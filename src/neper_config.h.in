@@ -1,0 +1,11 @@
+#cmakedefine HAVE_GSL
+#cmakedefine HAVE_LIBMATHEVAL
+#cmakedefine HAVE_NLOPT
+#cmakedefine HAVE_LIBSCOTCH
+#cmakedefine DEVEL_PROFILING
+#cmakedefine DEVEL_OPTIMIZATION
+#cmakedefine DEVEL_DEBUGGING_FLAG
+#cmakedefine DEVEL_DEBUGGING_TEST
+
+#define NEPER_VERSION @NEPER_VERSION@
+#define NEPER_EMAIL @NEPER_EMAIL@

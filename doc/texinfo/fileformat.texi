@@ -1,0 +1,616 @@
+@c This file is part of the Neper software package.
+@c Copyright (C) 2003-2016 Romain Quey
+@c See the COPYING file in the top-level directory.
+
+@node File Formats
+@appendix File Formats
+
+@menu
+* Tessellation File (@file{.tess})::
+* Raster Tessellation File (@file{.tesr})::
+* Multiscale Cell File::
+* Position File::
+@end menu
+
+@node Tessellation File (@file{.tess})
+@section Tessellation File (@file{.tess})
+
+Here are details on the @file{.tess} file format version
+@code{2.0}.  Developers should note that read and write functions are
+available as @samp{neut_tess_fscanf} and @samp{neut_tess_fprintf},
+defined in directories @file{neut/neut_tess/neut_tess_fscanf}
+and
+@file{neut/neut_tess/neut_tess_fprintf}.
+
+@c The '@ ' are necessary for .info compliance (@phantom{} and others
+@c not supported.
+@sp 1
+@code{
+***tess                                                                @*
+@  **format                                                            @*
+@ @ @  @var{format}                                                    @*
+@  **general                                                           @*
+@ @ @  @var{dim} @var{type}           @*
+@  **cell                                                              @*
+@ @ @  @var{number_of_cells}                                     @*
+@ [*id                                                               @*
+@ @ @ @var{cell1_id} @var{cell2_id} ... ]                              @*
+@ [*seed  @*
+@ @ @ @var{seed_id} @var{seed_x} @var{seed_y} @var{seed_z} @var{seed_weight} @*
+@ @ @  ... ]                                                            @*
+@ [*ori @*
+@ @ @ @var{descriptor} @*
+@ @ @  @var{cellid_param1} @var{cellid_param2} ...                       @*
+@ @ @  ... ]                                                            @*
+@ [*lamid @*
+@ @ @  @var{cell1_lamid} @var{cell2_lamid} ... ]                      @*
+@  **vertex                                                            @*
+@ @ @  @var{total_number_of_vertices}                                  @*
+@ @ @  @var{ver_id} @ @var{ver_x} @var{ver_y} @var{ver_z} @var{ver_state}               @*
+@ @ @  ...                                                             @*
+@  **edge                                                              @*
+@ @ @  @var{total_number_of_edges}                                     @*
+@ @ @  @var{edge_id}@ @var{ver_1} @var{ver_2} @var{edge_state}         @*
+@ @ @  ...                                                             @*
+@  **face                                                              @*
+@ @ @  @var{total_number_of_faces}                                     @*
+@ @ @  @var{face_id} @var{number_of_vertices} @var{ver_1} @ @ @var{ver_2} @ @ ...      @*
+@ @ @ @ @ @ @ @ @ @ @ @var{number_of_edges} @ @ @ @var{edge_1*} @var{edge_2*} ...      @*
+@ @ @ @ @ @ @ @ @ @ @ @var{face_eq_d} @var{face_eq_a} @var{face_eq_b} @var{face_eq_c} @*
+@ @ @ @ @ @ @ @ @ @ @ @var{face_state} @var{face_point}
+		    @var{face_point_x} @var{face_point_y} @var{face_point_z}  @*
+@ @ @  ...                                                               @*
+@  **polyhedron                                                      @*
+@ @ @  @var{total_number_of_polyhedra}                                   @*
+@ @ @  @var{poly_id} @var{number_of_faces} @var{face_1*} @var{face_2*} ...             @*
+@ @ @  ...                                                               @*
+@  **domain                                                          @*
+@ @  *general                                                          @*
+@ @ @  @var{dom_type}                                                    @*
+@ @  *vertex                                                           @*
+@ @ @  @var{total_number_of_dom_vertices}                                @*
+@ @ @  @var{dom_ver_id} @ @var{dom_ver_x} @var{dom_ver_y} @var{dom_ver_z} @var{dom_ver_label} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{number_of_dom_tess_vertices} @var{ver_1}                                    @*
+@ @ @  ...                                                               @*
+@ @  *edge                                                             @*
+@ @ @  @var{total_number_of_dom_edges}                                   @*
+@ @ @  @var{dom_edge_id} @var{dom_ver_1} @var{dom_ver_2} @var{dom_edge_label} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{number_of_dom_tess_edges} @var{edge_1}
+							      @var{edge_2} ...@*
+@ @ @  ...                                                               @*
+@ @  *face                                                             @*
+@ @ @  @var{total_number_of_dom_faces}                                   @*
+@ @ @  @var{dom_face_id} @var{number_of_dom_vertices} @var{dom_ver_1} @ @var{dom_ver_2} @ @var{...} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{number_of_dom_edges} @ @ @ @var{dom_edge_1} @var{dom_edge_2}
+							            @var{...} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{dom_face_eq_d} @var{dom_face_eq_a}
+			@var{dom_face_eq_b} @var{dom_face_eq_c} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{dom_face_label} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{number_of_dom_tess_faces}
+			@var{dom_tess_face_1} @var{dom_tess_face_2} @var{...} @*
+@ @ @ ...                                                               @*
+@  **periodic                                                           @*
+@ @  *general                                                           @*
+@ @ @  @var{per_x} @var{per_y} @var{per_z}      @*
+@ @ @  @var{per_dist_x} @var{per_dist_y} @var{per_dist_z}            @*
+@ @  *seed                                                              @*
+@ @ @  @var{slave_seed_qty}                                             @*
+@ @ @  @var{slave_seed_id} @var{master_seed_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z} @*
+@ @ @ ...                                                               @*
+@ @  *vertex                                                              @*
+@ @ @  @var{slave_ver_qty}                                             @*
+@ @ @  @var{slave_ver_id} @var{master_ver_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z} @*
+@ @ @ ...                                                               @*
+@ @  *edge                                                              @*
+@ @ @  @var{slave_edge_qty}                                             @*
+@ @ @  @var{slave_edge_id} @var{master_edge_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z} @*
+@ @ @ ...                                                               @*
+@ @  *face                                                              @*
+@ @ @  @var{slave_face_qty}                                             @*
+@ @ @  @var{slave_face_id} @var{master_face_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z} @*
+@ @ @ ...                                                               @*
+@  **scale                                                           @*
+@ @  *general                                                           @*
+@ @ @  @var{number_of_scales} @*
+@ @  *cellid                                                           @*
+@ @ @  @var{cell1_id} @var{cell1_scale1} @var{cell1_scale2} ... @var{cell1_scale@var{number_of_scales}} @*
+@ @ @ ... @*
+***end                                                                  @*
+}
+
+where (with identifiers being integer numbers),
+
+@itemize
+
+@item @code{***tess} denotes the beginning of a tessellation file.
+
+@item @code{**format} denotes the beginning of the format field.
+
+@item @code{@var{format}} is the file format, currently @samp{2.0}
+(character string).
+
+@item @code{**general} denotes the beginning of the general information field.
+
+@item @code{@var{dim}} is the dimension of the tessellation (1, 2 or 3).
+
+@item @code{@var{type}} is the type of tessellation (always
+@samp{standard}).
+
+@item @code{**cell} denotes the beginning of the cell field.
+
+@item @code{@var{number_of_cells}} is the number of cells.
+
+@item @code{*id} denotes the beginning of an optional identifier field.
+It the field is not present, the cells are considered to be numbered
+contiguously from 1.
+
+@item @code{@var{cell1_id}}, @code{@var{cell2_id}}, @dots{} are the actual
+identifiers of the cells.
+
+@item @code{*lamid} denotes the beginning of an optional lamella
+identifier field.
+
+@item @code{@var{cell1_lamid}}, @code{@var{cell2_lamid}}, @dots{} are
+the lamella identifiers of the cells.
+
+@item @code{*seed} denotes the beginning of a seed field.
+
+@item @code{@var{seed_id}} is the identifier of a seed and ranges from
+@code{1} to @code{number_of_cells}.
+
+@item @code{@var{seed_x}}, @code{@var{seed_y}} and @code{seed_z} are
+the three coordinates of a seed (real numbers).
+
+@item @code{@var{seed_weight}} is the weight of a seed (real number).
+
+@item @code{*ori} denotes the beginning of an optional crystal
+orientation field.
+
+@item @code{descriptor} is the descriptor used to parametrize the
+crystal orientations.  See @ref{Rotations and Orientations} for the list
+of available descriptors.
+
+@item @code{@var{cellid_param1}}, @code{@var{cellid_param2}}, @dots{} are
+the values of the orientation descriptor of cell @var{id}.
+
+@item @code{**vertex} denotes the beginning of the vertex field.
+
+@item @code{@var{total_number_of_vertices}} is the total number of
+vertices.
+
+@item @code{@var{ver_id}} is the identifier of a vertex and ranges from
+@code{1} to @code{total_number_of_vertices}.
+
+@item @code{@var{ver_x}}, @code{@var{ver_y}} and @code{ver_z} are
+the three coordinates of a vertex (real numbers).
+
+@item @code{@var{ver_state}} is an integer indicating the state of a
+vertex. For a standard tessellation (no regularization), it equals
+@code{0}.  For a regularized tessellation, it equals @code{0} if the
+vertex has not been modified by regularization and is higher than
+@code{0} otherwise.
+
+@item @code{**edge} denotes the beginning of the edge field.
+
+@item @code{@var{total_number_of_edges}} is the total number of edges.
+
+@item @code{@var{edge_id}} is the identifier of an edge and ranges from
+@code{1} to @code{total_number_of_edges}.
+
+@item @code{@var{ver_1}}, @code{@var{ver_2}}, @code{...} are
+identifiers of vertices.
+
+@item @code{@var{edge_state}} is an integer indicating the state of an
+edge (always @code{0}).
+
+@item @code{**face} denotes the beginning of the face field. It is
+present for a tessellation of dimension 2 or 3.
+
+@item @code{@var{total_number_of_faces}} is the total number of faces.
+
+@item @code{@var{face_id}} is the identifier of a face and ranges from
+@code{1} to @code{total_number_of_faces}.
+
+@item @code{@var{number_of_vertices}} is the number of vertices of a
+face.
+
+@item @code{@var{number_of_edges}} is the number of edges of a face.
+
+@item @code{@var{edge_1*}}, @code{@var{edge_2*}}, @code{...} are
+identifiers of the edges of a face, signed according to their
+orientation in the face.
+
+@item @code{@var{face_eq_a}}, @code{@var{face_eq_b}},
+@code{@var{face_eq_c}} and @code{@var{face_eq_d}} are the parameters of
+the equation of a face: @math{@var{face_eq_a}@,x + @var{face_eq_b}@,y +
+@var{face_eq_c}@,z = @var{face_eq_d}}.  The parameters are scaled so
+that
+@iftex
+@math{@var{face_eq_a}^2+@var{face_eq_b}^2+@var{face_eq_c}^2=1}.
+@end iftex
+
+@item @code{@var{face_state}} is an integer indicating the state of a
+face. For a standard tessellation (no regularization), it equals
+@code{0}.  For a regularized tessellation, it equals @code{0} if it has
+not been modified by regularization and @code{1} otherwise.
+
+@item @code{@var{face_point}} is an integer indicating the point used
+for the interpolation of a face. For a standard tessellation (no
+regularization), it equals @code{0}.  For a regularized tessellation: if
+the point is the face barycentre, it equals @code{0}; if the point is
+one of the face vertices, it equals to the position of the vertex in the
+list of vertices of the face. It equals @code{-1} if the point is undefined.
+
+@item @code{@var{face_point_x}}, @code{@var{face_point_y}} and
+@code{@var{face_point_z}} are the coordinates of the point used for the
+interpolation of a face (equal @code{0} if undefined).
+
+@item @code{**polyhedron} denotes the beginning of the polyhedron field.
+It is present for a tessellation of @w{dimension 3}.
+
+@item @code{@var{total_number_of_polyhedra}} is the total number of polyhedra.
+
+@item @code{@var{poly_id}} is the identifier of a polyhedron and ranges
+from @code{1} to @code{total_number_of_polyhedra}.
+
+@item @code{@var{number_of_faces}} is the number of faces of a
+polyhedron.
+
+@item @code{@var{face_1*}}, @code{@var{face_2*}}, @code{...} are
+identifiers of the faces of a polyhedron, signed according to their
+orientations in the polyhedron (positive if the normal of the face is
+pointing outwards and negative if it is pointing inwards).
+
+@item @code{**domain} denotes the beginning of the domain field.
+
+@item @code{*general} denotes the beginning of the domain general
+information field.
+
+@item @code{@var{dom_type}} is the type of the domain (one of
+@code{cube}, @code{cylinder}, @code{square}, @code{circle}, @code{poly} and @code{planes}).
+
+@item @code{*vertex} denotes the beginning of the domain vertex field.
+
+@item @code{@var{total_number_of_dom_vertices}} is the total number of
+domain vertices.
+
+@item @code{@var{dom_ver_id}} is the identifier of a domain vertex and
+ranges between @code{1} to @code{total_number_of_dom_vertices}.
+
+@item @code{@var{dom_ver_x}}, @code{@var{dom_ver_y}} and
+@code{dom_ver_z} are the three coordinates of a domain vertex (real numbers).
+
+@item @code{@var{dom_ver_label}} is the label of a domain vertex.
+
+@item @code{@var{number_of_dom_tess_vertices}} is the number of
+tessellation vertices of a domain vertex (must be 1).
+
+@item @code{*edge} denotes the beginning of the domain edge field (for a
+tessellation of dimension 2 @w{or 3}).
+
+@item @code{@var{total_number_of_dom_edges}} is the total number of
+domain edges.
+
+@item @code{@var{dom_edge_id}} is the identifier of a domain edge and
+ranges between @code{1} to @code{total_number_of_dom_edges}.
+
+@item @code{@var{dom_ver_1}}, @code{@var{dom_ver_2}}, @code{...} are
+identifiers of the domain vertices of a domain edge or face.
+
+@item @code{@var{dom_edge_label}} is the label of a domain edge.
+
+@item @code{@var{number_of_dom_tess_edges}} is the number of
+tessellation edges of a domain edge.
+
+@item @code{*face} denotes the beginning of the domain face field (for a
+tessellation of dimension 3).
+
+@item @code{@var{total_number_of_dom_faces}} is the total number of
+domain faces.
+
+@item @code{@var{dom_face_id}} is the identifier of a domain face and ranges from
+@code{1} to @code{total_number_of_dom_faces}.
+
+@item @code{@var{number_of_dom_vertices}} is the number of
+domain vertices of a domain face.
+
+@item @code{@var{number_of_dom_edges}} is the number of
+domain edges of a domain face.
+
+@item @code{@var{dom_edge_1}}, @code{@var{dom_edge_2}}, @code{...} are
+identifiers of the domain edges of a domain face.
+
+@item @code{@var{dom_face_eq_a}}, @code{@var{dom_face_eq_b}},
+@code{@var{dom_face_eq_c}} and @code{@var{dom_face_eq_d}} are the
+parameters of the equation of a domain face and are defined in the same
+way than @code{@var{face_eq_a}}, etc.@ (see above).
+
+@item @code{@var{dom_face_label}} is the label of a domain face. If
+@var{@code{dom_type}} is @samp{@code{cube}}, it is one of
+@samp{@code{x0}}, @samp{@code{x1}}, @samp{@code{y0}}, @samp{@code{y1}},
+@samp{@code{z0}} or @samp{@code{z1}}.  If @var{@code{dom_type}} is
+@samp{@code{cylinder}}, it is one of @samp{@code{z0}}, @samp{@code{z1}},
+@samp{@code{f1}}, @samp{@code{f2}}, @dots{} Otherwise, it is one of
+@samp{@code{f1}}, @samp{@code{f2}}, @dots{}
+
+@item @code{@var{number_of_dom_tess_faces}} is the number of
+tessellation faces of a domain face.
+
+@item @code{@var{dom_tess_face_1}}, @code{@var{dom_tess_face_2}},
+@code{...} are the identifiers of the tessellation faces of a domain
+face.
+
+@item @code{***end} denotes the end of a tessellation file.
+
+@item @code{**periodicity} denotes the beginning of the periodicity field.
+
+@item @code{*general} denotes the beginning of the periodicity general
+information field.
+
+@item @code{@var{per_x}}, @code{@var{per_y}} and @code{@var{per_z}} are
+booleans indicating x, y, and z periodicity.
+
+@item @code{@var{per_dist_x}}, @code{@var{per_dist_y}} and
+@code{@var{per_dist_z}} are the periodicity distances along x, y, and z.
+
+@item @code{*seed} denotes the beginning of the periodicity seed field.
+
+@item @code{@var{slave_seed_qty}} is the number of slave seeds.
+
+@item @code{@var{slave_seed_id}} is the identifier of a slave seed.
+
+@item @code{@var{master_seed_id}} is the identifier of the master of a
+slave seed.
+
+@item @code{@var{per_shift_x}}, @code{@var{per_shift_y}} and
+@code{@var{per_shift_z}} are the shifts of a slave seed (or vertex,
+    etc.) relative to its master, along x, y and z.  The values can be
+-1, 0 or 1.
+
+@item @code{*vertex} denotes the beginning of the periodicity vertex field.
+
+@item @code{@var{slave_vertex_qty}} is the number of slave vertices.
+
+@item @code{@var{slave_vertex_id}} is the identifier of a slave vertex.
+
+@item @code{@var{master_vertex_id}} is the identifier of the master of a
+slave vertex.
+
+@item @code{*edge} denotes the beginning of the periodicity edge field.
+
+@item @code{@var{slave_edge_qty}} is the number of slave edges.
+
+@item @code{@var{slave_edge_id}} is the identifier of a slave edge.
+
+@item @code{@var{master_edge_id}} is the identifier of the master of a
+slave edge.
+
+@item @code{*face} denotes the beginning of the periodicity face field
+(for a tessellation of dimension 3).
+
+@item @code{@var{slave_face_qty}} is the number of slave faces.
+
+@item @code{@var{slave_face_id}} is the identifier of a slave face.
+
+@item @code{@var{master_face_id}} is the identifier of the master of a
+slave face.
+
+@item @code{@var{number_of_scales}} is the number of scales.
+
+@item @code{@var{cell1_scale1}}, @code{@var{cell1_scale2}}, @dots{} are the
+identifiers of the cells of the scale-1, scale-2, @dots{} tessellations
+which the cell belongs to.
+
+@end itemize
+
+@node Raster Tessellation File (@file{.tesr})
+@section Raster Tessellation File (@file{.tesr})
+
+Here are details on the @file{.tesr} file format version
+@code{2.0}.  Developers should note that read and write functions are
+available as @samp{neut_tesr_fscanf} and @samp{neut_tesr_fprintf},
+defined in directories @file{neut/neut_tesr/neut_tesr_fscanf}
+and
+@file{neut/neut_tesr/neut_tesr_fprintf}.
+Compared to a tessellation file (@file{.tess}), a raster tessellation
+file can include cell morphological properties such as their centroids
+or volumes.  This is due to the fact that, for a raster tessellation,
+   these properties are both in small number and relatively expensive to
+   compute.
+
+@sp 1
+@code{
+***tesr                                                              	@*
+@  **format                                                          	@*
+@ @ @  @var{format} @var{data_format}                                	@*
+@  **general                                                         	@*
+@ @ @  @var{dimension}                                               	@*
+@ @ @  @var{size_x} @var{size_y} [@var{size_z}]                        	@*
+@ @ @  @var{rptsize_x} @var{rptsize_y} [@var{rptsize_z}]             	@*
+[**cell                                                              	@*
+@ @ @  @var{number_of_cells}                                            @*
+@ [*id                                                               	@*
+@ @ @  @var{cell1_id} @var{cell2_id} ...]                            	@*
+@ [*seed  								@*
+@ @ @ @var{seed_id} @var{seed_x} @var{seed_y} [@var{seed_z}] @var{seed_weight} @*
+@ @ @  ... ]                                                            @*
+@ [*ori 								@*
+@ @ @ @var{descriptor} 							@*
+@ @ @  @var{cell1_param1} @var{cell1_param2} ...                      	@*
+@ @ @  @var{cell2_param1} @var{cell2_param2} ...                     	@*
+@ @ @ ...] 								@*
+@ [*coo 								@*
+@ @ @  @var{cell1_x} @var{cell1_y} [@var{cell1_z}]             		@*
+@ @ @  @var{cell2_x} @var{cell2_y} [@var{cell2_z}]             		@*
+@ @ @  ... ]                                                            @*
+@ [*vol 								@*
+@ @ @  @var{cell1_vol}                   	 			@*
+@ @ @  @var{cell2_vol}                   	 			@*
+@ @ @  ... ]                                                            @*
+@ [*convexity 								@*
+@ @ @  @var{cell1_convexity}                   	 			@*
+@ @ @  @var{cell2_convexity}                   	 			@*
+@ @ @  ... ]                                                            @*
+@ @  ]	                                                            	@*
+@  **data                                                            	@*
+@ @ @  @var{rpt1_cell} @var{rpt2_cell} ...                           	@*
+@ @emph{or}                                                          	@*
+@ @ *file @var{data_file_name}                                       	@*
+***end                                                               	@*
+}
+
+where,
+
+@itemize
+
+@item @code{***tesr} denotes the beginning of a raster tessellation file.
+
+@item @code{**format} denotes the beginning of the format field.
+
+@item @code{@var{format}} is the file format, currently @samp{2.0}
+(character string).
+
+@item @code{@var{data_format}} is the format of the data in field
+@code{**data}.
+It can be either
+@code{ascii},
+@code{binary8} (8-bit binary),
+@code{binary16} (16-bit binary, Little@-Endian),
+@code{binary16_big} (16-bit binary, Big@-Endian),
+@code{binary32} (32-bit binary, Little@-Endian) or
+@code{binary32_big} (32-bit binary, Big@-Endian).
+
+@item @code{**general} denotes the beginning of the general information field.
+
+@item @code{@var{dimension}} is the dimension of the raster tessellation.
+
+@item @code{@var{size_x}}, @code{@var{size_y}} and @code{@var{size_z}} are
+the raster sizes along the 3 coordinate axes. The number of sizes must
+match @var{dimension}.
+
+@item @code{@var{rptsize_x}}, @code{@var{rptsize_y}} and
+@code{@var{rptsize_z}} are the point sizes along the 3 coordinate axes.
+The number of sizes must match @var{dimension}.
+
+@item @code{**cell} denotes the beginning of an optional cell field.
+
+@item @code{@var{number_of_cells}} is the number of cells.
+
+@item @code{*id} denotes the beginning of an optional identifier field.  If
+the field is present, the cell identifiers listed under @code{**data}
+are supposed to be numbered contiguously from 1 (or 0 in case of
+void), and their actual identifiers are considered to be the ones
+provided in the list.  The actual identifiers are used in output files.
+
+@item @code{@var{cell1_id}}, @code{@var{cell2_id}}, @dots{} are the actual
+identifiers of the cells.
+
+@item @code{*seed} denotes the beginning of a seed field.
+
+@item @code{@var{seed_id}} is the identifier of a seed and ranges from
+@code{1} to @code{number_of_cells}.
+
+@item @code{@var{seed_x}}, @code{@var{seed_y}} and @code{seed_z} are
+the three coordinates of a seed (real numbers).
+
+@item @code{@var{seed_weight}} is the weight of a seed (real number).
+
+@item @code{*ori} denotes the beginning of an optional crystal
+orientation field.
+
+@item @code{descriptor} is the descriptor used to parametrize the
+crystal orientations.  See @ref{Rotations and Orientations} for the list
+of available descriptors.
+
+@item @code{@var{cellid_param1}}, @code{@var{cellid_param2}}, @dots{} are
+the values of the orientation descriptor of cell @var{id}.
+
+@item @code{*coo} denotes the beginning of an optional centroid
+field.
+
+@item @code{@var{cellid_x}}, @code{@var{cellid_y}} and
+@code{@var{cellid_z}} are the coordinates of the centroids of cell
+@var{id}.
+
+@item @code{*vol} denotes the beginning of an optional volume
+field.
+
+@item @code{@var{cellid_vol}} is the volume of cell @var{id}.
+
+@item @code{*convexity} denotes the beginning of an optional convexity
+field.
+
+@item @code{@var{cellid_convexity}} is the convexity of cell @var{id}.
+
+@item @code{**data} denotes the beginning of the data field.  Data can be
+provided in the @file{.tesr} file or in a separate file, using
+@option{*file}, see below.
+
+@item @code{@var{rptid_cell}} is the cell raster point @code{@var{id}}
+belongs to.  The cell identifiers should start from 1. Use 0 for
+voids.
+
+@item @code{*file} denotes the beginning of a file field.
+
+@item @code{data_file_name} is the name of a file that contains the
+data. Typically, it is a @file{.raw} file.
+
+@end itemize
+
+@node Multiscale Cell File
+@section Multiscale Cell File
+
+A multiscale cell file provides cell-by-cell values for a multiscale
+tessellation.  It contains, for each cell, its @dfn{multiscale
+identifier}, @var{mid}, and the value(s).  A @dfn{cell multiscale
+identifier} (@var{mid}) is a character string identifying a cell at a
+specific scale.  For a given cell, C, @var{mid} combines the identifiers
+of the cells that C belongs to, at successive scales, to its own
+@code{id}, separated by @samp{@SEPFRAC{}}.  For a 1-scale tessellation,
+@var{mid} equals @var{id}.  For a 2-scale tessellation composed of
+@iftex
+@math{2@times3}
+@end iftex
+@ifinfo
+@math{2 x 3}
+@end ifinfo
+cells, the @var{mid}s are equal to @code{1::1},
+@code{1::2}, @code{1::3}, @code{2::1}, @code{2::2} and @code{2::3}.
+An example of a multiscale cell file providing integer values for these
+cells is:
+
+@verbatim
+1::1 3
+1::2 4
+1::3 5
+2::1 4
+2::2 2
+2::3 1
+@end verbatim
+
+@node Position File
+@section Position File
+
+A position file lists the coordinates of a given number of points.  The
+file must contain 1 coordinate per point in 1D, 2 coordinates per point
+in 2D and 3 coordinates per point in 3D.  While the dimension can be
+known from the context in which the file is read, it can also be
+specified by appending @samp{@SEPDEP@var{dim}} to the name of the
+position file, where @var{dim} is the dimension.
+@w{A coordinate} can be an integer or real number. A real
+number can have an arbitrary number of digits, but the decimal mark must
+@w{be @samp{.}}.
+The coordinates can be separated from each other by spaces, tabulators
+or newlines (any number as well as arbitrary combinations of them are
+supported).
+However, a good practice is to
+format the file with one line per point.
+An example of a position file containing 5 points in 3D is:
+
+@verbatim
+2.1235 9.4544 5.2145
+5.9564 3.6884 9.2145
+2.2547 3.2658 8.2514
+8.2515 9.4157 2.9454
+0.5874 4.2848 2.4874
+@end verbatim

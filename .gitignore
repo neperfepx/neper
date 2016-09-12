@@ -1,0 +1,30 @@
+# local files and directories
+*~
+.*.swp
+.*.swo
+html
+latex
+
+# src directory
+build
+config
+updatelib.sh*
+
+# doc directory
+*.png
+*.pdf
+*.info
+*.aux
+*.cp
+*.fn
+*.ky
+*.log
+*.pg
+*.toc
+*.tp
+*.tps
+*.vr
+*.fig
+*.kys
+data
+utils

@@ -1,0 +1,982 @@
+@c This file is part of the Neper software package.
+@c Copyright (C) 2003-2016 Romain Quey
+@c See the COPYING file in the top-level directory.
+
+@node Tessellation Module (-T)
+@chapter Tessellation Module (-T)
+
+@MT{} generates @dfn{tessellations} and @dfn{multiscale tessellations}
+of a bounded @dfn{domain} of space, in 2D or 3D.  Periodicity and
+semi-periodicity conditions can be prescribed.  @MT{} also enables to
+@dfn{regularize} the tessellations for better-quality meshing. The
+tessellations are provided in scalar (vectorial) or raster formats.
+
+@dfn{Tessellations} can be generated from various types of
+morphological cell properties (option @option{-morpho}).  Several
+predefined properties are available, such as those obtained by grain
+growth in metals (which are described by cell size and sphericity
+distributions). Custom properties can be specified using various
+metrics, including the size, the sphericity, the centroid
+or even the actual shape (using a raster tessellation), either in terms
+of distributions (when applicable) or on a per-cell basis.
+The generated @dfn{tessellations} are Laguerre (or Voronoi)
+tessellations whose seed attributes are set by optimization to
+obtain the desired cell properties.  Of course, il is also possible to
+generate standard tessellations (e.g.@ Poisson-Voronoi tessellations).
+
+@dfn{Multiscale tessellations} are characterized by the subdivision of
+the cells of a primary tessellation into secondary tessellations (and so
+on) and are obtained by combining into one, using the
+@w{@samp{@SEPFRAC{}} separator}, the option arguments that apply at the
+successive scales.  The same value can be used for defining the
+tessellations at a given scale, or different values can be loaded from a
+@dfn{multiscale cell file} (@pxref{Multiscale Cell File}).  So, all
+capabilities available for generating a standard (single-scale)
+tessellations are available for generating the tessellations at the
+different scales of a multiscale tessellation.  Examples are provided in
+the following.
+
+The @dfn{domain} of space in which the tessellation is created can be of
+any convex shape. In 3D, cuboidal, cylindrical and spherical shapes are
+directly supported while other morphologies can be defined from a set of
+planes (@w{option @option{-domain}}).  Periodicity or semi-periodicity
+conditions can be applied to the tessellation (@w{option
+@option{-periodicity}}).
+
+@dfn{Crystal orientations} are also provided for the cells. The
+orientations are randomly distributed according to a uniform
+distribution, either in the 3D space or along a specific orientation
+fibre (option @option{-ori}).  They can be provided according to
+different descriptors (option @option{-oridescriptor}).
+
+@dfn{Regularization} can be applied to the tessellations and consists in
+removing their small edges and faces (option @option{-regularization})
+which otherwise are highly detrimental to good-quality meshing with
+@mM{} (@pxref{Meshing Module (-M)}).  It it not available for periodic
+tessellations yet.
+
+@dfn{Output files} describe the tessellation either at the scalar
+format @file{.tess} or at the raster format @file{.tesr} (@pxref{File
+Formats}).  Both are input files of @mM{} (@pxref{Meshing Module (-M)})
+and @mV{} (@pxref{Visualization Module (-V)}).  Third-party software
+file formats are also available.
+
+@sp 1
+Here is what a typical run of @mT{} looks like,
+
+@sp 1
+@c typical_start
+@verbatim
+    $ neper -T -n 10 -id 1 -reg 1
+    ========================    N   e   p   e   r    =======================
+    Info   : A software package for polycrystal generation and meshing.
+    Info   : Version 3.0.0
+    Info   : Built with: gsl nlopt libmatheval
+    Info   : <http://neper.sourceforge.net>
+    Info   : Copyright (C) 2003-2016, and GNU GPL'd, by Romain Quey.
+    Info   : Comments and bug reports: <neper-users@lists.sourceforge.net>.
+    Info   : Loading initialization file `/home/rquey/.neperrc'...
+    Info   : ---------------------------------------------------------------
+    Info   : MODULE  -T loaded with arguments:
+    Info   : [ini file]
+    Info   : [com line] -n 10 -id 1 -morpho gg -reg 1
+    Info   : ---------------------------------------------------------------
+    Info   : Reading input data...
+    Info   : Creating domain...
+    Info   : Creating tessellation...
+    Info   :   - Running tessellation...
+    Info   :     > Entering optimization...
+    Info   :     > Setting seeds... 100%
+    Info   :     > Initial solution: f   =3.623581896
+    Info   :     > Iteration   2864: fmin=0.077875850 f=0.077875946
+    Info   :     > Reached `dvalditer' criterion.
+    Info   : Regularizing tessellation...
+    Info   :   - loop 1/2: 100% del=2
+    Info   : Writing tessellation...
+    Info   :     [o] Writing file `n10-id1.tess'...
+    Info   :     [o] Wrote file `n10-id1.tess'.
+    Info   : Elapsed time: 3.333 secs.
+    ========================================================================
+@end verbatim
+@c typical_end
+
+@section Arguments
+
+@subsection Input Data
+
+@kindex -n
+@inp{-n, integer or char_string,
+Specify the number of cells of the tessellation.
+The argument can be a mathematical expression based on the @var{size}
+variable@comma{} which is the size of the domain (volume in 3D@comma{}
+area in 2D).  For regular morphologies (cubes@comma{} lamellae@comma{}
+etc.@comma{} see option @option{-morpho})@comma{} the number of cells is
+defined from option @option{-morpho} and so the argument must be
+@samp{from_morpho}.
+, any, none}
+
+@kindex -id
+@inp{-id, integer,
+Specify the identifier of the tessellation. It defines the seed used by the random
+number generator to compute the (initial) seed positions.
+,
+any, 1}
+
+@opt{-dim, integer,
+Specify the dimension of the tessellation.
+,
+2 or 3, 3}
+
+@opt{-domain, char_string,
+Specify the domain morphology.
+In 3D@comma{} for a cuboidal shape@comma{}
+provide @samp{cube(@var{size_x},@var{size_y},@var{size_z})}@comma{}
+for a cylindrical shape@comma{} provide
+@samp{cylinder(@var{height},@var{diameter})}@comma{}
+and for a spherical shape@comma{} provide
+@samp{sphere(@var{diameter})}.
+In 2D@comma{} for a rectangular shape@comma{} provide
+@samp{square(@var{size_x},@var{size_y})} and for a
+circular shape@comma{} provide @samp{circle(@var{diameter})}.
+To specify the number of
+facets@comma{} @code{@var{facet_nb}}@comma{}
+of a circle@comma{} cylinder or sphere domain@comma{} use
+@samp{circle(@var{diameter},@var{facet_nb})}@comma{}
+@samp{cylinder(@var{height},@var{diameter},@var{facet_nb})}
+or @samp{sphere(@var{diameter},@var{facet_nb})}.
+For an arbitrary convex 3D shape@comma{}
+provide @samp{planes(@var{file_name})}@comma{}
+where @code{@var{file_name}} is the name of a file containing the
+total number of planes then@comma{} for each plane@comma{} the
+4 parameters of its equation (@math{d}@comma{} @math{a}@comma{} @math{b}
+and @math{c}@comma{} for an equation of the form @math{a@,x+b@,y+c@,z=d}). The
+plane normal@comma{} @math{(a,@,b,@,c)}@comma{} must be an outgoing
+vector of the domain.
+For a tessellation cell@comma{} provide
+@samp{cell(@var{file_name}@comma{}@var{cell_id})}@comma{} where
+@code{@var{file_name}} is the name of the tessellation file and
+@code{@var{cell_id}} is the cell identifier.
+To transform the domain@comma{} append
+a transformation to the domain name using the @samp{@SEPDEP{}}
+separator.  Available transformations are:
+@samp{rotate(@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{angle})}
+for a rotation about an axis/angle pair@comma{}
+@samp{scale(@var{x_factor}@comma{}@var{y_factor}@comma{}@var{z_factor})}
+for scaling@comma{}
+@samp{translate(@var{x_delta}@comma{}@var{y_delta}@comma{}@var{z_delta})}
+for a translation and @samp{split(@var{dir})} for splitting the domain
+in half along direction @samp{@var{dir}} (@samp{@var{x}}@comma{}
+@samp{@var{y}} or @samp{@var{z}})@comma{} which can be used to apply
+symmetries.  An example is
+@samp{@code{sphere(1@comma{}100)@SEPDEP{}translate(-0.5@comma{}-0.5@comma{}-0.5)@SEPDEP{}scale(0.5@comma{}1@comma{}2)}}.
+, see above list, cube(1@comma{}1@comma{}1) in 3D and
+square(1@comma{}1) in 2D}
+
+@opt{-periodicity, char_string,
+Specify the periodicity conditions that apply to the domain (and
+therefore to the tessellation).  Provide as argument @samp{0} (or
+@samp{none}) for no periodicity@comma{} @samp{1} (or @samp{all}) for full
+periodicity@comma{} or a list of periodicity directions (among
+@samp{x}@comma{} @samp{y} and @samp{z}) combined with @samp{@SEPNODEP{}}
+for semi-periodicity.
+,
+see above list, 0}
+
+Is it also possible to load a tessellation or a raster tessellation from a file,
+
+@kindex -loadtess
+@inp{-loadtess, file_name,
+Load a tessellation from a file.  Provide as argument the file name.
+,
+any, none}
+
+@kindex -loadtesr
+@inp{-loadtesr, file_name,
+Load a raster tessellation from a file.  Provide as argument the file name.
+To load only a subregion of a raster tessellation@comma{} use the
+syntax
+@samp{@var{file_name}:crop(@var{xmin},@var{xmax},@var{ymin},@var{ymax},@var{zmin},@var{zmax})}@comma{}
+where
+@code{@var{xmin}}@comma{} @code{@var{xmax}}@comma{}
+@code{@var{ymin}}@comma{} @code{@var{ymax}}@comma{}
+@code{@var{zmin}} and @code{@var{zmax}} are the minimum and maximum positions along
+@code{@var{x}}@comma{} @code{@var{y}} and @code{@var{z}}@comma{} respectively.
+For 2D raster tessellations@comma{} the @code{@var{z}} values can be omitted.
+To scale the number of points of a raster tessellation@comma{} use the syntax
+@samp{@var{file_name}:scale(@var{factor})}@comma{}
+where @code{@var{factor}} is the
+scaling factor@comma{} or
+@samp{@var{file_name}:scale(@var{factor_x},@var{factor_y},@var{factor_z})}@comma{}
+where @code{@var{factor_x}}@comma{} @code{@var{factor_y}} and
+@code{@var{factor_z}} are the
+scaling factor along @var{x}@comma{} @var{y} and @var{z}@comma{}
+respectively.
+For 2D raster tessellations@comma{} the @code{@var{z}} value can be omitted.
+,
+any, none}
+
+Finally, it is possible to load a set of points.  These points are used
+only for statistics, in option @option{-statpoint}; they are not
+seed points of the tessellation (see option @option{-morphooptiini}
+    instead).
+
+@kindex -loadpoint
+@inp{-loadpoint, file_name,
+Load points from a file.
+See @ref{Position File} for the file format.
+Provide as argument the file name.
+,
+any, none}
+
+@subsection Morphology Options
+
+These options can be used to set the cell morphology.  If you want to
+set seeds attributes instead, use @samp{@option{-morphooptiini ...
+  -morpho voronoi}}.
+
+@opt{-morpho, char_string,
+Specify morphological properties of the cells.
+It can be done either by using a special morphology string (as defined below)@comma{}
+or by specifying custom cell properties such as sizes@comma{} sphericities@comma{}
+centroids@comma{} or even exact shapes (using a raster tessellation).@*
+@emph{(i)} The special morphology strings are:@*
+@bullet{} @samp{@code{voronoi}} for a standard Poisson-Voronoi
+tessellation;@*
+@bullet{} @samp{@code{graingrowth}} or @samp{@code{gg}} for
+grain-growth statistical properties@comma{} which mean a wider grain size
+distribution and higher grain sphericities than in a Voronoi tessellation
+(it actually is an alias for
+@samp{@code{diameq:lognormal(1,0.35),sphericity:lognormal(0.145,0.03,1-x)}}@comma{}
+@w{see below});@*
+@bullet{} @samp{@code{centroidal}} for a centroidal
+tessellation@footnote{@code{centroidal} is not recommended as it does
+not correspond to a morphological property @i{ per se}; size and/or
+sphericity properties should be used instead.}
+(it actually is an alias for @samp{@code{centroid:seed}}@comma{} @w{see
+below});@*
+@bullet{} @samp{cube(@var{N})} / @samp{square(@var{N})} for a regular
+tessellation into cubic / square cells@comma{}
+where @samp{@var{N}} is the number of cells along a direction.@*
+@bullet{} @samp{lamellar(w=@var{w}@comma{}v=@var{v})} for a lamellar
+morphology.  Argument @samp{w=@var{w}} is mandatory and argument
+@samp{v=@var{v}} is optional. Argument @samp{@code{w=@var{w}}} enables
+to specify the absolute lamella width @code{@var{w}}.  For specifying
+several widths@comma{} combine them @w{with @samp{@SEPDEP}}.  In the
+case of a multiscale tessellation@comma{} for specifying cell-by-cell
+width values@comma{} use the syntax @samp{file(@var{file_name})} where
+@code{@var{file_name}} is the name of a multiscale cell file containing
+the list of widths (see @ref{Multiscale Cell File}).  Argument
+@samp{@code{v=@var{v}}} enables to specify the lamella plane @w{normals
+@code{@var{v}}}.  For randomly-distributed normals taken from a uniform
+distribution@comma{} use @samp{random}.  For specifying cell-by-cell
+normals@comma{} use the syntax @samp{file(@var{file_name})} where
+@code{@var{file_name}} is the name of a multiscale cell file containing
+the list of lamella plane normals (see @ref{Multiscale Cell File}).@*
+@emph{(ii)} Custom morphological properties can be defined
+by providing as argument the cell
+property and its value@comma{} combined with the @samp{@SEPDEP{}} separator.
+The available properties are:@*
+@bullet{} @samp{@code{size}} for the size (volume in 3D and area in 2D)
+and @samp{@code{diameq}} for the equivalent diameter;@*
+@bullet{} @samp{@code{sphericity}} for the sphericity and
+@bullet{} @samp{@code{centroid}} for the centroid;@*
+@bullet{} @samp{@code{centroidsize}} for combined centroid and size@comma{}
+and @samp{@code{centroiddiameq}} for combined centroid and equivalent
+diameter;@*
+@bullet{} @samp{@code{tesr}} for cells of a raster tessellation.@*
+Sizes@comma{} sphericities can be defined by statistical
+distributions or on a per-cell basis@comma{} while centroids can be
+defined only on a per-cell basis.
+The statistical distributions can be: a
+Dirac distribution@comma{} @samp{dirac(@var{mean})}@comma{} a
+normal distribution@comma{} @samp{normal(@var{mean},@var{sig})}@comma{}
+lognormal distributions@comma{}
+@samp{lognormal(@var{mean},@var{sig})} or
+@samp{lognormal(@var{mean},@var{sig},1-x)} (which means the variable is
+@math{(1 - \hbox{the cell property})})@comma{} or a sum of
+distributions of increasing averages@comma{} for example@comma{}
+@samp{0.3*normal(@var{mean1},@var{sig1})+0.7*normal(@var{mean2},@var{sig2})}.
+An interval of possible values can also be provided using
+@samp{interval(@var{min}@comma{}@var{max})}.
+Cell-by-cell values can be provided using
+@samp{file(@var{file_name})}@comma{} where @samp{@var{file_name}} is
+the name of the file containing the cell values.
+For @samp{@code{centroid}}@comma{} provide @samp{seed} to get a
+centroidal tessellation.
+For @samp{@code{tesr}}@comma{} @samp{@var{file_name}} is the name of the
+raster tessellation file.@*
+To specify several properties@comma{} combine them @w{with @samp{@SEPNODEP}}.
+,
+any, voronoi}
+
+@opt{-morphooptiini, coo:coo_char_string@comma{}weight:weight_char_string,
+Specify the initial positions and weights of the
+seeds. Different arguments are available@comma{} depending on the value
+of option @option{-morpho}. @*
+@samp{@var{weight_char_string}} can be a real value@comma{} any
+mathematical expression based on variables @samp{@code{radeq}} and
+@samp{@code{diameq}} (@pxref{Tessellation Keys}) and their average
+values@comma{} @samp{@code{avradeq}} and @samp{@code{avdiameq}}@comma{}
+respectively@comma{}
+or @samp{file(@var{file_name})} to load values from a file.
+The default depends on the value of option @samp{@option{-morpho}}:
+for @samp{@code{voronoi}}@comma{} it is @samp{0}@comma{}
+for a cell-size statistical distribution@comma{} it is @samp{avradeq}@comma{}
+and for cell-based size values (including @code{-morpho tesr})
+@comma{} it is @samp{radeq}.
+@*
+@samp{@var{coo_char_string}} can be @samp{random} for random
+positions@comma{} @samp{packing} for positions set by (rough) dense
+sphere packing using the weights as sphere radii@comma{}
+@samp{@code{centroid}} for cell centroids@comma{}
+or @samp{file(@var{file_name})} to load values from a file.
+The default depends on the value of option @samp{@option{-morpho}}:
+for @samp{@code{voronoi}}@comma{} it is @samp{random}@comma{}
+for a cell-size statistical distribution@comma{} it is @samp{none}@comma{}
+and for cell-based coordinate values
+(including @code{-morpho tesr})@comma{} it is @samp{centroid}.
+,
+see above list, default}
+
+@c @optnrc{-morphooptimultiseed, integer,
+@c Specify the number of seeds used to generate a cell.@*
+@c For @samp{@code{-morpho size}}@comma{} the argument can be a
+@c mathematical expression based on the @code{@var{radeq}} and
+@c @code{@var{avradeq}} (or @code{@var{diameq}} and @code{@var{avdiameq}})
+@c parameters.@*
+@c For @samp{@code{-morpho tesr}}@comma{} the argument
+@c can be a mathematical expression based on the variables provided in
+@c @ref{Raster Tessellation Keys}.@*
+@c Individual cell values can be provided
+@c using @samp{file(@var{file_name})}@comma{} where @var{file_name} is the
+@c name of a file containing the successive cell values.
+@c ,
+@c any >= 1, 1}
+
+@optsec{-morphooptiobjective, char_string,
+Specify the objective function. For statistical distributions@comma{}
+the available values of the goodness-of-fit test are @samp{chi2} (Chi-square test)@comma{} @samp{ks}
+(Kolmogorov-Smirnov test)@comma{} @samp{kuiper} (Kuiper's test)@comma{}
+@samp{cmv} (Cram@'er-Von Mises test)@comma{} @samp{ad} (Anderson-Darling
+test)@comma{}
+@samp{FL2} (L@math{^2}-norm on @math{F})@comma{}
+@samp{FL2w} (weighted L@math{^2}-norm
+on @math{F})@footnote{Weighting by @math{1/\prod_{i=0}^N{|F-p_i|}}
+where @math{p_0=0} and @math{p_i} are the cumulative proportions of the
+distribution modes. For a unimodal distribution@comma{} the
+expression simplifies to @math{1/(F\,(1-F))}.}@comma{}
+and the default value is @samp{FL2w}.
+For @samp{@code{centroid}}@comma{} a Minkowski distance between the
+seeds and centroids is used@comma{} and can be
+@samp{@code{L1}}@comma{} @samp{@code{L2}} or @samp{@code{Linf}}.
+For a raster tessellation@comma{} the distance function is used@comma{}
+which can be computed on different regions. The available values are @samp{vol}
+for the full volume and @samp{surf} for only the surface voxels of the cells.
+The surface voxels can be computed using different connexity rules:
+connexities of 0@comma{} 1 and 2 indicate that two voxels form a connex
+set if they share at least a vertex@comma{} edge of face@comma{}
+respectively (they lead to decreasing numbers of surface voxels).
+@samp{surf} assumes a connexity level of 1; to set the connexity
+level@comma{} use @samp{surf@var{level}}@comma{} where @var{level} is
+the connexity level.
+The default value is @samp{surf}.
+,
+any, default}
+
+@optsec{-morphooptidof, char_string,
+Specify the degrees of freedom. The available values are
+@samp{x}@comma{} @samp{y} and @samp{z} for the 3 coordinates@comma{}
+and @samp{w} for the weights. Combine with @samp{@SEPNODEP}.
+,
+see above list, x@SEPNODEP{}y@SEPNODEP{}z@SEPNODEP{}w}
+
+@optsec{-morphooptistop, char_string,
+Specify the stopping criteria of the optimization process.
+Note that you do not have to define all criteria; in most cases@comma{}
+only one or two are needed.
+A stopping expression must be of the form @samp{@var{var}=@var{val}}@comma{}
+where @samp{@var{var}} is a variable and @samp{@var{val}} is its value.
+The available variables are:
+an absolute or relative error on the value of the objective
+function@comma{} @samp{@var{eps}} or @samp{@var{reps}}@comma{}
+an absolute or relative error on the components of the solution
+vector@comma{} @samp{@var{xeps}} or @samp{@var{xreps}}@comma{}
+a value of the objective function@comma{} @samp{@var{val}}@comma{}
+a value of the derivative of the (minimum of the) objective
+function with respect to the
+iteration number@comma{} @samp{@var{dvalditer}}@comma{}
+a maximum number of iterations@comma{} @samp{@var{itermax}}@comma{} or
+a maximum computation time@comma{} @samp{@var{time}}@comma{}
+Combine them with @samp{@SEPNODEP}.
+Optimization stops as soon as one stopping criterion is matched.
+Optimization can also be stopped anytime by invoquing the Ctrl+C
+command.
+,
+any, dvalditer=1e-5 (val=1e-4@comma{}iter=1e4 for @option{-morpho centroidal})}
+
+@optsec{-morphooptialgo, char_string,
+Specify the optimization algorithm. The available values are
+@samp{subplex} (Subplex)@comma{}
+@samp{praxis} (Praxis)@comma{}
+@samp{neldermead} (Nelder-Mead)@comma{}
+@samp{cobyla} (Cobyla)@comma{}
+@samp{bobyqa} (Bobyqa) and
+@samp{newuoa} (Newuoa) --- only @samp{subplex} and @samp{praxis} are
+recommended.
+In the case of @option{-morpho centroidal}@comma{} another available
+value is @samp{lloyd} (Lloyd's algorithm); to specify the seed displacement
+factor (from the seed to the centroid)@comma{} use
+@samp{lloyd(@var{factor})} (the default value is 2).
+Another available value is @samp{random}@comma{} for which
+seeds are moved randomly by the distance specified using
+@option{-morphooptiinistep} (use only if you really know what you are
+doing).
+,
+any, subplex (lloyd for @option{-morpho centroidal})}
+
+@optsec{-morphooptialgoneigh, char_string,
+Specify the neighbour search algorithm. The available values are
+@samp{ann} (ANN) and
+@samp{qsort} (direct computation with qsort).  @samp{ann} is much
+faster.
+,
+any, ann}
+
+@optsec{-morphooptigrid, char_string,
+Specify the grid used to discretize the distributions. Provide
+@samp{regular(@var{min},@var{max},@var{bin_nb})}@comma{}
+where @code{@var{min}} and @code{@var{max}} are the minimum and maximum
+values of the grid interval@comma{} respectively@comma{} and
+@code{@var{bin_nb}} is the number of bins.
+,
+any, regular(-1@comma{}10@comma{}1100)}
+
+@optsec{-morphooptismooth, real,
+Specify the width of the Gaussian distribution which is assigned to each
+cell data to compute the distributions.
+,
+any, 0.05}
+
+@optsec{-morphooptideltamax, real,
+Specify the maximal value by which each variable is allowed to change
+during optimization.
+direction (relative to the average cell size) and each seed is allowed
+to grow (weight value).
+,
+any>=0, HUGE_VAL}
+
+@optsec{-morphooptiinistep, real,
+Specify the step used to perturb the seed positions and weights when
+optimization begins.  The argument can be a function of
+@var{diameq}@comma{} the average equivalent cell diameter.
+,
+any>0, diameq/10}
+
+@optsec{-morphooptilogtime, char_string,
+Log the time taken during the optimization process.
+The keys are provided in @ref{Tessellation Update Keys}.
+,
+any, none}
+
+@optsec{-morphooptilogvar, char_string,
+Log the variables@comma{} i.e.@ the seed attributes@comma{}
+during the optimization process.
+The keys are provided in @ref{Tessellation Update Keys}.
+,
+any, none}
+
+@optsec{-morphooptilogval, char_string,
+Log the value of the objective function during the optimization process.
+The keys are provided in @ref{Tessellation Update Keys}.
+,
+any, none}
+
+@optsec{-morphooptilogdis, char_string,
+Log the distributions during the optimization process.
+The keys are provided in @ref{Tessellation Update Keys}.
+,
+any, none}
+
+@c @optsec{-morphooptilog, char_string,
+@c Get a log of the optimization process.
+@c @samp{@code{seed}} for the seed coordinates and weights@comma{}
+@c @samp{@code{dis}} for the distributions and
+@c @samp{@code{obj}} for the objective function.
+@c For raster tessellation@comma{} provide @samp{@code{tesr}} to get the
+@c tesr@comma{} which may differ from the input tesr when using
+@c @option{-morphooptiobjective surf}).
+@c Combine the values @w{with @samp{@SEPNODEP}}.
+@c (If asking to @samp{time}@comma{} avoid asking for other information since
+@c writing the log files may bias the computation time.)
+@c Provide @code{@samp{all}} for all and @code{@samp{none}} for none.  The
+@c output files have extensions starting by @samp{@file{.topt}}.
+@c ,
+@c see above list, none}
+
+@subsection Transformation Options
+
+@optsec{-sort, char_string,
+Sort the tessellation cells (typically to
+facilitate data post-processing).  Provide as argument the
+mathematical expression used for sorting (@pxref{Mathematical and
+Logical Expressions}).
+, any, none}
+
+@opt{-scale, real:real:real,
+Scale the tessellation by given factors in the x@comma{} y and z directions
+once it is generated.
+In 2D@comma{} the @var{z} value can be omitted.
+,
+any, none}
+
+@opt{-transform, char_string(...),
+Apply transformations to a raster tessellation:@*
+@math{@bullet{}} @samp{@code{autocrop}} reduces the raster to its minimal size.@*
+@math{@bullet{}}
+@samp{@code{rasterscale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
+scales the number of points of the raster by factors
+@code{@var{x_fact}}@comma{} @code{@var{y_fact}} and @code{@var{z_fact}}
+along directions @var{x}@comma{} @code{@var{y}} and
+@code{@var{z}}@comma{} respectively. For a 2D tessellation@comma{}
+@code{@var{z_fact}} can be omitted.@*
+@math{@bullet{}} @samp{@code{rmsat}} removes the cell
+``satellites''@comma{} i.e.@ parts disconnected from the cell bulk.@*
+@math{@bullet{}} @samp{@code{grow}} grows the cells to fill the domain.@*
+@math{@bullet{}} @samp{@code{tessinter(@var{tess_file})}} computes the
+intersection with tessellation @file{@var{tess_file}}.@*
+Several transformations can be applied successively by combining them @w{with @samp{@SEPNODEP}}.
+,
+any, none}
+
+@subsection Crystal Orientation Options
+
+@opt{-ori, char_string,
+Specify the type of crystal orientation distribution.
+It can be either @samp{3D} for orientations in the 3D space@comma{}
+or
+@samp{fibre(@var{dir}@comma{}@var{coo_x}@comma{}@var{coo_y}@comma{}@var{coo_z})}
+for orientations along a specific fibre (crystal direction
+(@code{@var{coo_x}}@comma{} @code{@var{coo_y}}@comma{}
+ @code{@var{coo_z}})
+parallel to sample direction @code{@var{dir}}@comma{} where @code{@var{dir}}
+can be @samp{x}@comma{} @samp{y}@comma{} or @samp{z}).
+Crystal orientations are distributed randomly according to a uniform
+distribution in the specified space.
+,
+3D or fibre(...), 3D}
+
+@optsec{-oricrysym, char_string,
+Specify the crystal symmetry.  This is used to reduce the domain
+  of definition of the orientation descriptors.,
+triclinic or cubic, triclinic}
+
+@subsection Regularization Options
+
+@opt{-regularization, logical,
+Regularize a tessellation@comma{} that is@comma{} removes the small edges
+and@comma{} indirectly@comma{} the small faces. In return@comma{}
+faces can become non-planar (in 3D).  This is controlled by
+options @option{-fmax}@comma{} @option{-sel} and @option{-mloop}.
+Using regularization enables to get better-quality meshes using
+@mM{} (@pxref{Meshing Module (-M)}).
+,
+0 or 1, 0}
+
+@opt{-fmax, real,
+Specify the maximum allowed face flatness fault (in degrees). The flatness
+fault is the maximum angle between the normals at two locations on a
+face.,
+0 to 180,20}
+
+@optsectwo{-sel, -rsel, -sel or -rsel, real,
+Specify the absolute or relative small edge (maximum) length.
+@code{rsel} is defined relative to the average cell size (volume in
+3D and area in 2D).
+The
+default @code{-rsel 1} leads to a length of
+0.25 for a unit volume cell in 3D and
+0.125 for a unit area cell in 2D.
+The value also enables to avoid mesh refinement with
+the default meshing parameters (@pxref{Meshing Module (-M)}).
+It is also possible to specify values on a per-cell basis.
+The first way is to use the syntax
+@code{@var{default_sel}@SEPNODEP{}@var{cell_expr1}@SEPDEP{}@var{cell_sel1}@SEPNODEP{}@var{cell_expr2}@SEPDEP{}@var{cell_sel2}...}@comma{}
+where @code{@var{default_sel}} is the default small edge length@comma{}
+@code{@var{cell_expri}} is an expression defining the set of
+@w{cells @var{i}} and @code{@var{cell_seli}} is the corresponding small
+edge length.
+@samp{@code{@var{cell_expri}}} can be any
+expression based on variables provided in
+@ref{Tessellation Keys}.
+The expressions are processed one after the other. When processing
+expression @code{@var{cell_expri}}@comma{} the matching cells
+are assigned @code{@var{cell_seli}} as small edge length.
+Typically@comma{} option @option{-rsel} should be passed the same argument than
+option @option{-rcl} of @mM{}@comma{} see @ref{Meshing Module
+(-M)}. The second way is to load values from an external file using
+the syntax @samp{@@@var{file_name}}@comma{} where @code{@var{file_name}}
+is the name of the file containing the length values.,
+any,-rsel 1}
+
+@optsec{-mloop, integer,
+Specify the maximum number of regularization loops.
+During each loop@comma{} the small edges are considered in turn
+from the shortest to the largest.
+Regularization stops when the maximum number of loops is reached or no
+edges are deleted during a loop.,
+any,2}
+
+@subsection Output Options
+
+@opt{-o, file_name,
+Specify the output file name.,
+any, none}
+
+@opt{-format, char_string,
+Specify the format of the output file(s).
+For scalar tessellations@comma{} the available formats are
+the Neper @code{@samp{tess}}@comma{}
+the Gmsh @code{@samp{geo}}@comma{}
+the Ply @code{@samp{ply}}@comma{}
+the Wavefront @code{@samp{obj}}@comma{}
+the 3dec @code{@samp{3dec}}
+and the Surface Evolver @code{@samp{fe}}.
+For raster tessellations@comma{} the available formats are
+the Neper @code{@samp{tesr}}
+and the Kitware @code{@samp{vtk}}.
+Orientations for the cells can be obtained using @code{@samp{ori}} (see
+also options starting by @code{@samp{-ori}}).
+Combine the values @w{with @samp{@SEPNODEP}}.
+,
+tess@comma{} geo@comma{} ply@comma{} obj@comma{} 3dec@comma{} fe@comma{}
+tesr@comma{} vtk@comma{} ori, tess}
+
+@opt{-tesrformat, char_string,
+Specify the format of the raster output file(s).
+The available formats are ASCII (@samp{ascii})@comma{}
+8-bit binary / unsigned char-type (@samp{binary8})@comma{}
+16-bit binary / short-type (@samp{binary16} and @samp{binary16_big})
+and 32-bit binary / int-type (@samp{binary32} and @samp{binary32_big}).
+Formats @samp{binary16} and @samp{binary32} mean
+little endianness while
+formats @samp{binary16_big} and @samp{binary32_big} mean
+big endianness.@footnote{Endianness is both written in the tesr file and
+tested on the system when reading the tesr file, so that the user
+normally does not have to
+care about it (even when transferring files across systems).}
+,
+ascii@comma{} binary8@comma{} binary16@comma{} binary16_big@comma{} binary32@comma{} binary32_big,
+binary16 or binary_big (depending on the system)}
+
+@opt{-tesrsize, integer,
+Specify the number of points of a raster tessellation along a direction of
+the domain. In case of a domain of different lengths along the different
+directions@comma{} the argument stands for the geometrical average of
+the number of points along the different directions@comma{} so that the
+raster points are as cubic as possible.
+To specify different values along the x@comma{} y and z directions@comma{}
+combine the values with @samp{@SEPDEP}.
+,
+any, 20}
+
+@opt{-oridescriptor, char_string,
+Specify the orientation descriptor used in the @file{.tess}@comma{} @file{.tesr}
+and @file{.ori} files. It can be Euler angles in
+Bunge@comma{} Kocks or Roe convention (@code{e}@comma{}
+@code{ek}@comma{} @code{er})@comma{} rotation matrix (@code{g})@comma{}
+@w{axis /} angle or rotation (@code{rtheta})@comma{} Rodrigues vector
+(@code{R}) or quaternion (@code{q}).,
+above-mentioned values, e}
+
+@opt{-oriformat, char_string,
+Specify the format of the @file{.ori} output file. The available formats are:
+the Neper-native @code{plain} (i.e.@: only the descriptors on
+successive lines)@comma{} the Zset/Z@'ebulon @code{geof} and the
+FEpX @code{fepx}.
+,
+above-mentioned values, plain}
+
+@subsection Post-Processing Options
+
+The first options apply to the cells and seeds of a tessellation or a
+raster tessellation, independently of its dimension,
+
+@post{-statcell, char_string,
+Provide statistics on the tessellation cells.  Give as argument
+the keys as described in @ref{Tessellation Keys} for a tessellation and
+@ref{Raster Tessellation Keys} for a raster tessellation (combine with
+@samp{@SEPNODEP}).
+,
+any, none,
+.stcell}
+
+@post{-statseed, char_string,
+Provide statistics on the tessellation seeds.  Give as argument
+the keys as described in @ref{Tessellation Keys} for a tessellation and
+@ref{Raster Tessellation Keys} for a raster tessellation (combine with
+@samp{@SEPNODEP}).
+,
+any, none,
+.stseed}
+
+For a tessellation, it is also possible to get statistics on an
+entity-basis,
+
+@post{-statver, char_string,
+Provide statistics on the tessellation vertices.  Give as argument
+the keys as described in @ref{Tessellation Keys} (combine with
+@samp{@SEPNODEP}).
+,
+any, none,
+.stver}
+
+@post{-statedge, char_string,
+Provide statistics on the tessellation edges.  Give as argument
+the keys as described in @ref{Tessellation Keys} (combine with
+@samp{@SEPNODEP}).
+,
+any, none,
+.stedge}
+
+@post{-statface, char_string,
+Provide statistics on the tessellation faces.  Give as argument
+the keys as described in @ref{Tessellation Keys} (combine with
+@samp{@SEPNODEP}).
+,
+any, none,
+.stface}
+
+@post{-statpoly, char_string,
+Provide statistics on the tessellation polyhedra.  Give as argument
+the keys as described in @ref{Tessellation Keys} (combine with
+@samp{@SEPNODEP}).
+,
+any, none,
+.stpoly}
+
+Finally, it is possible to get statistics for a particular set of
+points. The option applies to a tessellation.
+
+@post{-statpoint, char_string,
+Provide statistics on points.  The points must be loaded with option
+@option{-loadpoint}. Give as argument
+the keys as described in @ref{Point Keys} (combine @w{with
+@samp{@SEPNODEP}}).
+,
+any, none,
+.stpoint}
+
+@subsection Debugging Options
+
+@kindex -checktess
+@inp{-checktess, file_name,
+Check a tessellation file.  Provide as argument the file name.
+Use this option if the tessellation file fails to load using
+option @option{-loadtess} or in other modules.
+,
+any, none}
+
+@section Output Files
+
+@subsection Tessellation
+
+@itemize
+@item Neper tessellation file: @file{.tess}
+
+It contains a scalar description of the tessellation.
+See @ref{File Formats} for the file syntax.
+
+@item Neper raster tessellation file: @file{.tesr}
+
+It contains a raster description of the tessellation.
+See @ref{File Formats} for the file syntax.
+
+@item Gmsh geometry file: @file{.geo}
+
+It contains a minimal description of the tessellation written under the
+Gmsh geometry file format @file{.geo}.  This file can be opened with
+Gmsh for visualization.
+
+@item Ply file: @file{.ply}
+
+It contains a description of the tessellation written under the
+standard ``Polygon File Format'' @file{.ply}.
+
+@item Wavefront geometry file: @file{.obj}
+
+It contains a description of the tessellation written under the
+Wavefront geometry format @file{.obj}.
+
+@item 3dec file: @file{.3dec}
+
+It contains a description of the tessellation written under the
+3dec format @file{.3dec}.
+
+@item VTK file: @file{.vtk}
+
+It contains a description of the raster tessellation written under the
+VTK format @file{.vtk} as supported by Amitex_ffpt.  Binary data are
+always written using BigEndians.
+
+@c @item tessellation debugging file: @file{.debug}
+@c It contains a human-friendly description of the tessellation, for
+@c debugging.
+
+@item Orientation file: @file{.ori}
+
+It contains crystal orientations for the tessellation cells.  The
+orientations are written on successive lines, using the descriptor
+specified by option @option{-oridescriptor} (see also
+@ref{Rotations and Orientations}) and the writing convention specified
+by option @option{-oriformat}.
+
+@end itemize
+
+@subsection Statistics
+
+Statistics files are provided for cells, seeds, vertices, edges, faces, polyhedra and
+points.  They are formatted with one entity per line.  Each line
+contains the
+data specified to the corresponding @option{-stat} option and described in
+@ref{Tessellation Keys} and
+@ref{Raster Tessellation Keys} (files @file{.stcell} and @file{.stseed}
+only).
+
+@itemize
+  @item Tessellation cell statistics file, @file{.stcell}.
+  @item Tessellation seed statistics file, @file{.stseed}.
+  @item Tessellation vertex statistics file, @file{.stver}.
+  @item Tessellation edge statistics file, @file{.stedge}.
+  @item Tessellation face statistics file, @file{.stface}.
+  @item Tessellation polyhedron statistics file, @file{.stpoly}.
+  @item Point statistics file, @file{.stpoint}.
+@end itemize
+
+@subsection Tessellation Optimization Log Files
+
+Log files are provided for the time, variables, statistical
+distributions and objective function value.
+The files contain the data specified to the corresponding
+@option{-morphooptilog} option and described on @ref{Tessellation Update
+Keys}.
+
+@itemize
+  @item Time file, @file{.logtime}.
+  @item Variables, i.e.@ seed attributes, file, @file{.logvar}.
+  @item Statistical distribution files, @file{.logdis@var{id}}, where
+	@var{id} is the identifier of the distribution.
+  @item Objective function value file, @file{.logval}.
+  @item Target raster tessellation file, @file{-obj.tesr}.
+@end itemize
+
+@section Examples
+
+Below are some examples of use of neper -T.
+
+@enumerate
+@c Example_beg
+@item    Generate a Voronoi tessellation containing 100 cells (with identifier = 1).
+@com{neper -T -n 100 -id 1}
+@item    Use an elongated domain and generate a Voronoi tessellation
+containing 100 cells.
+@com{neper -T -n 100 -id 1 -domain "cube(3,1,0.33)"}
+@item    Generate a Voronoi tessellation containing 100 cells and apply regularization.
+@com{neper -T -n 100 -id 1 -reg 1}
+@item    Generate a 2D Voronoi tessellation containing 100 cells.
+@com{neper -T -n 100 -id 1 -dim 2}
+@item    Generate a tessellation containing 100 cells with experimental grain-growth
+morphological properties.
+@com{neper -T -n 100 -id 1 -morpho gg}
+@item    Generate a tessellation containing 100 cells with experimental grain-growth
+morphological properties, and get the equivalent diameters and
+sphericities of the cells.
+@com{neper -T -n 100 -id 1 -morpho gg -statcell diameq:rel,sphericity}
+@item    Generate a 2-scale Voronoi tessellation containing
+@iftex
+@math{100@times10}
+@end iftex
+@ifinfo
+100 x 10
+@end ifinfo
+cells.
+@com{neper -T -n 100@SEPFRAC{}10 -id 1@SEPFRAC{}1}
+@item    Generate a 2-scale tessellation containing 10 primary
+cells with grain-growth morphological properties, each one divided into @w{lamellae} of width 0.1.
+@com{neper -T -n 10@SEPFRAC{}from_morpho -id 1@SEPFRAC{}1 -morpho "gg@SEPFRAC{}lamellar(w=0.1)"}
+@item    Generate a 2-scale Voronoi tessellation containing 10 primary
+cells with grain-growth morphological properties, each one divided into @w{lamellae} of
+widths loaded from file
+@file{lam_width} and plane normals loaded from file @file{lam_normal}.
+@com{neper -T -n 10@SEPFRAC{}from_morpho -id 1@SEPFRAC{}1 -morpho
+  "gg@SEPFRAC{}lamellar(w=file(lam_width),v=file(lam_normal))"}
+
+@verbatim
+      lam_width:
+       1 0.05
+       2 0.10
+       3 0.05
+       4 0.10
+       5 0.05
+       6 0.10
+       7 0.05
+       8 0.10
+       9 0.05
+      10 0.10
+@end verbatim
+@verbatim
+      lam_normal:
+       1 1.000000 0.000000 0.000000
+       2 0.000000 1.000000 0.000000
+       3 1.000000 0.000000 0.000000
+       4 0.000000 1.000000 0.000000
+       5 1.000000 0.000000 0.000000
+       6 0.000000 1.000000 0.000000
+       7 1.000000 0.000000 0.000000
+       8 0.000000 1.000000 0.000000
+       9 1.000000 0.000000 0.000000
+      10 0.000000 1.000000 0.000000
+@end verbatim
+
+@item    Generate a 2-scale Voronoi tessellation containing 3 primary
+cells divided into 1, 10 and 100 secondary cells, respectively.
+@com{neper -T -n "3@SEPFRAC{}file(myfile)" -id 1@SEPFRAC{}1}
+
+@verbatim
+      myfile:
+      1 1
+      2 10
+      3 100
+@end verbatim
+@item    Generate a 2-scale Voronoi tessellation containing
+@iftex
+@math{2@times3}
+@end iftex
+@ifinfo
+2 x 3
+@end ifinfo
+cells with specific seed coordinates at both scales (files @file{coo1} and @file{coo2}).
+@com{neper -T -n 2@SEPFRAC{}3 -id 1@SEPFRAC{}1 \\ @*
+@ @ @ @ @ @ -morphooptiini
+"coo@SEPDEP{}file(coo1),weight@SEPDEP{}0@SEPFRAC{}coo@SEPDEP{}file(coo2),weight@SEPDEP{}0"
+  \\ @*
+@ @ @ @ @ @ -morpho voronoi}
+
+@verbatim
+      coo1:
+      0.25 0.50 0.50
+      0.75 0.50 0.50
+      coo2:
+      1 0.25 0.10 0.50
+      1 0.25 0.50 0.50
+      1 0.25 0.90 0.50
+      2 0.75 0.50 0.10
+      2 0.75 0.50 0.50
+      2 0.75 0.50 0.90
+@end verbatim
+
+Note that @file{coo1} is a simple position file (@pxref{Position File})
+while
+@file{coo2} is a multiscale cell file (@pxref{Multiscale Cell File}).
+@c Example_end
+@end enumerate
+@c Example_end

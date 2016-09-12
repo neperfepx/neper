@@ -1,0 +1,301 @@
+@c This file is part of the Neper software package.
+@c Copyright (C) 2003-2016 Romain Quey
+@c See the COPYING file in the top-level directory.
+
+@node Developer's Guide
+@appendix Developer's Guide
+
+This chapter provides information useful to anyone who plans to
+contribute to Neper or wishes to better understand how it works. The code
+structure is detailed and information are given on how to efficiently
+contribute to it.  If you are missing information, complain!
+
+@section Code Structure
+
+The Neper root directory content is as follows
+(the slash character @samp{/} denotes directories),
+@itemize
+  @item @code{COPYING}: license terms
+  @item @code{README}:  information about other files and directories in
+  the directory
+  @item @code{VERSIONS}: information on the versions of Neper
+  @item @code{src/}: source code directory
+  @item @code{doc/}: documentation directory
+@end itemize
+
+Details on the  @samp{src/} and @samp{doc/} directories are provided in
+the following.
+
+@subsection Source Code
+
+Neper's source code is located in directory @file{src/} and consists of
+roughly 85,000 lines shared between 200 directories and 800 text files.
+The @samp{src/} directory contains the following files and directories,
+
+@itemize
+  @item @code{neper_.h} and @code{neper.c}
+
+  These are the main source code header file and source code file of
+  Neper. @samp{neper.c} contains the program @samp{main} function.  It
+  reads the arguments passed at the command line and runs the
+  corresponding functions, which  can be one of the program module.
+
+  @item @code{neper_t/}, @code{neper_m/} and @code{neper_v/}
+
+  These are directories that contain the source code of each of the
+  program modules.  The modules aim to be independent from
+  each other as much as possible, that is, a function of a given module
+  will never calls a function of another module (with a few exceptions).
+
+  @item @code{neut/}
+
+  @samp{neut} stands for @dfn{Neper utilities}.  The directory contains
+  utility functions specific to Neper and used by several modules.
+
+  @item @code{contrib/}
+
+  This directory contains utility functions not specific to
+  Neper.  The first one is @samp{ut}, which is a collection of
+  general-purpose, low-level C
+  functions (memory allocation, etc.). The second one is @samp{orilib},
+  which is a collection of routines for orientation manipulation
+  (see @url{http://orilib.sourceforge.net}). The last one is ANN,
+  a library for nearest neighbour searching (see
+  @url{www.cs.umd.edu/~mount/ANN}). Although these libraries
+  also are distributed alone (and might be already installed on your
+  system), they are included into Neper instead of being considered
+  as dependencies (contrary to the GSL, libmatheval, @dots{}), to
+  make Neper easier to install.
+
+  @item @code{CMakeLists.txt}, @code{neper_config.h.in} and @code{cmake/}
+
+  These files and directories are specific to the building system, CMake.
+  @file{CMakeLists.txt} is the CMake source file, which tells CMake
+  where to find the program source files, how to manage dependencies,
+  where to install Neper, etc.
+  @file{neper_config.h.in} is a small configuration file that is useful
+  to CMake for managing dependencies and program version numbers.
+  @file{cmake/} contains @file{.cmake} files which help CMake locating
+  the dependencies on the system (library and header files).
+@end itemize
+
+@page
+A module directory, @dfn{@code{neper_@var{X}/}},
+  where @samp{@var{X}} stands for the module letter (one of @samp{t},
+      @samp{m} or @samp{v}), is structured as follows,
+
+@itemize
+  @item @code{neper_@var{X}.h}, @code{neper_@var{X}_.h} and @code{neper_@var{X}.c}
+
+  These are the source code header files and source code file of
+  the module. @file{neper_@var{X}.c} contains the module
+  function, @samp{@code{neper_@var{X}}}. @file{neper_@var{X}_.h} is the
+  source code header file, which is @code{#include}'ed in
+  @file{neper_@var{X}.c} and contains a bunch of @code{#include}s to all
+  necessary library header files.  @file{neper_@var{X}.h} contains the
+  prototype of the module function and is @code{#include}'ed in
+  @file{neper_.h}.  Hence, files @file{_.h} are local header files while
+  files @file{.h} are header files
+  @code{#include}'ed into a upper-level source code header file.
+  This is true anywhere in the source code.
+  Moreover, any function specific to module @code{@var{X}} is prefixed
+  @samp{@code{ne@var{X}_}}.
+
+  @item @code{ne@var{X}_input/} and @code{structIn_@var{X}.h}
+
+  The @samp{@code{ne@var{X}_input/}} directory contains functions for
+  reading the value of the arguments passed to module @code{@var{X}}
+  from the command line.  The information are recorded into an
+  @samp{@code{IN}}
+  C structure, which is declared in file @samp{@code{structIn_@var{X}.h}}.
+
+  @item @code{ne@var{X}_@var{foo}/}, @code{ne@var{X}_@var{bar}/}, etc.
+
+  Each of these directories is associated to a specific task
+  of the module and contains a function
+  of the same name (@samp{@code{ne@var{X}_@var{foo}}}, etc.) which is
+  called from function @samp{@code{neper_@var{X}}}. Each directory
+  contains a directory tree structure.
+
+  @item @code{CMakeLists.txt}
+
+  This file tells CMake
+  where to find the source files and how to manage dependencies in the
+  module. It is used by the upper-level @file{CMakeLists.txt} file (there
+  is no lower-level @file{CMakeLists.txt} file).
+@end itemize
+
+The @file{neut} directory is roughly structured as follows,
+
+@itemize
+  @item @code{CMakeLists.txt}
+
+  This file tells CMake
+  where to find the source files and how to manage dependencies in the
+  module. It is used by the upper-level @file{CMakeLists.txt} file (there
+  is no lower-level @file{CMakeLists.txt} file).
+
+  @item @code{neut.h}, @code{neut_t.h}, @code{neut_m.h} and @code{neut_v.h}
+
+  These files are source code header files that @code{#include} header files
+  of @code{neut} (which contain function prototypes) and are
+  @code{#include}d in the modules. @file{neut.h} @code{#include}s all
+  header files while the three others @code{#include} header files only
+  necessary to the corresponding module (this speeds up compilation at
+  development stage).
+
+  @item @code{neut_structs/}
+
+  This directory contains header files which defines all C structures
+  used in the program.
+
+  @item @code{neut_@var{foo}/}, @code{neut_@var{bar}/}, etc.
+
+  Each of these directories contain functions specific to a particular C
+  structure.  For example, @file{neut_tess} contains functions relative
+  to the @samp{@code{TESS}} structure, which describes a tessellation.
+@end itemize
+
+@subsection Documentation
+
+Neper's documentation is located in directory @file{doc/}.  It is written in
+Texinfo, the GNU software documentation system.  The documentation
+consists of a collection of @file{.texi} files (text files).  The
+documentation may be compiled in PDF, info or html format by running
+@command{make pdf}, @command{make info} or @command{make html},
+respectively. In official releases, both the PDF and
+info documentation files are built and included in the archive.
+
+@page
+@section Contributing to Neper
+
+The Neper development repository is hosted on GitHub:
+@url{https://github.com/rquey/neper}.  Code contributions to be included
+in Neper's official (public) version should be submitted as pull
+requests on this respository.
+
+@subsection Coding Conventions
+
+Neper is written following the GNU Coding Standards
+(@url{http://www.gnu.org/prep/standards}), with the exception that
+braces are not indented (because there is so often 3+ loop levels in
+Neper). Please follow this convention. Here are a few tips and other
+remarks,
+
+@itemize
+  @item For Vim, put the following commands in file @file{$HOME/.vimrc}:
+@verbatim
+    :set sw=2
+    :set cindent
+    :syntax enable
+    :set textwidth=72
+@end verbatim
+
+  @item Your can run @command{indent -bli0 @var{source_files}} for
+        automatic formatting.
+  @item Break up the code into meaningful chunks using blank lines.
+  Always use a single blank line to separate parts of the code.
+  @item Neper admits no compilation warnings. Please fix all of them up.
+  @item Please help us maintaining good documentation by documenting any
+	capability you may add.
+@end itemize
+
+@subsection Adding a New Option
+
+In modules -T and -M, adding a new option can be done by following the
+successive steps,
+
+@itemize
+  @item Add a variable to the @samp{@code{IN}} structure to record the value of
+  the option (file @file{structIn_@var{X}.h}).
+  @item If necessary, allocate / free the variable in the @code{ne@var{X}_in_set_zero}
+  and @code{ne@var{X}_in_free} functions (file @file{ne@var{X}_input1.c})
+  Assign it a default value in @code{net_input_options_default}
+  (file @file{ne@var{X}_input3.c}).
+  @item Add the option to the option list in
+  @code{net_input_options_set} (file @file{ne@var{X}_input3.c}), taking
+  as an example another option of the same type (integer, etc.).
+  @item Where appropriate in the source code, add a new function for
+  the new option (if necessary in a new file or
+  directory).  The function should be executed depending on the
+  value of the option.
+  @item If adding one or several files or directories, add the source
+  file(s) to the
+  source file list in the @file{CMakeLists.txt} file of the
+  corresponding module.
+  @item Make sure the whole thing compiles and runs properly for your purpose.
+  @item Make sure your own changes did not break anything in
+  the rest of the code by running full testing, using @command{make
+    test} (or @command{ctest}).
+  You may also want to add a test specific to the new option.
+@end itemize
+
+In module -V, options are processed differently.  Instead of being
+recorded in a C structure, they are read one after the other and
+associated functions are executed along the way.  To add a new option,
+take an existing option as an example.
+
+@subsection Compilation Options
+
+For development, several compilation options can be changed from their
+default values. This must be done at configuration stage, using commands
+@samp{@command{ccmake ..}} or @samp{@command{cmake-gui ..}}.  The
+compilation options are,
+
+@itemize
+  @item @code{DEVEL_DEBUGGING_FLAG}
+
+  Setting the option to @code{ON} turns on the debugging compilation
+  flag @samp{@code{-g}}, which is required for debugging with
+  @command{gdb} and @command{valgrind}, and turns on the compilation
+  flag @samp{@code{-Werror}},
+  which makes all compilation warnings into errors.
+
+  @item @code{DEVEL_DEBUGGING_TEST}
+
+  Setting the option to @code{ON} runs
+  internal tests during Neper execution at places where the code is
+  otherwise considered robust.
+
+  @item @code{DEVEL_OPTIMIZATION}
+
+  Setting this option to @code{OFF} disables code optimization, which is
+  useful for debugging with @command{gdb} and @command{valgrind}.
+
+  @item @code{DEVEL_PROFILING}
+
+  Setting this option to @code{ON} turns on the code profiling
+  compilation flag @samp{@code{-pg}}, which is required for profiling
+  with @command{gprof}.  This is a highy CPU-sensitive option, which
+  should be used  only when profiling is actually carried out.
+
+@end itemize
+
+@subsection Testing
+
+The code can be tested using @command{CTest}.  The usual way is
+as follows:
+@com{ctest}
+
+It is also possible to run only some of the tests.
+@itemize
+@item
+Option @option{-R} selects the tests whose name contains a character
+string:
+@com{ctest -R @var{string}}
+
+As test names start by the letter of the module they refer to,
+followed by @w{character @samp{_}}, it becomes
+handy to run tests on a specific module, for example:
+@com{ctest -R T_}
+
+@item 
+Option @option{-E} selects the tests that do not contain a character
+string:
+@com{ctest -E @var{string}}
+
+@item 
+Option @option{-I} selects the tests from their numbers, for example:
+@com{ctest -I 3,5}
+
+@end itemize

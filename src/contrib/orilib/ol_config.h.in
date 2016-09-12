@@ -1,0 +1,9 @@
+/* This file is part of the 'orilib' software. */
+/* Copyright (C) 2007-2009, 2012 Romain Quey */
+/* see the COPYING file in the top-level directory.*/
+// #cmakedefine HAVE_GSL
+
+#define OL_VERSION_MAJOR @OL_VERSION_MAJOR@
+#define OL_VERSION_MINOR @OL_VERSION_MINOR@
+#define OL_VERSION_PATCH @OL_VERSION_PATCH@
+#define OL_VERSION_DEVEL @OL_VERSION_DEVEL@

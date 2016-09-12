@@ -1,0 +1,1216 @@
+@c This file is part of the Neper software package.
+@c Copyright (C) 2003-2016 Romain Quey
+@c See the COPYING file in the top-level directory.
+
+@node Visualization Module (-V)
+@chapter Visualization Module (-V)
+
+@MV{} is the Neper visualization module, with which the tessellations
+and meshes can be printed as publication-quality images.  It is also
+possible to visualize data on them using colours and transparency, or
+displacements of the nodes and to plot data on slices of the mesh.
+Points of specific size and colour can also be shown. The
+output is a PNG image file.  The POV-Ray ray-tracing library is
+used for generating the images.
+
+Contrary to other modules, @mV{} processes the command arguments
+one after the other. Typically, using @mV{} consists in loading a
+tessellation or a mesh, then
+data fields to render them.  The data can apply to the tessellation
+entities: polyhedra, faces, edges and vertices, to the mesh
+entities: @w{3D}, @w{2D}, @w{1D} and @w{0D
+elements} and nodes, and to points (options starting by
+@option{-data}). The entities that are to be visible, for example
+particular tessellation
+cells, element sets or elements, can also be specified (options
+starting by @option{-show}).  The way they are plotted: camera position
+and angle, projection type, image size, etc., can be set up too
+(options starting by @option{-camera} or @option{-image}).  Finally, the
+coordinate system can be added.
+
+@sp 1
+Here is what a typical run of @mV{} looks like,
+
+@c typical_start
+@verbatim
+    $ neper -V n10-id1.tess,n10-id1.msh -dataelsetcol id -print img
+
+    ========================    N   e   p   e   r    =======================
+    Info   : A software package for polycrystal generation and meshing.
+    Info   : Version 3.0.0
+    Info   : Built with: gsl nlopt libmatheval
+    Info   : <http://neper.sourceforge.net>
+    Info   : Copyright (C) 2003-2016, and GNU GPL'd, by Romain Quey.
+    Info   : Comments and bug reports: <neper-users@lists.sourceforge.net>.
+    Info   : Loading initialization file `/home/rquey/.neperrc'...
+    Info   : ---------------------------------------------------------------
+    Info   : MODULE  -V loaded with arguments:
+    Info   : [ini file]
+    Info   : [com line] n10-id1.tess,n10-id1.msh -dataelsetcol id -print img
+    Info   : ---------------------------------------------------------------
+    Info   : Loading tessellation...
+    Info   :     [i] Parsing file `n10-id1.tess'...
+    Info   :     [i] Parsed file `n10-id1.tess'.
+    Info   : Loading mesh...
+    Info   :     [i] Parsing file `n10-id1.msh'...
+    Info   :     [i] Parsed file `n10-id1.msh'.
+    Info   : Reconstructing mesh...
+    Info   : Reading data (elset3d, col)...
+    Info   : Printing image...
+    Info   :     [o] Writing file `img.pov'...
+    Info   :   - Printing mesh...
+    Info   :     > Reducing data...
+    Info   :       . Number of 3D elt faces reduced by 90% (to 410).
+    Info   :       . Number of 3D elt edges reduced by 50% (to 615).
+    Info   :       . Number of 0D elts    reduced by 100% (to 0).
+    Info   :     [o] Wrote file `img.pov'.
+    Info   :   - Generating png file (1080x1080 pixels)...
+    Info   :     [o] Writing file `img.png'...
+    Info   :     [o] Wrote file `img.png'.
+    Info   : Printing scale...
+    Info   : Elapsed time: 1.620 secs.
+    ========================================================================
+@end verbatim
+@c typical_end
+
+@section Arguments
+
+@subsection Prerequisites
+
+@req{-povray, path_name,
+Specify the path of the POV-Ray binary (for generating PNG images).,
+any, povray}
+
+@subsection Input Data
+
+@inp{, file_name,
+Specify the name of the input file. It can be a tessellation file
+(@file{.tess})@comma{} a raster tessellation file (@file{.tesr})@comma{}
+a mesh file (@file{.msh}) or a point file (@pxref{Position File}).
+To load several of them@comma{} combine them @w{with @samp{@SEPNODEP}}.
+,
+any, none}
+
+@subsection Tessellation Data Loading and Rendering
+
+The following options enable to define the properties (colour and size) of
+the tessellation cells or entities (polyhedra, faces, edges and vertices).  This
+can be done either directly, by specifying the property values (e.g.@
+the RGB channel values for colour) or indirectly, e.g.@ using scalar
+values that are converted in colour using a given @emph{@w{colour
+scheme}}.  In this case, a scale image is generated in addition to the
+tessellation image.  The scale properties can be set up (minimum,
+maximum and tick values).
+
+The following options apply to the cells of a tessellation or a raster
+tessellation, independently of its dimension,
+
+@opt{-datacellcol, char_string,
+Set the colours of the tessellation cells.  The argument can be
+one of the following:
+@w{@emph{(i)} @samp{id}} for colouring based on the identifier@comma{} using a colour
+palette (@pxref{Colours})@comma{}
+@w{@emph{(ii)} @samp{ori}} for colouring based on the crystal orientations@comma{}
+@w{@emph{(iii)} the} name of a colour that will be used for all cells (@pxref{Colours})@comma{}
+@w{@emph{(iv)} the} name of a file containing a list of colours
+(provided as RGB channel values)@comma{} or
+@w{@emph{(v)} a} string indicating how the
+colours can be obtained.  The string has the format
+@samp{@var{var}@SEPDEP{}@var{file_name}}@comma{} where @code{@var{var}} can be
+@samp{id} for identifiers@comma{} @samp{scal} for scalar
+@samp{ori} for crystal orientations or @samp{scal} for scalar
+values@comma{} and @samp{@var{file_name}} is the name of the file
+containing the data.  The colour schemes used to derive the colours from
+the data can be specified with option
+@option{-datacellcolscheme}.
+,
+any, white}
+
+@opt{-datacellcolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the tessellation cells loaded with option @option{-datacellcol}.
+The type of colour scheme depends on the type of data.  For crystal
+orientations@comma{} the colour scheme can be: @samp{R} for Rodrigues
+vector colouring; for scalar data@comma{} the colour scheme can be any
+list of colours.
+,
+"R" for crystal orientations and any list of colours for scalars,
+"R" for crystal orientations and "blue@comma{}cyan@comma{}yellow@comma{}red" for scalars
+}
+
+@opt{-datacelltrs, real,
+Set the transparency of the tessellation cells.  Provide as argument a
+value that applies to all cells or @samp{file(@var{file_name})} to load
+values from a file.
+,
+0 to 1, 0}
+
+@opt{-datacellscale, char_string,
+Set the scale relative to the @samp{-datacellcol scal} data.  Provide as
+argument the start and end values@comma{} combined with
+@samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
+argument the start value@comma{} the intermediate values and then the
+end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
+scale follow the format used for the start value.
+,
+any, data minimum:data maximum
+}
+
+@opt{-datacellscaletitle, char_string,
+Set the title of the scale relative to the @samp{-datacellcol scal} data.
+,
+any, none
+}
+
+For tessellations, it is also possible to set data on a
+per-entity basis,
+
+@opt{-datapolycol, char_string,
+Set the colours of the tessellation polyhedra.  The argument can be
+one of the following:
+@w{@emph{(i)} @samp{id}} for colouring based on the identifier@comma{} using a colour
+palette (@pxref{Colours})@comma{}
+@w{@emph{(ii)} @samp{scaleid(@var{scale})}} for colouring based on the
+identifier of the @var{scale} tessellation the polyhedron belongs to@comma{} using a colour
+palette (@pxref{Colours})@comma{}
+@w{@emph{(iii)} the} name of a colour that will be used for all polyhedra (@pxref{Colours})@comma{}
+@w{@emph{(iv)} the} name of a file containing a list of colours
+(provided as RGB channel values)@comma{} or
+@w{@emph{(v)} a} string indicating how the
+colours can be obtained.  The string has the format
+@samp{@var{var}@SEPDEP{}@var{file_name}}@comma{} where @code{@var{var}} can be
+@samp{ori} for crystal orientations or @samp{scal} for scalar
+values@comma{} and @samp{@var{file_name}} is the name of the file
+containing the data.  The colour schemes used to derive the colours from
+the data can be specified with option
+@option{-datapolycolscheme}.
+,
+any, white}
+
+@opt{-datapolycolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the tessellation polyhedra loaded with option @option{-datapolycol}.
+The type of colour scheme depends on the type of data.  For crystal
+orientations@comma{} the colour scheme can be: @samp{R} for Rodrigues
+vector colouring; for scalar data@comma{} the colour scheme can be any
+list of colours.
+,
+"R" for crystal orientations and any list of colours for scalars,
+"R" for crystal orientations and "blue@comma{}cyan@comma{}yellow@comma{}red" for scalars
+}
+
+@opt{-datapolytrs, real,
+Set the transparency of the tessellation polyhedra.  Provide as argument a
+value that applies to all polyhedra or @samp{file(@var{file_name})} to load
+values from a file.
+,
+0 to 1, 0}
+
+@opt{-datapolyscale, char_string,
+Set the scale relative to the @samp{-datapolycol scal} data.  Provide as
+argument the start and end values@comma{} combined with
+@samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
+argument the start value@comma{} the intermediate values and then the
+end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
+scale follow the format used for the start value.
+,
+any, data minimum:data maximum
+}
+
+@opt{-datapolyscaletitle, char_string,
+Set the title of the scale relative to the @samp{-datapolycol scal} data.
+,
+any, none
+}
+
+@opt{-datafacecol, char_string,
+Set the colours of the tessellation faces.  See option @option{-datapolycol}
+for the argument format.
+,
+any, white}
+
+@opt{-datafacecolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the tessellation faces loaded with option @option{-datafacecol}.
+See option @option{-datapolycolscheme} for the argument format.
+,
+see option @option{-datapolycolscheme},
+see option @option{-datapolycolscheme}
+}
+
+@opt{-datafacetrs, real,
+Set the transparency of the tessellation faces.  Provide as argument a
+value that applies to all faces or @samp{file(@var{file_name})} to load
+values from a file.
+,
+0 to 1, 0}
+
+@opt{-datafacescale, char_string,
+Set the scale relative to the @samp{-datafacecol scal} data.  Provide as
+argument the start and end values@comma{} combined with
+@samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
+argument the start value@comma{} the intermediate values and then the
+end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
+scale follow the format used for the start value.
+,
+any, data minimum:data maximum
+}
+
+@opt{-datafacescaletitle, char_string,
+Set the title of the scale relative to the @samp{-datafacecol scal} data.
+,
+any, none
+}
+
+@opt{-dataedgerad, char_string,
+Set the radii of the tessellation edges.
+The argument can be one of the following: a real value
+that will be used for all entities or the name of a file
+containing a list of radii.
+,
+any, tessellation dependent}
+
+@opt{-dataedgecol, char_string,
+Set the colours of the tessellation edges.  See option @option{-datapolycol}
+for the argument format.
+,
+any, black}
+
+@opt{-dataedgecolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the tessellation edges loaded with option @option{-dataedgecol}.
+See option @option{-datapolycolscheme} for the argument format.
+,
+see option @option{-datapolycolscheme},
+see option @option{-datapolycolscheme}
+}
+
+@opt{-dataedgetrs, real,
+Set the transparency of the tessellation edges.  Provide as argument a
+value that applies to all edges or @samp{file(@var{file_name})} to load
+values from a file.
+,
+0 to 1, 0}
+
+@opt{-dataedgescale, char_string,
+Set the scale relative to the @samp{-dataedgecol scal} data.  Provide as
+argument the start and end values@comma{} combined with
+@samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
+argument the start value@comma{} the intermediate values and then the
+end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
+scale follow the format used for the start value.
+,
+any, data minimum:data maximum
+}
+
+@opt{-dataedgescaletitle, char_string,
+Set the title of the scale relative to the @samp{-dataedgecol scal} data.
+,
+any, none
+}
+
+@opt{-dataverrad, char_string,
+Set the radii of the tessellation vertices.
+See option @option{-dataedgerad} for the argument format.
+,
+any, tessellation dependent}
+
+@opt{-datavercol, char_string,
+Set the colours of the tessellation vertices.  See option @option{-datapolycol}
+for the argument format.
+,
+any, black}
+
+@opt{-datavercolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the tessellation vertices loaded with option @option{-datavercol}.
+See option @option{-datapolycolscheme} for the argument format.
+,
+see option @option{-datapolycolscheme},
+see option @option{-datapolycolscheme}
+}
+
+@opt{-datavertrs, real,
+Set the transparency of the tessellation vertices.  Provide as argument a
+value that applies to all vertices or @samp{file(@var{file_name})} to load
+values from a file.
+,
+0 to 1, 0}
+
+@opt{-dataverscale, char_string,
+Set the scale relative to the @samp{-datavercol scal} data.  Provide as
+argument the start and end values@comma{} combined with
+@samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
+argument the start value@comma{} the intermediate values and then the
+end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
+scale follow the format used for the start value.
+,
+any, data minimum:data maximum
+}
+
+@opt{-dataverscaletitle, char_string,
+Set the title of the scale relative to the @samp{-datavercol scal} data.
+,
+any, none
+}
+
+@opt{-dataseedrad, char_string,
+Set the radii of the tessellation seeds.
+See option @option{-dataedgerad} for the argument format.
+,
+any, tessellation dependent}
+
+@opt{-dataseedcol, char_string,
+Set the colours of the tessellation seeds.  See option @option{-datapolycol}
+for the argument format.
+,
+any, grey}
+
+@opt{-dataseedcolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the tessellation seeds loaded with option @option{-dataseedcol}.
+See option @option{-datapolycolscheme} for the argument format.
+,
+see option @option{-datapolycolscheme},
+see option @option{-datapolycolscheme}
+}
+
+@opt{-dataseedscale, char_string,
+Set the scale relative to the @samp{-dataseedcol scal} data.  Provide as
+argument the start and end values@comma{} combined with
+@samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
+argument the start value@comma{} the intermediate values and then the
+end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
+scale follow the format used for the start value.
+,
+any, data minimum:data maximum
+}
+
+@opt{-dataseedscaletitle, char_string,
+Set the title of the scale relative to the @samp{-dataseedcol scal} data.
+,
+any, none
+}
+
+Below are options specific to raster tessellations,
+
+@opt{-datarptedgerad, real,
+Set the radius of the edges of the raster points.
+,
+any, proportional to the raster point size}
+
+@opt{-datarptedgecol, char_string,
+Set the colour of the edges of the raster points.
+Provide as argument the name of a colour that will be used for all
+points (@pxref{Colours}).
+,
+any, black}
+
+@subsection Mesh Data Loading and Rendering
+
+The following options enable to define the properties (colour, size,
+etc.)@ of the mesh entities (3D, 2D, 1D and 0D elements, and nodes).  This
+can be done either directly, by specifying the property values (e.g.@
+the RGB channel values for colour) or indirectly, e.g.@ using scalar
+values that are rendered in colour using a given @emph{@w{colour
+scheme}}.  In this case, a scale image is generated in addition to the
+mesh image.  The scale properties can be set up (start and end values,
+tick values).
+
+The options are listed below for @w{3D elements} (@samp{elt3d}) and element
+  sets (@samp{elset3d}), @w{2D elements}
+(@samp{elt2d}) and element sets (@samp{elset2d}), @w{1D elements}
+(@samp{elt1d}) and element sets (@samp{elset1d}), @w{0D elements}
+(@samp{elt0d}) and element sets (@samp{elset0d})
+and nodes (@samp{nodes}). Also note that the @samp{@dfn{elt}} and
+@samp{@dfn{elset}} labels can be used in place of @samp{elt@var{n}d} and
+@samp{elset@var{n}d}, where @code{@var{n}} is the highest mesh dimension.  This
+enables to use the same command whatever the highest mesh dimension is.
+
+@c 3D
+The following options enable to load data relative to the 3D mesh
+elements. Note that the options can be applied to element sets
+by changing @samp{elt} to @samp{elset}.
+
+@kindex -dataelset3dcol
+@opt{-dataelt3dcol, char_string,
+Set the colours of the 3D elements.  The argument can be
+one of the following:
+@emph{(i)} @samp{id} for the default colour palette
+     (@pxref{Colours})@comma{}
+@emph{(ii)} the name of a colour that will be used for all elements
+     (@pxref{Colours})@comma{}
+@emph{(iii)} the name of a file containing a list of colours
+(provided as RGB channel values)@comma{}
+@emph{(iv)} a string indicating how the
+colours can be obtained@comma{} or
+@emph{(v)} @samp{from_nodes} to derive the
+colours of the elements from the colours of the nodes (the node colours
+must be loaded using
+option @option{-datanodecol}). In case @emph{(iv)}@comma{} the string has the format
+@samp{@var{var}@SEPDEP{}@var{file_name}}@comma{} where @code{@var{var}} can be
+@samp{ori} for crystal orientations or @samp{scal} for scalar
+values@comma{} and @samp{@var{file_name}} is the name of the file
+containing the data.  The colour schemes used to derive the colours from
+the data can be specified with option
+@option{-dataelt3dcolscheme}.
+,
+any, white}
+
+@kindex -dataelset3dcolscheme
+@opt{-dataelt3dcolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the 3D elements loaded with option @option{-dataelt3dcol}.
+The type of colour scheme depends on the type of data.  For crystal
+orientations@comma{} the colour scheme can be: @samp{R} for Rodrigues
+vector colouring; for scalar data@comma{} the colour scheme can be any
+list of colours.
+,
+"R" for crystal orientations and any list of colours for scalars,
+"R" for crystal orientations and "blue@comma{}cyan@comma{}yellow@comma{}red" for scalars
+}
+
+@kindex -dataelset3dscale
+@opt{-dataelt3dscale, char_string,
+Set the scale relative to the @samp{-dataelt3dcol scal} data.  Provide as
+argument the start and end values@comma{} combined with
+@samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
+argument the start value@comma{} the intermediate values and then the
+end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
+scale follow the format used for the start value.
+,
+any, data minimum:data maximum
+}
+
+@kindex -dataelset3dscaletitle
+@opt{-dataelt3dscaletitle, char_string,
+Set the title of the scale relative to the @samp{-dataelt3dcol scal} data.
+,
+any, none
+}
+
+@kindex -dataelset3dedgerad
+@opt{-dataelt3dedgerad, real,
+Set the radius of the edges of the 3D elements.
+,
+any, mesh dependent}
+
+@kindex -dataelset3dedgecol
+@opt{-dataelt3dedgecol, char_string,
+Set the colour of the edges of the 3D elements.
+Provide as argument the name of a colour that will be used for all
+elements (@pxref{Colours}).
+,
+any, black}
+
+@c 2D
+
+@sp 1
+The following options enable to load data relative to the 2D elements.
+Note that the options can be applied to element sets
+by changing @samp{elt} to @samp{elset}.
+
+@kindex -dataelset2dcol
+@opt{-dataelt2dcol, char_string,
+Set the colours of the 2D elements.
+See option @option{-dataelt3dcol} for the argument format.
+,
+any, white}
+
+@kindex -dataelset2dcolscheme
+@opt{-dataelt2dcolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the 2D elements loaded with option @option{-dataelt2dcol}.
+See option @option{-dataelt3dcolscheme} for the argument format.
+,
+see option @option{-dataelt3dcolscheme},
+see option @option{-dataelt3dcolscheme}
+}
+
+@kindex -dataelset2dscale
+@opt{-dataelt2dscale, char_string,
+Set the scale relative to the @samp{-dataelt2dcol scal} data.  Provide as
+argument the start and end values@comma{} combined with
+@samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
+argument the start value@comma{} the intermediate values and then the
+end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
+scale follow the format used for the start value.
+,
+any, data minimum:data maximum
+}
+
+@kindex -dataelset2dscaletitle
+@opt{-dataelt2dscaletitle, char_string,
+Set the title of the scale relative to the @samp{-dataelt2dcol scal} data.
+,
+any, none
+}
+
+@kindex -dataelset2dedgerad
+@opt{-dataelt2dedgerad, real,
+Set the radius of the edges of the 2D elements.
+,
+any, mesh dependent}
+
+@kindex -dataelset2dedgecol
+@opt{-dataelt2dedgecol, char_string,
+Set the colours of the edges of the 3D elements.
+See option @option{-dataelt3dedgecol} for the argument format.
+,
+any, black}
+
+@sp 1
+The following options enable to load data relative to the 1D elements.
+Note that the options can be applied to element sets
+by changing @samp{elt} to @samp{elset}.
+
+@kindex -dataelset1dcol
+@opt{-dataelt1dcol, char_string,
+Set the colours of the 1D elements.
+See option @option{-dataelt3dcol} for the argument format.
+,
+any, black}
+
+@kindex -dataelset1dcolscheme
+@opt{-dataelt1dcolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the 1D elements loaded with option
+@option{-dataelt1dcol}. See option
+  @option{-dataelt3dcolscheme} for the argument format.
+,
+see option @option{-dataelt3dcolscheme},
+see option @option{-dataelt3dcolscheme}
+}
+
+@kindex -dataelset1dscale
+@opt{-dataelt1dscale, char_string,
+Set the scale relative to the @samp{-dataelt1dcol scal} data.  Provide as
+argument the start and end values@comma{} combined with
+@samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
+argument the start value@comma{} the intermediate values and then the
+end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
+scale follow the format used for the start value.
+,
+any, data minimum:data maximum
+}
+
+@kindex -dataelset1dscaletitle
+@opt{-dataelt1dscaletitle, char_string,
+Set the title of the scale relative to the @samp{-dataelt1dcol scal} data.
+,
+any, none
+}
+
+@kindex -dataelset1drad
+@opt{-dataelt1drad, char_string,
+Set the radius of the 1D elements.
+,
+any, mesh dependent}
+
+@sp 1
+The following options enable to load data relative to the 0D mesh
+elements.
+Note that the options can be applied to element sets
+by changing @samp{elt} to @samp{elset}.
+
+@kindex -dataelset0dcol
+@opt{-dataelt0dcol, char_string,
+Set the colours of the 0D elements.
+See option @option{-dataelt3dcol} for the argument format.
+,
+any, black}
+
+@kindex -dataelset0dcolscheme
+@opt{-dataelt0dcolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the 0D elements loaded with option
+@option{-dataelt0dcol}. See option
+@option{-dataelt3dcolscheme} for the argument format.
+,
+see option @option{-dataelt3dcolscheme},
+see option @option{-dataelt3dcolscheme}
+}
+
+@kindex -dataelset0dscale
+@opt{-dataelt0dscale, char_string,
+Set the scale relative to the @samp{-dataelt0dcol scal} data.  Provide as
+argument the start and end values@comma{} combined with
+@samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
+argument the start value@comma{} the intermediate values and then the
+end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
+scale follow the format used for the start value.
+,
+any, data minimum:data maximum
+}
+
+@kindex -dataelset0dscaletitle
+@opt{-dataelt0dscaletitle, char_string,
+Set the title of the scale relative to the @samp{-dataelt0dcol scal} data.
+,
+any, none
+}
+
+@kindex -dataelset0drad
+@opt{-dataelt0drad, char_string,
+Set the radius of the 0D elements.
+,
+any, mesh dependent}
+
+@sp 1
+The following options enable to load data relative to the nodes.
+
+@opt{-datanodecoo, char_string,
+Set the coordinates of the nodes.  The argument can be the name of
+a file containing a list of coordinates@comma{} or a string indicating
+how the coordinates can be obtained. The string has the format
+@samp{@var{var}@SEPDEP{}file_name}@comma{} where @code{@var{var}} can be @samp{disp} for
+displacements@comma{} and @file{file_name} is the name of the file
+containing the data.
+,
+any, none}
+
+@opt{-datanodecoofact, real,
+Set the value of the scaling factor to apply to the displacements of
+the nodes.
+,
+any, 1}
+
+@opt{-datanoderad, file_name,
+Set the radius of the nodes.
+,
+any, mesh dependent}
+
+@opt{-datanodecol, file_name,
+Set the colours of the nodes.
+See option @option{-dataelt3dcol} for the argument format.
+,
+any, black}
+
+@opt{-datanodecolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the nodes loaded with option
+@option{-datanodecol}. See option
+@option{-dataelt3dcolscheme} for the argument format.
+,
+see option @option{-dataelt3dcolscheme},
+see option @option{-dataelt3dcolscheme}
+}
+
+@opt{-datanodescale, char_string,
+Set the scale relative to the @samp{-datanodecol scal} data.  Provide as
+argument the start and end values@comma{} combined with
+@samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
+argument the start value@comma{} the intermediate values and then the
+end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
+scale follow the format used for the start value.
+,
+any, data minimum:data maximum
+}
+
+@opt{-datanodescaletitle, char_string,
+Set the title of the scale relative to the @samp{-datanodecol scal} data.
+,
+any, none
+}
+
+@subsection Point Data Loading and Rendering
+
+The following options enable to define the properties (colour, shape, size,
+etc.)@ of points loaded as input.  This can be done either directly, by specifying the
+property values (e.g.@ the RGB channel values for colour) or indirectly,
+e.g.@ using scalar values that are rendered in colour using a given
+@emph{@w{colour scheme}}.  In this case, a scale image is generated in
+addition to the image.  The scale properties can be set up (start and
+end values, tick values).
+
+@opt{-datapointcoo, char_string,
+Set the coordinates of the points.  The argument can be the name of
+a file containing a list of coordinates@comma{} or a string indicating
+how the coordinates can be obtained. The string has the format
+@samp{@var{var}@SEPDEP{}file_name}@comma{} where @code{@var{var}} can be @samp{disp} for
+displacements@comma{} and @file{file_name} is the name of the file
+containing the data.
+,
+any, none}
+
+@opt{-datapointcoofact, real,
+Set the value of the scaling factor to apply to the displacements of
+the points.
+,
+any, 1}
+
+@opt{-datapointrad, char_string,
+Set the radius (and shape) of the points.  The argument can be a value
+that applies to all points@comma{} a file containing a list of
+radii@comma{} or a string indicating how the radii can be obtained. The
+string has the format @samp{@var{var}@SEPDEP{}file_name}@comma{} where
+@code{@var{var}} stands for the morphology of the points and @file{file_name}
+is the name of the file containing the morphology parameters.
+For cube shape@comma{} @code{@var{var}} must be @samp{cube} and the file
+must contain@comma{} for each point@comma{} the radius (half of the edge
+length) then the coordinates of the three axes (which also is the
+rotation matrix that brings the reference axes into coincidence with the
+cube axes).
+For cylinder shape@comma{} @code{@var{var}} must be @samp{cyl} and the file
+must contain@comma{} for each point@comma{} the radius@comma{} the
+length@comma{} then the coordinates of the axis.
+For ellipsoidal shape@comma{} @code{@var{var}} must be @samp{ell} and
+the file must contain@comma{} for each point@comma{} the three radii
+then the coordinates of the three axes.
+The last capability is very specific: if the points are plotted in 
+Rodrigues space@comma{} appending
+@samp{:rodrigues} to the option argument enables to account for space
+distortion.
+,
+any, point set dependent}
+
+@opt{-datapointcol, char_string,
+Set the colours of the points.  The argument can be
+one of the following:
+@emph{(i)} @samp{id} for the default colour palette
+     (@pxref{Colours})@comma{}
+@emph{(ii)} the name of a colour that will be used for all points
+     (@pxref{Colours})@comma{}
+@emph{(iii)} the name of a file containing a list of colours
+(provided as RGB channel values) or
+@emph{(iv)} a string indicating how the
+colours can be obtained@comma{}.
+In case @emph{(iv)}@comma{} the string has the format
+@samp{@var{var}@SEPDEP{}@var{file_name}}@comma{} where @code{@var{var}} can be
+@samp{id} for identifiers@comma{} @samp{scal} for scalar
+@samp{ori} for crystal orientations or @samp{scal} for scalar
+values@comma{} and @samp{@var{file_name}} is the name of the file
+containing the data.  The colour schemes used to derive the colours from
+the data can be specified with option
+@option{-datapointcolscheme}.
+,
+any, grey}
+
+@opt{-datapointcolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the points loaded with option @option{-datapoint}.
+The type of colour scheme depends on the type of data.  For crystal
+orientations@comma{} the colour scheme can be: @samp{R} for Rodrigues
+vector colouring; for scalar data@comma{} the colour scheme can be any
+list of colours.
+,
+"R" for crystal orientations and any list of colours for scalars,
+"R" for crystal orientations and "blue@comma{}cyan@comma{}yellow@comma{}red" for scalars
+}
+
+@opt{-datapointtrs, real,
+Set the transparency of the points.  Provide as argument a
+value that applies to all points or @samp{file(@var{file_name})} to load
+values from a file.
+,
+0 to 1, 0}
+
+@opt{-datapointscale, char_string,
+Set the scale relative to the @samp{-datapointcol scal} data.  Provide as
+argument the start and end values@comma{} combined with
+@samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
+argument the start value@comma{} the intermediate values and then the
+end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
+scale follow the format used for the start value.
+,
+any, data minimum:data maximum
+}
+
+@opt{-datapointscaletitle, char_string,
+Set the title of the scale relative to the @samp{-datapointcol scal} data.
+,
+any, none
+}
+
+@subsection Coordinate System Rendering
+
+@opt{-datacsyscoo, char_string,
+Set the coordinates of the origin of the coordinate system.
+Combine the coordinates with @samp{@SEPDEP{}}.
+,
+any, 0@SEPDEP{}0@SEPDEP{}0}
+
+@opt{-datacsyslength, real,
+Set the length of the coordinate system axes.
+,
+any, 0.2}
+
+@opt{-datacsysrad, real,
+Set the radius of the coordinate system axes.
+,
+any, 0.01}
+
+@opt{-datacsyslabel, char_string,
+Set the labels of the coordinate system axes.
+Combine the labels with @samp{@SEPDEP{}}.
+,
+any, X1@SEPDEP{}X2@SEPDEP{}X3}
+
+@opt{-datacsyscol, char_string,
+Set the colour of the coordinate system. Provide as argument any colour as
+detailed in @ref{Colours}.
+,
+any, 32|32|32}
+
+@subsection Slice Settings
+
+@opt{-slicemesh, char_string,
+plot one (or several) slice(s) of the mesh.  Provide
+as argument the equation(s) of the plane(s)@comma{} under the form
+@samp{@var{a}*x+@var{b}*y+@var{c}*z=@var{d}} or any equivalent
+mathematical expression. Combine with @samp{@SEPNODEP{}}.
+,
+any, none}
+
+@subsection Show Settings
+
+The following options apply to the full tessellations or mesh.
+
+@opt{-showtess, logical,
+Show or hide the tessellation.
+,
+0 or 1, 1 if tess loaded and no mesh}
+
+@opt{-showtesr, logical,
+Show or hide the raster tessellation.
+,
+0 or 1, 1 if tesr loaded and no mesh}
+
+@opt{-showmesh, logical,
+Show or hide the mesh.
+,
+0 or 1, 1 if mesh loaded and no slice}
+
+@opt{-showmeshslice, logical,
+Show or hide the mesh slice(s).
+,
+0 or 1, 1 if existing slice(s)}
+
+@opt{-showpoint, logical or char_string,
+Show or hide the points.
+To show only specific points@comma{} provide
+@samp{file(@var{file_name})} to load point numbers from a
+file.
+,
+any, none}
+
+The following option applies to the cells of a tessellation or a raster
+tessellation, independently of its dimension,
+
+@opt{-showcell, char_string,
+Specify the cells to show. The argument can be: @samp{all} for
+all@comma{} @samp{none} for none@comma{}
+@samp{file(@var{file_name})} to load polyhedron identifiers from
+a file@comma{} or any expression based on the keys listed in
+@ref{Tessellation Keys} or @ref{Raster Tessellation Keys}.
+,
+any, all}
+
+@need 800
+For tessellations, it is also possible to set visibility on a per-entity
+basis,
+
+@opt{-showpoly, char_string,
+Specify the polyhedra to show. The argument can be: @samp{all} for
+all@comma{} @samp{none} for none@comma{}
+@samp{file(@var{file_name})} to load polyhedron identifiers from
+a file@comma{} or any expression based on the keys listed in
+@ref{Tessellation Keys}.
+,
+any, all}
+
+@opt{-showface, char_string,
+Specify the faces to show. The argument can be: @samp{all} for
+all@comma{} @samp{none} for none@comma{}
+@samp{file(@var{file_name})} to load face identifiers from
+a file@comma{} or any expression based on the keys listed in
+@ref{Tessellation Keys}. The following specific keys are also available:
+@samp{cell_shown} and @samp{poly_shown}.
+,
+any, none}
+
+@opt{-showedge, char_string,
+Specify the edges to show. The argument can be: @samp{all} for
+all@comma{} @samp{none} for none@comma{}
+@samp{file(@var{file_name})} to load edge numbers from a
+file@comma{} or any expression based on the keys listed in
+@ref{Tessellation Keys}. The following specific keys are also available:
+@samp{cell_shown}@comma{} @samp{poly_shown} and
+@samp{face_shown}.
+,
+any, @code{cell_shown}}
+
+@opt{-showver, char_string,
+Specify the vertices to show. The argument can be: @samp{all} for
+all@comma{} @samp{none} for none@comma{}
+@samp{file(@var{file_name})} to load vertex numbers from a
+file@comma{} or any expression based on the keys listed in
+@ref{Tessellation Keys}. The following specific keys are also available:
+@samp{cell_shown}@comma{} @samp{poly_shown}@comma{}
+@samp{face_shown} and @samp{edge_shown}.
+,
+any, none}
+
+@opt{-showseed, char_string,
+Specify the seeds to show. The argument can be: @samp{all} for
+all@comma{} @samp{none} for none@comma{}
+@samp{file(@var{file_name})} to load seed numbers from a
+file@comma{} or any expression based on the keys listed in
+@ref{Tessellation Keys}. The following specific key is also available:
+@samp{cell_shown}.
+,
+any, none}
+
+@optsec{-showfaceinter, logical,
+Show the interpolations of the tessellation faces (if any).
+The interpolation edges are printed in grey with a radius equal to
+the radius of the face edges.
+,
+0 or 1, 0}
+
+The following options apply to the entities of the mesh.
+The options apply to 3D elements (@samp{elt3d}) and element sets
+(@samp{elset3d}), 2D elements (@samp{elt2d}) and element sets
+(@samp{elset2d}), 1D elements (@samp{elt1d}) and element sets
+(@samp{elset1d}), 0D elements (@samp{elt0d}) and element sets
+(@samp{elset0d}), and nodes (@samp{nodes}). Also note that the
+@samp{elt} and @samp{elset} labels can be used in place of
+@samp{elt@var{n}d} and @samp{elset@var{n}d}, where @code{@var{n}} is the
+highest
+mesh dimension.  This enables to use the same command whatever the
+highest mesh dimension is.
+
+In the following option descriptions, note that any options can be
+applied to element @emph{sets} by changing @samp{elt} to @samp{elset}.
+
+@kindex -showelt
+@kindex -showelset
+
+@kindex -showelset3d
+@opt{-showelt3d, char_string,
+Specify the 3D elements to show. The argument can be: @samp{all} for
+all@comma{} @samp{none} for none@comma{}
+@samp{file(@var{file_name})} to load element identifiers from
+a file@comma{} or any expression based on the keys listed in
+@ref{Mesh Keys}.
+,
+any, all if highest mesh dim. is 3 and none otherwise}
+
+@kindex -showelset2d
+@opt{-showelt2d, char_string,
+Specify the 2D elements to show. The argument can be: @samp{all} for
+all@comma{} @samp{none} for none@comma{}
+@samp{file(@var{file_name})} to load element identifiers from
+a file@comma{} or any expression based on the keys listed in
+@ref{Mesh Keys}. The following specific key is also available:
+@samp{elt3d_shown}.
+,
+any, all if highest mesh dim. is 2 and none otherwise}
+
+@kindex -showelset1d
+@opt{-showelt1d, char_string,
+Specify the 1D elements to show. The argument can be: @samp{all} for all
+@comma{} @samp{none} for none@comma{} @samp{file(@var{file_name})} to load
+element numbers from a file@comma{} or any expression based on the keys
+listed in @ref{Mesh Keys}. The following specific keys are also available:
+@samp{elt2d_shown} and @samp{elt3d_shown}.
+,
+any, all if highest mesh dim. is 1 and none otherwise}
+
+@kindex -showelset0d
+@opt{-showelt0d, char_string,
+Specify the 0D elements to show. The argument can be: @samp{all} for all
+@samp{none} for none@comma{} @samp{file(@var{file_name})} to load
+element numbers from a file@comma{} or any expression based on the keys
+listed in @ref{Mesh Keys}. The following specific keys are also available:
+@samp{elt1d_shown}@comma{} @samp{elt2d_shown}
+and @samp{elt3d_shown}.
+,
+any, all if highest mesh dim. is 0 and none otherwise}
+
+@opt{-shownode, char_string,
+Specify the nodes to show. The argument can be: @samp{all} for all
+@comma{} @samp{none} for none@comma{} @samp{file(@var{file_name})} to load
+node numbers from a file@comma{} or any expression based on the keys
+listed in @ref{Mesh Keys}. The following specific keys are also available:
+@samp{elt0d_shown}@comma{} @samp{elt1d_shown}@comma{}
+@samp{elt2d_shown} and @samp{elt3d_shown}.
+,
+any, none}
+
+@opt{-showcsys, logical,
+Show the coordinate system.
+,
+0 or 1, 0}
+
+@opt{-showshadow, logical,
+Show the shadows.  If you want colours not affected by shadowing@comma{} switch this
+option off.
+,
+0 or 1, 1 in 3D and 0 in 2D and 1D}
+
+@subsection Camera Settings
+
+@opt{-cameracoo, char_string:char_string:char_string,
+Specify the camera coordinates.
+By default@comma{} the camera is shifted by a vector @dfn{v} from the
+tessellation or mesh centre.  The coordinates of vector @var{v} are
+denoted as @dfn{vx}@comma{} @dfn{vy} and @dfn{vz} (@w{= 3.462}@comma{}
+-5.770 and 4.327@comma{} respectively@comma{} in 3D and
+0@comma{} 0 and 8@comma{} respectively@comma{} in 2D and 1D).
+The coordinates of the tessellation or mesh centre are denoted as
+@dfn{x}@comma{} @dfn{y} and @dfn{z} (if both a tessellation and a mesh
+have been loaded@comma{} the mesh is considered).  Provide as argument
+the expression for the 3 coordinates@comma{} combined with @samp{@SEPDEP{}}.
+,
+any, @code{x+vx@SEPDEP{}y+vy@SEPDEP{}z+vz}}
+
+@opt{-cameralookat, char_string:char_string:char_string,
+Specify the location the camera looks at.
+By default@comma{} the camera looks at the
+tessellation or mesh centre.
+The coordinates of the tessellation or mesh centre are denoted as
+@dfn{x}@comma{} @dfn{y} @w{and @dfn{z}} (if both a tessellation and a mesh
+have been loaded@comma{} the mesh is considered).  Provide as argument
+the expression for the 3 coordinates@comma{} combined with @samp{@SEPDEP{}}.
+,
+any, @code{x@SEPDEP{}y@SEPDEP{}z}}
+
+@opt{-cameraangle, real,
+Specify the opening angle of the camera along the horizontal direction
+(in degrees). The opening angle along the vertical direction is determined
+from the opening along the horizontal direction and the image size ratio.
+,
+any, 25}
+
+@opt{-camerasky, real:real:real,
+Specify the sky vector of the camera (vertical direction).
+Provide as argument the coordinates combined with @samp{@SEPDEP{}}.
+,
+any,0@SEPDEP{}0@SEPDEP{}1}
+
+@opt{-cameraprojection, char_string,
+Specify the type of projection of the camera.
+,
+perspective or orthographic, perspective for 3D and orthographic for
+2D and 1D}
+
+@subsection Output Image Settings
+
+@opt{-imagesize, int:int,
+Specify the size of the image (in pixels).
+Provide as argument the width and height@comma{} combined with
+@samp{@SEPDEP{}}.
+,
+any, 1200:900}
+
+@opt{-imagebackground, char_string,
+Specify the colour of the background. Provide as argument any colour as
+detailed in @ref{Colours}.
+,
+any, white}
+
+@opt{-imageantialias, logical,
+Use antialiasing to produce a smoother image.  Switch antialiasing off
+for faster image generation or smaller image file.
+,
+0 or 1, 1}
+
+@opt{-imageformat, char_string,
+Specify the output image format.
+It can be
+the PNG @w{format (@file{.png})} or
+the POV-Ray @w{format (@file{.pov})}.
+Combine with @samp{@SEPNODEP{}}.
+,
+png or pov, png}
+
+@subsection Scripting
+
+@opttwo{-loop, -endloop, -loop char_string real real real ... , -endloop,
+Create a loop of commands.  Provide as argument the name of the
+loop variable@comma{} its initial value@comma{} the loop increment
+value@comma{} the final value then the commands to execute.
+An example of use of the @code{-loop} / @code{-endloop} capability is
+provided in the Examples Section.,
+any, none}
+
+@subsection Advanced Options
+
+@opt{-includepov, char_string,
+Use this option to include additional objects to the image@comma{}
+under the form of a POV-Ray file. Provide as argument the name of the
+POV-Ray file.
+,
+any, none}
+
+@section Output Files
+
+The output files are,
+
+@itemize
+@item PNG file, @file{.png}: a bitmapped image (the alpha channel is
+    off).
+@item POV-Ray file, @file{.pov}: a POV-Ray script file.
+@end itemize
+
+A PNG image can be obtained from a POV-Ray file by invoquing
+POV-Ray as follows (see the POV-Ray documentation for details and
+further commands),
+@code{povray @var{file.pov} +W@var{image_width} +H@var{image_height} -D +A0.2}.
+
+@section Examples
+
+Below are some examples of use of neper -V.
+
+@enumerate
+@item Print out tessellation @file{n10-id1.tess} with cells coloured
+from their identifiers and an image size of
+@iftex
+@math{900 @times 450}
+@end iftex
+@ifinfo
+900 x 450
+@end ifinfo
+pixels.
+@com{neper -V n10-id1.tess -datacellcol id -imagesize 900:450 -print img}
+
+@item Print out tessellation @file{n10-id1.tess} with cells coloured
+ from crystal orientations and semi-transparency.
+@com{neper -V n10-id1.tess -datacellcol ori -datacelltrs 0.5 -print img}
+
+@item Print out mesh @file{n10-id1.msh} with elements coloured from
+scalar values written in file @file{v} and a scale ranging from 0 to
+100.
+@com{neper -V n10-id1.msh -dataeltcol scal:v -dataeltscale 0:100 \ }
+@comx{@ @ @ @ @ @ -print img}
+
+@item Print out mesh @file{n10-id1.msh} with elements coloured from
+nodal scalar values written in file @file{v} and a scale ranging from 0
+to 100.
+@com{neper -V n10-id1.msh -datanodecol scal:v -dataeltcol from_nodes \ }
+@comx{@ @ @ @ @ @ -dataeltscale 0:100 -print img}
+
+@item Print out the 10 first cells of a 100-cell tessellation,
+ coloured from their identifiers and semi-transparency, and with
+ edges shown in red and vertices shown as green spheres of radius 0.01.
+@com{neper -V n100-id1.tess -showcell "id<=10" \ }
+@comx{@ @ @ @ @ @ -datacellcol id -datacelltrs 0.5 \ }
+@comx{@ @ @ @ @ @ -showedge cell_shown -showver cell_shown \ }
+@comx{@ @ @ @ @ @ -dataverrad 0.01 -dataedgecol red -datavercol green \ }
+@comx{@ @ @ @ @ @ -print img}
+@item Print out the interior element sets of mesh @file{n100-id1.msh}
+and show the 1D elements.
+@com{neper -V n100-id1.tess,n100-id1.msh -dataelsetcol id \ }
+@comx{@ @ @ @ @ @ -showelset 'body>0' -showelt1d elt3d_shown -print img}
+@item Print out 3 slices of mesh @file{n100-id1.msh}.
+@com{neper -V n100-id1.msh -dataelsetcol id \ }
+@comx{@ @ @ @ @ @ -slicemesh "x=0.5@SEPNODEP{}y=0.5@SEPNODEP{}z=0.5" -print img}
+@item Print out slices of mesh @file{n100-id1.msh}, at z coordinates ranging
+from 0.1 to 0.9 by step @w{of 0.1}, each slice being printed in a separate
+file.
+@com{neper -V n100-id1.msh -dataelsetcol id \ }
+@comx{@ @ @ @ @ @ -loop Z 0.1 0.1 0.9 \ }
+@comx{@ @ @ @ @ @ -slicemesh "z=Z" -print imgZ \ }
+@comx{@ @ @ @ @ @ -endloop}
+@end enumerate

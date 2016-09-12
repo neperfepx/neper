@@ -1,0 +1,35 @@
+		   Neper is copyright (C) 2003-2016
+
+                             Romain Quey
+                       <rquey at users.sf.net>
+
+Contributors include: Fabrice Barbe who is at the origin of Neper and
+has provided fresh ideas; Kamel Ibn Hassen Derouiche for Cmake
+integration; Loic Renversade for 2.5D meshing and tessellation
+optimization; Thierry Auger for MacOS port and process management.
+
+The ANN tree code (src/contrib/ann), excluding the CMakeLists.txt file, is
+copyright (C) 1997-2010 University of Maryland and Sunil Arya and David
+Mount and licensed under the the GNU Lesser Public License as published
+by the Free Software Foundation; either version 2.1 of the License, or
+(at your option) any later version.
+
+This version of Neper may use as a library: Gmsh, copyright (C)
+1997-2014 by Christophe Geuzaine and Jean-François Remacle and
+distributed under the terms of the GNU General Public License, Version 2
+or later, with an exception to allow for easier linking with external
+libraries.  See the Gmsh code for more information.
+
+This version of Neper may use as a library: libScotch, copyright (C)
+2004,2007,2008,2010,2011 ENSEIRB, INRIA & CNRS.  This software is
+governed by the CeCILL-C license under French law and abiding by the
+rules of distribution of free software. You can use, modify and/or
+redistribute the software under the terms of the CeCILL-C license as
+circulated by CEA, CNRS and INRIA at the following URL:
+"http://www.cecill.info".
+
+Thanks to the following forks for punctual help: Christophe Geuzaine for
+Gmsh; Francois Pellegrini for libScotch.
+
+Thanks to Ling Li for help with the Abaqus output; Ehsan Ghazvinian for
+help with the ply output.

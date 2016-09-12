@@ -1,0 +1,746 @@
+@c This file is part of the Neper software package.
+@c Copyright (C) 2003-2016 Romain Quey
+@c See the COPYING file in the top-level directory.
+
+@node Expressions and Keys
+@appendix Expressions and Keys
+
+@menu
+* Mathematical and Logical Expressions::
+* Tessellation Keys::
+* Raster Tessellation Keys::
+* Tessellation Update Keys::
+* Mesh Keys::
+* Point Keys::
+* Rotations and Orientations::
+* Colours::
+@end menu
+
+@node Mathematical and Logical Expressions
+@section Mathematical and Logical Expressions
+
+@neper{} can handle mathematical expressions.  It makes use of the GNU
+@code{libmatheval} library. The expression must contain no space,
+tabulation or new-line characters, and match the following
+syntax@footnote{Taken from the @code{libmatheval} documentation.}:
+
+Supported constants are (names that should be used are given in
+parenthesis): e (@code{e}), log2(e) (@code{log2e}), log10(e)
+(@code{log10e}), ln(2) (@code{ln2}), ln(10) (@code{ln10}), pi
+(@code{pi}), pi / 2 (@code{pi_2}), pi / 4 (@code{pi_4}), 1 / pi
+(@code{1_pi}), 2 / pi (@code{2_pi}), 2 / sqrt(pi) (@code{2_sqrtpi}),
+sqrt(2) (@code{sqrt}) and sqrt(1 / 2) (@code{sqrt1_2}).
+
+Variable name is any combination of alphanumericals and @code{_}
+characters beginning with a non-digit that is not elementary function
+name.
+
+Supported elementary functions are (names that should be used are
+given
+in parenthesis): exponential (@code{exp}), logarithmic
+(@code{log}),
+square root (@code{sqrt}), sine (@code{sin}), cosine (@code{cos}),
+tangent (@code{tan}), cotangent (@code{cot}), secant (@code{sec}),
+cosecant (@code{csc}), inverse sine (@code{asin}), inverse cosine
+(@code{acos}), inverse tangent (@code{atan}), inverse cotangent
+(@code{acot}), inverse secant (@code{asec}), inverse cosecant
+(@code{acsc}), hyperbolic sine (@code{sinh}), cosine (@code{cosh}),
+hyperbolic tangent (@code{tanh}), hyperbolic cotangent (@code{coth}),
+hyperbolic secant (@code{sech}), hyperbolic cosecant (@code{csch}),
+hyperbolic inverse sine (@code{asinh}), hyperbolic inverse cosine
+(@code{acosh}), hyperbolic inverse tangent (@code{atanh}), hyperbolic
+inverse cotangent (@code{acoth}), hyperbolic inverse secant
+(@code{asech}), hyperbolic inverse cosecant (@code{acsch}), absolute
+value (@code{abs}), Heaviside step function (@code{step}) with value 1
+defined for x = 0, Dirac delta function with infinity (@code{delta})
+and
+not-a-number (@code{nandelta}) values defined for x = 0, and error
+function (@code{erf}).
+
+Supported unary operation is unary minus (@code{'-'}).
+
+Supported binary operations are addition (@code{'+'}), subtraction
+(@code{'+'}), multiplication (@code{'*'}), division multiplication
+(@code{'/'}) and exponentiation (@code{'^'}).
+
+Usual mathematical rules regarding operation precedence
+apply. Parenthesis (@code{'('} and @code{')'}) could be used to change
+priority order.
+
+@neper{} includes additional functions: the minimum and maximum
+functions (@code{min(@var{a},@var{b})} and @code{max(@var{a},@var{b})},
+respectively).
+@code{@var{a}} and @code{@var{b}} can be
+any expression as described above. Moreover, square
+brackets (@code{'['} and @code{']'}) and curly brackets (@code{'@{'} and
+@code{'@}'}) can be used instead of the parentheses.
+
+The logical operators supported are:
+@math{=} (@code{==}),
+@math{\neq} (@code{!=}),
+@math{\geq} (@code{>=}),
+@math{\leq} (@code{<=}),
+@math{>} (@code{>}),
+@math{<} (@code{<}),
+AND (@code{&&}) and
+OR (@code{||}).
+
+@node Tessellation Keys
+@section Tessellation Keys
+
+Available keys for tessellation seeds, vertices, edges, faces and polyhedra
+are provided below.
+Also note that the descriptors apply to @emph{cells} if they are tagged to
+apply to @emph{polyhedra} and the tessellation is 3D and @emph{faces} and the
+tessellation is 2D.
+
+To turn a key value into a value relative to the mean over all entities
+(e.g.@ the relative cell size), append the key expression with
+the @samp{@SEPDEP{}rel} modifier.  To turn a key value into a value
+which holds for a unit cell size, append the key expression with
+the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
+@dfn{body} or @dfn{true} entities (see below), append @samp{b} or
+@samp{t} to the modifiers, respectively.
+
+@multitable @columnfractions 0.18 0.47 0.36
+  @headitem Key   @tab Descriptor                      @tab Apply to
+  @item @code{id} @tab Identifier                      @tab seed, ver, edge, face, poly
+  @item @code{x}  @tab x coordinate                    @tab seed, ver, edge, face, poly
+  @item @code{y}  @tab y coordinate                    @tab seed, ver, edge, face, poly
+  @item @code{z}  @tab z coordinate                    @tab seed, ver, edge, face, poly
+  @item @code{w}  @tab weight (width for a lamella tessellation) @tab seed
+  @item @code{true}  @tab true level                   @tab ver, edge, face, poly
+  @item @code{body}  @tab body level                   @tab ver, edge, face, poly
+  @item @code{state}  @tab state                       @tab ver, edge, face, poly
+  @item @code{domtype}  @tab type of domain (0 if on a domain vertex, 1
+      if on a domain edge and 2 if on a domain face) @tab ver, edge, face
+  @item @code{length}  @tab length                     @tab edge
+  @item @code{area}  @tab area                         @tab face, poly
+  @item @code{vol} @tab volume                         @tab poly
+  @item @code{size}  @tab size (area/volume in 2D/3D) @tab cell
+  @item @code{diameq}  @tab diameter of the equivalent
+  circle/sphere in 2D/3D                              @tab face, poly
+  @item @code{radeq}  @tab radius of the equivalent
+  circle/sphere in 2D/3D                              @tab face, poly
+  @item @code{circularity}  @tab circularity (2D counterpart of sphericity)          @tab face
+  @item @code{sphericity}  @tab sphericity@footnote{Sphericity of a
+    polyhedron = ratio of the surface area of
+      the sphere of equivalent volume to the surface area of the
+      polyhedron.} @tab poly
+  @item @code{convexity}  @tab convexity@footnote{Convexity of a
+    polyhedron (face) = ratio of the volume (area) of the polyhedron
+      (face) to the volume (area) of the convex hull of the polyhedron
+      (face).} @tab face@footnote{Applies only to a 2D tessellation.}, poly
+  @item @code{dihangleav},
+        @code{dihanglemin},
+	@code{dihanglemax} @tab average, minium and maximum dihedral
+	angle @tab face, poly
+  @item @code{dihanglelist} @tab dihedral angle list   @tab face, poly
+  @item @code{ff} @tab flatness fault (in degrees)     @tab face
+  @item @code{cyl} @tab whether or not is used to describe the
+                        circular part of a cylinder domain @tab edge
+  @item @code{vernb}  @tab number of vertices          @tab edge, face, poly
+  @item @code{edgenb}  @tab number of edges            @tab ver, face, poly
+  @item @code{facenb}  @tab number of faces            @tab ver, edge, poly
+  @item @code{polynb}  @tab number of polyhedra        @tab ver, edge, face
+  @item @code{neighnb}  @tab Number of neighbours of a face or
+  polyhedron@footnote{Neighbour of a face or polyhedron =
+    touching entity of the same type (faces for a face, @dots{}).}      @tab face, poly
+  @item @code{verlist}  @tab vertex list               @tab face, poly
+  @item @code{edgelist}  @tab edge list                @tab face, poly
+  @item @code{facelist}  @tab face list                @tab edge, poly
+  @item @code{npolylist} @tab neighbouring polyhedron list
+  @footnote{If a polyhedron has no neighbour on a face, a negative value
+    is returned instead of the neighbour id.} @tab poly
+  @item @code{facearealist} @tab face area list                  @tab poly
+  @item @code{faceeqlist} @tab face equation list@footnote{A face equation is specified by
+the parameters @math{d}, @math{a}, @math{b} and @math{c}, with the equation being: @math{a x + b y + c z = d}.  The vector
+@math{(a, b, c)} is pointing outwards of the polyhedron.}
+  @tab poly
+  @item @code{vercoolist}  @tab list of vertex coordinates @tab face, poly
+  @item @code{scaleid(@var{scale})}  @tab Identifier of the corresponding cell at scale
+  @var{scale} @tab cell
+  @item @code{lamid}  @tab lamella width id@footnote{In the case of a
+    lamellar tessellation with several lamella
+      widths@comma{} @var{lamid} stands for the actual lamellar width
+  of the cell (starting from 1).}            @tab face, poly
+@end multitable
+
+The list variables (@samp{verlist}, etc.) are not available for sorting
+(option @option{-sort}).
+
+For a cell, the @code{body} and @code{true} variables are
+defined as follows,
+@itemize
+@item @code{@var{body}} is an integer equal to @code{0} if the
+cell is at the domain boundary, i.e.@ if it shares at least one
+face with it (edge in 2D), and is equal to @code{1}
+or higher otherwise.  This is
+determined as follows: if a cell is surrounded by cells with
+@code{@var{body}} values equal to or higher than @code{@var{n}}, its
+@code{@var{body}} value is equal to @w{@code{@var{n} + 1}}.
+Therefore, @code{body} tends to increase with the distance to the domain
+boundary and can be used to define cells that may suffer from
+boundary effects.
+@c
+@item @code{@var{true}} is an integer equal to @code{0} it the
+cell shape is biased by the domain boundary, and is equal to
+@code{1} or higher otherwise. A value higher than @code{0} is achieved
+if and only if any seed that would
+have been located outside the domain (where it could not be)
+would not have affected the shape of the cell. This condition is
+fulfilled if the distance between the seed of the cell and any
+of its vertices is lower than the minimum distance between a vertex
+of the cell and the domain boundary.  @code{@var{true}} is
+extended to values higher than @code{1} in the same way as body:
+if a
+cell is surrounded by cells with @code{@var{true}} values
+equal to or higher than @code{@var{n}}, its @code{@var{true}} value is equal
+to @w{@code{@var{n} + 1}}.
+As @code{@var{body}}, @code{@var{true}} tends to increase with the
+distance to the domain boundary,
+and
+@iftex
+@math{@var{true}@leq@var{body}}.
+@end iftex
+@ifinfo
+@code{@var{true}<=@var{body}}.
+@end ifinfo
+@code{@var{true}} is especially useful for statistics on
+the cells (morphology, mesh, etc.), for which only cells with
+@iftex
+@math{@var{true}@geq 1}
+@end iftex
+@ifinfo
+@var{true} >= 1
+@end ifinfo
+should be considered.
+@end itemize
+
+For entities of lower dimension than cells (vertices, edges and faces),
+@code{@var{body}} and @code{@var{true}} are equal to the maximum
+@code{@var{body}} or @code{@var{true}} values of the cells they belong
+to.
+
+@node Raster Tessellation Keys
+@section Raster Tessellation Keys
+
+Available keys for raster tessellation seeds and cells are provided below.
+Mathematical and logical expressions based on these keys can also be
+used.
+To turn a key value into a value relative to the mean over all entities
+(e.g.@ the relative cell size), append the key expression with
+the @samp{@SEPDEP{}rel} modifier.  To turn a key value into a value
+which holds for a unit cell size, append the key expression with
+the @samp{@SEPDEP{}uc} modifier.
+
+@multitable @columnfractions 0.18 0.47 0.36
+  @headitem Key     @tab Descriptor                   @tab Apply to
+  @item @code{id}   @tab identifier                   @tab seed, cell
+  @item @code{x}    @tab x coordinate                 @tab seed, cell
+  @item @code{y}    @tab y coordinate                 @tab seed, cell
+  @item @code{z}    @tab z coordinate                 @tab seed, cell
+  @item @code{w}    @tab Laguerre weight              @tab seed
+  @item @code{size}  @tab size (area/volume in 2D/3D) @tab cell
+  @item @code{diameq}  @tab diameter of the equivalent
+  circle/sphere in 2D/3D                              @tab cell
+  @item @code{radeq}  @tab radius of the equivalent
+  circle/sphere in 2D/3D                              @tab cell
+  @item @code{convexity}  @tab convexity@footnote{Convexity of a cell = ratio of the volume of the cell to the volume of the convex hull of the cell.} @tab cell
+@end multitable
+
+@node Tessellation Update Keys
+@section Tessellation Update Keys
+
+@subsection Time Keys
+
+The available keys for option @option{-morphooptilogtime} are provided
+below.
+Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is an integer reduction
+factor, to log values only at specific iteration numbers.
+
+@multitable @columnfractions 0.18 0.47 0.36
+  @headitem Key     @tab Descriptor                   @tab Apply to
+  @item @code{iter}   @tab iteration number           @tab n/a
+  @item @code{varupdateqty}    @tab number of updated variables  @tab n/a
+  @item @code{seedupdateqty}    @tab number of updated seeds  @tab n/a
+  @item @code{seedupdatelist}    @tab list of updated seeds  @tab n/a
+  @item @code{cellupdateqty}    @tab number of updated cells  @tab n/a
+  @item @code{cellupdatelist}    @tab list of updated cells  @tab n/a
+  @item @code{var}    @tab time for variable update @tab n/a
+  @item @code{seed}    @tab time for seed update @tab n/a
+  @item @code{cell_init}    @tab time for cell update initialization @tab n/a
+  @item @code{cell_kdtree}  @tab time for cell update kdtree computation @tab n/a
+  @item @code{cell_shift}   @tab time for cell update shift computation @tab n/a
+  @item @code{cell_neigh}    @tab time for cell update neigh@. computation @tab n/a
+  @item @code{cell_cell}    @tab time for cell update cell computation @tab n/a
+  @item @code{cell_other}    @tab time for cell update others @tab n/a
+  @item @code{cell_total}    @tab total time for cell update @tab n/a
+  @item @code{val}    @tab time for (objective function) value update @tab n/a
+  @item @code{total}    @tab total time @tab n/a
+  @item @code{cumtotal}    @tab cumulative total time @tab n/a
+@end multitable
+
+@need 1200
+@subsection Variable Keys
+
+The available keys for option @option{-morphooptilogvar} are provided
+below.
+Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is an integer reduction
+factor, to log values only at specific iteration numbers.
+
+@multitable @columnfractions 0.18 0.47 0.36
+  @headitem Key    @tab Descriptor                   @tab Apply to
+  @item @code{iter}@tab iteration number             @tab n/a
+  @item @code{id}  @tab identifier                   @tab seed
+  @item @code{x}   @tab x coordinate                 @tab seed
+  @item @code{y}   @tab y coordinate                 @tab seed
+  @item @code{z}   @tab z coordinate                 @tab seed
+  @item @code{w}   @tab weight                       @tab seed
+@end multitable
+
+@subsection Objective Function Value Keys
+
+The available keys for option @option{-morphooptilogval} are provided
+below.
+Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is an integer reduction
+factor, to log values only at specific iteration numbers.
+
+@multitable @columnfractions 0.18 0.47 0.36
+  @headitem Key    @tab Descriptor                   @tab Apply to
+  @item @code{iter}@tab iteration number             @tab n/a
+  @item @code{val}  @tab value 	                     @tab n/a
+  @item @code{valmin}  @tab minimal value 	     @tab n/a
+  @item @code{val(@var{i})} @tab @var{i}th subvalue  @tab n/a
+  @item @code{val0(@var{i})} @tab @var{i}th subvalue, without smoothing @tab n/a
+@end multitable
+
+@subsection Statistical Distribution Keys
+
+The available keys for option @option{-morphooptilogdis} are provided
+below. PDF stands for @dfn{probability density function} and CDF stands
+for @dfn{cumulative probability density function}.
+Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is a reduction
+factor, to log values only at specific iteration numbers.
+
+@multitable @columnfractions 0.18 0.47 0.36
+  @headitem Key    @tab Descriptor              @tab Apply to
+  @item @code{iter}@tab iteration number        @tab n/a
+  @item @code{x}   @tab x coordinate            @tab n/a
+  @item @code{tarpdf}  @tab target PDF		@tab n/a
+  @item @code{tarcdf}  @tab target CDF 		@tab n/a
+  @item @code{curpdf}  @tab current PDF         @tab n/a
+  @item @code{curcdf}  @tab current CDF 	@tab n/a
+  @item @code{tarpdf0}  @tab target PDF, not smoothed @tab n/a
+  @item @code{tarcdf0}  @tab target CDF, not smoothed @tab n/a
+  @item @code{curcdf0}  @tab current CDF, not smoothed @tab n/a
+@end multitable
+
+@node Mesh Keys
+@section Mesh Keys
+
+Available keys for mesh node, elements and element sets (of all
+dimensions) and points are provided below.
+
+@multitable @columnfractions 0.18 0.47 0.36
+  @headitem Key       @tab Descriptor                       @tab Apply to
+  @item @code{id}     @tab identifier                       @tab node, @var{n}D elt, @var{n}D elset
+  @item @code{x}      @tab x coordinate                     @tab node, @var{n}D elt, @var{n}D elset
+  @item @code{y}      @tab y coordinate                     @tab node, @var{n}D elt, @var{n}D elset
+  @item @code{z}      @tab z coordinate                     @tab node, @var{n}D elt, @var{n}D elset
+  @item @code{dim}    @tab dimension (= lowest parent elt dimension) @tab node
+  @item @code{elset0d} @tab 0D elset                        @tab 0D elt
+  @item @code{elset1d} @tab 1D elset                        @tab 1D elt
+  @item @code{elset2d} @tab 2D elset                        @tab 2D elt
+  @item @code{elset3d} @tab 3D elset                        @tab 3D elt
+  @item @code{part}   @tab partition                       @tab @var{n}D elt, node
+  @item @code{cyl} @tab whether or not is used to describe the
+                        circular part of a cylinder domain @tab 1D elt, 1D elset
+  @item @code{vol}    @tab volume                           @tab 3D elt, 3D elset
+  @item @code{area}   @tab area                             @tab 2D elt
+  @item @code{length} @tab length                           @tab 1D elt, 3D elt, 1D elset
+  @item @code{rr}     @tab radius ratio                     @tab 3D elt
+  @item @code{rrav}, @code{rrmin}, @code{rrmax}
+                      @tab average, min and max radius ratios @tab 3D elset
+  @item @code{Osize}  @tab Osize                            @tab 3D elset
+  @item @code{eltnb}  @tab number of elements               @tab @var{n}D elset
+  @item @code{true}   @tab true level                       @tab @var{n}D elt, @var{n}D elset
+  @item @code{body}   @tab body level                       @tab @var{n}D elt, @var{n}D elset
+  @item @code{domtype}  @tab type of domain (0 if on a domain vertex, 1
+      if on a domain edge and 2 if on a domain face) @tab @w{2D elset},
+  @w{1D elset}, @w{0D elset}, @w{2D elt}, @w{1D elt}, @w{0D elt}
+  @item @code{2dmeshp}@tab coordinates of the closest point of the 2D mesh     @tab node, 3D elt
+  @item @code{2dmeshd}@tab distance to @samp{2dmeshp} @tab node, 3D elt
+  @item @code{2dmeshv}@tab vector to @samp{2dmeshp}   @tab node, 3D elt
+  @item @code{2dmeshn}@tab outgoing normal vector of the 2D mesh
+		     at @samp{2dmeshp}                @tab node, 3D elt
+@end multitable
+
+@dfn{@var{n}D} stands for an arbitrary dimension (from 0D to 3D).
+Variables starting by @samp{2dmesh} are only available for statistics
+(options starting by @option{-stat} of @mM{}); for elements, they apply to the centroids.
+
+@page
+@node Point Keys
+@section Point Keys
+
+Available keys for points are provided below.
+
+@multitable @columnfractions 0.18 0.47 0.18 0.10
+  @headitem Key   @tab Descriptor                      @tab Apply to @tab Require
+  @item @code{id} @tab Identifier                      @tab point    @tab 
+  @item @code{x}  @tab x coordinate                    @tab point    @tab 
+  @item @code{y}  @tab y coordinate                    @tab point    @tab 
+  @item @code{z}  @tab z coordinate                    @tab point    @tab 
+  @item @code{cell}  @tab cell                         @tab point    @tab tessellation
+  @item @code{elt3d}  @tab 3D element @tab point       @tab mesh
+  @item @code{elset3d}  @tab 3D elset @tab point       @tab mesh
+  @item @code{2dmeshp}@tab coordinates of the closest point of the 2D mesh     @tab point    @tab mesh
+  @item @code{2dmeshd}@tab distance to @samp{2dmeshp} @tab point    @tab mesh
+  @item @code{2dmeshv}@tab vector to @samp{2dmeshp}   @tab point    @tab mesh
+  @item @code{2dmeshn}@tab outgoing normal vector of the 2D mesh
+		     at @samp{2dmeshp}                @tab point    @tab mesh
+@end multitable
+
+@node Rotations and Orientations
+@section Rotations and Orientations
+
+Rotations and orientations can be described using the following
+descriptors (see Orilib, @url{http://orilib.sourceforge.net}, for more
+information).
+
+@multitable @columnfractions 0.18 0.47 0.36
+  @headitem Key @tab Descriptor @tab Number of variables
+  @item @code{g}  @tab Rotation matrix                 @tab 9
+  @item @code{rtheta}  @tab Rotation axis / angle pair @tab 4
+  @item @code{R}  @tab Rodrigues vector                @tab 3
+  @item @code{q}  @tab Quaternion                      @tab 4
+  @item @code{e}  @tab Euler angles (Bunge convention) @tab 3
+  @item @code{ek} @tab Euler angles (Kocks convention) @tab 3
+  @item @code{er} @tab Euler angles (Roe convention)   @tab 3
+@end multitable
+
+@node Colours
+@section Colours
+
+The available colours are provided below, with their corresponding RGB
+channel values. Any other colour can be defined from the RGB channel
+values, under format
+@samp{@w{@var{R_value}|@var{G_value}|@var{B_value}}}.
+
+@iftex
+@multitable @columnfractions 0.155 0.32 0.18 0.32
+@item (@phantom{00}0, @phantom{00}0, @phantom{00}0) @tab @code{black}
+@tab  (255, @phantom{00}0, @phantom{00}0) @tab @code{red}
+@item (@phantom{00}0, 255, @phantom{00}0) @tab @code{green}
+@tab  (@phantom{00}0, @phantom{00}0, 255) @tab @code{blue}
+@item (255, 255, @phantom{00}0) @tab @code{yellow}
+@tab  (255, @phantom{00}0, 255) @tab @code{magenta}
+@item (@phantom{00}0, 255, 255) @tab @code{cyan}
+@tab  (255, 255, 255) @tab @code{white}
+@item (128, @phantom{00}0, @phantom{00}0) @tab @code{maroon}
+@tab  (@phantom{00}0, @phantom{00}0, 128) @tab @code{navy}
+@item (127, 255, @phantom{00}0) @tab @code{chartreuse}
+@tab  (@phantom{00}0, 255, 127) @tab @code{springgreen}
+@item (128, 128, @phantom{00}0) @tab @code{olive}
+@tab  (128, @phantom{00}0, 128) @tab @code{purple}
+@item (@phantom{00}0, 128, 128) @tab @code{teal}
+@tab  (128, 128, 128) @tab @code{grey}
+@item (@phantom{00}0, 191, 255) @tab @code{deepskyblue}
+@tab  (124, 252, @phantom{00}0) @tab @code{lawngreen}
+@item (@phantom{0}64, @phantom{0}64, @phantom{0}64) @tab @code{darkgrey}
+@tab  (255, @phantom{0}69, @phantom{00}0) @tab @code{orangered}
+@item (192, 192, 192) @tab @code{silver}
+@tab  (255, 250, 250) @tab @code{snow}
+@item (139, @phantom{00}0, @phantom{00}0) @tab @code{darkred}
+@tab  (@phantom{00}0, @phantom{00}0, 139) @tab @code{darkblue}
+@item (255, 140, @phantom{00}0) @tab @code{darkorange}
+@tab  (240, 255, 255) @tab @code{azure}
+@item (248, 248, 255) @tab @code{ghostwhite}
+@tab  (255, 255, 240) @tab @code{ivory}
+@item (@phantom{00}0, @phantom{00}0, 205) @tab @code{mediumblue}
+@tab  (255, 182, 193) @tab @code{lightpink}
+@item (245, 255, 250) @tab @code{mintcream}
+@tab  (@phantom{0}75, @phantom{00}0, 130) @tab @code{indigo}
+@item (240, 128, 128) @tab @code{lightcoral}
+@tab  (255, 192, 203) @tab @code{pink}
+@item (255, 127, @phantom{0}80) @tab @code{coral}
+@tab  (250, 128, 114) @tab @code{salmon}
+@item (255, 250, 240) @tab @code{floralwhite}
+@tab  (127, 255, 212) @tab @code{aquamarine}
+@item (255, 250, 205) @tab @code{lemonchiffon}
+@tab  (255, 215, @phantom{00}0) @tab @code{gold}
+@item (@phantom{00}0, 100, @phantom{00}0) @tab @code{darkgreen}
+@tab  (255, 165, @phantom{00}0) @tab @code{orange}
+@item (240, 248, 255) @tab @code{aliceblue}
+@tab  (224, 255, 255) @tab @code{lightcyan}
+@item (255, 255, 224) @tab @code{lightyellow}
+@tab  (139, @phantom{00}0, 139) @tab @code{darkmagenta}
+@item (@phantom{00}0, 139, 139) @tab @code{darkcyan}
+@tab  (205, 133, @phantom{0}63) @tab @code{peru}
+@item (@phantom{0}70, 130, 180) @tab @code{steelblue}
+@tab  (255, 240, 245) @tab @code{lavenderblush}
+@item (255, 245, 238) @tab @code{seashell}
+@tab  (@phantom{00}0, 250, 154) @tab @code{mediumspringgreen}
+@item (@phantom{0}72, @phantom{0}61, 139) @tab @code{darkslateblue}
+@tab  (184, 134, @phantom{0}11) @tab @code{darkgoldenrod}
+@item (255, 160, 122) @tab @code{lightsalmon}
+@tab  (255, 228, 196) @tab @code{bisque}
+@item (135, 206, 250) @tab @code{lightskyblue}
+@tab  (250, 250, 210) @tab @code{lightgoldenrodyellow}
+@item (240, 255, 240) @tab @code{honeydew}
+@tab  (255, 248, 220) @tab @code{cornsilk}
+@item (255, 218, 185) @tab @code{peachpuff}
+@tab  (245, 245, 245) @tab @code{whitesmoke}
+@item (255, @phantom{0}99, @phantom{0}71) @tab @code{tomato}
+@tab  (112, 128, 144) @tab @code{slategrey}
+@item (255, 105, 180) @tab @code{hotpink}
+@tab  (253, 245, 230) @tab @code{oldlace}
+@item (255, 235, 205) @tab @code{blanchedalmond}
+@tab  (189, 183, 107) @tab @code{darkkhaki}
+@item (255, 228, 181) @tab @code{moccasin}
+@tab  (@phantom{00}0, 206, 209) @tab @code{darkturquoise}
+@item (@phantom{0}60, 179, 113) @tab @code{mediumseagreen}
+@tab  (199, @phantom{0}21, 133) @tab @code{mediumvioletred}
+@item (238, 130, 238) @tab @code{violet}
+@tab  (173, 255, @phantom{0}47) @tab @code{greenyellow}
+@item (255, 239, 213) @tab @code{papayawhip}
+@tab  (143, 188, 143) @tab @code{darkseagreen}
+@item (188, 143, 143) @tab @code{rosybrown}
+@tab  (255, @phantom{0}20, 147) @tab @code{deeppink}
+@item (139, @phantom{0}69, @phantom{0}19) @tab @code{saddlebrown}
+@tab  (148, @phantom{00}0, 211) @tab @code{darkviolet}
+@item (@phantom{0}30, 144, 255) @tab @code{dodgerblue}
+@tab  (119, 136, 153) @tab @code{lightslategrey}
+@item (222, 184, 135) @tab @code{burlywood}
+@tab  (255, 222, 173) @tab @code{navajowhite}
+@item (250, 240, 230) @tab @code{linen}
+@tab  (123, 104, 238) @tab @code{mediumslateblue}
+@item (@phantom{0}64, 224, 208) @tab @code{turquoise}
+@tab  (135, 206, 235) @tab @code{skyblue}
+@item (@phantom{0}72, 209, 204) @tab @code{mediumturquoise}
+@tab  (245, 245, 220) @tab @code{beige}
+@item (255, 228, 225) @tab @code{mistyrose}
+@tab  (210, 180, 140) @tab @code{tan}
+@item (250, 235, 215) @tab @code{antiquewhite}
+@tab  (216, 191, 216) @tab @code{thistle}
+@item (@phantom{0}50, 205, @phantom{0}50) @tab @code{limegreen}
+@tab  (233, 150, 122) @tab @code{darksalmon}
+@item (176, 196, 222) @tab @code{lightsteelblue}
+@tab  (@phantom{0}65, 105, 225) @tab @code{royalblue}
+@item (152, 251, 152) @tab @code{palegreen}
+@tab  (220, @phantom{0}20, @phantom{0}60) @tab @code{crimson}
+@item (245, 222, 179) @tab @code{wheat}
+@tab  (186, @phantom{0}85, 211) @tab @code{mediumorchid}
+@item (230, 230, 250) @tab @code{lavender}
+@tab  (240, 230, 140) @tab @code{khaki}
+@item (144, 238, 144) @tab @code{lightgreen}
+@tab  (175, 238, 238) @tab @code{paleturquoise}
+@item (@phantom{0}47, @phantom{0}79, @phantom{0}79) @tab @code{darkslategrey}
+@tab  (153, @phantom{0}50, 204) @tab @code{darkorchid}
+@item (@phantom{0}46, 139, @phantom{0}87) @tab @code{seagreen}
+@tab  (154, 205, @phantom{0}50) @tab @code{yellowgreen}
+@item (138, @phantom{0}43, 226) @tab @code{blueviolet}
+@tab  (219, 112, 147) @tab @code{palevioletred}
+@item (107, 142, @phantom{0}35) @tab @code{olivedrab}
+@tab  (147, 112, 219) @tab @code{mediumpurple}
+@item (244, 164, @phantom{0}96) @tab @code{sandybrown}
+@tab  (@phantom{0}85, 107, @phantom{0}47) @tab @code{darkolivegreen}
+@item (102, 205, 170) @tab @code{mediumaquamarine}
+@tab  (106, @phantom{0}90, 205) @tab @code{slateblue}
+@item (238, 232, 170) @tab @code{palegoldenrod}
+@tab  (@phantom{0}34, 139, @phantom{0}34) @tab @code{forestgreen}
+@item (@phantom{0}25, @phantom{0}25, 112) @tab @code{midnightblue}
+@tab  (@phantom{0}32, 178, 170) @tab @code{lightseagreen}
+@item (211, 211, 211) @tab @code{lightgrey}
+@tab  (218, 112, 214) @tab @code{orchid}
+@item (100, 149, 237) @tab @code{cornflowerblue}
+@tab  (160, @phantom{0}82, @phantom{0}45) @tab @code{sienna}
+@item (178, @phantom{0}34, @phantom{0}34) @tab @code{firebrick}
+@tab  (176, 224, 230) @tab @code{powderblue}
+@item (205, @phantom{0}92, @phantom{0}92) @tab @code{indianred}
+@tab  (105, 105, 105) @tab @code{dimgrey}
+@item (173, 216, 230) @tab @code{lightblue}
+@tab  (210, 105, @phantom{0}30) @tab @code{chocolate}
+@item (165, @phantom{0}42, @phantom{0}42) @tab @code{brown}
+@tab  (218, 165, @phantom{0}32) @tab @code{goldenrod}
+@item (220, 220, 220) @tab @code{gainsboro}
+@tab  (221, 160, 221) @tab @code{plum}
+@item (@phantom{0}95, 158, 160) @tab @code{cadetblue}
+@end multitable
+@end iftex
+
+@ifinfo
+@multitable @columnfractions 0.25 0.25 0.25 0.25
+@item (@ @ 0, @ @ 0, @ @ 0) @tab @code{black}
+@tab  (255, @ @ 0, @ @ 0) @tab @code{red}
+@item (@ @ 0, 255, @ @ 0) @tab @code{green}
+@tab  (@ @ 0, @ @ 0, 255) @tab @code{blue}
+@item (255, 255, @ @ 0) @tab @code{yellow}
+@tab  (255, @ @ 0, 255) @tab @code{magenta}
+@item (@ @ 0, 255, 255) @tab @code{cyan}
+@tab  (255, 255, 255) @tab @code{white}
+@item (128, @ @ 0, @ @ 0) @tab @code{maroon}
+@tab  (@ @ 0, @ @ 0, 128) @tab @code{navy}
+@item (127, 255, @ @ 0) @tab @code{chartreuse}
+@tab  (@ @ 0, 255, 127) @tab @code{springgreen}
+@item (128, 128, @ @ 0) @tab @code{olive}
+@tab  (128, @ @ 0, 128) @tab @code{purple}
+@item (@ @ 0, 128, 128) @tab @code{teal}
+@tab  (128, 128, 128) @tab @code{grey}
+@item (@ @ 0, 191, 255) @tab @code{deepskyblue}
+@tab  (124, 252, @ @ 0) @tab @code{lawngreen}
+@item (@ 64, @ 64, @ 64) @tab @code{darkgrey}
+@tab  (255, @ 69, @ @ 0) @tab @code{orangered}
+@item (192, 192, 192) @tab @code{silver}
+@tab  (255, 250, 250) @tab @code{snow}
+@item (139, @ @ 0, @ @ 0) @tab @code{darkred}
+@tab  (@ @ 0, @ @ 0, 139) @tab @code{darkblue}
+@item (255, 140, @ @ 0) @tab @code{darkorange}
+@tab  (240, 255, 255) @tab @code{azure}
+@item (248, 248, 255) @tab @code{ghostwhite}
+@tab  (255, 255, 240) @tab @code{ivory}
+@item (@ @ 0, @ @ 0, 205) @tab @code{mediumblue}
+@tab  (255, 182, 193) @tab @code{lightpink}
+@item (245, 255, 250) @tab @code{mintcream}
+@tab  (@ 75, @ @ 0, 130) @tab @code{indigo}
+@item (240, 128, 128) @tab @code{lightcoral}
+@tab  (255, 192, 203) @tab @code{pink}
+@item (255, 127, @ 80) @tab @code{coral}
+@tab  (250, 128, 114) @tab @code{salmon}
+@item (255, 250, 240) @tab @code{floralwhite}
+@tab  (127, 255, 212) @tab @code{aquamarine}
+@item (255, 250, 205) @tab @code{lemonchiffon}
+@tab  (255, 215, @ @ 0) @tab @code{gold}
+@item (@ @ 0, 100, @ @ 0) @tab @code{darkgreen}
+@tab  (255, 165, @ @ 0) @tab @code{orange}
+@item (240, 248, 255) @tab @code{aliceblue}
+@tab  (224, 255, 255) @tab @code{lightcyan}
+@item (255, 255, 224) @tab @code{lightyellow}
+@tab  (139, @ @ 0, 139) @tab @code{darkmagenta}
+@item (@ @ 0, 139, 139) @tab @code{darkcyan}
+@tab  (205, 133, @ 63) @tab @code{peru}
+@item (@ 70, 130, 180) @tab @code{steelblue}
+@tab  (255, 240, 245) @tab @code{lavenderblush}
+@item (255, 245, 238) @tab @code{seashell}
+@tab  (@ @ 0, 250, 154) @tab @code{mediumspringgreen}
+@item (@ 72, @ 61, 139) @tab @code{darkslateblue}
+@tab  (184, 134, @ 11) @tab @code{darkgoldenrod}
+@item (255, 160, 122) @tab @code{lightsalmon}
+@tab  (255, 228, 196) @tab @code{bisque}
+@item (135, 206, 250) @tab @code{lightskyblue}
+@tab  (250, 250, 210) @tab @code{lightgoldenrodyellow}
+@item (240, 255, 240) @tab @code{honeydew}
+@tab  (255, 248, 220) @tab @code{cornsilk}
+@item (255, 218, 185) @tab @code{peachpuff}
+@tab  (245, 245, 245) @tab @code{whitesmoke}
+@item (255, @ 99, @ 71) @tab @code{tomato}
+@tab  (112, 128, 144) @tab @code{slategrey}
+@item (255, 105, 180) @tab @code{hotpink}
+@tab  (253, 245, 230) @tab @code{oldlace}
+@item (255, 235, 205) @tab @code{blanchedalmond}
+@tab  (189, 183, 107) @tab @code{darkkhaki}
+@item (255, 228, 181) @tab @code{moccasin}
+@tab  (@ @ 0, 206, 209) @tab @code{darkturquoise}
+@item (@ 60, 179, 113) @tab @code{mediumseagreen}
+@tab  (199, @ 21, 133) @tab @code{mediumvioletred}
+@item (238, 130, 238) @tab @code{violet}
+@tab  (173, 255, @ 47) @tab @code{greenyellow}
+@item (255, 239, 213) @tab @code{papayawhip}
+@tab  (143, 188, 143) @tab @code{darkseagreen}
+@item (188, 143, 143) @tab @code{rosybrown}
+@tab  (255, @ 20, 147) @tab @code{deeppink}
+@item (139, @ 69, @ 19) @tab @code{saddlebrown}
+@tab  (148, @ @ 0, 211) @tab @code{darkviolet}
+@item (@ 30, 144, 255) @tab @code{dodgerblue}
+@tab  (119, 136, 153) @tab @code{lightslategrey}
+@item (222, 184, 135) @tab @code{burlywood}
+@tab  (255, 222, 173) @tab @code{navajowhite}
+@item (250, 240, 230) @tab @code{linen}
+@tab  (123, 104, 238) @tab @code{mediumslateblue}
+@item (@ 64, 224, 208) @tab @code{turquoise}
+@tab  (135, 206, 235) @tab @code{skyblue}
+@item (@ 72, 209, 204) @tab @code{mediumturquoise}
+@tab  (245, 245, 220) @tab @code{beige}
+@item (255, 228, 225) @tab @code{mistyrose}
+@tab  (210, 180, 140) @tab @code{tan}
+@item (250, 235, 215) @tab @code{antiquewhite}
+@tab  (216, 191, 216) @tab @code{thistle}
+@item (@ 50, 205, @ 50) @tab @code{limegreen}
+@tab  (233, 150, 122) @tab @code{darksalmon}
+@item (176, 196, 222) @tab @code{lightsteelblue}
+@tab  (@ 65, 105, 225) @tab @code{royalblue}
+@item (152, 251, 152) @tab @code{palegreen}
+@tab  (220, @ 20, @ 60) @tab @code{crimson}
+@item (245, 222, 179) @tab @code{wheat}
+@tab  (186, @ 85, 211) @tab @code{mediumorchid}
+@item (230, 230, 250) @tab @code{lavender}
+@tab  (240, 230, 140) @tab @code{khaki}
+@item (144, 238, 144) @tab @code{lightgreen}
+@tab  (175, 238, 238) @tab @code{paleturquoise}
+@item (@ 47, @ 79, @ 79) @tab @code{darkslategrey}
+@tab  (153, @ 50, 204) @tab @code{darkorchid}
+@item (@ 46, 139, @ 87) @tab @code{seagreen}
+@tab  (154, 205, @ 50) @tab @code{yellowgreen}
+@item (138, @ 43, 226) @tab @code{blueviolet}
+@tab  (219, 112, 147) @tab @code{palevioletred}
+@item (107, 142, @ 35) @tab @code{olivedrab}
+@tab  (147, 112, 219) @tab @code{mediumpurple}
+@item (244, 164, @ 96) @tab @code{sandybrown}
+@tab  (@ 85, 107, @ 47) @tab @code{darkolivegreen}
+@item (102, 205, 170) @tab @code{mediumaquamarine}
+@tab  (106, @ 90, 205) @tab @code{slateblue}
+@item (238, 232, 170) @tab @code{palegoldenrod}
+@tab  (@ 34, 139, @ 34) @tab @code{forestgreen}
+@item (@ 25, @ 25, 112) @tab @code{midnightblue}
+@tab  (@ 32, 178, 170) @tab @code{lightseagreen}
+@item (211, 211, 211) @tab @code{lightgrey}
+@tab  (218, 112, 214) @tab @code{orchid}
+@item (100, 149, 237) @tab @code{cornflowerblue}
+@tab  (160, @ 82, @ 45) @tab @code{sienna}
+@item (178, @ 34, @ 34) @tab @code{firebrick}
+@tab  (176, 224, 230) @tab @code{powderblue}
+@item (205, @ 92, @ 92) @tab @code{indianred}
+@tab  (105, 105, 105) @tab @code{dimgrey}
+@item (173, 216, 230) @tab @code{lightblue}
+@tab  (210, 105, @ 30) @tab @code{chocolate}
+@item (165, @ 42, @ 42) @tab @code{brown}
+@tab  (218, 165, @ 32) @tab @code{goldenrod}
+@item (220, 220, 220) @tab @code{gainsboro}
+@tab  (221, 160, 221) @tab @code{plum}
+@item (@ 95, 158, 160) @tab @code{cadetblue}
+@end multitable
+@end ifinfo
+
+The default colour palette (used for options @option{-datacellcol},
+@option{-dataelt3dcol}, etc.) is defined from the above colour list,
+by excluding colours of brightness below 0.2 and above 0.8.  The
+brightness is defined as the average of the channel values divided by
+255.  The resulting list of colours is:
+@code{red}, @code{green}, @code{blue}, @code{yellow}, @code{magenta},
+@code{cyan}, @code{chartreuse}, @code{springgreen}, @code{olive},
+@code{purple}, @code{teal}, @code{grey}, @code{deepskyblue},
+@code{lawngreen}, @code{darkgrey}, @code{orangered}, @code{silver},
+@code{darkorange}, @code{mediumblue}, @code{indigo}, @code{lightcoral},
+@code{coral}, @code{salmon}, @code{aquamarine}, @code{gold},
+@code{orange}, @code{darkmagenta}, @code{darkcyan}, @code{peru},
+@code{steelblue}, @code{mediumspringgreen}, @code{darkslateblue},
+@code{darkgoldenrod}, @code{lightsalmon}, @code{lightskyblue},
+@code{tomato}, @code{slategrey}, @code{hotpink}, @code{darkkhaki},
+@code{darkturquoise}, @code{mediumseagreen}, @code{mediumvioletred},
+@code{violet}, @code{greenyellow}, @code{darkseagreen},
+@code{rosybrown}, @code{deeppink}, @code{saddlebrown},
+@code{darkviolet}, @code{dodgerblue}, @code{lightslategrey},
+@code{burlywood}, @code{mediumslateblue}, @code{turquoise},
+@code{skyblue}, @code{mediumturquoise}, @code{tan}, @code{limegreen},
+@code{darksalmon}, @code{lightsteelblue}, @code{royalblue},
+@code{palegreen}, @code{crimson}, @code{mediumorchid}, @code{khaki},
+@code{lightgreen}, @code{darkslategrey}, @code{darkorchid},
+@code{seagreen}, @code{yellowgreen}, @code{blueviolet},
+@code{palevioletred}, @code{olivedrab}, @code{mediumpurple},
+@code{sandybrown}, @code{darkolivegreen}, @code{mediumaquamarine},
+@code{slateblue}, @code{forestgreen}, @code{midnightblue},
+@code{lightseagreen}, @code{orchid}, @code{cornflowerblue},
+@code{sienna}, @code{firebrick}, @code{indianred}, @code{dimgrey},
+@code{chocolate}, @code{brown}, @code{goldenrod}, @code{plum} and
+@code{cadetblue}.
