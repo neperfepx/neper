@@ -101,7 +101,6 @@ install (TARGETS neper DESTINATION bin
 # CTEST
 enable_testing ()
 include(CTest)
-configure_file (CTestCustom.cmake ${CMAKE_CURRENT_LIST_DIR}/CTestCustom.cmake)
 
 # Module -T
 
