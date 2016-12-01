@@ -21,8 +21,6 @@ net_reg_init (struct IN_T In, struct TESS Tess, struct REG *pReg)
     pcellsel = &((*pReg).PolySel);
   else if (Tess.Dim == 2)
     pcellsel = &((*pReg).FaceSel);
-  else if (Tess.Dim == 1)
-    pcellsel = &((*pReg).EdgeSel);
   else
     abort ();
 

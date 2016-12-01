@@ -331,6 +331,54 @@ ut_print_message (int head, int level, const char *s, ...)
 }
 
 void
+ut_print_message_inc (int head, int level, int inc, int incf, const char *s, ...)
+{
+  va_list args;
+
+  switch (head)
+  {
+  case 0:
+    printf ("Info   : ");
+    break;
+  case 1:
+    printf ("Warning: ");
+    break;
+  case 2:
+    printf ("Error  : ");
+    break;
+  case -1:
+    printf ("*DEBUG*: ");
+    break;
+  default:
+    printf ("         ");
+    break;
+  }
+
+  if (level == 2)
+    printf ("  - ");
+  else if (level == 3)
+    printf ("    > ");
+  else if (level == 4)
+    printf ("      . ");
+
+  if (incf > 0)
+    printf ("[%d/%d] ", inc, incf);
+  else
+    printf ("[%d] ", inc);
+
+  va_start (args, s);
+  vfprintf (stdout, s, args);
+  va_end (args);
+
+  fflush (stdout);
+
+  if (head == 2)
+    abort ();
+
+  return;
+}
+
+void
 ut_print_messagewnc (int head, int max, const char *message)
 {
   char *Header = ut_alloc_1d_char (10);

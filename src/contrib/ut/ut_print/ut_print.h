@@ -18,6 +18,8 @@ extern void ut_print_wnc_wncall (FILE*, int*, int, int*, int, const char*, ...);
 extern void ut_print_1lwnc (FILE *, const char *, unsigned int *, unsigned int);
 extern void ut_print_lineheader (int);
 extern void ut_print_message (int, int, const char *, ...);
+extern void ut_print_message_inc (int head, int level, int inc, int
+    incf, const char *s, ...);
 extern void ut_print_messagewnc (int, int, const char *);
 extern void ut_print_missingfile (const char *);
 extern void ut_print_moduleheader (const char *, int, char **, int, char **);

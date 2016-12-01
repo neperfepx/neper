@@ -278,8 +278,6 @@ neut_mesh_fprintf_geof_lisets (FILE* file, struct MESH Mesh2D,
 			       struct BOUNDARY Bound, char *fasets)
 {
   int i, j, k;
-  int *nodes = NULL;
-  int nodeqty;
 
   if (Mesh2D.Dimension != 2)
     abort ();
@@ -292,17 +290,12 @@ neut_mesh_fprintf_geof_lisets (FILE* file, struct MESH Mesh2D,
     if (Bound.BoundEltQty[i] > 0)
       for (j = 0; j < 2; j++)
       {
-	neut_boundary_bound_nodes (Mesh2D, Bound, i, j, &nodes, &nodeqty);
-
 	fprintf (file, "**liset %s\n", Bound.BoundNames[i][j]);
-	for (k = 0; k < nodeqty - 1; k++)
-	  fprintf (file, "line %d %d\n", nodes[k], nodes[k + 1]);
+	for (k = 1; k < Bound.BoundNodeQty[i]; k++)
+	  fprintf (file, "line %d %d\n", Bound.BoundNodes[i][j][k],
+					 Bound.BoundNodes[i][j][k + 1]);
 	fprintf (file, "\n");
-
-	ut_free_1d_int_ (&nodes);
       }
-
-  ut_free_1d_int (nodes);
 
   return;
 }

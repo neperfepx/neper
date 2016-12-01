@@ -25,7 +25,7 @@ nem_interface_duplicate (int dim, int *cells, int cellqty,
       node = nodes[j];
 
       neut_nodes_addnode (pNodes, (*pNodes).NodeCoo[node],
-				  (*pNodes).NodeCl[node]);
+				  (*pNodes).NodeCl ? (*pNodes).NodeCl[node] : -1);
       newnode = (*pNodes).NodeQty;
 
       (*pNodes).DupNodeQty++;

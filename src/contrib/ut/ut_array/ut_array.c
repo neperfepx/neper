@@ -281,6 +281,17 @@ ut_array_1d_int_fscanf (FILE * file, int *a, int size)
 }
 
 int
+ut_array_1d_char_fscanf (FILE * file, char **a, int size)
+{
+  int i, res = 0;
+
+  for (i = 0; i < size; i++)
+    res = fscanf (file, "%s", a[i]);
+
+  return res;
+}
+
+int
 ut_array_1d_fprintf (FILE * file, double *a, int size, const char *format)
 {
   int i, res;
@@ -3725,6 +3736,29 @@ ut_array_1d_int_set_3 (int *array, int v1, int v2, int v3)
 }
 
 int
+ut_array_1d_int_set_4 (int *array, int v1, int v2, int v3, int v4)
+{
+  array[0] = v1;
+  array[1] = v2;
+  array[2] = v3;
+  array[3] = v4;
+
+  return 0;
+}
+
+int
+ut_array_1d_int_set_5 (int *array, int v1, int v2, int v3, int v4, int v5)
+{
+  array[0] = v1;
+  array[1] = v2;
+  array[2] = v3;
+  array[3] = v4;
+  array[4] = v5;
+
+  return 0;
+}
+
+int
 ut_array_1d_set_2 (double *array, double v1, double v2)
 {
   array[0] = v1;
@@ -3912,6 +3946,58 @@ ut_array_1d_int_fscanf_filter_prefix (FILE* file, int *array, int size, char *fl
 	  {
 	    for (i = 0; i < partqty; i++)
 	      sscanf (parts[i], "%d", array + tmpqty++);
+	  }
+	}
+      }
+    }
+    while (status == 1 && tmpqty < size);
+
+    ut_free_1d_char (tmp);
+    ut_free_1d_char (lineflag);
+    ut_free_2d_char (parts, partqty);
+  }
+
+  return (tmpqty < size) ? -1 : 1;
+}
+
+int
+ut_array_1d_char_fscanf_filter_prefix (FILE* file, char **array, int size, char *flag)
+{
+  int i, tmpqty, status;
+  char *tmp = NULL;
+  char *lineflag = NULL;
+  char **parts = NULL;
+  int partqty = 0;
+
+  if (!strcmp (flag, "none"))
+  {
+    status = ut_array_1d_char_fscanf (file, array, size);
+    tmpqty = (status == 1) ? size : -1;
+  }
+
+  else
+  {
+    tmp = ut_alloc_1d_char (1000);
+    lineflag = ut_alloc_1d_char (10000);
+
+    tmpqty = 0;
+    do
+    {
+      status = -1;
+      if (fgets (tmp, 10000, file))
+      {
+	tmp[strlen (tmp) - 1] = '\0';
+	status = sscanf (tmp, "%s", lineflag);
+	if (!strcmp (lineflag, flag))
+	{
+	  ut_string_substrings (tmp + strlen (lineflag), &parts, &partqty);
+
+	  if (tmpqty + partqty > size)
+	    status = -1;
+	  else
+	  {
+	    for (i = 0; i < partqty; i++)
+	      sscanf (parts[i], "%s", array[tmpqty++]);
 	  }
 	}
       }

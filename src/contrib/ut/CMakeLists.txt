@@ -2,7 +2,7 @@
 # see the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.6)
-project(ut C)
+project(ut)
 
 set (UT_VERSION_MAJOR 1)
 set (UT_VERSION_MINOR 0)
@@ -10,7 +10,6 @@ set (UT_VERSION_PATCH 0)
 
 # should we use the optional libraries?
 option (HAVE_GSL      "Use the GNU Scientific Library (GSL)" ON)
-option (HAVE_LIBMATHEVAL "Use libmatheval"                   ON)
 option (HAVE_NLOPT      "Use NLOPT" ON)
 option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
 option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)" OFF)
@@ -43,7 +42,7 @@ add_library (ut
   ut_color/ut_color.c
   ut_file/ut_file.c
   ut_free/ut_free.c
-  ut_math/ut_math.c
+  ut_math/ut_math.cpp
   ut_fct/ut_fct.c
   ut_stat/ut_stat.c
   ut_mat/ut_mat.c
@@ -57,7 +56,7 @@ add_library (ut
   ut_tensor/ut_tensor.c
   ut_time/ut_time.c
   ut_vector/ut_vector.c
-  ut_nlopt/ut_nlopt.c
+  ut_nlopt/ut_nlopt.c #NLOPT
 )
 
 ## Link libraries
@@ -74,14 +73,6 @@ if (HAVE_GSL)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
   include_directories (${GSL_INCLUDE_DIRS})
 endif (HAVE_GSL)
-
-if (HAVE_LIBMATHEVAL)
-    find_package(LIBMATHEVAL REQUIRED)
-    include_directories( ${Matheval_INCLUDE_DIRS} )
-    link_directories( ${Matheval_LIBRARY_DIRS} )
-    set (EXTRA_LIBS ${EXTRA_LIBS} ${Matheval_LIBRARIES} )
-endif(HAVE_LIBMATHEVAL)
-
 
 target_link_libraries (ut ${EXTRA_LIBS})
 

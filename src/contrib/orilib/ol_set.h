@@ -14,6 +14,7 @@ struct OL_SET
   double **q;
   double *weight;
   int* id;
+  char **label;
   char* crysym;
 };
 typedef struct OL_SET OL_SET;

@@ -13,6 +13,8 @@ neut_boundary_set_zero (struct BOUNDARY *pBound)
   (*pBound).BoundEltQty = NULL;
   (*pBound).BoundElts = NULL;
   (*pBound).BoundEltFacets = NULL;
+  (*pBound).BoundNodeQty = NULL;
+  (*pBound).BoundNodes = NULL;
 
   return;
 }
@@ -26,6 +28,8 @@ neut_boundary_free (struct BOUNDARY *pBound)
   ut_free_1d_int ((*pBound).BoundEltQty);
   ut_free_3d_int ((*pBound).BoundElts, (*pBound).BoundQty + 1, 2);
   ut_free_3d_int ((*pBound).BoundEltFacets, (*pBound).BoundQty + 1, 2);
+  ut_free_1d_int ((*pBound).BoundNodeQty);
+  ut_free_3d_int ((*pBound).BoundNodes, (*pBound).BoundQty + 1, 2);
   (*pBound).BoundQty = 0;
 
   return;
@@ -74,6 +78,8 @@ neut_boundary_bound_nodes (struct MESH Mesh, struct BOUNDARY Bound, int id, int 
     else
       abort ();
   }
+  else
+    (*pnodes)[0] = surfnodes[0];
 
   for (i = 1; i <= Bound.BoundEltQty[id]; i++)
   {
@@ -81,7 +87,7 @@ neut_boundary_bound_nodes (struct MESH Mesh, struct BOUNDARY Bound, int id, int 
     facet = Bound.BoundEltFacets[id][side][i];
     neut_elt_facet_nodes (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder, Mesh.EltNodes[elt], facet, surfnodes);
 
-    lastnode = 0;
+    lastnode = (*pnodes)[i - 1];
     if (i > 1)
     {
       pos = ut_array_1d_int_eltpos (Mesh.EltNodes[elt], 3, lastnode);

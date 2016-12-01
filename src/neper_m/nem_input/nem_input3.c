@@ -80,6 +80,9 @@ nem_input_options_default (struct IN_M *pIn)
   strcpy ((*pIn).partmethod, "default");
   (*pIn).partstring = NULL;
   (*pIn).partbalancing = .5;
+  (*pIn).scale = NULL;
+
+  ut_string_string ("none", &(*pIn).scalestring);
 
   (*pIn).gmsh = ut_alloc_1d_char (5);
   strcpy ((*pIn).gmsh, "gmsh");
@@ -156,6 +159,9 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-meshpoly");
   strcpy (ArgList[++ArgQty], "-interface");
   strcpy (ArgList[++ArgQty], "-mesh3dreport");
+
+  // transformation options
+  strcpy (ArgList[++ArgQty], "-scale");
 
   // Mesh partitionning options ----------------------------------------
   strcpy (ArgList[++ArgQty], "-part");
@@ -406,6 +412,8 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).partmethod));
       else if (!strcmp (Arg, "-partbalancing"))
 	ut_arg_nextasreal (argv, &i, Arg, 0, 1, &((*pIn).partbalancing));
+      else if (!strcmp (Arg, "-scale"))
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).scalestring));
       else
 	ut_arg_error (Arg, "");
     }

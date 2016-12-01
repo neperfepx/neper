@@ -30,6 +30,7 @@ extern int ol_g_g_gdisori_ref (double **, double **, char*, double **);
 extern int ol_q_q_disori_rad (double *, double *, char*, double *);
 extern int ol_q_q_disori (double *, double *, char*, double *);
 extern int ol_q_q_qdisori (double *, double *, char*, double *);
+extern int ol_q_q_qdisori_update (double *, double *, char*, int, double *, char *, int *);
 extern int ol_q_q_qdisori_cur (double *, double *, char*, double *);
 extern int ol_q_q_qdisori_ref (double *, double *, char*, double *);
 

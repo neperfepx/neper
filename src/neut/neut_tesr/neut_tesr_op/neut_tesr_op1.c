@@ -241,13 +241,7 @@ neut_tesr_expr_cells (struct TESR Tesr, char *expr, int **pcell,
     for (i = 1; i <= Tesr.CellQty; i++)
     {
       vals[0] = i;
-#ifdef HAVE_LIBMATHEVAL
       status = ut_math_eval (expr, var_qty, vars, vals, &res);
-#else
-      ut_print_messagewnc (2, 72,
-			   "This capability is not available because this version of Neper has not been compiled with libmatheval.");
-      abort ();
-#endif
       if (status == -1)
 	abort ();
       if (res == 1)

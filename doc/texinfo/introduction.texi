@@ -131,12 +131,6 @@ It is likely to be available on your system or from your system package
 manager (binary and development packages); alternatively, the source
 code version can be downloaded from @uref{http://www.gnu.org/software/gsl}.
 
-@item the libmatheval library (optional, enabled by default). It is
-likely to be available on your system or from your system package
-manager (binary and development packages); alternatively, the source
-code version can be downloaded from
-@uref{http://www.gnu.org/software/libmatheval}.
-
 @item the NLopt library (optional, enabled by default).  It is needed
 by @mT{} for tessellation generation from cell properties. It is
 likely to be available on your system or from your system package
@@ -225,14 +219,13 @@ ambiguous. For instance, in module @code{-T}, option
 @option{-regularization} can be abbreviated to @option{-reg}.  Logical
 options can be enabled or disabled by providing argument @w{values of
 @samp{1}} @w{or @samp{0}}, respectively.  Integer or real argument
-values can be written as mathematical or logical expressions if
-libmatheval is available (for details on expressions, see
-@ref{Mathematical and Logical Expressions}).  For instance, in @mT{},
-option @option{@w{-rcl 0.5}} can also be written as @option{@w{-rcl
-1/2}} or @option{@w{-rcl "cos(pi/3)"}}.
-@MV{} shows some exceptions with respect to these rules: the argument
-cannot be listed in arbitrary order, string completion is not available
-and option @option{-loop} takes several arguments.
+values can be written as mathematical or logical expressions (for
+details on expressions, see @ref{Mathematical and Logical Expressions}).
+For instance, in @mT{}, option @option{@w{-rcl 0.5}} can also be written
+as @option{@w{-rcl 1/2}} or @option{@w{-rcl "cos(pi/3)"}}.  @MV{} shows
+some exceptions with respect to these rules: the argument cannot be
+listed in arbitrary order, string completion is not available and option
+@option{-loop} takes several arguments.
 
 @subsection Argument Separators
 

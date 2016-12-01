@@ -15,8 +15,6 @@ neut_tess_cell_size (struct TESS Tess, int cell, double *psize)
   }
   else if (Tess.Dim == 2)
     neut_tess_face_area (Tess, cell, psize);
-  else if (Tess.Dim == 1)
-    (*psize) = Tess.EdgeLength[cell];
   else
     ut_error_reportbug ();
 
@@ -141,10 +139,6 @@ neut_tess_size (struct TESS Tess, double *psize)
   }
   else if (Tess.Dim == 2)
     neut_tess_area (Tess, psize);
-  else if (Tess.Dim == 1)
-    neut_tess_length (Tess, psize);
-  else if (Tess.Dim == 0)
-    (*psize) = 0;
   else
     abort ();
 
@@ -531,10 +525,6 @@ neut_tess_cell_centroid (struct TESS Tess, int cell, double *coo)
     status = neut_tess_poly_centroid (Tess, cell, coo);
   else if (Tess.Dim == 2)
     neut_tess_face_centre (Tess, cell, coo);
-  else if (Tess.Dim == 1)
-    neut_tess_edge_centre (Tess, cell, coo);
-  else if (Tess.Dim == 0)
-    ut_array_1d_memcpy (coo, 3, Tess.VerCoo[cell]);
   else
     abort ();
 
@@ -743,19 +733,6 @@ neut_tess_centre (struct TESS Tess, double *centre)
     }
     ut_array_1d_scale (centre, 3, 1. / totval);
   }
-  else if (Tess.Dim == 1)
-  {
-    totval = 0;
-    for (i = 1; i <= Tess.EdgeQty; i++)
-    {
-      neut_tess_edge_centre (Tess, i, coo);
-      val = Tess.EdgeLength[i];
-      ut_array_1d_scale (coo, 3, val);
-      ut_array_1d_add (centre, coo, 3, centre);
-      totval += val;
-    }
-    ut_array_1d_scale (centre, 3, 1. / totval);
-  }
 
   ut_free_1d (coo);
 
@@ -765,45 +742,115 @@ neut_tess_centre (struct TESS Tess, double *centre)
 int
 neut_tess_point_inpoly_std (struct TESS Tess, double *coo, int nb)
 {
-  int i, j, res;
+  int i, j, status;
+  int *per = ut_alloc_1d_int (3);
   double *faceeq = ut_alloc_1d (4);
+  double *coob = ut_alloc_1d (3);
+  int *Periodic = ut_alloc_1d_int (3);
+  double *PeriodicDist = ut_alloc_1d (3);
 
-  res = 1;
-  for (i = 1; i <= Tess.PolyFaceQty[nb]; i++)
+  if (Tess.Periodic)
+    ut_array_1d_int_memcpy (Periodic, 3, Tess.Periodic);
+  if (Tess.PeriodicDist)
+    ut_array_1d_memcpy (PeriodicDist, 3, Tess.PeriodicDist);
+
+  status = 0;
+  for (per[0] = -Periodic[0]; per[0] <= Periodic[0]; per[0]++)
   {
-    for (j = 0; j < 4; j++)
-      faceeq[j] =
-	(double) Tess.PolyFaceOri[nb][i] *
-	Tess.FaceEq[Tess.PolyFaceNb[nb][i]][j];
-
-    if (ut_space_planeside_tol (faceeq, coo - 1, 1e-12) > 0)
+    for (per[1] = -Periodic[1]; per[1] <= Periodic[1]; per[1]++)
     {
-      res = 0;
-      break;
+      for (per[2] = -Periodic[2]; per[2] <= Periodic[2]; per[2]++)
+      {
+	for (j = 0; j < 3; j++)
+	  coob[j] = coo[j] + per[j] * PeriodicDist[j];
+
+	status = 1;
+	for (i = 1; i <= Tess.PolyFaceQty[nb]; i++)
+	{
+	  for (j = 0; j < 4; j++)
+	    faceeq[j] =
+	      (double) Tess.PolyFaceOri[nb][i] *
+	      Tess.FaceEq[Tess.PolyFaceNb[nb][i]][j];
+
+	  if (ut_space_planeside_tol (faceeq, coob - 1, 1e-12) > 0)
+	  {
+	    status = 0;
+	    break;
+	  }
+	}
+
+	if (status)
+	  break;
+      }
+
+      if (status)
+	break;
     }
+
+    if (status)
+      break;
   }
 
   ut_free_1d (faceeq);
+  ut_free_1d_int (per);
+  ut_free_1d (coob);
+  ut_free_1d_int (Periodic);
+  ut_free_1d (PeriodicDist);
 
-  return res;
+  return status;
 }
 
 int
 neut_tess_point_inpoly_reg (struct TESS Tess, double *coo, int nb)
 {
-  int elt, status;
+  int j, elt, status;
+  int *per = ut_alloc_1d_int (3);
   struct MESH Mesh;
   struct NODES Nodes;
+  double *coob = ut_alloc_1d (3);
+  int *Periodic = ut_alloc_1d_int (3);
+  double *PeriodicDist = ut_alloc_1d (3);
 
   neut_mesh_set_zero (&Mesh);
   neut_nodes_set_zero (&Nodes);
 
   neut_tess_poly_mesh (Tess, nb, &Nodes, &Mesh);
 
-  status = neut_mesh_elset_point_elt (Mesh, Nodes, 1, coo, &elt);
+  if (Tess.Periodic)
+    ut_array_1d_int_memcpy (Periodic, 3, Tess.Periodic);
+  if (Tess.PeriodicDist)
+    ut_array_1d_memcpy (PeriodicDist, 3, Tess.PeriodicDist);
+
+  status = -1;
+  for (per[0] = -Periodic[0]; per[0] <= Periodic[0]; per[0]++)
+  {
+    for (per[1] = -Periodic[1]; per[1] <= Periodic[1]; per[1]++)
+    {
+      for (per[2] = -Periodic[2]; per[2] <= Periodic[2]; per[2]++)
+      {
+	for (j = 0; j < 3; j++)
+	  coob[j] = coo[j] + per[j] * PeriodicDist[j];
+
+	  status = neut_mesh_elset_point_elt (Mesh, Nodes, 1, coo, &elt);
+	  if (status == 0)
+	    break;
+      }
+
+      if (status == 0)
+	break;
+    }
+
+    if (status == 0)
+      break;
+  }
 
   neut_mesh_free (&Mesh);
   neut_nodes_free (&Nodes);
+
+  ut_free_1d_int (per);
+  ut_free_1d (coob);
+  ut_free_1d_int (Periodic);
+  ut_free_1d (PeriodicDist);
 
   if (status == 0)
     return 1;
@@ -818,8 +865,6 @@ neut_tess_point_incell (struct TESS Tess, double *coo, int nb)
     return neut_tess_point_inpoly (Tess, coo, nb);
   if (Tess.Dim == 2)
     return neut_tess_point_inface (Tess, coo, nb);
-  if (Tess.Dim == 1)
-    return neut_tess_point_inedge (Tess, coo, nb);
   else
     ut_error_reportbug ();
 
@@ -841,8 +886,17 @@ neut_tess_point_inpoly (struct TESS Tess, double *coo, int nb)
 int
 neut_tess_point_inface (struct TESS Tess, double *coo, int face)
 {
-  int i, ver1, ver2, status;
+  int i, j, ver1, ver2, status;
   double *centre = ut_alloc_1d (3);
+  int *per = ut_alloc_1d_int (2);
+  double *coob = ut_alloc_1d (3);
+  int *Periodic = ut_alloc_1d_int (3);
+  double *PeriodicDist = ut_alloc_1d (3);
+
+  if (Tess.Periodic)
+    ut_array_1d_int_memcpy (Periodic, 3, Tess.Periodic);
+  if (Tess.PeriodicDist)
+    ut_array_1d_memcpy (PeriodicDist, 3, Tess.PeriodicDist);
 
   neut_tess_face_centre (Tess, face, centre);
 
@@ -853,16 +907,35 @@ neut_tess_point_inface (struct TESS Tess, double *coo, int face)
     ver2 =
       Tess.FaceVerNb[face][ut_num_rotpos (1, Tess.FaceVerQty[face], i, 1)];
 
-    if (ut_space_triangle_point_in (centre, Tess.VerCoo[ver1],
-				    Tess.VerCoo[ver2], coo,
-				    1e-6, 0))
+    for (per[0] = -Periodic[0]; per[0] <= Periodic[0]; per[0]++)
     {
-      status = 1;
-      break;
+      for (per[1] = -Periodic[1]; per[1] <= Periodic[1]; per[1]++)
+      {
+	for (j = 0; j < 3; j++)
+	  coob[j] = coo[j] + per[j] * PeriodicDist[j];
+
+	if (ut_space_triangle_point_in (centre, Tess.VerCoo[ver1],
+					Tess.VerCoo[ver2], coob,
+					1e-6, 0))
+	{
+	  status = 1;
+	  break;
+	}
+      }
+
+      if (status)
+	break;
     }
+
+    if (status)
+      break;
   }
 
   ut_free_1d (centre);
+  ut_free_1d (coob);
+  ut_free_1d_int (per);
+  ut_free_1d_int (Periodic);
+  ut_free_1d (PeriodicDist);
 
   return status;
 }
@@ -1106,10 +1179,7 @@ neut_tess_cell_radeq (struct TESS Tess, int cell, double *pval)
 void
 neut_tess_cell_diameq (struct TESS Tess, int cell, double *pval)
 {
-  if (Tess.Dim == 1)
-    (*pval) = Tess.EdgeLength[cell];
-
-  else if (Tess.Dim == 2)
+  if (Tess.Dim == 2)
     neut_tess_face_diameq (Tess, cell, pval);
 
   else if (Tess.Dim == 3)
@@ -1194,12 +1264,7 @@ neut_tess_cell_sphericity (struct TESS Tess, int cell, double *pval)
 {
   int status;
 
-  if (Tess.Dim == 1)
-  {
-    status = 0;
-    (*pval) = 1;
-  }
-  else if (Tess.Dim == 2)
+  if (Tess.Dim == 2)
     status = neut_tess_face_circularity (Tess, cell, pval);
   else if (Tess.Dim == 3)
     status = neut_tess_poly_sphericity (Tess, cell, pval);

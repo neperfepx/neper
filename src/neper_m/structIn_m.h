@@ -71,6 +71,10 @@ struct IN_M
   char *partmethod;		// partitioning method (in Scotch jargon)
   double partbalancing;		// partitioning balancing factor
 
+  // transformation
+  char *scalestring;		// scale the mesh once generated (or loaded)
+  double *scale;		// scaling values
+
   // output details
 
   char *format;			// format of the output mesh

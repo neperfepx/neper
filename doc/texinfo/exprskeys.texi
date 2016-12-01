@@ -19,71 +19,69 @@
 @node Mathematical and Logical Expressions
 @section Mathematical and Logical Expressions
 
-@neper{} can handle mathematical expressions.  It makes use of the GNU
-@code{libmatheval} library. The expression must contain no space,
+@neper{} can handle mathematical expressions.  It makes use of
+the @code{muparser} library. The expression must contain no space,
 tabulation or new-line characters, and match the following
-syntax@footnote{Taken from the @code{libmatheval} documentation.}:
+syntax@footnote{Taken from the @code{muparser} documentation, see
+@url{http://beltoforion.de/article.php?a=muparser} for more
+information.}.
 
-Supported constants are (names that should be used are given in
-parenthesis): e (@code{e}), log2(e) (@code{log2e}), log10(e)
-(@code{log10e}), ln(2) (@code{ln2}), ln(10) (@code{ln10}), pi
-(@code{pi}), pi / 2 (@code{pi_2}), pi / 4 (@code{pi_4}), 1 / pi
-(@code{1_pi}), 2 / pi (@code{2_pi}), 2 / sqrt(pi) (@code{2_sqrtpi}),
-sqrt(2) (@code{sqrt}) and sqrt(1 / 2) (@code{sqrt1_2}).
+@subsection Functions
 
-Variable name is any combination of alphanumericals and @code{_}
-characters beginning with a non-digit that is not elementary function
-name.
+The following table gives an overview of the functions supported by the
+default implementation. It lists the function names, the number of
+arguments and a brief description. 
 
-Supported elementary functions are (names that should be used are
-given
-in parenthesis): exponential (@code{exp}), logarithmic
-(@code{log}),
-square root (@code{sqrt}), sine (@code{sin}), cosine (@code{cos}),
-tangent (@code{tan}), cotangent (@code{cot}), secant (@code{sec}),
-cosecant (@code{csc}), inverse sine (@code{asin}), inverse cosine
-(@code{acos}), inverse tangent (@code{atan}), inverse cotangent
-(@code{acot}), inverse secant (@code{asec}), inverse cosecant
-(@code{acsc}), hyperbolic sine (@code{sinh}), cosine (@code{cosh}),
-hyperbolic tangent (@code{tanh}), hyperbolic cotangent (@code{coth}),
-hyperbolic secant (@code{sech}), hyperbolic cosecant (@code{csch}),
-hyperbolic inverse sine (@code{asinh}), hyperbolic inverse cosine
-(@code{acosh}), hyperbolic inverse tangent (@code{atanh}), hyperbolic
-inverse cotangent (@code{acoth}), hyperbolic inverse secant
-(@code{asech}), hyperbolic inverse cosecant (@code{acsch}), absolute
-value (@code{abs}), Heaviside step function (@code{step}) with value 1
-defined for x = 0, Dirac delta function with infinity (@code{delta})
-and
-not-a-number (@code{nandelta}) values defined for x = 0, and error
-function (@code{erf}).
+@multitable @columnfractions 0.18 0.83
+@headitem Name      @tab Description
+@item @code{sin}    @tab sine function
+@item @code{cos}    @tab cosine function
+@item @code{tan}    @tab tangens function
+@item @code{asin}   @tab arcus sine function
+@item @code{acos}   @tab arcus cosine function
+@item @code{atan}   @tab arcus tangens function
+@item @code{sinh}   @tab hyperbolic sine function
+@item @code{cosh}   @tab hyperbolic cosine
+@item @code{tanh}   @tab hyperbolic tangens function
+@item @code{asinh}  @tab hyperbolic arcus sine function
+@item @code{acosh}  @tab hyperbolic arcus tangens function
+@item @code{atanh}  @tab hyperbolic arcur tangens function
+@item @code{log2}   @tab logarithm to the base 2
+@item @code{log10}  @tab logarithm to the base 10
+@item @code{log}    @tab logarithm to the base 10
+@item @code{ln}     @tab logarithm to base @math{e} (2.71828@dots{})
+@item @code{exp}    @tab e raised to the power of x
+@item @code{sqrt}   @tab square root of a value
+@item @code{sign}   @tab sign function: -1 if @math{x<0}; 1 if @math{x>0}
+@item @code{rint}   @tab round to nearest integer
+@item @code{abs}    @tab absolute value
+@item @code{min}    @tab min of all arguments
+@item @code{max}    @tab max of all arguments
+@item @code{sum}    @tab sum of all arguments
+@item @code{avg}    @tab mean value of all arguments
+@end multitable
 
-Supported unary operation is unary minus (@code{'-'}).
+@subsection Binary Operators
 
-Supported binary operations are addition (@code{'+'}), subtraction
-(@code{'+'}), multiplication (@code{'*'}), division multiplication
-(@code{'/'}) and exponentiation (@code{'^'}).
+The following table lists the default binary operators supported by the
+parser. 
 
-Usual mathematical rules regarding operation precedence
-apply. Parenthesis (@code{'('} and @code{')'}) could be used to change
-priority order.
-
-@neper{} includes additional functions: the minimum and maximum
-functions (@code{min(@var{a},@var{b})} and @code{max(@var{a},@var{b})},
-respectively).
-@code{@var{a}} and @code{@var{b}} can be
-any expression as described above. Moreover, square
-brackets (@code{'['} and @code{']'}) and curly brackets (@code{'@{'} and
-@code{'@}'}) can be used instead of the parentheses.
-
-The logical operators supported are:
-@math{=} (@code{==}),
-@math{\neq} (@code{!=}),
-@math{\geq} (@code{>=}),
-@math{\leq} (@code{<=}),
-@math{>} (@code{>}),
-@math{<} (@code{<}),
-AND (@code{&&}) and
-OR (@code{||}).
+@multitable @columnfractions 0.18 0.47 0.36
+@headitem Operator      @tab Description    @tab Priority
+@item @code{&&}  @tab logical and               @tab 1
+@item @code{||}  @tab logical or                @tab 2
+@item @code{<=}  @tab less or equal             @tab 4
+@item @code{>=}  @tab greater or equal          @tab 4
+@item @code{!=}  @tab not equal                 @tab 4
+@item @code{==}  @tab equal                     @tab 4
+@item @code{>}  @tab greater than               @tab 4
+@item @code{<}  @tab less than                  @tab 4
+@item @code{+}  @tab addition                   @tab 5
+@item @code{-}  @tab subtraction                @tab 5
+@item @code{*}  @tab multiplication             @tab 6
+@item @code{/}  @tab division                   @tab 6
+@item @code{^}  @tab raise x to the power of y  @tab 7
+@end multitable
 
 @node Tessellation Keys
 @section Tessellation Keys
@@ -137,6 +135,7 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
 	angle @tab face, poly
   @item @code{dihanglelist} @tab dihedral angle list   @tab face, poly
   @item @code{ff} @tab flatness fault (in degrees)     @tab face
+  @item @code{theta} @tab disorientation angle (in degrees)     @tab edge (in 2D), face (in 3D)
   @item @code{cyl} @tab whether or not is used to describe the
                         circular part of a cylinder domain @tab edge
   @item @code{vernb}  @tab number of vertices          @tab edge, face, poly
@@ -149,6 +148,7 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
   @item @code{verlist}  @tab vertex list               @tab face, poly
   @item @code{edgelist}  @tab edge list                @tab face, poly
   @item @code{facelist}  @tab face list                @tab edge, poly
+  @item @code{nfacelist} @tab neighbouring face list   @tab face
   @item @code{npolylist} @tab neighbouring polyhedron list
   @footnote{If a polyhedron has no neighbour on a face, a negative value
     is returned instead of the neighbour id.} @tab poly
@@ -164,6 +164,9 @@ the parameters @math{d}, @math{a}, @math{b} and @math{c}, with the equation bein
     lamellar tessellation with several lamella
       widths@comma{} @var{lamid} stands for the actual lamellar width
   of the cell (starting from 1).}            @tab face, poly
+  @item @code{modeid}  @tab mode id@footnote{In the case of a
+    multimodal tessellation (e.g.@ in terms of cell size)@comma{}
+    @var{modeid} stands for the actual mode (starting from 1).}            @tab face, poly
 @end multitable
 
 The list variables (@samp{verlist}, etc.) are not available for sorting

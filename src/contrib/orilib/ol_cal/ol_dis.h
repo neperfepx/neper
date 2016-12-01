@@ -8,6 +8,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
+#include<float.h>
 #include"../ut/ut.h"
 #include"../ol_cal.h"
 

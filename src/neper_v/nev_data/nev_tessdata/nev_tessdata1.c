@@ -49,7 +49,8 @@ nev_tessdata_init (struct TESS Tess, struct TESSDATA *pTessData)
     if ((*pTessData).ColData[dim])
     {
       if (!strcmp ((*pTessData).ColDataType[dim], "id")
-       || !strncmp ((*pTessData).ColDataType[dim], "scaleid", 7))
+       || !strncmp ((*pTessData).ColDataType[dim], "scaleid", 7)
+       || !strcmp ((*pTessData).ColDataType[dim], "modeid"))
 	nev_data_id_colour ((*pTessData).ColData[dim], qty,
 			    (*pTessData).Col[dim]);
       else if (!strcmp ((*pTessData).ColDataType[dim], "col"))

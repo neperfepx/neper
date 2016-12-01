@@ -14,6 +14,7 @@ nem_mesh_gmsh_options (FILE * file, int algo2d, int algo3d, int opti,
   fprintf (file, "Mesh.MshFileVersion = 2;\n");
   fprintf (file, "Mesh.Algorithm      = %d;\n", algo2d);
   fprintf (file, "Mesh.Algorithm3D    = %d;\n", algo3d);
+  fprintf (file, "Mesh.SaveAll = 1;\n");
   if (opti == 1)
     fprintf (file, "Mesh.Optimize       = 1;\n");
   else if (opti == 2)

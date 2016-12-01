@@ -154,9 +154,6 @@ nem_reconstruct_mesh_1d (struct NODES Nodes, struct MESH *Mesh,
   {
     (*pTess).EdgeState = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
     (*pTess).EdgeDel = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
-
-    if ((*pTess).Dim == 1)
-      (*pTess).EdgeFaceQty = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
   }
 
   if (!Mesh[1].NodeElts)

@@ -51,6 +51,15 @@ neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
     fprintf (file, "\n");
   }
 
+  if (Tess.CellModeId)
+  {
+    fprintf (file, "  *modeid\n");
+    qty = 0;
+    for (i = 1; i <= Tess.CellQty; i++)
+      ut_print_wnc_int_header (file, Tess.CellModeId[i], &qty, 72, "  ");
+    fprintf (file, "\n");
+  }
+
   if (Tess.SeedCoo && Tess.SeedWeight)
   {
     fprintf (file, "  *seed\n");

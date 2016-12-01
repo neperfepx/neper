@@ -20,8 +20,6 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
     cl = MeshPara.poly_cl[1];
   else if (Tess.Dim == 2)
     cl = MeshPara.face_cl[1];
-  else if (Tess.Dim == 1)
-    cl = MeshPara.edge_cl[1];
   else
   {
     ut_error_reportbug ();

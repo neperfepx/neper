@@ -185,6 +185,8 @@ ol_g_rtheta_rad (double **g, double *r, double *ptheta)
 	r[i] *= ut_num_sgn (g[i][m]);
   }
 
+  ol_r_set_unit (r);
+
   return status; // -1;
 }
 

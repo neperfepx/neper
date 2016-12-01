@@ -157,17 +157,6 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     net_input_treatargs_multiscale ("-morphooptimultiseed", &(*pIn).morphooptimultiseedstring,
 				    (*pIn).levelqty, &((*pIn).morphooptimultiseed));
 
-    // scale
-    if (strcmp ((*pIn).scalestring, "none"))
-    {
-      (*pIn).scale = ut_alloc_1d (3);
-      ut_array_1d_set ((*pIn).scale, 3, 1);
-      ut_string_separate ((*pIn).scalestring, NEUT_SEP_DEP, &val, &qty);
-      for (i = 0; i < qty; i++)
-	if (strlen (val[0]) > 0)
-	  ut_string_real (val[i], &((*pIn).scale[i]));
-    }
-
     // Processing periodicstring & periodic
     (*pIn).periodic = ut_alloc_1d_int (3);
     if (strcmp ((*pIn).periodicstring, "none"))
@@ -221,6 +210,29 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
       ut_string_string ("segment(1)", &((*pIn).domain));
     else
       ut_error_reportbug ();
+  }
+
+  // scale
+  if (strcmp ((*pIn).scalestring, "none"))
+  {
+    (*pIn).scale = ut_alloc_1d (3);
+    ut_array_1d_set ((*pIn).scale, 3, 1);
+    ut_string_separate ((*pIn).scalestring, NEUT_SEP_DEP, &val, &qty);
+    for (i = 0; i < qty; i++)
+      if (strlen (val[0]) > 0)
+	ut_string_real (val[i], &((*pIn).scale[i]));
+  }
+
+  if ((*pIn).levelqty > 1 && ut_array_1d_int_sum ((*pIn).periodic, 3) != 0)
+  {
+    ut_print_messagewnc (2, 72, "Option `-periodic' is not available for multiscale tessellations.");
+    abort ();
+  }
+
+  if ((*pIn).reg == 1 && ut_array_1d_int_sum ((*pIn).periodic, 3) != 0)
+  {
+    ut_print_messagewnc (2, 72, "Option `-regularization 1' is not available for periodic tessellations.");
+    abort ();
   }
 
   // Setting file names ------------------------------------------------

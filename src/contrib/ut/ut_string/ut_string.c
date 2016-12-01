@@ -705,16 +705,20 @@ ut_string_inlist_int (char *string, char* c, int a)
 }
 
 int
-ut_string_addtolist (char **pstring, char c, char *new)
+ut_string_addtolist (char **pstring, char *c, char *new)
 {
   int length;
 
-  length = (*pstring) ? strlen (*pstring) : 0;
+  if (!(*pstring))
+    ut_string_string (new, pstring);
+  else
+  {
+    length = (*pstring) ? strlen (*pstring) : 0;
+    length += 1 + strlen (new);
 
-  length += 1 + strlen (new);
-
-  (*pstring) = ut_realloc_1d_char (*pstring, length + 1);
-  sprintf (*pstring + strlen (*pstring), "%c%s", c, new);
+    (*pstring) = ut_realloc_1d_char (*pstring, length + 1);
+    sprintf (*pstring + strlen (*pstring), "%s%s", c, new);
+  }
 
   return 0;
 }
@@ -908,11 +912,7 @@ ut_string_real (char* string, double* pres)
     sscanf (string, "%lf", pres);
 
   else if (format[strlen (format) - 1] == 's')
-#ifdef HAVE_LIBMATHEVAL
     ut_math_eval (string, 0, NULL, NULL, pres);
-#else
-    ut_print_message (2, 0, "Cannot process expression (libmatheval disabled).");
-#endif
   else
     abort ();
 
@@ -1004,4 +1004,36 @@ ut_string_iter_test (char* string, char* sep, int iter)
   ut_free_2d_char (vars, varqty);
 
   return status;
+}
+
+int
+ut_string_section_level (char *string, int *plevel)
+{
+  unsigned int i;
+
+  (*plevel) = 0;
+
+  for (i = 0; i < strlen (string); i++)
+  {
+    if (string[i] == '*')
+      (*plevel)++;
+    else
+      break;
+  }
+
+  return 0;
+}
+
+void
+ut_string_uppercase (char *string)
+{
+  int i = 0;
+
+  while(string[i])
+  {
+    string[i] = toupper(string[i]);
+    i++;
+  }
+
+  return;
 }

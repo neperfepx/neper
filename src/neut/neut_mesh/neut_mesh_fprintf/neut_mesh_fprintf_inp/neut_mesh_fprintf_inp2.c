@@ -10,7 +10,7 @@ neut_mesh_fprintf_inp_mesh2d (FILE *file, struct MESH Mesh2D, int
 {
   int i, j;
   int eltnodeqty2D = neut_elt_nodeqty (Mesh2D.EltType, Mesh2D.Dimension, Mesh2D.EltOrder);
-  int seq2d[6] = { 0, 1, 2, 3, 4, 5 };
+  int seq2d[6] = { 0, 2, 1, 5, 4, 3 };
 
   if (!strcmp (Mesh2D.EltType, "tri"))
   {

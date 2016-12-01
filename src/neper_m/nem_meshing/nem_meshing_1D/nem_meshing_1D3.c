@@ -4,13 +4,6 @@
 
 #include"nem_meshing_1D_.h"
 
-int cl1_pl_x_i (double cl1, double pl, double x);
-int cl1_cl_pl_n (double cl1, double cl, double pl);
-double cl1_pl_n_l (double cl1, double pl, double n);
-double cl1_cl2_pl_I (double cl1, double cl2, double pl);
-double cl1_pl_i_x (double cl1, double pl, int i);
-double cl1_pl_i_cl (double cl1, double pl, int i);
-
 void
 nem_mesh_1d_unitsegment (double cl1, double cl2, double clt, double pl,
 			 int *pqty, double **pcoo, double **pcl)
@@ -189,40 +182,4 @@ nem_mesh_1d_unitsegment (double cl1, double cl2, double clt, double pl,
   (*pqty) -= 2;
 
   return;
-}
-
-int
-cl1_cl_pl_n (double cl1, double clt, double pl)
-{
-  return 1 + ceil (log (clt / cl1) / log (pl));
-}
-
-double
-cl1_pl_n_l (double cl1, double pl, double n)
-{
-  return cl1 * (pow (pl, n - 1) - 1) / (pl - 1);
-}
-
-double
-cl1_cl2_pl_I (double cl1, double cl2, double pl)
-{
-  return 0.5 * (1 + (pl / (pl - 1)) * (cl2 - cl1));
-}
-
-double
-cl1_pl_i_x (double cl1, double pl, int i)
-{
-  return cl1 * (pow (pl, i - 1) - 1) / (pl - 1);
-}
-
-double
-cl1_pl_i_cl (double cl1, double pl, int i)
-{
-  return cl1 * pow (pl, i - 1);
-}
-
-int
-cl1_pl_x_i (double cl1, double pl, double x)
-{
-  return 1 + floor (log (1 + (pl - 1) * x / cl1) / log (pl));
 }

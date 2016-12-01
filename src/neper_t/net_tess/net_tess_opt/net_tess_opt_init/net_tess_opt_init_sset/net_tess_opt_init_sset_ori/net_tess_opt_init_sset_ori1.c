@@ -16,5 +16,7 @@ net_tess_opt_init_sset_ori (struct IN_T In, struct SEEDSET *pSSet)
   else
     abort ();
 
+  net_tess_opt_init_sset_ori_crysym (In, pSSet);
+
   return;
 }

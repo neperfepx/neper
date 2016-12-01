@@ -52,6 +52,11 @@ extern int ut_string_iter_test (char* string, char* sep, int iter);
 extern int ut_string_substrings (char *string, char ***psubstrings, int
     *psubstringqty);
 
+extern int ut_string_section_level (char *string, int *plevel);
+
+extern void ut_string_uppercase (char *string);
+extern int ut_string_addtolist (char **pstring, char *c, char *);
+
 #endif /* UT_STRING_H */
 
 #ifdef __cplusplus

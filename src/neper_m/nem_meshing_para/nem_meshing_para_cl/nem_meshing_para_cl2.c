@@ -14,10 +14,6 @@ nem_meshing_para_cl_cell (char *clstring, struct MESHPARA *pMeshPara,
     pcell_cl = &((*pMeshPara).poly_cl);
   else if (Tess.Dim == 2)
     pcell_cl = &((*pMeshPara).face_cl);
-  else if (Tess.Dim == 1)
-    pcell_cl = &((*pMeshPara).edge_cl);
-  else if (Tess.Dim == 0)
-    pcell_cl = &((*pMeshPara).ver_cl);
   else
     abort ();
 

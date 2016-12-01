@@ -6,7 +6,6 @@ cmake_minimum_required(VERSION 2.8)
 project(neper_v C)
 
 option (HAVE_GSL         "Use the GNU Scientific Library (GSL)" ON )
-option (HAVE_LIBMATHEVAL "Use libmatheval"                      ON )
 option (HAVE_NLOPT       "Use NLopt"                            ON )
 option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
 option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)

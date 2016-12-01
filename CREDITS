@@ -14,6 +14,10 @@ Mount and licensed under the the GNU Lesser Public License as published
 by the Free Software Foundation; either version 2.1 of the License, or
 (at your option) any later version.
 
+The muparser tree code (src/contrib/muparser), excluding the
+CMakeLists.txt file, is copyright (C) 2011 Ingo Berg and licensed under
+the MIT License.
+
 This version of Neper may use as a library: Gmsh, copyright (C)
 1997-2014 by Christophe Geuzaine and Jean-François Remacle and
 distributed under the terms of the GNU General Public License, Version 2

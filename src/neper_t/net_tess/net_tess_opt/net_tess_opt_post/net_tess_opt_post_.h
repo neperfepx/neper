@@ -16,3 +16,6 @@
 #include"neper_config.h"
 
 #include"net_tess_opt_post.h"
+
+extern void net_tess_opt_post_modes (struct TOPT TOpt, struct TESS
+    *Tess, int tessid);

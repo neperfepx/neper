@@ -122,7 +122,7 @@ ol_q_q_disori_rad (double *q1, double *q2, char* crysym, double *ptheta)
   if (strcmp (crysym, "cubic") == 0)
     crysym_maxrho = .92387953251128675613; /* = cos (45/2) */
   else
-    crysym_maxrho = 1e3;
+    crysym_maxrho = DBL_MAX;
 
 
   maxrho = 0;
@@ -134,6 +134,66 @@ ol_q_q_disori_rad (double *q1, double *q2, char* crysym, double *ptheta)
     if (rho > maxrho)
     {
       nb = i;
+      maxrho = rho;
+      if (maxrho > crysym_maxrho)
+	break;
+    }
+  }
+
+  (*ptheta) = 2 * ut_num_acos (maxrho);
+
+  ol_q_free (qd);
+
+  return nb;
+}
+
+/* rapid function on which other quaternion functions are based */
+int
+ol_q_q_disori_fr_rad (double *q1, double *q2, char* crysym, double *ptheta)
+{
+  int i, nb;
+  double rho, maxrho, crysym_maxrho;
+  double *qd = ol_q_alloc ();
+
+  double Tcubic[15][4] = {
+    {1, 0, 0, 0},		// 1
+    {OL_IS2, OL_IS2, 0, 0},     // 2
+    {OL_IS2, -OL_IS2, 0, 0},    // 4
+    {OL_IS2, 0, OL_IS2, 0},     // 5
+    {OL_IS2, 0, -OL_IS2, 0},	// 7
+    {OL_IS2, 0, 0, OL_IS2},	// 8
+    {OL_IS2, 0, 0, -OL_IS2},	// 10
+    {.5, .5, .5, .5},		// 17
+    {.5, -.5, -.5, -.5},	// 18
+    {.5, -.5, .5, .5},		// 19
+    {.5, .5, -.5, -.5},		// 20
+    {.5, .5, -.5, .5},		// 21
+    {.5, -.5, .5, -.5},		// 22
+    {.5, .5, .5, -.5},		// 23
+    {.5, -.5, -.5, .5}		// 24
+  };
+
+  int Tcubic_number[15] = {1, 2, 4, 5, 7, 8, 10, 17, 18, 19, 20, 21, 22,
+    23, 24};
+
+  /* computation of q1^{-1}.q2 */
+  ol_q_inverse (q1, qd);
+  ol_q_q_q (qd, q2, qd);
+
+  if (strcmp (crysym, "cubic") == 0)
+    crysym_maxrho = .92387953251128675613; /* = cos (45/2) */
+  else
+    crysym_maxrho = 1e3;
+
+  maxrho = 0;
+  nb = 1;
+  for (i = 0; i < 15; i++)
+  {
+    rho = fabs (qd[0] * Tcubic[i][0] - qd[1] * Tcubic[i][1]
+	      - qd[2] * Tcubic[i][2] - qd[3] * Tcubic[i][3]);
+    if (rho > maxrho)
+    {
+      nb = Tcubic_number[i];
       maxrho = rho;
       if (maxrho > crysym_maxrho)
 	break;
@@ -173,6 +233,56 @@ ol_q_q_qdisori (double *q1, double *q2, char* crysym, double *qd)
   ol_q_crysym (q2, crysym, nb, q2rot);
   ol_q_q_q_ref (q1inv, q2rot, qd);
   ol_q_q (qd, qd);
+
+  ol_q_free (q1inv);
+  ol_q_free (q2rot);
+
+  return nb;
+}
+
+int
+ol_q_q_qdisori_update (double *q1, double *q2, char* crysym, int prevnb,
+		       double *qd, char* flag, int *pstatus)
+{
+  int nb, status;
+  double theta;
+  double *q1inv = ol_q_alloc ();
+  double *q2rot = ol_q_alloc ();
+  double cubic_maxrho = .92387953251128675613; /* = cos (45/2) */
+  ol_q_set_zero (qd);
+
+  nb = 0;
+
+  status = 0;
+
+  if (!strcmp (crysym, "cubic") && prevnb >= 1 && prevnb <= 24)
+  {
+    ol_q_inverse (q1, q1inv);
+    ol_q_crysym (q2, crysym, prevnb, q2rot);
+    ol_q_q_q_ref (q1inv, q2rot, qd);
+    ol_q_q (qd, qd);
+    if (qd[0] > cubic_maxrho)
+    {
+      nb = prevnb;
+      status = 1;
+    }
+  }
+
+  if (! status)
+  {
+    if (flag && !strcmp (flag, "fr"))
+      nb = ol_q_q_disori_fr_rad (q1, q2, crysym, &theta);
+    else
+      nb = ol_q_q_disori_rad (q1, q2, crysym, &theta);
+
+    ol_q_inverse (q1, q1inv);
+    ol_q_crysym (q2, crysym, nb, q2rot);
+    ol_q_q_q_ref (q1inv, q2rot, qd);
+    ol_q_q (qd, qd);
+  }
+
+  if (pstatus)
+    (*pstatus) = status;
 
   ol_q_free (q1inv);
   ol_q_free (q2rot);

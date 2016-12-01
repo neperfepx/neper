@@ -12,7 +12,6 @@ set (ORILIB_VERSION_DEVEL 2)
 
 # should we use the optional libraries?
 # option (HAVE_GSL      "Use the GNU Scientific Library (GSL)" ON)
-# option (HAVE_LIBMATHEVAL "Use libmatheval"                   OFF)
 option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
 option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)" OFF)
 
@@ -56,6 +55,7 @@ ol_des/ol_q.c
 ol_des/ol_R.c
 ol_des/ol_rtheta.c
 ol_gen/ol_nb_e.c
+ol_gen/ol_label_g.c
 ol_gen/ol_nb_rtheta.c
 ol_set/ol_mean.c
 ol_set/ol_set_alloc.c

@@ -12,18 +12,12 @@ net_sort_tess (struct TESS *pTess, char *expr)
   char **vars = NULL;
   double *vals = NULL;
   double *res = NULL;
-  char *expr2 = NULL;
   char *cell = NULL;
   int *tmp = NULL;
   int *tmp2 = NULL;
   int qty2;
 
   neut_tess_cell (*pTess, &cell);
-
-  status = ut_math_eval_substitute (expr, &expr2);
-
-  if (status == -1)
-    ut_print_message (2, 0, "Expression of unknown format.\n");
 
   neut_tess_var_list (*pTess, cell, &vars, &var_qty);
   vals = ut_alloc_1d (var_qty);
@@ -33,11 +27,13 @@ net_sort_tess (struct TESS *pTess, char *expr)
   for (i = 1; i <= (*pTess).CellQty; i++)
   {
     for (j = 0; j < var_qty; j++)
-      if (strstr (expr2, vars[j]))
+      if (strstr (expr, vars[j]))
 	neut_tess_var_val (*pTess, NULL, NULL, NULL, cell, i, vars[j],
 			   &(vals[j]), NULL);
 
-    status = ut_math_eval (expr2, var_qty, vars, vals, &(res[i]));
+    status = ut_math_eval (expr, var_qty, vars, vals, &(res[i]));
+    if (status != 0)
+      ut_print_message (2, 2, "net_sort_tess: failed to process expression.\n");
   }
 
   tmp = ut_alloc_1d_int ((*pTess).CellQty);

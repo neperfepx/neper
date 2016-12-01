@@ -315,12 +315,6 @@ nev_show_tess_cell (char **argv, int *pi, struct TESS Tess,
       ut_realloc_1d_int ((*pPrint).showface, Tess.FaceQty + 1);
     ut_array_1d_int_memcpy ((*pPrint).showface, Tess.FaceQty + 1, showcell);
   }
-  else if (Tess.Dim == 1)
-  {
-    (*pPrint).showedge =
-      ut_realloc_1d_int ((*pPrint).showedge, Tess.EdgeQty + 1);
-    ut_array_1d_int_memcpy ((*pPrint).showedge, Tess.EdgeQty + 1, showcell);
-  }
 
   ut_free_1d_int (showcell);
   ut_free_2d_char (vars, varqty);

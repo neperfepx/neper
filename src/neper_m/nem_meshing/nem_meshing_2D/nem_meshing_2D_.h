@@ -10,8 +10,8 @@
 #include<ctype.h>
 #include<unistd.h>
 
-#ifdef HAVE_LIBMATHEVAL
-#include<matheval.h>
+#ifdef HAVE_muparser
+#include<muparser.h>
 #endif
 
 #include"ut.h"

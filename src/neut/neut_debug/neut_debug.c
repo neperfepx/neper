@@ -171,6 +171,52 @@ neut_debug_tess (FILE * file, struct TESS Tess)
   fprintf (file, "FaceQty = %d\n", Tess.FaceQty);
   fprintf (file, "PolyQty = %d\n", Tess.PolyQty);
 
+  fprintf (file, "== Cells =================\n");
+
+  fprintf (file, "CellQty = %d\n", Tess.CellQty);
+
+  fprintf (file, "CellId =\n");
+  if (Tess.CellId)
+    ut_array_1d_int_fprintf (file, Tess.CellId + 1, Tess.CellQty, "%d");
+  else
+    fprintf (file, "is NULL\n");
+
+  fprintf (file, "[id] CellModeId =\n");
+  if (Tess.CellModeId == NULL)
+    fprintf (file, "is NULL\n");
+  else
+    for (i = 1; i <= Tess.PolyQty; i++)
+      fprintf (file, "%d %d\n", i, Tess.CellModeId[i]);
+
+  fprintf (file, "[id] CellLamId =\n");
+  if (Tess.CellLamId == NULL)
+    fprintf (file, "is NULL\n");
+  else
+    for (i = 1; i <= Tess.PolyQty; i++)
+      fprintf (file, "%d %d\n", i, Tess.CellLamId[i]);
+
+  fprintf (file, "CellOri =\n");
+  if (Tess.CellOri)
+    ut_array_2d_fprintf (file, Tess.CellOri + 1, Tess.CellQty, 4, "%f");
+  else
+    fprintf (file, "is NULL\n");
+
+  fprintf (file, "[id] CellTrue =\n");
+  if (Tess.CellTrue == NULL)
+    fprintf (file, "is NULL\n");
+  else
+    for (i = 1; i <= Tess.PolyQty; i++)
+      fprintf (file, "%d %d\n", i, Tess.CellTrue[i]);
+
+  fprintf (file, "[id] CellBody =\n");
+  if (Tess.CellBody == NULL)
+    fprintf (file, "is NULL\n");
+  else
+    for (i = 1; i <= Tess.PolyQty; i++)
+      fprintf (file, "%d %d\n", i, Tess.CellBody[i]);
+
+  fprintf (file, "CellCrySym = %s\n", Tess.CellCrySym);
+
   fprintf (file, "== Seeds =================\n");
 
   fprintf (file, "[id] SeedCoo =\n");
@@ -409,33 +455,6 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     else
       for (i = 1; i <= Tess.PolyQty; i++)
 	fprintf (file, "%d %d\n", i, Tess.PolyState[i]);
-
-    fprintf (file, "[id] CellTrue =\n");
-    if (Tess.CellTrue == NULL)
-      fprintf (file, "is NULL\n");
-    else
-      for (i = 1; i <= Tess.PolyQty; i++)
-      {
-	fprintf (file, "%d %d\n", i, Tess.CellTrue[i]);
-      }
-
-    fprintf (file, "[id] CellLamId =\n");
-    if (Tess.CellLamId == NULL)
-      fprintf (file, "is NULL\n");
-    else
-      for (i = 1; i <= Tess.PolyQty; i++)
-      {
-	fprintf (file, "%d %d\n", i, Tess.CellLamId[i]);
-      }
-
-    fprintf (file, "[id] CellBody =\n");
-    if (Tess.CellBody == NULL)
-      fprintf (file, "is NULL\n");
-    else
-      for (i = 1; i <= Tess.PolyQty; i++)
-      {
-	fprintf (file, "%d %d\n", i, Tess.CellBody[i]);
-      }
   }
 
   fprintf (file, "== Domain =================\n");
@@ -632,6 +651,13 @@ neut_debug_seedset (FILE * file, struct SEEDSET SSet)
     for (i = 1; i <= SSet.Nall; i++)
       fprintf (file, "%f\n", SSet.SeedWeight[i]);
 
+  fprintf (file, "q =\n");
+  if (!SSet.q)
+    printf ("is NULL.\n");
+  else
+    for (i = 1; i <= SSet.Nall; i++)
+      ut_array_1d_fprintf (file, SSet.q[i], 4, "%f");
+
   fprintf (file, "LamEq = ");
   if (SSet.LamEq == NULL)
     fprintf (file, "(null)\n");
@@ -649,6 +675,18 @@ neut_debug_seedset (FILE * file, struct SEEDSET SSet)
     printf ("is NULL.\n");
   else
     ut_array_1d_int_fprintf (file, SSet.Periodic, 3, "%d");
+
+  fprintf (file, "PeriodicDist =\n");
+  if (!SSet.PeriodicDist)
+    printf ("is NULL.\n");
+  else
+    ut_array_1d_fprintf (file, SSet.PeriodicDist, 3, "%f");
+
+  fprintf (file, "Size =\n");
+  if (!SSet.Size)
+    printf ("is NULL.\n");
+  else
+    ut_array_2d_fprintf (file, SSet.Size, 3, 2, "%f");
 
   return;
 }

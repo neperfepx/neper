@@ -401,7 +401,7 @@ neut_tesr_var_val_all (struct TESR Tesr,
       size /= Tesr.CellQty;
 
       size = pow (size, 1. / Tesr.Dim);
-      neut_tesr_var_dim (entity2, var2[0], &dim);
+      neut_tesr_var_dim (Tesr.Dim, entity2, var2[0], &dim);
       factor = pow (1. / size, dim);
     }
     else
@@ -451,7 +451,7 @@ neut_tesr_expr_val_all (struct TESR Tesr,
       size /= Tesr.CellQty;
 
       size = pow (size, 1. / Tesr.Dim);
-      neut_tesr_var_dim (entity2, var2[0], &dim);
+      neut_tesr_var_dim (Tesr.Dim, entity2, var2[0], &dim);
       factor = pow (1. / size, dim);
     }
     else
@@ -538,9 +538,9 @@ neut_tesr_entity_expr_val (struct TESR Tesr, char *entity,
 }
 
 void
-neut_tesr_var_dim (char *entity, char *var, int *pdim)
+neut_tesr_var_dim (int dim, char *entity, char *var, int *pdim)
 {
-  neut_tess_var_dim (entity, var, pdim);
+  neut_tess_var_dim (dim, entity, var, pdim);
 
   return;
 }

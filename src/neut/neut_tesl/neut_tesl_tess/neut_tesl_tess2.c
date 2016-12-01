@@ -24,6 +24,8 @@ neut_tesl_tess_general (struct TESL Tesl, struct SEEDSET SSet,
   if (SSet.PeriodicDist)
     ut_array_1d_memcpy ((*pTess).PeriodicDist, 3, SSet.PeriodicDist);
 
+  ut_string_string (SSet.crysym, &(*pTess).CellCrySym);
+
   return;
 }
 

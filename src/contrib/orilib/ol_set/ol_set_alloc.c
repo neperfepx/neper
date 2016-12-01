@@ -14,6 +14,7 @@ ol_set_alloc (size_t size, char* crysym)
   ut_array_1d_set (Set.weight, size, 1);
   Set.id = ut_alloc_1d_int (size);
   ut_array_1d_int_set (Set.id, size, 1);
+  Set.label = ut_alloc_1d_pchar (size);
 
   if (crysym)
   {
@@ -32,6 +33,7 @@ ol_set_free (struct OL_SET Set)
   ut_free_2d (Set.q, Set.size);
   ut_free_1d (Set.weight);
   ut_free_1d_int (Set.id);
+  ut_free_2d_char (Set.label, Set.size);
   ut_free_1d_char (Set.crysym);
 
   return;

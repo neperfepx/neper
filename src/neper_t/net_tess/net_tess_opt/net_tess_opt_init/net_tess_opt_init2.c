@@ -182,6 +182,13 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
   (*pTOpt).tarcdf =
     (struct FCT *) calloc ((*pTOpt).tarqty, sizeof (struct FCT));
   (*pTOpt).cvl = (struct FCT *) calloc ((*pTOpt).tarqty, sizeof (struct FCT));
+  (*pTOpt).tarmodeqty = ut_alloc_1d_int ((*pTOpt).tarqty);
+  (*pTOpt).tarmodefact = ut_alloc_1d_pdouble ((*pTOpt).tarqty);
+  (*pTOpt).tarmodecdf0 =
+    (struct FCT **) calloc ((*pTOpt).tarqty, sizeof (struct FCT *));
+
+  for (i = 0; i < (*pTOpt).tarqty; i++)
+    ut_fct_set_zero ((*pTOpt).tarcdf + i);
 
   (*pTOpt).curval = ut_alloc_1d ((*pTOpt).tarqty);
   (*pTOpt).curval0 = ut_alloc_1d ((*pTOpt).tarqty);
@@ -270,8 +277,20 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
 	}
       }
 
+      (*pTOpt).tarmodeqty[i] = fct_qty;
+      (*pTOpt).tarmodefact[i] = ut_alloc_1d ((*pTOpt).tarmodeqty[i]);
+      (*pTOpt).tarmodecdf0[i] =
+	(struct FCT *) calloc ((*pTOpt).tarmodeqty[i], sizeof (struct FCT));
       for (j = 0; j < fct_qty; j++)
+	ut_fct_set_zero ((*pTOpt).tarmodecdf0[i] + j);
+
+      for (j = 0; j < fct_qty; j++)
+      {
+	(*pTOpt).tarmodefact[i][j] = fct_fact[j];
 	ut_fct_numericalfct_expr (Fct[j], In.morphooptigrid[level], Fct + j);
+	ut_fct_integralfct (Fct[j], (*pTOpt).tarmodecdf0[i] + j);
+      }
+
       ut_fct_add (Fct, fct_qty, fct_fact, (*pTOpt).tarexpr[i],
 		  (*pTOpt).tarpdf0 + i);
 

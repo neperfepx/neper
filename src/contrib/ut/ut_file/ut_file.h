@@ -43,6 +43,7 @@ extern int ut_file_thisreal (FILE*, double*);
 extern int ut_file_nextint  (FILE*, int*);
 extern int ut_file_nextchar  (FILE*, char*);
 extern int ut_file_nextstring  (FILE*, char*);
+extern int ut_file_nextstring_section_level (FILE * file, int *plevel);
 extern int ut_file_nextline (FILE *file, char** pline);
 extern int ut_file_nextline_nbwords (FILE * file, int* pqty);
 
@@ -59,6 +60,7 @@ extern int ut_file_cp (const char* frompath, const char* topath);
 extern int ut_file_filename (const char *name, char **pname);
 
 extern int ut_file_goto_lineheader (FILE *fp, const char* header);
+
 
 #endif /* UT_FILE_H */
 

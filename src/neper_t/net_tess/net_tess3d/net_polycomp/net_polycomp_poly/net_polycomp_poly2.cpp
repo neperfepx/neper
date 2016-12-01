@@ -42,6 +42,8 @@ net_polycomp_seed_tdyn (struct SEEDSET SSet, int id, int neighqty,
     ut_array_1d_sort_index (dist + 1, SSet.Nall, index + 1);
     ut_array_1d_int_memcpy ((*pTD).neighlist[id] + 1,
 	  (*pTD).neighqty[id], index + 1);
+    for (i = 1; i <= (*pTD).neighqty[id]; i++)
+      (*pTD).neighdist[id][i] = dist[(*pTD).neighlist[id][i] + 1];
 
     ut_free_1d (dist);
     ut_free_1d_int (index);

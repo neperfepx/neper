@@ -11,6 +11,7 @@
 #include"neut_m.h"
 #include"ut.h"
 #include"orilib.h"
+#include "nem_meshing_1D_useg/nem_meshing_1D_useg.h"
 
 #include"nem_meshing_1D.h"
 

@@ -221,53 +221,42 @@ nev_show_init (struct TESS Tess, struct TESR Tesr,
       (*pPrint).showpoly[0] = Tess.PolyQty;
       ut_array_1d_int_set ((*pPrint).showpoly + 1, Tess.PolyQty, 1);
     }
-    else if (Tess.Dim == 2 && (*pPrint).showface[0] == -1)
-    {
-      (*pPrint).showface =
-	ut_realloc_1d_int ((*pPrint).showface, Tess.FaceQty + 1);
-      (*pPrint).showface[0] = Tess.FaceQty;
-      ut_array_1d_int_set ((*pPrint).showface + 1, Tess.FaceQty, 1);
-    }
-    else if (Tess.Dim == 1 && (*pPrint).showedge[0] == -1)
-    {
-      (*pPrint).showedge =
-	ut_realloc_1d_int ((*pPrint).showedge, Tess.EdgeQty + 1);
-      (*pPrint).showedge[0] = Tess.EdgeQty;
-      ut_array_1d_int_set ((*pPrint).showedge + 1, Tess.EdgeQty, 1);
-    }
 
     if ((*pPrint).showface[0] == -1)
     {
       (*pPrint).showface =
 	ut_realloc_1d_int ((*pPrint).showface, Tess.FaceQty + 1);
-      (*pPrint).showface[0] = 0;
-      ut_array_1d_int_set ((*pPrint).showface + 1, Tess.FaceQty, 0);
+      if (Tess.Dim == 2)
+      {
+	(*pPrint).showface[0] = Tess.FaceQty;
+	ut_array_1d_int_set ((*pPrint).showface + 1, Tess.FaceQty, 1);
+      }
+      else
+      {
+	(*pPrint).showface[0] = 0;
+	ut_array_1d_int_set ((*pPrint).showface + 1, Tess.FaceQty, 0);
+      }
     }
 
     if ((*pPrint).showedge[0] == -1)
     {
       (*pPrint).showedge =
 	ut_realloc_1d_int ((*pPrint).showedge, Tess.EdgeQty + 1);
+      ut_array_1d_int_set ((*pPrint).showedge, Tess.EdgeQty + 1, 0);
 
-      if (Tess.Dim == 1)
+      for (i = 1; i <= Tess.EdgeQty; i++)
       {
-	(*pPrint).showedge[0] = Tess.EdgeQty;
-	ut_array_1d_int_set ((*pPrint).showedge + 1, Tess.EdgeQty, 1);
+	neut_tess_edge_cells (Tess, i, &cells, &cellqty);
+	for (j = 0; j < cellqty; j++)
+	  if ((Tess.Dim == 3 && (*pPrint).showpoly[cells[j]] == 1)
+	      || (Tess.Dim == 2 && (*pPrint).showface[cells[j]] == 1))
+	  {
+	    (*pPrint).showedge[i] = 1;
+	    break;
+	  }
+	ut_free_1d_int (cells);
+	cells = NULL;
       }
-      else if (Tess.Dim >= 2)
-	for (i = 1; i <= Tess.EdgeQty; i++)
-	{
-	  neut_tess_edge_cells (Tess, i, &cells, &cellqty);
-	  for (j = 0; j < cellqty; j++)
-	    if ((Tess.Dim == 3 && (*pPrint).showpoly[cells[j]] == 1)
-		|| (Tess.Dim == 2 && (*pPrint).showface[cells[j]] == 1))
-	    {
-	      (*pPrint).showedge[i] = 1;
-	      break;
-	    }
-	  ut_free_1d_int (cells);
-	  cells = NULL;
-	}
     }
 
     if ((*pPrint).showver[0] == -1)
@@ -281,8 +270,7 @@ nev_show_init (struct TESS Tess, struct TESR Tesr,
     {
       (*pPrint).showseed =
 	ut_realloc_1d_int ((*pPrint).showseed, Tess.CellQty + 1);
-      (*pPrint).showseed[0] = Tess.CellQty;
-      ut_array_1d_int_set ((*pPrint).showseed + 1, Tess.CellQty, 0);
+      ut_array_1d_int_set ((*pPrint).showseed, Tess.SeedQty + 1, 0);
     }
   }
 
@@ -292,6 +280,7 @@ nev_show_init (struct TESS Tess, struct TESR Tesr,
     {
       (*pPrint).showedge =
 	ut_realloc_1d_int ((*pPrint).showedge, Tesr.CellQty + 1);
+      ut_array_1d_int_set ((*pPrint).showedge + 1, Tess.EdgeQty, 0);
 
       if ((*pPrint).showedge[0] == -1)
       {
@@ -303,6 +292,7 @@ nev_show_init (struct TESS Tess, struct TESR Tesr,
     {
       (*pPrint).showface =
 	ut_realloc_1d_int ((*pPrint).showface, Tesr.CellQty + 1);
+      ut_array_1d_int_set ((*pPrint).showface + 1, Tess.FaceQty, 0);
 
       if ((*pPrint).showface[0] == -1)
       {
@@ -314,6 +304,7 @@ nev_show_init (struct TESS Tess, struct TESR Tesr,
     {
       (*pPrint).showpoly =
 	ut_realloc_1d_int ((*pPrint).showpoly, Tesr.CellQty + 1);
+      ut_array_1d_int_set ((*pPrint).showpoly + 1, Tess.PolyQty, 0);
 
       if ((*pPrint).showpoly[0] == -1)
       {

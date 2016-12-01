@@ -675,15 +675,11 @@ neut_mesh_Odis (struct NODES Nodes, struct MESH Mesh, char *Odisexpr,
       tmp = rr[i];
     else
     {
-#ifdef HAVE_LIBMATHEVAL
       // a tolerancy is required, as explained above.
       if (rr[i] < 1 - 1e6)
 	ut_math_eval (Odisexpr, var_qty, vars, vals, &tmp);
       else
 	tmp = 1;
-#else
-      ut_print_message (2, 2, "This capability requires libmatheval.");
-#endif
     }
     (*pOdis) *= tmp;
   }
@@ -740,14 +736,10 @@ neut_mesh_elset_Odis (struct NODES Nodes, struct MESH Mesh, int elset,
     }
     else
     {
-#ifdef HAVE_LIBMATHEVAL
       if (rr[elt] < 1 - 1e-6)
 	ut_math_eval (Odisexpr, var_qty, vars, vals, &tmp);
       else
 	tmp = 1;
-#else
-      ut_print_message (2, 2, "This capability requires libmatheval.");
-#endif
     }
     (*pOdis) *= tmp;
   }

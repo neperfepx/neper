@@ -96,3 +96,16 @@ net_tess_opt_init_sset_ori_fibre (char *distrib, struct SEEDSET *pSSet)
 
   return;
 }
+
+void
+net_tess_opt_init_sset_ori_crysym (struct IN_T In, struct SEEDSET *pSSet)
+{
+  int i;
+
+  for (i = 1; i <= (*pSSet).N; i++)
+    ol_q_qcrysym ((*pSSet).q[i], In.oricrysym, (*pSSet).q[i]);
+
+  ut_string_string (In.oricrysym, &(*pSSet).crysym);
+
+  return;
+}

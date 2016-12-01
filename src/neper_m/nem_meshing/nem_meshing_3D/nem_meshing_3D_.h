@@ -9,10 +9,6 @@
 #include<ctype.h>
 #include<unistd.h>
 
-#ifdef HAVE_LIBMATHEVAL
-#include<matheval.h>
-#endif
-
 #include"ut.h"
 #include"neut_m.h"
 #include"../../structIn_m.h"

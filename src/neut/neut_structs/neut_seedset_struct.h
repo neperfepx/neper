@@ -62,6 +62,9 @@ extern "C"
     /// Orientations (quaternion)
     double **q;
 
+    // Crystal symmetry
+    char *crysym;
+
     // periodic
     int Nall;
 

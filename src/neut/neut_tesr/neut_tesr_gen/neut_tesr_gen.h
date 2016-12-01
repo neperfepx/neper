@@ -40,7 +40,7 @@ extern "C"
   extern void neut_tesr_entity_expr_val (struct TESR Tesr, char *entity,
 					 char *expr, double *val);
 
-  extern void neut_tesr_var_dim (char *entity, char *var, int *pdim);
+  extern void neut_tesr_var_dim (int dim, char *entity, char *var, int *pdim);
 
   extern int neut_tesr_var_val_all (struct TESR Tesr, char *entity,
 				     char *var, double *val, char **ptype);

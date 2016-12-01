@@ -1,5 +1,4 @@
 #cmakedefine HAVE_GSL
-#cmakedefine HAVE_LIBMATHEVAL
 #cmakedefine HAVE_NLOPT
 #cmakedefine HAVE_LIBSCOTCH
 #cmakedefine DEVEL_PROFILING

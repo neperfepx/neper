@@ -120,6 +120,14 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
   }
 
   ut_file_nextstring (file, string);
+  if (!strcmp (string, "*modeid"))
+  {
+    ut_file_skip (file, 1);
+    (*pTess).CellModeId = ut_alloc_1d_int ((*pTess).CellQty + 1);
+    ut_array_1d_int_fscanf (file, (*pTess).CellModeId + 1, (*pTess).CellQty);
+  }
+
+  ut_file_nextstring (file, string);
   if (!strcmp (string, "*seed"))
   {
     ut_file_skip (file, 1);
@@ -508,8 +516,6 @@ neut_tess_fscanf_domain (struct TESS *pTess, FILE * file)
     neut_tess_init_edgedom (pTess);
     neut_tess_init_verdom_fromedgedom (pTess);
   }
-  else if ((*pTess).Dim == 1)
-    neut_tess_init_verdom (pTess);
 
   return;
 }

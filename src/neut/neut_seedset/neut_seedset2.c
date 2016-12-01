@@ -62,6 +62,8 @@ neut_seedset_memcpy_seeds (struct SEEDSET SSetA, struct SEEDSET *pSSetB)
   (*pSSetB).q = ut_alloc_2d ((*pSSetB).N + 1, 4);
   ut_array_2d_memcpy ((*pSSetB).q + 1, (*pSSetB).N, 4, SSetA.q + 1);
 
+  ut_string_string (SSetA.crysym, &(*pSSetB).crysym);
+
   return;
 }
 

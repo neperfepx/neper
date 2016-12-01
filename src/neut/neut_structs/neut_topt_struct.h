@@ -24,7 +24,7 @@ struct TOPT
   char **tartype;		// type of specification: stat or cell
   char **tarexpr;		// variable expressions (normal, ..., file)
   int *tarexprdisqty;		// number of distributions in the variable expression
-  double **tarexprdisprop;		// proportions of the distributions
+  double **tarexprdisprop;	// proportions of the distributions
   // can point to: distribution, cell-by-cell or
   // raster information (see below)
   double *tarrefval;		// variable reference value (average cell size, ...)
@@ -33,8 +33,11 @@ struct TOPT
   struct FCT *tarpdf0;		// target PDF, not smoothed
   struct FCT *tarpdf;		// target PDF, smoothed
   struct FCT *tarcdf0;		// target CDF, not smoothed, computed
-				// only when requested in logdis
   struct FCT *tarcdf;		// target CDF, smoothed
+
+  int         *tarmodeqty;      // number of modes of the target PDF/CDF
+  double     **tarmodefact;     // factors of the modes of the target PDF/CDF
+  struct FCT **tarmodecdf0;     // modes of the target CDF, not smoothed
 
   // cell-by-cell information
   double ***tarcellval;		// variable cell value

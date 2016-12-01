@@ -71,7 +71,7 @@ Here is what a typical run of @mT{} looks like,
     ========================    N   e   p   e   r    =======================
     Info   : A software package for polycrystal generation and meshing.
     Info   : Version 3.0.0
-    Info   : Built with: gsl nlopt libmatheval
+    Info   : Built with: gsl nlopt muparser
     Info   : <http://neper.sourceforge.net>
     Info   : Copyright (C) 2003-2016, and GNU GPL'd, by Romain Quey.
     Info   : Comments and bug reports: <neper-users@lists.sourceforge.net>.
@@ -256,7 +256,12 @@ sphericity properties should be used instead.}
 below});@*
 @bullet{} @samp{cube(@var{N})} / @samp{square(@var{N})} for a regular
 tessellation into cubic / square cells@comma{}
-where @samp{@var{N}} is the number of cells along a direction.@*
+where @samp{@var{N}} is the number of cells along a direction@comma{}
+or @samp{cube(@var{N1@SEPNODEP{}N2@SEPNODEP{}N3})} /
+@samp{square(@var{N1@SEPNODEP{}N2})} for a regular tessellation into
+cubic / square cells@comma{} where @samp{@var{N1}}@comma{} @samp{@var{N2}}
+and @samp{@var{N3}} are the number of cells along the different
+directions.@*
 @bullet{} @samp{lamellar(w=@var{w}@comma{}v=@var{v})} for a lamellar
 morphology.  Argument @samp{w=@var{w}} is mandatory and argument
 @samp{v=@var{v}} is optional. Argument @samp{@code{w=@var{w}}} enables
@@ -568,7 +573,7 @@ distribution in the specified space.
 @optsec{-oricrysym, char_string,
 Specify the crystal symmetry.  This is used to reduce the domain
   of definition of the orientation descriptors.,
-triclinic or cubic, triclinic}
+triclinic@comma{} cubic or hexagonal, triclinic}
 
 @subsection Regularization Options
 
@@ -684,7 +689,8 @@ Specify the orientation descriptor used in the @file{.tess}@comma{} @file{.tesr}
 and @file{.ori} files. It can be Euler angles in
 Bunge@comma{} Kocks or Roe convention (@code{e}@comma{}
 @code{ek}@comma{} @code{er})@comma{} rotation matrix (@code{g})@comma{}
-@w{axis /} angle or rotation (@code{rtheta})@comma{} Rodrigues vector
+@w{axis /} angle of rotation (@code{rtheta})@comma{}
+angle of rotation (@code{theta})@comma{} Rodrigues vector
 (@code{R}) or quaternion (@code{q}).,
 above-mentioned values, e}
 

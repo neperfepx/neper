@@ -9,13 +9,44 @@ net_tess_cube (char *string, int dim, struct TESS PTess, int poly,
 	       int TessId, struct TESS *pTess,
 	       struct SEEDSET *pSSet)
 {
-  int status, id, tmp;
+  int status, i, id;
   int *N = ut_alloc_1d_int (3);
+  char *tmpc = ut_alloc_1d_char (1000);
+  char *fct = NULL;
+  int varqty;
+  char **vars = NULL, **vals = NULL;
 
-  if (sscanf (string, "cube(%d)", &tmp) == 1)
-    ut_array_1d_int_set_3 (N, tmp, tmp, tmp);
-  else if (sscanf (string, "square(%d)", &tmp) == 1)
-    ut_array_1d_int_set_3 (N, tmp, tmp, 1);
+  ut_string_function_separate (string, &fct, &vars, &vals, &varqty);
+
+  if (!strcmp (fct, "cube"))
+  {
+    if (varqty == 1)
+    {
+      sscanf (vars[0], "%d", N);
+      ut_array_1d_int_set (N, 3, N[0]);
+    }
+    else if (varqty == 3)
+      for (i = 0; i < 3; i++)
+	sscanf (vars[i], "%d", N + i);
+    else
+      abort ();
+  }
+  else if (!strcmp (fct, "square"))
+  {
+    if (varqty == 1)
+    {
+      sscanf (vars[0], "%d", N);
+      ut_array_1d_int_set_3 (N, N[0], N[0], 1);
+    }
+    else if (varqty == 2)
+    {
+      for (i = 0; i < 2; i++)
+	sscanf (vars[i], "%d", N + i);
+      N[2] = 1;
+    }
+    else
+      abort ();
+  }
   else
     abort ();
 
@@ -65,6 +96,10 @@ net_tess_cube (char *string, int dim, struct TESS PTess, int poly,
   ut_free_4d_int (faceid, 3, N[0] + 1, N[1] + 1);
   ut_free_3d_int (polyid, N[0], N[1]);
   ut_free_1d_int (N);
+  ut_free_1d_char (tmpc);
+  ut_free_1d_char (fct);
+  ut_free_2d_char (vars, varqty);
+  ut_free_2d_char (vals, varqty);
 
   return 0;
 }

@@ -9,9 +9,6 @@ net_reg (struct IN_T In, struct TESS *pTess, struct REG *pReg)
 {
   int DelId = 0;
 
-  if ((*pTess).Dim == 1)
-    return;
-
   net_reg_init (In, *pTess, pReg);
 
   ut_print_message (0, 2, "");

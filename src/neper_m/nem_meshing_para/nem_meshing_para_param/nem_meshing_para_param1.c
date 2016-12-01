@@ -49,8 +49,6 @@ nem_meshing_para_param (struct IN_M In, struct TESS Tess,
 	neut_tess_volume (Tess, &size);
       else if (Tess.Dim == 2)
 	neut_tess_area (Tess, &size);
-      else if (Tess.Dim == 1)
-	neut_tess_length (Tess, &size);
     }
     else if ((*pMeshPara).input == 'v')
       neut_tesr_size (*pTesr, &size);

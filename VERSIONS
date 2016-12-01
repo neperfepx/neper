@@ -1,3 +1,16 @@
+New in 3.0.1 (01 Dec 2016):
+- module -T: fixed up options -periodic and -morphooptialgoneigh qsort,
+  added tessellation key `modeid' (for cells), added -morpho
+  cube(N1,N2,N3) and -morpho square(N1,N2), enabled -loadtess -scale,
+  added -oricrysym hexagonal, added tessellation keys 'nfacelist' and
+  'theta', cleaned code, fixed documentation of .tess file, added tests
+  on conflicing options.
+- module -M: added option -scale, fixed hexahedral meshing of periodic
+  tessellations, added physical groups to .msh, fixed 2D meshes in
+  Abaqus (.inp) file, fixed up option -faset internal.
+- module -V: fixed options -dataseed*.
+- general: removed libmatheval dependency, fixed testing.
+
 New in 3.0.0 (12 Sep 2016):
 - module -T: added 3 major capabilities: (i) tessellation generation
   from morphological cell properties (options starting by -morpho),

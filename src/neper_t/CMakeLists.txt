@@ -6,7 +6,6 @@ cmake_minimum_required(VERSION 2.8)
 project(neper_t)
 
 option (HAVE_GSL         "Use the GNU Scientific Library (GSL)" ON )
-option (HAVE_LIBMATHEVAL "Use libmatheval"                      ON )
 option (HAVE_NLOPT       "Use NLopt"                            ON )
 option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
 option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
@@ -72,8 +71,6 @@ add_library (neper_t
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_pre/net_tess_opt_init_sset_pre3.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_post/net_tess_opt_init_sset_post1.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_post/net_tess_opt_init_sset_post2.c
-./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_load/net_tess_opt_init_sset_load1.c
-./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_load/net_tess_opt_init_sset_load2.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_weight/net_tess_opt_init_sset_weight1.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_weight/net_tess_opt_init_sset_weight2.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_multiseed/net_tess_opt_init_sset_multiseed1.c
@@ -98,6 +95,7 @@ add_library (neper_t
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_log/net_tess_opt_comp_objective_log1.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_log/net_tess_opt_comp_objective_log2.c
 ./net_tess/net_tess_opt/net_tess_opt_post/net_tess_opt_post1.c
+./net_tess/net_tess_opt/net_tess_opt_post/net_tess_opt_post2.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_post/net_tess_opt_comp_post1.c
 ./net_tess/net_tess3d/net_tess3d1.cpp
 ./net_tess/net_tess3d/net_tess3d2.cpp
@@ -166,14 +164,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 find_library (MATHLIB m)
 if (MATHLIB)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${MATHLIB})
-endif ()
-
-if (HAVE_LIBMATHEVAL)
-  find_package (LIBMATHEVAL REQUIRED)
-  if (Matheval_LIBRARIES)
-    set (EXTRA_LIBS ${EXTRA_LIBS} ${Matheval_LIBRARIES})
-    include_directories (${Matheval_INCLUDE_DIRS})
-  endif ()
 endif ()
 
 if (HAVE_NLOPT)

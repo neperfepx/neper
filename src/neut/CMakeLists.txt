@@ -66,6 +66,7 @@ add_library (neut
 ./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_gmsh/neut_mesh_fscanf_gmsh3.c
 ./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_gmsh/neut_mesh_fscanf_gmsh4.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_gmsh/neut_mesh_fprintf_gmsh1.c
+./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_gmsh/neut_mesh_fprintf_gmsh2.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_per/neut_mesh_fprintf_per1.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_vtk/neut_mesh_fprintf_vtk1.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_fepx/neut_mesh_fprintf_fepx1.c

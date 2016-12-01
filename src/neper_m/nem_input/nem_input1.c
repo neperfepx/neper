@@ -42,6 +42,8 @@ nem_in_set_zero (struct IN_M *pIn)
   (*pIn).nset = NULL;
   (*pIn).partmethod = NULL;
   (*pIn).partstring = NULL;
+  (*pIn).scalestring = NULL;
+  (*pIn).scale = NULL;
   (*pIn).stelt = ut_alloc_1d_pchar (5);
   (*pIn).stelset = ut_alloc_1d_pchar (5);
   (*pIn).stn = NULL;
@@ -74,6 +76,8 @@ nem_in_free (struct IN_M In)
   ut_free_1d_char (In.nset);
   ut_free_1d_char (In.faset);
   ut_free_1d_char (In.partstring);
+  ut_free_1d_char (In.scalestring);
+  ut_free_1d      (In.scale);
   ut_free_1d_char (In.partmethod);
   ut_free_1d_char (In.tess);
   ut_free_1d_char (In.tesr);

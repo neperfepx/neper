@@ -24,6 +24,7 @@ neut_tess_set_zero (struct TESS *pTess)
   (*pTess).Type = NULL;
   (*pTess).Periodic = NULL;
   (*pTess).PeriodicDist = NULL;
+  (*pTess).CellCrySym = NULL;
 
   (*pTess).VerQty = 0;
   (*pTess).FaceQty = 0;
@@ -53,6 +54,7 @@ neut_tess_set_zero (struct TESS *pTess)
   (*pTess).FaceDom = NULL;
   (*pTess).CellId = NULL;
   (*pTess).CellOri = NULL;
+  (*pTess).CellCrySym = NULL;
   (*pTess).PolyFaceQty = NULL;
   (*pTess).PolyFaceNb = NULL;
   (*pTess).PolyFaceOri = NULL;
@@ -61,6 +63,7 @@ neut_tess_set_zero (struct TESS *pTess)
   (*pTess).CellTrue = NULL;
   (*pTess).CellBody = NULL;
   (*pTess).CellLamId = NULL;
+  (*pTess).CellModeId = NULL;
   (*pTess).SeedCoo = NULL;
   (*pTess).SeedWeight = NULL;
 
@@ -217,6 +220,7 @@ neut_tess_free (struct TESS *pTess)
 
   ut_free_1d_int ((*pTess).CellId);
   ut_free_2d ((*pTess).CellOri, (*pTess).CellQty + 1);
+  ut_free_1d_char ((*pTess).CellCrySym);
 
   ut_free_1d_int ((*pTess).PolyFaceQty);
   ut_free_2d_int ((*pTess).PolyFaceNb, (*pTess).PolyQty + 1);
@@ -226,6 +230,7 @@ neut_tess_free (struct TESS *pTess)
   ut_free_1d_int ((*pTess).CellTrue);
   ut_free_1d_int ((*pTess).CellBody);
   ut_free_1d_int ((*pTess).CellLamId);
+  ut_free_1d_int ((*pTess).CellModeId);
 
   ut_free_1d_char ((*pTess).Type);
   ut_free_1d_int ((*pTess).Periodic);
@@ -461,6 +466,10 @@ neut_tess_poly_switch (struct TESS *pTess, int p1, int p2)
   // CellLamId
   if ((*pTess).CellLamId != NULL)
     ut_array_1d_int_switch ((*pTess).CellLamId, p1, p2);
+
+  // CellModeId
+  if ((*pTess).CellModeId != NULL)
+    ut_array_1d_int_switch ((*pTess).CellModeId, p1, p2);
 
   // PolyFace* (keep FaceQty at the end)
   ut_array_2d_int_switchlines_length ((*pTess).PolyFaceNb,
@@ -805,8 +814,6 @@ neut_tess_init_celltrue (struct TESS *pTess)
 	qty = (*pTess).PolyFaceQty[i];
       else if ((*pTess).Dim == 2)
 	qty = (*pTess).FaceVerQty[i];
-      else if ((*pTess).Dim == 1)
-	qty = 2;
       else
 	abort ();
 
@@ -878,8 +885,6 @@ neut_tess_init_cellbody (struct TESS *pTess)
 	qty = (*pTess).PolyFaceQty[i];
       else if ((*pTess).Dim == 2)
 	qty = (*pTess).FaceVerQty[i];
-      else if ((*pTess).Dim == 1)
-	qty = 2;
       else
 	abort ();
 
@@ -925,8 +930,6 @@ neut_tess_init_domain (struct TESS *pTess)
     neut_tess_init_domain_3d (pTess);
   else if ((*pTess).Dim == 2)
     neut_tess_init_domain_2d (pTess);
-  else if ((*pTess).Dim == 1)
-    neut_tess_init_domain_1d (pTess);
   else
     ut_error_reportbug ();
 
@@ -1991,6 +1994,7 @@ neut_tess_poly_tess (struct TESS Tess, int poly, struct TESS *pTess)
   (*pTess).CellTrue = ut_alloc_1d_int (2);
   (*pTess).CellBody = ut_alloc_1d_int (2);
   (*pTess).CellLamId = ut_alloc_1d_int (2);
+  (*pTess).CellModeId = ut_alloc_1d_int (2);
 
   (*pTess).PolyFaceQty = ut_alloc_1d_int (2);
   (*pTess).PolyFaceNb = ut_alloc_1d_pint (2);
@@ -2290,6 +2294,11 @@ neut_tess_addcell_alloc (struct TESS *pTess)
     ut_realloc_1d_int ((*pTess).CellLamId, (*pTess).CellQty + 1);
   (*pTess).CellLamId[0] = 0;
   (*pTess).CellLamId[cell] = 0;
+
+  (*pTess).CellModeId =
+    ut_realloc_1d_int ((*pTess).CellModeId, (*pTess).CellQty + 1);
+  (*pTess).CellModeId[0] = 0;
+  (*pTess).CellModeId[cell] = 0;
 
   (*pTess).SeedQty = (*pTess).CellQty;
 

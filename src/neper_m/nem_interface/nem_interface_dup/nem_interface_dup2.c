@@ -84,6 +84,8 @@ nem_interface_dup_boundelts_3d (struct TESS Tess, struct NODES Nodes,
   (*pBound).BoundEltQty = ut_alloc_1d_int ((*pBound).BoundQty + 1);
   (*pBound).BoundElts = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
   (*pBound).BoundEltFacets = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
+  (*pBound).BoundNodeQty = ut_alloc_1d_int ((*pBound).BoundQty + 1);
+  (*pBound).BoundNodes = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
 
   for (i = 1; i <= Tess.FaceQty; i++)
     if (Tess.FaceDom[i][0] == -1)
@@ -116,6 +118,8 @@ nem_interface_dup_boundelts_3d (struct TESS Tess, struct NODES Nodes,
 				    nodes2d, &surf);
 	  (*pBound).BoundEltFacets[i][j][k] = surf;
 	}
+
+      // FIXME initialize BoundNodes and BoundNodeQty here
     }
 
   (*pBound).BoundNames = ut_alloc_3d_char ((*pBound).BoundQty + 1, 2, 100);
@@ -135,6 +139,7 @@ nem_interface_dup_boundelts_2d (struct TESS Tess, struct NODES Nodes,
 {
   int i, j, k, l, elt1d, elt2d, surf;
   int* nodes1d = ut_alloc_1d_int (3);
+  int nodeqty, *nodes = NULL;
 
   (*pBound).BoundQty = Tess.EdgeQty;
   (*pBound).BoundDom = ut_alloc_2d_int ((*pBound).BoundQty + 1, 2);
@@ -151,6 +156,8 @@ nem_interface_dup_boundelts_2d (struct TESS Tess, struct NODES Nodes,
   (*pBound).BoundEltQty = ut_alloc_1d_int ((*pBound).BoundQty + 1);
   (*pBound).BoundElts = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
   (*pBound).BoundEltFacets = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
+  (*pBound).BoundNodeQty = ut_alloc_1d_int ((*pBound).BoundQty + 1);
+  (*pBound).BoundNodes = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
 
   for (i = 1; i <= Tess.EdgeQty; i++)
     if (Tess.EdgeDom[i][0] == -1)
@@ -183,6 +190,24 @@ nem_interface_dup_boundelts_2d (struct TESS Tess, struct NODES Nodes,
 				    nodes1d, &surf);
 	  (*pBound).BoundEltFacets[i][j][k] = surf;
 	}
+
+      neut_boundary_bound_nodes (Mesh[2], *pBound, i, 0, &nodes,
+				 &nodeqty);
+      if (nodeqty != (*pBound).BoundEltQty[i] + 1)
+	abort ();
+
+      (*pBound).BoundNodeQty[i] = nodeqty;
+      (*pBound).BoundNodes[i] = ut_alloc_2d_int (2, (*pBound).BoundEltQty[i] + 2);
+
+      ut_array_1d_int_memcpy ((*pBound).BoundNodes[i][0] + 1, nodeqty,
+			      nodes);
+
+      for (j = 1; j <= (*pBound).BoundEltQty[i] + 1; j++)
+	neut_nodes_node_cell_dupnode (Nodes, (*pBound).BoundNodes[i][0][j],
+				      (*pBound).BoundCell[i][1],
+				      (*pBound).BoundNodes[i][1] + j);
+
+      ut_free_1d_int_ (&nodes);
     }
 
   (*pBound).BoundNames = ut_alloc_3d_char ((*pBound).BoundQty + 1, 2, 100);

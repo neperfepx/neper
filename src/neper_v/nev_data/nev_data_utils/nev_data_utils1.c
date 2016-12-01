@@ -363,6 +363,11 @@ nev_data_typearg_args (char *input, char *argument, char **ptype,
     ut_string_string (argument, ptype);
     ut_free_1d_char_ (pvalue);
   }
+  else if (argqty == 1 && !strcmp (argument, "modeid"))
+  {
+    ut_string_string (argument, ptype);
+    ut_free_1d_char_ (pvalue);
+  }
   else if (argqty == 1)
   {
     ut_string_string (input, ptype);

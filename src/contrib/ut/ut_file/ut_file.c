@@ -977,3 +977,26 @@ ut_file_string_goto_lineheader (FILE *file, char *flag)
 
   return 0;
 }
+
+int
+ut_file_nextstring_section_level (FILE * file, int *plevel)
+{
+  int val, status;
+  char *tmp = ut_alloc_1d_char (1000);
+
+  status = ut_file_nextstring (file, tmp);
+
+  if (status == 1)
+  {
+    ut_string_section_level (tmp, &val);
+
+    if (plevel)
+      (*plevel) = val;
+
+    status = 0;
+  }
+
+  ut_free_1d_char (tmp);
+
+  return status;
+}

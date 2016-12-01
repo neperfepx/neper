@@ -307,6 +307,8 @@ neut_tess_edge_domfaces (struct TESS Tess, int edge, int **pdface,
 void
 neut_tess_edge_cells (struct TESS Tess, int edge, int **pcell, int *pcellqty)
 {
+  int i;
+
   if (Tess.Dim == 3)
     neut_tess_edge_polys (Tess, edge, pcell, pcellqty);
 
@@ -315,6 +317,11 @@ neut_tess_edge_cells (struct TESS Tess, int edge, int **pcell, int *pcellqty)
     (*pcellqty) = Tess.EdgeFaceQty[edge];
     (*pcell) = ut_alloc_1d_int (*pcellqty);
     ut_array_1d_int_memcpy (*pcell, *pcellqty, Tess.EdgeFaceNb[edge]);
+
+    if (Tess.PerSeedQty > 0)
+      for (i = 0; i < (*pcellqty); i++)
+	if (Tess.PerSeedMaster[(*pcell)[i]] > 0)
+	  (*pcell)[i] = Tess.PerSeedMaster[(*pcell)[i]];
   }
 
   else
@@ -434,6 +441,10 @@ neut_tess_face_polys (struct TESS Tess, int face, int **ppoly, int *ppolyqty)
     {
       qty++;
       tmp[qty - 1] = Tess.FacePoly[face][i];
+
+      if (Tess.PerSeedQty > 0)
+	if (Tess.PerSeedMaster[tmp[qty - 1]] > 0)
+	  tmp[qty - 1] = Tess.PerSeedMaster[tmp[qty - 1]];
     }
 
   ut_array_1d_int_sort (tmp, qty);
@@ -913,30 +924,6 @@ neut_tess_cell_true (struct TESS Tess, int nb)
       status = 0;
   }
 
-  else if (Tess.Dim == 1)
-  {
-    if (Tess.DomVerQty == 0)
-      ut_error_reportbug ();
-
-    domdist = DBL_MAX;
-    for (i = 1; i <= Tess.DomVerQty; i++)
-    {
-      dist = ut_space_dist (Tess.SeedCoo[nb], Tess.DomVerCoo[i]);
-      domdist = ut_num_min (domdist, dist);
-    }
-
-    for (i = 0; i < 2; i++)
-    {
-      verid = Tess.EdgeVerNb[nb][i];
-      dist = ut_space_dist (Tess.SeedCoo[nb], Tess.VerCoo[verid]);
-      if (dist > .5 * domdist)
-      {
-	status = 0;
-	break;
-      }
-    }
-  }
-
   ut_free_1d_int (ver);
   ut_free_1d (proj);
   ut_free_1d (eq);
@@ -977,16 +964,6 @@ neut_tess_cell_body (struct TESS Tess, int nb)
 	if (Tess.EdgeDom[id][0] == 1)
 	  return 0;
       }
-  }
-
-  else if (Tess.Dim == 1)
-  {
-    for (i = 0; i < 2; i++)
-    {
-      id = Tess.EdgeVerNb[nb][i];
-      if (Tess.VerDom[id][0] == 0)
-	return 0;
-    }
   }
 
   else
@@ -1099,9 +1076,6 @@ neut_tess_edge_true (struct TESS Tess, int nb)
     ut_free_1d_int (celltrue);
   }
 
-  else if (Tess.Dim == 1)
-    res = Tess.CellTrue[nb];
-
   else
     res = 0;
 
@@ -1140,9 +1114,6 @@ neut_tess_edge_body (struct TESS Tess, int nb)
 
     ut_free_1d_int (cellbody);
   }
-
-  else if (Tess.Dim == 1)
-    res = Tess.CellBody[nb];
 
   else
     res = 0;
@@ -1326,9 +1297,6 @@ neut_tess_cell_neighcell (struct TESS Tess, int cell, int **pncell,
 
   else if (Tess.Dim == 2)
     neut_tess_face_neighfaces (Tess, cell, pncell, pncellqty);
-
-  else if (Tess.Dim == 1)
-    neut_tess_edge_neighedge (Tess, cell, pncell, pncellqty);
 
   else
     abort ();

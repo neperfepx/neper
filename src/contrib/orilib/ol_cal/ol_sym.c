@@ -15,6 +15,8 @@ ol_lauegroup_qty (char* lauegroup)
 {
   if (strcmp (lauegroup, "-1") == 0)
     return 1;
+  else if (strcmp (lauegroup, "triclinic") == 0)
+    return 1;
   else if (strcmp (lauegroup, "2m") == 0)
     return 2;
   else if (strcmp (lauegroup, "mmm") == 0)
@@ -37,6 +39,8 @@ ol_lauegroup_qty (char* lauegroup)
     return 24;
   else if (strcmp (lauegroup, "cubic") == 0)
     return 24;
+  else if (strcmp (lauegroup, "hexagonal") == 0)
+    return 12;
   else
     return -1;
 }
@@ -196,7 +200,8 @@ ol_g_crysym (double **g, char* crysym, int nb, double **g2)
     return -1;
 
   nb--; /* 0-indexed local vs 1-indexed input; this modif on nb is *local* */
-  if (strcmp (crysym, "-1") == 0)
+  if (strcmp (crysym, "-1") == 0
+   || strcmp (crysym, "triclinic") == 0)
     for (i = 0; i < 3; i++)
       for (j = 0; j < 3; j++)
 	T[i][j] = T_1[nb][i][j];
@@ -228,7 +233,8 @@ ol_g_crysym (double **g, char* crysym, int nb, double **g2)
     for (i = 0; i < 3; i++)
       for (j = 0; j < 3; j++)
 	T[i][j] = T6_m[nb][i][j];
-  else if (strcmp (crysym, "6/mmm") == 0)
+  else if (strcmp (crysym, "6/mmm") == 0
+        || strcmp (crysym, "hexagonal") == 0)
     for (i = 0; i < 3; i++)
       for (j = 0; j < 3; j++)
 	T[i][j] = T6_mmm[nb][i][j];
@@ -295,7 +301,15 @@ ol_q_crysym (double *q, char* crysym, int nb, double *q2)
     ol_q_q (q2, q2);
   }
   else
-    abort ();
+  {
+    double **g = ol_g_alloc ();
+    double **g2 = ol_g_alloc ();
+    ol_q_g (q, g);
+    ol_g_crysym (g, crysym, nb, g2);
+    ol_g_q (g2, q2);
+    ol_g_free (g);
+    ol_g_free (g2);
+  }
 
   return;
 }

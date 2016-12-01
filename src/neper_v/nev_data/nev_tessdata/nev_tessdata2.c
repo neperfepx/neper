@@ -71,6 +71,19 @@ nev_tessdata_fscanf_col (struct TESS Tess,
 	   && scale >= 0 && scale <= Tess.ScaleQty) ? Tess.ScaleCellId[i][scale] : i;
     }
   }
+  else if (!strcmp (type, "modeid"))
+  {
+    (*pTessData).ColData[id] = ut_alloc_2d (entityqty + 1, 1);
+
+    if (!value)
+      for (i = 1; i <= entityqty; i++)
+	(*pTessData).ColData[id][i][0]
+	  = (!strcmp (entity, "cell") && Tess.CellModeId) ?
+	  Tess.CellModeId[i] : 1;
+    else
+      ut_array_2d_fscanfn_wcard (value, (*pTessData).ColData[id] + 1,
+				 entityqty, 1, "numeral");
+  }
   else if (!strncmp (type, "ori", 3))
   {
     (*pTessData).ColData[id] = ut_alloc_2d (entityqty + 1, 4);

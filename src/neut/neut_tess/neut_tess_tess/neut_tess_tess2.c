@@ -52,6 +52,9 @@ neut_tess_tess_cell (struct TESS TessA, struct TESS *pTessB)
 			TessA.CellOri + 1);
   }
 
+  if (TessA.CellCrySym)
+    ut_string_string (TessA.CellCrySym, &((*pTessB).CellCrySym));
+
   (*pTessB).ScaleQty = TessA.ScaleQty;
 
   if (TessA.ScaleQty > 0)
@@ -65,6 +68,7 @@ neut_tess_tess_cell (struct TESS TessA, struct TESS *pTessB)
   neut_tess_tess_celltrue (TessA, pTessB);
   neut_tess_tess_cellbody (TessA, pTessB);
   neut_tess_tess_celllamid (TessA, pTessB);
+  neut_tess_tess_cellmodeid (TessA, pTessB);
 
   return;
 }

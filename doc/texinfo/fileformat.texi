@@ -44,6 +44,8 @@ and
 @ @ @  ... ]                                                            @*
 @ [*lamid @*
 @ @ @  @var{cell1_lamid} @var{cell2_lamid} ... ]                      @*
+@ [*modeid @*
+@ @ @  @var{cell1_modeid} @var{cell2_modeid} ... ]                     @*
 @  **vertex                                                            @*
 @ @ @  @var{total_number_of_vertices}                                  @*
 @ @ @  @var{ver_id} @ @var{ver_x} @var{ver_y} @var{ver_z} @var{ver_state}               @*
@@ -103,11 +105,11 @@ and
 @ @ @ ...                                                               @*
 @ @  *edge                                                              @*
 @ @ @  @var{slave_edge_qty}                                             @*
-@ @ @  @var{slave_edge_id} @var{master_edge_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z} @*
+@ @ @  @var{slave_edge_id} @var{master_edge_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z} @var{slave_edge_ori} @*
 @ @ @ ...                                                               @*
 @ @  *face                                                              @*
 @ @ @  @var{slave_face_qty}                                             @*
-@ @ @  @var{slave_face_id} @var{master_face_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z} @*
+@ @ @  @var{slave_face_id} @var{master_face_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z} @var{slave_face_ori} @*
 @ @ @ ...                                                               @*
 @  **scale                                                           @*
 @ @  *general                                                           @*
@@ -152,6 +154,12 @@ identifier field.
 
 @item @code{@var{cell1_lamid}}, @code{@var{cell2_lamid}}, @dots{} are
 the lamella identifiers of the cells.
+
+@item @code{*modeid} denotes the beginning of an optional mode
+identifier field.
+
+@item @code{@var{cell1_modeid}}, @code{@var{cell2_modeid}}, @dots{} are
+the mode identifiers of the cells.
 
 @item @code{*seed} denotes the beginning of a seed field.
 
@@ -385,6 +393,10 @@ slave vertex.
 @item @code{@var{master_edge_id}} is the identifier of the master of a
 slave edge.
 
+@item @code{@var{slave_edge_ori}} is the orientation of the slave edge
+with respect to the master edge: @code{1} if identical, @code{-1} if
+opposite.
+
 @item @code{*face} denotes the beginning of the periodicity face field
 (for a tessellation of dimension 3).
 
@@ -394,6 +406,10 @@ slave edge.
 
 @item @code{@var{master_face_id}} is the identifier of the master of a
 slave face.
+
+@item @code{@var{slave_face_ori}} is the orientation of the slave face
+with respect to the master face: @code{1} if identical, @code{-1} if
+opposite.
 
 @item @code{@var{number_of_scales}} is the number of scales.
 

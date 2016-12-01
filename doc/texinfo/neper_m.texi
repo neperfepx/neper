@@ -91,7 +91,7 @@ Here is what a typical run of @mM{} looks like,
     ========================    N   e   p   e   r    =======================
     Info   : A software package for polycrystal generation and meshing.
     Info   : Version 3.0.0
-    Info   : Built with: gsl nlopt libmatheval
+    Info   : Built with: gsl nlopt muparser
     Info   : <http://neper.sourceforge.net>
     Info   : Copyright (C) 2003-2016, and GNU GPL'd, by Romain Quey.
     Info   : Comments and bug reports: <neper-users@lists.sourceforge.net>.
@@ -486,6 +486,15 @@ meshes with duplicate nodes@comma{} except using options
 @option{-singnodedup} or @option{-interface}.
 ,
 0, any>0}
+
+@subsection Transformation Options
+
+@opt{-scale, real:real:real,
+Scale the mesh by given factors in the x@comma{} y and z directions
+once it is generated.
+In 2D@comma{} the @var{z} value can be omitted.
+,
+any, none}
 
 @subsection Mesh Partitioning Options
 

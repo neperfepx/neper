@@ -165,10 +165,6 @@ neper_head (char *neper_version)
   printf (" nlopt");
 #endif
 
-#ifdef HAVE_LIBMATHEVAL
-  printf (" libmatheval");
-#endif
-
 #ifdef HAVE_LIBSCOTCH
   printf (" libscotch");
 #endif

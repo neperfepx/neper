@@ -14,6 +14,8 @@ struct BOUNDARY
   int *BoundEltQty;	// [1...][0,1] number of elts of a bound
   int ***BoundElts;	// [1...][0,1][1...] elts of a bound, master and slave sides
   int ***BoundEltFacets;// [1...][0,1][1...] bounds of the elts of BoundElts
+  int *BoundNodeQty;	// [1...][0,1] number of nodes of a bound
+  int ***BoundNodes;	// [1...][0,1][1...] nodes of a bound, master and slave sides
 };
 typedef struct BOUNDARY BOUNDARY;
 

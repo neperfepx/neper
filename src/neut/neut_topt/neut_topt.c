@@ -75,6 +75,9 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).curcdf0 = NULL;
   (*pTOpt).curpenalty = NULL;
 
+  (*pTOpt).tarmodeqty = 0;
+  (*pTOpt).tarmodecdf0 = NULL;
+
   neut_tesr_set_zero (&(*pTOpt).tartesr);
   (*pTOpt).tarcellpts = NULL;
   (*pTOpt).tarcellptqty = NULL;
@@ -106,7 +109,7 @@ neut_topt_set_zero (struct TOPT *pTOpt)
 void
 neut_topt_free (struct TOPT *pTOpt)
 {
-  int i;
+  int i, j;
 
   neut_tdyn_free (&(*pTOpt).TDyn);
 
@@ -190,6 +193,16 @@ neut_topt_free (struct TOPT *pTOpt)
   for (i = 0; i < (*pTOpt).tarqty; i++)
     ut_fct_free ((*pTOpt).curcdf0 + i);
   free ((*pTOpt).curcdf0);
+
+  for (i = 0; i < (*pTOpt).tarqty; i++)
+  {
+    for (j = 0; j < (*pTOpt).tarmodeqty[i]; j++)
+      ut_fct_free ((*pTOpt).tarmodecdf0[i] + j);
+    free ((*pTOpt).tarmodecdf0[i]);
+  }
+  free ((*pTOpt).tarmodecdf0);
+
+  ut_free_2d ((*pTOpt).tarmodefact, (*pTOpt).tarqty);
 
   ut_free_1d ((*pTOpt).curval);
 

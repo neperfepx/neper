@@ -173,29 +173,6 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 2, "Processing mesh at interfaces...\n");
     nem_interface (In, Tess, &Nodes, Mesh, &Bound);
-
-    /*
-    int i, j, k;
-    int nodeqty, *nodes = NULL;
-    double *coo0 = ut_alloc_1d (3);
-    double *coo = ut_alloc_1d (3);
-    double *v = ut_alloc_1d (3);
-    neut_mesh_centre (Nodes, Mesh[Tess.Dim], coo0);
-    for (i = 1; i <= Mesh[Tess.Dim].ElsetQty; i++)
-    {
-      neut_mesh_elset_centre (Nodes, Mesh[Tess.Dim], i, coo);
-      neut_mesh_elset_nodes (Mesh[Tess.Dim], i, &nodes, &nodeqty);
-      for (k = 0; k < 3; k++)
-	v[k] = 0.15 * (coo[k] - coo0[k]);
-
-      for (j = 0; j < nodeqty; j++)
-      {
-	for (k = 0; k < 3; k++)
-	  Nodes.NodeCoo[nodes[j]][k] += v[k];
-
-      }
-    }
-    */
   }
 
   dim = neut_mesh_array_dim (Mesh);
@@ -223,6 +200,12 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 
 // ###################################################################
 // ### POST-MESHING OPERATIONS #######################################
+
+  if (strcmp (In.scalestring, "none"))
+  {
+    ut_print_message (0, 2, "Scaling mesh...\n");
+    neut_nodes_scale (&Nodes, In.scale[0], In.scale[1], In.scale[2]);
+  }
 
 // Partitioning mesh ###
   if (In.partstring)

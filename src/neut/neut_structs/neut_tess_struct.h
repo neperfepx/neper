@@ -39,6 +39,9 @@ extern "C"
     double **CellOri;		// crystal orientations of the cells
     int *CellLamId;		// in the case of a lamellar
                                 // tessellation, id of the lamella (width)
+    int *CellModeId;		// in the case of a multimodal
+                                // tessellation, id of the mode
+    char *CellCrySym;		// crystal symmetry (triclinic, cubic or hexagonal)
 
     int *CellTrue;		// true level of the cell (0 if not true, 1
     // is true, 2 if all neighs are true>=1, 3 if all

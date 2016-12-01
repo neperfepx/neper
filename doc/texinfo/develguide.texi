@@ -64,7 +64,7 @@ The @samp{src/} directory contains the following files and directories,
   @url{www.cs.umd.edu/~mount/ANN}). Although these libraries
   also are distributed alone (and might be already installed on your
   system), they are included into Neper instead of being considered
-  as dependencies (contrary to the GSL, libmatheval, @dots{}), to
+  as dependencies (contrary to the GSL, @dots{}), to
   make Neper easier to install.
 
   @item @code{CMakeLists.txt}, @code{neper_config.h.in} and @code{cmake/}

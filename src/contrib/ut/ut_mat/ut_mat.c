@@ -86,7 +86,7 @@ ut_mat_det_33 (double **m)
   double det = 0;
 
   det += m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]);
-  det += m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[2][1]);
+  det -= m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[1][2]);
   det += m[0][2] * (m[1][0] * m[2][1] - m[2][0] * m[1][1]);
 
   return det;
@@ -104,6 +104,30 @@ ut_mat_inverse_22 (double **m, double **minv)
   minv[0][1] = -m[0][1] / det;
   minv[1][0] = -m[1][0] / det;
   minv[1][1] = m[0][0] / det;
+
+  return 0;
+}
+
+int
+ut_mat_inverse_33 (double **m, double **minv)
+{
+  double det = ut_mat_det_33 (m);
+
+  minv[0][0] = (m[1][1] * m[2][2] - m[2][1] * m[1][2]);
+  minv[0][1] =-(m[1][0] * m[2][2] - m[2][0] * m[1][2]);
+  minv[0][2] = (m[1][0] * m[2][1] - m[2][0] * m[1][1]);
+
+  minv[1][0] =-(m[0][1] * m[2][2] - m[2][1] * m[0][2]);
+  minv[1][1] = (m[0][0] * m[2][2] - m[2][0] * m[0][2]);
+  minv[1][2] =-(m[0][0] * m[2][1] - m[2][0] * m[0][1]);
+
+  minv[2][0] = (m[0][1] * m[1][2] - m[1][1] * m[0][2]);
+  minv[2][1] =-(m[0][0] * m[1][2] - m[1][0] * m[0][2]);
+  minv[2][2] = (m[0][0] * m[1][1] - m[1][0] * m[0][1]);
+
+  ut_mat_transpose (minv, 3, 3, minv);
+
+  ut_array_2d_scale (minv, 3, 3, 1 / det);
 
   return 0;
 }
@@ -226,7 +250,7 @@ tql2 (int n, double **V, double *d, double *e)
 	}
 	f = f + h;
 	/* Implicit QL transformation. */
-	
+
 	p = d[m];
 	c = 1.0;
 	c2 = c;
@@ -272,7 +296,7 @@ tql2 (int n, double **V, double *d, double *e)
     p = d[i];
     for (j = i + 1; j < n; j++)
     {
-      if (d[j] > p) /* RQ modif to sort by decreasing eigen value */
+      if (d[j] > p)		/* RQ modif to sort by decreasing eigen value */
       {
 	k = j;
 	p = d[j];
@@ -447,7 +471,7 @@ ut_mat_transpose (double **A, int M, int N, double **At)
 }
 
 void
-ut_mat_trace (double **A, int size, double* ptr)
+ut_mat_trace (double **A, int size, double *ptr)
 {
   int i;
 
@@ -459,13 +483,13 @@ ut_mat_trace (double **A, int size, double* ptr)
 }
 
 int
-ut_mat_inverse (double** mat, int n, double** inv)
+ut_mat_inverse (double **mat, int n, double **inv)
 {
 #ifdef HAVE_GSL
   int i, j, signum;
 
-  gsl_matrix* gsl_mat = gsl_matrix_alloc (n, n);
-  gsl_matrix* gsl_inv = gsl_matrix_alloc (n, n);
+  gsl_matrix *gsl_mat = gsl_matrix_alloc (n, n);
+  gsl_matrix *gsl_inv = gsl_matrix_alloc (n, n);
   gsl_permutation *gsl_p = gsl_permutation_alloc (n);
   for (i = 0; i < n; i++)
     for (j = 0; j < n; j++)
@@ -483,16 +507,20 @@ ut_mat_inverse (double** mat, int n, double** inv)
   gsl_permutation_free (gsl_p);
 
 #else
-  if (mat != NULL && n != 0 && inv != NULL)
-    n = n; // trash stuff / for compil sake.
-  ut_print_messagewnc (2, 72, "ut_mat_inverse not available since ut has been compiled without gsl.\n");
+  if (n == 2)
+    ut_mat_inverse_22 (mat, inv);
+  else if (n == 3)
+    ut_mat_inverse_33 (mat, inv);
+  else
+    ut_print_messagewnc (2, 72,
+			 "ut_mat_inverse for n>3 not available since ut has been compiled without gsl.\n");
 #endif
 
   return 0;
 }
 
 int
-ut_mat_svd (double** A, int M, int N, double** U, double** S, double** V)
+ut_mat_svd (double **A, int M, int N, double **U, double **S, double **V)
 {
   int i;
   double **AAt = NULL, **AtA = NULL;
@@ -531,7 +559,7 @@ ut_mat_svd (double** A, int M, int N, double** U, double** S, double** V)
 }
 
 void
-ut_mat_sym (double** A, int size, double** S)
+ut_mat_sym (double **A, int size, double **S)
 {
   int i, j;
 
@@ -550,7 +578,7 @@ ut_mat_sym (double** A, int size, double** S)
 }
 
 void
-ut_mat_skew (double** A, int size, double** S)
+ut_mat_skew (double **A, int size, double **S)
 {
   int i, j;
 
@@ -566,4 +594,122 @@ ut_mat_skew (double** A, int size, double** S)
       S[i][j] = -S[j][i];
 
   return;
+}
+
+int
+ut_mat_sqrt (double **A, int size, double **B)
+{
+  int i;
+  double *eval = ut_alloc_1d (size);
+  double **evect = ut_alloc_2d (size, size);
+  double **Lambda = ut_alloc_2d (size, size);
+  double **tmp = ut_alloc_2d (size, size);
+  double **Q = ut_alloc_2d (size, size);
+  double **Qinv = ut_alloc_2d (size, size);
+
+  ut_mat_eigen (size, A, eval, evect);
+
+  ut_mat_transpose (evect, size, size, Q);
+  for (i = 0; i < size; i++)
+    Lambda[i][i] = sqrt (eval[i]);
+
+  ut_mat_inverse (Q, size, Qinv);
+
+  ut_mat_product (Q, size, size, Lambda, size, size, tmp);
+  ut_mat_product (tmp, size, size, Qinv, size, size, B);
+
+  ut_free_1d (eval);
+  ut_free_2d (evect, size);
+  ut_free_2d (Q, size);
+  ut_free_2d (Qinv, size);
+  ut_free_2d (Lambda, size);
+  ut_free_2d (tmp, size);
+
+  return 0;
+}
+
+int
+ut_mat_log (double **A, int size, double **B)
+{
+  int i;
+  double *eval = ut_alloc_1d (size);
+  double **evect = ut_alloc_2d (size, size);
+  double **Lambda = ut_alloc_2d (size, size);
+  double **tmp = ut_alloc_2d (size, size);
+  double **Q = ut_alloc_2d (size, size);
+  double **Qinv = ut_alloc_2d (size, size);
+
+  ut_mat_eigen (size, A, eval, evect);
+
+  ut_mat_transpose (evect, size, size, Q);
+  for (i = 0; i < size; i++)
+    Lambda[i][i] = log (eval[i]);
+
+  ut_mat_inverse (Q, size, Qinv);
+
+  ut_mat_product (Q, size, size, Lambda, size, size, tmp);
+  ut_mat_product (tmp, size, size, Qinv, size, size, B);
+
+  ut_free_1d (eval);
+  ut_free_2d (evect, size);
+  ut_free_2d (Q, size);
+  ut_free_2d (Qinv, size);
+  ut_free_2d (Lambda, size);
+  ut_free_2d (tmp, size);
+
+  return 0;
+}
+
+int
+ut_mat_exp (double **A, int size, double **B)
+{
+  int i;
+  double *eval = ut_alloc_1d (size);
+  double **evect = ut_alloc_2d (size, size);
+  double **Lambda = ut_alloc_2d (size, size);
+  double **tmp = ut_alloc_2d (size, size);
+  double **Q = ut_alloc_2d (size, size);
+  double **Qinv = ut_alloc_2d (size, size);
+
+  ut_mat_eigen (size, A, eval, evect);
+
+  ut_mat_transpose (evect, size, size, Q);
+  for (i = 0; i < size; i++)
+    Lambda[i][i] = exp (eval[i]);
+
+  ut_mat_inverse (Q, size, Qinv);
+
+  ut_mat_product (Q, size, size, Lambda, size, size, tmp);
+  ut_mat_product (tmp, size, size, Qinv, size, size, B);
+
+  ut_free_1d (eval);
+  ut_free_2d (evect, size);
+  ut_free_2d (Q, size);
+  ut_free_2d (Qinv, size);
+  ut_free_2d (Lambda, size);
+  ut_free_2d (tmp, size);
+
+  return 0;
+}
+
+int
+ut_mat_polar (double **A, int size1, int size2, double **Q, double **S)
+{
+  double **At = ut_alloc_2d (size2, size1);
+  double **AtA = ut_alloc_2d (size2, size2);
+  double **Sinv = ut_alloc_2d (size2, size2);
+
+  ut_mat_transpose (A, size1, size2, At);
+  ut_mat_product (At, size2, size1, A, size1, size2, AtA);
+
+  ut_mat_sqrt (AtA, size2, S);
+
+  ut_mat_inverse (S, size2, Sinv);
+
+  ut_mat_product (A, size1, size2, Sinv, size2, size2, Q);
+
+  ut_free_2d (At, size2);
+  ut_free_2d (AtA, size2);
+
+  return 0;
 }

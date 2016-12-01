@@ -141,6 +141,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 
 	    status = net_tess (In, level, Tess, ParentTessId, cell,
 			       SSet, MTess.TessQty, &MTess);
+
 	    if (status != 0)
 	      ut_print_message (2, 2, "Tessellation failed.\n");
 
@@ -205,6 +206,13 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
       {
 	ut_print_message (0, 1, "Sorting cells...\n");
 	net_sort (In, Tess + 1, NULL);
+      }
+
+      // Sorting cells ###
+      if (strcmp (In.scalestring, "none"))
+      {
+	ut_print_message (0, 1, "Scaling tessellation...\n");
+	neut_tess_scale (Tess + 1, In.scale[0], In.scale[1], In.scale[2]);
       }
     }
 

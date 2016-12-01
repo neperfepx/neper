@@ -38,7 +38,7 @@ Here is what a typical run of @mV{} looks like,
     ========================    N   e   p   e   r    =======================
     Info   : A software package for polycrystal generation and meshing.
     Info   : Version 3.0.0
-    Info   : Built with: gsl nlopt libmatheval
+    Info   : Built with: gsl nlopt muparser
     Info   : <http://neper.sourceforge.net>
     Info   : Copyright (C) 2003-2016, and GNU GPL'd, by Romain Quey.
     Info   : Comments and bug reports: <neper-users@lists.sourceforge.net>.

@@ -39,6 +39,7 @@ extern void ut_array_2d_int_zero_be (int **, int, int, int, int);
 extern int ut_array_1d_fscanf (FILE *, double *, int);
 extern int ut_array_1d_fscanfn (char *, double *, int);
 extern int ut_array_1d_int_fscanf (FILE *, int *, int);
+extern int ut_array_1d_char_fscanf (FILE *, char **, int);
 extern int ut_array_1d_int_fscanfn (char *, int *, int);
 extern int ut_array_2d_fscanf (FILE *, double **, int, int);
 extern int ut_array_2d_fscanfn (char *, double **, int, int);
@@ -285,6 +286,8 @@ extern int ut_array_3d_int_1d (int*** array, int size1, int size2, int size3,
 
 extern int ut_array_1d_set_3 (double* array, double v1, double v2, double v3);
 extern int ut_array_1d_int_set_3 (int* array, int v1, int v2, int v3);
+extern int ut_array_1d_int_set_4 (int* array, int v1, int v2, int v3, int v4);
+extern int ut_array_1d_int_set_5 (int* array, int v1, int v2, int v3, int v4, int v5);
 extern int ut_array_1d_set_2 (double* array, double v1, double v2);
 extern int ut_array_1d_int_set_2 (int* array, int v1, int v2);
 
@@ -299,6 +302,8 @@ extern int ut_array_0d_fscanf_filter_prefix (FILE* file, double* pval,
     char *flag);
 extern int ut_array_0d_char_fscanf_filter_prefix (FILE* file, char* pval,
     char *flag);
+extern int ut_array_1d_char_fscanf_filter_prefix (FILE* file, char** pval,
+    int size, char *flag);
 extern int ut_array_1d_fscanf_filter_prefix (FILE* file, double* array,
     int size, char *flag);
 extern int ut_array_1d_int_fscanf_filter_prefix (FILE* file, int
