@@ -1,3 +1,6 @@
+New in 3.0.3-1 (16 Feb 2017):
+- module -T: fixed -morphooptiini "coo:file()" in 2D.
+
 New in 3.0.2 (16 Feb 2017):
 - module -T: added -transform scale and transform rotate for scalar
   tessellations (.tess), fixed -morpho with -periodic, fixed -morpho

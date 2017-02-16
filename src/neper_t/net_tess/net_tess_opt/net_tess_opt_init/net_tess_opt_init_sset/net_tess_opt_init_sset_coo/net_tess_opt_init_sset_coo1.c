@@ -26,7 +26,7 @@ net_tess_opt_init_sset_coo (struct MTESS MTess, struct TESS *Tess,
   {
     from_file = 1;
     neut_mtess_tess_poly_mid (MTess, Tess[dtess], dcell, &mid);
-    net_multiscale_arg_2d_fscanf (cooexpr, mid, coo + 1, (*pTOpt).CellQty, 3);
+    net_multiscale_arg_2d_fscanf (cooexpr, mid, coo + 1, (*pTOpt).CellQty, (*pTOpt).Dim);
   }
 
   Point.Periodic = ut_alloc_1d_int (3);
