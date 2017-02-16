@@ -277,6 +277,8 @@ extern void ut_array_1d_int_list_rmelt (int **parray, int *psize, int val);
 extern void ut_array_1d_int_valqty (int *array, int size, int ***parray2,
 				    int *parray2qty);
 
+extern void ut_array_1d_int_list_addelts (int **parray, int *psize, int* elts, int eltqty);
+
 extern int ut_array_1d_int_diff (int *, int, int *, int);
 
 extern int ut_array_1d_int_percent (int *array, int size, int *percent);

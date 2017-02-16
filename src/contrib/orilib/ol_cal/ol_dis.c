@@ -115,30 +115,67 @@ ol_q_q_disori_rad (double *q1, double *q2, char* crysym, double *ptheta)
     {.5, -.5, -.5, .5}
   };
 
+  double Thexa[13][4] = {
+    {1.000000000, 0.000000000, 0.000000000 ,0.000000000}, // phantom
+    {1.000000000, 0.000000000, 0.000000000 ,0.000000000},
+    {0.866025404, 0.000000000, 0.000000000 ,0.500000000},
+    {0.500000000, 0.000000000, 0.000000000 ,0.866025404},
+    {0.000000000, 0.000000000, 0.000000000 ,1.000000000},
+    {0.500000000, 0.000000000, 0.000000000 ,-0.866025404},
+    {0.866025404, 0.000000000, 0.000000000 ,-0.500000000},
+    {0.000000000, 0.866025404, -0.500000000 ,0.000000000},
+    {0.000000000, -0.500000000, 0.866025404 ,0.000000000},
+    {0.000000000, 0.000000000, 1.000000000 ,0.000000000},
+    {0.000000000, 0.500000000, 0.866025404 ,0.000000000},
+    {0.000000000, 0.866025404, 0.500000000 ,0.000000000},
+    {0.000000000, 1.000000000, 0.000000000 ,0.000000000}
+  };
+
   /* computation of q1^{-1}.q2 */
   ol_q_inverse (q1, qd);
   ol_q_q_q (qd, q2, qd);
 
   if (strcmp (crysym, "cubic") == 0)
-    crysym_maxrho = .92387953251128675613; /* = cos (45/2) */
-  else
-    crysym_maxrho = DBL_MAX;
-
-
-  maxrho = 0;
-  nb = 1;
-  for (i = 1; i <= qty; i++)
   {
-    rho = fabs (qd[0] * Tcubic[i][0] - qd[1] * Tcubic[i][1]
-	      - qd[2] * Tcubic[i][2] - qd[3] * Tcubic[i][3]);
-    if (rho > maxrho)
+    crysym_maxrho = .92387953251128675613; /* = cos (45/2) */
+
+    maxrho = 0;
+    nb = 1;
+    for (i = 1; i <= qty; i++)
     {
-      nb = i;
-      maxrho = rho;
-      if (maxrho > crysym_maxrho)
-	break;
+      rho = fabs (qd[0] * Tcubic[i][0] - qd[1] * Tcubic[i][1]
+		- qd[2] * Tcubic[i][2] - qd[3] * Tcubic[i][3]);
+      if (rho > maxrho)
+      {
+	nb = i;
+	maxrho = rho;
+	if (maxrho > crysym_maxrho)
+	  break;
+      }
     }
   }
+  else if (strcmp (crysym, "hexagonal") == 0)
+  {
+    crysym_maxrho = DBL_MAX;
+
+    maxrho = 0;
+    nb = 1;
+    for (i = 1; i <= qty; i++)
+    {
+      rho = fabs (qd[0] * Thexa[i][0] - qd[1] * Thexa[i][1]
+		- qd[2] * Thexa[i][2] - qd[3] * Thexa[i][3]);
+      if (rho > maxrho)
+      {
+	nb = i;
+	maxrho = rho;
+	if (maxrho > crysym_maxrho)
+	  break;
+      }
+    }
+  }
+  else
+    abort ();
+
 
   (*ptheta) = 2 * ut_num_acos (maxrho);
 

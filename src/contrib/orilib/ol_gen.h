@@ -7,6 +7,8 @@
 #include "ol_des.h"
 #include "ol_glo.h"
 
+extern int  ol_label_g (char *, double **);
+
 extern void ol_nb_e (double, double, double, double *);
 extern void ol_nb_e_rad (double, double, double, double *);
 extern void ol_srand_e_rad (int, int, double **);

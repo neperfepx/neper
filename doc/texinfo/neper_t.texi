@@ -273,7 +273,12 @@ width values@comma{} use the syntax @samp{file(@var{file_name})} where
 the list of widths (see @ref{Multiscale Cell File}).  Argument
 @samp{@code{v=@var{v}}} enables to specify the lamella plane @w{normals
 @code{@var{v}}}.  For randomly-distributed normals taken from a uniform
-distribution@comma{} use @samp{random}.  For specifying cell-by-cell
+distribution@comma{} use @samp{random}.  For a direction of the parent
+crystal@comma{} use
+@samp{crysdir(@var{dir_x}@comma{}@var{dir_y}@comma{}@var{dir_z})}@comma{}
+where @math{(@var{dir_x}@comma{}@var{dir_y}@comma{}@var{dir_z})} is the
+  crystal direction.
+For specifying cell-by-cell
 normals@comma{} use the syntax @samp{file(@var{file_name})} where
 @code{@var{file_name}} is the name of a multiscale cell file containing
 the list of lamella plane normals (see @ref{Multiscale Cell File}).@*
@@ -535,7 +540,17 @@ In 2D@comma{} the @var{z} value can be omitted.
 any, none}
 
 @opt{-transform, char_string(...),
-Apply transformations to a raster tessellation:@*
+Apply transformations to a tessellation.@*
+The following transformation apply to a scalar tessellation:@*
+@math{@bullet{}} @samp{@code{scale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
+scales a tessellation by
+@code{@var{x_fact}}@comma{} @code{@var{y_fact}} and @code{@var{z_fact}}
+along directions @var{x}@comma{} @code{@var{y}} and
+@code{@var{z}}@comma{} respectively. For a 2D tessellation@comma{}
+@code{@var{z_fact}} can be omitted.@*
+@math{@bullet{}} @samp{rotate(@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{angle})}
+for a rotation about an axis/angle pair.@*
+The following transformation apply to a raster tessellation:@*
 @math{@bullet{}} @samp{@code{autocrop}} reduces the raster to its minimal size.@*
 @math{@bullet{}}
 @samp{@code{rasterscale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
@@ -557,18 +572,43 @@ any, none}
 
 @opt{-ori, char_string,
 Specify the type of crystal orientation distribution.
-It can be either @samp{3D} for orientations in the 3D space@comma{}
-or
-@samp{fibre(@var{dir}@comma{}@var{coo_x}@comma{}@var{coo_y}@comma{}@var{coo_z})}
+It can be:@*
+@bullet{} @samp{3D} for orientations in the 3D space;@*
+@bullet{} @samp{fibre(@var{dir}@comma{}@var{coo_x}@comma{}@var{coo_y}@comma{}@var{coo_z})}
 for orientations along a specific fibre (crystal direction
 (@code{@var{coo_x}}@comma{} @code{@var{coo_y}}@comma{}
  @code{@var{coo_z}})
 parallel to sample direction @code{@var{dir}}@comma{} where @code{@var{dir}}
-can be @samp{x}@comma{} @samp{y}@comma{} or @samp{z}).
-Crystal orientations are distributed randomly according to a uniform
-distribution in the specified space.
+can be @samp{x}@comma{} @samp{y}@comma{} or @samp{z});@*
+@bullet{} an ideal orientation@comma{} see @ref{Rotations and Orientations};@*
+@bullet{} a discrete orientation defined using an orientation descriptor:@*
+@samp{g(@var{g11}@comma{}@var{g12}@comma{}@var{g13}@comma{}@var{g21}@comma{}@var{g22}@comma{}@var{g23}@comma{}@var{g31}@comma{}@var{g32}@comma{}@var{g33}@comma{})}
+for a rotation matrix@comma{}
+@samp{e(@var{e1}@comma{}@var{e2}@comma{}@var{e3})} for Euler angles
+  in Bunge convention@comma{}
+@samp{ek(@var{ek1}@comma{}@var{ek2}@comma{}@var{ek3})} for Euler angles
+  in Kocks convention@comma{}
+@samp{er(@var{er1}@comma{}@var{er2}@comma{}@var{er3})} for Euler angles
+  in Roe convention@comma{}
+@samp{rtheta(@var{r1}@comma{}@var{r2}@comma{}@var{r3}@comma{}@var{theta})} for an
+  axis@w{ /} angle (in degrees) pair@comma{}
+@samp{q(@var{q1}@comma{}@var{q2}@comma{}@var{q3}@comma{}@var{q4})} for a
+  quaternion@comma{}
+@samp{R(@var{R1}@comma{}@var{R2}@comma{}@var{R3})} for a
+  Rodrigues vector and
+@samp{m(@var{h}@comma{}@var{k}@comma{}@var{l}@comma{}@var{u}@comma{}@var{v}@comma{}@var{w})}
+for Miller indices;@*
+@bullet{} @samp{equal} for orientations equal to the one of the parent
+cell;@*
+@bullet{} @samp{file(@var{filename})@SEPDEP{}@var{des}} for reading
+  orientations from file @file{@var{filename}} and written
+  using the descriptor @code{@var{des}} (@pxref{Rotations and Orientations});
+  if Euler angles (@code{e})@comma{} the descriptor can be omitted.@*
+For @samp{3D} and @samp{fibre}@comma{} crystal orientations are
+distributed randomly according to a uniform distribution in the
+specified space.
 ,
-3D or fibre(...), 3D}
+see above list, 3D}
 
 @optsec{-oricrysym, char_string,
 Specify the crystal symmetry.  This is used to reduce the domain

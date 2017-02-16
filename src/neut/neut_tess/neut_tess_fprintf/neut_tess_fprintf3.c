@@ -26,15 +26,15 @@ neut_tess_fprintf_per_gen (struct TESS Tess, FILE * file)
 void
 neut_tess_fprintf_per_seed (struct TESS Tess, FILE * file)
 {
-  int i, Shift, id;
+  int i, shift, id;
 
-  Shift = Tess.SeedQty - Tess.PerSeedQty;
+  shift = Tess.SeedQty - Tess.PerSeedQty;
 
   fprintf (file, "  *seed\n");
   fprintf (file, "   %d\n", Tess.PerSeedQty);
   for (i = 1; i <= Tess.PerSeedQty; i++)
   {
-    id = i + Shift;
+    id = i + shift;
     fprintf (file, "   %d ", id);
     fprintf (file, "%d ", Tess.PerSeedMaster[id]);
     ut_array_1d_int_fprintf (file, Tess.PerSeedShift[id], 3, "%d");

@@ -144,10 +144,15 @@ extern "C"
 
 extern void neut_nodes_init_dupnodeslave (struct NODES *pNodes);
 
-extern void neut_nodes_node_cell_dupnode (struct NODES Nodes, int node,
+extern void neut_nodes_node_seed_dupnode (struct NODES Nodes, int node,
     int cell, int *pdupnode);
 
 extern int neut_nodes_node_isslave (struct NODES Nodes, int node);
+
+extern int neut_nodes_node_shift_pernode (struct NODES Nodes, int node,
+    int* shift, int *ppernode);
+
+extern void neut_nodes_permasters (struct NODES Nodes, int **pmasters, int *pmasterqty);
 
 #endif /* NEUT_NODES_H */
 

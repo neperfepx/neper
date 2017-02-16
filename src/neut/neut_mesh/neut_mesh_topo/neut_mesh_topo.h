@@ -295,6 +295,9 @@ extern "C"
   extern void neut_mesh_node_elsets (struct MESH Mesh, int node,
 				     int **pelsets, int *pelsetqty);
 
+  extern int  neut_mesh_node_elset (struct MESH Mesh, int node,
+				    int *pelset);
+
 extern void neut_mesh_node_elset_elts (struct MESH Mesh, int node, int
 				       elset, int **pelts, int* peltqty);
 

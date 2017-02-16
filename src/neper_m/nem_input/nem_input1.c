@@ -126,7 +126,7 @@ nem_input_init_dim_tesr (struct IN_M *pIn, struct TESR Tesr)
   return;
 }
 
-void
+int
 nem_input_init_dim_mesh (struct IN_M *pIn, struct MESH *Mesh)
 {
   int datadim;
@@ -134,11 +134,11 @@ nem_input_init_dim_mesh (struct IN_M *pIn, struct MESH *Mesh)
   datadim = neut_mesh_array_dim (Mesh);
 
   if (datadim == -1)
-    ut_error_reportbug ();
+    return -1;
 
   nem_input_init_dim_datadim (pIn, datadim);
 
-  return;
+  return 0;
 }
 
 void

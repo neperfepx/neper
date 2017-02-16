@@ -7,103 +7,55 @@
 void
 neut_tess_fscanf (FILE * file, struct TESS *pTess)
 {
-  neut_tess_fscanf_verbosity (file, pTess, 0);
-}
-
-void
-neut_tess_fscanf_verbosity (FILE * file, struct TESS *pTess, int verbosity)
-{
   char *version = ut_alloc_1d_char (10);
-
-  verbosity = verbosity;
+  char *tmp = ut_alloc_1d_char (100);
 
   if ((*pTess).PolyQty > 0)
     neut_tess_free (pTess);
 
-  neut_tess_fscanf_version (file, version);
+  neut_tess_set_zero (pTess);
 
-  if (!strcmp (version, "1.9.2"))
+  neut_tess_fscanf_head (pTess, file);
+
+  neut_tess_fscanf_cell (pTess, file);
+
+  neut_tess_fscanf_ver (pTess, file);
+
+  neut_tess_fscanf_edge (pTess, file);
+  neut_tess_init_veredge (pTess);
+
+  if ((*pTess).Dim >= 2)
   {
-    neut_tess_fscanf_1p9 (file, pTess);
-    (*pTess).CellQty = (*pTess).PolyQty;
-    (*pTess).DomType = ut_alloc_1d_char (5);
-    strcpy ((*pTess).DomType, "cube");
-    neut_tess_init_domain (pTess);
+    neut_tess_fscanf_face (pTess, file);
+    neut_tess_init_edgeface (pTess);
   }
 
-  else if (!strcmp (version, "1.10"))
+  if ((*pTess).Dim >= 3)
   {
-    neut_tess_fscanf_1p10 (file, pTess);
-    neut_tess_init_domain_label (pTess);
+    neut_tess_fscanf_poly (pTess, file);
+    neut_tess_init_facepoly (pTess);
   }
 
-  else if (!strcmp (version, "2.0"))
-  {
-    char *tmp = ut_alloc_1d_char (100);
-    neut_tess_fscanf_head (pTess, file);
-    neut_tess_fscanf_cell (pTess, file);
-    if ((*pTess).Dim >= 0)
-      neut_tess_fscanf_ver (pTess, file);
-    if ((*pTess).Dim >= 1)
-    {
-      neut_tess_fscanf_edge (pTess, file);
-      neut_tess_init_veredge (pTess);
-    }
-    if ((*pTess).Dim >= 2)
-    {
-      neut_tess_fscanf_face (pTess, file);
-      neut_tess_init_edgeface (pTess);
-    }
-    if ((*pTess).Dim >= 3)
-    {
-      neut_tess_fscanf_poly (pTess, file);
-      neut_tess_init_facepoly (pTess);
-    }
+  ut_file_nextstring (file, tmp);
+  if (!strcmp (tmp, "**domain"))
+    neut_tess_fscanf_domain (pTess, file);
 
-    ut_file_nextstring (file, tmp);
-    if (!strcmp (tmp, "**domain"))
-      neut_tess_fscanf_domain (pTess, file);
+  ut_file_nextstring (file, tmp);
+  if (!strcmp (tmp, "**periodicity"))
+    neut_tess_fscanf_per (pTess, file);
 
-    ut_file_nextstring (file, tmp);
-    if (!strcmp (tmp, "**periodicity"))
-      neut_tess_fscanf_per (pTess, file);
+  ut_file_nextstring (file, tmp);
+  if (!strcmp (tmp, "**scale"))
+    neut_tess_fscanf_scale (pTess, file);
 
-    ut_file_nextstring (file, tmp);
-    if (!strcmp (tmp, "**scale"))
-      neut_tess_fscanf_scale (pTess, file);
-
-    neut_tess_fscanf_foot (file);
-    neut_tess_init_edgelength (pTess);
-
-    ut_free_1d_char (tmp);
-  }
-
-  else
-  {
-    ut_print_message (2, 2, "Unsupported tess file version `%s'.\n", version);
-    abort ();
-  }
-
-  /*
-     if (neut_tess_test (*pTess, verbosity) != 0)
-     {
-     ut_print_message (2, 0,
-     "Tessellation checking failed - tessellation is not valid.\n");
-     if (!verbosity)
-     ut_print_message (2, 0, "Debug with option -checktess of neper -T.\n");
-
-     abort ();
-     }
-     else if (verbosity)
-     ut_print_message (2, 0, "Tessellation checking succeeded.\n");
-   */
-
-  neut_tess_init_alldom_fromdomtess (pTess);
+  neut_tess_fscanf_foot (file);
+  neut_tess_init_edgelength (pTess);
 
   neut_tess_init_celltrue (pTess);
   neut_tess_init_cellbody (pTess);
 
   ut_free_1d_char (version);
+  ut_free_1d_char (tmp);
 
   return;
 }

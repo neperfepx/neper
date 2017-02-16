@@ -1198,12 +1198,22 @@ void
 neut_mesh_point_elt_in (struct MESH Mesh, struct NODES Nodes,
 			double *coo, int elt, int *pinelt)
 {
+  if (Mesh.Dimension == 3)
+    (*pinelt) =
+      ut_space_tet_point_in (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
+			     Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
+			     Nodes.NodeCoo[Mesh.EltNodes[elt][2]],
+			     Nodes.NodeCoo[Mesh.EltNodes[elt][3]], coo);
 
-  (*pinelt) =
-    ut_space_tet_point_in (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
-			   Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
-			   Nodes.NodeCoo[Mesh.EltNodes[elt][2]],
-			   Nodes.NodeCoo[Mesh.EltNodes[elt][3]], coo);
+  else if (Mesh.Dimension == 2)
+    (*pinelt) =
+      ut_space_triangle_point_in (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
+				  Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
+				  Nodes.NodeCoo[Mesh.EltNodes[elt][2]],
+				  coo, 1e-6, 1e-6);
+
+  else
+    abort ();
 
   return;
 }

@@ -40,7 +40,7 @@ nem_mesh_2d_gmsh (struct TESS Tess, int face, double *face_proj,
 
   file = ut_file_open (filename, "W");
 
-/*********************************************************************** 
+/***********************************************************************
  * general options */
 
   fprintf (file, "// face %d.\n", face);
@@ -54,20 +54,20 @@ nem_mesh_2d_gmsh (struct TESS Tess, int face, double *face_proj,
 
   nem_mesh_gmsh_options (file, nb, 4, 1, rnd);
 
-/*********************************************************************** 
+/***********************************************************************
  * writing nodes then 1D elements */
 
   nem_mesh_2d_gmsh_writenodes (Tess, Nodes, Mesh, face, face_proj, file);
   nem_mesh_2d_gmsh_write1dmesh (Tess, Mesh, face, file);
 
-/*********************************************************************** 
+/***********************************************************************
  * writing face */
 
   nem_mesh_2d_gmsh_writeface (Tess, Mesh, face, cl, file);
 
   ut_file_close (file, filename, "W");
 
-/*********************************************************************** 
+/***********************************************************************
  * meshing */
 
   gettimeofday (&beg_time, NULL);
@@ -79,7 +79,7 @@ nem_mesh_2d_gmsh (struct TESS Tess, int face, double *face_proj,
   (*pelapsed_t) = ut_time_subtract (&beg_time, &end_time);
   ut_free_1d_char (Args);
 
-/*********************************************************************** 
+/***********************************************************************
  * reading 2D mesh */
 
   if (ut_file_exist (filename_msh) == 0)
@@ -131,7 +131,7 @@ nem_mesh_2d_gmsh (struct TESS Tess, int face, double *face_proj,
     }
   }
 
-  // aligning element normal to face normal (should be the case, but 
+  // aligning element normal to face normal (should be the case, but
   // not always)
 
   if (face_proj)
@@ -251,14 +251,14 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
 
   neut_gmsh_rc ("bak");
 
-/*********************************************************************** 
+/***********************************************************************
  * writing 2D elements (w their nodes) in separate file */
 
   neut_mesh_poly_boundmesh (Tess, poly, Mesh[2], &Skin);
 
   file2 = ut_file_open (filename_surf, "W");
   neut_mesh_fprintf_gmsh (file2, "2", Nodes, Garbage, Garbage, Skin,
-			  Garbage, PGarbage, Garbage, NULL);
+			  Garbage, PGarbage, Garbage, NULL, "binary");
   ut_file_close (file2, filename_surf, "W");
 
   clmod = cl;
@@ -305,7 +305,7 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
     (*pelapsed_t) = ut_time_subtract (&beg_time, &end_time);
     ut_free_1d_char (Args);
 
-  /*********************************************************************** 
+  /***********************************************************************
    * reading 3D mesh */
 
     if (ut_file_exist (filename_msh) == 0)

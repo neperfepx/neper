@@ -57,6 +57,8 @@ neut_tess_fscanf_per_seed (struct TESS *pTess, FILE * file)
     (*pTess).SeedWeight[i] = (*pTess).SeedWeight[master];
   }
 
+  neut_tess_init_seedslave (pTess);
+
   return;
 }
 
@@ -88,7 +90,9 @@ neut_tess_fscanf_per_face (struct TESS *pTess, FILE * file)
     if (fscanf (file, "%d", &((*pTess).PerFaceOri[id])) != 1)
       abort ();
   }
+
   neut_tess_init_faceslave (pTess);
+  neut_tess_init_facepoly_per (pTess);
 
   return;
 }
@@ -119,6 +123,9 @@ neut_tess_fscanf_per_edge (struct TESS *pTess, FILE * file)
       abort ();
   }
   neut_tess_init_edgeslave (pTess);
+
+  if ((*pTess).Dim == 2)
+    neut_tess_init_edgefacenb_per (pTess);
 
   return;
 }

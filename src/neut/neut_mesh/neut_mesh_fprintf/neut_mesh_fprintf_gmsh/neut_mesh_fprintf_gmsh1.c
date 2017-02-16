@@ -9,13 +9,13 @@ neut_mesh_fprintf_gmsh (FILE * file, char *dim, struct NODES Nodes,
 			struct MESH Mesh0D, struct MESH Mesh1D,
 			struct MESH Mesh2D, struct MESH Mesh3D,
 			struct PART Part, struct MESH MeshCo,
-			char *numbering)
+			char *numbering, char* mode)
 {
-  neut_meshheader_fprintf_gmsh (file, Mesh0D, Mesh1D, Mesh2D, Mesh3D);
+  neut_meshheader_fprintf_gmsh (file, mode, Mesh0D, Mesh1D, Mesh2D, Mesh3D);
 
-  neut_nodes_fprintf_gmsh (file, Nodes);
+  neut_nodes_fprintf_gmsh (file, mode, Nodes);
 
-  neut_elts_fprintf_gmsh (file, Mesh0D, Mesh1D, Mesh2D, Mesh3D, Part,
+  neut_elts_fprintf_gmsh (file, mode, Mesh0D, Mesh1D, Mesh2D, Mesh3D, Part,
 			  MeshCo, dim, numbering);
 
   neut_physical_fprintf_gmsh (file, Mesh0D, Mesh1D, Mesh2D, Mesh3D,

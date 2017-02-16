@@ -5,8 +5,8 @@
 #include"neut_mesh_fprintf_inp_.h"
 
 void
-neut_mesh_fprintf_inp_mesh2d (FILE *file, struct MESH Mesh2D, int
-    shift_elt)
+neut_mesh_fprintf_inp_mesh2d (FILE *file, struct MESH Mesh2D,
+			      int shift_elt, char *type)
 {
   int i, j;
   int eltnodeqty2D = neut_elt_nodeqty (Mesh2D.EltType, Mesh2D.Dimension, Mesh2D.EltOrder);
@@ -30,13 +30,20 @@ neut_mesh_fprintf_inp_mesh2d (FILE *file, struct MESH Mesh2D, int
   }
   else if (!strcmp (Mesh2D.EltType, "quad"))
   {
+    fprintf (file, "*Element, type=");
+
     if (Mesh2D.EltOrder == 1)
     {
-      fprintf (file, "C2D4\n");
+      if (!type || !strcmp (type, "standard"))
+	fprintf (file, "C2D4\n");
+      else if (!strcmp (type, "cohesive"))
+	fprintf (file, "COH2D4\n");
+      else
+	abort ();
 
       for (i = 1; i <= Mesh2D.EltQty; i++)
       {
-	fprintf (file, "%d,", i);
+	fprintf (file, "%d, ", i + shift_elt);
 
 	fprintf (file, " %d,", Mesh2D.EltNodes[i][0]);
 	fprintf (file, " %d,", Mesh2D.EltNodes[i][1]);
@@ -46,11 +53,16 @@ neut_mesh_fprintf_inp_mesh2d (FILE *file, struct MESH Mesh2D, int
     }
     else
     {
-      fprintf (file, "C2D8\n");
+      if (!type || !strcmp (type, "standard"))
+	fprintf (file, "C2D8\n");
+      else if (!strcmp (type, "cohesive"))
+	fprintf (file, "COH2D8\n");
+      else
+	abort ();
 
       for (i = 1; i <= Mesh2D.EltQty; i++)
       {
-	fprintf (file, "%d, ", i);
+	fprintf (file, "%d, ", i + shift_elt);
 
 	fprintf (file, "%d, ", Mesh2D.EltNodes[i][0]);
 	fprintf (file, "%d, ", Mesh2D.EltNodes[i][1]);
@@ -68,7 +80,7 @@ neut_mesh_fprintf_inp_mesh2d (FILE *file, struct MESH Mesh2D, int
 }
 
 void
-neut_mesh_fprintf_inp_mesh3d (FILE *file, struct MESH Mesh3D, int shift_elt)
+neut_mesh_fprintf_inp_mesh3d (FILE *file, struct MESH Mesh3D, int shift_elt, char *type)
 {
   int i, j;
   int eltnodeqty3D = neut_elt_nodeqty (Mesh3D.EltType, Mesh3D.Dimension, Mesh3D.EltOrder);
@@ -114,9 +126,19 @@ neut_mesh_fprintf_inp_mesh3d (FILE *file, struct MESH Mesh3D, int shift_elt)
   else if (!strcmp (Mesh3D.EltType, "triprism"))
   {
     if (Mesh3D.EltOrder == 1)
-      fprintf (file, "C3D6\n");
+    {
+      if (!type || !strcmp (type, "standard"))
+	fprintf (file, "C3D6\n");
+      else if (!strcmp (type, "cohesive"))
+	fprintf (file, "COH3D6\n");
+    }
     else if (Mesh3D.EltOrder == 2)
-      fprintf (file, "C3D15\n");
+    {
+      if (!type || !strcmp (type, "standard"))
+	fprintf (file, "C3D15\n");
+      else if (!strcmp (type, "cohesive"))
+	fprintf (file, "COH3D15\n");
+    }
 
     for (i = 1; i <= Mesh3D.EltQty; i++)
     {

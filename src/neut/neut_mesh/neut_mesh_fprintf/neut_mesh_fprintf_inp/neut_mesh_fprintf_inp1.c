@@ -42,7 +42,7 @@ neut_mesh_fprintf_inp (FILE * file, char *dim,
 
   shift_elt2D = 0;
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "2") && Mesh2D.EltQty > 0)
-    neut_mesh_fprintf_inp_mesh2d (file, Mesh2D, shift_elt2D);
+    neut_mesh_fprintf_inp_mesh2d (file, Mesh2D, shift_elt2D, "standard");
 
 // 3D elts -------------------------------------------------------------
 
@@ -50,15 +50,9 @@ neut_mesh_fprintf_inp (FILE * file, char *dim,
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "2"))
     shift_elt3D += Mesh2D.EltQty;
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "3") && Mesh3D.EltQty > 0)
-    neut_mesh_fprintf_inp_mesh3d (file, Mesh3D, shift_elt3D);
+    neut_mesh_fprintf_inp_mesh3d (file, Mesh3D, shift_elt3D, "standard");
 
 // Cohesive elts -------------------------------------------------------
-
-  shift_eltCo = 0;
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "2"))
-    shift_eltCo += Mesh2D.EltQty;
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "3"))
-    shift_eltCo += Mesh3D.EltQty;
 
   if (MeshCo.EltQty > 0)
   {
@@ -69,9 +63,9 @@ neut_mesh_fprintf_inp (FILE * file, char *dim,
       shift_eltCo = shift_elt3D + Mesh3D.EltQty;
 
     if (MeshCo.Dimension == 2)
-      neut_mesh_fprintf_inp_mesh2d (file, MeshCo, shift_eltCo);
+      neut_mesh_fprintf_inp_mesh2d (file, MeshCo, shift_eltCo, "cohesive");
     if (MeshCo.Dimension == 3)
-      neut_mesh_fprintf_inp_mesh3d (file, MeshCo, shift_eltCo);
+      neut_mesh_fprintf_inp_mesh3d (file, MeshCo, shift_eltCo, "cohesive");
   }
 
 // 2D elsets -----------------------------------------------------------

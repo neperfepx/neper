@@ -7,7 +7,9 @@ extern "C"
 {
 #endif
 
-  extern void net_tess_opt_init_sset_ori (struct IN_T In,
+  extern void net_tess_opt_init_sset_ori (struct IN_T In, int level,
+					  struct SEEDSET *SSet,
+					  int dtess, int dcell,
 					  struct SEEDSET *pSSet);
 
 #ifdef __cplusplus

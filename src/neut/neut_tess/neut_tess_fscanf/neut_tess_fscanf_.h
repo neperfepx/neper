@@ -10,6 +10,7 @@
 
 #include"neut.h"
 
+extern void neut_tess_fscanf_head (struct TESS *,FILE *);
 extern void neut_tess_fscanf_version (FILE *, char *);
 extern void neut_tess_fscanf_foot (FILE *);
 extern void neut_tess_fscanf_cell (struct TESS *, FILE *);

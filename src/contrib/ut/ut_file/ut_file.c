@@ -139,6 +139,7 @@ ut_file_open (const char *name, const char *mode)
     {
       ut_print_lineheader (2);
       printf ("%s: no such file.\n", name2);
+      fflush(stdout);
       abort ();
     }
   }
@@ -149,6 +150,7 @@ ut_file_open (const char *name, const char *mode)
     {
       ut_print_lineheader (2);
       printf ("%s cannot be opened for writing.\n", name2);
+      fflush(stdout);
       abort ();
     }
   }
@@ -159,6 +161,7 @@ ut_file_open (const char *name, const char *mode)
     {
       ut_print_lineheader (2);
       printf ("%s cannot be opened for writing.\n", name2);
+      fflush(stdout);
       abort ();
     }
   }

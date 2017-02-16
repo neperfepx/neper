@@ -8,7 +8,7 @@ void
 nem_interface_cohesive (struct TESS Tess, struct NODES Nodes,
 		        struct MESH *Mesh, struct BOUNDARY Bound)
 {
-  int i, j, k, elt, facet, slavecell, dim = Tess.Dim;
+  int i, j, k, elt, facet, facetori, slaveseed, dim = Tess.Dim;
   int eltqty, *elts = NULL;
   int feltnodeqty, eltnodeqty, *nodes = NULL;
 
@@ -40,14 +40,15 @@ nem_interface_cohesive (struct TESS Tess, struct NODES Nodes,
       {
 	elt = Bound.BoundElts[i][0][j];
 	facet = Bound.BoundEltFacets[i][0][j];
-	slavecell = Bound.BoundCell[i][1];
+	facetori = Bound.BoundEltFacetOri[i][0][j];
+	slaveseed = Bound.BoundSeed[i][1];
 	neut_elt_facet_nodes (Mesh[Tess.Dim].EltType, Tess.Dim,
 			      Mesh[Tess.Dim].EltOrder,
 			      Mesh[Tess.Dim].EltNodes[elt],
-			      facet, nodes);
+			      facet, facetori, nodes);
 
 	for (k = 0; k < feltnodeqty; k++)
-	  neut_nodes_node_cell_dupnode (Nodes, nodes[k], slavecell,
+	  neut_nodes_node_seed_dupnode (Nodes, nodes[k], slaveseed,
 					nodes + Tess.Dim + k);
 
 	if (Mesh[4].Dimension == 2)

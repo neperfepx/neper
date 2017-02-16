@@ -19,7 +19,7 @@ net_tess_opt_init_sset_ori_3d (struct SEEDSET *pSSet)
 
   for (i = 1; i <= (*pSSet).N; i++)
   {
-    // keep the n1 n2 n3 stuff for backward compatibility. 
+    // keep the n1 n2 n3 stuff for backward compatibility.
     // Calling the gsl as an argument switches n1 and n3.
     n1 = gsl_rng_uniform (r);
     n2 = gsl_rng_uniform (r);
@@ -106,6 +106,115 @@ net_tess_opt_init_sset_ori_crysym (struct IN_T In, struct SEEDSET *pSSet)
     ol_q_qcrysym ((*pSSet).q[i], In.oricrysym, (*pSSet).q[i]);
 
   ut_string_string (In.oricrysym, &(*pSSet).crysym);
+
+  return;
+}
+
+void
+net_tess_opt_init_sset_ori_equal (struct SEEDSET *SSet, int dtess,
+				  int dcell, struct SEEDSET *pSSet)
+{
+  int i;
+
+  (*pSSet).q = ut_alloc_2d ((*pSSet).N + 1, 4);
+
+  for (i = 1; i <= (*pSSet).N; i++)
+    ut_array_1d_memcpy ((*pSSet).q[i], 4, SSet[dtess].q[dcell]);
+
+  return;
+}
+
+int
+net_tess_opt_init_sset_ori_label (char *label, struct SEEDSET *pSSet)
+{
+  int status, i;
+  double **g = ol_g_alloc ();
+
+  (*pSSet).q = ut_alloc_2d ((*pSSet).N + 1, 4);
+  status = ol_label_g (label, g);
+
+  if (!status)
+  {
+    ol_g_q (g, (*pSSet).q[1]);
+    for (i = 1; i <= (*pSSet).N; i++)
+      ut_array_1d_memcpy ((*pSSet).q[i], 4, (*pSSet).q[1]);
+  }
+
+  ol_g_free (g);
+
+  return status;
+}
+
+void
+net_tess_opt_init_sset_ori_file (char *filename, struct SEEDSET *pSSet)
+{
+  int i, partqty;
+  char **parts = NULL;
+  char *des = NULL;
+  double *vect = ut_alloc_1d (4);
+  double **g = ol_g_alloc ();
+  FILE *fp = NULL;
+
+  ut_string_separate (filename, NEUT_SEP_DEP, &parts, &partqty);
+  if (partqty == 1)
+    ut_string_string ("e", &des);
+  else
+    ut_string_string (parts[1], &des);
+
+  printf ("\n");
+  fp = ut_file_open (parts[0], "r");
+
+  (*pSSet).q = ut_alloc_2d ((*pSSet).N + 1, 4);
+
+  for (i = 1; i <= (*pSSet).N; i++)
+  {
+    if (!strcmp (des, "e"))
+    {
+      ol_e_fscanf (fp, vect);
+      ol_e_q (vect, (*pSSet).q[i]);
+    }
+    else if (!strcmp (des, "ek"))
+    {
+      ol_e_fscanf (fp, vect);
+      ol_ek_e (vect, vect);
+      ol_e_q (vect, (*pSSet).q[i]);
+    }
+    else if (!strcmp (des, "er"))
+    {
+      ol_e_fscanf (fp, vect);
+      ol_er_e (vect, vect);
+      ol_e_q (vect, (*pSSet).q[i]);
+    }
+    else if (!strcmp (des, "rtheta"))
+    {
+      ol_rtheta_fscanf (fp, vect, vect + 3);
+      ol_rtheta_q (vect, vect[3], (*pSSet).q[i]);
+    }
+    else if (!strcmp (des, "q"))
+    {
+      ol_q_fscanf (fp, vect);
+      ol_q_q (vect, (*pSSet).q[i]);
+    }
+    else if (!strcmp (des, "R"))
+    {
+      ol_R_fscanf (fp, vect);
+      ol_R_q (vect, (*pSSet).q[i]);
+    }
+    else if (!strcmp (des, "g"))
+    {
+      ol_g_fscanf (fp, g);
+      ol_g_q (g, (*pSSet).q[i]);
+    }
+    else
+      abort ();
+  }
+
+  ut_file_close (fp, filename, "r");
+  ut_print_message (0, 0, "");
+
+  ut_free_2d_char (parts, partqty);
+  ut_free_1d (vect);
+  ol_g_free (g);
 
   return;
 }

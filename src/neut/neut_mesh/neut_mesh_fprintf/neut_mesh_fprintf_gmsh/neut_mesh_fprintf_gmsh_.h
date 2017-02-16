@@ -12,16 +12,16 @@
 
 #include"neut_mesh_fprintf_gmsh.h"
 
-extern void neut_meshheader_fprintf_gmsh (FILE * file, struct MESH
+extern void neut_meshheader_fprintf_gmsh (FILE * file, char *mode, struct MESH
 					  Mesh0D, struct MESH Mesh1D,
 					  struct MESH Mesh2D,
 					  struct MESH Mesh3D);
-extern void neut_elts_fprintf_gmsh (FILE * file, struct MESH Mesh0D,
+extern void neut_elts_fprintf_gmsh (FILE * file, char *mode, struct MESH Mesh0D,
 				    struct MESH Mesh1D, struct MESH Mesh2D,
 				    struct MESH Mesh3D,
 				    struct PART Part, struct MESH CMesh,
 				    char *dim, char *numbering);
-extern void neut_nodes_fprintf_gmsh (FILE * file, struct NODES Nodes);
+extern void neut_nodes_fprintf_gmsh (FILE * file, char *mode, struct NODES Nodes);
 
 extern void neut_physical_fprintf_gmsh (FILE * file, struct MESH Mesh0D,
     struct MESH Mesh1D, struct MESH Mesh2D, struct MESH Mesh3D, char

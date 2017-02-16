@@ -198,7 +198,7 @@ neut_tess_tess_per (struct TESS TessA, struct TESS *pTessB)
 
     ut_array_1d_int_memcpy ((*pTessB).PerVerSlaveQty + 1,
 			    TessA.VerQty, TessA.PerVerSlaveQty + 1);
-    for (i = 1; i <= (*pTessB).PerVerQty; i++)
+    for (i = 1; i <= (*pTessB).VerQty; i++)
     {
       (*pTessB).PerVerSlaveNb[i]
 	= ut_alloc_1d_int ((*pTessB).PerVerSlaveQty[i] + 1);
@@ -233,7 +233,7 @@ neut_tess_tess_per (struct TESS TessA, struct TESS *pTessB)
 
     ut_array_1d_int_memcpy ((*pTessB).PerEdgeSlaveQty + 1,
 			    TessA.EdgeQty, TessA.PerEdgeSlaveQty + 1);
-    for (i = 1; i <= (*pTessB).PerEdgeQty; i++)
+    for (i = 1; i <= (*pTessB).EdgeQty; i++)
     {
       (*pTessB).PerEdgeSlaveNb[i]
 	= ut_alloc_1d_int ((*pTessB).PerEdgeSlaveQty[i] + 1);

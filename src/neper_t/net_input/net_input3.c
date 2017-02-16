@@ -48,7 +48,7 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("none", &(*pIn).format);
   ut_string_string ("binary16", &(*pIn).tesrformat);
 
-  ut_string_string ("3D", &((*pIn).oridistrib));
+  ut_string_string ("3d", &((*pIn).oridistribstring));
   ut_string_string ("e", &((*pIn).orides));
   ut_string_string ("triclinic", &((*pIn).oricrysym));
   ut_string_string ("plain", &((*pIn).oriformat));
@@ -90,6 +90,8 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ((*pIn).morphooptideltamaxstring, (*pIn).morphooptideltamax);
   (*pIn).morphooptiinistep = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).morphooptiinistepstring, (*pIn).morphooptiinistep);
+  (*pIn).oridistrib = ut_alloc_1d_pchar (1);
+  ut_string_string ((*pIn).oridistribstring, (*pIn).oridistrib);
 
   return;
 }
@@ -296,7 +298,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
     else if (!strcmp (Arg, "-tesrsize"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).tesrsizestring));
     else if (!strcmp (Arg, "-ori"))
-      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oridistrib));
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oridistribstring));
     else if (!strcmp (Arg, "-oridescriptor"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).orides));
     else if (!strcmp (Arg, "-oricrysym"))

@@ -15,7 +15,7 @@ net_tess_lam (struct IN_T In, int level,
   struct TESS *pTess = Tess + TessId;
   struct SEEDSET *pSSet = SSet + TessId;
 
-  net_tess_lam_seed (In, In.morpho[level], *pMTess, Tess, dtess, dcell,
+  net_tess_lam_seed (In, level, In.morpho[level], *pMTess, Tess, dtess, dcell,
 		     Dom, SSet, pSSet);
 
   net_tess3d (Tess[dtess], dcell, *pSSet, "ann", TessId, pMTess, pTess);

@@ -299,10 +299,10 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   // ###################################################################
   // ### WRITING RESULTS ###############################################
 
-  if (strcmp (In.transform, "none") && Tesr.Dim > 0)
+  if (strcmp (In.transform, "none") && (FTess.Dim > 0 || Tesr.Dim > 0))
   {
     ut_print_message (0, 1, "Operating on raster tessellation...\n");
-    net_transform (In, &Tesr);
+    net_transform (In, &FTess, &Tesr);
   }
 
   // ###################################################################

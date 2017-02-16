@@ -5,15 +5,19 @@
 cmake_minimum_required (VERSION 2.8)
 project (muparser CXX)
 
-option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)"
-ON)
-option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for
-production use)" OFF)
+option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
+option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)" OFF)
 
 file (GLOB headers "include/*.h")
 file (GLOB sources "src/*.cpp")
 
-add_definitions(-g -O3)
+if (DEVEL_OPTIMIZATION)
+  add_definitions(-O3)
+endif ()
+
+if (DEVEL_DEBUGGING_FLAG)
+  add_definitions(-g)
+endif ()
 
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 

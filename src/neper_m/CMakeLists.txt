@@ -84,6 +84,7 @@ add_library (neper_m
 ./nem/nem_mesh_gmsh/nem_mesh_gmsh1.c
 ./nem_transport/nem_transport1.c
 ./nem_transport/nem_transport2.c
+./nem_transport/nem_transport3.c
 ./nem_partition/nem_partition5.c
 ./nem_partition/nem_partition1.c
 ./nem_partition/nem_partition4.c

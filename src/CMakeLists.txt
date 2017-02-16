@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.0.1\")
+set (NEPER_VERSION \"3.0.2\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -151,6 +151,8 @@ add_test (T_morphooptilogval       ./neper --rcfile none -T -n 5 -morpho gg -mor
 add_test (T_morphooptilogdis       ./neper --rcfile none -T -n 5 -morpho gg -morphooptilogdis iter,x,tarpdf)
 add_test (T_sort                   ./neper --rcfile none -T -n 5 -sort x+y+z)
 add_test (T_scale                  ./neper --rcfile none -T -n 5 -scale 2:1:0.5)
+add_test (T_transform_scale        ./neper --rcfile none -T -n 5 -transform "scale(1,2,3)")
+add_test (T_transform_rotate       ./neper --rcfile none -T -n 5 -transform "rotate(1,0,0,45)")
 add_test (T_transform_rmsat        ./neper --rcfile none -T -n 5 -for tesr -transform rmsat)
 add_test (T_transform_rs           ./neper --rcfile none -T -n 5 -for tesr -transform "rasterscale(0.5,1,2)")
 add_test (T_transform_grow         ./neper --rcfile none -T -n 5 -for tesr -domain "cylinder(1,1,100)" -transform grow)
@@ -277,7 +279,7 @@ add_test (M_statelset0d          ./neper --rcfile none -M -loadmesh n5-id1.msh -
 add_test (M_statelset1d          ./neper --rcfile none -M -loadmesh n5-id1.msh -statelset1d id,x,y,z,length,eltnb,true,body,domtype)
 add_test (M_statelset2d          ./neper --rcfile none -M -loadmesh n5-id1.msh -statelset2d id,x,y,z,eltnb,true,body,domtype)
 add_test (M_statelset3d          ./neper --rcfile none -M -loadmesh n5-id1.msh -statelset3d id,x,y,z,vol,eltnb,rrav,rrmin,rrmax,Osize,eltnb,true,body)
-# add_test (M_statpoint            ./neper --rcfile none -M -loadmesh n5-id1.msh -loadpoint coo -statpoint id,x,y,z,elt3d,elset3d,2dmeshp,2dmeshd,2dmeshv,2dmeshn)
+# add_test (M_statpoint            ./neper --rcfile none -M -loadmesh n5-id1.msh -loadpoint coo -statpoint id,x,y,z,elt,elset,2dmeshp,2dmeshd,2dmeshv,2dmeshn)
 add_test (M_tesr_elt_hex         ./neper --rcfile none -M n5-id1.tesr -elt hex -cl 0.1)
 add_test (M_tesr_dim2            ./neper --rcfile none -M n5-id1-dim2.tesr -rcl 0.7 -for msh,geof,inp)
 
@@ -286,11 +288,13 @@ add_test (M_interface2           ./neper --rcfile none -M n5-id1.tess -mesh3dclc
 add_test (M_interface3           ./neper --rcfile none -M n5-id1-dim2.tess -interface discontinuous -faset internal -format geof)
 
 # Module -V
+add_test (V_pretest0             ./neper --rcfile none -T -n 5 -id 1 -per 1 -o n5-id1-per)
 add_test (V_pretest1             ./neper --rcfile none -T -n 5 -id 1 -reg 1 -statver x -statedge x -statface x -statpoly x -statcell x -statseed x -for tess,ori)
 add_test (V_pretest2             ./neper --rcfile none -T -n 5 -id 1 -reg 1 -dim 2 -o n5-id1-dim2 -statedge x -statface x -statcell x)
 add_test (V_pretest3             ./neper --rcfile none -M n5-id1.tess -mesh3dclconv 1 -statnode x -statelt0d x -statelt1d x -statelt2d x -statelt3d x -statelset3d x)
 add_test (V_pretest4             ./neper --rcfile none -M n5-id1-dim2.tess -mesh3dclconv 1 -statnode x -statelt0d x -statelt1d x -statelt2d x -statelset2d x)
 add_test (V_pretest5             ./neper --rcfile none -M n5-id1.tess -mesh3dclconv 1 -statnode x,y,z -o xyz)
+add_test (V_seedcol_per           ./neper --rcfile none -V n5-id1-per.tess -print foo)
 add_test (V_seedcol_rgb           ./neper --rcfile none -V n5-id1.tess -showcell none -showseed all -dataseedcol blue -print foo)
 add_test (V_seedcol_rgb2          ./neper --rcfile none -V n5-id1.tess -showcell none -showseed all -dataseedcol 10,20,30 -print foo)
 add_test (V_seedcol_id            ./neper --rcfile none -V n5-id1.tess -showcell none -showseed all -dataseedcol id -print foo)

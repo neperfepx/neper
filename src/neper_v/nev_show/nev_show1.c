@@ -269,7 +269,7 @@ nev_show_init (struct TESS Tess, struct TESR Tesr,
     if ((*pPrint).showseed[0] == -1)
     {
       (*pPrint).showseed =
-	ut_realloc_1d_int ((*pPrint).showseed, Tess.CellQty + 1);
+	ut_realloc_1d_int ((*pPrint).showseed, Tess.SeedQty + 1);
       ut_array_1d_int_set ((*pPrint).showseed, Tess.SeedQty + 1, 0);
     }
   }

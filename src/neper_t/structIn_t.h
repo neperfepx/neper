@@ -82,7 +82,8 @@ extern "C"
     char *format;			// output format
     char *tesrformat;			// output tesr format
 
-    char *oridistrib;			// orientation distribution
+    char *oridistribstring;		// orientation distribution string
+    char **oridistrib;			// orientation distribution
     char *orides;			// orientation descriptor
     char *oricrysym;			// orientation crystal symmetry
     char *oriformat;			// orientation file format

@@ -9,6 +9,9 @@ set (ANN_VERSION_MAJOR 1)
 set (ANN_VERSION_MINOR 1)
 set (ANN_VERSION_PATCH 0)
 
+option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
+option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)" OFF)
+
 # configure a header file to pass some of the CMake settings
 # to the source code
 configure_file (
@@ -19,7 +22,14 @@ configure_file (
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}")
 
-add_definitions(-g -O3)
+if (DEVEL_OPTIMIZATION)
+  add_definitions(-O3)
+endif ()
+
+if (DEVEL_DEBUGGING_FLAG)
+  add_definitions(-g)
+endif ()
+
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library (ann

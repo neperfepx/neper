@@ -5,9 +5,9 @@
 #include"neut_mesh_fscanf_gmsh_.h"
 
 void
-neut_mesh_fscanf_gmshHead (FILE * msh, int *pcontiguous)
+neut_mesh_fscanf_gmshHead (FILE * msh, int *pcontiguous, char **pmode)
 {
-  int status;
+  int status, type;
   char string[1000];
 
   /* Reading of the 2 first strings, which must be "$MeshFormat" and "2". */
@@ -20,18 +20,36 @@ neut_mesh_fscanf_gmshHead (FILE * msh, int *pcontiguous)
 
   if (fscanf (msh, "%s", string) != 1
       || (strcmp (string, "2") != 0 && strcmp (string, "2.2") != 0))
-  {
     ut_print_message (2, 0, "Bad msh file format version detected!\n");
-    abort ();
-  }
 
   /* skipping the 2 next ones. */
-  ut_file_skip (msh, 2);
+  status = fscanf (msh, "%d", &type);
+  if (status != 1)
+    abort ();
+
+  if (type == 0)
+    ut_string_string ("ascii", pmode);
+  else if (type == 1)
+    ut_string_string ("binary", pmode);
+  else
+    abort ();
+
+  ut_file_skip (msh, 1);
+
+  // trashing 1 value
+  if (!strcmp (*pmode, "binary"))
+  {
+    status = fread (&type, sizeof (int), 1, msh);
+    if (status != 1)
+      abort ();
+    status = fscanf (msh, "%s", string);
+    if (status != 1)
+      abort ();
+  }
 
   (*pcontiguous) = 0;
 
   status = fscanf (msh, "%s", string);
-
   if (status != 1)
     abort ();
 
@@ -63,11 +81,11 @@ neut_mesh_fscanf_gmshHead (FILE * msh, int *pcontiguous)
 }
 
 void
-ReadNodes (FILE * msh, struct NODES *pNodes, int *node_nbs)
+ReadNodes (FILE * msh, char *mode, struct NODES *pNodes, int *node_nbs)
 {
-  ReadNodesProp (msh, pNodes, node_nbs);
+  ReadNodesProp (msh, mode, pNodes, node_nbs);
 
-  ReadNodesFoot (msh);
+  ReadNodesFoot (msh, mode);
 
   return;
 }

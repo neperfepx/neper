@@ -5,7 +5,7 @@
 #include"net_tess_lam_seed_.h"
 
 void
-net_tess_lam_seed (struct IN_T In, char *morpho, struct MTESS MTess, struct TESS *Tess,
+net_tess_lam_seed (struct IN_T In, int level, char *morpho, struct MTESS MTess, struct TESS *Tess,
 	      int dtess, int dcell, struct TESS Dom,
 	      struct SEEDSET *SSet, struct SEEDSET *pSSet)
 
@@ -19,7 +19,7 @@ net_tess_lam_seed (struct IN_T In, char *morpho, struct MTESS MTess, struct TESS
   net_tess_lam_seed_readargs (morpho, MTess, Tess, dtess, dcell,
 			      &wtype, &w, &wqty, &vtype, &v, &vqty);
 
-  net_tess_lam_seed_set (In, MTess, Tess, dtess, dcell, Dom, wtype, w, wqty,
+  net_tess_lam_seed_set (In, level, MTess, Tess, dtess, dcell, Dom, wtype, w, wqty,
       vtype, v, vqty, SSet, pSSet);
 
   ut_free_1d (v);

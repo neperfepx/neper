@@ -67,7 +67,7 @@ nev_print_tess (FILE * file, struct PRINT Print, struct TESS Tess,
 	  {
 	    allneigh = 1;
 	    for (j = 0; j < neighqty; j++)
-	      if (Print.showpoly[neigh[j]] == 0)
+	      if (neut_tess_seed_iscell (Tess, neigh[j]) && Print.showpoly[neigh[j]] == 0)
 	      {
 		allneigh = 0;
 		break;
@@ -85,7 +85,8 @@ nev_print_tess (FILE * file, struct PRINT Print, struct TESS Tess,
     {
       status = 0;
       for (j = 0; j < 2; j++)
-	if (Tess.FacePoly[i][j] > 0 && Print.showpoly[Tess.FacePoly[i][j]])
+	if (neut_tess_seed_iscell (Tess, Tess.FacePoly[i][j])
+	    && Print.showpoly[Tess.FacePoly[i][j]])
 	  status = 1;
 
       if (status && !Print.showface[i])
@@ -109,7 +110,7 @@ nev_print_tess (FILE * file, struct PRINT Print, struct TESS Tess,
       for (j = 0; j < 2; j++)
       {
 	poly = Tess.FacePoly[face][j];
-	if (poly > 0 && Print.showpoly[poly])
+	if (neut_tess_seed_iscell (Tess, poly) && Print.showpoly[poly])
 	{
 	  qty++;
 	  ut_array_1d_int_add (Col, TessData.Col[3][poly], 3, Col);

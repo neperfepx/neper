@@ -36,3 +36,5 @@ extern void nem_interface_dup_renumber_1d (struct TESS Tess, struct NODES Nodes,
 				       struct MESH *Mesh);
 extern void nem_interface_dup_renumber_2d (struct TESS Tess, struct NODES Nodes,
 				       struct MESH *Mesh);
+
+extern void nem_interface_dup_per (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh);

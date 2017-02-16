@@ -10,6 +10,7 @@ set (UT_VERSION_PATCH 0)
 
 # should we use the optional libraries?
 option (HAVE_GSL      "Use the GNU Scientific Library (GSL)" ON)
+option (HAVE_MUPARSER "Use muparser"                   ON)
 option (HAVE_NLOPT      "Use NLOPT" ON)
 option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
 option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)" OFF)
@@ -24,13 +25,13 @@ configure_file (
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_SOURCE_DIR}")
 
-add_definitions(-Wall -W -g -O3)
+add_definitions(-Wall -W)
 if (DEVEL_OPTIMIZATION)
   add_definitions(-O3)
 endif ()
 
-if (DEVEL_DEBUGGING)
-  add_definitions(-Werror)
+if (DEVEL_DEBUGGING_FLAG)
+  add_definitions(-g -Werror)
 endif ()
 
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})

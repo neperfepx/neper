@@ -22,8 +22,8 @@ neut_tess_set_zero (struct TESS *pTess)
 
   (*pTess).CellQty = 0;
   (*pTess).Type = NULL;
-  (*pTess).Periodic = NULL;
-  (*pTess).PeriodicDist = NULL;
+  (*pTess).Periodic = ut_alloc_1d_int (3);
+  (*pTess).PeriodicDist = ut_alloc_1d (3);
   (*pTess).CellCrySym = NULL;
 
   (*pTess).VerQty = 0;
@@ -1464,8 +1464,12 @@ neut_tess_init_alldom_fromdomtess (struct TESS *pTess)
   ut_array_2d_int_col_set ((*pTess).VerDom + 1, (*pTess).VerQty, 0, -1);
   (*pTess).EdgeDom = ut_alloc_2d_int ((*pTess).EdgeQty + 1, 2);
   ut_array_2d_int_col_set ((*pTess).EdgeDom + 1, (*pTess).EdgeQty, 0, -1);
-  (*pTess).FaceDom = ut_alloc_2d_int ((*pTess).FaceQty + 1, 2);
-  ut_array_2d_int_col_set ((*pTess).FaceDom + 1, (*pTess).FaceQty, 0, -1);
+
+  if ((*pTess).Dim == 3)
+  {
+    (*pTess).FaceDom = ut_alloc_2d_int ((*pTess).FaceQty + 1, 2);
+    ut_array_2d_int_col_set ((*pTess).FaceDom + 1, (*pTess).FaceQty, 0, -1);
+  }
 
   for (i = 1; i <= (*pTess).DomFaceQty; i++)
     for (j = 1; j <= (*pTess).DomTessFaceQty[i]; j++)
@@ -2856,22 +2860,19 @@ neut_tess_init_domfaceeq (struct TESS *pTess)
 void
 neut_tess_init_seedslave (struct TESS *pTess)
 {
-  int i, x, y, z, id, seed, master, shift;
+  int i, x, y, z, id, master;
 
   (*pTess).PerSeedSlave = ut_alloc_2d_int ((*pTess).SeedQty + 1, 27);
 
-  shift = (*pTess).SeedQty - (*pTess).PerSeedQty;
-
-  for (i = 1; i <= (*pTess).PerSeedQty; i++)
+  for (i = (*pTess).CellQty + 1; i <= (*pTess).SeedQty; i++)
   {
-    seed = shift + i;
-    master = (*pTess).PerSeedMaster[seed];
+    master = (*pTess).PerSeedMaster[i];
 
-    x = (*pTess).PerSeedShift[seed][0];
-    y = (*pTess).PerSeedShift[seed][1];
-    z = (*pTess).PerSeedShift[seed][2];
+    x = (*pTess).PerSeedShift[i][0];
+    y = (*pTess).PerSeedShift[i][1];
+    z = (*pTess).PerSeedShift[i][2];
     id = (z + 1) * 9 + (y + 1) * 3 + (x + 1);
-    (*pTess).PerSeedSlave[master][id] = seed;
+    (*pTess).PerSeedSlave[master][id] = i;
   }
 
   return;
@@ -2889,6 +2890,72 @@ neut_tess_init_faceslave (struct TESS *pTess)
     slave = (*pTess).PerFaceNb[i];
     master = (*pTess).PerFaceMaster[slave];
     (*pTess).PerFaceSlaveNb[master] = slave;
+  }
+
+  return;
+}
+
+void
+neut_tess_init_facepoly_per (struct TESS *pTess)
+{
+  int i, face, masterface;
+
+  for (i = 1; i <= (*pTess).PerFaceQty; i++)
+  {
+    face = (*pTess).PerFaceNb[i];
+    if ((*pTess).FacePoly[face][1] != 0)
+      abort ();
+
+    masterface = (*pTess).PerFaceMaster[face];
+
+    (*pTess).FacePoly[face][1]
+      = neut_tess_seed_master_slave (*pTess,
+				     (*pTess).FacePoly[masterface][0],
+				     (*pTess).PerFaceShift[face], 1);
+
+    (*pTess).FacePoly[masterface][1]
+      = neut_tess_seed_master_slave (*pTess,
+				     (*pTess).FacePoly[face][0],
+				     (*pTess).PerFaceShift[face], -1);
+  }
+
+  return;
+}
+
+void
+neut_tess_init_edgefacenb_per (struct TESS *pTess)
+{
+  int i, edge, masteredge;
+
+  // This function sets EdgeEdgeNb to the slave seed numbers, for a 2D
+  // tessellation.  It does not make sense to apply it to a 3D
+  // tessellation.
+  if ((*pTess).Dim == 3)
+    abort ();
+
+  for (i = 1; i <= (*pTess).PerEdgeQty; i++)
+  {
+    edge = (*pTess).PerEdgeNb[i];
+    masteredge = (*pTess).PerEdgeMaster[edge];
+
+    if ((*pTess).EdgeFaceQty[edge] != 1)
+      abort ();
+    if ((*pTess).EdgeFaceQty[masteredge] != 1)
+      abort ();
+
+    (*pTess).EdgeFaceQty[edge] = 2;
+    (*pTess).EdgeFaceNb[edge] = ut_realloc_1d_int ((*pTess).EdgeFaceNb[edge], 2);
+    (*pTess).EdgeFaceNb[edge][1]
+      = neut_tess_seed_master_slave (*pTess,
+				     (*pTess).EdgeFaceNb[masteredge][0],
+				     (*pTess).PerEdgeShift[edge], 1);
+
+    (*pTess).EdgeFaceQty[masteredge] = 2;
+    (*pTess).EdgeFaceNb[masteredge] = ut_realloc_1d_int ((*pTess).EdgeFaceNb[masteredge], 2);
+    (*pTess).EdgeFaceNb[masteredge][1]
+      = neut_tess_seed_master_slave (*pTess,
+				     (*pTess).EdgeFaceNb[edge][0],
+				     (*pTess).PerEdgeShift[edge], -1);
   }
 
   return;

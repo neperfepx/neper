@@ -14,6 +14,7 @@ nem_mesh_gmsh_options (FILE * file, int algo2d, int algo3d, int opti,
   fprintf (file, "Mesh.MshFileVersion = 2;\n");
   fprintf (file, "Mesh.Algorithm      = %d;\n", algo2d);
   fprintf (file, "Mesh.Algorithm3D    = %d;\n", algo3d);
+  fprintf (file, "Mesh.Binary         = 1;\n");
   fprintf (file, "Mesh.SaveAll = 1;\n");
   if (opti == 1)
     fprintf (file, "Mesh.Optimize       = 1;\n");
@@ -43,7 +44,7 @@ nem_mesh_2d_gmsh_writenodes (struct TESS Tess, struct NODES Nodes,
   int *nodes = NULL;
   double *coo = ut_alloc_1d (3);
 
-  // searching set of nodes of the 0-D an 1-D meshes for this face 
+  // searching set of nodes of the 0-D an 1-D meshes for this face
 
   neut_mesh_face_boundnodes (Mesh[1], Tess, face, &nodes, &nodeqty);
 

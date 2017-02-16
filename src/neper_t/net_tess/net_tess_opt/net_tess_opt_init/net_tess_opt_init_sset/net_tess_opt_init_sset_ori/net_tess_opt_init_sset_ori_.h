@@ -20,3 +20,9 @@ extern void net_tess_opt_init_sset_ori_fibre (char *distrib,
 
 extern void net_tess_opt_init_sset_ori_crysym (struct IN_T In,
 					       struct SEEDSET *pSSet);
+extern void net_tess_opt_init_sset_ori_equal (struct SEEDSET *SSet,
+					      int dtess, int dcell,
+					      struct SEEDSET *pSSet);
+
+extern int  net_tess_opt_init_sset_ori_label (char *label, struct SEEDSET *pSSet);
+extern void net_tess_opt_init_sset_ori_file (char *label, struct SEEDSET *pSSet);

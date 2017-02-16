@@ -13,212 +13,428 @@ extern "C"
 /// \brief Tessellation structure
   struct TESS
   {
-    // MULTILEVEL TESSELLATION INFORMATION -------------------------------
+    // GENERAL INFORMATION ---------------------------------------------
 
-    int Dim;			// dimension of the tessellation
-    int PseudoDim;		// dimension the tessellation aims to
-    // have (-1 by default, can be 2)
-    double PseudoSize;		// if PseudoDim, size in the extruded
-    // direction
+    // Dimension of the tessellation (2 or 3)
+    int Dim;
 
-    int Level;			// level of the tessellation
-    // (1 for a regular tessellation)
+    // Dimension the tessellation aims to have (-1 by default, can be 2)
+    int PseudoDim;
 
-    int TessId;			// identifier of the tessellation
-    // (1 for a regular tessellation)
+    // If PseudoDim == 2, size in the 3rd direction
+    double PseudoSize;
 
-    char *Type;			// type of tessellation (standard/periodic)
-    int *Periodic;		// [0...2] for x, y and z periodicity
-    // (0: no, 1: yes)
-    double *PeriodicDist;	// [0...2] periodicity size along x, y and z
+    // Level of the tessellation (1 for a regular tessellation)
+    int Level;
+
+    // Identifier of the tessellation (1 for a regular tessellation)
+    int TessId;
+
+    // Type of tessellation ("standard" or "periodic")
+    char *Type;
+
+    // Periodicity along x, y and z [0...2] (0: no, 1: yes)
+    int *Periodic;
+
+    // Periodicity distance along x, y and z [0...2]
+    double *PeriodicDist;
 
     // CELL INFORMATION --------------------------------------------------
 
-    int CellQty;		// value of option -n.
-    int *CellId;		// identifiers of the cells
-    double **CellOri;		// crystal orientations of the cells
-    int *CellLamId;		// in the case of a lamellar
-                                // tessellation, id of the lamella (width)
-    int *CellModeId;		// in the case of a multimodal
-                                // tessellation, id of the mode
-    char *CellCrySym;		// crystal symmetry (triclinic, cubic or hexagonal)
+    // Number of cells, i.e. value of option -n.
+    // Equal to FaceQty in 2D and PolyQty in 3D.
+    int CellQty;
 
-    int *CellTrue;		// true level of the cell (0 if not true, 1
-    // is true, 2 if all neighs are true>=1, 3 if all
-    // neighs are true>=2, etc.
+    // Identifiers of the cells [1...CellQty]
+    int *CellId;
 
-    int *CellBody;		// same than CellTrue, but for body.
+    // Crystal orientations of the cells, in Euler (Bunge) angles
+    // [1...CellQty][0...2]
+    double **CellOri;
+
+    // For a lamellar tessellation, lamella ids of the cells, in terms
+    // of imposed width [1...CellQty] (starts at 1)
+    int *CellLamId;
+
+    // For a multimodal tessellation, mode ids of the cells, in terms of
+    // imposed size [1...CellQty] (starts at 1)
+    int *CellModeId;
+
+    // Crystal symmetry of the cells ("triclinic", "cubic" or
+    // "hexagonal").  Defined once for all cells, but this could be
+    // improved
+    char *CellCrySym;
+
+    // "True" levels of the cells. true>0 means that the shape is not
+    // influenced by the domain boundary.
+    // 0: not true;
+    // 1: true;
+    // 2: all neighs are true >= 1;
+    // 3: all neighs are true >= 2, etc.
+    int *CellTrue;
+
+    // "Body" levels of the cells. body>0 means that the cell does not
+    // intersect the domain boundary.
+    // 0: not body;
+    // 1: body;
+    // 2: all neighs are body >= 1;
+    // 3: all neighs are body >= 2, etc.
+    int *CellBody;
 
     // SEED INFORMATION --------------------------------------------------
 
-    int SeedQty;		// number of seeds (!= number of cells
-    // for periodic)
-    double **SeedCoo;		// SeedCoo[i][j] (j=0...2) are the 3 coordinates
-    // of the center.
-    double *SeedWeight;		// SeedWeight[i] is the Laguerre weight
+    // Number of seeds.  Equal to CellQty for a standard tessellation
+    // and to the grand-number of seeds for a periodic tessellation.
+    int SeedQty;
+
+    // Coordinates of the seeds [1...SeedQty][0...2]
+    double **SeedCoo;
+
+    // Laguerre weights of the seeds [1...SeedQty]
+    double *SeedWeight;
 
     // VERTEX INFORMATION ------------------------------------------------
 
-    int VerQty;			// number of vertices
+    // Number of vertices. In the case of a periodic tessellations, all
+    // vertices are listed, master/slave relationships are defined in
+    // PerVer* members.
+    int VerQty;
 
-    // For vertex i (i=1...VerQty):
-    double **VerCoo;		// VerCoo[i][j] (j=0...2) are the 3 coordinates.
+    // Vertex coordinates [1...VerQty][0...2]
+    double **VerCoo;
 
-    int *VerEdgeQty;		// VerEdgeQty[i] is the quantity of parent edges.
-    int **VerEdgeNb;		// VerEdge[i][j] (j=0...) are the parent edges.
+    // Vertex amount of edges [1...VerQty]
+    int *VerEdgeQty;
 
-    int **VerDom;		// VerDom[i][0] is the boundary type:
-    //  0: ver = domain ver
-    //  1: on a domain edge
-    //  2: on a domain face
-    // -1: not on domain
-    // VerDom[i][1] is the id of the boundary entity (0 if [0]=-1)
+    // Numbers of the vertex edges [1...VerQty][0...]
+    int **VerEdgeNb;
 
-    int *VerState;		// VerState[i] is the state of vertex i:
-    // 0: unchanged, -1: deleted, >0: modified =
-    // vertex weight (i.e. nb of vertices it
-    // represents).
+    // Vertex domain information [1...VerQty][0...1]
+    // [i][0] = -1: not on domain
+    // [i][0] =  0: on domain vertex
+    // [i][0] =  1: on domain edge
+    // [i][0] =  2: on domain face
+    // [i][1]: corresponding domain vertex / edge / face (w/a)
+    int **VerDom;
+
+    // Vertex state information [1...VerQty]
+    // -1: deleted
+    //  0: unchanged
+    // >=1: modified, corresponds to the number of vertices the vertex
+    // represents.
+    // Note that state -1 occurs only **during** regularization.  It
+    // will never happen outside the regularization function.
+    int *VerState;
 
     // EDGE INFORMATION --------------------------------------------------
 
-    int EdgeQty;		// number of edges
+    // Number of edges. In the case of a periodic tessellations, all
+    // edges are listed, master/slave relationships are defined in
+    // PerEdge* members.
+    int EdgeQty;
 
-    // For edge i (i=1...EdgeQty):
-    int **EdgeVerNb;		// VerNb[i][j] (j=0,1) are the numbers of the two
-    // vertices.
+    // Vertices of the edges [1...EdgeQty][0...1]
+    int **EdgeVerNb;
 
-    int *EdgeFaceQty;		// EdgeFaceQty[i] is the quantity of parent faces.
-    int **EdgeFaceNb;		// EdgeFaceNb[i][j] (j=0...) are the numbers of the
-    // parent faces.
+    // Number of faces of the edges [1...EdgeQty]
+    int *EdgeFaceQty;
 
-    double *EdgeLength;		// EdgeLength[i] is the length.
+    // Numbers of the faces of the edges [1...EdgeQty][0...]
+    int **EdgeFaceNb;
 
-    int *EdgeState;		// EdgeState[i]=0 means edge i still exists (=-1 else)
+    // Lengths of the edges [1...EdgeQty]
+    double *EdgeLength;
 
-    int *EdgeDel;		// EdgeDel[i]=0 means edge i can be deleted;
-    // -1 -> to large.
+    // States of the edges [1...EdgeQty]
+    // -1: deleted
+    //  0: unchanged
+    // Note that state -1 occurs only **during** regularization.  It
+    // will never happen outside the regularization function.
+    int *EdgeState;
 
-    int **EdgeDom;		// EdgeDom[i][0] is the boundary type:
-    //  1: on a domain edge
-    //  2: on a domain face
-    // -1: not on domain
-    // EdgeDom[i][1] is the id of the boundary entity
+    // Deletion information of the edges [1...VerQty]
+    //  0: can be deleted
+    // -1: cannot be deleted (too large)
+    // Note that this is used only **during** regularization.
+    int *EdgeDel;
+
+    // Domains of the edges [1...EdgeQty][0...1]
+    // [i][0] = -1: not on domain
+    // [i][0] =  1: on domain edge
+    // [i][0] =  2: on domain face
+    // [i][1]: corresponding domain edge / face (w/a)
+    int **EdgeDom;
 
     // FACE INFORMATION --------------------------------------------------
 
-    int FaceQty;		// number of faces
+    // Number of faces. In the case of a periodic tessellations, all
+    // faces are listed, master/slave relationships are defined in
+    // PerFace* members.
+    int FaceQty;
 
-    // For face i (i=1...FaceQty):
-    int **FacePoly;		// FacePoly[i][j] (j=0,1) are the numbers of the two
-    // parent polys.
+    // Polys of the faces [1...FaceQty][0...1].  In the standard
+    // case, the ids of the two polys are recorded. In the case of a
+    // boundary face, the id of the domain face (a negative number) is
+    // recorded as second poly.  In the case of a periodic face,
+    // the id of the slave seed is recorded as second poly.
+    int **FacePoly;
 
-    double **FaceEq;		// FaceEq[i][j] (j=0...3) are the four equation
-    // parameters:
+    // Equation parameters of the faces [1...FaceQty][0...3]:
     // FaceEq[i][1]*X1+FaceEq[i][2]*X2+FaceEq[i][3]*X3=FaceEq[i][0]
+    double **FaceEq;
 
-    int *FaceVerQty;		// FaceVerQty[i] is the quantity of face vertices
-    int **FaceVerNb;		// FaceVerNb[i][j] (j=1...FaceVerQty[i]) are the
-    // numbers of the vertices.
+    // Number of vertices of the faces [1...FaceQty]
+    int *FaceVerQty;
 
-    int **FaceEdgeNb;		// FaceEdgeNb[i][j] (j=1...FaceVerQty[i]) are the
-    // numbers of the edges.
+    // Numbers of the vertices of the faces [1...FaceQty][1...FaceVerQty[i]]
+    int **FaceVerNb;
 
-    int **FaceEdgeOri;		// FaceEdgeOri[i][j] (j=1...FaceVerQty[i]) are the
-    // orientations of the edges.
+    // Numbers of the edges of the faces [1...FaceQty][1...FaceVerQty[i]]
+    int **FaceEdgeNb;
 
-    int *FaceState;		// FaceState[i] = 0 means face i is unmodified,
-    // >0 means face i is modified, == -1 means face
+    // Orientations of the edges of the faces [1...FaceQty][1...FaceVerQty[i]],
+    // -1 or 1
+    int **FaceEdgeOri;
 
-    int *FacePt;		// point for the interpolation of the face.
-    // if facept>0, facept=nb of the face ver.
-    // if facept=0, the barycenter is considered.
-    // if facept=-1, undefined (e.g. for remeshing).
-    // for a 2D tess, must be -1.
+    // States of the faces [1...FaceQty]
+    // -1: deleted
+    //  0: unchanged
+    //  1: modified
+    // Note that state = -1 occurs only **during** regularization.  It
+    // will never happen outside the net_reg function.
+    int *FaceState;
 
-    double **FacePtCoo;		// coo of the pt used for interpolation.
-    int **FaceDom;		// FaceDom[i][0] is the boundary type:
-    //  2: on a domain face
-    // -1: not on domain
-    // FaceDom[i][1] is the id of the boundary entity
+    // Points used to interpolate the faces:
+    // -1: undefined (i.e. for remeshing)
+    //  0: barycenter
+    // >0: number of the face vertex
+    // always -1 in the case of a 2D tessellation
+    int *FacePt;
+
+    // Coordinates of the points used to interpolate the faces.
+    // undefined if FacePt != 0
+    double **FacePtCoo;
+
+
+    // Domains of the faces [1...EdgeQty][0...1]
+    // [i][0] = -1: not on domain
+    // [i][0] =  2: on domain face
+    // [i][1]: corresponding domain face (w/a)
+    int **FaceDom;
 
     // POLYHEDRON INFORMATION --------------------------------------------
 
-    int PolyQty;		// number of polyhedra
+    // Number of polys.
+    int PolyQty;
 
-    // For polyhedron i (i=1...PolyQty):
+    // Number of faces of the polys [1...PolyQty]
+    int *PolyFaceQty;
 
-    int *PolyFaceQty;		// PolyFaceQty[i] is the quantity of faces.
-    int **PolyFaceNb;		// PolyFaceNb[i][j] (j=1...PolyFaceQty[i]) are the
-    // numbers of the faces.
-    int **PolyFaceOri;		// PolyFaceOri[i][j] (j=1...PolyFaceQty[i]) are the
-    // orientations of the faces: 1 if the face normal
-    // is outgoing, -1 otherwise.
+    // Numbers of the faces of the polys
+    // [1...PolyQty][1...PolyFaceQty[i]]
+    int **PolyFaceNb;
 
-    int *PolyState;		// PolyState[i] = 0 means poly i is unmodified,
-				// -1 means deleted
+    // Orientations of the faces of the polys
+    // [1...PolyQty][1...PolyFaceQty[i]].
+    //  1: the face normal is outgoing
+    // -1: the face normal points otherwise.
+    int **PolyFaceOri;
+
+    // States of the polys [1...PolyQty]:
+    // seems to be always 0 (FIXME)
+    int *PolyState;
 
     // DOMAIN INFORMATION ------------------------------------------------
+
+    // Domain type ("cube", "cylinder", "sphere" or "planes")
     char *DomType;
 
+    // Number of vertices of the domain
     int DomVerQty;
+
+    // Coordinates of the domain vertices [1...DomVerQty][0...2]
     double **DomVerCoo;
+
+    // Labels of the domain vertices [1...DomVerQty]
     char **DomVerLabel;
+
+    // Number of domain edges of the domain vertices [1...DomVerQty]
     int *DomVerEdgeQty;
-    int **DomVerEdgeNb;		// 0 indexed
+
+    // Numbers of the domain edges of the domain vertices
+    // [1...DomVerQty][0...DomVerEdgeQty[i]]
+    int **DomVerEdgeNb;
+
+    // Numbers of the tessellation vertices of the domain vertices
+    // [1...DomVerQty]
     int *DomTessVerNb;
 
+    // Number of domain edges
     int DomEdgeQty;
-    char **DomEdgeLabel;
-    int **DomEdgeVerNb;		// 0 indexed
-    int **DomEdgeFaceNb;	// 0 indexed
-    int *DomTessEdgeQty;
-    int **DomTessEdgeNb;	// 1 indexed
 
+    // Labels of the domain edges
+    char **DomEdgeLabel;
+
+    // Numbers of the domain vertices of the domain edges
+    // [1...DomVerQty][0...1]
+    int **DomEdgeVerNb;		// 0 indexed
+
+    // Numbers of the domain faces of the domain edges
+    // [1...DomEdgeQty][0...1]
+    int **DomEdgeFaceNb;
+
+    // Number of tessellation edges of the domain edges
+    // [1...DomEdgeQty][0...1]
+    int *DomTessEdgeQty;
+
+    // Numbers of the tessellation edges of the domain edges
+    // [1...DomEdgeQty][1...DomTessEdgeQty[i]]
+    int **DomTessEdgeNb;
+
+    // Number of domain faces
     int DomFaceQty;
+
+    // Labels of the domain faces [1...DomFaceQty]
     char **DomFaceLabel;
+
+    // Equation parameters of the domain faces [1...DomFaceQty][0...3]
+    // DomFaceEq[i][1]*X1+DomFaceEq[i][2]*X2+DomFaceEq[i][3]*X3=DomFaceEq[i][0]
     double **DomFaceEq;
+
+    // Number of domain vertices of the domain faces [1...DomFaceQty]
     int *DomFaceVerQty;
-    int **DomFaceVerNb;		// 1 indexed
-    int **DomFaceEdgeNb;	// 1 indexed
+
+    // Numbers of the domain vertices of the domain faces
+    // [1...DomFaceQty][1...DomFaceVerQty[i]]
+    int **DomFaceVerNb;
+
+    // Numbers of the domain edges of the domain faces
+    // [1...DomFaceQty][1...DomFaceVerQty[i]]
+    int **DomFaceEdgeNb;
+
+    // Amount of tessellation faces of the domain faces [1...DomFaceQty]
     int *DomTessFaceQty;
-    int **DomTessFaceNb;	// 1 indexed
+
+    // Numbers of the tessellation faces of the domain faces
+    // [1...DomFaceQty][1...DomTessFaceQty[i]]
+    int **DomTessFaceNb;
 
     // SCALE INFORMATION -------------------------------------------------
 
-    int ScaleQty;		// number of scales
-    int **ScaleCellId;		// id of the poly a cell
-				// belongs to at a given scale
-				// [cell][scale=0...ScaleQty]
+    // Number of scales
+    int ScaleQty;
+
+    // Identifiers of the cells that cells belong to throughout scales
+    // [1...CellQty][0...ScaleQty]
+    int **ScaleCellId;
 
     // PERIODICITY INFORMATION -------------------------------------------
 
-    int PerSeedQty;		// number of periodic (slave) seeds
-    int *PerSeedMaster;		// master seed
-    int **PerSeedShift;		// shift wrt master (j=0...3)
-    int **PerSeedSlave;		// PerSeedSlave[i][j] (j=0...26) are the
-    // slave seeds
+    // Number of periodic (meaning slave) seeds
+    // PerSeedQty = SeedQty - CellQty
+    // Note that below, "Per" is used as a prefix to periodicity-related
+    // variables rather than "slave".  Also, PerSeed* members go from 1
+    // to SeedQty, i.e. cover all seeds.  Variables from 1 to CellQty
+    // refer to the master seeds while variables from CellQty + 1 to
+    // SeedQty refer to the slave seeds.
+    int PerSeedQty;
 
-    int PerVerQty;		// number of periodic (slave) vers
-    int *PerVerNb;		// ids of periodic (slave) vers [1...]
-    int *PerVerMaster;		// master ver
-    int **PerVerShift;		// shift wrt master (j=0...3)
-    int *PerVerSlaveQty;	// number of slaves of a master
-    int **PerVerSlaveNb;	// slaves of a master [1...]
+    // Master seeds of the periodic seeds [CellQty+1...SeedQty]
+    int *PerSeedMaster;
 
-    int PerEdgeQty;		// number of periodic (slave) edges
-    int *PerEdgeNb;		// ids of periodic (slave) edges [1...]
-    int *PerEdgeMaster;		// master edge
-    int **PerEdgeShift;		// shift wrt master (j=0...3)
-    int *PerEdgeOri;		// orientation of a slave wrt master
-    int *PerEdgeSlaveQty;	// number of slaves of a master
-    int **PerEdgeSlaveNb;	// slaves of a master [1...]
+    // Periodicity shifts of the periodic seeds wrt their master seeds
+    // [CellQty+1...SeedQty][0...2] Values can be: -1, 0, 1.
+    int **PerSeedShift;
 
-    int PerFaceQty;		// number of periodic (slave) faces
-    int *PerFaceNb;		// ids of periodic (master or slave) faces [1...]
-    int *PerFaceMaster;		// master face
-    int **PerFaceShift;		// shift wrt master (j=0...3)
-    int *PerFaceOri;		// orientation of a slave wrt master
-    int *PerFaceSlaveNb;	// slave of a master
+    // Slaves of the periodic (master) seeds [1...SeedQty][0...26]
+    // Note that master seeds range between 1 and CellQty
+    int **PerSeedSlave;
+
+    // Number of periodic (slave) vertices
+    int PerVerQty;
+
+    // Numbers of the periodic (slave) vertices [1...PerVerQty]
+    int *PerVerNb;
+
+    // Masters of the periodic (slave) vertices [1...VerQty]
+    // 0 if the vertex is a master, >0 otherwise
+    int *PerVerMaster;
+
+    // Periodicity shifts of the slave vertices wrt the corresponding
+    // master vertices [1...VerQty][0...2].
+    // For a given direction:
+    // -1: slave vertex has a coordinate equal to the coordinate
+    //     of its master minus the periodicity distance,
+    //  0: slave vertex has a coordinate equal to the coordinate
+    //     of its master,
+    //  1: slave vertex has a coordinate equal to the coordinate
+    //     of its master plus the periodicity distance,
+    // 0,0,0 if the vertex is a master
+    int **PerVerShift;
+
+    // Number of slave vertices of the master vertices [1...VerQty]
+    // >0 for all master vertices, 0 for all slave vertices
+    int *PerVerSlaveQty;
+
+    // Numbers of the slave vertices of the master vertices
+    // [1...VerQty][1...PerVerSlaveQty[i]]
+    int **PerVerSlaveNb;
+
+    // Number of periodic (slave) edges
+    int PerEdgeQty;
+
+    // Numbers of the periodic (slave) edges [1...PerEdgeQty]
+    int *PerEdgeNb;
+
+    // Masters of the periodic (slave) edges [1...EdgeQty]
+    // 0 if the edge is a master, >0 otherwise
+    int *PerEdgeMaster;
+
+    // Periodicity shifts of the slave edges wrt the corresponding
+    // master edges [1...EdgeQty][0...2]
+    // Values can be: -1, 0, 1 (see PerVerShift).
+    // Equal to 0,0,0 for master edges
+    int **PerEdgeShift;
+
+    // Periodicity orientations of the slave edges wrt the corresponding
+    // master edges [1...EdgeQty]:
+    // -1: opposite sense
+    //  1: same sense
+    int *PerEdgeOri;
+
+    // Number of slave edges of the periodic edges [1...PerEdgeQty]
+    // >0 for all master edges, 0 for all slave edges
+    int *PerEdgeSlaveQty;
+
+    // Numbers of the slave edges of the periodic edges
+    // [1...EdgeQty][1...PerEdgeSlaveQty[i]]
+    int **PerEdgeSlaveNb;
+
+    // Number of periodic (slave) faces
+    int PerFaceQty;
+
+    // Numbers of the periodic (slave) faces [1...PerFaceQty]
+    int *PerFaceNb;
+
+    // Masters of the periodic (slave) faces [1...FaceQty]
+    // 0 if the face is a master, >0 otherwise
+    int *PerFaceMaster;
+
+    // Periodicity shifts of the slave faces wrt the corresponding
+    // master faces [1...FaceQty][0...2]
+    // Values can be: -1, 0, 1 (see PerVerShift)
+    // Equal to 0,0,0 for master faces
+    int **PerFaceShift;
+
+    // Periodicity orientations of the slave faces wrt the corresponding
+    // master faces [1...FaceQty]:
+    // -1: opposite normal
+    //  1: same normal
+    int *PerFaceOri;
+
+    // Numbers of the slave faces of the periodic faces
+    // [1...FaceQty][1...PerFaceSlaveQty[i]]
+    int *PerFaceSlaveNb;
   };
   typedef struct TESS TESS;
 

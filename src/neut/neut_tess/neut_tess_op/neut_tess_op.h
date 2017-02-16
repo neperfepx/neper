@@ -240,6 +240,9 @@ extern "C"
   extern void neut_tess_init_edgeslave (struct TESS *pTess);
   extern void neut_tess_init_verslave (struct TESS *pTess);
 
+  extern void neut_tess_init_facepoly_per (struct TESS *pTess);
+  extern void neut_tess_init_edgefacenb_per (struct TESS *pTess);
+
   extern void neut_tess_init_seeds_fromcell (struct TESS *pTess);
 
 #endif				/* NEUT_TESS_OP_H */

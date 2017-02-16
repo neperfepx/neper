@@ -17,6 +17,14 @@
 
 #include"nem_transport.h"
 
-extern void nem_transport_mesh3d_parelt (struct TESS, struct NODES,
-					 struct MESH *, struct NODES,
-					 struct MESH *, int *);
+extern void nem_transport_elt_oldelt (struct NODES, struct MESH,
+				      struct NODES, struct MESH,
+				      int **);
+
+extern void nem_transport_elt (char *type, char *filename, struct NODES RNodes,
+			       struct MESH RMesh, struct NODES Nodes,
+			       struct MESH Mesh, int **poldelt);
+
+
+extern void nem_transport_node (char *type, char *filename, struct NODES RNodes,
+			        struct MESH RMesh, struct NODES Nodes);

@@ -19,6 +19,10 @@ extern "C"
   extern void neut_boundary_free (struct BOUNDARY *);
   extern void neut_boundary_bound_nodes (struct MESH Mesh, struct BOUNDARY Bound, int id, int side,
 					 int **pnodes, int *pnodeqty);
+  extern void neut_boundary_bound_nodes_2d (struct MESH Mesh, struct BOUNDARY Bound, int id, int side,
+					 int **pnodes, int *pnodeqty);
+  extern void neut_boundary_bound_nodes_3d (struct MESH Mesh, struct BOUNDARY Bound, int id, int side,
+					 int **pnodes, int *pnodeqty);
 
 #endif				/* NEUT_BOUNDARY_H */
 

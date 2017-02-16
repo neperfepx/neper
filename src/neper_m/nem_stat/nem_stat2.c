@@ -236,25 +236,29 @@ nem_stat_point (FILE * file, char *format,
 		struct NODES Nodes,
 		struct MESH *Mesh, struct TESS Tess, struct POINT Point)
 {
-  int i, j, invalqty, status, var_qty, meshx_init;
+  int i, j, invalqty, status, var_qty, meshx_init = 0;
   double val;
   char **invar = NULL, *valstring = NULL, *type = NULL, **vars = NULL;
   double **meshp = NULL, *meshd = NULL, **meshv = NULL, **meshn = NULL;
+  int dim = neut_mesh_array_dim (Mesh);
 
-  meshx_init = 0;
-  if (ut_string_inlist (format, NEUT_SEP_NODEP, "2dmeshp")
-      || ut_string_inlist (format, NEUT_SEP_NODEP, "2dmeshd")
-      || ut_string_inlist (format, NEUT_SEP_NODEP, "2dmeshv")
-      || ut_string_inlist (format, NEUT_SEP_NODEP, "2dmeshn"))
+  if (dim == 3)
   {
-    meshx_init = 1;
-    meshp = ut_alloc_2d (Point.PointQty + 1, 3);
-    meshd = ut_alloc_1d (Point.PointQty + 1);
-    meshv = ut_alloc_2d (Point.PointQty + 1, 3);
-    meshn = ut_alloc_2d (Point.PointQty + 1, 3);
-    neut_mesh_points_mesh2ddist (Tess, Nodes, Mesh[2], Mesh[3],
-				 Point.PointCoo + 1, Point.PointQty,
-				 meshp + 1, meshd + 1, meshv + 1, meshn + 1);
+    meshx_init = 0;
+    if (ut_string_inlist (format, NEUT_SEP_NODEP, "2dmeshp")
+	|| ut_string_inlist (format, NEUT_SEP_NODEP, "2dmeshd")
+	|| ut_string_inlist (format, NEUT_SEP_NODEP, "2dmeshv")
+	|| ut_string_inlist (format, NEUT_SEP_NODEP, "2dmeshn"))
+    {
+      meshx_init = 1;
+      meshp = ut_alloc_2d (Point.PointQty + 1, 3);
+      meshd = ut_alloc_1d (Point.PointQty + 1);
+      meshv = ut_alloc_2d (Point.PointQty + 1, 3);
+      meshn = ut_alloc_2d (Point.PointQty + 1, 3);
+      neut_mesh_points_mesh2ddist (Tess, Nodes, Mesh[2], Mesh[3],
+				   Point.PointCoo + 1, Point.PointQty,
+				   meshp + 1, meshd + 1, meshv + 1, meshn + 1);
+    }
   }
 
   ut_string_separate (format, NEUT_SEP_NODEP, &invar, &invalqty);
@@ -265,7 +269,7 @@ nem_stat_point (FILE * file, char *format,
     for (j = 0; j < invalqty; j++)
     {
       status =
-	neut_point_var_val (Point, i, Tess, Nodes, Mesh[3], invar[j], &val,
+	neut_point_var_val (Point, i, Tess, Nodes, Mesh[dim], invar[j], &val,
 			    &type);
 
       if (status == 0)

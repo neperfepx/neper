@@ -28,7 +28,7 @@ include_directories("${PROJECT_BINARY_DIR}/contrib/ut")
 include_directories("${PROJECT_SOURCE_DIR}/contrib/ut")
 
 
-add_definitions(-Wall -W -g -O3)
+add_definitions(-Wall -W)
 if (DEVEL_OPTIMIZATION)
   add_definitions(-O3)
 endif ()

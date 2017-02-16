@@ -21,41 +21,47 @@ ReadNodesHead (FILE * msh)
 }
 
 void
-ReadNodesFoot (FILE * msh)
+ReadNodesFoot (FILE * msh, char *mode)
 {
   char foot[1000];
 
+  (void) mode;
+
   if (fscanf (msh, "%s", foot) != 1 || strcmp (foot, "$EndNodes") != 0)
-    ut_print_message (2, 0, "Reading msh file: error.\n");
+    ut_print_message (2, 0, "Reading msh file: error (`%s' instead of $EndNodes).\n", foot);
 
   return;
 }
 
 void
-ReadNodesProp (FILE * msh, struct NODES *pNodes, int *node_nbs)
+ReadNodesProp (FILE * msh, char *mode, struct NODES *pNodes, int *node_nbs)
 {
-  int status, i, j, tmp;
-  int contiguous = 0;
-
-  if (node_nbs == NULL)
-    contiguous = 1;
+  int status, i, tmp;
+  char c;
 
   (*pNodes).NodeCoo = ut_alloc_2d ((*pNodes).NodeQty + 1, 3);
 
-  for (i = 1; i <= (*pNodes).NodeQty; i++)
-  {
-    if (contiguous == 0)
-      status = fscanf (msh, "%d", &(node_nbs[i]));
-    else
-      status = fscanf (msh, "%d", &tmp);
-
-    if (status != 1)
-      abort ();
-
-    for (j = 0; j < 3; j++)
+  if (!strcmp (mode, "ascii"))
+    for (i = 1; i <= (*pNodes).NodeQty; i++)
     {
-      status = fscanf (msh, "%lf", &(*pNodes).NodeCoo[i][j]);
+      status = fscanf (msh, "%d", node_nbs ? node_nbs + i : &tmp);
       if (status != 1)
+	abort ();
+
+      status = ut_array_1d_fscanf (msh, (*pNodes).NodeCoo[i], 3);
+      if (status != 1)
+	abort ();
+    }
+
+  else
+  {
+    if (fscanf (msh, "%c", &c) != 1)
+      abort ();
+    for (i = 1; i <= (*pNodes).NodeQty; i++)
+    {
+      if (fread (node_nbs ? node_nbs + i : &tmp, sizeof (int), 1, msh) != 1)
+	abort ();
+      if (fread ((*pNodes).NodeCoo[i], sizeof (double), 3, msh) != 3)
 	abort ();
     }
   }
@@ -64,39 +70,27 @@ ReadNodesProp (FILE * msh, struct NODES *pNodes, int *node_nbs)
 }
 
 int
-ReadMeshOfDim (FILE * msh, struct MESH *pMesh, int *node_nbs,
+ReadMeshOfDim (FILE * msh, char *mode, struct MESH *pMesh, int *node_nbs,
 	       int Dimension, int MaxEltQty)
 {
   int *elt_nbs = NULL;
   int *elset_nbs = NULL;
-  int contiguous = 0;
 
-  if (node_nbs == NULL)
-    contiguous = 1;
-
-  neut_mesh_free (pMesh);
+  // neut_mesh_free (pMesh);
+  neut_mesh_set_zero (pMesh);
 
   if (Dimension < 0 || Dimension > 3)
-  {
     ut_print_message (2, 0, "Wrong mesh dimension: %d!\n", Dimension);
-    abort ();
-  }
 
   if (MaxEltQty != 0)
   {
     (*pMesh).Dimension = Dimension;
 
-    if (contiguous == 0)
-      ReadEltsProp (msh, pMesh, &elt_nbs, MaxEltQty);
-    else
-      ReadEltsProp (msh, pMesh, NULL, MaxEltQty);
+    ReadEltsProp (msh, mode, pMesh, node_nbs ? &elt_nbs : NULL, MaxEltQty);
 
-    if (contiguous == 0)
-      SetElsets (pMesh, elt_nbs, &elset_nbs);
-    else
-      SetElsets (pMesh, NULL, NULL);
+    SetElsets (pMesh, node_nbs ? elt_nbs : NULL, node_nbs ? &elset_nbs : NULL);
 
-    if (contiguous == 0)
+    if (node_nbs)
       neut_mesh_renumber_continuous (pMesh, node_nbs, elt_nbs, elset_nbs);
   }
 

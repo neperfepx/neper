@@ -30,15 +30,16 @@ extern int net_tess_lam_seed_readargs_v (char *value,
 				    int domtess, int dompoly,
 				    char **pvtype, double **pv, int *pvqty);
 
-extern int net_tess_lam_seed_set (struct IN_T In, struct MTESS MTess, struct TESS *Tess,
+extern int net_tess_lam_seed_set (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
     int dtess, int dcell, struct TESS Dom, char *wtype, double *w, int
     wqty, char *vtype, double *v, int vqty, struct SEEDSET *SSet, struct SEEDSET *pSSet);
 
 
 extern int net_tess_lam_seed_set_init (struct SEEDSET *pSSet);
 
-extern int net_tess_lam_seed_set_normal (gsl_rng *r, char *vtype, double *v,
-				    int vqty, struct SEEDSET SSet, double *normal);
+extern int net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
+                                    gsl_rng *r, char *vtype, double *v,
+				    int vqty, double *normal);
 
 extern int net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng *r,
 				 double *n, char *wtype, double *w,

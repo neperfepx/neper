@@ -22,11 +22,11 @@ EdgeMeshing (struct TESS Tess, int edge, double cl, double pl,
   cl1 = Nodes.NodeCl[node1];
   cl2 = Nodes.NodeCl[node2];
 
-  if (cl <= 0 || pl < 1)
+  if (cl <= 1e-15 || pl < 1)
   {
-    ut_print_message (2, 0,
-		      "Bad meshing parameters for edge %d: cl = %f pl = %f\n",
-		      edge, cl, pl);
+    printf ("\n");
+    printf ("Bad meshing parameters for edge %d: cl = %f pl = %f\n",
+	    edge, cl, pl);
     ut_error_reportbug ();
   }
 

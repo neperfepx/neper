@@ -33,7 +33,7 @@ struct NODES
   int DupNodeQty;		// number of duplicate (slave) nodes
   int* DupNodeNb;		// ids of the duplicate nodes [1...]
   int* DupNodeMaster;		// master of nodes [NodeQty + 1...]
-  int* DupNodeCell;		// cell of nodes [NodeQty + 1...]
+  int* DupNodeSeed;		// cell of nodes [NodeQty + 1...]
   int* DupNodeSlaveQty;		// number of duplicates of a master [NodeQty + 1...]
   int** DupNodeSlaveNb;		// duplicates of a master [NodeQty + 1...][1...]
 };

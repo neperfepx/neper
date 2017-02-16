@@ -3,6 +3,7 @@
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_.h"
+#include<unistd.h>
 #include<gsl/gsl_rng.h>
 #include<gsl/gsl_randist.h>
 
@@ -42,7 +43,8 @@ net_tess_opt_comp_once (double *x, struct TOPT *pTOpt)
 int
 net_tess_opt_comp_rand (double *x, struct TOPT *pTOpt)
 {
-  int var, sgn;
+  int var = 0, sgn, prevvar = 0;
+  double prevx = 0;
 
   gsl_rng *r = gsl_rng_alloc (gsl_rng_ranlxd2);
   gsl_rng_set (r, 1);
@@ -58,15 +60,27 @@ net_tess_opt_comp_rand (double *x, struct TOPT *pTOpt)
 
   do
   {
-    var = (*pTOpt).xqty * gsl_rng_uniform (r);
-    sgn = ut_num_sgn (gsl_rng_uniform (r) - 0.5);
-    x[var] += sgn * (*pTOpt).inistep;
-    x[var] = ut_num_max (x[var], (*pTOpt).boundl[var]);
-    x[var] = ut_num_min (x[var], (*pTOpt).boundu[var]);
-
     net_tess_opt_comp_objective (0, x, NULL, pTOpt);
+
+    if ((*pTOpt).iter % 2 == 1)
+    {
+      var = (*pTOpt).xqty * gsl_rng_uniform (r);
+      sgn = ut_num_sgn (gsl_rng_uniform (r) - 0.5);
+
+      prevvar = var;
+      prevx = x[var];
+
+      x[var] += sgn * (*pTOpt).inistep;
+      x[var] = ut_num_max (x[var], (*pTOpt).boundl[var]);
+      x[var] = ut_num_min (x[var], (*pTOpt).boundu[var]);
+    }
+    else
+    {
+      var = prevvar;
+      x[var] = prevx;
+    }
   }
-  while ((*pTOpt).iter < (*pTOpt).itermax);
+  while ((*pTOpt).iter <= (*pTOpt).itermax);
 
   gsl_rng_free (r);
 

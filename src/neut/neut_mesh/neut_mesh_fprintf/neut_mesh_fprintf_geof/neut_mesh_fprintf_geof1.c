@@ -30,8 +30,13 @@ neut_mesh_fprintf_geof (FILE * file, struct NODES Nodes, struct MESH
 
   neut_mesh_fprintf_geof_nsets (file, NSet0D, NSet1D, NSet2D, nsets);
 
-  if (fasets != NULL && strcmp (fasets, "none") && Mesh3D.EltQty == 0)
-    neut_mesh_fprintf_geof_lisets (file, Mesh2D, Bound, fasets);
+  if (fasets != NULL && strcmp (fasets, "none"))
+  {
+    if (Mesh3D.EltQty == 0)
+      neut_mesh_fprintf_geof_lisets (file, Mesh2D, Bound, fasets);
+    else
+      neut_mesh_fprintf_geof_fasets (file, Mesh3D, Bound, fasets);
+  }
 
   neut_mesh_fprintf_geof_elsets (file, Mesh1D, Mesh2D, Mesh3D, dim, shift);
 

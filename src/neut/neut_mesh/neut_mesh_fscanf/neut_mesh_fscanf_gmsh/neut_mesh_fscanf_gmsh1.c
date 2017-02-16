@@ -13,11 +13,12 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH
   int leftelts;
   struct MESH Trash;
   int contiguous;
+  char *mode = NULL;
 
   neut_mesh_set_zero (&Trash);
   neut_nodes_free (pNodes);
 
-  neut_mesh_fscanf_gmshHead (file, &contiguous);
+  neut_mesh_fscanf_gmshHead (file, &contiguous, &mode);
   (*pNodes).NodeQty = ReadNodesHead (file);
 
   if (contiguous == 0)
@@ -25,46 +26,31 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH
     node_nbs = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
     node_nbs[0] = (*pNodes).NodeQty;
   }
-  ReadNodes (file, pNodes, node_nbs);
+  ReadNodes (file, mode, pNodes, node_nbs);
   // neut_nodes_renumber_continuous (pNodes, node_nbs, &nodes_old_new);
 
   ut_file_skip (file, 1);
   if (fscanf (file, "%d", &leftelts) != 1)
     abort ();
 
-  if (pMesh0D != NULL)
-    leftelts -= ReadMeshOfDim (file, pMesh0D, node_nbs, 0, leftelts);
-  else
-    leftelts -= ReadMeshOfDim (file, &Trash, node_nbs, 0, leftelts);
-
-  if (pMesh1D != NULL)
-    leftelts -= ReadMeshOfDim (file, pMesh1D, node_nbs, 1, leftelts);
-  else
-    leftelts -= ReadMeshOfDim (file, &Trash, node_nbs, 1, leftelts);
-
-  if (pMesh2D != NULL)
-    leftelts -= ReadMeshOfDim (file, pMesh2D, node_nbs, 2, leftelts);
-  else
-    leftelts -= ReadMeshOfDim (file, &Trash, node_nbs, 2, leftelts);
-
-  if (pMesh3D != NULL)
-    leftelts -= ReadMeshOfDim (file, pMesh3D, node_nbs, 3, leftelts);
-  else
-    leftelts -= ReadMeshOfDim (file, &Trash, node_nbs, 3, leftelts);
+  char c;
+  if (!strcmp (mode, "binary"))
+    if (fscanf (file, "%c", &c) != 1)
+      abort ();
+  leftelts -= ReadMeshOfDim (file, mode, pMesh0D ? pMesh0D : &Trash, node_nbs, 0, leftelts);
+  leftelts -= ReadMeshOfDim (file, mode, pMesh1D ? pMesh1D : &Trash, node_nbs, 1, leftelts);
+  leftelts -= ReadMeshOfDim (file, mode, pMesh2D ? pMesh2D : &Trash, node_nbs, 2, leftelts);
+  leftelts -= ReadMeshOfDim (file, mode, pMesh3D ? pMesh3D : &Trash, node_nbs, 3, leftelts);
 
   neut_mesh_free (&Trash);
 
   ut_free_1d_int (node_nbs);
 
   if (leftelts != 0)
-  {
-    ut_print_message (2, 0, "Reading of mesh file failed!\n");
-    ut_print_message (2, 0, "(Element quantity does not match.)\n");
-    printf ("leftelts = %d\n", leftelts);
-    abort ();
-  }
+    ut_print_message (2, 0, "Reading of mesh file failed! (Element quantity does not match (leftelts = %d.)\n", leftelts);
 
   ReadEltsFoot (file);
+  ut_free_1d_char (mode);
 
   return;
 }

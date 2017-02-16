@@ -157,6 +157,10 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     net_input_treatargs_multiscale ("-morphooptimultiseed", &(*pIn).morphooptimultiseedstring,
 				    (*pIn).levelqty, &((*pIn).morphooptimultiseed));
 
+    // oridistrib
+    net_input_treatargs_multiscale ("-oridistrib", &(*pIn).oridistribstring,
+				    (*pIn).levelqty, &((*pIn).oridistrib));
+
     // Processing periodicstring & periodic
     (*pIn).periodic = ut_alloc_1d_int (3);
     if (strcmp ((*pIn).periodicstring, "none"))
@@ -229,7 +233,8 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     abort ();
   }
 
-  if ((*pIn).reg == 1 && ut_array_1d_int_sum ((*pIn).periodic, 3) != 0)
+  if ((*pIn).reg == 1
+   && ((*pIn).periodic && ut_array_1d_int_sum ((*pIn).periodic, 3) != 0))
   {
     ut_print_messagewnc (2, 72, "Option `-regularization 1' is not available for periodic tessellations.");
     abort ();

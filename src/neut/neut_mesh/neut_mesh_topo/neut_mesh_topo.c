@@ -1884,6 +1884,29 @@ neut_mesh_node_neighnodes (struct MESH Mesh, int node, int **pnodes,
   return;
 }
 
+int
+neut_mesh_node_elset (struct MESH Mesh, int node, int *pelset)
+{
+  int status, elsetqty, *elsets = NULL;
+
+  neut_mesh_node_elsets (Mesh, node, &elsets, &elsetqty);
+
+  if (elsetqty == 1)
+  {
+    status = 0;
+    (*pelset) = elsets[0];
+  }
+  else
+  {
+    status = -1;
+    (*pelset) = -1;
+  }
+
+  ut_free_1d_int (elsets);
+
+  return status;
+}
+
 void
 neut_mesh_node_elsets (struct MESH Mesh, int node, int **pelsets,
 		       int *pelsetqty)
@@ -2136,7 +2159,7 @@ neut_mesh_fasets_bound (struct TESS Tess, struct NODES Nodes,
   (*pBound).BoundElts = ut_alloc_2d_pint ((*pBound).BoundQty + 1, 2);
   (*pBound).BoundEltFacets = ut_alloc_2d_pint ((*pBound).BoundQty + 1, 2);
   (*pBound).BoundDom = ut_alloc_2d_int ((*pBound).BoundQty + 1, 2);
-  (*pBound).BoundCell = ut_alloc_2d_int ((*pBound).BoundQty + 1, 2);
+  (*pBound).BoundSeed = ut_alloc_2d_int ((*pBound).BoundQty + 1, 2);
   (*pBound).BoundNames = ut_alloc_2d_pchar ((*pBound).BoundQty + 1, 2);
 
   int eltqty, *elts = NULL, *eltfasets = NULL;
@@ -2168,7 +2191,7 @@ neut_mesh_domface_elts3d (struct TESS Tess,
 			  struct NODES Nodes, char *faset,
 			  int **pelts, int **peltfasets, int *peltqty)
 {
-  int i, j, elt2d, elt3dqty, id, status, surf;
+  int i, j, elt2d, elt3dqty, id, status, surf, surfori;
   int *elt3d = NULL;
   double *n = ut_alloc_1d (3);
   double *n0 = ut_alloc_1d (3);
@@ -2219,7 +2242,7 @@ neut_mesh_domface_elts3d (struct TESS Tess,
       res = ut_vector_scalprod (n0, n);
       */
       neut_elt_nodes_facet (3, Mesh3D.EltNodes[elt3d[0]],
-                                Mesh2D.EltNodes[elt2d], &surf);
+                                Mesh2D.EltNodes[elt2d], &surf, &surfori);
 
       (*pelts)[(*peltqty)] = elt3d[0];
       (*peltfasets)[(*peltqty)] = surf;

@@ -60,6 +60,12 @@ neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
     fprintf (file, "\n");
   }
 
+  if (Tess.CellCrySym)
+  {
+    fprintf (file, "  *crysym\n");
+    fprintf (file, "   %s\n", Tess.CellCrySym);
+  }
+
   if (Tess.SeedCoo && Tess.SeedWeight)
   {
     fprintf (file, "  *seed\n");

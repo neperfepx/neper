@@ -80,7 +80,7 @@ neut_nodes_set_zero (struct NODES *pNodes)
   (*pNodes).DupNodeQty = 0;
   (*pNodes).DupNodeNb = NULL;
   (*pNodes).DupNodeMaster = NULL;
-  (*pNodes).DupNodeCell = NULL;
+  (*pNodes).DupNodeSeed = NULL;
   (*pNodes).DupNodeSlaveQty = NULL;
   (*pNodes).DupNodeSlaveNb = NULL;
 
@@ -104,7 +104,7 @@ neut_nodes_free (struct NODES *pNodes)
       ut_free_1d_int ((*pNodes).PerNodeMaster);
       ut_free_2d_int ((*pNodes).PerNodeShift, (*pNodes).NodeQty + 1);
       ut_free_1d_int ((*pNodes).PerNodeSlaveQty);
-      ut_free_2d_int ((*pNodes).PerNodeSlaveNb, (*pNodes).NodeQty + 1);
+      ut_free_2d_int ((*pNodes).PerNodeSlaveNb, (*pNodes).PerNodeQty + 1);
       (*pNodes).PerNodeQty = 0;
     }
 
@@ -112,7 +112,7 @@ neut_nodes_free (struct NODES *pNodes)
     {
       ut_free_1d_int ((*pNodes).DupNodeNb);
       ut_free_1d_int ((*pNodes).DupNodeMaster);
-      ut_free_1d_int ((*pNodes).DupNodeCell);
+      ut_free_1d_int ((*pNodes).DupNodeSeed);
       ut_free_1d_int ((*pNodes).DupNodeSlaveQty);
       ut_free_2d_int ((*pNodes).DupNodeSlaveNb, (*pNodes).NodeQty + 1);
       (*pNodes).DupNodeQty = 0;
@@ -260,12 +260,12 @@ neut_nodes_memcpy (struct NODES Nodes, struct NODES *pNodes2)
 			      Nodes.DupNodeMaster + 1);
     }
 
-    if (Nodes.DupNodeCell)
+    if (Nodes.DupNodeSeed)
     {
-      (*pNodes2).DupNodeCell = ut_alloc_1d_int ((*pNodes2).NodeQty + 1);
-      ut_array_1d_int_memcpy ((*pNodes2).DupNodeCell + 1,
+      (*pNodes2).DupNodeSeed = ut_alloc_1d_int ((*pNodes2).NodeQty + 1);
+      ut_array_1d_int_memcpy ((*pNodes2).DupNodeSeed + 1,
 	                      (*pNodes2).NodeQty,
-			      Nodes.DupNodeCell + 1);
+			      Nodes.DupNodeSeed + 1);
     }
 
     if (Nodes.DupNodeSlaveQty)
@@ -360,7 +360,7 @@ neut_nodes_point_closestnode (struct NODES Nodes, double *coo, int *pnode)
   for (i = 1; i <= Nodes.NodeQty; i++)
     dist[i] = ut_space_dist (Nodes.NodeCoo[i], coo);
 
-  (*pnode) = ut_array_1d_min_index (dist + 1, Nodes.NodeQty);
+  (*pnode) = 1 + ut_array_1d_min_index (dist + 1, Nodes.NodeQty);
 
   ut_free_1d (dist);
 
@@ -659,7 +659,7 @@ neut_nodes_markasdupslave (struct NODES *pNodes, int slave,
 }
 
 void
-neut_nodes_node_cell_dupnode (struct NODES Nodes, int node, int cell,
+neut_nodes_node_seed_dupnode (struct NODES Nodes, int node, int seed,
 			      int *pdupnode)
 {
   int i, slave;
@@ -667,16 +667,25 @@ neut_nodes_node_cell_dupnode (struct NODES Nodes, int node, int cell,
   if (neut_nodes_node_isslave (Nodes, node))
     node = Nodes.DupNodeMaster[node];
 
-  (*pdupnode) = -1;
-  for (i = 1; i <= Nodes.DupNodeSlaveQty[node]; i++)
+  if (seed == Nodes.DupNodeSeed[node])
+    (*pdupnode) = node;
+
+  else if (Nodes.DupNodeSlaveQty[node])
   {
-    slave = Nodes.DupNodeSlaveNb[node][i];
-    if (Nodes.DupNodeCell[slave] == cell)
+    (*pdupnode) = -1;
+    for (i = 1; i <= Nodes.DupNodeSlaveQty[node]; i++)
     {
-      (*pdupnode) = slave;
-      break;
+      slave = Nodes.DupNodeSlaveNb[node][i];
+      if (Nodes.DupNodeSeed[slave] == seed)
+      {
+	(*pdupnode) = slave;
+	break;
+      }
     }
   }
+
+  else
+    (*pdupnode) = node;
 
   return;
 }
@@ -685,4 +694,67 @@ int
 neut_nodes_node_isslave (struct NODES Nodes, int node)
 {
   return node > Nodes.NodeQty - Nodes.DupNodeQty;
+}
+
+int
+neut_nodes_node_shift_pernode (struct NODES Nodes, int node,
+                               int* shift, int *ppernode)
+{
+  int i, status, slavenode;
+  int shift2[3];
+
+  // input node must be a master node
+  if (Nodes.PerNodeMaster[node] != 0)
+  {
+    for (i = 0; i < 3; i++)
+      shift2[i] = shift[i] + Nodes.PerNodeShift[node][i];
+
+    node = Nodes.PerNodeMaster[node];
+  }
+  else
+    ut_array_1d_int_memcpy (shift2, 3, shift);
+
+  (*ppernode) = -1;
+
+  status = -1;
+
+  if (shift2[0] == 0 && shift2[1] == 0 && shift2[2] == 0)
+  {
+    status = 0;
+    (*ppernode) = node;
+  }
+  else
+    for (i = 1; i <= Nodes.PerNodeSlaveQty[node]; i++)
+    {
+      slavenode = Nodes.PerNodeSlaveNb[node][i];
+      if (ut_array_1d_int_equal (Nodes.PerNodeShift[slavenode], shift2, 3))
+      {
+	(*ppernode) = slavenode;
+	status = 0;
+	break;
+      }
+    }
+
+  return status;
+}
+
+void
+neut_nodes_permasters (struct NODES Nodes, int **pmasters, int *pmasterqty)
+{
+  int i, node;
+
+  (*pmasterqty) = Nodes.PerNodeQty;
+  (*pmasters) = ut_alloc_1d_int (*pmasterqty);
+
+  for (i = 1; i <= Nodes.PerNodeQty; i++)
+  {
+    node = Nodes.PerNodeNb[i];
+    (*pmasters)[i - 1] = Nodes.PerNodeMaster[node];
+  }
+
+  ut_array_1d_int_sort_uniq (*pmasters, *pmasterqty, pmasterqty);
+
+  (*pmasters) = ut_realloc_1d_int (*pmasters, *pmasterqty);
+
+  return;
 }

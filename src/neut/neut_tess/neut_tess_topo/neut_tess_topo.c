@@ -5,6 +5,19 @@
 #include"neut_tess_topo_.h"
 
 void
+neut_tess_ver_edges (struct TESS Tess, int ver, int **pedges, int *pedgeqty)
+{
+  ut_free_1d_int (*pedges);
+
+  (*pedgeqty) = Tess.VerEdgeQty[ver];
+  (*pedges) = ut_alloc_1d_int (*pedgeqty);
+
+  ut_array_1d_int_memcpy (*pedges, *pedgeqty, Tess.VerEdgeNb[ver]);
+
+  return;
+}
+
+void
 neut_tess_ver_edges_all (struct TESS Tess, int ver, int **pedge,
 			 int *pedgeqty)
 {
@@ -66,6 +79,13 @@ neut_tess_ver_faces (struct TESS Tess, int ver, int **pface, int *pfaceqty)
       tmp[(*pfaceqty)++] = Tess.EdgeFaceNb[tmpedge][j];
   }
 
+  if (Tess.Dim == 2)
+  {
+    for (i = 0; i < *pfaceqty; i++)
+      if (tmp[i] < 0 || tmp[i] > Tess.FaceQty)
+	tmp[i] = 0;
+    (*pfaceqty) -= ut_array_1d_int_deletencompress (tmp, (*pfaceqty), 0, (*pfaceqty));
+  }
   ut_array_1d_int_sort_uniq (tmp, *pfaceqty, pfaceqty);
 
   if (pface)
@@ -143,6 +163,67 @@ neut_tess_ver_seeds (struct TESS Tess, int ver, int **pseed, int *pseedqty)
 
   return;
 }
+
+// same result as neut_tess_ver_cells
+void
+neut_tess_ver_masterseeds (struct TESS Tess, int ver, int **pseed, int *pseedqty)
+{
+  int i;
+
+  neut_tess_ver_seeds (Tess, ver, pseed, pseedqty);
+
+  for (i = 0; i < (*pseedqty); i++)
+    if ((*pseed)[i] > Tess.CellQty)
+    {
+      (*pseedqty) -= ut_array_1d_int_deletencompress (*pseed,
+						      (*pseedqty),
+						      (*pseed)[i], 1);
+      i--;
+    }
+
+  return;
+}
+
+// same result as neut_tess_edge_cells
+void
+neut_tess_edge_masterseeds (struct TESS Tess, int edge, int **pseed, int *pseedqty)
+{
+  int i;
+
+  neut_tess_edge_seeds (Tess, edge, pseed, pseedqty);
+
+  for (i = 0; i < (*pseedqty); i++)
+    if ((*pseed)[i] > Tess.CellQty)
+    {
+      (*pseedqty) -= ut_array_1d_int_deletencompress (*pseed,
+						      (*pseedqty),
+						      (*pseed)[i], 1);
+      i--;
+    }
+
+  return;
+}
+
+// same result as neut_tess_face_cells
+void
+neut_tess_face_masterseeds (struct TESS Tess, int face, int **pseed, int *pseedqty)
+{
+  int i;
+
+  neut_tess_face_seeds (Tess, face, pseed, pseedqty);
+
+  for (i = 0; i < (*pseedqty); i++)
+    if ((*pseed)[i] > Tess.CellQty)
+    {
+      (*pseedqty) -= ut_array_1d_int_deletencompress (*pseed,
+						      (*pseedqty),
+						      (*pseed)[i], 1);
+      i--;
+    }
+
+  return;
+}
+
 
 void
 neut_tess_ver_seeds_positive (struct TESS Tess, int ver, int **pseed,
@@ -307,21 +388,22 @@ neut_tess_edge_domfaces (struct TESS Tess, int edge, int **pdface,
 void
 neut_tess_edge_cells (struct TESS Tess, int edge, int **pcell, int *pcellqty)
 {
-  int i;
+  int i, face;
+
+  ut_free_1d_int_ (pcell);
+  (*pcellqty) = 0;
 
   if (Tess.Dim == 3)
     neut_tess_edge_polys (Tess, edge, pcell, pcellqty);
 
   else if (Tess.Dim == 2)
   {
-    (*pcellqty) = Tess.EdgeFaceQty[edge];
-    (*pcell) = ut_alloc_1d_int (*pcellqty);
-    ut_array_1d_int_memcpy (*pcell, *pcellqty, Tess.EdgeFaceNb[edge]);
-
-    if (Tess.PerSeedQty > 0)
-      for (i = 0; i < (*pcellqty); i++)
-	if (Tess.PerSeedMaster[(*pcell)[i]] > 0)
-	  (*pcell)[i] = Tess.PerSeedMaster[(*pcell)[i]];
+    for (i = 0; i < Tess.EdgeFaceQty[edge]; i++)
+    {
+      face = Tess.EdgeFaceNb[edge][i];
+      if (face > 0 && face <= Tess.FaceQty)
+	ut_array_1d_int_list_addelt_nocheck (pcell, pcellqty, face);
+    }
   }
 
   else
@@ -437,12 +519,12 @@ neut_tess_face_polys (struct TESS Tess, int face, int **ppoly, int *ppolyqty)
 
   qty = 0;
   for (i = 0; i < 2; i++)
-    if (Tess.FacePoly[face][i] > 0)
+    if (Tess.FacePoly[face][i] > 0 && Tess.FacePoly[face][i] <= Tess.PolyQty)
     {
       qty++;
       tmp[qty - 1] = Tess.FacePoly[face][i];
 
-      if (Tess.PerSeedQty > 0)
+      if (!strcmp (Tess.Type, "periodic"))
 	if (Tess.PerSeedMaster[tmp[qty - 1]] > 0)
 	  tmp[qty - 1] = Tess.PerSeedMaster[tmp[qty - 1]];
     }
@@ -459,6 +541,23 @@ neut_tess_face_polys (struct TESS Tess, int face, int **ppoly, int *ppolyqty)
     (*ppolyqty) = qty;
 
   ut_free_1d_int (tmp);
+
+  return;
+}
+
+void
+neut_tess_face_seeds (struct TESS Tess, int face, int **pseeds, int *pseedqty)
+{
+  if (Tess.Dim == 3)
+  {
+    (*pseedqty) = 2;
+    (*pseeds) = ut_alloc_1d_int (*pseedqty);
+
+    ut_array_1d_int_memcpy (*pseeds, *pseedqty, Tess.FacePoly[face]);
+  }
+
+  else
+    abort ();
 
   return;
 }
@@ -2340,7 +2439,7 @@ neut_tess_seed_perseed (struct TESS Tess, int seed, int *shift)
 
   if (seed < 0)
     return seed;
-  else if (seed <= Tess.SeedQty - Tess.PerSeedQty)
+  else if (seed <= Tess.CellQty)
     return neut_tess_seed_master_slave (Tess, seed, shift, 1);
   else
   {
@@ -2842,4 +2941,160 @@ neut_tess_face_cells (struct TESS Tess, int face, int **pcell, int *pcellqty)
   neut_tess_face_polys (Tess, face, pcell, pcellqty);
 
   return;
+}
+
+int
+neut_tess_seed_masterseed (struct TESS Tess, int seed, int *pmaster)
+{
+  if (seed < 1 || seed > Tess.SeedQty)
+  {
+    (*pmaster) = -1;
+    return -1;
+  }
+
+  else
+  {
+    (*pmaster) = seed <= Tess.CellQty ? seed : Tess.PerSeedMaster[seed];
+    return 0;
+  }
+}
+
+int
+neut_tess_seed_isper (struct TESS Tess, int seed)
+{
+  if (!strcmp (Tess.Type, "standard"))
+    return 0;
+
+  else
+    return (Tess.PerSeedMaster[seed] > 0);
+}
+
+int
+neut_tess_seed_iscell (struct TESS Tess, int seed)
+{
+  return (seed >=1 && seed <= Tess.CellQty);
+}
+
+int
+neut_tess_ver_isper (struct TESS Tess, int ver)
+{
+  if (!strcmp (Tess.Type, "standard"))
+    return 0;
+
+  else
+    return (Tess.PerVerMaster[ver] > 0 || Tess.PerVerSlaveQty[ver] > 0);
+}
+
+int
+neut_tess_edge_isper (struct TESS Tess, int edge)
+{
+  if (!strcmp (Tess.Type, "standard"))
+    return 0;
+
+  else
+    return (Tess.PerEdgeMaster[edge] > 0 || Tess.PerEdgeSlaveQty[edge] > 0);
+}
+
+int
+neut_tess_face_isper (struct TESS Tess, int face)
+{
+  if (!strcmp (Tess.Type, "standard"))
+    return 0;
+
+  else
+    return (Tess.PerFaceMaster[face] > 0 || Tess.PerFaceSlaveNb[face] > 0);
+}
+
+int
+neut_tess_ver_ispermaster (struct TESS Tess, int ver)
+{
+  if (!strcmp (Tess.Type, "standard"))
+    return 0;
+
+  else
+    return (Tess.PerVerSlaveQty[ver] > 0);
+}
+
+int
+neut_tess_edge_ispermaster (struct TESS Tess, int edge)
+{
+  if (!strcmp (Tess.Type, "standard"))
+    return 0;
+
+  else
+    return (Tess.PerEdgeSlaveQty[edge] > 0);
+}
+
+int
+neut_tess_face_ispermaster (struct TESS Tess, int face)
+{
+  if (!strcmp (Tess.Type, "standard"))
+    return 0;
+
+  else
+    return (Tess.PerFaceSlaveNb[face] > 0);
+}
+
+int
+neut_tess_ver_isperslave (struct TESS Tess, int ver)
+{
+  if (!strcmp (Tess.Type, "standard"))
+    return 0;
+
+  else
+    return (Tess.PerVerMaster[ver] > 0);
+}
+
+int
+neut_tess_edge_isperslave (struct TESS Tess, int edge)
+{
+  if (!strcmp (Tess.Type, "standard"))
+    return 0;
+
+  else
+    return (Tess.PerEdgeMaster[edge] > 0);
+}
+
+int
+neut_tess_face_isperslave (struct TESS Tess, int face)
+{
+  if (!strcmp (Tess.Type, "standard"))
+    return 0;
+
+  else
+    return (Tess.PerFaceMaster[face] > 0);
+}
+
+void
+neut_tess_ver_inters (struct TESS Tess, int ver, int **pinters, int *pinterqty)
+{
+  if (Tess.Dim == 2)
+    neut_tess_ver_edges (Tess, ver, pinters, pinterqty);
+  else if (Tess.Dim == 3)
+    neut_tess_ver_faces (Tess, ver, pinters, pinterqty);
+  else
+    abort ();
+}
+
+void
+neut_tess_inter_seeds (struct TESS Tess, int inter, int **pseed,
+		       int *pseedqty)
+{
+  if (Tess.Dim == 2)
+    neut_tess_edge_seeds (Tess, inter, pseed, pseedqty);
+  else if (Tess.Dim == 3)
+    neut_tess_face_seeds (Tess, inter, pseed, pseedqty);
+  else
+    abort ();
+}
+
+int
+neut_tess_inter_isperslave (struct TESS Tess, int inter)
+{
+  if (Tess.Dim == 2)
+    return neut_tess_edge_isperslave (Tess, inter);
+  else if (Tess.Dim == 3)
+    return neut_tess_face_isperslave (Tess, inter);
+  else
+    abort ();
 }

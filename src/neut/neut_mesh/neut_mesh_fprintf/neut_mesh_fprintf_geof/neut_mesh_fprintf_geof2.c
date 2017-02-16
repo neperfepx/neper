@@ -300,6 +300,34 @@ neut_mesh_fprintf_geof_lisets (FILE* file, struct MESH Mesh2D,
   return;
 }
 
+void
+neut_mesh_fprintf_geof_fasets (FILE* file, struct MESH Mesh3D,
+			       struct BOUNDARY Bound, char *fasets)
+{
+  int i, j, k;
+
+  if (Mesh3D.Dimension != 3)
+    abort ();
+
+  if (strcmp (fasets, "internal"))
+    return;
+
+  fprintf (file, "\n");
+  for (i = 1; i <= Bound.BoundQty; i++)
+    if (Bound.BoundEltQty[i] > 0)
+      for (j = 0; j < 2; j++)
+      {
+	fprintf (file, "**faset %s\n", Bound.BoundNames[i][j]);
+	for (k = 1; k <= Bound.BoundNodeQty[i]; k += 3)
+	  fprintf (file, "t3 %d %d %d\n", Bound.BoundNodes[i][j][k],
+					   Bound.BoundNodes[i][j][k + 1],
+					   Bound.BoundNodes[i][j][k + 2]);
+	fprintf (file, "\n");
+      }
+
+  return;
+}
+
 /*
 void
 neut_mesh_fprintf_geof_bsets (FILE* file, struct MESH Mesh1D, char* bsets)

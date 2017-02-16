@@ -89,8 +89,8 @@ neut_point_var_list_mesh (char ***pvar, int *pvarqty)
   strcpy ((*pvar)[id++], "x");
   strcpy ((*pvar)[id++], "y");
   strcpy ((*pvar)[id++], "z");
-  strcpy ((*pvar)[id++], "elt3d");
-  strcpy ((*pvar)[id++], "elset3d");
+  strcpy ((*pvar)[id++], "elt");
+  strcpy ((*pvar)[id++], "elset");
   strcpy ((*pvar)[id++], "2dmeshp");
   strcpy ((*pvar)[id++], "2dmeshd");
   strcpy ((*pvar)[id++], "2dmeshv");
@@ -145,13 +145,13 @@ neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
       }
     strcpy (*ptype, "%d");
   }
-  else if (!strcmp (var, "elt3d"))
+  else if (!strcmp (var, "elt"))
   {
     neut_mesh_point_elt (Mesh, Nodes, Point.PointCoo[id], &tmp);
     (*pval) = tmp;
     strcpy (*ptype, "%d");
   }
-  else if (!strcmp (var, "elset3d"))
+  else if (!strcmp (var, "elset"))
   {
     neut_mesh_point_elset (Mesh, Nodes, Point.PointCoo[id], NULL, 0, &tmp);
     (*pval) = tmp;

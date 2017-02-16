@@ -68,6 +68,7 @@ net_in_set_zero (struct IN_T *pIn)
 
   (*pIn).format = NULL;
   (*pIn).tesrformat = NULL;
+  (*pIn).oridistribstring = NULL;
   (*pIn).oridistrib = NULL;
   (*pIn).orides = NULL;
   (*pIn).oricrysym = NULL;
@@ -109,7 +110,8 @@ net_in_free (struct IN_T *pIn)
   ut_free_1d ((*pIn).scale);
   ut_free_1d_char ((*pIn).format);
   ut_free_1d_char ((*pIn).tesrformat);
-  ut_free_1d_char ((*pIn).oridistrib);
+  ut_free_1d_char ((*pIn).oridistribstring);
+  ut_free_2d_char ((*pIn).oridistrib, (*pIn).levelqty + 1);
   ut_free_1d_char ((*pIn).orides);
   ut_free_1d_char ((*pIn).oricrysym);
   ut_free_1d_char ((*pIn).oriformat);

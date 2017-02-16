@@ -46,6 +46,8 @@ and
 @ @ @  @var{cell1_lamid} @var{cell2_lamid} ... ]                      @*
 @ [*modeid @*
 @ @ @  @var{cell1_modeid} @var{cell2_modeid} ... ]                     @*
+@ [*crysym @*
+@ @ @  @var{crysym}]                     			       @*
 @  **vertex                                                            @*
 @ @ @  @var{total_number_of_vertices}                                  @*
 @ @ @  @var{ver_id} @ @var{ver_x} @var{ver_y} @var{ver_z} @var{ver_state}               @*
@@ -160,6 +162,9 @@ identifier field.
 
 @item @code{@var{cell1_modeid}}, @code{@var{cell2_modeid}}, @dots{} are
 the mode identifiers of the cells.
+
+@item @code{@var{crysym}} is the crystal symmetry (@code{triclinic},
+@code{cubic} or @code{hexagonal}).
 
 @item @code{*seed} denotes the beginning of a seed field.
 

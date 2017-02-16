@@ -45,7 +45,7 @@ net_tess_lam_seed_readargs (char *morpho,
 }
 
 int
-net_tess_lam_seed_set (struct IN_T In, struct MTESS MTess, struct TESS *Tess, int dtess,
+net_tess_lam_seed_set (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess, int dtess,
 		       int dcell, struct TESS Dom, char *wtype, double *w, int wqty,
 		       char *vtype, double *v, int vqty,
 		       struct SEEDSET *SSet, struct SEEDSET *pSSet)
@@ -59,13 +59,13 @@ net_tess_lam_seed_set (struct IN_T In, struct MTESS MTess, struct TESS *Tess, in
       pSSet, 1, NULL);
 
   gsl_rng_set (r, (*pSSet).Random);
-  net_tess_lam_seed_set_normal (r, vtype, v, vqty, *pSSet, n);
+  net_tess_lam_seed_set_normal (SSet, dtess, dcell, r, vtype, v, vqty, n);
 
   net_tess_lam_seed_set_lam (Dom, r, n, wtype, w, wqty, pSSet);
 
   net_tess_lam_seed_set_finalize (pSSet);
 
-  net_tess_opt_init_sset_ori (In, pSSet);
+  net_tess_opt_init_sset_ori (In, level, SSet, dtess, dcell, pSSet);
 
   gsl_rng_free (r);
   ut_free_1d (n);

@@ -581,6 +581,8 @@ neut_tess_3dcolumnar_2d_edges (struct TESS Tess, int domface,
     (*pT).EdgeState[i] = Tess.EdgeState[oldedge];
     (*pT).EdgeDel[i] = Tess.EdgeDel[oldedge];
     ut_array_1d_int_memcpy ((*pT).EdgeDom[i], 2, Tess.EdgeDom[oldedge]);
+    if ((*pT).EdgeDom[i][0] == 2)
+      ut_array_1d_int_set_2 ((*pT).EdgeDom[i], -1, 0);
 
     if (periodic)
     {
@@ -918,6 +920,8 @@ neut_tess_domface_tess_domain (struct TESS Tess, int domface,
       ut_array_1d_int_deletencompress ((*pT).DomVerEdgeNb[i],
 				       (*pT).DomVerEdgeQty[i], 0,
 				       (*pT).DomVerEdgeQty[i]);
+
+    ut_array_1d_int_sort ((*pT).DomVerEdgeNb[i], (*pT).DomVerEdgeQty[i]);
   }
 
   // Renumbering domain vertices in domain edges
@@ -945,7 +949,7 @@ neut_tess_domface_tess_domain (struct TESS Tess, int domface,
     if ((*pT).EdgeDom[i][0] == 2)
     {
       if ((*pT).EdgeDom[i][1] == domface)
-	(*pT).EdgeDom[i][1] = -1;
+	ut_array_1d_int_set_2 ((*pT).EdgeDom[i], -1, 0);
       else
 	(*pT).EdgeDom[i][1] = 1;
     }
@@ -962,7 +966,7 @@ neut_tess_domface_tess_domain (struct TESS Tess, int domface,
     if ((*pT).VerDom[i][0] == 2)
     {
       if ((*pT).VerDom[i][1] == domface)
-	(*pT).VerDom[i][0] = -1;
+	ut_array_1d_int_set_2 ((*pT).VerDom[i], -1, 0);
       else
 	(*pT).VerDom[i][0] = 1;
     }

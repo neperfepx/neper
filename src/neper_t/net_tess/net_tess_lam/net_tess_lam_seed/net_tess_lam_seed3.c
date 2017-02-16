@@ -59,6 +59,8 @@ net_tess_lam_seed_readargs_v (char *value,
     ut_string_string ("random", pvtype);
   else if (!strncmp (value, "random(", 7))
     ut_string_string (value, pvtype);
+  else if (!strncmp (value, "crysdir(", 8))
+    ut_string_string (value, pvtype);
   else if (ut_string_filename (value))
   {
     ut_string_string ("file", pvtype);
@@ -85,20 +87,25 @@ net_tess_lam_seed_set_init (struct SEEDSET *pSSet)
 }
 
 int
-net_tess_lam_seed_set_normal (gsl_rng *r, char *vtype, double *v, int vqty,
-                         struct SEEDSET SSet, double *n)
+net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
+                              gsl_rng *r, char *vtype, double *v, int vqty,
+			      double *n)
 {
-  int id;
+  int id, dim = SSet[1].Dim;
   double theta;
+  double *q = NULL;
+
+  if (dtess != 0)
+    q = SSet[dtess].q[dcell];
 
   if (!strcmp (vtype, "file") && vqty == 1)
     ut_array_1d_memcpy (n, 3, v);
 
   else if (!strcmp (vtype, "random"))
   {
-    if (SSet.Dim == 3)
+    if (dim == 3)
       ol_nb_r (gsl_rng_uniform (r), gsl_rng_uniform (r), n);
-    else if (SSet.Dim == 2)
+    else if (dim == 2)
     {
       theta = 2 * M_PI * gsl_rng_uniform (r);
       n[0] = cos (theta);
@@ -121,6 +128,17 @@ net_tess_lam_seed_set_normal (gsl_rng *r, char *vtype, double *v, int vqty,
     ut_array_1d_memcpy (n, 3, pts[id]);
 
     ut_free_2d (pts, ptqty);
+  }
+
+  else if (!strncmp (vtype, "crysdir(", 8))
+  {
+    double **g = ol_g_alloc ();
+    sscanf (vtype, "crysdir(%lf,%lf,%lf)", n, n + 1, n + 2);
+    ol_q_g (q, g);
+    ol_g_inverse (g, g);
+    ol_g_vect_vect (g, n, n);
+    ut_array_1d_normalize (n, 3);
+    ol_g_free (g);
   }
 
   else

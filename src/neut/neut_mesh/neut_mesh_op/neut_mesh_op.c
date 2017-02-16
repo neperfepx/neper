@@ -81,7 +81,8 @@ neut_mesh_free (struct MESH *pMesh)
 
   ut_free_1d_char ((*pMesh).EltType);
 
-  ut_free_2d_int ((*pMesh).EltNodes, (*pMesh).EltQty + 1);
+  if ((*pMesh).EltNodes)
+    ut_free_2d_int ((*pMesh).EltNodes, (*pMesh).EltQty + 1);
 
   ut_free_1d_int ((*pMesh).ElsetId);
 
@@ -275,6 +276,18 @@ neut_mesh_init_nodeelts (struct MESH *pMesh, int NodeQty)
       node = (*pMesh).EltNodes[i][j];
       (*pMesh).NodeElts[node][++(*pMesh).NodeElts[node][0]] = i;
     }
+
+  return;
+}
+
+void
+neut_mesh_array_init_nodeelts (struct MESH *Mesh, int dim, int NodeQty)
+{
+  int i;
+
+  for (i = 0; i <= dim; i++)
+    if (Mesh[i].EltQty > 0)
+      neut_mesh_init_nodeelts (Mesh + i, NodeQty);
 
   return;
 }
@@ -1347,14 +1360,14 @@ neut_mesh_renumber_continuous (struct MESH *pMesh, int *node_nbs,
 
   int node_nb_max = ut_array_1d_int_max (node_nbs + 1, node_nbs[0]);
 
-  if (node_nbs != NULL)
+  if (node_nbs)
   {
     nodes_old_new = ut_alloc_1d_int (node_nb_max + 1);
     for (i = 1; i <= node_nbs[0]; i++)
       nodes_old_new[node_nbs[i]] = i;
   }
 
-  if (elt_nbs != NULL)
+  if (elt_nbs)
   {
     elt_nb_max = ut_array_1d_int_max (elt_nbs + 1, (*pMesh).EltQty);
 

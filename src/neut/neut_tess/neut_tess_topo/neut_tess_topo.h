@@ -17,6 +17,13 @@ extern "C"
   extern void neut_tess_ver_edges_all (struct TESS Tess, int ver, int **pedge,
 				       int *pedgeqty);
 
+/// \brief Get the edges of a vertex
+///
+///
+///
+  extern void neut_tess_ver_edges (struct TESS Tess, int ver, int **pedge,
+				   int *pedgeqty);
+
 /// \brief Get the faces of a vertex
 ///
 ///
@@ -44,6 +51,13 @@ extern "C"
 ///
   extern void neut_tess_ver_seeds (struct TESS Tess, int ver, int **pseed,
 				   int *pseedqty);
+
+  extern void neut_tess_ver_masterseeds (struct TESS Tess, int ver, int **pseed,
+					 int *pseedqty);
+  extern void neut_tess_edge_masterseeds (struct TESS Tess, int edge, int **pseed,
+					 int *pseedqty);
+  extern void neut_tess_face_masterseeds (struct TESS Tess, int face, int **pseed,
+					 int *pseedqty);
 
 /// \brief Get the positive seeds of a vertex
 ///
@@ -107,6 +121,13 @@ extern "C"
 ///
   extern void neut_tess_face_polys (struct TESS Tess, int face, int **ppoly,
 				    int *ppolyqty);
+
+/// \brief Get the seeds of a face
+///
+///
+///
+  extern void neut_tess_face_seeds (struct TESS Tess, int face, int
+      **pseeds, int *pseedqty);
 
 /// \brief Get the cells of a face
 ///
@@ -563,6 +584,29 @@ extern "C"
 
   extern void neut_tess_ver_cells (struct TESS Tess, int ver, int
       **pcell, int *pcellqty);
+
+  extern int neut_tess_seed_masterseed (struct TESS Tess, int seed, int *pmaster);
+
+  extern int neut_tess_seed_isper (struct TESS Tess, int seed);
+  extern int neut_tess_seed_iscell (struct TESS Tess, int seed);
+  extern int neut_tess_ver_isper (struct TESS Tess, int ver);
+  extern int neut_tess_edge_isper (struct TESS Tess, int edge);
+  extern int neut_tess_face_isper (struct TESS Tess, int face);
+
+  extern int neut_tess_ver_ispermaster (struct TESS Tess, int ver);
+  extern int neut_tess_edge_ispermaster (struct TESS Tess, int edge);
+  extern int neut_tess_face_ispermaster (struct TESS Tess, int face);
+
+  extern int neut_tess_ver_isperslave (struct TESS Tess, int ver);
+  extern int neut_tess_edge_isperslave (struct TESS Tess, int edge);
+  extern int neut_tess_face_isperslave (struct TESS Tess, int face);
+
+  extern void neut_tess_ver_inters (struct TESS Tess, int ver, int
+				    **pinters, int *pinterqty);
+
+  extern void neut_tess_inter_seeds (struct TESS Tess, int inter, int **pseed,
+				     int *pseedqty);
+  extern int neut_tess_inter_isperslave (struct TESS Tess, int inter);
 
 #endif				/* NEUT_TESS_TOPO_H */
 

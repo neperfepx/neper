@@ -383,26 +383,25 @@ dimensions) and points are provided below.
 Variables starting by @samp{2dmesh} are only available for statistics
 (options starting by @option{-stat} of @mM{}); for elements, they apply to the centroids.
 
-@page
 @node Point Keys
 @section Point Keys
 
 Available keys for points are provided below.
 
-@multitable @columnfractions 0.18 0.47 0.18 0.10
+@multitable @columnfractions 0.18 0.47 0.14 0.14
   @headitem Key   @tab Descriptor                      @tab Apply to @tab Require
   @item @code{id} @tab Identifier                      @tab point    @tab 
   @item @code{x}  @tab x coordinate                    @tab point    @tab 
   @item @code{y}  @tab y coordinate                    @tab point    @tab 
   @item @code{z}  @tab z coordinate                    @tab point    @tab 
   @item @code{cell}  @tab cell                         @tab point    @tab tessellation
-  @item @code{elt3d}  @tab 3D element @tab point       @tab mesh
-  @item @code{elset3d}  @tab 3D elset @tab point       @tab mesh
-  @item @code{2dmeshp}@tab coordinates of the closest point of the 2D mesh     @tab point    @tab mesh
-  @item @code{2dmeshd}@tab distance to @samp{2dmeshp} @tab point    @tab mesh
-  @item @code{2dmeshv}@tab vector to @samp{2dmeshp}   @tab point    @tab mesh
+  @item @code{elt}    @tab containing element          @tab point    @tab mesh
+  @item @code{elset}  @tab containing elset            @tab point    @tab mesh
+  @item @code{2dmeshp}@tab coordinates of the closest point of the 2D mesh     @tab point    @tab 3D mesh
+  @item @code{2dmeshd}@tab distance to @samp{2dmeshp} @tab point    @tab 3D mesh
+  @item @code{2dmeshv}@tab vector to @samp{2dmeshp}   @tab point    @tab 3D mesh
   @item @code{2dmeshn}@tab outgoing normal vector of the 2D mesh
-		     at @samp{2dmeshp}                @tab point    @tab mesh
+		     at @samp{2dmeshp}                @tab point    @tab 3D mesh
 @end multitable
 
 @node Rotations and Orientations
@@ -422,6 +421,41 @@ information).
   @item @code{ek} @tab Euler angles (Kocks convention) @tab 3
   @item @code{er} @tab Euler angles (Roe convention)   @tab 3
 @end multitable
+
+@sp 1
+Keys are available for ideal orientations:
+@multitable @columnfractions 0.18 0.83
+@iftex
+  @item Cube      @tab @math{@left(0@,0@,1@right)@left[1@,0@,0@right]}
+  @item Goss      @tab @math{@left(0@,1@,1@right)@left[1@,0@,0@right]}
+  @item U         @tab @math{@left(1@,0@,1@right)@left[@bar{1}@,0@,1@right]}
+  @item 45NDCube  @tab @math{@left(0@,0@,1@right)@left[1@,@bar{1}@,0@right]}
+  @item S1        @tab @math{@left(1@,2@,3@right)@left[6@,3@,@bar{4}@right]}
+  @item S2        @tab @math{@left(@bar{1}@,2@,3@right)@left[6@,@bar{3}@,4@right]}
+  @item S3        @tab @math{@left(1@,@bar{2}@,3@right)@left[6@,@bar{3}@,@bar{4}@right]}
+  @item S4        @tab @math{@left(@bar{1}@,@bar{2}@,3@right)@left[6@,3@,4@right]}
+  @item Brass1    @tab @math{@left(1@,1@,0@right)@left[1@,@bar{1}@,2@right]}
+  @item Brass2    @tab @math{@left(@bar{1}@,1@,0@right)@left[1@,1@,@bar{2}@right]}
+  @item Copper1   @tab @math{@left(1@,1@,2@right)@left[1@,1@,@bar{1}@right]}
+  @item Copper2   @tab @math{@left(@bar{1}@,1@,2@right)@left[1@,@bar{1}@,1@right]}
+@end iftex
+@ifinfo
+  @item Cube      @tab (0, 0, 1)[1, 0, 0]
+  @item Goss      @tab (0, 1, 1)[1, 0, 0]
+  @item U         @tab (1, 0, 1)[-1, 0, 1]
+  @item 45NDCube  @tab (0, 0, 1)[1, -1, 0]
+  @item S1        @tab (1, 2, 3)[6, 3, -4]
+  @item S2        @tab (-1, 2, 3)[6, -3, 4]
+  @item S3        @tab (1, -2, 3)[6, -3, -4]
+  @item S4        @tab (-1, -2, 3)[6, 3, 4]
+  @item Brass1    @tab (1, 1, 0)[1, -1, 2]
+  @item Brass2    @tab (-1, 1, 0)[1, 1, -2]
+  @item Copper1   @tab (1, 1, 2)[1, 1, -1]
+  @item Copper2   @tab (-1, 1, 2)[1, -1, 1]
+@end ifinfo
+@end multitable
+
+
 
 @node Colours
 @section Colours

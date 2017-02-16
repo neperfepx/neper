@@ -3613,6 +3613,17 @@ ut_array_1d_int_list_addelt (int **parray, int *psize, int val)
   return status;
 }
 
+void
+ut_array_1d_int_list_addelts (int **parray, int *psize, int *elts, int eltqty)
+{
+  int i;
+
+  for (i = 0; i < eltqty; i++)
+    ut_array_1d_int_list_addelt (parray, psize, elts[i]);
+
+  return;
+}
+
 int
 ut_array_1d_int_list_addelt_nocheck (int **parray, int *psize, int val)
 {

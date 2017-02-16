@@ -4,52 +4,6 @@
 
 #include"neut_tess_fscanf_.h"
 
-void
-neut_tess_fscanf_version (FILE * file, char *version)
-{
-  int status = 0;
-  char *tmp = ut_alloc_1d_char (1000);
-  fpos_t pos;
-
-  fgetpos (file, &pos);
-
-  if (fscanf (file, "%s", tmp) != 1)
-    status = -1;
-  else
-  {
-    if (!strcmp (tmp, "***tess1.9.2") || !strcmp (tmp, "***tess1.9"))
-    {
-      strcpy (version, "1.9.2");
-    }
-    else if (!strcmp (tmp, "***tess"))
-    {
-      if (ut_file_string_scanncomp (file, "**format") != 0)
-      {
-	ut_print_message (2, 0,
-			  "Input file is not a valid tessellation file.\n");
-	abort ();
-      }
-
-      if (fscanf (file, "%s", version) != 1)
-	status = -1;
-    }
-    else
-      status = -1;
-  }
-
-  if (status != 0)
-  {
-    ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
-    abort ();
-  }
-
-  fsetpos (file, &pos);
-
-  ut_free_1d_char (tmp);
-
-  return;
-}
-
 /* Tessellation exportation: head */
 void
 neut_tess_fscanf_head (struct TESS *pTess, FILE * file)
@@ -57,25 +11,21 @@ neut_tess_fscanf_head (struct TESS *pTess, FILE * file)
   if (ut_file_string_scanncomp (file, "***tess") != 0
       || ut_file_string_scanncomp (file, "**format") != 0
       || ut_file_string_scanncomp (file, "2.0") != 0)
-  {
     ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
-    abort ();
-  }
 
   if (ut_file_string_scanncomp (file, "**general") != 0)
-  {
     ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
-    abort ();
-  }
-  (*pTess).Type = ut_alloc_1d_char (100);
 
+  (*pTess).Type = ut_alloc_1d_char (100);
   if (fscanf (file, "%d%s", &((*pTess).Dim), (*pTess).Type) != 2)
-  {
     ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
-    abort ();
-  }
+
+  if ((*pTess).Dim < 2)
+    ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
 
   (*pTess).Level = 1;
+
+  (*pTess).TessId = 1;
 
   return;
 }
@@ -94,7 +44,7 @@ neut_tess_fscanf_foot (FILE * file)
 void
 neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
 {
-  int i, status, id;
+  int i, status, id, level;
   double theta;
   char *string = ut_alloc_1d_char (1000);
   double *des = ut_alloc_1d (9);
@@ -103,99 +53,109 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
       || fscanf (file, "%d", &((*pTess).CellQty)) != 1)
     abort ();
 
-  ut_file_nextstring (file, string);
-  if (!strcmp (string, "*id"))
+  while (!ut_file_nextstring_section_level (file, &level) && level == 1)
   {
-    ut_file_skip (file, 1);
-    (*pTess).CellId = ut_alloc_1d_int ((*pTess).CellQty + 1);
-    ut_array_1d_int_fscanf (file, (*pTess).CellId + 1, (*pTess).CellQty);
-  }
+    ut_file_nextstring (file, string);
 
-  ut_file_nextstring (file, string);
-  if (!strcmp (string, "*lamid"))
-  {
-    ut_file_skip (file, 1);
-    (*pTess).CellLamId = ut_alloc_1d_int ((*pTess).CellQty + 1);
-    ut_array_1d_int_fscanf (file, (*pTess).CellLamId + 1, (*pTess).CellQty);
-  }
-
-  ut_file_nextstring (file, string);
-  if (!strcmp (string, "*modeid"))
-  {
-    ut_file_skip (file, 1);
-    (*pTess).CellModeId = ut_alloc_1d_int ((*pTess).CellQty + 1);
-    ut_array_1d_int_fscanf (file, (*pTess).CellModeId + 1, (*pTess).CellQty);
-  }
-
-  ut_file_nextstring (file, string);
-  if (!strcmp (string, "*seed"))
-  {
-    ut_file_skip (file, 1);
-    (*pTess).SeedQty = (*pTess).CellQty;
-    (*pTess).SeedCoo = ut_alloc_2d ((*pTess).CellQty + 1, 3);
-    (*pTess).SeedWeight = ut_alloc_1d ((*pTess).CellQty + 1);
-
-    for (i = 1; i <= (*pTess).CellQty; i++)
+    if (!strcmp (string, "*id"))
     {
-      status = fscanf (file, "%d", &id);
-      if (id != i)
-	abort ();
-      ut_array_1d_fscanf (file, (*pTess).SeedCoo[id], 3);
-      status = fscanf (file, "%lf", &((*pTess).SeedWeight[id]));
+      ut_file_skip (file, 1);
+      (*pTess).CellId = ut_alloc_1d_int ((*pTess).CellQty + 1);
+      ut_array_1d_int_fscanf (file, (*pTess).CellId + 1, (*pTess).CellQty);
+    }
 
-      if (status != 1)
+    else if (!strcmp (string, "*lamid"))
+    {
+      ut_file_skip (file, 1);
+      (*pTess).CellLamId = ut_alloc_1d_int ((*pTess).CellQty + 1);
+      ut_array_1d_int_fscanf (file, (*pTess).CellLamId + 1, (*pTess).CellQty);
+    }
+
+    else if (!strcmp (string, "*modeid"))
+    {
+      ut_file_skip (file, 1);
+      (*pTess).CellModeId = ut_alloc_1d_int ((*pTess).CellQty + 1);
+      ut_array_1d_int_fscanf (file, (*pTess).CellModeId + 1, (*pTess).CellQty);
+    }
+
+    else if (!strcmp (string, "*crysym"))
+    {
+      ut_file_skip (file, 1);
+      (*pTess).CellCrySym = ut_alloc_1d_char (1000);
+      if (fscanf (file, "%s", (*pTess).CellCrySym) != 1)
 	abort ();
     }
-  }
 
-  ut_file_nextstring (file, string);
+    else if (!strcmp (string, "*seed"))
+    {
+      ut_file_skip (file, 1);
+      (*pTess).SeedQty = (*pTess).CellQty;
+      (*pTess).SeedCoo = ut_alloc_2d ((*pTess).CellQty + 1, 3);
+      (*pTess).SeedWeight = ut_alloc_1d ((*pTess).CellQty + 1);
 
-  if (!strcmp (string, "*ori"))
-  {
-    ut_file_skip (file, 1);
-    (*pTess).CellOri = ut_alloc_2d ((*pTess).CellQty + 1, 4);
-
-    if (fscanf (file, "%s", string) != 1)
-      abort ();
-
-    if (!strcmp (string, "q"))
-      ut_array_2d_fscanf (file, (*pTess).CellOri + 1, (*pTess).CellQty, 4);
-    else if (!strcmp (string, "e"))
       for (i = 1; i <= (*pTess).CellQty; i++)
       {
-	ol_e_fscanf (file, des);
-	ol_e_q (des, (*pTess).CellOri[i]);
-      }
-    else if (!strcmp (string, "er"))
-      for (i = 1; i <= (*pTess).CellQty; i++)
-      {
-	ol_e_fscanf (file, des);
-	ol_er_e (des, des);
-	ol_e_q (des, (*pTess).CellOri[i]);
-      }
-    else if (!strcmp (string, "ek"))
-      for (i = 1; i <= (*pTess).CellQty; i++)
-      {
-	ol_e_fscanf (file, des);
-	ol_ek_e (des, des);
-	ol_e_q (des, (*pTess).CellOri[i]);
-      }
-    else if (!strcmp (string, "rtheta"))
-      for (i = 1; i <= (*pTess).CellQty; i++)
-      {
-	ol_r_fscanf (file, des);
-	if (fscanf (file, "%lf", &theta) != 1)
+	status = fscanf (file, "%d", &id);
+	if (id != i)
 	  abort ();
-	ol_rtheta_q (des, theta, (*pTess).CellOri[i]);
+	ut_array_1d_fscanf (file, (*pTess).SeedCoo[id], 3);
+	status = fscanf (file, "%lf", &((*pTess).SeedWeight[id]));
+
+	if (status != 1)
+	  abort ();
       }
-    else if (!strcmp (string, "R"))
-      for (i = 1; i <= (*pTess).CellQty; i++)
-      {
-	ol_R_fscanf (file, des);
-	ol_R_q (des, (*pTess).CellOri[i]);
-      }
+    }
+
+    else if (!strcmp (string, "*ori"))
+    {
+      ut_file_skip (file, 1);
+      (*pTess).CellOri = ut_alloc_2d ((*pTess).CellQty + 1, 4);
+
+      if (fscanf (file, "%s", string) != 1)
+	abort ();
+
+      if (!strcmp (string, "q"))
+	ut_array_2d_fscanf (file, (*pTess).CellOri + 1, (*pTess).CellQty, 4);
+      else if (!strcmp (string, "e"))
+	for (i = 1; i <= (*pTess).CellQty; i++)
+	{
+	  ol_e_fscanf (file, des);
+	  ol_e_q (des, (*pTess).CellOri[i]);
+	}
+      else if (!strcmp (string, "er"))
+	for (i = 1; i <= (*pTess).CellQty; i++)
+	{
+	  ol_e_fscanf (file, des);
+	  ol_er_e (des, des);
+	  ol_e_q (des, (*pTess).CellOri[i]);
+	}
+      else if (!strcmp (string, "ek"))
+	for (i = 1; i <= (*pTess).CellQty; i++)
+	{
+	  ol_e_fscanf (file, des);
+	  ol_ek_e (des, des);
+	  ol_e_q (des, (*pTess).CellOri[i]);
+	}
+      else if (!strcmp (string, "rtheta"))
+	for (i = 1; i <= (*pTess).CellQty; i++)
+	{
+	  ol_r_fscanf (file, des);
+	  if (fscanf (file, "%lf", &theta) != 1)
+	    abort ();
+	  ol_rtheta_q (des, theta, (*pTess).CellOri[i]);
+	}
+      else if (!strcmp (string, "R"))
+	for (i = 1; i <= (*pTess).CellQty; i++)
+	{
+	  ol_R_fscanf (file, des);
+	  ol_R_q (des, (*pTess).CellOri[i]);
+	}
+      else
+	ut_print_message (2, 2, "Could not process descriptor `%s'.\n", string);
+    }
+
     else
-      ut_print_message (2, 2, "Could not process descriptor `%s'.\n", string);
+      ut_print_message (2, 2, "Could not read field `%s'.\n", string);
   }
 
   ut_free_1d_char (string);
@@ -278,7 +238,8 @@ neut_tess_fscanf_face (struct TESS *pTess, FILE * file)
       || fscanf (file, "%d", &((*pTess).FaceQty)) != 1)
     abort ();
 
-  (*pTess).FaceDom = ut_alloc_2d_int ((*pTess).FaceQty + 1, 2);
+  if ((*pTess).Dim == 3)
+    (*pTess).FaceDom = ut_alloc_2d_int ((*pTess).FaceQty + 1, 2);
   (*pTess).FaceEq = ut_alloc_2d ((*pTess).FaceQty + 1, 4);
   (*pTess).FaceVerQty = ut_alloc_1d_int ((*pTess).FaceQty + 1);
   (*pTess).FaceVerNb = ut_alloc_1d_pint ((*pTess).FaceQty + 1);
@@ -396,6 +357,8 @@ neut_tess_fscanf_domain (struct TESS *pTess, FILE * file)
   (*pTess).DomVerLabel = ut_alloc_2d_char ((*pTess).DomVerQty + 1, 100);
   (*pTess).DomTessVerNb = ut_alloc_1d_int ((*pTess).DomVerQty + 1);
 
+  // Reading vertices
+
   for (i = 1; i <= (*pTess).DomVerQty; i++)
   {
     if (fscanf (file, "%d", &id) != 1 || id != i)
@@ -415,40 +378,38 @@ neut_tess_fscanf_domain (struct TESS *pTess, FILE * file)
 
   // Reading edges
 
-  if ((*pTess).Dim > 1)
+  if (ut_file_string_scanncomp (file, "*edge") != 0
+      || fscanf (file, "%d", &((*pTess).DomEdgeQty)) != 1)
+    abort ();
+
+  (*pTess).DomEdgeLabel = ut_alloc_2d_char ((*pTess).DomEdgeQty + 1, 100);
+  (*pTess).DomTessEdgeQty = ut_alloc_1d_int ((*pTess).DomEdgeQty + 1);
+  (*pTess).DomTessEdgeNb = ut_alloc_1d_pint ((*pTess).DomEdgeQty + 1);
+  (*pTess).DomEdgeVerNb = ut_alloc_2d_int ((*pTess).DomEdgeQty + 1, 2);
+
+  for (i = 1; i <= (*pTess).DomEdgeQty; i++)
   {
-    if (ut_file_string_scanncomp (file, "*edge") != 0
-	|| fscanf (file, "%d", &((*pTess).DomEdgeQty)) != 1)
+    if (fscanf (file, "%d", &id) != 1 || id != i)
       abort ();
 
-    (*pTess).DomEdgeLabel = ut_alloc_2d_char ((*pTess).DomEdgeQty + 1, 100);
-    (*pTess).DomTessEdgeQty = ut_alloc_1d_int ((*pTess).DomEdgeQty + 1);
-    (*pTess).DomTessEdgeNb = ut_alloc_1d_pint ((*pTess).DomEdgeQty + 1);
-    (*pTess).DomEdgeVerNb = ut_alloc_2d_int ((*pTess).DomEdgeQty + 1, 2);
+    if (fscanf (file, "%s", (*pTess).DomEdgeLabel[i]) != 1)
+      abort ();
 
-    for (i = 1; i <= (*pTess).DomEdgeQty; i++)
-    {
-      if (fscanf (file, "%d", &id) != 1 || id != i)
-	abort ();
+    if (fscanf (file, "%d", &((*pTess).DomTessEdgeQty[i])) != 1)
+      abort ();
 
-      if (fscanf (file, "%s", (*pTess).DomEdgeLabel[i]) != 1)
-	abort ();
-
-      if (fscanf (file, "%d", &((*pTess).DomTessEdgeQty[i])) != 1)
-	abort ();
-
-      (*pTess).DomTessEdgeNb[i] =
-	ut_alloc_1d_int ((*pTess).DomTessEdgeQty[i] + 1);
-      ut_array_1d_int_fscanf (file, (*pTess).DomTessEdgeNb[i] + 1,
-			      (*pTess).DomTessEdgeQty[i]);
-      ut_array_1d_int_fscanf (file, (*pTess).DomEdgeVerNb[i], 2);
-    }
-
-    neut_tess_init_domain_domveredge (pTess);
+    (*pTess).DomTessEdgeNb[i] =
+      ut_alloc_1d_int ((*pTess).DomTessEdgeQty[i] + 1);
+    ut_array_1d_int_fscanf (file, (*pTess).DomTessEdgeNb[i] + 1,
+			    (*pTess).DomTessEdgeQty[i]);
+    ut_array_1d_int_fscanf (file, (*pTess).DomEdgeVerNb[i], 2);
   }
 
+  neut_tess_init_domain_domveredge (pTess);
+
   // Reading faces
-  if ((*pTess).Dim > 2)
+
+  if ((*pTess).Dim == 3)
   {
     if (ut_file_string_scanncomp (file, "*face") != 0
 	|| fscanf (file, "%d", &((*pTess).DomFaceQty)) != 1)
@@ -505,17 +466,7 @@ neut_tess_fscanf_domain (struct TESS *pTess, FILE * file)
     neut_tess_init_domain_domedgeface (pTess);
   }
 
-  if ((*pTess).Dim == 3)
-  {
-    neut_tess_init_facedom (pTess);
-    neut_tess_init_edgedom_fromfacedom (pTess);
-    neut_tess_init_verdom_fromedgedom (pTess);
-  }
-  else if ((*pTess).Dim == 2)
-  {
-    neut_tess_init_edgedom (pTess);
-    neut_tess_init_verdom_fromedgedom (pTess);
-  }
+  neut_tess_init_alldom_fromdomtess (pTess);
 
   return;
 }

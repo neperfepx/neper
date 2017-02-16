@@ -8,6 +8,6 @@ extern void nem_in_free (struct IN_M);
 
 extern void nem_input_init_dim_tess (struct IN_M *pIn, struct TESS Tess);
 extern void nem_input_init_dim_tesr (struct IN_M *pIn, struct TESR Tesr);
-extern void nem_input_init_dim_mesh (struct IN_M *pIn, struct MESH *Mesh);
+extern int nem_input_init_dim_mesh (struct IN_M *pIn, struct MESH *Mesh);
 
 extern int nem_input_outputismesh (struct IN_M In);

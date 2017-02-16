@@ -553,20 +553,22 @@ any, see_the_source}
 @subsection Field Transport Options
 
 @opt{-transport, char_string@SEPDEP{}char_string@SEPDEP{}file_name@SEPNODEP{}...,
-Transport data from a parent mesh to a child mesh
-(both 3D).
+Transport data from a parent mesh to a child mesh.
 The parent mesh is the input mesh and the child mesh is the result mesh
 (created by remeshing or loaded
 with @option{-loadmesh}).
 A transport entry must have format
 @samp{@var{entity_type}@SEPDEP{}@var{data_type}@SEPDEP{}@var{file_name}}@comma{}
 where
-@samp{@var{entity_type}} must be @samp{elt}@comma{}
+@samp{@var{entity_type}} must be @samp{node} or @samp{elt}@comma{}
 @samp{@var{data_type}} is the type of data@comma{} under format
 @samp{integer@var{X}} or @samp{real@var{X}}@comma{} where @code{@var{X}} is the
 dimension@comma{} and @code{@var{file_name}} is the name of the file
 containing the parent data.  For several data transports@comma{} combine
-the transport entries with @samp{@SEPNODEP}.,
+the transport entries with @samp{@SEPNODEP}. Nodal data are transported
+by interpolation using the shape functions (2D only).  Element data are transported by
+considering the parent element which the centroid of the new element belongs
+to.,
 any,none}
 
 @subsection Output Options
@@ -580,8 +582,10 @@ Specify the format of the output file(s). Mesh
 formats are: the Gmsh @samp{msh}@comma{} the @w{VTK @samp{vtk}}@comma{}
 the @w{Abaqus @samp{inp}}@comma{} the Zset/Z@'ebulon @samp{geof} and the
 FEpX @samp{fepx} (for the FEpX legacy format@comma{} provide
-@samp{fepx@SEPDEP{}legacy}). The tessellation file format
-@samp{tess} is also available.
+@samp{fepx@SEPDEP{}legacy}). For @samp{msh}@comma{} append
+@samp{@SEPDEP{}@var{format}} to specify the format@comma{}
+which can be @samp{ascii} or @samp{binary} (default @samp{ascii}).
+The tessellation file format @samp{tess} is also available.
 Combine arguments with @samp{@SEPNODEP}.,
 see above, msh}
 
@@ -801,7 +805,7 @@ The mesh can be written in the following formats,
 @subsection Periodicity
 
 @itemize
-@item File @file{.per}. For its slave node, the file provides (one slave
+@item File @file{.per}. For each slave node, the file provides (one slave
       node per line): the node id, the master node id and the shift
       vector of the slave.
 @end itemize

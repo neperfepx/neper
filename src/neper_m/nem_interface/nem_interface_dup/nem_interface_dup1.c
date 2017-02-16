@@ -8,8 +8,6 @@ void
 nem_interface_dup (struct TESS Tess, struct NODES *pNodes,
 		   struct MESH *Mesh, struct BOUNDARY *pBound)
 {
-  int i;
-
   nem_interface_dup_ver  (Tess, pNodes, Mesh);
   nem_interface_dup_edge (Tess, pNodes, Mesh);
   if (Tess.Dim == 3)
@@ -17,20 +15,23 @@ nem_interface_dup (struct TESS Tess, struct NODES *pNodes,
 
   neut_nodes_init_dupnodeslave (pNodes);
 
-  for (i = 0; i <= 3; i++)
-    neut_mesh_init_nodeelts (Mesh + i, (*pNodes).NodeQty);
+  neut_mesh_array_init_nodeelts (Mesh, Tess.Dim, (*pNodes).NodeQty);
+
+  nem_interface_dup_per (Tess, pNodes, Mesh);
+
+  neut_mesh_array_init_nodeelts (Mesh, Tess.Dim, (*pNodes).NodeQty);
+
+  nem_interface_dup_renumber_1d (Tess, *pNodes, Mesh);
 
   if (Tess.Dim == 2)
     nem_interface_dup_boundelts_2d (Tess, *pNodes, Mesh, pBound);
   else if (Tess.Dim == 3)
+  {
     nem_interface_dup_boundelts_3d (Tess, *pNodes, Mesh, pBound);
+    nem_interface_dup_renumber_2d (Tess, *pNodes, Mesh);
+  }
   else
     ut_error_reportbug ();
-
-  if (Tess.Dim == 3)
-    nem_interface_dup_renumber_2d (Tess, *pNodes, Mesh);
-
-  nem_interface_dup_renumber_1d (Tess, *pNodes, Mesh);
 
   return;
 }

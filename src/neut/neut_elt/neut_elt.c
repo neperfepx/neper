@@ -519,26 +519,72 @@ neut_elt_3d_rho (double *p1, double *p2, double *p3, double *p4)
 }
 
 void
-neut_elt_nodes_facet (int dim, int* nodes, int* surfnodes, int* pfacet)
+neut_elt_nodes_facet (int dim, int* nodes, int* facetnodes, int* pfacet, int *pfacetori)
 {
   int i;
   int* pos = ut_alloc_1d_int (dim);
 
   for (i = 0; i < dim; i++)
-    pos[i] = ut_array_1d_int_eltpos (nodes, dim + 1, surfnodes[i]);
-
-  ut_array_1d_int_sort (pos, dim);
+    pos[i] = ut_array_1d_int_eltpos (nodes, dim + 1, facetnodes[i]);
 
   if (dim == 3)
   {
-    if (pos[0] == 0 && pos[1] == 1 && pos[2] == 2)
+    if ((pos[0] == 0 && pos[1] == 2 && pos[2] == 1)
+     || (pos[0] == 2 && pos[1] == 1 && pos[2] == 0)
+     || (pos[0] == 1 && pos[1] == 0 && pos[2] == 2))
+    {
       (*pfacet) = 1;
-    else if (pos[0] == 0 && pos[1] == 1 && pos[2] == 3)
+      (*pfacetori) = 1;
+    }
+    else if ((pos[0] == 1 && pos[1] == 2 && pos[2] == 0)
+	  || (pos[0] == 0 && pos[1] == 1 && pos[2] == 2)
+	  || (pos[0] == 2 && pos[1] == 0 && pos[2] == 1))
+    {
+      (*pfacet) = 1;
+      (*pfacetori) = -1;
+    }
+    else if ((pos[0] == 0 && pos[1] == 1 && pos[2] == 3)
+	  || (pos[0] == 1 && pos[1] == 3 && pos[2] == 0)
+	  || (pos[0] == 3 && pos[1] == 0 && pos[2] == 1))
+    {
       (*pfacet) = 2;
-    else if (pos[0] == 1 && pos[1] == 2 && pos[2] == 3)
+      (*pfacetori) = 1;
+    }
+    else if ((pos[0] == 3 && pos[1] == 1 && pos[2] == 0)
+	  || (pos[0] == 0 && pos[1] == 3 && pos[2] == 1)
+	  || (pos[0] == 1 && pos[1] == 0 && pos[2] == 3))
+    {
+      (*pfacet) = 2;
+      (*pfacetori) = -1;
+    }
+    else if ((pos[0] == 1 && pos[1] == 2 && pos[2] == 3)
+	  || (pos[0] == 2 && pos[1] == 3 && pos[2] == 1)
+	  || (pos[0] == 3 && pos[1] == 1 && pos[2] == 2))
+    {
       (*pfacet) = 3;
-    else if (pos[0] == 0 && pos[1] == 2 && pos[2] == 3)
+      (*pfacetori) = 1;
+    }
+    else if ((pos[0] == 3 && pos[1] == 2 && pos[2] == 1)
+	  || (pos[0] == 1 && pos[1] == 3 && pos[2] == 2)
+	  || (pos[0] == 2 && pos[1] == 1 && pos[2] == 3))
+    {
+      (*pfacet) = 3;
+      (*pfacetori) = -1;
+    }
+    else if ((pos[0] == 0 && pos[1] == 3 && pos[2] == 2)
+	  || (pos[0] == 3 && pos[1] == 2 && pos[2] == 0)
+	  || (pos[0] == 2 && pos[1] == 0 && pos[2] == 3))
+    {
       (*pfacet) = 4;
+      (*pfacetori) = 1;
+    }
+    else if ((pos[0] == 2 && pos[1] == 3 && pos[2] == 0)
+	  || (pos[0] == 0 && pos[1] == 2 && pos[2] == 3)
+	  || (pos[0] == 3 && pos[1] == 0 && pos[2] == 2))
+    {
+      (*pfacet) = 4;
+      (*pfacetori) = -1;
+    }
     else
       abort ();
   }
@@ -546,11 +592,35 @@ neut_elt_nodes_facet (int dim, int* nodes, int* surfnodes, int* pfacet)
   else if (dim == 2)
   {
     if (pos[0] == 0 && pos[1] == 1)
+    {
       (*pfacet) = 1;
+      (*pfacetori) = 1;
+    }
+    else if (pos[0] == 1 && pos[1] == 0)
+    {
+      (*pfacet) = 1;
+      (*pfacetori) = 1;
+    }
     else if (pos[0] == 1 && pos[1] == 2)
+    {
       (*pfacet) = 2;
-    else if (pos[0] == 0 && pos[1] == 2)
+      (*pfacetori) = 1;
+    }
+    else if (pos[0] == 2 && pos[1] == 1)
+    {
+      (*pfacet) = 2;
+      (*pfacetori) = -1;
+    }
+    else if (pos[0] == 2 && pos[1] == 0)
+    {
       (*pfacet) = 3;
+      (*pfacetori) = 1;
+    }
+    else if (pos[0] == 0 && pos[1] == 2)
+    {
+      (*pfacet) = 3;
+      (*pfacetori) = -1;
+    }
     else
       abort ();
   }
@@ -565,7 +635,7 @@ neut_elt_nodes_facet (int dim, int* nodes, int* surfnodes, int* pfacet)
 
 void
 neut_elt_facet_nodes (char *type, int dim, int order,
-                      int* nodes, int facet, int* surfnodes)
+                      int* nodes, int facet, int facetori, int* facetnodes)
 {
   type = type;
 
@@ -575,18 +645,18 @@ neut_elt_facet_nodes (char *type, int dim, int order,
     {
       if (facet == 1)
       {
-	surfnodes[0] = nodes[0];
-	surfnodes[1] = nodes[1];
+	facetnodes[0] = nodes[0];
+	facetnodes[1] = nodes[1];
       }
       else if (facet == 2)
       {
-	surfnodes[0] = nodes[1];
-	surfnodes[1] = nodes[2];
+	facetnodes[0] = nodes[1];
+	facetnodes[1] = nodes[2];
       }
       else if (facet == 3)
       {
-	surfnodes[0] = nodes[2];
-	surfnodes[1] = nodes[0];
+	facetnodes[0] = nodes[2];
+	facetnodes[1] = nodes[0];
       }
       else
 	abort ();
@@ -595,21 +665,21 @@ neut_elt_facet_nodes (char *type, int dim, int order,
     {
       if (facet == 1)
       {
-	surfnodes[0] = nodes[0];
-	surfnodes[1] = nodes[1];
-	surfnodes[2] = nodes[3];
+	facetnodes[0] = nodes[0];
+	facetnodes[1] = nodes[1];
+	facetnodes[2] = nodes[3];
       }
       else if (facet == 2)
       {
-	surfnodes[0] = nodes[1];
-	surfnodes[1] = nodes[2];
-	surfnodes[2] = nodes[4];
+	facetnodes[0] = nodes[1];
+	facetnodes[1] = nodes[2];
+	facetnodes[2] = nodes[4];
       }
       else if (facet == 3)
       {
-	surfnodes[0] = nodes[2];
-	surfnodes[1] = nodes[0];
-	surfnodes[2] = nodes[5];
+	facetnodes[0] = nodes[2];
+	facetnodes[1] = nodes[0];
+	facetnodes[2] = nodes[5];
       }
       else
 	abort ();
@@ -622,34 +692,56 @@ neut_elt_facet_nodes (char *type, int dim, int order,
     {
       if (facet == 1)
       {
-	surfnodes[0] = nodes[0];
-	surfnodes[1] = nodes[1];
-	surfnodes[2] = nodes[2];
+	facetnodes[0] = nodes[0];
+	facetnodes[1] = nodes[2];
+	facetnodes[2] = nodes[1];
       }
       else if (facet == 2)
       {
-	surfnodes[0] = nodes[0];
-	surfnodes[1] = nodes[1];
-	surfnodes[2] = nodes[3];
+	facetnodes[0] = nodes[0];
+	facetnodes[1] = nodes[1];
+	facetnodes[2] = nodes[3];
       }
       else if (facet == 3)
       {
-	surfnodes[0] = nodes[1];
-	surfnodes[1] = nodes[2];
-	surfnodes[2] = nodes[3];
+	facetnodes[0] = nodes[1];
+	facetnodes[1] = nodes[2];
+	facetnodes[2] = nodes[3];
       }
       else if (facet == 4)
       {
-	surfnodes[0] = nodes[0];
-	surfnodes[1] = nodes[2];
-	surfnodes[2] = nodes[3];
+	facetnodes[0] = nodes[0];
+	facetnodes[1] = nodes[3];
+	facetnodes[2] = nodes[2];
       }
       else
 	abort ();
+
+      if (facetori == -1)
+	ut_array_1d_int_reverseelts (facetnodes, 3);
     }
     else if (order == 2)
       abort ();
   }
+
+  return;
+}
+
+// http://pages.suddenlink.net/physics/FEA/FEM_basis_functions_for_a_triangle.pdf
+void
+neut_elt_tri_shapefct (double *a, double *b, double *c, double *p, double *val)
+{
+  val[0] = ((p[0] - c[0]) * (b[1] - c[1]) - (b[0] - c[0]) * (p[1] - c[1]))
+         / ((a[0] - c[0]) * (b[1] - c[1]) - (b[0] - c[0]) * (a[1] - c[1]));
+
+  val[1] = ((p[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (p[1] - a[1]))
+         / ((b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1]));
+
+  val[2] = ((p[0] - b[0]) * (a[1] - b[1]) - (a[0] - b[0]) * (p[1] - b[1]))
+         / ((c[0] - b[0]) * (a[1] - b[1]) - (a[0] - b[0]) * (c[1] - b[1]));
+
+  if (ut_num_equal (ut_array_1d_sum (val, 3), 1, 1e-6) != 1)
+    abort ();
 
   return;
 }

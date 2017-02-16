@@ -1,3 +1,17 @@
+New in 3.0.2 (16 Feb 2017):
+- module -T: added -transform scale and transform rotate for scalar
+  tessellations (.tess), fixed -morpho with -periodic, fixed -morpho
+  with non-unitary domains, fixed -statedge/-statface theta with
+  -oricrysym hexagonal, improved -ori, added -morpho
+  lamellar(v=crysdir), added ***tess/**cell/*crysym section to .tess
+  file, fixed -morphooptialgo random, small fixes.
+- module -M: fixed -interface cohesive in 2D and 3D (for Abaqus), enable
+  -interface discontinuous and cohesive for periodic tessellations,
+  added -format msh:binary, fixed faset internal for 3D, added
+  -transport node:..., changed point keys "elt3d" and "elset3d" into "elt"
+  and "elset" (now apply to 3D or 2D), small fixes.
+- documentation: minor fixes.
+
 New in 3.0.1 (01 Dec 2016):
 - module -T: fixed up options -periodic and -morphooptialgoneigh qsort,
   added tessellation key `modeid' (for cells), added -morpho

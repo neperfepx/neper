@@ -13,9 +13,9 @@
 #include "neut_mesh_fprintf_inp.h"
 
 extern void neut_mesh_fprintf_inp_mesh2d (FILE *file,
-					  struct MESH Mesh2D, int);
+					  struct MESH Mesh2D, int, char* type);
 extern void neut_mesh_fprintf_inp_mesh3d (FILE *file,
-					  struct MESH Mesh3D, int);
+					  struct MESH Mesh3D, int, char *type);
 extern void neut_mesh_fprintf_inp_elsets (FILE *file, struct MESH
 					  Mesh, char *name, int shift);
 

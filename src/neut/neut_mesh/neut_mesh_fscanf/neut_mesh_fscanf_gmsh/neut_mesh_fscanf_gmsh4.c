@@ -6,108 +6,161 @@
 
 /* RAM */
 void
-ReadEltsProp (FILE * msh, struct MESH *pMesh, int **pelt_nbs, int MaxEltQty)
+ReadEltsProp (FILE * msh, char *mode, struct MESH *pMesh, int **pelt_nbs, int MaxEltQty)
 {
-  int i, j, tmp = 0, elttype = -1, eltnodeqty, status;
+  int i, j, id, tmp = 0, elttype = -1, eltnodeqty, status, dim, order, eltqty;
   fpos_t beg_mesh, beg_elt;
-  int tag_qty;
+  int tagqty;
   int contiguous = 0;
-  int dim, order;
   char *type = ut_alloc_1d_char (5);
 
   if (pelt_nbs == NULL)
     contiguous = 1;
 
   if (MaxEltQty == 0)
-  {
-    neut_mesh_set_zero (pMesh);
     return;
-  }
 
   fgetpos (msh, &beg_mesh);
 
   /* determining mesh info */
 
-  status = -1;
-  if (fscanf (msh, "%d%d", &tmp, &elttype) == 2)
-    status = neut_elt_gtype_prop (elttype, type, &dim, &order);
-
-  if (status != 0 || dim != (*pMesh).Dimension)
+  if (!strcmp (mode, "ascii"))
   {
-    neut_mesh_set_zero (pMesh);
-    fsetpos (msh, &beg_mesh);
-    ut_free_1d_char (type);
-    return;
-  }
+    status = -1;
+    if (fscanf (msh, "%d%d", &tmp, &elttype) == 2)
+      status = neut_elt_gtype_prop (elttype, type, &dim, &order);
 
-  (*pMesh).EltType = ut_alloc_1d_char (strlen (type) + 1);
-  sprintf ((*pMesh).EltType, "%s", type);
-  (*pMesh).EltOrder = order;
-
-  eltnodeqty =
-    neut_elt_nodeqty ((*pMesh).EltType, (*pMesh).Dimension,
-		      (*pMesh).EltOrder);
-
-  /* recording mesh */
-
-  /* first pass to determine EltQty, for allocation */
-
-  fsetpos (msh, &beg_mesh);
-
-  (*pMesh).EltQty = 0;
-
-  status = 1;
-  while (status)
-  {
-    ut_file_skip (msh, 1);
-    if (fscanf (msh, "%d", &tmp) != 1)
-      status = 0;
-    else
+    if (status != 0 || dim != (*pMesh).Dimension)
     {
-      if (fscanf (msh, "%d", &tag_qty) != 1)
+      neut_mesh_set_zero (pMesh);
+      fsetpos (msh, &beg_mesh);
+      ut_free_1d_char (type);
+      return;
+    }
+
+    (*pMesh).EltType = ut_alloc_1d_char (strlen (type) + 1);
+    sprintf ((*pMesh).EltType, "%s", type);
+    (*pMesh).EltOrder = order;
+
+    eltnodeqty =
+      neut_elt_nodeqty ((*pMesh).EltType, (*pMesh).Dimension,
+			(*pMesh).EltOrder);
+
+    /* recording mesh */
+
+    /* first pass to determine EltQty, for allocation */
+
+    fsetpos (msh, &beg_mesh);
+
+    (*pMesh).EltQty = 0;
+
+    status = 1;
+    while (status)
+    {
+      ut_file_skip (msh, 1);
+      if (fscanf (msh, "%d", &tmp) != 1)
+	status = 0;
+      else
+      {
+	if (fscanf (msh, "%d", &tagqty) != 1)
+	  abort ();
+
+	ut_file_skip (msh, tagqty + eltnodeqty);
+
+	if (tmp == elttype)
+	  (*pMesh).EltQty++;
+	else
+	  status = 0;
+      }
+    }
+
+    fsetpos (msh, &beg_mesh);
+
+    if (contiguous == 0)
+      (*pelt_nbs) = ut_alloc_1d_int ((*pMesh).EltQty + 1);
+
+    (*pMesh).EltNodes = ut_alloc_2d_int ((*pMesh).EltQty + 1, eltnodeqty);
+    (*pMesh).EltElset = ut_alloc_1d_int ((*pMesh).EltQty + 1);
+
+    /* now, recording elements */
+
+    for (i = 1; i <= (*pMesh).EltQty; i++)
+    {
+      /* reading info */
+      fgetpos (msh, &beg_elt);
+
+      if (contiguous == 0)
+	if (fscanf (msh, "%d", &((*pelt_nbs)[i])) != 1)
+	  abort ();
+
+      ut_file_skip (msh, 1 + contiguous);
+
+      if (fscanf (msh, "%d", &tagqty) != 1)
 	abort ();
 
-      ut_file_skip (msh, tag_qty + eltnodeqty);
+      ut_file_skip (msh, 1);
+      if (fscanf (msh, "%d", &((*pMesh).EltElset[i])) != 1)
+	abort ();
 
-      if (tmp == elttype)
-	(*pMesh).EltQty++;
-      else
-	status = 0;
+      ut_file_skip (msh, tagqty - 2);
+      for (j = 0; j < eltnodeqty; j++)
+	if (fscanf (msh, "%d", &(*pMesh).EltNodes[i][j]) != 1)
+	  abort ();
     }
   }
 
-  fsetpos (msh, &beg_mesh);
-
-  if (contiguous == 0)
-    (*pelt_nbs) = ut_alloc_1d_int ((*pMesh).EltQty + 1);
-
-  (*pMesh).EltNodes = ut_alloc_2d_int ((*pMesh).EltQty + 1, eltnodeqty);
-  (*pMesh).EltElset = ut_alloc_1d_int ((*pMesh).EltQty + 1);
-
-  /* now, recording elements */
-
-  for (i = 1; i <= (*pMesh).EltQty; i++)
+  else
   {
-    /* reading info */
-    fgetpos (msh, &beg_elt);
+    while ((*pMesh).EltQty < MaxEltQty)
+    {
+      fgetpos (msh, &beg_mesh);
+      status = -1;
+      if (fread (&elttype, sizeof (int), 1, msh) == 1
+       && fread (&eltqty , sizeof (int), 1, msh) == 1
+       && fread (&tagqty , sizeof (int), 1, msh) == 1)
+	status = neut_elt_gtype_prop (elttype, type, &dim, &order);
 
-    if (contiguous == 0)
-      if (fscanf (msh, "%d", &((*pelt_nbs)[i])) != 1)
-	abort ();
+      if (status != 0 || dim != (*pMesh).Dimension)
+      {
+	fsetpos (msh, &beg_mesh);
+	break;
+      }
 
-    ut_file_skip (msh, 1 + contiguous);
+      (*pMesh).EltType = ut_alloc_1d_char (strlen (type) + 1);
+      sprintf ((*pMesh).EltType, "%s", type);
+      (*pMesh).EltOrder = order;
 
-    if (fscanf (msh, "%d", &tag_qty) != 1)
-      abort ();
+      eltnodeqty =
+	neut_elt_nodeqty ((*pMesh).EltType, (*pMesh).Dimension,
+			  (*pMesh).EltOrder);
 
-    ut_file_skip (msh, 1);
-    if (fscanf (msh, "%d", &((*pMesh).EltElset[i])) != 1)
-      abort ();
+      if (pelt_nbs)
+	(*pelt_nbs) = ut_realloc_1d_int (*pelt_nbs, (*pMesh).EltQty + eltqty + 1);
 
-    ut_file_skip (msh, tag_qty - 2);
-    for (j = 0; j < eltnodeqty; j++)
-      if (fscanf (msh, "%d", &(*pMesh).EltNodes[i][j]) != 1)
-	abort ();
+      if ((*pMesh).EltQty == 0)
+	(*pMesh).EltNodes = ut_alloc_2d_int (1, eltnodeqty);
+
+      for (i = 1; i <= eltqty; i++)
+	(*pMesh).EltNodes
+	  = ut_realloc_2d_int_addline ((*pMesh).EltNodes, (*pMesh).EltQty + i + 1, eltnodeqty);
+
+      (*pMesh).EltElset = ut_realloc_1d_int ((*pMesh).EltElset, (*pMesh).EltQty + eltqty + 1);
+
+      for (i = 1; i <= eltqty; i++)
+      {
+	id = ++(*pMesh).EltQty;
+	if (fread (pelt_nbs ? (*pelt_nbs) + id : &tmp, sizeof (int), 1, msh) != 1)
+	  abort ();
+	if (fread ((*pMesh).EltElset + id, sizeof (int), 1, msh) != 1)
+	  abort ();
+
+	for (j = 0; j < tagqty - 1; j++)
+	  if (fread (&tmp, sizeof (int), 1, msh) != 1)
+	    abort ();
+	if (fread ((*pMesh).EltNodes[id], sizeof (int), eltnodeqty, msh) != (unsigned int) eltnodeqty)
+	  abort ();
+      }
+    }
   }
 
   ut_free_1d_char (type);

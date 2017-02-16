@@ -37,7 +37,8 @@ net_tess_opt_init_sset_post_per (int *periodic, struct TESS Tess, int poly,
 
   (*pSSet).PeriodicDist = ut_alloc_1d (3);
   for (i = 0; i < 3; i++)
-    (*pSSet).PeriodicDist[i] = bbox[i][1] - bbox[i][0];
+    if ((*pSSet).Periodic[i])
+      (*pSSet).PeriodicDist[i] = bbox[i][1] - bbox[i][0];
 
   (*pSSet).Nall = (*pSSet).N;
   (*pSSet).PerSeedMaster = ut_alloc_1d_int ((*pSSet).Nall + 1);

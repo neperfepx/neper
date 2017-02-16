@@ -103,7 +103,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     if (!strcmp (In.elttype, "tri"))
     {
       ut_print_message (0, 2, "Reconstructing topology...\n");
-      nem_reconstruct_mesh ("0,1,2,3", &RNodes, RMesh, &Tess);
+      nem_reconstruct_mesh ("all", &RNodes, RMesh, &Tess);
     }
   }
 
@@ -119,26 +119,32 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Loading result mesh...\n");
     nem_readmesh (In.loadmesh, &Nodes, Mesh);
-    nem_meshing_pinching (Tess, Nodes, Mesh);
+    status = nem_input_init_dim_mesh (&In, Mesh);
 
-    nem_input_init_dim_mesh (&In, Mesh);
+    if (status == -1)
+      ut_print_message (1, 3, "Mesh is void (%d node(s), 0 elt).\n", Nodes.NodeQty);
 
-    status = 0;
-    for (i = 0; i <= 2; i++)
-      if (ut_string_inlist_int (In.dimout, NEUT_SEP_NODEP, i)
-	  && Mesh[i].EltQty == 0)
-      {
-	status = 1;
-	break;
-      }
-
-    if (status || (Tess.PolyQty == 0 && strcmp (In.nset, "none") != 0))
+    else
     {
-      ut_print_message (0, 2, "Reconstructing mesh...\n");
-      nem_reconstruct_mesh ((Tess.PolyQty == 0
-			     && strcmp (In.nset,
-					"none") != 0) ? "all" : In.dimout,
-			    &Nodes, Mesh, &Tess);
+      nem_meshing_pinching (Tess, Nodes, Mesh);
+
+      status = 0;
+      for (i = 0; i <= 2; i++)
+	if (ut_string_inlist_int (In.dimout, NEUT_SEP_NODEP, i)
+	    && Mesh[i].EltQty == 0)
+	{
+	  status = 1;
+	  break;
+	}
+
+      if (status || (Tess.PolyQty == 0 && strcmp (In.nset, "none") != 0))
+      {
+	ut_print_message (0, 2, "Reconstructing mesh...\n");
+	nem_reconstruct_mesh ((Tess.PolyQty == 0
+			       && strcmp (In.nset,
+					  "none") != 0) ? "all" : In.dimout,
+			      &Nodes, Mesh, &Tess);
+      }
     }
   }
 
@@ -244,7 +250,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.transportstring)
   {
     ut_print_message (0, 1, "Transporting data...\n");
-    nem_transport (In, Tess, RNodes, RMesh, &Nodes, Mesh);
+    nem_transport (In, Tess, RNodes, RMesh, Nodes, Mesh);
   }
 
 // ###################################################################

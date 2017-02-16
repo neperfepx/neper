@@ -14,7 +14,7 @@ extern "C"
 				      MESH Mesh1D, struct MESH Mesh2D,
 				      struct MESH Mesh3D, struct PART
 				      Part, struct MESH CMesh, char
-				      *numbering);
+				      *numbering, char* mode);
 
 #endif				// NEUT_MESH_FPRINTF_GMSH
 

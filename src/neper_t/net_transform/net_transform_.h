@@ -7,11 +7,15 @@
 #include<math.h>
 #include<limits.h>
 #include<string.h>
+#include<orilib.h>
 
 #include"../structIn_t.h"
 #include"neut_t.h"
 
 #include"net_transform.h"
+
+extern void net_transform_tess (struct IN_T In, struct TESS *pTess);
+extern void net_transform_tesr (struct IN_T In, struct TESR *pTesr);
 
 extern void net_tesr_transform_cell (struct TESR Tesr, int cell, int dim,
 				  struct TESR *pTesr2, int *prptqty,

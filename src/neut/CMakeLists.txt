@@ -57,7 +57,8 @@ add_library (neut
 ./neut_lloyd/neut_lloyd.c
 ./neut_tdyn/neut_tdyn_op/neut_tdyn_op1.c
 ./neut_tdyn/neut_tdyn_fprintf/neut_tdyn_fprintf1.c
-./neut_boundary/neut_boundary.c
+./neut_boundary/neut_boundary1.c
+./neut_boundary/neut_boundary2.c
 ./neut_meshpara/neut_meshpara.c
 ./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_fepx/neut_mesh_fscanf_fepx1.c
 ./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_geof/neut_mesh_fscanf_geof1.c
@@ -116,10 +117,6 @@ add_library (neut
 ./neut_tess/neut_tess_fscanf/neut_tess_fscanf3.c
 ./neut_tess/neut_tess_fscanf/neut_tess_fscanf2.c
 ./neut_tess/neut_tess_fscanf/neut_tess_fscanf1.c
-./neut_tess/neut_tess_fscanf/neut_tess_fscanf_1p9/neut_tess_fscanf2_1p9.c
-./neut_tess/neut_tess_fscanf/neut_tess_fscanf_1p9/neut_tess_fscanf1_1p9.c
-./neut_tess/neut_tess_fscanf/neut_tess_fscanf_1p10/neut_tess_fscanf2_1p10.c
-./neut_tess/neut_tess_fscanf/neut_tess_fscanf_1p10/neut_tess_fscanf1_1p10.c
 ./neut_tess/neut_tess_op/neut_tess_op1.c
 ./neut_tess/neut_tess_op/neut_tess_op2.c
 ./neut_tess/neut_tess_op/neut_tess_op3.c

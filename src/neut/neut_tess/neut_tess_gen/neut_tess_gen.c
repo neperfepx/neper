@@ -1464,7 +1464,7 @@ neut_tess_val_poly2face (struct TESS Tess, double *polyval, double *faceval)
       for (j = 0; j < 2; j++)
       {
 	seed = Tess.FacePoly[i][j];
-	if (seed > 0)
+	if (seed > 0 && seed <= Tess.PolyQty)
 	{
 	  if (seed <= Tess.PolyQty)
 	    faceval[i] = ut_num_min (faceval[i], polyval[seed]);
@@ -1502,7 +1502,7 @@ neut_tess_val_face2edge (struct TESS Tess, double *faceval, double *edgeval)
       for (j = 0; j < Tess.EdgeFaceQty[i]; j++)
       {
 	face = Tess.EdgeFaceNb[i][j];
-	if (face > 0)
+	if (face > 0 && face <= Tess.FaceQty)
 	  edgeval[i] = ut_num_min (edgeval[i], faceval[face]);
       }
     else

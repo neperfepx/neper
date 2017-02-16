@@ -3,4 +3,4 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nem_transport (struct IN_M, struct TESS, struct NODES,
-			   struct MESH *, struct NODES *, struct MESH *);
+			   struct MESH *, struct NODES, struct MESH *);
