@@ -463,9 +463,9 @@ neut_tesr_cell_tesr (struct TESR Tesr, int cell, struct TESR *pCellTesr)
   (*pCellTesr).VoxCell
     = ut_alloc_3d_int (Tesr.size[0] + 2, Tesr.size[1] + 2, Tesr.size[2] + 2);
 
-  for (k = 1; k <= Tesr.size[2]; k++)
-    for (j = 1; j <= Tesr.size[1]; j++)
-      for (i = 1; i <= Tesr.size[0]; i++)
+  for (k = Tesr.CellBBox[cell][2][0]; k <= Tesr.CellBBox[cell][2][1]; k++)
+    for (j = Tesr.CellBBox[cell][1][0]; j <= Tesr.CellBBox[cell][1][1]; j++)
+      for (i = Tesr.CellBBox[cell][0][0]; i <= Tesr.CellBBox[cell][0][1]; i++)
 	if (Tesr.VoxCell[i][j][k] == cell)
 	  (*pCellTesr).VoxCell[i][j][k] = cell;
 
