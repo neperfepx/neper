@@ -1,4 +1,4 @@
-New in 3.0.3-3-tesr_fit (22 Feb 2017):
+New in 3.0.3-4-tesr_fit (22 Feb 2017):
 - module -T: fixed -morphooptiini "coo:file()" in 2D.
 - module -M: allowed -interface cohesive -periodic in 2D.
 

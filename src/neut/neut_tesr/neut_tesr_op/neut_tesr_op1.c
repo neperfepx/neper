@@ -279,9 +279,7 @@ neut_tesr_scale (struct TESR *pTesr, double scale1, double scale2,
   int i, j;
   double *scale = ut_alloc_1d (3);
 
-  scale[0] = scale1;
-  scale[1] = scale2;
-  scale[2] = scale3;
+  ut_array_1d_set_3 (scale, scale1, scale2, scale3);
 
   if (method == NULL)
   {
@@ -292,7 +290,7 @@ neut_tesr_scale (struct TESR *pTesr, double scale1, double scale2,
     {
       for (i = 0; i < (*pTesr).Dim; i++)
 	(*pTesr).CellCoo[j][i] *= scale[i];
-      (*pTesr).CellVol[j] *= scale1 * scale2 * scale3;
+      (*pTesr).CellVol[j] *= ut_array_1d_prod (scale, 3);
     }
   }
 
@@ -318,9 +316,7 @@ neut_tesr_rasterscale (struct TESR *pTesr, double scale1, double scale2,
   scale = ut_alloc_1d (3);
 
   srand48 (1);
-  scale[0] = scale1;
-  scale[1] = scale2;
-  scale[2] = scale3;
+  ut_array_1d_set_3 (scale, scale1, scale2, scale3);
 
   neut_tesr_set_zero (&Tesr2);
   neut_tesr_memcpy_parms (*pTesr, &Tesr2);
