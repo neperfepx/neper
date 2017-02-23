@@ -1903,7 +1903,7 @@ ut_space_polypts_point_dist_verbosity (double** ptcoos0, int ptqty,
   if (status == 1 || (pdist && isnan (*pdist)))
   {
     if (verbosity == 0)
-      ut_space_polypts_point_dist_verbosity (ptcoos0, ptqty, ptcoo, pdist, 1);
+      ut_space_polypts_point_dist_verbosity (ptcoos0, ptqty, ptcoo, pdist, 0);
     error = 1;
   }
 

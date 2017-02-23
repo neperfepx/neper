@@ -82,10 +82,9 @@ net_tess_opt_comp_objective_fval_cellval (struct TOPT *pTOpt)
       neut_poly_set_zero (&DomPoly);
       net_tess_poly ((*pTOpt).Dom, 1, &DomPoly);
 
-      printf ("faceqty_cell = %d\n", faceqty_cell);
       ut_space_polypts_point_dist_verbosity (DomPoly.VerCoo + 1, DomPoly.VerQty,
 					     (*pTOpt).SSet.SeedCoo[faceqty_cell],
-					     &dist, 1);
+					     &dist, 0);
 
       neut_poly_free (&DomPoly);
 

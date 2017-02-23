@@ -7,7 +7,7 @@
 void
 net_tess_opt_init_sset_general (struct IN_T In, struct MTESS MTess,
 				struct TESS *Tess, int dtess, int dcell,
-				struct SEEDSET *SSet, struct SEEDSET 
+				struct SEEDSET *SSet, struct SEEDSET
 				*pSSet, int CellQty, struct TOPT *pTOpt)
 {
   neut_seedset_set_zero (pSSet);

@@ -60,3 +60,5 @@ extern void net_tess_opt_init_target_cdf (int disbinqty, double binwidth,
 extern void net_tess_opt_init_target_cvl (struct IN_T In, int level, int
 					  var, struct TOPT *pTOpt);
 extern void net_tess_opt_init_tesrobj_pts (struct TOPT *pTOpt);
+
+extern void net_tess_opt_init_post (struct IN_T In, struct TOPT *pTOpt);

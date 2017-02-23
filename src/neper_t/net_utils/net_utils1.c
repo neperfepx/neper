@@ -465,7 +465,7 @@ net_tess_tesr (struct IN_T In, struct TESS Tess, TESR * pTesr)
 	qty++;
 
 	ut_array_1d_int_set_3 (pos, i, j, k);
-	neut_tesr_coo (*pTesr, pos, coo);
+	neut_tesr_pos_coo (*pTesr, pos, coo);
 
 	if (neut_tess_point_incell (Tess, coo, prevpid) == 1)
 	  (*pTesr).VoxCell[i][j][k] = prevpid;

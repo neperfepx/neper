@@ -165,6 +165,15 @@ net_tess_opt_init_tesrobj (struct TOPT *pTOpt)
   (*pTOpt).tarcellptqty = ut_alloc_1d_int ((*pTOpt).tartesr.CellQty + 1);
   (*pTOpt).tarcellrefval = ut_alloc_1d ((*pTOpt).tartesr.CellQty + 1);
 
+  (*pTOpt).tartesrscale = ut_alloc_1d ((*pTOpt).Dim);
+  neut_tesr_cells_anisoxyz ((*pTOpt).tartesr, (*pTOpt).tartesrscale);
+  for (i = 0; i < (*pTOpt).Dim; i++)
+    (*pTOpt).tartesrscale[i] = 1. / (*pTOpt).tartesrscale[i];
+  neut_tesr_scale (&((*pTOpt).tartesr),
+                   (*pTOpt).tartesrscale[0],
+                   (*pTOpt).tartesrscale[1],
+		   (*pTOpt).tartesrscale[2], NULL);
+
   net_tess_opt_init_tesrobj_pts (pTOpt);
 
   (*pTOpt).tarcellptqty[0] = ut_array_1d_int_sum ((*pTOpt).tarcellptqty + 1,

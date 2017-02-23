@@ -24,7 +24,7 @@ neut_tesr_point_pos (struct TESR Tesr, double *coo, int *rptpos)
 }
 
 int
-neut_tesr_coo (struct TESR Tesr, int *rptpos, double *coo)
+neut_tesr_pos_coo (struct TESR Tesr, int *rptpos, double *coo)
 {
   int i;
 
@@ -149,7 +149,7 @@ neut_tesr_cell_centre (struct TESR Tesr, int cell, double *coo)
 	if (Tesr.VoxCell[i][j][k] == cell)
 	{
 	  ut_array_1d_int_set_3 (rptpos, i, j, k);
-	  neut_tesr_coo (Tesr, rptpos, rptcoo);
+	  neut_tesr_pos_coo (Tesr, rptpos, rptcoo);
 	  ut_array_1d_add (coo, rptcoo, 3, coo);
 	  qty++;
 	}
@@ -227,6 +227,23 @@ neut_tesr_cell_points (struct TESR Tesr, int cell, int ***ppts, int *pptqty)
 	  (*ppts) = ut_realloc_2d_int_addline (*ppts, *pptqty, 3);
 	  ut_array_1d_int_set_3 ((*ppts)[(*pptqty) - 1], i, j, k);
 	}
+
+  return;
+}
+
+void
+neut_tesr_cell_coos (struct TESR Tesr, int cell, double ***pcoos, int *pcooqty)
+{
+  int i, **pts = NULL;
+
+  neut_tesr_cell_points (Tesr, cell, &pts, pcooqty);
+  // ut_array_2d_int_fprintf (stdout, pts, *pcooqty, 3, "%d");
+
+  (*pcoos) = ut_alloc_2d (*pcooqty, Tesr.Dim);
+  for (i = 0; i < *pcooqty; i++)
+    neut_tesr_pos_coo (Tesr, pts[i], (*pcoos)[i]);
+
+  ut_free_2d_int (pts, *pcooqty);
 
   return;
 }
@@ -399,7 +416,7 @@ neut_tesr_cell_convexity (struct TESR Tesr, int cell, double *pval)
   coos = ut_alloc_2d (qty, 3);
   for (i = 0; i < qty; i++)
   {
-    neut_tesr_coo (Tesr, pts[i], coos[i]);
+    neut_tesr_pos_coo (Tesr, pts[i], coos[i]);
     for (j = 0; j < Tesr.Dim; j++)
       coos[i][j] += eps * drand48 ();
   }
@@ -415,7 +432,7 @@ neut_tesr_cell_convexity (struct TESR Tesr, int cell, double *pval)
 	else
 	{
 	  ut_array_1d_int_set_3 (pt, i, j, k);
-	  neut_tesr_coo (Tesr, pt, coo);
+	  neut_tesr_pos_coo (Tesr, pt, coo);
 	  ut_space_polypts_point_dist (coos, qty, coo, &dist);
 	  if (dist < eps3)
 	    vol++;
@@ -436,6 +453,89 @@ neut_tesr_cell_convexity (struct TESR Tesr, int cell, double *pval)
 
   neut_nodes_free (&N);
   neut_mesh_free (&M);
+
+  return;
+}
+
+void
+neut_tesr_cell_aniso (struct TESR Tesr, int cell,
+		      double **evect, double *eval)
+{
+  int i, cooqty = 0;
+  double **coos = NULL;
+  double *centre = ut_alloc_1d (Tesr.Dim);
+  double **S = ut_alloc_2d (Tesr.Dim, Tesr.Dim);
+
+  neut_tesr_cell_centre (Tesr, cell, centre);
+  neut_tesr_cell_coos (Tesr, cell, &coos, &cooqty);
+  for (i = 0; i < cooqty; i++)
+    ut_array_1d_sub (coos[i], centre, Tesr.Dim, coos[i]);
+  ut_vector_set_covar (coos, Tesr.Dim, cooqty, S);
+  ut_mat_eigen (Tesr.Dim, S, eval, evect);
+
+  ut_free_1d (centre);
+  ut_free_2d (coos, cooqty);
+
+  ut_free_2d (S, Tesr.Dim);
+
+  return;
+}
+
+void
+neut_tesr_cell_anisoxyz (struct TESR Tesr, int cell, double *fact)
+{
+  int i, j, cooqty = 0;
+  double **coos = NULL;
+  double *centre = ut_alloc_1d (Tesr.Dim);
+  double **S = ut_alloc_2d (Tesr.Dim, Tesr.Dim);
+
+  neut_tesr_cell_coos (Tesr, cell, &coos, &cooqty);
+  neut_tesr_cell_centre (Tesr, cell, centre);
+  for (i = 0; i < cooqty; i++)
+    ut_array_1d_sub (coos[i], centre, Tesr.Dim, coos[i]);
+
+  for (i = 0; i < Tesr.Dim; i++)
+  {
+    fact[i] = 0;
+    for (j = 0; j < cooqty; j++)
+      fact[i] += pow (coos[j][i], 2);
+    fact[i] = sqrt (fact[i]);
+  }
+  ut_array_1d_scale (fact, Tesr.Dim,
+                     1. / pow (ut_array_1d_prod (fact, Tesr.Dim), 1. / Tesr.Dim));
+
+  ut_free_1d (centre);
+  ut_free_2d (coos, cooqty);
+  ut_free_2d (S, Tesr.Dim);
+
+  return;
+}
+
+void
+neut_tesr_cells_anisoxyz (struct TESR Tesr, double *fact)
+{
+  int i;
+  double vol;
+  double **facts = ut_alloc_2d (Tesr.CellQty + 1, Tesr.Dim);
+  double *vols = ut_alloc_1d (Tesr.CellQty + 1);
+
+  vol = 0;
+  ut_array_1d_zero (fact, 3);
+  for (i = 1; i <= Tesr.CellQty; i++)
+  {
+    neut_tesr_cell_anisoxyz (Tesr, i, facts[i]);
+    neut_tesr_cell_volume (Tesr, i, vols + i);
+    ut_array_1d_scale (facts[i], Tesr.Dim, vols[i]);
+    ut_array_1d_add (facts[i], fact, Tesr.Dim, fact);
+    vol += vols[i];
+  }
+  ut_array_1d_scale (fact, Tesr.Dim, 1. / vol);
+
+  ut_array_1d_scale (fact, Tesr.Dim,
+                     1. / pow (ut_array_1d_prod (fact, Tesr.Dim), 1. / Tesr.Dim));
+
+  ut_free_2d (facts, Tesr.CellQty);
+  ut_free_1d (vols);
 
   return;
 }

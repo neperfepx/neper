@@ -20,7 +20,7 @@ extern "C"
 /// \return 0 on success, -1 on failure.
 ///
 ///
-  extern int neut_tesr_coo (struct TESR Tesr, int *rptpos, double *coo);
+  extern int neut_tesr_pos_coo (struct TESR Tesr, int *rptpos, double *coo);
 
 /// \brief Get the centre of a cell of a TESR structure.
 /// \return 0 on success, -1 on failure.
@@ -52,6 +52,8 @@ extern "C"
 
   extern void neut_tesr_cell_points (struct TESR Tesr, int cell,
 				     int ***pts, int *pptqty);
+  extern void neut_tesr_cell_coos (struct TESR Tesr, int cell,
+				     double ***coos, int *pcooqty);
 
   extern void neut_tesr_cell_boundpoints (struct TESR Tesr, int cell,
 					  int ***pts, int *pptqty, int connectivity);
@@ -64,6 +66,12 @@ extern "C"
 
   extern void neut_tesr_cell_convexity (struct TESR Tesr, int cell,
 					double *pval);
+
+  extern void neut_tesr_cell_aniso (struct TESR Tesr, int cell,
+				    double **evect, double *eval);
+  extern void neut_tesr_cell_anisoxyz (struct TESR Tesr, int cell, double *fact);
+  extern void neut_tesr_cells_anisoxyz (struct TESR Tesr, double *fact);
+
 
 #include"net_utils/net_utils.h"
 

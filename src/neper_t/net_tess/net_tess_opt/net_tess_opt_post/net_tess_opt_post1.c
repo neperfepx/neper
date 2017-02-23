@@ -81,6 +81,14 @@ net_tess_opt_post (struct MTESS *pMTess, struct TESS *Tess,
     (*pSSet).SeedWeight[i] = weight[TOpt.CellSCellList[i][0]];
   }
 
+  if (TOpt.tartesrscale)
+  {
+    neut_tess_scale (pTess,
+	             1 / TOpt.tartesrscale[0],
+	             1 / TOpt.tartesrscale[1],
+	             1 / TOpt.tartesrscale[2]);
+  }
+
   net_tess_opt_post_modes (TOpt, Tess, tessid);
 
   ut_free_2d (coo, (*pTess).CellQty + 1);

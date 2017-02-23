@@ -286,12 +286,14 @@ neut_tesr_scale (struct TESR *pTesr, double scale1, double scale2,
     for (i = 0; i < (*pTesr).Dim; i++)
       (*pTesr).vsize[i] *= scale[i];
 
-    for (j = 1; j <= (*pTesr).CellQty; j++)
-    {
-      for (i = 0; i < (*pTesr).Dim; i++)
-	(*pTesr).CellCoo[j][i] *= scale[i];
-      (*pTesr).CellVol[j] *= ut_array_1d_prod (scale, 3);
-    }
+    if ((*pTesr).CellCoo)
+      for (j = 1; j <= (*pTesr).CellQty; j++)
+	for (i = 0; i < (*pTesr).Dim; i++)
+	  (*pTesr).CellCoo[j][i] *= scale[i];
+
+      if ((*pTesr).CellVol)
+	for (j = 1; j <= (*pTesr).CellQty; j++)
+	  (*pTesr).CellVol[j] *= ut_array_1d_prod (scale, 3);
   }
 
   ut_free_1d (scale);
@@ -406,7 +408,7 @@ neut_tesr_rasterscale (struct TESR *pTesr, double scale1, double scale2,
 
 	  ut_array_1d_int_set_3 (pos, i, j, k);
 
-	  neut_tesr_coo (Tesr2, pos, coo);
+	  neut_tesr_pos_coo (Tesr2, pos, coo);
 	  neut_tesr_point_pos (*pTesr, coo, pos);
 
 	  Tesr2.VoxCell[i][j][k] = (*pTesr).VoxCell[pos[0]][pos[1]][pos[2]];
@@ -988,7 +990,7 @@ neut_tesr_crop (struct TESR *pTesr, char *shape)
       for (i = 1; i <= (*pTesr).size[0]; i++)
       {
 	ut_array_1d_int_set_3 (pt, i, j, 1);
-	neut_tesr_coo (*pTesr, pt, coo2);
+	neut_tesr_pos_coo (*pTesr, pt, coo2);
 
 	if (ut_space_dist2d (coo, coo2) > .5 * d)
 	  ut_array_1d_int_set ((*pTesr).VoxCell[i][j] + 1, (*pTesr).size[2],
@@ -1291,7 +1293,7 @@ neut_tesr_tessinter (struct TESR *pTesr, char *crop, int verbosity)
       for (pos[0] = 1; pos[0] <= (*pTesr).size[0]; pos[0]++)
 	if ((*pTesr).VoxCell[pos[0]][pos[1]][pos[2]] != 0)
 	{
-	  neut_tesr_coo (*pTesr, pos, coo);
+	  neut_tesr_pos_coo (*pTesr, pos, coo);
 	  for (i = 1; i <= Tess.DomFaceQty; i++)
 	  {
 	    if (ut_space_planeside (Tess.DomFaceEq[i], coo - 1)

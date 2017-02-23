@@ -44,7 +44,7 @@ net_tess_opt_init_tesrobj_pts (struct TOPT *pTOpt)
     (*pTOpt).tarcellpts[i] = ut_alloc_2d_double ((*pTOpt).tarcellptqty[i], 3);
 
     for (j = 0; j < (*pTOpt).tarcellptqty[i]; j++)
-      neut_tesr_coo ((*pTOpt).tartesr, pts[j], (*pTOpt).tarcellpts[i][j]);
+      neut_tesr_pos_coo ((*pTOpt).tartesr, pts[j], (*pTOpt).tarcellpts[i][j]);
 
     ut_free_2d_int_ (&pts, (*pTOpt).tarcellptqty[i]);
   }

@@ -392,6 +392,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
 	  ut_print_message (2, 4,
 			    "Input tesr is of dimension %d, but -dim = %d.\n",
 			    (*pTOpt).tartesr.Dim, In.dim);
+	(*pTOpt).tarcellvalqty[i] = 1;
       }
     }
 
@@ -479,6 +480,40 @@ net_tess_opt_init_bounds (struct TOPT *pTOpt)
   }
 
   ut_free_2d_char (parts, qty);
+
+  return;
+}
+
+void
+net_tess_opt_init_post (struct IN_T In, struct TOPT *pTOpt)
+{
+  int i, j;
+
+  if ((*pTOpt).tartesrscale)
+  {
+    ut_print_message (0, 4, "Correcting for cells' aspect ratio (%.2f, %.2f, %.2f).\n",
+		     1 / (*pTOpt).tartesrscale[0],
+		     1 / (*pTOpt).tartesrscale[1],
+		     1 / (*pTOpt).tartesrscale[2]);
+
+    neut_tess_scale (&((*pTOpt).Dom),
+		     (*pTOpt).tartesrscale[0],
+		     (*pTOpt).tartesrscale[1],
+		     (*pTOpt).tartesrscale[2]);
+
+    if (ut_array_1d_int_sum (In.periodic, 3) > 0)
+      neut_tess_scale (&((*pTOpt).DomPer),
+		       (*pTOpt).tartesrscale[0],
+		       (*pTOpt).tartesrscale[1],
+		       (*pTOpt).tartesrscale[2]);
+
+    for (i = 1; i <= (*pTOpt).SSet.N; i++)
+      for (j = 0; j < (*pTOpt).Dim; j++)
+      {
+	(*pTOpt).SSet.SeedCoo0[i][j] *= (*pTOpt).tartesrscale[j];
+	(*pTOpt).SSet.SeedCoo[i][j] *= (*pTOpt).tartesrscale[j];
+      }
+  }
 
   return;
 }

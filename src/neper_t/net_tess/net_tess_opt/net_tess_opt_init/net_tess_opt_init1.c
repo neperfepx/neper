@@ -31,5 +31,8 @@ net_tess_opt_init (struct IN_T In, int level, struct MTESS MTess,
   // bounds (merge into init_parms)
   net_tess_opt_init_bounds (pTOpt);
 
+  //
+  net_tess_opt_init_post (In, pTOpt);
+
   return;
 }
