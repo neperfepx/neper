@@ -364,7 +364,8 @@ see above list, default}
 @c any >= 1, 1}
 
 @optsec{-morphooptiobjective, char_string,
-Specify the objective function. For statistical distributions@comma{}
+Specify the objective function.@*
+For statistical distributions@comma{}
 the available values of the goodness-of-fit test are @samp{chi2} (Chi-square test)@comma{} @samp{ks}
 (Kolmogorov-Smirnov test)@comma{} @samp{kuiper} (Kuiper's test)@comma{}
 @samp{cmv} (Cram@'er-Von Mises test)@comma{} @samp{ad} (Anderson-Darling
@@ -375,11 +376,17 @@ on @math{F})@footnote{Weighting by @math{1/\prod_{i=0}^N{|F-p_i|}}
 where @math{p_0=0} and @math{p_i} are the cumulative proportions of the
 distribution modes. For a unimodal distribution@comma{} the
 expression simplifies to @math{1/(F\,(1-F))}.}@comma{}
-and the default value is @samp{FL2w}.
+and the default value is @samp{FL2w}.@*
 For @samp{@code{centroid}}@comma{} a Minkowski distance between the
 seeds and centroids is used@comma{} and can be
-@samp{@code{L1}}@comma{} @samp{@code{L2}} or @samp{@code{Linf}}.
-For a raster tessellation@comma{} the distance function is used@comma{}
+@samp{@code{L1}}@comma{} @samp{@code{L2}} or @samp{@code{Linf}}.@*
+For a raster tessellation@comma{} first@comma{} preprocessing operations
+are available. Operation @samp{scaled} scales the tessellation
+to correct for a global cell elongation.
+Operation @samp{rasterscaled} scales the raster itself to correct
+for a global voxel elongation (which may result from operation
+@samp{scaled}).
+To compute the objective function@comma{} the distance function is used@comma{}
 which can be computed on different regions. The available values are @samp{vol}
 for the full volume and @samp{surf} for only the surface voxels of the cells.
 The surface voxels can be computed using different connexity rules:
@@ -388,8 +395,9 @@ set if they share at least a vertex@comma{} edge of face@comma{}
 respectively (they lead to decreasing numbers of surface voxels).
 @samp{surf} assumes a connexity level of 1; to set the connexity
 level@comma{} use @samp{surf@var{level}}@comma{} where @var{level} is
-the connexity level.
-The default value is @samp{surf}.
+the connexity level.  To define the objective function@comma{} append
+the (optional) operations to the distance function region.  The default
+value is @samp{scaled,rasterscaled,surf}.
 ,
 any, default}
 

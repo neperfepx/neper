@@ -106,13 +106,13 @@ net_tess_opt_init_parms (struct IN_T In, int level,
 
   ut_string_string (In.morphooptialgoneigh[level], &(*pTOpt).TDyn.algoneigh);
 
-  if (!strncmp ((*pTOpt).objective, "surf", 4))
-  {
-    if (!strcmp ((*pTOpt).objective, "surf"))
-      (*pTOpt).faceconn = 1;
-    else
-      sscanf ((*pTOpt).objective + 4, "%d", &((*pTOpt).faceconn));
-  }
+  if (ut_string_inlist ((*pTOpt).objective, NEUT_SEP_NODEP, "surf0"))
+    (*pTOpt).faceconn = 0;
+  else if (ut_string_inlist ((*pTOpt).objective, NEUT_SEP_NODEP, "surf1")
+        || ut_string_inlist ((*pTOpt).objective, NEUT_SEP_NODEP, "surf"))
+    (*pTOpt).faceconn = 1;
+  else if (ut_string_inlist ((*pTOpt).objective, NEUT_SEP_NODEP, "surf2"))
+    (*pTOpt).faceconn = 2;
 
   for (i = 0; i < (*pTOpt).tarqty; i++)
     if (!strcmp ((*pTOpt).tarvar[i], "tesr"))
@@ -491,11 +491,6 @@ net_tess_opt_init_post (struct IN_T In, struct TOPT *pTOpt)
 
   if ((*pTOpt).tartesrscale)
   {
-    ut_print_message (0, 4, "Correcting for cells' aspect ratio (%.2f, %.2f, %.2f).\n",
-		     1 / (*pTOpt).tartesrscale[0],
-		     1 / (*pTOpt).tartesrscale[1],
-		     1 / (*pTOpt).tartesrscale[2]);
-
     neut_tess_scale (&((*pTOpt).Dom),
 		     (*pTOpt).tartesrscale[0],
 		     (*pTOpt).tartesrscale[1],

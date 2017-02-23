@@ -26,13 +26,16 @@ net_tess_opt_init_tesrobj_pts (struct TOPT *pTOpt)
 
   char *message = ut_alloc_1d_char (100);
 
-  ut_print_message (0, 4, "Listing cell voxels (%s)... ", (*pTOpt).objective);
+  ut_print_message (0, 4, "Listing cell voxels... ");
 
   for (i = 1; i <= (*pTOpt).CellQty; i++)
   {
     ut_print_progress (stdout, i, (*pTOpt).CellQty, "%5.1f%%", message);
 
-    if (!strncmp ((*pTOpt).objective, "surf", 4))
+    if (ut_string_inlist ((*pTOpt).objective, NEUT_SEP_NODEP, "surf")
+     || ut_string_inlist ((*pTOpt).objective, NEUT_SEP_NODEP, "surf0")
+     || ut_string_inlist ((*pTOpt).objective, NEUT_SEP_NODEP, "surf1")
+     || ut_string_inlist ((*pTOpt).objective, NEUT_SEP_NODEP, "surf2"))
       neut_tesr_cell_boundpoints ((*pTOpt).tartesr, i,
 				  &pts, &(*pTOpt).tarcellptqty[i],
 				  (*pTOpt).faceconn);

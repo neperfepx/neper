@@ -138,9 +138,12 @@ net_tess_opt_comp_objective_fval_cellval_tesr (struct TOPT *pTOpt, int var,
 			   (*pTOpt).CellSCellQty[cell],
 			   (*pTOpt).tarcellpts[cell][i], &dist);
 
-    if (!strcmp ((*pTOpt).objective, "vol"))
+    if (ut_string_inlist ((*pTOpt).objective, NEUT_SEP_NODEP, "vol"))
       (*pTOpt).curcellval[var][cell][0] += dist;
-    else if (!strncmp ((*pTOpt).objective, "surf", 4))
+    else if (ut_string_inlist ((*pTOpt).objective, NEUT_SEP_NODEP, "surf")
+          || ut_string_inlist ((*pTOpt).objective, NEUT_SEP_NODEP, "surf0")
+          || ut_string_inlist ((*pTOpt).objective, NEUT_SEP_NODEP, "surf1")
+          || ut_string_inlist ((*pTOpt).objective, NEUT_SEP_NODEP, "surf2"))
       (*pTOpt).curcellval[var][cell][0] += pow (dist, 2.0);
     else
       abort ();
