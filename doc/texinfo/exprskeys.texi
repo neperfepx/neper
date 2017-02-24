@@ -116,10 +116,12 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
   @item @code{area}  @tab area                         @tab face, poly
   @item @code{vol} @tab volume                         @tab poly
   @item @code{size}  @tab size (area/volume in 2D/3D) @tab cell
-  @item @code{diameq}  @tab diameter of the equivalent
-  circle/sphere in 2D/3D                              @tab face, poly
-  @item @code{radeq}  @tab radius of the equivalent
-  circle/sphere in 2D/3D                              @tab face, poly
+  @item @code{diameq}  @tab equivalent
+    diameter@footnote{Equivalent diameter = diameter
+    of the circle of equivalent area/volume in 2D/3D.} @tab face, poly
+  @item @code{radeq}  @tab equivalent
+    radius@footnote{Equivalent radius = radius of the
+    circle of equivalent area/volume in 2D/3D.}        @tab face, poly
   @item @code{circularity}  @tab circularity (2D counterpart of sphericity)          @tab face
   @item @code{sphericity}  @tab sphericity@footnote{Sphericity of a
     polyhedron = ratio of the surface area of
@@ -245,10 +247,12 @@ the @samp{@SEPDEP{}uc} modifier.
   @item @code{z}    @tab z coordinate                 @tab seed, cell
   @item @code{w}    @tab Laguerre weight              @tab seed
   @item @code{size}  @tab size (area/volume in 2D/3D) @tab cell
-  @item @code{diameq}  @tab diameter of the equivalent
-  circle/sphere in 2D/3D                              @tab cell
-  @item @code{radeq}  @tab radius of the equivalent
-  circle/sphere in 2D/3D                              @tab cell
+  @item @code{diameq}  @tab equivalent
+    diameter@footnote{Equivalent diameter = diameter
+    of the circle of equivalent area/volume in 2D/3D.}@tab cell
+  @item @code{radeq}  @tab equivalent
+    radius@footnote{Equivalent radius = radius of the
+    circle of equivalent area/volume in 2D/3D.}       @tab cell
   @item @code{convexity}  @tab convexity@footnote{Convexity of a cell = ratio of the volume of the cell to the volume of the convex hull of the cell.} @tab cell
 @end multitable
 

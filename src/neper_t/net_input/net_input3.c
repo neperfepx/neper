@@ -30,7 +30,7 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("1", &(*pIn).morphooptimultiseedstring);
   ut_string_string ("default", &(*pIn).morphooptidofstring);
   ut_string_string ("HUGE_VAL", &(*pIn).morphooptideltamaxstring);
-  ut_string_string ("diameq/10", &(*pIn).morphooptiinistepstring);
+  ut_string_string ("avdiameq/10", &(*pIn).morphooptiinistepstring);
 
   ut_string_string ("none", &(*pIn).scalestring);
   (*pIn).reg = 0;

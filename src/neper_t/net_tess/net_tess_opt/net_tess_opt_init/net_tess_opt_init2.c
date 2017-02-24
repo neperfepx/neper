@@ -82,7 +82,7 @@ net_tess_opt_init_parms (struct IN_T In, int level,
   char **vars = ut_alloc_2d_char (1, 10);
   double *vals = ut_alloc_1d (1);
 
-  strcpy (vars[0], "diameq");
+  strcpy (vars[0], "avdiameq");
   vals[0] = diameq;
   ut_math_eval (In.morphooptiinistep[level], 1, vars, vals,
 		&((*pTOpt).inistep));

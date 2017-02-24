@@ -486,9 +486,9 @@ any>=0, HUGE_VAL}
 @optsec{-morphooptiinistep, real,
 Specify the step used to perturb the seed positions and weights when
 optimization begins.  The argument can be a function of
-@var{diameq}@comma{} the average equivalent cell diameter.
+@var{avdiameq}@comma{} the average equivalent cell diameter.
 ,
-any>0, diameq/10}
+any>0, avdiameq/10}
 
 @optsec{-morphooptilogtime, char_string,
 Log the time taken during the optimization process.
