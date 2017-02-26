@@ -178,7 +178,8 @@ neut_tess_cellavdiameq_cellqty (struct TESS Tess, double avdiameq, int *pCellQty
     abort ();
 
   (*pCellQty) = ut_num_d2ri (tesssize / size);
-  (*pfact) = (tesssize / size) / (*pCellQty);
+  if (pfact)
+    (*pfact) = (tesssize / size) / (*pCellQty);
 
   return;
 }
@@ -191,7 +192,8 @@ neut_tess_cellavsize_cellqty (struct TESS Tess, double avsize, int *pCellQty, do
   neut_tess_size (Tess, &tesssize);
 
   (*pCellQty) = ut_num_d2ri (tesssize / avsize);
-  (*pfact) = (tesssize / avsize) / (*pCellQty);
+  if (pfact)
+    (*pfact) = (tesssize / avsize) / (*pCellQty);
 
   return;
 }

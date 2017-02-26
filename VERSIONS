@@ -1,7 +1,6 @@
-New in 3.0.3-9 (26 Feb 2017):
-- module -T: added -n from_morpho with -morpho size:, -morpho diameq:
-  and -morpho tesr: to set the number of cells from a cell size
-  distribution or a raster tessellation, fixed -morphooptiini
+New in 3.0.3-10 (26 Feb 2017):
+- module -T: added -n from_morpho to set the number of cells from
+  -morpho graingrowth/gg/size/diameq/tesr; fixed -morphooptiini
   "coo:file()" in 2D, improved -morpho tesr for elongated cells.
 - module -M: allowed -interface cohesive -periodic in 2D.
 - documentation: minor fixes.

@@ -241,11 +241,14 @@ centroids@comma{} or even exact shapes (using a raster tessellation).@*
 @bullet{} @samp{@code{voronoi}} for a standard Poisson-Voronoi
 tessellation;@*
 @bullet{} @samp{@code{graingrowth}} or @samp{@code{gg}} for
-grain-growth statistical properties@comma{} which mean a wider grain size
+grain-growth statistical properties@comma{} which correspond to a wider grain size
 distribution and higher grain sphericities than in a Voronoi tessellation
 (it actually is an alias for
 @samp{@code{diameq:lognormal(1,0.35),sphericity:lognormal(0.145,0.03,1-x)}}@comma{}
-@w{see below});@*
+@w{see below}); the @samp{@code{graingrowth(@var{mean})}} and
+@samp{@code{gg}(@var{mean})} variants can be used to provide an absolute
+mean grain size@comma{} @code{@var{mean}} (in which case @option{-n
+from_morpho} must be used@comma{} see below);@*
 @bullet{} @samp{@code{centroidal}} for a centroidal
 tessellation@footnote{@code{centroidal} is not recommended as it does
 not correspond to a morphological property @i{ per se}; size and/or
@@ -306,7 +309,7 @@ distributions of increasing averages@comma{} for example@comma{}
 @samp{0.3*normal(@var{mean1},@var{sig1})+0.7*normal(@var{mean2},@var{sig2})}.
 If the number of cells is defined (see option @option{-n})@comma{} the
 size or diameq distribution is scaled to get the specified number
-of cells; if @option{-n} is set to @samp{from_morpho}@comma{} the number
+of cells; otherwise@comma{} i.e.@ @option{-n} is set to @samp{from_morpho}@comma{} the number
 of cells is determined from the size or diameq distribution.
 An interval of possible values can also be provided using
 @samp{interval(@var{min}@comma{}@var{max})}.
@@ -950,6 +953,10 @@ morphological properties.
 morphological properties, and get the equivalent diameters and
 sphericities of the cells.
 @com{neper -T -n 100 -id 1 -morpho gg -statcell diameq:rel,sphericity}
+@item    Generate a tessellation of specified absolute grain size
+distribution (and determine the number of cells accordingly).
+@com{neper -T -n from_morpho -id 1 -morpho@*@ @ @ @ @ @ 
+     "diameq:lognormal(0.1,0.03),sphericity:lognormal(0.145,0.03,1-x)"}
 @item    Generate a 2-scale Voronoi tessellation containing
 @iftex
 @math{100@times10}

@@ -124,7 +124,7 @@ void
 net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
 {
   int i, print = 0;
-  double fact = 1, fact2;
+  double fact = 1;
 
   print = ((*pTOpt).CellQty == -1);
 
@@ -135,8 +135,9 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
 
     if ((*pTOpt).CellQty == -1)
     {
-      neut_tess_cellavsize_cellqty ((*pTOpt).Dom, mean, &(*pTOpt).CellQty, &fact2);
-      (*pTOpt).tarrefval[id] = mean * fact2;
+      neut_tess_cellavsize_cellqty ((*pTOpt).Dom, mean, &(*pTOpt).CellQty, NULL);
+      neut_tess_cellavsize ((*pTOpt).Dom, (*pTOpt).CellQty,
+			    &((*pTOpt).tarrefval[id]));
     }
   }
 
@@ -173,8 +174,10 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
     {
       if (strcmp ((*pTOpt).tarvar[id], "tesr"))
       {
-	neut_tess_cellavdiameq_cellqty ((*pTOpt).Dom, mean * fact, &(*pTOpt).CellQty, &fact2);
-	(*pTOpt).tarrefval[id] = mean / fact * fact2;
+	neut_tess_cellavdiameq_cellqty ((*pTOpt).Dom, mean * fact, &(*pTOpt).CellQty, NULL);
+	neut_tess_cellavdiameq ((*pTOpt).Dom, (*pTOpt).CellQty,
+				&((*pTOpt).tarrefval[id]));
+	(*pTOpt).tarrefval[id] /= fact;
       }
       else
       {

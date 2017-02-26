@@ -143,22 +143,36 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
   char **tmp = NULL;
   char **parts = NULL;
   char *flag = ut_alloc_1d_char (100);
+  char string[1000];
 
   net_tess_opt_init_target_cellqty (In, MTess, Tess, poly, &(*pTOpt).CellQty);
 
   // dealing with aliases
   if (!strcmp (morpho, "voronoi"))
     (*pTOpt).tarqty = 0;
-  else if (!strcmp (morpho, "graingrowth") || !strcmp (morpho, "gg"))
+  else if (!strncmp (morpho, "graingrowth", 11) || !strncmp (morpho, "gg", 2))
   {
-    if ((*pTOpt).Dim == 3)
-      ut_string_separate
-	("diameq:lognormal(1,0.35),sphericity:lognormal(0.145,0.03,1-x)",
-	 NEUT_SEP_NODEP, &tmp, &((*pTOpt).tarqty));
+    if (sscanf (morpho, "graingrowth(%lf)", &mean) == 1)
+    {}
+    else if (sscanf (morpho, "gg(%lf)", &mean) == 1)
+    {}
     else
-      ut_string_separate
-	("diameq:lognormal(1,0.42),sphericity:lognormal(0.1,0.03,1-x)",
-	 NEUT_SEP_NODEP, &tmp, &((*pTOpt).tarqty));
+      mean = 1;
+
+    if ((*pTOpt).Dim == 3)
+    {
+      sprintf (string,
+	       "diameq:lognormal(%f,%f),sphericity:lognormal(0.145,0.03,1-x)",
+		 mean, 0.35 * mean);
+      ut_string_separate (string, NEUT_SEP_NODEP, &tmp, &((*pTOpt).tarqty));
+    }
+    else
+    {
+      sprintf (string,
+	       "diameq:lognormal(%f,%f),sphericity:lognormal(0.1,0.03,1-x)",
+		 mean, 0.42 * mean);
+      ut_string_separate (string, NEUT_SEP_NODEP, &tmp, &((*pTOpt).tarqty));
+    }
   }
   else
     ut_string_separate (morpho, NEUT_SEP_NODEP, &tmp, &((*pTOpt).tarqty));
