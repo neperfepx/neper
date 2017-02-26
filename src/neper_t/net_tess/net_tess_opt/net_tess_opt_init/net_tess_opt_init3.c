@@ -144,11 +144,8 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
 	   || !strcmp ((*pTOpt).tarvar[id], "centroid")
 	   || !strcmp ((*pTOpt).tarvar[id], "centroidsize")
 	   || !strcmp ((*pTOpt).tarvar[id], "centroiddiameq")
-	   || !strcmp ((*pTOpt).tarvar[id], "tesr"))
+           || !strcmp ((*pTOpt).tarvar[id], "tesr"))
   {
-    neut_tess_cellavdiameq ((*pTOpt).Dom, (*pTOpt).CellQty,
-			    &((*pTOpt).tarrefval[id]));
-
     if (!strcmp ((*pTOpt).tartype[id], "stat"))
     {
       fact = 0;
@@ -165,12 +162,26 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
     else
       fact = 1;
 
-    (*pTOpt).tarrefval[id] /= fact;
-
-    if ((*pTOpt).CellQty == -1)
+    if ((*pTOpt).CellQty != -1)
     {
-      neut_tess_cellavdiameq_cellqty ((*pTOpt).Dom, mean * fact, &(*pTOpt).CellQty, &fact2);
-      (*pTOpt).tarrefval[id] = mean * fact2;
+      neut_tess_cellavdiameq ((*pTOpt).Dom, (*pTOpt).CellQty,
+			      &((*pTOpt).tarrefval[id]));
+      (*pTOpt).tarrefval[id] /= fact;
+    }
+
+    else
+    {
+      if (strcmp ((*pTOpt).tarvar[id], "tesr"))
+      {
+	neut_tess_cellavdiameq_cellqty ((*pTOpt).Dom, mean * fact, &(*pTOpt).CellQty, &fact2);
+	(*pTOpt).tarrefval[id] = mean / fact * fact2;
+      }
+      else
+      {
+	(*pTOpt).CellQty = (*pTOpt).tartesr.CellQty;
+	neut_tess_cellavdiameq ((*pTOpt).Dom, (*pTOpt).CellQty,
+				&((*pTOpt).tarrefval[id]));
+      }
     }
   }
 
@@ -178,10 +189,7 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
     (*pTOpt).tarrefval[id] = 1;
 
   if (print)
-  {
     ut_print_message (0, 4, "Number of cells: %d\n", (*pTOpt).CellQty);
-    ut_print_message (0, 4, "Average grain size: %f\n", (*pTOpt).tarrefval[id]);
-  }
 
   return;
 }

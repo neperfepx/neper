@@ -304,10 +304,10 @@ lognormal distributions@comma{}
 @math{(1 - \hbox{the cell property})})@comma{} or a sum of
 distributions of increasing averages@comma{} for example@comma{}
 @samp{0.3*normal(@var{mean1},@var{sig1})+0.7*normal(@var{mean2},@var{sig2})}.
-If @option{-n} is defined@comma{} the size or diameq distribution will
-be scaled to get the specified number of cells; if @option{-n} is set to
-@samp{from_morpho}@comma{} the number of cells will be determined from
-the size or diameq distribution.
+If the number of cells is defined (see option @option{-n})@comma{} the
+size or diameq distribution is scaled to get the specified number
+of cells; if @option{-n} is set to @samp{from_morpho}@comma{} the number
+of cells is determined from the size or diameq distribution.
 An interval of possible values can also be provided using
 @samp{interval(@var{min}@comma{}@var{max})}.
 Cell-by-cell values can be provided using
@@ -316,7 +316,10 @@ the name of the file containing the cell values.
 For @samp{@code{centroid}}@comma{} provide @samp{seed} to get a
 centroidal tessellation.
 For @samp{@code{tesr}}@comma{} @samp{@var{file_name}} is the name of the
-raster tessellation file.@*
+raster tessellation file. If @option{-n} is set to
+@samp{from_morpho}@comma{} the number of cells is set to the number of
+cells of the raster tessellation.
+@*
 To specify several properties@comma{} combine them @w{with @samp{@SEPNODEP}}.
 ,
 any, voronoi}
