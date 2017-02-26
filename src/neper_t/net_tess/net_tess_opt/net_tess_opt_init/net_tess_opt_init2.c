@@ -138,6 +138,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
 			  int level, char *morpho, struct TOPT *pTOpt)
 {
   int i, j, partqty, status;
+  double mean = 1;
   double sum;
   char **tmp = NULL;
   char **parts = NULL;
@@ -224,7 +225,6 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
 
       // Setting distributions
       int qty3, fct_qty;
-      double mean;
       double *fct_fact = NULL;
       char **fct_expr = NULL;
       char **parts3 = NULL;
@@ -396,11 +396,14 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
       }
     }
 
-    net_tess_opt_init_ref (pTOpt, i);
+    net_tess_opt_init_ref (pTOpt, mean, i);
 
     if (strcmp ((*pTOpt).tarvar[i], "tesr") && (*pTOpt).tarcellvalqty[i] == 0)
       abort ();
   }
+
+  if ((*pTOpt).CellQty == -1)
+    ut_print_message (2, 4, "Could not process '-n from_morpho'.\n");
 
   ut_free_1d_char (flag);
   ut_free_2d_char (tmp, (*pTOpt).tarqty);

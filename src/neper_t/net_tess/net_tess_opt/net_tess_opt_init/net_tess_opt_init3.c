@@ -25,9 +25,14 @@ net_tess_opt_init_target_cellqty (struct IN_T In, struct MTESS MTess,
   vals[1] = vals[0] / cellavsize;
 
   neut_mtess_tess_poly_mid (MTess, Tess, poly, &tmp2);
-  net_multiscale_arg_0d_int_fscanf (In.n[Tess.Level + 1],
-				    tmp2, varqty, vars, vals, pCellQty);
-  (*pCellQty) = ut_num_max (*pCellQty, 1);
+  if (strcmp (In.n[Tess.Level + 1], "from_morpho"))
+  {
+    net_multiscale_arg_0d_int_fscanf (In.n[Tess.Level + 1],
+				      tmp2, varqty, vars, vals, pCellQty);
+    (*pCellQty) = ut_num_max (*pCellQty, 1);
+  }
+  else
+    (*pCellQty) = -1;
 
   ut_free_2d_char (vars, varqty);
   ut_free_1d (vals);
@@ -116,14 +121,24 @@ net_tess_opt_init_target_bin (double xmin, double xmax,
 }
 
 void
-net_tess_opt_init_ref (struct TOPT *pTOpt, int id)
+net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
 {
-  int i;
-  double fact;
+  int i, print = 0;
+  double fact = 1, fact2;
+
+  print = ((*pTOpt).CellQty == -1);
 
   if (!strcmp ((*pTOpt).tarvar[id], "size"))
+  {
     neut_tess_cellavsize ((*pTOpt).Dom, (*pTOpt).CellQty,
 			  &((*pTOpt).tarrefval[id]));
+
+    if ((*pTOpt).CellQty == -1)
+    {
+      neut_tess_cellavsize_cellqty ((*pTOpt).Dom, mean, &(*pTOpt).CellQty, &fact2);
+      (*pTOpt).tarrefval[id] = mean * fact2;
+    }
+  }
 
   else if (!strcmp ((*pTOpt).tarvar[id], "diameq")
 	   || !strcmp ((*pTOpt).tarvar[id], "centroid")
@@ -151,10 +166,22 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, int id)
       fact = 1;
 
     (*pTOpt).tarrefval[id] /= fact;
+
+    if ((*pTOpt).CellQty == -1)
+    {
+      neut_tess_cellavdiameq_cellqty ((*pTOpt).Dom, mean * fact, &(*pTOpt).CellQty, &fact2);
+      (*pTOpt).tarrefval[id] = mean * fact2;
+    }
   }
 
   else
     (*pTOpt).tarrefval[id] = 1;
+
+  if (print)
+  {
+    ut_print_message (0, 4, "Number of cells: %d\n", (*pTOpt).CellQty);
+    ut_print_message (0, 4, "Average grain size: %f\n", (*pTOpt).tarrefval[id]);
+  }
 
   return;
 }

@@ -107,12 +107,10 @@ Here is what a typical run of @mT{} looks like,
 @kindex -n
 @inp{-n, integer or char_string,
 Specify the number of cells of the tessellation.
-The argument can be a mathematical expression based on the @var{size}
+The argument can be an integer@comma{} a mathematical expression based on the @var{size}
 variable@comma{} which is the size of the domain (volume in 3D@comma{}
-area in 2D).  For regular morphologies (cubes@comma{} lamellae@comma{}
-etc.@comma{} see option @option{-morpho})@comma{} the number of cells is
-defined from option @option{-morpho} and so the argument must be
-@samp{from_morpho}.
+area in 2D)@comma{} or @samp{from_morpho} to set the value from
+the morphology (see @option{-morpho}).
 , any, none}
 
 @kindex -id
@@ -288,13 +286,13 @@ property and its value@comma{} combined with the @samp{@SEPDEP{}} separator.
 The available properties are:@*
 @bullet{} @samp{@code{size}} for the size (volume in 3D and area in 2D)
 and @samp{@code{diameq}} for the equivalent diameter;@*
-@bullet{} @samp{@code{sphericity}} for the sphericity and
+@bullet{} @samp{@code{sphericity}} for the sphericity;@*
 @bullet{} @samp{@code{centroid}} for the centroid;@*
 @bullet{} @samp{@code{centroidsize}} for combined centroid and size@comma{}
 and @samp{@code{centroiddiameq}} for combined centroid and equivalent
 diameter;@*
 @bullet{} @samp{@code{tesr}} for cells of a raster tessellation.@*
-Sizes@comma{} sphericities can be defined by statistical
+Sizes@comma{} diameqs and sphericities can be defined by statistical
 distributions or on a per-cell basis@comma{} while centroids can be
 defined only on a per-cell basis.
 The statistical distributions can be: a
@@ -306,6 +304,10 @@ lognormal distributions@comma{}
 @math{(1 - \hbox{the cell property})})@comma{} or a sum of
 distributions of increasing averages@comma{} for example@comma{}
 @samp{0.3*normal(@var{mean1},@var{sig1})+0.7*normal(@var{mean2},@var{sig2})}.
+If @option{-n} is defined@comma{} the size or diameq distribution will
+be scaled to get the specified number of cells; if @option{-n} is set to
+@samp{from_morpho}@comma{} the number of cells will be determined from
+the size or diameq distribution.
 An interval of possible values can also be provided using
 @samp{interval(@var{min}@comma{}@var{max})}.
 Cell-by-cell values can be provided using

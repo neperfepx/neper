@@ -164,6 +164,39 @@ neut_tess_cellavdiameq (struct TESS Tess, int CellQty, double *pdiameq)
 }
 
 void
+neut_tess_cellavdiameq_cellqty (struct TESS Tess, double avdiameq, int *pCellQty, double *pfact)
+{
+  double tesssize, size;
+
+  neut_tess_size (Tess, &tesssize);
+
+  if (Tess.Dim == 3 && Tess.PseudoDim == -1)
+    size = pow (avdiameq, 3) * (M_PI / 6);
+  else if (Tess.Dim == 2 || (Tess.Dim == 3 && Tess.PseudoDim == 2))
+    size = pow (avdiameq, 2) * (M_PI / 4);
+  else
+    abort ();
+
+  (*pCellQty) = ut_num_d2ri (tesssize / size);
+  (*pfact) = (tesssize / size) / (*pCellQty);
+
+  return;
+}
+
+void
+neut_tess_cellavsize_cellqty (struct TESS Tess, double avsize, int *pCellQty, double *pfact)
+{
+  double tesssize;
+
+  neut_tess_size (Tess, &tesssize);
+
+  (*pCellQty) = ut_num_d2ri (tesssize / avsize);
+  (*pfact) = (tesssize / avsize) / (*pCellQty);
+
+  return;
+}
+
+void
 neut_tess_cellavradeq (struct TESS Tess, int CellQty, double *pradeq)
 {
   neut_tess_cellavdiameq (Tess, CellQty, pradeq);

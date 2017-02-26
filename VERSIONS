@@ -1,6 +1,8 @@
-New in 3.0.3-7 (24 Feb 2017):
-- module -T: fixed -morphooptiini "coo:file()" in 2D, improved -morpho
-  tesr for elongated cells.
+New in 3.0.3-8 (26 Feb 2017):
+- module -T: added -n from_morpho with -morpho size: and -morpho diameq:
+  to set the number of cells from a cell size distribution, fixed
+  -morphooptiini "coo:file()" in 2D, improved -morpho tesr for elongated
+  cells.
 - module -M: allowed -interface cohesive -periodic in 2D.
 - documentation: minor fixes.
 

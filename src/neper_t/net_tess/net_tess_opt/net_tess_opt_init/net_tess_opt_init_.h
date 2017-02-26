@@ -50,7 +50,7 @@ extern void net_tess_opt_init_parms_algo (char *optialgo, struct TOPT *pTOpt);
 extern void net_tess_opt_init_target_bin (double xmin, double xmax,
 					  double mean, int ptqty, double *x);
 
-extern void net_tess_opt_init_ref (struct TOPT *pTOpt, int id);
+extern void net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id);
 
 extern void net_tess_opt_init_tesrobj (struct TOPT *pTOpt);
 
