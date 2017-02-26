@@ -29,7 +29,7 @@ the following.
 @subsection Source Code
 
 Neper's source code is located in directory @file{src/} and consists of
-roughly 85,000 lines shared between 200 directories and 800 text files.
+roughly 110,000 lines shared between 250 directories and 1000 text files.
 The @samp{src/} directory contains the following files and directories,
 
 @itemize
@@ -172,7 +172,7 @@ info documentation files are built and included in the archive.
 The Neper development repository is hosted on GitHub:
 @url{https://github.com/rquey/neper}.  Code contributions to be included
 in Neper's official (public) version should be submitted as pull
-requests on this respository.
+requests on this repository.
 
 @subsection Coding Conventions
 
@@ -191,7 +191,7 @@ remarks,
     :set textwidth=72
 @end verbatim
 
-  @item Your can run @command{indent -bli0 @var{source_files}} for
+  @item You can run @command{indent -bli0 @var{source_files}} for
         automatic formatting.
   @item Break up the code into meaningful chunks using blank lines.
   Always use a single blank line to separate parts of the code.

@@ -101,8 +101,7 @@ Neper's @file{src} directory,
 
 @com{make}
 
-Use option @samp{-j@var{N}} to turn multithreading on, where
-@code{@var{N}} is 1 + the number of cores of a processor.
+Use option @samp{-j} to use multithreading.
 
 @item Install Neper on your system (as root),
 @com{make install}
