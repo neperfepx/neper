@@ -96,6 +96,7 @@ extern "C"
     char *raw;				// raw data of tesr file
     char *geo;				// Gmsh geo file
     char *ply;				// Ply file
+    char *stl;				// stl file
     char *dec;				// 3dec file
     char *fe;				// fe file
     char *stc;				// cell stat file

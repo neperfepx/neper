@@ -281,3 +281,50 @@ neut_tess_fprintf_fe (FILE *file, struct TESS Tess)
 
   return;
 }
+
+void
+neut_tess_fprintf_stl (FILE * file, struct TESS Tess)
+{
+  int i, j, k;
+  struct NODES N;
+  struct MESH M;
+  double *n = ut_alloc_1d (3);
+
+  neut_nodes_set_zero (&N);
+  neut_mesh_set_zero (&M);
+
+  fprintf (file, "soliddart\n");
+
+  for (i = 1; i <= Tess.FaceQty; i++)
+  {
+    neut_tess_face_interpolmesh (Tess, i, &N, &M);
+    neut_debug_nodes (stdout, N);
+    neut_debug_mesh (stdout, M);
+
+    for (j = 1; j <= M.EltQty; j++)
+    {
+      neut_mesh_elt_normal (M, N, j, n);
+      printf ("n = ");
+      ut_array_1d_fprintf (stdout, n, 3, "%f");
+      fprintf (file, "  facet normal %.12f %.12f %.12f\n",
+	       n[0], n[1], n[2]);
+      fprintf (file, "    outer loop\n");
+      for (k = 0; k < 3; k++)
+	fprintf (file, "      vertex %.12f %.12f %.12f\n",
+		 N.NodeCoo[M.EltNodes[j][k]][0],
+		 N.NodeCoo[M.EltNodes[j][k]][1],
+		 N.NodeCoo[M.EltNodes[j][k]][2]);
+      fprintf (file, "    endloop\n");
+      fprintf (file, "  endfacet\n");
+    }
+
+    neut_mesh_free (&M);
+    neut_nodes_free (&N);
+  }
+
+  fprintf (file, "endsoliddart\n");
+
+  ut_free_1d (n);
+
+  return;
+}

@@ -263,6 +263,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   (*pIn).ori = ut_string_addextension ((*pIn).body, ".ori");
   (*pIn).geo = ut_string_addextension ((*pIn).body, ".geo");
   (*pIn).ply = ut_string_addextension ((*pIn).body, ".ply");
+  (*pIn).stl = ut_string_addextension ((*pIn).body, ".stl");
   (*pIn).dec = ut_string_addextension ((*pIn).body, ".3dec");
   (*pIn).fe = ut_string_addextension ((*pIn).body, ".fe");
   (*pIn).obj = ut_string_addextension ((*pIn).body, ".obj");

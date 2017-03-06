@@ -1,8 +1,9 @@
-New in 3.0.3-12 (06 Mar 2017):
+New in 3.0.3-13-add_stl (06 Mar 2017):
 - module -T: added -n from_morpho to set the number of cells from
   -morpho graingrowth/gg/size/diameq/tesr; fixed -morphooptiini
-  "coo:file()" in 2D, fixed -morpho centroidsize, improved -morpho
-  centroiddiameq, improved -morpho tesr for elongated cells.
+  "coo:file()" in 2D, fixed -morpho centroidsize, added -format stl,
+  improved -morpho centroiddiameq, improved -morpho tesr for elongated
+  cells.
 - module -M: allowed -interface cohesive -periodic in 2D.
 - documentation: minor fixes.
 
