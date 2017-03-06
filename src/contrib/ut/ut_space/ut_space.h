@@ -130,9 +130,15 @@ extern void ut_space_sphere_points (int n, double r, double **pts);
 extern void ut_space_volume_diameq (double vol, double *pdiameq);
 extern void ut_space_area_diameq (double area, double *pdiameq);
 extern void ut_space_volume_radeq (double vol, double *pradeq);
+extern void ut_space_diameq_area (double diameq, double *parea);
+extern void ut_space_diameq_volume (double diameq, double *pvol);
 extern void ut_space_area_radeq (double area, double *pradeq);
+extern void ut_space_diameq_size (int dim, double diameq, double *psize);
+extern void ut_space_size_diameq (int dim, double size, double *pdiameq);
+
 extern void ut_space_random (gsl_rng *r, int *dims, int dimqty, double mindist,
 			     double maxdist, double *v);
+
 
 #endif /* UT_SPACE_H */
 

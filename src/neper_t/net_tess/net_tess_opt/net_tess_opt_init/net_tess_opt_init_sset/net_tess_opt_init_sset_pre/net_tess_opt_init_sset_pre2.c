@@ -44,6 +44,14 @@ net_tess_opt_init_sset_pre_randseed (struct MTESS MTess, struct TESS *Tess,
 }
 
 void
+net_tess_opt_init_sset_pre_dim (struct TOPT TOpt, struct SEEDSET *pSSet)
+{
+  (*pSSet).Dim = TOpt.Dim;
+
+  return;
+}
+
+void
 net_tess_opt_init_sset_pre_type (struct SEEDSET *pSSet)
 {
   ut_string_string ("standard", &(*pSSet).Type);

@@ -38,6 +38,8 @@ extern void net_tess_opt_init_target_cellqty (struct IN_T In, struct
 					      MTESS MTess, struct TESS
 					      Tess, int poly, int *pCellQty);
 
+extern void net_tess_opt_init_target_scale (struct TOPT *pTOpt, int *pos);
+
 extern void net_tess_opt_init_current (struct TOPT *pTOpt);
 
 extern void net_tess_opt_init_bounds (struct TOPT *pTOpt);

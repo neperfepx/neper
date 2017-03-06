@@ -298,3 +298,33 @@ net_tess_opt_init_target_cvl (struct IN_T In, int level, int var,
 
   return;
 }
+
+void
+net_tess_opt_init_target_scale (struct TOPT *pTOpt, int *pos)
+{
+  int i;
+  double domvol, sumvol, tmp, fact;
+
+  if (!strcmp ((*pTOpt).tarvar[pos[0]], "centroidsize")
+   || !strcmp ((*pTOpt).tarvar[pos[0]], "centroiddiameq"))
+  {
+    neut_tess_size ((*pTOpt).Dom, &domvol);
+
+    sumvol = 0;
+    for (i = 1; i <= (*pTOpt).CellQty; i++)
+    {
+      ut_space_diameq_size ((*pTOpt).Dim,
+			    (*pTOpt).tarcellval[pos[0]][i][pos[1]],
+			    &tmp);
+      sumvol += tmp;
+    }
+
+    fact = pow (domvol / sumvol, 1. / (*pTOpt).Dim);
+    for (i = 1; i <= (*pTOpt).CellQty; i++)
+      (*pTOpt).tarcellval[pos[0]][i][pos[1]] *= fact;
+    if (!ut_num_requal (fact, 1, 1e-3))
+      ut_print_message (1, 4, "Cell diameqs scaled by a factor of %f.\n", fact);
+  }
+
+  return;
+}

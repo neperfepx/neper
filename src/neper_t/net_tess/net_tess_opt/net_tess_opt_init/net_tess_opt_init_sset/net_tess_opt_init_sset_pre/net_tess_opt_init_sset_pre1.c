@@ -12,6 +12,9 @@ net_tess_opt_init_sset_general (struct IN_T In, struct MTESS MTess,
 {
   neut_seedset_set_zero (pSSet);
 
+  if (pTOpt)
+    net_tess_opt_init_sset_pre_dim (*pTOpt, pSSet);
+
   net_tess_opt_init_sset_pre_type (pSSet);
 
   net_tess_opt_init_sset_pre_size (Tess, dtess, dcell, pSSet);
@@ -70,8 +73,7 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level,
 	ut_string_string ("seed", pcooexpr);
       ut_string_string ("avradeq", pweightexpr);
     }
-    else if (!strcmp (*pvar, "centroidsize")
-	     || !strcmp (*pvar, "centroiddiameq"))
+    else if (!strcmp (*pvar, "centroiddiameq"))
     {
       ut_string_string ("centroid", pcooexpr);
       ut_string_string ("radeq", pweightexpr);

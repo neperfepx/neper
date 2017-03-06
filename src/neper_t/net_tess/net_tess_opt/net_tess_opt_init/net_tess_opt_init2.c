@@ -137,13 +137,15 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
 			  struct TESS Tess, int poly,
 			  int level, char *morpho, struct TOPT *pTOpt)
 {
-  int i, j, partqty, status;
+  int i, j, partqty, status, diameq_pos[2];
   double mean = 1;
   double sum;
   char **tmp = NULL;
   char **parts = NULL;
   char *flag = ut_alloc_1d_char (100);
   char string[1000];
+
+  ut_array_1d_int_set (diameq_pos, 2, -1);
 
   net_tess_opt_init_target_cellqty (In, MTess, Tess, poly, &(*pTOpt).CellQty);
 
@@ -379,16 +381,25 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
 	else
 	  abort ();
 
+	// recording position of diameq specification, for scaling
+	if (!strcmp ((*pTOpt).tarvar[i], "centroidsize")
+	 || !strcmp ((*pTOpt).tarvar[i], "centroiddiameq"))
+	  ut_array_1d_int_set_2 (diameq_pos, i, (*pTOpt).Dim);
+	else if (!strcmp ((*pTOpt).tarvar[i], "size")
+	      || !strcmp ((*pTOpt).tarvar[i], "diameq"))
+	  ut_array_1d_int_set_2 (diameq_pos, i, 0);
+
 	if (!strcmp ((*pTOpt).tarvar[i], "centroidsize"))
 	{
+	  ut_array_1d_int_set_2 (diameq_pos, i, (*pTOpt).Dim);
 	  for (j = 1; j <= (*pTOpt).CellQty; j++)
-	    (*pTOpt).tarcellval[i][j][(*pTOpt).Dim]
-	      = pow ((2 * (*pTOpt).Dim / M_PI) *
-		     (*pTOpt).tarcellval[i][j][(*pTOpt).Dim],
-		     1. / (*pTOpt).Dim);
+	    ut_space_size_diameq ((*pTOpt).Dim,
+				  (*pTOpt).tarcellval[i][j][(*pTOpt).Dim],
+				  &(*pTOpt).tarcellval[i][j][(*pTOpt).Dim]);
+	  ut_string_string ("centroiddiameq", (*pTOpt).tarvar + i);
 	}
 
-	else if (!strncmp ((*pTOpt).tarvar[i], "size", 4))
+	else if (!strcmp ((*pTOpt).tarvar[i], "size"))
 	{
 	  sum = 0;
 	  for (j = 1; j <= (*pTOpt).CellQty; j++)
@@ -418,6 +429,9 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
 
   if ((*pTOpt).CellQty == -1)
     ut_print_message (2, 4, "Could not process '-n from_morpho'.\n");
+
+  if (diameq_pos[0] != -1)
+    net_tess_opt_init_target_scale (pTOpt, diameq_pos);
 
   ut_free_1d_char (flag);
   ut_free_2d_char (tmp, (*pTOpt).tarqty);

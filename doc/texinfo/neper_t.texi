@@ -315,7 +315,8 @@ An interval of possible values can also be provided using
 @samp{interval(@var{min}@comma{}@var{max})}.
 Cell-by-cell values can be provided using
 @samp{file(@var{file_name})}@comma{} where @samp{@var{file_name}} is
-the name of the file containing the cell values.
+the name of the file containing the cell values (@pxref{Position File}
+for centroids).
 For @samp{@code{centroid}}@comma{} provide @samp{seed} to get a
 centroidal tessellation.
 For @samp{@code{tesr}}@comma{} @samp{@var{file_name}} is the name of the
@@ -323,7 +324,9 @@ raster tessellation file. If @option{-n} is set to
 @samp{from_morpho}@comma{} the number of cells is set to the number of
 cells of the raster tessellation.
 @*
-To specify several properties@comma{} combine them @w{with @samp{@SEPNODEP}}.
+To specify several properties@comma{} combine them @w{with @samp{@SEPNODEP}}
+(centroids and sizes/equivalent diameters should be seen as one
+ property and specified with @code{centroidsize}/@code{centroiddiameq}).
 ,
 any, voronoi}
 

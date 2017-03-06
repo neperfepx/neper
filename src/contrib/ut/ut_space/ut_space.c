@@ -2552,6 +2552,52 @@ ut_space_volume_radeq (double vol, double *pradeq)
 }
 
 void
+ut_space_diameq_area (double diameq, double *parea)
+{
+  (*parea) = M_PI * pow (diameq, 2) / 4;
+
+  return;
+}
+
+void
+ut_space_diameq_volume (double diameq, double *pvol)
+{
+  (*pvol) = M_PI * pow (diameq, 3) / 6;
+
+  return;
+}
+
+void
+ut_space_diameq_size (int dim, double diameq, double *psize)
+{
+  if (dim == 1)
+    (*psize) = diameq;
+
+  else if (dim == 2)
+    ut_space_diameq_area (diameq, psize);
+
+  else if (dim == 3)
+    ut_space_diameq_volume (diameq, psize);
+
+  return;
+}
+
+void
+ut_space_size_diameq (int dim, double size, double *pdiameq)
+{
+  if (dim == 1)
+    (*pdiameq) = size;
+
+  else if (dim == 2)
+    ut_space_area_diameq (size, pdiameq);
+
+  else if (dim == 3)
+    ut_space_volume_diameq (size, pdiameq);
+
+  return;
+}
+
+void
 ut_space_area_radeq (double area, double *pradeq)
 {
   ut_space_area_diameq (area, pradeq);

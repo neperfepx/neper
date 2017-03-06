@@ -54,16 +54,6 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
       net_tess_opt_init_sset_weight_stat_radeq (pos, var, TOpt, radeq);
     else if (!strcmp (var, "centroid"))
       ut_array_1d_set (radeq + 1, TOpt.CellQty, vals[0]);
-    else if (!strcmp (var, "centroidsize"))
-      for (i = 1; i <= TOpt.CellQty; i++)
-      {
-	if (TOpt.Dim == 2)
-	  ut_space_area_radeq (TOpt.tarcellval[pos][i][TOpt.SSet.Dim],
-			       radeq + i);
-	else if (TOpt.Dim == 3)
-	  ut_space_volume_radeq (TOpt.tarcellval[pos][i][TOpt.SSet.Dim],
-				 radeq + i);
-      }
     else if (!strcmp (var, "centroiddiameq"))
       for (i = 1; i <= TOpt.CellQty; i++)
 	radeq[i] = 0.5 * TOpt.tarcellval[pos][i][TOpt.SSet.Dim];
