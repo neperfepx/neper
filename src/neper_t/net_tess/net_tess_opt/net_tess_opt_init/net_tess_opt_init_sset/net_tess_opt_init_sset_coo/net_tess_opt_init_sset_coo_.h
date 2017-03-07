@@ -18,6 +18,7 @@
 #include"neper_config.h"
 
 #include"net_tess_opt_init_sset_coo.h"
+#include"net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp.h"
 
 extern void net_tess_opt_init_sset_coo_cluster (int dim, gsl_rng * r2,
     int qty, double dist, double rad, struct POINT *pPoint);
@@ -28,3 +29,5 @@ extern void net_tess_opt_init_sset_coo_centre (struct TOPT *pTOpt,
 
 extern void net_tess_opt_init_sset_coo_record (struct TOPT *pTOpt, int
     cell, struct POINT *pPoint, double *centre, struct POINT *pPoint2);
+
+extern void net_tess_opt_init_sset_coo_lllfp2011 (struct TOPT *pTOpt);

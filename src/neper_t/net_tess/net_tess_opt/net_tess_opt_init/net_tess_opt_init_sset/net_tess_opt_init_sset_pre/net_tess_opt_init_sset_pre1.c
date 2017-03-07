@@ -75,12 +75,12 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level,
     }
     else if (!strcmp (*pvar, "centroiddiameq"))
     {
-      ut_string_string ("centroid", pcooexpr);
+      ut_string_string ("LLLFP2011", pcooexpr);
       ut_string_string ("radeq", pweightexpr);
     }
     else if (!strcmp (*pvar, "tesr"))
     {
-      ut_string_string ("centroid", pcooexpr);
+      ut_string_string ("LLLFP2011", pcooexpr);
       ut_string_string ("radeq", pweightexpr);
     }
     else if (!strcmp (*pvar, "size") || !strcmp (*pvar, "diameq"))

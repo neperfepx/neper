@@ -17,6 +17,7 @@ net_tess_opt_init_sset_coo (struct MTESS MTess, struct TESS *Tess,
   double **coo = ut_alloc_2d ((*pTOpt).CellQty + 1, 3);
   char *mid = NULL;
   int *id = ut_alloc_1d_int ((*pTOpt).CellQty + 1);
+  int multiseed = (ut_array_1d_int_max (qty + 1, (*pTOpt).CellQty) > 1);
 
   neut_point_set_zero (&Point);
   neut_point_set_zero (&Point2);
@@ -67,6 +68,14 @@ net_tess_opt_init_sset_coo (struct MTESS MTess, struct TESS *Tess,
 
     net_tess_opt_init_sset_coo_record (pTOpt, cell, &Point, centre,
 	&Point2);
+  }
+
+  if (!strcmp (cooexpr, "LLLFP2011"))
+  {
+    if (multiseed)
+      ut_print_message (2, 3, "LLFP2011 method not available with multiseeding.\n");
+
+    net_tess_opt_init_sset_coo_lllfp2011 (pTOpt);
   }
 
   ut_free_1d (centre);

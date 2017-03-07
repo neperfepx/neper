@@ -350,6 +350,12 @@ and for cell-based size values (including @code{-morpho tesr})
 positions@comma{} @samp{packing} for positions set by (rough) dense
 sphere packing using the weights as sphere radii@comma{}
 @samp{@code{centroid}} for cell centroids@comma{}
+@samp{@code{LLLFP2011}} for Lyckegaard et al.'s
+method@footnote{A.@ Lyckegaard@comma{} E.M.@ Lauridsen@comma{} W.@
+  Ludwig@comma{} R.W.@ Fonda@comma{}
+and H.F.@ Poulsen. On the Use of Laguerre Tessellations for
+Representations of 3D Grain Structures.  Advanced Engineering
+Materials@comma{} vol.@ 13, pp.@ 165--170@comma{} 2011.}@comma{}
 or @samp{file(@var{file_name})} to load values from a file (@pxref{Position File}).
 The default depends on the value of option @samp{@option{-morpho}}:
 for @samp{@code{voronoi}}@comma{} it is @samp{random}@comma{}
