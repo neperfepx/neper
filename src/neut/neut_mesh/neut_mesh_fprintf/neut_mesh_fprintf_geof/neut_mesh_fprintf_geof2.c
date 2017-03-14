@@ -15,14 +15,23 @@ neut_mesh_fprintf_geof_head (FILE * file)
 void
 neut_mesh_fprintf_geof_nodes (FILE * out, struct NODES Nodes)
 {
-  int i, j;
+  int i, j, dim;
+
+  // checking the dimension of the mesh from the node coordinates
+  dim = 2;
+  for (i = 1; i <= Nodes.NodeQty; i++)
+    if (Nodes.NodeCoo[i][2] != 0)
+    {
+      dim = 3;
+      break;
+    }
 
   fprintf (out, "**node\n");
-  fprintf (out, "%d 3\n", Nodes.NodeQty);
+  fprintf (out, "%d %d\n", Nodes.NodeQty, dim);
   for (i = 1; i <= Nodes.NodeQty; i++)
   {
     fprintf (out, "%d", i);
-    for (j = 0; j < 3; j++)
+    for (j = 0; j < dim; j++)
       fprintf (out, "  %.12f",
 	       (fabs (Nodes.NodeCoo[i][j]) <
 		1e-12) ? 0 : Nodes.NodeCoo[i][j]);
