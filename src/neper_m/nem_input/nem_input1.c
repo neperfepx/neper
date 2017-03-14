@@ -146,6 +146,9 @@ nem_input_init_dim_datadim (struct IN_M *pIn, int datadim)
 {
   int i;
 
+  if (strstr ((*pIn).dimstring, "."))
+    ut_print_message (2, 2, "Failed to process expression `%s' (option -dim).\n", (*pIn).dimstring);
+
   if (ut_string_inlist ((*pIn).dimstring, NEUT_SEP_NODEP, "none"))
   {
     (*pIn).dim = -1;
