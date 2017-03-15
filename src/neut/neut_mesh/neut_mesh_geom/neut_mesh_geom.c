@@ -624,7 +624,6 @@ neut_mesh_rr (struct NODES Nodes, struct MESH Mesh, double *prrav,
   return 0;
 }
 
-
 int
 neut_mesh_Odis (struct NODES Nodes, struct MESH Mesh, char *Odisexpr,
 		double *pOdis)

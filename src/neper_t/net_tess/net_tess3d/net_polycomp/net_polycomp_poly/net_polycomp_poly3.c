@@ -44,7 +44,6 @@ BadVerDet (double *plane, int CenterSide, struct POLYMOD Polymod,
   return;
 }
 
-
 /* PolyhedronModification modifies the polyhedron to take into account
  * the new neighbour.
  */

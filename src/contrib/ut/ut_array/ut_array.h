@@ -67,7 +67,6 @@ extern int ut_array_3d_int_fprintf (FILE *, int ***, int, int, int,
 
 extern int ut_array_2d_int_fscanf (FILE *, int **, int, int);
 
-
 extern void ut_array_2d_scale (double **, int, int, double);
 
 extern double ut_array_1d_min (double *, int);

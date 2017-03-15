@@ -343,7 +343,6 @@ ut_string_body (char *in, char* stops, char **pbody)
     res[i] = in[i];
   res[NoCbody] = '\0';
 
-
   (*pbody) = ut_realloc_1d_char (*pbody, strlen (res) + 1);
   strcpy (*pbody, res);
 

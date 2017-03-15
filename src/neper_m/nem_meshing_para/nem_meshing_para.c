@@ -41,7 +41,6 @@ nem_meshing_para (struct IN_M In,
   return;
 }
 
-
 void
 nem_meshing_para_post (struct MESHPARA MeshPara,
 		       struct TESS *pTess,

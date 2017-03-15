@@ -6,7 +6,7 @@
 
 void
 net_mtess_flatten_ver (struct MTESS MTess, struct TESS *Tess,
-		       int TessId, int *CTessIds, int CTessQty, 
+		       int TessId, int *CTessIds, int CTessQty,
 		       struct TESS *pFTess,
 		       struct TESSE *TessE, struct FLATTEN *pFlatten)
 {

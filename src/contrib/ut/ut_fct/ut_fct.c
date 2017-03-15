@@ -176,7 +176,6 @@ ut_fct_numericalfct_expr (struct FCT Fct, char *expr, struct FCT *pFct2)
   return;
 }
 
-
 void
 ut_fct_numericalfct (struct FCT Fct, double min, double max, int size, struct FCT *pFct2)
 {

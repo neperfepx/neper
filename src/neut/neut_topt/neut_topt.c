@@ -16,7 +16,7 @@ neut_topt_set_zero (struct TOPT *pTOpt)
 
   neut_tdyn_set_zero (&(*pTOpt).TDyn);
 
-  (*pTOpt).xqty = 0;        
+  (*pTOpt).xqty = 0;
   (*pTOpt).x_pvar = NULL;
   (*pTOpt).x_seed = NULL;
   (*pTOpt).x_var = NULL;

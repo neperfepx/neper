@@ -92,7 +92,7 @@ EdgeMeshing (struct TESS Tess, int edge, double cl, double pl,
   NodeCl[node1] = ut_num_max (NodeCl[node1], dist1);
   NodeCl[node2] = ut_num_max (NodeCl[node2], dist2);
 
-/*********************************************************************** 
+/***********************************************************************
  * recording M */
 
   neut_mesh_set_zero (pM);

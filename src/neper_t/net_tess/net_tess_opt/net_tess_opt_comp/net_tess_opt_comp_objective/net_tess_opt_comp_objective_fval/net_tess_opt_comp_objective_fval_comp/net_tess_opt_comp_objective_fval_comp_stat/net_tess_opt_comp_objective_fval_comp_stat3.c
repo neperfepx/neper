@@ -145,7 +145,6 @@ net_tess_opt_comp_objective_fval_comp_stat_evaluate_ad (struct TOPT
       (*pTOpt).curval[var] = val;
   }
 
-
   if ((*pTOpt).dissmoothing > 0)
   {
     val = 0;

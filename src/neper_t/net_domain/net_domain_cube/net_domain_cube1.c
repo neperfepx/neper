@@ -4,8 +4,8 @@
 
 #include"net_domain_cube_.h"
 
-/* Domain: 
- * 
+/* Domain:
+ *
  */
 void
 net_domain_cube (double **size, struct POLY *pDomain)

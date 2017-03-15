@@ -93,7 +93,6 @@ nem_partition_elts_balancing_Q (struct MESH Mesh, struct PART *pPart,
       }
     }
 
-
     if ((double) (inisum - sum) / (double) inisum > level)
       break;
 

@@ -13,6 +13,5 @@ nem_reconstruct_tesr (struct TESR *pTesr, struct TESS *pTess, struct NODES
 
   nem_reconstruct_tesr_tesr (*pTesr, pTess, pNodes, Mesh, NSet);
 
-
   return;
 }

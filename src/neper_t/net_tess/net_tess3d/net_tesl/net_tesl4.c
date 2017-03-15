@@ -99,7 +99,7 @@ CommonSeeds (struct TESL Tesl, int first, int second, int *nb)
  * (ii) the face does not exist: -1 is returned.
  * (iii) the two vertex numbers are negative: the face cannot
  * exist: 0 is returned.
- * 
+ *
  */
 int
 BissFace (struct TESL Tesl, int S1, int S2)

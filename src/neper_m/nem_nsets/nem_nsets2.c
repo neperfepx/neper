@@ -401,7 +401,6 @@ nem_nsets_2dbody_str (struct NSET *NSet)
   faceedge[6][2] = 11;
   faceedge[6][3] = 12;
 
-
   NSet[2].qty *= 2;
   NSet[2].names = ut_realloc_1d_pchar (NSet[2].names, NSet[2].qty + 1);
   NSet[2].nodeqty = ut_realloc_1d_int (NSet[2].nodeqty, NSet[2].qty + 1);

@@ -80,7 +80,7 @@ neut_polys_polypair_neigh (struct POLY *Poly,
       status = (status > 0);
     }
   }
-  
+
   return status;
 }
 

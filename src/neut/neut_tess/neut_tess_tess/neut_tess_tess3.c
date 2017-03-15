@@ -516,7 +516,6 @@ neut_tess_tess_domaindata (struct TESS TessA, struct TESS *pTessB)
   ut_array_1d_pchar_memcpy ((*pTessB).DomFaceLabel + 1, (*pTessB).DomFaceQty,
 			    TessA.DomFaceLabel + 1);
 
-
   (*pTessB).DomTessFaceQty = ut_alloc_1d_int ((*pTessB).DomFaceQty + 1);
   ut_array_1d_int_memcpy ((*pTessB).DomTessFaceQty + 1, (*pTessB).DomFaceQty,
 			  TessA.DomTessFaceQty + 1);

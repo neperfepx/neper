@@ -111,7 +111,7 @@ Here is what a typical run of @mM{} looks like,
     Info   :   - Preparing... (cl = 0.2321) 100%
     Info   :   - 0D meshing... 100%
     Info   :   - 1D meshing... 100%
-    Info   :   - 2D meshing... 100% (0.72|0.87/83%|11%| 6%) 
+    Info   :   - 2D meshing... 100% (0.72|0.87/83%|11%| 6%)
     Info   :     > Checking 2D mesh for pinching out...
     Info   :   - 3D meshing... 100% (0.89|0.91/100%| 0%| 0%)
     Info   : Searching nsets...
@@ -501,7 +501,7 @@ any, none}
 Mesh partitioning is achieved using the libScotch
 library@footnote{@cite{F.
 Pellegrini, Scotch and libScotch 5.1 User's Guide, INRIA Bordeaux
-Sud-Ouest, ENSEIRB & LaBRI, UMR CNRS 5800, 2008.}}.  The 
+Sud-Ouest, ENSEIRB & LaBRI, UMR CNRS 5800, 2008.}}.  The
 principle of mesh partitioning is to create partitions of same size
 while minimizing the interfaces between them. This affects the same load
 to all computation units and minimizes communications between them,

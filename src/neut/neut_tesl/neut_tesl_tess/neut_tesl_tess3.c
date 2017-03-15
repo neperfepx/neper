@@ -116,7 +116,7 @@ void neut_tesl_tessEdgeDel(struct TESL Tesl,struct TESS* pTess)
 {
     int i;
     double bound;
-    
+
     double mean=0.4313/pow(Tesl.PolyQty,0.33333333333333333333);
 
     bound=0.5*mean;
@@ -127,7 +127,6 @@ void neut_tesl_tessEdgeDel(struct TESL Tesl,struct TESS* pTess)
     return;
 }
 */
-
 
 /* neut_tesl_tesstializing the properties of the faces ******************* */
 

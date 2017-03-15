@@ -72,7 +72,6 @@ extern "C"
   extern void neut_tesr_cell_anisoxyz (struct TESR Tesr, int cell, double *fact);
   extern void neut_tesr_cells_anisoxyz (struct TESR Tesr, double *fact);
 
-
 #include"net_utils/net_utils.h"
 
 #endif				/* NEUT_VOX_GEOM_H */

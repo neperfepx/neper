@@ -192,7 +192,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_badarg ();
     }
 
-/*---------------------------------------------------------------------- 
+/*----------------------------------------------------------------------
 * input data */
     if (!strcmp (Arg, "-n") && i < argc - 1)
     {
@@ -251,7 +251,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
     else if (!strcmp (Arg, "-periodicity"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).periodicstring));
 
-/*---------------------------------------------------------------------- 
+/*----------------------------------------------------------------------
 * general options */
     else if (!strcmp (Arg, "-o"))
     {
@@ -259,7 +259,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_string_body ((*pIn).body, ".", &((*pIn).body));
     }
 
-/*---------------------------------------------------------------------- 
+/*----------------------------------------------------------------------
 * tessellation options */
     else if (!strcmp (Arg, "-domain"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).domain));
@@ -268,7 +268,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
     else if (!strcmp (Arg, "-transform"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transform));
 
-/*---------------------------------------------------------------------- 
+/*----------------------------------------------------------------------
 * regularization options */
     else if (!strcmp (Arg, "-regularization"))
       ut_arg_nextasint (argv, &i, Arg, 0, 1, &(*pIn).reg);
@@ -322,7 +322,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
     else if (!strcmp (Arg, "-sort"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).sortstring));
 
-/*---------------------------------------------------------------------- 
+/*----------------------------------------------------------------------
 * load capability */
     else if ((!strcmp (Arg, "-loadtess")) || (!strcmp (Arg, "-checktess")))
     {
@@ -387,7 +387,7 @@ net_input_treatargs_multiscale (char *option, char **pargstring, int scaleqty,
   ut_string_string ("", pargstring);
   for (i = 1; i <= scaleqty; i++)
   {
-    size = strlen (*pargstring) + strlen ((*pvals)[i]) + 1; 
+    size = strlen (*pargstring) + strlen ((*pvals)[i]) + 1;
     if (i < scaleqty)
       size += strlen (NEUT_SEP_FRAC);
 

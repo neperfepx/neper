@@ -46,7 +46,6 @@ ParFacePoly (struct POLY *Poly, int PNb, int VNb, int PrevP, int *PFG)
   return;
 }
 
-
 /* We search the vertex in the found PrevP poly
  */
 int

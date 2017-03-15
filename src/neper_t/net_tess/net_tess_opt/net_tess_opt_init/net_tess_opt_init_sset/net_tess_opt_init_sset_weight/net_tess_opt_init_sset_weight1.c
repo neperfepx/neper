@@ -28,7 +28,7 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
     net_multiscale_arg_1d_fscanf (weightexpr, mid, rad + 1, TOpt.CellQty);
   }
 
-  // special case of tesr: sending to neut_tesr_expr_val 
+  // special case of tesr: sending to neut_tesr_expr_val
   else if (!strcmp (var, "tesr"))
     for (i = 1; i <= TOpt.CellQty; i++)
     {

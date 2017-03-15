@@ -15,7 +15,6 @@ extern "C"
 #ifndef NEUT_TESL_TESS_H
 #define NEUT_TESL_TESS_H
 
-
   extern void neut_tesl_tess (struct TESL, struct SEEDSET, int, int,
 			      struct TESS *);
 

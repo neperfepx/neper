@@ -58,7 +58,6 @@ extern "C"
 ///
   extern void neut_tess_init_cellbody (struct TESS *pTess);
 
-
 /// \brief Initialize the lengths of the edges of a TESS
 ///
 ///

@@ -14,7 +14,7 @@ extern "C"
 
 #ifndef UT_NLOPT_H
 #define UT_NLOPT_H
-  
+
 #include<nlopt.h>
   extern void ut_nlopt_algo (char* optialgo, nlopt_algorithm *palgo);
 

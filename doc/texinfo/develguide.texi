@@ -289,12 +289,12 @@ followed by @w{character @samp{_}}, it becomes
 handy to run tests on a specific module, for example:
 @com{ctest -R T_}
 
-@item 
+@item
 Option @option{-E} selects the tests that do not contain a character
 string:
 @com{ctest -E @var{string}}
 
-@item 
+@item
 Option @option{-I} selects the tests from their numbers, for example:
 @com{ctest -I 3,5}
 

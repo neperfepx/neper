@@ -150,7 +150,6 @@ neut_tdyn_fprintf_time (struct TDYN TDyn)
     }
     fprintf (TDyn.logtime_fp, "\n");
 
-
   ut_free_2d_char (vars,varqty);
 
   return;

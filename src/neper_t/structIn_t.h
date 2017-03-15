@@ -31,7 +31,7 @@ extern "C"
     char *morphooptialgoneighstring;    // opti algorithm
     char **morphooptialgoneigh;		//
     char *morphooptiobjectivestring;	// opti objective function
-    char **morphooptiobjective;		// 
+    char **morphooptiobjective;		//
     char *morphooptigridstring;		// grid definition
     char **morphooptigrid;		//
     char *morphooptismoothstring;	// smoothing parameter

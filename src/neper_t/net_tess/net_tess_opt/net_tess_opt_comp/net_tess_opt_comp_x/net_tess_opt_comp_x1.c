@@ -49,7 +49,6 @@ net_tess_opt_comp_x (struct TOPT *pTOpt, double **px)
     }
   }
 
-
   //  k = 0;
   //  for (i = 0; i < qty; i++)
   //  {

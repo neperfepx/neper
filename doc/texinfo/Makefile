@@ -3,7 +3,7 @@
 # See the COPYING file in the top-level directory.
 
 pdf:
-	texi2pdf neper.texi 
+	texi2pdf neper.texi
 	cp neper.pdf ..
 
 info:

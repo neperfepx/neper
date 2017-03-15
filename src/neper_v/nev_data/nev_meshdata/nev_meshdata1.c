@@ -106,7 +106,6 @@ nev_meshdata_init (struct MESH Mesh,
     nev_data_rad_radius ((*pMeshData).RadData, (*pMeshData).EltQty,
 			 (*pMeshData).Rad);
 
-
   return;
 }
 

@@ -498,7 +498,6 @@ nev_print_rectangle (FILE * file, double *coo, double *size,
   return;
 }
 
-
 void
 nev_print_tet (FILE * file, double *coo1, double *coo2, double *coo3,
 	       double *coo4, char *texture, char *edge_rad,

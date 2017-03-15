@@ -31,7 +31,7 @@ ut_math_eval (char* expr, int var_qty, char** vars, double* vals,
 
     (*pres) = p.Eval();
   }
-  
+
   catch (Parser::exception_type &e)
   {
     return -1;
@@ -47,7 +47,7 @@ ut_math_eval (char* expr, int var_qty, char** vars, double* vals,
   ut_print_message (2, 0, "Cannot process expression (muparser not available).\n");
   abort ();
 #endif
-  
+
   return 0;
 }
 

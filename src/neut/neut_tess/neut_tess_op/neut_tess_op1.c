@@ -1940,7 +1940,6 @@ neut_tess_cat (struct TESS *pTessA, struct TESS TessB)
   return;
 }
 
-
 void
 neut_tess_poly_tess (struct TESS Tess, int poly, struct TESS *pTess)
 {

@@ -1,4 +1,4 @@
-New in 3.0.3-15 (14 Mar 2017):
+New in 3.0.3-16 (15 Mar 2017):
 - module -T: added -n from_morpho to set the number of cells from
   -morpho graingrowth/gg/size/diameq/tesr; fixed -morphooptiini
   "coo:file()" in 2D, fixed -morpho centroidsize, improved -morpho
@@ -84,7 +84,7 @@ New in 2.0.2 (29 Sep 2014):
 New in 2.0.1 (12 Mar 2014):
 - Fixed up compilation on some systems, added support for libscotch
   version 6.0, small fixes and cleanups.
-- module -T: enabled square and cube tessellations in .tess format, 
+- module -T: enabled square and cube tessellations in .tess format,
   fixed up cell sorting, made option -id mandatory, improved
   regularization of 2D tessellations, added bunch of tessellation
   keys, small fixes.
@@ -201,7 +201,7 @@ Please cite it in your works if you use Neper.
   distribution for 2D and 3D meshings (versions >=2.4.2).  Strongly
   reduced memory usage.
 - module -O: added capability to handle different orientation
-  descriptors. 
+  descriptors.
 - module -VS: new visualization module to generate publication-quality
   images (PNG format) of the tessellations, meshes and more...
 

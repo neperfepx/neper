@@ -9,7 +9,6 @@ extern "C"
 
   extern void net_reg (struct IN_T In, struct TESS *pTess, struct REG *pReg);
 
-
 #ifdef __cplusplus
 }
 #endif

@@ -17,7 +17,7 @@ struct SOPT
   double  **CellSSeedWei; 	// weight of the subcells of a cell [cell][scell]
   double  *CellSCellOptiThr;  	// overlap. threshold C [0,1] used for sset optimization [cell]
   struct POINT SCellOptiPts; 	// list of (raster) points used for sset optimization
-  int SCellOptiCellId;       	// id of the cell of the sset which is currently optimized 
+  int SCellOptiCellId;       	// id of the cell of the sset which is currently optimized
 };
 typedef struct SOPT SOPT;
 

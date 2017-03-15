@@ -215,7 +215,6 @@ extern "C"
     // undefined if FacePt != 0
     double **FacePtCoo;
 
-
     // Domains of the faces [1...EdgeQty][0...1]
     // [i][0] = -1: not on domain
     // [i][0] =  2: on domain face

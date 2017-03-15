@@ -30,7 +30,7 @@ information.}.
 
 The following table gives an overview of the functions supported by the
 default implementation. It lists the function names, the number of
-arguments and a brief description. 
+arguments and a brief description.
 
 @multitable @columnfractions 0.18 0.83
 @headitem Name      @tab Description
@@ -64,7 +64,7 @@ arguments and a brief description.
 @subsection Binary Operators
 
 The following table lists the default binary operators supported by the
-parser. 
+parser.
 
 @multitable @columnfractions 0.18 0.47 0.36
 @headitem Operator      @tab Description    @tab Priority
@@ -394,10 +394,10 @@ Available keys for points are provided below.
 
 @multitable @columnfractions 0.18 0.47 0.14 0.14
   @headitem Key   @tab Descriptor                      @tab Apply to @tab Require
-  @item @code{id} @tab Identifier                      @tab point    @tab 
-  @item @code{x}  @tab x coordinate                    @tab point    @tab 
-  @item @code{y}  @tab y coordinate                    @tab point    @tab 
-  @item @code{z}  @tab z coordinate                    @tab point    @tab 
+  @item @code{id} @tab Identifier                      @tab point    @tab
+  @item @code{x}  @tab x coordinate                    @tab point    @tab
+  @item @code{y}  @tab y coordinate                    @tab point    @tab
+  @item @code{z}  @tab z coordinate                    @tab point    @tab
   @item @code{cell}  @tab cell                         @tab point    @tab tessellation
   @item @code{elt}    @tab containing element          @tab point    @tab mesh
   @item @code{elset}  @tab containing elset            @tab point    @tab mesh
@@ -458,8 +458,6 @@ Keys are available for ideal orientations:
   @item Copper2   @tab (-1, 1, 2)[1, -1, 1]
 @end ifinfo
 @end multitable
-
-
 
 @node Colours
 @section Colours

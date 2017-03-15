@@ -13,7 +13,6 @@ net_tess_opt_init_sset_post_per (int *periodic, struct TESS Tess, int poly,
   int *shift = NULL;
   double **bbox = NULL;
 
-
   if (Tess.Level > 0)
   {
     (*pSSet).Nall = (*pSSet).N;

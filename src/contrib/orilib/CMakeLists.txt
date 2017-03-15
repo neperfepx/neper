@@ -15,7 +15,6 @@ set (ORILIB_VERSION_DEVEL 2)
 option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
 option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)" OFF)
 
-
 # configure a header file to pass some of the CMake settings
 # to the source code
 configure_file (
@@ -26,7 +25,6 @@ configure_file (
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_BINARY_DIR}/contrib/ut")
 include_directories("${PROJECT_SOURCE_DIR}/contrib/ut")
-
 
 add_definitions(-Wall -W)
 if (DEVEL_OPTIMIZATION)
@@ -39,7 +37,7 @@ endif ()
 
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
-add_library (orilib 
+add_library (orilib
 ol_cal/ol_com.c
 ol_cal/ol_csys.c
 ol_cal/ol_dis.c
@@ -79,9 +77,6 @@ if (HAVE_GSL)
   include_directories (${GSL_INCLUDE_DIRS})
 endif ()
 
-
-
-
 target_link_libraries (orilib ${EXTRA_LIBS})
 
 # INCLUDE_DIRECTORIES(${EXTRA_LIBS})
@@ -96,4 +91,3 @@ set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ol_set.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ol_glo.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_BINARY_DIR}/ol_config.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/orilib.h)
-

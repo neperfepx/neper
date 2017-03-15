@@ -471,8 +471,6 @@ ol_m_theta (int *m, double *ptheta)
   return;
 }
 
-
-
 void
 ol_m_R (int *m, double *R)
 {

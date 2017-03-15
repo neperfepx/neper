@@ -1275,7 +1275,6 @@ ut_print_gplv3 (FILE* file)
   return;
 }
 
-
 void
 ut_error_reportbug ()
 {

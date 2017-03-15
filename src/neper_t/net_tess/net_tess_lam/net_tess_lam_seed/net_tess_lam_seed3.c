@@ -176,7 +176,7 @@ net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng *r, double *n,
 
   return 0;
 }
-  
+
 int
 net_tess_lam_seed_set_finalize (struct SEEDSET *pSSet)
 {

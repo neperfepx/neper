@@ -176,7 +176,6 @@ ol_q_q_disori_rad (double *q1, double *q2, char* crysym, double *ptheta)
   else
     abort ();
 
-
   (*ptheta) = 2 * ut_num_acos (maxrho);
 
   ol_q_free (qd);
@@ -923,7 +922,6 @@ ol_g_g_misori_orthotropic_rad (double **g1, double **g2, double *pdis)
 
   return 1;
 }
-
 
 int
 ol_g_g_gdisori_orthotropic (double **g1, double **g2, char* crysym, double **gdis)

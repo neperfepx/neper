@@ -152,7 +152,6 @@ FnLFacesDet (POLYMOD Polymod, int *BadVer, int *FnLFaces)
 	}
     }
 
-
   return;
 }
 

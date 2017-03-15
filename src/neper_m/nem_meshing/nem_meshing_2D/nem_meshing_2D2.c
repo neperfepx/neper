@@ -63,7 +63,6 @@ nem_meshing_2D_face (struct IN_M In, struct MESHPARA MeshPara,
       neut_mesh_reversenodes (&M);
   }
 
-
   if ((*pMultim).Oalgo[face] != -1)
     (*pMultim).algohit[(*pMultim).Oalgo[face]]++;
   else

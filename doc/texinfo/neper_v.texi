@@ -757,7 +757,7 @@ length@comma{} then the coordinates of the axis.
 For ellipsoidal shape@comma{} @code{@var{var}} must be @samp{ell} and
 the file must contain@comma{} for each point@comma{} the three radii
 then the coordinates of the three axes.
-The last capability is very specific: if the points are plotted in 
+The last capability is very specific: if the points are plotted in
 Rodrigues space@comma{} appending
 @samp{:rodrigues} to the option argument enables to account for space
 distortion.

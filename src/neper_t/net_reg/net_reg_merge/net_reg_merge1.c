@@ -172,7 +172,7 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
       ut_print_progress_nonl (stdout, 100 * lratio1, 100, string, prevstring);
     }
 
-    /* ForceMerge deletes the edges specified manually 
+    /* ForceMerge deletes the edges specified manually
      * net_reg_merge_forcemerge (pTess,Reg);
      */
 

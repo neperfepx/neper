@@ -176,7 +176,6 @@ neut_tess_domain_tess (struct TESS Tess, struct TESS *pDomTess)
   return;
 }
 
-
 void
 neut_tess_init_domain_label (struct TESS *pTess)
 {

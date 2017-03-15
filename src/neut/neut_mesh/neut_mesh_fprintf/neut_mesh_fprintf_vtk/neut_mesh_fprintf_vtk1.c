@@ -29,7 +29,6 @@ neut_meshheader_fprintf_vtk (FILE * file)
   return;
 }
 
-
 void
 neut_elts_fprintf_vtk (FILE * file, char *dim, struct NODES Nodes,
 		       struct MESH Mesh1D,

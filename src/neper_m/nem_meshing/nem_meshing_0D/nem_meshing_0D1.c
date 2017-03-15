@@ -46,7 +46,6 @@ nem_meshing_0D (struct TESS Tess, struct MESHPARA MeshPara, struct
 				   pNodes, Mesh);
       }
 
-
       ut_print_progress_nonl (stdout, i, Tess.VerQty, "%3.0f%%", message);
     }
   }

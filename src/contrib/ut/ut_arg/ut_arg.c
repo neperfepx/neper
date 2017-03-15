@@ -31,7 +31,6 @@ ut_arg_nextaslogical (char **argv, int *pi, char *option, int* pres)
   return;
 }
 
-
 void
 ut_arg_nextasreal (char **argv, int *pi, char *option,
 		   double min, double max, double* pres)
@@ -71,7 +70,6 @@ ut_arg_nextasstring (char **argv, int *pi, char *option, char** pstring)
 
   return;
 }
-
 
 void
 ut_arg_badarg (void)

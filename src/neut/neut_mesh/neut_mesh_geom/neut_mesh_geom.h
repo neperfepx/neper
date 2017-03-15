@@ -182,7 +182,6 @@ extern "C"
   extern int neut_mesh_eltlength (struct NODES Nodes, struct MESH Mesh,
 				  double *pavlength);
 
-
 /// \brief Get the min, average and max radius ratios of the elts of a mesh.
 ///
 /// This function works for 2D and 3D meshes.
@@ -282,7 +281,6 @@ extern "C"
 
   extern void neut_mesh_elt2dpair_angle (struct NODES Nodes, struct MESH
       Mesh, int elt1, int elt2, double *pangle);
-
 
 #endif				/* NEUT_MESH_GEOM_H */
 

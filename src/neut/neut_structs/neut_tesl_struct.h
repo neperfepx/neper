@@ -29,14 +29,8 @@ extern "C"
     int **VerEdge;		// VerEdge[i][j] (j=0...3) are the numbers of the
     // 4 parent edges.
 
-
     int **VerSeed;		// VerSeed[i][j] (j=0...3) are the numbers of the
     // 4 parent seeds.
-
-
-
-
-
 
     // EDGE INFORMATION --------------------------------------------------
 
@@ -47,15 +41,6 @@ extern "C"
     // two vertices.
 
     double *EdgeLength;		// EdgeLength[i] is the length.
-
-
-
-
-
-
-
-
-
 
     // FACE INFORMATION --------------------------------------------------
 
@@ -78,17 +63,6 @@ extern "C"
 
     int **FaceEdgeOri;		// FaceEdgeOri[i][j] (j=1...FaceVerQty[i]) are the
     // orientations of the edges.
-
-
-
-
-
-
-
-
-
-
-
 
     // POLYHEDRON INFORMATION --------------------------------------------
 

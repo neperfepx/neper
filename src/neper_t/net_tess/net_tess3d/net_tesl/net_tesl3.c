@@ -229,7 +229,7 @@ IniTessVerSeed (struct TESL *pTesl, struct POLY *Poly, int **TVNb)
 
   Treat = ut_alloc_1d_int ((*pTesl).VerQty + 1);
 
-  /* For every poly, for every ver, if the (tesl-eq) ver has not 
+  /* For every poly, for every ver, if the (tesl-eq) ver has not
    * been treated yet (known thanks to Treat temporary array), the
    * 4 parent seeds are recorded. The first one is positive, the
    * three others can be negative (poly initial faces).
@@ -255,7 +255,6 @@ IniTessVerSeed (struct TESL *pTesl, struct POLY *Poly, int **TVNb)
 
   return;
 }
-
 
 /* Recording of the vertex coordinates
  */
@@ -372,7 +371,7 @@ SearchEdge (struct TESL *pTesl, int FNb, int PrevF, int S1, int S2, int p)
   /* The positions of S1 & S2 into the previous face are recorded as
    * pos1 & pos2.
    * According to their values, the one to use to access the number of
-   * the edge based on S1 and S2 is used (i.e. recorded as nb). 
+   * the edge based on S1 and S2 is used (i.e. recorded as nb).
    */
   pos1 =
     1 + ut_array_1d_int_eltpos ((*pTesl).FaceVerNb[PrevF] + 1,
@@ -442,7 +441,6 @@ IniTessPolyEdge (struct TESL *pTesl)
 
   return;
 }
-
 
 /* IniPolyFaceOri returns 1 if face i of polyhedron poly
    has an outgoing normal, and -1 else. */

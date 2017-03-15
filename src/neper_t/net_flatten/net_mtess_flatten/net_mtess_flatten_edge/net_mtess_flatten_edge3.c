@@ -352,7 +352,6 @@ net_mtess_flatten_edge_domedge_addedges (struct TESS *pFTess, struct TESSE
   net_mtess_flatten_edge_domedge_linkedge ((*pFTess).EdgeQty, TessE, domtess,
 				     domedge, 1);
 
-
   for (i = 0; i < TessQty; i++)
   {
     tess = TessNb[i];

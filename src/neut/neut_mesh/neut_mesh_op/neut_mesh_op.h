@@ -123,7 +123,6 @@ extern "C"
 					     struct MESH Mesh,
 					     struct MESH *pTMesh);
 
-
 /// \brief Get a 3D prism mesh from a 2D tri mesh
 ///
 /// \author Loïc Renversade
@@ -143,7 +142,6 @@ extern "C"
   extern void neut_mesh_tri_tet (struct NODES *Nodes, struct MESH Mesh,
 				 struct MESH *pTMesh, double thickness);
 
-
 /// \brief Add an elt to a mesh.
 ///
 ///
@@ -156,7 +154,6 @@ extern "C"
 ///
   extern void neut_mesh_addelset (struct MESH *pMesh, int *ElsetElts, int
 				  EltQty);
-
 
 /// \brief Add an elt to an elset of a mesh.
 ///
@@ -239,7 +236,6 @@ extern "C"
   extern void neut_mesh_eltpair_split (struct NODES *pNodes,
 				       struct MESH *pMesh, int elt1,
 				       int elt2);
-
 
 #endif				/* NEUT_MESH_OP_H */
 

@@ -34,7 +34,6 @@ extern int net_tess_lam_seed_set (struct IN_T In, int level, struct MTESS MTess,
     int dtess, int dcell, struct TESS Dom, char *wtype, double *w, int
     wqty, char *vtype, double *v, int vqty, struct SEEDSET *SSet, struct SEEDSET *pSSet);
 
-
 extern int net_tess_lam_seed_set_init (struct SEEDSET *pSSet);
 
 extern int net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,

@@ -32,7 +32,6 @@ neut_mesh_free_1d (struct MESH *array, int size)
   return;
 }
 
-
 struct MESH
 neut_mesh_alloc (int Dimension, char *EltType, int EltOrder, int EltQty,
 		 int ElsetQty)
@@ -635,7 +634,6 @@ neut_mesh_quad_tri (struct NODES Nodes, struct MESH Mesh, struct MESH *pTMesh)
   return;
 }
 
-
 // Turn a quad mesh into a tri mesh by  element subdivision
 void
 neut_mesh_quad_tri_insertnode (struct NODES *pNodes, struct MESH Mesh,
@@ -1161,7 +1159,6 @@ neut_mesh_elset_addelt (struct MESH *pMesh, int elset_nb, int elt)
 
   return;
 }
-
 
 void
 neut_mesh_elt_reversenodes (struct MESH *pMesh, int eltnb)

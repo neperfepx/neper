@@ -150,7 +150,6 @@ net_mtess_flatten_face_domface_body_tessfaces (struct MTESS MTess,
     tessface[i][1] = MTess.DomTessFaceNb[TessId][dface][i];
   }
 
-
   return;
 }
 

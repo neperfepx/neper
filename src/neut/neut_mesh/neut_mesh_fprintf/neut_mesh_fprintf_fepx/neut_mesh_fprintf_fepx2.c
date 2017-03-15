@@ -219,7 +219,6 @@ neut_mesh_fprintf_fepx_elsets (FILE * file, struct MESH Mesh3D, char *version)
   return;
 }
 
-
 void
 neut_mesh_fprintf_fepx_nsets (FILE * file, struct NSET NSet0D,
 			      struct NSET NSet1D, struct NSET NSet2D,

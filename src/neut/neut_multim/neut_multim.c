@@ -82,7 +82,7 @@ neut_multim_init (int dim, char *list, int cellqty, struct MULTIM *pMultim)
   }
   ut_free_2d_char (ind_algo, (*pMultim).algoqty);
 
-  // Alloc 
+  // Alloc
 
   (*pMultim).mOdis = ut_alloc_2d (cellqty + 1, (*pMultim).algoqty);
   (*pMultim).mOsize = ut_alloc_2d (cellqty + 1, (*pMultim).algoqty);

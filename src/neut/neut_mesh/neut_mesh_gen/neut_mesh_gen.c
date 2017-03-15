@@ -226,7 +226,6 @@ neut_mesh3d_elt_slice_quad (struct NODES Nodes, struct MESH Mesh, int elt,
   return 0;
 }
 
-
 int
 neut_mesh_elt_mesh (struct NODES Nodes, struct MESH Mesh, int elt,
 		    struct NODES *pENodes, struct MESH *pEMesh)
@@ -265,7 +264,6 @@ neut_mesh_elt_mesh (struct NODES Nodes, struct MESH Mesh, int elt,
 
   return 0;
 }
-
 
 void
 neut_mesh_elset_mesh (struct NODES Nodes, struct MESH Mesh,

@@ -36,7 +36,7 @@ net_tess_opt_init_sset_coo_cluster (int dim, gsl_rng *r2, int qty, double dist,
 void
 net_tess_opt_init_sset_coo_centre (struct TOPT *pTOpt, gsl_rng *r,
                                    char *var, int pos, char *cooexpr,
-				   struct POINT Point, 
+				   struct POINT Point,
 				   struct POINT Point2, int cell, double *centre)
 {
   int id, status, iter, iter_max = 1000;

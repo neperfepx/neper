@@ -224,7 +224,6 @@ neut_tess_face_masterseeds (struct TESS Tess, int face, int **pseed, int *pseedq
   return;
 }
 
-
 void
 neut_tess_ver_seeds_positive (struct TESS Tess, int ver, int **pseed,
 			      int *pseedqty)

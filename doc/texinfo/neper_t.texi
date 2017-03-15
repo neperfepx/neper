@@ -964,7 +964,7 @@ sphericities of the cells.
 @com{neper -T -n 100 -id 1 -morpho gg -statcell diameq:rel,sphericity}
 @item    Generate a tessellation of specified absolute grain size
 distribution (and determine the number of cells accordingly).
-@com{neper -T -n from_morpho -id 1 -morpho@*@ @ @ @ @ @ 
+@com{neper -T -n from_morpho -id 1 -morpho@*@ @ @ @ @ @
      "diameq:lognormal(0.1,0.03),sphericity:lognormal(0.145,0.03,1-x)"}
 @item    Generate a 2-scale Voronoi tessellation containing
 @iftex

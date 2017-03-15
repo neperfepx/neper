@@ -83,7 +83,6 @@ extern "C"
 				       struct MESH Mesh3D, int **pelset3d,
 				       int *pelset3dqty);
 
-
 /// \brief Get the 2D elts of a 3D elt.
 ///
 ///

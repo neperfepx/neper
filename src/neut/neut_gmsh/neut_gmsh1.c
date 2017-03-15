@@ -88,7 +88,6 @@ neut_gmsh_optialgo_nb (char *algo, int *pnb)
   return ((*pnb) == -2) ? -1 : 0;
 }
 
-
 int
 neut_gmsh_elt_nb (char *type, int dim, int order, int *pnb)
 {

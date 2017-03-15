@@ -749,7 +749,6 @@ neut_debug_tess_name (char *filename, struct TESS Tess)
   return;
 }
 
-
 void
 neut_debug_seedset (FILE * file, struct SEEDSET SSet)
 {
@@ -985,7 +984,6 @@ neut_debug_tessdata (FILE* file, struct TESSDATA TessData)
   else
     fprintf (file, "edgerad = NULL\n");
 
-
   if (TessData.edgecol != NULL)
   {
     fprintf (file, "edgecol =\n");
@@ -1042,7 +1040,6 @@ neut_debug_tessdata (FILE* file, struct TESSDATA TessData)
   }
   else
     fprintf (file, "verrad = NULL\n");
-
 
   if (TessData.vercol != NULL)
   {

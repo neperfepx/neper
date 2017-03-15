@@ -15,7 +15,6 @@ nem_smoothing_barypos (struct NODES Nodes,
   return;
 }
 
-
 void
 nem_smoothing_newcoo (double *coo, double *neighcoo, double A, double *newcoo)
 {

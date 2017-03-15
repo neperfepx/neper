@@ -30,7 +30,7 @@ if (DEVEL_PROFILING)
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
 endif ()
 
-add_library (neut 
+add_library (neut
 ./neut_tesl/neut_tesl.c
 ./neut_tesl/neut_tesl_tess/neut_tesl_tess3.c
 ./neut_tesl/neut_tesl_tess/neut_tesl_tess2.c

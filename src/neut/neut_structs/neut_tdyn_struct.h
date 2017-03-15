@@ -27,7 +27,7 @@ extern "C"
 
     int N;			// number of seeds
     int Nall;			// number of seeds (periodic)
-    
+
     double avdiameq;		// average cell diameter
 
     // REFERENCE STATE INFORMATION ---------------------------------------

@@ -65,7 +65,6 @@ neut_flatten_addver (struct FLATTEN *pFlatten, int *dom)
                                                  (*pFlatten).VerQty + 1);
   (*pFlatten).VerTessVerNb[(*pFlatten).VerQty] = NULL;
 
-
   (*pFlatten).VerDom[0] = NULL;
 
   return;
@@ -169,8 +168,8 @@ neut_flatten_init_domstuff_fromver (struct FLATTEN *pFlatten, struct
     else
       abort ();
 
-  // Computing DomEdgeTessVerQty / DomEdgeTessVerNb from 
-  // DomEdgeBTessVerQty / DomEdgeBTessVerNb and 
+  // Computing DomEdgeTessVerQty / DomEdgeTessVerNb from
+  // DomEdgeBTessVerQty / DomEdgeBTessVerNb and
   // DomVerTessVerQty / DomVerTessVerNb.
 
   (*pFlatten).DomEdgeTessVerQty = ut_alloc_1d_int ((*pFlatten).DEdgeQty + 1);
@@ -201,9 +200,9 @@ neut_flatten_init_domstuff_fromver (struct FLATTEN *pFlatten, struct
     }
   }
 
-  // Computing DomFaceTessVerQty / DomFaceTessVerNb from 
+  // Computing DomFaceTessVerQty / DomFaceTessVerNb from
   // DomFaceBTessVerQty / DomFaceBTessVerNb,
-  // DomEdgeBTessVerQty / DomEdgeBTessVerNb and 
+  // DomEdgeBTessVerQty / DomEdgeBTessVerNb and
   // DomVerTessVerQty / DomVerTessVerNb.
   (*pFlatten).DomFaceTessVerQty = ut_alloc_1d_int ((*pFlatten).DFaceQty + 1);
   (*pFlatten).DomFaceTessVerNb = ut_alloc_1d_pint ((*pFlatten).DFaceQty + 1);
@@ -320,8 +319,8 @@ neut_flatten_init_domstuff_fromedge (struct FLATTEN *pFlatten, struct
     else
       abort ();
 
-  // Computing DomFaceTessEdgeQty / DomFaceTessEdgeNb from 
-  // DomFaceBTessEdgeQty / DomFaceBTessEdgeNb and 
+  // Computing DomFaceTessEdgeQty / DomFaceTessEdgeNb from
+  // DomFaceBTessEdgeQty / DomFaceBTessEdgeNb and
   // DomEdgeTessEdgeQty / DomEdgeTessEdgeNb.
 
   (*pFlatten).DomFaceTessEdgeQty = ut_alloc_1d_int ((*pFlatten).DFaceQty + 1);
@@ -430,7 +429,6 @@ neut_flatten_free (struct FLATTEN *pFlatten)
   ut_free_2d_int ((*pFlatten).DomFaceTessFaceNb, (*pFlatten).DFaceQty + 1);
   ut_free_1d_int ((*pFlatten).DomPolyBTessFaceQty);
   ut_free_2d_int ((*pFlatten).DomPolyBTessFaceNb, (*pFlatten).DPolyQty + 1);
-
 
   for (i = 1; i <= (*pFlatten).VerQty; i++)
     ut_free_2d_int ((*pFlatten).VerTessVerNb[i], (*pFlatten).VerTessVerQty[i]);

@@ -195,7 +195,6 @@ SearchDelNNewVer (struct TESS *pTess, int edge, int *pdelver, int *pnewver)
   return;
 }
 
-
 int
 UpdateVerCoo (struct TESS *pTess, int delver, int newver, int verbosity)
 {

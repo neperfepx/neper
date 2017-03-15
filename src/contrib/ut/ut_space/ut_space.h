@@ -79,7 +79,6 @@ extern int ut_space_contour_intersect (double**, int);
 
 extern int ut_space_points_uvect (double*, double*, double*);
 
-
 extern void ut_space_string_vect (char*, double*);
 extern void ut_space_string_plane (char*, double*);
 
@@ -138,7 +137,6 @@ extern void ut_space_size_diameq (int dim, double size, double *pdiameq);
 
 extern void ut_space_random (gsl_rng *r, int *dims, int dimqty, double mindist,
 			     double maxdist, double *v);
-
 
 #endif /* UT_SPACE_H */
 

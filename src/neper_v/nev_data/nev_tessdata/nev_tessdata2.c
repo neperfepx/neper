@@ -3,7 +3,7 @@
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_tessdata_.h"
-  
+
 void
 nev_tessdata_fscanf_init (struct TESS Tess,
 			  char *entity_in, char *prop, char *argument,

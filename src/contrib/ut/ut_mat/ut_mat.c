@@ -52,7 +52,6 @@ ut_mat_product_33 (double **a, double **b, double **c)
   return 0;
 }
 
-
 int
 ut_mat_vect_product (double **a, int a1, int a2, double *b, int b1, double *c)
 {

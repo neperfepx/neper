@@ -23,8 +23,6 @@ extern "C"
 
 #include"net_tess_opt_comp_objective_fval_comp_stat.h"
 
-
-
 extern void net_tess_opt_comp_objective_fval_comp_stat_evaluate (struct TOPT
 						  *pTOpt, int var);
 extern void net_tess_opt_comp_objective_fval_comp_stat_evaluate_chi2 (struct TOPT

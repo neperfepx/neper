@@ -1287,7 +1287,6 @@ neut_mesh_elsets_nodes (struct MESH Mesh, int *elsets,
   return;
 }
 
-
 int
 neut_mesh_elt2d_elts3d (struct MESH Mesh2D, int elt2d, struct MESH Mesh3D,
 			int **pelt3d, int *pelt3dqty)

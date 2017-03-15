@@ -160,7 +160,7 @@ from the source code speeds up meshing significantly).  Gmsh must be
 available at the terminal as the command @command{gmsh}, or the path to
 its binary must be specified with option @option{-gmsh} (in @mM{}).
 
-@item the POV-Ray program (mandatory for module -V). 
+@item the POV-Ray program (mandatory for module -V).
 It is likely to be available on your system or from your system package
 manager (binary package); alternatively, a binary, or the source code,
 can be downloaded from @url{http://www.povray.org}.  POV-Ray must be

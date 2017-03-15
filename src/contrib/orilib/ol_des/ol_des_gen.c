@@ -8,7 +8,7 @@ ol_des_size (char* des)
 {
   if (! strcmp (des, "g"))
     return 9;
-  else if (! strcmp (des, "e")  || ! strcmp (des, "eb") 
+  else if (! strcmp (des, "e")  || ! strcmp (des, "eb")
 	|| ! strcmp (des, "er") || ! strcmp (des, "ek"))
     return 3;
   else if (! strcmp (des, "m"))
