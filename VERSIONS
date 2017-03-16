@@ -1,4 +1,4 @@
-New in 3.0.3-16 (15 Mar 2017):
+New in 3.0.3-17 (16 Mar 2017):
 - module -T: added -n from_morpho to set the number of cells from
   -morpho graingrowth/gg/size/diameq/tesr; fixed -morphooptiini
   "coo:file()" in 2D, fixed -morpho centroidsize, improved -morpho

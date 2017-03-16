@@ -321,32 +321,23 @@ ut_string_addextension (const char *in, const char *ext, ...)
 void
 ut_string_body (char *in, char* stops, char **pbody)
 {
-  int i, j, NoCin, NoCbody, DashPos = -1;
-  char* res = ut_alloc_1d_char (strlen (in) + 1);
+  int i, pos;
+  char *in2 = NULL;
+  ut_string_string (in, &in2);
 
-  NoCin = strlen (in);
-
-  for (i = NoCin - 1; i >= 0; i--)
-    for (j = 0; j < (int) strlen (stops); j++)
-    if (in[i] == stops[j])
+  pos = strlen (in2);
+  for (i = strlen (in2) - strlen (stops); i >= 0; i--)
+    if (!strncmp (in2 + i, stops, strlen (stops)))
     {
-      DashPos = i;
+      pos = i;
       break;
     }
 
-  if (DashPos == -1)
-    NoCbody = NoCin;
-  else
-    NoCbody = DashPos;
+  (*pbody) = ut_realloc_1d_char (*pbody, pos + 1);
+  strncpy (*pbody, in2, pos);
+  (*pbody)[pos] = '\0';
 
-  for (i = 0; i < NoCbody; i++)
-    res[i] = in[i];
-  res[NoCbody] = '\0';
-
-  (*pbody) = ut_realloc_1d_char (*pbody, strlen (res) + 1);
-  strcpy (*pbody, res);
-
-  ut_free_1d_char (res);
+  ut_free_1d_char (in2);
 
   return;
 }
