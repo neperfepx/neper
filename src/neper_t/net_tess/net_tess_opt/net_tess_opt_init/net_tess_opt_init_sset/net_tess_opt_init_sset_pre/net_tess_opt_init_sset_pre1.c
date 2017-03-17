@@ -40,6 +40,8 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level,
 			    char **pcooexpr, struct TOPT *pTOpt)
 {
   int i, qty;
+  char **tmp = NULL;
+  ut_string_separate (In.morphooptiini[level], NEUT_SEP_NODEP, &tmp, &qty);
 
   (*ppos) = -1;
   ut_string_string ("none", pvar);
@@ -58,7 +60,7 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level,
     }
   }
 
-  if (!strcmp (In.morphooptiini[level], "default"))
+  if (!strcmp (In.morphooptiini[level], "default") || qty != 2)
   {
     if ((*pTOpt).tarqty == 0)
     {
@@ -95,21 +97,18 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level,
     }
   }
 
-  else
+  if (strcmp (In.morphooptiini[level], "default"))
   {
-    char **tmp = NULL;
-    ut_string_separate (In.morphooptiini[level], NEUT_SEP_NODEP, &tmp, &qty);
-    if (qty != 2)
-      abort ();
-    for (i = 0; i < 2; i++)
+    for (i = 0; i < qty; i++)
       if (!strncmp (tmp[i], "coo:", 4))
 	ut_string_string (tmp[i] + 4, pcooexpr);
       else if (!strncmp (tmp[i], "weight:", 7))
 	ut_string_string (tmp[i] + 7, pweightexpr);
       else
 	abort ();
-    ut_free_2d_char (tmp, qty);
   }
+
+  ut_free_2d_char (tmp, qty);
 
   return;
 }

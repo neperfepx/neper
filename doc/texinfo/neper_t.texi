@@ -331,7 +331,7 @@ To specify several properties@comma{} combine them @w{with @samp{@SEPNODEP}}
 any, voronoi}
 
 @opt{-morphooptiini, coo:coo_char_string@comma{}weight:weight_char_string,
-Specify the initial positions and weights of the
+Specify the initial positions and/or weights of the
 seeds. Different arguments are available@comma{} depending on the value
 of option @option{-morpho}. @*
 @samp{@var{weight_char_string}} can be a real value@comma{} any
