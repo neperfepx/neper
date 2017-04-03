@@ -347,6 +347,15 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
 	else
 	  abort ();
 
+	if ((*pTOpt).CellQty == -1)
+	{
+	  if (ut_string_filename ((*pTOpt).tarexpr[i]))
+	    (*pTOpt).CellQty = ut_file_nbwords ((*pTOpt).tarexpr[i])
+				/ (*pTOpt).tarcellvalqty[i];
+	  else
+	    abort ();
+	}
+
 	(*pTOpt).tarcellval[i] = ut_alloc_2d ((*pTOpt).CellQty + 1,
 					      (*pTOpt).tarcellvalqty[i]);
 

@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.0.3-19-fix_n_frommorpho\")
+set (NEPER_VERSION \"3.0.3-20\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
