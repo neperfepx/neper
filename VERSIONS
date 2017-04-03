@@ -1,4 +1,4 @@
-New in 3.0.3-18 (17 Mar 2017):
+New in 3.0.3-19-fix_n_frommorpho (03 Apr 2017):
 - module -T: added -n from_morpho to set the number of cells from -morpho
   graingrowth/gg/size/diameq/tesr; fixed -morphooptiini, fixed -morpho
   centroidsize, improved -morpho centroiddiameq and tesr, improved -morpho tesr

@@ -339,8 +339,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
 	  else
 	    (*pTOpt).tarcellvalqty[i] = 2;
 	}
-	else if (!strcmp ((*pTOpt).tarvar[i], "centroid")
-		 || !strcmp ((*pTOpt).tarvar[i], "tesr"))
+	else if (!strcmp ((*pTOpt).tarvar[i], "centroid"))
 	  (*pTOpt).tarcellvalqty[i] = (*pTOpt).Dim;
 	else if (!strcmp ((*pTOpt).tarvar[i], "centroidsize")
 		 || !strcmp ((*pTOpt).tarvar[i], "centroiddiameq"))
