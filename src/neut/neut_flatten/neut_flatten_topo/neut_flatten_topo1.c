@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Ctopoyright (C) 2003-2016, Romain Quey. */
+/* Ctopoyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the ttopo-level directory. */
 
 #include "neut_flatten_topo_.h"
