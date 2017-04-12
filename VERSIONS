@@ -1,8 +1,8 @@
-New in 3.0.3-20 (03 Apr 2017):
+New in 3.0.3-23 (12 Apr 2017):
 - module -T: added -n from_morpho to set the number of cells from all
   -morpho inputs; fixed -morphooptiini, fixed -morpho centroidsize,
   improved -morpho centroiddiameq and tesr, improved -morpho tesr for
-  elongated cells.
+  elongated cells, added -format stl.
 - module -M: allowed -interface cohesive -periodic in 2D, improved
   -format geof, minor fixes.
 - documentation: minor fixes.

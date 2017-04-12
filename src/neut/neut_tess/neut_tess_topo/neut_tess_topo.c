@@ -1695,7 +1695,13 @@ neut_tess_face_interpolmesh (struct TESS Tess, int face, struct NODES *pN,
 
   if (Tess.FacePt[face] == 0)
   {
-    neut_nodes_addnode (pN, Tess.FacePtCoo[face], 1);
+    if (Tess.FaceState[face] == 1)
+      neut_nodes_addnode (pN, Tess.FacePtCoo[face], 1);
+    else
+    {
+      neut_tess_face_centre (Tess, face, p0);
+      neut_nodes_addnode (pN, p0, 1);
+    }
     ver0 = verqty + 1;
   }
   else if (Tess.FacePt[face] > 0)

@@ -708,6 +708,7 @@ For scalar tessellations@comma{} the available formats are
 the Neper @code{@samp{tess}}@comma{}
 the Gmsh @code{@samp{geo}}@comma{}
 the Ply @code{@samp{ply}}@comma{}
+the STL @code{@samp{stl}}@comma{}
 the Wavefront @code{@samp{obj}}@comma{}
 the 3dec @code{@samp{3dec}}
 and the Surface Evolver @code{@samp{fe}}.
@@ -718,7 +719,7 @@ Orientations for the cells can be obtained using @code{@samp{ori}} (see
 also options starting by @code{@samp{-ori}}).
 Combine the values @w{with @samp{@SEPNODEP}}.
 ,
-tess@comma{} geo@comma{} ply@comma{} obj@comma{} 3dec@comma{} fe@comma{}
+tess@comma{} geo@comma{} ply@comma{} stl@comma{} obj@comma{} 3dec@comma{} fe@comma{}
 tesr@comma{} vtk@comma{} ori, tess}
 
 @opt{-tesrformat, char_string,
@@ -872,6 +873,11 @@ Gmsh for visualization.
 
 It contains a description of the tessellation written under the
 standard ``Polygon File Format'' @file{.ply}.
+
+@item STL file: @file{.stl}
+
+It contains a description of the tessellation written under the
+STL (STereoLithography) format @file{.stl}.
 
 @item Wavefront geometry file: @file{.obj}
 

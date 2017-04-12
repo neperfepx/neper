@@ -84,6 +84,7 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).geo = NULL;
   (*pIn).mgeo = NULL;
   (*pIn).ply = NULL;
+  (*pIn).stl = NULL;
   (*pIn).stc = NULL;
   (*pIn).stv = NULL;
   (*pIn).ste = NULL;
@@ -126,6 +127,7 @@ net_in_free (struct IN_T *pIn)
   ut_free_1d_char ((*pIn).geo);
   ut_free_1d_char ((*pIn).mgeo);
   ut_free_1d_char ((*pIn).ply);
+  ut_free_1d_char ((*pIn).stl);
   ut_free_1d_char ((*pIn).stc);
   ut_free_1d_char ((*pIn).stv);
   ut_free_1d_char ((*pIn).ste);
