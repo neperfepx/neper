@@ -583,7 +583,8 @@ ut_string_function_separate (char *string, char** pfct,
 
   ut_string_separate2 (string2, ",", "=", &parts, &qty1, pqty);
 
-  (*pvars) = ut_alloc_1d_pchar (*pqty);
+  if (pvars)
+    (*pvars) = ut_alloc_1d_pchar (*pqty);
   if (pvals)
     (*pvals) = ut_alloc_1d_pchar (*pqty);
 
@@ -591,14 +592,19 @@ ut_string_function_separate (char *string, char** pfct,
   {
     if (qty1[i] == 2)
     {
-      if (!pvals)
+      if (!pvars || !pvals)
 	abort ();
 
       ut_string_string (parts[i][0], (*pvars) + i);
       ut_string_string (parts[i][1], (*pvals) + i);
     }
     else if (qty1[i] == 1)
-      ut_string_string (parts[i][0], (*pvars) + i);
+    {
+      if (!pvals || !pvals)
+	abort ();
+
+      ut_string_string (parts[i][0], (*pvals) + i);
+    }
     else
       abort ();
   }

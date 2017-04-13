@@ -272,6 +272,7 @@ ut_space_planeside_2d (double *P, double *C)
     return 1;
 }
 
+
 /* ut_space_trianglearea area returns the area of the triangle
  * whose vertex coordinates are specified as input data:
  * vertex i: coo[i][1,2,3] (i=1,2,3)
@@ -2471,6 +2472,7 @@ ut_space_polypts_point_dist_dosimplex (double **vercoo,
     ut_free_1d_int (samedir);
   }
 
+
   else
   {
     fprintf (fp, "ut_space_polypts_point_dist_dosimplex run with *pqty = %d\n",
@@ -2610,6 +2612,9 @@ ut_space_random (gsl_rng *r, int *dims, int dimqty, double mindist,
 {
   int i, size;
   double norm;
+
+  if (dimqty == 0)
+    return;
 
   size = 1 + ut_array_1d_int_max (dims, dimqty);
 

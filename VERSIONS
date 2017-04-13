@@ -1,8 +1,8 @@
-New in 3.0.3-18 (17 Mar 2017):
+New in 3.0.3-19-fix_morphooptialgo_random (13 Apr 2017):
 - module -T: added -n from_morpho to set the number of cells from -morpho
   graingrowth/gg/size/diameq/tesr; fixed -morphooptiini, fixed -morpho
   centroidsize, improved -morpho centroiddiameq and tesr, improved -morpho tesr
-  for elongated cells.
+  for elongated cells, improved -morphooptialgo random.
 - module -M: allowed -interface cohesive -periodic in 2D, improved
   -format geof, minor fixes.
 - documentation: minor fixes.

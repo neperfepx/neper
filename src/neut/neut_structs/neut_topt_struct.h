@@ -90,6 +90,8 @@ struct TOPT
   int *x_seed;     		// seed to which the variable is related
   int *x_var;     		// variable to which the variable is related
                                 // 0: x, 1: y, 2: z, 3: w
+  int **seedvar_x;     		// x to which the variable is related
+  				// [1...CellQty][0..dim]
   double **x_pvar; 		// pointer to associated variables in
 				// SSet (SeedCoo0 or SeedWeight)
 

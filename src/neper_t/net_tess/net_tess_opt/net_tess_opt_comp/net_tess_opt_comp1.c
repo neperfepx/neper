@@ -24,7 +24,7 @@ net_tess_opt_comp (struct TOPT *pTOpt)
 
   if ((*pTOpt).tarqty == 0)
     res = net_tess_opt_comp_once (x, pTOpt);
-  else if (!strcmp ((*pTOpt).algoname, "random"))
+  else if (!strncmp ((*pTOpt).algoname, "random", 5))
     res = net_tess_opt_comp_rand (x, pTOpt);
   else if (!strncmp ((*pTOpt).algoname, "lloyd", 5))
     res = net_tess_opt_comp_lloyd (x, pTOpt);
