@@ -462,10 +462,18 @@ In the case of @option{-morpho centroidal}@comma{} another available
 value is @samp{lloyd} (Lloyd's algorithm); to specify the seed displacement
 factor (from the seed to the centroid)@comma{} use
 @samp{lloyd(@var{factor})} (the default value is 2).
-Another available value is @samp{random}@comma{} for which
-seeds are moved randomly by the distance specified using
-@option{-morphooptiinistep} (use only if you really know what you are
-doing).
+Another available value (to use only if you really know what you are doing) is
+@samp{random(@var{seednb}@comma{}@var{dimnb}@comma{}@var{min}@comma{}@var{max}@comma{}@var{id})}@comma{}
+for which@comma{} at each odd iteration@comma{} each of @samp{@var{seednb}}
+seeds sees @samp{@var{dimnb}} of its attributes (among those specified by option
+@option{-morphooptidof}) being randomly perturbed@comma{} the norm of the total perturbation vector ranging from @samp{@var{min}}--@samp{@var{max}}; @samp{@var{id}} is the identifier of the distribution (similarly to option @option{-id}); variables can be 
+any mathematical expression based on
+@samp{@var{seednb}} (the total number of seeds)@comma{}
+@samp{@var{dim}} (the tessellation dimension)@comma{}
+@samp{@var{avdiameq}} (the average equivalent cell diameter) and
+@samp{@var{inistep}} (the value of @option{-morphooptiinistep}); at each next
+(even) iteration@comma{} the attributes of the seeds are reverted to their
+original values.
 ,
 any, subplex (lloyd for @option{-morpho centroidal})}
 

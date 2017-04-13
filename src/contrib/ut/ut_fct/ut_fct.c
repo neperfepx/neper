@@ -342,18 +342,18 @@ ut_fct_set (char *string, struct FCT *pFct)
 {
   int status;
   char *fct = NULL;
-  char **vars = NULL, **vals = NULL;
+  char **vals = NULL;
   int varqty;
   double mean, sig;
   char *expr = NULL;
 
-  ut_string_function_separate (string, &fct, &vars, &vals, &varqty);
+  ut_string_function_separate (string, &fct, NULL, &vals, &varqty);
   if (varqty >= 1)
-    sscanf (vars[0], "%lf", &mean);
+    sscanf (vals[0], "%lf", &mean);
   if (varqty >= 2)
-    sscanf (vars[1], "%lf", &sig);
+    sscanf (vals[1], "%lf", &sig);
   if (varqty >= 3)
-    ut_string_string (vars[2], &expr);
+    ut_string_string (vals[2], &expr);
 
   status = 0;
   if (!strcmp (fct, "dirac"))
@@ -369,7 +369,6 @@ ut_fct_set (char *string, struct FCT *pFct)
   }
 
   ut_free_1d_char (fct);
-  ut_free_2d_char (vars, varqty);
   ut_free_2d_char (vals, varqty);
   ut_free_1d_char (expr);
 

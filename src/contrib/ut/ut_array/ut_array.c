@@ -8,6 +8,10 @@
 #include<math.h>
 #include<assert.h>
 #include"ut.h"
+#ifdef HAVE_GSL
+#include<gsl/gsl_rng.h>
+#include<gsl/gsl_randist.h>
+#endif // HAVE_GSL
 
 int ut_array_1d_int_sort_comp (const void *, const void *);
 int ut_array_1d_pchar_sort_comp (const void *, const void *);
@@ -314,6 +318,7 @@ ut_array_1d_float_fprintf (FILE * file, float *a, int size, const char *format)
 {
   int i, res;
 
+
   for (i = 0; i < size - 1; i++)
   {
     fprintf (file, format, a[i]);
@@ -470,6 +475,7 @@ ut_array_1d_int_fscanfn_wcard (char *filename, int *a, int d1, char *wcard)
   return 0;
 }
 
+
 int
 ut_array_1d_int_fprintf (FILE * file, int *a, int size, const char *format)
 {
@@ -596,6 +602,8 @@ ut_array_2d_fprintf_oneline (FILE * fileid, double **array,
 
   return res;
 }
+
+
 
 int
 ut_array_2d_fprintf_col (FILE * file, double **a, int size1, int size2,
@@ -2499,6 +2507,7 @@ ut_array_1d_permutation (double *array, int qty, int *permutation)
   int i;
   double *tmp = ut_alloc_1d (qty);
 
+
   for (i = 0; i < qty; i++)
     tmp[i] = array[i];
 
@@ -2515,6 +2524,7 @@ ut_array_1d_permutation_int (int *array, int qty, int *permutation)
 {
   int i;
   int *tmp = ut_alloc_1d_int (qty);
+
 
   for (i = 0; i < qty; i++)
     tmp[i] = array[i];
@@ -2961,6 +2971,7 @@ ut_array_1d_int_sort_uniq (int *array, int oldsize, int *psize)
   return;
 }
 
+
 void
 ut_array_1d_sub (double *data1, double *data2, int size, double *data)
 {
@@ -3140,6 +3151,7 @@ ut_array_2d_zero_be (double **array, int begX, int endX, int begY, int endY)
 
   return;
 }
+
 
 int
 ut_array_1d_int_nbofthisval (int *array, int size, int val)
@@ -4190,3 +4202,38 @@ ut_array_1d_eltpos (double *array, int size, double val)
 
   return minid;
 }
+
+#ifdef HAVE_GSL
+void
+ut_array_1d_set_random (double *data, int n, double min, double max, gsl_rng *r)
+{
+  int i;
+
+  for (i = 0; i < n; i++)
+    data[i] = min + (max - min) * gsl_rng_uniform (r);
+
+  return;
+}
+#endif // HAVE_GSL
+
+
+#ifdef HAVE_GSL
+void
+ut_array_1d_int_randvals (int *data, int n, int *vals, int valqty, gsl_rng *r)
+{
+  int i;
+  double *tmp = ut_alloc_1d (n);
+  int *ids = ut_alloc_1d_int (n);
+
+  ut_array_1d_set_random (tmp, n, 0, 1, r);
+  ut_array_1d_sort_index (tmp, n, ids);
+
+  for (i = 0; i < valqty; i++)
+    vals[i] = data[ids[i]];
+
+  ut_free_1d (tmp);
+  ut_free_1d_int (ids);
+
+  return;
+}
+#endif // HAVE_GSL

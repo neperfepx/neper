@@ -59,7 +59,7 @@ net_tess_opt_init_parms_algo (char *optialgo, struct TOPT *pTOpt)
     (*pTOpt).algo = NLOPT_LN_NEWUOA_BOUND;
   else if (!strcmp (optialgo, "praxis"))
     (*pTOpt).algo = NLOPT_LN_PRAXIS;
-  else if (!strcmp (optialgo, "random"))
+  else if (!strncmp (optialgo, "random", 5))
     (*pTOpt).algo = NLOPT_LN_PRAXIS;
   else if (!strncmp (optialgo, "lloyd", 5))
     (*pTOpt).algo = NLOPT_LN_PRAXIS;

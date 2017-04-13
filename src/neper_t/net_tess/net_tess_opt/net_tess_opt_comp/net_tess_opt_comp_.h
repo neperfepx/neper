@@ -7,6 +7,8 @@
 #include<string.h>
 #include<limits.h>
 #include<time.h>
+#include<gsl/gsl_rng.h>
+#include<gsl/gsl_randist.h>
 
 #include"ut.h"
 #include"neut_t.h"
@@ -24,3 +26,15 @@ extern int net_tess_opt_comp_once (double *x, struct TOPT *pTOpt);
 extern int net_tess_opt_comp_rand (double *x, struct TOPT *pTOpt);
 extern int net_tess_opt_comp_lloyd (double *x, struct TOPT *pTOpt);
 extern int net_tess_opt_comp_nlopt (double *x, struct TOPT *pTOpt);
+
+extern void net_tess_opt_comp_rand_init (struct TOPT *pTOpt);
+extern void net_tess_opt_comp_rand_read (struct TOPT TOpt, int *pseedqty, int
+  *pdimqty, double *pmin, double *pmax, int *pid, int **palldims, int
+  *palldimqty);
+
+extern void net_tess_opt_comp_rand_shift (double *x, struct TOPT *pTOpt, int
+    seedqty, int dimqty, double min, double max, int *alldims, int
+    alldimqty, gsl_rng *r);
+
+extern void net_tess_opt_comp_rand_revert (double *x, struct TOPT TOpt,
+					   double *x_cpy);

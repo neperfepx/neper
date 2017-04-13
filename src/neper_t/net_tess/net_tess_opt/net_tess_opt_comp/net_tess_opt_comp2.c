@@ -3,9 +3,6 @@
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_.h"
-#include<unistd.h>
-#include<gsl/gsl_rng.h>
-#include<gsl/gsl_randist.h>
 
 #ifdef HAVE_NLOPT
 int
@@ -43,45 +40,34 @@ net_tess_opt_comp_once (double *x, struct TOPT *pTOpt)
 int
 net_tess_opt_comp_rand (double *x, struct TOPT *pTOpt)
 {
-  int var = 0, sgn, prevvar = 0;
-  double prevx = 0;
-
+  int id, seedqty, alldimqty, dimqty, *alldims = NULL;
+  double min, max, *x_cpy = ut_alloc_1d ((*pTOpt).xqty);
   gsl_rng *r = gsl_rng_alloc (gsl_rng_ranlxd2);
-  gsl_rng_set (r, 1);
 
-  if ((*pTOpt).itermax <= 0)
-  {
-    (*pTOpt).itermax = INT_MAX;
-    ut_print_clearline (stdout, 72);
-    ut_print_message (1, 4, "`itermax' was not set: optimization will never stop.\n");
-    ut_print_lineheader (0);
-    printf ("    >  ");
-  }
+  net_tess_opt_comp_rand_init (pTOpt);
+
+  net_tess_opt_comp_rand_read (*pTOpt, &seedqty, &dimqty, &min, &max, &id,
+			       &alldims, &alldimqty);
+
+  gsl_rng_set (r, id);
 
   do
   {
     net_tess_opt_comp_objective (0, x, NULL, pTOpt);
 
-    if ((*pTOpt).iter % 2 == 1)
+    if ((*pTOpt).iter % 2)
     {
-      var = (*pTOpt).xqty * gsl_rng_uniform (r);
-      sgn = ut_num_sgn (gsl_rng_uniform (r) - 0.5);
-
-      prevvar = var;
-      prevx = x[var];
-
-      x[var] += sgn * (*pTOpt).inistep;
-      x[var] = ut_num_max (x[var], (*pTOpt).boundl[var]);
-      x[var] = ut_num_min (x[var], (*pTOpt).boundu[var]);
+      ut_array_1d_memcpy (x_cpy, (*pTOpt).xqty, x);
+      net_tess_opt_comp_rand_shift (x, pTOpt, seedqty, dimqty, min, max,
+	                            alldims, alldimqty, r);
     }
     else
-    {
-      var = prevvar;
-      x[var] = prevx;
-    }
+      net_tess_opt_comp_rand_revert (x, *pTOpt, x_cpy);
   }
   while ((*pTOpt).iter <= (*pTOpt).itermax);
 
+  ut_free_1d_int (alldims);
+  ut_free_1d (x_cpy);
   gsl_rng_free (r);
 
   return 0;
