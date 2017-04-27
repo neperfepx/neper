@@ -107,11 +107,10 @@ net_tess_opt_comp_objective_fval_comp_celldata (struct TOPT *pTOpt, int id)
 	val2 = 1000 * (*pTOpt).curcellpenalty[i];
       }
 
-      curval +=
-	(pow (val, 2) + pow (val2, 2)) / pow ((*pTOpt).tarrefval[id], 2);
+      curval += pow (val, 2) + 0.25 * pow (val2, 2);
     }
-    curval = sqrt (curval / (*pTOpt).CellQty);
-    curval /= (*pTOpt).Dim;
+    neut_tess_cellavdiameq ((*pTOpt).Dom, (*pTOpt).CellQty, &avdiameq);
+    curval = sqrt (curval) / avdiameq;
   }
 
   else if (!strncmp ((*pTOpt).tarvar[id], "tesr", 4))
