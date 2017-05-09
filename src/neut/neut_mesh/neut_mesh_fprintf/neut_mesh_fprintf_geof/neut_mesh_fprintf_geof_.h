@@ -31,5 +31,7 @@ extern void neut_mesh_fprintf_geof_part_elset (FILE *, struct PART);
 
 extern void neut_mesh_fprintf_geof_lisets (FILE* file, struct MESH
     Mesh2D, struct BOUNDARY Bound, char* lisets);
+extern void neut_mesh_fprintf_geof_lisets_all (FILE* file, struct MESH
+    Mesh1D);
 extern void neut_mesh_fprintf_geof_fasets (FILE* file, struct MESH
     Mesh2D, struct BOUNDARY Bound, char* lisets);

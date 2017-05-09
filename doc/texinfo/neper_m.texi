@@ -253,6 +253,8 @@ always written into a @file{.msh} mesh file unless
 @samp{@SEPDEP{}msh} is appended to the option argument.
 If a mesh dimension of 3 is required@comma{} but the input data is 2D@comma{}
 the 3D mesh is obtained by extrusion of the 2D mesh.
+With @samp{@option{-format geof}}@comma{} use @samp{@code{1,inputdim}}
+to get the 1D mesh written as lisets (for visualization).
 ,
 0 to 3@comma{} all@comma{} none@comma{} inputdim, inputdim}
 

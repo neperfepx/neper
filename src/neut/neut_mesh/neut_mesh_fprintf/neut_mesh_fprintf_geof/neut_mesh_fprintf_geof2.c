@@ -69,7 +69,7 @@ neut_mesh_fprintf_geof_elts (FILE * out, struct MESH Mesh1D,
   fprintf (out, "\n**element\n");
   fprintf (out, "%d\n", eltqty);
 
-  // 2D elts
+  // 1D elts
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "1") && Mesh1D.EltQty > 0)
   {
     eltnodeqty =
@@ -305,6 +305,35 @@ neut_mesh_fprintf_geof_lisets (FILE* file, struct MESH Mesh2D,
 					 Bound.BoundNodes[i][j][k + 1]);
 	fprintf (file, "\n");
       }
+
+  return;
+}
+
+void
+neut_mesh_fprintf_geof_lisets_all (FILE* file, struct MESH Mesh1D)
+{
+  int i, j, elt;
+
+  if (Mesh1D.Dimension != 1)
+    abort ();
+
+  fprintf (file, "\n");
+  for (i = 1; i <= Mesh1D.ElsetQty; i++)
+  {
+     fprintf (file, "**liset edge%d\n", i);
+     for (j = 1; j <= Mesh1D.Elsets[i][0]; j++)
+     {
+       elt = Mesh1D.Elsets[i][j];
+       if (Mesh1D.EltOrder == 1)
+	 fprintf (file, "line %d %d\n", Mesh1D.EltNodes[elt][0],
+					Mesh1D.EltNodes[elt][1]);
+       else
+	 fprintf (file, "quad %d %d %d\n", Mesh1D.EltNodes[elt][0],
+					   Mesh1D.EltNodes[elt][2],
+					   Mesh1D.EltNodes[elt][1]);
+     }
+     fprintf (file, "\n");
+  }
 
   return;
 }
