@@ -75,6 +75,12 @@ if (HAVE_GSL)
   include_directories (${GSL_INCLUDE_DIRS})
 endif (HAVE_GSL)
 
+if (HAVE_NLOPT)
+  find_package (NLOPT REQUIRED)
+  set (EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES})
+  include_directories (${NLOPT_INCLUDE_DIRS})
+endif ()
+
 target_link_libraries (ut ${EXTRA_LIBS})
 
 # Installation of the library
