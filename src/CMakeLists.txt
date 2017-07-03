@@ -98,6 +98,12 @@ if (HAVE_PTHREAD)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 endif ()
 
+if (HAVE_NLOPT)
+  find_package (NLOPT REQUIRED)
+  set (EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES})
+  include_directories (${NLOPT_INCLUDE_DIRS})
+endif ()
+
 target_link_libraries (neper ${EXTRA_LIBS})
 
 install (TARGETS neper DESTINATION bin
