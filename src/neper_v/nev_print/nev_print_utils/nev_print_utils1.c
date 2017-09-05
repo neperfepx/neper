@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_utils_.h"
@@ -152,6 +152,70 @@ nev_print_cyl (FILE * file, double *coo, double *rad, char *texture)
   }
 
   ut_free_1d (v);
+
+  return;
+}
+
+void
+nev_print_tor (FILE * file, double *coo, double *rad, char *texture)
+{
+  double *v1 = ut_alloc_1d (3);
+  double *v2 = ut_alloc_1d (3);
+  double **g = ol_g_alloc ();
+
+  ut_array_1d_set_3 (v1, 0, 1, 0);
+  ut_array_1d_memcpy (v2, 3, rad + 2);
+  ol_vect_vect_g (v1, v2, g);
+
+  if (rad[0] > 0 && rad[1] > 0)
+  {
+    fprintf (file,
+	     "    torus {%18.15g,%18.15g matrix <%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g>\n",
+	     rad[0], rad[1],
+	     g[0][0], g[0][1], g[0][2],
+	     g[1][0], g[1][1], g[1][2],
+	     g[2][0], g[2][1], g[2][2],
+	     coo[0], coo[1], coo[2]);
+
+    if (texture != NULL)
+      fprintf (file, "    texture { %s }\n", texture);
+    fprintf (file, "  }\n");
+  }
+
+  ut_free_1d (v1);
+  ut_free_1d (v2);
+  ol_g_free (g);
+
+  return;
+}
+
+void
+nev_print_disc (FILE * file, double *coo, double *rad, char *texture)
+{
+  double *v1 = ut_alloc_1d (3);
+  double *v2 = ut_alloc_1d (3);
+  double **g = ol_g_alloc ();
+
+  ut_array_1d_set_3 (v1, 0, 1, 0);
+  ut_array_1d_memcpy (v2, 3, rad + 2);
+  ol_vect_vect_g (v1, v2, g);
+
+  if (rad[0] > 0)
+  {
+    fprintf (file,
+	     "    disc {<%18.15g,%18.15g,%18.15g>,  <%18.15g,%18.15g,%18.15g>, %18.15g\n",
+	     coo[0], coo[1], coo[2],
+	     rad[1], rad[2], rad[3],
+	     rad[0]);
+
+    if (texture != NULL)
+      fprintf (file, "    texture { %s }\n", texture);
+    fprintf (file, "  }\n");
+  }
+
+  ut_free_1d (v1);
+  ut_free_1d (v2);
+  ol_g_free (g);
 
   return;
 }
@@ -497,7 +561,6 @@ nev_print_rectangle (FILE * file, double *coo, double *size,
 
   return;
 }
-
 
 void
 nev_print_tet (FILE * file, double *coo1, double *coo2, double *coo3,

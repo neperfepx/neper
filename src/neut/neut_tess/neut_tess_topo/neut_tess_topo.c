@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_topo_.h"
@@ -223,7 +223,6 @@ neut_tess_face_masterseeds (struct TESS Tess, int face, int **pseed, int *pseedq
 
   return;
 }
-
 
 void
 neut_tess_ver_seeds_positive (struct TESS Tess, int ver, int **pseed,
@@ -1696,7 +1695,13 @@ neut_tess_face_interpolmesh (struct TESS Tess, int face, struct NODES *pN,
 
   if (Tess.FacePt[face] == 0)
   {
-    neut_nodes_addnode (pN, Tess.FacePtCoo[face], 1);
+    if (Tess.FaceState[face] == 1)
+      neut_nodes_addnode (pN, Tess.FacePtCoo[face], 1);
+    else
+    {
+      neut_tess_face_centre (Tess, face, p0);
+      neut_nodes_addnode (pN, p0, 1);
+    }
     ver0 = verqty + 1;
   }
   else if (Tess.FacePt[face] > 0)
@@ -3097,4 +3102,48 @@ neut_tess_inter_isperslave (struct TESS Tess, int inter)
     return neut_tess_face_isperslave (Tess, inter);
   else
     abort ();
+}
+
+int
+neut_tess_face_scale_polys (struct TESS Tess, int face, int scale, int *poly)
+{
+  int i;
+
+  ut_array_1d_int_memcpy (poly, 2, Tess.FacePoly[face]);
+
+  if (scale != Tess.ScaleQty)
+    for (i = 0; i < 2; i++)
+      if (poly[i] > 0)
+	poly[i] = Tess.ScaleCellId[Tess.FacePoly[face][i]][scale];
+
+  return 0;
+}
+
+int
+neut_tess_face_scale (struct TESS Tess, int face, int *pscale)
+{
+  int i, poly[2];
+
+  (*pscale) = -1;
+
+  if (Tess.FacePoly[face][0] < 0 || Tess.FacePoly[face][1] < 0)
+   (*pscale) = 0;
+
+  else
+  {
+    for (i = Tess.ScaleQty - 1; i >= 0; i--)
+    {
+      neut_tess_face_scale_polys (Tess, face, i, poly);
+      if (poly[0] == poly[1])
+      {
+	(*pscale) = i + 1;
+	break;
+      }
+    }
+  }
+
+  if ((*pscale) == -1)
+    ut_error_reportbug ();
+
+  return 0;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_.h"
@@ -102,4 +102,41 @@ net_tess_opt_comp_objective_poly (struct TOPT *pTOpt)
   neut_poly_free (&DomPoly);
 
   return 0;
+}
+
+void
+net_tess_opt_comp_objective_debugtest (struct TOPT TOpt)
+{
+  int i;
+  double *vol = ut_alloc_1d (TOpt.CellQty + 1);
+  double domvol, totvol;
+
+  neut_tess_volume (TOpt.Dom, &domvol);
+  for (i = 1; i <= TOpt.CellQty; i++)
+    neut_polys_volume (TOpt.Poly, TOpt.CellSCellList[i],
+	               TOpt.CellSCellQty[i], vol + i);
+
+  totvol = ut_array_1d_sum (vol + 1, TOpt.CellQty);
+
+  if (!ut_num_requal (totvol, domvol, 1e-6))
+  {
+    printf ("\n");
+    ut_print_lineheader (2);
+    printf ("Wrong cell update in net_polycomp.\n");
+    printf ("TDyn.seedchanged = ");
+    ut_array_1d_int_fprintf (stdout, TOpt.TDyn.seedchanged,
+	TOpt.TDyn.seedchangedqty, "%d");
+    printf ("TDyn.cellchanged = ");
+    ut_array_1d_int_fprintf (stdout, TOpt.TDyn.cellchanged,
+	TOpt.TDyn.cellchangedqty, "%d");
+    printf ("cell vols: ");
+    ut_array_1d_fprintf (stdout, vol + 1, TOpt.CellQty, "%.15f");
+    printf ("totvol = %.15f != domvol = %.15f (ratio %.12f)\n",
+	              totvol, domvol, totvol / domvol);
+    abort ();
+  }
+
+  ut_free_1d (vol);
+
+  return;
 }

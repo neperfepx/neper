@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_.h"
@@ -16,20 +16,23 @@ net_tess_opt_init (struct IN_T In, int level, struct MTESS MTess,
   net_tess_opt_init_domain (In, Tess[dtess], dcell, pTOpt);
 
   // target properties
-  net_tess_opt_init_target (In, MTess, Tess[dtess], dcell, level,
+  net_tess_opt_init_target (In, MTess, Tess, dtess, dcell, level,
 			    In.morpho[level], pTOpt);
 
   // sset (must come after target)
   net_tess_opt_init_sset (In, level, MTess, Tess, dtess, dcell, SSet, pTOpt);
 
   // optimization parameters
-  net_tess_opt_init_parms (In, level, Tess[dtess], pTOpt);
+  net_tess_opt_init_parms (In, level, MTess, Tess, dtess, dcell, pTOpt);
 
   // current properties (allocation)
   net_tess_opt_init_current (pTOpt);
 
   // bounds (merge into init_parms)
   net_tess_opt_init_bounds (pTOpt);
+
+  //
+  net_tess_opt_init_post (In, pTOpt);
 
   return;
 }

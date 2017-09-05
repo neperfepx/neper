@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2016, Romain Quey.
+# Copyright (C) 2003-2017, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
@@ -8,6 +8,7 @@ project(neper_t)
 option (HAVE_GSL         "Use the GNU Scientific Library (GSL)" ON )
 option (HAVE_NLOPT       "Use NLopt"                            ON )
 option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
+option (HAVE_OPENMP      "Use OpenMP"                           ON )
 option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
 option (DEVEL_DEBUGGING_TEST "Enable debugging tests (OFF for production use)"   OFF)
 option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)"   OFF)
@@ -65,7 +66,9 @@ add_library (neper_t
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init1.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init2.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init3.c
-./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init4.c
+./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_tesrobj/net_tess_opt_init_tesrobj1.c
+./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_tesrobj/net_tess_opt_init_tesrobj2.c
+./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_tesrobj/net_tess_opt_init_tesrobj3.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset1.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_pre/net_tess_opt_init_sset_pre1.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_pre/net_tess_opt_init_sset_pre2.c
@@ -79,6 +82,7 @@ add_library (neper_t
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_coo/net_tess_opt_init_sset_coo2.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp1.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp2.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp3.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_x/net_tess_opt_comp_x1.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_nlopt_init/net_tess_opt_comp_nlopt_init1.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_nlopt_init/net_tess_opt_comp_nlopt_init2.c
@@ -86,6 +90,10 @@ add_library (neper_t
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective2.cpp
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval1.cpp
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_init/net_tess_opt_comp_objective_fval_init1.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_tesr/net_tess_opt_comp_objective_fval_tesr1.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_tesr/net_tess_opt_comp_objective_fval_tesr2.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_cellpenalty/net_tess_opt_comp_objective_fval_cellpenalty1.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_cellpenalty/net_tess_opt_comp_objective_fval_cellpenalty1.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_cellval/net_tess_opt_comp_objective_fval_cellval1.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_cellval/net_tess_opt_comp_objective_fval_cellval2.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_comp/net_tess_opt_comp_objective_fval_comp1.c
@@ -183,6 +191,12 @@ if (HAVE_LIBSCOTCH)
   find_package (LIBSCOTCH REQUIRED)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${Scotch_LIBRARIES})
   include_directories (${Scotch_INCLUDE_DIRS})
+endif ()
+
+if (HAVE_OPENMP)
+  find_package (OpenMP REQUIRED)
+  set (EXTRA_LIBS ${EXTRA_LIBS} ${OpenMP_C_FLAGS})
+  add_definitions(${OpenMP_C_FLAGS})
 endif ()
 
 target_link_libraries (neper_t ${EXTRA_LIBS})

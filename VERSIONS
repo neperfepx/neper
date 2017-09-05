@@ -1,3 +1,16 @@
+New in 3.1.0 (05 Sep 2017):
+- module -T: made all options applicable to multiscale tessellations,
+  improved -morpho for all types of data, improved -morpho*
+  options, added -n from_morpho to set the number of cells from all
+  -morpho inputs, added -format stl, added -transform crop and 2d, added
+  -morphooptilogtesr, added tessellation key 'scale', included openMP
+  parallelization for -morpho tesr.
+- module -M: allowed -interface cohesive -periodic in 2D, improved -dim
+  for -format geof, improved -format geof, minor fixes.
+- module -V: added -datapointrad tor and disc.
+- documentation: small fixes.
+- general: support OpenMP.
+
 New in 3.0.2 (16 Feb 2017):
 - module -T: added -transform scale and transform rotate for scalar
   tessellations (.tess), fixed -morpho with -periodic, fixed -morpho
@@ -75,7 +88,7 @@ New in 2.0.2 (29 Sep 2014):
 New in 2.0.1 (12 Mar 2014):
 - Fixed up compilation on some systems, added support for libscotch
   version 6.0, small fixes and cleanups.
-- module -T: enabled square and cube tessellations in .tess format, 
+- module -T: enabled square and cube tessellations in .tess format,
   fixed up cell sorting, made option -id mandatory, improved
   regularization of 2D tessellations, added bunch of tessellation
   keys, small fixes.
@@ -192,7 +205,7 @@ Please cite it in your works if you use Neper.
   distribution for 2D and 3D meshings (versions >=2.4.2).  Strongly
   reduced memory usage.
 - module -O: added capability to handle different orientation
-  descriptors. 
+  descriptors.
 - module -VS: new visualization module to generate publication-quality
   images (PNG format) of the tessellations, meshes and more...
 

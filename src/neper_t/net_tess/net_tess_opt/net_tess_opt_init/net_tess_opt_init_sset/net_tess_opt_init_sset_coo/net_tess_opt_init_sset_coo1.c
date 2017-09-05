@@ -1,5 +1,5 @@
 /* This file is part of the Neper software sizeage. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_sset_coo_.h"
@@ -17,6 +17,9 @@ net_tess_opt_init_sset_coo (struct MTESS MTess, struct TESS *Tess,
   double **coo = ut_alloc_2d ((*pTOpt).CellQty + 1, 3);
   char *mid = NULL;
   int *id = ut_alloc_1d_int ((*pTOpt).CellQty + 1);
+  int multiseed = (ut_array_1d_int_max (qty + 1, (*pTOpt).CellQty) > 1);
+  FILE *fp = NULL;
+  struct TESS Tmp;
 
   neut_point_set_zero (&Point);
   neut_point_set_zero (&Point2);
@@ -26,7 +29,17 @@ net_tess_opt_init_sset_coo (struct MTESS MTess, struct TESS *Tess,
   {
     from_file = 1;
     neut_mtess_tess_poly_mid (MTess, Tess[dtess], dcell, &mid);
-    net_multiscale_arg_2d_fscanf (cooexpr, mid, coo + 1, (*pTOpt).CellQty, 3);
+    if (ut_file_testformat (cooexpr, "tess"))
+    {
+      neut_tess_set_zero (&Tmp);
+      fp = ut_file_open (cooexpr, "R");
+      neut_tess_fscanf (fp, &Tmp);
+      ut_array_2d_memcpy (coo + 1, (*pTOpt).CellQty, (*pTOpt).Dim, Tmp.SeedCoo + 1);
+      ut_file_close (fp, cooexpr, "R");
+      neut_tess_free (&Tmp);
+    }
+    else
+      net_multiscale_arg_2d_fscanf (cooexpr, mid, coo + 1, (*pTOpt).CellQty, (*pTOpt).Dim);
   }
 
   Point.Periodic = ut_alloc_1d_int (3);
@@ -67,6 +80,14 @@ net_tess_opt_init_sset_coo (struct MTESS MTess, struct TESS *Tess,
 
     net_tess_opt_init_sset_coo_record (pTOpt, cell, &Point, centre,
 	&Point2);
+  }
+
+  if (!strcmp (cooexpr, "LLLFP2011"))
+  {
+    if (multiseed)
+      ut_print_message (2, 3, "LLFP2011 method not available with multiseeding.\n");
+
+    net_tess_opt_init_sset_coo_lllfp2011 (pTOpt);
   }
 
   ut_free_1d (centre);

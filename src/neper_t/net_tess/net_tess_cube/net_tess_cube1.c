@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_cube_.h"
@@ -14,20 +14,20 @@ net_tess_cube (char *string, int dim, struct TESS PTess, int poly,
   char *tmpc = ut_alloc_1d_char (1000);
   char *fct = NULL;
   int varqty;
-  char **vars = NULL, **vals = NULL;
+  char **vals = NULL;
 
-  ut_string_function_separate (string, &fct, &vars, &vals, &varqty);
+  ut_string_function_separate (string, &fct, NULL, &vals, &varqty);
 
   if (!strcmp (fct, "cube"))
   {
     if (varqty == 1)
     {
-      sscanf (vars[0], "%d", N);
+      sscanf (vals[0], "%d", N);
       ut_array_1d_int_set (N, 3, N[0]);
     }
     else if (varqty == 3)
       for (i = 0; i < 3; i++)
-	sscanf (vars[i], "%d", N + i);
+	sscanf (vals[i], "%d", N + i);
     else
       abort ();
   }
@@ -35,13 +35,13 @@ net_tess_cube (char *string, int dim, struct TESS PTess, int poly,
   {
     if (varqty == 1)
     {
-      sscanf (vars[0], "%d", N);
+      sscanf (vals[0], "%d", N);
       ut_array_1d_int_set_3 (N, N[0], N[0], 1);
     }
     else if (varqty == 2)
     {
       for (i = 0; i < 2; i++)
-	sscanf (vars[i], "%d", N + i);
+	sscanf (vals[i], "%d", N + i);
       N[2] = 1;
     }
     else
@@ -98,7 +98,6 @@ net_tess_cube (char *string, int dim, struct TESS PTess, int poly,
   ut_free_1d_int (N);
   ut_free_1d_char (tmpc);
   ut_free_1d_char (fct);
-  ut_free_2d_char (vars, varqty);
   ut_free_2d_char (vals, varqty);
 
   return 0;

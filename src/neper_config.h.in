@@ -1,6 +1,7 @@
 #cmakedefine HAVE_GSL
 #cmakedefine HAVE_NLOPT
 #cmakedefine HAVE_LIBSCOTCH
+#cmakedefine HAVE_OPENMP
 #cmakedefine DEVEL_PROFILING
 #cmakedefine DEVEL_OPTIMIZATION
 #cmakedefine DEVEL_DEBUGGING_FLAG

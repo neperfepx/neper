@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_multim_.h"
@@ -82,7 +82,7 @@ neut_multim_init (int dim, char *list, int cellqty, struct MULTIM *pMultim)
   }
   ut_free_2d_char (ind_algo, (*pMultim).algoqty);
 
-  // Alloc 
+  // Alloc
 
   (*pMultim).mOdis = ut_alloc_2d (cellqty + 1, (*pMultim).algoqty);
   (*pMultim).mOsize = ut_alloc_2d (cellqty + 1, (*pMultim).algoqty);

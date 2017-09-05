@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -19,6 +19,9 @@ extern void net_tess_opt_init_sset_ori_fibre (char *distrib,
 					      struct SEEDSET *pSSet);
 
 extern void net_tess_opt_init_sset_ori_crysym (struct IN_T In,
+					       struct MTESS MTess,
+					       struct TESS *Tess,
+					       int dtess, int dcell,
 					       struct SEEDSET *pSSet);
 extern void net_tess_opt_init_sset_ori_equal (struct SEEDSET *SSet,
 					      int dtess, int dcell,

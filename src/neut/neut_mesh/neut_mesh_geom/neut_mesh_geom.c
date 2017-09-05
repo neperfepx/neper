@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_geom_.h"
@@ -623,7 +623,6 @@ neut_mesh_rr (struct NODES Nodes, struct MESH Mesh, double *prrav,
 
   return 0;
 }
-
 
 int
 neut_mesh_Odis (struct NODES Nodes, struct MESH Mesh, char *Odisexpr,

@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2016, Romain Quey.
+# Copyright (C) 2003-2017, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
@@ -8,6 +8,7 @@ project(neper_v C)
 option (HAVE_GSL         "Use the GNU Scientific Library (GSL)" ON )
 option (HAVE_NLOPT       "Use NLopt"                            ON )
 option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
+option (HAVE_OPENMP      "Use OpenMP"                           ON )
 option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
 option (DEVEL_DEBUGGING_TEST "Enable debugging tests (OFF for production use)"   OFF)
 option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)"   OFF)
@@ -84,7 +85,7 @@ add_library (neper_v
 set (EXTRA_LIBS ${EXTRA_LIBS} ut)
 set (EXTRA_LIBS ${EXTRA_LIBS} neut)
 set (EXTRA_LIBS ${EXTRA_LIBS} orilib)
-  
+
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 find_library (MATHLIB m)
@@ -108,6 +109,12 @@ if (HAVE_NLOPT)
   find_package (NLOPT REQUIRED)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES})
   include_directories (${NLOPT_INCLUDE_DIRS})
+endif ()
+
+if (HAVE_OPENMP)
+  find_package (OpenMP REQUIRED)
+  set (EXTRA_LIBS ${EXTRA_LIBS} ${OpenMP_C_FLAGS})
+  add_definitions(${OpenMP_C_FLAGS})
 endif ()
 
 target_link_libraries (neper_v ${EXTRA_LIBS})

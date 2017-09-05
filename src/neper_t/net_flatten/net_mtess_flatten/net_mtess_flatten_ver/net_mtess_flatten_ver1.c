@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_mtess_flatten_ver_.h"
 
 void
 net_mtess_flatten_ver (struct MTESS MTess, struct TESS *Tess,
-		       int TessId, int *CTessIds, int CTessQty, 
+		       int TessId, int *CTessIds, int CTessQty,
 		       struct TESS *pFTess,
 		       struct TESSE *TessE, struct FLATTEN *pFlatten)
 {

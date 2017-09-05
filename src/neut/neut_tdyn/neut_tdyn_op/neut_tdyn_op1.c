@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tdyn_op_.h"
@@ -59,12 +59,14 @@ neut_tdyn_set_zero (struct TDYN *pTD)
   (*pTD).logvar = NULL;
   (*pTD).logdis = NULL;
   (*pTD).logval = NULL;
+  (*pTD).logtesr = NULL;
   (*pTD).body = NULL;
   (*pTD).logtime_fp = NULL;
   (*pTD).logvar_fp = NULL;
   (*pTD).logdis_qty = 0;
   (*pTD).logdis_fp = NULL;
   (*pTD).logval_fp = NULL;
+  (*pTD).logtesr_fp = NULL;
 
   return;
 }
@@ -109,6 +111,7 @@ neut_tdyn_free (struct TDYN *pTD)
   ut_free_1d_char ((*pTD).logtime);
   ut_free_1d_char ((*pTD).logvar);
   ut_free_1d_char ((*pTD).logdis);
+  ut_free_1d_char ((*pTD).logtesr);
   ut_free_1d_char ((*pTD).logval);
   ut_free_1d_char ((*pTD).body);
 

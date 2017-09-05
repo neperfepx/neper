@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nem_nsets_.h"
@@ -400,7 +400,6 @@ nem_nsets_2dbody_str (struct NSET *NSet)
   faceedge[6][1] = 8;
   faceedge[6][2] = 11;
   faceedge[6][3] = 12;
-
 
   NSet[2].qty *= 2;
   NSet[2].names = ut_realloc_1d_pchar (NSet[2].names, NSet[2].qty + 1);

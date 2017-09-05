@@ -1,5 +1,5 @@
 /* This file is part of the Neper software sizeage. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_sset_weight_.h"
@@ -17,6 +17,8 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
   double *vals = ut_alloc_1d (varqty);
   double *radeq = ut_alloc_1d (TOpt.CellQty + 1);
   char *mid = NULL;
+  FILE *fp = NULL;
+  struct TESS Tmp;
   strcpy (vars[0], "avradeq");
   strcpy (vars[1], "avdiameq");
   strcpy (vars[2], "radeq");
@@ -25,10 +27,20 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
   if (ut_string_filename (weightexpr))
   {
     neut_mtess_tess_poly_mid (MTess, Tess[dtess], dcell, &mid);
-    net_multiscale_arg_1d_fscanf (weightexpr, mid, rad + 1, TOpt.CellQty);
+    if (ut_file_testformat (weightexpr, "tess"))
+    {
+      neut_tess_set_zero (&Tmp);
+      fp = ut_file_open (weightexpr, "R");
+      neut_tess_fscanf (fp, &Tmp);
+      ut_array_1d_memcpy (rad + 1, TOpt.CellQty, Tmp.SeedWeight + 1);
+      ut_file_close (fp, weightexpr, "R");
+      neut_tess_free (&Tmp);
+    }
+    else
+      net_multiscale_arg_1d_fscanf (weightexpr, mid, rad + 1, TOpt.CellQty);
   }
 
-  // special case of tesr: sending to neut_tesr_expr_val 
+  // special case of tesr: sending to neut_tesr_expr_val
   else if (!strcmp (var, "tesr"))
     for (i = 1; i <= TOpt.CellQty; i++)
     {
@@ -54,16 +66,6 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
       net_tess_opt_init_sset_weight_stat_radeq (pos, var, TOpt, radeq);
     else if (!strcmp (var, "centroid"))
       ut_array_1d_set (radeq + 1, TOpt.CellQty, vals[0]);
-    else if (!strcmp (var, "centroidsize"))
-      for (i = 1; i <= TOpt.CellQty; i++)
-      {
-	if (TOpt.Dim == 2)
-	  ut_space_area_radeq (TOpt.tarcellval[pos][i][TOpt.SSet.Dim],
-			       radeq + i);
-	else if (TOpt.Dim == 3)
-	  ut_space_volume_radeq (TOpt.tarcellval[pos][i][TOpt.SSet.Dim],
-				 radeq + i);
-      }
     else if (!strcmp (var, "centroiddiameq"))
       for (i = 1; i <= TOpt.CellQty; i++)
 	radeq[i] = 0.5 * TOpt.tarcellval[pos][i][TOpt.SSet.Dim];

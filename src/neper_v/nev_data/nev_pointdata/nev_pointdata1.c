@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_pointdata_.h"
@@ -234,6 +234,18 @@ nev_pointdata_fscanf (char *type, char *argument,
       (*pPointData).RadData = ut_alloc_2d ((*pPointData).PointQty + 1, 5);
       ut_array_2d_fscanfn_wcard (value, (*pPointData).RadData + 1,
 				 (*pPointData).PointQty, 5, "numeral,size");
+    }
+    else if (!strcmp ((*pPointData).RadDataType, "tor"))
+    {
+      (*pPointData).RadData = ut_alloc_2d ((*pPointData).PointQty + 1, 5);
+      ut_array_2d_fscanfn_wcard (value, (*pPointData).RadData + 1,
+				 (*pPointData).PointQty, 5, "numeral,size");
+    }
+    else if (!strcmp ((*pPointData).RadDataType, "disc"))
+    {
+      (*pPointData).RadData = ut_alloc_2d ((*pPointData).PointQty + 1, 4);
+      ut_array_2d_fscanfn_wcard (value, (*pPointData).RadData + 1,
+				 (*pPointData).PointQty, 4, "numeral,size");
     }
     else if (!strcmp ((*pPointData).RadDataType, "ell"))
     {

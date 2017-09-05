@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2016 Romain Quey
+@c Copyright (C) 2003-2017 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Introduction
@@ -101,8 +101,7 @@ Neper's @file{src} directory,
 
 @com{make}
 
-Use option @samp{-j@var{N}} to turn multithreading on, where
-@code{@var{N}} is 1 + the number of cores of a processor.
+Use option @samp{-j} to use multithreading.
 
 @item Install Neper on your system (as root),
 @com{make install}
@@ -138,6 +137,10 @@ manager (binary and development packages); alternatively, the source
 code version can be downloaded from
 @uref{http://ab-initio.mit.edu/wiki/index.php/NLopt}.
 
+@item the OpenMP library (optional, enabled by default).
+It is likely to be available on your system or from your system package
+manager.
+
 @item the libScotch library (version @code{5.1.12} or higher, optional,
 disabled by default).  It is needed by @mM{} for mesh partitioning.
 The source code can be downloaded from
@@ -161,7 +164,7 @@ from the source code speeds up meshing significantly).  Gmsh must be
 available at the terminal as the command @command{gmsh}, or the path to
 its binary must be specified with option @option{-gmsh} (in @mM{}).
 
-@item the POV-Ray program (mandatory for module -V). 
+@item the POV-Ray program (mandatory for module -V).
 It is likely to be available on your system or from your system package
 manager (binary package); alternatively, a binary, or the source code,
 can be downloaded from @url{http://www.povray.org}.  POV-Ray must be
@@ -362,6 +365,7 @@ jargon:
 @item @code{qual}  	@tab quality
 @item @code{rad} 	@tab radius
 @item @code{rcl} 	@tab relative characteristic length
+@item @code{res} 	@tab resolution
 @item @code{rmax}   	@tab relative maximum
 @item @code{sing} 	@tab singular
 @item @code{stat}  	@tab statistics

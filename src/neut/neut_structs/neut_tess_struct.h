@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -214,7 +214,6 @@ extern "C"
     // Coordinates of the points used to interpolate the faces.
     // undefined if FacePt != 0
     double **FacePtCoo;
-
 
     // Domains of the faces [1...EdgeQty][0...1]
     // [i][0] = -1: not on domain

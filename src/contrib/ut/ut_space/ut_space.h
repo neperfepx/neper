@@ -79,7 +79,6 @@ extern int ut_space_contour_intersect (double**, int);
 
 extern int ut_space_points_uvect (double*, double*, double*);
 
-
 extern void ut_space_string_vect (char*, double*);
 extern void ut_space_string_plane (char*, double*);
 
@@ -130,7 +129,12 @@ extern void ut_space_sphere_points (int n, double r, double **pts);
 extern void ut_space_volume_diameq (double vol, double *pdiameq);
 extern void ut_space_area_diameq (double area, double *pdiameq);
 extern void ut_space_volume_radeq (double vol, double *pradeq);
+extern void ut_space_diameq_area (double diameq, double *parea);
+extern void ut_space_diameq_volume (double diameq, double *pvol);
 extern void ut_space_area_radeq (double area, double *pradeq);
+extern void ut_space_diameq_size (int dim, double diameq, double *psize);
+extern void ut_space_size_diameq (int dim, double size, double *pdiameq);
+
 extern void ut_space_random (gsl_rng *r, int *dims, int dimqty, double mindist,
 			     double maxdist, double *v);
 

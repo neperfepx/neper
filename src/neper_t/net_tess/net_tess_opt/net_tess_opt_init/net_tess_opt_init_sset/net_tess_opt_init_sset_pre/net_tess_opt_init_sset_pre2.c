@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_sset_pre_.h"
@@ -44,6 +44,14 @@ net_tess_opt_init_sset_pre_randseed (struct MTESS MTess, struct TESS *Tess,
 }
 
 void
+net_tess_opt_init_sset_pre_dim (struct TOPT TOpt, struct SEEDSET *pSSet)
+{
+  (*pSSet).Dim = TOpt.Dim;
+
+  return;
+}
+
+void
 net_tess_opt_init_sset_pre_type (struct SEEDSET *pSSet)
 {
   ut_string_string ("standard", &(*pSSet).Type);
@@ -78,6 +86,49 @@ net_tess_opt_init_sset_pre_id (struct IN_T In, struct MTESS MTess,
 				    0, NULL, NULL, &(*pSSet).Id);
 
   ut_free_1d_char (tmp);
+
+  return;
+}
+
+void
+net_tess_opt_init_sset_pre_default_coo (struct TOPT TOpt, int pos, char *var, char **pcooexpr)
+{
+  if (TOpt.tarqty == 0)
+    ut_string_string ("random", pcooexpr);
+  else if (!strcmp (var, "centroid"))
+  {
+    if (strcmp (TOpt.tarexpr[pos], "seed"))
+      ut_string_string ("centroid", pcooexpr);
+    else
+      ut_string_string ("seed", pcooexpr);
+  }
+  else if (!strcmp (var, "centroiddiameq"))
+    ut_string_string ("centroid", pcooexpr);
+  else if (!strcmp (var, "tesr"))
+    ut_string_string ("centroid", pcooexpr);
+  else if (!strcmp (var, "size") || !strcmp (var, "diameq"))
+    ut_string_string ("random", pcooexpr);
+  else
+    ut_string_string ("random", pcooexpr);
+
+  return;
+}
+
+void
+net_tess_opt_init_sset_pre_default_weight (struct TOPT TOpt, char *var, char **pweightexpr)
+{
+  if (TOpt.tarqty == 0)
+    ut_string_string ("0", pweightexpr);
+  else if (!strcmp (var, "centroid"))
+    ut_string_string ("avradeq", pweightexpr);
+  else if (!strcmp (var, "centroiddiameq"))
+    ut_string_string ("radeq", pweightexpr);
+  else if (!strcmp (var, "tesr"))
+    ut_string_string ("radeq", pweightexpr);
+  else if (!strcmp (var, "size") || !strcmp (var, "diameq"))
+    ut_string_string ("avradeq", pweightexpr);
+  else
+    ut_string_string ("avradeq", pweightexpr);
 
   return;
 }

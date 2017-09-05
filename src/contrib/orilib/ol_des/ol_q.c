@@ -50,7 +50,6 @@ ol_q_set_unit (double *q)
   return;
 }
 
-
 void
 ol_q_set_this (double *q, double rho, double lambda, double mu, double nu)
 {
@@ -279,7 +278,6 @@ ol_q_e_rad (double *q, double *e)
     e[0] = 2 * atan2 (q[2], q[1]);
     e[2] = 0;
   }
-
 
   return;
 }

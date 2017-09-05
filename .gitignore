@@ -1,6 +1,7 @@
 # local files and directories
 *~
 .*.swp
+.*.swn
 .*.swo
 html
 latex

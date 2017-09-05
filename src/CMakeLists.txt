@@ -1,11 +1,11 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2016, Romain Quey.
+# Copyright (C) 2003-2017, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.0.2\")
+set (NEPER_VERSION \"3.1.0\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -13,6 +13,7 @@ option (HAVE_GSL           "Use the GNU Scientific Library (GSL)"        ON )
 option (HAVE_NLOPT         "Use NLopt"                                   ON )
 option (HAVE_LIBSCOTCH     "Use libscotch"                               OFF)
 option (HAVE_PTHREAD       "Use pthread"                                 OFF)
+option (HAVE_OPENMP        "Use OpenMP"                                  ON )
 option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON )
 option (DEVEL_DEBUGGING_TEST "Enable debugging tests (OFF for production use)"   OFF)
 option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)"   OFF)
@@ -49,9 +50,6 @@ add_definitions(-Wall -W)
 if (DEVEL_OPTIMIZATION)
   add_definitions(-O3)
 endif ()
-
-# disabling muparser compilation warnings
-add_definitions(-Wno-switch -Wno-unknown-pragmas)
 
 if (DEVEL_DEBUGGING_FLAG)
   add_definitions(-g -Werror)
@@ -98,6 +96,12 @@ if (HAVE_PTHREAD)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 endif ()
 
+if (HAVE_OPENMP)
+  find_package (OpenMP REQUIRED)
+  set (EXTRA_LIBS ${EXTRA_LIBS} ${OpenMP_C_FLAGS})
+  add_definitions(${OpenMP_C_FLAGS})
+endif ()
+
 target_link_libraries (neper ${EXTRA_LIBS})
 
 install (TARGETS neper DESTINATION bin
@@ -141,7 +145,7 @@ add_test (T_morphooptistop_val     ./neper --rcfile none -T -n 5 -morpho gg -mor
 add_test (T_morphooptistop_time    ./neper --rcfile none -T -n 5 -morpho gg -morphooptistop time=0.3)
 add_test (T_morphooptistop_timeval ./neper --rcfile none -T -n 5 -morpho gg -morphooptistop val=0.1,time=0.3)
 add_test (T_morphooptialgo         ./neper --rcfile none -T -n 5 -morpho gg -morphooptialgo praxis)
-add_test (T_morphooptigrid         ./neper --rcfile none -T -n 5 -morpho gg -morphooptigrid "regular(-1,10,110)")
+add_test (T_morphooptigrid         ./neper --rcfile none -T -n 5 -morpho gg -morphooptigrid "diameq:regular(-1,10,110),sphericity:regular(-0.1,1.1,120)")
 add_test (T_morphooptismooth       ./neper --rcfile none -T -n 5 -morpho gg -morphooptismooth 0.1)
 add_test (T_morphooptideltamax         ./neper --rcfile none -T -n 5 -morpho gg -morphooptideltamax 0.1)
 add_test (T_morphooptinistep       ./neper --rcfile none -T -n 5 -morpho gg -morphooptiinistep diameq/5)

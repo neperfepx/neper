@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2016, Romain Quey.
+# Copyright (C) 2003-2017, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
@@ -9,6 +9,7 @@ project(neut)
 option (HAVE_GSL       "Use the GNU Scientific Library (GSL)" ON)
 option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
 option (HAVE_NLOPT       "Use NLopt"                            ON )
+option (HAVE_OPENMP      "Use OpenMP"                           ON )
 option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
 option (DEVEL_DEBUGGING_TEST "Enable debugging tests (OFF for production use)"   OFF)
 option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)"   OFF)
@@ -30,7 +31,7 @@ if (DEVEL_PROFILING)
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
 endif ()
 
-add_library (neut 
+add_library (neut
 ./neut_tesl/neut_tesl.c
 ./neut_tesl/neut_tesl_tess/neut_tesl_tess3.c
 ./neut_tesl/neut_tesl_tess/neut_tesl_tess2.c
@@ -153,6 +154,7 @@ add_library (neut
 ./neut_tesr/neut_tesr_op/neut_tesr_op2.c
 ./neut_tesr/neut_tesr_op/neut_tesr_op3.c
 ./neut_tesr/neut_tesr_geom/neut_tesr_geom1.c
+./neut_tesr/neut_tesr_geom/neut_tesr_geom2.c
 ./neut_tesr/neut_tesr_gen/neut_tesr_gen1.c
 ./neut_topt/neut_topt.c
 ./neut_sopt/neut_sopt.c
@@ -186,6 +188,12 @@ if (HAVE_NLOPT)
   find_package (NLOPT REQUIRED)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES})
   include_directories (${NLOPT_INCLUDE_DIRS})
+endif ()
+
+if (HAVE_OPENMP)
+  find_package (OpenMP REQUIRED)
+  set (EXTRA_LIBS ${EXTRA_LIBS} ${OpenMP_C_FLAGS})
+  add_definitions(${OpenMP_C_FLAGS})
 endif ()
 
 target_link_libraries (neut ${EXTRA_LIBS})

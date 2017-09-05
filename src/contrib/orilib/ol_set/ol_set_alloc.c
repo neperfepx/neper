@@ -48,7 +48,7 @@ ol_set_fscanf (FILE * file, struct OL_SET *pSet, char *format)
   char* format2 = ut_alloc_1d_char (100);
 
   // checking the number of string on the first line
-  // can be 1, 3 or 4. 
+  // can be 1, 3 or 4.
   ut_file_line_nbwords_pointer (file, &firstline_nbw);
   whole_nbw = ut_file_nbwords_pointer (file);
 
@@ -262,7 +262,7 @@ ol_set_orthotropic (struct OL_SET Set1, struct OL_SET *pSet2)
 
   return;
 }
-  
+
 void
 ol_set_memcpy (struct OL_SET Set1, struct OL_SET* pSet2)
 {

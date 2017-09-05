@@ -8,6 +8,10 @@
 #include<math.h>
 #include<assert.h>
 #include"ut.h"
+#ifdef HAVE_GSL
+#include<gsl/gsl_rng.h>
+#include<gsl/gsl_randist.h>
+#endif // HAVE_GSL
 
 int ut_array_1d_int_sort_comp (const void *, const void *);
 int ut_array_1d_pchar_sort_comp (const void *, const void *);
@@ -2626,6 +2630,18 @@ ut_array_1d_scalprod (double *data1, double *data2, int n)
 }
 
 int
+ut_array_1d_int_scalprod (int *data1, int *data2, int n)
+{
+  int i;
+  int res = 0;
+
+  for (i = 0; i < n; i++)
+    res += data1[i] * data2[i];
+
+  return res;
+}
+
+int
 ut_array_1d_int_sum (int *data, int n)
 {
   int i;
@@ -3727,16 +3743,6 @@ ut_array_3d_int_1d (int ***array, int size1, int size2, int size3,
 }
 
 int
-ut_array_1d_set_3 (double *array, double v1, double v2, double v3)
-{
-  array[0] = v1;
-  array[1] = v2;
-  array[2] = v3;
-
-  return 0;
-}
-
-int
 ut_array_1d_int_set_3 (int *array, int v1, int v2, int v3)
 {
   array[0] = v1;
@@ -3774,6 +3780,66 @@ ut_array_1d_set_2 (double *array, double v1, double v2)
 {
   array[0] = v1;
   array[1] = v2;
+
+  return 0;
+}
+
+int
+ut_array_1d_set_3 (double *array, double v1, double v2, double v3)
+{
+  array[0] = v1;
+  array[1] = v2;
+  array[2] = v3;
+
+  return 0;
+}
+
+int
+ut_array_1d_set_4 (double *array, double v1, double v2, double v3, double v4)
+{
+  array[0] = v1;
+  array[1] = v2;
+  array[2] = v3;
+  array[3] = v4;
+
+  return 0;
+}
+
+int
+ut_array_1d_set_5 (double *array, double v1, double v2, double v3, double v4, double v5)
+{
+  array[0] = v1;
+  array[1] = v2;
+  array[2] = v3;
+  array[3] = v4;
+  array[4] = v5;
+
+  return 0;
+}
+
+int
+ut_array_1d_set_6 (double *array, double v1, double v2, double v3, double v4, double v5, double v6)
+{
+  array[0] = v1;
+  array[1] = v2;
+  array[2] = v3;
+  array[3] = v4;
+  array[4] = v5;
+  array[5] = v6;
+
+  return 0;
+}
+
+int
+ut_array_1d_set_7 (double *array, double v1, double v2, double v3, double v4, double v5, double v6, double v7)
+{
+  array[0] = v1;
+  array[1] = v2;
+  array[2] = v3;
+  array[3] = v4;
+  array[4] = v5;
+  array[5] = v6;
+  array[6] = v7;
 
   return 0;
 }
@@ -3829,40 +3895,52 @@ ut_array_0d_int_fscanf_filter_prefix (FILE* file, int* pval, char *flag)
 int
 ut_array_0d_char_fscanf_filter_prefix (FILE* file, char* val, char *flag)
 {
-  int status;
-  char *tmp = NULL;
-  char *lineflag = NULL;
+  int status, qty;
+  char *tmp = ut_alloc_1d_char (1000);
+  char *lineflag = ut_alloc_1d_char (10000);
 
-  if (!strcmp (flag, "none"))
+  if (!flag || !strcmp (flag, "") || !strcmp (flag, "none"))
   {
-    status = fscanf (file, "%s", val);
-    status++;
-  }
-
-  else
-  {
-    tmp = ut_alloc_1d_char (1000);
-    lineflag = ut_alloc_1d_char (10000);
-
     do
     {
       status = -1;
       if (fgets (tmp, 10000, file))
       {
 	tmp[strlen (tmp) - 1] = '\0';
-	status = sscanf (tmp, "%s", lineflag);
+	status = ut_string_nbwords (tmp);
       }
     }
-    while (status == 1 && strcmp (lineflag, flag));
+    while (status > 1);
+
+    if (status == 1)
+      status = 1 + sscanf (tmp, "%s", val);
+    else
+      status = -1;
+  }
+
+  else
+  {
+    do
+    {
+      status = -1;
+      qty = -1;
+      if (fgets (tmp, 10000, file))
+      {
+	tmp[strlen (tmp) - 1] = '\0';
+	status = sscanf (tmp, "%s", lineflag);
+	qty = ut_string_nbwords (tmp);
+      }
+    }
+    while ((status == 1 && strcmp (lineflag, flag)) || qty < 2);
 
     if (status == 1 && !strcmp (lineflag, flag))
       status = sscanf (tmp, "%s%s", lineflag, val);
     else
       status = -1;
-
-    ut_free_1d_char (tmp);
-    ut_free_1d_char (lineflag);
   }
+
+  ut_free_1d_char (tmp);
+  ut_free_1d_char (lineflag);
 
   return (status != 2) ? -1 : 1;
 }
@@ -4198,3 +4276,35 @@ ut_array_1d_eltpos (double *array, int size, double val)
 
   return minid;
 }
+
+#ifdef HAVE_GSL
+void
+ut_array_1d_set_rand (double *data, int n, double min, double max, gsl_rng *r)
+{
+  int i;
+
+  for (i = 0; i < n; i++)
+    data[i] = min + (max - min) * gsl_rng_uniform (r);
+
+  return;
+}
+
+void
+ut_array_1d_int_set_rand (int *data, int n, int min, int max, gsl_rng *r)
+{
+  int i;
+
+  for (i = 0; i < n; i++)
+    data[i] = min + (max - min + 1) * gsl_rng_uniform (r);
+
+  return;
+}
+
+void
+ut_array_1d_int_choose (int *src, int srcsize, int *dest, int destsize, gsl_rng *r)
+{
+  gsl_ran_choose (r, dest, destsize, src, srcsize, sizeof (int));
+
+  return;
+}
+#endif // HAVE_GSL

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_reg_.h"
@@ -13,13 +13,13 @@ net_reg (struct IN_T In, struct TESS *pTess, struct REG *pReg)
 
   ut_print_message (0, 2, "");
 
-  /*********************************************************************** 
+  /***********************************************************************
    * if fmax > 0 & mloop >= 1, small edge deletion */
 
   if ((*pReg).fmax > 1e-15 && (*pReg).mloop >= 1)
     net_reg_merge (pTess, *pReg, &DelId);
 
-  /*---------------------------------------------------------------------- 
+  /*----------------------------------------------------------------------
    * compressing */
   neut_tess_compress (pTess);
 
@@ -29,7 +29,7 @@ net_reg (struct IN_T In, struct TESS *pTess, struct REG *pReg)
   neut_tess_init_domtessedge (pTess);
   neut_tess_init_domtessver (pTess);
 
-  /*********************************************************************** 
+  /***********************************************************************
    * testing full tessellation */
 
 #ifdef DEVEL_DEBUGGING_TEST

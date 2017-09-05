@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_op_.h"
@@ -1939,7 +1939,6 @@ neut_tess_cat (struct TESS *pTessA, struct TESS TessB)
 
   return;
 }
-
 
 void
 neut_tess_poly_tess (struct TESS Tess, int poly, struct TESS *pTess)

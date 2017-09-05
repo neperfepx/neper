@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2016 Romain Quey
+@c Copyright (C) 2003-2017 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Expressions and Keys
@@ -9,7 +9,7 @@
 * Mathematical and Logical Expressions::
 * Tessellation Keys::
 * Raster Tessellation Keys::
-* Tessellation Update Keys::
+* Tessellation Optimization Keys::
 * Mesh Keys::
 * Point Keys::
 * Rotations and Orientations::
@@ -30,7 +30,7 @@ information.}.
 
 The following table gives an overview of the functions supported by the
 default implementation. It lists the function names, the number of
-arguments and a brief description. 
+arguments and a brief description.
 
 @multitable @columnfractions 0.18 0.83
 @headitem Name      @tab Description
@@ -64,7 +64,7 @@ arguments and a brief description.
 @subsection Binary Operators
 
 The following table lists the default binary operators supported by the
-parser. 
+parser.
 
 @multitable @columnfractions 0.18 0.47 0.36
 @headitem Operator      @tab Description    @tab Priority
@@ -82,6 +82,16 @@ parser.
 @item @code{/}  @tab division                   @tab 6
 @item @code{^}  @tab raise x to the power of y  @tab 7
 @end multitable
+
+@subsection Ternary Operators
+
+The parser has built in support for the if-then-else operator. It uses lazy evaluation in order to make sure only the necessary branch of the expression is evaluated.
+
+@multitable @columnfractions 0.18 0.83
+@headitem Operator      @tab Description
+@item @code{?:}         @tab if-then-else operator, following the C/C++ syntax: @*@code{(test)?value_if_true:value_if_false}.
+@end multitable
+
 
 @node Tessellation Keys
 @section Tessellation Keys
@@ -102,7 +112,7 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
 
 @multitable @columnfractions 0.18 0.47 0.36
   @headitem Key   @tab Descriptor                      @tab Apply to
-  @item @code{id} @tab Identifier                      @tab seed, ver, edge, face, poly
+  @item @code{id} @tab identifier                      @tab seed, ver, edge, face, poly
   @item @code{x}  @tab x coordinate                    @tab seed, ver, edge, face, poly
   @item @code{y}  @tab y coordinate                    @tab seed, ver, edge, face, poly
   @item @code{z}  @tab z coordinate                    @tab seed, ver, edge, face, poly
@@ -112,14 +122,17 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
   @item @code{state}  @tab state                       @tab ver, edge, face, poly
   @item @code{domtype}  @tab type of domain (0 if on a domain vertex, 1
       if on a domain edge and 2 if on a domain face) @tab ver, edge, face
+  @item @code{scale}  @tab scale @tab face@footnote{Applies only to a 3D tessellation and relevant for multiscale tessellations.  The scale of a face is the scale at which the face was created, and it ranges from 0 (for domain faces) to the number of scales of the tessellation (for the last created faces).}
   @item @code{length}  @tab length                     @tab edge
   @item @code{area}  @tab area                         @tab face, poly
   @item @code{vol} @tab volume                         @tab poly
   @item @code{size}  @tab size (area/volume in 2D/3D) @tab cell
-  @item @code{diameq}  @tab diameter of the equivalent
-  circle/sphere in 2D/3D                              @tab face, poly
-  @item @code{radeq}  @tab radius of the equivalent
-  circle/sphere in 2D/3D                              @tab face, poly
+  @item @code{diameq}  @tab equivalent
+    diameter@footnote{Equivalent diameter = diameter
+    of the circle of equivalent area/volume in 2D/3D.} @tab face, poly
+  @item @code{radeq}  @tab equivalent
+    radius@footnote{Equivalent radius = radius of the
+    circle of equivalent area/volume in 2D/3D.}        @tab face, poly
   @item @code{circularity}  @tab circularity (2D counterpart of sphericity)          @tab face
   @item @code{sphericity}  @tab sphericity@footnote{Sphericity of a
     polyhedron = ratio of the surface area of
@@ -142,7 +155,7 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
   @item @code{edgenb}  @tab number of edges            @tab ver, face, poly
   @item @code{facenb}  @tab number of faces            @tab ver, edge, poly
   @item @code{polynb}  @tab number of polyhedra        @tab ver, edge, face
-  @item @code{neighnb}  @tab Number of neighbours of a face or
+  @item @code{neighnb}  @tab number of neighbours of a face or
   polyhedron@footnote{Neighbour of a face or polyhedron =
     touching entity of the same type (faces for a face, @dots{}).}      @tab face, poly
   @item @code{verlist}  @tab vertex list               @tab face, poly
@@ -158,7 +171,7 @@ the parameters @math{d}, @math{a}, @math{b} and @math{c}, with the equation bein
 @math{(a, b, c)} is pointing outwards of the polyhedron.}
   @tab poly
   @item @code{vercoolist}  @tab list of vertex coordinates @tab face, poly
-  @item @code{scaleid(@var{scale})}  @tab Identifier of the corresponding cell at scale
+  @item @code{scaleid(@var{scale})}  @tab identifier of the corresponding cell at scale
   @var{scale} @tab cell
   @item @code{lamid}  @tab lamella width id@footnote{In the case of a
     lamellar tessellation with several lamella
@@ -245,15 +258,17 @@ the @samp{@SEPDEP{}uc} modifier.
   @item @code{z}    @tab z coordinate                 @tab seed, cell
   @item @code{w}    @tab Laguerre weight              @tab seed
   @item @code{size}  @tab size (area/volume in 2D/3D) @tab cell
-  @item @code{diameq}  @tab diameter of the equivalent
-  circle/sphere in 2D/3D                              @tab cell
-  @item @code{radeq}  @tab radius of the equivalent
-  circle/sphere in 2D/3D                              @tab cell
+  @item @code{diameq}  @tab equivalent
+    diameter@footnote{Equivalent diameter = diameter
+    of the circle of equivalent area/volume in 2D/3D.}@tab cell
+  @item @code{radeq}  @tab equivalent
+    radius@footnote{Equivalent radius = radius of the
+    circle of equivalent area/volume in 2D/3D.}       @tab cell
   @item @code{convexity}  @tab convexity@footnote{Convexity of a cell = ratio of the volume of the cell to the volume of the convex hull of the cell.} @tab cell
 @end multitable
 
-@node Tessellation Update Keys
-@section Tessellation Update Keys
+@node Tessellation Optimization Keys
+@section Tessellation Optimization Keys
 
 @subsection Time Keys
 
@@ -314,8 +329,14 @@ factor, to log values only at specific iteration numbers.
   @item @code{iter}@tab iteration number             @tab n/a
   @item @code{val}  @tab value 	                     @tab n/a
   @item @code{valmin}  @tab minimal value 	     @tab n/a
+  @item @code{val0}  @tab value, without smoothing 	                     @tab n/a
+  @item @code{valmin0}  @tab minimal value, without smoothing 	     @tab n/a
   @item @code{val(@var{i})} @tab @var{i}th subvalue  @tab n/a
   @item @code{val0(@var{i})} @tab @var{i}th subvalue, without smoothing @tab n/a
+  @item @code{eps} @tab error on the objective function (see option @option{-morphooptistop}) @tab n/a
+  @item @code{reps} @tab relative error on the objective function (see option @option{-morphooptistop}) @tab n/a
+  @item @code{loop} @tab optimization loop           @tab n/a
+  @item @code{plateaulength} @tab current plateau length@footnote{Number of iterations during which the objective function did not decrease.} @tab n/a
 @end multitable
 
 @subsection Statistical Distribution Keys
@@ -337,6 +358,23 @@ factor, to log values only at specific iteration numbers.
   @item @code{tarpdf0}  @tab target PDF, not smoothed @tab n/a
   @item @code{tarcdf0}  @tab target CDF, not smoothed @tab n/a
   @item @code{curcdf0}  @tab current CDF, not smoothed @tab n/a
+@end multitable
+
+@subsection Raster Tessellation Voxel Keys
+
+The available keys for option @option{-morphooptilogtesr} are provided
+below.  Values are written for each voxel used to compute the objective function.
+Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is a reduction
+factor, to log values only at specific iteration numbers.
+
+@multitable @columnfractions 0.18 0.47 0.36
+  @headitem Key     @tab Descriptor              @tab Apply to
+  @item @code{iter} @tab iteration number        @tab n/a
+  @item @code{id}   @tab cell identifier	 @tab n/a
+  @item @code{x}    @tab x coordinate            @tab n/a
+  @item @code{y}    @tab y coordinate            @tab n/a
+  @item @code{z}    @tab z coordinate            @tab n/a
+  @item @code{dist} @tab distance to the cell    @tab n/a
 @end multitable
 
 @node Mesh Keys
@@ -390,10 +428,10 @@ Available keys for points are provided below.
 
 @multitable @columnfractions 0.18 0.47 0.14 0.14
   @headitem Key   @tab Descriptor                      @tab Apply to @tab Require
-  @item @code{id} @tab Identifier                      @tab point    @tab 
-  @item @code{x}  @tab x coordinate                    @tab point    @tab 
-  @item @code{y}  @tab y coordinate                    @tab point    @tab 
-  @item @code{z}  @tab z coordinate                    @tab point    @tab 
+  @item @code{id} @tab identifier                      @tab point    @tab
+  @item @code{x}  @tab x coordinate                    @tab point    @tab
+  @item @code{y}  @tab y coordinate                    @tab point    @tab
+  @item @code{z}  @tab z coordinate                    @tab point    @tab
   @item @code{cell}  @tab cell                         @tab point    @tab tessellation
   @item @code{elt}    @tab containing element          @tab point    @tab mesh
   @item @code{elset}  @tab containing elset            @tab point    @tab mesh
@@ -413,10 +451,10 @@ information).
 
 @multitable @columnfractions 0.18 0.47 0.36
   @headitem Key @tab Descriptor @tab Number of variables
-  @item @code{g}  @tab Rotation matrix                 @tab 9
-  @item @code{rtheta}  @tab Rotation axis / angle pair @tab 4
+  @item @code{g}  @tab rotation matrix                 @tab 9
+  @item @code{rtheta}  @tab rotation axis / angle pair @tab 4
   @item @code{R}  @tab Rodrigues vector                @tab 3
-  @item @code{q}  @tab Quaternion                      @tab 4
+  @item @code{q}  @tab quaternion                      @tab 4
   @item @code{e}  @tab Euler angles (Bunge convention) @tab 3
   @item @code{ek} @tab Euler angles (Kocks convention) @tab 3
   @item @code{er} @tab Euler angles (Roe convention)   @tab 3
@@ -454,8 +492,6 @@ Keys are available for ideal orientations:
   @item Copper2   @tab (-1, 1, 2)[1, -1, 1]
 @end ifinfo
 @end multitable
-
-
 
 @node Colours
 @section Colours

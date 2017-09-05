@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -16,6 +16,7 @@ extern "C"
 #include<signal.h>
 
 #include"ut.h"
+#include"orilib.h"
 #include"neut_t.h"
 #include"net_utils/net_utils.h"
 
@@ -23,7 +24,13 @@ extern "C"
 
 #include"net_tess_opt_comp_objective_fval_comp_stat.h"
 
-
+extern void net_tess_opt_comp_objective_fval_comp_stat_alloc (struct TOPT *pTOpt, int var);
+extern void net_tess_opt_comp_objective_fval_comp_stat_smoothed_comp (struct TOPT *pTOpt, int var);
+extern void net_tess_opt_comp_objective_fval_comp_stat_smoothed_update (struct TOPT *pTOpt, int var);
+extern void net_tess_opt_comp_objective_fval_comp_stat_smoothed_comp_legacy (struct TOPT *pTOpt, int var);
+extern void net_tess_opt_comp_objective_fval_comp_stat_smoothed_update_legacy (struct TOPT *pTOpt, int var);
+extern void net_tess_opt_comp_objective_fval_comp_stat_unsmoothed_comp (struct TOPT *pTOpt, int var);
+extern void net_tess_opt_comp_objective_fval_comp_stat_smoothed_update_cell (struct TOPT *pTOpt, int var, int cell);
 
 extern void net_tess_opt_comp_objective_fval_comp_stat_evaluate (struct TOPT
 						  *pTOpt, int var);

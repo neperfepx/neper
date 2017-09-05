@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_gen_.h"
@@ -420,7 +420,7 @@ neut_tess_var_val (struct TESS Tess,
     else if (!strncmp (var2, "scaleid(", 8))
     {
       sscanf (var2, "scaleid(%d)", &scale);
-      (*pval) = (scale <= Tess.ScaleQty) ? Tess.ScaleCellId[id][scale] : -1;
+      (*pval) = (scale <= Tess.ScaleQty && Tess.ScaleCellId) ? Tess.ScaleCellId[id][scale] : -1;
       strcpy (typetmp, "%d");
     }
     else
@@ -580,6 +580,12 @@ neut_tess_var_val (struct TESS Tess,
     {
       sscanf (var2, "scaleid(%d)", &scale);
       (*pval) = (scale <= Tess.ScaleQty) ? Tess.ScaleCellId[id][scale] : -1;
+      strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var2, "scale"))
+    {
+      neut_tess_face_scale (Tess, id, &tmp);
+      (*pval) = tmp;
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var2, "theta"))
@@ -1787,4 +1793,26 @@ neut_tess_dom_pt_randpt_cluster (struct TESS Dom, struct POINT Point,
   ut_free_1d (coo2);
 
   return status;
+}
+
+int
+neut_tess_expr_vars_vals (struct TESS Tess, char* expr, int *showedge,
+                          int *showface, int *showpoly, char *entity,
+			  int id, char ***pvars, double **pvals, char ***ptypes,
+			  int *pvarqty)
+{
+  int i;
+
+  ut_math_vars (expr, pvars, pvarqty);
+
+  (*pvals) = ut_alloc_1d (*pvarqty);
+
+  if (ptypes)
+    (*ptypes) = ut_alloc_1d_pchar (*pvarqty);
+
+  for (i = 0; i < *pvarqty; i++)
+    neut_tess_var_val (Tess, showedge, showface, showpoly, entity, id,
+	              (*pvars)[i], (*pvals) + i, ptypes? (*ptypes) + i : NULL);
+
+  return 0;
 }

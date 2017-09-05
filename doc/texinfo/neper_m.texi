@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2016 Romain Quey
+@c Copyright (C) 2003-2017 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Meshing Module (-M)
@@ -93,7 +93,7 @@ Here is what a typical run of @mM{} looks like,
     Info   : Version 3.0.0
     Info   : Built with: gsl nlopt muparser
     Info   : <http://neper.sourceforge.net>
-    Info   : Copyright (C) 2003-2016, and GNU GPL'd, by Romain Quey.
+    Info   : Copyright (C) 2003-2017, and GNU GPL'd, by Romain Quey.
     Info   : Comments and bug reports: <neper-users@lists.sourceforge.net>.
     Info   : Loading initialization file `/home/rquey/.neperrc'...
     Info   : ---------------------------------------------------------------
@@ -111,7 +111,7 @@ Here is what a typical run of @mM{} looks like,
     Info   :   - Preparing... (cl = 0.2321) 100%
     Info   :   - 0D meshing... 100%
     Info   :   - 1D meshing... 100%
-    Info   :   - 2D meshing... 100% (0.72|0.87/83%|11%| 6%) 
+    Info   :   - 2D meshing... 100% (0.72|0.87/83%|11%| 6%)
     Info   :     > Checking 2D mesh for pinching out...
     Info   :   - 3D meshing... 100% (0.89|0.91/100%| 0%| 0%)
     Info   : Searching nsets...
@@ -253,6 +253,8 @@ always written into a @file{.msh} mesh file unless
 @samp{@SEPDEP{}msh} is appended to the option argument.
 If a mesh dimension of 3 is required@comma{} but the input data is 2D@comma{}
 the 3D mesh is obtained by extrusion of the 2D mesh.
+With @samp{@option{-format geof}}@comma{} use @samp{@code{1,inputdim}}
+to get the 1D mesh written as lisets (for visualization).
 ,
 0 to 3@comma{} all@comma{} none@comma{} inputdim, inputdim}
 
@@ -501,7 +503,7 @@ any, none}
 Mesh partitioning is achieved using the libScotch
 library@footnote{@cite{F.
 Pellegrini, Scotch and libScotch 5.1 User's Guide, INRIA Bordeaux
-Sud-Ouest, ENSEIRB & LaBRI, UMR CNRS 5800, 2008.}}.  The 
+Sud-Ouest, ENSEIRB & LaBRI, UMR CNRS 5800, 2008.}}.  The
 principle of mesh partitioning is to create partitions of same size
 while minimizing the interfaces between them. This affects the same load
 to all computation units and minimizes communications between them,

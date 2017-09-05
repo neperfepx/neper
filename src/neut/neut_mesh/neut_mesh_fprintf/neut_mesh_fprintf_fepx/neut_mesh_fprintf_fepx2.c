@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_fepx_.h"
@@ -218,7 +218,6 @@ neut_mesh_fprintf_fepx_elsets (FILE * file, struct MESH Mesh3D, char *version)
 
   return;
 }
-
 
 void
 neut_mesh_fprintf_fepx_nsets (FILE * file, struct NSET NSet0D,

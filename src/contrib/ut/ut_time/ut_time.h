@@ -12,7 +12,6 @@ extern "C" {
 
 extern double ut_time_subtract (struct timeval*, struct timeval*);
 
-
 #ifdef __cplusplus
 }
 #endif

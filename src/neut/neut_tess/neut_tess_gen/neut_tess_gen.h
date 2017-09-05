@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -65,6 +65,10 @@ extern "C"
   extern int neut_tess_dom_pt_randpt_cluster (struct TESS Dom, struct
       POINT Point, gsl_rng *r, struct POINT Point2, double penetration,
       double *coo, double *pdist);
+
+  extern int neut_tess_expr_vars_vals (struct TESS Tess, char* expr, int
+      *showedge, int *showface, int *showpoly, char *entity, int id, char
+      ***pvars, double **pvals, char ***ptypes, int *pvarqty);
 
 #endif				/* NEUT_TESS_GEN_H */
 

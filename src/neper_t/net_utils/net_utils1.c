@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_utils_.h"
@@ -21,6 +21,8 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).morphooptialgo = NULL;
   (*pIn).morphooptialgoneighstring = NULL;
   (*pIn).morphooptialgoneigh = NULL;
+  (*pIn).morphooptialgomaxiterstring = NULL;
+  (*pIn).morphooptialgomaxiter = NULL;
   (*pIn).morphooptiobjectivestring = NULL;
   (*pIn).morphooptiobjective = NULL;
   (*pIn).morphooptigridstring = NULL;
@@ -35,6 +37,8 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).morphooptilogvar = NULL;
   (*pIn).morphooptilogdisstring = NULL;
   (*pIn).morphooptilogdis = NULL;
+  (*pIn).morphooptilogtesrstring = NULL;
+  (*pIn).morphooptilogtesr = NULL;
   (*pIn).morphooptilogvalstring = NULL;
   (*pIn).morphooptilogval = NULL;
   (*pIn).morphooptidofstring = NULL;
@@ -84,6 +88,7 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).geo = NULL;
   (*pIn).mgeo = NULL;
   (*pIn).ply = NULL;
+  (*pIn).stl = NULL;
   (*pIn).stc = NULL;
   (*pIn).stv = NULL;
   (*pIn).ste = NULL;
@@ -126,6 +131,7 @@ net_in_free (struct IN_T *pIn)
   ut_free_1d_char ((*pIn).geo);
   ut_free_1d_char ((*pIn).mgeo);
   ut_free_1d_char ((*pIn).ply);
+  ut_free_1d_char ((*pIn).stl);
   ut_free_1d_char ((*pIn).stc);
   ut_free_1d_char ((*pIn).stv);
   ut_free_1d_char ((*pIn).ste);
@@ -465,7 +471,7 @@ net_tess_tesr (struct IN_T In, struct TESS Tess, TESR * pTesr)
 	qty++;
 
 	ut_array_1d_int_set_3 (pos, i, j, k);
-	neut_tesr_coo (*pTesr, pos, coo);
+	neut_tesr_pos_coo (*pTesr, pos, coo);
 
 	if (neut_tess_point_incell (Tess, coo, prevpid) == 1)
 	  (*pTesr).VoxCell[i][j][k] = prevpid;
@@ -626,6 +632,28 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
   neut_tess_init_domain (pTess);
 
   return;
+}
+
+int
+net_multiscale_mtess_arg_0d_char_fscanf (struct MTESS MTess, struct TESS *Tess,
+                                         int domtess, int dompoly,
+					 char *string, char **pval)
+{
+  char *mid = NULL;
+
+  if (ut_string_filename (string))
+  {
+    (*pval) = ut_alloc_1d_char (1000);
+    neut_mtess_tess_poly_mid (MTess, Tess[domtess], dompoly, &mid);
+    net_multiscale_arg_0d_char_fscanf (string, mid, *pval);
+    (*pval) = ut_realloc_1d_char (*pval, strlen (*pval) + 1);
+  }
+  else
+    ut_string_string (string, pval);
+
+  ut_free_1d_char (mid);
+
+  return 0;
 }
 
 int

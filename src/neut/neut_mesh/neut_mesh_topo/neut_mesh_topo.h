@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -82,7 +82,6 @@ extern "C"
   extern int neut_mesh_elt2d_elsets3d (struct MESH Mesh2D, int elt2d,
 				       struct MESH Mesh3D, int **pelset3d,
 				       int *pelset3dqty);
-
 
 /// \brief Get the 2D elts of a 3D elt.
 ///

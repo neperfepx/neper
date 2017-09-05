@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_debug_.h"
@@ -749,7 +749,6 @@ neut_debug_tess_name (char *filename, struct TESS Tess)
   return;
 }
 
-
 void
 neut_debug_seedset (FILE * file, struct SEEDSET SSet)
 {
@@ -985,7 +984,6 @@ neut_debug_tessdata (FILE* file, struct TESSDATA TessData)
   else
     fprintf (file, "edgerad = NULL\n");
 
-
   if (TessData.edgecol != NULL)
   {
     fprintf (file, "edgecol =\n");
@@ -1042,7 +1040,6 @@ neut_debug_tessdata (FILE* file, struct TESSDATA TessData)
   }
   else
     fprintf (file, "verrad = NULL\n");
-
 
   if (TessData.vercol != NULL)
   {

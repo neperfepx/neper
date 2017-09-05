@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_nlopt_init_.h"
@@ -39,13 +39,13 @@ net_tess_opt_comp_nlopt_init_stop (struct TOPT *pTOpt)
   // that your optimum function value is close to zero, you might
   // want to set an absolute tolerance with nlopt_set_ftol_abs as
   // well.) Criterion is disabled if tol is non-positive.
-  nlopt_set_ftol_rel ((*pTOpt).opt, (*pTOpt).reps);
+  nlopt_set_ftol_rel ((*pTOpt).opt, (*pTOpt).nlopt_reps);
 
   // Set absolute tolerance on function value: stop when an
   // optimization step (or an estimate of the optimum) changes the
   // function value by less than tol. Criterion is disabled if tol is
   // non-positive.
-  nlopt_set_ftol_abs ((*pTOpt).opt, (*pTOpt).eps);
+  nlopt_set_ftol_abs ((*pTOpt).opt, (*pTOpt).nlopt_eps);
 
   // Set relative tolerance on optimization parameters: stop when an
   // optimization step (or an estimate of the optimum) changes every

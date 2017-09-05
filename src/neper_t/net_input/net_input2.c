@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_input_.h"
@@ -70,7 +70,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
 	if (!strcmp ((*pIn).morpho[i], "centroid:seed"))
 	  ut_string_string ("lloyd(2)", &((*pIn).morphooptialgo[i]));
 	else
-	  ut_string_string ("subplex", &((*pIn).morphooptialgo[i]));
+	  ut_string_string ("subplex,praxis", &((*pIn).morphooptialgo[i]));
       }
 
     // morphooptiini
@@ -85,6 +85,12 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
 				    (*pIn).levelqty,
 				    &((*pIn).morphooptialgoneigh));
 
+    // morphooptialgomaxiter
+    net_input_treatargs_multiscale ("-morphooptialgomaxiter",
+				    &(*pIn).morphooptialgomaxiterstring,
+				    (*pIn).levelqty,
+				    &((*pIn).morphooptialgomaxiter));
+
     // morphooptiobjective
     net_input_treatargs_multiscale ("-morphooptiobjective", &(*pIn).morphooptiobjectivestring,
 				    (*pIn).levelqty, &((*pIn).morphooptiobjective));
@@ -92,10 +98,16 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     // morphooptigrid
     net_input_treatargs_multiscale ("-morphooptigrid", &(*pIn).morphooptigridstring,
 				    (*pIn).levelqty, &((*pIn).morphooptigrid));
+    for (i = 1; i <= (*pIn).levelqty; i++)
+      if (!strcmp ((*pIn).morphooptigrid[i], "default"))
+	ut_string_string ("diameq:regular(-1,10,1100),size:regular(-1,10,1100),sphericity:regular(-0.1,1.1,1200)", (*pIn).morphooptigrid + i);
 
     // morphooptismooth
     net_input_treatargs_multiscale ("-morphooptismooth", &(*pIn).morphooptismoothstring,
 				    (*pIn).levelqty, &((*pIn).morphooptismooth));
+    for (i = 1; i <= (*pIn).levelqty; i++)
+      if (!strcmp ((*pIn).morphooptismooth[i], "default"))
+	ut_string_string ("diameq:0.05,size:0.05,sphericity:0.005", (*pIn).morphooptismooth + i);
 
     // morphooptistop
     net_input_treatargs_multiscale ("-morphooptistop", &(*pIn).morphooptistopstring,
@@ -106,7 +118,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
 	if (!strncmp ((*pIn).morphooptialgo[i], "lloyd", 5))
 	  ut_string_string ("val=1e-4,itermax=1e4", (*pIn).morphooptistop + i);
 	else
-	  ut_string_string ("dvalditer=1e-5", (*pIn).morphooptistop + i);
+	  ut_string_string ("eps=1e-6", (*pIn).morphooptistop + i);
       }
 
     // morphooptidof
@@ -148,6 +160,10 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     // morphooptilogdis
     net_input_treatargs_multiscale ("-morphooptilogdis", &(*pIn).morphooptilogdisstring,
 				    (*pIn).levelqty, &((*pIn).morphooptilogdis));
+
+    // morphooptilogtesr
+    net_input_treatargs_multiscale ("-morphooptilogtesr", &(*pIn).morphooptilogtesrstring,
+				    (*pIn).levelqty, &((*pIn).morphooptilogtesr));
 
     // morphooptilogval
     net_input_treatargs_multiscale ("-morphooptilogval", &(*pIn).morphooptilogvalstring,
@@ -263,6 +279,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   (*pIn).ori = ut_string_addextension ((*pIn).body, ".ori");
   (*pIn).geo = ut_string_addextension ((*pIn).body, ".geo");
   (*pIn).ply = ut_string_addextension ((*pIn).body, ".ply");
+  (*pIn).stl = ut_string_addextension ((*pIn).body, ".stl");
   (*pIn).dec = ut_string_addextension ((*pIn).body, ".3dec");
   (*pIn).fe = ut_string_addextension ((*pIn).body, ".fe");
   (*pIn).obj = ut_string_addextension ((*pIn).body, ".obj");

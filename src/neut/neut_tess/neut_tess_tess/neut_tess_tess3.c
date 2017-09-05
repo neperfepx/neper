@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_tess_.h"
@@ -515,7 +515,6 @@ neut_tess_tess_domaindata (struct TESS TessA, struct TESS *pTessB)
   (*pTessB).DomFaceLabel = ut_alloc_1d_pchar ((*pTessB).DomFaceQty + 1);
   ut_array_1d_pchar_memcpy ((*pTessB).DomFaceLabel + 1, (*pTessB).DomFaceQty,
 			    TessA.DomFaceLabel + 1);
-
 
   (*pTessB).DomTessFaceQty = ut_alloc_1d_int ((*pTessB).DomFaceQty + 1);
   ut_array_1d_int_memcpy ((*pTessB).DomTessFaceQty + 1, (*pTessB).DomFaceQty,

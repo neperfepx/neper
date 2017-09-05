@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_sset_pre_.h"
@@ -7,10 +7,13 @@
 void
 net_tess_opt_init_sset_general (struct IN_T In, struct MTESS MTess,
 				struct TESS *Tess, int dtess, int dcell,
-				struct SEEDSET *SSet, struct SEEDSET 
+				struct SEEDSET *SSet, struct SEEDSET
 				*pSSet, int CellQty, struct TOPT *pTOpt)
 {
   neut_seedset_set_zero (pSSet);
+
+  if (pTOpt)
+    net_tess_opt_init_sset_pre_dim (*pTOpt, pSSet);
 
   net_tess_opt_init_sset_pre_type (pSSet);
 
@@ -33,10 +36,20 @@ net_tess_opt_init_sset_general (struct IN_T In, struct MTESS MTess,
 
 void
 net_tess_opt_init_sset_pre (struct IN_T In, int level,
+			    struct MTESS MTess, struct TESS *Tess,
+			    int domtess, int domcell,
 			    char **pvar, int *ppos, char **pweightexpr,
 			    char **pcooexpr, struct TOPT *pTOpt)
 {
-  int i, qty;
+  int i, qty, *qty1 = NULL;
+  char* string = ut_alloc_1d_char (1000);
+  char ***parts = NULL;
+
+  ut_free_1d_char (*pweightexpr);
+  ut_free_1d_char (*pcooexpr);
+
+  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, domtess, domcell,
+					   In.morphooptiini[level], &string);
 
   (*ppos) = -1;
   ut_string_string ("none", pvar);
@@ -55,59 +68,42 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level,
     }
   }
 
-  if (!strcmp (In.morphooptiini[level], "default"))
+  if (!strcmp (string, "default"))
   {
-    if ((*pTOpt).tarqty == 0)
-    {
-      ut_string_string ("random", pcooexpr);
-      ut_string_string ("0", pweightexpr);
-    }
-    else if (!strcmp (*pvar, "centroid"))
-    {
-      if (strcmp ((*pTOpt).tarexpr[*ppos], "seed"))
-	ut_string_string ("centroid", pcooexpr);
-      else
-	ut_string_string ("seed", pcooexpr);
-      ut_string_string ("avradeq", pweightexpr);
-    }
-    else if (!strcmp (*pvar, "centroidsize")
-	     || !strcmp (*pvar, "centroiddiameq"))
-    {
-      ut_string_string ("centroid", pcooexpr);
-      ut_string_string ("radeq", pweightexpr);
-    }
-    else if (!strcmp (*pvar, "tesr"))
-    {
-      ut_string_string ("centroid", pcooexpr);
-      ut_string_string ("radeq", pweightexpr);
-    }
-    else if (!strcmp (*pvar, "size") || !strcmp (*pvar, "diameq"))
-    {
-      ut_string_string ("random", pcooexpr);
-      ut_string_string ("avradeq", pweightexpr);
-    }
-    else
-    {
-      ut_string_string ("random", pcooexpr);
-      ut_string_string ("avradeq", pweightexpr);
-    }
+    net_tess_opt_init_sset_pre_default_coo (*pTOpt, *ppos, *pvar, pcooexpr);
+    net_tess_opt_init_sset_pre_default_weight (*pTOpt, *pvar, pweightexpr);
+  }
+
+  else if (ut_file_exist (string) && ut_file_testformat (string, "tess"))
+  {
+    (*pcooexpr) = ut_alloc_1d_char (strlen (string) + 7);
+    (*pweightexpr) = ut_alloc_1d_char (strlen (string) + 7);
+
+    sprintf (*pcooexpr, "file(%s)", string);
+    sprintf (*pweightexpr, "file(%s)", string);
   }
 
   else
   {
-    char **tmp = NULL;
-    ut_string_separate (In.morphooptiini[level], NEUT_SEP_NODEP, &tmp, &qty);
-    if (qty != 2)
-      abort ();
-    for (i = 0; i < 2; i++)
-      if (!strncmp (tmp[i], "coo:", 4))
-	ut_string_string (tmp[i] + 4, pcooexpr);
-      else if (!strncmp (tmp[i], "weight:", 7))
-	ut_string_string (tmp[i] + 7, pweightexpr);
+    ut_string_separate2 (string, NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty1, &qty);
+
+    for (i = 0; i < qty; i++)
+      if (!strcmp (parts[i][0], "coo"))
+	ut_string_string (parts[i][1], pcooexpr);
+      else if (!strcmp (parts[i][0], "weight"))
+	ut_string_string (parts[i][1], pweightexpr);
       else
-	abort ();
-    ut_free_2d_char (tmp, qty);
+	ut_print_message (2, 3, "Unknown variable `%s' (should be `coo' or `weight').\n",
+	                  parts[i][0]);
+
+    if (!(*pcooexpr))
+      net_tess_opt_init_sset_pre_default_coo (*pTOpt, *ppos, *pvar, pcooexpr);
+
+    if (!(*pweightexpr))
+      net_tess_opt_init_sset_pre_default_weight (*pTOpt, *pvar, pweightexpr);
   }
+
+  ut_free_1d_char (string);
 
   return;
 }

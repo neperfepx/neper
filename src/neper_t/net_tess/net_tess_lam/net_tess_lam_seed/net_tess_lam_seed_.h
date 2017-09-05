@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -33,7 +33,6 @@ extern int net_tess_lam_seed_readargs_v (char *value,
 extern int net_tess_lam_seed_set (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
     int dtess, int dcell, struct TESS Dom, char *wtype, double *w, int
     wqty, char *vtype, double *v, int vqty, struct SEEDSET *SSet, struct SEEDSET *pSSet);
-
 
 extern int net_tess_lam_seed_set_init (struct SEEDSET *pSSet);
 

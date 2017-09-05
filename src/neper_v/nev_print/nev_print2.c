@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_.h"
@@ -40,7 +40,6 @@ nev_print_pov2png (char *povray, char *filename, int imagewidth,
 
     // checking (again) if povray is present
     neut_povray_check_error ();
-
 
     if (imageantialias > 0)
       sprintf (command, "%s Input_File_Name=%s +O%s +W%d +H%d -D +A0.2",

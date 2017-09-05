@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -24,7 +24,6 @@ extern void nem_transport_elt_oldelt (struct NODES, struct MESH,
 extern void nem_transport_elt (char *type, char *filename, struct NODES RNodes,
 			       struct MESH RMesh, struct NODES Nodes,
 			       struct MESH Mesh, int **poldelt);
-
 
 extern void nem_transport_node (char *type, char *filename, struct NODES RNodes,
 			        struct MESH RMesh, struct NODES Nodes);

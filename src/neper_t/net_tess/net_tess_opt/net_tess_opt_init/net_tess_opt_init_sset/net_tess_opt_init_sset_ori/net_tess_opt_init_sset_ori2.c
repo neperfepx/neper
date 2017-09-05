@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tess_opt_init_sset_ori_.h"
@@ -98,14 +98,19 @@ net_tess_opt_init_sset_ori_fibre (char *distrib, struct SEEDSET *pSSet)
 }
 
 void
-net_tess_opt_init_sset_ori_crysym (struct IN_T In, struct SEEDSET *pSSet)
+net_tess_opt_init_sset_ori_crysym (struct IN_T In,
+                                   struct MTESS MTess, struct TESS *Tess,
+				   int dtess, int dcell,
+				   struct SEEDSET *pSSet)
 {
   int i;
 
-  for (i = 1; i <= (*pSSet).N; i++)
-    ol_q_qcrysym ((*pSSet).q[i], In.oricrysym, (*pSSet).q[i]);
+  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+                                           In.oricrysym,
+					   &(*pSSet).crysym);
 
-  ut_string_string (In.oricrysym, &(*pSSet).crysym);
+  for (i = 1; i <= (*pSSet).N; i++)
+    ol_q_qcrysym ((*pSSet).q[i], (*pSSet).crysym, (*pSSet).q[i]);
 
   return;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -607,6 +607,9 @@ extern "C"
   extern void neut_tess_inter_seeds (struct TESS Tess, int inter, int **pseed,
 				     int *pseedqty);
   extern int neut_tess_inter_isperslave (struct TESS Tess, int inter);
+
+  extern int neut_tess_face_scale (struct TESS Tess, int face, int *pscale);
+  extern int neut_tess_face_scale_polys (struct TESS Tess, int face, int scale, int *poly);
 
 #endif				/* NEUT_TESS_TOPO_H */
 

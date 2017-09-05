@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_sset_post_.h"
@@ -12,7 +12,6 @@ net_tess_opt_init_sset_post_per (int *periodic, struct TESS Tess, int poly,
   int master;
   int *shift = NULL;
   double **bbox = NULL;
-
 
   if (Tess.Level > 0)
   {

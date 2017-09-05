@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_mesh_gmsh_.h"
@@ -32,7 +32,6 @@ nem_mesh_gmsh_options (FILE * file, int algo2d, int algo3d, int opti,
 
   return;
 }
-
 
 void
 nem_mesh_2d_gmsh_writenodes (struct TESS Tess, struct NODES Nodes,

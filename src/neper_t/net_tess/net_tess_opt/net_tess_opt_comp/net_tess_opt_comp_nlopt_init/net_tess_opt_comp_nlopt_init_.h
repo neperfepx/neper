@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -16,6 +16,5 @@
 
 extern void net_tess_opt_comp_nlopt_init_stop (struct TOPT *pTOpt);
 extern void net_tess_opt_comp_nlopt_init_bounds (struct TOPT *pTOpt);
-extern void net_tess_opt_comp_nlopt_init (struct TOPT *pTOpt);
 extern void net_tess_opt_comp_nlopt_init_objective (struct TOPT *pTOpt);
 #endif

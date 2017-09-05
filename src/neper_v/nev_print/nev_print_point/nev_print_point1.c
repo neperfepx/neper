@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_point_.h"
@@ -84,6 +84,16 @@ nev_print_point (FILE * file, struct POINT Point, struct POINTDATA PointData,
 	  start = 2;
 	  length = 3;
 	}
+	else if (!strcmp (PointData.RadDataType, "tor"))
+	{
+	  start = 2;
+	  length = 3;
+	}
+	else if (!strcmp (PointData.RadDataType, "disc"))
+	{
+	  start = 2;
+	  length = 3;
+	}
 	else if (!strcmp (PointData.RadDataType, "ell"))
 	{
 	  start = 3;
@@ -110,6 +120,10 @@ nev_print_point (FILE * file, struct POINT Point, struct POINTDATA PointData,
 	  nev_print_cube (file, PointData.Coo[i], data, texture);
 	else if (!strcmp (PointData.RadDataType, "cyl"))
 	  nev_print_cyl (file, PointData.Coo[i], data, texture);
+	else if (!strcmp (PointData.RadDataType, "tor"))
+	  nev_print_tor (file, PointData.Coo[i], data, texture);
+	else if (!strcmp (PointData.RadDataType, "disc"))
+	  nev_print_disc (file, PointData.Coo[i], data, texture);
 	else if (!strcmp (PointData.RadDataType, "ell"))
 	  nev_print_ellipsoid (file, PointData.Coo[i], data, texture);
 	else

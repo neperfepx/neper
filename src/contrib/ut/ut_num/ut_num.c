@@ -222,7 +222,6 @@ ut_num_lcomden (int n1, int n2)
       }
   }
 
-
   n2den[0] = 0;
   if (n2 >= 0)
   {

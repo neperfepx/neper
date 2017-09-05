@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_res_.h"
@@ -79,6 +79,18 @@ net_res (struct IN_T In, struct MTESS MTess, struct TESS *Tess,
       file = ut_file_open (In.dec, "w");
       neut_tess_fprintf_dec (file, FTess);
       ut_file_close (file, In.dec, "w");
+    }
+    else
+      ut_print_message (1, 0, "Tess is void; cannot export; skipping\n");
+  }
+
+  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "stl"))
+  {
+    if (FTess.PolyQty != 0)
+    {
+      file = ut_file_open (In.stl, "w");
+      neut_tess_fprintf_stl (file, FTess);
+      ut_file_close (file, In.stl, "w");
     }
     else
       ut_print_message (1, 0, "Tess is void; cannot export; skipping\n");

@@ -217,7 +217,6 @@ ut_file_testpath (const char *name, const char *mode)
   return;
 }
 
-
 void
 ut_file_close (FILE * file, const char *name, const char *mode)
 {
@@ -358,7 +357,6 @@ ut_file_tofile (FILE * in, int qty, FILE * out, const char *a, const char *b)
   return 0;
 }
 
-
 int
 ut_file_readwcomma (FILE * file, double *pres)
 {
@@ -451,7 +449,6 @@ ut_file_format (const char *filename, char **pformat)
   return res;
 }
 
-
 // does not take the blank characters into account (because fscanf skip
 // them)
 int
@@ -521,7 +518,6 @@ ut_file_string_scanncomp (FILE * file, const char *string)
 
   return status;
 }
-
 
 int
 ut_file_string_nextpos (FILE * file, const char *string)

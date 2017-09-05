@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2016 Romain Quey
+@c Copyright (C) 2003-2017 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node File Formats
@@ -597,17 +597,23 @@ of the cells that C belongs to, at successive scales, to its own
 @end ifinfo
 cells, the @var{mid}s are equal to @code{1::1},
 @code{1::2}, @code{1::3}, @code{2::1}, @code{2::2} and @code{2::3}.
-An example of a multiscale cell file providing integer values for these
-cells is:
+The domain (which can be considered as a cell at scale 0), @var{mid} is nil.
+An example of a multiscale cell file that could be used to define the amounts of cells of a 3-scale tessellation is:
 
 @verbatim
+2
+1 2
+2 4
 1::1 3
 1::2 4
-1::3 5
-2::1 4
-2::2 2
-2::3 1
+2::1 5
+2::2 6
 @end verbatim
+
+The file could be used in @code{-T} as: @option{-n file(@var{filename})::file(@var{filename})::file(@var{filename})}.
+The first  instance of @samp{file(@var{filename})} will read the number of scale-1 cells in line 1,
+the second instance of @samp{file(@var{filename})} will read the number of scale-2 cells in lines 2--3 and
+the third  instance of @samp{file(@var{filename})} will read the number of scale-3 cells in lines 4--7.
 
 @node Position File
 @section Position File

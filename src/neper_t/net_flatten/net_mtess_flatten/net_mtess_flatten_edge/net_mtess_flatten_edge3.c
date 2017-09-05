@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_mtess_flatten_edge_.h"
@@ -351,7 +351,6 @@ net_mtess_flatten_edge_domedge_addedges (struct TESS *pFTess, struct TESSE
 
   net_mtess_flatten_edge_domedge_linkedge ((*pFTess).EdgeQty, TessE, domtess,
 				     domedge, 1);
-
 
   for (i = 0; i < TessQty; i++)
   {

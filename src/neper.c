@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neper_.h"
@@ -169,7 +169,17 @@ neper_head (char *neper_version)
   printf (" libscotch");
 #endif
 
+#ifdef HAVE_OPENMP
+  printf (" openmp");
+#endif
+
   printf ("\n");
+
+#ifdef HAVE_OPENMP
+#pragma omp parallel
+  if (omp_get_thread_num() == 0)
+    ut_print_message (0, 0, "Running on %d threads.\n", omp_get_num_threads ());
+#endif
 
 #ifndef DEVEL_OPTIMIZATION
   ut_print_message (1, 0,
@@ -209,10 +219,9 @@ neper_info ()
   ut_print_message (0, 0, "<http://neper.sourceforge.net>\n");
 
   ut_print_message (0, 0,
-		    "Copyright (C) 2003-2016, and GNU GPL'd, by Romain Quey.\n");
+		    "Copyright (C) 2003-2017, and GNU GPL'd, by Romain Quey.\n");
 
   ut_print_message (0, 72, "Comments and bug reports: <%s>.\n", NEPER_EMAIL);
 
   return;
 }
-

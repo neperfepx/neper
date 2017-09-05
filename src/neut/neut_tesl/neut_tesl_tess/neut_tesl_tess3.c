@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesl_tess_.h"
@@ -116,7 +116,7 @@ void neut_tesl_tessEdgeDel(struct TESL Tesl,struct TESS* pTess)
 {
     int i;
     double bound;
-    
+
     double mean=0.4313/pow(Tesl.PolyQty,0.33333333333333333333);
 
     bound=0.5*mean;
@@ -127,7 +127,6 @@ void neut_tesl_tessEdgeDel(struct TESL Tesl,struct TESS* pTess)
     return;
 }
 */
-
 
 /* neut_tesl_tesstializing the properties of the faces ******************* */
 

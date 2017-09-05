@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_x_.h"
@@ -20,6 +20,8 @@ net_tess_opt_comp_x (struct TOPT *pTOpt, double **px)
 
   (*pTOpt).x_seed = ut_alloc_1d_int ((*pTOpt).xqty);
   (*pTOpt).x_var = ut_alloc_1d_int ((*pTOpt).xqty);
+  (*pTOpt).seedvar_x = ut_alloc_2d_int ((*pTOpt).SSet.N + 1, (*pTOpt).Dim + 1);
+  ut_array_2d_int_set ((*pTOpt).seedvar_x + 1, (*pTOpt).SSet.N, (*pTOpt).Dim + 1, -1);
 
   k = 0;
   for (j = 0; j < (*pTOpt).seedoptiqty; j++)
@@ -34,21 +36,23 @@ net_tess_opt_comp_x (struct TOPT *pTOpt, double **px)
 	(*pTOpt).x_seed[k] = seed;
 	(*pTOpt).x_var[k] = dim;
 	(*pTOpt).x_pvar[k] = &((*pTOpt).SSet.SeedCoo0[seed][dim]);
-	(*px)[k++] = (*pTOpt).SSet.SeedCoo0[seed][dim];
-
+	(*px)[k] = (*pTOpt).SSet.SeedCoo0[seed][dim];
+	(*pTOpt).seedvar_x[seed][dim] = k;
       }
       else if (!strcmp (parts[i], "w"))
       {
 	(*pTOpt).x_seed[k] = seed;
-	(*pTOpt).x_var[k] = 3;
+	(*pTOpt).x_var[k] = (*pTOpt).SSet.Dim;
 	(*pTOpt).x_pvar[k] = &((*pTOpt).SSet.SeedWeight[seed]);
-	(*px)[k++] = (*pTOpt).SSet.SeedWeight[seed];
+	(*px)[k] = (*pTOpt).SSet.SeedWeight[seed];
+	(*pTOpt).seedvar_x[seed][(*pTOpt).SSet.Dim] = k;
       }
       else
 	abort ();
+
+      k++;
     }
   }
-
 
   //  k = 0;
   //  for (i = 0; i < qty; i++)

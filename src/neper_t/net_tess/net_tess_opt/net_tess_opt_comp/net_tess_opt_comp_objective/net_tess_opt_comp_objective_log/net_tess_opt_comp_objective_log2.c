@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_log_.h"
@@ -36,37 +36,21 @@ net_tess_opt_comp_objective_log_dis (struct TOPT TOpt, int id)
       if (!strncmp (vars[j], "iter", 4))
 	fprintf (TOpt.TDyn.logdis_fp[id], "%d", TOpt.iter);
       else if (!strcmp (vars[j], "x"))
-	fprintf (TOpt.TDyn.logdis_fp[id], "%.6f", TOpt.curpdf[id].x[i]);
+	fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.curpdf[id].x[i]);
       else if (!strcmp (vars[j], "tarpdf"))
-	fprintf (TOpt.TDyn.logdis_fp[id], "%.6f", TOpt.tarpdf[id].y[i]);
-      /*
-	fprintf (TOpt.TDyn.logdis_fp[id], "%.6f",
-	         ut_fct_eval (TOpt.tarpdf[id],  TOpt.curpdf[id].x[i]));
-		 */
+	fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.tarpdf[id].y[i]);
       else if (!strcmp (vars[j], "tarcdf"))
-	fprintf (TOpt.TDyn.logdis_fp[id], "%.6f", TOpt.tarcdf[id].y[i]);
-      /*
-	fprintf (TOpt.TDyn.logdis_fp[id], "%.6f",
-		 ut_fct_eval (TOpt.tarcdf[id],  TOpt.curpdf[id].x[i]));
-      */
+	fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.tarcdf[id].y[i]);
       else if (!strcmp (vars[j], "curpdf"))
-	fprintf (TOpt.TDyn.logdis_fp[id], "%.6f", TOpt.curpdf[id].y[i]);
+	fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.curpdf[id].y[i]);
       else if (!strcmp (vars[j], "curcdf"))
-	fprintf (TOpt.TDyn.logdis_fp[id], "%.6f", TOpt.curcdf[id].y[i]);
+	fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.curcdf[id].y[i]);
       else if (!strcmp (vars[j], "tarpdf0"))
-	fprintf (TOpt.TDyn.logdis_fp[id], "%.6f", TOpt.tarpdf0[id].y[i]);
-      /*
-	fprintf (TOpt.TDyn.logdis_fp[id], "%.6f",
-	          ut_fct_eval (TOpt.tarpdf0[id],  TOpt.curpdf[id].x[i]));
-      */
+	fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.tarpdf0[id].y[i]);
       else if (!strcmp (vars[j], "tarcdf0"))
-	fprintf (TOpt.TDyn.logdis_fp[id], "%.6f", TOpt.tarcdf0[id].y[i]);
-      /*
-	fprintf (TOpt.TDyn.logdis_fp[id], "%.6f",
-		 ut_fct_eval (TOpt.tarcdf0[id],  TOpt.curpdf[id].x[i]));
-      */
+	fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.tarcdf0[id].y[i]);
       else if (!strcmp (vars[j], "curcdf0"))
-	fprintf (TOpt.TDyn.logdis_fp[id], "%.6f", TOpt.curcdf0[id].y[i]);
+	fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.curcdf0[id].y[i]);
       else
 	fprintf (TOpt.TDyn.logdis_fp[id], "-1");
 
@@ -103,13 +87,13 @@ net_tess_opt_comp_objective_log_var (struct TOPT TOpt)
       else if (!strcmp (vars[j], "id"))
 	fprintf (TOpt.TDyn.logvar_fp, "%d", i);
       else if (!strcmp (vars[j], "x"))
-	fprintf (TOpt.TDyn.logvar_fp, "%.6f", TOpt.SSet.SeedCoo0[i][0]);
+	fprintf (TOpt.TDyn.logvar_fp, "%.12f", TOpt.SSet.SeedCoo0[i][0]);
       else if (!strcmp (vars[j], "y"))
-	fprintf (TOpt.TDyn.logvar_fp, "%.6f", TOpt.SSet.SeedCoo0[i][1]);
+	fprintf (TOpt.TDyn.logvar_fp, "%.12f", TOpt.SSet.SeedCoo0[i][1]);
       else if (!strcmp (vars[j], "z"))
-	fprintf (TOpt.TDyn.logvar_fp, "%.6f", TOpt.SSet.SeedCoo0[i][2]);
+	fprintf (TOpt.TDyn.logvar_fp, "%.12f", TOpt.SSet.SeedCoo0[i][2]);
       else if (!strcmp (vars[j], "w"))
-	fprintf (TOpt.TDyn.logvar_fp, "%.6f", TOpt.SSet.SeedWeight[i]);
+	fprintf (TOpt.TDyn.logvar_fp, "%.12f", TOpt.SSet.SeedWeight[i]);
       else
 	fprintf (TOpt.TDyn.logvar_fp, "-1");
 
@@ -129,6 +113,7 @@ net_tess_opt_comp_objective_log_val (struct TOPT TOpt)
 {
   int i, id;
   int varqty;
+  double val;
   char **vars = NULL;
 
   if (!ut_string_iter_test (TOpt.TDyn.logval, NEUT_SEP_NODEP, TOpt.iter))
@@ -141,14 +126,18 @@ net_tess_opt_comp_objective_log_val (struct TOPT TOpt)
     if (!strncmp (vars[i], "iter", 4))
       fprintf (TOpt.TDyn.logval_fp, "%d", TOpt.TDyn.iter);
     else if (!strcmp (vars[i], "val"))
-      fprintf (TOpt.TDyn.logval_fp, "%.6f", TOpt.objval);
+      fprintf (TOpt.TDyn.logval_fp, "%.12f", TOpt.objval);
     else if (!strcmp (vars[i], "valmin"))
-      fprintf (TOpt.TDyn.logval_fp, "%.6f", TOpt.objvalmin[TOpt.iter]);
+      fprintf (TOpt.TDyn.logval_fp, "%.12f", TOpt.objvalmin[TOpt.iter]);
+    else if (!strcmp (vars[i], "val0"))
+      fprintf (TOpt.TDyn.logval_fp, "%.12f", TOpt.objval0);
+    else if (!strcmp (vars[i], "valmin0"))
+      fprintf (TOpt.TDyn.logval_fp, "%.12f", TOpt.objvalmin0[TOpt.iter]);
     else if (!strncmp (vars[i], "val(", 4))
     {
       sscanf (vars[i], "val(%d)", &id);
       if (id >= 1 && id <= TOpt.tarqty)
-	fprintf (TOpt.TDyn.logval_fp, "%.6f", TOpt.curval[id - 1]);
+	fprintf (TOpt.TDyn.logval_fp, "%.12f", TOpt.curval[id - 1]);
       else
 	fprintf (TOpt.TDyn.logval_fp, "-1");
     }
@@ -156,10 +145,24 @@ net_tess_opt_comp_objective_log_val (struct TOPT TOpt)
     {
       sscanf (vars[i], "val0(%d)", &id);
       if (id >= 1 && id <= TOpt.tarqty)
-	fprintf (TOpt.TDyn.logval_fp, "%.6f", TOpt.curval0[id - 1]);
+	fprintf (TOpt.TDyn.logval_fp, "%.12f", TOpt.curval0[id - 1]);
       else
 	fprintf (TOpt.TDyn.logval_fp, "-1");
     }
+    else if (!strcmp (vars[i], "eps"))
+    {
+      neut_topt_eps (TOpt, &val);
+      fprintf (TOpt.TDyn.logval_fp, "%.12f", val);
+    }
+    else if (!strcmp (vars[i], "reps"))
+    {
+      neut_topt_reps (TOpt, &val);
+      fprintf (TOpt.TDyn.logval_fp, "%.12f", val);
+    }
+    else if (!strcmp (vars[i], "loop"))
+      fprintf (TOpt.TDyn.logval_fp, "%d", TOpt.loop);
+    else if (!strcmp (vars[i], "plateaulength"))
+      fprintf (TOpt.TDyn.logval_fp, "%d", TOpt.loop_plateau_length[TOpt.loop - 1]);
     else
       fprintf (TOpt.TDyn.logval_fp, "-1");
 
@@ -167,6 +170,52 @@ net_tess_opt_comp_objective_log_val (struct TOPT TOpt)
       fprintf (TOpt.TDyn.logval_fp, " ");
   }
   fprintf (TOpt.TDyn.logval_fp, "\n");
+  fflush (TOpt.TDyn.logval_fp);
+
+  ut_free_2d_char (vars, varqty);
+
+  return;
+}
+
+void
+net_tess_opt_comp_objective_log_tesr (struct TOPT TOpt)
+{
+  int i, j, k;
+  char **vars = NULL;
+  int varqty;
+
+  if (!ut_string_iter_test (TOpt.TDyn.logtesr, NEUT_SEP_NODEP, TOpt.iter))
+    return;
+
+  ut_string_separate (TOpt.TDyn.logtesr, NEUT_SEP_NODEP, &vars, &varqty);
+
+  for (i = 1; i <= TOpt.CellQty; i++)
+    for (j = 0; j < TOpt.tarcellptqty[i]; j++)
+    {
+      for (k = 0; k < varqty; k++)
+      {
+	if (!strncmp (vars[k], "iter", 4))
+	  fprintf (TOpt.TDyn.logtesr_fp, "%d", TOpt.TDyn.iter);
+	else if (!strcmp (vars[k], "id"))
+	  fprintf (TOpt.TDyn.logtesr_fp, "%d", i);
+	else if (!strcmp (vars[k], "x"))
+	  fprintf (TOpt.TDyn.logtesr_fp, "%f", TOpt.tarcellpts[i][j][0]);
+	else if (!strcmp (vars[k], "y"))
+	  fprintf (TOpt.TDyn.logtesr_fp, "%f", TOpt.tarcellpts[i][j][1]);
+	else if (!strcmp (vars[k], "z"))
+	  fprintf (TOpt.TDyn.logtesr_fp, "%f", TOpt.tarcellpts[i][j][2]);
+	else if (!strcmp (vars[k], "w"))
+	  fprintf (TOpt.TDyn.logtesr_fp, "%f", TOpt.tarcellptweights[i][j]);
+	else if (!strcmp (vars[k], "dist"))
+	  fprintf (TOpt.TDyn.logtesr_fp, "%f", TOpt.tarcellptsdist[i][j]);
+	else
+	  fprintf (TOpt.TDyn.logtesr_fp, "-1");
+
+	if (k < varqty - 1)
+	  fprintf (TOpt.TDyn.logtesr_fp, " ");
+      }
+      fprintf (TOpt.TDyn.logtesr_fp, "\n");
+    }
 
   ut_free_2d_char (vars, varqty);
 

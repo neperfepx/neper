@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_fval_cellval_.h"
@@ -119,44 +119,4 @@ net_tess_opt_comp_objective_fval_cellval_centroidsize (struct TOPT *pTOpt,
   ut_free_1d (coo);
 
   return;
-}
-
-int
-net_tess_opt_comp_objective_fval_cellval_tesr (struct TOPT *pTOpt, int var,
-					       int cell)
-{
-  int i;
-  double dist;
-  int wrong = 0;
-
-  (*pTOpt).curcellval[var][cell][0] = 0;
-
-  for (i = 0; i < (*pTOpt).tarcellptqty[cell]; i++)
-  {
-    neut_polys_point_dist ((*pTOpt).Poly,
-			   (*pTOpt).tarcellptscells[cell][i],
-			   (*pTOpt).CellSCellQty[cell],
-			   (*pTOpt).tarcellpts[cell][i], &dist);
-
-    if (!strcmp ((*pTOpt).objective, "vol"))
-      (*pTOpt).curcellval[var][cell][0] += dist;
-    else if (!strncmp ((*pTOpt).objective, "surf", 4))
-      (*pTOpt).curcellval[var][cell][0] += pow (dist, 2.0);
-    else
-      abort ();
-
-    if (dist > 0)
-      wrong++;
-  }
-
-  if (!strncmp ((*pTOpt).objective, "surf", 4))
-  {
-    (*pTOpt).curcellval[var][cell][0] /= (*pTOpt).tarrefval[var];
-    wrong = -1;
-  }
-
-  (*pTOpt).curcellval[var][cell][0] /= ((*pTOpt).tarrefval[var] *
-					(*pTOpt).tarcellptqty[0]);
-
-  return wrong;
 }

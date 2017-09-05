@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
-Changes by Romain Quey - 20 Dec 2013: 
+Changes by Romain Quey - 20 Dec 2013:
 - Removed Makefile which is replaced by CMakeLists.txt for compiling
   with CMake.
 - Added a bunch of "trick to disable warning" one-liners for fixing up
@@ -78,7 +78,7 @@ History
     Fixed minor compilation bugs for new versions of gcc
 
 ----------------------------------------------------------------------------
-Changes by Romain Quey - 20 Dec 2013: 
+Changes by Romain Quey - 20 Dec 2013:
 - Removed Makefile which is replaced by CMakeLists.txt for compiling
   with CMake.
 - Added a bunch of "trick to disable warning" one-liners for fixing up

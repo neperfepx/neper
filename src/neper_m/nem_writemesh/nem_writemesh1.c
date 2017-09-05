@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_writemesh_.h"
@@ -108,7 +108,7 @@ nem_writemesh (struct IN_M In, struct TESS Tess,
     ut_alloc_1d_int (Mesh[3].EltQty + 1);
 
     file = ut_file_open (In.geof, "w");
-    neut_mesh_fprintf_geof (file, Nodes, Mesh[0], Mesh[1], Mesh[2],
+    neut_mesh_fprintf_geof (file, Nodes, Mesh[1], Mesh[2],
 			    Mesh[3], NSet[0], NSet[1], NSet[2],
 			    expandnset, expandfaset, In.dimout, Part, Bound);
     ut_file_close (file, In.geof, "w");

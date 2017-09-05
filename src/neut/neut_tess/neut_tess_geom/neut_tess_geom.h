@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -103,6 +103,13 @@ extern "C"
 ///
   extern void neut_tess_cellavsize (struct TESS Tess,
 				    int CellQty, double *psize);
+
+  extern void neut_tess_cellavdiameq_cellqty (struct TESS Tess, double avdiameq,
+                                              int *pCellQty, double *fact2);
+
+  extern void neut_tess_cellavsize_cellqty (struct TESS Tess, double
+					    avsize, int *pCellQty,
+					    double *pfact);
 
 /// \brief Get the volume of a TESS
 ///

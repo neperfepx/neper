@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_reg_merge_.h"
@@ -172,7 +172,7 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
       ut_print_progress_nonl (stdout, 100 * lratio1, 100, string, prevstring);
     }
 
-    /* ForceMerge deletes the edges specified manually 
+    /* ForceMerge deletes the edges specified manually
      * net_reg_merge_forcemerge (pTess,Reg);
      */
 

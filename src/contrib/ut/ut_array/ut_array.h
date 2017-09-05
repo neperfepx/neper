@@ -5,6 +5,11 @@
 extern "C" {
 #endif
 
+#ifdef HAVE_GSL
+#include<gsl/gsl_rng.h>
+#include<gsl/gsl_randist.h>
+#endif // HAVE_GSL
+
 #ifndef UT_ARRAY_H
 #define UT_ARRAY_H
 
@@ -133,6 +138,7 @@ extern double ut_array_2d_absmax (double **, int, int);
 extern int ut_array_1d_int_max_index (int *, int);
 extern double ut_array_1d_sum (double *, int);
 extern double ut_array_1d_prod (double *, int);
+extern int ut_array_1d_int_scalprod (int *, int *, int);
 extern double ut_array_1d_scalprod (double *, double *, int);
 extern int ut_array_1d_int_sum (int *, int);
 extern int ut_array_1d_int_prod (int *, int);
@@ -286,12 +292,16 @@ extern int ut_array_1d_int_percent (int *array, int size, int *percent);
 extern int ut_array_3d_int_1d (int*** array, int size1, int size2, int size3,
                     int** parray1d);
 
-extern int ut_array_1d_set_3 (double* array, double v1, double v2, double v3);
+extern int ut_array_1d_int_set_2 (int* array, int v1, int v2);
 extern int ut_array_1d_int_set_3 (int* array, int v1, int v2, int v3);
 extern int ut_array_1d_int_set_4 (int* array, int v1, int v2, int v3, int v4);
 extern int ut_array_1d_int_set_5 (int* array, int v1, int v2, int v3, int v4, int v5);
 extern int ut_array_1d_set_2 (double* array, double v1, double v2);
-extern int ut_array_1d_int_set_2 (int* array, int v1, int v2);
+extern int ut_array_1d_set_3 (double* array, double v1, double v2, double v3);
+extern int ut_array_1d_set_4 (double* array, double v1, double v2, double v3, double v4);
+extern int ut_array_1d_set_5 (double* array, double v1, double v2, double v3, double v4, double v5);
+extern int ut_array_1d_set_6 (double* array, double v1, double v2, double v3, double v4, double v5, double v6);
+extern int ut_array_1d_set_7 (double* array, double v1, double v2, double v3, double v4, double v5, double v6, double v7);
 
 extern void ut_array_1d_int_set_id (int* array, int size);
 
@@ -334,6 +344,12 @@ extern int ut_array_1d_int_lists_merge (int* list1, int qty1, int*
 					int* pqty);
 
 extern int ut_array_1d_int_duplicates (int* array, int qty);
+
+#ifdef HAVE_GSL
+extern void ut_array_1d_set_rand (double *, int, double, double, gsl_rng *r);
+extern void ut_array_1d_int_set_rand (int *, int, int, int, gsl_rng *r);
+extern void ut_array_1d_int_choose (int *src, int srcsize, int *dest, int destsize, gsl_rng *r);
+#endif
 
 #endif /* UT_ARRAY_H */
 

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_meshdata_.h"
@@ -105,7 +105,6 @@ nev_meshdata_init (struct MESH Mesh,
   if ((*pMeshData).RadData)
     nev_data_rad_radius ((*pMeshData).RadData, (*pMeshData).EltQty,
 			 (*pMeshData).Rad);
-
 
   return;
 }

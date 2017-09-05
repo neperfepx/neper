@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tdyn_fprintf_.h"
@@ -33,6 +33,13 @@ neut_tdyn_fprintf_pre (struct TDYN *pTDyn)
       (*pTDyn).logdis_fp[i] = ut_file_open (filename, "w");
       ut_free_1d_char (filename);
     }
+  }
+
+  if (strcmp ((*pTDyn).logtesr, "none"))
+  {
+    filename = ut_string_addextension ((*pTDyn).body, ".logtesr");
+    (*pTDyn).logtesr_fp = ut_file_open (filename, "w");
+    ut_free_1d_char (filename);
   }
 
   if (strcmp ((*pTDyn).logval, "none"))
@@ -83,6 +90,14 @@ neut_tdyn_fprintf_post (struct TDYN *pTDyn)
     filename = ut_string_addextension ((*pTDyn).body, ".logval");
     printf ("\n");
     ut_file_close_nonl ((*pTDyn).logval_fp, filename, "w");
+    ut_free_1d_char (filename);
+  }
+
+  if (strcmp ((*pTDyn).logtesr, "none"))
+  {
+    filename = ut_string_addextension ((*pTDyn).body, ".logtesr");
+    printf ("\n");
+    ut_file_close_nonl ((*pTDyn).logtesr_fp, filename, "w");
     ut_free_1d_char (filename);
   }
 
@@ -149,7 +164,6 @@ neut_tdyn_fprintf_time (struct TDYN TDyn)
 	fprintf (TDyn.logtime_fp, " ");
     }
     fprintf (TDyn.logtime_fp, "\n");
-
 
   ut_free_2d_char (vars,varqty);
 

@@ -149,6 +149,7 @@ extern float*** ut_alloc_3d_float (unsigned int, unsigned int,
 extern double*** ut_alloc_3d (unsigned int, unsigned int, unsigned int);
 extern char*** ut_alloc_3d_char (unsigned int, unsigned int, unsigned int);
 
+extern int**** ut_alloc_3d_pint (unsigned int, unsigned int, unsigned int);
 extern int**** ut_alloc_4d_int (unsigned int, unsigned int,
 			       unsigned int, unsigned int);
 extern double**** ut_alloc_4d_double (unsigned int, unsigned int,

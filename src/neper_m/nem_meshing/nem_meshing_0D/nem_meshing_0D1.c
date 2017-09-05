@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_0D_.h"
@@ -45,7 +45,6 @@ nem_meshing_0D (struct TESS Tess, struct MESHPARA MeshPara, struct
 	nem_meshing_0D_addvermesh (N, M, master, Tess.PerVerShift[i],
 				   pNodes, Mesh);
       }
-
 
       ut_print_progress_nonl (stdout, i, Tess.VerQty, "%3.0f%%", message);
     }

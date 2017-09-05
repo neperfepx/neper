@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_1D_.h"
@@ -25,7 +25,7 @@ nem_meshing_1D (struct MESHPARA MeshPara, struct TESS Tess,
   // This array records the cls of the 0D nodes.  Due to a tolerancy on
   // the element size in EdgeMeshing, elements a little larger than the
   // cl at the 0D nodes can be generated.  This requires to update the
-  // 0D nodes to at least the size of the 1D elements they belong to. 
+  // 0D nodes to at least the size of the 1D elements they belong to.
   // NodeCl records what should become the 0D node cls; they are updated
   // at the end.
   double *NodeCl = ut_alloc_1d (Node0DQty + 1);

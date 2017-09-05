@@ -1,5 +1,5 @@
 /* This file is part of the Neper software sizeage. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_sset_coo_.h"
@@ -36,7 +36,7 @@ net_tess_opt_init_sset_coo_cluster (int dim, gsl_rng *r2, int qty, double dist,
 void
 net_tess_opt_init_sset_coo_centre (struct TOPT *pTOpt, gsl_rng *r,
                                    char *var, int pos, char *cooexpr,
-				   struct POINT Point, 
+				   struct POINT Point,
 				   struct POINT Point2, int cell, double *centre)
 {
   int id, status, iter, iter_max = 1000;
@@ -77,7 +77,7 @@ net_tess_opt_init_sset_coo_centre (struct TOPT *pTOpt, gsl_rng *r,
 
   else if (!strncmp (var, "centroid", 8))
   {
-    if (!strcmp (cooexpr, "centroid"))
+    if (!strcmp (cooexpr, "centroid") || !strcmp (cooexpr, "LLLFP2011"))
       ut_array_1d_memcpy (centre, (*pTOpt).Dim, (*pTOpt).tarcellval[pos][cell]);
     else
       abort ();
@@ -85,7 +85,7 @@ net_tess_opt_init_sset_coo_centre (struct TOPT *pTOpt, gsl_rng *r,
 
   else if (!strcmp (var, "tesr"))
   {
-    if (!strcmp (cooexpr, "centroid"))
+    if (!strcmp (cooexpr, "centroid") || !strcmp (cooexpr, "LLLFP2011"))
       neut_tesr_cell_centre ((*pTOpt).tartesr, cell, centre);
     else
       abort ();
@@ -114,6 +114,29 @@ net_tess_opt_init_sset_coo_record (struct TOPT *pTOpt, int cell, struct POINT
     neut_topt_seed_subcell_add (pTOpt, (*pPoint2).PointCoo[i],
 				(*pPoint2).PointRad[i], cell);
   }
+
+  return;
+}
+
+void
+net_tess_opt_init_sset_coo_lllfp2011 (struct TOPT *pTOpt)
+{
+  int i, j;
+  double *centroid = ut_alloc_1d (3);
+  struct TESS T;
+  neut_tess_set_zero (&T);
+
+  net_tess3d ((*pTOpt).Dom, 1, (*pTOpt).SSet, "ann", 1, NULL, &T);
+
+  for (i = 1; i <= (*pTOpt).SSet.N; i++)
+  {
+    neut_tess_cell_centroid (T, i, centroid);
+    for (j = 0; j < (*pTOpt).Dim; j++)
+      (*pTOpt).SSet.SeedCoo[i][j] = 2 * (*pTOpt).SSet.SeedCoo[i][j] - centroid[j];
+  }
+
+  ut_free_1d (centroid);
+  neut_tess_free (&T);
 
   return;
 }

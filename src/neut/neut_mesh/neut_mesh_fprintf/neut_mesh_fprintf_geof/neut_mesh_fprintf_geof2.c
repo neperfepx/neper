@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_geof_.h"
@@ -15,14 +15,23 @@ neut_mesh_fprintf_geof_head (FILE * file)
 void
 neut_mesh_fprintf_geof_nodes (FILE * out, struct NODES Nodes)
 {
-  int i, j;
+  int i, j, dim;
+
+  // checking the dimension of the mesh from the node coordinates
+  dim = 2;
+  for (i = 1; i <= Nodes.NodeQty; i++)
+    if (Nodes.NodeCoo[i][2] != 0)
+    {
+      dim = 3;
+      break;
+    }
 
   fprintf (out, "**node\n");
-  fprintf (out, "%d 3\n", Nodes.NodeQty);
+  fprintf (out, "%d %d\n", Nodes.NodeQty, dim);
   for (i = 1; i <= Nodes.NodeQty; i++)
   {
     fprintf (out, "%d", i);
-    for (j = 0; j < 3; j++)
+    for (j = 0; j < dim; j++)
       fprintf (out, "  %.12f",
 	       (fabs (Nodes.NodeCoo[i][j]) <
 		1e-12) ? 0 : Nodes.NodeCoo[i][j]);
@@ -60,7 +69,7 @@ neut_mesh_fprintf_geof_elts (FILE * out, struct MESH Mesh1D,
   fprintf (out, "\n**element\n");
   fprintf (out, "%d\n", eltqty);
 
-  // 2D elts
+  // 1D elts
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "1") && Mesh1D.EltQty > 0)
   {
     eltnodeqty =
@@ -296,6 +305,35 @@ neut_mesh_fprintf_geof_lisets (FILE* file, struct MESH Mesh2D,
 					 Bound.BoundNodes[i][j][k + 1]);
 	fprintf (file, "\n");
       }
+
+  return;
+}
+
+void
+neut_mesh_fprintf_geof_lisets_all (FILE* file, struct MESH Mesh1D)
+{
+  int i, j, elt;
+
+  if (Mesh1D.Dimension != 1)
+    abort ();
+
+  fprintf (file, "\n");
+  for (i = 1; i <= Mesh1D.ElsetQty; i++)
+  {
+     fprintf (file, "**liset edge%d\n", i);
+     for (j = 1; j <= Mesh1D.Elsets[i][0]; j++)
+     {
+       elt = Mesh1D.Elsets[i][j];
+       if (Mesh1D.EltOrder == 1)
+	 fprintf (file, "line %d %d\n", Mesh1D.EltNodes[elt][0],
+					Mesh1D.EltNodes[elt][1]);
+       else
+	 fprintf (file, "quad %d %d %d\n", Mesh1D.EltNodes[elt][0],
+					   Mesh1D.EltNodes[elt][2],
+					   Mesh1D.EltNodes[elt][1]);
+     }
+     fprintf (file, "\n");
+  }
 
   return;
 }

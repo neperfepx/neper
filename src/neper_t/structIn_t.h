@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -30,8 +30,11 @@ extern "C"
     char **morphooptiini;		//
     char *morphooptialgoneighstring;    // opti algorithm
     char **morphooptialgoneigh;		//
+    char *morphooptialgomaxiterstring;  // max number of iterations without
+    					// decreasing the objective function
+    char **morphooptialgomaxiter;	//
     char *morphooptiobjectivestring;	// opti objective function
-    char **morphooptiobjective;		// 
+    char **morphooptiobjective;		//
     char *morphooptigridstring;		// grid definition
     char **morphooptigrid;		//
     char *morphooptismoothstring;	// smoothing parameter
@@ -50,6 +53,8 @@ extern "C"
     char **morphooptilogvar;		//
     char *morphooptilogdisstring;       // distribution log
     char **morphooptilogdis;		//
+    char *morphooptilogtesrstring;      // tesr control points log
+    char **morphooptilogtesr;		//
     char *morphooptilogvalstring;       // value log
     char **morphooptilogval;		//
     char *morphooptimultiseedstring;	// opti multiseed
@@ -96,6 +101,7 @@ extern "C"
     char *raw;				// raw data of tesr file
     char *geo;				// Gmsh geo file
     char *ply;				// Ply file
+    char *stl;				// stl file
     char *dec;				// 3dec file
     char *fe;				// fe file
     char *stc;				// cell stat file

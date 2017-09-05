@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -18,6 +18,8 @@
 #include"neper_config.h"
 
 #include"net_tess_opt_init_sset_pre.h"
+
+extern void net_tess_opt_init_sset_pre_dim (struct TOPT TOpt, struct SEEDSET *pSSet);
 
 extern void net_tess_opt_init_sset_pre_type (struct SEEDSET *pSSet);
 

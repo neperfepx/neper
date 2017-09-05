@@ -1,6 +1,6 @@
 \input texinfo.tex
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2016 Romain Quey
+@c Copyright (C) 2003-2017 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @afourpaper
@@ -12,7 +12,7 @@
 @c %**start of header
 @setfilename        neper.info
 @include version.texi
-@set COPYRIGHT @copyright{} 2003--2016 Romain Quey
+@set COPYRIGHT @copyright{} 2003--2017 Romain Quey
 @c
 @settitle Neper @value{NEPER_VERSION}
 @footnotestyle separate

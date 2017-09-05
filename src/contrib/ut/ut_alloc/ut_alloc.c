@@ -892,6 +892,44 @@ ut_alloc_4d_int (unsigned int dim1, unsigned int dim2,
   return res;
 }
 
+int ****
+ut_alloc_3d_pint (unsigned int dim1, unsigned int dim2,
+		  unsigned int dim3)
+{
+  unsigned int i, j, k;
+  int ****res = (int ****) calloc (dim1, sizeof (int ***));
+  if (!res)
+  {
+    printf ("memory allocation failed! (%dx%dx%d)\n", dim1, dim2, dim3);
+    abort ();
+  }
+
+  for (i = 0; i < dim1; i++)
+  {
+    res[i] = (int ***) calloc (dim2, sizeof (int **));
+    if (!res[i])
+    {
+      printf ("memory allocation failed!\n");
+      abort ();
+    }
+
+    for (j = 0; j < dim2; j++)
+    {
+      res[i][j] = (int **) calloc (dim3, sizeof (int *));
+      if (!res[i][j])
+      {
+	printf ("memory allocation failed!\n");
+	abort ();
+      }
+
+      for (k = 0; k < dim3; k++)
+	res[i][j][k] = NULL;
+    }
+  }
+
+  return res;
+}
+
 double ****
 ut_alloc_4d (unsigned int dim1, unsigned int dim2,
 	     unsigned int dim3, unsigned int dim4)

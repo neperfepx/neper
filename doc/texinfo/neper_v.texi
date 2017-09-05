@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2016 Romain Quey
+@c Copyright (C) 2003-2017 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Visualization Module (-V)
@@ -40,7 +40,7 @@ Here is what a typical run of @mV{} looks like,
     Info   : Version 3.0.0
     Info   : Built with: gsl nlopt muparser
     Info   : <http://neper.sourceforge.net>
-    Info   : Copyright (C) 2003-2016, and GNU GPL'd, by Romain Quey.
+    Info   : Copyright (C) 2003-2017, and GNU GPL'd, by Romain Quey.
     Info   : Comments and bug reports: <neper-users@lists.sourceforge.net>.
     Info   : Loading initialization file `/home/rquey/.neperrc'...
     Info   : ---------------------------------------------------------------
@@ -754,10 +754,17 @@ cube axes).
 For cylinder shape@comma{} @code{@var{var}} must be @samp{cyl} and the file
 must contain@comma{} for each point@comma{} the radius@comma{} the
 length@comma{} then the coordinates of the axis.
+For disc (2D) shape@comma{} @code{@var{var}} must be @samp{disc} and the file
+must contain@comma{} for each point@comma{} the radius@comma{}
+then the coordinates of the axis.
 For ellipsoidal shape@comma{} @code{@var{var}} must be @samp{ell} and
 the file must contain@comma{} for each point@comma{} the three radii
 then the coordinates of the three axes.
-The last capability is very specific: if the points are plotted in 
+For torus shape@comma{} @code{@var{var}} must be @samp{tor} and the file
+must contain@comma{} for each point@comma{} the major radius (centre to
+centre line)@comma{} the minor radius@comma{} then the coordinates of
+the normal axis.
+The last capability is very specific: if the points are plotted in
 Rodrigues space@comma{} appending
 @samp{:rodrigues} to the option argument enables to account for space
 distortion.

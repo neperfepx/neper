@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_post_.h"
@@ -79,6 +79,14 @@ net_tess_opt_post (struct MTESS *pMTess, struct TESS *Tess,
     ut_array_1d_memcpy ((*pSSet).SeedCoo[i], 3,
 			coo[TOpt.CellSCellList[i][0]]);
     (*pSSet).SeedWeight[i] = weight[TOpt.CellSCellList[i][0]];
+  }
+
+  if (TOpt.tartesrscale)
+  {
+    neut_tess_scale (pTess,
+	             1 / TOpt.tartesrscale[0],
+	             1 / TOpt.tartesrscale[1],
+	             1 / TOpt.tartesrscale[2]);
   }
 
   net_tess_opt_post_modes (TOpt, Tess, tessid);

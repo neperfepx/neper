@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_gmsh_.h"
@@ -87,7 +87,6 @@ neut_gmsh_optialgo_nb (char *algo, int *pnb)
 
   return ((*pnb) == -2) ? -1 : 0;
 }
-
 
 int
 neut_gmsh_elt_nb (char *type, int dim, int order, int *pnb)

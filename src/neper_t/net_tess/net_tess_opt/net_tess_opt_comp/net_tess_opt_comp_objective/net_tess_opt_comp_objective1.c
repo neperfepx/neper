@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_.h"
@@ -11,18 +11,23 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
 			     void *data)
 {
   int i, status;
+  double val;
   struct TOPT *pTOpt = (struct TOPT *) data;
   char *message = ut_alloc_1d_char (1000);
   struct timeval ini_time, seed_time, tess_time, obj_time, end_time;
   char *fmin = ut_alloc_1d_char (1000);
   char *f = ut_alloc_1d_char (1000);
+  (void) grad;
+  char *loopnotice = ut_alloc_1d_char (1000);
+
+  if ((*pTOpt).loop > 1)
+    sprintf (loopnotice, " (%d %s)", (*pTOpt).loop, (*pTOpt).algoname[(*pTOpt).algoid]);
+  else
+    strcpy (loopnotice, "");
 
   gettimeofday (&ini_time, NULL);
 
   ((*pTOpt).iter)++;
-
-  grad = grad;
-  n = n;
 
   // In certain cases, the caller may wish to force the optimization to
   // halt, for some reason unknown to NLopt. For example, if the user
@@ -69,15 +74,45 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
 
   gettimeofday (&end_time, NULL);
 
-  if ((*pTOpt).dvalditer >= 0)
+  // must be before neut_topt_[r]eps
+  if (n > 0 && neut_topt_plateau (pTOpt))
   {
-    if ((*pTOpt).iter > (*pTOpt).xqty &&
-	((*pTOpt).objvalmin[(*pTOpt).iter - (*pTOpt).xqty] - (*pTOpt).objvalmin[(*pTOpt).iter]) <
-	(*pTOpt).dvalditer)
+#ifdef HAVE_NLOPT
+    nlopt_set_force_stop ((*pTOpt).opt, -100 - neut_topt_plateau (pTOpt));
+#endif
+    printf ("\n");
+    strcpy ((*pTOpt).message, "");
+    ut_print_message (0, 3, "");
+  }
+
+  if (n > 0 && (*pTOpt).eps >= 0)
+  {
+    status = neut_topt_eps (*pTOpt, &val);
+    if (status == 0 && val < (*pTOpt).eps)
     {
-      force_stop = 0;
 #ifdef HAVE_NLOPT
       nlopt_set_force_stop ((*pTOpt).opt, -6);
+#endif
+    }
+  }
+
+  if (n > 0 && (*pTOpt).reps >= 0)
+  {
+    status = neut_topt_reps (*pTOpt, &val);
+    if (status == 0 && val < (*pTOpt).reps)
+    {
+#ifdef HAVE_NLOPT
+      nlopt_set_force_stop ((*pTOpt).opt, -7);
+#endif
+    }
+  }
+
+  if (n > 0 && (*pTOpt).loopmax >= 0)
+  {
+    if ((*pTOpt).loop > (*pTOpt).loopmax)
+    {
+#ifdef HAVE_NLOPT
+      nlopt_set_force_stop ((*pTOpt).opt, -8);
 #endif
     }
   }
@@ -113,18 +148,19 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
       for (i = 0; i < 6 - ut_num_tenlen_int ((*pTOpt).iter); i++)
 	blank = strcat (blank, " ");
 
-      sprintf (message, "Iteration %s%d: fmin%s f%s", blank, (*pTOpt).iter,
-	       fmin, f);
+      sprintf (message, "Iteration %s%d: fmin%s f%s%s", blank, (*pTOpt).iter,
+	       fmin, f, loopnotice);
     }
     else
     {
       for (i = 0; i < 11 - ut_num_tenlen_int ((*pTOpt).iter); i++)
 	blank = strcat (blank, " ");
-      sprintf (message, "Iter %s%d: fmin=%s f=%s", blank, (*pTOpt).iter,
-	       fmin, f);
+      sprintf (message, "Iter %s%d: fmin=%s f=%s%s", blank, (*pTOpt).iter,
+	       fmin, f, loopnotice);
     }
     ut_free_1d_char (blank);
   }
+
   else
   {
     printf ("\n");
@@ -150,36 +186,12 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
   gettimeofday (&((*pTOpt).end_time), NULL);
 
 #ifdef DEVEL_DEBUGGING_TEST
-  double *vol = ut_alloc_1d ((*pTOpt).CellQty + 1);
-  double domvol, totvol;
-  neut_tess_volume ((*pTOpt).Dom, &domvol);
-  for (i = 1; i <= (*pTOpt).CellQty; i++)
-    neut_polys_volume ((*pTOpt).Poly, (*pTOpt).CellSCellList[i],
-	               (*pTOpt).CellSCellQty[i], vol + i);
-
-  totvol = ut_array_1d_sum (vol + 1, (*pTOpt).CellQty);
-
-  if (!ut_num_requal (totvol, domvol, 1e-6))
-  {
-    printf ("\n");
-    ut_print_lineheader (2);
-    printf ("Wrong cell update in net_polycomp.\n");
-    printf ("TDyn.seedchanged = ");
-    ut_array_1d_int_fprintf (stdout, (*pTOpt).TDyn.seedchanged,
-	(*pTOpt).TDyn.seedchangedqty, "%d");
-    printf ("TDyn.cellchanged = ");
-    ut_array_1d_int_fprintf (stdout, (*pTOpt).TDyn.cellchanged,
-	(*pTOpt).TDyn.cellchangedqty, "%d");
-    printf ("cell vols: ");
-    ut_array_1d_fprintf (stdout, vol + 1, (*pTOpt).CellQty, "%.15f");
-    printf ("totvol = %.15f != domvol = %.15f (ratio %.12f)\n",
-	              totvol, domvol, totvol / domvol);
-    abort ();
-  }
+  net_tess_opt_comp_objective_debugtest (*pTOpt);
 #endif
 
   ut_free_1d_char (fmin);
   ut_free_1d_char (f);
+  ut_free_1d_char (loopnotice);
 
   return (*pTOpt).objval;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_input_.h"
@@ -145,6 +145,9 @@ void
 nem_input_init_dim_datadim (struct IN_M *pIn, int datadim)
 {
   int i;
+
+  if (strstr ((*pIn).dimstring, "."))
+    ut_print_message (2, 2, "Failed to process expression `%s' (option -dim).\n", (*pIn).dimstring);
 
   if (ut_string_inlist ((*pIn).dimstring, NEUT_SEP_NODEP, "none"))
   {

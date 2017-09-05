@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_partition_.h"
@@ -92,7 +92,6 @@ nem_partition_elts_balancing_Q (struct MESH Mesh, struct PART *pPart,
 	break;
       }
     }
-
 
     if ((double) (inisum - sum) / (double) inisum > level)
       break;

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_reg_merge_del_.h"
@@ -194,7 +194,6 @@ SearchDelNNewVer (struct TESS *pTess, int edge, int *pdelver, int *pnewver)
 
   return;
 }
-
 
 int
 UpdateVerCoo (struct TESS *pTess, int delver, int newver, int verbosity)

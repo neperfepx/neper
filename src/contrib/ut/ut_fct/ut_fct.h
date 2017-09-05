@@ -55,6 +55,8 @@ extern int ut_fct_scale (struct FCT *pFct, double val);
 extern int ut_fct_add (struct FCT *Fct1, int qty, double *fact, char *expr, struct FCT *pFct2);
 extern void ut_fct_debug (FILE *fp, struct FCT Fct);
 
+extern int ut_fct_x_pos (struct FCT Fct, double x);
+
 #endif /* UT_FCT_H */
 
 #ifdef __cplusplus

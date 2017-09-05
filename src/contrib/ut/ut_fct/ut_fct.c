@@ -35,7 +35,7 @@ void
 ut_fct_set_init_interp (struct FCT *pFct)
 {
   if (!(*pFct).interp_type)
-    abort ();
+    (*pFct).interp_type = (gsl_interp_type*) gsl_interp_cspline;
   (*pFct).interp = gsl_interp_alloc ((*pFct).interp_type, (*pFct).size);
   gsl_interp_init ((*pFct).interp, (*pFct).x, (*pFct).y, (*pFct).size);
   (*pFct).interp_accel = gsl_interp_accel_alloc ();
@@ -176,7 +176,6 @@ ut_fct_numericalfct_expr (struct FCT Fct, char *expr, struct FCT *pFct2)
   return;
 }
 
-
 void
 ut_fct_numericalfct (struct FCT Fct, double min, double max, int size, struct FCT *pFct2)
 {
@@ -227,6 +226,9 @@ ut_fct_numericalfct (struct FCT Fct, double min, double max, int size, struct FC
 void
 ut_fct_memcpy (struct FCT Fct, struct FCT *pFct2)
 {
+  ut_fct_free (pFct2);
+  ut_fct_set_zero (pFct2);
+
   ut_string_string (Fct.type, &(*pFct2).type);
   ut_string_string (Fct.expr, &(*pFct2).expr);
 
@@ -262,8 +264,7 @@ ut_fct_integralfct (struct FCT Fct, struct FCT *pFct2)
 
   else if (!strcmp (Fct.type, "numerical"))
   {
-    ut_fct_set_numerical (pFct2, Fct.mean - 3 * Fct.sig, Fct.mean + 3 *
-			  Fct.sig, Fct.size);
+    ut_fct_set_numerical (pFct2, Fct.min, Fct.max, Fct.size);
     ut_array_1d_memcpy ((*pFct2).x, (*pFct2).size, Fct.x);
 
     for (i = 0; i < (*pFct2).size; i++)
@@ -310,7 +311,10 @@ ut_fct_convolution (struct FCT Fct, double sig, struct FCT *pFct2)
   ut_fct_set_zero (&FctC);
   ut_fct_set_normal (&FctC, 0, sig);
 
-  if (!strcmp (Fct.type, "normal"))
+  if (sig == 0)
+    ut_fct_memcpy (Fct, pFct2);
+
+  else if (!strcmp (Fct.type, "normal"))
     ut_fct_set_normal (pFct2, Fct.mean, sqrt (pow (Fct.sig, 2) + pow (sig, 2)));
 
   else if (!strcmp (Fct.type, "dirac"))
@@ -343,18 +347,18 @@ ut_fct_set (char *string, struct FCT *pFct)
 {
   int status;
   char *fct = NULL;
-  char **vars = NULL, **vals = NULL;
+  char **vals = NULL;
   int varqty;
   double mean, sig;
   char *expr = NULL;
 
-  ut_string_function_separate (string, &fct, &vars, &vals, &varqty);
+  ut_string_function_separate (string, &fct, NULL, &vals, &varqty);
   if (varqty >= 1)
-    sscanf (vars[0], "%lf", &mean);
+    sscanf (vals[0], "%lf", &mean);
   if (varqty >= 2)
-    sscanf (vars[1], "%lf", &sig);
+    sscanf (vals[1], "%lf", &sig);
   if (varqty >= 3)
-    ut_string_string (vars[2], &expr);
+    ut_string_string (vals[2], &expr);
 
   status = 0;
   if (!strcmp (fct, "dirac"))
@@ -370,7 +374,6 @@ ut_fct_set (char *string, struct FCT *pFct)
   }
 
   ut_free_1d_char (fct);
-  ut_free_2d_char (vars, varqty);
   ut_free_2d_char (vals, varqty);
   ut_free_1d_char (expr);
 
@@ -448,4 +451,19 @@ ut_fct_debug (FILE *fp, struct FCT Fct)
     fprintf (fp, "%f %f\n", Fct.x[i], Fct.y[i]);
 
   return;
+}
+
+int
+ut_fct_x_pos (struct FCT Fct, double x)
+{
+  int id;
+  double binwidth = ut_fct_binwidth (Fct, 0);
+
+  id = (x - Fct.min) / binwidth;
+  if (id < 0 && x < Fct.min - binwidth * 1e-6)
+    id = -1;
+  else if (id > Fct.size - 1 && x > Fct.max + binwidth * 1e-6)
+    id = -1;
+
+  return id;
 }

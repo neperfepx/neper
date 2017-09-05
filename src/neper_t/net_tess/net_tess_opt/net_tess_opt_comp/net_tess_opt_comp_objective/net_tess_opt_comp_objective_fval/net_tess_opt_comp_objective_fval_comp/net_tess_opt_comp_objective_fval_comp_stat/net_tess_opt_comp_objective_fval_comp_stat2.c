@@ -1,8 +1,167 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_fval_comp_stat_.h"
+
+void
+net_tess_opt_comp_objective_fval_comp_stat_alloc (struct TOPT *pTOpt, int var)
+{
+  ut_fct_set_numerical ((*pTOpt).curpdf + var,
+			(*pTOpt).tarpdf[var].min,
+			(*pTOpt).tarpdf[var].max,
+			(*pTOpt).tarpdf[var].size);
+  ut_fct_set_numerical ((*pTOpt).curcdf0 + var,
+			(*pTOpt).tarpdf[var].min,
+			(*pTOpt).tarpdf[var].max,
+			(*pTOpt).tarpdf[var].size);
+
+  return;
+}
+
+void
+net_tess_opt_comp_objective_fval_comp_stat_smoothed_comp (struct TOPT *pTOpt, int var)
+{
+  int i, j;
+  double val, deltax;
+
+  ut_fct_set_numerical ((*pTOpt).curcdf + var,
+			(*pTOpt).tarcdf[var].min,
+			(*pTOpt).tarcdf[var].max,
+			(*pTOpt).tarcdf[var].size);
+
+  ut_array_1d_zero ((*pTOpt).curcdf[var].y,
+		    (*pTOpt).curcdf[var].size);
+
+  (*pTOpt).curpenalty[var]  = 0;
+  for (j = 1; j <= (*pTOpt).CellQty; j++)
+  {
+    if ((*pTOpt).curcellpenalty[j] == 0)
+      for (i = 0; i < (*pTOpt).curcdf[var].size; i++)
+      {
+	deltax = (*pTOpt).curcdf[var].x[i] - (*pTOpt).curcellval[var][j][0];
+	val = 1 + erf (deltax / (OL_S2 * (*pTOpt).cvlsig[var]));
+	(*pTOpt).curcdf[var].y[i] += val;
+      }
+    else
+      (*pTOpt).curpenalty[var] += (*pTOpt).curcellpenalty[j];
+  }
+
+  ut_array_1d_scale ((*pTOpt).curcdf[var].y, (*pTOpt).curcdf[var].size,
+      1. / (2 * (*pTOpt).CellQty));
+
+  return;
+}
+
+void
+net_tess_opt_comp_objective_fval_comp_stat_smoothed_update (struct TOPT *pTOpt, int var)
+{
+  int i, cell;
+
+  for (i = 0; i < (*pTOpt).cellchangedqty; i++)
+  {
+    cell = (*pTOpt).cellchanged[i];
+
+    net_tess_opt_comp_objective_fval_comp_stat_smoothed_update_cell (pTOpt, var, cell);
+  }
+
+  return;
+}
+
+void
+net_tess_opt_comp_objective_fval_comp_stat_smoothed_comp_legacy (struct TOPT *pTOpt, int var)
+{
+  int i, j;
+
+  ut_array_1d_zero ((*pTOpt).curpdf[var].y,
+		    (*pTOpt).curpdf[var].size);
+
+  for (j = 1; j <= (*pTOpt).CellQty; j++)
+  {
+    if ((*pTOpt).curcellpenalty[j] == 0)
+      for (i = 0; i < (*pTOpt).curpdf[var].size; i++)
+	(*pTOpt).curpdf[var].y[i] +=
+	  ut_fct_eval ((*pTOpt).cvl[var], (*pTOpt).curpdf[var].x[i] -
+		       (*pTOpt).curcellval[var][j][0]) / (*pTOpt).CellQty;
+    else
+      (*pTOpt).curpenalty[var] += (*pTOpt).curcellpenalty[j];
+  }
+
+  ut_fct_integralfct ((*pTOpt).curpdf[var], (*pTOpt).curcdf + var);
+
+  return;
+}
+
+void
+net_tess_opt_comp_objective_fval_comp_stat_smoothed_update_legacy (struct TOPT *pTOpt, int var)
+{
+  int i, j, cell;
+  double val;
+
+  for (j = 0; j < (*pTOpt).cellchangedqty; j++)
+  {
+    cell = (*pTOpt).cellchanged[j];
+
+    // removing old contribution to curpdf
+    if ((*pTOpt).oldcellpenalty[cell] == 0)
+      for (i = 0; i < (*pTOpt).curpdf[var].size; i++)
+      {
+	val = ut_fct_eval ((*pTOpt).cvl[var], (*pTOpt).curpdf[var].x[i] -
+			   (*pTOpt).oldcellval[var][cell][0])
+			  / (*pTOpt).CellQty;
+	(*pTOpt).curpdf[var].y[i] -= val;
+
+	// if we have passed the nominal value and the function has
+	// reached 0, stopping.
+	if ((*pTOpt).curpdf[var].x[i] >
+	    (*pTOpt).oldcellval[var][cell][0] && val == 0)
+	  break;
+      }
+    (*pTOpt).curpenalty[var] -= (*pTOpt).oldcellpenalty[cell];
+
+    // adding new contribution to curpdf
+    if ((*pTOpt).curcellpenalty[cell] == 0)
+      for (i = 0; i < (*pTOpt).curpdf[var].size; i++)
+      {
+	val = ut_fct_eval ((*pTOpt).cvl[var], (*pTOpt).curpdf[var].x[i] -
+			   (*pTOpt).curcellval[var][cell][0])
+			  / (*pTOpt).CellQty;
+	(*pTOpt).curpdf[var].y[i] += val;
+
+	// if we have passed the nominal value and the function has
+	// reached 0, stopping.
+	if ((*pTOpt).curpdf[var].x[i] >
+	    (*pTOpt).curcellval[var][cell][0] && val == 0)
+	  break;
+      }
+    (*pTOpt).curpenalty[var] += (*pTOpt).curcellpenalty[cell];
+  }
+
+  ut_fct_integralfct ((*pTOpt).curpdf[var], (*pTOpt).curcdf + var);
+
+  return;
+}
+
+void
+net_tess_opt_comp_objective_fval_comp_stat_unsmoothed_comp (struct TOPT *pTOpt, int var)
+{
+  int i, j;
+
+  ut_array_1d_zero ((*pTOpt).curcdf0[var].y,
+		    (*pTOpt).curcdf0[var].size);
+  for (j = 1; j <= (*pTOpt).CellQty; j++)
+    if ((*pTOpt).curcellpenalty[j] == 0)
+      for (i = 0; i < (*pTOpt).curcdf0[var].size; i++)
+      {
+	if ((*pTOpt).curcdf0[var].x[i] > (*pTOpt).curcellval[var][j][0])
+	  (*pTOpt).curcdf0[var].y[i] += 1. / (*pTOpt).CellQty;
+      }
+
+  if ((*pTOpt).cvlsig[var] == 0)
+    ut_fct_memcpy ((*pTOpt).curcdf0[var], (*pTOpt).curcdf + var);
+
+  return;
+}
 
 void
 net_tess_opt_comp_objective_fval_comp_stat_evaluate (struct TOPT *pTOpt, int var)

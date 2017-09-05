@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_input_.h"
@@ -19,18 +19,20 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("default", &(*pIn).morphooptialgostring);
   ut_string_string ("default", &(*pIn).morphooptiinistring);
   ut_string_string ("ann", &(*pIn).morphooptialgoneighstring);
+  ut_string_string ("max(varnb,1000)", &(*pIn).morphooptialgomaxiterstring);
   ut_string_string ("default", &(*pIn).morphooptiobjectivestring);
-  ut_string_string ("regular(-1,10,1100)", &(*pIn).morphooptigridstring);
-  ut_string_string ("0.05", &(*pIn).morphooptismoothstring);
+  ut_string_string ("default", &(*pIn).morphooptigridstring);
+  ut_string_string ("default", &(*pIn).morphooptismoothstring);
   ut_string_string ("default", &(*pIn).morphooptistopstring);
   ut_string_string ("none", &(*pIn).morphooptilogtimestring);
   ut_string_string ("none", &(*pIn).morphooptilogvarstring);
   ut_string_string ("none", &(*pIn).morphooptilogdisstring);
+  ut_string_string ("none", &(*pIn).morphooptilogtesrstring);
   ut_string_string ("none", &(*pIn).morphooptilogvalstring);
   ut_string_string ("1", &(*pIn).morphooptimultiseedstring);
   ut_string_string ("default", &(*pIn).morphooptidofstring);
   ut_string_string ("HUGE_VAL", &(*pIn).morphooptideltamaxstring);
-  ut_string_string ("diameq/10", &(*pIn).morphooptiinistepstring);
+  ut_string_string ("avdiameq/10", &(*pIn).morphooptiinistepstring);
 
   ut_string_string ("none", &(*pIn).scalestring);
   (*pIn).reg = 0;
@@ -66,6 +68,8 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ((*pIn).morphooptialgostring, (*pIn).morphooptialgo);
   (*pIn).morphooptialgoneigh = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).morphooptialgoneighstring, (*pIn).morphooptialgoneigh);
+  (*pIn).morphooptialgomaxiter = ut_alloc_1d_pchar (1);
+  ut_string_string ((*pIn).morphooptialgomaxiterstring, (*pIn).morphooptialgomaxiter);
   (*pIn).morphooptiobjective = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).morphooptiobjectivestring, (*pIn).morphooptiobjective);
   (*pIn).morphooptigrid = ut_alloc_1d_pchar (1);
@@ -80,6 +84,8 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ((*pIn).morphooptilogvarstring, (*pIn).morphooptilogvar);
   (*pIn).morphooptilogdis = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).morphooptilogdisstring, (*pIn).morphooptilogdis);
+  (*pIn).morphooptilogtesr = ut_alloc_1d_pchar (1);
+  ut_string_string ((*pIn).morphooptilogtesrstring, (*pIn).morphooptilogtesr);
   (*pIn).morphooptilogval = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).morphooptilogvalstring, (*pIn).morphooptilogval);
   (*pIn).morphooptimultiseed = ut_alloc_1d_pchar (1);
@@ -113,6 +119,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-morphooptiini");
   strcpy (ArgList[++ArgQty], "-morphooptialgo");
   strcpy (ArgList[++ArgQty], "-morphooptialgoneigh");
+  strcpy (ArgList[++ArgQty], "-morphooptialgomaxiter");
   strcpy (ArgList[++ArgQty], "-morphooptiobjective");
   strcpy (ArgList[++ArgQty], "-morphooptigrid");
   strcpy (ArgList[++ArgQty], "-morphooptismooth");
@@ -122,6 +129,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-morphooptilogtime");
   strcpy (ArgList[++ArgQty], "-morphooptilogvar");
   strcpy (ArgList[++ArgQty], "-morphooptilogdis");
+  strcpy (ArgList[++ArgQty], "-morphooptilogtesr");
   strcpy (ArgList[++ArgQty], "-morphooptilogval");
   strcpy (ArgList[++ArgQty], "-morphooptidof");
   strcpy (ArgList[++ArgQty], "-morphooptimultiseed");
@@ -192,7 +200,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_badarg ();
     }
 
-/*---------------------------------------------------------------------- 
+/*----------------------------------------------------------------------
 * input data */
     if (!strcmp (Arg, "-n") && i < argc - 1)
     {
@@ -222,6 +230,8 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptialgostring));
     else if (!strcmp (Arg, "-morphooptialgoneigh"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptialgoneighstring));
+    else if (!strcmp (Arg, "-morphooptialgomaxiter"))
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptialgomaxiterstring));
     else if (!strcmp (Arg, "-morphooptiobjective"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptiobjectivestring));
     else if (!strcmp (Arg, "-morphooptigrid"))
@@ -236,6 +246,8 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptilogvarstring));
     else if (!strcmp (Arg, "-morphooptilogdis"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptilogdisstring));
+    else if (!strcmp (Arg, "-morphooptilogtesr"))
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptilogtesrstring));
     else if (!strcmp (Arg, "-morphooptilogval"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptilogvalstring));
     else if (!strcmp (Arg, "-morphooptidof"))
@@ -251,7 +263,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
     else if (!strcmp (Arg, "-periodicity"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).periodicstring));
 
-/*---------------------------------------------------------------------- 
+/*----------------------------------------------------------------------
 * general options */
     else if (!strcmp (Arg, "-o"))
     {
@@ -259,7 +271,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_string_body ((*pIn).body, ".", &((*pIn).body));
     }
 
-/*---------------------------------------------------------------------- 
+/*----------------------------------------------------------------------
 * tessellation options */
     else if (!strcmp (Arg, "-domain"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).domain));
@@ -268,7 +280,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
     else if (!strcmp (Arg, "-transform"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transform));
 
-/*---------------------------------------------------------------------- 
+/*----------------------------------------------------------------------
 * regularization options */
     else if (!strcmp (Arg, "-regularization"))
       ut_arg_nextasint (argv, &i, Arg, 0, 1, &(*pIn).reg);
@@ -322,7 +334,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
     else if (!strcmp (Arg, "-sort"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).sortstring));
 
-/*---------------------------------------------------------------------- 
+/*----------------------------------------------------------------------
 * load capability */
     else if ((!strcmp (Arg, "-loadtess")) || (!strcmp (Arg, "-checktess")))
     {
@@ -387,7 +399,7 @@ net_input_treatargs_multiscale (char *option, char **pargstring, int scaleqty,
   ut_string_string ("", pargstring);
   for (i = 1; i <= scaleqty; i++)
   {
-    size = strlen (*pargstring) + strlen ((*pvals)[i]) + 1; 
+    size = strlen (*pargstring) + strlen ((*pvals)[i]) + 1;
     if (i < scaleqty)
       size += strlen (NEUT_SEP_FRAC);
 

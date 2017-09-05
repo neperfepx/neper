@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_topo_.h"
@@ -1286,7 +1286,6 @@ neut_mesh_elsets_nodes (struct MESH Mesh, int *elsets,
 
   return;
 }
-
 
 int
 neut_mesh_elt2d_elts3d (struct MESH Mesh2D, int elt2d, struct MESH Mesh3D,

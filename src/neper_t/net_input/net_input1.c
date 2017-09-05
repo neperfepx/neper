@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_input_.h"
@@ -29,6 +29,7 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
       || ut_string_inlist ((*pIn).format, NEUT_SEP_NODEP, "3dec") == 1
       || ut_string_inlist ((*pIn).format, NEUT_SEP_NODEP, "fe") == 1
       || ut_string_inlist ((*pIn).format, NEUT_SEP_NODEP, "ply") == 1
+      || ut_string_inlist ((*pIn).format, NEUT_SEP_NODEP, "stl") == 1
       || ut_string_inlist ((*pIn).format, NEUT_SEP_NODEP, "obj") == 1)
     tess_out = 1;
   if (ut_string_inlist ((*pIn).format, NEUT_SEP_NODEP, "tesr") == 1

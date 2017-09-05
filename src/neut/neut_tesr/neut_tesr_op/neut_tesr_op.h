@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -113,6 +113,7 @@ extern "C"
 				       Domain, int dim, char *rptstring);
 
   extern void neut_tesr_crop (struct TESR *pTesr, char *shape);
+  extern int  neut_tesr_2d (struct TESR *pTesr);
 
   extern void neut_tesr_autocrop (struct TESR *pTesr);
 

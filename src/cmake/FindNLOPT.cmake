@@ -29,7 +29,7 @@ set (NLOPT_LIBRARIES ${NLOPT_LIBRARY})
 
 set (NLOPT_NAMES nlopt nlopt_cxx)
 
-# handle the QUIETLY and REQUIRED arguments and set NLOPT_FOUND to TRUE if 
+# handle the QUIETLY and REQUIRED arguments and set NLOPT_FOUND to TRUE if
 # all listed variables are TRUE
 include ( FindPackageHandleStandardArgs )
 find_package_handle_standard_args (NLOPT DEFAULT_MSG NLOPT_LIBRARY NLOPT_INCLUDE_DIRS)

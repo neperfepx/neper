@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_fval_comp_celldata_.h"
@@ -8,7 +8,7 @@ void
 net_tess_opt_comp_objective_fval_comp_celldata (struct TOPT *pTOpt, int id)
 {
   int i;
-  double val, val2, avdiameq, curval;
+  double val, val2, curval, avdiameq;
 
   if (!strncmp ((*pTOpt).tarvar[id], "size", 4)
       || !strcmp ((*pTOpt).tarvar[id], "sphericity"))
@@ -107,23 +107,10 @@ net_tess_opt_comp_objective_fval_comp_celldata (struct TOPT *pTOpt, int id)
 	val2 = 1000 * (*pTOpt).curcellpenalty[i];
       }
 
-      curval +=
-	(pow (val, 2) + pow (val2, 2)) / pow ((*pTOpt).tarrefval[id], 2);
+      curval += pow (val, 2) + 0.25 * pow (val2, 2);
     }
-    curval = sqrt (curval / (*pTOpt).CellQty);
-    curval /= (*pTOpt).Dim;
-  }
-
-  else if (!strncmp ((*pTOpt).tarvar[id], "tesr", 4))
-  {
-    curval = 0;
-    for (i = 1; i <= (*pTOpt).CellQty; ++i)
-      if ((*pTOpt).curcellpenalty[i] == 0)
-	curval += (*pTOpt).curcellval[id][i][0];
-      else
-	curval += 1000 * (*pTOpt).curcellpenalty[i];
     neut_tess_cellavdiameq ((*pTOpt).Dom, (*pTOpt).CellQty, &avdiameq);
-    curval /= avdiameq;
+    curval = sqrt (curval) / ((*pTOpt).CellQty * avdiameq);
   }
 
   else

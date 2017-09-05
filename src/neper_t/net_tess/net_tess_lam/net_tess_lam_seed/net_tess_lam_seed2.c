@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tess_lam_seed_.h"
@@ -65,7 +65,7 @@ net_tess_lam_seed_set (struct IN_T In, int level, struct MTESS MTess, struct TES
 
   net_tess_lam_seed_set_finalize (pSSet);
 
-  net_tess_opt_init_sset_ori (In, level, SSet, dtess, dcell, pSSet);
+  net_tess_opt_init_sset_ori (In, level, MTess, Tess, dtess, dcell, SSet, pSSet);
 
   gsl_rng_free (r);
   ut_free_1d (n);

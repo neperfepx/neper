@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tdyn_struct.h"
@@ -45,11 +45,15 @@ struct TOPT
 
   // raster microstructure information
   struct TESR tartesr;		// raster tessellation
-  double  ***tarcellpts;		// list of points coo of a target cell [0...]
-  int    *tarcellptqty;		// number of poiint of a target cell
-  double *tarcellrefval;	// ref val of a target cell
+  int tarptqtyini;		// initial number of target points.
+  double *tartesrscale;		// scaling factor of the tess (for elongated grains)
+  double  ***tarcellpts;	// list of points coo of a target cell [0...]
+  double  **tarcellptweights;	// list of points weight of a target cell [0...]
+  int    *tarcellptqty;		// number of point of a target cell
+  double *tarcellfact;		// factor of a target cell
   int  ***tarcellptscells;      // sorted subcells of a point
                                 // [cell][pt][0...CellSCellQty[cell]-1]
+  double **tarcellptsdist;       // distance value of cell points
 
   // CURRENT MICROSTRUCTURE DEFINITION ---------------------------------
 
@@ -89,6 +93,8 @@ struct TOPT
   int *x_seed;     		// seed to which the variable is related
   int *x_var;     		// variable to which the variable is related
                                 // 0: x, 1: y, 2: z, 3: w
+  int **seedvar_x;     		// x to which the variable is related
+  				// [1...CellQty][0..dim]
   double **x_pvar; 		// pointer to associated variables in
 				// SSet (SeedCoo0 or SeedWeight)
 
@@ -101,43 +107,53 @@ struct TOPT
   double *boundu;		// resulting upper bounds
 
   // resolution
-  char *algoname;		// name of the NLopt algorithm
+  int algoqty;			// number of algorithms
+  char **algoname;		// names of the NLopt algorithms
+  int algoid;			// id of the active algo: 0...algoqty-1
 #ifdef HAVE_NLOPT
-  nlopt_algorithm algo;		// NLopt algorithm
+  nlopt_algorithm *algo;	// NLopt algorithms [0,...]
 #endif
+  int *algomaxiter;		// maximum allowed number of iterations without
+  				// decreasing the objective function
   double inistep;		// typical delta used for gradient computation
 
   // distribution-specific parameters
-  char **disgrid;		// grid information for discretization
-  double dissmoothing;		// std dev of the Gaussian used for smoothing
-  struct FCT *cvl;        	// convolution function
+  char **grid;			// discretization grid
+  double *cvlsig;		// std dev of the Gaussians used for smoothing
+  struct FCT *cvl;		// smoothing functions
+  char *cvlmethod;		// convolution method, "numerical" or "analytical"
 
   // Termination criteria -------------------------------------------
   int itermax;			// maximum iteration number
   double val;			// objective function
-  double dvalditer;	        // derivative of the objective function
-                                // wrt the iteration number
-  double eps;			// delta on the objective function
-  double reps;			// relative delta on the objective function
+  double eps;		        // delta on the objective function
+  double reps;		        // relative delta on the objective function
+  double nlopt_eps;		// delta on the objective function, nlopt-style
+  double nlopt_reps;		// relative delta on the objective function, nlopt-style
   double xeps;			// delta on the solution vector
   double xreps;			// relative delta on the solution vector
   double time;			// CPU time
+  double loopmax;		// maximum number of optimization loop
 
   // OPTIMIZATION INFORMATION ------------------------------------------
   char *objective;		// objective function (for statistics,
   				// it may be 'ad', etc.; for tesr, it
 				// may be 'vol', 'surf', etc.)
+  char *objective_tesrval;
 
   // value of the objective function
   double *curval0;		// current values, no smoothing
   double *curval;		// current values
   double objval;		// value of the objective function
   double* objvalmin;		// minimum value of the objective function
+  double objval0;		// value of the objective function, no smoothing
+  double* objvalmin0;		// minimum value of the objective function, no smoothing
   int iter;			// number of iterations
-
-  // development information
-  int faceconn;			// face connectivity rule to define the
-  				// target cell points
+  int loop;			// number of loops
+  int* loop_start;		// iterations at the start of the loops [loop - 1]
+  int* loop_plateau_length;	// lengths of the loop plateaus [loop - 1]
+  int* loop_status;		// status of the loop [loop - 1] (0: ok, -1: ended by a
+  				// plateau, -2: is a plateau)
 
   // PROGRESS INFORMATION ----------------------------------------------
 

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_post_.h"
@@ -19,7 +19,7 @@ net_tess_opt_comp_post (struct TOPT TOpt, int res)
     if (res == NLOPT_STOPVAL_REACHED)
       ut_print_message (0, 3, "Reached `val' criterion.");
     else if (res == NLOPT_FTOL_REACHED)
-      ut_print_message (0, 3, "Reached `(r)eps' criterion.");
+      ut_print_message (0, 3, "Reached `nlopt_(r)eps' criterion.");
     else if (res == NLOPT_XTOL_REACHED)
       ut_print_message (0, 3, "Reached `x(r)eps' criterion.");
     else if (res == NLOPT_MAXEVAL_REACHED)
@@ -41,7 +41,14 @@ net_tess_opt_comp_post (struct TOPT TOpt, int res)
       if (nlopt_get_force_stop (TOpt.opt) == -5)
 	ut_print_message (1, 3, "Stopping on Ctrl+C invocation.");
       else if (nlopt_get_force_stop (TOpt.opt) == -6)
-	ut_print_message (0, 3, "Reached `dvalditer' criterion.");
+	ut_print_message (0, 3, "Reached `eps' criterion.");
+      else if (nlopt_get_force_stop (TOpt.opt) == -7)
+	ut_print_message (0, 3, "Reached `reps' criterion.");
+      else if (nlopt_get_force_stop (TOpt.opt) == -8)
+	ut_print_message (0, 3, "Reached `loopmax' criterion.");
+      else if (nlopt_get_force_stop (TOpt.opt) <= -101)
+	ut_print_message (0, 3, "Stopping on failed convergence (%d).",
+	                  nlopt_get_force_stop (TOpt.opt));
       else
 	ut_print_message (1, 3, "Stopping on unknown forced stop (%d).",
 			  nlopt_get_force_stop (TOpt.opt));

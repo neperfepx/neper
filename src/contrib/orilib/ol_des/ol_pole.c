@@ -423,7 +423,6 @@ ol_g_pf_eaprojxy (double **g, double *vect, double *p)
   return;
 }
 
-
 void
 ol_g_pf_eaproj_rad (double **g, double *vect, double *p)
 {
@@ -739,7 +738,7 @@ ol_vect_ipfweight (double *v, double *weight)
     ol_rtheta_g (r, theta, g);
     ol_g_vect_vect (g, v, v1);
 /* computing theta3 = angle to reach segment (001)-(111) by rotation
-   * about r (theta3 has a negative value) 
+   * about r (theta3 has a negative value)
 
   * theta3 is the solution of equation,
    * cos(theta3).v0 - sin(theta3).(v1+v2)/sqrt(2)

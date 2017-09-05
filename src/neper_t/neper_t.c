@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2016, Romain Quey. */
+/* Copyright (C) 2003-2017, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neper_t_.h"
@@ -226,7 +226,10 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 	net_dim (2, &FTess);
     }
     else if (In.levelqty == 1 || strcmp (In.load, "none"))
+    {
       neut_tess_tess (Tess[1], &FTess);
+      FTess.ScaleQty = 1;
+    }
 
     if (In.reg)
     {
