@@ -1,9 +1,10 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "ut_nlopt_.h"
 
+#ifdef HAVE_NLOPT
 void
 ut_nlopt_algo (char* optialgo, nlopt_algorithm *palgo)
 {
@@ -29,3 +30,4 @@ ut_nlopt_algo (char* optialgo, nlopt_algorithm *palgo)
 
   return;
 }
+#endif // HAVE_NLOPT

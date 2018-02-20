@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_topo_.h"
@@ -2253,4 +2253,32 @@ neut_mesh_domface_elts3d (struct TESS Tess,
   ut_free_1d_int (elt3d);
 
   return;
+}
+
+int
+neut_mesh_elset_elt_insidefacets (struct MESH Mesh1D,
+                                 struct MESH Mesh2D, int elset, int elt,
+				 int **pinsidefacets, int *pinsidefacetqty)
+{
+  int i, j, comelt, status;
+  int *nodepair = ut_alloc_1d_int (2);
+
+  if (Mesh2D.EltElset[elt] != elset)
+    abort ();
+
+  (*pinsidefacetqty) = 0;
+
+  for (i = 1; i <= 3; i++)
+  {
+    for (j = 0; j < 2; j++)
+      nodepair[j] = Mesh2D.EltNodes[elt][ut_num_rotpos (0, 2, i - 1, j)];
+
+    status = neut_mesh_nodes_comelt (Mesh1D, nodepair, 2, &comelt);
+    if (status == -1)
+      ut_array_1d_int_list_addelt (pinsidefacets, pinsidefacetqty, i);
+  }
+
+  ut_free_1d_int (nodepair);
+
+  return 0;
 }

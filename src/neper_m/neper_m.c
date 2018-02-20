@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neper_m_.h"
@@ -119,15 +119,14 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Loading result mesh...\n");
     nem_readmesh (In.loadmesh, &Nodes, Mesh);
-    status = nem_input_init_dim_mesh (&In, Mesh);
+    if (!In.tess)
+      status = nem_input_init_dim_mesh (&In, Mesh);
 
-    if (status == -1)
+    if (Nodes.NodeQty == 0)
       ut_print_message (1, 3, "Mesh is void (%d node(s), 0 elt).\n", Nodes.NodeQty);
 
     else
     {
-      nem_meshing_pinching (Tess, Nodes, Mesh);
-
       status = 0;
       for (i = 0; i <= 2; i++)
 	if (ut_string_inlist_int (In.dimout, NEUT_SEP_NODEP, i)
@@ -151,7 +150,8 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 // ###################################################################
 // ### COMPUTING OUTPUT MESH #########################################
 
-  if (!In.loadmesh && nem_input_outputismesh (In))
+  if (nem_input_outputismesh (In)
+      && (!In.loadmesh || (In.loadmesh && neut_mesh_isvoid (Mesh[In.dim]))))
   {
     if (Tess.VerQty > 0 || Tesr.CellQty > 0 || RMesh[3].EltQty > 0)
     {
@@ -160,7 +160,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
       nem_meshing_para (In, &Tess, &Tesr, &RNodes, RMesh, &MeshPara);
 
       if (!strcmp (In.elttype, "tri"))
-	nem_meshing (In, MeshPara, Tess, RNodes, RMesh, &Nodes, Mesh);
+	nem_meshing (In, MeshPara, &Tess, RNodes, RMesh, &Nodes, Mesh);
 
       else if (!strcmp (In.elttype, "quad"))
       {
@@ -263,7 +263,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Writing mesh statistics...\n");
 
-    if (!Tess.CellTrue)
+    if (!neut_tess_isvoid (Tess) && !Tess.CellTrue)
       neut_tess_init_celltrue (&Tess);
 
     nem_stat (Nodes, Mesh, Part, In, MeshPara, Tess, Point);

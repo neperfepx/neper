@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_.h"
@@ -33,20 +33,20 @@ net_tess_opt_init_target_cellqty (struct IN_T In, struct MTESS MTess,
   return;
 }
 
-#ifdef HAVE_NLOPT
 void
 net_tess_opt_init_parms_algo (struct IN_T In, int level, struct MTESS MTess,
                               struct TESS *Tess, int dtess, int dcell,
 			      struct TOPT *pTOpt)
 {
-  int i;
   char *optialgo = NULL;
 
   net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
                                            In.morphooptialgo[level],
 					   &optialgo);
-
   ut_string_separate (optialgo, NEUT_SEP_NODEP, &(*pTOpt).algoname, &(*pTOpt).algoqty);
+
+#ifdef HAVE_NLOPT
+  int i;
   (*pTOpt).algo = calloc ((*pTOpt).algoqty, sizeof (nlopt_algorithm));
 
   for (i = 0; i < (*pTOpt).algoqty; i++)
@@ -70,10 +70,10 @@ net_tess_opt_init_parms_algo (struct IN_T In, int level, struct MTESS MTess,
     else
       abort ();
   }
+#endif // HAVE_NLOPT
 
   return;
 }
-#endif
 
 void
 net_tess_opt_init_parms_algomaxiter (struct IN_T In, int level, struct TOPT *pTOpt)

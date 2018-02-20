@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_fval_tesr_.h"
@@ -40,7 +40,9 @@ net_tess_opt_comp_objective_fval_tesr_dist (int *cells, int cellqty, struct TOPT
       id++;
     }
 
+#ifdef HAVE_OPENMP
 #pragma omp parallel for private(cell,pt)
+#endif // HAVE_OPENMP
   for (i = 0; i < distqty; i++)
   {
     cell = dist_cell[i];

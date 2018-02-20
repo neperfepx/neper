@@ -93,6 +93,8 @@ ol_g_q (double **g, double *q)
 	q[i] *= ut_num_sgn (g[i - 1][m - 1]);
   }
 
+  ol_q_set_unit (q);
+
   return;
 }
 
@@ -285,18 +287,11 @@ ol_q_e_rad (double *q, double *e)
 void
 ol_q_q (double *q1, double *q2)
 {
-  int i;
+  if (q1 != q2)
+    ol_q_memcpy (q1, q2);
 
-  ol_q_memcpy (q1, q2);
-
-  for (i = 0; i < 4; i++)
-    if (fabs (q2[i]) > OL_EPS)
-    {
-      if (q2[i] < 0)
-	ut_array_1d_scale (q2, 4, -1);
-
-      break;
-    }
+  if (q2[0] < 0)
+    ut_array_1d_scale (q2, 4, -1);
 
   return;
 }

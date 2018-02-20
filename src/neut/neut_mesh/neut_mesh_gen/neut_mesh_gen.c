@@ -1,8 +1,14 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_gen_.h"
+
+int
+neut_mesh_isvoid (struct MESH Mesh)
+{
+  return Mesh.EltQty == 0;
+}
 
 void
 neut_mesh3d_slice (struct NODES Nodes, struct MESH Mesh, double *eq,

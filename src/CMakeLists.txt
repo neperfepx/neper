@@ -1,11 +1,11 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2017, Romain Quey.
+# Copyright (C) 2003-2018, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.1.0\")
+set (NEPER_VERSION \"3.1.1\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -81,6 +81,7 @@ set (EXTRA_LIBS ${EXTRA_LIBS} ann) # must be after neut
 set (EXTRA_LIBS ${EXTRA_LIBS} muparser)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+unset (HAVE_MUPARSER CACHE)
 
 if (HAVE_LIBSCOTCH)
   find_package (LIBSCOTCH REQUIRED)
@@ -123,7 +124,6 @@ add_test (T_domain_sphere         ./neper --rcfile none -T -n 5 -domain "sphere(
 add_test (T_periodic              ./neper --rcfile none -T -n 5 -periodic 1)
 add_test (T_periodic_x            ./neper --rcfile none -T -n 5 -periodic x)
 add_test (T_morpho_voronoi        ./neper --rcfile none -T -n 5 -morpho voronoi)
-add_test (T_morpho_gg             ./neper --rcfile none -T -n 5 -morpho gg)
 add_test (T_morpho_centroidal     ./neper --rcfile none -T -n 5 -morpho centroidal)
 add_test (T_morpho_cube           ./neper --rcfile none -T -n from_morpho -morpho "cube(2)")
 add_test (T_morpho_cube3          ./neper --rcfile none -T -n from_morpho -morpho "cube(2,3,4)")
@@ -131,6 +131,9 @@ add_test (T_morpho_square         ./neper --rcfile none -T -n from_morpho -dim 2
 add_test (T_morpho_square2        ./neper --rcfile none -T -n from_morpho -dim 2 -morpho "square(2,3)")
 add_test (T_morpho_lamellar_w     ./neper --rcfile none -T -n from_morpho -morpho "lamellar(w=0.1)")
 add_test (T_morpho_lamellar_w2    ./neper --rcfile none -T -n from_morpho -morpho "lamellar(w=0.1:0.02)")
+
+if (HAVE_NLOPT)
+add_test (T_morpho_gg             ./neper --rcfile none -T -n 5 -morpho gg)
 # add_test (T_morpho_tesr)
 add_test (T_morphooptini_packing  ./neper --rcfile none -T -n 5 -morpho gg -morphooptiini coo:packing,weight:radeq)
 add_test (T_morphooptini_random   ./neper --rcfile none -T -n 5 -morpho gg -morphooptiini coo:random,weight:avradeq)
@@ -153,6 +156,8 @@ add_test (T_morphooptilogtime      ./neper --rcfile none -T -n 5 -morpho gg -mor
 add_test (T_morphooptilogvar       ./neper --rcfile none -T -n 5 -morpho gg -morphooptilogvar iter,id,x,y,z,w)
 add_test (T_morphooptilogval       ./neper --rcfile none -T -n 5 -morpho gg -morphooptilogval iter,val,valmin)
 add_test (T_morphooptilogdis       ./neper --rcfile none -T -n 5 -morpho gg -morphooptilogdis iter,x,tarpdf)
+endif ()
+
 add_test (T_sort                   ./neper --rcfile none -T -n 5 -sort x+y+z)
 add_test (T_scale                  ./neper --rcfile none -T -n 5 -scale 2:1:0.5)
 add_test (T_transform_scale        ./neper --rcfile none -T -n 5 -transform "scale(1,2,3)")
@@ -190,12 +195,16 @@ add_test (Tm2_domain_cube           ./neper --rcfile none -T -n 5::5 -domain "cu
 add_test (Tm2_domain_cylinder       ./neper --rcfile none -T -n 5::5 -domain "cylinder(1,2,100)")
 add_test (Tm2_domain_sphere         ./neper --rcfile none -T -n 5::5 -domain "sphere(2,100)")
 add_test (Tm2_morpho_voronoi        ./neper --rcfile none -T -n 5::5 -morpho voronoi::voronoi)
-add_test (Tm2_morpho_gg             ./neper --rcfile none -T -n 5::5 -morpho gg::gg)
 add_test (Tm2_morpho_centroidal     ./neper --rcfile none -T -n 5::5 -morpho centroidal::centroidal)
+if (HAVE_NLOPT)
+add_test (Tm2_morpho_gg             ./neper --rcfile none -T -n 5::5 -morpho gg::gg)
+endif ()
 add_test (Tm2_morpho_cube           ./neper --rcfile none -T -n from_morpho::5 -morpho "cube(2)::voronoi")
 add_test (Tm2_morpho_square         ./neper --rcfile none -T -n from_morpho::5 -dim 2 -morpho "square(2)::voronoi")
+if (HAVE_NLOPT)
 add_test (Tm2_morpho_lamellar_w     ./neper --rcfile none -T -n 5::from_morpho -morpho "gg::lamellar(w=0.1)")
 add_test (Tm2_morpho_lamellar_w2    ./neper --rcfile none -T -n 5::from_morpho -morpho "gg::lamellar(w=0.1:0.02)")
+endif ()
 # add_test (Tm2_morpho_tesr)
 # add_test (Tm2_multiseed)
 add_test (Tm2_sort                   ./neper --rcfile none -T -n 5::5 -sort x+y+z)
@@ -208,12 +217,14 @@ add_test (Tm3_domain_cube           ./neper --rcfile none -T -n 3::3::3 -domain 
 add_test (Tm3_domain_cylinder       ./neper --rcfile none -T -n 3::3::3 -domain "cylinder(1,2,100)")
 add_test (Tm3_domain_sphere         ./neper --rcfile none -T -n 3::3::3 -domain "sphere(2,100)")
 add_test (Tm3_morpho_voronoi        ./neper --rcfile none -T -n 3::3::3 -morpho voronoi::voronoi::voronoi)
-add_test (Tm3_morpho_gg             ./neper --rcfile none -T -n 3::3::3 -morpho gg::gg)
 add_test (Tm3_morpho_centroidal     ./neper --rcfile none -T -n 2::2::2 -morpho centroidal::centroidal::centroidal)
 add_test (Tm3_morpho_cube           ./neper --rcfile none -T -n from_morpho::3::3 -morpho "cube(2)::voronoi::voronoi")
 add_test (Tm3_morpho_square         ./neper --rcfile none -T -n from_morpho::3::3 -dim 2 -morpho "square(2)::voronoi::voronoi")
+if (HAVE_NLOPT)
+add_test (Tm3_morpho_gg             ./neper --rcfile none -T -n 3::3::3 -morpho gg::gg)
 add_test (Tm3_morpho_lamellar_w     ./neper --rcfile none -T -n 3::3::from_morpho -morpho "gg::gg::lamellar(w=0.1)")
 add_test (Tm3_morpho_lamellar_w2    ./neper --rcfile none -T -n 3::3::from_morpho -morpho "gg::gg::lamellar(w=0.1:0.02)")
+endif ()
 # add_test (Tm3_morpho_tesr)
 # add_test (Tm3_multiseed)
 add_test (Tm3_sort                   ./neper --rcfile none -T -n 3::3::3 -sort x+y+z)

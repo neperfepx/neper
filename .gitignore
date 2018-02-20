@@ -18,6 +18,7 @@ updatelib.sh*
 *.aux
 *.cp
 *.fn
+*.fns
 *.ky
 *.log
 *.pg

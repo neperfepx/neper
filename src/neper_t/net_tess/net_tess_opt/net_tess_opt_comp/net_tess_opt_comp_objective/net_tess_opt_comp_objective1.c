@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_.h"
@@ -18,6 +18,7 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
   char *fmin = ut_alloc_1d_char (1000);
   char *f = ut_alloc_1d_char (1000);
   (void) grad;
+  (void) force_stop;
   char *loopnotice = ut_alloc_1d_char (1000);
 
   if ((*pTOpt).loop > 1)

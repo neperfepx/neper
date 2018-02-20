@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_domain_.h"
@@ -14,6 +14,7 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
   char *tmp = ut_alloc_1d_char (strlen (In.domain) + 1);
   char *domtype = ut_alloc_1d_char (strlen (In.domain) + 1);
   char **sizestring = NULL;
+  char *crysym = ut_alloc_1d_char (100);
   double *coo = ut_alloc_1d (3);
   char **strings = NULL;
   int stringqty;
@@ -184,6 +185,14 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
     neut_poly_centroid (Poly, coo);
     ut_free_2d (eq, qty);
   }
+  else if (!strcmp (domtype, "rodrigues"))
+  {
+    if (ut_string_nbwords (tmp) != 2 || sscanf (tmp, "%*s%s", crysym) != 1)
+      ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
+
+    net_domain_rodrigues (&Poly, crysym);
+    neut_poly_centroid (Poly, coo);
+  }
   else if (!strcmp (domtype, "planes"))
   {
     int i, qty;
@@ -288,6 +297,7 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
   ut_free_2d_char (sizestring, 3);
   ut_free_1d (coo);
   ut_free_2d_char (strings, stringqty);
+  ut_free_1d_char (crysym);
 
   return;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_gen_.h"
@@ -1815,4 +1815,10 @@ neut_tess_expr_vars_vals (struct TESS Tess, char* expr, int *showedge,
 	              (*pvars)[i], (*pvals) + i, ptypes? (*ptypes) + i : NULL);
 
   return 0;
+}
+
+int
+neut_tess_isvoid (struct TESS Tess)
+{
+  return (Tess.CellQty == 0);
 }

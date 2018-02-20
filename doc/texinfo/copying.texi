@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2017 Romain Quey
+@c Copyright (C) 2003-2018 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Conditions of Use
@@ -37,7 +37,7 @@ Public License}). Further
 information about this license is available from the GNU Project webpage
 @uref{http://www.gnu.org/copyleft/gpl-faq.html}.
 
-@sp 1
+@c @sp 1
 The Neper software package can be downloaded from
 @url{http://neper.sourceforge.net}. It also has two dedicated mailing
 lists,
@@ -68,21 +68,24 @@ to subscribe to the list to send a message nor receive a reply.
 
 @section User Guidelines
 
-If you use Neper for your own work, please,
-
-@itemize
-@item mention it explicitly in your reports
+If you use Neper for your own work, please, mention it explicitly in your reports (books, papers, talks,
 @iftex
-(books, papers, talks, @dots).
+@dots)
 @end iftex
 @ifinfo
-(books, papers, talks, ...).
+...)
 @end ifinfo
-
-@item cite the following paper:
+and
+cite the following paper(s):
 @c
-@cite{R. Quey, P.R. Dawson, F. Barbe. Large-scale 3D random
+@itemize
+@item @cite{R. Quey, P.R. Dawson, F. Barbe. Large-scale 3D random
 polycrystals for the finite element method: Generation, meshing and
-remeshing.  Computer Methods in Applied Mechanics and
-Engineering, vol.@ 200, pp.@ 1729--1745, 2011}.
+remeshing.  Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 200, pp.@ 1729--1745, 2011}
+(for Voronoi tessellation, regularization, meshing);
+@item @cite{R.@ Quey and L.@ Renversade, Optimal polyhedral description of 3D
+polycrystals: Method and application to statistical and synchrotron X-ray
+diffraction data, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 330, pp.@
+308-333, 2018.}
+(for tessellation from experimental properties (option @option{-morpho})).
 @end itemize

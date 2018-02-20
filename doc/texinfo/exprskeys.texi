@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2017 Romain Quey
+@c Copyright (C) 2003-2018 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Expressions and Keys
@@ -13,6 +13,7 @@
 * Mesh Keys::
 * Point Keys::
 * Rotations and Orientations::
+* Crystal Symmetries::
 * Colours::
 @end menu
 
@@ -459,6 +460,84 @@ information).
   @item @code{ek} @tab Euler angles (Kocks convention) @tab 3
   @item @code{er} @tab Euler angles (Roe convention)   @tab 3
 @end multitable
+
+@sp 1
+Keys are available for ideal orientations:
+@multitable @columnfractions 0.18 0.83
+@iftex
+  @item Cube      @tab @math{@left(0@,0@,1@right)@left[1@,0@,0@right]}
+  @item Goss      @tab @math{@left(0@,1@,1@right)@left[1@,0@,0@right]}
+  @item U         @tab @math{@left(1@,0@,1@right)@left[@bar{1}@,0@,1@right]}
+  @item 45NDCube  @tab @math{@left(0@,0@,1@right)@left[1@,@bar{1}@,0@right]}
+  @item S1        @tab @math{@left(1@,2@,3@right)@left[6@,3@,@bar{4}@right]}
+  @item S2        @tab @math{@left(@bar{1}@,2@,3@right)@left[6@,@bar{3}@,4@right]}
+  @item S3        @tab @math{@left(1@,@bar{2}@,3@right)@left[6@,@bar{3}@,@bar{4}@right]}
+  @item S4        @tab @math{@left(@bar{1}@,@bar{2}@,3@right)@left[6@,3@,4@right]}
+  @item Brass1    @tab @math{@left(1@,1@,0@right)@left[1@,@bar{1}@,2@right]}
+  @item Brass2    @tab @math{@left(@bar{1}@,1@,0@right)@left[1@,1@,@bar{2}@right]}
+  @item Copper1   @tab @math{@left(1@,1@,2@right)@left[1@,1@,@bar{1}@right]}
+  @item Copper2   @tab @math{@left(@bar{1}@,1@,2@right)@left[1@,@bar{1}@,1@right]}
+@end iftex
+@ifinfo
+  @item Cube      @tab (0, 0, 1)[1, 0, 0]
+  @item Goss      @tab (0, 1, 1)[1, 0, 0]
+  @item U         @tab (1, 0, 1)[-1, 0, 1]
+  @item 45NDCube  @tab (0, 0, 1)[1, -1, 0]
+  @item S1        @tab (1, 2, 3)[6, 3, -4]
+  @item S2        @tab (-1, 2, 3)[6, -3, 4]
+  @item S3        @tab (1, -2, 3)[6, -3, -4]
+  @item S4        @tab (-1, -2, 3)[6, 3, 4]
+  @item Brass1    @tab (1, 1, 0)[1, -1, 2]
+  @item Brass2    @tab (-1, 1, 0)[1, 1, -2]
+  @item Copper1   @tab (1, 1, 2)[1, 1, -1]
+  @item Copper2   @tab (-1, 1, 2)[1, -1, 1]
+@end ifinfo
+@end multitable
+
+@node Crystal Symmetries
+@section Crystal Symmetries
+
+Crystal symmetries can be described using the following
+descriptors.
+
+@iftex
+@multitable @columnfractions 0.18 0.47 0.36
+  @headitem Key @tab Descriptor @tab Number of operators
+  @item @code{triclinic} @tab triclinic (Laue group @math{@overline{1}}) @tab 24
+  @item @code{cubic}     @tab cubic				@tab 24
+  @item @code{hexagonal} @tab hexagonal				@tab @phantom{0}1
+  @item @code{-1}        @tab Laue group @math{@overline{1}}	@tab @phantom{0}1
+  @item @code{2/m}       @tab Laue group @math{2/m}		@tab @phantom{0}2
+  @item @code{mmm}       @tab Laue group @math{mmm}		@tab @phantom{0}4
+  @item @code{4/m}       @tab Laue group @math{4/m}		@tab @phantom{0}4
+  @item @code{4/mmm}     @tab Laue group @math{4/mmm}		@tab @phantom{0}8
+  @item @code{-3}        @tab Laue group @math{@overline{3}}	@tab @phantom{0}3
+  @item @code{-3m}       @tab Laue group @math{@overline{3}m}	@tab @phantom{0}6
+  @item @code{6/m}       @tab Laue group @math{6/m}		@tab @phantom{0}6
+  @item @code{6/mmm}     @tab Laue group @math{6/mmm}		@tab 12
+  @item @code{m-3}       @tab Laue group @math{m@overline{3}}	@tab 12
+  @item @code{m-3m}       @tab Laue group @math{m@overline{3}m}		@tab 24
+@end multitable
+@end iftex
+@ifinfo
+@multitable @columnfractions 0.18 0.47 0.36
+  @headitem Key @tab Descriptor @tab Number of operators
+  @item @code{triclinic} @tab triclinic (Laue group @math{-1})  @tab 24
+  @item @code{cubic}     @tab cubic				@tab 24
+  @item @code{hexagonal} @tab hexagonal				@tab 1
+  @item @code{-1}        @tab Laue group @math{-1}	        @tab 1
+  @item @code{2/m}       @tab Laue group @math{2/m}		@tab 2
+  @item @code{mmm}       @tab Laue group @math{mmm}		@tab 4
+  @item @code{4/m}       @tab Laue group @math{4/m}		@tab 4
+  @item @code{4/mmm}     @tab Laue group @math{4/mmm}		@tab 8
+  @item @code{-3}        @tab Laue group @math{-3}	        @tab 3
+  @item @code{-3m}       @tab Laue group @math{-3m}	        @tab 6
+  @item @code{6/m}       @tab Laue group @math{6/m}		@tab 6
+  @item @code{6/mmm}     @tab Laue group @math{6/mmm}		@tab 12
+  @item @code{m-3}       @tab Laue group @math{m-3}	        @tab 12
+  @item @code{m-3m}       @tab Laue group @math{m-3m}		@tab 24
+@end multitable
+@end ifinfo
 
 @sp 1
 Keys are available for ideal orientations:

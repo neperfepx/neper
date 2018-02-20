@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifndef NEPER_M
@@ -18,7 +18,6 @@
 #include"nem_input/nem_input.h"
 #include"nem_meshing_para/nem_meshing_para.h"
 #include"nem_meshing/nem_meshing.h"
-#include"nem_meshing/nem_meshing_pinching/nem_meshing_pinching.h"
 #include"nem_meshing_str/nem_meshing_str.h"
 #include"nem_cleaning/nem_cleaning.h"
 #include"nem_nsets/nem_nsets.h"

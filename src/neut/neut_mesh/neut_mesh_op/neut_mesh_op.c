@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_op_.h"
@@ -1117,6 +1117,9 @@ neut_mesh_addelt (struct MESH *pMesh, int *EltNodes)
 
   ut_array_1d_int_memcpy ((*pMesh).EltNodes[(*pMesh).EltQty], eltnodeqty,
 			  EltNodes);
+
+  if ((*pMesh).EltElset)
+    (*pMesh).EltElset = ut_realloc_1d_int ((*pMesh).EltElset, (*pMesh).EltQty + 1);
 
   /* update NodeElts */
   /* if ((*pMesh).NodeElts != NULL) */

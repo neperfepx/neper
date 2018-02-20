@@ -56,6 +56,17 @@ ol_q_q_q (double *q1, double *q2, double *q3)
 }
 
 void
+ol_q_q_q_ (double *q1, double *q2, double *q3)
+{
+  q3[0] = q1[0] * q2[0] - q1[1] * q2[1] - q1[2] * q2[2] - q1[3] * q2[3];
+  q3[1] = q1[0] * q2[1] + q1[1] * q2[0] + q1[2] * q2[3] - q1[3] * q2[2];
+  q3[2] = q1[0] * q2[2] - q1[1] * q2[3] + q1[2] * q2[0] + q1[3] * q2[1];
+  q3[3] = q1[0] * q2[3] + q1[1] * q2[2] - q1[2] * q2[1] + q1[3] * q2[0];
+
+  return;
+}
+
+void
 ol_q_q_q_cur (double *q1, double *q2, double *q3)
 {
   ol_q_q_q (q1, q2, q3);
@@ -120,6 +131,25 @@ ol_g_vect_vect (double **g, double *v1, double *v2)
 
   for (i = 0; i < 3; i++)
     v2[i] = vcpy[i];
+
+  return;
+}
+
+void
+ol_q_vect_vect (double *q, double *v1, double *v2)
+{
+  double *q1 = ol_q_alloc ();
+  double *q2 = ol_q_alloc ();
+
+  ol_q_set_zero (q1);
+  ol_q_set_zero (q2);
+
+  ut_array_1d_memcpy (q1 + 1, 3, v1);
+  ol_q_q_q (q, q1, q2);
+  ut_array_1d_memcpy (v2, 3, q2 + 1);
+
+  ol_q_free (q1);
+  ol_q_free (q2);
 
   return;
 }

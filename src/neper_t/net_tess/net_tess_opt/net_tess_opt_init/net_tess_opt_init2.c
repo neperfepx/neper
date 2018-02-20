@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_.h"
@@ -134,9 +134,7 @@ net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTess,
 
   ut_string_string (In.body, &((*pTOpt).TDyn.body));
 
-#ifdef HAVE_NLOPT
   net_tess_opt_init_parms_algo (In, level, MTess, Tess, dtess, dcell, pTOpt);
-#endif
 
   net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
                                            In.morphooptialgoneigh[level],
@@ -152,7 +150,9 @@ net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTess,
   ut_array_1d_int_addval ((*pTOpt).seedopti, (*pTOpt).seedoptiqty, 1,
 			  (*pTOpt).seedopti);
 
+#ifdef HAVE_NLOPT
   net_tess_opt_init_parms_algomaxiter (In, level, pTOpt);
+#endif
 
   for (i = 0; i < qty1; i++)
     ut_free_2d_char (parts[i], qty2[i]);

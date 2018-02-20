@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifndef STRUCTIN_H
@@ -46,6 +46,7 @@ struct IN_M
   int tesrsmoothitermax;	// itermax for smoothing
 
   char *mesh2dalgo;		// 2d meshing algos
+  int mesh2dpinchfix;		// 2d mesh pinches fixing
   char *mesh3dalgo;		// 3d meshing algos
   char *meshqualexpr;		// expression of O (see the Neper paper)
   double meshqualmin;		// min, target value of O (see the Neper paper)

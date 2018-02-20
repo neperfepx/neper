@@ -12,11 +12,13 @@ extern void ol_q_q_q_cur (double *, double *, double *);
 extern void ol_R_R_R_cur (double *, double *, double *);
 extern void ol_g_g_g (double **, double **, double **);
 extern void ol_q_q_q (double *, double *, double *);
+extern void ol_q_q_q_ (double *, double *, double *);
 extern void ol_R_R_R (double *, double *, double *);
 extern void ol_g_g_g_ref (double **, double **, double **);
 extern void ol_q_q_q_ref (double *, double *, double *);
 extern void ol_R_R_R_ref (double *, double *, double *);
 extern void ol_g_vect_vect (double **, double *, double *);
+extern void ol_q_vect_vect (double *, double *, double *);
 
 extern void ol_g_refcsys (double **, double **, double **);
 extern void ol_q_refcsys (double *, double *, double *);
@@ -139,6 +141,7 @@ extern int ol_crysym_qty (char*);
 extern int ol_lauegroup_qty (char*);
 
 extern void ol_g_lng (double**, double**);
+extern void ol_q_lnq (double*, double*);
 
 #endif /* OL_CAL */
 #ifndef OL_CALx

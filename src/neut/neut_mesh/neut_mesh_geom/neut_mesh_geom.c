@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_geom_.h"
@@ -1217,33 +1217,42 @@ neut_mesh_point_elt_in (struct MESH Mesh, struct NODES Nodes,
   return;
 }
 
-void
+int
 neut_mesh_elt2dpair_angle (struct NODES Nodes, struct MESH Mesh,
                            int elt1, int elt2, double *pangle)
 {
   double *n1 = ut_alloc_1d (3);
   double *n2 = ut_alloc_1d (3);
   int nodeqty, *nodes = NULL;
+  int status;
   int order1, order2;
 
   neut_mesh_eltpair_comnodes (Mesh, elt1, elt2, &nodes, &nodeqty);
 
-  if (nodeqty != 2)
-    ut_error_reportbug ();
+  if (nodeqty == 3)
+  {
+    status = 2;
+    (*pangle) = 180;
+  }
 
-  order1 = neut_mesh_elt2d_nodes_ordering (Mesh, elt1, nodes, nodeqty);
-  order2 = neut_mesh_elt2d_nodes_ordering (Mesh, elt2, nodes, nodeqty);
+  else
+  {
+    status = 0;
 
-  neut_mesh_elt_normal (Mesh, Nodes, elt1, n1);
-  neut_mesh_elt_normal (Mesh, Nodes, elt2, n2);
-  if (order1 == order2)
-    ut_array_1d_scale (n2, 3, -1);
+    order1 = neut_mesh_elt2d_nodes_ordering (Mesh, elt1, nodes, nodeqty);
+    order2 = neut_mesh_elt2d_nodes_ordering (Mesh, elt2, nodes, nodeqty);
 
-  (*pangle) = ut_vector_angle (n1, n2);
+    neut_mesh_elt_normal (Mesh, Nodes, elt1, n1);
+    neut_mesh_elt_normal (Mesh, Nodes, elt2, n2);
+    if (order1 == order2)
+      ut_array_1d_scale (n2, 3, -1);
+
+    (*pangle) = ut_vector_angle (n1, n2);
+  }
 
   ut_free_1d (n1);
   ut_free_1d (n2);
   ut_free_1d_int (nodes);
 
-  return;
+  return status;
 }

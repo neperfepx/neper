@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_input_.h"
@@ -45,6 +45,9 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     ut_print_message (2, 0, "through option `-gmsh'.\n");
     abort ();
   }
+  else if (!strcmp (tmp, "2.5.1") || !strcmp (tmp, "2.14.1"))
+    ut_print_message (2, 3, "Gmsh %s is known to produce error.  Please update.\n", tmp);
+
   ut_file_close (file, ".nepertmp", "R");
   remove (".nepertmp");
   ut_free_1d_char (tmp);

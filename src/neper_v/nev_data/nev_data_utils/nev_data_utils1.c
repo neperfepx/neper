@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_data_utils_.h"
@@ -373,6 +373,8 @@ nev_data_typearg_args (char *input, char *argument, char **ptype,
     ut_string_string (input, ptype);
     ut_string_string (args[0], pvalue);
   }
+  else if (!isalpha (argument[0]))
+    ut_string_string (argument, ptype);
   else if (argqty == 2)
   {
     ut_string_string (args[0], ptype);

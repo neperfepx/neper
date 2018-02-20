@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -360,6 +360,9 @@ extern void neut_mesh_fasets_bound (struct TESS Tess, struct NODES
 extern void neut_mesh_domface_elts3d (struct TESS Tess, struct MESH
     Mesh2D, struct MESH Mesh3D, struct NODES Nodes, char *faset, int
     **pelts, int **peltfasets, int *peltqty);
+
+extern int neut_mesh_elset_elt_insidefacets (struct MESH Mesh1D, struct MESH
+    Mesh2D, int elset, int elt, int **pinsidefacets, int *pinsidefacetqty);
 
 #endif /* NEUT_MESH_TOPO_H */
 

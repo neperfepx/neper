@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_nodes_.h"
@@ -299,8 +299,20 @@ void
 neut_nodes_proj_alongontomesh (struct NODES *pN, double *n, struct NODES N,
 			       struct MESH M, int elset)
 {
-  int i, j, elt, status;
-  double *coo = ut_alloc_1d (3);
+  int i;
+
+  for (i = 1; i <= (*pN).NodeQty; i++)
+    neut_node_proj_alongontomesh ((*pN).NodeCoo[i], n, N, M, elset);
+
+  return;
+}
+
+void
+neut_node_proj_alongontomesh (double *coo, double *n, struct NODES N,
+			      struct MESH M, int elset)
+{
+  int j, elt, status;
+  double *coo2 = ut_alloc_1d (3);
   double *eq = ut_alloc_1d (4);
 
   // FILE* file;
@@ -310,37 +322,34 @@ neut_nodes_proj_alongontomesh (struct NODES *pN, double *n, struct NODES N,
   // WriteMeshGmsh (file, N, Garbage, M, Garbage, NULL, NULL, NULL, PGarbage);
   // ut_file_close (file, message, "w");
 
-  for (i = 1; i <= (*pN).NodeQty; i++)
+  status = 0;
+
+  for (j = 1; j <= M.Elsets[elset][0]; j++)
   {
-    status = 0;
+    elt = M.Elsets[elset][j];
+    ut_array_1d_memcpy (coo2, 3, coo);
+    neut_mesh_elt_eq (M, N, elt, eq);
 
-    for (j = 1; j <= M.Elsets[elset][0]; j++)
+    ut_space_projpoint_alongonto (coo2, n, eq);
+
+    if (ut_space_triangle_point_in (N.NodeCoo[M.EltNodes[elt][0]],
+				    N.NodeCoo[M.EltNodes[elt][1]],
+				    N.NodeCoo[M.EltNodes[elt][2]],
+				    coo2, 1e-4, 1e-4) == 1)
     {
-      elt = M.Elsets[elset][j];
-      ut_array_1d_memcpy (coo, 3, (*pN).NodeCoo[i]);
-      neut_mesh_elt_eq (M, N, elt, eq);
-
-      ut_space_projpoint_alongonto (coo, n, eq);
-
-      if (ut_space_triangle_point_in (N.NodeCoo[M.EltNodes[elt][0]],
-				      N.NodeCoo[M.EltNodes[elt][1]],
-				      N.NodeCoo[M.EltNodes[elt][2]],
-				      coo, 1e-4, 1e-4) == 1)
-      {
-	ut_array_1d_memcpy ((*pN).NodeCoo[i], 3, coo);
-	status = 1;
-	break;
-      }
-    }
-
-    if (status == 0)
-    {
-      printf ("\nnode not caught during backward projection\n");
-      ut_error_reportbug ();
+      ut_array_1d_memcpy (coo, 3, coo2);
+      status = 1;
+      break;
     }
   }
 
-  ut_free_1d (coo);
+  if (status == 0)
+  {
+    printf ("\nnode not caught during backward projection\n");
+    ut_error_reportbug ();
+  }
+
+  ut_free_1d (coo2);
   ut_free_1d (eq);
 
   // sprintf (message, "face-%d-aft.msh", i);
@@ -476,7 +485,8 @@ neut_nodes_dist_pair (struct NODES Nodes, int n1, int n2)
 }
 
 void
-neut_nodes_bary (struct NODES Nodes, int *nodes, int nodeqty, double *coo)
+neut_nodes_bary (struct NODES Nodes, int *nodes, int nodeqty, double *coo,
+		 double *pcl)
 {
   int i;
 
@@ -485,12 +495,20 @@ neut_nodes_bary (struct NODES Nodes, int *nodes, int nodeqty, double *coo)
     ut_array_1d_add (coo, Nodes.NodeCoo[nodes[i]], 3, coo);
   ut_array_1d_scale (coo, 3, 1. / nodeqty);
 
+  if (pcl && Nodes.NodeCl)
+  {
+    (*pcl) = 0;
+    for (i = 0; i < nodeqty; i++)
+      (*pcl) += Nodes.NodeCl[nodes[i]];
+    (*pcl) /= nodeqty;
+  }
+
   return;
 }
 
 void
 neut_nodes_wbary (struct NODES Nodes, int *nodes, double *nodeweights,
-		  int nodeqty, double *coo)
+		  int nodeqty, double *coo, double *pcl)
 {
   int i, j;
   double sumweight;
@@ -502,6 +520,14 @@ neut_nodes_wbary (struct NODES Nodes, int *nodes, double *nodeweights,
 
   sumweight = ut_array_1d_sum (nodeweights, nodeqty);
   ut_array_1d_scale (coo, 3, 1. / sumweight);
+
+  if (pcl && Nodes.NodeCl)
+  {
+    (*pcl) = 0;
+    for (i = 0; i < nodeqty; i++)
+      (*pcl) += nodeweights[i] * Nodes.NodeCl[nodes[i]];
+    (*pcl) /= sumweight;
+  }
 
   return;
 }

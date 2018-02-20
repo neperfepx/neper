@@ -9,14 +9,13 @@ ol_crysym_qty (char* lauegroup)
   return ol_lauegroup_qty (lauegroup);
 }
 
+
 int
 ol_lauegroup_qty (char* lauegroup)
 {
   if (strcmp (lauegroup, "-1") == 0)
     return 1;
-  else if (strcmp (lauegroup, "triclinic") == 0)
-    return 1;
-  else if (strcmp (lauegroup, "2m") == 0)
+  else if (strcmp (lauegroup, "2/m") == 0)
     return 2;
   else if (strcmp (lauegroup, "mmm") == 0)
     return 4;
@@ -34,8 +33,10 @@ ol_lauegroup_qty (char* lauegroup)
     return 12;
   else if (strcmp (lauegroup, "m-3") == 0)
     return 12;
-  else if (strcmp (lauegroup, "m3m") == 0)
+  else if (strcmp (lauegroup, "m-3m") == 0)
     return 24;
+  else if (strcmp (lauegroup, "triclinic") == 0)
+    return 1;
   else if (strcmp (lauegroup, "cubic") == 0)
     return 24;
   else if (strcmp (lauegroup, "hexagonal") == 0)
@@ -43,6 +44,7 @@ ol_lauegroup_qty (char* lauegroup)
   else
     return -1;
 }
+
 
 int
 ol_g_crysym (double **g, char* crysym, int nb, double **g2)
@@ -87,42 +89,42 @@ ol_g_crysym (double **g, char* crysym, int nb, double **g2)
   };
 
   double T_3[3][3][3] = {
-    {{ 1,  0,  0}, { 0,  1,  0}, { 0,  0,  1}},
-    {{ 0, -1,  0}, { 1, -1,  0}, { 0,  0,  1}},
-    {{-1,  1,  0}, {-1,  0,  0}, { 0,  0,  1}}
+    {{ 1.0,       0,  0}, { 0,        1.0,  0}, { 0,  0,  1}},
+    {{-0.5, OL_S3O2,  0}, {-OL_S3O2, -0.5,  0}, { 0,  0,  1}},
+    {{-0.5,-OL_S3O2,  0}, { OL_S3O2, -0.5,  0}, { 0,  0,  1}}
   };
 
   double T_3m[6][3][3] = {
-    {{ 1,  0,  0}, { 0,  1,  0}, { 0,  0,  1}},
-    {{ 0, -1,  0}, { 1, -1,  0}, { 0,  0,  1}},
-    {{-1,  1,  0}, {-1,  0,  0}, { 0,  0,  1}},
-    {{ 1, -1,  0}, { 0, -1,  0}, { 0,  0, -1}},
-    {{-1,  0,  0}, {-1,  1,  0}, { 0,  0, -1}},
-    {{ 0,  1,  0}, { 1,  0,  0}, { 0,  0, -1}}
+    {{ 1.0,       0,  0}, { 0,        1.0,  0}, { 0,  0,  1}},
+    {{-0.5, OL_S3O2,  0}, {-OL_S3O2, -0.5,  0}, { 0,  0,  1}},
+    {{-0.5,-OL_S3O2,  0}, { OL_S3O2, -0.5,  0}, { 0,  0,  1}},
+    {{ 1.0,       0,  0}, { 0,       -1.0,  0}, { 0,  0, -1}},
+    {{-0.5, OL_S3O2,  0}, { OL_S3O2,  0.5,  0}, { 0,  0, -1}},
+    {{-0.5,-OL_S3O2,  0}, {-OL_S3O2,  0.5,  0}, { 0,  0, -1}}
   };
 
   double T6_m[6][3][3] = {
-    {{ 1,  0,  0}, { 0,  1,  0}, { 0,  0,  1}},
-    {{ 0, -1,  0}, { 1, -1,  0}, { 0,  0,  1}},
-    {{-1,  1,  0}, {-1,  0,  0}, { 0,  0,  1}},
-    {{ 1, -1,  0}, { 1,  0,  0}, { 0,  0,  1}},
-    {{-1,  0,  0}, { 0, -1,  0}, { 0,  0,  1}},
-    {{ 0,  1,  0}, {-1,  1,  0}, { 0,  0,  1}}
+    {{ 1  ,       0,  0}, {       0,  1  ,  0}, { 0,  0,  1}},
+    {{ 0.5, OL_S3O2,  0}, {-OL_S3O2,  0.5,  0}, { 0,  0,  1}},
+    {{-0.5, OL_S3O2,  0}, {-OL_S3O2, -0.5,  0}, { 0,  0,  1}},
+    {{-1  ,       0,  0}, {       0, -1  ,  0}, { 0,  0,  1}},
+    {{-0.5,-OL_S3O2,  0}, { OL_S3O2, -0.5,  0}, { 0,  0,  1}},
+    {{ 0.5,-OL_S3O2,  0}, { OL_S3O2,  0.5,  0}, { 0,  0,  1}},
   };
 
   double T6_mmm[12][3][3] = {
-    {{ 1  ,    0,  0}, {    0,  1  ,  0}, { 0,  0,  1}},
+    {{ 1  ,       0,  0}, {       0,  1  ,  0}, { 0,  0,  1}},
     {{ 0.5, OL_S3O2,  0}, {-OL_S3O2,  0.5,  0}, { 0,  0,  1}},
     {{-0.5, OL_S3O2,  0}, {-OL_S3O2, -0.5,  0}, { 0,  0,  1}},
-    {{-1  ,    0,  0}, {    0, -1  ,  0}, { 0,  0,  1}},
+    {{-1  ,       0,  0}, {       0, -1  ,  0}, { 0,  0,  1}},
     {{-0.5,-OL_S3O2,  0}, { OL_S3O2, -0.5,  0}, { 0,  0,  1}},
     {{ 0.5,-OL_S3O2,  0}, { OL_S3O2,  0.5,  0}, { 0,  0,  1}},
     {{ 0.5,-OL_S3O2,  0}, {-OL_S3O2, -0.5,  0}, { 0,  0, -1}},
     {{-0.5,-OL_S3O2,  0}, {-OL_S3O2,  0.5,  0}, { 0,  0, -1}},
-    {{-1  ,    0,  0}, {    0,  1  ,  0}, { 0,  0, -1}},
+    {{-1  ,       0,  0}, {    0,     1  ,  0}, { 0,  0, -1}},
     {{-0.5, OL_S3O2,  0}, { OL_S3O2,  0.5,  0}, { 0,  0, -1}},
     {{ 0.5, OL_S3O2,  0}, { OL_S3O2, -0.5,  0}, { 0,  0, -1}},
-    {{ 1  ,    0,  0}, {    0, -1  ,  0}, { 0,  0, -1}}
+    {{ 1  ,       0,  0}, {    0,    -1  ,  0}, { 0,  0, -1}}
   };
 
   double Tm_3[12][3][3] = {
@@ -240,7 +242,7 @@ ol_g_crysym (double **g, char* crysym, int nb, double **g2)
     for (i = 0; i < 3; i++)
       for (j = 0; j < 3; j++)
 	T[i][j] = Tm_3[nb][i][j];
-  else if (strcmp (crysym, "m3m") == 0)
+  else if (strcmp (crysym, "m-3m") == 0)
     for (i = 0; i < 3; i++)
       for (j = 0; j < 3; j++)
 	T[i][j] = Tm3m[nb][i][j];
@@ -261,8 +263,97 @@ ol_g_crysym (double **g, char* crysym, int nb, double **g2)
 void
 ol_q_crysym (double *q, char* crysym, int nb, double *q2)
 {
-  double Tcubic[25][4] = {
-    {8888, 8888, 8888, 8888},	/* phantom */
+  double *U = NULL;
+
+  double U_1[1][4] = {
+    { 1,  0,  0,  0}
+  };
+
+  double U2_m[2][4] = {
+    {1, 0, 0, 0},
+    {0, 0, 0, 1}
+  };
+
+  double Ummm[4][4] = {
+    {1, 0, 0, 0},
+    {0, 0, 0, 1},
+    {0, 1, 0, 0},
+    {0, 0, 1, 0}
+  };
+
+  double U4_m[4][4] = {
+    {     1, 0, 0,  0},
+    {     0, 0, 0,  1},
+    {OL_IS2, 0, 0, -OL_IS2},
+    {OL_IS2, 0, 0,  OL_IS2}
+  };
+
+  double U4_mmm[8][4] = {
+    {     1,      0,       0,       0},
+    {     0,      0,       0,       1},
+    {OL_IS2,      0,       0, -OL_IS2},
+    {OL_IS2,      0,       0,  OL_IS2},
+    {     0,      1,       0,       0},
+    {     0,      0,       1,       0},
+    {     0, OL_IS2,  OL_IS2,       0},
+    {     0, OL_IS2, -OL_IS2,       0}
+  };
+
+  double U_3[3][4] = {
+    {  1  , 0, 0, 0},
+    {  0.5, 0, 0, OL_S3O2},
+    {  0.5, 0, 0,-OL_S3O2}
+  };
+
+  double U_3m[6][4] = {
+    {  1  , 0, 0, 0},
+    {  0.5, 0, 0, OL_S3O2},
+    {  0.5, 0, 0,-OL_S3O2},
+    {  0  , 1, 0, 0},
+    {  0,-0.5,-OL_S3O2, 0},
+    {  0,-0.5, OL_S3O2, 0}
+  };
+
+  double U6_m[6][4] = {
+    {1, 0, 0, 0},
+    {OL_S3O2, 0, 0, 0.5},
+    {0.5, 0, 0, OL_S3O2},
+    {0, 0, 0, 1},
+    {0.5, 0, 0, -OL_S3O2},
+    {OL_S3O2, 0, 0, -0.5},
+  };
+
+  double U6_mmm[12][4] = {
+    {1, 0, 0, 0},
+    {OL_S3O2, 0, 0, 0.5},
+    {0.5, 0, 0, OL_S3O2},
+    {0, 0, 0, 1},
+    {0.5, 0, 0, -OL_S3O2},
+    {OL_S3O2, 0, 0, -0.5},
+    {0, OL_S3O2, -0.5, 0},
+    {0, -0.5, OL_S3O2, 0},
+    {0, 0, 1, 0},
+    {0, 0.5, OL_S3O2, 0},
+    {0, OL_S3O2, 0.5, 0},
+    {0, 1, 0, 0}
+  };
+
+  double Um_3[12][4] = {
+    {1  ,  0  ,  0  ,  0  },
+    {0.5,  0.5,  0.5,  0.5},
+    {0.5, -0.5, -0.5, -0.5},
+    {0.5, -0.5,  0.5, -0.5},
+    {0.5,  0.5, -0.5,  0.5},
+    {0.5,  0.5, -0.5, -0.5},
+    {0.5, -0.5,  0.5,  0.5},
+    {0.5, -0.5, -0.5,  0.5},
+    {0.5,  0.5,  0.5, -0.5},
+    {0  ,  1  ,  0  ,  0  },
+    {0  ,  0  ,  1  ,  0  },
+    {0  ,  0  ,  0  ,  1  }
+  };
+
+  double Um3m[24][4] = {
     { 1,  0,  0,  0},
     {OL_IS2, OL_IS2,  0,  0},
     { 0,  1,  0,  0},
@@ -289,25 +380,65 @@ ol_q_crysym (double *q, char* crysym, int nb, double *q2)
     {-.5, .5, .5, -.5}
   };
 
-  /* TODO */
-  if (strcmp (crysym, "cubic") == 0)
-  {
-    if (nb < 1 || nb > 24)
-      abort ();
+  double Ucubic[24][4] = {
+    { 1,  0,  0,  0},
+    {OL_IS2, OL_IS2,  0,  0},
+    { 0,  1,  0,  0},
+    {-OL_IS2, OL_IS2,  0,  0},
+    {OL_IS2,  0, OL_IS2,  0},
+    { 0,  0,  1,  0},
+    {-OL_IS2,  0, OL_IS2,  0},
+    {OL_IS2,  0,  0, OL_IS2},
+    { 0,  0,  0,  1},
+    {-OL_IS2,  0,  0, OL_IS2},
+    { 0, OL_IS2, OL_IS2,  0},
+    { 0,  0, OL_IS2, OL_IS2},
+    { 0, OL_IS2,  0, OL_IS2},
+    { 0, -OL_IS2, OL_IS2,  0},
+    { 0,  0, -OL_IS2, OL_IS2},
+    { 0, OL_IS2,  0, -OL_IS2},
+    {.5, .5, .5, .5},
+    {-.5, .5, .5, .5},
+    {.5, -.5, .5, .5},
+    {-.5, -.5, .5, .5},
+    {.5, .5, -.5, .5},
+    {-.5, .5, -.5, .5},
+    {.5, .5, .5, -.5},
+    {-.5, .5, .5, -.5}
+  };
 
-    ol_q_q_q (q, Tcubic[nb], q2);
-    ol_q_q (q2, q2);
-  }
+  nb--; /* 0-indexed local vs 1-indexed input; this modif on nb is *local* */
+  if (strcmp (crysym, "-1") == 0
+   || strcmp (crysym, "triclinic") == 0)
+    U = U_1[nb];
+  else if (strcmp (crysym, "2/m") == 0)
+    U = U2_m[nb];
+  else if (strcmp (crysym, "mmm") == 0)
+    U = Ummm[nb];
+  else if (strcmp (crysym, "4/m") == 0)
+    U = U4_m[nb];
+  else if (strcmp (crysym, "4/mmm") == 0)
+    U = U4_mmm[nb];
+  else if (strcmp (crysym, "-3") == 0)
+    U = U_3[nb];
+  else if (strcmp (crysym, "-3m") == 0)
+    U = U_3m[nb];
+  else if (strcmp (crysym, "6/m") == 0)
+    U = U6_m[nb];
+  else if (strcmp (crysym, "6/mmm") == 0
+        || strcmp (crysym, "hexagonal") == 0)
+    U = U6_mmm[nb];
+  else if (strcmp (crysym, "m-3") == 0)
+    U = Um_3[nb];
+  else if (strcmp (crysym, "m-3m") == 0)
+    U = Um3m[nb];
+  else if (strcmp (crysym, "cubic") == 0)
+    U = Ucubic[nb];
   else
-  {
-    double **g = ol_g_alloc ();
-    double **g2 = ol_g_alloc ();
-    ol_q_g (q, g);
-    ol_g_crysym (g, crysym, nb, g2);
-    ol_g_q (g2, q2);
-    ol_g_free (g);
-    ol_g_free (g2);
-  }
+    abort ();
+
+  ol_q_q_q (U, q, q2);
+  ol_q_q (q2, q2);
 
   return;
 }

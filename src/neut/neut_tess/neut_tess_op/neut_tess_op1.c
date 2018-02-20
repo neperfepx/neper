@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_op_.h"
@@ -365,6 +365,10 @@ neut_tess_scale (struct TESS *pTess, double vx, double vy, double vz)
     for (j = 0; j < 4; j++)
       (*pTess).DomFaceEq[i][j] /= norm;
   }
+
+  if ((*pTess).PeriodicDist)
+    for (i = 0; i < (*pTess).Dim; i++)
+      (*pTess).PeriodicDist[i] *= gsize[i];
 
   ut_free_1d (gsize);
 

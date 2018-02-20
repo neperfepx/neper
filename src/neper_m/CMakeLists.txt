@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2017, Romain Quey.
+# Copyright (C) 2003-2018, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
@@ -63,6 +63,7 @@ add_library (neper_m
 ./nem_meshing/nem_meshing_3D/nem_meshing_3D4.c
 ./nem_meshing/nem_meshing_pinching/nem_meshing_pinching1.c
 ./nem_meshing/nem_meshing_pinching/nem_meshing_pinching2.c
+./nem_meshing/nem_meshing_pinching/nem_meshing_pinching3.c
 ./nem_interface/nem_interface1.c
 ./nem_interface/nem_interface_dup/nem_interface_dup1.c
 ./nem_interface/nem_interface_dup/nem_interface_dup2.c

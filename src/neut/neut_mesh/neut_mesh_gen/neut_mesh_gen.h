@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -9,6 +9,8 @@ extern "C"
 
 #ifndef NEUT_MESH_GEN_H
 #define NEUT_MESH_GEN_H
+
+extern int neut_mesh_isvoid (struct MESH Mesh);
 
 /// \brief Create a mesh containing an element of a mesh.
 ///

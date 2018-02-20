@@ -1,5 +1,5 @@
   /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_input_.h"
@@ -61,6 +61,7 @@ nem_input_options_default (struct IN_M *pIn)
 
   (*pIn).mesh2dalgo = ut_alloc_1d_char (100);
   (*pIn).mesh3dalgo = ut_alloc_1d_char (100);
+  (*pIn).mesh2dpinchfix = 1;
   (*pIn).mesh3dreport = 0;
   ut_string_string ("all", &((*pIn).meshface));
   ut_string_string ("all", &((*pIn).meshpoly));
@@ -141,6 +142,7 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-dim");
   strcpy (ArgList[++ArgQty], "-meshreconstruct");	//
   strcpy (ArgList[++ArgQty], "-mesh2dalgo");
+  strcpy (ArgList[++ArgQty], "-mesh2dpinchfix");
   strcpy (ArgList[++ArgQty], "-mesh3dalgo");
   strcpy (ArgList[++ArgQty], "-meshqualexpr");
   strcpy (ArgList[++ArgQty], "-meshqualdisexpr");
@@ -319,6 +321,8 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
 			  &((*pIn).tesrsmoothitermax));
       else if (!strcmp (Arg, "-mesh2dalgo"))
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh2dalgo));
+      else if (!strcmp (Arg, "-mesh2dpinchfix"))
+	ut_arg_nextaslogical (argv, &i, Arg, &((*pIn).mesh2dpinchfix));
       else if (!strcmp (Arg, "-mesh3dalgo"))
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dalgo));
       else if (!strcmp (Arg, "-meshqualexpr"))

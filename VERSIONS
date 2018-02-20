@@ -1,3 +1,15 @@
+New in 3.1.1 (20 Feb 2018):
+- New paper: "R. Quey and L. Renversade, Optimal polyhedral description of 3D
+  polycrystals: Method and application to statistical and synchrotron X-ray
+  diffraction data, Comput. Methods Appl. Mech. Engrg., vol. 330, pp. 308-333,
+  2018."
+- module -T: fixed -scale, added -domain rodrigues.
+- module -M: fixed mesh of regularized tessellation through 2D-mesh pinches
+  correction, fixed -stat when a tesr is meshed, improved -loadmesh, added
+  -mesh2dpinchfix, added test on Gmsh's version.
+- module -V : fixed -datapolyscale.
+- general: fixed use without nlopt or openmp.
+
 New in 3.1.0 (05 Sep 2017):
 - module -T: made all options applicable to multiscale tessellations,
   improved -morpho for all types of data, improved -morpho*

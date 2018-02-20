@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -279,7 +279,7 @@ extern "C"
 					  struct NODES Nodes, double *coo,
 					  int *pnode);
 
-  extern void neut_mesh_elt2dpair_angle (struct NODES Nodes, struct MESH
+  extern int neut_mesh_elt2dpair_angle (struct NODES Nodes, struct MESH
       Mesh, int elt1, int elt2, double *pangle);
 
 #endif				/* NEUT_MESH_GEOM_H */

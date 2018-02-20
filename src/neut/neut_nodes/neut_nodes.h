@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2017, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -85,6 +85,9 @@ extern "C"
   extern void neut_nodes_proj_alongontomesh (struct NODES *pN, double *n,
 					     struct NODES N, struct MESH M,
 					     int elset);
+  extern void neut_node_proj_alongontomesh (double *coo, double *n,
+					    struct NODES N, struct MESH M,
+					    int elset);
 
 /// \brief Remove orphan nodes.
 ///
@@ -117,7 +120,7 @@ extern "C"
 ///
 ///
   extern void neut_nodes_bary (struct NODES Nodes, int *nodes, int
-			       nodeqty, double *coo);
+			       nodeqty, double *coo, double *pcl);
 
 /// \brief Get the weighted barycenter of nodes
 ///
@@ -125,7 +128,7 @@ extern "C"
 ///
   extern void neut_nodes_wbary (struct NODES Nodes, int *nodes,
 				double *nodeweights, int nodeqty,
-				double *coo);
+				double *coo, double *pcl);
 
 /// \brief Switch nodes of a NODES structure.
   extern void neut_nodes_renumber_switch (struct NODES *pNodes,
