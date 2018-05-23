@@ -53,19 +53,6 @@ extern "C"
   extern int neut_tess_delaunay (struct TESS Tess, struct NODES *pNodes,
 				 struct MESH *pMesh);
 
-  extern int neut_tess_dom_pt_randpt (struct TESS Dom, struct POINT
-				      Point, gsl_rng *r, double rad,
-				      double penetration, double
-				      *coo, double *pdist);
-  extern int neut_tess_dom_pt_randpt_pick (struct TESS Dom, struct POINT
-      Point, gsl_rng *r, double *coo);
-  extern int neut_tess_dom_pt_randpt_test (struct TESS Dom, struct POINT
-      Point, double rad, double penetration, double *coo, double
-      *pdist);
-  extern int neut_tess_dom_pt_randpt_cluster (struct TESS Dom, struct
-      POINT Point, gsl_rng *r, struct POINT Point2, double penetration,
-      double *coo, double *pdist);
-
   extern int neut_tess_expr_vars_vals (struct TESS Tess, char* expr, int
       *showedge, int *showface, int *showpoly, char *entity, int id, char
       ***pvars, double **pvals, char ***ptypes, int *pvarqty);

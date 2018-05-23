@@ -4,6 +4,7 @@
 #ifndef OL_DES
 #define OL_DES
 
+#include "ut.h"
 #include "ol_glo.h"
 #include "ol_cal.h"
 
@@ -130,6 +131,7 @@ extern void ol_g_ipf_crysym_stprojxy (double **, double *, char*, double *);
 extern void ol_g_ipf_crysym_eaproj (double **, double *, char*, double *);
 extern void ol_g_ipf_crysym_eaprojxy (double **, double *, char*, double *);
 extern void ol_g_ipf_crysym_eaproj_rad (double **, double *, char*, double *);
+extern void ol_ipf_g_stprojxy (double *p, double *vect, double **g);
 
 extern void ol_q_pf_stproj (double *, double *, double *);
 extern void ol_q_pf_stprojxy (double *, double *, double *);
@@ -149,44 +151,7 @@ extern void ol_q_ipf_crysym_stproj_rad (double *, double *, char*, double *);
 extern void ol_q_ipf_crysym_eaproj (double *, double *, char*, double *);
 extern void ol_q_ipf_crysym_eaprojxy (double *, double *, char*, double *);
 extern void ol_q_ipf_crysym_eaproj_rad (double *, double *, char*, double *);
-
-extern void ol_e_pf_stproj (double *, double *, double *);
-extern void ol_e_pf_stprojxy (double *, double *, double *);
-extern void ol_e_pf_stproj_rad (double *, double *, double *);
-extern void ol_e_pf_eaproj (double *, double *, double *);
-extern void ol_e_pf_eaprojxy (double *, double *, double *);
-extern void ol_e_pf_eaproj_rad (double *, double *, double *);
-extern void ol_e_ipf_stproj (double *, double *, double *);
-extern void ol_e_ipf_stprojxy (double *, double *, double *);
-extern void ol_e_ipf_stproj_rad (double *, double *, double *);
-extern void ol_e_ipf_eaproj (double *, double *, double *);
-extern void ol_e_ipf_eaprojxy (double *, double *, double *);
-extern void ol_e_ipf_eaproj_rad (double *, double *, double *);
-extern void ol_e_ipf_crysym_stproj (double *, double *, char*, double *);
-extern void ol_e_ipf_crysym_stprojxy (double *, double *, char*, double *);
-extern void ol_e_ipf_crysym_stproj_rad (double *, double *, char*, double *);
-extern void ol_e_ipf_crysym_eaproj (double *, double *, char*, double *);
-extern void ol_e_ipf_crysym_eaprojxy (double *, double *, char*, double *);
-extern void ol_e_ipf_crysym_eaproj_rad (double *, double *, char*, double *);
-
-extern void ol_R_pf_stproj (double *, double *, double *);
-extern void ol_R_pf_stprojxy (double *, double *, double *);
-extern void ol_R_pf_stproj_rad (double *, double *, double *);
-extern void ol_R_pf_eaproj (double *, double *, double *);
-extern void ol_R_pf_eaprojxy (double *, double *, double *);
-extern void ol_R_pf_eaproj_rad (double *, double *, double *);
-extern void ol_R_ipf_stproj (double *, double *, double *);
-extern void ol_R_ipf_stprojxy (double *, double *, double *);
-extern void ol_R_ipf_stproj_rad (double *, double *, double *);
-extern void ol_R_ipf_eaproj (double *, double *, double *);
-extern void ol_R_ipf_eaprojxy (double *, double *, double *);
-extern void ol_R_ipf_eaproj_rad (double *, double *, double *);
-extern void ol_R_ipf_crysym_stproj (double *, double *, char*, double *);
-extern void ol_R_ipf_crysym_stprojxy (double *, double *, char*, double *);
-extern void ol_R_ipf_crysym_stproj_rad (double *, double *, char*, double *);
-extern void ol_R_ipf_crysym_eaproj (double *, double *, char*, double *);
-extern void ol_R_ipf_crysym_eaprojxy (double *, double *, char*, double *);
-extern void ol_R_ipf_crysym_eaproj_rad (double *, double *, char*, double *);
+extern void ol_ipf_q_stprojxy (double *p, double *vect, double *q);
 
 extern void ol_pole_set_zero (int *);
 extern void ol_pole_set_this (int *, int, int, int);

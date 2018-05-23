@@ -33,6 +33,18 @@ ut_array_1d_scale (double *array, int qty, double scale)
   return;
 }
 
+
+void
+ut_array_1d_d2ri (double *array, int qty, int *array2)
+{
+  int i;
+
+  for (i = 0; i < qty; i++)
+    array2[i] = ut_num_d2ri (array[i]);
+
+  return;
+}
+
 void
 ut_array_1d_normalize (double *array, int qty)
 {
@@ -298,26 +310,14 @@ ut_array_1d_char_fscanf (FILE * file, char **a, int size)
 int
 ut_array_1d_fprintf (FILE * file, double *a, int size, const char *format)
 {
-  int i, res;
-
-  res = -1;
-  for (i = 0; i < size - 1; i++)
-  {
-    fprintf (file, format, a[i]);
-    res = fprintf (file, " ");
-  }
-  if (size > 0)
-    res = fprintf (file, format, a[size - 1]);
-  res = fprintf (file, "\n");
-
-  return res;
+  ut_array_1d_fprintf_nonl (file, a, size, format);
+  return fprintf (file, "\n");
 }
 
 int
 ut_array_1d_float_fprintf (FILE * file, float *a, int size, const char *format)
 {
   int i, res;
-
 
   for (i = 0; i < size - 1; i++)
   {
@@ -475,7 +475,6 @@ ut_array_1d_int_fscanfn_wcard (char *filename, int *a, int d1, char *wcard)
   return 0;
 }
 
-
 int
 ut_array_1d_int_fprintf (FILE * file, int *a, int size, const char *format)
 {
@@ -531,13 +530,25 @@ ut_array_1d_fprintf_nonl (FILE * file, double *a, int size, const char *format)
 {
   int i, res = 0;
 
-  for (i = 0; i < size - 1; i++)
+  if (strstr (format, "f"))
   {
-    fprintf (file, format, a[i]);
-    res = fprintf (file, " ");
+    for (i = 0; i < size - 1; i++)
+    {
+      fprintf (file, format, a[i]);
+      res = fprintf (file, " ");
+    }
+    if (size > 0)
+      res = fprintf (file, format, a[size - 1]);
   }
-  if (size > 0)
-    res = fprintf (file, format, a[size - 1]);
+
+  else if (strstr (format, "d"))
+  {
+    int *a2 = ut_alloc_1d_int (size);
+    ut_array_1d_d2ri (a, size, a2);
+
+    ut_array_1d_int_fprintf_nonl (file, a2, size, format);
+    ut_free_1d_int (a2);
+  }
 
   return res;
 }
@@ -602,8 +613,6 @@ ut_array_2d_fprintf_oneline (FILE * fileid, double **array,
 
   return res;
 }
-
-
 
 int
 ut_array_2d_fprintf_col (FILE * file, double **a, int size1, int size2,
@@ -768,6 +777,48 @@ ut_array_1d_mean (double *a, int size)
 }
 
 double
+ut_array_1d_mean_pow (double *a, int size, double p)
+{
+  int i;
+  double val = 0;
+
+  if (size <= 0)
+    abort ();
+
+  if (p == DBL_MAX)
+    val = ut_array_1d_max (a, size) / size;
+
+  else
+  {
+    for (i = 0; i < size; i++)
+      val += pow (a[i], p);
+    val = pow (1. / size * val, 1. / p);
+  }
+
+  return val;
+}
+
+double
+ut_array_1d_mean_powstring (double *a, int size, char* pstring)
+{
+  int status;
+  double p;
+
+  if (!strcmp (pstring, "Linf"))
+    p = DBL_MAX;
+  else if (!pstring || !strcmp (pstring, "default"))
+    p = 2;
+  else
+  {
+    status = sscanf (pstring, "L%lf", &p);
+    if (status != 1)
+      abort ();
+  }
+
+  return ut_array_1d_mean_pow (a, size, p);
+}
+
+double
 ut_array_1d_gmean (double *a, int size)
 {
   int i;
@@ -850,6 +901,32 @@ ut_array_1d_stddev (double *a, double mean, int size)
     stddev += (a[i] - mean) * (a[i] - mean);
   stddev /= size;
   stddev = sqrt (stddev);
+
+  return stddev;
+}
+
+double
+ut_array_1d_wstddev (double *a, double *w, double mean, int size)
+{
+  int i, M;
+  double tmp0, tmp1, stddev;
+
+  M = 0;
+  for (i = 0; i < size; i++)
+    M += (w[i] != 0);
+
+  if (M <= 0)
+    abort ();
+
+  tmp0 = 0;
+  tmp1 = 0;
+  for (i = 0; i < size; i++)
+  {
+    tmp0 += w[i] * pow (a[i] - mean, 2);
+    tmp1 += w[i];
+  }
+  tmp1 *= (double) (M - 1) / M;
+  stddev = sqrt (tmp0 / tmp1);
 
   return stddev;
 }
@@ -1557,6 +1634,23 @@ ut_array_2d_mean (double **a, int size1, int size2)
 }
 
 double
+ut_array_2d_col_mean (double **a, int size1, int col)
+{
+  int i;
+  double mean;
+
+  if (size1 <= 0 || col <= 0)
+    abort ();
+
+  mean = 0;
+  for (i = 0; i < size1; i++)
+      mean += a[i][col];
+  mean /= size1;
+
+  return mean;
+}
+
+double
 ut_array_2d_gmean (double **a, int size1, int size2)
 {
   int i, j;
@@ -1873,6 +1967,21 @@ ut_array_3d_memcpy (double ***dest, int size1, int size2, int size3,
     for (j = 0; j < size2; j++)
       for (k = 0; k < size3; k++)
 	dest[i][j][k] = src[i][j][k];
+
+  return;
+}
+
+void
+ut_array_4d_memcpy (double ****dest, int size1, int size2, int size3,
+		    int size4, double ****src)
+{
+  int i, j, k, l;
+
+  for (i = 0; i < size1; i++)
+    for (j = 0; j < size2; j++)
+      for (k = 0; k < size3; k++)
+        for (l = 0; l < size4; l++)
+          dest[i][j][k][l] = src[i][j][k][l];
 
   return;
 }
@@ -2507,7 +2616,6 @@ ut_array_1d_permutation (double *array, int qty, int *permutation)
   int i;
   double *tmp = ut_alloc_1d (qty);
 
-
   for (i = 0; i < qty; i++)
     tmp[i] = array[i];
 
@@ -2524,7 +2632,6 @@ ut_array_1d_permutation_int (int *array, int qty, int *permutation)
 {
   int i;
   int *tmp = ut_alloc_1d_int (qty);
-
 
   for (i = 0; i < qty; i++)
     tmp[i] = array[i];
@@ -2983,7 +3090,6 @@ ut_array_1d_int_sort_uniq (int *array, int oldsize, int *psize)
   return;
 }
 
-
 void
 ut_array_1d_sub (double *data1, double *data2, int size, double *data)
 {
@@ -3163,7 +3269,6 @@ ut_array_2d_zero_be (double **array, int begX, int endX, int begY, int endY)
 
   return;
 }
-
 
 int
 ut_array_1d_int_nbofthisval (int *array, int size, int val)

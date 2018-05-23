@@ -4,7 +4,7 @@
 
 extern void nem_mesh_gmsh_options (FILE *, int, int, int, double);
 
-extern void nem_mesh_2d_gmsh_writenodes (struct TESS, struct NODES,
+extern int nem_mesh_2d_gmsh_writenodes (struct TESS, struct NODES,
 					 struct MESH *, int, double *,
 					 FILE *);
 extern void nem_mesh_2d_gmsh_write1dmesh (struct TESS, struct MESH *, int,

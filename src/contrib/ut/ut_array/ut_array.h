@@ -14,6 +14,8 @@ extern "C" {
 #define UT_ARRAY_H
 
 extern void ut_array_1d_scale (double *, int, double);
+extern void ut_array_1d_d2ri (double *, int, int *);
+
 extern void ut_array_1d_normalize (double *, int);
 extern void ut_array_1d_int_scale (int *, int, double);
 extern void ut_array_1d_add (double *, double *, int, double *);
@@ -72,7 +74,6 @@ extern int ut_array_3d_int_fprintf (FILE *, int ***, int, int, int,
 
 extern int ut_array_2d_int_fscanf (FILE *, int **, int, int);
 
-
 extern void ut_array_2d_scale (double **, int, int, double);
 
 extern double ut_array_1d_min (double *, int);
@@ -83,11 +84,14 @@ extern int ut_array_1d_min_index (double *, int);
 extern double ut_array_1d_max (double *, int);
 extern int ut_array_2d_int_max (int**, int, int);
 extern double ut_array_1d_mean (double *, int);
+extern double ut_array_1d_mean_pow (double *, int, double);
+extern double ut_array_1d_mean_powstring (double *, int, char*);
 extern double ut_array_1d_gmean (double *, int);
 extern double ut_array_1d_int_mean (int *, int);
 extern double ut_array_1d_int_gmean (int *, int);
 extern double ut_array_1d_wmean (double *, double *, int);
 extern double ut_array_1d_stddev (double *, double, int);
+extern double ut_array_1d_wstddev (double *, double *, double, int);
 extern double ut_array_2d_stddev (double **, double, int, int);
 extern double ut_array_1d_absmax (double *, int);
 extern double ut_array_1d_absmin (double *, int);
@@ -103,6 +107,7 @@ extern float ut_array_2d_float_min (float **, int, int);
 extern float ut_array_2d_float_max (float **, int, int);
 extern double ut_array_2d_min (double **, int, int);
 extern double ut_array_2d_mean (double **, int, int);
+extern double ut_array_2d_col_mean (double **, int, int);
 extern double ut_array_2d_gmean (double **, int, int);
 extern double ut_array_3d_mean (double ***, int, int, int);
 extern double ut_array_3d_gmean (double ***, int, int, int);
@@ -156,6 +161,7 @@ extern void ut_array_2d_memcpy (double **, int, int, double **);
 extern void ut_array_2d_int_memcpy (int **, int, int, int **);
 extern void ut_array_1d_pchar_memcpy (char **, int, char **);
 extern void ut_array_3d_memcpy (double ***, int, int, int, double ***);
+extern void ut_array_4d_memcpy (double ****, int, int, int, int, double ****);
 extern void ut_array_3d_int_memcpy (int ***, int, int, int, int ***);
 extern void ut_array_3d_uchar_memcpy (unsigned char ***, int, int, int,
 				      unsigned char ***);
@@ -206,7 +212,8 @@ extern void ut_array_1d_permutation (double *, int, int *);
 extern void ut_array_1d_permutation_int (int *, int, int *);
 extern void ut_array_2d_permutation_int (int **, int, int, int *);
 
-extern void ut_array_distribparam (double *, int, double, double *, int *);
+extern void ut_array_distribparam (double *data, int n, double step, double *pfirst,
+		       int *plength);
 extern void ut_array_distrib (double *, int, double, double, int, double *);
 
 extern void ut_array_1d_set (double *, int, double);

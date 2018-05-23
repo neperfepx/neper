@@ -139,6 +139,7 @@ extern "C"
   extern int neut_nodes_dim (struct NODES Nodes);
 
   extern void neut_nodes_centre (struct NODES Nodes, double *centre);
+  extern void neut_nodes_bboxcentre (struct NODES Nodes, double *centre);
 
   extern void neut_nodes_init_nodeslave (struct NODES *pNodes);
 

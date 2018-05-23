@@ -56,6 +56,15 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
       sprintf ((*pTess).DomFaceLabel[i], "f%d", i - 2);
   }
 
+  else if (!strcmp ((*pTess).DomType, "stdtriangle"))
+  {
+    (*pTess).DomFaceLabel = ut_alloc_2d_char ((*pTess).DomFaceQty + 1, 10);
+    strcpy ((*pTess).DomFaceLabel[1], "z0");
+    strcpy ((*pTess).DomFaceLabel[2], "z1");
+    for (i = 3; i <= (*pTess).DomFaceQty; i++)
+      sprintf ((*pTess).DomFaceLabel[i], "f%d", i - 2);
+  }
+
   else
   {
     (*pTess).DomFaceLabel = ut_alloc_2d_char ((*pTess).DomFaceQty + 1, 10);

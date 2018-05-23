@@ -363,6 +363,7 @@ extern void neut_mesh_domface_elts3d (struct TESS Tess, struct MESH
 
 extern int neut_mesh_elset_elt_insidefacets (struct MESH Mesh1D, struct MESH
     Mesh2D, int elset, int elt, int **pinsidefacets, int *pinsidefacetqty);
+extern void neut_mesh_nodeqty (struct MESH Mesh, int *pnodeqty);
 
 #endif /* NEUT_MESH_TOPO_H */
 

@@ -143,12 +143,19 @@ extern "C"
 ///
 ///
   extern void neut_tess_centre (struct TESS Tess, double *);
+  extern void neut_tess_bboxcentre (struct TESS Tess, double *);
 
 /// \brief Get the bounding box of a TESS
 ///
 ///
 ///
   extern void neut_tess_bbox (struct TESS Tess, double **);
+
+/// \brief Get the bounding box of the cell of a TESS
+///
+///
+///
+  extern void neut_tess_cell_bbox (struct TESS Tess, int cell, double **size);
 
 /// \brief Get the bounding box of a TESS
 ///
@@ -167,6 +174,7 @@ extern "C"
 ///
 ///
   extern int neut_tess_point_inpoly (struct TESS Tess, double *, int);
+  extern int neut_tess_point_inpoly_std (struct TESS Tess, double *, int);
 
 /// \brief Determine whether a point is within a face
 ///

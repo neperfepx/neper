@@ -92,22 +92,6 @@ nem_meshing_3D_poly_algo (struct IN_M In, double cl, struct MULTIM
 }
 
 void
-nem_meshing_3D_poly_record (struct TESS Tess, int poly, struct NODES N,
-			    struct MESH M, struct NODES *pNodes,
-			    struct MESH *Mesh)
-{
-  int *node_nbs = NULL;
-
-  nem_meshing_3D_poly_record_nodes (Tess, poly, N, &node_nbs, pNodes, Mesh);
-
-  nem_meshing_3D_poly_record_elts (poly, M, node_nbs, Mesh);
-
-  ut_free_1d_int (node_nbs);
-
-  return;
-}
-
-void
 nem_meshing_3D_report_poly (struct MULTIM Multim, int poly)
 {
   int a;

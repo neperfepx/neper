@@ -40,6 +40,8 @@ extern "C"
     int varchangedqty;		// number of changed seed variables
     int seedchangedqty;		// current number of changed seeds
     int *seedchanged;		// current changed seeds
+    int seedmovedqty;		// current number of moved seeds
+    int *seedmoved;		// current moved seeds
     int cellchangedqty;		// current number of changed cells
     int *cellchanged;		// current changed cells
 
@@ -97,6 +99,12 @@ extern "C"
     double var_dur;			// x-filling duration
     double seed_dur;			// seedset-filling duration
     double val_dur;			// objective-function-value-computation duration
+    double val_init_dur;                //
+    double val_penalty_dur;             //
+    double val_val_dur;                 //
+    double val_val_cellval_dur;         //
+    double val_val_comp_dur;            //
+    double val_comp_dur;                //
     double total_dur;			// total duration
     double cumtotal_dur;	        // cumulative total duration
   };

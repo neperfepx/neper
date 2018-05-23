@@ -47,8 +47,12 @@ extern "C"
 		               int polyqty, double *pval);
   extern int neut_polys_sphericity (struct POLY *Poly, int *polys,
 				    int polyqty, double *pval);
+  extern int neut_polys_size_sphericity (struct POLY *Poly, int *polys,
+                                         int polyqty, double size, double *pval);
   extern int neut_polys_sphericity_2d (struct POLY *Poly, int *polys,
 				       int polyqty, double Size, double *pval);
+  extern int neut_polys_size_sphericity_2d (struct POLY *Poly, int *polys,
+                                         int polyqty, double size, double *pval);
   extern int neut_polys_centroid (struct POLY *Poly, int *polys, int
 				  polyqty, double *coo);
 

@@ -58,6 +58,12 @@ net_stat (struct IN_T In, struct TESS Tess, struct TESR *pTesr,
     ut_string_string (In.sts, &(data[qty][1]));
     qty++;
   }
+  if (In.stvox)
+  {
+    ut_string_string ("vox", &(data[qty][0]));
+    ut_string_string (In.stvox, &(data[qty][1]));
+    qty++;
+  }
 
   for (i = 0; i < qty; i++)
   {
@@ -76,6 +82,8 @@ net_stat (struct IN_T In, struct TESS Tess, struct TESR *pTesr,
     else if (!strcmp (data[i][0], "ver") || !strcmp (data[i][0], "edge")
 	     || !strcmp (data[i][0], "face") || !strcmp (data[i][0], "poly"))
       stattess = 1;
+    else if (!strcmp (data[i][0], "vox"))
+      stattesr = 1;
     else if (!strcmp (data[i][0], "point"))
       statpoint = 1;
 

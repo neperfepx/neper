@@ -22,7 +22,7 @@ extern void nem_meshing_3D_report_poly (struct MULTIM Multim, int poly);
 extern int nem_meshing_3D_poly (struct IN_M, double, struct MULTIM *,
 				struct timeval *pctrlc_t, double *,
 				double *, struct TESS, struct NODES *,
-				struct MESH *, int);
+				struct MESH *, struct NODES *pN, struct MESH *pM, int);
 extern void nem_meshing_3D_report_poly_algo (int poly, int a,
 					     struct NODES N, struct MESH M);
 

@@ -70,7 +70,7 @@ net_tess_opt_init_sset_coo (struct MTESS MTess, struct TESS *Tess,
       ut_print_progress (stdout, i, (*pTOpt).CellQty, "%.0f%%", prev);
 
     net_tess_opt_init_sset_coo_cluster ((*pTOpt).Dim, r2, qty[cell],
-					 0.5 * rad[cell], rad[cell], &Point2);
+                                        0.5 * rad[cell], rad[cell], &Point2);
 
     if (from_file)
       ut_array_1d_memcpy (centre, 3, coo[cell]);

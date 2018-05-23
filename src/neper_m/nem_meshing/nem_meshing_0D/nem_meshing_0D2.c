@@ -44,7 +44,7 @@ nem_meshing_0D_ver (struct TESS Tess, int ver, struct MESHPARA MeshPara,
   cl = MeshPara.ver_cl[ver];
 
   int *edgelist = NULL, edgeqty;
-  neut_tess_ver_edges_all (Tess, ver, &edgelist, &edgeqty);
+  neut_tess_ver_edges (Tess, ver, &edgelist, &edgeqty);
 
   if (edgeqty > 0)
   {

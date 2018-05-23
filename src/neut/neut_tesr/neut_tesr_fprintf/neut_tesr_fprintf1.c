@@ -24,6 +24,8 @@ neut_tesr_fprintf (FILE * file, char *format, struct TESR Tesr)
   neut_tesr_fprintf_head (file, format2, Tesr);
   neut_tesr_fprintf_cell (file, Tesr);
   neut_tesr_fprintf_data (file, format2, Tesr);
+  if (Tesr.VoxOri)
+    neut_tesr_fprintf_oridata (file, "q", "ascii", Tesr);
   neut_tesr_fprintf_foot (file);
 
   ut_free_1d_char (format2);
@@ -104,7 +106,7 @@ neut_tesr_fprintf_ami (FILE * file, char *format, struct TESR Tesr)
   fprintf (file, "SCALARS MaterialId %s\n", format_ami);
   fprintf (file, "LOOKUP_TABLE default\n");
 
-  neut_tesr_fprintf_raw (file, format2, Tesr);
+  neut_tesr_fprintf_data_noheader (file, format2, Tesr);
 
   ut_free_1d_char (format_ami);
   ut_free_1d_char (format2);

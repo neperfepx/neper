@@ -26,13 +26,7 @@ int
 neut_poly_volume (struct POLY Poly, double *pvol)
 {
   int i, ver, f;
-  double area, h;
-  double *p1 = NULL;
-  double *p2 = NULL;
-  double *p0 = NULL;
-  double *proj = NULL;
-  double *eq = NULL;
-  double *centre = NULL;
+  double area, h, proj[3], eq[4], centre[3];
 
   // Principle: sum the volumes of the pyramids based on the faces and
   // the poly centre. For the non-plane faces, we consider the
@@ -44,28 +38,20 @@ neut_poly_volume (struct POLY Poly, double *pvol)
     return 1;
   }
 
-  p0 = ut_alloc_1d (3);
-  proj = ut_alloc_1d (3);
-  eq = ut_alloc_1d (4);
-  centre = ut_alloc_1d (3);
-
   neut_poly_vercentroid (Poly, centre);
 
   (*pvol) = 0;
   for (f = 1; f <= Poly.FaceQty; f++)
   {
     ver = Poly.FaceVerNb[f][1];
-    ut_array_1d_memcpy (p0, 3, Poly.VerCoo[ver]);
 
     for (i = 1; i < Poly.FaceVerQty[f]; i++)
     {
-      p1 = Poly.VerCoo[Poly.FaceVerNb[f][i]];
-      p2 = Poly.VerCoo[Poly.FaceVerNb[f][i + 1]];
-      area = ut_space_triangle_area (p0, p1, p2);
+      area = ut_space_triangle_area (Poly.VerCoo[ver], Poly.VerCoo[Poly.FaceVerNb[f][i]], Poly.VerCoo[Poly.FaceVerNb[f][i + 1]]);
       if (!isnan (area))
       {
 	ut_array_1d_memcpy (proj, 3, centre);
-	ut_space_points_plane (p0, p1, p2, eq);
+	ut_space_points_plane (Poly.VerCoo[ver], Poly.VerCoo[Poly.FaceVerNb[f][i]], Poly.VerCoo[Poly.FaceVerNb[f][i + 1]], eq);
 	ut_space_projpoint_alongonto (proj, eq + 1, eq);
 	h = ut_space_dist (centre, proj);
 	if (!isnan (h))
@@ -73,25 +59,17 @@ neut_poly_volume (struct POLY Poly, double *pvol)
       }
     }
 
-    p1 = Poly.VerCoo[Poly.FaceVerNb[f][Poly.FaceVerQty[f]]];
-    p2 = Poly.VerCoo[Poly.FaceVerNb[f][1]];
-    area = ut_space_triangle_area (p0, p1, p2);
+    area = ut_space_triangle_area (Poly.VerCoo[ver], Poly.VerCoo[Poly.FaceVerNb[f][Poly.FaceVerQty[f]]], Poly.VerCoo[Poly.FaceVerNb[f][1]]);
     if (!isnan (area))
     {
       ut_array_1d_memcpy (proj, 3, centre);
-      ut_space_points_plane (p0, p1, p2, eq);
+      ut_space_points_plane (Poly.VerCoo[ver], Poly.VerCoo[Poly.FaceVerNb[f][Poly.FaceVerQty[f]]], Poly.VerCoo[Poly.FaceVerNb[f][1]], eq);
       ut_space_projpoint_alongonto (proj, eq + 1, eq);
       h = ut_space_dist (centre, proj);
       if (!isnan (h))
 	(*pvol) += area * h * 0.3333333333333333333333;
     }
   }
-
-  // don't free p1, p2 (shortcuts)
-  ut_free_1d (proj);
-  ut_free_1d (eq);
-  ut_free_1d (p0);
-  ut_free_1d (centre);
 
   return 0;
 }
@@ -173,6 +151,12 @@ neut_polys_diameq (struct POLY *Poly, int *polys, int polyqty, double *pval)
 {
   int i, poly;
   double tmp;
+
+  if (polyqty == 1)
+  {
+    neut_poly_diameq (Poly[polys[0]], pval);
+    return;
+  }
 
   (*pval) = 0;
   for (i = 0; i < polyqty; i++)
@@ -668,6 +652,17 @@ neut_polys_sphericity (struct POLY *Poly, int *polys, int polyqty, double *pval)
 }
 
 int
+neut_polys_size_sphericity (struct POLY *Poly, int *polys, int polyqty, double size, double *pval)
+{
+  double tmp;
+
+  neut_polys_area (Poly, polys, polyqty, &tmp);
+  (*pval) = M_PI * pow (6 /  M_PI  * size, 0.666666666666666666666666) / tmp;
+
+  return 0;
+}
+
+int
 neut_polys_convexity (struct POLY *Poly, int *polys, int polyqty, double *pval)
 {
   double vol, vol2;
@@ -708,13 +703,24 @@ neut_polys_convexity (struct POLY *Poly, int *polys, int polyqty, double *pval)
 }
 
 int
-neut_polys_sphericity_2d (struct POLY *Poly, int *polys, int polyqty, double Size, double *pval)
+neut_polys_sphericity_2d (struct POLY *Poly, int *polys, int polyqty, double pseudosize, double *pval)
+{
+  double size;
+
+  neut_polys_diameq_2d (Poly, polys, polyqty, pseudosize, &size);
+  size = M_PI / 4 * size * size;
+
+  return neut_polys_size_sphericity_2d (Poly, polys, polyqty, size, pval);
+}
+
+int
+neut_polys_size_sphericity_2d (struct POLY *Poly, int *polys, int polyqty, double size, double *pval)
 {
   int i, j, k, ver1, ver2, poly;
   double diameq, tmp;
   int polyqty2, *polys2 = NULL;
 
-  neut_polys_diameq_2d (Poly, polys, polyqty, Size, &diameq);
+  diameq = sqrt (4 / M_PI * size);
 
   tmp = 0;
   for (i = 0; i < polyqty; i++)

@@ -89,8 +89,10 @@ neut_mesh_free (struct MESH *pMesh)
 
   ut_free_1d_int ((*pMesh).EltElset);
 
+  /*
   if ((*pMesh).NodeElts != NULL)
     ut_free_2d_int ((*pMesh).NodeElts, (*pMesh).NodeQty + 1);
+  */
 
   neut_mesh_set_zero (pMesh);
 

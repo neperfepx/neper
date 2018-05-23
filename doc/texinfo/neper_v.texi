@@ -393,13 +393,47 @@ any, none
 }
 
 Below are options specific to raster tessellations,
+For a raster tessellation, it is also possible to set data on a per-voxel
+basis,
 
-@opt{-datarptedgerad, real,
+@opt{-datavoxcol, char_string,
+Set the colours of the voxels.
+See option @option{-datacellcol} for the argument format.
+,
+any, white}
+
+@opt{-datavoxcolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the voxels loaded with option @option{-datavoxcol}.
+See option @option{-datacellcolscheme} for the argument format.
+,
+see option @option{-datacellcolscheme},
+see option @option{-datacellcolscheme}
+}
+
+@opt{-datavoxscale, char_string,
+Set the scale relative to the @samp{-datavoxcol scal} data.  Provide as
+argument the start and end values@comma{} combined with
+@samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
+argument the start value@comma{} the intermediate values and then the
+end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
+scale follow the format used for the start value.
+,
+any, data minimum:data maximum
+}
+
+@opt{-datavoxscaletitle, char_string,
+Set the title of the scale relative to the @samp{-datavoxcol scal} data.
+,
+any, none
+}
+
+@opt{-datavoxedgerad, real,
 Set the radius of the edges of the raster points.
 ,
 any, proportional to the raster point size}
 
-@opt{-datarptedgecol, char_string,
+@opt{-datavoxedgecol, char_string,
 Set the colour of the edges of the raster points.
 Provide as argument the name of a colour that will be used for all
 points (@pxref{Colours}).
@@ -754,6 +788,9 @@ cube axes).
 For cylinder shape@comma{} @code{@var{var}} must be @samp{cyl} and the file
 must contain@comma{} for each point@comma{} the radius@comma{} the
 length@comma{} then the coordinates of the axis.
+For arrow shape@comma{} @code{@var{var}} must be @samp{arr} and the file
+must contain@comma{} for each point@comma{} the radius@comma{} the
+length@comma{} then the coordinates of the axis.
 For disc (2D) shape@comma{} @code{@var{var}} must be @samp{disc} and the file
 must contain@comma{} for each point@comma{} the radius@comma{}
 then the coordinates of the axis.
@@ -914,7 +951,7 @@ a file@comma{} or any expression based on the keys listed in
 any, all}
 
 @need 800
-For tessellations, it is also possible to set visibility on a per-entity
+For a tessellation, it is also possible to set visibility on a per-entity
 basis,
 
 @opt{-showpoly, char_string,
@@ -1060,8 +1097,8 @@ option off.
 
 @opt{-cameracoo, char_string:char_string:char_string,
 Specify the camera coordinates.
-By default@comma{} the camera is shifted by a vector @dfn{v} from the
-tessellation or mesh centre.  The coordinates of vector @var{v} are
+By default@comma{} the camera is shifted by a vector @dfn{v} from the centre of
+the bounding box of the tessellation or mesh.  The coordinates of vector @var{v} are
 denoted as @dfn{vx}@comma{} @dfn{vy} and @dfn{vz} (@w{= 3.462}@comma{}
 -5.770 and 4.327@comma{} respectively@comma{} in 3D and
 0@comma{} 0 and 8@comma{} respectively@comma{} in 2D and 1D).

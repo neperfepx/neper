@@ -143,6 +143,9 @@ or @samp{sphere(@var{diameter},@var{facet_nb})}.
 For a Rodrigues space fundamental region@comma{}
 provide @samp{rodrigues(@var{crysym})}@comma{}
 where @code{@var{crysym}} is the crystal symmetry (see @ref{Crystal Symmetries}).
+For a standard stereographic triangle@comma{}
+provide @samp{stdtriangle(@var{segment_nb})}@comma{}
+where @code{@var{segment_nb}} is the number of segments on the [011]--[111] line.
 For an arbitrary convex 3D shape@comma{}
 provide @samp{planes(@var{file_name})}@comma{}
 where @code{@var{file_name}} is the name of a file containing the
@@ -292,6 +295,9 @@ The available properties are:@*
 and @samp{@code{diameq}} for the equivalent diameter;@*
 @bullet{} @samp{@code{sphericity}} for the sphericity;@*
 @bullet{} @samp{@code{centroid}} for the centroid;@*
+@bullet{} @samp{@code{centroidtol}} for the centroid with a tolerance ---
+centroids with a tolerance higher than 1000 times the minimum tolerance are
+disregarded;@*
 @bullet{} @samp{@code{centroidsize}} for combined centroid and size@comma{}
 and @samp{@code{centroiddiameq}} for combined centroid and equivalent
 diameter;@*
@@ -305,7 +311,7 @@ normal distribution@comma{} @samp{normal(@var{mean},@var{sig})}@comma{}
 lognormal distributions@comma{}
 @samp{lognormal(@var{mean},@var{sig})} or
 @samp{lognormal(@var{mean},@var{sig},1-x)} (which means the variable is
-@math{(1 - \hbox{the cell property})})@comma{} or a sum of
+(1 @math{-} the cell property))@comma{} or a sum of
 distributions of increasing averages@comma{} for example@comma{}
 @samp{0.3*normal(@var{mean1},@var{sig1})+0.7*normal(@var{mean2},@var{sig2})}.
 If the number of cells is defined (see option @option{-n})@comma{} the
@@ -314,10 +320,12 @@ of cells; otherwise@comma{} i.e.@ @option{-n} is set to @samp{from_morpho}@comma
 of cells is determined from the size or diameq distribution.
 An interval of possible values can also be provided using
 @samp{interval(@var{min}@comma{}@var{max})}.
+A unique value can be assigned to all cells using @samp{@var{value}}@comma{}
+where @samp{@var{value}} is the value.
 Cell-by-cell values can be provided using
 @samp{file(@var{file_name})}@comma{} where @samp{@var{file_name}} is
 the name of the file containing the cell values (@pxref{Position File}
-for centroids).
+for @samp{@code{centroid}}; add a tolerance to each position for @samp{@code{centroidtol}}).
 For @samp{@code{centroid}}@comma{} provide @samp{seed} to get a
 centroidal tessellation.
 For @samp{@code{tesr}}@comma{} @samp{@var{file_name}} is the name of the
@@ -388,26 +396,32 @@ see above list, default}
 @c any >= 1, 1}
 
 @optsec{-morphooptiobjective, char_string,
-Specify the objective function.@*
-For statistical distributions@comma{}
-the available values of the goodness-of-fit test are @samp{chi2} (Chi-square test)@comma{} @samp{ks}
+Specify the objective function.  The argument should be of the form
+@samp{@var{prop1}@SEPDEP{}@var{objective_function1}@SEPNODEP{}@var{prop2}@SEPDEP{}@var{objective_function2}@SEPNODEP{}...}@comma{}
+where @code{@var{propx}} are properties as defined in option
+@option{-morpho}@comma{} and @code{@var{objective_functionx}} are their
+objective functions.
+An objective function depends on the property and its definition.
+@*
+@math{@bullet{}} For properties defined by a statistical distribution (which can be
+@samp{size}@comma{} @samp{diameq} or @samp{sphericity})@comma{}
+the available values are @samp{chi2} (Chi-square test)@comma{} @samp{ks}
 (Kolmogorov-Smirnov test)@comma{} @samp{kuiper} (Kuiper's test)@comma{}
 @samp{cmv} (Cram@'er-Von Mises test)@comma{} @samp{ad} (Anderson-Darling
 test)@comma{}
 @samp{FL2} (L@math{^2}-norm on @math{F})@comma{}
 @samp{FL2w} (weighted L@math{^2}-norm
-on @math{F})@footnote{Weighting by @math{1/\prod_{i=0}^N{|F-p_i|}}
-where @math{p_0=0} and @math{p_i} are the cumulative proportions of the
-distribution modes. For a unimodal distribution@comma{} the
-expression simplifies to @math{1/(F\,(1-F))}.}@comma{}
-and the default value is @samp{FL2w}.@*
-For @samp{@code{centroid}}@comma{} a Minkowski distance between the
-seeds and centroids is used@comma{} and can be
-@samp{@code{L1}}@comma{} @samp{@code{L2}} or @samp{@code{Linf}}.@*
-For a raster tessellation@comma{} the definition of the objective function
-includes several factors.
+on @math{F})@footnote{See [Quey and Renversade, CMAME, 2018].}@comma{}
+and the default value is @samp{FL2w}.
+@*
+@math{@bullet{}} For @samp{@code{centroid}}@comma{} a Minkowski distance
+between the seeds and centroids is used@comma{} and can be
+@samp{@code{L1}}@comma{} @samp{@code{L2}} or @samp{@code{Linf}}.
+@*
+@math{@bullet{}} For @samp{@code{tesr}}@comma{} the definition of the
+objective function includes several factors.
 First@comma{} preprocessing operations to the raster tessellation can be
-applied using @samp{@code{tesr(@var{operations})}}@comma{} where
+applied using @samp{@code{transform(@var{operations})}}@comma{} where
 @samp{@var{operations}} can include @samp{scale} to scale the tessellation to
 correct for a global cell elongation or @samp{rasterscale} to scale the raster
 itself to correct for a global voxel elongation (which may result from
@@ -425,8 +439,14 @@ specified using @samp{val(@var{expr})}@comma{} where @samp{@var{expr}} can be
 and tessellation cell boundaries@comma{} or @samp{intervol} for maximizing
 the volume intersection between the raster tessellation and tessellation
 (both provide similar results).  To define the objective
-function@comma{} combine the above factors using @samp{@SEPNODEP{}}.
-The default value is @samp{pts(region=surf,res=5),val(bounddist)}.
+function@comma{} combine the above factors using @samp{+}.
+The default value is @samp{pts(region=surf,res=5)+val(bounddist)}.
+@math{@bullet{}} It is finally possible to define how the different parts of
+the objective function are combined into the objective function (in the case
+where several properties are specified)@comma{}
+using @samp{general:@var{objective_function}}@comma{} where
+@samp{@var{objective_function}} can be @samp{L1}@comma{} @samp{L2} or
+@samp{Linf}; the default is @samp{L2}.
 ,
 any, default}
 
@@ -494,11 +514,11 @@ any, subplex@SEPNODEP{}praxis (lloyd for @option{-morpho centroidal})}
 
 @optsec{-morphooptialgoneigh, char_string,
 Specify the neighbour search algorithm. The available values are
-@samp{ann} (ANN) and
-@samp{qsort} (direct computation with qsort).  @samp{ann} is much
+@samp{nanoflann} (nanoflann) and
+@samp{qsort} (direct computation with qsort).  @samp{nanoflann} is much
 faster.
 ,
-any, ann}
+any, nanoflann}
 
 @optsec{-morphooptigrid, char_string,
 Specify the grids used to discretize the distributions. Provide the values using the syntax
@@ -596,7 +616,7 @@ any, none}
 
 @opt{-transform, char_string(...),
 Apply transformations to a tessellation.@*
-The following transformation apply to a scalar tessellation:@*
+The following transformations apply to a scalar tessellation:@*
 @math{@bullet{}} @samp{@code{scale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
 scales a tessellation by
 @code{@var{x_fact}}@comma{} @code{@var{y_fact}} and @code{@var{z_fact}}
@@ -604,9 +624,10 @@ along directions @var{x}@comma{} @code{@var{y}} and
 @code{@var{z}}@comma{} respectively. For a 2D tessellation@comma{}
 @code{@var{z_fact}} can be omitted.@*
 @math{@bullet{}} @samp{rotate(@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{angle})}
-for a rotation about an axis/angle pair.@*
-The following transformation apply to a raster tessellation:@*
-@math{@bullet{}} @samp{@code{crop:@var{shape}(@var{parameters})}} crops the raster tessellation by a shape@comma{} where @samp{@var{shape}(@var{parameters})} can be @samp{cube(@var{xmin}@comma{}@var{xmax}@comma{}@var{ymin}@comma{}@var{ymax}@comma{}@var{zmin}@comma{}@var{zmax})} or @samp{cylinder(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{diameter})} (the axis is z).@*
+for a rotation about the centre and by an axis/angle pair.@*
+The following transformations apply to a raster tessellation:@*
+@math{@bullet{}} @samp{@code{renumber}} renumbers a tessellation to remove empty cells.@*
+@math{@bullet{}} @samp{@code{crop:@var{shape}(@var{parameters})}} crops the raster tessellation by a shape@comma{} where @samp{@var{shape}(@var{parameters})} can be @samp{cube(@var{xmin}@comma{}@var{xmax}@comma{}@var{ymin}@comma{}@var{ymax}@comma{}@var{zmin}@comma{}@var{zmax})} or @samp{cylinder(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{diameter})} (the axis is z).  The values can be any mathematical expression based on the variables defined in @ref{Raster Tessellation Keys} (see general). @*
 @math{@bullet{}} @samp{@code{autocrop}} reduces the raster to its minimal size.@*
 @math{@bullet{}}
 @samp{@code{rasterscale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
@@ -620,6 +641,12 @@ along directions @var{x}@comma{} @code{@var{y}} and
 @math{@bullet{}} @samp{@code{grow}} grows the cells to fill the domain.@*
 @math{@bullet{}} @samp{@code{tessinter(@var{tess_file})}} computes the
 intersection with tessellation @file{@var{tess_file}}.@*
+@math{@bullet{}} @samp{@code{addbuffer(@var{buffx}@comma{}@var{buffy}@comma{}@var{buffz})}}
+adds a buffer of @code{@var{buffx}} void voxels on both sides in the x direction@comma{}
+a buffer of @code{@var{buffy}} void voxels on both sides in the y direction and
+a buffer of @code{@var{buffz}} void voxels on both sides in the z direction.@*
+@math{@bullet{}} @samp{rotate(@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{angle})}
+for a rotation about the centre and by an axis/angle pair (a buffer may be added beforehand@comma{} using @samp{@code{addbuffer}}).@*
 @math{@bullet{}} @samp{@code{2d}} transforms a 3D tessellation with 1 voxel along z into a 2D tessellation.@*
 Several transformations can be applied successively by combining them @w{with @samp{@SEPNODEP}}.
 ,
@@ -860,6 +887,17 @@ any, none,
 @post{-statpoly, char_string,
 Provide statistics on the tessellation polyhedra.  Give as argument
 the keys as described in @ref{Tessellation Keys} (combine with
+@samp{@SEPNODEP}).
+,
+any, none,
+.stpoly}
+
+For a tessellation, it is also possible to get statistics on an
+voxel-basis,
+ww
+@post{-statvox, char_string,
+Provide statistics on the tessellation voxels.  Give as argument
+the keys as described in @ref{Raster Tessellation Keys} (combine with
 @samp{@SEPNODEP}).
 ,
 any, none,

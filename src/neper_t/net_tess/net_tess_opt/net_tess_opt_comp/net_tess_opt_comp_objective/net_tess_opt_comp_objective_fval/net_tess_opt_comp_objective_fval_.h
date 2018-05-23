@@ -9,6 +9,7 @@ extern "C"
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
 #include"ut.h"
 #include"neut_t.h"
@@ -18,7 +19,7 @@ extern "C"
 #include"net_tess_opt_comp_objective_fval_init/net_tess_opt_comp_objective_fval_init.h"
 #include"net_tess_opt_comp_objective_fval_tesr/net_tess_opt_comp_objective_fval_tesr.h"
 
-#include"net_tess_opt_comp_objective_fval_cellval/net_tess_opt_comp_objective_fval_cellval.h"
+#include"net_tess_opt_comp_objective_fval_gen/net_tess_opt_comp_objective_fval_gen.h"
 #include"net_tess_opt_comp_objective_fval_cellpenalty/net_tess_opt_comp_objective_fval_cellpenalty.h"
 #include"net_tess_opt_comp_objective_fval_comp/net_tess_opt_comp_objective_fval_comp.h"
 

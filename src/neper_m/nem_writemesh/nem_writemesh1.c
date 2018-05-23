@@ -97,7 +97,7 @@ nem_writemesh (struct IN_M In, struct TESS Tess,
       || ut_string_inlist (In.format, NEUT_SEP_NODEP, "inp"))
   {
     file = ut_file_open (In.abq, "w");
-    neut_mesh_fprintf_inp (file, In.dimout, Tess, Nodes,
+    neut_mesh_fprintf_inp (file, In.dimout, Tess, Nodes, Mesh[1],
 			   Mesh[2], Mesh[3], Mesh[4], NSet[0], NSet[1], NSet[2],
 			   expandnset, expandfaset, Part, Bound);
     ut_file_close (file, In.abq, "w");

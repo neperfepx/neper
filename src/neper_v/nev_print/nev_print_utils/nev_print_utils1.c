@@ -157,6 +157,53 @@ nev_print_cyl (FILE * file, double *coo, double *rad, char *texture)
 }
 
 void
+nev_print_arr (FILE * file, double *coo, double *rad, char *texture)
+{
+  double *n = ut_alloc_1d (3);
+  double *v = ut_alloc_1d (3);
+  double fact = 3;
+  double fact2 = 2 * fact;
+
+  ut_array_1d_memcpy (v, 3, rad + 2);
+  ut_array_1d_scale (v, 3, 1. / ut_array_1d_norm (v, 3));
+  ut_array_1d_memcpy (n, 3, v);
+  ut_array_1d_scale (v, 3, rad[1] * .5);
+
+  if (rad[0] > 0 && rad[1] > 0)
+  {
+    fprintf (file,
+	     "    cylinder {<%18.15g,%18.15g,%18.15g>, <%18.15g,%18.15g,%18.15g>, %18.15g translate <%18.15g,%18.15g,%18.15g>\n",
+	     -v[0], -v[1], -v[2],
+             v[0] - fact2 * rad[0] * n[0],
+             v[1] - fact2 * rad[0] * n[1],
+             v[2] - fact2 * rad[0] * n[2],
+             rad[0], coo[0] + v[0], coo[1] + v[1],
+	     coo[2] + v[2]);
+
+    if (texture != NULL)
+      fprintf (file, "    texture { %s }\n", texture);
+    fprintf (file, "  }\n");
+
+    fprintf (file,
+        "    cone {<0.,0.,0.>, %18.15g <%18.15g,%18.15g,%18.15g>, 0. translate <%18.15g,%18.15g,%18.15g>\n",
+	     fact * rad[0],
+             fact2 * rad[0] * n[0], fact2 * rad[0] * n[1], fact2 * rad[0] * n[2],
+             coo[0] + 2 * v[0] - fact2 * rad[0] * n[0],
+             coo[1] + 2 * v[1] - fact2 * rad[0] * n[1],
+             coo[2] + 2 * v[2] - fact2 * rad[0] * n[2]);
+
+    if (texture != NULL)
+      fprintf (file, "    texture { %s }\n", texture);
+    fprintf (file, "  }\n");
+  }
+
+  ut_free_1d (v);
+  ut_free_1d (n);
+
+  return;
+}
+
+void
 nev_print_tor (FILE * file, double *coo, double *rad, char *texture)
 {
   double *v1 = ut_alloc_1d (3);

@@ -1,3 +1,16 @@
+New in 3.2.0 (23 May 2018):
+- general: Neper is now fully multithreaded.
+- module -T: improved -morpho, added -morpho variable:value, added -morpho
+  centroidtol, improved -morphooptiobjective, improved -transform crop, fixed
+  -n from_morpho, added -transform addbuffer, renamed -datarpt* into -datavox*,
+  added -transform renumber, added -domain stdtriangle, added **oridata to the
+  tesr file, added -statvox, speed up tesr generation, added -morphooptilogtime
+  val_ keys, minor fixes.
+- module -M: improved inp format.
+- module -V: improved msh reading, added -datapointrad arr, added -datavox
+  options.
+- documentation: small fixes.
+
 New in 3.1.1 (20 Feb 2018):
 - New paper: "R. Quey and L. Renversade, Optimal polyhedral description of 3D
   polycrystals: Method and application to statistical and synchrotron X-ray

@@ -75,9 +75,14 @@ nev_data_string_entity_type (char *string, char *entity, char *type)
   else if (strncmp (stringcpy, "cell", 4) == 0)
     strcpy (entity, "cell");
   else if (strncmp (stringcpy, "rptedge", 7) == 0)
-    strcpy (entity, "rptedge");
-  else if (strncmp (stringcpy, "rpt", 3) == 0)
-    strcpy (entity, "rpt");
+  {
+    ut_print_message (1, 3, "'rpt' is deprecated and will be removed in future versions.  Use 'vox' instead.\n");
+    strcpy (entity, "voxedge");
+  }
+  else if (strncmp (stringcpy, "voxedge", 7) == 0)
+    strcpy (entity, "voxedge");
+  else if (strncmp (stringcpy, "vox", 3) == 0)
+    strcpy (entity, "vox");
   else if (strncmp (stringcpy, "csys", 4) == 0)
     strcpy (entity, "csys");
   else if (strncmp (stringcpy, "point", 5) == 0)
@@ -138,6 +143,7 @@ nev_data_id_colour (double **data, int size, int **Col)
   int palettesize, pos;
   ut_color_palette_0208 (&palette, &palettesize);
 
+#pragma omp parallel for private(pos,j)
   for (i = 1; i <= size; i++)
   {
     pos = ut_num_d2ri (data[i][0] - 1) % palettesize;
@@ -191,21 +197,21 @@ void
 nev_data_ori_colour (double **data, int size, char *scheme, int **Col)
 {
   int i, j;
-  double *R = ol_R_alloc ();
+  double OL_S2m1 = OL_S2 - 1, TOL_S2m1 = 2 * (OL_S2 - 1);
 
   if (scheme == NULL || !strcmp (scheme, "R"))
+#pragma omp parallel for private(j)
     for (i = 1; i <= size; i++)
     {
+      double *R = ol_R_alloc ();
       ol_q_R (data[i], R);
       ol_R_Rcrysym (R, "cubic", R);
       for (j = 0; j < 3; j++)
-	Col[i][j] = ut_num_d2ri (255 * (R[j] + (OL_S2 - 1))
-				 / (2 * (OL_S2 - 1)));
+	Col[i][j] = ut_num_d2ri (255 * (R[j] + OL_S2m1) / TOL_S2m1);
+      ol_R_free (R);
     }
   else
     ut_error_reportbug ();
-
-  ol_R_free (R);
 
   return;
 }

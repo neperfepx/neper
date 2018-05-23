@@ -5,6 +5,14 @@
 cmake_minimum_required(VERSION 2.8)
 project(neut)
 
+# for nanoflann (on some systems) =======
+if (CMAKE_VERSION VERSION_LESS "3.1")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+else ()
+    set (CMAKE_CXX_STANDARD 11)
+endif ()
+add_definitions(-Wno-deprecated-declarations)
+
 # should we use the optional libraries?
 option (HAVE_GSL       "Use the GNU Scientific Library (GSL)" ON)
 option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
@@ -89,8 +97,8 @@ add_library (neut
 ./neut_mesh/neut_mesh_str/neut_mesh_str.c
 ./neut_gmsh/neut_gmsh1.c
 ./neut_debug/neut_debug.c
-./neut_seedset/neut_seedset1.c
-./neut_seedset/neut_seedset2.c
+./neut_seedset/neut_seedset1.cpp
+./neut_seedset/neut_seedset2.cpp
 ./neut_povray/neut_povray.c
 ./neut_nset/neut_nset.c
 ./neut_print/neut_print.c
@@ -163,6 +171,7 @@ add_library (neut
 ## Link libraries
 
 set (EXTRA_LIBS ${EXTRA_LIBS} ut)
+set (EXTRA_LIBS ${EXTRA_LIBS} orilib)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake
 			${CMAKE_MODULE_PATH})

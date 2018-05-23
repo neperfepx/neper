@@ -235,6 +235,12 @@ nev_pointdata_fscanf (char *type, char *argument,
       ut_array_2d_fscanfn_wcard (value, (*pPointData).RadData + 1,
 				 (*pPointData).PointQty, 5, "numeral,size");
     }
+    else if (!strcmp ((*pPointData).RadDataType, "arr"))
+    {
+      (*pPointData).RadData = ut_alloc_2d ((*pPointData).PointQty + 1, 5);
+      ut_array_2d_fscanfn_wcard (value, (*pPointData).RadData + 1,
+				 (*pPointData).PointQty, 5, "numeral,size");
+    }
     else if (!strcmp ((*pPointData).RadDataType, "tor"))
     {
       (*pPointData).RadData = ut_alloc_2d ((*pPointData).PointQty + 1, 5);

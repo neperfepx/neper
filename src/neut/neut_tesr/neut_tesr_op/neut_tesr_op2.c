@@ -6,14 +6,14 @@
 
 // The filter is applied on a per cell basis.
 void
-neut_tesr_rmsat_cell_find (struct TESR Tesr, int dim, int *prptqty,
-			   int ***prptpos)
+neut_tesr_rmsat_cell_find (struct TESR Tesr, int dim, int *pvoxqty,
+			   int ***pvoxpos)
 {
   int i, j, k, p, part;
   struct TESR Seg;
-  int *rptqty = NULL;
+  int *voxqty = NULL;
 
-  (*prptqty) = 0;
+  (*pvoxqty) = 0;
 
   for (p = 1; p <= Tesr.CellQty; p++)
   {
@@ -26,21 +26,21 @@ neut_tesr_rmsat_cell_find (struct TESR Tesr, int dim, int *prptqty,
     if (Seg.CellQty > 1)
     {
       // looking for the bigger part (will keep this one)
-      neut_tesr_cells_rptqty (Seg, &rptqty);
-      part = 1 + ut_array_1d_max_int_index (rptqty + 1, Seg.CellQty);
+      neut_tesr_cells_voxqty (Seg, &voxqty);
+      part = 1 + ut_array_1d_max_int_index (voxqty + 1, Seg.CellQty);
 
       for (k = 1; k <= Tesr.size[2]; k++)
 	for (j = 1; j <= Tesr.size[1]; j++)
 	  for (i = 1; i <= Tesr.size[0]; i++)
 	    if (Seg.VoxCell[i][j][k] != 0 && Seg.VoxCell[i][j][k] != part)
 	    {
-	      (*prptpos)
-		= ut_realloc_2d_int_addline ((*prptpos), ++(*prptqty), 3);
-	      ut_array_1d_int_set_3 ((*prptpos)[(*prptqty) - 1], i, j, k);
+	      (*pvoxpos)
+		= ut_realloc_2d_int_addline ((*pvoxpos), ++(*pvoxqty), 3);
+	      ut_array_1d_int_set_3 ((*pvoxpos)[(*pvoxqty) - 1], i, j, k);
 	    }
 
-      ut_free_1d_int (rptqty);
-      rptqty = NULL;
+      ut_free_1d_int (voxqty);
+      voxqty = NULL;
     }
 
     neut_tesr_free (&Seg);
@@ -50,8 +50,8 @@ neut_tesr_rmsat_cell_find (struct TESR Tesr, int dim, int *prptqty,
 }
 
 void
-neut_tesr_rmsat_cell_remove (struct TESR *pTesr, int dim, int rptqty,
-			     int **rptpos)
+neut_tesr_rmsat_cell_remove (struct TESR *pTesr, int dim, int voxqty,
+			     int **voxpos)
 {
   int i, j, neighqty, id;
   int **neighpos = NULL;
@@ -59,9 +59,9 @@ neut_tesr_rmsat_cell_remove (struct TESR *pTesr, int dim, int rptqty,
   int **cellinfo = NULL;
   int cellqty;
 
-  for (i = 0; i < rptqty; i++)
+  for (i = 0; i < voxqty; i++)
   {
-    neut_tesr_cells_pos_neighpos (*pTesr, NULL, -1, rptpos[i], dim,
+    neut_tesr_cells_pos_neighpos (*pTesr, NULL, -1, voxpos[i], dim,
 				  &neighpos, &neighqty);
 
     int *neighcell = ut_alloc_1d_int (neighqty);
@@ -75,7 +75,7 @@ neut_tesr_rmsat_cell_remove (struct TESR *pTesr, int dim, int rptqty,
     id = ut_array_1d_int_max_index (cellinfo[1], cellqty);
     int newcell = cellinfo[0][id];
 
-    (*pTesr).VoxCell[rptpos[i][0]][rptpos[i][1]][rptpos[i][2]] = newcell;
+    (*pTesr).VoxCell[voxpos[i][0]][voxpos[i][1]][voxpos[i][2]] = newcell;
 
     ut_free_1d_int (neighcell);
   }
@@ -94,13 +94,13 @@ neut_tesr_grow_neigh (struct TESR *pTesr, int poly, int qty,
   int **val = NULL;
   int valqty;
   struct TESR TesrCpy;
-  int rptqty;
+  int voxqty;
 
   neut_tesr_set_zero (&TesrCpy);
 
   data = ut_alloc_1d_int (pow (3, (*pTesr).Dim) - 1);
 
-  rptqty = 0;
+  voxqty = 0;
   totfilqty = 0;
   (*piterqty) = 1;
   do
@@ -113,7 +113,7 @@ neut_tesr_grow_neigh (struct TESR *pTesr, int poly, int qty,
 	for (i = 1; i <= (*pTesr).size[0]; i++)
 	  if ((*pTesr).VoxCell[i][j][k] == poly)
 	  {
-	    rptqty++;
+	    voxqty++;
 	    dataqty = 0;
 	    for (kk = k - 1; kk <= k + 1; kk++)
 	      for (jj = j - 1; jj <= j + 1; jj++)
@@ -144,5 +144,5 @@ neut_tesr_grow_neigh (struct TESR *pTesr, int poly, int qty,
   ut_free_1d_int (data);
   neut_tesr_free (&TesrCpy);
 
-  return (rptqty > 0) ? totfilqty : -1;
+  return (voxqty > 0) ? totfilqty : -1;
 }

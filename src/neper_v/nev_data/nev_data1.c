@@ -21,6 +21,7 @@ nev_data (char **argv, int *pi,
 
   dim = neut_mesh_array_dim (Mesh);
   nev_data_string_entity_type (argv[(*pi)], entity, type);
+
   if (!strcmp (entity, "elt"))
     sprintf (entity, "elt%dd", dim);
   if (!strcmp (entity, "elset"))
@@ -37,7 +38,7 @@ nev_data (char **argv, int *pi,
     else
       abort ();
   }
-  else if (!strncmp (entity, "rpt", 3))
+  else if (!strncmp (entity, "vox", 3))
     nev_tesrdata_fscanf (Tesr, entity, type, argv[++(*pi)], pTesrData);
   else if (!strncmp (entity, "elt", 3) || !strncmp (entity, "elset", 5))
     nev_meshdata_fscanf (Mesh, entity, type, argv[++(*pi)], MeshData);

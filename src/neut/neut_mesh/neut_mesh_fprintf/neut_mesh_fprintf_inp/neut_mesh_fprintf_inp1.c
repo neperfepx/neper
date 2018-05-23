@@ -7,14 +7,22 @@
 void
 neut_mesh_fprintf_inp (FILE * file, char *dim,
                        struct TESS Tess, struct NODES Nodes,
+                       struct MESH Mesh1D,
 		       struct MESH Mesh2D, struct MESH Mesh3D,
 		       struct MESH MeshCo,
 		       struct NSET NSet0D, struct NSET NSet1D,
 		       struct NSET NSet2D, char *nset, char *faset,
 		       struct PART Part, struct BOUNDARY Bound)
 {
-  int i, j;
-  int shift_elt2D = 0, shift_elt3D = 0, shift_eltCo = 0;
+  int i, j, meshdim;
+  int shift_elt1D = 0, shift_elt2D = 0, shift_elt3D = 0, shift_eltCo = 0;
+
+  if (Tess.Dim > 0)
+    meshdim = Tess.Dim;
+  else if (Nodes.NodeQty > 0)
+    meshdim = neut_nodes_dim (Nodes);
+  else
+    meshdim = 0;
 
 /*----------------------------------------------------------------------
  * header */
@@ -37,6 +45,12 @@ neut_mesh_fprintf_inp (FILE * file, char *dim,
 
 /*----------------------------------------------------------------------
  * elements */
+
+// 1D elts -------------------------------------------------------------
+
+  shift_elt1D = 0;
+  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "1") && Mesh1D.EltQty > 0)
+    neut_mesh_fprintf_inp_mesh1d (file, Mesh1D, shift_elt1D, meshdim);
 
 // 2D elts -------------------------------------------------------------
 

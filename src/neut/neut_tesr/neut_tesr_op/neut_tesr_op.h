@@ -89,7 +89,7 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_tesr_cells_rptqty (struct TESR, int **);
+  extern void neut_tesr_cells_voxqty (struct TESR, int **);
 
 /// \brief Copy the cell of a TESR structure into another TESR structure
 ///
@@ -110,7 +110,7 @@ extern "C"
   extern int neut_tesr_cell_switch (struct TESR *pTesr, int cell1, int cell2);
 
   extern void neut_tesr_init_tesrsize (struct TESR *pTesr, struct TESS
-				       Domain, int dim, char *rptstring);
+				       Domain, int dim, char *voxstring);
 
   extern void neut_tesr_crop (struct TESR *pTesr, char *shape);
   extern int  neut_tesr_2d (struct TESR *pTesr);
@@ -132,12 +132,16 @@ extern "C"
   extern int neut_tesr_grow_neigh (struct TESR *pTesr, int poly, int qty,
 				    int itermax, int *piterqty);
 
-  extern void neut_tesr_rmsat_cell_find (struct TESR Tesr, int dim, int *prptqty,
-					 int ***prptpos);
-  extern void neut_tesr_rmsat_cell_remove (struct TESR *pTesr, int dim, int rptqty,
-					   int **rptpos);
+  extern void neut_tesr_rmsat_cell_find (struct TESR Tesr, int dim, int *pvoxqty,
+					 int ***pvoxpos);
+  extern void neut_tesr_rmsat_cell_remove (struct TESR *pTesr, int dim, int voxqty,
+					   int **voxpos);
   extern void neut_tesr_tessinter (struct TESR *pTesr, char *crop, int
       verbosity);
+
+  extern void neut_tesr_addbuffer (struct TESR *pTesr, char *addbuffer);
+
+  extern void neut_tesr_rotate (struct TESR *pTesr, double **g);
 
 #endif				/* NEUT_VOX_OP_H */
 

@@ -344,7 +344,7 @@ neut_tess_fscanf_domain (struct TESS *pTess, FILE * file)
 {
   int i, id, tmp;
 
-  (*pTess).DomType = ut_alloc_1d_char (10);
+  (*pTess).DomType = ut_alloc_1d_char (1000);
 
   if (ut_file_string_scanncomp (file, "**domain") != 0
       || ut_file_string_scanncomp (file, "*general") != 0

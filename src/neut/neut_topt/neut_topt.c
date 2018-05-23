@@ -9,10 +9,13 @@ neut_topt_set_zero (struct TOPT *pTOpt)
 {
   (*pTOpt).Dim = 0;
   (*pTOpt).CellQty = 0;
+  (*pTOpt).DomType = NULL;
   neut_tess_set_zero (&(*pTOpt).Dom);
+  neut_poly_set_zero (&(*pTOpt).DomPoly);
   neut_tess_set_zero (&(*pTOpt).DomPer);
   neut_seedset_set_zero (&(*pTOpt).SSet);
   (*pTOpt).Poly = NULL;
+  (*pTOpt).CellSize = NULL;
 
   neut_tdyn_set_zero (&(*pTOpt).TDyn);
 
@@ -22,6 +25,7 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).x_var = NULL;
 
   (*pTOpt).dof = NULL;
+  (*pTOpt).tarobjective = NULL;
   (*pTOpt).objective = NULL;
   (*pTOpt).objective_tesrval = NULL;
 
@@ -86,7 +90,7 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).tarmodecdf0 = NULL;
 
   neut_tesr_set_zero (&(*pTOpt).tartesr);
-  (*pTOpt).tarptqtyini = 0;
+  (*pTOpt).tavoxqtyini = 0;
   (*pTOpt).tartesrscale = NULL;
   (*pTOpt).tarcellpts = NULL;
   (*pTOpt).tarcellptweights = NULL;
@@ -117,6 +121,12 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).message = NULL;
 
   gettimeofday (&((*pTOpt).end_time), NULL);
+
+  (*pTOpt).pnf_cloud = NULL;
+  (*pTOpt).pnf_tree = NULL;
+
+  (*pTOpt).ptid_seedid = NULL;
+  (*pTOpt).seedid_ptid = NULL;
 
   return;
 }
@@ -236,14 +246,18 @@ neut_topt_free (struct TOPT *pTOpt)
   ut_free_1d_int ((*pTOpt).loop_status);
 
   ut_free_1d_char ((*pTOpt).message);
+  ut_free_2d_char ((*pTOpt).tarobjective, (*pTOpt).tarqty);
   ut_free_1d_char ((*pTOpt).objective);
   ut_free_1d_char ((*pTOpt).objective_tesrval);
 
   neut_topt_set_zero (pTOpt);
 
+  ut_free_1d_char ((*pTOpt).DomType);
   neut_tess_free (&(*pTOpt).Dom);
+  neut_poly_free (&(*pTOpt).DomPoly);
   neut_tess_free (&(*pTOpt).DomPer);
   neut_poly_array_free (&(*pTOpt).Poly, (*pTOpt).SSet.N);
+  ut_free_1d ((*pTOpt).CellSize);
   neut_seedset_free (&(*pTOpt).SSet); // must be freed at the end (used to free others)
   // doing nothing to pTess (pointer only)
 

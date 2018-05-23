@@ -72,10 +72,14 @@ neut_mesh_fscanf_gmshHead (FILE * msh, int *pcontiguous, char **pmode)
     }
     while (strcmp (string, "$EndMeshFormat") != 0);
   }
-  else if (strcmp (string, "$EndMeshFormat") == 0)
-    return;
-  else
+  else if (strcmp (string, "$EndMeshFormat"))
     abort ();
+
+  ut_file_nextstring (msh, string);
+  if (!strcmp (string, "$PhysicalNames"))
+    do
+      status = fscanf (msh, "%s", string);
+    while (status == 1 && strcmp (string, "$EndPhysicalNames"));
 
   return;
 }

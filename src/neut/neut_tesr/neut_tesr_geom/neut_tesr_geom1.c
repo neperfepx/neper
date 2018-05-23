@@ -5,35 +5,79 @@
 #include "neut_tesr_geom_.h"
 
 int
-neut_tesr_point_pos (struct TESR Tesr, double *coo, int *rptpos)
+neut_tesr_vox_pos (struct TESR Tesr, int vox, int *pos)
+{
+  int qty, unitqty;
+
+  qty = vox;
+  unitqty = Tesr.size[0] * Tesr.size[1];
+  pos[2] = 1 + (qty - 1) / unitqty;
+
+  qty -= (pos[2] - 1) * unitqty;
+  unitqty = Tesr.size[0];
+  pos[1] = 1 + (qty - 1) / unitqty;
+
+  qty -= (pos[1] - 1) * unitqty;
+  pos[0] = qty;
+
+  return 0;
+}
+
+int
+neut_tesr_vox_coo (struct TESR Tesr, int vox, double *coo)
+{
+  int pos[3];
+
+  neut_tesr_vox_pos (Tesr, vox, pos);
+  neut_tesr_pos_coo (Tesr, pos, coo);
+
+  return 0;
+}
+
+int
+neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell)
+{
+  int voxpos[3];
+
+  neut_tesr_vox_pos (Tesr, vox, voxpos);
+  (*pcell) = Tesr.VoxCell[voxpos[0]][voxpos[1]][voxpos[2]];
+
+  return 0;
+}
+
+int
+neut_tesr_point_pos (struct TESR Tesr, double *coo, int *voxpos)
 {
   int i;
 
   for (i = 0; i < Tesr.Dim; i++)
   {
     if (coo[i] < 0 || coo[i] > Tesr.size[i] * Tesr.vsize[i])
+    {
+      ut_array_1d_int_set (voxpos, 3, -1);
       return -1;
+    }
 
-    rptpos[i] = ceil (coo[i] / Tesr.vsize[i] + 1e-6);
-    rptpos[i] = ut_num_min_int (rptpos[i], Tesr.size[i]);
+    voxpos[i] = ceil (coo[i] / Tesr.vsize[i] + 1e-6);
+    voxpos[i] = ut_num_min_int (voxpos[i], Tesr.size[i]);
   }
   for (i = Tesr.Dim; i < 3; i++)
-    rptpos[i] = 1;
+    voxpos[i] = 1;
 
   return 0;
 }
 
 int
-neut_tesr_pos_coo (struct TESR Tesr, int *rptpos, double *coo)
+neut_tesr_pos_coo (struct TESR Tesr, int *voxpos, double *coo)
 {
   int i;
 
   for (i = 0; i < Tesr.Dim; i++)
   {
-    if (rptpos[i] < 1 || rptpos[i] > Tesr.size[i])
+    if (voxpos[i] < 1 || voxpos[i] > Tesr.size[i])
       return -1;
 
-    coo[i] = (rptpos[i] - 0.5) * Tesr.vsize[i];
+    coo[i] = (voxpos[i] - 0.5) * Tesr.vsize[i];
   }
 
   return 0;
@@ -135,8 +179,8 @@ int
 neut_tesr_cell_centre (struct TESR Tesr, int cell, double *coo)
 {
   int i, j, k, qty;
-  int *rptpos = NULL;
-  double *rptcoo = NULL;
+  int *voxpos = NULL;
+  double *voxcoo = NULL;
 
   if (Tesr.CellCoo)
   {
@@ -144,8 +188,8 @@ neut_tesr_cell_centre (struct TESR Tesr, int cell, double *coo)
     return 0;
   }
 
-  rptpos = ut_alloc_1d_int (3);
-  rptcoo = ut_alloc_1d (3);
+  voxpos = ut_alloc_1d_int (3);
+  voxcoo = ut_alloc_1d (3);
 
   qty = 0;
   ut_array_1d_zero (coo, 3);
@@ -154,17 +198,17 @@ neut_tesr_cell_centre (struct TESR Tesr, int cell, double *coo)
       for (i = Tesr.CellBBox[cell][0][0]; i <= Tesr.CellBBox[cell][0][1]; i++)
 	if (Tesr.VoxCell[i][j][k] == cell)
 	{
-	  ut_array_1d_int_set_3 (rptpos, i, j, k);
-	  neut_tesr_pos_coo (Tesr, rptpos, rptcoo);
-	  ut_array_1d_add (coo, rptcoo, 3, coo);
+	  ut_array_1d_int_set_3 (voxpos, i, j, k);
+	  neut_tesr_pos_coo (Tesr, voxpos, voxcoo);
+	  ut_array_1d_add (coo, voxcoo, 3, coo);
 	  qty++;
 	}
 
   if (qty > 0)
     ut_array_1d_scale (coo, 3, 1. / qty);
 
-  ut_free_1d_int (rptpos);
-  ut_free_1d (rptcoo);
+  ut_free_1d_int (voxpos);
+  ut_free_1d (voxcoo);
 
   return (qty > 0) ? 0 : -1;
 }
@@ -493,4 +537,28 @@ neut_tesr_cells_anisoxyz (struct TESR Tesr, double *fact)
   ut_free_1d (vols);
 
   return;
+}
+
+int
+neut_tesr_perpos_pos (struct TESR Tesr, int *per, int *pos, int *pos2)
+{
+  int i;
+
+  ut_array_1d_int_memcpy (pos2, Tesr.Dim, pos);
+
+  for (i = 0; i < Tesr.Dim; i++)
+    if (pos[i] < 1 || pos[i] > Tesr.size[i])
+    {
+      if (!per || per[i])
+      {
+        while (pos2[i] < 1)
+          pos2[i] += Tesr.size[i];
+        while (pos2[i] > Tesr.size[i])
+          pos2[i] -= Tesr.size[i];
+      }
+      else
+        abort ();
+    }
+
+  return 0;
 }

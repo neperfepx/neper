@@ -12,7 +12,7 @@
 @c %**start of header
 @setfilename        neper.info
 @include version.texi
-@set COPYRIGHT @copyright{} 2003--2017 Romain Quey
+@set COPYRIGHT @copyright{} 2003--2018 Romain Quey
 @c
 @settitle Neper @value{NEPER_VERSION}
 @footnotestyle separate

@@ -95,7 +95,7 @@ net_tess_opt_init_sset_pre_default_coo (struct TOPT TOpt, int pos, char *var, ch
 {
   if (TOpt.tarqty == 0)
     ut_string_string ("random", pcooexpr);
-  else if (!strcmp (var, "centroid"))
+  else if (!strcmp (var, "centroid") || !strcmp (var, "centroidtol"))
   {
     if (strcmp (TOpt.tarexpr[pos], "seed"))
       ut_string_string ("centroid", pcooexpr);

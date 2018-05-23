@@ -9,7 +9,9 @@ extern "C"
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #include<time.h>
+#include<limits.h>
 
 #include"neut_t.h"
 

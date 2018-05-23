@@ -10,17 +10,23 @@ extern "C"
 #ifndef  NEUT_VOX_GEOM_H
 #define  NEUT_VOX_GEOM_H
 
+extern int neut_tesr_vox_pos (struct TESR Tesr, int vox, int *pos);
+extern int neut_tesr_vox_coo (struct TESR Tesr, int vox, double *coo);
+extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
+
 /// \brief Get the rpoint a point belongs to.
 /// \return 0 on success, -1 on failure.
 ///
 ///
-  extern int neut_tesr_point_pos (struct TESR Tesr, double *coo, int *rptpos);
+  extern int neut_tesr_point_pos (struct TESR Tesr, double *coo, int *voxpos);
 
 /// \brief Get the coordinate of a rpoint.
 /// \return 0 on success, -1 on failure.
 ///
 ///
-  extern int neut_tesr_pos_coo (struct TESR Tesr, int *rptpos, double *coo);
+  extern int neut_tesr_pos_coo (struct TESR Tesr, int *voxpos, double *coo);
+
+  extern int neut_tesr_perpos_pos (struct TESR Tesr, int *per, int *pos, int *pos2);
 
 /// \brief Get the centre of a cell of a TESR structure.
 /// \return 0 on success, -1 on failure.

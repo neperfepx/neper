@@ -61,10 +61,19 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level,
 	|| !strcmp ((*pTOpt).tarvar[i], "size")
 	|| !strcmp ((*pTOpt).tarvar[i], "diameq"))
     {
-      ut_string_string ((*pTOpt).tarvar[i], pvar);
-      if (*ppos != -1)
-	abort ();
-      (*ppos) = i;
+      if (*ppos == -1)
+      {
+        (*ppos) = i;
+        ut_string_string ((*pTOpt).tarvar[i], pvar);
+      }
+      /*
+      else
+      {
+        printf ("\n");
+        ut_print_message (1, 4, "Variables `%s' used (not `%s').\n",
+                          (*pTOpt).tarvar[*ppos], (*pTOpt).tarvar[i]);
+      }
+      */
     }
   }
 

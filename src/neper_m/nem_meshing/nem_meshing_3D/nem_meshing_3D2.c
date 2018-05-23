@@ -8,15 +8,16 @@ int
 nem_meshing_3D_poly (struct IN_M In, double cl, struct MULTIM *pMultim,
 		     struct timeval *pctrlc_t, double *pallowed_t,
 		     double *pmax_elapsed_t, struct TESS Tess,
-		     struct NODES *pNodes, struct MESH *Mesh, int poly)
+		     struct NODES *pNodes, struct MESH *Mesh,
+                     struct NODES *pN, struct MESH *pM, int poly)
 {
   int a;
   double elapsed_t, mOsize;
-  struct NODES N, N2;
-  struct MESH M, M2;
+  struct NODES N2;
+  struct MESH M2;
 
-  neut_nodes_set_zero (&N);
-  neut_mesh_set_zero (&M);
+  neut_nodes_set_zero (pN);
+  neut_mesh_set_zero (pM);
   neut_nodes_set_zero (&N2);
   neut_mesh_set_zero (&M2);
 
@@ -31,8 +32,8 @@ nem_meshing_3D_poly (struct IN_M In, double cl, struct MULTIM *pMultim,
     // best-quality mesh, recording it
     if ((*pMultim).Oalgo[poly] == a)
     {
-      neut_nodes_memcpy (N2, &N);
-      neut_mesh_memcpy (M2, &M);
+      neut_nodes_memcpy (N2, pN);
+      neut_mesh_memcpy (M2, pM);
     }
 
     // minimum quality reached; breaking
@@ -41,16 +42,12 @@ nem_meshing_3D_poly (struct IN_M In, double cl, struct MULTIM *pMultim,
   }
 
   if ((*pMultim).Oalgo[poly] != -1)
+#pragma omp atomic
     (*pMultim).algohit[(*pMultim).Oalgo[poly]]++;
   else
     ut_print_message (2, 3, "Meshing of poly %d failed\n", poly);
 
-  // Recording poly mesh in global mesh
-  nem_meshing_3D_poly_record (Tess, poly, N, M, pNodes, Mesh);
-
-  neut_nodes_free (&N);
   neut_nodes_free (&N2);
-  neut_mesh_free (&M);
   neut_mesh_free (&M2);
 
   return 0;
@@ -84,6 +81,22 @@ nem_meshing_3D_progress (struct MULTIM Multim, int poly, int polyqty,
   ut_free_1d_int (pct);
   ut_free_1d_char (format);
   ut_free_1d_char (tmp);
+
+  return;
+}
+
+void
+nem_meshing_3D_poly_record (struct TESS Tess, int poly, struct NODES N,
+			    struct MESH M, struct NODES *pNodes,
+			    struct MESH *Mesh)
+{
+  int *node_nbs = NULL;
+
+  nem_meshing_3D_poly_record_nodes (Tess, poly, N, &node_nbs, pNodes, Mesh);
+
+  nem_meshing_3D_poly_record_elts (poly, M, node_nbs, Mesh);
+
+  ut_free_1d_int (node_nbs);
 
   return;
 }

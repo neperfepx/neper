@@ -13,7 +13,7 @@ nev_camera_tess_expr_coo (struct TESS Tess, char *expr, double *coo)
   nev_camera_v (Tess.Dim, v);
 
   if (strchr (expr, 'x') || strchr (expr, 'y') || strchr (expr, 'z'))
-    neut_tess_centre (Tess, X);
+    neut_tess_bboxcentre (Tess, X);
 
   nev_camera_expr_coo (X, v, expr, coo);
 
@@ -29,15 +29,14 @@ nev_camera_mesh_expr_coo (struct NODES Nodes, struct MESH Mesh,
 {
   double *v = ut_alloc_1d (3);
   double *X = ut_alloc_1d (3);
+  (void) Mesh;
 
   nev_camera_v (neut_nodes_dim (Nodes), v);
 
   if (strchr (expr, 'x') || strchr (expr, 'y') || strchr (expr, 'z'))
   {
-    if (Mesh.EltQty > 0)
-      neut_mesh_centre (Nodes, Mesh, X);
-    else if (Nodes.NodeQty > 0)
-      neut_nodes_centre (Nodes, X);
+    if (Nodes.NodeQty > 0)
+      neut_nodes_bboxcentre (Nodes, X);
     else
       ut_error_reportbug ();
   }

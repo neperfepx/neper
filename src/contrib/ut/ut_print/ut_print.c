@@ -437,6 +437,9 @@ ut_print_messagewnc (int head, int max, const char *message)
 
   ut_free_1d_char (Header);
 
+  if (head == 2)
+    abort ();
+
   fflush (stdout);
 
   return;
@@ -1279,6 +1282,17 @@ void
 ut_error_reportbug ()
 {
   ut_print_messagewnc (2, 72, "You have discovered a bug in Neper!  Please send a full bug report to <rquey@users.sf.net>.  Thank you.\n");
+  fflush (stdout);
+
+  abort ();
+
+  return;
+}
+
+void
+ut_error_expression (char *expr)
+{
+  ut_print_message (2, 0, "Expression `%s' could not be processed.\n", expr);
   fflush (stdout);
 
   abort ();

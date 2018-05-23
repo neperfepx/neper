@@ -26,8 +26,8 @@ extern void nem_meshing_2D_progress (struct MULTIM Multim, int face, int
 extern int nem_meshing_2D_face (struct IN_M, struct MESHPARA, struct MULTIM *,
 				struct timeval *, double *,
 				double *, struct TESS, struct NODES,
-				struct MESH *, struct NODES *,
-				struct MESH *, int);
+                                struct MESH *, struct NODES *, struct MESH *,
+                                struct NODES *, struct MESH *, int **, int);
 
 extern void nem_meshing_2D_face_algo (struct IN_M In, struct MESHPARA,
 				      struct MULTIM *pMultim, int algo,

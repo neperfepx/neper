@@ -9,11 +9,19 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
 		struct TESS Tess, struct NODES RNodes, struct MESH *RMesh,
 		struct NODES *pNodes, struct MESH *Mesh)
 {
-  int i, id, faceqty, *face = NULL;
+  int i, id, faceqty, *face = NULL, qty;
   double allowed_t, max_elapsed_t = 0;
   char *message = ut_alloc_1d_char (128);
   struct MULTIM Multim;
   struct timeval ctrlc_t = { 0, 0 };
+  struct NODES *N = (struct NODES*) calloc (Tess.FaceQty + 1, sizeof (struct NODES));
+  struct MESH *M = (struct MESH*) calloc (Tess.FaceQty + 1, sizeof (struct MESH));
+  int **master_id = ut_alloc_1d_pint (Tess.FaceQty + 1);
+
+  for (i = 1; i <= Tess.FaceQty; i++)
+    neut_nodes_set_zero (N + i);
+  for (i = 1; i <= Tess.FaceQty; i++)
+    neut_mesh_set_zero (M + i);
 
   ut_print_message (0, 2, "2D meshing... ");
 
@@ -28,23 +36,36 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
   nem_meshing_2D_progress (Multim, 0, Tess.FaceQty, message);
 
   allowed_t = In.mesh2dmaxtime;
+  qty = 0;
+#pragma omp parallel for schedule(dynamic) private(i,id)
   for (i = 0; i < faceqty; i++)
     if (Tess.FaceVerQty[face[i]] > 0)
     {
       id = face[i];
 
-      while (Mesh[2].ElsetQty != id - 1)
-	neut_mesh_addelset (Mesh + 2, NULL, 0);
+      nem_meshing_2D_face (In, MeshPara, &Multim,
+                           &ctrlc_t, &allowed_t, &max_elapsed_t, Tess,
+                           RNodes, RMesh, pNodes, Mesh, N + id,
+                           M + id, master_id + id, id);
 
-      if (Tess.FaceVerQty[id] > 0)
-	nem_meshing_2D_face (In, MeshPara, &Multim,
-			     &ctrlc_t, &allowed_t, &max_elapsed_t, Tess,
-			     RNodes, RMesh, pNodes, Mesh, id);
-      else
-	neut_mesh_addelset (Mesh + 2, NULL, 0);
-
-      nem_meshing_2D_progress (Multim, i + 1, faceqty, message);
+#pragma omp critical
+      nem_meshing_2D_progress (Multim, ++qty, faceqty, message);
     }
+
+  // Recording face mesh in global mesh
+  for (i = 0; i < faceqty; i++)
+  {
+    id = face[i];
+
+    while (Mesh[2].ElsetQty != id - 1)
+      neut_mesh_addelset (Mesh + 2, NULL, 0);
+
+    if (Tess.FaceVerQty[id] > 0)
+      nem_meshing_2D_face_record (Tess, id, N[id], M[id], master_id[id],
+                                  pNodes, Mesh, MeshPara);
+    else
+      neut_mesh_addelset (Mesh + 2, NULL, 0);
+  }
 
   neut_mesh_init_nodeelts (Mesh + 2, (*pNodes).NodeQty);
   neut_mesh_init_eltelset (Mesh + 2, NULL);
@@ -60,6 +81,13 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
 
   ut_free_1d_char (message);
   ut_free_1d_int (face);
+
+  for (i = 1; i <= Tess.FaceQty; i++)
+      neut_nodes_free (N + i);
+  free (N);
+  for (i = 1; i <= Tess.FaceQty; i++)
+      neut_mesh_free (M + i);
+  free (M);
 
   return;
 }

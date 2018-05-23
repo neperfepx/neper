@@ -3,34 +3,48 @@
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_fval_.h"
-#include<ANN/ANN.h>
+
 
 double
 net_tess_opt_comp_objective_fval (struct TOPT *pTOpt)
 {
-  // initializing problem
+  int i;
+  struct timeval t1, t2, t3, t4, t5;
 
+  gettimeofday (&t1, NULL);
+
+  // Initializing problem & computing penalties ------------------------
   net_tess_opt_comp_objective_fval_init (pTOpt);
 
-  // updating penalties for changed cells
+  gettimeofday (&t2, NULL);
 
+  // updating penalties for changed cells
   net_tess_opt_comp_objective_fval_cellpenalty (pTOpt);
 
-  // case of a tesr
-  if ((*pTOpt).tarqty == 1 && !strcmp ((*pTOpt).tarvar[0], "tesr"))
-    net_tess_opt_comp_objective_fval_tesr (pTOpt);
+  gettimeofday (&t3, NULL);
 
-  // other cases
-  else
+  (*pTOpt).TDyn.val_val_cellval_dur = 0;
+  (*pTOpt).TDyn.val_val_comp_dur = 0;
+  // Computing curcellval and curval -----------------------------------
+  for (i = 0; i < (*pTOpt).tarqty; i++)
   {
-    // updating values for changed cells
-
-    net_tess_opt_comp_objective_fval_cellval (pTOpt);
-
-    // computing objective function
-
-    net_tess_opt_comp_objective_fval_comp (pTOpt);
+    if (!strcmp ((*pTOpt).tarvar[i], "tesr"))
+      net_tess_opt_comp_objective_fval_tesr (pTOpt, i);
+    else
+      net_tess_opt_comp_objective_fval_gen (pTOpt, i);
   }
+
+  gettimeofday (&t4, NULL);
+
+  // Computing objval --------------------------------------------------
+  net_tess_opt_comp_objective_fval_comp (pTOpt);
+
+  gettimeofday (&t5, NULL);
+
+  (*pTOpt).TDyn.val_init_dur = ut_time_subtract (&t1, &t2);
+  (*pTOpt).TDyn.val_penalty_dur = ut_time_subtract (&t2, &t3);
+  (*pTOpt).TDyn.val_val_dur = ut_time_subtract (&t3, &t4);
+  (*pTOpt).TDyn.val_comp_dur = ut_time_subtract (&t4, &t5);
 
   return (*pTOpt).objval;
 }

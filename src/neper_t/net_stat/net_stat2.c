@@ -127,11 +127,11 @@ net_stat_point (FILE * file, char *format, struct POINT Point,
 void
 net_stat_tesr (FILE * file, char *entity, char *format, struct TESR *pTesr)
 {
-  int qty;
-  int i, j, status, invalqty;
-  double val;
+  int i, j, qty, status, invalqty, valqty;
+  double val[10];
   char **invar = NULL, *type = NULL;
   double **data = NULL;
+  int *dataqty = NULL;
   char **datatype = NULL;
   double *coo = ut_alloc_1d (3);
 
@@ -139,92 +139,35 @@ net_stat_tesr (FILE * file, char *entity, char *format, struct TESR *pTesr)
 
   ut_string_separate (format, NEUT_SEP_NODEP, &invar, &invalqty);
 
-  if ((strstr (format, "x") || strstr (format, "y") || strstr (format, "z")) && !(*pTesr).CellCoo)
-    neut_tesr_init_cellcoo (pTesr);
-  if (strstr (format, "vol") && !(*pTesr).CellVol)
-    neut_tesr_init_cellvol (pTesr);
-  if (strstr (format, "convexity") && !(*pTesr).CellConvexity)
-    neut_tesr_init_cellconvexity (pTesr);
+  if (!strcmp (entity, "cell"))
+  {
+    if ((strstr (format, "x") || strstr (format, "y") || strstr (format, "z")) && !(*pTesr).CellCoo)
+      neut_tesr_init_cellcoo (pTesr);
+    if (strstr (format, "vol") && !(*pTesr).CellVol)
+      neut_tesr_init_cellvol (pTesr);
+    if (strstr (format, "convexity") && !(*pTesr).CellConvexity)
+      neut_tesr_init_cellconvexity (pTesr);
+  }
 
   data = ut_alloc_2d (invalqty, qty + 1);
+  dataqty = ut_alloc_1d_int (invalqty);
   datatype = ut_alloc_1d_pchar (invalqty);
-
-  for (j = 0; j < invalqty; j++)
-    if (strstr (invar[j], "rel") || strstr (invar[j], "uc"))
-    {
-      status = neut_tesr_expr_val_all (*pTesr, entity, invar[j], data[j],
-				       &(datatype[j]));
-      if (status != 0)
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  invar[j]);
-    }
 
   for (i = 1; i <= qty; i++)
     for (j = 0; j < invalqty; j++)
     {
-      if (!strcmp (entity, "cell"))
-      {
-	if (strstr (invar[j], "rel") || strstr (invar[j], "uc"))
-	{
-	  status = 0;
-	  val = data[j][i];
-	  ut_string_string (datatype[j], &type);
-	}
-	else if (!strcmp (invar[j], "x"))
-	{
-	  status = 0;
-	  neut_tesr_cell_centre (*pTesr, i, coo);
-	  val = coo[0];
-	  ut_string_string ("%f", &type);
-	}
-	else if (!strcmp (invar[j], "y"))
-	{
-	  status = 0;
-	  neut_tesr_cell_centre (*pTesr, i, coo);
-	  val = coo[1];
-	  ut_string_string ("%f", &type);
-	}
-	else if (!strcmp (invar[j], "z"))
-	{
-	  status = 0;
-	  neut_tesr_cell_centre (*pTesr, i, coo);
-	  val = coo[2];
-	  ut_string_string ("%f", &type);
-	}
-	else if (!strcmp (invar[j], "size")
-	      || !strcmp (invar[j], "vol"))
-	{
-	  status = 0;
-	  neut_tesr_cell_size (*pTesr, i, &val);
-	  ut_string_string ("%f", &type);
-	}
-	else
-	  status = neut_tesr_expr_val (*pTesr, entity, i, invar[j], &val, &type);
-      }
+      status = neut_tesr_expr_val (*pTesr, entity, i, invar[j], val, &valqty, &type);
+      if (status != 0)
+	ut_error_expression (invar[j]);
 
-      else
-	status = neut_tesr_expr_val (*pTesr, entity, i, invar[j], &val, &type);
-
-      if (status == 0)
-      {
-	if (!strcmp (type, "%d"))
-	  fprintf (file, "%d", ut_num_d2ri (val));
-	else if (!strcmp (type, "%f"))
-	  fprintf (file, "%.12f", val);
-	else
-	  ut_error_reportbug ();
-      }
-      else
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  invar[j]);
-
+      ut_array_1d_fprintf_nonl (file, val, valqty, !strcmp (type, "%f") ? "%.12f" : type);
       fprintf (file, (j < invalqty - 1) ? " " : "\n");
-      fflush (file);
     }
 
   ut_free_2d_char (invar, invalqty);
   ut_free_1d_char (type);
   ut_free_2d (data, invalqty);
+  ut_free_1d_int (dataqty);
   ut_free_2d_char (datatype, invalqty);
   ut_free_1d (coo);
 

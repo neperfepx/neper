@@ -99,7 +99,7 @@ nev_show_mesh_elt (char **argv, int *pi, struct TESS Tess,
 			     Part, Tess,
 			     (*pPrint).showelt0d, (*pPrint).showelt1d,
 			     (*pPrint).showelt2d, (*pPrint).showelt3d,
-			     0, entity, i, vars[j], &(vals[j]), NULL);
+			     0, entity, i, vars[j], &(vals[j]), NULL, NULL);
 
       status = ut_math_eval_int (argv[(*pi)], varqty, vars, vals,
 				 &((*pshowarray)[i]));
@@ -147,7 +147,7 @@ nev_show_mesh_nodes (char **argv, int *pi, struct TESS Tess,
 			     Part, Tess,
 			     (*pPrint).showelt0d, (*pPrint).showelt1d,
 			     (*pPrint).showelt2d, (*pPrint).showelt3d,
-			     0, "node", i, vars[j], &(vals[j]), NULL);
+			     0, "node", i, vars[j], &(vals[j]), NULL, NULL);
 
       status = ut_math_eval_int (argv[(*pi)], varqty, vars, vals,
 				 &((*pPrint).shownode[i]));
@@ -245,7 +245,7 @@ nev_show_mesh_elset (char **argv, int *pi, struct TESS Tess,
 			     Part, Tess,
 			     (*pPrint).showelt0d, (*pPrint).showelt1d,
 			     (*pPrint).showelt2d, (*pPrint).showelt3d,
-			     0, entity, i, vars[j], &(vals[j]), NULL);
+			     0, entity, i, vars[j], &(vals[j]), NULL, NULL);
 
       status = ut_math_eval_int (argv[(*pi)], varqty, vars, vals,
 				 &(showelset3d[i]));

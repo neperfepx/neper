@@ -20,9 +20,6 @@ extern "C"
 
 #include"net_tess_opt_comp_objective_fval_comp.h"
 
-#include"net_tess_opt_comp_objective_fval_comp_stat/net_tess_opt_comp_objective_fval_comp_stat.h"
-#include"net_tess_opt_comp_objective_fval_comp_celldata/net_tess_opt_comp_objective_fval_comp_celldata.h"
-
 #ifdef __cplusplus
 }
 #endif

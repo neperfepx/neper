@@ -229,7 +229,6 @@ neut_tesr_fscanf_foot (FILE * file)
   return;
 }
 
-/* Tessellation exportation: vertex */
 void
 neut_tesr_fscanf_data (struct TESR *pTesr, int *bounds, double *scale,
 		       char *format, FILE * file)
@@ -313,6 +312,70 @@ neut_tesr_fscanf_data (struct TESR *pTesr, int *bounds, double *scale,
      printf ("%d\n", status);
      }
    */
+
+  ut_free_1d_char (tmp);
+
+  return;
+}
+
+void
+neut_tesr_fscanf_oridata (struct TESR *pTesr, int *bounds, double *scale,
+		          char *format, FILE * file)
+{
+  char c;
+  FILE *file2 = NULL;
+  char *filename = NULL;
+  char *tmp = ut_alloc_1d_char (10);
+  fpos_t pos;
+  char des[10];
+
+  if (bounds || scale)
+    ut_error_reportbug ();
+
+  (*pTesr).VoxOri = ut_alloc_4d ((*pTesr).size[0] + 1,
+                                 (*pTesr).size[1] + 1,
+                                 (*pTesr).size[2] + 1, 4);
+
+  if (fscanf (file, "%s", tmp) != 1)
+    abort ();
+
+  if (strcmp (tmp, "**oridata") != 0)
+    abort ();
+
+  if (fscanf (file, "%s", des) != 1)
+    abort ();
+
+  do
+  {
+    fgetpos (file, &pos);
+    if (fscanf (file, "%c", &c) != 1)
+      abort ();
+  }
+  while (c == ' ' || c == '\n' || c == '\t');
+
+  fsetpos (file, &pos);
+
+  if (c == '*')
+    if (fscanf (file, "%s", tmp) != 1)
+      abort ();
+
+  if (!strcmp (tmp, "*file"))
+  {
+    filename = ut_alloc_1d_char (1000);
+    if (fscanf (file, "%s", filename) != 1)
+      abort ();
+    file2 = ut_file_open (filename, "r");
+  }
+  else
+    file2 = file;
+
+  neut_tesr_fscanf_oridata_default (pTesr, des, format, file2);
+
+  if (!strcmp (tmp, "*file"))
+  {
+    ut_file_close (file2, filename, "r");
+    ut_free_1d_char (filename);
+  }
 
   ut_free_1d_char (tmp);
 

@@ -13,9 +13,9 @@ nem_mesh_2d_gmsh (struct TESS Tess, int face, double *face_proj,
 		  double *pacl, struct timeval *pctrlc_t, double *pelapsed_t)
 {
   FILE *file = NULL;
-  int i, nb, status;
+  int i, nb, status, bnodeqty, bnodeqty2;
   struct timeval beg_time, end_time;
-  double *n = ut_alloc_1d (3);
+  double acl, *n = ut_alloc_1d (3);
   int **Elsets = NULL;
   int *ElsetLs = NULL;
   int ElsetQty;
@@ -35,8 +35,8 @@ nem_mesh_2d_gmsh (struct TESS Tess, int face, double *face_proj,
 
   neut_gmsh_rc ("bak");
 
-  sprintf (filename, "%s/tmp%d.geo", tmp, getpid ());
-  sprintf (filename_msh, "%s/tmp%d.msh", tmp, getpid ());
+  sprintf (filename, "%s/tmp%d-%d.geo", tmp, getpid (), omp_get_thread_num ());
+  sprintf (filename_msh, "%s/tmp%d-%d.msh", tmp, getpid (), omp_get_thread_num ());
 
   file = ut_file_open (filename, "W");
 
@@ -57,7 +57,7 @@ nem_mesh_2d_gmsh (struct TESS Tess, int face, double *face_proj,
 /***********************************************************************
  * writing nodes then 1D elements */
 
-  nem_mesh_2d_gmsh_writenodes (Tess, Nodes, Mesh, face, face_proj, file);
+  bnodeqty = nem_mesh_2d_gmsh_writenodes (Tess, Nodes, Mesh, face, face_proj, file);
   nem_mesh_2d_gmsh_write1dmesh (Tess, Mesh, face, file);
 
 /***********************************************************************
@@ -76,6 +76,7 @@ nem_mesh_2d_gmsh (struct TESS Tess, int face, double *face_proj,
 
   ut_sys_runwtime (gmsh, Args, allowed_t, pctrlc_t);
   gettimeofday (&end_time, NULL);
+#pragma omp critical
   (*pelapsed_t) = ut_time_subtract (&beg_time, &end_time);
   ut_free_1d_char (Args);
 
@@ -95,7 +96,9 @@ nem_mesh_2d_gmsh (struct TESS Tess, int face, double *face_proj,
       status = 1;
     else
     {
-      neut_mesh_Osize (*pN, *pM, cl, pacl);
+      neut_mesh_Osize (*pN, *pM, cl, &acl);
+#pragma omp critical
+      (*pacl) = acl;
 
       // nodes: skin nodes (numbers refer to *pN)
       neut_mesh_init_nodeelts (pM, (*pN).NodeQty);
@@ -103,7 +106,9 @@ nem_mesh_2d_gmsh (struct TESS Tess, int face, double *face_proj,
       neut_mesh_mergeelsets (&M2);
 
       neut_mesh_face_boundmesh (Mesh[1], Tess, face, &Skin);
+      neut_mesh_nodeqty (Skin, &bnodeqty2);
 
+      /*  This code is buggy as it modifies Nodes, which is a problem for multithreading.
       double **coo = ut_alloc_2d (Nodes.NodeQty + 1, 3);
       // node = i;
       for (i = 1; i <= Nodes.NodeQty; i++)
@@ -120,6 +125,10 @@ nem_mesh_2d_gmsh (struct TESS Tess, int face, double *face_proj,
       for (i = 1; i <= Nodes.NodeQty; i++)
 	ut_array_1d_memcpy (Nodes.NodeCoo[i], 3, coo[i]);
       ut_free_2d (coo, Nodes.NodeQty + 1);
+      */
+
+      if (bnodeqty == bnodeqty2)
+        match = 1;
 
       if (match == 1)
 	status = 0;
@@ -233,9 +242,9 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
   double clmod;
   int redo, iter;
 
-  sprintf (filename, "%s/tmp%d.geo", tmp, getpid ());
-  sprintf (filename_surf, "%s/tmp%d-surf.msh", tmp, getpid ());
-  sprintf (filename_msh, "%s/tmp%d.msh", tmp, getpid ());
+  sprintf (filename, "%s/tmp%d-%d.geo", tmp, getpid (), omp_get_thread_num ());
+  sprintf (filename_surf, "%s/tmp%d-%d-surf.msh", tmp, getpid (), omp_get_thread_num ());
+  sprintf (filename_msh, "%s/tmp%d-%d.msh", tmp, getpid (), omp_get_thread_num ());
 
   double speed = 0.2;
 

@@ -27,9 +27,8 @@ extern void net_tess_opt_comp_objective_fval_tesr_pre (struct TOPT TOpt,
     int **pcellcomped, int *pcellcompedqty);
 extern void net_tess_opt_comp_objective_fval_tesr_dist (int *cells, int cellqty, struct TOPT *pTOpt);
 extern void net_tess_opt_comp_objective_fval_tesr_cellval (int *cellcomped, int
-    cellcompedqty, struct TOPT *pTOpt);
-extern void net_tess_opt_comp_objective_fval_tesr_obj (struct TOPT *pTOpt);
-extern void net_tess_opt_comp_objective_fval_tesr_post (struct TOPT *pTOpt);
+    cellcompedqty, struct TOPT *pTOpt, int var);
+extern void net_tess_opt_comp_objective_fval_tesr_obj (struct TOPT *pTOpt, int var);
 
 #ifdef __cplusplus
 }

@@ -253,10 +253,17 @@ the @samp{@SEPDEP{}uc} modifier.
 
 @multitable @columnfractions 0.18 0.47 0.36
   @headitem Key     @tab Descriptor                   @tab Apply to
-  @item @code{id}   @tab identifier                   @tab seed, cell
-  @item @code{x}    @tab x coordinate                 @tab seed, cell
-  @item @code{y}    @tab y coordinate                 @tab seed, cell
-  @item @code{z}    @tab z coordinate                 @tab seed, cell
+  @item @code{id}   @tab identifier                   @tab seed, cell, voxel
+  @item @code{x}    @tab x coordinate                 @tab seed, cell, voxel
+  @item @code{y}    @tab y coordinate                 @tab seed, cell, voxel
+  @item @code{z}    @tab z coordinate                 @tab seed, cell, voxel
+  @item @code{xyz}  @tab x, y and z coordinates       @tab seed, cell, voxel
+  @item @code{vx}   @tab x coordinate (in voxel)      @tab voxel
+  @item @code{vy}   @tab y coordinate (in voxel)      @tab voxel
+  @item @code{vz}   @tab z coordinate (in voxel)      @tab voxel
+  @item @code{vxyz} @tab x, y and z coordinates (in voxel) @tab voxel
+  @item @code{e}    @tab Euler angles (Bunge convention) @tab cell, voxel
+  @item @code{cell} @tab cell                         @tab voxel
   @item @code{w}    @tab Laguerre weight              @tab seed
   @item @code{size}  @tab size (area/volume in 2D/3D) @tab cell
   @item @code{diameq}  @tab equivalent
@@ -266,6 +273,12 @@ the @samp{@SEPDEP{}uc} modifier.
     radius@footnote{Equivalent radius = radius of the
     circle of equivalent area/volume in 2D/3D.}       @tab cell
   @item @code{convexity}  @tab convexity@footnote{Convexity of a cell = ratio of the volume of the cell to the volume of the convex hull of the cell.} @tab cell
+  @item @code{voxsizex} @tab Voxel  size in direction x @tab general
+  @item @code{voxsizey} @tab Voxel  size in direction y @tab general
+  @item @code{voxsizez} @tab Voxel  size in direction z @tab general
+  @item @code{domsizex} @tab Domain size in direction x @tab general
+  @item @code{domsizey} @tab Domain size in direction y @tab general
+  @item @code{domsizez} @tab Domain size in direction z @tab general
 @end multitable
 
 @node Tessellation Optimization Keys
@@ -278,26 +291,32 @@ below.
 Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is an integer reduction
 factor, to log values only at specific iteration numbers.
 
-@multitable @columnfractions 0.18 0.47 0.36
-  @headitem Key     @tab Descriptor                   @tab Apply to
-  @item @code{iter}   @tab iteration number           @tab n/a
-  @item @code{varupdateqty}    @tab number of updated variables  @tab n/a
-  @item @code{seedupdateqty}    @tab number of updated seeds  @tab n/a
-  @item @code{seedupdatelist}    @tab list of updated seeds  @tab n/a
-  @item @code{cellupdateqty}    @tab number of updated cells  @tab n/a
-  @item @code{cellupdatelist}    @tab list of updated cells  @tab n/a
-  @item @code{var}    @tab time for variable update @tab n/a
-  @item @code{seed}    @tab time for seed update @tab n/a
-  @item @code{cell_init}    @tab time for cell update initialization @tab n/a
-  @item @code{cell_kdtree}  @tab time for cell update kdtree computation @tab n/a
-  @item @code{cell_shift}   @tab time for cell update shift computation @tab n/a
-  @item @code{cell_neigh}    @tab time for cell update neigh@. computation @tab n/a
-  @item @code{cell_cell}    @tab time for cell update cell computation @tab n/a
-  @item @code{cell_other}    @tab time for cell update others @tab n/a
-  @item @code{cell_total}    @tab total time for cell update @tab n/a
-  @item @code{val}    @tab time for (objective function) value update @tab n/a
-  @item @code{total}    @tab total time @tab n/a
-  @item @code{cumtotal}    @tab cumulative total time @tab n/a
+@multitable @columnfractions 0.18 0.82
+  @headitem Key                @tab Descriptor
+  @item @code{iter}            @tab iteration number
+  @item @code{varupdateqty}    @tab number of updated variables
+  @item @code{seedupdateqty}   @tab number of updated seeds
+  @item @code{seedupdatelist}  @tab list of updated seeds
+  @item @code{cellupdateqty}   @tab number of updated cells
+  @item @code{cellupdatelist}  @tab list of updated cells
+  @item @code{var}             @tab time for variable update
+  @item @code{seed}            @tab time for seed update
+  @item @code{cell_init}       @tab time for cell update initialization
+  @item @code{cell_kdtree}     @tab time for cell update kdtree computation
+  @item @code{cell_shift}      @tab time for cell update shift computation
+  @item @code{cell_neigh}      @tab time for cell update neigh@. computation
+  @item @code{cell_cell}       @tab time for cell update cell computation
+  @item @code{cell_other}      @tab time for cell update others
+  @item @code{cell_total}      @tab total time for cell update
+  @item @code{val}             @tab time for (objective function) value update
+  @item @code{val_init}        @tab time for (objective function) value update / initialization
+  @item @code{val_penalty}     @tab time for (objective function) value update / penalty computation
+  @item @code{val_val}         @tab time for (objective function) value update / value computation
+  @item @code{val_val_cellval} @tab time for (objective function) value update / value computation / cell values
+  @item @code{val_val_comp}    @tab time for (objective function) value update / value computation / computation
+  @item @code{val_comp}        @tab time for (objective function) value update / computation
+  @item @code{total}           @tab total time
+  @item @code{cumtotal}        @tab cumulative total time
 @end multitable
 
 @need 1200

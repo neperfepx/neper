@@ -33,7 +33,7 @@ nem_mesh_gmsh_options (FILE * file, int algo2d, int algo3d, int opti,
   return;
 }
 
-void
+int
 nem_mesh_2d_gmsh_writenodes (struct TESS Tess, struct NODES Nodes,
 			     struct MESH *Mesh, int face, double *face_proj,
 			     FILE * file)
@@ -64,7 +64,7 @@ nem_mesh_2d_gmsh_writenodes (struct TESS Tess, struct NODES Nodes,
   ut_free_1d_int (nodes);
   ut_free_1d (coo);
 
-  return;
+  return nodeqty;
 }
 
 void

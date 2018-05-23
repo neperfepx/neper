@@ -18,6 +18,7 @@
 #include"net_domain_cube/net_domain_cube.h"
 #include "../net_tess/net_tess3d/net_polycomp/net_polycomp_poly/net_polycomp_poly.h"
 
+extern void net_domain_stdtriangle_planes (int, double **);
 extern void net_domain_cylinder_planes (double, double, int, double **);
 extern void net_domain_sphere_planes (double rad, int qty, double **eq);
 extern void net_domain_rodrigues (struct POLY *pDomain, char *crysym);

@@ -14,7 +14,7 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
   double val;
   struct TOPT *pTOpt = (struct TOPT *) data;
   char *message = ut_alloc_1d_char (1000);
-  struct timeval ini_time, seed_time, tess_time, obj_time, end_time;
+  struct timeval t1, t2, t3, t4, t5;
   char *fmin = ut_alloc_1d_char (1000);
   char *f = ut_alloc_1d_char (1000);
   (void) grad;
@@ -26,7 +26,7 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
   else
     strcpy (loopnotice, "");
 
-  gettimeofday (&ini_time, NULL);
+  gettimeofday (&t1, NULL);
 
   ((*pTOpt).iter)++;
 
@@ -55,7 +55,8 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
   }
 #endif
 
-  gettimeofday (&seed_time, NULL);
+  gettimeofday (&t2, NULL);
+
   net_tess_opt_comp_objective_x_seedset (x, pTOpt);
 
   if ((*pTOpt).tarqty > 0
@@ -63,17 +64,18 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
    && !strcmp ((*pTOpt).tarexpr[0], "seed"))
     net_tess_opt_comp_objective_centroidal_update (pTOpt);
 
-  gettimeofday (&tess_time, NULL);
+  gettimeofday (&t3, NULL);
+
   status = net_tess_opt_comp_objective_poly (pTOpt);
 
-  gettimeofday (&obj_time, NULL);
+  gettimeofday (&t4, NULL);
 
   if (status == 0)
     net_tess_opt_comp_objective_fval (pTOpt);
   else
     (*pTOpt).objval = 10;
 
-  gettimeofday (&end_time, NULL);
+  gettimeofday (&t5, NULL);
 
   // must be before neut_topt_[r]eps
   if (n > 0 && neut_topt_plateau (pTOpt))
@@ -173,18 +175,18 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
   if ((*pTOpt).tarqty > 0)
     ut_print_progress (stdout, 1, INT_MAX, message, (*pTOpt).message);
 
-  (*pTOpt).TDyn.var_dur = ut_time_subtract (&((*pTOpt).end_time), &ini_time);
-  (*pTOpt).TDyn.seed_dur = ut_time_subtract (&seed_time, &tess_time);
-  (*pTOpt).TDyn.val_dur = ut_time_subtract (&obj_time, &end_time);
-  (*pTOpt).TDyn.total_dur = ut_time_subtract (&(*pTOpt).end_time, &end_time);
+  (*pTOpt).TDyn.var_dur = ut_time_subtract (&((*pTOpt).end_time), &t1);
+  (*pTOpt).TDyn.seed_dur = ut_time_subtract (&t2, &t3);
+  (*pTOpt).TDyn.val_dur = ut_time_subtract (&t4, &t5);
+  (*pTOpt).TDyn.total_dur = ut_time_subtract (&(*pTOpt).end_time, &t5);
   (*pTOpt).TDyn.cumtotal_dur += (*pTOpt).TDyn.total_dur;
 
   net_tess_opt_comp_objective_log (*pTOpt);
 
   ut_free_1d_char (message);
 
-  // Setting end_time of the next iteration
-  gettimeofday (&((*pTOpt).end_time), NULL);
+  // Setting t5 of the next iteration
+  gettimeofday (&(*pTOpt).end_time, NULL);
 
 #ifdef DEVEL_DEBUGGING_TEST
   net_tess_opt_comp_objective_debugtest (*pTOpt);

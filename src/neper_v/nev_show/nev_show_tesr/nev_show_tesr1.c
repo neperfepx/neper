@@ -62,7 +62,7 @@ nev_show_tesr_cell (char **argv, int *pi, struct TESR Tesr,
     {
       for (j = 0; j < varqty; j++)
 	if (strstr (argv[(*pi)], vars[j]))
-	  neut_tesr_var_val (Tesr, entity, i, vars[j], &(vals[j]), NULL);
+	  neut_tesr_var_val (Tesr, entity, i, vars[j], vals + j, NULL, NULL);
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);
       if (status == 0)

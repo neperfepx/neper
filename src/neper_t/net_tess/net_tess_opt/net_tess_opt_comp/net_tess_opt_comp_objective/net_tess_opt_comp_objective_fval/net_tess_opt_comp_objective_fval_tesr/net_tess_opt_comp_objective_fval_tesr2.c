@@ -63,7 +63,7 @@ net_tess_opt_comp_objective_fval_tesr_dist (int *cells, int cellqty, struct TOPT
 void
 net_tess_opt_comp_objective_fval_tesr_cellval (int *cellcomped,
 					       int cellcompedqty,
-					       struct TOPT *pTOpt)
+					       struct TOPT *pTOpt, int var)
 {
   int i, j, cell;
 
@@ -71,29 +71,29 @@ net_tess_opt_comp_objective_fval_tesr_cellval (int *cellcomped,
   {
     cell = cellcomped[i];
 
-    (*pTOpt).curcellval[0][cell][0] = 0;
+    (*pTOpt).curcellval[var][cell][0] = 0;
 
     if (!strcmp ((*pTOpt).objective_tesrval, "bounddist"))
       for (j = 0; j < (*pTOpt).tarcellptqty[cell]; j++)
-	(*pTOpt).curcellval[0][cell][0] += (*pTOpt).tarcellptweights[cell][j]
+	(*pTOpt).curcellval[var][cell][0] += (*pTOpt).tarcellptweights[cell][j]
 	                                 * pow ((*pTOpt).tarcellptsdist[cell][j], 2);
 
     else if (!strcmp ((*pTOpt).objective_tesrval, "intervol"))
       for (j = 0; j < (*pTOpt).tarcellptqty[cell]; j++)
-	(*pTOpt).curcellval[0][cell][0] += (*pTOpt).tarcellptweights[cell][j]
+	(*pTOpt).curcellval[var][cell][0] += (*pTOpt).tarcellptweights[cell][j]
 	                                 * (*pTOpt).tarcellptsdist[cell][j];
 
     else
       abort ();
 
-    (*pTOpt).curcellval[0][cell][0] *= (*pTOpt).tarcellfact[cell];
+    (*pTOpt).curcellval[var][cell][0] *= (*pTOpt).tarcellfact[cell];
   }
 
   return;
 }
 
 void
-net_tess_opt_comp_objective_fval_tesr_obj (struct TOPT *pTOpt)
+net_tess_opt_comp_objective_fval_tesr_obj (struct TOPT *pTOpt, int var)
 {
   int i;
   double val, lv, size, avdiameq;
@@ -105,10 +105,10 @@ net_tess_opt_comp_objective_fval_tesr_obj (struct TOPT *pTOpt)
     val = 0;
     for (i = 1; i <= (*pTOpt).CellQty; ++i)
       if ((*pTOpt).curcellpenalty[i] == 0)
-	val += (*pTOpt).curcellval[0][i][0];
+	val += (*pTOpt).curcellval[var][i][0];
       else
 	val += 1000 * (*pTOpt).curcellpenalty[i];
-    val = 2 / ((*pTOpt).tarptqtyini * avdiameq) * sqrt (val);
+    val = 2 / ((*pTOpt).tavoxqtyini * avdiameq) * sqrt (val);
   }
 
   else if (!strcmp ((*pTOpt).objective_tesrval, "intervol"))
@@ -119,7 +119,7 @@ net_tess_opt_comp_objective_fval_tesr_obj (struct TOPT *pTOpt)
     val = 0;
     for (i = 1; i <= (*pTOpt).CellQty; ++i)
       if ((*pTOpt).curcellpenalty[i] == 0)
-	val += (*pTOpt).curcellval[0][i][0];
+	val += (*pTOpt).curcellval[var][i][0];
       else
 	val += 1000 * (*pTOpt).curcellpenalty[i];
     val = pow (lv, (*pTOpt).Dim - 1) / size * val;
@@ -128,24 +128,7 @@ net_tess_opt_comp_objective_fval_tesr_obj (struct TOPT *pTOpt)
   else
     abort ();
 
-  (*pTOpt).curval[0] = val;
-
-  return;
-}
-
-void
-net_tess_opt_comp_objective_fval_tesr_post (struct TOPT *pTOpt)
-{
-  // comp / global computation
-
-  (*pTOpt).objval = (*pTOpt).curval[0];
-
-  (*pTOpt).objvalmin = ut_realloc_1d ((*pTOpt).objvalmin, (*pTOpt).iter + 1);
-  (*pTOpt).objvalmin[(*pTOpt).iter]
-    = ((*pTOpt).iter == 1) ? DBL_MAX : (*pTOpt).objvalmin[(*pTOpt).iter - 1];
-
-  (*pTOpt).objvalmin[(*pTOpt).iter]
-    = ut_num_min ((*pTOpt).objvalmin[(*pTOpt).iter], (*pTOpt).objval);
+  (*pTOpt).curval[var] = val;
 
   return;
 }

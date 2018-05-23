@@ -37,6 +37,10 @@ extern "C"
     int ***VoxCell;		// VoxPoly[i][j][k]: cell of point at
     // position i, j, k, with i in [1...size[0]],
     // j in [1...size[1]] and k in [1...size[2]]
+
+    double ****VoxOri;		// VoxOri[i][j][k]: ori of point at
+    // position i, j, k, with i in [1...size[0]],
+    // j in [1...size[1]] and k in [1...size[2]]
   };
   typedef struct TESR TESR;
 

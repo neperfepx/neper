@@ -84,6 +84,11 @@ nev_print_point (FILE * file, struct POINT Point, struct POINTDATA PointData,
 	  start = 2;
 	  length = 3;
 	}
+	else if (!strcmp (PointData.RadDataType, "arr"))
+	{
+	  start = 2;
+	  length = 3;
+	}
 	else if (!strcmp (PointData.RadDataType, "tor"))
 	{
 	  start = 2;
@@ -120,6 +125,8 @@ nev_print_point (FILE * file, struct POINT Point, struct POINTDATA PointData,
 	  nev_print_cube (file, PointData.Coo[i], data, texture);
 	else if (!strcmp (PointData.RadDataType, "cyl"))
 	  nev_print_cyl (file, PointData.Coo[i], data, texture);
+	else if (!strcmp (PointData.RadDataType, "arr"))
+	  nev_print_arr (file, PointData.Coo[i], data, texture);
 	else if (!strcmp (PointData.RadDataType, "tor"))
 	  nev_print_tor (file, PointData.Coo[i], data, texture);
 	else if (!strcmp (PointData.RadDataType, "disc"))

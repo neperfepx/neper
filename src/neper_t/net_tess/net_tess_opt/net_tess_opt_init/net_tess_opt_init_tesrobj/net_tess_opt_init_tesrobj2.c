@@ -91,7 +91,7 @@ net_tess_opt_init_tesrobj_region (char *region, struct TOPT *pTOpt)
 
   (*pTOpt).tarcellptqty[0] = ut_array_1d_int_sum ((*pTOpt).tarcellptqty + 1,
 						  (*pTOpt).tartesr.CellQty);
-  (*pTOpt).tarptqtyini = (*pTOpt).tarcellptqty[0];
+  (*pTOpt).tavoxqtyini = (*pTOpt).tarcellptqty[0];
 
   ut_free_1d_char (message);
 

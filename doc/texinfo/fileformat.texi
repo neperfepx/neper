@@ -435,9 +435,10 @@ and
 @file{neut/neut_tesr/neut_tesr_fprintf}.
 Compared to a tessellation file (@file{.tess}), a raster tessellation
 file can include cell morphological properties such as their centroids
-or volumes.  This is due to the fact that, for a raster tessellation,
-   these properties are both in small number and relatively expensive to
-   compute.
+or volumes.  This is motivated by the fact that, for a raster tessellation,
+these properties are both in small number and relatively expensive to
+compute, and so are stored once known.  Square brackets (@code{[ ]}) denote
+optional fields.
 
 @sp 1
 @code{
@@ -447,7 +448,7 @@ or volumes.  This is due to the fact that, for a raster tessellation,
 @  **general                                                         	@*
 @ @ @  @var{dimension}                                               	@*
 @ @ @  @var{size_x} @var{size_y} [@var{size_z}]                        	@*
-@ @ @  @var{rptsize_x} @var{rptsize_y} [@var{rptsize_z}]             	@*
+@ @ @  @var{voxsize_x} @var{voxsize_y} [@var{voxsize_z}]             	@*
 [**cell                                                              	@*
 @ @ @  @var{number_of_cells}                                            @*
 @ [*id                                                               	@*
@@ -474,9 +475,15 @@ or volumes.  This is due to the fact that, for a raster tessellation,
 @ @ @  ... ]                                                            @*
 @ @  ]	                                                            	@*
 @  **data                                                            	@*
-@ @ @  @var{rpt1_cell} @var{rpt2_cell} ...                           	@*
+@ @ @  @var{vox1_cell} @var{vox2_cell} ...                           	@*
 @ @emph{or}                                                          	@*
 @ @ *file @var{data_file_name}                                       	@*
+[**oridata                                                              @*
+@ @ @ @var{descriptor}                                                  @*
+@ @ @ @var{vox1_param1} @var{vox1_param2} ...                      	@*
+@ @ @ @var{vox2_param1} @var{vox2_param2} ...                     	@*
+@ @emph{or}                                                          	@*
+@ @ *file @var{oridata_file_name}]                                      @*
 ***end                                                               	@*
 }
 
@@ -509,8 +516,8 @@ It can be either
 the raster sizes along the 3 coordinate axes. The number of sizes must
 match @var{dimension}.
 
-@item @code{@var{rptsize_x}}, @code{@var{rptsize_y}} and
-@code{@var{rptsize_z}} are the point sizes along the 3 coordinate axes.
+@item @code{@var{voxsize_x}}, @code{@var{voxsize_y}} and
+@code{@var{voxsize_z}} are the voxel (pixel@comma{} in 2D) sizes along the 3 coordinate axes.
 The number of sizes must match @var{dimension}.
 
 @item @code{**cell} denotes the beginning of an optional cell field.
@@ -567,14 +574,29 @@ field.
 provided in the @file{.tesr} file or in a separate file, using
 @option{*file}, see below.
 
-@item @code{@var{rptid_cell}} is the cell raster point @code{@var{id}}
-belongs to.  The cell identifiers should start from 1. Use 0 for
-voids.
+@item @code{@var{voxid_cell}} is the cell voxel @code{@var{id}} belongs
+to.  Voxels must be listed in column-major order (x varying first, y
+varying second and z varying last).  The cell identifiers should start from 1.
+Use 0 for voids.
 
 @item @code{*file} denotes the beginning of a file field.
 
 @item @code{data_file_name} is the name of a file that contains the
 data. Typically, it is a @file{.raw} file.
+
+@item @code{**oridata} denotes the beginning of the orientation data field.  Data can be
+provided in the @file{.tesr} file or in a separate file, using
+@option{*file}, see below.
+
+@item @code{@var{voxid_param1}}, @code{@var{voxid_param2}}, @dots{} are
+the values of the orientation descriptor of voxel @var{id}.
+Orientations must be listed in column-major order (x varying first, y
+varying second and z varying last).
+Arbitrary orientations can be used for void voxels (@code{@var{voxid_cell} = 0}).
+These data must be written in ASCII format.
+
+@item @code{oridata_file_name} is the name of a file that contains the
+orientation data. Typically, it is a @file{.raw} file.
 
 @end itemize
 

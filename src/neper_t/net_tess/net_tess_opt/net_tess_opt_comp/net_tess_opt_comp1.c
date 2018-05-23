@@ -9,7 +9,6 @@ net_tess_opt_comp (struct TOPT *pTOpt)
 {
   double *x = NULL;
   int res = -1;
-  (void) res;
 
   neut_tdyn_fprintf_pre (&((*pTOpt).TDyn));
 

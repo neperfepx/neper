@@ -7,13 +7,17 @@
 void
 neut_tesr_fscanf (FILE * file, int *bounds, double *scale, struct TESR *pTesr)
 {
-  char *format = NULL;
+  char *format = NULL, string[1000];
 
   neut_tesr_free (pTesr);
 
   neut_tesr_fscanf_head (pTesr, bounds, &format, file);
   neut_tesr_fscanf_cell (pTesr, file);
   neut_tesr_fscanf_data (pTesr, bounds, scale, format, file);
+
+  ut_file_nextstring (file, string);
+  if (!strcmp (string, "**oridata"))
+    neut_tesr_fscanf_oridata (pTesr, bounds, scale, format, file);
   neut_tesr_fscanf_foot (file);
 
   neut_tesr_init_cellbbox (pTesr);

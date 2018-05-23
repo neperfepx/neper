@@ -124,6 +124,9 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
       strcpy (vars[0], "vol");
       vals[0] = M_PI * d * d * h / 4;
 
+      if (!strcmp (In.n[1], "from_morpho"))
+        ut_print_messagewnc (2, 72, "The number of facets must be specified in `-morpho cylinder' when using `-n from_morpho'.");
+
       ut_math_eval (In.n[1], 1, vars, vals, &res);
       res = ut_num_max (res, 1);
 
@@ -133,7 +136,7 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
       rcl2cl (1, 3, M_PI * d * d * h / 4, ut_num_d2ri (res), NULL, &cl);
 
       qty = (int) floor (M_PI * d / cl);
-      qty = ut_num_max_int (qty, 5);
+      qty = ut_num_max_int (qty, 12);
     }
     qty += 2;
 
@@ -148,6 +151,28 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
     }
 
     net_domain_cylinder_planes (h, d / 2, qty - 2, eq);
+    net_domain_clip (&Poly, eq, qty);
+    neut_poly_centroid (Poly, coo);
+    ut_free_2d (eq, qty);
+  }
+  else if (!strcmp (domtype, "stdtriangle"))
+  {
+    qty = 10;
+    if (ut_string_nbwords (tmp) == 2)
+    {
+      if (sscanf (tmp, "%*s%s", sizestring[0]) != 1)
+        ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
+
+      ut_string_int (sizestring[0], &qty);
+    }
+    pseudodim = 2;
+    pseudosize = 1e-6;
+
+    qty += 4;
+
+    double **eq = ut_alloc_2d (qty, 4);
+
+    net_domain_stdtriangle_planes (qty - 4, eq);
     net_domain_clip (&Poly, eq, qty);
     neut_poly_centroid (Poly, coo);
     ut_free_2d (eq, qty);

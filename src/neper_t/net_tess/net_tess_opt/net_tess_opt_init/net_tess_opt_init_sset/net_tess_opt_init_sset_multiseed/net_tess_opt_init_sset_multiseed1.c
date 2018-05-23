@@ -34,7 +34,7 @@ net_tess_opt_init_sset_multiseed (struct IN_T In, int level, struct TOPT TOpt, c
     {
       if (!strcmp (var, "tesr"))
 	neut_tesr_expr_val_int (TOpt.tartesr, "cell", i,
-				In.morphooptimultiseed[level], qty + i, NULL);
+				In.morphooptimultiseed[level], qty + i, NULL, NULL);
 
       else
       {

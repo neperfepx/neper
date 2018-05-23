@@ -2282,3 +2282,20 @@ neut_mesh_elset_elt_insidefacets (struct MESH Mesh1D,
 
   return 0;
 }
+
+void
+neut_mesh_nodeqty (struct MESH Mesh, int *pnodeqty)
+{
+  int i;
+  int eltnodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder);
+  int *nodes = ut_alloc_1d_int (Mesh.EltQty * eltnodeqty);
+
+  (*pnodeqty) = Mesh.EltQty * eltnodeqty;
+  for (i = 1; i <= Mesh.EltQty; i++)
+    ut_array_1d_int_memcpy (nodes + (i - 1) * eltnodeqty, eltnodeqty, Mesh.EltNodes[i]);
+  ut_array_1d_int_sort_uniq (nodes, *pnodeqty, pnodeqty);
+
+  ut_free_1d_int (nodes);
+
+  return;
+}

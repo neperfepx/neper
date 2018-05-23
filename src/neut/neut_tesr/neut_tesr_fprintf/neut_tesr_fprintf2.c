@@ -24,7 +24,17 @@ void
 neut_tesr_fprintf_data (FILE * file, char *format, struct TESR Tesr)
 {
   fprintf (file, " **data\n");
-  neut_tesr_fprintf_raw (file, format, Tesr);
+  neut_tesr_fprintf_data_noheader (file, format, Tesr);
+
+  return;
+}
+
+void
+neut_tesr_fprintf_oridata (FILE * file, char *des, char *format, struct TESR Tesr)
+{
+  fprintf (file, "\n**oridata\n");
+  fprintf (file, "   %s\n", des);
+  neut_tesr_fprintf_oridata_noheader (file, des, format, Tesr);
 
   return;
 }
@@ -107,14 +117,30 @@ neut_tesr_fprintf_data_raw (FILE * file, char *rawname, char *format,
   fprintf (file, "  *file %s", rawname);
 
   FILE *file2 = ut_file_open (rawname, "w");
-  neut_tesr_fprintf_raw (file2, format, Tesr);
+  neut_tesr_fprintf_data_noheader (file2, format, Tesr);
   ut_file_close (file2, rawname, "w");
 
   return;
 }
 
 void
-neut_tesr_fprintf_raw (FILE * file, char *format, struct TESR Tesr)
+neut_tesr_fprintf_oridata_raw (FILE * file, char *rawname, char *des, char *format,
+			       struct TESR Tesr)
+{
+  fprintf (file, " **oridata\n");
+  fprintf (file, "   %s\n", des);
+  fprintf (file, "  *file %s", rawname);
+
+  FILE *file2 = ut_file_open (rawname, "w");
+  neut_tesr_fprintf_oridata_noheader (file2, des, format, Tesr);
+  ut_file_close (file2, rawname, "w");
+
+  return;
+}
+
+
+void
+neut_tesr_fprintf_data_noheader (FILE * file, char *format, struct TESR Tesr)
 {
   int i, j, k, count;
   int *size = ut_alloc_1d_int (3);
@@ -220,6 +246,23 @@ neut_tesr_fprintf_raw (FILE * file, char *format, struct TESR Tesr)
 
   // ut_free_1d_char (progress);
   ut_free_1d_int (size);
+
+  return;
+}
+
+void
+neut_tesr_fprintf_oridata_noheader (FILE * file, char *des, char *format, struct TESR Tesr)
+{
+  int i, j, k;
+
+  if (!strcmp (des, "q") && !strcmp (format, "ascii"))
+    for (k = 1; k <= Tesr.size[2]; k++)
+      for (j = 1; j <= Tesr.size[1]; j++)
+	for (i = 1; i <= Tesr.size[0]; i++)
+	  ut_array_1d_fprintf (file, Tesr.VoxOri[i][j][k], 4, "%.12f");
+
+  else
+    abort ();
 
   return;
 }

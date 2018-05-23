@@ -102,6 +102,7 @@ net_in_set_zero (struct IN_T *pIn)
 
   (*pIn).sortstring = NULL;
   (*pIn).stpt = NULL;
+  (*pIn).stvox = NULL;
 
   return;
 }
@@ -426,19 +427,15 @@ net_poly_centroid (struct POLY Poly, double *coo)
 }
 
 void
-net_tess_tesr (struct IN_T In, struct TESS Tess, TESR * pTesr)
+net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
 {
-  int i, j, k, ii, jj, kk, qty;
-  int pid, prevpid;
-  char *progress = ut_alloc_1d_char (100);
-  int *pos = ut_alloc_1d_int (3);
-  double *coo = ut_alloc_1d (3);
-  double *coo_per = ut_alloc_1d (3);
+  int i;
 
-  (*pTesr).Dim = In.dim;
-  neut_tesr_init_tesrsize (pTesr, Tess, In.dim, In.tesrsizestring);
+  (*pTesr).Dim = Tess.Dim;
+  neut_tesr_init_tesrsize (pTesr, Tess, Tess.Dim, tesrsizestring);
   neut_tesr_alloc (pTesr, Tess.Dim, (*pTesr).size, (*pTesr).vsize);
   (*pTesr).CellQty = Tess.CellQty;
+  (*pTesr).CellBBox = ut_alloc_3d_int ((*pTesr).CellQty + 1, 3, 2);
 
   if (Tess.CellId)
   {
@@ -459,70 +456,9 @@ net_tess_tesr (struct IN_T In, struct TESS Tess, TESR * pTesr)
 			Tess.CellOri + 1);
   }
 
-  ut_print_progress (stdout, 0,
-		     (*pTesr).size[0] * (*pTesr).size[1] * (*pTesr).size[2],
-		     "%3.0f%%", progress);
-  prevpid = 1;
-  qty = 0;
-  for (k = 1; k <= (*pTesr).size[2]; k++)
-    for (j = 1; j <= (*pTesr).size[1]; j++)
-      for (i = 1; i <= (*pTesr).size[0]; i++)
-      {
-	qty++;
-
-	ut_array_1d_int_set_3 (pos, i, j, k);
-	neut_tesr_pos_coo (*pTesr, pos, coo);
-
-	if (neut_tess_point_incell (Tess, coo, prevpid) == 1)
-	  (*pTesr).VoxCell[i][j][k] = prevpid;
-	else
-	{
-	  for (pid = 1; pid <= Tess.CellQty; pid++)
-	  {
-	    if (pid == prevpid)
-	      continue;
-
-	    if (neut_tess_point_incell (Tess, coo, pid) == 1)
-	    {
-	      (*pTesr).VoxCell[i][j][k] = pid;
-	      prevpid = pid;
-	      break;
-	    }
-	  }
-	}
-
-	if ((*pTesr).VoxCell[i][j][k] == 0 && !strncmp (Tess.Type, "periodic", 8))
-	  for (kk = -Tess.Periodic[2]; kk <= Tess.Periodic[2] && (*pTesr).VoxCell[i][j][k] == 0; kk++)
-	    for (jj = -Tess.Periodic[1]; jj <= Tess.Periodic[1] && (*pTesr).VoxCell[i][j][k] == 0; jj++)
-	      for (ii = -Tess.Periodic[0]; ii <= Tess.Periodic[0] && (*pTesr).VoxCell[i][j][k] == 0; ii++)
-	      {
-		if (kk == 0 && jj == 0 && ii == 0)
-		  continue;
-
-		coo_per[0] = coo[0] + Tess.PeriodicDist[0] * ii;
-		coo_per[1] = coo[1] + Tess.PeriodicDist[1] * jj;
-		coo_per[2] = coo[2] + Tess.PeriodicDist[2] * kk;
-
-		for (pid = 1; pid <= Tess.CellQty; pid++)
-		  if (neut_tess_point_incell (Tess, coo_per, pid) == 1)
-		  {
-		    (*pTesr).VoxCell[i][j][k] = pid;
-		    prevpid = pid;
-		    break;
-		  }
-	      }
-
-	ut_print_progress (stdout, qty,
-			   (*pTesr).size[0] * (*pTesr).size[1] *
-			   (*pTesr).size[2], "%3.0f%%", progress);
-      }
-
-  neut_tesr_init_cellbbox (pTesr);
-
-  ut_free_1d_char (progress);
-  ut_free_1d_int (pos);
-  ut_free_1d (coo);
-  ut_free_1d (coo_per);
+#pragma omp parallel for schedule(dynamic)
+  for (i = 1; i <= Tess.CellQty; i++)
+    net_tess_tesr_cell (Tess, i, pTesr);
 
   return;
 }
@@ -821,7 +757,7 @@ net_pts_convexhull (double **coos, int qty, int dim, struct NODES *pN, struct ME
   net_poly_tess (DomPoly, coo, &Dom);
   ut_string_string ("cube", &Dom.DomType);
 
-  net_tess3d (Dom, 1, SSet, "ann", 1, NULL, &Tess);
+  net_tess3d (Dom, 1, SSet, "nanoflann", 1, NULL, &Tess);
   neut_tess_init_domain_poly (&Tess, Dom, 1, NULL, NULL, NULL);
   if (dim == 2)
   {

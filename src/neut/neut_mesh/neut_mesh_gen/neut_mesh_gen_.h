@@ -7,6 +7,7 @@
 #include<string.h>
 #include"neut.h"
 #include"float.h"
+#include"orilib.h"
 
 extern int neut_mesh3d_elt_slice_tri (struct NODES Nodes, struct MESH
 				      Mesh, int elt, double *eq,

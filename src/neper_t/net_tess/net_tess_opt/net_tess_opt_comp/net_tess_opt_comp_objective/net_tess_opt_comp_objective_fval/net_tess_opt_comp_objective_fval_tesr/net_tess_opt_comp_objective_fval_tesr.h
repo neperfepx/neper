@@ -4,4 +4,4 @@
 
 #include"structIn_t.h"
 
-extern void net_tess_opt_comp_objective_fval_tesr (struct TOPT *pTOpt);
+extern void net_tess_opt_comp_objective_fval_tesr (struct TOPT *pTOpt, int var);

@@ -17,6 +17,7 @@ nev_tesrdata_init (struct TESR Tesr, struct TESRDATA *pTesrData)
 
   if ((*pTesrData).ColData)
   {
+    ut_print_message (0, 1, "Computing colours...\n");
     if (!strcmp ((*pTesrData).ColDataType, "id"))
       nev_data_id_colour ((*pTesrData).ColData, Qty, (*pTesrData).Col);
     else if (!strcmp ((*pTesrData).ColDataType, "col"))
@@ -34,7 +35,10 @@ nev_tesrdata_init (struct TESR Tesr, struct TESRDATA *pTesrData)
   }
 
   if ((*pTesrData).trsdata)
+  {
+    ut_print_message (0, 1, "Computing transparency...\n");
     nev_data_tr_tr ((*pTesrData).trsdata, Qty, (*pTesrData).trs);
+  }
 
   if ((*pTesrData).BRad < 0)
   {
@@ -75,13 +79,17 @@ nev_tesrdata_fscanf (struct TESR Tesr, char *entity, char *type,
     pTD = &TesrDataCell;
   }
 
-  if (strcmp (entity, "rptedge") != 0)
+  if (!strcmp (entity, "cell") != 0)
+  {
     nev_tesrdata_fscanf_cell (Tesr, pTD, type, argument);
+    nev_tesrdata_cell2vox (Tesr, type, TesrDataCell, pTesrData);
+  }
+  else if (!strcmp (entity, "vox") != 0)
+    nev_tesrdata_fscanf_vox (Tesr, pTD, type, argument);
+  else if (!strcmp (entity, "voxedge") != 0)
+    nev_tesrdata_fscanf_voxedge (pTD, type, argument);
   else
-    nev_tesrdata_fscanf_rptb (pTD, type, argument);
-
-  if (cell)
-    nev_tesrdata_cell2rpt (Tesr, type, TesrDataCell, pTesrData);
+    abort ();
 
   return;
 }

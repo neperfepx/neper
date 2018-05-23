@@ -44,7 +44,7 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
   else if (!strcmp (var, "tesr"))
     for (i = 1; i <= TOpt.CellQty; i++)
     {
-      neut_tesr_expr_val (TOpt.tartesr, "cell", i, weightexpr, rad + i, NULL);
+      neut_tesr_expr_val (TOpt.tartesr, "cell", i, weightexpr, rad + i, NULL, NULL);
       ut_print_progress (stdout, i, TOpt.CellQty, "%.0f%%", prev);
     }
 
@@ -64,7 +64,7 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
       ut_array_1d_set (radeq + 1, TOpt.CellQty, 0);
     else if (!strcmp (var, "size") || !strcmp (var, "diameq"))
       net_tess_opt_init_sset_weight_stat_radeq (pos, var, TOpt, radeq);
-    else if (!strcmp (var, "centroid"))
+    else if (!strcmp (var, "centroid") || !strcmp (var, "centroidtol"))
       ut_array_1d_set (radeq + 1, TOpt.CellQty, vals[0]);
     else if (!strcmp (var, "centroiddiameq"))
       for (i = 1; i <= TOpt.CellQty; i++)
@@ -77,7 +77,12 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
     {
       vals[2] = radeq[i];
       vals[3] = 2 * radeq[i];
-      ut_math_eval (weightexpr, varqty, vars, vals, rad + i);
+      int status = ut_math_eval (weightexpr, varqty, vars, vals, rad + i);
+      if (status != 0)
+      {
+        printf ("\n");
+        ut_print_message (2, 4, "Failed to process expression `%s'.\n", weightexpr);
+      }
     }
   }
 

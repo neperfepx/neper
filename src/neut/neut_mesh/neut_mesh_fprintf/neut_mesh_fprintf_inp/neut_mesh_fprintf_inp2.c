@@ -1,8 +1,33 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 1003-1018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_inp_.h"
+
+void
+neut_mesh_fprintf_inp_mesh1d (FILE *file, struct MESH Mesh1D,
+			      int shift_elt, int dim)
+{
+  int i, j;
+  int eltnodeqty1D = neut_elt_nodeqty (Mesh1D.EltType, Mesh1D.Dimension, Mesh1D.EltOrder);
+  int seq1d[6] = { 0, 1, 2};
+  (void) dim;
+
+  fprintf (file, "*Element, type=");
+  fprintf (file, "T%dD%d\n", dim, eltnodeqty1D);
+
+  for (i = 1; i <= Mesh1D.EltQty; i++)
+  {
+    fprintf (file, "%d, ", i + shift_elt);
+    for (j = 0; j < eltnodeqty1D - 1; j++)
+      fprintf (file, "%d, ", Mesh1D.EltNodes[i][seq1d[j]]);
+    fprintf (file, "%d\n", Mesh1D.EltNodes[i][seq1d[eltnodeqty1D - 1]]);
+  }
+
+  fprintf (file, "\n");
+
+  return;
+}
 
 void
 neut_mesh_fprintf_inp_mesh2d (FILE *file, struct MESH Mesh2D,
@@ -35,7 +60,7 @@ neut_mesh_fprintf_inp_mesh2d (FILE *file, struct MESH Mesh2D,
     if (Mesh2D.EltOrder == 1)
     {
       if (!type || !strcmp (type, "standard"))
-	fprintf (file, "C2D4\n");
+	fprintf (file, "CPE4\n");
       else if (!strcmp (type, "cohesive"))
 	fprintf (file, "COH2D4\n");
       else
@@ -54,7 +79,7 @@ neut_mesh_fprintf_inp_mesh2d (FILE *file, struct MESH Mesh2D,
     else
     {
       if (!type || !strcmp (type, "standard"))
-	fprintf (file, "C2D8\n");
+	fprintf (file, "CPE8\n");
       else if (!strcmp (type, "cohesive"))
 	fprintf (file, "COH2D8\n");
       else

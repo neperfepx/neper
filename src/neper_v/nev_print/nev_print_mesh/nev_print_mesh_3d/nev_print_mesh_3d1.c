@@ -30,9 +30,11 @@ nev_print_mesh_3d (FILE * file, struct PRINT Print, struct NODES Nodes,
 
   ut_print_message (0, 3, "Reducing data...\n");
 
+  ut_print_message (0, 4, "3D...\n");
   nev_print_mesh_3d_compress (Print, Nodes, Mesh[3],
 			      &N, &M2D, pprintelt3dface, &elt2delt3d,
 			      &nodes_new_old);
+  ut_print_message (0, 4, "2D...\n");
   nev_print_mesh_2d_compress (M2D, NULL, &M1D);
 
   ut_print_message (0, 4,

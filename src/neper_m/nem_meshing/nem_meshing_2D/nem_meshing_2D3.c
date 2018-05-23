@@ -25,11 +25,11 @@ nem_meshing_2D_face_algo (struct IN_M In, struct MESHPARA MeshPara,
   strcpy (vars[0], "Odis");
   strcpy (vars[1], "Osize");
 
+  face_eq = MeshPara.face_eq ? MeshPara.face_eq[face] : NULL;
   /* mesh (iterate if meshing fails) */
   for (iter = 0; iter < In.mesh2diter; iter++)
   {
     rnd = iter * 1.e-5;
-    face_eq = MeshPara.face_eq ? MeshPara.face_eq[face] : NULL;
 
     status = nem_mesh_2d_gmsh (Tess, face, face_eq,
 			       Nodes, Mesh, MeshPara.face_cl[face],
@@ -40,7 +40,9 @@ nem_meshing_2D_face_algo (struct IN_M In, struct MESHPARA MeshPara,
 
     if (status == 0)		// success
     {
+#pragma omp critical
       (*pmax_elapsed_t) = ut_num_max ((*pmax_elapsed_t), *pelapsed_t);
+#pragma omp critical
       (*pallowed_t) =
 	ut_num_min (In.mesh2dmaxtime, In.mesh2drmaxtime * (*pmax_elapsed_t));
       break;
@@ -95,24 +97,6 @@ nem_meshing_2D_face_algo (struct IN_M In, struct MESHPARA MeshPara,
 
   ut_free_2d_char (vars, var_qty);
   ut_free_1d (vals);
-
-  return;
-}
-
-void
-nem_meshing_2D_face_record (struct TESS Tess, int face, struct NODES N,
-			    struct MESH M, int *master_id,
-			    struct NODES *pNodes,
-			    struct MESH *Mesh, struct MESHPARA MeshPara)
-{
-  int *node_nbs = NULL;
-
-  nem_meshing_2D_face_record_nodes (Tess, face, N, M, master_id,
-				    &node_nbs, pNodes, Mesh, MeshPara);
-
-  nem_meshing_2D_face_record_elts (face, M, node_nbs, Mesh);
-
-  ut_free_1d_int (node_nbs);
 
   return;
 }

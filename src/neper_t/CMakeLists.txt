@@ -5,6 +5,14 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper_t)
 
+# for nanoflann =======
+if (CMAKE_VERSION VERSION_LESS "3.1")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+else ()
+    set (CMAKE_CXX_STANDARD 11)
+endif ()
+add_definitions(-Wno-deprecated-declarations)
+
 option (HAVE_GSL         "Use the GNU Scientific Library (GSL)" ON )
 option (HAVE_NLOPT       "Use NLopt"                            ON )
 option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
@@ -15,8 +23,6 @@ option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for product
 option (DEVEL_PROFILING   "Enable profiling (OFF for production use)" OFF)
 
 include_directories("${PROJECT_BINARY_DIR}")
-include_directories("${PROJECT_BINARY_DIR}/contrib/ann")
-include_directories("${PROJECT_SOURCE_DIR}/contrib/ann")
 
 add_definitions(-Wall -W)
 if (DEVEL_OPTIMIZATION)
@@ -49,6 +55,7 @@ add_library (neper_t
 ./net_sort/net_sort1.c
 ./net_sort/net_sort2.c
 ./net_utils/net_utils1.c
+./net_utils/net_utils2.c
 ./net_utils/net_polymod_poly/net_polymod_poly1.c
 ./net_utils/net_polymod_poly/net_polymod_poly2.c
 ./net_utils/net_polymod_poly/net_polymod_poly3.c
@@ -62,10 +69,10 @@ add_library (neper_t
 ./net_tess/net_tess_lam//net_tess_lam_seed/net_tess_lam_seed2.c
 ./net_tess/net_tess_lam//net_tess_lam_seed/net_tess_lam_seed3.c
 ./net_tess/net_tess_lam//net_tess_lam_seed/net_tess_lam_seed4.c
-./net_tess/net_tess_opt/net_tess_opt1.c
-./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init1.c
-./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init2.c
-./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init3.c
+./net_tess/net_tess_opt/net_tess_opt1.cpp
+./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init1.cpp
+./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init2.cpp
+./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init3.cpp
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_tesrobj/net_tess_opt_init_tesrobj1.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_tesrobj/net_tess_opt_init_tesrobj2.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_tesrobj/net_tess_opt_init_tesrobj3.c
@@ -80,6 +87,7 @@ add_library (neper_t
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_multiseed/net_tess_opt_init_sset_multiseed1.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_coo/net_tess_opt_init_sset_coo1.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_coo/net_tess_opt_init_sset_coo2.c
+./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_coo/net_tess_opt_init_sset_coo3.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp1.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp2.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp3.c
@@ -94,13 +102,14 @@ add_library (neper_t
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_tesr/net_tess_opt_comp_objective_fval_tesr2.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_cellpenalty/net_tess_opt_comp_objective_fval_cellpenalty1.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_cellpenalty/net_tess_opt_comp_objective_fval_cellpenalty1.c
-./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_cellval/net_tess_opt_comp_objective_fval_cellval1.c
-./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_cellval/net_tess_opt_comp_objective_fval_cellval2.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_gen/net_tess_opt_comp_objective_fval_gen1.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_gen/net_tess_opt_comp_objective_fval_gen2.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_comp/net_tess_opt_comp_objective_fval_comp1.c
-./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_comp/net_tess_opt_comp_objective_fval_comp_stat/net_tess_opt_comp_objective_fval_comp_stat1.c
-./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_comp/net_tess_opt_comp_objective_fval_comp_stat/net_tess_opt_comp_objective_fval_comp_stat2.c
-./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_comp/net_tess_opt_comp_objective_fval_comp_stat/net_tess_opt_comp_objective_fval_comp_stat3.c
-./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_comp/net_tess_opt_comp_objective_fval_comp_celldata/net_tess_opt_comp_objective_fval_comp_celldata1.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_gen/net_tess_opt_comp_objective_fval_gen_stat/net_tess_opt_comp_objective_fval_gen_stat1.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_gen/net_tess_opt_comp_objective_fval_gen_stat/net_tess_opt_comp_objective_fval_gen_stat2.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_gen/net_tess_opt_comp_objective_fval_gen_stat/net_tess_opt_comp_objective_fval_gen_stat3.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_gen/net_tess_opt_comp_objective_fval_gen_celldata/net_tess_opt_comp_objective_fval_gen_celldata1.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_fval/net_tess_opt_comp_objective_fval_gen/net_tess_opt_comp_objective_fval_gen_celldata/net_tess_opt_comp_objective_fval_gen_celldata2.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_log/net_tess_opt_comp_objective_log1.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_log/net_tess_opt_comp_objective_log2.c
 ./net_tess/net_tess_opt/net_tess_opt_post/net_tess_opt_post1.c
@@ -166,7 +175,6 @@ add_library (neper_t
 set (EXTRA_LIBS ${EXTRA_LIBS} ut)
 set (EXTRA_LIBS ${EXTRA_LIBS} neut)
 set (EXTRA_LIBS ${EXTRA_LIBS} orilib)
-set (EXTRA_LIBS ${EXTRA_LIBS} ann)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 

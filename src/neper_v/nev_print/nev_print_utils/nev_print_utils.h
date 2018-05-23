@@ -9,6 +9,7 @@ extern void nev_print_arrow (FILE *, double *, double *, char *, char *);
 
 extern void nev_print_cube (FILE *, double *, double *, char *);
 extern void nev_print_cyl (FILE *, double *, double *, char *);
+extern void nev_print_arr (FILE *, double *, double *, char *);
 extern void nev_print_tor (FILE *, double *, double *, char *);
 extern void nev_print_disc (FILE *, double *, double *, char *);
 extern void nev_print_sphere (FILE *, double *, char *, char *);

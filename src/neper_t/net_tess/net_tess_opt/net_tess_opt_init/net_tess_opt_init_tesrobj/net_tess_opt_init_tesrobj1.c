@@ -5,7 +5,7 @@
 #include "net_tess_opt_init_tesrobj_.h"
 
 void
-net_tess_opt_init_tesrobj (struct TOPT *pTOpt)
+net_tess_opt_init_tesrobj (struct TOPT *pTOpt, int var)
 {
   int i, j, partqty, fct_varqty = 0;
   char **parts = NULL;
@@ -15,13 +15,13 @@ net_tess_opt_init_tesrobj (struct TOPT *pTOpt)
 
   net_tess_opt_init_tesrobj_pre (pTOpt);
 
-  ut_string_separate ((*pTOpt).objective, NEUT_SEP_NODEP, &parts, &partqty);
+  ut_string_separate ((*pTOpt).tarobjective[var], "+", &parts, &partqty);
 
   for (i = 0; i < partqty; i++)
   {
     ut_string_function_separate (parts[i], &fct, &fct_vars, &fct_vals, &fct_varqty);
 
-    if (!strcmp (fct, "tesr"))
+    if (!strcmp (fct, "transform"))
     {
       for (j = 0; j < fct_varqty; j++)
       {

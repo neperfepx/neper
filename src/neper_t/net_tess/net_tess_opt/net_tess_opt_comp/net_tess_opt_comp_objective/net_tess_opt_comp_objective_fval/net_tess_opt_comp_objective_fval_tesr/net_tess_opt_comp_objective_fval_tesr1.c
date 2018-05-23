@@ -5,7 +5,7 @@
 #include "net_tess_opt_comp_objective_fval_tesr_.h"
 
 void
-net_tess_opt_comp_objective_fval_tesr (struct TOPT *pTOpt)
+net_tess_opt_comp_objective_fval_tesr (struct TOPT *pTOpt, int var)
 {
   int cellcompedqty = 0, *cellcomped = NULL;
 
@@ -13,11 +13,9 @@ net_tess_opt_comp_objective_fval_tesr (struct TOPT *pTOpt)
 
   net_tess_opt_comp_objective_fval_tesr_dist (cellcomped, cellcompedqty, pTOpt);
 
-  net_tess_opt_comp_objective_fval_tesr_cellval (cellcomped, cellcompedqty, pTOpt);
+  net_tess_opt_comp_objective_fval_tesr_cellval (cellcomped, cellcompedqty, pTOpt, var);
 
-  net_tess_opt_comp_objective_fval_tesr_obj (pTOpt);
-
-  net_tess_opt_comp_objective_fval_tesr_post (pTOpt);
+  net_tess_opt_comp_objective_fval_tesr_obj (pTOpt, var);
 
   ut_free_1d_int (cellcomped);
 

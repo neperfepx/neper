@@ -18,7 +18,7 @@ net_tess_lam (struct IN_T In, int level,
   net_tess_lam_seed (In, level, In.morpho[level], *pMTess, Tess, dtess, dcell,
 		     Dom, SSet, pSSet);
 
-  net_tess3d (Tess[dtess], dcell, *pSSet, "ann", TessId, pMTess, pTess);
+  net_tess3d (Tess[dtess], dcell, *pSSet, "nanoflann", TessId, pMTess, pTess);
 
   neut_tess_init_seeds_fromcell (pTess);
 

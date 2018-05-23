@@ -59,9 +59,9 @@ The @samp{src/} directory contains the following files and directories,
   general-purpose, low-level C
   functions (memory allocation, etc.). The second one is @samp{orilib},
   which is a collection of routines for orientation manipulation
-  (see @url{http://orilib.sourceforge.net}). The last one is ANN,
+  (see @url{http://orilib.sourceforge.net}). The last one is nanoflann,
   a library for nearest neighbour searching (see
-  @url{www.cs.umd.edu/~mount/ANN}). Although these libraries
+  @url{https://github.com/jlblancoc/nanoflann}). Although these libraries
   also are distributed alone (and might be already installed on your
   system), they are included into Neper instead of being considered
   as dependencies (contrary to the GSL, @dots{}), to

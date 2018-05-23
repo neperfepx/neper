@@ -8,27 +8,31 @@ void
 net_tess_opt_init_sset_coo_cluster (int dim, gsl_rng *r2, int qty, double dist,
 				    double rad, struct POINT *pPoint)
 {
-  int i;
-  double *coo = ut_alloc_1d (3);
-  int dimqty, *dims = ut_alloc_1d_int (3);
-
-  // neut_seedset_activedim (SSet, "equiaxed", &dims, &dimqty);
-  dimqty = dim;
-  ut_array_1d_int_set_id (dims, dimqty);
-
   neut_point_set_zero (pPoint);
   (*pPoint).Dim = dim;
 
-  for (i = 1; i <= qty; i++)
+  if (qty == 1)
+    neut_point_addpoint (pPoint, NULL, rad);
+
+  else
   {
-    ut_space_random (r2, dims, dimqty, dist, dist, coo);
-    neut_point_addpoint (pPoint, coo, rad);
+    double *coo = ut_alloc_1d (3);
+    int i, dimqty, *dims = ut_alloc_1d_int (3);
+
+    dimqty = dim;
+    ut_array_1d_int_set_id (dims, dimqty);
+
+    for (i = 1; i <= qty; i++)
+    {
+      ut_space_random (r2, dims, dimqty, dist, dist, coo);
+      neut_point_addpoint (pPoint, coo, rad);
+    }
+
+    neut_point_shifttocentre (pPoint);
+
+    ut_free_1d (coo);
+    ut_free_1d_int (dims);
   }
-
-  neut_point_shifttocentre (pPoint);
-
-  ut_free_1d (coo);
-  ut_free_1d_int (dims);
 
   return;
 }
@@ -50,9 +54,13 @@ net_tess_opt_init_sset_coo_centre (struct TOPT *pTOpt, gsl_rng *r,
     do
     {
       iter++;
-      status = neut_tess_dom_pt_randpt_cluster ((*pTOpt).Dom, Point, r,
-						Point2, 0, coo[iter],
-						dist + iter);
+      if (Point2.PointQty == 1 && Point2.PointRad[1] == 0)
+        status = net_tess_opt_init_sset_coo_centre_randpt (pTOpt, Point, r,
+                                                           0, 0, coo[iter], dist + iter);
+      else
+        status = net_tess_opt_init_sset_coo_centre_randpt_cluster ((*pTOpt).DomPoly, Point, r,
+                                                  Point2, 0, coo[iter],
+                                                  dist + iter);
 
       // if random positions, we don't care if there is some overlap
       // (status = -1), but we do care if the point is not in the domain
@@ -78,7 +86,13 @@ net_tess_opt_init_sset_coo_centre (struct TOPT *pTOpt, gsl_rng *r,
   else if (!strncmp (var, "centroid", 8))
   {
     if (!strcmp (cooexpr, "centroid") || !strcmp (cooexpr, "LLLFP2011"))
-      ut_array_1d_memcpy (centre, (*pTOpt).Dim, (*pTOpt).tarcellval[pos][cell]);
+    {
+      if (strcmp (var, "centroidtol")
+          || (*pTOpt).tarcellval[pos][cell][(*pTOpt).tarcellvalqty[pos] - 1] < 1000)
+        ut_array_1d_memcpy (centre, (*pTOpt).Dim, (*pTOpt).tarcellval[pos][cell]);
+      else
+        net_tess_opt_init_sset_coo_centre_randpt_pick (Point, r, centre);
+    }
     else
       abort ();
   }
@@ -126,7 +140,7 @@ net_tess_opt_init_sset_coo_lllfp2011 (struct TOPT *pTOpt)
   struct TESS T;
   neut_tess_set_zero (&T);
 
-  net_tess3d ((*pTOpt).Dom, 1, (*pTOpt).SSet, "ann", 1, NULL, &T);
+  net_tess3d ((*pTOpt).Dom, 1, (*pTOpt).SSet, "nanoflann", 1, NULL, &T);
 
   for (i = 1; i <= (*pTOpt).SSet.N; i++)
   {

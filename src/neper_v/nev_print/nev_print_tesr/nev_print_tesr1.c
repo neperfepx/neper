@@ -24,6 +24,8 @@ nev_print_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
 
   neut_tess_set_zero (&Tess);
 
+  ut_print_message (0, 3, "Converting to mesh...\n");
+
   neut_nodes_set_zero (&Nodes);
   for (i = 0; i < 4; i++)
   {
@@ -52,6 +54,7 @@ nev_print_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
     ut_array_1d_int_set (Print.shownode + 1, Nodes.NodeQty, 1);
     Print.showelt1d = ut_alloc_1d_int (Mesh[dim].EltQty + 1);
     if (Print.showedge)
+#pragma omp parallel for
       for (i = 1; i <= Mesh[dim].EltQty; i++)
 	Print.showelt1d[i] = Print.showedge[Mesh[dim].EltElset[i]];
     else
@@ -61,6 +64,7 @@ nev_print_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
   {
     Print.showelt2d = ut_alloc_1d_int (Mesh[dim].EltQty + 1);
     if (Print.showface)
+#pragma omp parallel for
       for (i = 1; i <= Mesh[dim].EltQty; i++)
 	Print.showelt2d[i] = Print.showface[Mesh[dim].EltElset[i]];
     else
@@ -70,6 +74,7 @@ nev_print_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
   {
     Print.showelt3d = ut_alloc_1d_int (Mesh[dim].EltQty + 1);
     if (Print.showpoly)
+#pragma omp parallel for
       for (i = 1; i <= Mesh[dim].EltQty; i++)
 	Print.showelt3d[i] = Print.showpoly[Mesh[dim].EltElset[i]];
     else
@@ -79,11 +84,12 @@ nev_print_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
   MeshData[dim].EltQty = Mesh[dim].EltQty;
   MeshData[dim].BCol = ut_alloc_1d_int (3);
   MeshData[dim].Col = ut_alloc_2d_int (MeshData[dim].EltQty + 1, 3);
-  double *coo = ut_alloc_1d (3);
-  int *pos = ut_alloc_1d_int (3);
-  int id;
+#pragma omp parallel for
   for (i = 1; i <= MeshData[dim].EltQty; i++)
   {
+    int id;
+    double *coo = ut_alloc_1d (3);
+    int *pos = ut_alloc_1d_int (3);
     neut_mesh_elt_centre (Nodes, Mesh[dim], i, coo);
     neut_tesr_point_pos (Tesr, coo, pos);
     id = pos[0]
@@ -91,9 +97,9 @@ nev_print_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
       + (pos[2] - 1) * (Tesr.size[1] * Tesr.size[0]);
 
     ut_array_1d_int_memcpy (MeshData[dim].Col[i], 3, TesrData.Col[id]);
+    ut_free_1d_int (pos);
+    ut_free_1d (coo);
   }
-  ut_free_1d_int (pos);
-  ut_free_1d (coo);
 
   if (dim == 1)
   {

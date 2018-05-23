@@ -28,6 +28,7 @@ extern void ut_print_progress_nonl (FILE*, long, long, const char*, char*);
 extern void ut_print_reportbug (void);
 extern void ut_print_gplv3 (FILE*);
 extern void ut_error_reportbug (void);
+extern void ut_error_expression (char *expr);
 extern void ut_print_clearline (FILE* file, int nb);
 
 #endif /* UT_PRINT_H */

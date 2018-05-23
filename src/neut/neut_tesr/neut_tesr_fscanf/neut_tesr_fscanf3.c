@@ -92,6 +92,53 @@ neut_tesr_fscanf_data_default (struct TESR *pTesr, char *format, FILE * file)
 }
 
 void
+neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
+                                  FILE * file)
+{
+  int i, j, k;
+  (void) format;
+
+  if (!strcmp (des, "q"))
+  {
+    for (k = 1; k <= (*pTesr).size[2]; k++)
+      for (j = 1; j <= (*pTesr).size[1]; j++)
+        for (i = 1; i <= (*pTesr).size[0]; i++)
+          ut_array_1d_fscanf (file, (*pTesr).VoxOri[i][j][k], 4);
+  }
+
+  else if (!strcmp (des, "R"))
+  {
+    double *R = ol_R_alloc ();
+    for (k = 1; k <= (*pTesr).size[2]; k++)
+      for (j = 1; j <= (*pTesr).size[1]; j++)
+        for (i = 1; i <= (*pTesr).size[0]; i++)
+        {
+          ol_R_fscanf (file, R);
+          ol_R_q (R, (*pTesr).VoxOri[i][j][k]);
+        }
+    ol_R_free (R);
+  }
+
+  else if (!strcmp (des, "e"))
+  {
+    double *e = ol_e_alloc ();
+    for (k = 1; k <= (*pTesr).size[2]; k++)
+      for (j = 1; j <= (*pTesr).size[1]; j++)
+        for (i = 1; i <= (*pTesr).size[0]; i++)
+        {
+          ol_e_fscanf (file, e);
+          ol_e_q (e, (*pTesr).VoxOri[i][j][k]);
+        }
+    ol_R_free (e);
+  }
+
+  else
+    ut_error_expression (des);
+
+  return;
+}
+
+void
 neut_tesr_fscanf_data_bounds (struct TESR *pTesr, int *bounds, char *format,
 			      FILE * file)
 {

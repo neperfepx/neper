@@ -20,6 +20,7 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
     {
       ut_print_message (0, 2, "Rotating...\n");
       sscanf (parts[i], "rotate(%lf,%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2, &theta);
+      ol_r_set_unit (tmp);
       ol_rtheta_g (tmp, theta, g);
       neut_tess_rotate (pTess, g);
     }
@@ -44,8 +45,10 @@ void
 net_transform_tesr (struct IN_T In, struct TESR *pTesr)
 {
   int i, partqty;
+  double theta, *tmp = ol_r_alloc ();
   char **parts = NULL;
   double *val = ut_alloc_1d (3);
+  double **g = ol_g_alloc ();
 
   ut_string_separate (In.transform, NEUT_SEP_NODEP, &parts, &partqty);
 
@@ -87,12 +90,32 @@ net_transform_tesr (struct IN_T In, struct TESR *pTesr)
       ut_print_message (0, 2, "Making tessellation 2D...\n");
       neut_tesr_2d (pTesr);
     }
+    else if (!strcmp (parts[i], "renumber"))
+    {
+      ut_print_message (0, 2, "Renumbering...\n");
+      neut_tesr_renumber_continuous (pTesr);
+    }
+    else if (!strncmp (parts[i], "addbuffer", 9))
+    {
+      ut_print_message (0, 2, "Adding buffer...\n");
+      neut_tesr_addbuffer (pTesr, parts[i]);
+    }
+    else if (!strncmp (parts[i], "rotate", 6))
+    {
+      ut_print_message (0, 2, "Rotating...\n");
+      sscanf (parts[i], "rotate(%lf,%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2, &theta);
+      ol_r_set_unit (tmp);
+      ol_rtheta_g (tmp, theta, g);
+      neut_tesr_rotate (pTesr, g);
+    }
     else
       ut_print_message (2, 3, "Expression `%s' could not be processed.\n",
 			parts[i]);
   }
 
   ut_free_2d_char (parts, partqty);
+  ol_r_free (tmp);
+  ol_g_free (g);
 
   return;
 }

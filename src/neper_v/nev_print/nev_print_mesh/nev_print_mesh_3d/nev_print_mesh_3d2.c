@@ -37,14 +37,27 @@ nev_print_mesh_3d_compress (struct PRINT Print, struct NODES Nodes,
   nodes = ut_alloc_1d_int (elt2dnodeqty);
 
   eltqty = 0;
-  for (i = 1; i <= Mesh3D.EltQty; i++)
-    if (Print.showelt3d[i] == 1)
-      elts[eltqty++] = i;
+  if (ut_array_1d_int_sum (Print.showelt3d + 1, Mesh3D.EltQty) == Mesh3D.EltQty)
+  {
+    eltqty = Mesh3D.EltQty;
+    eltmax = Mesh3D.EltQty;
+    eltsinv = ut_alloc_1d_int (Mesh3D.EltQty + 1);
+    for (i = 0; i < Mesh3D.EltQty; i++)
+    {
+      elts[i] = i + 1;
+      eltsinv[i + 1] = i;
+    }
+  }
+  else
+  {
+    for (i = 1; i <= Mesh3D.EltQty; i++)
+      if (Print.showelt3d[i] == 1)
+        elts[eltqty++] = i;
+    if (eltqty > 0)
+      ut_array_1d_int_inv (elts, eltqty, &eltsinv, &eltmax);
+  }
 
   elts = ut_realloc_1d_int (elts, eltqty);
-
-  if (eltqty > 0)
-    ut_array_1d_int_inv (elts, eltqty, &eltsinv, &eltmax);
 
   if (Print.datareduction == 1)
   {

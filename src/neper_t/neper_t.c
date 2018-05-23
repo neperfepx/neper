@@ -286,8 +286,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 	  || ut_string_inlist (In.format, NEUT_SEP_NODEP, "raw") == 1
 	  || ut_string_inlist (In.format, NEUT_SEP_NODEP, "vtk") == 1))
   {
-    ut_print_message (0, 1, "Rastering tessellation... ");
-    net_tess_tesr (In, FTess, &Tesr);
+    ut_print_message (0, 1, "Rastering tessellation...\n");
+    net_tess_tesr (In.tesrsizestring, FTess, &Tesr);
   }
 
   // ###################################################################
@@ -311,7 +311,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   // ###################################################################
   // ### WRITING STATISTICS  ###########################################
 
-  if (In.stc || In.stv || In.ste || In.stf || In.stp || In.sts || In.stpt)
+  if (In.stc || In.stv || In.ste || In.stf || In.stp || In.sts || In.stpt || In.stvox)
   {
     ut_print_message (0, 1, "Writing statistics...\n");
     net_stat (In, FTess, &Tesr, Point);

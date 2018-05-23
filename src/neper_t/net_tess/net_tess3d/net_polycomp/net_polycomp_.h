@@ -9,6 +9,7 @@ extern "C"
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
 #ifdef HAVE_OPENMP
 #include<omp.h>
