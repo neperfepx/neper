@@ -19,6 +19,7 @@
 #include"net_utils/net_utils.h"
 #include"net_sort/net_sort.h"
 #include"net_dim/net_dim.h"
+#include"net_ori/net_ori.h"
 
 #include"net_input/net_input.h"
 #include"net_reg/net_reg.h"

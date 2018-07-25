@@ -12,7 +12,7 @@ set (UT_VERSION_PATCH 0)
 option (HAVE_GSL      "Use the GNU Scientific Library (GSL)" ON)
 option (HAVE_MUPARSER "Use muparser"                   ON)
 option (HAVE_NLOPT      "Use NLOPT" ON)
-option (HAVE_OPENMP   "Use OpenMP"                           ON)
+option (HAVE_OPENMP   "Use OpenMP"                           OFF)
 option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
 option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)" OFF)
 
@@ -37,7 +37,7 @@ endif ()
 
 set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
-add_library (ut
+add_library (ut 
   ut_alloc/ut_alloc.c
   ut_arg/ut_arg.c
   ut_array/ut_array.c
@@ -84,8 +84,8 @@ endif ()
 target_link_libraries (ut ${EXTRA_LIBS})
 
 # Installation of the library
-# SET (CMAKE_INSTALL_PREFIX /usr/local/lib/ut)
-# SET (DESTDIR /usr/local/lib/ut)
+SET (CMAKE_INSTALL_PREFIX /usr/local/lib/ut)
+SET (DESTDIR /usr/local/lib/ut)
 
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_alloc.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_arg.h)
@@ -108,3 +108,4 @@ set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_vector.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut_nlopt.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ut.h)
 set (INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_BINARY_DIR}/ut_config.h)
+

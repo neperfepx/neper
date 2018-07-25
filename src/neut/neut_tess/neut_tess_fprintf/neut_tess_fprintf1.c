@@ -25,7 +25,7 @@ neut_tess_fprintf (FILE * file, struct TESS Tess)
 
   neut_tess_fprintf_dom (Tess, file);
 
-  if (!strncmp (Tess.Type, "periodic", 8))
+  if (Tess.Type && !strncmp (Tess.Type, "periodic", 8))
     neut_tess_fprintf_per (Tess, file);
 
   if (Tess.ScaleQty > 1)

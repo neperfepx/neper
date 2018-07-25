@@ -100,9 +100,10 @@ neut_debug_mesh (FILE * file, struct MESH Mesh)
       fprintf (file, "(null)\n");
     fprintf (file, "ElsetQty = %d\n", Mesh.ElsetQty);
     fprintf (file, "Elsets = (quantity then ids of elements)\n");
-    for (i = 1; i <= Mesh.ElsetQty; i++)
-      ut_array_1d_int_fprintf (file, Mesh.Elsets[i], Mesh.Elsets[i][0] + 1,
-			       "%d");
+    if (Mesh.Elsets)
+      for (i = 1; i <= Mesh.ElsetQty; i++)
+        ut_array_1d_int_fprintf (file, Mesh.Elsets[i], Mesh.Elsets[i][0] + 1,
+                                 "%d");
   }
 
   fprintf (file, "NodeElts = \n");

@@ -61,6 +61,9 @@ int
 net_tess_finalize (struct TESS PTess,
                    struct SEEDSET SSet, struct TESS *pTess)
 {
+  if ((*pTess).CellQty == 0)
+    return 1;
+
   neut_tess_init_celltrue (pTess);
   neut_tess_init_cellbody (pTess);
 

@@ -53,6 +53,8 @@ net_tess_lam_seed_set (struct IN_T In, int level, struct MTESS MTess, struct TES
   double *n = ut_alloc_1d (3);
   gsl_rng *r = gsl_rng_alloc (gsl_rng_ranlxd2);
 
+  (void) level;
+
   net_tess_lam_seed_set_init (pSSet);
 
   net_tess_opt_init_sset_general (In, MTess, Tess, dtess, dcell, SSet,
@@ -64,8 +66,6 @@ net_tess_lam_seed_set (struct IN_T In, int level, struct MTESS MTess, struct TES
   net_tess_lam_seed_set_lam (Dom, r, n, wtype, w, wqty, pSSet);
 
   net_tess_lam_seed_set_finalize (pSSet);
-
-  net_tess_opt_init_sset_ori (In, level, MTess, Tess, dtess, dcell, SSet, pSSet);
 
   gsl_rng_free (r);
   ut_free_1d (n);

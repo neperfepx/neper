@@ -16,9 +16,12 @@ struct TOPT
   // domain and general
   int CellQty;			// number of cells
   char *DomType;                // type of domain (same as Dom.DomType)
-  struct TESS Dom;		// domain (1-cell tessellation)
-  struct POLY DomPoly;		// domain as a POLY
-  struct TESS DomPer;		// 3x3x3-scale domain (for periodicity)
+  struct TESS Dom0;		// domain (1-cell tessellation), not modified by aspratio
+  struct TESS Dom;		// domain (1-cell tessellation), modified by aspratio
+  struct TESS DomPer;		// 3x3x3-scale domain (for periodicity), modified by aspratio
+  struct POLY DomPoly;		// domain as a POLY, modified by aspratio
+  double *aspratio;             // aspect ratio (lengths) along the 3 axes
+  int *activedim;               // active dimension (columnar -> 1 zero, bamboo -> 2 zeros)
 
   // specified inputs
   int tarqty;			// number of target variables
@@ -55,7 +58,7 @@ struct TOPT
   double *tarcellfact;		// factor of a target cell
   int  ***tarcellptscells;      // sorted subcells of a point
                                 // [cell][pt][0...CellSCellQty[cell]-1]
-  double **tarcellptsdist;       // distance value of cell points
+  double **tarcellptsdist;      // distance value of cell points
 
   // CURRENT MICROSTRUCTURE DEFINITION ---------------------------------
 
@@ -63,6 +66,7 @@ struct TOPT
   struct SEEDSET SSet;		// Seed set
   struct POLY *Poly;		// set of polys
   double *CellSize;             // Poly sum (volume or area) (!= NULL / stored if known)
+  struct CRYS Crys;             // crystal
 
   // distribution information
   struct FCT *curpdf;		// current PDF, smoothed
@@ -92,6 +96,7 @@ struct TOPT
   // OPTIMIZATION INFORMATION -----------------------------------------
 
   // optimization variables
+  char *optitype;               // type of variables: seeds or behaviour
   int xqty;        		// total number of variables
   int *x_seed;     		// seed to which the variable is related
   int *x_var;     		// variable to which the variable is related

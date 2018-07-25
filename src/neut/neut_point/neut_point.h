@@ -29,6 +29,7 @@ extern "C"
       *psize);
   extern void neut_point_shift (struct POINT *pPoint, double *s);
   extern void neut_point_shifttocentre (struct POINT *pPoint);
+  extern void neut_point_bbox (struct POINT Point, double **bbox);
 
 #include "neut_point_fscanf/neut_point_fscanf.h"
 

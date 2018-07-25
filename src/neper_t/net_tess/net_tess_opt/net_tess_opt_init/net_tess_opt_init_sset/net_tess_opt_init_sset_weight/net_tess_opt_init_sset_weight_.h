@@ -21,3 +21,5 @@
 
 extern int net_tess_opt_init_sset_weight_stat_radeq (int pos, char *var,
     struct TOPT TOpt, double *weight);
+extern int net_tess_opt_init_sset_weight_celldata_radeq (int pos, char *var,
+    struct TOPT TOpt, double *weight);

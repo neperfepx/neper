@@ -1299,3 +1299,12 @@ ut_error_expression (char *expr)
 
   return;
 }
+
+void
+ut_print_elapsedtime (struct timeval beg_time, struct timeval end_time)
+{
+  double t = ut_time_subtract (&beg_time, &end_time);
+  ut_print_message (0, 1, "Elapsed time: %.3f secs.\n", t);
+
+  return;
+}

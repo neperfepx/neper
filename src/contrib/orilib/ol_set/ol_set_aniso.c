@@ -34,8 +34,6 @@ ol_set_aniso (struct OL_SET set, double **evect, double *eval)
       ol_q_R (set.q[i], R[i]);
 
     /* calculation of the covariant matrix S */
-    printf ("hi\n");
-
     if (set.weight != NULL)
     {
       sumweight = ut_array_1d_sum (set.weight, n);

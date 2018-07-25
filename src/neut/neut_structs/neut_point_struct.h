@@ -13,6 +13,7 @@ extern "C"
   struct POINT
   {
     int Dim;
+    int *activedim;
     int *Periodic;
     double **BBox;
 

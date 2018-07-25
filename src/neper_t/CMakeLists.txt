@@ -24,7 +24,7 @@ option (DEVEL_PROFILING   "Enable profiling (OFF for production use)" OFF)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-add_definitions(-Wall -W)
+add_definitions(-Wall -W -Wno-unknown-pragmas)
 if (DEVEL_OPTIMIZATION)
   add_definitions(-O3)
 endif ()
@@ -69,6 +69,11 @@ add_library (neper_t
 ./net_tess/net_tess_lam//net_tess_lam_seed/net_tess_lam_seed2.c
 ./net_tess/net_tess_lam//net_tess_lam_seed/net_tess_lam_seed3.c
 ./net_tess/net_tess_lam//net_tess_lam_seed/net_tess_lam_seed4.c
+./net_tess/net_tess_tocta/net_tess_tocta1.c
+./net_tess/net_tess_tocta/net_tess_tocta2.c
+./net_tess/net_tess_tocta//net_tess_tocta_seed/net_tess_tocta_seed1.c
+./net_tess/net_tess_tocta//net_tess_tocta_seed/net_tess_tocta_seed2.c
+./net_tess/net_tess_tocta//net_tess_tocta_seed/net_tess_tocta_seed3.c
 ./net_tess/net_tess_opt/net_tess_opt1.cpp
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init1.cpp
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init2.cpp
@@ -79,7 +84,6 @@ add_library (neper_t
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset1.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_pre/net_tess_opt_init_sset_pre1.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_pre/net_tess_opt_init_sset_pre2.c
-./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_pre/net_tess_opt_init_sset_pre3.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_post/net_tess_opt_init_sset_post1.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_post/net_tess_opt_init_sset_post2.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_weight/net_tess_opt_init_sset_weight1.c
@@ -91,7 +95,9 @@ add_library (neper_t
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp1.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp2.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp3.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp4.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_x/net_tess_opt_comp_x1.c
+./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_x/net_tess_opt_comp_x2.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_nlopt_init/net_tess_opt_comp_nlopt_init1.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_nlopt_init/net_tess_opt_comp_nlopt_init2.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective1.c
@@ -114,6 +120,7 @@ add_library (neper_t
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_objective/net_tess_opt_comp_objective_log/net_tess_opt_comp_objective_log2.c
 ./net_tess/net_tess_opt/net_tess_opt_post/net_tess_opt_post1.c
 ./net_tess/net_tess_opt/net_tess_opt_post/net_tess_opt_post2.c
+./net_tess/net_tess_opt/net_tess_opt_post/net_tess_opt_post3.c
 ./net_tess/net_tess_opt/net_tess_opt_comp/net_tess_opt_comp_post/net_tess_opt_comp_post1.c
 ./net_tess/net_tess3d/net_tess3d1.cpp
 ./net_tess/net_tess3d/net_tess3d2.cpp
@@ -162,7 +169,13 @@ add_library (neper_t
 ./net_stat/net_stat2.c
 ./net_res/net_res_ori/net_res_ori1.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_ori/net_tess_opt_init_sset_ori1.c
-./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_ori/net_tess_opt_init_sset_ori2.c
+./net_ori/net_ori1.c
+./net_ori/net_ori2.c
+./net_ori/net_ori_uniform/net_ori_uniform1.cpp
+./net_ori/net_ori_uniform/net_ori_uniform2.cpp
+./net_ori/net_ori_uniform/net_ori_uniform3.cpp
+./net_ori/net_ori_uniform/net_ori_uniform4.cpp
+./net_ori/net_ori_uniform/net_ori_uniform5.cpp
 ./net_domain/net_domain1.c
 ./net_domain/net_domain2.c
 ./net_domain/net_domain_cube/net_domain_cube2.c

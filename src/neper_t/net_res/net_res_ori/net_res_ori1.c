@@ -12,7 +12,7 @@ net_res_ori (struct IN_T In, struct SEEDSET SSet)
   char *des = ut_alloc_1d_char (10);
   char *format = ut_alloc_1d_char (10);
 
-  file = ut_file_open (In.ori, "w");
+  file = ut_file_open (In.orif, "w");
 
   strcpy (des, In.orides);
   strcpy (format, In.oriformat);
@@ -104,7 +104,7 @@ net_res_ori (struct IN_T In, struct SEEDSET SSet)
       double SQRT2 = 1.41421356237309504880;
       for (i = 1; i <= SSet.N; i++)
       {
-	if (strcmp (In.oricrysym, "cubic"))
+	if (strcmp (In.oricrysym[In.levelqty], "cubic"))
 	  ut_print_message (2, 1, "Rcol requires `-oricrysym cubic'.\n");
 
 	ol_q_R (SSet.q[i], R);
@@ -154,7 +154,7 @@ net_res_ori (struct IN_T In, struct SEEDSET SSet)
     ol_e_free (e);
   }
 
-  ut_file_close (file, In.ori, "w");
+  ut_file_close (file, In.orif, "w");
 
   ut_free_1d_char (des);
   ut_free_1d_char (format);

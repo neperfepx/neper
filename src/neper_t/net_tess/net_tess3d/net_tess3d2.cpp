@@ -6,7 +6,7 @@
 
 void
 net_polys_tess (int level, struct SEEDSET SSet,
-		int TessId, struct POLY *Poly, struct TESS *pTess)
+                int TessId, struct POLY *Poly, struct TESS *pTess)
 {
   struct TESL Tesl;
 

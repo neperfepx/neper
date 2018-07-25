@@ -23,6 +23,7 @@ extern int ut_mat_inverse_33 (double **, double **);
 extern void ut_mat_eigen (int, double **, double *, double **);
 extern void ut_mat_transpose (double **, int, int, double **);
 extern void ut_mat_trace (double**, int, double*);
+extern void ut_mat_dev (double**, int, double**);
 
 extern int  ut_mat_inverse (double**, int, double**);
 extern int ut_mat_svd (double** mat, int M, int N, double** U, double** s, double** V);

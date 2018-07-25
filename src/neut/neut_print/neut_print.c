@@ -13,7 +13,7 @@ neut_print_set_default (struct PRINT *pPrint)
 
   // camera ------------------------------------------------------------
   (*pPrint).cameracoostring = ut_alloc_1d_char (100);
-  sprintf ((*pPrint).cameracoostring, "x+vx%sy+vy%sz+vz",
+  sprintf ((*pPrint).cameracoostring, "x+length*vx%sy+length*vy%sz+length*vz",
 	   NEUT_SEP_DEP, NEUT_SEP_DEP);
   (*pPrint).cameracoo = ut_alloc_1d (3);
 

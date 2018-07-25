@@ -51,10 +51,11 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
   }
 
   // otherwise, tessellations are built in tess mode
-  else
+  else if (tess_out || tesr_out)
     ut_string_string ("tess", &(*pIn).mode);
 
-  (void) ori_out;
+  else if (ori_out)
+    ut_string_string ("ori", &(*pIn).mode);
 
   return;
 }

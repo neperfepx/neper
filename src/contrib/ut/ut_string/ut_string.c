@@ -621,6 +621,29 @@ ut_string_function_separate (char *string, char** pfct,
 }
 
 void
+ut_string_catfiles_separate (const char *string, char ***parts, int *pqty)
+{
+  int i, *pos = ut_alloc_1d_int (strlen (string));
+
+  (*pqty) = 0;
+  for (i = 0; i < (int) strlen (string); i++)
+    if (!strncmp (string + i, "file(", 5))
+    {
+      pos[(*pqty)] = i;
+      (*pqty)++;
+    }
+  pos[(*pqty)] = strlen (string);
+
+  (*parts) = ut_alloc_2d_char (*pqty, strlen (string) + 1);
+  for (i = 0; i < *pqty; i++)
+    strncpy ((*parts)[i], string + pos[i], pos[i + 1] - pos[i]);
+
+  ut_free_1d_int (pos);
+
+  return;
+}
+
+void
 ut_string_partqty (char *string, char c, int *pqty)
 {
   int pos;
@@ -715,6 +738,26 @@ ut_string_addtolist (char **pstring, char *c, char *new)
     (*pstring) = ut_realloc_1d_char (*pstring, length + 1);
     sprintf (*pstring + strlen (*pstring), "%s%s", c, new);
   }
+
+  return 0;
+}
+
+int
+ut_string_rmfromlist (char **pstring, char *c, char *rm)
+{
+  int i, partqty;
+  char **parts = NULL, *string2 = NULL;
+
+  ut_string_separate (*pstring, c, &parts, &partqty);
+
+  for (i = 0; i < partqty; i++)
+    if (strcmp (parts[i], rm))
+      ut_string_addtolist (&string2, c, parts[i]);
+
+  ut_string_string (string2, pstring);
+
+  ut_free_1d_char (string2);
+  ut_free_2d_char (parts, partqty);
 
   return 0;
 }
@@ -1032,4 +1075,15 @@ ut_string_uppercase (char *string)
   }
 
   return;
+}
+
+int
+ut_string_isanumber (char *s)
+{
+  if (s == NULL || *s == '\0' || isspace(*s))
+    return 0;
+
+  char * p;
+  strtod (s, &p);
+  return *p == '\0';
 }

@@ -28,7 +28,6 @@ net_tess_opt_comp_post (struct TOPT TOpt, int res)
       ut_print_message (0, 3, "Reached `time' criterion.");
     else
       ut_print_message (0, 3, "Reached unknown criterion.");
-
   }
   else
   {
@@ -39,23 +38,25 @@ net_tess_opt_comp_post (struct TOPT TOpt, int res)
     else if (res == NLOPT_FORCED_STOP)
     {
       if (nlopt_get_force_stop (TOpt.opt) == -5)
-	ut_print_message (1, 3, "Stopping on Ctrl+C invocation.");
+        ut_print_message (1, 3, "Stopping on Ctrl+C invocation.");
       else if (nlopt_get_force_stop (TOpt.opt) == -6)
-	ut_print_message (0, 3, "Reached `eps' criterion.");
+        ut_print_message (0, 3, "Reached `eps' criterion.");
       else if (nlopt_get_force_stop (TOpt.opt) == -7)
-	ut_print_message (0, 3, "Reached `reps' criterion.");
+        ut_print_message (0, 3, "Reached `reps' criterion.");
       else if (nlopt_get_force_stop (TOpt.opt) == -8)
-	ut_print_message (0, 3, "Reached `loopmax' criterion.");
+        ut_print_message (0, 3, "Reached `loopmax' criterion.");
       else if (nlopt_get_force_stop (TOpt.opt) <= -101)
-	ut_print_message (0, 3, "Stopping on failed convergence (%d).",
-	                  nlopt_get_force_stop (TOpt.opt));
+        ut_print_message (0, 3, "Stopping on failed convergence (%d).",
+                          nlopt_get_force_stop (TOpt.opt));
       else
-	ut_print_message (1, 3, "Stopping on unknown forced stop (%d).",
-			  nlopt_get_force_stop (TOpt.opt));
+        ut_print_message (1, 3, "Stopping on unknown forced stop (%d).",
+                          nlopt_get_force_stop (TOpt.opt));
     }
     else
       ut_print_message (1, 3, "Failed due to unknown error.");
   }
+
+  printf ("\n");
 
   return;
 }

@@ -51,6 +51,7 @@ ol_r_set_unit (double *r)
   return;
 }
 
+
 void
 ol_r_set_this (double *r, double r1, double r2, double r3)
 {
@@ -130,7 +131,7 @@ int
 ol_g_rtheta (double **g, double *r, double *ptheta)
 {
   int status;
-
+  
   status = ol_g_rtheta_rad (g, r, ptheta);
   ol_theta_rad2deg (*ptheta, ptheta);
 
@@ -144,6 +145,7 @@ ol_g_r (double **g, double *r)
 
   return ol_g_rtheta_rad (g, r, &theta);
 }
+
 
 int
 ol_g_rtheta_rad (double **g, double *r, double *ptheta)

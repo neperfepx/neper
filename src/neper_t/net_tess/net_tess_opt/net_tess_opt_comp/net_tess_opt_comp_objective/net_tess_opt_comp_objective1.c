@@ -18,7 +18,6 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
   char *fmin = ut_alloc_1d_char (1000);
   char *f = ut_alloc_1d_char (1000);
   (void) grad;
-  (void) force_stop;
   char *loopnotice = ut_alloc_1d_char (1000);
 
   if ((*pTOpt).loop > 1)
@@ -57,7 +56,12 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
 
   gettimeofday (&t2, NULL);
 
-  net_tess_opt_comp_objective_x_seedset (x, pTOpt);
+  if (!strcmp ((*pTOpt).optitype, "seeds"))
+    net_tess_opt_comp_objective_x_seedset (x, pTOpt);
+  else if (!strcmp ((*pTOpt).optitype, "crystal"))
+    net_tess_opt_comp_objective_x_crystal (x, pTOpt);
+  else
+    abort ();
 
   if ((*pTOpt).tarqty > 0
    && !strcmp ((*pTOpt).tarvar[0], "centroid")
@@ -66,7 +70,10 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
 
   gettimeofday (&t3, NULL);
 
-  status = net_tess_opt_comp_objective_poly (pTOpt);
+  if (!strcmp ((*pTOpt).optitype, "seeds"))
+    status = net_tess_opt_comp_objective_poly (pTOpt);
+  else
+    status = 0;
 
   gettimeofday (&t4, NULL);
 

@@ -60,3 +60,32 @@ net_tess_opt_init_sset_weight_stat_radeq (int pos, char
 
   return 0;
 }
+
+int
+net_tess_opt_init_sset_weight_celldata_radeq (int pos, char *var, struct TOPT TOpt,
+                                              double *radeq)
+{
+  int i;
+  double avradeq, avsize;
+
+  if (!strcmp (var, "diameq") || !strcmp (var, "radeq"))
+  {
+    neut_tess_cellavradeq (TOpt.Dom, TOpt.CellQty, &avradeq);
+
+    for (i = 1; i <= TOpt.CellQty; i++)
+      radeq[i] = avradeq * TOpt.tarcellval[pos][i][0];
+  }
+
+  else if (!strcmp (var, "size"))
+  {
+    neut_tess_cellavsize (TOpt.Dom, TOpt.CellQty, &avsize);
+
+    for (i = 1; i <= TOpt.CellQty; i++)
+      ut_space_size_radeq (TOpt.Dim, avsize * TOpt.tarcellval[pos][i][0], radeq + i);
+  }
+
+  else
+    abort ();
+
+  return 0;
+}

@@ -181,7 +181,7 @@ neut_mesh_size (struct NODES Nodes, struct MESH Mesh, double *psize)
 
   if (Mesh.Dimension == 0)
   {
-    neut_nodes_bbox (Nodes, bbox);
+    neut_nodes_bbox_vect (Nodes, bbox);
     (*psize) = 0;
     for (i = 0; i < 3; i++)
       (*psize) = ut_num_max (*psize, bbox[2 * i + 1] - bbox[2 * i]);

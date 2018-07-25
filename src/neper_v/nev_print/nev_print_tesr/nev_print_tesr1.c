@@ -36,6 +36,7 @@ nev_print_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
 
   neut_mesh_str (dim, Tesr.size, &Nodes, Mesh + dim, NULL);
   neut_nodes_scale (&Nodes, size[0], size[1], size[2]);
+  neut_nodes_shift (&Nodes, Tesr.Origin[0], Tesr.Origin[1], Tesr.Origin[2]);
 
   elt = 0;
   for (k = 1; k <= Tesr.size[2]; k++)

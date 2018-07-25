@@ -8,8 +8,9 @@ extern "C" {
 #ifndef UT_SPACE_H
 #define UT_SPACE_H
 
-#include "ut_config.h"
+#ifdef HAVE_GSL
 #include<gsl/gsl_rng.h>
+#endif
 
 extern double ut_space_dist_squared (double *, double *);
 extern double ut_space_dist (double *, double *);
@@ -79,6 +80,7 @@ extern int ut_space_contour_intersect (double**, int);
 
 extern int ut_space_points_uvect (double*, double*, double*);
 
+
 extern void ut_space_string_vect (char*, double*);
 extern void ut_space_string_plane (char*, double*);
 
@@ -134,9 +136,12 @@ extern void ut_space_diameq_volume (double diameq, double *pvol);
 extern void ut_space_area_radeq (double area, double *pradeq);
 extern void ut_space_diameq_size (int dim, double diameq, double *psize);
 extern void ut_space_size_diameq (int dim, double size, double *pdiameq);
+extern void ut_space_size_radeq (int dim, double size, double *pradeq);
 
+#ifdef HAVE_GSL
 extern void ut_space_random (gsl_rng *r, int *dims, int dimqty, double mindist,
 			     double maxdist, double *v);
+#endif
 
 #endif /* UT_SPACE_H */
 

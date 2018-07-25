@@ -6,6 +6,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
+#include<float.h>
 
 #include "neut.h"
 #include "neut_point.h"

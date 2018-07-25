@@ -6,7 +6,7 @@
 #define ORILIB_H
 
 #include "ut.h"
-#include "ol_config.h"
+// #include "ol_config.h"
 #include "ol_glo.h"
 #include "ol_des.h"
 #include "ol_gen.h"

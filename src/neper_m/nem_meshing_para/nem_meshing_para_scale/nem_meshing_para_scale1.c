@@ -18,8 +18,7 @@ nem_meshing_para_scale (struct MESHPARA MeshPara, struct TESS *pTess,
 
     if ((*pTesr).CellQty > 0)
       neut_tesr_scale (pTesr, 1 / MeshPara.clratio[0],
-		       1 / MeshPara.clratio[1], 1 / MeshPara.clratio[2],
-		       NULL);
+		       1 / MeshPara.clratio[1], 1 / MeshPara.clratio[2]);
 
     if ((*pNodes).NodeQty > 0)
     {
@@ -50,7 +49,7 @@ nem_meshing_para_unscale (struct MESHPARA MeshPara,
 
     if ((*pTesr).CellQty > 0)
       neut_tesr_scale (pTesr, MeshPara.clratio[0], MeshPara.clratio[1],
-		       MeshPara.clratio[2], NULL);
+		       MeshPara.clratio[2]);
 
     if ((*pRNodes).NodeQty > 0)
       neut_nodes_scale (pRNodes, MeshPara.clratio[0], MeshPara.clratio[1],

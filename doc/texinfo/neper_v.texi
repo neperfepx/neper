@@ -782,15 +782,15 @@ string has the format @samp{@var{var}@SEPDEP{}file_name}@comma{} where
 is the name of the file containing the morphology parameters.
 For cube shape@comma{} @code{@var{var}} must be @samp{cube} and the file
 must contain@comma{} for each point@comma{} the radius (half of the edge
-length) then the coordinates of the three axes (which also is the
+length) and then the coordinates of the three axes (which also is the
 rotation matrix that brings the reference axes into coincidence with the
 cube axes).
 For cylinder shape@comma{} @code{@var{var}} must be @samp{cyl} and the file
 must contain@comma{} for each point@comma{} the radius@comma{} the
-length@comma{} then the coordinates of the axis.
+length@comma{} and then the coordinates of the axis.
 For arrow shape@comma{} @code{@var{var}} must be @samp{arr} and the file
 must contain@comma{} for each point@comma{} the radius@comma{} the
-length@comma{} then the coordinates of the axis.
+length@comma{} and then the coordinates of the axis.
 For disc (2D) shape@comma{} @code{@var{var}} must be @samp{disc} and the file
 must contain@comma{} for each point@comma{} the radius@comma{}
 then the coordinates of the axis.
@@ -799,7 +799,7 @@ the file must contain@comma{} for each point@comma{} the three radii
 then the coordinates of the three axes.
 For torus shape@comma{} @code{@var{var}} must be @samp{tor} and the file
 must contain@comma{} for each point@comma{} the major radius (centre to
-centre line)@comma{} the minor radius@comma{} then the coordinates of
+centre line)@comma{} the minor radius@comma{} and then the coordinates of
 the normal axis.
 The last capability is very specific: if the points are plotted in
 Rodrigues space@comma{} appending
@@ -853,7 +853,7 @@ values from a file.
 Set the scale relative to the @samp{-datapointcol scal} data.  Provide as
 argument the start and end values@comma{} combined with
 @samp{@SEPDEP{}}.  To specify the intermediate values@comma{} provide as
-argument the start value@comma{} the intermediate values and then the
+argument the start value@comma{} the intermediate values@comma{} and then the
 end value@comma{} combined with @samp{@SEPDEP{}}.  The labels of the
 scale follow the format used for the start value.
 ,
@@ -1091,23 +1091,25 @@ Show the coordinate system.
 Show the shadows.  If you want colours not affected by shadowing@comma{} switch this
 option off.
 ,
-0 or 1, 1 in 3D and 0 in 2D and 1D}
+0 or 1, 1 in 3D and 0 in 2D}
 
 @subsection Camera Settings
 
 @opt{-cameracoo, char_string:char_string:char_string,
-Specify the camera coordinates.
-By default@comma{} the camera is shifted by a vector @dfn{v} from the centre of
-the bounding box of the tessellation or mesh.  The coordinates of vector @var{v} are
+Specify the camera coordinates. By default@comma{} the camera is shifted
+by @dfn{length} times a vector @dfn{v} from the centre of
+the bounding box of the tessellation or mesh.  The variable @dfn{length}
+is the average length of the bounding box (1 for a unit cube)@comma{}
+and the coordinates of vector @var{v} are
 denoted as @dfn{vx}@comma{} @dfn{vy} and @dfn{vz} (@w{= 3.462}@comma{}
--5.770 and 4.327@comma{} respectively@comma{} in 3D and
-0@comma{} 0 and 8@comma{} respectively@comma{} in 2D and 1D).
+-5.770 and 4.327@comma{} respectively@comma{} in 3D@comma{} and
+0@comma{} 0 and 8@comma{} respectively@comma{} in 2D).
 The coordinates of the tessellation or mesh centre are denoted as
 @dfn{x}@comma{} @dfn{y} and @dfn{z} (if both a tessellation and a mesh
 have been loaded@comma{} the mesh is considered).  Provide as argument
 the expression for the 3 coordinates@comma{} combined with @samp{@SEPDEP{}}.
 ,
-any, @code{x+vx@SEPDEP{}y+vy@SEPDEP{}z+vz}}
+any, @code{x+length*vx@SEPDEP{}y+length*vy@SEPDEP{}z+length*vz}}
 
 @opt{-cameralookat, char_string:char_string:char_string,
 Specify the location the camera looks at.
@@ -1137,7 +1139,7 @@ any,0@SEPDEP{}0@SEPDEP{}1}
 Specify the type of projection of the camera.
 ,
 perspective or orthographic, perspective for 3D and orthographic for
-2D and 1D}
+2D}
 
 @subsection Output Image Settings
 
@@ -1174,7 +1176,7 @@ png or pov, png}
 @opttwo{-loop, -endloop, -loop char_string real real real ... , -endloop,
 Create a loop of commands.  Provide as argument the name of the
 loop variable@comma{} its initial value@comma{} the loop increment
-value@comma{} the final value then the commands to execute.
+value@comma{} the final value@comma{} and then the commands to execute.
 An example of use of the @code{-loop} / @code{-endloop} capability is
 provided in the Examples Section.,
 any, none}

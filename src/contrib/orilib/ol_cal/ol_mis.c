@@ -15,3 +15,14 @@ ol_g_lng (double** g, double** lng)
 
   return;
 }
+
+void
+ol_q_lnq (double* q, double* lnq)
+{
+  double theta;
+
+  ol_q_rtheta_rad (q, lnq, &theta);
+  ut_array_1d_scale (lnq, 3, theta / 2);
+
+  return;
+}

@@ -449,13 +449,15 @@ optional fields.
 @ @ @  @var{dimension}                                               	@*
 @ @ @  @var{size_x} @var{size_y} [@var{size_z}]                        	@*
 @ @ @  @var{voxsize_x} @var{voxsize_y} [@var{voxsize_z}]             	@*
+@ [*origin                                                              @*
+@ @ @  @var{origin_x} @var{origin_y} [@var{origin_z}]]            	@*
 [**cell                                                              	@*
 @ @ @  @var{number_of_cells}                                            @*
 @ [*id                                                               	@*
 @ @ @  @var{cell1_id} @var{cell2_id} ...]                            	@*
 @ [*seed  								@*
 @ @ @ @var{seed_id} @var{seed_x} @var{seed_y} [@var{seed_z}] @var{seed_weight} @*
-@ @ @  ... ]                                                            @*
+@ @ @  ...]                                                            @*
 @ [*ori 								@*
 @ @ @ @var{descriptor} 							@*
 @ @ @  @var{cell1_param1} @var{cell1_param2} ...                      	@*
@@ -464,16 +466,16 @@ optional fields.
 @ [*coo 								@*
 @ @ @  @var{cell1_x} @var{cell1_y} [@var{cell1_z}]             		@*
 @ @ @  @var{cell2_x} @var{cell2_y} [@var{cell2_z}]             		@*
-@ @ @  ... ]                                                            @*
+@ @ @  ...]                                                            @*
 @ [*vol 								@*
 @ @ @  @var{cell1_vol}                   	 			@*
 @ @ @  @var{cell2_vol}                   	 			@*
-@ @ @  ... ]                                                            @*
+@ @ @  ...]                                                            @*
 @ [*convexity 								@*
 @ @ @  @var{cell1_convexity}                   	 			@*
 @ @ @  @var{cell2_convexity}                   	 			@*
-@ @ @  ... ]                                                            @*
-@ @  ]	                                                            	@*
+@ @ @  ...]                                                             @*
+]	                                                            	@*
 @  **data                                                            	@*
 @ @ @  @var{vox1_cell} @var{vox2_cell} ...                           	@*
 @ @emph{or}                                                          	@*
@@ -483,7 +485,8 @@ optional fields.
 @ @ @ @var{vox1_param1} @var{vox1_param2} ...                      	@*
 @ @ @ @var{vox2_param1} @var{vox2_param2} ...                     	@*
 @ @emph{or}                                                          	@*
-@ @ *file @var{oridata_file_name}]                                      @*
+@ @ *file @var{oridata_file_name}                                       @*
+]	                                                            	@*
 ***end                                                               	@*
 }
 
@@ -513,12 +516,19 @@ It can be either
 @item @code{@var{dimension}} is the dimension of the raster tessellation.
 
 @item @code{@var{size_x}}, @code{@var{size_y}} and @code{@var{size_z}} are
-the raster sizes along the 3 coordinate axes. The number of sizes must
+the raster sizes along the coordinate axes. The number of sizes must
 match @var{dimension}.
 
 @item @code{@var{voxsize_x}}, @code{@var{voxsize_y}} and
-@code{@var{voxsize_z}} are the voxel (pixel@comma{} in 2D) sizes along the 3 coordinate axes.
+@code{@var{voxsize_z}} are the voxel (pixel@comma{} in 2D) sizes along the coordinate axes.
 The number of sizes must match @var{dimension}.
+
+@item @code{*origin} denotes the beginning of an optional origin field.
+
+@item @code{@var{origin_x}}, @code{@var{origin_y}} and
+@code{@var{origin_z}} are the (absolute) coordinates of the origin of the
+raster tessellation along the coordinate axes.  The number of coordinates must
+match @var{dimension}.
 
 @item @code{**cell} denotes the beginning of an optional cell field.
 

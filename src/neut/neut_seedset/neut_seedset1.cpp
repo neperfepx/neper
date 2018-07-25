@@ -6,14 +6,19 @@
 #include "neut_structs/neut_nanoflann_struct.hpp"
 
 extern void neut_seedset_kdtree_cloud (struct SEEDSET SSet,
-                                       NFCLOUD *pnf_cloud, int** pptid_seedid,
-                                       int** pseedid_ptid);
-extern void neut_seedset_kdtree_tree (NFCLOUD *pnf_cloud, NFTREE** pnf_tree);
-extern void neut_seedset_kdtree_update (NFCLOUD *pnf_cloud, int* seedmovedqty, int seedmoved,
-                                        NFTREE** pnf_tree);
+                                       NFCLOUD * pnf_cloud,
+                                       int **pptid_seedid,
+                                       int **pseedid_ptid);
+extern void neut_seedset_kdtree_tree (NFCLOUD * pnf_cloud,
+                                      NFTREE ** pnf_tree);
+extern void neut_seedset_kdtree_update (NFCLOUD * pnf_cloud,
+                                        int *seedmovedqty, int seedmoved,
+                                        NFTREE ** pnf_tree);
 extern void neut_seedset_kdtree_update_seed (struct SEEDSET SSet, int seed,
-    NFCLOUD *pnf_cloud, NFTREE **pnf_tree, int** pptid_seedid, int**
-    pseedid_ptid);
+                                             NFCLOUD * pnf_cloud,
+                                             NFTREE ** pnf_tree,
+                                             int **pptid_seedid,
+                                             int **pseedid_ptid);
 
 void
 neut_seedset_set_zero (struct SEEDSET *pSSet)
@@ -112,9 +117,9 @@ neut_seedset_addseed (struct SEEDSET *pSSet, double *coo, double w)
   (*pSSet).N++;
 
   (*pSSet).SeedCoo0 = ut_realloc_2d_addline ((*pSSet).SeedCoo0,
-					     (*pSSet).N + 1, 3);
+                                             (*pSSet).N + 1, 3);
   (*pSSet).SeedCoo = ut_realloc_2d_addline ((*pSSet).SeedCoo,
-					    (*pSSet).N + 1, 3);
+                                            (*pSSet).N + 1, 3);
   ut_array_1d_memcpy ((*pSSet).SeedCoo0[(*pSSet).N], 3, coo);
 
   if (!strcmp ((*pSSet).Type, "standard"))
@@ -122,9 +127,9 @@ neut_seedset_addseed (struct SEEDSET *pSSet, double *coo, double w)
   else
     for (i = 0; i < (*pSSet).Dim; i++)
       (*pSSet).SeedCoo[(*pSSet).N][i]
-	= (*pSSet).SeedCoo0[(*pSSet).N][i]
-	- (*pSSet).Periodic[i]
-	* floor ((*pSSet).SeedCoo0[(*pSSet).N][i] / (*pSSet).Periodic[i]);
+        = (*pSSet).SeedCoo0[(*pSSet).N][i]
+        - (*pSSet).Periodic[i]
+        * floor ((*pSSet).SeedCoo0[(*pSSet).N][i] / (*pSSet).Periodic[i]);
 
   (*pSSet).SeedWeight = ut_realloc_1d ((*pSSet).SeedWeight, (*pSSet).N + 1);
   (*pSSet).SeedWeight[(*pSSet).N] = w;
@@ -160,7 +165,7 @@ neut_seedset_slave_add (struct SEEDSET *pSSet, int master, int *shift)
   ut_array_1d_int_memcpy ((*pSSet).PerSeedShift[id], 3, shift);
 
   (*pSSet).SeedCoo = ut_realloc_2d_addline ((*pSSet).SeedCoo,
-					    (*pSSet).Nall + 1, 3);
+                                            (*pSSet).Nall + 1, 3);
   (*pSSet).SeedWeight =
     ut_realloc_1d ((*pSSet).SeedWeight, (*pSSet).Nall + 1);
 
@@ -212,7 +217,7 @@ neut_seedset_init_seedslave (struct SEEDSET *pSSet)
     (*pSSet).PerSeedSlaveQty[master]++;
     (*pSSet).PerSeedSlaveNb[master]
       = ut_realloc_1d_int ((*pSSet).PerSeedSlaveNb[master],
-			   (*pSSet).PerSeedSlaveQty[master] + 1);
+                           (*pSSet).PerSeedSlaveQty[master] + 1);
     (*pSSet).PerSeedSlaveNb[master][(*pSSet).PerSeedSlaveQty[master]] = slave;
   }
 
@@ -260,17 +265,17 @@ neut_seedset_seed_update_fromseedcoo0 (struct SEEDSET *pSSet, int id)
     {
       if ((*pSSet).Periodic[i])
       {
-	alpha = floor (((*pSSet).SeedCoo0[id][i] - (*pSSet).Size[i][0])
-		       / (*pSSet).PeriodicDist[i]);
-	(*pSSet).SeedCoo[id][i] = (*pSSet).SeedCoo0[id][i]
-	                        - alpha * (*pSSet).PeriodicDist[i];
+        alpha = floor (((*pSSet).SeedCoo0[id][i] - (*pSSet).Size[i][0])
+                       / (*pSSet).PeriodicDist[i]);
+        (*pSSet).SeedCoo[id][i] = (*pSSet).SeedCoo0[id][i]
+          - alpha * (*pSSet).PeriodicDist[i];
 
-	if ((*pSSet).SeedCoo[id][i] < 0
-	 || (*pSSet).SeedCoo[id][i] > (*pSSet).PeriodicDist[i])
-	  abort ();
+        if ((*pSSet).SeedCoo[id][i] < 0
+            || (*pSSet).SeedCoo[id][i] > (*pSSet).PeriodicDist[i])
+          abort ();
       }
       else
-	(*pSSet).SeedCoo[id][i] = (*pSSet).SeedCoo0[id][i];
+        (*pSSet).SeedCoo[id][i] = (*pSSet).SeedCoo0[id][i];
     }
 
   if (!strncmp ((*pSSet).Type, "periodic", 8))
@@ -303,9 +308,9 @@ neut_seedset_voidcell_distance (struct SEEDSET SSet, int seed)
       continue;
 
     ut_space_points_bisplane_power (SSet.SeedCoo[seed],
-				    SSet.SeedCoo[i],
-				    SSet.SeedWeight[seed],
-				    SSet.SeedWeight[i], plane);
+                                    SSet.SeedCoo[i],
+                                    SSet.SeedWeight[seed],
+                                    SSet.SeedWeight[i], plane);
     ut_space_point_plane_dist_signed (SSet.SeedCoo[seed], plane, &dist);
 
     if (dist > 0)
@@ -329,22 +334,24 @@ neut_seedset_memcpy (struct SEEDSET SSetA, struct SEEDSET *pSSetB)
 }
 
 void
-neut_seedset_memcpy_seed_addseed (struct SEEDSET SSetA, int seed, struct SEEDSET *pSSetB)
+neut_seedset_memcpy_seed_addseed (struct SEEDSET SSetA, int seed,
+                                  struct SEEDSET *pSSetB)
 {
-  int newseed =  ++(*pSSetB).N;
+  int newseed = ++(*pSSetB).N;
 
   if (newseed == 1)
   {
-    (*pSSetB).q        = ut_alloc_2d (1, 1);
+    (*pSSetB).q = ut_alloc_2d (1, 1);
     (*pSSetB).SeedCoo0 = ut_alloc_2d (1, 3);
-    (*pSSetB).SeedCoo  = ut_alloc_2d (1, 3);
+    (*pSSetB).SeedCoo = ut_alloc_2d (1, 3);
     if (SSetA.LamEq)
-      (*pSSetB).LamEq  = ut_alloc_2d (1, 4);
+      (*pSSetB).LamEq = ut_alloc_2d (1, 4);
   }
 
   if (SSetA.LamEq)
   {
-    (*pSSetB).LamEq = ut_realloc_2d_addline ((*pSSetB).LamEq, (*pSSetB).N + 1, 4);
+    (*pSSetB).LamEq =
+      ut_realloc_2d_addline ((*pSSetB).LamEq, (*pSSetB).N + 1, 4);
     ut_array_1d_memcpy ((*pSSetB).LamEq[newseed], 4, SSetA.LamEq[seed]);
   }
 
@@ -356,17 +363,21 @@ neut_seedset_memcpy_seed_addseed (struct SEEDSET SSetA, int seed, struct SEEDSET
 
   if (SSetA.LamWidthId)
   {
-    (*pSSetB).LamWidthId = ut_realloc_1d_int ((*pSSetB).LamWidthId, (*pSSetB).N + 1);
+    (*pSSetB).LamWidthId =
+      ut_realloc_1d_int ((*pSSetB).LamWidthId, (*pSSetB).N + 1);
     (*pSSetB).LamWidthId[newseed] = SSetA.LamWidthId[seed];
   }
 
-  (*pSSetB).SeedCoo0 = ut_realloc_2d_addline ((*pSSetB).SeedCoo0, (*pSSetB).N + 1, 3);
+  (*pSSetB).SeedCoo0 =
+    ut_realloc_2d_addline ((*pSSetB).SeedCoo0, (*pSSetB).N + 1, 3);
   ut_array_1d_memcpy ((*pSSetB).SeedCoo0[newseed], 3, SSetA.SeedCoo0[seed]);
 
-  (*pSSetB).SeedCoo = ut_realloc_2d_addline ((*pSSetB).SeedCoo, (*pSSetB).N + 1, 3);
+  (*pSSetB).SeedCoo =
+    ut_realloc_2d_addline ((*pSSetB).SeedCoo, (*pSSetB).N + 1, 3);
   ut_array_1d_memcpy ((*pSSetB).SeedCoo[newseed], 3, SSetA.SeedCoo[seed]);
 
-  (*pSSetB).SeedWeight = ut_realloc_1d ((*pSSetB).SeedWeight, (*pSSetB).N + 1);
+  (*pSSetB).SeedWeight =
+    ut_realloc_1d ((*pSSetB).SeedWeight, (*pSSetB).N + 1);
   (*pSSetB).SeedWeight[newseed] = SSetA.SeedWeight[seed];
 
   (*pSSetB).q = ut_realloc_2d_addline ((*pSSetB).q, (*pSSetB).N + 1, 4);
@@ -376,7 +387,8 @@ neut_seedset_memcpy_seed_addseed (struct SEEDSET SSetA, int seed, struct SEEDSET
 }
 
 void
-neut_seedset_activedim (struct SEEDSET SSet, char *morpho, int **pdim, int *pdimqty)
+neut_seedset_activedim (struct SEEDSET SSet, char *morpho, int **pdim,
+                        int *pdimqty)
 {
   (*pdim) = ut_alloc_1d_int (3);
   (*pdimqty) = 0;
@@ -417,8 +429,8 @@ neut_seedset_activedim (struct SEEDSET SSet, char *morpho, int **pdim, int *pdim
 
 void
 neut_seedset_seed_randomize (struct SEEDSET *pSSet, int seed,
-			     gsl_rng *r, int *dims, int dimqty,
-			     double mindist, double maxdist)
+                             gsl_rng * r, int *dims, int dimqty,
+                             double mindist, double maxdist)
 {
   int i;
   double *v = ut_alloc_1d (3);
@@ -438,11 +450,11 @@ neut_seedset_bbox_size (struct SEEDSET SSet, double *psize)
 {
   if (SSet.Dim == 3)
     (*psize) = (SSet.Size[2][1] - SSet.Size[2][0])
-             * (SSet.Size[1][1] - SSet.Size[1][0])
-             * (SSet.Size[0][1] - SSet.Size[0][0]);
+      * (SSet.Size[1][1] - SSet.Size[1][0])
+      * (SSet.Size[0][1] - SSet.Size[0][0]);
   else if (SSet.Dim == 2)
     (*psize) = (SSet.Size[1][1] - SSet.Size[1][0])
-             * (SSet.Size[0][1] - SSet.Size[0][0]);
+      * (SSet.Size[0][1] - SSet.Size[0][0]);
   else
     abort ();
 
@@ -450,10 +462,9 @@ neut_seedset_bbox_size (struct SEEDSET SSet, double *psize)
 }
 
 void
-neut_seedset_kdtree (struct SEEDSET SSet, NFCLOUD *pnf_cloud,
-                     NFTREE **pnf_tree,
-                     int** pptid_seedid,
-                     int** pseedid_ptid)
+neut_seedset_kdtree (struct SEEDSET SSet, NFCLOUD * pnf_cloud,
+                     NFTREE ** pnf_tree,
+                     int **pptid_seedid, int **pseedid_ptid)
 {
   neut_seedset_kdtree_cloud (SSet, pnf_cloud, pptid_seedid, pseedid_ptid);
   neut_seedset_kdtree_tree (pnf_cloud, pnf_tree);
@@ -463,16 +474,15 @@ neut_seedset_kdtree (struct SEEDSET SSet, NFCLOUD *pnf_cloud,
 
 void
 neut_seedset_kdtree_update (struct SEEDSET SSet, int *seedmoved,
-                            int seedmovedqty, NFCLOUD *pnf_cloud,
-                            NFTREE **pnf_tree,
-                            int** pptid_seedid,
-                            int** pseedid_ptid)
+                            int seedmovedqty, NFCLOUD * pnf_cloud,
+                            NFTREE ** pnf_tree,
+                            int **pptid_seedid, int **pseedid_ptid)
 {
   int i, j;
 
   for (i = 0; i < seedmovedqty; i++)
-    neut_seedset_kdtree_update_seed (SSet, seedmoved[i], pnf_cloud, pnf_tree, pptid_seedid,
-                                     pseedid_ptid);
+    neut_seedset_kdtree_update_seed (SSet, seedmoved[i], pnf_cloud, pnf_tree,
+                                     pptid_seedid, pseedid_ptid);
 
   if (SSet.Type[0] == 'p')
     for (i = 0; i < seedmovedqty; i++)

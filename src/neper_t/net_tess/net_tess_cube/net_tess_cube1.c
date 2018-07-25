@@ -5,9 +5,9 @@
 #include "net_tess_cube_.h"
 
 int
-net_tess_cube (char *string, int dim, struct TESS PTess, int poly,
-	       int TessId, struct TESS *pTess,
-	       struct SEEDSET *pSSet)
+net_tess_cube (struct IN_T In, int level, struct MTESS *pMTess,
+               struct TESS *Tess, int dtess, int dcell, struct TESS Dom,
+               int TessId, struct SEEDSET *SSet)
 {
   int status, i, id;
   int *N = ut_alloc_1d_int (3);
@@ -15,8 +15,11 @@ net_tess_cube (char *string, int dim, struct TESS PTess, int poly,
   char *fct = NULL;
   int varqty;
   char **vals = NULL;
+  int dim = (In.levelqty > 1) ? 3 : In.dim;
 
-  ut_string_function_separate (string, &fct, NULL, &vals, &varqty);
+  ut_print_message (0, 2, "Running tessellation...\n");
+
+  ut_string_function_separate (In.morpho[level], &fct, NULL, &vals, &varqty);
 
   if (!strcmp (fct, "cube"))
   {
@@ -55,41 +58,44 @@ net_tess_cube (char *string, int dim, struct TESS PTess, int poly,
   int ****faceid = ut_alloc_4d_int (3, N[0] + 1, N[1] + 1, N[2] + 1);
   int ***polyid = ut_alloc_3d_int (N[0], N[1], N[2]);
 
-  if (poly != 1)
+  if (level != 1 || dtess != 0 || dcell != 1)
     ut_error_reportbug ();
 
   net_tess_cube_ids (N, verid, edgeid, faceid, polyid);
 
-  net_tess_cube_general (TessId, pTess);
+  net_tess_cube_general (TessId, Tess + 1);
 
-  net_tess_cube_cells (N, pTess);
-  net_tess_cube_vers (N, PTess, verid, pTess);
-  net_tess_cube_edges (N, verid, edgeid, pTess);
-  net_tess_cube_faces (N, verid, edgeid, faceid, pTess);
-  net_tess_cube_polys (N, faceid, polyid, pTess);
-  neut_tess_init_seeds_fromcell (pTess);
-  net_tess_cube_sset (*pTess, pSSet);
+  net_tess_cube_cells (N, Tess + 1);
+  net_tess_cube_vers (N, Dom, verid, Tess + 1);
+  net_tess_cube_edges (N, verid, edgeid, Tess + 1);
+  net_tess_cube_faces (N, verid, edgeid, faceid, Tess + 1);
+  net_tess_cube_polys (N, faceid, polyid, Tess + 1);
+  neut_tess_init_seeds_fromcell (Tess + 1);
+  net_tess_cube_sset (Tess[1], SSet + 1);
 
-  neut_tess_init_veredge (pTess);
-  neut_tess_init_edgeface (pTess);
-  net_tess_cube_facepoly (N, faceid, pTess);
+  neut_tess_init_veredge (Tess + 1);
+  neut_tess_init_edgeface (Tess + 1);
+  net_tess_cube_facepoly (N, faceid, Tess + 1);
 
-  neut_tess_init_domain_poly (pTess, PTess, 1, NULL, NULL, NULL);
+  neut_tess_init_domain_poly (Tess + 1, Dom, 1, NULL, NULL, NULL);
 
   if (dim == 2)
   {
     struct TESS T2;
     neut_tess_set_zero (&T2);
 
-    status = neut_tess_domface_label_id (*pTess, "z0", &id);
+    status = neut_tess_domface_label_id (Tess[1], "z0", &id);
 
     if (status != 0)
       ut_error_reportbug ();
 
-    neut_tess_domface_tess (*pTess, id, &T2);
-    neut_tess_tess (T2, pTess);
+    neut_tess_domface_tess (Tess[1], id, &T2);
+    neut_tess_tess (T2, Tess + 1);
     neut_tess_free (&T2);
   }
+
+  ut_print_message (0, 2, "Generating crystal orientations...\n");
+  net_ori (In, 1, *pMTess, Tess, SSet, 0, 1, SSet + 1, 3);
 
   ut_free_3d_int (verid, N[0] + 1, N[1] + 1);
   ut_free_4d_int (edgeid, 3, N[0] + 1, N[1] + 1);

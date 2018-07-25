@@ -6,8 +6,10 @@
 #include<math.h>
 #include<string.h>
 #include<float.h>
+#ifdef HAVE_GSL
 #include<gsl/gsl_rng.h>
 #include<gsl/gsl_randist.h>
+#endif
 #include"ut.h"
 
 double
@@ -2598,6 +2600,21 @@ ut_space_size_diameq (int dim, double size, double *pdiameq)
 }
 
 void
+ut_space_size_radeq (int dim, double size, double *pradeq)
+{
+  if (dim == 1)
+    (*pradeq) = size;
+
+  else if (dim == 2)
+    ut_space_area_radeq (size, pradeq);
+
+  else if (dim == 3)
+    ut_space_volume_radeq (size, pradeq);
+
+  return;
+}
+
+void
 ut_space_area_radeq (double area, double *pradeq)
 {
   ut_space_area_diameq (area, pradeq);
@@ -2606,6 +2623,7 @@ ut_space_area_radeq (double area, double *pradeq)
   return;
 }
 
+#ifdef HAVE_GSL
 void
 ut_space_random (gsl_rng *r, int *dims, int dimqty, double mindist,
 		 double maxdist, double *v)
@@ -2636,3 +2654,4 @@ ut_space_random (gsl_rng *r, int *dims, int dimqty, double mindist,
 
   return;
 }
+#endif

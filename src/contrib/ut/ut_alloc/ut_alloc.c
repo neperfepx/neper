@@ -1260,3 +1260,73 @@ ut_realloc_3d_int_addarray (int ***array, int line, int col, int depth)
 
   return array;
 }
+
+/**
+ * \file alloc_2d_contig.c
+ * \brief
+ *
+ *
+ * \author VILLANI Aurelien
+ *
+ */
+double **
+ut_alloc_2d_contig (size_t rows, size_t cols)
+{
+  // https://stackoverflow.com/questions/31641509/assigning-memory-for-contiguous-2d-array
+  size_t r;
+
+  /* allocate chunk: rows times the pointer, rows * cols times the value */
+  double **array =
+    malloc (rows * sizeof (double *) + rows * cols * sizeof (double));
+
+  /* calculate pointer to first row: point directly behind the pointers,
+   * then cast */
+  double *row = (double *) (array + rows);
+
+  /* set all row pointers */
+  for (r = 0; r < rows; ++r)
+  {
+    array[r] = row;
+    row += cols;
+  }
+  size_t i, j;
+  for (i = 0; i < rows; ++i)
+  {
+    for (j = 0; j < cols; ++j)
+    {
+      array[i][j] = 0;
+    }
+  }
+  return array;
+}
+
+long **
+ut_alloc_2d_contig_long (size_t rows, size_t cols)
+{
+  // https://stackoverflow.com/questions/31641509/assigning-memory-for-contiguous-2d-array
+  size_t r;
+
+  /* allocate chunk: rows times the pointer, rows * cols times the value */
+  long **array =
+    malloc (rows * sizeof (long *) + rows * cols * sizeof (long));
+
+  /* calculate pointer to first row: point directly behind the pointers,
+   * then cast */
+  long *row = (long *) (array + rows);
+
+  /* set all row pointers */
+  for (r = 0; r < rows; ++r)
+  {
+    array[r] = row;
+    row += cols;
+  }
+  size_t i, j;
+  for (i = 0; i < rows; ++i)
+  {
+    for (j = 0; j < cols; ++j)
+    {
+      array[i][j] = 0;
+    }
+  }
+  return array;
+}

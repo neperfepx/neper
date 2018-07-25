@@ -32,19 +32,15 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   }
 
   char *tmp = ut_alloc_1d_char (1000);
-  sprintf (tmp, "%s --version 2>&1 | grep -v \"[a-z]\" > .nepertmp",
-	   (*pIn).gmsh);
+  sprintf (tmp, "%s --version 2> .nepertmp", (*pIn).gmsh);
   if (system (tmp) == -1)
     abort ();
 
   FILE *file = ut_file_open (".nepertmp", "R");
   if (fscanf (file, "%s", tmp) != 1)
-  {
-    ut_print_message (2, 0,
-		      "You have to specify a valid access path to the gmsh binary\n");
-    ut_print_message (2, 0, "through option `-gmsh'.\n");
-    abort ();
-  }
+    ut_print_message (2, 3, "Option `-gmsh' does not provide a valid path to the gmsh binary.\n");
+  else if (strstr (tmp, "git"))
+    ut_print_message (1, 3, "Using a development Gmsh version (%s)...\n", tmp);
   else if (!strcmp (tmp, "2.5.1") || !strcmp (tmp, "2.14.1"))
     ut_print_message (2, 3, "Gmsh %s is known to produce error.  Please update.\n", tmp);
 

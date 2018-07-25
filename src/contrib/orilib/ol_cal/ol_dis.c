@@ -173,6 +173,11 @@ ol_q_q_disori_rad (double *q1, double *q2, char* crysym, double *ptheta)
       }
     }
   }
+  else if (strcmp (crysym, "triclinic") == 0)
+  {
+    maxrho = fabs (qd[0]);
+    nb = 1;
+  }
   else
     abort ();
 
@@ -302,6 +307,15 @@ ol_q_q_qdisori_update (double *q1, double *q2, char* crysym, int prevnb,
       nb = prevnb;
       status = 1;
     }
+  }
+
+  else if (!strcmp (crysym, "triclinic"))
+  {
+    ol_q_inverse (q1, q1inv);
+    ol_q_q_q_ref (q1inv, q2, qd);
+    ol_q_q (qd, qd);
+    nb = 1;
+    status = 1;
   }
 
   if (! status)

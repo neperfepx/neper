@@ -100,7 +100,8 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_nodes_bbox (struct NODES Nodes, double *bbox);
+  extern void neut_nodes_bbox (struct NODES Nodes, double **bbox);
+  extern void neut_nodes_bbox_vect (struct NODES Nodes, double *bbox);
 
 /// \brief Get the closest node of a point.
 ///

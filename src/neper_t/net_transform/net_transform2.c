@@ -16,7 +16,15 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
 
   for (i = 0; i < partqty; i++)
   {
-    if (!strncmp (parts[i], "rotate", 6))
+    if (!strncmp (parts[i], "scale", 5))
+    {
+      ut_print_message (0, 2, "Scaling...\n");
+      status = sscanf (parts[i], "scale(%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2);
+      if (status == 2)
+	tmp[2] = 1;
+      neut_tess_scale (pTess, tmp[0], tmp[1], tmp[2]);
+    }
+    else if (!strncmp (parts[i], "rotate", 6))
     {
       ut_print_message (0, 2, "Rotating...\n");
       sscanf (parts[i], "rotate(%lf,%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2, &theta);
@@ -24,13 +32,13 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
       ol_rtheta_g (tmp, theta, g);
       neut_tess_rotate (pTess, g);
     }
-    else if (!strncmp (parts[i], "scale", 5))
+    else if (!strncmp (parts[i], "translate", 9))
     {
-      ut_print_message (0, 2, "Scaling...\n");
-      status = sscanf (parts[i], "scale(%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2);
+      ut_print_message (0, 2, "Translating...\n");
+      status = sscanf (parts[i], "translate(%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2);
       if (status == 2)
 	tmp[2] = 1;
-      neut_tess_scale (pTess, tmp[0], tmp[1], tmp[2]);
+      neut_tess_shift (pTess, tmp[0], tmp[1], tmp[2]);
     }
   }
 
@@ -44,7 +52,7 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
 void
 net_transform_tesr (struct IN_T In, struct TESR *pTesr)
 {
-  int i, partqty;
+  int i, partqty, status;
   double theta, *tmp = ol_r_alloc ();
   char **parts = NULL;
   double *val = ut_alloc_1d (3);
@@ -54,7 +62,31 @@ net_transform_tesr (struct IN_T In, struct TESR *pTesr)
 
   for (i = 0; i < partqty; i++)
   {
-    if (!strcmp (parts[i], "autocrop"))
+    if (!strncmp (parts[i], "scale", 5))
+    {
+      ut_print_message (0, 2, "Scaling...\n");
+      status = sscanf (parts[i], "scale(%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2);
+      if (status == 2)
+	tmp[2] = 1;
+      neut_tesr_scale (pTesr, tmp[0], tmp[1], tmp[2]);
+    }
+    else if (!strncmp (parts[i], "rotate", 6))
+    {
+      ut_print_message (0, 2, "Rotating...\n");
+      sscanf (parts[i], "rotate(%lf,%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2, &theta);
+      ol_r_set_unit (tmp);
+      ol_rtheta_g (tmp, theta, g);
+      neut_tesr_rotate (pTesr, g);
+    }
+    else if (!strncmp (parts[i], "translate", 5))
+    {
+      ut_print_message (0, 2, "Translating...\n");
+      status = sscanf (parts[i], "translate(%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2);
+      if (status == 2)
+	tmp[2] = 1;
+      neut_tesr_translate (pTesr, tmp[0], tmp[1], tmp[2]);
+    }
+    else if (!strcmp (parts[i], "autocrop"))
     {
       ut_print_message (0, 2, "Autocropping...\n");
       neut_tesr_autocrop (pTesr);
@@ -99,14 +131,6 @@ net_transform_tesr (struct IN_T In, struct TESR *pTesr)
     {
       ut_print_message (0, 2, "Adding buffer...\n");
       neut_tesr_addbuffer (pTesr, parts[i]);
-    }
-    else if (!strncmp (parts[i], "rotate", 6))
-    {
-      ut_print_message (0, 2, "Rotating...\n");
-      sscanf (parts[i], "rotate(%lf,%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2, &theta);
-      ol_r_set_unit (tmp);
-      ol_rtheta_g (tmp, theta, g);
-      neut_tesr_rotate (pTesr, g);
     }
     else
       ut_print_message (2, 3, "Expression `%s' could not be processed.\n",

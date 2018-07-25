@@ -123,8 +123,9 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
 	int j;
 	for (j = 0; j < SQty; j++)
 	{
-	  nev_nodedata_init (SNodes[j], Tess.CellQty, &(SNodeData[j]));
-	  nev_meshdata_init (SMesh[j], 1, Tess.CellQty, &(SMeshData[j][2]));
+
+	  nev_nodedata_init (SNodes[j], Mesh[3].ElsetQty, &(SNodeData[j]));
+	  nev_meshdata_init (SMesh[j], 1, Mesh[3].ElsetQty, &(SMeshData[j][2]));
 	}
 
 	nev_show_init (Tess, Tesr, Nodes, Mesh, SQty, Point, &Print);

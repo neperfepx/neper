@@ -44,11 +44,13 @@ extern "C"
 #include "neut_glo/neut_glo.h"
 #include "neut_structs/neut_structs.h"
 #include "neut_tess/neut_tess.h"
+#include "neut_crys/neut_crys.h"
 #include "neut_tesse/neut_tesse.h"
 #include "neut_mtess/neut_mtess.h"
 #include "neut_flatten/neut_flatten.h"
 #include "neut_tesr/neut_tesr.h"
 #include "neut_elt/neut_elt.h"
+#include "neut_crys/neut_crys.h"
 #include "neut_mesh/neut_mesh.h"
 #include "neut_nodes/neut_nodes.h"
 #include "neut_meshpara/neut_meshpara.h"
@@ -73,10 +75,13 @@ extern "C"
 #include "neut_lloyd/neut_lloyd.h"
 #include "neut_tdyn/neut_tdyn.h"
 #include "neut_boundary/neut_boundary.h"
+#include "neut_crys/neut_crys.h"
 #ifdef HAVE_NLOPT
 #include "neut_topt/neut_topt.h"
-#include "neut_sopt/neut_sopt.h"
 #endif
+#include "neut_sopt/neut_sopt.h"
+#include "neut_oopt/neut_oopt.h"
+#include "neut_ori/neut_ori.h"
 
 #endif				/* NEUT_H */
 

@@ -30,6 +30,7 @@ extern int ut_string_stringpos (char *, char*, int);
 extern void ut_string_separate (const char*, const char*, char***, int*);
 extern void ut_string_function_separate (char *string, char** pfct,
                              char ***vars, char ***vals, int *pqty);
+extern void ut_string_catfiles_separate (const char *string, char ***parts, int *pqty);
 extern void ut_string_separate2 (const char *, const char*, const char*, char****, int**, int*);
 extern int ut_string_inlist (const char*, const char*, const char*);
 extern int ut_string_inlist_int (char*, char*, int);
@@ -56,6 +57,9 @@ extern int ut_string_section_level (char *string, int *plevel);
 
 extern void ut_string_uppercase (char *string);
 extern int ut_string_addtolist (char **pstring, char *c, char *);
+extern int ut_string_rmfromlist (char **pstring, char *c, char *rm);
+
+extern int ut_string_isanumber (char *s);
 
 #endif /* UT_STRING_H */
 

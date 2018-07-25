@@ -6,21 +6,27 @@
 
 void
 net_tess_opt_init (struct IN_T In, int level, struct MTESS MTess,
-		   struct TESS *Tess, int dtess, int dcell,
-		   struct SEEDSET *SSet, struct TOPT *pTOpt)
+                   struct TESS *Tess, int dtess, int dcell,
+                   struct SEEDSET *SSet, struct TOPT *pTOpt)
 {
-  // general
-  net_tess_opt_init_general (pTOpt);
-
-  // domain
-  net_tess_opt_init_domain (In, Tess[dtess], dcell, pTOpt);
+  // general, dim, domain0
+  net_tess_opt_init_general (In, level, MTess, Tess, dtess, dcell, pTOpt);
 
   // target properties
   net_tess_opt_init_target (In, MTess, Tess, dtess, dcell, level,
-			    In.morpho[level], pTOpt);
+                            In.morpho[level], pTOpt);
+
+  // domain to tessellate
+  net_tess_opt_init_domain (In, Tess[dtess], dcell, pTOpt);
 
   // sset (must come after target)
-  net_tess_opt_init_sset (In, level, MTess, Tess, dtess, dcell, SSet, pTOpt);
+  if (!strcmp ((*pTOpt).optitype, "seeds"))
+    net_tess_opt_init_sset (In, level, MTess, Tess, dtess, dcell, SSet,
+                            pTOpt);
+  else if (!strcmp ((*pTOpt).optitype, "crystal"))
+    net_tess_opt_init_crystal (In, level, pTOpt);
+  else
+    abort ();
 
   // optimization parameters
   net_tess_opt_init_parms (In, level, MTess, Tess, dtess, dcell, pTOpt);
@@ -31,7 +37,7 @@ net_tess_opt_init (struct IN_T In, int level, struct MTESS MTess,
   // bounds (merge into init_parms)
   net_tess_opt_init_bounds (pTOpt);
 
-  //
+  // finalizing
   net_tess_opt_init_post (In, pTOpt);
 
   return;

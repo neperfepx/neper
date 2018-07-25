@@ -12,7 +12,6 @@ extern void ol_q_q_q_cur (double *, double *, double *);
 extern void ol_R_R_R_cur (double *, double *, double *);
 extern void ol_g_g_g (double **, double **, double **);
 extern void ol_q_q_q (double *, double *, double *);
-extern void ol_q_q_q_ (double *, double *, double *);
 extern void ol_R_R_R (double *, double *, double *);
 extern void ol_g_g_g_ref (double **, double **, double **);
 extern void ol_q_q_q_ref (double *, double *, double *);
@@ -99,6 +98,7 @@ extern void ol_R_inverse (double *, double *);
 
 extern int  ol_g_crysym (double **, char*, int, double **);
 extern void ol_q_crysym (double *, char*, int, double *);
+extern void ol_q_crysym_nopos (double *, char*, int, double *);
 extern void ol_m_crysym (int *, char*, int, int *);
 extern void ol_pole_crysym (int *, char*, int, int *);
 extern double ol_g_gcrysym (double **, char*, double **);

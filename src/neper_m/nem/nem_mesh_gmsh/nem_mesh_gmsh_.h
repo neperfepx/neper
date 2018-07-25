@@ -8,7 +8,11 @@
 #include<string.h>
 #include<unistd.h>
 #include<time.h>
+#include"neper_config.h"
+
+#ifdef HAVE_OPENMP
 #include<omp.h>
+#endif // HAVE_OPENMP
 
 #include"../../structIn_m.h"
 

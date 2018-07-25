@@ -158,10 +158,21 @@ Neper
 @sp 0
 @ @phantom{XX}
 @t{$} @code{\a\}
-@ @phantom{XX}
 @end iftex
 @ifinfo
 $ \a\
+@end ifinfo
+@end macro
+
+@c COM
+@macro comc{a,b}
+@iftex
+@sp 0
+@ @phantom{XX}
+@t{$} @code{\a\} \b\
+@end iftex
+@ifinfo
+$ \a\ \b\
 @end ifinfo
 @end macro
 

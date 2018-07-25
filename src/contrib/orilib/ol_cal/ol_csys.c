@@ -16,6 +16,7 @@ ol_g_refcsys (double **g, double **gs, double **gnew)
   return;
 }
 
+
 void
 ol_q_refcsys (double *q, double *qs, double *qnew)
 {
@@ -42,6 +43,7 @@ ol_g_csys (double **g, double **gs, double **gnew)
 
   return;
 }
+
 
 void
 ol_q_csys (double *q, double *qs, double *qnew)

@@ -28,17 +28,26 @@ nev_camera_v (int dim, double *v)
 }
 
 void
-nev_camera_expr_coo (double *X, double *v, char *expr, double *coo)
+nev_camera_expr_coo (double **bbox, double *v, char *expr, double *coo)
 {
   char **expr2 = NULL;
   char **def = ut_alloc_2d_char (3, 100);
   int i, status, var_qty, qty;
+  double *X = ut_alloc_1d (3);
+  double length, *L = ut_alloc_1d (3);
   ut_string_separate (expr, NEUT_SEP_DEP, &expr2, &qty);
   if (qty != 3)
     ut_print_message (2, 2, "Expression `%s' could not be processed.\n",
 		      expr);
 
-  var_qty = 2;
+  for (i = 0; i < 3; i++)
+    X[i] = ut_array_1d_mean (bbox[i], 2);
+
+  for (i = 0; i < 3; i++)
+    L[i] = bbox[i][1] - bbox[i][0];
+  length = ut_array_1d_mean (L, 3);
+
+  var_qty = 3;
   char **vars = ut_alloc_2d_char (var_qty, 15);
   double *vals = ut_alloc_1d (var_qty);
 
@@ -46,9 +55,11 @@ nev_camera_expr_coo (double *X, double *v, char *expr, double *coo)
   {
     sprintf (vars[0], "v%c", 'x' + i);
     sprintf (vars[1], "%c", 'x' + i);
+    sprintf (vars[2], "length");
 
     vals[0] = v[i];
     vals[1] = X[i];
+    vals[2] = length;
 
     sprintf (def[0], "%s", vars[0]);
     sprintf (def[1], "%s", vars[1]);
@@ -71,6 +82,8 @@ nev_camera_expr_coo (double *X, double *v, char *expr, double *coo)
   ut_free_2d_char (vars, var_qty);
   ut_free_1d (vals);
   ut_free_2d_char (def, 3);
+  ut_free_1d (X);
+  ut_free_1d (L);
 
   return;
 }

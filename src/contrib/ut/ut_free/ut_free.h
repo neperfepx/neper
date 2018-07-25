@@ -50,6 +50,9 @@ extern void ut_free_4d_int (int ****, unsigned int, unsigned int, unsigned int);
 extern void ut_free_1d_int_ (int **);
 extern void ut_free_1d_ (double **);
 
+extern void ut_free_2d_contig (double **p);
+extern void ut_free_2d_contig_long (long **p);
+
 #endif /* UT_FREE_H */
 
 #ifdef __cplusplus

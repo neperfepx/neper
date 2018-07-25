@@ -7,32 +7,28 @@
 
 int
 net_tess_opt (struct IN_T In, int level, struct TESS *Tess, int dtess,
-	      int dcell, int TessId, struct MTESS *pMTess,
-	      struct SEEDSET *SSet)
+              int dcell, int TessId, struct MTESS *pMTess,
+              struct SEEDSET *SSet)
 {
   struct TOPT TOpt;
   NFCLOUD nf_cloud;
-  NFTREE  *nf_tree = nullptr;
+  NFTREE *nf_tree = nullptr;
 
   neut_topt_set_zero (&TOpt);
   TOpt.pnf_cloud = &nf_cloud;
-  TOpt.pnf_tree  = &nf_tree;
-
-  if (strcmp (In.morpho[level], "voronoi"))
-  {
-    printf ("\n");
-    ut_print_message (0, 3, "Entering optimization...\n");
-  }
+  TOpt.pnf_tree = &nf_tree;
 
   // Initializing optimization
   net_tess_opt_init (In, level, *pMTess, Tess, dtess, dcell, SSet, &TOpt);
+
+  ut_print_message (0, 2, "Running tessellation...\n");
 
   // Running optimization
   net_tess_opt_comp (&TOpt);
 
   // Recording tessellation
   net_tess_opt_post (pMTess, Tess, dtess, dcell, TessId,
-		     TOpt.Poly, TOpt, SSet);
+                     TOpt.Poly, TOpt, SSet);
 
   neut_topt_free (&TOpt);
 

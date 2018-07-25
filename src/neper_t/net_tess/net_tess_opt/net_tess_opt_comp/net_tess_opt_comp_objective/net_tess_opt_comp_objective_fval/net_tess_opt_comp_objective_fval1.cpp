@@ -19,6 +19,7 @@ net_tess_opt_comp_objective_fval (struct TOPT *pTOpt)
   gettimeofday (&t2, NULL);
 
   // updating penalties for changed cells
+
   net_tess_opt_comp_objective_fval_cellpenalty (pTOpt);
 
   gettimeofday (&t3, NULL);

@@ -41,18 +41,19 @@ extern "C"
 ///
   extern void neut_tesr_memcpy_parms (struct TESR Vox1, struct TESR *pTesr2);
 
-/// \brief Determine the bounding box of a TESR.
-///
-/// Grand bbox, which does take VoxCell into account.
-///
-  extern void neut_tesr_bbox (struct TESR Tesr, double **bbox);
-
 /// \brief Scale (= stretch) a TESR structure.
 ///
 /// The size of the raster points is scaled.
 ///
   extern void neut_tesr_scale (struct TESR *pTesr, double scale1, double
-			       scale2, double scale3, char *method);
+			       scale2, double scale3);
+
+/// \brief Translate a TESR structure.
+///
+///
+///
+  extern void neut_tesr_translate (struct TESR *pTesr, double s1, double s2,
+                                   double s3);
 
 /// \brief Scale the grid of a TESR structure.
 ///

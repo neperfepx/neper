@@ -36,5 +36,12 @@ extern void net_tess_opt_comp_rand_shift (double *x, struct TOPT *pTOpt, int
     seedqty, int dimqty, double min, double max, int *alldims, int
     alldimqty, gsl_rng *r);
 
+extern void net_tess_opt_comp_rand_shift_seeds (double *x, struct TOPT *pTOpt, int
+    seedqty, int dimqty, double min, double max, int *alldims, int
+    alldimqty, gsl_rng *r);
+
+extern void net_tess_opt_comp_rand_shift_crystal (double *x, struct TOPT *pTOpt,
+    int dimqty, double min, double max, int *alldims, int alldimqty, gsl_rng *r);
+
 extern void net_tess_opt_comp_rand_revert (double *x, struct TOPT TOpt,
 					   double *x_cpy);

@@ -6,7 +6,7 @@
 #include"neut/neut_structs/neut_nanoflann_struct.hpp"
 
 extern void net_polycomp_poly (struct POLY Domain, struct SEEDSET SSet,
-                               NFTREE **pnf_tree, int *ptid_seedid,
+                               NFTREE ** pnf_tree, int *ptid_seedid,
                                int PolyId,
                                struct POLY *pPoly, struct TDYN *pTD);
 
@@ -23,8 +23,8 @@ net_polycomp_cells_inittdyn (struct TDYN *pTD)
 
 void
 net_polycomp_cells_updatecell (struct POLY Domain, struct SEEDSET SSet,
-                               NFTREE **pnf_tree, int *ptid_seedid, int cell,
-			       struct POLY **pPoly, struct TDYN *pTD)
+                               NFTREE ** pnf_tree, int *ptid_seedid, int cell,
+                               struct POLY **pPoly, struct TDYN *pTD)
 {
   int eltpos;
 
@@ -33,7 +33,8 @@ net_polycomp_cells_updatecell (struct POLY Domain, struct SEEDSET SSet,
                                    cell);
 
   if (eltpos == -1)
-    net_polycomp_poly (Domain, SSet, pnf_tree, ptid_seedid, cell, (*pPoly) + cell, pTD);
+    net_polycomp_poly (Domain, SSet, pnf_tree, ptid_seedid, cell,
+                       (*pPoly) + cell, pTD);
 
   return;
 }

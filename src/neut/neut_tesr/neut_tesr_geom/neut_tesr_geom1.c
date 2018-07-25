@@ -52,13 +52,7 @@ neut_tesr_point_pos (struct TESR Tesr, double *coo, int *voxpos)
 
   for (i = 0; i < Tesr.Dim; i++)
   {
-    if (coo[i] < 0 || coo[i] > Tesr.size[i] * Tesr.vsize[i])
-    {
-      ut_array_1d_int_set (voxpos, 3, -1);
-      return -1;
-    }
-
-    voxpos[i] = ceil (coo[i] / Tesr.vsize[i] + 1e-6);
+    voxpos[i] = ceil ((coo[i] - Tesr.Origin[i]) / Tesr.vsize[i] + 1e-6);
     voxpos[i] = ut_num_min_int (voxpos[i], Tesr.size[i]);
   }
   for (i = Tesr.Dim; i < 3; i++)
@@ -73,12 +67,7 @@ neut_tesr_pos_coo (struct TESR Tesr, int *voxpos, double *coo)
   int i;
 
   for (i = 0; i < Tesr.Dim; i++)
-  {
-    if (voxpos[i] < 1 || voxpos[i] > Tesr.size[i])
-      return -1;
-
-    coo[i] = (voxpos[i] - 0.5) * Tesr.vsize[i];
-  }
+    coo[i] = Tesr.Origin[i] + (voxpos[i] - 0.5) * Tesr.vsize[i];
 
   return 0;
 }
@@ -219,7 +208,7 @@ neut_tesr_centre (struct TESR Tesr, double *coo)
   int i;
 
   for (i = 0; i < 3; i++)
-    coo[i] = 0.5 * Tesr.vsize[i] * Tesr.size[i];
+    coo[i] = Tesr.Origin[i] + 0.5 * Tesr.vsize[i] * Tesr.size[i];
 
   return;
 }
@@ -548,7 +537,6 @@ neut_tesr_perpos_pos (struct TESR Tesr, int *per, int *pos, int *pos2)
 
   for (i = 0; i < Tesr.Dim; i++)
     if (pos[i] < 1 || pos[i] > Tesr.size[i])
-    {
       if (!per || per[i])
       {
         while (pos2[i] < 1)
@@ -556,9 +544,22 @@ neut_tesr_perpos_pos (struct TESR Tesr, int *per, int *pos, int *pos2)
         while (pos2[i] > Tesr.size[i])
           pos2[i] -= Tesr.size[i];
       }
-      else
-        abort ();
-    }
 
   return 0;
+}
+
+void
+neut_tesr_bbox (struct TESR Tesr, double **bbox)
+{
+  int i;
+
+  ut_array_2d_set (bbox, 3, 1, 0);
+
+  for (i = 0; i < 3; i++)
+  {
+    bbox[i][0] = Tesr.Origin[i];
+    bbox[i][1] = Tesr.Origin[i] + Tesr.size[i] * Tesr.vsize[i];
+  }
+
+  return;
 }

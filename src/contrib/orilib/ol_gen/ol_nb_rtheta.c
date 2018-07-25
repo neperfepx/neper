@@ -11,12 +11,18 @@ ol_nb_r (double n1, double n2, double *r)
   if (n1 < 0 || n1 > 1 || n2 < 0 || n2 > 1)
     abort ();
 
-  alpha = acos (2 * n1 - 1);
-  beta = 2 * OL_PI * n2;
+  if (n1 != 0)
+  {
+    alpha = acos (2 * n1 - 1);
+    beta = 2 * OL_PI * n2;
 
-  r[0] = sin (alpha) * cos (beta);
-  r[1] = sin (alpha) * sin (beta);
-  r[2] = cos (alpha);
+    r[0] = sin (alpha) * cos (beta);
+    r[1] = sin (alpha) * sin (beta);
+    r[2] = cos (alpha);
+  }
+
+  else
+    ut_array_1d_set_3 (r, 0, 0, 1);
 
   return;
 }

@@ -28,7 +28,7 @@ extern "C"
     char **morphooptialgo;		//
     char *morphooptiinistring;		// opti algorithm
     char **morphooptiini;		//
-    char *morphooptialgoneighstring;    // opti algorithm
+    char *morphooptialgoneighstring;    // opti algorithm / neighbour search
     char **morphooptialgoneigh;		//
     char *morphooptialgomaxiterstring;  // max number of iterations without
     					// decreasing the objective function
@@ -60,8 +60,20 @@ extern "C"
     char *morphooptimultiseedstring;	// opti multiseed
     char **morphooptimultiseed;		//
 
+    char *oristring;		        // orientation distribution string
+    char **ori;                         // orientation distribution
+    char *oricrysymstring;		// orientation crystal symmetry
+    char **oricrysym;			//
+    char *orioptistopstring;            // orientation opti / termination criterion
+    char **orioptistop;                 //
+    char *orioptineighstring;           // orientation opti / neighbour string
+    char **orioptineigh;                //
+    char *orioptiinistring;             // orientation opti initial orientations
+    char **orioptiini;                  //
+    char *orioptifixstring;             // orientation opti fixed orientations
+    char **orioptifix;                  //
+
     // post-tessellation options
-    char *scalestring;			// scaling
     int reg;				// regularization
     double fmax;			// regularization fmax
     char *seltype;			// regularization sel type
@@ -75,7 +87,6 @@ extern "C"
 
     // internal variables
     int *periodic;			// periodicity
-    double *scale;			// scaling factors
     int levelqty;			// number of levels
     char *mode;				// running mode: tess or tesr
     char *input;			// NULL (=none), n, tess, tesr
@@ -87,10 +98,7 @@ extern "C"
     char *format;			// output format
     char *tesrformat;			// output tesr format
 
-    char *oridistribstring;		// orientation distribution string
-    char **oridistrib;			// orientation distribution
     char *orides;			// orientation descriptor
-    char *oricrysym;			// orientation crystal symmetry
     char *oriformat;			// orientation file format
 
     // output files
@@ -113,7 +121,7 @@ extern "C"
     char *stpt;				// point stat file
     char *stvox;		        // vox stat file
     char *obj;				// Wavefront obj file
-    char *ori;				// orientation file
+    char *orif;				// orientation file
 
     // output files for development
     char *debug;			// tess debug file

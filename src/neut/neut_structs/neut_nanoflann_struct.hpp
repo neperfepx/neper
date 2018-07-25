@@ -9,7 +9,7 @@ struct NFCLOUD
     double p[3];
   };
 
-  std::vector < pt > pts;
+    std::vector < pt > pts;
 
   // Must return the number of data points
   inline size_t kdtree_get_point_count () const
@@ -34,5 +34,10 @@ struct NFCLOUD
   }
 };
 
-typedef nanoflann::KDTreeSingleIndexDynamicAdaptor < nanoflann::L2_Simple_Adaptor < double, NFCLOUD >, NFCLOUD, 3
-> NFTREE;
+typedef
+  nanoflann::KDTreeSingleIndexDynamicAdaptor <
+  nanoflann::L2_Simple_Adaptor < double,
+  NFCLOUD >,
+  NFCLOUD,
+  3 >
+  NFTREE;

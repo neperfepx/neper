@@ -49,7 +49,7 @@ extern "C"
 				     char *expr, double **val, int *valqty, char **ptype);
 
   extern int neut_tesr_pos_valid (struct TESR Tesr, int *pos);
-
+  extern void neut_tesr_sizestring (struct TESR Tesr, char **psizestring);
 #endif				/* NEUT_VOX_GEN_H */
 
 #ifdef __cplusplus

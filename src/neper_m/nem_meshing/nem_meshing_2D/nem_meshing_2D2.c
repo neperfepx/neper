@@ -13,9 +13,9 @@ nem_meshing_2D_face (struct IN_M In, struct MESHPARA MeshPara,
                      struct NODES *pNodes,
 		     struct MESH *Mesh,
                      struct NODES *pN, struct MESH *pM,
-                     int **pmaster_id, int face)
+                     int face)
 {
-  int a, master;
+  int a;
   double elapsed_t, mOsize;
   struct NODES N2;
   struct MESH M2;
@@ -25,45 +25,29 @@ nem_meshing_2D_face (struct IN_M In, struct MESHPARA MeshPara,
   neut_nodes_set_zero (&N2);
   neut_mesh_set_zero (&M2);
 
-  if (Tess.Dim == 2 || strncmp (Tess.Type, "periodic", 8) != 0
-      || Tess.PerFaceMaster[face] == 0)
-  {
-    (*pMultim).Oalgo[face] = -1;
-    if (!MeshPara.face_op || !MeshPara.face_op[face])
-      for (a = 0; a < (*pMultim).algoqty; a++)
+  (*pMultim).Oalgo[face] = -1;
+  if (!MeshPara.face_op || !MeshPara.face_op[face])
+    for (a = 0; a < (*pMultim).algoqty; a++)
+    {
+      // meshing
+      nem_meshing_2D_face_algo (In, MeshPara, pMultim, a, pctrlc_t,
+                                pallowed_t, pmax_elapsed_t, Tess,
+                                RNodes, RMesh, *pNodes, Mesh, face,
+                                &N2, &M2, &mOsize, &elapsed_t);
+
+      // best-quality mesh, recording it
+      if ((*pMultim).Oalgo[face] == a)
       {
-	// meshing
-	nem_meshing_2D_face_algo (In, MeshPara, pMultim, a, pctrlc_t,
-				  pallowed_t, pmax_elapsed_t, Tess,
-				  RNodes, RMesh, *pNodes, Mesh, face,
-				  &N2, &M2, &mOsize, &elapsed_t);
-
-	// best-quality mesh, recording it
-	if ((*pMultim).Oalgo[face] == a)
-	{
-	  neut_nodes_memcpy (N2, pN);
-	  neut_mesh_memcpy (M2, pM);
-	}
-
-	// minimum quality reached; breaking
-	if ((*pMultim).mO[face][a] > In.meshqualmin)
-	  break;
+        neut_nodes_memcpy (N2, pN);
+        neut_mesh_memcpy (M2, pM);
       }
-    else
-      neut_mesh_elset_mesh (RNodes, RMesh[2], face, pN, pM, NULL);
-  }
 
+      // minimum quality reached; breaking
+      if ((*pMultim).mO[face][a] > In.meshqualmin)
+        break;
+    }
   else
-  {
-    master = Tess.PerFaceMaster[face];
-    neut_mesh_elset_mesh (*pNodes, Mesh[2], master, pN, pM, pmaster_id);
-    neut_nodes_shift (pN,
-		      Tess.PerFaceShift[face][0] * Tess.PeriodicDist[0],
-		      Tess.PerFaceShift[face][1] * Tess.PeriodicDist[1],
-		      Tess.PerFaceShift[face][2] * Tess.PeriodicDist[2]);
-    if (Tess.PerFaceOri[face] == 1)
-      neut_mesh_reversenodes (pM);
-  }
+    neut_mesh_elset_mesh (RNodes, RMesh[2], face, pN, pM, NULL);
 
   if ((*pMultim).Oalgo[face] != -1)
 #pragma omp critical
@@ -73,6 +57,30 @@ nem_meshing_2D_face (struct IN_M In, struct MESHPARA MeshPara,
 
   neut_nodes_free (&N2);
   neut_mesh_free (&M2);
+
+  return 0;
+}
+
+int
+nem_meshing_2D_face_per (struct TESS Tess, struct NODES *N,
+                         struct MESH *M, struct NODES *pN,
+                         struct MESH *pM, int **pmaster_id,
+                         int face)
+
+{
+  int master;
+
+  neut_nodes_set_zero (pN);
+  neut_mesh_set_zero (pM);
+
+  master = Tess.PerFaceMaster[face];
+  neut_mesh_elset_mesh (N[master], M[master], 1, pN, pM, pmaster_id);
+  neut_nodes_shift (pN,
+                    Tess.PerFaceShift[face][0] * Tess.PeriodicDist[0],
+                    Tess.PerFaceShift[face][1] * Tess.PeriodicDist[1],
+                    Tess.PerFaceShift[face][2] * Tess.PeriodicDist[2]);
+  if (Tess.PerFaceOri[face] == 1)
+    neut_mesh_reversenodes (pM);
 
   return 0;
 }

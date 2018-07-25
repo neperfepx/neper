@@ -4,15 +4,19 @@
 
 #include"net_polycomp_.h"
 #include"neut/neut_structs/neut_nanoflann_struct.hpp"
-extern void neut_seedset_kdtree (struct SEEDSET SSet, NFCLOUD *pnf_cloud,
-    NFTREE **pnf_tree, int**, int **);
+extern void neut_seedset_kdtree (struct SEEDSET SSet, NFCLOUD * pnf_cloud,
+                                 NFTREE ** pnf_tree, int **, int **);
 extern void neut_seedset_kdtree_update (struct SEEDSET SSet, int *seedchanged,
-                                        int seedchangedqty, NFCLOUD *pnf_cloud,
-                                        NFTREE **pnf_tree, int **, int **);
+                                        int seedchangedqty,
+                                        NFCLOUD * pnf_cloud,
+                                        NFTREE ** pnf_tree, int **, int **);
 
-extern void net_polycomp_cells_updatecell (struct POLY Domain, struct SEEDSET SSet,
-                                    NFTREE **pnf_tree, int *ptid_seedid, int cell,
-				    struct POLY **pPoly, struct TDYN *pTD);
+extern void net_polycomp_cells_updatecell (struct POLY Domain,
+                                           struct SEEDSET SSet,
+                                           NFTREE ** pnf_tree,
+                                           int *ptid_seedid, int cell,
+                                           struct POLY **pPoly,
+                                           struct TDYN *pTD);
 
 void
 net_polycomp_inittdyn (struct POLY Domain, struct SEEDSET SSet,
@@ -31,11 +35,11 @@ net_polycomp_inittdyn (struct POLY Domain, struct SEEDSET SSet,
   else
   {
     (*pTD).cell_kdtree_dur = 0;
-    (*pTD).cell_shift_dur  = 0;
-    (*pTD).cell_neigh_dur  = 0;
-    (*pTD).cell_cell_dur   = 0;
-    (*pTD).cell_other_dur  = 0;
-    (*pTD).cell_total_dur  = 0;
+    (*pTD).cell_shift_dur = 0;
+    (*pTD).cell_neigh_dur = 0;
+    (*pTD).cell_cell_dur = 0;
+    (*pTD).cell_other_dur = 0;
+    (*pTD).cell_total_dur = 0;
   }
 
   return;
@@ -43,9 +47,8 @@ net_polycomp_inittdyn (struct POLY Domain, struct SEEDSET SSet,
 
 void
 net_polycomp_kdtree (struct SEEDSET SSet,
-		     NFCLOUD *pnf_cloud, NFTREE **pnf_tree,
-                     int** pptid_seedid, int** pseedid_ptid,
-                     struct TDYN *pTD)
+                     NFCLOUD * pnf_cloud, NFTREE ** pnf_tree,
+                     int **pptid_seedid, int **pseedid_ptid, struct TDYN *pTD)
 {
   struct timeval time;
 
@@ -54,10 +57,12 @@ net_polycomp_kdtree (struct SEEDSET SSet,
   if (!strcmp ((*pTD).algoneigh, "nanoflann"))
   {
     if ((*pTD).iter == 1)
-      neut_seedset_kdtree (SSet, pnf_cloud, pnf_tree, pptid_seedid, pseedid_ptid);
+      neut_seedset_kdtree (SSet, pnf_cloud, pnf_tree, pptid_seedid,
+                           pseedid_ptid);
     else if ((*pTD).seedmovedqty > 0)
       neut_seedset_kdtree_update (SSet, (*pTD).seedmoved, (*pTD).seedmovedqty,
-                                  pnf_cloud, pnf_tree, pptid_seedid, pseedid_ptid);
+                                  pnf_cloud, pnf_tree, pptid_seedid,
+                                  pseedid_ptid);
   }
 
   (*pTD).cell_kdtree_dur = ut_time_subtract (&time, NULL);
@@ -79,8 +84,7 @@ net_polycomp_shift (struct SEEDSET SSet, struct TDYN *pTD)
   // computing shifts and maxshift, on condition that the refcoo are defined
   // (i.e. this is not the first increment)
   for (i = 1; i <= (*pTD).N; i++)
-    (*pTD).shift[i] =
-      ut_space_dist ((*pTD).neighrefcoo[i], SSet.SeedCoo[i]);
+    (*pTD).shift[i] = ut_space_dist ((*pTD).neighrefcoo[i], SSet.SeedCoo[i]);
   (*pTD).shiftmax = ut_array_1d_max ((*pTD).shift + 1, (*pTD).N);
   (*pTD).shiftmean = ut_array_1d_mean ((*pTD).shift + 1, (*pTD).N);
 
@@ -96,8 +100,8 @@ net_polycomp_shift (struct SEEDSET SSet, struct TDYN *pTD)
 
 void
 net_polycomp_updatedseeds (struct SEEDSET SSet, struct TDYN *pTD,
-			   int *updatedseeds_in, int updatedseedqty_in,
-			   int **pupdatedseeds, int *pupdatedseedqty)
+                           int *updatedseeds_in, int updatedseedqty_in,
+                           int **pupdatedseeds, int *pupdatedseedqty)
 {
   int i;
 
@@ -106,15 +110,16 @@ net_polycomp_updatedseeds (struct SEEDSET SSet, struct TDYN *pTD,
     (*pupdatedseedqty) = 0;
     for (i = 1; i <= SSet.N; i++)
       if ((*pTD).iter == 1 || (*pTD).shift[i] > 1e-20
-	  || (*pTD).shiftw[i] > 1e-20)
-	ut_array_1d_int_list_addelt_nocheck (pupdatedseeds, pupdatedseedqty, i);
+          || (*pTD).shiftw[i] > 1e-20)
+        ut_array_1d_int_list_addelt_nocheck (pupdatedseeds, pupdatedseedqty,
+                                             i);
   }
   else
   {
     (*pupdatedseedqty) = updatedseedqty_in;
     (*pupdatedseeds) = ut_alloc_1d_int (*pupdatedseedqty);
     ut_array_1d_int_memcpy (*pupdatedseeds, *pupdatedseedqty,
-			    updatedseeds_in);
+                            updatedseeds_in);
   }
 
   return;
@@ -122,7 +127,7 @@ net_polycomp_updatedseeds (struct SEEDSET SSet, struct TDYN *pTD,
 
 void
 net_polycomp_cells (struct POLY Domain, struct SEEDSET SSet,
-                    NFTREE **pnf_tree, int *ptid_seedid,
+                    NFTREE ** pnf_tree, int *ptid_seedid,
                     int *updatedseeds, int updatedseedqty,
                     struct TDYN *pTD, struct POLY **pPoly)
 {
@@ -140,33 +145,34 @@ net_polycomp_cells (struct POLY Domain, struct SEEDSET SSet,
   if ((*pTD).domcellqty == 1)
 #pragma omp parallel for schedule(dynamic)
     for (i = 1; i <= SSet.N; i++)
-      net_polycomp_cells_updatecell (Domain, SSet, pnf_tree, ptid_seedid, i, pPoly, pTD);
+      net_polycomp_cells_updatecell (Domain, SSet, pnf_tree, ptid_seedid, i,
+                                     pPoly, pTD);
 
   // Recording old neighs of updatedseeds
   neut_polys_neighpolys (*pPoly, SSet, updatedseeds, updatedseedqty,
-			 &oldneighs, &oldneighqty);
+                         &oldneighs, &oldneighqty);
 
   // Updating cells of updatedseeds
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < updatedseedqty; i++)
     net_polycomp_cells_updatecell (Domain, SSet, pnf_tree, ptid_seedid,
-				   updatedseeds[i], pPoly, pTD);
+                                   updatedseeds[i], pPoly, pTD);
 
   // Recording new neighs of updatedseeds
   neut_polys_neighpolys (*pPoly, SSet, updatedseeds, updatedseedqty,
-			 &newneighs, &newneighqty);
+                         &newneighs, &newneighqty);
 
   // Updating old first-neighbours of updatedseeds
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < oldneighqty; i++)
-    net_polycomp_cells_updatecell (Domain, SSet, pnf_tree, ptid_seedid, oldneighs[i],
-				   pPoly, pTD);
+    net_polycomp_cells_updatecell (Domain, SSet, pnf_tree, ptid_seedid,
+                                   oldneighs[i], pPoly, pTD);
 
   // Updating new first-neighbours of updatedseeds
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < newneighqty; i++)
-    net_polycomp_cells_updatecell (Domain, SSet, pnf_tree, ptid_seedid, newneighs[i],
-				   pPoly, pTD);
+    net_polycomp_cells_updatecell (Domain, SSet, pnf_tree, ptid_seedid,
+                                   newneighs[i], pPoly, pTD);
 
   // Updating second-and-more-neighbours of updateseeds (changedneighs)
   // We start from the second-neighbours, but third-and-more-neighbours
@@ -174,13 +180,14 @@ net_polycomp_cells (struct POLY Domain, struct SEEDSET SSet,
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < (*pTD).changedneighqty; i++)
     net_polycomp_cells_updatecell (Domain, SSet, pnf_tree, ptid_seedid,
-				   (*pTD).changedneighs[i], pPoly, pTD);
+                                   (*pTD).changedneighs[i], pPoly, pTD);
 
   // If a cell is the full domain, updating all cells
   if ((*pTD).domcellqty == 1)
 #pragma omp parallel for schedule(dynamic)
     for (i = 1; i <= SSet.N; i++)
-      net_polycomp_cells_updatecell (Domain, SSet, pnf_tree, ptid_seedid, i, pPoly, pTD);
+      net_polycomp_cells_updatecell (Domain, SSet, pnf_tree, ptid_seedid, i,
+                                     pPoly, pTD);
 
   // Free'ing memory
   ut_free_1d_int (oldneighs);

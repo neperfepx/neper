@@ -43,13 +43,26 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
     {
       id = face[i];
 
-      nem_meshing_2D_face (In, MeshPara, &Multim,
-                           &ctrlc_t, &allowed_t, &max_elapsed_t, Tess,
-                           RNodes, RMesh, pNodes, Mesh, N + id,
-                           M + id, master_id + id, id);
-
+      if (Tess.Dim == 2 || strncmp (Tess.Type, "periodic", 8) != 0
+          || Tess.PerFaceMaster[id] == 0)
+        nem_meshing_2D_face (In, MeshPara, &Multim,
+                             &ctrlc_t, &allowed_t, &max_elapsed_t, Tess,
+                             RNodes, RMesh, pNodes, Mesh, N + id,
+                             M + id, id);
 #pragma omp critical
       nem_meshing_2D_progress (Multim, ++qty, faceqty, message);
+    }
+
+  // slave parallel faces, if any
+#pragma omp parallel for schedule(dynamic) private(i,id)
+  for (i = 0; i < faceqty; i++)
+    if (Tess.FaceVerQty[face[i]] > 0)
+    {
+      id = face[i];
+
+      if (Tess.Dim != 2 && !strncmp (Tess.Type, "periodic", 8)
+          && Tess.PerFaceMaster[id] != 0)
+        nem_meshing_2D_face_per (Tess, N, M, N + id, M + id, master_id + id, id);
     }
 
   // Recording face mesh in global mesh

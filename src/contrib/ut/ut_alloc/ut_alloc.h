@@ -181,6 +181,9 @@ extern char** ut_realloc_2d_char_addline (char**, int, int);
 extern int** ut_realloc_2d_int_delline (int**, int, int);
 extern double** ut_realloc_2d_delline (double**, int, int);
 
+extern double **ut_alloc_2d_contig (size_t rows, size_t cols);
+extern long **ut_alloc_2d_contig_long (size_t rows, size_t cols);
+
 #endif /* UT_ALLOC_H */
 
 #ifdef __cplusplus

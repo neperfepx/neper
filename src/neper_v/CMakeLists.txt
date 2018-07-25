@@ -16,7 +16,7 @@ option (DEVEL_PROFILING   "Enable profiling (OFF for production use)" OFF)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-add_definitions(-Wall -W)
+add_definitions(-Wall -W -Wno-unknown-pragmas)
 if (DEVEL_OPTIMIZATION)
   add_definitions(-O3)
 endif ()

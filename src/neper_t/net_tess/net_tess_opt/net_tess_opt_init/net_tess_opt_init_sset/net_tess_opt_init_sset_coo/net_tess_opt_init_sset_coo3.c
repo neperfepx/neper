@@ -63,6 +63,11 @@ net_tess_opt_init_sset_coo_centre_randpt_pick (struct POINT Point,
   for (i = Point.Dim; i < 3; i++)
     coo[i] = ut_array_1d_mean (Point.BBox[i], 2);
 
+  if (Point.activedim)
+    for (i = 0; i < Point.Dim; i++)
+      if (!Point.activedim[i])
+        coo[i] = ut_array_1d_mean (Point.BBox[i], 2);
+
   return 0;
 }
 

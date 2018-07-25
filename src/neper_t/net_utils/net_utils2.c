@@ -16,10 +16,15 @@ net_tess_tesr_cell (struct TESS Tess, int cell, struct TESR *pTesr)
 
   for (i = 0; i < Tess.Dim; i++)
     for (j = 0; j < 2; j++)
+      bbox[i][j] -= (*pTesr).Origin[i];
+
+  for (i = 0; i < Tess.Dim; i++)
+    for (j = 0; j < 2; j++)
     {
-      (*pTesr).CellBBox[cell][i][j] = ut_num_d2ri (ceil (bbox[i][j] / (*pTesr).vsize[i] + 1e-6));
-      if (bbox[i][j] < (*pTesr).vsize[i] * (*pTesr).size[i] + 1e-6)
-        (*pTesr).CellBBox[cell][i][j] = ut_num_min ((*pTesr).CellBBox[cell][i][j], (*pTesr).size[i]);
+      (*pTesr).CellBBox[cell][i][j]
+        = ut_num_d2ri (ceil (bbox[i][j] / (*pTesr).vsize[i] + 1e-6));
+      if (bbox[i][j] < 0)
+        (*pTesr).CellBBox[cell][i][j]--;
     }
   if (Tess.Dim == 2)
     ut_array_1d_int_set_2 ((*pTesr).CellBBox[cell][2], 1, 1);
@@ -29,10 +34,16 @@ net_tess_tesr_cell (struct TESS Tess, int cell, struct TESR *pTesr)
       for (i = (*pTesr).CellBBox[cell][0][0]; i <= (*pTesr).CellBBox[cell][0][1]; i++)
       {
 	ut_array_1d_int_set_3 (pos, i, j, k);
-        neut_tesr_perpos_pos (*pTesr, Tess.Periodic, pos, pos);
 	neut_tesr_pos_coo (*pTesr, pos, coo);
+
 	if (neut_tess_point_incell (Tess, coo, cell) == 1)
-	  (*pTesr).VoxCell[pos[0]][pos[1]][pos[2]] = cell;
+        {
+          neut_tesr_perpos_pos (*pTesr, Tess.Periodic, pos, pos);
+          if (pos[0] >= 1 && pos[0] <= (*pTesr).size[0]
+           && pos[1] >= 1 && pos[1] <= (*pTesr).size[1]
+           && pos[2] >= 1 && pos[2] <= (*pTesr).size[2])
+            (*pTesr).VoxCell[pos[0]][pos[1]][pos[2]] = cell;
+        }
       }
 
   ut_free_2d (bbox, 3);

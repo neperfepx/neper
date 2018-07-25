@@ -15,6 +15,10 @@ extern "C"
 #include<float.h>
 #include<gsl/gsl_rng.h>
 #include<gsl/gsl_randist.h>
+#ifdef HAVE_ZEROMQ
+#include <assert.h>
+#include <zmq.h>
+#endif // HAVE_ZEROMQ
 
 #include"ut.h"
 #include"neut_t.h"
@@ -27,7 +31,8 @@ extern "C"
 #include"net_tess_opt_init_sset/net_tess_opt_init_sset.h"
 #include"net_tess_opt_init_tesrobj/net_tess_opt_init_tesrobj.h"
 
-extern void net_tess_opt_init_general (struct TOPT *pTOpt);
+extern void net_tess_opt_init_general (struct IN_T In, int level, struct MTESS
+    MTess, struct TESS *Tess, int dtess, int dcell, struct TOPT *pTOpt);
 
 extern void net_tess_opt_init_domain (struct IN_T In, struct TESS PTess,
 				      int cell, struct TOPT *pTOpt);
@@ -40,6 +45,8 @@ extern void net_tess_opt_init_target (struct IN_T In, struct MTESS
 				      int dompoly, int level, char *morpho,
 				      struct TOPT *pTOpt);
 
+extern void net_tess_opt_init_crystal (struct IN_T In, int level, struct TOPT *pTOpt);
+
 extern void net_tess_opt_init_target_cellqty (struct IN_T In, struct
 					      MTESS MTess, struct TESS
 					      Tess, int poly, int *pCellQty);
@@ -49,6 +56,8 @@ extern void net_tess_opt_init_target_scale (struct TOPT *pTOpt, int *pos);
 extern void net_tess_opt_init_current (struct TOPT *pTOpt);
 
 extern void net_tess_opt_init_bounds (struct TOPT *pTOpt);
+extern void net_tess_opt_init_bounds_seeds (struct TOPT *pTOpt);
+extern void net_tess_opt_init_bounds_crystal (struct TOPT *pTOpt);
 
 extern void net_tess_opt_init_parms_objective (char *distribobjective,
 					       struct TOPT *pTOpt);

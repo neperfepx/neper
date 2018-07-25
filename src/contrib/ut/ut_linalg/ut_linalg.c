@@ -5,6 +5,8 @@
 #include<stdlib.h>
 #include<math.h>
 #include"ut.h"
+
+#ifdef HAVE_GSL
 #include<gsl/gsl_linalg.h>
 
 int
@@ -50,3 +52,4 @@ ut_linalg_solve_LU (double** A, double* B, int size, double* X)
 
   return status;
 }
+#endif

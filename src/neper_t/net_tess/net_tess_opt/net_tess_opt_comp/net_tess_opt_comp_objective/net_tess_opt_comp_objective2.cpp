@@ -6,8 +6,8 @@
 #include "neut/neut_structs/neut_nanoflann_struct.hpp"
 
 extern void net_polycomp (struct POLY Domain, struct SEEDSET SeedSet,
-                          NFCLOUD *pnf_cloud, NFTREE **pnf_index,
-                          int** pptid_seedid, int** pseedid_ptid,
+                          NFCLOUD * pnf_cloud, NFTREE ** pnf_index,
+                          int **pptid_seedid, int **pseedid_ptid,
                           struct POLY
                           **pPoly, int *seed_changed, int seed_changedqty,
                           struct TDYN *);
@@ -27,19 +27,21 @@ net_tess_opt_comp_objective_x_seedset (const double *x, struct TOPT *pTOpt)
       (*pTOpt).TDyn.varchangedqty++;
       *((*pTOpt).x_pvar[i]) = x[i];
       ut_array_1d_int_list_addelt (&(*pTOpt).TDyn.seedchanged,
-	  &(*pTOpt).TDyn.seedchangedqty, (*pTOpt).x_seed[i]);
+                                   &(*pTOpt).TDyn.seedchangedqty,
+                                   (*pTOpt).x_seed[i]);
       if ((*pTOpt).x_var[i] != 3)
         ut_array_1d_int_list_addelt (&(*pTOpt).TDyn.seedmoved,
-            &(*pTOpt).TDyn.seedmovedqty, (*pTOpt).x_seed[i]);
+                                     &(*pTOpt).TDyn.seedmovedqty,
+                                     (*pTOpt).x_seed[i]);
     }
 
   ut_array_1d_int_sort_uniq ((*pTOpt).TDyn.seedchanged,
-			     (*pTOpt).TDyn.seedchangedqty,
-			     &(*pTOpt).TDyn.seedchangedqty);
+                             (*pTOpt).TDyn.seedchangedqty,
+                             &(*pTOpt).TDyn.seedchangedqty);
 
   ut_array_1d_int_sort_uniq ((*pTOpt).TDyn.seedmoved,
-			     (*pTOpt).TDyn.seedmovedqty,
-			     &(*pTOpt).TDyn.seedmovedqty);
+                             (*pTOpt).TDyn.seedmovedqty,
+                             &(*pTOpt).TDyn.seedmovedqty);
 
   for (i = 0; i < (*pTOpt).TDyn.seedchangedqty; i++)
   {
@@ -48,6 +50,19 @@ net_tess_opt_comp_objective_x_seedset (const double *x, struct TOPT *pTOpt)
     if (!strncmp ((*pTOpt).SSet.Type, "periodic", 8))
       neut_seedset_seed_updateslaves (&((*pTOpt).SSet), seed);
   }
+
+  return;
+}
+
+// FIXME/EMMC
+// below, we need not to copy all values.
+void
+net_tess_opt_comp_objective_x_crystal (const double *x, struct TOPT *pTOpt)
+{
+  int i;
+
+  for (i = 0; i < (*pTOpt).xqty; i++)
+    *((*pTOpt).x_pvar[i]) = x[i];
 
   return;
 }
@@ -62,8 +77,8 @@ net_tess_opt_comp_objective_centroidal_update (struct TOPT *pTOpt)
     seed = (*pTOpt).TDyn.seedchanged[i];
 
     ut_array_1d_memcpy ((*pTOpt).tarcellval[0][seed],
-			(*pTOpt).tarcellvalqty[0],
-			(*pTOpt).SSet.SeedCoo[seed]);
+                        (*pTOpt).tarcellvalqty[0],
+                        (*pTOpt).SSet.SeedCoo[seed]);
   }
 
   return;
@@ -73,30 +88,23 @@ int
 net_tess_opt_comp_objective_poly (struct TOPT *pTOpt)
 {
   int i, cell, scell;
-  struct POLY DomPoly;
 
   ut_string_string ((char *) "custom", &((*pTOpt).SSet).weight);
 
-  neut_poly_set_zero (&DomPoly);
-  if (!strcmp (((*pTOpt).SSet).Type, "standard"))
-    net_tess_poly ((*pTOpt).Dom, 1, &DomPoly);
-  else
-    net_tess_poly ((*pTOpt).DomPer, 1, &DomPoly);
-
-  net_polycomp (DomPoly, (*pTOpt).SSet,
-		(NFCLOUD *) (*pTOpt).pnf_cloud,
+  net_polycomp ((*pTOpt).DomPoly, (*pTOpt).SSet,
+                (NFCLOUD *) (*pTOpt).pnf_cloud,
                 (NFTREE **) (*pTOpt).pnf_tree,
                 &(*pTOpt).ptid_seedid,
                 &(*pTOpt).seedid_ptid,
                 &(*pTOpt).Poly,
-		(*pTOpt).TDyn.seedchanged, (*pTOpt).TDyn.seedchangedqty,
-		&(*pTOpt).TDyn);
+                (*pTOpt).TDyn.seedchanged, (*pTOpt).TDyn.seedchangedqty,
+                &(*pTOpt).TDyn);
 
   (*pTOpt).scellchangedqty = ((*pTOpt).TDyn).cellchangedqty;
   (*pTOpt).scellchanged = ut_realloc_1d_int ((*pTOpt).scellchanged,
-					     (*pTOpt).scellchangedqty);
+                                             (*pTOpt).scellchangedqty);
   ut_array_1d_int_memcpy ((*pTOpt).scellchanged, (*pTOpt).scellchangedqty,
-			  ((*pTOpt).TDyn).cellchanged);
+                          ((*pTOpt).TDyn).cellchanged);
 
   (*pTOpt).cellchangedqty = 0;
   for (i = 0; i < (*pTOpt).scellchangedqty; i++)
@@ -104,11 +112,9 @@ net_tess_opt_comp_objective_poly (struct TOPT *pTOpt)
     scell = (*pTOpt).scellchanged[i];
     cell = (*pTOpt).SCellCell[scell];
     ut_array_1d_int_list_addelt (&((*pTOpt).cellchanged),
-				 &((*pTOpt).cellchangedqty), cell);
+                                 &((*pTOpt).cellchangedqty), cell);
   }
   ut_array_1d_int_sort ((*pTOpt).cellchanged, (*pTOpt).cellchangedqty);
-
-  neut_poly_free (&DomPoly);
 
   return 0;
 }
@@ -123,7 +129,7 @@ net_tess_opt_comp_objective_debugtest (struct TOPT TOpt)
   neut_tess_volume (TOpt.Dom, &domvol);
   for (i = 1; i <= TOpt.CellQty; i++)
     neut_polys_volume (TOpt.Poly, TOpt.CellSCellList[i],
-	               TOpt.CellSCellQty[i], vol + i);
+                       TOpt.CellSCellQty[i], vol + i);
 
   totvol = ut_array_1d_sum (vol + 1, TOpt.CellQty);
 
@@ -134,14 +140,14 @@ net_tess_opt_comp_objective_debugtest (struct TOPT TOpt)
     printf ("Wrong cell update in net_polycomp.\n");
     printf ("TDyn.seedchanged = ");
     ut_array_1d_int_fprintf (stdout, TOpt.TDyn.seedchanged,
-	TOpt.TDyn.seedchangedqty, "%d");
+                             TOpt.TDyn.seedchangedqty, "%d");
     printf ("TDyn.cellchanged = ");
     ut_array_1d_int_fprintf (stdout, TOpt.TDyn.cellchanged,
-	TOpt.TDyn.cellchangedqty, "%d");
+                             TOpt.TDyn.cellchangedqty, "%d");
     printf ("cell vols: ");
     ut_array_1d_fprintf (stdout, vol + 1, TOpt.CellQty, "%.15f");
     printf ("totvol = %.15f != domvol = %.15f (ratio %.12f)\n",
-	              totvol, domvol, totvol / domvol);
+            totvol, domvol, totvol / domvol);
     abort ();
   }
 

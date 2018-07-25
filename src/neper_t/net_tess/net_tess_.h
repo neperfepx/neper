@@ -19,6 +19,7 @@
 #include"../structIn_t.h"
 #include"net_tess_cube/net_tess_cube.h"
 #include"net_tess_lam/net_tess_lam.h"
+#include"net_tess_tocta/net_tess_tocta.h"
 #include"net_tess_opt/net_tess_opt.h"
 #include"net_utils/net_utils.h"
 

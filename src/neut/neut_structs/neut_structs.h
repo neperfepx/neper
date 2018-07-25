@@ -16,6 +16,7 @@ extern "C"
 #define NEUT_STRUCTS_H
 
 #include "neut_tesl_struct.h"
+#include "neut_crys_struct.h"
 #include "neut_reg_struct.h"
 #include "neut_lloyd_struct.h"
 #include "neut_mesh_struct.h"
@@ -50,6 +51,7 @@ extern "C"
 #endif
 
 #include "neut_tdyn_struct.h"
+#include "neut_oopt_struct.h"
 
 #endif				/* NEUT_STRUCTS_H */
 

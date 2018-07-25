@@ -5,11 +5,17 @@
 #include "net_tess_opt_init_sset_coo_.h"
 
 void
-net_tess_opt_init_sset_coo_cluster (int dim, gsl_rng *r2, int qty, double dist,
-				    double rad, struct POINT *pPoint)
+net_tess_opt_init_sset_coo_cluster (int dim, int *activedim, gsl_rng *r2,
+                                    int qty, double dist, double rad,
+                                    struct POINT *pPoint)
 {
   neut_point_set_zero (pPoint);
   (*pPoint).Dim = dim;
+  if (activedim)
+  {
+    (*pPoint).activedim = ut_alloc_1d_int (3);
+    ut_array_1d_int_memcpy ((*pPoint).activedim, 3, activedim);
+  }
 
   if (qty == 1)
     neut_point_addpoint (pPoint, NULL, rad);
@@ -17,7 +23,7 @@ net_tess_opt_init_sset_coo_cluster (int dim, gsl_rng *r2, int qty, double dist,
   else
   {
     double *coo = ut_alloc_1d (3);
-    int i, dimqty, *dims = ut_alloc_1d_int (3);
+    int i, j, dimqty, *dims = ut_alloc_1d_int (3);
 
     dimqty = dim;
     ut_array_1d_int_set_id (dims, dimqty);
@@ -25,6 +31,10 @@ net_tess_opt_init_sset_coo_cluster (int dim, gsl_rng *r2, int qty, double dist,
     for (i = 1; i <= qty; i++)
     {
       ut_space_random (r2, dims, dimqty, dist, dist, coo);
+      if (activedim)
+        for (j = 0; j < dim; j++)
+          if (!activedim[j])
+            coo[i] = 0;
       neut_point_addpoint (pPoint, coo, rad);
     }
 
@@ -71,6 +81,9 @@ net_tess_opt_init_sset_coo_centre (struct TOPT *pTOpt, gsl_rng *r,
 	  status = 0;
       }
       else if (!strcmp (cooexpr, "packing"))
+      {
+      }
+      else if (!strncmp (cooexpr, "bcc", 3))
       {
       }
       else
@@ -153,4 +166,52 @@ net_tess_opt_init_sset_coo_lllfp2011 (struct TOPT *pTOpt)
   neut_tess_free (&T);
 
   return;
+}
+
+int
+net_tess_opt_init_sset_coo_bcc_expr (struct TESS Dom, char *cooexpr, double ***pcoo)
+{
+  int n;
+
+  sscanf (cooexpr, "bcc(%d)", &n);
+
+  return net_tess_opt_init_sset_coo_bcc (Dom, n, pcoo);
+}
+
+int
+net_tess_opt_init_sset_coo_bcc (struct TESS Dom, int n, double ***pcoo)
+{
+  int i, x, y, z, nb, N = ut_num_d2ri (pow (n, 3) + pow (n + 1, 3));
+  double step[3], **bbox = ut_alloc_2d (3, 2);
+
+  (*pcoo) = ut_alloc_2d (N + 1, 3);
+
+  neut_tess_bbox (Dom, bbox);
+  for (i = 0; i < 3; i++)
+    step[i] = (bbox[i][1] - bbox[i][0]) / n;
+
+  nb = 0;
+  for (x = 1; x <= n; x++)
+    for (y = 1; y <= n; y++)
+      for (z = 1; z <= n; z++)
+      {
+        nb++;
+        (*pcoo)[nb][0] = bbox[0][0] + (x - 0.5) * step[0];
+        (*pcoo)[nb][1] = bbox[1][0] + (y - 0.5) * step[1];
+	(*pcoo)[nb][2] = bbox[2][0] + (z - 0.5) * step[2];
+      }
+
+  for (x = 0; x <= n; x++)
+    for (y = 0; y <= n; y++)
+      for (z = 0; z <= n; z++)
+      {
+        nb++;
+        (*pcoo)[nb][0] = bbox[0][0] + x * step[0];
+        (*pcoo)[nb][1] = bbox[1][0] + y * step[1];
+	(*pcoo)[nb][2] = bbox[2][0] + z * step[2];
+      }
+
+  ut_free_2d (bbox, 3);
+
+  return nb;
 }

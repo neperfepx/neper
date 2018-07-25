@@ -121,7 +121,7 @@ nem_scaling_para (char *elttype, struct TESS *pTess, struct TESR *pTesr,
 
     else if (input == 'v')
       neut_tesr_scale (pTesr, (*pMeshPara).scale[0],
-		       (*pMeshPara).scale[1], (*pMeshPara).scale[2], NULL);
+		       (*pMeshPara).scale[1], (*pMeshPara).scale[2]);
     else if (input == 'm')
       neut_nodes_scale (pRNodes, (*pMeshPara).scale[0],
 			(*pMeshPara).scale[1], (*pMeshPara).scale[2]);
@@ -178,7 +178,7 @@ nem_scaling_post (struct MESHPARA MeshPara, struct TESS *pTess,
 		       1 / MeshPara.scale[1], 1 / MeshPara.scale[2]);
     if ((*pTesr).PolyQty > 0)
       neut_tesr_scale (pTesr, 1 / MeshPara.scale[0],
-		       1 / MeshPara.scale[1], 1 / MeshPara.scale[2], NULL);
+		       1 / MeshPara.scale[1], 1 / MeshPara.scale[2]);
 
     neut_nodes_scale (pNodes, 1 / MeshPara.scale[0],
 		      1 / MeshPara.scale[1], 1 / MeshPara.scale[2]);

@@ -16,6 +16,7 @@ struct OL_SET
   int* id;
   char **label;
   char* crysym;
+  size_t nc;
 };
 typedef struct OL_SET OL_SET;
 

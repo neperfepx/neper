@@ -4412,4 +4412,49 @@ ut_array_1d_int_choose (int *src, int srcsize, int *dest, int destsize, gsl_rng 
 
   return;
 }
+
+void
+ut_array_1d_round_keepsum (double *a, int size, double *b)
+{
+  int i, id, remaining, *status = ut_alloc_1d_int (size);
+  double correc, *diff = ut_alloc_1d (size);
+
+  ut_array_1d_memcpy (b, size, a);
+
+  remaining = size;
+  while (remaining > 1)
+  {
+    // computing the difference to the nearest integer (excluding those already rounded)
+    for (i = 0; i < size; i++)
+      if (status[i] == 0)
+        diff[i] = ut_num_d2ri (b[i]) - b[i];
+      else
+        diff[i] = DBL_MAX;
+
+    // picking the element with the smallest difference
+    id = ut_array_1d_absmin_index (diff, size);
+
+    // distributing the difference to other (non-rounded) elements
+    correc = diff[id] / --remaining;
+    status[id] = 1;
+    b[id] = ut_num_d2ri (b[id]);
+    for (i = 0; i < size; i++)
+      if (!status[i])
+        b[i] -= correc;
+
+    if (remaining == 1)
+      for (i = 0; i < size; i++)
+        if (!status[i])
+        {
+          b[i] = ut_num_d2ri (b[i]);
+          break;
+        }
+  }
+
+  ut_free_1d_int (status);
+  ut_free_1d (diff);
+
+  return;
+}
+
 #endif // HAVE_GSL

@@ -10,11 +10,11 @@ net_tess_opt_comp_objective_fval_gen_stat_alloc (struct TOPT *pTOpt, int var)
   ut_fct_set_numerical ((*pTOpt).curpdf + var,
 			(*pTOpt).tarpdf[var].min,
 			(*pTOpt).tarpdf[var].max,
-			(*pTOpt).tarpdf[var].size);
+			(*pTOpt).tarpdf[var].size, NULL);
   ut_fct_set_numerical ((*pTOpt).curcdf0 + var,
 			(*pTOpt).tarpdf[var].min,
 			(*pTOpt).tarpdf[var].max,
-			(*pTOpt).tarpdf[var].size);
+			(*pTOpt).tarpdf[var].size, NULL);
 
   return;
 }
@@ -28,7 +28,7 @@ net_tess_opt_comp_objective_fval_gen_stat_smoothed_comp (struct TOPT *pTOpt, int
   ut_fct_set_numerical ((*pTOpt).curcdf + var,
 			(*pTOpt).tarcdf[var].min,
 			(*pTOpt).tarcdf[var].max,
-			(*pTOpt).tarcdf[var].size);
+			(*pTOpt).tarcdf[var].size, NULL);
 
   ut_array_1d_zero ((*pTOpt).curcdf[var].y,
 		    (*pTOpt).curcdf[var].size);
@@ -184,6 +184,9 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate (struct TOPT *pTOpt, int var)
   if (!strcmp ((*pTOpt).tarobjective[var], "default")
         || !strcmp ((*pTOpt).tarobjective[var], "FL2w"))
     net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2w (pTOpt, var);
+
+  else if (!strcmp ((*pTOpt).tarobjective[var], "FL2wu"))
+    net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2wu (pTOpt, var);
 
   else if (!strcmp ((*pTOpt).tarobjective[var], "ad"))
     net_tess_opt_comp_objective_fval_gen_stat_evaluate_ad (pTOpt, var);

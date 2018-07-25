@@ -559,6 +559,12 @@ neut_tesr_var_val_all (struct TESR Tesr, char *entity, char *var, double **val,
   double size, factor, mean;
   char **var2 = NULL;
   int var2qty;
+  char *entity2 = NULL;
+
+  if (strcmp (entity, "cell") != 0)
+    ut_string_string (entity, &entity2);
+  else
+    ut_string_string ("poly", &entity2);
 
   ut_string_separate (var, NEUT_SEP_DEP, &var2, &var2qty);
 
@@ -590,6 +596,7 @@ neut_tesr_var_val_all (struct TESR Tesr, char *entity, char *var, double **val,
   }
 
   ut_free_2d_char (var2, var2qty);
+  ut_free_1d_char (entity2);
 
   return 0;
 }
@@ -602,6 +609,12 @@ neut_tesr_expr_val_all (struct TESR Tesr, char *entity, char *var,
   double size, factor, mean;
   char **var2 = NULL;
   int var2qty;
+  char *entity2 = NULL;
+
+  if (strcmp (entity, "cell") != 0)
+    ut_string_string (entity, &entity2);
+  else
+    ut_string_string ("poly", &entity2);
 
   ut_string_separate (var, NEUT_SEP_DEP, &var2, &var2qty);
 
@@ -723,4 +736,22 @@ neut_tesr_pos_valid (struct TESR Tesr, int *pos)
   return (pos[0] >= 1 && pos[0] <= Tesr.size[0] &&
           pos[1] >= 1 && pos[1] <= Tesr.size[1] &&
           pos[2] >= 1 && pos[2] <= Tesr.size[2]);
+}
+
+void
+neut_tesr_sizestring (struct TESR Tesr, char **psizestring)
+{
+  (*psizestring) = ut_realloc_1d_char (*psizestring, 1000);
+
+  if (Tesr.Dim == 2)
+    sprintf ((*psizestring), "%d%s%d", Tesr.size[0], NEUT_SEP_DEP, Tesr.size[1]);
+  else if (Tesr.Dim == 3)
+    sprintf ((*psizestring), "%d%s%d%s%d", Tesr.size[0], NEUT_SEP_DEP,
+                                           Tesr.size[1], NEUT_SEP_DEP, Tesr.size[2]);
+  else
+    abort ();
+
+  (*psizestring) = ut_realloc_1d_char ((*psizestring), strlen (*psizestring) + 1);
+
+  return;
 }

@@ -107,13 +107,13 @@ main (int argc, char **argv)
     {
       if (ut_file_exist (rcfile))
       {
-	ut_print_message (0, 0, "Loading initialization file `%s'...\n",
-			  rcfile);
-	ut_option_read (rcfile, &fargc, &fargv, "neper", mod);
+        ut_print_message (0, 0, "Loading initialization file `%s'...\n",
+                          rcfile);
+        ut_option_read (rcfile, &fargc, &fargv, "neper", mod);
       }
       else
-	ut_print_message (0, 0, "No initialization file found (`%s').\n",
-			  rcfile);
+        ut_print_message (0, 0, "No initialization file found (`%s').\n",
+                          rcfile);
     }
     else
       ut_print_message (0, 0, "Ignoring initialization file.\n");
@@ -152,7 +152,7 @@ neper_head (char *neper_version)
     ("\n========================    N   e   p   e   r    =======================\n");
 
   ut_print_message (0, 0,
-		    "A software package for polycrystal generation and meshing.\n");
+                    "A software package for polycrystal generation and meshing.\n");
 
   ut_print_message (0, 0, "Version %s\n", neper_version);
 
@@ -177,28 +177,29 @@ neper_head (char *neper_version)
 
 #ifdef HAVE_OPENMP
 #pragma omp parallel
-  if (omp_get_thread_num() == 0)
-    ut_print_message (0, 0, "Running on %d threads.\n", omp_get_num_threads ());
+  if (omp_get_thread_num () == 0)
+    ut_print_message (0, 0, "Running on %d threads.\n",
+                      omp_get_num_threads ());
 #endif
 
 #ifndef DEVEL_OPTIMIZATION
   ut_print_message (1, 0,
-		    "Built with: no optimization.            NOT FOR PRODUCTION USE.\n");
+                    "Built with: no optimization.            NOT FOR PRODUCTION USE.\n");
 #endif
 
 #ifdef DEVEL_PROFILING
   ut_print_message (1, 0,
-		    "Built with: profiling.                  NOT FOR PRODUCTION USE.\n");
+                    "Built with: profiling.                  NOT FOR PRODUCTION USE.\n");
 #endif
 
 #ifdef DEVEL_DEBUGGING_TEST
   ut_print_message (1, 0,
-		    "Built with: debugging tests.            NOT FOR PRODUCTION USE.\n");
+                    "Built with: debugging tests.            NOT FOR PRODUCTION USE.\n");
 #endif
 
 #ifdef DEVEL_DEBUGGING_FLAG
   ut_print_message (1, 0,
-		    "Built with: debugging compilation flag. NOT FOR PRODUCTION USE.\n");
+                    "Built with: debugging compilation flag. NOT FOR PRODUCTION USE.\n");
 #endif
 
   return;
@@ -219,7 +220,7 @@ neper_info ()
   ut_print_message (0, 0, "<http://neper.sourceforge.net>\n");
 
   ut_print_message (0, 0,
-		    "Copyright (C) 2003-2018, and GNU GPL'd, by Romain Quey.\n");
+                    "Copyright (C) 2003-2018, and GNU GPL'd, by Romain Quey.\n");
 
   ut_print_message (0, 72, "Comments and bug reports: <%s>.\n", NEPER_EMAIL);
 

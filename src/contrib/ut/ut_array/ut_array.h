@@ -358,6 +358,8 @@ extern void ut_array_1d_int_set_rand (int *, int, int, int, gsl_rng *r);
 extern void ut_array_1d_int_choose (int *src, int srcsize, int *dest, int destsize, gsl_rng *r);
 #endif
 
+extern void ut_array_1d_round_keepsum (double *a, int size, double *b);
+
 #endif /* UT_ARRAY_H */
 
 #ifdef __cplusplus

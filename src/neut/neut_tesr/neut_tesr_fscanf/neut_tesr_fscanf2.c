@@ -10,6 +10,7 @@ neut_tesr_fscanf_head (struct TESR *pTesr, int *bounds, char **pformat,
 		       FILE * file)
 {
   int i, status;
+  char *string = ut_alloc_1d_char (1000);
 
   (*pformat) = ut_alloc_1d_char (10);
 
@@ -50,6 +51,7 @@ neut_tesr_fscanf_head (struct TESR *pTesr, int *bounds, char **pformat,
 		      "Input file is not a valid raster tessellation file.\n");
 
   (*pTesr).size = ut_alloc_1d_int (3);
+  (*pTesr).Origin = ut_alloc_1d (3);
   ut_array_1d_int_set ((*pTesr).size, 3, 1);
   status = ut_array_1d_int_fscanf (file, (*pTesr).size, (*pTesr).Dim);
 
@@ -69,9 +71,23 @@ neut_tesr_fscanf_head (struct TESR *pTesr, int *bounds, char **pformat,
   (*pTesr).vsize = ut_alloc_1d (3);
   status = ut_array_1d_fscanf (file, (*pTesr).vsize, (*pTesr).Dim);
 
+  while (ut_file_nextstring (file, string) == 1 && strncmp (string, "**", 2))
+  {
+    if (!strcmp (string, "*origin"))
+    {
+      ut_file_skip (file, 1);
+      ut_array_1d_fscanf (file, (*pTesr).Origin, (*pTesr).Dim);
+    }
+
+    else
+      ut_print_message (2, 2, "Failed to read tesr file.\n");
+  }
+
   if (status != 1)
     ut_print_message (2, 0,
 		      "Input file is not a valid raster tessellation file.\n");
+
+  ut_free_1d_char (string);
 
   return;
 }

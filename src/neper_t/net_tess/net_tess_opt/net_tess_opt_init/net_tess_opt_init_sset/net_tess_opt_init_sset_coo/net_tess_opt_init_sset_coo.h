@@ -7,3 +7,5 @@
 extern void net_tess_opt_init_sset_coo (struct MTESS MTess, struct TESS
     *Tess, int dtess, int dcell, struct TOPT *pTOpt, char *var, int pos,
     char *cooexpr, double *rad, int *qty);
+
+extern int net_tess_opt_init_sset_coo_bcc (struct TESS Dom, int n, double ***pcoo);

@@ -25,6 +25,8 @@ extern "C"
 
 extern void net_tess_opt_comp_objective_x_seedset (const double *x,
 					      struct TOPT *pTOpt);
+extern void net_tess_opt_comp_objective_x_crystal (const double *x,
+					      struct TOPT *pTOpt);
 extern void net_tess_opt_comp_objective_centroidal_update (struct TOPT *pTOpt);
 
 extern int net_tess_opt_comp_objective_poly (struct TOPT *pTOpt);

@@ -31,6 +31,16 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).morphooptismooth = NULL;
   (*pIn).morphooptistopstring = NULL;
   (*pIn).morphooptistop = NULL;
+  (*pIn).oricrysymstring = NULL;
+  (*pIn).oricrysym = NULL;
+  (*pIn).orioptistopstring = NULL;
+  (*pIn).orioptistop = NULL;
+  (*pIn).orioptineighstring = NULL;
+  (*pIn).orioptineigh = NULL;
+  (*pIn).orioptiinistring = NULL;
+  (*pIn).orioptiini = NULL;
+  (*pIn).orioptifixstring = NULL;
+  (*pIn).orioptifix = NULL;
   (*pIn).morphooptilogtimestring = NULL;
   (*pIn).morphooptilogtime = NULL;
   (*pIn).morphooptilogvarstring = NULL;
@@ -62,8 +72,6 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).input = 0;
 
   (*pIn).domain = NULL;
-  (*pIn).scalestring = NULL;
-  (*pIn).scale = NULL;
   (*pIn).transform = NULL;
 
   (*pIn).tesrsizestring = NULL;
@@ -72,10 +80,9 @@ net_in_set_zero (struct IN_T *pIn)
 
   (*pIn).format = NULL;
   (*pIn).tesrformat = NULL;
-  (*pIn).oridistribstring = NULL;
-  (*pIn).oridistrib = NULL;
+  (*pIn).oristring = NULL;
+  (*pIn).ori = NULL;
   (*pIn).orides = NULL;
-  (*pIn).oricrysym = NULL;
   (*pIn).oriformat = NULL;
   (*pIn).body = NULL;
   (*pIn).load = NULL;
@@ -97,7 +104,7 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).sts = NULL;
   (*pIn).dec = NULL;
   (*pIn).obj = NULL;
-  (*pIn).ori = NULL;
+  (*pIn).orif = NULL;
   (*pIn).debug = NULL;
 
   (*pIn).sortstring = NULL;
@@ -111,15 +118,12 @@ void
 net_in_free (struct IN_T *pIn)
 {
   ut_free_1d_char ((*pIn).domain);
-  ut_free_1d_char ((*pIn).scalestring);
   ut_free_1d_char ((*pIn).transform);
-  ut_free_1d ((*pIn).scale);
   ut_free_1d_char ((*pIn).format);
   ut_free_1d_char ((*pIn).tesrformat);
-  ut_free_1d_char ((*pIn).oridistribstring);
-  ut_free_2d_char ((*pIn).oridistrib, (*pIn).levelqty + 1);
+  ut_free_1d_char ((*pIn).oristring);
+  ut_free_2d_char ((*pIn).ori, (*pIn).levelqty + 1);
   ut_free_1d_char ((*pIn).orides);
-  ut_free_1d_char ((*pIn).oricrysym);
   ut_free_1d_char ((*pIn).oriformat);
   ut_free_1d_char ((*pIn).body);
   ut_free_1d_char ((*pIn).load);
@@ -141,7 +145,7 @@ net_in_free (struct IN_T *pIn)
   ut_free_1d_char ((*pIn).sts);
   ut_free_1d_char ((*pIn).dec);
   ut_free_1d_char ((*pIn).obj);
-  ut_free_1d_char ((*pIn).ori);
+  ut_free_1d_char ((*pIn).orif);
   ut_free_1d_char ((*pIn).debug);
   ut_free_1d_char ((*pIn).sortstring);
   ut_free_1d_char ((*pIn).stpt);
@@ -168,6 +172,10 @@ net_in_free (struct IN_T *pIn)
   ut_free_2d_char ((*pIn).morphooptismooth, (*pIn).levelqty + 1);
   ut_free_1d_char ((*pIn).morphooptistopstring);
   ut_free_2d_char ((*pIn).morphooptistop, (*pIn).levelqty + 1);
+  ut_free_1d_char ((*pIn).oricrysymstring);
+  ut_free_2d_char ((*pIn).oricrysym, (*pIn).levelqty + 1);
+  ut_free_1d_char ((*pIn).orioptistopstring);
+  ut_free_2d_char ((*pIn).orioptistop, (*pIn).levelqty + 1);
   ut_free_1d_char ((*pIn).morphooptilogtimestring);
   ut_free_2d_char ((*pIn).morphooptilogtime, (*pIn).levelqty + 1);
   ut_free_1d_char ((*pIn).morphooptilogvarstring);
@@ -430,12 +438,17 @@ void
 net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
 {
   int i;
+  double **bbox = ut_alloc_2d (3, 2);
 
   (*pTesr).Dim = Tess.Dim;
   neut_tesr_init_tesrsize (pTesr, Tess, Tess.Dim, tesrsizestring);
   neut_tesr_alloc (pTesr, Tess.Dim, (*pTesr).size, (*pTesr).vsize);
   (*pTesr).CellQty = Tess.CellQty;
   (*pTesr).CellBBox = ut_alloc_3d_int ((*pTesr).CellQty + 1, 3, 2);
+
+  neut_tess_bbox (Tess, bbox);
+  for (i = 0; i < 3; i++)
+    (*pTesr).Origin[i] = bbox[i][0];
 
   if (Tess.CellId)
   {
@@ -459,6 +472,10 @@ net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
 #pragma omp parallel for schedule(dynamic)
   for (i = 1; i <= Tess.CellQty; i++)
     net_tess_tesr_cell (Tess, i, pTesr);
+
+  neut_tesr_init_cellbbox (pTesr);
+
+  ut_free_2d (bbox, 3);
 
   return;
 }

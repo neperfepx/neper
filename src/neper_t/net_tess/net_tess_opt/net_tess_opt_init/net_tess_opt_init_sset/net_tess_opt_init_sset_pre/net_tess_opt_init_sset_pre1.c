@@ -17,13 +17,11 @@ net_tess_opt_init_sset_general (struct IN_T In, struct MTESS MTess,
 
   net_tess_opt_init_sset_pre_type (pSSet);
 
-  net_tess_opt_init_sset_pre_size (Tess, dtess, dcell, pSSet);
+  net_tess_opt_init_sset_pre_size (Tess, dtess, dcell, pTOpt, pSSet);
 
-  net_tess_opt_init_sset_pre_id (In, MTess, Tess, dtess, dcell,
-				 pSSet);
+  net_ori_mtess_id (In, MTess, Tess, dtess, dcell, pSSet);
 
-  net_tess_opt_init_sset_pre_randseed (MTess, Tess, dtess, dcell, SSet,
-				       CellQty, pSSet);
+  net_ori_mtess_randseed (MTess, Tess, dtess, dcell, SSet, CellQty, pSSet);
 
   if (pTOpt)
   {

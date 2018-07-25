@@ -86,6 +86,9 @@ remeshing.  Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 200, pp.@ 1729--1745, 2
 @item @cite{R.@ Quey and L.@ Renversade, Optimal polyhedral description of 3D
 polycrystals: Method and application to statistical and synchrotron X-ray
 diffraction data, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 330, pp.@
-308-333, 2018.}
-(for tessellation from experimental properties (option @option{-morpho})).
+308-333, 2018}
+(for tessellation from experimental properties with option @option{-morpho});
+@item @cite{R.@ Quey, A.@ Villani and C.@ Maurice, Nearly uniform sampling
+of crystal orientations, J.@ Appl.@ Crystallogr., vol.@ 51, https://doi.org/10.1107/S1600576718009019}
+(for uniform crystal orientation distribution with option @option{-ori uniform}).
 @end itemize

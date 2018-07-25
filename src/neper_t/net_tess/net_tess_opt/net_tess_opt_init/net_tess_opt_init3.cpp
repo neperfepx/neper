@@ -6,13 +6,13 @@
 
 void
 net_tess_opt_init_target_cellqty (struct IN_T In, struct MTESS MTess,
-				  struct TESS Tess, int poly, int *pCellQty)
+                                  struct TESS Tess, int poly, int *pCellQty)
 {
   int varqty;
   char **vars = NULL;
   double *vals = NULL;
   char *tmp2 = ut_alloc_1d_char (100);
-  char* expr = In.n[Tess.Level + 1];
+  char *expr = In.n[Tess.Level + 1];
 
   neut_tess_expr_vars_vals (Tess, expr, NULL, NULL, NULL, (char *) "cell",
                             poly, &vars, &vals, NULL, &varqty);
@@ -20,7 +20,8 @@ net_tess_opt_init_target_cellqty (struct IN_T In, struct MTESS MTess,
   neut_mtess_tess_poly_mid (MTess, Tess, poly, &tmp2);
   if (strcmp (expr, "from_morpho"))
   {
-    net_multiscale_arg_0d_int_fscanf (expr, tmp2, varqty, vars, vals, pCellQty);
+    net_multiscale_arg_0d_int_fscanf (expr, tmp2, varqty, vars, vals,
+                                      pCellQty);
     (*pCellQty) = ut_num_max (*pCellQty, 1);
   }
   else
@@ -36,18 +37,20 @@ net_tess_opt_init_target_cellqty (struct IN_T In, struct MTESS MTess,
 void
 net_tess_opt_init_parms_algo (struct IN_T In, int level, struct MTESS MTess,
                               struct TESS *Tess, int dtess, int dcell,
-			      struct TOPT *pTOpt)
+                              struct TOPT *pTOpt)
 {
   char *optialgo = NULL;
 
   net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
                                            In.morphooptialgo[level],
-					   &optialgo);
-  ut_string_separate (optialgo, NEUT_SEP_NODEP, &(*pTOpt).algoname, &(*pTOpt).algoqty);
+                                           &optialgo);
+  ut_string_separate (optialgo, NEUT_SEP_NODEP, &(*pTOpt).algoname,
+                      &(*pTOpt).algoqty);
 
 #ifdef HAVE_NLOPT
   int i;
-  (*pTOpt).algo = (nlopt_algorithm*) calloc ((*pTOpt).algoqty, sizeof (nlopt_algorithm));
+  (*pTOpt).algo =
+    (nlopt_algorithm *) calloc ((*pTOpt).algoqty, sizeof (nlopt_algorithm));
 
   for (i = 0; i < (*pTOpt).algoqty; i++)
   {
@@ -76,7 +79,8 @@ net_tess_opt_init_parms_algo (struct IN_T In, int level, struct MTESS MTess,
 }
 
 void
-net_tess_opt_init_parms_algomaxiter (struct IN_T In, int level, struct TOPT *pTOpt)
+net_tess_opt_init_parms_algomaxiter (struct IN_T In, int level,
+                                     struct TOPT *pTOpt)
 {
   int i, qty, varqty = 1;
   char **vars = ut_alloc_1d_pchar (varqty);
@@ -92,7 +96,7 @@ net_tess_opt_init_parms_algomaxiter (struct IN_T In, int level, struct TOPT *pTO
 
   for (i = 0; i < (*pTOpt).algoqty; i++)
     ut_math_eval_int (In.morphooptialgomaxiter[level], varqty, vars, vals,
-		      (*pTOpt).algomaxiter + i);
+                      (*pTOpt).algomaxiter + i);
 
   ut_free_2d_char (vars, varqty);
   ut_free_1d (vals);
@@ -102,13 +106,13 @@ net_tess_opt_init_parms_algomaxiter (struct IN_T In, int level, struct TOPT *pTO
 
 void
 net_tess_opt_init_parms_objective (char *morphooptiobjective,
-				   struct TOPT *pTOpt)
+                                   struct TOPT *pTOpt)
 {
   int i, j, partqty1, *partqty2 = NULL;
   char ***parts = NULL;
 
-  ut_string_separate2 (morphooptiobjective, NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts,
-                       &partqty2, &partqty1);
+  ut_string_separate2 (morphooptiobjective, NEUT_SEP_NODEP, NEUT_SEP_DEP,
+                       &parts, &partqty2, &partqty1);
 
   (*pTOpt).tarobjective = ut_alloc_1d_pchar ((*pTOpt).tarqty);
 
@@ -123,7 +127,8 @@ net_tess_opt_init_parms_objective (char *morphooptiobjective,
     if (!strcmp ((*pTOpt).tarobjective[i], "default"))
     {
       if (!strcmp ((*pTOpt).tarvar[i], "tesr"))
-	ut_string_string ("pts(region=surf,res=5)+val(bounddist)", (*pTOpt).tarobjective + i);
+        ut_string_string ("pts(region=surf,res=5)+val(bounddist)",
+                          (*pTOpt).tarobjective + i);
     }
   }
 
@@ -140,7 +145,7 @@ net_tess_opt_init_parms_objective (char *morphooptiobjective,
 
 void
 net_tess_opt_init_target_bin (double xmin, double xmax,
-			      double mean, int binqty, double *binx)
+                              double mean, int binqty, double *binx)
 {
   int i, id;
   double min, binwidth = (xmax - xmin) / binqty;
@@ -171,36 +176,37 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
 
   if (!strcmp ((*pTOpt).tarvar[id], "size"))
   {
-    neut_tess_cellavsize ((*pTOpt).Dom, (*pTOpt).CellQty,
-			  &((*pTOpt).tarrefval[id]));
+    neut_tess_cellavsize ((*pTOpt).Dom0, (*pTOpt).CellQty,
+                          &((*pTOpt).tarrefval[id]));
 
     if ((*pTOpt).CellQty == -1)
     {
-      neut_tess_cellavsize_cellqty ((*pTOpt).Dom, mean, &(*pTOpt).CellQty, NULL);
+      neut_tess_cellavsize_cellqty ((*pTOpt).Dom0, mean, &(*pTOpt).CellQty,
+                                    NULL);
       (*pTOpt).CellQty = ut_num_max ((*pTOpt).CellQty, 1);
-      neut_tess_cellavsize ((*pTOpt).Dom, (*pTOpt).CellQty,
-			    &((*pTOpt).tarrefval[id]));
+      neut_tess_cellavsize ((*pTOpt).Dom0, (*pTOpt).CellQty,
+                            &((*pTOpt).tarrefval[id]));
     }
   }
 
   else if (!strcmp ((*pTOpt).tarvar[id], "diameq")
-	   || !strcmp ((*pTOpt).tarvar[id], "centroid")
-	   || !strcmp ((*pTOpt).tarvar[id], "centroidtol")
-	   || !strcmp ((*pTOpt).tarvar[id], "centroidsize")
-	   || !strcmp ((*pTOpt).tarvar[id], "centroiddiameq")
+           || !strcmp ((*pTOpt).tarvar[id], "centroid")
+           || !strcmp ((*pTOpt).tarvar[id], "centroidtol")
+           || !strcmp ((*pTOpt).tarvar[id], "centroidsize")
+           || !strcmp ((*pTOpt).tarvar[id], "centroiddiameq")
            || !strcmp ((*pTOpt).tarvar[id], "tesr"))
   {
     if (!strcmp ((*pTOpt).tartype[id], "stat"))
     {
       fact = 0;
       if (strcmp ((*pTOpt).tarpdf0[id].type, "numerical"))
-	abort ();
+        abort ();
 
       for (i = 0; i < (*pTOpt).tarpdf0[id].size; i++)
-	fact +=
-	  (*pTOpt).tarpdf0[id].y[i]
-	  * ut_fct_binwidth ((*pTOpt).tarpdf0[id], i)
-	  * pow ((*pTOpt).tarpdf0[id].x[i], (*pTOpt).Dim);
+        fact +=
+          (*pTOpt).tarpdf0[id].y[i]
+          * ut_fct_binwidth ((*pTOpt).tarpdf0[id], i)
+          * pow ((*pTOpt).tarpdf0[id].x[i], (*pTOpt).Dim);
       fact = pow (fact, 1. / (*pTOpt).Dim);
     }
     else
@@ -208,8 +214,8 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
 
     if ((*pTOpt).CellQty != -1)
     {
-      neut_tess_cellavdiameq ((*pTOpt).Dom, (*pTOpt).CellQty,
-			      &((*pTOpt).tarrefval[id]));
+      neut_tess_cellavdiameq ((*pTOpt).Dom0, (*pTOpt).CellQty,
+                              &((*pTOpt).tarrefval[id]));
       (*pTOpt).tarrefval[id] /= fact;
 
       if (!strcmp ((*pTOpt).tarvar[id], "centroidtol"))
@@ -217,10 +223,13 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
         int qty = 0;
         double norm = 0;
         for (j = 1; j <= (*pTOpt).CellQty; j++)
-          if ((*pTOpt).tarcellval[id][j][(*pTOpt).tarcellvalqty[id] - 1] < 1000)
+          if ((*pTOpt).tarcellval[id][j][(*pTOpt).tarcellvalqty[id] - 1] <
+              1000)
           {
             qty++;
-            norm += pow ((*pTOpt).tarcellval[id][j][(*pTOpt).tarcellvalqty[id] - 1], 2);
+            norm +=
+              pow ((*pTOpt).tarcellval[id][j][(*pTOpt).tarcellvalqty[id] - 1],
+                   2);
           }
         norm = sqrt (norm / qty);
         (*pTOpt).tarrefval[id] /= norm;
@@ -231,17 +240,18 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
     {
       if (strcmp ((*pTOpt).tarvar[id], "tesr"))
       {
-	neut_tess_cellavdiameq_cellqty ((*pTOpt).Dom, mean * fact, &(*pTOpt).CellQty, NULL);
+        neut_tess_cellavdiameq_cellqty ((*pTOpt).Dom0, mean * fact,
+                                        &(*pTOpt).CellQty, NULL);
         (*pTOpt).CellQty = ut_num_max ((*pTOpt).CellQty, 1);
-	neut_tess_cellavdiameq ((*pTOpt).Dom, (*pTOpt).CellQty,
-				&((*pTOpt).tarrefval[id]));
-	(*pTOpt).tarrefval[id] /= fact;
+        neut_tess_cellavdiameq ((*pTOpt).Dom0, (*pTOpt).CellQty,
+                                &((*pTOpt).tarrefval[id]));
+        (*pTOpt).tarrefval[id] /= fact;
       }
       else
       {
-	(*pTOpt).CellQty = (*pTOpt).tartesr.CellQty;
-	neut_tess_cellavdiameq ((*pTOpt).Dom, (*pTOpt).CellQty,
-				&((*pTOpt).tarrefval[id]));
+        (*pTOpt).CellQty = (*pTOpt).tartesr.CellQty;
+        neut_tess_cellavdiameq ((*pTOpt).Dom0, (*pTOpt).CellQty,
+                                &((*pTOpt).tarrefval[id]));
       }
     }
   }
@@ -258,8 +268,8 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
 void
 net_tess_opt_init_target_grid (struct IN_T In, int level,
                                struct MTESS MTess, struct TESS *Tess,
-			       int dtess, int dcell,
-			       int var, struct TOPT *pTOpt)
+                               int dtess, int dcell,
+                               int var, struct TOPT *pTOpt)
 {
   int i, status;
   char ***parts = NULL;
@@ -267,10 +277,9 @@ net_tess_opt_init_target_grid (struct IN_T In, int level,
   char *string = NULL;
 
   net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
-                                           In.morphooptigrid[level],
-					   &string);
+                                           In.morphooptigrid[level], &string);
   ut_string_separate2 (string, NEUT_SEP_NODEP, NEUT_SEP_DEP,
-		       &parts, &qty2, &qty);
+                       &parts, &qty2, &qty);
 
   status = -1;
   for (i = 0; i < qty; i++)
@@ -284,7 +293,7 @@ net_tess_opt_init_target_grid (struct IN_T In, int level,
 
   if (status == -1)
     ut_print_message (2, 3, "Variable `%s' not found in `-morphooptigrid'.\n",
-	              (*pTOpt).tarvar[var]);
+                      (*pTOpt).tarvar[var]);
 
   ut_free_1d_char (string);
 
@@ -294,8 +303,8 @@ net_tess_opt_init_target_grid (struct IN_T In, int level,
 void
 net_tess_opt_init_target_cvl (struct IN_T In, int level,
                               struct MTESS MTess, struct TESS *Tess,
-			      int dtess, int dcell,
-			      int var, struct TOPT *pTOpt)
+                              int dtess, int dcell,
+                              int var, struct TOPT *pTOpt)
 {
   int i;
   double status, min, sum = 0;
@@ -307,14 +316,15 @@ net_tess_opt_init_target_cvl (struct IN_T In, int level,
 
   net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
                                            In.morphooptismooth[level],
-					   &string);
+                                           &string);
   ut_string_separate2 (string, NEUT_SEP_NODEP, NEUT_SEP_DEP,
-		       &parts, &qty2, &qty);
+                       &parts, &qty2, &qty);
 
   status = -1;
   for (i = 0; i < qty; i++)
   {
-    if (!strcmp (parts[i][0], "analytical") || !strcmp (parts[i][0], "numerical"))
+    if (!strcmp (parts[i][0], "analytical")
+        || !strcmp (parts[i][0], "numerical"))
     {
       ut_string_string (parts[i][0], &(*pTOpt).cvlmethod);
       break;
@@ -326,18 +336,19 @@ net_tess_opt_init_target_cvl (struct IN_T In, int level,
   }
 
   if (status == -1)
-    ut_print_message (2, 3, "Variable `%s' not found in `-morphooptismooth'.\n",
-	              (*pTOpt).tarvar[var]);
+    ut_print_message (2, 3,
+                      "Variable `%s' not found in `-morphooptismooth'.\n",
+                      (*pTOpt).tarvar[var]);
 
   if ((*pTOpt).cvlsig[var] > 0)
   {
     ut_fct_set_normal ((*pTOpt).cvl + var, 0, (*pTOpt).cvlsig[var]);
     ut_fct_numericalfct ((*pTOpt).cvl[var], -3 * (*pTOpt).cvlsig[var],
-			 3 * (*pTOpt).cvlsig[var], 100, (*pTOpt).cvl + var);
+                         3 * (*pTOpt).cvlsig[var], 100, (*pTOpt).cvl + var);
 
     min = ut_array_1d_min ((*pTOpt).cvl[var].y, (*pTOpt).cvl[var].size);
     ut_array_1d_addval ((*pTOpt).cvl[var].y, (*pTOpt).cvl[var].size, -min,
-			(*pTOpt).cvl[var].y);
+                        (*pTOpt).cvl[var].y);
 
     for (i = 0; i < (*pTOpt).cvl[var].size; i++)
       sum += ut_fct_binwidth ((*pTOpt).cvl[var], i) * (*pTOpt).cvl[var].y[i];
@@ -356,16 +367,15 @@ net_tess_opt_init_target_scale (struct TOPT *pTOpt, int *pos)
   double domvol, sumvol, tmp, fact;
 
   if (!strcmp ((*pTOpt).tarvar[pos[0]], "centroidsize")
-   || !strcmp ((*pTOpt).tarvar[pos[0]], "centroiddiameq"))
+      || !strcmp ((*pTOpt).tarvar[pos[0]], "centroiddiameq"))
   {
-    neut_tess_size ((*pTOpt).Dom, &domvol);
+    neut_tess_size ((*pTOpt).Dom0, &domvol);
 
     sumvol = 0;
     for (i = 1; i <= (*pTOpt).CellQty; i++)
     {
       ut_space_diameq_size ((*pTOpt).Dim,
-			    (*pTOpt).tarcellval[pos[0]][i][pos[1]],
-			    &tmp);
+                            (*pTOpt).tarcellval[pos[0]][i][pos[1]], &tmp);
       sumvol += tmp;
     }
 
@@ -373,8 +383,77 @@ net_tess_opt_init_target_scale (struct TOPT *pTOpt, int *pos)
     for (i = 1; i <= (*pTOpt).CellQty; i++)
       (*pTOpt).tarcellval[pos[0]][i][pos[1]] *= fact;
     if (!ut_num_requal (fact, 1, 1e-3))
-      ut_print_message (1, 4, "Cell diameqs scaled by a factor of %f.\n", fact);
+      ut_print_message (1, 4, "Cell diameqs scaled by a factor of %f.\n",
+                        fact);
   }
+
+  return;
+}
+
+void
+net_tess_opt_init_bounds_seeds (struct TOPT *pTOpt)
+{
+  int i, j, k, seed, dim, partqty;
+  char **parts = NULL;
+
+  ut_string_separate ((*pTOpt).dof, NEUT_SEP_NODEP, &parts, &partqty);
+
+  (*pTOpt).boundl = ut_alloc_1d (partqty * (*pTOpt).seedoptiqty + 1);
+  (*pTOpt).boundu = ut_alloc_1d (partqty * (*pTOpt).seedoptiqty + 1);
+
+  k = 0;
+  for (j = 0; j < (*pTOpt).seedoptiqty; j++)
+  {
+    seed = (*pTOpt).seedopti[j];
+    for (i = 0; i < partqty; i++)
+    {
+      if (!strcmp (parts[i], "x") || !strcmp (parts[i], "y")
+          || !strcmp (parts[i], "z"))
+      {
+        dim = parts[i][0] - 'x';
+        (*pTOpt).boundl[k] =
+          ((*pTOpt).SSet).SeedCoo0[seed][dim] - (*pTOpt).dist;
+        (*pTOpt).boundu[k] =
+          ((*pTOpt).SSet).SeedCoo0[seed][dim] + (*pTOpt).dist;
+        k++;
+      }
+      else if (!strcmp (parts[i], "w"))
+      {
+        (*pTOpt).boundl[k] = ((*pTOpt).SSet).SeedWeight[seed] - (*pTOpt).dist;
+        (*pTOpt).boundu[k] = ((*pTOpt).SSet).SeedWeight[seed] + (*pTOpt).dist;
+        (*pTOpt).boundl[k] = ut_num_max (0, (*pTOpt).boundl[k]);
+        k++;
+      }
+      else
+        abort ();
+    }
+  }
+
+  ut_free_2d_char (parts, partqty);
+
+  return;
+}
+
+// FIXME/EMMC
+void
+net_tess_opt_init_bounds_crystal (struct TOPT *pTOpt)
+{
+  int i, partqty;
+  char **parts = NULL;
+
+  ut_string_separate ((*pTOpt).dof, NEUT_SEP_NODEP, &parts, &partqty);
+
+  (*pTOpt).boundl = ut_alloc_1d (partqty);
+  (*pTOpt).boundu = ut_alloc_1d (partqty);
+
+  for (i = 0; i < partqty; i++)
+  {
+    (*pTOpt).boundl[i] =
+      ut_num_max ((*pTOpt).Crys.C[i] - (*pTOpt).dist, 1e-6);
+    (*pTOpt).boundu[i] = (*pTOpt).Crys.C[i] + (*pTOpt).dist;
+  }
+
+  ut_free_2d_char (parts, partqty);
 
   return;
 }

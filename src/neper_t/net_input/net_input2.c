@@ -8,8 +8,7 @@ void
 net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
 		     struct IN_T *pIn)
 {
-  int i, qty;
-  char **val = NULL;
+  int i;
 
   net_input_options_default (pIn);
 
@@ -173,9 +172,48 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     net_input_treatargs_multiscale ("-morphooptimultiseed", &(*pIn).morphooptimultiseedstring,
 				    (*pIn).levelqty, &((*pIn).morphooptimultiseed));
 
-    // oridistrib
-    net_input_treatargs_multiscale ("-oridistrib", &(*pIn).oridistribstring,
-				    (*pIn).levelqty, &((*pIn).oridistrib));
+    // ori
+    net_input_treatargs_multiscale ("-ori", &(*pIn).oristring,
+				    (*pIn).levelqty, &((*pIn).ori));
+    for (i = 1; i <= (*pIn).levelqty; i++)
+      if (!strcmp ((*pIn).ori[i], "default"))
+        ut_string_string ("random", (*pIn).ori + i);
+
+    // oricrysym
+    net_input_treatargs_multiscale ("-oricrysym", &(*pIn).oricrysymstring,
+				    (*pIn).levelqty, &((*pIn).oricrysym));
+
+    for (i = 1; i <= (*pIn).levelqty; i++)
+      if (!strcmp ((*pIn).oricrysym[i], "default"))
+        ut_string_string ("triclinic", (*pIn).oricrysym + i);
+
+    // orioptistop
+    net_input_treatargs_multiscale ("-orioptistop", &(*pIn).orioptistopstring,
+				    (*pIn).levelqty, &((*pIn).orioptistop));
+    for (i = 1; i <= (*pIn).levelqty; i++)
+      if (!strcmp ((*pIn).orioptistop[i], "default"))
+        ut_string_string ("reps<1e-3||iter>=1e3", (*pIn).orioptistop + i);
+
+    // orioptineigh
+    net_input_treatargs_multiscale ("-orioptineigh", &(*pIn).orioptineighstring,
+				    (*pIn).levelqty, &((*pIn).orioptineigh));
+    for (i = 1; i <= (*pIn).levelqty; i++)
+      if (!strcmp ((*pIn).orioptineigh[i], "default"))
+        ut_string_string ("Nstar<10000?pi:20*dr", (*pIn).orioptineigh + i);
+
+    // orioptiini
+    net_input_treatargs_multiscale ("-orioptiini", &(*pIn).orioptiinistring,
+				    (*pIn).levelqty, &((*pIn).orioptiini));
+    for (i = 1; i <= (*pIn).levelqty; i++)
+      if (!strcmp ((*pIn).orioptiini[i], "default"))
+        ut_string_string ("random", (*pIn).orioptiini + i);
+
+    // orioptifix
+    net_input_treatargs_multiscale ("-orioptifix", &(*pIn).orioptifixstring,
+				    (*pIn).levelqty, &((*pIn).orioptifix));
+    for (i = 1; i <= (*pIn).levelqty; i++)
+      if (!strcmp ((*pIn).orioptifix[i], "default"))
+        ut_string_string ("none", (*pIn).orioptifix + i);
 
     // Processing periodicstring & periodic
     (*pIn).periodic = ut_alloc_1d_int (3);
@@ -232,17 +270,6 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
       ut_error_reportbug ();
   }
 
-  // scale
-  if (strcmp ((*pIn).scalestring, "none"))
-  {
-    (*pIn).scale = ut_alloc_1d (3);
-    ut_array_1d_set ((*pIn).scale, 3, 1);
-    ut_string_separate ((*pIn).scalestring, NEUT_SEP_DEP, &val, &qty);
-    for (i = 0; i < qty; i++)
-      if (strlen (val[0]) > 0)
-	ut_string_real (val[i], &((*pIn).scale[i]));
-  }
-
   if ((*pIn).levelqty > 1 && ut_array_1d_int_sum ((*pIn).periodic, 3) != 0)
   {
     ut_print_messagewnc (2, 72, "Option `-periodic' is not available for multiscale tessellations.");
@@ -255,6 +282,17 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     ut_print_messagewnc (2, 72, "Option `-regularization 1' is not available for periodic tessellations.");
     abort ();
   }
+
+  if (((*pIn).dim == 3 &&
+       (!strncmp ((*pIn).domain, "square", 6)
+     || !strncmp ((*pIn).domain, "circle", 6)
+     || !strncmp ((*pIn).domain, "stdtriangle", 11)))
+   || ((*pIn).dim == 2 &&
+       (!strncmp ((*pIn).domain, "cube", 4)
+     || !strncmp ((*pIn).domain, "cylinder", 8)
+     || !strncmp ((*pIn).domain, "sphere", 6)
+     || !strncmp ((*pIn).domain, "rodrigues", 9))))
+    ut_print_messagewnc (2, 72, "Options `-dim' and `-domain' conflict.");
 
   // Setting file names ------------------------------------------------
 
@@ -276,7 +314,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   (*pIn).tesr = ut_string_addextension ((*pIn).body, ".tesr");
   (*pIn).vtk = ut_string_addextension ((*pIn).body, ".vtk");
   (*pIn).raw = ut_string_addextension ((*pIn).body, ".raw");
-  (*pIn).ori = ut_string_addextension ((*pIn).body, ".ori");
+  (*pIn).orif = ut_string_addextension ((*pIn).body, ".ori");
   (*pIn).geo = ut_string_addextension ((*pIn).body, ".geo");
   (*pIn).ply = ut_string_addextension ((*pIn).body, ".ply");
   (*pIn).stl = ut_string_addextension ((*pIn).body, ".stl");
@@ -286,8 +324,6 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   (*pIn).debug = ut_string_addextension ((*pIn).body, ".debug");
   (*pIn).mtess = ut_string_addextension ((*pIn).body, ".mtess");
   (*pIn).mgeo = ut_string_addextension ((*pIn).body, ".mgeo");
-
-  ut_free_2d_char (val, qty);
 
   return;
 }

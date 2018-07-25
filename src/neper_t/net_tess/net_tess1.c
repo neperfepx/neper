@@ -28,13 +28,18 @@ net_tess (struct IN_T In, int level, struct TESS *Tess, int dtess,
   // regular tessellations: cube and square
   if (!strncmp (In.morpho[level], "cube", 4)
    || !strncmp (In.morpho[level], "square", 6))
-    status = net_tess_cube (In.morpho[level], dim, Tess[dtess],
-			    dcell, TessId, Tess + TessId, SSet + TessId);
+    status = net_tess_cube (In, level, pMTess, Tess, dtess, dcell,
+			    Dom, TessId, SSet);
 
   // standard Voronoi/Laguerre tessellation
   else if (!strncmp (In.morpho[level], "lamellar", 8))
     status = net_tess_lam (In, level, pMTess, Tess, dtess, dcell,
 			   Dom, TessId, SSet);
+
+  // standard Voronoi/Laguerre tessellation
+  else if (!strncmp (In.morpho[level], "tocta", 5))
+    status = net_tess_tocta (In, level, pMTess, Tess, dtess, dcell,
+			    Dom, TessId, SSet);
 
   // other tessellations
   else

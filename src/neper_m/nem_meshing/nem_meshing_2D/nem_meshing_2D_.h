@@ -27,7 +27,12 @@ extern int nem_meshing_2D_face (struct IN_M, struct MESHPARA, struct MULTIM *,
 				struct timeval *, double *,
 				double *, struct TESS, struct NODES,
                                 struct MESH *, struct NODES *, struct MESH *,
-                                struct NODES *, struct MESH *, int **, int);
+                                struct NODES *, struct MESH *, int);
+
+extern int nem_meshing_2D_face_per (struct TESS Tess, struct NODES *pNodes,
+                                    struct MESH *Mesh, struct NODES *pN,
+                                    struct MESH *pM, int **pmaster_id,
+                                    int face);
 
 extern void nem_meshing_2D_face_algo (struct IN_M In, struct MESHPARA,
 				      struct MULTIM *pMultim, int algo,

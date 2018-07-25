@@ -107,7 +107,7 @@ neut_mesh_str_3d (int *size, struct NODES *pNodes, struct MESH
   double *domain = ut_alloc_1d (6);
   double eps = 1e-12;
 
-  neut_nodes_bbox ((*pNodes), domain);
+  neut_nodes_bbox_vect ((*pNodes), domain);
 
   for (i = 0; i < 3; i++)
   {
@@ -231,7 +231,7 @@ neut_mesh_str_2d (int *size, struct NODES *pNodes, struct MESH
   double *domain = ut_alloc_1d (6);
   double eps = 1e-12;
 
-  neut_nodes_bbox ((*pNodes), domain);
+  neut_nodes_bbox_vect ((*pNodes), domain);
 
   for (i = 0; i < 2; i++)
   {
@@ -344,7 +344,7 @@ neut_mesh_str_1d (int *size, struct NODES *pNodes, struct MESH
   double *domain = ut_alloc_1d (6);
   double eps = 1e-12;
 
-  neut_nodes_bbox ((*pNodes), domain);
+  neut_nodes_bbox_vect ((*pNodes), domain);
 
   domain[0] += eps;
   domain[1] -= eps;

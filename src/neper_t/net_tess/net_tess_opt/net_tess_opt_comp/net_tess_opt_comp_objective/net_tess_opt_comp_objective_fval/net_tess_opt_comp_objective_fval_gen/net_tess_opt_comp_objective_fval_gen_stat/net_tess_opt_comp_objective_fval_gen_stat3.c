@@ -268,6 +268,47 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2w (struct TOPT
 }
 
 void
+net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2wu (struct TOPT
+    *pTOpt, int var)
+{
+  int i;
+  double w, weight, val;
+
+  val = 0;
+  for (i = 0; i < (*pTOpt).tarcdf[var].size; i++)
+  {
+    w = ut_fct_binwidth ((*pTOpt).tarcdf[var], i);
+
+    weight = 1 / ((*pTOpt).tarcdf[var].y[i] * (1 - (*pTOpt).tarcdf[var].y[i]));
+    weight = ut_num_min (weight, 1e3);
+
+    val += w * weight * pow ((*pTOpt).curcdf[var].y[i] -
+			     (*pTOpt).tarcdf[var].y[i], 2);
+  }
+
+  (*pTOpt).curval[var] = val;
+
+  if (strstr ((*pTOpt).TDyn.logval, "val0"))
+  {
+    val = 0;
+    for (i = 0; i < (*pTOpt).tarcdf0[var].size; i++)
+    {
+      w = ut_fct_binwidth ((*pTOpt).tarcdf0[var], i);
+
+      weight = 1 / ((*pTOpt).tarcdf0[var].y[i] * (1 - (*pTOpt).tarcdf0[var].y[i]));
+      weight = ut_num_min (weight, 1e3);
+
+      val += w * weight * pow ((*pTOpt).curcdf0[var].y[i] -
+			       (*pTOpt).tarcdf0[var].y[i], 2);
+    }
+
+    (*pTOpt).curval0[var] = val;
+  }
+
+  return;
+}
+
+void
 net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2 (struct TOPT
     *pTOpt, int var)
 {

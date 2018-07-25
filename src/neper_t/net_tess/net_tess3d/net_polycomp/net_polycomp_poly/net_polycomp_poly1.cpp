@@ -6,17 +6,16 @@
 #include"neut/neut_structs/neut_nanoflann_struct.hpp"
 
 extern void net_polycomp_seed_tdyn (struct SEEDSET SSet, int id,
-				    int, NFTREE **pnf_tree,
-				    int *ptid_seedid, struct TDYN *pTD);
+                                    int, NFTREE ** pnf_tree,
+                                    int *ptid_seedid, struct TDYN *pTD);
 
 /* net_polycomp_poly searches out the polyhedron associated
 * to the considered seed.
 */
 void
 net_polycomp_poly (struct POLY Domain, struct SEEDSET SSet,
-                   NFTREE **pnf_tree, int *ptid_seedid,
-                   int id, struct POLY
-		   *pPoly, struct TDYN *pTD)
+                   NFTREE ** pnf_tree, int *ptid_seedid,
+                   int id, struct POLY *pPoly, struct TDYN *pTD)
 {
   int i, j, cutqty;
   struct POLYMOD Polymod;
@@ -58,17 +57,17 @@ net_polycomp_poly (struct POLY Domain, struct SEEDSET SSet,
       // larger number of neighbours.
       if (i > (*pTD).neighqty[id])
       {
-	gettimeofday (&time, NULL);
-	net_polycomp_seed_tdyn (SSet, id, 2 * (*pTD).neighqty[id],
+        gettimeofday (&time, NULL);
+        net_polycomp_seed_tdyn (SSet, id, 2 * (*pTD).neighqty[id],
                                 pnf_tree, ptid_seedid, pTD);
-	(*pTD).cell_neigh_dur += ut_time_subtract (&time, NULL);
+        (*pTD).cell_neigh_dur += ut_time_subtract (&time, NULL);
       }
 
       gettimeofday (&time, NULL);
       if (CurrentPolyTest (Polymod, SSet, id, i, *pTD, 0) == 1)
-	cutqty += NewPolyhedron (SSet, id, (*pTD).neighlist[id][i], &Polymod);
+        cutqty += NewPolyhedron (SSet, id, (*pTD).neighlist[id][i], &Polymod);
       else if (CurrentPolyTest (Polymod, SSet, id, i, *pTD, wmax) == 0)
-	break;
+        break;
       (*pTD).cell_cell_dur += ut_time_subtract (&time, NULL);
     }
 
@@ -93,16 +92,16 @@ net_polycomp_poly (struct POLY Domain, struct SEEDSET SSet,
     if (ut_array_1d_int_eltpos (tmp2, qty2, tmp1[j]) == -1)
 #pragma omp critical
       ut_array_1d_int_list_addelt (&(*pTD).changedneighs,
-				   &(*pTD).changedneighqty, tmp1[j]);
+                                   &(*pTD).changedneighqty, tmp1[j]);
   for (j = 0; j < qty2; j++)
     if (ut_array_1d_int_eltpos (tmp1, qty1, tmp2[j]) == -1)
 #pragma omp critical
       ut_array_1d_int_list_addelt (&(*pTD).changedneighs,
-				   &(*pTD).changedneighqty, tmp2[j]);
+                                   &(*pTD).changedneighqty, tmp2[j]);
 
 #pragma omp critical
   ut_array_1d_int_list_addelt (&(*pTD).cellchanged,
-			       &(*pTD).cellchangedqty, id);
+                               &(*pTD).cellchangedqty, id);
 
   if (cutqty == 0)
 #pragma omp critical

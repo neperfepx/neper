@@ -22,6 +22,7 @@ extern "C"
 #include "neut_structs/neut_structs.h"
 #include "neut_tesl/neut_tesl.h"
 #include "neut_tess/neut_tess.h"
+#include "neut_crys/neut_crys.h"
 #include "neut_tesse/neut_tesse.h"
 #include "neut_mtess/neut_mtess.h"
 #include "neut_flatten/neut_flatten.h"
@@ -38,6 +39,8 @@ extern "C"
 #include "neut_tdyn/neut_tdyn.h"
 #include "neut_nodes/neut_nodes.h"
 #include "neut_mesh/neut_mesh.h"
+#include "neut_ori/neut_ori.h"
+#include "neut_oopt/neut_oopt.h"
 
 #endif				/* NEUT_T_H */
 

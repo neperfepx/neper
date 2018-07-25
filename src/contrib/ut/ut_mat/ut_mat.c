@@ -52,6 +52,7 @@ ut_mat_product_33 (double **a, double **b, double **c)
   return 0;
 }
 
+
 int
 ut_mat_vect_product (double **a, int a1, int a2, double *b, int b1, double *c)
 {
@@ -711,4 +712,20 @@ ut_mat_polar (double **A, int size1, int size2, double **Q, double **S)
   ut_free_2d (AtA, size2);
 
   return 0;
+}
+
+void
+ut_mat_dev (double **A, int size, double **B)
+{
+  int i;
+  double tr;
+
+  ut_mat_trace (A, size, &tr);
+
+  ut_array_2d_memcpy (B, size, size, A);
+
+  for (i = 0; i < size; i++)
+    B[i][i] -= tr / size;
+
+  return;
 }

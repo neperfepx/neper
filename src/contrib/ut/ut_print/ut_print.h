@@ -30,6 +30,7 @@ extern void ut_print_gplv3 (FILE*);
 extern void ut_error_reportbug (void);
 extern void ut_error_expression (char *expr);
 extern void ut_print_clearline (FILE* file, int nb);
+extern void ut_print_elapsedtime (struct timeval beg_time, struct timeval end_time);
 
 #endif /* UT_PRINT_H */
 

@@ -34,7 +34,6 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("HUGE_VAL", &(*pIn).morphooptideltamaxstring);
   ut_string_string ("avdiameq/10", &(*pIn).morphooptiinistepstring);
 
-  ut_string_string ("none", &(*pIn).scalestring);
   (*pIn).reg = 0;
   (*pIn).fmax = 20;
   ut_string_string ("rel", &((*pIn).seltype));
@@ -50,9 +49,14 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("none", &(*pIn).format);
   ut_string_string ("binary16", &(*pIn).tesrformat);
 
-  ut_string_string ("3d", &((*pIn).oridistribstring));
+  ut_string_string ("default", &((*pIn).oristring));
+  ut_string_string ("default", &(*pIn).orioptistopstring);
+  ut_string_string ("default", &(*pIn).orioptineighstring);
+  ut_string_string ("default", &(*pIn).orioptiinistring);
+  ut_string_string ("default", &(*pIn).orioptifixstring);
+  ut_string_string ("default", &((*pIn).oricrysymstring));
+
   ut_string_string ("e", &((*pIn).orides));
-  ut_string_string ("triclinic", &((*pIn).oricrysym));
   ut_string_string ("plain", &((*pIn).oriformat));
 
   // copying defaults to first line of multiscale parameters
@@ -96,8 +100,19 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ((*pIn).morphooptideltamaxstring, (*pIn).morphooptideltamax);
   (*pIn).morphooptiinistep = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).morphooptiinistepstring, (*pIn).morphooptiinistep);
-  (*pIn).oridistrib = ut_alloc_1d_pchar (1);
-  ut_string_string ((*pIn).oridistribstring, (*pIn).oridistrib);
+
+  (*pIn).ori = ut_alloc_1d_pchar (1);
+  ut_string_string ((*pIn).oristring, (*pIn).ori);
+  (*pIn).oricrysym = ut_alloc_1d_pchar (1);
+  ut_string_string ((*pIn).oricrysymstring, (*pIn).oricrysym);
+  (*pIn).orioptistop = ut_alloc_1d_pchar (1);
+  ut_string_string ((*pIn).oristring, (*pIn).orioptistop);
+  (*pIn).orioptineigh = ut_alloc_1d_pchar (1);
+  ut_string_string ((*pIn).oristring, (*pIn).orioptineigh);
+  (*pIn).orioptiini = ut_alloc_1d_pchar (1);
+  ut_string_string ((*pIn).oristring, (*pIn).orioptiini);
+  (*pIn).orioptifix = ut_alloc_1d_pchar (1);
+  ut_string_string ((*pIn).orioptifixstring, (*pIn).orioptifix);
 
   return;
 }
@@ -119,6 +134,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-morphooptiini");
   strcpy (ArgList[++ArgQty], "-morphooptialgo");
   strcpy (ArgList[++ArgQty], "-morphooptialgoneigh");
+  strcpy (ArgList[++ArgQty], "-morphooptialgoini");
   strcpy (ArgList[++ArgQty], "-morphooptialgomaxiter");
   strcpy (ArgList[++ArgQty], "-morphooptiobjective");
   strcpy (ArgList[++ArgQty], "-morphooptigrid");
@@ -142,7 +158,6 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   // Tessellation options ----------------------------------------------
   strcpy (ArgList[++ArgQty], "-domain");
   strcpy (ArgList[++ArgQty], "-domainfacet");
-  strcpy (ArgList[++ArgQty], "-scale");
   strcpy (ArgList[++ArgQty], "-transform");
   // Regularization options --------------------------------------------
   strcpy (ArgList[++ArgQty], "-regularization");
@@ -156,6 +171,10 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-tesrformat");
   strcpy (ArgList[++ArgQty], "-tesrsize");
   strcpy (ArgList[++ArgQty], "-ori");
+  strcpy (ArgList[++ArgQty], "-orioptistop");
+  strcpy (ArgList[++ArgQty], "-orioptineigh");
+  strcpy (ArgList[++ArgQty], "-orioptiini");
+  strcpy (ArgList[++ArgQty], "-orioptifix");
   strcpy (ArgList[++ArgQty], "-oridescriptor");
   strcpy (ArgList[++ArgQty], "-oricrysym");
   strcpy (ArgList[++ArgQty], "-oriformat");
@@ -197,7 +216,10 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
     else if (Res == -1)
     {
       ut_print_lineheader (2);
-      printf ("Unknown option `%s'.\n", argv[i]);
+      if (!strcmp (argv[i], "-scale"))
+        printf ("Option `-scale' was removed; use `-transform scale' instead.\n");
+      else
+        printf ("Unknown option `%s'.\n", argv[i]);
       ut_arg_badarg ();
     }
 
@@ -276,8 +298,6 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
 * tessellation options */
     else if (!strcmp (Arg, "-domain"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).domain));
-    else if (!strcmp (Arg, "-scale"))
-      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).scalestring));
     else if (!strcmp (Arg, "-transform"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transform));
 
@@ -311,11 +331,19 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
     else if (!strcmp (Arg, "-tesrsize"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).tesrsizestring));
     else if (!strcmp (Arg, "-ori"))
-      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oridistribstring));
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oristring));
+    else if (!strcmp (Arg, "-orioptistop"))
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).orioptistopstring));
+    else if (!strcmp (Arg, "-orioptineigh"))
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).orioptineighstring));
+    else if (!strcmp (Arg, "-orioptiini"))
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).orioptiinistring));
+    else if (!strcmp (Arg, "-orioptifix"))
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).orioptifixstring));
     else if (!strcmp (Arg, "-oridescriptor"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).orides));
     else if (!strcmp (Arg, "-oricrysym"))
-      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oricrysym));
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oricrysymstring));
     else if (!strcmp (Arg, "-oriformat"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oriformat));
     else if (!strcmp (Arg, "-statcell"))

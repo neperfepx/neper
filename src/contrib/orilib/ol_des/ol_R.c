@@ -40,8 +40,8 @@ ol_R_set_id (double *R)
 
 void
 ol_R_set_this (double *R,
-double R1,
-double R2,
+double R1, 
+double R2, 
 double R3)
 {
   R[0] = R1;
@@ -50,6 +50,7 @@ double R3)
 
   return;
 }
+
 
 void
 ol_R_memcpy (double *Rsrc, double *Rdest)

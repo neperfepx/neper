@@ -5,6 +5,8 @@
 .*.swo
 html
 latex
+bin/
+src/.idea
 
 # src directory
 build
@@ -31,3 +33,5 @@ updatelib.sh*
 data
 utils
 tags
+
+*.orig

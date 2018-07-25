@@ -25,7 +25,7 @@ option (DEVEL_PROFILING   "Enable profiling (OFF for production use)" OFF)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-add_definitions(-Wall -W)
+add_definitions(-Wall -W -Wno-unknown-pragmas)
 if (DEVEL_OPTIMIZATION)
   add_definitions(-O3)
 endif ()
@@ -61,6 +61,7 @@ add_library (neut
 ./neut_part/neut_part.c
 ./neut_multim/neut_multim.c
 ./neut_elt/neut_elt.c
+./neut_crys/neut_crys.c
 ./neut_nodes/neut_nodes.c
 ./neut_reg/neut_reg.c
 ./neut_lloyd/neut_lloyd.c
@@ -164,8 +165,13 @@ add_library (neut
 ./neut_tesr/neut_tesr_geom/neut_tesr_geom1.c
 ./neut_tesr/neut_tesr_geom/neut_tesr_geom2.c
 ./neut_tesr/neut_tesr_gen/neut_tesr_gen1.c
+./neut_crys/neut_crys.c
 ./neut_topt/neut_topt.c
 ./neut_sopt/neut_sopt.c
+./neut_oopt/neut_oopt.c
+./neut_ori/neut_ori.c
+./neut_oset/neut_oset1.cpp
+./neut_oset/neut_oset2.cpp
 )
 
 ## Link libraries

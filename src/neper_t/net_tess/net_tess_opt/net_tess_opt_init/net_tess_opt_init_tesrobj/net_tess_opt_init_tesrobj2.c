@@ -33,7 +33,7 @@ net_tess_opt_init_tesrobj_scale (struct TOPT *pTOpt)
   neut_tesr_scale (&((*pTOpt).tartesr),
 		   (*pTOpt).tartesrscale[0],
 		   (*pTOpt).tartesrscale[1],
-		   (*pTOpt).tartesrscale[2], NULL);
+		   (*pTOpt).tartesrscale[2]);
 
   return;
 }

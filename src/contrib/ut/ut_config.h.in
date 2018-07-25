@@ -1,5 +1,4 @@
 #cmakedefine HAVE_GSL
-#define HAVE_MUPARSER
 #cmakedefine DEVEL_DEBUGGING_FLAG
 #cmakedefine DEVEL_OPTIMIZATION
 

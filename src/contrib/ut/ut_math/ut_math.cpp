@@ -7,15 +7,12 @@
 #include<ctype.h>
 #include"ut.h"
 
-#ifdef HAVE_MUPARSER
 #include"contrib/muparser/include/muParser.h"
-#endif
 
 int
 ut_math_eval (char* expr, int var_qty, char** vars, double* vals,
               double* pres)
 {
-#ifdef HAVE_MUPARSER
   using namespace mu;
   int i;
 
@@ -38,17 +35,6 @@ ut_math_eval (char* expr, int var_qty, char** vars, double* vals,
   {
     return -1;
   }
-
-#else
-  (void) expr;
-  (void) var_qty;
-  (void) vars;
-  (void) vals;
-  (void) pres;
-  printf ("\n");
-  ut_print_message (2, 0, "Cannot process expression (muparser not available).\n");
-  abort ();
-#endif
 
   return 0;
 }

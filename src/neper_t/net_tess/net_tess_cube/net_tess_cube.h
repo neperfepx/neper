@@ -7,9 +7,9 @@ extern "C"
 {
 #endif
 
-  extern int net_tess_cube (char *string, int dim, struct TESS PTess, int poly,
-			    int TessId, struct TESS *pTess,
-			    struct SEEDSET *pSSet);
+  extern int net_tess_cube (struct IN_T In, int level, struct MTESS *pMTess,
+                            struct TESS *Tess, int dtess, int dcell, struct TESS Dom,
+                            int TessId, struct SEEDSET *SSet);
 
 #ifdef __cplusplus
 }

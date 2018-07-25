@@ -9,6 +9,7 @@ neut_point_set_zero (struct POINT *pPoint)
 {
   (*pPoint).Dim = 0;
   (*pPoint).Periodic = NULL;
+  (*pPoint).activedim = NULL;
   (*pPoint).BBox = NULL;
   (*pPoint).PointQty = 0;
   (*pPoint).PointCoo = NULL;
@@ -23,6 +24,7 @@ neut_point_free (struct POINT *pPoint)
   ut_free_2d_ (&(*pPoint).PointCoo, (*pPoint).PointQty + 1);
   ut_free_1d_ (&(*pPoint).PointRad);
   ut_free_1d_int_ (&(*pPoint).Periodic);
+  ut_free_1d_int_ (&(*pPoint).activedim);
   ut_free_2d_ (&(*pPoint).BBox, 3);
 
   (*pPoint).PointQty = 0;
@@ -57,6 +59,27 @@ neut_point_centre (struct POINT Point, double *centre)
   ut_array_1d_scale (centre, 3, 1. / totsize);
 
   ut_free_1d (tmp);
+
+  return;
+}
+
+void
+neut_point_bbox (struct POINT Point, double **bbox)
+{
+  int i, j;
+
+  for (i = 0; i < 3; i++)
+  {
+    bbox[i][0] = DBL_MAX;
+    bbox[i][1] = -DBL_MAX;
+  }
+
+  for (i = 1; i <= Point.PointQty; i++)
+    for (j = 0; j < 3; j++)
+    {
+      bbox[j][0] = ut_num_min (bbox[j][0], Point.PointCoo[i][j]);
+      bbox[j][1] = ut_num_max (bbox[j][1], Point.PointCoo[i][j]);
+    }
 
   return;
 }

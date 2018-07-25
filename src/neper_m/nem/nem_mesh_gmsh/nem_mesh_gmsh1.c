@@ -35,8 +35,13 @@ nem_mesh_2d_gmsh (struct TESS Tess, int face, double *face_proj,
 
   neut_gmsh_rc ("bak");
 
+#ifdef HAVE_OPENMP
   sprintf (filename, "%s/tmp%d-%d.geo", tmp, getpid (), omp_get_thread_num ());
   sprintf (filename_msh, "%s/tmp%d-%d.msh", tmp, getpid (), omp_get_thread_num ());
+#else // HAVE_OPENMP
+  sprintf (filename, "%s/tmp%d-1.geo", tmp, getpid ());
+  sprintf (filename_msh, "%s/tmp%d-1.msh", tmp, getpid ());
+#endif // HAVE_OPENMP
 
   file = ut_file_open (filename, "W");
 
@@ -242,9 +247,15 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
   double clmod;
   int redo, iter;
 
+#ifdef HAVE_OPENMP
   sprintf (filename, "%s/tmp%d-%d.geo", tmp, getpid (), omp_get_thread_num ());
   sprintf (filename_surf, "%s/tmp%d-%d-surf.msh", tmp, getpid (), omp_get_thread_num ());
   sprintf (filename_msh, "%s/tmp%d-%d.msh", tmp, getpid (), omp_get_thread_num ());
+#else // HAVE_OPENMP
+  sprintf (filename, "%s/tmp%d-1.geo", tmp, getpid ());
+  sprintf (filename_surf, "%s/tmp%d-1-surf.msh", tmp, getpid ());
+  sprintf (filename_msh, "%s/tmp%d-1.msh", tmp, getpid ());
+#endif // HAVE_OPENMP
 
   double speed = 0.2;
 

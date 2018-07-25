@@ -42,7 +42,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   {
     // Creating domain ###
     neut_mtess_set_dom (&MTess, &Tess);
-    if (strcmp (In.input, "tess") != 0 && strcmp (In.input, "tesr") != 0)
+    if (!strcmp (In.mode, "tess") && strcmp (In.input, "tess") != 0 && strcmp (In.input, "tesr") != 0)
     {
       ut_print_message (0, 1, "Creating domain...\n");
       net_domain (In, &MTess, &(Tess[0]));
@@ -126,7 +126,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 	    // ### COMPUTING TESSELLATION ###############################
 
 	    if (In.levelqty == 1)
-	      ut_print_message (0, 2, "Running tessellation... ");
+            {
+            }
 	    else
 	    {
 	      ut_print_clearline (stdout, 72);
@@ -183,14 +184,14 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 	    net_sort (In, Tess + 1, NULL);
 	}
 
+        /*
 	if (strcmp (In.scalestring, "none") && level == 1)
 	{
 	  ut_print_message (0, 1, "[%5d] ", level);
 	  printf ("Scaling tessellation...\n");
 	  neut_tess_scale (Tess + 1, In.scale[0], In.scale[1], In.scale[2]);
 	}
-
-	printf ("\n");
+        */
       }
 
       // #############################################################
@@ -208,12 +209,13 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 	net_sort (In, Tess + 1, NULL);
       }
 
-      // Sorting cells ###
+      /*
       if (strcmp (In.scalestring, "none"))
       {
 	ut_print_message (0, 1, "Scaling tessellation...\n");
 	neut_tess_scale (Tess + 1, In.scale[0], In.scale[1], In.scale[2]);
       }
+      */
     }
 
     if (In.levelqty > 1)
@@ -273,10 +275,17 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 			min_id, max_id);
   }
 
-  // Scaling ###
-  if (strcmp (In.scalestring, "none"))
-    if (Tesr.CellQty > 0)
-      neut_tesr_scale (&Tesr, In.scale[0], In.scale[1], In.scale[2], NULL);
+  // ###################################################################
+  // ### COMPUTING ORIENTATION DATA ####################################
+
+  else if (!strcmp (In.mode, "ori"))
+  {
+    ut_print_message (0, 1, "Generating crystal orientations...\n");
+
+    net_ori_pre (In, MTess, Tess, &SSet, &SSetQty);
+
+    net_ori (In, 1, MTess, Tess, SSet, 0, 1, SSet + 1, 2);
+  }
 
   // #################################################################
   // ### Rastering tessellation if necessary ########################
@@ -286,8 +295,17 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 	  || ut_string_inlist (In.format, NEUT_SEP_NODEP, "raw") == 1
 	  || ut_string_inlist (In.format, NEUT_SEP_NODEP, "vtk") == 1))
   {
-    ut_print_message (0, 1, "Rastering tessellation...\n");
+    ut_print_message (0, 1, "Rasterizing tessellation...\n");
     net_tess_tesr (In.tesrsizestring, FTess, &Tesr);
+  }
+
+  // ###################################################################
+  // ### TRANSFORMING TESSELLATION #####################################
+
+  if (strcmp (In.transform, "none") && (FTess.Dim > 0 || Tesr.Dim > 0))
+  {
+    ut_print_message (0, 1, "Transforming tessellation...\n");
+    net_transform (In, &FTess, &Tesr);
   }
 
   // ###################################################################
@@ -297,15 +315,6 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Importing points...\n");
     neut_point_name_fscanf (In.loadpoint, &Point);
-  }
-
-  // ###################################################################
-  // ### WRITING RESULTS ###############################################
-
-  if (strcmp (In.transform, "none") && (FTess.Dim > 0 || Tesr.Dim > 0))
-  {
-    ut_print_message (0, 1, "Operating on raster tessellation...\n");
-    net_transform (In, &FTess, &Tesr);
   }
 
   // ###################################################################
@@ -320,7 +329,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   // ###################################################################
   // ### WRITING RESULTS ###############################################
 
-  ut_print_message (0, 1, "Writing tessellation...\n");
+  ut_print_message (0, 1, "Writing results...\n");
   net_res (In, MTess, Tess, FTess, Tesr, SSet, SSetQty);
 
   // ###################################################################

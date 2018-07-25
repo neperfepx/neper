@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 1003-1018, Romain Quey. */
+/* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_inp_.h"

@@ -51,6 +51,8 @@ extern void net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2 (struct TOPT
 						     *pTOpt, int var);
 extern void net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2w (struct TOPT
 						     *pTOpt, int var);
+extern void net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2wu (struct TOPT
+						     *pTOpt, int var);
 
 #ifdef __cplusplus
 }

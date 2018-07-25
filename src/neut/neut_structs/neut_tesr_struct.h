@@ -13,13 +13,14 @@ extern "C"
   struct TESR
   {
     // GENERAL INFORMATION -----------------------------------------------
+    double *Origin;             // origin (absolute coordinates)
 
     int Dim;			// Dimension
     int CellQty;		// number of polyhedra
     int *CellId;		// identifiers of the cells
     double **CellOri;		// crystal orientations of the cells
     int ***CellBBox;		// bbox of a cell [cell][0...2][0,1]
-    double **CellCoo;		// centroids of the cells
+    double **CellCoo;		// centroids of the cells (absolute coordinates)
     double *CellVol;		// volumes/areas of the cells
     double *CellConvexity;      // Convexity of the cells
 

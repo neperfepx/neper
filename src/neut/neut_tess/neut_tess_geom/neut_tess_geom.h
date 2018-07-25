@@ -151,17 +151,35 @@ extern "C"
 ///
   extern void neut_tess_bbox (struct TESS Tess, double **);
 
+/// \brief Get the bounding box of vertices of a TESS
+///
+///
+///
+  extern void neut_tess_vers_bbox (struct TESS Tess, int *vers, int verqty, double **size);
+
 /// \brief Get the bounding box of the cell of a TESS
 ///
 ///
 ///
   extern void neut_tess_cell_bbox (struct TESS Tess, int cell, double **size);
 
-/// \brief Get the bounding box of a TESS
+/// \brief Get the bounding box of an edge of a TESS
 ///
 ///
 ///
   extern void neut_tess_edge_bbox (struct TESS Tess, int edge, double **size);
+
+/// \brief Get the bounding box of a face of a TESS
+///
+///
+///
+  extern void neut_tess_face_bbox (struct TESS Tess, int face, double **size);
+
+/// \brief Get the bounding box of a poly of a TESS
+///
+///
+///
+  extern void neut_tess_poly_bbox (struct TESS Tess, int poly, double **size);
 
 /// \brief Determine whether a point is within a cell
 ///

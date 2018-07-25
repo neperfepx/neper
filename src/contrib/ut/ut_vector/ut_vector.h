@@ -19,7 +19,7 @@ extern double ut_vector_angle_rad_2d (double *, double *);
 extern double ut_vector_angle_2d (double *, double *);
 extern double ut_vector_int_angle_rad (int *, int *);
 extern double ut_vector_int_angle (int *, int *);
-extern int   ut_vector_set_covar (double**, int, int, double**);
+extern int    ut_vector_set_covar (double**, int, int, double**);
 extern void   ut_vector_uvect (double*, double*);
 
 #endif /* UT_VECTOR_H */

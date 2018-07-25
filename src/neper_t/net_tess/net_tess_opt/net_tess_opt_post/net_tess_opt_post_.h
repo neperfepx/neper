@@ -17,5 +17,10 @@
 
 #include"net_tess_opt_post.h"
 
+extern void net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess,
+		   int dtess, int dcell, int tessid,
+		   struct POLY *Poly, struct TOPT TOpt,
+		   struct SEEDSET *SSet);
+
 extern void net_tess_opt_post_modes (struct TOPT TOpt, struct TESS
     *Tess, int tessid);

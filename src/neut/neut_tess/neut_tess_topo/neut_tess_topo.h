@@ -223,6 +223,13 @@ extern "C"
   extern int neut_tess_edges_comver (struct TESS Tess, int *edge,
 				     int edgeqty, int *pver);
 
+/// \brief Get the vertices of a edge
+///
+///
+///
+  extern void neut_tess_edge_vers (struct TESS Tess, int edge, int **pver,
+				   int *pverqty);
+
 /// \brief Get the vertices of a face
 ///
 ///

@@ -133,7 +133,11 @@ ol_vect_fprintf (FILE * file, double *vect, char *format)
 int
 ol_vect_fscanf (FILE * file, double *vect)
 {
-  return fscanf (file, "%lf%lf%lf", &vect[0], &vect[1], &vect[2]);
+  int status;
+
+  status = fscanf (file, "%lf%lf%lf", vect, vect + 1, vect + 2);
+
+  return status == 3 ? 1 : -1;
 }
 
 int
@@ -148,7 +152,11 @@ ol_p_fprintf (FILE * file, double *p, char *format)
 int
 ol_p_fscanf (FILE * file, double *p)
 {
-  return fscanf (file, "%lf%lf", &p[0], &p[1]);
+  int status;
+
+  status = fscanf (file, "%lf%lf", p, p + 1);
+
+  return status == 2 ? 1 : -1;
 }
 
 void

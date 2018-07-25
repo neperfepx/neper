@@ -7,16 +7,16 @@
 // #include"contrib/nanoflann/nanoflann.hpp"
 
 extern void net_polycomp (struct POLY Domain, struct SEEDSET SeedSet,
-                          NFCLOUD *pnf_cloud, NFTREE **pnf_index,
-                          int** pptid_seedid, int** pseedid_ptid,
+                          NFCLOUD * pnf_cloud, NFTREE ** pnf_index,
+                          int **pptid_seedid, int **pseedid_ptid,
                           struct POLY **pPoly,
-			  int *seed_changed, int seed_changedqty,
-			  struct TDYN *);
+                          int *seed_changed, int seed_changedqty,
+                          struct TDYN *);
 
 int
 net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
-	    char *algoneigh, int TessId, struct MTESS *pMTess,
-	    struct TESS *pTess)
+            char *algoneigh, int TessId, struct MTESS *pMTess,
+            struct TESS *pTess)
 {
   struct POLY DomPoly, *Poly = NULL;
   struct TDYN TD;
@@ -32,7 +32,8 @@ net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
 
   net_tess_poly (PTess, poly, &DomPoly);
 
-  net_polycomp (DomPoly, SSet, &nf_cloud, &nf_index, &ptid_seedid, &seedid_ptid, &Poly, NULL, -1, &TD);
+  net_polycomp (DomPoly, SSet, &nf_cloud, &nf_index, &ptid_seedid,
+                &seedid_ptid, &Poly, NULL, -1, &TD);
 
   net_polys_tess (PTess.Level + 1, SSet, TessId, Poly, pTess);
 

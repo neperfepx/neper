@@ -30,12 +30,22 @@ net_mtess_flatten_face_domface_dom (struct MTESS MTess, struct TESS *Tess,
     {
       edge = Tess[tessface[0]].FaceEdgeNb[face][j];
       ori = Tess[tessface[0]].FaceEdgeOri[face][j];
-      for (k = 0; k < (*pTessE)[tessface[0]].EdgeFEdgeQty[edge]; k++)
-      {
-	fedge = (*pTessE)[tessface[0]].EdgeFEdgeNb[edge][k];
-	fori = (*pTessE)[tessface[0]].EdgeFEdgeOri[edge][k];
-	neut_tess_face_addedge (pFTess, newface, fedge, ori * fori);
-      }
+
+      if (ori == 1)
+        for (k = 0; k < (*pTessE)[tessface[0]].EdgeFEdgeQty[edge]; k++)
+        {
+          fedge = (*pTessE)[tessface[0]].EdgeFEdgeNb[edge][k];
+          fori = (*pTessE)[tessface[0]].EdgeFEdgeOri[edge][k];
+          neut_tess_face_addedge (pFTess, newface, fedge, fori);
+        }
+
+      else
+        for (k = (*pTessE)[tessface[0]].EdgeFEdgeQty[edge] - 1; k >= 0; k--)
+        {
+          fedge = (*pTessE)[tessface[0]].EdgeFEdgeNb[edge][k];
+          fori = (*pTessE)[tessface[0]].EdgeFEdgeOri[edge][k];
+          neut_tess_face_addedge (pFTess, newface, fedge, -fori);
+        }
     }
 
     neut_tesse_face_addface (&((*pTessE)[TessId]), dface, newface, 1);

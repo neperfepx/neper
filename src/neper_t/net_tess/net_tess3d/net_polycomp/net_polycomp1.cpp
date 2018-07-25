@@ -6,11 +6,11 @@
 #include"neut/neut_structs/neut_nanoflann_struct.hpp"
 
 extern void net_polycomp_kdtree (struct SEEDSET SSet,
-				 NFCLOUD *pnf_cloud, NFTREE **pnf_tree,
-                                 int** pptid_seedid, int** pseedid_ptid,
+                                 NFCLOUD * pnf_cloud, NFTREE ** pnf_tree,
+                                 int **pptid_seedid, int **pseedid_ptid,
                                  struct TDYN *pTD);
 extern void net_polycomp_cells (struct POLY Domain, struct SEEDSET SSet,
-				NFTREE **pnf_tree, int *ptid_seedid,
+                                NFTREE ** pnf_tree, int *ptid_seedid,
                                 int *updatedseeds, int updatedcellqty,
                                 struct TDYN *pTD, struct POLY **pPoly);
 
@@ -19,11 +19,10 @@ extern void net_polycomp_cells (struct POLY Domain, struct SEEDSET SSet,
  */
 void
 net_polycomp (struct POLY Domain, struct SEEDSET SSet,
-              NFCLOUD *pnf_cloud, NFTREE **pnf_tree,
-              int **pptid_seedid, int** pseedid_ptid,
+              NFCLOUD * pnf_cloud, NFTREE ** pnf_tree,
+              int **pptid_seedid, int **pseedid_ptid,
               struct POLY **pPoly,
-	      int *updatedseeds_in, int updatedseedqty_in,
-	      struct TDYN *pTD)
+              int *updatedseeds_in, int updatedseedqty_in, struct TDYN *pTD)
 {
   int updatedseedqty, *updatedseeds = NULL;
   struct timeval time;
@@ -40,7 +39,8 @@ net_polycomp (struct POLY Domain, struct SEEDSET SSet,
   // Computing KD tree -------------------------------------------------
 
   if (strcmp ((*pTD).algoneigh, "qsort"))
-    net_polycomp_kdtree (SSet, pnf_cloud, pnf_tree, pptid_seedid, pseedid_ptid, pTD);
+    net_polycomp_kdtree (SSet, pnf_cloud, pnf_tree, pptid_seedid,
+                         pseedid_ptid, pTD);
 
   // Computing shifts --------------------------------------------------
 
@@ -49,7 +49,7 @@ net_polycomp (struct POLY Domain, struct SEEDSET SSet,
   // Recording updated seeds -------------------------------------------
 
   net_polycomp_updatedseeds (SSet, pTD, updatedseeds_in, updatedseedqty_in,
-			     &updatedseeds, &updatedseedqty);
+                             &updatedseeds, &updatedseedqty);
 
   // Calculating cells -------------------------------------------------
 

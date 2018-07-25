@@ -9,6 +9,7 @@
 
 #include"ut.h"
 #include"neut_t.h"
+#include"net_ori/net_ori.h"
 
 #include"../../net_utils/net_utils.h"
 

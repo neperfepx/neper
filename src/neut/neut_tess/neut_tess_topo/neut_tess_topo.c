@@ -814,6 +814,16 @@ neut_tess_edges_comver (struct TESS Tess, int *edges, int edgeqty, int *pver)
 }
 
 void
+neut_tess_edge_vers (struct TESS Tess, int edge, int **pver, int *pverqty)
+{
+  (*pverqty) = 2;
+  (*pver) = ut_alloc_1d_int (*pverqty);
+  ut_array_1d_int_memcpy (*pver, *pverqty, Tess.EdgeVerNb[edge]);
+
+  return;
+}
+
+void
 neut_tess_face_vers (struct TESS Tess, int face, int **pver, int *pverqty)
 {
   (*pverqty) = Tess.FaceVerQty[face];

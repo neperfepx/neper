@@ -7,6 +7,8 @@
 void
 neut_tesr_fprintf_head (FILE * file, char *format, struct TESR Tesr)
 {
+  int i, origin = 0;
+
   fprintf (file, "***tesr\n");
   fprintf (file, " **format\n");
   fprintf (file, "   2.0 %s\n", format);
@@ -16,6 +18,20 @@ neut_tesr_fprintf_head (FILE * file, char *format, struct TESR Tesr)
   ut_array_1d_int_fprintf (file, Tesr.size, Tesr.Dim, "%d");
   fprintf (file, "   ");
   ut_array_1d_fprintf (file, Tesr.vsize, Tesr.Dim, "%.12f");
+
+  for (i = 0; i < Tesr.Dim; i++)
+    if (Tesr.Origin[i] != 0)
+    {
+      origin = 1;
+      break;
+    }
+
+  if (origin)
+  {
+    fprintf (file, "  *origin\n");
+    fprintf (file, "   ");
+    ut_array_1d_fprintf (file, Tesr.Origin, Tesr.Dim, "%.12f");
+  }
 
   return;
 }

@@ -37,7 +37,28 @@ neut_nodes_shift (struct NODES *pNodes, double shiftx, double shifty,
 }
 
 void
-neut_nodes_bbox (struct NODES Nodes, double *bbox)
+neut_nodes_bbox (struct NODES Nodes, double **bbox)
+{
+  int i, j;
+
+  for (i = 0; i < 3; i++)
+  {
+    bbox[i][0] = DBL_MAX;
+    bbox[i][1] = -DBL_MAX;
+  }
+
+  for (i = 1; i <= Nodes.NodeQty; i++)
+    for (j = 0; j < 3; j++)
+    {
+      bbox[j][0] = ut_num_min (bbox[j][0], Nodes.NodeCoo[i][j]);
+      bbox[j][1] = ut_num_max (bbox[j][1], Nodes.NodeCoo[i][j]);
+    }
+
+  return;
+}
+
+void
+neut_nodes_bbox_vect (struct NODES Nodes, double *bbox)
 {
   int i;
 
@@ -566,7 +587,7 @@ neut_nodes_dim (struct NODES Nodes)
   double *bbox = ut_alloc_1d (6);
   double *l = ut_alloc_1d (3);
 
-  neut_nodes_bbox (Nodes, bbox);
+  neut_nodes_bbox_vect (Nodes, bbox);
   for (i = 0; i < 3; i++)
     l[i] = bbox[2 * i + 1] - bbox[2 * i];
 
@@ -592,7 +613,7 @@ neut_nodes_centre (struct NODES Nodes, double *centre)
   int i;
   double *bbox = ut_alloc_1d (6);
 
-  neut_nodes_bbox (Nodes, bbox);
+  neut_nodes_bbox_vect (Nodes, bbox);
   for (i = 0; i < 3; i++)
     centre[i] = .5 * (bbox[2 * i + 1] + bbox[2 * i]);
 
@@ -607,7 +628,7 @@ neut_nodes_bboxcentre (struct NODES Nodes, double *centre)
   int i;
   double *bbox = ut_alloc_1d (6);
 
-  neut_nodes_bbox (Nodes, bbox);
+  neut_nodes_bbox_vect (Nodes, bbox);
   for (i = 0; i < 3; i++)
     centre[i] = .5 * (bbox[2 * i + 1] + bbox[2 * i]);
 

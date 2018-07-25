@@ -25,6 +25,7 @@ ut_color_name_rgb (char *name, int *c)
   return name2rgb (name, c);
 }
 
+
 int
 name2rgb (char *name, int *c)
 {
@@ -975,6 +976,7 @@ rgb_intensity (int *rgb, double intensity, int *rgb2)
 
   return;
 }
+
 
 int
 ut_color_scheme_val_color (char* scheme, double beg, double end,

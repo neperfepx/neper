@@ -10,14 +10,12 @@ net_tess_opt_init_sset_coo (struct MTESS MTess, struct TESS *Tess,
 			    char *var, int pos, char *cooexpr,
 			    double *rad, int *qty)
 {
-  int i, cell, from_file = 0;
+  int i, j, cell, from_file = 0;
   double *centre = ut_alloc_1d (3);
   struct POINT Point, Point2;
   char *prev = ut_alloc_1d_char (1000);
   double **coo = ut_alloc_2d ((*pTOpt).CellQty + 1, 3);
   char *mid = NULL;
-  int *id = ut_alloc_1d_int ((*pTOpt).CellQty + 1);
-  int multiseed = (ut_array_1d_int_max (qty + 1, (*pTOpt).CellQty) > 1);
   FILE *fp = NULL;
   struct TESS Tmp;
 
@@ -40,11 +38,31 @@ net_tess_opt_init_sset_coo (struct MTESS MTess, struct TESS *Tess,
     }
     else
       net_multiscale_arg_2d_fscanf (cooexpr, mid, coo + 1, (*pTOpt).CellQty, (*pTOpt).Dim);
+
+    if ((*pTOpt).aspratio)
+      for (i = 1; i <= (*pTOpt).CellQty; i++)
+        for (j = 0; j < (*pTOpt).Dim; j++)
+          coo[i][j] /= (*pTOpt).aspratio[j];
   }
+
+  else if (!strncmp (cooexpr, "bcc", 3))
+  {
+    (*pTOpt).CellQty = net_tess_opt_init_sset_coo_bcc_expr ((*pTOpt).Dom, cooexpr, &coo);
+    (*pTOpt).SSet.Size = ut_alloc_2d (3, 2);
+    neut_tess_bbox ((*pTOpt).Dom, (*pTOpt).SSet.Size);
+  }
+
+  int *id = ut_alloc_1d_int ((*pTOpt).CellQty + 1);
+  int multiseed = (ut_array_1d_int_max (qty + 1, (*pTOpt).CellQty) > 1);
 
   Point.Periodic = ut_alloc_1d_int (3);
   if ((*pTOpt).SSet.Periodic)
     ut_array_1d_int_memcpy (Point.Periodic, 3, (*pTOpt).SSet.Periodic);
+  if ((*pTOpt).activedim)
+  {
+    Point.activedim = ut_alloc_1d_int (3);
+    ut_array_1d_int_memcpy (Point.activedim, 3, (*pTOpt).activedim);
+  }
   Point.BBox = ut_alloc_2d (3, 2);
   ut_array_2d_memcpy (Point.BBox, 3, 2, (*pTOpt).SSet.Size);
   Point.Dim = (*pTOpt).SSet.Dim;
@@ -69,10 +87,10 @@ net_tess_opt_init_sset_coo (struct MTESS MTess, struct TESS *Tess,
     if ((*pTOpt).tarqty > 0)
       ut_print_progress (stdout, i, (*pTOpt).CellQty, "%.0f%%", prev);
 
-    net_tess_opt_init_sset_coo_cluster ((*pTOpt).Dim, r2, qty[cell],
+    net_tess_opt_init_sset_coo_cluster ((*pTOpt).Dim, (*pTOpt).activedim, r2, qty[cell],
                                         0.5 * rad[cell], rad[cell], &Point2);
 
-    if (from_file)
+    if (from_file || !strncmp (cooexpr, "bcc", 3))
       ut_array_1d_memcpy (centre, 3, coo[cell]);
     else
       net_tess_opt_init_sset_coo_centre (pTOpt, r, var, pos, cooexpr,
@@ -89,6 +107,9 @@ net_tess_opt_init_sset_coo (struct MTESS MTess, struct TESS *Tess,
 
     net_tess_opt_init_sset_coo_lllfp2011 (pTOpt);
   }
+
+  if ((*pTOpt).tarqty == 0)
+    printf ("\n");
 
   ut_free_1d (centre);
   ut_free_2d (coo, (*pTOpt).CellQty + 1);

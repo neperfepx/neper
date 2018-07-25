@@ -9,7 +9,6 @@ net_tess_opt_comp_objective_fval_cellpenalty (struct TOPT *pTOpt)
 {
   int i, j, cell, scell, faceqty, contiguous, faceqty_cell = 0;
   double dist;
-  struct POLY DomPoly;
 
   for (i = 0; i < (*pTOpt).cellchangedqty; i++)
   {
@@ -62,32 +61,21 @@ net_tess_opt_comp_objective_fval_cellpenalty (struct TOPT *pTOpt)
       // domain.  So, adding the distance to the domain as a penalty.
       if (strncmp (((*pTOpt).SSet).Type, "periodic", 8) != 0)
       {
-	neut_poly_set_zero (&DomPoly);
-	net_tess_poly ((*pTOpt).Dom, 1, &DomPoly);
-
 	for (j = 0; j < (*pTOpt).CellSCellQty[cell]; j++)
 	{
 	  scell = (*pTOpt).CellSCellList[cell][j];
-	  neut_poly_point_dist (DomPoly, ((*pTOpt).SSet).SeedCoo[scell],
+	  neut_poly_point_dist ((*pTOpt).DomPoly, ((*pTOpt).SSet).SeedCoo[scell],
 				&dist);
 	  (*pTOpt).curcellpenalty[cell] += dist;
 	}
-
-	neut_poly_free (&DomPoly);
       }
     }
 
     if (faceqty == 0 && (*pTOpt).curcellpenalty[cell] == 0)
     {
-      neut_poly_set_zero (&DomPoly);
-      net_tess_poly ((*pTOpt).Dom, 1, &DomPoly);
-
-      ut_space_polypts_point_dist_verbosity (DomPoly.VerCoo + 1, DomPoly.VerQty,
+      ut_space_polypts_point_dist_verbosity ((*pTOpt).DomPoly.VerCoo + 1, (*pTOpt).DomPoly.VerQty,
 					     (*pTOpt).SSet.SeedCoo[faceqty_cell],
 					     &dist, 0);
-
-      neut_poly_free (&DomPoly);
-
       ut_error_reportbug ();
     }
   }

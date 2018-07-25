@@ -7,6 +7,8 @@
 #include<float.h>
 #include<math.h>
 #include"ut.h"
+
+#ifdef HAVE_GSL
 #include<gsl/gsl_interp.h>
 
 void
@@ -70,7 +72,8 @@ ut_fct_set_dirac (struct FCT *pFct, double x, double area)
 }
 
 void
-ut_fct_set_numerical (struct FCT *pFct, double min, double max, int size)
+ut_fct_set_numerical (struct FCT *pFct, double min, double max, int size,
+                      char *method)
 {
   ut_string_string ("numerical", &(*pFct).type);
   ut_string_string ("none", &(*pFct).expr);
@@ -79,7 +82,7 @@ ut_fct_set_numerical (struct FCT *pFct, double min, double max, int size)
   (*pFct).size = size;
   (*pFct).x = ut_alloc_1d ((*pFct).size);
   (*pFct).y = ut_alloc_1d ((*pFct).size);
-  ut_fct_interval_x_linear (min, max, size, pFct);
+  ut_fct_interval_x_linear (min, max, size, method, pFct);
 
   return;
 }
@@ -186,12 +189,12 @@ ut_fct_numericalfct (struct FCT Fct, double min, double max, int size, struct FC
   ut_fct_set_zero (&FctC);
   ut_fct_memcpy (Fct, &FctC);
 
-  ut_fct_set_numerical (pFct2, min, max, size);
+  ut_fct_set_numerical (pFct2, min, max, size, "center");
   (*pFct2).mean = FctC.mean;
   (*pFct2).sig = FctC.sig;
   (*pFct2).area = FctC.area;
 
-  ut_fct_interval_x_linear (min, max, size, pFct2);
+  ut_fct_interval_x_linear (min, max, size, "center", pFct2);
 
   if (FctC.type && !strcmp (FctC.type, "dirac"))
   {
@@ -264,7 +267,7 @@ ut_fct_integralfct (struct FCT Fct, struct FCT *pFct2)
 
   else if (!strcmp (Fct.type, "numerical"))
   {
-    ut_fct_set_numerical (pFct2, Fct.min, Fct.max, Fct.size);
+    ut_fct_set_numerical (pFct2, Fct.min, Fct.max, Fct.size, "center");
     ut_array_1d_memcpy ((*pFct2).x, (*pFct2).size, Fct.x);
 
     for (i = 0; i < (*pFct2).size; i++)
@@ -382,7 +385,7 @@ ut_fct_set (char *string, struct FCT *pFct)
 
 void
 ut_fct_interval_x_linear (double min, double max, int size,
-                          struct FCT *pFct)
+                          char* method, struct FCT *pFct)
 {
   int i;
 
@@ -391,8 +394,14 @@ ut_fct_interval_x_linear (double min, double max, int size,
   (*pFct).max = max;
   (*pFct).size = size;
 
-  for (i = 0; i < (*pFct).size; i++)
-    (*pFct).x[i] = min + (max - min) * (2 * i + 1) / (2 * (*pFct).size);
+  if (!method || !strcmp (method, "center"))
+    for (i = 0; i < (*pFct).size; i++)
+      (*pFct).x[i] = min + (max - min) * (2 * i + 1) / (2 * (*pFct).size);
+  else if (!strcmp (method, "bounds"))
+    for (i = 0; i < (*pFct).size; i++)
+      (*pFct).x[i] = min + i * (max - min) / ((*pFct).size - 1);
+  else
+    abort ();
 
   return;
 }
@@ -467,3 +476,5 @@ ut_fct_x_pos (struct FCT Fct, double x)
 
   return id;
 }
+
+#endif

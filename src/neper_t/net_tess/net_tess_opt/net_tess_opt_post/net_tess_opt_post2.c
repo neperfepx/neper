@@ -5,89 +5,97 @@
 #include "net_tess_opt_post_.h"
 
 void
-net_tess_opt_post_modes (struct TOPT TOpt, struct TESS *Tess, int tessid)
+net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess,
+                        int dtess, int dcell, int tessid,
+                        struct POLY *Poly, struct TOPT TOpt,
+                        struct SEEDSET *SSet)
 {
-  int tar, i, j, size, pos, tmp;
-  double *val = ut_alloc_1d (TOpt.CellQty);
-  int *id = ut_alloc_1d_int (TOpt.CellQty);
-  double **modeval = NULL;
-  double *x = NULL;
-  int *modehint = NULL;
-  int *mode = ut_alloc_1d_int (TOpt.CellQty);
-  double *tmpval = NULL;
+  int i, cell;
+  struct TESS *pTess = Tess + tessid;
+  struct SEEDSET *pSSet = SSet + tessid;
 
-  tar = -1;
-  for (i = 0; i < TOpt.tarqty; i++)
-    if (TOpt.tarmodeqty[i] > 1)
-    {
-      tar = i;
-      break;
-    }
+  net_polys_tess (Tess[dtess].Level + 1, TOpt.SSet, tessid, Poly, pTess);
 
-  Tess[tessid].CellModeId = ut_alloc_1d_int (Tess[tessid].CellQty + 1);
+  if (TOpt.aspratio)
+    neut_tess_scale (pTess, TOpt.aspratio[0], TOpt.aspratio[1], TOpt.aspratio[2]);
 
-  if (tar != -1)
+  net_tess3d_domain (Tess[dtess], dcell, tessid, pMTess, pTess);
+  if (!strncmp ((*pTess).Type, "periodic", 8))
+    net_tess3d_periodic (pTess);
+
+#ifdef DEVEL_DEBUGGING_TEST
+  if (neut_tess_test (*pTess, 0) != 0 || neut_tess_test_dom (*pTess, 0) != 0)
+    ut_print_message (2, 2, "The tessellation is not valid.\n");
+#endif
+
+  if (TOpt.tarqty > 0 && !strcmp (TOpt.tarvar[0], "tesr"))
   {
-    size = TOpt.tarmodecdf0[tar][0].size;
-    x = ut_alloc_1d (size);
-    ut_array_1d_memcpy (x, size, TOpt.tarmodecdf0[tar][0].x);
-
-    modeval = ut_alloc_1d_pdouble (TOpt.tarmodeqty[tar]);
-    modehint = ut_alloc_1d_int (TOpt.tarmodeqty[tar]);
-    tmpval = ut_alloc_1d (TOpt.tarmodeqty[tar]);
-
-    for (i = 0; i < TOpt.tarmodeqty[tar]; i++)
+    (*pTess).CellId = ut_alloc_1d_int ((*pTess).CellQty + 1);
+    for (i = 1; i <= (*pTess).CellQty; i++)
     {
-      modeval[i] = ut_alloc_1d (size);
-      ut_array_1d_memcpy (modeval[i], size, TOpt.tarmodecdf0[tar][i].y);
-      ut_array_1d_scale (modeval[i], size, TOpt.CellQty * TOpt.tarmodefact[tar][i]);
+      cell = TOpt.SCellCell[i];
+      if (TOpt.tartesr.CellId)
+	(*pTess).CellId[i] = TOpt.tartesr.CellId[cell];
+      else
+	(*pTess).CellId[i] = cell;
     }
 
-    for (i = 0; i < TOpt.CellQty; i++)
-      val[i] = TOpt.curcellval[tar][i + 1][0];
-
-    ut_array_1d_sort_index (val, TOpt.CellQty, id);
-
-    pos = 0;
-    for (i = 0; i < size && pos < TOpt.CellQty; i++)
-      if (x[i] > val[id[pos]])
+    if (TOpt.tartesr.CellOri)
+    {
+      (*pTess).CellOri = ut_alloc_2d ((*pTess).CellQty + 1, 4);
+      for (i = 1; i <= (*pTess).CellQty; i++)
       {
-	for (j = 0; j < TOpt.tarmodeqty[tar]; j++)
-	  tmpval[j] = modeval[j][i] - modehint[j];
-
-	tmp = ut_array_1d_max_index (tmpval, TOpt.tarmodeqty[tar]);
-
-	if (mode[id[pos]] != 0)
-	  abort ();
-
-	if (tmpval[tmp] > 0.5)
-	{
-	  mode[id[pos]] = tmp + 1;
-	  modehint[tmp]++;
-	  i--;
-	  pos++;
-	}
+	cell = TOpt.SCellCell[i];
+	ut_array_1d_memcpy ((*pTess).CellOri[i], 4,
+			    TOpt.tartesr.CellOri[cell]);
       }
-
-    ut_free_2d_ (&modeval, TOpt.tarmodeqty[tar]);
-    ut_free_1d_int_ (&modehint);
-    ut_free_1d_ (&tmpval);
-
-    for (i = 1; i <= Tess[tessid].CellQty; i++)
-      Tess[tessid].CellModeId[i] = mode[Tess[tessid].CellId[i] - 1];
-
-    if (ut_array_1d_int_eltpos (Tess[tessid].CellModeId + 1,
-				Tess[tessid].CellQty, 0) != -1)
-      ut_error_reportbug ();
+    }
+  }
+  else
+  {
+    (*pTess).CellId = ut_alloc_1d_int ((*pTess).CellQty + 1);
+    for (i = 1; i <= (*pTess).CellQty; i++)
+    {
+      cell = TOpt.SCellCell[i];
+      (*pTess).CellId[i] = cell;
+    }
   }
 
-  else
-    ut_array_1d_int_set (Tess[tessid].CellModeId + 1,
-			 Tess[tessid].CellQty, 1);
+  double **coo = ut_alloc_2d (TOpt.SSet.N + 1, 3);
+  double *weight = ut_alloc_1d (TOpt.SSet.N + 1);
+  ut_array_2d_memcpy (coo + 1, (*pTess).CellQty, 3, (*pTess).SeedCoo + 1);
+  ut_array_1d_memcpy (weight + 1, (*pTess).CellQty, (*pTess).SeedWeight + 1);
 
-  ut_free_1d (val);
-  ut_free_1d_int (id);
-  ut_free_1d (x);
+  neut_seedset_memcpy (TOpt.SSet, pSSet);
+
+  // Below is a fix to make sure that the seeds and the cell coincide.
+  // This is to handle the case where TOpt.CellSCellList[i] != i,
+  // which is obtained by sphere packing.
+  // This is a workaround to the fact that the cell-seeds relationship
+  // is not recorded yet in the TESS structure.
+  for (i = 1; i <= (*pTess).CellQty; i++)
+  {
+    ut_array_1d_memcpy ((*pTess).SeedCoo[i], 3,
+			coo[TOpt.CellSCellList[i][0]]);
+    (*pTess).SeedWeight[i] = weight[TOpt.CellSCellList[i][0]];
+
+    ut_array_1d_memcpy ((*pSSet).SeedCoo[i], 3,
+			coo[TOpt.CellSCellList[i][0]]);
+    (*pSSet).SeedWeight[i] = weight[TOpt.CellSCellList[i][0]];
+  }
+
+  if (TOpt.tartesrscale)
+  {
+    neut_tess_scale (pTess,
+	             1 / TOpt.tartesrscale[0],
+	             1 / TOpt.tartesrscale[1],
+	             1 / TOpt.tartesrscale[2]);
+  }
+
+  net_tess_opt_post_modes (TOpt, Tess, tessid);
+
+  ut_free_2d (coo, (*pTess).CellQty + 1);
+  ut_free_1d (weight);
 
   return;
 }

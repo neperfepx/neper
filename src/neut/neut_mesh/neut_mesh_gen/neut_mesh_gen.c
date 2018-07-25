@@ -265,6 +265,9 @@ neut_mesh_elt_mesh (struct NODES Nodes, struct MESH Mesh, int elt,
   (*pEMesh).EltQty = 1;
   (*pEMesh).EltNodes = ut_alloc_2d_int (2, eltnodeqty);
 
+  (*pEMesh).EltElset = ut_alloc_1d_int (2);
+  (*pEMesh).EltElset[1] = Mesh.EltElset[elt];
+
   for (i = 0; i < eltnodeqty; i++)
     (*pEMesh).EltNodes[1][i] = i + 1;
 
