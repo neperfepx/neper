@@ -224,6 +224,7 @@ net_domain_sphere (double *parms, struct POLY *pDomain)
 
   net_domain_sphere_planes (parms[0] / 2, parms[1], eq);
   net_domain_clip (pDomain, eq, parms[1]);
+
   ut_free_2d (eq, parms[1]);
 
   return;
@@ -313,6 +314,81 @@ net_domain_rodrigues (char *crysym, struct POLY *pDomain)
   ol_q_free (q1);
   ol_q_free (q2);
   ut_free_2d (eq, eqqty);
+
+  return;
+}
+
+void
+net_domain_planes_string (char *domain, int dim, struct POLY *pDomain)
+{
+  int eqqty;
+  double **eqs = NULL;
+
+  net_domain_planesparms (domain, dim, &eqs, &eqqty);
+  net_domain_planes (eqs, eqqty, pDomain);
+
+  ut_free_2d (eqs, eqqty);
+
+  return;
+}
+
+void
+net_domain_planesparms (char *domain, int dim, double ***peqs, int *peqqty)
+{
+  int i, varqty, shift;
+  char **vars = NULL, *filename = NULL;
+  FILE *file = NULL;
+
+  ut_string_function_separate (domain, NULL, NULL, &vars, &varqty);
+
+  if (varqty != 1)
+    ut_print_message (2, 0, "Unknown expression `%s'.\n", domain);
+
+  ut_string_string (vars[0], &filename);
+
+  file = ut_file_open (filename, "r");
+
+  if (fscanf (file, "%d", peqqty) != 1)
+    abort ();
+
+  if (dim == 2)
+  {
+    shift = 2;
+    (*peqqty) += 2;
+  }
+  else
+    shift = 0;
+
+  (*peqs) = ut_alloc_2d (*peqqty, 4);
+
+  // recording z0 and z1 faces
+  if (dim == 2)
+  {
+    (*peqs)[0][3] = -1;
+    (*peqs)[1][3] = 1;
+    (*peqs)[1][0] = 1e-6;
+  }
+
+  // recording faces
+  for (i = shift; i < *peqqty; i++)
+  {
+    ut_array_1d_fscanf (file, (*peqs)[i], 4);
+    if (ut_array_1d_norm ((*peqs)[i] + 1, 3) == 0)
+      ut_print_message (2, 3, "Face %d: normal norm is zero.\n", i - 1);
+    ut_array_1d_scale ((*peqs)[i], 4, 1. / ut_vector_norm ((*peqs)[i] + 1));
+  }
+
+  ut_free_2d_char (vars, varqty);
+  ut_file_close (file, filename, "r");
+  ut_free_1d_char (filename);
+
+  return;
+}
+
+void
+net_domain_planes (double **eqs, int eqqty, struct POLY *pDomain)
+{
+  net_domain_clip (pDomain, eqs, eqqty);
 
   return;
 }

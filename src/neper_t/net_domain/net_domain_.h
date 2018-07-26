@@ -42,4 +42,8 @@ extern void net_domain_rodrigues_string (char *domain, struct POLY *pDomain);
 extern void net_domain_rodriguesparms (char *domain, char **pcrysym);
 extern void net_domain_rodrigues (char *crysym, struct POLY *pDomain);
 
+extern void net_domain_planes_string (char *domain, int dim, struct POLY *pDomain);
+extern void net_domain_planesparms (char *domain, int dim, double ***peqs, int *peqqty);
+extern void net_domain_planes (double **eqs, int eqqty, struct POLY *pDomain);
+
 #include"net_domain.h"

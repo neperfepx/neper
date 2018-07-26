@@ -7,7 +7,7 @@
 void
 net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
 {
-  int i, id, qty0, pseudodim = -1;
+  int i, pseudodim = -1;
   double pseudosize = -DBL_MAX;
   double **size = ut_alloc_2d (3, 2);
   struct POLY Poly;
@@ -46,48 +46,8 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
     net_domain_rodrigues_string (In.domain, &Poly);
 
   else if (!strcmp (domtype, "planes"))
-  {
-    int i, qty;
-    char *filename = ut_alloc_1d_char (strlen (tmp) + 1);
-    FILE *file = NULL;
+    net_domain_planes_string (In.domain, In.dim, &Poly);
 
-    if (ut_string_nbwords (tmp) != 2)
-      ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
-    sscanf (tmp, "%*s%s", filename);
-    file = ut_file_open (filename, "r");
-
-    if (fscanf (file, "%d", &qty) != 1)
-      abort ();
-
-    qty0 = (In.dim == 2) ? 2 : 0;
-
-    double **eq = ut_alloc_2d (qty + qty0, 4);
-
-    // recording z0 and z1 faces
-    if (In.dim == 2)
-    {
-      eq[0][3] = -1;
-      eq[1][3] = 1;
-      eq[1][0] = 1e-6;
-    }
-
-    // recording faces
-    for (i = 0; i < qty; i++)
-    {
-      id = qty0 + i;
-      ut_array_1d_fscanf (file, eq[id], 4);
-      if (ut_array_1d_norm (eq[id] + 1, 3) == 0)
-	ut_print_message (2, 3, "Face %d: normal norm is zero.\n", id - 1);
-      ut_array_1d_scale (eq[id], 4, 1. / ut_vector_norm (eq[id] + 1));
-    }
-
-    net_domain_clip (&Poly, eq, qty + qty0);
-
-    ut_free_2d (eq, qty);
-
-    ut_file_close (file, filename, "r");
-    ut_free_1d_char (filename);
-  }
   else if (!strcmp (domtype, "cell"))
   {
     int cell;
@@ -107,6 +67,7 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
     neut_tess_free (&Tessb);
     ut_free_1d_char (filename);
   }
+
   else
   {
     ut_print_message (2, 0, "Domain type unknown (%s)\n", domtype);
