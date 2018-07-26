@@ -106,63 +106,6 @@ net_domain_tesspoly_planes (struct TESS Tess, int id, int *pqty, double **eq)
 }
 
 void
-net_domain_rodrigues (struct POLY *pDomain, char *crysym)
-{
-  int i, eqqty, n = ol_crysym_qty (crysym);
-  double **eq = NULL;
-  double *q1 = ol_q_alloc ();
-  double *q2 = ol_q_alloc ();
-  double *r = ol_r_alloc ();
-  double theta, thetamax;
-  double *O = ut_alloc_1d (4);
-  double **cubesize = ut_alloc_2d (3, 2);
-  srand48 (1);
-
-  thetamax = tan (0.99 * M_PI * 0.5);
-  for (i = 0; i < 3; i++)
-    ut_array_1d_set_2 (cubesize[i], -thetamax, thetamax);
-  net_domain_cube (cubesize, pDomain);
-
-  if (!strcmp (crysym, "m-3"))
-    ut_print_message (1, 2, "Face positions are randomized a bit to avoid degeneracy.\n");
-
-  eqqty = 0;
-  for (i = 2; i <= n; i++)
-  {
-    ol_q_crysym (q1, crysym, i, q2);
-    ol_q_rtheta_rad (q2, r, &theta);
-    if (!strcmp (crysym, "m-3"))
-      theta += 1e-3 * (2 * drand48 () - 1);
-
-    eq = ut_realloc_2d_addline (eq, ++eqqty, 4);
-
-    ut_array_1d_memcpy (eq[eqqty - 1] + 1, 3, r);
-    eq[eqqty - 1][0] = tan (theta / 4);
-    if (eq[eqqty - 1][0] < 0)
-      ut_array_1d_scale (eq[eqqty - 1], 4, -1);
-
-    if (theta > M_PI - OL_EPS)
-    {
-      eq = ut_realloc_2d_addline (eq, ++eqqty, 4);
-      ut_array_1d_memcpy (eq[eqqty - 1], 4, eq[eqqty - 2]);
-      ut_array_1d_scale (eq[eqqty - 1] + 1, 3, -1);
-    }
-  }
-
-  if (eqqty > 0)
-    net_domain_clip (pDomain, eq, eqqty);
-
-  ut_free_2d (cubesize, 3);
-  ut_free_1d (O);
-  ol_r_free (r);
-  ol_q_free (q1);
-  ol_q_free (q2);
-  ut_free_2d (eq, eqqty);
-
-  return;
-}
-
-void
 net_domain_clip (struct POLY *pDomain, double **eq, int qty)
 {
   int i, j, shift;

@@ -22,7 +22,6 @@ extern void net_domain_cubeparms (char *domain, double **size);
 extern void net_domain_stdtriangle_planes (int, double **);
 extern void net_domain_cylinder_planes (double, double, int, double **);
 extern void net_domain_sphere_planes (double rad, int qty, double **eq);
-extern void net_domain_rodrigues (struct POLY *pDomain, char *crysym);
 extern void net_domain_clip (struct POLY *, double **, int);
 extern void net_domain_tesspoly_planes (struct TESS, int, int *, double **);
 extern void net_domain_transform (struct TESS *pDomain, char* string);
@@ -38,5 +37,9 @@ extern void net_domain_stdtriangle (double *parms, struct POLY *pDomain);
 extern void net_domain_sphere_string (char *domain, struct POLY *pDomain);
 extern void net_domain_sphereparms (char *domain, double *parms);
 extern void net_domain_sphere (double *parms, struct POLY *pDomain);
+
+extern void net_domain_rodrigues_string (char *domain, struct POLY *pDomain);
+extern void net_domain_rodriguesparms (char *domain, char **pcrysym);
+extern void net_domain_rodrigues (char *crysym, struct POLY *pDomain);
 
 #include"net_domain.h"

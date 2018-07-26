@@ -43,12 +43,8 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
     net_domain_sphere_string (In.domain, &Poly);
 
   else if (!strcmp (domtype, "rodrigues"))
-  {
-    if (ut_string_nbwords (tmp) != 2 || sscanf (tmp, "%*s%s", crysym) != 1)
-      ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
+    net_domain_rodrigues_string (In.domain, &Poly);
 
-    net_domain_rodrigues (&Poly, crysym);
-  }
   else if (!strcmp (domtype, "planes"))
   {
     int i, qty;
