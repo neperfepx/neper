@@ -392,3 +392,52 @@ net_domain_planes (double **eqs, int eqqty, struct POLY *pDomain)
 
   return;
 }
+
+void
+net_domain_cell_string (char *domain, struct POLY *pDomain)
+{
+  int cell;
+  char *filename = NULL;
+
+  net_domain_cellparms (domain, &filename, &cell);
+  net_domain_cell (filename, cell, pDomain);
+
+  ut_free_1d_char (filename);
+
+  return;
+}
+
+void
+net_domain_cellparms (char *domain, char **pfilename, int *pcell)
+{
+  int varqty;
+  char **vars = NULL, *filename = NULL;
+
+  ut_string_function_separate (domain, NULL, NULL, &vars, &varqty);
+
+  if (varqty != 2)
+    ut_print_message (2, 0, "Unknown expression `%s'.\n", domain);
+
+  ut_string_string (vars[0], pfilename);
+  ut_string_int (vars[1], pcell);
+
+  ut_free_2d_char (vars, varqty);
+  ut_free_1d_char (filename);
+
+  return;
+}
+
+void
+net_domain_cell (char *filename, int cell, struct POLY *pDomain)
+{
+  struct TESS Tessb;
+
+  neut_tess_set_zero (&Tessb);
+
+  neut_tess_name_fscanf (filename, &Tessb);
+  net_tess_poly (Tessb, cell, pDomain);
+
+  neut_tess_free (&Tessb);
+
+  return;
+}

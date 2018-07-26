@@ -49,30 +49,10 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
     net_domain_planes_string (In.domain, In.dim, &Poly);
 
   else if (!strcmp (domtype, "cell"))
-  {
-    int cell;
-    char *filename = ut_alloc_1d_char (strlen (tmp) + 1);
-    struct TESS Tessb;
-
-    neut_tess_set_zero (&Tessb);
-
-    if (ut_string_nbwords (tmp) != 3
-	|| sscanf (tmp, "%*s%s%s", filename, sizestring[1]) != 2)
-      ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
-
-    neut_tess_name_fscanf (filename, &Tessb);
-    sscanf (sizestring[1], "%d", &cell);
-    net_tess_poly (Tessb, cell, &Poly);
-
-    neut_tess_free (&Tessb);
-    ut_free_1d_char (filename);
-  }
+    net_domain_cell_string (In.domain, &Poly);
 
   else
-  {
     ut_print_message (2, 0, "Domain type unknown (%s)\n", domtype);
-    abort ();
-  }
 
   if (Poly.VerQty > 0)
   {

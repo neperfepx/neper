@@ -46,4 +46,8 @@ extern void net_domain_planes_string (char *domain, int dim, struct POLY *pDomai
 extern void net_domain_planesparms (char *domain, int dim, double ***peqs, int *peqqty);
 extern void net_domain_planes (double **eqs, int eqqty, struct POLY *pDomain);
 
+extern void net_domain_cell_string (char *domain, struct POLY *pDomain);
+extern void net_domain_cellparms (char *domain, char **pfilename, int *pcell);
+extern void net_domain_cell (char *filename, int cell, struct POLY *pDomain);
+
 #include"net_domain.h"
