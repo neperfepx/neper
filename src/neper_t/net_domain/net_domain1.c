@@ -7,7 +7,7 @@
 void
 net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
 {
-  int i, qty, id, qty0, pseudodim = -1;
+  int i, id, qty0, pseudodim = -1;
   double pseudosize = -DBL_MAX;
   double **size = ut_alloc_2d (3, 2);
   struct POLY Poly;
@@ -37,30 +37,10 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
     net_domain_cylinder_string (In.domain, In.n[1], &Poly);
 
   else if (!strcmp (domtype, "stdtriangle"))
-  {
-    qty = 10;
-    if (ut_string_nbwords (tmp) == 2)
-    {
-      if (sscanf (tmp, "%*s%s", sizestring[0]) != 1)
-        ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
+    net_domain_stdtriangle_string (In.domain, &Poly);
 
-      ut_string_int (sizestring[0], &qty);
-    }
-    pseudodim = 2;
-    pseudosize = 1e-6;
-
-    qty += 4;
-
-    double **eq = ut_alloc_2d (qty, 4);
-
-    net_domain_stdtriangle_planes (qty - 4, eq);
-    net_domain_clip (&Poly, eq, qty);
-    ut_free_2d (eq, qty);
-  }
   else if (!strcmp (domtype, "sphere"))
   {
-    qty = 100;
-
     if (ut_string_nbwords (tmp) == 2)
     {
       if (sscanf (tmp, "%*s%s", sizestring[0]) != 1)

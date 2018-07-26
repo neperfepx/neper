@@ -31,4 +31,8 @@ extern void net_domain_cylinder_string (char *domain, char *nstring, struct POLY
 extern void net_domain_cylinderparms (char *domain, char *nstring, double *parms, int *ppseudodim, double *ppseudosize);
 extern void net_domain_cylinder (double *parms, struct POLY *pDomain);
 
+extern void net_domain_stdtriangle_string (char *domain, struct POLY *pDomain);
+extern void net_domain_stdtriangle_parms (char *domain, double *parms);
+extern void net_domain_stdtriangle (double *parms, struct POLY *pDomain);
+
 #include"net_domain.h"

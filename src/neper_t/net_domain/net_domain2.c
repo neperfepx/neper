@@ -124,3 +124,53 @@ net_domain_cylinder (double *parms, struct POLY *pDomain)
 
   return;
 }
+
+void
+net_domain_stdtriangle_string (char *domain, struct POLY *pDomain)
+{
+  double *parms = ut_alloc_1d (2);
+
+  net_domain_stdtriangle_parms (domain, parms);
+  net_domain_stdtriangle (parms, pDomain);
+
+  ut_free_1d (parms);
+
+  return;
+}
+
+void
+net_domain_stdtriangle_parms (char *domain, double *parms)
+{
+  int varqty;
+  char **vars = NULL;
+
+  ut_string_function_separate (domain, NULL, NULL, &vars, &varqty);
+
+  if (varqty != 1)
+    ut_print_message (2, 0, "Unknown expression `%s'.\n", domain);
+
+  ut_string_real (vars[0], parms);
+
+  parms[0] += 4;
+
+  ut_free_2d_char (vars, varqty);
+
+  return;
+}
+
+void
+net_domain_stdtriangle (double *parms, struct POLY *pDomain)
+{
+  int qty = ut_num_d2ri (parms[0]);
+  double **eq = ut_alloc_2d (qty, 4);
+
+  net_domain_stdtriangle_planes (qty - 4, eq);
+  net_domain_clip (pDomain, eq, qty);
+
+  (*pDomain).PseudoDim = 2;
+  (*pDomain).PseudoSize = 1e-6;
+
+  ut_free_2d (eq, qty);
+
+  return;
+}
