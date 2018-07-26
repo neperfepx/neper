@@ -32,7 +32,11 @@ extern void net_domain_cylinderparms (char *domain, char *nstring, double *parms
 extern void net_domain_cylinder (double *parms, struct POLY *pDomain);
 
 extern void net_domain_stdtriangle_string (char *domain, struct POLY *pDomain);
-extern void net_domain_stdtriangle_parms (char *domain, double *parms);
+extern void net_domain_stdtriangleparms (char *domain, double *parms);
 extern void net_domain_stdtriangle (double *parms, struct POLY *pDomain);
+
+extern void net_domain_sphere_string (char *domain, struct POLY *pDomain);
+extern void net_domain_sphereparms (char *domain, double *parms);
+extern void net_domain_sphere (double *parms, struct POLY *pDomain);
 
 #include"net_domain.h"

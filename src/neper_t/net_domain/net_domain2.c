@@ -130,7 +130,7 @@ net_domain_stdtriangle_string (char *domain, struct POLY *pDomain)
 {
   double *parms = ut_alloc_1d (2);
 
-  net_domain_stdtriangle_parms (domain, parms);
+  net_domain_stdtriangleparms (domain, parms);
   net_domain_stdtriangle (parms, pDomain);
 
   ut_free_1d (parms);
@@ -139,7 +139,7 @@ net_domain_stdtriangle_string (char *domain, struct POLY *pDomain)
 }
 
 void
-net_domain_stdtriangle_parms (char *domain, double *parms)
+net_domain_stdtriangleparms (char *domain, double *parms)
 {
   int varqty;
   char **vars = NULL;
@@ -171,6 +171,60 @@ net_domain_stdtriangle (double *parms, struct POLY *pDomain)
   (*pDomain).PseudoSize = 1e-6;
 
   ut_free_2d (eq, qty);
+
+  return;
+}
+
+void
+net_domain_sphere_string (char *domain, struct POLY *pDomain)
+{
+  double *parms = ut_alloc_1d (2);
+
+  net_domain_sphereparms (domain, parms);
+  net_domain_sphere (parms, pDomain);
+
+  ut_free_1d (parms);
+
+  return;
+}
+
+void
+net_domain_sphereparms (char *domain, double *parms)
+{
+  int i, varqty;
+  char **vars = NULL;
+
+  parms[1] = 100;
+
+  ut_string_function_separate (domain, NULL, NULL, &vars, &varqty);
+
+  if (varqty != 1 && varqty != 2)
+    ut_print_message (2, 0, "Unknown expression `%s'.\n", domain);
+
+  for (i = 0; i < varqty; i++)
+    ut_string_real (vars[i], parms + i);
+
+  parms[0] += 4;
+
+  if (parms[1] != -1 && parms[1] < 4)
+  {
+    ut_print_message (1, 2, "Increasing the number of facets to 4.\n");
+    parms[1] = 4;
+  }
+
+  ut_free_2d_char (vars, varqty);
+
+  return;
+}
+
+void
+net_domain_sphere (double *parms, struct POLY *pDomain)
+{
+  double **eq = ut_alloc_2d (parms[1], 4);
+
+  net_domain_sphere_planes (parms[0] / 2, parms[1], eq);
+  net_domain_clip (pDomain, eq, parms[1]);
+  ut_free_2d (eq, parms[1]);
 
   return;
 }

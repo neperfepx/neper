@@ -40,35 +40,8 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
     net_domain_stdtriangle_string (In.domain, &Poly);
 
   else if (!strcmp (domtype, "sphere"))
-  {
-    if (ut_string_nbwords (tmp) == 2)
-    {
-      if (sscanf (tmp, "%*s%s", sizestring[0]) != 1)
-	ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
+    net_domain_sphere_string (In.domain, &Poly);
 
-      ut_string_real (sizestring[0], parms);
-    }
-    else if (ut_string_nbwords (tmp) == 3)
-    {
-      if (sscanf (tmp, "%*s%s%s", sizestring[0], sizestring[1]) != 2)
-	ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
-
-      ut_string_real (sizestring[0], parms);
-      ut_string_real (sizestring[1], parms + 1);
-    }
-
-    if (parms[1] != -1 && parms[1] < 4)
-    {
-      ut_print_message (1, 2, "Increasing the number of facets to 4.\n");
-      parms[1] = 4;
-    }
-
-    double **eq = ut_alloc_2d (parms[1], 4);
-
-    net_domain_sphere_planes (parms[0] / 2, parms[1], eq);
-    net_domain_clip (&Poly, eq, parms[1]);
-    ut_free_2d (eq, parms[1]);
-  }
   else if (!strcmp (domtype, "rodrigues"))
   {
     if (ut_string_nbwords (tmp) != 2 || sscanf (tmp, "%*s%s", crysym) != 1)
