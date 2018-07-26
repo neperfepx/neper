@@ -68,6 +68,42 @@ net_tess_opt_comp_objective_x_crystal (const double *x, struct TOPT *pTOpt)
 }
 
 void
+net_tess_opt_comp_objective_x_domain (const double *x, struct TOPT *pTOpt)
+{
+  int i;
+
+  printf ("\n");
+  printf ("x = ");
+  ut_array_1d_fprintf (stdout, (double *) x, (*pTOpt).xqty, "%f");
+  printf ("\n");
+
+  (*pTOpt).TDyn.varchangedqty = (*pTOpt).xqty;
+
+  for (i = 0; i < (*pTOpt).xqty; i++)
+    if ((*pTOpt).iter <= 1 || (*((*pTOpt).x_pvar[i])) != x[i])
+    {
+      (*pTOpt).TDyn.varchangedqty++;
+      *((*pTOpt).x_pvar[i]) = x[i];
+    }
+
+  if (1 || (*pTOpt).iter <= 1)
+  {
+    (*pTOpt).TDyn.seedchangedqty = (*pTOpt).CellQty;
+    (*pTOpt).TDyn.seedmovedqty = (*pTOpt).CellQty;
+    (*pTOpt).TDyn.seedchanged = ut_alloc_1d_int ((*pTOpt).TDyn.seedchangedqty);
+    (*pTOpt).TDyn.seedmoved = ut_alloc_1d_int ((*pTOpt).TDyn.seedmovedqty);
+    ut_array_1d_int_set_id ((*pTOpt).TDyn.seedchanged, (*pTOpt).TDyn.seedchangedqty);
+    ut_array_1d_int_addval ((*pTOpt).TDyn.seedchanged, (*pTOpt).TDyn.seedchangedqty, 1,
+                            (*pTOpt).TDyn.seedchanged);
+    ut_array_1d_int_set_id ((*pTOpt).TDyn.seedmoved, (*pTOpt).TDyn.seedmovedqty);
+    ut_array_1d_int_addval ((*pTOpt).TDyn.seedmoved, (*pTOpt).TDyn.seedmovedqty, 1,
+                            (*pTOpt).TDyn.seedmoved);
+  }
+
+  return;
+}
+
+void
 net_tess_opt_comp_objective_centroidal_update (struct TOPT *pTOpt)
 {
   int i, seed;

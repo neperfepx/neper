@@ -67,6 +67,7 @@ struct TOPT
   struct POLY *Poly;		// set of polys
   double *CellSize;             // Poly sum (volume or area) (!= NULL / stored if known)
   struct CRYS Crys;             // crystal
+  double *DomParms;             // domain parameters
 
   // distribution information
   struct FCT *curpdf;		// current PDF, smoothed

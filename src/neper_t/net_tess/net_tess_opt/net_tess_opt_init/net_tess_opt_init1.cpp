@@ -25,6 +25,9 @@ net_tess_opt_init (struct IN_T In, int level, struct MTESS MTess,
                             pTOpt);
   else if (!strcmp ((*pTOpt).optitype, "crystal"))
     net_tess_opt_init_crystal (In, level, pTOpt);
+  else if (!strcmp ((*pTOpt).optitype, "domain"))
+  {
+  }
   else
     abort ();
 

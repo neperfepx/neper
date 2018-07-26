@@ -8,6 +8,7 @@ extern "C"
 #endif
 
   extern void net_domain_cube (double **, struct POLY *);
+  extern void net_domain_cube_string (char *, struct POLY *);
 
 #ifdef __cplusplus
 }

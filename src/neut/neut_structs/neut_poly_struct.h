@@ -17,6 +17,12 @@ extern "C"
 
   struct POLY
   {
+    // Dimension the poly aims to have (-1 by default, can be 2)
+    int PseudoDim;
+
+    // If PseudoDim == 2, size in the 3rd direction
+    double PseudoSize;
+
     /* All entities of POLY structure are the same than those of POLYMOD
      * structure. VerUse and FaceUse do not exist in POLY.
      */

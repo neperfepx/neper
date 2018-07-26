@@ -7,6 +7,9 @@
 void
 neut_poly_set_zero (struct POLY *pPoly)
 {
+  (*pPoly).PseudoDim = -1;
+  (*pPoly).PseudoSize = -DBL_MAX;
+
   (*pPoly).VerQty = 0;
   (*pPoly).FaceQty = 0;
 

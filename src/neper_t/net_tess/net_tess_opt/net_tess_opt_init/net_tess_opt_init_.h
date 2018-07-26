@@ -58,6 +58,7 @@ extern void net_tess_opt_init_current (struct TOPT *pTOpt);
 extern void net_tess_opt_init_bounds (struct TOPT *pTOpt);
 extern void net_tess_opt_init_bounds_seeds (struct TOPT *pTOpt);
 extern void net_tess_opt_init_bounds_crystal (struct TOPT *pTOpt);
+extern void net_tess_opt_init_bounds_domain (struct TOPT *pTOpt);
 
 extern void net_tess_opt_init_parms_objective (char *distribobjective,
 					       struct TOPT *pTOpt);

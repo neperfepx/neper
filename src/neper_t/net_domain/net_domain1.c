@@ -8,16 +8,16 @@ void
 net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
 {
   int i, qty, id, qty0, pseudodim = -1;
-  double h, d, pseudosize = -DBL_MAX;
+  double pseudosize = -DBL_MAX;
   double **size = ut_alloc_2d (3, 2);
   struct POLY Poly;
   char *tmp = ut_alloc_1d_char (strlen (In.domain) + 1);
   char *domtype = ut_alloc_1d_char (strlen (In.domain) + 1);
   char **sizestring = NULL;
   char *crysym = ut_alloc_1d_char (100);
-  double *coo = ut_alloc_1d (3);
   char **strings = NULL;
   int stringqty;
+  double *parms = ut_alloc_1d (10);
 
   ut_string_separate (In.domain, NEUT_SEP_DEP, &strings, &stringqty);
 
@@ -30,131 +30,12 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
 
   neut_poly_set_zero (&Poly);
 
-  if (!strcmp (domtype, "cube"))
-  {
-    if (ut_string_nbwords (tmp) != 4
-	|| sscanf (tmp, "%*s%s%s%s",
-		   sizestring[0], sizestring[1], sizestring[2]) != 3)
-      ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
+  if (!strncmp (In.domain, "cube", 4) || !strncmp (In.domain, "square", 6))
+    net_domain_cube_string (In.domain, &Poly);
 
-    ut_string_real (sizestring[0], &(size[0][1]));
-    ut_string_real (sizestring[1], &(size[1][1]));
-    ut_string_real (sizestring[2], &(size[2][1]));
-
-    net_domain_cube (size, &Poly);
-    neut_poly_centroid (Poly, coo);
-  }
-  else if (!strcmp (domtype, "square"))
-  {
-    if (ut_string_nbwords (tmp) != 3
-	|| sscanf (tmp, "%*s%s%s", sizestring[0], sizestring[1]) != 2)
-      ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
-
-    ut_string_real (sizestring[0], &(size[0][1]));
-    ut_string_real (sizestring[1], &(size[1][1]));
-    size[2][1] = 1e-6 * ut_num_min (size[0][1], size[1][1]);
-
-    pseudodim = 2;
-    pseudosize = size[2][1];
-
-    net_domain_cube (size, &Poly);
-    neut_poly_centroid (Poly, coo);
-  }
   else if (!strcmp (domtype, "cylinder") || !strcmp (domtype, "circle"))
-  {
-    if (!strcmp (domtype, "cylinder"))
-    {
-      qty = -1;
-      if (ut_string_nbwords (tmp) == 3)
-      {
-	if (sscanf (tmp, "%*s%s%s", sizestring[0], sizestring[1]) != 2)
-	  ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
+    net_domain_cylinder_string (In.domain, In.n[1], &Poly);
 
-	ut_string_real (sizestring[0], &h);
-	ut_string_real (sizestring[1], &d);
-      }
-      else if (ut_string_nbwords (tmp) == 4)
-      {
-	if (sscanf (tmp, "%*s%s%s%s", sizestring[0], sizestring[1],
-		    sizestring[2]) != 3)
-	  ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
-
-	ut_string_real (sizestring[0], &h);
-	ut_string_real (sizestring[1], &d);
-	ut_string_int (sizestring[2], &qty);
-      }
-    }
-    else if (!strcmp (domtype, "circle"))
-    {
-      h = 1;
-      qty = -1;
-      if (ut_string_nbwords (tmp) == 2)
-      {
-	if (sscanf (tmp, "%*s%s", sizestring[0]) != 1)
-	  ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
-
-	ut_string_real (sizestring[0], &d);
-      }
-      else if (ut_string_nbwords (tmp) == 3)
-      {
-	if (sscanf (tmp, "%*s%s%s", sizestring[0], sizestring[1]) != 2)
-	  ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
-
-	ut_string_real (sizestring[0], &d);
-	ut_string_int (sizestring[1], &qty);
-      }
-    }
-    else
-      ut_error_reportbug ();
-
-    if (qty != -1 && qty < 3)
-    {
-      ut_print_message (1, 2, "Increasing the number of facets to 3.\n");
-      qty = 3;
-    }
-
-    if (qty == -1)
-    {
-      double cl;
-      int varqty = 1;
-      char **vars = ut_alloc_2d_char (1, 10);
-      double *vals = ut_alloc_1d (1);
-      double res;
-
-      strcpy (vars[0], "vol");
-      vals[0] = M_PI * d * d * h / 4;
-
-      if (!strcmp (In.n[1], "from_morpho"))
-        ut_print_messagewnc (2, 72, "The number of facets must be specified in `-morpho cylinder' when using `-n from_morpho'.");
-
-      ut_math_eval (In.n[1], 1, vars, vals, &res);
-      res = ut_num_max (res, 1);
-
-      ut_free_2d_char (vars, varqty);
-      ut_free_1d (vals);
-
-      rcl2cl (1, 3, M_PI * d * d * h / 4, ut_num_d2ri (res), NULL, &cl);
-
-      qty = (int) floor (M_PI * d / cl);
-      qty = ut_num_max_int (qty, 12);
-    }
-    qty += 2;
-
-    double **eq = ut_alloc_2d (qty, 4);
-
-    if (!strcmp (domtype, "circle"))
-    {
-      h = 1e-6 * d;
-
-      pseudodim = 2;
-      pseudosize = h;
-    }
-
-    net_domain_cylinder_planes (h, d / 2, qty - 2, eq);
-    net_domain_clip (&Poly, eq, qty);
-    neut_poly_centroid (Poly, coo);
-    ut_free_2d (eq, qty);
-  }
   else if (!strcmp (domtype, "stdtriangle"))
   {
     qty = 10;
@@ -174,7 +55,6 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
 
     net_domain_stdtriangle_planes (qty - 4, eq);
     net_domain_clip (&Poly, eq, qty);
-    neut_poly_centroid (Poly, coo);
     ut_free_2d (eq, qty);
   }
   else if (!strcmp (domtype, "sphere"))
@@ -186,29 +66,28 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
       if (sscanf (tmp, "%*s%s", sizestring[0]) != 1)
 	ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
 
-      ut_string_real (sizestring[0], &d);
+      ut_string_real (sizestring[0], parms);
     }
     else if (ut_string_nbwords (tmp) == 3)
     {
       if (sscanf (tmp, "%*s%s%s", sizestring[0], sizestring[1]) != 2)
 	ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
 
-      ut_string_real (sizestring[0], &d);
-      ut_string_int (sizestring[1], &qty);
+      ut_string_real (sizestring[0], parms);
+      ut_string_real (sizestring[1], parms + 1);
     }
 
-    if (qty != -1 && qty < 4)
+    if (parms[1] != -1 && parms[1] < 4)
     {
       ut_print_message (1, 2, "Increasing the number of facets to 4.\n");
-      qty = 4;
+      parms[1] = 4;
     }
 
-    double **eq = ut_alloc_2d (qty, 4);
+    double **eq = ut_alloc_2d (parms[1], 4);
 
-    net_domain_sphere_planes (d / 2, qty, eq);
-    net_domain_clip (&Poly, eq, qty);
-    neut_poly_centroid (Poly, coo);
-    ut_free_2d (eq, qty);
+    net_domain_sphere_planes (parms[0] / 2, parms[1], eq);
+    net_domain_clip (&Poly, eq, parms[1]);
+    ut_free_2d (eq, parms[1]);
   }
   else if (!strcmp (domtype, "rodrigues"))
   {
@@ -216,7 +95,6 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
       ut_print_message (2, 0, "Unknown expression `%s'.\n", In.domain);
 
     net_domain_rodrigues (&Poly, crysym);
-    neut_poly_centroid (Poly, coo);
   }
   else if (!strcmp (domtype, "planes"))
   {
@@ -255,7 +133,6 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
     }
 
     net_domain_clip (&Poly, eq, qty + qty0);
-    neut_poly_centroid (Poly, coo);
 
     ut_free_2d (eq, qty);
 
@@ -277,7 +154,6 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
     neut_tess_name_fscanf (filename, &Tessb);
     sscanf (sizestring[1], "%d", &cell);
     net_tess_poly (Tessb, cell, &Poly);
-    neut_poly_centroid (Poly, coo);
 
     neut_tess_free (&Tessb);
     ut_free_1d_char (filename);
@@ -289,7 +165,13 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
   }
 
   if (Poly.VerQty > 0)
+  {
+    double *coo = ut_alloc_1d (3);
+    neut_poly_centroid (Poly, coo);
     net_poly_tess (Poly, coo, pDomain);
+    ut_free_1d (coo);
+  }
+
   (*pDomain).Level = 0;
   (*pDomain).PseudoDim = pseudodim;
   if (pseudodim != -1)
@@ -320,9 +202,9 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
   ut_free_1d_char (tmp);
   ut_free_1d_char (domtype);
   ut_free_2d_char (sizestring, 3);
-  ut_free_1d (coo);
   ut_free_2d_char (strings, stringqty);
   ut_free_1d_char (crysym);
+  ut_free_1d (parms);
 
   return;
 }

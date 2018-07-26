@@ -457,3 +457,25 @@ net_tess_opt_init_bounds_crystal (struct TOPT *pTOpt)
 
   return;
 }
+
+void
+net_tess_opt_init_bounds_domain (struct TOPT *pTOpt)
+{
+  int i, partqty;
+  char **parts = NULL;
+
+  ut_string_separate ((*pTOpt).dof, NEUT_SEP_NODEP, &parts, &partqty);
+
+  (*pTOpt).boundl = ut_alloc_1d (partqty);
+  (*pTOpt).boundu = ut_alloc_1d (partqty);
+
+  for (i = 0; i < partqty; i++)
+  {
+    (*pTOpt).boundl[i] = 1e-6;
+    (*pTOpt).boundu[i] = DBL_MAX;
+  }
+
+  ut_free_2d_char (parts, partqty);
+
+  return;
+}

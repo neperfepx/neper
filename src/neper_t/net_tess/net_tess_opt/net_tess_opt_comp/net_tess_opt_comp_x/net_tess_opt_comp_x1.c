@@ -11,6 +11,8 @@ net_tess_opt_comp_x (struct TOPT *pTOpt, double **px)
     net_tess_opt_comp_x_seeds (pTOpt, px);
   else if (!strcmp ((*pTOpt).optitype, "crystal"))
     net_tess_opt_comp_x_crystal (pTOpt, px);
+  else if (!strcmp ((*pTOpt).optitype, "domain"))
+    net_tess_opt_comp_x_domain (pTOpt, px);
   else
     abort ();
 

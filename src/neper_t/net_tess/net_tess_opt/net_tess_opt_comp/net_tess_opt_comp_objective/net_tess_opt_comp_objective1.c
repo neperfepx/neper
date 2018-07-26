@@ -60,6 +60,8 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
     net_tess_opt_comp_objective_x_seedset (x, pTOpt);
   else if (!strcmp ((*pTOpt).optitype, "crystal"))
     net_tess_opt_comp_objective_x_crystal (x, pTOpt);
+  else if (!strcmp ((*pTOpt).optitype, "domain"))
+    net_tess_opt_comp_objective_x_domain (x, pTOpt);
   else
     abort ();
 
@@ -70,7 +72,7 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
 
   gettimeofday (&t3, NULL);
 
-  if (!strcmp ((*pTOpt).optitype, "seeds"))
+  if (!strcmp ((*pTOpt).optitype, "seeds") || !strcmp ((*pTOpt).optitype, "domain"))
     status = net_tess_opt_comp_objective_poly (pTOpt);
   else
     status = 0;

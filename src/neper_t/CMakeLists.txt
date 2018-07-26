@@ -178,6 +178,7 @@ add_library (neper_t
 ./net_ori/net_ori_uniform/net_ori_uniform5.cpp
 ./net_domain/net_domain1.c
 ./net_domain/net_domain2.c
+./net_domain/net_domain3.c
 ./net_domain/net_domain_cube/net_domain_cube2.c
 ./net_domain/net_domain_cube/net_domain_cube1.c
 ./net_domain/net_domain_cube/net_domain_cube3.c
