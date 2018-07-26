@@ -246,27 +246,31 @@ extern void ol_R_e (double *, double *);
 extern void ol_R_e_rad (double *, double *);
 extern void ol_R_q (double *, double *);
 
-extern void ol_homochoric_thetafct (struct FCT *phfct);
 extern double* ol_homochoric_alloc (void);
 extern void ol_homochoric_free (double *);
 extern int ol_homochoric_fscanf (FILE *, double *);
 extern int ol_homochoric_fprintf (FILE *, double *, char *);
 extern void ol_g_homochoric (double **, double *);
+
+#ifdef HAVE_GSL
+extern void ol_homochoric_thetafct (struct FCT *phfct);
 extern void ol_homochoric_g (struct FCT *, double *, double **);
-extern void ol_rtheta_homochoric (double *, double, double *);
-extern void ol_rtheta_homochoric_rad (double *, double, double *);
 extern void ol_homochoric_rtheta (struct FCT *, double *, double *, double *);
 extern void ol_homochoric_rtheta_rad (struct FCT *, double *, double *, double *);
-extern void ol_homochoric_r (double *, double *);
 extern void ol_homochoric_theta (struct FCT *, double *, double *);
 extern void ol_homochoric_theta_rad (struct FCT *, double *, double *);
+extern void ol_homochoric_e (struct FCT *, double *, double *);
+extern void ol_homochoric_e_rad (struct FCT *, double *, double *);
+extern void ol_homochoric_q (struct FCT *, double *, double *);
+#endif // HAVE_GSL
+
+extern void ol_rtheta_homochoric (double *, double, double *);
+extern void ol_rtheta_homochoric_rad (double *, double, double *);
+extern void ol_homochoric_r (double *, double *);
 extern void ol_homochoric_memcpy (double *, double *);
 extern void ol_homochoric_set_zero (double *);
 extern void ol_homochoric_set_id (double *);
 extern void ol_homochoric_set_this (double *, double, double, double);
-extern void ol_homochoric_e (struct FCT *, double *, double *);
-extern void ol_homochoric_e_rad (struct FCT *, double *, double *);
-extern void ol_homochoric_q (struct FCT *, double *, double *);
 
 extern double* ol_r_alloc (void);
 extern void ol_r_free (double *);

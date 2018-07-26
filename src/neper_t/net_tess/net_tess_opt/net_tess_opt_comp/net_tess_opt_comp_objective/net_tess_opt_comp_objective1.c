@@ -4,7 +4,9 @@
 
 #include "net_tess_opt_comp_objective_.h"
 
+#ifdef HAVE_NLOPT
 static int force_stop = 0;
+#endif
 
 double
 net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,

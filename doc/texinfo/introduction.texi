@@ -32,7 +32,7 @@ Several, complementary resources describing Neper are available:
 
 @item The Neper GitHub repository, @url{http://github.com/rquey/neper}, is the page for development.  It is also where Neper's latest, development version can be downloaded from.
 
-@item The 3 Neper reference papers,
+@item The three Neper reference papers,
   @itemize
   @item ``@cite{R.@ Quey, P.R.@ Dawson and F.@ Barbe, Large-scale 3D random
   polycrystals for the finite element method: Generation, meshing and
@@ -46,9 +46,8 @@ Several, complementary resources describing Neper are available:
   diffraction data, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 330, pp.@
   308-333, 2018}'' describes tessellation generation from experimental properties;
   @item ``@cite{R.@ Quey, A.@ Villani and C.@ Maurice, Nearly uniform sampling
-  of crystal orientations, J.@ Appl.@ Crystallogr., vol. 51,
-  https://doi.org/10.1107/S1600576718009019}'' describes uniform sampling of
-  crystal orientations.
+  of crystal orientations, J.@ Appl.@ Crystallogr., vol. 51, pp.@ 1162-1173, 2018.}''
+  describes uniform sampling of crystal orientations.
   @end itemize
 @end itemize
 
@@ -90,7 +89,7 @@ Several of Neper's dependencies can be managed at this stage.  Some of them are 
 
 @itemize
 
-@item The GNU Scientific Library (GSL, mandatory, enabled by default).  It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{http://www.gnu.org/software/gsl}.
+@item The GNU Scientific Library (GSL, mandatory).  It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{http://www.gnu.org/software/gsl}.
 
 @item The NLopt library (optional, enabled by default).  It is needed by @mT{} for tessellation generation from cell properties. It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{http://ab-initio.mit.edu/wiki/index.php/NLopt}.
 
@@ -98,7 +97,7 @@ Several of Neper's dependencies can be managed at this stage.  Some of them are 
 
 @item The libScotch library (version @code{5.1.12} or higher, optional, disabled by default).  It is needed by @mM{} for mesh partitioning.  The source code can be downloaded from @url{www.labri.fr/perso/pelegrin/scotch}.
 
-@item The pthread library (optional, disabled by default). It is needed if libScotch version @code{6.0.0} or higher is enabled.  It is likely to be available on your system or from your system package manager.
+@item The pthread library (optional, enabled if libScotch enabled). It is needed if libScotch version @code{6.0.0} or higher is enabled.  It is likely to be available on your system or from your system package manager.
 
 @end itemize
 

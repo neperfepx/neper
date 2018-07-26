@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2009, 2012 Romain Quey */
+/* Copyright (C) 2003-2018, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -557,7 +557,7 @@ void
 ut_string_function_separate (char *string, char** pfct,
                              char ***pvars, char ***pvals, int *pqty)
 {
-  int i, pos = 0;
+  int i, pos = 0, qty;
   char* string2 = NULL;
   char*** parts = NULL;
   int *qty1 = NULL;
@@ -566,7 +566,8 @@ ut_string_function_separate (char *string, char** pfct,
 
   if (!string)
   {
-    (*pqty) = 0;
+    if (pqty)
+      (*pqty) = 0;
     return;
   }
 
@@ -581,29 +582,28 @@ ut_string_function_separate (char *string, char** pfct,
   ut_string_string (string + pos + 1, &string2);
   string2[strlen (string2) - 1] = '\0';
 
-  ut_string_separate2 (string2, ",", "=", &parts, &qty1, pqty);
+  ut_string_separate2 (string2, ",", "=", &parts, &qty1, &qty);
 
+  if (pqty)
+    (*pqty) = qty;
   if (pvars)
-    (*pvars) = ut_alloc_1d_pchar (*pqty);
+    (*pvars) = ut_alloc_1d_pchar (qty);
   if (pvals)
-    (*pvals) = ut_alloc_1d_pchar (*pqty);
+    (*pvals) = ut_alloc_1d_pchar (qty);
 
-  for (i = 0; i < *pqty; i++)
+  for (i = 0; i < qty; i++)
   {
     if (qty1[i] == 2)
     {
-      if (!pvars || !pvals)
-	abort ();
-
-      ut_string_string (parts[i][0], (*pvars) + i);
-      ut_string_string (parts[i][1], (*pvals) + i);
+      if (pvars)
+        ut_string_string (parts[i][0], (*pvars) + i);
+      if (pvals)
+        ut_string_string (parts[i][1], (*pvals) + i);
     }
     else if (qty1[i] == 1)
     {
-      if (!pvals || !pvals)
-	abort ();
-
-      ut_string_string (parts[i][0], (*pvals) + i);
+      if (pvals)
+        ut_string_string (parts[i][0], (*pvals) + i);
     }
     else
       abort ();
@@ -611,7 +611,7 @@ ut_string_function_separate (char *string, char** pfct,
 
   ut_free_1d_char (string2);
   ut_free_1d_char (string3);
-  for (i = *pqty - 1; i >= 0; i--)
+  for (i = qty - 1; i >= 0; i--)
     ut_free_2d_char (parts[i], qty1[i]);
   free (parts);
   ut_free_1d_int (qty1);

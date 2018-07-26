@@ -365,18 +365,37 @@ net_poly_tess (struct POLY Poly, double *coo, struct TESS *pTess)
 {
   struct TESL Tesl;
   struct SEEDSET SSet;
+  double *coob = NULL;
+
+  if (Poly.VerQty == 0)
+  {
+    neut_tess_set_zero (pTess);
+
+    return;
+  }
+
+  coob = ut_alloc_1d (3);
 
   neut_tesl_set_zero (&Tesl);
   neut_seedset_set_zero (&SSet);
   ut_string_string ("standard", &(SSet.Type));
-  neut_seedset_addseed (&SSet, coo, 0);
 
-  net_poly_tesl (Poly, coo, &Tesl);
+  if (coo)
+    ut_array_1d_memcpy (coob, 3, coo);
+  else
+    neut_poly_centroid (Poly, coob);
+
+  neut_seedset_addseed (&SSet, coob, 0);
+
+  net_poly_tesl (Poly, coob, &Tesl);
   neut_tesl_tess (Tesl, SSet, 0, 0, pTess);
   neut_tess_poly_centroid (*pTess, 1, (*pTess).SeedCoo[1]);
+  (*pTess).PseudoDim = Poly.PseudoDim;
+  (*pTess).PseudoSize = Poly.PseudoSize;
 
   neut_tesl_free (&Tesl);
   neut_seedset_free (&SSet);
+  ut_free_1d (coob);
 
   return;
 }
