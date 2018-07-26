@@ -106,13 +106,13 @@ net_domain_tesspoly_planes (struct TESS Tess, int id, int *pqty, double **eq)
 }
 
 void
-net_domain_clip (struct POLY *pDomain, double **eq, int qty)
+net_domain_clip (struct POLY *pPoly, double **eq, int qty)
 {
   int i, j, shift;
   double **cubesize = ut_alloc_2d (3, 2);
   struct POLYMOD Polymod;
 
-  if ((*pDomain).VerQty == 0)
+  if ((*pPoly).VerQty == 0)
   {
     cubesize[0][0] = -1e6;
     cubesize[0][1] = 1e6;
@@ -121,16 +121,16 @@ net_domain_clip (struct POLY *pDomain, double **eq, int qty)
     cubesize[2][0] = -1e6;
     cubesize[2][1] = 1e6;
 
-    net_domain_cube (cubesize, pDomain);
+    net_domain_cube (cubesize, pPoly);
   }
 
-  shift = ((*pDomain).FaceQty > 0)
-          ? ut_array_1d_int_min ((*pDomain).FacePoly + 1, (*pDomain).FaceQty)
+  shift = ((*pPoly).FaceQty > 0)
+          ? ut_array_1d_int_min ((*pPoly).FacePoly + 1, (*pPoly).FaceQty)
 	  : 0;
 
   neut_polymod_set_zero (&Polymod);
 
-  neut_poly_polymod ((*pDomain), &Polymod);
+  neut_poly_polymod ((*pPoly), &Polymod);
 
   int *BadVer = NULL;
 
@@ -151,11 +151,11 @@ net_domain_clip (struct POLY *pDomain, double **eq, int qty)
 
   // neut_debug_polymod (stdout, Polymod);
 
-  neut_poly_free (pDomain);
+  neut_poly_free (pPoly);
 
   // neut_debug_polymod (stdout, Polymod);
-  net_polymod_poly (Polymod, pDomain);
-  // neut_debug_poly (stdout, *pDomain);
+  net_polymod_poly (Polymod, pPoly);
+  // neut_debug_poly (stdout, *pPoly);
 
   neut_polymod_free (&Polymod);
 
@@ -181,71 +181,6 @@ net_domain_sphere_planes (double rad, int qty, double **eq)
   }
 
   ut_free_2d (pts, qty);
-
-  return;
-}
-
-void
-net_domain_transform (struct TESS *pDomain, char* string)
-{
-  int dir, status;
-  double *v = ol_r_alloc ();
-  double theta;
-  double **g = ol_g_alloc ();
-  double *eq = ut_alloc_1d (4);
-  double *coo = ut_alloc_1d (3);
-
-  if (!strncmp (string, "rotate(", 7))
-  {
-    status = sscanf (string, "rotate(%lf,%lf,%lf,%lf)", v, v + 1, v + 2, &theta);
-    if (status != 4)
-      abort ();
-    ol_r_set_unit (v);
-    ol_rtheta_g (v, theta, g);
-    neut_tess_rotate (pDomain, g);
-  }
-
-  else if (!strncmp (string, "translate(", 10))
-  {
-    status = sscanf (string, "translate(%lf,%lf,%lf)", v, v + 1, v + 2);
-    if (status != 3)
-      abort ();
-    neut_tess_shift (pDomain, v[0], v[1], v[2]);
-  }
-
-  else if (!strncmp (string, "scale(", 6))
-  {
-    status = sscanf (string, "scale(%lf,%lf,%lf)", v, v + 1, v + 2);
-    if (status != 3)
-      abort ();
-    neut_tess_scale (pDomain, v[0], v[1], v[2]);
-  }
-
-  else if (!strncmp (string, "split(", 6))
-  {
-    double **bbox = ut_alloc_2d (3, 2);
-    struct SEEDSET SSet;
-    neut_seedset_set_zero (&SSet);
-    SSet.Type = ut_alloc_1d_char (1);
-    neut_seedset_addseed (&SSet, coo, 0);
-    neut_tess_bbox (*pDomain, bbox);
-    dir = string[6] - 'x';
-    if (dir < 0 || dir > 2)
-      ut_print_message (2, 3, "Cannot read `%s'.\n", string);
-
-    eq[0] = - 0.5 * (bbox[dir][1] + bbox[dir][0]);
-    eq[dir + 1] = -1;
-    net_tess_clip (SSet, pDomain, eq);
-    neut_seedset_free (&SSet);
-  }
-
-  else
-    abort ();
-
-  ol_r_free (v);
-  ol_g_free (g);
-  ut_free_1d (eq);
-  ut_free_1d (coo);
 
   return;
 }

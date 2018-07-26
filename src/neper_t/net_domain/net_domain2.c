@@ -5,19 +5,19 @@
 #include"net_domain_.h"
 
 void
-net_domain_cylinder_string (char *domain, char *nstring, struct POLY *pDomain)
+net_domain_cylinder_string (char *domain, char *nstring, struct POLY *pPoly)
 {
   int pseudodim;
   double pseudosize;
   double *parms = ut_alloc_1d (10);
 
   net_domain_cylinderparms (domain, nstring, parms, &pseudodim, &pseudosize);
-  net_domain_cylinder (parms, pDomain);
+  net_domain_cylinder (parms, pPoly);
 
   if (pseudodim != -1)
   {
-    (*pDomain).PseudoDim = pseudodim;
-    (*pDomain).PseudoSize = pseudosize;
+    (*pPoly).PseudoDim = pseudodim;
+    (*pPoly).PseudoSize = pseudosize;
   }
 
   ut_free_1d (parms);
@@ -114,24 +114,24 @@ net_domain_cylinderparms (char *domain, char *nstring, double *parms,
 }
 
 void
-net_domain_cylinder (double *parms, struct POLY *pDomain)
+net_domain_cylinder (double *parms, struct POLY *pPoly)
 {
   double **eq = ut_alloc_2d (ut_num_d2ri (parms[2]), 4);
 
   net_domain_cylinder_planes (parms[0], parms[1] / 2, parms[2] - 2, eq);
-  net_domain_clip (pDomain, eq, parms[2]);
+  net_domain_clip (pPoly, eq, parms[2]);
   ut_free_2d (eq, parms[2]);
 
   return;
 }
 
 void
-net_domain_stdtriangle_string (char *domain, struct POLY *pDomain)
+net_domain_stdtriangle_string (char *domain, struct POLY *pPoly)
 {
   double *parms = ut_alloc_1d (2);
 
   net_domain_stdtriangleparms (domain, parms);
-  net_domain_stdtriangle (parms, pDomain);
+  net_domain_stdtriangle (parms, pPoly);
 
   ut_free_1d (parms);
 
@@ -159,16 +159,16 @@ net_domain_stdtriangleparms (char *domain, double *parms)
 }
 
 void
-net_domain_stdtriangle (double *parms, struct POLY *pDomain)
+net_domain_stdtriangle (double *parms, struct POLY *pPoly)
 {
   int qty = ut_num_d2ri (parms[0]);
   double **eq = ut_alloc_2d (qty, 4);
 
   net_domain_stdtriangle_planes (qty - 4, eq);
-  net_domain_clip (pDomain, eq, qty);
+  net_domain_clip (pPoly, eq, qty);
 
-  (*pDomain).PseudoDim = 2;
-  (*pDomain).PseudoSize = 1e-6;
+  (*pPoly).PseudoDim = 2;
+  (*pPoly).PseudoSize = 1e-6;
 
   ut_free_2d (eq, qty);
 
@@ -176,12 +176,12 @@ net_domain_stdtriangle (double *parms, struct POLY *pDomain)
 }
 
 void
-net_domain_sphere_string (char *domain, struct POLY *pDomain)
+net_domain_sphere_string (char *domain, struct POLY *pPoly)
 {
   double *parms = ut_alloc_1d (2);
 
   net_domain_sphereparms (domain, parms);
-  net_domain_sphere (parms, pDomain);
+  net_domain_sphere (parms, pPoly);
 
   ut_free_1d (parms);
 
@@ -218,12 +218,12 @@ net_domain_sphereparms (char *domain, double *parms)
 }
 
 void
-net_domain_sphere (double *parms, struct POLY *pDomain)
+net_domain_sphere (double *parms, struct POLY *pPoly)
 {
   double **eq = ut_alloc_2d (parms[1], 4);
 
   net_domain_sphere_planes (parms[0] / 2, parms[1], eq);
-  net_domain_clip (pDomain, eq, parms[1]);
+  net_domain_clip (pPoly, eq, parms[1]);
 
   ut_free_2d (eq, parms[1]);
 
@@ -231,12 +231,12 @@ net_domain_sphere (double *parms, struct POLY *pDomain)
 }
 
 void
-net_domain_rodrigues_string (char *domain, struct POLY *pDomain)
+net_domain_rodrigues_string (char *domain, struct POLY *pPoly)
 {
   char *crysym = NULL;
 
   net_domain_rodriguesparms (domain, &crysym);
-  net_domain_rodrigues (crysym, pDomain);
+  net_domain_rodrigues (crysym, pPoly);
 
   ut_free_1d_char (crysym);
 
@@ -262,7 +262,7 @@ net_domain_rodriguesparms (char *domain, char **pcrysym)
 }
 
 void
-net_domain_rodrigues (char *crysym, struct POLY *pDomain)
+net_domain_rodrigues (char *crysym, struct POLY *pPoly)
 {
   int i, eqqty, n = ol_crysym_qty (crysym);
   double **eq = NULL;
@@ -277,7 +277,7 @@ net_domain_rodrigues (char *crysym, struct POLY *pDomain)
   thetamax = tan (0.99 * M_PI * 0.5);
   for (i = 0; i < 3; i++)
     ut_array_1d_set_2 (cubesize[i], -thetamax, thetamax);
-  net_domain_cube (cubesize, pDomain);
+  net_domain_cube (cubesize, pPoly);
 
   if (!strcmp (crysym, "m-3"))
     ut_print_message (1, 2, "Face positions are randomized a bit to avoid degeneracy.\n");
@@ -306,7 +306,7 @@ net_domain_rodrigues (char *crysym, struct POLY *pDomain)
   }
 
   if (eqqty > 0)
-    net_domain_clip (pDomain, eq, eqqty);
+    net_domain_clip (pPoly, eq, eqqty);
 
   ut_free_2d (cubesize, 3);
   ut_free_1d (O);
@@ -319,13 +319,13 @@ net_domain_rodrigues (char *crysym, struct POLY *pDomain)
 }
 
 void
-net_domain_planes_string (char *domain, int dim, struct POLY *pDomain)
+net_domain_planes_string (char *domain, int dim, struct POLY *pPoly)
 {
   int eqqty;
   double **eqs = NULL;
 
   net_domain_planesparms (domain, dim, &eqs, &eqqty);
-  net_domain_planes (eqs, eqqty, pDomain);
+  net_domain_planes (eqs, eqqty, pPoly);
 
   ut_free_2d (eqs, eqqty);
 
@@ -386,21 +386,21 @@ net_domain_planesparms (char *domain, int dim, double ***peqs, int *peqqty)
 }
 
 void
-net_domain_planes (double **eqs, int eqqty, struct POLY *pDomain)
+net_domain_planes (double **eqs, int eqqty, struct POLY *pPoly)
 {
-  net_domain_clip (pDomain, eqs, eqqty);
+  net_domain_clip (pPoly, eqs, eqqty);
 
   return;
 }
 
 void
-net_domain_cell_string (char *domain, struct POLY *pDomain)
+net_domain_cell_string (char *domain, struct POLY *pPoly)
 {
   int cell;
   char *filename = NULL;
 
   net_domain_cellparms (domain, &filename, &cell);
-  net_domain_cell (filename, cell, pDomain);
+  net_domain_cell (filename, cell, pPoly);
 
   ut_free_1d_char (filename);
 
@@ -428,16 +428,81 @@ net_domain_cellparms (char *domain, char **pfilename, int *pcell)
 }
 
 void
-net_domain_cell (char *filename, int cell, struct POLY *pDomain)
+net_domain_cell (char *filename, int cell, struct POLY *pPoly)
 {
   struct TESS Tessb;
 
   neut_tess_set_zero (&Tessb);
 
   neut_tess_name_fscanf (filename, &Tessb);
-  net_tess_poly (Tessb, cell, pDomain);
+  net_tess_poly (Tessb, cell, pPoly);
 
   neut_tess_free (&Tessb);
+
+  return;
+}
+
+void
+net_domain_transform (struct TESS *pPoly, char* string)
+{
+  int dir, status;
+  double *v = ol_r_alloc ();
+  double theta;
+  double **g = ol_g_alloc ();
+  double *eq = ut_alloc_1d (4);
+  double *coo = ut_alloc_1d (3);
+
+  if (!strncmp (string, "rotate(", 7))
+  {
+    status = sscanf (string, "rotate(%lf,%lf,%lf,%lf)", v, v + 1, v + 2, &theta);
+    if (status != 4)
+      abort ();
+    ol_r_set_unit (v);
+    ol_rtheta_g (v, theta, g);
+    neut_tess_rotate (pPoly, g);
+  }
+
+  else if (!strncmp (string, "translate(", 10))
+  {
+    status = sscanf (string, "translate(%lf,%lf,%lf)", v, v + 1, v + 2);
+    if (status != 3)
+      abort ();
+    neut_tess_shift (pPoly, v[0], v[1], v[2]);
+  }
+
+  else if (!strncmp (string, "scale(", 6))
+  {
+    status = sscanf (string, "scale(%lf,%lf,%lf)", v, v + 1, v + 2);
+    if (status != 3)
+      abort ();
+    neut_tess_scale (pPoly, v[0], v[1], v[2]);
+  }
+
+  else if (!strncmp (string, "split(", 6))
+  {
+    double **bbox = ut_alloc_2d (3, 2);
+    struct SEEDSET SSet;
+    neut_seedset_set_zero (&SSet);
+    SSet.Type = ut_alloc_1d_char (1);
+    neut_seedset_addseed (&SSet, coo, 0);
+    neut_tess_bbox (*pPoly, bbox);
+    dir = string[6] - 'x';
+    if (dir < 0 || dir > 2)
+      ut_print_message (2, 3, "Cannot read `%s'.\n", string);
+
+    eq[0] = - 0.5 * (bbox[dir][1] + bbox[dir][0]);
+    eq[dir + 1] = -1;
+    net_tess_clip (SSet, pPoly, eq);
+    neut_seedset_free (&SSet);
+  }
+
+  else
+    abort ();
+
+  ol_r_free (v);
+  ol_g_free (g);
+  ut_free_1d (eq);
+  ut_free_1d (coo);
 
   return;
 }
