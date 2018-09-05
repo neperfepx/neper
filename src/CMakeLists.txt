@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.2.1-8\")
+set (NEPER_VERSION \"3.2.1-11\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -69,7 +69,6 @@ endif ()
 
 SET(HAVE_MUPARSER ON CACHE BOOL "Use muParser") # sets to ON in ut, etc.
 SET(HAVE_PNG OFF CACHE BOOL "Use the libpng library") # sets to OFF in ut, etc.
-SET(HAVE_LOCALUT OFF CACHE BOOL "Use the libpng library") # sets to OFF in ut, etc.
 
 set(BUILD_SHARED_LIBS OFF)
 
@@ -82,7 +81,6 @@ add_subdirectory(neper_m)
 add_subdirectory(neper_v)
 
 unset (HAVE_MUPARSER CACHE) # hide from ccmake (comes from ut)
-unset (HAVE_LOCALUT CACHE)  # hide from ccmake (comes from orilib)
 unset (HAVE_GLPK CACHE)     # hide from ccmake (comes from orilib)
 unset (HAVE_PNG CACHE)      # hide from ccmake (comes from ut)
 
