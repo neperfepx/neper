@@ -12,5 +12,7 @@
 #include "ol_gen.h"
 #include "ol_cal.h"
 #include "ol_set.h"
+#include "ol_map.h"
+#include "ol_xpl.h"
 
 #endif /* ORILIB_H */

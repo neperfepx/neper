@@ -35,6 +35,8 @@ net_tess_opt_comp (struct TOPT *pTOpt)
 
 #ifdef HAVE_NLOPT
   net_tess_opt_comp_post (*pTOpt, res);
+#else
+  (void) res;
 #endif
 
   neut_tdyn_fprintf_post (&((*pTOpt).TDyn));

@@ -3,9 +3,9 @@
 @c See the COPYING file in the top-level directory.
 
 @iftex
-@set NEPER_VERSION 3.2.1-8-domain_cleanup
+@set NEPER_VERSION 3.2.1-9-cmake_cleanup
 @end iftex
 
 @ifinfo
-@set NEPER_VERSION 3.2.1-8-domain_cleanup
+@set NEPER_VERSION 3.2.1-9-cmake_cleanup
 @end ifinfo

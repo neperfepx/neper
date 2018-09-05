@@ -3,6 +3,8 @@
 /* see the COPYING file in the top-level directory.*/
 #include "ol_homochoric.h"
 
+#ifdef HAVE_GSL
+
 double *
 ol_homochoric_alloc ()
 {
@@ -254,3 +256,5 @@ ol_homochoric_e_rad (struct FCT *phfct, double *homochoric, double *e)
 
   return;
 }
+
+#endif // HAVE_GSL

@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2009, 2012 Romain Quey */
+/* Copyright (C) 2003-2018, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdlib.h>
