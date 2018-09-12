@@ -7,13 +7,15 @@
 int
 net_tess_lam_seed_set_w_pre (gsl_rng *r, struct TESS Dom, double *n,
 			char *wtype, double *w, int wqty,
-                        double *plane, double *pdistmin,
-			double *pdistmax)
+                        char *postype, char *pos, double *plane,
+                        double *pdistmin, double *pdistmax)
+
 {
   int i;
   double *dist = ut_alloc_1d (Dom.VerQty + 1);
 
   (void) wtype;
+  (void) postype;
 
   ut_array_1d_memcpy (plane + 1, 3, n);
 
@@ -27,7 +29,12 @@ net_tess_lam_seed_set_w_pre (gsl_rng *r, struct TESS Dom, double *n,
 
   // First plane: shifting it onto the distmin vertex then shifting it
   // further down by a random value within [0,sum_of_widths]
-  plane[0] = *pdistmin - gsl_rng_uniform (r) * ut_array_1d_sum (w, wqty);
+  if (!strcmp (pos, "random"))
+    plane[0] = *pdistmin - gsl_rng_uniform (r) * ut_array_1d_sum (w, wqty);
+  else if (!strcmp (pos, "start"))
+    plane[0] = *pdistmin;
+  else
+    ut_print_message (2, 3, "Failed to process expression `pos=%s'.\n", postype);
 
   ut_free_1d (dist);
 

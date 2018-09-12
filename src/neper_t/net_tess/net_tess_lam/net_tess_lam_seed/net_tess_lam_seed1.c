@@ -12,20 +12,24 @@ net_tess_lam_seed (struct IN_T In, int level, char *morpho, struct MTESS MTess, 
 {
   int wqty, vqty;
   double *w = NULL, *v = NULL;
-  char *wtype = NULL, *vtype = NULL;
+  char *pos = NULL;
+  char *wtype = NULL, *vtype = NULL, *postype = NULL;
 
   ut_string_string ("standard", &(*pSSet).Type);
 
   net_tess_lam_seed_readargs (morpho, MTess, Tess, dtess, dcell,
-			      &wtype, &w, &wqty, &vtype, &v, &vqty);
+			      &wtype, &w, &wqty, &vtype, &v, &vqty,
+                              &postype, &pos);
 
   net_tess_lam_seed_set (In, level, MTess, Tess, dtess, dcell, Dom, wtype, w, wqty,
-      vtype, v, vqty, SSet, pSSet);
+      vtype, v, vqty, postype, pos, SSet, pSSet);
 
   ut_free_1d (v);
   ut_free_1d (w);
+  ut_free_1d_char (pos);
   ut_free_1d_char (vtype);
   ut_free_1d_char (wtype);
+  ut_free_1d_char (postype);
 
   return;
 }

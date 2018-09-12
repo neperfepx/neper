@@ -277,9 +277,10 @@ directions;@*
 @bullet{} @samp{tocta(@var{N})} for a regular
 tessellation into truncated octahedra@comma{}
 where @samp{@var{N}} is the number of cells along a direction;@*
-@bullet{} @samp{lamellar(w=@var{w}@comma{}v=@var{v})} for a lamellar
-morphology.  Argument @samp{w=@var{w}} is mandatory and argument
-@samp{v=@var{v}} is optional. Argument @samp{@code{w=@var{w}}} enables
+@bullet{} @samp{lamellar(w=@var{w}@comma{}v=@var{v}@comma{}pos=@var{pos})} for a lamellar
+morphology.  Argument @samp{w=@var{w}} is mandatory@comma{} and arguments
+@samp{v=@var{v}} and @samp{pos=@var{pos}} are optional.
+Argument @samp{@code{w=@var{w}}} enables
 to specify the absolute lamella width @code{@var{w}}.  For specifying
 several widths@comma{} combine them @w{with @samp{@SEPDEP}}.  In the
 case of a multiscale tessellation@comma{} for specifying cell-by-cell
@@ -288,7 +289,7 @@ width values@comma{} use the syntax @samp{file(@var{file_name})} where
 the list of widths (see @ref{Multiscale Cell File}).  Argument
 @samp{@code{v=@var{v}}} enables to specify the lamella plane @w{normals
 @code{@var{v}}}.  For randomly-distributed normals taken from a uniform
-distribution@comma{} use @samp{random}.  For a direction of space@comma{} use
+distribution@comma{} use @samp{random} (the default).  For a direction of space@comma{} use
 @samp{(@var{dir_x}@comma{}@var{dir_y}@comma{}@var{dir_z})}@comma{}
 where @math{(@var{dir_x}@comma{}@var{dir_y}@comma{}@var{dir_z})} is the
 direction.
@@ -300,7 +301,17 @@ where @math{(@var{crysdir_x}@comma{}@var{crysdir_y}@comma{}@var{crysdir_z})} is 
 For specifying cell-by-cell
 normals@comma{} use the syntax @samp{file(@var{file_name})} where
 @code{@var{file_name}} is the name of a multiscale cell file containing
-the list of lamella plane normals (see @ref{Multiscale Cell File}).@*
+the list of lamella plane normals (see @ref{Multiscale Cell File}).
+Argument @samp{@code{pos=@var{pos}}} enables
+to specify the position of the lamellaes@comma{} @code{@var{pos}}.
+It can be @samp{@var{random}} for a random position (the default) or
+@samp{@var{start}} for the first lamella starting (full-width) from the
+start point of the domain (along direction @code{@var{dir}}).
+In the
+case of a multiscale tessellation@comma{} for specifying cell-by-cell
+position values@comma{} use the syntax @samp{file(@var{file_name})} where
+@code{@var{file_name}} is the name of a multiscale cell file containing
+the list of positions (see @ref{Multiscale Cell File}).@*
 @emph{(ii)} Custom morphological properties can be defined
 by providing as argument the cell
 property and its value@comma{} combined with the @samp{@SEPDEP{}} separator.
