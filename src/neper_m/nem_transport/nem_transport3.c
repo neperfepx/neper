@@ -9,8 +9,7 @@ nem_transport_elt_oldelt (struct NODES OldNodes,
 			  struct MESH OldMesh, struct NODES NewNodes,
 			  struct MESH NewMesh, int **poldelt)
 {
-  int i, elset3d, status;
-  double *coo = ut_alloc_1d (3);
+  int i;
   struct MESH Facet;
   int *elts2d = ut_alloc_1d_int (5);
   double *eq = ut_alloc_1d (4);
@@ -29,9 +28,14 @@ nem_transport_elt_oldelt (struct NODES OldNodes,
   ut_print_message (0, 3, "Searching transport information... %3d%%", 0);
   strcpy (message, " 0%");
 
+  int done = 0;
+#pragma omp parallel for private(i) schedule(dynamic)
   // for each new elt, determining parent elt
   for (i = 1; i <= NewMesh.EltQty; i++)
   {
+    int elset3d, status;
+    double *coo = ut_alloc_1d (3);
+
     // parent element = old element in which the new element centre falls.
     elset3d = NewMesh.EltElset[i];
     neut_mesh_elt_centre (NewNodes, NewMesh, i, coo);
@@ -43,12 +47,15 @@ nem_transport_elt_oldelt (struct NODES OldNodes,
       status = neut_mesh_elset_point_closestelt (OldMesh, OldNodes,
 						 elset3d, coo, &((*poldelt)[i]));
 
-    ut_print_progress (stdout, i, NewMesh.EltQty, "%3.0f%%", message);
+#pragma omp critical
+    done++;
+    ut_print_progress (stdout, done, NewMesh.EltQty, "%3.0f%%", message);
+
+    ut_free_1d (coo);
   }
 
   ut_free_1d_int (elts2d);
   neut_mesh_free (&Facet);
-  ut_free_1d (coo);
   ut_free_1d_char (message);
   ut_free_1d (eq);
 

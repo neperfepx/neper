@@ -1,4 +1,4 @@
-New in 3.2.1-11 (05 Sep 2018):
+New in 3.2.1-12 (12 Sep 2018):
 - New paper: "R. Quey, A. Villani, and C. Maurice. Nearly uniform sampling of
   crystal orientations. J. Appl. Crystallogr., vol. 51,
   doi:10.1107/S1600576718009019, 2018."
@@ -10,7 +10,7 @@ New in 3.2.1-11 (05 Sep 2018):
   several tessellation keys, merged option -scale into -transform, made minor
   improvements.
 - module -M: fixed meshing of periodic tessellation with openMP, allowed Gmsh
-  development versions.
+  development versions, speed up -transport.
 - module -V: improved camera parameters, fixed -slicemesh for hex meshes.
 
 New in 3.2.0 (23 May 2018):
