@@ -288,10 +288,14 @@ width values@comma{} use the syntax @samp{file(@var{file_name})} where
 the list of widths (see @ref{Multiscale Cell File}).  Argument
 @samp{@code{v=@var{v}}} enables to specify the lamella plane @w{normals
 @code{@var{v}}}.  For randomly-distributed normals taken from a uniform
-distribution@comma{} use @samp{random}.  For a direction of the parent
-crystal@comma{} use
-@samp{crysdir(@var{dir_x}@comma{}@var{dir_y}@comma{}@var{dir_z})}@comma{}
+distribution@comma{} use @samp{random}.  For a direction of space@comma{} use
+@samp{(@var{dir_x}@comma{}@var{dir_y}@comma{}@var{dir_z})}@comma{}
 where @math{(@var{dir_x}@comma{}@var{dir_y}@comma{}@var{dir_z})} is the
+direction.
+For a direction of the parent
+crystal@comma{} use
+@samp{crysdir(@var{crysdir_x}@comma{}@var{crysdir_y}@comma{}@var{crysdir_z})}@comma{}
+where @math{(@var{crysdir_x}@comma{}@var{crysdir_y}@comma{}@var{crysdir_z})} is the
   crystal direction.
 For specifying cell-by-cell
 normals@comma{} use the syntax @samp{file(@var{file_name})} where

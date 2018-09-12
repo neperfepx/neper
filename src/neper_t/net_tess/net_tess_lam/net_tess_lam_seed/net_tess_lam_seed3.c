@@ -59,6 +59,8 @@ net_tess_lam_seed_readargs_v (char *value,
     ut_string_string ("random", pvtype);
   else if (!strncmp (value, "random(", 7))
     ut_string_string (value, pvtype);
+  else if (!strncmp (value, "(", 1))
+    ut_string_string (value, pvtype);
   else if (!strncmp (value, "crysdir(", 8))
     ut_string_string (value, pvtype);
   else if (ut_string_filename (value))
@@ -128,6 +130,12 @@ net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
     ut_array_1d_memcpy (n, 3, pts[id]);
 
     ut_free_2d (pts, ptqty);
+  }
+
+  else if (!strncmp (vtype, "(", 1))
+  {
+    sscanf (vtype, "(%lf,%lf,%lf)", n, n + 1, n + 2);
+    ut_array_1d_normalize (n, 3);
   }
 
   else if (!strncmp (vtype, "crysdir(", 8))
