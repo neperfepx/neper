@@ -45,15 +45,15 @@ nem_meshing_2D_face (struct IN_M In, struct MESHPARA MeshPara,
       // minimum quality reached; breaking
       if ((*pMultim).mO[face][a] > In.meshqualmin)
         break;
+
+      if ((*pMultim).Oalgo[face] != -1)
+#pragma omp critical
+        (*pMultim).algohit[(*pMultim).Oalgo[face]]++;
+      else
+        ut_print_message (2, 3, "Meshing of face %d failed\n", face);
     }
   else
     neut_mesh_elset_mesh (RNodes, RMesh[2], face, pN, pM, NULL);
-
-  if ((*pMultim).Oalgo[face] != -1)
-#pragma omp critical
-    (*pMultim).algohit[(*pMultim).Oalgo[face]]++;
-  else
-    ut_print_message (2, 3, "Meshing of face %d failed\n", face);
 
   neut_nodes_free (&N2);
   neut_mesh_free (&M2);
