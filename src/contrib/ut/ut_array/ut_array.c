@@ -4233,7 +4233,13 @@ ut_array_2d_fscanf_filter_prefix (FILE *file, double** array, int size1, int siz
       if (!strcmp (tmp, flag))
 	qty++;
     }
-    while (qty != size1);
+    while (qty != size1 && status == 2);
+
+    if (status != 2)
+    {
+      printf ("qty == %d vs size1 = %d\n", qty, size1);
+      abort ();
+    }
 
     ut_free_1d_char (tmp);
   }

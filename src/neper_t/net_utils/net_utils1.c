@@ -665,7 +665,7 @@ net_multiscale_arg_0d_fscanf (char *string, char *flag,
     file = ut_file_open (string, "R");
     status = ut_array_0d_char_fscanf_filter_prefix (file, tmp, flag);
     if (status != 1)
-      ut_print_message (2, 0, "Failed to read file.\n");
+      ut_print_message (2, 0, "Failed to read file `%s'.\n", string);
 
     ut_file_close (file, string, "R");
   }
@@ -700,7 +700,7 @@ net_multiscale_arg_1d_fscanf (char *string, char *flag, double *val, int valqty)
   file = ut_file_open (string, "R");
   status = ut_array_1d_fscanf_filter_prefix (file, val, valqty, flag);
   if (status != 1)
-    ut_print_message (2, 0, "Failed to read file.\n");
+    ut_print_message (2, 0, "Failed to read file `%s'.\n", string);
   ut_file_close (file, string, "R");
 
   return 0;
@@ -715,7 +715,7 @@ net_multiscale_arg_1d_int_fscanf (char *string, char *flag, int *val, int valqty
   file = ut_file_open (string, "R");
   status = ut_array_1d_int_fscanf_filter_prefix (file, val, valqty, flag);
   if (status != 1)
-    ut_print_message (2, 0, "Failed to read file.\n");
+    ut_print_message (2, 0, "Failed to read file `%s'.\n", string);
   ut_file_close (file, string, "R");
 
   return 0;
@@ -730,7 +730,7 @@ net_multiscale_arg_2d_fscanf (char *string, char *flag, double **val, int size1,
   file = ut_file_open (string, "R");
   status = ut_array_2d_fscanf_filter_prefix (file, val, size1, size2, flag);
   if (status != 1)
-    ut_print_message (2, 0, "Failed to read file.\n");
+    ut_print_message (2, 0, "Failed to read file `%s'.\n", string);
   ut_file_close (file, string, "R");
 
   return 0;
