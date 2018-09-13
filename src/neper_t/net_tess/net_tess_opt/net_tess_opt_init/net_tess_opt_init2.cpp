@@ -235,6 +235,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
     parts = NULL;
 
     isval = ut_string_isanumber ((*pTOpt).tarexpr[i]);
+
     if (!strncmp ((*pTOpt).tarexpr[i], "file", 4)
         || !strcmp ((*pTOpt).tarexpr[i], "seed")
         || !strncmp ((*pTOpt).tarexpr[i], "interval", 8) || isval)
@@ -368,6 +369,11 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
           if (ut_string_filename ((*pTOpt).tarexpr[i]))
             (*pTOpt).CellQty = ut_file_nbwords ((*pTOpt).tarexpr[i])
               / (*pTOpt).tarcellvalqty[i];
+          else if (isval)
+          {
+            sscanf ((*pTOpt).tarexpr[i], "%lf", &mean);
+            net_tess_opt_init_ref (pTOpt, mean, i);
+          }
           else
             abort ();
         }
