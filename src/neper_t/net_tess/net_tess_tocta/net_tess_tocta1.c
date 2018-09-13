@@ -5,7 +5,7 @@
 #include "net_tess_tocta_.h"
 
 int
-net_tess_tocta (struct IN_T In, int level,
+net_tess_tocta (struct IN_T In, int level, char *morpho,
               struct MTESS *pMTess, struct TESS *Tess,
 	      int dtess, int dcell,
 	      struct TESS Dom,
@@ -15,7 +15,7 @@ net_tess_tocta (struct IN_T In, int level,
   struct TESS *pTess = Tess + TessId;
   struct SEEDSET *pSSet = SSet + TessId;
 
-  net_tess_tocta_seed (In, level, In.morpho[level], *pMTess, Tess, dtess, dcell,
+  net_tess_tocta_seed (In, level, morpho, *pMTess, Tess, dtess, dcell,
                        Dom, SSet, pSSet);
 
   ut_print_message (0, 2, "Running tessellation...\n");

@@ -5,7 +5,8 @@
 #include "net_tess_opt_init_.h"
 
 void
-net_tess_opt_init (struct IN_T In, int level, struct MTESS MTess,
+net_tess_opt_init (struct IN_T In, int level, char *morpho,
+                   struct MTESS MTess,
                    struct TESS *Tess, int dtess, int dcell,
                    struct SEEDSET *SSet, struct TOPT *pTOpt)
 {
@@ -14,7 +15,7 @@ net_tess_opt_init (struct IN_T In, int level, struct MTESS MTess,
 
   // target properties
   net_tess_opt_init_target (In, MTess, Tess, dtess, dcell, level,
-                            In.morpho[level], pTOpt);
+                            morpho, pTOpt);
 
   // domain to tessellate
   net_tess_opt_init_domain (In, Tess[dtess], dcell, pTOpt);

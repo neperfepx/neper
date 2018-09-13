@@ -9,7 +9,7 @@ extern "C"
 
 #include"structIn_t.h"
 
-extern int net_tess_opt (struct IN_T In, int level, struct TESS *Tess, int dtess,
+extern int net_tess_opt (struct IN_T In, int level, char *morpho, struct TESS *Tess, int dtess,
 			 int dcell, int TessId, struct MTESS *pMTess,
 			 struct SEEDSET *SSet);
 

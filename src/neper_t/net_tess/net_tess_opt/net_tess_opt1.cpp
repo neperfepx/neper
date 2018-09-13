@@ -6,7 +6,7 @@
 #include"neut/neut_structs/neut_nanoflann_struct.hpp"
 
 int
-net_tess_opt (struct IN_T In, int level, struct TESS *Tess, int dtess,
+net_tess_opt (struct IN_T In, int level, char *morpho, struct TESS *Tess, int dtess,
               int dcell, int TessId, struct MTESS *pMTess,
               struct SEEDSET *SSet)
 {
@@ -19,7 +19,7 @@ net_tess_opt (struct IN_T In, int level, struct TESS *Tess, int dtess,
   TOpt.pnf_tree = &nf_tree;
 
   // Initializing optimization
-  net_tess_opt_init (In, level, *pMTess, Tess, dtess, dcell, SSet, &TOpt);
+  net_tess_opt_init (In, level, morpho, *pMTess, Tess, dtess, dcell, SSet, &TOpt);
 
   ut_print_message (0, 2, "Running tessellation...\n");
 

@@ -244,10 +244,16 @@ set seeds attributes instead, use @samp{@option{-morphooptiini ...
 
 @opt{-morpho, char_string,
 Specify morphological properties of the cells.
-It can be done either by using a special morphology string (as defined below)@comma{}
-or by specifying custom cell properties such as sizes@comma{} sphericities@comma{}
-centroids@comma{} or even exact shapes (using a raster tessellation). Global properties
-(sometimes refered to as @dfn{morphological texture}) can be added.@*
+It can be done either by using a special morphology string (as defined
+below)@comma{} or by specifying custom cell properties such as sizes@comma{}
+sphericities@comma{} centroids@comma{} or even exact shapes (using a raster
+tessellation). Global properties (sometimes refered to as @dfn{morphological
+texture}) can be added.  Finally@comma{} in the case of a multiscale
+tessellation@comma{} cell-by-cell values can be specified using
+@code{@var{file_name}}@comma{} where @code{@var{file_name}} is the name of a
+multiscale cell file containing the list of morphologies (see @ref{Multiscale
+Cell File}).
+@*
 @emph{(i)} The special morphology strings are the following (mutually-exclusive):@*
 @bullet{} @samp{@code{voronoi}} for a standard Poisson-Voronoi
 tessellation;@*

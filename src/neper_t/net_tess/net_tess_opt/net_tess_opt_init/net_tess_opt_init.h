@@ -10,7 +10,8 @@ extern "C"
 #include"structIn_t.h"
 
 void
-net_tess_opt_init (struct IN_T In, int level, struct MTESS MTess,
+net_tess_opt_init (struct IN_T In, int level, char *morpho,
+                   struct MTESS MTess,
 		   struct TESS *Tess, int dtess, int dcell,
 		   struct SEEDSET *SSet, struct TOPT *pTOpt);
 

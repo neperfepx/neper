@@ -5,7 +5,7 @@
 #include "net_tess_cube_.h"
 
 int
-net_tess_cube (struct IN_T In, int level, struct MTESS *pMTess,
+net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
                struct TESS *Tess, int dtess, int dcell, struct TESS Dom,
                int TessId, struct SEEDSET *SSet)
 {
@@ -19,7 +19,7 @@ net_tess_cube (struct IN_T In, int level, struct MTESS *pMTess,
 
   ut_print_message (0, 2, "Running tessellation...\n");
 
-  ut_string_function_separate (In.morpho[level], &fct, NULL, &vals, &varqty);
+  ut_string_function_separate (morpho, &fct, NULL, &vals, &varqty);
 
   if (!strcmp (fct, "cube"))
   {
