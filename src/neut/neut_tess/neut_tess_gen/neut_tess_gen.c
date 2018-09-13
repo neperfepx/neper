@@ -37,12 +37,13 @@ neut_tess_var_list (struct TESS Tess, char *entity, char ***pvar,
   else if (!strcmp (entity, "poly")
 	   || (!(strcmp (entity, "cell")) && Tess.Dim == 3))
   {
-    (*pvarqty) = 31;
+    (*pvarqty) = 32;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
     strcpy ((*pvar)[id++], "id");
     strcpy ((*pvar)[id++], "x");
     strcpy ((*pvar)[id++], "y");
     strcpy ((*pvar)[id++], "z");
+    strcpy ((*pvar)[id++], "w");
     strcpy ((*pvar)[id++], "xmin");
     strcpy ((*pvar)[id++], "xmax");
     strcpy ((*pvar)[id++], "ymin");
@@ -74,12 +75,13 @@ neut_tess_var_list (struct TESS Tess, char *entity, char ***pvar,
   else if (!strcmp (entity, "face")
 	   || (!(strcmp (entity, "cell")) && Tess.Dim == 2))
   {
-    (*pvarqty) = 37;
+    (*pvarqty) = 38;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
     strcpy ((*pvar)[id++], "id");
     strcpy ((*pvar)[id++], "x");
     strcpy ((*pvar)[id++], "y");
     strcpy ((*pvar)[id++], "z");
+    strcpy ((*pvar)[id++], "w");
     strcpy ((*pvar)[id++], "xmin");
     strcpy ((*pvar)[id++], "xmax");
     strcpy ((*pvar)[id++], "ymin");
@@ -318,6 +320,11 @@ neut_tess_var_val (struct TESS Tess,
       (*pval) = c[2];
       strcpy (typetmp, "%f");
     }
+    else if (!strcmp (var2, "w"))
+    {
+      (*pval) = Tess.SeedWeight[id];
+      strcpy (typetmp, "%f");
+    }
     else if (!strcmp (var2, "xmin"))
     {
       neut_tess_poly_bbox (Tess, id, bbox);
@@ -508,6 +515,11 @@ neut_tess_var_val (struct TESS Tess,
     else if (!strcmp (var2, "z"))
     {
       neut_tess_face_centre_z (Tess, id, pval);
+      strcpy (typetmp, "%f");
+    }
+    else if (!strcmp (var2, "w"))
+    {
+      (*pval) = Tess.SeedWeight[id];
       strcpy (typetmp, "%f");
     }
     else if (!strcmp (var2, "xmin"))
