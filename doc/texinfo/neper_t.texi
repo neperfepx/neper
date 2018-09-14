@@ -453,7 +453,7 @@ where @code{@var{propx}} are properties as defined in option
 objective functions.
 An objective function depends on the property and its definition.
 @*
-@math{@bullet{}} For properties defined by a statistical distribution (which can be
+@mybullet For properties defined by a statistical distribution (which can be
 @samp{size}@comma{} @samp{diameq} or @samp{sphericity})@comma{}
 the available values are @samp{chi2} (Chi-square test)@comma{} @samp{ks}
 (Kolmogorov-Smirnov test)@comma{} @samp{kuiper} (Kuiper's test)@comma{}
@@ -466,11 +466,11 @@ on @math{F})@footnote{See [Quey and Renversade, CMAME, 2018].}@comma{}
 on @math{F} corresponding to @samp{FL2w} for a unimodal distribution)@comma{}
 and the default value is @samp{FL2w}.
 @*
-@math{@bullet{}} For @samp{@code{centroid}}@comma{} a Minkowski distance
+@mybullet For @samp{@code{centroid}}@comma{} a Minkowski distance
 between the seeds and centroids is used@comma{} and can be
 @samp{@code{L1}}@comma{} @samp{@code{L2}} or @samp{@code{Linf}}.
 @*
-@math{@bullet{}} For @samp{@code{tesr}}@comma{} the definition of the
+@mybullet For @samp{@code{tesr}}@comma{} the definition of the
 objective function includes several factors.
 First@comma{} preprocessing operations to the raster tessellation can be
 applied using @samp{@code{transform(@var{operations})}}@comma{} where
@@ -748,38 +748,38 @@ Apply transformations to a tessellation (if scalar and raster tessellations
 are written in output@comma{} they are transformed independently; i.e.@comma{}
 rasterization preceeds transformation).@*
 The following transformations apply to a scalar or raster tessellation:@*
-@math{@bullet{}} @samp{@code{scale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
+@mybullet @samp{@code{scale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
 scales a tessellation by
 @code{@var{x_fact}}@comma{} @code{@var{y_fact}} and @code{@var{z_fact}}
 along directions @var{x}@comma{} @code{@var{y}} and
 @code{@var{z}}@comma{} respectively. For a 2D tessellation@comma{}
 @code{@var{z_fact}} can be omitted.@*
-@math{@bullet{}} @samp{rotate(@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{angle})}
+@mybullet @samp{rotate(@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{angle})}
 for a rotation about the centre and by an axis/angle pair.@*
-@math{@bullet{}} @samp{translate(@var{dist_x}@comma{}@var{dist_y}@comma{}@var{dist_z})}
+@mybullet @samp{translate(@var{dist_x}@comma{}@var{dist_y}@comma{}@var{dist_z})}
 for a translation by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} and @code{@var{dist_z}}
 along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
 The following transformations apply only to a raster tessellation:@*
-@math{@bullet{}} @samp{@code{renumber}} renumbers a tessellation to remove empty cells.@*
-@math{@bullet{}} @samp{@code{crop:@var{shape}(@var{parameters})}} crops the raster tessellation by a shape@comma{} where @samp{@var{shape}(@var{parameters})} can be @samp{cube(@var{xmin}@comma{}@var{xmax}@comma{}@var{ymin}@comma{}@var{ymax}@comma{}@var{zmin}@comma{}@var{zmax})} or @samp{cylinder(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{diameter})} (the axis is z).  The values can be any mathematical expression based on the variables defined in @ref{Raster Tessellation Keys} (see general). @*
-@math{@bullet{}} @samp{@code{autocrop}} reduces the raster to its minimal size.@*
-@math{@bullet{}}
+@mybullet @samp{@code{renumber}} renumbers a tessellation to remove empty cells.@*
+@mybullet @samp{@code{crop:@var{shape}(@var{parameters})}} crops the raster tessellation by a shape@comma{} where @samp{@var{shape}(@var{parameters})} can be @samp{cube(@var{xmin}@comma{}@var{xmax}@comma{}@var{ymin}@comma{}@var{ymax}@comma{}@var{zmin}@comma{}@var{zmax})} or @samp{cylinder(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{diameter})} (the axis is z).  The values can be any mathematical expression based on the variables defined in @ref{Raster Tessellation Keys} (see general). @*
+@mybullet @samp{@code{autocrop}} reduces the raster to its minimal size.@*
+@mybullet
 @samp{@code{rasterscale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
 scales the number of points of the raster by factors
 @code{@var{x_fact}}@comma{} @code{@var{y_fact}} and @code{@var{z_fact}}
 along directions @var{x}@comma{} @code{@var{y}} and
 @code{@var{z}}@comma{} respectively. For a 2D tessellation@comma{}
 @code{@var{z_fact}} can be omitted.@*
-@math{@bullet{}} @samp{@code{rmsat}} removes the cell
+@mybullet @samp{@code{rmsat}} removes the cell
 ``satellites''@comma{} i.e.@ parts disconnected from the cell bulk.@*
-@math{@bullet{}} @samp{@code{grow}} grows the cells to fill the domain.@*
-@math{@bullet{}} @samp{@code{tessinter(@var{tess_file})}} computes the
+@mybullet @samp{@code{grow}} grows the cells to fill the domain.@*
+@mybullet @samp{@code{tessinter(@var{tess_file})}} computes the
 intersection with tessellation @file{@var{tess_file}}.@*
-@math{@bullet{}} @samp{@code{addbuffer(@var{buffx}@comma{}@var{buffy}@comma{}@var{buffz})}}
+@mybullet @samp{@code{addbuffer(@var{buffx}@comma{}@var{buffy}@comma{}@var{buffz})}}
 adds a buffer of @code{@var{buffx}} void voxels on both sides in the x direction@comma{}
 a buffer of @code{@var{buffy}} void voxels on both sides in the y direction and
 a buffer of @code{@var{buffz}} void voxels on both sides in the z direction.@*
-@math{@bullet{}} @samp{@code{2d}} transforms a 3D tessellation with 1 voxel along z into a 2D tessellation.@*
+@mybullet @samp{@code{2d}} transforms a 3D tessellation with 1 voxel along z into a 2D tessellation.@*
 Several transformations can be applied successively by combining them @w{with @samp{@SEPNODEP}}.
 ,
 any, none}

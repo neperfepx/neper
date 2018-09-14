@@ -152,6 +152,10 @@ Neper
 ::
 @end macro
 
+@macro mybullet
+@math{@bullet{}}@w{ }
+@end macro
+
 @c COM
 @macro com{a}
 @iftex
