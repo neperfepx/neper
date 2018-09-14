@@ -962,7 +962,7 @@ neut_tess_point_inface (struct TESS Tess, double *coo, int face)
 {
   int i, j, ver1, ver2, status;
   double *centre = ut_alloc_1d (3);
-  int *per = ut_alloc_1d_int (2);
+  int *per = ut_alloc_1d_int (3);
   double *coob = ut_alloc_1d (3);
   int *Periodic = ut_alloc_1d_int (3);
   double *PeriodicDist = ut_alloc_1d (3);
