@@ -11,6 +11,8 @@ extern "C"
 #define NEUT_TESS_MERGE_H
 
   extern void neut_tess_merge (struct TESS *);
+  extern int  neut_tess_cellexpr_merge (struct TESS *pTess, char *expr);
+  extern void neut_tess_cells_merge (struct TESS *pTess, int *cells, int cellqty);
 
 #endif				/* NEUT_TESS_MERGE_H */
 

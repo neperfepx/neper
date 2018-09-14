@@ -40,6 +40,27 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
 	tmp[2] = 1;
       neut_tess_shift (pTess, tmp[0], tmp[1], tmp[2]);
     }
+    else if (!strncmp (parts[i], "mergecell", 9))
+    {
+      ut_print_message (0, 2, "Merging cells...\n");
+
+      int j, exprqty, qty;
+      char *fct = NULL, **exprs = NULL;
+
+      ut_string_function_separate_exprs (parts[i], &fct, &exprs, &exprqty);
+
+      for (j = 0; j < exprqty; j++)
+      {
+        qty = neut_tess_cellexpr_merge (pTess, exprs[j]);
+        ut_print_message (0, 3, "Merged %d cells...\n", qty);
+      }
+
+      ut_free_1d_char (fct);
+      ut_free_2d_char (exprs, exprqty);
+    }
+    else
+      ut_print_message (1, 3, "Skipping `%s'...\n", parts[i]);
+
   }
 
   ol_g_free (g);

@@ -8,8 +8,8 @@
 #include"neut.h"
 
 #include "neut_tess_merge_edges/neut_tess_merge_edges.h"
-#include "neut_tess_merge_faces/neut_tess_merge_faces.h"
-#include "neut_tess_merge_polys/neut_tess_merge_polys.h"
+#include "neut_tess_faces_merge/neut_tess_faces_merge.h"
+#include "neut_tess_polys_merge/neut_tess_polys_merge.h"
 
 extern void neut_tess_merge_ondomain (struct TESS *pTess);
 extern void neut_tess_merge_finalize (struct TESS *pTess);

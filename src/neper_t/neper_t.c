@@ -232,12 +232,6 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
       neut_tess_tess (Tess[1], &FTess);
       FTess.ScaleQty = 1;
     }
-
-    if (In.reg)
-    {
-      ut_print_message (0, 1, "Regularizing tessellation...\n");
-      net_reg (In, &FTess, &Reg);
-    }
   }
 
   // ###################################################################
@@ -306,6 +300,12 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Transforming tessellation...\n");
     net_transform (In, &FTess, &Tesr);
+  }
+
+  if (!strcmp (In.mode, "tess") && In.reg)
+  {
+    ut_print_message (0, 1, "Regularizing tessellation...\n");
+    net_reg (In, &FTess, &Reg);
   }
 
   // ###################################################################

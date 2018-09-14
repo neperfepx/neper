@@ -621,6 +621,38 @@ ut_string_function_separate (char *string, char** pfct,
 }
 
 void
+ut_string_function_separate_exprs (char *string, char** pfct,
+                                   char ***pexprs, int *pexprqty)
+{
+  int pos = 0;
+  char *tmp = NULL, *string2 = NULL;
+
+  if (!string)
+  {
+    if (pexprqty)
+      (*pexprqty) = 0;
+    return;
+  }
+
+  tmp = ut_alloc_1d_char (strlen (string) + 1);
+
+  ut_string_untilchar (string, '(', &pos, tmp);
+
+  if (pfct)
+    ut_string_string (tmp, pfct);
+
+  ut_string_string (string + pos + 1, &string2);
+  string2[strlen (string2) - 1] = '\0';
+
+  ut_string_separate (string2, ",", pexprs, pexprqty);
+
+  ut_free_1d_char (string2);
+  ut_free_1d_char (tmp);
+
+  return;
+}
+
+void
 ut_string_catfiles_separate (const char *string, char ***parts, int *pqty)
 {
   int i, *pos = ut_alloc_1d_int (strlen (string));

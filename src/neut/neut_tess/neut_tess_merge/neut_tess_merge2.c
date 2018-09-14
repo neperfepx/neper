@@ -26,7 +26,7 @@ neut_tess_merge_ondomain (struct TESS *pTess)
 	    &setfaces, &setfaceqty);
 
 	for (k = 0; k < setqty; k++)
-	  neut_tess_merge_faces (pTess, setfaces[k], setfaceqty[k]);
+	  neut_tess_faces_merge (pTess, setfaces[k], setfaceqty[k]);
 
 	setqty = 0;
 	ut_free_1d_int_ (&setfaceqty);

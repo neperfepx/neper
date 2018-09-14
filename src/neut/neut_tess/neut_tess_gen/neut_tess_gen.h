@@ -27,6 +27,8 @@ extern "C"
   extern void neut_tess_dim_entity (int dim, char **pentity);
   extern void neut_tess_entity_qty (struct TESS Tess, char *entity, int
 				    *pqty);
+  extern int neut_tess_expr_celllist (struct TESS Tess, char *, int **,
+				      int *);
   extern int neut_tess_expr_polylist (struct TESS Tess, char *, int **,
 				      int *);
   extern int neut_tess_expr_facelist (struct TESS Tess, char *, int **,

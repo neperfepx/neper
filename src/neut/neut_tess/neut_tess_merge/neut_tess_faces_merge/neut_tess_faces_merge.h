@@ -10,16 +10,16 @@ extern "C"
 #ifndef NEUT_TESS_MERGECELLS_2D_H
 #define NEUT_TESS_MERGECELLS_2D_H
 
-  extern void neut_tess_merge_faces (struct TESS *pTess, int *cells,
+  extern void neut_tess_faces_merge (struct TESS *pTess, int *cells,
 				     int cellqty);
 
-  extern void neut_tess_merge_faces_verlists (struct TESS *pTess,
+  extern void neut_tess_faces_merge_verlists (struct TESS *pTess,
 					      int *deledges, int deledgeqty,
 					      int **pkeepvers,
 					      int *pkeepverqty,
 					      int **pdelvers,
 					      int *pdelverqty);
-  extern void neut_tess_merge_faces_updatevers (struct TESS *pTess,
+  extern void neut_tess_faces_merge_updatevers (struct TESS *pTess,
 						int *deledges, int deledgeqty,
 						int *keepvers, int keepverqty,
 						int *delvers, int delverqty);

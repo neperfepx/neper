@@ -10,7 +10,7 @@ extern "C"
 #ifndef NEUT_TESS_MERGECELLS_3D_H
 #define NEUT_TESS_MERGECELLS_3D_H
 
-  extern void neut_tess_merge_polys (struct TESS *pTess, int *cells,
+  extern void neut_tess_polys_merge (struct TESS *pTess, int *cells,
 				     int cellqty);
 
 #endif				/* NEUT_TESS_MERGECELLS_3D_H */

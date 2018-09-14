@@ -1386,6 +1386,22 @@ neut_tess_entity_qty (struct TESS Tess, char *entity, int *pqty)
 }
 
 int
+neut_tess_expr_celllist (struct TESS Tess, char *expr, int **pcells,
+			 int *pcellqty)
+{
+  int status = -1;
+
+  if (Tess.Dim == 3)
+    status = neut_tess_expr_polylist (Tess, expr, pcells, pcellqty);
+  else if (Tess.Dim == 2)
+    status = neut_tess_expr_facelist (Tess, expr, pcells, pcellqty);
+  else
+    abort ();
+
+  return status;
+}
+
+int
 neut_tess_expr_polylist (struct TESS Tess, char *expr, int **ppoly,
 			 int *ppolyqty)
 {

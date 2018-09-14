@@ -109,10 +109,10 @@ add_library (neut
 ./neut_tess/neut_tess_merge/neut_tess_merge1.c
 ./neut_tess/neut_tess_merge/neut_tess_merge2.c
 ./neut_tess/neut_tess_merge/neut_tess_merge_edges/neut_tess_merge_edges1.c
-./neut_tess/neut_tess_merge/neut_tess_merge_faces/neut_tess_merge_faces1.c
-./neut_tess/neut_tess_merge/neut_tess_merge_faces/neut_tess_merge_faces2.c
-./neut_tess/neut_tess_merge/neut_tess_merge_polys/neut_tess_merge_polys1.c
-./neut_tess/neut_tess_merge/neut_tess_merge_polys/neut_tess_merge_polys2.c
+./neut_tess/neut_tess_merge/neut_tess_faces_merge/neut_tess_faces_merge1.c
+./neut_tess/neut_tess_merge/neut_tess_faces_merge/neut_tess_faces_merge2.c
+./neut_tess/neut_tess_merge/neut_tess_polys_merge/neut_tess_polys_merge1.c
+./neut_tess/neut_tess_merge/neut_tess_polys_merge/neut_tess_polys_merge2.c
 ./neut_tess/neut_tess_compress/neut_tess_compress1.c
 ./neut_tess/neut_tess_compress/neut_tess_compress2.c
 ./neut_tess/neut_tess_compress/neut_tess_compress3.c

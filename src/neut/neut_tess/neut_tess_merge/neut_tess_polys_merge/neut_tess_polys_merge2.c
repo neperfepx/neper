@@ -2,10 +2,10 @@
 /* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include "neut_tess_merge_polys_.h"
+#include "neut_tess_polys_merge_.h"
 
 void
-neut_tess_merge_polys_polylists (struct TESS *pTess, int *polys, int polyqty,
+neut_tess_polys_merge_polylists (struct TESS *pTess, int *polys, int polyqty,
 				 int *pkeeppoly,
 				 int **pdelpolys, int *pdelpolyqty)
 {
@@ -19,7 +19,7 @@ neut_tess_merge_polys_polylists (struct TESS *pTess, int *polys, int polyqty,
 }
 
 void
-neut_tess_merge_polys_facelists (struct TESS *pTess, int *polys, int polyqty,
+neut_tess_polys_merge_facelists (struct TESS *pTess, int *polys, int polyqty,
 				 int **pkeepfaces, int *pkeepfaceqty,
 				 int **pdelfaces, int *pdelfaceqty)
 {
@@ -60,7 +60,7 @@ neut_tess_merge_polys_facelists (struct TESS *pTess, int *polys, int polyqty,
 }
 
 void
-neut_tess_merge_polys_edgelists (struct TESS *pTess,
+neut_tess_polys_merge_edgelists (struct TESS *pTess,
 				 int *delfaces, int delfaceqty,
 				 int **pkeepedges, int *pkeepedgeqty,
 				 int **pdeledges, int *pdeledgeqty)
@@ -102,7 +102,7 @@ neut_tess_merge_polys_edgelists (struct TESS *pTess,
 }
 
 void
-neut_tess_merge_polys_mergepolys (struct TESS *pTess,
+neut_tess_polys_merge_mergepolys (struct TESS *pTess,
 				  int newpoly,
 				  int *delpolys, int delpolyqty,
 				  int *keepfaces, int keepfaceqty)
@@ -170,7 +170,7 @@ neut_tess_merge_polys_mergepolys (struct TESS *pTess,
 }
 
 void
-neut_tess_merge_polys_updatefaces (struct TESS *pTess,
+neut_tess_polys_merge_updatefaces (struct TESS *pTess,
 				   int *delfaces, int delfaceqty)
 {
   int i;
@@ -182,7 +182,7 @@ neut_tess_merge_polys_updatefaces (struct TESS *pTess,
 }
 
 void
-neut_tess_merge_polys_updateedges (struct TESS *pTess,
+neut_tess_polys_merge_updateedges (struct TESS *pTess,
 				   int *delfaces, int delfaceqty,
 				   int *keepedges, int keepedgeqty,
 				   int *deledges, int deledgeqty)

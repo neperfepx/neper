@@ -2,10 +2,10 @@
 /* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include "neut_tess_merge_faces_.h"
+#include "neut_tess_faces_merge_.h"
 
 void
-neut_tess_merge_faces_facelists (struct TESS *pTess, int *faces, int faceqty,
+neut_tess_faces_merge_facelists (struct TESS *pTess, int *faces, int faceqty,
 				 int *pkeepface,
 				 int **pdelfaces, int *pdelfaceqty)
 {
@@ -19,7 +19,7 @@ neut_tess_merge_faces_facelists (struct TESS *pTess, int *faces, int faceqty,
 }
 
 void
-neut_tess_merge_faces_edgelists (struct TESS *pTess, int *faces, int faceqty,
+neut_tess_faces_merge_edgelists (struct TESS *pTess, int *faces, int faceqty,
 				 int **pkeepedges, int *pkeepedgeqty,
 				 int **pdeledges, int *pdeledgeqty)
 {
@@ -60,7 +60,7 @@ neut_tess_merge_faces_edgelists (struct TESS *pTess, int *faces, int faceqty,
 }
 
 void
-neut_tess_merge_faces_verlists (struct TESS *pTess,
+neut_tess_faces_merge_verlists (struct TESS *pTess,
 				int *deledges, int deledgeqty,
 				int **pkeepvers, int *pkeepverqty,
 				int **pdelvers, int *pdelverqty)
@@ -102,7 +102,7 @@ neut_tess_merge_faces_verlists (struct TESS *pTess,
 }
 
 void
-neut_tess_merge_faces_mergefaces (struct TESS *pTess, int newface,
+neut_tess_faces_merge_mergefaces (struct TESS *pTess, int newface,
 				  int *delfaces, int delfaceqty,
 				  int *keepedges, int keepedgeqty)
 {
@@ -133,7 +133,7 @@ neut_tess_merge_faces_mergefaces (struct TESS *pTess, int newface,
 }
 
 void
-neut_tess_merge_faces_updateedges (struct TESS *pTess, int newface,
+neut_tess_faces_merge_updateedges (struct TESS *pTess, int newface,
 				   int *delfaces, int delfaceqty,
 				   int *keepedges, int keepedgeqty,
 				   int *deledges, int deledgeqty)
@@ -164,7 +164,7 @@ neut_tess_merge_faces_updateedges (struct TESS *pTess, int newface,
 }
 
 void
-neut_tess_merge_faces_updatevers (struct TESS *pTess,
+neut_tess_faces_merge_updatevers (struct TESS *pTess,
 				  int *deledges, int deledgeqty,
 				  int *keepvers, int keepverqty,
 				  int *delvers, int delverqty)

@@ -7,31 +7,31 @@
 #include<math.h>
 #include"neut.h"
 
-#include"neut_tess_merge_faces.h"
+#include"neut_tess_faces_merge.h"
 
 extern void
-neut_tess_merge_faces_edges (struct TESS *pTess, int *cells, int cellqty,
+neut_tess_faces_merge_edges (struct TESS *pTess, int *cells, int cellqty,
 			     int **pkeepedges, int *pkeepedgeqty,
 			     int **pdeledges, int *pdeledgeqty);
 
-extern void neut_tess_merge_faces_facelists (struct TESS *pTess,
+extern void neut_tess_faces_merge_facelists (struct TESS *pTess,
 					     int *cells, int cellqty,
 					     int *pkeepface,
 					     int **pdelfaces,
 					     int *pdelfaceqty);
 
-extern void neut_tess_merge_faces_edgelists (struct TESS *pTess,
+extern void neut_tess_faces_merge_edgelists (struct TESS *pTess,
 					     int *cells, int cellqty,
 					     int **pkeepedges,
 					     int *pkeepedgeqty,
 					     int **pdeledges,
 					     int *pdeledgeqty);
 
-extern void neut_tess_merge_faces_mergefaces (struct TESS *pTess,
+extern void neut_tess_faces_merge_mergefaces (struct TESS *pTess,
 					      int keepface, int *delfaces,
 					      int delface, int *keepedges,
 					      int keepedgeqty);
-extern void neut_tess_merge_faces_updateedges (struct TESS *pTess,
+extern void neut_tess_faces_merge_updateedges (struct TESS *pTess,
 					       int newface, int *delfaces,
 					       int delfaceqty, int *keepedges,
 					       int keepedgeqty, int *deledges,

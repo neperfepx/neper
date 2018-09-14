@@ -2,10 +2,10 @@
 /* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include "neut_tess_merge_faces_.h"
+#include "neut_tess_faces_merge_.h"
 
 void
-neut_tess_merge_faces (struct TESS *pTess, int *faces, int faceqty)
+neut_tess_faces_merge (struct TESS *pTess, int *faces, int faceqty)
 {
   int newface;
   int delfaceqty, *delfaces = NULL;
@@ -17,28 +17,28 @@ neut_tess_merge_faces (struct TESS *pTess, int *faces, int faceqty)
   if (faceqty == 1)
     return;
 
-  neut_tess_merge_faces_facelists (pTess, faces, faceqty,
+  neut_tess_faces_merge_facelists (pTess, faces, faceqty,
 				   &newface, &delfaces, &delfaceqty);
 
-  neut_tess_merge_faces_edgelists (pTess, faces, faceqty,
+  neut_tess_faces_merge_edgelists (pTess, faces, faceqty,
 				   &keepedges, &keepedgeqty,
 				   &deledges, &deledgeqty);
 
-  neut_tess_merge_faces_verlists (pTess,
+  neut_tess_faces_merge_verlists (pTess,
 				  deledges, deledgeqty,
 				  &keepvers, &keepverqty,
 				  &delvers, &delverqty);
 
-  neut_tess_merge_faces_mergefaces (pTess, newface,
+  neut_tess_faces_merge_mergefaces (pTess, newface,
 				    delfaces, delfaceqty,
 				    keepedges, keepedgeqty);
 
-  neut_tess_merge_faces_updateedges (pTess, newface,
+  neut_tess_faces_merge_updateedges (pTess, newface,
 				     delfaces, delfaceqty,
 				     keepedges, keepedgeqty,
 				     deledges, deledgeqty);
 
-  neut_tess_merge_faces_updatevers (pTess,
+  neut_tess_faces_merge_updatevers (pTess,
 				    deledges, deledgeqty,
 				    keepvers, keepverqty, delvers, delverqty);
 
