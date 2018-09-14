@@ -16,7 +16,7 @@ neut_tess_polys_merge (struct TESS *pTess, int *polys, int polyqty)
   int keepverqty, *keepvers = NULL;
   int delverqty, *delvers = NULL;
 
-  if (polyqty == 1)
+  if (polyqty <= 1)
     return;
 
   neut_tess_polys_merge_polylists (pTess, polys, polyqty,
