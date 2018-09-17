@@ -223,6 +223,8 @@ extern "C"
   extern int neut_tess_edges_comver (struct TESS Tess, int *edge,
 				     int edgeqty, int *pver);
 
+  extern int neut_tess_edgepair_comver (struct TESS Tess, int edge1, int edge2, int *pver);
+
 /// \brief Get the vertices of a edge
 ///
 ///
@@ -583,10 +585,10 @@ extern "C"
   extern void neut_tess_poly_domface_faces (struct TESS Tess, int poly,
       int domface, int **pfaces, int *pfaceqty);
 
-  extern void neut_tess_faces_contiguousfaces (struct TESS Tess, int
+  extern void neut_tess_faces_contiguousfaces (struct TESS Tess, int coplanar, int
       *faces, int faceqty, int *pqty, int ***pfaces, int **pfaceqty);
 
-  extern void neut_tess_edges_contiguousedges (struct TESS Tess, int
+  extern void neut_tess_edges_contiguousedges (struct TESS Tess, int colinear, int
       *edges, int edgeqty, int *pqty, int ***pedges, int **pedgeqty);
 
   extern void neut_tess_ver_cells (struct TESS Tess, int ver, int
@@ -617,6 +619,9 @@ extern "C"
 
   extern int neut_tess_face_scale (struct TESS Tess, int face, int *pscale);
   extern int neut_tess_face_scale_polys (struct TESS Tess, int face, int scale, int *poly);
+
+  extern void neut_tess_polypair_commonfaces (struct TESS Tess, int poly1, int poly2,
+                                int **pfaces, int *pfaceqty);
 
 #endif				/* NEUT_TESS_TOPO_H */
 

@@ -7,4 +7,4 @@
 #include<math.h>
 #include"neut.h"
 
-#include"neut_tess_merge_edges.h"
+#include"neut_tess_edges_merge.h"

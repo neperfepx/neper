@@ -2,10 +2,10 @@
 /* Copyright (C) 2003-2018, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include "neut_tess_merge_edges_.h"
+#include "neut_tess_edges_merge_.h"
 
 void
-neut_tess_merge_edges (struct TESS *pTess, int *edges, int edgeqty)
+neut_tess_edges_merge (struct TESS *pTess, int *edges, int edgeqty)
 {
   int i, j, edge, ver, newedge, face;
   int deledgeqty, *deledges = NULL;

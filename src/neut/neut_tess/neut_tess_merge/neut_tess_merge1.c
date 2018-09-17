@@ -5,6 +5,45 @@
 #include"neut_tess_merge_.h"
 
 void
+neut_tess_cells_merge (struct TESS *pTess, int *cells, int cellqty)
+{
+  int newcell = -1;
+
+  if ((*pTess).Dim == 3)
+    newcell = neut_tess_polys_merge (pTess, cells, cellqty);
+
+  else if ((*pTess).Dim == 2)
+    neut_tess_faces_merge (pTess, cells, cellqty);
+
+  else
+    abort ();
+
+  neut_tess_merge_ondomain (pTess);
+
+  neut_tess_merge_polyfaces (pTess, newcell);
+
+  neut_tess_merge_polyedges (pTess, newcell);
+
+  neut_tess_merge_finalize (pTess);
+
+  return;
+}
+
+int
+neut_tess_cellexpr_merge (struct TESS *pTess, char *expr)
+{
+  int cellqty, *cells = NULL;
+
+  neut_tess_expr_celllist (*pTess, expr, &cells, &cellqty);
+
+  neut_tess_cells_merge (pTess, cells, cellqty);
+
+  ut_free_1d_int (cells);
+
+  return cellqty;
+}
+
+void
 neut_tess_merge (struct TESS *pTess)
 {
   int i, j, id;
@@ -29,39 +68,6 @@ neut_tess_merge (struct TESS *pTess)
   ut_free_1d_int (cellqty);
   ut_free_2d_int (cells, cellidqty);
   ut_free_1d_int (cellids);
-
-  return;
-}
-
-int
-neut_tess_cellexpr_merge (struct TESS *pTess, char *expr)
-{
-  int cellqty, *cells = NULL;
-
-  neut_tess_expr_celllist (*pTess, expr, &cells, &cellqty);
-
-  neut_tess_cells_merge (pTess, cells, cellqty);
-
-  ut_free_1d_int (cells);
-
-  return cellqty;
-}
-
-void
-neut_tess_cells_merge (struct TESS *pTess, int *cells, int cellqty)
-{
-  if ((*pTess).Dim == 3)
-    neut_tess_polys_merge (pTess, cells, cellqty);
-
-  else if ((*pTess).Dim == 2)
-    neut_tess_faces_merge (pTess, cells, cellqty);
-
-  else
-    abort ();
-
-  neut_tess_merge_ondomain (pTess);
-
-  neut_tess_merge_finalize (pTess);
 
   return;
 }

@@ -4,7 +4,7 @@
 
 #include "neut_tess_polys_merge_.h"
 
-void
+int
 neut_tess_polys_merge (struct TESS *pTess, int *polys, int polyqty)
 {
   int newpoly;
@@ -17,7 +17,7 @@ neut_tess_polys_merge (struct TESS *pTess, int *polys, int polyqty)
   int delverqty, *delvers = NULL;
 
   if (polyqty <= 1)
-    return;
+    return (polyqty == 1) ? polys[0] : -1;
 
   neut_tess_polys_merge_polylists (pTess, polys, polyqty,
 				   &newpoly, &delpolys, &delpolyqty);
@@ -57,5 +57,5 @@ neut_tess_polys_merge (struct TESS *pTess, int *polys, int polyqty)
   ut_free_1d_int_ (&keepvers);
   ut_free_1d_int_ (&delvers);
 
-  return;
+  return newpoly;
 }

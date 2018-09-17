@@ -27,6 +27,8 @@ extern "C"
 ///
   extern int neut_tess_edge_eq (struct TESS Tess, int, double *);
 
+  extern int neut_tess_edge_dir (struct TESS Tess, int edge, double *dir);
+
 /// \brief Get the equation of a domain edge (for a 2D tess)
 ///
 ///
@@ -244,6 +246,8 @@ extern "C"
 					double *pval);
   extern void neut_tess_cell_convexity (struct TESS Tess, int cell,
 					double *pval);
+
+  extern void neut_tess_edgepair_angle (struct TESS Tess, int edge1, int edge2, double *pangle);
 
 #endif				/* NEUT_TESS_GEOM_H */
 

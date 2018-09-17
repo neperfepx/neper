@@ -34,6 +34,20 @@ neut_tess_edge_eq (struct TESS Tess, int edge, double *eq)
 }
 
 int
+neut_tess_edge_dir (struct TESS Tess, int edge, double *dir)
+{
+  if (edge < 1 || edge > Tess.EdgeQty)
+    ut_error_reportbug ();
+
+  ut_array_1d_sub (Tess.VerCoo[Tess.EdgeVerNb[edge][0]],
+                   Tess.VerCoo[Tess.EdgeVerNb[edge][1]], 3, dir);
+
+  ut_array_1d_normalize (dir, 3);
+
+  return 0;
+}
+
+int
 neut_tess_domedge_eq (struct TESS Tess, int domedge, double *eq)
 {
   if (domedge < 1 || domedge > Tess.DomEdgeQty || Tess.Dim != 2)
@@ -1565,6 +1579,31 @@ neut_tess_cell_convexity (struct TESS Tess, int cell, double *pval)
     neut_tess_poly_convexity (Tess, cell, pval);
   else
     abort ();
+
+  return;
+}
+
+void
+neut_tess_edgepair_angle (struct TESS Tess, int edge1, int edge2, double *pangle)
+{
+  int comver;
+  double *v1 = ut_alloc_1d (3);
+  double *v2 = ut_alloc_1d (3);
+
+  neut_tess_edge_dir (Tess, edge1, v1);
+  neut_tess_edge_dir (Tess, edge2, v2);
+
+  *pangle = ut_vector_angle (v1, v2);
+
+  if (!neut_tess_edgepair_comver (Tess, edge1, edge2, &comver))
+  {
+    if (ut_array_1d_int_eltpos (Tess.EdgeVerNb[edge1], 2, comver)
+     == ut_array_1d_int_eltpos (Tess.EdgeVerNb[edge2], 2, comver))
+      (*pangle) -= 180;
+  }
+
+  ut_free_1d (v1);
+  ut_free_1d (v2);
 
   return;
 }

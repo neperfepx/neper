@@ -813,6 +813,20 @@ neut_tess_edges_comver (struct TESS Tess, int *edges, int edgeqty, int *pver)
   return status;
 }
 
+int
+neut_tess_edgepair_comver (struct TESS Tess, int edge1, int edge2, int *pver)
+{
+  int status, *edges = ut_alloc_1d_int (2);
+
+  ut_array_1d_int_set_2 (edges, edge1, edge2);
+
+  status = neut_tess_edges_comver (Tess, edges, 2, pver);
+
+  ut_free_1d_int (edges);
+
+  return status;
+}
+
 void
 neut_tess_edge_vers (struct TESS Tess, int edge, int **pver, int *pverqty)
 {
@@ -1430,6 +1444,8 @@ neut_tess_poly_neighpoly (struct TESS Tess, int poly, int **pnpoly,
 	tmp[(*pnpolyqty)++] = Tess.FacePoly[face][j];
       }
   }
+
+  ut_array_1d_int_sort_uniq (tmp, *pnpolyqty, pnpolyqty);
 
   if (pnpoly)
   {
@@ -2840,7 +2856,7 @@ neut_tess_poly_domface_faces (struct TESS Tess, int poly,
 }
 
 void
-neut_tess_faces_contiguousfaces (struct TESS Tess, int *faces, int faceqty,
+neut_tess_faces_contiguousfaces (struct TESS Tess, int coplanar, int *faces, int faceqty,
                                  int *pqty, int ***pfaces, int **pfaceqty)
 {
   int i, j, face, id;
@@ -2851,6 +2867,8 @@ neut_tess_faces_contiguousfaces (struct TESS Tess, int *faces, int faceqty,
   qty = faceqty;
   tmp = ut_alloc_1d_int (qty);
   ut_array_1d_int_memcpy (tmp, qty, faces);
+
+  (*pqty) = 0;
 
   while (qty > 0)
   {
@@ -2875,8 +2893,14 @@ neut_tess_faces_contiguousfaces (struct TESS Tess, int *faces, int faceqty,
 
       for (j = 0; j < interqty; j++)
       {
-	ut_array_1d_int_list_addelt ((*pfaces) + id, (*pfaceqty) + id, inter[j]);
-	ut_array_1d_int_list_rmelt (&tmp, &qty, inter[j]);
+        double angle;
+        angle = ut_vector_angle (Tess.FaceEq[(*pfaces)[id][0]] + 1, Tess.FaceEq[inter[j]] + 1);
+
+        if (!coplanar || ut_num_equal (angle, 0, 1e-6) || ut_num_equal (angle, 180, 1e-6))
+        {
+          ut_array_1d_int_list_addelt ((*pfaces) + id, (*pfaceqty) + id, inter[j]);
+          ut_array_1d_int_list_rmelt (&tmp, &qty, inter[j]);
+        }
       }
     }
   }
@@ -2889,7 +2913,7 @@ neut_tess_faces_contiguousfaces (struct TESS Tess, int *faces, int faceqty,
 }
 
 void
-neut_tess_edges_contiguousedges (struct TESS Tess, int *edges, int edgeqty,
+neut_tess_edges_contiguousedges (struct TESS Tess, int colinear, int *edges, int edgeqty,
                                  int *pqty, int ***pedges, int **pedgeqty)
 {
   int i, j, edge, id;
@@ -2924,8 +2948,22 @@ neut_tess_edges_contiguousedges (struct TESS Tess, int *edges, int edgeqty,
 
       for (j = 0; j < interqty; j++)
       {
-	ut_array_1d_int_list_addelt ((*pedges) + id, (*pedgeqty) + id, inter[j]);
-	ut_array_1d_int_list_rmelt (&tmp, &qty, inter[j]);
+        double angle;
+        double *v1 = ut_alloc_1d (3);
+        double *v2 = ut_alloc_1d (3);
+
+        neut_tess_edge_dir (Tess, (*pedges)[id][0], v1);
+        neut_tess_edge_dir (Tess, edge, v2);
+        angle = ut_vector_angle (v1, v2);
+
+        if (!colinear || ut_num_equal (angle, 0, 1e-6) || ut_num_equal (angle, 180, 1e-6))
+        {
+          ut_array_1d_int_list_addelt ((*pedges) + id, (*pedgeqty) + id, inter[j]);
+          ut_array_1d_int_list_rmelt (&tmp, &qty, inter[j]);
+        }
+
+        ut_free_1d (v1);
+        ut_free_1d (v2);
       }
     }
   }
@@ -3156,4 +3194,17 @@ neut_tess_face_scale (struct TESS Tess, int face, int *pscale)
     ut_error_reportbug ();
 
   return 0;
+}
+
+void
+neut_tess_polypair_commonfaces (struct TESS Tess, int poly1, int poly2,
+                                int **pfaces, int *pfaceqty)
+{
+  (*pfaces) = ut_alloc_1d_int (Tess.PolyFaceQty[poly1]);
+
+  ut_array_1d_int_inter (Tess.PolyFaceNb[poly1] + 1, Tess.PolyFaceQty[poly1],
+                         Tess.PolyFaceNb[poly2] + 1, Tess.PolyFaceQty[poly2],
+                         *pfaces, pfaceqty);
+
+  return;
 }
