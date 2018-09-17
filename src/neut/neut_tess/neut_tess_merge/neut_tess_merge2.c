@@ -11,11 +11,11 @@ neut_tess_merge_polyfaces (struct TESS *pTess, int poly)
   int comfaceqty, *comfaces = NULL;
   int setqty = 0, *setfaceqty = NULL, **setfaces = NULL;
 
-  neut_tess_poly_neighpoly (*pTess, poly, &npolys, &npolyqty);
+  neut_tess_poly_neighseeds (*pTess, poly, &npolys, &npolyqty);
 
   for (i = 0; i < npolyqty; i++)
   {
-    neut_tess_polypair_commonfaces (*pTess, poly, npolys[i], &comfaces, &comfaceqty);
+    neut_tess_seedpair_commonfaces (*pTess, poly, npolys[i], &comfaces, &comfaceqty);
 
     neut_tess_faces_contiguousfaces (*pTess, 1, comfaces, comfaceqty, &setqty,
         &setfaces, &setfaceqty);
@@ -58,63 +58,6 @@ neut_tess_merge_polyedges (struct TESS *pTess, int poly)
   }
 
   ut_free_1d_int (vers);
-
-  return;
-}
-
-void
-neut_tess_merge_ondomain (struct TESS *pTess)
-{
-  int i, j, k, edgeqty, *edges = NULL;
-  int face, faceqty, *faces = NULL;
-  int poly, polyqty, *polys = NULL;
-  int setqty = 0, *setfaceqty = NULL, **setfaces = NULL;
-  int *setedgeqty = NULL, **setedges = NULL;
-
-  if ((*pTess).Dim == 3)
-    for (i = 1; i <= (*pTess).DomFaceQty; i++)
-    {
-      neut_tess_domface_polys (*pTess, i, &polys, &polyqty);
-
-      for (j = 0; j < polyqty; j++)
-      {
-	poly = polys[j];
-	neut_tess_poly_domface_faces (*pTess, poly, i, &faces, &faceqty);
-	neut_tess_faces_contiguousfaces (*pTess, 1, faces, faceqty, &setqty,
-	    &setfaces, &setfaceqty);
-
-	for (k = 0; k < setqty; k++)
-	  neut_tess_faces_merge (pTess, setfaces[k], setfaceqty[k]);
-
-	setqty = 0;
-	ut_free_1d_int_ (&setfaceqty);
-	ut_free_2d_int_ (&setfaces, setqty);
-      }
-    }
-
-  for (i = 1; i <= (*pTess).DomEdgeQty; i++)
-  {
-    neut_tess_domedge_faces (*pTess, i, &faces, &faceqty);
-
-    for (j = 0; j < faceqty; j++)
-    {
-      face = faces[j];
-      neut_tess_face_domedge_edges (*pTess, face, i, &edges, &edgeqty);
-      neut_tess_edges_contiguousedges (*pTess, 0, edges, edgeqty, &setqty,
-	  &setedges, &setedgeqty);
-
-      for (k = 0; k < setqty; k++)
-	neut_tess_edges_merge (pTess, setedges[k], setedgeqty[k]);
-
-      setqty = 0;
-      ut_free_1d_int_ (&setedgeqty);
-      ut_free_2d_int_ (&setedges, setqty);
-    }
-  }
-
-  ut_free_1d_int (edges);
-  ut_free_1d_int (faces);
-  ut_free_1d_int (polys);
 
   return;
 }

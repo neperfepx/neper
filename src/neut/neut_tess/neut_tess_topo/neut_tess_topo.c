@@ -1459,6 +1459,38 @@ neut_tess_poly_neighpoly (struct TESS Tess, int poly, int **pnpoly,
 }
 
 void
+neut_tess_poly_neighseeds (struct TESS Tess, int poly, int **pnseeds,
+			   int *pnseedqty)
+{
+  int i, j, face, *tmp = NULL;
+
+  (*pnseedqty) = 0;
+  for (i = 1; i <= Tess.PolyFaceQty[poly]; i++)
+  {
+    face = Tess.PolyFaceNb[poly][i];
+
+    for (j = 0; j < 2; j++)
+      if (Tess.FacePoly[face][j] != poly)
+      {
+	tmp = ut_realloc_1d_int (tmp, (*pnseedqty) + 1);
+	tmp[(*pnseedqty)++] = Tess.FacePoly[face][j];
+      }
+  }
+
+  ut_array_1d_int_sort_uniq (tmp, *pnseedqty, pnseedqty);
+
+  if (pnseeds)
+  {
+    (*pnseeds) = ut_realloc_1d_int (*pnseeds, *pnseedqty);
+    ut_array_1d_int_memcpy (*pnseeds, *pnseedqty, tmp);
+  }
+
+  ut_free_1d_int (tmp);
+
+  return;
+}
+
+void
 neut_tess_face_neighfaces (struct TESS Tess, int face, int **pnface,
 			  int *pnfaceqty)
 {
@@ -3205,6 +3237,40 @@ neut_tess_polypair_commonfaces (struct TESS Tess, int poly1, int poly2,
   ut_array_1d_int_inter (Tess.PolyFaceNb[poly1] + 1, Tess.PolyFaceQty[poly1],
                          Tess.PolyFaceNb[poly2] + 1, Tess.PolyFaceQty[poly2],
                          *pfaces, pfaceqty);
+
+  return;
+}
+
+void
+neut_tess_seedpair_commonfaces (struct TESS Tess, int seed1, int seed2,
+                                int **pfaces, int *pfaceqty)
+{
+  int i, face, poly1, poly2;
+
+  if (seed1 > 0 && seed2 > 0)
+    neut_tess_polypair_commonfaces (Tess, seed1, seed2, pfaces, pfaceqty);
+  else if (seed1 <= 0 && seed2 <= 0)
+    abort ();
+  else
+  {
+    poly1 = seed1 > 0 ? seed1 : seed2;
+    poly2 = seed1 > 0 ? seed2 : seed1;
+
+    (*pfaces) = ut_realloc_1d_int (*pfaces, Tess.PolyFaceQty[poly1]);
+    (*pfaceqty) = Tess.PolyFaceQty[poly1];
+
+    ut_array_1d_int_memcpy (*pfaces, *pfaceqty, Tess.PolyFaceNb[poly1] + 1);
+
+    for (i = 0; i < *pfaceqty; i++)
+    {
+      face = (*pfaces)[i];
+
+      if (ut_array_1d_int_eltpos (Tess.FacePoly[face], 2, poly2) == -1)
+        ut_array_1d_int_list_rmelt (pfaces, pfaceqty, poly2);
+    }
+
+    (*pfaces) = ut_realloc_1d_int (*pfaces, *pfaceqty);
+  }
 
   return;
 }

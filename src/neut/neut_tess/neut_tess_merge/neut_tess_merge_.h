@@ -13,5 +13,4 @@
 
 extern void neut_tess_merge_polyfaces (struct TESS *pTess, int poly);
 extern void neut_tess_merge_polyedges (struct TESS *pTess, int poly);
-extern void neut_tess_merge_ondomain (struct TESS *pTess);
 extern void neut_tess_merge_finalize (struct TESS *pTess);
