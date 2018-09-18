@@ -18,8 +18,6 @@ neut_tess_cells_merge (struct TESS *pTess, int *cells, int cellqty)
   else
     abort ();
 
-  (void) newcell;
-
   neut_tess_merge_polyfaces (pTess, newcell);
 
   neut_tess_merge_polyedges (pTess, newcell);

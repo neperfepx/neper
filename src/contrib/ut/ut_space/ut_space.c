@@ -2655,3 +2655,63 @@ ut_space_random (gsl_rng *r, int *dims, int dimqty, double mindist,
   return;
 }
 #endif
+
+void
+ut_space_polygon_triangles (double *eq, double **coos, int cooqty,
+                            int ***ptripos, int *ptriqty)
+{
+  int loop = 0, loopmax = 10, i, j, in, idqty = cooqty;
+  int *triid = ut_alloc_1d_int (3);
+  int *id = ut_alloc_1d_int (idqty);
+  ut_array_1d_int_set_id (id, idqty);
+  double *eq2 = ut_alloc_1d (4);
+
+  (*ptriqty) = 0;
+
+  while (idqty >= 3 && loop < loopmax)
+  {
+    loop++;
+
+    for (i = 0; i < idqty; i++)
+    {
+      // picking triangle and testing if it is fully contained in the polygon
+
+      for (j = 0; j < 3; j++)
+        triid[j] = id[ut_num_rotpos (0, idqty - 1, i, j)];
+
+      ut_space_points_plane (coos[triid[0]], coos[triid[1]], coos[triid[2]], eq2);
+
+      if (ut_array_1d_scalprod (eq + 1, eq2 + 1, 3) > 0)
+        in = 1;
+      else
+        in = 0;
+
+      if (in)
+        for (j = 0; j < cooqty; j++)
+          if (j != triid[0] && j != triid[1] && j != triid[2])
+            if (ut_space_triangle_point_in (coos[triid[0]], coos[triid[1]], coos[triid[2]],
+                                            coos[j], 1e-6, 1e-6))
+            {
+              in = 0;
+              break;
+            }
+
+      // if fully contained, recording it and removing it from the list
+      if (in)
+      {
+        (*ptriqty)++;
+        (*ptripos) = ut_realloc_2d_int_addline (*ptripos, *ptriqty, 3);
+        ut_array_1d_int_memcpy ((*ptripos)[(*ptriqty) - 1], 3, triid);
+
+        ut_array_1d_int_list_rmelt (&id, &idqty, triid[1]);
+        i = 0;
+      }
+    }
+  }
+
+  ut_free_1d_int (id);
+  ut_free_1d_int (triid);
+  ut_free_1d (eq2);
+
+  return;
+}

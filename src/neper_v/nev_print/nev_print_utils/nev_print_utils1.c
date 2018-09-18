@@ -547,11 +547,11 @@ nev_print_polygon_edge (FILE * file, int qty, double **coo,
 }
 
 void
-nev_print_polygon (FILE * file, int qty, double **coo,
+nev_print_polygon (FILE * file, double *eq, int qty, double **coo,
 		   char *texture, char *edge_rad, char *edge_texture,
 		   int pt, double *p, char *iedge_rad, char *iedge_texture)
 {
-  int i, p1, p2;
+  int i, triqty, **tripos = NULL;
   double *c = ut_alloc_1d (3);
 
   if (pt < 0 && p == NULL)
@@ -565,15 +565,12 @@ nev_print_polygon (FILE * file, int qty, double **coo,
   else
     ut_array_1d_memcpy (c, 3, p);
 
-  // drawing face
-  for (i = 0; i < qty; i++)
-  {
-    p1 = i;
-    p2 = ut_num_rotpos (0, qty - 1, i, 1);
+  ut_space_polygon_triangles (eq, coo, qty, &tripos, &triqty);
 
-    if (p1 != pt && p2 != pt)
-      nev_print_triangle (file, c, coo[p1], coo[p2], texture, NULL, NULL);
-  }
+  // drawing face
+  for (i = 0; i < triqty; i++)
+    nev_print_triangle (file, coo[tripos[i][0]], coo[tripos[i][1]], coo[tripos[i][2]],
+                        texture, NULL, NULL);
 
   nev_print_polygon_edge (file, qty, coo, edge_rad, edge_texture);
 
@@ -583,28 +580,7 @@ nev_print_polygon (FILE * file, int qty, double **coo,
       nev_print_segment (file, c, coo[i], iedge_rad, iedge_texture);
 
   ut_free_1d (c);
-
-  return;
-}
-
-void
-nev_print_rectangle (FILE * file, double *coo, double *size,
-		     char *texture, char *edge_rad, char *edge_texture)
-{
-  int i;
-  double **coo2 = ut_alloc_2d (4, 3);
-
-  for (i = 0; i < 4; i++)
-    ut_array_1d_memcpy (coo2[i], 2, coo);
-  coo2[1][0] += size[0];
-  coo2[2][0] += size[0];
-  coo2[2][1] += size[1];
-  coo2[3][1] += size[1];
-
-  nev_print_polygon (file, 4, coo2, texture, edge_rad, edge_texture,
-		     -1, NULL, NULL, NULL);
-
-  ut_free_2d (coo2, 4);
+  ut_free_2d_int (tripos, triqty);
 
   return;
 }

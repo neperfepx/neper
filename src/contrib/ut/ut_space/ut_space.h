@@ -143,6 +143,10 @@ extern void ut_space_random (gsl_rng *r, int *dims, int dimqty, double mindist,
 			     double maxdist, double *v);
 #endif
 
+extern void ut_space_polygon_triangles (double *eq, double **coos, int cooqty,
+                                        int ***ptripos, int *ptriqty);
+
+
 #endif /* UT_SPACE_H */
 
 #ifdef __cplusplus
