@@ -109,6 +109,7 @@ add_library (neut
 ./neut_tess/neut_tess_merge/neut_tess_merge1.c
 ./neut_tess/neut_tess_merge/neut_tess_merge2.c
 ./neut_tess/neut_tess_merge/neut_tess_edges_merge/neut_tess_edges_merge1.c
+./neut_tess/neut_tess_merge/neut_tess_edges_merge/neut_tess_edges_merge2.c
 ./neut_tess/neut_tess_merge/neut_tess_faces_merge/neut_tess_faces_merge1.c
 ./neut_tess/neut_tess_merge/neut_tess_faces_merge/neut_tess_faces_merge2.c
 ./neut_tess/neut_tess_merge/neut_tess_polys_merge/neut_tess_polys_merge1.c

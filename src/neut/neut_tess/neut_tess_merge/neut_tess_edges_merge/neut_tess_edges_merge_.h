@@ -8,3 +8,9 @@
 #include"neut.h"
 
 #include"neut_tess_edges_merge.h"
+
+extern void neut_tess_edges_merge_edgelists (struct TESS *pTess, int *edges,
+    int edgeqty, int *pkeepedge, int **pdeledges, int *pdeledgeqty);
+
+extern void neut_tess_edges_merge_verlists (struct TESS *pTess, int *edges, int
+    edgeqty, int keepedge, int **pkeepvers, int **pdelvers, int *pdelverqty);

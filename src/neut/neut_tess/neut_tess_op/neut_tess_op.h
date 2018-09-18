@@ -211,7 +211,8 @@ extern "C"
   extern void neut_tess_face_addedges (struct TESS *pTess, int face,
 				       int *edges, int edgeqty);
   extern void neut_tess_face_setedges (struct TESS *pTess, int face,
-				       int *edges, int edgeqty);
+				       int *edges, int edgeqty,
+                                       int firstedgeori);
   extern void neut_tess_cell_addcentre (struct TESS *pTess, int cell,
 					double *centre, double weight);
   extern void neut_tess_poly_addface (struct TESS *pTess, int poly, int

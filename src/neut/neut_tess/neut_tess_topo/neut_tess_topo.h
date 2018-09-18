@@ -291,7 +291,7 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_tess_edge_neighedge (struct TESS Tess, int edge,
+  extern void neut_tess_edge_neighedges (struct TESS Tess, int edge,
 					int **pnedge, int *pnedgeqty);
 
 /// \brief Get the neighbouring cells of a cell

@@ -1539,7 +1539,7 @@ neut_tess_edgepair_neigh (struct TESS Tess, int edge1, int edge2)
 {
   int status, qty, *tmp = NULL;
 
-  neut_tess_edge_neighedge (Tess, edge1, &tmp, &qty);
+  neut_tess_edge_neighedges (Tess, edge1, &tmp, &qty);
 
   status = (ut_array_1d_int_eltpos (tmp, qty, edge2) != -1);
 
@@ -1549,7 +1549,7 @@ neut_tess_edgepair_neigh (struct TESS Tess, int edge1, int edge2)
 }
 
 void
-neut_tess_edge_neighedge (struct TESS Tess, int edge, int **pnedge,
+neut_tess_edge_neighedges (struct TESS Tess, int edge, int **pnedge,
 			  int *pnedgeqty)
 {
   int i, j, ver, *tmp = NULL;
@@ -2975,7 +2975,7 @@ neut_tess_edges_contiguousedges (struct TESS Tess, int colinear, int *edges, int
     {
       edge = (*pedges)[id][i];
 
-      neut_tess_edge_neighedge (Tess, edge, &tmp2, &qty2);
+      neut_tess_edge_neighedges (Tess, edge, &tmp2, &qty2);
       ut_array_1d_int_inter (tmp2, qty2, tmp, qty, inter, &interqty);
 
       for (j = 0; j < interqty; j++)
@@ -3258,7 +3258,6 @@ neut_tess_seedpair_commonfaces (struct TESS Tess, int seed1, int seed2,
 
     (*pfaces) = ut_realloc_1d_int (*pfaces, Tess.PolyFaceQty[poly1]);
     (*pfaceqty) = Tess.PolyFaceQty[poly1];
-
     ut_array_1d_int_memcpy (*pfaces, *pfaceqty, Tess.PolyFaceNb[poly1] + 1);
 
     for (i = 0; i < *pfaceqty; i++)
@@ -3266,7 +3265,10 @@ neut_tess_seedpair_commonfaces (struct TESS Tess, int seed1, int seed2,
       face = (*pfaces)[i];
 
       if (ut_array_1d_int_eltpos (Tess.FacePoly[face], 2, poly2) == -1)
-        ut_array_1d_int_list_rmelt (pfaces, pfaceqty, poly2);
+      {
+        ut_array_1d_int_list_rmelt (pfaces, pfaceqty, face);
+        i--;
+      }
     }
 
     (*pfaces) = ut_realloc_1d_int (*pfaces, *pfaceqty);

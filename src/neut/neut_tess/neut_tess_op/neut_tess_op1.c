@@ -2432,7 +2432,7 @@ neut_tess_face_addedges (struct TESS *pTess, int face, int *edges,
 
 void
 neut_tess_face_setedges (struct TESS *pTess, int face, int *edges,
-			 int edgeqty)
+			 int edgeqty, int firstedgeori)
 {
   int i, qty, *tmp = NULL;
   int lastedge, lastedgeori, lastver, testedge, found;
@@ -2442,14 +2442,15 @@ neut_tess_face_setedges (struct TESS *pTess, int face, int *edges,
   ut_array_1d_int_memcpy (tmp, qty, edges);
 
   (*pTess).FaceVerQty[face] = 0;
-  neut_tess_face_addedge (pTess, face, tmp[0], 0);
-  qty -= ut_array_1d_int_deletencompress (tmp, qty, tmp[0], 1);
+  neut_tess_face_addedge (pTess, face, edges[0], firstedgeori);
+
+  ut_array_1d_int_list_rmelt (&tmp, &qty, edges[0]);
 
   while (qty > 0)
   {
     lastedge    = (*pTess).FaceEdgeNb[face][(*pTess).FaceVerQty[face]];
     lastedgeori = (*pTess).FaceEdgeOri[face][(*pTess).FaceVerQty[face]];
-    lastver     = (*pTess).EdgeVerNb[lastedge][(lastedgeori == -1) ? 0 : 1];
+    lastver     = (*pTess).EdgeVerNb[lastedge][(lastedgeori == 1) ? 1 : 0];
 
     found = 0;
     for (i = 0; i < (*pTess).VerEdgeQty[lastver]; i++)

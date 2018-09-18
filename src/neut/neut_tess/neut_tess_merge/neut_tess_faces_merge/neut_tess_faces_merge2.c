@@ -6,22 +6,49 @@
 
 void
 neut_tess_faces_merge_facelists (struct TESS *pTess, int *faces, int faceqty,
-				 int *pkeepface,
-				 int **pdelfaces, int *pdelfaceqty)
+                                 int *pkeepface, int **pdelfaces,
+                                 int *pdelfaceqty)
 {
-  pTess = pTess;
-  (*pkeepface) = faces[0];
-  (*pdelfaceqty) = faceqty - 1;
+  int i, j;
+  int *nfaces = NULL, nfaceqty = 0;
+
+  (*pdelfaceqty) = faceqty;
   (*pdelfaces) = ut_alloc_1d_int (*pdelfaceqty);
-  ut_array_1d_int_memcpy (*pdelfaces, *pdelfaceqty, faces + 1);
+  ut_array_1d_int_memcpy (*pdelfaces, *pdelfaceqty, faces);
+
+  // looking for a face which is not surrounded by delfaces; this will be
+  // useful to determine the edge orientations.
+  (*pkeepface) = -1;
+  for (i = 0; i < faceqty; i++)
+  {
+    neut_tess_face_neighfaces (*pTess, faces[i], &nfaces, &nfaceqty);
+
+    for (j = 0; j < nfaceqty; j++)
+      if (ut_array_1d_int_eltpos (faces, faceqty, nfaces[j]) == -1)
+      {
+        (*pkeepface) = faces[i];
+        break;
+      }
+
+    ut_free_1d_int_ (&nfaces);
+
+    if (*pkeepface != -1)
+      break;
+  }
+
+  if ((*pkeepface) == -1)
+    abort ();
+
+  ut_array_1d_int_list_rmelt (pdelfaces, pdelfaceqty, *pkeepface);
 
   return;
 }
 
 void
 neut_tess_faces_merge_edgelists (struct TESS *pTess, int *faces, int faceqty,
-				 int **pkeepedges, int *pkeepedgeqty,
-				 int **pdeledges, int *pdeledgeqty)
+                                 int keepface, int **pkeepedges,
+                                 int *pkeepedgeqty, int *pfirstkeepedgeori,
+                                 int **pdeledges, int *pdeledgeqty)
 {
   int i, j, del, edgeqty = 0, *edges = NULL, edge;
 
@@ -49,10 +76,32 @@ neut_tess_faces_merge_edgelists (struct TESS *pTess, int *faces, int faceqty,
     }
 
     if (!del)
+    {
       ut_array_1d_int_list_addelt (pkeepedges, pkeepedgeqty, edge);
+      ut_array_1d_int_list_addelt (pkeepedges, pkeepedgeqty, edge);
+    }
     else
       ut_array_1d_int_list_addelt (pdeledges, pdeledgeqty, edge);
   }
+
+  int pos, found = 0;
+  for (i = 0; i < *pkeepedgeqty; i++)
+  {
+    pos = ut_array_1d_int_eltpos ((*pTess).FaceEdgeNb[keepface] + 1,
+                                  (*pTess).FaceVerQty[keepface],
+                                  (*pkeepedges)[i]);
+
+    if (pos != -1)
+    {
+      ut_array_1d_int_switch (*pkeepedges, 0, i);
+      (*pfirstkeepedgeori) = (*pTess).FaceEdgeOri[keepface][pos + 1];
+      found = 1;
+      break;
+    }
+  }
+
+  if (!found)
+    abort ();
 
   ut_free_1d_int (edges);
 
@@ -104,11 +153,13 @@ neut_tess_faces_merge_verlists (struct TESS *pTess,
 void
 neut_tess_faces_merge_mergefaces (struct TESS *pTess, int newface,
 				  int *delfaces, int delfaceqty,
-				  int *keepedges, int keepedgeqty)
+				  int *keepedges, int keepedgeqty,
+                                  int firstkeepedgeori)
 {
   int i, j, face, poly;
 
-  neut_tess_face_setedges (pTess, newface, keepedges, keepedgeqty);
+  neut_tess_face_setedges (pTess, newface, keepedges, keepedgeqty,
+                           firstkeepedgeori);
 
   for (i = 0; i < delfaceqty; i++)
     (*pTess).FaceState[delfaces[i]] = -1;

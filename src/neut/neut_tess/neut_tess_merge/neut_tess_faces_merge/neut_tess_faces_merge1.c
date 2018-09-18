@@ -7,9 +7,9 @@
 void
 neut_tess_faces_merge (struct TESS *pTess, int *faces, int faceqty)
 {
-  int newface;
+  int keepface;
   int delfaceqty, *delfaces = NULL;
-  int keepedgeqty, *keepedges = NULL;
+  int keepedgeqty, *keepedges = NULL, firstkeepedgeori;
   int deledgeqty, *deledges = NULL;
   int keepverqty, *keepvers = NULL;
   int delverqty, *delvers = NULL;
@@ -18,22 +18,24 @@ neut_tess_faces_merge (struct TESS *pTess, int *faces, int faceqty)
     return;
 
   neut_tess_faces_merge_facelists (pTess, faces, faceqty,
-				   &newface, &delfaces, &delfaceqty);
+				   &keepface, &delfaces, &delfaceqty);
 
-  neut_tess_faces_merge_edgelists (pTess, faces, faceqty,
-				   &keepedges, &keepedgeqty,
-				   &deledges, &deledgeqty);
+  neut_tess_faces_merge_edgelists (pTess, faces, faceqty, keepface,
+                                   &keepedges, &keepedgeqty,
+                                   &firstkeepedgeori,
+                                   &deledges, &deledgeqty);
 
   neut_tess_faces_merge_verlists (pTess,
 				  deledges, deledgeqty,
 				  &keepvers, &keepverqty,
 				  &delvers, &delverqty);
 
-  neut_tess_faces_merge_mergefaces (pTess, newface,
+  neut_tess_faces_merge_mergefaces (pTess, keepface,
 				    delfaces, delfaceqty,
-				    keepedges, keepedgeqty);
+				    keepedges, keepedgeqty,
+                                    firstkeepedgeori);
 
-  neut_tess_faces_merge_updateedges (pTess, newface,
+  neut_tess_faces_merge_updateedges (pTess, keepface,
 				     delfaces, delfaceqty,
 				     keepedges, keepedgeqty,
 				     deledges, deledgeqty);
