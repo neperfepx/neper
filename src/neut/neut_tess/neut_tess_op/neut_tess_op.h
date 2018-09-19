@@ -245,6 +245,10 @@ extern "C"
 
   extern void neut_tess_init_seeds_fromcell (struct TESS *pTess);
 
+  extern void neut_tess_poly_remove (struct TESS *pTess, int poly);
+  extern void neut_tess_polys_remove (struct TESS *pTess, int *polys, int polyqty);
+  extern int  neut_tess_cellexpr_remove (struct TESS *pTess, char *expr);
+
 #endif				/* NEUT_TESS_OP_H */
 
 #ifdef __cplusplus

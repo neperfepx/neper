@@ -3045,3 +3045,157 @@ neut_tess_init_seeds_fromcell (struct TESS *pTess)
 
   return;
 }
+
+void
+neut_tess_poly_remove_nocompress (struct TESS *pTess, int poly)
+{
+  int i, j, face, polyqty;
+  int faceqty, *faces = NULL;
+  int edge, edgeqty, *edges = NULL;
+  int ver, verqty, *vers = NULL;
+  int delfaceqty = 0, *delfaces = NULL;
+  int deledgeqty = 0, *deledges = NULL;
+  int delverqty = 0, *delvers = NULL;
+
+  // recording poly faces, edges and vertices as well as those to delete
+  // (orphans)
+
+  neut_tess_poly_faces (*pTess, poly, &faces, &faceqty);
+  neut_tess_poly_edges (*pTess, poly, &edges, &edgeqty);
+  neut_tess_poly_vers (*pTess, poly, &vers, &verqty);
+
+  for (i = 0; i < faceqty; i++)
+  {
+    face = faces[i];
+    neut_tess_face_polys (*pTess, face, NULL, &polyqty);
+    if (polyqty == 1)
+      ut_array_1d_int_list_addelt (&delfaces, &delfaceqty, face);
+  }
+
+  for (i = 0; i < edgeqty; i++)
+  {
+    edge = edges[i];
+    neut_tess_edge_polys (*pTess, edge, NULL, &polyqty);
+    if (polyqty == 1)
+      ut_array_1d_int_list_addelt (&deledges, &deledgeqty, edge);
+  }
+
+  for (i = 0; i < verqty; i++)
+  {
+    ver = vers[i];
+    neut_tess_ver_polys (*pTess, ver, NULL, &polyqty);
+    if (polyqty == 1)
+      ut_array_1d_int_list_addelt (&delvers, &delverqty, ver);
+  }
+
+  // removing poly and orphan faces, edges and vertices
+
+  (*pTess).PolyState[poly] = -1;
+
+  for (i = 0; i < faceqty; i++)
+  {
+    face = faces[i];
+
+    ut_array_1d_int_findnreplace ((*pTess).FacePoly[face], 2,
+                                  poly, -((*pTess).DomFaceQty + 1));
+    ut_array_1d_int_sort_des ((*pTess).FacePoly[face], 2);
+  }
+
+  for (i = 0; i < delfaceqty; i++)
+  {
+    face = delfaces[i];
+
+    for (j = 1; j <= (*pTess).FaceVerQty[face]; j++)
+    {
+      edge = (*pTess).FaceEdgeNb[face][j];
+
+      ut_array_1d_int_list_rmelt (&(*pTess).EdgeFaceNb[edge],
+                                  &(*pTess).EdgeFaceQty[edge],
+                                  face);
+    }
+
+    (*pTess).FaceState[face] = -1;
+  }
+
+  for (i = 0; i < deledgeqty; i++)
+  {
+    edge = deledges[i];
+
+    for (j = 0; j < 2; j++)
+    {
+      ver = (*pTess).EdgeVerNb[edge][j];
+
+      ut_array_1d_int_list_rmelt (&(*pTess).VerEdgeNb[ver],
+                                  &(*pTess).VerEdgeQty[ver],
+                                  edge);
+    }
+
+    (*pTess).EdgeState[edge] = -1;
+  }
+
+  for (i = 0; i < delverqty; i++)
+  {
+    ver = delvers[i];
+
+    (*pTess).VerState[ver] = -1;
+  }
+
+  ut_free_1d_int (faces);
+  ut_free_1d_int (edges);
+  ut_free_1d_int (vers);
+  ut_free_1d_int (delfaces);
+  ut_free_1d_int (deledges);
+  ut_free_1d_int (delvers);
+
+  return;
+}
+
+void
+neut_tess_poly_remove (struct TESS *pTess, int poly)
+{
+  neut_tess_poly_remove_nocompress (pTess, poly);
+
+  neut_tess_compress (pTess);
+  neut_tess_init_domtessface (pTess);
+  neut_tess_init_domtessedge (pTess);
+  neut_tess_init_domtessver (pTess);
+
+  return;
+}
+
+void
+neut_tess_polys_remove (struct TESS *pTess, int* polys, int polyqty)
+{
+  int i, poly;
+
+  for (i = 0; i < polyqty; i++)
+  {
+    poly = polys[i];
+
+    neut_tess_poly_remove_nocompress (pTess, poly);
+  }
+
+  neut_tess_compress (pTess);
+  neut_tess_init_domtessface (pTess);
+  neut_tess_init_domtessedge (pTess);
+  neut_tess_init_domtessver (pTess);
+
+  return;
+}
+
+int
+neut_tess_cellexpr_remove (struct TESS *pTess, char *expr)
+{
+  int *cells = NULL, cellqty = 0;
+
+  if ((*pTess).Dim == 2)
+    abort ();
+
+  neut_tess_expr_celllist (*pTess, expr, &cells, &cellqty);
+
+  neut_tess_polys_remove (pTess, cells, cellqty);
+
+  ut_free_1d_int (cells);
+
+  return cellqty;
+}

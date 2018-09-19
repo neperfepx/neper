@@ -913,6 +913,17 @@ neut_tess_poly_edges (struct TESS Tess, int poly, int **pedge, int *pedgeqty)
 }
 
 void
+neut_tess_poly_faces (struct TESS Tess, int poly, int **pfaces, int *pfaceqty)
+{
+  (*pfaceqty) = Tess.PolyFaceQty[poly];
+  (*pfaces) = ut_alloc_1d_int (*pfaceqty);
+
+  ut_array_1d_int_memcpy (*pfaces, *pfaceqty, Tess.PolyFaceNb[poly] + 1);
+
+  return;
+}
+
+void
 neut_tess_poly_edge_faces (struct TESS Tess, int poly, int edge, int **pface)
 {
   int i, f, qty = 0;

@@ -257,6 +257,9 @@ extern "C"
 				     polyqty, int **pfaces, int
 				     *pfaceqty);
 
+  extern void neut_tess_poly_faces (struct TESS Tess, int poly, int **pface,
+				    int *pfaceqty);
+
 /// \brief Get the skin faces of a set of polyhedra
 ///
 ///

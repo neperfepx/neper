@@ -58,6 +58,24 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
       ut_free_1d_char (fct);
       ut_free_2d_char (exprs, exprqty);
     }
+    else if (!strncmp (parts[i], "rmcell", 6))
+    {
+      ut_print_message (0, 2, "Removing cells...\n");
+
+      int j, exprqty, qty;
+      char *fct = NULL, **exprs = NULL;
+
+      ut_string_function_separate_exprs (parts[i], &fct, &exprs, &exprqty);
+
+      for (j = 0; j < exprqty; j++)
+      {
+        qty = neut_tess_cellexpr_remove (pTess, exprs[j]);
+        ut_print_message (0, 3, "Removed %d cells...\n", qty);
+      }
+
+      ut_free_1d_char (fct);
+      ut_free_2d_char (exprs, exprqty);
+    }
     else
       ut_print_message (1, 3, "Skipping `%s'...\n", parts[i]);
 
