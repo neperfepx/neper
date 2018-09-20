@@ -3199,3 +3199,12 @@ neut_tess_cellexpr_remove (struct TESS *pTess, char *expr)
 
   return cellqty;
 }
+
+void
+neut_tess_resetcellid (struct TESS *pTess)
+{
+  (*pTess).CellId = ut_realloc_1d_int ((*pTess).CellId, (*pTess).CellQty + 1);
+  ut_array_1d_int_set_id ((*pTess).CellId, (*pTess).CellQty + 1);
+
+  return;
+}

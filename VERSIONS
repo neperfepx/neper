@@ -1,4 +1,4 @@
-New in 3.2.1-28 (19 Sep 2018):
+New in 3.2.1-29 (20 Sep 2018):
 - New paper: "R. Quey, A. Villani, and C. Maurice. Nearly uniform sampling of
   crystal orientations. J. Appl. Crystallogr., vol. 51,
   doi:10.1107/S1600576718009019, 2018."
@@ -6,7 +6,7 @@ New in 3.2.1-28 (19 Sep 2018):
   sistem options -orioptiini -orioptifix, -orioptistop and -orioptineigh,
   -added -morpho tocta, columnar, bamboo and aspratio, fixed -morpho
   multimodal, improved -morpho, improved -morphooptiini, added -transform
-  translate, mergecell and rmcell, fixed tesr output for periodic
+  translate, mergecell, rmcell and resetcellid, fixed tesr output for periodic
   tessellations, fixed tess to tesr conversion, added several tessellation
   keys, merged option -scale into -transform, improved -morpho lamellar, made
   minor improvements.

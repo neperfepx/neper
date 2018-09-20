@@ -76,6 +76,11 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
       ut_free_1d_char (fct);
       ut_free_2d_char (exprs, exprqty);
     }
+    else if (!strcmp (parts[i], "resetcellid"))
+    {
+      ut_print_message (0, 2, "Resetting cell ids...\n");
+      neut_tess_resetcellid (pTess);
+    }
     else
       ut_print_message (1, 3, "Skipping `%s'...\n", parts[i]);
 
