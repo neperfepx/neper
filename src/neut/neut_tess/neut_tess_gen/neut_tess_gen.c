@@ -1528,71 +1528,39 @@ void
 neut_tess_entity_expr_val (struct TESS Tess, char *entity, char *expr,
 			   double *val)
 {
-  int i, j, k, status;
-  int qty, *qty2 = NULL;
-  char ***list = NULL;
+  int j, k, status, entityqty, varqty;
   char **vars = NULL;
   double *vals = NULL;
   FILE *file = NULL;
-  int varqty;
-  int entityqty;
-  double tmp, tmp2;
 
   neut_tess_entity_qty (Tess, entity, &entityqty);
-  ut_string_separate2 (expr, NEUT_SEP_NODEP, NEUT_SEP_DEP, &list, &qty2,
-		       &qty);
-
-  // patching list
-  for (i = 0; i < qty; i++)
-    if (qty2[i] == 2)
-      continue;
-    else if (qty2[i] == 1)
-    {
-      list[i] = ut_realloc_1d_pchar (list[i], 2);
-      list[i][1] = NULL;
-      ut_string_string (list[i][0], &(list[i][1]));
-      strcpy (list[i][0], "1");
-      qty2[i] = 2;
-    }
-    else
-      abort ();
-
   neut_tess_var_list (Tess, entity, &vars, &varqty);
-
   vals = ut_alloc_1d (varqty);
 
-  for (i = 0; i < qty; i++)
+  if (ut_string_filename (expr))
   {
-    if (ut_string_filename (list[i][1]))
+    file = ut_file_open (expr, "R");
+    ut_array_1d_fscanf (file, val + 1, entityqty);
+    ut_file_close (file, expr, "R");
+  }
+  else
+  {
+    for (j = 1; j <= entityqty; j++)
     {
-      file = ut_file_open (list[i][1], "R");
-      ut_array_1d_fscanf (file, val + 1, entityqty);
-      ut_file_close (file, list[i][1], "R");
-    }
-    else
-    {
-      ut_string_real (list[i][1], &tmp);
+      for (k = 0; k < varqty; k++)
+        if (strstr (expr, vars[k]))
+          neut_tess_var_val (Tess, NULL, NULL, NULL, entity, j, vars[k],
+                             vals + k, NULL);
 
-      if (!strcmp (list[i][0], "1"))
-	ut_array_1d_set (val + 1, entityqty, tmp);
-      else
-	for (j = 1; j <= entityqty; j++)
-	{
-	  for (k = 0; k < varqty; k++)
-	    if (strstr (list[i][0], vars[k]))
-	      neut_tess_var_val (Tess, NULL, NULL, NULL, entity, j, vars[k],
-				 &(vals[k]), NULL);
+      status = ut_math_eval (expr, varqty, vars, vals, val + j);
 
-	  status = ut_math_eval (list[i][0], varqty, vars, vals, &tmp2);
-
-	  if (status == -1)
-	    abort ();
-
-	  if (ut_num_equal (tmp2, 1, 1e-6))
-	    val[j] = tmp;
-	}
+      if (status == -1)
+        abort ();
     }
   }
+
+  ut_free_2d_char (vars, varqty);
+  ut_free_1d (vals);
 
   return;
 }

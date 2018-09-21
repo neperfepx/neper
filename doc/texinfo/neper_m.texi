@@ -214,25 +214,13 @@ tet@comma{} hex, tet}
 @opttwo{-cl, -rcl, -cl or -rcl, real,
 Specify the absolute or relative characteristic length of the elements.
 @code{rcl} is defined relative to the average cell size.
-The default @code{-rcl 1} leads to a mesh with about 100 elements per
+The default@comma{} @code{-rcl 1}@comma{} leads to a mesh with about 100 elements per
 cell in average (@w{64 in 2D}).
-For free meshing@comma{} it is also possible to get non-uniform
-characteristic length distributions@comma{} as detailed in the following.
-To define a characteristic length on a per-cell basis@comma{} the first way is to use the syntax
-@code{@var{default_cl}@SEPNODEP{}@var{cell_expr1}@SEPDEP{}@var{cell_cl1}@SEPNODEP{}@var{cell_expr2}@SEPDEP{}@var{cell_cl2}...}@comma{}
-where @code{@var{default_cl}} is the default characteristic length@comma{}
-@code{@var{cell_expri}} is an expression defining the set of
-@w{cells @var{i}} and @code{@var{cell_cli}} is the corresponding characteristic length.
-@samp{@code{@var{cell_expri}}} can be any
-expression based on variables provided in
-@ref{Tessellation Keys} for tessellations@comma{} @ref{Raster
-Tessellation Keys} for
-raster tessellations and @ref{Mesh Keys} for meshes.
-The expressions are processed one after the other. When processing
-expression @code{@var{cell_expri}}@comma{} the matching cells
-are assigned @code{@var{cell_cli}} as characteristic length.
+For free meshing@comma{} it is also possible to define the characteristic length
+on a per-cell basis@comma{} using any mathematical expression based on the
+variables defined in @ref{Tessellation Keys}.
 A typical use is @samp{@code{-rcl
-@var{val1}@SEPNODEP{}body==0@SEPDEP{}@var{val2}}} to get interior cells
+(body>0)?@var{val1}:@var{val2}}} to get interior cells
 meshed with @code{@var{rcl}=@var{val1}} and boundary cells
 meshed with @code{@var{rcl}=@var{val2}}.
 The second way is to load values from an external file using
