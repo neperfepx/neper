@@ -189,56 +189,49 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
   int i, j, k;
   int edge, face;
   int res = 0;
-  int *vers = ut_alloc_1d_int (10000);
-  int *edges = ut_alloc_1d_int (10000);
-  int *faces = ut_alloc_1d_int (10000);
-  int polyqty;
-  int *poly = NULL;
+  int verqty, *vers = NULL;
+  int edgeqty, *edges = NULL;
+  int faceqty, *faces = NULL;
+  int polyqty, *polys = NULL;
 
   if (verbosity >= 4)
     printf ("checking TESS (2) AROUND VER %d (/%d)\n", ver, Tess.VerQty);
 
   /* Searching polyhedra */
-  neut_tess_ver_polys (Tess, ver, &poly, &polyqty);
+  neut_tess_ver_polys (Tess, ver, &polys, &polyqty);
 
   /* searching faces and edges of all the polyhedra */
-  faces[0] = 0;
-  edges[0] = 0;
-  vers[0] = 0;
+  faceqty = 0;
+  edgeqty = 0;
+  verqty = 0;
   for (i = 0; i < polyqty; i++)
   {
-    if (poly[i] < 0)
+    if (polys[i] <= 0)
       continue;
 
-    for (j = 1; j <= Tess.PolyFaceQty[poly[i]]; j++)
+    for (j = 1; j <= Tess.PolyFaceQty[polys[i]]; j++)
     {
-      face = Tess.PolyFaceNb[poly[i]][j];
+      face = Tess.PolyFaceNb[polys[i]][j];
 
-      faces[0]++;
-      faces[faces[0]] = face;
+      ut_array_1d_int_list_addelt (&faces, &faceqty, face);
 
       for (k = 1; k <= Tess.FaceVerQty[face]; k++)
       {
-	edges[0]++;
-	edges[edges[0]] = Tess.FaceEdgeNb[face][k];
-
-	vers[0]++;
-	vers[vers[0]] = Tess.FaceVerNb[face][k];
+        ut_array_1d_int_list_addelt (&edges, &edgeqty, Tess.FaceEdgeNb[face][k]);
+        ut_array_1d_int_list_addelt (&vers,  &verqty,  Tess.FaceVerNb[face][k] );
       }
     }
   }
 
-  ut_array_1d_int_sort_uniq (faces + 1, faces[0], &(faces[0]));
-
-  ut_array_1d_int_sort_uniq (edges + 1, edges[0], &(edges[0]));
-
-  ut_array_1d_int_sort_uniq (vers + 1, vers[0], &(vers[0]));
+  ut_array_1d_int_sort_uniq (faces, faceqty, &faceqty);
+  ut_array_1d_int_sort_uniq (edges, edgeqty, &edgeqty);
+  ut_array_1d_int_sort_uniq (vers, verqty, &verqty);
 
   /* Checking of the vertex */
   if (verbosity >= 4)
     printf ("Checking vertex: ");
 
-  for (i = 1; i <= vers[0]; i++)
+  for (i = 0; i < verqty; i++)
   {
     ver = vers[i];
 
@@ -254,7 +247,7 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
 	ut_free_1d_int (vers);
 	ut_free_1d_int (edges);
 	ut_free_1d_int (faces);
-	ut_free_1d_int (poly);
+	ut_free_1d_int (polys);
 	return res;
       }
     }
@@ -267,7 +260,7 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
   if (verbosity >= 4)
     printf ("\nChecking edges: ");
 
-  for (i = 0; i <= edges[0]; i++)
+  for (i = 0; i < edgeqty; i++)
   {
     edge = edges[i];
 
@@ -283,7 +276,7 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
 	ut_free_1d_int (vers);
 	ut_free_1d_int (edges);
 	ut_free_1d_int (faces);
-	ut_free_1d_int (poly);
+	ut_free_1d_int (polys);
 	return res;
       }
     }
@@ -296,7 +289,7 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
   if (verbosity >= 4)
     printf ("\nChecking faces: ");
 
-  for (i = 1; i <= faces[0]; i++)
+  for (i = 0; i < faceqty; i++)
   {
     face = faces[i];
 
@@ -312,7 +305,7 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
 	ut_free_1d_int (vers);
 	ut_free_1d_int (edges);
 	ut_free_1d_int (faces);
-	ut_free_1d_int (poly);
+	ut_free_1d_int (polys);
 	return res;
       }
     }
@@ -328,20 +321,20 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
 
   for (i = 0; i < polyqty; i++)
   {
-    if (poly[i] < 0)
+    if (polys[i] < 0)
       continue;
 
     if (verbosity >= 4)
       printf ("%d:", i);
-    res = neut_tess_test_poly (Tess, poly[i], 0);
+    res = neut_tess_test_poly (Tess, polys[i], 0);
     if (res != 0)
     {
       if (verbosity >= 4)
-	printf ("poly %d: nok\n", poly[i]);
+	printf ("polys %d: nok\n", polys[i]);
       ut_free_1d_int (vers);
       ut_free_1d_int (edges);
       ut_free_1d_int (faces);
-      ut_free_1d_int (poly);
+      ut_free_1d_int (polys);
       return res;
     }
   }
@@ -358,7 +351,7 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
   ut_free_1d_int (vers);
   ut_free_1d_int (edges);
   ut_free_1d_int (faces);
-  ut_free_1d_int (poly);
+  ut_free_1d_int (polys);
 
   return res;
 }
