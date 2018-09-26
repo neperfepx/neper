@@ -5,7 +5,8 @@
 #include"nem_meshing_3D_.h"
 
 void
-nem_meshing_3D_poly_algo (struct IN_M In, double cl, struct MULTIM
+nem_meshing_3D_poly_algo (struct IN_M In, double cl, double mesh3dclreps,
+                          struct MULTIM
 			  *pMultim, int algo, struct timeval *pctrlc_t,
 			  double *pallowed_t, double *pmax_elapsed_t,
 			  struct TESS Tess, struct NODES Nodes,
@@ -27,7 +28,7 @@ nem_meshing_3D_poly_algo (struct IN_M In, double cl, struct MULTIM
     rnd = iter * 1.e-5;
 
     status = nem_mesh_3d_gmsh (Tess, poly, Nodes, Mesh, cl,
-			       In.mesh3dclconv, In.gmsh, In.tmp,
+			       mesh3dclreps, In.gmsh, In.tmp,
 			       (*pMultim).algos[algo][0],
 			       (*pMultim).algos[algo][1],
 			       rnd, *pallowed_t, pN,

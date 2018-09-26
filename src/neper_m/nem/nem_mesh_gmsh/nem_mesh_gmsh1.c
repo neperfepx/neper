@@ -224,7 +224,7 @@ nem_mesh_2d_gmsh_b (struct TESS Tess, int face,
 
 int
 nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
-		  struct MESH *Mesh, double cl, double clconv,
+		  struct MESH *Mesh, double cl, double clreps,
 		  char *gmsh, char *tmp, char
 		  *algo, char *opti, double rnd, double allowed_t,
 		  struct NODES *pN, struct MESH *pM,
@@ -355,9 +355,9 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
       cross++;
 
     redo = 0;
-    // if ((iter == 1 && lmean > (1 + clconv) * cl)
-    // || (iter >  1 && ut_num_requal (lmean, cl, clconv) == 0))
-    if (ut_num_requal (lmean, cl, clconv) == 0)
+    // if ((iter == 1 && lmean > (1 + clreps) * cl)
+    // || (iter >  1 && ut_num_requal (lmean, cl, clreps) == 0))
+    if (ut_num_requal (lmean, cl, clreps) == 0)
     {
       if (lmean > cl)
 	clmod /= (1 + speed / (cross + 1));
@@ -376,7 +376,7 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
     // printf ("redo = %d\n", redo);
     iter++;
   }
-  while (redo == 1 && cross < speed / clconv && clmod >= cl / 5);
+  while (redo == 1 && cross < speed / clreps && clmod >= cl / 5);
 
   if (ut_file_exist (filename_msh) == 0)
     status = 1;

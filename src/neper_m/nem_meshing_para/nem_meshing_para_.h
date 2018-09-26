@@ -18,5 +18,6 @@
 #include"nem_meshing_para.h"
 #include"nem_meshing_para_param/nem_meshing_para_param.h"
 #include"nem_meshing_para_cl/nem_meshing_para_cl.h"
+#include"nem_meshing_para_mesh3dclreps/nem_meshing_para_mesh3dclreps.h"
 #include"nem_meshing_para_scale/nem_meshing_para_scale.h"
 #include"nem_meshing_para_faceproj/nem_meshing_para_faceproj.h"

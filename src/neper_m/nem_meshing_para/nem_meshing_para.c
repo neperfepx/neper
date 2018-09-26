@@ -19,6 +19,8 @@ nem_meshing_para (struct IN_M In,
   nem_meshing_para_cl (In.clstring, In.clratiostring, *pTess, pTesr, pRNodes,
 		       RMesh, pMeshPara);
 
+  nem_meshing_para_mesh3dclreps (In.mesh3dclrepsstring, *pTess, pMeshPara);
+
   if ((*pTess).VerQty > 0)
   {
     min = ut_array_1d_min ((*pMeshPara).ver_cl + 1, (*pTess).VerQty);

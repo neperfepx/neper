@@ -15,6 +15,8 @@ neut_meshpara_set_zero (struct MESHPARA *pMeshPara)
   (*pMeshPara).edge_cl = NULL;
   (*pMeshPara).ver_cl = NULL;
 
+  (*pMeshPara).mesh3dclreps = NULL;
+
   (*pMeshPara).face_eq = NULL;
   (*pMeshPara).face_op = NULL;
   (*pMeshPara).edge_op = NULL;
@@ -32,6 +34,8 @@ neut_meshpara_free (struct MESHPARA MeshPara)
   ut_free_1d (MeshPara.face_cl);
   ut_free_1d (MeshPara.edge_cl);
   ut_free_1d (MeshPara.ver_cl);
+
+  ut_free_1d (MeshPara.mesh3dclreps);
 
   return;
 }

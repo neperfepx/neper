@@ -65,6 +65,7 @@ nem_input_options_default (struct IN_M *pIn)
   (*pIn).mesh3dreport = 0;
   ut_string_string ("all", &((*pIn).meshface));
   ut_string_string ("all", &((*pIn).meshpoly));
+  (*pIn).mesh3dclrepsstring = NULL;
 
   (*pIn).meshqualexpr = ut_alloc_1d_char (100);
   strcpy ((*pIn).meshqualexpr, "Odis^0.8*Osize^0.2");
@@ -95,7 +96,7 @@ nem_input_options_default (struct IN_M *pIn)
   (*pIn).mesh3dmaxtime = 10000;
   (*pIn).mesh3drmaxtime = 100;
   (*pIn).mesh3diter = 3;
-  (*pIn).mesh3dclconv = 0.02;
+  ut_string_string ("0.02", &(*pIn).mesh3dclrepsstring);
 
   /* Options for remeshing --------------------------------- */
   (*pIn).transportstring = NULL;
@@ -198,6 +199,7 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-mesh3drmaxtime");
   strcpy (ArgList[++ArgQty], "-mesh3diter");
   strcpy (ArgList[++ArgQty], "-mesh3dclconv");
+  strcpy (ArgList[++ArgQty], "-mesh3dclreps");
 
   // Field transport ---------------------------------------------------
   strcpy (ArgList[++ArgQty], "-transport");
@@ -393,7 +395,12 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
       else if (!strcmp (Arg, "-mesh3diter"))
 	ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).mesh3diter));
       else if (!strcmp (Arg, "-mesh3dclconv"))
-	ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX, &((*pIn).mesh3dclconv));
+      {
+        ut_print_message (1, 1, "Option `-mesh3dclconv' is deprecated and will be removed in future versions.  Use `-mesh3dclreps' instead.\n");
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dclrepsstring));
+      }
+      else if (!strcmp (Arg, "-mesh3dclreps"))
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dclrepsstring));
       else if (!strcmp (Arg, "-nset"))
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).nset));
       else if (!strcmp (Arg, "-faset"))

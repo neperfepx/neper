@@ -721,13 +721,18 @@ any, none,
 These advanced options set running conditions for the meshing libraries
 (triangle and tetrahedral meshing),
 
-@optsec{-mesh3dclconv, real,
-Specify the maximum difference between the characteristic length @code{cl}
-and the average element length (for each polyhedron).  Neper tries its
-best to get the average element size to match @code{cl}.  Use this
-option to change the tolerance on the relative difference between the
-two. This is a highly CPU-sensitive capability (increasing this value
-can be efficient to speed up meshing).
+@optsec{-mesh3dclreps, real,
+Specify the relative tolerance on the average element characteristic length
+of each polyhedron (compared to @code{cl}).
+The value can also be defined on a per-cell basis@comma{}
+using any mathematical expression based on the
+variables defined in @ref{Tessellation Keys}
+or by loading values from an external file@comma{} using
+the syntax @samp{@@@var{file_name}}@comma{} where @code{@var{file_name}}
+is the name of the file containing the values.
+As Neper proceeds iteratively to adjust the average element characteristic
+length@comma{} this is a highly CPU-sensitive capability@comma{}
+and low values will increase computation time significantly.
 ,
 any, 0.02}
 

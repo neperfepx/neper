@@ -44,6 +44,7 @@ add_library (neper_m
 ./nem_meshing_para/nem_meshing_para_cl/nem_meshing_para_cl1.c
 ./nem_meshing_para/nem_meshing_para_cl/nem_meshing_para_cl2.c
 ./nem_meshing_para/nem_meshing_para_cl/nem_meshing_para_cl3.c
+./nem_meshing_para/nem_meshing_para_mesh3dclreps/nem_meshing_para_mesh3dclreps1.c
 ./nem_meshing_para/nem_meshing_para_param/nem_meshing_para_param1.c
 ./nem_meshing/nem_meshing_0D/nem_meshing_0D2.c
 ./nem_meshing/nem_meshing_0D/nem_meshing_0D1.c

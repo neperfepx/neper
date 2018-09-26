@@ -33,6 +33,8 @@ extern "C"
     double *edge_cl;
     double *ver_cl;
 
+    double *mesh3dclreps;
+
     double **face_eq;
     int *face_op;
     int *edge_op;

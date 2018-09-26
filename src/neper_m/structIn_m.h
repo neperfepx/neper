@@ -57,7 +57,7 @@ struct IN_M
   double mesh3dmaxtime;		// 3D mesher max run time
   double mesh3drmaxtime;	// 3D mesher max relative run time
   int mesh3diter;		// 3D mesher max number of iterations
-  double mesh3dclconv;		// 3D mesh cl convergence criterion
+  char* mesh3dclrepsstring;     // 3D mesh cl convergence criterion
   int mesh3dreport;		// report statistics on the 3D mesh (logical)
 
   char *transportstring;	// Data to transport
