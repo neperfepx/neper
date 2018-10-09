@@ -24,6 +24,7 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
 	tmp[2] = 1;
       neut_tess_scale (pTess, tmp[0], tmp[1], tmp[2]);
     }
+
     else if (!strncmp (parts[i], "rotate", 6))
     {
       ut_print_message (0, 2, "Rotating...\n");
@@ -32,6 +33,7 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
       ol_rtheta_g (tmp, theta, g);
       neut_tess_rotate (pTess, g);
     }
+
     else if (!strncmp (parts[i], "translate", 9))
     {
       ut_print_message (0, 2, "Translating...\n");
@@ -40,6 +42,7 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
 	tmp[2] = 1;
       neut_tess_shift (pTess, tmp[0], tmp[1], tmp[2]);
     }
+
     else if (!strncmp (parts[i], "mergecell", 9))
     {
       ut_print_message (0, 2, "Merging cells...\n");
@@ -58,6 +61,7 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
       ut_free_1d_char (fct);
       ut_free_2d_char (exprs, exprqty);
     }
+
     else if (!strncmp (parts[i], "rmcell", 6))
     {
       ut_print_message (0, 2, "Removing cells...\n");
@@ -76,14 +80,15 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
       ut_free_1d_char (fct);
       ut_free_2d_char (exprs, exprqty);
     }
+
     else if (!strcmp (parts[i], "resetcellid"))
     {
       ut_print_message (0, 2, "Resetting cell ids...\n");
       neut_tess_resetcellid (pTess);
     }
+
     else
       ut_print_message (1, 3, "Skipping `%s'...\n", parts[i]);
-
   }
 
   ol_g_free (g);

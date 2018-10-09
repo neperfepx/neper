@@ -8,7 +8,6 @@ int
 net_tess (struct IN_T In, int level, struct TESS *Tess, int dtess,
 	  int dcell, struct SEEDSET *SSet, int TessId,
 	  struct MTESS *pMTess)
-
 {
   int status = -1, periodic;
   int dim = (In.levelqty > 1 && In.dim == 2) ? 3 : In.dim;
