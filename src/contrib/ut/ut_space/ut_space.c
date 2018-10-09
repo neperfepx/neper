@@ -2660,7 +2660,7 @@ void
 ut_space_polygon_triangles (double *eq, double **coos, int cooqty,
                             int ***ptripos, int *ptriqty)
 {
-  int loop = 0, loopmax = 10, i, j, in, idqty = cooqty;
+  int loop, loopmax = 100, i, j, in, idqty = cooqty;
   int *triid = ut_alloc_1d_int (3);
   int *id = ut_alloc_1d_int (idqty);
   ut_array_1d_int_set_id (id, idqty);
@@ -2668,10 +2668,9 @@ ut_space_polygon_triangles (double *eq, double **coos, int cooqty,
 
   (*ptriqty) = 0;
 
+  loop = 0;
   while (idqty >= 3 && loop < loopmax)
   {
-    loop++;
-
     for (i = 0; i < idqty; i++)
     {
       // picking triangle and testing if it is fully contained in the polygon
@@ -2690,7 +2689,7 @@ ut_space_polygon_triangles (double *eq, double **coos, int cooqty,
         for (j = 0; j < cooqty; j++)
           if (j != triid[0] && j != triid[1] && j != triid[2])
             if (ut_space_triangle_point_in (coos[triid[0]], coos[triid[1]], coos[triid[2]],
-                                            coos[j], 1e-6, 1e-6))
+                                            coos[j], 0, 0))
             {
               in = 0;
               break;
@@ -2699,6 +2698,7 @@ ut_space_polygon_triangles (double *eq, double **coos, int cooqty,
       // if fully contained, recording it and removing it from the list
       if (in)
       {
+        loop = 0;
         (*ptriqty)++;
         (*ptripos) = ut_realloc_2d_int_addline (*ptripos, *ptriqty, 3);
         ut_array_1d_int_memcpy ((*ptripos)[(*ptriqty) - 1], 3, triid);
@@ -2706,6 +2706,8 @@ ut_space_polygon_triangles (double *eq, double **coos, int cooqty,
         ut_array_1d_int_list_rmelt (&id, &idqty, triid[1]);
         i = 0;
       }
+      else
+        loop++;
     }
   }
 
