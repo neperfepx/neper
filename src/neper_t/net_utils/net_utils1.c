@@ -321,9 +321,15 @@ net_tess_poly (struct TESS Tess, int poly, struct POLY *pPoly)
       (*pPoly).VerFace[i][j] = faces_inv[face - facemin] + 1;
     }
 
+  /*
   // This is needed by multiscale
+  // Actually, this seems only needed for multiscale + call to net_tess3d,
+  // which happens only in net_tess_lam or net_tess_tocta.
+  // This broke net_tess_clip, for example
+  // so, the patch was moved to net_tess3d
   for (i = 1; i <= (*pPoly).FaceQty; i++)
     (*pPoly).FacePoly[i] = -i;
+    */
 
   ut_free_1d_int (faces);
   ut_free_1d_int (vers);

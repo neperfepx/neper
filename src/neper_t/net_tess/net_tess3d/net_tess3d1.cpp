@@ -32,6 +32,13 @@ net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
 
   net_tess_poly (PTess, poly, &DomPoly);
 
+  // FacePoly must not contain positive polys; quickfix
+  if (ut_array_1d_int_max (DomPoly.FacePoly + 1, DomPoly.FaceQty) > 0)
+  {
+    for (int i = 1; i <= DomPoly.FaceQty; i++)
+      DomPoly.FacePoly[i] = -i;
+  }
+
   net_polycomp (DomPoly, SSet, &nf_cloud, &nf_index, &ptid_seedid,
                 &seedid_ptid, &Poly, NULL, -1, &TD);
 
