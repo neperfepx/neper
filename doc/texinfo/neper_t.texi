@@ -868,7 +868,7 @@ For scalar tessellations@comma{} the available formats are
 the Neper @code{@samp{tess}}@comma{}
 the Gmsh @code{@samp{geo}}@comma{}
 the Ply @code{@samp{ply}}@comma{}
-the STL @code{@samp{stl}}@comma{}
+the STL @code{@samp{stl}} (for a separate file for each cell@comma{} append @samp{@SEPDEP{}bycell)}@comma{}
 the Wavefront @code{@samp{obj}}@comma{}
 the 3dec @code{@samp{3dec}}
 and the Surface Evolver @code{@samp{fe}}.
@@ -879,7 +879,7 @@ Orientations for the cells can be obtained using @code{@samp{ori}} (see
 also options starting by @code{@samp{-ori}}).
 Combine the values @w{with @samp{@SEPNODEP}}.
 ,
-tess@comma{} geo@comma{} ply@comma{} stl@comma{} obj@comma{} 3dec@comma{} fe@comma{}
+tess@comma{} geo@comma{} ply@comma{} stl(@SEPDEP{}bycell)@comma{} obj@comma{} 3dec@comma{} fe@comma{}
 tesr@comma{} vtk@comma{} ori, tess}
 
 @opt{-tesrformat, char_string,
@@ -1061,6 +1061,9 @@ standard ``Polygon File Format'' @file{.ply}.
 
 It contains a description of the tessellation written under the
 STL (STereoLithography) format @file{.stl}.
+If @samp{@option{-format stl:bycell}} was used, a separate file is written for each cell,
+whose name ends in @file{-@var{id}.stl}, where samp{@var{id}} is the cell identifier
+written with leading zeros.
 
 @item Wavefront geometry file: @file{.obj}
 

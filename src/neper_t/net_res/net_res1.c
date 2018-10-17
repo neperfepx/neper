@@ -96,6 +96,14 @@ net_res (struct IN_T In, struct MTESS MTess, struct TESS *Tess,
       ut_print_message (1, 0, "Tess is void; cannot export; skipping\n");
   }
 
+  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "stl:bycell"))
+  {
+    if (FTess.PolyQty != 0)
+      neut_tess_name_fprintf_stl_bycell (In.body, FTess);
+    else
+      ut_print_message (1, 0, "Tess is void; cannot export; skipping\n");
+  }
+
   if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "fe"))	// SurfaceEvolver fe
   {
     if (FTess.PolyQty != 0)

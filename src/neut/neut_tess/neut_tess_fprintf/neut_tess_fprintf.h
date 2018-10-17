@@ -16,6 +16,9 @@ extern "C"
   extern void neut_tess_name_fprintf (char *, struct TESS);
   extern void neut_tess_fprintf_ply (FILE *, struct TESS);
   extern void neut_tess_fprintf_stl (FILE *, struct TESS);
+  extern void neut_tess_cell_fprintf_stl (FILE *, struct TESS, int cell);
+  extern void neut_tess_name_fprintf_stl (char *, struct TESS);
+  extern void neut_tess_name_fprintf_stl_bycell (char *, struct TESS);
   extern void neut_tess_fprintf_obj (FILE *, struct TESS);
   extern void neut_tess_fprintf_dec (FILE *, struct TESS);
   extern void neut_tess_fprintf_fe (FILE *, struct TESS);
