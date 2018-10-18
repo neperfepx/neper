@@ -87,6 +87,27 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
       neut_tess_resetcellid (pTess);
     }
 
+    else if (!strncmp (parts[i], "planecut", 8))
+    {
+      int j, exprqty;
+      char *fct = NULL, **exprs = NULL;
+
+      ut_print_message (0, 2, "Cutting by plane...\n");
+
+      ut_string_function_separate_exprs (parts[i], &fct, &exprs, &exprqty);
+      if (exprqty != 4)
+        ut_print_message (2, 2, "Failed to parse expression `%s'.\n", parts[i]);
+
+      double *eq = ut_alloc_1d (4);
+      for (j = 0; j < 4; j++)
+        sscanf (exprs[j], "%lf", eq + j);
+      struct SEEDSET SSet;
+      neut_seedset_set_zero (&SSet);
+      net_tess_seedset (*pTess, &SSet);
+      ut_array_1d_scale (eq, 4, 1. / ut_array_1d_norm (eq + 1, 3));
+      net_tess_clip (SSet, pTess, eq);
+    }
+
     else
       ut_print_message (1, 3, "Skipping `%s'...\n", parts[i]);
   }

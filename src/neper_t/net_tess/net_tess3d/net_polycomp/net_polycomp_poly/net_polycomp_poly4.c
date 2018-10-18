@@ -189,6 +189,8 @@ FaceModif (int pFace, int Face, POLYMOD * pPolymod, int *BadVer, int last)
   int NbBadVer;			/* Number of bad vertices of the face */
   int *pNbBadVer = &NbBadVer;
 
+  double *coo = ut_alloc_1d (3);
+
   couple1 = (int *) ut_alloc_1d_int (2);
   couple2 = (int *) ut_alloc_1d_int (2);
   faces1 = (int *) ut_alloc_1d_int (2);
@@ -200,6 +202,20 @@ FaceModif (int pFace, int Face, POLYMOD * pPolymod, int *BadVer, int last)
   bel2 =
     VerCoupleNFaces (pPolymod, BadVer, Face, pFace, couple1, couple2, faces1,
 		     faces2, pNbBadVer);
+
+  /* Recording of the next face to modify.
+   */
+  if (bel2 != -1)
+    if (faces1[0] == Face)
+      next = faces1[1];
+    else
+      next = faces1[0];
+  else if (faces2[0] == Face)
+    next = faces2[1];
+  else
+    next = faces2[0];
+
+  neut_polymod_faces_inter (*pPolymod, Face, next, (*pPolymod).FaceQty, coo);
 
   /* Modification of Face properties to suppress the bad vertices.
    */
@@ -214,7 +230,7 @@ FaceModif (int pFace, int Face, POLYMOD * pPolymod, int *BadVer, int last)
    * Else, second vertex of the face is set to the first created vertex.
    */
   if (last == 0)
-    next = FaceModif2ndNewVer (pPolymod, Face, bel2, faces1, faces2);
+    FaceModif2ndNewVer (pPolymod, Face, bel2, next, coo);
   else
     FaceModifAddBegVer (pPolymod, Face, last, bel2);
 
@@ -224,6 +240,7 @@ FaceModif (int pFace, int Face, POLYMOD * pPolymod, int *BadVer, int last)
   ut_free_1d_int (couple2);
   ut_free_1d_int (faces1);
   ut_free_1d_int (faces2);
+  ut_free_1d (coo);
 
   return next;
 }
@@ -233,12 +250,12 @@ FaceModif (int pFace, int Face, POLYMOD * pPolymod, int *BadVer, int last)
  * the new face.
  */
 int
-NewVer (POLYMOD * pPolymod, int first, int second, int third)
+NewVer (POLYMOD * pPolymod, int first, int second, int third, double *coo)
 {
   UpdVerQty (pPolymod);
   UpdVerUse (pPolymod);
   UpdVerFace (pPolymod, first, second, third);
-  UpdVerCoo (pPolymod, first, second, third);
+  UpdVerCoo (pPolymod, first, second, third, coo);
 
   return (*pPolymod).VerQty;
 }

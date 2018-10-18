@@ -81,29 +81,15 @@ UpdVerFace (struct POLYMOD *pPolymod, int first, int second, int third)
 }
 
 void
-UpdVerCoo (struct POLYMOD *pPolymod, int first, int second, int third)
+UpdVerCoo (struct POLYMOD *pPolymod, int first, int second, int third, double *coo)
 {
-  int i;
-  double **A = ut_alloc_2d (3, 3);
-  double *B = ut_alloc_1d (3);
-
-  for (i = 0; i < 3; i++)
-  {
-    A[0][i] = (*pPolymod).FaceEq[first][i + 1];
-    A[1][i] = (*pPolymod).FaceEq[second][i + 1];
-    A[2][i] = (*pPolymod).FaceEq[third][i + 1];
-  }
-  B[0] = (*pPolymod).FaceEq[first][0];
-  B[1] = (*pPolymod).FaceEq[second][0];
-  B[2] = (*pPolymod).FaceEq[third][0];
-
   (*pPolymod).VerCoo = ut_realloc_2d_addline ((*pPolymod).VerCoo,
 					      (*pPolymod).VerQty + 1, 3);
 
-  ut_linalg_solve_LU (A, B, 3, (*pPolymod).VerCoo[(*pPolymod).VerQty]);
-
-  ut_free_2d (A, 3);
-  ut_free_1d (B);
+  if (!coo)
+    neut_polymod_faces_inter (*pPolymod, first, second, third, (*pPolymod).VerCoo[(*pPolymod).VerQty]);
+  else
+    ut_array_1d_memcpy ((*pPolymod).VerCoo[(*pPolymod).VerQty], 3, coo);
 
   return;
 }
@@ -243,38 +229,17 @@ FaceModif1stNewVer (struct POLYMOD *pPolymod, int Face)
 
 /* Adding of the second new vertex.
  */
-int
-FaceModif2ndNewVer (struct POLYMOD *pPolymod, int Face, int bel2, int *faces1,
-		    int *faces2)
+void
+FaceModif2ndNewVer (struct POLYMOD *pPolymod, int Face, int bel2, int next, double *coo)
 {
-  /* number of the next face to modify.
-   */
-  int next;
-
   /* The FaceVerQty is incremented.
    */
   (*pPolymod).FaceVerQty[Face]++;
 
-  /* Recording of the next face to modify.
-   */
-  if (bel2 != -1)
-    if (faces1[0] == Face)
-      next = faces1[1];
-    else
-      next = faces1[0];
-  else if (faces2[0] == Face)
-    next = faces2[1];
-  else
-    next = faces2[0];
-
-  /* simple verification... */
-  if (next <= 0)
-    ut_error_reportbug ();
-
   /* Creation of the new vertex as the intersection between faces
    * Face, next & (*pPolymod).FaceQty.
    */
-  NewVer (pPolymod, Face, next, (*pPolymod).FaceQty);
+  NewVer (pPolymod, Face, next, (*pPolymod).FaceQty, coo);
 
   /* Adding of this vertex
    */
@@ -291,7 +256,7 @@ FaceModif2ndNewVer (struct POLYMOD *pPolymod, int Face, int bel2, int *faces1,
 			    (*pPolymod).FaceVerQty[Face] - 1,
 			    (*pPolymod).FaceVerQty[Face]);
 
-  return next;
+  return;
 }
 
 /* Else, second vertex of the face is set to the first created vertex.

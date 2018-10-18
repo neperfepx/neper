@@ -90,7 +90,11 @@ PolyhedronModification (int Nei, double *plane, struct POLYMOD *pPolymod,
    * the new face: VerQty is increased, VerUse, VerFace and VerCoo are
    * initiated.. The number of the created vertex is returned.
    */
-  firstVer = NewVer (pPolymod, FnLFaces[0], FnLFaces[1], (*pPolymod).FaceQty);
+  double *coo = ut_alloc_1d (3);
+  neut_polymod_faces_inter (*pPolymod, FnLFaces[0], FnLFaces[1], (*pPolymod).FaceQty,
+                             coo);
+  firstVer = NewVer (pPolymod, FnLFaces[0], FnLFaces[1], (*pPolymod).FaceQty, coo);
+  ut_free_1d (coo);
 
   /* NewFaceAddVer adds the new vertex to the new face.
    */

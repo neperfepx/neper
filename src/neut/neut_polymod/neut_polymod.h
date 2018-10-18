@@ -17,6 +17,7 @@ extern "C"
 
   extern void neut_polymod_set_zero (struct POLYMOD *pPolymod);
   extern void neut_polymod_free (struct POLYMOD *pPolymod);
+  extern void neut_polymod_faces_inter (struct POLYMOD Polymod, int p1, int p2, int p3, double *inter);
 
 #endif				/* NEUT_POLYMOD_H */
 

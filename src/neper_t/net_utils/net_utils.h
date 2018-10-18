@@ -55,6 +55,8 @@ extern "C"
   extern int net_multiscale_mtess_arg_0d_char_fscanf (struct MTESS MTess,
       struct TESS *Tess, int domtess, int dompoly, char *string, char **pval);
 
+  extern int net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet);
+
 #include "net_tess/net_tess3d/net_tess3d.h"
 #include "net_polymod_poly/net_polymod_poly.h"
 #include "net_legacy/net_legacy.h"

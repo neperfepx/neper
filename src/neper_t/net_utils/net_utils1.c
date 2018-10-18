@@ -552,6 +552,7 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
   struct POLYMOD Polymod;
   int *BadVer = ut_alloc_1d_int (1000);
   struct TESL Tesl;
+  struct TESS TessCpy;
   int plane_id;
 
   level = (*pTess).Level;
@@ -560,6 +561,8 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
   plane_id = ut_array_2d_int_min ((*pTess).FacePoly + 1, (*pTess).FaceQty, 2) - 1;
 
   neut_tesl_set_zero (&Tesl);
+  neut_tess_set_zero (&TessCpy);
+  neut_tess_tess (*pTess, &TessCpy);
 
   neut_polymod_set_zero (&Polymod);
 
@@ -608,6 +611,13 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
 
   ut_string_string ("clipped", &((*pTess)).DomType);
   neut_tess_init_domain (pTess);
+
+  neut_tess_tess_gen (TessCpy, pTess);
+  neut_tess_tess_cell (TessCpy, pTess);
+  neut_tess_tess_seed (TessCpy, pTess);
+  neut_tess_tess_scale (TessCpy, pTess);
+
+  neut_tess_free (&TessCpy);
 
   return;
 }
@@ -827,4 +837,21 @@ net_pts_convexhull (double **coos, int qty, int dim, struct NODES *pN, struct ME
   neut_mesh_free (&Mesh);
 
   return;
+}
+
+int
+net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet)
+{
+  neut_seedset_free (pSSet);
+  neut_seedset_set_zero (pSSet);
+
+  (*pSSet).N = Tess.SeedQty;
+
+  (*pSSet).SeedCoo = ut_alloc_2d ((*pSSet).N + 1, 3);
+  ut_array_2d_memcpy ((*pSSet).SeedCoo + 1, (*pSSet).N, 3, Tess.SeedCoo + 1);
+
+  (*pSSet).SeedWeight = ut_alloc_1d ((*pSSet).N + 1);
+  ut_array_1d_memcpy ((*pSSet).SeedWeight + 1, (*pSSet).N, Tess.SeedWeight + 1);
+
+  return 0;
 }
