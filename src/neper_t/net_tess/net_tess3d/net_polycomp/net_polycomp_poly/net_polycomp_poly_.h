@@ -35,7 +35,7 @@ extern "C"
   extern void FnLFacesDet (POLYMOD Polymod, int *BadVer, int *FnLFaces);
   extern int FaceModif (int pFace, int Face, POLYMOD * pPolymod, int
 			*BadVer, int last);
-  extern int NewVer (POLYMOD * pPolymod, int first, int second, int third);
+  extern int NewVer (POLYMOD * pPolymod, int first, int second, int third, double *coo);
   extern void NewFaceAddVer (POLYMOD * pPolymod);
 
   extern void UpdFaceQty (struct POLYMOD *pPolymod);
@@ -47,7 +47,7 @@ extern "C"
   extern void UpdVerFace (struct POLYMOD *pPolymod, int first, int second,
 			  int third);
   extern void UpdVerCoo (struct POLYMOD *pPolymod, int first, int second,
-			 int third);
+			 int third, double *coo);
   extern void UpdFaceVerQty (struct POLYMOD *pPolymod);
   extern void UpdFaceVerNb (struct POLYMOD *pPolymod);
   extern void SnNS (struct POLYMOD Polymod, int ns, int nf, int *Ver,
@@ -60,8 +60,8 @@ extern "C"
   extern void FaceModifGenPara (struct POLYMOD *pPolymod, int Face,
 				int NbBadVer);
   extern void FaceModif1stNewVer (struct POLYMOD *pPolymod, int Face);
-  extern int FaceModif2ndNewVer (struct POLYMOD *pPolymod, int Face, int bel2,
-				 int *faces1, int *faces2);
+  extern void FaceModif2ndNewVer (struct POLYMOD *pPolymod, int Face, int bel2,
+				 int next, double *coo);
   extern void FaceModifAddBegVer (struct POLYMOD *pPolymod, int Face,
 				  int last, int bel2);
 

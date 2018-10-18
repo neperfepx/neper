@@ -34,7 +34,6 @@ extern void neut_tess_tess_facebound (struct TESS, struct TESS *);
 extern void neut_tess_tess_facestate (struct TESS, struct TESS *);
 extern void neut_tess_tess_facept (struct TESS, struct TESS *);
 extern void neut_tess_tess_poly (struct TESS, struct TESS *);
-extern void neut_tess_tess_seed (struct TESS, struct TESS *);
 extern void neut_tess_tess_polyqty (struct TESS, struct TESS *);
 extern void neut_tess_tess_polyface (struct TESS, struct TESS *);
 extern void neut_tess_tess_polystate (struct TESS, struct TESS *);

@@ -747,6 +747,7 @@ any, Nstar<10000?pi:20*dr}
 Apply transformations to a tessellation (if scalar and raster tessellations
 are written in output@comma{} they are transformed independently; i.e.@comma{}
 rasterization preceeds transformation).@*
+@*
 The following transformations apply to a scalar or raster tessellation:@*
 @mybullet @samp{@code{scale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
 scales a tessellation by
@@ -759,6 +760,7 @@ for a rotation about the centre and by an axis/angle pair.@*
 @mybullet @samp{translate(@var{dist_x}@comma{}@var{dist_y}@comma{}@var{dist_z})}
 for a translation by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} and @code{@var{dist_z}}
 along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
+@mybullet @samp{planecut(@var{a}@comma{}@var{b}@comma{}@var{c}@comma{}@var{d})} for cutting by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d}.@*
 @mybullet @samp{mergecell(@var{expr1}@comma{}@var{expr2}@comma{}@dots{})} for merging cells
 matching expression @code{@var{expr1}}@comma{} @code{@var{expr2}}@comma{} etc.@comma{}
 where expressions are based on the variables defined in @ref{Tessellation Keys}.
@@ -768,6 +770,7 @@ matching expression @code{@var{expr1}}@comma{} @code{@var{expr2}}@comma{} etc.@c
 where expressions are based on the variables defined in @ref{Tessellation Keys}.
 Cell removing operates incrementally through expressions.@*
 @mybullet @samp{resetcellid} for resetting cell ids (contiguous numbering from 1).@*
+@*
 The following transformations apply only to a raster tessellation:@*
 @mybullet @samp{@code{renumber}} renumbers a tessellation to remove empty cells.@*
 @mybullet @samp{@code{crop:@var{shape}(@var{parameters})}} crops the raster tessellation by a shape@comma{} where @samp{@var{shape}(@var{parameters})} can be @samp{cube(@var{xmin}@comma{}@var{xmax}@comma{}@var{ymin}@comma{}@var{ymax}@comma{}@var{zmin}@comma{}@var{zmax})} or @samp{cylinder(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{diameter})} (the axis is z).  The values can be any mathematical expression based on the variables defined in @ref{Raster Tessellation Keys} (see general). @*
