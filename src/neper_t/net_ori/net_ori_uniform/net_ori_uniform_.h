@@ -3,7 +3,6 @@
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
-#include<stdlib.h>
 #include<string.h>
 #include<limits.h>
 #include<math.h>
