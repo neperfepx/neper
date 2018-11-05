@@ -89,6 +89,6 @@ diffraction data, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 330, pp.@
 308-333, 2018}
 (for tessellation from experimental properties with option @option{-morpho});
 @item @cite{R.@ Quey, A.@ Villani and C.@ Maurice, Nearly uniform sampling
-of crystal orientations, J.@ Appl.@ Crystallogr., vol.@ 51, https://doi.org/10.1107/S1600576718009019}
+of crystal orientations, J.@ Appl.@ Crystallogr., vol. 51, pp.@ 1162-1173, 2018.}''
 (for uniform crystal orientation distribution with option @option{-ori uniform}).
 @end itemize
