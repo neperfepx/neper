@@ -218,13 +218,14 @@ The default@comma{} @code{-rcl 1}@comma{} leads to a mesh with about 100 element
 cell in average (@w{64 in 2D}).
 For free meshing@comma{} it is also possible to define the characteristic length
 on a per-cell basis@comma{} using any mathematical expression based on the
-variables defined in @ref{Tessellation Keys}.
+variables defined in @ref{Tessellation Keys} (or @ref{Raster Tessellation Keys} for a
+2D raster tessellation).
 A typical use is @samp{@code{-rcl
 (body>0)?@var{val1}:@var{val2}}} to get interior cells
 meshed with @code{@var{rcl}=@var{val1}} and boundary cells
 meshed with @code{@var{rcl}=@var{val2}}.
 The second way is to load values from an external file using
-the syntax @samp{@@@var{file_name}}@comma{} where @code{@var{file_name}}
+the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
 is the name of the file containing the characteristic length values.
 ,
 any, -rcl 1}
@@ -273,7 +274,7 @@ Specify the minimum characteristic length of the elements.,
 any, none}
 @c @optdevel{-meshface, expression,
 @c Specify the faces to mesh. The argument can be: @samp{all} for
-@c all@comma{} @samp{@@@var{file_name}} to load face numbers from a
+@c all@comma{} @samp{file(@var{file_name})} to load face numbers from a
 @c file@comma{} or any expression based on the following arguments:
 @c @var{cenx}@comma{} @var{ceny}@comma{} @var{cenz}@comma{}
 @c @var{volume}@comma{}
@@ -283,7 +284,7 @@ any, none}
 @c
 @c @optdevel{-meshpoly, expression,
 @c Specify the polyhedra to mesh. The argument can be: @samp{all} for
-@c all@comma{} @samp{@@@var{file_name}} to load polyhedron numbers from a
+@c all@comma{} @samp{file(@var{file_name})} to load polyhedron numbers from a
 @c file@comma{} or any expression based on the following arguments:
 @c @var{cenx}@comma{} @var{ceny}@comma{} @var{cenz}@comma{}
 @c @var{volume}@comma{}
@@ -728,7 +729,7 @@ The value can also be defined on a per-cell basis@comma{}
 using any mathematical expression based on the
 variables defined in @ref{Tessellation Keys}
 or by loading values from an external file@comma{} using
-the syntax @samp{@@@var{file_name}}@comma{} where @code{@var{file_name}}
+the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
 is the name of the file containing the values.
 As Neper proceeds iteratively to adjust the average element characteristic
 length@comma{} this is a highly CPU-sensitive capability@comma{}

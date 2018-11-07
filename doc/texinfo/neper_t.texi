@@ -858,7 +858,7 @@ are assigned @code{@var{cell_seli}} as small edge length.
 Typically@comma{} option @option{-rsel} should be passed the same argument than
 option @option{-rcl} of @mM{}@comma{} see @ref{Meshing Module
 (-M)}. The second way is to load values from an external file using
-the syntax @samp{@@@var{file_name}}@comma{} where @code{@var{file_name}}
+the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
 is the name of the file containing the length values.,
 any,-rsel 1}
 
