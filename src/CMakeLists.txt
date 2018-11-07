@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.2.1-42\")
+set (NEPER_VERSION \"3.2.1-43\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -268,8 +268,8 @@ add_test (M_cl_hex               ./neper --rcfile none -M n5-id1.tess -elt hex -
 add_test (M_rcl_hex              ./neper --rcfile none -M n5-id1.tess -elt hex -rcl 0.7)
 add_test (M_cl_hex_dim2          ./neper --rcfile none -M n5-id1-dim2.tess -elt hex -cl 0.5)
 add_test (M_rcl_hex_dim2         ./neper --rcfile none -M n5-id1-dim2.tess -elt hex -rcl 0.7)
-add_test (M_cl_expr              ./neper --rcfile none -M n5-id1.tess -mesh3dclreps 1 -cl 0.25,id==2:0.5)
-add_test (M_rcl_expr             ./neper --rcfile none -M n5-id1.tess -mesh3dclreps 1 -rcl 1,id==2:0.7)
+add_test (M_cl_expr              ./neper --rcfile none -M n5-id1.tess -mesh3dclreps 1 -cl id==2?0.5:0.25)
+add_test (M_rcl_expr             ./neper --rcfile none -M n5-id1.tess -mesh3dclreps 1 -rcl id==2?0.7:1)
 add_test (M_dim                  ./neper --rcfile none -M n5-id1.tess -mesh3dclreps 1 -dim 1,2)
 add_test (M_dim2                 ./neper --rcfile none -M n5-id1.tess -mesh3dclreps 1 -dim all)
 add_test (M_dim_expr             ./neper --rcfile none -M n5-id1.tess -mesh3dclreps 1 -dim inputdim)

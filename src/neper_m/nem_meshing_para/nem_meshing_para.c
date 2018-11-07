@@ -19,7 +19,7 @@ nem_meshing_para (struct IN_M In,
   nem_meshing_para_cl (In.clstring, In.clratiostring, *pTess, pTesr, pRNodes,
 		       RMesh, pMeshPara);
 
-  nem_meshing_para_mesh3dclreps (In.mesh3dclrepsstring, *pTess, pMeshPara);
+  nem_meshing_para_mesh3dclreps (In.mesh3dclrepsstring, *pTess, *pTesr, pMeshPara);
 
   if ((*pTess).VerQty > 0)
   {
