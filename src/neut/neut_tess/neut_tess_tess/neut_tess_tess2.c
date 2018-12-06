@@ -60,9 +60,12 @@ neut_tess_tess_cell (struct TESS TessA, struct TESS *pTessB)
   if (TessA.ScaleQty > 0)
   {
     (*pTessB).ScaleQty = TessA.ScaleQty;
-    (*pTessB).ScaleCellId = ut_alloc_2d_int (TessA.CellQty + 1, TessA.ScaleQty);
-    ut_array_2d_int_memcpy ((*pTessB).ScaleCellId + 1,
-			    TessA.CellQty, TessA.ScaleQty, TessA.ScaleCellId + 1);
+    if (TessA.ScaleCellId)
+    {
+      (*pTessB).ScaleCellId = ut_alloc_2d_int (TessA.CellQty + 1, TessA.ScaleQty);
+      ut_array_2d_int_memcpy ((*pTessB).ScaleCellId + 1,
+                              TessA.CellQty, TessA.ScaleQty, TessA.ScaleCellId + 1);
+    }
   }
 
   neut_tess_tess_celltrue (TessA, pTessB);
