@@ -21,9 +21,6 @@ net_ori_uniform_opt_forces_ser (struct OL_SET *pOSet, double **f, double *E)
       double Eij, *fij = ut_alloc_1d (3);
       net_ori_uniform_opt_forces_comp (pOSet, i, j, fij, &Eij);
 
-      if (isnan (Eij))
-        printf ("i = %d j = %d\n", i, j);
-
       Eij *= 0.5;
 #pragma omp atomic
       E[i] += Eij;
@@ -78,9 +75,6 @@ net_ori_uniform_opt_forces_ser_neigh (struct OL_SET *pOSet,
         continue;
 
       net_ori_uniform_opt_forces_comp_neigh (pOSet, i, neighs[j], fij, &Eij, pqcloud);
-
-      if (isnan (Eij))
-        printf ("i = %d j = %d\n", i, j);
 
       Eij *= 0.5;
       E[i] += Eij;
