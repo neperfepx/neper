@@ -172,10 +172,10 @@ neut_tdyn_fprintf_time (struct TDYN TDyn)
     else
       fprintf (TDyn.logtime_fp, "%d", -1);
 
-      if (i < varqty - 1)
-	fprintf (TDyn.logtime_fp, " ");
-    }
-    fprintf (TDyn.logtime_fp, "\n");
+    if (i < varqty - 1)
+      fprintf (TDyn.logtime_fp, " ");
+  }
+  fprintf (TDyn.logtime_fp, "\n");
 
   ut_free_2d_char (vars,varqty);
 

@@ -294,10 +294,10 @@ nem_order (struct NODES *pNodes, struct MESH *pMesh1D,
 
   if (do_1d)
   {
-   if (ut_array_2d_int_eltpos ((*pMesh1D).EltNodes + 1,
+    if (ut_array_2d_int_eltpos ((*pMesh1D).EltNodes + 1,
 			       (*pMesh1D).EltQty, nodeqty_1d, 0, NULL,
 			       NULL) != -1)
-    ut_error_reportbug ();
+      ut_error_reportbug ();
 
     if ((*pMesh1D).NodeElts)
       ut_free_2d_int ((*pMesh1D).NodeElts, node1max + 1);

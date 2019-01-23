@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.3.1-45\")
+set (NEPER_VERSION \"3.3.1-46\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -53,7 +53,7 @@ configure_file (
   "${PROJECT_BINARY_DIR}/neper_config.h"
 )
 
-add_definitions(-Wall -W -Wno-unknown-pragmas)
+add_definitions(-Wall -W -Wno-unknown-pragmas -Wno-deprecated-declarations)
 if (DEVEL_OPTIMIZATION)
   add_definitions(-O3)
 endif ()

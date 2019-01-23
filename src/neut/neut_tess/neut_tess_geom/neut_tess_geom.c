@@ -917,9 +917,9 @@ neut_tess_point_inpoly_reg (struct TESS Tess, double *coo, int nb)
 	for (j = 0; j < 3; j++)
 	  coob[j] = coo[j] + per[j] * PeriodicDist[j];
 
-	  status = neut_mesh_elset_point_elt (Mesh, Nodes, 1, coo, &elt);
-	  if (status == 0)
-	    break;
+        status = neut_mesh_elset_point_elt (Mesh, Nodes, 1, coo, &elt);
+        if (status == 0)
+          break;
       }
 
       if (status == 0)

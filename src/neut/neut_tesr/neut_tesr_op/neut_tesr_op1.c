@@ -264,9 +264,9 @@ neut_tesr_scale (struct TESR *pTesr, double scale1, double scale2,
       for (i = 0; i < (*pTesr).Dim; i++)
         (*pTesr).CellCoo[j][i] *= scale[i];
 
-    if ((*pTesr).CellVol)
-      for (j = 1; j <= (*pTesr).CellQty; j++)
-        (*pTesr).CellVol[j] *= ut_array_1d_prod (scale, 3);
+  if ((*pTesr).CellVol)
+    for (j = 1; j <= (*pTesr).CellQty; j++)
+      (*pTesr).CellVol[j] *= ut_array_1d_prod (scale, 3);
 
   ut_free_1d (scale);
 
