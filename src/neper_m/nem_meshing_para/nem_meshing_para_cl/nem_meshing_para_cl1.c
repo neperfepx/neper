@@ -37,7 +37,7 @@ nem_meshing_para_cl (char *clstring, char *clratiostring,
   }
   else if ((*pMeshPara).input == 'v')
   {
-    nem_meshing_para_cl_cell_tesr (clstring, pMeshPara, *pTesr, Tess);
+    nem_meshing_para_cl_cell_tesr (clstring, pMeshPara, *pTesr);
 
     if (!strcmp ((*pMeshPara).elttype, "tri"))
     {

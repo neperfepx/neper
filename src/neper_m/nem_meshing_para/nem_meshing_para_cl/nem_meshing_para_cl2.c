@@ -21,14 +21,14 @@ nem_meshing_para_cl_cell (char *clstring, struct MESHPARA *pMeshPara,
   neut_tess_entity_expr_val (Tess, "cell", clstring, *pcell_cl);
 
   if (!strcmp ((*pMeshPara).cltype, "rel"))
-    nem_meshing_para_rcl2cl (pMeshPara, Tess, *pcell_cl);
+    nem_meshing_para_rcl2cl (pMeshPara, Tess.CellQty, Tess.Dim, *pcell_cl);
 
   return 0;
 }
 
 int
 nem_meshing_para_cl_cell_tesr (char *clstring, struct MESHPARA *pMeshPara,
-			       struct TESR Tesr, struct TESS Tess)
+			       struct TESR Tesr)
 {
   double **pcell_cl = NULL;
 
@@ -47,7 +47,7 @@ nem_meshing_para_cl_cell_tesr (char *clstring, struct MESHPARA *pMeshPara,
   neut_tesr_entity_expr_val (Tesr, "cell", clstring, *pcell_cl);
 
   if (!strcmp ((*pMeshPara).cltype, "rel"))
-    nem_meshing_para_rcl2cl (pMeshPara, Tess, *pcell_cl);
+    nem_meshing_para_rcl2cl (pMeshPara, Tesr.CellQty, Tesr.Dim, *pcell_cl);
 
   return 0;
 }
@@ -66,7 +66,7 @@ nem_meshing_para_cl_poly_mesh (char *clstring, struct MESHPARA *pMeshPara,
 			     "elset3d", clstring, (*pMeshPara).poly_cl);
 
   if (!strcmp ((*pMeshPara).cltype, "rel"))
-    nem_meshing_para_rcl2cl (pMeshPara, Tess, (*pMeshPara).poly_cl);
+    nem_meshing_para_rcl2cl (pMeshPara, Tess.CellQty, Tess.Dim, (*pMeshPara).poly_cl);
 
   neut_part_free (Part);
 

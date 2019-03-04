@@ -1,9 +1,10 @@
-New in 3.3.1-46 (23 Jan 2019):
+New in 3.3.1-47 (04 Mar 2019):
 - module -T: added -transform mergecell, rmcell, resetcellid and planecut,
   improved -morpho lamellar, improved -morpho diameq, added -format stl:bycell,
   made -morpho multiscale, added tessellation keys, made minor improvements.
-- module -M: renamed -mesh3dclconv into -mesh3dclreps, improved -cl, -rcl and
-  -mesh3dclreps argument expressions, speed up -transport, fixed 2D remeshing.
+- module -M: fixed -rcl for tesr, renamed -mesh3dclconv into -mesh3dclreps,
+  improved -cl, -rcl and -mesh3dclreps argument expressions, speed up
+  -transport, fixed 2D remeshing.
 - module -V: improved visualization of non-convex cells.
 
 New in 3.3.0 (25 Jul 2018):

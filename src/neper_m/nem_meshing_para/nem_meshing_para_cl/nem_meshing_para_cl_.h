@@ -20,11 +20,11 @@
 extern int nem_meshing_para_cl_cell (char *, struct MESHPARA *,
 				     struct TESS Tess);
 extern int nem_meshing_para_cl_cell_tesr (char *, struct MESHPARA *pMeshPara,
-					  struct TESR Tesr, struct TESS Tess);
+					  struct TESR Tesr);
 extern int nem_meshing_para_cl_poly_mesh (char *, struct MESHPARA *pMeshPara,
 					  struct NODES Nodes,
 					  struct MESH *Mesh,
 					  struct TESS Tess);
 
-extern int nem_meshing_para_rcl2cl (struct MESHPARA *pMeshPara, struct
-				    TESS, double *cell_cl);
+extern int nem_meshing_para_rcl2cl (struct MESHPARA *pMeshPara, int, int,
+				    double *cell_cl);
