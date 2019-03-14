@@ -17,6 +17,7 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
   struct NODES *N = (struct NODES*) calloc (Tess.FaceQty + 1, sizeof (struct NODES));
   struct MESH *M = (struct MESH*) calloc (Tess.FaceQty + 1, sizeof (struct MESH));
   int **master_id = ut_alloc_1d_pint (Tess.FaceQty + 1);
+  int **N_global_id = ut_alloc_1d_pint (Tess.FaceQty + 1);
 
   for (i = 1; i <= Tess.FaceQty; i++)
     neut_nodes_set_zero (N + i);
@@ -66,6 +67,7 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
     }
 
   // Recording face mesh in global mesh
+  // do not multithread (periodicity)
   for (i = 0; i < faceqty; i++)
   {
     id = face[i];
@@ -75,7 +77,7 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
 
     if (Tess.FaceVerQty[id] > 0)
       nem_meshing_2D_face_record (Tess, id, N[id], M[id], master_id[id],
-                                  pNodes, Mesh, MeshPara);
+                                  pNodes, N_global_id, Mesh, MeshPara);
     else
       neut_mesh_addelset (Mesh + 2, NULL, 0);
   }
@@ -101,6 +103,8 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
   for (i = 1; i <= Tess.FaceQty; i++)
       neut_mesh_free (M + i);
   free (M);
+
+  ut_free_2d_int (N_global_id, Tess.FaceQty + 1);
 
   return;
 }

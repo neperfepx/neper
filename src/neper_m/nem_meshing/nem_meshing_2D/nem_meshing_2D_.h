@@ -51,11 +51,12 @@ extern void nem_meshing_2D_face_proj (struct TESS Tess, struct NODES RNodes,
 extern void nem_meshing_2D_face_record (struct TESS Tess, int face,
 					struct NODES N, struct MESH M,
 					int *master_id, struct NODES *pNodes,
-					struct MESH *Mesh, struct MESHPARA);
+					int **pN_global,
+                                        struct MESH *Mesh, struct MESHPARA);
 
 extern void nem_meshing_2D_face_record_nodes (struct TESS Tess, int face,
-					      struct NODES N, struct MESH M,
-					      int *master_id, int **pnode_nbs,
+					      struct NODES N,
+					      int *master_id, int **pN_global,
 					      struct NODES *pNodes,
 					      struct MESH *Mesh,
 					      struct MESHPARA);

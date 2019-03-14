@@ -120,17 +120,13 @@ nem_meshing_2D_progress (struct MULTIM Multim, int face, int faceqty,
 void
 nem_meshing_2D_face_record (struct TESS Tess, int face, struct NODES N,
 			    struct MESH M, int *master_id,
-			    struct NODES *pNodes,
+			    struct NODES *pNodes, int **N_global_id,
 			    struct MESH *Mesh, struct MESHPARA MeshPara)
 {
-  int *node_nbs = NULL;
+  nem_meshing_2D_face_record_nodes (Tess, face, N, master_id,
+				    N_global_id, pNodes, Mesh, MeshPara);
 
-  nem_meshing_2D_face_record_nodes (Tess, face, N, M, master_id,
-				    &node_nbs, pNodes, Mesh, MeshPara);
-
-  nem_meshing_2D_face_record_elts (face, M, node_nbs, Mesh);
-
-  ut_free_1d_int (node_nbs);
+  nem_meshing_2D_face_record_elts (face, M, N_global_id[face], Mesh);
 
   return;
 }
