@@ -625,10 +625,15 @@ extern "C"
   extern int neut_tess_face_scale (struct TESS Tess, int face, int *pscale);
   extern int neut_tess_face_scale_polys (struct TESS Tess, int face, int scale, int *poly);
 
+  extern void neut_tess_edge_scale (struct TESS Tess, int edge, int *pscale);
+  extern void neut_tess_ver_scale (struct TESS Tess, int ver, int *pscale);
+
   extern void neut_tess_polypair_commonfaces (struct TESS Tess, int poly1, int poly2,
                                 int **pfaces, int *pfaceqty);
   extern void neut_tess_seedpair_commonfaces (struct TESS Tess, int seed1, int seed2,
                                 int **pfaces, int *pfaceqty);
+
+  extern void neut_tess_edge_faces (struct TESS Tess, int edge, int **pfaces, int *pfaceqty);
 
 #endif				/* NEUT_TESS_TOPO_H */
 

@@ -376,6 +376,10 @@ neighbour element sets (which are associated to the tessellation cells).  Provid
 distinct nodes for the neighbour element sets.  Provide @samp{cohesive} for
 cohesive elements at interfaces@comma{} joining the neigbour element
 sets.
+In the case of a multiscale tessellation@comma{} it is possible to provide
+a different value for each scale using the @samp{@SEPFRAC{}} separator
+(if fewer values than tessellation scales are provided@comma{} the last
+ provided value is used for all higher scales).
 See option @option{-faset} for the output format.
 ,
 see above, continuous}

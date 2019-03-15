@@ -3202,7 +3202,7 @@ neut_tess_face_scale_polys (struct TESS Tess, int face, int scale, int *poly)
 
   ut_array_1d_int_memcpy (poly, 2, Tess.FacePoly[face]);
 
-  if (scale != Tess.ScaleQty)
+  if (Tess.ScaleQty > 1 && scale != Tess.ScaleQty)
     for (i = 0; i < 2; i++)
       if (poly[i] > 0)
 	poly[i] = Tess.ScaleCellId[Tess.FacePoly[face][i]][scale];
@@ -3215,6 +3215,9 @@ neut_tess_face_scale (struct TESS Tess, int face, int *pscale)
 {
   int i, poly[2];
 
+  if (Tess.Dim != 3)
+    abort ();
+
   (*pscale) = -1;
 
   if (Tess.FacePoly[face][0] < 0 || Tess.FacePoly[face][1] < 0)
@@ -3222,6 +3225,7 @@ neut_tess_face_scale (struct TESS Tess, int face, int *pscale)
 
   else
   {
+   (*pscale) = 1;
     for (i = Tess.ScaleQty - 1; i >= 0; i--)
     {
       neut_tess_face_scale_polys (Tess, face, i, poly);
@@ -3284,6 +3288,52 @@ neut_tess_seedpair_commonfaces (struct TESS Tess, int seed1, int seed2,
 
     (*pfaces) = ut_realloc_1d_int (*pfaces, *pfaceqty);
   }
+
+  return;
+}
+
+void
+neut_tess_edge_scale (struct TESS Tess, int edge, int *pscale)
+{
+  int i, faceqty, *faces = NULL;
+
+  neut_tess_edge_faces (Tess, edge, &faces, &faceqty);
+
+  for (i = 0; i < faceqty; i++)
+    neut_tess_face_scale (Tess, faces[i], faces + i);
+
+  (*pscale) = ut_array_1d_int_max (faces, faceqty);
+
+  ut_free_1d_int (faces);
+
+  return;
+}
+
+void
+neut_tess_ver_scale (struct TESS Tess, int ver, int *pscale)
+{
+  int i, edgeqty, *edges = NULL;
+
+  neut_tess_ver_edges (Tess, ver, &edges, &edgeqty);
+
+  for (i = 0; i < edgeqty; i++)
+    neut_tess_edge_scale (Tess, edges[i], edges + i);
+
+  (*pscale) = ut_array_1d_int_max (edges, edgeqty);
+
+  ut_free_1d_int (edges);
+
+  return;
+}
+
+void
+neut_tess_edge_faces (struct TESS Tess, int edge, int **pfaces, int *pfaceqty)
+{
+  (*pfaceqty) = Tess.EdgeFaceQty[edge];
+
+  (*pfaces) = ut_alloc_1d_int (*pfaceqty);
+
+  ut_array_1d_int_memcpy (*pfaces, *pfaceqty, Tess.EdgeFaceNb[edge]);
 
   return;
 }

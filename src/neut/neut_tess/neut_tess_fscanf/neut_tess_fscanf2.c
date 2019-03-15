@@ -25,6 +25,8 @@ neut_tess_fscanf_head (struct TESS *pTess, FILE * file)
 
   (*pTess).Level = 1;
 
+  (*pTess).ScaleQty = 1;
+
   (*pTess).TessId = 1;
 
   return;

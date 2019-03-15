@@ -175,7 +175,8 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     }
   }
 
-  if (strcmp (In.interface, "continuous"))
+  if (ut_string_inlist (In.interface, NEUT_SEP_DEP, "discontinuous")
+   || ut_string_inlist (In.interface, NEUT_SEP_DEP, "cohesive"))
   {
     ut_print_message (0, 2, "Processing mesh at interfaces...\n");
     nem_interface (In, Tess, &Nodes, Mesh, &Bound);

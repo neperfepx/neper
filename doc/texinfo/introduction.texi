@@ -163,7 +163,7 @@ Some options may take several argument values.  These values can be combined usi
 
 @item The @samp{@SEPDEP} separator is used to combine correlated arguments, i.e.@ arguments of different types, which cannot be processed independently from each other.  Such arguments can be values of a variable in different directions, for instance.
 
-@item The @samp{::} separator is used in @mT{} for assigning argument values to the different scales of a multiscale tessellation.  It is a ``super-separator'' that takes precedence over the @samp{@SEPNODEP} and @samp{@SEPDEP} standard separators.
+@item The @samp{::} separator is used in @mT{} (and a little in @mM{}) for assigning argument values to the different scales of a multiscale tessellation.  It is a ``super-separator'' that takes precedence over the @samp{@SEPNODEP} and @samp{@SEPDEP} standard separators.
 
 @end itemize
 
