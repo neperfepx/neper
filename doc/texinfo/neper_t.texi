@@ -1076,7 +1076,7 @@ standard ``Polygon File Format'' @file{.ply}.
 It contains a description of the tessellation written under the
 STL (STereoLithography) format @file{.stl}.
 If @samp{@option{-format stl:bycell}} was used, a separate file is written for each cell,
-whose name ends in @file{-@var{id}.stl}, where samp{@var{id}} is the cell identifier
+whose name ends in @file{-@var{id}.stl}, where @samp{@var{id}} is the cell identifier
 written with leading zeros.
 
 @item Wavefront geometry file: @file{.obj}

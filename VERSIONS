@@ -1,4 +1,4 @@
-New in 3.3.1-50 (15 Mar 2019):
+New in 3.3.1-51 (15 Mar 2019):
 - module -T: added -transform mergecell, rmcell, resetcellid and planecut,
   improved -morpho lamellar, improved -morpho diameq, added -format stl:bycell,
   made -morpho multiscale, added tessellation keys, made minor improvements.
