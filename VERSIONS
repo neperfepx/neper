@@ -1,3 +1,8 @@
+New in 3.3.1-51-mb (02 Apr 2019):
+- module -T: added new statistical distributions beta, lorentzian, studentst,
+  weibull, breitwigner, expnormal, moffat, pearson7, pseudovoigt
+  and skewnormal, added naive way to limit admissible x values.
+
 New in 3.3.1-51 (15 Mar 2019):
 - module -T: added -transform mergecell, rmcell, resetcellid and planecut,
   improved -morpho lamellar, improved -morpho diameq, added -format stl:bycell,

@@ -342,7 +342,7 @@ net_tess_opt_init_target_cvl (struct IN_T In, int level,
 
   if ((*pTOpt).cvlsig[var] > 0)
   {
-    ut_fct_set_normal ((*pTOpt).cvl + var, 0, (*pTOpt).cvlsig[var]);
+    ut_fct_set_normal ((*pTOpt).cvl + var, 0, (*pTOpt).cvlsig[var],0, 0, 0, 0); // not sure about this
     ut_fct_numericalfct ((*pTOpt).cvl[var], -3 * (*pTOpt).cvlsig[var],
                          3 * (*pTOpt).cvlsig[var], 100, (*pTOpt).cvl + var);
 

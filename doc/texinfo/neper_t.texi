@@ -336,23 +336,70 @@ diameter;@*
 Sizes@comma{} diameqs and sphericities can be defined by statistical
 distributions or on a per-cell basis@comma{} while centroids can be
 defined only on a per-cell basis.
-The statistical distributions can be: a
-Dirac distribution@comma{} @samp{dirac(@var{mean})}@comma{} a
-normal distribution@comma{} @samp{normal(@var{mean},@var{sig})}@comma{}
-lognormal distributions@comma{}
-@samp{lognormal(@var{mean},@var{sig})} or
-@samp{lognormal(@var{mean},@var{sig},1-x)} (which means the variable is
-(1 @math{-} the cell property))@comma{} or a sum of
-distributions of increasing averages@comma{} for example@comma{}
-@samp{0.3*normal(@var{mean1},@var{sig1})+0.7*normal(@var{mean2},@var{sig2})}.
-@samp{@code{mean}} represents the mean and
-@samp{@code{sig}} represents the standard deviation.
-If the number of cells is defined (see option @option{-n})@comma{} the
-size or diameq distribution is scaled to get the specified number
-of cells; otherwise@comma{} i.e.@ @option{-n} is set to @samp{from_morpho}@comma{} the number
-of cells is determined from the size or diameq distribution.
-An interval of possible values can also be provided using
-@samp{interval(@var{min}@comma{}@var{max})}.
+The statistical distributions can be:@*
+@bullet{} a Dirac distribution@comma{}@*
+@samp{dirac(@var{mean})}@*
+@bullet{} a beta function@comma{}@*
+@samp{beta(@var{x},@var{y}@{,@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@comma{}@*
+@var{x} and @var{y} must be @math{> 0}@*
+@bullet{} a Lorentzian distribution@comma{}@*
+@samp{lorentzian(@var{mean},@var{sig}@{,@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@*
+@bullet{} a normal distribution@comma{}@*
+@samp{normal(@var{mean},@var{sig}@{,@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@*
+@bullet{} a Student's t distribution@comma{}@*
+@samp{studentst(@var{mean},@var{sig}@{,@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@*
+@bullet{} a Weibull distribution@comma{}@*
+@samp{weibull(@var{k},@var{sig}@{,@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@comma{}@*
+@var{k} (@math{> 0}) represents the shape@*
+@bullet{} a lognormal distribution@comma{}@*
+@samp{lognormal(@var{mean},@var{sig}@{,@var{fromin},@var{toin},@var{fromtype},@var{totype},@var{expr}@})}@*
+If @var{expr} is assigned a number (@math{> -1})@comma{} the function values will
+be computed with regard to @math{@var{expr} @math{-} @var{x}}@*
+@bullet{} a Breit-Wigner distribution@comma{}@*
+@samp{breitwigner(@var{mean},@var{sig}@{,@var{gam},@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@comma{}@*
+@math{@var{gam} >= 0}@*
+@bullet{} an exp-normal distribution@comma{}@*
+@samp{expnormal(@var{mean},@var{sig}@{,@var{gam},@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@comma{}@*
+@math{@var{gam} > 0}@comma{} default is @var{gam} @math{=} @var{sig}@*
+@bullet{} a Moffat distribution@comma{}@*
+@samp{moffat(@var{mean},@var{sig}@{,@var{gam},@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@comma{}@*
+@var{gam} @math{> 0}@*
+@bullet{} a Pearson type VII distribution@comma{}@*
+@samp{pearson7(@var{mean},@var{sig}@{,@var{gam},@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@comma{}@*
+default is @var{gam} @math{=} 1.5@*
+@bullet{} a Pseudo-Voigt distribution@comma{}@*
+@samp{pseudovoigt(@var{mean},@var{sig}@{,@var{gam},@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@comma{}@*
+where @math{0 <= @var{gam} <= 1} has a default value of 0.5@*
+@bullet{} a skewed normal distribution@comma{}@*
+@samp{skewnormal(@var{mean},@var{sig}@{,@var{gam},@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@comma{}@*
+default is @var{gam} @math{=} @var{sig}@*
+A sum of distributions of increasing averages is also possible@comma{}
+for example@comma{} @samp{0.3*normal(@var{mean}=0.5,@var{sig}=0.1)+0.7*moffat(0.5,0.1)}.
+@samp{@code{mean}} represents the center (or mean)@comma{} @samp{@code{sig}} (@math{>} 0)
+represents the scale (usually the standard deviation).
+@samp{@code{gam}} is an additional parameter@comma{} the purpose of which depends on the given distribution function.
+Variables in @samp{@{@}} are optional@comma{} defaults are either given or 1 for @var{gam} and custom limits are disabled.
+Limits (lower limit: from@comma{} upper limit: to) for the admissible x values can be assigned
+using the keywords @samp{@code{frominclusive}}@comma{} @samp{@code{toinclusive}}
+for inclusive limits (@math{from <= x <= to}) or @samp{@code{fromexclusive}}@comma{} @samp{@code{toexclusive}}
+for exclusive ones  (@math{from < x < to}).
+If the correspondig keyword is used@comma{} the parameters can be given in any order@comma{} e.g.
+@samp{@code{moffat(@var{gam}=1,@var{fromex}=0,@var{toin}=1,@var{sig}=0.1,@var{mean}=0.5}}.
+If no keyword is given@comma{} e.g. @samp{@code{lognormal(0.25,0.01,0.7)}}@comma{}
+the parameters are read with regards to their position@comma{} as given above 
+(in this case @samp{@code{@var{mean}=0.25, @var{sig}=0.01, @var{expr}=0.7}}).
+Please note that @samp{@code{fromtype}} and @samp{@code{totype}} are not keywords@comma{}
+but rather a way to change the type of the limits without using keywords to explicitly assign
+one to them (0 = disable/ignore limit@comma{} 1 = inclusive limit@comma{} 2 = exclusive limit).
+It is possible to use keywords for some variables and let the rest be read in according to their position
+(e.g. @samp{@code{lognormal(@var{expr}=1,0.01,@var{mean}=0.25,1,0,@var{toex}=1,2}}@comma{} which results in:
+@samp{@code{@var{mean}=0.25, @var{sig}=0.01, @var{expr}=1, @var{amp}=1, @var{fromex}=0, @var{toex}=1}})@comma{}
+though that is not recommended.@*
+If the number of cells is defined (see option @option{-n})@comma{}
+the size or diameq distribution is scaled to get the specified number of cells;
+otherwise@comma{} i.e.@ @option{-n} is set to @samp{from_morpho}@comma{}
+the number of cells is determined from the size or diameq distribution.
+An interval of possible values can also be provided using @samp{interval(@var{min}@comma{}@var{max})}.
 A unique value can be assigned to all cells using @samp{@var{value}}@comma{}
 where @samp{@var{value}} is the value.
 Cell-by-cell values can be provided using
@@ -388,6 +435,8 @@ To specify several properties@comma{} combine them @w{with @samp{@SEPNODEP}}
  property and specified with @code{centroidsize}/@code{centroiddiameq}).
 ,
 any, voronoi}
+
+@c @bullet{} a Donaich distribution@comma{}@*@samp{donaich(@var{mean},@var{sig}@{,@var{gam},@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@comma{}@*default is @var{gam} @math{=} @var{sig}@*
 
 @opt{-morphooptiini, char_string,
 Specify the initial positions and/or weights of the
