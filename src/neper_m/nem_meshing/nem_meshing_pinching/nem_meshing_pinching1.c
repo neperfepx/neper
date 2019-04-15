@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_pinching_.h"
@@ -21,7 +21,7 @@ nem_meshing_pinching (struct IN_M In, struct MESHPARA MeshPara,
   // for each poly, looking for pinches at every 1d elt
   for (i = 1; i <= (*pTess).PolyQty; i++)
   {
-    if (nem_meshing_pinching_testpoly (In, i))
+    if (nem_meshing_pinching_testpoly (In, *pTess, Mesh, i))
       continue;
 
     neut_tess_poly_edges (*pTess, i, &edges, &edgeqty);

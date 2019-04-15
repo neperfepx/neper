@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2009, 2012 Romain Quey */
+/* Copyright (C) 2003-2019, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -60,6 +60,8 @@ extern int ut_file_cp (const char* frompath, const char* topath);
 extern int ut_file_filename (const char *name, char **pname);
 
 extern int ut_file_goto_lineheader (FILE *fp, const char* header);
+
+extern int ut_filename_istess (const char *filename);
 
 
 #endif /* UT_FILE_H */

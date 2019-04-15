@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 extern void nev_print_segment (FILE *, double *, double *, char *, char *);
@@ -18,7 +18,7 @@ extern void nev_print_triangle_edge (FILE *, double *, double *, double *,
 				     char *, char *);
 extern void nev_print_triangle (FILE *, double *, double *, double *, char *,
 				char *, char *);
-extern void nev_print_polygon (FILE *, int, double **, char *, char *, char *,
+extern void nev_print_polygon (FILE *, double*, int, double **, char *, char *, char *,
 			       int, double *, char *, char *);
 extern void nev_print_polygon_edge (FILE *, int, double **, char *, char *);
 
@@ -31,7 +31,3 @@ extern void nev_print_mesh2d (FILE *, struct NODES, struct MESH, int *,
 			      int **, char *, int);
 
 extern void nev_print_scale (FILE *, char *, char *, char *);
-
-extern void nev_print_rectangle (FILE * file, double *coo, double *size,
-				 char *texture, char *edge_rad,
-				 char *edge_texture);

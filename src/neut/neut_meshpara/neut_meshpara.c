@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_meshpara_.h"
@@ -15,9 +15,11 @@ neut_meshpara_set_zero (struct MESHPARA *pMeshPara)
   (*pMeshPara).edge_cl = NULL;
   (*pMeshPara).ver_cl = NULL;
 
-  (*pMeshPara).face_eq = NULL;
+  (*pMeshPara).mesh3dclreps = NULL;
+
   (*pMeshPara).face_op = NULL;
   (*pMeshPara).edge_op = NULL;
+  (*pMeshPara).face_eq = NULL;
 
   return;
 }
@@ -32,6 +34,8 @@ neut_meshpara_free (struct MESHPARA MeshPara)
   ut_free_1d (MeshPara.face_cl);
   ut_free_1d (MeshPara.edge_cl);
   ut_free_1d (MeshPara.ver_cl);
+
+  ut_free_1d (MeshPara.mesh3dclreps);
 
   return;
 }

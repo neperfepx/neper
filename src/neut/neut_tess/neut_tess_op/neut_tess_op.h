@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -118,6 +118,7 @@ extern "C"
 ///
   extern void neut_tess_init_facedom_face_v (struct TESS *pTess, int face);
 
+  // fails for non-convex domains
   extern int neut_tess_init_edgedom_fromfacedom (struct TESS *pTess);
   extern int neut_tess_init_edgedom_fromedgeface (struct TESS *pTess);
 
@@ -126,6 +127,7 @@ extern "C"
 /// Requirements: uses the Tess (incl. Domain) definition and FaceDom
 ///
 ///
+  // fails for non-convex domains
   extern int neut_tess_init_verdom_fromfacedom (struct TESS *pTess);
   extern int neut_tess_init_verdom_fromedgedom (struct TESS *pTess);
   extern int neut_tess_init_verdom_fromveredge (struct TESS *pTess);
@@ -163,8 +165,8 @@ extern "C"
 ///
   extern void neut_tess_init_domain (struct TESS *pTess);
   extern void neut_tess_init_domain_3d (struct TESS *pTess);
+  extern void neut_tess_init_domain_3d_fromdomfaces (struct TESS *pTess);
   extern void neut_tess_init_domain_2d (struct TESS *pTess);
-  extern void neut_tess_init_domain_1d (struct TESS *pTess);
 
 /// \brief Initialize the domain of a TESS using a POLY
 ///
@@ -211,12 +213,19 @@ extern "C"
   extern void neut_tess_face_addedges (struct TESS *pTess, int face,
 				       int *edges, int edgeqty);
   extern void neut_tess_face_setedges (struct TESS *pTess, int face,
-				       int *edges, int edgeqty);
+				       int *edges, int edgeqty,
+                                       int firstedgeori);
   extern void neut_tess_cell_addcentre (struct TESS *pTess, int cell,
 					double *centre, double weight);
   extern void neut_tess_poly_addface (struct TESS *pTess, int poly, int
 				      face, int ori);
   extern void neut_tess_poly_rmface (struct TESS *pTess, int poly, int face);
+  extern void neut_tess_edge_rmface (struct TESS *pTess, int edge, int face);
+  extern void neut_tess_domface_addface (struct TESS *pTess, int domface, int face);
+  extern void neut_tess_domface_rmface (struct TESS *pTess, int domface, int face);
+  extern void neut_tess_domedge_rmedge (struct TESS *pTess, int domedge, int edge);
+  extern void neut_tess_domedge_addedge (struct TESS *pTess, int domedge, int edge);
+  extern void neut_tess_ver_rmedge (struct TESS *pTess, int ver, int edge);
   extern void neut_tess_face_changepoly (struct TESS *pTess, int face, int poly1,
 					 int poly2);
   extern void neut_tess_init_veredge (struct TESS *pTess);
@@ -243,6 +252,15 @@ extern "C"
   extern void neut_tess_init_edgefacenb_per (struct TESS *pTess);
 
   extern void neut_tess_init_seeds_fromcell (struct TESS *pTess);
+
+  extern void neut_tess_poly_remove (struct TESS *pTess, int poly);
+  extern void neut_tess_polys_remove (struct TESS *pTess, int *polys, int polyqty);
+  extern void neut_tess_polys_remove_nocompress (struct TESS *pTess, int *polys, int polyqty);
+  extern int  neut_tess_cellexpr_remove (struct TESS *pTess, char *expr);
+
+  extern void neut_tess_resetcellid (struct TESS *pTess);
+
+  extern int neut_tess_init_domfacez0 (struct TESS *pTess);
 
 #endif				/* NEUT_TESS_OP_H */
 

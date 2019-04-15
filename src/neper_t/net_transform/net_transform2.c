@@ -1,11 +1,11 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_transform_.h"
 
 void
-net_transform_tess (struct IN_T In, struct TESS *pTess)
+net_transform_tess (struct IN_T In, struct TESS Dom, struct TESS *pTess)
 {
   int i, partqty, status;
   char **parts = NULL;
@@ -21,9 +21,10 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
       ut_print_message (0, 2, "Scaling...\n");
       status = sscanf (parts[i], "scale(%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2);
       if (status == 2)
-	tmp[2] = 1;
+        tmp[2] = 1;
       neut_tess_scale (pTess, tmp[0], tmp[1], tmp[2]);
     }
+
     else if (!strncmp (parts[i], "rotate", 6))
     {
       ut_print_message (0, 2, "Rotating...\n");
@@ -32,14 +33,89 @@ net_transform_tess (struct IN_T In, struct TESS *pTess)
       ol_rtheta_g (tmp, theta, g);
       neut_tess_rotate (pTess, g);
     }
+
     else if (!strncmp (parts[i], "translate", 9))
     {
       ut_print_message (0, 2, "Translating...\n");
       status = sscanf (parts[i], "translate(%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2);
       if (status == 2)
-	tmp[2] = 1;
+        tmp[2] = 1;
       neut_tess_shift (pTess, tmp[0], tmp[1], tmp[2]);
     }
+
+    else if (!strncmp (parts[i], "cut", 3))
+    {
+      ut_print_message (1, 2, "Cutting (experimental)...\n");
+      net_transform_tess_cut (parts[i], Dom, pTess);
+    }
+
+    else if (!strncmp (parts[i], "mergecell", 9))
+    {
+      ut_print_message (0, 2, "Merging cells...\n");
+
+      int j, exprqty, qty;
+      char *fct = NULL, **exprs = NULL;
+
+      ut_string_function_separate_exprs (parts[i], &fct, &exprs, &exprqty);
+
+      for (j = 0; j < exprqty; j++)
+      {
+        qty = neut_tess_cellexpr_merge (pTess, exprs[j], 1);
+        ut_print_message (0, 3, "Merged %d cells...\n", qty);
+      }
+
+      ut_free_1d_char (fct);
+      ut_free_2d_char (exprs, exprqty);
+    }
+
+    else if (!strncmp (parts[i], "rmcell", 6))
+    {
+      ut_print_message (0, 2, "Removing cells...\n");
+
+      int j, exprqty, qty;
+      char *fct = NULL, **exprs = NULL;
+
+      ut_string_function_separate_exprs (parts[i], &fct, &exprs, &exprqty);
+
+      for (j = 0; j < exprqty; j++)
+      {
+        qty = neut_tess_cellexpr_remove (pTess, exprs[j]);
+        ut_print_message (0, 3, "Removed %d cells...\n", qty);
+      }
+
+      ut_free_1d_char (fct);
+      ut_free_2d_char (exprs, exprqty);
+    }
+
+    else if (!strcmp (parts[i], "resetcellid"))
+    {
+      ut_print_message (0, 2, "Resetting cell ids...\n");
+      neut_tess_resetcellid (pTess);
+    }
+
+    else if (!strncmp (parts[i], "planecut(", 9))
+    {
+      int j, exprqty;
+      char *fct = NULL, **exprs = NULL;
+
+      ut_print_message (0, 2, "Cutting by plane...\n");
+
+      ut_string_function_separate_exprs (parts[i], &fct, &exprs, &exprqty);
+      if (exprqty != 4)
+        ut_print_message (2, 2, "Failed to parse expression `%s'.\n", parts[i]);
+
+      double *eq = ut_alloc_1d (4);
+      for (j = 0; j < 4; j++)
+        sscanf (exprs[j], "%lf", eq + j);
+      struct SEEDSET SSet;
+      neut_seedset_set_zero (&SSet);
+      net_tess_seedset (*pTess, &SSet);
+      ut_array_1d_scale (eq, 4, 1. / ut_array_1d_norm (eq + 1, 3));
+      net_tess_clip (SSet, pTess, eq);
+    }
+
+    else
+      ut_print_message (1, 3, "Skipping `%s'...\n", parts[i]);
   }
 
   ol_g_free (g);

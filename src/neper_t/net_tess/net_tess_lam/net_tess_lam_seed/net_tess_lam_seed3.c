@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tess_lam_seed_.h"
@@ -59,6 +59,8 @@ net_tess_lam_seed_readargs_v (char *value,
     ut_string_string ("random", pvtype);
   else if (!strncmp (value, "random(", 7))
     ut_string_string (value, pvtype);
+  else if (!strncmp (value, "(", 1))
+    ut_string_string (value, pvtype);
   else if (!strncmp (value, "crysdir(", 8))
     ut_string_string (value, pvtype);
   else if (ut_string_filename (value))
@@ -72,6 +74,36 @@ net_tess_lam_seed_readargs_v (char *value,
   }
   else
     ut_print_message (2, 2, "Failed to read 'v' argument.\n");
+
+  ut_free_1d_char (mid);
+
+  return 0;
+}
+
+int
+net_tess_lam_seed_readargs_pos (char *value,
+                                struct MTESS MTess, struct TESS *Tess,
+                                int domtess, int dompoly,
+                                char **ppostype, char **ppos)
+{
+  char *mid = NULL;
+
+  (*ppos) = ut_alloc_1d_char (1000);
+
+  // reading string
+  if (ut_string_filename (value))
+  {
+    ut_string_string ("file", ppostype);
+    neut_mtess_tess_poly_mid (MTess, Tess[domtess], dompoly, &mid);
+    net_multiscale_arg_0d_char_fscanf (value, mid, *ppos);
+  }
+  else
+  {
+    ut_string_string ("value", ppostype);
+    ut_string_string (value, ppos);
+  }
+
+  ut_free_1d_char (mid);
 
   return 0;
 }
@@ -130,6 +162,12 @@ net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
     ut_free_2d (pts, ptqty);
   }
 
+  else if (!strncmp (vtype, "(", 1))
+  {
+    sscanf (vtype, "(%lf,%lf,%lf)", n, n + 1, n + 2);
+    ut_array_1d_normalize (n, 3);
+  }
+
   else if (!strncmp (vtype, "crysdir(", 8))
   {
     double **g = ol_g_alloc ();
@@ -149,14 +187,15 @@ net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
 
 int
 net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng *r, double *n,
-		      char *wtype, double *w, int wqty,
-		      struct SEEDSET *pSSet)
+		      char *wtype, double *w, int wqty, char* postype,
+		      char *pos, struct SEEDSET *pSSet)
 {
   int w_id;
   double coo, distmin, distmax;
   double *plane = ut_alloc_1d (4);
 
-  net_tess_lam_seed_set_w_pre (r, Dom, n, wtype, w, wqty, plane, &distmin, &distmax);
+  net_tess_lam_seed_set_w_pre (r, Dom, n, wtype, w, wqty, postype, pos, plane,
+                               &distmin, &distmax);
 
   (*pSSet).N = 0;
   coo = plane[0];

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_load_.h"
@@ -11,7 +11,7 @@ nev_load (char *string, struct TESS *pTess, struct TESR *pTesr,
 	  struct NODEDATA *pNodeData, struct MESHDATA *MeshData,
 	  struct POINTDATA *pPointData)
 {
-  int i, qty, dim;
+  int i, j, qty, dim;
   char **list = NULL;
 
   if ((*pTess).VerQty == 0 && (*pTesr).CellQty == 0
@@ -51,14 +51,15 @@ nev_load (char *string, struct TESS *pTess, struct TESR *pTesr,
 	if (Mesh[3].EltQty > 0)
 	{
 	  ut_print_message (0, 1, "Reconstructing mesh...\n");
+          // does not work for hex meshes, due to topological issues
 	  if (!strcmp (Mesh[neut_mesh_array_dim (Mesh)].EltType,
 		       "tri") && (*pTesr).Dim == 0 && (*pTess).Dim == 0)
 	    nem_reconstruct_mesh ("3,2,1,0", pNodes, Mesh, pTess);
-	  else
-	    nem_reconstruct_mesh ("3,2,1,0", pNodes, Mesh, NULL);
 	}
-	else if (Mesh[2].EltQty > 0)
-	  neut_mesh_init_nodeelts (Mesh + 2, (*pNodes).NodeQty);
+
+        for (j = 0; j <= 3; j++)
+          if (!neut_mesh_isvoid (Mesh[j]) && !(Mesh[j].NodeElts))
+            neut_mesh_init_nodeelts (Mesh + j, (*pNodes).NodeQty);
       }
       else			// point
       {

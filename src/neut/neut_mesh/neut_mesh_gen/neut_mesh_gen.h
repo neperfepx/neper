@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -41,6 +41,14 @@ extern int neut_mesh_isvoid (struct MESH Mesh);
   extern void neut_mesh_face_boundnodes (struct MESH Mesh1D, struct TESS
 					 Tess, int face, int **pnodes,
 					 int *pnodeqty);
+
+/// \brief Get the coordinates of the nodes of the boundary of a Tess face.
+///
+///
+///
+extern void neut_mesh_face_boundnodecoos (struct NODES Nodes, struct MESH
+                                          Mesh1D, struct TESS Tess, int face,
+                                          double ***pnodecoos, int *pnodeqty);
 
 /// \brief Get the mesh of the boundary of a TESS poly.
 ///

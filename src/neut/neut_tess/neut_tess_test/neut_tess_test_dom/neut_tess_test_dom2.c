@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_test_dom_.h"
@@ -75,7 +75,7 @@ neut_tess_test_dom_def (struct TESS Tess, int verbosity)
       {
 	face = Tess.DomEdgeFaceNb[i][j];
 	if (ut_array_1d_int_eltpos
-	    (Tess.DomFaceEdgeNb[face] + 1, Tess.DomFaceVerQty[face], i) == -1)
+	    (Tess.DomFaceEdgeNb[face] + 1, Tess.DomFaceEdgeQty[face], i) == -1)
 	{
 	  if (verbosity)
 	    ut_print_message (2, 4,
@@ -99,11 +99,20 @@ neut_tess_test_dom_def (struct TESS Tess, int verbosity)
 
   for (i = 1; i <= Tess.DomFaceQty; i++)
   {
-    if (Tess.DomFaceVerQty[i] < 3)
+    if (Tess.DomFaceVerQty[i] < 0)
     {
       if (verbosity)
-	ut_print_message (2, 4, "domface %d has %d < 3 vertices\n", i,
+	ut_print_message (2, 4, "domface %d has %d < 0 vertices\n", i,
 			  Tess.DomFaceVerQty[i]);
+
+      return 8;
+    }
+
+    if (Tess.DomFaceEdgeQty[i] < 0)
+    {
+      if (verbosity)
+	ut_print_message (2, 4, "domface %d has %d < 0 edges\n", i,
+			  Tess.DomFaceEdgeQty[i]);
 
       return 8;
     }
@@ -127,7 +136,7 @@ neut_tess_test_dom_def (struct TESS Tess, int verbosity)
       ut_free_1d_int (tmp);
     }
 
-    for (j = 1; j <= Tess.DomFaceVerQty[i]; j++)
+    for (j = 1; j <= Tess.DomFaceEdgeQty[i]; j++)
     {
       edge = Tess.DomFaceEdgeNb[i][j];
 
@@ -408,7 +417,7 @@ neut_tess_test_dom_tessface (struct TESS Tess, int verbosity)
 	  dface = Tess.VerDom[i][1];
 	  int *tmp = NULL;
 	  int qty;
-	  neut_tess_domface_ver (Tess, dface, &tmp, &qty);
+	  neut_tess_domface_vers (Tess, dface, &tmp, &qty);
 	  if (ut_array_1d_int_eltpos (tmp, qty, i) == -1)
 	  {
 	    ut_free_1d_int (tmp);

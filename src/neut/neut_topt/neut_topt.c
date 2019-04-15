@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_topt_.h"
@@ -18,6 +18,7 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   neut_crys_set_zero (&(*pTOpt).Crys);
   (*pTOpt).Poly = NULL;
   (*pTOpt).CellSize = NULL;
+  (*pTOpt).DomParms = NULL;
 
   (*pTOpt).aspratio = NULL;
   (*pTOpt).activedim = NULL;
@@ -268,6 +269,7 @@ neut_topt_free (struct TOPT *pTOpt)
   neut_tess_free (&(*pTOpt).DomPer);
   neut_poly_array_free (&(*pTOpt).Poly, (*pTOpt).SSet.N);
   ut_free_1d ((*pTOpt).CellSize);
+  ut_free_1d ((*pTOpt).DomParms);
   neut_seedset_free (&(*pTOpt).SSet); // must be freed at the end (used to free others)
   // doing nothing to pTess (pointer only)
 

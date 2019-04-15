@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -58,6 +58,7 @@ extern void net_tess_opt_init_current (struct TOPT *pTOpt);
 extern void net_tess_opt_init_bounds (struct TOPT *pTOpt);
 extern void net_tess_opt_init_bounds_seeds (struct TOPT *pTOpt);
 extern void net_tess_opt_init_bounds_crystal (struct TOPT *pTOpt);
+extern void net_tess_opt_init_bounds_domain (struct TOPT *pTOpt);
 
 extern void net_tess_opt_init_parms_objective (char *distribobjective,
 					       struct TOPT *pTOpt);

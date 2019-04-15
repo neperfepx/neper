@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_x_.h"
@@ -92,6 +92,48 @@ net_tess_opt_comp_x_crystal (struct TOPT *pTOpt, double **px)
     {
       (*pTOpt).x_pvar[i] = (*pTOpt).Crys.C + 2;
       (*px)[i] = (*pTOpt).Crys.C[2];
+    }
+    else
+      abort ();
+
+  if ((*pTOpt).iter == 0)
+    for (i = 0; i < qty; i++)
+      if ((*px)[i] < (*pTOpt).boundl[i] || (*px)[i] > (*pTOpt).boundu[i])
+	ut_print_message (2, 3, "Initial solution out of bounds.\n");
+
+  ut_free_2d_char (parts, qty);
+
+  return;
+}
+
+void
+net_tess_opt_comp_x_domain (struct TOPT *pTOpt, double **px)
+{
+  int i, qty;
+  char **parts = NULL;
+
+  ut_string_separate ((*pTOpt).dof, NEUT_SEP_NODEP, &parts, &qty);
+
+  (*px) = ut_alloc_1d (qty);
+  (*pTOpt).xqty = qty;
+
+  (*pTOpt).x_pvar = ut_alloc_1d_pdouble ((*pTOpt).xqty);
+
+  for (i = 0; i < qty; i++)
+    if (!strcmp (parts[i], "domain1"))
+    {
+      (*pTOpt).x_pvar[i] = (*pTOpt).DomParms;
+      (*px)[i] = (*pTOpt).DomParms[0];
+    }
+    else if (!strcmp (parts[i], "domain2"))
+    {
+      (*pTOpt).x_pvar[i] = (*pTOpt).DomParms + 1;
+      (*px)[i] = (*pTOpt).DomParms[1];
+    }
+    else if (!strcmp (parts[i], "domain3"))
+    {
+      (*pTOpt).x_pvar[i] = (*pTOpt).DomParms + 2;
+      (*px)[i] = (*pTOpt).DomParms[2];
     }
     else
       abort ();

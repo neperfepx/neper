@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nem_nsets_.h"
@@ -102,7 +102,7 @@ nem_nsets_2dbody_tess (struct TESS Tess, struct NSET *NSet)
     ut_array_1d_int_memcpy (NSet[2].nodes[i], NSet[2].nodeqty[i],
 			    NSet[2].nodes[ref]);
 
-    for (j = 1; j <= Tess.DomFaceVerQty[ref]; j++)
+    for (j = 1; j <= Tess.DomFaceEdgeQty[ref]; j++)
     {
       edge = Tess.DomFaceEdgeNb[ref][j];
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2009, 2012 Romain Quey */
+/* Copyright (C) 2003-2019, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -27,6 +27,7 @@ extern int ut_space_indomain2d_int (int **, int, int *);
 extern int ut_space_planeside (double *, double *);
 extern int ut_space_planeside_tol (double *, double *, double);
 extern int ut_space_planeside_2d (double *, double *);
+extern int ut_space_sphereside (double *, double, double *);
 
 extern double ut_space_trianglearea (double *, double *, double *);
 extern void ut_space_trianglenormal (double *, double *, double *, double *);
@@ -52,7 +53,9 @@ extern int ut_space_point_plane_dist_signed (double*, double*, double*);
 extern int ut_space_segment_plane_intersect (double*, double*, double*, double*);
 #endif
 
-extern int ut_space_point_line_dist (double*, double*, double*);
+extern int ut_space_point_line_dist_2d (double*, double*, double*);
+
+extern int ut_space_point_line_dist (double*, double*, double*, double*);
 
 extern void ut_space_points_invect_plane (double *, double *, double *,
 					  double *);
@@ -142,6 +145,42 @@ extern void ut_space_size_radeq (int dim, double size, double *pradeq);
 extern void ut_space_random (gsl_rng *r, int *dims, int dimqty, double mindist,
 			     double maxdist, double *v);
 #endif
+
+extern void ut_space_polygon_triangles (double *eq, double **coos, int cooqty,
+                                        int ***ptripos, int *ptriqty);
+extern void ut_space_point_plane_mirror (double *P, double *eq, double *P2);
+extern void ut_space_point_sphere_mirror (double *P, double *C, double rad, double *P2);
+extern void ut_space_point_cyl_mirror (double *point, double *basis, double *axis, double rad, double *mirror);
+extern void ut_space_point_cyl2_mirror (double *point, double *basis, double *axis, double *ell1, double *ell2, double rad1, double rad2, double *mirror);
+extern void ut_space_point_torus_mirror (double *P, double *C, double *N, double R, double R2, double *mirror);
+
+extern void ut_space_point_plane_proj (double *point, double *eq, double *proj);
+
+extern void ut_space_point_cyl_proj (double *point, double *basis, double *axis, double rad, double *proj);
+extern void ut_space_point_sphere_proj (double *point, double *c, double rad, double *proj);
+extern void ut_space_point_torus_proj (double *P, double *C, double *N, double R, double R2, double *proj);
+extern void ut_space_point_cyl2_proj (double *point, double *basis, double *axis,
+                                      double *ell1, double *ell2, double rad1, double rad2,
+                                      double *proj);
+
+extern int ut_space_cylside (double *A, double *v, double rad, double *coo);
+extern int ut_space_cyl2side (double *A, double *v, double *ell1, double *ell2,
+                              double rad1, double rad2, double *coo);
+
+extern void ut_space_pointset_plane (double **coos, int cooqty, double *eq);
+
+extern void ut_space_point_sphere_tangentplane (double *point, double *c, double rad, double *plane);
+extern void ut_space_point_cyl_tangentplane (double *point, double *basis, double *axis, double rad, double *planeeq);
+extern void ut_space_point_cyl2_tangentplane (double *point, double *basis, double *axis, double *ell1, double *ell2, double rad1, double rad2, double *planeeq);
+extern void ut_space_point_torus_tangentplane (double *point, double *basis, double *axis, double rad, double rad2, double *planeeq);
+
+extern void ut_space_point_circle_dist (double *P, double *C, double *N, double rad, double *pdist, double *K);
+
+extern void ut_space_point_ellipse_dist (double *P, double *C, double *d1, double *d2,
+                             double *d3, double rad1, double rad2,
+                             double *pdist, double *K2);
+
+extern void ut_space_point_normal_plane (double *C, double *N, double *plane);
 
 #endif /* UT_SPACE_H */
 

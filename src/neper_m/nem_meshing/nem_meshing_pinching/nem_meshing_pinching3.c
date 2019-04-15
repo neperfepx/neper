@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_pinching_.h"
@@ -83,14 +83,14 @@ nem_meshing_pinching_fix_proj (struct MESHPARA MeshPara, struct TESS *pTess,
     neut_tess_face_interpolmesh (*pTess, elset, &Nint, &Mint);
 
     neut_node_proj_alongontomesh ((*pNodes).NodeCoo[newnode],
-				  MeshPara.face_eq[elset],
+				  MeshPara.face_eq[elset] + 1,
 				  Nint, Mint, 1);
   }
 
   // Projecting new node in case of remeshing
   else
     neut_node_proj_alongontomesh ((*pNodes).NodeCoo[newnode],
-				  MeshPara.face_eq[elset],
+				  MeshPara.face_eq[elset] + 1,
 				  RNodes, RMesh[2], elset);
 
   neut_nodes_free (&Nint);

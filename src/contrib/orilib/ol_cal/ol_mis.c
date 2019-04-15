@@ -26,3 +26,19 @@ ol_q_lnq (double* q, double* lnq)
 
   return;
 }
+
+void
+ol_lnq_q (double* lnq, double* q)
+{
+  double theta, *r = ol_r_alloc ();
+
+  theta = 2 * ut_array_1d_norm (lnq, 3);
+  ut_array_1d_memcpy (r, 3, lnq);
+  ol_r_set_unit (r);
+
+  ol_rtheta_q (r, theta, q);
+
+  ol_r_free (r);
+
+  return;
+}

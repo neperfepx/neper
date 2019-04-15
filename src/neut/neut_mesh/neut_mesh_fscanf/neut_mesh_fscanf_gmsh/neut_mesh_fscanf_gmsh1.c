@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fscanf_gmsh_.h"
@@ -12,7 +12,7 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH
   int *node_nbs = NULL;
   int leftelts;
   struct MESH Trash;
-  int contiguous;
+  int status, contiguous;
   char *mode = NULL;
 
   neut_mesh_set_zero (&Trash);
@@ -50,6 +50,66 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH
     ut_print_message (2, 0, "Reading of mesh file failed! (Element quantity does not match (leftelts = %d.)\n", leftelts);
 
   ReadEltsFoot (file);
+
+  int i, dim, id, qty;
+  char *string = ut_alloc_1d_char (1000);
+
+  if (pMesh0D)
+  {
+    (*pMesh0D).ElsetLabels = ut_alloc_2d_char ((*pMesh0D).ElsetQty + 1, 100);
+    for (i = 1; i <= (*pMesh0D).ElsetQty; i++)
+      sprintf ((*pMesh0D).ElsetLabels[i], "ver%d", i);
+  }
+
+  if (pMesh1D)
+  {
+    (*pMesh1D).ElsetLabels = ut_alloc_2d_char ((*pMesh1D).ElsetQty + 1, 100);
+    for (i = 1; i <= (*pMesh1D).ElsetQty; i++)
+      sprintf ((*pMesh1D).ElsetLabels[i], "edge%d", i);
+  }
+
+  if (pMesh2D)
+  {
+    (*pMesh2D).ElsetLabels = ut_alloc_2d_char ((*pMesh2D).ElsetQty + 1, 100);
+    for (i = 1; i <= (*pMesh2D).ElsetQty; i++)
+      sprintf ((*pMesh2D).ElsetLabels[i], "face%d", i);
+  }
+
+  if (pMesh3D)
+  {
+    (*pMesh3D).ElsetLabels = ut_alloc_2d_char ((*pMesh3D).ElsetQty + 1, 100);
+    for (i = 1; i <= (*pMesh3D).ElsetQty; i++)
+      sprintf ((*pMesh3D).ElsetLabels[i], "poly%d", i);
+  }
+
+  ut_file_nextstring (file, string);
+
+  if (!strcmp (string, "$PhysicalNames"))
+  {
+    ut_file_skip (file, 1);
+    if (fscanf (file, "%d", &qty) != 1)
+      abort ();
+
+    for (i = 1; i <= qty; i++)
+    {
+      if (fscanf (file, "%d%d", &dim, &id) != 2)
+        abort ();
+
+      if (dim == 0)
+        status = fscanf (file, "%s", (*pMesh0D).ElsetLabels[id]);
+      else if (dim == 1)
+        status = fscanf (file, "%s", (*pMesh1D).ElsetLabels[id]);
+      else if (dim == 2)
+        status = fscanf (file, "%s", (*pMesh2D).ElsetLabels[id]);
+      else if (dim == 3)
+        status = fscanf (file, "%s", (*pMesh3D).ElsetLabels[id]);
+
+      if (status != 1)
+        abort ();
+    }
+  }
+
+  ut_free_1d_char (string);
   ut_free_1d_char (mode);
 
   return;

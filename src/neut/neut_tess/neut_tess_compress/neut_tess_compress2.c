@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_compress_.h"
@@ -76,6 +76,9 @@ neut_tess_compress_faces (struct TESS *pTess)
   if ((*pTess).Dim == 2)
     (*pTess).CellQty = pos;
 
+  if ((*pTess).DomFaceQty > 0)
+    neut_tess_init_domtessface (pTess);
+
   return;
 }
 
@@ -108,6 +111,9 @@ neut_tess_compress_edges (struct TESS *pTess)
 
   (*pTess).EdgeQty = pos;
 
+  if ((*pTess).DomEdgeQty > 0)
+    neut_tess_init_domtessedge (pTess);
+
   return;
 }
 
@@ -135,6 +141,91 @@ neut_tess_compress_vers (struct TESS *pTess)
   (*pTess).VerState = ut_realloc_1d_int ((*pTess).VerState, pos + 1);
 
   (*pTess).VerQty = pos;
+
+  if ((*pTess).DomVerQty > 0)
+    neut_tess_init_domtessver (pTess);
+
+
+  return;
+}
+
+void
+neut_tess_compress_domfaces (struct TESS *pTess)
+{
+  int i, domfaceqty, *domface_old_new = NULL;
+
+  if ((*pTess).Dim == 2)
+    return;
+
+  domface_old_new = ut_alloc_1d_int ((*pTess).DomFaceQty + 1);
+
+  domfaceqty = 0;
+  for (i = 1; i <= (*pTess).DomFaceQty; i++)
+    if ((*pTess).DomTessFaceQty[i] > 0)
+      domface_old_new[i] = ++domfaceqty;
+
+  if (domfaceqty < (*pTess).DomFaceQty)
+    for (i = 1; i <= (*pTess).DomFaceQty; i++)
+      if ((*pTess).DomTessFaceQty[i] > 0)
+        neut_tess_compress_movedomface (pTess, i, domface_old_new[i]);
+
+  (*pTess).DomFaceQty = domfaceqty;
+
+  ut_free_1d_int (domface_old_new);
+
+  return;
+}
+
+void
+neut_tess_compress_domedges (struct TESS *pTess)
+{
+  int i, domedgeqty, *domedge_old_new = NULL;
+
+  if ((*pTess).Dim == 2)
+    return;
+
+  domedge_old_new = ut_alloc_1d_int ((*pTess).DomEdgeQty + 1);
+
+  domedgeqty = 0;
+  for (i = 1; i <= (*pTess).DomEdgeQty; i++)
+    if ((*pTess).DomTessEdgeQty[i] > 0)
+      domedge_old_new[i] = ++domedgeqty;
+
+  if (domedgeqty < (*pTess).DomEdgeQty)
+    for (i = 1; i <= (*pTess).DomEdgeQty; i++)
+      if ((*pTess).DomTessEdgeQty[i] > 0)
+        neut_tess_compress_movedomedge (pTess, i, domedge_old_new[i]);
+
+  (*pTess).DomEdgeQty = domedgeqty;
+
+  ut_free_1d_int (domedge_old_new);
+
+  return;
+}
+
+void
+neut_tess_compress_domvers (struct TESS *pTess)
+{
+  int i, domverqty, *domver_old_new = NULL;
+
+  if ((*pTess).Dim == 2)
+    return;
+
+  domver_old_new = ut_alloc_1d_int ((*pTess).DomEdgeQty + 1);
+
+  domverqty = 0;
+  for (i = 1; i <= (*pTess).DomEdgeQty; i++)
+    if ((*pTess).DomTessEdgeQty[i] > 0)
+      domver_old_new[i] = ++domverqty;
+
+  if (domverqty < (*pTess).DomEdgeQty)
+    for (i = 1; i <= (*pTess).DomEdgeQty; i++)
+      if ((*pTess).DomTessEdgeQty[i] > 0)
+        neut_tess_compress_movedomver (pTess, i, domver_old_new[i]);
+
+  (*pTess).DomEdgeQty = domverqty;
+
+  ut_free_1d_int (domver_old_new);
 
   return;
 }

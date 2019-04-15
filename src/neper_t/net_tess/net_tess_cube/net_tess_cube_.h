@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -20,7 +20,7 @@ extern void net_tess_cube_ids (int *N, int ***verid, int ****edgeid,
 			       int ****faceid, int ***polyid);
 extern void net_tess_cube_cells (int *N, struct TESS *pTess);
 extern void net_tess_cube_sset (struct TESS Tess, struct SEEDSET *pSSet);
-extern void net_tess_cube_vers (int *N, struct TESS PTess, int ***verid,
+extern void net_tess_cube_vers (int *N, double **bbox, int ***verid,
 				struct TESS *pTess);
 extern void net_tess_cube_edges (int *N, int ***verid, int ****edgeid,
 				 struct TESS *pTess);

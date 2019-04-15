@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_uniform_.h"
@@ -20,9 +20,6 @@ net_ori_uniform_opt_forces_ser (struct OL_SET *pOSet, double **f, double *E)
     {
       double Eij, *fij = ut_alloc_1d (3);
       net_ori_uniform_opt_forces_comp (pOSet, i, j, fij, &Eij);
-
-      if (isnan (Eij))
-        printf ("i = %d j = %d\n", i, j);
 
       Eij *= 0.5;
 #pragma omp atomic
@@ -78,9 +75,6 @@ net_ori_uniform_opt_forces_ser_neigh (struct OL_SET *pOSet,
         continue;
 
       net_ori_uniform_opt_forces_comp_neigh (pOSet, i, neighs[j], fij, &Eij, pqcloud);
-
-      if (isnan (Eij))
-        printf ("i = %d j = %d\n", i, j);
 
       Eij *= 0.5;
       E[i] += Eij;

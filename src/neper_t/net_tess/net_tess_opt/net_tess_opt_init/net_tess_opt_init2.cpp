@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_.h"
@@ -25,6 +25,8 @@ net_tess_opt_init_general (struct IN_T In, int level, struct MTESS MTess,
     ut_string_string ("seeds", &((*pTOpt).optitype));
   else if (strstr ((*pTOpt).dof, "c"))
     ut_string_string ("crystal", &((*pTOpt).optitype));
+  else if (strstr ((*pTOpt).dof, "d"))
+    ut_string_string ("domain", &((*pTOpt).optitype));
   else
     abort ();
 
@@ -233,6 +235,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
     parts = NULL;
 
     isval = ut_string_isanumber ((*pTOpt).tarexpr[i]);
+
     if (!strncmp ((*pTOpt).tarexpr[i], "file", 4)
         || !strcmp ((*pTOpt).tarexpr[i], "seed")
         || !strncmp ((*pTOpt).tarexpr[i], "interval", 8) || isval)
@@ -366,6 +369,11 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
           if (ut_string_filename ((*pTOpt).tarexpr[i]))
             (*pTOpt).CellQty = ut_file_nbwords ((*pTOpt).tarexpr[i])
               / (*pTOpt).tarcellvalqty[i];
+          else if (isval)
+          {
+            sscanf ((*pTOpt).tarexpr[i], "%lf", &mean);
+            net_tess_opt_init_ref (pTOpt, mean, i);
+          }
           else
             abort ();
         }
@@ -507,8 +515,24 @@ net_tess_opt_init_domain (struct IN_T In, struct TESS PTess, int cell,
                        1 / (*pTOpt).aspratio[1], 1 / (*pTOpt).aspratio[2]);
   }
 
-  if (PTess.Level == 0 && !strcmp (PTess.DomType, "cube"))
-    ut_string_string ("cube", &(*pTOpt).DomType);
+  if (PTess.Level == 0)
+  {
+    ut_string_string (PTess.DomType, &(*pTOpt).DomType);
+    char *fct = NULL;
+    int i, varqty;
+    char **vars = NULL;
+    char **vals = NULL;
+
+    ut_string_function_separate (In.domain, &fct, &vars, &vals, &varqty);
+
+    (*pTOpt).DomParms = ut_alloc_1d (varqty);
+    for (i = 0; i < varqty; i++)
+      sscanf (vals[i], "%lf", (*pTOpt).DomParms + i);
+
+    ut_free_1d_char (fct);
+    ut_free_2d_char (vars, varqty);
+    ut_free_2d_char (vals, varqty);
+  }
 
   if (!ut_array_1d_int_sum (In.periodic, 3))
     net_tess_poly ((*pTOpt).Dom, 1, &(*pTOpt).DomPoly);
@@ -626,6 +650,14 @@ net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTess,
 
     strcpy (vars[0], "avc");
     vals[0] = ut_array_1d_mean ((*pTOpt).Crys.C, 3);
+  }
+  else if (!strcmp ((*pTOpt).optitype, "domain"))
+  {
+    if (!strcmp (string, "default"))
+      ut_string_string ("avdiameq/10", &string);
+
+    strcpy (vars[0], "avdiameq");
+    vals[0] = diameq;
   }
   else
     abort ();
@@ -762,6 +794,8 @@ net_tess_opt_init_bounds (struct TOPT *pTOpt)
     net_tess_opt_init_bounds_seeds (pTOpt);
   else if (!strcmp ((*pTOpt).optitype, "crystal"))
     net_tess_opt_init_bounds_crystal (pTOpt);
+  else if (!strcmp ((*pTOpt).optitype, "domain"))
+    net_tess_opt_init_bounds_domain (pTOpt);
   else
     abort ();
 

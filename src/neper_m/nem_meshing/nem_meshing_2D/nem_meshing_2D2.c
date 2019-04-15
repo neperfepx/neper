@@ -1,93 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_2D_.h"
 
-int
-nem_meshing_2D_face (struct IN_M In, struct MESHPARA MeshPara,
-		     struct MULTIM *pMultim, struct timeval *pctrlc_t,
-		     double *pallowed_t, double *pmax_elapsed_t,
-		     struct TESS Tess, struct NODES RNodes,
-		     struct MESH *RMesh,
-                     struct NODES *pNodes,
-		     struct MESH *Mesh,
-                     struct NODES *pN, struct MESH *pM,
-                     int face)
-{
-  int a;
-  double elapsed_t, mOsize;
-  struct NODES N2;
-  struct MESH M2;
-
-  neut_nodes_set_zero (pN);
-  neut_mesh_set_zero (pM);
-  neut_nodes_set_zero (&N2);
-  neut_mesh_set_zero (&M2);
-
-  (*pMultim).Oalgo[face] = -1;
-  if (!MeshPara.face_op || !MeshPara.face_op[face])
-    for (a = 0; a < (*pMultim).algoqty; a++)
-    {
-      // meshing
-      nem_meshing_2D_face_algo (In, MeshPara, pMultim, a, pctrlc_t,
-                                pallowed_t, pmax_elapsed_t, Tess,
-                                RNodes, RMesh, *pNodes, Mesh, face,
-                                &N2, &M2, &mOsize, &elapsed_t);
-
-      // best-quality mesh, recording it
-      if ((*pMultim).Oalgo[face] == a)
-      {
-        neut_nodes_memcpy (N2, pN);
-        neut_mesh_memcpy (M2, pM);
-      }
-
-      // minimum quality reached; breaking
-      if ((*pMultim).mO[face][a] > In.meshqualmin)
-        break;
-    }
-  else
-    neut_mesh_elset_mesh (RNodes, RMesh[2], face, pN, pM, NULL);
-
-  if ((*pMultim).Oalgo[face] != -1)
-#pragma omp critical
-    (*pMultim).algohit[(*pMultim).Oalgo[face]]++;
-  else
-    ut_print_message (2, 3, "Meshing of face %d failed\n", face);
-
-  neut_nodes_free (&N2);
-  neut_mesh_free (&M2);
-
-  return 0;
-}
-
-int
-nem_meshing_2D_face_per (struct TESS Tess, struct NODES *N,
-                         struct MESH *M, struct NODES *pN,
-                         struct MESH *pM, int **pmaster_id,
-                         int face)
-
-{
-  int master;
-
-  neut_nodes_set_zero (pN);
-  neut_mesh_set_zero (pM);
-
-  master = Tess.PerFaceMaster[face];
-  neut_mesh_elset_mesh (N[master], M[master], 1, pN, pM, pmaster_id);
-  neut_nodes_shift (pN,
-                    Tess.PerFaceShift[face][0] * Tess.PeriodicDist[0],
-                    Tess.PerFaceShift[face][1] * Tess.PeriodicDist[1],
-                    Tess.PerFaceShift[face][2] * Tess.PeriodicDist[2]);
-  if (Tess.PerFaceOri[face] == 1)
-    neut_mesh_reversenodes (pM);
-
-  return 0;
-}
-
 void
 nem_meshing_2D_progress (struct MULTIM Multim, int face, int faceqty,
-			 char *message)
+                         char *message)
 {
   int a;
   int *pct = ut_alloc_1d_int (Multim.algoqty);
@@ -95,8 +14,8 @@ nem_meshing_2D_progress (struct MULTIM Multim, int face, int faceqty,
   char *format = ut_alloc_1d_char (128);
 
   sprintf (format, "%%3.0f%%%% (%.2g|%.2g/",
-	   (face > 0) ? ut_array_1d_min (Multim.O + 1, face) : 0,
-	   (face > 0) ? ut_array_1d_mean (Multim.O + 1, face) : 0);
+           (face > 0) ? ut_array_1d_min (Multim.O + 1, face) : 0,
+           (face > 0) ? ut_array_1d_mean (Multim.O + 1, face) : 0);
 
   if (face > 0)
     ut_array_1d_int_percent (Multim.algohit, Multim.algoqty, pct);
@@ -104,7 +23,7 @@ nem_meshing_2D_progress (struct MULTIM Multim, int face, int faceqty,
   for (a = 0; a < Multim.algoqty; a++)
   {
     sprintf (tmp, "%s%2d%%%c", format, pct[a],
-	     (a < Multim.algoqty - 1) ? '|' : ')');
+             (a < Multim.algoqty - 1) ? '|' : ')');
     strcpy (format, tmp);
   }
 
@@ -117,20 +36,132 @@ nem_meshing_2D_progress (struct MULTIM Multim, int face, int faceqty,
   return;
 }
 
+int
+nem_meshing_2D_face (struct IN_M In, struct MESHPARA MeshPara,
+                     struct MULTIM *pMultim, struct timeval *pctrlc_t,
+                     double *pallowed_t, double *pmax_elapsed_t,
+                     struct TESS Tess, struct NODES RNodes,
+                     struct MESH *RMesh, struct NODES Nodes,
+                     struct MESH *Mesh, struct NODES *pN, struct MESH *pM,
+                     int **pbnodes, int **plbnodes, int *pbnodeqty, int face)
+{
+  int a, *bnodes2 = NULL, *lbnodes2 = NULL, bnodeqty2;
+  double elapsed_t, mOsize;
+  struct NODES N2;
+  struct MESH M2;
+
+  neut_nodes_set_zero (&N2);
+  neut_mesh_set_zero (&M2);
+
+  // if the face must be copied, we copy and that's it
+  if (!strcmp (MeshPara.face_op[face], "copy"))
+    neut_mesh_elset_mesh (RNodes, RMesh[2], face, pN, pM, NULL);
+
+  // otherwise, running multimeshing
+  else
+  {
+    (*pMultim).Oalgo[face] = -1;
+    for (a = 0; a < (*pMultim).algoqty; a++)
+    {
+      // meshing
+      nem_meshing_2D_face_mesh (In, MeshPara, pMultim, a, pctrlc_t,
+                                pallowed_t, pmax_elapsed_t, Tess, RNodes,
+                                RMesh, Nodes, Mesh, face, &N2, &M2, &bnodes2,
+                                &lbnodes2, &bnodeqty2, &mOsize, &elapsed_t);
+
+      // if best-quality mesh, then recording it
+      if ((*pMultim).Oalgo[face] == a)
+      {
+        neut_nodes_memcpy (N2, pN);
+        neut_mesh_memcpy (M2, pM);
+        *pbnodeqty = bnodeqty2;
+        (*pbnodes) = ut_realloc_1d_int (*pbnodes, *pbnodeqty);
+        (*plbnodes) = ut_realloc_1d_int (*plbnodes, *pbnodeqty);
+        ut_array_1d_int_memcpy (*pbnodes, *pbnodeqty, bnodes2);
+        ut_array_1d_int_memcpy (*plbnodes, *pbnodeqty, lbnodes2);
+      }
+
+      // if mesh quality criterion reached, breaking
+      if ((*pMultim).mO[face][a] > In.meshqualmin)
+        break;
+    }
+
+    if ((*pMultim).Oalgo[face] != -1)
+#pragma omp critical
+      (*pMultim).algohit[(*pMultim).Oalgo[face]]++;
+    else
+      ut_print_message (2, 3, "Meshing of face %d failed\n", face);
+  }
+
+  neut_nodes_free (&N2);
+  neut_mesh_free (&M2);
+  ut_free_1d_int (bnodes2);
+  ut_free_1d_int (lbnodes2);
+
+  return 0;
+}
+
+int
+nem_meshing_2D_face_per (struct TESS Tess, struct NODES Nodes,
+                         struct NODES *N,
+                         struct MESH *M, struct NODES *pN,
+                         struct MESH *pM, int **pmaster_id,
+                         int ***pbnodes, int ***plbnodes, int **pbnodeqty,
+                         int face)
+{
+  int i, status, master = Tess.PerFaceMaster[face];
+
+  neut_nodes_set_zero (pN);
+  neut_mesh_set_zero (pM);
+
+  neut_nodes_memcpy (N[master], pN);
+  neut_mesh_memcpy (M[master], pM);
+
+  neut_nodes_shift (pN,
+                    Tess.PerFaceShift[face][0] * Tess.PeriodicDist[0],
+                    Tess.PerFaceShift[face][1] * Tess.PeriodicDist[1],
+                    Tess.PerFaceShift[face][2] * Tess.PeriodicDist[2]);
+
+  (*pmaster_id) = ut_alloc_1d_int (N[master].NodeQty + 1);
+  ut_array_1d_int_set_id (*pmaster_id, N[master].NodeQty + 1);
+
+  (*pbnodeqty)[face] = (*pbnodeqty)[master];
+  (*plbnodes)[face]  = ut_realloc_1d_int ((*plbnodes)[face], (*pbnodeqty)[face]);
+  (*pbnodes)[face]   = ut_realloc_1d_int ((*pbnodes)[face], (*pbnodeqty)[face]);
+
+  ut_array_1d_int_memcpy ((*plbnodes)[face], (*pbnodeqty)[face], (*plbnodes)[master]);
+  ut_array_1d_int_memcpy ((*pbnodes)[face], (*pbnodeqty)[face], (*pbnodes)[master]);
+
+  int *shift = ut_alloc_1d_int (3);
+  ut_array_1d_int_memcpy (shift, 3, Tess.PerFaceShift[face]);
+  ut_array_1d_int_scale (shift, 3, 1);
+  for (i = 0; i < (*pbnodeqty)[face]; i++)
+  {
+    status = neut_nodes_node_shift_pernode (Nodes, (*pbnodes)[master][i],
+                                            shift,
+                                            (*pbnodes)[face] + i);
+    if (status)
+      abort ();
+  }
+  ut_free_1d_int (shift);
+
+  if (Tess.PerFaceOri[face] == 1)
+    neut_mesh_reversenodes (pM);
+
+  return 0;
+}
+
 void
 nem_meshing_2D_face_record (struct TESS Tess, int face, struct NODES N,
-			    struct MESH M, int *master_id,
-			    struct NODES *pNodes,
-			    struct MESH *Mesh, struct MESHPARA MeshPara)
+                            struct MESH M, int *bnodes, int *lbnodes,
+                            int bnodeqty, int *master_id,
+                            struct NODES *pNodes, int **N_global_id,
+                            struct MESH *Mesh)
 {
-  int *node_nbs = NULL;
+  nem_meshing_2D_face_record_nodes (Tess, face, N, bnodes, lbnodes, bnodeqty,
+                                    master_id, N_global_id, pNodes);
 
-  nem_meshing_2D_face_record_nodes (Tess, face, N, M, master_id,
-				    &node_nbs, pNodes, Mesh, MeshPara);
-
-  nem_meshing_2D_face_record_elts (face, M, node_nbs, Mesh);
-
-  ut_free_1d_int (node_nbs);
+  nem_meshing_2D_face_record_elts (face, M, N_global_id[face], Mesh);
 
   return;
 }

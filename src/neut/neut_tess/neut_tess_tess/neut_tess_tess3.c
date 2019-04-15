@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_tess_.h"
@@ -478,6 +478,10 @@ neut_tess_tess_domaindata (struct TESS TessA, struct TESS *pTessB)
   ut_array_1d_pchar_memcpy ((*pTessB).DomEdgeLabel + 1, (*pTessB).DomEdgeQty,
 			    TessA.DomEdgeLabel + 1);
 
+  (*pTessB).DomEdgeVerQty = ut_alloc_1d_int ((*pTessB).DomEdgeQty + 1);
+  ut_array_1d_int_memcpy ((*pTessB).DomEdgeVerQty + 1, (*pTessB).DomEdgeQty,
+			  TessA.DomEdgeVerQty + 1);
+
   (*pTessB).DomEdgeVerNb = ut_alloc_2d_int ((*pTessB).DomEdgeQty + 1, 2);
   ut_array_2d_int_memcpy ((*pTessB).DomEdgeVerNb + 1, (*pTessB).DomEdgeQty, 2,
 			  TessA.DomEdgeVerNb + 1);
@@ -512,6 +516,25 @@ neut_tess_tess_domaindata (struct TESS TessA, struct TESS *pTessB)
   (*pTessB).DomFaceEq = ut_alloc_2d ((*pTessB).DomFaceQty + 1, 4);
   ut_array_2d_memcpy ((*pTessB).DomFaceEq + 1, (*pTessB).DomFaceQty, 4,
 		      TessA.DomFaceEq + 1);
+
+  (*pTessB).DomFaceType = ut_alloc_1d_pchar ((*pTessB).DomFaceQty + 1);
+  for (i = 1; i <= (*pTessB).DomFaceQty; i++)
+    ut_string_string (TessA.DomFaceType[i], (*pTessB).DomFaceType + i);
+
+  (*pTessB).DomFaceParmQty = ut_alloc_1d_int ((*pTessB).DomFaceQty + 1);
+  (*pTessB).DomFaceParms = ut_alloc_1d_pdouble ((*pTessB).DomFaceQty + 1);
+  for (i = 1; i <= (*pTessB).DomFaceQty; i++)
+  {
+    (*pTessB).DomFaceParmQty[i] = TessA.DomFaceParmQty[i];
+    if ((*pTessB).DomFaceParmQty[i] > 0)
+    {
+      (*pTessB).DomFaceParms[i] = ut_alloc_1d ((*pTessB).DomFaceParmQty[i]);
+      ut_array_1d_memcpy ((*pTessB).DomFaceParms[i],
+                          (*pTessB).DomFaceParmQty[i],
+                          TessA.DomFaceParms[i]);
+    }
+  }
+
   (*pTessB).DomFaceLabel = ut_alloc_1d_pchar ((*pTessB).DomFaceQty + 1);
   ut_array_1d_pchar_memcpy ((*pTessB).DomFaceLabel + 1, (*pTessB).DomFaceQty,
 			    TessA.DomFaceLabel + 1);
@@ -534,10 +557,14 @@ neut_tess_tess_domaindata (struct TESS TessA, struct TESS *pTessB)
 
   (*pTessB).DomFaceVerQty = ut_alloc_1d_int ((*pTessB).DomFaceQty + 1);
   (*pTessB).DomFaceVerNb = ut_alloc_1d_pint ((*pTessB).DomFaceQty + 1);
+  (*pTessB).DomFaceEdgeQty = ut_alloc_1d_int ((*pTessB).DomFaceQty + 1);
   (*pTessB).DomFaceEdgeNb = ut_alloc_1d_pint ((*pTessB).DomFaceQty + 1);
 
   ut_array_1d_int_memcpy ((*pTessB).DomFaceVerQty + 1, (*pTessB).DomFaceQty,
 			  TessA.DomFaceVerQty + 1);
+
+  ut_array_1d_int_memcpy ((*pTessB).DomFaceEdgeQty + 1, (*pTessB).DomFaceQty,
+			  TessA.DomFaceEdgeQty + 1);
 
   for (i = 1; i <= (*pTessB).DomFaceQty; i++)
   {
@@ -548,9 +575,9 @@ neut_tess_tess_domaindata (struct TESS TessA, struct TESS *pTessB)
 			    TessA.DomFaceVerNb[i] + 1);
 
     (*pTessB).DomFaceEdgeNb[i] =
-      ut_alloc_1d_int ((*pTessB).DomFaceVerQty[i] + 1);
+      ut_alloc_1d_int ((*pTessB).DomFaceEdgeQty[i] + 1);
     ut_array_1d_int_memcpy ((*pTessB).DomFaceEdgeNb[i] + 1,
-			    (*pTessB).DomFaceVerQty[i],
+			    (*pTessB).DomFaceEdgeQty[i],
 			    TessA.DomFaceEdgeNb[i] + 1);
   }
 

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_debug_.h"
@@ -38,6 +38,14 @@ neut_debug_nodes (FILE * file, struct NODES Nodes)
 					     Nodes.PerNodeShift[id][0],
 					     Nodes.PerNodeShift[id][1],
 					     Nodes.PerNodeShift[id][2]);
+    }
+
+    fprintf (file, "i PerNodeSlaveQty PerNodeSlaveNb\n");
+    for (i = 1; i <= Nodes.PerNodeQty; i++)
+    {
+      fprintf (file, "%d %d ", i, Nodes.PerNodeSlaveQty[i]);
+      ut_array_1d_int_fprintf (stdout, Nodes.PerNodeSlaveNb[i] + 1,
+                                       Nodes.PerNodeSlaveQty[i], "%d");
     }
   }
 
@@ -526,21 +534,29 @@ neut_debug_tess (FILE * file, struct TESS Tess)
   }
 
   fprintf (file, "[id] DomTessVerNb\n");
-  for (i = 1; i <= Tess.DomVerQty; i++)
-    fprintf (file, "%d %d\n", i, Tess.DomTessVerNb[i]);
+  if (!Tess.DomTessVerNb)
+    printf ("is NULL\n");
+  else
+    for (i = 1; i <= Tess.DomVerQty; i++)
+      fprintf (file, "%d %d\n", i, Tess.DomTessVerNb[i]);
 
   // Domain edge
   fprintf (file, "DomEdgeQty = %d\n", Tess.DomEdgeQty);
   fflush (file);
 
   fprintf (file, "[id] DomEdgeLabel =\n");
-  if (Tess.DomEdgeLabel == NULL)
+  if (!Tess.DomEdgeLabel)
     fprintf (file, "is NULL\n");
+  else if (sizeof (Tess.DomEdgeLabel) / sizeof (char*) < (unsigned) Tess.DomEdgeQty + 1)
+    fprintf (file, "is underallocated\n");
   else
     for (i = 1; i <= Tess.DomEdgeQty; i++)
     {
       fprintf (file, "%d ", i);
-      fprintf (file, "%s\n", Tess.DomEdgeLabel[i]);
+      if (Tess.DomEdgeLabel[i])
+        fprintf (file, "%s\n", Tess.DomEdgeLabel[i]);
+      else
+        fprintf (file, "NULL\n");
     }
 
   fprintf (file, "[id] DomEdgeVerNb\n");
@@ -560,12 +576,15 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     }
 
   fprintf (file, "[id] DomTessEdgeQty then DomTessEdgeNb\n");
-  for (i = 1; i <= Tess.DomEdgeQty; i++)
-  {
-    fprintf (file, "%d %d ", i, Tess.DomTessEdgeQty[i]);
-    ut_array_1d_int_fprintf (file, Tess.DomTessEdgeNb[i] + 1,
-			     Tess.DomTessEdgeQty[i], "%d");
-  }
+  if (!Tess.DomTessEdgeNb)
+    printf ("is NULL\n");
+  else
+    for (i = 1; i <= Tess.DomEdgeQty; i++)
+    {
+      fprintf (file, "%d %d ", i, Tess.DomTessEdgeQty[i]);
+      ut_array_1d_int_fprintf (file, Tess.DomTessEdgeNb[i] + 1,
+                               Tess.DomTessEdgeQty[i], "%d");
+    }
 
   // Domain face
   fprintf (file, "DomFaceQty = %d\n", Tess.DomFaceQty);
@@ -589,6 +608,14 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     fprintf (file, "is NULL\n");
   fflush (file);
 
+  fprintf (file, "DomFaceType =\n");
+  if (Tess.DomFaceType != NULL)
+    for (i = 1; i <= Tess.DomFaceQty; i++)
+      fprintf (file, "%s\n", Tess.DomFaceType[i]);
+  else
+    fprintf (file, "is NULL\n");
+  fflush (file);
+
   fprintf (file, "[id] DomFaceVerQty then DomFaceVerNb =\n");
   if (Tess.DomFaceVerQty != NULL && Tess.DomFaceVerNb != NULL)
     for (i = 1; i <= Tess.DomFaceQty; i++)
@@ -601,13 +628,13 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     fprintf (file, "is NULL\n");
   fflush (file);
 
-  fprintf (file, "[id] DomFaceVerQty then DomFaceEdgeNb =\n");
-  if (Tess.DomFaceVerQty != NULL && Tess.DomFaceEdgeNb != NULL)
+  fprintf (file, "[id] DomFaceEdgeQty then DomFaceEdgeNb =\n");
+  if (Tess.DomFaceEdgeQty != NULL && Tess.DomFaceEdgeNb != NULL)
     for (i = 1; i <= Tess.DomFaceQty; i++)
     {
-      fprintf (file, "%d %d ", i, Tess.DomFaceVerQty[i]);
+      fprintf (file, "%d %d ", i, Tess.DomFaceEdgeQty[i]);
       ut_array_1d_int_fprintf (file, Tess.DomFaceEdgeNb[i] + 1,
-			       Tess.DomFaceVerQty[i], "%d");
+			       Tess.DomFaceEdgeQty[i], "%d");
     }
   else
     fprintf (file, "is NULL\n");
@@ -765,7 +792,11 @@ neut_debug_seedset (FILE * file, struct SEEDSET SSet)
     fprintf (file, "is NULL.\n");
   else
     for (i = 1; i <= SSet.N; i++)
+    {
+      printf ("%d: ", i);
+      fflush (file);
       ut_array_1d_fprintf (file, SSet.SeedCoo0[i], 3, "%f");
+    }
 
   fprintf (file, "SeedCoo =\n");
   if (!SSet.SeedCoo)
@@ -1274,6 +1305,112 @@ neut_debug_tesr (FILE * file, struct TESR Tesr)
       for (i = 1; i <= Tesr.size[0]; i++)
 	fprintf (file, "%d ", Tesr.VoxCell[i][j][k]);
   fprintf (file, "\n");
+
+  return;
+}
+
+void
+neut_debug_prim (FILE *file, struct PRIM Prim)
+{
+  fprintf (file, "Type = ");
+  fprintf (file, "%s\n", Prim.Type);
+
+  fprintf (file, "ParmQty = ");
+  fprintf (file, "%d\n", Prim.ParmQty);
+
+  fprintf (file, "Parms = ");
+  if (Prim.Parms)
+    ut_array_1d_fprintf (file, Prim.Parms, Prim.ParmQty, "%f");
+  else
+    fprintf (file, "NULL\n");
+
+  fprintf (file, "Eq = ");
+  if (Prim.Eq)
+    ut_array_1d_fprintf (file, Prim.Eq, 4, "%f");
+  else
+    fprintf (file, "NULL\n");
+
+  fprintf (file, "Base = ");
+  if (Prim.Base)
+    ut_array_1d_fprintf (file, Prim.Base, 3, "%f");
+  else
+    fprintf (file, "NULL\n");
+
+  fprintf (file, "Dir = ");
+  if (Prim.Dir)
+    ut_array_1d_fprintf (file, Prim.Dir, 3, "%f");
+  else
+    fprintf (file, "NULL\n");
+
+  fprintf (file, "Rad = %f\n", Prim.Rad[0]);
+
+  return;
+}
+
+void
+neut_debug_mtess (FILE *file, struct MTESS MTess, struct TESS *Tess)
+{
+  int i, j;
+
+  fprintf (file, "LevelQty = %d\n", MTess.LevelQty);
+
+  fprintf (file, "LevelTessQty =\n");
+  if (!MTess.LevelTessQty)
+    fprintf (file, "is NULL\n");
+  else
+    ut_array_1d_int_fprintf (file, MTess.LevelTessQty + 1, MTess.LevelQty, "%d");
+
+  fprintf (file, "LevelTess =\n");
+  if (!MTess.LevelTess)
+    fprintf (file, "is NULL\n");
+  else
+    for (i = 1; i <= MTess.LevelQty; i++)
+      ut_array_1d_int_fprintf (file, MTess.LevelTess[i] + 1, MTess.LevelTessQty[i], "%d");
+
+  fprintf (file, "TessQty = %d\n", MTess.TessQty);
+
+  fprintf (file, "TessDom =\n");
+  if (!MTess.TessDom)
+    printf ("is NULL\n");
+  else
+    ut_array_2d_int_fprintf (file, MTess.TessDom + 1, MTess.TessQty, 2, "%d");
+
+  fprintf (file, "DomTess =\n");
+  fprintf (file, "FIXME\n");
+
+  fprintf (file, "TessDQty = %d\n", MTess.TessDQty);
+
+  fprintf (file, "TessDomVerNb =\n");
+  if (!MTess.TessDomVerNb)
+    fprintf (file, "is NULL\n");
+  else
+    for (i = 1; i <= MTess.TessQty; i++)
+      ut_array_1d_int_fprintf (file, MTess.TessDomVerNb[i] + 1, Tess[i].DomVerQty, "%d");
+
+  fprintf (file, "TessDomEdgeNb =\n");
+  if (!MTess.TessDomEdgeNb)
+    fprintf (file, "is NULL\n");
+  else
+    for (i = 1; i <= MTess.TessQty; i++)
+      ut_array_1d_int_fprintf (file, MTess.TessDomEdgeNb[i] + 1, Tess[i].DomEdgeQty, "%d");
+
+  fprintf (file, "TessDomFaceNb =\n");
+  if (!MTess.TessDomFaceNb)
+    fprintf (file, "is NULL\n");
+  else
+    for (i = 1; i <= MTess.TessQty; i++)
+      ut_array_1d_int_fprintf (file, MTess.TessDomFaceNb[i] + 1, Tess[i].DomFaceQty, "%d");
+
+  fprintf (file, "DomTessFaceNb =\n");
+  if (!MTess.DomTessFaceNb)
+    fprintf (file, "is NULL\n");
+  else
+    for (i = 1; i <= MTess.TessQty; i++)
+      for (j = 1; j <= Tess[MTess.TessQty].FaceQty; j++)
+      {
+        fprintf (file, "tess %d face %d: ", i, j);
+        ut_array_1d_int_fprintf (file, MTess.DomTessFaceNb[i][j], 2, "%d");
+      }
 
   return;
 }

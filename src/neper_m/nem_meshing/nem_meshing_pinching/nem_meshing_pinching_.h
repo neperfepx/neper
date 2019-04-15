@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -21,7 +21,8 @@ extern void nem_meshing_pinching_fix (struct MESHPARA MeshPara, struct TESS
     *pTess, struct NODES RNodes, struct MESH *RMesh, struct NODES *pNodes, struct
     MESH *Mesh, int* elts);
 
-extern int nem_meshing_pinching_testpoly (struct IN_M In, int poly);
+extern int nem_meshing_pinching_testpoly (struct IN_M In, struct TESS Tess, struct MESH *Mesh,
+                                          int poly);
 
 extern void nem_meshing_pinching_fix_eltfacets (struct MESH *Mesh, int elt,
                                                 int **peltfacets, int *peltfacetqty);

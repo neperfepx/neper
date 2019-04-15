@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neper_t_.h"
@@ -45,7 +45,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     if (!strcmp (In.mode, "tess") && strcmp (In.input, "tess") != 0 && strcmp (In.input, "tesr") != 0)
     {
       ut_print_message (0, 1, "Creating domain...\n");
-      net_domain (In, &MTess, &(Tess[0]));
+      net_domain (In, &MTess, Tess);
     }
   }
 
@@ -200,7 +200,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     else if (strcmp (In.load, "none"))
     {
       ut_print_message (0, 1, "Importing tessellation...\n");
-      neut_mtess_name_fscanf (In.load, &MTess, &Tess);
+      neut_mtess_set_tess (&MTess, &Tess);
+      neut_tess_name_fscanf (In.load, Tess + 1);
 
       // Sorting cells ###
       if (strcmp (In.sortstring, "none"))
@@ -231,12 +232,6 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     {
       neut_tess_tess (Tess[1], &FTess);
       FTess.ScaleQty = 1;
-    }
-
-    if (In.reg)
-    {
-      ut_print_message (0, 1, "Regularizing tessellation...\n");
-      net_reg (In, &FTess, &Reg);
     }
   }
 
@@ -285,6 +280,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     net_ori_pre (In, MTess, Tess, &SSet, &SSetQty);
 
     net_ori (In, 1, MTess, Tess, SSet, 0, 1, SSet + 1, 2);
+
+    net_seedset_tess (SSet[1], &FTess);
   }
 
   // #################################################################
@@ -305,7 +302,13 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   if (strcmp (In.transform, "none") && (FTess.Dim > 0 || Tesr.Dim > 0))
   {
     ut_print_message (0, 1, "Transforming tessellation...\n");
-    net_transform (In, &FTess, &Tesr);
+    net_transform (In, Tess[0], &FTess, &Tesr);
+  }
+
+  if (!strcmp (In.mode, "tess") && In.reg)
+  {
+    ut_print_message (0, 1, "Regularizing tessellation...\n");
+    net_reg (In, &FTess, &Reg);
   }
 
   // ###################################################################
@@ -330,7 +333,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   // ### WRITING RESULTS ###############################################
 
   ut_print_message (0, 1, "Writing results...\n");
-  net_res (In, MTess, Tess, FTess, Tesr, SSet, SSetQty);
+  net_res (In, FTess, Tesr);
 
   // ###################################################################
   // ### CLOSING #######################################################

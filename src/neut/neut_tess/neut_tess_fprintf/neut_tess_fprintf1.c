@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_fprintf_.h"
@@ -54,17 +54,17 @@ neut_tess_fprintf_gmsh (FILE * file, struct TESS Tess)
   int i, j;
 
   for (i = 1; i <= Tess.VerQty; i++)
-    if (Tess.VerState[i] != -1)
+    if (!Tess.VerState || Tess.VerState[i] != -1)
       fprintf (file, "Point (%d) = {%.12f,%.12f,%.12f};\n",
 	       i, Tess.VerCoo[i][0], Tess.VerCoo[i][1], Tess.VerCoo[i][2]);
 
   for (i = 1; i <= Tess.EdgeQty; i++)
-    if (Tess.EdgeState[i] != -1)
+    if (!Tess.EdgeState || Tess.EdgeState[i] != -1)
       fprintf (file, "Line (%d) = {%d,%d};\n",
 	       i, Tess.EdgeVerNb[i][0], Tess.EdgeVerNb[i][1]);
 
   for (i = 1; i <= Tess.FaceQty; i++)
-    if (Tess.FaceState[i] != -1)
+    if (!Tess.FaceState || Tess.FaceState[i] != -1)
     {
       fprintf (file, "Line Loop (%d) = {", i);
       for (j = 1; j <= Tess.FaceVerQty[i]; j++)
@@ -78,7 +78,7 @@ neut_tess_fprintf_gmsh (FILE * file, struct TESS Tess)
     }
 
   for (i = 1; i <= Tess.PolyQty; i++)
-    if (Tess.PolyState[i] != -1)
+    if (!Tess.PolyState || Tess.PolyState[i] != -1)
     {
       fprintf (file, "Surface Loop (%d) = {", i);
       for (j = 1; j <= Tess.PolyFaceQty[i]; j++)
@@ -283,6 +283,18 @@ neut_tess_fprintf_fe (FILE *file, struct TESS Tess)
 }
 
 void
+neut_tess_name_fprintf_stl (char *filename, struct TESS Tess)
+{
+  FILE *file = ut_file_open (filename, "w");
+
+  neut_tess_fprintf_stl (file, Tess);
+
+  ut_file_close (file, filename, "w");
+
+  return;
+}
+
+void
 neut_tess_fprintf_stl (FILE * file, struct TESS Tess)
 {
   int i, j, k;
@@ -298,14 +310,10 @@ neut_tess_fprintf_stl (FILE * file, struct TESS Tess)
   for (i = 1; i <= Tess.FaceQty; i++)
   {
     neut_tess_face_interpolmesh (Tess, i, &N, &M);
-    neut_debug_nodes (stdout, N);
-    neut_debug_mesh (stdout, M);
 
     for (j = 1; j <= M.EltQty; j++)
     {
       neut_mesh_elt_normal (M, N, j, n);
-      printf ("n = ");
-      ut_array_1d_fprintf (stdout, n, 3, "%f");
       fprintf (file, "  facet normal %.12f %.12f %.12f\n",
 	       n[0], n[1], n[2]);
       fprintf (file, "    outer loop\n");
@@ -325,6 +333,85 @@ neut_tess_fprintf_stl (FILE * file, struct TESS Tess)
   fprintf (file, "endsoliddart\n");
 
   ut_free_1d (n);
+
+  return;
+}
+
+void
+neut_tess_name_fprintf_stl_bycell (char *filename, struct TESS Tess)
+{
+  int i;
+  char *filename2 = ut_alloc_1d_char (strlen (filename) + 100);
+  char *id = ut_alloc_1d_char (100);
+  FILE *file = NULL;
+  int length = ut_num_tenlen_int (Tess.CellQty);
+  char format[5];
+
+  sprintf (format, "%%0%dd", length);
+
+  for (i = 1; i <= Tess.CellQty; i++)
+  {
+    sprintf (id, format, i);
+    sprintf (filename2, "%s-%s.stl", filename, id);
+    file = ut_file_open (filename2, "w");
+    neut_tess_cell_fprintf_stl (file, Tess, i);
+    ut_file_close (file, filename2, "w");
+  }
+
+  ut_free_1d_char (filename2);
+  ut_free_1d_char (id);
+
+  return;
+}
+
+void
+neut_tess_cell_fprintf_stl (FILE * file, struct TESS Tess, int cell)
+{
+  int i, j, k;
+  struct NODES N;
+  struct MESH M;
+  double *n = ut_alloc_1d (3);
+  int faceqty, face, *faces = NULL;
+
+  if (Tess.Dim != 3)
+    abort ();
+
+  neut_tess_poly_faces (Tess, cell, &faces, &faceqty);
+
+  neut_nodes_set_zero (&N);
+  neut_mesh_set_zero (&M);
+
+  fprintf (file, "soliddart\n");
+
+  for (i = 0; i < faceqty; i++)
+  {
+    face = faces[i];
+
+    neut_tess_face_interpolmesh (Tess, face, &N, &M);
+
+    for (j = 1; j <= M.EltQty; j++)
+    {
+      neut_mesh_elt_normal (M, N, j, n);
+      fprintf (file, "  facet normal %.12f %.12f %.12f\n",
+	       n[0], n[1], n[2]);
+      fprintf (file, "    outer loop\n");
+      for (k = 0; k < 3; k++)
+	fprintf (file, "      vertex %.12f %.12f %.12f\n",
+		 N.NodeCoo[M.EltNodes[j][k]][0],
+		 N.NodeCoo[M.EltNodes[j][k]][1],
+		 N.NodeCoo[M.EltNodes[j][k]][2]);
+      fprintf (file, "    endloop\n");
+      fprintf (file, "  endfacet\n");
+    }
+
+    neut_mesh_free (&M);
+    neut_nodes_free (&N);
+  }
+
+  fprintf (file, "endsoliddart\n");
+
+  ut_free_1d (n);
+  ut_free_1d_int (faces);
 
   return;
 }

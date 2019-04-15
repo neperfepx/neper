@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neper_m_.h"
@@ -160,7 +160,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
       nem_meshing_para (In, &Tess, &Tesr, &RNodes, RMesh, &MeshPara);
 
       if (!strcmp (In.elttype, "tri"))
-	nem_meshing (In, MeshPara, &Tess, RNodes, RMesh, &Nodes, Mesh);
+	nem_meshing (In, &MeshPara, &Tess, RNodes, RMesh, &Nodes, Mesh);
 
       else if (!strcmp (In.elttype, "quad"))
       {
@@ -175,7 +175,8 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     }
   }
 
-  if (strcmp (In.interface, "continuous"))
+  if (ut_string_inlist (In.interface, NEUT_SEP_DEP, "discontinuous")
+      || ut_string_inlist (In.interface, NEUT_SEP_DEP, "cohesive"))
   {
     ut_print_message (0, 2, "Processing mesh at interfaces...\n");
     nem_interface (In, Tess, &Nodes, Mesh, &Bound);
@@ -196,11 +197,11 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   }
 
 // managing mesh order ###
-  if (In.order == 2)
+  if (In.order == 2 && Mesh[dim].EltOrder == 1)
   {
     ut_print_message (0, 2, "Switching mesh to order 2...\n");
 
-    if (dim >= 0)
+    if (dim >= 0 && Mesh[dim].EltOrder == 1)
       nem_order (&Nodes, Mesh + 1, Mesh + 2, Mesh + 3);
   }
 
@@ -227,6 +228,13 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Searching nsets...\n");
     nem_nsets (In, Tess, Tesr, Nodes, Mesh, NSet);
+  }
+
+// Searching element sets ###
+  if (strcmp (In.elset, "default"))
+  {
+    ut_print_message (0, 1, "Searching elsets...\n");
+    nem_elsets (In, Tess, Nodes, Mesh, Part);
   }
 
 // ###################################################################

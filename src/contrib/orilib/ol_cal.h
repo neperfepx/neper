@@ -142,6 +142,7 @@ extern int ol_lauegroup_qty (char*);
 
 extern void ol_g_lng (double**, double**);
 extern void ol_q_lnq (double*, double*);
+extern void ol_lnq_q (double*, double*);
 
 #endif /* OL_CAL */
 #ifndef OL_CALx

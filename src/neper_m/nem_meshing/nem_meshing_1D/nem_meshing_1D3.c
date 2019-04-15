@@ -1,185 +1,135 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_1D_.h"
 
 void
-nem_mesh_1d_unitsegment (double cl1, double cl2, double clt, double pl,
-			 int *pqty, double **pcoo, double **pcl)
+nem_meshing_1D_edge_algo (struct TESS Tess, struct NODES RNodes,
+                          struct MESH *RMesh,
+                          int edge, double cl, double pl,
+                          struct NODES Nodes, double *Node0DCl,
+                          struct NODES *pN, struct MESH *pM)
 {
-  int i, id, n1p, n2p, add;
-  double I;
-  double lp, Dl, l1p, l2p, n1p_cl, n2p_cl, cltp, d1, d2;
-  double plp;
+  int iter, itermax = 100;
+  double l = Tess.EdgeLength[edge];
+  struct NODES N0;
+  struct MESH M0;
 
-  // Checking input data
-  if (pl == 1)
-    pl = 1 + 1e-6;
+  neut_nodes_set_zero (&N0);
+  neut_mesh_set_zero (&M0);
 
-  if (cl1 > clt || cl2 > clt || cl2 < cl1 || pl <= 1 || cl1 <= 0 || cl2 <= 0)
+  // standard case
+  if (RNodes.NodeQty == 0 && !neut_tess_edge_iscurved (Tess, edge))
+    nem_meshing_1D_edge_algo_mesh (Tess.EdgeVerNb[edge][0],
+                                   Tess.EdgeVerNb[edge][1], edge, l, cl, pl,
+                                   Nodes, Node0DCl, pN, pM);
+
+  // case of remeshing
+  else if (RNodes.NodeQty > 0)
   {
-    printf ("cl1 = %f cl2 = %f clt = %f pl = %f\n", cl1, cl2, clt, pl);
+    nem_meshing_1D_edge_algo_mesh (Tess.EdgeVerNb[edge][0],
+                                   Tess.EdgeVerNb[edge][1], edge, l, cl, pl,
+                                   Nodes, Node0DCl, pN, pM);
+
+    neut_mesh_elset_mesh (RNodes, RMesh[1], edge, &N0, &M0, NULL);
+
+    nem_meshing_1D_edge_projontomesh (Tess, edge, N0, M0, pN, *pM);
+  }
+
+  // case of curved edge
+  // Since we do not know the geometry of the edge, we proceed by iterations,
+  // by successive remeshing.
+  else if (neut_tess_edge_iscurved (Tess, edge))
+  {
+    nem_meshing_1D_edge_algo_mesh (Tess.EdgeVerNb[edge][0],
+                                   Tess.EdgeVerNb[edge][1],
+                                   edge, l, cl, pl, Nodes, Node0DCl, pN, pM);
+
+    nem_meshing_1D_edge_projontodomain (Tess, edge, pN, *pM);
+
+    iter = 0;
+    do
+    {
+      neut_nodes_memcpy (*pN, &N0);
+      neut_mesh_memcpy (*pM, &M0);
+
+      neut_mesh_elset_length (N0, M0, 1, Tess.EdgeLength + edge);
+
+      nem_meshing_1D_edge_algo_mesh (Tess.EdgeVerNb[edge][0],
+                                     Tess.EdgeVerNb[edge][1],
+                                     edge, Tess.EdgeLength[edge], cl, pl, Nodes, Node0DCl, pN, pM);
+
+      nem_meshing_1D_edge_projontomesh (Tess, edge, N0, M0, pN, *pM);
+      nem_meshing_1D_edge_projontodomain (Tess, edge, pN, *pM);
+    }
+    while (N0.NodeQty != (*pN).NodeQty && ++iter < itermax);
+  }
+
+  neut_nodes_free (&N0);
+  neut_mesh_free (&M0);
+
+  return;
+}
+
+void
+nem_meshing_1D_edge_record_nodes (struct TESS Tess, int edge, struct NODES N,
+                                  int *master_id, int **N_global_id,
+                                  struct NODES *pNodes)
+{
+  int i;
+
+  // note: we check if the nodes are given in the sense of the edge,
+  // or in the opposite sense.  Recording nodes accordingly...
+
+  N_global_id[edge] = ut_alloc_1d_int (N.NodeQty + 1);
+  N_global_id[edge][1] = Tess.EdgeVerNb[edge][0];
+  N_global_id[edge][N.NodeQty] = Tess.EdgeVerNb[edge][1];
+  for (i = 2; i < N.NodeQty; i++)
+    N_global_id[edge][i] = (*pNodes).NodeQty + i - 1;
+
+  /* adding body nodes to global nodes */
+  for (i = 2; i < N.NodeQty; i++)
+  {
+    neut_nodes_addnode (pNodes, N.NodeCoo[i], N.NodeCl[i]);
+
+    if (master_id)
+      neut_nodes_markasslave (pNodes, (*pNodes).NodeQty,
+                              N_global_id[Tess.PerEdgeMaster[edge]][master_id[i]],
+                              Tess.PerEdgeShift[edge]);
+  }
+
+  return;
+}
+
+void
+nem_meshing_1D_edge_record_elts (int edge, struct MESH M,
+                                 int *N_global_id, struct MESH *Mesh)
+{
+  int i, j, *elt_nbs = NULL;
+
+  /* renumbering mesh nodes to match global nodes */
+  for (i = 1; i <= M.EltQty; i++)
+    for (j = 0; j < 2; j++)
+      M.EltNodes[i][j] = N_global_id[M.EltNodes[i][j]];
+
+  /* renumbering mesh elts */
+  elt_nbs = ut_alloc_1d_int (M.EltQty + 1);
+  for (i = 1; i <= M.EltQty; i++)
+    elt_nbs[i] = Mesh[1].EltQty + i;
+
+  for (i = 1; i <= M.Elsets[1][0]; i++)
+    M.Elsets[1][i] = elt_nbs[M.Elsets[1][i]];
+
+  for (i = 1; i <= M.EltQty; i++)
+    neut_mesh_addelt (Mesh + 1, M.EltNodes[i]);
+
+  neut_mesh_addelset (Mesh + 1, M.Elsets[1] + 1, M.Elsets[1][0]);
+
+  if (Mesh[1].ElsetQty != edge)
     ut_error_reportbug ();
-  }
 
-  // I is the intersection point between the cl progressions from both
-  // extremities of the segment.
-
-  I = cl1_cl2_pl_I (cl1, cl2, pl);
-
-  // I > 1 means that pl is too low to reach cl2 at the second
-  // extremity, by progression from cl1. pl has to be increased.
-  if (I > 1)
-  {
-    plp = cl2 - cl1 + 1;
-    (*pqty) = cl1_pl_x_i (cl1, plp, 1.) + 1;
-    lp = cl1_pl_n_l (cl1, plp, *pqty);
-
-    (*pcoo) = ut_alloc_1d ((*pqty));
-    for (i = 1; i <= *pqty; i++)
-      (*pcoo)[i - 1] = cl1_pl_i_x (cl1, plp, i) / lp;
-  }
-
-  // Processing with pl
-  else
-  {
-    // Calculating the number of nodes and the lengths of the 2
-    // progression segments.
-    n1p = cl1_cl_pl_n (cl1, clt, pl);
-    n2p = cl1_cl_pl_n (cl2, clt, pl);
-    l1p = cl1_pl_n_l (cl1, pl, n1p);
-    l2p = cl1_pl_n_l (cl2, pl, n2p);
-
-    // If the progression segments intersect each other, there will be
-    // only 2 segments
-    if (l1p + l2p > 1)
-    {
-      n1p = cl1_pl_x_i (cl1, pl, I);	// number of nodes before I
-      n2p = cl1_pl_x_i (cl2, pl, 1 - I);	// number of nodes before I
-      l1p = cl1_pl_n_l (cl1, pl, n1p);	// length before I
-      l2p = cl1_pl_n_l (cl2, pl, n2p);	// length before I
-
-      n1p_cl = cl1_pl_i_cl (cl1, pl, n1p);	// cl at last point
-      n2p_cl = cl1_pl_i_cl (cl2, pl, n2p);	// cl at last point
-      cltp = ut_num_min (n1p_cl, n2p_cl);	// min of the two
-
-      // Distance between the two progression segments
-      Dl = 1 - l1p - l2p;
-      if (Dl < 0)
-      {
-	printf ("Dl < 0\n");
-	ut_error_reportbug ();
-      }
-
-      // If Dl < cltp, adding a segment of length cltp then scaling the
-      // node coo to get a full segment of length 1
-      if (Dl < cltp)
-      {
-	lp = l1p + l2p + cltp;
-
-	id = 0;
-	(*pqty) = n1p + n2p;
-	(*pcoo) = ut_alloc_1d ((*pqty));
-	for (i = 1; i <= n1p; i++)
-	  (*pcoo)[id++] = cl1_pl_i_x (cl1, pl, i);
-	for (i = n2p; i >= 1; i--)
-	  (*pcoo)[id++] = lp - cl1_pl_i_x (cl2, pl, i);
-	ut_array_1d_scale ((*pcoo), (*pqty), 1 / lp);
-      }
-
-      // otherwise, adding a node by extending the 2 progression
-      // segments then scaling the node coo to get a full segment of
-      // length 1
-      else
-      {
-	// taking 1 more node for each progression segment; both last
-	// nodes will be only one in the final mesh
-	l1p = cl1_pl_n_l (cl1, pl, n1p + 1);
-	l2p = cl1_pl_n_l (cl2, pl, n2p + 1);
-	lp = l1p + l2p;
-
-	id = 0;
-	(*pqty) = n1p + n2p + 1;
-	(*pcoo) = ut_alloc_1d ((*pqty));
-	for (i = 1; i <= n1p + 1; i++)	// + 1 for the 1 more node
-	  (*pcoo)[id++] = cl1_pl_i_x (cl1, pl, i);
-	for (i = n2p; i >= 1; i--)
-	  (*pcoo)[id++] = lp - cl1_pl_i_x (cl2, pl, i);
-	ut_array_1d_scale ((*pcoo), (*pqty), 1 / lp);
-      }
-    }
-
-    // if the two progression segments do not intersect, computing the
-    // number of nodes to add between them. Adding segments of length
-    // clt between the parts and scaling all coos as before.
-    else
-    {
-      // distance between the progression segments
-      Dl = 1 - l1p - l2p;
-
-      // number of nodes to add, allowing a tolerancy of 0.05
-      add = ceil (ut_num_max (Dl / clt, 0.051) - 0.05) - 1;
-
-      lp = l1p + l2p + (add + 1) * clt;
-
-      // lp < 1 may happen due to the -0.05 tolerancy above. In this
-      // case, increasing clt a little for the elements between the
-      // progression parts. Not doing so would result in element lengths
-      // higher than cl1 and cl2 at both extremities, which is not
-      // allowed.
-      if (lp < 1)
-      {
-	cltp = (1 - l1p - l2p) / (add + 1);
-	lp = 1;
-      }
-      else
-	cltp = clt;
-
-      // Computing coos
-
-      id = 0;
-      (*pqty) = n1p + n2p + add;
-      (*pcoo) = ut_alloc_1d ((*pqty));
-      for (i = 1; i <= n1p; i++)
-	(*pcoo)[id++] = cl1_pl_i_x (cl1, pl, i);
-      for (i = 1; i <= add; i++)
-      {
-	(*pcoo)[id] = (*pcoo)[id - 1] + cltp;
-	id++;
-      }
-      for (i = n2p; i >= 1; i--)
-	(*pcoo)[id++] = lp - cl1_pl_i_x (cl2, pl, i);
-      ut_array_1d_scale ((*pcoo), (*pqty), 1 / lp);
-    }
-  }
-
-  // Computing characteristic lengths from the segment lengths
-
-  (*pcl) = ut_alloc_1d (*pqty);
-
-  // The characteristic length at a node is the max of the lengths of
-  // the two elements of the node, with a change to account for the
-  // elements that are between the progression parts, but have length <
-  // clt.
-  (*pcl)[0] = cl1;
-  for (i = 1; i < (*pqty) - 1; i++)
-  {
-    d1 = (*pcoo)[i] - (*pcoo)[i - 1];
-    d2 = (*pcoo)[i + 1] - (*pcoo)[i];
-
-    (*pcl)[i] = ut_num_max (d1, d2);
-    if ((*pcl)[i] < clt && d1 > clt / pl && d2 > clt / pl)
-      (*pcl)[i] = clt;
-  }
-  (*pcl)[(*pqty) - 1] = cl2;
-
-  (*pcl)[0] = ut_num_max ((*pcl)[0], (*pcoo)[1]);
-  (*pcl)[(*pqty) - 1]
-    = ut_num_max ((*pcl)[(*pqty) - 1],
-		  (*pcoo)[(*pqty) - 1] - (*pcoo)[(*pqty) - 2]);
-
-  (*pqty) -= 2;
+  ut_free_1d_int (elt_nbs);
 
   return;
 }

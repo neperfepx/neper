@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_topo_.h"
@@ -95,6 +95,51 @@ neut_tess_ver_faces (struct TESS Tess, int ver, int **pface, int *pfaceqty)
   }
 
   ut_free_1d_int (tmp);
+
+  return;
+}
+
+void
+neut_tess_vers_faces (struct TESS Tess, int* vers, int verqty, int **pfaces, int *pfaceqty)
+{
+  int i;
+  int **verfaces = NULL, *verfaceqty = NULL;
+
+  verfaces = ut_alloc_1d_pint (verqty);
+
+  for (i = 0; i < verqty; i++)
+    neut_tess_ver_faces (Tess, vers[i], verfaces + i, verfaceqty + i);
+
+  ut_array_1d_int_lists_merge (verfaces, verfaceqty, verqty, pfaces, pfaceqty);
+
+  ut_free_2d_int (verfaces, verqty);
+  ut_free_1d_int (verfaceqty);
+
+  return;
+}
+
+void
+neut_tess_vers_faces_notondomain (struct TESS Tess, int* vers, int verqty, int **pfaces, int *pfaceqty)
+{
+  int i;
+
+  neut_tess_vers_faces (Tess, vers, verqty, pfaces, pfaceqty);
+
+  for (i = 0; i < *pfaceqty; i++)
+    if (Tess.FaceDom[i][0] == 2)
+      ut_array_1d_int_list_rmelt (pfaces, pfaceqty, (*pfaces)[i]);
+
+  return;
+}
+
+void
+neut_tess_edge_faces (struct TESS Tess, int edge, int **pfaces, int *pfaceqty)
+{
+  ut_free_1d_int_ (pfaces);
+
+  (*pfaceqty) = Tess.EdgeFaceQty[edge];
+  (*pfaces) = ut_alloc_1d_int (*pfaceqty);
+  ut_array_1d_int_memcpy (*pfaces, *pfaceqty, Tess.EdgeFaceNb[edge]);
 
   return;
 }
@@ -329,57 +374,39 @@ neut_tess_vers_alldomedges (struct TESS Tess, int *vers, int verqty,
 }
 
 void
-neut_tess_ver_domfaces (struct TESS Tess, int ver, int **pdface,
+neut_tess_ver_domfaces (struct TESS Tess, int ver, int **pdfaces,
 			int *pdfaceqty)
 {
-  if (Tess.VerDom[ver][0] == -1)
-    (*pdfaceqty) = 0;
-  else if (Tess.VerDom[ver][0] == 0)	// is a dom ver
-    neut_tess_domver_domface (Tess, Tess.VerDom[ver][1], pdface, pdfaceqty);
-  else if (Tess.VerDom[ver][0] == 1)	// is on a dom edge
-  {
-    if (Tess.Dim == 3)
-      (*pdfaceqty) = 2;
-    else
-      (*pdfaceqty) = 1;
+  int i;
 
-    (*pdface) = ut_alloc_1d_int (*pdfaceqty);
-    ut_array_1d_int_memcpy (*pdface, *pdfaceqty,
-			    Tess.DomEdgeFaceNb[Tess.VerDom[ver][1]]);
-  }
-  else if (Tess.VerDom[ver][0] == 2)	// is a dom face
-  {
-    (*pdfaceqty) = 1;
-    (*pdface) = ut_alloc_1d_int (1);
-    (*pdface)[0] = Tess.VerDom[ver][1];
-  }
-  else
-    ut_error_reportbug ();
+  ut_free_1d_int_ (pdfaces);
+  (*pdfaceqty) = 0;
+
+  neut_tess_ver_faces (Tess, ver, pdfaces, pdfaceqty);
+  for (i = 0; i < *pdfaceqty; i++)
+    (*pdfaces)[i] = Tess.FaceDom[(*pdfaces)[i]][0] == 2 ? Tess.FaceDom[(*pdfaces)[i]][1] : -1;
+  ut_array_1d_int_sort_uniq (*pdfaces, *pdfaceqty, pdfaceqty);
+  (*pdfaceqty) -= ut_array_1d_int_deletencompress (*pdfaces, *pdfaceqty, -1, 1);
+
+  (*pdfaces) = ut_realloc_1d_int (*pdfaces, *pdfaceqty);
 
   return;
 }
 
 void
-neut_tess_edge_domfaces (struct TESS Tess, int edge, int **pdface,
+neut_tess_edge_domfaces (struct TESS Tess, int edge, int **pdfaces,
 			 int *pdfaceqty)
 {
-  if (Tess.EdgeDom[edge][0] == -1)
-    (*pdfaceqty) = 0;
-  else if (Tess.EdgeDom[edge][0] == 1)	// is on a dom edge
-  {
-    (*pdfaceqty) = 2;
-    (*pdface) = ut_alloc_1d_int (2);
-    ut_array_1d_int_memcpy (*pdface, 2,
-			    Tess.DomEdgeFaceNb[Tess.EdgeDom[edge][1]]);
-  }
-  else if (Tess.EdgeDom[edge][0] == 2)	// is a dom face
-  {
-    (*pdfaceqty) = 1;
-    (*pdface) = ut_alloc_1d_int (1);
-    (*pdface)[0] = Tess.EdgeDom[edge][1];
-  }
-  else
-    ut_error_reportbug ();
+  int i;
+
+  neut_tess_edge_faces (Tess, edge, pdfaces, pdfaceqty);
+
+  for (i = 0; i < *pdfaceqty; i++)
+    (*pdfaces)[i] = Tess.FaceDom[(*pdfaces)[i]][0] == 2 ? Tess.FaceDom[(*pdfaces)[i]][1] : -1;
+  ut_array_1d_int_sort_uniq (*pdfaces, *pdfaceqty, pdfaceqty);
+  (*pdfaceqty) -= ut_array_1d_int_deletencompress (*pdfaces, *pdfaceqty, -1, 1);
+
+  (*pdfaces) = ut_realloc_1d_int (*pdfaces, *pdfaceqty);
 
   return;
 }
@@ -672,7 +699,7 @@ neut_tess_ver_domface_edges (struct TESS Tess, int ver, int dface,
       // checking that the dedge belongs to the dface
       dedge = Tess.EdgeDom[edge][1];
       if (ut_array_1d_int_eltpos (Tess.DomFaceEdgeNb[dface] + 1,
-				  Tess.DomFaceVerQty[dface], dedge) != -1)
+				  Tess.DomFaceEdgeQty[dface], dedge) != -1)
 	status = 1;
     }
 
@@ -813,6 +840,77 @@ neut_tess_edges_comver (struct TESS Tess, int *edges, int edgeqty, int *pver)
   return status;
 }
 
+int
+neut_tess_edgepair_comver (struct TESS Tess, int edge1, int edge2, int *pver)
+{
+  int status, *edges = ut_alloc_1d_int (2);
+
+  ut_array_1d_int_set_2 (edges, edge1, edge2);
+
+  status = neut_tess_edges_comver (Tess, edges, 2, pver);
+
+  ut_free_1d_int (edges);
+
+  return status;
+}
+
+int
+neut_tess_faces_compolys (struct TESS Tess, int *faces, int faceqty,
+			  int **ppolys, int *ppolyqty)
+{
+  int i, status, qty, *tmp = NULL;
+
+  if (faceqty <= 0)
+    return -1;
+
+  neut_tess_face_polys (Tess, faces[0], ppolys, ppolyqty);
+
+  for (i = 1; i < faceqty && *ppolyqty > 0; i++)
+  {
+    neut_tess_face_polys (Tess, faces[i], &tmp, &qty);
+    ut_array_1d_int_inter (*ppolys, *ppolyqty, tmp, qty, *ppolys, ppolyqty);
+  }
+
+  if (*ppolyqty > 0)
+  {
+    (*ppolys) = ut_realloc_1d_int (*ppolys, *ppolyqty);
+    status = 0;
+  }
+  else
+  {
+    ut_free_1d_int (*ppolys);
+    status = -1;
+  }
+
+  ut_free_1d_int (tmp);
+
+  return status;
+}
+
+int
+neut_tess_faces_compoly (struct TESS Tess, int *faces, int faceqty,
+			  int *ppoly)
+{
+  int status, *tmp = NULL, qty;
+
+  status = neut_tess_faces_compolys (Tess, faces, faceqty, &tmp, &qty);
+
+  if (qty == 1)
+  {
+    (*ppoly) = tmp[0];
+    status = 0;
+  }
+  else
+  {
+    (*ppoly) = -1;
+    status = -1;
+  }
+
+  ut_free_1d_int (tmp);
+
+  return status;
+}
+
 void
 neut_tess_edge_vers (struct TESS Tess, int edge, int **pver, int *pverqty)
 {
@@ -867,6 +965,34 @@ neut_tess_poly_vers (struct TESS Tess, int poly, int **pver, int *pverqty)
 }
 
 void
+neut_tess_poly_vercoos (struct TESS Tess, int poly, int **pvers, double ***pvercoos, int *pverqty)
+{
+  int i, *tmp = NULL, qty;
+
+  neut_tess_poly_vers (Tess, poly, &tmp, &qty);
+
+  if (pverqty)
+    (*pverqty) = qty;
+
+  if (pvers)
+  {
+    (*pvers) = ut_alloc_1d_int (qty);
+    ut_array_1d_int_memcpy (*pvers, qty, tmp);
+  }
+
+  if (pvercoos)
+  {
+    (*pvercoos) = ut_alloc_2d (qty, 3);
+    for (i = 0; i < qty; i++)
+      ut_array_1d_memcpy ((*pvercoos)[i], 3, Tess.VerCoo[tmp[i]]);
+  }
+
+  ut_free_1d_int (tmp);
+
+  return;
+}
+
+void
 neut_tess_poly_edges (struct TESS Tess, int poly, int **pedge, int *pedgeqty)
 {
   int i, j, face;
@@ -891,6 +1017,81 @@ neut_tess_poly_edges (struct TESS Tess, int poly, int **pedge, int *pedgeqty)
     (*pedge) = ut_alloc_1d_int (*pedgeqty);
     ut_array_1d_int_memcpy (*pedge, *pedgeqty, tmp);
     ut_array_1d_int_sort (*pedge, *pedgeqty);
+  }
+
+  ut_free_1d_int (tmp);
+
+  return;
+}
+
+void
+neut_tess_poly_edgevers (struct TESS Tess, int poly, int **pedges, int ***pedgevers, int *pedgeqty)
+{
+  int i, *tmp = NULL, qty;
+
+  neut_tess_poly_edges (Tess, poly, &tmp, &qty);
+
+  if (pedgeqty)
+    (*pedgeqty) = qty;
+
+  if (pedges)
+  {
+    (*pedges) = ut_alloc_1d_int (qty);
+    ut_array_1d_int_memcpy (*pedges, qty, tmp);
+  }
+
+  if (pedgevers)
+  {
+    (*pedgevers) = ut_alloc_2d_int (qty, 2);
+    for (i = 0; i < qty; i++)
+      ut_array_1d_int_memcpy ((*pedgevers)[i], 2, Tess.EdgeVerNb[tmp[i]]);
+  }
+
+  ut_free_1d_int (tmp);
+
+  return;
+}
+
+void
+neut_tess_poly_faces (struct TESS Tess, int poly, int **pfaces, int *pfaceqty)
+{
+  (*pfaceqty) = Tess.PolyFaceQty[poly];
+  (*pfaces) = ut_alloc_1d_int (*pfaceqty);
+
+  ut_array_1d_int_memcpy (*pfaces, *pfaceqty, Tess.PolyFaceNb[poly] + 1);
+
+  return;
+}
+
+void
+neut_tess_poly_faceedges (struct TESS Tess, int poly, int **pfaces,
+                          int ***pfaceedges, int **pfaceedgeqty,
+                          int *pfaceqty)
+{
+  int i, face, *tmp = NULL, qty;
+
+  neut_tess_poly_faces (Tess, poly, &tmp, &qty);
+
+  if (pfaceqty)
+    (*pfaceqty) = qty;
+
+  if (pfaces)
+  {
+    (*pfaces) = ut_alloc_1d_int (qty);
+    ut_array_1d_int_memcpy (*pfaces, qty, tmp);
+  }
+
+  if (pfaceedges && pfaceedgeqty)
+  {
+    (*pfaceedges) = ut_alloc_1d_pint (qty);
+    (*pfaceedgeqty) = ut_alloc_1d_int (qty);
+    for (i = 0; i < qty; i++)
+    {
+      face = tmp[i];
+      (*pfaceedgeqty)[i] = Tess.FaceVerQty[face];
+      (*pfaceedges)[i] = ut_alloc_1d_int ((*pfaceedgeqty)[i]);
+      ut_array_1d_int_memcpy ((*pfaceedges)[i], (*pfaceedgeqty)[i], Tess.FaceEdgeNb[face] + 1);
+    }
   }
 
   ut_free_1d_int (tmp);
@@ -1013,7 +1214,7 @@ neut_tess_cell_true (struct TESS Tess, int nb)
       for (i = 1; i <= Tess.DomEdgeQty; i++)
       {
 	neut_tess_domedge_eq (Tess, i, eq);
-	ut_space_point_line_dist (Tess.SeedCoo[nb], eq, &dist);
+	ut_space_point_line_dist_2d (Tess.SeedCoo[nb], eq, &dist);
 	domdist = ut_num_min (domdist, dist);
       }
 
@@ -1305,7 +1506,7 @@ neut_tess_domface_body_edges (struct TESS Tess, int dface, int **pedge,
 
   neut_tess_domface_edges (Tess, dface, pedge, pedgeqty);
 
-  for (i = 1; i <= Tess.DomFaceVerQty[dface]; i++)
+  for (i = 1; i <= Tess.DomFaceEdgeQty[dface]; i++)
   {
     dedge = Tess.DomFaceEdgeNb[dface][i];
 
@@ -1431,10 +1632,44 @@ neut_tess_poly_neighpoly (struct TESS Tess, int poly, int **pnpoly,
       }
   }
 
+  ut_array_1d_int_sort_uniq (tmp, *pnpolyqty, pnpolyqty);
+
   if (pnpoly)
   {
     (*pnpoly) = ut_realloc_1d_int (*pnpoly, *pnpolyqty);
     ut_array_1d_int_memcpy (*pnpoly, *pnpolyqty, tmp);
+  }
+
+  ut_free_1d_int (tmp);
+
+  return;
+}
+
+void
+neut_tess_poly_neighseeds (struct TESS Tess, int poly, int **pnseeds,
+			   int *pnseedqty)
+{
+  int i, j, face, *tmp = NULL;
+
+  (*pnseedqty) = 0;
+  for (i = 1; i <= Tess.PolyFaceQty[poly]; i++)
+  {
+    face = Tess.PolyFaceNb[poly][i];
+
+    for (j = 0; j < 2; j++)
+      if (Tess.FacePoly[face][j] != poly)
+      {
+	tmp = ut_realloc_1d_int (tmp, (*pnseedqty) + 1);
+	tmp[(*pnseedqty)++] = Tess.FacePoly[face][j];
+      }
+  }
+
+  ut_array_1d_int_sort_uniq (tmp, *pnseedqty, pnseedqty);
+
+  if (pnseeds)
+  {
+    (*pnseeds) = ut_realloc_1d_int (*pnseeds, *pnseedqty);
+    ut_array_1d_int_memcpy (*pnseeds, *pnseedqty, tmp);
   }
 
   ut_free_1d_int (tmp);
@@ -1472,6 +1707,27 @@ neut_tess_face_neighfaces (struct TESS Tess, int face, int **pnface,
   return;
 }
 
+void
+neut_tess_faces_neighfaces (struct TESS Tess, int *faces, int faceqty, int **pnfaces,
+			    int *pnfaceqty)
+{
+  int i;
+  int **tmp = NULL, *qty = NULL;
+
+  tmp = ut_alloc_1d_pint (faceqty);
+  qty = ut_alloc_1d_int (faceqty);
+
+  for (i = 0; i < faceqty; i++)
+    neut_tess_face_neighfaces (Tess, faces[i], tmp + i, qty + i);
+
+  ut_array_1d_int_lists_merge (tmp, qty, faceqty, pnfaces, pnfaceqty);
+
+  ut_free_1d_int (qty);
+  ut_free_2d_int (tmp, faceqty);
+
+  return;
+}
+
 int
 neut_tess_facepair_neigh (struct TESS Tess, int face1, int face2)
 {
@@ -1491,7 +1747,7 @@ neut_tess_edgepair_neigh (struct TESS Tess, int edge1, int edge2)
 {
   int status, qty, *tmp = NULL;
 
-  neut_tess_edge_neighedge (Tess, edge1, &tmp, &qty);
+  neut_tess_edge_neighedges (Tess, edge1, &tmp, &qty);
 
   status = (ut_array_1d_int_eltpos (tmp, qty, edge2) != -1);
 
@@ -1501,7 +1757,7 @@ neut_tess_edgepair_neigh (struct TESS Tess, int edge1, int edge2)
 }
 
 void
-neut_tess_edge_neighedge (struct TESS Tess, int edge, int **pnedge,
+neut_tess_edge_neighedges (struct TESS Tess, int edge, int **pnedge,
 			  int *pnedgeqty)
 {
   int i, j, ver, *tmp = NULL;
@@ -1695,6 +1951,7 @@ neut_tess_face_interpolmesh (struct TESS Tess, int face, struct NODES *pN,
   neut_mesh_set_zero (pM);
   (*pM).Dimension = 2;
   (*pM).EltOrder = 1;
+  ut_string_string ("tri", &(*pM).EltType);
 
   verqty = Tess.FaceVerQty[face];
   for (i = 1; i <= verqty; i++)
@@ -1764,30 +2021,37 @@ neut_tess_face_interpolmesh (struct TESS Tess, int face, struct NODES *pN,
 }
 
 int
-neut_tess_domfaces_comdomver (struct TESS Tess, int *face, int faceqty,
+neut_tess_domfaces_comdomver (struct TESS Tess, int *domfaces, int domfaceqty,
 			      int *pver)
 {
-  int i, status, qty;
-  int *nb = NULL;
+  int i, status, domface;
+  int *tmp = NULL, qty;
 
-  if (faceqty <= 0)
+  if (domfaceqty <= 0)
   {
     (*pver) = -1;
     return -1;
   }
 
-  nb = ut_alloc_1d_int (Tess.DomFaceVerQty[face[0]]);
-  qty = Tess.DomFaceVerQty[face[0]];
-  ut_array_1d_int_memcpy (nb, Tess.DomFaceVerQty[face[0]],
-			  Tess.DomFaceVerNb[face[0]] + 1);
+  domface = domfaces[0];
 
-  for (i = 1; i < faceqty && qty > 0; i++)
-    ut_array_1d_int_inter (nb, qty, Tess.DomFaceVerNb[face[i]] + 1,
-			   Tess.DomFaceVerQty[face[i]], nb, &qty);
+  tmp = ut_alloc_1d_int (Tess.DomFaceVerQty[domface]);
+  qty = Tess.DomFaceVerQty[domface];
+  ut_array_1d_int_memcpy (tmp, Tess.DomFaceVerQty[domface],
+			  Tess.DomFaceVerNb[domface] + 1);
+
+  for (i = 1; i < domfaceqty && qty > 0; i++)
+  {
+    domface = domfaces[i];
+    ut_array_1d_int_inter (tmp, qty, Tess.DomFaceVerNb[domface] + 1,
+			   Tess.DomFaceVerQty[domface], tmp, &qty);
+  }
+
+  ut_array_1d_int_list_rmelt (&tmp, &qty, 0);
 
   if (qty == 1)
   {
-    (*pver) = nb[0];
+    (*pver) = tmp[0];
     status = 0;
   }
   else
@@ -1796,7 +2060,7 @@ neut_tess_domfaces_comdomver (struct TESS Tess, int *face, int faceqty,
     status = -1;
   }
 
-  ut_free_1d_int (nb);
+  ut_free_1d_int (tmp);
 
   return status;
 }
@@ -1814,14 +2078,14 @@ neut_tess_domfaces_comdomedge (struct TESS Tess, int *dface, int dfaceqty,
     return -1;
   }
 
-  nb = ut_alloc_1d_int (Tess.DomFaceVerQty[dface[0]]);
-  qty = Tess.DomFaceVerQty[dface[0]];
-  ut_array_1d_int_memcpy (nb, Tess.DomFaceVerQty[dface[0]],
+  nb = ut_alloc_1d_int (Tess.DomFaceEdgeQty[dface[0]]);
+  qty = Tess.DomFaceEdgeQty[dface[0]];
+  ut_array_1d_int_memcpy (nb, Tess.DomFaceEdgeQty[dface[0]],
 			  Tess.DomFaceEdgeNb[dface[0]] + 1);
 
   for (i = 1; i < dfaceqty && qty > 0; i++)
     ut_array_1d_int_inter (nb, qty, Tess.DomFaceEdgeNb[dface[i]] + 1,
-			   Tess.DomFaceVerQty[dface[i]], nb, &qty);
+			   Tess.DomFaceEdgeQty[dface[i]], nb, &qty);
 
   if (qty == 1)
   {
@@ -1936,26 +2200,28 @@ neut_tess_domedges_comdomver (struct TESS Tess, int *dedge, int dedgeqty,
 }
 
 int
-neut_tess_domedges_domvers (struct TESS Tess, int *dedge, int dedgeqty,
+neut_tess_domedges_domvers (struct TESS Tess, int *domedges, int domedgeqty,
 			    int **pdver, int *pdverqty)
 {
-  int i, id;
+  int i, domedge;
 
   // no edges: return
-  if (dedgeqty <= 0)
+  if (domedgeqty <= 0)
   {
     (*pdver) = NULL;
     (*pdverqty) = 0;
     return -1;
   }
 
-  (*pdver) = ut_alloc_1d_int (dedgeqty * 2);
+  (*pdver) = ut_alloc_1d_int (domedgeqty * 2);
   (*pdverqty) = 0;
-  for (i = 0; i < dedgeqty; i++)
+  for (i = 0; i < domedgeqty; i++)
   {
-    id = dedge[i];
-    ut_array_1d_int_memcpy (*pdver + *pdverqty, 2, Tess.DomEdgeVerNb[id]);
-    (*pdverqty) += 2;
+    domedge = domedges[i];
+    ut_array_1d_int_memcpy (*pdver + *pdverqty,
+                            Tess.DomEdgeVerQty[domedge],
+                            Tess.DomEdgeVerNb[domedge]);
+    (*pdverqty) += Tess.DomEdgeVerQty[domedge];
   }
 
   ut_array_1d_int_sort_uniq (*pdver, *pdverqty, pdverqty);
@@ -2190,7 +2456,7 @@ neut_tess_domedges_ver (struct TESS Tess, int *dedge, int dedgeqty,
 }
 
 void
-neut_tess_domface_ver (struct TESS Tess, int dface, int **pver, int *pverqty)
+neut_tess_domface_vers (struct TESS Tess, int dface, int **pver, int *pverqty)
 {
   int i, j, face;
 
@@ -2211,16 +2477,38 @@ neut_tess_domface_ver (struct TESS Tess, int dface, int **pver, int *pverqty)
 }
 
 void
+neut_tess_domfaces_vers (struct TESS Tess, int *domfaces, int domfaceqty,
+                         int **pvers, int *pverqty)
+{
+  int i;
+  int **domfacevers = NULL, *domfaceverqty = NULL;
+
+  domfacevers = ut_alloc_1d_pint (domfaceqty);
+  domfaceverqty = ut_alloc_1d_int (domfaceqty);
+
+  for (i = 0; i < domfaceqty; i++)
+    neut_tess_domface_vers (Tess, domfaces[i], domfacevers + i, domfaceverqty + i);
+
+  ut_array_1d_int_lists_merge (domfacevers, domfaceverqty, domfaceqty,
+                               pvers, pverqty);
+
+  ut_free_2d_int (domfacevers, domfaceqty);
+  ut_free_1d_int (domfaceverqty);
+
+  return;
+}
+
+void
 neut_tess_domface_body_ver (struct TESS Tess, int dface, int **pver,
 			    int *pverqty)
 {
   int i, boundverqty;
   int *boundver = NULL;
 
-  neut_tess_domface_ver (Tess, dface, pver, pverqty);
+  neut_tess_domface_vers (Tess, dface, pver, pverqty);
 
   neut_tess_domedges_ver (Tess, Tess.DomFaceEdgeNb[dface] + 1,
-			  Tess.DomFaceVerQty[dface], &boundver, &boundverqty);
+			  Tess.DomFaceEdgeQty[dface], &boundver, &boundverqty);
 
   for (i = 0; i < boundverqty; i++)
     if (ut_array_1d_int_deletencompress (*pver, *pverqty, boundver[i], 1) !=
@@ -2485,7 +2773,7 @@ neut_tess_face_perface (struct TESS Tess, int face, int *shift, int *pperface)
     ut_array_1d_int_memcpy (shiftb, 3, Tess.PerFaceShift[slave]);
     ut_array_1d_int_scale (shiftb, 3, -1);
 
-    if (ut_array_1d_int_equal (shift, shiftb, 3))
+    if (ut_array_1d_int_equal (shift, 3, shiftb, 3))
     {
       (*pperface) = slave;
       status = 0;
@@ -2494,7 +2782,7 @@ neut_tess_face_perface (struct TESS Tess, int face, int *shift, int *pperface)
   else
   {
     (*pperface) = Tess.PerFaceMaster[face];
-    if (ut_array_1d_int_equal (shift, Tess.PerFaceShift[face], 3))
+    if (ut_array_1d_int_equal (shift, 3, Tess.PerFaceShift[face], 3))
       status = 0;
   }
 
@@ -2840,17 +3128,20 @@ neut_tess_poly_domface_faces (struct TESS Tess, int poly,
 }
 
 void
-neut_tess_faces_contiguousfaces (struct TESS Tess, int *faces, int faceqty,
+neut_tess_faces_contiguousfaces (struct TESS Tess, double coplanar, int *faces, int faceqty,
                                  int *pqty, int ***pfaces, int **pfaceqty)
 {
   int i, j, face, id;
   int qty, *tmp = NULL;
   int interqty, *inter = ut_alloc_1d_int (faceqty);
   int qty2, *tmp2 = NULL;
+  int *facedom = ut_alloc_1d_int (2);
 
   qty = faceqty;
   tmp = ut_alloc_1d_int (qty);
   ut_array_1d_int_memcpy (tmp, qty, faces);
+
+  (*pqty) = 0;
 
   while (qty > 0)
   {
@@ -2860,6 +3151,7 @@ neut_tess_faces_contiguousfaces (struct TESS Tess, int *faces, int faceqty,
     (*pfaces)[id] = NULL;
     (*pfaceqty) = ut_realloc_1d_int (*pfaceqty, *pqty);
     (*pfaceqty)[id] = 0;
+    ut_array_1d_int_memcpy (facedom, 2, Tess.FaceDom[tmp[0]]);
 
     // adding face to set
     ut_array_1d_int_list_addelt ((*pfaces) + id, (*pfaceqty) + id, tmp[0]);
@@ -2875,8 +3167,16 @@ neut_tess_faces_contiguousfaces (struct TESS Tess, int *faces, int faceqty,
 
       for (j = 0; j < interqty; j++)
       {
-	ut_array_1d_int_list_addelt ((*pfaces) + id, (*pfaceqty) + id, inter[j]);
-	ut_array_1d_int_list_rmelt (&tmp, &qty, inter[j]);
+        double scalprod;
+        scalprod = ut_vector_scalprod (Tess.FaceEq[(*pfaces)[id][0]] + 1,
+                                       Tess.FaceEq[inter[j]] + 1);
+
+        if (ut_array_1d_int_equal (Tess.FaceDom[face], 2, facedom, 2)
+         && (scalprod >= coplanar - 1e-6 || neut_tess_face_iscurved (Tess, face)))
+        {
+          ut_array_1d_int_list_addelt ((*pfaces) + id, (*pfaceqty) + id, inter[j]);
+          ut_array_1d_int_list_rmelt (&tmp, &qty, inter[j]);
+        }
       }
     }
   }
@@ -2884,23 +3184,26 @@ neut_tess_faces_contiguousfaces (struct TESS Tess, int *faces, int faceqty,
   ut_free_1d_int_ (&tmp);
   ut_free_1d_int_ (&tmp2);
   ut_free_1d_int_ (&inter);
+  ut_free_1d_int (facedom);
 
   return;
 }
 
 void
-neut_tess_edges_contiguousedges (struct TESS Tess, int *edges, int edgeqty,
+neut_tess_edges_contiguousedges (struct TESS Tess, double colinear, int *edges, int edgeqty,
                                  int *pqty, int ***pedges, int **pedgeqty)
 {
   int i, j, edge, id;
   int qty, *tmp = NULL;
   int interqty, *inter = ut_alloc_1d_int (edgeqty);
   int qty2, *tmp2 = NULL;
+  int *edgedom = ut_alloc_1d_int (2);
 
   qty = edgeqty;
   tmp = ut_alloc_1d_int (qty);
   ut_array_1d_int_memcpy (tmp, qty, edges);
 
+  (*pqty) = 0;
   while (qty > 0)
   {
     // adding new set
@@ -2909,6 +3212,10 @@ neut_tess_edges_contiguousedges (struct TESS Tess, int *edges, int edgeqty,
     (*pedges)[id] = NULL;
     (*pedgeqty) = ut_realloc_1d_int (*pedgeqty, *pqty);
     (*pedgeqty)[id] = 0;
+    if (Tess.EdgeDom)
+      ut_array_1d_int_memcpy (edgedom, 2, Tess.EdgeDom[tmp[0]]);
+    else
+      ut_array_1d_int_set (edgedom, 2, 0);
 
     // adding edge to set
     ut_array_1d_int_list_addelt ((*pedges) + id, (*pedgeqty) + id, tmp[0]);
@@ -2919,13 +3226,28 @@ neut_tess_edges_contiguousedges (struct TESS Tess, int *edges, int edgeqty,
     {
       edge = (*pedges)[id][i];
 
-      neut_tess_edge_neighedge (Tess, edge, &tmp2, &qty2);
+      neut_tess_edge_neighedges (Tess, edge, &tmp2, &qty2);
       ut_array_1d_int_inter (tmp2, qty2, tmp, qty, inter, &interqty);
 
       for (j = 0; j < interqty; j++)
       {
-	ut_array_1d_int_list_addelt ((*pedges) + id, (*pedgeqty) + id, inter[j]);
-	ut_array_1d_int_list_rmelt (&tmp, &qty, inter[j]);
+        double scalprod;
+        double *v1 = ut_alloc_1d (3);
+        double *v2 = ut_alloc_1d (3);
+
+        neut_tess_edge_dir (Tess, (*pedges)[id][0], v1);
+        neut_tess_edge_dir (Tess, edge, v2);
+        scalprod = ut_vector_scalprod (v1, v2);
+
+        if ((ut_array_1d_int_equal (Tess.EdgeDom[edge], 2, edgedom, 2)) &&
+            (fabs (scalprod) >= colinear - 1e-6 || neut_tess_edge_iscurved (Tess, edge)))
+        {
+          ut_array_1d_int_list_addelt ((*pedges) + id, (*pedgeqty) + id, inter[j]);
+          ut_array_1d_int_list_rmelt (&tmp, &qty, inter[j]);
+        }
+
+        ut_free_1d (v1);
+        ut_free_1d (v2);
       }
     }
   }
@@ -2933,6 +3255,7 @@ neut_tess_edges_contiguousedges (struct TESS Tess, int *edges, int edgeqty,
   ut_free_1d_int_ (&tmp);
   ut_free_1d_int_ (&tmp2);
   ut_free_1d_int_ (&inter);
+  ut_free_1d_int (edgedom);
 
   return;
 }
@@ -3121,7 +3444,7 @@ neut_tess_face_scale_polys (struct TESS Tess, int face, int scale, int *poly)
 
   ut_array_1d_int_memcpy (poly, 2, Tess.FacePoly[face]);
 
-  if (scale != Tess.ScaleQty)
+  if (Tess.ScaleQty > 1 && scale != Tess.ScaleQty)
     for (i = 0; i < 2; i++)
       if (poly[i] > 0)
 	poly[i] = Tess.ScaleCellId[Tess.FacePoly[face][i]][scale];
@@ -3134,6 +3457,17 @@ neut_tess_face_scale (struct TESS Tess, int face, int *pscale)
 {
   int i, poly[2];
 
+  if (Tess.Dim < 3)
+  {
+    if (Tess.ScaleQty == 1)
+    {
+      (*pscale) = 1;
+      return 0;
+    }
+    else
+      abort ();
+  }
+
   (*pscale) = -1;
 
   if (Tess.FacePoly[face][0] < 0 || Tess.FacePoly[face][1] < 0)
@@ -3141,6 +3475,7 @@ neut_tess_face_scale (struct TESS Tess, int face, int *pscale)
 
   else
   {
+    (*pscale) = 1;
     for (i = Tess.ScaleQty - 1; i >= 0; i--)
     {
       neut_tess_face_scale_polys (Tess, face, i, poly);
@@ -3156,4 +3491,209 @@ neut_tess_face_scale (struct TESS Tess, int face, int *pscale)
     ut_error_reportbug ();
 
   return 0;
+}
+
+void
+neut_tess_polypair_commonfaces (struct TESS Tess, int poly1, int poly2,
+                                int **pfaces, int *pfaceqty)
+{
+  (*pfaces) = ut_alloc_1d_int (Tess.PolyFaceQty[poly1]);
+
+  ut_array_1d_int_inter (Tess.PolyFaceNb[poly1] + 1, Tess.PolyFaceQty[poly1],
+                         Tess.PolyFaceNb[poly2] + 1, Tess.PolyFaceQty[poly2],
+                         *pfaces, pfaceqty);
+
+  return;
+}
+
+void
+neut_tess_seedpair_commonfaces (struct TESS Tess, int seed1, int seed2,
+                                int **pfaces, int *pfaceqty)
+{
+  int i, face, poly1, poly2;
+
+  if (seed1 > 0 && seed2 > 0)
+    neut_tess_polypair_commonfaces (Tess, seed1, seed2, pfaces, pfaceqty);
+  else if (seed1 <= 0 && seed2 <= 0)
+    abort ();
+  else
+  {
+    poly1 = seed1 > 0 ? seed1 : seed2;
+    poly2 = seed1 > 0 ? seed2 : seed1;
+
+    (*pfaces) = ut_realloc_1d_int (*pfaces, Tess.PolyFaceQty[poly1]);
+    (*pfaceqty) = Tess.PolyFaceQty[poly1];
+    ut_array_1d_int_memcpy (*pfaces, *pfaceqty, Tess.PolyFaceNb[poly1] + 1);
+
+    for (i = 0; i < *pfaceqty; i++)
+    {
+      face = (*pfaces)[i];
+
+      if (ut_array_1d_int_eltpos (Tess.FacePoly[face], 2, poly2) == -1)
+      {
+        ut_array_1d_int_list_rmelt (pfaces, pfaceqty, face);
+        i--;
+      }
+    }
+
+    (*pfaces) = ut_realloc_1d_int (*pfaces, *pfaceqty);
+  }
+
+  return;
+}
+
+void
+neut_tess_vers_allfaces (struct TESS Tess, int *vers, int verqty,
+                         int **pfaces, int *pfaceqty)
+{
+  int i, ver, qty, *tmp = NULL;
+
+  (*pfaceqty) = 0;
+  ut_free_1d_int_ (pfaces);
+
+  for (i = 0; i < verqty; i++)
+  {
+    ver = vers[i];
+
+    neut_tess_ver_faces (Tess, ver, &tmp, &qty);
+
+    (*pfaces) = ut_realloc_1d_int (*pfaces, *pfaceqty + qty);
+    ut_array_1d_int_memcpy (*pfaces + *pfaceqty, qty, tmp);
+    (*pfaceqty) += qty;
+  }
+
+  ut_array_1d_int_sort_uniq (*pfaces, *pfaceqty, pfaceqty);
+  (*pfaces) = ut_realloc_1d_int (*pfaces, *pfaceqty);
+
+  ut_free_1d_int (tmp);
+
+  return;
+}
+
+void
+neut_tess_face_vercoos (struct TESS Tess, int face, double ***pvercoos,  int *pverqty)
+{
+  int i, ver, *vers = NULL;
+
+  neut_tess_face_vers (Tess, face, &vers, pverqty);
+
+  (*pvercoos) = ut_alloc_2d (*pverqty, 3);
+
+  for (i = 0; i < *pverqty; i++)
+  {
+    ver = vers[i];
+
+    ut_array_1d_memcpy ((*pvercoos)[i], 3, Tess.VerCoo[ver]);
+  }
+
+  ut_free_1d_int (vers);
+
+  return;
+}
+
+void
+neut_tess_domfaces_faces (struct TESS Tess, int *domfaces, int domfaceqty,
+                          int **pfaces, int *pfaceqty)
+{
+  int i, domface;
+  int **tmp = ut_alloc_1d_pint (domfaceqty);
+  int *qty = ut_alloc_1d_int (domfaceqty);
+
+  for (i = 0; i < domfaceqty; i++)
+  {
+    domface = domfaces[i];
+
+    tmp[i] = Tess.DomTessFaceNb[domface] + 1;
+    qty[i] = Tess.DomTessFaceQty[domface];
+  }
+
+  ut_array_1d_int_lists_merge (tmp, qty, domfaceqty, pfaces, pfaceqty);
+
+  ut_free_1d_pint (tmp);
+  ut_free_1d_int (qty);
+
+  return;
+}
+
+int
+neut_tess_edge_iscurved (struct TESS Tess, int edge)
+{
+  int i, curved;
+  int domface, *domfaces = NULL, domfaceqty;
+
+  if (Tess.Dim == 3)
+  {
+    neut_tess_edge_domfaces (Tess, edge, &domfaces, &domfaceqty);
+
+    curved = 0;
+    for (i = 0; i < domfaceqty; i++)
+    {
+      domface = domfaces[i];
+
+      if (strcmp (Tess.DomFaceType[domface], "plane"))
+      {
+        curved = 1;
+        break;
+      }
+    }
+  }
+  else
+    curved = 0;
+
+  ut_free_1d_int (domfaces);
+
+  return curved;
+}
+
+int
+neut_tess_face_iscurved (struct TESS Tess, int face)
+{
+  return Tess.FaceDom && Tess.FaceDom[face][0] == 2
+         && Tess.DomFaceType && strcmp (Tess.DomFaceType[Tess.FaceDom[face][1]], "plane");
+}
+
+int
+neut_tess_face_hascurvededge (struct TESS Tess, int face)
+{
+  int i;
+
+  for (i = 1; i <= Tess.FaceVerQty[face]; i++)
+    if (neut_tess_edge_iscurved (Tess, Tess.FaceEdgeNb[face][i]))
+      return 1;
+
+  return 0;
+}
+
+void
+neut_tess_edge_scale (struct TESS Tess, int edge, int *pscale)
+{
+  int i, faceqty, *faces = NULL;
+
+  neut_tess_edge_faces (Tess, edge, &faces, &faceqty);
+
+  for (i = 0; i < faceqty; i++)
+    neut_tess_face_scale (Tess, faces[i], faces + i);
+
+  (*pscale) = ut_array_1d_int_max (faces, faceqty);
+
+  ut_free_1d_int (faces);
+
+  return;
+}
+
+void
+neut_tess_ver_scale (struct TESS Tess, int ver, int *pscale)
+{
+  int i, edgeqty, *edges = NULL;
+
+  neut_tess_ver_edges (Tess, ver, &edges, &edgeqty);
+
+  for (i = 0; i < edgeqty; i++)
+    neut_tess_edge_scale (Tess, edges[i], edges + i);
+
+  (*pscale) = ut_array_1d_int_max (edges, edgeqty);
+
+  ut_free_1d_int (edges);
+
+  return;
 }

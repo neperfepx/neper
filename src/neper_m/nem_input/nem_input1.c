@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_input_.h"
@@ -40,6 +40,7 @@ nem_in_set_zero (struct IN_M *pIn)
   (*pIn).msh = NULL;
   (*pIn).per = NULL;
   (*pIn).nset = NULL;
+  (*pIn).elset = NULL;
   (*pIn).partmethod = NULL;
   (*pIn).partstring = NULL;
   (*pIn).scalestring = NULL;
@@ -59,6 +60,14 @@ nem_in_set_zero (struct IN_M *pIn)
   (*pIn).dimout = NULL;
   (*pIn).dimout_msh = NULL;
 
+  (*pIn).cltype = NULL;
+  (*pIn).clstring = NULL;
+  (*pIn).clfacetype = NULL;
+  (*pIn).clfacestring = NULL;
+  (*pIn).cledgetype = NULL;
+  (*pIn).cledgestring = NULL;
+  (*pIn).clvertype = NULL;
+  (*pIn).clverstring = NULL;
   (*pIn).clratiostring = NULL;
 
   return;
@@ -74,6 +83,7 @@ nem_in_free (struct IN_M In)
   ut_free_1d_char (In.mesh2dalgo);
   ut_free_1d_char (In.mesh3dalgo);
   ut_free_1d_char (In.nset);
+  ut_free_1d_char (In.elset);
   ut_free_1d_char (In.faset);
   ut_free_1d_char (In.partstring);
   ut_free_1d_char (In.scalestring);
@@ -101,7 +111,14 @@ nem_in_free (struct IN_M In)
   ut_free_1d_char (In.meshqualexpr);
   ut_free_1d_char (In.meshqualdisexpr);
   ut_free_1d_char (In.elttype);
+  ut_free_1d_char (In.cltype);
   ut_free_1d_char (In.clstring);
+  ut_free_1d_char (In.clfacetype);
+  ut_free_1d_char (In.clfacestring);
+  ut_free_1d_char (In.cledgetype);
+  ut_free_1d_char (In.cledgestring);
+  ut_free_1d_char (In.clvertype);
+  ut_free_1d_char (In.clverstring);
   ut_free_1d_char (In.clratiostring);
   ut_free_1d_char (In.transportstring);
   ut_free_1d_char (In.interface);

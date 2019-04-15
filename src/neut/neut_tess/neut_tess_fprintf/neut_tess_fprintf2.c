@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_fprintf_.h"
@@ -9,7 +9,7 @@ neut_tess_fprintf_head (struct TESS Tess, FILE * file)
 {
   fprintf (file, "***tess\n");
   fprintf (file, " **format\n");
-  fprintf (file, "   2.0\n");
+  fprintf (file, "   3.4\n");
   fprintf (file, " **general\n");
   fprintf (file, "   %d %s\n", Tess.Dim, Tess.Type);
 
@@ -147,7 +147,7 @@ neut_tess_fprintf_face (struct TESS Tess, FILE * file)
   {
     fprintf (file, " %3d", i);
 
-    fprintf (file, " %d ", Tess.FaceVerQty[i]);
+    fprintf (file, " %d%s", Tess.FaceVerQty[i], Tess.FaceVerQty[i]? " " : "");
     ut_array_1d_int_fprintf (file, Tess.FaceVerNb[i] + 1, Tess.FaceVerQty[i],
 			     "%d");
 
@@ -218,12 +218,14 @@ neut_tess_fprintf_dom (struct TESS Tess, FILE * file)
 
     for (i = 1; i <= Tess.DomEdgeQty; i++)
     {
-      fprintf (file, " %3d %s\n", i, Tess.DomEdgeLabel[i]);
-      fprintf (file, "   %3d ", Tess.DomTessEdgeQty[i]);
+      fprintf (file, " %3d ", i);
+      fprintf (file, "%d%s", Tess.DomEdgeVerQty[i], Tess.DomEdgeVerQty[i]? " " : "");
+      ut_array_1d_int_fprintf (file, Tess.DomEdgeVerNb[i],
+                                     Tess.DomEdgeVerQty[i], "%d");
+      fprintf (file, "     %s\n", Tess.DomEdgeLabel[i]);
+      fprintf (file, "     %d%s", Tess.DomTessEdgeQty[i], Tess.DomTessEdgeQty[i]? " " : "");
       ut_array_1d_int_fprintf (file, Tess.DomTessEdgeNb[i] + 1,
 			       Tess.DomTessEdgeQty[i], "%d");
-      fprintf (file, "     ");
-      ut_array_1d_int_fprintf (file, Tess.DomEdgeVerNb[i], 2, "%d");
     }
   }
 
@@ -236,16 +238,23 @@ neut_tess_fprintf_dom (struct TESS Tess, FILE * file)
     {
       fprintf (file, " %3d ", i);
 
-      fprintf (file, "%d ", Tess.DomFaceVerQty[i]);
+      fprintf (file, "%d%s", Tess.DomFaceVerQty[i], Tess.DomFaceVerQty[i]? " " : "");
       ut_array_1d_int_fprintf (file, Tess.DomFaceVerNb[i] + 1,
 			       Tess.DomFaceVerQty[i], "%d");
       fprintf (file, "     ");
-      fprintf (file, "%d ", Tess.DomFaceVerQty[i]);
+      fprintf (file, "%d%s", Tess.DomFaceEdgeQty[i], Tess.DomFaceEdgeQty[i]? " " : "");
       ut_array_1d_int_fprintf (file, Tess.DomFaceEdgeNb[i] + 1,
-			       Tess.DomFaceVerQty[i], "%d");
+			       Tess.DomFaceEdgeQty[i], "%d");
 
-      fprintf (file, "     ");
-      ut_array_1d_fprintf (file, Tess.DomFaceEq[i], 4, "%.12f");
+      fprintf (file, "     %s\n", Tess.DomFaceType[i]);
+
+      fprintf (file, "     %d ", Tess.DomFaceParmQty[i]);
+
+      if (!strcmp (Tess.DomFaceType[i], "plane"))
+        ut_array_1d_fprintf (file, Tess.DomFaceEq[i], 4, "%.12f");
+      else
+        ut_array_1d_fprintf (file, Tess.DomFaceParms[i],
+                                   Tess.DomFaceParmQty[i], "%.12f");
 
       fprintf (file, "     %s\n", Tess.DomFaceLabel[i]);
 

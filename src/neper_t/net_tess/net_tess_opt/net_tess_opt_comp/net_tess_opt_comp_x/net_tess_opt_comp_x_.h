@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -14,3 +14,4 @@
 
 extern void net_tess_opt_comp_x_seeds (struct TOPT *pTOpt, double **px);
 extern void net_tess_opt_comp_x_crystal (struct TOPT *pTOpt, double **px);
+extern void net_tess_opt_comp_x_domain (struct TOPT *pTOpt, double **px);

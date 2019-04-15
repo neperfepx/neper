@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_0D_.h"
@@ -15,10 +15,8 @@ nem_meshing_0D (struct TESS Tess, struct MESHPARA MeshPara, struct
 
   neut_nodes_set_zero (&N);
   neut_mesh_set_zero (&M);
-  Mesh[0].Dimension = 0;
-  Mesh[0].EltOrder = 1;
-  Mesh[0].EltType = ut_alloc_1d_char (5);
-  strcpy (Mesh[0].EltType, "tri");
+
+  Mesh[0] = neut_mesh_alloc (0, "tri", 1, 0, 0);
 
   ut_print_message (0, 2, "0D meshing... ");
 
@@ -54,6 +52,7 @@ nem_meshing_0D (struct TESS Tess, struct MESHPARA MeshPara, struct
 
   neut_mesh_init_nodeelts (Mesh + 0, (*pNodes).NodeQty);
   neut_mesh_init_eltelset (Mesh + 0, NULL);
+  neut_nodes_init_nodeslave (pNodes);
 
   neut_nodes_free (&N);
   neut_mesh_free (&M);

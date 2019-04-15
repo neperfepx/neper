@@ -1,6 +1,6 @@
 \input texinfo.tex
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2018 Romain Quey
+@c Copyright (C) 2003-2019 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @afourpaper
@@ -12,7 +12,7 @@
 @c %**start of header
 @setfilename        neper.info
 @include version.texi
-@set COPYRIGHT @copyright{} 2003--2018 Romain Quey
+@set COPYRIGHT @copyright{} 2003--2019 Romain Quey
 @c
 @settitle Neper @value{NEPER_VERSION}
 @footnotestyle separate
@@ -152,6 +152,10 @@ Neper
 ::
 @end macro
 
+@macro mybullet
+@math{@bullet{}}@w{ }
+@end macro
+
 @c COM
 @macro com{a}
 @iftex
@@ -224,6 +228,16 @@ Possible values: @code{\c\}. Default value: @code{\d\}.
 @kindex \f\
 @kindex \g\
 @deftypefn {Option} @t{\a\} @emph{\e\}
+\b\@*
+Possible values: @code{\c\}. Default value: @code{\d\}.
+@end deftypefn
+@end macro
+
+@c OPTTWOSEC
+@macro opttwosec{f, g, a, e, b, c, d }
+@kindex \f\
+@kindex \g\
+@deftypefn {Secondary Option} @t{\a\} @emph{\e\}
 \b\@*
 Possible values: @code{\c\}. Default value: @code{\d\}.
 @end deftypefn

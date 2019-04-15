@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_gmsh_.h"
@@ -350,22 +350,42 @@ neut_physical_fprintf_gmsh (FILE * file, struct MESH Mesh0D,
   // 0D mesh
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "0"))
     for (i = 1; i <= Mesh0D.ElsetQty; i++)
-      fprintf (file, "0 %d ver%d\n", i, i);
+    {
+      if (Mesh0D.ElsetLabels)
+        fprintf (file, "0 %d %s\n", i, Mesh0D.ElsetLabels[i]);
+      else
+        fprintf (file, "0 %d ver%d\n", i, i);
+    }
 
   // 1D mesh
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "1"))
     for (i = 1; i <= Mesh1D.ElsetQty; i++)
-      fprintf (file, "1 %d edge%d\n", i, i);
+    {
+      if (Mesh1D.ElsetLabels)
+        fprintf (file, "1 %d %s\n", i, Mesh1D.ElsetLabels[i]);
+      else
+        fprintf (file, "1 %d edge%d\n", i, i);
+    }
 
   // 2D mesh
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "2"))
     for (i = 1; i <= Mesh2D.ElsetQty; i++)
-      fprintf (file, "2 %d face%d\n", i, i);
+    {
+      if (Mesh2D.ElsetLabels)
+        fprintf (file, "2 %d %s\n", i, Mesh2D.ElsetLabels[i]);
+      else
+        fprintf (file, "2 %d face%d\n", i, i);
+    }
 
   // 3D mesh
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "3"))
     for (i = 1; i <= Mesh3D.ElsetQty; i++)
-      fprintf (file, "3 %d poly%d\n", i, i);
+    {
+      if (Mesh3D.ElsetLabels)
+        fprintf (file, "3 %d %s\n", i, Mesh3D.ElsetLabels[i]);
+      else
+        fprintf (file, "3 %d poly%d\n", i, i);
+    }
 
   fprintf (file, "$EndPhysicalNames\n");
 

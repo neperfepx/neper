@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesl_tess_.h"
@@ -10,7 +10,7 @@ neut_tesl_tess_general (struct TESL Tesl, struct SEEDSET SSet,
 {
   (*pTess).CellQty = Tesl.PolyQty;
 
-  ut_string_string (SSet.Type, &(*pTess).Type);
+  ut_string_string (SSet.Type ? SSet.Type : "standard", &(*pTess).Type);
 
   (*pTess).Dim = 3;
 
@@ -24,7 +24,7 @@ neut_tesl_tess_general (struct TESL Tesl, struct SEEDSET SSet,
   if (SSet.PeriodicDist)
     ut_array_1d_memcpy ((*pTess).PeriodicDist, 3, SSet.PeriodicDist);
 
-  ut_string_string (SSet.crysym, &(*pTess).CellCrySym);
+  ut_string_string (SSet.crysym ? SSet.crysym : "triclinic", &(*pTess).CellCrySym);
 
   return;
 }
@@ -94,6 +94,9 @@ neut_tesl_tess_seed (struct SEEDSET SSet, struct TESS *pTess)
 {
   (*pTess).SeedQty = SSet.Nall;
   (*pTess).PerSeedQty = SSet.Nall - SSet.N;
+
+  if (SSet.Nall == 0)
+    return;
 
   (*pTess).SeedCoo = ut_alloc_2d (SSet.Nall + 1, 3);
   (*pTess).SeedWeight = ut_alloc_1d (SSet.Nall + 1);

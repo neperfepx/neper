@@ -1,16 +1,19 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
+#include<float.h>
 
 #include"../../structIn_t.h"
 #include"ut.h"
 #include"neut_t.h"
 
 #include"net_domain_cube.h"
+
+extern void net_domain_cubeparms (char *domain, double **size, int *ppseudodim, double *ppseudosize);
 
 extern void CubeVer (double **, struct POLY *);
 extern void IniVerQty (struct POLY *);

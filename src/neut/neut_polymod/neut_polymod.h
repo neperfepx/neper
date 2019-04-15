@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -17,6 +17,7 @@ extern "C"
 
   extern void neut_polymod_set_zero (struct POLYMOD *pPolymod);
   extern void neut_polymod_free (struct POLYMOD *pPolymod);
+  extern void neut_polymod_faces_inter (struct POLYMOD Polymod, int p1, int p2, int p3, double *inter);
 
 #endif				/* NEUT_POLYMOD_H */
 

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -81,6 +81,12 @@ extern "C"
 /// Input: EltElset
 ///
   extern void neut_mesh_init_elsets (struct MESH *pMesh);
+
+/// \brief Initialize Elsets labels
+///
+/// Input: Dimension, ElsetQty
+///
+  extern void neut_mesh_init_elsetlabels (struct MESH *pMesh);
 
 /// \brief Merge the elsets of a mesh.
 ///
@@ -236,6 +242,9 @@ extern "C"
   extern void neut_mesh_eltpair_split (struct NODES *pNodes,
 				       struct MESH *pMesh, int elt1,
 				       int elt2);
+
+  extern void neut_mesh_2d_laplaciansmooth (struct NODES *pN, struct MESH M,
+                                            int *bnodes, int bnodeqty);
 
 #endif				/* NEUT_MESH_OP_H */
 

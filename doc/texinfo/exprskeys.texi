@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2018 Romain Quey
+@c Copyright (C) 2003-2019 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Expressions and Keys
@@ -123,12 +123,15 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
   @item @code{xmax}  @tab maximum x coordinate         @tab edge, face, poly
   @item @code{ymax}  @tab maximum y coordinate         @tab edge, face, poly
   @item @code{zmax}  @tab maximum z coordinate         @tab edge, face, poly
-  @item @code{w}  @tab weight (width for a lamella tessellation) @tab seed
+  @item @code{w}  @tab weight (width for a lamella tessellation) @tab seed, cell
   @item @code{true}  @tab true level                   @tab ver, edge, face, poly
   @item @code{body}  @tab body level                   @tab ver, edge, face, poly
   @item @code{state}  @tab state                       @tab ver, edge, face, poly
   @item @code{domtype}  @tab type of domain (0 if on a domain vertex, 1
       if on a domain edge and 2 if on a domain face) @tab ver, edge, face
+  @item @code{domface}  @tab domain face (-1 if undefined) @tab face
+  @item @code{domedge}  @tab domain edge (-1 if undefined) @tab edge
+  @item @code{domver}  @tab domain vertex (-1 if undefined) @tab ver
   @item @code{scale}  @tab scale @tab face@footnote{Applies only to a 3D tessellation and relevant for multiscale tessellations.  The scale of a face is the scale at which the face was created, and it ranges from 0 (for domain faces) to the number of scales of the tessellation (for the last created faces).}
   @item @code{length}  @tab length                     @tab edge
   @item @code{area}  @tab area                         @tab face, poly
@@ -426,6 +429,9 @@ dimensions) and points are provided below.
   @item @code{vol}    @tab volume                           @tab 3D elt, 3D elset
   @item @code{area}   @tab area                             @tab 2D elt
   @item @code{length} @tab length                           @tab 1D elt, 3D elt, 1D elset
+  @item @code{elsetvol}    @tab elset volume                @tab 3D elt
+  @item @code{elsetarea}   @tab elset area                  @tab 2D elt
+  @item @code{elsetlength} @tab elset length                @tab 1D elt
   @item @code{rr}     @tab radius ratio                     @tab 3D elt
   @item @code{rrav}, @code{rrmin}, @code{rrmax}
                       @tab average, min and max radius ratios @tab 3D elset

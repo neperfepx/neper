@@ -1,121 +1,143 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_1D_.h"
 
 void
-EdgeMeshing (struct TESS Tess, int edge, double cl, double pl,
-	     struct NODES Nodes, double *NodeCl,
-	     struct NODES *pN, struct MESH *pM)
+nem_meshing_1D_pre (struct MESHPARA *pMeshPara, struct TESS Tess,
+                    struct NODES RNodes, struct MESH *RMesh,
+		    struct NODES Nodes,
+                    double **pNodeCl)
 {
-  int i, j, node1, node2, ptqty;
-  double l = Tess.EdgeLength[edge];
-  double cl1, cl2;
-  double dist1, dist2;
-  double *Coo = NULL;
-  double *Cl = NULL;
+  int i, j, edge;
+  struct NODES N;
+  struct MESH M;
 
-  node1 = Tess.EdgeVerNb[edge][0];
-  node2 = Tess.EdgeVerNb[edge][1];
+  neut_nodes_set_zero (&N);
+  neut_mesh_set_zero (&M);
 
-  cl1 = Nodes.NodeCl[node1];
-  cl2 = Nodes.NodeCl[node2];
+  (*pNodeCl) = ut_alloc_1d (Nodes.NodeQty + 1);
+  ut_array_1d_memcpy ((*pNodeCl) + 1, Nodes.NodeQty, Nodes.NodeCl + 1);
 
-  if (cl <= 1e-15 || pl < 1)
-  {
-    printf ("\n");
-    printf ("Bad meshing parameters for edge %d: cl = %f pl = %f\n",
-	    edge, cl, pl);
-    ut_error_reportbug ();
-  }
+  // in case of faces with < 3 edges, we want to make sure that the
+  // face contour has >= 3 elts
+  for (i = 1; i <= Tess.FaceQty; i++)
+    if (Tess.FaceVerQty[i] > 0 && Tess.FaceVerQty[i] <= 2)
+    {
+      int eltqty = 0;
+      double *edgel = ut_alloc_1d (Tess.FaceVerQty[i]);
+      for (j = 1; j <= Tess.FaceVerQty[i]; j++)
+      {
+	edge = Tess.FaceEdgeNb[i][j];
+        nem_meshing_1D_edge (*pMeshPara, Tess, RNodes, RMesh,
+                             edge, (*pMeshPara).edge_cl[edge],
+                             (*pMeshPara).pl, Nodes, *pNodeCl, &N, &M);
+	edgel[j - 1] = Tess.EdgeLength[edge];
+	eltqty += M.EltQty;
+      }
+      int id = 1 + ut_array_1d_max_index (edgel, Tess.FaceVerQty[i]);
+      edge = Tess.FaceEdgeNb[i][id];
 
-  // trick to support cl < cli
-  if (cl1 > cl || cl2 > cl)
-  {
-    cl1 = ut_num_min (cl1, cl);
-    cl2 = ut_num_min (cl2, cl);
-  }
+      // if < 3, we add elt(s) to the longest edge
+      if (eltqty < 3)
+	(*pMeshPara).edge_cl[edge]
+	  = ut_num_min ((*pMeshPara).edge_cl[edge],
+			Tess.EdgeLength[edge] / (4 - Tess.FaceVerQty[i]));
+    }
 
-  // if cl1 > cl2, reversing edge before passing it to
-  // nem_mesh_1d_unitsegment
-  int reverse = (cl1 <= cl2) ? 0 : 1;
+  neut_mesh_free (&M);
+  neut_nodes_free (&N);
 
-  if (reverse == 1)
-    ut_num_switch (&cl1, &cl2);
+  return;
+}
 
-  nem_mesh_1d_unitsegment (cl1 / l, cl2 / l, cl / l, pl, &ptqty, &Coo, &Cl);
+void
+nem_meshing_1D_edge (struct MESHPARA MeshPara, struct TESS Tess,
+                     struct NODES RNodes, struct MESH *RMesh,
+                     int edge, double cl, double pl,
+                     struct NODES Nodes, double *Node0DCl,
+                     struct NODES *pN, struct MESH *pM)
+{
+  // if the edge must be copied, we copy and escape
+  if (!strcmp (MeshPara.edge_op[edge], "copy"))
+    neut_mesh_elset_mesh (RNodes, RMesh[1], edge, pN, pM, NULL);
 
-  // if cl1 > cl2, reversing back the edge
-  if (reverse == 1)
-  {
-    ut_array_1d_reverseelts (Coo, ptqty + 2);
-    for (i = 0; i <= ptqty + 1; i++)
-      Coo[i] = 1 - Coo[i];
-    ut_array_1d_reverseelts (Cl, ptqty + 2);
-  }
+  else
+    nem_meshing_1D_edge_algo (Tess, RNodes, RMesh, edge, cl, pl, Nodes,
+                              Node0DCl, pN, pM);
 
-/***********************************************************************
- * recording N */
+  return;
+}
+
+void
+nem_meshing_1D_edge_per (struct TESS Tess, struct NODES *N, struct MESH *M,
+                         struct NODES *pN, struct MESH *pM, int **pmaster_id,
+                         int edge)
+{
+  int master;
 
   neut_nodes_set_zero (pN);
-
-  (*pN).NodeQty = 2 + ptqty;
-  (*pN).NodeCoo = ut_alloc_2d (3 + ptqty, 3);
-  (*pN).NodeCl = ut_alloc_1d (3 + ptqty);
-
-  // recording coo of the boundary nodes (which are actually recorded as
-  // 0D-mesh nodes)
-  ut_array_1d_memcpy ((*pN).NodeCoo[1], 3, Nodes.NodeCoo[node1]);
-  ut_array_1d_memcpy ((*pN).NodeCoo[ptqty + 2], 3, Nodes.NodeCoo[node2]);
-
-  /* recording properties for the body nodes (coo + cl) */
-  for (i = 1; i <= ptqty; i++)
-  {
-    /* i'st body node has pos i + 1 */
-    for (j = 0; j < 3; j++)
-      (*pN).NodeCoo[i + 1][j] =
-	(1 - Coo[i]) * Nodes.NodeCoo[node1][j]
-	+ Coo[i] * Nodes.NodeCoo[node2][j];
-
-    (*pN).NodeCl[i + 1] = Cl[i] * l;
-  }
-  dist1 = ut_space_dist ((*pN).NodeCoo[1], (*pN).NodeCoo[2]);
-  dist2 = ut_space_dist ((*pN).NodeCoo[ptqty + 1], (*pN).NodeCoo[ptqty + 2]);
-
-  /*
-     printf ("node %d: %f <- %f\n", node1, NodeCl[node1],
-     ut_num_max (NodeCl[node1], dist1));
-     printf ("node %d: %f <- %f\n", node2, NodeCl[node2],
-     ut_num_max (NodeCl[node2], dist2));
-   */
-  NodeCl[node1] = ut_num_max (NodeCl[node1], dist1);
-  NodeCl[node2] = ut_num_max (NodeCl[node2], dist2);
-
-/***********************************************************************
- * recording M */
-
   neut_mesh_set_zero (pM);
 
-  (*pM).Dimension = 1;
-  (*pM).EltOrder = 1;
-  (*pM).EltQty = ptqty + 1;
+  master = Tess.PerEdgeMaster[edge];
+  neut_mesh_elset_mesh (N[master], M[master], 1, pN, pM, pmaster_id);
+  neut_nodes_shift (N + edge,
+                    Tess.PerEdgeShift[edge][0] * Tess.PeriodicDist[0],
+                    Tess.PerEdgeShift[edge][1] * Tess.PeriodicDist[1],
+                    Tess.PerEdgeShift[edge][2] * Tess.PeriodicDist[2]);
 
-  (*pM).EltNodes = ut_alloc_2d_int ((*pM).EltQty + 1, 2);
-  for (i = 1; i <= (*pM).EltQty; i++)
+  if (Tess.PerEdgeOri[edge] == -1)
   {
-    (*pM).EltNodes[i][0] = i;
-    (*pM).EltNodes[i][1] = i + 1;
+    neut_nodes_reverse (N + edge);
+    ut_array_1d_int_reverseelts (*pmaster_id + 1, N[edge].NodeQty);
   }
+}
 
-  (*pM).ElsetQty = 1;
-  (*pM).Elsets = ut_alloc_2d_int ((*pM).ElsetQty + 1, (*pM).EltQty + 1);
-  (*pM).Elsets[1][0] = (*pM).EltQty;
-  for (i = 1; i <= (*pM).EltQty; i++)
-    (*pM).Elsets[1][i] = i;
+void
+nem_meshing_1D_edge_record (struct TESS Tess, int edge, struct NODES N,
+                            struct MESH M, int *master_id,
+                            struct NODES *pNodes, int **N_global_id,
+                            struct MESH *Mesh)
+{
+  nem_meshing_1D_edge_record_nodes (Tess, edge, N, master_id,
+                                    N_global_id, pNodes);
 
-  ut_free_1d (Coo);
-  ut_free_1d (Cl);
+  nem_meshing_1D_edge_record_elts (edge, M, N_global_id[edge], Mesh);
+
+  return;
+}
+
+void
+nem_meshing_1D_post (struct NODES *pNodes, struct MESH *Mesh,
+                     int Node0DQty, double *Node0DCl)
+{
+  int i, j;
+  double max, *cl = NULL;
+
+  // Node0DCl may have been changed for some 0D nodes because of the 5%
+  // tolerancy involved during 1D meshing.  Here, we are assiging all
+  // periodic nodes the same cl, which is the maximum of all values (not
+  // the master value).
+  if ((*pNodes).PerNodeQty > 0)
+    for (i = 1; i <= Node0DQty; i++)
+      if ((*pNodes).PerNodeMaster[i] == 0)
+      {
+	cl = ut_alloc_1d ((*pNodes).PerNodeSlaveQty[i] + 1);
+	cl[0] = Node0DCl[i];
+	for (j = 1; j <= (*pNodes).PerNodeSlaveQty[i]; j++)
+	  cl[j] = Node0DCl[(*pNodes).PerNodeSlaveNb[i][j]];
+	max = ut_array_1d_max (cl, (*pNodes).PerNodeSlaveQty[i] + 1);
+	Node0DCl[i] = max;
+	for (j = 1; j <= (*pNodes).PerNodeSlaveQty[i]; j++)
+	  Node0DCl[(*pNodes).PerNodeSlaveNb[i][j]] = max;
+	ut_free_1d_ (&cl);
+      }
+
+  ut_array_1d_memcpy ((*pNodes).NodeCl + 1, Node0DQty, Node0DCl + 1);
+
+  neut_mesh_init_nodeelts (Mesh + 1, (*pNodes).NodeQty);
+  neut_mesh_init_eltelset (Mesh + 1, NULL);
 
   return;
 }

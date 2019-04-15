@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2018, Romain Quey.
+# Copyright (C) 2003-2019, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
@@ -44,6 +44,7 @@ add_library (neper_m
 ./nem_meshing_para/nem_meshing_para_cl/nem_meshing_para_cl1.c
 ./nem_meshing_para/nem_meshing_para_cl/nem_meshing_para_cl2.c
 ./nem_meshing_para/nem_meshing_para_cl/nem_meshing_para_cl3.c
+./nem_meshing_para/nem_meshing_para_mesh3dclreps/nem_meshing_para_mesh3dclreps1.c
 ./nem_meshing_para/nem_meshing_para_param/nem_meshing_para_param1.c
 ./nem_meshing/nem_meshing_0D/nem_meshing_0D2.c
 ./nem_meshing/nem_meshing_0D/nem_meshing_0D1.c
@@ -51,12 +52,15 @@ add_library (neper_m
 ./nem_meshing/nem_meshing_1D/nem_meshing_1D2.c
 ./nem_meshing/nem_meshing_1D/nem_meshing_1D3.c
 ./nem_meshing/nem_meshing_1D/nem_meshing_1D4.c
+./nem_meshing/nem_meshing_1D/nem_meshing_1D5.c
 ./nem_meshing/nem_meshing_1D/nem_meshing_1D_useg/nem_meshing_1D_useg1.c
 ./nem_meshing/nem_meshing_1D/nem_meshing_1D_useg/nem_meshing_1D_useg2.c
 ./nem_meshing/nem_meshing_2D/nem_meshing_2D1.c
 ./nem_meshing/nem_meshing_2D/nem_meshing_2D2.c
 ./nem_meshing/nem_meshing_2D/nem_meshing_2D3.c
-./nem_meshing/nem_meshing_2D/nem_meshing_2D4.c
+./nem_meshing/nem_meshing_2D/nem_meshing_2D_face_mesh_gmsh/nem_meshing_2D_face_mesh_gmsh1.c
+./nem_meshing/nem_meshing_2D/nem_meshing_2D_face_mesh_gmsh/nem_meshing_2D_face_mesh_gmsh2.c
+./nem_meshing/nem_meshing_2D/nem_meshing_2D_face_mesh_gmsh/nem_meshing_2D_face_mesh_gmsh3.c
 ./nem_meshing/nem_meshing_3D/nem_meshing_3D1.c
 ./nem_meshing/nem_meshing_3D/nem_meshing_3D2.c
 ./nem_meshing/nem_meshing_3D/nem_meshing_3D3.c
@@ -99,6 +103,8 @@ add_library (neper_m
 ./nem_writemesh/nem_writemesh1.c
 ./nem_nsets/nem_nsets1.c
 ./nem_nsets/nem_nsets2.c
+./nem_elsets/nem_elsets1.c
+./nem_elsets/nem_elsets2.c
 ./nem_meshing_str/nem_meshing_str1.c
 ./nem_meshing_str/nem_meshing_str2.c
 ./neper_m.c

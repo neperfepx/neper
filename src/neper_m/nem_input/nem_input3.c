@@ -1,5 +1,5 @@
   /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_input_.h"
@@ -12,6 +12,7 @@ nem_input_options_default (struct IN_M *pIn)
 
   (*pIn).nset = ut_alloc_1d_char (1000);
   strcpy ((*pIn).nset, "default");
+  ut_string_string ("default", &(*pIn).elset);
   (*pIn).faset = ut_alloc_1d_char (100);
   strcpy ((*pIn).faset, "none");
 
@@ -52,10 +53,15 @@ nem_input_options_default (struct IN_M *pIn)
   (*pIn).singnodedup = 0;
   (*pIn).dupnodemerge = -1;
 
-  (*pIn).cltype = ut_alloc_1d_char (4);
-  strcpy ((*pIn).cltype, "rel");	// abs or rel
-  (*pIn).clstring = ut_alloc_1d_char (2);
-  strcpy ((*pIn).clstring, "1");
+  ut_string_string ("rel", &(*pIn).cltype);
+  ut_string_string ("1", &(*pIn).clstring);
+  ut_string_string ("rel", &(*pIn).clfacetype);
+  ut_string_string ("default", &(*pIn).clfacestring);
+  ut_string_string ("rel", &(*pIn).cledgetype);
+  ut_string_string ("default", &(*pIn).cledgestring);
+  ut_string_string ("rel", &(*pIn).clvertype);
+  ut_string_string ("default", &(*pIn).clverstring);
+
   (*pIn).clmin = 0;
   (*pIn).pl = 2;
 
@@ -65,6 +71,7 @@ nem_input_options_default (struct IN_M *pIn)
   (*pIn).mesh3dreport = 0;
   ut_string_string ("all", &((*pIn).meshface));
   ut_string_string ("all", &((*pIn).meshpoly));
+  (*pIn).mesh3dclrepsstring = NULL;
 
   (*pIn).meshqualexpr = ut_alloc_1d_char (100);
   strcpy ((*pIn).meshqualexpr, "Odis^0.8*Osize^0.2");
@@ -95,7 +102,7 @@ nem_input_options_default (struct IN_M *pIn)
   (*pIn).mesh3dmaxtime = 10000;
   (*pIn).mesh3drmaxtime = 100;
   (*pIn).mesh3diter = 3;
-  (*pIn).mesh3dclconv = 0.02;
+  ut_string_string ("0.02", &(*pIn).mesh3dclrepsstring);
 
   /* Options for remeshing --------------------------------- */
   (*pIn).transportstring = NULL;
@@ -135,6 +142,12 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-elttype");
   strcpy (ArgList[++ArgQty], "-cl");
   strcpy (ArgList[++ArgQty], "-rcl");
+  strcpy (ArgList[++ArgQty], "-clface");
+  strcpy (ArgList[++ArgQty], "-rclface");
+  strcpy (ArgList[++ArgQty], "-cledge");
+  strcpy (ArgList[++ArgQty], "-rcledge");
+  strcpy (ArgList[++ArgQty], "-clver");
+  strcpy (ArgList[++ArgQty], "-rclver");
   strcpy (ArgList[++ArgQty], "-clratio");
   strcpy (ArgList[++ArgQty], "-pl");
   strcpy (ArgList[++ArgQty], "-clmin");
@@ -172,6 +185,7 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
 
   // Output options ----------------------------------------------------
   strcpy (ArgList[++ArgQty], "-format");
+  strcpy (ArgList[++ArgQty], "-elset");
   strcpy (ArgList[++ArgQty], "-nset");
   strcpy (ArgList[++ArgQty], "-surf");	// deprecated
   strcpy (ArgList[++ArgQty], "-faset");
@@ -198,6 +212,7 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-mesh3drmaxtime");
   strcpy (ArgList[++ArgQty], "-mesh3diter");
   strcpy (ArgList[++ArgQty], "-mesh3dclconv");
+  strcpy (ArgList[++ArgQty], "-mesh3dclreps");
 
   // Field transport ---------------------------------------------------
   strcpy (ArgList[++ArgQty], "-transport");
@@ -298,13 +313,43 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
 
       else if (!strcmp (Arg, "-cl"))
       {
-	strcpy ((*pIn).cltype, "abs");
+	ut_string_string ("abs", &(*pIn).cltype);
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clstring));
       }
       else if (!strcmp (Arg, "-rcl"))
       {
-	strcpy ((*pIn).cltype, "rel");
+	ut_string_string ("rel", &(*pIn).cltype);
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clstring));
+      }
+      else if (!strcmp (Arg, "-clface"))
+      {
+	ut_string_string ("abs", &(*pIn).cltype);
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clfacestring));
+      }
+      else if (!strcmp (Arg, "-rclface"))
+      {
+	ut_string_string ("rel", &(*pIn).cltype);
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clfacestring));
+      }
+      else if (!strcmp (Arg, "-cledge"))
+      {
+	ut_string_string ("abs", &(*pIn).cltype);
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).cledgestring));
+      }
+      else if (!strcmp (Arg, "-rcledge"))
+      {
+	ut_string_string ("rel", &(*pIn).cltype);
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).cledgestring));
+      }
+      else if (!strcmp (Arg, "-clver"))
+      {
+	ut_string_string ("abs", &(*pIn).cltype);
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clverstring));
+      }
+      else if (!strcmp (Arg, "-rclver"))
+      {
+	ut_string_string ("rel", &(*pIn).cltype);
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clverstring));
       }
       else if (!strcmp (Arg, "-clratio"))
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clratiostring));
@@ -393,7 +438,14 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
       else if (!strcmp (Arg, "-mesh3diter"))
 	ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).mesh3diter));
       else if (!strcmp (Arg, "-mesh3dclconv"))
-	ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX, &((*pIn).mesh3dclconv));
+      {
+        ut_print_message (1, 1, "Option `-mesh3dclconv' is deprecated and will be removed in future versions.  Use `-mesh3dclreps' instead.\n");
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dclrepsstring));
+      }
+      else if (!strcmp (Arg, "-mesh3dclreps"))
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dclrepsstring));
+      else if (!strcmp (Arg, "-elset"))
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).elset));
       else if (!strcmp (Arg, "-nset"))
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).nset));
       else if (!strcmp (Arg, "-faset"))

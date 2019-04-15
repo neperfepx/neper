@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_tess_.h"
@@ -137,7 +137,7 @@ nev_print_tess (FILE * file, struct PRINT Print, struct TESS Tess,
 
       fprintf (file, "// poly face %d\n", face);
 
-      nev_print_polygon (file, Tess.FaceVerQty[face], coo, texture,
+      nev_print_polygon (file, Tess.FaceEq[face], Tess.FaceVerQty[face], coo, texture,
 			 NULL, NULL, Tess.FacePt[face] - 1, p2, NULL, NULL);
 
       ut_free_2d (coo, Tess.FaceVerQty[face]);
@@ -180,7 +180,7 @@ nev_print_tess (FILE * file, struct PRINT Print, struct TESS Tess,
 
     fprintf (file, "// face %d\n", face);
 
-    nev_print_polygon (file, Tess.FaceVerQty[face], coo, texture,
+    nev_print_polygon (file, Tess.FaceEq[face], Tess.FaceVerQty[face], coo, texture,
 		       NULL, NULL, Tess.FacePt[face] - 1, p2, NULL, NULL);
 
     if (Print.showfaceinter == 1 && neut_tess_face_ff (Tess, face) > 0)

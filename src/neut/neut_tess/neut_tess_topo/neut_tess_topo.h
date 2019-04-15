@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -30,6 +30,20 @@ extern "C"
 ///
   extern void neut_tess_ver_faces (struct TESS Tess, int ver, int **pface,
 				   int *pfaceqty);
+
+/// \brief Get the faces of vertices
+///
+///
+///
+  extern void neut_tess_vers_faces (struct TESS Tess, int* vers, int verqty,
+                                    int **pfaces, int *pfaceqty);
+
+/// \brief Get the faces of vertices, faces not on the domain
+///
+///
+///
+  extern void neut_tess_vers_faces_notondomain (struct TESS Tess, int* vers, int verqty,
+                                                int **pfaces, int *pfaceqty);
 
 /// \brief Get the faces of a vertex, among the faces of a poly
 ///
@@ -223,6 +237,8 @@ extern "C"
   extern int neut_tess_edges_comver (struct TESS Tess, int *edge,
 				     int edgeqty, int *pver);
 
+  extern int neut_tess_edgepair_comver (struct TESS Tess, int edge1, int edge2, int *pver);
+
 /// \brief Get the vertices of a edge
 ///
 ///
@@ -243,6 +259,8 @@ extern "C"
 ///
   extern void neut_tess_poly_vers (struct TESS Tess, int poly, int **pver,
 				   int *pverqty);
+  extern void neut_tess_poly_vercoos (struct TESS Tess, int poly, int **pvers,
+                                      double ***pvercoos, int *pverqty);
 
 /// \brief Get the edges of a polyhedron
 ///
@@ -250,10 +268,18 @@ extern "C"
 ///
   extern void neut_tess_poly_edges (struct TESS Tess, int poly, int **pedge,
 				    int *pedgeqty);
+  extern void neut_tess_poly_edgevers (struct TESS Tess, int poly, int **pedge,
+				       int ***pedgevers, int *pedgeqty);
 
   extern void neut_tess_polys_faces (struct TESS Tess, int *polys, int
 				     polyqty, int **pfaces, int
 				     *pfaceqty);
+  extern void neut_tess_poly_faceedges (struct TESS Tess, int poly,
+                                        int **pfaces, int ***pfaceedges,
+                                        int **pfaceedgeqty, int *pfaceqty);
+
+  extern void neut_tess_poly_faces (struct TESS Tess, int poly, int **pface,
+				    int *pfaceqty);
 
 /// \brief Get the skin faces of a set of polyhedra
 ///
@@ -269,6 +295,8 @@ extern "C"
 ///
   extern void neut_tess_poly_neighpoly (struct TESS Tess, int poly,
 					int **pnpoly, int *pnpolyqty);
+  extern void neut_tess_poly_neighseeds (struct TESS Tess, int poly,
+                                         int **pnseeds, int *pnseedqty);
 
 /// \brief Get the neighbouring faces of a face
 ///
@@ -276,6 +304,14 @@ extern "C"
 ///
   extern void neut_tess_face_neighfaces (struct TESS Tess, int face,
 					int **pnface, int *pnfaceqty);
+
+/// \brief Get the neighbouring faces of faces (may contain some of the input faces);
+///
+///
+///
+  extern void neut_tess_faces_neighfaces (struct TESS Tess, int *faces,
+                                          int faceqty,
+					  int **pnfaces, int *pnfaceqty);
 
   extern int neut_tess_facepair_neigh (struct TESS Tess, int face1, int
       face2);
@@ -287,7 +323,7 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_tess_edge_neighedge (struct TESS Tess, int edge,
+  extern void neut_tess_edge_neighedges (struct TESS Tess, int edge,
 					int **pnedge, int *pnedgeqty);
 
 /// \brief Get the neighbouring cells of a cell
@@ -416,8 +452,15 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_tess_domface_ver (struct TESS Tess, int dface, int **pver,
+  extern void neut_tess_domface_vers (struct TESS Tess, int dface, int **pver,
 				     int *pverqty);
+
+/// \brief Get the vertices of domain faces
+///
+///
+///
+  extern void neut_tess_domfaces_vers (struct TESS Tess, int *domfaces,
+                                       int domfaceqty, int **pvers, int *pverqty);
 
 /// \brief Get the vertices of the body of a domain face
 ///
@@ -583,10 +626,10 @@ extern "C"
   extern void neut_tess_poly_domface_faces (struct TESS Tess, int poly,
       int domface, int **pfaces, int *pfaceqty);
 
-  extern void neut_tess_faces_contiguousfaces (struct TESS Tess, int
+  extern void neut_tess_faces_contiguousfaces (struct TESS Tess, double coplanar, int
       *faces, int faceqty, int *pqty, int ***pfaces, int **pfaceqty);
 
-  extern void neut_tess_edges_contiguousedges (struct TESS Tess, int
+  extern void neut_tess_edges_contiguousedges (struct TESS Tess, double colinear, int
       *edges, int edgeqty, int *pqty, int ***pedges, int **pedgeqty);
 
   extern void neut_tess_ver_cells (struct TESS Tess, int ver, int
@@ -617,6 +660,32 @@ extern "C"
 
   extern int neut_tess_face_scale (struct TESS Tess, int face, int *pscale);
   extern int neut_tess_face_scale_polys (struct TESS Tess, int face, int scale, int *poly);
+
+  extern void neut_tess_edge_scale (struct TESS Tess, int edge, int *pscale);
+  extern void neut_tess_ver_scale (struct TESS Tess, int ver, int *pscale);
+
+  extern void neut_tess_polypair_commonfaces (struct TESS Tess, int poly1, int poly2,
+                                int **pfaces, int *pfaceqty);
+  extern void neut_tess_seedpair_commonfaces (struct TESS Tess, int seed1, int seed2,
+                                int **pfaces, int *pfaceqty);
+
+  extern void neut_tess_vers_allfaces (struct TESS Tess, int *vers, int verqty,
+                                       int **pfaces, int *pfaceqty);
+
+  extern void neut_tess_face_vercoos (struct TESS Tess, int face, double ***pvercoos,  int *pverqty);
+
+  extern void neut_tess_poly_edge_faces (struct TESS Tess, int poly, int edge, int **pface);
+
+  extern void neut_tess_domfaces_faces (struct TESS Tess, int *domfaces, int domfaceqty,
+                                        int **pfaces, int *pfaceqty);
+
+  extern int neut_tess_edge_iscurved (struct TESS Tess, int edge);
+  extern int neut_tess_face_iscurved (struct TESS Tess, int face);
+  extern int neut_tess_face_hascurvededge (struct TESS Tess, int face);
+
+  extern void neut_tess_edge_scale (struct TESS Tess, int edge, int *pscale);
+  extern void neut_tess_ver_scale (struct TESS Tess, int ver, int *pscale);
+  extern void neut_tess_edge_faces (struct TESS Tess, int edge, int **pfaces, int *pfaceqty);
 
 #endif				/* NEUT_TESS_TOPO_H */
 

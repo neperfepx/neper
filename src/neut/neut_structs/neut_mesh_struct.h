@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -35,6 +35,8 @@ extern "C"
     // [1...Elsets[][0]]: ids of the elts
 
     int *EltElset;		// for each elt: elset
+
+    char **ElsetLabels;         // for each elset: label
 
     // information on the nodes
 

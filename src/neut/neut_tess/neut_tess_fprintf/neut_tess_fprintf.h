@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -16,6 +16,9 @@ extern "C"
   extern void neut_tess_name_fprintf (char *, struct TESS);
   extern void neut_tess_fprintf_ply (FILE *, struct TESS);
   extern void neut_tess_fprintf_stl (FILE *, struct TESS);
+  extern void neut_tess_cell_fprintf_stl (FILE *, struct TESS, int cell);
+  extern void neut_tess_name_fprintf_stl (char *, struct TESS);
+  extern void neut_tess_name_fprintf_stl_bycell (char *, struct TESS);
   extern void neut_tess_fprintf_obj (FILE *, struct TESS);
   extern void neut_tess_fprintf_dec (FILE *, struct TESS);
   extern void neut_tess_fprintf_fe (FILE *, struct TESS);

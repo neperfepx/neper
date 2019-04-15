@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_poly_op_.h"
@@ -7,6 +7,9 @@
 void
 neut_poly_set_zero (struct POLY *pPoly)
 {
+  (*pPoly).PseudoDim = -1;
+  (*pPoly).PseudoSize = -DBL_MAX;
+
   (*pPoly).VerQty = 0;
   (*pPoly).FaceQty = 0;
 

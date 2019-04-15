@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2009, 2012 Romain Quey */
+/* Copyright (C) 2003-2019, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -7,6 +7,8 @@ extern "C" {
 
 #ifndef UT_PRINT_H
 #define UT_PRINT_H
+
+#include<sys/time.h>
 
 extern void ut_print_wnc_int (FILE *, int, int *, int);
 extern void ut_print_wnc_int_header (FILE *, int, int *, int, const char*);

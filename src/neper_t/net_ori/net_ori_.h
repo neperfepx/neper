@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -25,6 +25,9 @@ extern void net_ori_equal (struct SEEDSET *SSet,
 extern int net_ori_label (char *label, struct OL_SET *pOSet);
 
 extern void net_ori_crysym (struct OL_SET *pOSet);
+
+extern void net_ori_spread (char *ori, struct SEEDSET *SSet, int dtess,
+                            int dcell, struct OL_SET *pOSet);
 
 extern void net_ori_mtess_params (struct IN_T In, int level, struct MTESS MTess,
                                   struct TESS *Tess, int dtess, int dcell,

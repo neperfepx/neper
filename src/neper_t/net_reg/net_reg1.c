@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_reg_.h"
@@ -8,6 +8,9 @@ void
 net_reg (struct IN_T In, struct TESS *pTess, struct REG *pReg)
 {
   int DelId = 0;
+
+  if ((*pTess).CellQty == 0)
+    return;
 
   net_reg_init (In, *pTess, pReg);
 

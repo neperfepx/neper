@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -33,9 +33,22 @@ extern "C"
     double *edge_cl;
     double *ver_cl;
 
+    double *mesh3dclreps;
+
+    /// "copy" or NULL
+    char **edge_op;
+
+    // "meshproj": projection onto plane of equation provided in face_eq,
+    // back-projection onto existing mesh along normal provided in face_eq + 1
+    // (for remeshing)
+    // "planeproj": projection onto plane (for standard or regularization) of
+    // equation provided in face_eq
+    // "copy": copy mesh given in input (for a failed remeshing)
+    char **face_op;
+
+    // face equation (4 parameters) for the (orthogonal) projection of the
+    // boundary
     double **face_eq;
-    int *face_op;
-    int *edge_op;
   };
   typedef struct MESHPARA MESHPARA;
 

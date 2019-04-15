@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_.h"
@@ -35,6 +35,8 @@ net_tess_opt_comp (struct TOPT *pTOpt)
 
 #ifdef HAVE_NLOPT
   net_tess_opt_comp_post (*pTOpt, res);
+#else
+  (void) res;
 #endif
 
   neut_tdyn_fprintf_post (&((*pTOpt).TDyn));

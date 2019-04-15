@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2009, 2012 Romain Quey */
+/* Copyright (C) 2003-2019, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -30,6 +30,8 @@ extern int ut_string_stringpos (char *, char*, int);
 extern void ut_string_separate (const char*, const char*, char***, int*);
 extern void ut_string_function_separate (char *string, char** pfct,
                              char ***vars, char ***vals, int *pqty);
+extern void ut_string_function_separate_exprs (char *string, char** pfct,
+                             char ***pexprs, int *pexprqty);
 extern void ut_string_catfiles_separate (const char *string, char ***parts, int *pqty);
 extern void ut_string_separate2 (const char *, const char*, const char*, char****, int**, int*);
 extern int ut_string_inlist (const char*, const char*, const char*);

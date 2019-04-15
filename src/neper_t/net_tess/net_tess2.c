@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_.h"
@@ -32,7 +32,7 @@ net_tess_perdomain (struct IN_T In, struct TESS PTess, int cell,
 int
 net_tess_3dto2d (struct TESS *pTess)
 {
-  int id, status;
+  int id;
   struct TESS T2;
 
   neut_tess_set_zero (&T2);
@@ -40,10 +40,13 @@ net_tess_3dto2d (struct TESS *pTess)
   if ((*pTess).DomFaceQty == 0)
     ut_error_reportbug ();
 
-  status = neut_tess_domface_label_id (*pTess, "z0", &id);
+  if (neut_tess_domface_label_id (*pTess, "z0", &id) != 0)
+  {
+    neut_tess_init_domfacez0 (pTess);
 
-  if (status != 0)
-    ut_error_reportbug ();
+    if (neut_tess_domface_label_id (*pTess, "z0", &id) != 0)
+      ut_error_reportbug ();
+  }
 
   neut_tess_3dcolumnar_2d (*pTess, &T2);
   neut_tess_tess (T2, pTess);
@@ -54,7 +57,7 @@ net_tess_3dto2d (struct TESS *pTess)
     ut_print_message (2, 2, "The tessellation is not valid.\n");
 #endif
 
-  return status;
+  return 0;
 }
 
 int

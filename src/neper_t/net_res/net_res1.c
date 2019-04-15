@@ -1,13 +1,11 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_res_.h"
 
 void
-net_res (struct IN_T In, struct MTESS MTess, struct TESS *Tess,
-	 struct TESS FTess, struct TESR Tesr, struct SEEDSET *SSet,
-	 int SSetQty)
+net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
 {
   FILE *file = NULL;
 
@@ -23,27 +21,6 @@ net_res (struct IN_T In, struct MTESS MTess, struct TESS *Tess,
     file = ut_file_open (In.geo, "w");
     neut_tess_fprintf_gmsh (file, FTess);
     ut_file_close (file, In.geo, "w");
-  }
-
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "mtess"))
-  {
-    file = ut_file_open (In.mtess, "w");
-    neut_mtess_fprintf (file, MTess, Tess);
-    ut_file_close (file, In.mtess, "w");
-  }
-
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "mgeo"))	// geo file
-  {
-    struct TESS TessP;
-    neut_tess_set_zero (&TessP);
-    int i;
-    neut_tess_tess (Tess[MTess.LevelTess[MTess.LevelQty][1]], &TessP);
-    for (i = 2; i <= MTess.LevelTessQty[MTess.LevelQty]; i++)
-      neut_tess_cat (&TessP, Tess[MTess.LevelTess[MTess.LevelQty][i]]);
-
-    file = ut_file_open (In.mgeo, "w");
-    neut_tess_fprintf_gmsh (file, TessP);
-    ut_file_close (file, In.mgeo, "w");
   }
 
   if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "ply"))	// gmsh ply file
@@ -92,6 +69,14 @@ net_res (struct IN_T In, struct MTESS MTess, struct TESS *Tess,
       neut_tess_fprintf_stl (file, FTess);
       ut_file_close (file, In.stl, "w");
     }
+    else
+      ut_print_message (1, 0, "Tess is void; cannot export; skipping\n");
+  }
+
+  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "stl:bycell"))
+  {
+    if (FTess.PolyQty != 0)
+      neut_tess_name_fprintf_stl_bycell (In.body, FTess);
     else
       ut_print_message (1, 0, "Tess is void; cannot export; skipping\n");
   }
@@ -152,12 +137,7 @@ net_res (struct IN_T In, struct MTESS MTess, struct TESS *Tess,
   }
 
   if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "ori"))
-  {
-    if (SSetQty >= 1)
-      net_res_ori (In, SSet[1]);
-    else
-      ut_print_message (1, 2, "Skipping `-format ori' (seed set is void).\n");
-  }
+    net_res_ori (In, FTess);
 
   return;
 }

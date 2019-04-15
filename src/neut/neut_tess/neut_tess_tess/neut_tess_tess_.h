@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -34,7 +34,6 @@ extern void neut_tess_tess_facebound (struct TESS, struct TESS *);
 extern void neut_tess_tess_facestate (struct TESS, struct TESS *);
 extern void neut_tess_tess_facept (struct TESS, struct TESS *);
 extern void neut_tess_tess_poly (struct TESS, struct TESS *);
-extern void neut_tess_tess_seed (struct TESS, struct TESS *);
 extern void neut_tess_tess_polyqty (struct TESS, struct TESS *);
 extern void neut_tess_tess_polyface (struct TESS, struct TESS *);
 extern void neut_tess_tess_polystate (struct TESS, struct TESS *);

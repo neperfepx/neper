@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -18,8 +18,8 @@ extern void neut_mesh_fprintf_inp_mesh2d (FILE *file,
 					  struct MESH Mesh2D, int, char* type);
 extern void neut_mesh_fprintf_inp_mesh3d (FILE *file,
 					  struct MESH Mesh3D, int, char *type);
-extern void neut_mesh_fprintf_inp_elsets (FILE *file, struct MESH
-					  Mesh, char *name, int shift);
+extern void neut_mesh_fprintf_inp_elsets (FILE *file, struct MESH Mesh,
+                                          int shift);
 
 extern void neut_mesh_fprintf_inp_nsets (FILE *, struct NSET, struct NSET,
 					 struct NSET, char*, char *);

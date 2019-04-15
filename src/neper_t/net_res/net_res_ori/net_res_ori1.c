@@ -1,11 +1,11 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_res_ori_.h"
 
 extern void
-net_res_ori (struct IN_T In, struct SEEDSET SSet)
+net_res_ori (struct IN_T In, struct TESS Tess)
 {
   FILE *file = NULL;
   int i, j;
@@ -23,9 +23,9 @@ net_res_ori (struct IN_T In, struct SEEDSET SSet)
     if (strcmp (des, "e") == 0)
     {
       double *e = ol_e_alloc ();
-      for (i = 1; i <= SSet.N; i++)
+      for (i = 1; i <= Tess.CellQty; i++)
       {
-	ol_q_e (SSet.q[i], e);
+	ol_q_e (Tess.CellOri[i], e);
 	ol_e_fprintf (file, e, "%17.12f");
       }
       ol_e_free (e);
@@ -33,9 +33,9 @@ net_res_ori (struct IN_T In, struct SEEDSET SSet)
     else if (strcmp (des, "ek") == 0)
     {
       double *e = ol_e_alloc ();
-      for (i = 1; i <= SSet.N; i++)
+      for (i = 1; i <= Tess.CellQty; i++)
       {
-	ol_q_e (SSet.q[i], e);
+	ol_q_e (Tess.CellOri[i], e);
 	ol_e_ek (e, e);
 	ol_e_fprintf (file, e, "%17.12f");
       }
@@ -44,9 +44,9 @@ net_res_ori (struct IN_T In, struct SEEDSET SSet)
     else if (strcmp (des, "er") == 0)
     {
       double *e = ol_e_alloc ();
-      for (i = 1; i <= SSet.N; i++)
+      for (i = 1; i <= Tess.CellQty; i++)
       {
-	ol_q_e (SSet.q[i], e);
+	ol_q_e (Tess.CellOri[i], e);
 	ol_e_er (e, e);
 	ol_e_fprintf (file, e, "%17.12f");
       }
@@ -55,9 +55,9 @@ net_res_ori (struct IN_T In, struct SEEDSET SSet)
     else if (strcmp (des, "g") == 0)
     {
       double **g = ol_g_alloc ();
-      for (i = 1; i <= SSet.N; i++)
+      for (i = 1; i <= Tess.CellQty; i++)
       {
-	ol_q_g (SSet.q[i], g);
+	ol_q_g (Tess.CellOri[i], g);
 	ol_g_fprintf (file, g, "%17.12f");
       }
       ol_g_free (g);
@@ -66,9 +66,9 @@ net_res_ori (struct IN_T In, struct SEEDSET SSet)
     {
       double *r = ol_r_alloc ();
       double theta;
-      for (i = 1; i <= SSet.N; i++)
+      for (i = 1; i <= Tess.CellQty; i++)
       {
-	ol_q_rtheta (SSet.q[i], r, &theta);
+	ol_q_rtheta (Tess.CellOri[i], r, &theta);
 	ol_rtheta_fprintf (file, r, theta, "%17.12f");
       }
       ol_r_free (r);
@@ -76,38 +76,38 @@ net_res_ori (struct IN_T In, struct SEEDSET SSet)
     else if (strcmp (des, "theta") == 0)
     {
       double theta;
-      for (i = 1; i <= SSet.N; i++)
+      for (i = 1; i <= Tess.CellQty; i++)
       {
-	ol_q_theta (SSet.q[i], &theta);
+	ol_q_theta (Tess.CellOri[i], &theta);
 	ol_theta_fprintf (file, theta, "%17.12f");
       }
     }
     else if (strcmp (des, "R") == 0)
     {
       double *R = ol_R_alloc ();
-      for (i = 1; i <= SSet.N; i++)
+      for (i = 1; i <= Tess.CellQty; i++)
       {
-	ol_q_R (SSet.q[i], R);
+	ol_q_R (Tess.CellOri[i], R);
 	ol_R_fprintf (file, R, "%17.12f");
       }
       ol_R_free (R);
     }
     else if (strcmp (des, "q") == 0)
     {
-      for (i = 1; i <= SSet.N; i++)
-	ol_q_fprintf (file, SSet.q[i], "%17.12f");
+      for (i = 1; i <= Tess.CellQty; i++)
+	ol_q_fprintf (file, Tess.CellOri[i], "%17.12f");
     }
     else if (strcmp (des, "Rcol") == 0)
     {
       double *R = ol_R_alloc ();
       int *rgb = ut_alloc_1d_int (3);
       double SQRT2 = 1.41421356237309504880;
-      for (i = 1; i <= SSet.N; i++)
+      for (i = 1; i <= Tess.CellQty; i++)
       {
 	if (strcmp (In.oricrysym[In.levelqty], "cubic"))
 	  ut_print_message (2, 1, "Rcol requires `-oricrysym cubic'.\n");
 
-	ol_q_R (SSet.q[i], R);
+	ol_q_R (Tess.CellOri[i], R);
 	for (j = 0; j < 3; j++)
 	  rgb[j] =
 	    ut_num_d2ri (255 * (R[j] + (SQRT2 - 1)) / (2 * (SQRT2 - 1)));
@@ -124,11 +124,11 @@ net_res_ori (struct IN_T In, struct SEEDSET SSet)
   // fepx format
   else if (strcmp (format, "fepx") == 0)
   {
-    fprintf (file, "grain-orientations\n%d\n", SSet.N);
+    fprintf (file, "grain-orientations\n%d\n", Tess.CellQty);
     double *e = ol_e_alloc ();
-    for (i = 1; i <= SSet.N; i++)
+    for (i = 1; i <= Tess.CellQty; i++)
     {
-      ol_q_e (SSet.q[i], e);
+      ol_q_e (Tess.CellOri[i], e);
       ol_e_ek (e, e);
       for (j = 0; j < 3; j++)
 	fprintf (file, "%17.12f ", e[j]);
@@ -142,10 +142,10 @@ net_res_ori (struct IN_T In, struct SEEDSET SSet)
   else if (strcmp (format, "geof") == 0)
   {
     double *e = ol_e_alloc ();
-    for (i = 1; i <= SSet.N; i++)
+    for (i = 1; i <= Tess.CellQty; i++)
     {
       fprintf (file, "**elset poly%d  *rotation ", i);
-      ol_q_e (SSet.q[i], e);
+      ol_q_e (Tess.CellOri[i], e);
       ol_e_e (e, e);
       for (j = 0; j < 3; j++)
 	fprintf (file, "%17.12f ", e[j]);

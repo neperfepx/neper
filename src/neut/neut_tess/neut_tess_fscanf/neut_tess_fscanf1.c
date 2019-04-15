@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_fscanf_.h"
@@ -15,7 +15,7 @@ neut_tess_fscanf (FILE * file, struct TESS *pTess)
 
   neut_tess_set_zero (pTess);
 
-  neut_tess_fscanf_head (pTess, file);
+  neut_tess_fscanf_head (pTess, file, &version);
 
   neut_tess_fscanf_cell (pTess, file);
 
@@ -38,7 +38,7 @@ neut_tess_fscanf (FILE * file, struct TESS *pTess)
 
   ut_file_nextstring (file, tmp);
   if (!strcmp (tmp, "**domain"))
-    neut_tess_fscanf_domain (pTess, file);
+    neut_tess_fscanf_domain (pTess, version, file);
 
   ut_file_nextstring (file, tmp);
   if (!strcmp (tmp, "**periodicity"))
