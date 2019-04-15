@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2009, 2012 Romain Quey */
+/* Copyright (C) 2003-2019, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -269,7 +269,7 @@ extern void ut_array_1d_int_sort_index2 (int *, int, int *);
 extern void ut_array_1d_sort_index2 (double *, int, int *);
 
 extern int ut_array_2dns_int_fprintf (FILE *, int **, int, int *, const char *);
-extern int ut_array_1d_int_equal (int *, int *, int);
+extern int ut_array_1d_int_equal (int *, int, int *, int);
 extern int ut_array_1d_int_opposite (int *, int *, int);
 extern int ut_array_1d_equal (double *, double *, int, double);
 extern int ut_array_1d_requal (double *, double *, int, double);
@@ -286,11 +286,11 @@ extern int ut_array_1d_char_find (char *, int, char);
 
 extern int ut_array_1d_int_list_addelt_nocheck (int **parray, int *psize, int val);
 extern int ut_array_1d_int_list_addelt (int **parray, int *psize, int val);
+extern void ut_array_1d_int_list_addelts (int **parray, int *psize, int* elts, int eltqty);
 extern void ut_array_1d_int_list_rmelt (int **parray, int *psize, int val);
+extern void ut_array_1d_int_list_rmelts (int **parray, int *psize, int *vals, int valqty);
 extern void ut_array_1d_int_valqty (int *array, int size, int ***parray2,
 				    int *parray2qty);
-
-extern void ut_array_1d_int_list_addelts (int **parray, int *psize, int* elts, int eltqty);
 
 extern int ut_array_1d_int_diff (int *, int, int *, int);
 
@@ -346,9 +346,16 @@ extern void ut_array_3d_switcharrays (double ***array, int size1, int
 extern void ut_array_3d_int_switcharrays (int ***array, int size1, int
 				      size2, int line1, int line2);
 
-extern int ut_array_1d_int_lists_merge (int* list1, int qty1, int*
-					list2, int qty2, int** plist,
-					int* pqty);
+extern void ut_array_1d_int_lists_merge (int** listvals, int *listvalqty,
+                                        int listqty, int **pvals,
+                                        int *pvalqty);
+
+extern int ut_array_1d_int_listpair_merge (int* list1, int qty1, int*
+					   list2, int qty2, int** plist,
+					   int* pqty);
+
+extern int ut_array_1d_int_listpair_equal (int* list1, int qty1, int*
+					   list2, int qty2);
 
 extern int ut_array_1d_int_duplicates (int* array, int qty);
 
@@ -359,6 +366,19 @@ extern void ut_array_1d_int_choose (int *src, int srcsize, int *dest, int destsi
 #endif
 
 extern void ut_array_1d_round_keepsum (double *a, int size, double *b);
+
+extern int ut_array_2d_pair (double **a, int sizea1, int sizea2, double **b,
+                             int sizeb1, int sizeb2, int *pair, double *pdist);
+
+extern int ut_array_2d_int_pair (int **a, int sizea1, int sizea2, int **b,
+                                 int sizeb1, int sizeb2, int *pair);
+
+extern int ut_array_2d_int_list_pair (int **a, int sizea1, int sizea2, int **b,
+                                      int sizeb1, int sizeb2, int *pair);
+
+extern int ut_array_2d_int_list_pair_2 (int **a, int sizea1, int *sizea2,
+                                        int **b, int sizeb1, int *sizeb2,
+                                        int *pair);
 
 #endif /* UT_ARRAY_H */
 

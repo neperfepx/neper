@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2018 Romain Quey
+@c Copyright (C) 2003-2019 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node File Formats
@@ -78,7 +78,8 @@ and
 @ @ @  ...                                                               @*
 @ @  *edge                                                             @*
 @ @ @  @var{total_number_of_dom_edges}                                   @*
-@ @ @  @var{dom_edge_id} @var{dom_ver_1} @var{dom_ver_2} @var{dom_edge_label} @*
+@ @ @  @var{dom_edge_id} @var{number_of_dom_vertices} [@var{dom_ver_1} @var{dom_ver_2}] @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{dom_edge_label} @*
 @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{number_of_dom_tess_edges} @var{edge_1}
 							      @var{edge_2} ...@*
 @ @ @  ...                                                               @*
@@ -87,8 +88,8 @@ and
 @ @ @  @var{dom_face_id} @var{number_of_dom_vertices} @var{dom_ver_1} @ @var{dom_ver_2} @ @var{...} @*
 @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{number_of_dom_edges} @ @ @ @var{dom_edge_1} @var{dom_edge_2}
 							            @var{...} @*
-@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{dom_face_eq_d} @var{dom_face_eq_a}
-			@var{dom_face_eq_b} @var{dom_face_eq_c} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{dom_face_type} @*
+@ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{number_of_params} @var{dom_face_param1} @var{dom_face_param2} @var{...} @*
 @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{dom_face_label} @*
 @ @ @ @ @ @ @ @ @ @ @ @ @ @ @ @var{number_of_dom_tess_faces}
 			@var{dom_tess_face_1} @var{dom_tess_face_2} @var{...} @*
@@ -307,6 +308,9 @@ domain edges.
 @item @code{@var{dom_edge_id}} is the identifier of a domain edge and
 ranges between @code{1} to @code{total_number_of_dom_edges}.
 
+@item @code{@var{number_of_dom_vertices}} is the number of
+domain vertices of a domain edge or a domain face.
+
 @item @code{@var{dom_ver_1}}, @code{@var{dom_ver_2}}, @code{...} are
 identifiers of the domain vertices of a domain edge or face.
 
@@ -324,19 +328,26 @@ domain faces.
 @item @code{@var{dom_face_id}} is the identifier of a domain face and ranges from
 @code{1} to @code{total_number_of_dom_faces}.
 
-@item @code{@var{number_of_dom_vertices}} is the number of
-domain vertices of a domain face.
-
 @item @code{@var{number_of_dom_edges}} is the number of
 domain edges of a domain face.
 
 @item @code{@var{dom_edge_1}}, @code{@var{dom_edge_2}}, @code{...} are
 identifiers of the domain edges of a domain face.
 
-@item @code{@var{dom_face_eq_a}}, @code{@var{dom_face_eq_b}},
-@code{@var{dom_face_eq_c}} and @code{@var{dom_face_eq_d}} are the
-parameters of the equation of a domain face and are defined in the same
-way than @code{@var{face_eq_a}}, etc.@ (see above).
+@item @code{@var{dom_face_type}} is the type of a face, among
+@samp{@code{plane}}, @samp{@code{cylinder}} or @samp{@code{sphere}}.
+
+@item @code{@var{number_of_params}} is the number of parameters of a domain
+face.
+
+@item @code{@var{dom_face_param1}}, @code{@var{dom_face_param2}}, @code{...}
+are the parameters of a domain face.  For a planar face, they are the parameters
+of the equation of the face, listed in the order
+@code{@var{face_eq_d}}, @code{@var{face_eq_a}}, @code{face_eq_b} and
+@code{@var{face_eq_c}}.
+For a cylindrical face, they are the coordinates of the base point,
+the axis and the radius.
+For a spherical face, they are the coordinates of the centre and the radius.
 
 @item @code{@var{dom_face_label}} is the label of a domain face. If
 @var{@code{dom_type}} is @samp{@code{cube}}, it is one of

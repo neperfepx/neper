@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -48,8 +48,8 @@ extern "C"
     // Identifiers of the cells [1...CellQty]
     int *CellId;
 
-    // Crystal orientations of the cells, in Euler (Bunge) angles
-    // [1...CellQty][0...2]
+    // Crystal orientations of the cells, in quaternions
+    // [1...CellQty][0...3]
     double **CellOri;
 
     // For a lamellar tessellation, lamella ids of the cells, in terms
@@ -245,7 +245,7 @@ extern "C"
 
     // DOMAIN INFORMATION ------------------------------------------------
 
-    // Domain type ("cube", "cylinder", "sphere" or "planes")
+    // Domain type ("cube", "cylinder", "sphere", "planes" or "cut")
     char *DomType;
 
     // Number of vertices of the domain
@@ -261,7 +261,7 @@ extern "C"
     int *DomVerEdgeQty;
 
     // Numbers of the domain edges of the domain vertices
-    // [1...DomVerQty][0...DomVerEdgeQty[i]]
+    // [1...DomVerQty][0...DomVerEdgeQty[i]-1]
     int **DomVerEdgeNb;
 
     // Numbers of the tessellation vertices of the domain vertices
@@ -274,8 +274,12 @@ extern "C"
     // Labels of the domain edges
     char **DomEdgeLabel;
 
+    // Numbers of domain vertices of the domain edges
+    // [1...DomVerQty]
+    int *DomEdgeVerQty;
+
     // Numbers of the domain vertices of the domain edges
-    // [1...DomVerQty][0...1]
+    // [1...DomVerQty][0...DomEdgeVerQty-1]
     int **DomEdgeVerNb;		// 0 indexed
 
     // Numbers of the domain faces of the domain edges
@@ -300,6 +304,16 @@ extern "C"
     // DomFaceEq[i][1]*X1+DomFaceEq[i][2]*X2+DomFaceEq[i][3]*X3=DomFaceEq[i][0]
     double **DomFaceEq;
 
+    /// Type of domain face: NULL, plane, cylinder, ecylinder or sphere
+    /// The parameters are recorded in DomFaceParms
+    char **DomFaceType;
+
+    int* DomFaceParmQty;
+
+    // ecylinder: Cx, Cy, Cz, axisx, axisy, axisz, ell1x, ell1y, ell1z, ell2x,
+    // ell2y, ell2z, rady, radz
+    double **DomFaceParms;
+
     // Number of domain vertices of the domain faces [1...DomFaceQty]
     int *DomFaceVerQty;
 
@@ -307,8 +321,11 @@ extern "C"
     // [1...DomFaceQty][1...DomFaceVerQty[i]]
     int **DomFaceVerNb;
 
+    // Number of domain edge of the domain faces [1...DomFaceQty]
+    int *DomFaceEdgeQty;
+
     // Numbers of the domain edges of the domain faces
-    // [1...DomFaceQty][1...DomFaceVerQty[i]]
+    // [1...DomFaceQty][1...DomFaceEdgeQty[i]]
     int **DomFaceEdgeNb;
 
     // Amount of tessellation faces of the domain faces [1...DomFaceQty]

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess3d_.h"
@@ -31,6 +31,13 @@ net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
   neut_poly_set_zero (&DomPoly);
 
   net_tess_poly (PTess, poly, &DomPoly);
+
+  // FacePoly must not contain positive polys; quickfix
+  if (ut_array_1d_int_max (DomPoly.FacePoly + 1, DomPoly.FaceQty) > 0)
+  {
+    for (int i = 1; i <= DomPoly.FaceQty; i++)
+      DomPoly.FacePoly[i] = -i;
+  }
 
   net_polycomp (DomPoly, SSet, &nf_cloud, &nf_index, &ptid_seedid,
                 &seedid_ptid, &Poly, NULL, -1, &TD);

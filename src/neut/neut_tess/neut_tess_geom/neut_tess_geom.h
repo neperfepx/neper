@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -26,6 +26,8 @@ extern "C"
 ///
 ///
   extern int neut_tess_edge_eq (struct TESS Tess, int, double *);
+
+  extern int neut_tess_edge_dir (struct TESS Tess, int edge, double *dir);
 
 /// \brief Get the equation of a domain edge (for a 2D tess)
 ///
@@ -87,6 +89,8 @@ extern "C"
 ///
 ///
   extern int neut_tess_size (struct TESS Tess, double *);
+
+  extern int neut_tess_diameq (struct TESS Tess, double *);
 
 /// \brief Get the average cell equivalent diameter of a TESS
 ///
@@ -208,6 +212,11 @@ extern "C"
   extern void neut_tess_face_normal_fromver (struct TESS Tess, int face,
 					     double *n);
 
+  extern void neut_tess_face_eq_fromvers (struct TESS Tess, int face,
+					     double *eq);
+
+  extern void neut_tess_faceinter_fromdomface (struct TESS *pTess, int face);
+
   extern void neut_tess_face_dihangle (struct TESS, int face, int id,
 				       double *pangle);
   extern void neut_tess_face_dihangles (struct TESS Tess, int face,
@@ -235,8 +244,12 @@ extern "C"
   extern int neut_tess_poly_sphericity (struct TESS, int poly, double *pval);
   extern int neut_tess_cell_sphericity (struct TESS, int cell, double *pval);
 
+  extern int neut_tess_cell_primside (struct TESS Tess, int cell,
+				       struct PRIM Prim, int *pside);
   extern int neut_tess_cell_planeside (struct TESS Tess, int cell,
 				       double *plane, int *pside);
+  extern int neut_tess_cell_sphereside (struct TESS Tess, int cell,
+                                        double *C, double rad, int *pside);
 
   extern void neut_tess_face_convexity (struct TESS Tess, int face,
 					double *pval);
@@ -244,6 +257,28 @@ extern "C"
 					double *pval);
   extern void neut_tess_cell_convexity (struct TESS Tess, int cell,
 					double *pval);
+
+  extern void neut_tess_edgepair_angle (struct TESS Tess, int edge1, int edge2, double *pangle);
+
+  extern int neut_tess_cell_cylside (struct TESS Tess, int cell, double *C, double *v,
+                                     double rad, int *pside);
+  extern int neut_tess_cell_cyl2side (struct TESS Tess, int cell, double *C,
+                                      double *v, double *ell1, double *ell2,
+                                      double rad1, double rad2, int *pside);
+
+  extern int neut_tess_cell_torusside (struct TESS Tess, int cell, double *C, double *v,
+                                       double rad, double rad2, int *pside);
+
+  extern void neut_tess_seed_prim_mirror (struct TESS, int seed, struct PRIM Prim, double *mirror);
+
+  extern int  neut_tess_domfaces_point_proj (struct TESS, int *domfaces, int domfaceqty,
+                                             double *point, double *proj);
+
+  extern void neut_tess_poly_faces_aveq (struct TESS Tess, int poly, int *faces,
+                                         int faceqty, double *eq);
+
+  extern void neut_tess_coo_percoos (struct TESS Tess, double *coo,
+                                     double ***ppercoos, int *ppercooqty);
 
 #endif				/* NEUT_TESS_GEOM_H */
 

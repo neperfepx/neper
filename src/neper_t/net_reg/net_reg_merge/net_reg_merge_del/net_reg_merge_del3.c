@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_reg_merge_del_.h"
@@ -316,6 +316,7 @@ UpdateVerCooBary (struct TESS *pTess, int delver, int newver)
 int
 UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
 {
+  int status = 0;
   int i, j, k;
   double **A = NULL;
   double *B = NULL;
@@ -373,65 +374,92 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
 
   M = qty;
 
-  double **constraint = ut_alloc_2d (M, 4);
-  // for (i = 0; i < M; i++)
-  // ut_array_1d_memcpy (constraint[i], 4, (*pTess).DomFaceEq[domainface[i]]);
+  int curved, iter;
+  double dist, **constraint = ut_alloc_2d (M, 4);
+
+  curved = 0;
   for (i = 0; i < M; i++)
-    ut_array_1d_memcpy (constraint[i], 4, (*pTess).DomFaceEq[tmp[i]]);
-
-  if (verbosity > 0)
-  {
-    printf ("\n\n");
-    printf ("newver = %d\n", newver);
-    printf ("M = %d: ", M);
-    ut_array_1d_int_fprintf (stdout, domainface, M, "%d");
-    ut_array_2d_fprintf (stdout, constraint, M, 4, "%9.6f");
-    printf ("\n\n");
-  }
-
-  A = ut_alloc_2d (3 + M, 3 + M);
-  B = ut_alloc_1d (3 + M);
-  X = ut_alloc_1d (3 + M);
-
-  // Filling up the 3 x 3 first values of A
-  double *n = NULL;
-  double d;
-  for (i = 0; i < N; i++)
-  {
-    n = (*pTess).FaceEq[face[i]] + 1;
-    for (j = 0; j < 3; j++)
-      for (k = 0; k < 3; k++)
-	A[j][k] += n[j] * n[k];
-  }
-
-  // Filling up the 3 first values of B
-  for (i = 0; i < N; i++)
-  {
-    n = (*pTess).FaceEq[face[i]] + 1;
-    d = (*pTess).FaceEq[face[i]][0];
-    for (j = 0; j < 3; j++)
-      B[j] += d * n[j];
-  }
-
-  // Filling up the 3 x M (x 2) constraint values of A and
-  // the M constraint values of B.
-  double *nprime = NULL;
-  double dprime;
-  for (i = 0; i < M; i++)
-  {
-    nprime = constraint[i] + 1;
-    dprime = constraint[i][0];
-    for (j = 0; j < 3; j++)
+    if (strncmp ((*pTess).DomFaceType[tmp[i]], "plane", 5))
     {
-      A[i + 3][j] = nprime[j];
-      A[j][i + 3] = nprime[j];
-      B[i + 3] = dprime;
+      curved = 1;
+      break;
     }
+
+  iter = 0;
+  do
+  {
+    iter++;
+
+    for (i = 0; i < M; i++)
+    {
+      neut_primparms_point_tangentplane ((*pTess).DomFaceType[tmp[i]],
+                                         (*pTess).DomFaceParms[tmp[i]],
+                                         (*pTess).VerCoo[newver],
+                                         constraint[i]);
+      if (verbosity > 0)
+      {
+        printf ("constraint %d (type = %s): ", i, (*pTess).DomFaceType[tmp[i]]);
+        ut_array_1d_fprintf (stdout, constraint[i], 4, "%f");
+      }
+    }
+
+    if (verbosity > 0)
+    {
+      printf ("\n\n");
+      printf ("newver = %d\n", newver);
+      printf ("M = %d: ", M);
+      ut_array_1d_int_fprintf (stdout, domainface, M, "%d");
+      ut_array_2d_fprintf (stdout, constraint, M, 4, "%9.6f");
+      printf ("\n\n");
+    }
+
+    A = ut_alloc_2d (3 + M, 3 + M);
+    B = ut_alloc_1d (3 + M);
+    X = ut_alloc_1d (3 + M);
+
+    // Filling up the 3 x 3 first values of A
+    double *n = NULL;
+    double d;
+    for (i = 0; i < N; i++)
+    {
+      n = (*pTess).FaceEq[face[i]] + 1;
+      for (j = 0; j < 3; j++)
+        for (k = 0; k < 3; k++)
+          A[j][k] += n[j] * n[k];
+    }
+
+    // Filling up the 3 first values of B
+    for (i = 0; i < N; i++)
+    {
+      n = (*pTess).FaceEq[face[i]] + 1;
+      d = (*pTess).FaceEq[face[i]][0];
+      for (j = 0; j < 3; j++)
+        B[j] += d * n[j];
+    }
+
+    // Filling up the 3 x M (x 2) constraint values of A and
+    // the M constraint values of B.
+    double *nprime = NULL;
+    double dprime;
+    for (i = 0; i < M; i++)
+    {
+      nprime = constraint[i] + 1;
+      dprime = constraint[i][0];
+      for (j = 0; j < 3; j++)
+      {
+        A[i + 3][j] = nprime[j];
+        A[j][i + 3] = nprime[j];
+        B[i + 3] = dprime;
+      }
+    }
+
+    status = ut_linalg_solve_LU (A, B, M + 3, X);
+
+    dist = ut_space_dist ((*pTess).VerCoo[newver], X);
+
+    ut_array_1d_memcpy ((*pTess).VerCoo[newver], 3, X);
   }
-
-  int status = ut_linalg_solve_LU (A, B, M + 3, X);
-
-  ut_array_1d_memcpy ((*pTess).VerCoo[newver], 3, X);
+  while (curved && iter < 1000 && dist > 1e-9);
 
   ut_free_2d (A, 3 + M);
   ut_free_1d (B);

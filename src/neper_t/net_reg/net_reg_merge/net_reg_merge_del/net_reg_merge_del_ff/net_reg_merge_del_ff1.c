@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_reg_merge_del_ff_.h"
@@ -16,7 +16,7 @@ net_reg_merge_del_ff (struct TESS *pTess, int ver)
 
   FFF = ut_alloc_1d (faceqty);
   for (i = 0; i < faceqty; i++)
-    FFF[i] = FFBaryFace (pTess, face[i]);
+    FFF[i] = net_reg_merge_del_ff_interpolate (pTess, face[i]);
 
   res = ut_array_1d_max (FFF, faceqty);
 

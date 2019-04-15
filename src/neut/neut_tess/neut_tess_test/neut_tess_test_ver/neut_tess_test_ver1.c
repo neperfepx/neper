@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_test_ver_.h"
@@ -13,8 +13,8 @@ neut_tess_test_ver (struct TESS Tess, int i, int verbosity)
   if (neut_tess_test_verEdgeQtyNNb (Tess, i, verbosity) != 0
       || neut_tess_test_verEdgeReciprocity (Tess, i, verbosity) != 0
       || neut_tess_test_verBoundNCoo (Tess, i, verbosity) != 0
-      || (strcmp (Tess.DomType, "cylinder") != 0 &&
-	  neut_tess_test_verFaceCoplaneity (Tess, i, verbosity) != 0))
+      || ((strcmp (Tess.DomType, "cylinder") || strcmp (Tess.DomType, "cut")) &&
+         neut_tess_test_verFaceCoplaneity (Tess, i, verbosity) != 0))
     return -1;
   else
     return 0;

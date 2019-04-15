@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_cube_.h"
 
 int
-net_tess_cube (struct IN_T In, int level, struct MTESS *pMTess,
-               struct TESS *Tess, int dtess, int dcell, struct TESS Dom,
+net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
+               struct TESS *Tess, int dtess, int dcell,
                int TessId, struct SEEDSET *SSet)
 {
   int status, i, id;
@@ -16,10 +16,15 @@ net_tess_cube (struct IN_T In, int level, struct MTESS *pMTess,
   int varqty;
   char **vals = NULL;
   int dim = (In.levelqty > 1) ? 3 : In.dim;
+  struct TESS Dom;
+
+  neut_tess_set_zero (&Dom);
+
+  neut_tess_poly_tess (Tess[dtess], dcell, &Dom);
 
   ut_print_message (0, 2, "Running tessellation...\n");
 
-  ut_string_function_separate (In.morpho[level], &fct, NULL, &vals, &varqty);
+  ut_string_function_separate (morpho, &fct, NULL, &vals, &varqty);
 
   if (!strcmp (fct, "cube"))
   {
@@ -57,6 +62,8 @@ net_tess_cube (struct IN_T In, int level, struct MTESS *pMTess,
   int ****edgeid = ut_alloc_4d_int (3, N[0] + 1, N[1] + 1, N[2] + 1);
   int ****faceid = ut_alloc_4d_int (3, N[0] + 1, N[1] + 1, N[2] + 1);
   int ***polyid = ut_alloc_3d_int (N[0], N[1], N[2]);
+  double **bbox = ut_alloc_2d (3, 2);
+  neut_tess_bbox (Dom, bbox);
 
   if (level != 1 || dtess != 0 || dcell != 1)
     ut_error_reportbug ();
@@ -66,7 +73,7 @@ net_tess_cube (struct IN_T In, int level, struct MTESS *pMTess,
   net_tess_cube_general (TessId, Tess + 1);
 
   net_tess_cube_cells (N, Tess + 1);
-  net_tess_cube_vers (N, Dom, verid, Tess + 1);
+  net_tess_cube_vers (N, bbox, verid, Tess + 1);
   net_tess_cube_edges (N, verid, edgeid, Tess + 1);
   net_tess_cube_faces (N, verid, edgeid, faceid, Tess + 1);
   net_tess_cube_polys (N, faceid, polyid, Tess + 1);
@@ -105,6 +112,8 @@ net_tess_cube (struct IN_T In, int level, struct MTESS *pMTess,
   ut_free_1d_char (tmpc);
   ut_free_1d_char (fct);
   ut_free_2d_char (vals, varqty);
+  ut_free_2d (bbox, 3);
+  neut_tess_free (&Dom);
 
   return 0;
 }

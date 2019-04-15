@@ -1,17 +1,32 @@
+New in 3.4.0 (15 Apr 2019):
+- module -T: added tessellation cutting (to get non-convex domains) using
+  -transform cut, added cell merging and removal using -transform mergecell and
+  rmcell, added -transform resetcellid, added -ori spread, improved -morpho
+  lamellar, improved -morpho diameq, added -format stl:bycell, added
+  tessellation keys, fixed -morpho aspratio and rasterization of periodic
+  tessellations, fixed -domain circle:split, made small fixes and improvements.
+- module -M: made -interface mutliscale, renamed -mesh3dclconv into
+  -mesh3dclreps, improved -cl, -rcl and -mesh3dclreps argument expressions,
+  speed up -transport, fixed 2D remeshing, speed up -statelt and -statelset,
+  added -[r]clface, -[r]cledge and -[r]clver.
+- module -V: improved visualization of non-convex cells, fixed visualization of
+  hex meshes, minor other fixes.
+
 New in 3.3.0 (25 Jul 2018):
-- New paper: "R. Quey, A. Villani, and C. Maurice. Nearly uniform sampling of
-  crystal orientations. J. Appl. Crystallogr., vol. 51,
+- New paper: "R. Quey, A. Villani, and C. Maurice. Nearly uniform
+  sampling of crystal orientations. J. Appl. Crystallogr., vol. 51,
   doi:10.1107/S1600576718009019, 2018."
-- module -T: added -ori uniform for uniform orientation distribution, added
-  sistem options -orioptiini -orioptifix, -orioptistop and -orioptineigh,
-  -added -morpho tocta, columnar, bamboo and aspratio, fixed -morpho
-  multimodal, improved -morphooptiini, added -transform translate, fixed tesr
-  output for periodic tessellations, fixed tess to tesr conversion, added
-  several tessellation keys, merged option -scale into -transform, made minor
-  improvements.
-- module -M: fixed meshing of periodic tessellation with openMP, allowed Gmsh
-  development versions.
-- module -V: improved camera parameters, fixed -slicemesh for hex meshes.
+- module -T: added -ori uniform for uniform orientation distribution,
+  added sister options -orioptiini, -orioptifix, -orioptistop and
+  -orioptineigh, added -morpho tocta, columnar, bamboo and aspratio,
+  fixed -morpho multimodal, improved -morphooptiini, added -transform
+  translate, fixed tesr output for periodic tessellations, fixed tess to
+  tesr conversion, added several tessellation keys, merged option -scale
+  into -transform, made minor improvements.
+- module -M: fixed meshing of periodic tessellation with openMP, allowed
+  Gmsh development versions.
+- module -V: improved camera parameters, fixed -slicemesh for hex
+  meshes.
 
 New in 3.2.0 (23 May 2018):
 - general: Neper is now fully multithreaded.

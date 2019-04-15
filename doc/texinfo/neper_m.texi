@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2018 Romain Quey
+@c Copyright (C) 2003-2019 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Meshing Module (-M)
@@ -75,7 +75,9 @@ vertices, edges, faces and polyhedra) can be described by element
 sets (option @option{-dim}).  Node sets of the vertices, edges
 and faces of the boundary of the tessellation are also provided for
 prescribing the boundary conditions (option @option{-nset}).  The
-surface element sets are also provided (option @option{-faset}).  The
+surface element sets are also provided (option @option{-faset}).
+Element sets other than those corresponding to the tessellation cells can be
+defined (option @option{-elset}). The
 mesh order can be 1 or 2 (option @option{-order}).
 Statistical data can be obtained on the meshes (options starting by
 @option{-stat}).
@@ -93,7 +95,7 @@ Here is what a typical run of @mM{} looks like,
     Info   : Version 3.0.0
     Info   : Built with: gsl nlopt muparser
     Info   : <http://neper.sourceforge.net>
-    Info   : Copyright (C) 2003-2018, and GNU GPL'd, by Romain Quey.
+    Info   : Copyright (C) 2003-2019, and GNU GPL'd, by Romain Quey.
     Info   : Comments and bug reports: <neper-users@lists.sourceforge.net>.
     Info   : Loading initialization file `/home/rquey/.neperrc'...
     Info   : ---------------------------------------------------------------
@@ -214,29 +216,18 @@ tet@comma{} hex, tet}
 @opttwo{-cl, -rcl, -cl or -rcl, real,
 Specify the absolute or relative characteristic length of the elements.
 @code{rcl} is defined relative to the average cell size.
-The default @code{-rcl 1} leads to a mesh with about 100 elements per
+The default@comma{} @code{-rcl 1}@comma{} leads to a mesh with about 100 elements per
 cell in average (@w{64 in 2D}).
-For free meshing@comma{} it is also possible to get non-uniform
-characteristic length distributions@comma{} as detailed in the following.
-To define a characteristic length on a per-cell basis@comma{} the first way is to use the syntax
-@code{@var{default_cl}@SEPNODEP{}@var{cell_expr1}@SEPDEP{}@var{cell_cl1}@SEPNODEP{}@var{cell_expr2}@SEPDEP{}@var{cell_cl2}...}@comma{}
-where @code{@var{default_cl}} is the default characteristic length@comma{}
-@code{@var{cell_expri}} is an expression defining the set of
-@w{cells @var{i}} and @code{@var{cell_cli}} is the corresponding characteristic length.
-@samp{@code{@var{cell_expri}}} can be any
-expression based on variables provided in
-@ref{Tessellation Keys} for tessellations@comma{} @ref{Raster
-Tessellation Keys} for
-raster tessellations and @ref{Mesh Keys} for meshes.
-The expressions are processed one after the other. When processing
-expression @code{@var{cell_expri}}@comma{} the matching cells
-are assigned @code{@var{cell_cli}} as characteristic length.
+For free meshing@comma{} it is also possible to define the characteristic length
+on a per-cell basis@comma{} using any mathematical expression based on the
+variables defined in @ref{Tessellation Keys} (or @ref{Raster Tessellation Keys} for a
+2D raster tessellation).
 A typical use is @samp{@code{-rcl
-@var{val1}@SEPNODEP{}body==0@SEPDEP{}@var{val2}}} to get interior cells
+(body>0)?@var{val1}:@var{val2}}} to get interior cells
 meshed with @code{@var{rcl}=@var{val1}} and boundary cells
 meshed with @code{@var{rcl}=@var{val2}}.
 The second way is to load values from an external file using
-the syntax @samp{@@@var{file_name}}@comma{} where @code{@var{file_name}}
+the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
 is the name of the file containing the characteristic length values.
 ,
 any, -rcl 1}
@@ -267,6 +258,45 @@ Specify the mesh order.
 ,
 1 or 2,1}
 
+@opttwosec{-clface, -rclface, -clface or -rclface, real,
+Specify the absolute or relative characteristic length of the elements@comma{} on a per-face basis.
+Provide as argument any mathematical expression based on the
+variables defined in @ref{Tessellation Keys}
+or @samp{default} (the value inherited from the parent polyhedra).
+A typical use is @samp{@code{-rcl
+(domface==@var{id})?@var{val}:default}} to get a finer mesh at domain surface @code{@var{id}}.
+The second way is to load values from an external file using
+the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
+is the name of the file containing the characteristic length values.
+,
+any, none}
+
+@opttwosec{-cledge, -rcledge, -cledge or -rcledge, real,
+Specify the absolute or relative characteristic length of the elements@comma{} on a per-edge basis.
+Provide as argument any mathematical expression based on the
+variables defined in @ref{Tessellation Keys}
+or @samp{default} (the value inherited from the parent faces).
+A typical use is @samp{@code{-rcl
+(domedge==@var{id})?@var{val}:default}} to get a finer mesh at domain edge @code{@var{id}}.
+The second way is to load values from an external file using
+the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
+is the name of the file containing the characteristic length values.
+,
+any, none}
+
+@opttwosec{-clver, -rclver, -clver or -rclver, real,
+Specify the absolute or relative characteristic length of the elements@comma{} on a per-vertex basis.
+Provide as argument any mathematical expression based on the
+variables defined in @ref{Tessellation Keys}
+or @samp{default} (the value inherited from the parent edges).
+A typical use is @samp{@code{-rcl
+(domver==@var{id})?@var{val}:default}} to get a finer mesh at domain vertex @code{@var{id}}.
+The second way is to load values from an external file using
+the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
+is the name of the file containing the characteristic length values.
+,
+any, none}
+
 @optsec{-pl, real,
 Specify the progression factor for the element characteristic lengths. This value is
 the maximum ratio between the lengths of two adjacent 1D elements.,
@@ -285,7 +315,7 @@ Specify the minimum characteristic length of the elements.,
 any, none}
 @c @optdevel{-meshface, expression,
 @c Specify the faces to mesh. The argument can be: @samp{all} for
-@c all@comma{} @samp{@@@var{file_name}} to load face numbers from a
+@c all@comma{} @samp{file(@var{file_name})} to load face numbers from a
 @c file@comma{} or any expression based on the following arguments:
 @c @var{cenx}@comma{} @var{ceny}@comma{} @var{cenz}@comma{}
 @c @var{volume}@comma{}
@@ -295,7 +325,7 @@ any, none}
 @c
 @c @optdevel{-meshpoly, expression,
 @c Specify the polyhedra to mesh. The argument can be: @samp{all} for
-@c all@comma{} @samp{@@@var{file_name}} to load polyhedron numbers from a
+@c all@comma{} @samp{file(@var{file_name})} to load polyhedron numbers from a
 @c file@comma{} or any expression based on the following arguments:
 @c @var{cenx}@comma{} @var{ceny}@comma{} @var{cenz}@comma{}
 @c @var{volume}@comma{}
@@ -387,6 +417,10 @@ neighbour element sets (which are associated to the tessellation cells).  Provid
 distinct nodes for the neighbour element sets.  Provide @samp{cohesive} for
 cohesive elements at interfaces@comma{} joining the neigbour element
 sets.
+In the case of a multiscale tessellation@comma{} it is possible to provide
+a different value for each scale using the @samp{@SEPFRAC{}} separator
+(if fewer values than tessellation scales are provided@comma{} the last
+ provided value is used for all higher scales).
 See option @option{-faset} for the output format.
 ,
 see above, continuous}
@@ -632,6 +666,19 @@ them @w{with @samp{@SEPNODEP}}.  Provide @code{none} for none.
 ,
 see above, none}
 
+@optsec{-elset, char_string,
+Specify the element sets to provide.  The argument can be:
+@code{default} for the default element sets (those corresponding to the
+input tessellation cells)@comma{} or an expression of the form
+@samp{@var{elset_label}@SEPDEP@var{elset_definition}}@comma{}
+where @code{@var{elset_label}} is a custom elset label and
+@code{@var{elset_definition}} is an expression defining the elements
+belonging to the elset@comma{} defined from the
+variables provided in @ref{Mesh Keys}.
+Combine arguments with @samp{@SEPNODEP}.
+,
+see above, default}
+
 @subsection Post-Processing Options
 
 The following options provide statistics on the nodes (@samp{nodes}),
@@ -733,13 +780,18 @@ any, none,
 These advanced options set running conditions for the meshing libraries
 (triangle and tetrahedral meshing),
 
-@optsec{-mesh3dclconv, real,
-Specify the maximum difference between the characteristic length @code{cl}
-and the average element length (for each polyhedron).  Neper tries its
-best to get the average element size to match @code{cl}.  Use this
-option to change the tolerance on the relative difference between the
-two. This is a highly CPU-sensitive capability (increasing this value
-can be efficient to speed up meshing).
+@optsec{-mesh3dclreps, real,
+Specify the relative tolerance on the average element characteristic length
+of each polyhedron (compared to @code{cl}).
+The value can also be defined on a per-cell basis@comma{}
+using any mathematical expression based on the
+variables defined in @ref{Tessellation Keys}
+or by loading values from an external file@comma{} using
+the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
+is the name of the file containing the values.
+As Neper proceeds iteratively to adjust the average element characteristic
+length@comma{} this is a highly CPU-sensitive capability@comma{}
+and low values will increase computation time significantly.
 ,
 any, 0.02}
 

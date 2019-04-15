@@ -1,11 +1,11 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_sset_post_.h"
 
 void
-net_tess_opt_init_sset_post_per (int *periodic, struct TESS Tess, int poly,
+net_tess_opt_init_sset_post_per (int *periodic, int level, struct TESS Dom, int poly,
 				 struct SEEDSET *pSSet)
 {
   int i, j, k, l;
@@ -13,7 +13,7 @@ net_tess_opt_init_sset_post_per (int *periodic, struct TESS Tess, int poly,
   int *shift = NULL;
   double **bbox = NULL;
 
-  if (Tess.Level > 0)
+  if (level > 0)
   {
     (*pSSet).Nall = (*pSSet).N;
     return;
@@ -24,7 +24,7 @@ net_tess_opt_init_sset_post_per (int *periodic, struct TESS Tess, int poly,
 
   if (poly != 1)
     ut_error_reportbug ();
-  neut_tess_bbox (Tess, bbox);
+  neut_tess_bbox (Dom, bbox);
 
   if (ut_array_1d_int_sum (periodic, 3) > 0)
     ut_string_string ("periodic", &(*pSSet).Type);

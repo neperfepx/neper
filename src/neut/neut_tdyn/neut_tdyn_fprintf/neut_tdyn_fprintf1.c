@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tdyn_fprintf_.h"
@@ -172,10 +172,10 @@ neut_tdyn_fprintf_time (struct TDYN TDyn)
     else
       fprintf (TDyn.logtime_fp, "%d", -1);
 
-      if (i < varqty - 1)
-	fprintf (TDyn.logtime_fp, " ");
-    }
-    fprintf (TDyn.logtime_fp, "\n");
+    if (i < varqty - 1)
+      fprintf (TDyn.logtime_fp, " ");
+  }
+  fprintf (TDyn.logtime_fp, "\n");
 
   ut_free_2d_char (vars,varqty);
 

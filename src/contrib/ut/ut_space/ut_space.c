@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2009, 2012 Romain Quey */
+/* Copyright (C) 2003-2019, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -11,6 +11,7 @@
 #include<gsl/gsl_randist.h>
 #endif
 #include"ut.h"
+#include"ut_space_ellipse/ut_space_ellipse.h"
 
 double
 ut_space_dist2d (double *a, double *b)
@@ -249,6 +250,21 @@ int
 ut_space_planeside (double *P, double *C)
 {
   if (P[1] * C[1] + P[2] * C[2] + P[3] * C[3] - P[0] < 0)
+    return -1;
+  else
+    return 1;
+}
+
+/* indicates the domain whose a specified point belongs to. */
+// C: center, rad: radius, coo: point coos
+int
+ut_space_sphereside (double *C, double rad, double *coo)
+{
+  double dist;
+
+  dist = ut_space_dist (C, coo);
+
+  if (dist <= rad)
     return -1;
   else
     return 1;
@@ -1253,7 +1269,7 @@ ut_space_points_uvect (double* a, double* b, double* uvect)
 }
 
 int
-ut_space_point_line_dist (double* C, double* L, double* pdist)
+ut_space_point_line_dist_2d (double* C, double* L, double* pdist)
 {
   (*pdist) = fabs (C[0] * L[1] + C[1] * L[2] - L[0])
              / ut_array_1d_norm (L + 1, 2);
@@ -2655,3 +2671,565 @@ ut_space_random (gsl_rng *r, int *dims, int dimqty, double mindist,
   return;
 }
 #endif
+
+void
+ut_space_polygon_triangles (double *eq, double **coos, int cooqty,
+                            int ***ptripos, int *ptriqty)
+{
+  int loop, loopmax = 100, i, j, in, idqty = cooqty;
+  int *triid = ut_alloc_1d_int (3);
+  int *id = ut_alloc_1d_int (idqty);
+  ut_array_1d_int_set_id (id, idqty);
+  double *eq2 = ut_alloc_1d (4);
+
+  (*ptriqty) = 0;
+
+  loop = 0;
+  while (idqty >= 3 && loop < loopmax)
+  {
+    for (i = 0; i < idqty; i++)
+    {
+      // picking triangle and testing if it is fully contained in the polygon
+
+      for (j = 0; j < 3; j++)
+        triid[j] = id[ut_num_rotpos (0, idqty - 1, i, j)];
+
+      ut_space_points_plane (coos[triid[0]], coos[triid[1]], coos[triid[2]], eq2);
+
+      if (ut_array_1d_scalprod (eq + 1, eq2 + 1, 3) > 0)
+        in = 1;
+      else
+        in = 0;
+
+      if (in)
+        for (j = 0; j < cooqty; j++)
+          if (j != triid[0] && j != triid[1] && j != triid[2])
+            if (ut_space_triangle_point_in (coos[triid[0]], coos[triid[1]], coos[triid[2]],
+                                            coos[j], 0, 0))
+            {
+              in = 0;
+              break;
+            }
+
+      // if fully contained, recording it and removing it from the list
+      if (in)
+      {
+        loop = 0;
+        (*ptriqty)++;
+        (*ptripos) = ut_realloc_2d_int_addline (*ptripos, *ptriqty, 3);
+        ut_array_1d_int_memcpy ((*ptripos)[(*ptriqty) - 1], 3, triid);
+
+        ut_array_1d_int_list_rmelt (&id, &idqty, triid[1]);
+        i = 0;
+      }
+      else
+        loop++;
+    }
+  }
+
+  ut_free_1d_int (id);
+  ut_free_1d_int (triid);
+  ut_free_1d (eq2);
+
+  return;
+}
+
+void
+ut_space_point_plane_mirror (double *P, double *eq, double *P2)
+{
+  int i;
+
+  ut_array_1d_memcpy (P2, 3, P);
+
+  ut_space_projpoint_alongonto (P2, eq + 1, eq);
+
+  for (i = 0; i < 3; i++)
+    P2[i] = 2 * P2[i] - P[i];
+
+  return;
+}
+
+void
+ut_space_point_sphere_mirror (double *P, double *C, double rad, double *P2)
+{
+  int i;
+  double *v = ut_alloc_1d (3);
+  double *I = ut_alloc_1d (3);
+
+  ut_array_1d_sub (C, P, 3, v);
+  ut_array_1d_normalize (v, 3);
+  ut_array_1d_scale (v, 3, rad);
+
+  ut_array_1d_add (C, v, 3, I);
+
+  for (i = 0; i < 3; i++)
+    P2[i] = 2 * I[i] - P[i];
+
+  ut_free_1d (v);
+  ut_free_1d (I);
+
+  return;
+}
+
+void
+ut_space_point_cyl_mirror (double *point, double *basis, double *axis, double rad, double *mirror)
+{
+  int i;
+  double *proj = ut_alloc_1d (3);
+  double *basis2 = ut_alloc_1d (3);
+  double *v = ut_alloc_1d (3);
+  double *oncyl = ut_alloc_1d (3);
+
+  ut_array_1d_add (basis, axis, 3, basis2);
+
+  ut_space_segment_point_proj (basis, basis2, point, NULL, NULL, proj);
+
+  ut_array_1d_sub (proj, point, 3, v);
+
+  ut_array_1d_normalize (v, 3);
+
+  ut_array_1d_scale (v, 3, rad);
+
+  ut_array_1d_add (proj, v, 3, oncyl);
+
+  for (i = 0; i < 3; i++)
+    mirror[i] = 2 * oncyl[i] - point[i];
+
+  ut_free_1d (oncyl);
+  ut_free_1d (proj);
+  ut_free_1d (basis2);
+  ut_free_1d (v);
+
+  return;
+}
+
+void
+ut_space_point_torus_mirror (double *P, double *C, double *N, double R, double R2, double *mirror)
+{
+  double *K = ut_alloc_1d (3);
+
+  ut_space_point_circle_dist (P, C, N, R, NULL, K);
+  ut_space_point_sphere_mirror (P, K, R2, mirror);
+
+  ut_free_1d (K);
+
+  return;
+}
+
+void
+ut_space_point_cyl_proj (double *point, double *basis, double *axis, double rad, double *proj)
+{
+  double *basis2 = ut_alloc_1d (3);
+  double *v = ut_alloc_1d (3);
+  double *tmp = ut_alloc_1d (3);
+
+  ut_array_1d_add (basis, axis, 3, basis2);
+
+  ut_space_segment_point_proj (basis, basis2, point, NULL, NULL, tmp);
+
+  ut_array_1d_sub (tmp, point, 3, v);
+  ut_array_1d_normalize (v, 3);
+  ut_array_1d_scale (v, 3, rad);
+  ut_array_1d_add (tmp, v, 3, proj);
+
+  ut_free_1d (basis2);
+  ut_free_1d (v);
+  ut_free_1d (tmp);
+
+  return;
+}
+
+void
+ut_space_point_sphere_proj (double *point, double *c, double rad, double *proj)
+{
+  double *v = ut_alloc_1d (3);
+
+  ut_array_1d_sub (c, point, 3, v);
+
+  if (ut_array_1d_norm (v, 3) > 0)
+    ut_array_1d_normalize (v, 3);
+  else
+    ut_array_1d_set_3 (v, 1, 0, 0);
+
+  ut_array_1d_scale (v, 3, rad);
+
+  ut_array_1d_add (c, v, 3, proj);
+
+  ut_free_1d (v);
+
+  return;
+}
+
+void
+ut_space_point_plane_proj (double *point, double *eq, double *proj)
+{
+  ut_array_1d_memcpy (proj, 3, point);
+  ut_space_projpoint_alongonto (proj, eq + 1, eq);
+
+  return;
+}
+
+int
+ut_space_point_line_dist (double* P, double *A, double *v, double* pdist)
+{
+  double l, area, *B = ut_alloc_1d (3);
+
+  ut_array_1d_add (A, v, 3, B);
+
+  area = ut_space_triangle_area (P, A, B);
+  l = ut_array_1d_norm (v, 3);
+
+  (*pdist) = 2 * area / l;
+
+  ut_free_1d (B);
+
+  return 0;
+}
+
+/* indicates the domain whose a specified point belongs to. */
+// C: center, v: axis, rad: radius, coo: point coos
+int
+ut_space_cylside (double *A, double *v, double rad, double *coo)
+{
+  double dist;
+
+  ut_space_point_line_dist (coo, A, v, &dist);
+
+  if (dist <= rad)
+    return -1;
+  else
+    return 1;
+}
+
+int
+ut_space_cyl2side (double *A, double *v, double *ell1, double *ell2,
+                   double rad1, double rad2, double *coo)
+{
+  int side;
+  double *plane = ut_alloc_1d (4);
+
+  ut_space_point_cyl2_tangentplane (coo, A, v, ell1, ell2, rad1, rad2, plane);
+
+  side = ut_space_planeside (plane, coo - 1);
+
+  ut_free_1d (plane);
+
+  return side;
+}
+
+void
+ut_space_pointset_plane (double **coos, int cooqty, double *eq)
+{
+  int i, j;
+  double *mean = ut_alloc_1d (3);
+  double **coos2 = ut_alloc_2d (cooqty, 3);
+  double **evect = ut_alloc_2d (3, 3);
+  double *eval = ut_alloc_1d (3);
+
+  for (i = 0; i < cooqty; i++)
+    for (j = 0; j < 3; j++)
+      mean[j] += coos[i][j];
+  ut_array_1d_scale (mean, 3, 1. / cooqty);
+
+  for (i = 0; i < cooqty; i++)
+    for (j = 0; j < 3; j++)
+      coos2[i][j] = coos[i][j] - mean[j];
+
+  ut_space_points_covarmatrix (coos2, NULL, 3, cooqty, evect, eval);
+
+  ut_array_1d_memcpy (eq + 1, 3, evect[2]);
+  eq[0] = ut_vector_scalprod (mean, eq + 1);
+
+  ut_free_1d (eval);
+  ut_free_2d (evect, 3);
+  ut_free_1d (mean);
+  ut_free_2d (coos2, cooqty);
+
+  return;
+}
+
+void
+ut_space_point_sphere_tangentplane (double *point, double *c, double rad, double *planeeq)
+{
+  double *v = ut_alloc_1d (3);
+  double *proj = ut_alloc_1d (3);
+
+  ut_space_point_sphere_proj (point, c, rad, proj);
+
+  ut_array_1d_sub (c, proj, 3, planeeq + 1);
+  ut_array_1d_normalize (planeeq + 1, 3);
+
+  planeeq[0] = ut_vector_scalprod (proj, planeeq + 1);
+
+  ut_free_1d (v);
+  ut_free_1d (proj);
+
+  return;
+}
+
+void
+ut_space_point_cyl_tangentplane (double *point, double *basis, double *axis, double rad, double *planeeq)
+{
+  double *tmp = ut_alloc_1d (3);
+  double *basis2 = ut_alloc_1d (3);
+  double *proj = ut_alloc_1d (3);
+
+  ut_space_point_cyl_proj (point, basis, axis, rad, proj);
+
+  ut_array_1d_add (basis, axis, 3, basis2);
+
+  ut_space_segment_point_proj (basis, basis2, proj, NULL, NULL, tmp);
+
+  ut_array_1d_sub (tmp, proj, 3, planeeq + 1);
+  ut_array_1d_normalize (planeeq + 1, 3);
+
+  planeeq[0] = ut_vector_scalprod (proj, planeeq + 1);
+
+  ut_free_1d (basis2);
+  ut_free_1d (tmp);
+  ut_free_1d (proj);
+
+  return;
+}
+
+// P: point, C: circle center, N: circle normal, rad: circle radius, *pdist: distance, K2: nearest point
+// if P is out of the circle's plane, it is projected onto it
+void
+ut_space_point_circle_dist (double *P, double *C, double *N, double rad, double *pdist, double *K2)
+{
+  int i;
+  double *eq = ut_alloc_1d (4);
+  double *Q = ut_alloc_1d (3);
+  double *K = ut_alloc_1d (3);
+  double *CQ = ut_alloc_1d (3);
+  double *CQbar = ut_alloc_1d (3);
+
+  ut_space_point_normal_plane (C, N, eq);
+
+  ut_space_point_plane_proj (P, eq, Q);
+
+  ut_array_1d_sub (C, Q, 3, CQ);
+  ut_array_1d_memcpy (CQbar, 3, CQ);
+  ut_array_1d_normalize (CQbar, 3);
+
+  for (i = 0; i < 3; i++)
+    K[i] = C[i] + rad * CQbar[i];
+
+  if (K2)
+    ut_array_1d_memcpy (K2, 3, K);
+
+  if (pdist)
+    (*pdist) = ut_space_dist (K, P);
+
+  ut_free_1d (Q);
+  ut_free_1d (K);
+  ut_free_1d (eq);
+  ut_free_1d (CQ);
+  ut_free_1d (CQbar);
+
+  return;
+}
+
+void
+ut_space_point_normal_plane (double *C, double *N, double *plane)
+{
+  ut_array_1d_memcpy (plane + 1, 3, N);
+  ut_array_1d_normalize (plane + 1, 3);
+  plane[0] = ut_vector_scalprod (C, N);
+
+  return;
+}
+
+void
+ut_space_point_torus_proj (double *P, double *C, double *N, double R, double R2, double *proj)
+{
+  double *K = ut_alloc_1d (3);
+
+
+  ut_space_point_circle_dist (P, C, N, R, NULL, K);
+  ut_space_point_sphere_proj (P, K, R2, proj);
+
+  ut_free_1d (K);
+
+  return;
+}
+
+void
+ut_space_point_torus_tangentplane (double *P, double *C, double *N, double R, double R2, double *plane)
+{
+  double *K = ut_alloc_1d (3);
+
+  ut_space_point_circle_dist (P, C, N, R, NULL, K);
+  ut_space_point_sphere_tangentplane (P, K, R2, plane);
+
+  ut_free_1d (K);
+
+  return;
+}
+
+// P0: point, C: circle center, d1: circle normal, rad: circle radius, *pdist:
+// distance, K: nearest point.
+// if P is out of the ellispse's plane, it is projected onto it
+void
+ut_space_point_ellipse_dist (double *P0, double *C, double *d3, double *d1,
+                             double *d2, double rad1, double rad2,
+                             double *pdist, double *K)
+{
+  int i;
+  double *P = ut_alloc_1d (3);
+  double *Psgn = ut_alloc_1d (2);
+  double **g = ut_alloc_2d (3, 3);
+  double **ginv = ut_alloc_2d (3, 3);
+  double *tmp = ut_alloc_1d (4);
+  double *PP0 = ut_alloc_1d (3);
+
+  // making a copy of P0; P0 will remain unchanged
+  ut_array_1d_memcpy (P, 3, P0);
+
+  // projecting P onto the ellipse plane, because this is the distance we consider
+  // recording shift in PP0
+
+  ut_space_point_normal_plane (C, d3, tmp);
+
+  ut_space_point_plane_proj (P0, tmp, P);
+  ut_array_1d_sub (P, P0, 3, PP0);
+
+  // subtracting C so that the ellispse can be considered centred at the origin
+  // (this will be undone later)
+  ut_array_1d_sub (C, P, 3, P);
+
+  ut_array_1d_memcpy (g[0], 3, d1);
+  ut_array_1d_memcpy (g[1], 3, d2);
+  ut_array_1d_memcpy (g[2], 3, d3);
+
+  // a prerequisite is that rad1 > rad2.  If not, we swap rad1 and rad2 and d1 and d2
+  // (this will not need to be undone later)
+  if (rad2 > rad1)
+  {
+    ut_num_switch (&rad1, &rad2);
+    ut_array_1d_memcpy (tmp, 3, g[0]);
+    ut_array_1d_memcpy (g[0], 3, g[1]);
+    ut_array_1d_memcpy (g[1], 3, tmp);
+  }
+
+  // expressing P in the ellipse csys, of base vectors d1, d2 and d3
+  // (this will be undone later)
+
+  ut_mat_transpose (g, 3, 3, ginv);
+
+  ut_mat_vect_product (g, 3, 3, P, 3, P);
+
+  if (!ut_num_equal (P[2], 0, 1e-6))
+    abort ();
+
+  // moving P to the first quadrant, recording the quadrant in Psgn
+  // (this will be undone later)
+
+  for (i = 0; i < 2; i++)
+  {
+    Psgn[i] = ut_num_sgn (P[i]);
+    P[i] *= Psgn[i];
+  }
+
+  // Everything is in place, so now we go...
+
+  (*pdist) = DistancePointEllipse (rad1, rad2, P[0], P[1], K, K + 1);
+  K[2] = 0;
+
+  // undoing quadrant
+  for (i = 0; i < 2; i++)
+    K[i] *= Psgn[i];
+
+  // undoing ellipse csys
+  ut_mat_vect_product (ginv, 3, 3, K, 3, K);
+
+  // undoing centre
+  ut_array_1d_add (K, C, 3, K);
+  // ut_array_1d_add (K, PP0, 3, K); // ????????????????
+
+  ut_free_1d (P);
+  ut_free_1d (Psgn);
+  ut_free_2d (g, 3);
+  ut_free_1d (tmp);
+  ut_free_1d (PP0);
+
+  return;
+}
+
+void
+ut_space_point_cyl2_proj (double *point, double *basis, double *axis,
+                          double *ell1, double *ell2, double rad1, double rad2,
+                          double *proj)
+{
+  // the basis point must be moved to belong to the plane containing point and normal to axis
+
+  double dist;
+  double *basis2 = ut_alloc_1d (3);
+  double *plane = ut_alloc_1d (4);
+
+  ut_space_point_normal_plane (point, axis, plane);
+  ut_space_point_plane_proj (basis, plane, basis2);
+
+  if (rad1 == 0 || rad2 == 0)
+    abort ();
+  ut_space_point_ellipse_dist (point, basis2, axis, ell1, ell2, rad1, rad2, &dist, proj);
+
+  ut_free_1d (plane);
+  ut_free_1d (basis2);
+
+  return;
+}
+
+void
+ut_space_point_cyl2_tangentplane (double *point, double *basis, double *axis,
+                                  double *ell1, double *ell2, double rad1, double rad2,
+                                  double *plane)
+{
+  double *tmp = ut_alloc_1d (4);
+  double *n = ut_alloc_1d (3);
+  double *proj = ut_alloc_1d (3);
+
+  ut_space_point_cyl2_proj (point, basis, axis, ell1, ell2, rad1, rad2, proj);
+
+  // computing normal of the tangent plane
+  // if point != proj, we can drectly use them;
+  // otherwise, we use point, basis and axis.
+  if (ut_space_dist (point, proj) > 1e-6 * sqrt(rad1 * rad2))
+    ut_space_points_uvect (proj, point, n);
+  else
+  {
+    ut_space_points_invect_plane (point, basis, axis, plane);
+    ut_vector_vectprod (axis, plane + 1, n);
+    ut_array_1d_sub (basis, point, 3, tmp);
+    if (ut_vector_scalprod (tmp, n) < 0)
+      ut_array_1d_scale (n, 3, -1);
+  }
+
+  ut_space_point_normal_plane (proj, n, plane);
+  if (ut_space_planeside (plane, basis - 1) == 1)
+    ut_array_1d_scale (plane, 4, -1);
+
+  ut_free_1d (tmp);
+  ut_free_1d (n);
+  ut_free_1d (proj);
+
+  return;
+}
+
+void
+ut_space_point_cyl2_mirror (double *point, double *basis, double *axis,
+                            double *ell1, double *ell2, double rad1,
+                            double rad2, double *mirror)
+{
+  int i;
+  double *proj = ut_alloc_1d (3);
+
+  ut_space_point_cyl2_proj (point, basis, axis, ell1, ell2, rad1, rad2, proj);
+
+  for (i = 0; i < 3; i++)
+    mirror[i] = 2 * proj[i] - point[i];
+
+  ut_free_1d (proj);
+
+  return;
+}

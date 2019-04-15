@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -20,6 +20,7 @@
 #include"net_tess_cube/net_tess_cube.h"
 #include"net_tess_lam/net_tess_lam.h"
 #include"net_tess_tocta/net_tess_tocta.h"
+#include"net_tess_file/net_tess_file.h"
 #include"net_tess_opt/net_tess_opt.h"
 #include"net_utils/net_utils.h"
 

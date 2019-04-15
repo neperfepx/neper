@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_3D_.h"
@@ -43,7 +43,8 @@ nem_meshing_3D (struct IN_M In, struct MESHPARA MeshPara,
       {
         id = poly[i];
 
-        nem_meshing_3D_poly (In, MeshPara.poly_cl[id], &Multim,
+        nem_meshing_3D_poly (In, MeshPara.poly_cl[id], MeshPara.mesh3dclreps[id],
+                             &Multim,
                              &ctrlc_t, &allowed_t, &max_elapsed_t, Tess,
                              pNodes, Mesh, N + id, M + id, id);
 

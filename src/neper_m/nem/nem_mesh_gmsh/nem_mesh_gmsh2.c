@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_mesh_gmsh_.h"
@@ -34,57 +34,46 @@ nem_mesh_gmsh_options (FILE * file, int algo2d, int algo3d, int opti,
 }
 
 int
-nem_mesh_2d_gmsh_writenodes (struct TESS Tess, struct NODES Nodes,
-			     struct MESH *Mesh, int face, double *face_proj,
-			     FILE * file)
+nem_mesh_2d_gmsh_writeboundary (struct TESS Tess, struct NODES Nodes,
+                                struct MESH *Mesh, int face, double *faceproj,
+                                int **pbnodes, double ***pbnodecoos,
+                                int *pbnodeqty, FILE * file)
 {
   int i, node;
-  int nodeqty;
-  int *nodes = NULL;
-  double *coo = ut_alloc_1d (3);
 
   // searching set of nodes of the 0-D an 1-D meshes for this face
 
-  neut_mesh_face_boundnodes (Mesh[1], Tess, face, &nodes, &nodeqty);
+  neut_mesh_face_boundnodes (Mesh[1], Tess, face, pbnodes, pbnodeqty);
+  (*pbnodecoos) = ut_alloc_2d (*pbnodeqty, 3);
 
   // printing face nodes
-  for (i = 0; i < nodeqty; i++)
+  for (i = 0; i < *pbnodeqty; i++)
   {
-    node = nodes[i];
-    ut_array_1d_memcpy (coo, 3, Nodes.NodeCoo[node]);
+    node = (*pbnodes)[i];
+    ut_array_1d_memcpy ((*pbnodecoos)[i], 3, Nodes.NodeCoo[node]);
 
     // if modified face, projecting the node into its initial plane
-    if (Tess.FaceState[face] > 0 && face_proj)
-      ut_space_projpoint_alongonto (coo, face_proj, Tess.FaceEq[face]);
+    if (Tess.FaceState[face] > 0 && faceproj)
+      ut_space_projpoint_alongonto ((*pbnodecoos)[i], faceproj + 1, faceproj);
 
     fprintf (file, "Point(%d) = {%.12f, %.12f, %.12f, %.12f};\n",
-	     node, coo[0], coo[1], coo[2], Nodes.NodeCl[node]);
+	     i + 1, (*pbnodecoos)[i][0], (*pbnodecoos)[i][1], (*pbnodecoos)[i][2], Nodes.NodeCl[node]);
   }
 
-  ut_free_1d_int (nodes);
-  ut_free_1d (coo);
+  for (i = 1; i <= *pbnodeqty; i++)
+    fprintf (file, "Line(%d) = {%d,%d} ;\n", i, i,
+             ut_num_rotpos (1, *pbnodeqty, i, 1));
 
-  return nodeqty;
-}
+  fprintf (file, "Line Loop(1) = {");
 
-void
-nem_mesh_2d_gmsh_write1dmesh (struct TESS Tess, struct MESH *Mesh, int face,
-			      FILE * file)
-{
-  int i, j, elt, edge;
+  for (i = 0; i < *pbnodeqty; i++)
+    fprintf (file, "%d%s", i + 1, i < *pbnodeqty - 1 ? "," : "};\n");
 
-  for (i = 1; i <= Tess.FaceVerQty[face]; i++)
-  {
-    edge = Tess.FaceEdgeNb[face][i];
+  fprintf (file, "Plane Surface(1) = {1}; ");
+  fprintf (file, "Physical Surface(1) = {1};\n");
 
-    /* writing elts */
-    for (j = 1; j <= Mesh[1].Elsets[edge][0]; j++)
-    {
-      elt = Mesh[1].Elsets[edge][j];
-      fprintf (file, "Line(%d) = {%d,%d} ;\n", elt,
-	       Mesh[1].EltNodes[elt][0], Mesh[1].EltNodes[elt][1]);
-    }
-  }
+  // fprintf (file, "Mesh.CharacteristicLengthMax = %f;\n", cl);
+  // above does not work on all architecture.
 
-  return;
+  return *pbnodeqty;
 }

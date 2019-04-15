@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2009, 2012 Romain Quey */
+/* Copyright (C) 2003-2019, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -451,6 +451,20 @@ ut_file_format (const char *filename, char **pformat)
   return res;
 }
 
+int
+ut_filename_istess (const char *filename)
+{
+  int status;
+  char *format = ut_alloc_1d_char (100);
+
+  ut_file_format (filename, &format);
+
+  status = !strcmp (format, "tess") ? 1 : 0;
+
+  ut_free_1d_char (format);
+
+  return status;
+}
 
 // does not take the blank characters into account (because fscanf skip
 // them)

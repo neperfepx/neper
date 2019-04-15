@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_compress_.h"
@@ -43,8 +43,10 @@ neut_tess_compress_movepoly (struct TESS *pTess, int old, int new)
     (*pTess).FacePoly[face][pos] = new;
   }
 
-  (*pTess).CellId[new] = (*pTess).CellId[old];
-  ut_array_1d_memcpy ((*pTess).CellOri[new], 4, (*pTess).CellOri[old]);
+  if ((*pTess).CellId)
+    (*pTess).CellId[new] = (*pTess).CellId[old];
+  if ((*pTess).CellOri)
+    ut_array_1d_memcpy ((*pTess).CellOri[new], 4, (*pTess).CellOri[old]);
   if ((*pTess).CellTrue)
     (*pTess).CellTrue[new] = (*pTess).CellTrue[old];
   if ((*pTess).CellBody)
@@ -131,7 +133,7 @@ neut_tess_compress_moveface (struct TESS *pTess, int old, int new)
 
     if (pos == -1)
     {
-      printf ("EdgeFaceNb\n");
+      printf ("face %d has edge %d but not vice versa\n", new, edge);
       abort ();
     }
 
@@ -190,7 +192,7 @@ neut_tess_compress_moveedge (struct TESS *pTess, int old, int new)
 
     if (pos == -1)
     {
-      printf ("FaceEdgeNb\n");
+      printf ("edge %d has face %d but not vice versa\n", new, face);
       abort ();
     }
 
@@ -272,6 +274,147 @@ neut_tess_compress_movever (struct TESS *pTess, int old, int new)
   }
 
   ut_free_1d_int (face);
+
+  return;
+}
+
+void
+neut_tess_compress_movedomface (struct TESS *pTess, int old, int new)
+{
+  int i, face;
+
+  /* moving face parameters */
+  if ((*pTess).Dim == 2 || old == new)
+    return;
+
+  ut_string_string ((*pTess).DomFaceLabel[old], &(*pTess).DomFaceLabel[new]);
+
+  ut_array_1d_memcpy ((*pTess).DomFaceEq[new], 4, (*pTess).DomFaceEq[old]);
+
+  ut_string_string ((*pTess).DomFaceType[old], &(*pTess).DomFaceType[new]);
+
+  (*pTess).DomFaceParmQty[new] = (*pTess).DomFaceParmQty[old];
+
+  (*pTess).DomFaceParms[new]
+    = ut_realloc_1d ((*pTess).DomFaceParms[new], (*pTess).DomFaceParmQty[new]);
+
+  ut_array_1d_memcpy ((*pTess).DomFaceParms[new],
+                      (*pTess).DomFaceParmQty[new],
+                      (*pTess).DomFaceParms[old]);
+
+  (*pTess).DomFaceVerQty[new] = (*pTess).DomFaceVerQty[old];
+
+  (*pTess).DomFaceVerNb[new] = ut_realloc_1d_int
+    ((*pTess).DomFaceVerNb[new], (*pTess).DomFaceVerQty[new] + 1);
+
+  ut_array_1d_int_memcpy ((*pTess).DomFaceVerNb[new] + 1,
+			  (*pTess).DomFaceVerQty[new],
+			  (*pTess).DomFaceVerNb[old] + 1);
+
+  (*pTess).DomFaceEdgeQty[new] = (*pTess).DomFaceEdgeQty[old];
+
+  (*pTess).DomFaceEdgeNb[new] = ut_realloc_1d_int
+    ((*pTess).DomFaceEdgeNb[new], (*pTess).DomFaceEdgeQty[new] + 1);
+
+  ut_array_1d_int_memcpy ((*pTess).DomFaceEdgeNb[new] + 1,
+			  (*pTess).DomFaceEdgeQty[new],
+			  (*pTess).DomFaceEdgeNb[old] + 1);
+
+  (*pTess).DomTessFaceQty[new] = (*pTess).DomTessFaceQty[old];
+
+  (*pTess).DomTessFaceNb[new] = ut_realloc_1d_int
+    ((*pTess).DomTessFaceNb[new], (*pTess).DomTessFaceQty[new] + 1);
+
+  ut_array_1d_int_memcpy ((*pTess).DomTessFaceNb[new] + 1,
+			  (*pTess).DomTessFaceQty[new],
+			  (*pTess).DomTessFaceNb[old] + 1);
+
+  for (i = 1; i <= (*pTess).DomTessFaceQty[new]; i++)
+  {
+    face = (*pTess).DomTessFaceNb[new][i];
+
+    if ((*pTess).FaceDom[face][0] != 2 || (*pTess).FaceDom[face][1] != old)
+      ut_error_reportbug ();
+
+    (*pTess).FaceDom[face][1] = new;
+
+    if ((*pTess).FacePoly[face][1] != -old)
+      ut_error_reportbug ();
+
+    (*pTess).FacePoly[face][1] = -new;
+  }
+
+  return;
+}
+
+void
+neut_tess_compress_movedomedge (struct TESS *pTess, int old, int new)
+{
+  int i, edge;
+
+  if (old == new)
+    return;
+
+  ut_string_string ((*pTess).DomEdgeLabel[old], &(*pTess).DomEdgeLabel[new]);
+
+  ut_array_1d_int_memcpy ((*pTess).DomEdgeVerNb[new], 2,
+			  (*pTess).DomEdgeVerNb[old]);
+
+  ut_array_1d_int_memcpy ((*pTess).DomEdgeFaceNb[new], 2,
+			  (*pTess).DomEdgeFaceNb[old]);
+
+  (*pTess).DomTessEdgeQty[new] = (*pTess).DomTessEdgeQty[old];
+
+  (*pTess).DomTessEdgeNb[new] = ut_realloc_1d_int
+    ((*pTess).DomTessEdgeNb[new], (*pTess).DomTessEdgeQty[new] + 1);
+
+  ut_array_1d_int_memcpy ((*pTess).DomTessEdgeNb[new] + 1,
+			  (*pTess).DomTessEdgeQty[new],
+			  (*pTess).DomTessEdgeNb[old] + 1);
+
+  for (i = 1; i <= (*pTess).DomTessEdgeQty[new]; i++)
+  {
+    edge = (*pTess).DomTessEdgeNb[new][i];
+
+    if ((*pTess).EdgeDom[edge][0] != 1 || (*pTess).EdgeDom[edge][1] != old)
+      ut_error_reportbug ();
+
+    (*pTess).EdgeDom[edge][1] = new;
+  }
+
+  return;
+}
+
+void
+neut_tess_compress_movedomver (struct TESS *pTess, int old, int new)
+{
+  int ver;
+
+  if (old == new)
+    return;
+
+  ut_string_string ((*pTess).DomVerLabel[old], &(*pTess).DomVerLabel[new]);
+
+  ut_array_1d_memcpy ((*pTess).DomVerCoo[new] + 1, 3,
+	              (*pTess).DomVerCoo[old] + 1);
+
+  (*pTess).DomVerEdgeQty[new] = (*pTess).DomVerEdgeQty[old];
+
+  (*pTess).DomVerEdgeNb[new]
+    = ut_realloc_1d_int ((*pTess).DomVerEdgeNb[new], (*pTess).DomVerEdgeQty[new]);
+
+  ut_array_1d_int_memcpy ((*pTess).DomVerEdgeNb[new],
+                          (*pTess).DomVerEdgeQty[new],
+			  (*pTess).DomVerEdgeNb[old]);
+
+  (*pTess).DomTessVerNb[new] = (*pTess).DomTessVerNb[old];
+
+  ver = (*pTess).DomTessVerNb[new];
+
+  if ((*pTess).VerDom[ver][0] != 0 || (*pTess).VerDom[ver][1] != old)
+    ut_error_reportbug ();
+
+  (*pTess).VerDom[ver][1] = new;
 
   return;
 }

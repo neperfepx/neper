@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_nodes_.h"
@@ -790,7 +790,7 @@ neut_nodes_node_shift_pernode (struct NODES Nodes, int node,
     for (i = 1; i <= Nodes.PerNodeSlaveQty[node]; i++)
     {
       slavenode = Nodes.PerNodeSlaveNb[node][i];
-      if (ut_array_1d_int_equal (Nodes.PerNodeShift[slavenode], shift2, 3))
+      if (ut_array_1d_int_equal (Nodes.PerNodeShift[slavenode], 3, shift2, 3))
       {
 	(*ppernode) = slavenode;
 	status = 0;

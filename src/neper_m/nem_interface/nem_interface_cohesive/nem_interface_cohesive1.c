@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_interface_cohesive_.h"
@@ -68,6 +68,10 @@ nem_interface_cohesive (struct TESS Tess, struct NODES Nodes,
    }
 
   neut_mesh_init_eltelset (Mesh + 4, NULL);
+
+  Mesh[4].ElsetLabels = ut_alloc_2d_char (Mesh[4].ElsetQty + 1, 100);
+  for (i = 1; i <= Mesh[4].ElsetQty; i++)
+    sprintf (Mesh[4].ElsetLabels[i], "bound%d", i);
 
   ut_free_1d_int (nodes);
   ut_free_1d_int (elts);

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -15,8 +15,6 @@ extern "C"
 #ifndef NEUT_MTESS_H
 #define NEUT_MTESS_H
 
-#include "neut_mtess_fprintf/neut_mtess_fprintf.h"
-#include "neut_mtess_fscanf/neut_mtess_fscanf.h"
 #include "neut_mtess_op/neut_mtess_op.h"
 #include "neut_mtess_topo/neut_mtess_topo.h"
 #include "neut_mtess_gen/neut_mtess_gen.h"

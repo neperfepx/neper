@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2009, 2012 Romain Quey */
+/* Copyright (C) 2003-2019, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -3597,11 +3597,14 @@ ut_array_1d_int_inv (int *b, int qty, int **pbinv, int *pbinqty)
 }
 
 int
-ut_array_1d_int_equal (int *a, int *b, int qty)
+ut_array_1d_int_equal (int *a, int qtya, int *b, int qtyb)
 {
   int i;
 
-  for (i = 0; i < qty; i++)
+  if (qtya != qtyb)
+    return 0;
+
+  for (i = 0; i < qtya; i++)
     if (a[i] != b[i])
       return 0;
 
@@ -3759,6 +3762,17 @@ void
 ut_array_1d_int_list_rmelt (int **parray, int *psize, int val)
 {
   (*psize) -= ut_array_1d_int_deletencompress (*parray, *psize, val, 1);
+
+  return;
+}
+
+void
+ut_array_1d_int_list_rmelts (int **parray, int *psize, int *vals, int valqty)
+{
+  int i;
+
+  for (i = 0; i < valqty; i++)
+    ut_array_1d_int_list_rmelt (parray, psize, vals[i]);
 
   return;
 }
@@ -4233,7 +4247,13 @@ ut_array_2d_fscanf_filter_prefix (FILE *file, double** array, int size1, int siz
       if (!strcmp (tmp, flag))
 	qty++;
     }
-    while (qty != size1);
+    while (qty != size1 && status == 2);
+
+    if (status != 2)
+    {
+      printf ("qty == %d vs size1 = %d\n", qty, size1);
+      abort ();
+    }
 
     ut_free_1d_char (tmp);
   }
@@ -4323,8 +4343,8 @@ ut_array_3d_switcharrays (double ***array, int size1, int size2, int line1, int 
 }
 
 int
-ut_array_1d_int_lists_merge (int* list1, int qty1, int* list2, int qty2,
-                             int** plist, int* pqty)
+ut_array_1d_int_listpair_merge (int* list1, int qty1, int* list2, int qty2,
+                                int** plist, int* pqty)
 {
   int qty, *tmp = NULL;
 
@@ -4346,6 +4366,52 @@ ut_array_1d_int_lists_merge (int* list1, int qty1, int* list2, int qty2,
   ut_free_1d_int (tmp);
 
   return 0;
+}
+
+int
+ut_array_1d_int_listpair_equal (int* list1, int qty1, int* list2, int qty2)
+{
+  if (qty1 != qty2)
+    return 0;
+
+  int status;
+  int *list1b = ut_alloc_1d_int (qty1);
+  int *list2b = ut_alloc_1d_int (qty2);
+
+  ut_array_1d_int_memcpy (list1b, qty1, list1);
+  ut_array_1d_int_memcpy (list2b, qty2, list2);
+
+  ut_array_1d_int_sort (list1b, qty1);
+  ut_array_1d_int_sort (list2b, qty2);
+
+  status = ut_array_1d_int_equal (list1b, qty1, list2b, qty2);
+
+  ut_free_1d_int (list1b);
+  ut_free_1d_int (list2b);
+
+  return status;
+}
+
+void
+ut_array_1d_int_lists_merge (int** listvals, int *listvalqty, int listqty,
+                             int **pvals, int *pvalqty)
+{
+  int i, pos;
+
+  (*pvalqty) = ut_array_1d_int_sum (listvalqty, listqty);
+
+  (*pvals) = ut_alloc_1d_int (*pvalqty);
+
+  pos = 0;
+  for (i = 0; i < listqty; i++)
+  {
+    ut_array_1d_int_memcpy (*pvals + pos, listvalqty[i], listvals[i]);
+    pos += listvalqty[i];
+  }
+
+  ut_array_1d_int_sort_uniq (*pvals, *pvalqty, pvalqty);
+
+  return;
 }
 
 int
@@ -4458,3 +4524,150 @@ ut_array_1d_round_keepsum (double *a, int size, double *b)
 }
 
 #endif // HAVE_GSL
+
+int
+ut_array_2d_pair (double **a, int sizea1, int sizea2, double **b, int sizeb1,
+                  int sizeb2, int *pair, double *pdist)
+{
+  if (sizea1 != sizeb1 || sizea2 != sizeb2)
+    return -1;
+
+  int i, j, status, size1 = sizea1, size2 = sizea2;
+  double *dists = ut_alloc_1d (size1);
+  double *v = ut_alloc_1d (size2);
+  int *hint = ut_alloc_1d_int (size1);
+
+  status = 0;
+  for (i = 0; i < size1; i++)
+  {
+    for (j = 0; j < size1; j++)
+    {
+      ut_array_1d_sub (a[i], b[j], size2, v);
+      dists[j] = ut_array_1d_norm (v, size2);
+    }
+
+    pair[i] = ut_array_1d_min_index (dists, size1);
+    hint[pair[i]]++;
+
+    if (hint[pair[i]] > 1)
+    {
+      status = -1;
+      break;
+    }
+  }
+
+  if (!status)
+  {
+    (*pdist) = 0;
+    for (i = 0; i < sizea1; i++)
+    {
+      ut_array_1d_sub (a[i], b[pair[i]], size2, v);
+      (*pdist) += ut_array_1d_norm (v, size2);
+    }
+  }
+
+  ut_free_1d (dists);
+  ut_free_1d (v);
+  ut_free_1d_int (hint);
+
+  return status;
+}
+
+int
+ut_array_2d_int_pair (int **a, int sizea1, int sizea2, int **b, int sizeb1,
+                      int sizeb2, int *pair)
+{
+  if (sizea1 != sizeb1 || sizea2 != sizeb2)
+    return -1;
+
+  int i, j, status, size1 = sizea1, size2 = sizea2;
+  int *hint = ut_alloc_1d_int (size1);
+
+  status = 0;
+  for (i = 0; i < size1; i++)
+  {
+    for (j = 0; j < size1; j++)
+      if (ut_array_1d_int_equal (a[i], size2, b[i], size2))
+      {
+        pair[i] = j;
+        hint[pair[i]]++;
+        break;
+      }
+
+    if (hint[pair[i]] > 1)
+    {
+      status = -1;
+      break;
+    }
+  }
+
+  ut_free_1d_int (hint);
+
+  return status;
+}
+
+int
+ut_array_2d_int_list_pair (int **a, int sizea1, int sizea2, int **b, int sizeb1,
+                           int sizeb2, int *pair)
+{
+  if (sizea1 != sizeb1 || sizea2 != sizeb2)
+    return -1;
+
+  int i, j, status, size1 = sizea1, size2 = sizea2;
+  int *hint = ut_alloc_1d_int (size1);
+
+  status = 0;
+  for (i = 0; i < size1; i++)
+  {
+    for (j = 0; j < size1; j++)
+      if (ut_array_1d_int_listpair_equal (a[i], size2, b[j], size2))
+      {
+        pair[i] = j;
+        hint[pair[i]]++;
+        break;
+      }
+
+    if (hint[pair[i]] > 1)
+    {
+      status = -1;
+      break;
+    }
+  }
+
+  ut_free_1d_int (hint);
+
+  return status;
+}
+
+int
+ut_array_2d_int_list_pair_2 (int **a, int sizea1, int *sizea2, int **b, int sizeb1,
+                            int *sizeb2, int *pair)
+{
+  if (sizea1 != sizeb1)
+    return -1;
+
+  int i, j, status, size1 = sizea1;
+  int *hint = ut_alloc_1d_int (size1);
+
+  status = 0;
+  for (i = 0; i < size1; i++)
+  {
+    for (j = 0; j < size1; j++)
+      if (ut_array_1d_int_listpair_equal (a[i], sizea2[i], b[j], sizeb2[j]))
+      {
+        pair[i] = j;
+        hint[pair[i]]++;
+        break;
+      }
+
+    if (hint[pair[i]] > 1)
+    {
+      status = -1;
+      break;
+    }
+  }
+
+  ut_free_1d_int (hint);
+
+  return status;
+}

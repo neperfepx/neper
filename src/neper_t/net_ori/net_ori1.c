@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_.h"
@@ -33,6 +33,9 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
 
   else if (!strcmp (ori, "equal"))
     net_ori_equal (SSet, dtess, dcell, &OSet);
+
+  else if (!strncmp (ori, "spread(", 7))
+    net_ori_spread (ori, SSet, dtess, dcell, &OSet);
 
   else if (!strncmp (ori, "fibre", 5))
     net_ori_fibre ((*pSSet).Random, ori, &OSet);

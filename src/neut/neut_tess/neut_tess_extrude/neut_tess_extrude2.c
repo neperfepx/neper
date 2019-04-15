@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_extrude_.h"
@@ -209,9 +209,10 @@ neut_tess_extrude_domain (struct TESS Tess, double d, struct TESS *pT)
   (*pT).DomFaceVerNb[domface]
     = ut_alloc_1d_int ((*pT).DomFaceVerQty[domface] + 1);
   ut_array_1d_int_set_id ((*pT).DomFaceVerNb[domface], Tess.DomVerQty + 1);
+  (*pT).DomFaceEdgeQty[domface] = Tess.DomEdgeQty;
   (*pT).DomFaceEdgeNb[domface]
-    = ut_alloc_1d_int ((*pT).DomFaceVerQty[domface] + 1);
-  ut_array_1d_int_set_id ((*pT).DomFaceEdgeNb[domface], Tess.DomVerQty + 1);
+    = ut_alloc_1d_int ((*pT).DomFaceEdgeQty[domface] + 1);
+  ut_array_1d_int_set_id ((*pT).DomFaceEdgeNb[domface], Tess.DomEdgeQty + 1);
 
   domface = neut_tess_adddomface_alloc (pT);
   ut_string_string ("z1", &((*pT).DomFaceLabel[domface]));
@@ -224,11 +225,12 @@ neut_tess_extrude_domain (struct TESS Tess, double d, struct TESS *pT)
   ut_array_1d_int_addval ((*pT).DomFaceVerNb[domface] + 1,
 			  (*pT).DomFaceVerQty[domface], Tess.DomVerQty,
 			  (*pT).DomFaceVerNb[domface] + 1);
+  (*pT).DomFaceEdgeQty[domface] = Tess.DomEdgeQty;
   (*pT).DomFaceEdgeNb[domface]
-    = ut_alloc_1d_int ((*pT).DomFaceVerQty[domface] + 1);
-  ut_array_1d_int_set_id ((*pT).DomFaceEdgeNb[domface], Tess.DomVerQty + 1);
+    = ut_alloc_1d_int ((*pT).DomFaceEdgeQty[domface] + 1);
+  ut_array_1d_int_set_id ((*pT).DomFaceEdgeNb[domface], Tess.DomEdgeQty + 1);
   ut_array_1d_int_addval ((*pT).DomFaceEdgeNb[domface] + 1,
-			  (*pT).DomFaceVerQty[domface], Tess.DomVerQty,
+			  (*pT).DomFaceEdgeQty[domface], Tess.DomEdgeQty,
 			  (*pT).DomFaceEdgeNb[domface] + 1);
 
   for (i = 1; i <= Tess.DomEdgeQty; i++)
@@ -240,8 +242,9 @@ neut_tess_extrude_domain (struct TESS Tess, double d, struct TESS *pT)
     (*pT).DomFaceVerQty[domface] = 4;
     (*pT).DomFaceVerNb[domface]
       = ut_alloc_1d_int ((*pT).DomFaceVerQty[domface] + 1);
+    (*pT).DomFaceEdgeQty[domface] = 4;
     (*pT).DomFaceEdgeNb[domface]
-      = ut_alloc_1d_int ((*pT).DomFaceVerQty[domface] + 1);
+      = ut_alloc_1d_int ((*pT).DomFaceEdgeQty[domface] + 1);
 
     dver1 = Tess.DomEdgeVerNb[i][0];
     dver2 = Tess.DomEdgeVerNb[i][1];
@@ -259,7 +262,7 @@ neut_tess_extrude_domain (struct TESS Tess, double d, struct TESS *pT)
 
   ut_array_2d_int_zero ((*pT).DomEdgeFaceNb + 1, (*pT).DomEdgeQty, 2);
   for (i = 1; i <= (*pT).DomFaceQty; i++)
-    for (j = 1; j <= (*pT).DomFaceVerQty[i]; j++)
+    for (j = 1; j <= (*pT).DomFaceEdgeQty[i]; j++)
     {
       domedge = (*pT).DomFaceEdgeNb[i][j];
 

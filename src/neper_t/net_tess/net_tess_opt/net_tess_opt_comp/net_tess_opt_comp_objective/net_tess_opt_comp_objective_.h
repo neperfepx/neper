@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -26,6 +26,8 @@ extern "C"
 extern void net_tess_opt_comp_objective_x_seedset (const double *x,
 					      struct TOPT *pTOpt);
 extern void net_tess_opt_comp_objective_x_crystal (const double *x,
+					      struct TOPT *pTOpt);
+extern void net_tess_opt_comp_objective_x_domain (const double *x,
 					      struct TOPT *pTOpt);
 extern void net_tess_opt_comp_objective_centroidal_update (struct TOPT *pTOpt);
 

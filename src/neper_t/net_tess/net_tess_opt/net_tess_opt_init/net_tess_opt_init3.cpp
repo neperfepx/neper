@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_.h"
@@ -451,6 +451,28 @@ net_tess_opt_init_bounds_crystal (struct TOPT *pTOpt)
     (*pTOpt).boundl[i] =
       ut_num_max ((*pTOpt).Crys.C[i] - (*pTOpt).dist, 1e-6);
     (*pTOpt).boundu[i] = (*pTOpt).Crys.C[i] + (*pTOpt).dist;
+  }
+
+  ut_free_2d_char (parts, partqty);
+
+  return;
+}
+
+void
+net_tess_opt_init_bounds_domain (struct TOPT *pTOpt)
+{
+  int i, partqty;
+  char **parts = NULL;
+
+  ut_string_separate ((*pTOpt).dof, NEUT_SEP_NODEP, &parts, &partqty);
+
+  (*pTOpt).boundl = ut_alloc_1d (partqty);
+  (*pTOpt).boundu = ut_alloc_1d (partqty);
+
+  for (i = 0; i < partqty; i++)
+  {
+    (*pTOpt).boundl[i] = 1e-6;
+    (*pTOpt).boundu[i] = DBL_MAX;
   }
 
   ut_free_2d_char (parts, partqty);

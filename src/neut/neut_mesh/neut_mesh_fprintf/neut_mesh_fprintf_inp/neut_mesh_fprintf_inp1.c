@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_inp_.h"
@@ -85,17 +85,17 @@ neut_mesh_fprintf_inp (FILE * file, char *dim,
 // 2D elsets -----------------------------------------------------------
 
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "2"))
-    neut_mesh_fprintf_inp_elsets (file, Mesh2D, "face", shift_elt2D);
+    neut_mesh_fprintf_inp_elsets (file, Mesh2D, shift_elt2D);
 
 // 3D elsets -----------------------------------------------------------
 
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "3"))
-    neut_mesh_fprintf_inp_elsets (file, Mesh3D, "poly", shift_elt3D);
+    neut_mesh_fprintf_inp_elsets (file, Mesh3D, shift_elt3D);
 
 // 3D elsets -----------------------------------------------------------
 
   if (MeshCo.EltQty > 0)
-    neut_mesh_fprintf_inp_elsets (file, MeshCo, "bound", shift_eltCo);
+    neut_mesh_fprintf_inp_elsets (file, MeshCo, shift_eltCo);
 
   if (Part.qty > 0)
     neut_mesh_fprintf_inp_part_elset (file, Part);

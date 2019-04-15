@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_mtess_flatten_dom_.h"
@@ -61,6 +61,9 @@ net_mtess_flatten_dom_edge (struct TESS *Tess, int TessId,
     ut_string_string (Tess[TessId].DomEdgeLabel[i],
 		      &((*pFTess).DomEdgeLabel[i]));
 
+  (*pFTess).DomEdgeVerQty = ut_alloc_1d_int ((*pFTess).DomEdgeQty + 1);
+  ut_array_1d_int_set ((*pFTess).DomEdgeVerQty + 1, (*pFTess).DomEdgeQty, 2);
+
   (*pFTess).DomEdgeVerNb = ut_alloc_2d_int ((*pFTess).DomEdgeQty + 1, 2);
   ut_array_2d_int_memcpy ((*pFTess).DomEdgeVerNb + 1,
 			  (*pFTess).DomEdgeQty, 2, Tess[TessId].DomEdgeVerNb + 1);
@@ -100,10 +103,39 @@ net_mtess_flatten_dom_face (struct TESS *Tess, int TessId,
   int i, j, face;
 
   (*pFTess).DomFaceQty = Tess[TessId].DomFaceQty;
+
   (*pFTess).DomFaceLabel = ut_alloc_1d_pchar ((*pFTess).DomFaceQty + 1);
   for (i = 1; i <= (*pFTess).DomFaceQty; i++)
     ut_string_string (Tess[TessId].DomFaceLabel[i],
 	              &((*pFTess).DomFaceLabel[i]));
+
+  (*pFTess).DomFaceType = ut_alloc_1d_pchar ((*pFTess).DomFaceQty + 1);
+  for (i = 1; i <= (*pFTess).DomFaceQty; i++)
+    ut_string_string (Tess[TessId].DomFaceType[i],
+	              &((*pFTess).DomFaceType[i]));
+
+  (*pFTess).DomFaceParmQty = ut_alloc_1d_int ((*pFTess).DomFaceQty + 1);
+  ut_array_1d_int_memcpy ((*pFTess).DomFaceParmQty + 1,
+                          (*pFTess).DomFaceQty,
+                          Tess[TessId].DomFaceParmQty + 1);
+
+  (*pFTess).DomFaceParms = ut_alloc_1d_pdouble ((*pFTess).DomFaceQty + 1);
+  for (i = 1; i <= (*pFTess).DomFaceQty; i++)
+  {
+    (*pFTess).DomFaceParms[i] = ut_alloc_1d ((*pFTess).DomFaceParmQty[i]);
+    ut_array_1d_memcpy ((*pFTess).DomFaceParms[i],
+                        (*pFTess).DomFaceParmQty[i],
+                        Tess[TessId].DomFaceParms[i]);
+  }
+
+  for (i = 1; i <= (*pFTess).DomFaceQty; i++)
+    ut_string_string (Tess[TessId].DomFaceType[i],
+	              &((*pFTess).DomFaceType[i]));
+
+  (*pFTess).DomFaceType = ut_alloc_1d_pchar ((*pFTess).DomFaceQty + 1);
+  for (i = 1; i <= (*pFTess).DomFaceQty; i++)
+    ut_string_string (Tess[TessId].DomFaceType[i],
+	              &((*pFTess).DomFaceType[i]));
 
   (*pFTess).DomFaceEq = ut_alloc_2d ((*pFTess).DomFaceQty + 1, 4);
   ut_array_2d_memcpy ((*pFTess).DomFaceEq + 1, (*pFTess).DomFaceQty,
@@ -111,6 +143,7 @@ net_mtess_flatten_dom_face (struct TESS *Tess, int TessId,
 
   (*pFTess).DomFaceVerQty = ut_alloc_1d_int ((*pFTess).DomFaceQty + 1);
   (*pFTess).DomFaceVerNb = ut_alloc_1d_pint ((*pFTess).DomFaceQty + 1);
+  (*pFTess).DomFaceEdgeQty = ut_alloc_1d_int ((*pFTess).DomFaceQty + 1);
   (*pFTess).DomFaceEdgeNb = ut_alloc_1d_pint ((*pFTess).DomFaceQty + 1);
   for (i = 1; i <= (*pFTess).DomFaceQty; i++)
   {
@@ -120,10 +153,11 @@ net_mtess_flatten_dom_face (struct TESS *Tess, int TessId,
     ut_array_1d_int_memcpy ((*pFTess).DomFaceVerNb[i] + 1,
 			    (*pFTess).DomFaceVerQty[i],
 			    Tess[TessId].DomFaceVerNb[i] + 1);
+    (*pFTess).DomFaceEdgeQty[i] = Tess[TessId].DomFaceEdgeQty[i];
     (*pFTess).DomFaceEdgeNb[i] = ut_alloc_1d_int
-      ((*pFTess).DomFaceVerQty[i] + 1);
+      ((*pFTess).DomFaceEdgeQty[i] + 1);
     ut_array_1d_int_memcpy ((*pFTess).DomFaceEdgeNb[i] + 1,
-			    (*pFTess).DomFaceVerQty[i],
+			    (*pFTess).DomFaceEdgeQty[i],
 			    Tess[TessId].DomFaceEdgeNb[i] + 1);
   }
 

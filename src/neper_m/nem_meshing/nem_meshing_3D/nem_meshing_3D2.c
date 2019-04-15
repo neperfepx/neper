@@ -1,11 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_3D_.h"
 
 int
-nem_meshing_3D_poly (struct IN_M In, double cl, struct MULTIM *pMultim,
+nem_meshing_3D_poly (struct IN_M In, double cl, double mesh3dclreps,
+                     struct MULTIM *pMultim,
 		     struct timeval *pctrlc_t, double *pallowed_t,
 		     double *pmax_elapsed_t, struct TESS Tess,
 		     struct NODES *pNodes, struct MESH *Mesh,
@@ -25,7 +26,7 @@ nem_meshing_3D_poly (struct IN_M In, double cl, struct MULTIM *pMultim,
   for (a = 0; a < (*pMultim).algoqty; a++)
   {
     // meshing
-    nem_meshing_3D_poly_algo (In, cl, pMultim, a, pctrlc_t, pallowed_t,
+    nem_meshing_3D_poly_algo (In, cl, mesh3dclreps, pMultim, a, pctrlc_t, pallowed_t,
 			      pmax_elapsed_t, Tess, *pNodes, Mesh, poly,
 			      &N2, &M2, &mOsize, &elapsed_t);
 
@@ -45,7 +46,7 @@ nem_meshing_3D_poly (struct IN_M In, double cl, struct MULTIM *pMultim,
 #pragma omp atomic
     (*pMultim).algohit[(*pMultim).Oalgo[poly]]++;
   else
-    ut_print_message (2, 3, "Meshing of poly %d failed\n", poly);
+    ut_print_message (2, 3, "Meshing of poly %d (%d) failed\n", poly, Tess.CellId? Tess.CellId[poly] : poly);
 
   neut_nodes_free (&N2);
   neut_mesh_free (&M2);

@@ -1,12 +1,15 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2018 Romain Quey
+@c Copyright (C) 2003-2019 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Tessellation Module (-T)
 @chapter Tessellation Module (-T)
 
 @MT{} generates @dfn{tessellations} and @dfn{multiscale tessellations}
-of a bounded @dfn{domain} of space, in 2D or 3D.  Periodicity and
+of a bounded @dfn{domain} of space, in 2D or 3D.  The domain must be convex,
+but once generated the tessellation can be cut by various shapes, e.g.@ to
+include a notch (experimental feature).
+Periodicity and
 semi-periodicity conditions can be prescribed.  @MT{} also enables to
 @dfn{regularize} the tessellations for better-quality meshing. The
 tessellations are provided in scalar (vectorial) or raster formats.
@@ -43,9 +46,13 @@ the following.
 The @dfn{domain} of space in which the tessellation is created can be of
 any convex shape. In 3D, cuboidal, cylindrical and spherical shapes (and a few
 other, exotic shapes) are directly supported while other morphologies can
-be defined from a set of planes (@w{option @option{-domain}}).  Periodicity or
-semi-periodicity conditions can be applied to the tessellation (@w{option
-    @option{-periodicity}}).
+be defined from a set of planes (@w{option @option{-domain}}).
+Non convex domain shapes can be obtained by cutting the tessellation
+by different geometrical primitives once generated
+(@w{option @option{-tranform cut}}, experimental).@footnote{Only non-convexities larger than
+the typical cell size are supported.}
+Periodicity or semi-periodicity conditions can be applied to the tessellation
+(@w{option @option{-periodicity}}).
 
 @dfn{Crystal orientations} can be randomly distributed (according to a
 uniform frequency distribution), either in the 3D space or along a specific
@@ -79,7 +86,7 @@ Here is what a typical run of @mT{} looks like,
     Info   : Version 3.0.0
     Info   : Built with: gsl nlopt muparser
     Info   : <http://neper.sourceforge.net>
-    Info   : Copyright (C) 2003-2018, and GNU GPL'd, by Romain Quey.
+    Info   : Copyright (C) 2003-2019, and GNU GPL'd, by Romain Quey.
     Info   : Comments and bug reports: <neper-users@lists.sourceforge.net>.
     Info   : Loading initialization file `/home/rquey/.neperrc'...
     Info   : ---------------------------------------------------------------
@@ -244,10 +251,17 @@ set seeds attributes instead, use @samp{@option{-morphooptiini ...
 
 @opt{-morpho, char_string,
 Specify morphological properties of the cells.
-It can be done either by using a special morphology string (as defined below)@comma{}
-or by specifying custom cell properties such as sizes@comma{} sphericities@comma{}
-centroids@comma{} or even exact shapes (using a raster tessellation). Global properties
-(sometimes refered to as @dfn{morphological texture}) can be added.@*
+It can be done either by using a special morphology string (as defined
+below)@comma{} or by specifying custom cell properties such as sizes@comma{}
+sphericities@comma{} centroids@comma{} or even exact shapes (using a raster
+tessellation). Global properties (sometimes refered to as @dfn{morphological
+texture}) can be added.  Alternatively@comma{} a complete tessellation can also
+be loaded (as a tessellation file).  Finally@comma{} in the case of a
+multiscale tessellation@comma{} cell-by-cell values can be specified using
+@code{@var{file_name}}@comma{} where @code{@var{file_name}} is the name of a
+multiscale cell file containing the list of morphologies (see @ref{Multiscale
+Cell File}).
+@*
 @emph{(i)} The special morphology strings are the following (mutually-exclusive):@*
 @bullet{} @samp{@code{voronoi}} for a standard Poisson-Voronoi
 tessellation;@*
@@ -277,9 +291,10 @@ directions;@*
 @bullet{} @samp{tocta(@var{N})} for a regular
 tessellation into truncated octahedra@comma{}
 where @samp{@var{N}} is the number of cells along a direction;@*
-@bullet{} @samp{lamellar(w=@var{w}@comma{}v=@var{v})} for a lamellar
-morphology.  Argument @samp{w=@var{w}} is mandatory and argument
-@samp{v=@var{v}} is optional. Argument @samp{@code{w=@var{w}}} enables
+@bullet{} @samp{lamellar(w=@var{w}@comma{}v=@var{v}@comma{}pos=@var{pos})} for a lamellar
+morphology.  Argument @samp{w=@var{w}} is mandatory@comma{} and arguments
+@samp{v=@var{v}} and @samp{pos=@var{pos}} are optional.
+Argument @samp{@code{w=@var{w}}} enables
 to specify the absolute lamella width @code{@var{w}}.  For specifying
 several widths@comma{} combine them @w{with @samp{@SEPDEP}}.  In the
 case of a multiscale tessellation@comma{} for specifying cell-by-cell
@@ -288,15 +303,29 @@ width values@comma{} use the syntax @samp{file(@var{file_name})} where
 the list of widths (see @ref{Multiscale Cell File}).  Argument
 @samp{@code{v=@var{v}}} enables to specify the lamella plane @w{normals
 @code{@var{v}}}.  For randomly-distributed normals taken from a uniform
-distribution@comma{} use @samp{random}.  For a direction of the parent
-crystal@comma{} use
-@samp{crysdir(@var{dir_x}@comma{}@var{dir_y}@comma{}@var{dir_z})}@comma{}
+distribution@comma{} use @samp{random} (the default).  For a direction of space@comma{} use
+@samp{(@var{dir_x}@comma{}@var{dir_y}@comma{}@var{dir_z})}@comma{}
 where @math{(@var{dir_x}@comma{}@var{dir_y}@comma{}@var{dir_z})} is the
+direction.
+For a direction of the parent
+crystal@comma{} use
+@samp{crysdir(@var{crysdir_x}@comma{}@var{crysdir_y}@comma{}@var{crysdir_z})}@comma{}
+where @math{(@var{crysdir_x}@comma{}@var{crysdir_y}@comma{}@var{crysdir_z})} is the
   crystal direction.
 For specifying cell-by-cell
 normals@comma{} use the syntax @samp{file(@var{file_name})} where
 @code{@var{file_name}} is the name of a multiscale cell file containing
-the list of lamella plane normals (see @ref{Multiscale Cell File}).@*
+the list of lamella plane normals (see @ref{Multiscale Cell File}).
+Argument @samp{@code{pos=@var{pos}}} enables
+to specify the position of the lamellaes@comma{} @code{@var{pos}}.
+It can be @samp{@var{random}} for a random position (the default) or
+@samp{@var{start}} for the first lamella starting (full-width) from the
+start point of the domain (along direction @code{@var{dir}}).
+In the
+case of a multiscale tessellation@comma{} for specifying cell-by-cell
+position values@comma{} use the syntax @samp{file(@var{file_name})} where
+@code{@var{file_name}} is the name of a multiscale cell file containing
+the list of positions (see @ref{Multiscale Cell File}).@*
 @emph{(ii)} Custom morphological properties can be defined
 by providing as argument the cell
 property and its value@comma{} combined with the @samp{@SEPDEP{}} separator.
@@ -361,6 +390,9 @@ relative length along the coordinate axes. For a 2D tessellation@comma{}
 @samp{@var{r3}} can be omitted.  When provided@comma{} other
 properties@comma{} such as the equivalent diameter or the sphericity@comma{}
 are considered to apply to the cells as if they had no aspect ratio.
+@*
+@emph{(iv)} A tessellation can be loaded using @samp{@code{file(@var{file_name})}}@comma{}
+where @samp{@var{file_name}} is the name of the tessellation file.
 @*
 To specify several properties@comma{} combine them @w{with @samp{@SEPNODEP}}
 (centroids and sizes/equivalent diameters should be seen as one
@@ -432,7 +464,7 @@ where @code{@var{propx}} are properties as defined in option
 objective functions.
 An objective function depends on the property and its definition.
 @*
-@math{@bullet{}} For properties defined by a statistical distribution (which can be
+@mybullet For properties defined by a statistical distribution (which can be
 @samp{size}@comma{} @samp{diameq} or @samp{sphericity})@comma{}
 the available values are @samp{chi2} (Chi-square test)@comma{} @samp{ks}
 (Kolmogorov-Smirnov test)@comma{} @samp{kuiper} (Kuiper's test)@comma{}
@@ -445,11 +477,11 @@ on @math{F})@footnote{See [Quey and Renversade, CMAME, 2018].}@comma{}
 on @math{F} corresponding to @samp{FL2w} for a unimodal distribution)@comma{}
 and the default value is @samp{FL2w}.
 @*
-@math{@bullet{}} For @samp{@code{centroid}}@comma{} a Minkowski distance
+@mybullet For @samp{@code{centroid}}@comma{} a Minkowski distance
 between the seeds and centroids is used@comma{} and can be
 @samp{@code{L1}}@comma{} @samp{@code{L2}} or @samp{@code{Linf}}.
 @*
-@math{@bullet{}} For @samp{@code{tesr}}@comma{} the definition of the
+@mybullet For @samp{@code{tesr}}@comma{} the definition of the
 objective function includes several factors.
 First@comma{} preprocessing operations to the raster tessellation can be
 applied using @samp{@code{transform(@var{operations})}}@comma{} where
@@ -670,6 +702,10 @@ for a rotation matrix@comma{}
 for Miller indices;@*
 @bullet{} @samp{equal} for orientations equal to the one of the parent
 cell;@*
+@bullet{} @samp{spread(@var{thetam})} for orientations randomly distributed
+about the one of the parent cell@comma{} according to a 3-variate normal
+distribution@comma{} and so that the average misorientation angle with respect
+to the average orientation is equal to @var{thetam}.@*
 @bullet{} @samp{file(@var{filename})@SEPDEP{}@var{des}} for reading
   orientations from file @file{@var{filename}} and written
   using the descriptor @code{@var{des}} (@pxref{Rotations and Orientations});
@@ -726,39 +762,70 @@ any, Nstar<10000?pi:20*dr}
 Apply transformations to a tessellation (if scalar and raster tessellations
 are written in output@comma{} they are transformed independently; i.e.@comma{}
 rasterization preceeds transformation).@*
-The following transformations apply to a scalar or raster tessellation:@*
-@math{@bullet{}} @samp{@code{scale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
+@*
+The following transformations apply to a scalar tessellation:@*
+@mybullet @samp{@code{scale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
 scales a tessellation by
 @code{@var{x_fact}}@comma{} @code{@var{y_fact}} and @code{@var{z_fact}}
 along directions @var{x}@comma{} @code{@var{y}} and
 @code{@var{z}}@comma{} respectively. For a 2D tessellation@comma{}
 @code{@var{z_fact}} can be omitted.@*
-@math{@bullet{}} @samp{rotate(@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{angle})}
+@mybullet @samp{rotate(@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{angle})}
 for a rotation about the centre and by an axis/angle pair.@*
-@math{@bullet{}} @samp{translate(@var{dist_x}@comma{}@var{dist_y}@comma{}@var{dist_z})}
+@mybullet @samp{translate(@var{dist_x}@comma{}@var{dist_y}@comma{}@var{dist_z})}
 for a translation by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} and @code{@var{dist_z}}
 along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
-The following transformations apply only to a raster tessellation:@*
-@math{@bullet{}} @samp{@code{renumber}} renumbers a tessellation to remove empty cells.@*
-@math{@bullet{}} @samp{@code{crop:@var{shape}(@var{parameters})}} crops the raster tessellation by a shape@comma{} where @samp{@var{shape}(@var{parameters})} can be @samp{cube(@var{xmin}@comma{}@var{xmax}@comma{}@var{ymin}@comma{}@var{ymax}@comma{}@var{zmin}@comma{}@var{zmax})} or @samp{cylinder(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{diameter})} (the axis is z).  The values can be any mathematical expression based on the variables defined in @ref{Raster Tessellation Keys} (see general). @*
-@math{@bullet{}} @samp{@code{autocrop}} reduces the raster to its minimal size.@*
-@math{@bullet{}}
+@bullet{} @samp{cut(@var{primitive1}@comma{}@var{primitive2}@comma{}...)} for cutting by a series of geometrical primitives (experimental).  The primitives can be:@*
+@emph{(i)} @samp{plane(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for a plane of equation @math{a@,x+b@,y+c@,z=d} (actually representing the half space on its positive side);@*
+@emph{(ii)} @samp{sphere(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{centre_z}@comma{}@var{rad})} for a sphere of centre @math{(@var{centre_x}@comma{} @var{centre_y}@comma{} @var{centre_z})} and radius @var{rad};@*
+@emph{(iii)} @samp{cylinder(@var{basis_x}@comma{}@var{basis_y}@comma{}@var{basis_z}@comma{}@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{rad})} for a cylinder of basis point @math{(@var{basis_x}@comma{} @var{basis_y}@comma{} @var{basis_z})}@comma{} axis @math{(@var{axis_x}@comma{} @var{axis_y}@comma{} @var{axis_z})} and radius @var{rad};@*
+@emph{(iv)} @samp{ecylinder(@var{basis_x}@comma{}@var{basis_y}@comma{}@var{basis_z}@comma{}@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{esaxis1_x}@comma{}@var{esaxis1_y}@comma{} @var{esaxis1_z}@comma{}@var{esaxis2_x}@comma{}@var{esaxis2_y}@comma{}@var{esaxis2_z}@comma{}@var{srad1}@comma{}@var{srad2})} for an elliptic cylinder of basis point @math{(@var{basis_x}@comma{} @var{basis_y}@comma{} @var{basis_z})}@comma{} axis @math{(@var{axis_x}@comma{} @var{axis_y}@comma{} @var{axis_z})}@comma{} ellipse section first axis @math{(@var{esaxis1_x}@comma{} @var{esaxis1_y}@comma{} @var{esaxis1_z})}@comma{} ellipse section second axis @math{(@var{esaxis2_x}@comma{} @var{esaxis2_y}@comma{} @var{esaxis2_z})}@comma{} ellipse section first radius @var{esrad1} and ellipse section second radius @var{esrad2}@comma{} and@*
+@c @emph{(v)} @samp{torus(@var{basis_x}@comma{}@var{basis_y}@comma{}@var{basis_z}@comma{}@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{rad}@comma{}@var{srad})} for a torus of basis point @math{(@var{basis_x}@comma{} @var{basis_y}@comma{} @var{basis_z})}@comma{} axis @math{(@var{axis_x}@comma{} @var{axis_y}@comma{} @var{axis_z})}@comma{} (major) radius @var{rad} and section radius @var{srad}.@*
+Append @samp{i} to a primitive name (to get @samp{cylinderi}@comma{} etc.) for the complementary shape.
+@*
+@mybullet @samp{planecut(@var{a}@comma{}@var{b}@comma{}@var{c}@comma{}@var{d})} for cutting by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d}.@*
+@mybullet @samp{mergecell(@var{expr1}@comma{}@var{expr2}@comma{}@dots{})} for merging cells
+matching expression @code{@var{expr1}}@comma{} @code{@var{expr2}}@comma{} etc.@comma{}
+where expressions are based on the variables defined in @ref{Tessellation Keys}.
+Cell merging operates incrementally through expressions.@*
+@mybullet @samp{rmcell(@var{expr1}@comma{}@var{expr2}@comma{}@dots{})} for removing cells
+matching expression @code{@var{expr1}}@comma{} @code{@var{expr2}}@comma{} etc.@comma{}
+where expressions are based on the variables defined in @ref{Tessellation Keys}.
+Cell removing operates incrementally through expressions.@*
+@mybullet @samp{resetcellid} for resetting cell ids (contiguous numbering from 1).@*
+@*
+The following transformations apply to a raster tessellation:@*
+@mybullet @samp{@code{scale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
+scales a tessellation by
+@code{@var{x_fact}}@comma{} @code{@var{y_fact}} and @code{@var{z_fact}}
+along directions @var{x}@comma{} @code{@var{y}} and
+@code{@var{z}}@comma{} respectively. For a 2D tessellation@comma{}
+@code{@var{z_fact}} can be omitted.@*
+@mybullet @samp{rotate(@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{angle})}
+for a rotation about the centre and by an axis/angle pair.@*
+@mybullet @samp{translate(@var{dist_x}@comma{}@var{dist_y}@comma{}@var{dist_z})}
+for a translation by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} and @code{@var{dist_z}}
+along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
+@mybullet @samp{@code{renumber}} renumbers a tessellation to remove empty cells.@*
+@mybullet @samp{@code{crop:@var{shape}(@var{parameters})}} crops the raster tessellation by a shape@comma{} where @samp{@var{shape}(@var{parameters})} can be @samp{cube(@var{xmin}@comma{}@var{xmax}@comma{}@var{ymin}@comma{}@var{ymax}@comma{}@var{zmin}@comma{}@var{zmax})} or @samp{cylinder(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{diameter})} (the axis is z).  The values can be any mathematical expression based on the variables defined in @ref{Raster Tessellation Keys} (see general). @*
+@mybullet @samp{@code{autocrop}} reduces the raster to its minimal size.@*
+@mybullet
 @samp{@code{rasterscale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
 scales the number of points of the raster by factors
 @code{@var{x_fact}}@comma{} @code{@var{y_fact}} and @code{@var{z_fact}}
 along directions @var{x}@comma{} @code{@var{y}} and
 @code{@var{z}}@comma{} respectively. For a 2D tessellation@comma{}
 @code{@var{z_fact}} can be omitted.@*
-@math{@bullet{}} @samp{@code{rmsat}} removes the cell
+@mybullet @samp{@code{rmsat}} removes the cell
 ``satellites''@comma{} i.e.@ parts disconnected from the cell bulk.@*
-@math{@bullet{}} @samp{@code{grow}} grows the cells to fill the domain.@*
-@math{@bullet{}} @samp{@code{tessinter(@var{tess_file})}} computes the
+@mybullet @samp{@code{grow}} grows the cells to fill the domain.@*
+@mybullet @samp{@code{tessinter(@var{tess_file})}} computes the
 intersection with tessellation @file{@var{tess_file}}.@*
-@math{@bullet{}} @samp{@code{addbuffer(@var{buffx}@comma{}@var{buffy}@comma{}@var{buffz})}}
+@mybullet @samp{@code{addbuffer(@var{buffx}@comma{}@var{buffy}@comma{}@var{buffz})}}
 adds a buffer of @code{@var{buffx}} void voxels on both sides in the x direction@comma{}
 a buffer of @code{@var{buffy}} void voxels on both sides in the y direction and
 a buffer of @code{@var{buffz}} void voxels on both sides in the z direction.@*
-@math{@bullet{}} @samp{@code{2d}} transforms a 3D tessellation with 1 voxel along z into a 2D tessellation.@*
+@mybullet @samp{@code{2d}} transforms a 3D tessellation with 1 voxel along z into a 2D tessellation.@*
 Several transformations can be applied successively by combining them @w{with @samp{@SEPNODEP}}.
 ,
 any, none}
@@ -814,7 +881,7 @@ are assigned @code{@var{cell_seli}} as small edge length.
 Typically@comma{} option @option{-rsel} should be passed the same argument than
 option @option{-rcl} of @mM{}@comma{} see @ref{Meshing Module
 (-M)}. The second way is to load values from an external file using
-the syntax @samp{@@@var{file_name}}@comma{} where @code{@var{file_name}}
+the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
 is the name of the file containing the length values.,
 any,-rsel 1}
 
@@ -838,7 +905,7 @@ For scalar tessellations@comma{} the available formats are
 the Neper @code{@samp{tess}}@comma{}
 the Gmsh @code{@samp{geo}}@comma{}
 the Ply @code{@samp{ply}}@comma{}
-the STL @code{@samp{stl}}@comma{}
+the STL @code{@samp{stl}} (for a separate file for each cell@comma{} append @samp{@SEPDEP{}bycell)}@comma{}
 the Wavefront @code{@samp{obj}}@comma{}
 the 3dec @code{@samp{3dec}}
 and the Surface Evolver @code{@samp{fe}}.
@@ -849,7 +916,7 @@ Orientations for the cells can be obtained using @code{@samp{ori}} (see
 also options starting by @code{@samp{-ori}}).
 Combine the values @w{with @samp{@SEPNODEP}}.
 ,
-tess@comma{} geo@comma{} ply@comma{} stl@comma{} obj@comma{} 3dec@comma{} fe@comma{}
+tess@comma{} geo@comma{} ply@comma{} stl(@SEPDEP{}bycell)@comma{} obj@comma{} 3dec@comma{} fe@comma{}
 tesr@comma{} vtk@comma{} ori, tess}
 
 @opt{-tesrformat, char_string,
@@ -1031,6 +1098,9 @@ standard ``Polygon File Format'' @file{.ply}.
 
 It contains a description of the tessellation written under the
 STL (STereoLithography) format @file{.stl}.
+If @samp{@option{-format stl:bycell}} was used, a separate file is written for each cell,
+whose name ends in @file{-@var{id}.stl}, where @samp{@var{id}} is the cell identifier
+written with leading zeros.
 
 @item Wavefront geometry file: @file{.obj}
 
@@ -1131,6 +1201,10 @@ sphericities of the cells.
 distribution (and determine the number of cells accordingly).
 @com{neper -T -n from_morpho -id 1 -morpho@*@ @ @ @ @ @
      "diameq:lognormal(0.1,0.03),sphericity:lognormal(0.145,0.03,1-x)"}
+@item Generate a tessellation in a non-convex domain (by cutting the tessellation
+    once generated).
+@com{neper -T -n 100 -id 1 -morpho gg @*@ @ @ @ @ @
+     -transform "cut(cylinder(1.2,0.5,0.5,0,1,0,0.4))"}
 @item    Generate a 2-scale Voronoi tessellation containing
 @iftex
 @math{100@times10}

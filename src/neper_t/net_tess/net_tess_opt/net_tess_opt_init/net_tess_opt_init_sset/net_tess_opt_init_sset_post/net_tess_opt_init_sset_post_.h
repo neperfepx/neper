@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -22,6 +22,6 @@
 extern void net_tess_opt_init_sset_post_log (struct IN_T In, int level,
 					     struct TOPT *pTOpt);
 
-extern void net_tess_opt_init_sset_post_per (int *periodic, struct TESS
-					     Tess, int poly,
-					     struct SEEDSET *pSSet);
+extern void net_tess_opt_init_sset_post_per (int *periodic, int level,
+                                             struct TESS Tess, int poly,
+                                             struct SEEDSET *pSSet);

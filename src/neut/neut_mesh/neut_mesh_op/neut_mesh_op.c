@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_op_.h"
@@ -113,6 +113,7 @@ neut_mesh_set_zero (struct MESH *pMesh)
 
   (*pMesh).ElsetId = NULL;
   (*pMesh).Elsets = NULL;
+  (*pMesh).ElsetLabels = NULL;
 
   (*pMesh).NodeQty = 0;
 
@@ -447,6 +448,31 @@ neut_mesh_init_elsets (struct MESH *pMesh)
   }
 
   ut_free_1d_int (nelts);
+
+  return;
+}
+
+void
+neut_mesh_init_elsetlabels (struct MESH *pMesh)
+{
+  int i;
+  char* tmp = NULL;
+
+  if ((*pMesh).Dimension == 0)
+    ut_string_string ("ver", &tmp);
+  else if ((*pMesh).Dimension == 1)
+    ut_string_string ("edge", &tmp);
+  else if ((*pMesh).Dimension == 2)
+    ut_string_string ("face", &tmp);
+  else if ((*pMesh).Dimension == 3)
+    ut_string_string ("poly", &tmp);
+
+  (*pMesh).ElsetLabels = ut_alloc_2d_char ((*pMesh).ElsetQty + 1, 20);
+
+  for (i = 1; i <= (*pMesh).ElsetQty; i++)
+    sprintf ((*pMesh).ElsetLabels[i], "%s%d", tmp, i);
+
+  ut_free_1d_char (tmp);
 
   return;
 }
@@ -1689,6 +1715,60 @@ neut_mesh_eltpair_split (struct NODES *pNodes, struct MESH *pMesh, int elt1,
   ut_free_1d_int (allelts);
   ut_free_1d_int (allnodes);
   ut_free_1d_int (comnodes);
+
+  return;
+}
+
+void
+neut_mesh_2d_laplaciansmooth (struct NODES *pN, struct MESH M,
+                              int *bnodes, int bnodeqty)
+{
+  int i, iter;
+  int *nodes = NULL, nodeqty;
+  int **neighnodes = NULL, *neighnodeqty = NULL;
+  double **neighbarys = NULL;
+  double *nodeshifts = NULL;
+  double eps;
+
+  nodeqty = 0;
+  for (i = 1; i <= (*pN).NodeQty; i++)
+    if (ut_array_1d_int_eltpos (bnodes, bnodeqty, i) == -1)
+      ut_array_1d_int_list_addelt_nocheck (&nodes, &nodeqty, i);
+
+  if (nodeqty == 0)
+    return;
+
+  neut_mesh_area (*pN, M, &eps);
+  eps *= 1e-9;
+
+  neighnodes = ut_alloc_1d_pint (nodeqty);
+  neighnodeqty = ut_alloc_1d_int (nodeqty);
+  neighbarys = ut_alloc_2d (nodeqty, 3);
+  nodeshifts = ut_alloc_1d (nodeqty);
+
+  for (i = 0; i < nodeqty; i++)
+    neut_mesh_node_neighnodes (M, nodes[i], neighnodes + i, neighnodeqty + i);
+
+  iter = 0;
+  do
+  {
+    for (i = 0; i < nodeqty; i++)
+      neut_nodes_bary (*pN, neighnodes[i], neighnodeqty[i], neighbarys[i],
+                       NULL);
+
+    for (i = 0; i < nodeqty; i++)
+      nodeshifts[i] = ut_space_dist ((*pN).NodeCoo[nodes[i]], neighbarys[i]);
+
+    for (i = 0; i < nodeqty; i++)
+      ut_array_1d_memcpy ((*pN).NodeCoo[nodes[i]], 3, neighbarys[i]);
+  }
+  while (++iter < 1000 && ut_array_1d_mean (nodeshifts, nodeqty) > eps);
+
+  ut_free_1d_int (nodes);
+  ut_free_2d_int (neighnodes, nodeqty);
+  ut_free_1d_int (neighnodeqty);
+  ut_free_2d (neighbarys, nodeqty);
+  ut_free_1d (nodeshifts);
 
   return;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_poly_topo_.h"
@@ -221,7 +221,7 @@ neut_poly_edges (struct POLY Poly, int ***pedges, int *pedgeqty)
 
       status = 0;
       for (k = 0; k < (*pedgeqty); k++)
-	if (ut_array_1d_int_equal (tmp, (*pedges)[k], 2))
+	if (ut_array_1d_int_equal (tmp, 2, (*pedges)[k], 2))
 	{
 	  status = 1;
 	  break;

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tdyn_struct.h"
@@ -67,6 +67,7 @@ struct TOPT
   struct POLY *Poly;		// set of polys
   double *CellSize;             // Poly sum (volume or area) (!= NULL / stored if known)
   struct CRYS Crys;             // crystal
+  double *DomParms;             // domain parameters
 
   // distribution information
   struct FCT *curpdf;		// current PDF, smoothed

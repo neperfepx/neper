@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -12,6 +12,7 @@ extern "C"
 
   extern void neut_tess_tess (struct TESS, struct TESS *);
   extern void neut_tess_tess_gen (struct TESS, struct TESS *);
+  extern void neut_tess_tess_seed (struct TESS, struct TESS *);
   extern void neut_tess_tess_cell (struct TESS, struct TESS *);
   extern void neut_tess_tess_ver (struct TESS, struct TESS *);
   extern void neut_tess_tess_edge (struct TESS, struct TESS *);

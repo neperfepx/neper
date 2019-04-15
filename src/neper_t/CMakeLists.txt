@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2018, Romain Quey.
+# Copyright (C) 2003-2019, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
@@ -52,6 +52,9 @@ add_library (neper_t
 ./net_reg/net_reg2.c
 ./net_transform/net_transform1.c
 ./net_transform/net_transform2.c
+./net_transform/net_transform_tess_cut/net_transform_tess_cut1.c
+./net_transform/net_transform_tess_cut/net_transform_tess_cut2.c
+./net_transform/net_transform_tess_cut/net_transform_tess_cut3.c
 ./net_sort/net_sort1.c
 ./net_sort/net_sort2.c
 ./net_utils/net_utils1.c
@@ -74,6 +77,9 @@ add_library (neper_t
 ./net_tess/net_tess_tocta//net_tess_tocta_seed/net_tess_tocta_seed1.c
 ./net_tess/net_tess_tocta//net_tess_tocta_seed/net_tess_tocta_seed2.c
 ./net_tess/net_tess_tocta//net_tess_tocta_seed/net_tess_tocta_seed3.c
+./net_tess/net_tess_file/net_tess_file1.c
+./net_tess/net_tess_file/net_tess_file2.c
+./net_tess/net_tess_file/net_tess_file3.c
 ./net_tess/net_tess_opt/net_tess_opt1.cpp
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init1.cpp
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init2.cpp
@@ -178,6 +184,7 @@ add_library (neper_t
 ./net_ori/net_ori_uniform/net_ori_uniform5.cpp
 ./net_domain/net_domain1.c
 ./net_domain/net_domain2.c
+./net_domain/net_domain3.c
 ./net_domain/net_domain_cube/net_domain_cube2.c
 ./net_domain/net_domain_cube/net_domain_cube1.c
 ./net_domain/net_domain_cube/net_domain_cube3.c

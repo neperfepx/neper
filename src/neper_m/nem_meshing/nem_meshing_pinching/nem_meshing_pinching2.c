@@ -1,13 +1,14 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_pinching_.h"
 
 int
-nem_meshing_pinching_testpoly (struct IN_M In, int poly)
+nem_meshing_pinching_testpoly (struct IN_M In, struct TESS Tess,
+                               struct MESH *Mesh, int poly)
 {
-  int status, varqty = 1;
+  int i, face, status, varqty = 1;
   char **vars = ut_alloc_1d_pchar (varqty);
   double *vals = ut_alloc_1d (varqty);
 
@@ -18,6 +19,18 @@ nem_meshing_pinching_testpoly (struct IN_M In, int poly)
     ut_math_eval_int (In.meshpoly, varqty, vars, vals, &status);
   else
     status = 1;
+
+  if (status)
+    for (i = 1; i <= Tess.PolyFaceQty[poly]; i++)
+    {
+      face = Tess.PolyFaceNb[poly][i];
+
+      if (face > Mesh[2].ElsetQty || Mesh[2].Elsets[face][0] == 0)
+      {
+        status = 0;
+        break;
+      }
+    }
 
   ut_free_2d_char (vars, varqty);
   ut_free_1d (vals);
@@ -65,17 +78,23 @@ nem_meshing_pinching_fix (struct MESHPARA MeshPara, struct TESS *pTess,
 			  struct NODES *pNodes, struct MESH *Mesh,
 			  int* elts)
 {
-  int i, j, elt, elset, newnode;
+  int i, j, k, elt, elset, newnode;
   int *facets = NULL, facetqty;
-  int *nodes = ut_alloc_1d_int (2);
   int *comelts = ut_alloc_1d_int (2);
+  int *facestates = ut_alloc_1d_int (2);
+
+  for (i = 0; i < 2; i++)
+    facestates[i] = (*pTess).FaceState[Mesh[2].EltElset[elts[i]]];
+
+  if (facestates[0] == 0 && facestates[1] == 0)
+    ut_array_1d_int_set (facestates, 2, 1);
 
   for (i = 0; i < 2; i++)
   {
     elt = elts[i];
     elset = Mesh[2].EltElset[elt];
 
-    if ((*pTess).FaceState[elset] == 0)
+    if (facestates[i] == 0)
       continue;
 
     nem_meshing_pinching_fix_eltfacets (Mesh, elt, &facets, &facetqty);
@@ -84,13 +103,27 @@ nem_meshing_pinching_fix (struct MESHPARA MeshPara, struct TESS *pTess,
     {
       nem_meshing_pinching_fix_split (pNodes, Mesh, elt, facets[j], &newnode);
 
-      nem_meshing_pinching_fix_proj (MeshPara, pTess, RNodes, RMesh, pNodes,
-				     elset, newnode);
+      if (!neut_tess_face_iscurved (*pTess, elset))
+        nem_meshing_pinching_fix_proj (MeshPara, pTess, RNodes, RMesh, pNodes,
+                                       elset, newnode);
+    }
+
+    if (neut_tess_face_iscurved (*pTess, elset))
+    {
+      int *nodes = NULL, nodeqty;
+      neut_mesh_elset2d_bodynodes (*pTess, Mesh, elset, &nodes, &nodeqty);
+
+      for (k = 0; k < nodeqty; k++)
+        neut_tess_domfaces_point_proj (*pTess, &(*pTess).FaceDom[elset][1], 1,
+                                       (*pNodes).NodeCoo[nodes[k]],
+                                       (*pNodes).NodeCoo[nodes[k]]);
+
+      ut_free_1d_int_ (&nodes);
     }
   }
 
-  ut_free_1d_int (nodes);
   ut_free_1d_int (comelts);
+  ut_free_1d_int (facestates);
 
   return;
 }

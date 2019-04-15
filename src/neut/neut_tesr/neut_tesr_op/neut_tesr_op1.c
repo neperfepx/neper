@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tesr_op_.h"
@@ -264,9 +264,9 @@ neut_tesr_scale (struct TESR *pTesr, double scale1, double scale2,
       for (i = 0; i < (*pTesr).Dim; i++)
         (*pTesr).CellCoo[j][i] *= scale[i];
 
-    if ((*pTesr).CellVol)
-      for (j = 1; j <= (*pTesr).CellQty; j++)
-        (*pTesr).CellVol[j] *= ut_array_1d_prod (scale, 3);
+  if ((*pTesr).CellVol)
+    for (j = 1; j <= (*pTesr).CellQty; j++)
+      (*pTesr).CellVol[j] *= ut_array_1d_prod (scale, 3);
 
   ut_free_1d (scale);
 

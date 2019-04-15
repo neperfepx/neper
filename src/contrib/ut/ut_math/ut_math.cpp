@@ -1,4 +1,4 @@
-/* Copyright (C) 2007-2009, 2012 Romain Quey */
+/* Copyright (C) 2003-2019, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -7,7 +7,8 @@
 #include<ctype.h>
 #include"ut.h"
 
-#include"contrib/muparser/include/muParser.h"
+#ifdef HAVE_MUPARSER
+#include <muParser.h>
 
 int
 ut_math_eval (char* expr, int var_qty, char** vars, double* vals,
@@ -145,3 +146,4 @@ ut_math_string_isfunction (char *string)
 
   return status;
 }
+#endif // HAVE_MUPARSER

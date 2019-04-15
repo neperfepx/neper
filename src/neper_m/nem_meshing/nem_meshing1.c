@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_.h"
@@ -10,7 +10,7 @@
 // RNodes, RMesh[0] and RMesh[1] structures.  This is useful for
 // remeshing.
 int
-nem_meshing (struct IN_M In, struct MESHPARA MeshPara,
+nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara,
 	     struct TESS *pTess,
 	     struct NODES RNodes, struct MESH *RMesh,
 	     struct NODES *pNodes, struct MESH *Mesh)
@@ -27,42 +27,39 @@ nem_meshing (struct IN_M In, struct MESHPARA MeshPara,
 
   nem_meshing_gen (*pTess, pNodes);
 
-  if (MeshPara.dim >= 0)
+  if ((*pMeshPara).dim >= 0)
   {
     if (!neut_mesh_isvoid (Mesh[0]))
       ut_print_message (0, 2, "0D meshing... skipped\n");
     else
-    {
-      nem_meshing_0D (*pTess, MeshPara, pNodes, Mesh);
-      neut_nodes_init_nodeslave (pNodes);
-    }
+      nem_meshing_0D (*pTess, *pMeshPara, pNodes, Mesh);
   }
 
-  if (MeshPara.dim >= 1)
+  if ((*pMeshPara).dim >= 1)
   {
     if (!neut_mesh_isvoid (Mesh[1]))
       ut_print_message (0, 2, "1D meshing... skipped\n");
     else
-      nem_meshing_1D (MeshPara, *pTess, RNodes, RMesh, pNodes, Mesh);
+      nem_meshing_1D (pMeshPara, *pTess, RNodes, RMesh, pNodes, Mesh);
   }
 
-  if (MeshPara.dim >= 2)
+  if ((*pMeshPara).dim >= 2)
   {
     if (!neut_mesh_isvoid (Mesh[2]))
       ut_print_message (0, 2, "2D meshing... skipped\n");
     else
-      nem_meshing_2D (In, MeshPara, *pTess, RNodes, RMesh, pNodes, Mesh);
+      nem_meshing_2D (In, *pMeshPara, *pTess, RNodes, RMesh, pNodes, Mesh);
 
     if (Mesh[2].EltQty > 0 && In.mesh2dpinchfix)
-      nem_meshing_pinching (In, MeshPara, pTess, RNodes, RMesh, pNodes, Mesh);
+      nem_meshing_pinching (In, *pMeshPara, pTess, RNodes, RMesh, pNodes, Mesh);
   }
 
-  if (MeshPara.dim >= 3)
+  if ((*pMeshPara).dim >= 3)
   {
     if (!neut_mesh_isvoid (Mesh[3]))
       ut_print_message (0, 2, "3D meshing... skipped\n");
     else
-      nem_meshing_3D (In, MeshPara, *pTess, pNodes, Mesh);
+      nem_meshing_3D (In, *pMeshPara, *pTess, pNodes, Mesh);
   }
 
   if ((*pTess).CellId)
@@ -73,7 +70,7 @@ nem_meshing (struct IN_M In, struct MESHPARA MeshPara,
 			      (*pTess).CellQty, (*pTess).CellId + 1);
     }
 
-  neut_nodes_init_nodeslave (pNodes);
+  nem_meshing_post (*pTess, Mesh);
 
   return EXIT_SUCCESS;
 }

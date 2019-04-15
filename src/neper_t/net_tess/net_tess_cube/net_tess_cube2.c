@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_cube_.h"
@@ -94,14 +94,12 @@ net_tess_cube_sset (struct TESS Tess, struct SEEDSET *pSSet)
 }
 
 void
-net_tess_cube_vers (int *N, struct TESS PTess, int ***verid,
+net_tess_cube_vers (int *N, double **bbox, int ***verid,
 		    struct TESS *pTess)
 {
   int i, j, k, id;
-  double **bbox = ut_alloc_2d (3, 2);
   double *size = ut_alloc_1d (3);
 
-  neut_tess_bbox (PTess, bbox);
   for (i = 0; i < 3; i++)
     size[i] = bbox[i][1] - bbox[i][0];
 
@@ -119,7 +117,6 @@ net_tess_cube_vers (int *N, struct TESS PTess, int ***verid,
 	(*pTess).VerCoo[id][2] = (double) k / N[2] * size[2];
       }
 
-  ut_free_2d (bbox, 3);
   ut_free_1d (size);
 
   return;

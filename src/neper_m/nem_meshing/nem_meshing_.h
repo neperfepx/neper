@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -21,3 +21,5 @@
 #include"nem_meshing.h"
 
 extern void nem_meshing_gen (struct TESS Tess, struct NODES *pNodes);
+
+extern void nem_meshing_post (struct TESS Tess, struct MESH *Mesh);

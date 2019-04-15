@@ -1,10 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_.h"
 
+#ifdef HAVE_NLOPT
 static int force_stop = 0;
+#endif
 
 double
 net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
@@ -60,6 +62,8 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
     net_tess_opt_comp_objective_x_seedset (x, pTOpt);
   else if (!strcmp ((*pTOpt).optitype, "crystal"))
     net_tess_opt_comp_objective_x_crystal (x, pTOpt);
+  else if (!strcmp ((*pTOpt).optitype, "domain"))
+    net_tess_opt_comp_objective_x_domain (x, pTOpt);
   else
     abort ();
 
@@ -70,7 +74,7 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
 
   gettimeofday (&t3, NULL);
 
-  if (!strcmp ((*pTOpt).optitype, "seeds"))
+  if (!strcmp ((*pTOpt).optitype, "seeds") || !strcmp ((*pTOpt).optitype, "domain"))
     status = net_tess_opt_comp_objective_poly (pTOpt);
   else
     status = 0;

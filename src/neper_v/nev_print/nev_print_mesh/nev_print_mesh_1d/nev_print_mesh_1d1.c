@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_mesh_1d_.h"
@@ -9,7 +9,7 @@ nev_print_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
 		   struct MESH *Mesh, struct NODEDATA NodeData, struct
 		   MESHDATA *MeshData)
 {
-  int i, j, elt1d_qty, elt3dqty, printelt1d_qty, texture_unique;
+  int i, j, elset, elt1d_qty, elt3dqty, printelt1d_qty, texture_unique;
   double ambient = (Print.showshadow == 1) ? 0.6 : 1;
   char *texture = NULL;
   int *hidden = NULL;
@@ -30,10 +30,13 @@ nev_print_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
     for (i = 1; i <= Mesh[1].EltQty; i++)
       if (Print.showelt1d[i])
       {
+        elset = Mesh[1].EltElset[i];
+
 	if (Tess.EdgeQty == 0)
 	  hidden[i] = 0;
-	else if (Tess.EdgeQty > 0
-		 && Tess.EdgeDom[Mesh[1].EltElset[i]][0] >= 1)
+        else if (Tess.EdgeQty > 0 && Tess.EdgeDom[elset][0] >= 1)
+	  hidden[i] = 0;
+	else if (!strcmp (Tess.Type, "periodic") && Tess.EdgeFaceQty[elset] < 3)
 	  hidden[i] = 0;
 	else
 	{

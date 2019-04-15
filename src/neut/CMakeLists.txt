@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2018, Romain Quey.
+# Copyright (C) 2003-2019, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
@@ -108,11 +108,12 @@ add_library (neut
 ./neut_point/neut_point_fscanf/neut_point_fscanf1.c
 ./neut_tess/neut_tess_merge/neut_tess_merge1.c
 ./neut_tess/neut_tess_merge/neut_tess_merge2.c
-./neut_tess/neut_tess_merge/neut_tess_merge_edges/neut_tess_merge_edges1.c
-./neut_tess/neut_tess_merge/neut_tess_merge_faces/neut_tess_merge_faces1.c
-./neut_tess/neut_tess_merge/neut_tess_merge_faces/neut_tess_merge_faces2.c
-./neut_tess/neut_tess_merge/neut_tess_merge_polys/neut_tess_merge_polys1.c
-./neut_tess/neut_tess_merge/neut_tess_merge_polys/neut_tess_merge_polys2.c
+./neut_tess/neut_tess_merge/neut_tess_edges_merge/neut_tess_edges_merge1.c
+./neut_tess/neut_tess_merge/neut_tess_edges_merge/neut_tess_edges_merge2.c
+./neut_tess/neut_tess_merge/neut_tess_faces_merge/neut_tess_faces_merge1.c
+./neut_tess/neut_tess_merge/neut_tess_faces_merge/neut_tess_faces_merge2.c
+./neut_tess/neut_tess_merge/neut_tess_polys_merge/neut_tess_polys_merge1.c
+./neut_tess/neut_tess_merge/neut_tess_polys_merge/neut_tess_polys_merge2.c
 ./neut_tess/neut_tess_compress/neut_tess_compress1.c
 ./neut_tess/neut_tess_compress/neut_tess_compress2.c
 ./neut_tess/neut_tess_compress/neut_tess_compress3.c
@@ -145,10 +146,6 @@ add_library (neut
 ./neut_tess/neut_tess_geom/neut_tess_geom.c
 ./neut_tess/neut_tess_gen/neut_tess_gen.c
 ./neut_tesse/neut_tesse_op/neut_tesse_op1.c
-./neut_mtess/neut_mtess_fprintf/neut_mtess_fprintf1.c
-./neut_mtess/neut_mtess_fprintf/neut_mtess_fprintf2.c
-./neut_mtess/neut_mtess_fscanf/neut_mtess_fscanf1.c
-./neut_mtess/neut_mtess_fscanf/neut_mtess_fscanf2.c
 ./neut_mtess/neut_mtess_op/neut_mtess_op1.c
 ./neut_mtess/neut_mtess_topo/neut_mtess_topo1.c
 ./neut_mtess/neut_mtess_gen/neut_mtess_gen1.c
@@ -172,6 +169,7 @@ add_library (neut
 ./neut_ori/neut_ori.c
 ./neut_oset/neut_oset1.cpp
 ./neut_oset/neut_oset2.cpp
+./neut_prim/neut_prim.c
 )
 
 ## Link libraries

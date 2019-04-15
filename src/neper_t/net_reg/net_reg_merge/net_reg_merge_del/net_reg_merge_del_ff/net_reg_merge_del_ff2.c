@@ -1,16 +1,16 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_reg_merge_del_ff_.h"
 
-// FFBaryFace builds the interpolation of the face by
+// net_reg_merge_del_ff_interpolate builds the interpolation of the face by
 // searching the point used (barycenter or a vertex) and calculating the
 // corresponding flatness fault.
 double
-FFBaryFace (struct TESS *pTess, int face)
+net_reg_merge_del_ff_interpolate (struct TESS *pTess, int face)
 {
-  int i;
+  int i, domface;
   double minff;
   double *ff = ut_alloc_1d ((*pTess).FaceVerQty[face] + 1);
 
@@ -25,6 +25,13 @@ FFBaryFace (struct TESS *pTess, int face)
   {
     (*pTess).FacePt[face] = i;
     ff[i] = neut_tess_face_ff (*pTess, face);
+    if ((*pTess).FaceDom[face][0] == 2)
+    {
+      domface = (*pTess).FaceDom[face][1];
+      if (strcmp ((*pTess).DomFaceType[domface], "plane")
+          && ff[i] < 90)
+        ff[i] = 0;
+    }
   }
 
   (*pTess).FacePt[face] =

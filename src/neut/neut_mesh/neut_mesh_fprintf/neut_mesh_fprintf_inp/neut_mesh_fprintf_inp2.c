@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_inp_.h"
@@ -184,14 +184,13 @@ neut_mesh_fprintf_inp_mesh3d (FILE *file, struct MESH Mesh3D, int shift_elt, cha
 
 void
 neut_mesh_fprintf_inp_elsets (FILE *file, struct MESH Mesh,
-			      char *name, int shift_elt)
+			      int shift_elt)
 {
   int i, j, Col, call;
 
   for (i = 1; i <= Mesh.ElsetQty; i++)
   {
-    fprintf (file, "*Elset, elset=%s%d\n", name,
-	     (!Mesh.ElsetId) ? i : Mesh.ElsetId[i]);
+    fprintf (file, "*Elset, elset=%s\n", Mesh.ElsetLabels[i]);
     Col = 0;
     call = 0;
     for (j = 1; j <= Mesh.Elsets[i][0]; j++)

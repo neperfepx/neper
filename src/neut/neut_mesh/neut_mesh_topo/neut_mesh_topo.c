@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_topo_.h"
@@ -952,6 +952,10 @@ neut_mesh2d_mesh1d (struct NODES Nodes, struct MESH Mesh2D,
   double **eodeq = NULL;
   int eodqty = 0;
 
+  int **EdgeFaceNb = NULL;
+  int *EdgeFaceQty = NULL;
+  int EdgeQty;
+
   neut_nodes_set_zero (&fake);
 
   neut_mesh_set_zero (&EltMesh1D);
@@ -1009,7 +1013,7 @@ neut_mesh2d_mesh1d (struct NODES Nodes, struct MESH Mesh2D,
   //   . else, do nothing.
   // Set ElsetQty, EltElset, *pEdgeQty, *pEdgeFaceQty and *pEdgeFaceNb
 
-  (*pEdgeQty) = 0;
+  EdgeQty = 0;
 
   if (verbosity)
     ut_print_progress (stdout, 0, (*pMesh1D).EltQty, "[2/2] %3.0f%%",
@@ -1038,12 +1042,12 @@ neut_mesh2d_mesh1d (struct NODES Nodes, struct MESH Mesh2D,
 	  neut_mesh_elt_reversenodes (pMesh1D, i);
       }
 
-      (*pEdgeQty) = elset;
-      (*pEdgeFaceQty) = ut_realloc_1d_int (*pEdgeFaceQty, *pEdgeQty);
-      (*pEdgeFaceQty)[(*pEdgeQty) - 1] = elset2dqty;
-      (*pEdgeFaceNb)
-	= ut_realloc_2d_int_addline (*pEdgeFaceNb, *pEdgeQty, elset2dqty);
-      ut_array_1d_int_memcpy ((*pEdgeFaceNb)[(*pEdgeQty) - 1], elset2dqty,
+      EdgeQty = elset;
+      EdgeFaceQty = ut_realloc_1d_int (EdgeFaceQty, EdgeQty);
+      EdgeFaceQty[EdgeQty - 1] = elset2dqty;
+      EdgeFaceNb
+	= ut_realloc_2d_int_addline (EdgeFaceNb, EdgeQty, elset2dqty);
+      ut_array_1d_int_memcpy (EdgeFaceNb[EdgeQty - 1], elset2dqty,
 			      elset2d);
 
       // loop on neighbours
@@ -1076,8 +1080,8 @@ neut_mesh2d_mesh1d (struct NODES Nodes, struct MESH Mesh2D,
 	  // recording it and adding non-registered neighbours to the
 	  // buffer.
 	  if (!ut_array_1d_int_diff (elset2d, elset2dqty,
-				     (*pEdgeFaceNb)[elset - 1],
-				     (*pEdgeFaceQty)[elset - 1]))
+				     EdgeFaceNb[elset - 1],
+				     EdgeFaceQty[elset - 1]))
 	  {
 	    (*pMesh1D).EltElset[elt1d] = elset;
 
@@ -1114,6 +1118,30 @@ neut_mesh2d_mesh1d (struct NODES Nodes, struct MESH Mesh2D,
   if (verbosity)
     ut_print_progress (stdout, (*pMesh1D).EltQty, (*pMesh1D).EltQty,
 		       "%3.0f%%", progress);
+
+  if (pEdgeQty)
+    (*pEdgeQty) = EdgeQty;
+
+  if (pEdgeFaceQty)
+  {
+    (*pEdgeFaceQty) = ut_alloc_1d_int (EdgeQty);
+
+    ut_array_1d_int_memcpy (*pEdgeFaceQty, EdgeQty, EdgeFaceQty);
+  }
+
+  if (pEdgeFaceNb)
+  {
+    (*pEdgeFaceNb) = ut_alloc_1d_pint (EdgeQty);
+
+    for (i = 0; i < EdgeQty; i++)
+    {
+      (*pEdgeFaceNb)[i] = ut_alloc_1d_int (EdgeFaceQty[i]);
+      ut_array_1d_int_memcpy ((*pEdgeFaceNb)[i], EdgeFaceQty[i], EdgeFaceNb[i]);
+    }
+  }
+
+  ut_free_1d_int (EdgeFaceQty);
+  ut_free_2d_int (EdgeFaceNb, EdgeQty);
 
   neut_mesh_init_elsets (pMesh1D);
 

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_sset_post_.h"
@@ -21,7 +21,9 @@ net_tess_opt_init_sset_post (struct IN_T In, int level, struct TESS PTess,
     }
 
   // periodicity
-  net_tess_opt_init_sset_post_per (In.periodic, PTess, cell, &(*pTOpt).SSet);
+  (void) PTess;
+  net_tess_opt_init_sset_post_per (In.periodic, PTess.Level,
+                                   (*pTOpt).Dom, cell, &(*pTOpt).SSet);
 
   // log
   net_tess_opt_init_sset_post_log (In, level, pTOpt);

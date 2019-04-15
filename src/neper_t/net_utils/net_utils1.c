@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_utils_.h"
@@ -321,9 +321,15 @@ net_tess_poly (struct TESS Tess, int poly, struct POLY *pPoly)
       (*pPoly).VerFace[i][j] = faces_inv[face - facemin] + 1;
     }
 
+  /*
   // This is needed by multiscale
+  // Actually, this seems only needed for multiscale + call to net_tess3d,
+  // which happens only in net_tess_lam or net_tess_tocta.
+  // This broke net_tess_clip, for example
+  // so, the patch was moved to net_tess3d
   for (i = 1; i <= (*pPoly).FaceQty; i++)
     (*pPoly).FacePoly[i] = -i;
+    */
 
   ut_free_1d_int (faces);
   ut_free_1d_int (vers);
@@ -365,18 +371,37 @@ net_poly_tess (struct POLY Poly, double *coo, struct TESS *pTess)
 {
   struct TESL Tesl;
   struct SEEDSET SSet;
+  double *coob = NULL;
+
+  if (Poly.VerQty == 0)
+  {
+    neut_tess_set_zero (pTess);
+
+    return;
+  }
+
+  coob = ut_alloc_1d (3);
 
   neut_tesl_set_zero (&Tesl);
   neut_seedset_set_zero (&SSet);
   ut_string_string ("standard", &(SSet.Type));
-  neut_seedset_addseed (&SSet, coo, 0);
 
-  net_poly_tesl (Poly, coo, &Tesl);
+  if (coo)
+    ut_array_1d_memcpy (coob, 3, coo);
+  else
+    neut_poly_centroid (Poly, coob);
+
+  neut_seedset_addseed (&SSet, coob, 0);
+
+  net_poly_tesl (Poly, coob, &Tesl);
   neut_tesl_tess (Tesl, SSet, 0, 0, pTess);
   neut_tess_poly_centroid (*pTess, 1, (*pTess).SeedCoo[1]);
+  (*pTess).PseudoDim = Poly.PseudoDim;
+  (*pTess).PseudoSize = Poly.PseudoSize;
 
   neut_tesl_free (&Tesl);
   neut_seedset_free (&SSet);
+  ut_free_1d (coob);
 
   return;
 }
@@ -527,6 +552,7 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
   struct POLYMOD Polymod;
   int *BadVer = ut_alloc_1d_int (1000);
   struct TESL Tesl;
+  struct TESS TessCpy;
   int plane_id;
 
   level = (*pTess).Level;
@@ -535,6 +561,8 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
   plane_id = ut_array_2d_int_min ((*pTess).FacePoly + 1, (*pTess).FaceQty, 2) - 1;
 
   neut_tesl_set_zero (&Tesl);
+  neut_tess_set_zero (&TessCpy);
+  neut_tess_tess (*pTess, &TessCpy);
 
   neut_polymod_set_zero (&Polymod);
 
@@ -583,6 +611,13 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
 
   ut_string_string ("clipped", &((*pTess)).DomType);
   neut_tess_init_domain (pTess);
+
+  neut_tess_tess_gen (TessCpy, pTess);
+  neut_tess_tess_cell (TessCpy, pTess);
+  neut_tess_tess_seed (TessCpy, pTess);
+  neut_tess_tess_scale (TessCpy, pTess);
+
+  neut_tess_free (&TessCpy);
 
   return;
 }
@@ -646,7 +681,7 @@ net_multiscale_arg_0d_fscanf (char *string, char *flag,
     file = ut_file_open (string, "R");
     status = ut_array_0d_char_fscanf_filter_prefix (file, tmp, flag);
     if (status != 1)
-      ut_print_message (2, 0, "Failed to read file.\n");
+      ut_print_message (2, 0, "Failed to read file `%s'.\n", string);
 
     ut_file_close (file, string, "R");
   }
@@ -681,7 +716,7 @@ net_multiscale_arg_1d_fscanf (char *string, char *flag, double *val, int valqty)
   file = ut_file_open (string, "R");
   status = ut_array_1d_fscanf_filter_prefix (file, val, valqty, flag);
   if (status != 1)
-    ut_print_message (2, 0, "Failed to read file.\n");
+    ut_print_message (2, 0, "Failed to read file `%s'.\n", string);
   ut_file_close (file, string, "R");
 
   return 0;
@@ -696,7 +731,7 @@ net_multiscale_arg_1d_int_fscanf (char *string, char *flag, int *val, int valqty
   file = ut_file_open (string, "R");
   status = ut_array_1d_int_fscanf_filter_prefix (file, val, valqty, flag);
   if (status != 1)
-    ut_print_message (2, 0, "Failed to read file.\n");
+    ut_print_message (2, 0, "Failed to read file `%s'.\n", string);
   ut_file_close (file, string, "R");
 
   return 0;
@@ -711,7 +746,7 @@ net_multiscale_arg_2d_fscanf (char *string, char *flag, double **val, int size1,
   file = ut_file_open (string, "R");
   status = ut_array_2d_fscanf_filter_prefix (file, val, size1, size2, flag);
   if (status != 1)
-    ut_print_message (2, 0, "Failed to read file.\n");
+    ut_print_message (2, 0, "Failed to read file `%s'.\n", string);
   ut_file_close (file, string, "R");
 
   return 0;
@@ -800,6 +835,50 @@ net_pts_convexhull (double **coos, int qty, int dim, struct NODES *pN, struct ME
   neut_tess_free (&Tess);
   neut_tess_free (&Tess2);
   neut_mesh_free (&Mesh);
+
+  return;
+}
+
+int
+net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet)
+{
+  neut_seedset_free (pSSet);
+  neut_seedset_set_zero (pSSet);
+
+  (*pSSet).N = Tess.SeedQty;
+  (*pSSet).Nall = Tess.SeedQty;
+  ut_string_string (Tess.Type, &(*pSSet).Type);
+
+  if (!strcmp ((*pSSet).Type, "periodic"))
+    abort ();
+
+  (*pSSet).SeedCoo = ut_alloc_2d ((*pSSet).Nall + 1, 3);
+  ut_array_2d_memcpy ((*pSSet).SeedCoo + 1, (*pSSet).Nall, 3, Tess.SeedCoo + 1);
+
+  (*pSSet).SeedCoo0 = ut_alloc_2d ((*pSSet).N + 1, 3);
+  ut_array_2d_memcpy ((*pSSet).SeedCoo0 + 1, (*pSSet).N, 3, (*pSSet).SeedCoo + 1);
+
+  (*pSSet).SeedWeight = ut_alloc_1d ((*pSSet).Nall + 1);
+  ut_array_1d_memcpy ((*pSSet).SeedWeight + 1, (*pSSet).Nall, Tess.SeedWeight + 1);
+
+  return 0;
+}
+
+void
+net_seedset_tess (struct SEEDSET SSet, struct TESS *pTess)
+{
+  neut_tess_set_zero (pTess);
+
+  (*pTess).Dim = 0;
+
+  (*pTess).CellQty = SSet.N;
+
+  if (SSet.q)
+  {
+    (*pTess).CellOri = ut_alloc_2d ((*pTess).CellQty + 1, 4);
+
+    ut_array_2d_memcpy ((*pTess).CellOri + 1, (*pTess).CellQty, 4, SSet.q);
+  }
 
   return;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifndef STRUCTIN_H
@@ -32,6 +32,14 @@ struct IN_M
   char *cltype;			// abs or rel
   char *clstring;		// value of -cl or -rcl
   char *clratiostring;		// ratio between the x, y and z direction
+
+  char *clfacetype;		// abs or rel, face
+  char *clfacestring;		// value of -cl or -rcl, face
+  char *cledgetype;		// abs or rel, edge
+  char *cledgestring;		// value of -cl or -rcl, edge
+  char *clvertype;		// abs or rel, ver
+  char *clverstring;		// value of -cl or -rcl, ver
+
   double clmin;
   double pl;
 
@@ -57,7 +65,7 @@ struct IN_M
   double mesh3dmaxtime;		// 3D mesher max run time
   double mesh3drmaxtime;	// 3D mesher max relative run time
   int mesh3diter;		// 3D mesher max number of iterations
-  double mesh3dclconv;		// 3D mesh cl convergence criterion
+  char* mesh3dclrepsstring;     // 3D mesh cl convergence criterion
   int mesh3dreport;		// report statistics on the 3D mesh (logical)
 
   char *transportstring;	// Data to transport
@@ -66,6 +74,7 @@ struct IN_M
   double dupnodemerge;		// merge duplicate nodes (tolerancy)
 
   char *nset;			// list of nsets
+  char *elset;			// list of elsets
   char *faset;			// list of fasets
 
   char *partstring;		// partitioning string

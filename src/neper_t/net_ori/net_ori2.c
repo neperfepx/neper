@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_.h"
@@ -101,6 +101,53 @@ net_ori_equal (struct SEEDSET *SSet, int dtess,
 
   for (i = 0; i < (*pOSet).size; i++)
     ut_array_1d_memcpy ((*pOSet).q[i], 4, SSet[dtess].q[dcell]);
+
+  return;
+}
+
+void
+net_ori_spread (char *ori,
+                struct SEEDSET *SSet, int dtess,
+                int dcell, struct OL_SET *pOSet)
+{
+  unsigned int i, j;
+  double sig, mean;
+  double *v = ol_r_alloc ();
+  double *q = ol_q_alloc ();
+  int varqty;
+  char** vars = NULL;
+  char** vals = NULL;
+
+  ut_string_function_separate (ori, NULL, &vars, &vals, &varqty);
+
+  if (varqty != 1)
+    abort ();
+
+  if (!vars || !vars[0] || !strcmp (vars[0], "mean"))
+  {
+    sscanf (vals[0], "%lf", &mean);
+    sig = mean / (2 * sqrt (2 / M_PI)); // Glez and Driver, J. Appl. Cryst., 2001
+  }
+  else
+    abort ();
+
+  gsl_rng *rand = gsl_rng_alloc (gsl_rng_ranlxd2);
+  gsl_rng_set (rand, SSet[dtess].Random);
+
+  for (i = 0; i < (*pOSet).size; i++)
+  {
+    for (j = 0; j < 3; j++)
+      v[j] = gsl_ran_gaussian (rand, sig / 2);
+
+    ol_lnq_q (v, q);
+
+    ol_q_q_q (SSet[dtess].q[dcell], q, (*pOSet).q[i]);
+  }
+
+  gsl_rng_free (rand);
+  ol_q_free (q);
+  ut_free_2d_char (vars, varqty);
+  ut_free_2d_char (vals, varqty);
 
   return;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_geof_.h"
@@ -406,8 +406,7 @@ neut_mesh_fprintf_geof_elsets (FILE * file, struct MESH Mesh1D,
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "1") && Mesh1D.EltOrder == 1)
     for (i = 1; i <= Mesh1D.ElsetQty; i++)
     {
-      fprintf (file, "**elset line%d\n", (!Mesh1D.ElsetId) ? i
-	       : Mesh1D.ElsetId[i]);
+      fprintf (file, "**elset %s\n", Mesh1D.ElsetLabels[i]);
       Col = 0;
       for (j = 1; j <= Mesh1D.Elsets[i][0]; j++)
 	ut_print_wnc_int (file, Mesh1D.Elsets[i][j] + shift[1], &Col, 72);
@@ -418,8 +417,7 @@ neut_mesh_fprintf_geof_elsets (FILE * file, struct MESH Mesh1D,
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "2"))
     for (i = 1; i <= Mesh2D.ElsetQty; i++)
     {
-      fprintf (file, "\n**elset face%d\n", (!Mesh2D.ElsetId) ? i
-	       : Mesh2D.ElsetId[i]);
+      fprintf (file, "\n**elset %s\n", Mesh2D.ElsetLabels[i]);
       Col = 0;
       for (j = 1; j <= Mesh2D.Elsets[i][0]; j++)
 	ut_print_wnc_int (file, Mesh2D.Elsets[i][j] + shift[2], &Col, 72);
@@ -430,8 +428,7 @@ neut_mesh_fprintf_geof_elsets (FILE * file, struct MESH Mesh1D,
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "3"))
     for (i = 1; i <= Mesh3D.ElsetQty; i++)
     {
-      fprintf (file, "\n**elset poly%d\n", (!Mesh3D.ElsetId) ? i
-	       : Mesh3D.ElsetId[i]);
+      fprintf (file, "\n**elset %s\n", Mesh3D.ElsetLabels[i]);
       Col = 0;
       for (j = 1; j <= Mesh3D.Elsets[i][0]; j++)
 	ut_print_wnc_int (file, Mesh3D.Elsets[i][j] + shift[3], &Col, 72);

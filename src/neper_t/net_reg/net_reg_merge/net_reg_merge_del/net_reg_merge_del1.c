@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_reg_merge_del_.h"
@@ -14,7 +14,7 @@ net_reg_merge_del (struct TESS *pTess, int edge, int *pver,
   int verbosity = 0;
 
   // Buffering modified entities ---------------------------------------
-
+  //
   if (buf)
     net_reg_merge_del_buffer (*pTess, edge, buf, pTessBuf);
 
@@ -112,10 +112,13 @@ net_reg_merge_del (struct TESS *pTess, int edge, int *pver,
 
   net_edgedel_edgedom_fromverdom (pTess, *pver);
 
-  (*pmaxff) = net_reg_merge_del_ff (pTess, *pver);
-
   if ((*pTess).Dim == 3)
+  {
+    (*pmaxff) = net_reg_merge_del_ff (pTess, *pver);
     net_tess_reg_ver_facedom (pTess, *pver);
+  }
+  else
+    (*pmaxff) = 0;
 
   if (verbosity >= 2)
     ut_print_message (0, 3, "Testing tessellation...\n");

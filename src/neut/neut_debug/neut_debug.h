@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2018, Romain Quey. */
+/* Copyright (C) 2003-2019, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -41,6 +41,10 @@ extern "C"
 
   extern void neut_debug_multim (FILE * file, struct MULTIM Multim);
   extern void neut_debug_tesr (FILE * file, struct TESR Tesr);
+
+  extern void neut_debug_prim (FILE *file, struct PRIM Prim);
+
+  extern void neut_debug_mtess (FILE *file, struct MTESS MTess, struct TESS *Tess);
 
 #endif				/* NEUT_DEBUG_H */
 
