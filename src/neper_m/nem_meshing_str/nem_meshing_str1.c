@@ -45,7 +45,8 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
   // ut_print_message (0, 2, "Searching elsets... ");
   nem_meshing_str_tess (Tess, pNodes, Mesh);
 
-  neut_mesh_init_elsets (Mesh + 3);
+  neut_mesh_init_elsets (Mesh + Tess.Dim);
+  neut_mesh_init_elsetlabels (Mesh + Tess.Dim);
 
   nem_reconstruct_mesh (In.dimout, pNodes, Mesh, NULL);
 
@@ -136,6 +137,7 @@ nem_meshing_tesr_str (struct IN_M In, struct MESHPARA MeshPara,
 	Mesh[Tesr.Dim].EltElset[++elt] = Tesr2.VoxCell[i][j][k];
 
   neut_mesh_init_elsets (Mesh + Tesr.Dim);
+  neut_mesh_init_elsetlabels (Mesh + Tesr.Dim);
 
   neut_mesh_rmelset (Mesh + Tesr.Dim, *pNodes, 0);
 

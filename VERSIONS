@@ -1,3 +1,6 @@
+New in 3.4.1-1 (26 Apr 2019):
+- module -M: fix -elt hex.
+
 New in 3.4.0 (15 Apr 2019):
 - module -T: added tessellation cutting (to get non-convex domains) using
   -transform cut, added cell merging and removal using -transform mergecell and
