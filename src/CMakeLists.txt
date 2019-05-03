@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.4.1-1\")
+set (NEPER_VERSION \"3.4.1-2\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -206,8 +206,8 @@ add_test (T_statface              ./neper --rcfile none -T -n 2 -statface id,x,y
 add_test (T_statpoly              ./neper --rcfile none -T -n 2 -statpoly "id,x,y,z,true,body,state,area,vol,size,diameq,radeq,sphericity,convexity,dihangleav,dihanglemin,dihanglemax,dihanglelist,vernb,edgenb,facenb,neighnb,verlist,edgelist,facelist,npolylist,facearealist,faceeqlist,vercoolist,scaleid(1)")
 # add_test (T_statpoint)
 # add_test (T_checktess)
-add_test (T_loadtess              ./neper --rcfile none -T -loadtess n5-id1.tess -statcell x -format tess,tesr)
-add_test (T_loadtesr              ./neper --rcfile none -T -loadtesr n5-id1.tesr -statcell x -format tesr)
+add_test (T_loadtess              ./neper --rcfile none -T -loadtess n2-id1.tess -statcell x -format tess,tesr)
+add_test (T_loadtesr              ./neper --rcfile none -T -loadtesr n2-id1.tesr -statcell x -format tesr)
 
 add_test (Tm2_n                     ./neper --rcfile none -T -n 2::2 -o n5x5)
 add_test (Tm2_dim                   ./neper --rcfile none -T -n 2::2 -dim 2)
