@@ -15,8 +15,8 @@ extern "C"
   extern void neut_tess_var_dim (int dim, char *entity, char *var, int *pdim);
   extern int neut_tess_var_val (struct TESS Tess,
 				int *showedge, int *showface, int *showpoly,
-				char *entity, int id, char *var, double *pval,
-				char **type);
+				char *entity, int id, char *var, double *vals,
+				int *pvalqty, char **type);
   extern int neut_tess_var_val_all (struct TESS Tess, int *showedge,
 				    int *showface, int *showpoly,
 				    char *entity, char *var, double *val,

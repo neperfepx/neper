@@ -1,5 +1,5 @@
-New in 3.4.1-4 (07 May 2019):
-- module -T: fixed -statvox e.
+New in 3.4.1-5 (07 May 2019):
+- module -T: fixed -statvox e, added tessellation keys.
 - module -M: fix -elt hex.
 - documentation: small fixes.
 

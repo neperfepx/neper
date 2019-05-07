@@ -25,7 +25,7 @@ nev_show_tess_seed (char **argv, int *pi, struct TESS Tess,
   int i, j, status, varqty;
   double res;
   char **vars = NULL;
-  double *vals = NULL;
+  double *vals = ut_alloc_1d (1000);
   int SeedQty = Tess.CellQty;
 
   (*pi)++;
@@ -46,7 +46,7 @@ nev_show_tess_seed (char **argv, int *pi, struct TESS Tess,
 	if (strstr (argv[(*pi)], vars[j]))
 	  neut_tess_var_val (Tess, (*pPrint).showedge,
 			     (*pPrint).showface, (*pPrint).showpoly, "seed",
-			     i, vars[j], &(vals[j]), NULL);
+			     i, vars[j], vals + j, NULL, NULL);
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);
       if (status == 0)
@@ -93,7 +93,7 @@ nev_show_tess_ver (char **argv, int *pi, struct TESS Tess,
 	if (strstr (argv[(*pi)], vars[j]))
 	  neut_tess_var_val (Tess, (*pPrint).showedge,
 			     (*pPrint).showface, (*pPrint).showpoly, "ver", i,
-			     vars[j], &(vals[j]), NULL);
+			     vars[j], vals + j, NULL, NULL);
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);
       if (status == 0)
@@ -142,7 +142,7 @@ nev_show_tess_edge (char **argv, int *pi, struct TESS Tess,
 	  neut_tess_var_val (Tess,
 			     (*pPrint).showedge,
 			     (*pPrint).showface, (*pPrint).showpoly,
-			     "edge", i, vars[j], &(vals[j]), NULL);
+			     "edge", i, vars[j], vals + j, NULL, NULL);
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);
       if (status == 0)
@@ -190,7 +190,7 @@ nev_show_tess_face (char **argv, int *pi, struct TESS Tess,
 	if (strstr (argv[(*pi)], vars[j]))
 	  neut_tess_var_val (Tess, NULL, NULL,
 			     (*pPrint).showface, "face", i, vars[j],
-			     &(vals[j]), NULL);
+			     vals + j, NULL, NULL);
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);
       if (status == 0)
@@ -237,7 +237,7 @@ nev_show_tess_poly (char **argv, int *pi, struct TESS Tess,
       for (j = 0; j < varqty; j++)
 	if (strstr (argv[(*pi)], vars[j]))
 	  neut_tess_var_val (Tess, NULL, NULL, NULL, "poly", i, vars[j],
-			     &(vals[j]), NULL);
+			     vals + j, NULL, NULL);
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);
       if (status == 0)
@@ -289,7 +289,7 @@ nev_show_tess_cell (char **argv, int *pi, struct TESS Tess,
 	    vals[j] = Tess.CellId ? Tess.CellId[i] : i;
 	  else
 	    neut_tess_var_val (Tess, NULL, NULL, NULL, cell, i, vars[j],
-			       &(vals[j]), NULL);
+			       vals + j, NULL, NULL);
 	}
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);

@@ -152,35 +152,36 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
     polyhedron (face) = ratio of the volume (area) of the polyhedron
       (face) to the volume (area) of the convex hull of the polyhedron
       (face).} @tab face@footnote{Applies only to a 2D tessellation.}, poly
-  @item @code{dihangleav},
-        @code{dihanglemin},
-	@code{dihanglemax} @tab average, minium and maximum dihedral
-	angle @tab face, poly
-  @item @code{dihanglelist} @tab dihedral angle list   @tab face, poly
+  @item @code{dihangleav} @tab average dihedral angle @tab face, poly
+  @item @code{dihanglemin} @tab minimum dihedral angle @tab face, poly
+  @item @code{dihanglemax} @tab maximum dihedral angle @tab face, poly
+  @item @code{dihangles} @tab dihedral angles @tab face, poly
   @item @code{ff} @tab flatness fault (in degrees)     @tab face
   @item @code{theta} @tab disorientation angle (in degrees)     @tab edge (in 2D), face (in 3D)
   @item @code{cyl} @tab whether or not is used to describe the
                         circular part of a cylinder domain @tab edge
   @item @code{vernb}  @tab number of vertices          @tab edge, face, poly
+  @item @code{vers}  @tab vertices                  @tab edge, face, poly
   @item @code{edgenb}  @tab number of edges            @tab ver, face, poly
+  @item @code{edges}  @tab edges                    @tab ver, face, poly
   @item @code{facenb}  @tab number of faces            @tab ver, edge, poly
+  @item @code{faces}  @tab faces                    @tab ver, edge, poly
   @item @code{polynb}  @tab number of polyhedra        @tab ver, edge, face
-  @item @code{neighnb}  @tab number of neighbours of a face or
-  polyhedron@footnote{Neighbour of a face or polyhedron =
-    touching entity of the same type (faces for a face, @dots{}).}      @tab face, poly
-  @item @code{verlist}  @tab vertex list               @tab face, poly
-  @item @code{edgelist}  @tab edge list                @tab face, poly
-  @item @code{facelist}  @tab face list                @tab edge, poly
-  @item @code{nfacelist} @tab neighbouring face list   @tab face
-  @item @code{npolylist} @tab neighbouring polyhedron list
+  @item @code{polys}  @tab polyhedra                @tab ver, edge, face
+  @item @code{nfacenb}  @tab number of neighbouring faces @tab face
+  @item @code{nfaces} @tab neighbouring faces @tab face
+  @item @code{npolynb} @tab number of neighbouring polyhedra @tab poly
+  @item @code{npolys} @tab neighbouring polyhedra            @tab poly
+  @item @code{nseednb} @tab number of neighbouring seeds @tab poly
+  @item @code{nseeds} @tab neighbouring seeds
   @footnote{If a polyhedron has no neighbour on a face, a negative value
-    is returned instead of the neighbour id.} @tab poly
-  @item @code{facearealist} @tab face area list                  @tab poly
-  @item @code{faceeqlist} @tab face equation list@footnote{A face equation is specified by
+    is returned.} @tab poly
+  @item @code{vercoos}  @tab vertex coordinates @tab face, poly
+  @item @code{faceareas} @tab face surface areas @tab poly
+  @item @code{faceeqs} @tab face equations@footnote{A face equation is specified by
 the parameters @math{d}, @math{a}, @math{b} and @math{c}, with the equation being: @math{a x + b y + c z = d}.  The vector
 @math{(a, b, c)} is pointing outwards of the polyhedron.}
   @tab poly
-  @item @code{vercoolist}  @tab list of vertex coordinates @tab face, poly
   @item @code{scaleid(@var{scale})}  @tab identifier of the corresponding cell at scale
   @var{scale} @tab cell
   @item @code{lamid}  @tab lamella width id@footnote{In the case of a
@@ -192,7 +193,7 @@ the parameters @math{d}, @math{a}, @math{b} and @math{c}, with the equation bein
     @var{modeid} stands for the actual mode (starting from 1).}            @tab face, poly
 @end multitable
 
-The list variables (@samp{verlist}, etc.) are not available for sorting
+Variables consisting of several values (@samp{vers}, etc.) are not available for sorting
 (option @option{-sort}).
 
 For a cell, the @code{body} and @code{true} variables are

@@ -29,7 +29,7 @@ net_sort_tess (struct TESS *pTess, char *expr)
     for (j = 0; j < var_qty; j++)
       if (strstr (expr, vars[j]))
 	neut_tess_var_val (*pTess, NULL, NULL, NULL, cell, i, vars[j],
-			   &(vals[j]), NULL);
+			   vals + j, NULL, NULL);
 
     status = ut_math_eval (expr, var_qty, vars, vals, &(res[i]));
     if (status != 0)
