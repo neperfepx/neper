@@ -496,6 +496,7 @@ optional fields.
 @ @ @ @var{vox1_param1} @var{vox1_param2} ...                      	@*
 @ @ @ @var{vox2_param1} @var{vox2_param2} ...                     	@*
 @ @emph{or}                                                          	@*
+@ @ @ @var{descriptor}                                                  @*
 @ @ *file @var{oridata_file_name}                                       @*
 ]	                                                            	@*
 ***end                                                               	@*

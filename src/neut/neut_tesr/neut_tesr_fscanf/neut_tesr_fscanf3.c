@@ -98,12 +98,30 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
   int i, j, k;
   (void) format;
 
-  if (!strcmp (des, "q"))
+  if (!strcmp (des, "g"))
   {
+    double **g = ol_g_alloc ();
     for (k = 1; k <= (*pTesr).size[2]; k++)
       for (j = 1; j <= (*pTesr).size[1]; j++)
         for (i = 1; i <= (*pTesr).size[0]; i++)
-          ut_array_1d_fscanf (file, (*pTesr).VoxOri[i][j][k], 4);
+        {
+          ol_g_fscanf (file, g);
+          ol_g_q (g, (*pTesr).VoxOri[i][j][k]);
+        }
+    ol_g_free (g);
+  }
+
+  else if (!strcmp (des, "rtheta"))
+  {
+    double theta, *r = ol_r_alloc ();
+    for (k = 1; k <= (*pTesr).size[2]; k++)
+      for (j = 1; j <= (*pTesr).size[1]; j++)
+        for (i = 1; i <= (*pTesr).size[0]; i++)
+        {
+          ol_rtheta_fscanf (file, r, &theta);
+          ol_rtheta_q (r, theta, (*pTesr).VoxOri[i][j][k]);
+        }
+    ol_r_free (r);
   }
 
   else if (!strcmp (des, "R"))
@@ -119,6 +137,14 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
     ol_R_free (R);
   }
 
+  else if (!strcmp (des, "q"))
+  {
+    for (k = 1; k <= (*pTesr).size[2]; k++)
+      for (j = 1; j <= (*pTesr).size[1]; j++)
+        for (i = 1; i <= (*pTesr).size[0]; i++)
+          ol_q_fscanf (file, (*pTesr).VoxOri[i][j][k]);
+  }
+
   else if (!strcmp (des, "e"))
   {
     double *e = ol_e_alloc ();
@@ -129,7 +155,35 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
           ol_e_fscanf (file, e);
           ol_e_q (e, (*pTesr).VoxOri[i][j][k]);
         }
-    ol_R_free (e);
+    ol_e_free (e);
+  }
+
+  else if (!strcmp (des, "ek"))
+  {
+    double *e = ol_e_alloc ();
+    for (k = 1; k <= (*pTesr).size[2]; k++)
+      for (j = 1; j <= (*pTesr).size[1]; j++)
+        for (i = 1; i <= (*pTesr).size[0]; i++)
+        {
+          ol_e_fscanf (file, e);
+          ol_ek_e (e, e);
+          ol_e_q (e, (*pTesr).VoxOri[i][j][k]);
+        }
+    ol_e_free (e);
+  }
+
+  else if (!strcmp (des, "er"))
+  {
+    double *e = ol_e_alloc ();
+    for (k = 1; k <= (*pTesr).size[2]; k++)
+      for (j = 1; j <= (*pTesr).size[1]; j++)
+        for (i = 1; i <= (*pTesr).size[0]; i++)
+        {
+          ol_e_fscanf (file, e);
+          ol_er_e (e, e);
+          ol_e_q (e, (*pTesr).VoxOri[i][j][k]);
+        }
+    ol_e_free (e);
   }
 
   else
