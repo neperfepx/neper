@@ -144,6 +144,8 @@ extern "C"
 
   extern void neut_tesr_rotate (struct TESR *pTesr, double **g);
 
+  extern void neut_tesr_init_voxori (struct TESR *pTesr);
+
 #endif				/* NEUT_VOX_OP_H */
 
 #ifdef __cplusplus

@@ -1507,3 +1507,23 @@ neut_tesr_addbuffer (struct TESR *pTesr, char *addbuffer)
 
   return;
 }
+
+void
+neut_tesr_init_voxori (struct TESR *pTesr)
+{
+  int i, j, k;
+
+  if (!(*pTesr).CellOri)
+    return;
+
+  (*pTesr).VoxOri = ut_alloc_4d ((*pTesr).size[0] + 1, (*pTesr).size[1] + 1,
+                                 (*pTesr).size[2] + 1, 4);
+
+  for (k = 1; k <= (*pTesr).size[2]; k++)
+    for (j = 1; j <= (*pTesr).size[1]; j++)
+      for (i = 1; i <= (*pTesr).size[0]; i++)
+        ut_array_1d_memcpy ((*pTesr).VoxOri[i][j][k], 4,
+                            (*pTesr).CellOri[(*pTesr).VoxCell[i][j][k]]);
+
+  return;
+}

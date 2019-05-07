@@ -95,8 +95,7 @@ void
 neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
                                   FILE * file)
 {
-  int i, j, k;
-  (void) format;
+  int i, j, k, l, endian = ut_sys_endian ();
 
   if (!strcmp (des, "g"))
   {
@@ -105,7 +104,17 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
       for (j = 1; j <= (*pTesr).size[1]; j++)
         for (i = 1; i <= (*pTesr).size[0]; i++)
         {
-          ol_g_fscanf (file, g);
+          if (!strcmp (format, "ascii"))
+            ol_g_fscanf (file, g);
+          else
+            for (l = 0; l < 9; l++)
+            {
+              if (fread (g[l / 3] + l % 3, sizeof (double), 1, file) != 1)
+                abort ();
+              if (endian)
+                g[l / 3][l % 3] = ut_num_reverseendian (g[l / 3][l % 3]);
+            }
+
           ol_g_q (g, (*pTesr).VoxOri[i][j][k]);
         }
     ol_g_free (g);
@@ -118,7 +127,23 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
       for (j = 1; j <= (*pTesr).size[1]; j++)
         for (i = 1; i <= (*pTesr).size[0]; i++)
         {
-          ol_rtheta_fscanf (file, r, &theta);
+          if (!strcmp (format, "ascii"))
+            ol_rtheta_fscanf (file, r, &theta);
+          else
+          {
+            for (l = 0; l < 3; l++)
+            {
+              if (fread (r + l, sizeof (double), 1, file) != 1)
+                abort ();
+              if (endian)
+                r[l] = ut_num_reverseendian (r[l]);
+            }
+            if (fread (&theta, sizeof (double), 1, file) != 1)
+              abort ();
+            if (endian)
+              theta = ut_num_reverseendian (theta);
+          }
+
           ol_rtheta_q (r, theta, (*pTesr).VoxOri[i][j][k]);
         }
     ol_r_free (r);
@@ -131,7 +156,17 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
       for (j = 1; j <= (*pTesr).size[1]; j++)
         for (i = 1; i <= (*pTesr).size[0]; i++)
         {
-          ol_R_fscanf (file, R);
+          if (!strcmp (format, "ascii"))
+            ol_R_fscanf (file, R);
+          else
+            for (l = 0; l < 3; l++)
+            {
+              if (fread (R + l, sizeof (double), 1, file) != 1)
+                abort ();
+              if (endian)
+                R[l] = ut_num_reverseendian (R[l]);
+            }
+
           ol_R_q (R, (*pTesr).VoxOri[i][j][k]);
         }
     ol_R_free (R);
@@ -142,7 +177,17 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
     for (k = 1; k <= (*pTesr).size[2]; k++)
       for (j = 1; j <= (*pTesr).size[1]; j++)
         for (i = 1; i <= (*pTesr).size[0]; i++)
-          ol_q_fscanf (file, (*pTesr).VoxOri[i][j][k]);
+          if (!strcmp (format, "ascii"))
+            ol_q_fscanf (file, (*pTesr).VoxOri[i][j][k]);
+          else
+            for (l = 0; l < 4; l++)
+            {
+              if (fread ((*pTesr).VoxOri[i][j][k] + l, sizeof (double), 1, file) != 1)
+                abort ();
+              if (endian)
+                (*pTesr).VoxOri[i][j][k][l]
+                  = ut_num_reverseendian ((*pTesr).VoxOri[i][j][k][l]);
+            }
   }
 
   else if (!strcmp (des, "e"))
@@ -152,7 +197,17 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
       for (j = 1; j <= (*pTesr).size[1]; j++)
         for (i = 1; i <= (*pTesr).size[0]; i++)
         {
-          ol_e_fscanf (file, e);
+          if (!strcmp (format, "ascii"))
+            ol_e_fscanf (file, e);
+          else
+            for (l = 0; l < 3; l++)
+            {
+              if (fread (e + l, sizeof (double), 1, file) != 1)
+                abort ();
+              if (endian)
+                e[l] = ut_num_reverseendian (e[l]);
+            }
+
           ol_e_q (e, (*pTesr).VoxOri[i][j][k]);
         }
     ol_e_free (e);
@@ -165,7 +220,17 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
       for (j = 1; j <= (*pTesr).size[1]; j++)
         for (i = 1; i <= (*pTesr).size[0]; i++)
         {
-          ol_e_fscanf (file, e);
+          if (!strcmp (format, "ascii"))
+            ol_e_fscanf (file, e);
+          else
+            for (l = 0; l < 3; l++)
+            {
+              if (fread (e + l, sizeof (double), 1, file) != 1)
+                abort ();
+              if (endian)
+                e[l] = ut_num_reverseendian (e[l]);
+            }
+
           ol_ek_e (e, e);
           ol_e_q (e, (*pTesr).VoxOri[i][j][k]);
         }
@@ -179,7 +244,17 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
       for (j = 1; j <= (*pTesr).size[1]; j++)
         for (i = 1; i <= (*pTesr).size[0]; i++)
         {
-          ol_e_fscanf (file, e);
+          if (!strcmp (format, "ascii"))
+            ol_e_fscanf (file, e);
+          else
+            for (l = 0; l < 3; l++)
+            {
+              if (fread (e + l, sizeof (double), 1, file) != 1)
+                abort ();
+              if (endian)
+                e[l] = ut_num_reverseendian (e[l]);
+            }
+
           ol_er_e (e, e);
           ol_e_q (e, (*pTesr).VoxOri[i][j][k]);
         }

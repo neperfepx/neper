@@ -615,7 +615,8 @@ the values of the orientation descriptor of voxel @var{id}.
 Orientations must be listed in column-major order (x varying first, y
 varying second and z varying last).
 Arbitrary orientations can be used for void voxels (@code{@var{voxid_cell} = 0}).
-These data must be written in ASCII format.
+These data must be written under format @var{data_format}, in terms of ASCII or binary.
+In the case of binary format, double-precision numbers are considered.
 
 @item @code{oridata_file_name} is the name of a file that contains the
 orientation data. Typically, it is a @file{.raw} file.

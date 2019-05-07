@@ -48,7 +48,7 @@ neut_tesr_fprintf_data (FILE * file, char *format, struct TESR Tesr)
 void
 neut_tesr_fprintf_oridata (FILE * file, char *des, char *format, struct TESR Tesr)
 {
-  fprintf (file, "\n**oridata\n");
+  fprintf (file, "\n **oridata\n");
   fprintf (file, "   %s\n", des);
   neut_tesr_fprintf_oridata_noheader (file, des, format, Tesr);
 
@@ -269,16 +269,24 @@ neut_tesr_fprintf_data_noheader (FILE * file, char *format, struct TESR Tesr)
 void
 neut_tesr_fprintf_oridata_noheader (FILE * file, char *des, char *format, struct TESR Tesr)
 {
-  int i, j, k;
+  int i, j, k, l;
 
-  if (!strcmp (des, "q") && !strcmp (format, "ascii"))
-    for (k = 1; k <= Tesr.size[2]; k++)
-      for (j = 1; j <= Tesr.size[1]; j++)
-	for (i = 1; i <= Tesr.size[0]; i++)
-	  ut_array_1d_fprintf (file, Tesr.VoxOri[i][j][k], 4, "%.12f");
-
-  else
+  if (strcmp (des, "q"))
     abort ();
+
+  for (k = 1; k <= Tesr.size[2]; k++)
+    for (j = 1; j <= Tesr.size[1]; j++)
+      for (i = 1; i <= Tesr.size[0]; i++)
+        if (!strcmp (format, "ascii"))
+        {
+          if (i < Tesr.size[0] || j < Tesr.size[1] || k < Tesr.size[2])
+            ut_array_1d_fprintf (file, Tesr.VoxOri[i][j][k], 4, "%.12f");
+          else
+            ut_array_1d_fprintf_nonl (file, Tesr.VoxOri[i][j][k], 4, "%.12f");
+        }
+        else
+          for (l = 0; l < 4; l++)
+            fwrite (Tesr.VoxOri[i][j][k] + l, sizeof (double), 1, file);
 
   return;
 }
