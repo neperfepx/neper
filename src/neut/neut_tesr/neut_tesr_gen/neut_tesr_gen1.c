@@ -524,9 +524,16 @@ neut_tesr_var_val (struct TESR Tesr, char *entity,
     }
     else if (!strcmp (var, "e"))
     {
-      int cell;
-      neut_tesr_vox_cell (Tesr, id, &cell);
-      ol_q_e (Tesr.CellOri[cell], val);
+      if (Tesr.VoxOri)
+      {
+        neut_tesr_vox_pos (Tesr, id, tmpint3);
+        ol_q_e (Tesr.VoxOri[tmpint3[0]][tmpint3[1]][tmpint3[2]], val);
+      }
+      else
+      {
+        neut_tesr_vox_cell (Tesr, id, &tmpint);
+        ol_q_e (Tesr.CellOri[tmpint], val);
+      }
       strcpy (typetmp, "%f");
       if (pvalqty)
         (*pvalqty) = 3;
