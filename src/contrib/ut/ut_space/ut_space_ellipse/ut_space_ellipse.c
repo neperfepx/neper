@@ -20,7 +20,8 @@ GetRoot (double r0, double z0, double z1, double g)
   double s0 = z1 - 1;
   double s1 = (g < 0 ? 0 : sqrt (n0 * n0 + z1 * z1) - 1);
   double s = 0;
-  for (int i = 0; i < 1000; ++i)
+  int i;
+  for (i = 0; i < 1000; ++i)
   {
     s = (s0 + s1) / 2;
 
