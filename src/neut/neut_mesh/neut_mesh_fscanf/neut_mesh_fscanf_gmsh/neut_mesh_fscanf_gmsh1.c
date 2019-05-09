@@ -96,13 +96,13 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH
         abort ();
 
       if (dim == 0)
-        status = fscanf (file, "%s", (*pMesh0D).ElsetLabels[id]);
+        status = fscanf (file, "%s", pMesh0D ? (*pMesh0D).ElsetLabels[id] : string);
       else if (dim == 1)
-        status = fscanf (file, "%s", (*pMesh1D).ElsetLabels[id]);
+        status = fscanf (file, "%s", pMesh1D ? (*pMesh1D).ElsetLabels[id] : string);
       else if (dim == 2)
-        status = fscanf (file, "%s", (*pMesh2D).ElsetLabels[id]);
+        status = fscanf (file, "%s", pMesh2D ? (*pMesh2D).ElsetLabels[id] : string);
       else if (dim == 3)
-        status = fscanf (file, "%s", (*pMesh3D).ElsetLabels[id]);
+        status = fscanf (file, "%s", pMesh3D ? (*pMesh3D).ElsetLabels[id] : string);
 
       if (status != 1)
         abort ();

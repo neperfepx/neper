@@ -1,4 +1,4 @@
-New in 3.4.1-8 (09 May 2019):
+New in 3.4.1-9 (09 May 2019):
 - module -T: fixed -statvox e, added tessellation keys, improved tesr format.
 - module -M: fix -elt hex.
 - documentation: small fixes.
