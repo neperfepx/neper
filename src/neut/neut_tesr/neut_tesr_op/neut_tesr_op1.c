@@ -1305,6 +1305,7 @@ neut_tesr_init_cellcoo (struct TESR *pTesr)
   if ((*pTesr).CellCoo)
     ut_free_2d_ (&(*pTesr).CellCoo, (*pTesr).CellQty + 1);
 
+#pragma omp parallel for schedule(dynamic) private(i)
   for (i = 1; i <= (*pTesr).CellQty; i++)
     neut_tesr_cell_centre (*pTesr, i, tmp[i]);
 
@@ -1324,6 +1325,7 @@ neut_tesr_init_cellvol (struct TESR *pTesr)
 
   ut_free_1d_ (&(*pTesr).CellVol);
 
+#pragma omp parallel for schedule(dynamic) private(i)
   for (i = 1; i <= (*pTesr).CellQty; i++)
     neut_tesr_cell_size (*pTesr, i, tmp + i);
 
@@ -1341,6 +1343,7 @@ neut_tesr_init_cellconvexity (struct TESR *pTesr)
 
   ut_free_1d_ (&(*pTesr).CellConvexity);
 
+#pragma omp parallel for schedule(dynamic) private(i)
   for (i = 1; i <= (*pTesr).CellQty; i++)
     neut_tesr_cell_convexity (*pTesr, i, tmp + i);
 
