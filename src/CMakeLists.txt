@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.4.1-11\")
+set (NEPER_VERSION \"3.4.1-12\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -134,6 +134,14 @@ add_test (T_dim                    ./neper --rcfile none -T -n 2 -dim 2)
 add_test (T_domain_cube            ./neper --rcfile none -T -n 2 -domain "cube(1,2,4)")
 add_test (T_domain_cylinder        ./neper --rcfile none -T -n 2 -domain "cylinder(1,2,100)")
 add_test (T_domain_sphere          ./neper --rcfile none -T -n 2 -domain "sphere(2,100)")
+add_test (T_domain_square          ./neper --rcfile none -T -n 2 -dim 2 -domain "square(1,2)")
+add_test (T_domain_rotate          ./neper --rcfile none -T -n 2 -domain "cube(1,1,1):rotate(1,1,1,10)")
+add_test (T_domain_translate       ./neper --rcfile none -T -n 2 -domain "cube(1,1,1):translate(1,2,3)")
+add_test (T_domain_scale           ./neper --rcfile none -T -n 2 -domain "cube(1,1,1):scale(1,2,3)")
+add_test (T_domain_split           ./neper --rcfile none -T -n 2 -domain "cube(1,1,1):split(z)")
+add_test (T_domain_rotate2         ./neper --rcfile none -T -n 2 -dim 2 -domain "square(1,1):rotate(10)")
+add_test (T_domain_translate2      ./neper --rcfile none -T -n 2 -dim 2 -domain "square(1,1):translate(1,2)")
+add_test (T_domain_scale2          ./neper --rcfile none -T -n 2 -dim 2 -domain "square(1,1):scale(1,2)")
 add_test (T_periodic               ./neper --rcfile none -T -n 2 -periodic 1)
 add_test (T_periodic_x             ./neper --rcfile none -T -n 2 -periodic x)
 add_test (T_morpho_voronoi         ./neper --rcfile none -T -n 2 -morpho voronoi)

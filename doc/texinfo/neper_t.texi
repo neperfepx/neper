@@ -175,14 +175,18 @@ To transform the domain@comma{} append
 a transformation to the domain name using the @samp{@SEPDEP{}}
 separator.  Available transformations are:
 @samp{rotate(@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{angle})}
-for a rotation about an axis/angle pair@comma{}
+for a rotation of angle @var{angle} about axis
+@math{(@var{axis_x}@comma{} @var{axis_y} @comma{}@var{axis_z})}@comma{}
 @samp{scale(@var{x_factor}@comma{}@var{y_factor}@comma{}@var{z_factor})}
 for scaling@comma{}
 @samp{translate(@var{x_delta}@comma{}@var{y_delta}@comma{}@var{z_delta})}
 for a translation and @samp{split(@var{dir})} for splitting the domain
 in half along direction @samp{@var{dir}} (@samp{@var{x}}@comma{}
 @samp{@var{y}} or @samp{@var{z}})@comma{} which can be used to apply
-symmetries.  An example is
+symmetries.  For a 2D tessellation@comma{} the axis parameters can be omitted
+in @samp{rotate} (default @math{(0@comma{} 0@comma{} 1)})@comma{}
+and the @math{z} component can be omitted in @samp{scale} (default 1) and
+@samp{translate} (default 0).  An example is
 @samp{@code{sphere(1@comma{}100)@SEPDEP{}translate(-0.5@comma{}-0.5@comma{}-0.5)@SEPDEP{}scale(0.5@comma{}1@comma{}2)}}.
 , see above list, cube(1@comma{}1@comma{}1) in 3D and
 square(1@comma{}1) in 2D}

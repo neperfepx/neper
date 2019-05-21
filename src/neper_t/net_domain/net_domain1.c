@@ -18,26 +18,26 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
 
   neut_poly_set_zero (&Poly);
 
-  if (!strncmp (In.domain, "cube", 4) || !strncmp (In.domain, "square", 6))
-    net_domain_cube_string (In.domain, &Poly);
+  if (!strncmp (strings[0], "cube", 4) || !strncmp (strings[0], "square", 6))
+    net_domain_cube_string (strings[0], &Poly);
 
   else if (!strcmp (domain, "cylinder") || !strcmp (domain, "circle"))
-    net_domain_cylinder_string (In.domain, In.n[1], &Poly);
+    net_domain_cylinder_string (strings[0], In.n[1], &Poly);
 
   else if (!strcmp (domain, "stdtriangle"))
-    net_domain_stdtriangle_string (In.domain, &Poly);
+    net_domain_stdtriangle_string (strings[0], &Poly);
 
   else if (!strcmp (domain, "sphere"))
-    net_domain_sphere_string (In.domain, &Poly);
+    net_domain_sphere_string (strings[0], &Poly);
 
   else if (!strcmp (domain, "rodrigues"))
-    net_domain_rodrigues_string (In.domain, &Poly);
+    net_domain_rodrigues_string (strings[0], &Poly);
 
   else if (!strcmp (domain, "planes"))
-    net_domain_planes_string (In.domain, In.dim, &Poly);
+    net_domain_planes_string (strings[0], In.dim, &Poly);
 
   else if (!strcmp (domain, "cell"))
-    net_domain_cell_string (In.domain, &Poly);
+    net_domain_cell_string (strings[0], &Poly);
 
   else
     ut_print_message (2, 0, "Domain type unknown (%s)\n", domain);
@@ -56,7 +56,7 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
   (*pMTess).DomTessFaceNb[0] = ut_alloc_2d_int ((*pDomain).FaceQty + 1, 2);
 
   for (i = 1; i < stringqty; i++)
-    net_domain_transform (pDomain, strings[i]);
+    net_domain_transform (pDomain, In.dim, strings[i]);
 
   for (i = 1; i <= (*pDomain).FaceQty; i++)
     (*pDomain).FacePoly[i][1] = -i;

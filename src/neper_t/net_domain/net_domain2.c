@@ -443,7 +443,7 @@ net_domain_cell (char *filename, int cell, struct POLY *pPoly)
 }
 
 void
-net_domain_transform (struct TESS *pPoly, char* string)
+net_domain_transform (struct TESS *pPoly, int dim, char* string)
 {
   int dir, status;
   double *v = ol_r_alloc ();
@@ -454,8 +454,9 @@ net_domain_transform (struct TESS *pPoly, char* string)
 
   if (!strncmp (string, "rotate(", 7))
   {
+    ut_array_1d_set_3 (v, 0., 0., 1.);
     status = sscanf (string, "rotate(%lf,%lf,%lf,%lf)", v, v + 1, v + 2, &theta);
-    if (status != 4)
+    if (status != 1 && status != 4)
       abort ();
     ol_r_set_unit (v);
     ol_rtheta_g (v, theta, g);
@@ -464,17 +465,19 @@ net_domain_transform (struct TESS *pPoly, char* string)
 
   else if (!strncmp (string, "translate(", 10))
   {
+    ut_array_1d_set (v, 3, 0.);
     status = sscanf (string, "translate(%lf,%lf,%lf)", v, v + 1, v + 2);
-    if (status != 3)
-      abort ();
+    if (status < dim)
+      ut_print_message (2, 3, "Failed to parse expression `%s'.\n", string);
     neut_tess_shift (pPoly, v[0], v[1], v[2]);
   }
 
   else if (!strncmp (string, "scale(", 6))
   {
+    ut_array_1d_set (v, 3, 1.);
     status = sscanf (string, "scale(%lf,%lf,%lf)", v, v + 1, v + 2);
-    if (status != 3)
-      abort ();
+    if (status < dim)
+      ut_print_message (2, 3, "Failed to parse expression `%s'.\n", string);
     neut_tess_scale (pPoly, v[0], v[1], v[2]);
   }
 
