@@ -191,6 +191,7 @@ the parameters @math{d}, @math{a}, @math{b} and @math{c}, with the equation bein
   @item @code{modeid}  @tab mode id@footnote{In the case of a
     multimodal tessellation (e.g.@ in terms of cell size)@comma{}
     @var{modeid} stands for the actual mode (starting from 1).}            @tab face, poly
+  @item @code{e}  @tab Euler angles (Bunge convention) @tab seed, face (in 2D), poly
 @end multitable
 
 Variables consisting of several values (@samp{vers}, etc.) are not available for sorting
