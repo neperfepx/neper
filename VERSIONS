@@ -1,7 +1,7 @@
-New in 3.4.1-12 (21 May 2019):
+New in 3.4.1-13 (22 May 2019):
 - module -T: fixed -statvox e, added tessellation keys, improved tesr format,
   fixed -ori fibre, fixed -domain, improved -statcell convexity.
-- module -M: fix -elt hex.
+- module -M: fixed -elt hex, added mesh keys.
 - documentation: small fixes.
 
 New in 3.4.0 (15 Apr 2019):

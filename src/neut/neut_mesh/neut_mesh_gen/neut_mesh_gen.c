@@ -696,7 +696,7 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
 
   if (!strcmp (entity, "elset3d"))
   {
-    (*pvarqty) = 13;
+    (*pvarqty) = 14;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
     strcpy ((*pvar)[id++], "id");
     strcpy ((*pvar)[id++], "x");
@@ -711,6 +711,7 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[id++], "true");
     strcpy ((*pvar)[id++], "body");
     strcpy ((*pvar)[id++], "domtype");
+    strcpy ((*pvar)[id++], "e");
   }
   else if (!strcmp (entity, "elset2d"))
   {
@@ -756,7 +757,7 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
   }
   else if (!strcmp (entity, "elt3d"))
   {
-    (*pvarqty) = 13;
+    (*pvarqty) = 14;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
     strcpy ((*pvar)[id++], "id");
     strcpy ((*pvar)[id++], "x");
@@ -771,6 +772,7 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[id++], "domtype");
     strcpy ((*pvar)[id++], "part");
     strcpy ((*pvar)[id++], "elsetvol");
+    strcpy ((*pvar)[id++], "e");
   }
   else if (!strcmp (entity, "elt2d"))
   {
@@ -881,7 +883,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
 		   struct PART Part, struct TESS Tess,
 		   int *showelt0d, int *showelt1d, int *showelt2d,
 		   int *showelt3d, double cl, char *entity, int id, char *var,
-		   double *val, double *pvalqty, char **ptype)
+		   double *val, int *pvalqty, char **ptype)
 {
   int j, status;
   double rrmean, rrmin, rrmax;
@@ -965,6 +967,12 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
 	val[0] = -1;
       strcpy (typetmp, "%f");
     }
+    else if (!strcmp (var, "e"))
+    {
+      ol_q_e (Tess.CellOri[id], val);
+      (*pvalqty) = 3;
+      strcpy (typetmp, "%f");
+    }
   }
   else if (!strcmp (entity, "elset2d"))
   {
@@ -1013,6 +1021,18 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     {
       val[0] = Tess.FaceDom[id][0];
       strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "e"))
+    {
+      if (Tess.Dim == 2)
+      {
+        ol_q_e (Tess.CellOri[id], val);
+        (*pvalqty) = 3;
+      }
+      else
+        (*pvalqty) = 0;
+
+      strcpy (typetmp, "%f");
     }
   }
   else if (!strcmp (entity, "elset1d"))
@@ -1176,6 +1196,12 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
       val[0] = Part.elt_parts ? Part.elt_parts[id] + 1 : 0;
       strcpy (typetmp, "%d");
     }
+    else if (!strcmp (var, "e"))
+    {
+      ol_q_e (Tess.CellOri[Mesh3D.EltElset[id]], val);
+      (*pvalqty) = 3;
+      strcpy (typetmp, "%f");
+    }
     else
       status = -1;
   }
@@ -1254,6 +1280,18 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     {
       val[0] = Part.elt_parts ? Part.elt_parts[id] + 1 : 0;
       strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "e"))
+    {
+      if (Tess.Dim == 2)
+      {
+        ol_q_e (Tess.CellOri[Mesh3D.EltElset[id]], val);
+        (*pvalqty) = 3;
+      }
+      else
+        (*pvalqty) = 0;
+
+      strcpy (typetmp, "%f");
     }
     else
       status = -1;

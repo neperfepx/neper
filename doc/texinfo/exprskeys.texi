@@ -448,6 +448,7 @@ dimensions) and points are provided below.
   @item @code{2dmeshv}@tab vector to @samp{2dmeshp}   @tab node, 3D elt
   @item @code{2dmeshn}@tab outgoing normal vector of the 2D mesh
 		     at @samp{2dmeshp}                @tab node, 3D elt
+  @item @code{e}  @tab Euler angles (Bunge convention) @tab 2D elt, 3D elt, 2D elset, 3D elset
 @end multitable
 
 @dfn{@var{n}D} stands for an arbitrary dimension (from 0D to 3D).
