@@ -88,6 +88,7 @@ struct IN_M
   // output details
 
   char *format;			// format of the output mesh
+  char *performat;	        // format of the output per file
 
   char *body;			// output file name, without extension
   char *msh;			// mesh file at the msh format

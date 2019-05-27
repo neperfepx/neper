@@ -679,6 +679,12 @@ Combine arguments with @samp{@SEPNODEP}.
 ,
 see above, default}
 
+@opt{-oriformat, char_string,
+Specify the format of the @file{.per} output file. The available formats are:
+the Neper-native @code{plain} and the Zset/Z@'ebulon @code{geof}.
+,
+see above, plain}
+
 @subsection Post-Processing Options
 
 The following options provide statistics on the nodes (@samp{nodes}),

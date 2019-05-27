@@ -61,6 +61,7 @@ nem_input_options_default (struct IN_M *pIn)
   ut_string_string ("default", &(*pIn).cledgestring);
   ut_string_string ("rel", &(*pIn).clvertype);
   ut_string_string ("default", &(*pIn).clverstring);
+  ut_string_string ("plain", &(*pIn).performat);
 
   (*pIn).clmin = 0;
   (*pIn).pl = 2;
@@ -189,6 +190,7 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-nset");
   strcpy (ArgList[++ArgQty], "-surf");	// deprecated
   strcpy (ArgList[++ArgQty], "-faset");
+  strcpy (ArgList[++ArgQty], "-performat");
 
   // Tessellation and mesh statistics options ------------------------------
   strcpy (ArgList[++ArgQty], "-statnode");
@@ -454,6 +456,8 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
 	if ((*pIn).faset[0] == '2')
 	  ut_arg_nextasstring (argv, &i, Arg, &((*pIn).faset));
       }
+      else if (!strcmp (Arg, "-performat"))
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).performat));
       else if (!strcmp (Arg, "-loadmesh"))
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).loadmesh));
       else if (!strcmp (Arg, "-loadpoint"))
