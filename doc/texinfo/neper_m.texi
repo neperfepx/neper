@@ -867,9 +867,14 @@ The mesh can be written in the following formats,
 @subsection Periodicity
 
 @itemize
-@item File @file{.per}. For each slave node, the file provides (one slave
-      node per line): the node id, the master node id and the shift
-      vector of the slave.
+@item File @file{.per}.
+
+It contains the mesh periodicity conditions, written following the
+convention specified by option @option{-performat}.  For format @samp{plain},
+for each slave node, the file provides (one slave node per line): the node id,
+the master node id and the shift vector of the slave.  For format @samp{geof},
+the file provides the displacement relationships between master and slaves nodes.
+
 @end itemize
 
 @subsection Interfaces
