@@ -1926,7 +1926,7 @@ neut_tess_coo_percoos (struct TESS Tess, double *coo, double ***ppercoos, int *p
 
           id++;
           for (l = 0; l < 3; l++)
-            (*ppercoos)[id][l] = (*ppercoos)[0][l] + per[l] * Tess.Periodic[l];
+            (*ppercoos)[id][l] = (*ppercoos)[0][l] + per[l] * Tess.PeriodicDist[l];
         }
 
   ut_free_1d_int (per);
