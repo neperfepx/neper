@@ -1,7 +1,8 @@
-New in 3.4.1-16 (28 May 2019):
+New in 3.4.1-17 (30 May 2019):
 - module -T: fixed -statvox e, added tessellation keys, improved tesr format,
   fixed -ori fibre, fixed -domain, improved -statcell convexity.
 - module -M: fixed -elt hex, added -performat, added mesh keys.
+- general: fixed compilation when NLopt locally installed.
 - documentation: small fixes.
 
 New in 3.4.0 (15 Apr 2019):

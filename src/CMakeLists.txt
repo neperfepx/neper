@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.4.1-16\")
+set (NEPER_VERSION \"3.4.1-17\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -111,6 +111,12 @@ if (HAVE_OPENMP)
   find_package (OpenMP REQUIRED)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${OpenMP_C_FLAGS})
   add_definitions(${OpenMP_C_FLAGS})
+endif ()
+
+if (HAVE_NLOPT)                                     # NLOPT
+  find_package(NLOPT REQUIRED)                      # NLOPT
+  set (EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES}) # NLOPT
+  include_directories (${NLOPT_INCLUDE_DIRS})       # NLOPT
 endif ()
 
 target_link_libraries (neper ${EXTRA_LIBS})
