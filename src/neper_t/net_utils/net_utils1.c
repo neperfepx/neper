@@ -877,7 +877,7 @@ net_seedset_tess (struct SEEDSET SSet, struct TESS *pTess)
   {
     (*pTess).CellOri = ut_alloc_2d ((*pTess).CellQty + 1, 4);
 
-    ut_array_2d_memcpy ((*pTess).CellOri + 1, (*pTess).CellQty, 4, SSet.q);
+    ut_array_2d_memcpy ((*pTess).CellOri + 1, (*pTess).CellQty, 4, SSet.q + 1);
   }
 
   return;
