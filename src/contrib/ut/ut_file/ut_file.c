@@ -103,12 +103,18 @@ ut_file_exist (const char *name, ...)
   int res;
   va_list args;
   char *fullname = ut_alloc_1d_char (1000);
+  char *fullname2 = ut_alloc_1d_char (1000);
   FILE *file;
 
   va_start (args, name);
   vsprintf (fullname, name, args);
 
-  file = fopen (fullname, "r");
+  if (!strncmp (fullname, "file(", 5) && fullname[strlen (fullname) - 1] == ')')
+    fullname2 = strncpy (fullname2, fullname + 5, strlen (fullname) - 6);
+  else
+    fullname2 = strcpy (fullname2, fullname);
+
+  file = fopen (fullname2, "r");
   if (file == NULL)
     res = 0;
   else
@@ -118,6 +124,7 @@ ut_file_exist (const char *name, ...)
   }
 
   ut_free_1d_char (fullname);
+  ut_free_1d_char (fullname2);
   va_end (args);
 
   return res;
