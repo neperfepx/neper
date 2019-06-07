@@ -641,18 +641,28 @@ neut_tess_vers_bbox (struct TESS Tess, int *vers, int verqty, double **size)
   return;
 }
 
-void
+int
 neut_tess_cell_bbox (struct TESS Tess, int cell, double **size)
 {
-  int verqty, *vers = NULL;
+  if (neut_tess_cell_isvoid (Tess, cell))
+  {
+    ut_array_2d_zero (size, 3, 2);
 
-  neut_tess_cell_vers (Tess, cell, &vers, &verqty);
+    return -1;
+  }
 
-  neut_tess_vers_bbox (Tess, vers, verqty, size);
+  else
+  {
+    int verqty, *vers = NULL;
 
-  ut_free_1d_int (vers);
+    neut_tess_cell_vers (Tess, cell, &vers, &verqty);
 
-  return;
+    neut_tess_vers_bbox (Tess, vers, verqty, size);
+
+    ut_free_1d_int (vers);
+
+    return 0;
+  }
 }
 
 void

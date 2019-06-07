@@ -1807,3 +1807,9 @@ neut_tess_isvoid (struct TESS Tess)
 {
   return (Tess.CellQty == 0);
 }
+
+int
+neut_tess_cell_isvoid (struct TESS Tess, int cell)
+{
+  return (Tess.Dim == 3 && Tess.PolyFaceQty[cell] == 0) || (Tess.Dim == 2 && Tess.FaceVerQty[cell] == 0);
+}

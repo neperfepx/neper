@@ -165,7 +165,7 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_tess_cell_bbox (struct TESS Tess, int cell, double **size);
+  extern int neut_tess_cell_bbox (struct TESS Tess, int cell, double **size);
 
 /// \brief Get the bounding box of an edge of a TESS
 ///

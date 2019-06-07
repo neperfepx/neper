@@ -61,6 +61,8 @@ extern "C"
 
   extern int neut_tess_isvoid (struct TESS Tess);
 
+  extern int neut_tess_cell_isvoid (struct TESS Tess, int cell);
+
 #endif				/* NEUT_TESS_GEN_H */
 
 #ifdef __cplusplus
