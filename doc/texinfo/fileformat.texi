@@ -462,6 +462,7 @@ optional fields.
 @ @ @  @var{voxsize_x} @var{voxsize_y} [@var{voxsize_z}]             	@*
 @ [*origin                                                              @*
 @ @ @  @var{origin_x} @var{origin_y} [@var{origin_z}]]            	@*
+@ [*hasvoid @var{has_void}]                                             @*
 [**cell                                                              	@*
 @ @ @  @var{number_of_cells}                                            @*
 @ [*id                                                               	@*
@@ -541,6 +542,11 @@ The number of sizes must match @var{dimension}.
 @code{@var{origin_z}} are the (absolute) coordinates of the origin of the
 raster tessellation along the coordinate axes.  The number of coordinates must
 match @var{dimension}.
+
+@item @code{*hasvoid} denotes the beginning of an optional has-void field.
+
+@item @code{@var{has_void}} is a boolean indicating whether the tessellation
+contains void voxels (which have a cell id of 0).
 
 @item @code{**cell} denotes the beginning of an optional cell field.
 

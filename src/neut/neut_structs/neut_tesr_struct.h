@@ -14,6 +14,7 @@ extern "C"
   {
     // GENERAL INFORMATION -----------------------------------------------
     double *Origin;             // origin (absolute coordinates)
+    int hasvoid;                // has void voxels? 0 or 1
 
     int Dim;			// Dimension
     int CellQty;		// number of polyhedra

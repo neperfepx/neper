@@ -79,6 +79,14 @@ neut_tesr_fscanf_head (struct TESR *pTesr, int *bounds, char **pformat,
       ut_array_1d_fscanf (file, (*pTesr).Origin, (*pTesr).Dim);
     }
 
+    else if (!strcmp (string, "*hasvoid"))
+    {
+      ut_file_skip (file, 1);
+      if (fscanf (file, "%d", &(*pTesr).hasvoid) != 1)
+        ut_print_message (2, 0,
+                          "Input file is not a valid raster tessellation file.\n");
+    }
+
     else
       ut_print_message (2, 2, "Failed to read tesr file.\n");
   }

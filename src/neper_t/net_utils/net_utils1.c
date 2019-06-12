@@ -500,6 +500,8 @@ net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
 
   neut_tesr_init_cellbbox (pTesr);
 
+  neut_tesr_init_hasvoid (pTesr);
+
   ut_free_2d (bbox, 3);
 
   return;

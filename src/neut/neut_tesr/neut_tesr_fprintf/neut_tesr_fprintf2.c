@@ -33,6 +33,9 @@ neut_tesr_fprintf_head (FILE * file, char *format, struct TESR Tesr)
     ut_array_1d_fprintf (file, Tesr.Origin, Tesr.Dim, "%.12f");
   }
 
+  if (Tesr.hasvoid != -1)
+    fprintf (file, "  *hasvoid %d\n", Tesr.hasvoid);
+
   return;
 }
 
