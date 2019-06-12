@@ -613,8 +613,6 @@ any, diameq@SEPDEP{}0.05@SEPNODEP{}size@SEPDEP{}0.05@SEPNODEP{}sphericity@SEPDEP
 @optsec{-morphooptideltamax, real,
 Specify the maximal value by which each variable is allowed to change
 during optimization.
-direction (relative to the average cell size) and each seed is allowed
-to grow (weight value).
 ,
 any>=0, HUGE_VAL}
 
