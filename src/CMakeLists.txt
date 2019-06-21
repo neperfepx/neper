@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.4.1-23\")
+set (NEPER_VERSION \"3.4.1-24\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -95,6 +95,12 @@ set (EXTRA_LIBS ${EXTRA_LIBS} neper_m)
 set (EXTRA_LIBS ${EXTRA_LIBS} neper_v)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+
+if (HAVE_GSL)
+  find_package(GSL REQUIRED)
+  set (EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
+  include_directories(${GSL_INCLUDE_DIRS})
+endif ()
 
 if (HAVE_LIBSCOTCH)
   find_package (LIBSCOTCH REQUIRED)
