@@ -1,4 +1,4 @@
-New in 3.4.1-27 (21 Jun 2019):
+New in 3.4.1-28 (21 Jun 2019):
 - module -T: fixed -statvox e, added tessellation keys, improved tesr format,
   fixed -ori fibre, fixed -domain, fixed -for ori, fixed -morpho centroidal,
   improved -statcell convexity, improved tesr file, minor fixes.

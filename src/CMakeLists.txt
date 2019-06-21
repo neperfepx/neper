@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.4.1-27\")
+set (NEPER_VERSION \"3.4.1-28\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -260,7 +260,7 @@ add_test (Tm3_domain_cube           ./neper --rcfile none -T -n 2::2::2 -domain 
 add_test (Tm3_domain_cylinder       ./neper --rcfile none -T -n 2::2::2 -domain "cylinder(1,2,100)")
 add_test (Tm3_domain_sphere         ./neper --rcfile none -T -n 2::2::2 -domain "sphere(2,100)")
 add_test (Tm3_morpho_voronoi        ./neper --rcfile none -T -n 2::2::2 -morpho voronoi::voronoi::voronoi)
-add_test (Tm3_morpho_centroidal     ./neper --rcfile none -T -n 2::2::2 -morpho centroidal::centroidal::centroidal)
+add_test (Tm3_morpho_centroidal     ./neper --rcfile none -T -n 7::2::2 -morpho centroidal::centroidal::centroidal)
 add_test (Tm3_morpho_cube           ./neper --rcfile none -T -n from_morpho::2::2 -morpho "cube(2)::voronoi::voronoi")
 add_test (Tm3_morpho_square         ./neper --rcfile none -T -n from_morpho::2::2 -dim 2 -morpho "square(2)::voronoi::voronoi")
 if (HAVE_NLOPT)
