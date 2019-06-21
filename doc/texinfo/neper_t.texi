@@ -547,7 +547,7 @@ Optimization stops as soon as one stopping criterion is verified.
 Optimization can also be stopped anytime using the Ctrl+C
 command.
 ,
-any, eps=1e-6 (val=1e-4@comma{}iter=1e4 for @option{-morpho centroidal})}
+any, eps=1e-6 (val=1e-4@comma{}iter=10000 for @option{-morpho centroidal})}
 
 @optsec{-morphooptialgo, char_string,
 Specify the optimization algorithm. The available values are

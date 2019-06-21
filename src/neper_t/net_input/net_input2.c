@@ -115,7 +115,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
       if (!strcmp ((*pIn).morphooptistop[i], "default"))
       {
 	if (!strncmp ((*pIn).morphooptialgo[i], "lloyd", 5))
-	  ut_string_string ("val=1e-4,itermax=1e4", (*pIn).morphooptistop + i);
+	  ut_string_string ("val=1e-4,itermax=10000", (*pIn).morphooptistop + i);
 	else
 	  ut_string_string ("eps=1e-6", (*pIn).morphooptistop + i);
       }
