@@ -563,7 +563,7 @@ may be used if previous ones fail.
 In the case of @option{-morpho centroidal}@comma{} another available
 value is @samp{lloyd} (Lloyd's algorithm); to specify the seed displacement
 factor (from the seed to the centroid)@comma{} use
-@samp{lloyd(@var{factor})} (the default value is 2).
+@samp{lloyd(@var{factor})} (the default value is 1.9).
 Another available value (to use only if you really know what you are doing) is
 @samp{random(@var{seednb}@comma{}@var{dimnb}@comma{}@var{min}@comma{}@var{max}@comma{}@var{id})}@comma{}
 for which@comma{} at each odd iteration@comma{} each of @samp{@var{seednb}}

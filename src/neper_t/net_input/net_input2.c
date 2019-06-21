@@ -67,7 +67,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
       if (!strcmp ((*pIn).morphooptialgo[i], "default"))
       {
 	if (!strcmp ((*pIn).morpho[i], "centroid:seed"))
-	  ut_string_string ("lloyd(2)", &((*pIn).morphooptialgo[i]));
+	  ut_string_string ("lloyd(1.9)", &((*pIn).morphooptialgo[i]));
 	else
 	  ut_string_string ("subplex,praxis", &((*pIn).morphooptialgo[i]));
       }
