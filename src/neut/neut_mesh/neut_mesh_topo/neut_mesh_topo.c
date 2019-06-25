@@ -2327,3 +2327,36 @@ neut_mesh_nodeqty (struct MESH Mesh, int *pnodeqty)
 
   return;
 }
+
+int
+neut_mesh_elt1d_isembedded (struct MESH Mesh3D, struct MESH Mesh1D, int elt1d)
+{
+  int i, j, id, node;
+  int elt, eltqty, *elts = NULL;
+  int facetnodeqty, *facetnodes = NULL;
+
+  neut_mesh_nodes_comelts (Mesh3D, Mesh1D.EltNodes[elt1d], 2, &elts, &eltqty);
+
+  facetnodeqty = 2 * eltqty;
+  facetnodes = ut_alloc_1d_int (facetnodeqty);
+
+  id = 0;
+  for (i = 0; i < eltqty; i++)
+  {
+    elt = elts[i];
+
+    for (j = 0; j < 4; j++)
+    {
+      node = Mesh3D.EltNodes[elt][j];
+      if (ut_array_1d_int_eltpos (Mesh1D.EltNodes[elt1d], 2, node) == -1)
+        facetnodes[id++] = node;
+    }
+  }
+
+  ut_array_1d_int_sort_uniq (facetnodes, facetnodeqty, &facetnodeqty);
+
+  ut_free_1d_int (elts);
+  ut_free_1d_int (facetnodes);
+
+  return eltqty == facetnodeqty;
+}

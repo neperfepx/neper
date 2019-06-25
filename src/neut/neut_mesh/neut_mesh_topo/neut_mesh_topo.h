@@ -365,6 +365,9 @@ extern int neut_mesh_elset_elt_insidefacets (struct MESH Mesh1D, struct MESH
     Mesh2D, int elset, int elt, int **pinsidefacets, int *pinsidefacetqty);
 extern void neut_mesh_nodeqty (struct MESH Mesh, int *pnodeqty);
 
+extern int neut_mesh_elt1d_isembedded (struct MESH Mesh3D, struct MESH Mesh1D,
+                                       int elt1d);
+
 #endif /* NEUT_MESH_TOPO_H */
 
 #ifdef __cplusplus
