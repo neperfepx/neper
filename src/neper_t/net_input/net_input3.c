@@ -55,6 +55,7 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("default", &(*pIn).orioptiinistring);
   ut_string_string ("default", &(*pIn).orioptifixstring);
   ut_string_string ("default", &((*pIn).oricrysymstring));
+  ut_string_string ("none", &(*pIn).orioptilogvarstring);
 
   ut_string_string ("e", &((*pIn).orides));
   ut_string_string ("plain", &((*pIn).oriformat));
@@ -113,6 +114,8 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ((*pIn).oristring, (*pIn).orioptiini);
   (*pIn).orioptifix = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).orioptifixstring, (*pIn).orioptifix);
+  (*pIn).orioptilogvar = ut_alloc_1d_pchar (1);
+  ut_string_string ((*pIn).orioptilogvarstring, (*pIn).orioptilogvar);
 
   return;
 }
@@ -178,6 +181,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-oridescriptor");
   strcpy (ArgList[++ArgQty], "-oricrysym");
   strcpy (ArgList[++ArgQty], "-oriformat");
+  strcpy (ArgList[++ArgQty], "-orioptilogvar");
   // Post-processing ---------------------------------------------------
   strcpy (ArgList[++ArgQty], "-statver");
   strcpy (ArgList[++ArgQty], "-statedge");
@@ -346,6 +350,8 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oricrysymstring));
     else if (!strcmp (Arg, "-oriformat"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oriformat));
+    else if (!strcmp (Arg, "-orioptilogvar"))
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).orioptilogvarstring));
     else if (!strcmp (Arg, "-statcell"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).stc));
     else if (!strcmp (Arg, "-statver"))

@@ -25,6 +25,9 @@ struct OOPT
   int fixoriqty;                        // number of fixed orientations
   int *fixori;                          // fixori[0...n-1] = 1 means fixed, 0 otherwise
 
+  char *logvar;                         // logvar string
+  FILE *logvar_fp;	                // variable log file
+
   // current state information
   double avforce_ini;                   // initial average force
   double avforce;                       // current average force

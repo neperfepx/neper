@@ -41,6 +41,8 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).orioptiini = NULL;
   (*pIn).orioptifixstring = NULL;
   (*pIn).orioptifix = NULL;
+  (*pIn).orioptilogvarstring = NULL;
+  (*pIn).orioptilogvar = NULL;
   (*pIn).morphooptilogtimestring = NULL;
   (*pIn).morphooptilogtime = NULL;
   (*pIn).morphooptilogvarstring = NULL;

@@ -626,6 +626,7 @@ any>0, avdiameq/10}
 @optsec{-morphooptilogtime, char_string,
 Log the time taken during the optimization process.
 The keys are provided in @ref{Tessellation Optimization Keys}.
+The log file has extension @file{.logtime}.
 ,
 any, none}
 
@@ -633,24 +634,28 @@ any, none}
 Log the variables@comma{} i.e.@ the seed attributes@comma{}
 during the optimization process.
 The keys are provided in @ref{Tessellation Optimization Keys}.
+The log file has extension @file{.logvar}.
 ,
 any, none}
 
 @optsec{-morphooptilogval, char_string,
 Log the value of the objective function during the optimization process.
 The keys are provided in @ref{Tessellation Optimization Keys}.
+The log file has extension @file{.logval}.
 ,
 any, none}
 
 @optsec{-morphooptilogdis, char_string,
 Log the distributions during the optimization process.
 The keys are provided in @ref{Tessellation Optimization Keys}.
+The log files have extension @file{.logdis*}.
 ,
 any, none}
 
 @optsec{-morphooptilogtesr, char_string,
 Log the raster tessellation voxel data during the optimization process.
 The keys are provided in @ref{Tessellation Optimization Keys}.
+The log file has extension @file{.logtesr}.
 ,
 any, none}
 
@@ -757,6 +762,14 @@ based on @code{@var{dr}} (the average radius of an orientation).
 taking crystal symmetry into account).
 ,
 any, Nstar<10000?pi:20*dr}
+
+@optsec{-orioptilogvar, char_string,
+Log the variables@comma{} i.e.@ the orientations@comma{}
+during the optimization process.
+The keys are provided in @ref{Orientation Optimization Keys}.
+The log file has extension @file{.logorivar}.
+,
+any, none}
 
 @subsection Transformation Options
 
@@ -1169,6 +1182,16 @@ The files contain the data specified to the corresponding
 	@var{id} is the identifier of the distribution.
   @item Objective function value file, @file{.logval}.
   @item Target raster tessellation file, @file{-obj.tesr}.
+@end itemize
+
+@subsection Orientation Optimization Log Files
+
+A log file is provided for the orientation variables.
+The files contain the data specified to the
+@option{-orioptilogvar} option and described on @ref{Orientation Optimization Keys}.
+
+@itemize
+  @item Variables, i.e.@ orientations, @file{.logorivar}.
 @end itemize
 
 @section Examples

@@ -10,6 +10,7 @@
 * Tessellation Keys::
 * Raster Tessellation Keys::
 * Tessellation Optimization Keys::
+* Orientation Optimization Keys::
 * Mesh Keys::
 * Point Keys::
 * Rotations and Orientations::
@@ -406,6 +407,29 @@ factor, to log values only at specific iteration numbers.
   @item @code{y}    @tab y coordinate            @tab n/a
   @item @code{z}    @tab z coordinate            @tab n/a
   @item @code{dist} @tab distance to the cell    @tab n/a
+@end multitable
+
+@node Orientation Optimization Keys
+@section Orientation Optimization Keys
+
+@subsection Variable Keys
+
+The available keys for option @option{-orioptilogvar} are provided
+below.  For all orientation descriptors but @samp{q}, the returned orientation are located in the fundamental region.
+@c Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is an integer reduction
+@c factor, to log values only at specific iteration numbers.
+
+@multitable @columnfractions 0.18 0.47 0.36
+  @headitem Key    @tab Descriptor                          @tab Apply to
+  @item @code{iter}@tab iteration number                    @tab n/a
+  @item @code{id}  @tab identifier                          @tab seed
+  @item @code{g}  @tab rotation matrix                      @tab seed
+  @item @code{rtheta}  @tab rotation axis / angle pair      @tab seed
+  @item @code{R}  @tab Rodrigues vector                     @tab seed
+  @item @code{q}  @tab quaternion                           @tab seed
+  @item @code{e}  @tab Euler angles (Bunge convention)      @tab seed
+  @item @code{ek} @tab Euler angles (Kocks convention)      @tab seed
+  @item @code{er} @tab Euler angles (Roe convention)        @tab seed
 @end multitable
 
 @node Mesh Keys

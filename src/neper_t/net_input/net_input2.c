@@ -215,6 +215,10 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
       if (!strcmp ((*pIn).orioptifix[i], "default"))
         ut_string_string ("none", (*pIn).orioptifix + i);
 
+    // orioptilogvar
+    net_input_treatargs_multiscale ("-orioptilogvar", &(*pIn).orioptilogvarstring,
+				    (*pIn).levelqty, &((*pIn).orioptilogvar));
+
     // Processing periodicstring & periodic
     (*pIn).periodic = ut_alloc_1d_int (3);
     if (strcmp ((*pIn).periodicstring, "none"))

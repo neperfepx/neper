@@ -1,7 +1,8 @@
-New in 3.4.1-29 (25 Jun 2019):
+New in 3.4.1-30 (27 Jun 2019):
 - module -T: fixed -statvox e, added tessellation keys, improved tesr format,
   fixed -ori fibre, fixed -domain, fixed -for ori, fixed -morpho centroidal,
-  improved -statcell convexity, improved tesr file, minor fixes.
+  improved -statcell convexity, added -orioptilogvar, improved tesr file, minor
+  fixes.
 - module -M: fixed -elt hex, added -performat, added mesh keys.
 - module -V: fixed visualization of periodic meshes.
 - general: fixed compilation when GSL and NLopt locally installed.
