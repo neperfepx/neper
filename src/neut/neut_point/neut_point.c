@@ -125,45 +125,48 @@ neut_point_var_list_mesh (char ***pvar, int *pvarqty)
 int
 neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
 		    struct NODES Nodes, struct MESH Mesh,
-		    char *var, double *pval, char **ptype)
+		    char *var, double **pvals, int *pvalqty, char **ptype)
 {
   int i, status, tmp;
 
   (*ptype) = ut_alloc_1d_char (10);
 
+  (*pvalqty) = 1;
+  *pvals = ut_realloc_1d (*pvals, *pvalqty);
+
   status = 0;
   if (!strcmp (var, "id"))
   {
-    (*pval) = id;
+    (*pvals)[0] = id;
     strcpy (*ptype, "%d");
   }
   else if (!strcmp (var, "x"))
   {
-    (*pval) = Point.PointCoo[id][0];
+    (*pvals)[0] = Point.PointCoo[id][0];
     strcpy (*ptype, "%f");
   }
   else if (!strcmp (var, "y"))
   {
-    (*pval) = Point.PointCoo[id][1];
+    (*pvals)[0] = Point.PointCoo[id][1];
     strcpy (*ptype, "%f");
   }
   else if (!strcmp (var, "z"))
   {
-    (*pval) = Point.PointCoo[id][2];
+    (*pvals)[0] = Point.PointCoo[id][2];
     strcpy (*ptype, "%f");
   }
   else if (!strcmp (var, "rad"))
   {
-    (*pval) = Point.PointRad[id];
+    (*pvals)[0] = Point.PointRad[id];
     strcpy (*ptype, "%f");
   }
   else if (!strcmp (var, "poly") || !strcmp (var, "cell"))
   {
-    (*pval) = -1;
+    (*pvals)[0] = -1;
     for (i = 1; i <= Tess.PolyQty; i++)
       if (neut_tess_point_inpoly (Tess, Point.PointCoo[id], i) == 1)
       {
-	(*pval) = i;
+	(*pvals)[0] = i;
 	break;
       }
     strcpy (*ptype, "%d");
@@ -171,17 +174,40 @@ neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
   else if (!strcmp (var, "elt"))
   {
     neut_mesh_point_elt (Mesh, Nodes, Point.PointCoo[id], &tmp);
-    (*pval) = tmp;
+    (*pvals)[0] = tmp;
     strcpy (*ptype, "%d");
   }
   else if (!strcmp (var, "elset"))
   {
     neut_mesh_point_elset (Mesh, Nodes, Point.PointCoo[id], NULL, 0, &tmp);
-    (*pval) = tmp;
+    (*pvals)[0] = tmp;
     strcpy (*ptype, "%d");
   }
   else
     status = -1;
+
+  return status;
+}
+
+int
+neut_point_var_val_one (struct POINT Point, int id, struct TESS Tess,
+                        struct NODES Nodes, struct MESH Mesh,
+                        char *var, double *pval, char **ptype)
+{
+  int status, qty;
+  double *tmp = NULL;
+
+  status = neut_point_var_val (Point, id, Tess, Nodes, Mesh, var, &tmp, &qty, ptype);
+
+  if (qty == 1)
+  {
+    (*pval) = tmp[0];
+    status = 0;
+  }
+  else
+    status = -1;
+
+  ut_free_1d (tmp);
 
   return status;
 }

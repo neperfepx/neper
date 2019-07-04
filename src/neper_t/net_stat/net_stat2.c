@@ -51,8 +51,8 @@ void
 net_stat_point (FILE * file, char *format, struct POINT Point,
 		struct TESS Tess)
 {
-  int i, j, status, invalqty, var_qty;
-  double val;
+  int i, j, status, invalqty, var_qty, valqty;
+  double *vals = NULL;
   char **invar = NULL, *type = NULL, **vars = NULL;
   struct NODES Nodes;
   struct MESH Mesh;
@@ -67,22 +67,12 @@ net_stat_point (FILE * file, char *format, struct POINT Point,
   for (i = 1; i <= Point.PointQty; i++)
     for (j = 0; j < invalqty; j++)
     {
-      status =
-	neut_point_var_val (Point, i, Tess, Nodes, Mesh, invar[j], &val,
-			    &type);
+      status = neut_point_var_val (Point, i, Tess, Nodes, Mesh, invar[j], &vals, &valqty, &type);
 
-      if (status == 0)
-      {
-	if (!strcmp (type, "%d"))
-	  fprintf (file, "%d", ut_num_d2ri (val));
-	else if (!strcmp (type, "%f"))
-	  fprintf (file, "%.12f", val);
-	else
-	  ut_error_reportbug ();
-      }
+      if (!status)
+        ut_array_1d_fprintf_nonl (file, vals, valqty, !strcmp (type, "%f") ? "%.12f" : type);
       else
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  invar[j]);
+        ut_error_expression (invar[j]);
 
       fprintf (file, (j < invalqty - 1) ? " " : "\n");
     }
@@ -90,6 +80,7 @@ net_stat_point (FILE * file, char *format, struct POINT Point,
   ut_free_2d_char (invar, invalqty);
   ut_free_2d_char (vars, var_qty);
   ut_free_1d_char (type);
+  ut_free_1d (vals);
 
   neut_nodes_free (&Nodes);
   neut_mesh_free (&Mesh);

@@ -220,8 +220,8 @@ nem_stat_point (FILE * file, char *format,
 		struct NODES Nodes,
 		struct MESH *Mesh, struct TESS Tess, struct POINT Point)
 {
-  int i, j, invalqty, status, var_qty, meshx_init = 0;
-  double val;
+  int i, j, invalqty, var_qty, meshx_init = 0, valqty, status;
+  double *vals = NULL;
   char **invar = NULL, *valstring = NULL, *type = NULL, **vars = NULL;
   double **meshp = NULL, *meshd = NULL, **meshv = NULL, **meshn = NULL;
   int dim = neut_mesh_array_dim (Mesh);
@@ -252,21 +252,11 @@ nem_stat_point (FILE * file, char *format,
   for (i = 1; i <= Point.PointQty; i++)
     for (j = 0; j < invalqty; j++)
     {
-      status =
-	neut_point_var_val (Point, i, Tess, Nodes, Mesh[dim], invar[j], &val,
-			    &type);
+      status = neut_point_var_val (Point, i, Tess, Nodes, Mesh[dim], invar[j],
+                                   &vals, &valqty, &type);
 
-      if (status == 0)
-      {
-	if (!strcmp (type, "%d"))
-	  fprintf (file, "%d", ut_num_d2ri (val));
-	else if (!strcmp (type, "%f"))
-	  fprintf (file, "%.12f", val);
-	else if (!strcmp (type, "%s"))
-	  fprintf (file, "%s", valstring);
-	else
-	  ut_error_reportbug ();
-      }
+      if (!status)
+        ut_array_1d_fprintf_nonl (file, vals, valqty, !strcmp (type, "%f") ? "%.12f" : type);
       else if (!strcmp (invar[j], "2dmeshp"))
 	fprintf (file, "%.12f %.12f %.12f", meshp[i][0], meshp[i][1],
 		 meshp[i][2]);
@@ -279,8 +269,7 @@ nem_stat_point (FILE * file, char *format,
 	fprintf (file, "%.12f %.12f %.12f", meshn[i][0], meshn[i][1],
 		 meshn[i][2]);
       else
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  invar[j]);
+        ut_error_expression (invar[j]);
 
       fprintf (file, (j < invalqty - 1) ? " " : "\n");
     }
@@ -289,6 +278,7 @@ nem_stat_point (FILE * file, char *format,
   ut_free_2d_char (vars, var_qty);
   ut_free_1d_char (type);
   ut_free_1d_char (valstring);
+  ut_free_1d (vals);
 
   if (meshx_init)
   {
