@@ -1085,9 +1085,9 @@ neut_tesr_crop (struct TESR *pTesr, char *shape)
     if (qty != 3)
       ut_print_message (2, 3, "Failed to parse `%s'.\n", shape);
 
-    neut_tesr_expr_val (*pTesr, "general", 0, vals[0], coo, NULL, NULL);
-    neut_tesr_expr_val (*pTesr, "general", 0, vals[1], coo + 1, NULL, NULL);
-    neut_tesr_expr_val (*pTesr, "general", 0, vals[2], &d, NULL, NULL);
+    neut_tesr_expr_val_one (*pTesr, "general", 0, vals[0], coo, NULL);
+    neut_tesr_expr_val_one (*pTesr, "general", 0, vals[1], coo + 1, NULL);
+    neut_tesr_expr_val_one (*pTesr, "general", 0, vals[2], &d, NULL);
 
     for (j = 1; j <= (*pTesr).size[1]; j++)
       for (i = 1; i <= (*pTesr).size[0]; i++)
@@ -1106,7 +1106,7 @@ neut_tesr_crop (struct TESR *pTesr, char *shape)
       ut_print_message (2, 3, "Failed to parse `%s'.\n", shape);
 
     for (i = 0; i < 6; i++)
-      neut_tesr_expr_val (*pTesr, "general", 0, vals[i], cube + i, NULL, NULL);
+      neut_tesr_expr_val_one (*pTesr, "general", 0, vals[i], cube + i, NULL);
 
     for (k = 1; k <= (*pTesr).size[2]; k++)
       for (j = 1; j <= (*pTesr).size[1]; j++)

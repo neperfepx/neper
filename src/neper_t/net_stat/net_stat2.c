@@ -101,7 +101,7 @@ void
 net_stat_tesr (FILE * file, char *entity, char *format, struct TESR *pTesr)
 {
   int i, j, qty, status, invalqty, valqty;
-  double val[10];
+  double *vals = NULL;
   char **invar = NULL, *type = NULL;
   double **data = NULL;
   int *dataqty = NULL;
@@ -129,16 +129,19 @@ net_stat_tesr (FILE * file, char *entity, char *format, struct TESR *pTesr)
   for (i = 1; i <= qty; i++)
     for (j = 0; j < invalqty; j++)
     {
-      status = neut_tesr_expr_val (*pTesr, entity, i, invar[j], val, &valqty, &type);
-      if (status != 0)
-	ut_error_expression (invar[j]);
+      status = neut_tesr_expr_val (*pTesr, entity, i, invar[j], &vals, &valqty, &type);
 
-      ut_array_1d_fprintf_nonl (file, val, valqty, !strcmp (type, "%f") ? "%.12f" : type);
+      if (!status)
+        ut_array_1d_fprintf_nonl (file, vals, valqty, !strcmp (type, "%f") ? "%.12f" : type);
+      else
+        ut_error_expression (invar[j]);
+
       fprintf (file, (j < invalqty - 1) ? " " : "\n");
     }
 
   ut_free_2d_char (invar, invalqty);
   ut_free_1d_char (type);
+  ut_free_1d (vals);
   ut_free_2d (data, invalqty);
   ut_free_1d_int (dataqty);
   ut_free_2d_char (datatype, invalqty);
