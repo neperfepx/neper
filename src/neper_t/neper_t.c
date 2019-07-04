@@ -321,6 +321,12 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   }
 
   // ###################################################################
+  // ### WRITING RESULTS ###############################################
+
+  ut_print_message (0, 1, "Writing results...\n");
+  net_res (In, FTess, Tesr);
+
+  // ###################################################################
   // ### WRITING STATISTICS  ###########################################
 
   if (In.stc || In.stv || In.ste || In.stf || In.stp || In.sts || In.stpt || In.stvox)
@@ -328,12 +334,6 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     ut_print_message (0, 1, "Writing statistics...\n");
     net_stat (In, FTess, &Tesr, Point);
   }
-
-  // ###################################################################
-  // ### WRITING RESULTS ###############################################
-
-  ut_print_message (0, 1, "Writing results...\n");
-  net_res (In, FTess, Tesr);
 
   // ###################################################################
   // ### CLOSING #######################################################

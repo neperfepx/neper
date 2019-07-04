@@ -7,8 +7,8 @@
 void
 net_stat_tess (FILE * file, char *entity, char *format, struct TESS Tess)
 {
-  int i, j, qty, invalqty, valqty;
-  double* vals = ut_alloc_1d (100);
+  int i, j, status, qty, invalqty, valqty;
+  double* vals = NULL;
   char **invar = NULL, *type = NULL;
   double **data = NULL;
   int *dataqty = NULL;
@@ -26,9 +26,13 @@ net_stat_tess (FILE * file, char *entity, char *format, struct TESS Tess)
   for (i = 1; i <= qty; i++)
     for (j = 0; j < invalqty; j++)
     {
-      neut_tess_var_val (Tess, NULL, NULL, NULL, entity, i, invar[j], vals, &valqty, &type);
+      status = neut_tess_var_val (Tess, NULL, NULL, NULL, entity, i, invar[j], &vals, &valqty, &type);
 
-      ut_array_1d_fprintf_nonl (file, vals, valqty, !strcmp (type, "%f") ? "%.12f" : type);
+      if (!status)
+        ut_array_1d_fprintf_nonl (file, vals, valqty, !strcmp (type, "%f") ? "%.12f" : type);
+      else
+        ut_error_expression (invar[j]);
+
       fprintf (file, (j < invalqty - 1) ? " " : "\n");
     }
 
