@@ -13,7 +13,6 @@ neut_boundary_set_zero (struct BOUNDARY *pBound)
   (*pBound).BoundEltQty = NULL;
   (*pBound).BoundElts = NULL;
   (*pBound).BoundEltFacets = NULL;
-  (*pBound).BoundEltFacetOri = NULL;
   (*pBound).BoundNodeQty = NULL;
   (*pBound).BoundNodes = NULL;
 
@@ -29,7 +28,6 @@ neut_boundary_free (struct BOUNDARY *pBound)
   ut_free_1d_int ((*pBound).BoundEltQty);
   ut_free_3d_int ((*pBound).BoundElts, (*pBound).BoundQty + 1, 2);
   ut_free_3d_int ((*pBound).BoundEltFacets, (*pBound).BoundQty + 1, 2);
-  ut_free_3d_int ((*pBound).BoundEltFacetOri, (*pBound).BoundQty + 1, 2);
   ut_free_1d_int ((*pBound).BoundNodeQty);
   ut_free_3d_int ((*pBound).BoundNodes, (*pBound).BoundQty + 1, 2);
   (*pBound).BoundQty = 0;
@@ -41,7 +39,7 @@ void
 neut_boundary_bound_nodes_2d (struct MESH Mesh, struct BOUNDARY Bound, int id, int side,
                               int **pnodes, int *pnodeqty)
 {
-  int i, ori, pos, elt, facet, nextelt, nextfacet, lastnode, facetori, nextfacetori;
+  int i, ori, pos, elt, facet, nextelt, nextfacet, lastnode;
   int *surfnodes = ut_alloc_1d_int (2);
   int *nextsurfnodes = ut_alloc_1d_int (2);
 
@@ -58,18 +56,14 @@ neut_boundary_bound_nodes_2d (struct MESH Mesh, struct BOUNDARY Bound, int id, i
 
   elt = Bound.BoundElts[id][side][1];
   facet = Bound.BoundEltFacets[id][side][1];
-  ori = Bound.BoundEltFacetOri[id][side][1];
-  // the knownledge of ori is not used (postcoding)
-  neut_elt_facet_nodes (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder, Mesh.EltNodes[elt], facet, ori, surfnodes);
+  neut_elt_facet_nodes (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder, Mesh.EltNodes[elt], facet, 1, surfnodes);
 
   ori = 1;
   if (Bound.BoundEltQty[id] > 1)
   {
     nextelt = Bound.BoundElts[id][side][2];
     nextfacet = Bound.BoundEltFacets[id][side][2];
-    nextfacetori = Bound.BoundEltFacetOri[id][side][2];
-    // the knownledge of nextfaceori is not used (postcoding)
-    neut_elt_facet_nodes (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder, Mesh.EltNodes[nextelt], nextfacet, nextfacetori, nextsurfnodes);
+    neut_elt_facet_nodes (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder, Mesh.EltNodes[nextelt], nextfacet, 1, nextsurfnodes);
 
     if (ut_array_1d_int_eltpos (nextsurfnodes, 2, surfnodes[1]) != -1)
     {
@@ -91,9 +85,7 @@ neut_boundary_bound_nodes_2d (struct MESH Mesh, struct BOUNDARY Bound, int id, i
   {
     elt = Bound.BoundElts[id][side][i];
     facet = Bound.BoundEltFacets[id][side][i];
-    facetori = Bound.BoundEltFacetOri[id][side][i];
-    // the knownledge of faceori is not used (postcoding)
-    neut_elt_facet_nodes (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder, Mesh.EltNodes[elt], facet, facetori, surfnodes);
+    neut_elt_facet_nodes (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder, Mesh.EltNodes[elt], facet, 1, surfnodes);
 
     lastnode = (*pnodes)[i - 1];
     if (i > 1)
@@ -125,7 +117,7 @@ void
 neut_boundary_bound_nodes_3d (struct MESH Mesh, struct BOUNDARY Bound, int id, int side,
                               int **pnodes, int *pnodeqty)
 {
-  int i, j, elt, facet, facetori;
+  int i, j, elt, facet;
   int *surfnodes = ut_alloc_1d_int (3);
   int *nextsurfnodes = ut_alloc_1d_int (3);
 
@@ -145,8 +137,7 @@ neut_boundary_bound_nodes_3d (struct MESH Mesh, struct BOUNDARY Bound, int id, i
   {
     elt = Bound.BoundElts[id][side][i];
     facet = Bound.BoundEltFacets[id][side][i];
-    facetori = Bound.BoundEltFacetOri[id][side][i];
-    neut_elt_facet_nodes (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder, Mesh.EltNodes[elt], facet, facetori, surfnodes);
+    neut_elt_facet_nodes (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder, Mesh.EltNodes[elt], facet, 1, surfnodes);
 
     for (j = 0; j < 3; j++)
       (*pnodes)[(*pnodeqty)++] = surfnodes[j];

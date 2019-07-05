@@ -173,7 +173,6 @@ nem_interface_dup_boundelts_3d (struct TESS Tess, int *faces, int faceqty,
   (*pBound).BoundEltQty = ut_alloc_1d_int ((*pBound).BoundQty + 1);
   (*pBound).BoundElts = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
   (*pBound).BoundEltFacets = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
-  (*pBound).BoundEltFacetOri = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
   (*pBound).BoundNodeQty = ut_alloc_1d_int ((*pBound).BoundQty + 1);
   (*pBound).BoundNodes = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
 
@@ -188,7 +187,6 @@ nem_interface_dup_boundelts_3d (struct TESS Tess, int *faces, int faceqty,
       (*pBound).BoundEltQty[face] = Mesh[2].Elsets[face][0];
       (*pBound).BoundElts[face] = ut_alloc_2d_int (2, (*pBound).BoundEltQty[face] + 1);
       (*pBound).BoundEltFacets[face] = ut_alloc_2d_int (2, (*pBound).BoundEltQty[face] + 1);
-      (*pBound).BoundEltFacetOri[face] = ut_alloc_2d_int (2, (*pBound).BoundEltQty[face] + 1);
 
       for (j = 0; j < 2; j++)
 	for (k = 1; k <= (*pBound).BoundEltQty[face]; k++)
@@ -211,7 +209,6 @@ nem_interface_dup_boundelts_3d (struct TESS Tess, int *faces, int faceqty,
 	  neut_elt_nodes_facet (3, Mesh[3].EltNodes[elt3d],
 				    nodes2d, &surf, &surfori);
 	  (*pBound).BoundEltFacets[face][j][k] = surf;
-	  (*pBound).BoundEltFacetOri[face][j][k] = surfori;
 	}
 
       // initializing BoundNodes and BoundNodeQty
@@ -270,7 +267,6 @@ nem_interface_dup_boundelts_2d (struct TESS Tess, struct NODES Nodes,
   (*pBound).BoundEltQty = ut_alloc_1d_int ((*pBound).BoundQty + 1);
   (*pBound).BoundElts = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
   (*pBound).BoundEltFacets = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
-  (*pBound).BoundEltFacetOri = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
   (*pBound).BoundNodeQty = ut_alloc_1d_int ((*pBound).BoundQty + 1);
   (*pBound).BoundNodes = ut_alloc_1d_ppint ((*pBound).BoundQty + 1);
 
@@ -282,7 +278,6 @@ nem_interface_dup_boundelts_2d (struct TESS Tess, struct NODES Nodes,
       (*pBound).BoundEltQty[i] = Mesh[1].Elsets[i][0];
       (*pBound).BoundElts[i] = ut_alloc_2d_int (2, (*pBound).BoundEltQty[i] + 1);
       (*pBound).BoundEltFacets[i] = ut_alloc_2d_int (2, (*pBound).BoundEltQty[i] + 1);
-      (*pBound).BoundEltFacetOri[i] = ut_alloc_2d_int (2, (*pBound).BoundEltQty[i] + 1);
 
       // the if statement below has the effect of skipping the slave
       // edges of a periodic tessellation
@@ -308,7 +303,6 @@ nem_interface_dup_boundelts_2d (struct TESS Tess, struct NODES Nodes,
 	    neut_elt_nodes_facet (2, Mesh[2].EltNodes[elt2d],
 				      nodes1d, &surf, &surfori);
 	    (*pBound).BoundEltFacets[i][j][k] = surf;
-	    (*pBound).BoundEltFacetOri[i][j][k] = surfori;
 	  }
 
       neut_boundary_bound_nodes (Mesh[2], *pBound, i, 0, &nodes,
