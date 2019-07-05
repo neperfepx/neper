@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.4.1-34\")
+set (NEPER_VERSION \"3.4.1-35\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -218,12 +218,12 @@ add_test (T_tesrformat             ./neper --rcfile none -T -n 2 -format tesr -t
 add_test (T_tesrsize               ./neper --rcfile none -T -n 2 -format tesr -tesrsize 10)
 add_test (T_oridescriptor          ./neper --rcfile none -T -n 2 -oridescriptor R)
 add_test (T_oriformat              ./neper --rcfile none -T -n 2 -oriformat fepx)
-add_test (T_statcell              ./neper --rcfile none -T -n 2 -statcell "id,x,y,z,true,body,state,area,vol,size,diameq,radeq,sphericity,convexity,dihangleav,dihanglemin,dihanglemax,dihanglelist,vernb,edgenb,facenb,neighnb,verlist,edgelist,facelist,npolylist,facearealist,faceeqlist,vercoolist,scaleid(1)")
+add_test (T_statcell              ./neper --rcfile none -T -n 2 -statcell "id,x,y,z,true,body,state,area,vol,size,diameq,radeq,sphericity,convexity,dihangleav,dihanglemin,dihanglemax,dihangles,vernb,edgenb,facenb,neighnb,vers,edges,faces,npolys,faceareas,faceeqs,vercoos,scaleid(1)")
 add_test (T_statseed              ./neper --rcfile none -T -n 2 -statseed id,x,y,z,w)
 add_test (T_statver               ./neper --rcfile none -T -n 2 -statver  id,x,y,z,true,body,state,domtype,edgenb,facenb,polynb)
-add_test (T_statedge              ./neper --rcfile none -T -n 2 -statedge id,x,y,z,true,body,state,domtype,length,cyl,vernb,facenb,polynb,facelist)
-add_test (T_statface              ./neper --rcfile none -T -n 2 -statface id,x,y,z,true,body,state,domtype,area,diameq,radeq,circularity,dihangleav,dihanglemin,dihanglemax,dihanglelist,ff,vernb,edgenb,polynb,neighnb,verlist,edgelist)
-add_test (T_statpoly              ./neper --rcfile none -T -n 2 -statpoly "id,x,y,z,true,body,state,area,vol,size,diameq,radeq,sphericity,convexity,dihangleav,dihanglemin,dihanglemax,dihanglelist,vernb,edgenb,facenb,neighnb,verlist,edgelist,facelist,npolylist,facearealist,faceeqlist,vercoolist,scaleid(1)")
+add_test (T_statedge              ./neper --rcfile none -T -n 2 -statedge id,x,y,z,true,body,state,domtype,length,cyl,vernb,facenb,polynb,faces)
+add_test (T_statface              ./neper --rcfile none -T -n 2 -statface id,x,y,z,true,body,state,domtype,area,diameq,radeq,circularity,dihangleav,dihanglemin,dihanglemax,dihangles,ff,vernb,edgenb,polynb,neighnb,vers,edges)
+add_test (T_statpoly              ./neper --rcfile none -T -n 2 -statpoly "id,x,y,z,true,body,state,area,vol,size,diameq,radeq,sphericity,convexity,dihangleav,dihanglemin,dihanglemax,dihangles,vernb,edgenb,facenb,neighnb,vers,edges,faces,npolys,faceareas,faceeqs,vercoos,scaleid(1)")
 # add_test (T_statpoint)
 # add_test (T_checktess)
 add_test (T_loadtess              ./neper --rcfile none -T -loadtess n2-id1.tess -statcell x -format tess,tesr)
