@@ -38,8 +38,8 @@ void
 net_ori_fibre (long random, char *distrib, struct OL_SET *pOSet)
 {
   unsigned int i;
-  unsigned char axis_c;
-  double theta, axis[3], dir[3];
+  unsigned char c;
+  double theta, dirs[3], dirc[3];
   double *q_align = ol_q_alloc ();
   double *q_rand = ol_q_alloc ();
 
@@ -48,24 +48,38 @@ net_ori_fibre (long random, char *distrib, struct OL_SET *pOSet)
   rnd = gsl_rng_alloc (gsl_rng_ranlxd2);
   gsl_rng_set (rnd, random - 1);
 
-  if (sscanf (distrib, "fibre(%c,%lf,%lf,%lf)", &axis_c, dir, dir + 1,
-              dir + 2) != 4 || (axis_c != 'x' && axis_c != 'y'
-                                && axis_c != 'z'))
+  if (sscanf (distrib, "fibre(%lf,%lf,%lf,%lf,%lf,%lf)", dirs, dirs + 1,
+                   dirs + 2, dirc, dirc + 1, dirc + 2) == 6)
+  {
+    ut_vector_uvect (dirs, dirs);
+    ut_vector_uvect (dirc, dirc);
+  }
+
+  // legacy
+  else if (sscanf (distrib, "fibre(%c,%lf,%lf,%lf)", &c, dirc, dirc + 1, dirc + 2) == 4)
+  {
+    if (c == 'x' || c == 'y' || c == 'z')
+      for (i = 0; i < 3; i++)
+        dirs[i] = c == 'x' + i;
+    else
+      ut_print_message (2, 2, "Failed to parse expression `%s'.\n", distrib);
+
+    ut_print_message (1, 2, "Argument `%s' is deprecated and will not be supported in future versions.  See the documentation.\n", distrib);
+
+    ut_vector_uvect (dirc, dirc);
+  }
+
+  else
     ut_print_message (2, 2, "Failed to parse expression `%s'.\n", distrib);
 
-  for (i = 0; i < 3; i++)
-    axis[i] = axis_c == 'x' + i;
-
-  ut_vector_uvect (dir, dir);
-
   // 1st rotation, to get in the fibre
-  ol_vect_vect_q (dir, axis, q_align);
+  ol_vect_vect_q (dirc, dirs, q_align);
 
   // 2nd rotation, about the fibre
   for (i = 0; i < (*pOSet).size; i++)
   {
     theta = 2.0 * M_PI * gsl_rng_uniform (rnd);
-    ol_rtheta_q_rad (axis, theta, q_rand);
+    ol_rtheta_q_rad (dirs, theta, q_rand);
     ol_q_q_q_ref (q_align, q_rand, (*pOSet).q[i]);
   }
 

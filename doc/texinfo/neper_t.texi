@@ -683,12 +683,11 @@ It can be:@*
 @bullet{} @samp{random} for randomly-distributed orientations in 3D space;@*
 @bullet{} @samp{uniform} for uniformly-distributed orientations in 3D space
 (the crystal symmetry must be specified using @option{-oricrysym});@*
-@bullet{} @samp{fibre(@var{dir}@comma{}@var{coo_x}@comma{}@var{coo_y}@comma{}@var{coo_z})}
-for randomly-distributed orientations along a specific fibre (crystal direction
-(@code{@var{coo_x}}@comma{} @code{@var{coo_y}}@comma{}
- @code{@var{coo_z}})
-parallel to sample direction @code{@var{dir}}@comma{} where @code{@var{dir}}
-can be @samp{x}@comma{} @samp{y}@comma{} or @samp{z});@*
+@bullet{} @samp{fibre(@var{dirs_x}@comma{}@var{dirs_y}@comma{}@var{dirs_z}@comma{}@var{dirc_x}@comma{}@var{dirc_y}@comma{}@var{dirc_z})}
+for randomly-distributed orientations about the fibre defined by crystal direction
+(@code{@var{dirc_x}}@comma{} @code{@var{dirc_y}}@comma{} @code{@var{dirc_z}})
+parallel to sample direction
+(@code{@var{dirs_x}}@comma{} @code{@var{dirs_y}}@comma{} @code{@var{dirs_z}});@*
 @bullet{} an ideal orientation@comma{} see @ref{Rotations and Orientations};@*
 @bullet{} a discrete orientation defined using an orientation descriptor:@*
 @samp{g(@var{g11}@comma{}@var{g12}@comma{}@var{g13}@comma{}@var{g21}@comma{}@var{g22}@comma{}@var{g23}@comma{}@var{g31}@comma{}@var{g32}@comma{}@var{g33}@comma{})}
@@ -712,7 +711,7 @@ cell;@*
 @bullet{} @samp{spread(@var{thetam})} for orientations randomly distributed
 about the one of the parent cell@comma{} according to a 3-variate normal
 distribution@comma{} and so that the average misorientation angle with respect
-to the average orientation is equal to @var{thetam}.@*
+to the average orientation is equal to @code{@var{thetam}};@*
 @bullet{} @samp{file(@var{filename})@SEPDEP{}@var{des}} for reading
   orientations from file @file{@var{filename}} and written
   using the descriptor @code{@var{des}} (@pxref{Rotations and Orientations});
