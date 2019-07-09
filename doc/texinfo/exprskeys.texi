@@ -94,7 +94,7 @@ The parser has built in support for the if-then-else operator. It uses lazy eval
 @item @code{?:}         @tab if-then-else operator, following the C/C++ syntax: @*@code{(test)?value_if_true:value_if_false}.
 @end multitable
 
-@subsection Distribution Functions
+@subsection Statistical Distributions
 
 The following table lists the statistical distributions.  Arguments enclosed in square brackets (@samp{[} and @samp{]}) are optional.
 
@@ -160,15 +160,10 @@ For all distributions, custom limits can be added as last arguments, using @samp
 If the parameter keywords are used, the parameters can be given in any order; e.g.,
 @samp{@code{moffat(@var{gam}=1,@var{fromex}=0,@var{toin}=1,@var{sig}=0.1,@var{mean}=0.5)}}.
 Otherwise, the parameters are read based on their positions; e.g.,
-@samp{@code{lognormal(0.25,0.01,0.7)}} yields @math{mean=0.25}, @math{sig=0.01}
-and @math{expr=0.7}.
-It is possible (but not
-recommended) to specify some variables by keyword and let others be read
-based on their positions; e.g.,
-@samp{@code{lognormal(@var{expr}=1,0.01,@var{mean}=0.25,1,0,@var{toex}=1,2)}},
-which corresponds to @math{mean=0.25}, @math{sig=0.01}, @math{expr=1},
-@math{amp=1}, @math{fromex=0} and @math{toex=1}.
-
+@samp{@code{lognormal(0.25,0.01)}} yields @math{mean=0.25} and @math{sig=0.01}.
+It is also possible (but not recommended) to specify some variables by keyword
+and let others be read by position.
+@c
 Finally, a sum of distributions of increasing averages can be provided;
 e.g., @samp{0.3*lognormal(0.5,0.1)+0.7*normal(1,0.1)}.
 
