@@ -57,9 +57,9 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
       if (strlen (morpho2) > 0)
         morpho2 = strcat (morpho2, NEUT_SEP_NODEP);
       morpho2 = strcat (morpho2, (*pTOpt).Dim == 3 ?
-                        "diameq:lognormal(1,0.35),sphericity:lognormal(0.145,0.03,1-x)"
+                        "diameq:lognormal(1,0.35),1-sphericity:lognormal(0.145,0.03)"
                         :
-                        "diameq:lognormal(1,0.42),sphericity:lognormal(0.100,0.03,1-x)");
+                        "diameq:lognormal(1,0.42),1-sphericity:lognormal(0.100,0.03)");
     }
     else if (!strncmp (parts[i], "graingrowth", 11)
              || !strncmp (parts[i], "gg", 2))
@@ -78,7 +78,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
       {
         string = ut_alloc_1d_char (1000);
         sprintf (string,
-                 "diameq:lognormal(%f,%f),sphericity:lognormal(0.145,0.03,1-x)",
+                 "diameq:lognormal(%f,%f),1-sphericity:lognormal(0.145,0.03)",
                  mean, 0.35 * mean);
         if (strlen (morpho2) > 0)
           morpho2 = strcat (morpho2, NEUT_SEP_NODEP);
@@ -88,7 +88,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
       {
         string = ut_alloc_1d_char (1000);
         sprintf (string,
-                 "diameq:lognormal(%f,%f),sphericity:lognormal(0.1,0.03,1-x)",
+                 "diameq:lognormal(%f,%f),1-sphericity:lognormal(0.1,0.03)",
                  mean, 0.42 * mean);
         if (strlen (morpho2) > 0)
           morpho2 = strcat (morpho2, NEUT_SEP_NODEP);
@@ -167,6 +167,17 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
     }
     else
     {
+      if (!strcmp (parts[i] + strlen (parts[i]) - 5, ",1-x)"))
+      {
+        ut_print_message (1, 2, "Flag `1-x' is deprecated and will be removed in future versions.  Use variable `1-sphericity' instead.\n");
+        char *tmp = NULL;
+        ut_string_string (parts[i], &tmp);
+        ut_string_fnrs (tmp, ",1-x", "", 1);
+        parts[i] = ut_realloc_1d_char (parts[i], strlen (tmp) + 3);
+        sprintf (parts[i], "1-%s", tmp);
+        ut_free_1d_char (tmp);
+      }
+
       if (strlen (morpho2) > 0)
         morpho2 = strcat (morpho2, NEUT_SEP_NODEP);
       morpho2 = strcat (morpho2, parts[i]);
@@ -303,7 +314,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
         for (j = 0; j < fct_qty; j++)
         {
           Fct[j].mean /= mean;
-          Fct[j].sig /= mean;
+          Fct[j].sigma /= mean;
         }
       }
 
@@ -321,8 +332,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
         ut_fct_integralfct (Fct[j], (*pTOpt).tarmodecdf0[i] + j);
       }
 
-      ut_fct_add (Fct, fct_qty, fct_fact, (*pTOpt).tarexpr[i],
-                  (*pTOpt).tarpdf0 + i);
+      ut_fct_add (Fct, fct_qty, fct_fact, (*pTOpt).tarpdf0 + i);
 
       ut_free_2d_char (parts2, fct_qty);
       ut_free_2d_char (fct_expr, fct_qty);
@@ -347,7 +357,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
       {
         if (!strcmp ((*pTOpt).tarvar[i], "size")
             || !strcmp ((*pTOpt).tarvar[i], "diameq")
-            || !strcmp ((*pTOpt).tarvar[i], "sphericity"))
+            || strstr ((*pTOpt).tarvar[i], "sphericity"))
         {
           if (strncmp ((*pTOpt).tarexpr[i], "interval", 8))
             (*pTOpt).tarcellvalqty[i] = 1;

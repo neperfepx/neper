@@ -94,6 +94,83 @@ The parser has built in support for the if-then-else operator. It uses lazy eval
 @item @code{?:}         @tab if-then-else operator, following the C/C++ syntax: @*@code{(test)?value_if_true:value_if_false}.
 @end multitable
 
+@subsection Statistical Distributions
+
+The following table lists the statistical distributions.  Arguments enclosed in square brackets (@samp{[} and @samp{]}) are optional.  Custom endpoints (not indicated) can also be added as arguments, as described in the following.
+
+@multitable @columnfractions 0.4 0.25 0.35
+@headitem Operator
+          @tab Description
+          @tab Information
+@item @code{normal(@var{mean},@var{sigma})}
+      @tab normal
+      @tab
+@item @code{lognormal(@var{mean},@var{sigma})}
+      @tab lognormal
+      @tab
+@item @code{dirac(@var{mean})}
+      @tab Dirac
+      @tab
+@item @code{beta(@var{x},@var{y})}
+      @tab beta function
+      @tab @math{x>0}@comma{} @math{y>0}
+@item @code{lorentzian(@var{mean},@var{sigma})}
+      @tab Lorentzian
+      @tab
+@item @code{studentst(@var{mean},@var{sigma})}
+      @tab Student's t
+      @tab
+@item @code{weibull(@var{k},@var{sigma})}
+      @tab Weibull
+      @tab @math{k > 0} represents the shape
+@item @code{breitwigner(@var{mean},@var{sigma}[,@var{gamma}])}
+      @tab Breit-Wigner
+      @tab @math{gamma @geq{} 0}, default 1
+@item @code{expnormal(@var{mean},@var{sigma}[,@var{gamma}])}
+      @tab exp-normal
+      @tab @math{gamma > 0} default @math{sigma}
+@item @code{moffat(@var{mean},@var{sigma}[,@var{gamma}])}
+      @tab Moffat
+      @tab @math{gamma > 0}, default 1
+@item @code{pearson7(@var{mean},@var{sigma}[,@var{gamma}])}
+      @tab Pearson type VII
+      @tab default @math{gamma = 1.5}
+@item @code{pseudovoigt(@var{mean},@var{sigma}[,@var{gamma}])}
+      @tab Pseudo-Voigt
+      @tab
+@iftex
+@math{gamma @in [0,@,1]}, default 0.5
+@end iftex
+@ifinfo
+@math{gamma in [0,@,1]}, default 0.5
+@end ifinfo
+@item @code{skewnormal(@var{mean},@var{sigma}[,@var{gamma}])}
+      @tab skewed normal
+      @tab default @math{gamma = sigma}
+@end multitable
+
+@samp{@code{mean}} represents the mean (or centre), and @samp{@code{sigma}} (@math{>} 0)
+represents the standard deviation (or scale). @samp{@code{gamma}}
+depends on the distribution function (see the above table).
+@c
+For all distributions, custom endpoints can be added as last arguments, @samp{@var{from},@var{to}}, where @samp{@var{from}} is the lower end point and @samp{@var{to}} is the upper endpoint.
+@c
+@c @samp{@code{fromtype}} and @samp{@code{totype}} are not
+@c keywords per se, but serve to change the type of the endpoints without using
+@c keywords to explicitly assign one to them (0 = disable/ignore limit, 1 =
+@c inclusive limit, 2 = exclusive limit).
+@c
+If the parameter keywords are used, the parameters can be given in any order; e.g.,
+@samp{@code{moffat(@var{gamma}=1,@var{from}=0,@var{to}=1,@var{sigma}=0.1,@var{mean}=0.5)}}.
+Otherwise, the parameters are read based on their positions; e.g.,
+@samp{@code{lognormal(0.25,0.01)}} yields @math{mean=0.25} and @math{sigma=0.01}.
+It is also possible (but not recommended) to specify some variables by keyword
+and let others be read by position.  Endpoints are considered inclusive by default, but exclusive endpoints can be specified using @samp{fromexclusive=@var{from}} and @samp{toexclusive=@var{to}}
+(@samp{frominclusive=@var{from}} and @samp{toinclusive=@var{to}} can be used for inclusive endpoints).
+@c
+String completion is available for the keywords.
+Finally, a sum of distributions of increasing averages can be provided;
+e.g., @samp{0.3*lognormal(0.5,0.1)+0.7*normal(1,0.1)}.
 
 @node Tessellation Keys
 @section Tessellation Keys
