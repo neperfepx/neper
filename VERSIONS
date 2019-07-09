@@ -1,7 +1,8 @@
-New in 3.4.1-41-add-distrib-functions (09 Jul 2019):
+New in 3.4.1-42-add-distrib-functions (09 Jul 2019):
 - module -T: added new statistical distributions beta, lorentzian, studentst,
   weibull, breitwigner, expnormal, moffat, pearson7, pseudovoigt
-  and skewnormal, added naive way to limit admissible x values.
+  and skewnormal, added naive way to limit admissible x values,
+  added variable 1-sphericity.
 
 New in 3.4.1-37 (08 Jul 2019):
 - module -T: fixed -statvox e, added tessellation keys, improved tesr format,

@@ -99,14 +99,14 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
 				    (*pIn).levelqty, &((*pIn).morphooptigrid));
     for (i = 1; i <= (*pIn).levelqty; i++)
       if (!strcmp ((*pIn).morphooptigrid[i], "default"))
-	ut_string_string ("diameq:regular(-1,10,1100),size:regular(-1,10,1100),sphericity:regular(-0.1,1.1,1200)", (*pIn).morphooptigrid + i);
+	ut_string_string ("diameq:regular(-1,10,1100),size:regular(-1,10,1100),sphericity:regular(-0.1,1.1,1200),1-sphericity:regular(-0.1,1.1,1200)", (*pIn).morphooptigrid + i);
 
     // morphooptismooth
     net_input_treatargs_multiscale ("-morphooptismooth", &(*pIn).morphooptismoothstring,
 				    (*pIn).levelqty, &((*pIn).morphooptismooth));
     for (i = 1; i <= (*pIn).levelqty; i++)
       if (!strcmp ((*pIn).morphooptismooth[i], "default"))
-	ut_string_string ("diameq:0.05,size:0.05,sphericity:0.005", (*pIn).morphooptismooth + i);
+	ut_string_string ("diameq:0.05,size:0.05,sphericity:0.005,1-sphericity:0.005", (*pIn).morphooptismooth + i);
 
     // morphooptistop
     net_input_treatargs_multiscale ("-morphooptistop", &(*pIn).morphooptistopstring,

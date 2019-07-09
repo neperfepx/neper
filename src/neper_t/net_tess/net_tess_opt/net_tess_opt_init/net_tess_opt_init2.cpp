@@ -57,9 +57,9 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
       if (strlen (morpho2) > 0)
         morpho2 = strcat (morpho2, NEUT_SEP_NODEP);
       morpho2 = strcat (morpho2, (*pTOpt).Dim == 3 ?
-                        "diameq:lognormal(1,0.35),sphericity:lognormal(0.145,0.03,1-x)"
+                        "diameq:lognormal(1,0.35),1-sphericity:lognormal(0.145,0.03)"
                         :
-                        "diameq:lognormal(1,0.42),sphericity:lognormal(0.100,0.03,1-x)");
+                        "diameq:lognormal(1,0.42),1-sphericity:lognormal(0.100,0.03)");
     }
     else if (!strncmp (parts[i], "graingrowth", 11)
              || !strncmp (parts[i], "gg", 2))
@@ -78,7 +78,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
       {
         string = ut_alloc_1d_char (1000);
         sprintf (string,
-                 "diameq:lognormal(%f,%f),sphericity:lognormal(0.145,0.03,1-x)",
+                 "diameq:lognormal(%f,%f),1-sphericity:lognormal(0.145,0.03)",
                  mean, 0.35 * mean);
         if (strlen (morpho2) > 0)
           morpho2 = strcat (morpho2, NEUT_SEP_NODEP);
@@ -88,7 +88,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
       {
         string = ut_alloc_1d_char (1000);
         sprintf (string,
-                 "diameq:lognormal(%f,%f),sphericity:lognormal(0.1,0.03,1-x)",
+                 "diameq:lognormal(%f,%f),1-sphericity:lognormal(0.1,0.03)",
                  mean, 0.42 * mean);
         if (strlen (morpho2) > 0)
           morpho2 = strcat (morpho2, NEUT_SEP_NODEP);
@@ -347,7 +347,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
       {
         if (!strcmp ((*pTOpt).tarvar[i], "size")
             || !strcmp ((*pTOpt).tarvar[i], "diameq")
-            || !strcmp ((*pTOpt).tarvar[i], "sphericity"))
+            || strstr ((*pTOpt).tarvar[i], "sphericity"))
         {
           if (strncmp ((*pTOpt).tarexpr[i], "interval", 8))
             (*pTOpt).tarcellvalqty[i] = 1;

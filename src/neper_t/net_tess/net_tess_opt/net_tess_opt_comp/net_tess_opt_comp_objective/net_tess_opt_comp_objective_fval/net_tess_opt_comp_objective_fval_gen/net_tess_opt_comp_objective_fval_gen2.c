@@ -94,6 +94,9 @@ net_tess_opt_comp_objective_fval_gen_sphericity (struct TOPT *pTOpt,
                              (*pTOpt).curcellval[var][cell]);
   }
 
+  if (!strcmp ((*pTOpt).tarvar[var], "1-sphericity"))
+    (*pTOpt).curcellval[var][cell][0] = 1 - (*pTOpt).curcellval[var][cell][0];
+
   return;
 }
 

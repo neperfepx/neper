@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.4.1-41-add-distrib-functions\")
+set (NEPER_VERSION \"3.4.1-42-add-distrib-functions\")
 set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
 
 # should we use the optional libraries?
@@ -188,7 +188,7 @@ add_test (T_morphooptistop_val     ./neper --rcfile none -T -n 2 -morpho gg -mor
 add_test (T_morphooptistop_time    ./neper --rcfile none -T -n 2 -morpho gg -morphooptistop time=0.1)
 add_test (T_morphooptistop_timeval ./neper --rcfile none -T -n 2 -morpho gg -morphooptistop val=10,time=0.1)
 add_test (T_morphooptialgo         ./neper --rcfile none -T -n 2 -morpho gg -morphooptialgo praxis -morphooptistop itermax=10)
-add_test (T_morphooptigrid         ./neper --rcfile none -T -n 2 -morpho gg -morphooptigrid "diameq:regular(-1,10,110),sphericity:regular(-0.1,1.1,120)" -morphooptistop itermax=10)
+add_test (T_morphooptigrid         ./neper --rcfile none -T -n 2 -morpho gg -morphooptigrid "diameq:regular(-1,10,110),sphericity:regular(-0.1,1.1,120),1-sphericity:regular(-0.1,1.1,120)" -morphooptistop itermax=10)
 add_test (T_morphooptismooth       ./neper --rcfile none -T -n 2 -morpho gg -morphooptismooth 0.1 -morphooptistop itermax=10)
 add_test (T_morphooptideltamax     ./neper --rcfile none -T -n 2 -morpho gg -morphooptideltamax 0.1 -morphooptistop itermax=10)
 add_test (T_morphooptinistep       ./neper --rcfile none -T -n 2 -morpho gg -morphooptiinistep diameq/5 -morphooptistop itermax=10)

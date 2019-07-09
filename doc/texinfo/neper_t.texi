@@ -273,7 +273,7 @@ tessellation;@*
 grain-growth statistical properties@comma{} which correspond to a wider grain size
 distribution and higher grain sphericities than in a Voronoi tessellation
 (it actually is an alias for
-@samp{@code{diameq:lognormal(1,0.35),sphericity:lognormal(0.145,0.03,1-x)}}@comma{}
+@samp{@code{diameq:lognormal(1,0.35),1-sphericity:lognormal(0.145,0.03)}}@comma{}
 @w{see below}); the @samp{@code{graingrowth(@var{mean})}} and
 @samp{@code{gg}(@var{mean})} variants can be used to provide an absolute
 mean grain size@comma{} @code{@var{mean}} (in which case @option{-n
@@ -336,7 +336,14 @@ property and its value@comma{} combined with the @samp{@SEPDEP{}} separator.
 The available properties are the following:@*
 @bullet{} @samp{@code{size}} for the size (volume in 3D and area in 2D)
 and @samp{@code{diameq}} for the equivalent diameter;@*
-@bullet{} @samp{@code{sphericity}} for the sphericity;@*
+@bullet{} @samp{@code{sphericity}} for the sphericity and
+@samp{@code{1-sphericity}} for 1 @math{-} the sphericity@footnote{The reason
+behind the @samp{@code{1-sphericity}} variable is that, for a grain growth
+microstructure, 1 @math{-} the sphericity follows a lognormal distribution; see
+@cite{R.@ Quey and L.@ Renversade, Optimal polyhedral description of 3D
+polycrystals: Method and application to statistical and synchrotron X-ray
+diffraction data, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 330, pp.@
+308-333, 2018}.}
 @bullet{} @samp{@code{centroid}} for the centroid;@*
 @bullet{} @samp{@code{centroidtol}} for the centroid with a tolerance ---
 centroids with a tolerance higher than 1000 times the minimum tolerance are
@@ -1216,7 +1223,7 @@ sphericities of the cells.
 @item    Generate a tessellation of specified absolute grain size
 distribution (and determine the number of cells accordingly).
 @com{neper -T -n from_morpho -id 1 -morpho@*@ @ @ @ @ @
-     "diameq:lognormal(0.1,0.03),sphericity:lognormal(0.145,0.03,1-x)"}
+     "diameq:lognormal(0.1,0.03),1-sphericity:lognormal(0.145,0.03)"}
 @item Generate a tessellation in a non-convex domain (by cutting the tessellation
     once generated).
 @com{neper -T -n 100 -id 1 -morpho gg @*@ @ @ @ @ @
