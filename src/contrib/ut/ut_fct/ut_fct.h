@@ -16,7 +16,7 @@ struct FCT
   char* type;
 
   double mean;	// mean (or expectation) of distribution x
-  double sig;	// standard deviation x
+  double sigma;	// standard deviation x
   double gamma;	// extra parameter for some functions
 
   // flags for x value restriction (0, 1, 2: none, inclusive, exclusive)
@@ -43,39 +43,39 @@ extern void ut_fct_free (struct FCT *pFct);
 extern double ut_fct_eval (struct FCT Fct, double x);
 extern void ut_fct_set_init_interp (struct FCT *pFct);
 extern void ut_fct_set_dirac (struct FCT *pFct, double x, double area);
-extern void ut_fct_set_normal (struct FCT *pFct, double mean, double sig,
+extern void ut_fct_set_normal (struct FCT *pFct, double mean, double sigma,
 char type_from, char type_to, double from, double to);
-extern void ut_fct_set_erf (struct FCT *pFct, double mean, double sig);
-extern void ut_fct_set_lognormal (struct FCT *pFct, double mean, double sig,
+extern void ut_fct_set_erf (struct FCT *pFct, double mean, double sigma);
+extern void ut_fct_set_lognormal (struct FCT *pFct, double mean, double sigma,
 char type_from, char type_to, double from, double to);
-extern void ut_fct_set_lorentzian (struct FCT *pFct, double mean, double sig,
+extern void ut_fct_set_lorentzian (struct FCT *pFct, double mean, double sigma,
 char type_from, char type_to, double from, double to);
-extern void ut_fct_set_studentst (struct FCT *pFct, double mean, double sig,
+extern void ut_fct_set_studentst (struct FCT *pFct, double mean, double sigma,
 char type_from, char type_to, double from, double to);
-extern void ut_fct_set_pseudovoigt (struct FCT *pFct, double mean, double sig,
+extern void ut_fct_set_pseudovoigt (struct FCT *pFct, double mean, double sigma,
 double gamma, char type_from, char type_to, double from, double to);
-extern void ut_fct_set_moffat (struct FCT *pFct, double mean, double sig,
+extern void ut_fct_set_moffat (struct FCT *pFct, double mean, double sigma,
 double gamma, char type_from, char type_to, double from, double to);
-extern void ut_fct_set_pearson7 (struct FCT *pFct, double mean, double sig,
+extern void ut_fct_set_pearson7 (struct FCT *pFct, double mean, double sigma,
 double gamma, char type_from, char type_to, double from, double to);
-extern void ut_fct_set_breitwigner (struct FCT *pFct, double mean, double sig,
+extern void ut_fct_set_breitwigner (struct FCT *pFct, double mean, double sigma,
 double gamma, char type_from, char type_to, double from, double to);
-extern void ut_fct_set_expnormal (struct FCT *pFct, double mean, double sig,
+extern void ut_fct_set_expnormal (struct FCT *pFct, double mean, double sigma,
 double gamma, char type_from, char type_to, double from, double to);
-extern void ut_fct_set_skewnormal (struct FCT *pFct, double mean, double sig,
+extern void ut_fct_set_skewnormal (struct FCT *pFct, double mean, double sigma,
 double gamma, char type_from, char type_to, double from, double to);
-/*extern void ut_fct_set_donaich (struct FCT *pFct, double mean, double sig,
+/*extern void ut_fct_set_donaich (struct FCT *pFct, double mean, double sigma,
 double gamma, char type_from, char type_to, double from, double to);*/
-extern void ut_fct_set_beta (struct FCT *pFct, double mean, double sig,
+extern void ut_fct_set_beta (struct FCT *pFct, double mean, double sigma,
 char type_from, char type_to, double from, double to);
-extern void ut_fct_set_weibull (struct FCT *pFct, double mean, double sig,
+extern void ut_fct_set_weibull (struct FCT *pFct, double mean, double sigma,
 char type_from, char type_to, double from, double to);
 
 extern void ut_fct_set_numerical (struct FCT *pFct, double min, double
     max, int size, char *method);
 extern void ut_fct_memcpy (struct FCT Fct, struct FCT *pFct2);
 extern double ut_fct_binwidth (struct FCT Fct, int bin);
-extern void ut_fct_convolution (struct FCT Fct, double sig, struct FCT *pFct2);
+extern void ut_fct_convolution (struct FCT Fct, double sigma, struct FCT *pFct2);
 extern void ut_fct_integralfct (struct FCT Fct, struct FCT *pFct2);
 extern double ut_fct_binwidth (struct FCT Fct, int bin);
 extern void ut_fct_numericalfct (struct FCT Fct, double min, double max, int size, struct FCT *pFct2);

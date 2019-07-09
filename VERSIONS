@@ -1,16 +1,13 @@
-New in 3.4.1-44-add-distrib-functions (09 Jul 2019):
-- module -T: added new statistical distributions beta, lorentzian, studentst,
-  weibull, breitwigner, expnormal, moffat, pearson7, pseudovoigt
-  and skewnormal, added naive way to limit admissible x values,
-  added variable 1-sphericity.
-
 New in 3.4.1-37 (08 Jul 2019):
-- module -T: fixed -statvox e, added tessellation keys, improved tesr format,
-  improved -ori fibre, fixed -domain, fixed -for ori, fixed -morpho centroidal,
-  improved -statcell convexity, added -orioptilogvar, improved tesr file, minor
-  fixes.
+- module -T: added new statistical distributions to -morpho: beta, lorentzian,
+  studentst, weibull, breitwigner, expnormal, moffat, pearson7, pseudovoigt and
+  skewnormal, added endpoints to statistical distributions, added variable
+  1-sphericity, fixed -statvox e, added tessellation keys, improved tesr
+  format, improved -ori fibre, fixed -domain, fixed -for ori, fixed -morpho
+  centroidal, improved -statcell convexity, added -orioptilogvar, improved tesr
+  file, minor fixes.
 - module -M: fixed -elt hex, added -performat, added mesh keys, fixed
-  -interface cohesive for Abaqus, minor fixes.
+-interface cohesive for Abaqus, minor fixes.
 - module -V: fixed visualization of periodic meshes.
 - general: fixed compilation when GSL and NLopt locally installed.
 - documentation: small fixes.

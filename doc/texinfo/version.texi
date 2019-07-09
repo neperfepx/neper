@@ -3,9 +3,9 @@
 @c See the COPYING file in the top-level directory.
 
 @iftex
-@set NEPER_VERSION 3.4.1-44-add-distrib-functions
+@set NEPER_VERSION 3.4.1-45-add-distrib-functions
 @end iftex
 
 @ifinfo
-@set NEPER_VERSION 3.4.1-44-add-distrib-functions
+@set NEPER_VERSION 3.4.1-45-add-distrib-functions
 @end ifinfo

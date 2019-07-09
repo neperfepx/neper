@@ -400,7 +400,7 @@ To specify several properties@comma{} combine them @w{with @samp{@SEPNODEP}}
 ,
 any, voronoi}
 
-@c @bullet{} a Donaich distribution@comma{}@*@samp{donaich(@var{mean},@var{sig}@{,@var{gam},@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@comma{}@*default is @var{gam} @math{=} @var{sig}@*
+@c @bullet{} a Donaich distribution@comma{}@*@samp{donaich(@var{mean},@var{sigma}@{,@var{gamma},@var{fromin},@var{toin},@var{fromtype},@var{totype}@})}@comma{}@*default is @var{gamma} @math{=} @var{sigma}@*
 
 @opt{-morphooptiini, char_string,
 Specify the initial positions and/or weights of the
