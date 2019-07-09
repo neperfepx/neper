@@ -182,14 +182,12 @@ ut_fct_set_pseudovoigt (struct FCT *pFct, double mean, double sig,
   (*pFct).mean = mean;
   (*pFct).sig = sig;
   (*pFct).area = 1;
+
   if (gamma <= 1 && gamma >= 0)	// weighting fraction: (1-gamma)*normal + gamma*lorentzian
     (*pFct).gamma = gamma;
   else
-  {
-    ut_print_message (2, 0,
-		      "The distribution function 'pseudovoigt' requires 0 <= gamma <= 1 (default: gamma = 0.5).\n");
-    abort ();
-  }
+    ut_print_message (2, 0, "pseudovoigt: required gamma in [0,1]\n");
+
   (*pFct).type_from = type_from;
   (*pFct).type_to = type_to;
   (*pFct).from = from;
@@ -207,14 +205,12 @@ ut_fct_set_moffat (struct FCT *pFct, double mean, double sig, double gamma,
   (*pFct).mean = mean;
   (*pFct).sig = sig;
   (*pFct).area = 1;
+
   if (gamma > 0)
     (*pFct).gamma = gamma;	// exponent (often called beta): pdf = A*[...]^(-gamma)
   else
-  {
-    ut_print_message (2, 0,
-		      "The distribution function 'moffat' requires gamma > 0 (default: gamma = 1).\n");
-    abort ();
-  }
+    ut_print_message (2, 0, "moffat: required gamma > 0\n");
+
   (*pFct).type_from = type_from;
   (*pFct).type_to = type_to;
   (*pFct).from = from;
@@ -251,14 +247,12 @@ ut_fct_set_breitwigner (struct FCT *pFct, double mean, double sig,
   (*pFct).mean = mean;
   (*pFct).sig = sig;
   (*pFct).area = 1;
+
   if (gamma >= 0)
     (*pFct).gamma = gamma;	// q, the Fano parameter
   else
-  {
-    ut_print_message (2, 0,
-		      "The distribution function 'breitwigner' requires gamma >= 0 (default: gamma = 1).\n");
-    abort ();
-  }
+    ut_print_message (2, 0, "breitwigner: required gamma >= 0\n");
+
   (*pFct).type_from = type_from;
   (*pFct).type_to = type_to;
   (*pFct).from = from;
@@ -276,14 +270,12 @@ ut_fct_set_expnormal (struct FCT *pFct, double mean, double sig, double gamma,
   (*pFct).mean = mean;
   (*pFct).sig = sig;
   (*pFct).area = 1;
+
   if (gamma > 0)
     (*pFct).gamma = gamma;
   else
-  {
-    ut_print_message (2, 0,
-		      "The distribution function 'expnormal' requires gamma > 0 (default: gamma = sigma).\n");
-    abort ();
-  }
+    ut_print_message (2, 0, "expnormal: required gamma > 0.\n");
+
   (*pFct).type_from = type_from;
   (*pFct).type_to = type_to;
   (*pFct).from = from;
@@ -335,14 +327,12 @@ ut_fct_set_beta (struct FCT *pFct, double mean, double sig, int type_from,
 		 int type_to, double from, double to)
 {
   ut_string_string ("beta", &(*pFct).type);
+
   if (mean > 0)
     (*pFct).mean = mean;
   else
-  {
-    ut_print_message (2, 0,
-		      "The distribution function 'beta' requires x, y > 0.\n");
-    abort ();
-  }
+    ut_print_message (2, 0, "beta: required x, y > 0\n");
+
   (*pFct).sig = sig;
   (*pFct).area = 1;
   (*pFct).type_from = type_from;
@@ -359,14 +349,12 @@ ut_fct_set_weibull (struct FCT *pFct, double mean, double sig,
 		    int type_from, int type_to, double from, double to)
 {
   ut_string_string ("weibull", &(*pFct).type);
+
   if (mean > 0)
     (*pFct).mean = mean;
   else
-  {
-    ut_print_message (2, 0,
-		      "The distribution function 'weibull' requires mean, sigma > 0.\n");
-    abort ();
-  }
+    ut_print_message (2, 0, "weibull: required mean, sigma > 0\n");
+
   (*pFct).sig = sig;
   (*pFct).area = 1;
   (*pFct).type_from = type_from;
@@ -387,9 +375,11 @@ ut_fct_eval (struct FCT Fct, double x)
   skip = Fct.type_from == 0 ? skip
     : Fct.type_from == 1 ? (x < Fct.from ? '1' : skip)
     : Fct.type_from == 2 ? (x <= Fct.from ? '1' : skip) : skip;
+
   skip = Fct.type_from == 0 ? skip
     : Fct.type_to == 1 ? (x > Fct.to ? '1' : skip)
     : Fct.type_to == 2 ? (x >= Fct.to ? '1' : skip) : skip;
+
   if (skip == '0')
   {
     if (!strcmp (Fct.type, "numerical"))
@@ -414,11 +404,8 @@ ut_fct_eval (struct FCT Fct, double x)
       double ln_sig, ln_mu, c;
       if (Fct.expr && sscanf (Fct.expr, "%lf", &c))
       {
-      if (c <= 0)
-      {
-        ut_print_message (2, 0, "Please enter an expr > 0!\n");
-        abort ();
-      }
+        if (c <= 0)
+          abort ();
         x = c - x;
       }
 
@@ -731,9 +718,8 @@ ut_fct_set (char *string, struct FCT *pFct)
   int input_switch[3] = { 0, 0, 0 };	// mean, sig, gam
   int given_boundary_type[2] ={ 0, 0 };
 
-
   // Parameter list ------------------------------------------------------------
-  varlist = ut_alloc_2d_char (15, 15);
+  varlist = ut_alloc_2d_char (12, 20);
   varqty = 0;
   strcpy (varlist[++varqty], "mean");
   strcpy (varlist[++varqty], "x");
@@ -759,7 +745,8 @@ ut_fct_set (char *string, struct FCT *pFct)
     else
       status = -1;
 
-    if (status == 0)	// read parameters by keyword
+    // read parameters by keyword
+    if (status == 0)
     {
       if (!strcmp (param, "mean") || !strcmp (param, "x")
           || !strcmp (param, "k"))
@@ -802,8 +789,10 @@ ut_fct_set (char *string, struct FCT *pFct)
         sscanf (vals[i], "%lf", &to);
         given_boundary_type[1] = 2;
       }
-    }		// if(status != 0), no keyword recognised
-    else	// read parameter by position
+    }
+
+    // if(status != 0), no keyword recognised -> read parameter by position
+    else
       /* order of arguments:
        * for fcts with a gamma: [mean,sigma,gamma,frominclusive,toinclusive,fromtype,totype]
        * for lognormal:         [mean,sigma,frominclusive,toinclusive,fromtype,totype,expr]
@@ -882,33 +871,22 @@ ut_fct_set (char *string, struct FCT *pFct)
 
   // Check whether input correct ---------------------------------------------
 
-  // dirac function only requires mean to be provided
+  // dirac function only required mean to be provided
   if (!strcmp (fct, "dirac"))
   {
     if (input_switch[0] > 0)	// if mean given
       input_switch[1] = 1;	// mark sigma as "given"
     else
-    {
-      ut_print_message (2, 0,
-			"Check distribution function input: mean must be provided!\n");
-      abort ();
-    }
+      ut_print_message (2, 0, "dirac: missing mean\n");
   }
 
   // makes sure that at least the required parameters were given (mean & sigma)
   if (input_switch[0] < 1 || input_switch[1] < 1)	// if mean or sigma NOT given
-  {
-    ut_print_message (2, 0,
-		      "Check distribution function input: mean and sigma must be provided!\n");
-    abort ();
-  }
+    ut_print_message (2, 0, "dirac: missing mean and sigma\n");
 
   // sigma must be > 0
   if (sig <= 0)
-  {
-    ut_print_message (2, 0, "Please enter a sigma > 0!\n");
-    abort ();
-  }
+    ut_print_message (2, 0, "dirac: required sigma > 0\n");
 
   // makes sure that gamma has a value assigned
   if (input_switch[2] == 0)	// if gamma yet unassigned
