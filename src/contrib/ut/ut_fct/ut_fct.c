@@ -15,7 +15,6 @@ void
 ut_fct_set_zero (struct FCT *pFct)
 {
   (*pFct).type = NULL;
-  (*pFct).expr = NULL;
 
   (*pFct).mean = 0;
   (*pFct).sig = 0;
@@ -53,7 +52,6 @@ ut_fct_set_init_interp (struct FCT *pFct)
 void
 ut_fct_free (struct FCT *pFct)
 {
-  ut_free_1d_char ((*pFct).expr);
   ut_free_1d_char ((*pFct).type);
 
   ut_free_1d ((*pFct).x);
@@ -82,7 +80,6 @@ ut_fct_set_numerical (struct FCT *pFct, double min, double max, int size,
                       char *method)
 {
   ut_string_string ("numerical", &(*pFct).type);
-  ut_string_string ("none", &(*pFct).expr);
   (*pFct).min = min;
   (*pFct).max = max;
   (*pFct).size = size;
@@ -122,14 +119,13 @@ ut_fct_set_erf (struct FCT *pFct, double mean, double sig)
 
 // sets parameters of the Log-normal distribution
 void
-ut_fct_set_lognormal (struct FCT *pFct, double mean, double sig, char *expr,
+ut_fct_set_lognormal (struct FCT *pFct, double mean, double sig,
 		      char type_from, char type_to, double from, double to)
 {
   ut_string_string ("lognormal", &(*pFct).type);
   (*pFct).mean = mean;
   (*pFct).sig = sig;
   (*pFct).area = 1;
-  ut_string_string (expr, &(*pFct).expr);
   (*pFct).type_from = type_from;
   (*pFct).type_to = type_to;
   (*pFct).from = from;
@@ -396,13 +392,7 @@ ut_fct_eval (struct FCT Fct, double x)
 
   else if (!strcmp (Fct.type, "lognormal"))
   {
-    double ln_sig, ln_mu, c;
-    if (Fct.expr && sscanf (Fct.expr, "%lf", &c))
-    {
-      if (c <= 0)
-        abort ();
-      x = c - x;
-    }
+    double ln_sig, ln_mu;
 
     ln_sig = sqrt (log (1 + pow (Fct.sig, 2) / pow (Fct.mean, 2)));
     ln_mu = log (Fct.mean) - .5 * pow (ln_sig, 2);
@@ -568,7 +558,6 @@ ut_fct_memcpy (struct FCT Fct, struct FCT *pFct2)
   ut_fct_set_zero (pFct2);
 
   ut_string_string (Fct.type, &(*pFct2).type);
-  ut_string_string (Fct.expr, &(*pFct2).expr);
 
   (*pFct2).mean = Fct.mean;
   (*pFct2).sig = Fct.sig;
@@ -711,14 +700,13 @@ ut_fct_set (char *string, struct FCT *pFct)
   char given_boundary_type[2] ={ 'n', 'n' };
 
   // Parameter list ------------------------------------------------------------
-  varlist = ut_alloc_2d_char (14, 20);
+  varlist = ut_alloc_2d_char (13, 20);
   varqty = 0;
   strcpy (varlist[++varqty], "mean");
   strcpy (varlist[++varqty], "x");
   strcpy (varlist[++varqty], "k");
   strcpy (varlist[++varqty], "sigma");
   strcpy (varlist[++varqty], "y");
-  strcpy (varlist[++varqty], "expression");
   strcpy (varlist[++varqty], "gamma");
   strcpy (varlist[++varqty], "from");
   strcpy (varlist[++varqty], "to");
@@ -753,9 +741,6 @@ ut_fct_set (char *string, struct FCT *pFct)
         input_switch[1] = 1;
       }
 
-      else if (!strcmp (param, "expression"))
-        ut_string_string (vals[i], &expr);
-
       else if (!strcmp (param, "gamma"))
       {
         sscanf (vals[i], "%lf", &gam);
@@ -787,7 +772,6 @@ ut_fct_set (char *string, struct FCT *pFct)
     else
       /* order of arguments:
        * for fcts with a gamma: [mean,sigma,gamma,frominclusive,toinclusive,fromtype,totype]
-       * for lognormal:         [mean,sigma,frominclusive,toinclusive,fromtype,totype,expr]
        * fo all others:         [mean,sigma,frominclusive,toinclusive,fromtype,totype]
        */
     {
@@ -853,10 +837,7 @@ ut_fct_set (char *string, struct FCT *pFct)
           sscanf (vals[5], "%c", &given_boundary_type[0]);
         break;
       case 6:	// expr OR totype
-        if (!strcmp (fct, "lognormal"))
-          ut_string_string (vals[6], &expr);
-        else
-          sscanf (vals[6], "%c", &given_boundary_type[1]);
+        sscanf (vals[6], "%c", &given_boundary_type[1]);
       }
     }
   }
@@ -893,7 +874,7 @@ ut_fct_set (char *string, struct FCT *pFct)
     ut_fct_set_normal (pFct, mean, sig, given_boundary_type[0],
 		       given_boundary_type[1], from, to);
   else if (!strcmp (fct, "lognormal"))
-    ut_fct_set_lognormal (pFct, mean, sig, expr, given_boundary_type[0],
+    ut_fct_set_lognormal (pFct, mean, sig, given_boundary_type[0],
 			  given_boundary_type[1], from, to);
   else if (!strcmp (fct, "lorentzian"))
     ut_fct_set_lorentzian (pFct, mean, sig, given_boundary_type[0],
@@ -981,13 +962,12 @@ ut_fct_scale (struct FCT *pFct, double val)
 }
 
 int
-ut_fct_add (struct FCT *Fct1, int qty, double *fact, char *expr,
+ut_fct_add (struct FCT *Fct1, int qty, double *fact,
 	    struct FCT *pFct2)
 {
   int i, j;
 
   ut_fct_memcpy (Fct1[0], pFct2);
-  ut_string_string (expr, &(*pFct2).expr);
 
   if (qty == 1)
     return 0;
@@ -1018,7 +998,6 @@ ut_fct_debug (FILE *fp, struct FCT Fct)
   fprintf (fp, "Fct.from = %f\n", Fct.from);
   fprintf (fp, "Fct.to = %f\n", Fct.to);
   fprintf (fp, "Fct.area = %f\n", Fct.area);
-  fprintf (fp, "Fct.expr = %s\n", Fct.expr);
   fprintf (fp, "Fct.size = %d\n", Fct.size);
   fprintf (fp, "Fct.min = %f\n", Fct.min);
   fprintf (fp, "Fct.max = %f\n", Fct.max);

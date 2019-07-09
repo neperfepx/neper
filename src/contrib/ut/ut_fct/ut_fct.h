@@ -26,7 +26,6 @@ struct FCT
   double from;	// lower x value limit
   double to;	// upper x value limit
   double area;
-  char *expr;	// allows for "c-x" evaluation [lognormal distribution]
 
   double min;
   double max;
@@ -48,7 +47,7 @@ extern void ut_fct_set_normal (struct FCT *pFct, double mean, double sig,
 char type_from, char type_to, double from, double to);
 extern void ut_fct_set_erf (struct FCT *pFct, double mean, double sig);
 extern void ut_fct_set_lognormal (struct FCT *pFct, double mean, double sig,
-char *expr, char type_from, char type_to, double from, double to);
+char type_from, char type_to, double from, double to);
 extern void ut_fct_set_lorentzian (struct FCT *pFct, double mean, double sig,
 char type_from, char type_to, double from, double to);
 extern void ut_fct_set_studentst (struct FCT *pFct, double mean, double sig,
@@ -85,7 +84,7 @@ extern int  ut_fct_set (char *expr, struct FCT *pFct);
 extern void ut_fct_interval_x_linear (double min, double max, int size, char *method,
 				      struct FCT *pFct);
 extern int ut_fct_scale (struct FCT *pFct, double val);
-extern int ut_fct_add (struct FCT *Fct1, int qty, double *fact, char *expr, struct FCT *pFct2);
+extern int ut_fct_add (struct FCT *Fct1, int qty, double *fact, struct FCT *pFct2);
 extern void ut_fct_debug (FILE *fp, struct FCT Fct);
 
 extern int ut_fct_x_pos (struct FCT Fct, double x);

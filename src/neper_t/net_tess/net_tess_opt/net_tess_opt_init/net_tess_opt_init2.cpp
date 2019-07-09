@@ -167,6 +167,17 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
     }
     else
     {
+      if (!strcmp (parts[i] + strlen (parts[i]) - 5, ",1-x)"))
+      {
+        ut_print_message (1, 2, "Flag `1-x' is deprecated and will be removed in future versions.  Use variable `1-sphericity' instead.\n");
+        char *tmp = NULL;
+        ut_string_string (parts[i], &tmp);
+        ut_string_fnrs (tmp, ",1-x", "", 1);
+        parts[i] = ut_realloc_1d_char (parts[i], strlen (tmp) + 3);
+        sprintf (parts[i], "1-%s", tmp);
+        ut_free_1d_char (tmp);
+      }
+
       if (strlen (morpho2) > 0)
         morpho2 = strcat (morpho2, NEUT_SEP_NODEP);
       morpho2 = strcat (morpho2, parts[i]);
@@ -321,8 +332,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
         ut_fct_integralfct (Fct[j], (*pTOpt).tarmodecdf0[i] + j);
       }
 
-      ut_fct_add (Fct, fct_qty, fct_fact, (*pTOpt).tarexpr[i],
-                  (*pTOpt).tarpdf0 + i);
+      ut_fct_add (Fct, fct_qty, fct_fact, (*pTOpt).tarpdf0 + i);
 
       ut_free_2d_char (parts2, fct_qty);
       ut_free_2d_char (fct_expr, fct_qty);
