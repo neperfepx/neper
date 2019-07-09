@@ -20,8 +20,8 @@ ut_fct_set_zero (struct FCT *pFct)
   (*pFct).mean = 0;
   (*pFct).sig = 0;
   (*pFct).gamma = 0;
-  (*pFct).type_from = 0;
-  (*pFct).type_to = 0;
+  (*pFct).type_from = 'n';
+  (*pFct).type_to = 'n';
   (*pFct).from = 0;
   (*pFct).to = 0;
   (*pFct).area = 0;
@@ -95,8 +95,8 @@ ut_fct_set_numerical (struct FCT *pFct, double min, double max, int size,
 
 // sets parameters of the Normal (Gaussian) distribution
 void
-ut_fct_set_normal (struct FCT *pFct, double mean, double sig, int type_from,
-		   int type_to, double from, double to)
+ut_fct_set_normal (struct FCT *pFct, double mean, double sig, char type_from,
+		   char type_to, double from, double to)
 {
   ut_string_string ("normal", &(*pFct).type);
   (*pFct).mean = mean;
@@ -123,7 +123,7 @@ ut_fct_set_erf (struct FCT *pFct, double mean, double sig)
 // sets parameters of the Log-normal distribution
 void
 ut_fct_set_lognormal (struct FCT *pFct, double mean, double sig, char *expr,
-		      int type_from, int type_to, double from, double to)
+		      char type_from, char type_to, double from, double to)
 {
   ut_string_string ("lognormal", &(*pFct).type);
   (*pFct).mean = mean;
@@ -141,7 +141,7 @@ ut_fct_set_lognormal (struct FCT *pFct, double mean, double sig, char *expr,
 // sets parameters of the Lorentzian distribution
 void
 ut_fct_set_lorentzian (struct FCT *pFct, double mean, double sig,
-		       int type_from, int type_to, double from, double to)
+		       char type_from, char type_to, double from, double to)
 {
   ut_string_string ("lorentzian", &(*pFct).type);
   (*pFct).mean = mean;
@@ -158,7 +158,7 @@ ut_fct_set_lorentzian (struct FCT *pFct, double mean, double sig,
 // sets parameters of the Student's t distribution
 void
 ut_fct_set_studentst (struct FCT *pFct, double mean, double sig,
-		      int type_from, int type_to, double from, double to)
+		      char type_from, char type_to, double from, double to)
 {
   ut_string_string ("studentst", &(*pFct).type);
   (*pFct).mean = mean;
@@ -175,7 +175,7 @@ ut_fct_set_studentst (struct FCT *pFct, double mean, double sig,
 // sets parameters of the Pseudo-Voigt distribution
 void
 ut_fct_set_pseudovoigt (struct FCT *pFct, double mean, double sig,
-			double gamma, int type_from, int type_to, double from,
+			double gamma, char type_from, char type_to, double from,
 			double to)
 {
   ut_string_string ("pseudovoigt", &(*pFct).type);
@@ -199,7 +199,7 @@ ut_fct_set_pseudovoigt (struct FCT *pFct, double mean, double sig,
 // sets parameters of the Moffat distribution
 void
 ut_fct_set_moffat (struct FCT *pFct, double mean, double sig, double gamma,
-		   int type_from, int type_to, double from, double to)
+		   char type_from, char type_to, double from, double to)
 {
   ut_string_string ("moffat", &(*pFct).type);
   (*pFct).mean = mean;
@@ -222,7 +222,7 @@ ut_fct_set_moffat (struct FCT *pFct, double mean, double sig, double gamma,
 // sets parameters of the Pearson type VII distribution
 void
 ut_fct_set_pearson7 (struct FCT *pFct, double mean, double sig, double gamma,
-		     int type_from, int type_to, double from, double to)
+		     char type_from, char type_to, double from, double to)
 {
   ut_string_string ("pearson7", &(*pFct).type);
   (*pFct).mean = mean;
@@ -240,7 +240,7 @@ ut_fct_set_pearson7 (struct FCT *pFct, double mean, double sig, double gamma,
 // sets parameters of the Breit-Wigner-Fano function
 void
 ut_fct_set_breitwigner (struct FCT *pFct, double mean, double sig,
-			double gamma, int type_from, int type_to, double from,
+			double gamma, char type_from, char type_to, double from,
 			double to)
 {
   ut_string_string ("breitwigner", &(*pFct).type);
@@ -264,7 +264,7 @@ ut_fct_set_breitwigner (struct FCT *pFct, double mean, double sig,
 // sets parameters of the Exponential Gaussian (normal) distribution
 void
 ut_fct_set_expnormal (struct FCT *pFct, double mean, double sig, double gamma,
-		      int type_from, int type_to, double from, double to)
+		      char type_from, char type_to, double from, double to)
 {
   ut_string_string ("expnormal", &(*pFct).type);
   (*pFct).mean = mean;
@@ -287,7 +287,7 @@ ut_fct_set_expnormal (struct FCT *pFct, double mean, double sig, double gamma,
 // sets parameters of the Skewed Gaussian (normal) distribution
 void
 ut_fct_set_skewnormal (struct FCT *pFct, double mean, double sig,
-		       double gamma, int type_from, int type_to, double from,
+		       double gamma, char type_from, char type_to, double from,
 		       double to)
 {
   ut_string_string ("skewnormal", &(*pFct).type);
@@ -306,7 +306,7 @@ ut_fct_set_skewnormal (struct FCT *pFct, double mean, double sig,
 // sets parameters of the distribution
 void
 ut_fct_set_donaich (struct FCT *pFct, double mean, double sig, double gamma,
-		    int type_from, int type_to, double from, double to)
+		    char type_from, char type_to, double from, double to)
 {
   ut_string_string ("donaich", &(*pFct).type);
   (*pFct).mean = mean;
@@ -323,8 +323,8 @@ ut_fct_set_donaich (struct FCT *pFct, double mean, double sig, double gamma,
 */
 // sets parameters of the Beta distribution
 void
-ut_fct_set_beta (struct FCT *pFct, double mean, double sig, int type_from,
-		 int type_to, double from, double to)
+ut_fct_set_beta (struct FCT *pFct, double mean, double sig, char type_from,
+		 char type_to, double from, double to)
 {
   ut_string_string ("beta", &(*pFct).type);
 
@@ -346,7 +346,7 @@ ut_fct_set_beta (struct FCT *pFct, double mean, double sig, int type_from,
 // sets parameters of the Weibull distribution
 void
 ut_fct_set_weibull (struct FCT *pFct, double mean, double sig,
-		    int type_from, int type_to, double from, double to)
+		    char type_from, char type_to, double from, double to)
 {
   ut_string_string ("weibull", &(*pFct).type);
 
@@ -369,142 +369,134 @@ double
 ut_fct_eval (struct FCT Fct, double x)
 {
   double val;
-  char skip = '0';
 
   // makes sure x is within limits, if limits given
-  skip = Fct.type_from == 0 ? skip
-    : Fct.type_from == 1 ? (x < Fct.from ? '1' : skip)
-    : Fct.type_from == 2 ? (x <= Fct.from ? '1' : skip) : skip;
+  if ((Fct.type_from == 'i' && x <  Fct.from)
+   || (Fct.type_from == 'e' && x <= Fct.from)
+   || (Fct.type_to   == 'i' && x >  Fct.to  )
+   || (Fct.type_to   == 'e' && x >= Fct.to  ))
+    return 0;
 
-  skip = Fct.type_from == 0 ? skip
-    : Fct.type_to == 1 ? (x > Fct.to ? '1' : skip)
-    : Fct.type_to == 2 ? (x >= Fct.to ? '1' : skip) : skip;
-
-  if (skip == '0')
+  if (!strcmp (Fct.type, "numerical"))
   {
-    if (!strcmp (Fct.type, "numerical"))
-    {
-      if (x < Fct.x[0])
-        val = Fct.y[0];
-      else if (x > Fct.x[Fct.size - 1])
-	      val = Fct.y[Fct.size - 1];
-      else
-	      val = gsl_interp_eval (Fct.interp, Fct.x, Fct.y, x, Fct.interp_accel);
-    }
-
-    else if (!strcmp (Fct.type, "dirac"))
-      val = (x == Fct.mean) ? DBL_MAX : 0;
-
-    else if (!strcmp (Fct.type, "normal"))
-      val =	exp (-pow (x - Fct.mean, 2) / (2 * pow (Fct.sig, 2)))
-                / (Fct.sig * sqrt (2 *M_PI));
-
-    else if (!strcmp (Fct.type, "lognormal"))
-    {
-      double ln_sig, ln_mu, c;
-      if (Fct.expr && sscanf (Fct.expr, "%lf", &c))
-      {
-        if (c <= 0)
-          abort ();
-        x = c - x;
-      }
-
-      ln_sig = sqrt (log (1 + pow (Fct.sig, 2) / pow (Fct.mean, 2)));
-      ln_mu = log (Fct.mean) - .5 * pow (ln_sig, 2);
-
-      val = (x > 0) ?
-            exp (-pow (log (x) - ln_mu, 2) / (2 * pow (ln_sig, 2)))
-              / (x * ln_sig * sqrt (2 * M_PI)) : 0;
-    }
-
-    else if (!strcmp (Fct.type, "lorentzian"))
-      val = Fct.sig / ((pow (x - Fct.mean, 2) + pow (Fct.sig, 2)) * M_PI);
-
-    else if (!strcmp (Fct.type, "studentst"))
-    {
-      const double halfSig = Fct.sig * 0.5;
-
-      val = pow (1. + pow (x - Fct.mean, 2) / Fct.sig, -halfSig - 0.5)
-              / (tgamma (halfSig) * sqrt (Fct.sig * M_PI))
-              * tgamma (halfSig + 0.5);
-    }
-
-    else if (!strcmp (Fct.type, "pseudovoigt"))
-    {
-      double sig_g = Fct.sig / sqrt (2. * log (2.)),
-              dist = pow (x - Fct.mean, 2);
-
-      val = (Fct.gamma * Fct.sig / ((dist + pow (Fct.sig, 2)) * M_PI))
-              + ((1 - Fct.gamma) * exp (-dist * 0.5 / pow (sig_g, 2))
-              / (sig_g * sqrt (2. * M_PI)));
-    }
-
-    else if (!strcmp (Fct.type, "moffat"))
-      val = (x > 0) ?
-              pow (pow ((x - Fct.mean) / Fct.sig, 2) + 1., -Fct.gamma) : 0;
-
-    else if (!strcmp (Fct.type, "pearson7"))
-    {
-      val = (tgamma (Fct.gamma)
-              * pow (1 + pow ((x - Fct.mean) / Fct.sig, 2), -Fct.gamma))
-              / (Fct.sig * tgamma (Fct.gamma - 0.5) * tgamma (0.5));
-    }
-
-    else if (!strcmp (Fct.type, "breitwigner"))
-    {
-      const double sum = x - Fct.mean, fac = Fct.sig * 0.5;
-      val = pow (Fct.gamma * fac + sum, 2) / (pow (fac, 2) + pow (sum, 2));
-    }
-    else if (!strcmp (Fct.type, "expnormal"))
-    {
-      const double prod = Fct.gamma * pow (Fct.sig, 2), sum = Fct.mean - x;
-
-      val = 0.5 * Fct.gamma * exp (Fct.gamma * (0.5 * prod + sum))
-              * erfc ((sum + prod) / (Fct.sig * sqrt (2.)));
-    }
-
-    else if (!strcmp (Fct.type, "skewnormal"))
-    {
-      const double factor = (x - Fct.mean) / (Fct.sig * sqrt (2.));
-
-      val = (1. + erf (factor * Fct.gamma)) * exp (-pow (factor, 2))
-              / (Fct.sig * sqrt (2. * M_PI));
-    }
-/*
-    else if (!strcmp (Fct.type, "donaich"))
-    {
-      const double fac0 = (x - Fct.mean) / Fct.sig, fac1 = 1. - Fct.gamma;
-
-      val = cos (0.5 * M_PI * Fct.gamma + fac1 * atan (fac0))
-              / (pow (1 + fac0, fac1 * 0.5) * pow (Fct.sig, fac1));
-    }
-*/
-    else if (!strcmp (Fct.type, "beta"))
-    {
-      val = (x > 0 && x < 1) ?
-              tgamma (Fct.mean + Fct.sig) * pow (x, Fct.mean - 1.)
-              * pow (1. - x, Fct.sig - 1.)
-              / (tgamma (Fct.mean) * tgamma (Fct.sig)) : 0;
-    }
-
-    else if (!strcmp (Fct.type, "weibull"))
-    {
-      val = (x > 0) ?
-              Fct.mean * pow (x, Fct.mean - 1)
-              * exp (-pow ((x / Fct.sig), Fct.mean)) / pow (Fct.sig, Fct.mean)
-              :	0;
-    }
-    else if (!strcmp (Fct.type, "erf"))
-      val = 0.5 + 0.5 * erf ((x - Fct.mean) / (sqrt (2) * Fct.sig));
-
+    if (x < Fct.x[0])
+      val = Fct.y[0];
+    else if (x > Fct.x[Fct.size - 1])
+            val = Fct.y[Fct.size - 1];
     else
+            val = gsl_interp_eval (Fct.interp, Fct.x, Fct.y, x, Fct.interp_accel);
+  }
+
+  else if (!strcmp (Fct.type, "dirac"))
+    val = (x == Fct.mean) ? DBL_MAX : 0;
+
+  else if (!strcmp (Fct.type, "normal"))
+    val =	exp (-pow (x - Fct.mean, 2) / (2 * pow (Fct.sig, 2)))
+              / (Fct.sig * sqrt (2 *M_PI));
+
+  else if (!strcmp (Fct.type, "lognormal"))
+  {
+    double ln_sig, ln_mu, c;
+    if (Fct.expr && sscanf (Fct.expr, "%lf", &c))
     {
-      printf ("Unknown Fct.type = %s\n", Fct.type);
-      abort ();
+      if (c <= 0)
+        abort ();
+      x = c - x;
     }
-  }				// if (skip == '1')
+
+    ln_sig = sqrt (log (1 + pow (Fct.sig, 2) / pow (Fct.mean, 2)));
+    ln_mu = log (Fct.mean) - .5 * pow (ln_sig, 2);
+
+    val = (x > 0) ?
+          exp (-pow (log (x) - ln_mu, 2) / (2 * pow (ln_sig, 2)))
+            / (x * ln_sig * sqrt (2 * M_PI)) : 0;
+  }
+
+  else if (!strcmp (Fct.type, "lorentzian"))
+    val = Fct.sig / ((pow (x - Fct.mean, 2) + pow (Fct.sig, 2)) * M_PI);
+
+  else if (!strcmp (Fct.type, "studentst"))
+  {
+    const double halfSig = Fct.sig * 0.5;
+
+    val = pow (1. + pow (x - Fct.mean, 2) / Fct.sig, -halfSig - 0.5)
+            / (tgamma (halfSig) * sqrt (Fct.sig * M_PI))
+            * tgamma (halfSig + 0.5);
+  }
+
+  else if (!strcmp (Fct.type, "pseudovoigt"))
+  {
+    double sig_g = Fct.sig / sqrt (2. * log (2.)),
+            dist = pow (x - Fct.mean, 2);
+
+    val = (Fct.gamma * Fct.sig / ((dist + pow (Fct.sig, 2)) * M_PI))
+            + ((1 - Fct.gamma) * exp (-dist * 0.5 / pow (sig_g, 2))
+            / (sig_g * sqrt (2. * M_PI)));
+  }
+
+  else if (!strcmp (Fct.type, "moffat"))
+    val = (x > 0) ?
+            pow (pow ((x - Fct.mean) / Fct.sig, 2) + 1., -Fct.gamma) : 0;
+
+  else if (!strcmp (Fct.type, "pearson7"))
+  {
+    val = (tgamma (Fct.gamma)
+            * pow (1 + pow ((x - Fct.mean) / Fct.sig, 2), -Fct.gamma))
+            / (Fct.sig * tgamma (Fct.gamma - 0.5) * tgamma (0.5));
+  }
+
+  else if (!strcmp (Fct.type, "breitwigner"))
+  {
+    const double sum = x - Fct.mean, fac = Fct.sig * 0.5;
+    val = pow (Fct.gamma * fac + sum, 2) / (pow (fac, 2) + pow (sum, 2));
+  }
+  else if (!strcmp (Fct.type, "expnormal"))
+  {
+    const double prod = Fct.gamma * pow (Fct.sig, 2), sum = Fct.mean - x;
+
+    val = 0.5 * Fct.gamma * exp (Fct.gamma * (0.5 * prod + sum))
+            * erfc ((sum + prod) / (Fct.sig * sqrt (2.)));
+  }
+
+  else if (!strcmp (Fct.type, "skewnormal"))
+  {
+    const double factor = (x - Fct.mean) / (Fct.sig * sqrt (2.));
+
+    val = (1. + erf (factor * Fct.gamma)) * exp (-pow (factor, 2))
+            / (Fct.sig * sqrt (2. * M_PI));
+  }
+/*
+  else if (!strcmp (Fct.type, "donaich"))
+  {
+    const double fac0 = (x - Fct.mean) / Fct.sig, fac1 = 1. - Fct.gamma;
+
+    val = cos (0.5 * M_PI * Fct.gamma + fac1 * atan (fac0))
+            / (pow (1 + fac0, fac1 * 0.5) * pow (Fct.sig, fac1));
+  }
+*/
+  else if (!strcmp (Fct.type, "beta"))
+  {
+    val = (x > 0 && x < 1) ?
+            tgamma (Fct.mean + Fct.sig) * pow (x, Fct.mean - 1.)
+            * pow (1. - x, Fct.sig - 1.)
+            / (tgamma (Fct.mean) * tgamma (Fct.sig)) : 0;
+  }
+
+  else if (!strcmp (Fct.type, "weibull"))
+  {
+    val = (x > 0) ?
+            Fct.mean * pow (x, Fct.mean - 1)
+            * exp (-pow ((x / Fct.sig), Fct.mean)) / pow (Fct.sig, Fct.mean)
+            :	0;
+  }
+  else if (!strcmp (Fct.type, "erf"))
+    val = 0.5 + 0.5 * erf ((x - Fct.mean) / (sqrt (2) * Fct.sig));
+
   else
-    val = 0;			// x is out of limits
+  {
+    printf ("Unknown Fct.type = %s\n", Fct.type);
+    abort ();
+  }
 
   return val;
 }
@@ -716,10 +708,10 @@ ut_fct_set (char *string, struct FCT *pFct)
   char *expr = NULL;
 
   int input_switch[3] = { 0, 0, 0 };	// mean, sig, gam
-  int given_boundary_type[2] ={ 0, 0 };
+  char given_boundary_type[2] ={ 'n', 'n' };
 
   // Parameter list ------------------------------------------------------------
-  varlist = ut_alloc_2d_char (12, 20);
+  varlist = ut_alloc_2d_char (14, 20);
   varqty = 0;
   strcpy (varlist[++varqty], "mean");
   strcpy (varlist[++varqty], "x");
@@ -728,6 +720,8 @@ ut_fct_set (char *string, struct FCT *pFct)
   strcpy (varlist[++varqty], "y");
   strcpy (varlist[++varqty], "expression");
   strcpy (varlist[++varqty], "gamma");
+  strcpy (varlist[++varqty], "from");
+  strcpy (varlist[++varqty], "to");
   strcpy (varlist[++varqty], "frominclusive");
   strcpy (varlist[++varqty], "toinclusive");
   strcpy (varlist[++varqty], "fromexclusive");
@@ -739,14 +733,12 @@ ut_fct_set (char *string, struct FCT *pFct)
   for (i = 0; i < inputqty; ++i)
   {
     if (vars[i])
-    {
       status = ut_string_comp (vars[i], varlist, varqty, &param);
-    }
     else
       status = -1;
 
-    // read parameters by keyword
-    if (status == 0)
+    // reading by keyword
+    if (!status)
     {
       if (!strcmp (param, "mean") || !strcmp (param, "x")
           || !strcmp (param, "k"))
@@ -769,29 +761,29 @@ ut_fct_set (char *string, struct FCT *pFct)
         sscanf (vals[i], "%lf", &gam);
         input_switch[2] = 1;
       }
-      else if (!strcmp (param, "frominclusive"))
+      else if (!strcmp (param, "from") || !strcmp (param, "frominclusive"))
       {
         sscanf (vals[i], "%lf", &from);
-        given_boundary_type[0] = 1;
+        given_boundary_type[0] = 'i';
       }
-      else if (!strcmp (param, "toinclusive"))
+      else if (!strcmp (param, "to") || !strcmp (param, "toinclusive"))
       {
         sscanf (vals[i], "%lf", &to);
-        given_boundary_type[1] = 1;
+        given_boundary_type[1] = 'i';
       }
       else if (!strcmp (param, "fromexclusive"))
       {
         sscanf (vals[i], "%lf", &from);
-        given_boundary_type[0] = 2;
+        given_boundary_type[0] = 'e';
       }
       else if (!strcmp (param, "toexclusive"))
       {
         sscanf (vals[i], "%lf", &to);
-        given_boundary_type[1] = 2;
+        given_boundary_type[1] = 'e';
       }
     }
 
-    // if(status != 0), no keyword recognised -> read parameter by position
+    // reading by position
     else
       /* order of arguments:
        * for fcts with a gamma: [mean,sigma,gamma,frominclusive,toinclusive,fromtype,totype]
@@ -816,7 +808,7 @@ ut_fct_set (char *string, struct FCT *pFct)
         || !strcmp (fct, "weibull"))
         {
           sscanf (vals[2], "%lf", &from);
-          given_boundary_type[0] = 1;
+          given_boundary_type[0] = 'i';
         }
         else
         {
@@ -831,12 +823,12 @@ ut_fct_set (char *string, struct FCT *pFct)
         || !strcmp (fct, "weibull"))
         {
           sscanf (vals[3], "%lf", &to);
-          given_boundary_type[1] = 1;
+          given_boundary_type[1] = 'i';
         }
         else
         {
           sscanf (vals[3], "%lf", &from);
-          given_boundary_type[0] = 1;
+          given_boundary_type[0] = 'i';
         }
         break;
       case 4:	// fromtype OR toinclusive
@@ -844,11 +836,11 @@ ut_fct_set (char *string, struct FCT *pFct)
         || !strcmp (fct, "beta") || !strcmp (fct, "lognormal")
         || !strcmp (fct, "lorentzian") || !strcmp (fct, "studentst")
         || !strcmp (fct, "weibull"))
-          sscanf (vals[4], "%d", &given_boundary_type[0]);
+          sscanf (vals[4], "%c", &given_boundary_type[0]);
         else
         {
           sscanf (vals[4], "%lf", &to);
-          given_boundary_type[1] = 1;
+          given_boundary_type[1] = 'i';
         }
         break;
       case 5:	// totype OR fromtype
@@ -856,15 +848,15 @@ ut_fct_set (char *string, struct FCT *pFct)
         || !strcmp (fct, "beta") || !strcmp (fct, "lognormal")
         || !strcmp (fct, "lorentzian") || !strcmp (fct, "studentst")
         || !strcmp (fct, "weibull"))
-          sscanf (vals[5], "%d", &given_boundary_type[1]);
+          sscanf (vals[5], "%c", &given_boundary_type[1]);
         else
-          sscanf (vals[5], "%d", &given_boundary_type[0]);
+          sscanf (vals[5], "%c", &given_boundary_type[0]);
         break;
       case 6:	// expr OR totype
         if (!strcmp (fct, "lognormal"))
           ut_string_string (vals[6], &expr);
         else
-          sscanf (vals[6], "%d", &given_boundary_type[1]);
+          sscanf (vals[6], "%c", &given_boundary_type[1]);
       }
     }
   }
