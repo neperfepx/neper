@@ -1,4 +1,4 @@
-New in 3.4.1-46 (10 Jul 2019):
+New in 3.4.1-47 (18 Jul 2019):
 - module -T: added new statistical distributions to -morpho: beta, lorentzian,
   studentst, weibull, breitwigner, expnormal, moffat, pearson7, pseudovoigt and
   skewnormal, added endpoints to statistical distributions, added variable

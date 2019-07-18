@@ -855,7 +855,7 @@ ut_fct_set (char *string, struct FCT *pFct)
     ut_print_message (2, 0, "%s: missing sigma\n", string);
 
   // sigma must be > 0
-  if (sigma <= 0)
+  if (strcmp (fct, "dirac") && sigma <= 0)
     ut_print_message (2, 0, "%s: required sigma > 0\n", string);
 
   // makes sure that gamma has a value assigned
