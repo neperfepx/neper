@@ -750,11 +750,21 @@ void
 neut_tess_face_centre (struct TESS Tess, int face, double *centre)
 {
   int i, ver, ver1, ver2, pos;
-  double *coo = ut_alloc_1d (3);
-  double *tmp = ut_alloc_1d (3);
+  double *coo = NULL;
+  double *tmp = NULL;
   double val, totval;
 
-  pos = (Tess.FacePt[face] > 0) ? Tess.FacePt[face] : 1;
+  if (Tess.FaceVerQty[face] == 0)
+  {
+    ut_array_1d_zero (centre, 3);
+
+    return;
+  }
+
+  coo = ut_alloc_1d (3);
+  tmp = ut_alloc_1d (3);
+
+  pos = (Tess.Dim == 3 && Tess.FacePt[face] > 0) ? Tess.FacePt[face] : 1;
   ver = Tess.FaceVerNb[face][pos];
   ut_array_1d_memcpy (coo, 3, Tess.VerCoo[ver]);
 

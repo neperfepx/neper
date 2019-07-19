@@ -26,7 +26,7 @@ extern "C"
   extern void net_tess_tesr (char *tesrsizestring, struct TESS, struct TESR *);
   extern void net_tess_tesr_cell (struct TESS, int, struct TESR *);
 
-  extern void net_tess_clip (struct SEEDSET SSet, struct TESS *pTess,
+  extern int net_tess_clip (struct SEEDSET SSet, struct TESS *pTess,
 			     double *eq);
 
   extern int net_multiscale_arg_0d_fscanf (char *string, char* flag,

@@ -17,7 +17,7 @@ extern void neut_tess_init_domain_domedgevernb (struct TESS *pTess);
 extern void neut_tess_domface_tess_general (struct TESS Tess, struct
 					    TESS *pT);
 extern void neut_tess_domface_tess_seeds (struct TESS Tess, struct TESS *pT);
-extern void neut_tess_domface_tess_cells (struct TESS Tess, struct TESS *pT);
+extern void neut_tess_domface_tess_cells (struct TESS Tess, int *oldface_newface, struct TESS *pT);
 extern void neut_tess_domface_tess_faces (struct TESS Tess, int domface,
 					  struct TESS *pT,
 					  int *oldface_newface);
@@ -34,7 +34,6 @@ extern void neut_tess_domface_tess_domain (struct TESS Tess, int domface,
 					   struct TESS *pT,
 					   int *oldedge_newedge,
 					   int *oldver_newver);
-extern void neut_tess_domface_tess_scale (struct TESS Tess, struct TESS *pT);
 
 extern void neut_tess_3dcolumnar_2d_faces (struct TESS Tess, int domface,
 					   struct TESS *pT);

@@ -794,7 +794,8 @@ along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
 @emph{(iv)} @samp{ecylinder(@var{basis_x}@comma{}@var{basis_y}@comma{}@var{basis_z}@comma{}@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{esaxis1_x}@comma{}@var{esaxis1_y}@comma{} @var{esaxis1_z}@comma{}@var{esaxis2_x}@comma{}@var{esaxis2_y}@comma{}@var{esaxis2_z}@comma{}@var{srad1}@comma{}@var{srad2})} for an elliptic cylinder of basis point @math{(@var{basis_x}@comma{} @var{basis_y}@comma{} @var{basis_z})}@comma{} axis @math{(@var{axis_x}@comma{} @var{axis_y}@comma{} @var{axis_z})}@comma{} ellipse section first axis @math{(@var{esaxis1_x}@comma{} @var{esaxis1_y}@comma{} @var{esaxis1_z})}@comma{} ellipse section second axis @math{(@var{esaxis2_x}@comma{} @var{esaxis2_y}@comma{} @var{esaxis2_z})}@comma{} ellipse section first radius @var{esrad1} and ellipse section second radius @var{esrad2}.@*
 Append @samp{i} to a primitive name (to get @samp{cylinderi}@comma{} etc.) for the complementary shape.
 @*
-@mybullet @samp{planecut(@var{a}@comma{}@var{b}@comma{}@var{c}@comma{}@var{d})} for cutting by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d}.@*
+@mybullet @samp{planecut(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for cutting by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d}.@*
+@mybullet @samp{slice(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for slicing a 3D tessellation by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d} (yielding to a 2D tessellation).@*
 @mybullet @samp{mergecell(@var{expr1}@comma{}@var{expr2}@comma{}@dots{})} for merging cells
 matching expression @code{@var{expr1}}@comma{} @code{@var{expr2}}@comma{} etc.@comma{}
 where expressions are based on the variables defined in @ref{Tessellation Keys}.

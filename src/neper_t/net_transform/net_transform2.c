@@ -96,7 +96,12 @@ net_transform_tess (struct IN_T In, struct TESS Dom, struct TESS *pTess)
     else if (!strncmp (parts[i], "planecut(", 9))
     {
       int j, exprqty;
+      double *eq = ut_alloc_1d (4);
       char *fct = NULL, **exprs = NULL;
+      struct SEEDSET SSet;
+
+      neut_seedset_set_zero (&SSet);
+      net_tess_seedset (*pTess, &SSet);
 
       ut_print_message (0, 2, "Cutting by plane...\n");
 
@@ -104,14 +109,49 @@ net_transform_tess (struct IN_T In, struct TESS Dom, struct TESS *pTess)
       if (exprqty != 4)
         ut_print_message (2, 2, "Failed to parse expression `%s'.\n", parts[i]);
 
-      double *eq = ut_alloc_1d (4);
       for (j = 0; j < 4; j++)
         sscanf (exprs[j], "%lf", eq + j);
-      struct SEEDSET SSet;
-      neut_seedset_set_zero (&SSet);
-      net_tess_seedset (*pTess, &SSet);
+
       ut_array_1d_scale (eq, 4, 1. / ut_array_1d_norm (eq + 1, 3));
       net_tess_clip (SSet, pTess, eq);
+
+      ut_free_1d (eq);
+      neut_seedset_free (&SSet);
+      ut_free_1d_char (fct);
+      ut_free_2d_char (exprs, exprqty);
+    }
+
+    else if (!strncmp (parts[i], "slice(", 6))
+    {
+      int j, exprqty, domface;
+      double *eq = ut_alloc_1d (4);
+      char *fct = NULL, **exprs = NULL;
+      struct TESS Tess2;
+      struct SEEDSET SSet;
+
+      neut_tess_set_zero (&Tess2);
+      neut_seedset_set_zero (&SSet);
+      net_tess_seedset (*pTess, &SSet);
+
+      ut_print_message (0, 2, "Slicing...\n");
+
+      ut_string_function_separate_exprs (parts[i], &fct, &exprs, &exprqty);
+      if (exprqty != 4)
+        ut_print_message (2, 2, "Failed to parse expression `%s'.\n", parts[i]);
+
+      for (j = 0; j < 4; j++)
+        sscanf (exprs[j], "%lf", eq + j);
+
+      ut_array_1d_scale (eq, 4, 1. / ut_array_1d_norm (eq + 1, 3));
+      domface = net_tess_clip (SSet, pTess, eq);
+      neut_tess_tess (*pTess, &Tess2);
+      neut_tess_domface_tess (Tess2, domface, pTess);
+
+      ut_free_1d (eq);
+      ut_free_1d_char (fct);
+      ut_free_2d_char (exprs, exprqty);
+      neut_tess_free (&Tess2);
+      neut_seedset_free (&SSet);
     }
 
     else
