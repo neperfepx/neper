@@ -3,6 +3,7 @@
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_geom_.h"
+#include"neut/neut_structs/neut_nanoflann_struct.hpp"
 
 /* neut_mesh_elt_area computes the area of a 2D element */
 int
@@ -1044,6 +1045,44 @@ neut_mesh_elset_point_closestelt (struct MESH Mesh, struct NODES Nodes,
 
   ut_free_1d (dist);
   ut_free_1d (eltcoo);
+
+  return 0;
+}
+
+int
+neut_mesh_elset_points_closestelts (struct MESH Mesh, struct NODES Nodes,
+                                    int elset, double **coos, int qty, int *elts)
+{
+  int i;
+  NFTREE *nf_tree = nullptr;
+  NFCLOUD nf_cloud;
+
+  // filling cloud
+
+  nf_cloud.pts.resize (Mesh.Elsets[elset][0]);
+
+  for (i = 0; i < Mesh.Elsets[elset][0]; i++)
+    neut_mesh_elt_centre (Nodes, Mesh, Mesh.Elsets[elset][i + 1], nf_cloud.pts[i].p);
+
+  // building tree
+
+  nf_tree = new NFTREE (3, nf_cloud);
+
+  // finding neighbour
+
+  for (i = 0; i < qty; i++)
+  {
+    std::vector < size_t > ret_index (1);
+    std::vector < double >out_dist_sqr (1);
+    nanoflann::KNNResultSet < double >resultSet (1);
+    resultSet.init (&ret_index[0], &out_dist_sqr[0]);
+
+    nf_tree->findNeighbors (resultSet, coos[i],
+                            nanoflann::SearchParams (INT_MAX));
+    elts[i] = Mesh.Elsets[elset][ret_index[0] + 1];
+  }
+
+  delete nf_tree;
 
   return 0;
 }
