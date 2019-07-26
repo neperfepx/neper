@@ -261,6 +261,12 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     nem_transport (In, Tess, RNodes, RMesh, Nodes, Mesh);
   }
 
+  if (In.transportfepxstring)
+  {
+    ut_print_message (0, 1, "Transporting FEpX data...\n");
+    nem_transportfepx (In, Tess, RNodes, RMesh, Nodes, Mesh);
+  }
+
 // ###################################################################
 // ### MESH STATISTICS ###############################################
 

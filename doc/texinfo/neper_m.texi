@@ -609,6 +609,25 @@ considering the parent element which the centroid of the new element belongs
 to.,
 any,none}
 
+@opt{-transportfepx, char_string@SEPDEP{}char_string...,
+Transport FEpX data from a parent mesh to a child mesh.
+The parent mesh is the input mesh and the child mesh is the result mesh
+(created by remeshing or loaded
+with @option{-loadmesh}).
+A transport entry must have format
+@samp{@var{orientation_file}@SEPDEP{}@var{tau_file}}@comma{}
+where
+@samp{@var{orientation_file}} is the orientation file (a list of Euler angles in Kocks convention)
+and
+@samp{@var{tau_file}} is the critical resolved shear strength file (a list of scalars).
+These element data are transported by
+considering the parent element which the centroid of the new element belongs
+to.
+Moreover@comma{} the FEpX files of extensions @file{.kocks} and @file{.opt}
+are generated from these data and can be used to run a new simulation.
+,
+any,none}
+
 @subsection Output Options
 
 @opt{-o, file_name,

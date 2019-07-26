@@ -107,6 +107,7 @@ nem_input_options_default (struct IN_M *pIn)
 
   /* Options for remeshing --------------------------------- */
   (*pIn).transportstring = NULL;
+  (*pIn).transportfepxstring = NULL;
 
   (*pIn).loadmesh = NULL;
   (*pIn).loadpoint = NULL;
@@ -218,6 +219,7 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
 
   // Field transport ---------------------------------------------------
   strcpy (ArgList[++ArgQty], "-transport");
+  strcpy (ArgList[++ArgQty], "-transportfepx");
 
   // Restart a job -----------------------------------------------------
   strcpy (ArgList[++ArgQty], "-loadtess");	// not documented
@@ -464,6 +466,8 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).loadpoint));
       else if ((!strcmp (Arg, "-transport")))
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transportstring));
+      else if ((!strcmp (Arg, "-transportfepx")))
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transportfepxstring));
       else if (!strcmp (Arg, "-format"))
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).format));
       else if (!strcmp (Arg, "-part"))

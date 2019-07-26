@@ -69,6 +69,7 @@ struct IN_M
   int mesh3dreport;		// report statistics on the 3D mesh (logical)
 
   char *transportstring;	// Data to transport
+  char *transportfepxstring;	// Data to transport / specific to FEpX
 
   int singnodedup;		// duplicate singular nodes (logical)
   double dupnodemerge;		// merge duplicate nodes (tolerancy)

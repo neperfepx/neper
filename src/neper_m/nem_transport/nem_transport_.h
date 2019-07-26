@@ -27,3 +27,6 @@ extern void nem_transport_elt (char *type, char *filename, struct NODES RNodes,
 
 extern void nem_transport_node (char *type, char *filename, struct NODES RNodes,
 			        struct MESH RMesh, struct NODES Nodes);
+
+extern void nem_transportfepx_fepxfiles (struct IN_M In, struct TESS Tess,
+                                         struct MESH *Mesh, char **transport);
