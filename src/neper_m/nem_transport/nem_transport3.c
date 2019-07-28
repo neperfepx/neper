@@ -7,7 +7,7 @@
 void
 nem_transport_elt_oldelt (struct NODES OldNodes,
 			  struct MESH OldMesh, struct NODES NewNodes,
-			  struct MESH NewMesh, int **poldelt)
+			  struct MESH NewMesh, char *method, int **poldelt)
 {
   int i, j;
   struct MESH Facet;
@@ -47,8 +47,8 @@ nem_transport_elt_oldelt (struct NODES OldNodes,
     if (status != 0)
     */
 
-    neut_mesh_elset_points_closestelts (OldMesh, OldNodes,
-                                        i, coos, NewMesh.Elsets[i][0], ids);
+    neut_mesh_elset_points_closestelts (OldMesh, OldNodes, i, coos,
+                                        NewMesh.Elsets[i][0], method, ids);
 
     for (j = 0; j < NewMesh.Elsets[i][0]; j++)
       (*poldelt)[NewMesh.Elsets[i][j + 1]] = ids[j];

@@ -1,4 +1,4 @@
-New in 3.4.1-50 (26 Jul 2019):
+New in 3.4.1-51 (28 Jul 2019):
 - module -T: added -transform slice, added new statistical distributions to
   -morpho: beta, lorentzian, studentst, weibull, breitwigner, expnormal,
   moffat, pearson7, pseudovoigt and skewnormal, added endpoints to statistical
@@ -6,9 +6,9 @@ New in 3.4.1-50 (26 Jul 2019):
   tessellation keys, improved tesr format, improved -ori fibre, fixed -domain,
   fixed -for ori, fixed -morpho centroidal, improved -statcell convexity, added
   -orioptilogvar, improved tesr file, minor fixes.
-- module -M: fixed -elt hex, added -performat, added mesh keys,
-  added -transportfepx, fixed -interface cohesive for Abaqus, speed up
-  -transport, minor fixes.
+- module -M: fixed -elt hex, added -performat, added mesh keys, added
+  -transporteltmethod, added -transportfepx, fixed -interface cohesive for
+  Abaqus, speed up -transport, minor fixes.
 - module -V: fixed visualization of periodic meshes.
 - general: fixed compilation when GSL and NLopt locally installed.
 - documentation: small fixes.

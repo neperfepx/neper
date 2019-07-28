@@ -124,6 +124,7 @@ nem_in_free (struct IN_M In)
   ut_free_1d_char (In.clratiostring);
   ut_free_1d_char (In.transportstring);
   ut_free_1d_char (In.transportfepxstring);
+  ut_free_1d_char (In.transporteltmethodstring);
   ut_free_1d_char (In.interface);
   ut_free_1d_char (In.intf);
 

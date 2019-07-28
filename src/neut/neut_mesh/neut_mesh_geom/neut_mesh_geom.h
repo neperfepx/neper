@@ -241,9 +241,8 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_mesh_point_elt_in (struct MESH Mesh, struct NODES
-				      Nodes, double *coo, int elt,
-				      int *pinelt);
+  extern int neut_mesh_point_elt_in (struct MESH Mesh, struct NODES
+				      Nodes, double *coo, int elt);
 
 /// \brief Determine the clsest elt of an elset of a mesh to which a point is.
 ///
@@ -255,7 +254,8 @@ extern "C"
 
   extern int neut_mesh_elset_points_closestelts (struct MESH Mesh, struct
 					         NODES Nodes, int elset,
-					         double **coos, int qty, int *elts);
+					         double **coos, int qty,
+                                                 char *method, int *elts);
 
 /// \brief Determine the closest position from a point to the elements
 /// of a 2D mesh.

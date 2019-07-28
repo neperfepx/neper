@@ -52,7 +52,7 @@ necessary to ensure good-quality meshing, see @ref{Tessellation Module
 
 Remeshing can also be applied to generate a new, good-quality
 mesh from a mesh containing poor-quality elements.  The variables
-defined on the old mesh can be transported on the new mesh (options
+defined on the parent mesh can be transported on the child mesh (options
 starting by @option{-transport}).
 
 For mapped meshing, mesh cleaning options enable to remove
@@ -604,9 +604,9 @@ where
 dimension@comma{} and @code{@var{file_name}} is the name of the file
 containing the parent data.  For several data transports@comma{} combine
 the transport entries with @samp{@SEPNODEP}. Nodal data are transported
-by interpolation using the shape functions (2D only).  Element data are transported by
-considering the parent element which the centroid of the new element belongs
-to.,
+by interpolation using the shape functions (2D only).  Elemental data are transported
+as specified by @option{-transporteltmethod}.
+,
 any,none}
 
 @opt{-transportfepx, char_string@SEPDEP{}char_string...,
@@ -620,13 +620,21 @@ where
 @samp{@var{orientation_file}} is the orientation file (a list of Euler angles in Kocks convention)
 and
 @samp{@var{tau_file}} is the critical resolved shear strength file (a list of scalars).
-These element data are transported by
-considering the parent element which the centroid of the new element belongs
-to.
-Moreover@comma{} the FEpX files of extensions @file{.kocks} and @file{.opt}
+These elemental data are transported as specified by @option{-transporteltmethod}.
+Moreover@comma{} the @file{.kocks} and @file{.opt} FEpX files
 are generated from these data and can be used to run a new simulation.
 ,
 any,none}
+
+@optsec{-transporteltmethod, char_string@SEPDEP{}char_string...,
+Specify the method to transport elemental data from the parent mesh to the
+child mesh. For each element of the child mesh@comma{} its centre@comma{}
+@var{c}@comma{} is considered.  Use @samp{distance} to choose@comma{}
+for each element of the child mesh (of centre @var{c})@comma{} the element of
+the parent mesh whose centre is the closest to @var{c}@comma{}
+or @samp{location} to choose the element @var{c} belongs to.
+,
+see above,distance}
 
 @subsection Output Options
 

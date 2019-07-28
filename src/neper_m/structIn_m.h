@@ -70,6 +70,7 @@ struct IN_M
 
   char *transportstring;	// Data to transport
   char *transportfepxstring;	// Data to transport / specific to FEpX
+  char *transporteltmethodstring; // Method to transport elemental data
 
   int singnodedup;		// duplicate singular nodes (logical)
   double dupnodemerge;		// merge duplicate nodes (tolerancy)

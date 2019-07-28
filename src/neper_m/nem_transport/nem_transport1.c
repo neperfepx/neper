@@ -28,7 +28,7 @@ nem_transport (struct IN_M In, struct TESS Tess, struct NODES RNodes, struct
     ut_print_message (0, 3, "Transporting `%s'...\n", val[2]);
 
     if (!strcmp (val[0], "elt"))
-      nem_transport_elt (val[1], val[2], RNodes, RMesh[dim], Nodes, Mesh[dim], &oldelt);
+      nem_transport_elt (val[1], val[2], In.transporteltmethodstring, RNodes, RMesh[dim], Nodes, Mesh[dim], &oldelt);
     else if (!strcmp (val[0], "node"))
       nem_transport_node (val[1], val[2], RNodes, RMesh[dim], Nodes);
     else
@@ -60,11 +60,11 @@ nem_transportfepx (struct IN_M In, struct TESS Tess, struct NODES RNodes,
 
   ut_print_message (0, 3, "Transporting `orik'...\n");
 
-  nem_transport_elt ("real3", transport[0], RNodes, RMesh[dim], Nodes, Mesh[dim], &oldelt);
+  nem_transport_elt ("real3", transport[0], In.transporteltmethodstring, RNodes, RMesh[dim], Nodes, Mesh[dim], &oldelt);
 
   ut_print_message (0, 3, "Transporting `tau'...\n");
 
-  nem_transport_elt ("real1", transport[1], RNodes, RMesh[dim], Nodes, Mesh[dim], &oldelt);
+  nem_transport_elt ("real1", transport[1], In.transporteltmethodstring, RNodes, RMesh[dim], Nodes, Mesh[dim], &oldelt);
 
   ut_print_message (0, 3, "Writing FEpX files...\n");
 

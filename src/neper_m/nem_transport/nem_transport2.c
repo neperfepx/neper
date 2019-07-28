@@ -5,16 +5,16 @@
 #include"nem_transport_.h"
 
 void
-nem_transport_elt (char *type, char *filename, struct NODES RNodes,
-		   struct MESH RMesh, struct NODES Nodes,
-		   struct MESH Mesh, int **poldelt)
+nem_transport_elt (char *type, char *filename, char *method,
+                   struct NODES RNodes, struct MESH RMesh, struct NODES Nodes,
+                   struct MESH Mesh, int **poldelt)
 {
   int j, dim;
   FILE *file = NULL;
   char *name = NULL;
 
   if (!(*poldelt))
-    nem_transport_elt_oldelt (RNodes, RMesh, Nodes, Mesh, &(*poldelt));
+    nem_transport_elt_oldelt (RNodes, RMesh, Nodes, Mesh, method, poldelt);
 
   if (sscanf (type, "real%d", &dim) == 1)
   {
@@ -62,7 +62,8 @@ nem_transport_elt (char *type, char *filename, struct NODES RNodes,
 
 void
 nem_transport_node (char *type, char *filename, struct NODES RNodes,
-		    struct MESH RMesh, struct NODES Nodes)
+                    struct MESH RMesh, struct NODES Nodes)
+
 {
   int i, j, k, dim, elt, status;
   FILE *file = NULL;
