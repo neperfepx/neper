@@ -27,6 +27,8 @@ configure_file (
 
 include_directories(${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR})
 
+include_directories(${OPENGJK_INCLUDE_DIR} ${OPENGJK_BINARY_DIR})
+
 if (HAVE_MUPARSER)
   if (DEFINED MUPARSER_INCLUDE_DIR AND DEFINED MUPARSER_BINARY_DIR)
     include_directories(${MUPARSER_INCLUDE_DIR} ${MUPARSER_BINARY_DIR})
@@ -110,6 +112,8 @@ endif ()
 if (HAVE_MUPARSER)
   set (EXTRA_LIBS ${EXTRA_LIBS} muparser)
 endif ()
+
+set (EXTRA_LIBS ${EXTRA_LIBS} openGJKlib)
 
 target_link_libraries (ut ${EXTRA_LIBS})
 

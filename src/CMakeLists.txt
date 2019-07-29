@@ -26,6 +26,7 @@ set (MUPARSER_SOURCE_DIR "${PROJECT_SOURCE_DIR}/contrib/muparser")
 set (MUPARSER_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/muparser")
 set (MUPARSER_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/muparser/include")
 
+include_directories("${PROJECT_SOURCE_DIR}/contrib/openGJK")
 include_directories("${PROJECT_SOURCE_DIR}/contrib/ut")
 set (UT_SOURCE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut")
 set (UT_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/ut")
@@ -38,6 +39,7 @@ include_directories("${PROJECT_SOURCE_DIR}/neper_m")
 include_directories("${PROJECT_SOURCE_DIR}/neper_v")
 
 include_directories("${PROJECT_BINARY_DIR}")
+include_directories("${PROJECT_BINARY_DIR}/contrib/openGJK")
 include_directories("${PROJECT_BINARY_DIR}/contrib/ut")
 include_directories("${PROJECT_BINARY_DIR}/contrib/orilib")
 include_directories("${PROJECT_BINARY_DIR}/contrib/muparser")
@@ -72,6 +74,7 @@ SET(HAVE_PNG OFF CACHE BOOL "Use the libpng library") # sets to OFF in ut, etc.
 
 set(BUILD_SHARED_LIBS OFF)
 
+add_subdirectory(contrib/openGJK)
 add_subdirectory(contrib/muparser)
 add_subdirectory(contrib/ut)
 add_subdirectory(contrib/orilib)
@@ -86,6 +89,7 @@ unset (HAVE_PNG CACHE)      # hide from ccmake (comes from ut)
 
 add_executable (neper neper.c)
 
+set (EXTRA_LIBS ${EXTRA_LIBS} openGJKlib)
 set (EXTRA_LIBS ${EXTRA_LIBS} muparser)
 set (EXTRA_LIBS ${EXTRA_LIBS} ut)
 set (EXTRA_LIBS ${EXTRA_LIBS} orilib)
