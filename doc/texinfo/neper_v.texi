@@ -1183,10 +1183,31 @@ any, none}
 
 @subsection Advanced Options
 
-@opt{-includepov, char_string,
+@opt{-includepov, char_string:char_string:...,
 Use this option to include additional objects to the image@comma{}
-under the form of a POV-Ray file. Provide as argument the name of the
-POV-Ray file.
+under the form of a POV-Ray file. Provide as first argument the name of the
+POV-Ray file and as next arguments successive transformations to apply to the
+objects of the POV-Ray file.  The transformations can be
+@samp{translate(@var{vx}@comma{}@var{vy}@comma{}@var{vz})} for a translation of
+vector @math{(vx@comma{}vy@comma{}vz)}@comma{}
+@samp{scale(@var{sx}@comma{}@var{sy}@comma{}@var{sz})} for scaling by factors
+@math{sx}@comma{} @math{sy} and @math{sz} in the three directions of space@comma{} and
+@samp{rotate(@var{thetax}@comma{}@var{thetay}@comma{}@var{thetaz})} for a rotation of angles
+@math{thetax}@comma{} @math{thetay} and @math{thetaz} about axes @math{x}@comma{} @math{y}
+and @math{z}@footnote{The rotation is read in POV-Ray style; i.e.@comma{} according to
+the POV-Ray documentation: @emph{Note that the order of the rotations does
+matter.  Rotations occur about the x-axis first@comma{} then the y-axis@comma{}
+then the z-axis.  If you are not sure if this is what you want then you should
+only rotate on one axis at a time using multiple rotation statements to get a
+correct rotation.  Rotation is always performed relative to the axis. Thus if
+an object is some distance from the axis of rotation it will not only rotate
+but it will orbit about the axis as though it was swinging around on an
+invisible string.  POV-Ray uses a left-handed rotation system. Using the famous
+"Computer Graphics Aerobics" exercise@comma{} you hold up your left hand and
+point your thumb in the positive direction of the axis of rotation.  Your
+fingers will curl in the positive direction of rotation. Similarly if you point
+your thumb in the negative direction of the axis your fingers will curl in the
+negative direction of rotation.}}.
 ,
 any, none}
 
