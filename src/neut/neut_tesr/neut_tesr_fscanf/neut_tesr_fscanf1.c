@@ -5,33 +5,6 @@
 #include"neut_tesr_fscanf_.h"
 
 void
-neut_tesr_fscanf (FILE * file, int *bounds, double *scale, struct TESR *pTesr)
-{
-  char *format = NULL, string[1000];
-
-  neut_tesr_free (pTesr);
-
-  neut_tesr_fscanf_head (pTesr, bounds, &format, file);
-  neut_tesr_fscanf_cell (pTesr, file);
-  neut_tesr_fscanf_data (pTesr, bounds, scale, format, file);
-
-  ut_file_nextstring (file, string);
-  if (!strcmp (string, "**oridata"))
-    neut_tesr_fscanf_oridata (pTesr, bounds, scale, format, file);
-  neut_tesr_fscanf_foot (file);
-
-  neut_tesr_init_cellbbox (pTesr);
-
-  if (bounds || scale)
-    if ((*pTesr).size[2] == 1)
-      (*pTesr).Dim = 2;
-
-  ut_free_1d_char (format);
-
-  return;
-}
-
-void
 neut_tesr_name_fscanf (char *name, struct TESR *pTesr)
 {
   FILE *file = NULL;
@@ -86,13 +59,40 @@ neut_tesr_name_fscanf (char *name, struct TESR *pTesr)
   }
 
   file = ut_file_open (list[0], "r");
-  neut_tesr_fscanf (file, bounds, scale, pTesr);
+  neut_tesr_fscanf (file, dirname (list[0]), bounds, scale, pTesr);
   ut_file_close (file, list[0], "r");
 
   ut_free_1d_int (bounds);
   ut_free_1d (scale);
   ut_free_2d_char (string, 6);
   ut_free_2d_char (list, qty);
+
+  return;
+}
+
+void
+neut_tesr_fscanf (FILE * file, char *dirname, int *bounds, double *scale, struct TESR *pTesr)
+{
+  char *format = NULL, string[1000];
+
+  neut_tesr_free (pTesr);
+
+  neut_tesr_fscanf_head (pTesr, bounds, &format, file);
+  neut_tesr_fscanf_cell (pTesr, file);
+  neut_tesr_fscanf_data (pTesr, dirname, bounds, scale, format, file);
+
+  ut_file_nextstring (file, string);
+  if (!strcmp (string, "**oridata"))
+    neut_tesr_fscanf_oridata (pTesr, dirname, bounds, scale, format, file);
+  neut_tesr_fscanf_foot (file);
+
+  neut_tesr_init_cellbbox (pTesr);
+
+  if (bounds || scale)
+    if ((*pTesr).size[2] == 1)
+      (*pTesr).Dim = 2;
+
+  ut_free_1d_char (format);
 
   return;
 }

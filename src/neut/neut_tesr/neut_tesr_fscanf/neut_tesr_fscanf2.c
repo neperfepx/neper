@@ -254,14 +254,16 @@ neut_tesr_fscanf_foot (FILE * file)
 }
 
 void
-neut_tesr_fscanf_data (struct TESR *pTesr, int *bounds, double *scale,
-		       char *format, FILE * file)
+neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
+                       double *scale, char *format, FILE * file)
+
 {
   int i;
   char c;
   FILE *file2 = NULL;
   char *filename = NULL;
   char *tmp = ut_alloc_1d_char (10);
+  char *tmp2 = ut_alloc_1d_char (1000);
   fpos_t pos;
 
   if (bounds && scale)
@@ -299,8 +301,9 @@ neut_tesr_fscanf_data (struct TESR *pTesr, int *bounds, double *scale,
   if (!strcmp (tmp, "*file"))
   {
     filename = ut_alloc_1d_char (1000);
-    if (fscanf (file, "%s", filename) != 1)
+    if (fscanf (file, "%s", tmp2) != 1)
       abort ();
+    sprintf (filename, "%s/%s", dirname, tmp2);
     file2 = ut_file_open (filename, "r");
   }
   else
@@ -338,18 +341,20 @@ neut_tesr_fscanf_data (struct TESR *pTesr, int *bounds, double *scale,
    */
 
   ut_free_1d_char (tmp);
+  ut_free_1d_char (tmp2);
 
   return;
 }
 
 void
-neut_tesr_fscanf_oridata (struct TESR *pTesr, int *bounds, double *scale,
-		          char *format, FILE * file)
+neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
+                          double *scale, char *format, FILE * file)
 {
   char c;
   FILE *file2 = NULL;
   char *filename = NULL;
   char *tmp = ut_alloc_1d_char (10);
+  char *tmp2 = ut_alloc_1d_char (1000);
   fpos_t pos;
   char des[10];
 
@@ -386,8 +391,9 @@ neut_tesr_fscanf_oridata (struct TESR *pTesr, int *bounds, double *scale,
   if (!strcmp (tmp, "*file"))
   {
     filename = ut_alloc_1d_char (1000);
-    if (fscanf (file, "%s", filename) != 1)
+    if (fscanf (file, "%s", tmp2) != 1)
       abort ();
+    sprintf (filename, "%s/%s", dirname, tmp2);
     file2 = ut_file_open (filename, "r");
   }
   else
@@ -402,6 +408,7 @@ neut_tesr_fscanf_oridata (struct TESR *pTesr, int *bounds, double *scale,
   }
 
   ut_free_1d_char (tmp);
+  ut_free_1d_char (tmp2);
 
   return;
 }

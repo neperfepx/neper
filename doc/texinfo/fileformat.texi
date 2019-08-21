@@ -610,7 +610,7 @@ Use 0 for voids.
 @item @code{*file} denotes the beginning of a file field.
 
 @item @code{data_file_name} is the name of a file that contains the
-data. Typically, it is a @file{.raw} file.
+data.  It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided. Typically, it is a @file{.raw} file.
 
 @item @code{**oridata} denotes the beginning of the orientation data field.  Data can be
 provided in the @file{.tesr} file or in a separate file, using
@@ -625,7 +625,7 @@ These data must be written under format @var{data_format}, in terms of ASCII or 
 In the case of binary format, double-precision numbers are considered.
 
 @item @code{oridata_file_name} is the name of a file that contains the
-orientation data. Typically, it is a @file{.raw} file.
+orientation data.   It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided.  Typically, it is a @file{.raw} file.
 
 @end itemize
 
