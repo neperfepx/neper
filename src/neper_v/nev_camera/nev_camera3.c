@@ -28,7 +28,7 @@ nev_camera_v (int dim, double *v)
 }
 
 void
-nev_camera_expr_coo (double **bbox, double *v, char *expr, double *coo)
+nev_camera_expr_coo (double **bbox, double* centre, double *v, char *expr, double *coo)
 {
   char **expr2 = NULL;
   char **def = ut_alloc_2d_char (3, 100);
@@ -40,8 +40,11 @@ nev_camera_expr_coo (double **bbox, double *v, char *expr, double *coo)
     ut_print_message (2, 2, "Expression `%s' could not be processed.\n",
 		      expr);
 
-  for (i = 0; i < 3; i++)
-    X[i] = ut_array_1d_mean (bbox[i], 2);
+  if (centre)
+    ut_array_1d_memcpy (X, 3, centre);
+  else
+    for (i = 0; i < 3; i++)
+      X[i] = ut_array_1d_mean (bbox[i], 2);
 
   for (i = 0; i < 3; i++)
     L[i] = bbox[i][1] - bbox[i][0];

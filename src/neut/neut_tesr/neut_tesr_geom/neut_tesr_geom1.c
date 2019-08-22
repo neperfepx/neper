@@ -203,12 +203,46 @@ neut_tesr_cell_centre (struct TESR Tesr, int cell, double *coo)
 }
 
 void
-neut_tesr_centre (struct TESR Tesr, double *coo)
+neut_tesr_rastercentre (struct TESR Tesr, double *coo)
 {
   int i;
 
   for (i = 0; i < 3; i++)
     coo[i] = Tesr.Origin[i] + 0.5 * Tesr.vsize[i] * Tesr.size[i];
+
+  return;
+}
+
+void
+neut_tesr_centre (struct TESR Tesr, double *coo)
+{
+  int i, j;
+  double *vol = NULL, **cellcoo = NULL;
+
+  if (!Tesr.hasvoid)
+  {
+    neut_tesr_rastercentre (Tesr, coo);
+    return;
+  }
+
+  vol = ut_alloc_1d (Tesr.CellQty);
+  cellcoo = ut_alloc_2d (Tesr.CellQty, 3);
+
+  for (i = 0; i < Tesr.CellQty; i++)
+  {
+    neut_tesr_cell_volume (Tesr, i + 1, vol + i);
+    neut_tesr_cell_centre (Tesr, i + 1, cellcoo[i]);
+  }
+
+  ut_array_1d_zero (coo, 3);
+  for (i = 0; i < Tesr.CellQty; i++)
+    for (j = 0; j < 3; j++)
+      coo[j] += vol[i] * cellcoo[i][j];
+  ut_array_1d_scale (coo, 3, 1. / ut_array_1d_sum (vol, Tesr.CellQty));
+  ut_array_1d_add (coo, Tesr.Origin, 3, coo);
+
+  ut_free_1d (vol);
+  ut_free_2d (cellcoo, Tesr.CellQty);
 
   return;
 }

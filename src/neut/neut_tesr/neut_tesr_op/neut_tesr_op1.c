@@ -301,7 +301,7 @@ neut_tesr_rotate (struct TESR *pTesr, double **g)
   neut_tesr_memcpy_parms (*pTesr, &Tesr2);
   neut_tesr_alloc (&Tesr2, (*pTesr).Dim, (*pTesr).size, (*pTesr).vsize);
 
-  neut_tesr_centre (Tesr2, c);
+  neut_tesr_rastercentre (Tesr2, c);
 
 #pragma omp parallel for private(i,j,k,tmp,tmp2,coonew,cooold,posold)
   for (k = 1; k <= Tesr2.size[2]; k++)

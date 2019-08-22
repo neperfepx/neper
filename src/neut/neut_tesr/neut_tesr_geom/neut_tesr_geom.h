@@ -51,6 +51,8 @@ extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
   extern int neut_tesr_cell_area (struct TESR Tesr, int cell, double *area);
   extern int neut_tesr_cell_size (struct TESR Tesr, int cell, double *size);
 
+  extern void neut_tesr_rastercentre (struct TESR Tesr, double *coo);
+
   extern void neut_tesr_centre (struct TESR Tesr, double *coo);
 
   extern void neut_tesr_cell_diameq (struct TESR Tesr, int cell,
