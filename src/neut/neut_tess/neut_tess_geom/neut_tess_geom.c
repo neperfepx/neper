@@ -1443,10 +1443,10 @@ neut_tess_cell_sphereside (struct TESS Tess, int cell, double *C, double rad,
 int
 neut_tess_cell_primside (struct TESS Tess, int cell, struct PRIM Prim, int *pside)
 {
-  if (!strcmp (Prim.Type, "plane"))
-    return neut_tess_cell_planeside (Tess, cell, Prim.Eq, pside);
-  else if (!strcmp (Prim.Type, "planei"))
+  if (!strcmp (Prim.Type, "hspace"))
     return -neut_tess_cell_planeside (Tess, cell, Prim.Eq, pside);
+  else if (!strcmp (Prim.Type, "hspacei"))
+    return neut_tess_cell_planeside (Tess, cell, Prim.Eq, pside);
   else if (!strcmp (Prim.Type, "sphere"))
     return neut_tess_cell_sphereside (Tess, cell, Prim.Base, Prim.Rad[0], pside);
   else if (!strcmp (Prim.Type, "spherei"))
