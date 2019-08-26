@@ -53,8 +53,11 @@ nev_print_foot (FILE * file, struct PRINT Print)
     }
   }
 
-  fprintf (file, "rotate<-90,  0,  0>\n");
-  fprintf (file, "scale <  1,  1, -1>\n");
+  if (!ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov:objects"))
+  {
+    fprintf (file, "rotate<-90,  0,  0>\n");
+    fprintf (file, "scale <  1,  1, -1>\n");
+  }
   fprintf (file, "}\n");
 
   // ut_free_3d_char (povs, povqty);

@@ -1165,11 +1165,12 @@ for faster image generation or smaller image file.
 @opt{-imageformat, char_string,
 Specify the output image format.
 It can be
-the PNG @w{format (@file{.png})} or
-the POV-Ray @w{format (@file{.pov})}.
+the PNG @w{format (@file{png})} or
+the POV-Ray @w{format (@file{pov})}.
+Use @samp{pov:objects} to get a POV-Ray file containing only the objects@footnote{Not compatible with @samp{png}; the resulting file can be loaded with @option{-includepov}.}.
 Combine with @samp{@SEPNODEP{}}.
 ,
-png or pov, png}
+see above list, png}
 
 @subsection Scripting
 
@@ -1213,7 +1214,7 @@ any, none}
 
 @section Output Files
 
-The output files are,
+The output files are
 
 @itemize
 @item PNG file, @file{.png}: a bitmapped image (the alpha channel is

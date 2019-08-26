@@ -104,7 +104,8 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
 		       imageheight, Print.imageantialias, 2);
   }
 
-  if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0)
+  if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0
+   && ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov:objects") == 0)
     remove (filename);
 
   ut_print_message (0, 1, "Printing scale...\n");
@@ -127,7 +128,8 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
 	nev_print_pov2png (Print.povray, filename2, 0.3 * imageheight,
 			   imageheight, Print.imageantialias, 3);
 
-      if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0)
+      if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0
+       && ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov:objects") == 0)
 	remove (filename2);
     }
 
@@ -146,7 +148,8 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
       nev_print_pov2png (Print.povray, filename2, 0.3 * imageheight,
 			 imageheight, Print.imageantialias, 3);
 
-    if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0)
+    if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0
+     && ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov:objects") == 0)
       remove (filename2);
   }
 
@@ -167,7 +170,8 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
 	nev_print_pov2png (Print.povray, filename2, 0.3 * imageheight,
 			   imageheight, Print.imageantialias, 3);
 
-      if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0)
+      if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0
+       && ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov:objects") == 0)
 	remove (filename2);
     }
 
@@ -187,7 +191,8 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
       nev_print_pov2png (Print.povray, filename2, 0.3 * imageheight,
 			 imageheight, Print.imageantialias, 3);
 
-    if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0)
+    if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0
+     && ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov:objects") == 0)
       remove (filename2);
   }
 
@@ -207,7 +212,8 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
       nev_print_pov2png (Print.povray, filename2, 0.3 * imageheight,
 			 imageheight, Print.imageantialias, 3);
 
-    if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0)
+    if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0
+     && ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov:objects") == 0)
       remove (filename2);
   }
 
