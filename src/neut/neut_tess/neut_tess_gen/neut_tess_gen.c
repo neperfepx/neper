@@ -1309,14 +1309,11 @@ neut_tess_var_val_one (struct TESS Tess,
   neut_tess_var_val (Tess, showedge, showface, showpoly, entity, id, var, &tmp,
                      &qty, ptype);
 
-  if (qty != 1)
-    abort ();
-
   (*pvals) = tmp[0];
 
   ut_free_1d (tmp);
 
-  return 0;
+  return qty == 1 ? 0 : -1;
 }
 
 void
