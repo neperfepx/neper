@@ -726,7 +726,7 @@ neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet)
   (*pOSet) = ol_set_alloc ((Tesr.CellBBox[cell][2][1] - Tesr.CellBBox[cell][2][0] + 1)
                          * (Tesr.CellBBox[cell][1][1] - Tesr.CellBBox[cell][1][0] + 1)
                          * (Tesr.CellBBox[cell][0][1] - Tesr.CellBBox[cell][0][0] + 1),
-                         "cubic");
+                         Tesr.CellCrySym? Tesr.CellCrySym : "triclinic");
 
   qty = 0;
   for (k = Tesr.CellBBox[cell][2][0]; k <= Tesr.CellBBox[cell][2][1]; k++)
@@ -736,7 +736,6 @@ neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet)
           ol_q_memcpy (Tesr.VoxOri[i][j][k], (*pOSet).q[qty++]);
 
   (*pOSet).size = (size_t) qty;
-  ut_string_string ("cubic", &(*pOSet).crysym);
 
   return;
 }
