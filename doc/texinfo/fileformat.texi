@@ -488,6 +488,9 @@ optional fields.
 @ @ @  @var{cell2_convexity}                   	 			@*
 @ @ @  ...]                                                             @*
 ]	                                                            	@*
+[*crysym 								@*
+@ @ @ @var{crysym} 							@*
+]	                                                            	@*
 @  **data                                                            	@*
 @ @ @  @var{vox1_cell} @var{vox2_cell} ...                           	@*
 @ @emph{or}                                                          	@*
@@ -597,6 +600,12 @@ field.
 field.
 
 @item @code{@var{cellid_convexity}} is the convexity of cell @var{id}.
+
+@item @code{*crysym} denotes the beginning of an optional crystal symmetry
+field.
+
+@item @code{@var{crysym}} is the crystal symmetry (@code{triclinic},
+@code{cubic} or @code{hexagonal}).
 
 @item @code{**data} denotes the beginning of the data field.  Data can be
 provided in the @file{.tesr} file or in a separate file, using

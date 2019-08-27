@@ -123,6 +123,12 @@ neut_tesr_fprintf_cell (FILE * file, struct TESR Tesr)
       fprintf (file, "   %.12f\n", Tesr.CellConvexity[i]);
   }
 
+  if (Tesr.CellCrySym)
+  {
+    fprintf (file, "  *crysym\n");
+    fprintf (file, "   %s\n", Tesr.CellCrySym);
+  }
+
   ol_e_free (e);
 
   return;

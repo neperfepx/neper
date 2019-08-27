@@ -232,6 +232,17 @@ neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file)
 	}
       }
 
+      else if (!strcmp (string, "*crysym"))
+      {
+	ut_file_skip (file, 1);
+	(*pTesr).CellCrySym = ut_alloc_1d_char (100);
+	status = fscanf (file, "%s", (*pTesr).CellCrySym);
+        if (status != 1)
+          abort ();
+	(*pTesr).CellCrySym = ut_realloc_1d_char ((*pTesr).CellCrySym,
+                                                  strlen ((*pTesr).CellCrySym) + 1);
+      }
+
       else
 	ut_print_message (2, 2, "Failed to read tesr file.\n");
     }

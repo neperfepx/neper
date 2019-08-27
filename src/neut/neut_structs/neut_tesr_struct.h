@@ -25,6 +25,11 @@ extern "C"
     double *CellVol;		// volumes/areas of the cells
     double *CellConvexity;      // Convexity of the cells
 
+    // Crystal symmetry of the cells ("triclinic", "cubic" or
+    // "hexagonal").  Defined once for all cells, but this could be
+    // improved
+    char *CellCrySym;
+
     int *size;			// number of points in the 3 directions of space
     double *vsize;		// size of points in the 3 directions of space
 
