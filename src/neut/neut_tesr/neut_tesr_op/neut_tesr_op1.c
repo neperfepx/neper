@@ -844,6 +844,19 @@ neut_tesr_renumber_continuous (struct TESR *pTesr)
     ut_error_reportbug ();
 
   if ((*pTesr).CellId)
+    for (l = 1; l <= (*pTesr).CellQty; l++)
+      if ((*pTesr).CellId[l] == 0)
+      {
+        for (k = (*pTesr).CellBBox[l][2][0]; k <= (*pTesr).CellBBox[l][2][1]; k++)
+          for (j = (*pTesr).CellBBox[l][1][0]; j <= (*pTesr).CellBBox[l][1][1]; j++)
+            for (i = (*pTesr).CellBBox[l][0][0]; i <= (*pTesr).CellBBox[l][0][1]; i++)
+              if ((*pTesr).VoxCell[i][j][k] == l)
+                (*pTesr).VoxCell[i][j][k] = 0;
+
+        ut_array_2d_int_zero ((*pTesr).CellBBox[l], 3, 2);
+      }
+
+  if ((*pTesr).CellId)
   {
     CellQty_old = (*pTesr).CellQty;
     CellId_old = ut_alloc_1d_int (CellQty_old + 1);
