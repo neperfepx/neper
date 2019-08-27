@@ -87,6 +87,11 @@ net_transform_tesr (struct IN_T In, struct TESR *pTesr)
       ut_print_message (0, 2, "Adding buffer...\n");
       neut_tesr_addbuffer (pTesr, parts[i]);
     }
+    else if (!strcmp (parts[i], "oriaverage"))
+    {
+      ut_print_message (0, 2, "Averaging orientations...\n");
+      neut_tesr_oriaverage (pTesr);
+    }
     else
       ut_print_message (2, 3, "Expression `%s' could not be processed.\n",
 			parts[i]);

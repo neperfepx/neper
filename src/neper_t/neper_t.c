@@ -302,7 +302,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   if (strcmp (In.transform, "none") && (FTess.Dim > 0 || Tesr.Dim > 0))
   {
     ut_print_message (0, 1, "Transforming tessellation...\n");
-    net_transform (In, Tess[0], &FTess, &Tesr);
+    net_transform (In, Tess, &FTess, &Tesr);
   }
 
   if (!strcmp (In.mode, "tess") && In.reg)

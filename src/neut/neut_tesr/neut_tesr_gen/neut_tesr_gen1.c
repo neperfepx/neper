@@ -717,3 +717,26 @@ neut_tesr_sizestring (struct TESR Tesr, char **psizestring)
 
   return;
 }
+
+void
+neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet)
+{
+  int i, j, k, qty;
+
+  (*pOSet) = ol_set_alloc ((Tesr.CellBBox[cell][2][1] - Tesr.CellBBox[cell][2][0] + 1)
+                         * (Tesr.CellBBox[cell][1][1] - Tesr.CellBBox[cell][1][0] + 1)
+                         * (Tesr.CellBBox[cell][0][1] - Tesr.CellBBox[cell][0][0] + 1),
+                         "cubic");
+
+  qty = 0;
+  for (k = Tesr.CellBBox[cell][2][0]; k <= Tesr.CellBBox[cell][2][1]; k++)
+    for (j = Tesr.CellBBox[cell][1][0]; j <= Tesr.CellBBox[cell][1][1]; j++)
+      for (i = Tesr.CellBBox[cell][0][0]; i <= Tesr.CellBBox[cell][0][1]; i++)
+        if (Tesr.VoxCell[i][j][k] == cell)
+          ol_q_memcpy (Tesr.VoxOri[i][j][k], (*pOSet).q[qty++]);
+
+  (*pOSet).size = (size_t) qty;
+  ut_string_string ("cubic", &(*pOSet).crysym);
+
+  return;
+}

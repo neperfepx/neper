@@ -1576,3 +1576,22 @@ neut_tesr_init_voxori (struct TESR *pTesr)
 
   return;
 }
+
+void
+neut_tesr_oriaverage (struct TESR *pTesr)
+{
+  int i;
+  struct OL_SET OSet;
+
+  if (!(*pTesr).VoxOri)
+    return;
+
+  for (i = 1; i <= (*pTesr).CellQty; i++)
+  {
+    neut_tesr_cell_olset (*pTesr, i, &OSet);
+    if (OSet.size > 0)
+      ol_set_mean_iter (OSet, (*pTesr).CellOri[i]);
+  }
+
+  return;
+}
