@@ -421,3 +421,64 @@ nev_data_typearg_args (char *input, char *argument, char **ptype,
 
   return;
 }
+
+void
+nev_data_fscanf_ori (char *value, int qty, double **dataembed,
+                     double ***pColData, char **pColDataType)
+{
+  (*pColData) = ut_alloc_2d (qty + 1, 4);
+
+  // ut_string_string ("oriq", pColDataType);
+
+  if (!value)
+  {
+    if (dataembed)
+      ut_array_2d_memcpy (*pColData + 1, qty, 4, dataembed + 1);
+    else
+      ut_print_message (2, 3, "No orientation data available.\n");
+  }
+
+  else
+    nev_data_fscanf_ori_file (value, qty, pColData, pColDataType);
+
+  return;
+}
+
+void
+nev_data_fscanf_ori_tesr (struct TESR Tesr, char *value, int qty, double ****dataembedvox,
+                          double **dataembedcell, double ***pColData,
+                          char **pColDataType)
+{
+  int i, j, k, id;
+
+  (*pColData) = ut_alloc_2d (qty + 1, 4);
+
+  // ut_string_string ("oriq", pColDataType);
+
+  if (!value)
+  {
+    if (dataembedvox)
+    {
+      id = 0;
+      for (k = 1; k <= Tesr.size[2]; k++)
+        for (j = 1; j <= Tesr.size[1]; j++)
+          for (i = 1; i <= Tesr.size[0]; i++)
+            ut_array_1d_memcpy ((*pColData)[++id], 4, dataembedvox[i][j][k]);
+    }
+    else if (dataembedcell)
+    {
+      id = 0;
+      for (k = 1; k <= Tesr.size[2]; k++)
+        for (j = 1; j <= Tesr.size[1]; j++)
+          for (i = 1; i <= Tesr.size[0]; i++)
+            ut_array_1d_memcpy ((*pColData)[++id], 4, dataembedcell[Tesr.VoxCell[i][j][k]]);
+    }
+    else
+      ut_print_message (2, 3, "No orientation data available.\n");
+  }
+
+  else
+    nev_data_fscanf_ori_file (value, qty, pColData, pColDataType);
+
+  return;
+}
