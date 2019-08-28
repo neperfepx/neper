@@ -117,7 +117,7 @@ palette (@pxref{Colours})@comma{}
 @w{@emph{(v)} a} string indicating how the
 colours can be obtained.  The string has the format
 @samp{@var{var}@SEPDEP{}@var{file_name}}@comma{} where @code{@var{var}} can be
-@samp{id} for identifiers@comma{} @samp{scal} for scalar
+@samp{id} for identifiers@comma{}
 @samp{ori} for crystal orientations or @samp{scal} for scalar
 values@comma{} and @samp{@var{file_name}} is the name of the file
 containing the data.  The colour schemes used to derive the colours from
@@ -821,7 +821,7 @@ one of the following:
 colours can be obtained@comma{}.
 In case @emph{(iv)}@comma{} the string has the format
 @samp{@var{var}@SEPDEP{}@var{file_name}}@comma{} where @code{@var{var}} can be
-@samp{id} for identifiers@comma{} @samp{scal} for scalar
+@samp{id} for identifiers@comma{}
 @samp{ori} for crystal orientations or @samp{scal} for scalar
 values@comma{} and @samp{@var{file_name}} is the name of the file
 containing the data.  The colour schemes used to derive the colours from

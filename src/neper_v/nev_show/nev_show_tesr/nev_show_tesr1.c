@@ -31,12 +31,7 @@ nev_show_tesr_cell (char **argv, int *pi, struct TESR Tesr,
 
   (*pi)++;
 
-  if (Tesr.Dim == 1)
-  {
-    pshowarray = &(*pPrint).showedge;
-    ut_string_string ("edge", &entity);
-  }
-  else if (Tesr.Dim == 2)
+  if (Tesr.Dim == 2)
   {
     pshowarray = &(*pPrint).showface;
     ut_string_string ("face", &entity);
