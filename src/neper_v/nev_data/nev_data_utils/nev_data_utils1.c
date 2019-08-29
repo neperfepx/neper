@@ -197,14 +197,14 @@ void
 nev_data_ori_colour (double **data, int size, char *scheme, int **Col)
 {
   int i, j;
-  double halflength;
+  double length;
 
   if (!scheme || !strncmp (scheme, "R", 1))
   {
     if (!scheme || !strcmp (scheme, "R"))
-      halflength = OL_S2 - 1;
+      length = OL_S2 - 1;
     else if (!strncmp (scheme, "R(", 2))
-      sscanf (scheme, "R(%lf)", &halflength);
+      sscanf (scheme, "R(%lf)", &length);
     else
       ut_error_reportbug ();
 
@@ -215,7 +215,7 @@ nev_data_ori_colour (double **data, int size, char *scheme, int **Col)
       ol_q_R (data[i], R);
       ol_R_Rcrysym (R, "cubic", R);
       for (j = 0; j < 3; j++)
-        Col[i][j] = ut_num_bound (ut_num_d2ri (127.5 * (R[j] + halflength) / halflength), 0, 255);
+        Col[i][j] = ut_num_bound (ut_num_d2ri (127.5 * (R[j] + length) / length), 0, 255);
       ol_R_free (R);
     }
   }
@@ -233,6 +233,27 @@ nev_data_ori_colour (double **data, int size, char *scheme, int **Col)
         Col[i][j] = ut_num_bound (ut_num_d2ri (127.5 * (r[j] + 1)), 0, 255);
       ol_q_free (q);
       ol_r_free (r);
+    }
+  }
+
+  else if (!strncmp (scheme, "theta", 5))
+  {
+    if (!strcmp (scheme, "theta"))
+      length = 1.09606677025243897430; // 62.8 * pi / 180
+    else if (!strncmp (scheme, "theta(", 6))
+      sscanf (scheme, "theta(%lf)", &length);
+    else
+      ut_error_reportbug ();
+
+#pragma omp parallel for private(j)
+    for (i = 1; i <= size; i++)
+    {
+      double theta, *q = ol_q_alloc ();
+      ol_q_qcrysym (data[i], "cubic", q);
+      ol_q_theta (q, &theta);
+      for (j = 0; j < 3; j++)
+        Col[i][j] = ut_num_bound (ut_num_d2ri (225 * theta / length), 0, 255);
+      ol_q_free (q);
     }
   }
 

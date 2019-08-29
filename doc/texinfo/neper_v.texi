@@ -135,7 +135,9 @@ the colour scheme can be:
 @samp{R} for Rodrigues vector colouring inside the fundamental region@comma{}
 @samp{R(@var{halflength})} for Rodrigues vector colouring inside a cube of
 edge half-length @var{halflength}@comma{}
-and @samp{r} for rotation axis colouring.@*
+@samp{r} for rotation axis colouring and
+@samp{theta} for rotation angle colouring (can be bounded using
+@samp{theta(@var{max})}).@*
 @bullet{} For scalars@comma{} the colour scheme can be any list of colours.
 ,
 see above list,
