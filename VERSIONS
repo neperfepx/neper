@@ -1,4 +1,4 @@
-New in 3.4.1-68 (29 Aug 2019):
+New in 3.4.1-69 (29 Aug 2019):
 - module -T: added -transform slice, added new statistical distributions to
   -morpho: beta, lorentzian, studentst, weibull, breitwigner, expnormal,
   moffat, pearson7, pseudovoigt and skewnormal, added endpoints to statistical
@@ -13,8 +13,8 @@ New in 3.4.1-68 (29 Aug 2019):
   -transporteltmethod, added -transportfepx, fixed -interface cohesive for
   Abaqus, speed up -transport, minor fixes.
 - module -V: added -showvox, added -datavoxcol disori, added colour scheme R(),
-  r and theta, added -imageformat pov:objects, improved -includepov, fixed
-  visualization of periodic meshes, small fixes.
+  r, theta and rtheta, added -imageformat pov:objects, improved -includepov,
+  fixed visualization of periodic meshes, small fixes.
 - general: fixed compilation when GSL and NLopt locally installed.
 - documentation: small fixes.
 

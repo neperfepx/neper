@@ -257,6 +257,28 @@ nev_data_ori_colour (double **data, int size, char *scheme, int **Col)
     }
   }
 
+  else if (!strncmp (scheme, "rtheta", 5))
+  {
+    if (!strcmp (scheme, "rtheta"))
+      length = 1.09606677025243897430; // 62.8 * pi / 180
+    else if (!strncmp (scheme, "rtheta(", 7))
+      sscanf (scheme, "rtheta(%lf)", &length);
+    else
+      ut_error_reportbug ();
+
+#pragma omp parallel for private(i,j)
+    for (i = 1; i <= size; i++)
+    {
+      double theta, *q = ol_q_alloc (), *r = ol_r_alloc ();
+      ol_q_qcrysym (data[i], "cubic", q);
+      ol_q_rtheta_rad (q, r, &theta);
+      for (j = 0; j < 3; j++)
+        Col[i][j] = ut_num_bound (ut_num_d2ri (127.5 * (r[j] * theta + length) / length), 0, 255);
+      ol_q_free (q);
+      ol_r_free (r);
+    }
+  }
+
   return;
 }
 

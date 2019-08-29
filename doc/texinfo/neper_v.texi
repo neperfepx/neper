@@ -132,12 +132,14 @@ the tessellation cells loaded with option @option{-datacellcol}.
 The type of colour scheme depends on the type of data.@*
 @bullet{} For crystal orientations (cubic symmetry is assumed)@comma{}
 the colour scheme can be:
-@samp{R} for Rodrigues vector colouring inside the fundamental region@comma{}
-@samp{R(@var{halflength})} for Rodrigues vector colouring inside a cube of
-edge half-length @var{halflength}@comma{}
-@samp{r} for rotation axis colouring and
+@samp{R} for Rodrigues vector colouring (default is inside the fundamental
+region@comma{} can be bounded using @samp{R(@var{max})}@comma{} where @var{max}
+is the maximum extent)@comma{}
+@samp{r} for rotation axis colouring@comma{}
 @samp{theta} for rotation angle colouring (can be bounded using
-@samp{theta(@var{max})}).@*
+@samp{theta(@var{max})}@comma{} where @var{max} is the maximum angle (in radian)) and
+@samp{rtheta} for rotation axis / angle colouring (can be bounded using
+@samp{rtheta(@var{max})}@comma{} where @var{max} is the maximum angle (in radian)).@*
 @bullet{} For scalars@comma{} the colour scheme can be any list of colours.
 ,
 see above list,
