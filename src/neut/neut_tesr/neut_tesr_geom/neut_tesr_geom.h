@@ -82,6 +82,9 @@ extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
 
   extern void neut_tesr_bbox (struct TESR Tesr, double **bbox);
 
+  extern int neut_tesr_pos_vox (struct TESR Tesr, int *pos, int *pvox);
+  extern int neut_tesr_pos3_vox (struct TESR Tesr, int x, int y, int z, int *pvox);
+
 #include"net_utils/net_utils.h"
 
 #endif				/* NEUT_VOX_GEOM_H */

@@ -113,7 +113,7 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
 
   for (i = 0; i <= 3; i++)
     if (MeshData[i].ColDataType != NULL
-	&& !strcmp (MeshData[i].ColDataType, "scal"))
+        && !strcmp (MeshData[i].ColDataType, "scal"))
     {
       ut_print_message (0, 2, "Printing scale for dimension %d...\n", i);
 
@@ -121,16 +121,16 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
 
       file = ut_file_open (filename2, "w");
       nev_print_scale (file, MeshData[i].ColScheme, MeshData[i].Scale,
-		       MeshData[i].ScaleTitle);
+                       MeshData[i].ScaleTitle);
       ut_file_close (file, filename2, "w");
 
       if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "png"))
-	nev_print_pov2png (Print.povray, filename2, 0.3 * imageheight,
-			   imageheight, Print.imageantialias, 3);
+        nev_print_pov2png (Print.povray, filename2, 0.3 * imageheight,
+                           imageheight, Print.imageantialias, 3);
 
       if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0
        && ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov:objects") == 0)
-	remove (filename2);
+        remove (filename2);
     }
 
   if (NodeData.ColDataType != NULL && !strcmp (NodeData.ColDataType, "scal"))
@@ -141,12 +141,12 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
 
     file = ut_file_open (filename2, "w");
     nev_print_scale (file, NodeData.ColScheme, NodeData.Scale,
-		     NodeData.ScaleTitle);
+                     NodeData.ScaleTitle);
     ut_file_close (file, filename2, "w");
 
     if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "png"))
       nev_print_pov2png (Print.povray, filename2, 0.3 * imageheight,
-			 imageheight, Print.imageantialias, 3);
+                         imageheight, Print.imageantialias, 3);
 
     if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0
      && ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov:objects") == 0)
@@ -155,7 +155,7 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
 
   for (i = 0; i <= 3; i++)
     if (TessData.ColDataType[i] != NULL
-	&& !strcmp (TessData.ColDataType[i], "scal"))
+        && !strcmp (TessData.ColDataType[i], "scal"))
     {
       ut_print_message (0, 2, "Printing scale for dim %d...\n", i);
 
@@ -163,16 +163,16 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
 
       file = ut_file_open (filename2, "w");
       nev_print_scale (file, TessData.ColScheme[i], TessData.Scale[i],
-		       TessData.ScaleTitle[i]);
+                       TessData.ScaleTitle[i]);
       ut_file_close (file, filename2, "w");
 
       if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "png"))
-	nev_print_pov2png (Print.povray, filename2, 0.3 * imageheight,
-			   imageheight, Print.imageantialias, 3);
+        nev_print_pov2png (Print.povray, filename2, 0.3 * imageheight,
+                           imageheight, Print.imageantialias, 3);
 
       if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0
        && ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov:objects") == 0)
-	remove (filename2);
+        remove (filename2);
     }
 
   if (TesrData.ColDataType != NULL
@@ -184,12 +184,12 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
 
     file = ut_file_open (filename2, "w");
     nev_print_scale (file, TesrData.ColScheme, TesrData.Scale,
-		     TesrData.ScaleTitle);
+                     TesrData.ScaleTitle);
     ut_file_close (file, filename2, "w");
 
     if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "png"))
       nev_print_pov2png (Print.povray, filename2, 0.3 * imageheight,
-			 imageheight, Print.imageantialias, 3);
+                         imageheight, Print.imageantialias, 3);
 
     if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0
      && ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov:objects") == 0)
@@ -205,12 +205,12 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
 
     file = ut_file_open (filename2, "w");
     nev_print_scale (file, PointData.ColScheme, PointData.Scale,
-		     PointData.ScaleTitle);
+                     PointData.ScaleTitle);
     ut_file_close (file, filename2, "w");
 
     if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "png"))
       nev_print_pov2png (Print.povray, filename2, 0.3 * imageheight,
-			 imageheight, Print.imageantialias, 3);
+                         imageheight, Print.imageantialias, 3);
 
     if (ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov") == 0
      && ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov:objects") == 0)
@@ -218,7 +218,6 @@ nev_print (char **expargv, int *pi, struct PRINT Print,
   }
 
   ut_free_1d_char (ent);
-
   ut_free_1d_char (command);
   ut_free_1d_char (filename);
   ut_free_1d_char (filename2);

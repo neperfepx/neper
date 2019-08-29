@@ -107,6 +107,21 @@ nev_tesrdata_fscanf_vox (struct TESR Tesr, struct TESRDATA *pTD,
     else if (!strncmp ((*pTD).ColDataType, "ori", 3))
       nev_data_fscanf_ori_tesr (Tesr, value, (*pTD).Qty, Tesr.VoxOri, Tesr.CellOri,
                                 &(*pTD).ColData, &(*pTD).ColDataType);
+    else if (!strncmp ((*pTD).ColDataType, "disori", 6))
+    {
+      nev_data_fscanf_ori_tesr (Tesr, value, (*pTD).Qty, Tesr.VoxOri, Tesr.CellOri,
+                                &(*pTD).ColData, &(*pTD).ColDataType);
+      int j, k, id = 0, cell;
+      for (k = 1; k <= Tesr.size[2]; k++)
+        for (j = 1; j <= Tesr.size[1]; j++)
+          for (i = 1; i <= Tesr.size[0]; i++)
+          {
+            id++;
+            cell = Tesr.VoxCell[i][j][k];
+            ol_q_q_qdisori ((*pTD).ColData[id], Tesr.CellOri[cell],
+                            Tesr.CellCrySym, (*pTD).ColData[id]);
+          }
+    }
     else if (!strcmp ((*pTD).ColDataType, "scal"))
     {
       (*pTD).ColData = ut_alloc_2d ((*pTD).Qty + 1, 1);

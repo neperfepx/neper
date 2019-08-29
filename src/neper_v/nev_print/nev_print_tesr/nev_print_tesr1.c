@@ -42,7 +42,8 @@ nev_print_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
   for (k = 1; k <= Tesr.size[2]; k++)
     for (j = 1; j <= Tesr.size[1]; j++)
       for (i = 1; i <= Tesr.size[0]; i++)
-	Mesh[dim].EltElset[++elt] = Tesr.VoxCell[i][j][k];
+	Mesh[dim].EltElset[++elt]
+          = (!Print.showvox || Print.showvox[i][j][k]) ? Tesr.VoxCell[i][j][k] : 0;
 
   neut_mesh_init_elsets (Mesh + dim);
   neut_mesh_rmelset (Mesh + dim, Nodes, 0);

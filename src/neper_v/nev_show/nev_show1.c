@@ -90,6 +90,14 @@ nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
       ut_print_message (2, 0, "Cannot process `%s'.\n", argv[(*pi)]);
   }
 
+  else if (!strcmp (argv[(*pi)], "-showvox"))
+  {
+    if (Tesr.Dim == 3)
+      nev_show_tesr_vox (argv, pi, Tesr, pPrint);
+    else
+      ut_print_message (2, 0, "Cannot process `%s'.\n", argv[(*pi)]);
+  }
+
   else if (!strcmp (argv[(*pi)], "-showfaceinter"))
   {
     if (Tess.Dim == 3)

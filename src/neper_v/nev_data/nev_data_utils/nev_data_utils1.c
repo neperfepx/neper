@@ -197,21 +197,25 @@ void
 nev_data_ori_colour (double **data, int size, char *scheme, int **Col)
 {
   int i, j;
-  double OL_S2m1 = OL_S2 - 1, TOL_S2m1 = 2 * (OL_S2 - 1);
+  double max;
 
-  if (scheme == NULL || !strcmp (scheme, "R"))
-#pragma omp parallel for private(j)
-    for (i = 1; i <= size; i++)
-    {
-      double *R = ol_R_alloc ();
-      ol_q_R (data[i], R);
-      ol_R_Rcrysym (R, "cubic", R);
-      for (j = 0; j < 3; j++)
-	Col[i][j] = ut_num_d2ri (255 * (R[j] + OL_S2m1) / TOL_S2m1);
-      ol_R_free (R);
-    }
+  if (!scheme || !strcmp (scheme, "R"))
+    max = OL_S2 - 1;
+  else if (!strncmp (scheme, "R(", 2))
+    sscanf (scheme, "R(%lf)", &max);
   else
     ut_error_reportbug ();
+
+#pragma omp parallel for private(j)
+  for (i = 1; i <= size; i++)
+  {
+    double *R = ol_R_alloc ();
+    ol_q_R (data[i], R);
+    ol_R_Rcrysym (R, "cubic", R);
+    for (j = 0; j < 3; j++)
+      Col[i][j] = ut_num_bound (ut_num_d2ri (127.5 * (R[j] + max) / max), 0, 255);
+    ol_R_free (R);
+  }
 
   return;
 }
@@ -357,6 +361,11 @@ nev_data_typearg_args (char *input, char *argument, char **ptype,
   if (argqty == 1 && !strcmp (argument, "ori"))
   {
     ut_string_string ("ori", ptype);
+    ut_free_1d_char_ (pvalue);
+  }
+  else if (argqty == 1 && !strcmp (argument, "disori"))
+  {
+    ut_string_string ("disori", ptype);
     ut_free_1d_char_ (pvalue);
   }
   else if (argqty == 1 && !strcmp (argument, "id"))

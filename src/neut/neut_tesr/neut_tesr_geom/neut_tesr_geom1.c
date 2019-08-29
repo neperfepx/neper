@@ -24,6 +24,22 @@ neut_tesr_vox_pos (struct TESR Tesr, int vox, int *pos)
 }
 
 int
+neut_tesr_pos3_vox (struct TESR Tesr, int x, int y, int z, int *pvox)
+{
+  (*pvox) = (z - 1) * Tesr.size[1] * Tesr.size[0]
+          + (y - 1) * Tesr.size[0]
+          + x;
+
+  return 0;
+}
+
+int
+neut_tesr_pos_vox (struct TESR Tesr, int *pos, int *pvox)
+{
+  return neut_tesr_pos3_vox (Tesr, pos[0], pos[1], pos[2], pvox);
+}
+
+int
 neut_tesr_vox_coo (struct TESR Tesr, int vox, double *coo)
 {
   int pos[3];

@@ -303,8 +303,27 @@ neut_tesr_var_val (struct TESR Tesr, char *entity,
 {
   int i, status, b, tmpint, tmpint3[3];
   double vol;
-  double *c = ut_alloc_1d (3);
-  char *typetmp = ut_alloc_1d_char (10);
+  double *c = NULL;
+  char *typetmp = NULL;
+
+  (*pvals) = ut_realloc_1d (*pvals, 1);
+
+  if (pvalqty)
+    (*pvalqty) = 1;
+
+  // this is for a quick evaluation
+  if (!strcmp (entity, "vox") && (!strcmp (var, "x") || !strcmp (var, "y") || !strcmp (var, "z")))
+  {
+    double *coo = ut_alloc_1d (3);
+    neut_tesr_vox_coo (Tesr, id, coo);
+    (*pvals)[0] = coo[var[0] - 'x'];
+    ut_free_1d (coo);
+
+    return 1;
+  }
+
+  c = ut_alloc_1d (3);
+  typetmp = ut_alloc_1d_char (10);
 
   // b = (Tess.CellQty > 0) ? Tess.CellBody[id] : 0;
   b = 0;
@@ -312,11 +331,6 @@ neut_tesr_var_val (struct TESR Tesr, char *entity,
   if (strcmp (entity, "vox") && (!strcmp (var, "x") || !strcmp (var, "y") || !strcmp (var, "z")
       || !strcmp (var, "xyz")))
     neut_tesr_cell_centre (Tesr, id, c);
-
-  (*pvals) = ut_realloc_1d (*pvals, 1);
-
-  if (pvalqty)
-    (*pvalqty) = 1;
 
   status = -1;
   if (!strcmp (entity, "general")

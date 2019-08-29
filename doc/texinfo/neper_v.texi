@@ -129,12 +129,15 @@ any, white}
 @opt{-datacellcolscheme, char_string,
 Set the colour scheme used to get colours from the data of
 the tessellation cells loaded with option @option{-datacellcol}.
-The type of colour scheme depends on the type of data.  For crystal
-orientations@comma{} the colour scheme can be: @samp{R} for Rodrigues
-vector colouring; for scalar data@comma{} the colour scheme can be any
-list of colours.
+The type of colour scheme depends on the type of data.@*
+@bullet{} For crystal orientations (cubic symmetry is assumed)@comma{}
+the colour scheme can be:
+@samp{R} for Rodrigues vector colouring inside the fundamental region@comma{}
+@samp{R(@var{halflength})} for Rodrigues vector colouring inside a cube of
+edge half-length @var{halflength}.@*
+@bullet{} For scalars@comma{} the colour scheme can be any list of colours.
 ,
-"R" for crystal orientations and any list of colours for scalars,
+see above list,
 "R" for crystal orientations and "blue@comma{}cyan@comma{}yellow@comma{}red" for scalars
 }
 
@@ -189,14 +192,11 @@ any, white}
 
 @opt{-datapolycolscheme, char_string,
 Set the colour scheme used to get colours from the data of
-the tessellation polyhedra loaded with option @option{-datapolycol}.
-The type of colour scheme depends on the type of data.  For crystal
-orientations@comma{} the colour scheme can be: @samp{R} for Rodrigues
-vector colouring; for scalar data@comma{} the colour scheme can be any
-list of colours.
+the tessellation faces loaded with option @option{-datafacecol}.
+See option @option{-datacellcolscheme} for the argument format.
 ,
-"R" for crystal orientations and any list of colours for scalars,
-"R" for crystal orientations and "blue@comma{}cyan@comma{}yellow@comma{}red" for scalars
+see option @option{-datacellcolscheme},
+see option @option{-datacellcolscheme}
 }
 
 @opt{-datapolytrs, real,
@@ -229,13 +229,22 @@ for the argument format.
 ,
 any, white}
 
+@opt{-datapolycolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the tessellation faces loaded with option @option{-datafacecol}.
+See option @option{-datacellcolscheme} for the argument format.
+,
+see option @option{-datacellcolscheme},
+see option @option{-datacellcolscheme}
+}
+
 @opt{-datafacecolscheme, char_string,
 Set the colour scheme used to get colours from the data of
 the tessellation faces loaded with option @option{-datafacecol}.
-See option @option{-datapolycolscheme} for the argument format.
+See option @option{-datacellcolscheme} for the argument format.
 ,
-see option @option{-datapolycolscheme},
-see option @option{-datapolycolscheme}
+see option @option{-datacellcolscheme},
+see option @option{-datacellcolscheme}
 }
 
 @opt{-datafacetrs, real,
@@ -279,10 +288,10 @@ any, black}
 @opt{-dataedgecolscheme, char_string,
 Set the colour scheme used to get colours from the data of
 the tessellation edges loaded with option @option{-dataedgecol}.
-See option @option{-datapolycolscheme} for the argument format.
+See option @option{-datacellcolscheme} for the argument format.
 ,
-see option @option{-datapolycolscheme},
-see option @option{-datapolycolscheme}
+see option @option{-datacellcolscheme},
+see option @option{-datacellcolscheme}
 }
 
 @opt{-dataedgetrs, real,
@@ -324,10 +333,10 @@ any, black}
 @opt{-datavercolscheme, char_string,
 Set the colour scheme used to get colours from the data of
 the tessellation vertices loaded with option @option{-datavercol}.
-See option @option{-datapolycolscheme} for the argument format.
+See option @option{-datacellcolscheme} for the argument format.
 ,
-see option @option{-datapolycolscheme},
-see option @option{-datapolycolscheme}
+see option @option{-datacellcolscheme},
+see option @option{-datacellcolscheme}
 }
 
 @opt{-datavertrs, real,
@@ -369,10 +378,10 @@ any, grey}
 @opt{-dataseedcolscheme, char_string,
 Set the colour scheme used to get colours from the data of
 the tessellation seeds loaded with option @option{-dataseedcol}.
-See option @option{-datapolycolscheme} for the argument format.
+See option @option{-datacellcolscheme} for the argument format.
 ,
-see option @option{-datapolycolscheme},
-see option @option{-datapolycolscheme}
+see option @option{-datacellcolscheme},
+see option @option{-datacellcolscheme}
 }
 
 @opt{-dataseedscale, char_string,
@@ -397,8 +406,25 @@ For a raster tessellation, it is also possible to set data on a per-voxel
 basis,
 
 @opt{-datavoxcol, char_string,
-Set the colours of the voxels.
-See option @option{-datacellcol} for the argument format.
+Set the colours of the voxels.  The argument can be
+one of the following:
+@w{@emph{(i)} @samp{id}} for colouring based on the identifier@comma{} using a colour
+palette (@pxref{Colours})@comma{}
+@w{@emph{(ii)} @samp{ori}} for colouring based on the crystal orientations@comma{}
+@w{@emph{(iii)} @samp{disori}} for colouring based on the disorientations with
+  respect to the corresponding mean cell orientation@comma{}
+@w{@emph{(iv)} the} name of a colour that will be used for all cells (@pxref{Colours})@comma{}
+@w{@emph{(v)} the} name of a file containing a list of colours
+(provided as RGB channel values)@comma{} or
+@w{@emph{(vi)} a} string indicating how the
+colours can be obtained.  The string has the format
+@samp{@var{var}@SEPDEP{}@var{file_name}}@comma{} where @code{@var{var}} can be
+@samp{id} for identifiers@comma{}
+@samp{ori} for crystal orientations or @samp{scal} for scalar
+values@comma{} and @samp{@var{file_name}} is the name of the file
+containing the data.  The colour schemes used to derive the colours from
+the data can be specified with option
+@option{-datavoxcolscheme}.
 ,
 any, white}
 
@@ -1011,6 +1037,18 @@ The interpolation edges are printed in grey with a radius equal to
 the radius of the face edges.
 ,
 0 or 1, 0}
+
+For a raster tessellation, it is possible to set visibility of the individual
+voxels,
+
+@opt{-showvox, char_string,
+Specify the voxels to show. The argument can be: @samp{all} for
+all@comma{} @samp{none} for none@comma{}
+@samp{file(@var{file_name})} to load voxel identifiers from
+a file@comma{} or any expression based on the keys listed in
+@ref{Tessellation Keys}.
+,
+any, all}
 
 The following options apply to the entities of the mesh.
 The options apply to 3D elements (@samp{elt3d}) and element sets

@@ -69,6 +69,7 @@ neut_print_set_default (struct PRINT *pPrint)
   (*pPrint).showpoint[0] = -1;
   (*pPrint).showshadow = -1;
   (*pPrint).showcsys = -1;
+  (*pPrint).showvox = NULL;
 
   (*pPrint).datareduction = 1;
 

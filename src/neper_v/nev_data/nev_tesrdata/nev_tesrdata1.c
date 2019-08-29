@@ -23,7 +23,9 @@ nev_tesrdata_init (struct TESR Tesr, struct TESRDATA *pTesrData)
     else if (!strcmp ((*pTesrData).ColDataType, "col"))
       nev_data_col_colour ((*pTesrData).ColData, Qty, (*pTesrData).Col);
     else if (!strncmp ((*pTesrData).ColDataType, "ori", 3))
-      nev_data_ori_colour ((*pTesrData).ColData, Qty, "R", (*pTesrData).Col);
+      nev_data_ori_colour ((*pTesrData).ColData, Qty, (*pTesrData).ColScheme, (*pTesrData).Col);
+    else if (!strncmp ((*pTesrData).ColDataType, "disori", 6))
+      nev_data_ori_colour ((*pTesrData).ColData, Qty, (*pTesrData).ColScheme, (*pTesrData).Col);
     else if (!strcmp ((*pTesrData).ColDataType, "scal"))
       nev_data_scal_colour ((*pTesrData).ColData,
 	                    (*pTesrData).ColDataDef, Qty,
