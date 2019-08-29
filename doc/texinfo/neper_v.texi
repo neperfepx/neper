@@ -134,7 +134,8 @@ The type of colour scheme depends on the type of data.@*
 the colour scheme can be:
 @samp{R} for Rodrigues vector colouring inside the fundamental region@comma{}
 @samp{R(@var{halflength})} for Rodrigues vector colouring inside a cube of
-edge half-length @var{halflength}.@*
+edge half-length @var{halflength}@comma{}
+and @samp{r} for rotation axis colouring.@*
 @bullet{} For scalars@comma{} the colour scheme can be any list of colours.
 ,
 see above list,

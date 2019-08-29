@@ -197,24 +197,43 @@ void
 nev_data_ori_colour (double **data, int size, char *scheme, int **Col)
 {
   int i, j;
-  double max;
+  double halflength;
 
-  if (!scheme || !strcmp (scheme, "R"))
-    max = OL_S2 - 1;
-  else if (!strncmp (scheme, "R(", 2))
-    sscanf (scheme, "R(%lf)", &max);
-  else
-    ut_error_reportbug ();
+  if (!scheme || !strncmp (scheme, "R", 1))
+  {
+    if (!scheme || !strcmp (scheme, "R"))
+      halflength = OL_S2 - 1;
+    else if (!strncmp (scheme, "R(", 2))
+      sscanf (scheme, "R(%lf)", &halflength);
+    else
+      ut_error_reportbug ();
 
 #pragma omp parallel for private(j)
-  for (i = 1; i <= size; i++)
+    for (i = 1; i <= size; i++)
+    {
+      double *R = ol_R_alloc ();
+      ol_q_R (data[i], R);
+      ol_R_Rcrysym (R, "cubic", R);
+      for (j = 0; j < 3; j++)
+        Col[i][j] = ut_num_bound (ut_num_d2ri (127.5 * (R[j] + halflength) / halflength), 0, 255);
+      ol_R_free (R);
+    }
+  }
+
+  else if (!strcmp (scheme, "r"))
   {
-    double *R = ol_R_alloc ();
-    ol_q_R (data[i], R);
-    ol_R_Rcrysym (R, "cubic", R);
-    for (j = 0; j < 3; j++)
-      Col[i][j] = ut_num_bound (ut_num_d2ri (127.5 * (R[j] + max) / max), 0, 255);
-    ol_R_free (R);
+#pragma omp parallel for private(j)
+    for (i = 1; i <= size; i++)
+    {
+      double *q = ol_q_alloc ();
+      double *r = ol_r_alloc ();
+      ol_q_qcrysym (data[i], "cubic", q);
+      ol_q_r (q, r);
+      for (j = 0; j < 3; j++)
+        Col[i][j] = ut_num_bound (ut_num_d2ri (127.5 * (r[j] + 1)), 0, 255);
+      ol_q_free (q);
+      ol_r_free (r);
+    }
   }
 
   return;
