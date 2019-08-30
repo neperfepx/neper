@@ -887,8 +887,8 @@ The mesh can be written in the following formats,
 @item Zset/Z@'ebulon format: file @file{.geof}
 
 @item FEpX format: files @file{.mesh}, @file{.grain} and @file{.bcs}
-(@file{.parms}, @file{.mesh}, @file{.surf}, @file{.opt} and @file{.bcs}
- in legacy mode)
+(@file{.parms}, @file{.mesh}, @file{.surf}, @file{.opt}, @file{.bcs}
+and @file{.kocks} in legacy mode)
 @end itemize
 
 @subsection Periodicity

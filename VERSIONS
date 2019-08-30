@@ -1,4 +1,4 @@
-New in 3.4.1-70 (29 Aug 2019):
+New in 3.4.1-71 (30 Aug 2019):
 - module -T: added -transform slice, added new statistical distributions to
   -morpho: beta, lorentzian, studentst, weibull, breitwigner, expnormal,
   moffat, pearson7, pseudovoigt and skewnormal, added endpoints to statistical
@@ -11,7 +11,8 @@ New in 3.4.1-70 (29 Aug 2019):
   minor fixes.
 - module -M: fixed -elt hex, added -performat, added mesh keys, added
   -transporteltmethod, added -transportfepx, fixed -interface cohesive for
-  Abaqus, speed up -transport, minor fixes.
+  Abaqus, added kocks file to -for fepx:legacy, speed up -transport, minor
+  fixes.
 - module -V: added -showvox, added -datavoxcol disori, added colour scheme R(),
   r, theta and rtheta, added -imageformat pov:objects, improved -includepov,
   fixed visualization of periodic meshes, small fixes.

@@ -329,6 +329,30 @@ neut_mesh_fprintf_fepx_nsets (FILE * file, struct NSET NSet0D,
   return;
 }
 
+void
+neut_mesh_fprintf_fepx_kocks (FILE *file, struct TESS Tess, char *version)
+{
+  int i;
+  double *ek = ol_e_alloc ();
+
+  if (version && strcmp (version, "legacy"))
+    abort ();
+
+  fprintf (file, "grain-orientations\n");
+  fprintf (file, "%d\n", Tess.CellQty);
+  for (i = 1; i <= Tess.CellQty; i++)
+  {
+    ol_q_e (Tess.CellOri[i], ek);
+    ol_e_ek (ek, ek);
+    fprintf (file, "%17.12f %17.12f %17.12f %d\n", ek[0], ek[1], ek[2], i);
+  }
+  fprintf (file, "EOF\n");
+
+  ol_e_free (ek);
+
+  return;
+}
+
 /*
 void
 neut_mesh_bcsfile_update (FILE* filein, FILE* file, struct PART Part)
