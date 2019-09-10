@@ -1733,34 +1733,31 @@ int
 neut_mesh_node_dim (struct MESH Mesh0D, struct MESH Mesh1D,
 		    struct MESH Mesh2D, struct MESH Mesh3D, int node)
 {
-  int j, dim = -1;
+  int dim = -1;
 
-  int eltnodeqty0d, eltnodeqty1d, eltnodeqty2d;
+  if (Mesh0D.EltQty > 0 && !Mesh0D.NodeElts)
+    abort ();
 
-  eltnodeqty0d =
-    neut_elt_nodeqty (Mesh0D.EltType, Mesh0D.Dimension, Mesh0D.EltOrder);
-  eltnodeqty1d =
-    neut_elt_nodeqty (Mesh1D.EltType, Mesh1D.Dimension, Mesh1D.EltOrder);
-  eltnodeqty2d =
-    neut_elt_nodeqty (Mesh2D.EltType, Mesh2D.Dimension, Mesh2D.EltOrder);
+  if (Mesh1D.EltQty > 1 && !Mesh1D.NodeElts)
+    abort ();
 
-  for (j = 1; dim == -1 && j <= Mesh0D.EltQty; j++)
-    if (ut_array_1d_int_eltpos (Mesh0D.EltNodes[j], eltnodeqty0d, node) != -1)
-      dim = 0;
+  if (Mesh2D.EltQty > 2 && !Mesh2D.NodeElts)
+    abort ();
 
-  for (j = 1; dim == -1 && j <= Mesh1D.EltQty; j++)
-    if (ut_array_1d_int_eltpos (Mesh1D.EltNodes[j], eltnodeqty1d, node) != -1)
-      dim = 1;
+  if (Mesh3D.EltQty > 3 && !Mesh3D.NodeElts)
+    abort ();
 
-  for (j = 1; dim == -1 && j <= Mesh2D.EltQty; j++)
-    if (ut_array_1d_int_eltpos (Mesh2D.EltNodes[j], eltnodeqty2d, node) != -1)
-      dim = 2;
+  if (node <= Mesh0D.NodeQty && Mesh0D.NodeElts[node][0] > 0)
+    dim = 0;
 
-  if (dim == -1)
-  {
-    Mesh3D = Mesh3D;
+  if (node <= Mesh1D.NodeQty && Mesh1D.NodeElts[node][0] > 0)
+    dim = 1;
+
+  if (node <= Mesh2D.NodeQty && Mesh2D.NodeElts[node][0] > 0)
+    dim = 2;
+
+  if (node <= Mesh3D.NodeQty && Mesh3D.NodeElts[node][0] > 0)
     dim = 3;
-  }
 
   return dim;
 }

@@ -25,6 +25,12 @@ nem_transform (struct IN_M In, struct NODES *pNodes, struct MESH *Mesh)
       neut_nodes_scale (pNodes, tmp[0], tmp[1], tmp[2]);
     }
 
+    else if (!strncmp (parts[i], "smooth", 5))
+    {
+      ut_print_message (0, 3, "Smoothing...\n");
+      nem_transform_smooth (parts[i], pNodes, Mesh);
+    }
+
     else
       ut_print_message (1, 3, "Skipping `%s'...\n", parts[i]);
   }

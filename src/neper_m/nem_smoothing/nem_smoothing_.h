@@ -13,9 +13,6 @@
 
 #include"nem_smoothing.h"
 
-extern void nem_smoothing_laplacian (struct NODES *pNodes,
-				     struct MESH *Mesh, int dim,
-				     double A, int itermax);
 extern void nem_smoothing_barypos (struct NODES Nodes,
 				   int *neighnodes, double *neighnodeweights,
 				   int neighnodeqty, double *NeighCoo);

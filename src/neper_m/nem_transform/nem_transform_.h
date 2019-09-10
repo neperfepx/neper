@@ -10,3 +10,6 @@
 #include"ut.h"
 
 #include"nem_transform.h"
+#include"../nem_smoothing/nem_smoothing.h"
+
+extern void nem_transform_smooth (char *smooth, struct NODES *pNodes, struct MESH *Mesh);

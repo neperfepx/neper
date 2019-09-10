@@ -6,3 +6,6 @@
 
 extern void nem_smoothing (struct IN_M In, struct TESS *pTess,
 			   struct NODES *pNodes, struct MESH *Mesh);
+extern void nem_smoothing_laplacian (struct NODES *pNodes,
+				     struct MESH *Mesh, int dim,
+				     double A, int itermax);
