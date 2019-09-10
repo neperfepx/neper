@@ -208,10 +208,10 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 // ###################################################################
 // ### POST-MESHING OPERATIONS #######################################
 
-  if (strcmp (In.scalestring, "none"))
+  if (strcmp (In.transform, "none"))
   {
-    ut_print_message (0, 2, "Scaling mesh...\n");
-    neut_nodes_scale (&Nodes, In.scale[0], In.scale[1], In.scale[2]);
+    ut_print_message (0, 2, "Transforming mesh...\n");
+    nem_transform (In, &Nodes, Mesh);
   }
 
 // Partitioning mesh ###

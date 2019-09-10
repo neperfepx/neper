@@ -84,8 +84,7 @@ struct IN_M
   double partbalancing;		// partitioning balancing factor
 
   // transformation
-  char *scalestring;		// scale the mesh once generated (or loaded)
-  double *scale;		// scaling values
+  char *transform;        // transform the mesh once generated (or loaded)
 
   // output details
 

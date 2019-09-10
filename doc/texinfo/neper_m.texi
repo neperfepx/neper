@@ -527,10 +527,15 @@ meshes with duplicate nodes@comma{} except using options
 
 @subsection Transformation Options
 
-@opt{-scale, real:real:real,
-Scale the mesh by given factors in the x@comma{} y and z directions
-once it is generated.
-In 2D@comma{} the @var{z} value can be omitted.
+@opt{-transform, char_string(...),
+Apply transformations to a mesh.
+The following transformations can be applied:@*
+@mybullet @samp{@code{scale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
+scales a mesh by
+@code{@var{x_fact}}@comma{} @code{@var{y_fact}} and @code{@var{z_fact}}
+along directions @var{x}@comma{} @code{@var{y}} and
+@code{@var{z}}@comma{} respectively. For a 2D mesh@comma{}
+@code{@var{z_fact}} can be omitted.
 ,
 any, none}
 
