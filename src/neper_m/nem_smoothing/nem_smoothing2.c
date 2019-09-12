@@ -11,10 +11,11 @@
 // are applied (itermax).  There is no stop criterion, itermax will
 // always be reached.
 void
-nem_smoothing_laplacian (struct NODES *pNodes,
-			 struct MESH *Mesh, int dim, double A, int itermax)
+nem_smoothing_laplacian (struct TESS Tess, struct NODES *pNodes,
+			 struct MESH *Mesh, int dim, double A, int itermax,
+                         char *nodetype)
 {
-  int i, j, nodeqty, nodeqty2;
+  int i, j, nodeqty, nodeqty2, domtype;
   int *nodes = NULL;
   int *nodes2 = NULL;
   double **NodeCoo = NULL;
@@ -27,6 +28,17 @@ nem_smoothing_laplacian (struct NODES *pNodes,
 
   for (i = 0; i < nodeqty2; i++)
     nodeqty -= ut_array_1d_int_deletencompress (nodes, nodeqty, nodes2[i], 1);
+
+  if (!strcmp (nodetype, "interior"))
+  {
+    for (i = 0; i < nodeqty; i++)
+    {
+      neut_mesh_node_domtype (Tess, Mesh[0], Mesh[1], Mesh[2], Mesh[3], nodes[i], &domtype);
+      if (domtype != -1)
+        nodes[i] = 0;
+    }
+    nodeqty -= ut_array_1d_int_deletencompress (nodes, nodeqty, 0, INT_MAX);
+  }
 
   NodeCoo = ut_alloc_2d (Mesh[dim].NodeQty + 1, 3);
 

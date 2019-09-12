@@ -211,7 +211,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (strcmp (In.transform, "none"))
   {
     ut_print_message (0, 2, "Transforming mesh...\n");
-    nem_transform (In, &Nodes, Mesh);
+    nem_transform (In, Tess, &Nodes, Mesh);
   }
 
 // Partitioning mesh ###

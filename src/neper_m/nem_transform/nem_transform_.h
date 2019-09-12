@@ -4,6 +4,7 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<limits.h>
 
 #include"structIn_m.h"
 #include"neut_m.h"
@@ -12,4 +13,5 @@
 #include"nem_transform.h"
 #include"../nem_smoothing/nem_smoothing.h"
 
-extern void nem_transform_smooth (char *smooth, struct NODES *pNodes, struct MESH *Mesh);
+extern void nem_transform_smooth (char *smooth, struct TESS Tess,
+                                  struct NODES *pNodes, struct MESH *Mesh);

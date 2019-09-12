@@ -5,7 +5,9 @@
 #include"nem_transform_.h"
 
 void
-nem_transform (struct IN_M In, struct NODES *pNodes, struct MESH *Mesh)
+nem_transform (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
+               struct MESH *Mesh)
+
 {
   int i, partqty, status;
   double *tmp = ut_alloc_1d (3);
@@ -28,7 +30,7 @@ nem_transform (struct IN_M In, struct NODES *pNodes, struct MESH *Mesh)
     else if (!strncmp (parts[i], "smooth", 5))
     {
       ut_print_message (0, 3, "Smoothing...\n");
-      nem_transform_smooth (parts[i], pNodes, Mesh);
+      nem_transform_smooth (parts[i], Tess, pNodes, Mesh);
     }
 
     else
