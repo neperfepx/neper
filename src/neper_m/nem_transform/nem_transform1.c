@@ -27,6 +27,15 @@ nem_transform (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
       neut_nodes_scale (pNodes, tmp[0], tmp[1], tmp[2]);
     }
 
+    else if (!strncmp (parts[i], "translate", 5))
+    {
+      ut_print_message (0, 3, "Translating...\n");
+      status = sscanf (parts[i], "translate(%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2);
+      if (status == 2)
+        tmp[2] = 1;
+      neut_nodes_shift (pNodes, tmp[0], tmp[1], tmp[2]);
+    }
+
     else if (!strncmp (parts[i], "smooth", 5))
     {
       ut_print_message (0, 3, "Smoothing...\n");
