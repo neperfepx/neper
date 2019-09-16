@@ -16,7 +16,7 @@ extern void neut_tesr_fprintf_head (FILE *, char *, struct TESR);
 extern void neut_tesr_fprintf_data (FILE *, char *, struct TESR);
 extern void neut_tesr_fprintf_cell (FILE *, struct TESR);
 extern void neut_tesr_fprintf_data_noheader (FILE * file, char *format,
-				   struct TESR Tesr);
+				   struct TESR Tesr, int *CellId);
 extern void neut_tesr_fprintf_data_raw (FILE * file, char *rawname,
 					char *format, struct TESR Tesr);
 extern void neut_tesr_fprintf_oridata (FILE *, char *, char *, struct TESR);
