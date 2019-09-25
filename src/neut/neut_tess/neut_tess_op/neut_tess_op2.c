@@ -283,20 +283,6 @@ neut_tess_domface_tess_seeds (struct TESS Tess, struct TESS *pT)
 			    Tess.PerSeedSlave + 1);
   }
 
-  if (Tess.CellLamId)
-  {
-    (*pT).CellLamId = ut_alloc_1d_int ((*pT).CellQty + 1);
-    ut_array_1d_int_memcpy ((*pT).CellLamId + 1, (*pT).CellQty,
-			    Tess.CellLamId + 1);
-  }
-
-  if (Tess.CellModeId)
-  {
-    (*pT).CellModeId = ut_alloc_1d_int ((*pT).CellQty + 1);
-    ut_array_1d_int_memcpy ((*pT).CellModeId + 1, (*pT).CellQty,
-			    Tess.CellModeId + 1);
-  }
-
   return;
 }
 
@@ -310,7 +296,7 @@ neut_tess_domface_tess_cells (struct TESS Tess, int *oldface_newface, struct TES
     ut_array_1d_int_inv (oldface_newface, Tess.FaceQty + 1, &newface_oldface, &newfaceqty);
 
   for (i = 1; i <= (*pT).FaceQty; i++)
-    face_oldpoly[i] = Tess.FacePoly[newface_oldface[i]][0];
+    face_oldpoly[i] = oldface_newface? Tess.FacePoly[newface_oldface[i]][0] : Tess.FacePoly[i][0];
 
   (*pT).CellQty = (*pT).FaceQty;
 
@@ -338,6 +324,20 @@ neut_tess_domface_tess_cells (struct TESS Tess, int *oldface_newface, struct TES
     (*pT).CellModeId = ut_alloc_1d_int (Tess.CellQty + 1);
     for (i = 1; i <= (*pT).CellQty; i++)
       (*pT).CellModeId[i] = Tess.CellModeId[face_oldpoly[i]];
+  }
+
+  if (Tess.CellLamId)
+  {
+    (*pT).CellLamId = ut_alloc_1d_int ((*pT).CellQty + 1);
+    ut_array_1d_int_memcpy ((*pT).CellLamId + 1, (*pT).CellQty,
+			    Tess.CellLamId + 1);
+  }
+
+  if (Tess.CellModeId)
+  {
+    (*pT).CellModeId = ut_alloc_1d_int ((*pT).CellQty + 1);
+    ut_array_1d_int_memcpy ((*pT).CellModeId + 1, (*pT).CellQty,
+			    Tess.CellModeId + 1);
   }
 
   ut_string_string (Tess.CellCrySym, &((*pT).CellCrySym));

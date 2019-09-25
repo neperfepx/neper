@@ -3151,9 +3151,9 @@ neut_tess_3dcolumnar_2d (struct TESS Tess, struct TESS *pT)
 
   neut_tess_domface_tess_seeds (Tess, pT);
 
-  neut_tess_domface_tess_cells (Tess, NULL, pT);
-
   neut_tess_3dcolumnar_2d_faces (Tess, domface, pT);
+
+  neut_tess_domface_tess_cells (Tess, NULL, pT);
 
   neut_tess_3dcolumnar_2d_edges (Tess, domface, pT, oldedge_newedge);
 
