@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Meshing &#8212; Neper 3.4.0 documentation</title>
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.4.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/neper.ico"/>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Visualization" href="visualization.html" />
+    <link rel="prev" title="Generation" href="generation.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+  </head>
+  <body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          Neper</a>
+        <span class="navbar-text navbar-version pull-left"><b>version 3.4.0 (15 Apr 2019)</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="generation.html">Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generation.html#generalities">Generalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generation.html#tessellations-from-morphological-properties">Tessellations from morphological properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generation.html#multiscale-tessellations">Multiscale tessellations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generation.html#periodic-and-semi-periodic-tessellations">Periodic and semi-periodic tessellations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generation.html#regularization">Regularization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generation.html#scalar-and-raster-formats">Scalar and raster formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generation.html#statistics">Statistics</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Meshing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#generalities">Generalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#element-size">Element size</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#remeshing">Remeshing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mesh-partitioning">Mesh partitioning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#raster-tessellation-meshing">Raster tessellation meshing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#statistics">Statistics</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#generalities">Generalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#colour-transparency-etc">Colour, transparency, etc.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#entity-selection">Entity selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#mesh-slicing">Mesh slicing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id1">2019</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id2">2018</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id3">2017</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id4">2016</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id5">2015</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id6">2014</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id7">2013</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id8">2012</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id9">2011</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id10">2009</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id11">2008</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id12">2007</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="downloads.html">Downloads</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="downloads.html#current-stable-release">Current stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downloads.html#development-repository">Development repository</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downloads.html#supplementary-software">Supplementary software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downloads.html#references">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downloads.html#mailing-lists">Mailing lists</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Meshing</a><ul>
+<li><a class="reference internal" href="#generalities">Generalities</a></li>
+<li><a class="reference internal" href="#element-size">Element size</a></li>
+<li><a class="reference internal" href="#remeshing">Remeshing</a></li>
+<li><a class="reference internal" href="#mesh-partitioning">Mesh partitioning</a></li>
+<li><a class="reference internal" href="#raster-tessellation-meshing">Raster tessellation meshing</a></li>
+<li><a class="reference internal" href="#statistics">Statistics</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="generation.html" title="Previous Chapter: Generation"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Generation</span>
+    </a>
+  </li>
+  <li>
+    <a href="visualization.html" title="Next Chapter: Visualization"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Visualization &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="_sources/meshing.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="meshing">
+<span id="meshing-link"></span><h1>Meshing<a class="headerlink" href="#meshing" title="Permalink to this headline">¶</a></h1>
+<p>Module -M of Neper is dedicated to tessellation meshing. The input
+data is a tessellation as provided by module -T or a mesh to remesh.
+The mesh size can be uniform or defined on a per-grain basis. Cohesive
+elements can be inserted at interfaces. The
+output mesh can be written at several formats, including
+the Abaqus ‘.inp’,
+the FEpX ‘.fepx’,
+the Zset ‘.geof’,
+and the Gmsh ‘.msh’. Statistical data also are available.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#generalities" id="id1">Generalities</a></li>
+<li><a class="reference internal" href="#element-size" id="id2">Element size</a></li>
+<li><a class="reference internal" href="#remeshing" id="id3">Remeshing</a></li>
+<li><a class="reference internal" href="#mesh-partitioning" id="id4">Mesh partitioning</a></li>
+<li><a class="reference internal" href="#raster-tessellation-meshing" id="id5">Raster tessellation meshing</a></li>
+<li><a class="reference internal" href="#statistics" id="id6">Statistics</a></li>
+</ul>
+</div>
+<div class="section" id="generalities">
+<h2><a class="toc-backref" href="#id1">Generalities</a><a class="headerlink" href="#generalities" title="Permalink to this headline">¶</a></h2>
+<p>A mesh is created from a tessellation and a target element size. To
+ensure mesh quality, each face or volume is meshed using a collection of
+algorithms, until a minimum mesh quality index is reached. The quality
+index depends on the sizes and aspect ratios of the elements.  The
+Netgen and Gmsh libraries are used for 2D and 3D meshing. The output
+data consists of the mesh of the full tessellation, with element sets
+for the individual cells (optionally interfaces) and node sets for the
+domain surfaces, edges and vertices. The free mesh of a regularized
+1000-cell tessellation is shown below, as well as its mapped mesh, where
+regular elements lead to stepped boundaries.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -M n1000.tess
+$ neper -M n1000.tess -elttype hex
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/mesh_gene.png"><img alt="_images/mesh_gene.png" src="_images/mesh_gene.png" style="width: 66.67%;" /></a>
+<p><a class="reference download internal" href="_downloads/mesh_gene.sh" download=""><code class="xref download docutils literal"><span class="pre">mesh_gene.sh</span></code></a></p>
+</div>
+<div class="section" id="element-size">
+<h2><a class="toc-backref" href="#id2">Element size</a><a class="headerlink" href="#element-size" title="Permalink to this headline">¶</a></h2>
+<p>The element size can be uniform or defined on a per-cell basis. It
+can be monitored using logical expressions that define cell sets,
+each of which is assigned a specific element size, or by loading the
+cell element sizes from a file. Typically, this can be used to
+generate a mesh with different element sizes for the boundary cells
+and the interior cells.  Meshes with uniform and per-cell defined
+element sizes are shown below.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -M n1000.tess -rcl 0.5
+$ neper -M n1000.tess -rcl &quot;1,body&gt;0:0.35&quot;
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/mesh_size.png"><img alt="_images/mesh_size.png" src="_images/mesh_size.png" style="width: 66.67%;" /></a>
+<p><a class="reference download internal" href="_downloads/mesh_size.sh" download=""><code class="xref download docutils literal"><span class="pre">mesh_size.sh</span></code></a></p>
+</div>
+<div class="section" id="remeshing">
+<h2><a class="toc-backref" href="#id3">Remeshing</a><a class="headerlink" href="#remeshing" title="Permalink to this headline">¶</a></h2>
+<p>Instead of a tessellation, a mesh can be provided as input. The new
+mesh can be created with the same or different element size, and/or
+even with different values along the three dimensions of space.
+Moreover, data can be transported from the input mesh to the output
+mesh. This enables to deform a tessellation to larger strains than
+possible with a single mesh. Remeshing and element data transport are
+illustrated below (top: deformed mesh and bottom: remeshed mesh; an
+element scalar field is shown in colour).</p>
+<a class="reference internal image-reference" href="_images/mesh_reme.png"><img alt="_images/mesh_reme.png" src="_images/mesh_reme.png" style="width: 33%;" /></a>
+</div>
+<div class="section" id="mesh-partitioning">
+<h2><a class="toc-backref" href="#id4">Mesh partitioning</a><a class="headerlink" href="#mesh-partitioning" title="Permalink to this headline">¶</a></h2>
+<p>A mesh can be partitioned for parallel finite element simulations.  The
+principle is that the partitions are of the same size and the interfaces
+between them are minimized. Node and element partitions are provided.
+The libScotch library is used for partitioning.  A meshed divided into 8
+x 8 partitions is shown below.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -M n1000.tess -rcl 0.5 -part 8:8
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/mesh_part.png"><img alt="_images/mesh_part.png" src="_images/mesh_part.png" style="width: 33%;" /></a>
+</div>
+<div class="section" id="raster-tessellation-meshing">
+<h2><a class="toc-backref" href="#id5">Raster tessellation meshing</a><a class="headerlink" href="#raster-tessellation-meshing" title="Permalink to this headline">¶</a></h2>
+<p>2D raster tessellations can be meshed into triangles.
+All capabilities available for scalar tessellations are also
+available for raster tessellations. An example of
+meshing of a microstructure with curved grain boundaries (grain
+growth simulation) is provided below. (Left: raster microstructure; right:
+corresponding mesh.)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -M micro.tesr
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/m_tesr.png"><img alt="_images/m_tesr.png" src="_images/m_tesr.png" style="width: 16.5%;" /></a>
+<a class="reference internal image-reference" href="_images/m_tesr_mesh.png"><img alt="_images/m_tesr_mesh.png" src="_images/m_tesr_mesh.png" style="width: 16.5%;" /></a>
+</div>
+<div class="section" id="statistics">
+<h2><a class="toc-backref" href="#id6">Statistics</a><a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
+<p>A wide variety of statistics are available for the elements, element
+sets (at all dimensions) and nodes, including morphology and
+topology properties. For example, the element variables include: the
+centroid coordinates, the elset identifier, the partition, the
+volume and radius ratio. An example of statistical analysis is
+illustrated below by the distribution of the element radius
+ratios of a 1000-cell tessellation mesh.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -M n1000.tess -statelt rr
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/mesh_stat.png"><img alt="_images/mesh_stat.png" src="_images/mesh_stat.png" style="width: 33%;" /></a>
+<p><a class="reference download internal" href="_downloads/mesh_stat.sh" download=""><code class="xref download docutils literal"><span class="pre">mesh_stat.sh</span></code></a></p>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
