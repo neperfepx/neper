@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.4.1-80\")
+set (NEPER_VERSION \"3.4.1-81\")
 set (NEPER_CONTACT \"http://www.neper.info/community\")
 
 # should we use the optional libraries?
