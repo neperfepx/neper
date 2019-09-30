@@ -22,6 +22,7 @@ neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess,
     printsurf = 0;
     printgrain = 1;
     printbcs = 1;
+    printkocks = 0;
   }
   else if (!strcmp (version, "legacy"))
   {
@@ -112,9 +113,14 @@ neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess,
   /* kocks = node sets */
   if (printkocks)
   {
-    file = ut_file_open (kocks, "w");
-    neut_mesh_fprintf_fepx_kocks (file, Tess, version);
-    ut_file_close (file, kocks, "w");
+    if (Tess.CellOri)
+    {
+      file = ut_file_open (kocks, "w");
+      neut_mesh_fprintf_fepx_kocks (file, Tess, version);
+      ut_file_close (file, kocks, "w");
+    }
+    else
+      ut_print_message (1, 3, "Skipping kocks file (CellOri not defined)...\n");
   }
 
   return;

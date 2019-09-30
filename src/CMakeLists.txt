@@ -5,8 +5,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.4.1-79\")
-set (NEPER_EMAIL \"neper-users@lists.sourceforge.net\")
+set (NEPER_VERSION \"3.4.1-80\")
+set (NEPER_CONTACT \"http://www.neper.info/community\")
 
 # should we use the optional libraries?
 set (HAVE_GSL ON)
