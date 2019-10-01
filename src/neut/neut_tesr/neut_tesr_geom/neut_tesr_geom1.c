@@ -613,3 +613,18 @@ neut_tesr_bbox (struct TESR Tesr, double **bbox)
 
   return;
 }
+
+void
+neut_tesr_bboxsize (struct TESR Tesr, double *bboxsize)
+{
+  int i;
+  double **bbox = ut_alloc_2d (3, 2);
+
+  neut_tesr_bbox (Tesr, bbox);
+  for (i = 0; i < 3; i++)
+    bboxsize[i] = bbox[i][1] - bbox[i][0];
+
+  ut_free_2d (bbox, 3);
+
+  return;
+}

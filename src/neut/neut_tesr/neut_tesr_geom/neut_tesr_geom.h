@@ -82,6 +82,7 @@ extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
   extern void neut_tesr_cells_anisoxyz (struct TESR Tesr, double *fact);
 
   extern void neut_tesr_bbox (struct TESR Tesr, double **bbox);
+  extern void neut_tesr_bboxsize (struct TESR Tesr, double *bboxsize);
 
   extern int neut_tesr_pos_vox (struct TESR Tesr, int *pos, int *pvox);
   extern int neut_tesr_pos3_vox (struct TESR Tesr, int x, int y, int z, int *pvox);

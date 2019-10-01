@@ -1,4 +1,4 @@
-New in 3.4.1-87 (01 Oct 2019):
+New in 3.4.1-88 (01 Oct 2019):
 - module -T: added -transform slice, added new statistical distributions to
   -morpho: beta, lorentzian, studentst, weibull, breitwigner, expnormal,
   moffat, pearson7, pseudovoigt and skewnormal, added endpoints to statistical
