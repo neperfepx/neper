@@ -1,25 +1,26 @@
-New in 3.4.1-90 (01 Oct 2019):
-- module -T: added -transform slice, added new statistical distributions to
-  -morpho: beta, lorentzian, studentst, weibull, breitwigner, expnormal,
-  moffat, pearson7, pseudovoigt and skewnormal, added endpoints to statistical
-  distributions, added variable 1-sphericity, fixed -loadtesr file.tesr:crop,
-  fixed argument reading, fixed -statvox e, added tessellation keys, improved
-  tesr format, improved -ori fibre, added -transform oriaverage, replaced
-  -transform plane with -transform hspace, fixed -domain, fixed -for ori, fixed
-  -morpho centroidal, fixed tesr reading, improved -transform renumber,
-  improved -statcell convexity, added -orioptilogvar, added crystal symmetry to
-  tesr file, improved tesr file, fixed vtk output, minor fixes.
-- module -M: fixed -elt hex, added -performat, added mesh keys, added
-  -transform scale, translate and smooth, merged -scale into -transform, added
-  -transporteltmethod, added -transportfepx, fixed -interface cohesive for
-  Abaqus, added kocks file to -for fepx:legacy, speed up -transport, minor
-  fixes.
-- module -V: added -showvox, added -datavoxcol disori, added colour scheme R(),
-  r, theta and rtheta, added -imageformat pov:objects, improved -includepov,
-  fixed visualization of periodic meshes, small fixes.
+New in 3.4.1-91 (01 Oct 2019):
+- module -T: added -transform slice and oriaverage,
+  added new statistical distributions to -morpho: beta, lorentzian, studentst,
+  weibull, breitwigner, expnormal, moffat, pearson7, pseudovoigt and
+  skewnormal, added endpoints to statistical distributions, added variable
+  1-sphericity to -morpho, added tessellation keys, added -orioptilogvar,
+  improved argument reading (multiscale tessellation), improved tesr format,
+  improved -transform renumber, improved -ori fibre, improved -statcell
+  convexity, replaced -transform plane with -transform hspace, fixed -loadtesr
+  file.tesr:..., fixed -statvox e, fixed -for ori, fixed -domain, fixed -morpho
+  centroidal, fixed tesr reading, fixed vtk output, enrich tesr file, made
+  minor fixes.
+- module -M: added -transform scale, translate and smooth, added
+  -transporteltmethod, added -transportfepx, added mesh keys, added -performat,
+  added kocks file to -for fepx:legacy, fixed -interface cohesive for Abaqus,
+  fixed -elt hex, merged -scale into -transform, speed up -transport, made
+  minor fixes.
+- module -V: added -showvox, added -datavoxcol disori, added colour schemes
+  R(), r, theta and rtheta, added -imageformat pov:objects, improved
+  -includepov, fixed visualization of periodic meshes, made small fixes.
+- documentation: made minor fixes and improvements.
 - general: fixed compilation when GSL and NLopt locally installed, website now
   at http://neper.info.
-- documentation: small fixes.
 
 New in 3.4.0 (15 Apr 2019):
 - module -T: added tessellation cutting (to get non-convex domains) using
