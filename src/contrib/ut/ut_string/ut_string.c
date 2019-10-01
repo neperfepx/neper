@@ -230,7 +230,7 @@ ut_string_comp (char *in, char **list, int qty, char **pout)
   if (res > 0)
   {
     (*pout) = ut_alloc_1d_char (strlen (list2[res][0]) + 1);
-    strcpy (*pout, list2[res][0]);	/* this is the goo possibility. */
+    strcpy (*pout, list2[res][0]);	/* this is the good possibility. */
   }
 
   for (i = 1; i <= qty; i++)
@@ -1054,7 +1054,9 @@ int
 ut_string_filename (char* string)
 {
   return ((string && strlen (string) > 0)
-	 && (!strncmp (string, "file(", 5) || string[0] == '@'));
+	 && (!strncmp (string, "file(", 5)
+          || !strncmp (string, "msfile(", 7)
+          || string[0] == '@'));
 }
 
 int

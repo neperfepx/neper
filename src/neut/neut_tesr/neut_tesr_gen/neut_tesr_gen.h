@@ -10,6 +10,8 @@ extern "C"
 #ifndef  NEUT_VOX_GEN_H
 #define  NEUT_VOX_GEN_H
 
+#include<orilib.h>
+
   extern void neut_tesr_cell (struct TESR Tesr, char **pcell);
   extern void neut_tesr_entity_qty (struct TESR Tesr, char *entity,
 				    int *pqty);
@@ -28,28 +30,31 @@ extern "C"
 
   extern void neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty);
   extern int neut_tesr_expr_val (struct TESR Tesr, char *entity,
-				     int id, char *expr, double *val, int *pvalqty, char **ptype);
+				     int id, char *expr, double **pvals, int *pvalqty, char **ptype);
+  extern int neut_tesr_expr_val_one (struct TESR Tesr, char *entity,
+				     int id, char *expr, double *pval, char **ptype);
   extern int neut_tesr_expr_val_int (struct TESR Tesr, char *entity,
-				     int id, char *expr, int *val, int *pvalqty, char **ptype);
+				     int id, char *expr, int **pvals, int *pvalqty, char **ptype);
+  extern int neut_tesr_expr_val_int_one (struct TESR Tesr, char *entity,
+                                         int id, char *expr, int *pval, char **ptype);
   extern int neut_tesr_var_val (struct TESR Tesr,
-				char *entity, int id, char *var, double *val, int* pvalqty,
+				char *entity, int id, char *var, double **vals, int* pvalqty,
 				char **ptype);
-  extern int neut_tesr_var_val_int (struct TESR Tesr,
-				char *entity, int id, char *var, int *val,
-				int *pvalqty, char **ptype);
+  extern int neut_tesr_var_val_one (struct TESR Tesr,
+                                    char *entity, int id, char *var, double *pval, char **ptype);
+  extern int neut_tesr_var_val_int (struct TESR Tesr, char *entity, int id,
+                                    char *var, int **pvals, int *pvalqty, char **ptype);
 
   extern void neut_tesr_entity_expr_val (struct TESR Tesr, char *entity,
 					 char *expr, double *val);
 
   extern void neut_tesr_var_dim (int dim, char *entity, char *var, int *pdim);
 
-  extern int neut_tesr_var_val_all (struct TESR Tesr, char *entity,
-				     char *var, double **val, int *valqty, char **ptype);
-  extern int neut_tesr_expr_val_all (struct TESR Tesr, char *entity,
-				     char *expr, double **val, int *valqty, char **ptype);
-
   extern int neut_tesr_pos_valid (struct TESR Tesr, int *pos);
   extern void neut_tesr_sizestring (struct TESR Tesr, char **psizestring);
+
+  extern void neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet);
+
 #endif				/* NEUT_VOX_GEN_H */
 
 #ifdef __cplusplus

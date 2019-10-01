@@ -148,6 +148,8 @@ main (int argc, char **argv)
 void
 neper_head (char *neper_version)
 {
+  int comma = 0, alldeps = 1;
+
   printf
     ("\n========================    N   e   p   e   r    =======================\n");
 
@@ -158,29 +160,34 @@ neper_head (char *neper_version)
 
   ut_print_message (0, 0, "Built with:");
 #ifdef HAVE_GSL
-  printf (" gsl");
+  printf ("%s gsl", comma ? "," : "");
+  comma = 1;
+#else
+  alldeps = 0;
 #endif
 
 #ifdef HAVE_NLOPT
-  printf (" nlopt");
+  printf ("%s nlopt", comma ? "," : ":");
+  comma = 1;
+#else
+  alldeps = 0;
 #endif
 
 #ifdef HAVE_LIBSCOTCH
-  printf (" libscotch");
+  printf ("%s libscotch", comma ? "," : ":");
+  comma = 1;
+#else
+  alldeps = 0;
 #endif
 
 #ifdef HAVE_OPENMP
-  printf (" openmp");
+  printf ("%s openmp", comma ? "," : ":");
+  comma = 1;
+#else
+  alldeps = 0;
 #endif
 
-  printf ("\n");
-
-#ifdef HAVE_OPENMP
-#pragma omp parallel
-  if (omp_get_thread_num () == 0)
-    ut_print_message (0, 0, "Running on %d threads.\n",
-                      omp_get_num_threads ());
-#endif
+  printf ("%s\n", alldeps ? " (full build)" : "");
 
 #ifndef DEVEL_OPTIMIZATION
   ut_print_message (1, 0,
@@ -202,6 +209,13 @@ neper_head (char *neper_version)
                     "Built with: debugging compilation flag. NOT FOR PRODUCTION USE.\n");
 #endif
 
+#ifdef HAVE_OPENMP
+#pragma omp parallel
+  if (omp_get_thread_num () == 0)
+    ut_print_message (0, 0, "Running on %d threads.\n",
+                      omp_get_num_threads ());
+#endif
+
   return;
 }
 
@@ -217,12 +231,10 @@ neper_foot ()
 void
 neper_info ()
 {
-  ut_print_message (0, 0, "<http://neper.sourceforge.net>\n");
+  ut_print_message (0, 0, "<http://neper.info> <http://neper.info/community>\n");
 
   ut_print_message (0, 0,
                     "Copyright (C) 2003-2019, and GNU GPL'd, by Romain Quey.\n");
-
-  ut_print_message (0, 72, "Comments and bug reports: <%s>.\n", NEPER_EMAIL);
 
   return;
 }

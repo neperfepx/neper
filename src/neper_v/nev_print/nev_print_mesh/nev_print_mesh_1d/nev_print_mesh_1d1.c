@@ -36,8 +36,8 @@ nev_print_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
 	  hidden[i] = 0;
         else if (Tess.EdgeQty > 0 && Tess.EdgeDom[elset][0] >= 1)
 	  hidden[i] = 0;
-	else if (!strcmp (Tess.Type, "periodic") && Tess.EdgeFaceQty[elset] < 3)
-	  hidden[i] = 0;
+        else if (!neut_mesh_elt1d_isembedded (Mesh[3], Mesh[1], i))
+          hidden[i] = 0;
 	else
 	{
 	  neut_mesh_elt1d_elts3d (Mesh[1], i, Mesh[2], Mesh[3], &elts3d,

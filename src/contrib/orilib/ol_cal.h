@@ -53,6 +53,7 @@ extern void ol_vect_vect_theta (double *, double *, double *);
 extern void ol_vect_vect_rtheta_rad (double *, double *, double *, double *);
 extern void ol_vect_vect_rtheta (double *, double *, double *, double *);
 extern void ol_vect_vect_g (double *, double *, double **);
+extern void ol_vect_vect_q (double *, double *, double *);
 
 extern int ol_e_e_disori_rad (double *, double *, char*, double *);
 extern int ol_e_e_disori (double *, double *, char*, double *);

@@ -37,7 +37,7 @@ nev_tessdata_fscanf_col (struct TESS Tess,
                          int id, int entityqty,
                          char *type, char *value)
 {
-  int i, scale, qty;
+  int i, scale;
 
   ut_string_string (type, &(*pTessData).ColDataType[id]);
 
@@ -85,85 +85,8 @@ nev_tessdata_fscanf_col (struct TESS Tess,
 				 entityqty, 1, "numeral");
   }
   else if (!strncmp (type, "ori", 3))
-  {
-    (*pTessData).ColData[id] = ut_alloc_2d (entityqty + 1, 4);
-
-    if (!value)
-    {
-      if (!Tess.CellOri)
-	ut_print_message (2, 3, "No orientation data available.\n");
-      else
-      {
-	ut_string_string ("oriq", &((*pTessData).ColDataType[id]));
-	ut_array_2d_memcpy ((*pTessData).ColData[id] + 1,
-			    Tess.CellQty, 4, Tess.CellOri + 1);
-      }
-    }
-    else
-    {
-      double *tmpd = ut_alloc_1d (4);
-      int *tmpi = ut_alloc_1d_int (6);
-      double **tmpdd = ut_alloc_2d (3, 3);
-      FILE *file = ut_file_open (value, "r");
-
-      if (strlen (type) == 3
-	  || !strcmp (type + 3, "e") || !strcmp (type + 3, "ek")
-	  || !strcmp (type + 3, "er") || !strcmp (type + 3, "R"))
-	qty = 3;
-      else if (!strcmp (type + 3, "q"))
-	qty = 4;
-      else if (!strcmp (type + 3, "m"))
-	qty = 6;
-      else if (!strcmp (type + 3, "g"))
-	qty = 9;
-      else
-      {
-	printf ("type = %s\n", type);
-	ut_error_reportbug ();
-	abort ();
-      }
-
-      ut_file_nbwords_testwmessage (value, entityqty * qty);
-
-      for (i = 1; i <= Tess.CellQty; i++)
-	if (!strcmp (type, "orie"))
-	{
-	  ol_e_fscanf (file, tmpd);
-	  ol_e_q (tmpd, (*pTessData).ColData[id][i]);
-	}
-	else if (!strcmp (type, "oriek"))
-	{
-	  ol_e_fscanf (file, tmpd);
-	  ol_ek_e (tmpd, tmpd);
-	  ol_e_q (tmpd, (*pTessData).ColData[id][i]);
-	}
-	else if (!strcmp (type, "orier"))
-	{
-	  ol_e_fscanf (file, tmpd);
-	  ol_er_e (tmpd, tmpd);
-	  ol_e_q (tmpd, (*pTessData).ColData[id][i]);
-	}
-	else if (!strcmp (type, "oriq"))
-	  ol_q_fscanf (file, (*pTessData).ColData[id][i]);
-	else if (!strcmp (type, "oriR"))
-	{
-	  ol_R_fscanf (file, tmpd);
-	  ol_R_q (tmpd, (*pTessData).ColData[id][i]);
-	}
-	else if (!strcmp (type, "orim"))
-	{
-	  ol_m_fscanf (file, tmpi);
-	  ol_m_q (tmpi, (*pTessData).ColData[id][i]);
-	}
-	else if (!strcmp (type, "orig"))
-	{
-	  ol_g_fscanf (file, tmpdd);
-	  ol_g_q (tmpdd, (*pTessData).ColData[id][i]);
-	}
-	else
-	  ut_error_reportbug ();
-    }
-  }
+    nev_data_fscanf_ori (value, Tess.CellQty, Tess.CellOri,
+                         (*pTessData).ColData + id, (*pTessData).ColDataType + id);
   else if (!strcmp (type, "scal"))
   {
     (*pTessData).ColData[id] = ut_alloc_2d (entityqty + 1, 1);

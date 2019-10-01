@@ -51,10 +51,11 @@ add_library (neper_t
 ./net_reg/net_reg1.c
 ./net_reg/net_reg2.c
 ./net_transform/net_transform1.c
-./net_transform/net_transform2.c
-./net_transform/net_transform_tess_cut/net_transform_tess_cut1.c
-./net_transform/net_transform_tess_cut/net_transform_tess_cut2.c
-./net_transform/net_transform_tess_cut/net_transform_tess_cut3.c
+./net_transform/net_transform_tess/net_transform_tess.c
+./net_transform/net_transform_tess/net_transform_tess_cut/net_transform_tess_cut1.c
+./net_transform/net_transform_tess/net_transform_tess_cut/net_transform_tess_cut2.c
+./net_transform/net_transform_tess/net_transform_tess_cut/net_transform_tess_cut3.c
+./net_transform/net_transform_tesr/net_transform_tesr.c
 ./net_sort/net_sort1.c
 ./net_sort/net_sort2.c
 ./net_utils/net_utils1.c

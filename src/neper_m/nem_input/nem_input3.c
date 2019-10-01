@@ -61,6 +61,7 @@ nem_input_options_default (struct IN_M *pIn)
   ut_string_string ("default", &(*pIn).cledgestring);
   ut_string_string ("rel", &(*pIn).clvertype);
   ut_string_string ("default", &(*pIn).clverstring);
+  ut_string_string ("plain", &(*pIn).performat);
 
   (*pIn).clmin = 0;
   (*pIn).pl = 2;
@@ -88,9 +89,8 @@ nem_input_options_default (struct IN_M *pIn)
   strcpy ((*pIn).partmethod, "default");
   (*pIn).partstring = NULL;
   (*pIn).partbalancing = .5;
-  (*pIn).scale = NULL;
 
-  ut_string_string ("none", &(*pIn).scalestring);
+  ut_string_string ("none", &(*pIn).transform);
 
   (*pIn).gmsh = ut_alloc_1d_char (5);
   strcpy ((*pIn).gmsh, "gmsh");
@@ -106,6 +106,9 @@ nem_input_options_default (struct IN_M *pIn)
 
   /* Options for remeshing --------------------------------- */
   (*pIn).transportstring = NULL;
+  (*pIn).transportfepxstring = NULL;
+  (*pIn).transporteltmethodstring = NULL;
+  ut_string_string ("distance", &(*pIn).transporteltmethodstring);
 
   (*pIn).loadmesh = NULL;
   (*pIn).loadpoint = NULL;
@@ -176,7 +179,7 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-mesh3dreport");
 
   // transformation options
-  strcpy (ArgList[++ArgQty], "-scale");
+  strcpy (ArgList[++ArgQty], "-transform");
 
   // Mesh partitionning options ----------------------------------------
   strcpy (ArgList[++ArgQty], "-part");
@@ -189,6 +192,7 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-nset");
   strcpy (ArgList[++ArgQty], "-surf");	// deprecated
   strcpy (ArgList[++ArgQty], "-faset");
+  strcpy (ArgList[++ArgQty], "-performat");
 
   // Tessellation and mesh statistics options ------------------------------
   strcpy (ArgList[++ArgQty], "-statnode");
@@ -216,6 +220,8 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
 
   // Field transport ---------------------------------------------------
   strcpy (ArgList[++ArgQty], "-transport");
+  strcpy (ArgList[++ArgQty], "-transportfepx");
+  strcpy (ArgList[++ArgQty], "-transporteltmethod");
 
   // Restart a job -----------------------------------------------------
   strcpy (ArgList[++ArgQty], "-loadtess");	// not documented
@@ -454,12 +460,18 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
 	if ((*pIn).faset[0] == '2')
 	  ut_arg_nextasstring (argv, &i, Arg, &((*pIn).faset));
       }
+      else if (!strcmp (Arg, "-performat"))
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).performat));
       else if (!strcmp (Arg, "-loadmesh"))
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).loadmesh));
       else if (!strcmp (Arg, "-loadpoint"))
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).loadpoint));
       else if ((!strcmp (Arg, "-transport")))
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transportstring));
+      else if ((!strcmp (Arg, "-transportfepx")))
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transportfepxstring));
+      else if ((!strcmp (Arg, "-transporteltmethod")))
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transporteltmethodstring));
       else if (!strcmp (Arg, "-format"))
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).format));
       else if (!strcmp (Arg, "-part"))
@@ -468,8 +480,8 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
 	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).partmethod));
       else if (!strcmp (Arg, "-partbalancing"))
 	ut_arg_nextasreal (argv, &i, Arg, 0, 1, &((*pIn).partbalancing));
-      else if (!strcmp (Arg, "-scale"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).scalestring));
+      else if (!strcmp (Arg, "-transform"))
+	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transform));
       else
 	ut_arg_error (Arg, "");
     }

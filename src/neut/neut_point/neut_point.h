@@ -22,7 +22,10 @@ extern "C"
   extern void neut_point_var_list (char ***pvar, int *pvarqty);
   extern int neut_point_var_val (struct POINT Point, int id, struct TESS
 				 Tess, struct NODES Nodes, struct MESH Mesh,
-				 char *var, double *pval, char **ptype);
+				 char *var, double **pvals, int *pvalqty, char **ptype);
+  extern int neut_point_var_val_one (struct POINT Point, int id, struct TESS
+                                     Tess, struct NODES Nodes, struct MESH Mesh,
+                                     char *var, double *pval, char **ptype);
   extern void neut_point_addpoint (struct POINT *pPoint, double *coo, double rad);
 
   extern void neut_point_pt_size (struct POINT Point, int pt, double

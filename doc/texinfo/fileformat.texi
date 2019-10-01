@@ -462,6 +462,7 @@ optional fields.
 @ @ @  @var{voxsize_x} @var{voxsize_y} [@var{voxsize_z}]             	@*
 @ [*origin                                                              @*
 @ @ @  @var{origin_x} @var{origin_y} [@var{origin_z}]]            	@*
+@ [*hasvoid @var{has_void}]                                             @*
 [**cell                                                              	@*
 @ @ @  @var{number_of_cells}                                            @*
 @ [*id                                                               	@*
@@ -487,6 +488,9 @@ optional fields.
 @ @ @  @var{cell2_convexity}                   	 			@*
 @ @ @  ...]                                                             @*
 ]	                                                            	@*
+[*crysym 								@*
+@ @ @ @var{crysym} 							@*
+]	                                                            	@*
 @  **data                                                            	@*
 @ @ @  @var{vox1_cell} @var{vox2_cell} ...                           	@*
 @ @emph{or}                                                          	@*
@@ -496,6 +500,7 @@ optional fields.
 @ @ @ @var{vox1_param1} @var{vox1_param2} ...                      	@*
 @ @ @ @var{vox2_param1} @var{vox2_param2} ...                     	@*
 @ @emph{or}                                                          	@*
+@ @ @ @var{descriptor}                                                  @*
 @ @ *file @var{oridata_file_name}                                       @*
 ]	                                                            	@*
 ***end                                                               	@*
@@ -540,6 +545,11 @@ The number of sizes must match @var{dimension}.
 @code{@var{origin_z}} are the (absolute) coordinates of the origin of the
 raster tessellation along the coordinate axes.  The number of coordinates must
 match @var{dimension}.
+
+@item @code{*hasvoid} denotes the beginning of an optional has-void field.
+
+@item @code{@var{has_void}} is a boolean indicating whether the tessellation
+contains void voxels (which have a cell id of 0).
 
 @item @code{**cell} denotes the beginning of an optional cell field.
 
@@ -591,6 +601,12 @@ field.
 
 @item @code{@var{cellid_convexity}} is the convexity of cell @var{id}.
 
+@item @code{*crysym} denotes the beginning of an optional crystal symmetry
+field.
+
+@item @code{@var{crysym}} is the crystal symmetry (@code{triclinic},
+@code{cubic} or @code{hexagonal}).
+
 @item @code{**data} denotes the beginning of the data field.  Data can be
 provided in the @file{.tesr} file or in a separate file, using
 @option{*file}, see below.
@@ -603,7 +619,7 @@ Use 0 for voids.
 @item @code{*file} denotes the beginning of a file field.
 
 @item @code{data_file_name} is the name of a file that contains the
-data. Typically, it is a @file{.raw} file.
+data.  It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided. Typically, it is a @file{.raw} file.
 
 @item @code{**oridata} denotes the beginning of the orientation data field.  Data can be
 provided in the @file{.tesr} file or in a separate file, using
@@ -614,10 +630,11 @@ the values of the orientation descriptor of voxel @var{id}.
 Orientations must be listed in column-major order (x varying first, y
 varying second and z varying last).
 Arbitrary orientations can be used for void voxels (@code{@var{voxid_cell} = 0}).
-These data must be written in ASCII format.
+These data must be written under format @var{data_format}, in terms of ASCII or binary.
+In the case of binary format, double-precision numbers are considered.
 
 @item @code{oridata_file_name} is the name of a file that contains the
-orientation data. Typically, it is a @file{.raw} file.
+orientation data.   It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided.  Typically, it is a @file{.raw} file.
 
 @end itemize
 
@@ -625,7 +642,10 @@ orientation data. Typically, it is a @file{.raw} file.
 @section Multiscale Cell File
 
 A multiscale cell file provides cell-by-cell values for a multiscale
-tessellation.  It contains, for each cell, its @dfn{multiscale
+tessellation and can be loaded using @samp{msfile(@var{filename})}@footnote{As
+of version 3.5.0, @samp{msfile(@var{filename})} should be preferred over
+@samp{file(@var{filename})}}.
+The file contains, for each cell, its @dfn{multiscale
 identifier}, @var{mid}, and the value(s).  A @dfn{cell multiscale
 identifier} (@var{mid}) is a character string identifying a cell at a
 specific scale.  For a given cell, C, @var{mid} combines the identifiers
@@ -651,12 +671,14 @@ An example of a multiscale cell file that could be used to define the amounts of
 1::2 4
 2::1 5
 2::2 6
+2::3 7
+2::4 8
 @end verbatim
 
-The file could be used in @code{-T} as: @option{-n file(@var{filename})::file(@var{filename})::file(@var{filename})}.
-The first  instance of @samp{file(@var{filename})} will read the number of scale-1 cells in line 1,
-the second instance of @samp{file(@var{filename})} will read the number of scale-2 cells in lines 2--3 and
-the third  instance of @samp{file(@var{filename})} will read the number of scale-3 cells in lines 4--7.
+The file could be used in @code{-T} as: @option{-n msfile(@var{filename})::msfile(@var{filename})::msfile(@var{filename})}.
+The first  instance of @samp{msfile(@var{filename})} reads the number of scale-1 cells in line 1,
+the second instance of @samp{msfile(@var{filename})} reads the number of scale-2 cells in lines 2--3, and
+the third  instance of @samp{msfile(@var{filename})} reads the number of scale-3 cells in lines 4--7.
 
 @node Position File
 @section Position File

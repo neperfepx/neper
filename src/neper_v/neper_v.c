@@ -16,7 +16,7 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
 
   // Mesh
   struct NODES Nodes;
-  struct MESH *Mesh = calloc (4, sizeof (MESH));
+  struct MESH *Mesh = calloc (5, sizeof (MESH));
 
   // Point
   struct POINT Point;
@@ -25,7 +25,7 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
   struct TESSDATA TessData;
   struct TESRDATA TesrData;
   struct NODEDATA NodeData;
-  struct MESHDATA *MeshData = calloc (4, sizeof (MESHDATA));
+  struct MESHDATA *MeshData = calloc (5, sizeof (MESHDATA));
   struct CSYSDATA CsysData;
   struct POINTDATA PointData;
 
@@ -51,7 +51,7 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
   neut_point_set_zero (&Point);
   neut_tessdata_set_default (&TessData);
   neut_tesrdata_set_default (&TesrData);
-  for (dim = 0; dim <= 3; dim++)
+  for (dim = 0; dim <= 4; dim++)
   {
     neut_mesh_set_zero (Mesh + dim);
     neut_meshdata_set_default (MeshData + dim);
@@ -154,7 +154,7 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
   neut_print_free (&Print);
   neut_tess_free (&Tess);
   neut_nodes_free (&Nodes);
-  for (dim = 0; dim <= 3; dim++)
+  for (dim = 0; dim <= 4; dim++)
   {
     neut_mesh_free (Mesh + dim);
     neut_meshdata_free (MeshData + dim);

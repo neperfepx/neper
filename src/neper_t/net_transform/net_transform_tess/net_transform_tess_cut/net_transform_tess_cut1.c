@@ -18,6 +18,9 @@ net_transform_tess_cut (char *expr, struct TESS Dom, struct TESS *pTess)
   neut_seedset_set_zero (&SSet);
   neut_tess_set_zero (&TessGen);
 
+  if (Dom.CellQty == 0)
+    ut_print_message (2, 3, "Dom is void (you probably used `-loadtess'.)\n");
+
   // preparing
 
   net_transform_tess_cut_pre (*pTess, expr, &TessGen, &Prim, &PrimQty);

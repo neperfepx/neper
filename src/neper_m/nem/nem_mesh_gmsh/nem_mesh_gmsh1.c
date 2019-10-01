@@ -119,7 +119,7 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
     {
       status = 0;
       file = ut_file_open (filename_msh, "R");
-      neut_mesh_fscanf_msh (file, pN, NULL, NULL, NULL, pM);
+      neut_mesh_fscanf_msh (file, pN, NULL, NULL, NULL, pM, NULL);
       ut_file_close (file, filename_msh, "R");
     }
 
@@ -166,7 +166,7 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
   {
     status = 0;
     file = ut_file_open (filename_msh, "R");
-    neut_mesh_fscanf_msh (file, pN, NULL, NULL, NULL, pM);
+    neut_mesh_fscanf_msh (file, pN, NULL, NULL, NULL, pM, NULL);
     ut_file_close (file, filename_msh, "R");
 
     if ((*pM).EltQty <= 0)

@@ -594,75 +594,100 @@ neut_tess_cell_centroid (struct TESS Tess, int cell, double *coo)
 }
 
 void
-neut_tess_bbox (struct TESS Tess, double **size)
+neut_tess_bbox (struct TESS Tess, double **bbox)
 {
   int i, j;
 
   /* Searching the tessellation bounding box */
-  size[0][0] = size[1][0] = size[2][0] = DBL_MAX;
-  size[0][1] = size[1][1] = size[2][1] = -DBL_MAX;
+  bbox[0][0] = bbox[1][0] = bbox[2][0] = DBL_MAX;
+  bbox[0][1] = bbox[1][1] = bbox[2][1] = -DBL_MAX;
 
   if (Tess.DomVerQty == 0)
     for (i = 1; i <= Tess.VerQty; i++)
       for (j = 0; j < 3; j++)
       {
-	size[j][0] = ut_num_min (size[j][0], Tess.VerCoo[i][j]);
-	size[j][1] = ut_num_max (size[j][1], Tess.VerCoo[i][j]);
+	bbox[j][0] = ut_num_min (bbox[j][0], Tess.VerCoo[i][j]);
+	bbox[j][1] = ut_num_max (bbox[j][1], Tess.VerCoo[i][j]);
       }
   else
     for (i = 1; i <= Tess.DomVerQty; i++)
       for (j = 0; j < 3; j++)
       {
-	size[j][0] = ut_num_min (size[j][0], Tess.DomVerCoo[i][j]);
-	size[j][1] = ut_num_max (size[j][1], Tess.DomVerCoo[i][j]);
+	bbox[j][0] = ut_num_min (bbox[j][0], Tess.DomVerCoo[i][j]);
+	bbox[j][1] = ut_num_max (bbox[j][1], Tess.DomVerCoo[i][j]);
       }
 
   return;
 }
 
 void
-neut_tess_vers_bbox (struct TESS Tess, int *vers, int verqty, double **size)
+neut_tess_bboxsize (struct TESS Tess, double *bboxsize)
+{
+  int i;
+  double **bbox = ut_alloc_2d (3, 2);
+
+  neut_tess_bbox (Tess, bbox);
+  for (i = 0; i < 3; i++)
+    bboxsize[i] = bbox[i][1] - bbox[i][0];
+
+  ut_free_2d (bbox, 3);
+
+  return;
+}
+
+void
+neut_tess_vers_bbox (struct TESS Tess, int *vers, int verqty, double **bbox)
 {
   int i, j;
 
   for (i = 0; i < Tess.Dim; i++)
   {
-    size[i][0] = DBL_MAX;
-    size[i][1] = -DBL_MAX;
+    bbox[i][0] = DBL_MAX;
+    bbox[i][1] = -DBL_MAX;
   }
 
   for (i = 0; i < verqty; i++)
     for (j = 0; j < Tess.Dim; j++)
     {
-      size[j][0] = ut_num_min (size[j][0], Tess.VerCoo[vers[i]][j]);
-      size[j][1] = ut_num_max (size[j][1], Tess.VerCoo[vers[i]][j]);
+      bbox[j][0] = ut_num_min (bbox[j][0], Tess.VerCoo[vers[i]][j]);
+      bbox[j][1] = ut_num_max (bbox[j][1], Tess.VerCoo[vers[i]][j]);
     }
 
   return;
 }
 
-void
-neut_tess_cell_bbox (struct TESS Tess, int cell, double **size)
+int
+neut_tess_cell_bbox (struct TESS Tess, int cell, double **bbox)
 {
-  int verqty, *vers = NULL;
+  if (neut_tess_cell_isvoid (Tess, cell))
+  {
+    ut_array_2d_zero (bbox, 3, 2);
 
-  neut_tess_cell_vers (Tess, cell, &vers, &verqty);
+    return -1;
+  }
 
-  neut_tess_vers_bbox (Tess, vers, verqty, size);
+  else
+  {
+    int verqty, *vers = NULL;
 
-  ut_free_1d_int (vers);
+    neut_tess_cell_vers (Tess, cell, &vers, &verqty);
 
-  return;
+    neut_tess_vers_bbox (Tess, vers, verqty, bbox);
+
+    ut_free_1d_int (vers);
+
+    return 0;
+  }
 }
 
 void
-neut_tess_poly_bbox (struct TESS Tess, int poly, double **size)
+neut_tess_poly_bbox (struct TESS Tess, int poly, double **bbox)
 {
   int verqty, *vers = NULL;
 
   neut_tess_poly_vers (Tess, poly, &vers, &verqty);
 
-  neut_tess_vers_bbox (Tess, vers, verqty, size);
+  neut_tess_vers_bbox (Tess, vers, verqty, bbox);
 
   ut_free_1d_int (vers);
 
@@ -670,13 +695,13 @@ neut_tess_poly_bbox (struct TESS Tess, int poly, double **size)
 }
 
 void
-neut_tess_face_bbox (struct TESS Tess, int face, double **size)
+neut_tess_face_bbox (struct TESS Tess, int face, double **bbox)
 {
   int verqty, *vers = NULL;
 
   neut_tess_face_vers (Tess, face, &vers, &verqty);
 
-  neut_tess_vers_bbox (Tess, vers, verqty, size);
+  neut_tess_vers_bbox (Tess, vers, verqty, bbox);
 
   ut_free_1d_int (vers);
 
@@ -684,13 +709,13 @@ neut_tess_face_bbox (struct TESS Tess, int face, double **size)
 }
 
 void
-neut_tess_edge_bbox (struct TESS Tess, int edge, double **size)
+neut_tess_edge_bbox (struct TESS Tess, int edge, double **bbox)
 {
   int verqty, *vers = NULL;
 
   neut_tess_edge_vers (Tess, edge, &vers, &verqty);
 
-  neut_tess_vers_bbox (Tess, vers, verqty, size);
+  neut_tess_vers_bbox (Tess, vers, verqty, bbox);
 
   ut_free_1d_int (vers);
 
@@ -740,11 +765,21 @@ void
 neut_tess_face_centre (struct TESS Tess, int face, double *centre)
 {
   int i, ver, ver1, ver2, pos;
-  double *coo = ut_alloc_1d (3);
-  double *tmp = ut_alloc_1d (3);
+  double *coo = NULL;
+  double *tmp = NULL;
   double val, totval;
 
-  pos = (Tess.FacePt[face] > 0) ? Tess.FacePt[face] : 1;
+  if (Tess.FaceVerQty[face] == 0)
+  {
+    ut_array_1d_zero (centre, 3);
+
+    return;
+  }
+
+  coo = ut_alloc_1d (3);
+  tmp = ut_alloc_1d (3);
+
+  pos = (Tess.Dim == 3 && Tess.FacePt[face] > 0) ? Tess.FacePt[face] : 1;
   ver = Tess.FaceVerNb[face][pos];
   ut_array_1d_memcpy (coo, 3, Tess.VerCoo[ver]);
 
@@ -1423,10 +1458,10 @@ neut_tess_cell_sphereside (struct TESS Tess, int cell, double *C, double rad,
 int
 neut_tess_cell_primside (struct TESS Tess, int cell, struct PRIM Prim, int *pside)
 {
-  if (!strcmp (Prim.Type, "plane"))
-    return neut_tess_cell_planeside (Tess, cell, Prim.Eq, pside);
-  else if (!strcmp (Prim.Type, "planei"))
+  if (!strcmp (Prim.Type, "hspace"))
     return -neut_tess_cell_planeside (Tess, cell, Prim.Eq, pside);
+  else if (!strcmp (Prim.Type, "hspacei"))
+    return neut_tess_cell_planeside (Tess, cell, Prim.Eq, pside);
   else if (!strcmp (Prim.Type, "sphere"))
     return neut_tess_cell_sphereside (Tess, cell, Prim.Base, Prim.Rad[0], pside);
   else if (!strcmp (Prim.Type, "spherei"))
@@ -1926,7 +1961,7 @@ neut_tess_coo_percoos (struct TESS Tess, double *coo, double ***ppercoos, int *p
 
           id++;
           for (l = 0; l < 3; l++)
-            (*ppercoos)[id][l] = (*ppercoos)[0][l] + per[l] * Tess.Periodic[l];
+            (*ppercoos)[id][l] = (*ppercoos)[0][l] + per[l] * Tess.PeriodicDist[l];
         }
 
   ut_free_1d_int (per);

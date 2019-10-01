@@ -155,6 +155,12 @@ extern "C"
 ///
   extern void neut_tess_bbox (struct TESS Tess, double **);
 
+/// \brief Get the size of the bounding box of a TESS
+///
+///
+///
+  extern void neut_tess_bboxsize (struct TESS Tess, double *);
+
 /// \brief Get the bounding box of vertices of a TESS
 ///
 ///
@@ -165,7 +171,7 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_tess_cell_bbox (struct TESS Tess, int cell, double **size);
+  extern int neut_tess_cell_bbox (struct TESS Tess, int cell, double **size);
 
 /// \brief Get the bounding box of an edge of a TESS
 ///

@@ -109,8 +109,16 @@ extern void neut_mesh_face_boundnodecoos (struct NODES Nodes, struct MESH
 				struct TESS Tess, int *showelt0d,
 				int *showelt1d, int *showelt2d,
 				int *showelt3d, double cl, char *entity,
-				int id, char *var, double *val,
-                                double *pvalqty, char **ptype);
+				int id, char *var, double **pvals,
+                                int *pvalqty, char **ptype);
+  extern int neut_mesh_var_val_one (struct NODES Nodes, struct MESH Mesh0D,
+                                    struct MESH Mesh1D, struct MESH Mesh2D,
+                                    struct MESH Mesh3D, struct PART Part,
+                                    struct TESS Tess, int *showelt0d,
+                                    int *showelt1d, int *showelt2d,
+                                    int *showelt3d, double cl, char *entity,
+                                    int id, char *var, double *pval,
+                                    char **ptype);
 
   extern void neut_mesh_entity_expr_val (struct NODES Nodes,
 					 struct MESH Mesh0D,

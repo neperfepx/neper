@@ -37,6 +37,9 @@ neut_oopt_set_zero (struct OOPT *pOOpt)
   (*pOOpt).orioptistop = NULL;
   (*pOOpt).orioptineigh = NULL;
 
+  (*pOOpt).logvar = NULL;
+  (*pOOpt).logvar_fp = NULL;
+
   return;
 }
 

@@ -20,12 +20,15 @@
 #include "neut/neut_structs/neut_qcloud_struct.hpp"
 #include "neut/neut_oset/neut_oset.hpp"
 
+extern void net_ori_uniform_log (struct IN_T In, int iter, struct OL_SET OSet, struct OOPT OOpt);
+extern void net_ori_uniform_log_var (struct IN_T In, int iter, struct OL_SET OSet, struct OOPT OOpt);
+
 extern void net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
                       struct TESS *Tess, int dtess, int dcell, long random,
                       struct OL_SET *pOSet, struct OOPT *pOOpt,
                       int verbositylevel);
 
-extern int net_ori_uniform_opt (struct OOPT *pOOpt, struct OL_SET *pOSet, int verbositylevel);
+extern int net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet, int verbositylevel);
 
 extern void net_ori_uniform_opt_forces (struct OL_SET *pOSet,
                                 double **f, double *E, struct OOPT *pOOpt,

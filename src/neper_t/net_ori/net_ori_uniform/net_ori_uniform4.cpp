@@ -117,3 +117,98 @@ net_ori_uniform_opt_rot_ori (double **f, double alpha, int i,
 
   return;
 }
+
+void
+net_ori_uniform_log_var (struct IN_T In, int iter, struct OL_SET OSet, struct OOPT OOpt)
+{
+  int i, j, k;
+  int varqty;
+  char **vars = NULL;
+  char *filename = NULL;
+  double *q = ol_q_alloc ();
+  double **g = ol_g_alloc ();
+  double *R = ol_R_alloc ();
+  double *tmp = ol_e_alloc ();
+  double theta, *r = ol_r_alloc ();
+
+  /*
+  if (!ut_string_iter_test (OOpt.logvar, NEUT_SEP_NODEP, OOpt.iter))
+    return;
+  */
+
+  filename = ut_string_addextension (In.body, ".logorivar");
+  OOpt.logvar_fp = ut_file_open (filename, iter == 0 ? "W" : "A");
+
+  ut_string_separate (OOpt.logvar, NEUT_SEP_NODEP, &vars, &varqty);
+
+  for (i = 0; i < (int) OSet.size; i++)
+  {
+    ol_q_qcrysym (OSet.q[i], OSet.crysym, q);
+
+    for (j = 0; j < varqty; j++)
+    {
+      if (!strncmp (vars[j], "iter", 4))
+	fprintf (OOpt.logvar_fp, "%d", iter);
+      else if (!strcmp (vars[j], "id"))
+	fprintf (OOpt.logvar_fp, "%d", i + 1);
+      else if (!strcmp (vars[j], "g"))
+      {
+        ol_q_g (q, g);
+        for (k = 0; k < 3; k++)
+        {
+          ut_array_1d_fprintf_nonl (OOpt.logvar_fp, g[k], 3, "%.12f");
+          if (k < 2)
+            fprintf (OOpt.logvar_fp, " ");
+        }
+      }
+      else if (!strcmp (vars[j], "rtheta"))
+      {
+        ol_q_rtheta (q, r, &theta);
+	ut_array_1d_fprintf_nonl (OOpt.logvar_fp, r, 3, "%.12f");
+        fprintf (OOpt.logvar_fp, " %.12f", theta);
+      }
+      else if (!strcmp (vars[j], "R"))
+      {
+        ol_q_R (q, R);
+	ut_array_1d_fprintf_nonl (OOpt.logvar_fp, R, 3, "%.12f");
+      }
+      else if (!strcmp (vars[j], "q"))
+	ut_array_1d_fprintf_nonl (OOpt.logvar_fp, OSet.q[i], 4, "%.12f");
+      else if (!strcmp (vars[j], "e"))
+      {
+        ol_q_e (q, tmp);
+	ut_array_1d_fprintf_nonl (OOpt.logvar_fp, tmp, 3, "%.12f");
+      }
+      else if (!strcmp (vars[j], "ek"))
+      {
+        ol_q_e (q, tmp);
+        ol_e_ek (tmp, tmp);
+	ut_array_1d_fprintf_nonl (OOpt.logvar_fp, tmp, 3, "%.12f");
+      }
+      else if (!strcmp (vars[j], "er"))
+      {
+        ol_q_e (q, tmp);
+        ol_e_er (tmp, tmp);
+	ut_array_1d_fprintf_nonl (OOpt.logvar_fp, tmp, 3, "%.12f");
+      }
+      else
+	fprintf (OOpt.logvar_fp, "-1");
+
+      if (j < varqty - 1)
+	fprintf (OOpt.logvar_fp, " ");
+    }
+    fprintf (OOpt.logvar_fp, "\n");
+  }
+
+  ut_file_close (OOpt.logvar_fp, filename, iter == 0 ? "W" : "A");
+
+  ut_free_2d_char (vars, varqty);
+  ut_free_1d_char (filename);
+  ol_q_free (q);
+  ol_R_free (R);
+  ol_g_free (g);
+  ol_r_free (r);
+  ol_e_free (tmp);
+
+  return;
+}

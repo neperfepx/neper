@@ -52,7 +52,7 @@ necessary to ensure good-quality meshing, see @ref{Tessellation Module
 
 Remeshing can also be applied to generate a new, good-quality
 mesh from a mesh containing poor-quality elements.  The variables
-defined on the old mesh can be transported on the new mesh (options
+defined on the parent mesh can be transported on the child mesh (options
 starting by @option{-transport}).
 
 For mapped meshing, mesh cleaning options enable to remove
@@ -92,11 +92,10 @@ Here is what a typical run of @mM{} looks like,
 
     ========================    N   e   p   e   r    =======================
     Info   : A software package for polycrystal generation and meshing.
-    Info   : Version 3.0.0
+    Info   : Version 3.5.0
     Info   : Built with: gsl nlopt muparser
-    Info   : <http://neper.sourceforge.net>
+    Info   : <http://neper.info> <http://neper.info/community>
     Info   : Copyright (C) 2003-2019, and GNU GPL'd, by Romain Quey.
-    Info   : Comments and bug reports: <neper-users@lists.sourceforge.net>.
     Info   : Loading initialization file `/home/rquey/.neperrc'...
     Info   : ---------------------------------------------------------------
     Info   : MODULE  -M loaded with arguments:
@@ -527,12 +526,32 @@ meshes with duplicate nodes@comma{} except using options
 
 @subsection Transformation Options
 
-@opt{-scale, real:real:real,
-Scale the mesh by given factors in the x@comma{} y and z directions
-once it is generated.
-In 2D@comma{} the @var{z} value can be omitted.
+@opt{-transform, char_string(...),
+Apply transformations to a mesh.
+The following transformations can be applied:@*
+@mybullet @samp{@code{scale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
+scales a mesh by @code{@var{x_fact}}@comma{} @code{@var{y_fact}} and
+@code{@var{z_fact}} along directions @var{x}@comma{} @code{@var{y}} and
+@code{@var{z}}@comma{} respectively. For a 2D mesh@comma{} @code{@var{z_fact}}
+can be omitted.@*
+@mybullet @samp{translate(@var{dist_x}@comma{}@var{dist_y}@comma{}@var{dist_z})}
+translates a mesh by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} and @code{@var{dist_z}}
+along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
+@mybullet @samp{@code{smooth(@var{fact}@comma{}@var{itermax}@comma{}@var{type})}}
+smooths the interfaces of a mesh by Laplacian smoothing (use only if you know
+what you are doing).  Laplacian smoothing is an iterative method that modifies
+the coordinates of a node using the coordinates of the neighbouring nodes.  At
+iteration @var{i}@comma{} the position of a node@comma{} @math{X_i}@comma{} is
+calculated from its previous position@comma{} @math{X_{i-1}}@comma{} and the
+position of the barycentre of the neighbouring nodes (weighted
+barycentre@comma{} considering the inverse of the distance between the node and
+the neighbour)@comma{} @math{X^n_{i-1}}@comma{} as follows:
+@math{X_i=(1-fact)@,X_{i-1} + fact@,X^n_{i-1};@,0@leq{}fact@leq{}1}.
+@var{itermax} iterations are applied. @var{type} defines the nodes used for
+smoothing and can be @samp{all} for all nodes or @samp{interior} for interior
+nodes.
 ,
-any, none}
+see above, none}
 
 @subsection Mesh Partitioning Options
 
@@ -604,10 +623,37 @@ where
 dimension@comma{} and @code{@var{file_name}} is the name of the file
 containing the parent data.  For several data transports@comma{} combine
 the transport entries with @samp{@SEPNODEP}. Nodal data are transported
-by interpolation using the shape functions (2D only).  Element data are transported by
-considering the parent element which the centroid of the new element belongs
-to.,
+by interpolation using the shape functions (2D only).  Elemental data are transported
+as specified by @option{-transporteltmethod}.
+,
 any,none}
+
+@opt{-transportfepx, char_string@SEPDEP{}char_string...,
+Transport FEpX data from a parent mesh to a child mesh.
+The parent mesh is the input mesh and the child mesh is the result mesh
+(created by remeshing or loaded
+with @option{-loadmesh}).
+A transport entry must have format
+@samp{@var{orientation_file}@SEPDEP{}@var{tau_file}}@comma{}
+where
+@samp{@var{orientation_file}} is the orientation file (a list of Euler angles in Kocks convention)
+and
+@samp{@var{tau_file}} is the critical resolved shear strength file (a list of scalars).
+These elemental data are transported as specified by @option{-transporteltmethod}.
+Moreover@comma{} the @file{.kocks} and @file{.opt} FEpX files
+are generated from these data and can be used to run a new simulation.
+,
+any,none}
+
+@optsec{-transporteltmethod, char_string@SEPDEP{}char_string...,
+Specify the method to transport elemental data from the parent mesh to the
+child mesh. For each element of the child mesh@comma{} its centre@comma{}
+@var{c}@comma{} is considered.  Use @samp{distance} to choose@comma{}
+for each element of the child mesh (of centre @var{c})@comma{} the element of
+the parent mesh whose centre is the closest to @var{c}@comma{}
+or @samp{location} to choose the element @var{c} belongs to.
+,
+see above,distance}
 
 @subsection Output Options
 
@@ -678,6 +724,12 @@ variables provided in @ref{Mesh Keys}.
 Combine arguments with @samp{@SEPNODEP}.
 ,
 see above, default}
+
+@opt{-oriformat, char_string,
+Specify the format of the @file{.per} output file. The available formats are:
+the Neper-native @code{plain} and the Zset/Z@'ebulon @code{geof}.
+,
+see above, plain}
 
 @subsection Post-Processing Options
 
@@ -854,16 +906,21 @@ The mesh can be written in the following formats,
 @item Zset/Z@'ebulon format: file @file{.geof}
 
 @item FEpX format: files @file{.mesh}, @file{.grain} and @file{.bcs}
-(@file{.parms}, @file{.mesh}, @file{.surf}, @file{.opt} and @file{.bcs}
- in legacy mode)
+(@file{.parms}, @file{.mesh}, @file{.surf}, @file{.opt}, @file{.bcs}
+and @file{.kocks} in legacy mode)
 @end itemize
 
 @subsection Periodicity
 
 @itemize
-@item File @file{.per}. For each slave node, the file provides (one slave
-      node per line): the node id, the master node id and the shift
-      vector of the slave.
+@item File @file{.per}.
+
+It contains the mesh periodicity conditions, written following the
+convention specified by option @option{-performat}.  For format @samp{plain},
+for each slave node, the file provides (one slave node per line): the node id,
+the master node id and the shift vector of the slave.  For format @samp{geof},
+the file provides the displacement relationships between master and slaves nodes.
+
 @end itemize
 
 @subsection Interfaces

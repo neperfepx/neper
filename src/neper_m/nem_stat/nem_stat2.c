@@ -8,8 +8,8 @@ void
 nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
 		struct MESH *Mesh, struct PART Part, struct TESS Tess)
 {
-  int i, j, status, invalqty, var_qty;
-  double val[10], valqty;
+  int i, j, status, invalqty, var_qty, valqty;
+  double *vals = NULL;
   char **invar = NULL, *valstring = NULL, *type = NULL, **vars = NULL;
   double **meshp = NULL, *meshd = NULL, **meshv = NULL, **meshn = NULL;
 
@@ -33,14 +33,13 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
   for (i = 1; i <= Nodes.NodeQty; i++)
     for (j = 0; j < invalqty; j++)
     {
-      status =
-	neut_mesh_var_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
-			   Part, Tess,
-			   NULL, NULL, NULL, NULL, 0, "node", i, invar[j],
-			   val, &valqty, &type);
+      status = neut_mesh_var_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
+                                  Part, Tess, NULL, NULL, NULL, NULL, 0,
+                                  "node", i, invar[j], &vals, &valqty,
+                                  &type);
 
-      if (status == 0)
-        ut_array_1d_fprintf_nonl (file, val, valqty, !strcmp (type, "%f") ? "%.12f" : type);
+      if (!status)
+        ut_array_1d_fprintf_nonl (file, vals, valqty, !strcmp (type, "%f") ? "%.12f" : type);
       else if (!strcmp (invar[j], "2dmeshp"))
 	fprintf (file, "%.12f %.12f %.12f", meshp[i][0], meshp[i][1],
 		 meshp[i][2]);
@@ -53,8 +52,7 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
 	fprintf (file, "%.12f %.12f %.12f", meshn[i][0], meshn[i][1],
 		 meshn[i][2]);
       else
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  invar[j]);
+        ut_error_expression (invar[j]);
 
       fprintf (file, (j < invalqty - 1) ? " " : "\n");
     }
@@ -68,6 +66,7 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
   ut_free_2d (meshp, Nodes.NodeQty + 1);
   ut_free_2d (meshv, Nodes.NodeQty + 1);
   ut_free_2d (meshn, Nodes.NodeQty + 1);
+  ut_free_1d (vals);
 
   return;
 }
@@ -76,8 +75,8 @@ void
 nem_stat_elts (FILE * file, int dim, char *format, struct NODES Nodes,
 	       struct MESH *Mesh, struct PART Part, struct TESS Tess)
 {
-  int i, j, status, invalqty, var_qty, qty, meshx_init;
-  double val;
+  int i, j, invalqty, var_qty, qty, meshx_init, valqty, status;
+  double *vals = NULL;
   char **invar = NULL, *valstring = NULL, *type = NULL, **vars = NULL;
   char *entity = ut_alloc_1d_char (10);
   double **meshp = NULL, *meshd = NULL, **meshv = NULL, **meshn = NULL;
@@ -109,43 +108,26 @@ nem_stat_elts (FILE * file, int dim, char *format, struct NODES Nodes,
   for (i = 1; i <= qty; i++)
     for (j = 0; j < invalqty; j++)
     {
-      status =
-	neut_mesh_var_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
-			   Part, Tess,
-			   NULL, NULL, NULL, NULL, 0, entity, i, invar[j],
-			   &val, NULL, &type);
+      status = neut_mesh_var_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
+                                  Part, Tess, NULL, NULL, NULL, NULL, 0,
+                                  entity, i, invar[j], &vals, &valqty,
+                                  &type);
 
-      if (status == 0)
-      {
-	if (!strcmp (type, "%d"))
-	  fprintf (file, "%d", ut_num_d2ri (val));
-	else if (!strcmp (type, "%f"))
-	  fprintf (file, "%.12f", val);
-	else if (!strcmp (type, "%s"))
-	  fprintf (file, "%s", valstring);
-	else
-	  ut_error_reportbug ();
-      }
-      else if (dim == 3)
-      {
-	if (!strcmp (invar[j], "2dmeshp"))
-	  fprintf (file, "%.12f %.12f %.12f", meshp[i][0], meshp[i][1],
-		   meshp[i][2]);
-	else if (!strcmp (invar[j], "2dmeshd"))
-	  fprintf (file, "%.12f", meshd[i]);
-	else if (!strcmp (invar[j], "2dmeshv"))
-	  fprintf (file, "%.12f %.12f %.12f", meshv[i][0], meshv[i][1],
-		   meshv[i][2]);
-	else if (!strcmp (invar[j], "2dmeshn"))
-	  fprintf (file, "%.12f %.12f %.12f", meshn[i][0], meshn[i][1],
-		   meshn[i][2]);
-	else
-	  ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			    invar[j]);
-      }
+      if (!status)
+        ut_array_1d_fprintf_nonl (file, vals, valqty, !strcmp (type, "%f") ? "%.12f" : type);
+      else if (dim == 3 && !strcmp (invar[j], "2dmeshp"))
+        fprintf (file, "%.12f %.12f %.12f", meshp[i][0], meshp[i][1],
+                 meshp[i][2]);
+      else if (dim == 3 && !strcmp (invar[j], "2dmeshd"))
+        fprintf (file, "%.12f", meshd[i]);
+      else if (dim == 3 && !strcmp (invar[j], "2dmeshv"))
+        fprintf (file, "%.12f %.12f %.12f", meshv[i][0], meshv[i][1],
+                 meshv[i][2]);
+      else if (dim == 3 && !strcmp (invar[j], "2dmeshn"))
+        fprintf (file, "%.12f %.12f %.12f", meshn[i][0], meshn[i][1],
+                 meshn[i][2]);
       else
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  invar[j]);
+        ut_error_expression (invar[j]);
 
       fprintf (file, (j < invalqty - 1) ? " " : "\n");
     }
@@ -154,6 +136,7 @@ nem_stat_elts (FILE * file, int dim, char *format, struct NODES Nodes,
   ut_free_2d_char (vars, var_qty);
   ut_free_1d_char (type);
   ut_free_1d_char (valstring);
+  ut_free_1d (vals);
 
   if (meshx_init)
   {
@@ -196,19 +179,15 @@ nem_stat_elsets (FILE * file, int dim, char *format, struct NODES Nodes,
 
     for (j = 0; j < invalqty; j++)
     {
-      status = neut_mesh_var_val (Nodes, Mesh[0], Mesh[1], Mesh[2],
-				  Mesh[3], Part, Tess, NULL, NULL, NULL, NULL,
-				  cl, entity, i, invar[j], &val, NULL, &type);
+      status = neut_mesh_var_val_one (Nodes, Mesh[0], Mesh[1], Mesh[2],
+                                      Mesh[3], Part, Tess, NULL, NULL, NULL,
+                                      NULL, cl, entity, i, invar[j], &val,
+                                      &type);
 
-      if (status == 0)
-      {
-	if (!strcmp (type, "%d"))
-	  fprintf (file, "%d", ut_num_d2ri (val));
-	else if (!strcmp (type, "%f"))
-	  fprintf (file, "%.12f", val);
-	else
-	  ut_error_reportbug ();
-      }
+      if (!status)
+        ut_array_1d_fprintf_nonl (file, &val, 1, !strcmp (type, "%f") ? "%.12f" : type);
+      else
+        ut_error_expression (invar[j]);
 
       fprintf (file, (j < invalqty - 1) ? " " : "\n");
     }
@@ -227,8 +206,8 @@ nem_stat_point (FILE * file, char *format,
 		struct NODES Nodes,
 		struct MESH *Mesh, struct TESS Tess, struct POINT Point)
 {
-  int i, j, invalqty, status, var_qty, meshx_init = 0;
-  double val;
+  int i, j, invalqty, var_qty, meshx_init = 0, valqty, status;
+  double *vals = NULL;
   char **invar = NULL, *valstring = NULL, *type = NULL, **vars = NULL;
   double **meshp = NULL, *meshd = NULL, **meshv = NULL, **meshn = NULL;
   int dim = neut_mesh_array_dim (Mesh);
@@ -259,21 +238,11 @@ nem_stat_point (FILE * file, char *format,
   for (i = 1; i <= Point.PointQty; i++)
     for (j = 0; j < invalqty; j++)
     {
-      status =
-	neut_point_var_val (Point, i, Tess, Nodes, Mesh[dim], invar[j], &val,
-			    &type);
+      status = neut_point_var_val (Point, i, Tess, Nodes, Mesh[dim], invar[j],
+                                   &vals, &valqty, &type);
 
-      if (status == 0)
-      {
-	if (!strcmp (type, "%d"))
-	  fprintf (file, "%d", ut_num_d2ri (val));
-	else if (!strcmp (type, "%f"))
-	  fprintf (file, "%.12f", val);
-	else if (!strcmp (type, "%s"))
-	  fprintf (file, "%s", valstring);
-	else
-	  ut_error_reportbug ();
-      }
+      if (!status)
+        ut_array_1d_fprintf_nonl (file, vals, valqty, !strcmp (type, "%f") ? "%.12f" : type);
       else if (!strcmp (invar[j], "2dmeshp"))
 	fprintf (file, "%.12f %.12f %.12f", meshp[i][0], meshp[i][1],
 		 meshp[i][2]);
@@ -286,8 +255,7 @@ nem_stat_point (FILE * file, char *format,
 	fprintf (file, "%.12f %.12f %.12f", meshn[i][0], meshn[i][1],
 		 meshn[i][2]);
       else
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  invar[j]);
+        ut_error_expression (invar[j]);
 
       fprintf (file, (j < invalqty - 1) ? " " : "\n");
     }
@@ -296,6 +264,7 @@ nem_stat_point (FILE * file, char *format,
   ut_free_2d_char (vars, var_qty);
   ut_free_1d_char (type);
   ut_free_1d_char (valstring);
+  ut_free_1d (vals);
 
   if (meshx_init)
   {

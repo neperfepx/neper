@@ -131,7 +131,10 @@ nem_writemesh (struct IN_M In, struct TESS Tess,
   if (Nodes.Periodic && ut_array_1d_int_sum (Nodes.Periodic, 3) > 0)
   {
     file = ut_file_open (In.per, "w");
-    neut_mesh_fprintf_per (file, Nodes);
+    if (!strcmp (In.performat, "plain"))
+      neut_mesh_fprintf_per_plain (file, Nodes);
+    else if (!strcmp (In.performat, "geof"))
+      neut_mesh_fprintf_per_geof (file, Nodes);
     ut_file_close (file, In.per, "w");
   }
 

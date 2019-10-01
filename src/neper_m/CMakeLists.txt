@@ -75,6 +75,8 @@ add_library (neper_m
 ./nem_interface/nem_interface_cohesive/nem_interface_cohesive1.c
 ./nem_order/nem_order1.c
 ./nem_order/nem_order2.c
+./nem_transform/nem_transform1.c
+./nem_transform/nem_transform2.c
 ./nem_cleaning/nem_cleaning1.c
 ./nem_input/nem_input1.c
 ./nem_input/nem_input2.c

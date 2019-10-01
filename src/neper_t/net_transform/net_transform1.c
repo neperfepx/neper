@@ -5,10 +5,10 @@
 #include"net_transform_.h"
 
 void
-net_transform (struct IN_T In, struct TESS Dom, struct TESS *pTess, struct TESR *pTesr)
+net_transform (struct IN_T In, struct TESS *pDom, struct TESS *pTess, struct TESR *pTesr)
 {
   if ((*pTess).Dim > 0)
-    net_transform_tess (In, Dom, pTess);
+    net_transform_tess (In, pDom, pTess);
 
   if ((*pTesr).Dim > 0)
     net_transform_tesr (In, pTesr);

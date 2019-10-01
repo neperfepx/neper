@@ -46,7 +46,7 @@ nev_load (char *string, struct TESS *pTess, struct TESR *pTesr,
       {
 	ut_print_message (0, 1, "Loading mesh...\n");
 	neut_mesh_name_fscanf_msh (list[i], pNodes, Mesh, Mesh + 1, Mesh + 2,
-				   Mesh + 3);
+				   Mesh + 3, Mesh + 4);
 
 	if (Mesh[3].EltQty > 0)
 	{

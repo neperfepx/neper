@@ -72,6 +72,8 @@ extern "C"
     char **orioptiini;                  //
     char *orioptifixstring;             // orientation opti fixed orientations
     char **orioptifix;                  //
+    char *orioptilogvarstring;           // variable log
+    char **orioptilogvar;		//
 
     // post-tessellation options
     int reg;				// regularization

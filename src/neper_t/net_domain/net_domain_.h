@@ -24,7 +24,7 @@ extern void net_domain_cylinder_planes (double, double, int, double **);
 extern void net_domain_sphere_planes (double rad, int qty, double **eq);
 extern void net_domain_clip (struct POLY *, double **, int);
 extern void net_domain_tesspoly_planes (struct TESS, int, int *, double **);
-extern void net_domain_transform (struct TESS *pDomain, char* string);
+extern void net_domain_transform (struct TESS *pDomain, int dim, char* string);
 
 extern void net_domain_cylinder_string (char *domain, char *nstring, struct POLY *pDomain);
 extern void net_domain_cylinderparms (char *domain, char *nstring, double *parms, int *ppseudodim, double *ppseudosize);

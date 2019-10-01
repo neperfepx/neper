@@ -9,7 +9,8 @@ extern "C"
 
 #ifndef NEUT_MESH_FPRINTF_PER
 
-  extern void neut_mesh_fprintf_per (FILE * file, struct NODES Nodes);
+  extern void neut_mesh_fprintf_per_plain (FILE * file, struct NODES Nodes);
+  extern void neut_mesh_fprintf_per_geof (FILE * file, struct NODES Nodes);
 
 #endif				// NEUT_MESH_FPRINTF_PER
 

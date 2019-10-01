@@ -61,7 +61,7 @@ neut_polymod_faces_inter (struct POLYMOD Polymod, int p1, int p2, int p3, double
 
   det = ut_mat_det_33 (A);
 
-  if (ut_num_equal (det, 0, 1e-12)) // the 2 first faces must be coplanar
+  if (ut_num_equal (det, 0, 1e-15)) // the 2 first faces must be coplanar
   {
     if (!ut_space_planes_equal (Polymod.FaceEq[p1], Polymod.FaceEq[p2]))
       ut_error_reportbug ();

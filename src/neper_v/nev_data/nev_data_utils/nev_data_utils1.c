@@ -197,9 +197,17 @@ void
 nev_data_ori_colour (double **data, int size, char *scheme, int **Col)
 {
   int i, j;
-  double OL_S2m1 = OL_S2 - 1, TOL_S2m1 = 2 * (OL_S2 - 1);
+  double length;
 
-  if (scheme == NULL || !strcmp (scheme, "R"))
+  if (!scheme || !strncmp (scheme, "R", 1))
+  {
+    if (!scheme || !strcmp (scheme, "R"))
+      length = OL_S2 - 1;
+    else if (!strncmp (scheme, "R(", 2))
+      sscanf (scheme, "R(%lf)", &length);
+    else
+      ut_error_reportbug ();
+
 #pragma omp parallel for private(j)
     for (i = 1; i <= size; i++)
     {
@@ -207,11 +215,69 @@ nev_data_ori_colour (double **data, int size, char *scheme, int **Col)
       ol_q_R (data[i], R);
       ol_R_Rcrysym (R, "cubic", R);
       for (j = 0; j < 3; j++)
-	Col[i][j] = ut_num_d2ri (255 * (R[j] + OL_S2m1) / TOL_S2m1);
+        Col[i][j] = ut_num_bound (ut_num_d2ri (127.5 * (R[j] + length) / length), 0, 255);
       ol_R_free (R);
     }
-  else
-    ut_error_reportbug ();
+  }
+
+  else if (!strcmp (scheme, "r"))
+  {
+#pragma omp parallel for private(j)
+    for (i = 1; i <= size; i++)
+    {
+      double *q = ol_q_alloc ();
+      double *r = ol_r_alloc ();
+      ol_q_qcrysym (data[i], "cubic", q);
+      ol_q_r (q, r);
+      for (j = 0; j < 3; j++)
+        Col[i][j] = ut_num_bound (ut_num_d2ri (127.5 * (r[j] + 1)), 0, 255);
+      ol_q_free (q);
+      ol_r_free (r);
+    }
+  }
+
+  else if (!strncmp (scheme, "theta", 5))
+  {
+    if (!strcmp (scheme, "theta"))
+      length = 1.09606677025243897430; // 62.8 * pi / 180
+    else if (!strncmp (scheme, "theta(", 6))
+      sscanf (scheme, "theta(%lf)", &length);
+    else
+      ut_error_reportbug ();
+
+#pragma omp parallel for private(j)
+    for (i = 1; i <= size; i++)
+    {
+      double theta, *q = ol_q_alloc ();
+      ol_q_qcrysym (data[i], "cubic", q);
+      ol_q_theta (q, &theta);
+      for (j = 0; j < 3; j++)
+        Col[i][j] = ut_num_bound (ut_num_d2ri (225 * theta / length), 0, 255);
+      ol_q_free (q);
+    }
+  }
+
+  else if (!strncmp (scheme, "rtheta", 5))
+  {
+    if (!strcmp (scheme, "rtheta"))
+      length = 1.09606677025243897430; // 62.8 * pi / 180
+    else if (!strncmp (scheme, "rtheta(", 7))
+      sscanf (scheme, "rtheta(%lf)", &length);
+    else
+      ut_error_reportbug ();
+
+#pragma omp parallel for private(i,j)
+    for (i = 1; i <= size; i++)
+    {
+      double theta, *q = ol_q_alloc (), *r = ol_r_alloc ();
+      ol_q_qcrysym (data[i], "cubic", q);
+      ol_q_rtheta_rad (q, r, &theta);
+      for (j = 0; j < 3; j++)
+        Col[i][j] = ut_num_bound (ut_num_d2ri (127.5 * (r[j] * theta + length) / length), 0, 255);
+      ol_q_free (q);
+      ol_r_free (r);
+    }
+  }
 
   return;
 }
@@ -359,6 +425,11 @@ nev_data_typearg_args (char *input, char *argument, char **ptype,
     ut_string_string ("ori", ptype);
     ut_free_1d_char_ (pvalue);
   }
+  else if (argqty == 1 && !strcmp (argument, "disori"))
+  {
+    ut_string_string ("disori", ptype);
+    ut_free_1d_char_ (pvalue);
+  }
   else if (argqty == 1 && !strcmp (argument, "id"))
   {
     ut_string_string ("id", ptype);
@@ -418,6 +489,67 @@ nev_data_typearg_args (char *input, char *argument, char **ptype,
 
   if (!strcmp (*ptype, "ori") && *pvalue)
     ut_string_string ("orie", ptype);
+
+  return;
+}
+
+void
+nev_data_fscanf_ori (char *value, int qty, double **dataembed,
+                     double ***pColData, char **pColDataType)
+{
+  (*pColData) = ut_alloc_2d (qty + 1, 4);
+
+  // ut_string_string ("oriq", pColDataType);
+
+  if (!value)
+  {
+    if (dataembed)
+      ut_array_2d_memcpy (*pColData + 1, qty, 4, dataembed + 1);
+    else
+      ut_print_message (2, 3, "No orientation data available.\n");
+  }
+
+  else
+    nev_data_fscanf_ori_file (value, qty, pColData, pColDataType);
+
+  return;
+}
+
+void
+nev_data_fscanf_ori_tesr (struct TESR Tesr, char *value, int qty, double ****dataembedvox,
+                          double **dataembedcell, double ***pColData,
+                          char **pColDataType)
+{
+  int i, j, k, id;
+
+  (*pColData) = ut_alloc_2d (qty + 1, 4);
+
+  // ut_string_string ("oriq", pColDataType);
+
+  if (!value)
+  {
+    if (dataembedvox)
+    {
+      id = 0;
+      for (k = 1; k <= Tesr.size[2]; k++)
+        for (j = 1; j <= Tesr.size[1]; j++)
+          for (i = 1; i <= Tesr.size[0]; i++)
+            ut_array_1d_memcpy ((*pColData)[++id], 4, dataembedvox[i][j][k]);
+    }
+    else if (dataembedcell)
+    {
+      id = 0;
+      for (k = 1; k <= Tesr.size[2]; k++)
+        for (j = 1; j <= Tesr.size[1]; j++)
+          for (i = 1; i <= Tesr.size[0]; i++)
+            ut_array_1d_memcpy ((*pColData)[++id], 4, dataembedcell[Tesr.VoxCell[i][j][k]]);
+    }
+    else
+      ut_print_message (2, 3, "No orientation data available.\n");
+  }
+
+  else
+    nev_data_fscanf_ori_file (value, qty, pColData, pColDataType);
 
   return;
 }

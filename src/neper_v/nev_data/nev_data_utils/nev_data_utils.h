@@ -18,3 +18,12 @@ extern void nev_data_coo_coo (double **, double **, double, int, double **);
 extern void nev_data_disp_coo (double **, double **, double, int, double **);
 
 extern void nev_data_typearg_args (char *, char *, char **, char **, char **);
+
+extern void nev_data_fscanf_ori (char *value, int qty, double **dataembed,
+                                 double ***pColData, char **pColDataType);
+extern void nev_data_fscanf_ori_tesr (struct TESR Tesr, char *value, int qty,
+                                      double ****dataembedvox,
+                                      double **dataembedcell,
+                                      double ***pColData, char **pColDataType);
+extern void nev_data_fscanf_ori_file (char *value, int qty, double ***pColData,
+                                      char **pColDataType);

@@ -3114,9 +3114,9 @@ neut_tess_domface_tess (struct TESS Tess, int domface, struct TESS *pT)
 
   neut_tess_domface_tess_seeds (Tess, pT);
 
-  neut_tess_domface_tess_cells (Tess, pT);
-
   neut_tess_domface_tess_faces (Tess, domface, pT, oldface_newface);
+
+  neut_tess_domface_tess_cells (Tess, oldface_newface, pT);
 
   neut_tess_domface_tess_edges (Tess, domface, pT, oldedge_newedge);
 
@@ -3127,8 +3127,6 @@ neut_tess_domface_tess (struct TESS Tess, int domface, struct TESS *pT)
 
   neut_tess_domface_tess_domain (Tess, domface, pT,
 				 oldedge_newedge, oldver_newver);
-
-  neut_tess_domface_tess_scale (Tess, pT);
 
   ut_free_1d_int (oldver_newver);
   ut_free_1d_int (oldedge_newedge);
@@ -3153,9 +3151,9 @@ neut_tess_3dcolumnar_2d (struct TESS Tess, struct TESS *pT)
 
   neut_tess_domface_tess_seeds (Tess, pT);
 
-  neut_tess_domface_tess_cells (Tess, pT);
-
   neut_tess_3dcolumnar_2d_faces (Tess, domface, pT);
+
+  neut_tess_domface_tess_cells (Tess, NULL, pT);
 
   neut_tess_3dcolumnar_2d_edges (Tess, domface, pT, oldedge_newedge);
 
@@ -3169,8 +3167,6 @@ neut_tess_3dcolumnar_2d (struct TESS Tess, struct TESS *pT)
 
   neut_tess_domface_tess_domain (Tess, domface, pT,
 				 oldedge_newedge, oldver_newver);
-
-  neut_tess_domface_tess_scale (Tess, pT);
 
   ut_free_1d_int (oldver_newver);
   ut_free_1d_int (oldedge_newedge);

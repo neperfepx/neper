@@ -99,71 +99,8 @@ nev_nodedata_fscanf (char *type, char *argument, struct NODEDATA *pNodeData)
 				 (*pNodeData).NodeQty, 3, "colour,size");
     }
     else if (!strncmp ((*pNodeData).ColDataType, "ori", 3))
-    {
-      (*pNodeData).ColData = ut_alloc_2d ((*pNodeData).NodeQty + 1, 3);
-      int i;
-      double *tmpd = ut_alloc_1d (4);
-      int *tmpi = ut_alloc_1d_int (6);
-      double **tmpdd = ut_alloc_2d (3, 3);
-      FILE *file = ut_file_open (value, "r");
-
-      int qty0;
-      if (!strcmp ((*pNodeData).ColDataType + 3, "e")
-	  || !strcmp ((*pNodeData).ColDataType + 3, "ek")
-	  || !strcmp ((*pNodeData).ColDataType + 3, "er")
-	  || !strcmp ((*pNodeData).ColDataType + 3, "R"))
-	qty0 = 3;
-      else if (!strcmp ((*pNodeData).ColDataType + 3, "q"))
-	qty0 = 4;
-      else if (!strcmp ((*pNodeData).ColDataType + 3, "m"))
-	qty0 = 6;
-      else if (!strcmp ((*pNodeData).ColDataType + 3, "g"))
-	qty0 = 9;
-      else
-      {
-	printf ("(*pNodeData).ColDataType = %s\n", (*pNodeData).ColDataType);
-	ut_error_reportbug ();
-	abort ();
-      }
-
-      ut_file_nbwords_testwmessage (value, (*pNodeData).NodeQty * qty0);
-
-      for (i = 1; i <= (*pNodeData).NodeQty; i++)
-	if (!strcmp ((*pNodeData).ColDataType + 3, "e"))
-	  ol_e_fscanf (file, (*pNodeData).ColData[i]);
-	else if (!strcmp ((*pNodeData).ColDataType + 3, "ek"))
-	{
-	  ol_e_fscanf (file, tmpd);
-	  ol_ek_e (tmpd, (*pNodeData).ColData[i]);
-	}
-	else if (!strcmp ((*pNodeData).ColDataType + 3, "er"))
-	{
-	  ol_e_fscanf (file, tmpd);
-	  ol_er_e (tmpd, (*pNodeData).ColData[i]);
-	}
-	else if (!strcmp ((*pNodeData).ColDataType + 3, "q"))
-	{
-	  ol_q_fscanf (file, tmpd);
-	  ol_q_e (tmpd, (*pNodeData).ColData[i]);
-	}
-	else if (!strcmp ((*pNodeData).ColDataType + 3, "R"))
-	{
-	  ol_R_fscanf (file, tmpd);
-	  ol_R_e (tmpd, (*pNodeData).ColData[i]);
-	}
-	else if (!strcmp ((*pNodeData).ColDataType + 3, "m"))
-	{
-	  ol_m_fscanf (file, tmpi);
-	  ol_m_e (tmpi, (*pNodeData).ColData[i]);
-	}
-	else if (!strcmp ((*pNodeData).ColDataType + 3, "g"))
-	{
-	  ol_g_fscanf (file, tmpdd);
-	  ol_g_e (tmpdd, (*pNodeData).ColData[i]);
-	}
-	else
-	  ut_error_reportbug ();
-    }
+      nev_data_fscanf_ori (value, (*pNodeData).NodeQty, NULL,
+                           &(*pNodeData).ColData, &(*pNodeData).ColDataType);
     else if (!strcmp ((*pNodeData).ColDataType, "scal"))
     {
       (*pNodeData).ColData = ut_alloc_2d ((*pNodeData).NodeQty + 1, 1);

@@ -44,7 +44,7 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
   else if (!strcmp (var, "tesr"))
     for (i = 1; i <= TOpt.CellQty; i++)
     {
-      neut_tesr_expr_val (TOpt.tartesr, "cell", i, weightexpr, rad + i, NULL, NULL);
+      neut_tesr_expr_val_one (TOpt.tartesr, "cell", i, weightexpr, rad + i, NULL);
       ut_print_progress (stdout, i, TOpt.CellQty, "%.0f%%", prev);
     }
 

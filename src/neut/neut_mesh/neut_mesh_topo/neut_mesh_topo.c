@@ -1728,39 +1728,39 @@ neut_mesh_elts_boundelts (struct MESH Mesh, int *elts, int eltqty,
 
   return;
 }
-
 int
 neut_mesh_node_dim (struct MESH Mesh0D, struct MESH Mesh1D,
-		    struct MESH Mesh2D, struct MESH Mesh3D, int node)
+                    struct MESH Mesh2D, struct MESH Mesh3D, int node)
 {
-  int j, dim = -1;
+  return neut_mesh_node_dim_max (Mesh0D, Mesh1D, Mesh2D, Mesh3D, node);
+}
 
-  int eltnodeqty0d, eltnodeqty1d, eltnodeqty2d;
+int
+neut_mesh_node_dim_max (struct MESH Mesh0D, struct MESH Mesh1D,
+		        struct MESH Mesh2D, struct MESH Mesh3D, int node)
+{
+  int dim = -1;
 
-  eltnodeqty0d =
-    neut_elt_nodeqty (Mesh0D.EltType, Mesh0D.Dimension, Mesh0D.EltOrder);
-  eltnodeqty1d =
-    neut_elt_nodeqty (Mesh1D.EltType, Mesh1D.Dimension, Mesh1D.EltOrder);
-  eltnodeqty2d =
-    neut_elt_nodeqty (Mesh2D.EltType, Mesh2D.Dimension, Mesh2D.EltOrder);
+  if (Mesh0D.EltQty > 0 && !Mesh0D.NodeElts)
+    abort ();
 
-  for (j = 1; dim == -1 && j <= Mesh0D.EltQty; j++)
-    if (ut_array_1d_int_eltpos (Mesh0D.EltNodes[j], eltnodeqty0d, node) != -1)
-      dim = 0;
+  if (Mesh1D.EltQty > 1 && !Mesh1D.NodeElts)
+    abort ();
 
-  for (j = 1; dim == -1 && j <= Mesh1D.EltQty; j++)
-    if (ut_array_1d_int_eltpos (Mesh1D.EltNodes[j], eltnodeqty1d, node) != -1)
-      dim = 1;
+  if (Mesh2D.EltQty > 2 && !Mesh2D.NodeElts)
+    abort ();
 
-  for (j = 1; dim == -1 && j <= Mesh2D.EltQty; j++)
-    if (ut_array_1d_int_eltpos (Mesh2D.EltNodes[j], eltnodeqty2d, node) != -1)
-      dim = 2;
+  if (Mesh3D.EltQty > 3 && !Mesh3D.NodeElts)
+    abort ();
 
-  if (dim == -1)
-  {
-    Mesh3D = Mesh3D;
+  if (node <= Mesh3D.NodeQty && Mesh3D.NodeElts[node][0] > 0)
     dim = 3;
-  }
+  else if (node <= Mesh2D.NodeQty && Mesh2D.NodeElts[node][0] > 0)
+    dim = 2;
+  else if (node <= Mesh1D.NodeQty && Mesh1D.NodeElts[node][0] > 0)
+    dim = 1;
+  else if (node <= Mesh0D.NodeQty && Mesh0D.NodeElts[node][0] > 0)
+    dim = 0;
 
   return dim;
 }
@@ -1769,31 +1769,28 @@ int
 neut_mesh_node_dim_min (struct MESH Mesh0D, struct MESH Mesh1D,
 			struct MESH Mesh2D, struct MESH Mesh3D, int node)
 {
-  int j, dim = -1;
+  int dim = -1;
 
-  int eltnodeqty0d, eltnodeqty1d, eltnodeqty2d;
+  if (Mesh0D.EltQty > 0 && !Mesh0D.NodeElts)
+    abort ();
 
-  eltnodeqty0d =
-    neut_elt_nodeqty (Mesh0D.EltType, Mesh0D.Dimension, Mesh0D.EltOrder);
-  eltnodeqty1d =
-    neut_elt_nodeqty (Mesh1D.EltType, Mesh1D.Dimension, Mesh1D.EltOrder);
-  eltnodeqty2d =
-    neut_elt_nodeqty (Mesh2D.EltType, Mesh2D.Dimension, Mesh2D.EltOrder);
+  if (Mesh1D.EltQty > 1 && !Mesh1D.NodeElts)
+    abort ();
 
-  Mesh3D = Mesh3D;		// trick to avoid warning
-  dim = 3;
+  if (Mesh2D.EltQty > 2 && !Mesh2D.NodeElts)
+    abort ();
 
-  for (j = 1; dim == -1 && j <= Mesh2D.EltQty; j++)
-    if (ut_array_1d_int_eltpos (Mesh2D.EltNodes[j], eltnodeqty2d, node) != -1)
-      dim = 2;
+  if (Mesh3D.EltQty > 3 && !Mesh3D.NodeElts)
+    abort ();
 
-  for (j = 1; dim == -1 && j <= Mesh1D.EltQty; j++)
-    if (ut_array_1d_int_eltpos (Mesh1D.EltNodes[j], eltnodeqty1d, node) != -1)
-      dim = 1;
-
-  for (j = 1; dim == -1 && j <= Mesh0D.EltQty; j++)
-    if (ut_array_1d_int_eltpos (Mesh0D.EltNodes[j], eltnodeqty0d, node) != -1)
-      dim = 0;
+  if (node <= Mesh0D.NodeQty && Mesh0D.NodeElts[node][0] > 0)
+    dim = 0;
+  else if (node <= Mesh1D.NodeQty && Mesh1D.NodeElts[node][0] > 0)
+    dim = 1;
+  else if (node <= Mesh2D.NodeQty && Mesh2D.NodeElts[node][0] > 0)
+    dim = 2;
+  else if (node <= Mesh3D.NodeQty && Mesh3D.NodeElts[node][0] > 0)
+    dim = 3;
 
   return dim;
 }
@@ -2326,4 +2323,75 @@ neut_mesh_nodeqty (struct MESH Mesh, int *pnodeqty)
   ut_free_1d_int (nodes);
 
   return;
+}
+
+int
+neut_mesh_elt1d_isembedded (struct MESH Mesh3D, struct MESH Mesh1D, int elt1d)
+{
+  int i, j, id, node;
+  int elt, eltqty, *elts = NULL;
+  int facetnodeqty, *facetnodes = NULL;
+
+  neut_mesh_nodes_comelts (Mesh3D, Mesh1D.EltNodes[elt1d], 2, &elts, &eltqty);
+
+  facetnodeqty = 2 * eltqty;
+  facetnodes = ut_alloc_1d_int (facetnodeqty);
+
+  id = 0;
+  for (i = 0; i < eltqty; i++)
+  {
+    elt = elts[i];
+
+    for (j = 0; j < 4; j++)
+    {
+      node = Mesh3D.EltNodes[elt][j];
+      if (ut_array_1d_int_eltpos (Mesh1D.EltNodes[elt1d], 2, node) == -1)
+        facetnodes[id++] = node;
+    }
+  }
+
+  ut_array_1d_int_sort_uniq (facetnodes, facetnodeqty, &facetnodeqty);
+
+  ut_free_1d_int (elts);
+  ut_free_1d_int (facetnodes);
+
+  return eltqty == facetnodeqty;
+}
+
+int
+neut_mesh_node_domtype (struct TESS Tess,
+                        struct MESH Mesh0D, struct MESH Mesh1D,
+                        struct MESH Mesh2D, struct MESH Mesh3D,
+                        int node, int *pdomtype)
+{
+  struct MESH **Mesh = (struct MESH **) calloc (sizeof (struct MESH*), 4);
+
+  Mesh[0] = &Mesh0D;
+  Mesh[1] = &Mesh1D;
+  Mesh[2] = &Mesh2D;
+  Mesh[3] = &Mesh3D;
+
+  int meshdim = neut_mesh_array_dim (*Mesh);
+  int dim, elset;
+
+  dim = neut_mesh_node_dim_min (Mesh0D, Mesh1D, Mesh2D, Mesh3D, node);
+
+  if (dim == meshdim)
+    (*pdomtype) = -1;
+
+  else
+  {
+    neut_mesh_node_elset (*(Mesh[dim]), node, &elset);
+
+    if (dim == 2)
+      (*pdomtype) = (Tess.FaceDom[elset][0] == 2) ? 2:-1;
+    else if (dim == 1)
+      (*pdomtype) = Tess.EdgeDom[elset][0];
+    else if (dim == 0)
+      (*pdomtype) = Tess.VerDom[elset][0];
+  }
+
+  free (Mesh);
+
+  return 0;
 }

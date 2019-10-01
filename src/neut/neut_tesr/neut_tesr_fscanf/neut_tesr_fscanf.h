@@ -10,7 +10,6 @@ extern "C"
 #ifndef NEUT_VOX_FSCANF_H
 #define NEUT_VOX_FSCANF_H
 
-  extern void neut_tesr_fscanf (FILE *, int *, double *, struct TESR *);
   extern void neut_tesr_name_fscanf (char *, struct TESR *);
 
 #endif				/* NEUT_VOX_FSCANF_H */

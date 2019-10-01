@@ -68,6 +68,10 @@ net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
                       (*pOOpt).fixoriqty, (*pOOpt).fixoriqty > 1 ? "s" : "");
   }
 
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
+                                           In.orioptilogvar[level],
+                                           &(*pOOpt).logvar);
+
   // terminal output
   ut_print_message (0, verbositylevel, "Crystal symmetry: %s", (*pOSet).crysym);
   if ((*pOOpt).neighd < M_PI - OL_EPS_RAD)
@@ -83,7 +87,7 @@ net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
 }
 
 int
-net_ori_uniform_opt (struct OOPT *pOOpt, struct OL_SET *pOSet, int verbositylevel)
+net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet, int verbositylevel)
 {
   int iter, stop_iter = 0;
   double alpha = DBL_MAX, **fc = NULL, **qc = NULL;
@@ -121,6 +125,8 @@ net_ori_uniform_opt (struct OOPT *pOOpt, struct OL_SET *pOSet, int verbosityleve
   // printing results
   // net_ori_uniform_opt_verbosity (*pOOpt, iter, alpha, prevmessage, message);
 
+  net_ori_uniform_log (In, iter, *pOSet, *pOOpt);
+
   neut_oopt_time_set_zero (pOOpt);
 
   stop_iter = net_ori_uniform_opt_stop (pOOpt, iter);
@@ -146,6 +152,8 @@ net_ori_uniform_opt (struct OOPT *pOOpt, struct OL_SET *pOSet, int verbosityleve
     net_ori_uniform_opt_energy (iter, pOSet, E, &Etot, pOOpt);
 
     net_ori_uniform_opt_verbosity (*pOOpt, iter, prevmessage, message, verbositylevel);
+
+    net_ori_uniform_log (In, iter, *pOSet, *pOOpt);
 
     neut_oopt_finalize (pOOpt);
 

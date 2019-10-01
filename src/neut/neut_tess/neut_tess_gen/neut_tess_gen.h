@@ -15,11 +15,11 @@ extern "C"
   extern void neut_tess_var_dim (int dim, char *entity, char *var, int *pdim);
   extern int neut_tess_var_val (struct TESS Tess,
 				int *showedge, int *showface, int *showpoly,
-				char *entity, int id, char *var, double *pval,
-				char **type);
-  extern int neut_tess_var_val_all (struct TESS Tess, int *showedge,
-				    int *showface, int *showpoly,
-				    char *entity, char *var, double *val,
+				char *entity, int id, char *var, double **pvals,
+				int *pvalqty, char **type);
+  extern int neut_tess_var_val_one (struct TESS Tess,
+				    int *showedge, int *showface, int *showpoly,
+				    char *entity, int id, char *var, double *pvals,
 				    char **type);
   extern int neut_tess_var_val_string (struct TESS Tess, char *entity, int id,
 				       char *var, char **pval, char **type);
@@ -60,6 +60,8 @@ extern "C"
       ***pvars, double **pvals, char ***ptypes, int *pvarqty);
 
   extern int neut_tess_isvoid (struct TESS Tess);
+
+  extern int neut_tess_cell_isvoid (struct TESS Tess, int cell);
 
 #endif				/* NEUT_TESS_GEN_H */
 

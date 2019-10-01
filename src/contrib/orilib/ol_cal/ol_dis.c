@@ -430,6 +430,17 @@ ol_vect_vect_g (double *v1, double *v2, double **g)
   return;
 }
 
+void
+ol_vect_vect_q (double *v1, double *v2, double *q)
+{
+  double theta, *r = ol_r_alloc ();
+
+  ol_vect_vect_rtheta (v1, v2, r, &theta);
+  ol_rtheta_q (r, theta, q);
+
+  return;
+}
+
 int
 ol_g_g_gmisori (double **g1, double **g2, double **gmis)
 {

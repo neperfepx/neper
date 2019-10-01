@@ -21,16 +21,14 @@ Neper is a software package for polycrystal generation and meshing.  The polycry
 
 Neper aims to be an easy-to-use, efficient and robust tool.  All the input data are prescribed non-interactively, using command lines and / or ASCII files. All treatments can therefore be automated.
 
-@subsection Resources
+@subsection Resources and Support
 
 Several, complementary resources describing Neper are available:
 
 @itemize
 @item The Neper reference manual, which is this document, describes all Neper's capabilities.  Each module is dedicated a specific chapter, which describes the available commands and result files, and provides examples.  The manual is available at the PDF and info formats.@footnote{Provided that the info file is properly installed at your site, it can be accessed by the command: @command{info neper}.}
 
-@item The Neper website, @url{http://neper.sourceforge.net}, is where Neper's official distribution can be downloaded from. It also provides some examples with illustrations.
-
-@item The Neper GitHub repository, @url{http://github.com/rquey/neper}, is the page for development.  It is also where Neper's latest, development version can be downloaded from.
+@item The Neper website, @url{http://neper.info} gives a general introduction to Neper (including examples with illustrations) and is where Neper can be downloaded from.
 
 @item The three Neper reference papers,
   @itemize
@@ -40,7 +38,7 @@ Several, complementary resources describing Neper are available:
   1729-1745, 2011}'' describes the @w{regularization /} meshing
   methodologies.  It can be downloaded from the Neper homepage or directly
   from this link:
-  @url{http://neper.sourceforge.net/docs/neper-reference-paper.pdf};
+  @url{http://neper.info/docs/neper-reference-paper.pdf};
   @item ``@cite{R.@ Quey and L.@ Renversade, Optimal polyhedral description of 3D
   polycrystals: Method and application to statistical and synchrotron X-ray
   diffraction data, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 330, pp.@
@@ -49,7 +47,26 @@ Several, complementary resources describing Neper are available:
   of crystal orientations, J.@ Appl.@ Crystallogr., vol. 51, pp.@ 1162-1173, 2018.}''
   describes uniform sampling of crystal orientations.
   @end itemize
+
 @end itemize
+
+@c @sp 1
+The best way to report bugs is directly through the GitHub issue tracker,
+@url{http://github.com/rquey/neper/issues}.  When reporting bugs, please help
+us helping you by providing a minimal working example.
+@c
+Neper also has two dedicated mailing lists (the GitHub issue tracker should be
+preferred, especially for bug reports):
+@c
+@code{neper-announce}
+(@url{https://lists.sourceforge.net/lists/listinfo/neper-announce}), the
+``read-only'' list for release announcement
+and @code{neper-users}
+(@url{https://lists.sourceforge.net/lists/listinfo/neper-users}), the
+``read-write'' list for users.
+@c
+As of October 2019, Neper also has an IRC channel, @url{#neper}, on the
+@code{freenode} network.
 
 @section Installing Neper
 
@@ -70,7 +87,7 @@ Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix
 
 @com{make}
 
-Use option @samp{-j} to use multithreaded compilation.
+Use option @samp{-j} for a multithreaded compilation.
 
 @item Install Neper on your system (as root),
 @com{make install}
@@ -266,7 +283,6 @@ jargon:
 @item @code{rcl} 	@tab relative characteristic length
 @item @code{res} 	@tab resolution
 @item @code{rmax}   	@tab relative maximum
-@item @code{sig} 	@tab sigma (standard deviation)
 @item @code{sing} 	@tab singular
 @item @code{stat}  	@tab statistics
 @item @code{surf}  	@tab surface

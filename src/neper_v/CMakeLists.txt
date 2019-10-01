@@ -56,6 +56,7 @@ add_library (neper_v
 ./nev_data/nev_pointdata/nev_pointdata1.c
 ./nev_data/nev_csysdata/nev_csysdata1.c
 ./nev_data/nev_data_utils/nev_data_utils1.c
+./nev_data/nev_data_utils/nev_data_utils2.c
 ./nev_camera/nev_camera3.c
 ./nev_camera/nev_camera2.c
 ./nev_camera/nev_camera1.c

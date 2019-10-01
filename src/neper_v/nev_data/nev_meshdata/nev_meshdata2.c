@@ -49,59 +49,8 @@ nev_meshdata_fscanf_elt (struct MESH Mesh, struct MESHDATA *pMD,
 				 (*pMD).EltQty, 3, "colour,size");
     }
     else if (!strncmp ((*pMD).ColDataType, "ori", 3))
-    {
-      (*pMD).ColData = ut_alloc_2d ((*pMD).EltQty + 1, 4);
-      int i;
-      double *tmpd = ut_alloc_1d (4);
-      int *tmpi = ut_alloc_1d_int (6);
-      double **tmpdd = ut_alloc_2d (3, 3);
-      FILE *file = ut_file_open (value, "r");
-
-      int qty0;
-      neut_meshdata_coldatatype_size (*pMD, &qty0);
-
-      ut_file_nbwords_testwmessage (value, (*pMD).EltQty * qty0);
-
-      for (i = 1; i <= (*pMD).EltQty; i++)
-	if (!strcmp ((*pMD).ColDataType + 3, "e"))
-	{
-	  ol_e_fscanf (file, tmpd);
-	  ol_e_q (tmpd, (*pMD).ColData[i]);
-	}
-	else if (!strcmp ((*pMD).ColDataType + 3, "ek"))
-	{
-	  ol_e_fscanf (file, tmpd);
-	  ol_ek_e (tmpd, tmpd);
-	  ol_e_q (tmpd, (*pMD).ColData[i]);
-	}
-	else if (!strcmp ((*pMD).ColDataType + 3, "er"))
-	{
-	  ol_e_fscanf (file, tmpd);
-	  ol_er_e (tmpd, tmpd);
-	  ol_e_q (tmpd, (*pMD).ColData[i]);
-	}
-	else if (!strcmp ((*pMD).ColDataType + 3, "q"))
-	  ol_q_fscanf (file, (*pMD).ColData[i]);
-	else if (!strcmp ((*pMD).ColDataType + 3, "R"))
-	{
-	  ol_R_fscanf (file, tmpd);
-	  ol_R_q (tmpd, (*pMD).ColData[i]);
-	}
-	else if (!strcmp ((*pMD).ColDataType + 3, "m"))
-	{
-	  ol_m_fscanf (file, tmpi);
-	  ol_m_q (tmpi, (*pMD).ColData[i]);
-	}
-	else if (!strcmp ((*pMD).ColDataType + 3, "g"))
-	{
-	  ol_g_fscanf (file, tmpdd);
-	  ol_g_q (tmpdd, (*pMD).ColData[i]);
-	}
-	else
-	  ut_error_reportbug ();
-
-      ut_string_string ("oriq", &((*pMD).ColDataType));
-    }
+      nev_data_fscanf_ori (value, (*pMD).EltQty, NULL,
+                           &(*pMD).ColData, &(*pMD).ColDataType);
     else if (!strcmp ((*pMD).ColDataType, "scal"))
     {
       (*pMD).ColData = ut_alloc_2d ((*pMD).EltQty + 1, 1);

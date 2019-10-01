@@ -208,3 +208,12 @@ net_ori_uniform_opt_stop (struct OOPT *pOOpt, int iter)
 
   return stop;
 }
+
+void
+net_ori_uniform_log (struct IN_T In, int iter, struct OL_SET OSet, struct OOPT OOpt)
+{
+  if (strcmp (OOpt.logvar, "none"))
+    net_ori_uniform_log_var (In, iter, OSet, OOpt);
+
+  return;
+}
