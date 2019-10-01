@@ -111,6 +111,8 @@ ut_file_exist (const char *name, ...)
 
   if (!strncmp (fullname, "file(", 5) && fullname[strlen (fullname) - 1] == ')')
     fullname2 = strncpy (fullname2, fullname + 5, strlen (fullname) - 6);
+  else if (!strncmp (fullname, "msfile(", 7) && fullname[strlen (fullname) - 1] == ')')
+    fullname2 = strncpy (fullname2, fullname + 7, strlen (fullname) - 8);
   else
     fullname2 = strcpy (fullname2, fullname);
 
@@ -961,17 +963,18 @@ ut_file_cp_lines (FILE * src, FILE * dest, int *lines, int lineqty)
 int
 ut_file_filename (const char *name, char **pname)
 {
-  int status;
   (*pname) = ut_alloc_1d_char (strlen (name) + 1);
 
-  status = sscanf (name, "file(%[^)])", *pname);
-  if (status != 1)
-  {
-    if (name[0] != '@')
-      strcpy (*pname, name);
-    else
-      strcpy (*pname, name + 1);
-  }
+  if (sscanf (name, "file(%[^)])", *pname) == 1)
+  {}
+  else if (sscanf (name, "msfile(%[^)])", *pname) == 1)
+  {}
+  else if (sscanf (name, "@%s", *pname) == 1)
+  {}
+  else if (sscanf (name, "%s", *pname) == 1)
+  {}
+
+  (*pname) = ut_realloc_1d_char (*pname, strlen (*pname) + 1);
 
   return 0;
 }

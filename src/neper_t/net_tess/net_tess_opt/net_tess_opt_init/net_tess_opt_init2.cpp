@@ -16,7 +16,7 @@ net_tess_opt_init_general (struct IN_T In, int level, struct MTESS MTess,
 
   neut_tess_poly_tess (Tess[dtess], dcell, &((*pTOpt).Dom0));
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptidof[level],
                                            &(*pTOpt).dof);
 
@@ -186,7 +186,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
 
   if (ut_string_filename (morpho2))
   {
-    net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dpoly,
+    net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dpoly,
                                              morpho2, &string);
     ut_string_separate (string, NEUT_SEP_NODEP, &tmp, &((*pTOpt).tarqty));
   }
@@ -577,7 +577,7 @@ net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTess,
   (*pTOpt).objvalmin = NULL;
   (*pTOpt).iter = 0;
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptidof[level],
                                            &(*pTOpt).dof);
 
@@ -594,7 +594,7 @@ net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTess,
     ut_free_1d_char (rm);
   }
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptistop[level], &string);
 
   ut_string_separate2 (string, NEUT_SEP_NODEP, "=", &parts, &qty2, &qty1);
@@ -627,7 +627,7 @@ net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTess,
     (*pTOpt).dist = HUGE_VAL;
   else
   {
-    net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+    net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                              In.morphooptideltamax[level],
                                              &string);
     sscanf (string, "%lf", &((*pTOpt).dist));
@@ -641,7 +641,7 @@ net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTess,
 
   strcpy (vars[0], "avdiameq");
   vals[0] = diameq;
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptiinistep[level],
                                            &string);
 
@@ -677,25 +677,25 @@ net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTess,
   ut_free_2d_char (vars, 1);
   ut_free_1d (vals);
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptiobjective[level],
                                            &string);
   net_tess_opt_init_parms_objective (string, pTOpt);
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptilogtime[level],
                                            &(*pTOpt).TDyn.logtime);
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptilogvar[level],
                                            &(*pTOpt).TDyn.logvar);
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptilogdis[level],
                                            &(*pTOpt).TDyn.logdis);
   (*pTOpt).TDyn.logdis_qty = (*pTOpt).tarqty;
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptilogval[level],
                                            &(*pTOpt).TDyn.logval);
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptilogtesr[level],
                                            &(*pTOpt).TDyn.logtesr);
 
@@ -703,7 +703,7 @@ net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTess,
 
   net_tess_opt_init_parms_algo (In, level, MTess, Tess, dtess, dcell, pTOpt);
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptialgoneigh[level],
                                            &(*pTOpt).TDyn.algoneigh);
 

@@ -1054,7 +1054,9 @@ int
 ut_string_filename (char* string)
 {
   return ((string && strlen (string) > 0)
-	 && (!strncmp (string, "file(", 5) || string[0] == '@'));
+	 && (!strncmp (string, "file(", 5)
+          || !strncmp (string, "msfile(", 7)
+          || string[0] == '@'));
 }
 
 int

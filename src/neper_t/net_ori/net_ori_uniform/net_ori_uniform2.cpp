@@ -68,7 +68,7 @@ net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
                       (*pOOpt).fixoriqty, (*pOOpt).fixoriqty > 1 ? "s" : "");
   }
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.orioptilogvar[level],
                                            &(*pOOpt).logvar);
 

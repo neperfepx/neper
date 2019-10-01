@@ -638,19 +638,23 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
 }
 
 int
-net_multiscale_mtess_arg_0d_char_fscanf (struct MTESS MTess, struct TESS *Tess,
+net_multiscale_mtess_arg_0d_char_fscanf (int level, struct MTESS MTess, struct TESS *Tess,
                                          int domtess, int dompoly,
 					 char *string, char **pval)
 {
   char *mid = NULL;
 
-  if (ut_string_filename (string))
+  if (level == 1 && strncmp (string, "msfile(", 7))
+    ut_string_string (string, pval);
+
+  else if (ut_string_filename (string))
   {
     (*pval) = ut_alloc_1d_char (1000);
     neut_mtess_tess_poly_mid (MTess, Tess[domtess], dompoly, &mid);
     net_multiscale_arg_0d_char_fscanf (string, mid, *pval);
     (*pval) = ut_realloc_1d_char (*pval, strlen (*pval) + 1);
   }
+
   else
     ut_string_string (string, pval);
 

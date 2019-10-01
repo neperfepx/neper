@@ -41,7 +41,7 @@ net_tess_opt_init_parms_algo (struct IN_T In, int level, struct MTESS MTess,
 {
   char *optialgo = NULL;
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptialgo[level],
                                            &optialgo);
   ut_string_separate (optialgo, NEUT_SEP_NODEP, &(*pTOpt).algoname,
@@ -276,7 +276,7 @@ net_tess_opt_init_target_grid (struct IN_T In, int level,
   int qty, *qty2 = NULL;
   char *string = NULL;
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptigrid[level], &string);
   ut_string_separate2 (string, NEUT_SEP_NODEP, NEUT_SEP_DEP,
                        &parts, &qty2, &qty);
@@ -314,7 +314,7 @@ net_tess_opt_init_target_cvl (struct IN_T In, int level,
 
   ut_string_string ("numerical", &(*pTOpt).cvlmethod);
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptismooth[level],
                                            &string);
   ut_string_separate2 (string, NEUT_SEP_NODEP, NEUT_SEP_DEP,

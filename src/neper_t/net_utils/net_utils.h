@@ -52,7 +52,7 @@ extern "C"
   extern void  net_clip (char *clip, struct SEEDSET SSet, struct TESS
       *pTess);
 
-  extern int net_multiscale_mtess_arg_0d_char_fscanf (struct MTESS MTess,
+  extern int net_multiscale_mtess_arg_0d_char_fscanf (int level, struct MTESS MTess,
       struct TESS *Tess, int domtess, int dompoly, char *string, char **pval);
 
   extern int net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet);

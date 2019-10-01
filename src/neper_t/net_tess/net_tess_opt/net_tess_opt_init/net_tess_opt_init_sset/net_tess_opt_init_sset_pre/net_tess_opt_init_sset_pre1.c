@@ -46,7 +46,7 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level,
   ut_free_1d_char (*pweightexpr);
   ut_free_1d_char (*pcooexpr);
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, domtess, domcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, domtess, domcell,
 					   In.morphooptiini[level], &string);
 
   (*ppos) = -1;

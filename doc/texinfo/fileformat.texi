@@ -642,7 +642,10 @@ orientation data.   It must be located in the same directory as the parent tesr 
 @section Multiscale Cell File
 
 A multiscale cell file provides cell-by-cell values for a multiscale
-tessellation.  It contains, for each cell, its @dfn{multiscale
+tessellation and can be loaded using @samp{msfile(@var{filename})}@footnote{As
+of version 3.5.0, @samp{msfile(@var{filename})} should be preferred over
+@samp{file(@var{filename})}}.
+The file contains, for each cell, its @dfn{multiscale
 identifier}, @var{mid}, and the value(s).  A @dfn{cell multiscale
 identifier} (@var{mid}) is a character string identifying a cell at a
 specific scale.  For a given cell, C, @var{mid} combines the identifiers
@@ -668,12 +671,14 @@ An example of a multiscale cell file that could be used to define the amounts of
 1::2 4
 2::1 5
 2::2 6
+2::3 7
+2::4 8
 @end verbatim
 
-The file could be used in @code{-T} as: @option{-n file(@var{filename})::file(@var{filename})::file(@var{filename})}.
-The first  instance of @samp{file(@var{filename})} will read the number of scale-1 cells in line 1,
-the second instance of @samp{file(@var{filename})} will read the number of scale-2 cells in lines 2--3 and
-the third  instance of @samp{file(@var{filename})} will read the number of scale-3 cells in lines 4--7.
+The file could be used in @code{-T} as: @option{-n msfile(@var{filename})::msfile(@var{filename})::msfile(@var{filename})}.
+The first  instance of @samp{msfile(@var{filename})} reads the number of scale-1 cells in line 1,
+the second instance of @samp{msfile(@var{filename})} reads the number of scale-2 cells in lines 2--3, and
+the third  instance of @samp{msfile(@var{filename})} reads the number of scale-3 cells in lines 4--7.
 
 @node Position File
 @section Position File
