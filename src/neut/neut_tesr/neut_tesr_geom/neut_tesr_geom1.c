@@ -62,13 +62,13 @@ neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell)
 }
 
 int
-neut_tesr_point_pos (struct TESR Tesr, double *coo, int *voxpos)
+neut_tesr_coo_pos (struct TESR Tesr, double *coo, int mode, int *voxpos)
 {
   int i;
 
   for (i = 0; i < Tesr.Dim; i++)
   {
-    voxpos[i] = ceil ((coo[i] - Tesr.Origin[i]) / Tesr.vsize[i] + 1e-6);
+    voxpos[i] = ceil ((coo[i] - Tesr.Origin[i]) / Tesr.vsize[i] + ut_num_sgn_int (mode) * 1e-6);
     voxpos[i] = ut_num_min_int (voxpos[i], Tesr.size[i]);
   }
   for (i = Tesr.Dim; i < 3; i++)

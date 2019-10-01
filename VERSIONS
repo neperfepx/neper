@@ -1,14 +1,14 @@
-New in 3.4.1-86 (01 Oct 2019):
+New in 3.4.1-87 (01 Oct 2019):
 - module -T: added -transform slice, added new statistical distributions to
   -morpho: beta, lorentzian, studentst, weibull, breitwigner, expnormal,
   moffat, pearson7, pseudovoigt and skewnormal, added endpoints to statistical
-  distributions, added variable 1-sphericity, fixed argument reading, fixed
-  -statvox e, added tessellation keys, improved tesr format, improved -ori
-  fibre, added -transform oriaverage, replaced -transform plane with -transform
-  hspace, fixed -domain, fixed -for ori, fixed -morpho centroidal, fixed tesr
-  reading, improved -transform renumber, improved -statcell convexity, added
-  -orioptilogvar, added crystal symmetry to tesr file, improved tesr file,
-  fixed vtk output, minor fixes.
+  distributions, added variable 1-sphericity, fixed -loadtesr file.tesr:crop,
+  fixed argument reading, fixed -statvox e, added tessellation keys, improved
+  tesr format, improved -ori fibre, added -transform oriaverage, replaced
+  -transform plane with -transform hspace, fixed -domain, fixed -for ori, fixed
+  -morpho centroidal, fixed tesr reading, improved -transform renumber,
+  improved -statcell convexity, added -orioptilogvar, added crystal symmetry to
+  tesr file, improved tesr file, fixed vtk output, minor fixes.
 - module -M: fixed -elt hex, added -performat, added mesh keys, added
   -transform scale, translate and smooth, merged -scale into -transform, added
   -transporteltmethod, added -transportfepx, fixed -interface cohesive for

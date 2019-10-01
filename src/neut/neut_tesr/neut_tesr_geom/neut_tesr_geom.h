@@ -15,10 +15,11 @@ extern int neut_tesr_vox_coo (struct TESR Tesr, int vox, double *coo);
 extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
 
 /// \brief Get the rpoint a point belongs to.
+/// mode>=0 picks the voxel after, mode < 0 picks the voxel before
 /// \return 0 on success, -1 on failure.
 ///
 ///
-  extern int neut_tesr_point_pos (struct TESR Tesr, double *coo, int *voxpos);
+  extern int neut_tesr_coo_pos (struct TESR Tesr, double *coo, int mode, int *voxpos);
 
 /// \brief Get the coordinate of a rpoint.
 /// \return 0 on success, -1 on failure.

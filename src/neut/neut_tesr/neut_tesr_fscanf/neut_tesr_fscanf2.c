@@ -6,8 +6,8 @@
 
 /* Tessellation exportation: head */
 void
-neut_tesr_fscanf_head (struct TESR *pTesr, int *bounds, char **pformat,
-		       FILE * file)
+neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds, int *voxbounds,
+                       char **pformat, FILE * file)
 {
   int i, status;
   char *string = ut_alloc_1d_char (1000);
@@ -59,15 +59,6 @@ neut_tesr_fscanf_head (struct TESR *pTesr, int *bounds, char **pformat,
     ut_print_message (2, 0,
 		      "Input file is not a valid raster tessellation file.\n");
 
-  if (bounds)
-    for (i = 0; i < 3; i++)
-    {
-      if (bounds[2 * i] == -1)
-	bounds[2 * i] = 1;
-      if (bounds[2 * i + 1] == -1)
-	bounds[2 * i + 1] = (*pTesr).size[i];
-    }
-
   (*pTesr).vsize = ut_alloc_1d (3);
   status = ut_array_1d_fscanf (file, (*pTesr).vsize, (*pTesr).Dim);
 
@@ -89,6 +80,26 @@ neut_tesr_fscanf_head (struct TESR *pTesr, int *bounds, char **pformat,
 
     else
       ut_print_message (2, 2, "Failed to read tesr file.\n");
+  }
+
+  if (bounds)
+  {
+    int *vox = ut_alloc_1d_int (3);
+    double *coo = ut_alloc_1d (3);
+
+    for (i = 0; i <= 1; i++)
+    {
+      ut_array_1d_set_3 (coo, bounds[i] - (*pTesr).Origin[0],
+                              bounds[i + 2] - (*pTesr).Origin[1],
+                              bounds[i + 4] - (*pTesr).Origin[2]);
+      neut_tesr_coo_pos (*pTesr, coo, i?-1:1, vox);
+      voxbounds[i] = vox[0];
+      voxbounds[i + 2] = vox[1];
+      voxbounds[i + 4] = vox[2];
+    }
+
+    ut_free_1d_int (vox);
+    ut_free_1d (coo);
   }
 
   if (status != 1)

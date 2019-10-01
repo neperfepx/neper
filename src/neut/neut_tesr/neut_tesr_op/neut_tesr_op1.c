@@ -323,7 +323,7 @@ neut_tesr_rotate (struct TESR *pTesr, double **g)
         ol_g_vect_vect (g, tmp, tmp2);
         ut_array_1d_add (tmp2, c, 3, cooold);
 
-        neut_tesr_point_pos (*pTesr, cooold, posold);
+        neut_tesr_coo_pos (*pTesr, cooold, 0, posold);
         if (neut_tesr_pos_valid (*pTesr, posold))
           Tesr2.VoxCell[i][j][k] = (*pTesr).VoxCell[posold[0]][posold[1]][posold[2]];
       }
@@ -508,7 +508,7 @@ neut_tesr_rasterscale (struct TESR *pTesr, double scale1, double scale2,
 	  ut_array_1d_int_set_3 (pos, i, j, k);
 
 	  neut_tesr_pos_coo (Tesr2, pos, coo);
-	  neut_tesr_point_pos (*pTesr, coo, pos);
+	  neut_tesr_coo_pos (*pTesr, coo, 0, pos);
 
 	  Tesr2.VoxCell[i][j][k] = (*pTesr).VoxCell[pos[0]][pos[1]][pos[2]];
 

@@ -222,8 +222,8 @@ where
 @code{@var{zmin}} and @code{@var{zmax}} are the minimum and maximum positions along
 @code{@var{x}}@comma{} @code{@var{y}} and @code{@var{z}}@comma{} respectively.
 For 2D raster tessellations@comma{} the @code{@var{z}} values can be omitted.
-To scale the number of points of a raster tessellation@comma{} use the syntax
-@samp{@var{file_name}:scale(@var{factor})}@comma{}
+To scale the number of voxels of a raster tessellation@comma{} use the syntax
+@samp{@var{file_name}:rasterscale(@var{factor})}@comma{}
 where @code{@var{factor}} is the
 scaling factor@comma{} or
 @samp{@var{file_name}:scale(@var{factor_x},@var{factor_y},@var{factor_z})}@comma{}
@@ -817,7 +817,7 @@ along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
 @mybullet @samp{@code{autocrop}} reduces the raster to its minimal size.@*
 @mybullet
 @samp{@code{rasterscale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
-scales the number of points of the raster by factors
+scales the number of voxels of the raster by factors
 @code{@var{x_fact}}@comma{} @code{@var{y_fact}} and @code{@var{z_fact}}
 along directions @var{x}@comma{} @code{@var{y}} and
 @code{@var{z}}@comma{} respectively. For a 2D tessellation@comma{}
