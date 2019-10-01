@@ -8,7 +8,7 @@ About
    :local:
 
 Neper is developed by `Romain Quey <https://www.mines-stetienne.fr/author/quey>`_ at
-`CNRS <http://www.cnrs.fr/index.php>`_
+`CNRS <http://www.cnrs.fr/index.php/en>`_
 and `MINES Saint-Etienne <http://www.mines-stetienne.fr/en>`_, France.
 
 Neper is distributed as a free / open-source software, under the

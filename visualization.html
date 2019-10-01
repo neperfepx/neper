@@ -3,13 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Visualization &#8212; Neper 3.4.0 documentation</title>
+    <title>Visualization &#8212; Neper 3.5.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.4.0',
+        VERSION:     '3.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -48,7 +48,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Neper</a>
-        <span class="navbar-text navbar-version pull-left"><b>version 3.4.0 (15 Apr 2019)</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>version 3.5.0 (01 Oct 2019)</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -69,6 +69,8 @@
 <li class="toctree-l2"><a class="reference internal" href="generation.html#tessellations-from-morphological-properties">Tessellations from morphological properties</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generation.html#multiscale-tessellations">Multiscale tessellations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generation.html#periodic-and-semi-periodic-tessellations">Periodic and semi-periodic tessellations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generation.html#new-non-convex-domains">[new] Non-convex domains</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generation.html#new-crystal-orientation-distribution">[new] Crystal orientation distribution</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generation.html#regularization">Regularization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generation.html#scalar-and-raster-formats">Scalar and raster formats</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generation.html#statistics">Statistics</a></li>
@@ -91,26 +93,32 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id1">2019</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id2">2018</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id3">2017</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id4">2016</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id5">2015</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id6">2014</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id7">2013</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id8">2012</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id9">2011</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id10">2009</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id11">2008</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id12">2007</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id1">2020</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id2">2019</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id3">2018</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id4">2017</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id5">2016</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id6">2015</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id7">2014</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id8">2013</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id9">2012</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id10">2011</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id11">2009</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id12">2008</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id13">2007</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="downloads.html">Downloads</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="downloads.html#current-stable-release">Current stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downloads.html#current-official-release">Current official release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="downloads.html#development-repository">Development repository</a></li>
 <li class="toctree-l2"><a class="reference internal" href="downloads.html#supplementary-software">Supplementary software</a></li>
 <li class="toctree-l2"><a class="reference internal" href="downloads.html#references">References</a></li>
-<li class="toctree-l2"><a class="reference internal" href="downloads.html#mailing-lists">Mailing lists</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">Community</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="community.html#keeping-up-to-date">Keeping up-to-date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community.html#getting-support">Getting Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community.html#contributing">Contributing</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
@@ -183,13 +191,13 @@
       
   <div class="section" id="visualization">
 <span id="visualization-link"></span><h1>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h1>
-<p>Module -V of Neper is dedicated to the visualization of tessellations
-and meshes. The input data is a tessellation or mesh as provided by
-modules -T and -M. The way the tessellation and mesh entities are
-displayed can be specified in detail, which makes the module adequate
-for post-processing. 3D mesh slicing is also available. All
-capabilities available for 3D tessellations and meshes are available
-in 2D and 1D.</p>
+<p>Module -V is for visualizing tessellations and meshes. The input data is a
+tessellation or mesh as provided by modules -T and -M. The way the tessellation
+and mesh entities are displayed can be specified in detail, which makes the
+module adequate for post-processing. Mesh slicing is also available. The
+POV-Ray ray-tracing package is used to generate the output PNG image.  Loops
+can also be created to generate a series of images that can then be turned into
+a movie.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
 <li><a class="reference internal" href="#generalities" id="id1">Generalities</a></li>
@@ -207,11 +215,14 @@ angle, look-at point and projection, shadowing effects and image
 properties. The POV-Ray ray-tracing package is used to generate
 images at the PNG format. Examples are provided below for a
 tessellation and its mesh.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -V n1000.tess -datacellcol id -print n1000
-$ neper -V n1000.msh  -showelt1d all \
-           -dataelset3dcol id        \
-           -dataelt3dedgerad 0.001   \
-           -dataelt1drad 0.0025      \
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -V n1000.tess               \
+           -datacellcol id          \
+           -print n1000
+$ neper -V n1000.tess,n1000.msh     \
+           -showelt1d all           \
+           -dataelset3dcol id       \
+           -dataelt3dedgerad 0.001  \
+           -dataelt1drad 0.0025     \
            -print n1000-mesh
 </pre></div>
 </div>
@@ -220,17 +231,23 @@ $ neper -V n1000.msh  -showelt1d all \
 </div>
 <div class="section" id="colour-transparency-etc">
 <h2><a class="toc-backref" href="#id2">Colour, transparency, etc.</a><a class="headerlink" href="#colour-transparency-etc" title="Permalink to this headline">¶</a></h2>
-<p>The tessellation and mesh entities can be assigned particular
-colours, transparency or size. Mesh nodes can also be applied
+<p>The tessellation and mesh entities can be assigned specific
+colours, transparencies or sizes. Mesh nodes can also be applied
 displacements. For example, cells colours can be defined from the
 cell identifiers, the lattice orientations or a scalar field, or they
 can be loaded from a file. A mesh can be coloured from element or
 nodal values. Examples are provided below.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -V n1000.tess -datacellcol id -datacelltrs 0.5 -print n1000
-$ neper -V n1000.msh -showelt1d all \
-        -dataelt3dedgerad 0.001 -dataelt1drad 0.0025 \
-        -datanodecol scal:mesh.stnode -dataeltcol from_nodes \
-        -print n1000-mesh
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -V n1000.tess                   \
+           -datacellcol id              \
+           -datacelltrs 0.5             \
+           -print n1000
+$ neper -V n1000.tess,n1000.msh         \
+          -showelt1d all                \
+          -dataelt3dedgerad 0.001       \
+          -dataelt1drad 0.0025          \
+          -datanodecol scal:mesh.stnode \
+          -dataeltcol from_nodes        \
+          -print n1000-mesh
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/visu_cotr.png"><img alt="_images/visu_cotr.png" src="_images/visu_cotr.png" style="width: 66.67%;" /></a>
@@ -242,12 +259,18 @@ $ neper -V n1000.msh -showelt1d all \
 display can be specified. This can be carried out using logical
 expressions or identifiers loaded from a file. This is illustrated
 below for a tessellation and its mesh.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -V n1000.tess -datacellcol id -datacelltrs 0.5 \
-           -showcell &quot;id&lt;=50&quot; -showedge &quot;cell_shown||(domtype==1)&quot; \
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -V n1000.tess                           \
+           -datacellcol id                      \
+           -datacelltrs 0.5                     \
+           -showcell &quot;id&lt;=50&quot;                   \
+           -showedge &quot;cell_shown||(domtype==1)&quot; \
            -print selecttess
-$ neper -V n1000.msh -dataelsetcol id \
-           -showelt &quot;(z&lt;0.5)||(body&gt;0)&quot;  -showelt1d elt3d_shown \
-           -dataelt3dedgerad 0.001 -dataelt1drad 0.0025 \
+$ neper -V n1000.tess,n1000.msh                 \
+           -dataelsetcol id                     \
+           -showelt &quot;(z&lt;0.5)||(body&gt;0)&quot;         \
+           -showelt1d elt3d_shown               \
+           -dataelt3dedgerad 0.001              \
+           -dataelt1drad 0.0025                 \
            -print selectmesh
 </pre></div>
 </div>
@@ -260,10 +283,12 @@ $ neper -V n1000.msh -dataelsetcol id \
 retained during slicing. This is illustrated on the right by 3
 orthogonal slices of a mesh, where the colour shows the distance with
 respect to the nearest cell boundary.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -V n1000.msh -dataelt3dedgerad 0.001 -dataelt1drad 0.0025 \
-           -datanodecol scal:mesh-rclbody0p35.stnode              \
-           -dataeltcol from_nodes                                 \
-           -slicemesh x=0.5,y=0.5,z=0.5                           \
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -V n1000.tess,n1000.msh                      \
+           -dataelt3dedgerad 0.001                   \
+           -dataelt1drad 0.0025                      \
+           -datanodecol scal:mesh-rclbody0p35.stnode \
+           -dataeltcol from_nodes                    \
+           -slicemesh x=0.5,y=0.5,z=0.5              \
            -print slicemesh
 </pre></div>
 </div>

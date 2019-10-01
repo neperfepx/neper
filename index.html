@@ -3,13 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Neper: polycrystal generation and meshing &#8212; Neper 3.4.0 documentation</title>
+    <title>Neper: polycrystal generation and meshing &#8212; Neper 3.5.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.4.0',
+        VERSION:     '3.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -47,7 +47,7 @@
         </button>
         <a class="navbar-brand" href="#">
           Neper</a>
-        <span class="navbar-text navbar-version pull-left"><b>version 3.4.0 (15 Apr 2019)</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>version 3.5.0 (01 Oct 2019)</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -68,6 +68,8 @@
 <li class="toctree-l2"><a class="reference internal" href="generation.html#tessellations-from-morphological-properties">Tessellations from morphological properties</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generation.html#multiscale-tessellations">Multiscale tessellations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generation.html#periodic-and-semi-periodic-tessellations">Periodic and semi-periodic tessellations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generation.html#new-non-convex-domains">[new] Non-convex domains</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generation.html#new-crystal-orientation-distribution">[new] Crystal orientation distribution</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generation.html#regularization">Regularization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generation.html#scalar-and-raster-formats">Scalar and raster formats</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generation.html#statistics">Statistics</a></li>
@@ -90,30 +92,32 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id1">2019</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id2">2018</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id3">2017</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id4">2016</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id5">2015</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id6">2014</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id7">2013</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id8">2012</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id9">2011</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id10">2009</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id11">2008</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id12">2007</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id1">2020</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id2">2019</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id3">2018</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id4">2017</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id5">2016</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id6">2015</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id7">2014</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id8">2013</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id9">2012</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id10">2011</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id11">2009</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id12">2008</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id13">2007</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="downloads.html">Downloads</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="downloads.html#current-stable-release">Current stable release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="downloads.html#current-official-release">Current official release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="downloads.html#development-repository">Development repository</a></li>
 <li class="toctree-l2"><a class="reference internal" href="downloads.html#supplementary-software">Supplementary software</a></li>
 <li class="toctree-l2"><a class="reference internal" href="downloads.html#references">References</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="community.html">Community</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="community.html#user-support">User Support</a></li>
-<li class="toctree-l2"><a class="reference internal" href="community.html#get-together">Get together</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community.html#keeping-up-to-date">Keeping up-to-date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community.html#getting-support">Getting Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="community.html#contributing">Contributing</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
@@ -205,36 +209,41 @@ full polycrystal image.</li>
 </ul>
 <p>Standard approaches (regular
 tessellations and Voronoi or Laguerre
-tessellations) are also available.</p>
+tessellations) are also available.
+See <a class="reference external" href="generation.html#tessellations-from-morphological-properties">examples</a>.</p>
 </li>
 <li><p class="first"><strong>Generation of multiscale
 microstructures</strong></p>
 <p>Each cell of a primary tessellation is
 partitioned into a new tessellation, and
-the process can be repeated an arbitrary
+the process can be repeated any
 number of times. This can be used to mode
 complex microstructures such as bainitic
-steel, lamellar Ti-6Al-4V, etc.</p>
+steel, lamellar Ti-6Al-4V, etc.
+See <a class="reference external" href="generation.html#multiscale-microstructures">examples</a>.</p>
 </li>
 <li><p class="first"><strong>Generation of periodic or
 semi-periodic microstructures</strong></p>
 <p>The tessellations (and their meshes) can
 be prescribed periodic or semi-periodic
-conditions to cancel the effect of free
-surfaces or reduce the size of the RVE.</p>
+conditions to avoid free-surface effects
+or reduce the RVE size.
+See <a class="reference external" href="generation.html#periodic-and-semi-periodic-tessellations">examples</a>.</p>
 </li>
 <li><p class="first"><strong>NEW (version 3.4+):</strong> <strong>Generation of polycrystals in
 non-convex domains</strong></p>
 <p>Once generated, tessellations can be cut by a series of
 geometric primitives,
 such as half-spaces, cylinders, elliptic cylinders or spheres, to
-generate non-convex domains, as illustrated on the right.</p>
+generate non-convex domains.
+See <a class="reference external" href="generation.html#new-non-convex-domains">examples</a>.</p>
 </li>
 <li><p class="first"><strong>NEW (version 3.3+):</strong> <strong>Generation of uniform orientation
 distributions</strong></p>
 <p>Orientations can be uniformly distributed (flat ODF) for
 any number of orientations and any crystal symmetry.
-Some orientations can even be prescribed.</p>
+Some orientations can even be prescribed.
+See <a class="reference external" href="generation.html#new-crystal-orientation-distribution">examples</a>.</p>
 </li>
 <li><p class="first"><strong>Meshing into good-quality elements</strong></p>
 <p>Meshing involves specific methods
@@ -271,10 +280,6 @@ system.</p>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">As of October 2019, we are rethinking user support.  See the <a class="reference external" href="community.html">community page</a>.</p>
-</div>
 <div class="section" id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">

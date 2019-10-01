@@ -22,28 +22,33 @@ Neper: polycrystal generation and meshing
 |    (3DXRD, DCT, HEDM, ...)                                        |                                  |
 |    and such as grain centroids/volumes or a                       |                                  |
 |    full polycrystal image.                                        |                                  |
-|                                                                   |                                  |
 |  Standard approaches (regular                                     |                                  |
 |  tessellations and Voronoi or Laguerre                            |                                  |
 |  tessellations) are also available.                               |                                  |
+|  See `examples                                                    |                                  |
+|  <generation.html#tessellations-from-morphological-properties>`_. |                                  |
 |                                                                   |                                  |
 |- **Generation of multiscale                                       |                                  |
 |  microstructures**                                                |                                  |
 |                                                                   |                                  |
 |  Each cell of a primary tessellation is                           |                                  |
 |  partitioned into a new tessellation, and                         |                                  |
-|  the process can be repeated an arbitrary                         |                                  |
+|  the process can be repeated any                                  |                                  |
 |  number of times. This can be used to mode                        |                                  |
 |  complex microstructures such as bainitic                         |                                  |
 |  steel, lamellar Ti-6Al-4V, etc.                                  |                                  |
+|  See `examples                                                    |                                  |
+|  <generation.html#multiscale-microstructures>`_.                  |                                  |
 |                                                                   |                                  |
 |- **Generation of periodic or                                      |                                  |
 |  semi-periodic microstructures**                                  |                                  |
 |                                                                   |                                  |
 |  The tessellations (and their meshes) can                         |                                  |
 |  be prescribed periodic or semi-periodic                          |                                  |
-|  conditions to cancel the effect of free                          |                                  |
-|  surfaces or reduce the size of the RVE.                          |                                  |
+|  conditions to avoid free-surface effects                         |                                  |
+|  or reduce the RVE size.                                          |                                  |
+|  See `examples                                                    |                                  |
+|  <generation.html#periodic-and-semi-periodic-tessellations>`_.    |                                  |
 |                                                                   |                                  |
 |- **NEW (version 3.4+):** **Generation of polycrystals in          |                                  |
 |  non-convex domains**                                             |                                  |
@@ -51,7 +56,8 @@ Neper: polycrystal generation and meshing
 |  Once generated, tessellations can be cut by a series of          |                                  |
 |  geometric primitives,                                            |                                  |
 |  such as half-spaces, cylinders, elliptic cylinders or spheres, to|                                  |
-|  generate non-convex domains, as illustrated on the right.        |                                  |
+|  generate non-convex domains.                                     |                                  |
+|  See `examples <generation.html#new-non-convex-domains>`_.        |                                  |
 |                                                                   |                                  |
 |- **NEW (version 3.3+):** **Generation of uniform orientation      |                                  |
 |  distributions**                                                  |                                  |
@@ -59,6 +65,8 @@ Neper: polycrystal generation and meshing
 |  Orientations can be uniformly distributed (flat ODF) for         |                                  |
 |  any number of orientations and any crystal symmetry.             |                                  |
 |  Some orientations can even be prescribed.                        |                                  |
+|  See `examples                                                    |                                  |
+|  <generation.html#new-crystal-orientation-distribution>`_.        |                                  |
 |                                                                   |                                  |
 |- **Meshing into good-quality elements**                           |                                  |
 |                                                                   |                                  |
@@ -91,8 +99,6 @@ Neper: polycrystal generation and meshing
 |system.                                                            |                                  |
 +-------------------------------------------------------------------+----------------------------------+
 
-.. note:: Discover how Neper would do as a researcher on his `Google Scholar page <https://scholar.google.com/citations?hl=en&user=fG8cHDsAAAAJ&view_op=list_works&sortby=pubdate>`_ (contains all the application papers listed `here <applications.html>`_).
-
 Contents
 ========
 
@@ -104,9 +110,10 @@ Contents
    visualization
    applications
    downloads
+   community
    about
 
 Author
 ======
 
-- `Romain Quey <rquey@users.sourceforge.net>`_
+- `Romain Quey <romain.quey@mines-stetienne.fr>`_

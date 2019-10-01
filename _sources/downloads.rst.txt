@@ -14,19 +14,17 @@ are restrictions on its distribution (see the
 
 It you use Neper for your own work, please mention it explicitly and cite one or several of the papers given in the References section below.  The papers are available for download.
 
-Current stable release
-----------------------
+Current official release
+------------------------
 
-- `neper-3.4.0.tgz (15 Apr 2019) <http://sourceforge.net/projects/neper/files/neper-3.4.0.tgz/download>`_: source code and documentation
+- `neper-3.5.0.tgz (01 Oct 2019) <tarballs/neper-3.5.0.tgz>`_: source code and documentation
 - `neper.pdf <docs/neper.pdf>`_: documentation
 
 Development repository
 ----------------------
 
-A development repository is hosted on GitHub:
-http://github.com/rquey/neper.  It provides the development version.
-Code contributions to be included in the official (public) version of
-Neper should be submitted as pull requests.
+The development version is hosted on GitHub:
+https://github.com/rquey/neper.  This is also the place for code contributions, see the `community <community.html#contributing>`_ page.
 
 Supplementary software
 ----------------------
@@ -35,10 +33,10 @@ Supplementary software
   `GSL  <http://www.gnu.org/software/gsl/>`_,
   `muParser  <http://beltoforion.de/article.php?a=muparser>`_ (included in Neper),
   `nanoflann  <https://github.com/jlblancoc/nanoflann>`_ (included in Neper),
-  `Gmsh <http://geuz.org/gmsh>`_,
+  `Gmsh <http://gmsh.info/>`_,
   `libScotch <http://www.labri.fr/perso/pelegrin/scotch>`_,
   `POV-Ray <http://www.povray.org>`_
-- All versions of Neper can be accessed `here <http://sourceforge.net/projects/neper/files/neper/>`_.
+- Old versions of Neper can be accessed from the `GitHub repository <https://github.com/rquey/neper/releases>`_ (documentation not compiled) or `here <tarballs>`_.
 
 References
 ----------
@@ -48,13 +46,3 @@ References
 - Romain Quey and Loïc Renversade, Optimal polyhedral description of 3D polycrystals: Method and application to statistical and synchrotron X-ray diffraction data, Comput. Methods Appl. Mech. Engrg., vol. 330, pp. 308-333, 2018: `postprint <https://hal.archives-ouvertes.fr/hal-01626440>`_ `link <https://www.sciencedirect.com/science/article/pii/S0045782517307028>`_
 
 - Romain Quey, Aurelien Villani and Claire Maurice, Nearly uniform sampling of crystal orientations. J. Appl. Crystallogr., vol. 51, pp. 1162-1173, 2018. `reprint <docs/quey-villani-maurice-JAC-2018.pdf>`_ `link <http://scripts.iucr.org/cgi-bin/paper?buy=yes&cnor=ks5599&showscheme=yes>`_
-
-Mailing lists
--------------
-
-There are two mailing lists for Neper, which you may find useful to
-subscribe to:
-
-- `neper-announce <https://lists.sourceforge.net/lists/listinfo/neper-announce>`_: the "read-only" list for important news: new releases, bug fixes, etc. (low traffic, highly recommended!).
-- `neper-users <https://lists.sourceforge.net/lists/listinfo/neper-users>`_: the "read-write" list for users. Please send all questions, bug reports, requests or any errors or omissions in this manual to this list.
-

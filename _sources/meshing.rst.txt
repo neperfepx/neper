@@ -3,15 +3,16 @@
 Meshing
 =======
 
-Module -M of Neper is dedicated to tessellation meshing. The input
+Module -M is dedicated to meshing. The input
 data is a tessellation as provided by module -T or a mesh to remesh.
 The mesh size can be uniform or defined on a per-grain basis. Cohesive
 elements can be inserted at interfaces. The
 output mesh can be written at several formats, including
+the Gmsh '.msh',
 the Abaqus '.inp',
-the FEpX '.fepx',
-the Zset '.geof',
-and the Gmsh '.msh'. Statistical data also are available.
+the Zset '.geof' and
+the FEpX '.fepx'.
+Statistical data also are available.
 
 .. contents::
    :depth: 2
@@ -21,14 +22,14 @@ Generalities
 ------------
 
 A mesh is created from a tessellation and a target element size. To
-ensure mesh quality, each face or volume is meshed using a collection of
+ensure mesh quality, each face or volume is meshed using several
 algorithms, until a minimum mesh quality index is reached. The quality
 index depends on the sizes and aspect ratios of the elements.  The
-Netgen and Gmsh libraries are used for 2D and 3D meshing. The output
-data consists of the mesh of the full tessellation, with element sets
-for the individual cells (optionally interfaces) and node sets for the
+Netgen and Gmsh libraries are used for 2D and 3D meshings. The output
+data consists of the mesh of the full tessellation, including element sets
+of the individual cells (optionally interfaces) and node sets of the
 domain surfaces, edges and vertices. The free mesh of a regularized
-1000-cell tessellation is shown below, as well as its mapped mesh, where
+1000-cell tessellation is shown below, as well as its mapped mesh, whose
 regular elements lead to stepped boundaries.
 ::
 
@@ -44,7 +45,7 @@ Element size
 ------------
 
 The element size can be uniform or defined on a per-cell basis. It
-can be monitored using logical expressions that define cell sets,
+can be controlled using logical expressions that define cell sets,
 each of which is assigned a specific element size, or by loading the
 cell element sizes from a file. Typically, this can be used to
 generate a mesh with different element sizes for the boundary cells

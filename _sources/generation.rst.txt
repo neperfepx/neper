@@ -73,7 +73,7 @@ from a tessellation whose each cell is further divided by
 tessellation (and so on). All capabilities available for 1-scale tessellations are
 available for multiscale tessellations. Such a process is suitable to
 model polycrystals where primary grains are divided into several
-grains. Multiscale tessellations can also be meshed. 
+grains. Multiscale tessellations can also be meshed.
 ::
 
   $ neper -T -n 200::from_morpho            -morpho "gg::lamellar(w=0.02)"
@@ -106,6 +106,46 @@ These tessellations can be meshed just as non-periodic tessellations.
   :width: 100%
 
 :download:`gene_peri.sh <imgs/gene_peri.sh>`
+
+[new] Non-convex domains
+------------------------
+
+Non-convex domains can be obtained by cutting a tessellation by one or several
+geometrical primitives, such as half-spaces, spheres, cylinders or elliptic
+cylinders.  Due to the current implementation, this feature remains experimental
+and will run properly only if the local curvature of the geometrical
+primitive is larger than the typical cell size.  The resulting tessellations
+can be regularized and meshed just as convex tessellations.
+::
+
+  $ neper -T -n 1000 -morpho gg -transform "cut(sphere(1,0.5,1,0.7))"
+  $ neper -T -n 1000 -morpho gg -domain "cube(1.2,0.1,1.2)" -transform "cut(cylinder(0.3,0,0.3,0,1,0,0.15),cylinder(0.3,0,0.9,0,1,0,0.15),cylinder(0.9,0,0.3,0,1,0,0.15),cylinder(0.9,0,0.9,0,1,0,0.15))"
+  $ neper -T -n 1000 -morpho gg -domain "cube(0.6,0.6,1.4):translate(-0.3,-0.3,-0.7)" -transform "cut(cylinder(-0.9,0,0,0,1,0,0.8),cylinder(0.9,0,0,0,1,0,0.8),cylinder(0,-0.9,0,1,0,0,0.8),cylinder(0,0.9,0,1,0,0,0.8))"
+
+.. image:: imgs/gene_cut.png
+  :width: 100%
+
+:download:`gene_cut.sh <imgs/gene_cut.sh>`
+
+[new] Crystal orientation distribution
+--------------------------------------
+
+Crystal orientations are assigned to the cells.  The first type of crystal
+orientation distribution is **random**, which corresponds to the standard case
+for which orientations are distributed randomly according to a uniform distribution
+(for the metallurgists: no texture, but still random orientations).  The second
+type of crystal orientation distribution is **uniform**, which corresponds to a
+new case for which orientations are distributed uniformly (still according to a
+uniform orientation distribution), i.e. there will be no local orientation
+clusters as is typical from a random distribution.  It is important to specify
+the crystal symmetry in this case.
+::
+
+  $ neper -T -n 1000 -format ori
+  $ neper -T -n 1000 -oricrysym cubic -ori uniform -format ori
+
+.. image:: imgs/gene_flatori.png
+  :width: 100%
 
 Regularization
 --------------

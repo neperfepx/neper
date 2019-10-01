@@ -12,6 +12,11 @@ This list is also available on Neper's `Google Scholar page <https://scholar.goo
    :depth: 2
    :local:
 
+2020
+----
+
+- D. Wicht, M. Schneider and T. Bohlke, *An efficient solution scheme for small-strain crystal-elasto-viscoplasticity in a dual framework*, **Computer Methods in Applied Mechanics and Engineering**, vol. 358, pp. 112611, 2020.
+
 2019
 ----
 
