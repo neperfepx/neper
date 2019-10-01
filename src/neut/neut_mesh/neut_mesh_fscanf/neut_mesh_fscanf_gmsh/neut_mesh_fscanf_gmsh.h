@@ -13,13 +13,15 @@ extern "C"
 				    struct MESH *pMesh0D,
 				    struct MESH *pMesh1D,
 				    struct MESH *pMesh2D,
-				    struct MESH *pMesh3D);
+				    struct MESH *pMesh3D,
+				    struct MESH *pMeshCo);
 
   extern void neut_mesh_name_fscanf_msh (char *filename, struct NODES *pNodes,
 					 struct MESH *pMesh0D,
 					 struct MESH *pMesh1D,
 					 struct MESH *pMesh2D,
-					 struct MESH *pMesh3D);
+					 struct MESH *pMesh3D,
+					 struct MESH *pMeshCo);
 
 #endif				// NEUT_MESH_FSCANF_GMSH
 

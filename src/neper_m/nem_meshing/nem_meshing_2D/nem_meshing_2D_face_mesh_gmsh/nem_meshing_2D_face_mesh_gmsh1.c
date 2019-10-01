@@ -94,7 +94,7 @@ nem_meshing_2D_face_mesh_gmsh (struct TESS Tess, struct NODES RNodes,
   {
     status = 0;
     file = ut_file_open (filename_msh, "R");
-    neut_mesh_fscanf_msh (file, pN, NULL, NULL, pM, NULL);
+    neut_mesh_fscanf_msh (file, pN, NULL, NULL, pM, NULL, NULL);
     ut_file_close (file, filename_msh, "R");
 
     if ((*pM).EltQty <= 0)

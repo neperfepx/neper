@@ -25,7 +25,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   struct POINT Point;
   struct BOUNDARY Bound;
 
-  RMesh = malloc (4 * sizeof (struct MESH));
+  RMesh = malloc (5 * sizeof (struct MESH));
   Mesh = malloc (5 * sizeof (struct MESH));
   NSet = malloc (3 * sizeof (struct NSET));
 
@@ -97,7 +97,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 2, "Loading mesh...\n");
     neut_mesh_name_fscanf_msh (In.mesh, &RNodes, RMesh, RMesh + 1, RMesh + 2,
-			       RMesh + 3);
+			       RMesh + 3, RMesh + 4);
     nem_input_init_dim_mesh (&In, RMesh);
 
     if (!strcmp (In.elttype, "tri"))
@@ -290,9 +290,9 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   neut_meshpara_free (MeshPara);
   neut_tess_free (&Tess);
   neut_nodes_free (&Nodes);
-  for (i = 0; i <= 3; i++)
+  for (i = 0; i <= 4; i++)
     neut_mesh_free (Mesh + i);
-  for (i = 0; i <= 3; i++)
+  for (i = 0; i <= 4; i++)
     neut_mesh_free (RMesh + i);
   for (i = 0; i <= 2; i++)
     neut_nset_free (NSet + i);
