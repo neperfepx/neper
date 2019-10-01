@@ -46,9 +46,12 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
   // if loading from a file, setting mode to its format
   if (strcmp ((*pIn).load, "none"))
   {
-    if (!ut_file_exist ((*pIn).load))
-      ut_print_message (2, 0, "%s: no such file.\n", (*pIn).load);
-    ut_file_format ((*pIn).load, &(*pIn).mode);
+    int partqty;
+    char **parts = NULL;
+    ut_string_separate ((*pIn).load, NEUT_SEP_DEP, &parts, &partqty);
+    if (!ut_file_exist (parts[0]))
+      ut_print_message (2, 0, "%s: no such file.\n", parts[0]);
+    ut_file_format (parts[0], &(*pIn).mode);
   }
 
   // otherwise, tessellations are built in tess mode
