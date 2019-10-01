@@ -74,11 +74,11 @@ void
 neut_tesr_fscanf (FILE * file, char *dirname, double *bounds, double *scale, struct TESR *pTesr)
 {
   char *format = NULL, string[1000];
-  int *voxbounds = ut_alloc_1d_int (6);
+  int *voxbounds = NULL;
 
   neut_tesr_free (pTesr);
 
-  neut_tesr_fscanf_head (pTesr, bounds, voxbounds, &format, file);
+  neut_tesr_fscanf_head (pTesr, bounds, &voxbounds, &format, file);
   neut_tesr_fscanf_cell (pTesr, file);
   neut_tesr_fscanf_data (pTesr, dirname, voxbounds, scale, format, file);
 

@@ -18,7 +18,7 @@
 extern void neut_tesr_fscanf (FILE *, char *, double *, double *, struct TESR *);
 extern void neut_tesr_fscanf_version (FILE *, char *);
 extern void neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds,
-				   int *voxbounds, char **format, FILE * file);
+				   int **pvoxbounds, char **format, FILE * file);
 extern void neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file);
 extern void neut_tesr_fscanf_data (struct TESR *pTesr, char *path, int *bounds,
 				   double *scale, char *format, FILE * file);

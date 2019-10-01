@@ -6,7 +6,7 @@
 
 /* Tessellation exportation: head */
 void
-neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds, int *voxbounds,
+neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds, int **pvoxbounds,
                        char **pformat, FILE * file)
 {
   int i, status;
@@ -86,6 +86,7 @@ neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds, int *voxbounds,
   {
     int *vox = ut_alloc_1d_int (3);
     double *coo = ut_alloc_1d (3);
+    (*pvoxbounds) = ut_alloc_1d_int (6);
 
     for (i = 0; i <= 1; i++)
     {
@@ -93,9 +94,9 @@ neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds, int *voxbounds,
                               bounds[i + 2] - (*pTesr).Origin[1],
                               bounds[i + 4] - (*pTesr).Origin[2]);
       neut_tesr_coo_pos (*pTesr, coo, i?-1:1, vox);
-      voxbounds[i] = vox[0];
-      voxbounds[i + 2] = vox[1];
-      voxbounds[i + 4] = vox[2];
+      (*pvoxbounds)[i] = vox[0];
+      (*pvoxbounds)[i + 2] = vox[1];
+      (*pvoxbounds)[i + 4] = vox[2];
     }
 
     ut_free_1d_int (vox);
