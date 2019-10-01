@@ -37,38 +37,9 @@ Public License}). Further
 information about this license is available from the GNU Project webpage
 @uref{http://www.gnu.org/copyleft/gpl-faq.html}.
 
-@c @sp 1
-The Neper software package can be downloaded from
-@url{http://neper.sourceforge.net}. It also has two dedicated mailing
-lists,
-
-@itemize
-@item neper-announce: the ``read-only'' list for important news: new
-releases, bug fixes, etc. (low traffic, highly recommended!)
-
-@w{To subscribe, visit
-@url{https://lists.sourceforge.net/lists/listinfo/neper-announce}}.
-The list is archived at@*
-@url{http://sourceforge.net/mailarchive/forum.php?forum_name=neper-announce}.
-
-@item neper-users: the ``read-write'' list for users.  Please send all
-questions, bug reports, requests or any errors or omissions in this
-manual to this list.
-
-@w{To subscribe, visit
-@url{https://lists.sourceforge.net/lists/listinfo/neper-users}};
-@w{to send a message, use @email{neper-users@@lists.sourceforge.net}}.
-The list is archived at
-@url{http://sourceforge.net/mailarchive/forum.php?forum_name=neper-users}.
-@end itemize
-
-The best way to get help is by checking out the list archives or by
-sending a message to the neper-users list.  There is no need
-to subscribe to the list to send a message nor receive a reply.
-
 @section User Guidelines
 
-If you use Neper for your own work, please, mention it explicitly in your reports (books, papers, talks,
+If you use Neper for your own work, please, mention it explicitly in your reports (papers, books, talks,
 @iftex
 @dots)
 @end iftex
@@ -76,7 +47,7 @@ If you use Neper for your own work, please, mention it explicitly in your report
 ...)
 @end ifinfo
 and
-cite the following paper(s):
+cite one of several of the following papers (depending of your use of Neper):
 @c
 @itemize
 @item @cite{R. Quey, P.R. Dawson, F. Barbe. Large-scale 3D random
@@ -89,6 +60,6 @@ diffraction data, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 330, pp.@
 308-333, 2018}
 (for tessellation from experimental properties with option @option{-morpho});
 @item @cite{R.@ Quey, A.@ Villani and C.@ Maurice, Nearly uniform sampling
-of crystal orientations, J.@ Appl.@ Crystallogr., vol. 51, pp.@ 1162-1173, 2018.}''
+of crystal orientations, J.@ Appl.@ Crystallogr., vol. 51, pp.@ 1162-1173, 2018}
 (for uniform crystal orientation distribution with option @option{-ori uniform}).
 @end itemize

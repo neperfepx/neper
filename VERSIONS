@@ -1,4 +1,4 @@
-New in 3.4.1-82 (30 Sep 2019):
+New in 3.4.1-83 (01 Oct 2019):
 - module -T: added -transform slice, added new statistical distributions to
   -morpho: beta, lorentzian, studentst, weibull, breitwigner, expnormal,
   moffat, pearson7, pseudovoigt and skewnormal, added endpoints to statistical
@@ -17,7 +17,8 @@ New in 3.4.1-82 (30 Sep 2019):
 - module -V: added -showvox, added -datavoxcol disori, added colour scheme R(),
   r, theta and rtheta, added -imageformat pov:objects, improved -includepov,
   fixed visualization of periodic meshes, small fixes.
-- general: fixed compilation when GSL and NLopt locally installed.
+- general: fixed compilation when GSL and NLopt locally installed, website now
+  at http://neper.info.
 - documentation: small fixes.
 
 New in 3.4.0 (15 Apr 2019):
