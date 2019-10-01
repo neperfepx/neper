@@ -1,4 +1,4 @@
-New in 3.4.1-91 (01 Oct 2019):
+New in 3.5.0 (01 Oct 2019):
 - module -T: added -transform slice and oriaverage,
   added new statistical distributions to -morpho: beta, lorentzian, studentst,
   weibull, breitwigner, expnormal, moffat, pearson7, pseudovoigt and
