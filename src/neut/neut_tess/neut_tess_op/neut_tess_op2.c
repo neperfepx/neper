@@ -243,6 +243,8 @@ neut_tess_domface_tess_general (struct TESS Tess, struct TESS *pT)
     ut_array_1d_memcpy ((*pT).PeriodicDist, 3, Tess.PeriodicDist);
   }
 
+  (*pT).ScaleQty = Tess.ScaleQty;
+
   return;
 }
 
@@ -281,6 +283,49 @@ neut_tess_domface_tess_seeds (struct TESS Tess, struct TESS *pT)
 			    Tess.PerSeedSlave + 1);
   }
 
+  return;
+}
+
+void
+neut_tess_domface_tess_cells (struct TESS Tess, int *oldface_newface, struct TESS *pT)
+{
+  int i, j, newfaceqty, *newface_oldface = NULL;
+  int *face_oldpoly = ut_alloc_1d_int ((*pT).FaceQty + 1);
+
+  if (oldface_newface)
+    ut_array_1d_int_inv (oldface_newface, Tess.FaceQty + 1, &newface_oldface, &newfaceqty);
+
+  for (i = 1; i <= (*pT).FaceQty; i++)
+    face_oldpoly[i] = oldface_newface? Tess.FacePoly[newface_oldface[i]][0] : Tess.FacePoly[i][0];
+
+  (*pT).CellQty = (*pT).FaceQty;
+
+  (*pT).CellId = ut_alloc_1d_int ((*pT).CellQty + 1);
+  ut_array_1d_int_set_id ((*pT).CellId, (*pT).CellQty + 1);
+    for (i = 1; i <= (*pT).CellQty; i++)
+      if (newface_oldface)
+        (*pT).CellId[i] = Tess.CellId ? Tess.CellId[face_oldpoly[i]] : face_oldpoly[i];
+
+  (*pT).ScaleCellId = ut_alloc_2d_int ((*pT).CellQty + 1, (*pT).ScaleQty + 1);
+    for (i = 1; i <= (*pT).CellQty; i++)
+      if (newface_oldface && Tess.ScaleCellId)
+        for (j = 1; j <= (*pT).ScaleQty; j++)
+          (*pT).ScaleCellId[i][j] = Tess.ScaleCellId[face_oldpoly[i]][j];
+
+  if (Tess.CellOri)
+  {
+    (*pT).CellOri = ut_alloc_2d (Tess.CellQty + 1, 4);
+    for (i = 1; i <= (*pT).CellQty; i++)
+      ut_array_1d_memcpy ((*pT).CellOri[i], 4, Tess.CellOri[face_oldpoly[i]]);
+  }
+
+  if (Tess.CellModeId)
+  {
+    (*pT).CellModeId = ut_alloc_1d_int (Tess.CellQty + 1);
+    for (i = 1; i <= (*pT).CellQty; i++)
+      (*pT).CellModeId[i] = Tess.CellModeId[face_oldpoly[i]];
+  }
+
   if (Tess.CellLamId)
   {
     (*pT).CellLamId = ut_alloc_1d_int ((*pT).CellQty + 1);
@@ -295,33 +340,10 @@ neut_tess_domface_tess_seeds (struct TESS Tess, struct TESS *pT)
 			    Tess.CellModeId + 1);
   }
 
-  return;
-}
-
-void
-neut_tess_domface_tess_cells (struct TESS Tess, struct TESS *pT)
-{
-  (*pT).CellQty = Tess.CellQty;
-
-  if (Tess.CellId)
-  {
-    (*pT).CellId = ut_alloc_1d_int (Tess.CellQty + 1);
-    ut_array_1d_int_memcpy ((*pT).CellId + 1, Tess.CellQty, Tess.CellId + 1);
-  }
-
-  if (Tess.CellOri)
-  {
-    (*pT).CellOri = ut_alloc_2d (Tess.CellQty + 1, 4);
-    ut_array_2d_memcpy ((*pT).CellOri + 1, Tess.CellQty, 4, Tess.CellOri + 1);
-  }
-
-  if (Tess.CellModeId)
-  {
-    (*pT).CellModeId = ut_alloc_1d_int (Tess.CellQty + 1);
-    ut_array_1d_int_memcpy ((*pT).CellModeId + 1, Tess.CellQty, Tess.CellModeId + 1);
-  }
-
   ut_string_string (Tess.CellCrySym, &((*pT).CellCrySym));
+
+  ut_free_1d_int (newface_oldface);
+  ut_free_1d_int (face_oldpoly);
 
   return;
 }
@@ -934,23 +956,6 @@ neut_tess_domface_tess_domain (struct TESS Tess, int domface,
 
   ut_free_1d_int (olddedge_newdedge);
   ut_free_1d_int (olddver_newdver);
-
-  return;
-}
-
-void
-neut_tess_domface_tess_scale (struct TESS Tess, struct TESS *pT)
-{
-  // Scale information
-  if (Tess.ScaleQty > 0)
-  {
-    (*pT).ScaleQty = Tess.ScaleQty;
-    (*pT).ScaleCellId = ut_alloc_2d_int (Tess.CellQty + 1,
-					 Tess.ScaleQty + 1);
-    ut_array_2d_int_memcpy ((*pT).ScaleCellId + 1, Tess.CellQty,
-			    Tess.ScaleQty + 1,
-			    Tess.ScaleCellId + 1);
-  }
 
   return;
 }

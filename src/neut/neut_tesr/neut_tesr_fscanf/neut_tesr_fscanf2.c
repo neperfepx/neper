@@ -6,8 +6,8 @@
 
 /* Tessellation exportation: head */
 void
-neut_tesr_fscanf_head (struct TESR *pTesr, int *bounds, char **pformat,
-		       FILE * file)
+neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds, int **pvoxbounds,
+                       char **pformat, FILE * file)
 {
   int i, status;
   char *string = ut_alloc_1d_char (1000);
@@ -59,17 +59,49 @@ neut_tesr_fscanf_head (struct TESR *pTesr, int *bounds, char **pformat,
     ut_print_message (2, 0,
 		      "Input file is not a valid raster tessellation file.\n");
 
-  if (bounds)
-    for (i = 0; i < 3; i++)
-    {
-      if (bounds[2 * i] == -1)
-	bounds[2 * i] = 1;
-      if (bounds[2 * i + 1] == -1)
-	bounds[2 * i + 1] = (*pTesr).size[i];
-    }
-
   (*pTesr).vsize = ut_alloc_1d (3);
   status = ut_array_1d_fscanf (file, (*pTesr).vsize, (*pTesr).Dim);
+
+  while (ut_file_nextstring (file, string) == 1 && strncmp (string, "**", 2))
+  {
+    if (!strcmp (string, "*origin"))
+    {
+      ut_file_skip (file, 1);
+      ut_array_1d_fscanf (file, (*pTesr).Origin, (*pTesr).Dim);
+    }
+
+    else if (!strcmp (string, "*hasvoid"))
+    {
+      ut_file_skip (file, 1);
+      if (fscanf (file, "%d", &(*pTesr).hasvoid) != 1)
+        ut_print_message (2, 0,
+                          "Input file is not a valid raster tessellation file.\n");
+    }
+
+    else
+      ut_print_message (2, 2, "Failed to read tesr file.\n");
+  }
+
+  if (bounds)
+  {
+    int *vox = ut_alloc_1d_int (3);
+    double *coo = ut_alloc_1d (3);
+    (*pvoxbounds) = ut_alloc_1d_int (6);
+
+    for (i = 0; i <= 1; i++)
+    {
+      ut_array_1d_set_3 (coo, bounds[i] - (*pTesr).Origin[0],
+                              bounds[i + 2] - (*pTesr).Origin[1],
+                              bounds[i + 4] - (*pTesr).Origin[2]);
+      neut_tesr_coo_pos (*pTesr, coo, i?-1:1, vox);
+      (*pvoxbounds)[i] = vox[0];
+      (*pvoxbounds)[i + 2] = vox[1];
+      (*pvoxbounds)[i + 4] = vox[2];
+    }
+
+    ut_free_1d_int (vox);
+    ut_free_1d (coo);
+  }
 
   while (ut_file_nextstring (file, string) == 1 && strncmp (string, "**", 2))
   {
@@ -224,6 +256,17 @@ neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file)
 	}
       }
 
+      else if (!strcmp (string, "*crysym"))
+      {
+	ut_file_skip (file, 1);
+	(*pTesr).CellCrySym = ut_alloc_1d_char (100);
+	status = fscanf (file, "%s", (*pTesr).CellCrySym);
+        if (status != 1)
+          abort ();
+	(*pTesr).CellCrySym = ut_realloc_1d_char ((*pTesr).CellCrySym,
+                                                  strlen ((*pTesr).CellCrySym) + 1);
+      }
+
       else
 	ut_print_message (2, 2, "Failed to read tesr file.\n");
     }
@@ -246,14 +289,16 @@ neut_tesr_fscanf_foot (FILE * file)
 }
 
 void
-neut_tesr_fscanf_data (struct TESR *pTesr, int *bounds, double *scale,
-		       char *format, FILE * file)
+neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
+                       double *scale, char *format, FILE * file)
+
 {
   int i;
   char c;
   FILE *file2 = NULL;
   char *filename = NULL;
   char *tmp = ut_alloc_1d_char (10);
+  char *tmp2 = ut_alloc_1d_char (1000);
   fpos_t pos;
 
   if (bounds && scale)
@@ -291,8 +336,9 @@ neut_tesr_fscanf_data (struct TESR *pTesr, int *bounds, double *scale,
   if (!strcmp (tmp, "*file"))
   {
     filename = ut_alloc_1d_char (1000);
-    if (fscanf (file, "%s", filename) != 1)
+    if (fscanf (file, "%s", tmp2) != 1)
       abort ();
+    sprintf (filename, "%s/%s", dirname, tmp2);
     file2 = ut_file_open (filename, "r");
   }
   else
@@ -330,6 +376,74 @@ neut_tesr_fscanf_data (struct TESR *pTesr, int *bounds, double *scale,
    */
 
   ut_free_1d_char (tmp);
+  ut_free_1d_char (tmp2);
+
+  return;
+}
+
+void
+neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
+                          double *scale, char *format, FILE * file)
+{
+  char c;
+  FILE *file2 = NULL;
+  char *filename = NULL;
+  char *tmp = ut_alloc_1d_char (10);
+  char *tmp2 = ut_alloc_1d_char (1000);
+  fpos_t pos;
+  char des[10];
+
+  if (bounds || scale)
+    ut_error_reportbug ();
+
+  (*pTesr).VoxOri = ut_alloc_4d ((*pTesr).size[0] + 1,
+                                 (*pTesr).size[1] + 1,
+                                 (*pTesr).size[2] + 1, 4);
+
+  if (fscanf (file, "%s", tmp) != 1)
+    abort ();
+
+  if (strcmp (tmp, "**oridata") != 0)
+    abort ();
+
+  if (fscanf (file, "%s", des) != 1)
+    abort ();
+
+  do
+  {
+    fgetpos (file, &pos);
+    if (fscanf (file, "%c", &c) != 1)
+      abort ();
+  }
+  while (c == ' ' || c == '\n' || c == '\t');
+
+  fsetpos (file, &pos);
+
+  if (c == '*')
+    if (fscanf (file, "%s", tmp) != 1)
+      abort ();
+
+  if (!strcmp (tmp, "*file"))
+  {
+    filename = ut_alloc_1d_char (1000);
+    if (fscanf (file, "%s", tmp2) != 1)
+      abort ();
+    sprintf (filename, "%s/%s", dirname, tmp2);
+    file2 = ut_file_open (filename, "r");
+  }
+  else
+    file2 = file;
+
+  neut_tesr_fscanf_oridata_default (pTesr, des, format, file2);
+
+  if (!strcmp (tmp, "*file"))
+  {
+    ut_file_close (file2, filename, "r");
+    ut_free_1d_char (filename);
+  }
+
+  ut_free_1d_char (tmp);
+  ut_free_1d_char (tmp2);
 
   return;
 }

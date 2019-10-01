@@ -14,7 +14,7 @@ ol_gnd_crys_b (struct OL_CRYS Crys, double *pb)
   if (!strcmp (Crys.structure, "sc"))
     (*pb) = Crys.a;
   else if (!strcmp (Crys.structure, "fcc"))
-    (*pb) = Crys.a * sqrt (3) / 2;	// fcc {111}<110>
+    (*pb) = Crys.a * sqrt (2) / 2;	// fcc {111}<110>
   else
     abort ();
 

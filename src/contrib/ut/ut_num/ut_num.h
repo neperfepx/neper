@@ -47,6 +47,8 @@ extern void ut_num_switch_int (int*, int*);
 
 extern double ut_num_percent (double a, double b);
 
+extern double ut_num_reverseendian (double a);
+
 #endif /* UT_NUM_H */
 
 #ifdef __cplusplus

@@ -1,3 +1,27 @@
+New in 3.5.0 (01 Oct 2019):
+- module -T: added -transform slice and oriaverage,
+  added new statistical distributions to -morpho: beta, lorentzian, studentst,
+  weibull, breitwigner, expnormal, moffat, pearson7, pseudovoigt and
+  skewnormal, added endpoints to statistical distributions, added variable
+  1-sphericity to -morpho, added tessellation keys, added -orioptilogvar,
+  improved argument reading (multiscale tessellation), improved tesr format,
+  improved -transform renumber, improved -ori fibre, improved -statcell
+  convexity, replaced -transform plane with -transform hspace, fixed -loadtesr
+  file.tesr:..., fixed -statvox e, fixed -for ori, fixed -domain, fixed -morpho
+  centroidal, fixed tesr reading, fixed vtk output, enrich tesr file, made
+  minor fixes.
+- module -M: added -transform scale, translate and smooth, added
+  -transporteltmethod, added -transportfepx, added mesh keys, added -performat,
+  added kocks file to -for fepx:legacy, fixed -interface cohesive for Abaqus,
+  fixed -elt hex, merged -scale into -transform, speed up -transport, made
+  minor fixes.
+- module -V: added -showvox, added -datavoxcol disori, added colour schemes
+  R(), r, theta and rtheta, added -imageformat pov:objects, improved
+  -includepov, fixed visualization of periodic meshes, made small fixes.
+- documentation: made minor fixes and improvements.
+- general: fixed compilation when GSL and NLopt locally installed, website now
+  at http://neper.info.
+
 New in 3.4.0 (15 Apr 2019):
 - module -T: added tessellation cutting (to get non-convex domains) using
   -transform cut, added cell merging and removal using -transform mergecell and

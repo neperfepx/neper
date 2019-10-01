@@ -10,6 +10,7 @@
 * Tessellation Keys::
 * Raster Tessellation Keys::
 * Tessellation Optimization Keys::
+* Orientation Optimization Keys::
 * Mesh Keys::
 * Point Keys::
 * Rotations and Orientations::
@@ -93,6 +94,83 @@ The parser has built in support for the if-then-else operator. It uses lazy eval
 @item @code{?:}         @tab if-then-else operator, following the C/C++ syntax: @*@code{(test)?value_if_true:value_if_false}.
 @end multitable
 
+@subsection Statistical Distributions
+
+The following table lists the statistical distributions.  Arguments enclosed in square brackets (@samp{[} and @samp{]}) are optional.  Custom endpoints (not indicated) can also be added as arguments, as described in the following.
+
+@multitable @columnfractions 0.4 0.25 0.35
+@headitem Operator
+          @tab Description
+          @tab Information
+@item @code{normal(@var{mean},@var{sigma})}
+      @tab normal
+      @tab
+@item @code{lognormal(@var{mean},@var{sigma})}
+      @tab lognormal
+      @tab
+@item @code{dirac(@var{mean})}
+      @tab Dirac
+      @tab
+@item @code{beta(@var{x},@var{y})}
+      @tab beta function
+      @tab @math{x>0}@comma{} @math{y>0}
+@item @code{lorentzian(@var{mean},@var{sigma})}
+      @tab Lorentzian
+      @tab
+@item @code{studentst(@var{mean},@var{sigma})}
+      @tab Student's t
+      @tab
+@item @code{weibull(@var{k},@var{sigma})}
+      @tab Weibull
+      @tab @math{k > 0} represents the shape
+@item @code{breitwigner(@var{mean},@var{sigma}[,@var{gamma}])}
+      @tab Breit-Wigner
+      @tab @math{gamma @geq{} 0}, default 1
+@item @code{expnormal(@var{mean},@var{sigma}[,@var{gamma}])}
+      @tab exp-normal
+      @tab @math{gamma > 0} default @math{sigma}
+@item @code{moffat(@var{mean},@var{sigma}[,@var{gamma}])}
+      @tab Moffat
+      @tab @math{gamma > 0}, default 1
+@item @code{pearson7(@var{mean},@var{sigma}[,@var{gamma}])}
+      @tab Pearson type VII
+      @tab default @math{gamma = 1.5}
+@item @code{pseudovoigt(@var{mean},@var{sigma}[,@var{gamma}])}
+      @tab Pseudo-Voigt
+      @tab
+@iftex
+@math{gamma @in [0,@,1]}, default 0.5
+@end iftex
+@ifinfo
+@math{gamma in [0,@,1]}, default 0.5
+@end ifinfo
+@item @code{skewnormal(@var{mean},@var{sigma}[,@var{gamma}])}
+      @tab skewed normal
+      @tab default @math{gamma = sigma}
+@end multitable
+
+@samp{@code{mean}} represents the mean (or centre), and @samp{@code{sigma}} (@math{>} 0)
+represents the standard deviation (or scale). @samp{@code{gamma}}
+depends on the distribution function (see the above table).
+@c
+For all distributions, custom endpoints can be added as last arguments, @samp{@var{from},@var{to}}, where @samp{@var{from}} is the lower end point and @samp{@var{to}} is the upper endpoint.
+@c
+@c @samp{@code{fromtype}} and @samp{@code{totype}} are not
+@c keywords per se, but serve to change the type of the endpoints without using
+@c keywords to explicitly assign one to them (0 = disable/ignore limit, 1 =
+@c inclusive limit, 2 = exclusive limit).
+@c
+If the parameter keywords are used, the parameters can be given in any order; e.g.,
+@samp{@code{moffat(@var{gamma}=1,@var{from}=0,@var{to}=1,@var{sigma}=0.1,@var{mean}=0.5)}}.
+Otherwise, the parameters are read based on their positions; e.g.,
+@samp{@code{lognormal(0.25,0.01)}} yields @math{mean=0.25} and @math{sigma=0.01}.
+It is also possible (but not recommended) to specify some variables by keyword
+and let others be read by position.  Endpoints are considered inclusive by default, but exclusive endpoints can be specified using @samp{fromexclusive=@var{from}} and @samp{toexclusive=@var{to}}
+(@samp{frominclusive=@var{from}} and @samp{toinclusive=@var{to}} can be used for inclusive endpoints).
+@c
+String completion is available for the keywords.
+Finally, a sum of distributions of increasing averages can be provided;
+e.g., @samp{0.3*lognormal(0.5,0.1)+0.7*normal(1,0.1)}.
 
 @node Tessellation Keys
 @section Tessellation Keys
@@ -152,35 +230,36 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
     polyhedron (face) = ratio of the volume (area) of the polyhedron
       (face) to the volume (area) of the convex hull of the polyhedron
       (face).} @tab face@footnote{Applies only to a 2D tessellation.}, poly
-  @item @code{dihangleav},
-        @code{dihanglemin},
-	@code{dihanglemax} @tab average, minium and maximum dihedral
-	angle @tab face, poly
-  @item @code{dihanglelist} @tab dihedral angle list   @tab face, poly
+  @item @code{dihangleav} @tab average dihedral angle @tab face, poly
+  @item @code{dihanglemin} @tab minimum dihedral angle @tab face, poly
+  @item @code{dihanglemax} @tab maximum dihedral angle @tab face, poly
+  @item @code{dihangles} @tab dihedral angles @tab face, poly
   @item @code{ff} @tab flatness fault (in degrees)     @tab face
   @item @code{theta} @tab disorientation angle (in degrees)     @tab edge (in 2D), face (in 3D)
   @item @code{cyl} @tab whether or not is used to describe the
                         circular part of a cylinder domain @tab edge
   @item @code{vernb}  @tab number of vertices          @tab edge, face, poly
+  @item @code{vers}  @tab vertices                  @tab edge, face, poly
   @item @code{edgenb}  @tab number of edges            @tab ver, face, poly
+  @item @code{edges}  @tab edges                    @tab ver, face, poly
   @item @code{facenb}  @tab number of faces            @tab ver, edge, poly
+  @item @code{faces}  @tab faces                    @tab ver, edge, poly
   @item @code{polynb}  @tab number of polyhedra        @tab ver, edge, face
-  @item @code{neighnb}  @tab number of neighbours of a face or
-  polyhedron@footnote{Neighbour of a face or polyhedron =
-    touching entity of the same type (faces for a face, @dots{}).}      @tab face, poly
-  @item @code{verlist}  @tab vertex list               @tab face, poly
-  @item @code{edgelist}  @tab edge list                @tab face, poly
-  @item @code{facelist}  @tab face list                @tab edge, poly
-  @item @code{nfacelist} @tab neighbouring face list   @tab face
-  @item @code{npolylist} @tab neighbouring polyhedron list
+  @item @code{polys}  @tab polyhedra                @tab ver, edge, face
+  @item @code{nfacenb}  @tab number of neighbouring faces @tab face
+  @item @code{nfaces} @tab neighbouring faces @tab face
+  @item @code{npolynb} @tab number of neighbouring polyhedra @tab poly
+  @item @code{npolys} @tab neighbouring polyhedra            @tab poly
+  @item @code{nseednb} @tab number of neighbouring seeds @tab poly
+  @item @code{nseeds} @tab neighbouring seeds
   @footnote{If a polyhedron has no neighbour on a face, a negative value
-    is returned instead of the neighbour id.} @tab poly
-  @item @code{facearealist} @tab face area list                  @tab poly
-  @item @code{faceeqlist} @tab face equation list@footnote{A face equation is specified by
+    is returned.} @tab poly
+  @item @code{vercoos}  @tab vertex coordinates @tab face, poly
+  @item @code{faceareas} @tab face surface areas @tab poly
+  @item @code{faceeqs} @tab face equations@footnote{A face equation is specified by
 the parameters @math{d}, @math{a}, @math{b} and @math{c}, with the equation being: @math{a x + b y + c z = d}.  The vector
 @math{(a, b, c)} is pointing outwards of the polyhedron.}
   @tab poly
-  @item @code{vercoolist}  @tab list of vertex coordinates @tab face, poly
   @item @code{scaleid(@var{scale})}  @tab identifier of the corresponding cell at scale
   @var{scale} @tab cell
   @item @code{lamid}  @tab lamella width id@footnote{In the case of a
@@ -190,9 +269,10 @@ the parameters @math{d}, @math{a}, @math{b} and @math{c}, with the equation bein
   @item @code{modeid}  @tab mode id@footnote{In the case of a
     multimodal tessellation (e.g.@ in terms of cell size)@comma{}
     @var{modeid} stands for the actual mode (starting from 1).}            @tab face, poly
+  @item @code{e}  @tab Euler angles (Bunge convention) @tab seed, face (in 2D), poly
 @end multitable
 
-The list variables (@samp{verlist}, etc.) are not available for sorting
+Variables consisting of several values (@samp{vers}, etc.) are not available for sorting
 (option @option{-sort}).
 
 For a cell, the @code{body} and @code{true} variables are
@@ -406,6 +486,29 @@ factor, to log values only at specific iteration numbers.
   @item @code{dist} @tab distance to the cell    @tab n/a
 @end multitable
 
+@node Orientation Optimization Keys
+@section Orientation Optimization Keys
+
+@subsection Variable Keys
+
+The available keys for option @option{-orioptilogvar} are provided
+below.  For all orientation descriptors but @samp{q}, the returned orientation are located in the fundamental region.
+@c Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is an integer reduction
+@c factor, to log values only at specific iteration numbers.
+
+@multitable @columnfractions 0.18 0.47 0.36
+  @headitem Key    @tab Descriptor                          @tab Apply to
+  @item @code{iter}@tab iteration number                    @tab n/a
+  @item @code{id}  @tab identifier                          @tab seed
+  @item @code{g}  @tab rotation matrix                      @tab seed
+  @item @code{rtheta}  @tab rotation axis / angle pair      @tab seed
+  @item @code{R}  @tab Rodrigues vector                     @tab seed
+  @item @code{q}  @tab quaternion                           @tab seed
+  @item @code{e}  @tab Euler angles (Bunge convention)      @tab seed
+  @item @code{ek} @tab Euler angles (Kocks convention)      @tab seed
+  @item @code{er} @tab Euler angles (Roe convention)        @tab seed
+@end multitable
+
 @node Mesh Keys
 @section Mesh Keys
 
@@ -447,6 +550,7 @@ dimensions) and points are provided below.
   @item @code{2dmeshv}@tab vector to @samp{2dmeshp}   @tab node, 3D elt
   @item @code{2dmeshn}@tab outgoing normal vector of the 2D mesh
 		     at @samp{2dmeshp}                @tab node, 3D elt
+  @item @code{e}  @tab Euler angles (Bunge convention) @tab 2D elt, 3D elt, 2D elset, 3D elset
 @end multitable
 
 @dfn{@var{n}D} stands for an arbitrary dimension (from 0D to 3D).

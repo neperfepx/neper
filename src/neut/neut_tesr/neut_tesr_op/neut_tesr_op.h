@@ -122,6 +122,7 @@ extern "C"
   extern void neut_tesr_init_cellcoo  (struct TESR *pTesr);
   extern void neut_tesr_init_cellvol  (struct TESR *pTesr);
   extern void neut_tesr_init_cellconvexity  (struct TESR *pTesr);
+  extern void neut_tesr_init_hasvoid  (struct TESR *pTesr);
 
   extern void net_tesr_cell_segment (struct TESR Tesr, int cell, int
       dim, struct TESR *pSeg);
@@ -143,6 +144,10 @@ extern "C"
   extern void neut_tesr_addbuffer (struct TESR *pTesr, char *addbuffer);
 
   extern void neut_tesr_rotate (struct TESR *pTesr, double **g);
+
+  extern void neut_tesr_init_voxori (struct TESR *pTesr);
+
+  extern void neut_tesr_oriaverage (struct TESR *pTesr);
 
 #endif				/* NEUT_VOX_OP_H */
 

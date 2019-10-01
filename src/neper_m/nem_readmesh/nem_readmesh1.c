@@ -33,7 +33,7 @@ nem_readmesh (char *filename, struct NODES *pNodes, struct MESH *Mesh)
   if (strcmp (filetype, "gmsh_msh") == 0)
   {
     file = ut_file_open (meshname, "r");
-    neut_mesh_fscanf_msh (file, pNodes, Mesh, Mesh + 1, Mesh + 2, Mesh + 3);
+    neut_mesh_fscanf_msh (file, pNodes, Mesh, Mesh + 1, Mesh + 2, Mesh + 3, Mesh + 4);
     ut_file_close (file, meshname, "r");
   }
   else if (strcmp (filetype, "zebulon_geof") == 0)

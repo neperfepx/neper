@@ -33,62 +33,59 @@ net_ori_random (long random, struct OL_SET *pOSet)
 }
 
 // Author: L. Renversade.
+// fixed rq
 void
 net_ori_fibre (long random, char *distrib, struct OL_SET *pOSet)
 {
   unsigned int i;
-  double eps = 1e-9;
-  char axis_c;
-  double axis[3];
-  double dir[3];
-
-  double *r = ol_r_alloc ();
-  double theta;
-
+  unsigned char c;
+  double theta, dirs[3], dirc[3];
   double *q_align = ol_q_alloc ();
   double *q_rand = ol_q_alloc ();
 
   gsl_rng *rnd = NULL;
 
-  // FIBRE
-  if (sscanf (distrib, "fibre(%c,%lf,%lf,%lf)", &axis_c, dir, dir + 1,
-              dir + 2) != 4 || (axis_c != 'x' && axis_c != 'y'
-                                && axis_c != 'z'))
-    ut_print_message (2, 2, "Option -ori: failed to read fibre.\n");
-
-  axis[0] = (axis_c == 'x') ? 1 : 0;
-  axis[1] = (axis_c == 'y') ? 1 : 0;
-  axis[2] = (axis_c == 'z') ? 1 : 0;
-
-  ut_vector_uvect (dir, dir);
-
   rnd = gsl_rng_alloc (gsl_rng_ranlxd2);
   gsl_rng_set (rnd, random - 1);
 
-  /*------ 1st rotation: aligning DIR along AXIS -------------*/
-  theta = ut_vector_angle_rad (dir, axis);      // the angle to align DIR with AXIS (DIR -> AXIS): > 0
-
-  if (ut_num_equal (theta, 0, eps) == 1
-      || ut_num_equal (theta, M_PI, eps) == 1)
-    ol_q_set_id (q_align);      // identity if DIR == AXIS
-  else
+  if (sscanf (distrib, "fibre(%lf,%lf,%lf,%lf,%lf,%lf)", dirs, dirs + 1,
+                   dirs + 2, dirc, dirc + 1, dirc + 2) == 6)
   {
-    ut_vector_vectprod (dir, axis, r);  // the axis to align DIR with AXIS (DIR -> AXIS) : unit vector
-    ol_rtheta_q_rad (r, theta, q_align);
+    ut_vector_uvect (dirs, dirs);
+    ut_vector_uvect (dirc, dirc);
   }
 
-  /*------- 2nd rotation: random rotation around AXIS --------*/
+  // legacy
+  else if (sscanf (distrib, "fibre(%c,%lf,%lf,%lf)", &c, dirc, dirc + 1, dirc + 2) == 4)
+  {
+    if (c == 'x' || c == 'y' || c == 'z')
+      for (i = 0; i < 3; i++)
+        dirs[i] = c == 'x' + i;
+    else
+      ut_print_message (2, 2, "Failed to parse expression `%s'.\n", distrib);
+
+    ut_print_message (1, 2, "Argument `%s' is deprecated and will not be supported in future versions.  See the documentation.\n", distrib);
+
+    ut_vector_uvect (dirc, dirc);
+  }
+
+  else
+    ut_print_message (2, 2, "Failed to parse expression `%s'.\n", distrib);
+
+  // 1st rotation, to get in the fibre
+  ol_vect_vect_q (dirc, dirs, q_align);
+
+  // 2nd rotation, about the fibre
   for (i = 0; i < (*pOSet).size; i++)
   {
     theta = 2.0 * M_PI * gsl_rng_uniform (rnd);
-    ol_rtheta_q_rad (axis, theta, q_rand);
-    ol_q_q_q_ref (q_align, q_rand, (*pOSet).q[i]);      // rotations in the reference csys
+    ol_rtheta_q_rad (dirs, theta, q_rand);
+    ol_q_q_q_ref (q_align, q_rand, (*pOSet).q[i]);
   }
 
   gsl_rng_free (rnd);
   ol_q_free (q_align);
   ol_q_free (q_rand);
-  ol_r_free (r);
 
   return;
 }
@@ -353,10 +350,10 @@ net_ori_mtess_params (struct IN_T In, int level, struct MTESS MTess,
                       struct TESS *Tess, int dtess, int dcell,
                       char **pori, char **pcrysym)
 {
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.ori[level], pori);
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.oricrysym[level],
 					   pcrysym);
 

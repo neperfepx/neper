@@ -333,3 +333,18 @@ ut_num_log (double a)
   else
     abort ();
 }
+
+double
+ut_num_reverseendian (double data)
+{
+  unsigned int i;
+  double result;
+  const char* datac = (const char *) &data;
+
+  char *dest = (char *)&result;
+
+  for(i = 0; i < sizeof (double); i++)
+     dest[i] = datac[sizeof (double) - i - 1];
+
+  return result;
+}

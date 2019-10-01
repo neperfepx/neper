@@ -155,6 +155,7 @@ extern void ut_array_1d_int_abs (int *, int);
 extern void ut_array_1d_int_sgn (int *, int, int *);
 
 extern void ut_array_1d_memcpy (double *, int, double *);
+extern void ut_array_1d_memcpy_fromint (double *, int, int *);
 extern void ut_array_1d_int_memcpy (int *, int, int *);
 extern void ut_array_1d_uint_memcpy (unsigned int *, int, unsigned int *);
 extern void ut_array_2d_memcpy (double **, int, int, double **);

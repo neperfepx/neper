@@ -34,87 +34,8 @@ nev_tesrdata_fscanf_cell (struct TESR Tesr, struct TESRDATA *pTD,
 	(*pTD).ColData[i][0] = Tesr.CellId ? Tesr.CellId[i] : i;
     }
     else if (!strncmp ((*pTD).ColDataType, "ori", 3))
-    {
-      (*pTD).ColData = ut_alloc_2d ((*pTD).Qty + 1, 4);
-
-      if (!value)
-      {
-	if (!Tesr.CellOri)
-	  ut_print_message (2, 3, "No orientation data available.\n");
-	else
-	{
-	  ut_string_string ("oriq", &((*pTD).ColDataType));
-	  ut_array_2d_memcpy ((*pTD).ColData + 1, (*pTD).Qty, 4,
-			      Tesr.CellOri + 1);
-	}
-      }
-      else
-      {
-	double *tmpd = ut_alloc_1d (4);
-	int *tmpi = ut_alloc_1d_int (6);
-	double **tmpdd = ut_alloc_2d (3, 3);
-	FILE *file = ut_file_open (value, "r");
-
-	int qty0;
-	if (!strcmp ((*pTD).ColDataType + 3, "e")
-	    || !strcmp ((*pTD).ColDataType + 3, "ek")
-	    || !strcmp ((*pTD).ColDataType + 3, "er")
-	    || !strcmp ((*pTD).ColDataType + 3, "R"))
-	  qty0 = 3;
-	else if (!strcmp ((*pTD).ColDataType + 3, "q"))
-	  qty0 = 4;
-	else if (!strcmp ((*pTD).ColDataType + 3, "m"))
-	  qty0 = 6;
-	else if (!strcmp ((*pTD).ColDataType + 3, "g"))
-	  qty0 = 9;
-	else
-	{
-	  printf ("(*pTD).ColDataType = %s\n", (*pTD).ColDataType);
-	  ut_error_reportbug ();
-	  abort ();
-	}
-
-	ut_file_nbwords_testwmessage (value, (*pTD).Qty * qty0);
-
-	for (i = 1; i <= (*pTD).Qty; i++)
-	  if (!strcmp ((*pTD).ColDataType + 3, "e"))
-	  {
-	    ol_e_fscanf (file, tmpd);
-	    ol_e_q (tmpd, (*pTD).ColData[i]);
-	  }
-	  else if (!strcmp ((*pTD).ColDataType + 3, "ek"))
-	  {
-	    ol_e_fscanf (file, tmpd);
-	    ol_ek_e (tmpd, tmpd);
-	    ol_e_q (tmpd, (*pTD).ColData[i]);
-	  }
-	  else if (!strcmp ((*pTD).ColDataType + 3, "er"))
-	  {
-	    ol_e_fscanf (file, tmpd);
-	    ol_er_e (tmpd, tmpd);
-	    ol_e_q (tmpd, (*pTD).ColData[i]);
-	  }
-	  else if (!strcmp ((*pTD).ColDataType + 3, "q"))
-	    ol_q_fscanf (file, (*pTD).ColData[i]);
-	  else if (!strcmp ((*pTD).ColDataType + 3, "R"))
-	  {
-	    ol_R_fscanf (file, tmpd);
-	    ol_R_q (tmpd, (*pTD).ColData[i]);
-	  }
-	  else if (!strcmp ((*pTD).ColDataType + 3, "m"))
-	  {
-	    ol_m_fscanf (file, tmpi);
-	    ol_m_q (tmpi, (*pTD).ColData[i]);
-	  }
-	  else if (!strcmp ((*pTD).ColDataType + 3, "g"))
-	  {
-	    ol_g_fscanf (file, tmpdd);
-	    ol_g_q (tmpdd, (*pTD).ColData[i]);
-	  }
-	  else
-	    ut_error_reportbug ();
-      }
-    }
+      nev_data_fscanf_ori (value, (*pTD).Qty, Tesr.CellOri, &(*pTD).ColData,
+                           &(*pTD).ColDataType);
     else if (!strcmp ((*pTD).ColDataType, "scal"))
     {
       (*pTD).ColData = ut_alloc_2d ((*pTD).Qty + 1, 1);
@@ -162,14 +83,10 @@ void
 nev_tesrdata_fscanf_vox (struct TESR Tesr, struct TESRDATA *pTD,
 			 char *prop, char *argument)
 {
-  int i, j, k, cell;
-  char **args = NULL;
-  int argqty;
+  int i;
   char *type = NULL, *value = NULL;
 
   nev_data_typearg_args (prop, argument, &type, &value, NULL);
-
-  ut_string_separate (argument, NEUT_SEP_DEP, &args, &argqty);
 
   if (!strcmp (prop, "col"))
   {
@@ -188,101 +105,22 @@ nev_tesrdata_fscanf_vox (struct TESR Tesr, struct TESRDATA *pTD,
 	(*pTD).ColData[i][0] = i;
     }
     else if (!strncmp ((*pTD).ColDataType, "ori", 3))
+      nev_data_fscanf_ori_tesr (Tesr, value, (*pTD).Qty, Tesr.VoxOri, Tesr.CellOri,
+                                &(*pTD).ColData, &(*pTD).ColDataType);
+    else if (!strncmp ((*pTD).ColDataType, "disori", 6))
     {
-      (*pTD).ColData = ut_alloc_2d ((*pTD).Qty + 1, 4);
-
-      if (!value)
-      {
-        if (Tesr.VoxOri)
-	{
-	  ut_string_string ("oriq", &((*pTD).ColDataType));
-          int id = 0;
-          for (k = 1; k <= Tesr.size[2]; k++)
-            for (j = 1; j <= Tesr.size[1]; j++)
-              for (i = 1; i <= Tesr.size[0]; i++)
-                ut_array_1d_memcpy ((*pTD).ColData[++id], 4, Tesr.VoxOri[i][j][k]);
-	}
-        else if (Tesr.CellOri)
-	{
-	  ut_string_string ("oriq", &((*pTD).ColDataType));
-          int id = 0;
-          for (k = 1; k <= Tesr.size[2]; k++)
-            for (j = 1; j <= Tesr.size[1]; j++)
-              for (i = 1; i <= Tesr.size[0]; i++)
-              {
-                cell = Tesr.VoxCell[i][j][k];
-                ut_array_1d_memcpy ((*pTD).ColData[++id], 4, Tesr.CellOri[cell]);
-              }
-	}
-	else
-	  ut_print_message (2, 3, "No orientation data available.\n");
-      }
-      else
-      {
-	double *tmpd = ut_alloc_1d (4);
-	int *tmpi = ut_alloc_1d_int (6);
-	double **tmpdd = ut_alloc_2d (3, 3);
-	FILE *file = ut_file_open (value, "r");
-
-	int qty0;
-	if (!strcmp ((*pTD).ColDataType + 3, "e")
-	    || !strcmp ((*pTD).ColDataType + 3, "ek")
-	    || !strcmp ((*pTD).ColDataType + 3, "er")
-	    || !strcmp ((*pTD).ColDataType + 3, "R"))
-	  qty0 = 3;
-	else if (!strcmp ((*pTD).ColDataType + 3, "q"))
-	  qty0 = 4;
-	else if (!strcmp ((*pTD).ColDataType + 3, "m"))
-	  qty0 = 6;
-	else if (!strcmp ((*pTD).ColDataType + 3, "g"))
-	  qty0 = 9;
-	else
-	{
-	  printf ("(*pTD).ColDataType = %s\n", (*pTD).ColDataType);
-	  ut_error_reportbug ();
-	  abort ();
-	}
-
-	ut_file_nbwords_testwmessage (value, (*pTD).Qty * qty0);
-
-	for (i = 1; i <= (*pTD).Qty; i++)
-	  if (!strcmp ((*pTD).ColDataType + 3, "e"))
-	  {
-	    ol_e_fscanf (file, tmpd);
-	    ol_e_q (tmpd, (*pTD).ColData[i]);
-	  }
-	  else if (!strcmp ((*pTD).ColDataType + 3, "ek"))
-	  {
-	    ol_e_fscanf (file, tmpd);
-	    ol_ek_e (tmpd, tmpd);
-	    ol_e_q (tmpd, (*pTD).ColData[i]);
-	  }
-	  else if (!strcmp ((*pTD).ColDataType + 3, "er"))
-	  {
-	    ol_e_fscanf (file, tmpd);
-	    ol_er_e (tmpd, tmpd);
-	    ol_e_q (tmpd, (*pTD).ColData[i]);
-	  }
-	  else if (!strcmp ((*pTD).ColDataType + 3, "q"))
-	    ol_q_fscanf (file, (*pTD).ColData[i]);
-	  else if (!strcmp ((*pTD).ColDataType + 3, "R"))
-	  {
-	    ol_R_fscanf (file, tmpd);
-	    ol_R_q (tmpd, (*pTD).ColData[i]);
-	  }
-	  else if (!strcmp ((*pTD).ColDataType + 3, "m"))
-	  {
-	    ol_m_fscanf (file, tmpi);
-	    ol_m_q (tmpi, (*pTD).ColData[i]);
-	  }
-	  else if (!strcmp ((*pTD).ColDataType + 3, "g"))
-	  {
-	    ol_g_fscanf (file, tmpdd);
-	    ol_g_q (tmpdd, (*pTD).ColData[i]);
-	  }
-	  else
-	    ut_error_reportbug ();
-      }
+      nev_data_fscanf_ori_tesr (Tesr, value, (*pTD).Qty, Tesr.VoxOri, Tesr.CellOri,
+                                &(*pTD).ColData, &(*pTD).ColDataType);
+      int j, k, id = 0, cell;
+      for (k = 1; k <= Tesr.size[2]; k++)
+        for (j = 1; j <= Tesr.size[1]; j++)
+          for (i = 1; i <= Tesr.size[0]; i++)
+          {
+            id++;
+            cell = Tesr.VoxCell[i][j][k];
+            ol_q_q_qdisori ((*pTD).ColData[id], Tesr.CellOri[cell],
+                            Tesr.CellCrySym, (*pTD).ColData[id]);
+          }
     }
     else if (!strcmp ((*pTD).ColDataType, "scal"))
     {
@@ -302,7 +140,6 @@ nev_tesrdata_fscanf_vox (struct TESR Tesr, struct TESRDATA *pTD,
   else
     ut_error_reportbug ();
 
-  ut_free_2d_char (args, argqty);
   ut_free_1d_char (value);
 
   return;
@@ -369,21 +206,11 @@ nev_tesrdata_cell2vox (struct TESR Tesr, char *prop,
 	}
   }
   else if (!strcmp (prop, "colscheme"))
-  {
-    (*pTD).ColScheme = ut_alloc_1d_char (strlen (TesrDataCell.ColScheme) + 1);
-    strcpy ((*pTD).ColScheme, TesrDataCell.ColScheme);
-  }
+    ut_string_string (TesrDataCell.ColScheme, &(*pTD).ColScheme);
   else if (!strcmp (prop, "scale"))
-  {
-    (*pTD).Scale = ut_alloc_1d_char (strlen (TesrDataCell.Scale) + 1);
-    strcpy ((*pTD).Scale, TesrDataCell.Scale);
-  }
+    ut_string_string (TesrDataCell.Scale, &(*pTD).Scale);
   else if (!strcmp (prop, "scaletitle"))
-  {
-    (*pTD).ScaleTitle
-      = ut_alloc_1d_char (strlen (TesrDataCell.ScaleTitle) + 1);
-    strcpy ((*pTD).ScaleTitle, TesrDataCell.ScaleTitle);
-  }
+    ut_string_string (TesrDataCell.ScaleTitle, &(*pTD).ScaleTitle);
   else
     ut_error_reportbug ();
 

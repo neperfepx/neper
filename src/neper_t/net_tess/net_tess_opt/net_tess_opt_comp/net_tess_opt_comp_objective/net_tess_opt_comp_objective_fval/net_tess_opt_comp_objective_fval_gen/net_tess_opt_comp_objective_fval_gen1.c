@@ -25,7 +25,8 @@ net_tess_opt_comp_objective_fval_gen (struct TOPT *pTOpt, int var)
       else if (!strcmp ((*pTOpt).tarvar[var], "diameq"))
         net_tess_opt_comp_objective_fval_gen_diameq (pTOpt, var, cell);
 
-      else if (!strcmp ((*pTOpt).tarvar[var], "sphericity"))
+      else if (strstr ((*pTOpt).tarvar[var], "sphericity")
+            || strstr ((*pTOpt).tarvar[var], "1-sphericity"))
         net_tess_opt_comp_objective_fval_gen_sphericity (pTOpt, var, cell);
 
       else if (!strcmp ((*pTOpt).tarvar[var], "convexity"))

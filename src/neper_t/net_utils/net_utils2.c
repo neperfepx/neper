@@ -8,9 +8,16 @@ void
 net_tess_tesr_cell (struct TESS Tess, int cell, struct TESR *pTesr)
 {
   int i, j, k;
-  double **bbox = ut_alloc_2d (3, 2);
-  double *coo = ut_alloc_1d (3);
-  int *pos = ut_alloc_1d_int (3);
+  double **bbox = NULL;
+  double *coo = NULL;
+  int *pos = NULL;
+
+  if (neut_tess_cell_isvoid (Tess, cell))
+    return;
+
+  bbox = ut_alloc_2d (3, 2);
+  coo = ut_alloc_1d (3);
+  pos = ut_alloc_1d_int (3);
 
   neut_tess_cell_bbox (Tess, cell, bbox);
 

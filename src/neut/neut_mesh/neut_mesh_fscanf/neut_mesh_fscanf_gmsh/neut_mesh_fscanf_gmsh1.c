@@ -7,7 +7,7 @@
 void
 neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH
 		      *pMesh0D, struct MESH *pMesh1D, struct MESH *pMesh2D,
-		      struct MESH *pMesh3D)
+		      struct MESH *pMesh3D, struct MESH *pMeshCo)
 {
   int *node_nbs = NULL;
   int leftelts;
@@ -41,6 +41,7 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH
   leftelts -= ReadMeshOfDim (file, mode, pMesh1D ? pMesh1D : &Trash, node_nbs, 1, leftelts);
   leftelts -= ReadMeshOfDim (file, mode, pMesh2D ? pMesh2D : &Trash, node_nbs, 2, leftelts);
   leftelts -= ReadMeshOfDim (file, mode, pMesh3D ? pMesh3D : &Trash, node_nbs, 3, leftelts);
+  leftelts -= ReadMeshOfDim (file, mode, pMeshCo ? pMeshCo : &Trash, node_nbs, 3, leftelts);
 
   neut_mesh_free (&Trash);
 
@@ -96,13 +97,13 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH
         abort ();
 
       if (dim == 0)
-        status = fscanf (file, "%s", (*pMesh0D).ElsetLabels[id]);
+        status = fscanf (file, "%s", pMesh0D ? (*pMesh0D).ElsetLabels[id] : string);
       else if (dim == 1)
-        status = fscanf (file, "%s", (*pMesh1D).ElsetLabels[id]);
+        status = fscanf (file, "%s", pMesh1D ? (*pMesh1D).ElsetLabels[id] : string);
       else if (dim == 2)
-        status = fscanf (file, "%s", (*pMesh2D).ElsetLabels[id]);
+        status = fscanf (file, "%s", pMesh2D ? (*pMesh2D).ElsetLabels[id] : string);
       else if (dim == 3)
-        status = fscanf (file, "%s", (*pMesh3D).ElsetLabels[id]);
+        status = fscanf (file, "%s", pMesh3D ? (*pMesh3D).ElsetLabels[id] : string);
 
       if (status != 1)
         abort ();
@@ -118,7 +119,8 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH
 void
 neut_mesh_name_fscanf_msh (char *name, struct NODES *pNodes, struct MESH
 			   *pMesh0D, struct MESH *pMesh1D,
-			   struct MESH *pMesh2D, struct MESH *pMesh3D)
+			   struct MESH *pMesh2D, struct MESH *pMesh3D,
+                           struct MESH *pMeshCo)
 {
   FILE *file = NULL;
   char **list = NULL;
@@ -128,7 +130,7 @@ neut_mesh_name_fscanf_msh (char *name, struct NODES *pNodes, struct MESH
 
   file = ut_file_open (list[0], "r");
 
-  neut_mesh_fscanf_msh (file, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D);
+  neut_mesh_fscanf_msh (file, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D, pMeshCo);
 
   ut_file_close (file, list[0], "r");
 

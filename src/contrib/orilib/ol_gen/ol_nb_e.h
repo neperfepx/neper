@@ -1,6 +1,12 @@
 /* This file is part of the 'orilib' software. */
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #ifndef OL_NB_E_H
 #define OL_NB_E_H
 
@@ -11,3 +17,6 @@
 #include"../ol_gen.h"
 
 #endif /* OL_NB_E_H */
+#ifdef __cplusplus
+}
+#endif

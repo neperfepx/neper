@@ -109,74 +109,8 @@ nev_pointdata_fscanf (char *type, char *argument,
 				 (*pPointData).PointQty, 3, "colour,size");
     }
     else if (!strncmp ((*pPointData).ColDataType, "ori", 3))
-    {
-      (*pPointData).ColData = ut_alloc_2d ((*pPointData).PointQty + 1, 4);
-      int i;
-      double *tmpd = ut_alloc_1d (4);
-      int *tmpi = ut_alloc_1d_int (6);
-      double **tmpdd = ut_alloc_2d (3, 3);
-      FILE *file = ut_file_open (value, "r");
-
-      int qty0;
-      if (!strcmp ((*pPointData).ColDataType + 3, "e")
-	  || !strcmp ((*pPointData).ColDataType + 3, "ek")
-	  || !strcmp ((*pPointData).ColDataType + 3, "er")
-	  || !strcmp ((*pPointData).ColDataType + 3, "R"))
-	qty0 = 3;
-      else if (!strcmp ((*pPointData).ColDataType + 3, "q"))
-	qty0 = 4;
-      else if (!strcmp ((*pPointData).ColDataType + 3, "m"))
-	qty0 = 6;
-      else if (!strcmp ((*pPointData).ColDataType + 3, "g"))
-	qty0 = 9;
-      else
-      {
-	printf ("(*pPointData).ColDataType = %s\n",
-		(*pPointData).ColDataType);
-	ut_error_reportbug ();
-	abort ();
-      }
-
-      ut_file_nbwords_testwmessage (value, (*pPointData).PointQty * qty0);
-
-      for (i = 1; i <= (*pPointData).PointQty; i++)
-	if (!strcmp ((*pPointData).ColDataType + 3, "e"))
-	{
-	  ol_e_fscanf (file, tmpd);
-	  ol_e_q (tmpd, (*pPointData).ColData[i]);
-	}
-	else if (!strcmp ((*pPointData).ColDataType + 3, "ek"))
-	{
-	  ol_e_fscanf (file, tmpd);
-	  ol_ek_e (tmpd, tmpd);
-	  ol_e_q (tmpd, (*pPointData).ColData[i]);
-	}
-	else if (!strcmp ((*pPointData).ColDataType + 3, "er"))
-	{
-	  ol_e_fscanf (file, tmpd);
-	  ol_er_e (tmpd, tmpd);
-	  ol_e_q (tmpd, (*pPointData).ColData[i]);
-	}
-	else if (!strcmp ((*pPointData).ColDataType + 3, "q"))
-	  ol_q_fscanf (file, (*pPointData).ColData[i]);
-	else if (!strcmp ((*pPointData).ColDataType + 3, "R"))
-	{
-	  ol_R_fscanf (file, tmpd);
-	  ol_R_q (tmpd, (*pPointData).ColData[i]);
-	}
-	else if (!strcmp ((*pPointData).ColDataType + 3, "m"))
-	{
-	  ol_m_fscanf (file, tmpi);
-	  ol_m_q (tmpi, (*pPointData).ColData[i]);
-	}
-	else if (!strcmp ((*pPointData).ColDataType + 3, "g"))
-	{
-	  ol_g_fscanf (file, tmpdd);
-	  ol_g_q (tmpdd, (*pPointData).ColData[i]);
-	}
-	else
-	  ut_error_reportbug ();
-    }
+      nev_data_fscanf_ori (value, (*pPointData).PointQty, NULL,
+                           &(*pPointData).ColData, &(*pPointData).ColDataType);
     else if (!strcmp ((*pPointData).ColDataType, "scal"))
     {
       (*pPointData).ColData = ut_alloc_2d ((*pPointData).PointQty + 1, 1);

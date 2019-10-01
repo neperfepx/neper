@@ -46,7 +46,7 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level,
   ut_free_1d_char (*pweightexpr);
   ut_free_1d_char (*pcooexpr);
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, domtess, domcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, domtess, domcell,
 					   In.morphooptiini[level], &string);
 
   (*ppos) = -1;
@@ -81,13 +81,11 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level,
     net_tess_opt_init_sset_pre_default_weight (*pTOpt, *pvar, pweightexpr);
   }
 
-  else if (ut_file_exist (string) && ut_file_testformat (string, "tess"))
+  else if (ut_file_exist (In.morphooptiini[level])
+        && ut_file_testformat (In.morphooptiini[level], "tess"))
   {
-    (*pcooexpr) = ut_alloc_1d_char (strlen (string) + 7);
-    (*pweightexpr) = ut_alloc_1d_char (strlen (string) + 7);
-
-    sprintf (*pcooexpr, "file(%s)", string);
-    sprintf (*pweightexpr, "file(%s)", string);
+    ut_string_string (In.morphooptiini[level], pcooexpr);
+    ut_string_string (In.morphooptiini[level], pweightexpr);
   }
 
   else

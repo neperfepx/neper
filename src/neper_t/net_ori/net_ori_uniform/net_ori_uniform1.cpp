@@ -16,7 +16,7 @@ net_ori_uniform (struct IN_T In, int level, struct MTESS MTess,
   net_ori_uniform_init (In, level, MTess, Tess, dtess, dcell, random, pOSet,
                         &OOpt, verbositylevel);
 
-  net_ori_uniform_opt (&OOpt, pOSet, verbositylevel);
+  net_ori_uniform_opt (In, &OOpt, pOSet, verbositylevel);
 
   neut_oopt_free (&OOpt);
 

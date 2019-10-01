@@ -12,7 +12,7 @@ ReadEltsProp (FILE * msh, char *mode, struct MESH *pMesh, int **pelt_nbs, int Ma
   fpos_t beg_mesh, beg_elt;
   int tagqty;
   int contiguous = 0;
-  char *type = ut_alloc_1d_char (5);
+  char *type = ut_alloc_1d_char (10);
 
   if (pelt_nbs == NULL)
     contiguous = 1;

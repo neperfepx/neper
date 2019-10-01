@@ -1,6 +1,12 @@
 /* This file is part of the 'orilib' software. */
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #ifndef OL_MAPP
 #define OL_MAPP
 
@@ -90,3 +96,6 @@ extern void ol_map_transform (struct OL_MAP, double **, size_t, size_t,
 #include "ol_des.h"
 #include "ol_set.h"
 #endif /* OL_MAPx */
+#ifdef __cplusplus
+}
+#endif

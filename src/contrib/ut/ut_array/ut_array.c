@@ -1924,6 +1924,17 @@ ut_array_1d_memcpy (double *dest, int size, double *src)
 }
 
 void
+ut_array_1d_memcpy_fromint (double *dest, int size, int *src)
+{
+  int i;
+
+  for (i = 0; i < size; i++)
+    dest[i] = src[i];
+
+  return;
+}
+
+void
 ut_array_1d_int_memcpy (int *dest, int size, int *src)
 {
   int i;

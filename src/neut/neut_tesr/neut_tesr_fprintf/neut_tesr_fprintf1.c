@@ -25,7 +25,7 @@ neut_tesr_fprintf (FILE * file, char *format, struct TESR Tesr)
   neut_tesr_fprintf_cell (file, Tesr);
   neut_tesr_fprintf_data (file, format2, Tesr);
   if (Tesr.VoxOri)
-    neut_tesr_fprintf_oridata (file, "q", "ascii", Tesr);
+    neut_tesr_fprintf_oridata (file, "q", format, Tesr);
   neut_tesr_fprintf_foot (file);
 
   ut_free_1d_char (format2);
@@ -100,13 +100,13 @@ neut_tesr_fprintf_ami (FILE * file, char *format, struct TESR Tesr)
   fprintf (file, "BINARY\n");
   fprintf (file, "DATASET STRUCTURED_POINTS\n");
   fprintf (file, "DIMENSIONS    %d   %d   %d\n", Tesr.size[0] + 1, Tesr.size[1] + 1, Tesr.size[2] + 1);
-  fprintf (file, "ORIGIN    0.000   0.000   0.000\n");
+  fprintf (file, "ORIGIN    %.12f %.12f %.12f\n", Tesr.Origin[0], Tesr.Origin[1], Tesr.Origin[2]);
   fprintf (file, "SPACING    %.12f    %.12f   %.12f\n", Tesr.vsize[0], Tesr.vsize[1], Tesr.vsize[2]);
   fprintf (file, "CELL_DATA   %d\n", ut_array_1d_int_prod (Tesr.size, 3));
   fprintf (file, "SCALARS MaterialId %s\n", format_ami);
   fprintf (file, "LOOKUP_TABLE default\n");
 
-  neut_tesr_fprintf_data_noheader (file, format2, Tesr);
+  neut_tesr_fprintf_data_noheader (file, format2, Tesr, Tesr.CellId);
 
   ut_free_1d_char (format_ami);
   ut_free_1d_char (format2);

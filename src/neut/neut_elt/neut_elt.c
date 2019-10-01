@@ -300,7 +300,7 @@ neut_elt_gtype_prop (int gtype, char *type, int *pdim, int *porder)
   }
   else if (gtype == 6)		// 6-node prism
   {
-    sprintf (type, "pris");
+    sprintf (type, "triprism");
     (*pdim) = 3;
     (*porder) = 1;
   }

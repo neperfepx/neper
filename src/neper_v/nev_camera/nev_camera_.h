@@ -23,7 +23,7 @@ extern void nev_camera_tesr_expr_coo (struct TESR Tesr, char *expr,
 				      double *coo);
 extern void nev_camera_point_expr_coo (struct POINT Point, char *expr,
 				       double *coo);
-extern void nev_camera_expr_coo (double **bbox, double *v, char *expr,
+extern void nev_camera_expr_coo (double **bbox, double *centre, double *v, char *expr,
 				 double *coo);
 extern void nev_camera_v (int dim, double *v);
 

@@ -4,3 +4,6 @@
 
 extern void nem_transport (struct IN_M, struct TESS, struct NODES,
 			   struct MESH *, struct NODES, struct MESH *);
+
+extern void nem_transportfepx (struct IN_M, struct TESS, struct NODES,
+			       struct MESH *, struct NODES, struct MESH *);
