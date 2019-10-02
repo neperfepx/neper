@@ -22,4 +22,4 @@ ASCII files. Neper can be compiled and run on any Unix-like system.
 ## Installation
 
 Installation instructions are provided in the PDF documentation included in the
-distribution or available [here](docs/neper.pdf).
+distribution or available [here](https://rquey.github.io/neper/docs/neper.pdf).
