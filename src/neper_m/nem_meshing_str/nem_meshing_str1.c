@@ -118,7 +118,6 @@ nem_meshing_tesr_str (struct IN_M In, struct MESHPARA MeshPara,
 
   neut_mesh_str (Tesr.Dim, msize, pNodes, Mesh + Tesr.Dim,
 		 NSet + Tesr.Dim - 1);
-
   neut_nodes_scale (pNodes, bboxsize[1], bboxsize[1], Tesr.Dim == 3 ? bboxsize[1] : cl);
   neut_nodes_shift (pNodes, bbox[0][0], bbox[1][0], bbox[2][0]);
 

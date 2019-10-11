@@ -12,12 +12,10 @@ nem_meshing_para_param (struct IN_M In, struct TESS Tess,
   int cellqty, dim;
   double size;
 
-  (*pMeshPara).elttype = ut_alloc_1d_char (strlen (In.elttype) + 1);
-  strcpy ((*pMeshPara).elttype, In.elttype);
   (*pMeshPara).pl = In.pl;
   (*pMeshPara).clmin = In.clmin;
-  (*pMeshPara).cltype = ut_alloc_1d_char (strlen (In.cltype) + 1);
-  strcpy ((*pMeshPara).cltype, In.cltype);
+  ut_string_string (In.cltype, &(*pMeshPara).cltype);
+  ut_string_string (In.elttype, &(*pMeshPara).elttype); // needed by quad9
 
   // Testing type of input: tess or tesr or mesh
   if (In.mesh)

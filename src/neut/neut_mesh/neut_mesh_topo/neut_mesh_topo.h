@@ -141,7 +141,7 @@ extern "C"
 				       int *peltqty);
 
 /// \brief Get the common elts of nodes.
-///
+/// \note The elements are listed in ascending order
 ///
 ///
   extern void neut_mesh_nodes_comelts (struct MESH Mesh, int *nodes,
