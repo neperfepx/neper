@@ -37,8 +37,8 @@
 #define mexPrintf  printf
 #endif
 
-#define eps_rel22  5e-4
-#define eps_tot22  1e-12
+#define eps_rel22  1e-5
+#define eps_tot22  1e-9
 
 #define norm2(a) (a[0]*a[0]+a[1]*a[1]+a[2]*a[2])
 
@@ -646,7 +646,7 @@ double gjk(struct bd bd1, struct bd bd2, struct simplex *s) {
 
   int k = 0;                /**< Iteration counter            */
   int i;                    /**< General purpose counter      */
-  int mk = 5000;            /**< Maximum number of iterations of the GJK algorithm */
+  int mk = 100;            /**< Maximum number of iterations of the GJK algorithm */
   int absTestin;
   double norm2Wmax = 0;
   double tesnorm;

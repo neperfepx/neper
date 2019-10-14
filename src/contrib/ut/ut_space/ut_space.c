@@ -1753,7 +1753,7 @@ ut_space_polypts_point_dist (double** ptcoos0, int ptqty,
   struct bd       bd1; /* Body comprised of a point only */
   struct bd       bd2; /* Body comprised of ptqty points */
   struct simplex s;
-  double eps = 1e-14;
+  double eps = 1e-10;
 
   bd1.coord = ptcoos0;
   bd1.numpoints = ptqty;
