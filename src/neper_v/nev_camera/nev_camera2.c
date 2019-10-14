@@ -15,7 +15,7 @@ nev_camera_tess_expr_coo (struct TESS Tess, char *expr, double *coo)
   if (strchr (expr, 'x') || strchr (expr, 'y') || strchr (expr, 'z'))
     neut_tess_bbox (Tess, bbox);
 
-  nev_camera_expr_coo (bbox, v, expr, coo);
+  nev_camera_expr_coo (bbox, NULL, v, expr, coo);
 
   ut_free_1d (v);
   ut_free_2d (bbox, 3);
@@ -41,7 +41,7 @@ nev_camera_mesh_expr_coo (struct NODES Nodes, struct MESH Mesh,
       ut_error_reportbug ();
   }
 
-  nev_camera_expr_coo (bbox, v, expr, coo);
+  nev_camera_expr_coo (bbox, NULL, v, expr, coo);
 
   ut_free_1d (v);
   ut_free_2d (bbox, 3);
@@ -54,16 +54,22 @@ nev_camera_tesr_expr_coo (struct TESR Tesr, char *expr, double *coo)
 {
   double *v = ut_alloc_1d (3);
   double **bbox = ut_alloc_2d (3, 2);
+  double *centre = NULL;
 
   nev_camera_v (Tesr.Dim, v);
 
   if (strchr (expr, 'x') || strchr (expr, 'y') || strchr (expr, 'z'))
+  {
     neut_tesr_bbox (Tesr, bbox);
+    centre = ut_alloc_1d (3);
+    neut_tesr_centre (Tesr, centre);
+  }
 
-  nev_camera_expr_coo (bbox, v, expr, coo);
+  nev_camera_expr_coo (bbox, centre, v, expr, coo);
 
   ut_free_1d (v);
   ut_free_2d (bbox, 3);
+  ut_free_1d (centre);
 
   return;
 }
@@ -79,7 +85,7 @@ nev_camera_point_expr_coo (struct POINT Point, char *expr, double *coo)
   if (strchr (expr, 'x') || strchr (expr, 'y') || strchr (expr, 'z'))
     neut_point_bbox (Point, bbox);
 
-  nev_camera_expr_coo (bbox, v, expr, coo);
+  nev_camera_expr_coo (bbox, NULL, v, expr, coo);
 
   ut_free_1d (v);
   ut_free_2d (bbox, 3);

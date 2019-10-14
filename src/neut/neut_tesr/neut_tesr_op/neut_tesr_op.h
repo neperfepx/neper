@@ -147,6 +147,8 @@ extern "C"
 
   extern void neut_tesr_init_voxori (struct TESR *pTesr);
 
+  extern void neut_tesr_oriaverage (struct TESR *pTesr);
+
 #endif				/* NEUT_VOX_OP_H */
 
 #ifdef __cplusplus

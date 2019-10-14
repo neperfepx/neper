@@ -39,8 +39,8 @@ neut_prim_sscanf (char *expr, struct PRIM *pPrim)
 
   ut_string_function_separate_exprs (expr, &(*pPrim).Type, &vals, &valqty);
 
-  if (!strcmp ((*pPrim).Type, "plane")
-   || !strcmp ((*pPrim).Type, "planei"))
+  if (!strcmp ((*pPrim).Type, "hspace")
+   || !strcmp ((*pPrim).Type, "hspacei"))
   {
     if (valqty != 4)
       status = -1;
@@ -163,10 +163,10 @@ neut_prim_point_side (struct PRIM Prim, double *coo, int *pside)
 {
   double dist;
 
-  if (!strcmp (Prim.Type, "plane"))
+  if (!strcmp (Prim.Type, "hspace"))
+    *pside = -ut_space_planeside (Prim.Eq, coo - 1);
+  else if (!strcmp (Prim.Type, "hspacei"))
     *pside = ut_space_planeside (Prim.Eq, coo - 1);
-  else if (!strcmp (Prim.Type, "planei"))
-    *pside = - ut_space_planeside (Prim.Eq, coo - 1);
   else if (!strcmp (Prim.Type, "sphere"))
     *pside = ut_space_dist (coo, Prim.Base) > Prim.Rad[0] ? 1 : -1;
   else if (!strcmp (Prim.Type, "spherei"))
@@ -220,8 +220,8 @@ neut_prim_point_side (struct PRIM Prim, double *coo, int *pside)
 void
 neut_prim_point_mirror (struct PRIM Prim, double *coo, double *mirror)
 {
-  if (!strcmp (Prim.Type, "plane")
-   || !strcmp (Prim.Type, "planei"))
+  if (!strcmp (Prim.Type, "hspace")
+   || !strcmp (Prim.Type, "hspacei"))
     ut_space_point_plane_mirror (coo, Prim.Eq, mirror);
   else if (!strcmp (Prim.Type, "sphere")
         || !strcmp (Prim.Type, "spherei"))
@@ -256,7 +256,9 @@ neut_primparms_point_proj (char* type, double *parms, double *coo, double *proj)
   ut_array_1d_memcpy (coo2, 3, coo);
 
   if (!strcmp (type, "plane")
-   || !strcmp (type, "planei"))
+   || !strcmp (type, "planei")
+   || !strcmp (type, "hspace")
+   || !strcmp (type, "hspacei"))
     ut_space_point_plane_proj (coo, parms, proj);
   else if (!strcmp (type, "sphere")
         || !strcmp (type, "spherei"))
@@ -272,7 +274,10 @@ neut_primparms_point_proj (char* type, double *parms, double *coo, double *proj)
         || !strcmp (type, "torusi"))
     ut_space_point_torus_proj (coo, parms, parms + 3, parms[6], parms[7], proj);
   else
+  {
+    printf ("type = %s\n", type);
     abort ();
+  }
 
   dist = ut_space_dist (coo2, proj);
 
@@ -285,7 +290,9 @@ void
 neut_primparms_point_tangentplane (char* type, double *parms, double *coo, double *plane)
 {
   if (!strcmp (type, "plane")
-   || !strcmp (type, "planei"))
+   || !strcmp (type, "planei")
+   || !strcmp (type, "hspace")
+   || !strcmp (type, "hspacei"))
     ut_array_1d_memcpy (plane, 4, parms);
   else if (!strcmp (type, "sphere")
         || !strcmp (type, "spherei"))

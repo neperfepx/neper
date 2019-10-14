@@ -63,6 +63,17 @@ neut_elt_nodeqty (char *type, int dim, int order)
   QuadNodesPerElt[3][1] = 8;
   QuadNodesPerElt[3][2] = 20;
 
+  int **Quad9NodesPerElt = ut_alloc_2d_int (4, 3);
+
+  Quad9NodesPerElt[0][1] = 1;
+  Quad9NodesPerElt[0][2] = 1;
+  Quad9NodesPerElt[1][1] = 2;
+  Quad9NodesPerElt[1][2] = 3;
+  Quad9NodesPerElt[2][1] = 4;
+  Quad9NodesPerElt[2][2] = 9;
+  Quad9NodesPerElt[3][1] = 8;
+  Quad9NodesPerElt[3][2] = 21;
+
   int **TriPrismNodesPerElt = ut_alloc_2d_int (4, 3);
 
   TriPrismNodesPerElt[0][1] = 0;
@@ -86,6 +97,8 @@ neut_elt_nodeqty (char *type, int dim, int order)
     res = TriNodesPerElt[dim][order];
   else if (!strcmp (type, "quad"))
     res = QuadNodesPerElt[dim][order];
+  else if (!strcmp (type, "quad9"))
+    res = Quad9NodesPerElt[dim][order];
   else if (!strcmp (type, "triprism"))
     res = TriPrismNodesPerElt[dim][order];
   else
@@ -94,6 +107,7 @@ neut_elt_nodeqty (char *type, int dim, int order)
 
   ut_free_2d_int (TriNodesPerElt, 4);
   ut_free_2d_int (QuadNodesPerElt, 4);
+  ut_free_2d_int (Quad9NodesPerElt, 4);
   ut_free_2d_int (TriPrismNodesPerElt, 4);
 
   return res;
@@ -300,7 +314,7 @@ neut_elt_gtype_prop (int gtype, char *type, int *pdim, int *porder)
   }
   else if (gtype == 6)		// 6-node prism
   {
-    sprintf (type, "pris");
+    sprintf (type, "triprism");
     (*pdim) = 3;
     (*porder) = 1;
   }

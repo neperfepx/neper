@@ -350,10 +350,10 @@ net_ori_mtess_params (struct IN_T In, int level, struct MTESS MTess,
                       struct TESS *Tess, int dtess, int dcell,
                       char **pori, char **pcrysym)
 {
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.ori[level], pori);
 
-  net_multiscale_mtess_arg_0d_char_fscanf (MTess, Tess, dtess, dcell,
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.oricrysym[level],
 					   pcrysym);
 

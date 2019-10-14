@@ -10,22 +10,5 @@
 
 #include"net_transform.h"
 
-#include"net_transform_tess_cut/net_transform_tess_cut.h"
-
-extern void net_transform_tess (struct IN_T In, struct TESS Dom, struct TESS *pTess);
-extern void net_transform_tesr (struct IN_T In, struct TESR *pTesr);
-
-extern void net_tesr_transform_cell (struct TESR Tesr, int cell, int dim,
-				  struct TESR *pTesr2, int *pvoxqty,
-				  int *pcellqty);
-extern void net_tesr_cell_segment (struct TESR Tesr, int cell, int dim,
-				   struct TESR *pSeg);
-extern void net_tesr_segment (struct TESR Tesr, int dim, struct TESR *pSeg);
-
-extern void net_tesr_transform_cell_find (struct TESR Tesr, int dim,
-				       int *pvoxqty, int ***pvoxpos);
-extern void net_tesr_transform_cell_remove (struct TESR *pTesr, int dim,
-					 int voxqty, int **voxpos);
-
-extern int net_tesr_transform_noise (struct TESR *pTesr, int poly, int
-				  qty, int itermax, int *piterqty);
+#include"net_transform_tess/net_transform_tess_.h"
+#include"net_transform_tesr/net_transform_tesr_.h"

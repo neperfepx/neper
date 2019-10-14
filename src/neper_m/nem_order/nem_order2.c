@@ -115,6 +115,7 @@ nem_order_init_2d (char *elttype, int ***pfir2, int ***psec2,
     (*pfir2)[5][0] = 2;
     (*pfir2)[5][1] = 0;
   }
+
   else if (!strcmp (elttype, "quad"))
   {
     (*psec2)[0][1] = (*psec2)[1][0] = 4;
@@ -131,6 +132,26 @@ nem_order_init_2d (char *elttype, int ***pfir2, int ***psec2,
     (*pfir2)[7][0] = 3;
     (*pfir2)[7][1] = 0;
   }
+
+  else if (!strcmp (elttype, "quad9"))
+  {
+    (*psec2)[0][1] = (*psec2)[1][0] = 4;
+    (*psec2)[1][2] = (*psec2)[2][1] = 5;
+    (*psec2)[2][3] = (*psec2)[3][2] = 6;
+    (*psec2)[3][0] = (*psec2)[0][3] = 7;
+
+    (*pfir2)[4][0] = 0;
+    (*pfir2)[4][1] = 1;
+    (*pfir2)[5][0] = 1;
+    (*pfir2)[5][1] = 2;
+    (*pfir2)[6][0] = 2;
+    (*pfir2)[6][1] = 3;
+    (*pfir2)[7][0] = 3;
+    (*pfir2)[7][1] = 0;
+    (*pfir2)[8][0] = -1; // this means the node is not between 1st-order nodes
+    (*pfir2)[8][1] = -1; // this means the node is not between 1st-order nodes
+  }
+
   else
     abort ();
 

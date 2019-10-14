@@ -37,11 +37,10 @@ Here is what a typical run of @mV{} looks like,
 
     ========================    N   e   p   e   r    =======================
     Info   : A software package for polycrystal generation and meshing.
-    Info   : Version 3.0.0
+    Info   : Version 3.5.0
     Info   : Built with: gsl nlopt muparser
-    Info   : <http://neper.sourceforge.net>
+    Info   : <http://neper.info> <http://neper.info/community>
     Info   : Copyright (C) 2003-2019, and GNU GPL'd, by Romain Quey.
-    Info   : Comments and bug reports: <neper-users@lists.sourceforge.net>.
     Info   : Loading initialization file `/home/rquey/.neperrc'...
     Info   : ---------------------------------------------------------------
     Info   : MODULE  -V loaded with arguments:
@@ -117,7 +116,7 @@ palette (@pxref{Colours})@comma{}
 @w{@emph{(v)} a} string indicating how the
 colours can be obtained.  The string has the format
 @samp{@var{var}@SEPDEP{}@var{file_name}}@comma{} where @code{@var{var}} can be
-@samp{id} for identifiers@comma{} @samp{scal} for scalar
+@samp{id} for identifiers@comma{}
 @samp{ori} for crystal orientations or @samp{scal} for scalar
 values@comma{} and @samp{@var{file_name}} is the name of the file
 containing the data.  The colour schemes used to derive the colours from
@@ -129,12 +128,20 @@ any, white}
 @opt{-datacellcolscheme, char_string,
 Set the colour scheme used to get colours from the data of
 the tessellation cells loaded with option @option{-datacellcol}.
-The type of colour scheme depends on the type of data.  For crystal
-orientations@comma{} the colour scheme can be: @samp{R} for Rodrigues
-vector colouring; for scalar data@comma{} the colour scheme can be any
-list of colours.
+The type of colour scheme depends on the type of data.@*
+@bullet{} For crystal orientations (cubic symmetry is assumed)@comma{}
+the colour scheme can be:
+@samp{R} for Rodrigues vector colouring (default is inside the fundamental
+region@comma{} can be bounded using @samp{R(@var{max})}@comma{} where @var{max}
+is the maximum extent)@comma{}
+@samp{r} for rotation axis colouring@comma{}
+@samp{theta} for rotation angle colouring (can be bounded using
+@samp{theta(@var{max})}@comma{} where @var{max} is the maximum angle (in radian)) and
+@samp{rtheta} for rotation axis / angle colouring (can be bounded using
+@samp{rtheta(@var{max})}@comma{} where @var{max} is the maximum angle (in radian)).@*
+@bullet{} For scalars@comma{} the colour scheme can be any list of colours.
 ,
-"R" for crystal orientations and any list of colours for scalars,
+see above list,
 "R" for crystal orientations and "blue@comma{}cyan@comma{}yellow@comma{}red" for scalars
 }
 
@@ -189,14 +196,11 @@ any, white}
 
 @opt{-datapolycolscheme, char_string,
 Set the colour scheme used to get colours from the data of
-the tessellation polyhedra loaded with option @option{-datapolycol}.
-The type of colour scheme depends on the type of data.  For crystal
-orientations@comma{} the colour scheme can be: @samp{R} for Rodrigues
-vector colouring; for scalar data@comma{} the colour scheme can be any
-list of colours.
+the tessellation faces loaded with option @option{-datafacecol}.
+See option @option{-datacellcolscheme} for the argument format.
 ,
-"R" for crystal orientations and any list of colours for scalars,
-"R" for crystal orientations and "blue@comma{}cyan@comma{}yellow@comma{}red" for scalars
+see option @option{-datacellcolscheme},
+see option @option{-datacellcolscheme}
 }
 
 @opt{-datapolytrs, real,
@@ -229,13 +233,22 @@ for the argument format.
 ,
 any, white}
 
+@opt{-datapolycolscheme, char_string,
+Set the colour scheme used to get colours from the data of
+the tessellation faces loaded with option @option{-datafacecol}.
+See option @option{-datacellcolscheme} for the argument format.
+,
+see option @option{-datacellcolscheme},
+see option @option{-datacellcolscheme}
+}
+
 @opt{-datafacecolscheme, char_string,
 Set the colour scheme used to get colours from the data of
 the tessellation faces loaded with option @option{-datafacecol}.
-See option @option{-datapolycolscheme} for the argument format.
+See option @option{-datacellcolscheme} for the argument format.
 ,
-see option @option{-datapolycolscheme},
-see option @option{-datapolycolscheme}
+see option @option{-datacellcolscheme},
+see option @option{-datacellcolscheme}
 }
 
 @opt{-datafacetrs, real,
@@ -279,10 +292,10 @@ any, black}
 @opt{-dataedgecolscheme, char_string,
 Set the colour scheme used to get colours from the data of
 the tessellation edges loaded with option @option{-dataedgecol}.
-See option @option{-datapolycolscheme} for the argument format.
+See option @option{-datacellcolscheme} for the argument format.
 ,
-see option @option{-datapolycolscheme},
-see option @option{-datapolycolscheme}
+see option @option{-datacellcolscheme},
+see option @option{-datacellcolscheme}
 }
 
 @opt{-dataedgetrs, real,
@@ -324,10 +337,10 @@ any, black}
 @opt{-datavercolscheme, char_string,
 Set the colour scheme used to get colours from the data of
 the tessellation vertices loaded with option @option{-datavercol}.
-See option @option{-datapolycolscheme} for the argument format.
+See option @option{-datacellcolscheme} for the argument format.
 ,
-see option @option{-datapolycolscheme},
-see option @option{-datapolycolscheme}
+see option @option{-datacellcolscheme},
+see option @option{-datacellcolscheme}
 }
 
 @opt{-datavertrs, real,
@@ -369,10 +382,10 @@ any, grey}
 @opt{-dataseedcolscheme, char_string,
 Set the colour scheme used to get colours from the data of
 the tessellation seeds loaded with option @option{-dataseedcol}.
-See option @option{-datapolycolscheme} for the argument format.
+See option @option{-datacellcolscheme} for the argument format.
 ,
-see option @option{-datapolycolscheme},
-see option @option{-datapolycolscheme}
+see option @option{-datacellcolscheme},
+see option @option{-datacellcolscheme}
 }
 
 @opt{-dataseedscale, char_string,
@@ -397,8 +410,25 @@ For a raster tessellation, it is also possible to set data on a per-voxel
 basis,
 
 @opt{-datavoxcol, char_string,
-Set the colours of the voxels.
-See option @option{-datacellcol} for the argument format.
+Set the colours of the voxels.  The argument can be
+one of the following:
+@w{@emph{(i)} @samp{id}} for colouring based on the identifier@comma{} using a colour
+palette (@pxref{Colours})@comma{}
+@w{@emph{(ii)} @samp{ori}} for colouring based on the crystal orientations@comma{}
+@w{@emph{(iii)} @samp{disori}} for colouring based on the disorientations with
+  respect to the corresponding mean cell orientation@comma{}
+@w{@emph{(iv)} the} name of a colour that will be used for all cells (@pxref{Colours})@comma{}
+@w{@emph{(v)} the} name of a file containing a list of colours
+(provided as RGB channel values)@comma{} or
+@w{@emph{(vi)} a} string indicating how the
+colours can be obtained.  The string has the format
+@samp{@var{var}@SEPDEP{}@var{file_name}}@comma{} where @code{@var{var}} can be
+@samp{id} for identifiers@comma{}
+@samp{ori} for crystal orientations or @samp{scal} for scalar
+values@comma{} and @samp{@var{file_name}} is the name of the file
+containing the data.  The colour schemes used to derive the colours from
+the data can be specified with option
+@option{-datavoxcolscheme}.
 ,
 any, white}
 
@@ -821,7 +851,7 @@ one of the following:
 colours can be obtained@comma{}.
 In case @emph{(iv)}@comma{} the string has the format
 @samp{@var{var}@SEPDEP{}@var{file_name}}@comma{} where @code{@var{var}} can be
-@samp{id} for identifiers@comma{} @samp{scal} for scalar
+@samp{id} for identifiers@comma{}
 @samp{ori} for crystal orientations or @samp{scal} for scalar
 values@comma{} and @samp{@var{file_name}} is the name of the file
 containing the data.  The colour schemes used to derive the colours from
@@ -1012,6 +1042,18 @@ the radius of the face edges.
 ,
 0 or 1, 0}
 
+For a raster tessellation, it is possible to set visibility of the individual
+voxels,
+
+@opt{-showvox, char_string,
+Specify the voxels to show. The argument can be: @samp{all} for
+all@comma{} @samp{none} for none@comma{}
+@samp{file(@var{file_name})} to load voxel identifiers from
+a file@comma{} or any expression based on the keys listed in
+@ref{Tessellation Keys}.
+,
+any, all}
+
 The following options apply to the entities of the mesh.
 The options apply to 3D elements (@samp{elt3d}) and element sets
 (@samp{elset3d}), 2D elements (@samp{elt2d}) and element sets
@@ -1165,11 +1207,12 @@ for faster image generation or smaller image file.
 @opt{-imageformat, char_string,
 Specify the output image format.
 It can be
-the PNG @w{format (@file{.png})} or
-the POV-Ray @w{format (@file{.pov})}.
+the PNG @w{format (@file{png})} or
+the POV-Ray @w{format (@file{pov})}.
+Use @samp{pov:objects} to get a POV-Ray file containing only the objects@footnote{Not compatible with @samp{png}; the resulting file can be loaded with @option{-includepov}.}.
 Combine with @samp{@SEPNODEP{}}.
 ,
-png or pov, png}
+see above list, png}
 
 @subsection Scripting
 
@@ -1183,16 +1226,37 @@ any, none}
 
 @subsection Advanced Options
 
-@opt{-includepov, char_string,
+@opt{-includepov, char_string:char_string:...,
 Use this option to include additional objects to the image@comma{}
-under the form of a POV-Ray file. Provide as argument the name of the
-POV-Ray file.
+under the form of a POV-Ray file. Provide as first argument the name of the
+POV-Ray file and as next arguments successive transformations to apply to the
+objects of the POV-Ray file.  The transformations can be
+@samp{translate(@var{vx}@comma{}@var{vy}@comma{}@var{vz})} for a translation of
+vector @math{(vx@comma{}vy@comma{}vz)}@comma{}
+@samp{scale(@var{sx}@comma{}@var{sy}@comma{}@var{sz})} for scaling by factors
+@math{sx}@comma{} @math{sy} and @math{sz} in the three directions of space@comma{} and
+@samp{rotate(@var{thetax}@comma{}@var{thetay}@comma{}@var{thetaz})} for a rotation of angles
+@math{thetax}@comma{} @math{thetay} and @math{thetaz} about axes @math{x}@comma{} @math{y}
+and @math{z}@footnote{The rotation is read in POV-Ray style; i.e.@comma{} according to
+the POV-Ray documentation: @emph{Note that the order of the rotations does
+matter.  Rotations occur about the x-axis first@comma{} then the y-axis@comma{}
+then the z-axis.  If you are not sure if this is what you want then you should
+only rotate on one axis at a time using multiple rotation statements to get a
+correct rotation.  Rotation is always performed relative to the axis. Thus if
+an object is some distance from the axis of rotation it will not only rotate
+but it will orbit about the axis as though it was swinging around on an
+invisible string.  POV-Ray uses a left-handed rotation system. Using the famous
+"Computer Graphics Aerobics" exercise@comma{} you hold up your left hand and
+point your thumb in the positive direction of the axis of rotation.  Your
+fingers will curl in the positive direction of rotation. Similarly if you point
+your thumb in the negative direction of the axis your fingers will curl in the
+negative direction of rotation.}}.
 ,
 any, none}
 
 @section Output Files
 
-The output files are,
+The output files are
 
 @itemize
 @item PNG file, @file{.png}: a bitmapped image (the alpha channel is

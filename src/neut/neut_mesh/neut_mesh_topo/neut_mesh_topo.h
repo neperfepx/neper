@@ -141,7 +141,7 @@ extern "C"
 				       int *peltqty);
 
 /// \brief Get the common elts of nodes.
-///
+/// \note The elements are listed in ascending order
 ///
 ///
   extern void neut_mesh_nodes_comelts (struct MESH Mesh, int *nodes,
@@ -269,10 +269,18 @@ extern "C"
 ///
 ///
   extern int neut_mesh_node_dim (struct MESH Mesh0D, struct MESH Mesh1D,
-				 struct MESH Mesh2D, struct MESH Mesh3D,
-				 int node);
+                                 struct MESH Mesh2D, struct MESH Mesh3D,
+                                 int node);
 
-/// \brief Get the dimension of a node of a mesh.
+/// \brief Get the min dimension of a node of a mesh.
+///
+///
+///
+  extern int neut_mesh_node_dim_min (struct MESH Mesh0D, struct MESH Mesh1D,
+                                     struct MESH Mesh2D, struct MESH Mesh3D,
+                                     int node);
+
+/// \brief Get the max dimension of a node of a mesh.
 ///
 ///
 ///
@@ -367,6 +375,11 @@ extern void neut_mesh_nodeqty (struct MESH Mesh, int *pnodeqty);
 
 extern int neut_mesh_elt1d_isembedded (struct MESH Mesh3D, struct MESH Mesh1D,
                                        int elt1d);
+
+extern int neut_mesh_node_domtype (struct TESS Tess, struct MESH Mesh0D,
+                                   struct MESH Mesh1D, struct MESH Mesh2D,
+                                   struct MESH Mesh3D, int node,
+                                   int *pdomtype);
 
 #endif /* NEUT_MESH_TOPO_H */
 

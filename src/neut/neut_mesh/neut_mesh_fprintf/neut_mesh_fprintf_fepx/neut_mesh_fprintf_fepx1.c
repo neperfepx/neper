@@ -12,8 +12,8 @@ neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess,
 			     char *nset, char *faset, char *version)
 {
   FILE *file = NULL;
-  int printparms, printmesh, printsurf, printgrain, printbcs;
-  char *parms, *mesh, *surf, *grain, *bcs;
+  int printparms, printmesh, printsurf, printgrain, printbcs, printkocks;
+  char *parms, *mesh, *surf, *grain, *bcs, *kocks;
 
   if (!version || !strcmp (version, "current"))
   {
@@ -22,6 +22,7 @@ neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess,
     printsurf = 0;
     printgrain = 1;
     printbcs = 1;
+    printkocks = 0;
   }
   else if (!strcmp (version, "legacy"))
   {
@@ -30,6 +31,7 @@ neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess,
     printsurf = 1;
     printgrain = 1;
     printbcs = 1;
+    printkocks = 1;
   }
   else
   {
@@ -45,6 +47,7 @@ neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess,
   else
     grain = ut_string_addextension (body, ".opt");
   bcs = ut_string_addextension (body, ".bcs");
+  kocks = ut_string_addextension (body, ".kocks");
 
   /* fepx1, parms = general parameters */
   if (printparms)
@@ -105,6 +108,19 @@ neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess,
     file = ut_file_open (bcs, "w");
     neut_mesh_fprintf_fepx_nsets (file, NSet0D, NSet1D, NSet2D, nset, version);
     ut_file_close (file, bcs, "w");
+  }
+
+  /* kocks = node sets */
+  if (printkocks)
+  {
+    if (Tess.CellOri)
+    {
+      file = ut_file_open (kocks, "w");
+      neut_mesh_fprintf_fepx_kocks (file, Tess, version);
+      ut_file_close (file, kocks, "w");
+    }
+    else
+      ut_print_message (1, 3, "Skipping kocks file (CellOri not defined)...\n");
   }
 
   return;

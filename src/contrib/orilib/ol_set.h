@@ -1,6 +1,12 @@
 /* This file is part of the 'orilib' software. */
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #ifndef OL_SSET
 #define OL_SSET
 
@@ -94,3 +100,6 @@ extern void ol_set_aniso_v_thetatr_modes_id (struct OL_SET, double*,
 #include "ol_des.h"
 #include "ol_gen.h"
 #endif /* OL_SETx */
+#ifdef __cplusplus
+}
+#endif

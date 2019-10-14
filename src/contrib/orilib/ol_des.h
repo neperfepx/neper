@@ -1,6 +1,12 @@
 /* This file is part of the 'orilib' software. */
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #ifndef OL_DES
 #define OL_DES
 
@@ -331,3 +337,6 @@ extern void ol_rtheta_e_rad (double *, double, double *);
 #include "ol_glo.h"
 #include "ol_cal.h"
 #endif /* OL_DESx */
+#ifdef __cplusplus
+}
+#endif

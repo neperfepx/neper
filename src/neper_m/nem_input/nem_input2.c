@@ -8,8 +8,6 @@ void
 nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
 		     struct IN_M *pIn)
 {
-  int i;
-
   /* Setting default options */
   nem_input_options_default (pIn);
 
@@ -18,18 +16,20 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   nem_input_options_set (pIn, argc, argv);
 
   // Checking out the elttype value
-  (*pIn).elttype = ut_realloc_1d_char ((*pIn).elttype, 5);
   if (!strcmp ((*pIn).elttype, "tet"))
-    strcpy ((*pIn).elttype, "tri");
+    ut_string_string ("tri", &(*pIn).elttype);
   else if (!strcmp ((*pIn).elttype, "hex"))
-    strcpy ((*pIn).elttype, "quad");
+    ut_string_string ("quad", &(*pIn).elttype);
 
   if (strcmp ((*pIn).elttype, "tri") != 0
-      && strcmp ((*pIn).elttype, "quad") != 0)
+      && strncmp ((*pIn).elttype, "quad", 4) != 0)
   {
     ut_print_message (2, 0, "Unknown elt type `%s'.\n", (*pIn).elttype);
     abort ();
   }
+
+  if (!strcmp ((*pIn).elttype, "quad9") && (*pIn).order == 1)
+    ut_print_message (2, 0, "Elt type `%s' needs `-order 2`.\n", (*pIn).elttype);
 
   char *tmp = ut_alloc_1d_char (1000);
   sprintf (tmp, "%s --version 2> .nepertmp", (*pIn).gmsh);
@@ -47,22 +47,6 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   ut_file_close (file, ".nepertmp", "R");
   remove (".nepertmp");
   ut_free_1d_char (tmp);
-
-  // scale
-  if (strcmp ((*pIn).scalestring, "none"))
-  {
-    char **val = NULL;
-    int qty;
-
-    (*pIn).scale = ut_alloc_1d (3);
-    ut_array_1d_set ((*pIn).scale, 3, 1);
-    ut_string_separate ((*pIn).scalestring, NEUT_SEP_DEP, &val, &qty);
-    for (i = 0; i < qty; i++)
-      if (strlen (val[0]) > 0)
-	ut_string_real (val[i], &((*pIn).scale[i]));
-
-    ut_free_2d_char (val, qty);
-  }
 
   if ((*pIn).partstring)
   {

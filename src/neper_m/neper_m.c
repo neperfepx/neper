@@ -25,7 +25,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   struct POINT Point;
   struct BOUNDARY Bound;
 
-  RMesh = malloc (4 * sizeof (struct MESH));
+  RMesh = malloc (5 * sizeof (struct MESH));
   Mesh = malloc (5 * sizeof (struct MESH));
   NSet = malloc (3 * sizeof (struct NSET));
 
@@ -97,7 +97,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 2, "Loading mesh...\n");
     neut_mesh_name_fscanf_msh (In.mesh, &RNodes, RMesh, RMesh + 1, RMesh + 2,
-			       RMesh + 3);
+			       RMesh + 3, RMesh + 4);
     nem_input_init_dim_mesh (&In, RMesh);
 
     if (!strcmp (In.elttype, "tri"))
@@ -162,13 +162,16 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
       if (!strcmp (In.elttype, "tri"))
 	nem_meshing (In, &MeshPara, &Tess, RNodes, RMesh, &Nodes, Mesh);
 
-      else if (!strcmp (In.elttype, "quad"))
+      else if (!strncmp (In.elttype, "quad", 4))
       {
 	if (In.tess)
 	  nem_meshing_tess_str (In, MeshPara, Tess, &Nodes, Mesh, NSet);
 	else if (In.tesr)
 	  nem_meshing_tesr_str (In, MeshPara, Tesr, &Nodes, Mesh, NSet);
       }
+
+      else
+        ut_error_reportbug ();
 
       // Post-scaling of input / mesh if necessary (use of clratio) ###
       nem_meshing_para_post (MeshPara, &Tess, &Tesr, &RNodes, &Nodes, Mesh);
@@ -202,16 +205,16 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     ut_print_message (0, 2, "Switching mesh to order 2...\n");
 
     if (dim >= 0 && Mesh[dim].EltOrder == 1)
-      nem_order (&Nodes, Mesh + 1, Mesh + 2, Mesh + 3);
+      nem_order (In, &Nodes, Mesh + 1, Mesh + 2, Mesh + 3);
   }
 
 // ###################################################################
 // ### POST-MESHING OPERATIONS #######################################
 
-  if (strcmp (In.scalestring, "none"))
+  if (strcmp (In.transform, "none"))
   {
-    ut_print_message (0, 2, "Scaling mesh...\n");
-    neut_nodes_scale (&Nodes, In.scale[0], In.scale[1], In.scale[2]);
+    ut_print_message (0, 2, "Transforming mesh...\n");
+    nem_transform (In, Tess, &Nodes, Mesh);
   }
 
 // Partitioning mesh ###
@@ -261,6 +264,12 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     nem_transport (In, Tess, RNodes, RMesh, Nodes, Mesh);
   }
 
+  if (In.transportfepxstring)
+  {
+    ut_print_message (0, 1, "Transporting FEpX data...\n");
+    nem_transportfepx (In, Tess, RNodes, RMesh, Nodes, Mesh);
+  }
+
 // ###################################################################
 // ### MESH STATISTICS ###############################################
 
@@ -284,9 +293,9 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   neut_meshpara_free (MeshPara);
   neut_tess_free (&Tess);
   neut_nodes_free (&Nodes);
-  for (i = 0; i <= 3; i++)
+  for (i = 0; i <= 4; i++)
     neut_mesh_free (Mesh + i);
-  for (i = 0; i <= 3; i++)
+  for (i = 0; i <= 4; i++)
     neut_mesh_free (RMesh + i);
   for (i = 0; i <= 2; i++)
     neut_nset_free (NSet + i);

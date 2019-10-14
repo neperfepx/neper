@@ -65,7 +65,7 @@ net_tess_opt_init_tesrobj_res_cell (int *size, double *vsize, int cell, struct T
     ut_array_1d_int_set (pos, 3, 1);
     for (j = 0; j < Tesr.Dim; j++)
     {
-      pos[j] = ceil ((*pTOpt).tarcellpts[cell][i][j] / vsize[j] + 1e-6);
+      pos[j] = ceil (((*pTOpt).tarcellpts[cell][i][j] - (*pTOpt).tartesr.Origin[j]) / vsize[j] + 1e-6);
       pos[j] = ut_num_min_int (pos[j], size[j]);
     }
 

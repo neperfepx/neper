@@ -10,6 +10,8 @@ extern "C"
 #ifndef  NEUT_VOX_GEN_H
 #define  NEUT_VOX_GEN_H
 
+#include<orilib.h>
+
   extern void neut_tesr_cell (struct TESR Tesr, char **pcell);
   extern void neut_tesr_entity_qty (struct TESR Tesr, char *entity,
 				    int *pqty);
@@ -50,6 +52,9 @@ extern "C"
 
   extern int neut_tesr_pos_valid (struct TESR Tesr, int *pos);
   extern void neut_tesr_sizestring (struct TESR Tesr, char **psizestring);
+
+  extern void neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet);
+
 #endif				/* NEUT_VOX_GEN_H */
 
 #ifdef __cplusplus

@@ -36,12 +36,14 @@ the cells of a primary tessellation into secondary tessellations (and so
 on) and are obtained by combining into one, using the
 @w{@samp{@SEPFRAC{}} separator}, the option arguments that apply at the
 successive scales.  The same value can be used for defining the
-tessellations at a given scale, or different values can be loaded from a
-@dfn{multiscale cell file} (@pxref{Multiscale Cell File}).  So, all
-capabilities available for generating a standard (single-scale)
-tessellations are available for generating the tessellations at the
-different scales of a multiscale tessellation.  Examples are provided in
-the following.
+tessellations at a given scale, or different values can be loaded using
+@samp{msfile(@var{filename})}, where @file{@var{filename}} is a @dfn{multiscale
+cell file} (@pxref{Multiscale Cell File}).@footnote{As of version 3.5.0,
+@samp{msfile(@var{filename})} should be preferred over
+@samp{file(@var{filename})} to load a multiscale cell file.}
+So, all capabilities available for generating a standard (single-scale)
+tessellations are available for generating the tessellations at the different
+scales of a multiscale tessellation.  Examples are provided in the following.
 
 The @dfn{domain} of space in which the tessellation is created can be of
 any convex shape. In 3D, cuboidal, cylindrical and spherical shapes (and a few
@@ -83,11 +85,10 @@ Here is what a typical run of @mT{} looks like,
     $ neper -T -n 10 -id 1 -reg 1
     ========================    N   e   p   e   r    =======================
     Info   : A software package for polycrystal generation and meshing.
-    Info   : Version 3.0.0
+    Info   : Version 3.5.0
     Info   : Built with: gsl nlopt muparser
-    Info   : <http://neper.sourceforge.net>
+    Info   : <http://neper.info> <http://neper.info/community>
     Info   : Copyright (C) 2003-2019, and GNU GPL'd, by Romain Quey.
-    Info   : Comments and bug reports: <neper-users@lists.sourceforge.net>.
     Info   : Loading initialization file `/home/rquey/.neperrc'...
     Info   : ---------------------------------------------------------------
     Info   : MODULE  -T loaded with arguments:
@@ -221,8 +222,8 @@ where
 @code{@var{zmin}} and @code{@var{zmax}} are the minimum and maximum positions along
 @code{@var{x}}@comma{} @code{@var{y}} and @code{@var{z}}@comma{} respectively.
 For 2D raster tessellations@comma{} the @code{@var{z}} values can be omitted.
-To scale the number of points of a raster tessellation@comma{} use the syntax
-@samp{@var{file_name}:scale(@var{factor})}@comma{}
+To scale the number of voxels of a raster tessellation@comma{} use the syntax
+@samp{@var{file_name}:rasterscale(@var{factor})}@comma{}
 where @code{@var{factor}} is the
 scaling factor@comma{} or
 @samp{@var{file_name}:scale(@var{factor_x},@var{factor_y},@var{factor_z})}@comma{}
@@ -260,11 +261,7 @@ below)@comma{} or by specifying custom cell properties such as sizes@comma{}
 sphericities@comma{} centroids@comma{} or even exact shapes (using a raster
 tessellation). Global properties (sometimes refered to as @dfn{morphological
 texture}) can be added.  Alternatively@comma{} a complete tessellation can also
-be loaded (as a tessellation file).  Finally@comma{} in the case of a
-multiscale tessellation@comma{} cell-by-cell values can be specified using
-@code{@var{file_name}}@comma{} where @code{@var{file_name}} is the name of a
-multiscale cell file containing the list of morphologies (see @ref{Multiscale
-Cell File}).
+be loaded (as a tessellation file).
 @*
 @emph{(i)} The special morphology strings are the following (mutually-exclusive):@*
 @bullet{} @samp{@code{voronoi}} for a standard Poisson-Voronoi
@@ -300,11 +297,8 @@ morphology.  Argument @samp{w=@var{w}} is mandatory@comma{} and arguments
 @samp{v=@var{v}} and @samp{pos=@var{pos}} are optional.
 Argument @samp{@code{w=@var{w}}} enables
 to specify the absolute lamella width @code{@var{w}}.  For specifying
-several widths@comma{} combine them @w{with @samp{@SEPDEP}}.  In the
-case of a multiscale tessellation@comma{} for specifying cell-by-cell
-width values@comma{} use the syntax @samp{file(@var{file_name})} where
-@code{@var{file_name}} is the name of a multiscale cell file containing
-the list of widths (see @ref{Multiscale Cell File}).  Argument
+several widths@comma{} combine them @w{with @samp{@SEPDEP}}.
+Argument
 @samp{@code{v=@var{v}}} enables to specify the lamella plane @w{normals
 @code{@var{v}}}.  For randomly-distributed normals taken from a uniform
 distribution@comma{} use @samp{random} (the default).  For a direction of space@comma{} use
@@ -316,20 +310,15 @@ crystal@comma{} use
 @samp{crysdir(@var{crysdir_x}@comma{}@var{crysdir_y}@comma{}@var{crysdir_z})}@comma{}
 where @math{(@var{crysdir_x}@comma{}@var{crysdir_y}@comma{}@var{crysdir_z})} is the
   crystal direction.
-For specifying cell-by-cell
-normals@comma{} use the syntax @samp{file(@var{file_name})} where
-@code{@var{file_name}} is the name of a multiscale cell file containing
-the list of lamella plane normals (see @ref{Multiscale Cell File}).
 Argument @samp{@code{pos=@var{pos}}} enables
-to specify the position of the lamellaes@comma{} @code{@var{pos}}.
-It can be @samp{@var{random}} for a random position (the default) or
-@samp{@var{start}} for the first lamella starting (full-width) from the
-start point of the domain (along direction @code{@var{dir}}).
-In the
-case of a multiscale tessellation@comma{} for specifying cell-by-cell
-position values@comma{} use the syntax @samp{file(@var{file_name})} where
-@code{@var{file_name}} is the name of a multiscale cell file containing
-the list of positions (see @ref{Multiscale Cell File}).@*
+to specify the position of the lamellaes@comma{} @code{@var{pos}}.  It can be
+@samp{@var{random}} for a random position (the default) or @samp{@var{start}}
+for the first lamella starting (full-width) from the start point of the domain
+(along direction @code{@var{dir}}).
+In the case of a multiscale tessellation@comma{} multiscale cell files can be
+provided as values of @samp{@var{w}}@comma{} @samp{@var{v}}@comma{} and
+@samp{@var{pos}}@comma{} @pxref{Multiscale Cell File}.
+@*
 @emph{(ii)} Custom morphological properties can be defined
 by providing as argument the cell
 property and its value@comma{} combined with the @samp{@SEPDEP{}} separator.
@@ -474,7 +463,11 @@ the available values are @samp{chi2} (Chi-square test)@comma{} @samp{ks}
 test)@comma{}
 @samp{FL2} (L@math{^2}-norm on @math{F})@comma{}
 @samp{FL2w} (weighted L@math{^2}-norm
-on @math{F})@footnote{See [Quey and Renversade, CMAME, 2018].}@comma{}
+on @math{F})
+@footnote{@cite{R.@ Quey and L.@ Renversade, Optimal polyhedral description of 3D
+polycrystals: Method and application to statistical and synchrotron X-ray
+diffraction data, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 330, pp.@
+308-333, 2018}.}@comma{}
 @samp{FL2wu} (weighted L@math{^2}-norm
 on @math{F} corresponding to @samp{FL2w} for a unimodal distribution)@comma{}
 and the default value is @samp{FL2w}.
@@ -562,7 +555,7 @@ In the case of @option{-morpho centroidal}@comma{} another available
 value is @samp{lloyd} (Lloyd's algorithm); to specify the seed displacement
 factor (from the seed to the centroid)@comma{} use
 @samp{lloyd(@var{factor})} (the default value is 1.9).
-Another available value (to use only if you really know what you are doing) is
+Another available value (use only if you know what you are doing) is
 @samp{random(@var{seednb}@comma{}@var{dimnb}@comma{}@var{min}@comma{}@var{max}@comma{}@var{id})}@comma{}
 for which@comma{} at each odd iteration@comma{} each of @samp{@var{seednb}}
 seeds sees @samp{@var{dimnb}} of its attributes (among those specified by option
@@ -788,13 +781,14 @@ for a rotation about the centre and by an axis/angle pair.@*
 for a translation by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} and @code{@var{dist_z}}
 along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
 @bullet{} @samp{cut(@var{primitive1}@comma{}@var{primitive2}@comma{}...)} for cutting by a series of geometrical primitives (experimental).  The primitives can be:@*
-@emph{(i)} @samp{plane(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for a plane of equation @math{a@,x+b@,y+c@,z=d} (actually representing the half space on its positive side);@*
+@emph{(i)} @samp{hspace(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for the half-space of equation @math{a@,x+b@,y+c@,z@geq{}d};@*
 @emph{(ii)} @samp{sphere(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{centre_z}@comma{}@var{rad})} for a sphere of centre @math{(@var{centre_x}@comma{} @var{centre_y}@comma{} @var{centre_z})} and radius @var{rad};@*
 @emph{(iii)} @samp{cylinder(@var{basis_x}@comma{}@var{basis_y}@comma{}@var{basis_z}@comma{}@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{rad})} for a cylinder of basis point @math{(@var{basis_x}@comma{} @var{basis_y}@comma{} @var{basis_z})}@comma{} axis @math{(@var{axis_x}@comma{} @var{axis_y}@comma{} @var{axis_z})} and radius @var{rad};@*
 @emph{(iv)} @samp{ecylinder(@var{basis_x}@comma{}@var{basis_y}@comma{}@var{basis_z}@comma{}@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{esaxis1_x}@comma{}@var{esaxis1_y}@comma{} @var{esaxis1_z}@comma{}@var{esaxis2_x}@comma{}@var{esaxis2_y}@comma{}@var{esaxis2_z}@comma{}@var{srad1}@comma{}@var{srad2})} for an elliptic cylinder of basis point @math{(@var{basis_x}@comma{} @var{basis_y}@comma{} @var{basis_z})}@comma{} axis @math{(@var{axis_x}@comma{} @var{axis_y}@comma{} @var{axis_z})}@comma{} ellipse section first axis @math{(@var{esaxis1_x}@comma{} @var{esaxis1_y}@comma{} @var{esaxis1_z})}@comma{} ellipse section second axis @math{(@var{esaxis2_x}@comma{} @var{esaxis2_y}@comma{} @var{esaxis2_z})}@comma{} ellipse section first radius @var{esrad1} and ellipse section second radius @var{esrad2}.@*
 Append @samp{i} to a primitive name (to get @samp{cylinderi}@comma{} etc.) for the complementary shape.
 @*
-@mybullet @samp{planecut(@var{a}@comma{}@var{b}@comma{}@var{c}@comma{}@var{d})} for cutting by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d}.@*
+@mybullet @samp{planecut(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for cutting by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d}.@*
+@mybullet @samp{slice(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for slicing a 3D tessellation by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d} (yielding to a 2D tessellation).@*
 @mybullet @samp{mergecell(@var{expr1}@comma{}@var{expr2}@comma{}@dots{})} for merging cells
 matching expression @code{@var{expr1}}@comma{} @code{@var{expr2}}@comma{} etc.@comma{}
 where expressions are based on the variables defined in @ref{Tessellation Keys}.
@@ -817,12 +811,13 @@ for a rotation about the centre and by an axis/angle pair.@*
 @mybullet @samp{translate(@var{dist_x}@comma{}@var{dist_y}@comma{}@var{dist_z})}
 for a translation by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} and @code{@var{dist_z}}
 along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
-@mybullet @samp{@code{renumber}} renumbers a tessellation to remove empty cells.@*
+@mybullet @samp{@code{renumber}} renumbers a tessellation to remove cells that are empty or have a zero id.@*
+@mybullet @samp{@code{oriaverage}} sets the cell orientations (field @samp{**cell/*ori}) as the averages of the cell voxel orientations (field @samp{**oridata}).@*
 @mybullet @samp{@code{crop:@var{shape}(@var{parameters})}} crops the raster tessellation by a shape@comma{} where @samp{@var{shape}(@var{parameters})} can be @samp{cube(@var{xmin}@comma{}@var{xmax}@comma{}@var{ymin}@comma{}@var{ymax}@comma{}@var{zmin}@comma{}@var{zmax})} or @samp{cylinder(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{diameter})} (the axis is z).  The values can be any mathematical expression based on the variables defined in @ref{Raster Tessellation Keys} (see general). @*
 @mybullet @samp{@code{autocrop}} reduces the raster to its minimal size.@*
 @mybullet
 @samp{@code{rasterscale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
-scales the number of points of the raster by factors
+scales the number of voxels of the raster by factors
 @code{@var{x_fact}}@comma{} @code{@var{y_fact}} and @code{@var{z_fact}}
 along directions @var{x}@comma{} @code{@var{y}} and
 @code{@var{z}}@comma{} respectively. For a 2D tessellation@comma{}
@@ -1294,7 +1289,7 @@ cells divided into 1, 10 and 100 secondary cells, respectively.
 cells with specific seed coordinates at both scales (files @file{coo1} and @file{coo2}).
 @com{neper -T -n 2@SEPFRAC{}3 -id 1@SEPFRAC{}1 \\ @*
 @ @ @ @ @ @ -morphooptiini
-"coo@SEPDEP{}file(coo1),weight@SEPDEP{}0@SEPFRAC{}coo@SEPDEP{}file(coo2),weight@SEPDEP{}0"
+"coo@SEPDEP{}file(coo1),weight@SEPDEP{}0@SEPFRAC{}coo@SEPDEP{}msfile(coo2),weight@SEPDEP{}0"
   \\ @*
 @ @ @ @ @ @ -morpho voronoi}
 

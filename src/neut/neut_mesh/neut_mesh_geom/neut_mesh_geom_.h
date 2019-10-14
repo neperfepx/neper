@@ -9,3 +9,7 @@
 #include<float.h>
 #include<math.h>
 #include"neut.h"
+#include"neut/neut_structs/neut_nanoflann_struct.hpp"
+
+extern int neut_mesh_elset_points_closestelts_search (struct MESH Mesh, int
+    elset, double *coo, NFTREE*, int qty, int *pelt);

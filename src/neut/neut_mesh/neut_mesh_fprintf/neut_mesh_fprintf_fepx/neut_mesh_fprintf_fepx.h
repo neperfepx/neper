@@ -29,6 +29,7 @@ extern void neut_mesh_fprintf_fepx_skinelts (FILE *, struct TESS, struct MESH,
 extern void neut_mesh_fprintf_fepx_elsets (FILE *, struct MESH, char*);
 extern void neut_mesh_fprintf_fepx_nsets (FILE *, struct NSET, struct NSET,
 					  struct NSET, char *, char *);
+extern void neut_mesh_fprintf_fepx_kocks (FILE *file, struct TESS Tess, char *version);
 extern void neut_mesh_fprintf_fepx_nset (FILE *, char *, int, int *);
 
 #endif				// NEUT_MESH_FPRINTF_FEPX

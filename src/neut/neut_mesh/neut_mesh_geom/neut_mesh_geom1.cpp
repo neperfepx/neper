@@ -3,6 +3,7 @@
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_geom_.h"
+#include"neut/neut_structs/neut_nanoflann_struct.hpp"
 
 /* neut_mesh_elt_area computes the area of a 2D element */
 int
@@ -988,7 +989,7 @@ neut_mesh_elset_point_elt (struct MESH Mesh, struct NODES Nodes, int elset,
 
   for (i = 1; i <= Mesh.Elsets[elset][0]; i++)
   {
-    neut_mesh_point_elt_in (Mesh, Nodes, coo, Mesh.Elsets[elset][i], &inelt);
+    inelt = neut_mesh_point_elt_in (Mesh, Nodes, coo, Mesh.Elsets[elset][i]);
 
     if (inelt == 1)
     {
@@ -1044,6 +1045,63 @@ neut_mesh_elset_point_closestelt (struct MESH Mesh, struct NODES Nodes,
 
   ut_free_1d (dist);
   ut_free_1d (eltcoo);
+
+  return 0;
+}
+
+int
+neut_mesh_elset_points_closestelts (struct MESH Mesh, struct NODES Nodes,
+                                    int elset, double **coos, int qty,
+                                    char *method, int *elts)
+{
+  int i, j, *testqty = ut_alloc_1d_int (4);
+  NFTREE *nf_tree = nullptr;
+  NFCLOUD nf_cloud;
+
+  if (Mesh.Elsets[elset][0] <= 3)
+    ut_array_1d_int_set_4 (testqty, Mesh.Elsets[elset][0], -1, -1, -1);
+  else if (Mesh.Elsets[elset][0] <= 10)
+    ut_array_1d_int_set_4 (testqty, 3, Mesh.Elsets[elset][0], -1, -1);
+  else if (Mesh.Elsets[elset][0] <= 30)
+    ut_array_1d_int_set_4 (testqty, 3, 10, Mesh.Elsets[elset][0], -1);
+  else
+    ut_array_1d_int_set_4 (testqty, 3, 10, 30, Mesh.Elsets[elset][0]);
+
+  // filling cloud
+
+  nf_cloud.pts.resize (Mesh.Elsets[elset][0]);
+
+  for (i = 0; i < Mesh.Elsets[elset][0]; i++)
+    neut_mesh_elt_centre (Nodes, Mesh, Mesh.Elsets[elset][i + 1], nf_cloud.pts[i].p);
+
+  // building tree
+
+  nf_tree = new NFTREE (3, nf_cloud);
+
+  // finding neighbour
+
+  for (i = 0; i < qty; i++)
+  {
+    if (!strcmp (method, "distance"))
+      neut_mesh_elset_points_closestelts_search (Mesh, elset, coos[i], nf_tree,
+                                                 1, elts + i);
+
+    else if (!strcmp (method, "location"))
+      for (j = 0; j < 4 && testqty[j] > 0; j++)
+      {
+        neut_mesh_elset_points_closestelts_search (Mesh, elset, coos[i],
+                                                   nf_tree, testqty[j], elts + i);
+
+        if (neut_mesh_point_elt_in (Mesh, Nodes, coos[i], elts[i]))
+          break;
+      }
+
+    else
+      abort ();
+  }
+
+  delete nf_tree;
+  ut_free_1d_int (testqty);
 
   return 0;
 }
@@ -1193,28 +1251,24 @@ neut_mesh_point_proj_alongonto (double *Coo, double *n, struct NODES N,
   return status;
 }
 
-void
+int
 neut_mesh_point_elt_in (struct MESH Mesh, struct NODES Nodes,
-			double *coo, int elt, int *pinelt)
+			double *coo, int elt)
 {
   if (Mesh.Dimension == 3)
-    (*pinelt) =
-      ut_space_tet_point_in (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
-			     Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
-			     Nodes.NodeCoo[Mesh.EltNodes[elt][2]],
-			     Nodes.NodeCoo[Mesh.EltNodes[elt][3]], coo);
+      return ut_space_tet_point_in (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
+                                    Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
+                                    Nodes.NodeCoo[Mesh.EltNodes[elt][2]],
+                                    Nodes.NodeCoo[Mesh.EltNodes[elt][3]],
+                                    coo);
 
   else if (Mesh.Dimension == 2)
-    (*pinelt) =
-      ut_space_triangle_point_in (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
-				  Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
-				  Nodes.NodeCoo[Mesh.EltNodes[elt][2]],
-				  coo, 1e-6, 1e-6);
-
+      return ut_space_triangle_point_in (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
+                                         Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
+                                         Nodes.NodeCoo[Mesh.EltNodes[elt][2]],
+                                         coo, 1e-6, 1e-6);
   else
     abort ();
-
-  return;
 }
 
 int

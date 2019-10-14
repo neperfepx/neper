@@ -548,10 +548,10 @@ net_clip (char *clip, struct SEEDSET SSet, struct TESS *pTess)
   return;
 }
 
-void
+int
 net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
 {
-  int i, side, level, tessid;
+  int i, side, level, tessid, domface;
   struct POLY *Poly = calloc ((*pTess).CellQty + 1, sizeof (struct POLY));
   struct POLYMOD Polymod;
   int *BadVer = ut_alloc_1d_int (1000);
@@ -593,28 +593,39 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
 
   int j;
   int domfaceqty = 0;
-  int *domface = ut_alloc_1d_int ((*pTess).FaceQty);
+  int *domfaces = ut_alloc_1d_int ((*pTess).FaceQty);
   int *domfaceinv = NULL;
   int domfacemax;
   for (i = 1; i <= (*pTess).FaceQty; i++)
     for (j = 0; j < 2; j++)
       if ((*pTess).FacePoly[i][j] < 0)
-	domface[domfaceqty++] = -(*pTess).FacePoly[i][j];
+	domfaces[domfaceqty++] = -(*pTess).FacePoly[i][j];
 
-  ut_array_1d_int_sort_uniq (domface, domfaceqty, &domfaceqty);
+  ut_array_1d_int_sort_uniq (domfaces, domfaceqty, &domfaceqty);
 
-  ut_array_1d_int_inv (domface, domfaceqty, &domfaceinv, &domfacemax);
+  ut_array_1d_int_inv (domfaces, domfaceqty, &domfaceinv, &domfacemax);
 
   for (i = 1; i <= (*pTess).FaceQty; i++)
     for (j = 0; j < 2; j++)
       if ((*pTess).FacePoly[i][j] < 0)
 	(*pTess).FacePoly[i][j] = -domfaceinv[-(*pTess).FacePoly[i][j]] - 1;
 
-  ut_free_1d_int (domface);
+  ut_free_1d_int (domfaces);
   ut_free_1d_int (domfaceinv);
 
   ut_string_string ("clipped", &((*pTess)).DomType);
   neut_tess_init_domain (pTess);
+
+  domface = -1;
+  for (i = 1; i <= (*pTess).DomFaceQty; i++)
+    if (ut_array_1d_equal ((*pTess).DomFaceEq[i], eq, 4, 1e-12))
+    {
+      domface = i;
+      break;
+    }
+
+  if (domface == -1)
+    abort ();
 
   neut_tess_tess_gen (TessCpy, pTess);
   neut_tess_tess_cell (TessCpy, pTess);
@@ -623,23 +634,27 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
 
   neut_tess_free (&TessCpy);
 
-  return;
+  return domface;
 }
 
 int
-net_multiscale_mtess_arg_0d_char_fscanf (struct MTESS MTess, struct TESS *Tess,
+net_multiscale_mtess_arg_0d_char_fscanf (int level, struct MTESS MTess, struct TESS *Tess,
                                          int domtess, int dompoly,
 					 char *string, char **pval)
 {
   char *mid = NULL;
 
-  if (ut_string_filename (string))
+  if (level == 1 && strncmp (string, "msfile(", 7))
+    ut_string_string (string, pval);
+
+  else if (ut_string_filename (string))
   {
     (*pval) = ut_alloc_1d_char (1000);
     neut_mtess_tess_poly_mid (MTess, Tess[domtess], dompoly, &mid);
     net_multiscale_arg_0d_char_fscanf (string, mid, *pval);
     (*pval) = ut_realloc_1d_char (*pval, strlen (*pval) + 1);
   }
+
   else
     ut_string_string (string, pval);
 

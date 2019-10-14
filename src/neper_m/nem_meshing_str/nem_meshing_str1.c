@@ -11,10 +11,12 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
 {
   int i;
   int *msize = ut_alloc_1d_int (3);
-  double **dsize = ut_alloc_2d (3, 2);
+  double **bbox = ut_alloc_2d (3, 2);
+  double *bboxsize = ut_alloc_1d (3);
   double cl;
 
-  neut_tess_bbox (Tess, dsize);
+  neut_tess_bbox (Tess, bbox);
+  neut_tess_bboxsize (Tess, bboxsize);
 
   if (Tess.Dim == 3)
     cl = MeshPara.poly_cl[1];
@@ -27,7 +29,7 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
   }
 
   for (i = 0; i < 3; i++)
-    msize[i] = ut_num_d2ri ((dsize[i][1] - dsize[i][0]) / cl);
+    msize[i] = ut_num_d2ri (bboxsize[i] / cl);
 
   // neut_utils_nset_expand (In.nset, &expandnset);
   // neut_utils_nset_expand (In.faset, &expandfaset);
@@ -38,7 +40,8 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
 
   neut_mesh_str (Tess.Dim, msize, pNodes, Mesh + Tess.Dim,
 		 NSet + Tess.Dim - 1);
-  neut_nodes_scale (pNodes, dsize[0][1], dsize[1][1], dsize[2][1]);
+  neut_nodes_scale (pNodes, bboxsize[1], bboxsize[1], bboxsize[1]);
+  neut_nodes_shift (pNodes, bbox[0][0], bbox[1][0], bbox[2][0]);
 
   /* Searching elsets ---------------------------------------------- */
 
@@ -72,7 +75,8 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
   // ut_free_1d_char (expandnset);
   // ut_free_1d_char (expandfaset);
   ut_free_1d_int (msize);
-  ut_free_2d (dsize, 3);
+  ut_free_2d (bbox, 3);
+  ut_free_1d (bboxsize);
 
   return;
 }
@@ -87,9 +91,11 @@ nem_meshing_tesr_str (struct IN_M In, struct MESHPARA MeshPara,
   struct TESR Tesr2;
   int *msize = ut_alloc_1d_int (3);
   double *scale = ut_alloc_1d (3);
-  double **dsize = ut_alloc_2d (3, 2);
+  double **bbox = ut_alloc_2d (3, 2);
+  double *bboxsize = ut_alloc_1d (3);
 
-  neut_tesr_bbox (Tesr, dsize);
+  neut_tesr_bbox (Tesr, bbox);
+  neut_tesr_bboxsize (Tesr, bboxsize);
 
   if (Tesr.Dim == 3)
     cl = MeshPara.poly_cl[1];
@@ -102,7 +108,7 @@ nem_meshing_tesr_str (struct IN_M In, struct MESHPARA MeshPara,
 
   for (i = 0; i < 3; i++)
   {
-    msize[i] = ut_num_d2ri ((dsize[i][1] - dsize[i][0]) / cl);
+    msize[i] = ut_num_d2ri ((bbox[i][1] - bbox[i][0]) / cl);
     msize[i] = ut_num_max_int (msize[i], 1);
   }
 
@@ -112,13 +118,8 @@ nem_meshing_tesr_str (struct IN_M In, struct MESHPARA MeshPara,
 
   neut_mesh_str (Tesr.Dim, msize, pNodes, Mesh + Tesr.Dim,
 		 NSet + Tesr.Dim - 1);
-
-  if (Tesr.Dim == 3)
-    neut_nodes_scale (pNodes, dsize[0][1], dsize[1][1], dsize[2][1]);
-  else if (Tesr.Dim == 2)
-    neut_nodes_scale (pNodes, dsize[0][1], dsize[1][1], cl);
-  else if (Tesr.Dim == 1)
-    neut_nodes_scale (pNodes, dsize[0][1], cl, cl);
+  neut_nodes_scale (pNodes, bboxsize[1], bboxsize[1], Tesr.Dim == 3 ? bboxsize[1] : cl);
+  neut_nodes_shift (pNodes, bbox[0][0], bbox[1][0], bbox[2][0]);
 
   printf ("\n");
 

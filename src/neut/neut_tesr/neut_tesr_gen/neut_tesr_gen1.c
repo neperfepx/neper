@@ -303,8 +303,27 @@ neut_tesr_var_val (struct TESR Tesr, char *entity,
 {
   int i, status, b, tmpint, tmpint3[3];
   double vol;
-  double *c = ut_alloc_1d (3);
-  char *typetmp = ut_alloc_1d_char (10);
+  double *c = NULL;
+  char *typetmp = NULL;
+
+  (*pvals) = ut_realloc_1d (*pvals, 1);
+
+  if (pvalqty)
+    (*pvalqty) = 1;
+
+  // this is for a quick evaluation
+  if (!strcmp (entity, "vox") && (!strcmp (var, "x") || !strcmp (var, "y") || !strcmp (var, "z")))
+  {
+    double *coo = ut_alloc_1d (3);
+    neut_tesr_vox_coo (Tesr, id, coo);
+    (*pvals)[0] = coo[var[0] - 'x'];
+    ut_free_1d (coo);
+
+    return 1;
+  }
+
+  c = ut_alloc_1d (3);
+  typetmp = ut_alloc_1d_char (10);
 
   // b = (Tess.CellQty > 0) ? Tess.CellBody[id] : 0;
   b = 0;
@@ -312,11 +331,6 @@ neut_tesr_var_val (struct TESR Tesr, char *entity,
   if (strcmp (entity, "vox") && (!strcmp (var, "x") || !strcmp (var, "y") || !strcmp (var, "z")
       || !strcmp (var, "xyz")))
     neut_tesr_cell_centre (Tesr, id, c);
-
-  (*pvals) = ut_realloc_1d (*pvals, 1);
-
-  if (pvalqty)
-    (*pvalqty) = 1;
 
   status = -1;
   if (!strcmp (entity, "general")
@@ -714,6 +728,28 @@ neut_tesr_sizestring (struct TESR Tesr, char **psizestring)
     abort ();
 
   (*psizestring) = ut_realloc_1d_char ((*psizestring), strlen (*psizestring) + 1);
+
+  return;
+}
+
+void
+neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet)
+{
+  int i, j, k, qty;
+
+  (*pOSet) = ol_set_alloc ((Tesr.CellBBox[cell][2][1] - Tesr.CellBBox[cell][2][0] + 1)
+                         * (Tesr.CellBBox[cell][1][1] - Tesr.CellBBox[cell][1][0] + 1)
+                         * (Tesr.CellBBox[cell][0][1] - Tesr.CellBBox[cell][0][0] + 1),
+                         Tesr.CellCrySym? Tesr.CellCrySym : "triclinic");
+
+  qty = 0;
+  for (k = Tesr.CellBBox[cell][2][0]; k <= Tesr.CellBBox[cell][2][1]; k++)
+    for (j = Tesr.CellBBox[cell][1][0]; j <= Tesr.CellBBox[cell][1][1]; j++)
+      for (i = Tesr.CellBBox[cell][0][0]; i <= Tesr.CellBBox[cell][0][1]; i++)
+        if (Tesr.VoxCell[i][j][k] == cell)
+          ol_q_memcpy (Tesr.VoxOri[i][j][k], (*pOSet).q[qty++]);
+
+  (*pOSet).size = (size_t) qty;
 
   return;
 }

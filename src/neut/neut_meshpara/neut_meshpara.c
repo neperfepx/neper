@@ -8,6 +8,7 @@ void
 neut_meshpara_set_zero (struct MESHPARA *pMeshPara)
 {
   (*pMeshPara).cltype = NULL;
+  (*pMeshPara).elttype = NULL;
   (*pMeshPara).clratio = NULL;
 
   (*pMeshPara).poly_cl = NULL;
@@ -28,6 +29,7 @@ void
 neut_meshpara_free (struct MESHPARA MeshPara)
 {
   ut_free_1d_char (MeshPara.cltype);
+  ut_free_1d_char (MeshPara.elttype);
   ut_free_1d (MeshPara.clratio);
 
   ut_free_1d (MeshPara.poly_cl);

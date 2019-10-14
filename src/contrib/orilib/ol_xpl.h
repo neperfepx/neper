@@ -1,6 +1,12 @@
 /* This file is part of the 'orilib' software. */
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #ifndef OL_GND_H
 #define OL_GND_H
 
@@ -103,3 +109,6 @@ extern void ol_crys_ss_schmids (struct OL_CRYS Crys, double** g,
 #include "ol_cal.h"
 #include "ol_map.h"
 #endif /* OL_GNDx */
+#ifdef __cplusplus
+}
+#endif
