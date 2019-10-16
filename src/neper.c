@@ -27,7 +27,6 @@ main (int argc, char **argv)
   strcpy (modlist[++modqty], "--version");
   strcpy (modlist[++modqty], "--license");
   strcpy (modlist[++modqty], "--rcfile");
-  strcpy (modlist[++modqty], "--test");
   strcpy (modlist[++modqty], "-T");
   strcpy (modlist[++modqty], "-M");
   strcpy (modlist[++modqty], "-V");
@@ -66,20 +65,6 @@ main (int argc, char **argv)
 
   else if (argc >= 2 && !strcmp (mod, "--license"))
     ut_print_gplv3 (stdout);
-
-  else if (argc >= 2 && !strcmp (mod, "--test"))
-  {
-    int largc = 5;
-    char **largv = ut_alloc_2d_char (largc + 1, 100);
-    strcpy (largv[0], "neper");
-    strcpy (largv[1], "-D");
-    strcpy (largv[2], "all");
-    strcpy (largv[3], "-runmode");
-    strcpy (largv[4], "fast");
-    ut_free_2d_char (largv, largc + 1);
-
-    neper_foot ();
-  }
 
   else
   {
