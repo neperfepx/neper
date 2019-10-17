@@ -47,6 +47,12 @@ extern "C"
   extern void neut_nodes_shift (struct NODES *pNodes, double shiftx,
 				double shifty, double shiftz);
 
+/// \brief Rotate nodes
+///
+///
+///
+  extern void neut_nodes_rotate (struct NODES *pNodes, double r1, double r2, double r3, double theta);
+
 /// \brief Switch two nodes.
 ///
 ///

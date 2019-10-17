@@ -539,6 +539,8 @@ scales a mesh by @code{@var{x_fact}}@comma{} @code{@var{y_fact}} and
 @code{@var{z_fact}} along directions @var{x}@comma{} @code{@var{y}} and
 @code{@var{z}}@comma{} respectively. For a 2D mesh@comma{} @code{@var{z_fact}}
 can be omitted.@*
+@mybullet @samp{rotate(@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{angle})}
+for a rotation about the centre and by an axis/angle pair.@*
 @mybullet @samp{translate(@var{dist_x}@comma{}@var{dist_y}@comma{}@var{dist_z})}
 translates a mesh by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} and @code{@var{dist_z}}
 along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*

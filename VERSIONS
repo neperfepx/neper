@@ -1,5 +1,5 @@
-New in 3.5.1-4 (16 Oct 2019):
-- module -M: added -elt quad9.
+New in 3.5.1-5 (17 Oct 2019):
+- module -M: added -elt quad9, added -transform rotate.
 
 New in 3.5.0 (01 Oct 2019):
 - module -T: added -transform slice and oriaverage,
