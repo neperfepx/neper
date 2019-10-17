@@ -143,36 +143,51 @@ neper_head (char *neper_version)
 
   ut_print_message (0, 0, "Version %s\n", neper_version);
 
-  ut_print_message (0, 0, "Built with:");
+  ut_print_message (0, 0, "Built with: ");
+
 #ifdef HAVE_GSL
-  printf ("%s gsl", comma ? "," : "");
+  printf ("%sgsl", comma ? "|" : "");
   comma = 1;
 #else
   alldeps = 0;
 #endif
 
-#ifdef HAVE_NLOPT
-  printf ("%s nlopt", comma ? "," : ":");
+#ifdef HAVE_MUPARSER
+  printf ("%smuparser", comma ? "|" : "");
   comma = 1;
 #else
   alldeps = 0;
 #endif
 
-#ifdef HAVE_LIBSCOTCH
-  printf ("%s libscotch", comma ? "," : ":");
+#ifdef HAVE_OPENGJK
+  printf ("%sopengjk", comma ? "|" : ":");
   comma = 1;
 #else
   alldeps = 0;
 #endif
 
 #ifdef HAVE_OPENMP
-  printf ("%s openmp", comma ? "," : ":");
+  printf ("%sopenmp", comma ? "|" : ":");
   comma = 1;
 #else
   alldeps = 0;
 #endif
 
-  printf ("%s\n", alldeps ? " (full build)" : "");
+#ifdef HAVE_NLOPT
+  printf ("%snlopt", comma ? "|" : ":");
+  comma = 1;
+#else
+  alldeps = 0;
+#endif
+
+#ifdef HAVE_LIBSCOTCH
+  printf ("%slibscotch", comma ? "|" : ":");
+  comma = 1;
+#else
+  alldeps = 0;
+#endif
+
+  printf ("%s\n", alldeps ? " (full)" : "");
 
 #ifndef DEVEL_OPTIMIZATION
   ut_print_message (1, 0,

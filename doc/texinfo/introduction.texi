@@ -128,8 +128,8 @@ Other dependencies are needed at run time only (they are not linked against Nepe
 
 @end itemize
 
-Neper has a few more dependencies, which are directly included in the source code (see directory @file{src/contrib}): nanoflann (@url{https://github.com/jlblancoc/nanoflann}) and muparser
-(@url{http://beltoforion.de/article.php?a=muparser}).
+Neper has a few more dependencies, which are directly included in the source code (see directory @file{src/contrib}): nanoflann (@url{https://github.com/jlblancoc/nanoflann}), muparser
+(@url{http://beltoforion.de/article.php?a=muparser}) and openGJK (@url{https://github.com/MattiaMontanari/openGJK}).
 
 Finally, the Neper installation can be tested out by
 running

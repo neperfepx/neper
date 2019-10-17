@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.5.1-11\")
+set (NEPER_VERSION \"3.5.1-12\")
 
 # should we use the optional libraries?
 set (HAVE_GSL ON)
@@ -17,6 +17,12 @@ option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON )
 option (DEVEL_DEBUGGING_TEST "Enable debugging tests (OFF for production use)"   OFF)
 option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)"   OFF)
 option (DEVEL_PROFILING    "Enable profiling (OFF for production use)"   OFF)
+
+function(message)
+  if (NOT MESSAGE_QUIET)
+    _message(${ARGN})
+  endif()
+endfunction()
 
 include_directories("${PROJECT_SOURCE_DIR}")
 
@@ -69,9 +75,12 @@ if (DEVEL_PROFILING)
 endif ()
 
 SET(HAVE_MUPARSER ON CACHE BOOL "Use muParser") # sets to ON in ut, etc.
+SET(HAVE_OPENGJK ON CACHE BOOL "Use openGJK") # sets to ON in ut, etc.
 SET(HAVE_PNG OFF CACHE BOOL "Use the libpng library") # sets to OFF in ut, etc.
 
 set(BUILD_SHARED_LIBS OFF)
+
+set(MESSAGE_QUIET ON)
 
 add_subdirectory(contrib/openGJK)
 add_subdirectory(contrib/muparser)
@@ -82,9 +91,13 @@ add_subdirectory(neper_t)
 add_subdirectory(neper_m)
 add_subdirectory(neper_v)
 
+set(MESSAGE_QUIET OFF)
+
 unset (HAVE_MUPARSER CACHE) # hide from ccmake (comes from ut)
+unset (HAVE_OPENGJK CACHE) # hide from ccmake (comes from ut)
 unset (HAVE_GLPK CACHE)     # hide from ccmake (comes from orilib)
 unset (HAVE_PNG CACHE)      # hide from ccmake (comes from ut)
+unset (VERSION_ACCURATE CACHE) # hide from ccmake (comes from openGJK)
 
 add_executable (neper neper.c)
 
