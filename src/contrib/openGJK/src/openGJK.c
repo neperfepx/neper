@@ -14,17 +14,17 @@
  *   the Free Software Foundation, either version 3 of the License, or    *
  *   any later version.                                                   *
  *                                                                        *
- *   openGJK is distributed in the hope that it will be useful,           *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of       *
+ *  openGJK is distributed in the hope that it will be useful, but        *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of           *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See The        *
  *   GNU General Public License for more details.                         *
  *                                                                        *
  *  You should have received a copy of the GNU General Public License     *
- *   along with Foobar.  If not, see <https://www.gnu.org/licenses/>.     *
+ *   along with openGJK. If not, see <https://www.gnu.org/licenses/>.     *
  *                                                                        *
  *       openGJK: open-source Gilbert-Johnson-Keerthi algorithm           *
- *            Copyright (C) Mattia Montanari 2018 - 2019                  *
- *              http://iel.eng.ox.ac.uk/?page_id=504                      *
+ *        Copyright (C) Mattia Montanari, Univeristy of Oxford            *
+ *                       http://iel.eng.ox.ac.uk                          *
  *                                                                        *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
@@ -307,7 +307,6 @@ inline static void S2D(struct simplex * s, double *v)
     S2Dregion1(); 
     return;
   }
-
 }
 
 inline static void S3D(struct simplex * s, double *v) {
@@ -380,7 +379,6 @@ inline static void S3D(struct simplex * s, double *v) {
         for (i = 0; i < 3; i++)
           s->vrtx[2][i] = s->vrtx[3][i];
       }
-      // Call S2D
       S2D(s, v);
       break;
     case 1:
@@ -485,7 +483,6 @@ inline static void S3D(struct simplex * s, double *v) {
         else {
           // ERROR;
         }
-
       }
       else if (dotTotal == 3) {
         // sk is s.t. hff3 for sk < 0
@@ -598,7 +595,6 @@ inline static void S3D(struct simplex * s, double *v) {
     default:
       mexPrintf("\nERROR:\tunhandled");
   }
-
 }
 
 inline static void support(struct bd *body, const double *v) {
@@ -723,175 +719,5 @@ double gjk(struct bd bd1, struct bd bd2, struct simplex *s) {
 
   } while ((s->nvrtx != 4) && (k != mk));
 
-  if (k == mk) {
-    mexPrintf("\n * * OPENGJK REACHED MAXIMUM ITERATION NUMBER ! * * * * * * * * \n");
-  }
-
   return sqrt(norm2(v));
-}
-
-
-
-#ifdef MATLABDOESMEXSTUFF
-/**
- * @brief Mex function for Matlab.
- */
-void mexFunction(int nlhs, mxArray *plhs[],
-  int nrhs, const mxArray *prhs[])
-{
-
-  double *inCoordsA;
-  double *inCoordsB;
-  size_t  nCoordsA;
-  size_t  nCoordsB;
-  int     i;
-  double *distance;
-  int     c = 3;
-  int     count = 0;
-  double**arr1;
-  double**arr2;
-
-  /**************** PARSE INPUTS AND OUTPUTS **********************/
-  /*----------------------------------------------------------------*/
-  /* Examine input (right-hand-side) arguments. */
-  if (nrhs != 2) {
-    mexErrMsgIdAndTxt("MyToolbox:gjk:nrhs", "Two inputs required.");
-  }
-  /* Examine output (left-hand-side) arguments. */
-  if (nlhs != 1) {
-    mexErrMsgIdAndTxt("MyToolbox:gjk:nlhs", "One output required.");
-  }
-
-  /* make sure the two input arguments are any numerical type */
-  /* .. first input */
-  if (!mxIsNumeric(prhs[0])) {
-    mexErrMsgIdAndTxt("MyToolbox:gjk:notNumeric", "Input matrix must be type numeric.");
-  }
-  /* .. second input */
-  if (!mxIsNumeric(prhs[1])) {
-    mexErrMsgIdAndTxt("MyToolbox:gjk:notNumeric", "Input matrix must be type numeric.");
-  }
-
-  /* make sure the two input arguments have 3 columns */
-  /* .. first input */
-  if (mxGetM(prhs[0]) != 3) {
-    mexErrMsgIdAndTxt("MyToolbox:gjk:notColumnVector", "First input must have 3 columns.");
-  }
-  /* .. second input */
-  if (mxGetM(prhs[1]) != 3) {
-    mexErrMsgIdAndTxt("MyToolbox:gjk:notColumnVector", "Second input must have 3 columns.");
-  }
-
-  /*----------------------------------------------------------------*/
-  /* CREATE DATA COMPATIBLE WITH MATALB  */
-
-  /* create a pointer to the real data in the input matrix  */
-  inCoordsA = mxGetPr(prhs[0]);
-  inCoordsB = mxGetPr(prhs[1]);
-
-  /* get the length of each input vector */
-  nCoordsA = mxGetN(prhs[0]);
-  nCoordsB = mxGetN(prhs[1]);
-
-  /* Create output */
-  plhs[0] = mxCreateDoubleMatrix(1, 1, mxREAL);
-
-  /* get a pointer to the real data in the output matrix */
-  distance = mxGetPr(plhs[0]);
-
-  /* Copy data from Matlab's vectors into two new arrays */
-  arr1 = (double **)mxMalloc(sizeof(double *) * (int)nCoordsA);
-  arr2 = (double **)mxMalloc(sizeof(double *) * (int)nCoordsB);
-
-  for (i = 0; i < nCoordsA; i++)
-    arr1[i] = &inCoordsA[i * 3];
-
-  for (i = 0; i < nCoordsB; i++)
-    arr2[i] = &inCoordsB[i * 3];
-
-  /*----------------------------------------------------------------*/
-  /* POPULATE BODIES' STRUCTURES  */
-
-  struct bd       bd1; /* Structure of body A */
-  struct bd       bd2; /* Structure of body B */
-
-  /* Assign number of vertices to each body */
-  bd1.numpoints = (int)nCoordsA;
-  bd2.numpoints = (int)nCoordsB;
-
-  bd1.coord = arr1;
-  bd2.coord = arr2;
-
-  /*----------------------------------------------------------------*/
-  /*CALL COMPUTATIONAL ROUTINE  */
-
-  struct simplex s;
-  s.nvrtx = 0;
-
-  /* Compute squared distance using GJK algorithm */
-  distance[0] = gjk(bd1, bd2, &s);
-
-  mxFree(arr1);
-  mxFree(arr2);
-
-}
-#endif
-
-/**
- * @brief Invoke this function from C# applications
- */
-double csFunction(int nCoordsA, double *inCoordsA, int nCoordsB, double *inCoordsB)
-{
-  double distance = 0;
-  int i, j;
-
-  /*----------------------------------------------------------------*/
-  /* POPULATE BODIES' STRUCTURES  */
-
-  struct bd       bd1; /* Structure of body A */
-  struct bd       bd2; /* Structure of body B */
-
-  /* Assign number of vertices to each body */
-  bd1.numpoints = (int)nCoordsA;
-  bd2.numpoints = (int)nCoordsB;
-
-  double **pinCoordsA = (double **)malloc(bd1.numpoints * sizeof(double *));
-  for (i = 0; i < bd1.numpoints; i++)
-    pinCoordsA[i] = (double *)malloc(3 * sizeof(double));
-
-  for (i = 0; i < 3; i++)
-    for (j = 0; j < bd1.numpoints; j++)
-      pinCoordsA[j][i] = inCoordsA[i*bd1.numpoints + j];
-
-  double **pinCoordsB = (double **)malloc(bd2.numpoints * sizeof(double *));
-  for (i = 0; i < bd2.numpoints; i++)
-    pinCoordsB[i] = (double *)malloc(3 * sizeof(double));
-
-  for (i = 0; i < 3; i++)
-    for (j = 0; j < bd2.numpoints; j++)
-      pinCoordsB[j][i] = inCoordsB[i*bd2.numpoints + j];
-
-  bd1.coord = pinCoordsA;
-  bd2.coord = pinCoordsB;
-
-
-  /*----------------------------------------------------------------*/
-  /*CALL COMPUTATIONAL ROUTINE  */
-  struct simplex s;
-
-  /* Initialise simplex as empty */
-  s.nvrtx = 0;
-
-  /* Compute squared distance using GJK algorithm */
-  distance = gjk(bd1, bd2, &s);
-
-  for (i = 0; i < bd1.numpoints; i++)
-    free(pinCoordsA[i]);
-  free(pinCoordsA);
-
-  for (i = 0; i < bd2.numpoints; i++)
-    free(pinCoordsB[i]);
-  free(pinCoordsB);
-
-  return distance;
 }
