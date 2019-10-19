@@ -1,4 +1,4 @@
-New in 3.5.1-12 (17 Oct 2019):
+New in 3.5.1-13 (19 Oct 2019):
 - module -T: sped up -morpho tesr using openGJK.
 - module -M: added -elt quad9, added -transform rotate.
 
