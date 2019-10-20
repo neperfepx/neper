@@ -5,13 +5,12 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.5.1-14\")
+set (NEPER_VERSION \"3.5.1-15\")
 
 # should we use the optional libraries?
 set (HAVE_GSL ON)
 option (HAVE_NLOPT           "Use NLopt"                                 ON )
 option (HAVE_LIBSCOTCH     "Use libscotch"                               OFF)
-option (HAVE_PTHREAD       "Use pthread (for libScotch version 6 and later" OFF)
 option (HAVE_OPENMP        "Use OpenMP"                                  ON )
 option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON )
 option (DEVEL_DEBUGGING_TEST "Enable debugging tests (OFF for production use)"   OFF)
@@ -122,9 +121,6 @@ if (HAVE_LIBSCOTCH)
   find_package (LIBSCOTCH REQUIRED)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${Scotch_LIBRARIES})
   include_directories (${Scotch_INCLUDE_DIRS})
-endif ()
-
-if (HAVE_PTHREAD)
   find_package (Threads REQUIRED)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 endif ()
@@ -148,7 +144,6 @@ install (TARGETS neper DESTINATION bin
 	 GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
 unset(HAVE_GSL CACHE) # hides it in ccmake
-unset(HAVE_PTHREAD CACHE) # hides it in ccmake
 
 # CTEST
 enable_testing ()

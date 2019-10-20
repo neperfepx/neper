@@ -22,8 +22,3 @@ extern int neut_mesh3d_elt_slice_quad (struct NODES Nodes, struct MESH
 				       struct MESH *pSMesh, int **pelt_newold,
 				       int ***pnode_newold,
 				       double **pnode_fact);
-
-extern void neut_mesh_entity_qty (struct NODES Nodes, struct MESH Mesh0D,
-                                  struct MESH Mesh1D, struct MESH Mesh2D,
-                                  struct MESH Mesh3D, char *entity,
-                                  int *pentityqty);

@@ -1,6 +1,8 @@
-New in 3.5.1-14 (19 Oct 2019):
-- module -T: fixed -morpho, sped up -morpho tesr using openGJK.
+New in 3.5.1-15 (20 Oct 2019):
+- module -T: fixed -morpho from wide grain size distributions, sped up -morpho
+  tesr using openGJK.
 - module -M: added -elt quad9, added -transform rotate.
+- general: fixed compilation without openMP.
 
 New in 3.5.0 (01 Oct 2019):
 - module -T: added -transform slice and oriaverage,

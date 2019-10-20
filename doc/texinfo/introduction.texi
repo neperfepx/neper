@@ -112,9 +112,9 @@ Several of Neper's dependencies can be managed at this stage.  Some of them are 
 
 @item The OpenMP library (optional, enabled by default).  It is likely to be available on your system or from your system package manager.
 
-@item The libScotch library (version @code{5.1.12} or higher, optional, disabled by default).  It is needed by @mM{} for mesh partitioning.  The source code can be downloaded from @url{www.labri.fr/perso/pelegrin/scotch}.
+@item The libScotch library (version @code{6.0.0} or higher, optional, disabled by default).  It is needed by @mM{} for mesh partitioning.  The source code can be downloaded from @url{www.labri.fr/perso/pelegrin/scotch}.
 
-@item The pthread library (optional, enabled if libScotch enabled). It is needed if libScotch version @code{6.0.0} or higher is enabled.  It is likely to be available on your system or from your system package manager.
+@item The pthread library (mandatory if libScotch enabled). It is likely to be available on your system or from your system package manager.
 
 @end itemize
 
