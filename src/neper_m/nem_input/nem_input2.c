@@ -31,6 +31,9 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   if (!strcmp ((*pIn).elttype, "quad9") && (*pIn).order == 1)
     ut_print_message (2, 0, "Elt type `%s' needs `-order 2`.\n", (*pIn).elttype);
 
+  if (!strcmp ((*pIn).faset, "all"))
+    ut_string_string ("faces", &(*pIn).faset);
+
   char *tmp = ut_alloc_1d_char (1000);
   sprintf (tmp, "%s --version 2> .nepertmp", (*pIn).gmsh);
   if (system (tmp) == -1)

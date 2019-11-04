@@ -714,6 +714,8 @@ Specify the element surface meshes (edge meshes in 2D) to provide. Use
 faces@comma{} provide their labels (see option @option{-nset}).  For
 internal mesh faces (edges in 2D) as created by @samp{@option{-interface
 discontinuous}}@comma{} provide @samp{internal}.
+@footnote{In a @file{.msh} file@comma{} the elements are assigned to fasets
+using a 4th element tag@comma{} and the fasets are defined as physical entities.}
 Combine
 them @w{with @samp{@SEPNODEP}}.  Provide @code{none} for none.
 ,

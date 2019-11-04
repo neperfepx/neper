@@ -12,17 +12,21 @@
 
 #include"neut_mesh_fprintf_gmsh.h"
 
+extern void neut_mesh_fprintf_gmsh_pre (struct TESS Tess,
+    char *fasetlist, char ***pfasets, int **pfasetids, int *pfasetqty);
+
 extern void neut_meshheader_fprintf_gmsh (FILE * file, char *mode, struct MESH
 					  Mesh0D, struct MESH Mesh1D,
 					  struct MESH Mesh2D,
 					  struct MESH Mesh3D);
-extern void neut_elts_fprintf_gmsh (FILE * file, char *mode, struct MESH Mesh0D,
-				    struct MESH Mesh1D, struct MESH Mesh2D,
-				    struct MESH Mesh3D,
+extern void neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
+                                    struct MESH Mesh0D, struct MESH Mesh1D,
+                                    struct MESH Mesh2D, struct MESH Mesh3D,
 				    struct PART Part, struct MESH CMesh,
-				    char *dim, char *numbering);
+                                    char **fasets, int *fasetids, int fasetqty,
+                                    char *dim, char *numbering);
 extern void neut_nodes_fprintf_gmsh (FILE * file, char *mode, struct NODES Nodes);
 
-extern void neut_physical_fprintf_gmsh (FILE * file, struct MESH Mesh0D,
-    struct MESH Mesh1D, struct MESH Mesh2D, struct MESH Mesh3D, char
-    *dim);
+extern void neut_physical_fprintf_gmsh (FILE * file, struct MESH Mesh0D, struct
+    MESH Mesh1D, struct MESH Mesh2D, struct MESH Mesh3D, char **fasets, int
+    *fasetids, int fasetqty, char *dim);

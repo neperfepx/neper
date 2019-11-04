@@ -59,8 +59,8 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
   neut_mesh_poly_boundmesh (Tess, poly, Mesh[2], &Skin);
 
   file2 = ut_file_open (filename_surf, "W");
-  neut_mesh_fprintf_gmsh (file2, "2", Nodes, Garbage, Garbage, Skin,
-			  Garbage, PGarbage, Garbage, NULL, "binary");
+  neut_mesh_fprintf_gmsh (file2, "2", Tess, Nodes, Garbage, Garbage, Skin,
+			  Garbage, PGarbage, Garbage, NULL, NULL, "binary");
   ut_file_close (file2, filename_surf, "W");
 
   clmod = cl;
