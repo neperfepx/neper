@@ -24,7 +24,7 @@ neut_mesh_fprintf_gmsh_pre (struct TESS Tess, char *fasetlist, char ***pfasets,
         if (!strcmp (tmp[i], Tess.DomFaceLabel[j]))
         {
           (*pfasetqty)++;
-          (*pfasets) = ut_realloc_2d_char_addline (*pfasets, *pfasetqty, strlen (Tess.DomFaceLabel[j] + 1));
+          (*pfasets) = ut_realloc_2d_char_addline (*pfasets, *pfasetqty, strlen (Tess.DomFaceLabel[j]) +1);
           (*pfasetids) = ut_realloc_1d_int (*pfasetids, *pfasetqty);
 
           strcpy ((*pfasets)[(*pfasetqty) - 1], Tess.DomFaceLabel[j]);
