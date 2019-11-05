@@ -32,6 +32,7 @@
 project (openGJKlib)
 
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_FLAGS "-std=gnu99")
 
 # SELECT USER OPTIONS
 option(VERSION_ACCURATE  "Reduce speed to maximise accuracy (OFF)" OFF )
