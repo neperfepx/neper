@@ -108,6 +108,7 @@ extern "C"
     char *tess;				// tess file
     char *tesr;				// tesr file
     char *vtk;				// AMITEX-FFT file
+    char *olmap;		        // Orilib map file
     char *raw;				// raw data of tesr file
     char *geo;				// Gmsh geo file
     char *ply;				// Ply file

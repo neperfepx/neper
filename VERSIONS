@@ -1,6 +1,6 @@
-New in 3.5.1-18 (05 Nov 2019):
+New in 3.5.1-19 (14 Nov 2019):
 - module -T: fixed -morpho from wide grain size distributions, sped up -morpho
-  tesr using openGJK.
+  tesr using openGJK, added olmap format.
 - module -M: added -elt quad9, added -transform rotate, added fasets to .msh
   file.
 - general: fixed compilation without openMP.
