@@ -95,6 +95,8 @@ nem_input_options_default (struct IN_M *pIn)
 
   ut_string_string ("none", &(*pIn).transform);
 
+  ut_string_string ("none", &(*pIn).transform);
+
   (*pIn).gmsh = ut_alloc_1d_char (5);
   strcpy ((*pIn).gmsh, "gmsh");
   ut_string_string (".", &(*pIn).tmp);

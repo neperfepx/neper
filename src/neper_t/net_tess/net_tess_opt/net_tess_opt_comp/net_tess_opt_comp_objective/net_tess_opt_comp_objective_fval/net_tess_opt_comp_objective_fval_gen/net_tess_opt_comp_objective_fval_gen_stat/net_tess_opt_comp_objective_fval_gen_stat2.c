@@ -77,6 +77,7 @@ net_tess_opt_comp_objective_fval_gen_stat_smoothed_gen_legacy (struct TOPT *pTOp
   ut_array_1d_zero ((*pTOpt).curpdf[var].y,
 		    (*pTOpt).curpdf[var].size);
 
+  (*pTOpt).curpenalty[var] = 0;
   for (j = 1; j <= (*pTOpt).CellQty; j++)
   {
     if ((*pTOpt).curcellpenalty[j] == 0)

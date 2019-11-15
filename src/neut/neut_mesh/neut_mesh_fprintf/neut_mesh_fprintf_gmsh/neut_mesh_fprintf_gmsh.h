@@ -9,12 +9,13 @@ extern "C"
 
 #ifndef NEUT_MESH_FPRINTF_GMSH
 
-  extern void neut_mesh_fprintf_gmsh (FILE * file, char *dim, struct NODES
+  extern void neut_mesh_fprintf_gmsh (FILE * file, char *dim, struct TESS Tess,
+                                      struct NODES
 				      Nodes, struct MESH Mesh0D, struct
 				      MESH Mesh1D, struct MESH Mesh2D,
-				      struct MESH Mesh3D, struct PART
-				      Part, struct MESH CMesh, char
-				      *numbering, char* mode);
+                                      struct MESH Mesh3D, struct PART Part,
+                                      struct MESH CMesh, char *fasets, char
+                                      *numbering, char* mode);
 
 #endif				// NEUT_MESH_FPRINTF_GMSH
 

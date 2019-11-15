@@ -55,6 +55,8 @@ extern "C"
 
   extern void neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet);
 
+  extern void neut_tesr_olmap (struct TESR Tesr, struct OL_MAP *pMap);
+
   extern int neut_tesr_pos_valid (struct TESR Tesr, int *pos);
   extern void neut_tesr_sizestring (struct TESR Tesr, char **psizestring);
 #endif				/* NEUT_VOX_GEN_H */

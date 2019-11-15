@@ -853,6 +853,8 @@ neut_mesh_entity_qty (struct NODES Nodes, struct MESH Mesh0D,
                       struct MESH Mesh1D, struct MESH Mesh2D,
                       struct MESH Mesh3D, char *entity, int *pentityqty)
 {
+  (*pentityqty) = 0;
+
   if (!strcmp (entity, "elset3d"))
     (*pentityqty) = Mesh3D.ElsetQty;
   else if (!strcmp (entity, "elset2d"))

@@ -162,13 +162,16 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
       if (!strcmp (In.elttype, "tri"))
 	nem_meshing (In, &MeshPara, &Tess, RNodes, RMesh, &Nodes, Mesh);
 
-      else if (!strcmp (In.elttype, "quad"))
+      else if (!strncmp (In.elttype, "quad", 4))
       {
 	if (In.tess)
 	  nem_meshing_tess_str (In, MeshPara, Tess, &Nodes, Mesh, NSet);
 	else if (In.tesr)
 	  nem_meshing_tesr_str (In, MeshPara, Tesr, &Nodes, Mesh, NSet);
       }
+
+      else
+        ut_error_reportbug ();
 
       // Post-scaling of input / mesh if necessary (use of clratio) ###
       nem_meshing_para_post (MeshPara, &Tess, &Tesr, &RNodes, &Nodes, Mesh);
@@ -202,7 +205,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     ut_print_message (0, 2, "Switching mesh to order 2...\n");
 
     if (dim >= 0 && Mesh[dim].EltOrder == 1)
-      nem_order (&Nodes, Mesh + 1, Mesh + 2, Mesh + 3);
+      nem_order (In, &Nodes, Mesh + 1, Mesh + 2, Mesh + 3);
   }
 
 // ###################################################################

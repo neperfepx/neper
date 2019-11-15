@@ -2210,6 +2210,30 @@ neut_mesh_fasets_bound (struct TESS Tess, struct NODES Nodes,
 }
 
 void
+neut_mesh_domface_elts (struct TESS Tess, struct MESH Mesh2D, char *domface,
+                        int **pelts, int *peltqty)
+{
+  int i, j, domfaceid, id, status;
+
+  status = neut_tess_domface_label_id (Tess, domface, &domfaceid);
+
+  if (status != 0)
+    abort ();
+
+  id = 0;
+  (*peltqty) = 0;
+  for (i = 1; i <= Tess.DomTessFaceQty[domfaceid]; i++)
+  {
+    (*peltqty) += Mesh2D.Elsets[Tess.DomTessFaceNb[domfaceid][i]][0];
+    (*pelts) = ut_realloc_1d_int (*pelts, *peltqty);
+    for (j = 1; j <= Mesh2D.Elsets[Tess.DomTessFaceNb[domfaceid][i]][0]; j++)
+      (*pelts)[id++] = Mesh2D.Elsets[Tess.DomTessFaceNb[domfaceid][i]][j];
+  }
+
+  return;
+}
+
+void
 neut_mesh_domface_elts3d (struct TESS Tess,
 			  struct MESH Mesh2D, struct MESH Mesh3D,
 			  struct NODES Nodes, char *faset,
@@ -2394,4 +2418,15 @@ neut_mesh_node_domtype (struct TESS Tess,
   free (Mesh);
 
   return 0;
+}
+
+void
+neut_mesh_elt_domface (struct TESS Tess, struct MESH Mesh2D, int elt, int *pdomface)
+{
+  if (!Mesh2D.EltElset)
+    abort ();
+
+  (*pdomface) = Tess.FaceDom[Mesh2D.EltElset[elt]][0] == 2 ? Tess.FaceDom[Mesh2D.EltElset[elt]][1] : -1;
+
+  return;
 }

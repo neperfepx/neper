@@ -206,11 +206,16 @@ any, none}
 @subsection Meshing Options
 
 @opt{-elttype, char_string,
-Specify the type of elements@comma{} among tetrahedral (@samp{tet}) and hexahedral
-(@samp{hex}). (The 2D counterparts@comma{} @samp{tri} and
-@samp{quad}@comma{} can also be used and are equivalent.)
+Specify the type of elements@comma{} among
+@samp{tri}   for triangular elements@comma{}
+@samp{quad}  for quadrangular elements@comma{}
+@samp{quad9} for 9-node quadrangular elements@comma{}
+@samp{tet}   for tetrahedral elements and
+@samp{hex}   for hexahedral elements.
+(In 2D@comma{} @samp{tet} and @samp{hex} are allowed and interprated as @samp{tri} and
+@samp{quad}@comma{} respectively.)
 ,
-tet@comma{} hex, tet}
+see above, tet in 3D and tri in 2D}
 
 @opttwo{-cl, -rcl, -cl or -rcl, real,
 Specify the absolute or relative characteristic length of the elements.
@@ -252,7 +257,7 @@ Specify the mesh order.
 4-node quadrangular elements@comma{} 4-node tetrahedral elements and
 8-node hexahedral elements.
 2 means 3-node linear elements@comma{} 6-node triangular elements@comma{}
-8-node quadrangular elements@comma{} 10-node tetrahedral elements and
+8-node or 9-node quadrangular elements@comma{} 10-node tetrahedral elements and
 20-node hexahedral elements.
 ,
 1 or 2,1}
@@ -534,6 +539,8 @@ scales a mesh by @code{@var{x_fact}}@comma{} @code{@var{y_fact}} and
 @code{@var{z_fact}} along directions @var{x}@comma{} @code{@var{y}} and
 @code{@var{z}}@comma{} respectively. For a 2D mesh@comma{} @code{@var{z_fact}}
 can be omitted.@*
+@mybullet @samp{rotate(@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{angle})}
+for a rotation about the centre and by an axis/angle pair.@*
 @mybullet @samp{translate(@var{dist_x}@comma{}@var{dist_y}@comma{}@var{dist_z})}
 translates a mesh by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} and @code{@var{dist_z}}
 along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
@@ -707,6 +714,8 @@ Specify the element surface meshes (edge meshes in 2D) to provide. Use
 faces@comma{} provide their labels (see option @option{-nset}).  For
 internal mesh faces (edges in 2D) as created by @samp{@option{-interface
 discontinuous}}@comma{} provide @samp{internal}.
+@footnote{In a @file{.msh} file@comma{} the elements are assigned to fasets
+using a 4th element tag@comma{} and the fasets are defined as physical entities.}
 Combine
 them @w{with @samp{@SEPNODEP}}.  Provide @code{none} for none.
 ,

@@ -664,28 +664,6 @@ net_multiscale_mtess_arg_0d_char_fscanf (int level, struct MTESS MTess, struct T
 }
 
 int
-net_multiscale_mtess_arg_0d_char_fscanf (struct MTESS MTess, struct TESS *Tess,
-                                         int domtess, int dompoly,
-					 char *string, char **pval)
-{
-  char *mid = NULL;
-
-  if (ut_string_filename (string))
-  {
-    (*pval) = ut_alloc_1d_char (1000);
-    neut_mtess_tess_poly_mid (MTess, Tess[domtess], dompoly, &mid);
-    net_multiscale_arg_0d_char_fscanf (string, mid, *pval);
-    (*pval) = ut_realloc_1d_char (*pval, strlen (*pval) + 1);
-  }
-  else
-    ut_string_string (string, pval);
-
-  ut_free_1d_char (mid);
-
-  return 0;
-}
-
-int
 net_multiscale_arg_0d_char_fscanf (char *string, char *flag, char *val)
 {
   int status;

@@ -12,6 +12,7 @@ set (UT_VERSION_PATCH 0)
 # should we use the optional libraries?
 option (HAVE_GSL      "Use the GNU Scientific Library (GSL)" ON)
 option (HAVE_MUPARSER "Use muparser"                         OFF)
+option (HAVE_OPENGJK  "Use openGJK"                          OFF)
 option (HAVE_NLOPT    "Use NLopt"                            OFF)
 option (HAVE_OPENMP   "Use OpenMP"                           ON)
 option (HAVE_PNG      "Use the libpng library"               ON)
@@ -37,6 +38,10 @@ if (HAVE_MUPARSER)
   else ()
     message (FATAL_ERROR "Failed to find muparser")
   endif ()
+endif ()
+
+if (HAVE_OPENGJK)
+  include_directories(${OPENGJK_INCLUDE_DIR} ${OPENGJK_BINARY_DIR})
 endif ()
 
 add_definitions(-Wall -W)
@@ -109,6 +114,10 @@ endif ()
 
 if (HAVE_MUPARSER)
   set (EXTRA_LIBS ${EXTRA_LIBS} muparser)
+endif ()
+
+if (HAVE_OPENGJK)
+  set (EXTRA_LIBS ${EXTRA_LIBS} openGJKlib)
 endif ()
 
 target_link_libraries (ut ${EXTRA_LIBS})

@@ -612,7 +612,6 @@ nev_print_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle)
   char *minexpr = NULL, *maxexpr = NULL, *ticks = NULL;
   char **parts = NULL;
   int qty;
-  char* format = ut_alloc_1d_char (10);
 
   double height = 1;
 
@@ -626,7 +625,6 @@ nev_print_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle)
 
   ut_string_string (parts[0], &minexpr);
   ut_string_string (parts[qty - 1], &maxexpr);
-  ut_string_format (minexpr, format);
 
   if (qty > 2)
   {
@@ -751,7 +749,7 @@ nev_print_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle)
     for (i = 0; i < valqty; i++)
     {
       val[i] = min + ((double) i / (valqty - 1)) * (max - min);
-      sprintf (valstring[i], format, val[i]);
+      sprintf (valstring[i], "%g", val[i]);
     }
   }
   else
@@ -817,7 +815,6 @@ nev_print_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle)
   ut_free_1d (coo);
   ut_free_1d_int (eltnodes);
   ut_free_1d (nodescal);
-  ut_free_1d_char (format);
 
   return;
 }

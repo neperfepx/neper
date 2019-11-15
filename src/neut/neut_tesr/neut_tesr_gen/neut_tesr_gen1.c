@@ -384,6 +384,20 @@ neut_tesr_var_val (struct TESR Tesr, char *entity,
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
       ol_q_e (Tesr.CellOri[id], *pvals);
       strcpy (typetmp, "%f");
+    }
+    else if (!strcmp (var, "xyz"))
+    {
+      (*pvalqty) = 3;
+      (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
+      ut_array_1d_memcpy (*pvals, 3, c);
+      strcpy (typetmp, "%f");
+    }
+    else if (!strcmp (var, "e"))
+    {
+      (*pvalqty) = 3;
+      (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
+      ol_q_e (Tesr.CellOri[id], *pvals);
+      strcpy (typetmp, "%f");
       (*pvalqty) = 3;
     }
     else if (!strcmp (var, "vol"))
@@ -448,16 +462,6 @@ neut_tesr_var_val (struct TESR Tesr, char *entity,
       ol_q_e (Tesr.CellOri[id], *pvals);
       strcpy (typetmp, "%f");
     }
-    else if (!strcmp (var, "voxsizey"))
-    {
-      val[0] = Tesr.vsize[1];
-      strcpy (typetmp, "%f");
-    }
-    else if (!strcmp (var, "voxsizez"))
-    {
-      val[0] = Tesr.vsize[2];
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "domsizex"))
     {
       val[0] = Tesr.vsize[0] * Tesr.size[0];
@@ -514,11 +518,7 @@ neut_tesr_var_val (struct TESR Tesr, char *entity,
       neut_tesr_cell_volume (Tesr, id, &vol);
       (*pvals)[0] = vol;
       strcpy (typetmp, "%f");
-      if (pvalqty)
-        (*pvalqty) = 3;
     }
-    else
-      status = -1;
   }
 
   else if (!strcmp (entity, "vox"))
@@ -769,9 +769,6 @@ neut_tesr_sizestring (struct TESR Tesr, char **psizestring)
 
   (*psizestring) = ut_realloc_1d_char ((*psizestring), strlen (*psizestring) + 1);
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
-
   return;
 }
 
@@ -793,6 +790,39 @@ neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet)
           ol_q_memcpy (Tesr.VoxOri[i][j][k], (*pOSet).q[qty++]);
 
   (*pOSet).size = (size_t) qty;
+
+  return;
+}
+
+void
+neut_tesr_olmap (struct TESR Tesr, struct OL_MAP *pMap)
+{
+  unsigned int i, j;
+
+  if (Tesr.Dim != 2)
+    abort ();
+
+  if (ut_array_1d_min (Tesr.vsize, 2) != ut_array_1d_max (Tesr.vsize, 2))
+    abort ();
+
+  (*pMap) = ol_map_alloc (Tesr.size[0], Tesr.size[1], Tesr.vsize[0],
+                          Tesr.CellCrySym);
+
+  for (i = 0; i < (*pMap).xsize; i++)
+    for (j = 0; j < (*pMap).ysize; j++)
+    {
+      if (Tesr.VoxCell[i + 1][j + 1][1] != 0)
+      {
+        (*pMap).id[i][j] = 1;
+
+        if (Tesr.VoxOri)
+          ol_q_memcpy (Tesr.VoxOri[i + 1][j + 1][1], (*pMap).q[i][j]);
+        else
+          ol_q_memcpy (Tesr.CellOri[Tesr.VoxCell[i + 1][j + 1][1]], (*pMap).q[i][j]);
+      }
+      else
+        (*pMap).id[i][j] = 0;
+    }
 
   return;
 }

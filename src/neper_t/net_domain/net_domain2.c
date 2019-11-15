@@ -455,9 +455,6 @@ net_domain_cell (char *filename, int cell, struct POLY *pPoly)
 
   neut_tess_set_zero (&Tessb);
 
-  neut_tess_name_fscanf (filename, &Tessb);
-  net_tess_poly (Tessb, cell, pPoly);
-
   ut_free_2d_char (vars, varqty);
   ut_file_close (file, filename, "r");
   ut_free_1d_char (filename);

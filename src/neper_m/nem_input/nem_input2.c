@@ -18,18 +18,23 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   nem_input_options_set (pIn, argc, argv);
 
   // Checking out the elttype value
-  (*pIn).elttype = ut_realloc_1d_char ((*pIn).elttype, 5);
   if (!strcmp ((*pIn).elttype, "tet"))
-    strcpy ((*pIn).elttype, "tri");
+    ut_string_string ("tri", &(*pIn).elttype);
   else if (!strcmp ((*pIn).elttype, "hex"))
-    strcpy ((*pIn).elttype, "quad");
+    ut_string_string ("quad", &(*pIn).elttype);
 
   if (strcmp ((*pIn).elttype, "tri") != 0
-      && strcmp ((*pIn).elttype, "quad") != 0)
+      && strncmp ((*pIn).elttype, "quad", 4) != 0)
   {
     ut_print_message (2, 0, "Unknown elt type `%s'.\n", (*pIn).elttype);
     abort ();
   }
+
+  if (!strcmp ((*pIn).elttype, "quad9") && (*pIn).order == 1)
+    ut_print_message (2, 0, "Elt type `%s' needs `-order 2`.\n", (*pIn).elttype);
+
+  if (!strcmp ((*pIn).faset, "all"))
+    ut_string_string ("faces", &(*pIn).faset);
 
   char *tmp = ut_alloc_1d_char (1000);
   sprintf (tmp, "%s --version 2> .nepertmp", (*pIn).gmsh);

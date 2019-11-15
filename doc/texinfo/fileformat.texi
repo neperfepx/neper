@@ -636,20 +636,6 @@ In the case of binary format, double-precision numbers are considered.
 @item @code{oridata_file_name} is the name of a file that contains the
 orientation data.   It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided.  Typically, it is a @file{.raw} file.
 
-@item @code{**oridata} denotes the beginning of the orientation data field.  Data can be
-provided in the @file{.tesr} file or in a separate file, using
-@option{*file}, see below.
-
-@item @code{@var{voxid_param1}}, @code{@var{voxid_param2}}, @dots{} are
-the values of the orientation descriptor of voxel @var{id}.
-Orientations must be listed in column-major order (x varying first, y
-varying second and z varying last).
-Arbitrary orientations can be used for void voxels (@code{@var{voxid_cell} = 0}).
-These data must be written in ASCII format.
-
-@item @code{oridata_file_name} is the name of a file that contains the
-orientation data. Typically, it is a @file{.raw} file.
-
 @end itemize
 
 @node Multiscale Cell File

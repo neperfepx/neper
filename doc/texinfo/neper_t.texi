@@ -918,14 +918,15 @@ the Wavefront @code{@samp{obj}}@comma{}
 the 3dec @code{@samp{3dec}}
 and the Surface Evolver @code{@samp{fe}}.
 For raster tessellations@comma{} the available formats are
-the Neper @code{@samp{tesr}}
+the Neper @code{@samp{tesr}}@comma{}
+the Orilib map format @code{@samp{olmap}}@comma{}
 and the Kitware @code{@samp{vtk}}.
 Orientations for the cells can be obtained using @code{@samp{ori}} (see
 also options starting by @code{@samp{-ori}}).
 Combine the values @w{with @samp{@SEPNODEP}}.
 ,
 tess@comma{} geo@comma{} ply@comma{} stl(@SEPDEP{}bycell)@comma{} obj@comma{} 3dec@comma{} fe@comma{}
-tesr@comma{} vtk@comma{} ori, tess}
+tesr@comma{} olmap@comma{} vtk@comma{} ori, tess}
 
 @opt{-tesrformat, char_string,
 Specify the format of the raster output file(s).
@@ -1090,6 +1091,11 @@ See @ref{File Formats} for the file syntax.
 
 It contains a raster description of the tessellation.
 See @ref{File Formats} for the file syntax.
+
+@item Orilib map file: @file{.olmap}
+
+It contains a description of a 2D raster tessellation as an orientation map and
+written under the Orilib format @file{.olmap}.
 
 @item Gmsh geometry file: @file{.geo}
 
