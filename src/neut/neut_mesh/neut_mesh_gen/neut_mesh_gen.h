@@ -142,6 +142,11 @@ extern void neut_mesh2d_mesh3d (struct NODES *pNodes, struct MESH
 extern void neut_mesh1d_mesh2d (struct NODES *pNodes, struct MESH
 				Mesh1D, struct MESH *pMesh2D);
 
+extern void neut_mesh_entity_qty (struct NODES Nodes, struct MESH Mesh0D,
+                                  struct MESH Mesh1D, struct MESH Mesh2D,
+                                  struct MESH Mesh3D, char *entity,
+                                  int *pentityqty);
+
 #endif /* NEUT_MESH_GEN_H */
 
 #ifdef __cplusplus

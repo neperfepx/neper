@@ -100,6 +100,27 @@ neut_mesh_fprintf_inp_mesh2d (FILE *file, struct MESH Mesh2D,
       }
     }
   }
+  else if (!strcmp (Mesh2D.EltType, "quad9"))
+  {
+    fprintf (file, "*Element, type=");
+
+    fprintf (file, "CPE9\n");
+
+    for (i = 1; i <= Mesh2D.EltQty; i++)
+    {
+      fprintf (file, "%d, ", i + shift_elt);
+
+      fprintf (file, "%d, ", Mesh2D.EltNodes[i][0]);
+      fprintf (file, "%d, ", Mesh2D.EltNodes[i][1]);
+      fprintf (file, "%d, ", Mesh2D.EltNodes[i][2]);
+      fprintf (file, "%d, ", Mesh2D.EltNodes[i][3]);
+      fprintf (file, "%d, ", Mesh2D.EltNodes[i][4]);
+      fprintf (file, "%d, ", Mesh2D.EltNodes[i][5]);
+      fprintf (file, "%d, ", Mesh2D.EltNodes[i][6]);
+      fprintf (file, "%d, ", Mesh2D.EltNodes[i][7]);
+      fprintf (file, "%d\n", Mesh2D.EltNodes[i][8]);
+    }
+  }
 
   fprintf (file, "\n");
 }

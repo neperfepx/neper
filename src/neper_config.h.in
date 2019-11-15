@@ -1,5 +1,6 @@
 #cmakedefine HAVE_GSL
 #cmakedefine HAVE_NLOPT
+#cmakedefine HAVE_PTHREAD
 #cmakedefine HAVE_LIBSCOTCH
 #cmakedefine HAVE_OPENMP
 #cmakedefine DEVEL_PROFILING

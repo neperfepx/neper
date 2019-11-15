@@ -141,7 +141,7 @@ extern "C"
 				       int *peltqty);
 
 /// \brief Get the common elts of nodes.
-///
+/// \note The elements are listed in ascending order
 ///
 ///
   extern void neut_mesh_nodes_comelts (struct MESH Mesh, int *nodes,
@@ -365,6 +365,9 @@ extern void neut_mesh_fasets_bound (struct TESS Tess, struct NODES
     Nodes, struct MESH Mesh2D, struct MESH Mesh3D, char *fasetlist,
     struct BOUNDARY *pBound);
 
+extern void neut_mesh_domface_elts (struct TESS Tess, struct MESH Mesh2D,
+                                    char *faset, int **pelts, int *peltqty);
+
 extern void neut_mesh_domface_elts3d (struct TESS Tess, struct MESH
     Mesh2D, struct MESH Mesh3D, struct NODES Nodes, char *faset, int
     **pelts, int **peltfasets, int *peltqty);
@@ -380,6 +383,8 @@ extern int neut_mesh_node_domtype (struct TESS Tess, struct MESH Mesh0D,
                                    struct MESH Mesh1D, struct MESH Mesh2D,
                                    struct MESH Mesh3D, int node,
                                    int *pdomtype);
+
+extern void neut_mesh_elt_domface (struct TESS Tess, struct MESH Mesh2D, int elt, int *pdomface);
 
 #endif /* NEUT_MESH_TOPO_H */
 

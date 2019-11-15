@@ -133,6 +133,15 @@ neut_gmsh_elt_nb (char *type, int dim, int order, int *pnb)
     else
       (*pnb) = -1;
   }
+  else if (strcmp (type, "quad9") == 0)
+  {
+    if (dim == 2 && order == 1)
+      (*pnb) = 3;
+    else if (dim == 2 && order == 2)
+      (*pnb) = 10;
+    else
+      (*pnb) = -1;
+  }
   else if (strcmp (type, "triprism") == 0)
   {
     if (dim == 0 && order == 1)

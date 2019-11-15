@@ -5,18 +5,23 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.5.0\")
+set (NEPER_VERSION \"3.5.1-21\")
 
 # should we use the optional libraries?
 set (HAVE_GSL ON)
 option (HAVE_NLOPT           "Use NLopt"                                 ON )
 option (HAVE_LIBSCOTCH     "Use libscotch"                               OFF)
-option (HAVE_PTHREAD       "Use pthread (for libScotch version 6 and later" OFF)
 option (HAVE_OPENMP        "Use OpenMP"                                  ON )
 option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON )
 option (DEVEL_DEBUGGING_TEST "Enable debugging tests (OFF for production use)"   OFF)
 option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)"   OFF)
 option (DEVEL_PROFILING    "Enable profiling (OFF for production use)"   OFF)
+
+function(message)
+  if (NOT MESSAGE_QUIET)
+    _message(${ARGN})
+  endif()
+endfunction()
 
 include_directories("${PROJECT_SOURCE_DIR}")
 
@@ -25,6 +30,7 @@ set (MUPARSER_SOURCE_DIR "${PROJECT_SOURCE_DIR}/contrib/muparser")
 set (MUPARSER_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/muparser")
 set (MUPARSER_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/muparser/include")
 
+include_directories("${PROJECT_SOURCE_DIR}/contrib/openGJK")
 include_directories("${PROJECT_SOURCE_DIR}/contrib/ut")
 set (UT_SOURCE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut")
 set (UT_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/ut")
@@ -37,6 +43,7 @@ include_directories("${PROJECT_SOURCE_DIR}/neper_m")
 include_directories("${PROJECT_SOURCE_DIR}/neper_v")
 
 include_directories("${PROJECT_BINARY_DIR}")
+include_directories("${PROJECT_BINARY_DIR}/contrib/openGJK")
 include_directories("${PROJECT_BINARY_DIR}/contrib/ut")
 include_directories("${PROJECT_BINARY_DIR}/contrib/orilib")
 include_directories("${PROJECT_BINARY_DIR}/contrib/muparser")
@@ -67,10 +74,14 @@ if (DEVEL_PROFILING)
 endif ()
 
 SET(HAVE_MUPARSER ON CACHE BOOL "Use muParser") # sets to ON in ut, etc.
+SET(HAVE_OPENGJK ON CACHE BOOL "Use openGJK") # sets to ON in ut, etc.
 SET(HAVE_PNG OFF CACHE BOOL "Use the libpng library") # sets to OFF in ut, etc.
 
 set(BUILD_SHARED_LIBS OFF)
 
+set(MESSAGE_QUIET ON)
+
+add_subdirectory(contrib/openGJK)
 add_subdirectory(contrib/muparser)
 add_subdirectory(contrib/ut)
 add_subdirectory(contrib/orilib)
@@ -79,12 +90,17 @@ add_subdirectory(neper_t)
 add_subdirectory(neper_m)
 add_subdirectory(neper_v)
 
+set(MESSAGE_QUIET OFF)
+
 unset (HAVE_MUPARSER CACHE) # hide from ccmake (comes from ut)
+unset (HAVE_OPENGJK CACHE) # hide from ccmake (comes from ut)
 unset (HAVE_GLPK CACHE)     # hide from ccmake (comes from orilib)
 unset (HAVE_PNG CACHE)      # hide from ccmake (comes from ut)
+unset (VERSION_ACCURATE CACHE) # hide from ccmake (comes from openGJK)
 
 add_executable (neper neper.c)
 
+set (EXTRA_LIBS ${EXTRA_LIBS} openGJKlib)
 set (EXTRA_LIBS ${EXTRA_LIBS} muparser)
 set (EXTRA_LIBS ${EXTRA_LIBS} ut)
 set (EXTRA_LIBS ${EXTRA_LIBS} orilib)
@@ -105,9 +121,6 @@ if (HAVE_LIBSCOTCH)
   find_package (LIBSCOTCH REQUIRED)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${Scotch_LIBRARIES})
   include_directories (${Scotch_INCLUDE_DIRS})
-endif ()
-
-if (HAVE_PTHREAD)
   find_package (Threads REQUIRED)
   set (EXTRA_LIBS ${EXTRA_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 endif ()
@@ -131,7 +144,6 @@ install (TARGETS neper DESTINATION bin
 	 GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
 unset(HAVE_GSL CACHE) # hides it in ccmake
-unset(HAVE_PTHREAD CACHE) # hides it in ccmake
 
 # CTEST
 enable_testing ()

@@ -24,6 +24,7 @@
 #include "ut_tensor/ut_tensor.h"
 #include "ut_time/ut_time.h"
 #include "ut_vector/ut_vector.h"
+#include "include/openGJK/openGJK.h"
 #ifdef HAVE_NLOPT
 #include "ut_nlopt/ut_nlopt.h"
 #endif

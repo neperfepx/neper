@@ -753,3 +753,36 @@ neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet)
 
   return;
 }
+
+void
+neut_tesr_olmap (struct TESR Tesr, struct OL_MAP *pMap)
+{
+  unsigned int i, j;
+
+  if (Tesr.Dim != 2)
+    abort ();
+
+  if (ut_array_1d_min (Tesr.vsize, 2) != ut_array_1d_max (Tesr.vsize, 2))
+    abort ();
+
+  (*pMap) = ol_map_alloc (Tesr.size[0], Tesr.size[1], Tesr.vsize[0],
+                          Tesr.CellCrySym);
+
+  for (i = 0; i < (*pMap).xsize; i++)
+    for (j = 0; j < (*pMap).ysize; j++)
+    {
+      if (Tesr.VoxCell[i + 1][j + 1][1] != 0)
+      {
+        (*pMap).id[i][j] = 1;
+
+        if (Tesr.VoxOri)
+          ol_q_memcpy (Tesr.VoxOri[i + 1][j + 1][1], (*pMap).q[i][j]);
+        else
+          ol_q_memcpy (Tesr.CellOri[Tesr.VoxCell[i + 1][j + 1][1]], (*pMap).q[i][j]);
+      }
+      else
+        (*pMap).id[i][j] = 0;
+    }
+
+  return;
+}

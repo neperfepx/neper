@@ -1108,7 +1108,7 @@ rcl2cl (double rcl, int dim, double size, int CellQty, char *elttype,
       (*pl) = rcl * 0.5 * pow (size / CellQty, 0.5);
       (*pl) *= 0.5;
     }
-    else if (!strcmp (elttype, "quad"))
+    else if (!strncmp (elttype, "quad", 4))
     {
       (*pl) =
 	rcl * 0.5 * pow (size / CellQty, 0.3333333333333333333333333333);

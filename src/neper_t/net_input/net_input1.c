@@ -35,7 +35,8 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
     tess_out = 1;
   if (ut_string_inlist ((*pIn).format, NEUT_SEP_NODEP, "tesr") == 1
       || ut_string_inlist ((*pIn).format, NEUT_SEP_NODEP, "raw") == 1
-      || ut_string_inlist ((*pIn).format, NEUT_SEP_NODEP, "vtk") == 1)
+      || ut_string_inlist ((*pIn).format, NEUT_SEP_NODEP, "vtk") == 1
+      || ut_string_inlist ((*pIn).format, NEUT_SEP_NODEP, "olmap") == 1)
     tesr_out = 1;
   if (tess_out == 0 && tesr_out == 0
       && ut_string_inlist ((*pIn).format, NEUT_SEP_NODEP, "ori") == 1)

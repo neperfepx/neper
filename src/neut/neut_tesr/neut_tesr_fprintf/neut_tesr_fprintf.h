@@ -19,6 +19,8 @@ extern "C"
 
   extern void neut_tesr_fprintf_ami (FILE *, char *, struct TESR);
 
+  extern void neut_tesr_fprintf_olmap (FILE *, struct TESR);
+
 #endif				/* NEUT_VOX_FPRINTF_H */
 
 #ifdef __cplusplus

@@ -27,7 +27,6 @@ main (int argc, char **argv)
   strcpy (modlist[++modqty], "--version");
   strcpy (modlist[++modqty], "--license");
   strcpy (modlist[++modqty], "--rcfile");
-  strcpy (modlist[++modqty], "--test");
   strcpy (modlist[++modqty], "-T");
   strcpy (modlist[++modqty], "-M");
   strcpy (modlist[++modqty], "-V");
@@ -66,20 +65,6 @@ main (int argc, char **argv)
 
   else if (argc >= 2 && !strcmp (mod, "--license"))
     ut_print_gplv3 (stdout);
-
-  else if (argc >= 2 && !strcmp (mod, "--test"))
-  {
-    int largc = 5;
-    char **largv = ut_alloc_2d_char (largc + 1, 100);
-    strcpy (largv[0], "neper");
-    strcpy (largv[1], "-D");
-    strcpy (largv[2], "all");
-    strcpy (largv[3], "-runmode");
-    strcpy (largv[4], "fast");
-    ut_free_2d_char (largv, largc + 1);
-
-    neper_foot ();
-  }
 
   else
   {
@@ -158,36 +143,51 @@ neper_head (char *neper_version)
 
   ut_print_message (0, 0, "Version %s\n", neper_version);
 
-  ut_print_message (0, 0, "Built with:");
+  ut_print_message (0, 0, "Built with: ");
+
 #ifdef HAVE_GSL
-  printf ("%s gsl", comma ? "," : "");
+  printf ("%sgsl", comma ? "|" : "");
   comma = 1;
 #else
   alldeps = 0;
 #endif
 
-#ifdef HAVE_NLOPT
-  printf ("%s nlopt", comma ? "," : ":");
+#ifdef HAVE_MUPARSER
+  printf ("%smuparser", comma ? "|" : "");
   comma = 1;
 #else
   alldeps = 0;
 #endif
 
-#ifdef HAVE_LIBSCOTCH
-  printf ("%s libscotch", comma ? "," : ":");
+#ifdef HAVE_OPENGJK
+  printf ("%sopengjk", comma ? "|" : ":");
   comma = 1;
 #else
   alldeps = 0;
 #endif
 
 #ifdef HAVE_OPENMP
-  printf ("%s openmp", comma ? "," : ":");
+  printf ("%sopenmp", comma ? "|" : ":");
   comma = 1;
 #else
   alldeps = 0;
 #endif
 
-  printf ("%s\n", alldeps ? " (full build)" : "");
+#ifdef HAVE_NLOPT
+  printf ("%snlopt", comma ? "|" : ":");
+  comma = 1;
+#else
+  alldeps = 0;
+#endif
+
+#ifdef HAVE_LIBSCOTCH
+  printf ("%slibscotch", comma ? "|" : ":");
+  comma = 1;
+#else
+  alldeps = 0;
+#endif
+
+  printf ("%s\n", alldeps ? " (full)" : "");
 
 #ifndef DEVEL_OPTIMIZATION
   ut_print_message (1, 0,
@@ -231,7 +231,7 @@ neper_foot ()
 void
 neper_info ()
 {
-  ut_print_message (0, 0, "<http://neper.info> <http://neper.info/community>\n");
+  ut_print_message (0, 0, "<http://neper.info>\n");
 
   ut_print_message (0, 0,
                     "Copyright (C) 2003-2019, and GNU GPL'd, by Romain Quey.\n");

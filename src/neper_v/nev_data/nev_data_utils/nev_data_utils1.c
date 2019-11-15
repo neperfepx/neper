@@ -293,16 +293,10 @@ nev_data_scal_colour (double **data, int *datadef, int size, char *scale,
   int qty;
   char *min = NULL, *max = NULL;
   char *tmp = ut_alloc_1d_char (1000);
-  char* format = ut_alloc_1d_char (100);
 
   qty = 0;
   if (scale)
-  {
     ut_string_separate (scale, NEUT_SEP_DEP, &parts, &qty);
-    ut_string_format (parts[0], format);
-  }
-  else
-    ut_string_string ("%.3g", &format);
 
   if (qty >= 2)
   {
@@ -360,18 +354,19 @@ nev_data_scal_colour (double **data, int *datadef, int size, char *scale,
   if (pscale)
   {
     (*pscale) = ut_alloc_1d_char (1000);
+    if (qty >= 2)
     {
-      sprintf (*pscale, format, ScaleBeg);
+      strcpy (*pscale, parts[0]);
       for (i = 1; i < qty - 1; i++)
       {
 	(*pscale) = strcat (*pscale, NEUT_SEP_DEP);
 	(*pscale) = strcat (*pscale, parts[i]);
       }
-
-      sprintf (tmp, format, ScaleEnd);
       (*pscale) = strcat (*pscale, NEUT_SEP_DEP);
-      (*pscale) = strcat (*pscale, tmp);
+      (*pscale) = strcat (*pscale, parts[qty - 1]);
     }
+    else
+      sprintf (*pscale, "%f%s%f", ScaleBeg, NEUT_SEP_DEP, ScaleEnd);
 
     (*pscale) = ut_realloc_1d_char (*pscale, strlen (*pscale) + 1);
   }
@@ -380,7 +375,6 @@ nev_data_scal_colour (double **data, int *datadef, int size, char *scale,
   ut_free_1d_char (min);
   ut_free_1d_char (max);
   ut_free_1d_char (tmp);
-  ut_free_1d_char (format);
 
   return;
 }

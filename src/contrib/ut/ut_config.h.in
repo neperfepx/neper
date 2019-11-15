@@ -1,6 +1,7 @@
 #cmakedefine HAVE_GSL
 #cmakedefine HAVE_PNG
 #cmakedefine HAVE_MUPARSER
+#cmakedefine HAVE_OPENGJK
 #cmakedefine DEVEL_DEBUGGING_FLAG
 #cmakedefine DEVEL_OPTIMIZATION
 

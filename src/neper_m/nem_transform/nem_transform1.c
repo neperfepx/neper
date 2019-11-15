@@ -10,9 +10,8 @@ nem_transform (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
 
 {
   int i, partqty, status;
-  double *tmp = ut_alloc_1d (3);
+  double *tmp = ut_alloc_1d (4);
   char **parts = NULL;
-  (void) Mesh;
 
   ut_string_separate (In.transform, NEUT_SEP_NODEP, &parts, &partqty);
 
@@ -34,6 +33,13 @@ nem_transform (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
       if (status == 2)
         tmp[2] = 1;
       neut_nodes_shift (pNodes, tmp[0], tmp[1], tmp[2]);
+    }
+
+    else if (!strncmp (parts[i], "rotate", 6))
+    {
+      ut_print_message (0, 3, "Rotating...\n");
+      status = sscanf (parts[i], "rotate(%lf,%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2, tmp + 3);
+      neut_nodes_rotate (pNodes, tmp[0], tmp[1], tmp[2], tmp[3]);
     }
 
     else if (!strncmp (parts[i], "smooth", 5))

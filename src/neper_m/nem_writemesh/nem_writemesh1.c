@@ -71,8 +71,8 @@ nem_writemesh (struct IN_M In, struct TESS Tess,
       ut_string_string ("binary", &format);
 
     file = ut_file_open (In.msh, "w");
-    neut_mesh_fprintf_gmsh (file, In.dimout_msh, Nodes, Mesh[0], Mesh[1],
-			    Mesh[2], Mesh[3], Part, Mesh[4], NULL, format);
+    neut_mesh_fprintf_gmsh (file, In.dimout_msh, Tess, Nodes, Mesh[0], Mesh[1],
+			    Mesh[2], Mesh[3], Part, Mesh[4], expandfaset, NULL, format);
     ut_file_close (file, In.msh, "w");
     ut_free_1d_char (format);
   }

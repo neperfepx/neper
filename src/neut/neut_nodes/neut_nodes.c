@@ -37,6 +37,26 @@ neut_nodes_shift (struct NODES *pNodes, double shiftx, double shifty,
 }
 
 void
+neut_nodes_rotate (struct NODES *pNodes, double r1, double r2, double r3,
+                   double theta)
+{
+  int i;
+  double **g = ol_g_alloc ();
+  double *r = ol_r_alloc ();
+
+  ol_r_set_this (r, r1, r2, r3);
+  ol_rtheta_g (r, -theta, g);
+
+  for (i = 1; i <= (*pNodes).NodeQty; i++)
+    ol_g_vect_vect (g, (*pNodes).NodeCoo[i], (*pNodes).NodeCoo[i]);
+
+  ol_g_free (g);
+  ol_r_free (r);
+
+  return;
+}
+
+void
 neut_nodes_bbox (struct NODES Nodes, double **bbox)
 {
   int i, j;

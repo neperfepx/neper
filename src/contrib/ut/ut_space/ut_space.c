@@ -1745,15 +1745,42 @@ ut_space_vectpair_samedir_tol (double *v1, double *v2, double tol)
     return 0;
 }
 
-// Guy with the cap's method... http://mollyrocket.com/849
+// modified by Mattia Montanari to integrate openGJK
 int
 ut_space_polypts_point_dist (double** ptcoos0, int ptqty,
 			     double* ptcoo, double *pdist)
 {
+#ifdef openGJK
+  struct bd       bd1; /* Body comprised of a point only */
+  struct bd       bd2; /* Body comprised of ptqty points */
+  struct simplex s;
+  double eps = 1e-10;
+
+  bd1.coord = ptcoos0;
+  bd1.numpoints = ptqty;
+
+  bd2.coord = &ptcoo;
+  bd2.numpoints = 1;
+
+  /* Initialise simplex as empty */
+  s.nvrtx = 0;
+  *pdist = gjk (bd1, bd2, &s);
+
+  /* Three values may be returned:
+   *  1 intersecion
+   *  0 otherwise
+   * -1 IFF an error occcurred. */
+  if (*pdist < eps)
+    return 0;
+  else
+    return 1;
+#else
   return ut_space_polypts_point_dist_verbosity (ptcoos0, ptqty, ptcoo,
 						pdist, 0);
+#endif
 }
 
+// Guy with the cap's method... http://mollyrocket.com/849
 int
 ut_space_polypts_point_dist_verbosity (double** ptcoos0, int ptqty,
     double* ptcoo, double *pdist, int verbosity)

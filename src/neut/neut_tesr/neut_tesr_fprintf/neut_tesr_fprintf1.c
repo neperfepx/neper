@@ -113,3 +113,17 @@ neut_tesr_fprintf_ami (FILE * file, char *format, struct TESR Tesr)
 
   return;
 }
+
+void
+neut_tesr_fprintf_olmap (FILE * file, struct TESR Tesr)
+{
+  struct OL_MAP Map;
+
+  neut_tesr_olmap (Tesr, &Map);
+
+  ol_map_fprintf (file, Map, "%.12f");
+
+  ol_map_free (Map);
+
+  return;
+}
