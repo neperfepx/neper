@@ -40,7 +40,7 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
 
   neut_mesh_str (Tess.Dim, msize, pNodes, Mesh + Tess.Dim,
 		 NSet + Tess.Dim - 1);
-  neut_nodes_scale (pNodes, bboxsize[1], bboxsize[1], bboxsize[1]);
+  neut_nodes_scale (pNodes, bboxsize[0], bboxsize[1], bboxsize[2]);
   neut_nodes_shift (pNodes, bbox[0][0], bbox[1][0], bbox[2][0]);
 
   /* Searching elsets ---------------------------------------------- */
