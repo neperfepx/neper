@@ -15,11 +15,20 @@ This list is also available on Neper's `Google Scholar page <https://scholar.goo
 2020
 ----
 
+- P.M.C. Carneiro, P.V. Gamboa, C. Baudin and A.P. Silva, *Modelling of elastic modulus of a biphasic ceramic microstructure using 3D representative volume elements*, **Journal of the European Ceramic Society**, doi://10.1016/j.jeurceramsoc.2019.10.046.
+- S.C. Aduloju and T.T. Truster, *A primal formulation for imposing periodic boundary conditions on conforming and nonconforming meshes*, **Computer Methods in Applied Mechanics and Engineering**, doi://10.1016/j.cma.2019.112663.
+- C. Kurniawan, S. Baird, D.T. Fullwood, E.R. Homer and O.K. Johnson, *Grain boundary structure–property model inference using polycrystals: the overdetermined case*, **Journal of Materials Science**, doi://10.1007/s10853-019-04125-z.
+- M. Kasemer and P. Dawson, *A finite element methodology to incorporate kinematic activation of discrete deformation twins in a crystal plasticity framework*, **Computer Methods in Applied Mechanics and Engineering**, vol. 358, pp. 112653, 2020.
 - D. Wicht, M. Schneider and T. Bohlke, *An efficient solution scheme for small-strain crystal-elasto-viscoplasticity in a dual framework*, **Computer Methods in Applied Mechanics and Engineering**, vol. 358, pp. 112611, 2020.
 
 2019
 ----
 
+- E. Raghami, C. Schrank and J.H. Kruhl, *3D modelling of the effect of thermal-elastic stress on grain-boundary opening in quartz grain aggregates*, **Tectonophysics**, doi://10.1016/j.tecto.2019.228242.
+- W. Zhang, X. Wang, Y. Wang, X. Yu, Y. Gao and Z. Feng, *Type IV Failure in Weldment of Creep Resistant Ferritic Alloys: I. Micromechanical Origin of Creep Strain Localization in the Heat Affected Zone*, **Journal of the Mechanics and Physics of Solids**, doi://10.1016/j.jmps.2019.103774.
+- S. Dhala, S. Mishra, A. Tewari and A. Alankar, *Modeling of finite deformation of pseudoelastic NiTi shape memory alloy considering various inelasticity mechanisms*, **International Journal of Plasticity**, vol. 115, pp. 216-237, 2019.
+- X. Gao, X. Zhang and A. Li, *Numerical Study on Mechanical Properties of Quasi-Continuous SiCp/Al Network Composites with Various Particle Size Ratios (PSRs)*, **International Journal of Applied Mechanics**, vol. 11, pp. 1950065, 2019.
+- N. Guo, C.Y. Sun, Y.F. Zhang and M.W. Fu, *Analysis of size dependent earing evolution in micro deep drawing of TWIP steel by using crystal plasticity modeling*, **International Journal of Mechanical Sciences**, doi://10.1016/j.ijmecsci.2019.105200.
 - T.M.J. Gebhart, D. Jehnichen, R. Koschichow, M. Muller, M. Gobel, V. Geske, M. Stegelmann and M. Gude, *Multi-scale modelling approach to homogenise the mechanical properties of polymeric closed-cell bead foams*, **International Journal of Engineering Science**, vol. 145, pp. 103168, 2019.
 - H. Li, J. Yang, Y. Han, C. Yang, J.J.K. Daemen and P. Li, *Weibull grain-based model (W-GBM) for simulating heterogeneous mechanical characteristics of salt rock*, **Engineering Analysis with Boundary Elements**, vol. 108, pp. 227-243, 2019.
 - H. Li, C. Yang, X. Ding, N.T. William, H. Yin and S. Zhang, *Weibull linear parallel bond model (WLPBM) for simulating micro-mechanical characteristics of heterogeneous rocks*, **Engineering Analysis with Boundary Elements**, vol. 108, pp. 82-94, 2019.
@@ -49,7 +58,7 @@ This list is also available on Neper's `Google Scholar page <https://scholar.goo
   materials using softening contact models in DEM*, **International Journal of Fracture**, doi:10.1007/s10704-019-00373-x.
 - L. Hu, S.-y. Jiang, L.-X. Shi and Y.-Q. Zhang, *Prediction of grain scale plasticity of NiTi shape memory alloy based on crystal plasticity finite element method*, **Transactions of Nonferrous Metals Society of China**, vol. 29, pp. 775-784, 2019.
 - T. Kawamori, Q. Ru and K.L. Vodopyanov, *Comprehensive Model for Randomly Phase-Matched Frequency Conversion in Zinc-Blende Polycrystals and Experimental Results for ZnSe*, **Physical Review Applied**, vol. 11, pp. 054015, 2019.
-- L. Filipovic, *A method for simulating the influence of grain boundaries and material interfaces on electromigration*, **Microelectronics Reliability**, doi:10.1016/j.microrel.2019.04.005.
+- L. Filipovic, *A method for simulating the influence of grain boundaries and material interfaces on electromigration*, **Microelectronics Reliability**, vol. 97, pp. 38-52, 2019.
 - K. Balusu, R. Kelton, E.I. Meletis and H. Huang, *Investigating the relationship between grain orientation and surface height changes in nickel polycrystals under tensile plastic deformation*, **Mechanics of Materials**, doi:10.1016/j.mechmat.2019.04.011.
 - H.S. Abdullahi, Y. Liang and S. Gao, *Predicting the elastic properties of closed-cell aluminum foams: a mesoscopic geometric modeling approach*, **SN Applied Sciences**, doi:10.1007/s42452-019-0382-y.
 - Y. Liu, A. Van Pamel, P.B. Nagy and P. Cawley, *Investigation of ultrasonic backscatter using three-dimensional finite element simulations*, **The Journal of the Acoustical Society of America**, vol. 145, pp.1584, 2019.
