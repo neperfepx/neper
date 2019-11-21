@@ -1,3 +1,6 @@
+New in 3.5.2-1 (21 Nov 2019):
+- documentation: small fixes.
+
 New in 3.5.1 (15 Nov 2019):
 - module -T: fixed -morpho from wide grain size distributions, sped up -morpho
   tesr using openGJK, added olmap format.

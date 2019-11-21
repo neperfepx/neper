@@ -50,7 +50,6 @@ Neper's source code is located in directory @file{src/} and consists of roughly 
 
 @end itemize
 
-@page
 A module directory, @dfn{@code{neper_@var{X}/}}, where @samp{@var{X}} stands for the module letter (one of @samp{t}, @samp{m} or @samp{v}), is structured as follows,
 
 @itemize
