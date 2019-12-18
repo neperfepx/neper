@@ -825,8 +825,8 @@ neut_tesr_cell_tesrpos (struct TESR Tesr, int cell, int *pvoxqty,
 int
 neut_tesr_renumber_continuous (struct TESR *pTesr)
 {
-  int i, j, k, l, idmax, oldidmax;
-  int *qty = NULL;
+  int i, j, k, l, cellidmax, oldcellidmax;
+  int *cellvoxqty = NULL;
   int CellQty_old = 0;
   int *CellId_old = NULL;
   int *CellId_old_inv = NULL;
@@ -837,8 +837,8 @@ neut_tesr_renumber_continuous (struct TESR *pTesr)
   double  *CellConvexity_old = NULL;
   double **SeedCoo_old = NULL;
   double *SeedWeight_old = NULL;
-  int *id_old_new = NULL;
-  int id_old_max;
+  int *CellId_inv = NULL;
+  int CellId_max;
 
   if ((*pTesr).CellOri && !(*pTesr).CellId)
     ut_error_reportbug ();
@@ -909,41 +909,42 @@ neut_tesr_renumber_continuous (struct TESR *pTesr)
 			(*pTesr).SeedWeight + 1);
   }
 
-  idmax = 0;
-  qty = ut_alloc_1d_int (1);
+  // recording the number of voxels of each cell in cellvoxqty, cellidmax is the maximum cell id
+  cellidmax = 0;
+  cellvoxqty = ut_alloc_1d_int (1);
   for (k = 1; k <= (*pTesr).size[2]; k++)
     for (j = 1; j <= (*pTesr).size[1]; j++)
       for (i = 1; i <= (*pTesr).size[0]; i++)
       {
-	if ((*pTesr).VoxCell[i][j][k] > idmax)
+	if ((*pTesr).VoxCell[i][j][k] > cellidmax)
 	{
-	  oldidmax = idmax;
-	  idmax = (*pTesr).VoxCell[i][j][k];
-	  qty = ut_realloc_1d_int (qty, idmax + 1);
-	  for (l = oldidmax + 1; l <= idmax; l++)
-	    qty[l] = 0;
+	  oldcellidmax = cellidmax;
+	  cellidmax = (*pTesr).VoxCell[i][j][k];
+	  cellvoxqty = ut_realloc_1d_int (cellvoxqty, cellidmax + 1);
+	  for (l = oldcellidmax + 1; l <= cellidmax; l++)
+	    cellvoxqty[l] = 0;
 	}
 
-	qty[(*pTesr).VoxCell[i][j][k]]++;
+	cellvoxqty[(*pTesr).VoxCell[i][j][k]]++;
       }
 
+  // filling struct TESR.CellId
   (*pTesr).CellQty = 0;
-  (*pTesr).CellId = ut_alloc_1d_int (idmax + 1);
-  for (i = 1; i <= idmax; i++)
-    if (qty[i] > 0)
+  (*pTesr).CellId = ut_alloc_1d_int (cellidmax - ut_array_1d_int_nbofthisval (cellvoxqty + 1, cellidmax, 0) + 1);
+  for (i = 1; i <= cellidmax; i++)
+    if (cellvoxqty[i] > 0)
       (*pTesr).CellId[++(*pTesr).CellQty] = i;
 
-  (*pTesr).CellId = ut_realloc_1d_int ((*pTesr).CellId, (*pTesr).CellQty + 1);
-
   ut_array_1d_int_inv ((*pTesr).CellId, (*pTesr).CellQty + 1,
-		       &id_old_new, &id_old_max);
+		       &CellId_inv, &CellId_max);
 
+  // renumbering VoxCell
   for (k = 1; k <= (*pTesr).size[2]; k++)
     for (j = 1; j <= (*pTesr).size[1]; j++)
       for (i = 1; i <= (*pTesr).size[0]; i++)
-	(*pTesr).VoxCell[i][j][k] = id_old_new[(*pTesr).VoxCell[i][j][k]];
+	(*pTesr).VoxCell[i][j][k] = CellId_inv[(*pTesr).VoxCell[i][j][k]];
 
-  if (CellQty_old > 0)
+  if (CellId_old)
     for (i = 1; i <= (*pTesr).CellQty; i++)
       (*pTesr).CellId[i] = CellId_old[(*pTesr).CellId[i]];
 
@@ -975,8 +976,8 @@ neut_tesr_renumber_continuous (struct TESR *pTesr)
       (*pTesr).SeedWeight[i] =
 	SeedWeight_old[CellId_old_inv[(*pTesr).CellId[i]]];
 
-  ut_free_1d_int (qty);
-  ut_free_1d_int (id_old_new);
+  ut_free_1d_int (cellvoxqty);
+  ut_free_1d_int (CellId_inv);
   ut_free_1d_int (CellId_old);
   ut_free_1d_int (CellId_old_inv);
   if (CellOri_old)
