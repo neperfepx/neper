@@ -3,9 +3,9 @@
 @c See the COPYING file in the top-level directory.
 
 @iftex
-@set NEPER_VERSION 3.5.2-3
+@set NEPER_VERSION 3.5.2-4
 @end iftex
 
 @ifinfo
-@set NEPER_VERSION 3.5.2-3
+@set NEPER_VERSION 3.5.2-4
 @end ifinfo
