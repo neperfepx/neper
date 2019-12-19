@@ -332,7 +332,7 @@ microstructure, 1 @math{-} the sphericity follows a lognormal distribution; see
 @cite{R.@ Quey and L.@ Renversade, Optimal polyhedral description of 3D
 polycrystals: Method and application to statistical and synchrotron X-ray
 diffraction data, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 330, pp.@
-308-333, 2018}.}
+308-333, 2018}.};@*
 @bullet{} @samp{@code{centroid}} for the centroid;@*
 @bullet{} @samp{@code{centroidtol}} for the centroid with a tolerance ---
 centroids with a tolerance higher than 1000 times the minimum tolerance are
@@ -456,14 +456,12 @@ objective functions.
 An objective function depends on the property and its definition.
 @*
 @mybullet For properties defined by a statistical distribution (which can be
-@samp{size}@comma{} @samp{diameq} or @samp{sphericity})@comma{}
-the available values are @samp{chi2} (Chi-square test)@comma{} @samp{ks}
-(Kolmogorov-Smirnov test)@comma{} @samp{kuiper} (Kuiper's test)@comma{}
-@samp{cmv} (Cram@'er-Von Mises test)@comma{} @samp{ad} (Anderson-Darling
-test)@comma{}
-@samp{FL2} (L@math{^2}-norm on @math{F})@comma{}
-@samp{FL2w} (weighted L@math{^2}-norm
-on @math{F})
+@samp{size}@comma{} @samp{diameq}@comma{} @samp{sphericity} or
+@samp{1-sphericity})@comma{} the available values are @samp{chi2} (Chi-square
+  test)@comma{} @samp{ks} (Kolmogorov-Smirnov test)@comma{} @samp{kuiper}
+(Kuiper's test)@comma{} @samp{cmv} (Cram@'er-Von Mises test)@comma{} @samp{ad}
+(Anderson-Darling test)@comma{} @samp{FL2} (L@math{^2}-norm on
+@math{F})@comma{} @samp{FL2w} (weighted L@math{^2}-norm on @math{F})
 @footnote{@cite{R.@ Quey and L.@ Renversade, Optimal polyhedral description of 3D
 polycrystals: Method and application to statistical and synchrotron X-ray
 diffraction data, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 330, pp.@
@@ -581,21 +579,21 @@ any, nanoflann}
 @optsec{-morphooptigrid, char_string,
 Specify the grids used to discretize the distributions. Provide the values using the syntax
 @samp{@var{var}@SEPDEP{}@var{grid}}@comma{} where @var{var} is
-the variable@comma{} among @code{diameq}@comma{} @code{size} and
-@code{sphericity} and @var{grid} is the grid.
+the variable@comma{} among @code{diameq}@comma{} @code{size}@comma{} @code{sphericity} and
+@code{1-sphericity}@comma{} and @var{grid} is the grid.
 The grid must be of the form @samp{regular(@var{min},@var{max},@var{bin_nb})}@comma{}
 where @code{@var{min}} and @code{@var{max}} are the minimum and maximum
 values of the grid interval@comma{} respectively@comma{} and
 @code{@var{bin_nb}} is the number of bins.
 ,
-any, diameq:regular(-1@comma{}10@comma{}1100)@comma{}size:regular(-1@comma{}10@comma{}1100)@comma{}sphericity:regular(-0.1@comma{}1.1@comma{}1200)}
+any, diameq:regular(-1@comma{}10@comma{}1100)@comma{}size:regular(-1@comma{}10@comma{}1100)@comma{}sphericity:regular(-0.1@comma{}1.1@comma{}1200)@comma{}1-sphericity:regular(-0.1@comma{}1.1@comma{}1200)}
 
 @optsec{-morphooptismooth, char_string,
 Specify the standard deviations of the Gaussian distributions which are
 assigned to each cell data to compute the distributions.  Provide the values
 using the syntax @samp{@var{var}@SEPDEP{}@var{val}}@comma{} where @var{var} is
-the variable@comma{} among @code{diameq}@comma{} @code{size} and
-@code{sphericity} and @var{val} is the value.
+the variable@comma{} among @code{diameq}@comma{} @code{size}@comma{}
+@code{sphericity} and @code{1-sphericity}@comma{} and @var{val} is the value.
 It is also possible to specify how the convolution functions should be treated: provide @samp{analytical} for analytical functions or @samp{numerical} for numerical functions (the default@comma{} recommended).
 Combine with @samp{@SEPNODEP}.
 ,
