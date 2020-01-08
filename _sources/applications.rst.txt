@@ -15,8 +15,17 @@ This list is also available on Neper's `Google Scholar page <https://scholar.goo
 2020
 ----
 
+- K.A. Taylor, E. Gjonaj and H. de Gersem, *Coupled Simulation of Current Flow and Residual Thermal Stress in ZnO Varistors*, **IEEE Transactions on Magnetics**, vol. 56, pp. 7504504, 2020.
+- D. Wicht, M. Schneider and T. Bohlke, *On Quasi‐Newton methods in FFT‐based micromechanics*, **International Journal for Numerical Methods in Engineering**, doi://10.1002/nme.6283.
+- M. Marvi-Mashhadi, C.S. Lopes and J. LLorca, *High fidelity simulation of the mechanical behavior of closed-cell polyurethane foams*, **Journal of the Mechanics and Physics of Solids**, vol. 135, pp. 103814, 2020.
+- S. Luo, R. Huang, L. Zhu and H. Yao, *The formation of the Dabashan orocline, central China: Insights from high-resolution 3D crustal shear-wave velocity structure*, **Tectonophysics**, doi://10.1016/j.tecto.2019.228244.
+- S. El Shawish, P.-G. Vuncent, H. Moulinec, L. Cizelj and L. Gélébart, *Full-field polycrystal plasticity simulations of neutron-irradiated austenitic stainless steel: A comparison between FE and FFT-based approaches*, **Journal of Nuclear Materials**, doi://10.1016/j.jnucmat.2019.151927.
+- M. Jalili and B. Soltani, *Investigation the micromechanisms of strain localization formation in AZ31 Mg alloy: A mesoscale 3D full-field crystal plasticity computational homogenization study*, **European Journal of Mechanics - A/Solids**, doi://10.1016/j.euromechsol.2019.103903.
+- M. Diehl, D. Wang, C. Liu, J.R. Mianroodi, F. Hanb, D. Ma, P.J.J. Kokg, F. Roters and P. Shanthraj, *Solving material mechanics and multiphysics problems of metals with complex microstructures using DAMASK – The Düsseldorf Advanced Material Simulation Kit*, **Advanced Engineering Materials**, doi://10.1002/adem.201901044.
+- T. Fischer, S.U. Kyzy, O. Munz and E. Werner, *Microstructure-based modelling of rubbing in polycrystalline honeycomb structures*, **Continuum Mechanics and Thermodynamics**, doi:///10.1007/s00161-019-00852-5.
+- K. Chatterjee, R.A. Carson and P. Dawson, *Estimation of Errors in Stress Distributions Computed in Finite Element Simulations of Polycrystals*, **Integrating Materials and Manufacturing Innovation**, doi://10.1007/s40192-019-00158-z.
 - P.M.C. Carneiro, P.V. Gamboa, C. Baudin and A.P. Silva, *Modelling of elastic modulus of a biphasic ceramic microstructure using 3D representative volume elements*, **Journal of the European Ceramic Society**, doi://10.1016/j.jeurceramsoc.2019.10.046.
-- S.C. Aduloju and T.T. Truster, *A primal formulation for imposing periodic boundary conditions on conforming and nonconforming meshes*, **Computer Methods in Applied Mechanics and Engineering**, doi://10.1016/j.cma.2019.112663.
+- S.C. Aduloju and T.J. Truster, *A primal formulation for imposing periodic boundary conditions on conforming and nonconforming meshes*, **Computer Methods in Applied Mechanics and Engineering**, doi://10.1016/j.cma.2019.112663.
 - C. Kurniawan, S. Baird, D.T. Fullwood, E.R. Homer and O.K. Johnson, *Grain boundary structure–property model inference using polycrystals: the overdetermined case*, **Journal of Materials Science**, doi://10.1007/s10853-019-04125-z.
 - M. Kasemer and P. Dawson, *A finite element methodology to incorporate kinematic activation of discrete deformation twins in a crystal plasticity framework*, **Computer Methods in Applied Mechanics and Engineering**, vol. 358, pp. 112653, 2020.
 - D. Wicht, M. Schneider and T. Bohlke, *An efficient solution scheme for small-strain crystal-elasto-viscoplasticity in a dual framework*, **Computer Methods in Applied Mechanics and Engineering**, vol. 358, pp. 112611, 2020.
@@ -24,6 +33,10 @@ This list is also available on Neper's `Google Scholar page <https://scholar.goo
 2019
 ----
 
+- B. Flipon, C. Keller, R. Quey and F. Barbe, *A full-field crystal-plasticity analysis of bimodal polycrystals*, **International Journal of Solids and Structures**, doi:10.1016/j.ijsolstr.2019.02.005. `made cover of the Journal <docs/cover-ijss-2020.png>`_
+- Y. Charles, H.T. Nguyen, K. Ardon and M. Gasperini, chapter *Scale Transition in Finite Element Simulations of Hydrogen–Plasticity Interactions* in *Mechanics and Physics of Solids at Micro‐ and Nano‐Scales*, **book edited by Wiley**, 2019.
+- Y. Zhang, G. Xiao, C. Xu, T. Zhou, M. Yi and Z. Chen, *Cohesive Element Model for Fracture Behavior Analysis of Al2O3/Graphene Composite Ceramic Tool Material*, **Crystals**, vol. 9, pp. 669, 2019.
+- R. Ma and T.J. Truster, * Combined crystal plasticity and grain boundary modeling of creep in Ferritic-Martensitic Steels, part 1: Theory and implementation*, **Modelling and Simulation in Materials Science and Engineering**, vol. 27, pp. 075009, 2019.
 - E. Raghami, C. Schrank and J.H. Kruhl, *3D modelling of the effect of thermal-elastic stress on grain-boundary opening in quartz grain aggregates*, **Tectonophysics**, doi://10.1016/j.tecto.2019.228242.
 - W. Zhang, X. Wang, Y. Wang, X. Yu, Y. Gao and Z. Feng, *Type IV Failure in Weldment of Creep Resistant Ferritic Alloys: I. Micromechanical Origin of Creep Strain Localization in the Heat Affected Zone*, **Journal of the Mechanics and Physics of Solids**, doi://10.1016/j.jmps.2019.103774.
 - S. Dhala, S. Mishra, A. Tewari and A. Alankar, *Modeling of finite deformation of pseudoelastic NiTi shape memory alloy considering various inelasticity mechanisms*, **International Journal of Plasticity**, vol. 115, pp. 216-237, 2019.
@@ -67,7 +80,6 @@ This list is also available on Neper's `Google Scholar page <https://scholar.goo
 - X.F. Li, H.B. Li and J. Zhao, *The role of transgranular capability in grain-based modelling of crystalline rocks*, **Computers and Geotechnics**, vol. 110, pp. 161-183, 2019.
 - H. Zhang, A. Jérusalem, E. Salvati, C. Papadaki, K.S. Fong, X. Song and A.M. Morsunsky, *Multi-scale mechanisms of Twinning-detwinning in magnesium AZ31B alloy simulated by crystal plasticity modeling and validated via in situ synchrotron XRD and in situ SEM-EBSD*, **International Journal of Plasticity**, doi:10.1016/j.ijplas.2019.02.018.
 - X. Gao, X. Zhang, M. Qian and L. Geng, *Effect of reinforcement shape on fracture behaviour of SiC/Al composites with network architecture*, **Composite Structures**, doi:10.1016/j.compstruct.2019.02.067.
-- B. Flipon, C. Keller, R. Quey and F. Barbe, *A full-field crystal-plasticity analysis of bimodal polycrystals*, **International Journal of Solids and Structures**, doi:10.1016/j.ijsolstr.2019.02.005.
 - H. Kanso, R. Patte, V. Baltz and D. Ledue, *Influence of finite-size and edge effects on the exchange-bias properties of ferromagnetic/antiferromagnetic nanodots: Granular Monte Carlo investigation*, **Physical Review B**, doi:10.1103/physrevb.99.054410.
 - R. Carson and P. Dawson, *Formulation and Characterization of a Continuous Crystal Lattice Orientation Finite Element Method (LOFEM) and its Application to Dislocation Fields*, **Journal of the Mechanics and Physics of Solids**, doi:10.1016/j.jmps.2019.02.006.
 - R. Berthelsen and A. Menzel, *Computational homogenisation of thermo-viscoplastic composites: Large strain formulation and weak micro-periodicity*, **Computer Methods in Applied Mechanics and Engineering**, doi:10.1016/j.cma.2018.12.032.
@@ -87,6 +99,7 @@ This list is also available on Neper's `Google Scholar page <https://scholar.goo
 2018
 ----
 
+- T.J. Truster, *DEIP, discontinuous element insertion Program — Mesh generation for interfacial finite element modeling*, **SoftwareX**, vol. 7, pp. 162--170, 2018.
 - B. Flipon, L. Milhem, C. Keller, R. Quey, F. Barbe, *Modelling of polycrystals using well-controlled Voronoi-type tessellations and its applications to micromechanical analyses*, **Physics and Mechanics of Random Media: from Morphology to Material Properties, F. Willot and S. Forest (Eds), Presse des Mines, Paris, France**, ch. 23, pp. 187-198, 2018.
 - M. Montanari and N. Petrinic, *OpenGJK for C, C# and Matlab: Reliable solutions to distance queries between convex bodies in three-dimensional space*, **SoftwareX**, pp. 352-355, vol. 7, 2018.
 - X. Zhang, Y. Mu, M. Dodaran, S. Shao, D. Moldovan and W.J. Meng, *Mechanical failure of CrN/Cu/CrN interfacial regions under tensile loading*, **Acta Materialia**, vol. 160, pp. 1-13, 2018.
@@ -182,6 +195,7 @@ This list is also available on Neper's `Google Scholar page <https://scholar.goo
 2016
 ----
 
+- T.J. Truster, *On interface element insertion into three-dimensional meshes*, **Engineering Fracture Mechanics**, vol. 153, pp. 171--174, 2016.
 - A. Van Pamel,  G. Sha, S.I. Rokhlin and M.J.S. Lowe, *Finite element modelling of elastic wave propagation and scaterring within heterogeneous media*, **Mathematical, Physical and Engineering Sciences**, vol. 473, 20160738, 2016.
 - G. Lhoutellier, D. Ledue, R. Patte and V. Baltz, *Monte Carlo investigation of how interfacial magnetic couplings affect blocking temperature distributions in exchange bias bilayers*, **Jounal of Applied Physics**, vol. 120, pp. 193902, 2016.
 - A. Zouaghi, V. Velay, A. Soveja, T. Pottier, M. Cheikh and F. Rézai-Aria, *A multi-scale approach to investigate the non linear subsurface  behavior and strain localization of X38CrMoV5-1 martensitic tool steel: experiment and numerical analysis*, **International Journal of Plasticity**, vol. 87, pp. 130-153, 2016.
