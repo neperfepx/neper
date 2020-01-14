@@ -254,6 +254,8 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
   @item @code{nseeds} @tab neighbouring seeds
   @footnote{If a polyhedron has no neighbour on a face, a negative value
     is returned.} @tab poly
+  @item @code{ncellnb} @tab number of neighbouring cells @tab face (in 2D), poly (in 3D)
+  @item @code{ncells} @tab neighbouring cells  @tab face (in 2D), poly (in 3D)
   @item @code{vercoos}  @tab vertex coordinates @tab face, poly
   @item @code{faceareas} @tab face surface areas @tab poly
   @item @code{faceeqs} @tab face equations@footnote{A face equation is specified by

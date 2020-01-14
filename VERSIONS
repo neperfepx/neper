@@ -1,5 +1,5 @@
-New in 3.5.2-4 (19 Dec 2019):
-- module -T: fixed -morphooptiobjective.
+New in 3.5.2-5 (14 Jan 2020):
+- module -T: fixed -morphooptiobjective, fixed -statface nfaces.
 - documentation: small fixes.
 
 New in 3.5.1 (15 Nov 2019):
