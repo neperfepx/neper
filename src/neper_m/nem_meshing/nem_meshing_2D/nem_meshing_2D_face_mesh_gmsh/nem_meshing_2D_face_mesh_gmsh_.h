@@ -20,14 +20,15 @@
 
 #include"nem_meshing_2D_face_mesh_gmsh.h"
 
-extern void nem_meshing_2D_face_mesh_gmsh_proj (struct TESS Tess, int face,
-                                                struct MESHPARA MeshPara,
-                                                double ***pbnodecoos,
+extern void nem_meshing_2D_face_mesh_gmsh_proj (struct TESS Tess, struct NODES Nodes,
+                                                int face, struct MESHPARA MeshPara,
+                                                int *bnodes,
+                                                double ***pbnodecoos, double **pbnodecls,
                                                 int bnodeqty);
 
 extern void nem_meshing_2D_face_mesh_gmsh_writeboundary (struct NODES Nodes, int *bnodes,
-                                                         double **bnodecoos, int bnodeqty,
-                                                         FILE * file);
+                                                         double **bnodecoos, double *bnodecls,
+                                                         int bnodeqty, FILE * file);
 
 extern void nem_meshing_2D_face_mesh_gmsh_backproj (struct TESS Tess,
                                           struct NODES RNodes,

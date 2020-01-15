@@ -24,9 +24,10 @@ nem_meshing_2D_face_mesh_gmsh_boundary (struct TESS Tess, struct NODES Nodes,
 }
 
 void
-nem_meshing_2D_face_mesh_gmsh_proj (struct TESS Tess, int face,
-                                    struct MESHPARA MeshPara,
-                                    double ***pbnodecoos, int bnodeqty)
+nem_meshing_2D_face_mesh_gmsh_proj (struct TESS Tess, struct NODES Nodes,
+                                    int face, struct MESHPARA MeshPara,
+                                    int *bnodes, double ***pbnodecoos,
+                                    double **pbnodecls, int bnodeqty)
 {
   int i, j;
 
@@ -39,6 +40,37 @@ nem_meshing_2D_face_mesh_gmsh_proj (struct TESS Tess, int face,
       ut_space_projpoint_alongonto ((*pbnodecoos)[i],
                                     MeshPara.face_eq[face] + 1,
                                     MeshPara.face_eq[face]);
+
+  else if (!strcmp (MeshPara.face_op[face], "sphereproj"))
+  {
+    double *uvect = ut_alloc_1d (3);
+    double *c = Tess.DomFaceParms[Tess.FaceDom[face][1]];     // centre
+
+    (*pbnodecls) = ut_alloc_1d (bnodeqty);
+
+    for (i = 0; i < bnodeqty; i++)
+    {
+      ut_space_points_uvect (c, (*pbnodecoos)[i], uvect);
+      ut_space_projpoint_alongonto ((*pbnodecoos)[i], uvect,
+                                    MeshPara.face_eq[face]);
+    }
+
+    // increasing cl if needed to make sure 2D meshing is ok at the boundary
+    for (i = 0; i < bnodeqty; i++)
+    {
+      int bef, aft;
+      bef = ut_num_rotpos (0, bnodeqty - 1, i, -1);
+      aft = ut_num_rotpos (0, bnodeqty - 1, i,  1);
+
+      (*pbnodecls)[i] = Nodes.NodeCl[bnodes[i]];
+      (*pbnodecls)[i] = ut_num_max ((*pbnodecls)[i],
+                                    1.01 * ut_space_dist ((*pbnodecoos)[bef], (*pbnodecoos)[i]));
+      (*pbnodecls)[i] = ut_num_max ((*pbnodecls)[i],
+                                    1.01 * ut_space_dist ((*pbnodecoos)[aft], (*pbnodecoos)[i]));
+    }
+
+    ut_free_1d (uvect);
+  }
 
   else if (!strcmp (MeshPara.face_op[face], "cylinderproj"))
   {
@@ -131,6 +163,16 @@ nem_meshing_2D_face_mesh_gmsh_backproj (struct TESS Tess, struct NODES RNodes,
     // in other cases (face not flat), we do nothing
   }
 
+  else if (!strcmp (MeshPara.face_op[face], "sphereproj"))
+  {
+    int domface = Tess.FaceDom[face][1];
+    double *c = Tess.DomFaceParms[domface];     // centre
+    double r = Tess.DomFaceParms[domface][3];   // radius
+
+    for (i = 1; i <= (*pN).NodeQty; i++)
+      ut_space_point_sphere_proj ((*pN).NodeCoo[i], c, r, (*pN).NodeCoo[i]);
+  }
+
   else if (!strcmp (MeshPara.face_op[face], "cylinderproj"))
   {
     int i, j, domface = Tess.FaceDom[face][1];
@@ -185,8 +227,8 @@ nem_meshing_2D_face_mesh_gmsh_backproj (struct TESS Tess, struct NODES RNodes,
 
 void
 nem_meshing_2D_face_mesh_gmsh_writeboundary (struct NODES Nodes, int *bnodes,
-                                             double **bnodecoos, int bnodeqty,
-                                             FILE *file)
+                                             double **bnodecoos, double *bnodecls,
+                                             int bnodeqty, FILE *file)
 {
   int i, node;
 
@@ -197,7 +239,7 @@ nem_meshing_2D_face_mesh_gmsh_writeboundary (struct NODES Nodes, int *bnodes,
 
     fprintf (file, "Point(%d) = {%.12f, %.12f, %.12f, %.12f};\n",
              i + 1, bnodecoos[i][0], bnodecoos[i][1],
-             bnodecoos[i][2], Nodes.NodeCl[node]);
+             bnodecoos[i][2], bnodecls ? bnodecls[i] : Nodes.NodeCl[node]);
   }
 
   for (i = 1; i <= bnodeqty; i++)

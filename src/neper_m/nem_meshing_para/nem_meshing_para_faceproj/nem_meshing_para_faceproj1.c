@@ -23,6 +23,9 @@ nem_meshing_para_faceproj (struct TESS Tess,
     else if (neut_tess_face_iscurved (Tess, i)
           && !strcmp (Tess.DomFaceType[Tess.FaceDom[i][1]], "cylinder"))
       ut_string_string ("cylinderproj", (*pMeshPara).face_op + i);
+    else if (neut_tess_face_iscurved (Tess, i)
+          && !strcmp (Tess.DomFaceType[Tess.FaceDom[i][1]], "sphere"))
+      ut_string_string ("sphereproj", (*pMeshPara).face_op + i);
     else
       ut_string_string ("planeproj", (*pMeshPara).face_op + i);
 

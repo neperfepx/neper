@@ -23,6 +23,7 @@ nem_meshing_2D_face_mesh_gmsh (struct TESS Tess, struct NODES RNodes,
   char *filename = ut_alloc_1d_char (100);
   char *filename_msh = ut_alloc_1d_char (100);
   double **bnodecoos = NULL;
+  double *bnodecls = NULL;
   double *face_eq = MeshPara.face_eq ? MeshPara.face_eq[face] : NULL;
 
   neut_nodes_free (pN);
@@ -66,13 +67,13 @@ nem_meshing_2D_face_mesh_gmsh (struct TESS Tess, struct NODES RNodes,
   nem_meshing_2D_face_mesh_gmsh_boundary (Tess, Nodes, Mesh, face,
                                           pbnodes, &bnodecoos, pbnodeqty);
 
-  nem_meshing_2D_face_mesh_gmsh_proj (Tess, face, MeshPara, &bnodecoos,
-                                      *pbnodeqty);
+  nem_meshing_2D_face_mesh_gmsh_proj (Tess, Nodes, face, MeshPara, *pbnodes, &bnodecoos,
+                                      &bnodecls, *pbnodeqty);
 
 // Writing boundary mesh -----------------------------------------------
 
   nem_meshing_2D_face_mesh_gmsh_writeboundary (Nodes, *pbnodes, bnodecoos,
-                                               *pbnodeqty, file);
+                                               bnodecls, *pbnodeqty, file);
 
   ut_file_close (file, filename, "W");
 
@@ -202,6 +203,7 @@ nem_meshing_2D_face_mesh_gmsh (struct TESS Tess, struct NODES RNodes,
   ut_free_1d_char (filename);
   ut_free_1d_char (filename_msh);
   ut_free_2d (bnodecoos, *pbnodeqty);
+  ut_free_1d (bnodecls);
 
   return status;
 }
