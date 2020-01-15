@@ -295,6 +295,8 @@ extern "C"
 ///
   extern void neut_tess_poly_neighpoly (struct TESS Tess, int poly,
 					int **pnpoly, int *pnpolyqty);
+  extern void neut_tess_poly_neighpoly_samedomain (struct TESS Tess, int poly,
+					int **pnpoly, int *pnpolyqty);
   extern void neut_tess_poly_neighseeds (struct TESS Tess, int poly,
                                          int **pnseeds, int *pnseedqty);
 
@@ -303,6 +305,8 @@ extern "C"
 ///
 ///
   extern void neut_tess_face_neighfaces (struct TESS Tess, int face,
+					int **pnface, int *pnfaceqty);
+  extern void neut_tess_face_neighfaces_samedomain (struct TESS Tess, int face,
 					int **pnface, int *pnfaceqty);
 
 /// \brief Get the neighbouring faces of faces (may contain some of the input faces);

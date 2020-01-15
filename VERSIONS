@@ -1,5 +1,7 @@
-New in 3.5.2-5 (14 Jan 2020):
-- module -T: fixed -morphooptiobjective, fixed -statface nfaces.
+New in 3.5.2-6 (15 Jan 2020):
+- module -T: fixed -morphooptiobjective, fixed -statface nfaces, added tessellation
+  keys nfaces_samedomain, nfacenb_samedomain, npolys_samedomain and
+  npolynb_samedomain.
 - documentation: small fixes.
 
 New in 3.5.1 (15 Nov 2019):

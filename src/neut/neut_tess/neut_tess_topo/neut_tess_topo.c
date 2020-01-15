@@ -1646,6 +1646,34 @@ neut_tess_poly_neighpoly (struct TESS Tess, int poly, int **pnpoly,
 }
 
 void
+neut_tess_poly_neighpoly_samedomain (struct TESS Tess, int poly, int **pnpolys,
+                                     int *pnpolyqty)
+{
+  int i, qty, *tmp = NULL, qty2, *tmp2 = NULL, scale = Tess.ScaleQty - 1;
+
+  neut_tess_poly_neighpoly (Tess, poly, &tmp, &qty);
+
+  qty2 = 0;
+  for (i = 0; i < qty; i++)
+    if (Tess.ScaleCellId[tmp[i]][scale] == Tess.ScaleCellId[poly][scale])
+      ut_array_1d_int_list_addelt (&tmp2, &qty2, tmp[i]);
+
+  if (pnpolyqty)
+    (*pnpolyqty) = qty2;
+
+  if (pnpolys)
+  {
+    (*pnpolys) = ut_realloc_1d_int (*pnpolys, qty2);
+    ut_array_1d_int_memcpy (*pnpolys, qty2, tmp2);
+  }
+
+  ut_free_1d_int (tmp);
+  ut_free_1d_int (tmp2);
+
+  return;
+}
+
+void
 neut_tess_poly_neighseeds (struct TESS Tess, int poly, int **pnseeds,
 			   int *pnseedqty)
 {
@@ -1703,6 +1731,34 @@ neut_tess_face_neighfaces (struct TESS Tess, int face, int **pnface,
   }
 
   ut_free_1d_int (tmp);
+
+  return;
+}
+
+void
+neut_tess_face_neighfaces_samedomain (struct TESS Tess, int face, int **pnfaces,
+                                      int *pnfaceqty)
+{
+  int i, qty, *tmp = NULL, qty2, *tmp2 = NULL, scale = Tess.ScaleQty - 1;
+
+  neut_tess_face_neighfaces (Tess, face, &tmp, &qty);
+
+  qty2 = 0;
+  for (i = 0; i < qty; i++)
+    if (Tess.ScaleCellId[tmp[i]][scale] == Tess.ScaleCellId[face][scale])
+      ut_array_1d_int_list_addelt (&tmp2, &qty2, tmp[i]);
+
+  if (pnfaceqty)
+    (*pnfaceqty) = qty2;
+
+  if (pnfaces)
+  {
+    (*pnfaces) = ut_realloc_1d_int (*pnfaces, qty2);
+    ut_array_1d_int_memcpy (*pnfaces, qty2, tmp2);
+  }
+
+  ut_free_1d_int (tmp);
+  ut_free_1d_int (tmp2);
 
   return;
 }
