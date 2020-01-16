@@ -15,3 +15,6 @@
 
 extern void nem_transform_smooth (char *smooth, struct TESS Tess,
                                   struct NODES *pNodes, struct MESH *Mesh);
+
+extern void nem_transform_explode (char *explode, struct NODES *pNodes,
+                                   struct MESH *Mesh);

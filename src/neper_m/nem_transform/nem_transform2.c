@@ -34,3 +34,38 @@ nem_transform_smooth (char *smooth, struct TESS Tess, struct NODES *pNodes,
 
   return;
 }
+
+void
+nem_transform_explode (char *explode, struct NODES *pNodes,
+                      struct MESH *Mesh)
+{
+  int i, j, dim = neut_mesh_array_dim (Mesh);
+  double factor, dist;
+  double *c = ut_alloc_1d (3), *C = ut_alloc_1d (3);
+  double *v = ut_alloc_1d (3);
+  int nodeqty, *nodes = NULL;
+
+  neut_mesh_centre (*pNodes, Mesh[dim], C);
+
+  if (sscanf (explode, "explode(%lf", &factor) != 1)
+    ut_print_message (2, 4, "Failed to parse expression `%s'.\n", explode);
+
+  for (i = 1; i <= Mesh[dim].ElsetQty; i++)
+  {
+    neut_mesh_elset_centre (*pNodes, Mesh[dim], i, c);
+    ut_array_1d_sub (C, c, 3, v);
+    dist = ut_array_1d_norm (v, 3);
+    ut_array_1d_scale (v, 3, dist * factor);
+
+    neut_mesh_elset_nodes (Mesh[dim], i, &nodes, &nodeqty);
+
+    for (j = 0; j < nodeqty; j++)
+      ut_array_1d_add ((*pNodes).NodeCoo[nodes[j]], v, 3, (*pNodes).NodeCoo[nodes[j]]);
+  }
+
+  ut_free_1d (C);
+  ut_free_1d (c);
+  ut_free_1d_int (nodes);
+
+  return;
+}

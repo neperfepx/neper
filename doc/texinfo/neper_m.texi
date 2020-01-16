@@ -556,7 +556,11 @@ the neighbour)@comma{} @math{X^n_{i-1}}@comma{} as follows:
 @math{X_i=(1-fact)@,X_{i-1} + fact@,X^n_{i-1};@,0@leq{}fact@leq{}1}.
 @var{itermax} iterations are applied. @var{type} defines the nodes used for
 smoothing and can be @samp{all} for all nodes or @samp{interior} for interior
-nodes.
+nodes.@*
+@mybullet @samp{@code{explode(@var{fact})}} to produce an ``exploded'' mesh@comma{}
+for which elsets are apart from each other (or cohesive elements become thick).
+To be used in conjunction with @option{-interface discontinuous or cohesive}.
+@samp{@var{fact}} is a factor controlling the distance between elsets.
 ,
 see above, none}
 

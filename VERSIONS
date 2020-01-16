@@ -1,8 +1,9 @@
-New in 3.5.2-7 (15 Jan 2020):
+New in 3.5.2-8 (16 Jan 2020):
 - module -T: fixed -morphooptiobjective, fixed -statface nfaces, added tessellation
   keys nfaces_samedomain, nfacenb_samedomain, npolys_samedomain and
   npolynb_samedomain.
-- module -M: fixed meshing of tessellation cut by a sphere.
+- module -M: fixed meshing of tessellation cut by a sphere, added -transform
+  explode.
 - documentation: small fixes.
 
 New in 3.5.1 (15 Nov 2019):
