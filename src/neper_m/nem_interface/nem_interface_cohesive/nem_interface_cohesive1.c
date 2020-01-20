@@ -63,7 +63,7 @@ nem_interface_cohesive (struct TESS Tess, struct NODES Nodes,
       neut_mesh_addelset (Mesh + 4, elts, eltqty);
       Mesh[4].ElsetId = ut_realloc_1d_int (Mesh[4].ElsetId,
 					   Mesh[4].ElsetQty + 1);
-      Mesh[4].ElsetId[Mesh[4].ElsetQty] = i;
+      Mesh[4].ElsetId[Mesh[4].ElsetQty] = Mesh[dim].ElsetQty + i;
    }
 
   neut_mesh_init_eltelset (Mesh + 4, NULL);

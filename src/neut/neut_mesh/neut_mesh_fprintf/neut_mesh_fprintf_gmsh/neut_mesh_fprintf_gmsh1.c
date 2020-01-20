@@ -26,7 +26,7 @@ neut_mesh_fprintf_gmsh (FILE * file, char *dim, struct TESS Tess,
                           numbering);
 
   neut_physical_fprintf_gmsh (file, Mesh0D, Mesh1D, Mesh2D, Mesh3D,
-			      fasets, fasetids, fasetqty, dim);
+			      MeshCo, fasets, fasetids, fasetqty, dim);
 
   ut_free_1d_int (fasetids);
   ut_free_2d_char (fasets, fasetqty);

@@ -7,13 +7,13 @@
 void
 neut_mesh_fprintf_geof (FILE * file, struct NODES Nodes,
 			struct MESH Mesh1D, struct MESH Mesh2D,
-			struct MESH Mesh3D, struct NSET NSet0D,
-			struct NSET NSet1D, struct NSET NSet2D,
-			char *nsets, char *fasets, char *dim,
-			struct PART Part, struct BOUNDARY Bound)
+			struct MESH Mesh3D, struct MESH MeshCo,
+                        struct NSET NSet0D, struct NSET NSet1D,
+                        struct NSET NSet2D, char *nsets, char *fasets,
+                        char *dim, struct PART Part, struct BOUNDARY Bound)
 {
   int i, printdim, printliset = 0;
-  int *shift = ut_alloc_1d_int (4);
+  int *shift = ut_alloc_1d_int (5);
   char *printdimstring = ut_alloc_1d_char (2);
 
   printdim = 0;
@@ -41,7 +41,7 @@ neut_mesh_fprintf_geof (FILE * file, struct NODES Nodes,
 
   neut_mesh_fprintf_geof_nodes (file, Nodes);
 
-  neut_mesh_fprintf_geof_elts (file, Mesh1D, Mesh2D, Mesh3D, printdimstring, shift);
+  neut_mesh_fprintf_geof_elts (file, Mesh1D, Mesh2D, Mesh3D, MeshCo, printdimstring, shift);
 
   neut_mesh_fprintf_geof_sethead (file);
 
@@ -58,7 +58,7 @@ neut_mesh_fprintf_geof (FILE * file, struct NODES Nodes,
   if (printliset)
     neut_mesh_fprintf_geof_lisets_all (file, Mesh1D);
 
-  neut_mesh_fprintf_geof_elsets (file, Mesh1D, Mesh2D, Mesh3D, printdimstring, shift);
+  neut_mesh_fprintf_geof_elsets (file, Mesh1D, Mesh2D, Mesh3D, MeshCo, printdimstring, shift);
 
   if (Part.qty > 0)
     neut_mesh_fprintf_geof_part (file, Part);

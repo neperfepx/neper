@@ -28,5 +28,5 @@ extern void neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
 extern void neut_nodes_fprintf_gmsh (FILE * file, char *mode, struct NODES Nodes);
 
 extern void neut_physical_fprintf_gmsh (FILE * file, struct MESH Mesh0D, struct
-    MESH Mesh1D, struct MESH Mesh2D, struct MESH Mesh3D, char **fasets, int
-    *fasetids, int fasetqty, char *dim);
+    MESH Mesh1D, struct MESH Mesh2D, struct MESH Mesh3D, struct MESH MeshCo,
+    char **fasets, int *fasetids, int fasetqty, char *dim);

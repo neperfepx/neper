@@ -15,14 +15,17 @@
 extern void neut_mesh_fprintf_geof_head (FILE * file);
 extern void neut_mesh_fprintf_geof_nodes (FILE *, struct NODES);
 extern void neut_mesh_fprintf_geof_elts (FILE *, struct MESH, struct MESH,
-					 struct MESH, char *, int *);
+					 struct MESH, struct MESH, char *, int *);
+extern void neut_mesh_fprintf_geof_elts_1d (FILE *, struct MESH, int shift);
+extern void neut_mesh_fprintf_geof_elts_2d (FILE *, struct MESH, int shift);
+extern void neut_mesh_fprintf_geof_elts_3d (FILE *, struct MESH, int shift);
 extern void neut_mesh_fprintf_geof_nsets (FILE *, struct NSET, struct NSET,
 					  struct NSET, char *);
 extern void neut_mesh_fprintf_geof_sethead (FILE *);
 extern void neut_mesh_fprintf_geof_bsets (FILE * file, struct MESH Mesh1D,
 					  char *bsets);
 extern void neut_mesh_fprintf_geof_elsets (FILE *, struct MESH, struct MESH,
-					   struct MESH, char *, int *);
+					   struct MESH, struct MESH, char *, int *);
 extern void neut_mesh_fprintf_geof_foot (FILE *);
 extern void neut_mesh_fprintf_geof_nset (FILE *, char *, int, int *);
 extern void neut_mesh_fprintf_geof_part (FILE *, struct PART);
