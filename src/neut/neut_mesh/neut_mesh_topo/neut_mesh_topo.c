@@ -162,6 +162,20 @@ neut_mesh_nodes_comelts (struct MESH Mesh, int *nodes, int nodeqty,
 }
 
 void
+neut_mesh_nodes_onecomelt (struct MESH Mesh, int *nodes, int nodeqty,
+                           int *pelt)
+{
+  int *elts = NULL, eltqty;
+
+  neut_mesh_nodes_comelts (Mesh, nodes, nodeqty, &elts, &eltqty);
+  (*pelt) = (eltqty > 0) ? elts[0] : -1;
+
+  ut_free_1d_int (elts);
+
+  return;
+}
+
+void
 neut_mesh_nodes_allelts (struct MESH Mesh, int *nodes, int nodeqty,
 			 int **pelts, int *peltqty)
 {
@@ -2427,6 +2441,44 @@ neut_mesh_elt_domface (struct TESS Tess, struct MESH Mesh2D, int elt, int *pdomf
     abort ();
 
   (*pdomface) = Tess.FaceDom[Mesh2D.EltElset[elt]][0] == 2 ? Tess.FaceDom[Mesh2D.EltElset[elt]][1] : -1;
+
+  return;
+}
+
+void
+neut_mesh_order1nodes_order2node (struct MESH Mesh, int node1, int node2, int *pnode)
+{
+  if (!Mesh.NodeElts)
+    ut_print_message (2, 0, "neut_mesh_nodes_comelts requires NodeElts\n");
+
+  int pos, pos1, pos2;
+  int *elts = NULL, eltqty, elt;
+  int *nodes = ut_alloc_1d_int (2);
+  nodes[0] = node1;
+  nodes[1] = node2;
+
+  int nodeqty_o1, nodeqty_tot;
+  int **fir = NULL, **sec = NULL;
+
+  neut_elt_orderarrays (Mesh.EltType, Mesh.Dimension, &fir, &nodeqty_tot, &sec, &nodeqty_o1);
+
+  neut_mesh_nodes_comelts (Mesh, nodes, 2, &elts, &eltqty);
+
+  if (eltqty == 0)
+    (*pnode) = -1;
+
+  else
+  {
+    elt = elts[0];
+
+    pos1 = ut_array_1d_int_eltpos (Mesh.EltNodes[elt], nodeqty_o1, nodes[0]);
+    pos2 = ut_array_1d_int_eltpos (Mesh.EltNodes[elt], nodeqty_o1, nodes[1]);
+    pos = sec[pos1][pos2];
+    (*pnode) = Mesh.EltNodes[elt][pos];
+  }
+
+  ut_free_1d_int (nodes);
+  ut_free_1d_int (elts);
 
   return;
 }

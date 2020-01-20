@@ -72,6 +72,8 @@ nem_interface_cohesive (struct TESS Tess, struct NODES Nodes,
   for (i = 1; i <= Mesh[4].ElsetQty; i++)
     sprintf (Mesh[4].ElsetLabels[i], "bound%d", i);
 
+  neut_mesh_init_nodeelts (Mesh + 4, Nodes.NodeQty);
+
   ut_free_1d_int (nodes);
   ut_free_1d_int (elts);
 

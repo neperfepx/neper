@@ -37,13 +37,13 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   neut_nodes_set_zero (&Nodes);
   neut_boundary_set_zero (&Bound);
 
-  for (i = 0; i <= 3; i++)
+  for (i = 0; i < 5; i++)
     neut_mesh_set_zero (RMesh + i);
 
-  for (i = 0; i <= 4; i++)
+  for (i = 0; i < 5; i++)
     neut_mesh_set_zero (Mesh + i);
 
-  for (i = 0; i <= 2; i++)
+  for (i = 0; i < 3; i++)
     neut_nset_set_zero (NSet + i);
 
   neut_part_set_zero (&Part);
@@ -205,7 +205,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     ut_print_message (0, 2, "Switching mesh to order 2...\n");
 
     if (dim >= 0 && Mesh[dim].EltOrder == 1)
-      nem_order (In, &Nodes, Mesh + 1, Mesh + 2, Mesh + 3);
+      nem_order (In, &Nodes, Mesh);
   }
 
 // ###################################################################

@@ -589,6 +589,34 @@ neut_tess_face_seeds (struct TESS Tess, int face, int **pseeds, int *pseedqty)
 }
 
 void
+neut_tess_face_seeds_positive (struct TESS Tess, int face, int **pseed,
+			       int *pseedqty)
+{
+  int i, qty, *tmp = NULL;
+
+  neut_tess_face_seeds (Tess, face, &tmp, &qty);
+
+  for (i = 0; i < qty; i++)
+    if (tmp[i] < 0)
+      tmp[i] = 0;
+
+  qty -= ut_array_1d_int_deletencompress (tmp, qty, 0, qty);
+
+  if (pseed)
+  {
+    (*pseed) = ut_alloc_1d_int (qty);
+    ut_array_1d_int_memcpy (*pseed, qty, tmp);
+  }
+
+  if (pseedqty)
+    (*pseedqty) = qty;
+
+  ut_free_1d_int (tmp);
+
+  return;
+}
+
+void
 neut_tess_edges_vers (struct TESS Tess, int *edge, int edgeqty, int **pver,
 		      int *pverqty)
 {
@@ -3480,6 +3508,20 @@ neut_tess_inter_seeds (struct TESS Tess, int inter, int **pseed,
     neut_tess_face_seeds (Tess, inter, pseed, pseedqty);
   else
     abort ();
+}
+
+void
+neut_tess_inter_seeds_positive (struct TESS Tess, int inter, int **pseeds,
+                                int *pseedqty)
+{
+  if (Tess.Dim == 2)
+    neut_tess_edge_seeds_positive (Tess, inter, pseeds, pseedqty);
+  else if (Tess.Dim == 3)
+    neut_tess_face_seeds_positive (Tess, inter, pseeds, pseedqty);
+  else
+    abort ();
+
+  return;
 }
 
 int

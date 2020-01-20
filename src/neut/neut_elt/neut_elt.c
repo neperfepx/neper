@@ -759,3 +759,280 @@ neut_elt_tri_shapefct (double *a, double *b, double *c, double *p, double *val)
 
   return;
 }
+
+void
+neut_elt_orderarrays_3d (char *elttype, int ***pfir, int *pnodeqty_tot,
+                         int ***psec, int *pnodeqty_o1)
+{
+  int tmp_o1, tmp_tot;
+
+  tmp_o1 = neut_elt_nodeqty (elttype, 3, 1);
+  tmp_tot = neut_elt_nodeqty (elttype, 3, 2);
+
+  if (pfir)
+    (*pfir) = ut_alloc_2d_int (tmp_tot, 2);
+
+  if (psec)
+    (*psec) = ut_alloc_2d_int (tmp_o1, tmp_o1);
+
+  if (!strcmp (elttype, "tri"))
+  {
+    if (psec)
+    {
+      (*psec)[0][1] = (*psec)[1][0] = 4;
+      (*psec)[1][2] = (*psec)[2][1] = 5;
+      (*psec)[2][0] = (*psec)[0][2] = 6;
+      (*psec)[3][0] = (*psec)[0][3] = 7;
+      (*psec)[2][3] = (*psec)[3][2] = 8;
+      (*psec)[3][1] = (*psec)[1][3] = 9;
+    }
+
+    if (pfir)
+    {
+      (*pfir)[4][0] = 0;
+      (*pfir)[4][1] = 1;
+      (*pfir)[5][0] = 1;
+      (*pfir)[5][1] = 2;
+      (*pfir)[6][0] = 2;
+      (*pfir)[6][1] = 0;
+      (*pfir)[7][0] = 3;
+      (*pfir)[7][1] = 0;
+      (*pfir)[8][0] = 2;
+      (*pfir)[8][1] = 3;
+      (*pfir)[9][0] = 3;
+      (*pfir)[9][1] = 1;
+    }
+  }
+  else if (!strcmp (elttype, "quad"))
+  {
+    if (psec)
+    {
+      (*psec)[0][1] = (*psec)[1][0] = 8;
+      (*psec)[4][5] = (*psec)[5][4] = 16;
+      (*psec)[3][2] = (*psec)[2][3] = 13;
+      (*psec)[7][6] = (*psec)[6][7] = 19;
+
+      (*psec)[0][4] = (*psec)[4][0] = 10;
+      (*psec)[1][5] = (*psec)[5][1] = 12;
+      (*psec)[3][7] = (*psec)[7][3] = 15;
+      (*psec)[2][6] = (*psec)[6][2] = 14;
+
+      (*psec)[0][3] = (*psec)[3][0] = 9;
+      (*psec)[1][2] = (*psec)[2][1] = 11;
+      (*psec)[4][7] = (*psec)[7][4] = 17;
+      (*psec)[5][6] = (*psec)[6][5] = 18;
+    }
+
+    if (pfir)
+    {
+      (*pfir)[8][0] = 0;
+      (*pfir)[8][1] = 1;
+      (*pfir)[9][0] = 0;
+      (*pfir)[9][1] = 3;
+      (*pfir)[10][0] = 0;
+      (*pfir)[10][1] = 4;
+      (*pfir)[11][0] = 1;
+      (*pfir)[11][1] = 2;
+      (*pfir)[12][0] = 1;
+      (*pfir)[12][1] = 5;
+      (*pfir)[13][0] = 2;
+      (*pfir)[13][1] = 3;
+      (*pfir)[14][0] = 2;
+      (*pfir)[14][1] = 6;
+      (*pfir)[15][0] = 3;
+      (*pfir)[15][1] = 7;
+      (*pfir)[16][0] = 4;
+      (*pfir)[16][1] = 5;
+      (*pfir)[17][0] = 4;
+      (*pfir)[17][1] = 7;
+      (*pfir)[18][0] = 5;
+      (*pfir)[18][1] = 6;
+      (*pfir)[19][0] = 6;
+      (*pfir)[19][1] = 7;
+    }
+  }
+  else if (!strcmp (elttype, "triprism"))
+  {
+    if (psec)
+    {
+      (*psec)[0][1] = (*psec)[1][0] = 6;
+      (*psec)[2][0] = (*psec)[0][2] = 7;
+      (*psec)[3][0] = (*psec)[0][3] = 8;
+      (*psec)[1][2] = (*psec)[2][1] = 9;
+      (*psec)[1][4] = (*psec)[4][1] = 10;
+      (*psec)[2][5] = (*psec)[5][2] = 11;
+      (*psec)[3][4] = (*psec)[4][3] = 12;
+      (*psec)[3][5] = (*psec)[5][3] = 13;
+      (*psec)[4][5] = (*psec)[5][4] = 14;
+    }
+
+    if (pfir)
+    {
+      (*pfir)[6][0] = 0;
+      (*pfir)[6][1] = 1;
+      (*pfir)[7][0] = 2;
+      (*pfir)[7][1] = 0;
+      (*pfir)[8][0] = 0;
+      (*pfir)[8][1] = 3;
+      (*pfir)[9][0] = 2;
+      (*pfir)[9][1] = 1;
+      (*pfir)[10][0] = 4;
+      (*pfir)[10][1] = 1;
+      (*pfir)[11][0] = 5;
+      (*pfir)[11][1] = 2;
+      (*pfir)[12][0] = 3;
+      (*pfir)[12][1] = 4;
+      (*pfir)[13][0] = 3;
+      (*pfir)[13][1] = 5;
+      (*pfir)[14][0] = 4;
+      (*pfir)[14][1] = 5;
+    }
+  }
+
+  if (pnodeqty_o1)
+    *pnodeqty_o1 = tmp_o1;
+  if (pnodeqty_tot)
+    *pnodeqty_tot = tmp_tot;
+
+  return;
+}
+
+void
+neut_elt_orderarrays_2d (char *elttype, int ***pfir, int *pnodeqty_tot,
+                         int ***psec, int *pnodeqty_o1)
+{
+  int tmp_o1, tmp_tot;
+
+  tmp_o1 = neut_elt_nodeqty (elttype, 2, 1);
+  tmp_tot = neut_elt_nodeqty (elttype, 2, 2);
+
+  if (pfir)
+    (*pfir) = ut_alloc_2d_int (tmp_tot, 2);
+
+  if (psec)
+    (*psec) = ut_alloc_2d_int (tmp_o1, tmp_o1);
+
+  if (!strcmp (elttype, "tri"))
+  {
+    if (psec)
+    {
+      (*psec)[0][1] = (*psec)[1][0] = 3;
+      (*psec)[1][2] = (*psec)[2][1] = 4;
+      (*psec)[2][0] = (*psec)[0][2] = 5;
+    }
+
+    if (pfir)
+    {
+      (*pfir)[3][0] = 0;
+      (*pfir)[3][1] = 1;
+      (*pfir)[4][0] = 1;
+      (*pfir)[4][1] = 2;
+      (*pfir)[5][0] = 2;
+      (*pfir)[5][1] = 0;
+    }
+  }
+
+  else if (!strcmp (elttype, "quad"))
+  {
+    if (psec)
+    {
+      (*psec)[0][1] = (*psec)[1][0] = 4;
+      (*psec)[1][2] = (*psec)[2][1] = 5;
+      (*psec)[2][3] = (*psec)[3][2] = 6;
+      (*psec)[3][0] = (*psec)[0][3] = 7;
+    }
+
+    if (pfir)
+    {
+      (*pfir)[4][0] = 0;
+      (*pfir)[4][1] = 1;
+      (*pfir)[5][0] = 1;
+      (*pfir)[5][1] = 2;
+      (*pfir)[6][0] = 2;
+      (*pfir)[6][1] = 3;
+      (*pfir)[7][0] = 3;
+      (*pfir)[7][1] = 0;
+    }
+  }
+
+  else if (!strcmp (elttype, "quad9"))
+  {
+    if (psec)
+    {
+      (*psec)[0][1] = (*psec)[1][0] = 4;
+      (*psec)[1][2] = (*psec)[2][1] = 5;
+      (*psec)[2][3] = (*psec)[3][2] = 6;
+      (*psec)[3][0] = (*psec)[0][3] = 7;
+    }
+
+    if (pfir)
+    {
+      (*pfir)[4][0] = 0;
+      (*pfir)[4][1] = 1;
+      (*pfir)[5][0] = 1;
+      (*pfir)[5][1] = 2;
+      (*pfir)[6][0] = 2;
+      (*pfir)[6][1] = 3;
+      (*pfir)[7][0] = 3;
+      (*pfir)[7][1] = 0;
+      (*pfir)[8][0] = -1; // this means the node is not between 1st-order nodes
+      (*pfir)[8][1] = -1; // this means the node is not between 1st-order nodes
+    }
+  }
+
+  else
+    abort ();
+
+  if (pnodeqty_o1)
+    *pnodeqty_o1 = tmp_o1;
+  if (pnodeqty_tot)
+    *pnodeqty_tot = tmp_tot;
+
+  return;
+}
+
+void
+neut_elt_orderarrays_1d (char *elttype, int ***pfir, int *pnodeqty_tot,
+                         int ***psec, int *pnodeqty_o1)
+{
+  int tmp_o1, tmp_tot;
+
+  tmp_o1 = neut_elt_nodeqty (elttype, 1, 1);
+  tmp_tot = neut_elt_nodeqty (elttype, 1, 2);
+
+  if (psec)
+  {
+    (*psec) = ut_alloc_2d_int (tmp_o1, tmp_o1);
+    (*psec)[0][1] = (*psec)[1][0] = 2;
+  }
+
+  if (pfir)
+  {
+    (*pfir) = ut_alloc_2d_int (tmp_tot, 2);
+    (*pfir)[2][0] = 0;
+    (*pfir)[2][1] = 1;
+  }
+
+  if (pnodeqty_o1)
+    *pnodeqty_o1 = tmp_o1;
+  if (pnodeqty_tot)
+    *pnodeqty_tot = tmp_tot;
+
+  return;
+}
+
+void
+neut_elt_orderarrays (char *elttype, int dim, int ***pfir, int *pnodeqty_tot,
+                      int ***psec, int *pnodeqty_o1)
+{
+  if (dim == 1)
+    neut_elt_orderarrays_1d (elttype, pfir, pnodeqty_tot, psec, pnodeqty_o1);
+  else if (dim == 2)
+    neut_elt_orderarrays_2d (elttype, pfir, pnodeqty_tot, psec, pnodeqty_o1);
+  else if (dim == 3)
+    neut_elt_orderarrays_3d (elttype, pfir, pnodeqty_tot, psec, pnodeqty_o1);
+  else
+    abort ();
+
+  return;
+}

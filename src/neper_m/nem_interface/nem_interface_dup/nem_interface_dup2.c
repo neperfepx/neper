@@ -82,7 +82,7 @@ nem_interface_dup_ver (struct TESS Tess, int *vers, int verqty,
     for (j = 0; j < interqty; j++)
     {
       inter = inters[j];
-      neut_tess_inter_seeds (Tess, inter, &tmp, &qty);
+      neut_tess_inter_seeds_positive (Tess, inter, &tmp, &qty);
 
       if (!neut_tess_inter_isperslave (Tess, inter))
 	ut_array_1d_int_list_addelts (&seeds, &seedqty, tmp, qty);

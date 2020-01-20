@@ -165,7 +165,7 @@ neut_nodes_free (struct NODES *pNodes)
   return;
 }
 
-void
+int
 neut_nodes_addnode (struct NODES *pNodes, double *NodeCoo, double NodeCl)
 {
   (*pNodes).NodeQty++;
@@ -199,7 +199,7 @@ neut_nodes_addnode (struct NODES *pNodes, double *NodeCoo, double NodeCl)
     (*pNodes).PerNodeSlaveNb[0] = NULL;
   }
 
-  return;
+  return (*pNodes).NodeQty;
 }
 
 void

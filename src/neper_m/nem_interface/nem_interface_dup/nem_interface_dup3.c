@@ -15,8 +15,8 @@ nem_interface_duplicate (int dim, int *seeds, int seedqty,
   eltnodeqty = neut_elt_nodeqty (Mesh[dim].EltType, Mesh[dim].Dimension,
       Mesh[dim].EltOrder);
 
-  (*pNodes).DupNodeSeed
-    = ut_realloc_1d_int ((*pNodes).DupNodeSeed, (*pNodes).NodeQty + 1);
+  if (!(*pNodes).DupNodeSeed)
+    (*pNodes).DupNodeSeed = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
 
   for (j = 0; j < nodeqty; j++)
   {

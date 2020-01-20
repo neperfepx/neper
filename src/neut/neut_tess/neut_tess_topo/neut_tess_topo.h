@@ -143,6 +143,9 @@ extern "C"
   extern void neut_tess_face_seeds (struct TESS Tess, int face, int
       **pseeds, int *pseedqty);
 
+  extern void neut_tess_face_seeds_positive (struct TESS Tess, int face, int
+      **pseeds, int *pseedqty);
+
 /// \brief Get the cells of a face
 ///
 ///
@@ -659,6 +662,8 @@ extern "C"
 				    **pinters, int *pinterqty);
 
   extern void neut_tess_inter_seeds (struct TESS Tess, int inter, int **pseed,
+				     int *pseedqty);
+  extern void neut_tess_inter_seeds_positive (struct TESS Tess, int inter, int **pseed,
 				     int *pseedqty);
   extern int neut_tess_inter_isperslave (struct TESS Tess, int inter);
 

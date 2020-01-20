@@ -81,7 +81,7 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_nodes_addnode (struct NODES *pNodes, double *NodeCoo,
+  extern int neut_nodes_addnode (struct NODES *pNodes, double *NodeCoo,
 				  double NodeCl);
 
 /// \brief Project nodes along a given direction onto a Mesh.
