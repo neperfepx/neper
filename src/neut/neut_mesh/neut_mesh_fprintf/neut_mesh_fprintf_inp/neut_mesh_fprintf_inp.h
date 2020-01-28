@@ -10,12 +10,13 @@ extern "C"
 #ifndef NEUT_MESH_FPRINTF_INP
 
   extern void neut_mesh_fprintf_inp (FILE * file, char *dim, struct TESS Tess,
-				     struct NODES Nodes, struct MESH Mesh1D,
-                                     struct MESH Mesh2D, struct MESH Mesh3D,
-                                     struct MESH MeshCo, struct NSET NSet0D,
-				     struct NSET NSet1D, struct NSET NSet2D,
-				     char *nset, char *faset, struct PART Part,
-				     struct BOUNDARY Bound);
+				     struct NODES Nodes, struct MESH Mesh0D,
+                                     struct MESH Mesh1D, struct MESH Mesh2D,
+                                     struct MESH Mesh3D, struct MESH MeshCo,
+                                     struct NSET NSet0D, struct NSET NSet1D,
+                                     struct NSET NSet2D, char *nset, char
+                                     *faset, struct PART Part, struct BOUNDARY
+                                     Bound);
 
 #endif				// NEUT_MESH_FPRINTF_INP
 

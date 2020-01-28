@@ -7,7 +7,7 @@
 void
 neut_mesh_fprintf_inp (FILE * file, char *dim,
                        struct TESS Tess, struct NODES Nodes,
-                       struct MESH Mesh1D,
+                       struct MESH Mesh0D, struct MESH Mesh1D,
 		       struct MESH Mesh2D, struct MESH Mesh3D,
 		       struct MESH MeshCo,
 		       struct NSET NSet0D, struct NSET NSet1D,
@@ -81,6 +81,16 @@ neut_mesh_fprintf_inp (FILE * file, char *dim,
     if (MeshCo.Dimension == 3)
       neut_mesh_fprintf_inp_mesh3d (file, MeshCo, shift_eltCo, "cohesive");
   }
+
+// 0D elsets -----------------------------------------------------------
+
+  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "0"))
+    neut_mesh_fprintf_inp_elsets (file, Mesh0D, 0);
+
+// 1D elsets -----------------------------------------------------------
+
+  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "1"))
+    neut_mesh_fprintf_inp_elsets (file, Mesh1D, shift_elt1D);
 
 // 2D elsets -----------------------------------------------------------
 
