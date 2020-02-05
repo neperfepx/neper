@@ -815,7 +815,10 @@ for a translation by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} a
 along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
 @mybullet @samp{@code{renumber}} renumbers a tessellation to remove cells that are empty or have a zero id.@*
 @mybullet @samp{@code{oriaverage}} sets the cell orientations (field @samp{**cell/*ori}) as the averages of the cell voxel orientations (field @samp{**oridata}).@*
-@mybullet @samp{@code{crop:@var{shape}(@var{parameters})}} crops the raster tessellation by a shape@comma{} where @samp{@var{shape}(@var{parameters})} can be @samp{cube(@var{xmin}@comma{}@var{xmax}@comma{}@var{ymin}@comma{}@var{ymax}@comma{}@var{zmin}@comma{}@var{zmax})} or @samp{cylinder(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{diameter})} (the axis is z).  The values can be any mathematical expression based on the variables defined in @ref{Raster Tessellation Keys} (see general). @*
+@mybullet @samp{@code{crop(@var{primitive})}} crops the raster tessellation by a primitive.
+The primitive can be:@*
+@emph{(i)} @samp{cube(@var{xmin}@comma{}@var{xmax}@comma{}@var{ymin}@comma{}@var{ymax}@comma{}@var{zmin}@comma{}@var{zmax})} for a cube defined by its @math{x}@comma{} @math{y} and @math{z} bounds;@*
+@emph{(ii)} @samp{cylinder(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{diameter})} for a cylinder of @math{z} axis.@*
 @mybullet @samp{@code{autocrop}} reduces the raster to its minimal size.@*
 @mybullet
 @samp{@code{rasterscale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}

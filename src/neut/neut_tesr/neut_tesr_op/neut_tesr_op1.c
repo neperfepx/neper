@@ -1086,7 +1086,7 @@ neut_tesr_init_tesrsize (struct TESR *pTesr, struct TESS Domain, int dim,
 }
 
 void
-neut_tesr_crop (struct TESR *pTesr, char *shape)
+neut_tesr_crop (struct TESR *pTesr, char *crop)
 {
   int i, j, k, id;
   double d;
@@ -1096,6 +1096,17 @@ neut_tesr_crop (struct TESR *pTesr, char *shape)
   int *pt = ut_alloc_1d_int (3);
   int qty = 0;
   char *fct = NULL, **vars = NULL, **vals = NULL;
+  char *shape = ut_alloc_1d_char (strlen (crop) + 1);
+
+  if (!strncmp (crop, "crop(", 5))
+  {
+    sscanf (crop + 5, "%s", shape);
+    shape[strlen (shape) - 1] = '\0';
+  }
+  else if (!strncmp (crop, "crop:", 5))
+    sscanf (crop + 5, "%s", shape);
+  else
+    strcpy (shape, crop);
 
   ut_string_function_separate (shape, &fct, &vars, &vals, &qty);
 
@@ -1167,6 +1178,7 @@ neut_tesr_crop (struct TESR *pTesr, char *shape)
   ut_free_1d (coo2);
   ut_free_1d_int (pt);
   ut_free_1d (cube);
+  ut_free_1d_char (shape);
 
   return;
 }
