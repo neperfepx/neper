@@ -372,6 +372,9 @@ neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
   // 3D mesh
   if (MeshCo.EltQty > 0)
   {
+    if (!strcmp (MeshCo.EltType, "quad6"))
+      ut_print_message (1, 4, "Elt type `quad6' undefined in Gmsh (the mesh will not open).\n");
+
     if (!strcmp (mode, "binary"))
     {
       int data[3] = {elt_typeCo, MeshCo.EltQty, 3};

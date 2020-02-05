@@ -19,6 +19,9 @@ nem_order_pre (struct IN_M In, struct MESH *Mesh, int *domesh)
   if (!strcmp (In.interface, "cohesive"))
     domesh[4] = 1;
 
+  if (dim == 2 && !strcmp (Mesh[2].EltType, "tri") && Mesh[4].EltQty > 0 && !strcmp (Mesh[4].EltType, "quad"))
+    ut_string_string ("quad6", &Mesh[4].EltType);
+
   return;
 }
 

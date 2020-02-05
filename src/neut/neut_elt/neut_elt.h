@@ -36,7 +36,6 @@ extern void neut_elt_orderarrays_3d (char *elttype, int ***pfir3, int *pnodeqty_
 extern void neut_elt_orderarrays_2d (char *elttype, int ***pfir2, int *pnodeqty_2d, int ***psec2, int *pnodeqty_2d1);
 extern void neut_elt_orderarrays_1d (char *elttype, int ***pfir1, int *pnodeqty_1d, int ***psec1, int *pnodeqty_1d1);
 extern void neut_elt_orderarrays_0d (char *elttype, int ***pfir0, int *pnodeqty_0d, int ***psec0, int *pnodeqty_0d1);
-extern void neut_elt_orderarrays_co (char *elttype, int ***pfir0, int *pnodeqty_co, int ***psec0, int *pnodeqty_co1);
 
 extern void neut_elt_orderarrays (char *elttype, int dim, int ***pfir,  int *pnodeqty, int ***psec,
                                   int *pnodeqty1);

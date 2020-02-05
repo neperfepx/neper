@@ -74,6 +74,17 @@ neut_elt_nodeqty (char *type, int dim, int order)
   Quad9NodesPerElt[3][1] = 8;
   Quad9NodesPerElt[3][2] = 21;
 
+  int **Quad6NodesPerElt = ut_alloc_2d_int (4, 3);
+
+  Quad6NodesPerElt[0][1] = 1;
+  Quad6NodesPerElt[0][2] = 1;
+  Quad6NodesPerElt[1][1] = 2;
+  Quad6NodesPerElt[1][2] = 3;
+  Quad6NodesPerElt[2][1] = 4;
+  Quad6NodesPerElt[2][2] = 6;
+  Quad6NodesPerElt[3][1] = 0;
+  Quad6NodesPerElt[3][2] = 0;
+
   int **TriPrismNodesPerElt = ut_alloc_2d_int (4, 3);
 
   TriPrismNodesPerElt[0][1] = 0;
@@ -99,6 +110,8 @@ neut_elt_nodeqty (char *type, int dim, int order)
     res = QuadNodesPerElt[dim][order];
   else if (!strcmp (type, "quad9"))
     res = Quad9NodesPerElt[dim][order];
+  else if (!strcmp (type, "quad6"))
+    res = Quad6NodesPerElt[dim][order];
   else if (!strcmp (type, "triprism"))
     res = TriPrismNodesPerElt[dim][order];
   else
@@ -952,6 +965,23 @@ neut_elt_orderarrays_2d (char *elttype, int ***pfir, int *pnodeqty_tot,
       (*pfir)[6][1] = 3;
       (*pfir)[7][0] = 3;
       (*pfir)[7][1] = 0;
+    }
+  }
+
+  else if (!strcmp (elttype, "quad6"))
+  {
+    if (psec)
+    {
+      (*psec)[0][1] = (*psec)[1][0] = 4;
+      (*psec)[2][3] = (*psec)[3][2] = 5;
+    }
+
+    if (pfir)
+    {
+      (*pfir)[4][0] = 0;
+      (*pfir)[4][1] = 1;
+      (*pfir)[5][0] = 2;
+      (*pfir)[5][1] = 3;
     }
   }
 

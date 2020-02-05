@@ -81,6 +81,29 @@ neut_mesh_fprintf_geof_elts_2d (FILE *file, struct MESH Mesh2D, int shift)
       }
   }
 
+  else if (!strcmp (Mesh2D.EltType, "quad6"))
+  {
+    if (!strcmp (Mesh2D.EltType, "quad6"))
+      ut_print_message (1, 4, "Elt type `quad6' undefined in Zset (the mesh will not open).\n");
+
+    if (Mesh2D.EltOrder == 1)
+      abort ();
+
+    else if (Mesh2D.EltOrder == 2)
+      for (i = 1; i <= Mesh2D.EltQty; i++)
+      {
+        fprintf (file, "%d c2d4o2 ", shift + i);
+        fprintf (file, " %d", Mesh2D.EltNodes[i][0]);
+        fprintf (file, " %d", Mesh2D.EltNodes[i][3]);
+        fprintf (file, " %d", Mesh2D.EltNodes[i][1]);
+        fprintf (file, " %d", Mesh2D.EltNodes[i][4]);
+        fprintf (file, " %d", Mesh2D.EltNodes[i][2]);
+        fprintf (file, " %d", Mesh2D.EltNodes[i][5]);
+
+        fprintf (file, "\n");
+      }
+  }
+
   return;
 }
 
