@@ -29,6 +29,9 @@ extern "C"
   extern void net_tess_clip_expr (struct TESS *pTess, char *clip);
   extern int net_tess_clip (struct TESS *pTess, double *eq);
 
+  extern void net_tess_crop_expr (struct TESS *pTess, char *crop);
+  extern int net_tess_crop_cube (struct TESS *pTess, double **bounds);
+
   extern int net_multiscale_arg_0d_fscanf (char *string, char* flag,
 					   int varqty, char **vars,
 					   double *vals, double *pval);

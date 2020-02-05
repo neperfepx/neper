@@ -630,6 +630,77 @@ net_tess_clip (struct TESS *pTess, double *eq)
   return domface;
 }
 
+void
+net_tess_crop_expr (struct TESS *pTess, char *crop)
+{
+  int i, j, exprqty;
+  char *fct = NULL, **exprs = NULL;
+  double **bounds = ut_alloc_2d (3, 2);
+  char *crop2 = NULL;
+
+  ut_string_string (crop, &crop2);
+  crop2[strlen (crop2) - 1] = '\0';
+  ut_string_fnrs (crop2, "crop(", "", 1);
+
+  if (strstr (crop2, "cube"))
+  {
+    ut_string_function_separate_exprs (crop2, &fct, &exprs, &exprqty);
+
+    if (exprqty != 6)
+      ut_print_message (2, 2, "Failed to parse expression `%s'.\n", crop2);
+
+    for (i = 0; i < 3; i++)
+      for (j = 0; j < 2; j++)
+        sscanf (exprs[2 * i + j], "%lf", bounds[i] + j);
+
+    net_tess_crop_cube (pTess, bounds);
+
+    ut_free_2d (bounds, 3);
+  }
+
+  else
+    ut_print_message (2, 2, "Failed to parse expression `%s'.\n", crop2);
+
+  ut_free_1d_char (fct);
+  ut_free_2d_char (exprs, exprqty);
+  ut_free_1d_char (crop2);
+
+  return;
+}
+
+int
+net_tess_crop_cube (struct TESS *pTess, double** bounds)
+{
+  int i, dir, bound;
+  double **eqs = ut_alloc_2d (6, 4);
+  double **bbox = ut_alloc_2d (3, 2);
+
+  ut_array_1d_set_4 (eqs[0], -bounds[0][0], -1,  0,  0);
+  ut_array_1d_set_4 (eqs[1],  bounds[0][1],  1,  0,  0);
+  ut_array_1d_set_4 (eqs[2], -bounds[1][0],  0, -1,  0);
+  ut_array_1d_set_4 (eqs[3],  bounds[1][1],  0,  1,  0);
+  ut_array_1d_set_4 (eqs[4], -bounds[2][0],  0,  0, -1);
+  ut_array_1d_set_4 (eqs[5],  bounds[2][1],  0,  0,  1);
+
+  neut_tess_bbox (*pTess, bbox);
+
+  for (i = 0; i < 6; i++)
+  {
+    dir = i / 2;
+    bound = i % 2;
+
+    // skipping cuts that are out of (or coincide with) the bbox
+    if ((bound == 0 && -eqs[i][0] > bbox[dir][0])
+     || (bound == 1 && eqs[i][0] < bbox[dir][1]))
+      net_tess_clip (pTess, eqs[i]);
+  }
+
+  ut_free_2d (eqs, 6);
+  ut_free_2d (bbox, 3);
+
+  return 0;
+}
+
 int
 net_multiscale_mtess_arg_0d_char_fscanf (int level, struct MTESS MTess, struct TESS *Tess,
                                          int domtess, int dompoly,

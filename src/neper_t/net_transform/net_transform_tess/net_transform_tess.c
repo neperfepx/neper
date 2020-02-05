@@ -99,6 +99,12 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
       net_tess_clip_expr (pTess, parts[i]);
     }
 
+    else if (!strncmp (parts[i], "crop(", 5))
+    {
+      ut_print_message (0, 2, "Cropping...\n");
+      net_tess_crop_expr (pTess, parts[i]);
+    }
+
     else if (!strncmp (parts[i], "slice(", 6))
     {
       int j, exprqty, domface;

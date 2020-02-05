@@ -778,7 +778,8 @@ for a rotation about the centre and by an axis/angle pair.@*
 @mybullet @samp{translate(@var{dist_x}@comma{}@var{dist_y}@comma{}@var{dist_z})}
 for a translation by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} and @code{@var{dist_z}}
 along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
-@bullet{} @samp{cut(@var{primitive1}@comma{}@var{primitive2}@comma{}...)} for cutting by a series of geometrical primitives (experimental).  The primitives can be:@*
+@bullet{} @samp{cut(@var{primitive1}@comma{}@var{primitive2}@comma{}...)} for cutting by a series of geometrical primitives (experimental).
+The primitives can be:@*
 @emph{(i)} @samp{hspace(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for the half-space of equation @math{a@,x+b@,y+c@,z@geq{}d};@*
 @emph{(ii)} @samp{sphere(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{centre_z}@comma{}@var{rad})} for a sphere of centre @math{(@var{centre_x}@comma{} @var{centre_y}@comma{} @var{centre_z})} and radius @var{rad};@*
 @emph{(iii)} @samp{cylinder(@var{basis_x}@comma{}@var{basis_y}@comma{}@var{basis_z}@comma{}@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{rad})} for a cylinder of basis point @math{(@var{basis_x}@comma{} @var{basis_y}@comma{} @var{basis_z})}@comma{} axis @math{(@var{axis_x}@comma{} @var{axis_y}@comma{} @var{axis_z})} and radius @var{rad};@*
@@ -786,6 +787,9 @@ along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
 Append @samp{i} to a primitive name (to get @samp{cylinderi}@comma{} etc.) for the complementary shape.
 @*
 @mybullet @samp{planecut(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for cutting by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d}.@*
+@mybullet @samp{@code{crop(@var{primitive})}} crops the tessellation by a primitive.
+The primitive can be:@*
+@emph{(i)} @samp{cube(@var{xmin}@comma{}@var{xmax}@comma{}@var{ymin}@comma{}@var{ymax}@comma{}@var{zmin}@comma{}@var{zmax})} for a cube defined by its @math{x}@comma{} @math{y} and @math{z} bounds.@*
 @mybullet @samp{slice(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for slicing a 3D tessellation by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d} (yielding to a 2D tessellation).@*
 @mybullet @samp{mergecell(@var{expr1}@comma{}@var{expr2}@comma{}@dots{})} for merging cells
 matching expression @code{@var{expr1}}@comma{} @code{@var{expr2}}@comma{} etc.@comma{}
