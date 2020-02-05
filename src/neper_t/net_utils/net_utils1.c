@@ -510,46 +510,33 @@ net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
 }
 
 void
-net_clip (char *clip, struct SEEDSET SSet, struct TESS *pTess)
+net_tess_clip_expr (struct TESS *pTess, char *clip)
 {
-  int i, qty, status;
-  FILE *fp = NULL;
-  char *tmp = NULL;
+  int j, exprqty;
   double *eq = ut_alloc_1d (4);
-  char *input = ut_alloc_1d_char (strlen (clip) + 1);
-  char *file = ut_alloc_1d_char (strlen (clip) + 1);
+  char *fct = NULL, **exprs = NULL;
 
-  ut_string_string (clip, &tmp);
+  ut_string_function_separate_exprs (clip, &fct, &exprs, &exprqty);
 
-  ut_string_fnr (tmp, '(', ' ');
-  ut_string_fnr (tmp, ')', ' ');
-  ut_string_fnr (tmp, ',', ' ');
-  if (sscanf (tmp, "%s%s", input, file) != 2)
-    ut_print_message (2, 2, "Failed to read argument `%s'.\n", clip);
+  if (exprqty != 4)
+    ut_print_message (2, 2, "Failed to parse expression `%s'.\n", clip);
 
-  fp = ut_file_open (file, "r");
-  if (fscanf (fp, "%d", &qty) != 1)
-    abort ();
-  for (i = 0; i < qty; i++)
-  {
-    status = ut_array_1d_fscanf (fp, eq, 4);
-    if (status != 1)
-      abort ();
-    ut_array_1d_scale (eq, 4, 1. / ut_vector_norm (eq + 1));
-    net_tess_clip (SSet, pTess, eq);
-  }
-  ut_file_close (fp, file, "r");
+  for (j = 0; j < 4; j++)
+    sscanf (exprs[j], "%lf", eq + j);
 
-  ut_free_1d_char (tmp);
-  ut_free_1d_char (input);
-  ut_free_1d_char (file);
+  ut_array_1d_scale (eq, 4, 1. / ut_array_1d_norm (eq + 1, 3));
+
+  net_tess_clip (pTess, eq);
+
   ut_free_1d (eq);
+  ut_free_1d_char (fct);
+  ut_free_2d_char (exprs, exprqty);
 
   return;
 }
 
 int
-net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
+net_tess_clip (struct TESS *pTess, double *eq)
 {
   int i, side, level, tessid, domface;
   struct POLY *Poly = calloc ((*pTess).CellQty + 1, sizeof (struct POLY));
@@ -558,6 +545,10 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
   struct TESL Tesl;
   struct TESS TessCpy;
   int plane_id;
+  struct SEEDSET SSet;
+
+  neut_seedset_set_zero (&SSet);
+  net_tess_seedset (*pTess, &SSet);
 
   level = (*pTess).Level;
   tessid = (*pTess).TessId;
@@ -631,6 +622,8 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
   neut_tess_tess_cell (TessCpy, pTess);
   neut_tess_tess_seed (TessCpy, pTess);
   neut_tess_tess_scale (TessCpy, pTess);
+
+  neut_tess_compress (pTess);
 
   neut_tess_free (&TessCpy);
 

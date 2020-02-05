@@ -82,8 +82,8 @@ neut_tesl_tess_poly (struct TESL Tesl, struct TESS *pTess)
   (*pTess).CellTrue = ut_alloc_1d_int (Tesl.PolyQty + 1);
   (*pTess).CellBody = ut_alloc_1d_int (Tesl.PolyQty + 1);
 
-  neut_tesl_tessPolyState (pTess);
   neut_tesl_tessPolyFace (Tesl, pTess);
+  neut_tesl_tessPolyState (pTess);
 
   return;
 }

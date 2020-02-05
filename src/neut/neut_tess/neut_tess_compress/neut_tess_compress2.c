@@ -29,6 +29,7 @@ neut_tess_compress_polys (struct TESS *pTess)
 
   (*pTess).PolyQty = pos;
   (*pTess).CellQty = pos;
+  (*pTess).SeedQty = pos;
 
   return;
 }
@@ -74,7 +75,10 @@ neut_tess_compress_faces (struct TESS *pTess)
 
   (*pTess).FaceQty = pos;
   if ((*pTess).Dim == 2)
+  {
     (*pTess).CellQty = pos;
+    (*pTess).SeedQty = pos;
+  }
 
   if ((*pTess).DomFaceQty > 0)
     neut_tess_init_domtessface (pTess);

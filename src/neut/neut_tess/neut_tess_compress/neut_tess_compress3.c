@@ -56,6 +56,11 @@ neut_tess_compress_movepoly (struct TESS *pTess, int old, int new)
   if ((*pTess).CellModeId)
     (*pTess).CellModeId[new] = (*pTess).CellModeId[old];
 
+  if ((*pTess).SeedCoo)
+    ut_array_1d_memcpy ((*pTess).SeedCoo[new], 3, (*pTess).SeedCoo[old]);
+  if ((*pTess).SeedWeight)
+    (*pTess).SeedWeight[new] = (*pTess).SeedWeight[old];
+
   return;
 }
 

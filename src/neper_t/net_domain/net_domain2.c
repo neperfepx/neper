@@ -484,10 +484,6 @@ net_domain_transform (struct TESS *pPoly, int dim, char* string)
   else if (!strncmp (string, "split(", 6))
   {
     double **bbox = ut_alloc_2d (3, 2);
-    struct SEEDSET SSet;
-    neut_seedset_set_zero (&SSet);
-    SSet.Type = ut_alloc_1d_char (1);
-    neut_seedset_addseed (&SSet, coo, 0);
     neut_tess_bbox (*pPoly, bbox);
     dir = string[6] - 'x';
     if (dir < 0 || dir > 2)
@@ -495,8 +491,7 @@ net_domain_transform (struct TESS *pPoly, int dim, char* string)
 
     eq[0] = - 0.5 * (bbox[dir][1] + bbox[dir][0]);
     eq[dir + 1] = -1;
-    net_tess_clip (SSet, pPoly, eq);
-    neut_seedset_free (&SSet);
+    net_tess_clip (pPoly, eq);
   }
 
   else

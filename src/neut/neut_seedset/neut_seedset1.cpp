@@ -122,7 +122,7 @@ neut_seedset_addseed (struct SEEDSET *pSSet, double *coo, double w)
                                             (*pSSet).N + 1, 3);
   ut_array_1d_memcpy ((*pSSet).SeedCoo0[(*pSSet).N], 3, coo);
 
-  if (!strcmp ((*pSSet).Type, "standard"))
+  if (!(*pSSet).Type || !strcmp ((*pSSet).Type, "standard"))
     ut_array_1d_memcpy ((*pSSet).SeedCoo[(*pSSet).N], 3, coo);
   else
     for (i = 0; i < (*pSSet).Dim; i++)
