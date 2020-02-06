@@ -776,7 +776,7 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
   }
   else if (!strcmp (entity, "elt2d"))
   {
-    (*pvarqty) = 12;
+    (*pvarqty) = 13;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
     strcpy ((*pvar)[id++], "id");
     strcpy ((*pvar)[id++], "x");
@@ -790,6 +790,7 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[id++], "elt3d_shown");
     strcpy ((*pvar)[id++], "part");
     strcpy ((*pvar)[id++], "elsetarea");
+    strcpy ((*pvar)[id++], "length");
   }
   else if (!strcmp (entity, "elt1d"))
   {
@@ -1295,6 +1296,11 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
       else
         (*pvalqty) = 0;
 
+      strcpy (typetmp, "%f");
+    }
+    else if (!strcmp (var, "length"))
+    {
+      neut_mesh_elt_lengths (Nodes, Mesh2D, id, *pvals, NULL, NULL);
       strcpy (typetmp, "%f");
     }
     else

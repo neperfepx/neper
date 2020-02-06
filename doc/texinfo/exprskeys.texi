@@ -539,7 +539,7 @@ dimensions) and points are provided below.
                         circular part of a cylinder domain @tab 1D elt, 1D elset
   @item @code{vol}    @tab volume                           @tab 3D elt, 3D elset
   @item @code{area}   @tab area                             @tab 2D elt
-  @item @code{length} @tab length                           @tab 1D elt, 3D elt, 1D elset
+  @item @code{length} @tab length                           @tab 1D elt, 2D elt, 3D elt, 1D elset
   @item @code{elsetvol}    @tab elset volume                @tab 3D elt
   @item @code{elsetarea}   @tab elset area                  @tab 2D elt
   @item @code{elsetlength} @tab elset length                @tab 1D elt
