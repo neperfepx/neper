@@ -13,9 +13,19 @@ neut_mesh_elt_area (struct NODES Nodes, struct MESH Mesh, int elt,
   if (Mesh.Dimension != 2)
     ut_error_reportbug ();
 
-  (*parea) = ut_space_triangle_area (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
-				     Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
-				     Nodes.NodeCoo[Mesh.EltNodes[elt][2]]);
+  if (!strcmp (Mesh.EltType, "tri"))
+    (*parea) = ut_space_triangle_area (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
+                                       Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
+                                       Nodes.NodeCoo[Mesh.EltNodes[elt][2]]);
+  else if (!strcmp (Mesh.EltType, "quad"))
+    (*parea) = ut_space_triangle_area (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
+                                       Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
+                                       Nodes.NodeCoo[Mesh.EltNodes[elt][2]])
+             + ut_space_triangle_area (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
+                                       Nodes.NodeCoo[Mesh.EltNodes[elt][2]],
+                                       Nodes.NodeCoo[Mesh.EltNodes[elt][3]]);
+  else
+    abort ();
 
   return 0;
 }
