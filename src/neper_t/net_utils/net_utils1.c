@@ -928,12 +928,20 @@ net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet)
   neut_seedset_free (pSSet);
   neut_seedset_set_zero (pSSet);
 
+  (*pSSet).Dim = Tess.Dim;
   (*pSSet).N = Tess.SeedQty;
   (*pSSet).Nall = Tess.SeedQty;
   ut_string_string (Tess.Type, &(*pSSet).Type);
 
+  // Nall and SeedCoo (and SeedWeight?) not set properly for a periodic
+  // tessellation
   if (!strcmp ((*pSSet).Type, "periodic"))
     abort ();
+
+  ut_string_string (Tess.CellCrySym, &(*pSSet).crysym);
+
+  (*pSSet).Size = ut_alloc_2d (3, 2);
+  neut_tess_bbox (Tess, (*pSSet).Size);
 
   (*pSSet).SeedCoo = ut_alloc_2d ((*pSSet).Nall + 1, 3);
   ut_array_2d_memcpy ((*pSSet).SeedCoo + 1, (*pSSet).Nall, 3, Tess.SeedCoo + 1);
@@ -943,6 +951,32 @@ net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet)
 
   (*pSSet).SeedWeight = ut_alloc_1d ((*pSSet).Nall + 1);
   ut_array_1d_memcpy ((*pSSet).SeedWeight + 1, (*pSSet).Nall, Tess.SeedWeight + 1);
+
+  if (Tess.CellOri)
+  {
+    (*pSSet).q = ut_alloc_2d ((*pSSet).N + 1, 4);
+    ut_array_2d_memcpy ((*pSSet).q + 1, (*pSSet).N, 4, Tess.CellOri + 1);
+  }
+
+  (*pSSet).Periodic = ut_alloc_1d_int (3);
+  ut_array_1d_int_memcpy ((*pSSet).Periodic, 3, Tess.Periodic);
+  (*pSSet).PeriodicDist = ut_alloc_1d (3);
+  ut_array_1d_memcpy ((*pSSet).PeriodicDist, 3, Tess.PeriodicDist);
+
+  if (!strcmp ((*pSSet).Type, "periodic"))
+  {
+    (*pSSet).PerSeedMaster = ut_alloc_1d_int ((*pSSet).Nall + 1);
+    ut_array_1d_int_memcpy ((*pSSet).PerSeedMaster + 1, (*pSSet).Nall,
+                            Tess.PerSeedMaster + 1);
+    (*pSSet).PerSeedShift = ut_alloc_2d_int ((*pSSet).Nall + 1, 3);
+    ut_array_2d_int_memcpy ((*pSSet).PerSeedShift + 1, (*pSSet).Nall, 3,
+                            Tess.PerSeedShift + 1);
+    (*pSSet).PerSeedSlaveQty = ut_alloc_1d_int ((*pSSet).N + 1);
+    ut_array_1d_int_set ((*pSSet).PerSeedSlaveQty + 1, (*pSSet).N, pow (3, (*pSSet).Dim));
+    (*pSSet).PerSeedSlaveNb = ut_alloc_2d_int ((*pSSet).N + 1, pow (3, (*pSSet).Dim));
+    ut_array_2d_int_memcpy ((*pSSet).PerSeedShift + 1, (*pSSet).N, pow (3, (*pSSet).Dim),
+                            Tess.PerSeedShift + 1);
+  }
 
   return 0;
 }
