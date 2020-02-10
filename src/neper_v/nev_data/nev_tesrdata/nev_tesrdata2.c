@@ -71,7 +71,7 @@ nev_tesrdata_fscanf_cell (struct TESR Tesr, struct TESRDATA *pTD,
   else if (!strcmp (prop, "scaletitle"))
     ut_string_string (argument, &(*pTD).ScaleTitle);
   else
-    ut_error_reportbug ();
+    ut_error_expression (prop);
 
   ut_free_2d_char (args, argqty);
   ut_free_1d_char (value);
@@ -138,7 +138,7 @@ nev_tesrdata_fscanf_vox (struct TESR Tesr, struct TESRDATA *pTD,
   else if (!strcmp (prop, "scaletitle"))
     ut_string_string (argument, &(*pTD).ScaleTitle);
   else
-    ut_error_reportbug ();
+    ut_error_expression (prop);
 
   ut_free_1d_char (value);
 
@@ -156,7 +156,7 @@ nev_tesrdata_fscanf_voxedge (struct TESRDATA *pTD, char *prop, char *argument)
   else if (!strcmp (prop, "rad"))
     sscanf (argument, "%lf", &((*pTD).BRad));
   else
-    ut_error_reportbug ();
+    ut_error_expression (prop);
 
   return;
 }
@@ -212,7 +212,7 @@ nev_tesrdata_cell2vox (struct TESR Tesr, char *prop,
   else if (!strcmp (prop, "scaletitle"))
     ut_string_string (TesrDataCell.ScaleTitle, &(*pTD).ScaleTitle);
   else
-    ut_error_reportbug ();
+    ut_error_expression (prop);
 
   return;
 }

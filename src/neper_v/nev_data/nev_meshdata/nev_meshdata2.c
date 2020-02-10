@@ -85,7 +85,7 @@ nev_meshdata_fscanf_elt (struct MESH Mesh, struct MESHDATA *pMD,
     strcpy ((*pMD).ScaleTitle, argument);
   }
   else
-    ut_error_reportbug ();
+    ut_error_expression (type);
 
   ut_free_1d_char (value);
   ut_free_2d_char (args, argqty);
@@ -104,7 +104,7 @@ nev_meshdata_fscanf_eltb (struct MESHDATA *pMD, char *type, char *argument)
   else if (!strcmp (type, "rad"))
     ut_array_1d_fscanfn_wcard (argument, &((*pMD).BRad), 1, "numeral");
   else
-    ut_error_reportbug ();
+    ut_error_expression (type);
 
   return;
 }
@@ -172,7 +172,7 @@ nev_meshdata_elset2elt (struct MESH Mesh,
       strcpy ((*pMD).ScaleTitle, MeshDataSet.ScaleTitle);
     }
     else
-      ut_error_reportbug ();
+      ut_error_expression (type);
   }
   else
   {
@@ -184,7 +184,7 @@ nev_meshdata_elset2elt (struct MESH Mesh,
     else if (!strcmp (type, "rad"))
       (*pMD).BRad = MeshDataSet.BRad;
     else
-      ut_error_reportbug ();
+      ut_error_expression (type);
   }
 
   return;

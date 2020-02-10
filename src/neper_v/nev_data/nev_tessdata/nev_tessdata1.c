@@ -66,7 +66,7 @@ nev_tessdata_init (struct TESS Tess, struct TESSDATA *pTessData)
 			      (*pTessData).Col[dim],
 			      &((*pTessData).Scale[dim]));
       else
-	ut_error_reportbug ();
+        ut_error_expression ((*pTessData).ColDataType[dim]);
     }
 
     if ((*pTessData).trsdata[dim])
@@ -103,7 +103,7 @@ nev_tessdata_fscanf (struct TESS Tess, char *entity, char *prop,
   else if (!strcmp (prop, "scaletitle"))
     nev_tessdata_fscanf_scaletitle (pTessData, id, value);
   else
-    ut_error_reportbug ();
+    ut_error_expression (prop);
 
   ut_free_1d_char (type);
   ut_free_1d_char (value);

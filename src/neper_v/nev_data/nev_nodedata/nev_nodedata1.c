@@ -44,10 +44,7 @@ nev_nodedata_init (struct NODES Nodes, int Qty, struct NODEDATA *pNodeData)
 			    (*pNodeData).Col, &((*pNodeData).Scale));
 
     else
-    {
-      printf ("(*pNodeData).ColDataType = %s\n", (*pNodeData).ColDataType);
-      ut_error_reportbug ();
-    }
+      ut_error_expression ((*pNodeData).ColDataType);
   }
 
   if ((*pNodeData).RadData)
@@ -171,7 +168,7 @@ nev_nodedata_fscanf (char *type, char *argument, struct NODEDATA *pNodeData)
   else if (!strcmp (type, "coofact"))
     sscanf (args[0], "%lf", &((*pNodeData).CooFact));
   else
-    ut_error_reportbug ();
+    ut_error_expression (type);
 
   ut_free_1d_char (value);
 

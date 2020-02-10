@@ -43,10 +43,7 @@ nev_pointdata_init (struct POINT Point, struct POINTDATA *pPointData)
 			    (*pPointData).Col, &((*pPointData).Scale));
 
     else
-    {
-      printf ("(*pPointData).ColDataType = %s\n", (*pPointData).ColDataType);
-      ut_error_reportbug ();
-    }
+      ut_error_expression ((*pPointData).ColDataType);
   }
 
   if (!(*pPointData).RadDataType)
@@ -239,7 +236,7 @@ nev_pointdata_fscanf (char *type, char *argument,
   else if (!strcmp (type, "coofact"))
     sscanf (args[0], "%lf", &((*pPointData).CooFact));
   else
-    ut_error_reportbug ();
+    ut_error_expression (type);
 
   ut_free_1d_char (value);
   ut_free_1d_char (mod);

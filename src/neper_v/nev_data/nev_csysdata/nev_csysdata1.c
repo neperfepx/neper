@@ -21,10 +21,7 @@ nev_csysdata_init (struct CSYSDATA *pCsysData)
       for (i = 0; i < 3; i++)
 	(*pCsysData).Col[i] = ut_num_d2ri ((*pCsysData).ColData[i]);
     else
-    {
-      printf ("(*pCsysData).ColDataType = %s\n", (*pCsysData).ColDataType);
-      ut_error_reportbug ();
-    }
+      ut_error_expression ((*pCsysData).ColDataType);
   }
 
   if ((*pCsysData).RadData)
@@ -146,7 +143,7 @@ nev_csysdata_fscanf (char *type, char *argument, struct CSYSDATA *pCsysData)
       abort ();
   }
   else
-    ut_error_reportbug ();
+    ut_error_expression (type);
 
   ut_free_1d_char (value);
 

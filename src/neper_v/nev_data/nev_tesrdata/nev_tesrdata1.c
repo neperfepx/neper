@@ -33,7 +33,7 @@ nev_tesrdata_init (struct TESR Tesr, struct TESRDATA *pTesrData)
 			    "blue,cyan,yellow,red",
 			    (*pTesrData).Col, &((*pTesrData).Scale));
     else
-      ut_error_reportbug ();
+      ut_error_expression ((*pTesrData).ColDataType);
   }
 
   if ((*pTesrData).trsdata)

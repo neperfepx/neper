@@ -99,7 +99,7 @@ nev_meshdata_init (struct MESH Mesh,
 			    (*pMeshData).Col, &((*pMeshData).Scale));
 
     else
-      ut_error_reportbug ();
+      ut_error_expression ((*pMeshData).ColDataType);
   }
 
   if ((*pMeshData).RadData)
