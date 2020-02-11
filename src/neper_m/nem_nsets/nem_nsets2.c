@@ -14,10 +14,7 @@ nem_nsets_2d_tess (struct TESS Tess, struct MESH *Mesh, struct NSET *NSet)
 
   // setting up face nset labels
   for (i = 1; i <= NSet[2].qty; i++)
-  {
-    NSet[2].names[i] = ut_alloc_1d_char (strlen (Tess.DomFaceLabel[i]) + 1);
-    strcpy (NSet[2].names[i], Tess.DomFaceLabel[i]);
-  }
+    ut_string_string (Tess.DomFaceLabel[i], NSet[2].names + i);
 
   // Computing nsets
   NSet[2].nodeqty = ut_alloc_1d_int (Tess.DomFaceQty + 1);
@@ -25,8 +22,8 @@ nem_nsets_2d_tess (struct TESS Tess, struct MESH *Mesh, struct NSET *NSet)
 
   for (i = 1; i <= Tess.DomFaceQty; i++)
     neut_mesh_elsets_nodes (Mesh[2], Tess.DomTessFaceNb[i] + 1,
-			    Tess.DomTessFaceQty[i], &(NSet[2].nodes[i]),
-			    &(NSet[2].nodeqty[i]));
+			    Tess.DomTessFaceQty[i], NSet[2].nodes + i,
+			    NSet[2].nodeqty + i);
 
   return;
 }
@@ -44,12 +41,11 @@ nem_nsets_1d_tess (struct TESS Tess, struct MESH *Mesh, struct NSET *NSet)
 
   for (i = 1; i <= Tess.DomEdgeQty; i++)
   {
-    NSet[1].names[i] = ut_alloc_1d_char (strlen (Tess.DomEdgeLabel[i]) + 1);
-    strcpy (NSet[1].names[i], Tess.DomEdgeLabel[i]);
+    ut_string_string (Tess.DomEdgeLabel[i], NSet[1].names + i);
 
     neut_mesh_elsets_nodes (Mesh[1], Tess.DomTessEdgeNb[i] + 1,
-			    Tess.DomTessEdgeQty[i], &(NSet[1].nodes[i]),
-			    &(NSet[1].nodeqty[i]));
+			    Tess.DomTessEdgeQty[i], NSet[1].nodes + i,
+			    NSet[1].nodeqty + i);
   }
 
   return;
@@ -68,12 +64,11 @@ nem_nsets_0d_tess (struct TESS Tess, struct MESH *Mesh, struct NSET *NSet)
 
   for (i = 1; i <= Tess.DomVerQty; i++)
   {
-    NSet[0].names[i] = ut_alloc_1d_char (strlen (Tess.DomVerLabel[i]) + 1);
-    strcpy (NSet[0].names[i], Tess.DomVerLabel[i]);
+    ut_string_string (Tess.DomVerLabel[i], NSet[0].names + i);
 
     if (Tess.DomTessVerNb[i] > 0)
       neut_mesh_elset_nodes (Mesh[0], Tess.DomTessVerNb[i],
-			     &(NSet[0].nodes[i]), &(NSet[0].nodeqty[i]));
+			     NSet[0].nodes + i, NSet[0].nodeqty + i);
   }
 
   return;
@@ -191,8 +186,7 @@ nem_nsets_0d_tess_str (struct TESS Tess, struct NSET *NSet)
 
   for (i = 1; i <= Tess.DomVerQty; i++)
   {
-    NSet[0].names[i] = ut_alloc_1d_char (strlen (Tess.DomEdgeLabel[i]) + 1);
-    strcpy (NSet[0].names[i], Tess.DomEdgeLabel[i]);
+    ut_string_string (Tess.DomEdgeLabel[i], NSet[0].names + i);
 
     neut_nsets_inter (NSet[1], Tess.DomVerEdgeNb[i][0],
 		      Tess.DomVerEdgeNb[i][1], NULL, &(NSet[0].nodes[i]),
@@ -524,30 +518,6 @@ nem_nsets_1dbody_str (struct NSET *NSet)
   }
 
   ut_free_2d_int (edgever, NSet[2].qty + 1);
-
-  return;
-}
-
-void
-nem_nset_addduplicates (struct NSET *pNSet, struct NODES Nodes)
-{
-  int i, j, node;
-
-  for (i = 1; i <= (*pNSet).qty; i++)
-    for (j = 0; j < (*pNSet).nodeqty[i]; j++)
-    {
-      node = (*pNSet).nodes[i][j];
-
-      if (Nodes.DupNodeQty > 0 && Nodes.DupNodeSlaveQty[node] > 0)
-      {
-	(*pNSet).nodes[i] = ut_realloc_1d_int ((*pNSet).nodes[i],
-	    (*pNSet).nodeqty[i] + Nodes.DupNodeSlaveQty[node]);
-	ut_array_1d_int_memcpy ((*pNSet).nodes[i] + (*pNSet).nodeqty[i],
-	                        Nodes.DupNodeSlaveQty[node],
-	                        Nodes.DupNodeSlaveNb[node] + 1);
-	(*pNSet).nodeqty[i] += Nodes.DupNodeSlaveQty[node];
-      }
-    }
 
   return;
 }

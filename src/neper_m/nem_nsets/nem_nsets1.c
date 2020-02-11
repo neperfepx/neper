@@ -6,10 +6,8 @@
 
 void
 nem_nsets (struct IN_M In, struct TESS Tess, struct TESR Tesr,
-           struct NODES Nodes, struct MESH *Mesh, struct NSET *NSet)
+           struct MESH *Mesh, struct NSET *NSet)
 {
-  int i;
-
   if (In.nset == NULL || strlen (In.nset) == 0 || !strcmp (In.nset, "none"))
     return;
 
@@ -69,10 +67,6 @@ nem_nsets (struct IN_M In, struct TESS Tess, struct TESR Tesr,
       }
     }
   }
-
-  // Adding duplicate nodes
-  for (i = 0; i < Tess.Dim; i++)
-    nem_nset_addduplicates (NSet + i, Nodes);
 
   return;
 }

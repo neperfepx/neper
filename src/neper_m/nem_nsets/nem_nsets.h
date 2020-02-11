@@ -3,4 +3,4 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nem_nsets (struct IN_M, struct TESS, struct TESR,
-                       struct NODES, struct MESH*, struct NSET *);
+                       struct MESH*, struct NSET *);

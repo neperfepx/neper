@@ -1,4 +1,4 @@
-New in 3.5.2-19 (10 Feb 2020):
+New in 3.5.2-20 (11 Feb 2020):
 - module -T: fixed -morphooptiobjective, fixed -statface nfaces, added
   tessellation keys nfaces_samedomain, nfacenb_samedomain, npolys_samedomain
   and npolynb_samedomain, fixed -transform planecut, added -transform
@@ -6,8 +6,8 @@ New in 3.5.2-19 (10 Feb 2020):
   crop for tesr.
 - module -M: fixed meshing of tessellation cut by a sphere, fixed 2nd-order
   meshing with -interface discontinuous and cohesive, added -transform explode,
-  added -statelt2d length, fixed -statelt area for quad element, improved inp
-  format.
+  added -statelt2d length, fixed -statelt area for quad element, fixed -nset
+  with discontinuous or cohesive (interface) mesh, improved inp format.
 - module -V: minor improvements.
 - documentation: small fixes.
 

@@ -9,12 +9,9 @@ nem_order_pre (struct IN_M In, struct MESH *Mesh, int *domesh)
 {
   int i, dim = neut_mesh_array_dim (Mesh);
 
-  for (i = 0; i < dim; i++)
+  for (i = 0; i <= dim; i++)
     if (Mesh[i].EltQty > 0)
       domesh[i] = 1;
-
-  if (strcmp (In.interface, "continuous"))
-    ut_array_1d_int_zero (domesh + 1, dim - 1);
 
   if (!strcmp (In.interface, "cohesive"))
     domesh[4] = 1;

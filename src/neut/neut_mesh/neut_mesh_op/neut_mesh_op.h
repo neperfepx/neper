@@ -68,7 +68,7 @@ extern "C"
 ///
 ///
   extern void neut_mesh_init_nodeelts (struct MESH *pMesh, int NodeQty);
-  extern void neut_mesh_array_init_nodeelts (struct MESH *Mesh, int dim, int NodeQty);
+  extern void neut_mesh_array_init_nodeelts (struct MESH *Mesh, int NodeQty);
 
 /// \brief Initialize EltElset of a MESH structure.
 ///

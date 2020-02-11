@@ -59,45 +59,28 @@ nem_interface_dup_pre (struct IN_M In, struct TESS Tess,
   return;
 }
 
-// The principle is to duplicate all vers but those belonging to slave
-// interfaces.  To do so, we work from the interfaces.  By using
-// "interfaces", we can deal with 2D and 3D.
 void
 nem_interface_dup_ver (struct TESS Tess, int *vers, int verqty,
                        struct NODES *pNodes, struct MESH *Mesh)
 {
-  int i, j, qty, *tmp = NULL;
-  int nodeqty, *nodes = NULL;
+  int i, ver;
   int seedqty, *seeds = NULL;
-  int inter, interqty, *inters = NULL;
-  int ver;
+  int nodeqty, *nodes = NULL;
 
   for (i = 0; i < verqty; i++)
   {
     ver = vers[i];
 
-    neut_tess_ver_inters (Tess, ver, &inters, &interqty);
-
-    seedqty = 0;
-    for (j = 0; j < interqty; j++)
-    {
-      inter = inters[j];
-      neut_tess_inter_seeds_positive (Tess, inter, &tmp, &qty);
-
-      if (!neut_tess_inter_isperslave (Tess, inter))
-	ut_array_1d_int_list_addelts (&seeds, &seedqty, tmp, qty);
-    }
-
-    ut_array_1d_int_sort (seeds, seedqty);
+    neut_tess_ver_seeds (Tess, ver, &seeds, &seedqty);
+    if (neut_tess_ver_isperslave (Tess, ver))
+      neut_tess_ver_masterseeds (Tess, ver, &seeds, &seedqty);
 
     neut_mesh_elset_nodes (Mesh[0], ver, &nodes, &nodeqty);
-    nem_interface_duplicate (Tess.Dim, seeds, seedqty, nodes, nodeqty, pNodes, Mesh);
+    nem_interface_duplicate (seeds, seedqty, nodes, nodeqty, pNodes, Mesh);
   }
 
-  ut_free_1d_int (tmp);
   ut_free_1d_int (nodes);
   ut_free_1d_int (seeds);
-  ut_free_1d_int (inters);
 
   return;
 }
@@ -107,8 +90,8 @@ nem_interface_dup_edge (struct TESS Tess, int *edges, int edgeqty,
                         struct NODES *pNodes, struct MESH *Mesh)
 {
   int i, edge;
-  int nodeqty, *nodes = NULL;
   int seedqty, *seeds = NULL;
+  int nodeqty, *nodes = NULL;
 
   for (i = 0; i < edgeqty; i++)
   {
@@ -119,7 +102,7 @@ nem_interface_dup_edge (struct TESS Tess, int *edges, int edgeqty,
       neut_tess_edge_masterseeds (Tess, edge, &seeds, &seedqty);
 
     neut_mesh_elset1d_bodynodes (Tess, Mesh, edge, &nodes, &nodeqty);
-    nem_interface_duplicate (Tess.Dim, seeds, seedqty, nodes, nodeqty, pNodes, Mesh);
+    nem_interface_duplicate (seeds, seedqty, nodes, nodeqty, pNodes, Mesh);
   }
 
   ut_free_1d_int (nodes);
@@ -133,8 +116,8 @@ nem_interface_dup_face (struct TESS Tess, int *faces, int faceqty,
                         struct NODES *pNodes, struct MESH *Mesh)
 {
   int i, face;
-  int nodeqty, *nodes = NULL;
   int seedqty, *seeds = NULL;
+  int nodeqty, *nodes = NULL;
 
   for (i = 0; i < faceqty; i++)
   {
@@ -145,7 +128,7 @@ nem_interface_dup_face (struct TESS Tess, int *faces, int faceqty,
       neut_tess_face_masterseeds (Tess, face, &seeds, &seedqty);
 
     neut_mesh_elset2d_bodynodes (Tess, Mesh, face, &nodes, &nodeqty);
-    nem_interface_duplicate (Tess.Dim, seeds, seedqty, nodes, nodeqty, pNodes, Mesh);
+    nem_interface_duplicate (seeds, seedqty, nodes, nodeqty, pNodes, Mesh);
   }
 
   ut_free_1d_int (nodes);

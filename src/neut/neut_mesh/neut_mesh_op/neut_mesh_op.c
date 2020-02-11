@@ -283,9 +283,9 @@ neut_mesh_init_nodeelts (struct MESH *pMesh, int NodeQty)
 }
 
 void
-neut_mesh_array_init_nodeelts (struct MESH *Mesh, int dim, int NodeQty)
+neut_mesh_array_init_nodeelts (struct MESH *Mesh, int NodeQty)
 {
-  int i;
+  int i, dim = neut_mesh_array_dim (Mesh);
 
   for (i = 0; i <= dim; i++)
     if (Mesh[i].EltQty > 0)

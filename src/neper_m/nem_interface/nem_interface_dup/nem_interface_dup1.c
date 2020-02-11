@@ -23,13 +23,11 @@ nem_interface_dup (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
 
   neut_nodes_init_dupnodeslave (pNodes);
 
-  neut_mesh_array_init_nodeelts (Mesh, Tess.Dim, (*pNodes).NodeQty);
-
   nem_interface_dup_per (Tess, pNodes, Mesh);
 
-  neut_mesh_array_init_nodeelts (Mesh, Tess.Dim, (*pNodes).NodeQty);
-
   nem_interface_dup_renumber_1d (Tess, *pNodes, Mesh);
+
+  neut_mesh_array_init_nodeelts (Mesh, (*pNodes).NodeQty);
 
   if (Tess.Dim == 2)
     nem_interface_dup_boundelts_2d (Tess, *pNodes, Mesh, pBound);

@@ -230,7 +230,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (strcmp (In.nset, "none") != 0 && dim >= 1)
   {
     ut_print_message (0, 1, "Searching nsets...\n");
-    nem_nsets (In, Tess, Tesr, Nodes, Mesh, NSet);
+    nem_nsets (In, Tess, Tesr, Mesh, NSet);
   }
 
 // Searching element sets ###

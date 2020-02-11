@@ -26,8 +26,9 @@ extern void nem_interface_dup_edge (struct TESS Tess, int *edges, int edgeqty,
 extern void nem_interface_dup_face (struct TESS Tess, int *faces, int faceqty,
                                         struct NODES *pNodes, struct MESH *Mesh);
 
-extern void nem_interface_duplicate (int dim, int *polys, int polyqty,
-    int *nodes, int nodeqty, struct NODES *pNodes, struct MESH *Mesh);
+extern void nem_interface_duplicate (int *polys, int polyqty, int *nodes,
+                                     int nodeqty, struct NODES *pNodes,
+                                     struct MESH *Mesh);
 
 extern void nem_interface_dup_boundelts_3d (struct TESS Tess, int *faces, int faceqty,
                                             struct NODES Nodes,
