@@ -205,7 +205,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     ut_print_message (0, 2, "Switching mesh to order 2...\n");
 
     if (dim >= 0 && Mesh[dim].EltOrder == 1)
-      nem_order (In, &Nodes, Mesh);
+      nem_order (In, Tess, &Nodes, Mesh);
   }
 
 // ###################################################################

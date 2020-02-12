@@ -66,6 +66,17 @@ nem_order_dim (struct IN_M In, struct NODES *pNodes, struct MESH *pMeshU, struct
 }
 
 void
+nem_order_periodic (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh)
+{
+  nem_order_periodic_edges (Tess, pNodes, Mesh);
+
+  if (Tess.Dim == 3)
+    nem_order_periodic_faces (Tess, pNodes, Mesh);
+
+  return;
+}
+
+void
 nem_order_post (struct IN_M In, int NodeQty_before, struct NODES *pNodes)
 {
   int i;

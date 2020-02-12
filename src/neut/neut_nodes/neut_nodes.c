@@ -145,7 +145,7 @@ neut_nodes_free (struct NODES *pNodes)
       ut_free_1d_int ((*pNodes).PerNodeMaster);
       ut_free_2d_int ((*pNodes).PerNodeShift, (*pNodes).NodeQty + 1);
       ut_free_1d_int ((*pNodes).PerNodeSlaveQty);
-      ut_free_2d_int ((*pNodes).PerNodeSlaveNb, (*pNodes).PerNodeQty + 1);
+      ut_free_2d_int ((*pNodes).PerNodeSlaveNb, (*pNodes).NodeQty + 1);
       (*pNodes).PerNodeQty = 0;
     }
 
@@ -197,6 +197,7 @@ neut_nodes_addnode (struct NODES *pNodes, double *NodeCoo, double NodeCl)
     (*pNodes).PerNodeSlaveNb
       = ut_realloc_1d_pint ((*pNodes).PerNodeSlaveNb, (*pNodes).NodeQty + 1);
     (*pNodes).PerNodeSlaveNb[0] = NULL;
+    (*pNodes).PerNodeSlaveNb[(*pNodes).NodeQty] = NULL;
   }
 
   return (*pNodes).NodeQty;
