@@ -116,6 +116,9 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
 
       ut_print_message (0, 2, "Slicing...\n");
 
+      if (!strcmp ((*pTess).Type, "periodic"))
+        ut_print_message (2, 3, "Not available for periodic tessellations.\n");
+
       ut_string_function_separate_exprs (parts[i], &fct, &exprs, &exprqty);
       if (exprqty != 4)
         ut_print_message (2, 2, "Failed to parse expression `%s'.\n", parts[i]);
