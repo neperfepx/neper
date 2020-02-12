@@ -1661,7 +1661,7 @@ neut_tess_val_poly2face (struct TESS Tess, double *polyval, double *faceval)
       abort ();
 
   // This does not look necessary
-  if (!strncmp (Tess.Type, "periodic", 8))
+  if (!strcmp (Tess.Type, "periodic"))
     for (i = 1; i <= Tess.PerFaceQty; i++)
     {
       face = Tess.PerFaceNb[i];
@@ -1691,7 +1691,7 @@ neut_tess_val_face2edge (struct TESS Tess, double *faceval, double *edgeval)
       abort ();
 
   // This does not look necessary
-  if (!strncmp (Tess.Type, "periodic", 8))
+  if (!strcmp (Tess.Type, "periodic"))
     for (i = 1; i <= Tess.PerEdgeQty; i++)
     {
       edge = Tess.PerEdgeNb[i];
@@ -1721,7 +1721,7 @@ neut_tess_val_edge2ver (struct TESS Tess, double *edgeval, double *verval)
       abort ();
 
   // This does not look necessary
-  if (!strncmp (Tess.Type, "periodic", 8))
+  if (!strcmp (Tess.Type, "periodic"))
     for (i = 1; i <= Tess.PerVerQty; i++)
     {
       ver = Tess.PerVerNb[i];

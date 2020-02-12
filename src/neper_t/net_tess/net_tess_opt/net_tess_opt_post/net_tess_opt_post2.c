@@ -20,7 +20,7 @@ net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess,
     neut_tess_scale (pTess, TOpt.aspratio[0], TOpt.aspratio[1], TOpt.aspratio[2]);
 
   net_tess3d_domain (Tess[dtess], dcell, tessid, pMTess, pTess);
-  if (!strncmp ((*pTess).Type, "periodic", 8))
+  if (!strcmp ((*pTess).Type, "periodic"))
     net_tess3d_periodic (pTess);
 
 #ifdef DEVEL_DEBUGGING_TEST

@@ -10,7 +10,7 @@ neut_tess_test (struct TESS Tess, int verbosity)
   int i;
   int res = 0;
 
-  if (!strncmp (Tess.Type, "periodic", 8))
+  if (!strcmp (Tess.Type, "periodic"))
     return res;
 
   if (verbosity)

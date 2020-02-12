@@ -26,8 +26,7 @@ nem_meshing_0D (struct TESS Tess, struct MESHPARA MeshPara, struct
 
     for (i = 1; i <= Tess.VerQty; i++)
     {
-      if (strncmp (Tess.Type, "periodic", 8) != 0
-	  || Tess.PerVerMaster[i] == 0)
+      if (strcmp (Tess.Type, "periodic") || !Tess.PerVerMaster[i])
       {
 	nem_meshing_0D_ver (Tess, i, MeshPara, &N, &M);
 	nem_meshing_0D_addvermesh (N, M, 0, NULL, pNodes, Mesh);

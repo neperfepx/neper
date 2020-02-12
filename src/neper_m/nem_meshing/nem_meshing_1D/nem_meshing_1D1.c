@@ -41,7 +41,7 @@ nem_meshing_1D (struct MESHPARA *pMeshPara, struct TESS Tess,
   // meshing edges
   for (i = 1; i <= Tess.EdgeQty; i++)
   {
-    if (strncmp (Tess.Type, "periodic", 8) || !Tess.PerEdgeMaster[i])
+    if (strcmp (Tess.Type, "periodic") || !Tess.PerEdgeMaster[i])
       nem_meshing_1D_edge (*pMeshPara, Tess, RNodes, RMesh, i,
                            (*pMeshPara).edge_cl[i], (*pMeshPara).pl, *pNodes,
                            Node0DCl, N + i, M + i);
@@ -51,7 +51,7 @@ nem_meshing_1D (struct MESHPARA *pMeshPara, struct TESS Tess,
 
   // slave edges, if any
   for (i = 1; i <= Tess.EdgeQty; i++)
-    if (!strncmp (Tess.Type, "periodic", 8) && Tess.PerEdgeMaster[i])
+    if (!strcmp (Tess.Type, "periodic") && Tess.PerEdgeMaster[i])
       nem_meshing_1D_edge_per (Tess, N, M, N + i, M + i, master_id + i, i);
 
   // Recording edge meshes in global mesh

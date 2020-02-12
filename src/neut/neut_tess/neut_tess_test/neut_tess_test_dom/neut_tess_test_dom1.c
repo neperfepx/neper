@@ -8,7 +8,7 @@ int
 neut_tess_test_dom (struct TESS Tess, int verbosity)
 {
   // disabling test for periodic tessellations
-  if (!strncmp (Tess.Type, "periodic", 8))
+  if (!strcmp (Tess.Type, "periodic"))
     return 0;
 
   if (neut_tess_test_dom_def (Tess, verbosity) != 0

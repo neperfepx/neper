@@ -49,7 +49,7 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
     {
       face = faces[i];
 
-      if (Tess.Dim == 2 || strncmp (Tess.Type, "periodic", 8)
+      if (Tess.Dim == 2 || strcmp (Tess.Type, "periodic")
           || !Tess.PerFaceMaster[face])
         nem_meshing_2D_face (In, MeshPara, &Multim,
                              &ctrlc_t, &allowed_t, &max_elapsed_t, Tess,
@@ -67,7 +67,7 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
     {
       face = faces[i];
 
-      if (Tess.Dim != 2 && !strncmp (Tess.Type, "periodic", 8)
+      if (Tess.Dim != 2 && !strcmp (Tess.Type, "periodic")
           && Tess.PerFaceMaster[face])
         nem_meshing_2D_face_per (Tess, *pNodes, N, M, N + face, M + face,
                                  master_id + face, &bnodes, &lbnodes,
