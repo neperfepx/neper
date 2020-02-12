@@ -929,14 +929,9 @@ net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet)
   neut_seedset_set_zero (pSSet);
 
   (*pSSet).Dim = Tess.Dim;
-  (*pSSet).N = Tess.SeedQty;
+  (*pSSet).N = Tess.CellQty;
   (*pSSet).Nall = Tess.SeedQty;
   ut_string_string (Tess.Type, &(*pSSet).Type);
-
-  // Nall and SeedCoo (and SeedWeight?) not set properly for a periodic
-  // tessellation
-  if (!strcmp ((*pSSet).Type, "periodic"))
-    abort ();
 
   ut_string_string (Tess.CellCrySym, &(*pSSet).crysym);
 

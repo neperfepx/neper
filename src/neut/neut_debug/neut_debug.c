@@ -816,7 +816,7 @@ neut_debug_seedset (FILE * file, struct SEEDSET SSet)
   if (!SSet.q)
     fprintf (file, "is NULL.\n");
   else
-    for (i = 1; i <= SSet.Nall; i++)
+    for (i = 1; i <= SSet.N; i++)
       ut_array_1d_fprintf (file, SSet.q[i], 4, "%f");
 
   fprintf (file, "LamEq = ");
