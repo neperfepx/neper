@@ -9,6 +9,7 @@ neut_tess_tess_gen (struct TESS TessA, struct TESS *pTessB)
 {
   (*pTessB).Dim = TessA.Dim;
   (*pTessB).PseudoDim = TessA.PseudoDim;
+  (*pTessB).PseudoSize = TessA.PseudoSize;
   (*pTessB).Level = TessA.Level;
   (*pTessB).TessId = TessA.TessId;
 
