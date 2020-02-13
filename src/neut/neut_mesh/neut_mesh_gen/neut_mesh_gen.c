@@ -44,15 +44,14 @@ neut_mesh3d_slice (struct NODES Nodes, struct MESH Mesh, double *eq,
   int ElsetQty, **Elsets = NULL;
 
   ElsetQty = Mesh.ElsetQty;
-  Elsets = ut_alloc_1d_pint (ElsetQty + 1);
-  Elsets[0] = NULL;
-  for (i = 1; i <= ElsetQty; i++)
-    Elsets[i] = ut_alloc_1d_int (Mesh.Elsets[i][0]);
+  Elsets = ut_alloc_2d_int (ElsetQty + 1, 1);
 
   for (i = 1; i <= (*pSMesh).EltQty; i++)
   {
     elset = Mesh.EltElset[(*pelt_newold)[i]];
-    Elsets[elset][++Elsets[elset][0]] = i;
+    Elsets[elset][0]++;
+    Elsets[elset] = ut_realloc_1d_int (Elsets[elset], Elsets[elset][0] + 1);
+    Elsets[elset][Elsets[elset][0]] = i;
   }
 
   id = 0;
