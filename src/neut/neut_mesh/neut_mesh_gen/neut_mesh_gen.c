@@ -721,13 +721,15 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
 
   if (!strcmp (entity, "elset3d"))
   {
-    (*pvarqty) = 14;
+    (*pvarqty) = 16;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
     strcpy ((*pvar)[id++], "id");
     strcpy ((*pvar)[id++], "x");
     strcpy ((*pvar)[id++], "y");
     strcpy ((*pvar)[id++], "z");
     strcpy ((*pvar)[id++], "vol");
+    strcpy ((*pvar)[id++], "diameq");
+    strcpy ((*pvar)[id++], "radeq");
     strcpy ((*pvar)[id++], "eltnb");
     strcpy ((*pvar)[id++], "Osize");
     strcpy ((*pvar)[id++], "rrav");
@@ -740,13 +742,15 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
   }
   else if (!strcmp (entity, "elset2d"))
   {
-    (*pvarqty) = 9;
+    (*pvarqty) = 11;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
     strcpy ((*pvar)[id++], "id");
     strcpy ((*pvar)[id++], "x");
     strcpy ((*pvar)[id++], "y");
     strcpy ((*pvar)[id++], "z");
     strcpy ((*pvar)[id++], "area");
+    strcpy ((*pvar)[id++], "diameq");
+    strcpy ((*pvar)[id++], "radeq");
     strcpy ((*pvar)[id++], "eltnb");
     strcpy ((*pvar)[id++], "true");
     strcpy ((*pvar)[id++], "body");
@@ -782,7 +786,7 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
   }
   else if (!strcmp (entity, "elt3d"))
   {
-    (*pvarqty) = 14;
+    (*pvarqty) = 16;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
     strcpy ((*pvar)[id++], "id");
     strcpy ((*pvar)[id++], "x");
@@ -790,6 +794,8 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[id++], "z");
     strcpy ((*pvar)[id++], "elset3d");
     strcpy ((*pvar)[id++], "vol");
+    strcpy ((*pvar)[id++], "diameq");
+    strcpy ((*pvar)[id++], "radeq");
     strcpy ((*pvar)[id++], "length");
     strcpy ((*pvar)[id++], "rr");
     strcpy ((*pvar)[id++], "true");
@@ -801,13 +807,15 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
   }
   else if (!strcmp (entity, "elt2d"))
   {
-    (*pvarqty) = 13;
+    (*pvarqty) = 15;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
     strcpy ((*pvar)[id++], "id");
     strcpy ((*pvar)[id++], "x");
     strcpy ((*pvar)[id++], "y");
     strcpy ((*pvar)[id++], "z");
     strcpy ((*pvar)[id++], "area");
+    strcpy ((*pvar)[id++], "diameq");
+    strcpy ((*pvar)[id++], "radeq");
     strcpy ((*pvar)[id++], "elset2d");
     strcpy ((*pvar)[id++], "true");
     strcpy ((*pvar)[id++], "body");
@@ -959,6 +967,16 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
       neut_mesh_elset_volume (Nodes, Mesh3D, id, *pvals);
       strcpy (typetmp, "%f");
     }
+    else if (!strcmp (var, "diameq"))
+    {
+      neut_mesh_elset_diameq (Nodes, Mesh3D, id, *pvals);
+      strcpy (typetmp, "%f");
+    }
+    else if (!strcmp (var, "radeq"))
+    {
+      neut_mesh_elset_radeq (Nodes, Mesh3D, id, *pvals);
+      strcpy (typetmp, "%f");
+    }
     else if (!strcmp (var, "rrav"))
     {
       (*pvals)[0] = rrmean;
@@ -1030,6 +1048,16 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     else if (!strcmp (var, "area"))
     {
       neut_mesh_elset_area (Nodes, Mesh2D, id, *pvals);
+      strcpy (typetmp, "%f");
+    }
+    else if (!strcmp (var, "diameq"))
+    {
+      neut_mesh_elset_diameq (Nodes, Mesh2D, id, *pvals);
+      strcpy (typetmp, "%f");
+    }
+    else if (!strcmp (var, "radeq"))
+    {
+      neut_mesh_elset_radeq (Nodes, Mesh2D, id, *pvals);
       strcpy (typetmp, "%f");
     }
     else if (!strcmp (var, "eltnb"))
@@ -1191,6 +1219,16 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
       neut_mesh_elt_volume (Nodes, Mesh3D, id, *pvals);
       strcpy (typetmp, "%f");
     }
+    else if (!strcmp (var, "diameq"))
+    {
+      neut_mesh_elt_diameq (Nodes, Mesh3D, id, *pvals);
+      strcpy (typetmp, "%f");
+    }
+    else if (!strcmp (var, "radeq"))
+    {
+      neut_mesh_elt_radeq (Nodes, Mesh3D, id, *pvals);
+      strcpy (typetmp, "%f");
+    }
     else if (!strcmp (var, "elsetvol"))
     {
       neut_mesh_elset_volume (Nodes, Mesh3D, Mesh3D.EltElset[id], *pvals);
@@ -1261,6 +1299,16 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     else if (!strcmp (var, "area"))
     {
       neut_mesh_elt_area (Nodes, Mesh2D, id, *pvals);
+      strcpy (typetmp, "%f");
+    }
+    else if (!strcmp (var, "diameq"))
+    {
+      neut_mesh_elt_diameq (Nodes, Mesh2D, id, *pvals);
+      strcpy (typetmp, "%f");
+    }
+    else if (!strcmp (var, "radeq"))
+    {
+      neut_mesh_elt_radeq (Nodes, Mesh2D, id, *pvals);
       strcpy (typetmp, "%f");
     }
     else if (!strcmp (var, "elsetarea"))

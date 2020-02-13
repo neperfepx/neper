@@ -1,4 +1,4 @@
-New in 3.5.2-26 (13 Feb 2020):
+New in 3.5.2-27 (13 Feb 2020):
 - module -T: fixed -morphooptiobjective, fixed -statface nfaces, added
   tessellation keys nfaces_samedomain, nfacenb_samedomain, npolys_samedomain
   and npolynb_samedomain, fixed -transform planecut, added -transform
@@ -8,7 +8,8 @@ New in 3.5.2-26 (13 Feb 2020):
   2nd-order meshing, fixed 2nd-order meshing with -interface discontinuous and
   cohesive, added -transform explode, added -statelt2d length, added -transform
   slice, fixed -statelt area for quad element, fixed -nset with discontinuous
-  or cohesive (interface) mesh, improved inp format, minor fixes.
+  or cohesive (interface) mesh, added mesh keys, improved inp format, minor
+  fixes.
 - module -V: minor improvements.
 - documentation: minor fixes.
 

@@ -112,6 +112,18 @@ extern "C"
   extern int neut_mesh_elset_volume (struct NODES Nodes, struct MESH Mesh,
 				     int elset, double *pvol);
 
+  extern int neut_mesh_elset_diameq (struct NODES Nodes, struct MESH Mesh,
+				     int elset, double *pdiameq);
+
+  extern int neut_mesh_elset_radeq (struct NODES Nodes, struct MESH Mesh,
+				     int elset, double *pradeq);
+
+  extern int neut_mesh_elt_diameq (struct NODES Nodes, struct MESH Mesh,
+				     int elt, double *pdiameq);
+
+  extern int neut_mesh_elt_radeq (struct NODES Nodes, struct MESH Mesh,
+				     int elt, double *pradeq);
+
 /// \brief Get the area of an elset of a 2D mesh.
 ///
 ///

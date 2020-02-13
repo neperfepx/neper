@@ -124,6 +124,65 @@ neut_mesh_elset_area (struct NODES Nodes, struct MESH Mesh, int elset,
 }
 
 int
+neut_mesh_elset_diameq (struct NODES Nodes, struct MESH Mesh, int elset,
+			double *pval)
+{
+  if (Mesh.Dimension == 3)
+  {
+    neut_mesh_elset_volume (Nodes, Mesh, elset, pval);
+    (*pval) = pow ((6 / M_PI) * (*pval), 0.3333333333333333333333333);
+  }
+
+  else if (Mesh.Dimension == 2)
+  {
+    neut_mesh_elset_area (Nodes, Mesh, elset, pval);
+    (*pval) = pow ((6 / M_PI) * (*pval), 0.3333333333333333333333333);
+  }
+
+  return 0;
+}
+
+int
+neut_mesh_elset_radeq (struct NODES Nodes, struct MESH Mesh, int elset,
+		       double *pval)
+{
+  neut_mesh_elset_diameq (Nodes, Mesh, elset, pval);
+  (*pval) *= 0.5;
+
+  return 0;
+}
+
+int
+neut_mesh_elt_diameq (struct NODES Nodes, struct MESH Mesh, int elt,
+			double *pval)
+{
+  if (Mesh.Dimension == 3)
+  {
+    neut_mesh_elt_volume (Nodes, Mesh, elt, pval);
+    (*pval) = pow ((6 / M_PI) * (*pval), 0.3333333333333333333333333);
+  }
+
+  else if (Mesh.Dimension == 2)
+  {
+    neut_mesh_elt_area (Nodes, Mesh, elt, pval);
+    (*pval) = pow ((6 / M_PI) * (*pval), 0.3333333333333333333333333);
+  }
+
+  return 0;
+}
+
+int
+neut_mesh_elt_radeq (struct NODES Nodes, struct MESH Mesh, int elt,
+		       double *pval)
+{
+  neut_mesh_elt_diameq (Nodes, Mesh, elt, pval);
+  (*pval) *= 0.5;
+
+  return 0;
+}
+
+
+int
 neut_mesh_area (struct NODES Nodes, struct MESH Mesh, double *parea)
 {
   int i;
