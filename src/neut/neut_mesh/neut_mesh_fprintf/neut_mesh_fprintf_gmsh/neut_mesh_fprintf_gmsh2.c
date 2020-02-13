@@ -134,7 +134,7 @@ neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
       neut_mesh_domface_elts (Tess, Mesh2D, fasets[i], &elts, &eltqty);
 
       for (j = 0; j < eltqty; j++)
-        eltfaset[elts[j]] = fasetids[i];
+        eltfaset[elts[j]] = fasetids[i] + Mesh2D.ElsetQty;
 
       ut_free_1d_int (elts);
     }
@@ -427,6 +427,7 @@ neut_physical_fprintf_gmsh (FILE * file, struct MESH Mesh0D,
     physicalqty += Mesh1D.ElsetQty;
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "2"))
     physicalqty += Mesh2D.ElsetQty;
+  physicalqty += fasetqty;
   if (ut_string_inlist (dim, NEUT_SEP_NODEP, "3"))
     physicalqty += Mesh3D.ElsetQty;
   if (MeshCo.EltQty > 0)
@@ -466,7 +467,7 @@ neut_physical_fprintf_gmsh (FILE * file, struct MESH Mesh0D,
     }
 
     for (i = 0; i < fasetqty; i++)
-      fprintf (file, "2 %d %s\n", fasetids[i], fasets[i]);
+      fprintf (file, "2 %d %s\n", fasetids[i] + Mesh2D.ElsetQty, fasets[i]);
   }
 
   // 3D mesh
