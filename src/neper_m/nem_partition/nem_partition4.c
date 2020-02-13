@@ -17,7 +17,7 @@ nem_partition_elts_balancing_Q (struct MESH Mesh, struct PART *pPart,
   double *tmp = NULL;
   int *id = NULL;
 
-  srand (1);
+  srand48 (1);
   /* Initializing stuff */
   /* A is the distance to the target number of elements, to be zero'd. */
 
