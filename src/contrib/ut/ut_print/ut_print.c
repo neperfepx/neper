@@ -1281,8 +1281,7 @@ ut_print_gplv3 (FILE* file)
 void
 ut_error_reportbug ()
 {
-  ut_print_messagewnc (2, 72, "You have discovered a bug in Neper!  Please send a full bug report to <rquey@users.sf.net>.  Thank you.\n");
-  fflush (stdout);
+  ut_print_messagewnc (2, 72, "You have discovered a bug!  If you think this is a real bug, please file an issue on <https://github.com/rquey/neper/issues>.  Thank you.\n");
 
   abort ();
 

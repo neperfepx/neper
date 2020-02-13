@@ -294,12 +294,7 @@ TreatFaceVer (struct TESL *pTesl, int FNb, int S1, int S2)
    */
   status = CommonSeeds (*pTesl, S1, S2, PPNb);
   if (status != 3)
-  {
-    printf ("number of common seeds = %d != 3\n", status);
-    printf ("seeds = ");
-    ut_array_1d_int_fprintf (stdout, PPNb, status, "%d");
-    ut_error_reportbug ();
-  }
+    ut_print_message (2, 3, "Found degenerate configuration.\n");
 
   /* BissFace returns the bissecting face of segment based on the two
    * specified polyhedron centers.
