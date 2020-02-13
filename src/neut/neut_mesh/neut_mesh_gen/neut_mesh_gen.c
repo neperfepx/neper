@@ -906,7 +906,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     status = 0;
     if (!strcmp (var, "id"))
     {
-      (*pvals)[0] = id;
+      (*pvals)[0] = Mesh3D.ElsetId ? Mesh3D.ElsetId[id] : id;
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var, "eltnb"))
@@ -984,7 +984,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     status = 0;
     if (!strcmp (var, "id"))
     {
-      (*pvals)[0] = id;
+      (*pvals)[0] = Mesh2D.ElsetId ? Mesh2D.ElsetId[id] : id;
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var, "x"))
@@ -1045,7 +1045,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     status = 0;
     if (!strcmp (var, "id"))
     {
-      (*pvals)[0] = id;
+      (*pvals)[0] = Mesh1D.ElsetId ? Mesh1D.ElsetId[id] : id;
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var, "eltnb"))
@@ -1099,7 +1099,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     status = 0;
     if (!strcmp (var, "id"))
     {
-      (*pvals)[0] = id;
+      (*pvals)[0] = Mesh0D.ElsetId ? Mesh0D.ElsetId[id] : id;
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var, "eltnb"))
