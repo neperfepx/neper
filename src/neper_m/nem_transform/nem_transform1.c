@@ -54,6 +54,12 @@ nem_transform (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
       nem_transform_explode (parts[i], pNodes, Mesh);
     }
 
+    else if (!strncmp (parts[i], "slice", 5))
+    {
+      ut_print_message (0, 3, "Slicing...\n");
+      nem_transform_slice (parts[i], pNodes, Mesh);
+    }
+
     else
       ut_print_message (1, 3, "Skipping `%s'...\n", parts[i]);
   }

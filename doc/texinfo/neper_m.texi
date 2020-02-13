@@ -560,7 +560,8 @@ nodes.@*
 @mybullet @samp{@code{explode(@var{fact})}} to produce an ``exploded'' mesh@comma{}
 for which elsets are apart from each other (or cohesive elements become thick).
 To be used in conjunction with @option{-interface discontinuous or cohesive}.
-@samp{@var{fact}} is a factor controlling the distance between elsets.
+@samp{@var{fact}} is a factor controlling the distance between elsets.@*
+@mybullet @samp{slice(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for slicing a 3D mesh by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d} (yielding to a 2D mesh).
 ,
 see above, none}
 

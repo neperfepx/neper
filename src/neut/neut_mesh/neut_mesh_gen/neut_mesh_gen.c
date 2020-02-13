@@ -16,7 +16,7 @@ neut_mesh3d_slice (struct NODES Nodes, struct MESH Mesh, double *eq,
 		   int **pelt_newold, int ***pnode_newold,
 		   double **pnode_fact)
 {
-  int i;
+  int i, id, elset;
 
   if (Mesh.Dimension != 3)
     ut_error_reportbug ();
@@ -41,7 +41,32 @@ neut_mesh3d_slice (struct NODES Nodes, struct MESH Mesh, double *eq,
   else
     ut_error_reportbug ();
 
-  neut_mesh_addelset (pSMesh, NULL, (*pSMesh).EltQty);
+  int ElsetQty, **Elsets = NULL;
+
+  ElsetQty = Mesh.ElsetQty;
+  Elsets = ut_alloc_1d_pint (ElsetQty + 1);
+  Elsets[0] = NULL;
+  for (i = 1; i <= ElsetQty; i++)
+    Elsets[i] = ut_alloc_1d_int (Mesh.Elsets[i][0]);
+
+  for (i = 1; i <= (*pSMesh).EltQty; i++)
+  {
+    elset = Mesh.EltElset[(*pelt_newold)[i]];
+    Elsets[elset][++Elsets[elset][0]] = i;
+  }
+
+  id = 0;
+  (*pSMesh).ElsetId = ut_alloc_1d_int (Mesh.ElsetQty + 1);
+  for (i = 1; i <= ElsetQty; i++)
+    if (Elsets[i][0] > 0)
+    {
+      neut_mesh_addelset (pSMesh, Elsets[i] + 1, Elsets[i][0]);
+      (*pSMesh).ElsetId[++id] = i;
+    }
+
+  neut_mesh_init_eltelset (pSMesh, NULL);
+
+  ut_free_2d_int (Elsets, ElsetQty + 1);
 
   return;
 }

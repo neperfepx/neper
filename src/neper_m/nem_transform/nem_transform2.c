@@ -69,3 +69,38 @@ nem_transform_explode (char *explode, struct NODES *pNodes,
 
   return;
 }
+
+void
+nem_transform_slice (char *slice, struct NODES *pNodes,
+                     struct MESH *Mesh)
+{
+  double *eq = ut_alloc_1d (4);
+  struct NODES SNodes;
+  struct MESH SMesh;
+  int *elt_newold = NULL;
+  int **node_newold = NULL;
+  double *node_fact = NULL;
+
+  neut_nodes_set_zero (&SNodes);
+  neut_mesh_set_zero (&SMesh);
+
+  sscanf (slice, "slice(%lf,%lf,%lf,%lf)", eq, eq + 1, eq + 2, eq + 3);
+
+  neut_mesh3d_slice (*pNodes, Mesh[3], eq, &SNodes, &SMesh, &elt_newold,
+                     &node_newold, &node_fact);
+
+  neut_nodes_memcpy (SNodes, pNodes);
+  neut_mesh_memcpy (SMesh, Mesh + 2);
+  neut_nodes_free (&SNodes);
+  neut_mesh_free (&SMesh);
+  neut_mesh_free (Mesh + 3);
+  neut_mesh_free (Mesh + 1);
+  neut_mesh_free (Mesh + 0);
+
+  ut_free_1d (eq);
+  ut_free_1d_int (elt_newold);
+  ut_free_2d_int (node_newold, SNodes.NodeQty + 1);
+  ut_free_1d (node_fact);
+
+  return;
+}
