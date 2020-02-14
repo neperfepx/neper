@@ -279,35 +279,41 @@ UpdateVerCooBary (struct TESS *pTess, int delver, int newver)
   double **ptcoo = ut_alloc_2d (2, 3);
   double **eqs = NULL;
   int *vers = ut_alloc_1d_int (2);
+  double *v = ut_alloc_1d (3);
+  double *n = ut_alloc_1d (3);
 
   vers[0] = delver;
   vers[1] = newver;
 
   neut_tess_vers_alldomedges (*pTess, vers, 2, &domedges, &domedgeqty);
 
-  eqqty = domedgeqty;
+  eqqty = domedgeqty + 1;
+  eqs = ut_alloc_2d (eqqty, 4);
+
+  ut_array_1d_memcpy (eqs[0], 4, (*pTess).FaceEq[1]);
 
   if (domedgeqty > 0)
-  {
-    eqs = ut_alloc_2d (eqqty, 3);
     for (i = 0; i < domedgeqty; i++)
     {
       domedge = domedges[i];
       domver1 = (*pTess).DomEdgeVerNb[domedge][0];
       domver2 = (*pTess).DomEdgeVerNb[domedge][1];
-      ut_space_points_line ((*pTess).DomVerCoo[domver1],
-			    (*pTess).DomVerCoo[domver2], eqs[i]);
+      ut_space_points_uvect ((*pTess).DomVerCoo[domver1],
+			    (*pTess).DomVerCoo[domver2], v);
+      ut_vector_vectprod (v, eqs[0] + 1, n);
+      ut_space_point_normal_plane ((*pTess).DomVerCoo[domver1], n, eqs[i + 1]);
     }
-  }
 
   ut_array_1d_memcpy (ptcoo[0], 3, (*pTess).VerCoo[delver]);
   ut_array_1d_memcpy (ptcoo[1], 3, (*pTess).VerCoo[newver]);
 
-  ut_space_bary2d_constrained (ptcoo, NULL, 2, eqs, eqqty,
+  ut_space_bary3d_constrained (ptcoo, NULL, 2, eqs, eqqty,
 			       (*pTess).VerCoo[newver]);
 
   ut_free_2d (ptcoo, 2);
   ut_free_2d (eqs, eqqty);
+  ut_free_1d (v);
+  ut_free_1d (n);
 
   return 0;
 }
