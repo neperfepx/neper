@@ -582,23 +582,6 @@ neut_mesh_elset_eq (struct MESH Mesh, struct NODES Nodes, int elset,
 }
 
 int
-neut_mesh_elt_length (struct NODES Nodes, struct MESH Mesh, int elt,
-		      double *plength)
-{
-  int node1, node2;
-
-  if (Mesh.Dimension != 1)
-    return -1;
-
-  node1 = Mesh.EltNodes[elt][0];
-  node2 = Mesh.EltNodes[elt][1];
-
-  (*plength) = ut_space_dist (Nodes.NodeCoo[node1], Nodes.NodeCoo[node2]);
-
-  return 0;
-}
-
-int
 neut_mesh_elset_rr (struct NODES Nodes, struct MESH Mesh, int elset,
 		    double *prrmean, double *prrmin, double *prrmax)
 {
@@ -857,13 +840,56 @@ neut_mesh_centre (struct NODES Nodes, struct MESH Mesh, double *centre)
 
 void
 neut_mesh_elt_lengths (struct NODES Nodes, struct MESH Mesh, int elt,
-		       double *pavlength, double *pminlength,
-		       double *pmaxlength)
+		       double *lengths)
+{
+  int node1, node2, node3, node4;
+
+  if (Mesh.Dimension == 1)
+    lengths[0] = ut_space_dist (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
+                                Nodes.NodeCoo[Mesh.EltNodes[elt][1]]);
+
+  else if (Mesh.Dimension == 2)
+  {
+    node1 = Mesh.EltNodes[elt][0];
+    node2 = Mesh.EltNodes[elt][1];
+    node3 = Mesh.EltNodes[elt][2];
+
+    lengths[0] = ut_space_dist (Nodes.NodeCoo[node1], Nodes.NodeCoo[node2]);
+    lengths[1] = ut_space_dist (Nodes.NodeCoo[node2], Nodes.NodeCoo[node3]);
+    lengths[2] = ut_space_dist (Nodes.NodeCoo[node3], Nodes.NodeCoo[node1]);
+  }
+
+  else if (Mesh.Dimension == 3)
+  {
+    node1 = Mesh.EltNodes[elt][0];
+    node2 = Mesh.EltNodes[elt][1];
+    node3 = Mesh.EltNodes[elt][2];
+    node4 = Mesh.EltNodes[elt][3];
+
+    lengths[0] = ut_space_dist (Nodes.NodeCoo[node1], Nodes.NodeCoo[node2]);
+    lengths[1] = ut_space_dist (Nodes.NodeCoo[node2], Nodes.NodeCoo[node3]);
+    lengths[2] = ut_space_dist (Nodes.NodeCoo[node3], Nodes.NodeCoo[node4]);
+    lengths[3] = ut_space_dist (Nodes.NodeCoo[node4], Nodes.NodeCoo[node1]);
+  }
+
+  else
+    ut_error_reportbug ();
+
+  return;
+}
+
+void
+neut_mesh_elt_length (struct NODES Nodes, struct MESH Mesh, int elt,
+		       double *pavlength)
 {
   int node1, node2, node3, node4;
   double *length = ut_alloc_1d (4);
 
-  if (Mesh.Dimension == 2)
+  if (Mesh.Dimension == 1)
+    (*pavlength) = ut_space_dist (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
+                                  Nodes.NodeCoo[Mesh.EltNodes[elt][1]]);
+
+  else if (Mesh.Dimension == 2)
   {
     node1 = Mesh.EltNodes[elt][0];
     node2 = Mesh.EltNodes[elt][1];
@@ -873,13 +899,9 @@ neut_mesh_elt_lengths (struct NODES Nodes, struct MESH Mesh, int elt,
     length[1] = ut_space_dist (Nodes.NodeCoo[node2], Nodes.NodeCoo[node3]);
     length[2] = ut_space_dist (Nodes.NodeCoo[node3], Nodes.NodeCoo[node1]);
 
-    if (pavlength != NULL)
-      (*pavlength) = ut_array_1d_mean (length, 3);
-    if (pminlength != NULL)
-      (*pminlength) = ut_array_1d_min (length, 3);
-    if (pmaxlength != NULL)
-      (*pmaxlength) = ut_array_1d_max (length, 3);
+    (*pavlength) = ut_array_1d_mean (length, 3);
   }
+
   else if (Mesh.Dimension == 3)
   {
     node1 = Mesh.EltNodes[elt][0];
@@ -892,12 +914,7 @@ neut_mesh_elt_lengths (struct NODES Nodes, struct MESH Mesh, int elt,
     length[2] = ut_space_dist (Nodes.NodeCoo[node3], Nodes.NodeCoo[node4]);
     length[3] = ut_space_dist (Nodes.NodeCoo[node4], Nodes.NodeCoo[node1]);
 
-    if (pavlength != NULL)
-      (*pavlength) = ut_array_1d_mean (length, 4);
-    if (pminlength != NULL)
-      (*pminlength) = ut_array_1d_min (length, 4);
-    if (pmaxlength != NULL)
-      (*pmaxlength) = ut_array_1d_max (length, 4);
+    (*pavlength) = ut_array_1d_mean (length, 4);
   }
   else
     ut_error_reportbug ();
@@ -929,8 +946,7 @@ neut_mesh_elset_Osize (struct NODES Nodes, struct MESH Mesh, int elset,
   for (i = 1; i <= Mesh.Elsets[elset][0]; i++)
   {
     elt = Mesh.Elsets[elset][i];
-    neut_mesh_elt_lengths (Nodes, Mesh, elt, &(meanlength[i - 1]),
-			   NULL, NULL);
+    neut_mesh_elt_length (Nodes, Mesh, elt, &(meanlength[i - 1]));
   }
 
   ut_array_1d_scale (meanlength, Mesh.Elsets[elset][0], 1 / cl);
@@ -961,7 +977,7 @@ neut_mesh_Osize (struct NODES Nodes, struct MESH Mesh, double cl,
   }
 
   for (i = 1; i <= Mesh.EltQty; i++)
-    neut_mesh_elt_lengths (Nodes, Mesh, i, &(meanlength[i - 1]), NULL, NULL);
+    neut_mesh_elt_length (Nodes, Mesh, i, &(meanlength[i - 1]));
 
   ut_array_1d_scale (meanlength, Mesh.EltQty, 1 / cl);
 
@@ -984,7 +1000,7 @@ neut_mesh_eltlength (struct NODES Nodes, struct MESH Mesh, double *pavlength)
   double *meanlength = ut_alloc_1d (Mesh.EltQty);
 
   for (i = 1; i <= Mesh.EltQty; i++)
-    neut_mesh_elt_lengths (Nodes, Mesh, i, &(meanlength[i - 1]), NULL, NULL);
+    neut_mesh_elt_length (Nodes, Mesh, i, &(meanlength[i - 1]));
 
   (*pavlength) = ut_array_1d_mean (meanlength, Mesh.EltQty);
 

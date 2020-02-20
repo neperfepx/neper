@@ -141,7 +141,7 @@ nem_meshing_3D_report_poly_algo (int poly, int a,
   for (i = 1; i <= M.EltQty; i++)
   {
     neut_mesh_elt_rr (N, M, i, &rr);
-    neut_mesh_elt_lengths (N, M, i, &length, NULL, NULL);
+    neut_mesh_elt_length (N, M, i, &length);
     fprintf (file, "%.5g %.5g\n", rr, length);
   }
 
