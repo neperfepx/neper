@@ -71,8 +71,8 @@ net_tesl (struct SEEDSET SSet, struct POLY *Poly, struct TESL *pTesl)
    */
   status = IniTessEdge (pTesl);
 
-  ut_free_2d_int (TVNb, (*pTesl).PolyQty + 1);
-  ut_free_2d_int (TFNb, (*pTesl).PolyQty + 1);
+  ut_free_2d_int (&TVNb, (*pTesl).PolyQty + 1);
+  ut_free_2d_int (&TFNb, (*pTesl).PolyQty + 1);
 
 /* ************************************************************************
  * Recording of the edge lengths from the edge properties, and of the

@@ -12,13 +12,13 @@ neut_point_fscanf (FILE * file, struct POINT *pPoint)
 
   (*pPoint).PointCoo = ut_alloc_2d ((*pPoint).PointQty + 1, 3);
   ut_array_2d_fscanf (file, (*pPoint).PointCoo + 1, (*pPoint).PointQty,
-		      (*pPoint).Dim);
+                      (*pPoint).Dim);
 
   return;
 }
 
 void
-neut_point_name_fscanf (char *filename, struct POINT *pPoint)
+neut_point_fnscanf (char *filename, struct POINT *pPoint)
 {
   FILE *file = ut_file_open (filename, "r");
 

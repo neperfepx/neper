@@ -7,13 +7,12 @@
 void
 nem_transform (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
                struct MESH *Mesh)
-
 {
   int i, partqty, status;
   double *tmp = ut_alloc_1d (4);
   char **parts = NULL;
 
-  ut_string_separate (In.transform, NEUT_SEP_NODEP, &parts, &partqty);
+  ut_list_break (In.transform, NEUT_SEP_NODEP, &parts, &partqty);
 
   for (i = 0; i < partqty; i++)
   {
@@ -29,7 +28,8 @@ nem_transform (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
     else if (!strncmp (parts[i], "translate", 5))
     {
       ut_print_message (0, 3, "Translating...\n");
-      status = sscanf (parts[i], "translate(%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2);
+      status =
+        sscanf (parts[i], "translate(%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2);
       if (status == 2)
         tmp[2] = 1;
       neut_nodes_shift (pNodes, tmp[0], tmp[1], tmp[2]);
@@ -38,7 +38,9 @@ nem_transform (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
     else if (!strncmp (parts[i], "rotate", 6))
     {
       ut_print_message (0, 3, "Rotating...\n");
-      status = sscanf (parts[i], "rotate(%lf,%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2, tmp + 3);
+      status =
+        sscanf (parts[i], "rotate(%lf,%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2,
+                tmp + 3);
       neut_nodes_rotate (pNodes, tmp[0], tmp[1], tmp[2], tmp[3]);
     }
 
@@ -64,7 +66,7 @@ nem_transform (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
       ut_print_message (1, 3, "Skipping `%s'...\n", parts[i]);
   }
 
-  ut_free_1d (tmp);
+  ut_free_1d (&tmp);
 
   return;
 }

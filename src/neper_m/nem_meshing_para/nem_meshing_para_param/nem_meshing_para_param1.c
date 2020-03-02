@@ -5,9 +5,9 @@
 #include"nem_meshing_para_param_.h"
 
 void
-nem_meshing_para_param (struct IN_M In, struct TESS Tess,
-			struct TESR *pTesr, struct NODES RNodes,
-			struct MESH *RMesh, struct MESHPARA *pMeshPara)
+nem_meshing_para_param (struct IN_M In, struct TESS Tess, struct TESR *pTesr,
+                        struct NODES RNodes, struct MESH *RMesh,
+                        struct MESHPARA *pMeshPara)
 {
   int cellqty, dim;
   double size;
@@ -44,9 +44,9 @@ nem_meshing_para_param (struct IN_M In, struct TESS Tess,
     if ((*pMeshPara).input == 't')
     {
       if (Tess.Dim == 3)
-	neut_tess_volume (Tess, &size);
+        neut_tess_volume (Tess, &size);
       else if (Tess.Dim == 2)
-	neut_tess_area (Tess, &size);
+        neut_tess_area (Tess, &size);
     }
     else if ((*pMeshPara).input == 'v')
       neut_tesr_size (*pTesr, &size);

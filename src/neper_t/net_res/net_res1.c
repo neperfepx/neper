@@ -9,21 +9,21 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
 {
   FILE *file = NULL;
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "tess"))
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "tess"))
   {
     file = ut_file_open (In.tess, "w");
     neut_tess_fprintf (file, FTess);
     ut_file_close (file, In.tess, "w");
   }
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "geo"))
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "geo"))
   {
     file = ut_file_open (In.geo, "w");
     neut_tess_fprintf_gmsh (file, FTess);
     ut_file_close (file, In.geo, "w");
   }
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "ply"))	// gmsh ply file
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "ply"))       // gmsh ply file
   {
     if (FTess.CellQty != 0)
     {
@@ -33,10 +33,10 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
     }
     else
       ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n",
-			In.ply);
+                        In.ply);
   }
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "obj"))	// obj file
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "obj"))       // obj file
   {
     if (FTess.CellQty != 0)
     {
@@ -46,10 +46,10 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
     }
     else
       ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n",
-			In.obj);
+                        In.obj);
   }
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "3dec"))	// Itasca 3DEC file
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "3dec"))      // Itasca 3DEC file
   {
     if (FTess.PolyQty != 0)
     {
@@ -61,7 +61,7 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
       ut_print_message (1, 0, "Tess is void; cannot export; skipping\n");
   }
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "stl"))
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "stl"))
   {
     if (FTess.PolyQty != 0)
     {
@@ -73,7 +73,7 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
       ut_print_message (1, 0, "Tess is void; cannot export; skipping\n");
   }
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "stl:bycell"))
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "stl:bycell"))
   {
     if (FTess.PolyQty != 0)
       neut_tess_name_fprintf_stl_bycell (In.body, FTess);
@@ -81,7 +81,7 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
       ut_print_message (1, 0, "Tess is void; cannot export; skipping\n");
   }
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "fe"))	// SurfaceEvolver fe
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "fe"))        // SurfaceEvolver fe
   {
     if (FTess.PolyQty != 0)
     {
@@ -93,7 +93,7 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
       ut_print_message (1, 0, "Tess is void; cannot export; skipping\n");
   }
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "tesr"))	// tesr file
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "tesr"))      // tesr file
   {
     if (Tesr.CellQty != 0)
     {
@@ -103,19 +103,19 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
     }
     else
       ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n",
-			In.tesr);
+                        In.tesr);
   }
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "raw"))	// tesr/raw file
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "raw"))       // tesr/raw file
   {
     if (Tesr.CellQty != 0)
       neut_tesr_name_fprintf_raw (In.tesr, In.raw, In.tesrformat, Tesr);
     else
       ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n",
-			In.raw);
+                        In.raw);
   }
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "vtk"))	// vtk file
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "vtk"))       // vtk file
   {
     if (Tesr.CellQty != 0)
     {
@@ -125,10 +125,10 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
     }
     else
       ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n",
-			In.vtk);
+                        In.vtk);
   }
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "olmap"))	// olmap file
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "olmap"))     // olmap file
   {
     if (Tesr.CellQty != 0)
     {
@@ -138,18 +138,18 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
     }
     else
       ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n",
-			In.olmap);
+                        In.olmap);
   }
 
   if (FTess.VerQty > 0
-      && ut_string_inlist (In.format, NEUT_SEP_NODEP, "debug"))
+      && ut_list_testelt (In.format, NEUT_SEP_NODEP, "debug"))
   {
     file = ut_file_open (In.debug, "w");
     neut_debug_tess (file, FTess);
     ut_file_close (file, In.debug, "w");
   }
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "ori"))
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "ori"))
     net_res_ori (In, FTess);
 
   return;

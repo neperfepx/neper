@@ -58,7 +58,7 @@ neut_tess_cellexpr_merge (struct TESS *pTess, char *expr, double coplanar)
 
   newcell = neut_tess_cells_merge (pTess, cells, cellqty, coplanar);
 
-  ut_free_1d_int (cells);
+  ut_free_1d_int (&cells);
 
   return newcell;
 }
@@ -70,7 +70,7 @@ neut_tess_merge (struct TESS *pTess)
   int cellidqty = 0, *cellids = NULL, *cellqty = NULL, **cells = NULL;
 
   cellids = ut_alloc_1d_int ((*pTess).CellQty);
-  ut_array_1d_int_memcpy (cellids, (*pTess).CellQty, (*pTess).CellId + 1);
+  ut_array_1d_int_memcpy ((*pTess).CellId + 1, (*pTess).CellQty, cellids);
   ut_array_1d_int_sort_uniq (cellids, (*pTess).CellQty, &cellidqty);
 
   cells = ut_alloc_1d_pint (cellidqty);
@@ -80,14 +80,14 @@ neut_tess_merge (struct TESS *pTess)
     id = cellids[i];
     for (j = 1; j <= (*pTess).CellQty; j++)
       if ((*pTess).CellId[j] == id)
-	ut_array_1d_int_list_addelt (cells + i, cellqty + i, j);
+        ut_array_1d_int_list_addval (cells + i, cellqty + i, j);
 
     neut_tess_cells_merge (pTess, cells[i], cellqty[i], 1);
   }
 
-  ut_free_1d_int (cellqty);
-  ut_free_2d_int (cells, cellidqty);
-  ut_free_1d_int (cellids);
+  ut_free_1d_int (&cellqty);
+  ut_free_2d_int (&cells, cellidqty);
+  ut_free_1d_int (&cellids);
 
   return;
 }

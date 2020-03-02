@@ -48,7 +48,7 @@ oneDIntCompress (int *array, int beg, int end)
   for (i = end2 + 1; i <= end; i++)
     array[i] = 0;
 
-  ut_free_1d_int (array2);
+  ut_free_1d_int (&array2);
 
   return end2;
 }
@@ -67,7 +67,7 @@ oneDIntDeleteNCompress (int *array, int beg, int end, int value, int loop)
     if (pos != -1)
     {
       for (i = pos; i <= end - 1; i++)
-	array[i] = array[i + 1];
+        array[i] = array[i + 1];
       qty++;
     }
     else

@@ -17,9 +17,9 @@ net_tess_opt_comp_objective_fval_init (struct TOPT *pTOpt)
     {
       cell = (*pTOpt).cellchanged[j];
       (*pTOpt).oldcellpenalty[cell] = (*pTOpt).curcellpenalty[cell];
-      ut_array_1d_memcpy ((*pTOpt).oldcellval[i][cell],
-			  (*pTOpt).tarcellvalqty[i],
-			  (*pTOpt).curcellval[i][cell]);
+      ut_array_1d_memcpy ((*pTOpt).curcellval[i][cell],
+                          (*pTOpt).tarcellvalqty[i],
+                          (*pTOpt).oldcellval[i][cell]);
     }
 
   return;

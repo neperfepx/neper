@@ -21,23 +21,23 @@ ol_map_vect_ipfrgb (struct OL_MAP Map, double *Vs, int *nidrgb)
     {
       if (Map.id[i][j] == 1)
       {
-	for (k = 1; k <= 24; k++)
-	{
-	  ol_q_crysym (Map.q[i][j], "cubic", k, q);
-	  ol_q_g (q, g);
-	  ol_g_ipf_stprojxy (g, Vs, p);
-	  ol_stprojxy_vect (p, v);
-	  test = ol_vect_ipfweight (v, weight);
-	  if (test == 0)
-	  {
-	    ol_ipfweight_rgb (weight, Map.rgb[i][j]);
-	    break;
-	  }
-	}
+        for (k = 1; k <= 24; k++)
+        {
+          ol_q_crysym (Map.q[i][j], "cubic", k, q);
+          ol_q_g (q, g);
+          ol_g_ipf_stprojxy (g, Vs, p);
+          ol_stprojxy_vect (p, v);
+          test = ol_vect_ipfweight (v, weight);
+          if (test == 0)
+          {
+            ol_ipfweight_rgb (weight, Map.rgb[i][j]);
+            break;
+          }
+        }
       }
       else
-	for (k = 0; k < 3; k++)
-	  Map.rgb[i][j][k] = nidrgb[k];
+        for (k = 0; k < 3; k++)
+          Map.rgb[i][j][k] = nidrgb[k];
     }
 
   ol_q_free (q);
@@ -71,9 +71,9 @@ ol_ipfweight_rgb (double *weight, int *rgb)
   for (i = 0; i < 3; i++)
     for (j = 0; j < 3; j++)
       if (i == j)
-	rgbp[i][j] = (int) 255;
+        rgbp[i][j] = (int) 255;
       else
-	rgbp[i][j] = (int) (f / (1 + f) * 255.);
+        rgbp[i][j] = (int) (f / (1 + f) * 255.);
 
   for (k = 0; k < 3; k++)
     weight[k] = (s[k] - 2) * weight[k] * weight[k] * weight[k]
@@ -91,14 +91,14 @@ ol_ipfweight_rgb (double *weight, int *rgb)
   for (i = 0; i < 3; i++)
     rgb[i] = (int) ((double) rgb[i] * maxrgb / (double) max);
 
-  ut_free_2d_int (rgbp, 3);
+  ut_free_2d_int (&rgbp, 3);
   ol_e_free (s);
 
   return;
 }
 
 void
-ol_ipfrgb_legend (size_t xsize, size_t *pysize, int ****prgb)
+ol_ipfrgb_legend (size_t xsize, size_t * pysize, int ****prgb)
 {
   unsigned int i, j;
   int k, test;
@@ -116,14 +116,14 @@ ol_ipfrgb_legend (size_t xsize, size_t *pysize, int ****prgb)
     for (j = 0; j < *pysize; j++)
     {
       ol_p_set_this (p, ymax * (1 - (double) j / (*pysize - 1)),
-		     xmax * (double) i / (xsize - 1));
+                     xmax * (double) i / (xsize - 1));
       ol_stprojxy_vect (p, v);
       test = ol_vect_ipfweight (v, weight);
       if (test == 0)
-	ol_ipfweight_rgb (weight, (*prgb)[i][j]);
+        ol_ipfweight_rgb (weight, (*prgb)[i][j]);
       else
-	for (k = 0; k < 3; k++)
-	  (*prgb)[i][j][k] = 255;
+        for (k = 0; k < 3; k++)
+          (*prgb)[i][j][k] = 255;
     }
 
   ol_p_free (p);

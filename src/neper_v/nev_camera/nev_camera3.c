@@ -22,26 +22,27 @@ nev_camera_v (int dim, double *v)
   }
 
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   return;
 }
 
 void
-nev_camera_expr_coo (double **bbox, double* centre, double *v, char *expr, double *coo)
+nev_camera_expr_coo (double **bbox, double *centre, double *v, char *expr,
+                     double *coo)
 {
   char **expr2 = NULL;
   char **def = ut_alloc_2d_char (3, 100);
   int i, status, var_qty, qty;
   double *X = ut_alloc_1d (3);
   double length, *L = ut_alloc_1d (3);
-  ut_string_separate (expr, NEUT_SEP_DEP, &expr2, &qty);
+  ut_list_break (expr, NEUT_SEP_DEP, &expr2, &qty);
   if (qty != 3)
     ut_print_message (2, 2, "Expression `%s' could not be processed.\n",
-		      expr);
+                      expr);
 
   if (centre)
-    ut_array_1d_memcpy (X, 3, centre);
+    ut_array_1d_memcpy (centre, 3, X);
   else
     for (i = 0; i < 3; i++)
       X[i] = ut_array_1d_mean (bbox[i], 2);
@@ -78,15 +79,15 @@ nev_camera_expr_coo (double **bbox, double* centre, double *v, char *expr, doubl
     {
       status = ut_math_eval (expr2[i], var_qty, vars, vals, &(coo[i]));
       if (status == -1)
-	abort ();
+        abort ();
     }
   }
 
-  ut_free_2d_char (vars, var_qty);
-  ut_free_1d (vals);
-  ut_free_2d_char (def, 3);
-  ut_free_1d (X);
-  ut_free_1d (L);
+  ut_free_2d_char (&vars, var_qty);
+  ut_free_1d (&vals);
+  ut_free_2d_char (&def, 3);
+  ut_free_1d (&X);
+  ut_free_1d (&L);
 
   return;
 }

@@ -20,10 +20,10 @@ neut_tess_test_poly (struct TESS Tess, int i, int verbosity)
     return res;
 
   /*
-  res = neut_tess_test_polyCoplaneityFace (Tess, i, verbosity);
-  if (res != 0)
-    return res;
-    */
+     res = neut_tess_test_polyCoplaneityFace (Tess, i, verbosity);
+     if (res != 0)
+     return res;
+   */
 
   res = neut_tess_test_polyOrientationFace (Tess, i, verbosity);
   if (res != 0)

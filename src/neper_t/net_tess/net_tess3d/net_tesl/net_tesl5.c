@@ -10,10 +10,10 @@
 int
 PrevPoly (struct POLY *Poly, int PNb, int VNb)
 {
-  int i;			/* mute variable                                */
-  int ParentFace;		/* mute variable representing a parent face of  */
+  int i;                        /* mute variable                                */
+  int ParentFace;               /* mute variable representing a parent face of  */
   /* the vertex                                   */
-  int PrevP;			/* value to return                              */
+  int PrevP;                    /* value to return                              */
 
   /* in Poly PNb and for ver VNb:                                     */
   /* the lower (but positive) parent seed of the parent faces         */
@@ -43,8 +43,8 @@ PrevPoly (struct POLY *Poly, int PNb, int VNb)
 int
 PrevVer (struct POLY *Poly, int PNb, int VNb, int PrevP)
 {
-  int PrevS;			/* Value to return
-				 */
+  int PrevS;                    /* Value to return
+                                 */
   int *PFG = ut_alloc_1d_int (3);
 
   /* The searched vertex of Poly PrevP -which also belongs to Poly
@@ -61,7 +61,7 @@ PrevVer (struct POLY *Poly, int PNb, int VNb, int PrevP)
    */
   PrevS = SearchInPrevP (Poly, PrevP, PFG);
 
-  ut_free_1d_int (PFG);
+  ut_free_1d_int (&PFG);
 
   return PrevS;
 }
@@ -102,7 +102,7 @@ FaceEdges2PolyEdges (struct TESL *pTesl, int PNb, int FNb, int qty)
        */
       qty++;
       (*pTesl).PolyEdgeNb[PNb] =
-	ut_realloc_1d_int ((*pTesl).PolyEdgeNb[PNb], qty + 1);
+        ut_realloc_1d_int ((*pTesl).PolyEdgeNb[PNb], qty + 1);
       /* The polyhedron new edge number is recorded.
        */
       (*pTesl).PolyEdgeNb[PNb][qty] = ENb;

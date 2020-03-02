@@ -12,14 +12,14 @@ neut_mesh_isvoid (struct MESH Mesh)
 
 void
 neut_mesh3d_slice (struct NODES Nodes, struct MESH Mesh, double *eq,
-		   struct NODES *pSNodes, struct MESH *pSMesh,
-		   int **pelt_newold, int ***pnode_newold,
-		   double **pnode_fact)
+                   struct NODES *pSNodes, struct MESH *pSMesh,
+                   int **pelt_newold, int ***pnode_newold,
+                   double **pnode_fact)
 {
   int i, id, elset;
 
   if (Mesh.Dimension != 3)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   (*pSMesh).Dimension = 2;
   (*pSMesh).EltOrder = 1;
@@ -33,13 +33,13 @@ neut_mesh3d_slice (struct NODES Nodes, struct MESH Mesh, double *eq,
   if (!strcmp (Mesh.EltType, "tri"))
     for (i = 1; i <= Mesh.EltQty; i++)
       neut_mesh3d_elt_slice_tri (Nodes, Mesh, i, eq, pSNodes, pSMesh,
-				 pelt_newold, pnode_newold, pnode_fact);
+                                 pelt_newold, pnode_newold, pnode_fact);
   else if (!strcmp (Mesh.EltType, "quad"))
     for (i = 1; i <= Mesh.EltQty; i++)
       neut_mesh3d_elt_slice_quad (Nodes, Mesh, i, eq, pSNodes, pSMesh,
-				  pelt_newold, pnode_newold, pnode_fact);
+                                  pelt_newold, pnode_newold, pnode_fact);
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   int ElsetQty, **Elsets = NULL;
 
@@ -65,16 +65,16 @@ neut_mesh3d_slice (struct NODES Nodes, struct MESH Mesh, double *eq,
 
   neut_mesh_init_eltelset (pSMesh, NULL);
 
-  ut_free_2d_int (Elsets, ElsetQty + 1);
+  ut_free_2d_int (&Elsets, ElsetQty + 1);
 
   return;
 }
 
 int
 neut_mesh3d_elt_slice_tri (struct NODES Nodes, struct MESH Mesh, int elt,
-			   double *eq, struct NODES *pSNodes,
-			   struct MESH *pSMesh, int **pelt_newold,
-			   int ***pnode_newold, double **pnode_fact)
+                           double *eq, struct NODES *pSNodes,
+                           struct MESH *pSMesh, int **pelt_newold,
+                           int ***pnode_newold, double **pnode_fact)
 {
   int i, j, node;
   int *side = ut_alloc_1d_int (4);
@@ -97,9 +97,9 @@ neut_mesh3d_elt_slice_tri (struct NODES Nodes, struct MESH Mesh, int elt,
   for (i = 0; i < 4; i++)
   {
     node = Mesh.EltNodes[elt][i];
-    side[i] = ut_space_planeside (eq, Nodes.NodeCoo[node] - 1);
+    side[i] = ut_space_point_plane_side (Nodes.NodeCoo[node] - 1, eq);
   }
-  siden = ut_array_1d_int_nbofthisval (side, 4, -1);
+  siden = ut_array_1d_int_valnb (side, 4, -1);
   intertype = ut_num_min (siden, 4 - siden);
 
   if (intertype == 1)
@@ -110,33 +110,33 @@ neut_mesh3d_elt_slice_tri (struct NODES Nodes, struct MESH Mesh, int elt,
     else if (siden == 3)
       pos[0] = ut_array_1d_int_eltpos (side, 4, 1);
     else
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
     nodemaster = Mesh.EltNodes[elt][pos[0]];
-    ut_space_point_plane_dist (Nodes.NodeCoo[nodemaster], eq, &distmaster);
+    distmaster = ut_space_point_plane_dist (Nodes.NodeCoo[nodemaster], eq);
 
     // finding intersection between the tet and the plane (triangle)
     id = 0;
     for (i = 0; i < 4; i++)
       if (i != pos[0])
       {
-	node = Mesh.EltNodes[elt][i];
-	ut_space_segment_plane_intersect (Nodes.NodeCoo[nodemaster],
-					  Nodes.NodeCoo[node], eq, coo);
-	neut_nodes_addnode (pSNodes, coo, 0);
+        node = Mesh.EltNodes[elt][i];
+        ut_space_segment_plane_intersect (Nodes.NodeCoo[nodemaster],
+                                          Nodes.NodeCoo[node], eq, coo);
+        neut_nodes_addnode (pSNodes, coo, 0);
 
-	ut_space_point_plane_dist (Nodes.NodeCoo[node], eq, &dist);
+        dist = ut_space_point_plane_dist (Nodes.NodeCoo[node], eq);
 
-	eltnodes[id++] = (*pSNodes).NodeQty;
+        eltnodes[id++] = (*pSNodes).NodeQty;
 
-	(*pnode_newold) =
-	  ut_realloc_2d_int_addline ((*pnode_newold), (*pSNodes).NodeQty + 1,
-				     2);
-	(*pnode_fact) = ut_realloc_1d ((*pnode_fact), (*pSNodes).NodeQty + 1);
+        (*pnode_newold) =
+          ut_realloc_2d_int_addline ((*pnode_newold), (*pSNodes).NodeQty + 1,
+                                     2);
+        (*pnode_fact) = ut_realloc_1d ((*pnode_fact), (*pSNodes).NodeQty + 1);
 
-	(*pnode_newold)[(*pSNodes).NodeQty][0] = nodemaster;
-	(*pnode_newold)[(*pSNodes).NodeQty][1] = node;
-	(*pnode_fact)[(*pSNodes).NodeQty] = distmaster / (distmaster + dist);
+        (*pnode_newold)[(*pSNodes).NodeQty][0] = nodemaster;
+        (*pnode_newold)[(*pSNodes).NodeQty][1] = node;
+        (*pnode_fact)[(*pSNodes).NodeQty] = distmaster / (distmaster + dist);
       }
 
     neut_mesh_addelt (pSMesh, eltnodes);
@@ -151,9 +151,9 @@ neut_mesh3d_elt_slice_tri (struct NODES Nodes, struct MESH Mesh, int elt,
     int id2 = 0;
     for (i = 0; i < 4; i++)
       if (side[i] == -1)
-	pos[id++] = i;
+        pos[id++] = i;
       else
-	pos2[id2++] = i;
+        pos2[id2++] = i;
 
     // Finding intersection between the tet and the plane
     // (quadrangle).  Splitting up the quadrangle into two triangles
@@ -162,25 +162,25 @@ neut_mesh3d_elt_slice_tri (struct NODES Nodes, struct MESH Mesh, int elt,
     for (j = 0; j < 2; j++)
     {
       nodemaster = Mesh.EltNodes[elt][pos[j]];
-      ut_space_point_plane_dist (Nodes.NodeCoo[nodemaster], eq, &distmaster);
+      distmaster = ut_space_point_plane_dist (Nodes.NodeCoo[nodemaster], eq);
 
       for (i = 0; i < 2; i++)
       {
-	node = Mesh.EltNodes[elt][pos2[i]];
-	ut_space_point_plane_dist (Nodes.NodeCoo[node], eq, &dist);
+        node = Mesh.EltNodes[elt][pos2[i]];
+        dist = ut_space_point_plane_dist (Nodes.NodeCoo[node], eq);
 
-	ut_space_segment_plane_intersect (Nodes.NodeCoo[nodemaster],
-					  Nodes.NodeCoo[node], eq, coo);
-	neut_nodes_addnode (pSNodes, coo, 0);
+        ut_space_segment_plane_intersect (Nodes.NodeCoo[nodemaster],
+                                          Nodes.NodeCoo[node], eq, coo);
+        neut_nodes_addnode (pSNodes, coo, 0);
 
-	(*pnode_newold) =
-	  ut_realloc_2d_int_addline ((*pnode_newold), (*pSNodes).NodeQty + 1,
-				     2);
-	(*pnode_fact) = ut_realloc_1d ((*pnode_fact), (*pSNodes).NodeQty + 1);
+        (*pnode_newold) =
+          ut_realloc_2d_int_addline ((*pnode_newold), (*pSNodes).NodeQty + 1,
+                                     2);
+        (*pnode_fact) = ut_realloc_1d ((*pnode_fact), (*pSNodes).NodeQty + 1);
 
-	(*pnode_newold)[(*pSNodes).NodeQty][0] = nodemaster;
-	(*pnode_newold)[(*pSNodes).NodeQty][1] = node;
-	(*pnode_fact)[(*pSNodes).NodeQty] = distmaster / (distmaster + dist);
+        (*pnode_newold)[(*pSNodes).NodeQty][0] = nodemaster;
+        (*pnode_newold)[(*pSNodes).NodeQty][1] = node;
+        (*pnode_fact)[(*pSNodes).NodeQty] = distmaster / (distmaster + dist);
       }
     }
 
@@ -203,20 +203,20 @@ neut_mesh3d_elt_slice_tri (struct NODES Nodes, struct MESH Mesh, int elt,
     (*pelt_newold)[(*pSMesh).EltQty] = elt;
   }
 
-  ut_free_1d_int (side);
-  ut_free_1d (coo);
-  ut_free_1d_int (pos);
-  ut_free_1d_int (pos2);
-  ut_free_1d_int (eltnodes);
+  ut_free_1d_int (&side);
+  ut_free_1d (&coo);
+  ut_free_1d_int (&pos);
+  ut_free_1d_int (&pos2);
+  ut_free_1d_int (&eltnodes);
 
   return intertype;
 }
 
 int
 neut_mesh3d_elt_slice_quad (struct NODES Nodes, struct MESH Mesh, int elt,
-			    double *eq, struct NODES *pSNodes,
-			    struct MESH *pSMesh, int **pelt_newold,
-			    int ***pnode_newold, double **pnode_fact)
+                            double *eq, struct NODES *pSNodes,
+                            struct MESH *pSMesh, int **pelt_newold,
+                            int ***pnode_newold, double **pnode_fact)
 {
   int i, j, sl_elt, sl_node, eltqty, nodeqty;
   struct NODES ENodes;
@@ -236,7 +236,7 @@ neut_mesh3d_elt_slice_quad (struct NODES Nodes, struct MESH Mesh, int elt,
     nodeqty = (*pSNodes).NodeQty;
     eltqty = (*pSMesh).EltQty;
     neut_mesh3d_elt_slice_tri (ENodes, TEMesh, i, eq, pSNodes, pSMesh,
-			       pelt_newold, pnode_newold, pnode_fact);
+                               pelt_newold, pnode_newold, pnode_fact);
 
     // Renumbering added elts
     for (sl_elt = eltqty + 1; sl_elt <= (*pSMesh).EltQty; sl_elt++)
@@ -245,8 +245,8 @@ neut_mesh3d_elt_slice_quad (struct NODES Nodes, struct MESH Mesh, int elt,
     // Renumbering added nodes
     for (sl_node = nodeqty + 1; sl_node <= (*pSNodes).NodeQty; sl_node++)
       for (j = 0; j < 2; j++)
-	(*pnode_newold)[sl_node][j] =
-	  Mesh.EltNodes[elt][(*pnode_newold)[sl_node][j] - 1];
+        (*pnode_newold)[sl_node][j] =
+          Mesh.EltNodes[elt][(*pnode_newold)[sl_node][j] - 1];
   }
 
   neut_nodes_free (&ENodes);
@@ -258,7 +258,7 @@ neut_mesh3d_elt_slice_quad (struct NODES Nodes, struct MESH Mesh, int elt,
 
 int
 neut_mesh_elt_mesh (struct NODES Nodes, struct MESH Mesh, int elt,
-		    struct NODES *pENodes, struct MESH *pEMesh)
+                    struct NODES *pENodes, struct MESH *pEMesh)
 {
   int i, node;
   int eltnodeqty =
@@ -274,7 +274,7 @@ neut_mesh_elt_mesh (struct NODES Nodes, struct MESH Mesh, int elt,
   for (i = 1; i <= eltnodeqty; i++)
   {
     node = Mesh.EltNodes[elt][i - 1];
-    ut_array_1d_memcpy ((*pENodes).NodeCoo[i], 3, Nodes.NodeCoo[node]);
+    ut_array_1d_memcpy (Nodes.NodeCoo[node], 3, (*pENodes).NodeCoo[i]);
   }
 
   // Setting *pEMesh
@@ -299,9 +299,8 @@ neut_mesh_elt_mesh (struct NODES Nodes, struct MESH Mesh, int elt,
 }
 
 void
-neut_mesh_elset_mesh (struct NODES Nodes, struct MESH Mesh,
-		      int elset, struct NODES *pN, struct MESH *pM,
-		      int **pnode_nbs)
+neut_mesh_elset_mesh (struct NODES Nodes, struct MESH Mesh, int elset,
+                      struct NODES *pN, struct MESH *pM, int **pnode_nbs)
 {
   int i, j, node, elt, eltnodeqty;
   double l;
@@ -331,13 +330,13 @@ neut_mesh_elset_mesh (struct NODES Nodes, struct MESH Mesh,
       node = Mesh.EltNodes[elt][j];
       if (ut_array_1d_int_eltpos (node_nbs + 1, node_nbs[0], node) == -1)
       {
-	node_nbs[++node_nbs[0]] = node;
+        node_nbs[++node_nbs[0]] = node;
 
-	if (!Nodes.NodeCl)
-	  neut_mesh_elt_length (Nodes, Mesh, elt, &l);
-	else
-	  l = Nodes.NodeCl[node_nbs[node_nbs[0]]];
-	neut_nodes_addnode (pN, Nodes.NodeCoo[node], l);
+        if (!Nodes.NodeCl)
+          neut_mesh_elt_length (Nodes, Mesh, elt, &l);
+        else
+          l = Nodes.NodeCl[node_nbs[node_nbs[0]]];
+        neut_nodes_addnode (pN, Nodes.NodeCoo[node], l);
       }
     }
   }
@@ -358,18 +357,18 @@ neut_mesh_elset_mesh (struct NODES Nodes, struct MESH Mesh,
   if (pnode_nbs)
   {
     (*pnode_nbs) = ut_alloc_1d_int (node_nbs[0] + 1);
-    ut_array_1d_int_memcpy (*pnode_nbs, node_nbs[0] + 1, node_nbs);
+    ut_array_1d_int_memcpy (node_nbs, node_nbs[0] + 1, *pnode_nbs);
   }
 
-  ut_free_1d_int (node_nbs);
-  ut_free_1d_int (node_nbs_inv);
+  ut_free_1d_int (&node_nbs);
+  ut_free_1d_int (&node_nbs_inv);
 
   return;
 }
 
 void
 neut_mesh_face_boundmesh (struct MESH Mesh1D, struct TESS Tess, int face,
-			  struct MESH *pBMesh)
+                          struct MESH *pBMesh)
 {
   int e, i, j, edge, elt;
   int *nodes = ut_alloc_1d_int (3);
@@ -397,7 +396,7 @@ neut_mesh_face_boundmesh (struct MESH Mesh1D, struct TESS Tess, int face,
       elt = Mesh1D.Elsets[edge][i];
 
       for (j = 0; j < 2; j++)
-	nodes[j] = Mesh1D.EltNodes[elt][seq[ori][j]];
+        nodes[j] = Mesh1D.EltNodes[elt][seq[ori][j]];
 
       neut_mesh_addelt (pBMesh, nodes);
     }
@@ -414,16 +413,16 @@ neut_mesh_face_boundmesh (struct MESH Mesh1D, struct TESS Tess, int face,
   /*----------------------------------------------------------------------
    * foot */
 
-  ut_free_1d_int (nodes);
-  ut_free_1d_int (elts);
-  ut_free_2d_int (seq, 2);
+  ut_free_1d_int (&nodes);
+  ut_free_1d_int (&elts);
+  ut_free_2d_int (&seq, 2);
 
   return;
 }
 
 void
 neut_mesh_face_boundnodes (struct MESH Mesh1D, struct TESS Tess, int face,
-			   int **pnodes, int *pnodeqty)
+                           int **pnodes, int *pnodeqty)
 {
   int i, j, edge, elt;
   // note: only the 1st-order nodes are recorded
@@ -446,14 +445,14 @@ neut_mesh_face_boundnodes (struct MESH Mesh1D, struct TESS Tess, int face,
     if (Tess.FaceEdgeOri[face][i] == 1)
       for (j = 1; j <= Mesh1D.Elsets[edge][0]; j++)
       {
-	elt = Mesh1D.Elsets[edge][j];
-	(*pnodes)[(*pnodeqty)++] = Mesh1D.EltNodes[elt][0];
+        elt = Mesh1D.Elsets[edge][j];
+        (*pnodes)[(*pnodeqty)++] = Mesh1D.EltNodes[elt][0];
       }
     else
       for (j = Mesh1D.Elsets[edge][0]; j >= 1; j--)
       {
-	elt = Mesh1D.Elsets[edge][j];
-	(*pnodes)[(*pnodeqty)++] = Mesh1D.EltNodes[elt][1];
+        elt = Mesh1D.Elsets[edge][j];
+        (*pnodes)[(*pnodeqty)++] = Mesh1D.EltNodes[elt][1];
       }
   }
 
@@ -462,8 +461,8 @@ neut_mesh_face_boundnodes (struct MESH Mesh1D, struct TESS Tess, int face,
 
 void
 neut_mesh_face_boundnodecoos (struct NODES Nodes, struct MESH Mesh1D,
-                              struct TESS Tess, int face,
-                              double ***pnodecoos, int *pnodeqty)
+                              struct TESS Tess, int face, double ***pnodecoos,
+                              int *pnodeqty)
 {
   int i, node, *nodes = NULL;
 
@@ -474,28 +473,28 @@ neut_mesh_face_boundnodecoos (struct NODES Nodes, struct MESH Mesh1D,
   for (i = 0; i < *pnodeqty; i++)
   {
     node = nodes[i];
-    ut_array_1d_memcpy ((*pnodecoos)[i], 3, Nodes.NodeCoo[node]);
+    ut_array_1d_memcpy (Nodes.NodeCoo[node], 3, (*pnodecoos)[i]);
   }
 
-  ut_free_1d_int (nodes);
+  ut_free_1d_int (&nodes);
 
   return;
 }
 
 void
 neut_mesh_poly_boundmesh (struct TESS Tess, int poly, struct MESH Mesh2D,
-			  struct MESH *pBMesh)
+                          struct MESH *pBMesh)
 {
   int f, i, j, face, elt;
-  int eltnodeqty
-    = neut_elt_nodeqty (Mesh2D.EltType, Mesh2D.Dimension, Mesh2D.EltOrder);
+  int eltnodeqty =
+    neut_elt_nodeqty (Mesh2D.EltType, Mesh2D.Dimension, Mesh2D.EltOrder);
   int *nodes = ut_alloc_1d_int (eltnodeqty);
   int **seq = ut_alloc_2d_int (2, eltnodeqty);
   int ori;
   int *elts = NULL;
 
   if (strcmp (Mesh2D.EltType, "tri") != 0)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   if (Mesh2D.EltOrder == 1)
   {
@@ -511,7 +510,7 @@ neut_mesh_poly_boundmesh (struct TESS Tess, int poly, struct MESH Mesh2D,
     ut_array_1d_int_reverseelts (seq[1] + 3, 3);
   }
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   (*pBMesh).Dimension = Mesh2D.Dimension;
   (*pBMesh).EltOrder = Mesh2D.EltOrder;
@@ -528,7 +527,7 @@ neut_mesh_poly_boundmesh (struct TESS Tess, int poly, struct MESH Mesh2D,
       elt = Mesh2D.Elsets[face][i];
 
       for (j = 0; j < eltnodeqty; j++)
-	nodes[j] = Mesh2D.EltNodes[elt][seq[ori][j]];
+        nodes[j] = Mesh2D.EltNodes[elt][seq[ori][j]];
 
       neut_mesh_addelt (pBMesh, nodes);
     }
@@ -545,9 +544,9 @@ neut_mesh_poly_boundmesh (struct TESS Tess, int poly, struct MESH Mesh2D,
   /*----------------------------------------------------------------------
    * foot */
 
-  ut_free_1d_int (nodes);
-  ut_free_1d_int (elts);
-  ut_free_2d_int (seq, 2);
+  ut_free_1d_int (&nodes);
+  ut_free_1d_int (&elts);
+  ut_free_2d_int (&seq, 2);
 
   return;
 }
@@ -560,8 +559,8 @@ neut_mesh_elset_valid (struct MESH Mesh, int elset)
 
 void
 neut_mesh_elts_mesh2ddist (struct TESS Tess, struct NODES Nodes,
-			   struct MESH Mesh2D, struct MESH Mesh3D,
-			   double **p, double *d, double **v, double **n)
+                           struct MESH Mesh2D, struct MESH Mesh3D, double **p,
+                           double *d, double **v, double **n)
 {
   int i, elset;
   struct MESH *M = calloc (Tess.PolyQty + 1, sizeof (MESH));
@@ -572,7 +571,7 @@ neut_mesh_elts_mesh2ddist (struct TESS Tess, struct NODES Nodes,
     neut_mesh_set_zero (&(M[i]));
 
   if (Mesh2D.Dimension != 2 || Mesh3D.Dimension != 3)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   // finding the poly to which the point belongs
   for (i = 1; i <= Mesh3D.EltQty; i++)
@@ -586,24 +585,24 @@ neut_mesh_elts_mesh2ddist (struct TESS Tess, struct NODES Nodes,
       neut_mesh_init_nodeelts (&(M[elset]), Nodes.NodeQty);
     }
 
-    neut_mesh_point_closestpoint
-      (M[elset], Nodes, coo, &(d[i]), p[i], v[i], n[i]);
+    neut_mesh_point_closestpoint (M[elset], Nodes, coo, &(d[i]), p[i], v[i],
+                                  n[i]);
   }
 
   for (i = 1; i <= Tess.PolyQty; i++)
     neut_mesh_free (&(M[i]));
   free (M);
 
-  ut_free_1d (coo);
-  ut_free_1d (eltcoo);
+  ut_free_1d (&coo);
+  ut_free_1d (&eltcoo);
 
   return;
 }
 
 void
 neut_mesh_nodes_mesh2ddist (struct TESS Tess, struct NODES Nodes,
-			    struct MESH Mesh2D, struct MESH Mesh3D,
-			    double **p, double *d, double **v, double **n)
+                            struct MESH Mesh2D, struct MESH Mesh3D,
+                            double **p, double *d, double **v, double **n)
 {
   int i, elset, elsetqty;
   int *elsets = NULL;
@@ -613,7 +612,7 @@ neut_mesh_nodes_mesh2ddist (struct TESS Tess, struct NODES Nodes,
     neut_mesh_set_zero (&(M[i]));
 
   if (Mesh2D.Dimension != 2 || Mesh3D.Dimension != 3)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   // finding the poly to which the point belongs
   for (i = 1; i <= Nodes.NodeQty; i++)
@@ -621,7 +620,7 @@ neut_mesh_nodes_mesh2ddist (struct TESS Tess, struct NODES Nodes,
     neut_mesh_node_elsets (Mesh3D, i, &elsets, &elsetqty);
 
     if (elsetqty == 0)
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
     elset = elsets[0];
 
@@ -633,19 +632,18 @@ neut_mesh_nodes_mesh2ddist (struct TESS Tess, struct NODES Nodes,
 
     // in the body of a grain
     if (elsetqty == 1)
-      neut_mesh_point_closestpoint
-	(M[elset], Nodes, Nodes.NodeCoo[i], &(d[i]), p[i], v[i], n[i]);
+      neut_mesh_point_closestpoint (M[elset], Nodes, Nodes.NodeCoo[i],
+                                    &(d[i]), p[i], v[i], n[i]);
     // on the 2D mesh
     else
     {
-      ut_array_1d_memcpy (p[i], 3, Nodes.NodeCoo[i]);
+      ut_array_1d_memcpy (Nodes.NodeCoo[i], 3, p[i]);
       d[i] = 0;
       ut_array_1d_zero (v[i], 3);
       neut_mesh_node_normal (M[elset], Nodes, i, n[i]);
     }
 
-    ut_free_1d_int (elsets);
-    elsets = NULL;
+    ut_free_1d_int (&elsets);
   }
 
   for (i = 1; i <= Tess.PolyQty; i++)
@@ -657,9 +655,9 @@ neut_mesh_nodes_mesh2ddist (struct TESS Tess, struct NODES Nodes,
 
 void
 neut_mesh_points_mesh2ddist (struct TESS Tess, struct NODES Nodes,
-			     struct MESH Mesh2D, struct MESH Mesh3D,
-			     double **coo, int qty, double **p,
-			     double *d, double **v, double **n)
+                             struct MESH Mesh2D, struct MESH Mesh3D,
+                             double **coo, int qty, double **p, double *d,
+                             double **v, double **n)
 {
   int i, j, status, elset, pos;
   struct MESH *M = calloc (Tess.PolyQty + 1, sizeof (MESH));
@@ -673,23 +671,24 @@ neut_mesh_points_mesh2ddist (struct TESS Tess, struct NODES Nodes,
     neut_mesh_set_zero (&(M[i]));
 
   if (Mesh2D.Dimension != 2 || Mesh3D.Dimension != 3)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   // finding the poly to which the point belongs
   for (i = 0; i < qty; i++)
   {
-    status = neut_mesh_point_elset (Mesh3D, Nodes, coo[i], elsetlist,
-				    elsetqty, &elset);
+    status =
+      neut_mesh_point_elset (Mesh3D, Nodes, coo[i], elsetlist, elsetqty,
+                             &elset);
     if (elset != elsetlist[0])
     {
       pos = ut_array_1d_int_eltpos (elsetlist, elsetqty, elset);
       for (j = pos; j > 0; j--)
-	elsetlist[j] = elsetlist[j - 1];
+        elsetlist[j] = elsetlist[j - 1];
       elsetlist[0] = elset;
     }
 
     if (status == -1)
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
     if (M[elset].EltQty == 0)
     {
@@ -698,17 +697,17 @@ neut_mesh_points_mesh2ddist (struct TESS Tess, struct NODES Nodes,
     }
 
     if (!neut_mesh_elset_valid (Mesh3D, elset))
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
-    neut_mesh_point_closestpoint
-      (M[elset], Nodes, coo[i], &(d[i]), p[i], v[i], n[i]);
+    neut_mesh_point_closestpoint (M[elset], Nodes, coo[i], &(d[i]), p[i],
+                                  v[i], n[i]);
   }
 
   for (i = 1; i <= Tess.PolyQty; i++)
     neut_mesh_free (&(M[i]));
   free (M);
 
-  ut_free_1d_int (elsetlist);
+  ut_free_1d_int (&elsetlist);
 
   return;
 }
@@ -879,7 +878,7 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[id++], "part");
   }
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   return;
 }
@@ -910,18 +909,18 @@ neut_mesh_entity_qty (struct NODES Nodes, struct MESH Mesh0D,
   else if (!strcmp (entity, "node"))
     (*pentityqty) = Nodes.NodeQty;
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   return;
 }
 
 int
-neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
-		   Mesh1D, struct MESH Mesh2D, struct MESH Mesh3D,
-		   struct PART Part, struct TESS Tess,
-		   int *showelt0d, int *showelt1d, int *showelt2d,
-		   int *showelt3d, double cl, char *entity, int id, char *var,
-		   double **pvals, int *pvalqty, char **ptype)
+neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
+                   struct MESH Mesh2D, struct MESH Mesh3D, struct PART Part,
+                   struct TESS Tess, int *showelt0d, int *showelt1d,
+                   int *showelt2d, int *showelt3d, double cl, char *entity,
+                   int id, char *var, double **pvals, int *pvalqty,
+                   char **ptype)
 {
   int j, status;
   double rrmean, rrmin, rrmax;
@@ -1012,9 +1011,9 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     else if (!strcmp (var, "Osize"))
     {
       if (cl > 0)
-	neut_mesh_elset_Osize (Nodes, Mesh3D, id, cl, *pvals);
+        neut_mesh_elset_Osize (Nodes, Mesh3D, id, cl, *pvals);
       else
-	(*pvals)[0] = -1;
+        (*pvals)[0] = -1;
       strcpy (typetmp, "%f");
     }
     else if (!strcmp (var, "e"))
@@ -1350,19 +1349,19 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     {
       int *elts = NULL;
       int eltqty;
-      neut_mesh_elt0d_elts3d (Mesh0D, id, Mesh1D, Mesh2D,
-			      Mesh3D, &elts, &eltqty);
+      neut_mesh_elt0d_elts3d (Mesh0D, id, Mesh1D, Mesh2D, Mesh3D, &elts,
+                              &eltqty);
 
       (*pvals)[0] = 0;
       for (j = 0; j < eltqty; j++)
-	if (showelt3d[elts[j]])
-	{
-	  (*pvals)[0] = 1;
-	  break;
-	}
+        if (showelt3d[elts[j]])
+        {
+          (*pvals)[0] = 1;
+          break;
+        }
 
       strcpy (typetmp, "%d");
-      ut_free_1d_int (elts);
+      ut_free_1d_int (&elts);
     }
     else if (!strcmp (var, "part"))
     {
@@ -1458,14 +1457,14 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
 
       (*pvals)[0] = 0;
       for (j = 0; j < eltqty; j++)
-	if (showelt3d[elts[j]])
-	{
-	  (*pvals)[0] = 1;
-	  break;
-	}
+        if (showelt3d[elts[j]])
+        {
+          (*pvals)[0] = 1;
+          break;
+        }
 
       strcpy (typetmp, "%d");
-      ut_free_1d_int (elts);
+      ut_free_1d_int (&elts);
     }
     else if (!strcmp (var, "elt2d_shown"))
     {
@@ -1475,14 +1474,14 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
 
       (*pvals)[0] = 0;
       for (j = 0; j < eltqty; j++)
-	if (showelt2d[elts[j]])
-	{
-	  (*pvals)[0] = 1;
-	  break;
-	}
+        if (showelt2d[elts[j]])
+        {
+          (*pvals)[0] = 1;
+          break;
+        }
 
       strcpy (typetmp, "%d");
-      ut_free_1d_int (elts);
+      ut_free_1d_int (&elts);
     }
     else if (!strcmp (var, "cyl"))
     {
@@ -1549,19 +1548,19 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     {
       int *elts = NULL;
       int eltqty;
-      neut_mesh_elt0d_elts3d (Mesh0D, id, Mesh1D, Mesh2D,
-			      Mesh3D, &elts, &eltqty);
+      neut_mesh_elt0d_elts3d (Mesh0D, id, Mesh1D, Mesh2D, Mesh3D, &elts,
+                              &eltqty);
 
       (*pvals)[0] = 0;
       for (j = 0; j < eltqty; j++)
-	if (showelt3d[elts[j]])
-	{
-	  (*pvals)[0] = 1;
-	  break;
-	}
+        if (showelt3d[elts[j]])
+        {
+          (*pvals)[0] = 1;
+          break;
+        }
 
       strcpy (typetmp, "%d");
-      ut_free_1d_int (elts);
+      ut_free_1d_int (&elts);
     }
     else if (!strcmp (var, "elt2d_shown"))
     {
@@ -1571,14 +1570,14 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
 
       (*pvals)[0] = 0;
       for (j = 0; j < eltqty; j++)
-	if (showelt2d[elts[j]])
-	{
-	  (*pvals)[0] = 1;
-	  break;
-	}
+        if (showelt2d[elts[j]])
+        {
+          (*pvals)[0] = 1;
+          break;
+        }
 
       strcpy (typetmp, "%d");
-      ut_free_1d_int (elts);
+      ut_free_1d_int (&elts);
     }
     else if (!strcmp (var, "elt1d_shown"))
     {
@@ -1588,14 +1587,14 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
 
       (*pvals)[0] = 0;
       for (j = 0; j < eltqty; j++)
-	if (showelt1d[elts[j]])
-	{
-	  (*pvals)[0] = 1;
-	  break;
-	}
+        if (showelt1d[elts[j]])
+        {
+          (*pvals)[0] = 1;
+          break;
+        }
 
       strcpy (typetmp, "%d");
-      ut_free_1d_int (elts);
+      ut_free_1d_int (&elts);
     }
     else
       status = -1;
@@ -1632,11 +1631,11 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     {
       (*pvals)[0] = 0;
       for (j = 1; j <= Mesh3D.NodeElts[id][0]; j++)
-	if (showelt3d[Mesh3D.NodeElts[id][j]])
-	{
-	  (*pvals)[0] = 1;
-	  break;
-	}
+        if (showelt3d[Mesh3D.NodeElts[id][j]])
+        {
+          (*pvals)[0] = 1;
+          break;
+        }
 
       strcpy (typetmp, "%d");
     }
@@ -1644,11 +1643,11 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     {
       (*pvals)[0] = 0;
       for (j = 1; j <= Mesh2D.NodeElts[id][0]; j++)
-	if (showelt2d[Mesh2D.NodeElts[id][j]])
-	{
-	  (*pvals)[0] = 1;
-	  break;
-	}
+        if (showelt2d[Mesh2D.NodeElts[id][j]])
+        {
+          (*pvals)[0] = 1;
+          break;
+        }
 
       strcpy (typetmp, "%d");
     }
@@ -1656,11 +1655,11 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     {
       (*pvals)[0] = 0;
       for (j = 1; j <= Mesh1D.NodeElts[id][0]; j++)
-	if (showelt1d[Mesh1D.NodeElts[id][j]])
-	{
-	  (*pvals)[0] = 1;
-	  break;
-	}
+        if (showelt1d[Mesh1D.NodeElts[id][j]])
+        {
+          (*pvals)[0] = 1;
+          break;
+        }
 
       strcpy (typetmp, "%d");
     }
@@ -1668,11 +1667,11 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
     {
       (*pvals)[0] = 0;
       for (j = 1; j <= Mesh0D.NodeElts[id][0]; j++)
-	if (showelt0d[Mesh0D.NodeElts[id][j]])
-	{
-	  (*pvals)[0] = 1;
-	  break;
-	}
+        if (showelt0d[Mesh0D.NodeElts[id][j]])
+        {
+          (*pvals)[0] = 1;
+          break;
+        }
 
       strcpy (typetmp, "%d");
     }
@@ -1685,29 +1684,29 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
       status = -1;
   }
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   if (ptype)
   {
-    ut_free_1d_char (*ptype);
+    ut_free_1d_char (ptype);
     (*ptype) = ut_alloc_1d_char (strlen (typetmp) + 1);
     strcpy (*ptype, typetmp);
   }
 
-  ut_free_1d (c);
-  ut_free_1d_char (typetmp);
+  ut_free_1d (&c);
+  ut_free_1d_char (&typetmp);
 
   return status;
 }
 
 
 int
-neut_mesh_var_val_one (struct NODES Nodes, struct MESH Mesh0D, struct MESH
-		   Mesh1D, struct MESH Mesh2D, struct MESH Mesh3D,
-		   struct PART Part, struct TESS Tess,
-		   int *showelt0d, int *showelt1d, int *showelt2d,
-		   int *showelt3d, double cl, char *entity, int id, char *var,
-		   double *pval, char **ptype)
+neut_mesh_var_val_one (struct NODES Nodes, struct MESH Mesh0D,
+                       struct MESH Mesh1D, struct MESH Mesh2D,
+                       struct MESH Mesh3D, struct PART Part, struct TESS Tess,
+                       int *showelt0d, int *showelt1d, int *showelt2d,
+                       int *showelt3d, double cl, char *entity, int id,
+                       char *var, double *pval, char **ptype)
 {
   int status, qty;
   double *tmp = NULL;
@@ -1724,7 +1723,7 @@ neut_mesh_var_val_one (struct NODES Nodes, struct MESH Mesh0D, struct MESH
   else
     status = -1;
 
-  ut_free_1d (tmp);
+  ut_free_1d (&tmp);
 
   return status;
 }
@@ -1742,20 +1741,22 @@ neut_mesh_array_dim (struct MESH *Mesh)
 }
 
 void
-neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
-			   Mesh1D, struct MESH Mesh2D, struct MESH Mesh3D,
-			   struct PART Part, struct TESS Tess, int *showelt0d,
-			   int *showelt1d, int *showelt2d, int *showelt3d,
-			   char *entity, char *expr, double *val)
+neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH Mesh0D,
+                           struct MESH Mesh1D, struct MESH Mesh2D,
+                           struct MESH Mesh3D, struct PART Part,
+                           struct TESS Tess, int *showelt0d, int *showelt1d,
+                           int *showelt2d, int *showelt3d, char *entity,
+                           char *expr, double *val)
 {
   int j, entityqty, varqty;
   char **vars = NULL;
   FILE *file = NULL;
 
-  neut_mesh_entity_qty (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, entity, &entityqty);
+  neut_mesh_entity_qty (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, entity,
+                        &entityqty);
   neut_mesh_var_list (entity, &vars, &varqty);
 
-  if (ut_string_filename (expr))
+  if (ut_string_isfilename (expr))
   {
     file = ut_file_open (expr, "R");
     ut_array_1d_fscanf (file, val + 1, entityqty);
@@ -1775,8 +1776,8 @@ neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
           if (!strcmp (vars[k], "default"))
             vals[k] = val[j];
 
-          neut_mesh_var_val_one (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D,
-                                 Part, Tess, showelt0d, showelt1d, showelt2d,
+          neut_mesh_var_val_one (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, Part,
+                                 Tess, showelt0d, showelt1d, showelt2d,
                                  showelt3d, 0, entity, j, vars[k], vals + k,
                                  NULL);
         }
@@ -1785,19 +1786,18 @@ neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH
       if (status == -1)
         abort ();
 
-      ut_free_1d_ (&vals);
+      ut_free_1d (&vals);
     }
   }
 
-  ut_free_2d_char (vars, varqty);
+  ut_free_2d_char (&vars, varqty);
 
   return;
 }
 
 void
-neut_mesh_elset1d_bodynodes (struct TESS Tess,
-			     struct MESH *Mesh, int elset,
-			     int **pnodes, int *pnodeqty)
+neut_mesh_elset1d_bodynodes (struct TESS Tess, struct MESH *Mesh, int elset,
+                             int **pnodes, int *pnodeqty)
 {
   int i, j, ver, nodeqty2, *nodes2 = NULL;
 
@@ -1810,22 +1810,19 @@ neut_mesh_elset1d_bodynodes (struct TESS Tess,
     neut_mesh_elset_nodes (Mesh[0], ver, &nodes2, &nodeqty2);
 
     for (j = 0; j < nodeqty2; j++)
-      (*pnodeqty) -=
-	ut_array_1d_int_deletencompress (*pnodes, *pnodeqty,
-					 nodes2[j], 1);
+      (*pnodeqty) -= ut_array_1d_int_rmelt (*pnodes, *pnodeqty, nodes2[j], 1);
   }
 
   (*pnodes) = ut_realloc_1d_int (*pnodes, *pnodeqty);
 
-  ut_free_1d_int (nodes2);
+  ut_free_1d_int (&nodes2);
 
   return;
 }
 
 void
-neut_mesh_elset2d_bodynodes (struct TESS Tess,
-			     struct MESH *Mesh, int elset,
-			     int **pnodes, int *pnodeqty)
+neut_mesh_elset2d_bodynodes (struct TESS Tess, struct MESH *Mesh, int elset,
+                             int **pnodes, int *pnodeqty)
 {
   int i, j, edge, nodeqty2, *nodes2 = NULL;
 
@@ -1838,14 +1835,12 @@ neut_mesh_elset2d_bodynodes (struct TESS Tess,
     neut_mesh_elset_nodes (Mesh[1], edge, &nodes2, &nodeqty2);
 
     for (j = 0; j < nodeqty2; j++)
-      (*pnodeqty) -=
-	ut_array_1d_int_deletencompress (*pnodes, *pnodeqty,
-					 nodes2[j], 1);
+      (*pnodeqty) -= ut_array_1d_int_rmelt (*pnodes, *pnodeqty, nodes2[j], 1);
   }
 
   (*pnodes) = ut_realloc_1d_int (*pnodes, *pnodeqty);
 
-  ut_free_1d_int (nodes2);
+  ut_free_1d_int (&nodes2);
 
   return;
 }
@@ -1871,8 +1866,8 @@ neut_mesh1d_mesh2d (struct NODES *pNodes, struct MESH Mesh1D,
   neut_mesh_free (pMesh2D);
   (*pMesh2D) = neut_mesh_alloc (2, "tri", 1, Mesh1D.EltQty, 1);
 
-  ut_array_2d_int_memcpy ((*pMesh2D).EltNodes + 1, Mesh1D.EltQty, 2,
-		          Mesh1D.EltNodes + 1);
+  ut_array_2d_int_memcpy (Mesh1D.EltNodes + 1, Mesh1D.EltQty, 2,
+                          (*pMesh2D).EltNodes + 1);
   for (i = 1; i <= Mesh1D.EltQty; i++)
     (*pMesh2D).EltNodes[i][2] = (*pNodes).NodeQty;
 
@@ -1880,8 +1875,8 @@ neut_mesh1d_mesh2d (struct NODES *pNodes, struct MESH Mesh1D,
   ut_array_1d_int_set ((*pMesh2D).EltElset + 1, (*pMesh2D).EltQty, 1);
   neut_mesh_init_elsets (pMesh2D);
 
-  ut_free_1d (centre);
-  ut_free_2d (coo, Mesh1D.EltQty + 1);
+  ut_free_1d (&centre);
+  ut_free_2d (&coo, Mesh1D.EltQty + 1);
 
   return;
 }
@@ -1907,8 +1902,8 @@ neut_mesh2d_mesh3d (struct NODES *pNodes, struct MESH Mesh2D,
   neut_mesh_free (pMesh3D);
   (*pMesh3D) = neut_mesh_alloc (3, "tri", 1, Mesh2D.EltQty, 1);
 
-  ut_array_2d_int_memcpy ((*pMesh3D).EltNodes + 1, Mesh2D.EltQty, 3,
-		          Mesh2D.EltNodes + 1);
+  ut_array_2d_int_memcpy (Mesh2D.EltNodes + 1, Mesh2D.EltQty, 3,
+                          (*pMesh3D).EltNodes + 1);
   for (i = 1; i <= Mesh2D.EltQty; i++)
     (*pMesh3D).EltNodes[i][3] = (*pNodes).NodeQty;
 
@@ -1916,8 +1911,8 @@ neut_mesh2d_mesh3d (struct NODES *pNodes, struct MESH Mesh2D,
   ut_array_1d_int_set ((*pMesh3D).EltElset + 1, (*pMesh3D).EltQty, 1);
   neut_mesh_init_elsets (pMesh3D);
 
-  ut_free_1d (centre);
-  ut_free_2d (coo, Mesh2D.EltQty + 1);
+  ut_free_1d (&centre);
+  ut_free_2d (&coo, Mesh2D.EltQty + 1);
 
   return;
 }

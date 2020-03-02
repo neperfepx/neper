@@ -6,9 +6,10 @@
 
 void
 net_mtess_flatten_face_domface_dom (struct MTESS MTess, struct TESS *Tess,
-			      int TessId, int dface,
-			      struct TESS *pFTess, struct TESSE **pTessE,
-			      int *dom, struct FLATTEN *pFlatten)
+                                    int TessId, int dface,
+                                    struct TESS *pFTess,
+                                    struct TESSE **pTessE, int *dom,
+                                    struct FLATTEN *pFlatten)
 {
   int i, j, k, edge, face, ori, poly, newface, fedge, fori;
   int *tessface = ut_alloc_1d_int (2);
@@ -52,16 +53,17 @@ net_mtess_flatten_face_domface_dom (struct MTESS MTess, struct TESS *Tess,
     neut_tesse_face_addface (&((*pTessE)[tessface[0]]), face, newface, 1);
   }
 
-  ut_free_1d_int (tessface);
+  ut_free_1d_int (&tessface);
 
   return;
 }
 
 void
 net_mtess_flatten_face_domface_body (struct MTESS MTess, struct TESS *Tess,
-			       int TessId, int dface, struct TESS *pFTess,
-			       struct TESSE **pTessE, int *dom,
-			       struct FLATTEN *pFlatten)
+                                     int TessId, int dface,
+                                     struct TESS *pFTess,
+                                     struct TESSE **pTessE, int *dom,
+                                     struct FLATTEN *pFlatten)
 {
   int i, j, fedge, fedgeinv;
   int edgeqty = 0;
@@ -75,10 +77,12 @@ net_mtess_flatten_face_domface_body (struct MTESS MTess, struct TESS *Tess,
   double *coob = ut_alloc_1d (3);
 
   // Recording the tesses / domfaces of the domface
-  net_mtess_flatten_face_domface_body_tessfaces (MTess, Tess, TessId, dface, tessface);
+  net_mtess_flatten_face_domface_body_tessfaces (MTess, Tess, TessId, dface,
+                                                 tessface);
 
   // Recording all edges of the domface
-  neut_flatten_domface_edges (*pFlatten, Tess[TessId], dface, &edges, &edgeqty);
+  neut_flatten_domface_edges (*pFlatten, Tess[TessId], dface, &edges,
+                              &edgeqty);
   ut_array_1d_int_inv (edges, edgeqty, &edgesinv, &edgemax);
 
   // For each edge, recording the faces of the tesses it belongs to
@@ -93,13 +97,13 @@ net_mtess_flatten_face_domface_body (struct MTESS MTess, struct TESS *Tess,
     for (j = 0; j < 2; j++)
     {
       neut_tess_edge_centre (*pFTess, fedge, coo);
-      net_mtess_flatten_face_domface_edge_tess_faces (*pFlatten, fedge,
-						coo, Tess[tessface[j][0]],
-						tessface[j][1],
-						&(edgetessfacenb[fedgeinv]
-						  [j]),
-						&(edgetessfaceqty[fedgeinv]
-						  [j]));
+      net_mtess_flatten_face_domface_edge_tess_faces (*pFlatten, fedge, coo,
+                                                      Tess[tessface[j][0]],
+                                                      tessface[j][1],
+                                                      &(edgetessfacenb
+                                                        [fedgeinv][j]),
+                                                      &(edgetessfaceqty
+                                                        [fedgeinv][j]));
     }
   }
 
@@ -110,12 +114,9 @@ net_mtess_flatten_face_domface_body (struct MTESS MTess, struct TESS *Tess,
   int startver, endver, fface;
 
   int edgepos = 0;
-  while (net_mtess_flatten_face_domface_body_nextface (edges, edgeqty,
-						 edgesinv,
-						 edgetessfacenb,
-						 edgetessfaceqty,
-						 &facepairlist, &facepairqty,
-						 &edgepos, facepair) == 1)
+  while (net_mtess_flatten_face_domface_body_nextface
+         (edges, edgeqty, edgesinv, edgetessfacenb, edgetessfaceqty,
+          &facepairlist, &facepairqty, &edgepos, facepair) == 1)
   {
     fedge = edges[edgepos];
 
@@ -135,17 +136,14 @@ net_mtess_flatten_face_domface_body (struct MTESS MTess, struct TESS *Tess,
     {
       // Looking for the next fedge. The fedge is connected to the
       // previous one and has the same tess faces.
-      net_mtess_flatten_face_domface_body_nextedge (*pFlatten,
-					      Tess[TessId],
-					      dface, *pFTess,
-					      facepair, endedge,
-					      endver,
-					      edgesinv,
-					      edgetessfacenb,
-					      edgetessfaceqty,
-					      &nextedge, &nextedgeori);
+      net_mtess_flatten_face_domface_body_nextedge (*pFlatten, Tess[TessId],
+                                                    dface, *pFTess, facepair,
+                                                    endedge, endver, edgesinv,
+                                                    edgetessfacenb,
+                                                    edgetessfaceqty,
+                                                    &nextedge, &nextedgeori);
       if (nextedge == -1)
-	ut_error_reportbug ();
+        ut_print_neperbug ();
 
       neut_tess_face_addedge (pFTess, fface, nextedge, nextedgeori);
 
@@ -160,27 +158,29 @@ net_mtess_flatten_face_domface_body (struct MTESS MTess, struct TESS *Tess,
 
     for (j = 0; j < 2; j++)
     {
-      ori = ut_num_sgn (ut_vector_scalprod
-			((*pFTess).FaceEq[(*pFTess).FaceQty] + 1,
-			 Tess[tessface[j][0]].FaceEq[facepair[j]] + 1));
-      neut_tesse_face_addface (&((*pTessE)[tessface[j][0]]),
-			       facepair[j], (*pFlatten).FaceQty, ori);
+      ori =
+        ut_num_sgn (ut_vector_scalprod
+                    ((*pFTess).FaceEq[(*pFTess).FaceQty] + 1,
+                     Tess[tessface[j][0]].FaceEq[facepair[j]] + 1));
+      neut_tesse_face_addface (&((*pTessE)[tessface[j][0]]), facepair[j],
+                               (*pFlatten).FaceQty, ori);
     }
-    ori = ut_num_sgn (ut_vector_scalprod
-		      ((*pFTess).FaceEq[(*pFTess).FaceQty] + 1,
-		       Tess[TessId].FaceEq[dface] + 1));
-    neut_tesse_face_addface (&((*pTessE)[TessId]), dface,
-			     (*pFlatten).FaceQty, ori);
+    ori =
+      ut_num_sgn (ut_vector_scalprod
+                  ((*pFTess).FaceEq[(*pFTess).FaceQty] + 1,
+                   Tess[TessId].FaceEq[dface] + 1));
+    neut_tesse_face_addface (&((*pTessE)[TessId]), dface, (*pFlatten).FaceQty,
+                             ori);
   }
 
-  ut_free_1d_int (facepair);
-  ut_free_1d_int (edges);
-  ut_free_2d_int (tessface, 2);
-  ut_free_2d_int (edgetessfaceqty, edgeqty + 1);
-  ut_free_3d_int (edgetessfacenb, edgeqty + 1, 2);
-  ut_free_1d (coo);
-  ut_free_1d (coob);
-  ut_free_1d_int (edgesinv);
+  ut_free_1d_int (&facepair);
+  ut_free_1d_int (&edges);
+  ut_free_2d_int (&tessface, 2);
+  ut_free_2d_int (&edgetessfaceqty, edgeqty + 1);
+  ut_free_3d_int (&edgetessfacenb, edgeqty + 1, 2);
+  ut_free_1d (&coo);
+  ut_free_1d (&coob);
+  ut_free_1d_int (&edgesinv);
 
   return;
 }

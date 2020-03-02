@@ -6,7 +6,7 @@
 
 void
 Pm2PComp (struct POLYMOD Polymod, int *CompVer, int *CompVerInv,
-	  int *CompFace, int *CompFaceInv)
+          int *CompFace, int *CompFaceInv)
 {
   /* Determination of CompVer and CompVerInv
    */
@@ -42,7 +42,7 @@ Pm2PFaceQty (struct POLY *pPoly, int *CompFace)
  */
 void
 Pm2PVerFace (struct POLYMOD Polymod, struct POLY *pPoly, int *CompVer,
-	     int *CompFaceInv)
+             int *CompFaceInv)
 {
   int i, j;
 
@@ -111,7 +111,7 @@ Pm2PFaceVerQty (struct POLYMOD Polymod, struct POLY *pPoly, int *CompFace)
  */
 void
 Pm2PFaceVerNb (struct POLYMOD Polymod, struct POLY *pPoly, int *CompFace,
-	       int *CompVerInv)
+               int *CompVerInv)
 {
   int i, j;
 
@@ -120,7 +120,7 @@ Pm2PFaceVerNb (struct POLYMOD Polymod, struct POLY *pPoly, int *CompFace,
     (*pPoly).FaceVerNb[i] = ut_alloc_1d_int ((*pPoly).FaceVerQty[i] + 1);
     for (j = 1; j <= (*pPoly).FaceVerQty[i]; j++)
       (*pPoly).FaceVerNb[i][j] =
-	CompVerInv[Polymod.FaceVerNb[CompFace[i]][j]];
+        CompVerInv[Polymod.FaceVerNb[CompFace[i]][j]];
   }
 
   return;

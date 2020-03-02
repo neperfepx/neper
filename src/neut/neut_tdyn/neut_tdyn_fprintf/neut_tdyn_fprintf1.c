@@ -14,24 +14,25 @@ neut_tdyn_fprintf_pre (struct TDYN *pTDyn)
   {
     filename = ut_string_addextension ((*pTDyn).body, ".logtime");
     (*pTDyn).logtime_fp = ut_file_open (filename, "w");
-    ut_free_1d_char (filename);
+    ut_free_1d_char (&filename);
   }
 
   if (strcmp ((*pTDyn).logvar, "none"))
   {
     filename = ut_string_addextension ((*pTDyn).body, ".logvar");
     (*pTDyn).logvar_fp = ut_file_open (filename, "w");
-    ut_free_1d_char (filename);
+    ut_free_1d_char (&filename);
   }
 
   if (strcmp ((*pTDyn).logdis, "none"))
   {
-    (*pTDyn).logdis_fp = (FILE **) calloc ((*pTDyn).logdis_qty, sizeof (FILE *));
+    (*pTDyn).logdis_fp =
+      (FILE **) calloc ((*pTDyn).logdis_qty, sizeof (FILE *));
     for (i = 0; i < (*pTDyn).logdis_qty; i++)
     {
       filename = ut_string_addextension ((*pTDyn).body, ".logdis%d", i + 1);
       (*pTDyn).logdis_fp[i] = ut_file_open (filename, "w");
-      ut_free_1d_char (filename);
+      ut_free_1d_char (&filename);
     }
   }
 
@@ -39,14 +40,14 @@ neut_tdyn_fprintf_pre (struct TDYN *pTDyn)
   {
     filename = ut_string_addextension ((*pTDyn).body, ".logtesr");
     (*pTDyn).logtesr_fp = ut_file_open (filename, "w");
-    ut_free_1d_char (filename);
+    ut_free_1d_char (&filename);
   }
 
   if (strcmp ((*pTDyn).logval, "none"))
   {
     filename = ut_string_addextension ((*pTDyn).body, ".logval");
     (*pTDyn).logval_fp = ut_file_open (filename, "w");
-    ut_free_1d_char (filename);
+    ut_free_1d_char (&filename);
   }
 
   return;
@@ -62,16 +63,16 @@ neut_tdyn_fprintf_post (struct TDYN *pTDyn)
   {
     filename = ut_string_addextension ((*pTDyn).body, ".logtime");
     printf ("\n");
-    ut_file_close_nonl ((*pTDyn).logtime_fp, filename, "w");
-    ut_free_1d_char (filename);
+    ut_file_close ((*pTDyn).logtime_fp, filename, "w,nonl");
+    ut_free_1d_char (&filename);
   }
 
   if (strcmp ((*pTDyn).logvar, "none"))
   {
     filename = ut_string_addextension ((*pTDyn).body, ".logvar");
     printf ("\n");
-    ut_file_close_nonl ((*pTDyn).logvar_fp, filename, "w");
-    ut_free_1d_char (filename);
+    ut_file_close ((*pTDyn).logvar_fp, filename, "w,nonl");
+    ut_free_1d_char (&filename);
   }
 
   if (strcmp ((*pTDyn).logdis, "none"))
@@ -80,8 +81,8 @@ neut_tdyn_fprintf_post (struct TDYN *pTDyn)
     {
       filename = ut_string_addextension ((*pTDyn).body, ".logdis%d", i + 1);
       printf ("\n");
-      ut_file_close_nonl ((*pTDyn).logdis_fp[i], filename, "w");
-      ut_free_1d_char (filename);
+      ut_file_close ((*pTDyn).logdis_fp[i], filename, "w,nonl");
+      ut_free_1d_char (&filename);
     }
   }
 
@@ -89,16 +90,16 @@ neut_tdyn_fprintf_post (struct TDYN *pTDyn)
   {
     filename = ut_string_addextension ((*pTDyn).body, ".logval");
     printf ("\n");
-    ut_file_close_nonl ((*pTDyn).logval_fp, filename, "w");
-    ut_free_1d_char (filename);
+    ut_file_close ((*pTDyn).logval_fp, filename, "w,nonl");
+    ut_free_1d_char (&filename);
   }
 
   if (strcmp ((*pTDyn).logtesr, "none"))
   {
     filename = ut_string_addextension ((*pTDyn).body, ".logtesr");
     printf ("\n");
-    ut_file_close_nonl ((*pTDyn).logtesr_fp, filename, "w");
-    ut_free_1d_char (filename);
+    ut_file_close ((*pTDyn).logtesr_fp, filename, "w,nonl");
+    ut_free_1d_char (&filename);
   }
 
   return;
@@ -110,10 +111,10 @@ neut_tdyn_fprintf_time (struct TDYN TDyn)
   int i, varqty;
   char **vars = NULL;
 
-  if (!ut_string_iter_test (TDyn.logtime, NEUT_SEP_NODEP, TDyn.iter))
+  if (!ut_list_iter_test (TDyn.logtime, NEUT_SEP_NODEP, TDyn.iter))
     return;
 
-  ut_string_separate (TDyn.logtime, NEUT_SEP_NODEP, &vars, &varqty);
+  ut_list_break (TDyn.logtime, NEUT_SEP_NODEP, &vars, &varqty);
 
   for (i = 0; i < varqty; i++)
   {
@@ -125,12 +126,12 @@ neut_tdyn_fprintf_time (struct TDYN TDyn)
       fprintf (TDyn.logtime_fp, "%d", TDyn.seedchangedqty);
     else if (!strcmp (vars[i], "seedupdatelist"))
       ut_array_1d_int_fprintf_nonl (TDyn.logtime_fp, TDyn.seedchanged,
-			       TDyn.seedchangedqty, "%d");
+                                    TDyn.seedchangedqty, "%d");
     else if (!strcmp (vars[i], "cellupdateqty"))
       fprintf (TDyn.logtime_fp, "%d", TDyn.cellchangedqty);
     else if (!strcmp (vars[i], "cellupdatelist"))
       ut_array_1d_int_fprintf_nonl (TDyn.logtime_fp, TDyn.cellchanged,
-			       TDyn.cellchangedqty, "%d");
+                                    TDyn.cellchangedqty, "%d");
     else if (!strcmp (vars[i], "var"))
       fprintf (TDyn.logtime_fp, "%.6f", TDyn.var_dur);
     else if (!strcmp (vars[i], "seed"))
@@ -177,7 +178,7 @@ neut_tdyn_fprintf_time (struct TDYN TDyn)
   }
   fprintf (TDyn.logtime_fp, "\n");
 
-  ut_free_2d_char (vars,varqty);
+  ut_free_2d_char (&vars, varqty);
 
   return;
 }

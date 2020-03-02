@@ -5,9 +5,9 @@
 #include"nem_transport_.h"
 
 void
-nem_transport_elt_oldelt (struct NODES OldNodes,
-			  struct MESH OldMesh, struct NODES NewNodes,
-			  struct MESH NewMesh, char *method, int **poldelt)
+nem_transport_elt_oldelt (struct NODES OldNodes, struct MESH OldMesh,
+                          struct NODES NewNodes, struct MESH NewMesh,
+                          char *method, int **poldelt)
 {
   int i, j;
   struct MESH Facet;
@@ -36,16 +36,17 @@ nem_transport_elt_oldelt (struct NODES OldNodes,
     int *ids = ut_alloc_1d_int (NewMesh.Elsets[i][0]);
 
     for (j = 0; j < NewMesh.Elsets[i][0]; j++)
-      neut_mesh_elt_centre (NewNodes, NewMesh, NewMesh.Elsets[i][j + 1], coos[j]);
+      neut_mesh_elt_centre (NewNodes, NewMesh, NewMesh.Elsets[i][j + 1],
+                            coos[j]);
 
     // parent element = old element in which the new element centre falls.
     /*
-    status = neut_mesh_elset_point_elt (OldMesh, OldNodes, elset3d,
-					coo, &((*poldelt)[i]));
+       status = neut_mesh_elset_point_elt (OldMesh, OldNodes, elset3d,
+       coo, &((*poldelt)[i]));
 
-    // if it does not fall in any old element, picking the closest.
-    if (status != 0)
-    */
+       // if it does not fall in any old element, picking the closest.
+       if (status != 0)
+     */
 
     neut_mesh_elset_points_closestelts (OldMesh, OldNodes, i, coos,
                                         NewMesh.Elsets[i][0], method, ids);
@@ -56,13 +57,13 @@ nem_transport_elt_oldelt (struct NODES OldNodes,
 #pragma omp critical
     done++;
 
-    ut_free_2d (coos, NewMesh.Elsets[i][0]);
-    ut_free_1d_int (ids);
+    ut_free_2d (&coos, NewMesh.Elsets[i][0]);
+    ut_free_1d_int (&ids);
   }
 
-  ut_free_1d_int (elts2d);
+  ut_free_1d_int (&elts2d);
   neut_mesh_free (&Facet);
-  ut_free_1d (eq);
+  ut_free_1d (&eq);
 
   return;
 }

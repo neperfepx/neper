@@ -27,8 +27,8 @@ neut_mesh_fprintf_scotch (char *body, struct NODES Nodes, struct MESH Mesh)
   neut_nodes_fprintf_scotch (file, Nodes);
   ut_file_close (file, scg, "w");
 
-  ut_free_1d_char (scm);
-  ut_free_1d_char (scg);
+  ut_free_1d_char (&scm);
+  ut_free_1d_char (&scg);
 
   return;
 }

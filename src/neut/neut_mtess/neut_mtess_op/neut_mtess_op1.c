@@ -30,23 +30,22 @@ neut_mtess_free (struct MTESS *pMTess, struct TESS **pTess)
 {
   int i;
 
-  ut_free_1d_int ((*pMTess).LevelTessQty);
-  ut_free_2d_int ((*pMTess).LevelTess, (*pMTess).LevelQty + 1);
-  ut_free_2d_int ((*pMTess).TessDom, (*pMTess).TessQty + 1);
-  ut_free_2d_int ((*pMTess).DomTess, (*pMTess).TessQty + 1);
+  ut_free_1d_int (&(*pMTess).LevelTessQty);
+  ut_free_2d_int (&(*pMTess).LevelTess, (*pMTess).LevelQty + 1);
+  ut_free_2d_int (&(*pMTess).TessDom, (*pMTess).TessQty + 1);
+  ut_free_2d_int (&(*pMTess).DomTess, (*pMTess).TessQty + 1);
 
   /* UNCOMMENT and FIXME with neper -T -n from_morpho::2 -morpho "cube(2)::voronoi"
-  ut_free_2d_int ((*pMTess).TessDomVerNb, (*pMTess).TessQty + 1);
-  ut_free_2d_int ((*pMTess).TessDomEdgeNb, (*pMTess).TessQty + 1);
-  ut_free_2d_int ((*pMTess).TessDomFaceNb, (*pMTess).TessQty + 1);
-  */
+     ut_free_2d_int (&(*pMTess).TessDomVerNb, (*pMTess).TessQty + 1);
+     ut_free_2d_int (&(*pMTess).TessDomEdgeNb, (*pMTess).TessQty + 1);
+     ut_free_2d_int (&(*pMTess).TessDomFaceNb, (*pMTess).TessQty + 1);
+   */
 
   if ((*pMTess).DomTessFaceNb)
   {
     for (i = 0; i <= (*pMTess).TessQty; i++)
-      ut_free_2d_int ((*pMTess).DomTessFaceNb[i],
-		      (*pTess)[i].FaceQty + 1);
-    ut_free_1d_ppint ((*pMTess).DomTessFaceNb);
+      ut_free_2d_int (&(*pMTess).DomTessFaceNb[i], (*pTess)[i].FaceQty + 1);
+    ut_free_1d_ppint (&(*pMTess).DomTessFaceNb);
   }
 
   if ((*pTess))

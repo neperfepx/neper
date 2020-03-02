@@ -14,7 +14,7 @@ neut_tess_test_polyReciprocityFace (struct TESS Tess, int i, int verbosity)
   {
     if (verbosity)
       ut_print_message (2, 3, "number of faces = %d < 4.\n",
-			Tess.PolyFaceQty[i]);
+                        Tess.PolyFaceQty[i]);
 
     return 2;
   }
@@ -26,9 +26,9 @@ neut_tess_test_polyReciprocityFace (struct TESS Tess, int i, int verbosity)
     if (ut_array_1d_int_eltpos (Tess.FacePoly[face], 2, i) == -1)
     {
       if (verbosity)
-	ut_print_message (2, 3,
-			  "based on face %d, but poly is not in face poly list.\n",
-			  face);
+        ut_print_message (2, 3,
+                          "based on face %d, but poly is not in face poly list.\n",
+                          face);
 
       return 3;
     }
@@ -53,17 +53,17 @@ neut_tess_test_polyCoplaneityFace (struct TESS Tess, int i, int verbosity)
   }
 
   for (j = 1; j <= Tess.DomFaceQty; j++)
-    if (ut_array_1d_int_nbofthisval (tmp + 1, tmp[0], j) > 1)
+    if (ut_array_1d_int_valnb (tmp + 1, tmp[0], j) > 1)
     {
       if (verbosity)
-	ut_print_message (2, 3,
-			  "has several faces which belong to the same domain face.\n");
+        ut_print_message (2, 3,
+                          "has several faces which belong to the same domain face.\n");
 
       res = 3;
       break;
     }
 
-  ut_free_1d_int (tmp);
+  ut_free_1d_int (&tmp);
 
   return res;
 }
@@ -81,23 +81,23 @@ neut_tess_test_polyOrientationFace (struct TESS Tess, int i, int verbosity)
   {
     face = Tess.PolyFaceNb[i][j];
 
-    ut_array_1d_memcpy (eq, 4, Tess.FaceEq[face]);
+    ut_array_1d_memcpy (Tess.FaceEq[face], 4, eq);
     ut_array_1d_scale (eq, 4, Tess.PolyFaceOri[i][j]);
 
-    if (ut_space_planeside (eq, centre - 1) != -1)
+    if (ut_space_point_plane_side (centre - 1, eq) != -1)
     {
       if (verbosity)
-	ut_print_message (2, 3,
-			  "(%d) face %d is not properly oriented (centre %f %f %f vs FaceEq*FaceOri %f %f %f %f FaceOri %d.\n",
-			  j, face, centre[0], centre[1], centre[2], eq[0],
-			  eq[1], eq[2], eq[3], Tess.PolyFaceOri[i][j]);
+        ut_print_message (2, 3,
+                          "(%d) face %d is not properly oriented (centre %f %f %f vs FaceEq*FaceOri %f %f %f %f FaceOri %d.\n",
+                          j, face, centre[0], centre[1], centre[2], eq[0],
+                          eq[1], eq[2], eq[3], Tess.PolyFaceOri[i][j]);
 
       return 1;
     }
   }
 
-  ut_free_1d (eq);
-  ut_free_1d (centre);
+  ut_free_1d (&eq);
+  ut_free_1d (&centre);
 
   return 0;
 }
@@ -140,10 +140,10 @@ neut_tess_test_polyOrientationFace (struct TESS Tess, int i, int verbosity)
     }
   }
 
-  ut_free_1d_int (edge_faces);
-  ut_free_1d_int (edge);
-  ut_free_1d_int (face_ori);
-  ut_free_1d_int (edge_ori);
+  ut_free_1d_int (&edge_faces);
+  ut_free_1d_int (&edge);
+  ut_free_1d_int (&face_ori);
+  ut_free_1d_int (&edge_ori);
 
   return res;
 }
@@ -174,47 +174,53 @@ neut_tess_test_poly_pinching (struct TESS Tess, int poly, int verbosity)
 
       // if they have more than 3 common vertices, this does happen.
       if (verqty > 3)
-	status = -1;
+        status = -1;
 
       // if they have 3 common vertices and if one of them is not a
       // neighbour of the 2 others, this happens.
       else if (verqty == 3)
       {
-	for (k = 0; k < 2; k++)
-	{
-	  face = faces[k];
+        for (k = 0; k < 2; k++)
+        {
+          face = faces[k];
 
-	  for (l = 0; l < verqty; l++)
-	  {
-	    ver = vers[l];
-	    pos = ut_array_1d_int_eltpos (Tess.FaceVerNb[face] + 1,
-					  Tess.FaceVerQty[face],
-					  ver);
-	    if (pos == -1)
-	      ut_error_reportbug ();
+          for (l = 0; l < verqty; l++)
+          {
+            ver = vers[l];
+            pos =
+              ut_array_1d_int_eltpos (Tess.FaceVerNb[face] + 1,
+                                      Tess.FaceVerQty[face], ver);
+            if (pos == -1)
+              ut_print_neperbug ();
 
-	    pos++;
+            pos++;
 
-	    verbef = Tess.FaceVerNb[face][ut_num_rotpos (1, Tess.FaceVerQty[face], pos, -1)];
-	    veraft = Tess.FaceVerNb[face][ut_num_rotpos (1, Tess.FaceVerQty[face], pos,  1)];
-	    if (ut_array_1d_int_eltpos (vers, verqty, verbef) == -1
-	     && ut_array_1d_int_eltpos (vers, verqty, veraft) == -1)
-	    {
-	      status = 1;
-	      break;
-	    }
-	  }
+            verbef =
+              Tess.
+              FaceVerNb[face][ut_array_rotpos
+                              (1, Tess.FaceVerQty[face], pos, -1)];
+            veraft =
+              Tess.
+              FaceVerNb[face][ut_array_rotpos
+                              (1, Tess.FaceVerQty[face], pos, 1)];
+            if (ut_array_1d_int_eltpos (vers, verqty, verbef) == -1
+                && ut_array_1d_int_eltpos (vers, verqty, veraft) == -1)
+            {
+              status = 1;
+              break;
+            }
+          }
 
-	  if (status)
-	    break;
-	}
+          if (status)
+            break;
+        }
 
-	if (status)
-	  break;
+        if (status)
+          break;
       }
 
       if (status)
-	break;
+        break;
     }
 
     if (status)
@@ -224,8 +230,8 @@ neut_tess_test_poly_pinching (struct TESS Tess, int poly, int verbosity)
   if (status && verbosity)
     ut_print_message (2, 3, "number of vers = %d > 2.\n", verqty);
 
-  ut_free_1d_int (faces);
-  ut_free_1d_int (vers);
+  ut_free_1d_int (&faces);
+  ut_free_1d_int (&vers);
 
   return status;
 }

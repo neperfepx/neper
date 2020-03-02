@@ -5,12 +5,12 @@
 #include"nem_smoothing_.h"
 
 void
-nem_smoothing_barypos (struct NODES Nodes,
-		       int *neighnodes, double *neighnodeweights,
-		       int neighnodeqty, double *NeighCoo)
+nem_smoothing_barypos (struct NODES Nodes, int *neighnodes,
+                       double *neighnodeweights, int neighnodeqty,
+                       double *NeighCoo)
 {
   neut_nodes_wbary (Nodes, neighnodes, neighnodeweights, neighnodeqty,
-		    NeighCoo, NULL);
+                    NeighCoo, NULL);
 
   return;
 }
@@ -28,21 +28,20 @@ nem_smoothing_newcoo (double *coo, double *neighcoo, double A, double *newcoo)
 
 void
 nem_smoothing_nodes_updatecoo (struct NODES *pNodes, int *nodes, int nodeqty,
-			       double **NodeCoo)
+                               double **NodeCoo)
 {
   int i;
 
   for (i = 0; i < nodeqty; i++)
-    ut_array_1d_memcpy ((*pNodes).NodeCoo[nodes[i]], 3, NodeCoo[nodes[i]]);
+    ut_array_1d_memcpy (NodeCoo[nodes[i]], 3, (*pNodes).NodeCoo[nodes[i]]);
 
   return;
 }
 
 void
-nem_smoothing_neighnodeweights (struct NODES Nodes,
-				struct MESH *Mesh,
-				int node, int *neighnodes,
-				int neighnodeqty, double **pneighnodeweights)
+nem_smoothing_neighnodeweights (struct NODES Nodes, struct MESH *Mesh,
+                                int node, int *neighnodes, int neighnodeqty,
+                                double **pneighnodeweights)
 {
   int dim, i;
 
@@ -55,10 +54,12 @@ nem_smoothing_neighnodeweights (struct NODES Nodes,
   else
     for (i = 0; i < neighnodeqty; i++)
     {
-      (*pneighnodeweights)[i]
-        = 1 / ut_space_dist (Nodes.NodeCoo[node], Nodes.NodeCoo[neighnodes[i]]);
+      (*pneighnodeweights)[i] =
+        1 / ut_space_dist (Nodes.NodeCoo[node], Nodes.NodeCoo[neighnodes[i]]);
 
-      dim = neut_mesh_node_dim (Mesh[0], Mesh[1], Mesh[2], Mesh[3], neighnodes[i]);
+      dim =
+        neut_mesh_node_dim (Mesh[0], Mesh[1], Mesh[2], Mesh[3],
+                            neighnodes[i]);
       (*pneighnodeweights)[i] *= (dim <= 1) ? 10 : 1;
     }
 

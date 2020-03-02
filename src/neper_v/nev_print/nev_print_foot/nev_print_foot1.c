@@ -16,7 +16,8 @@ nev_print_foot (FILE * file, struct PRINT Print)
 
   if (Print.includepov)
   {
-    ut_string_separate2 (Print.includepov, NEUT_SEP_NODEP, NEUT_SEP_DEP, &povs, &povqty2, &povqty);
+    ut_list_break2 (Print.includepov, NEUT_SEP_NODEP, NEUT_SEP_DEP, &povs,
+                    &povqty2, &povqty);
 
     for (i = 0; i < povqty; i++)
     {
@@ -29,12 +30,12 @@ nev_print_foot (FILE * file, struct PRINT Print)
         fprintf (file, "union {\n\n");
 
       while (fgets (line, 1000, filein) != NULL)
-	fprintf (file, "%s", line);
+        fprintf (file, "%s", line);
       fprintf (file, "// Included file %s ---------\n", povs[i][0]);
 
       for (j = 2; j <= povqty2[i]; j++)
       {
-        ut_string_function_separate (povs[i][j - 1], &fct, &vars, &vals, &argqty);
+        ut_string_function (povs[i][j - 1], &fct, &vars, &vals, &argqty);
 
         fprintf (file, "\n%s<", fct);
         for (k = 0; k < argqty; k++)
@@ -44,8 +45,8 @@ nev_print_foot (FILE * file, struct PRINT Print)
         }
         fprintf (file, "}\n");
 
-        ut_free_2d_char (vars, argqty);
-        ut_free_2d_char (vals, argqty);
+        ut_free_2d_char (&vars, argqty);
+        ut_free_2d_char (&vals, argqty);
       }
       fprintf (file, "\n");
 
@@ -53,16 +54,16 @@ nev_print_foot (FILE * file, struct PRINT Print)
     }
   }
 
-  if (!ut_string_inlist (Print.format, NEUT_SEP_NODEP, "pov:objects"))
+  if (!ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects"))
   {
     fprintf (file, "rotate<-90,  0,  0>\n");
     fprintf (file, "scale <  1,  1, -1>\n");
   }
   fprintf (file, "}\n");
 
-  // ut_free_3d_char (povs, povqty);
-  ut_free_1d_int (povqty2);
-  ut_free_1d_char (line);
+  // ut_free_3d_char (&povs, povqty);
+  ut_free_1d_int (&povqty2);
+  ut_free_1d_char (&line);
 
   return;
 }

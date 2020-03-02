@@ -7,6 +7,7 @@
 #include<string.h>
 #include<float.h>
 #include<limits.h>
+#include<sys/time.h>
 
 #include"ut.h"
 #include"orilib.h"

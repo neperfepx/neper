@@ -7,8 +7,7 @@
 void
 nem_meshing_1D_pre (struct MESHPARA *pMeshPara, struct TESS Tess,
                     struct NODES RNodes, struct MESH *RMesh,
-		    struct NODES Nodes,
-                    double **pNodeCl)
+                    struct NODES Nodes, double **pNodeCl)
 {
   int i, j, edge;
   struct NODES N;
@@ -18,7 +17,7 @@ nem_meshing_1D_pre (struct MESHPARA *pMeshPara, struct TESS Tess,
   neut_mesh_set_zero (&M);
 
   (*pNodeCl) = ut_alloc_1d (Nodes.NodeQty + 1);
-  ut_array_1d_memcpy ((*pNodeCl) + 1, Nodes.NodeQty, Nodes.NodeCl + 1);
+  ut_array_1d_memcpy (Nodes.NodeCl + 1, Nodes.NodeQty, (*pNodeCl) + 1);
 
   // in case of faces with < 3 edges, we want to make sure that the
   // face contour has >= 3 elts
@@ -29,21 +28,21 @@ nem_meshing_1D_pre (struct MESHPARA *pMeshPara, struct TESS Tess,
       double *edgel = ut_alloc_1d (Tess.FaceVerQty[i]);
       for (j = 1; j <= Tess.FaceVerQty[i]; j++)
       {
-	edge = Tess.FaceEdgeNb[i][j];
-        nem_meshing_1D_edge (*pMeshPara, Tess, RNodes, RMesh,
-                             edge, (*pMeshPara).edge_cl[edge],
-                             (*pMeshPara).pl, Nodes, *pNodeCl, &N, &M);
-	edgel[j - 1] = Tess.EdgeLength[edge];
-	eltqty += M.EltQty;
+        edge = Tess.FaceEdgeNb[i][j];
+        nem_meshing_1D_edge (*pMeshPara, Tess, RNodes, RMesh, edge,
+                             (*pMeshPara).edge_cl[edge], (*pMeshPara).pl,
+                             Nodes, *pNodeCl, &N, &M);
+        edgel[j - 1] = Tess.EdgeLength[edge];
+        eltqty += M.EltQty;
       }
       int id = 1 + ut_array_1d_max_index (edgel, Tess.FaceVerQty[i]);
       edge = Tess.FaceEdgeNb[i][id];
 
       // if < 3, we add elt(s) to the longest edge
       if (eltqty < 3)
-	(*pMeshPara).edge_cl[edge]
-	  = ut_num_min ((*pMeshPara).edge_cl[edge],
-			Tess.EdgeLength[edge] / (4 - Tess.FaceVerQty[i]));
+        (*pMeshPara).edge_cl[edge] =
+          ut_num_min ((*pMeshPara).edge_cl[edge],
+                      Tess.EdgeLength[edge] / (4 - Tess.FaceVerQty[i]));
     }
 
   neut_mesh_free (&M);
@@ -54,10 +53,9 @@ nem_meshing_1D_pre (struct MESHPARA *pMeshPara, struct TESS Tess,
 
 void
 nem_meshing_1D_edge (struct MESHPARA MeshPara, struct TESS Tess,
-                     struct NODES RNodes, struct MESH *RMesh,
-                     int edge, double cl, double pl,
-                     struct NODES Nodes, double *Node0DCl,
-                     struct NODES *pN, struct MESH *pM)
+                     struct NODES RNodes, struct MESH *RMesh, int edge,
+                     double cl, double pl, struct NODES Nodes,
+                     double *Node0DCl, struct NODES *pN, struct MESH *pM)
 {
   // if the edge must be copied, we copy and escape
   if (!strcmp (MeshPara.edge_op[edge], "copy"))
@@ -100,8 +98,8 @@ nem_meshing_1D_edge_record (struct TESS Tess, int edge, struct NODES N,
                             struct NODES *pNodes, int **N_global_id,
                             struct MESH *Mesh)
 {
-  nem_meshing_1D_edge_record_nodes (Tess, edge, N, master_id,
-                                    N_global_id, pNodes);
+  nem_meshing_1D_edge_record_nodes (Tess, edge, N, master_id, N_global_id,
+                                    pNodes);
 
   nem_meshing_1D_edge_record_elts (edge, M, N_global_id[edge], Mesh);
 
@@ -109,8 +107,8 @@ nem_meshing_1D_edge_record (struct TESS Tess, int edge, struct NODES N,
 }
 
 void
-nem_meshing_1D_post (struct NODES *pNodes, struct MESH *Mesh,
-                     int Node0DQty, double *Node0DCl)
+nem_meshing_1D_post (struct NODES *pNodes, struct MESH *Mesh, int Node0DQty,
+                     double *Node0DCl)
 {
   int i, j;
   double max, *cl = NULL;
@@ -123,18 +121,18 @@ nem_meshing_1D_post (struct NODES *pNodes, struct MESH *Mesh,
     for (i = 1; i <= Node0DQty; i++)
       if ((*pNodes).PerNodeMaster[i] == 0)
       {
-	cl = ut_alloc_1d ((*pNodes).PerNodeSlaveQty[i] + 1);
-	cl[0] = Node0DCl[i];
-	for (j = 1; j <= (*pNodes).PerNodeSlaveQty[i]; j++)
-	  cl[j] = Node0DCl[(*pNodes).PerNodeSlaveNb[i][j]];
-	max = ut_array_1d_max (cl, (*pNodes).PerNodeSlaveQty[i] + 1);
-	Node0DCl[i] = max;
-	for (j = 1; j <= (*pNodes).PerNodeSlaveQty[i]; j++)
-	  Node0DCl[(*pNodes).PerNodeSlaveNb[i][j]] = max;
-	ut_free_1d_ (&cl);
+        cl = ut_alloc_1d ((*pNodes).PerNodeSlaveQty[i] + 1);
+        cl[0] = Node0DCl[i];
+        for (j = 1; j <= (*pNodes).PerNodeSlaveQty[i]; j++)
+          cl[j] = Node0DCl[(*pNodes).PerNodeSlaveNb[i][j]];
+        max = ut_array_1d_max (cl, (*pNodes).PerNodeSlaveQty[i] + 1);
+        Node0DCl[i] = max;
+        for (j = 1; j <= (*pNodes).PerNodeSlaveQty[i]; j++)
+          Node0DCl[(*pNodes).PerNodeSlaveNb[i][j]] = max;
+        ut_free_1d (&cl);
       }
 
-  ut_array_1d_memcpy ((*pNodes).NodeCl + 1, Node0DQty, Node0DCl + 1);
+  ut_array_1d_memcpy (Node0DCl + 1, Node0DQty, (*pNodes).NodeCl + 1);
 
   neut_mesh_init_nodeelts (Mesh + 1, (*pNodes).NodeQty);
   neut_mesh_init_eltelset (Mesh + 1, NULL);

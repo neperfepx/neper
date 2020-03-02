@@ -20,7 +20,7 @@ nev_show_tesr (char **argv, int *pi, struct PRINT *pPrint)
 
 void
 nev_show_tesr_cell (char **argv, int *pi, struct TESR Tesr,
-		    struct PRINT *pPrint)
+                    struct PRINT *pPrint)
 {
   int i, j, status, varqty;
   double res;
@@ -56,46 +56,47 @@ nev_show_tesr_cell (char **argv, int *pi, struct TESR Tesr,
     for (i = 1; i <= Tesr.CellQty; i++)
     {
       for (j = 0; j < varqty; j++)
-	if (strstr (argv[(*pi)], vars[j]))
-	  neut_tesr_var_val_one (Tesr, entity, i, vars[j], vals + j, NULL);
+        if (strstr (argv[(*pi)], vars[j]))
+          neut_tesr_var_val_one (Tesr, entity, i, vars[j], vals + j, NULL);
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);
       if (status == 0)
-	(*pshowarray)[i] = res;
+        (*pshowarray)[i] = res;
       else
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  argv[(*pi)]);
+        ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
+                          argv[(*pi)]);
     }
   }
 
   (*pshowarray)[0] = ut_array_1d_int_sum ((*pshowarray) + 1, Tesr.CellQty);
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
-  ut_free_1d_char (entity);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
+  ut_free_1d_char (&entity);
 
   return;
 }
 
 void
 nev_show_tesr_vox (char **argv, int *pi, struct TESR Tesr,
-		   struct PRINT *pPrint)
+                   struct PRINT *pPrint)
 {
   int i, j, k, varqty;
   char **vars = NULL;
 
   (*pi)++;
 
-  (*pPrint).showvox = ut_alloc_3d_int (Tesr.size[0] + 1, Tesr.size[1] + 1, Tesr.size[2] + 1);
+  (*pPrint).showvox =
+    ut_alloc_3d_int (Tesr.size[0] + 1, Tesr.size[1] + 1, Tesr.size[2] + 1);
 
   neut_tesr_var_list ("vox", &vars, &varqty);
 
   if (!strcmp (argv[(*pi)], "all") || !strcmp (argv[(*pi)], "1"))
-    ut_array_3d_int_set ((*pPrint).showvox, Tesr.size[0] + 1, Tesr.size[1] + 1,
-                         Tesr.size[2] + 1, 1);
+    ut_array_3d_int_set ((*pPrint).showvox, Tesr.size[0] + 1,
+                         Tesr.size[1] + 1, Tesr.size[2] + 1, 1);
   else if (!strcmp (argv[(*pi)], "none") || !strcmp (argv[(*pi)], "0"))
-    ut_array_3d_int_set ((*pPrint).showvox, Tesr.size[0] + 1, Tesr.size[1] + 1,
-                         Tesr.size[2] + 1, 0);
+    ut_array_3d_int_set ((*pPrint).showvox, Tesr.size[0] + 1,
+                         Tesr.size[1] + 1, Tesr.size[2] + 1, 0);
   else
   {
 #pragma omp parallel for schedule(dynamic) private (i,j,k)
@@ -111,19 +112,21 @@ nev_show_tesr_vox (char **argv, int *pi, struct TESR Tesr,
             neut_tesr_pos3_vox (Tesr, i, j, k, &pos);
             for (l = 0; l < varqty; l++)
               if (strstr (argv[(*pi)], vars[l]))
-                neut_tesr_var_val_one (Tesr, "vox", pos, vars[l], vals + l, NULL);
+                neut_tesr_var_val_one (Tesr, "vox", pos, vars[l], vals + l,
+                                       NULL);
 
             if (!ut_math_eval (argv[(*pi)], varqty, vars, vals, &res))
               (*pPrint).showvox[i][j][k] = res;
             else
-              ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
+              ut_print_message (2, 0,
+                                "Expression `%s' could not be processed.\n",
                                 argv[(*pi)]);
 
-            ut_free_1d (vals);
+            ut_free_1d (&vals);
           }
   }
 
-  ut_free_2d_char (vars, varqty);
+  ut_free_2d_char (&vars, varqty);
 
   return;
 }

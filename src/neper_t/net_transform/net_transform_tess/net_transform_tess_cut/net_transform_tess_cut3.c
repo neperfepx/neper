@@ -7,8 +7,8 @@
 
 // merge mirror cells and remove the resulting cell
 void
-net_transform_tess_cut_clean_remove (struct PRIM Prim,
-                                     int *seeds, int seedqty, int *cutcells,
+net_transform_tess_cut_clean_remove (struct PRIM Prim, int *seeds,
+                                     int seedqty, int *cutcells,
                                      int cutcellqty, int *pnewdomface,
                                      struct TESS *pTess)
 {
@@ -24,18 +24,17 @@ net_transform_tess_cut_clean_remove (struct PRIM Prim,
   ut_string_string (Prim.Type, (*pTess).DomFaceType + *pnewdomface);
 
   (*pTess).DomFaceParmQty[*pnewdomface] = Prim.ParmQty;
-  (*pTess).DomFaceParms[*pnewdomface]
-    = ut_alloc_1d ((*pTess).DomFaceParmQty[*pnewdomface]);
-  ut_array_1d_memcpy ((*pTess).DomFaceParms[*pnewdomface],
-                      (*pTess).DomFaceParmQty[*pnewdomface],
-                      Prim.Parms);
+  (*pTess).DomFaceParms[*pnewdomface] =
+    ut_alloc_1d ((*pTess).DomFaceParmQty[*pnewdomface]);
+  ut_array_1d_memcpy (Prim.Parms, (*pTess).DomFaceParmQty[*pnewdomface],
+                      (*pTess).DomFaceParms[*pnewdomface]);
 
   // This merges faces and edges for each cut cell, when possible.
   // This is needed to remove the small edges and faces created by mirroring.
   for (i = 0; i < cutcellqty; i++)
     neut_tess_cells_merge_nocompress (pTess, cutcells + i, 1, -1);
 
-  ut_free_1d_int (poly_new_old);
+  ut_free_1d_int (&poly_new_old);
 
   return;
 }
@@ -43,13 +42,15 @@ net_transform_tess_cut_clean_remove (struct PRIM Prim,
 // project all vertices of the newdomain face onto it,
 // taking domain faces into account
 void
-net_transform_tess_cut_clean_proj (int *newdomfaces, int newdomfaceqty, struct TESS *pTess)
+net_transform_tess_cut_clean_proj (int *newdomfaces, int newdomfaceqty,
+                                   struct TESS *pTess)
 {
   int i, status;
   int ver, verqty, *vers = NULL;
   int *domfaces = NULL, domfaceqty;
 
-  neut_tess_domfaces_vers (*pTess, newdomfaces, newdomfaceqty, &vers, &verqty);
+  neut_tess_domfaces_vers (*pTess, newdomfaces, newdomfaceqty, &vers,
+                           &verqty);
 
   for (i = 0; i < verqty; i++)
   {
@@ -57,16 +58,18 @@ net_transform_tess_cut_clean_proj (int *newdomfaces, int newdomfaceqty, struct T
 
     neut_tess_ver_domfaces (*pTess, ver, &domfaces, &domfaceqty);
 
-    status = neut_tess_domfaces_point_proj (*pTess, domfaces, domfaceqty,
-                                            (*pTess).VerCoo[ver],
-                                            (*pTess).VerCoo[ver]);
+    status =
+      neut_tess_domfaces_point_proj (*pTess, domfaces, domfaceqty,
+                                     (*pTess).VerCoo[ver],
+                                     (*pTess).VerCoo[ver]);
 
     if (status)
-      ut_print_message (2, 3, "Projection failed.  Increase -n or try other -ids.\n");
+      ut_print_message (2, 3,
+                        "Projection failed.  Increase -n or try other -ids.\n");
   }
 
-  ut_free_1d_int (vers);
-  ut_free_1d_int (domfaces);
+  ut_free_1d_int (&vers);
+  ut_free_1d_int (&domfaces);
 
   return;
 }
@@ -80,7 +83,8 @@ net_transform_tess_cut_clean_faceequpdate (int *newdomfaces,
   int verqty, *vers = NULL;
   int face, faceqty, *faces = NULL;
 
-  neut_tess_domfaces_vers (*pTess, newdomfaces, newdomfaceqty, &vers, &verqty);
+  neut_tess_domfaces_vers (*pTess, newdomfaces, newdomfaceqty, &vers,
+                           &verqty);
 
   // updating equations of the faces close to the new domain face,
   // from the coordinates of their vertices
@@ -100,8 +104,8 @@ net_transform_tess_cut_clean_faceequpdate (int *newdomfaces,
     neut_tess_face_fixorifromedges (pTess, face);
   }
 
-  ut_free_1d_int (vers);
-  ut_free_1d_int (faces);
+  ut_free_1d_int (&vers);
+  ut_free_1d_int (&faces);
 
   return;
 }
@@ -118,29 +122,33 @@ net_transform_tess_cut_post_update_domain (struct TESS *pTess)
 
     neut_tess_faces_contiguousfaces (*pTess, -1,
                                      (*pTess).DomTessFaceNb[i] + 1,
-                                     (*pTess).DomTessFaceQty[i],
-                                     &qty, &faces, &faceqty);
+                                     (*pTess).DomTessFaceQty[i], &qty, &faces,
+                                     &faceqty);
     if (qty > 1)
     {
       ut_string_string ((*pTess).DomFaceLabel[i], &body);
 
-      (*pTess).DomFaceLabel[i] = ut_realloc_1d_char ((*pTess).DomFaceLabel[i],
-                                                     strlen (body) + 10);
+      (*pTess).DomFaceLabel[i] =
+        ut_realloc_1d_char ((*pTess).DomFaceLabel[i], strlen (body) + 10);
       sprintf ((*pTess).DomFaceLabel[i], "%s-1", body);
 
       for (j = 1; j < qty; j++)
       {
         newdomface = neut_tess_adddomface_alloc (pTess);
-        (*pTess).DomFaceLabel[newdomface]
-          = ut_realloc_1d_char ((*pTess).DomFaceLabel[newdomface], strlen (body) + 10);
+        (*pTess).DomFaceLabel[newdomface] =
+          ut_realloc_1d_char ((*pTess).DomFaceLabel[newdomface],
+                              strlen (body) + 10);
         sprintf ((*pTess).DomFaceLabel[newdomface], "%s-%d", body, j + 1);
-        ut_string_string ((*pTess).DomFaceType[i], &(*pTess).DomFaceType[newdomface]);
-        ut_array_1d_memcpy ((*pTess).DomFaceEq[newdomface], 4, (*pTess).DomFaceEq[i]);
+        ut_string_string ((*pTess).DomFaceType[i],
+                          &(*pTess).DomFaceType[newdomface]);
+        ut_array_1d_memcpy ((*pTess).DomFaceEq[i], 4,
+                            (*pTess).DomFaceEq[newdomface]);
         (*pTess).DomFaceParmQty[newdomface] = (*pTess).DomFaceParmQty[i];
-        (*pTess).DomFaceParms[newdomface] = ut_alloc_1d ((*pTess).DomFaceParmQty[newdomface]);
-        ut_array_1d_memcpy ((*pTess).DomFaceParms[newdomface],
+        (*pTess).DomFaceParms[newdomface] =
+          ut_alloc_1d ((*pTess).DomFaceParmQty[newdomface]);
+        ut_array_1d_memcpy ((*pTess).DomFaceParms[i],
                             (*pTess).DomFaceParmQty[newdomface],
-                            (*pTess).DomFaceParms[i]);
+                            (*pTess).DomFaceParms[newdomface]);
 
         for (k = 0; k < faceqty[j]; k++)
         {
@@ -154,13 +162,13 @@ net_transform_tess_cut_post_update_domain (struct TESS *pTess)
       }
     }
 
-    ut_free_2d_int (faces, qty);
-    ut_free_1d_int (faceqty);
+    ut_free_2d_int (&faces, qty);
+    ut_free_1d_int (&faceqty);
   }
 
   neut_tess_init_domain_3d_fromdomfaces (pTess);
 
-  ut_free_1d_char (body);
+  ut_free_1d_char (&body);
 
   return;
 }

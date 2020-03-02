@@ -30,7 +30,8 @@ net_tess_opt_comp (struct TOPT *pTOpt)
 #ifdef HAVE_NLOPT
     res = net_tess_opt_comp_nlopt (x, pTOpt);
 #else
-    ut_print_message (2, 0, "net_tess_opt_comp_nlopt not available since Neper was compiled without NLopt.\n");
+    ut_print_message (2, 0,
+                      "net_tess_opt_comp_nlopt not available since Neper was compiled without NLopt.\n");
 #endif
 
 #ifdef HAVE_NLOPT
@@ -41,7 +42,7 @@ net_tess_opt_comp (struct TOPT *pTOpt)
 
   neut_tdyn_fprintf_post (&((*pTOpt).TDyn));
 
-  ut_free_1d (x);
+  ut_free_1d (&x);
 
   return;
 }

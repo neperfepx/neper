@@ -20,11 +20,11 @@ neut_part_set_zero (struct PART *pPart)
 void
 neut_part_free (struct PART Part)
 {
-  ut_free_1d_int (Part.node_parts);
-  ut_free_1d_int (Part.elt_parts);
-  ut_free_1d_int (Part.nodeqty);
-  ut_free_1d_int (Part.eltqty);
-  ut_free_1d_int (Part.targeteltqty);
+  ut_free_1d_int (&Part.node_parts);
+  ut_free_1d_int (&Part.elt_parts);
+  ut_free_1d_int (&Part.nodeqty);
+  ut_free_1d_int (&Part.eltqty);
+  ut_free_1d_int (&Part.targeteltqty);
 
   return;
 }

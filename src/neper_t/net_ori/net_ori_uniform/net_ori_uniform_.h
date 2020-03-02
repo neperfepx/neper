@@ -7,6 +7,7 @@
 #include<limits.h>
 #include<math.h>
 #include<gsl/gsl_rng.h>
+#include<sys/time.h>
 
 #include"structIn_t.h"
 #include"ut.h"

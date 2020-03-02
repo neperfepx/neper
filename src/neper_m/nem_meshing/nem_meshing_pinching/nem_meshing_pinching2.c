@@ -32,16 +32,16 @@ nem_meshing_pinching_testpoly (struct IN_M In, struct TESS Tess,
       }
     }
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
 
   return (status == 1) ? 0 : -1;
 }
 
 void
 nem_meshing_pinching_inter (struct MESHPARA MeshPara, struct TESS *pTess,
-			    struct NODES *pNodes, struct MESH *Mesh,
-			    int elset)
+                            struct NODES *pNodes, struct MESH *Mesh,
+                            int elset)
 {
   int i;
   struct NODES Nint;
@@ -62,21 +62,19 @@ nem_meshing_pinching_inter (struct MESHPARA MeshPara, struct TESS *pTess,
 
   for (i = 0; i < bodynodeqty; i++)
     neut_node_proj_alongontomesh ((*pNodes).NodeCoo[bodynodes[i]],
-				  MeshPara.face_eq[elset],
-				  Nint, Mint, 1);
+                                  MeshPara.face_eq[elset], Nint, Mint, 1);
 
   neut_nodes_free (&Nint);
   neut_mesh_free (&Mint);
-  ut_free_1d_int (bodynodes);
+  ut_free_1d_int (&bodynodes);
 
   return;
 }
 
 void
 nem_meshing_pinching_fix (struct MESHPARA MeshPara, struct TESS *pTess,
-			  struct NODES RNodes, struct MESH* RMesh,
-			  struct NODES *pNodes, struct MESH *Mesh,
-			  int* elts)
+                          struct NODES RNodes, struct MESH *RMesh,
+                          struct NODES *pNodes, struct MESH *Mesh, int *elts)
 {
   int i, j, k, elt, elset, newnode;
   int *facets = NULL, facetqty;
@@ -118,12 +116,12 @@ nem_meshing_pinching_fix (struct MESHPARA MeshPara, struct TESS *pTess,
                                        (*pNodes).NodeCoo[nodes[k]],
                                        (*pNodes).NodeCoo[nodes[k]]);
 
-      ut_free_1d_int_ (&nodes);
+      ut_free_1d_int (&nodes);
     }
   }
 
-  ut_free_1d_int (comelts);
-  ut_free_1d_int (facestates);
+  ut_free_1d_int (&comelts);
+  ut_free_1d_int (&facestates);
 
   return;
 }

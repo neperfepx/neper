@@ -6,9 +6,8 @@
 
 void
 net_mtess_flatten_cell_body (struct MTESS MTess, struct TESS *Tess,
-                       int *CTessIds, int CTessQty,
-		       struct TESS *pFTess, struct TESSE **pTessE,
-		       struct FLATTEN *pFlatten)
+                             int *CTessIds, int CTessQty, struct TESS *pFTess,
+                             struct TESSE **pTessE, struct FLATTEN *pFlatten)
 {
   int i, j, k, l, id, face, poly, cell, domtess, dompoly;
   int *dom = ut_alloc_1d_int (2);
@@ -27,20 +26,20 @@ net_mtess_flatten_cell_body (struct MTESS MTess, struct TESS *Tess,
       neut_flatten_addpoly (pFlatten, dom);
 
       neut_tess_cell_addcentre (pFTess, cell, Tess[id].SeedCoo[j],
-				Tess[id].SeedWeight[j]);
+                                Tess[id].SeedWeight[j]);
       if (Tess[id].CellOri)
-	ut_array_1d_memcpy ((*pFTess).CellOri[cell], 4, Tess[id].CellOri[j]);
+        ut_array_1d_memcpy (Tess[id].CellOri[j], 4, (*pFTess).CellOri[cell]);
 
       for (k = 1; k <= Tess[id].PolyFaceQty[j]; k++)
       {
-	face = Tess[id].PolyFaceNb[j][k];
-	for (l = 0; l < (*pTessE)[id].FaceFFaceQty[face]; l++)
-	{
-	  neut_tess_poly_addface (pFTess, poly,
-				  (*pTessE)[id].FaceFFaceNb[face][l],
-				  Tess[id].PolyFaceOri[j][k] *
-				  (*pTessE)[id].FaceFFaceOri[face][l]);
-	}
+        face = Tess[id].PolyFaceNb[j][k];
+        for (l = 0; l < (*pTessE)[id].FaceFFaceQty[face]; l++)
+        {
+          neut_tess_poly_addface (pFTess, poly,
+                                  (*pTessE)[id].FaceFFaceNb[face][l],
+                                  Tess[id].PolyFaceOri[j][k] *
+                                  (*pTessE)[id].FaceFFaceOri[face][l]);
+        }
       }
 
       domtess = MTess.TessDom[id][0];
@@ -54,7 +53,7 @@ net_mtess_flatten_cell_body (struct MTESS MTess, struct TESS *Tess,
 
   neut_tess_init_facepoly (pFTess);
 
-  ut_free_1d_int (dom);
+  ut_free_1d_int (&dom);
 
   return;
 }

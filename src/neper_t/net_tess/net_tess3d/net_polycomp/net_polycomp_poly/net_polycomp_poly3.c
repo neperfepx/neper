@@ -9,7 +9,7 @@
  */
 void
 BadVerDet (double *plane, int CenterSide, struct POLYMOD Polymod,
-	   int **pBadVer)
+           int **pBadVer)
 {
   /* Mute variables */
   int i;
@@ -24,7 +24,7 @@ BadVerDet (double *plane, int CenterSide, struct POLYMOD Polymod,
   for (i = 1; i <= Polymod.VerQty; i++)
     if (Polymod.VerUse[i] == 1)
     {
-      VerSide = ut_space_planeside (plane, Polymod.VerCoo[i] - 1);
+      VerSide = ut_space_point_plane_side (Polymod.VerCoo[i] - 1, plane);
       /* the term -1 is added to take into account the fact that Side
        * read coordinates in [1]...[3] while they are stored in
        * [0]...[2] in VerCoo[i]
@@ -35,9 +35,9 @@ BadVerDet (double *plane, int CenterSide, struct POLYMOD Polymod,
        */
       if (VerSide != CenterSide)
       {
-	(*pBadVer)[0]++;
-	(*pBadVer) = ut_realloc_1d_int ((*pBadVer), (*pBadVer)[0] + 2);
-	(*pBadVer)[(*pBadVer)[0]] = i;
+        (*pBadVer)[0]++;
+        (*pBadVer) = ut_realloc_1d_int ((*pBadVer), (*pBadVer)[0] + 2);
+        (*pBadVer)[(*pBadVer)[0]] = i;
       }
     }
 
@@ -49,14 +49,14 @@ BadVerDet (double *plane, int CenterSide, struct POLYMOD Polymod,
  */
 int
 PolyhedronModification (int Nei, double *plane, struct POLYMOD *pPolymod,
-			int *BadVer)
+                        int *BadVer)
 {
   int status;
-  int *FnLFaces = NULL;		/* first & last face to be modified         */
-  int Face;			/* current face to be modified              */
-  int pFace;			/* previous face that has been modified     */
-  int nFace;			/* next face to modifiy                     */
-  int firstVer;			/* first created vertex                     */
+  int *FnLFaces = NULL;         /* first & last face to be modified         */
+  int Face;                     /* current face to be modified              */
+  int pFace;                    /* previous face that has been modified     */
+  int nFace;                    /* next face to modifiy                     */
+  int firstVer;                 /* first created vertex                     */
 
   /* VerUseUpdating modifies pPolymod.VerUse: VerUse[i]<--0 if the
    * ith vertex is a bad vertex.
@@ -91,10 +91,11 @@ PolyhedronModification (int Nei, double *plane, struct POLYMOD *pPolymod,
    * initiated.. The number of the created vertex is returned.
    */
   double *coo = ut_alloc_1d (3);
-  neut_polymod_faces_inter (*pPolymod, FnLFaces[0], FnLFaces[1], (*pPolymod).FaceQty,
-                             coo);
-  firstVer = NewVer (pPolymod, FnLFaces[0], FnLFaces[1], (*pPolymod).FaceQty, coo);
-  ut_free_1d (coo);
+  neut_polymod_faces_inter (*pPolymod, FnLFaces[0], FnLFaces[1],
+                            (*pPolymod).FaceQty, coo);
+  firstVer =
+    NewVer (pPolymod, FnLFaces[0], FnLFaces[1], (*pPolymod).FaceQty, coo);
+  ut_free_1d (&coo);
 
   /* NewFaceAddVer adds the new vertex to the new face.
    */
@@ -119,7 +120,7 @@ PolyhedronModification (int Nei, double *plane, struct POLYMOD *pPolymod,
 
   FaceModif (pFace, FnLFaces[1], pPolymod, BadVer, firstVer);
 
-  ut_free_1d_int (FnLFaces);
+  ut_free_1d_int (&FnLFaces);
 
   return 0;
 }

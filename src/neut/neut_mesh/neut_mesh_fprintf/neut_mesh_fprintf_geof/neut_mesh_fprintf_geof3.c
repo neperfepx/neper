@@ -5,7 +5,7 @@
 #include"neut_mesh_fprintf_geof_.h"
 
 void
-neut_mesh_fprintf_geof_elts_1d (FILE *file, struct MESH Mesh1D, int shift)
+neut_mesh_fprintf_geof_elts_1d (FILE * file, struct MESH Mesh1D, int shift)
 {
   int i, eltnodeqty;
 
@@ -26,7 +26,7 @@ neut_mesh_fprintf_geof_elts_1d (FILE *file, struct MESH Mesh1D, int shift)
 }
 
 void
-neut_mesh_fprintf_geof_elts_2d (FILE *file, struct MESH Mesh2D, int shift)
+neut_mesh_fprintf_geof_elts_2d (FILE * file, struct MESH Mesh2D, int shift)
 {
   int i, eltnodeqty;
 
@@ -84,7 +84,8 @@ neut_mesh_fprintf_geof_elts_2d (FILE *file, struct MESH Mesh2D, int shift)
   else if (!strcmp (Mesh2D.EltType, "quad6"))
   {
     if (!strcmp (Mesh2D.EltType, "quad6"))
-      ut_print_message (1, 4, "Elt type `quad6' undefined in Zset (the mesh will not open).\n");
+      ut_print_message (1, 4,
+                        "Elt type `quad6' undefined in Zset (the mesh will not open).\n");
 
     if (Mesh2D.EltOrder == 1)
       abort ();
@@ -108,7 +109,7 @@ neut_mesh_fprintf_geof_elts_2d (FILE *file, struct MESH Mesh2D, int shift)
 }
 
 void
-neut_mesh_fprintf_geof_elts_3d (FILE *file, struct MESH Mesh3D, int shift)
+neut_mesh_fprintf_geof_elts_3d (FILE * file, struct MESH Mesh3D, int shift)
 {
   int i, j;
 
@@ -255,7 +256,7 @@ neut_mesh_fprintf_geof_part_nset (FILE * file, struct PART Part)
     nodeqty = 0;
     for (i = 1; i <= Part.node_parts[0]; i++)
       if (Part.node_parts[i] == p)
-	nodes[nodeqty++] = i;
+        nodes[nodeqty++] = i;
 
     fprintf (file, "\n**nset part%d\n", p + 1);
     Col = 0;
@@ -265,7 +266,7 @@ neut_mesh_fprintf_geof_part_nset (FILE * file, struct PART Part)
     fprintf (file, "\n");
   }
 
-  ut_free_1d_int (nodes);
+  ut_free_1d_int (&nodes);
 
   return;
 }
@@ -281,7 +282,7 @@ neut_mesh_fprintf_geof_part_elset (FILE * file, struct PART Part)
     eltqty = 0;
     for (i = 1; i <= Part.elt_parts[0]; i++)
       if (Part.elt_parts[i] == p)
-	elts[eltqty++] = i;
+        elts[eltqty++] = i;
 
     fprintf (file, "\n**elset part%d\n", p + 1);
     Col = 0;

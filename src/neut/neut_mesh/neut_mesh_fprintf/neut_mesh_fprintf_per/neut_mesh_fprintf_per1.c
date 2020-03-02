@@ -27,7 +27,9 @@ neut_mesh_fprintf_per_geof (FILE * file, struct NODES Nodes)
 
   for (i = 1; i <= Nodes.PerNodeQty; i++)
     for (j = 1; j <= 3; j++)
-      fprintf (file, "**mpc2 %d U%d %d U%d\n", Nodes.PerNodeMaster[Nodes.PerNodeNb[i]], j, Nodes.PerNodeNb[i], j);
+      fprintf (file, "**mpc2 %d U%d %d U%d\n",
+               Nodes.PerNodeMaster[Nodes.PerNodeNb[i]], j, Nodes.PerNodeNb[i],
+               j);
 
   return;
 }

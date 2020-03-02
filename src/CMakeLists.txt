@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.5.2-34\")
+set (NEPER_VERSION \"3.5.2-35\")
 
 # should we use the optional libraries?
 set (HAVE_GSL ON)
@@ -31,10 +31,10 @@ set (MUPARSER_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/muparser")
 set (MUPARSER_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/muparser/include")
 
 include_directories("${PROJECT_SOURCE_DIR}/contrib/openGJK")
-include_directories("${PROJECT_SOURCE_DIR}/contrib/ut")
-set (UT_SOURCE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut")
-set (UT_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/ut")
-set (UT_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut/include")
+include_directories("${PROJECT_SOURCE_DIR}/contrib/ut/src")
+set (UT_SOURCE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut/src")
+set (UT_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/ut/src")
+set (UT_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut/src/include")
 
 include_directories("${PROJECT_SOURCE_DIR}/contrib/orilib")
 include_directories("${PROJECT_SOURCE_DIR}/neut")
@@ -44,7 +44,7 @@ include_directories("${PROJECT_SOURCE_DIR}/neper_v")
 
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_BINARY_DIR}/contrib/openGJK")
-include_directories("${PROJECT_BINARY_DIR}/contrib/ut")
+include_directories("${PROJECT_BINARY_DIR}/contrib/ut/src")
 include_directories("${PROJECT_BINARY_DIR}/contrib/orilib")
 include_directories("${PROJECT_BINARY_DIR}/contrib/muparser")
 include_directories("${PROJECT_BINARY_DIR}/neut")
@@ -83,7 +83,7 @@ set(MESSAGE_QUIET ON)
 
 add_subdirectory(contrib/openGJK)
 add_subdirectory(contrib/muparser)
-add_subdirectory(contrib/ut)
+add_subdirectory(contrib/ut/src)
 add_subdirectory(contrib/orilib)
 add_subdirectory(neut)
 add_subdirectory(neper_t)

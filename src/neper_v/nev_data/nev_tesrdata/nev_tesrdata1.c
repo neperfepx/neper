@@ -23,17 +23,17 @@ nev_tesrdata_init (struct TESR Tesr, struct TESRDATA *pTesrData)
     else if (!strcmp ((*pTesrData).ColDataType, "col"))
       nev_data_col_colour ((*pTesrData).ColData, Qty, (*pTesrData).Col);
     else if (!strncmp ((*pTesrData).ColDataType, "ori", 3))
-      nev_data_ori_colour ((*pTesrData).ColData, Qty, (*pTesrData).ColScheme, (*pTesrData).Col);
+      nev_data_ori_colour ((*pTesrData).ColData, Qty, (*pTesrData).ColScheme,
+                           (*pTesrData).Col);
     else if (!strncmp ((*pTesrData).ColDataType, "disori", 6))
-      nev_data_ori_colour ((*pTesrData).ColData, Qty, (*pTesrData).ColScheme, (*pTesrData).Col);
+      nev_data_ori_colour ((*pTesrData).ColData, Qty, (*pTesrData).ColScheme,
+                           (*pTesrData).Col);
     else if (!strcmp ((*pTesrData).ColDataType, "scal"))
-      nev_data_scal_colour ((*pTesrData).ColData,
-	                    (*pTesrData).ColDataDef, Qty,
-			    (*pTesrData).Scale,
-			    "blue,cyan,yellow,red",
-			    (*pTesrData).Col, &((*pTesrData).Scale));
+      nev_data_scal_colour ((*pTesrData).ColData, (*pTesrData).ColDataDef,
+                            Qty, (*pTesrData).Scale, "blue,cyan,yellow,red",
+                            (*pTesrData).Col, &((*pTesrData).Scale));
     else
-      ut_error_expression ((*pTesrData).ColDataType);
+      ut_print_exprbug ((*pTesrData).ColDataType);
   }
 
   if ((*pTesrData).trsdata)
@@ -50,8 +50,8 @@ nev_tesrdata_init (struct TESR Tesr, struct TESRDATA *pTesrData)
       (*pTesrData).BRad = 1.00070287798127172169 * Tesr.vsize[0];
   }
   else if (Tesr.Dim == 1)
-    (*pTesrData).BRad = sqrt (pow (Tesr.vsize[0], 2)
-			      + pow (.5 * (*pTesrData).BRad, 2));
+    (*pTesrData).BRad =
+      sqrt (pow (Tesr.vsize[0], 2) + pow (.5 * (*pTesrData).BRad, 2));
 
   if (!(*pTesrData).BCol)
     (*pTesrData).BCol = ut_alloc_1d_int (3);
@@ -61,7 +61,7 @@ nev_tesrdata_init (struct TESR Tesr, struct TESRDATA *pTesrData)
 
 void
 nev_tesrdata_fscanf (struct TESR Tesr, char *entity, char *type,
-		     char *argument, struct TESRDATA *pTesrData)
+                     char *argument, struct TESRDATA *pTesrData)
 {
   int cell;
   struct TESRDATA TesrDataCell;

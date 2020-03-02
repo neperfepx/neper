@@ -11,7 +11,7 @@ extern "C"
 #define NEUT_POINT_FSCANF_H
 
   extern void neut_point_fscanf (FILE *, struct POINT *);
-  extern void neut_point_name_fscanf (char *, struct POINT *);
+  extern void neut_point_fnscanf (char *, struct POINT *);
 
 #endif				/* NEUT_POINT_FSCANF_H */
 

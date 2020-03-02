@@ -86,8 +86,8 @@ neut_tesl_tessEdgeFace (struct TESL Tesl, struct TESS *pTess)
       tmpedge = Tesl.FaceEdgeNb[i][j];
 
       (*pTess).EdgeFaceNb[tmpedge] =
-	ut_realloc_1d_int ((*pTess).EdgeFaceNb[tmpedge],
-			   ++(*pTess).EdgeFaceQty[tmpedge]);
+        ut_realloc_1d_int ((*pTess).EdgeFaceNb[tmpedge],
+                           ++(*pTess).EdgeFaceQty[tmpedge]);
 
       (*pTess).EdgeFaceNb[tmpedge][(*pTess).EdgeFaceQty[tmpedge] - 1] = i;
     }

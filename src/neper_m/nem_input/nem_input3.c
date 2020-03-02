@@ -156,7 +156,7 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-clmin");
   strcpy (ArgList[++ArgQty], "-order");
   strcpy (ArgList[++ArgQty], "-dim");
-  strcpy (ArgList[++ArgQty], "-meshreconstruct");	//
+  strcpy (ArgList[++ArgQty], "-meshreconstruct");       //
   strcpy (ArgList[++ArgQty], "-mesh2dalgo");
   strcpy (ArgList[++ArgQty], "-mesh2dpinchfix");
   strcpy (ArgList[++ArgQty], "-mesh3dalgo");
@@ -190,7 +190,7 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-format");
   strcpy (ArgList[++ArgQty], "-elset");
   strcpy (ArgList[++ArgQty], "-nset");
-  strcpy (ArgList[++ArgQty], "-surf");	// deprecated
+  strcpy (ArgList[++ArgQty], "-surf");  // deprecated
   strcpy (ArgList[++ArgQty], "-faset");
   strcpy (ArgList[++ArgQty], "-performat");
 
@@ -224,7 +224,7 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-transporteltmethod");
 
   // Restart a job -----------------------------------------------------
-  strcpy (ArgList[++ArgQty], "-loadtess");	// not documented
+  strcpy (ArgList[++ArgQty], "-loadtess");      // not documented
   strcpy (ArgList[++ArgQty], "-loadmesh");
   strcpy (ArgList[++ArgQty], "-loadpoint");
 
@@ -239,259 +239,260 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
     {
       if (!(*pIn).tess && !(*pIn).tesr && !(*pIn).mesh)
       {
-	i--;
+        i--;
 
-	char *tmp = NULL;
-	ut_arg_nextasstring (argv, &i, Arg, &tmp);
-	char **list = NULL;
-	int qty;
+        char *tmp = NULL;
+        ut_arg_nextasstring (argv, &i, Arg, &tmp);
+        char **list = NULL;
+        int qty;
 
-	ut_string_separate (tmp, NEUT_SEP_NODEP, &list, &qty);
+        ut_list_break (tmp, NEUT_SEP_NODEP, &list, &qty);
 
-	for (j = 0; j < qty; j++)
-	{
-	  char *format = NULL;
-	  char **list2 = NULL;
-	  int qty2;
+        for (j = 0; j < qty; j++)
+        {
+          char *format = NULL;
+          char **list2 = NULL;
+          int qty2;
 
-	  ut_string_separate (list[j], NEUT_SEP_DEP, &list2, &qty2);
+          ut_list_break (list[j], NEUT_SEP_DEP, &list2, &qty2);
 
-	  ut_file_format (list2[0], &format);
+          ut_file_format (list2[0], &format);
 
-	  if (format && (!strcmp (format, "tess") || !strcmp (format,
-							      "mtess")))
-	    ut_string_string (list[j], &((*pIn).tess));
-	  else if (format && (!strcmp (format, "tesr")))
-	    ut_string_string (list[j], &((*pIn).tesr));
-	  else if (format && (!strcmp (format, "gmsh_msh")))
-	    ut_string_string (list[j], &((*pIn).mesh));
-	  else
-	    ut_print_message (2, 3, "Unknown input file format.");
+          if (format && !strcmp (format, "tess"))
+            ut_string_string (list[j], &((*pIn).tess));
+          else if (format && (!strcmp (format, "tesr")))
+            ut_string_string (list[j], &((*pIn).tesr));
+          else if (format && (!strcmp (format, "gmsh:msh")))
+            ut_string_string (list[j], &((*pIn).mesh));
+          else
+            ut_print_message (2, 3, "Unknown input file format.");
 
-	  ut_free_2d_char (list2, qty2);
-	  ut_free_1d_char (format);
-	}
+          ut_free_2d_char (&list2, qty2);
+          ut_free_1d_char (&format);
+        }
 
-	ut_free_1d_char (tmp);
-	ut_free_2d_char (list, qty);
+        ut_free_1d_char (&tmp);
+        ut_free_2d_char (&list, qty);
       }
       else
       {
-	ut_print_message (2, 0, "Input file already loaded\n");
-	abort ();
+        ut_print_message (2, 0, "Input file already loaded\n");
+        abort ();
       }
     }
 
     else
     {
       /* Searching option name (string completion stuff) */
-      Res = ut_string_comp (argv[i], ArgList, ArgQty, &Arg);
+      Res = ut_string_completion (argv[i], ArgList, ArgQty, &Arg);
       if (Res == 1)
       {
-	ut_print_lineheader (2);
-	printf ("Several possibilities for option `%s'.\n", argv[i]);
-	ut_arg_badarg ();
+        ut_print_lineheader (2);
+        printf ("Several possibilities for option `%s'.\n", argv[i]);
+        ut_arg_badarg ();
       }
       else if (Res == -1)
       {
-	ut_print_lineheader (2);
-	printf ("Unknown option `%s'.\n", argv[i]);
-	ut_arg_badarg ();
+        ut_print_lineheader (2);
+        printf ("Unknown option `%s'.\n", argv[i]);
+        ut_arg_badarg ();
       }
 
       /* Prerequisites ---------------------------------------------- */
 
       if (!strcmp (Arg, "-gmsh"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).gmsh));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).gmsh));
 
       else if (!strcmp (Arg, "-tmp"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).tmp));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).tmp));
 
       /* General options ------------------------------------------------ */
 
       else if (!strcmp (Arg, "-o"))
       {
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).body));
-	ut_string_body ((*pIn).body, ".", &((*pIn).body));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).body));
+        ut_string_body ((*pIn).body, ".", &((*pIn).body));
       }
 
       /* Options for the meshing ----------------------------------------- */
 
       else if (!strcmp (Arg, "-cl"))
       {
-	ut_string_string ("abs", &(*pIn).cltype);
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clstring));
+        ut_string_string ("abs", &(*pIn).cltype);
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clstring));
       }
       else if (!strcmp (Arg, "-rcl"))
       {
-	ut_string_string ("rel", &(*pIn).cltype);
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clstring));
+        ut_string_string ("rel", &(*pIn).cltype);
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clstring));
       }
       else if (!strcmp (Arg, "-clface"))
       {
-	ut_string_string ("abs", &(*pIn).cltype);
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clfacestring));
+        ut_string_string ("abs", &(*pIn).cltype);
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clfacestring));
       }
       else if (!strcmp (Arg, "-rclface"))
       {
-	ut_string_string ("rel", &(*pIn).cltype);
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clfacestring));
+        ut_string_string ("rel", &(*pIn).cltype);
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clfacestring));
       }
       else if (!strcmp (Arg, "-cledge"))
       {
-	ut_string_string ("abs", &(*pIn).cltype);
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).cledgestring));
+        ut_string_string ("abs", &(*pIn).cltype);
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).cledgestring));
       }
       else if (!strcmp (Arg, "-rcledge"))
       {
-	ut_string_string ("rel", &(*pIn).cltype);
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).cledgestring));
+        ut_string_string ("rel", &(*pIn).cltype);
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).cledgestring));
       }
       else if (!strcmp (Arg, "-clver"))
       {
-	ut_string_string ("abs", &(*pIn).cltype);
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clverstring));
+        ut_string_string ("abs", &(*pIn).cltype);
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clverstring));
       }
       else if (!strcmp (Arg, "-rclver"))
       {
-	ut_string_string ("rel", &(*pIn).cltype);
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clverstring));
+        ut_string_string ("rel", &(*pIn).cltype);
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clverstring));
       }
       else if (!strcmp (Arg, "-clratio"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clratiostring));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).clratiostring));
       else if (!strcmp (Arg, "-clmin"))
-	ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX, &((*pIn).clmin));
+        ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX, &((*pIn).clmin));
       else if ((!strcmp (Arg, "-pl")))
-	ut_arg_nextasreal (argv, &i, Arg, 1, DBL_MAX, &((*pIn).pl));
+        ut_arg_nextasreal (argv, &i, Arg, 1, DBL_MAX, &((*pIn).pl));
       else if (!strcmp (Arg, "-tesrsmooth"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).tesrsmooth));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).tesrsmooth));
       else if ((!strcmp (Arg, "-tesrsmoothfact")))
-	ut_arg_nextasreal (argv, &i, Arg, 0, 1, &((*pIn).tesrsmoothfact));
+        ut_arg_nextasreal (argv, &i, Arg, 0, 1, &((*pIn).tesrsmoothfact));
       else if ((!strcmp (Arg, "-tesrsmoothitermax")))
-	ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX,
-			  &((*pIn).tesrsmoothitermax));
+        ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX,
+                          &((*pIn).tesrsmoothitermax));
       else if (!strcmp (Arg, "-mesh2dalgo"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh2dalgo));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh2dalgo));
       else if (!strcmp (Arg, "-mesh2dpinchfix"))
-	ut_arg_nextaslogical (argv, &i, Arg, &((*pIn).mesh2dpinchfix));
+        ut_arg_nextaslogical (argv, &i, Arg, &((*pIn).mesh2dpinchfix));
       else if (!strcmp (Arg, "-mesh3dalgo"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dalgo));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dalgo));
       else if (!strcmp (Arg, "-meshqualexpr"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).meshqualexpr));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).meshqualexpr));
       else if (!strcmp (Arg, "-meshqualdisexpr"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).meshqualdisexpr));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).meshqualdisexpr));
       else if (!strcmp (Arg, "-meshqualmin"))
-	ut_arg_nextasreal (argv, &i, Arg, 0, 1, &((*pIn).meshqualmin));
+        ut_arg_nextasreal (argv, &i, Arg, 0, 1, &((*pIn).meshqualmin));
       else if (!strcmp (Arg, "-singnodedup"))
-	ut_arg_nextasint (argv, &i, Arg, 0, 1, &((*pIn).singnodedup));
+        ut_arg_nextasint (argv, &i, Arg, 0, 1, &((*pIn).singnodedup));
       else if (!strcmp (Arg, "-dupnodemerge"))
-	ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX, &((*pIn).dupnodemerge));
-      else if (!strcmp (Arg, "-interface") )
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).interface));
+        ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX, &((*pIn).dupnodemerge));
+      else if (!strcmp (Arg, "-interface"))
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).interface));
       // development options
       else if (!strcmp (Arg, "-mesh3dreport"))
-	ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).mesh3dreport));
+        ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).mesh3dreport));
       else if (!strcmp (Arg, "-meshpoly"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).meshpoly));
-      else if (!strcmp (Arg, "-meshface") )
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).meshface));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).meshpoly));
+      else if (!strcmp (Arg, "-meshface"))
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).meshface));
       // end of development options
 
       else if ((!strcmp (Arg, "-order")))
-	ut_arg_nextasint (argv, &i, Arg, 1, 2, &((*pIn).order));
+        ut_arg_nextasint (argv, &i, Arg, 1, 2, &((*pIn).order));
       else if (!strcmp (Arg, "-dim"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).dimstring));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).dimstring));
       else if ((!strcmp (Arg, "-elttype")))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).elttype));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).elttype));
       else if (!strcmp (Arg, "-statnode"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).stn));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).stn));
       else if (!strcmp (Arg, "-statelt0d"))
-	ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[0])));
+        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[0])));
       else if (!strcmp (Arg, "-statelt1d"))
-	ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[1])));
+        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[1])));
       else if (!strcmp (Arg, "-statelt2d"))
-	ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[2])));
+        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[2])));
       else if (!strcmp (Arg, "-statelt3d"))
-	ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[3])));
+        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[3])));
       else if (!strcmp (Arg, "-statelt"))
-	ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[4])));
+        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[4])));
       else if (!strcmp (Arg, "-statelset0d"))
-	ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[0])));
+        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[0])));
       else if (!strcmp (Arg, "-statelset1d"))
-	ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[1])));
+        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[1])));
       else if (!strcmp (Arg, "-statelset2d"))
-	ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[2])));
+        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[2])));
       else if (!strcmp (Arg, "-statelset3d"))
-	ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[3])));
+        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[3])));
       else if (!strcmp (Arg, "-statelset"))
-	ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[4])));
+        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[4])));
       else if (!strcmp (Arg, "-statpoint"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).stpt));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).stpt));
       else if (!strcmp (Arg, "-mesh3dmaxtime"))
-	ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX,
-			   &((*pIn).mesh3dmaxtime));
+        ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX,
+                           &((*pIn).mesh3dmaxtime));
       else if (!strcmp (Arg, "-mesh2drmaxtime"))
-	ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX,
-			   &((*pIn).mesh2drmaxtime));
+        ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX,
+                           &((*pIn).mesh2drmaxtime));
       else if (!strcmp (Arg, "-mesh2diter"))
-	ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).mesh2diter));
+        ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).mesh2diter));
       else if (!strcmp (Arg, "-mesh2dmaxtime"))
-	ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX,
-			   &((*pIn).mesh2dmaxtime));
+        ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX,
+                           &((*pIn).mesh2dmaxtime));
       else if (!strcmp (Arg, "-mesh3drmaxtime"))
-	ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX,
-			   &((*pIn).mesh3drmaxtime));
+        ut_arg_nextasreal (argv, &i, Arg, 0, DBL_MAX,
+                           &((*pIn).mesh3drmaxtime));
       else if (!strcmp (Arg, "-mesh3diter"))
-	ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).mesh3diter));
+        ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).mesh3diter));
       else if (!strcmp (Arg, "-mesh3dclconv"))
       {
-        ut_print_message (1, 1, "Option `-mesh3dclconv' is deprecated and will be removed in future versions.  Use `-mesh3dclreps' instead.\n");
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dclrepsstring));
+        ut_print_message (1, 1,
+                          "Option `-mesh3dclconv' is deprecated and will be removed in future versions.  Use `-mesh3dclreps' instead.\n");
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dclrepsstring));
       }
       else if (!strcmp (Arg, "-mesh3dclreps"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dclrepsstring));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dclrepsstring));
       else if (!strcmp (Arg, "-elset"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).elset));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).elset));
       else if (!strcmp (Arg, "-nset"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).nset));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).nset));
       else if (!strcmp (Arg, "-faset"))
       {
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).faset));
-	if ((*pIn).faset[0] == '2')
-	  ut_arg_nextasstring (argv, &i, Arg, &((*pIn).faset));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).faset));
+        if ((*pIn).faset[0] == '2')
+          ut_arg_nextasstring (argv, &i, Arg, &((*pIn).faset));
       }
       else if (!strcmp (Arg, "-performat"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).performat));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).performat));
       else if (!strcmp (Arg, "-loadmesh"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).loadmesh));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).loadmesh));
       else if (!strcmp (Arg, "-loadpoint"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).loadpoint));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).loadpoint));
       else if ((!strcmp (Arg, "-transport")))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transportstring));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transportstring));
       else if ((!strcmp (Arg, "-transportfepx")))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transportfepxstring));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transportfepxstring));
       else if ((!strcmp (Arg, "-transporteltmethod")))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transporteltmethodstring));
+        ut_arg_nextasstring (argv, &i, Arg,
+                             &((*pIn).transporteltmethodstring));
       else if (!strcmp (Arg, "-format"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).format));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).format));
       else if (!strcmp (Arg, "-part"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).partstring));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).partstring));
       else if (!strcmp (Arg, "-partmethod"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).partmethod));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).partmethod));
       else if (!strcmp (Arg, "-partbalancing"))
-	ut_arg_nextasreal (argv, &i, Arg, 0, 1, &((*pIn).partbalancing));
+        ut_arg_nextasreal (argv, &i, Arg, 0, 1, &((*pIn).partbalancing));
       else if (!strcmp (Arg, "-transform"))
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transform));
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transform));
       else
-	ut_arg_error (Arg, "");
+        ut_arg_error (Arg, "");
     }
   }
 
-  ut_free_2d_char (ArgList, 101);
-  ut_free_1d_char (Arg);
-  ut_free_1d_char (format);
-  ut_free_1d_char (tmpstring);
-  ut_free_1d_char (tmpstring2);
+  ut_free_2d_char (&ArgList, 101);
+  ut_free_1d_char (&Arg);
+  ut_free_1d_char (&format);
+  ut_free_1d_char (&tmpstring);
+  ut_free_1d_char (&tmpstring2);
 
   return;
 }

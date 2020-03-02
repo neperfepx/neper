@@ -5,8 +5,8 @@
 #include"neut_mesh_fprintf_gmsh_.h"
 
 void
-neut_mesh_fprintf_gmsh_pre (struct TESS Tess, char *fasetlist, char ***pfasets,
-                            int **pfasetids, int *pfasetqty)
+neut_mesh_fprintf_gmsh_pre (struct TESS Tess, char *fasetlist,
+                            char ***pfasets, int **pfasetids, int *pfasetqty)
 {
   int i, j, qty, found;
   char **tmp = NULL;
@@ -14,7 +14,7 @@ neut_mesh_fprintf_gmsh_pre (struct TESS Tess, char *fasetlist, char ***pfasets,
   *pfasetqty = 0;
   if (fasetlist && strlen (fasetlist) > 0 && strcmp (fasetlist, "none"))
   {
-    ut_string_separate (fasetlist, NEUT_SEP_NODEP, &tmp, &qty);
+    ut_list_break (fasetlist, NEUT_SEP_NODEP, &tmp, &qty);
 
     for (i = 0; i < qty; i++)
     {
@@ -24,7 +24,9 @@ neut_mesh_fprintf_gmsh_pre (struct TESS Tess, char *fasetlist, char ***pfasets,
         if (!strcmp (tmp[i], Tess.DomFaceLabel[j]))
         {
           (*pfasetqty)++;
-          (*pfasets) = ut_realloc_2d_char_addline (*pfasets, *pfasetqty, strlen (Tess.DomFaceLabel[j]) +1);
+          (*pfasets) =
+            ut_realloc_2d_char_addline (*pfasets, *pfasetqty,
+                                        strlen (Tess.DomFaceLabel[j]) + 1);
           (*pfasetids) = ut_realloc_1d_int (*pfasetids, *pfasetqty);
 
           strcpy ((*pfasets)[(*pfasetqty) - 1], Tess.DomFaceLabel[j]);
@@ -35,7 +37,8 @@ neut_mesh_fprintf_gmsh_pre (struct TESS Tess, char *fasetlist, char ***pfasets,
         }
 
       if (!found)
-        ut_print_message (1, 3, "Faset `%s' not found.  Skipping...\n", tmp[i]);
+        ut_print_message (1, 3, "Faset `%s' not found.  Skipping...\n",
+                          tmp[i]);
     }
   }
 
@@ -43,9 +46,9 @@ neut_mesh_fprintf_gmsh_pre (struct TESS Tess, char *fasetlist, char ***pfasets,
 }
 
 void
-neut_meshheader_fprintf_gmsh (FILE * file, char *mode, struct MESH Mesh0D, struct
-			      MESH Mesh1D, struct MESH Mesh2D,
-			      struct MESH Mesh3D)
+neut_meshheader_fprintf_gmsh (FILE * file, char *mode, struct MESH Mesh0D,
+                              struct MESH Mesh1D, struct MESH Mesh2D,
+                              struct MESH Mesh3D)
 {
   int filetype, one = 1;
 
@@ -64,8 +67,8 @@ neut_meshheader_fprintf_gmsh (FILE * file, char *mode, struct MESH Mesh0D, struc
     fprintf (file, "\n");
   }
 
-  if (!Mesh0D.ElsetId && !Mesh1D.ElsetId
-      && !Mesh2D.ElsetId && !Mesh3D.ElsetId)
+  if (!Mesh0D.ElsetId && !Mesh1D.ElsetId && !Mesh2D.ElsetId
+      && !Mesh3D.ElsetId)
   {
     fprintf (file, "$Comments\n");
     fprintf (file, "contiguous\n");
@@ -89,9 +92,9 @@ neut_nodes_fprintf_gmsh (FILE * file, char *mode, struct NODES Nodes)
     {
       fprintf (file, "%d", i);
       for (j = 0; j < 3; j++)
-	fprintf (file, " %.12f",
-		 (fabs (Nodes.NodeCoo[i][j]) <
-		  1e-12) ? 0 : Nodes.NodeCoo[i][j]);
+        fprintf (file, " %.12f",
+                 (fabs (Nodes.NodeCoo[i][j]) <
+                  1e-12) ? 0 : Nodes.NodeCoo[i][j]);
       fprintf (file, "\n");
     }
   }
@@ -111,12 +114,11 @@ neut_nodes_fprintf_gmsh (FILE * file, char *mode, struct NODES Nodes)
 
 void
 neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
-                        struct MESH Mesh0D,
-			struct MESH Mesh1D, struct MESH Mesh2D,
-			struct MESH Mesh3D,
-			struct PART Part, struct MESH MeshCo,
-                        char **fasets, int *fasetids, int fasetqty,
-                        char *dim, char *numbering)
+                        struct MESH Mesh0D, struct MESH Mesh1D,
+                        struct MESH Mesh2D, struct MESH Mesh3D,
+                        struct PART Part, struct MESH MeshCo, char **fasets,
+                        int *fasetids, int fasetqty, char *dim,
+                        char *numbering)
 {
   int i, j, elt_type0D, elt_type1D, elt_type2D, elt_type3D, elt_typeCo, elset;
   int eltnodeqty1D, eltnodeqty2D, eltnodeqty3D, eltnodeqtyCo;
@@ -136,7 +138,7 @@ neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
       for (j = 0; j < eltqty; j++)
         eltfaset[elts[j]] = fasetids[i] + Mesh2D.ElsetQty;
 
-      ut_free_1d_int (elts);
+      ut_free_1d_int (&elts);
     }
   }
 
@@ -151,69 +153,69 @@ neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
 
   if (Mesh0D.EltQty != 0
       && neut_gmsh_elt_nb (Mesh0D.EltType, Mesh0D.Dimension, Mesh0D.EltOrder,
-			   &elt_type0D) != 0)
-    ut_error_reportbug ();
+                           &elt_type0D) != 0)
+    ut_print_neperbug ();
 
   if (Mesh1D.EltQty != 0
       && neut_gmsh_elt_nb (Mesh1D.EltType, Mesh1D.Dimension, Mesh1D.EltOrder,
-			   &elt_type1D) != 0)
-    ut_error_reportbug ();
+                           &elt_type1D) != 0)
+    ut_print_neperbug ();
 
   if (Mesh2D.EltQty != 0
       && neut_gmsh_elt_nb (Mesh2D.EltType, Mesh2D.Dimension, Mesh2D.EltOrder,
-			   &elt_type2D) != 0)
-    ut_error_reportbug ();
+                           &elt_type2D) != 0)
+    ut_print_neperbug ();
 
   if (Mesh3D.EltQty != 0
       && neut_gmsh_elt_nb (Mesh3D.EltType, Mesh3D.Dimension, Mesh3D.EltOrder,
-			   &elt_type3D) != 0)
-    ut_error_reportbug ();
+                           &elt_type3D) != 0)
+    ut_print_neperbug ();
 
   if (MeshCo.EltQty != 0
       && neut_gmsh_elt_nb (MeshCo.EltType, MeshCo.Dimension, MeshCo.EltOrder,
-			   &elt_typeCo) != 0)
-    ut_error_reportbug ();
+                           &elt_typeCo) != 0)
+    ut_print_neperbug ();
 
   fprintf (file, "$Elements\n");
   int eltqty = 0;
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "0"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "0"))
   {
     shift[0] = 0;
     eltqty += Mesh0D.EltQty;
   }
 
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "1"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "1"))
   {
     if (numbering == NULL || !strcmp (numbering, "contiguous"))
       shift[1] = eltqty;
     else if (!strcmp (numbering, "from1"))
       shift[1] = 0;
     else
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
     eltqty += Mesh1D.EltQty;
   }
 
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "2"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "2"))
   {
     if (numbering == NULL || !strcmp (numbering, "contiguous"))
       shift[2] = eltqty;
     else if (!strcmp (numbering, "from1"))
       shift[2] = 0;
     else
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
     eltqty += Mesh2D.EltQty;
   }
 
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "3"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "3"))
   {
     if (numbering == NULL || !strcmp (numbering, "contiguous"))
       shift[3] = eltqty;
     else if (!strcmp (numbering, "from1"))
       shift[3] = 0;
     else
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
     eltqty += Mesh3D.EltQty;
   }
@@ -225,7 +227,7 @@ neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
     else if (!strcmp (numbering, "from1"))
       shift[4] = 0;
     else
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
     eltqty += MeshCo.EltQty;
   }
@@ -233,11 +235,11 @@ neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
   fprintf (file, "%d\n", eltqty);
 
   // 0D mesh
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "0"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "0"))
   {
     if (!strcmp (mode, "binary"))
     {
-      int data[3] = {elt_type0D, Mesh0D.EltQty, 3};
+      int data[3] = { elt_type0D, Mesh0D.EltQty, 3 };
       fwrite (data, sizeof (int), 3, file);
     }
 
@@ -245,29 +247,30 @@ neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
       neut_mesh_init_eltelset (&Mesh0D, NULL);
     for (i = 1; i <= Mesh0D.EltQty; i++)
     {
-      elset = (!Mesh0D.ElsetId) ? Mesh0D.EltElset[i]
-	: Mesh0D.ElsetId[Mesh0D.EltElset[i]];
+      elset =
+        (!Mesh0D.ElsetId) ? Mesh0D.EltElset[i] : Mesh0D.ElsetId[Mesh0D.
+                                                                EltElset[i]];
 
       if (!strcmp (mode, "ascii"))
       {
-	fprintf (file, "%d %d 3 %d %d 0 ", i, elt_type0D, elset, elset);
-	ut_array_1d_int_fprintf (file, Mesh0D.EltNodes[i], 1, "%d");
+        fprintf (file, "%d %d 3 %d %d 0 ", i, elt_type0D, elset, elset);
+        ut_array_1d_int_fprintf (file, Mesh0D.EltNodes[i], 1, "%d");
       }
       else
       {
-	int data[4] = {i, elset, elset, 0};
-	fwrite (&data, sizeof (int), 4, file);
-	fwrite (Mesh0D.EltNodes[i], sizeof (int), 1, file);
+        int data[4] = { i, elset, elset, 0 };
+        fwrite (&data, sizeof (int), 4, file);
+        fwrite (Mesh0D.EltNodes[i], sizeof (int), 1, file);
       }
     }
   }
 
   // 1D mesh
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "1"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "1"))
   {
     if (!strcmp (mode, "binary"))
     {
-      int data[3] = {elt_type1D, Mesh1D.EltQty, 3};
+      int data[3] = { elt_type1D, Mesh1D.EltQty, 3 };
       fwrite (data, sizeof (int), 3, file);
     }
 
@@ -276,30 +279,32 @@ neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
 
     for (i = 1; i <= Mesh1D.EltQty; i++)
     {
-      elset = (!Mesh1D.ElsetId) ? Mesh1D.EltElset[i]
-	: Mesh1D.ElsetId[Mesh1D.EltElset[i]];
+      elset =
+        (!Mesh1D.ElsetId) ? Mesh1D.EltElset[i] : Mesh1D.ElsetId[Mesh1D.
+                                                                EltElset[i]];
 
       if (!strcmp (mode, "ascii"))
       {
-	fprintf (file, "%d %d 3 %d %d 0 ", i + shift[1], elt_type1D,
-		 elset, elset);
-	ut_array_1d_int_fprintf (file, Mesh1D.EltNodes[i], eltnodeqty1D, "%d");
+        fprintf (file, "%d %d 3 %d %d 0 ", i + shift[1], elt_type1D, elset,
+                 elset);
+        ut_array_1d_int_fprintf (file, Mesh1D.EltNodes[i], eltnodeqty1D,
+                                 "%d");
       }
       else
       {
-	int data[4] = {i + shift[1], elset, elset, 0};
-	fwrite (&data, sizeof (int), 4, file);
-	fwrite (Mesh1D.EltNodes[i], sizeof (int), eltnodeqty1D, file);
+        int data[4] = { i + shift[1], elset, elset, 0 };
+        fwrite (&data, sizeof (int), 4, file);
+        fwrite (Mesh1D.EltNodes[i], sizeof (int), eltnodeqty1D, file);
       }
     }
   }
 
   // 2D mesh
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "2"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "2"))
   {
     if (!strcmp (mode, "binary"))
     {
-      int data[3] = {elt_type2D, Mesh2D.EltQty, !fasetqty ? 3 : 4};
+      int data[3] = { elt_type2D, Mesh2D.EltQty, !fasetqty ? 3 : 4 };
       fwrite (data, sizeof (int), 3, file);
     }
 
@@ -308,29 +313,31 @@ neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
 
     for (i = 1; i <= Mesh2D.EltQty; i++)
     {
-      elset = (!Mesh2D.ElsetId) ? Mesh2D.EltElset[i]
-	: Mesh2D.ElsetId[Mesh2D.EltElset[i]];
+      elset =
+        (!Mesh2D.ElsetId) ? Mesh2D.EltElset[i] : Mesh2D.ElsetId[Mesh2D.
+                                                                EltElset[i]];
 
       if (!strcmp (mode, "ascii"))
       {
         if (!fasetqty || !eltfaset[i])
-          fprintf (file, "%d %d 3 %d %d 0 ", i + shift[2], elt_type2D,
-                   elset, elset);
+          fprintf (file, "%d %d 3 %d %d 0 ", i + shift[2], elt_type2D, elset,
+                   elset);
         else
           fprintf (file, "%d %d 4 %d %d 0 %d ", i + shift[2], elt_type2D,
                    elset, elset, eltfaset[i]);
-        ut_array_1d_int_fprintf (file, Mesh2D.EltNodes[i], eltnodeqty2D, "%d");
+        ut_array_1d_int_fprintf (file, Mesh2D.EltNodes[i], eltnodeqty2D,
+                                 "%d");
       }
       else
       {
         if (!fasetqty)
         {
-          int data[4] = {i + shift[2], elset, elset, 0};
+          int data[4] = { i + shift[2], elset, elset, 0 };
           fwrite (&data, sizeof (int), 4, file);
         }
         else
         {
-          int data[5] = {i + shift[2], elset, elset, 0, eltfaset[i]};
+          int data[5] = { i + shift[2], elset, elset, 0, eltfaset[i] };
           fwrite (&data, sizeof (int), 5, file);
         }
         fwrite (Mesh2D.EltNodes[i], sizeof (int), eltnodeqty2D, file);
@@ -339,63 +346,77 @@ neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
   }
 
   // 3D mesh
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "3"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "3"))
   {
     if (!strcmp (mode, "binary"))
     {
-      int data[3] = {elt_type3D, Mesh3D.EltQty, 3};
+      int data[3] = { elt_type3D, Mesh3D.EltQty, 3 };
       fwrite (data, sizeof (int), 3, file);
     }
 
     for (i = 1; i <= Mesh3D.EltQty; i++)
     {
-      elset = (!Mesh3D.ElsetId) ? Mesh3D.EltElset[i]
-        : Mesh3D.ElsetId[Mesh3D.EltElset[i]];
+      elset =
+        (!Mesh3D.ElsetId) ? Mesh3D.EltElset[i] : Mesh3D.ElsetId[Mesh3D.
+                                                                EltElset[i]];
 
       if (!strcmp (mode, "ascii"))
       {
-        fprintf (file, "%d %d 3 %d %d %d ", i + shift[3], elt_type3D,
-                 elset, elset, (Part.qty > 0) ? Part.elt_parts[i] + 1 : 0);
+        fprintf (file, "%d %d 3 %d %d %d ", i + shift[3], elt_type3D, elset,
+                 elset, (Part.qty > 0) ? Part.elt_parts[i] + 1 : 0);
         ut_array_1d_int_fprintf (file, Mesh3D.EltNodes[i], eltnodeqty3D,
                                  "%d");
       }
       else
       {
-        int data[4] = {i + shift[3], elset, elset,
-                       (Part.qty > 0) ? Part.elt_parts[i] + 1 : 0};
+        int data[4] = { i + shift[3], elset, elset,
+          (Part.qty > 0) ? Part.elt_parts[i] + 1 : 0
+        };
         fwrite (&data, sizeof (int), 4, file);
         fwrite (Mesh3D.EltNodes[i], sizeof (int), eltnodeqty3D, file);
       }
     }
   }
 
-  // 3D mesh
+  // cohesive element mesh
   if (MeshCo.EltQty > 0)
   {
+    int shiftCo;
+
     if (!strcmp (MeshCo.EltType, "quad6"))
-      ut_print_message (1, 4, "Elt type `quad6' undefined in Gmsh (the mesh will not open).\n");
+      ut_print_message (1, 4,
+                        "Elt type `quad6' undefined in Gmsh (the mesh will not open).\n");
 
     if (!strcmp (mode, "binary"))
     {
-      int data[3] = {elt_typeCo, MeshCo.EltQty, 3};
+      int data[3] = { elt_typeCo, MeshCo.EltQty, 3 };
       fwrite (data, sizeof (int), 3, file);
     }
 
+    if (MeshCo.Dimension == 2)
+      shiftCo = Mesh2D.ElsetQty;
+    else if (MeshCo.Dimension == 3)
+      shiftCo = Mesh3D.ElsetQty;
+    else
+      abort ();
+
     for (i = 1; i <= MeshCo.EltQty; i++)
     {
-      elset = (!MeshCo.ElsetId) ? MeshCo.EltElset[i]
-        : MeshCo.ElsetId[MeshCo.EltElset[i]];
+      elset =
+        (!MeshCo.ElsetId) ? MeshCo.EltElset[i] : MeshCo.ElsetId[MeshCo.
+                                                                EltElset[i]];
+      elset += shiftCo;
 
       if (!strcmp (mode, "ascii"))
       {
-        fprintf (file, "%d %d 3 %d %d %d ", i + shift[4], elt_typeCo,
-                 elset, elset, 0);
+        fprintf (file, "%d %d 3 %d %d %d ", i + shift[4], elt_typeCo, elset,
+                 elset, 0);
         ut_array_1d_int_fprintf (file, MeshCo.EltNodes[i], eltnodeqtyCo,
                                  "%d");
       }
       else
       {
-        int data[4] = {i + shift[4], elset, elset, 0};
+        int data[4] = { i + shift[4], elset, elset, 0 };
         fwrite (&data, sizeof (int), 4, file);
         fwrite (MeshCo.EltNodes[i], sizeof (int), eltnodeqtyCo, file);
       }
@@ -404,31 +425,31 @@ neut_elts_fprintf_gmsh (FILE * file, char *mode, struct TESS Tess,
 
   fprintf (file, "$EndElements\n");
 
-  ut_free_1d_int (shift);
-  ut_free_1d_int (eltfaset);
+  ut_free_1d_int (&shift);
+  ut_free_1d_int (&eltfaset);
 
   return;
 }
 
 void
 neut_physical_fprintf_gmsh (FILE * file, struct MESH Mesh0D,
-			    struct MESH Mesh1D, struct MESH Mesh2D,
+                            struct MESH Mesh1D, struct MESH Mesh2D,
                             struct MESH Mesh3D, struct MESH MeshCo,
-                            char **fasets, int *fasetids,
-                            int fasetqty, char *dim)
+                            char **fasets, int *fasetids, int fasetqty,
+                            char *dim)
 {
   int i, physicalqty = 0;
 
   fprintf (file, "$PhysicalNames\n");
 
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "0"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "0"))
     physicalqty += Mesh0D.ElsetQty;
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "1"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "1"))
     physicalqty += Mesh1D.ElsetQty;
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "2"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "2"))
     physicalqty += Mesh2D.ElsetQty;
   physicalqty += fasetqty;
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "3"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "3"))
     physicalqty += Mesh3D.ElsetQty;
   if (MeshCo.EltQty > 0)
     physicalqty += MeshCo.ElsetQty;
@@ -436,7 +457,7 @@ neut_physical_fprintf_gmsh (FILE * file, struct MESH Mesh0D,
   fprintf (file, "%d\n", physicalqty);
 
   // 0D mesh
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "0"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "0"))
     for (i = 1; i <= Mesh0D.ElsetQty; i++)
     {
       if (Mesh0D.ElsetLabels)
@@ -446,7 +467,7 @@ neut_physical_fprintf_gmsh (FILE * file, struct MESH Mesh0D,
     }
 
   // 1D mesh
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "1"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "1"))
     for (i = 1; i <= Mesh1D.ElsetQty; i++)
     {
       if (Mesh1D.ElsetLabels)
@@ -456,7 +477,7 @@ neut_physical_fprintf_gmsh (FILE * file, struct MESH Mesh0D,
     }
 
   // 2D mesh
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "2"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "2"))
   {
     for (i = 1; i <= Mesh2D.ElsetQty; i++)
     {
@@ -471,7 +492,7 @@ neut_physical_fprintf_gmsh (FILE * file, struct MESH Mesh0D,
   }
 
   // 3D mesh
-  if (ut_string_inlist (dim, NEUT_SEP_NODEP, "3"))
+  if (ut_list_testelt (dim, NEUT_SEP_NODEP, "3"))
     for (i = 1; i <= Mesh3D.ElsetQty; i++)
     {
       if (Mesh3D.ElsetLabels)
@@ -486,7 +507,8 @@ neut_physical_fprintf_gmsh (FILE * file, struct MESH Mesh0D,
     for (i = 1; i <= MeshCo.ElsetQty; i++)
     {
       if (MeshCo.ElsetLabels)
-        fprintf (file, "%d %d %s\n", MeshCo.Dimension, MeshCo.ElsetId[i], MeshCo.ElsetLabels[i]);
+        fprintf (file, "%d %d %s\n", MeshCo.Dimension, MeshCo.ElsetId[i],
+                 MeshCo.ElsetLabels[i]);
       else
         abort ();
     }

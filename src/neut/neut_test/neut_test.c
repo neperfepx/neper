@@ -20,11 +20,11 @@ neut_test_set_zero (struct TEST *pTest)
 void
 neut_test_free (struct TEST *pTest)
 {
-  ut_free_1d_int ((*pTest).Id);
-  ut_free_1d_char ((*pTest).ModPreCom);
-  ut_free_2d_char ((*pTest).PreCom, (*pTest).Qty);
-  ut_free_2d_char ((*pTest).ComDep, (*pTest).Qty);
-  ut_free_2d_char ((*pTest).Com, (*pTest).Qty);
+  ut_free_1d_int (&(*pTest).Id);
+  ut_free_1d_char (&(*pTest).ModPreCom);
+  ut_free_2d_char (&(*pTest).PreCom, (*pTest).Qty);
+  ut_free_2d_char (&(*pTest).ComDep, (*pTest).Qty);
+  ut_free_2d_char (&(*pTest).Com, (*pTest).Qty);
   (*pTest).Qty = 0;
 
   return;

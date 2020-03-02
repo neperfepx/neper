@@ -6,16 +6,16 @@
 
 int
 net_tess3d_domain (struct TESS PTess, int poly, int TessId,
-		   struct MTESS *pMTess, struct TESS *pTess)
+                   struct MTESS *pMTess, struct TESS *pTess)
 {
   if (pMTess)
   {
-    (*pMTess).TessDomVerNb
-      = ut_realloc_1d_pint ((*pMTess).TessDomVerNb, TessId + 1);
-    (*pMTess).TessDomEdgeNb
-      = ut_realloc_1d_pint ((*pMTess).TessDomEdgeNb, TessId + 1);
-    (*pMTess).TessDomFaceNb
-      = ut_realloc_1d_pint ((*pMTess).TessDomFaceNb, TessId + 1);
+    (*pMTess).TessDomVerNb =
+      ut_realloc_1d_pint ((*pMTess).TessDomVerNb, TessId + 1);
+    (*pMTess).TessDomEdgeNb =
+      ut_realloc_1d_pint ((*pMTess).TessDomEdgeNb, TessId + 1);
+    (*pMTess).TessDomFaceNb =
+      ut_realloc_1d_pint ((*pMTess).TessDomFaceNb, TessId + 1);
 
     if (TessId == 1)
     {
@@ -26,9 +26,12 @@ net_tess3d_domain (struct TESS PTess, int poly, int TessId,
   }
 
   neut_tess_init_domain_poly (pTess, PTess, poly,
-			      pMTess? &((*pMTess).TessDomVerNb[TessId])  : NULL,
-			      pMTess? &((*pMTess).TessDomEdgeNb[TessId]) : NULL,
-			      pMTess? &((*pMTess).TessDomFaceNb[TessId]) : NULL);
+                              pMTess ? &((*pMTess).
+                                         TessDomVerNb[TessId]) : NULL,
+                              pMTess ? &((*pMTess).
+                                         TessDomEdgeNb[TessId]) : NULL,
+                              pMTess ? &((*pMTess).
+                                         TessDomFaceNb[TessId]) : NULL);
 
   if (pMTess)
   {
@@ -39,7 +42,7 @@ net_tess3d_domain (struct TESS PTess, int poly, int TessId,
 
       pos = ut_array_1d_int_eltpos (PTess.FacePoly[domface], 2, poly);
       if (pos == -1)
-        ut_error_reportbug ();
+        ut_print_neperbug ();
 
       (*pMTess).DomTessFaceNb[PTess.TessId][domface][pos] = i;
     }

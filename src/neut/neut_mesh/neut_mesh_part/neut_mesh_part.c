@@ -6,7 +6,7 @@
 
 int
 neut_mesh_elt_coms (struct MESH Mesh, int elt, int partqty, int *parttab,
-		    int *parttab2, int **coms, int *pcomqty)
+                    int *parttab2, int **coms, int *pcomqty)
 {
   int i, j, pos, eltpart, nodepart, comtotalqty;
   int eltnodeqty =
@@ -26,19 +26,19 @@ neut_mesh_elt_coms (struct MESH Mesh, int elt, int partqty, int *parttab,
       comtotalqty++;
       pos = -1;
       for (j = 0; j < *pcomqty; j++)
-	if (coms[j][0] == nodepart)
-	{
-	  pos = j;
-	  break;
-	}
+        if (coms[j][0] == nodepart)
+        {
+          pos = j;
+          break;
+        }
 
       if (pos != -1)
-	coms[pos][1]++;
+        coms[pos][1]++;
       else
       {
-	coms[(*pcomqty)][0] = nodepart;
-	coms[(*pcomqty)][1] = 1;
-	(*pcomqty)++;
+        coms[(*pcomqty)][0] = nodepart;
+        coms[(*pcomqty)][1] = 1;
+        (*pcomqty)++;
       }
     }
   }

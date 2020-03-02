@@ -5,7 +5,8 @@
 #include"net_domain_cube_.h"
 
 void
-net_domain_cubeparms (char *domain, double **size, int *ppseudodim, double *ppseudosize)
+net_domain_cubeparms (char *domain, double **size, int *ppseudodim,
+                      double *ppseudosize)
 {
   int i, varqty;
   char **vars = NULL;
@@ -13,10 +14,10 @@ net_domain_cubeparms (char *domain, double **size, int *ppseudodim, double *ppse
 
   ut_array_2d_zero (size, 3, 2);
 
-  ut_string_function_separate (domain, &fct, NULL, &vars, &varqty);
+  ut_string_function (domain, &fct, NULL, &vars, &varqty);
 
   if ((!strcmp (fct, "square") && varqty != 2)
-   || (!strcmp (fct, "cube") && varqty != 3))
+      || (!strcmp (fct, "cube") && varqty != 3))
     ut_print_message (2, 0, "Failed to process expression `%s'.\n", domain);
 
   if (!strcmp (fct, "cube"))
@@ -41,8 +42,8 @@ net_domain_cubeparms (char *domain, double **size, int *ppseudodim, double *ppse
   else
     abort ();
 
-  ut_free_1d_char (fct);
-  ut_free_2d_char (vars, varqty);
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vars, varqty);
 
   return;
 }

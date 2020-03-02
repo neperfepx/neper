@@ -16,7 +16,7 @@ extern "C"
 #include<float.h>
 #define isNaN(x) ((x) != (x))
 
-#include"../ut/ut.h"
+#include"../ut/src/ut.h"
 #include"../ol_set.h"
 
 #endif /* OL_DIS_DEP_H */

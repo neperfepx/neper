@@ -20,8 +20,8 @@ net_reg_merge_del_ff (struct TESS *pTess, int ver)
 
   res = ut_array_1d_max (FFF, faceqty);
 
-  ut_free_1d_int (face);
-  ut_free_1d (FFF);
+  ut_free_1d_int (&face);
+  ut_free_1d (&FFF);
 
   return res;
 }

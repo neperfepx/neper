@@ -58,17 +58,17 @@ neut_mesh_fscanf_gmshHead (FILE * msh, int *pcontiguous, char **pmode)
     do
     {
       if (fscanf (msh, "%s", string) != 1)
-	abort ();
+        abort ();
 
       if (strcmp (string, "contiguous") == 0)
-	(*pcontiguous) = 1;
+        (*pcontiguous) = 1;
     }
     while (strcmp (string, "$EndComments") != 0);
 
     do
     {
       if (fscanf (msh, "%s", string) != 1)
-	abort ();
+        abort ();
     }
     while (strcmp (string, "$EndMeshFormat") != 0);
   }

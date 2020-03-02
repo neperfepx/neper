@@ -5,9 +5,8 @@
 #include"net_mtess_flatten_cell_.h"
 
 void
-net_mtess_flatten_cell (struct TESS *Tess,
-			int *CTessIds, int CTessQty,
-			struct TESS *pFTess)
+net_mtess_flatten_cell (struct TESS *Tess, int *CTessIds, int CTessQty,
+                        struct TESS *pFTess)
 {
   int i, j, id, id2;
 
@@ -23,7 +22,7 @@ net_mtess_flatten_cell (struct TESS *Tess,
       id = CTessIds[i];
 
       for (j = 1; j <= Tess[id].CellQty; j++)
-	(*pFTess).CellLamId[++id2] = Tess[id].CellLamId[j];
+        (*pFTess).CellLamId[++id2] = Tess[id].CellLamId[j];
     }
   }
 

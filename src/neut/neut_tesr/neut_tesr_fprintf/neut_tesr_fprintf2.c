@@ -49,7 +49,8 @@ neut_tesr_fprintf_data (FILE * file, char *format, struct TESR Tesr)
 }
 
 void
-neut_tesr_fprintf_oridata (FILE * file, char *des, char *format, struct TESR Tesr)
+neut_tesr_fprintf_oridata (FILE * file, char *des, char *format,
+                           struct TESR Tesr)
 {
   fprintf (file, "\n **oridata\n");
   fprintf (file, "   %s\n", des);
@@ -82,7 +83,7 @@ neut_tesr_fprintf_cell (FILE * file, struct TESR Tesr)
     {
       fprintf (file, " %3d ", i);
       for (j = 0; j < Tesr.Dim; j++)
-	fprintf (file, "%.12f ", Tesr.SeedCoo[i][j]);
+        fprintf (file, "%.12f ", Tesr.SeedCoo[i][j]);
       fprintf (file, "%.12f\n", Tesr.SeedWeight[i]);
     }
   }
@@ -136,7 +137,7 @@ neut_tesr_fprintf_cell (FILE * file, struct TESR Tesr)
 
 void
 neut_tesr_fprintf_data_raw (FILE * file, char *rawname, char *format,
-			    struct TESR Tesr)
+                            struct TESR Tesr)
 {
   fprintf (file, " **data\n");
   fprintf (file, "  *file %s", rawname);
@@ -149,8 +150,8 @@ neut_tesr_fprintf_data_raw (FILE * file, char *rawname, char *format,
 }
 
 void
-neut_tesr_fprintf_oridata_raw (FILE * file, char *rawname, char *des, char *format,
-			       struct TESR Tesr)
+neut_tesr_fprintf_oridata_raw (FILE * file, char *rawname, char *des,
+                               char *format, struct TESR Tesr)
 {
   fprintf (file, " **oridata\n");
   fprintf (file, "   %s\n", des);
@@ -165,22 +166,25 @@ neut_tesr_fprintf_oridata_raw (FILE * file, char *rawname, char *des, char *form
 
 
 void
-neut_tesr_fprintf_data_noheader (FILE * file, char *format, struct TESR Tesr, int* CellId)
+neut_tesr_fprintf_data_noheader (FILE * file, char *format, struct TESR Tesr,
+                                 int *CellId)
 {
   int i, j, k, count;
   int *size = ut_alloc_1d_int (3);
   // char* progress = ut_alloc_1d_char (10);
 
   ut_array_1d_int_set (size, 3, 1);
-  ut_array_1d_int_memcpy (size, Tesr.Dim, Tesr.size);
+  ut_array_1d_int_memcpy (Tesr.size, Tesr.Dim, size);
 
   if (!strcmp (format, "ascii"))
   {
     count = 0;
     for (k = 1; k <= size[2]; k++)
       for (j = 1; j <= size[1]; j++)
-	for (i = 1; i <= size[0]; i++)
-	  ut_print_wnc_int (file, CellId ? CellId[Tesr.VoxCell[i][j][k]] : Tesr.VoxCell[i][j][k], &count, 72);
+        for (i = 1; i <= size[0]; i++)
+          ut_print_wnc_int (file,
+                            CellId ? CellId[Tesr.VoxCell[i][j][k]] : Tesr.
+                            VoxCell[i][j][k], &count, 72);
   }
 
   else if (!strcmp (format, "binary8"))
@@ -189,29 +193,31 @@ neut_tesr_fprintf_data_noheader (FILE * file, char *format, struct TESR Tesr, in
 
     for (k = 1; k <= size[2]; k++)
       for (j = 1; j <= size[1]; j++)
-	for (i = 1; i <= size[0]; i++)
-	{
-	  data = CellId ? CellId[Tesr.VoxCell[i][j][k]] : Tesr.VoxCell[i][j][k];
-	  fwrite (&data, sizeof (unsigned char), 1, file);
-	}
+        for (i = 1; i <= size[0]; i++)
+        {
+          data =
+            CellId ? CellId[Tesr.VoxCell[i][j][k]] : Tesr.VoxCell[i][j][k];
+          fwrite (&data, sizeof (unsigned char), 1, file);
+        }
   }
 
   else if ((!strcmp (format, "binary16") && !ut_sys_endian ())
-        || (!strcmp (format, "binary16_big") && ut_sys_endian ()))
+           || (!strcmp (format, "binary16_big") && ut_sys_endian ()))
   {
     short data;
 
     for (k = 1; k <= size[2]; k++)
       for (j = 1; j <= size[1]; j++)
-	for (i = 1; i <= size[0]; i++)
-	{
-	  data = CellId ? CellId[Tesr.VoxCell[i][j][k]] : Tesr.VoxCell[i][j][k];
-	  fwrite (&data, sizeof (short), 1, file);
-	}
+        for (i = 1; i <= size[0]; i++)
+        {
+          data =
+            CellId ? CellId[Tesr.VoxCell[i][j][k]] : Tesr.VoxCell[i][j][k];
+          fwrite (&data, sizeof (short), 1, file);
+        }
   }
 
   else if ((!strcmp (format, "binary16") && ut_sys_endian ())
-        || (!strcmp (format, "binary16_big") && !ut_sys_endian ()))
+           || (!strcmp (format, "binary16_big") && !ut_sys_endian ()))
   {
     short data;
     short val2;
@@ -220,33 +226,35 @@ neut_tesr_fprintf_data_noheader (FILE * file, char *format, struct TESR Tesr, in
 
     for (k = 1; k <= size[2]; k++)
       for (j = 1; j <= size[1]; j++)
-	for (i = 1; i <= size[0]; i++)
-	{
-	  data = CellId ? CellId[Tesr.VoxCell[i][j][k]] : Tesr.VoxCell[i][j][k];
-	  pval = (char *) &data;
-	  pval2[1] = pval[0];
-	  pval2[0] = pval[1];
+        for (i = 1; i <= size[0]; i++)
+        {
+          data =
+            CellId ? CellId[Tesr.VoxCell[i][j][k]] : Tesr.VoxCell[i][j][k];
+          pval = (char *) &data;
+          pval2[1] = pval[0];
+          pval2[0] = pval[1];
 
-	  fwrite (pval2, sizeof (short), 1, file);
-	}
+          fwrite (pval2, sizeof (short), 1, file);
+        }
   }
 
   else if ((!strcmp (format, "binary32") && !ut_sys_endian ())
-        || (!strcmp (format, "binary32_big") && ut_sys_endian ()))
+           || (!strcmp (format, "binary32_big") && ut_sys_endian ()))
   {
     int data;
 
     for (k = 1; k <= size[2]; k++)
       for (j = 1; j <= size[1]; j++)
-	for (i = 1; i <= size[0]; i++)
-	{
-	  data = CellId ? CellId[Tesr.VoxCell[i][j][k]] : Tesr.VoxCell[i][j][k];
-	  fwrite (&data, sizeof (int), 1, file);
-	}
+        for (i = 1; i <= size[0]; i++)
+        {
+          data =
+            CellId ? CellId[Tesr.VoxCell[i][j][k]] : Tesr.VoxCell[i][j][k];
+          fwrite (&data, sizeof (int), 1, file);
+        }
   }
 
   else if ((!strcmp (format, "binary32") && ut_sys_endian ())
-        || (!strcmp (format, "binary32_big") && !ut_sys_endian ()))
+           || (!strcmp (format, "binary32_big") && !ut_sys_endian ()))
   {
     int data, val2 = 0;
     char *pval = NULL;
@@ -254,29 +262,31 @@ neut_tesr_fprintf_data_noheader (FILE * file, char *format, struct TESR Tesr, in
 
     for (k = 1; k <= size[2]; k++)
       for (j = 1; j <= size[1]; j++)
-	for (i = 1; i <= size[0]; i++)
-	{
-	  data = CellId ? CellId[Tesr.VoxCell[i][j][k]] : Tesr.VoxCell[i][j][k];
-	  pval = (char *) &data;
-	  pval2[3] = pval[0];
-	  pval2[2] = pval[1];
-	  pval2[1] = pval[2];
-	  pval2[0] = pval[3];
-	  fwrite (pval2, sizeof (int), 1, file);
-	}
+        for (i = 1; i <= size[0]; i++)
+        {
+          data =
+            CellId ? CellId[Tesr.VoxCell[i][j][k]] : Tesr.VoxCell[i][j][k];
+          pval = (char *) &data;
+          pval2[3] = pval[0];
+          pval2[2] = pval[1];
+          pval2[1] = pval[2];
+          pval2[0] = pval[3];
+          fwrite (pval2, sizeof (int), 1, file);
+        }
   }
 
   else
     abort ();
 
-  // ut_free_1d_char (progress);
-  ut_free_1d_int (size);
+  // ut_free_1d_char (&progress);
+  ut_free_1d_int (&size);
 
   return;
 }
 
 void
-neut_tesr_fprintf_oridata_noheader (FILE * file, char *des, char *format, struct TESR Tesr)
+neut_tesr_fprintf_oridata_noheader (FILE * file, char *des, char *format,
+                                    struct TESR Tesr)
 {
   int i, j, k, l;
 

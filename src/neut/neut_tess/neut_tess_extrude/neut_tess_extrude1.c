@@ -8,7 +8,7 @@ void
 neut_tess_extrude (struct TESS Tess, double d, struct TESS *pT)
 {
   if (Tess.Dim != 2)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   neut_tess_free (pT);
 

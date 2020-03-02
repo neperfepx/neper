@@ -24,8 +24,8 @@ neut_lloyd_set_zero (struct LLOYD *pLloyd)
 void
 neut_lloyd_free (struct LLOYD *pLloyd)
 {
-  ut_free_1d_char ((*pLloyd).norm);
-  ut_free_1d_int ((*pLloyd).dims);
+  ut_free_1d_char (&(*pLloyd).norm);
+  ut_free_1d_int (&(*pLloyd).dims);
 
   neut_lloyd_set_zero (pLloyd);
 

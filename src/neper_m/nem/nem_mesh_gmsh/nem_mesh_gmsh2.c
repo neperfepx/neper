@@ -7,7 +7,7 @@
 /* MeshingOptions writes the meshing options into file. */
 void
 nem_mesh_gmsh_options (FILE * file, int algo2d, int algo3d, int opti,
-		       double rnd)
+                       double rnd)
 {
   fprintf (file, "/* Options for the meshing: */\n");
   fprintf (file, "General.Verbosity   = 0;\n");
@@ -50,19 +50,21 @@ nem_mesh_2d_gmsh_writeboundary (struct TESS Tess, struct NODES Nodes,
   for (i = 0; i < *pbnodeqty; i++)
   {
     node = (*pbnodes)[i];
-    ut_array_1d_memcpy ((*pbnodecoos)[i], 3, Nodes.NodeCoo[node]);
+    ut_array_1d_memcpy (Nodes.NodeCoo[node], 3, (*pbnodecoos)[i]);
 
     // if modified face, projecting the node into its initial plane
     if (Tess.FaceState[face] > 0 && faceproj)
-      ut_space_projpoint_alongonto ((*pbnodecoos)[i], faceproj + 1, faceproj);
+      ut_space_point_dir_plane_proj ((*pbnodecoos)[i], faceproj + 1, faceproj,
+                                     (*pbnodecoos)[i]);
 
-    fprintf (file, "Point(%d) = {%.12f, %.12f, %.12f, %.12f};\n",
-	     i + 1, (*pbnodecoos)[i][0], (*pbnodecoos)[i][1], (*pbnodecoos)[i][2], Nodes.NodeCl[node]);
+    fprintf (file, "Point(%d) = {%.12f, %.12f, %.12f, %.12f};\n", i + 1,
+             (*pbnodecoos)[i][0], (*pbnodecoos)[i][1], (*pbnodecoos)[i][2],
+             Nodes.NodeCl[node]);
   }
 
   for (i = 1; i <= *pbnodeqty; i++)
     fprintf (file, "Line(%d) = {%d,%d} ;\n", i, i,
-             ut_num_rotpos (1, *pbnodeqty, i, 1));
+             ut_array_rotpos (1, *pbnodeqty, i, 1));
 
   fprintf (file, "Line Loop(1) = {");
 

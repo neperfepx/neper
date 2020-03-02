@@ -6,7 +6,7 @@
 
 void
 neut_oset_kdtree (struct OL_SET *pOSet, struct QCLOUD *pqcloud,
-                  my_kd_tree_t **pqindex)
+                  my_kd_tree_t ** pqindex)
 {
   neut_oset_kdtree_cloud (pOSet, pqcloud);
   neut_oset_kdtree_build (pqcloud, pqindex);

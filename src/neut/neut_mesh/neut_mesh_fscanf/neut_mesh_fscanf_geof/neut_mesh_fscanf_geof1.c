@@ -72,7 +72,7 @@ neut_mesh_fscanf_geof (FILE * file, struct NODES *pNodes, struct MESH *pMesh)
     else if ((*pMesh).EltOrder != order || (*pMesh).Dimension != dim)
     {
       ut_print_messagewnc (2, 72,
-			   "Mesh dimension and element order must be the same for all elements.");
+                           "Mesh dimension and element order must be the same for all elements.");
       /* abort (); */
     }
 
@@ -93,35 +93,35 @@ neut_mesh_fscanf_geof (FILE * file, struct NODES *pNodes, struct MESH *pMesh)
       status += fscanf (file, "%d", &((*pMesh).EltNodes[i][8]));
       status += fscanf (file, "%d", &((*pMesh).EltNodes[i][3]));
       if (status != 10)
-	abort ();
+        abort ();
     }
   }
 
   /* reading elsets ------------------------------------------------- */
-  (*pMesh).ElsetQty = ut_file_string_number (file, "**elset", "");
+  (*pMesh).ElsetQty = ut_file_string_number (file, "**elset");
 
   if ((*pMesh).ElsetQty != 0)
   {
     elset_nbs = ut_alloc_1d_int ((*pMesh).ElsetQty + 1);
     (*pMesh).Elsets = ut_alloc_1d_pint ((*pMesh).ElsetQty + 1);
 
-    if (ut_file_string_goto (file, "**elset") == -1)
+    if (ut_file_string_goto (file, "**elset") != 0)
       abort ();
 
     for (i = 1; i <= (*pMesh).ElsetQty; i++)
     {
       ut_file_skip (file, 1);
       for (j = 0; j < 5; j++)
-	if (fscanf (file, "%c", &c) != 1)
-	  abort ();
+        if (fscanf (file, "%c", &c) != 1)
+          abort ();
 
       if (fscanf (file, "%d", &(elset_nbs[i])) != 1)
-	abort ();
+        abort ();
 
       if (i < (*pMesh).ElsetQty)
-	qty = ut_file_string_nextpos (file, "**elset");
+        qty = ut_file_string_nextpos (file, "**elset");
       else
-	qty = ut_file_string_nextpos (file, "***return");
+        qty = ut_file_string_nextpos (file, "***return");
 
       (*pMesh).Elsets[i] = ut_alloc_1d_int (qty + 1);
       (*pMesh).Elsets[i][0] = qty;
@@ -130,8 +130,8 @@ neut_mesh_fscanf_geof (FILE * file, struct NODES *pNodes, struct MESH *pMesh)
     }
   }
 
-  ut_free_1d_char (string);
-  ut_free_1d_char (type);
+  ut_free_1d_char (&string);
+  ut_free_1d_char (&type);
 
   neut_mesh_init_eltelset (pMesh, elset_nbs);
 
@@ -139,7 +139,7 @@ neut_mesh_fscanf_geof (FILE * file, struct NODES *pNodes, struct MESH *pMesh)
    * */
   neut_mesh_renumber_continuous (pMesh, node_nbs, elt_nbs, elset_nbs);
 
-  ut_free_1d_int (nodes_old_new);
+  ut_free_1d_int (&nodes_old_new);
 
   return;
 }
@@ -154,7 +154,7 @@ neut_mesh_prop_fscanf_geof (FILE * file, int *pNodeQty, int *pEltQty)
   if (fscanf (file, "%d", pNodeQty) != 1)
     abort ();
 
-  if (ut_file_string_goto (file, "**element") != 1)
+  if (ut_file_string_goto (file, "**element") != 0)
     abort ();
 
   ut_file_skip (file, 1);

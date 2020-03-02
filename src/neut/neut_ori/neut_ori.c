@@ -18,7 +18,7 @@ neut_ori_volthetafct (struct FCT *pvolfct)
   (*pvolfct).x = (*pvolfct).y;
   (*pvolfct).y = ptmp;
 
-  ut_fct_set_init_interp (pvolfct);
+  ut_fct_init_interp (pvolfct);
 
   return;
 }
@@ -32,7 +32,8 @@ neut_ori_vol_theta (struct FCT *pvolfct, double vol, double *ptheta)
 }
 
 void
-neut_ori_n_avthetaeq (struct FCT *pvolfct, int N, char *crysym, double *ptheta)
+neut_ori_n_avthetaeq (struct FCT *pvolfct, int N, char *crysym,
+                      double *ptheta)
 {
   double vol = pow (M_PI, 2) / (N * ol_crysym_qty (crysym));
 
@@ -60,7 +61,8 @@ neut_ori_n_avradeq (struct FCT *pvolfct, int N, char *crysym, double *pradeq)
 }
 
 void
-neut_ori_n_avdiameq (struct FCT *pvolfct, int N, char *crysym, double *pdiameq)
+neut_ori_n_avdiameq (struct FCT *pvolfct, int N, char *crysym,
+                     double *pdiameq)
 {
   neut_ori_n_avthetaeq (pvolfct, N, crysym, pdiameq);
 
@@ -93,7 +95,7 @@ neut_ori_f_r (double *f, double *r)
 {
   if (ut_vector_norm (f) != 0)
   {
-    ut_array_1d_memcpy (r, 3, f);
+    ut_array_1d_memcpy (f, 3, r);
     ut_array_1d_scale (r, 3, 1. / ut_vector_norm (r));
   }
   else

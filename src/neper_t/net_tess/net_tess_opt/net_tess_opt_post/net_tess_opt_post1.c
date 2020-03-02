@@ -5,13 +5,13 @@
 #include "net_tess_opt_post_.h"
 
 void
-net_tess_opt_post (struct MTESS *pMTess, struct TESS *Tess,
-		   int dtess, int dcell, int tessid,
-		   struct POLY *Poly, struct TOPT TOpt,
-		   struct SEEDSET *SSet)
+net_tess_opt_post (struct MTESS *pMTess, struct TESS *Tess, int dtess,
+                   int dcell, int tessid, struct POLY *Poly, struct TOPT TOpt,
+                   struct SEEDSET *SSet)
 {
   if (!strcmp (TOpt.optitype, "seeds"))
-    net_tess_opt_post_tess (pMTess, Tess, dtess, dcell, tessid, Poly, TOpt, SSet);
+    net_tess_opt_post_tess (pMTess, Tess, dtess, dcell, tessid, Poly, TOpt,
+                            SSet);
 
   return;
 }

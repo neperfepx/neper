@@ -6,7 +6,7 @@
 
 void
 net_stat (struct IN_T In, struct TESS Tess, struct TESR *pTesr,
-	  struct POINT Point)
+          struct POINT Point)
 {
   int i, qty, stattess, stattesr, statpoint;
   FILE *file = NULL;
@@ -75,12 +75,12 @@ net_stat (struct IN_T In, struct TESS Tess, struct TESR *pTesr,
     if (!strcmp (data[i][0], "seed") || !strcmp (data[i][0], "cell"))
     {
       if (Tess.Dim > 0)
-	stattess = 1;
+        stattess = 1;
       else if ((*pTesr).Dim > 0)
-	stattesr = 1;
+        stattesr = 1;
     }
     else if (!strcmp (data[i][0], "ver") || !strcmp (data[i][0], "edge")
-	     || !strcmp (data[i][0], "face") || !strcmp (data[i][0], "poly"))
+             || !strcmp (data[i][0], "face") || !strcmp (data[i][0], "poly"))
       stattess = 1;
     else if (!strcmp (data[i][0], "vox"))
       stattesr = 1;
@@ -105,11 +105,11 @@ net_stat (struct IN_T In, struct TESS Tess, struct TESR *pTesr,
       net_stat_point (file, data[i][1], Point, Tess);
       ut_file_close (file, name, "w");
     }
-    ut_free_1d_char (name);
+    ut_free_1d_char (&name);
   }
 
-  ut_free_1d_char (ext);
-  ut_free_3d_char (data, 100, 2);
+  ut_free_1d_char (&ext);
+  ut_free_3d_char (&data, 100, 2);
 
   return;
 }

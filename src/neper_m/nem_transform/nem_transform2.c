@@ -28,16 +28,15 @@ nem_transform_smooth (char *smooth, struct TESS Tess, struct NODES *pNodes,
       nem_smoothing_laplacian (Tess, pNodes, Mesh, dim, factor, 1, type);
   }
 
-  ut_free_1d_char (type);
-  ut_free_1d_char (message);
-  ut_free_1d_char (prevmessage);
+  ut_free_1d_char (&type);
+  ut_free_1d_char (&message);
+  ut_free_1d_char (&prevmessage);
 
   return;
 }
 
 void
-nem_transform_explode (char *explode, struct NODES *pNodes,
-                      struct MESH *Mesh)
+nem_transform_explode (char *explode, struct NODES *pNodes, struct MESH *Mesh)
 {
   int i, j, dim = neut_mesh_array_dim (Mesh);
   double factor, dist;
@@ -60,19 +59,19 @@ nem_transform_explode (char *explode, struct NODES *pNodes,
     neut_mesh_elset_nodes (Mesh[dim], i, &nodes, &nodeqty);
 
     for (j = 0; j < nodeqty; j++)
-      ut_array_1d_add ((*pNodes).NodeCoo[nodes[j]], v, 3, (*pNodes).NodeCoo[nodes[j]]);
+      ut_array_1d_add ((*pNodes).NodeCoo[nodes[j]], v, 3,
+                       (*pNodes).NodeCoo[nodes[j]]);
   }
 
-  ut_free_1d (C);
-  ut_free_1d (c);
-  ut_free_1d_int (nodes);
+  ut_free_1d (&C);
+  ut_free_1d (&c);
+  ut_free_1d_int (&nodes);
 
   return;
 }
 
 void
-nem_transform_slice (char *slice, struct NODES *pNodes,
-                     struct MESH *Mesh)
+nem_transform_slice (char *slice, struct NODES *pNodes, struct MESH *Mesh)
 {
   double *eq = ut_alloc_1d (4);
   struct NODES SNodes;
@@ -97,10 +96,10 @@ nem_transform_slice (char *slice, struct NODES *pNodes,
   neut_mesh_free (Mesh + 1);
   neut_mesh_free (Mesh + 0);
 
-  ut_free_1d (eq);
-  ut_free_1d_int (elt_newold);
-  ut_free_2d_int (node_newold, SNodes.NodeQty + 1);
-  ut_free_1d (node_fact);
+  ut_free_1d (&eq);
+  ut_free_1d_int (&elt_newold);
+  ut_free_2d_int (&node_newold, SNodes.NodeQty + 1);
+  ut_free_1d (&node_fact);
 
   return;
 }

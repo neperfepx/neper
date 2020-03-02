@@ -14,7 +14,7 @@ extern "C"
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
-#include"../ut/ut.h"
+#include"../ut/src/ut.h"
 #include"../ol_cal.h"
 
 #endif /* OL_SYM_H */

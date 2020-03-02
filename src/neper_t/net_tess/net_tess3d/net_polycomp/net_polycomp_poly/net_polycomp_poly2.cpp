@@ -14,11 +14,11 @@ net_polycomp_seed_tdyn (struct SEEDSET SSet, int id, int neighqty,
 
   (*pTD).neighqty[id] = ut_num_min_int (neighqty, SSet.Nall);
 
-  (*pTD).neighlist[id] = ut_realloc_1d_int ((*pTD).neighlist[id],
-                                            (*pTD).neighqty[id] + 1);
-  (*pTD).neighdist[id] = ut_realloc_1d ((*pTD).neighdist[id],
-                                        (*pTD).neighqty[id] + 1);
-  ut_array_1d_memcpy ((*pTD).neighrefcoo[id], 3, SSet.SeedCoo[id]);
+  (*pTD).neighlist[id] =
+    ut_realloc_1d_int ((*pTD).neighlist[id], (*pTD).neighqty[id] + 1);
+  (*pTD).neighdist[id] =
+    ut_realloc_1d ((*pTD).neighdist[id], (*pTD).neighqty[id] + 1);
+  ut_array_1d_memcpy (SSet.SeedCoo[id], 3, (*pTD).neighrefcoo[id]);
   (*pTD).neighrefw[id] = SSet.SeedWeight[id];
   (*pTD).shift[id] = 0;
 
@@ -47,20 +47,20 @@ net_polycomp_seed_tdyn (struct SEEDSET SSet, int id, int neighqty,
     for (i = 1; i <= SSet.Nall; i++)
       dist[i] = ut_space_dist (SSet.SeedCoo[id], SSet.SeedCoo[i]);
     ut_array_1d_sort_index (dist + 1, SSet.Nall, index + 1);
-    ut_array_1d_int_memcpy ((*pTD).neighlist[id] + 1,
-                            (*pTD).neighqty[id], index + 1);
+    ut_array_1d_int_memcpy (index + 1, (*pTD).neighqty[id],
+                            (*pTD).neighlist[id] + 1);
     for (i = 1; i <= (*pTD).neighqty[id]; i++)
       (*pTD).neighdist[id][i] = dist[(*pTD).neighlist[id][i] + 1];
 
-    ut_array_1d_int_addval ((*pTD).neighlist[id] + 1,
-                            (*pTD).neighqty[id], 1, (*pTD).neighlist[id] + 1);
+    ut_array_1d_int_addval ((*pTD).neighlist[id] + 1, (*pTD).neighqty[id], 1,
+                            (*pTD).neighlist[id] + 1);
 
-    ut_free_1d (dist);
-    ut_free_1d_int (index);
+    ut_free_1d (&dist);
+    ut_free_1d_int (&index);
   }
 
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   return;
 }
@@ -144,8 +144,8 @@ NewPolyhedron (struct SEEDSET SSet, int PolyId, int NeiId,
   }
 
   /* The memory of the temporary arrays plane and vertices is unallocated. */
-  ut_free_1d (plane);
-  ut_free_1d_int (BadVer);
+  ut_free_1d (&plane);
+  ut_free_1d_int (&BadVer);
 
   return status;
 }
@@ -163,7 +163,7 @@ NewPolyhedron_plane (int NeiId, int CenterSide, double *plane,
   if (BadVer[0] != 0)
     PolyhedronModification (NeiId, plane, pPolymod, BadVer);
 
-  ut_free_1d_int (BadVer);
+  ut_free_1d_int (&BadVer);
 
   return;
 }

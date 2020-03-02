@@ -7,7 +7,7 @@
 
 int
 neut_mesh_elset_points_closestelts_search (struct MESH Mesh, int elset,
-                                           double *coo, NFTREE *nf_tree,
+                                           double *coo, NFTREE * nf_tree,
                                            int qty, int *pelt)
 {
   qty = ut_num_min (qty, Mesh.Elsets[elset][0]);

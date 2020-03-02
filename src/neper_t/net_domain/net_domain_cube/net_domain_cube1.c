@@ -23,7 +23,7 @@ net_domain_cube_string (char *domain, struct POLY *pDomain)
     (*pDomain).PseudoSize = pseudosize;
   }
 
-  ut_free_2d (size, 3);
+  ut_free_2d (&size, 3);
 
   return;
 }

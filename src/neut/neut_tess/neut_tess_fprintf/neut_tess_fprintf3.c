@@ -121,7 +121,8 @@ neut_tess_fprintf_scale_cellid (struct TESS Tess, FILE * file)
   for (i = 1; i <= Tess.CellQty; i++)
   {
     fprintf (file, "   %d ", i);
-    ut_array_1d_int_fprintf (file, Tess.ScaleCellId[i] + 1, Tess.ScaleQty, "%d");
+    ut_array_1d_int_fprintf (file, Tess.ScaleCellId[i] + 1, Tess.ScaleQty,
+                             "%d");
   }
 
   return;

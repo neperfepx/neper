@@ -13,7 +13,7 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("none", &((*pIn).periodicstring));
   ut_string_string ("20", &((*pIn).tesrsizestring));
 
-  (*pIn).nstring = NULL; // needed for proper levelqty determination
+  (*pIn).nstring = NULL;        // needed for proper levelqty determination
   ut_string_string ("1", &(*pIn).idstring);
   ut_string_string ("voronoi", &(*pIn).morphostring);
   ut_string_string ("default", &(*pIn).morphooptialgostring);
@@ -40,7 +40,7 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("1", &((*pIn).selstring));
   (*pIn).mloop = 2;
   (*pIn).maxedgedelqty = INT_MAX;
-  ut_string_string ("none", &(*pIn).sortstring); // to change into sort
+  ut_string_string ("none", &(*pIn).sortstring);        // to change into sort
   ut_string_string ("none", &(*pIn).transform);
   (*pIn).checktess = 0;
   ut_string_string ("none", &(*pIn).load);
@@ -72,11 +72,14 @@ net_input_options_default (struct IN_T *pIn)
   (*pIn).morphooptialgo = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).morphooptialgostring, (*pIn).morphooptialgo);
   (*pIn).morphooptialgoneigh = ut_alloc_1d_pchar (1);
-  ut_string_string ((*pIn).morphooptialgoneighstring, (*pIn).morphooptialgoneigh);
+  ut_string_string ((*pIn).morphooptialgoneighstring,
+                    (*pIn).morphooptialgoneigh);
   (*pIn).morphooptialgomaxiter = ut_alloc_1d_pchar (1);
-  ut_string_string ((*pIn).morphooptialgomaxiterstring, (*pIn).morphooptialgomaxiter);
+  ut_string_string ((*pIn).morphooptialgomaxiterstring,
+                    (*pIn).morphooptialgomaxiter);
   (*pIn).morphooptiobjective = ut_alloc_1d_pchar (1);
-  ut_string_string ((*pIn).morphooptiobjectivestring, (*pIn).morphooptiobjective);
+  ut_string_string ((*pIn).morphooptiobjectivestring,
+                    (*pIn).morphooptiobjective);
   (*pIn).morphooptigrid = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).morphooptigridstring, (*pIn).morphooptigrid);
   (*pIn).morphooptismooth = ut_alloc_1d_pchar (1);
@@ -94,11 +97,13 @@ net_input_options_default (struct IN_T *pIn)
   (*pIn).morphooptilogval = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).morphooptilogvalstring, (*pIn).morphooptilogval);
   (*pIn).morphooptimultiseed = ut_alloc_1d_pchar (1);
-  ut_string_string ((*pIn).morphooptimultiseedstring, (*pIn).morphooptimultiseed);
+  ut_string_string ((*pIn).morphooptimultiseedstring,
+                    (*pIn).morphooptimultiseed);
   (*pIn).morphooptidof = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).morphooptidofstring, (*pIn).morphooptidof);
   (*pIn).morphooptideltamax = ut_alloc_1d_pchar (1);
-  ut_string_string ((*pIn).morphooptideltamaxstring, (*pIn).morphooptideltamax);
+  ut_string_string ((*pIn).morphooptideltamaxstring,
+                    (*pIn).morphooptideltamax);
   (*pIn).morphooptiinistep = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).morphooptiinistepstring, (*pIn).morphooptiinistep);
 
@@ -210,7 +215,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_badarg ();
 
     /* Searching option name (string completion stuff) */
-    Res = ut_string_comp (argv[i], ArgList, ArgQty, &Arg);
+    Res = ut_string_completion (argv[i], ArgList, ArgQty, &Arg);
     if (Res == 1)
     {
       ut_print_lineheader (2);
@@ -221,7 +226,8 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
     {
       ut_print_lineheader (2);
       if (!strcmp (argv[i], "-scale"))
-        printf ("Option `-scale' was removed; use `-transform scale' instead.\n");
+        printf
+          ("Option `-scale' was removed; use `-transform scale' instead.\n");
       else
         printf ("Unknown option `%s'.\n", argv[i]);
       ut_arg_badarg ();
@@ -233,19 +239,19 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
     {
       if ((*pIn).input == NULL)
       {
-	(*pIn).input = ut_alloc_1d_char (5);
-	strcpy ((*pIn).input, "n");
-	ut_arg_nextasstring (argv, &i, Arg, &((*pIn).nstring));
+        (*pIn).input = ut_alloc_1d_char (5);
+        strcpy ((*pIn).input, "n");
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).nstring));
 
-	if ((*pIn).morphostring
-	    && (strncmp ((*pIn).morphostring, "cube", 4) == 0
-	    || strncmp ((*pIn).morphostring, "dodeca", 6) == 0
-	    || strncmp ((*pIn).morphostring, "tocta", 5) == 0
-	    || strncmp ((*pIn).morphostring, "square", 6) == 0))
-	  strcpy ((*pIn).input, "n_reg");
+        if ((*pIn).morphostring
+            && (strncmp ((*pIn).morphostring, "cube", 4) == 0
+                || strncmp ((*pIn).morphostring, "dodeca", 6) == 0
+                || strncmp ((*pIn).morphostring, "tocta", 5) == 0
+                || strncmp ((*pIn).morphostring, "square", 6) == 0))
+          strcpy ((*pIn).input, "n_reg");
       }
       else
-	ut_arg_badarg ();
+        ut_arg_badarg ();
     }
     else if (!strcmp (Arg, "-id") && i < argc - 1)
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).idstring));
@@ -256,11 +262,14 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
     else if (!strcmp (Arg, "-morphooptialgo"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptialgostring));
     else if (!strcmp (Arg, "-morphooptialgoneigh"))
-      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptialgoneighstring));
+      ut_arg_nextasstring (argv, &i, Arg,
+                           &((*pIn).morphooptialgoneighstring));
     else if (!strcmp (Arg, "-morphooptialgomaxiter"))
-      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptialgomaxiterstring));
+      ut_arg_nextasstring (argv, &i, Arg,
+                           &((*pIn).morphooptialgomaxiterstring));
     else if (!strcmp (Arg, "-morphooptiobjective"))
-      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptiobjectivestring));
+      ut_arg_nextasstring (argv, &i, Arg,
+                           &((*pIn).morphooptiobjectivestring));
     else if (!strcmp (Arg, "-morphooptigrid"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptigridstring));
     else if (!strcmp (Arg, "-morphooptismooth"))
@@ -282,7 +291,8 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
     else if (!strcmp (Arg, "-morphooptideltamax"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptideltamaxstring));
     else if (!strcmp (Arg, "-morphooptimultiseed"))
-      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptimultiseedstring));
+      ut_arg_nextasstring (argv, &i, Arg,
+                           &((*pIn).morphooptimultiseedstring));
     else if (!strcmp (Arg, "-morphooptiinistep"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptiinistepstring));
     else if (!strcmp (Arg, "-dim"))
@@ -379,7 +389,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).load));
 
       if (!strcmp (Arg, "-checktess"))
-	(*pIn).checktess = 1;
+        (*pIn).checktess = 1;
     }
     else if (!strcmp (Arg, "-loadtesr"))
     {
@@ -393,29 +403,30 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_badarg ();
   }
 
-  ut_free_1d_char (Arg);
-  ut_free_2d_char (ArgList, 101);
+  ut_free_1d_char (&Arg);
+  ut_free_2d_char (&ArgList, 101);
 
   return;
 }
 
 int
 net_input_treatargs_multiscale (char *option, char **pargstring, int scaleqty,
-				char ***pvals)
+                                char ***pvals)
 {
   int i, argqty, size;
   char **args = NULL;
-  char* def = NULL;
+  char *def = NULL;
 
   ut_string_string ((*pvals)[0], &def);
 
   if (!*pargstring && scaleqty <= 0)
     return 0;
 
-  ut_string_separate (*pargstring, NEUT_SEP_FRAC, &args, &argqty);
+  ut_list_break (*pargstring, NEUT_SEP_FRAC, &args, &argqty);
 
   if (scaleqty > 0 && argqty > scaleqty)
-    ut_print_message (2, 2, "Option `%s': number of scales exceeds %d.\n", option, scaleqty);
+    ut_print_message (2, 2, "Option `%s': number of scales exceeds %d.\n",
+                      option, scaleqty);
 
   if (scaleqty < 0)
     scaleqty = argqty;
@@ -431,8 +442,6 @@ net_input_treatargs_multiscale (char *option, char **pargstring, int scaleqty,
   for (i = argqty + 1; i <= scaleqty; i++)
     ut_string_string ((*pvals)[0], (*pvals) + i);
 
-  ut_free_1d_char (*pargstring);
-  (*pargstring) = NULL;
   ut_string_string ("", pargstring);
   for (i = 1; i <= scaleqty; i++)
   {
@@ -447,8 +456,8 @@ net_input_treatargs_multiscale (char *option, char **pargstring, int scaleqty,
       (*pargstring) = strcat (*pargstring, NEUT_SEP_FRAC);
   }
 
-  ut_free_2d_char (args, argqty);
-  ut_free_1d_char (def);
+  ut_free_2d_char (&args, argqty);
+  ut_free_1d_char (&def);
 
   return argqty;
 }

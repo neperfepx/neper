@@ -10,6 +10,7 @@ extern "C"
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<sys/time.h>
 
 #include"ut.h"
 #include"neut_t.h"

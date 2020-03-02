@@ -17,38 +17,31 @@ neut_tess_faces_merge (struct TESS *pTess, int *faces, int faceqty)
   if (faceqty == 1)
     return;
 
-  neut_tess_faces_merge_facelists (pTess, faces, faceqty,
-				   &keepface, &delfaces, &delfaceqty);
+  neut_tess_faces_merge_facelists (pTess, faces, faceqty, &keepface,
+                                   &delfaces, &delfaceqty);
 
   neut_tess_faces_merge_edgelists (pTess, faces, faceqty, keepface,
                                    &keepedges, &keepedgeqty,
-                                   &firstkeepedgeori,
-                                   &deledges, &deledgeqty);
+                                   &firstkeepedgeori, &deledges, &deledgeqty);
 
-  neut_tess_faces_merge_verlists (pTess,
-				  deledges, deledgeqty,
-				  &keepvers, &keepverqty,
-				  &delvers, &delverqty);
+  neut_tess_faces_merge_verlists (pTess, deledges, deledgeqty, &keepvers,
+                                  &keepverqty, &delvers, &delverqty);
 
-  neut_tess_faces_merge_mergefaces (pTess, keepface,
-				    delfaces, delfaceqty,
-				    keepedges, keepedgeqty,
-                                    firstkeepedgeori);
+  neut_tess_faces_merge_mergefaces (pTess, keepface, delfaces, delfaceqty,
+                                    keepedges, keepedgeqty, firstkeepedgeori);
 
-  neut_tess_faces_merge_updateedges (pTess, keepface,
-				     delfaces, delfaceqty,
-				     keepedges, keepedgeqty,
-				     deledges, deledgeqty);
+  neut_tess_faces_merge_updateedges (pTess, keepface, delfaces, delfaceqty,
+                                     keepedges, keepedgeqty, deledges,
+                                     deledgeqty);
 
-  neut_tess_faces_merge_updatevers (pTess,
-				    deledges, deledgeqty,
-				    keepvers, keepverqty, delvers, delverqty);
+  neut_tess_faces_merge_updatevers (pTess, deledges, deledgeqty, keepvers,
+                                    keepverqty, delvers, delverqty);
 
-  ut_free_1d_int_ (&delfaces);
-  ut_free_1d_int_ (&keepedges);
-  ut_free_1d_int_ (&deledges);
-  ut_free_1d_int_ (&keepvers);
-  ut_free_1d_int_ (&delvers);
+  ut_free_1d_int (&delfaces);
+  ut_free_1d_int (&keepedges);
+  ut_free_1d_int (&deledges);
+  ut_free_1d_int (&keepvers);
+  ut_free_1d_int (&delvers);
 
   return;
 }

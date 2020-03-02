@@ -5,8 +5,8 @@
 #include"nem_tess_.h"
 
 void
-nem_tess_face_1delts (struct TESS Tess, struct MESH *Mesh, int
-		      face, int **pelts, int *peltqty)
+nem_tess_face_1delts (struct TESS Tess, struct MESH *Mesh, int face,
+                      int **pelts, int *peltqty)
 {
   int i, j, EdgeQty, edge, ori;
 
@@ -29,18 +29,18 @@ nem_tess_face_1delts (struct TESS Tess, struct MESH *Mesh, int
 
     if (ori == 1)
       for (j = 1; j <= Mesh[1].Elsets[edge][0]; j++)
-	(*pelts)[(*peltqty)++] = Mesh[1].Elsets[edge][j];
+        (*pelts)[(*peltqty)++] = Mesh[1].Elsets[edge][j];
     else
       for (j = Mesh[1].Elsets[edge][0]; j >= 1; j--)
-	(*pelts)[(*peltqty)++] = -Mesh[1].Elsets[edge][j];
+        (*pelts)[(*peltqty)++] = -Mesh[1].Elsets[edge][j];
   }
 
   return;
 }
 
 void
-nem_tess_updatefrommesh_geom (struct TESS *pTess, struct NODES
-			      Nodes, struct MESH *Mesh)
+nem_tess_updatefrommesh_geom (struct TESS *pTess, struct NODES Nodes,
+                              struct MESH *Mesh)
 {
   if (Mesh[3].EltQty > 0)
     nem_tess_updatefrommesh_geom_seed (pTess, Nodes, Mesh);
@@ -58,8 +58,8 @@ nem_tess_updatefrommesh_geom (struct TESS *pTess, struct NODES
 }
 
 void
-nem_tess_edgebodies_nodes (struct TESS Tess, struct MESH *Mesh,
-			   int **pnodes, int *pnodeqty)
+nem_tess_edgebodies_nodes (struct TESS Tess, struct MESH *Mesh, int **pnodes,
+                           int *pnodeqty)
 {
   int i, j, elt, qty;
   int *tmp = NULL;
@@ -74,27 +74,25 @@ nem_tess_edgebodies_nodes (struct TESS Tess, struct MESH *Mesh,
     {
       elt = Mesh[0].Elsets[Tess.EdgeVerNb[i][j]][1];
 
-      if (ut_array_1d_int_deletencompress (tmp, qty,
-					   Mesh[0].EltNodes[elt][0], 1) != 1)
-	ut_error_reportbug ();
+      if (ut_array_1d_int_rmelt (tmp, qty, Mesh[0].EltNodes[elt][0], 1) != 1)
+        ut_print_neperbug ();
 
       qty--;
     }
 
     (*pnodes) = ut_realloc_1d_int ((*pnodes), (*pnodeqty) + qty);
-    ut_array_1d_int_memcpy ((*pnodes) + (*pnodeqty), qty, tmp);
+    ut_array_1d_int_memcpy (tmp, qty, (*pnodes) + (*pnodeqty));
     (*pnodeqty) += qty;
 
-    ut_free_1d_int (tmp);
-    tmp = NULL;
+    ut_free_1d_int (&tmp);
   }
 
   return;
 }
 
 void
-nem_tess_facebodies_nodes (struct TESS Tess, struct MESH *Mesh,
-			   int **pnodes, int *pnodeqty)
+nem_tess_facebodies_nodes (struct TESS Tess, struct MESH *Mesh, int **pnodes,
+                           int *pnodeqty)
 {
   int i, j, k, qty;
   int *tmp = NULL;
@@ -110,21 +108,19 @@ nem_tess_facebodies_nodes (struct TESS Tess, struct MESH *Mesh,
     for (j = 1; j <= Tess.FaceVerQty[i]; j++)
     {
       neut_mesh_elset_nodes (Mesh[1], Tess.FaceEdgeNb[i][j], &edgenodes,
-			     &edgenodeqty);
+                             &edgenodeqty);
 
       for (k = 0; k < edgenodeqty; k++)
-	qty -= ut_array_1d_int_deletencompress (tmp, qty, edgenodes[k], 1);
+        qty -= ut_array_1d_int_rmelt (tmp, qty, edgenodes[k], 1);
 
-      ut_free_1d_int (edgenodes);
-      edgenodes = NULL;
+      ut_free_1d_int (&edgenodes);
     }
 
     (*pnodes) = ut_realloc_1d_int ((*pnodes), (*pnodeqty) + qty);
-    ut_array_1d_int_memcpy ((*pnodes) + (*pnodeqty), qty, tmp);
+    ut_array_1d_int_memcpy (tmp, qty, (*pnodes) + (*pnodeqty));
     (*pnodeqty) += qty;
 
-    ut_free_1d_int (tmp);
-    tmp = NULL;
+    ut_free_1d_int (&tmp);
   }
 
   return;

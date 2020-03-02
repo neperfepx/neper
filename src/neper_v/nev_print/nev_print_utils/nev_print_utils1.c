@@ -5,16 +5,16 @@
 #include"nev_print_utils_.h"
 
 void
-nev_print_segment (FILE * file, double *coo1,
-		   double *coo2, char *edge_rad, char *edge_texture)
+nev_print_segment (FILE * file, double *coo1, double *coo2, char *edge_rad,
+                   char *edge_texture)
 {
   if (!nev_print_cylinder_test (coo1, coo2, edge_rad))
     return;
 
-  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo1[0], coo1[1], coo1[2]);
-  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	   coo2[0], coo2[1], coo2[2]);
+  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n", coo1[0],
+           coo1[1], coo1[2]);
+  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n", coo2[0],
+           coo2[1], coo2[2]);
   fprintf (file, "              %s\n", edge_rad);
 
   if (edge_texture != NULL)
@@ -25,17 +25,17 @@ nev_print_segment (FILE * file, double *coo1,
 }
 
 void
-nev_print_cone (FILE * file, double *coo1,
-		double *coo2, char *edge_rad, char *edge_texture)
+nev_print_cone (FILE * file, double *coo1, double *coo2, char *edge_rad,
+                char *edge_texture)
 {
   if (!nev_print_cylinder_test (coo1, coo2, edge_rad))
     return;
 
-  fprintf (file, "    cone {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo1[0], coo1[1], coo1[2]);
+  fprintf (file, "    cone {<%18.15g,%18.15g,%18.15g>,\n", coo1[0], coo1[1],
+           coo1[2]);
   fprintf (file, "              %s,\n", edge_rad);
-  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	   coo2[0], coo2[1], coo2[2]);
+  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n", coo2[0],
+           coo2[1], coo2[2]);
   fprintf (file, "              0\n");
 
   if (edge_texture != NULL)
@@ -46,32 +46,32 @@ nev_print_cone (FILE * file, double *coo1,
 }
 
 void
-nev_print_segment_wsph (FILE * file, double *coo1,
-			double *coo2, char *edge_rad, char *edge_texture)
+nev_print_segment_wsph (FILE * file, double *coo1, double *coo2,
+                        char *edge_rad, char *edge_texture)
 {
   if (!nev_print_cylinder_test (coo1, coo2, edge_rad))
     return;
 
-  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo1[0], coo1[1], coo1[2]);
-  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	   coo2[0], coo2[1], coo2[2]);
+  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n", coo1[0],
+           coo1[1], coo1[2]);
+  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n", coo2[0],
+           coo2[1], coo2[2]);
   fprintf (file, "              %s\n", edge_rad);
 
   if (edge_texture != NULL)
     fprintf (file, "    texture { %s }\n", edge_texture);
   fprintf (file, "  }\n");
 
-  fprintf (file, "    sphere {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo1[0], coo1[1], coo1[2]);
+  fprintf (file, "    sphere {<%18.15g,%18.15g,%18.15g>,\n", coo1[0], coo1[1],
+           coo1[2]);
   fprintf (file, "              %s\n", edge_rad);
 
   if (edge_texture != NULL)
     fprintf (file, "    texture { %s }\n", edge_texture);
   fprintf (file, "  }\n");
 
-  fprintf (file, "    sphere {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo2[0], coo2[1], coo2[2]);
+  fprintf (file, "    sphere {<%18.15g,%18.15g,%18.15g>,\n", coo2[0], coo2[1],
+           coo2[2]);
   fprintf (file, "              %s\n", edge_rad);
 
   if (edge_texture != NULL)
@@ -89,8 +89,8 @@ nev_print_sphere (FILE * file, double *coo, char *sphere_rad, char *texture)
   if (!sphere_rad || (sscanf (sphere_rad, "%lf", &rad) == 1 && rad <= 0))
     return;
 
-  fprintf (file, "    sphere {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo[0], coo[1], coo[2]);
+  fprintf (file, "    sphere {<%18.15g,%18.15g,%18.15g>,\n", coo[0], coo[1],
+           coo[2]);
   fprintf (file, "              %s\n", sphere_rad);
 
   if (texture != NULL)
@@ -104,9 +104,9 @@ void
 nev_print_ellipsoid (FILE * file, double *coo, double *rad, char *texture)
 {
   fprintf (file,
-	   "    sphere {<0.,0.,0.>, 1. scale <%18.15g,%18.15g,%18.15g> matrix <%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,0.,0.,0.> translate <%18.15g,%18.15g,%18.15g>\n",
-	   rad[0], rad[1], rad[2], rad[3], rad[4], rad[5], rad[6], rad[7],
-	   rad[8], rad[9], rad[10], rad[11], coo[0], coo[1], coo[2]);
+           "    sphere {<0.,0.,0.>, 1. scale <%18.15g,%18.15g,%18.15g> matrix <%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,0.,0.,0.> translate <%18.15g,%18.15g,%18.15g>\n",
+           rad[0], rad[1], rad[2], rad[3], rad[4], rad[5], rad[6], rad[7],
+           rad[8], rad[9], rad[10], rad[11], coo[0], coo[1], coo[2]);
 
   if (texture != NULL)
     fprintf (file, "    texture { %s }\n", texture);
@@ -119,9 +119,9 @@ void
 nev_print_cube (FILE * file, double *coo, double *rad, char *texture)
 {
   fprintf (file,
-	   "    box {<-.5,-.5,-.5>, <.5,.5,.5> scale %18.15g matrix <%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,0.,0.,0.> translate <%18.15g,%18.15g,%18.15g>\n",
-	   2 * rad[0], rad[1], rad[2], rad[3], rad[4], rad[5], rad[6], rad[7],
-	   rad[8], rad[9], coo[0], coo[1], coo[2]);
+           "    box {<-.5,-.5,-.5>, <.5,.5,.5> scale %18.15g matrix <%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,0.,0.,0.> translate <%18.15g,%18.15g,%18.15g>\n",
+           2 * rad[0], rad[1], rad[2], rad[3], rad[4], rad[5], rad[6], rad[7],
+           rad[8], rad[9], coo[0], coo[1], coo[2]);
 
   if (texture != NULL)
     fprintf (file, "    texture { %s }\n", texture);
@@ -135,23 +135,23 @@ nev_print_cyl (FILE * file, double *coo, double *rad, char *texture)
 {
   double *v = ut_alloc_1d (3);
 
-  ut_array_1d_memcpy (v, 3, rad + 2);
+  ut_array_1d_memcpy (rad + 2, 3, v);
   ut_array_1d_scale (v, 3, 1. / ut_array_1d_norm (v, 3));
   ut_array_1d_scale (v, 3, rad[1] * .5);
 
   if (rad[0] > 0 && rad[1] > 0)
   {
     fprintf (file,
-	     "    cylinder {<%18.15g,%18.15g,%18.15g>, <%18.15g,%18.15g,%18.15g>, %18.15g translate <%18.15g,%18.15g,%18.15g>\n",
-	     -v[0], -v[1], -v[2], v[0], v[1], v[2], rad[0], coo[0], coo[1],
-	     coo[2]);
+             "    cylinder {<%18.15g,%18.15g,%18.15g>, <%18.15g,%18.15g,%18.15g>, %18.15g translate <%18.15g,%18.15g,%18.15g>\n",
+             -v[0], -v[1], -v[2], v[0], v[1], v[2], rad[0], coo[0], coo[1],
+             coo[2]);
 
     if (texture != NULL)
       fprintf (file, "    texture { %s }\n", texture);
     fprintf (file, "  }\n");
   }
 
-  ut_free_1d (v);
+  ut_free_1d (&v);
 
   return;
 }
@@ -164,31 +164,27 @@ nev_print_arr (FILE * file, double *coo, double *rad, char *texture)
   double fact = 3;
   double fact2 = 2 * fact;
 
-  ut_array_1d_memcpy (v, 3, rad + 2);
+  ut_array_1d_memcpy (rad + 2, 3, v);
   ut_array_1d_scale (v, 3, 1. / ut_array_1d_norm (v, 3));
-  ut_array_1d_memcpy (n, 3, v);
+  ut_array_1d_memcpy (v, 3, n);
   ut_array_1d_scale (v, 3, rad[1] * .5);
 
   if (rad[0] > 0 && rad[1] > 0)
   {
     fprintf (file,
-	     "    cylinder {<%18.15g,%18.15g,%18.15g>, <%18.15g,%18.15g,%18.15g>, %18.15g translate <%18.15g,%18.15g,%18.15g>\n",
-	     -v[0], -v[1], -v[2],
-             v[0] - fact2 * rad[0] * n[0],
-             v[1] - fact2 * rad[0] * n[1],
-             v[2] - fact2 * rad[0] * n[2],
-             rad[0], coo[0] + v[0], coo[1] + v[1],
-	     coo[2] + v[2]);
+             "    cylinder {<%18.15g,%18.15g,%18.15g>, <%18.15g,%18.15g,%18.15g>, %18.15g translate <%18.15g,%18.15g,%18.15g>\n",
+             -v[0], -v[1], -v[2], v[0] - fact2 * rad[0] * n[0],
+             v[1] - fact2 * rad[0] * n[1], v[2] - fact2 * rad[0] * n[2],
+             rad[0], coo[0] + v[0], coo[1] + v[1], coo[2] + v[2]);
 
     if (texture != NULL)
       fprintf (file, "    texture { %s }\n", texture);
     fprintf (file, "  }\n");
 
     fprintf (file,
-        "    cone {<0.,0.,0.>, %18.15g <%18.15g,%18.15g,%18.15g>, 0. translate <%18.15g,%18.15g,%18.15g>\n",
-	     fact * rad[0],
-             fact2 * rad[0] * n[0], fact2 * rad[0] * n[1], fact2 * rad[0] * n[2],
-             coo[0] + 2 * v[0] - fact2 * rad[0] * n[0],
+             "    cone {<0.,0.,0.>, %18.15g <%18.15g,%18.15g,%18.15g>, 0. translate <%18.15g,%18.15g,%18.15g>\n",
+             fact * rad[0], fact2 * rad[0] * n[0], fact2 * rad[0] * n[1],
+             fact2 * rad[0] * n[2], coo[0] + 2 * v[0] - fact2 * rad[0] * n[0],
              coo[1] + 2 * v[1] - fact2 * rad[0] * n[1],
              coo[2] + 2 * v[2] - fact2 * rad[0] * n[2]);
 
@@ -197,8 +193,8 @@ nev_print_arr (FILE * file, double *coo, double *rad, char *texture)
     fprintf (file, "  }\n");
   }
 
-  ut_free_1d (v);
-  ut_free_1d (n);
+  ut_free_1d (&v);
+  ut_free_1d (&n);
 
   return;
 }
@@ -211,26 +207,23 @@ nev_print_tor (FILE * file, double *coo, double *rad, char *texture)
   double **g = ol_g_alloc ();
 
   ut_array_1d_set_3 (v1, 0, 1, 0);
-  ut_array_1d_memcpy (v2, 3, rad + 2);
+  ut_array_1d_memcpy (rad + 2, 3, v2);
   ol_vect_vect_g (v1, v2, g);
 
   if (rad[0] > 0 && rad[1] > 0)
   {
     fprintf (file,
-	     "    torus {%18.15g,%18.15g matrix <%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g>\n",
-	     rad[0], rad[1],
-	     g[0][0], g[0][1], g[0][2],
-	     g[1][0], g[1][1], g[1][2],
-	     g[2][0], g[2][1], g[2][2],
-	     coo[0], coo[1], coo[2]);
+             "    torus {%18.15g,%18.15g matrix <%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g>\n",
+             rad[0], rad[1], g[0][0], g[0][1], g[0][2], g[1][0], g[1][1],
+             g[1][2], g[2][0], g[2][1], g[2][2], coo[0], coo[1], coo[2]);
 
     if (texture != NULL)
       fprintf (file, "    texture { %s }\n", texture);
     fprintf (file, "  }\n");
   }
 
-  ut_free_1d (v1);
-  ut_free_1d (v2);
+  ut_free_1d (&v1);
+  ut_free_1d (&v2);
   ol_g_free (g);
 
   return;
@@ -244,24 +237,22 @@ nev_print_disc (FILE * file, double *coo, double *rad, char *texture)
   double **g = ol_g_alloc ();
 
   ut_array_1d_set_3 (v1, 0, 1, 0);
-  ut_array_1d_memcpy (v2, 3, rad + 2);
+  ut_array_1d_memcpy (rad + 2, 3, v2);
   ol_vect_vect_g (v1, v2, g);
 
   if (rad[0] > 0)
   {
     fprintf (file,
-	     "    disc {<%18.15g,%18.15g,%18.15g>,  <%18.15g,%18.15g,%18.15g>, %18.15g\n",
-	     coo[0], coo[1], coo[2],
-	     rad[1], rad[2], rad[3],
-	     rad[0]);
+             "    disc {<%18.15g,%18.15g,%18.15g>,  <%18.15g,%18.15g,%18.15g>, %18.15g\n",
+             coo[0], coo[1], coo[2], rad[1], rad[2], rad[3], rad[0]);
 
     if (texture != NULL)
       fprintf (file, "    texture { %s }\n", texture);
     fprintf (file, "  }\n");
   }
 
-  ut_free_1d (v1);
-  ut_free_1d (v2);
+  ut_free_1d (&v1);
+  ut_free_1d (&v2);
   ol_g_free (g);
 
   return;
@@ -269,7 +260,7 @@ nev_print_disc (FILE * file, double *coo, double *rad, char *texture)
 
 void
 nev_print_triangle_edge (FILE * file, double *coo1, double *coo2,
-			 double *coo3, char *edge_rad, char *edge_texture)
+                         double *coo3, char *edge_rad, char *edge_texture)
 {
   double rad;
 
@@ -278,22 +269,22 @@ nev_print_triangle_edge (FILE * file, double *coo1, double *coo2,
 
   fprintf (file, "  union {\n");
 
-  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo1[0], coo1[1], coo1[2]);
-  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	   coo2[0], coo2[1], coo2[2]);
+  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n", coo1[0],
+           coo1[1], coo1[2]);
+  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n", coo2[0],
+           coo2[1], coo2[2]);
   fprintf (file, "              %s }\n", edge_rad);
 
-  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo2[0], coo2[1], coo2[2]);
-  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	   coo3[0], coo3[1], coo3[2]);
+  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n", coo2[0],
+           coo2[1], coo2[2]);
+  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n", coo3[0],
+           coo3[1], coo3[2]);
   fprintf (file, "              %s }\n", edge_rad);
 
-  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo3[0], coo3[1], coo3[2]);
-  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	   coo1[0], coo1[1], coo1[2]);
+  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n", coo3[0],
+           coo3[1], coo3[2]);
+  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n", coo1[0],
+           coo1[1], coo1[2]);
   fprintf (file, "              %s }\n", edge_rad);
 
   if (edge_texture != NULL)
@@ -305,15 +296,15 @@ nev_print_triangle_edge (FILE * file, double *coo1, double *coo2,
 
 void
 nev_print_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
-		  int *showelt, int **rgb, char *coltype, int showshadow)
+                  int *showelt, int **rgb, char *coltype, int showshadow)
 {
   int i, showeltqty;
 
   if (Nodes.NodeQty == 0 || Mesh.EltQty == 0)
     return;
 
-  showeltqty = showelt ? ut_array_1d_int_sum (showelt + 1, Mesh.EltQty)
-    : Mesh.EltQty;
+  showeltqty =
+    showelt ? ut_array_1d_int_sum (showelt + 1, Mesh.EltQty) : Mesh.EltQty;
 
   if (showeltqty == 0)
     return;
@@ -327,8 +318,8 @@ nev_print_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
   for (i = 1; i <= Nodes.NodeQty; i++)
   {
     fprintf (file, "    <%.12f,%.12f,%.12f>%s\n", Nodes.NodeCoo[i][0],
-	     Nodes.NodeCoo[i][1], Nodes.NodeCoo[i][2],
-	     (i < Nodes.NodeQty) ? NEUT_SEP_NODEP : " ");
+             Nodes.NodeCoo[i][1], Nodes.NodeCoo[i][2],
+             (i < Nodes.NodeQty) ? NEUT_SEP_NODEP : " ");
   }
 
   fprintf (file, "  }\n");
@@ -346,11 +337,11 @@ nev_print_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
     for (i = 1; i <= Mesh.EltQty; i++)
       if (!showelt || showelt[i])
       {
-	elt_text[i] = text_qty++;
-	fprintf (file,
-		 "    texture{pigment{rgb<%.12f,%.12f,%.12f>} finish {ambient %.1f}}\n",
-		 rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255.,
-		 ambient);
+        elt_text[i] = text_qty++;
+        fprintf (file,
+                 "    texture{pigment{rgb<%.12f,%.12f,%.12f>} finish {ambient %.1f}}\n",
+                 rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255.,
+                 ambient);
       }
   }
   else if (strcmp (coltype, "node") == 0)
@@ -360,12 +351,12 @@ nev_print_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
     for (i = 1; i <= Nodes.NodeQty; i++)
     {
       fprintf (file,
-	       "    texture{pigment{rgb<%.12f,%.12f,%.12f>} finish {ambient %.1f}}\n",
-	       rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255., ambient);
+               "    texture{pigment{rgb<%.12f,%.12f,%.12f>} finish {ambient %.1f}}\n",
+               rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255., ambient);
     }
   }
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   fprintf (file, "  }\n");
 
@@ -376,80 +367,80 @@ nev_print_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
   else if (strcmp (Mesh.EltType, "quad") == 0)
     fprintf (file, "    %d,\n", showeltqty * 2);
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   if (!strcmp (coltype, "elt"))
   {
     if (strcmp (Mesh.EltType, "tri") == 0)
     {
       for (i = 1; i <= Mesh.EltQty; i++)
-	if (!showelt || showelt[i])
-	  fprintf (file, "    <%d,%d,%d>,%d%c\n", Mesh.EltNodes[i][0] - 1,
-		   Mesh.EltNodes[i][1] - 1, Mesh.EltNodes[i][2] - 1,
-		   elt_text[i], (i < Mesh.EltQty) ? ',' : ' ');
+        if (!showelt || showelt[i])
+          fprintf (file, "    <%d,%d,%d>,%d%c\n", Mesh.EltNodes[i][0] - 1,
+                   Mesh.EltNodes[i][1] - 1, Mesh.EltNodes[i][2] - 1,
+                   elt_text[i], (i < Mesh.EltQty) ? ',' : ' ');
     }
     else if (strcmp (Mesh.EltType, "quad") == 0)
       for (i = 1; i <= Mesh.EltQty; i++)
-	if (!showelt || showelt[i])
-	{
-	  fprintf (file, "    <%d,%d,%d>,%d%c\n", Mesh.EltNodes[i][0] - 1,
-		   Mesh.EltNodes[i][1] - 1, Mesh.EltNodes[i][2] - 1,
-		   elt_text[i], (i < Mesh.EltQty) ? ',' : ',');
-	  fprintf (file, "    <%d,%d,%d>,%d%c\n", Mesh.EltNodes[i][0] - 1,
-		   Mesh.EltNodes[i][2] - 1, Mesh.EltNodes[i][3] - 1,
-		   elt_text[i], (i < Mesh.EltQty) ? ',' : ' ');
-	}
+        if (!showelt || showelt[i])
+        {
+          fprintf (file, "    <%d,%d,%d>,%d%c\n", Mesh.EltNodes[i][0] - 1,
+                   Mesh.EltNodes[i][1] - 1, Mesh.EltNodes[i][2] - 1,
+                   elt_text[i], (i < Mesh.EltQty) ? ',' : ',');
+          fprintf (file, "    <%d,%d,%d>,%d%c\n", Mesh.EltNodes[i][0] - 1,
+                   Mesh.EltNodes[i][2] - 1, Mesh.EltNodes[i][3] - 1,
+                   elt_text[i], (i < Mesh.EltQty) ? ',' : ' ');
+        }
   }
   else if (!strcmp (coltype, "node"))
   {
     if (strcmp (Mesh.EltType, "tri") == 0)
     {
       for (i = 1; i <= Mesh.EltQty; i++)
-	if (!showelt || showelt[i])
-	  fprintf (file, "    <%d,%d,%d>,%d,%d,%d%c\n",
-		   Mesh.EltNodes[i][0] - 1, Mesh.EltNodes[i][1] - 1,
-		   Mesh.EltNodes[i][2] - 1, Mesh.EltNodes[i][0] - 1,
-		   Mesh.EltNodes[i][1] - 1, Mesh.EltNodes[i][2] - 1,
-		   (i < Mesh.EltQty) ? ',' : ' ');
+        if (!showelt || showelt[i])
+          fprintf (file, "    <%d,%d,%d>,%d,%d,%d%c\n",
+                   Mesh.EltNodes[i][0] - 1, Mesh.EltNodes[i][1] - 1,
+                   Mesh.EltNodes[i][2] - 1, Mesh.EltNodes[i][0] - 1,
+                   Mesh.EltNodes[i][1] - 1, Mesh.EltNodes[i][2] - 1,
+                   (i < Mesh.EltQty) ? ',' : ' ');
     }
     else if (strcmp (Mesh.EltType, "quad") == 0)
     {
       for (i = 1; i <= Mesh.EltQty; i++)
-	if (!showelt || showelt[i])
-	{
-	  fprintf (file, "    <%d,%d,%d>,%d,%d,%d%c\n",
-		   Mesh.EltNodes[i][0] - 1, Mesh.EltNodes[i][1] - 1,
-		   Mesh.EltNodes[i][2] - 1, Mesh.EltNodes[i][0] - 1,
-		   Mesh.EltNodes[i][1] - 1, Mesh.EltNodes[i][2] - 1,
-		   (i < Mesh.EltQty) ? ',' : ' ');
-	  fprintf (file, "    <%d,%d,%d>,%d,%d,%d%c\n",
-		   Mesh.EltNodes[i][0] - 1, Mesh.EltNodes[i][2] - 1,
-		   Mesh.EltNodes[i][3] - 1, Mesh.EltNodes[i][0] - 1,
-		   Mesh.EltNodes[i][2] - 1, Mesh.EltNodes[i][3] - 1,
-		   (i < Mesh.EltQty) ? ',' : ' ');
-	}
+        if (!showelt || showelt[i])
+        {
+          fprintf (file, "    <%d,%d,%d>,%d,%d,%d%c\n",
+                   Mesh.EltNodes[i][0] - 1, Mesh.EltNodes[i][1] - 1,
+                   Mesh.EltNodes[i][2] - 1, Mesh.EltNodes[i][0] - 1,
+                   Mesh.EltNodes[i][1] - 1, Mesh.EltNodes[i][2] - 1,
+                   (i < Mesh.EltQty) ? ',' : ' ');
+          fprintf (file, "    <%d,%d,%d>,%d,%d,%d%c\n",
+                   Mesh.EltNodes[i][0] - 1, Mesh.EltNodes[i][2] - 1,
+                   Mesh.EltNodes[i][3] - 1, Mesh.EltNodes[i][0] - 1,
+                   Mesh.EltNodes[i][2] - 1, Mesh.EltNodes[i][3] - 1,
+                   (i < Mesh.EltQty) ? ',' : ' ');
+        }
     }
   }
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   fprintf (file, "  }\n");
   fprintf (file, "}\n");
-  ut_free_1d_int (elt_text);
+  ut_free_1d_int (&elt_text);
 
   return;
 }
 
 void
 nev_print_triangle (FILE * file, double *coo1, double *coo2, double *coo3,
-		    char *texture, char *edge_rad, char *edge_texture)
+                    char *texture, char *edge_rad, char *edge_texture)
 {
-  fprintf (file, "triangle {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo1[0], coo1[1], coo1[2]);
-  fprintf (file, "          <%18.15g,%18.15g,%18.15g>,\n",
-	   coo2[0], coo2[1], coo2[2]);
-  fprintf (file, "          <%18.15g,%18.15g,%18.15g>\n",
-	   coo3[0], coo3[1], coo3[2]);
+  fprintf (file, "triangle {<%18.15g,%18.15g,%18.15g>,\n", coo1[0], coo1[1],
+           coo1[2]);
+  fprintf (file, "          <%18.15g,%18.15g,%18.15g>,\n", coo2[0], coo2[1],
+           coo2[2]);
+  fprintf (file, "          <%18.15g,%18.15g,%18.15g>\n", coo3[0], coo3[1],
+           coo3[2]);
 
   fprintf (file, "            texture { %s }\n", texture);
   fprintf (file, "  }\n");
@@ -461,7 +452,7 @@ nev_print_triangle (FILE * file, double *coo1, double *coo2, double *coo3,
 
 void
 nev_print_tet_edge (FILE * file, double *coo1, double *coo2, double *coo3,
-		    double *coo4, char *edge_rad, char *edge_texture)
+                    double *coo4, char *edge_rad, char *edge_texture)
 {
   double rad;
 
@@ -470,40 +461,40 @@ nev_print_tet_edge (FILE * file, double *coo1, double *coo2, double *coo3,
 
   fprintf (file, "  union {\n");
 
-  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo1[0], coo1[1], coo1[2]);
-  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	   coo2[0], coo2[1], coo2[2]);
+  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n", coo1[0],
+           coo1[1], coo1[2]);
+  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n", coo2[0],
+           coo2[1], coo2[2]);
   fprintf (file, "              %s }\n", edge_rad);
 
-  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo2[0], coo2[1], coo2[2]);
-  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	   coo3[0], coo3[1], coo3[2]);
+  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n", coo2[0],
+           coo2[1], coo2[2]);
+  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n", coo3[0],
+           coo3[1], coo3[2]);
   fprintf (file, "              %s }\n", edge_rad);
 
-  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo3[0], coo3[1], coo3[2]);
-  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	   coo1[0], coo1[1], coo1[2]);
+  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n", coo3[0],
+           coo3[1], coo3[2]);
+  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n", coo1[0],
+           coo1[1], coo1[2]);
   fprintf (file, "              %s }\n", edge_rad);
 
-  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo4[0], coo4[1], coo4[2]);
-  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	   coo1[0], coo1[1], coo1[2]);
+  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n", coo4[0],
+           coo4[1], coo4[2]);
+  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n", coo1[0],
+           coo1[1], coo1[2]);
   fprintf (file, "              %s }\n", edge_rad);
 
-  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo4[0], coo4[1], coo4[2]);
-  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	   coo2[0], coo2[1], coo2[2]);
+  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n", coo4[0],
+           coo4[1], coo4[2]);
+  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n", coo2[0],
+           coo2[1], coo2[2]);
   fprintf (file, "              %s }\n", edge_rad);
 
-  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo4[0], coo4[1], coo4[2]);
-  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	   coo3[0], coo3[1], coo3[2]);
+  fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n", coo4[0],
+           coo4[1], coo4[2]);
+  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n", coo3[0],
+           coo3[1], coo3[2]);
   fprintf (file, "              %s }\n", edge_rad);
 
   if (edge_texture != NULL)
@@ -514,8 +505,8 @@ nev_print_tet_edge (FILE * file, double *coo1, double *coo2, double *coo3,
 }
 
 void
-nev_print_polygon_edge (FILE * file, int qty, double **coo,
-			char *edge_rad, char *edge_texture)
+nev_print_polygon_edge (FILE * file, int qty, double **coo, char *edge_rad,
+                        char *edge_texture)
 {
   int i;
   double rad;
@@ -527,16 +518,16 @@ nev_print_polygon_edge (FILE * file, int qty, double **coo,
 
   for (i = 0; i < qty - 1; i++)
   {
-    fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n",
-	     coo[i][0], coo[i][1], coo[i][2]);
+    fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n", coo[i][0],
+             coo[i][1], coo[i][2]);
     fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	     coo[i + 1][0], coo[i + 1][1], coo[i + 1][2]);
+             coo[i + 1][0], coo[i + 1][1], coo[i + 1][2]);
     fprintf (file, "              %s }\n", edge_rad);
   }
   fprintf (file, "    cylinder {<%18.15g,%18.15g,%18.15g>,\n",
-	   coo[qty - 1][0], coo[qty - 1][1], coo[qty - 1][2]);
-  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n",
-	   coo[0][0], coo[0][1], coo[0][2]);
+           coo[qty - 1][0], coo[qty - 1][1], coo[qty - 1][2]);
+  fprintf (file, "              <%18.15g,%18.15g,%18.15g>,\n", coo[0][0],
+           coo[0][1], coo[0][2]);
   fprintf (file, "              %s }\n", edge_rad);
 
   if (edge_texture != NULL)
@@ -548,8 +539,8 @@ nev_print_polygon_edge (FILE * file, int qty, double **coo,
 
 void
 nev_print_polygon (FILE * file, double *eq, int qty, double **coo,
-		   char *texture, char *edge_rad, char *edge_texture,
-		   int pt, double *p, char *iedge_rad, char *iedge_texture)
+                   char *texture, char *edge_rad, char *edge_texture, int pt,
+                   double *p, char *iedge_rad, char *iedge_texture)
 {
   int i, triqty, **tripos = NULL;
   double *c = ut_alloc_1d (3);
@@ -561,16 +552,16 @@ nev_print_polygon (FILE * file, double *eq, int qty, double **coo,
     ut_array_1d_scale (c, 3, 1. / qty);
   }
   else if (pt >= 0)
-    ut_array_1d_memcpy (c, 3, coo[pt]);
+    ut_array_1d_memcpy (coo[pt], 3, c);
   else
-    ut_array_1d_memcpy (c, 3, p);
+    ut_array_1d_memcpy (p, 3, c);
 
   ut_space_polygon_triangles (eq, coo, qty, &tripos, &triqty);
 
   // drawing face
   for (i = 0; i < triqty; i++)
-    nev_print_triangle (file, coo[tripos[i][0]], coo[tripos[i][1]], coo[tripos[i][2]],
-                        texture, NULL, NULL);
+    nev_print_triangle (file, coo[tripos[i][0]], coo[tripos[i][1]],
+                        coo[tripos[i][2]], texture, NULL, NULL);
 
   nev_print_polygon_edge (file, qty, coo, edge_rad, edge_texture);
 
@@ -579,16 +570,16 @@ nev_print_polygon (FILE * file, double *eq, int qty, double **coo,
     for (i = 0; i < qty; i++)
       nev_print_segment (file, c, coo[i], iedge_rad, iedge_texture);
 
-  ut_free_1d (c);
-  ut_free_2d_int (tripos, triqty);
+  ut_free_1d (&c);
+  ut_free_2d_int (&tripos, triqty);
 
   return;
 }
 
 void
 nev_print_tet (FILE * file, double *coo1, double *coo2, double *coo3,
-	       double *coo4, char *texture, char *edge_rad,
-	       char *edge_texture)
+               double *coo4, char *texture, char *edge_rad,
+               char *edge_texture)
 {
   nev_print_triangle (file, coo1, coo2, coo3, texture, NULL, NULL);
   nev_print_triangle (file, coo1, coo3, coo4, texture, NULL, NULL);
@@ -619,9 +610,9 @@ nev_print_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle)
 
   double min, max;
 
-  ut_string_separate (scale, NEUT_SEP_DEP, &parts, &qty);
+  ut_list_break (scale, NEUT_SEP_DEP, &parts, &qty);
   if (qty < 2)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   ut_string_string (parts[0], &minexpr);
   ut_string_string (parts[qty - 1], &maxexpr);
@@ -714,11 +705,11 @@ nev_print_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle)
   int **rgb = ut_alloc_2d_int (N.NodeQty + 1, 3);
   if (ColScheme != NULL)
     for (i = 1; i <= N.NodeQty; i++)
-      ut_color_scheme_val_color (ColScheme, min, max, nodescal[i], rgb[i]);
+      ut_color_bar_val_color (ColScheme, min, max, nodescal[i], rgb[i]);
   else
     for (i = 1; i <= N.NodeQty; i++)
-      ut_color_scheme_val_color ("blue,cyan,yellow,red", min, max,
-				 nodescal[i], rgb[i]);
+      ut_color_bar_val_color ("blue,cyan,yellow,red", min, max, nodescal[i],
+                              rgb[i]);
 
   nev_print_header (file, Print);
   nev_print_mesh2d (file, N, M, NULL, rgb, "elt", Print.showshadow);
@@ -726,16 +717,16 @@ nev_print_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle)
 
   fprintf (file, "union {\n");
   fprintf (file,
-	   "cylinder {<-0.1,0,0>,<-0.1,0,%f>,0.0025 texture {pigment{rgb<0,0,0>}}}\n",
-	   height);
+           "cylinder {<-0.1,0,0>,<-0.1,0,%f>,0.0025 texture {pigment{rgb<0,0,0>}}}\n",
+           height);
   fprintf (file,
-	   "cylinder {<0,0,0>,<0,0,%f>,0.0025 texture {pigment{rgb<0,0,0>}}}\n",
-	   height);
+           "cylinder {<0,0,0>,<0,0,%f>,0.0025 texture {pigment{rgb<0,0,0>}}}\n",
+           height);
   fprintf (file,
-	   "cylinder {<-0.1,0,0>,<0,0,0>,0.0025 texture {pigment{rgb<0,0,0>}}}\n");
+           "cylinder {<-0.1,0,0>,<0,0,0>,0.0025 texture {pigment{rgb<0,0,0>}}}\n");
   fprintf (file,
-	   "cylinder {<-0.1,0,%f>,<0,0,%f>,0.0025 texture {pigment{rgb<0,0,0>}}}\n",
-	   height, height);
+           "cylinder {<-0.1,0,%f>,<0,0,%f>,0.0025 texture {pigment{rgb<0,0,0>}}}\n",
+           height, height);
 
   int valqty;
   double z;
@@ -754,11 +745,11 @@ nev_print_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle)
   }
   else
   {
-    ut_string_separate (ticks, NEUT_SEP_DEP, &valstring, &valqty);
+    ut_list_break (ticks, NEUT_SEP_DEP, &valstring, &valqty);
     val = ut_alloc_1d (valqty);
     for (i = 0; i < valqty; i++)
     {
-      ut_string_fnr (valstring[i], '_', ' ');
+      ut_string_fnrs (valstring[i], "_", " ", INT_MAX);
       ut_string_real (valstring[i], &(val[i]));
     }
   }
@@ -770,8 +761,8 @@ nev_print_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle)
     z = height * (val[i] - min) / (max - min);
 
     fprintf (file,
-	     "cylinder {<-0.1,0,%f>,<0,0,%f>,0.0025 texture {pigment{rgb<0,0,0>}}}\n",
-	     z, z);
+             "cylinder {<-0.1,0,%f>,<0,0,%f>,0.0025 texture {pigment{rgb<0,0,0>}}}\n",
+             z, z);
 
     fprintf (file, "text {ttf \"timrom.ttf\" \"%s\" 0.1, 0\n", valstring[i]);
     fprintf (file, "pigment {rgb<0,0,0>}\n");
@@ -803,8 +794,8 @@ nev_print_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle)
     fprintf (file, "object {ScaleTitle translate - (Min - Max) / 2}\n");
   }
 
-  ut_free_1d (val);
-  ut_free_2d_char (valstring, valqty);
+  ut_free_1d (&val);
+  ut_free_2d_char (&valstring, valqty);
 
   fprintf (file, "}\n");
 
@@ -812,16 +803,16 @@ nev_print_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle)
 
   neut_nodes_free (&N);
   neut_mesh_free (&M);
-  ut_free_1d (coo);
-  ut_free_1d_int (eltnodes);
-  ut_free_1d (nodescal);
+  ut_free_1d (&coo);
+  ut_free_1d_int (&eltnodes);
+  ut_free_1d (&nodescal);
 
   return;
 }
 
 void
-nev_print_arrow (FILE * file, double *O,
-		 double *v, char *edge_rad, char *edge_texture)
+nev_print_arrow (FILE * file, double *O, double *v, char *edge_rad,
+                 char *edge_texture)
 {
   int i;
   double **coo = ut_alloc_2d (3, 3);
@@ -829,7 +820,7 @@ nev_print_arrow (FILE * file, double *O,
   double edge_rad_val;
   double *vnorm = ut_alloc_1d (3);
 
-  ut_array_1d_memcpy (vnorm, 3, v);
+  ut_array_1d_memcpy (v, 3, vnorm);
   ut_array_1d_scale (vnorm, 3, 1. / ut_array_1d_norm (vnorm, 3));
 
   sscanf (edge_rad, "%lf", &edge_rad_val);
@@ -849,9 +840,9 @@ nev_print_arrow (FILE * file, double *O,
   nev_print_cone (file, coo[1], coo[2], tip_rad, edge_texture);
   nev_print_sphere (file, coo[0], edge_rad, edge_texture);
 
-  ut_free_2d (coo, 3);
-  ut_free_1d_char (tip_rad);
-  ut_free_1d (vnorm);
+  ut_free_2d (&coo, 3);
+  ut_free_1d_char (&tip_rad);
+  ut_free_1d (&vnorm);
 
   return;
 }

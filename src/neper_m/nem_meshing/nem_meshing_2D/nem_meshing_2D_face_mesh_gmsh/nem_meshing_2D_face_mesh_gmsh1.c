@@ -6,10 +6,11 @@
 
 int
 nem_meshing_2D_face_mesh_gmsh (struct TESS Tess, struct NODES RNodes,
-                               struct MESH *RMesh, int face, struct MESHPARA MeshPara,
-                               struct NODES Nodes, struct MESH *Mesh,
-                               double cl, char *gmsh, char *tmp, char *algo,
-                               double rnd, double allowed_t, struct NODES *pN,
+                               struct MESH *RMesh, int face,
+                               struct MESHPARA MeshPara, struct NODES Nodes,
+                               struct MESH *Mesh, double cl, char *gmsh,
+                               char *tmp, char *algo, double rnd,
+                               double allowed_t, struct NODES *pN,
                                struct MESH *pM, int **pbnodes, int **plbnodes,
                                int *pbnodeqty, double *pacl,
                                struct timeval *pctrlc_t, double *pelapsed_t)
@@ -64,11 +65,11 @@ nem_meshing_2D_face_mesh_gmsh (struct TESS Tess, struct NODES RNodes,
 
 // Building boundary mesh and projecting it ----------------------------
 
-  nem_meshing_2D_face_mesh_gmsh_boundary (Tess, Nodes, Mesh, face,
-                                          pbnodes, &bnodecoos, pbnodeqty);
+  nem_meshing_2D_face_mesh_gmsh_boundary (Tess, Nodes, Mesh, face, pbnodes,
+                                          &bnodecoos, pbnodeqty);
 
-  nem_meshing_2D_face_mesh_gmsh_proj (Tess, Nodes, face, MeshPara, *pbnodes, &bnodecoos,
-                                      &bnodecls, *pbnodeqty);
+  nem_meshing_2D_face_mesh_gmsh_proj (Tess, Nodes, face, MeshPara, *pbnodes,
+                                      &bnodecoos, &bnodecls, *pbnodeqty);
 
 // Writing boundary mesh -----------------------------------------------
 
@@ -87,7 +88,7 @@ nem_meshing_2D_face_mesh_gmsh (struct TESS Tess, struct NODES RNodes,
   gettimeofday (&end_time, NULL);
 #pragma omp critical
   (*pelapsed_t) = ut_time_subtract (&beg_time, &end_time);
-  ut_free_1d_char (Args);
+  ut_free_1d_char (&Args);
 
 // Reading output mesh -------------------------------------------------
 
@@ -131,14 +132,14 @@ nem_meshing_2D_face_mesh_gmsh (struct TESS Tess, struct NODES RNodes,
         {
           printf ("(*plbnodes)[i] = %d\n", (*plbnodes)[i]);
           printf ("(*pN).NodeQty = %d\n", (*pN).NodeQty);
-          ut_error_reportbug ();
+          ut_print_neperbug ();
         }
 
         min_dist_max = ut_num_max (min_dist_max, dists[pos]);
       }
-      ut_free_1d (dists);
+      ut_free_1d (&dists);
 
-      ut_free_1d_int_ (&nodes1d);
+      ut_free_1d_int (&nodes1d);
 
       if (*pbnodeqty == nodeqty1d && min_dist_max < 1e-9)
         match = 1;
@@ -198,12 +199,12 @@ nem_meshing_2D_face_mesh_gmsh (struct TESS Tess, struct NODES RNodes,
 
   neut_gmsh_rc ("unbak");
 
-  ut_free_1d (n);
+  ut_free_1d (&n);
   neut_mesh_free (&M1D);
-  ut_free_1d_char (filename);
-  ut_free_1d_char (filename_msh);
-  ut_free_2d (bnodecoos, *pbnodeqty);
-  ut_free_1d (bnodecls);
+  ut_free_1d_char (&filename);
+  ut_free_1d_char (&filename_msh);
+  ut_free_2d (&bnodecoos, *pbnodeqty);
+  ut_free_1d (&bnodecls);
 
   return status;
 }

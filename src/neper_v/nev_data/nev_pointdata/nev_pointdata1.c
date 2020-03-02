@@ -17,55 +17,54 @@ nev_pointdata_init (struct POINT Point, struct POINTDATA *pPointData)
   pointrad = 0.0168 / pow ((*pPointData).PointQty, 0.25);
   ut_array_1d_set ((*pPointData).Rad + 1, (*pPointData).PointQty, pointrad);
   ut_array_2d_int_set ((*pPointData).Col + 1, (*pPointData).PointQty, 3, 128);
-  ut_array_2d_memcpy ((*pPointData).Coo + 1, (*pPointData).PointQty, 3,
-		      Point.PointCoo + 1);
+  ut_array_2d_memcpy (Point.PointCoo + 1, (*pPointData).PointQty, 3,
+                      (*pPointData).Coo + 1);
 
   if ((*pPointData).ColData)
   {
     if ((*pPointData).ColDataType
-	&& !strcmp ((*pPointData).ColDataType, "id"))
+        && !strcmp ((*pPointData).ColDataType, "id"))
       nev_data_id_colour ((*pPointData).ColData, (*pPointData).PointQty,
-			  (*pPointData).Col);
+                          (*pPointData).Col);
     else if ((*pPointData).ColDataType
-	     && !strcmp ((*pPointData).ColDataType, "col"))
+             && !strcmp ((*pPointData).ColDataType, "col"))
       nev_data_col_colour ((*pPointData).ColData, (*pPointData).PointQty,
-			   (*pPointData).Col);
+                           (*pPointData).Col);
     else if ((*pPointData).ColDataType
-	     && !strncmp ((*pPointData).ColDataType, "ori", 3))
+             && !strncmp ((*pPointData).ColDataType, "ori", 3))
       nev_data_ori_colour ((*pPointData).ColData, (*pPointData).PointQty,
-			   (*pPointData).ColScheme, (*pPointData).Col);
+                           (*pPointData).ColScheme, (*pPointData).Col);
     else if ((*pPointData).ColDataType
-	     && !strcmp ((*pPointData).ColDataType, "scal"))
+             && !strcmp ((*pPointData).ColDataType, "scal"))
       nev_data_scal_colour ((*pPointData).ColData, NULL,
-			    (*pPointData).PointQty,
-			    (*pPointData).Scale,
-			    (*pPointData).ColScheme,
-			    (*pPointData).Col, &((*pPointData).Scale));
+                            (*pPointData).PointQty, (*pPointData).Scale,
+                            (*pPointData).ColScheme, (*pPointData).Col,
+                            &((*pPointData).Scale));
 
     else
-      ut_error_expression ((*pPointData).ColDataType);
+      ut_print_exprbug ((*pPointData).ColDataType);
   }
 
   if (!(*pPointData).RadDataType)
     ut_string_string ("rad", &((*pPointData).RadDataType));
   if ((*pPointData).RadData)
     nev_data_rad_radius ((*pPointData).RadData, (*pPointData).PointQty,
-			 (*pPointData).Rad);
+                         (*pPointData).Rad);
 
   if ((*pPointData).trsdata)
     nev_data_tr_tr ((*pPointData).trsdata, (*pPointData).PointQty,
-		    (*pPointData).trs);
+                    (*pPointData).trs);
 
   if ((*pPointData).CooDataType)
   {
     if (!strcmp ((*pPointData).CooDataType, "coo"))
       nev_data_coo_coo (Point.PointCoo, (*pPointData).CooData,
-			(*pPointData).CooFact, (*pPointData).PointQty,
-			(*pPointData).Coo);
+                        (*pPointData).CooFact, (*pPointData).PointQty,
+                        (*pPointData).Coo);
     else if (!strcmp ((*pPointData).CooDataType, "disp"))
       nev_data_disp_coo (Point.PointCoo, (*pPointData).CooData,
-			 (*pPointData).CooFact, (*pPointData).PointQty,
-			 (*pPointData).Coo);
+                         (*pPointData).CooFact, (*pPointData).PointQty,
+                         (*pPointData).Coo);
     else
       abort ();
   }
@@ -75,44 +74,45 @@ nev_pointdata_init (struct POINT Point, struct POINTDATA *pPointData)
 
 void
 nev_pointdata_fscanf (char *type, char *argument,
-		      struct POINTDATA *pPointData)
+                      struct POINTDATA *pPointData)
 {
   char **args = NULL;
   int i, argqty;
   char *value = NULL, *mod = NULL;
 
-  ut_string_separate (argument, NEUT_SEP_DEP, &args, &argqty);
+  ut_list_break (argument, NEUT_SEP_DEP, &args, &argqty);
 
   if (!strcmp (type, "col"))
   {
     nev_data_typearg_args ("col", argument, &(*pPointData).ColDataType,
-			   &value, &mod);
+                           &value, &mod);
 
     if (!strcmp ((*pPointData).ColDataType, "id"))
     {
       (*pPointData).ColData = ut_alloc_2d ((*pPointData).PointQty + 1, 3);
 
       if (!value)
-	for (i = 1; i <= (*pPointData).PointQty; i++)
-	  (*pPointData).ColData[i][0] = i;
+        for (i = 1; i <= (*pPointData).PointQty; i++)
+          (*pPointData).ColData[i][0] = i;
       else
-	ut_array_2d_fscanfn_wcard (value, (*pPointData).ColData + 1,
-				   (*pPointData).PointQty, 1, "numeral");
+        ut_array_2d_fnscanf_wcard (value, (*pPointData).ColData + 1,
+                                   (*pPointData).PointQty, 1, "numeral");
     }
     else if (!strcmp ((*pPointData).ColDataType, "col"))
     {
       (*pPointData).ColData = ut_alloc_2d ((*pPointData).PointQty + 1, 3);
-      ut_array_2d_fscanfn_wcard (value, (*pPointData).ColData + 1,
-				 (*pPointData).PointQty, 3, "colour,size");
+      ut_array_2d_fnscanf_wcard (value, (*pPointData).ColData + 1,
+                                 (*pPointData).PointQty, 3, "colour,size");
     }
     else if (!strncmp ((*pPointData).ColDataType, "ori", 3))
       nev_data_fscanf_ori (value, (*pPointData).PointQty, NULL,
-                           &(*pPointData).ColData, &(*pPointData).ColDataType);
+                           &(*pPointData).ColData,
+                           &(*pPointData).ColDataType);
     else if (!strcmp ((*pPointData).ColDataType, "scal"))
     {
       (*pPointData).ColData = ut_alloc_2d ((*pPointData).PointQty + 1, 1);
-      ut_array_2d_fscanfn_wcard (value, (*pPointData).ColData + 1,
-				 (*pPointData).PointQty, 1, "numeral,size");
+      ut_array_2d_fnscanf_wcard (value, (*pPointData).ColData + 1,
+                                 (*pPointData).PointQty, 1, "numeral,size");
     }
     else
       abort ();
@@ -129,14 +129,14 @@ nev_pointdata_fscanf (char *type, char *argument,
     if (!strcmp ((*pPointData).trsdatatype, "trs"))
     {
       (*pPointData).trsdata = ut_alloc_2d ((*pPointData).PointQty + 1, 3);
-      ut_array_2d_fscanfn_wcard (args[0], (*pPointData).trsdata + 1,
-				 (*pPointData).PointQty, 1, "numeral,size");
+      ut_array_2d_fnscanf_wcard (args[0], (*pPointData).trsdata + 1,
+                                 (*pPointData).PointQty, 1, "numeral,size");
     }
     else if (!strcmp ((*pPointData).trsdatatype, "scal"))
     {
       (*pPointData).trsdata = ut_alloc_2d ((*pPointData).PointQty + 1, 3);
-      ut_array_2d_fscanfn_wcard (args[0] + 5, (*pPointData).trsdata + 1,
-				 (*pPointData).PointQty, 1, "numeral,size");
+      ut_array_2d_fnscanf_wcard (args[0] + 5, (*pPointData).trsdata + 1,
+                                 (*pPointData).PointQty, 1, "numeral,size");
     }
     else
       abort ();
@@ -144,51 +144,51 @@ nev_pointdata_fscanf (char *type, char *argument,
   else if (!strcmp (type, "rad"))
   {
     nev_data_typearg_args ("rad", argument, &(*pPointData).RadDataType,
-			   &value, &mod);
+                           &value, &mod);
     if (mod)
       ut_string_string (mod, &((*pPointData).Space));
 
     if (!strcmp ((*pPointData).RadDataType, "rad"))
     {
       (*pPointData).RadData = ut_alloc_2d ((*pPointData).PointQty + 1, 3);
-      ut_array_2d_fscanfn_wcard (value, (*pPointData).RadData + 1,
-				 (*pPointData).PointQty, 1, "numeral,size");
+      ut_array_2d_fnscanf_wcard (value, (*pPointData).RadData + 1,
+                                 (*pPointData).PointQty, 1, "numeral,size");
     }
     else if (!strcmp ((*pPointData).RadDataType, "cube"))
     {
       (*pPointData).RadData = ut_alloc_2d ((*pPointData).PointQty + 1, 10);
-      ut_array_2d_fscanfn_wcard (value, (*pPointData).RadData + 1,
-				 (*pPointData).PointQty, 10, "numeral,size");
+      ut_array_2d_fnscanf_wcard (value, (*pPointData).RadData + 1,
+                                 (*pPointData).PointQty, 10, "numeral,size");
     }
     else if (!strcmp ((*pPointData).RadDataType, "cyl"))
     {
       (*pPointData).RadData = ut_alloc_2d ((*pPointData).PointQty + 1, 5);
-      ut_array_2d_fscanfn_wcard (value, (*pPointData).RadData + 1,
-				 (*pPointData).PointQty, 5, "numeral,size");
+      ut_array_2d_fnscanf_wcard (value, (*pPointData).RadData + 1,
+                                 (*pPointData).PointQty, 5, "numeral,size");
     }
     else if (!strcmp ((*pPointData).RadDataType, "arr"))
     {
       (*pPointData).RadData = ut_alloc_2d ((*pPointData).PointQty + 1, 5);
-      ut_array_2d_fscanfn_wcard (value, (*pPointData).RadData + 1,
-				 (*pPointData).PointQty, 5, "numeral,size");
+      ut_array_2d_fnscanf_wcard (value, (*pPointData).RadData + 1,
+                                 (*pPointData).PointQty, 5, "numeral,size");
     }
     else if (!strcmp ((*pPointData).RadDataType, "tor"))
     {
       (*pPointData).RadData = ut_alloc_2d ((*pPointData).PointQty + 1, 5);
-      ut_array_2d_fscanfn_wcard (value, (*pPointData).RadData + 1,
-				 (*pPointData).PointQty, 5, "numeral,size");
+      ut_array_2d_fnscanf_wcard (value, (*pPointData).RadData + 1,
+                                 (*pPointData).PointQty, 5, "numeral,size");
     }
     else if (!strcmp ((*pPointData).RadDataType, "disc"))
     {
       (*pPointData).RadData = ut_alloc_2d ((*pPointData).PointQty + 1, 4);
-      ut_array_2d_fscanfn_wcard (value, (*pPointData).RadData + 1,
-				 (*pPointData).PointQty, 4, "numeral,size");
+      ut_array_2d_fnscanf_wcard (value, (*pPointData).RadData + 1,
+                                 (*pPointData).PointQty, 4, "numeral,size");
     }
     else if (!strcmp ((*pPointData).RadDataType, "ell"))
     {
       (*pPointData).RadData = ut_alloc_2d ((*pPointData).PointQty + 1, 12);
-      ut_array_2d_fscanfn_wcard (value, (*pPointData).RadData + 1,
-				 (*pPointData).PointQty, 12, "numeral,size");
+      ut_array_2d_fnscanf_wcard (value, (*pPointData).RadData + 1,
+                                 (*pPointData).PointQty, 12, "numeral,size");
     }
     else
       abort ();
@@ -225,21 +225,21 @@ nev_pointdata_fscanf (char *type, char *argument,
       (*pPointData).CooData = ut_alloc_2d ((*pPointData).PointQty + 1, 3);
 
     if (!strcmp ((*pPointData).CooDataType, "coo"))
-      ut_array_2d_fscanfn_wcard (args[0], (*pPointData).CooData + 1,
-				 (*pPointData).PointQty, 3, "size");
+      ut_array_2d_fnscanf_wcard (args[0], (*pPointData).CooData + 1,
+                                 (*pPointData).PointQty, 3, "size");
     else if (!strcmp ((*pPointData).CooDataType, "disp"))
-      ut_array_2d_fscanfn_wcard (args[1], (*pPointData).CooData + 1,
-				 (*pPointData).PointQty, 3, "size");
+      ut_array_2d_fnscanf_wcard (args[1], (*pPointData).CooData + 1,
+                                 (*pPointData).PointQty, 3, "size");
     else
       abort ();
   }
   else if (!strcmp (type, "coofact"))
     sscanf (args[0], "%lf", &((*pPointData).CooFact));
   else
-    ut_error_expression (type);
+    ut_print_exprbug (type);
 
-  ut_free_1d_char (value);
-  ut_free_1d_char (mod);
+  ut_free_1d_char (&value);
+  ut_free_1d_char (&mod);
 
   return;
 }

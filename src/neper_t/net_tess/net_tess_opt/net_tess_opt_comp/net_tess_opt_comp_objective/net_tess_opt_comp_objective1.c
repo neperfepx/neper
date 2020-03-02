@@ -10,7 +10,7 @@ static int force_stop = 0;
 
 double
 net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
-			     void *data)
+                             void *data)
 {
   int i, status;
   double val;
@@ -23,7 +23,8 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
   char *loopnotice = ut_alloc_1d_char (1000);
 
   if ((*pTOpt).loop > 1)
-    sprintf (loopnotice, " (%d %s)", (*pTOpt).loop, (*pTOpt).algoname[(*pTOpt).algoid]);
+    sprintf (loopnotice, " (%d %s)", (*pTOpt).loop,
+             (*pTOpt).algoname[(*pTOpt).algoid]);
   else
     strcpy (loopnotice, "");
 
@@ -67,14 +68,14 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
   else
     abort ();
 
-  if ((*pTOpt).tarqty > 0
-   && !strcmp ((*pTOpt).tarvar[0], "centroid")
-   && !strcmp ((*pTOpt).tarexpr[0], "seed"))
+  if ((*pTOpt).tarqty > 0 && !strcmp ((*pTOpt).tarvar[0], "centroid")
+      && !strcmp ((*pTOpt).tarexpr[0], "seed"))
     net_tess_opt_comp_objective_centroidal_update (pTOpt);
 
   gettimeofday (&t3, NULL);
 
-  if (!strcmp ((*pTOpt).optitype, "seeds") || !strcmp ((*pTOpt).optitype, "domain"))
+  if (!strcmp ((*pTOpt).optitype, "seeds")
+      || !strcmp ((*pTOpt).optitype, "domain"))
     status = net_tess_opt_comp_objective_poly (pTOpt);
   else
     status = 0;
@@ -145,7 +146,7 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
 
   if ((*pTOpt).iter <= (*pTOpt).itermax)
   {
-    char* blank = ut_alloc_1d_char (10);
+    char *blank = ut_alloc_1d_char (10);
 
     if ((*pTOpt).objvalmin[(*pTOpt).iter] < 1e12)
       sprintf (fmin, "=%.9f", (*pTOpt).objvalmin[(*pTOpt).iter]);
@@ -160,19 +161,19 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
     if ((*pTOpt).iter < 1e6)
     {
       for (i = 0; i < 6 - ut_num_tenlen_int ((*pTOpt).iter); i++)
-	blank = strcat (blank, " ");
+        blank = strcat (blank, " ");
 
       sprintf (message, "Iteration %s%d: fmin%s f%s%s", blank, (*pTOpt).iter,
-	       fmin, f, loopnotice);
+               fmin, f, loopnotice);
     }
     else
     {
       for (i = 0; i < 11 - ut_num_tenlen_int ((*pTOpt).iter); i++)
-	blank = strcat (blank, " ");
+        blank = strcat (blank, " ");
       sprintf (message, "Iter %s%d: fmin=%s f=%s%s", blank, (*pTOpt).iter,
-	       fmin, f, loopnotice);
+               fmin, f, loopnotice);
     }
-    ut_free_1d_char (blank);
+    ut_free_1d_char (&blank);
   }
 
   else
@@ -194,7 +195,7 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
 
   net_tess_opt_comp_objective_log (*pTOpt);
 
-  ut_free_1d_char (message);
+  ut_free_1d_char (&message);
 
   // Setting t5 of the next iteration
   gettimeofday (&(*pTOpt).end_time, NULL);
@@ -203,9 +204,9 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
   net_tess_opt_comp_objective_debugtest (*pTOpt);
 #endif
 
-  ut_free_1d_char (fmin);
-  ut_free_1d_char (f);
-  ut_free_1d_char (loopnotice);
+  ut_free_1d_char (&fmin);
+  ut_free_1d_char (&f);
+  ut_free_1d_char (&loopnotice);
 
   return (*pTOpt).objval;
 }

@@ -6,8 +6,8 @@
 
 int
 net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
-               struct TESS *Tess, int dtess, int dcell,
-               int TessId, struct SEEDSET *SSet)
+               struct TESS *Tess, int dtess, int dcell, int TessId,
+               struct SEEDSET *SSet)
 {
   int status, i, id;
   int *N = ut_alloc_1d_int (3);
@@ -24,7 +24,7 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
 
   ut_print_message (0, 2, "Running tessellation...\n");
 
-  ut_string_function_separate (morpho, &fct, NULL, &vals, &varqty);
+  ut_string_function (morpho, &fct, NULL, &vals, &varqty);
 
   if (!strcmp (fct, "cube"))
   {
@@ -35,7 +35,7 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
     }
     else if (varqty == 3)
       for (i = 0; i < 3; i++)
-	sscanf (vals[i], "%d", N + i);
+        sscanf (vals[i], "%d", N + i);
     else
       abort ();
   }
@@ -49,7 +49,7 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
     else if (varqty == 2)
     {
       for (i = 0; i < 2; i++)
-	sscanf (vals[i], "%d", N + i);
+        sscanf (vals[i], "%d", N + i);
       N[2] = 1;
     }
     else
@@ -66,7 +66,7 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
   neut_tess_bbox (Dom, bbox);
 
   if (level != 1 || dtess != 0 || dcell != 1)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   net_tess_cube_ids (N, verid, edgeid, faceid, polyid);
 
@@ -94,7 +94,7 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
     status = neut_tess_domface_label_id (Tess[1], "z0", &id);
 
     if (status != 0)
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
     neut_tess_domface_tess (Tess[1], id, &T2);
     neut_tess_tess (T2, Tess + 1);
@@ -104,15 +104,15 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
   ut_print_message (0, 2, "Generating crystal orientations...\n");
   net_ori (In, 1, *pMTess, Tess, SSet, 0, 1, SSet + 1, 3);
 
-  ut_free_3d_int (verid, N[0] + 1, N[1] + 1);
-  ut_free_4d_int (edgeid, 3, N[0] + 1, N[1] + 1);
-  ut_free_4d_int (faceid, 3, N[0] + 1, N[1] + 1);
-  ut_free_3d_int (polyid, N[0], N[1]);
-  ut_free_1d_int (N);
-  ut_free_1d_char (tmpc);
-  ut_free_1d_char (fct);
-  ut_free_2d_char (vals, varqty);
-  ut_free_2d (bbox, 3);
+  ut_free_3d_int (&verid, N[0] + 1, N[1] + 1);
+  ut_free_4d_int (&edgeid, 3, N[0] + 1, N[1] + 1);
+  ut_free_4d_int (&faceid, 3, N[0] + 1, N[1] + 1);
+  ut_free_3d_int (&polyid, N[0], N[1]);
+  ut_free_1d_int (&N);
+  ut_free_1d_char (&tmpc);
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vals, varqty);
+  ut_free_2d (&bbox, 3);
   neut_tess_free (&Dom);
 
   return 0;

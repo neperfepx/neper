@@ -5,10 +5,9 @@
 #include"nem_meshing_para_cl_.h"
 
 int
-nem_meshing_para_cl (struct IN_M In,
-		     struct TESS Tess, struct TESR *pTesr,
-		     struct NODES RNodes, struct MESH *Mesh,
-		     struct MESHPARA *pMeshPara)
+nem_meshing_para_cl (struct IN_M In, struct TESS Tess, struct TESR *pTesr,
+                     struct NODES RNodes, struct MESH *Mesh,
+                     struct MESHPARA *pMeshPara)
 {
   char *clstring = In.clstring;
   char *clratiostring = In.clratiostring;
@@ -32,8 +31,8 @@ nem_meshing_para_cl (struct IN_M In,
     {
       (*pMeshPara).edge_cl = ut_alloc_1d (Tess.EdgeQty + 1);
 
-        neut_tess_val_face2edge (Tess, (*pMeshPara).face_cl,
-                                 (*pMeshPara).edge_cl);
+      neut_tess_val_face2edge (Tess, (*pMeshPara).face_cl,
+                               (*pMeshPara).edge_cl);
 
       if (strcmp (In.cledgestring, "default"))
         nem_meshing_para_cl_edge (In.cledgestring, pMeshPara, Tess);
@@ -58,23 +57,23 @@ nem_meshing_para_cl (struct IN_M In,
     {
       if (Tess.Dim == 3)
       {
-	(*pMeshPara).face_cl = ut_alloc_1d (Tess.FaceQty + 1);
-	neut_tess_val_poly2face (Tess, (*pMeshPara).poly_cl,
-				 (*pMeshPara).face_cl);
+        (*pMeshPara).face_cl = ut_alloc_1d (Tess.FaceQty + 1);
+        neut_tess_val_poly2face (Tess, (*pMeshPara).poly_cl,
+                                 (*pMeshPara).face_cl);
       }
 
       if (Tess.Dim >= 2)
       {
-	(*pMeshPara).edge_cl = ut_alloc_1d (Tess.EdgeQty + 1);
-	neut_tess_val_face2edge (Tess, (*pMeshPara).face_cl,
-				 (*pMeshPara).edge_cl);
+        (*pMeshPara).edge_cl = ut_alloc_1d (Tess.EdgeQty + 1);
+        neut_tess_val_face2edge (Tess, (*pMeshPara).face_cl,
+                                 (*pMeshPara).edge_cl);
       }
 
       if (Tess.Dim >= 1)
       {
-	(*pMeshPara).ver_cl = ut_alloc_1d (Tess.VerQty + 1);
-	neut_tess_val_edge2ver (Tess, (*pMeshPara).edge_cl,
-				(*pMeshPara).ver_cl);
+        (*pMeshPara).ver_cl = ut_alloc_1d (Tess.VerQty + 1);
+        neut_tess_val_edge2ver (Tess, (*pMeshPara).edge_cl,
+                                (*pMeshPara).ver_cl);
       }
     }
   }
@@ -88,11 +87,11 @@ nem_meshing_para_cl (struct IN_M In,
       (*pMeshPara).edge_cl = ut_alloc_1d (Tess.EdgeQty + 1);
       (*pMeshPara).ver_cl = ut_alloc_1d (Tess.VerQty + 1);
       neut_tess_val_poly2face (Tess, (*pMeshPara).poly_cl,
-			       (*pMeshPara).face_cl);
+                               (*pMeshPara).face_cl);
       neut_tess_val_face2edge (Tess, (*pMeshPara).face_cl,
-			       (*pMeshPara).edge_cl);
+                               (*pMeshPara).edge_cl);
       neut_tess_val_edge2ver (Tess, (*pMeshPara).edge_cl,
-			      (*pMeshPara).ver_cl);
+                              (*pMeshPara).ver_cl);
     }
   }
 
@@ -102,7 +101,7 @@ nem_meshing_para_cl (struct IN_M In,
     double gmean;
     char **tmp = NULL;
 
-    ut_string_separate (clratiostring, NEUT_SEP_DEP, &tmp, &qty);
+    ut_list_break (clratiostring, NEUT_SEP_DEP, &tmp, &qty);
 
     (*pMeshPara).clratio = ut_alloc_1d (3);
     ut_array_1d_set ((*pMeshPara).clratio, 3, 1);

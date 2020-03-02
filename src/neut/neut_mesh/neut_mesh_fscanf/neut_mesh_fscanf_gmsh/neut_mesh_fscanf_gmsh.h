@@ -16,7 +16,7 @@ extern "C"
 				    struct MESH *pMesh3D,
 				    struct MESH *pMeshCo);
 
-  extern void neut_mesh_name_fscanf_msh (char *filename, struct NODES *pNodes,
+  extern void neut_mesh_fnscanf_msh (char *filename, struct NODES *pNodes,
 					 struct MESH *pMesh0D,
 					 struct MESH *pMesh1D,
 					 struct MESH *pMesh2D,

@@ -9,14 +9,12 @@
 extern void net_polycomp (struct POLY Domain, struct SEEDSET SeedSet,
                           NFCLOUD * pnf_cloud, NFTREE ** pnf_index,
                           int **pptid_seedid, int **pseedid_ptid,
-                          struct POLY **pPoly,
-                          int *seed_changed, int seed_changedqty,
-                          struct TDYN *);
+                          struct POLY **pPoly, int *seed_changed,
+                          int seed_changedqty, struct TDYN *);
 
 int
-net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
-            char *algoneigh, int TessId, struct MTESS *pMTess,
-            struct TESS *pTess)
+net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet, char *algoneigh,
+            int TessId, struct MTESS *pMTess, struct TESS *pTess)
 {
   struct POLY DomPoly, *Poly = NULL;
   struct TDYN TD;
@@ -54,8 +52,8 @@ net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
   neut_tdyn_free (&TD);
 
   delete nf_index;
-  ut_free_1d_int (seedid_ptid);
-  ut_free_1d_int (ptid_seedid);
+  ut_free_1d_int (&seedid_ptid);
+  ut_free_1d_int (&ptid_seedid);
 
   return 0;
 }

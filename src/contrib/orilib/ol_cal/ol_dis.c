@@ -4,13 +4,13 @@
 #include "ol_dis.h"
 
 int
-ol_g_g_gdisori (double **g1, double **g2, char* crysym, double **gdis)
+ol_g_g_gdisori (double **g1, double **g2, char *crysym, double **gdis)
 {
   int i, nb;
   double theta, mintheta;
   double **g1inv = ol_g_alloc ();
   double **g2rot = ol_g_alloc ();
-  double **gtmp  = ol_g_alloc ();
+  double **gtmp = ol_g_alloc ();
   int qty = ol_lauegroup_qty (crysym);
 
   ol_g_inverse (g1, g1inv);
@@ -40,13 +40,13 @@ ol_g_g_gdisori (double **g1, double **g2, char* crysym, double **gdis)
 }
 
 int
-ol_g_g_gdisori_ref (double **g1, double **g2, char* crysym, double **gdis)
+ol_g_g_gdisori_ref (double **g1, double **g2, char *crysym, double **gdis)
 {
   return ol_g_g_gdisori (g1, g2, crysym, gdis);
 }
 
 int
-ol_g_g_gdisori_cur (double **g1, double **g2, char* crysym, double **gdis)
+ol_g_g_gdisori_cur (double **g1, double **g2, char *crysym, double **gdis)
 {
   int i, nb;
   double theta, mintheta;
@@ -80,7 +80,7 @@ ol_g_g_gdisori_cur (double **g1, double **g2, char* crysym, double **gdis)
 
 /* rapid function on which other quaternion functions are based */
 int
-ol_q_q_disori_rad (double *q1, double *q2, char* crysym, double *ptheta)
+ol_q_q_disori_rad (double *q1, double *q2, char *crysym, double *ptheta)
 {
   int i, nb;
   double rho, maxrho, crysym_maxrho;
@@ -88,7 +88,7 @@ ol_q_q_disori_rad (double *q1, double *q2, char* crysym, double *ptheta)
   int qty = ol_lauegroup_qty (crysym);
 
   double Tcubic[25][4] = {
-    {8888, 8888, 8888, 8888},	/* phantom */
+    {8888, 8888, 8888, 8888},   /* phantom */
     {1, 0, 0, 0},
     {OL_IS2, OL_IS2, 0, 0},
     {0, 1, 0, 0},
@@ -116,19 +116,19 @@ ol_q_q_disori_rad (double *q1, double *q2, char* crysym, double *ptheta)
   };
 
   double Thexa[13][4] = {
-    {1.000000000, 0.000000000, 0.000000000 ,0.000000000}, // phantom
-    {1.000000000, 0.000000000, 0.000000000 ,0.000000000},
-    {0.866025404, 0.000000000, 0.000000000 ,0.500000000},
-    {0.500000000, 0.000000000, 0.000000000 ,0.866025404},
-    {0.000000000, 0.000000000, 0.000000000 ,1.000000000},
-    {0.500000000, 0.000000000, 0.000000000 ,-0.866025404},
-    {0.866025404, 0.000000000, 0.000000000 ,-0.500000000},
-    {0.000000000, 0.866025404, -0.500000000 ,0.000000000},
-    {0.000000000, -0.500000000, 0.866025404 ,0.000000000},
-    {0.000000000, 0.000000000, 1.000000000 ,0.000000000},
-    {0.000000000, 0.500000000, 0.866025404 ,0.000000000},
-    {0.000000000, 0.866025404, 0.500000000 ,0.000000000},
-    {0.000000000, 1.000000000, 0.000000000 ,0.000000000}
+    {1.000000000, 0.000000000, 0.000000000, 0.000000000},       // phantom
+    {1.000000000, 0.000000000, 0.000000000, 0.000000000},
+    {0.866025404, 0.000000000, 0.000000000, 0.500000000},
+    {0.500000000, 0.000000000, 0.000000000, 0.866025404},
+    {0.000000000, 0.000000000, 0.000000000, 1.000000000},
+    {0.500000000, 0.000000000, 0.000000000, -0.866025404},
+    {0.866025404, 0.000000000, 0.000000000, -0.500000000},
+    {0.000000000, 0.866025404, -0.500000000, 0.000000000},
+    {0.000000000, -0.500000000, 0.866025404, 0.000000000},
+    {0.000000000, 0.000000000, 1.000000000, 0.000000000},
+    {0.000000000, 0.500000000, 0.866025404, 0.000000000},
+    {0.000000000, 0.866025404, 0.500000000, 0.000000000},
+    {0.000000000, 1.000000000, 0.000000000, 0.000000000}
   };
 
   /* computation of q1^{-1}.q2 */
@@ -137,20 +137,20 @@ ol_q_q_disori_rad (double *q1, double *q2, char* crysym, double *ptheta)
 
   if (strcmp (crysym, "cubic") == 0)
   {
-    crysym_maxrho = .92387953251128675613; /* = cos (45/2) */
+    crysym_maxrho = .92387953251128675613;      /* = cos (45/2) */
 
     maxrho = 0;
     nb = 1;
     for (i = 1; i <= qty; i++)
     {
       rho = fabs (qd[0] * Tcubic[i][0] - qd[1] * Tcubic[i][1]
-		- qd[2] * Tcubic[i][2] - qd[3] * Tcubic[i][3]);
+                  - qd[2] * Tcubic[i][2] - qd[3] * Tcubic[i][3]);
       if (rho > maxrho)
       {
-	nb = i;
-	maxrho = rho;
-	if (maxrho > crysym_maxrho)
-	  break;
+        nb = i;
+        maxrho = rho;
+        if (maxrho > crysym_maxrho)
+          break;
       }
     }
   }
@@ -163,13 +163,13 @@ ol_q_q_disori_rad (double *q1, double *q2, char* crysym, double *ptheta)
     for (i = 1; i <= qty; i++)
     {
       rho = fabs (qd[0] * Thexa[i][0] - qd[1] * Thexa[i][1]
-		- qd[2] * Thexa[i][2] - qd[3] * Thexa[i][3]);
+                  - qd[2] * Thexa[i][2] - qd[3] * Thexa[i][3]);
       if (rho > maxrho)
       {
-	nb = i;
-	maxrho = rho;
-	if (maxrho > crysym_maxrho)
-	  break;
+        nb = i;
+        maxrho = rho;
+        if (maxrho > crysym_maxrho)
+          break;
       }
     }
   }
@@ -190,39 +190,40 @@ ol_q_q_disori_rad (double *q1, double *q2, char* crysym, double *ptheta)
 
 /* rapid function on which other quaternion functions are based */
 int
-ol_q_q_disori_fr_rad (double *q1, double *q2, char* crysym, double *ptheta)
+ol_q_q_disori_fr_rad (double *q1, double *q2, char *crysym, double *ptheta)
 {
   int i, nb;
   double rho, maxrho, crysym_maxrho;
   double *qd = ol_q_alloc ();
 
   double Tcubic[15][4] = {
-    {1, 0, 0, 0},		// 1
+    {1, 0, 0, 0},               // 1
     {OL_IS2, OL_IS2, 0, 0},     // 2
     {OL_IS2, -OL_IS2, 0, 0},    // 4
     {OL_IS2, 0, OL_IS2, 0},     // 5
-    {OL_IS2, 0, -OL_IS2, 0},	// 7
-    {OL_IS2, 0, 0, OL_IS2},	// 8
-    {OL_IS2, 0, 0, -OL_IS2},	// 10
-    {.5, .5, .5, .5},		// 17
-    {.5, -.5, -.5, -.5},	// 18
-    {.5, -.5, .5, .5},		// 19
-    {.5, .5, -.5, -.5},		// 20
-    {.5, .5, -.5, .5},		// 21
-    {.5, -.5, .5, -.5},		// 22
-    {.5, .5, .5, -.5},		// 23
-    {.5, -.5, -.5, .5}		// 24
+    {OL_IS2, 0, -OL_IS2, 0},    // 7
+    {OL_IS2, 0, 0, OL_IS2},     // 8
+    {OL_IS2, 0, 0, -OL_IS2},    // 10
+    {.5, .5, .5, .5},           // 17
+    {.5, -.5, -.5, -.5},        // 18
+    {.5, -.5, .5, .5},          // 19
+    {.5, .5, -.5, -.5},         // 20
+    {.5, .5, -.5, .5},          // 21
+    {.5, -.5, .5, -.5},         // 22
+    {.5, .5, .5, -.5},          // 23
+    {.5, -.5, -.5, .5}          // 24
   };
 
-  int Tcubic_number[15] = {1, 2, 4, 5, 7, 8, 10, 17, 18, 19, 20, 21, 22,
-    23, 24};
+  int Tcubic_number[15] = { 1, 2, 4, 5, 7, 8, 10, 17, 18, 19, 20, 21, 22,
+    23, 24
+  };
 
   /* computation of q1^{-1}.q2 */
   ol_q_inverse (q1, qd);
   ol_q_q_q (qd, q2, qd);
 
   if (strcmp (crysym, "cubic") == 0)
-    crysym_maxrho = .92387953251128675613; /* = cos (45/2) */
+    crysym_maxrho = .92387953251128675613;      /* = cos (45/2) */
   else
     crysym_maxrho = 1e3;
 
@@ -231,13 +232,13 @@ ol_q_q_disori_fr_rad (double *q1, double *q2, char* crysym, double *ptheta)
   for (i = 0; i < 15; i++)
   {
     rho = fabs (qd[0] * Tcubic[i][0] - qd[1] * Tcubic[i][1]
-	      - qd[2] * Tcubic[i][2] - qd[3] * Tcubic[i][3]);
+                - qd[2] * Tcubic[i][2] - qd[3] * Tcubic[i][3]);
     if (rho > maxrho)
     {
       nb = Tcubic_number[i];
       maxrho = rho;
       if (maxrho > crysym_maxrho)
-	break;
+        break;
     }
   }
 
@@ -249,7 +250,7 @@ ol_q_q_disori_fr_rad (double *q1, double *q2, char* crysym, double *ptheta)
 }
 
 int
-ol_q_q_disori (double *q1, double *q2, char* crysym, double *ptheta)
+ol_q_q_disori (double *q1, double *q2, char *crysym, double *ptheta)
 {
   int nb;
 
@@ -261,7 +262,7 @@ ol_q_q_disori (double *q1, double *q2, char* crysym, double *ptheta)
 }
 
 int
-ol_q_q_qdisori (double *q1, double *q2, char* crysym, double *qd)
+ol_q_q_qdisori (double *q1, double *q2, char *crysym, double *qd)
 {
   int nb;
   double theta;
@@ -282,14 +283,14 @@ ol_q_q_qdisori (double *q1, double *q2, char* crysym, double *qd)
 }
 
 int
-ol_q_q_qdisori_update (double *q1, double *q2, char* crysym, int prevnb,
-		       double *qd, char* flag, int *pstatus)
+ol_q_q_qdisori_update (double *q1, double *q2, char *crysym, int prevnb,
+                       double *qd, char *flag, int *pstatus)
 {
   int nb, status;
   double theta;
   double *q1inv = ol_q_alloc ();
   double *q2rot = ol_q_alloc ();
-  double cubic_maxrho = .92387953251128675613; /* = cos (45/2) */
+  double cubic_maxrho = .92387953251128675613;  /* = cos (45/2) */
   ol_q_set_zero (qd);
 
   nb = 0;
@@ -318,7 +319,7 @@ ol_q_q_qdisori_update (double *q1, double *q2, char* crysym, int prevnb,
     status = 1;
   }
 
-  if (! status)
+  if (!status)
   {
     if (flag && !strcmp (flag, "fr"))
       nb = ol_q_q_disori_fr_rad (q1, q2, crysym, &theta);
@@ -341,13 +342,13 @@ ol_q_q_qdisori_update (double *q1, double *q2, char* crysym, int prevnb,
 }
 
 int
-ol_q_q_qdisori_ref (double *q1, double *q2, char* crysym, double *qd)
+ol_q_q_qdisori_ref (double *q1, double *q2, char *crysym, double *qd)
 {
   return ol_q_q_qdisori (q1, q2, crysym, qd);
 }
 
 int
-ol_q_q_qdisori_cur (double *q1, double *q2, char* crysym, double *qd)
+ol_q_q_qdisori_cur (double *q1, double *q2, char *crysym, double *qd)
 {
   int nb;
   double theta;
@@ -560,7 +561,7 @@ ol_q_q_misori (double *q1, double *q2, double *ptheta)
 
 /* for the sake of convenience and efficiency, quaternions are used. */
 int
-ol_g_g_disori_rad (double **g1, double **g2, char* crysym, double *ptheta)
+ol_g_g_disori_rad (double **g1, double **g2, char *crysym, double *ptheta)
 {
   double *q1 = ol_q_alloc ();
   double *q2 = ol_q_alloc ();
@@ -577,7 +578,7 @@ ol_g_g_disori_rad (double **g1, double **g2, char* crysym, double *ptheta)
 }
 
 int
-ol_g_g_disori (double **g1, double **g2, char* crysym, double *ptheta)
+ol_g_g_disori (double **g1, double **g2, char *crysym, double *ptheta)
 {
   ol_g_g_disori_rad (g1, g2, crysym, ptheta);
 
@@ -587,7 +588,7 @@ ol_g_g_disori (double **g1, double **g2, char* crysym, double *ptheta)
 }
 
 int
-ol_e_e_disori_rad (double *e1, double *e2, char* crysym, double *ptheta)
+ol_e_e_disori_rad (double *e1, double *e2, char *crysym, double *ptheta)
 {
   double *q1 = ol_q_alloc ();
   double *q2 = ol_q_alloc ();
@@ -604,7 +605,7 @@ ol_e_e_disori_rad (double *e1, double *e2, char* crysym, double *ptheta)
 }
 
 int
-ol_e_e_disori (double *e1, double *e2, char* crysym, double *ptheta)
+ol_e_e_disori (double *e1, double *e2, char *crysym, double *ptheta)
 {
   double *q1 = ol_q_alloc ();
   double *q2 = ol_q_alloc ();
@@ -621,7 +622,7 @@ ol_e_e_disori (double *e1, double *e2, char* crysym, double *ptheta)
 }
 
 int
-ol_e_e_gdisori (double *e1, double *e2, char* crysym, double **g)
+ol_e_e_gdisori (double *e1, double *e2, char *crysym, double **g)
 {
   int res;
   double **g1 = ol_g_alloc ();
@@ -657,7 +658,7 @@ ol_e_e_gmisori (double *e1, double *e2, double **g)
 }
 
 int
-ol_e_e_qdisori (double *e1, double *e2, char* crysym, double *q)
+ol_e_e_qdisori (double *e1, double *e2, char *crysym, double *q)
 {
   int res;
   double *q1 = ol_q_alloc ();
@@ -729,7 +730,7 @@ ol_e_e_misori (double *e1, double *e2, double *ptheta)
 }
 
 int
-ol_m_m_disori (int *m1, int *m2, char* crysym, double *ptheta)
+ol_m_m_disori (int *m1, int *m2, char *crysym, double *ptheta)
 {
   double *q1 = ol_q_alloc ();
   double *q2 = ol_q_alloc ();
@@ -746,7 +747,7 @@ ol_m_m_disori (int *m1, int *m2, char* crysym, double *ptheta)
 }
 
 int
-ol_m_m_gdisori (int *m1, int *m2, char* crysym, double **g)
+ol_m_m_gdisori (int *m1, int *m2, char *crysym, double **g)
 {
   int res;
   double **g1 = ol_g_alloc ();
@@ -782,7 +783,7 @@ ol_m_m_gmisori (int *m1, int *m2, double **g)
 }
 
 int
-ol_m_m_qdisori (int *m1, int *m2, char* crysym, double *q)
+ol_m_m_qdisori (int *m1, int *m2, char *crysym, double *q)
 {
   int res;
   double *q1 = ol_q_alloc ();
@@ -837,7 +838,7 @@ ol_m_m_misori (int *m1, int *m2, double *ptheta)
 }
 
 int
-ol_R_R_disori_rad (double *R1, double *R2, char* crysym, double *ptheta)
+ol_R_R_disori_rad (double *R1, double *R2, char *crysym, double *ptheta)
 {
   double *q1 = ol_q_alloc ();
   double *q2 = ol_q_alloc ();
@@ -854,7 +855,7 @@ ol_R_R_disori_rad (double *R1, double *R2, char* crysym, double *ptheta)
 }
 
 int
-ol_R_R_disori (double *R1, double *R2, char* crysym, double *ptheta)
+ol_R_R_disori (double *R1, double *R2, char *crysym, double *ptheta)
 {
   double *q1 = ol_q_alloc ();
   double *q2 = ol_q_alloc ();
@@ -905,7 +906,8 @@ ol_R_R_misori (double *R1, double *R2, double *ptheta)
 }
 
 int
-ol_g_g_disori_orthotropic_rad (double **g1, double **g2, char* crysym, double *pdis)
+ol_g_g_disori_orthotropic_rad (double **g1, double **g2, char *crysym,
+                               double *pdis)
 {
   double distmp;
   int i, qty;
@@ -921,7 +923,7 @@ ol_g_g_disori_orthotropic_rad (double **g1, double **g2, char* crysym, double *p
       (*pdis) = distmp;
   }
 
-  ut_free_3d (gsym, 3, 3);
+  ut_free_3d (&gsym, 3, 3);
 
   return 1;
 }
@@ -943,13 +945,14 @@ ol_g_g_misori_orthotropic_rad (double **g1, double **g2, double *pdis)
       (*pdis) = distmp;
   }
 
-  ut_free_3d (gsym, 3, 3);
+  ut_free_3d (&gsym, 3, 3);
 
   return 1;
 }
 
 int
-ol_g_g_gdisori_orthotropic (double **g1, double **g2, char* crysym, double **gdis)
+ol_g_g_gdisori_orthotropic (double **g1, double **g2, char *crysym,
+                            double **gdis)
 {
   int i, id;
   double ***gsym = ut_alloc_3d (4, 3, 3);
@@ -967,9 +970,9 @@ ol_g_g_gdisori_orthotropic (double **g1, double **g2, char* crysym, double **gdi
   id = ut_array_1d_min_index (dis, 4);
   ol_g_memcpy (gd[id], gdis);
 
-  ut_free_3d (gsym, 3, 3);
-  ut_free_3d (gd, 3, 3);
-  ut_free_1d (dis);
+  ut_free_3d (&gsym, 3, 3);
+  ut_free_3d (&gd, 3, 3);
+  ut_free_1d (&dis);
 
   return id + 1;
 }
@@ -993,15 +996,16 @@ ol_g_g_gmisori_orthotropic (double **g1, double **g2, double **gdis)
   id = ut_array_1d_min_index (dis, 4);
   ol_g_memcpy (gd[id], gdis);
 
-  ut_free_3d (gsym, 3, 3);
-  ut_free_3d (gd, 3, 3);
-  ut_free_1d (dis);
+  ut_free_3d (&gsym, 3, 3);
+  ut_free_3d (&gd, 3, 3);
+  ut_free_1d (&dis);
 
   return id + 1;
 }
 
 int
-ol_q_q_qdisori_orthotropic (double *q1, double *q2, char* crysym, double *qdis)
+ol_q_q_qdisori_orthotropic (double *q1, double *q2, char *crysym,
+                            double *qdis)
 {
   int i, id;
   double **qsym = ut_alloc_2d (4, 4);
@@ -1019,9 +1023,9 @@ ol_q_q_qdisori_orthotropic (double *q1, double *q2, char* crysym, double *qdis)
   id = ut_array_1d_min_index (dis, 4);
   ol_q_memcpy (qd[id], qdis);
 
-  ut_free_2d (qsym, 4);
-  ut_free_2d (qd, 4);
-  ut_free_1d (dis);
+  ut_free_2d (&qsym, 4);
+  ut_free_2d (&qd, 4);
+  ut_free_1d (&dis);
 
   return id + 1;
 }
@@ -1045,15 +1049,16 @@ ol_q_q_qmisori_orthotropic (double *q1, double *q2, double *qdis)
   id = ut_array_1d_min_index (dis, 4);
   ol_q_memcpy (qd[id], qdis);
 
-  ut_free_2d (qsym, 4);
-  ut_free_2d (qd, 4);
-  ut_free_1d (dis);
+  ut_free_2d (&qsym, 4);
+  ut_free_2d (&qd, 4);
+  ut_free_1d (&dis);
 
   return id + 1;
 }
 
 int
-ol_g_g_disori_orthotropic (double **g1, double **g2, char* crysym, double *pdis)
+ol_g_g_disori_orthotropic (double **g1, double **g2, char *crysym,
+                           double *pdis)
 {
   ol_g_g_disori_orthotropic_rad (g1, g2, crysym, pdis);
   ol_theta_rad2deg (*pdis, pdis);
@@ -1071,7 +1076,8 @@ ol_g_g_misori_orthotropic (double **g1, double **g2, double *pdis)
 }
 
 int
-ol_q_q_disori_orthotropic_rad (double *q1, double *q2, char* crysym, double *pdis)
+ol_q_q_disori_orthotropic_rad (double *q1, double *q2, char *crysym,
+                               double *pdis)
 {
   double distmp;
   int i, qty;
@@ -1087,13 +1093,13 @@ ol_q_q_disori_orthotropic_rad (double *q1, double *q2, char* crysym, double *pdi
       (*pdis) = distmp;
   }
 
-  ut_free_2d (qsym, 4);
+  ut_free_2d (&qsym, 4);
 
   return 1;
 }
 
 int
-ol_q_q_disori_orthotropic (double *q1, double *q2, char* crysym, double *pdis)
+ol_q_q_disori_orthotropic (double *q1, double *q2, char *crysym, double *pdis)
 {
   ol_q_q_disori_orthotropic_rad (q1, q2, crysym, pdis);
   ol_theta_rad2deg (*pdis, pdis);
@@ -1118,7 +1124,7 @@ ol_q_q_misori_orthotropic_rad (double *q1, double *q2, double *pdis)
       (*pdis) = distmp;
   }
 
-  ut_free_2d (qsym, 4);
+  ut_free_2d (&qsym, 4);
 
   return 1;
 }
@@ -1133,7 +1139,8 @@ ol_q_q_misori_orthotropic (double *q1, double *q2, double *pdis)
 }
 
 int
-ol_e_e_disori_orthotropic_rad (double *e1, double *e2, char* crysym, double *pdis)
+ol_e_e_disori_orthotropic_rad (double *e1, double *e2, char *crysym,
+                               double *pdis)
 {
   int res;
   double *q1 = ol_q_alloc ();
@@ -1151,7 +1158,7 @@ ol_e_e_disori_orthotropic_rad (double *e1, double *e2, char* crysym, double *pdi
 }
 
 int
-ol_e_e_disori_orthotropic (double *e1, double *e2, char* crysym, double *pdis)
+ol_e_e_disori_orthotropic (double *e1, double *e2, char *crysym, double *pdis)
 {
   int res;
   double *q1 = ol_q_alloc ();
@@ -1169,7 +1176,7 @@ ol_e_e_disori_orthotropic (double *e1, double *e2, char* crysym, double *pdis)
 }
 
 int
-ol_m_m_disori_orthotropic (int *m1, int *m2, char* crysym, double *pdis)
+ol_m_m_disori_orthotropic (int *m1, int *m2, char *crysym, double *pdis)
 {
   int res;
   double *q1 = ol_q_alloc ();

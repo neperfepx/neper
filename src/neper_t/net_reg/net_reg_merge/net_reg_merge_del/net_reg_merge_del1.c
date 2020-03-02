@@ -7,8 +7,8 @@
 // Delete an edge.  Returns 0 for success, -1 if the Tess test fails
 // and -2 if the edge deletion aborted.
 int
-net_reg_merge_del (struct TESS *pTess, int edge, int *pver,
-		   double *pmaxff, int **buf, struct TESS *pTessBuf)
+net_reg_merge_del (struct TESS *pTess, int edge, int *pver, double *pmaxff,
+                   int **buf, struct TESS *pTessBuf)
 {
   int i, delver, test;
   int verbosity = 0;
@@ -36,8 +36,8 @@ net_reg_merge_del (struct TESS *pTess, int edge, int *pver,
   {
     ut_print_lineheader (-1);
     printf ("has ver %d and %d of bounds %d %d and %d %d\n", ver1, ver2,
-	    (*pTess).VerDom[ver1][0], (*pTess).VerDom[ver1][1],
-	    (*pTess).VerDom[ver2][0], (*pTess).VerDom[ver2][1]);
+            (*pTess).VerDom[ver1][0], (*pTess).VerDom[ver1][1],
+            (*pTess).VerDom[ver2][0], (*pTess).VerDom[ver2][1]);
   }
 
   // test for edge not on a domain edge, but shrinking into a domain
@@ -65,15 +65,14 @@ net_reg_merge_del (struct TESS *pTess, int edge, int *pver,
     neut_tess_cell_vers (*pTess, cell[i], &ver, &verqty);
 
     if (((*pTess).Dim == 3 && verqty == 4)
-	|| ((*pTess).Dim == 2 && verqty == 3))
+        || ((*pTess).Dim == 2 && verqty == 3))
     {
-      ut_free_1d_int (cell);
+      ut_free_1d_int (&cell);
       return -2;
     }
-    ut_free_1d_int (ver);
-    ver = NULL;
+    ut_free_1d_int (&ver);
   }
-  ut_free_1d_int (cell);
+  ut_free_1d_int (&cell);
 
   /*
      // test for edge leading to the a "bow tie"-shaped face after being
@@ -134,8 +133,8 @@ net_reg_merge_del (struct TESS *pTess, int edge, int *pver,
 
       if (test != 0)
       {
-	test = -1;
-	(*pmaxff) = 888.8;
+        test = -1;
+        (*pmaxff) = 888.8;
       }
     }
   }
@@ -158,16 +157,16 @@ net_reg_merge_undel (struct TESS *pTess, int **buf, struct TESS TessBuf)
   {
     id = buf[0][i];
 
-    ut_array_1d_memcpy ((*pTess).VerCoo[id], 3, TessBuf.VerCoo[id]);
+    ut_array_1d_memcpy (TessBuf.VerCoo[id], 3, (*pTess).VerCoo[id]);
 
     (*pTess).VerEdgeQty[id] = TessBuf.VerEdgeQty[id];
 
-    (*pTess).VerEdgeNb[id] = ut_realloc_1d_int ((*pTess).VerEdgeNb[id],
-						(*pTess).VerEdgeQty[id]);
-    ut_array_1d_int_memcpy ((*pTess).VerEdgeNb[id],
-			    (*pTess).VerEdgeQty[id], TessBuf.VerEdgeNb[id]);
+    (*pTess).VerEdgeNb[id] =
+      ut_realloc_1d_int ((*pTess).VerEdgeNb[id], (*pTess).VerEdgeQty[id]);
+    ut_array_1d_int_memcpy (TessBuf.VerEdgeNb[id], (*pTess).VerEdgeQty[id],
+                            (*pTess).VerEdgeNb[id]);
 
-    ut_array_1d_int_memcpy ((*pTess).VerDom[id], 2, TessBuf.VerDom[id]);
+    ut_array_1d_int_memcpy (TessBuf.VerDom[id], 2, (*pTess).VerDom[id]);
 
     (*pTess).VerState[id] = TessBuf.VerState[id];
   }
@@ -176,16 +175,16 @@ net_reg_merge_undel (struct TESS *pTess, int **buf, struct TESS TessBuf)
   {
     id = buf[1][i];
 
-    ut_array_1d_int_memcpy ((*pTess).EdgeVerNb[id], 2, TessBuf.EdgeVerNb[id]);
+    ut_array_1d_int_memcpy (TessBuf.EdgeVerNb[id], 2, (*pTess).EdgeVerNb[id]);
 
     (*pTess).EdgeFaceQty[id] = TessBuf.EdgeFaceQty[id];
 
-    ut_array_1d_int_memcpy ((*pTess).EdgeFaceNb[id],
-			    (*pTess).EdgeFaceQty[id], TessBuf.EdgeFaceNb[id]);
+    ut_array_1d_int_memcpy (TessBuf.EdgeFaceNb[id], (*pTess).EdgeFaceQty[id],
+                            (*pTess).EdgeFaceNb[id]);
 
     (*pTess).EdgeLength[id] = TessBuf.EdgeLength[id];
 
-    ut_array_1d_int_memcpy ((*pTess).EdgeDom[id], 2, TessBuf.EdgeDom[id]);
+    ut_array_1d_int_memcpy (TessBuf.EdgeDom[id], 2, (*pTess).EdgeDom[id]);
 
     (*pTess).EdgeState[id] = TessBuf.EdgeState[id];
 
@@ -197,30 +196,30 @@ net_reg_merge_undel (struct TESS *pTess, int **buf, struct TESS TessBuf)
     id = buf[2][i];
 
     if ((*pTess).Dim == 3)
-      ut_array_1d_int_memcpy ((*pTess).FacePoly[id], 2, TessBuf.FacePoly[id]);
+      ut_array_1d_int_memcpy (TessBuf.FacePoly[id], 2, (*pTess).FacePoly[id]);
 
-    ut_array_1d_memcpy ((*pTess).FaceEq[id], 4, TessBuf.FaceEq[id]);
+    ut_array_1d_memcpy (TessBuf.FaceEq[id], 4, (*pTess).FaceEq[id]);
 
     (*pTess).FaceVerQty[id] = TessBuf.FaceVerQty[id];
 
-    ut_array_1d_int_memcpy ((*pTess).FaceVerNb[id] + 1,
-			    (*pTess).FaceVerQty[id],
-			    TessBuf.FaceVerNb[id] + 1);
+    ut_array_1d_int_memcpy (TessBuf.FaceVerNb[id] + 1,
+                            (*pTess).FaceVerQty[id],
+                            (*pTess).FaceVerNb[id] + 1);
 
-    ut_array_1d_int_memcpy ((*pTess).FaceEdgeNb[id] + 1,
-			    (*pTess).FaceVerQty[id],
-			    TessBuf.FaceEdgeNb[id] + 1);
+    ut_array_1d_int_memcpy (TessBuf.FaceEdgeNb[id] + 1,
+                            (*pTess).FaceVerQty[id],
+                            (*pTess).FaceEdgeNb[id] + 1);
 
-    ut_array_1d_int_memcpy ((*pTess).FaceEdgeOri[id] + 1,
-			    (*pTess).FaceVerQty[id],
-			    TessBuf.FaceEdgeOri[id] + 1);
+    ut_array_1d_int_memcpy (TessBuf.FaceEdgeOri[id] + 1,
+                            (*pTess).FaceVerQty[id],
+                            (*pTess).FaceEdgeOri[id] + 1);
 
     (*pTess).FacePt[id] = TessBuf.FacePt[id];
 
-    ut_array_1d_memcpy ((*pTess).FacePtCoo[id], 3, TessBuf.FacePtCoo[id]);
+    ut_array_1d_memcpy (TessBuf.FacePtCoo[id], 3, (*pTess).FacePtCoo[id]);
 
     if ((*pTess).Dim == 3)
-      ut_array_1d_int_memcpy ((*pTess).FaceDom[id], 2, TessBuf.FaceDom[id]);
+      ut_array_1d_int_memcpy (TessBuf.FaceDom[id], 2, (*pTess).FaceDom[id]);
 
     (*pTess).FaceState[id] = TessBuf.FaceState[id];
   }
@@ -232,13 +231,13 @@ net_reg_merge_undel (struct TESS *pTess, int **buf, struct TESS TessBuf)
 
       (*pTess).PolyFaceQty[id] = TessBuf.PolyFaceQty[id];
 
-      ut_array_1d_int_memcpy ((*pTess).PolyFaceNb[id] + 1,
-			      (*pTess).PolyFaceQty[id],
-			      TessBuf.PolyFaceNb[id] + 1);
+      ut_array_1d_int_memcpy (TessBuf.PolyFaceNb[id] + 1,
+                              (*pTess).PolyFaceQty[id],
+                              (*pTess).PolyFaceNb[id] + 1);
 
-      ut_array_1d_int_memcpy ((*pTess).PolyFaceOri[id] + 1,
-			      (*pTess).PolyFaceQty[id],
-			      TessBuf.PolyFaceOri[id] + 1);
+      ut_array_1d_int_memcpy (TessBuf.PolyFaceOri[id] + 1,
+                              (*pTess).PolyFaceQty[id],
+                              (*pTess).PolyFaceOri[id] + 1);
     }
 
   return;
@@ -253,16 +252,13 @@ net_reg_merge_undel_free (int **buf, struct TESS *pTessBuf)
   {
     id = buf[0][i];
 
-    ut_free_1d ((*pTessBuf).VerCoo[id]);
-    (*pTessBuf).VerCoo[id] = NULL;
+    ut_free_1d (&(*pTessBuf).VerCoo[id]);
 
     (*pTessBuf).VerEdgeQty[id] = 0;
 
-    ut_free_1d_int ((*pTessBuf).VerEdgeNb[id]);
-    (*pTessBuf).VerEdgeNb[id] = NULL;
+    ut_free_1d_int (&(*pTessBuf).VerEdgeNb[id]);
 
-    ut_free_1d_int ((*pTessBuf).VerDom[id]);
-    (*pTessBuf).VerDom[id] = NULL;
+    ut_free_1d_int (&(*pTessBuf).VerDom[id]);
 
     (*pTessBuf).VerState[id] = 0;
   }
@@ -271,18 +267,15 @@ net_reg_merge_undel_free (int **buf, struct TESS *pTessBuf)
   {
     id = buf[1][i];
 
-    ut_free_1d_int ((*pTessBuf).EdgeVerNb[id]);
-    (*pTessBuf).EdgeVerNb[id] = NULL;
+    ut_free_1d_int (&(*pTessBuf).EdgeVerNb[id]);
 
     (*pTessBuf).EdgeFaceQty[id] = 0;
 
-    ut_free_1d_int ((*pTessBuf).EdgeFaceNb[id]);
-    (*pTessBuf).EdgeFaceNb[id] = NULL;
+    ut_free_1d_int (&(*pTessBuf).EdgeFaceNb[id]);
 
     (*pTessBuf).EdgeLength[id] = 0;
 
-    ut_free_1d_int ((*pTessBuf).EdgeDom[id]);
-    (*pTessBuf).EdgeDom[id] = NULL;
+    ut_free_1d_int (&(*pTessBuf).EdgeDom[id]);
 
     (*pTessBuf).EdgeState[id] = 0;
 
@@ -293,30 +286,23 @@ net_reg_merge_undel_free (int **buf, struct TESS *pTessBuf)
   {
     id = buf[2][i];
 
-    ut_free_1d_int ((*pTessBuf).FacePoly[id]);
-    (*pTessBuf).FacePoly[id] = NULL;
+    ut_free_1d_int (&(*pTessBuf).FacePoly[id]);
 
-    ut_free_1d ((*pTessBuf).FaceEq[id]);
-    (*pTessBuf).FaceEq[id] = NULL;
+    ut_free_1d (&(*pTessBuf).FaceEq[id]);
 
     (*pTessBuf).FaceVerQty[id] = 0;
 
-    ut_free_1d_int ((*pTessBuf).FaceVerNb[id]);
-    (*pTessBuf).FaceVerNb[id] = NULL;
+    ut_free_1d_int (&(*pTessBuf).FaceVerNb[id]);
 
-    ut_free_1d_int ((*pTessBuf).FaceEdgeNb[id]);
-    (*pTessBuf).FaceEdgeNb[id] = NULL;
+    ut_free_1d_int (&(*pTessBuf).FaceEdgeNb[id]);
 
-    ut_free_1d_int ((*pTessBuf).FaceEdgeOri[id]);
-    (*pTessBuf).FaceEdgeOri[id] = NULL;
+    ut_free_1d_int (&(*pTessBuf).FaceEdgeOri[id]);
 
     (*pTessBuf).FacePt[id] = 0;
 
-    ut_free_1d ((*pTessBuf).FacePtCoo[id]);
-    (*pTessBuf).FacePtCoo[id] = NULL;
+    ut_free_1d (&(*pTessBuf).FacePtCoo[id]);
 
-    ut_free_1d_int ((*pTessBuf).FaceDom[id]);
-    (*pTessBuf).FaceDom[id] = NULL;
+    ut_free_1d_int (&(*pTessBuf).FaceDom[id]);
 
     (*pTessBuf).FaceState[id] = 0;
   }
@@ -327,11 +313,9 @@ net_reg_merge_undel_free (int **buf, struct TESS *pTessBuf)
 
     (*pTessBuf).PolyFaceQty[id] = 0;
 
-    ut_free_1d_int ((*pTessBuf).PolyFaceNb[id]);
-    (*pTessBuf).PolyFaceNb[id] = NULL;
+    ut_free_1d_int (&(*pTessBuf).PolyFaceNb[id]);
 
-    ut_free_1d_int ((*pTessBuf).PolyFaceOri[id]);
-    (*pTessBuf).PolyFaceOri[id] = NULL;
+    ut_free_1d_int (&(*pTessBuf).PolyFaceOri[id]);
   }
 
   for (i = 0; i < 4; i++)

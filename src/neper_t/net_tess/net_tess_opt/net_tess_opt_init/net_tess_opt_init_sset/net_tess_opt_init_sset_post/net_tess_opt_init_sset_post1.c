@@ -6,8 +6,8 @@
 
 void
 net_tess_opt_init_sset_post (struct IN_T In, int level, struct TESS PTess,
-			     int cell, struct SEEDSET SSet,
-			     struct TOPT *pTOpt)
+                             int cell, struct SEEDSET SSet,
+                             struct TOPT *pTOpt)
 {
   int i, j, scell;
 
@@ -17,13 +17,13 @@ net_tess_opt_init_sset_post (struct IN_T In, int level, struct TESS PTess,
     for (j = 0; j < (*pTOpt).CellSCellQty[i]; j++)
     {
       scell = (*pTOpt).CellSCellList[i][j];
-      ut_array_1d_memcpy ((*pTOpt).SSet.q[scell], 4, SSet.q[i]);
+      ut_array_1d_memcpy (SSet.q[i], 4, (*pTOpt).SSet.q[scell]);
     }
 
   // periodicity
   (void) PTess;
-  net_tess_opt_init_sset_post_per (In.periodic, PTess.Level,
-                                   (*pTOpt).Dom, cell, &(*pTOpt).SSet);
+  net_tess_opt_init_sset_post_per (In.periodic, PTess.Level, (*pTOpt).Dom,
+                                   cell, &(*pTOpt).SSet);
 
   // log
   net_tess_opt_init_sset_post_log (In, level, pTOpt);

@@ -5,8 +5,8 @@
 #include"nev_tesrdata_.h"
 
 void
-nev_tesrdata_fscanf_cell (struct TESR Tesr, struct TESRDATA *pTD,
-			  char *prop, char *argument)
+nev_tesrdata_fscanf_cell (struct TESR Tesr, struct TESRDATA *pTD, char *prop,
+                          char *argument)
 {
   int i;
   char **args = NULL;
@@ -15,7 +15,7 @@ nev_tesrdata_fscanf_cell (struct TESR Tesr, struct TESRDATA *pTD,
 
   nev_data_typearg_args (prop, argument, &type, &value, NULL);
 
-  ut_string_separate (argument, NEUT_SEP_DEP, &args, &argqty);
+  ut_list_break (argument, NEUT_SEP_DEP, &args, &argqty);
 
   if (!strcmp (prop, "col"))
   {
@@ -24,14 +24,14 @@ nev_tesrdata_fscanf_cell (struct TESR Tesr, struct TESRDATA *pTD,
     if (!strcmp ((*pTD).ColDataType, "col"))
     {
       (*pTD).ColData = ut_alloc_2d ((*pTD).Qty + 1, 3);
-      ut_array_2d_fscanfn_wcard (value, (*pTD).ColData + 1,
-				 (*pTD).Qty, 3, "colour,size");
+      ut_array_2d_fnscanf_wcard (value, (*pTD).ColData + 1, (*pTD).Qty, 3,
+                                 "colour,size");
     }
     else if (!strcmp ((*pTD).ColDataType, "id"))
     {
       (*pTD).ColData = ut_alloc_2d ((*pTD).Qty + 1, 1);
       for (i = 1; i <= (*pTD).Qty; i++)
-	(*pTD).ColData[i][0] = Tesr.CellId ? Tesr.CellId[i] : i;
+        (*pTD).ColData[i][0] = Tesr.CellId ? Tesr.CellId[i] : i;
     }
     else if (!strncmp ((*pTD).ColDataType, "ori", 3))
       nev_data_fscanf_ori (value, (*pTD).Qty, Tesr.CellOri, &(*pTD).ColData,
@@ -39,8 +39,8 @@ nev_tesrdata_fscanf_cell (struct TESR Tesr, struct TESRDATA *pTD,
     else if (!strcmp ((*pTD).ColDataType, "scal"))
     {
       (*pTD).ColData = ut_alloc_2d ((*pTD).Qty + 1, 1);
-      ut_array_2d_fscanfn_wcard (value, (*pTD).ColData + 1,
-				 (*pTD).Qty, 1, "numeral,size");
+      ut_array_2d_fnscanf_wcard (value, (*pTD).ColData + 1, (*pTD).Qty, 1,
+                                 "numeral,size");
     }
     else
       abort ();
@@ -52,14 +52,14 @@ nev_tesrdata_fscanf_cell (struct TESR Tesr, struct TESRDATA *pTD,
     if (!strcmp ((*pTD).trsdatatype, "trs"))
     {
       (*pTD).trsdata = ut_alloc_2d ((*pTD).Qty + 1, 3);
-      ut_array_2d_fscanfn_wcard (args[0], (*pTD).trsdata + 1,
-				 (*pTD).Qty, 1, "numeral,size");
+      ut_array_2d_fnscanf_wcard (args[0], (*pTD).trsdata + 1, (*pTD).Qty, 1,
+                                 "numeral,size");
     }
     else if (!strcmp ((*pTD).trsdatatype, "scal"))
     {
       (*pTD).trsdata = ut_alloc_2d ((*pTD).Qty + 1, 3);
-      ut_array_2d_fscanfn_wcard (args[0] + 5, (*pTD).trsdata + 1,
-				 (*pTD).Qty, 1, "numeral,size");
+      ut_array_2d_fnscanf_wcard (args[0] + 5, (*pTD).trsdata + 1, (*pTD).Qty,
+                                 1, "numeral,size");
     }
     else
       abort ();
@@ -71,17 +71,17 @@ nev_tesrdata_fscanf_cell (struct TESR Tesr, struct TESRDATA *pTD,
   else if (!strcmp (prop, "scaletitle"))
     ut_string_string (argument, &(*pTD).ScaleTitle);
   else
-    ut_error_expression (prop);
+    ut_print_exprbug (prop);
 
-  ut_free_2d_char (args, argqty);
-  ut_free_1d_char (value);
+  ut_free_2d_char (&args, argqty);
+  ut_free_1d_char (&value);
 
   return;
 }
 
 void
-nev_tesrdata_fscanf_vox (struct TESR Tesr, struct TESRDATA *pTD,
-			 char *prop, char *argument)
+nev_tesrdata_fscanf_vox (struct TESR Tesr, struct TESRDATA *pTD, char *prop,
+                         char *argument)
 {
   int i;
   char *type = NULL, *value = NULL;
@@ -95,22 +95,24 @@ nev_tesrdata_fscanf_vox (struct TESR Tesr, struct TESRDATA *pTD,
     if (!strcmp ((*pTD).ColDataType, "col"))
     {
       (*pTD).ColData = ut_alloc_2d ((*pTD).Qty + 1, 3);
-      ut_array_2d_fscanfn_wcard (value, (*pTD).ColData + 1,
-				 (*pTD).Qty, 3, "colour,size");
+      ut_array_2d_fnscanf_wcard (value, (*pTD).ColData + 1, (*pTD).Qty, 3,
+                                 "colour,size");
     }
     else if (!strcmp ((*pTD).ColDataType, "id"))
     {
       (*pTD).ColData = ut_alloc_2d ((*pTD).Qty + 1, 1);
       for (i = 1; i <= (*pTD).Qty; i++)
-	(*pTD).ColData[i][0] = i;
+        (*pTD).ColData[i][0] = i;
     }
     else if (!strncmp ((*pTD).ColDataType, "ori", 3))
-      nev_data_fscanf_ori_tesr (Tesr, value, (*pTD).Qty, Tesr.VoxOri, Tesr.CellOri,
-                                &(*pTD).ColData, &(*pTD).ColDataType);
+      nev_data_fscanf_ori_tesr (Tesr, value, (*pTD).Qty, Tesr.VoxOri,
+                                Tesr.CellOri, &(*pTD).ColData,
+                                &(*pTD).ColDataType);
     else if (!strncmp ((*pTD).ColDataType, "disori", 6))
     {
-      nev_data_fscanf_ori_tesr (Tesr, value, (*pTD).Qty, Tesr.VoxOri, Tesr.CellOri,
-                                &(*pTD).ColData, &(*pTD).ColDataType);
+      nev_data_fscanf_ori_tesr (Tesr, value, (*pTD).Qty, Tesr.VoxOri,
+                                Tesr.CellOri, &(*pTD).ColData,
+                                &(*pTD).ColDataType);
       int j, k, id = 0, cell;
       for (k = 1; k <= Tesr.size[2]; k++)
         for (j = 1; j <= Tesr.size[1]; j++)
@@ -125,8 +127,8 @@ nev_tesrdata_fscanf_vox (struct TESR Tesr, struct TESRDATA *pTD,
     else if (!strcmp ((*pTD).ColDataType, "scal"))
     {
       (*pTD).ColData = ut_alloc_2d ((*pTD).Qty + 1, 1);
-      ut_array_2d_fscanfn_wcard (value, (*pTD).ColData + 1,
-				 (*pTD).Qty, 1, "numeral,size");
+      ut_array_2d_fnscanf_wcard (value, (*pTD).ColData + 1, (*pTD).Qty, 1,
+                                 "numeral,size");
     }
     else
       abort ();
@@ -138,9 +140,9 @@ nev_tesrdata_fscanf_vox (struct TESR Tesr, struct TESRDATA *pTD,
   else if (!strcmp (prop, "scaletitle"))
     ut_string_string (argument, &(*pTD).ScaleTitle);
   else
-    ut_error_expression (prop);
+    ut_print_exprbug (prop);
 
-  ut_free_1d_char (value);
+  ut_free_1d_char (&value);
 
   return;
 }
@@ -151,19 +153,19 @@ nev_tesrdata_fscanf_voxedge (struct TESRDATA *pTD, char *prop, char *argument)
   if (!strcmp (prop, "col"))
   {
     (*pTD).BCol = ut_alloc_1d_int (3);
-    ut_array_1d_int_fscanfn_wcard (argument, (*pTD).BCol, 3, "colour");
+    ut_array_1d_int_fnscanf_wcard (argument, (*pTD).BCol, 3, "colour");
   }
   else if (!strcmp (prop, "rad"))
     sscanf (argument, "%lf", &((*pTD).BRad));
   else
-    ut_error_expression (prop);
+    ut_print_exprbug (prop);
 
   return;
 }
 
 void
 nev_tesrdata_cell2vox (struct TESR Tesr, char *prop,
-		       struct TESRDATA TesrDataCell, struct TESRDATA *pTD)
+                       struct TESRDATA TesrDataCell, struct TESRDATA *pTD)
 {
   int i, j, k, id, size, vox;
 
@@ -172,21 +174,21 @@ nev_tesrdata_cell2vox (struct TESR Tesr, char *prop,
   for (k = 1; k <= Tesr.size[2]; k++)
     for (j = 1; j <= Tesr.size[1]; j++)
       for (i = 1; i <= Tesr.size[0]; i++)
-	(*pTD).ColDataDef[++id] = (Tesr.VoxCell[i][j][k] > 0);
+        (*pTD).ColDataDef[++id] = (Tesr.VoxCell[i][j][k] > 0);
 
   ut_string_string ("cell", &(*pTD).type);
 
   if (!strcmp (prop, "col"))
   {
-    (*pTD).ColDataType
-      = ut_alloc_1d_char (strlen (TesrDataCell.ColDataType) + 1);
+    (*pTD).ColDataType =
+      ut_alloc_1d_char (strlen (TesrDataCell.ColDataType) + 1);
     strcpy ((*pTD).ColDataType, TesrDataCell.ColDataType);
 
     size = -1;
     if (!strcmp ((*pTD).ColDataType, "id"))
       size = 1;
     else if (!strcmp ((*pTD).ColDataType, "col")
-	     || !strncmp ((*pTD).ColDataType, "ori", 3))
+             || !strncmp ((*pTD).ColDataType, "ori", 3))
       size = 3;
     else if (!strcmp ((*pTD).ColDataType, "rad"))
       size = 1;
@@ -199,11 +201,11 @@ nev_tesrdata_cell2vox (struct TESR Tesr, char *prop,
     vox = 0;
     for (k = 1; k <= Tesr.size[2]; k++)
       for (j = 1; j <= Tesr.size[1]; j++)
-	for (i = 1; i <= Tesr.size[0]; i++)
-	{
-	  vox++;
-	  (*pTD).ColData[vox] = TesrDataCell.ColData[Tesr.VoxCell[i][j][k]];
-	}
+        for (i = 1; i <= Tesr.size[0]; i++)
+        {
+          vox++;
+          (*pTD).ColData[vox] = TesrDataCell.ColData[Tesr.VoxCell[i][j][k]];
+        }
   }
   else if (!strcmp (prop, "colscheme"))
     ut_string_string (TesrDataCell.ColScheme, &(*pTD).ColScheme);
@@ -212,7 +214,7 @@ nev_tesrdata_cell2vox (struct TESR Tesr, char *prop,
   else if (!strcmp (prop, "scaletitle"))
     ut_string_string (TesrDataCell.ScaleTitle, &(*pTD).ScaleTitle);
   else
-    ut_error_expression (prop);
+    ut_print_exprbug (prop);
 
   return;
 }

@@ -6,7 +6,7 @@
 
 void
 nem_meshing_str_tess (struct TESS Tess, struct NODES *pNodes,
-		      struct MESH *Mesh)
+                      struct MESH *Mesh)
 {
   int elt, pid, prevpid;
   char *progress = ut_alloc_1d_char (100);
@@ -22,20 +22,20 @@ nem_meshing_str_tess (struct TESS Tess, struct NODES *pNodes,
     else
       for (pid = 1; pid <= Tess.CellQty; pid++)
       {
-	if (pid == prevpid)
-	  continue;
+        if (pid == prevpid)
+          continue;
 
-	if (neut_tess_point_incell (Tess, coo, pid) == 1)
-	{
-	  Mesh[Tess.Dim].EltElset[elt] = pid;
-	  prevpid = pid;
-	  break;
-	}
+        if (neut_tess_point_incell (Tess, coo, pid) == 1)
+        {
+          Mesh[Tess.Dim].EltElset[elt] = pid;
+          prevpid = pid;
+          break;
+        }
       }
 
     /* print percent evolution in case of verbosity */
     ut_print_progress (stdout, elt, Mesh[Tess.Dim].EltQty, "%3.0f%%",
-		       progress);
+                       progress);
   }
 
   neut_mesh_init_elsets (Mesh + Tess.Dim);
@@ -43,15 +43,15 @@ nem_meshing_str_tess (struct TESS Tess, struct NODES *pNodes,
   neut_mesh_rmelset (Mesh + Tess.Dim, *pNodes, 0);
   neut_nodes_rmorphans (pNodes, Mesh + Tess.Dim, NULL);
 
-  ut_free_1d_char (progress);
-  ut_free_1d (coo);
+  ut_free_1d_char (&progress);
+  ut_free_1d (&coo);
 
   return;
 }
 
 void
 nem_meshing_str_meshcell (char *meshcell, struct TESR Tesr, struct MESH *Mesh,
-			  struct NODES *pNodes, struct NSET *NSet)
+                          struct NODES *pNodes, struct NSET *NSet)
 {
   int i, cellqty;
   int *cell = NULL;
@@ -64,7 +64,7 @@ nem_meshing_str_meshcell (char *meshcell, struct TESR Tesr, struct MESH *Mesh,
 
   neut_nodes_rmorphans (pNodes, Mesh + 3, NSet + 2);
 
-  ut_free_1d_int (cell);
+  ut_free_1d_int (&cell);
 
   return;
 }

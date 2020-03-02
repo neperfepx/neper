@@ -12,8 +12,8 @@ int
 TreatVer (struct POLY *Poly, int PNb, int VNb)
 {
   int status;
-  int i;			/* mute variable */
-  int *ParFace = ut_alloc_1d_int (3);	/* 3 parent faces of the vertex */
+  int i;                        /* mute variable */
+  int *ParFace = ut_alloc_1d_int (3);   /* 3 parent faces of the vertex */
 
   for (i = 0; i < 3; i++)
     ParFace[i] = Poly[PNb].VerFace[VNb][i];
@@ -22,12 +22,12 @@ TreatVer (struct POLY *Poly, int PNb, int VNb)
   if (PNb < Poly[PNb].FacePoly[ParFace[0]]
       || Poly[PNb].FacePoly[ParFace[0]] < 0)
     if (PNb < Poly[PNb].FacePoly[ParFace[1]]
-	|| Poly[PNb].FacePoly[ParFace[1]] < 0)
+        || Poly[PNb].FacePoly[ParFace[1]] < 0)
       if (PNb < Poly[PNb].FacePoly[ParFace[2]]
-	  || Poly[PNb].FacePoly[ParFace[2]] < 0)
-	status = 1;
+          || Poly[PNb].FacePoly[ParFace[2]] < 0)
+        status = 1;
 
-  ut_free_1d_int (ParFace);
+  ut_free_1d_int (&ParFace);
 
   return status;
 }
@@ -45,13 +45,13 @@ AddVer (int **TVNb, int PNb, int VNb, int nb)
 void
 SearchVer (struct POLY *Poly, int PNb, int VNb, int **TVNb)
 {
-  int PrevP;			/* nb of a polyhedron in which the ver VNb
-				 * has been recorded previously
-				 * (prevP<PNb)
-				 */
-  int PrevS;			/* nb of the vertex in this poyhedron,
-				 * which correspond to this studied.
-				 */
+  int PrevP;                    /* nb of a polyhedron in which the ver VNb
+                                 * has been recorded previously
+                                 * (prevP<PNb)
+                                 */
+  int PrevS;                    /* nb of the vertex in this poyhedron,
+                                 * which correspond to this studied.
+                                 */
 
   /* We search the number of a polyhedron in which the studied
    * vertex has been recorded previously. It has a common face
@@ -85,8 +85,8 @@ CommonSeeds (struct TESL Tesl, int first, int second, int *nb)
     for (j = 0; j <= 3; j++)
       if (Tesl.VerSeed[first][i] == Tesl.VerSeed[second][j])
       {
-	nb[qty] = Tesl.VerSeed[first][i];
-	qty++;
+        nb[qty] = Tesl.VerSeed[first][i];
+        qty++;
       }
 
   return qty;
@@ -104,8 +104,8 @@ CommonSeeds (struct TESL Tesl, int first, int second, int *nb)
 int
 BissFace (struct TESL Tesl, int S1, int S2)
 {
-  int i;			/* mute variables       */
-  int f;			/* temporary face nb    */
+  int i;                        /* mute variables       */
+  int f;                        /* temporary face nb    */
   int N = Tesl.PolyQty;
 
   /* S1 & S2 are negative: the bissecting face cannot exist:

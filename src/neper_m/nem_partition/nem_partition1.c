@@ -7,7 +7,7 @@
 
 void
 nem_partition (struct IN_M In, struct NODES *pNodes, struct MESH *Mesh,
-	       struct PART *pPart)
+               struct PART *pPart)
 {
   int dim = neut_mesh_array_dim (Mesh);
 

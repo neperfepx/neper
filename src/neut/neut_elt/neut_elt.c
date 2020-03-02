@@ -6,7 +6,7 @@
 
 void
 neut_elt_name_prop (char *format, char *name, char *type, int *pDimension,
-		    int *pOrder)
+                    int *pOrder)
 {
   if (strcmp (format, "geof") == 0)
   {
@@ -116,12 +116,12 @@ neut_elt_nodeqty (char *type, int dim, int order)
     res = TriPrismNodesPerElt[dim][order];
   else
     ut_print_message (2, 0, "neut_elt_nodeqty: unknown elt type `%s'.\n",
-		      type);
+                      type);
 
-  ut_free_2d_int (TriNodesPerElt, 4);
-  ut_free_2d_int (QuadNodesPerElt, 4);
-  ut_free_2d_int (Quad9NodesPerElt, 4);
-  ut_free_2d_int (TriPrismNodesPerElt, 4);
+  ut_free_2d_int (&TriNodesPerElt, 4);
+  ut_free_2d_int (&QuadNodesPerElt, 4);
+  ut_free_2d_int (&Quad9NodesPerElt, 4);
+  ut_free_2d_int (&TriPrismNodesPerElt, 4);
 
   return res;
 }
@@ -151,17 +151,17 @@ neut_elt_boundqty (char *type, int dim)
     res = QuadFacesPerElt[dim];
   else
     ut_print_message (2, 0, "neut_elt_boundqty: unknown elt type `%s'.\n",
-		      type);
+                      type);
 
-  ut_free_1d_int (TriFacesPerElt);
-  ut_free_1d_int (QuadFacesPerElt);
+  ut_free_1d_int (&TriFacesPerElt);
+  ut_free_1d_int (&QuadFacesPerElt);
 
   return res;
 }
 
 int
 neut_elt_boundlist (char *type, int dim, int ***pbounds, int *pboundqty,
-		    int *pnodeqty)
+                    int *pnodeqty)
 {
   int nodeqty;
 
@@ -264,23 +264,23 @@ neut_elt_order (char *type, int dim, int nodeqty)
     if (dim == 3)
     {
       if (nodeqty == 4)
-	res = 1;
+        res = 1;
       else if (nodeqty == 10)
-	res = 2;
+        res = 2;
     }
     if (dim == 2)
     {
       if (nodeqty == 3)
-	res = 1;
+        res = 1;
       else if (nodeqty == 6)
-	res = 2;
+        res = 2;
     }
     if (dim == 1)
     {
       if (nodeqty == 2)
-	res = 1;
+        res = 1;
       else if (nodeqty == 3)
-	res = 2;
+        res = 2;
     }
     if (dim == 0)
       res = 1;
@@ -295,79 +295,79 @@ neut_elt_gtype_prop (int gtype, char *type, int *pdim, int *porder)
   int status;
 
   status = 0;
-  if (gtype == 1)		// 2-node line
+  if (gtype == 1)               // 2-node line
   {
     sprintf (type, "tri");
     (*pdim) = 1;
     (*porder) = 1;
   }
-  else if (gtype == 2)		// 3-node triangle
+  else if (gtype == 2)          // 3-node triangle
   {
     sprintf (type, "tri");
     (*pdim) = 2;
     (*porder) = 1;
   }
-  else if (gtype == 3)		// 4-node quadrangle
+  else if (gtype == 3)          // 4-node quadrangle
   {
     sprintf (type, "quad");
     (*pdim) = 2;
     (*porder) = 1;
   }
-  else if (gtype == 4)		// 4-node tetrahedron
+  else if (gtype == 4)          // 4-node tetrahedron
   {
     sprintf (type, "tri");
     (*pdim) = 3;
     (*porder) = 1;
   }
-  else if (gtype == 5)		// 8-node hexahedron
+  else if (gtype == 5)          // 8-node hexahedron
   {
     sprintf (type, "quad");
     (*pdim) = 3;
     (*porder) = 1;
   }
-  else if (gtype == 6)		// 6-node prism
+  else if (gtype == 6)          // 6-node prism
   {
     sprintf (type, "triprism");
     (*pdim) = 3;
     (*porder) = 1;
   }
-  else if (gtype == 7)		// 5-node pyramid
+  else if (gtype == 7)          // 5-node pyramid
   {
     sprintf (type, "pyr");
     (*pdim) = 3;
     (*porder) = 1;
   }
-  else if (gtype == 8)		// 3-node 2nd order line
+  else if (gtype == 8)          // 3-node 2nd order line
   {
     sprintf (type, "tri");
     (*pdim) = 1;
     (*porder) = 2;
   }
-  else if (gtype == 9)		// 6-node 2nd order triangle
+  else if (gtype == 9)          // 6-node 2nd order triangle
   {
     sprintf (type, "tri");
     (*pdim) = 2;
     (*porder) = 2;
   }
-  else if (gtype == 11)		// 10-node 2nd order tetrahedron
+  else if (gtype == 11)         // 10-node 2nd order tetrahedron
   {
     sprintf (type, "tri");
     (*pdim) = 3;
     (*porder) = 2;
   }
-  else if (gtype == 15)		// 1-node point
+  else if (gtype == 15)         // 1-node point
   {
     sprintf (type, "tri");
     (*pdim) = 0;
     (*porder) = 1;
   }
-  else if (gtype == 16)		// 8-node 2nd order quadrangle
+  else if (gtype == 16)         // 8-node 2nd order quadrangle
   {
     sprintf (type, "quad");
     (*pdim) = 2;
     (*porder) = 2;
   }
-  else if (gtype == 17)		// 8-node 2nd order quadrangle
+  else if (gtype == 17)         // 8-node 2nd order quadrangle
   {
     sprintf (type, "quad");
     (*pdim) = 3;
@@ -403,11 +403,11 @@ neut_elt_dim_gtype_order (int dim, int gtype)
 double
 neut_elt_rr_3d (double *p1, double *p2, double *p3, double *p4)
 {
-  int i, j, k, l;		/* loop indices */
-  double facenormal[4][3];	/* the normals of each face of the tet */
-  double facearea2[4];		/* areas of the faces of the tet */
-  double Z;			/* quantity needed for circumradius */
-  double facesum = 0.0;		/* sum of the areas of the faces */
+  int i, j, k, l;               /* loop indices */
+  double facenormal[4][3];      /* the normals of each face of the tet */
+  double facearea2[4];          /* areas of the faces of the tet */
+  double Z;                     /* quantity needed for circumradius */
+  double facesum = 0.0;         /* sum of the areas of the faces */
   double vol;
   double **point = ut_alloc_1d_pdouble (4);
   point[0] = p1;
@@ -445,7 +445,8 @@ neut_elt_rr_3d (double *p1, double *p2, double *p3, double *p4)
       (point[k][1] - point[j][1]) * (point[l][0] - point[j][0]);
 
     /* compute (2 *area)^2 for this face */
-    facearea2[i] = facenormal[i][0] * facenormal[i][0] +
+    facearea2[i] =
+      facenormal[i][0] * facenormal[i][0] +
       facenormal[i][1] * facenormal[i][1] +
       facenormal[i][2] * facenormal[i][2];
     facesum += sqrt (facearea2[i]) * 0.5;
@@ -457,7 +458,7 @@ neut_elt_rr_3d (double *p1, double *p2, double *p3, double *p4)
   /* now we are ready to compute the radius ratio, which is
      (108 * V^2) / Z (A1 + A2 + A3 + A4) */
 
-  ut_free_1d_pdouble (point);
+  ut_free_1d_pdouble (&point);
 
   return (108 * vol * vol) / (Z * facesum);
 }
@@ -516,7 +517,7 @@ neut_elt_rr_2d (double *p1, double *p2, double *p3)
 {
   double l1, l2, l3, area;
 
-  area = ut_space_trianglearea (p1, p2, p3);
+  area = ut_space_triangle_area (p1, p2, p3);
   l1 = ut_space_dist (p1, p2);
   l2 = ut_space_dist (p2, p3);
   l3 = ut_space_dist (p3, p1);
@@ -540,16 +541,17 @@ neut_elt_3d_rho (double *p1, double *p2, double *p3, double *p4)
 
   rho = ut_array_1d_min (l, 6) / ut_array_1d_max (l, 6);
 
-  ut_free_1d (l);
+  ut_free_1d (&l);
 
   return rho;
 }
 
 void
-neut_elt_nodes_facet (int dim, int* nodes, int* facetnodes, int* pfacet, int *pfacetori)
+neut_elt_nodes_facet (int dim, int *nodes, int *facetnodes, int *pfacet,
+                      int *pfacetori)
 {
   int i;
-  int* pos = ut_alloc_1d_int (dim);
+  int *pos = ut_alloc_1d_int (dim);
 
   for (i = 0; i < dim; i++)
     pos[i] = ut_array_1d_int_eltpos (nodes, dim + 1, facetnodes[i]);
@@ -557,57 +559,72 @@ neut_elt_nodes_facet (int dim, int* nodes, int* facetnodes, int* pfacet, int *pf
   if (dim == 3)
   {
     if ((pos[0] == 0 && pos[1] == 2 && pos[2] == 1)
-     || (pos[0] == 2 && pos[1] == 1 && pos[2] == 0)
-     || (pos[0] == 1 && pos[1] == 0 && pos[2] == 2))
+        || (pos[0] == 2 && pos[1] == 1 && pos[2] == 0) || (pos[0] == 1
+                                                           && pos[1] == 0
+                                                           && pos[2] == 2))
     {
       (*pfacet) = 1;
       (*pfacetori) = 1;
     }
     else if ((pos[0] == 1 && pos[1] == 2 && pos[2] == 0)
-	  || (pos[0] == 0 && pos[1] == 1 && pos[2] == 2)
-	  || (pos[0] == 2 && pos[1] == 0 && pos[2] == 1))
+             || (pos[0] == 0 && pos[1] == 1 && pos[2] == 2) || (pos[0] == 2
+                                                                && pos[1] == 0
+                                                                && pos[2] ==
+                                                                1))
     {
       (*pfacet) = 1;
       (*pfacetori) = -1;
     }
     else if ((pos[0] == 0 && pos[1] == 1 && pos[2] == 3)
-	  || (pos[0] == 1 && pos[1] == 3 && pos[2] == 0)
-	  || (pos[0] == 3 && pos[1] == 0 && pos[2] == 1))
+             || (pos[0] == 1 && pos[1] == 3 && pos[2] == 0) || (pos[0] == 3
+                                                                && pos[1] == 0
+                                                                && pos[2] ==
+                                                                1))
     {
       (*pfacet) = 2;
       (*pfacetori) = 1;
     }
     else if ((pos[0] == 3 && pos[1] == 1 && pos[2] == 0)
-	  || (pos[0] == 0 && pos[1] == 3 && pos[2] == 1)
-	  || (pos[0] == 1 && pos[1] == 0 && pos[2] == 3))
+             || (pos[0] == 0 && pos[1] == 3 && pos[2] == 1) || (pos[0] == 1
+                                                                && pos[1] == 0
+                                                                && pos[2] ==
+                                                                3))
     {
       (*pfacet) = 2;
       (*pfacetori) = -1;
     }
     else if ((pos[0] == 1 && pos[1] == 2 && pos[2] == 3)
-	  || (pos[0] == 2 && pos[1] == 3 && pos[2] == 1)
-	  || (pos[0] == 3 && pos[1] == 1 && pos[2] == 2))
+             || (pos[0] == 2 && pos[1] == 3 && pos[2] == 1) || (pos[0] == 3
+                                                                && pos[1] == 1
+                                                                && pos[2] ==
+                                                                2))
     {
       (*pfacet) = 3;
       (*pfacetori) = 1;
     }
     else if ((pos[0] == 3 && pos[1] == 2 && pos[2] == 1)
-	  || (pos[0] == 1 && pos[1] == 3 && pos[2] == 2)
-	  || (pos[0] == 2 && pos[1] == 1 && pos[2] == 3))
+             || (pos[0] == 1 && pos[1] == 3 && pos[2] == 2) || (pos[0] == 2
+                                                                && pos[1] == 1
+                                                                && pos[2] ==
+                                                                3))
     {
       (*pfacet) = 3;
       (*pfacetori) = -1;
     }
     else if ((pos[0] == 0 && pos[1] == 3 && pos[2] == 2)
-	  || (pos[0] == 3 && pos[1] == 2 && pos[2] == 0)
-	  || (pos[0] == 2 && pos[1] == 0 && pos[2] == 3))
+             || (pos[0] == 3 && pos[1] == 2 && pos[2] == 0) || (pos[0] == 2
+                                                                && pos[1] == 0
+                                                                && pos[2] ==
+                                                                3))
     {
       (*pfacet) = 4;
       (*pfacetori) = 1;
     }
     else if ((pos[0] == 2 && pos[1] == 3 && pos[2] == 0)
-	  || (pos[0] == 0 && pos[1] == 2 && pos[2] == 3)
-	  || (pos[0] == 3 && pos[1] == 0 && pos[2] == 2))
+             || (pos[0] == 0 && pos[1] == 2 && pos[2] == 3) || (pos[0] == 3
+                                                                && pos[1] == 0
+                                                                && pos[2] ==
+                                                                2))
     {
       (*pfacet) = 4;
       (*pfacetori) = -1;
@@ -655,14 +672,14 @@ neut_elt_nodes_facet (int dim, int* nodes, int* facetnodes, int* pfacet, int *pf
   else
     abort ();
 
-  ut_free_1d_int (pos);
+  ut_free_1d_int (&pos);
 
   return;
 }
 
 void
-neut_elt_facet_nodes (char *type, int dim, int order,
-                      int* nodes, int facet, int facetori, int* facetnodes)
+neut_elt_facet_nodes (char *type, int dim, int order, int *nodes, int facet,
+                      int facetori, int *facetnodes)
 {
   type = type;
 
@@ -672,44 +689,44 @@ neut_elt_facet_nodes (char *type, int dim, int order,
     {
       if (facet == 1)
       {
-	facetnodes[0] = nodes[0];
-	facetnodes[1] = nodes[1];
+        facetnodes[0] = nodes[0];
+        facetnodes[1] = nodes[1];
       }
       else if (facet == 2)
       {
-	facetnodes[0] = nodes[1];
-	facetnodes[1] = nodes[2];
+        facetnodes[0] = nodes[1];
+        facetnodes[1] = nodes[2];
       }
       else if (facet == 3)
       {
-	facetnodes[0] = nodes[2];
-	facetnodes[1] = nodes[0];
+        facetnodes[0] = nodes[2];
+        facetnodes[1] = nodes[0];
       }
       else
-	abort ();
+        abort ();
     }
     else if (order == 2)
     {
       if (facet == 1)
       {
-	facetnodes[0] = nodes[0];
-	facetnodes[1] = nodes[1];
-	facetnodes[2] = nodes[3];
+        facetnodes[0] = nodes[0];
+        facetnodes[1] = nodes[1];
+        facetnodes[2] = nodes[3];
       }
       else if (facet == 2)
       {
-	facetnodes[0] = nodes[1];
-	facetnodes[1] = nodes[2];
-	facetnodes[2] = nodes[4];
+        facetnodes[0] = nodes[1];
+        facetnodes[1] = nodes[2];
+        facetnodes[2] = nodes[4];
       }
       else if (facet == 3)
       {
-	facetnodes[0] = nodes[2];
-	facetnodes[1] = nodes[0];
-	facetnodes[2] = nodes[5];
+        facetnodes[0] = nodes[2];
+        facetnodes[1] = nodes[0];
+        facetnodes[2] = nodes[5];
       }
       else
-	abort ();
+        abort ();
     }
   }
 
@@ -719,33 +736,33 @@ neut_elt_facet_nodes (char *type, int dim, int order,
     {
       if (facet == 1)
       {
-	facetnodes[0] = nodes[0];
-	facetnodes[1] = nodes[2];
-	facetnodes[2] = nodes[1];
+        facetnodes[0] = nodes[0];
+        facetnodes[1] = nodes[2];
+        facetnodes[2] = nodes[1];
       }
       else if (facet == 2)
       {
-	facetnodes[0] = nodes[0];
-	facetnodes[1] = nodes[1];
-	facetnodes[2] = nodes[3];
+        facetnodes[0] = nodes[0];
+        facetnodes[1] = nodes[1];
+        facetnodes[2] = nodes[3];
       }
       else if (facet == 3)
       {
-	facetnodes[0] = nodes[1];
-	facetnodes[1] = nodes[2];
-	facetnodes[2] = nodes[3];
+        facetnodes[0] = nodes[1];
+        facetnodes[1] = nodes[2];
+        facetnodes[2] = nodes[3];
       }
       else if (facet == 4)
       {
-	facetnodes[0] = nodes[0];
-	facetnodes[1] = nodes[3];
-	facetnodes[2] = nodes[2];
+        facetnodes[0] = nodes[0];
+        facetnodes[1] = nodes[3];
+        facetnodes[2] = nodes[2];
       }
       else
-	abort ();
+        abort ();
 
       if (facetori == -1)
-	ut_array_1d_int_reverseelts (facetnodes, 3);
+        ut_array_1d_int_reverseelts (facetnodes, 3);
     }
     else if (order == 2)
       abort ();
@@ -756,16 +773,26 @@ neut_elt_facet_nodes (char *type, int dim, int order,
 
 // http://pages.suddenlink.net/physics/FEA/FEM_basis_functions_for_a_triangle.pdf
 void
-neut_elt_tri_shapefct (double *a, double *b, double *c, double *p, double *val)
+neut_elt_tri_shapefct (double *a, double *b, double *c, double *p,
+                       double *val)
 {
-  val[0] = ((p[0] - c[0]) * (b[1] - c[1]) - (b[0] - c[0]) * (p[1] - c[1]))
-         / ((a[0] - c[0]) * (b[1] - c[1]) - (b[0] - c[0]) * (a[1] - c[1]));
+  val[0] =
+    ((p[0] - c[0]) * (b[1] - c[1]) -
+     (b[0] - c[0]) * (p[1] - c[1])) / ((a[0] - c[0]) * (b[1] - c[1]) - (b[0] -
+                                                                        c[0])
+                                       * (a[1] - c[1]));
 
-  val[1] = ((p[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (p[1] - a[1]))
-         / ((b[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (b[1] - a[1]));
+  val[1] =
+    ((p[0] - a[0]) * (c[1] - a[1]) -
+     (c[0] - a[0]) * (p[1] - a[1])) / ((b[0] - a[0]) * (c[1] - a[1]) - (c[0] -
+                                                                        a[0])
+                                       * (b[1] - a[1]));
 
-  val[2] = ((p[0] - b[0]) * (a[1] - b[1]) - (a[0] - b[0]) * (p[1] - b[1]))
-         / ((c[0] - b[0]) * (a[1] - b[1]) - (a[0] - b[0]) * (c[1] - b[1]));
+  val[2] =
+    ((p[0] - b[0]) * (a[1] - b[1]) -
+     (a[0] - b[0]) * (p[1] - b[1])) / ((c[0] - b[0]) * (a[1] - b[1]) - (a[0] -
+                                                                        b[0])
+                                       * (c[1] - b[1]));
 
   if (ut_num_equal (ut_array_1d_sum (val, 3), 1, 1e-6) != 1)
     abort ();
@@ -1005,8 +1032,8 @@ neut_elt_orderarrays_2d (char *elttype, int ***pfir, int *pnodeqty_tot,
       (*pfir)[6][1] = 3;
       (*pfir)[7][0] = 3;
       (*pfir)[7][1] = 0;
-      (*pfir)[8][0] = -1; // this means the node is not between 1st-order nodes
-      (*pfir)[8][1] = -1; // this means the node is not between 1st-order nodes
+      (*pfir)[8][0] = -1;       // this means the node is not between 1st-order nodes
+      (*pfir)[8][1] = -1;       // this means the node is not between 1st-order nodes
     }
   }
 

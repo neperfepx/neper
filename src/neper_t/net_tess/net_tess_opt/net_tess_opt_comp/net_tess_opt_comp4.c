@@ -5,12 +5,13 @@
 #include "net_tess_opt_comp_.h"
 
 void
-net_tess_opt_comp_rand_shift_seeds (double *x, struct TOPT *pTOpt, int seedqty,
-                                    int dimqty, double min, double max,
-                                    int *alldims, int alldimqty, gsl_rng *r)
+net_tess_opt_comp_rand_shift_seeds (double *x, struct TOPT *pTOpt,
+                                    int seedqty, int dimqty, double min,
+                                    double max, int *alldims, int alldimqty,
+                                    gsl_rng * r)
 {
   int i, j, seed, dim, id;
-  int* seeds = ut_alloc_1d_int ((*pTOpt).SSet.N);
+  int *seeds = ut_alloc_1d_int ((*pTOpt).SSet.N);
   double *tmp = ut_alloc_1d (ut_num_max ((*pTOpt).SSet.N, 4));
   double *v = ut_alloc_1d ((*pTOpt).Dim + 1);
   int *dims = ut_alloc_1d_int (4);
@@ -39,10 +40,10 @@ net_tess_opt_comp_rand_shift_seeds (double *x, struct TOPT *pTOpt, int seedqty,
     }
   }
 
-  ut_free_1d_int (seeds);
-  ut_free_1d (tmp);
-  ut_free_1d (v);
-  ut_free_1d_int (dims);
+  ut_free_1d_int (&seeds);
+  ut_free_1d (&tmp);
+  ut_free_1d (&v);
+  ut_free_1d_int (&dims);
 
   return;
 }
@@ -50,7 +51,8 @@ net_tess_opt_comp_rand_shift_seeds (double *x, struct TOPT *pTOpt, int seedqty,
 void
 net_tess_opt_comp_rand_shift_crystal (double *x, struct TOPT *pTOpt,
                                       int dimqty, double min, double max,
-                                      int *alldims, int alldimqty, gsl_rng *r)
+                                      int *alldims, int alldimqty,
+                                      gsl_rng * r)
 {
   int j, dim;
   double *tmp = ut_alloc_1d (ut_num_max ((*pTOpt).SSet.N, 4));
@@ -69,9 +71,9 @@ net_tess_opt_comp_rand_shift_crystal (double *x, struct TOPT *pTOpt,
     x[dim] = ut_num_min (x[dim], (*pTOpt).boundu[dim]);
   }
 
-  ut_free_1d (tmp);
-  ut_free_1d (v);
-  ut_free_1d_int (dims);
+  ut_free_1d (&tmp);
+  ut_free_1d (&v);
+  ut_free_1d_int (&dims);
 
   return;
 }

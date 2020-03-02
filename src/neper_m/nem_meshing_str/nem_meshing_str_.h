@@ -14,6 +14,6 @@
 #include"nem_meshing_str.h"
 
 extern void nem_meshing_str_tess (struct TESS Tess, struct NODES *,
-				  struct MESH *Mesh);
+                                  struct MESH *Mesh);
 extern void nem_meshing_str_meshcell (char *, struct TESR, struct MESH *,
-				      struct NODES *, struct NSET *);
+                                      struct NODES *, struct NSET *);

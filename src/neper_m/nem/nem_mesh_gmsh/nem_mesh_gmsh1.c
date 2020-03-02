@@ -6,11 +6,10 @@
 
 int
 nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
-		  struct MESH *Mesh, double cl, double clreps,
-		  char *gmsh, char *tmp, char
-		  *algo, char *opti, double rnd, double allowed_t,
-		  struct NODES *pN, struct MESH *pM,
-		  double *pacl, struct timeval *pctrlc_t, double *pelapsed_t)
+                  struct MESH *Mesh, double cl, double clreps, char *gmsh,
+                  char *tmp, char *algo, char *opti, double rnd,
+                  double allowed_t, struct NODES *pN, struct MESH *pM,
+                  double *pacl, struct timeval *pctrlc_t, double *pelapsed_t)
 {
   FILE *file, *file2;
   char *Args = NULL;
@@ -30,9 +29,12 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
   int redo, iter;
 
 #ifdef HAVE_OPENMP
-  sprintf (filename, "%s/tmp%d-%d.geo", tmp, getpid (), omp_get_thread_num ());
-  sprintf (filename_surf, "%s/tmp%d-%d-surf.msh", tmp, getpid (), omp_get_thread_num ());
-  sprintf (filename_msh, "%s/tmp%d-%d.msh", tmp, getpid (), omp_get_thread_num ());
+  sprintf (filename, "%s/tmp%d-%d.geo", tmp, getpid (),
+           omp_get_thread_num ());
+  sprintf (filename_surf, "%s/tmp%d-%d-surf.msh", tmp, getpid (),
+           omp_get_thread_num ());
+  sprintf (filename_msh, "%s/tmp%d-%d.msh", tmp, getpid (),
+           omp_get_thread_num ());
 #else // HAVE_OPENMP
   sprintf (filename, "%s/tmp%d-1.geo", tmp, getpid ());
   sprintf (filename_surf, "%s/tmp%d-1-surf.msh", tmp, getpid ());
@@ -60,7 +62,7 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
 
   file2 = ut_file_open (filename_surf, "W");
   neut_mesh_fprintf_gmsh (file2, "2", Tess, Nodes, Garbage, Garbage, Skin,
-			  Garbage, PGarbage, Garbage, NULL, NULL, "binary");
+                          Garbage, PGarbage, Garbage, NULL, NULL, "binary");
   ut_file_close (file2, filename_surf, "W");
 
   clmod = cl;
@@ -88,7 +90,7 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
     {
       printf ("\n");
       ut_print_message (2, 3, "Mesh optimization algorithm `%s' unknown.\n",
-			opti);
+                        opti);
       abort ();
     }
 
@@ -99,13 +101,12 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
     // meshing
     gettimeofday (&beg_time, NULL);
     Args = ut_alloc_1d_char (1000);
-    sprintf (Args,
-	     "%s -3 -v 0 -order 1 %s -o %s > /dev/null 2> /dev/null",
-	     gmsh, filename, filename_msh);
+    sprintf (Args, "%s -3 -v 0 -order 1 %s -o %s > /dev/null 2> /dev/null",
+             gmsh, filename, filename_msh);
     ut_sys_runwtime (gmsh, Args, allowed_t, pctrlc_t);
     gettimeofday (&end_time, NULL);
     (*pelapsed_t) = ut_time_subtract (&beg_time, &end_time);
-    ut_free_1d_char (Args);
+    ut_free_1d_char (&Args);
 
   /***********************************************************************
    * reading 3D mesh */
@@ -142,9 +143,9 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
     if (ut_num_requal (lmean, cl, clreps) == 0)
     {
       if (lmean > cl)
-	clmod /= (1 + speed / (cross + 1));
+        clmod /= (1 + speed / (cross + 1));
       else
-	clmod *= (1 + speed / (cross + 1));
+        clmod *= (1 + speed / (cross + 1));
       redo = 1;
     }
 
@@ -184,11 +185,11 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
       match = neut_mesh_cmp (Nodes, Skin, *pN, M2);
 
       if (match == 1)
-	status = 0;
+        status = 0;
       else
-	status = 2;		// means meshes do not match
+        status = 2;             // means meshes do not match
 
-      ut_free_2d_int (Elsets, ElsetQty);
+      ut_free_2d_int (&Elsets, ElsetQty);
     }
   }
 
@@ -203,8 +204,8 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
 
   neut_mesh_free (&Skin);
   neut_mesh_free (&M2);
-  ut_free_1d_char (filename);
-  ut_free_1d_char (filename_msh);
+  ut_free_1d_char (&filename);
+  ut_free_1d_char (&filename_msh);
 
   neut_gmsh_rc ("unbak");
 

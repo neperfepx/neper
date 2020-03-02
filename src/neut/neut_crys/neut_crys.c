@@ -15,7 +15,7 @@ neut_crys_set_zero (struct CRYS *pCrys)
 void
 neut_crys_free (struct CRYS *pCrys)
 {
-  ut_free_1d_char ((*pCrys).crysym);
+  ut_free_1d_char (&(*pCrys).crysym);
 
   return;
 }

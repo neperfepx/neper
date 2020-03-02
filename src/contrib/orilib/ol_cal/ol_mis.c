@@ -4,7 +4,7 @@
 #include "ol_mis.h"
 
 void
-ol_g_lng (double** g, double** lng)
+ol_g_lng (double **g, double **lng)
 {
   double theta;
 
@@ -17,7 +17,7 @@ ol_g_lng (double** g, double** lng)
 }
 
 void
-ol_q_lnq (double* q, double* lnq)
+ol_q_lnq (double *q, double *lnq)
 {
   double theta;
 
@@ -28,12 +28,12 @@ ol_q_lnq (double* q, double* lnq)
 }
 
 void
-ol_lnq_q (double* lnq, double* q)
+ol_lnq_q (double *lnq, double *q)
 {
   double theta, *r = ol_r_alloc ();
 
   theta = 2 * ut_array_1d_norm (lnq, 3);
-  ut_array_1d_memcpy (r, 3, lnq);
+  ut_array_1d_memcpy (lnq, 3, r);
   ol_r_set_unit (r);
 
   ol_rtheta_q (r, theta, q);

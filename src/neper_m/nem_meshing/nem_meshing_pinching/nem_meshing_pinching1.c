@@ -6,9 +6,9 @@
 
 void
 nem_meshing_pinching (struct IN_M In, struct MESHPARA MeshPara,
-		      struct TESS *pTess, struct NODES RNodes,
-		      struct MESH *RMesh, struct NODES *pNodes,
-		      struct MESH *Mesh)
+                      struct TESS *pTess, struct NODES RNodes,
+                      struct MESH *RMesh, struct NODES *pNodes,
+                      struct MESH *Mesh)
 {
   int i, j, k, elt1d, status, elset;
   double n1n2angle;
@@ -31,47 +31,50 @@ nem_meshing_pinching (struct IN_M In, struct MESHPARA MeshPara,
     {
       elt1d = elts1d[j];
       neut_mesh_elt1d_elsets2d_elts2d (Mesh[1], elt1d, Mesh[2],
-				       (*pTess).PolyFaceNb[i] + 1,
-				       (*pTess).PolyFaceQty[i],
-				       &elts2d, &elt2dqty);
+                                       (*pTess).PolyFaceNb[i] + 1,
+                                       (*pTess).PolyFaceQty[i], &elts2d,
+                                       &elt2dqty);
       if (elt2dqty != 2)
-	ut_error_reportbug ();
+        ut_print_neperbug ();
 
       // testing for pinching
-      status = neut_mesh_elt2dpair_angle (*pNodes, Mesh[2], elts2d[0], elts2d[1],
-					  &n1n2angle);
+      status =
+        neut_mesh_elt2dpair_angle (*pNodes, Mesh[2], elts2d[0], elts2d[1],
+                                   &n1n2angle);
 
       if (status != 0 || ut_num_equal (n1n2angle, 180, 1e-3))
       {
-	ut_print_message (0, 3, "poly %d: elts %d & %d...\n",
-			  i, elts2d[0], elts2d[1], status);
+        ut_print_message (0, 3, "poly %d: elts %d & %d...\n", i, elts2d[0],
+                          elts2d[1], status);
 
-	// setting interpolations based on barycenter
-	if (RNodes.NodeQty == 0)
-	{
-	  for (k = 0; k < 2; k++)
-	  {
-	    elset = Mesh[2].EltElset[elts2d[k]];
-	    if ((*pTess).FaceState[elset] != 0 && (*pTess).FacePt[elset] > 0)
-	      nem_meshing_pinching_inter (MeshPara, pTess, pNodes, Mesh, elset);
-	  }
+        // setting interpolations based on barycenter
+        if (RNodes.NodeQty == 0)
+        {
+          for (k = 0; k < 2; k++)
+          {
+            elset = Mesh[2].EltElset[elts2d[k]];
+            if ((*pTess).FaceState[elset] != 0 && (*pTess).FacePt[elset] > 0)
+              nem_meshing_pinching_inter (MeshPara, pTess, pNodes, Mesh,
+                                          elset);
+          }
 
-	  // testing again for pinching
-	  status = neut_mesh_elt2dpair_angle (*pNodes, Mesh[2], elts2d[0], elts2d[1],
-					      &n1n2angle);
-	}
+          // testing again for pinching
+          status =
+            neut_mesh_elt2dpair_angle (*pNodes, Mesh[2], elts2d[0], elts2d[1],
+                                       &n1n2angle);
+        }
 
-	// if the problem remains, fixing meshes
-	if (status != 0 || ut_num_equal (n1n2angle, 180, 1e-3))
-	  nem_meshing_pinching_fix (MeshPara, pTess, RNodes, RMesh, pNodes,
-				    Mesh, elts2d);
+        // if the problem remains, fixing meshes
+        if (status != 0 || ut_num_equal (n1n2angle, 180, 1e-3))
+          nem_meshing_pinching_fix (MeshPara, pTess, RNodes, RMesh, pNodes,
+                                    Mesh, elts2d);
       }
     }
   }
 
-  ut_free_1d_int (elts2d);
-  ut_free_1d_int (elts1d);
-  ut_free_1d_int (edges);
+  ut_free_1d_int (&elts2d);
+  ut_free_1d_int (&elts1d);
+  ut_free_1d_int (&edges);
 
   return;
 }

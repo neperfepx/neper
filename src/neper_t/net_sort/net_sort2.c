@@ -28,27 +28,28 @@ net_sort_tess (struct TESS *pTess, char *expr)
   {
     for (j = 0; j < var_qty; j++)
       if (strstr (expr, vars[j]))
-	neut_tess_var_val_one (*pTess, NULL, NULL, NULL, cell, i, vars[j],
-			       vals + j, NULL);
+        neut_tess_var_val_one (*pTess, NULL, NULL, NULL, cell, i, vars[j],
+                               vals + j, NULL);
 
     status = ut_math_eval (expr, var_qty, vars, vals, &(res[i]));
     if (status != 0)
-      ut_print_message (2, 2, "net_sort_tess: failed to process expression.\n");
+      ut_print_message (2, 2,
+                        "net_sort_tess: failed to process expression.\n");
   }
 
   tmp = ut_alloc_1d_int ((*pTess).CellQty);
   ut_array_1d_sort_index (res + 1, (*pTess).CellQty, tmp);
   ut_array_1d_int_inv (tmp, (*pTess).CellQty, &tmp2, &qty2);
-  ut_array_1d_int_memcpy ((*pTess).CellId + 1, (*pTess).CellQty, tmp2);
+  ut_array_1d_int_memcpy (tmp2, (*pTess).CellQty, (*pTess).CellId + 1);
   ut_array_1d_int_addval ((*pTess).CellId + 1, (*pTess).CellQty, 1,
-			  (*pTess).CellId + 1);
+                          (*pTess).CellId + 1);
 
-  ut_free_1d_int (tmp);
-  ut_free_1d_int (tmp2);
-  ut_free_2d_char (vars, var_qty);
-  ut_free_1d (vals);
-  ut_free_1d (res);
-  ut_free_1d_char (cell);
+  ut_free_1d_int (&tmp);
+  ut_free_1d_int (&tmp2);
+  ut_free_2d_char (&vars, var_qty);
+  ut_free_1d (&vals);
+  ut_free_1d (&res);
+  ut_free_1d_char (&cell);
 
   return;
 }

@@ -5,10 +5,9 @@
 #include"net_mtess_flatten_ver_.h"
 
 void
-net_mtess_flatten_ver (struct MTESS MTess, struct TESS *Tess,
-		       int TessId, int *CTessIds, int CTessQty,
-		       struct TESS *pFTess,
-		       struct TESSE *TessE, struct FLATTEN *pFlatten)
+net_mtess_flatten_ver (struct MTESS MTess, struct TESS *Tess, int TessId,
+                       int *CTessIds, int CTessQty, struct TESS *pFTess,
+                       struct TESSE *TessE, struct FLATTEN *pFlatten)
 {
   int i, j, id, domver, domverid;
   int *dom = ut_alloc_1d_int (2);
@@ -39,36 +38,36 @@ net_mtess_flatten_ver (struct MTESS MTess, struct TESS *Tess,
     for (j = 1; j <= Tess[id].VerQty; j++)
       if (Tess[id].VerDom[j][0] != 0)
       {
-	dom[0] = Tess[id].VerDom[j][0];
-	if (dom[0] == 1)
-	  dom[1] = MTess.TessDomEdgeNb[id][Tess[id].VerDom[j][1]];
-	else if (dom[0] == 2)
-	  dom[1] = MTess.TessDomFaceNb[id][Tess[id].VerDom[j][1]];
-	else if (dom[0] == -1)
-	{
-	  dom[0] = 3;
-	  dom[1] = MTess.TessDom[id][1];
-	}
-	else
-	  abort ();
+        dom[0] = Tess[id].VerDom[j][0];
+        if (dom[0] == 1)
+          dom[1] = MTess.TessDomEdgeNb[id][Tess[id].VerDom[j][1]];
+        else if (dom[0] == 2)
+          dom[1] = MTess.TessDomFaceNb[id][Tess[id].VerDom[j][1]];
+        else if (dom[0] == -1)
+        {
+          dom[0] = 3;
+          dom[1] = MTess.TessDom[id][1];
+        }
+        else
+          abort ();
 
-	neut_tess_addver (pFTess, Tess[id].VerCoo[j]);
-	TessE[id].VerFVer[j] = (*pFTess).VerQty;
-	neut_flatten_addver (pFlatten, dom);
+        neut_tess_addver (pFTess, Tess[id].VerCoo[j]);
+        TessE[id].VerFVer[j] = (*pFTess).VerQty;
+        neut_flatten_addver (pFlatten, dom);
       }
       else
       {
-	domver = Tess[id].VerDom[j][1];
-	domverid = MTess.TessDomVerNb[id][domver];
-	TessE[id].VerFVer[j] = TessE[TessId].VerFVer[domverid];
+        domver = Tess[id].VerDom[j][1];
+        domverid = MTess.TessDomVerNb[id][domver];
+        TessE[id].VerFVer[j] = TessE[TessId].VerFVer[domverid];
       }
   }
 
   // filling pFVerTessVerQty and pFVerTessVerNb
-  net_mtess_flatten_ver_init_fvertessver (Tess, CTessIds,
-					  CTessQty, TessE, pFlatten);
+  net_mtess_flatten_ver_init_fvertessver (Tess, CTessIds, CTessQty, TessE,
+                                          pFlatten);
 
-  ut_free_1d_int (dom);
+  ut_free_1d_int (&dom);
 
   return;
 }

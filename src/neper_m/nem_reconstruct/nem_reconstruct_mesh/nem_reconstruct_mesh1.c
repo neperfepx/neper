@@ -5,8 +5,8 @@
 #include "nem_reconstruct_mesh_.h"
 
 void
-nem_reconstruct_mesh (char *dim, struct NODES *pNodes,
-		      struct MESH *Mesh, struct TESS *pTess)
+nem_reconstruct_mesh (char *dim, struct NODES *pNodes, struct MESH *Mesh,
+                      struct TESS *pTess)
 {
   int i, input_dim, recon_dim, mode;
 
@@ -18,7 +18,7 @@ nem_reconstruct_mesh (char *dim, struct NODES *pNodes,
 
   recon_dim = input_dim;
   for (i = 0; i < input_dim; i++)
-    if (!strcmp (dim, "all") || ut_string_inlist_int (dim, NEUT_SEP_NODEP, i))
+    if (!strcmp (dim, "all") || ut_list_testelt_int (dim, NEUT_SEP_NODEP, i))
     {
       recon_dim = i;
       break;
@@ -42,10 +42,10 @@ nem_reconstruct_mesh (char *dim, struct NODES *pNodes,
     for (i = recon_dim; i <= input_dim; i++)
       if (Mesh[i].EltQty == 0 && (*pTess).VerQty > 0)
       {
-	ut_print_message (1, 2,
-			  "%dD mesh is missing. Tessellation will be disregarded.\n",
-			  i);
-	mode = 2;
+        ut_print_message (1, 2,
+                          "%dD mesh is missing. Tessellation will be disregarded.\n",
+                          i);
+        mode = 2;
       }
 
   for (i = 0; i <= 3; i++)
@@ -76,7 +76,7 @@ nem_reconstruct_mesh (char *dim, struct NODES *pNodes,
   if (input_dim >= 0 && recon_dim <= 0)
     nem_reconstruct_mesh_0d (*pNodes, Mesh, mode, pTess);
 
-  if (mode == 2)		// Tess is void; reconstructing domain
+  if (mode == 2)                // Tess is void; reconstructing domain
     neut_tess_init_domain (pTess);
 
   if (mode >= 1)
@@ -92,14 +92,14 @@ nem_reconstruct_mesh (char *dim, struct NODES *pNodes,
 
   for (i = 0; i <= 2; i++)
     if (strcmp (dim, "all") != 0
-	&& !ut_string_inlist_int (dim, NEUT_SEP_NODEP, i))
+        && !ut_list_testelt_int (dim, NEUT_SEP_NODEP, i))
       neut_mesh_free (Mesh + i);
 
   /*
      if (pTess != NULL && neut_tess_test (*pTess) != 0)
      {
      ut_print_message (2, 0, "nem_reconstruct_mesh: tess is not valid!\n");
-     ut_error_reportbug ();
+     ut_print_neperbug ();
      }
    */
 

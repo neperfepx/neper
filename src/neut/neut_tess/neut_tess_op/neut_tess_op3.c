@@ -9,12 +9,12 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
   int i, j;
 
   if ((*pTess).Dim != 3)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   if ((!strcmp ((*pTess).DomType, "cube")
-    || !strcmp ((*pTess).DomType, "square")
-    || (strcmp ((*pTess).DomType, "cut") && (*pTess).DomVerQty == 8
-        && (*pTess).DomEdgeQty == 12 && (*pTess).DomFaceQty == 6)))
+       || !strcmp ((*pTess).DomType, "square")
+       || (strcmp ((*pTess).DomType, "cut") && (*pTess).DomVerQty == 8
+           && (*pTess).DomEdgeQty == 12 && (*pTess).DomFaceQty == 6)))
 
   {
     strcpy ((*pTess).DomType, "cube");
@@ -27,28 +27,28 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
     for (i = 1; i <= 3; i++)
     {
       for (j = 1; j <= 6; j++)
-	tmp[j - 1] = fabs (fabs ((*pTess).DomFaceEq[j][i]) - 1);
+        tmp[j - 1] = fabs (fabs ((*pTess).DomFaceEq[j][i]) - 1);
 
       ut_array_1d_sort_index (tmp, 6, id);
       ut_array_1d_int_addval (id, 6, 1, id);
 
       for (j = 0; j < 2; j++)
-	cst[j] = (*pTess).DomFaceEq[id[j]][i] * (*pTess).DomFaceEq[id[j]][0];
+        cst[j] = (*pTess).DomFaceEq[id[j]][i] * (*pTess).DomFaceEq[id[j]][0];
 
       if (cst[0] > cst[1])
-	ut_array_1d_int_reverseelts (id, 2);
+        ut_array_1d_int_reverseelts (id, 2);
 
       for (j = 0; j < 2; j++)
-	sprintf ((*pTess).DomFaceLabel[id[j]], "%c%d", 'x' + i - 1, j);
+        sprintf ((*pTess).DomFaceLabel[id[j]], "%c%d", 'x' + i - 1, j);
     }
 
-    ut_free_1d (tmp);
-    ut_free_1d_int (id);
-    ut_free_1d (cst);
+    ut_free_1d (&tmp);
+    ut_free_1d_int (&id);
+    ut_free_1d (&cst);
   }
 
   else if (!strcmp ((*pTess).DomType, "cylinder")
-	   || !strcmp ((*pTess).DomType, "circle"))
+           || !strcmp ((*pTess).DomType, "circle"))
   {
     (*pTess).DomFaceLabel = ut_alloc_2d_char ((*pTess).DomFaceQty + 1, 10);
     strcpy ((*pTess).DomFaceLabel[1], "z0");
@@ -82,14 +82,14 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
       strlen ((*pTess).DomFaceLabel[face[1]]) + 1;
     (*pTess).DomEdgeLabel[i] = ut_alloc_1d_char (length);
     if (strcmp
-	((*pTess).DomFaceLabel[face[0]], (*pTess).DomFaceLabel[face[1]]) < 0)
+        ((*pTess).DomFaceLabel[face[0]], (*pTess).DomFaceLabel[face[1]]) < 0)
       sprintf ((*pTess).DomEdgeLabel[i], "%s%s",
-	       (*pTess).DomFaceLabel[face[0]],
-	       (*pTess).DomFaceLabel[face[1]]);
+               (*pTess).DomFaceLabel[face[0]],
+               (*pTess).DomFaceLabel[face[1]]);
     else
       sprintf ((*pTess).DomEdgeLabel[i], "%s%s",
-	       (*pTess).DomFaceLabel[face[1]],
-	       (*pTess).DomFaceLabel[face[0]]);
+               (*pTess).DomFaceLabel[face[1]],
+               (*pTess).DomFaceLabel[face[0]]);
   }
 
   (*pTess).DomVerLabel = ut_alloc_1d_pchar ((*pTess).DomVerQty + 1);
@@ -104,15 +104,12 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
 
     fnames = ut_alloc_1d_pchar (domfaceqty);
     for (j = 0; j < domfaceqty; j++)
-    {
-      fnames[j] =
-	ut_alloc_1d_char (strlen ((*pTess).DomFaceLabel[domface[j]]) + 1);
-      strcpy (fnames[j], (*pTess).DomFaceLabel[domface[j]]);
-    }
-    (*pTess).DomVerLabel[i] = ut_string_array_paste_cmp (fnames, domfaceqty);
+      ut_string_string ((*pTess).DomFaceLabel[domface[j]], fnames + j);
+    ut_array_1d_pchar_sort (fnames, domfaceqty);
+    (*pTess).DomVerLabel[i] = ut_string_array_paste (fnames, domfaceqty);
 
-    ut_free_2d_char (fnames, domfaceqty);
-    ut_free_1d_int (domface);
+    ut_free_2d_char (&fnames, domfaceqty);
+    ut_free_1d_int (&domface);
   }
 
   return;
@@ -125,7 +122,7 @@ neut_tess_init_domain_label_2d (struct TESS *pTess)
   int *ver = ut_alloc_1d_int (2);
 
   if ((*pTess).Dim != 2)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   if (!strcmp ((*pTess).DomType, "square")
       || ((*pTess).DomVerQty == 4 && (*pTess).DomEdgeQty == 4))
@@ -141,33 +138,33 @@ neut_tess_init_domain_label_2d (struct TESS *pTess)
     for (j = 1; j <= 4; j++)
     {
       for (i = 0; i < (*pTess).DomEdgeVerQty[j]; i++)
-	ver[i] = (*pTess).DomTessVerNb[(*pTess).DomEdgeVerNb[j][i]];
+        ver[i] = (*pTess).DomTessVerNb[(*pTess).DomEdgeVerNb[j][i]];
 
-      ut_space_points_line ((*pTess).VerCoo[ver[0]],
-			    (*pTess).VerCoo[ver[1]], DomEdgeEq[j]);
+      ut_space_points_line ((*pTess).VerCoo[ver[0]], (*pTess).VerCoo[ver[1]],
+                            DomEdgeEq[j]);
     }
 
     for (i = 1; i <= 2; i++)
     {
       for (j = 1; j <= 4; j++)
-	tmp[j - 1] = fabs (fabs (DomEdgeEq[j][i]) - 1);
+        tmp[j - 1] = fabs (fabs (DomEdgeEq[j][i]) - 1);
 
       ut_array_1d_sort_index (tmp, 4, id);
       ut_array_1d_int_addval (id, 4, 1, id);
 
       for (j = 0; j < 2; j++)
-	cst[j] = DomEdgeEq[id[j]][i] * DomEdgeEq[id[j]][0];
+        cst[j] = DomEdgeEq[id[j]][i] * DomEdgeEq[id[j]][0];
 
       if (cst[0] > cst[1])
-	ut_array_1d_int_reverseelts (id, 2);
+        ut_array_1d_int_reverseelts (id, 2);
 
       for (j = 0; j < 2; j++)
-	sprintf ((*pTess).DomEdgeLabel[id[j]], "%c%d", 'x' + i - 1, j);
+        sprintf ((*pTess).DomEdgeLabel[id[j]], "%c%d", 'x' + i - 1, j);
     }
 
-    ut_free_1d (tmp);
-    ut_free_1d_int (id);
-    ut_free_1d (cst);
+    ut_free_1d (&tmp);
+    ut_free_1d_int (&id);
+    ut_free_1d (&cst);
   }
 
   else
@@ -185,21 +182,16 @@ neut_tess_init_domain_label_2d (struct TESS *pTess)
 
     enames = ut_alloc_1d_pchar ((*pTess).DomVerEdgeQty[i]);
     for (j = 0; j < (*pTess).DomVerEdgeQty[i]; j++)
-    {
-      enames[j] =
-	ut_alloc_1d_char (strlen
-			  ((*pTess).
-			   DomEdgeLabel[(*pTess).DomVerEdgeNb[i][j]]) + 1);
-      strcpy (enames[j], (*pTess).DomEdgeLabel[(*pTess).DomVerEdgeNb[i][j]]);
-    }
-    (*pTess).DomVerLabel[i] = ut_string_array_paste_cmp (enames,
-							 (*pTess).
-							 DomVerEdgeQty[i]);
+      ut_string_string ((*pTess).DomEdgeLabel[(*pTess).DomVerEdgeNb[i][j]],
+                        enames + j);
+    ut_array_1d_pchar_sort (enames, (*pTess).DomVerEdgeQty[i]);
+    (*pTess).DomVerLabel[i] =
+      ut_string_array_paste (enames, (*pTess).DomVerEdgeQty[i]);
 
-    ut_free_2d_char (enames, (*pTess).DomVerEdgeQty[i]);
+    ut_free_2d_char (&enames, (*pTess).DomVerEdgeQty[i]);
   }
 
-  ut_free_1d_int (ver);
+  ut_free_1d_int (&ver);
 
   return;
 }
@@ -210,7 +202,7 @@ neut_tess_init_domain_label_1d (struct TESS *pTess)
   int i;
 
   if ((*pTess).Dim != 1)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   (*pTess).DomVerLabel = ut_alloc_1d_pchar ((*pTess).DomVerQty + 1);
 

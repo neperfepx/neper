@@ -5,8 +5,8 @@
 #include"nem_meshing_0D_.h"
 
 void
-nem_meshing_0D (struct TESS Tess, struct MESHPARA MeshPara, struct
-		NODES *pNodes, struct MESH *Mesh)
+nem_meshing_0D (struct TESS Tess, struct MESHPARA MeshPara,
+                struct NODES *pNodes, struct MESH *Mesh)
 {
   int i, master;
   struct NODES N;
@@ -28,19 +28,18 @@ nem_meshing_0D (struct TESS Tess, struct MESHPARA MeshPara, struct
     {
       if (strcmp (Tess.Type, "periodic") || !Tess.PerVerMaster[i])
       {
-	nem_meshing_0D_ver (Tess, i, MeshPara, &N, &M);
-	nem_meshing_0D_addvermesh (N, M, 0, NULL, pNodes, Mesh);
+        nem_meshing_0D_ver (Tess, i, MeshPara, &N, &M);
+        nem_meshing_0D_addvermesh (N, M, 0, NULL, pNodes, Mesh);
       }
       else
       {
-	master = Tess.PerVerMaster[i];
-	neut_mesh_elset_mesh (*pNodes, Mesh[0], master, &N, &M, NULL);
-	neut_nodes_shift (&N,
-			  Tess.PerVerShift[i][0] * Tess.PeriodicDist[0],
-			  Tess.PerVerShift[i][1] * Tess.PeriodicDist[1],
-			  Tess.PerVerShift[i][2] * Tess.PeriodicDist[2]);
-	nem_meshing_0D_addvermesh (N, M, master, Tess.PerVerShift[i],
-				   pNodes, Mesh);
+        master = Tess.PerVerMaster[i];
+        neut_mesh_elset_mesh (*pNodes, Mesh[0], master, &N, &M, NULL);
+        neut_nodes_shift (&N, Tess.PerVerShift[i][0] * Tess.PeriodicDist[0],
+                          Tess.PerVerShift[i][1] * Tess.PeriodicDist[1],
+                          Tess.PerVerShift[i][2] * Tess.PeriodicDist[2]);
+        nem_meshing_0D_addvermesh (N, M, master, Tess.PerVerShift[i], pNodes,
+                                   Mesh);
       }
 
       ut_print_progress_nonl (stdout, i, Tess.VerQty, "%3.0f%%", message);
@@ -55,7 +54,7 @@ nem_meshing_0D (struct TESS Tess, struct MESHPARA MeshPara, struct
 
   neut_nodes_free (&N);
   neut_mesh_free (&M);
-  ut_free_1d_char (message);
+  ut_free_1d_char (&message);
 
   return;
 }

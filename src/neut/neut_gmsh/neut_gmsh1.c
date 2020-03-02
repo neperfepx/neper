@@ -31,8 +31,8 @@ neut_gmsh_rc (char *action)
   else
     abort ();
 
-  ut_free_1d_char (s1);
-  ut_free_1d_char (s2);
+  ut_free_1d_char (&s1);
+  ut_free_1d_char (&s2);
 
   return;
 }

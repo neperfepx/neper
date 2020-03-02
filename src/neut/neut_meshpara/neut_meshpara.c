@@ -28,16 +28,15 @@ neut_meshpara_set_zero (struct MESHPARA *pMeshPara)
 void
 neut_meshpara_free (struct MESHPARA MeshPara)
 {
-  ut_free_1d_char (MeshPara.cltype);
-  ut_free_1d_char (MeshPara.elttype);
-  ut_free_1d (MeshPara.clratio);
+  ut_free_1d_char (&MeshPara.cltype);
+  ut_free_1d (&MeshPara.clratio);
 
-  ut_free_1d (MeshPara.poly_cl);
-  ut_free_1d (MeshPara.face_cl);
-  ut_free_1d (MeshPara.edge_cl);
-  ut_free_1d (MeshPara.ver_cl);
+  ut_free_1d (&MeshPara.poly_cl);
+  ut_free_1d (&MeshPara.face_cl);
+  ut_free_1d (&MeshPara.edge_cl);
+  ut_free_1d (&MeshPara.ver_cl);
 
-  ut_free_1d (MeshPara.mesh3dclreps);
+  ut_free_1d (&MeshPara.mesh3dclreps);
 
   return;
 }

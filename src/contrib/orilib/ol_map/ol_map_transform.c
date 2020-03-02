@@ -4,7 +4,8 @@
 #include "ol_map_transform.h"
 
 void
-ol_map_transformparam (struct OL_MAP Map, double **F, size_t * pxsize, size_t * pysize, double *S)
+ol_map_transformparam (struct OL_MAP Map, double **F, size_t * pxsize,
+                       size_t * pysize, double *S)
 {
   int i;
   double xmin, xmax, ymin, ymax;
@@ -23,8 +24,7 @@ ol_map_transformparam (struct OL_MAP Map, double **F, size_t * pxsize, size_t * 
   C[2][0] = F[0][1] * Map.ysize;
   C[2][1] = F[1][1] * Map.ysize;
 
-  C[3][0] = F[0][0] * Map.xsize
-    + F[0][1] * Map.ysize;
+  C[3][0] = F[0][0] * Map.xsize + F[0][1] * Map.ysize;
   C[3][1] = F[1][0] * Map.xsize + F[1][1] * Map.ysize;
 
   /* searching bounds */
@@ -47,19 +47,20 @@ ol_map_transformparam (struct OL_MAP Map, double **F, size_t * pxsize, size_t * 
   S[0] = -xmin;
   S[1] = -ymin;
 
-  ut_free_1d (tmp);
-  ut_free_2d (C, 4);
+  ut_free_1d (&tmp);
+  ut_free_2d (&C, 4);
 
   return;
 }
 
 void
-ol_map_transform (struct OL_MAP Map, double **F, size_t xsize, size_t ysize, double *S, struct OL_MAP *pMap2)
+ol_map_transform (struct OL_MAP Map, double **F, size_t xsize, size_t ysize,
+                  double *S, struct OL_MAP *pMap2)
 {
   size_t i, j;
   size_t x, y;
   double det;
-  double **Fi = ut_alloc_2d (2, 2);	/* the inverse of F */
+  double **Fi = ut_alloc_2d (2, 2);     /* the inverse of F */
 
   (*pMap2).xsize = xsize;
   (*pMap2).ysize = ysize;
@@ -84,17 +85,15 @@ ol_map_transform (struct OL_MAP Map, double **F, size_t xsize, size_t ysize, dou
 
       /* if out of the old map -> id = 0, else recording id and q */
       if (x > Map.xsize - 1 || y > Map.ysize - 1)
-	(*pMap2).id[i][j] = 0;
+        (*pMap2).id[i][j] = 0;
       else
       {
-	(*pMap2).id[i][j] = Map.id[x][y];
-	ol_q_memcpy (Map.q[x][y], (*pMap2).q[i][j]);
+        (*pMap2).id[i][j] = Map.id[x][y];
+        ol_q_memcpy (Map.q[x][y], (*pMap2).q[i][j]);
       }
     }
 
-  ut_free_2d (Fi, 2);
+  ut_free_2d (&Fi, 2);
 
   return;
 }
-
-

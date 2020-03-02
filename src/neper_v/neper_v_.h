@@ -18,7 +18,6 @@
 #include"nev_slice/nev_slice.h"
 #include"nev_include/nev_include.h"
 #include"nev_show/nev_show.h"
-#include"nev_processimage/nev_processimage.h"
 #include"nev_povray/nev_povray.h"
 
 #include"neper_v.h"

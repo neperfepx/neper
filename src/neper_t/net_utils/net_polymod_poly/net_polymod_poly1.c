@@ -70,10 +70,10 @@ net_polymod_poly (struct POLYMOD Polymod, struct POLY *pPoly)
 
   /* Memory allocation of temporary used arrays.
    */
-  ut_free_1d_int (CompVer);
-  ut_free_1d_int (CompVerInv);
-  ut_free_1d_int (CompFace);
-  ut_free_1d_int (CompFaceInv);
+  ut_free_1d_int (&CompVer);
+  ut_free_1d_int (&CompVerInv);
+  ut_free_1d_int (&CompFace);
+  ut_free_1d_int (&CompFaceInv);
 
   return;
 }

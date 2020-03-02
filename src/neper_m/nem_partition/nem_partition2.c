@@ -31,7 +31,7 @@ nem_partition_init (struct IN_M In, SCOTCH_Arch * pArch, struct PART *pPart)
     (*pPart).mapping = ut_alloc_1d_char (strlen (In.partstring) + 1);
     strcpy ((*pPart).mapping, In.partstring);
 
-    ut_string_separate (In.partstring, NEUT_SEP_DEP, &list, &qty);
+    ut_list_break (In.partstring, NEUT_SEP_DEP, &list, &qty);
 
     // from an architecture file
     if (qty == 1)
@@ -55,10 +55,10 @@ nem_partition_init (struct IN_M In, SCOTCH_Arch * pArch, struct PART *pPart)
     }
 
     else
-      ut_error_reportbug ();
+      ut_print_neperbug ();
   }
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   if (!strcmp ((*pPart).mode, "mapping"))
   {
@@ -71,16 +71,16 @@ nem_partition_init (struct IN_M In, SCOTCH_Arch * pArch, struct PART *pPart)
   if (qty == 2)
     remove ("neperarch.tmp");
 
-  ut_free_1d_char (archfile);
-  ut_free_1d_char (format);
-  ut_free_2d_char (list, qty);
+  ut_free_1d_char (&archfile);
+  ut_free_1d_char (&format);
+  ut_free_2d_char (&list, qty);
 
   return;
 }
 
 void
-nem_partition_prep (struct NODES *pNodes, struct MESH *Mesh, struct
-		    PART *pPart, SCOTCH_Mesh * pSCMesh)
+nem_partition_prep (struct NODES *pNodes, struct MESH *Mesh,
+                    struct PART *pPart, SCOTCH_Mesh * pSCMesh)
 {
   int i, total;
   int dim = neut_mesh_array_dim (Mesh);
@@ -108,16 +108,15 @@ nem_partition_prep (struct NODES *pNodes, struct MESH *Mesh, struct
 }
 
 void
-nem_partition_nodes (struct IN_M In, SCOTCH_Mesh * pSCMesh, SCOTCH_Arch * pArch,
-		     struct NODES *pNodes, struct MESH *Mesh,
-		     struct PART *pPart)
+nem_partition_nodes (struct IN_M In, SCOTCH_Mesh * pSCMesh,
+                     SCOTCH_Arch * pArch, struct NODES *pNodes,
+                     struct MESH *Mesh, struct PART *pPart)
 {
   SCOTCH_Num *parttab;
   int status;
   int dim = neut_mesh_array_dim (Mesh);
-  int eltnodeqty =
-    neut_elt_nodeqty (Mesh[dim].EltType, Mesh[dim].Dimension,
-		      Mesh[dim].EltOrder);
+  int eltnodeqty = neut_elt_nodeqty (Mesh[dim].EltType, Mesh[dim].Dimension,
+                                     Mesh[dim].EltOrder);
   int i, j, qty;
   SCOTCH_Graph Graph;
   SCOTCH_Strat Strat;
@@ -133,15 +132,15 @@ nem_partition_nodes (struct IN_M In, SCOTCH_Mesh * pSCMesh, SCOTCH_Arch * pArch,
   {
     status =
       SCOTCH_stratGraphMap (&Strat,
-			    "r{job=t,map=t,poli=S,sep=m{type=h,vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{dif=1,rem=1,pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}|m{type=h,vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{dif=1,rem=1,pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}}");
+                            "r{job=t,map=t,poli=S,sep=m{type=h,vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{dif=1,rem=1,pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}|m{type=h,vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{dif=1,rem=1,pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}}");
     if (status != 0)
       SCOTCH_stratGraphMap (&Strat,
-			    "b{job=t,map=t,poli=S,sep=m{type=h,vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{dif=1,rem=1,pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}|m{type=h,vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{dif=1,rem=1,pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}}");
+                            "b{job=t,map=t,poli=S,sep=m{type=h,vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{dif=1,rem=1,pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}|m{type=h,vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{dif=1,rem=1,pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}}");
   }
-  else				// >= 6
+  else                          // >= 6
   {
     SCOTCH_stratGraphMap (&Strat,
-			  "r{job=t,map=t,poli=S,sep=m{vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}|m{vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}}");
+                          "r{job=t,map=t,poli=S,sep=m{vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}|m{vert=80,low=h{pass=10}f{bal=0.0005,move=80}x,asc=b{bnd=d{pass=40}f{bal=0.005,move=80},org=f{bal=0.005,move=80}}x}}");
   }
 
   parttab = ut_alloc_1d_int (Mesh[dim].EltQty * eltnodeqty * 2 + 2);
@@ -158,25 +157,25 @@ nem_partition_nodes (struct IN_M In, SCOTCH_Mesh * pSCMesh, SCOTCH_Arch * pArch,
     for (j = 1; j <= (*pNodes).NodeQty; j++)
       parttab[j] = (*pPart).qty * (j - 1) / (*pNodes).NodeQty;
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   (*pPart).node_parts = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
   (*pPart).node_parts[0] = (*pNodes).NodeQty;
-  ut_array_1d_int_memcpy ((*pPart).node_parts + 1, (*pNodes).NodeQty,
-			  parttab + 1);
-  ut_free_1d_int (parttab);
+  ut_array_1d_int_memcpy (parttab + 1, (*pNodes).NodeQty,
+                          (*pPart).node_parts + 1);
+  ut_free_1d_int (&parttab);
 
   /* renumbering nodes and elt nodes */
   qty = 0;
   for (i = 0; i < (*pPart).qty; i++)
     for (j = 1; j <= (*pNodes).NodeQty; j++)
       if ((*pPart).node_parts[j] == i)
-	node_nbs[j] = ++qty;
+        node_nbs[j] = ++qty;
   node_nbs[0] = (*pNodes).NodeQty;
   ut_array_1d_int_sort ((*pPart).node_parts + 1, (*pNodes).NodeQty);
 
   if (qty != (*pNodes).NodeQty)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   neut_nodes_renumber_switch (pNodes, node_nbs);
   for (i = 0; i <= dim; i++)
@@ -186,11 +185,10 @@ nem_partition_nodes (struct IN_M In, SCOTCH_Mesh * pSCMesh, SCOTCH_Arch * pArch,
 
   for (i = 0; i < (*pPart).qty; i++)
     (*pPart).nodeqty[i] =
-      ut_array_1d_int_nbofthisval ((*pPart).node_parts + 1, (*pNodes).NodeQty,
-				   i);
+      ut_array_1d_int_valnb ((*pPart).node_parts + 1, (*pNodes).NodeQty, i);
 
-  ut_free_1d_int (node_nbs);
-  ut_free_1d_int (version);
+  ut_free_1d_int (&node_nbs);
+  ut_free_1d_int (&version);
 
   return;
 }
@@ -231,7 +229,7 @@ nem_partition_elts (struct IN_M In, struct MESH *Mesh, struct PART *pPart)
   for (i = 0; i < (*pPart).qty; i++)
     for (j = 1; j <= Mesh[dim].EltQty; j++)
       if ((*pPart).elt_parts[j] == i)
-	elt_nbs[j] = ++qty;
+        elt_nbs[j] = ++qty;
   elt_nbs[0] = Mesh[dim].EltQty;
 
   /* renumbering elts */
@@ -242,14 +240,14 @@ nem_partition_elts (struct IN_M In, struct MESH *Mesh, struct PART *pPart)
   for (i = 1; i <= Mesh[dim].EltQty; i++)
     if (neut_mesh_elt_isbound (Mesh[dim], i, (*pPart).node_parts))
       neut_mesh_elt_coms (Mesh[dim], i, (*pPart).qty, (*pPart).node_parts,
-			  (*pPart).elt_parts, coms, &partqty);
+                          (*pPart).elt_parts, coms, &partqty);
 
   // reinitializing eltelset (brute force method)
   if (Mesh[dim].EltElset != NULL)
     neut_mesh_init_eltelset (Mesh + dim, NULL);
 
-  ut_free_2d_int (coms, (*pPart).qty);
-  ut_free_1d_int (elt_nbs);
+  ut_free_2d_int (&coms, (*pPart).qty);
+  ut_free_1d_int (&elt_nbs);
 
   return;
 }
@@ -270,9 +268,9 @@ nem_partition_stats (int partnbr, struct MESH Mesh, struct PART Part)
     cutqty += neut_mesh_elt_comqty (Mesh, i, Part.node_parts, Part.elt_parts);
 
   ut_print_message (0, 3, "Nb of nodes per partition: min = %d, max = %d\n",
-		    nmin, nmax);
+                    nmin, nmax);
   ut_print_message (0, 3, "Nb of elts  per partition: min = %d, max = %d\n",
-		    emin, emax);
+                    emin, emax);
   ut_print_message (0, 3, "Nb of communications: %d\n", cutqty);
 
   return;

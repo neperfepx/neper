@@ -5,8 +5,8 @@
 #include"nem_tess_.h"
 
 void
-nem_tess_updatefrommesh_geom_seed (struct TESS *pTess,
-				   struct NODES Nodes, struct MESH *Mesh)
+nem_tess_updatefrommesh_geom_seed (struct TESS *pTess, struct NODES Nodes,
+                                   struct MESH *Mesh)
 {
   int i;
 
@@ -18,7 +18,7 @@ nem_tess_updatefrommesh_geom_seed (struct TESS *pTess,
   if (Mesh[(*pTess).Dim].ElsetQty > 0)
     for (i = 1; i <= (*pTess).CellQty; i++)
       neut_mesh_elset_centre (Nodes, Mesh[(*pTess).Dim], i,
-			      (*pTess).SeedCoo[i]);
+                              (*pTess).SeedCoo[i]);
 
   if ((*pTess).SeedWeight == NULL)
     (*pTess).SeedWeight = ut_alloc_1d ((*pTess).CellQty + 1);
@@ -27,8 +27,8 @@ nem_tess_updatefrommesh_geom_seed (struct TESS *pTess,
 }
 
 void
-nem_tess_updatefrommesh_geom_ver (struct TESS *pTess,
-				  struct NODES Nodes, struct MESH *Mesh)
+nem_tess_updatefrommesh_geom_ver (struct TESS *pTess, struct NODES Nodes,
+                                  struct MESH *Mesh)
 {
   int i, node;
 
@@ -40,15 +40,15 @@ nem_tess_updatefrommesh_geom_ver (struct TESS *pTess,
     for (i = 1; i <= (*pTess).VerQty; i++)
     {
       node = Mesh[0].EltNodes[i][0];
-      ut_array_1d_memcpy ((*pTess).VerCoo[i], 3, Nodes.NodeCoo[node]);
+      ut_array_1d_memcpy (Nodes.NodeCoo[node], 3, (*pTess).VerCoo[i]);
     }
 
   return;
 }
 
 void
-nem_tess_updatefrommesh_geom_edge (struct TESS *pTess,
-				   struct NODES Nodes, struct MESH *Mesh)
+nem_tess_updatefrommesh_geom_edge (struct TESS *pTess, struct NODES Nodes,
+                                   struct MESH *Mesh)
 {
   int i, j;
   double length;
@@ -68,16 +68,16 @@ nem_tess_updatefrommesh_geom_edge (struct TESS *pTess,
     for (i = 1; i <= (*pTess).EdgeQty; i++)
       for (j = 1; j <= Mesh[1].Elsets[i][0]; j++)
       {
-	neut_mesh_elt_length (Nodes, Mesh[1], Mesh[1].Elsets[i][j], &length);
-	(*pTess).EdgeLength[i] += length;
+        neut_mesh_elt_length (Nodes, Mesh[1], Mesh[1].Elsets[i][j], &length);
+        (*pTess).EdgeLength[i] += length;
       }
 
   return;
 }
 
 void
-nem_tess_updatefrommesh_geom_face (struct TESS *pTess,
-				   struct NODES Nodes, struct MESH *Mesh)
+nem_tess_updatefrommesh_geom_face (struct TESS *pTess, struct NODES Nodes,
+                                   struct MESH *Mesh)
 {
   int i, j, elt;
   double norm;
@@ -102,21 +102,21 @@ nem_tess_updatefrommesh_geom_face (struct TESS *pTess,
       ut_array_1d_zero (eq, 4);
       for (j = 1; j <= Mesh[2].Elsets[i][0]; j++)
       {
-	elt = Mesh[2].Elsets[i][j];
-	neut_mesh_elt_eq (Mesh[2], Nodes, elt, eqe);
-	ut_array_1d_add (eqe, eq, 4, eq);
+        elt = Mesh[2].Elsets[i][j];
+        neut_mesh_elt_eq (Mesh[2], Nodes, elt, eqe);
+        ut_array_1d_add (eqe, eq, 4, eq);
       }
 
       norm = ut_vector_norm (eq + 1);
       ut_array_1d_scale (eq, 4, 1. / norm);
 
-      ut_array_1d_memcpy ((*pTess).FaceEq[i], 4, eq);
+      ut_array_1d_memcpy (eq, 4, (*pTess).FaceEq[i]);
     }
 
   nem_tess_updatefrommesh_geom_polyfaceori (pTess, Nodes, Mesh);
 
-  ut_free_1d (eqe);
-  ut_free_1d (eq);
+  ut_free_1d (&eqe);
+  ut_free_1d (&eq);
 
   return;
 }

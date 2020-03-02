@@ -8,7 +8,7 @@
 /* FaceVerQty (it is also the face edge quantity).		 */
 void
 net_reg_merge_delFromFace (struct TESS *pTess, int face, int edge,
-			   int verbosity)
+                           int verbosity)
 {
   int i;
   int pos;
@@ -25,14 +25,14 @@ net_reg_merge_delFromFace (struct TESS *pTess, int face, int edge,
 
   pos =
     oneDIntEltPos ((*pTess).FaceEdgeNb[face], 1, (*pTess).FaceVerQty[face],
-		   edge);
+                   edge);
 
-  ut_array_1d_int_deletencompress ((*pTess).FaceEdgeNb[face] + 1,
-				   (*pTess).FaceVerQty[face], edge, 1);
+  ut_array_1d_int_rmelt ((*pTess).FaceEdgeNb[face] + 1,
+                         (*pTess).FaceVerQty[face], edge, 1);
 
-  ut_array_1d_int_memcpy ((*pTess).FaceEdgeOri[face] + pos,
-			  (*pTess).FaceVerQty[face] - pos,
-			  (*pTess).FaceEdgeOri[face] + pos + 1);
+  ut_array_1d_int_memcpy ((*pTess).FaceEdgeOri[face] + pos + 1,
+                          (*pTess).FaceVerQty[face] - pos,
+                          (*pTess).FaceEdgeOri[face] + pos);
 
   (*pTess).FaceVerQty[face]--;
 
@@ -53,7 +53,7 @@ net_reg_merge_delFromFace (struct TESS *pTess, int face, int edge,
 void
 DeleteVerFromFace (struct TESS *pTess, int face, int delver, int verbosity)
 {
-  int qty;			/* for the test */
+  int qty;                      /* for the test */
 
   if (verbosity >= 3)
   {
@@ -62,8 +62,8 @@ DeleteVerFromFace (struct TESS *pTess, int face, int delver, int verbosity)
   }
 
   qty =
-    ut_array_1d_int_deletencompress ((*pTess).FaceVerNb[face] + 1,
-				     (*pTess).FaceVerQty[face], delver, 1);
+    ut_array_1d_int_rmelt ((*pTess).FaceVerNb[face] + 1,
+                           (*pTess).FaceVerQty[face], delver, 1);
 
   /* test */
   if (qty != 1)
@@ -81,7 +81,7 @@ DeleteVerFromFace (struct TESS *pTess, int face, int delver, int verbosity)
 void
 ReplaceVerInFace (struct TESS *pTess, int face, int delver, int newver)
 {
-  int pos;			/* for the test */
+  int pos;                      /* for the test */
 
   /* ut_print_lineheader(-1);
    * printf("Replacing ver %d by ver %d in face %d\n",delver,newver,face);
@@ -89,7 +89,7 @@ ReplaceVerInFace (struct TESS *pTess, int face, int delver, int newver)
 
   pos =
     oneDIntEltPos ((*pTess).FaceVerNb[face], 1, (*pTess).FaceVerQty[face],
-		   delver);
+                   delver);
 
   /* test */
   if (pos == -1)
@@ -166,12 +166,11 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
    */
   (*pTess).EdgeFaceNb[nnew] =
     ut_realloc_1d_int ((*pTess).EdgeFaceNb[nnew],
-		       (*pTess).EdgeFaceQty[nnew] +
-		       (*pTess).EdgeFaceQty[old]);
-  ut_array_1d_int_memcpy ((*pTess).EdgeFaceNb[nnew] +
-			  (*pTess).EdgeFaceQty[nnew],
-			  (*pTess).EdgeFaceQty[old],
-			  (*pTess).EdgeFaceNb[old]);
+                       (*pTess).EdgeFaceQty[nnew] +
+                       (*pTess).EdgeFaceQty[old]);
+  ut_array_1d_int_memcpy ((*pTess).EdgeFaceNb[old], (*pTess).EdgeFaceQty[old],
+                          (*pTess).EdgeFaceNb[nnew] +
+                          (*pTess).EdgeFaceQty[nnew]);
 
   (*pTess).EdgeFaceQty[nnew] += (*pTess).EdgeFaceQty[old];
 
@@ -185,7 +184,7 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
     printf ("sorting\n");
   }
   ut_array_1d_int_sort ((*pTess).EdgeFaceNb[nnew],
-			(*pTess).EdgeFaceQty[nnew]);
+                        (*pTess).EdgeFaceQty[nnew]);
   if (verbosity >= 3)
   {
     printf ("EdgeFaceNb: %d: ", (*pTess).EdgeFaceQty[nnew]);
@@ -200,7 +199,7 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
   // neper -FM n2-id1.tesl -fmax 20
   (*pTess).EdgeFaceQty[nnew] =
     1 + oneDIntCompress ((*pTess).EdgeFaceNb[nnew], 0,
-			 (*pTess).EdgeFaceQty[nnew] - 1);
+                         (*pTess).EdgeFaceQty[nnew] - 1);
   if (verbosity >= 3)
   {
     printf ("EdgeFaceNb: %d: ", (*pTess).EdgeFaceQty[nnew]);
@@ -213,7 +212,7 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
 
   (*pTess).EdgeFaceQty[nnew] -=
     oneDIntDeleteNCompress ((*pTess).EdgeFaceNb[nnew], 0,
-			    (*pTess).EdgeFaceQty[nnew], face, 2);
+                            (*pTess).EdgeFaceQty[nnew], face, 2);
   if (verbosity >= 3)
   {
     printf ("EdgeFaceNb: %d: ", (*pTess).EdgeFaceQty[nnew]);
@@ -238,7 +237,7 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
   for (i = 0; i < (*pTess).EdgeFaceQty[old]; i++)
   {
     tmpface = (*pTess).EdgeFaceNb[old][i];
-    if (tmpface == face)	/* this is the deleted face */
+    if (tmpface == face)        /* this is the deleted face */
       continue;
 
     if (verbosity >= 3)
@@ -246,13 +245,13 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
       ut_print_lineheader (-1);
       printf ("        face %d: ", tmpface);
       for (j = 1; j <= (*pTess).FaceVerQty[tmpface]; j++)
-	printf ("%d ", (*pTess).FaceEdgeNb[tmpface][j]);
+        printf ("%d ", (*pTess).FaceEdgeNb[tmpface][j]);
       printf ("\n");
     }
 
     pos =
       oneDIntEltPos ((*pTess).FaceEdgeNb[tmpface], 1,
-		     (*pTess).FaceVerQty[tmpface], old);
+                     (*pTess).FaceVerQty[tmpface], old);
     (*pTess).FaceEdgeNb[tmpface][pos] = nnew;
     (*pTess).FaceEdgeOri[tmpface][pos] *= ori;
 
@@ -261,52 +260,52 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
       ut_print_lineheader (-1);
       printf ("          become: ");
       for (j = 1; j <= (*pTess).FaceVerQty[tmpface]; j++)
-	printf ("%d ", (*pTess).FaceEdgeNb[tmpface][j]);
+        printf ("%d ", (*pTess).FaceEdgeNb[tmpface][j]);
       printf ("\nvertices:\n");
       for (j = 1; j <= (*pTess).FaceVerQty[tmpface]; j++)
-	printf ("%d ", (*pTess).FaceVerNb[tmpface][j]);
+        printf ("%d ", (*pTess).FaceVerNb[tmpface][j]);
       printf ("\n");
     }
 
     for (j = 1; j <= (*pTess).FaceVerQty[tmpface] - 1; j++)
       if ((*pTess).FaceEdgeNb[tmpface][j] ==
-	  (*pTess).FaceEdgeNb[tmpface][j + 1])
+          (*pTess).FaceEdgeNb[tmpface][j + 1])
       {
-	ut_array_1d_int_deletencompress ((*pTess).FaceEdgeNb[tmpface] + 1,
-					 (*pTess).FaceVerQty[tmpface],
-					 (*pTess).FaceEdgeNb[tmpface][j], 2);
-	for (k = (*pTess).FaceVerQty[tmpface]; k >= j + 2; k--)
-	  (*pTess).FaceEdgeOri[tmpface][k - 2] =
-	    (*pTess).FaceEdgeOri[tmpface][k];
-	for (k = (*pTess).FaceVerQty[tmpface]; k >= j + 2; k--)
-	  (*pTess).FaceVerNb[tmpface][k - 2] = (*pTess).FaceVerNb[tmpface][k];
+        ut_array_1d_int_rmelt ((*pTess).FaceEdgeNb[tmpface] + 1,
+                               (*pTess).FaceVerQty[tmpface],
+                               (*pTess).FaceEdgeNb[tmpface][j], 2);
+        for (k = (*pTess).FaceVerQty[tmpface]; k >= j + 2; k--)
+          (*pTess).FaceEdgeOri[tmpface][k - 2] =
+            (*pTess).FaceEdgeOri[tmpface][k];
+        for (k = (*pTess).FaceVerQty[tmpface]; k >= j + 2; k--)
+          (*pTess).FaceVerNb[tmpface][k - 2] = (*pTess).FaceVerNb[tmpface][k];
 
-	(*pTess).FaceVerQty[tmpface] -= 2;
-	if (verbosity >= 2)
-	{
-	  ut_print_message (1, 3, "critical case detected\n");
+        (*pTess).FaceVerQty[tmpface] -= 2;
+        if (verbosity >= 2)
+        {
+          ut_print_message (1, 3, "critical case detected\n");
 
-	  for (j = 1; j <= (*pTess).FaceVerQty[tmpface]; j++)
-	    printf ("%d ", (*pTess).FaceEdgeNb[tmpface][j]);
-	  printf ("\n");
-	}
+          for (j = 1; j <= (*pTess).FaceVerQty[tmpface]; j++)
+            printf ("%d ", (*pTess).FaceEdgeNb[tmpface][j]);
+          printf ("\n");
+        }
 
-	break;
+        break;
       }
     if ((*pTess).FaceEdgeNb[tmpface][1] ==
-	(*pTess).FaceEdgeNb[tmpface][(*pTess).FaceVerQty[tmpface]])
+        (*pTess).FaceEdgeNb[tmpface][(*pTess).FaceVerQty[tmpface]])
     {
       for (k = 1; k <= (*pTess).FaceVerQty[tmpface] - 1; k++)
-	(*pTess).FaceEdgeNb[tmpface][k] = (*pTess).FaceEdgeNb[tmpface][k + 1];
+        (*pTess).FaceEdgeNb[tmpface][k] = (*pTess).FaceEdgeNb[tmpface][k + 1];
       for (k = 1; k <= (*pTess).FaceVerQty[tmpface] - 1; k++)
-	(*pTess).FaceEdgeOri[tmpface][k] =
-	  (*pTess).FaceEdgeOri[tmpface][k + 1];
+        (*pTess).FaceEdgeOri[tmpface][k] =
+          (*pTess).FaceEdgeOri[tmpface][k + 1];
       for (k = 1; k <= (*pTess).FaceVerQty[tmpface] - 1; k++)
-	(*pTess).FaceVerNb[tmpface][k] = (*pTess).FaceVerNb[tmpface][k + 1];
+        (*pTess).FaceVerNb[tmpface][k] = (*pTess).FaceVerNb[tmpface][k + 1];
 
       (*pTess).FaceVerQty[tmpface] -= 2;
       if (verbosity >= 2)
-	ut_print_message (1, 3, "critical case 2 detected\n");
+        ut_print_message (1, 3, "critical case 2 detected\n");
       return 1;
     }
   }
@@ -326,18 +325,18 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
       ut_print_lineheader (-1);
       printf ("        ver %d: ", tmpver);
       for (j = 0; j <= (*pTess).VerEdgeQty[tmpver] - 1; j++)
-	printf ("%d ", (*pTess).VerEdgeNb[tmpver][j]);
+        printf ("%d ", (*pTess).VerEdgeNb[tmpver][j]);
       printf (" become  ");
     }
 
     (*pTess).VerEdgeQty[tmpver] -=
       oneDIntDeleteNCompress ((*pTess).VerEdgeNb[tmpver], 0,
-			      (*pTess).VerEdgeQty[tmpver] - 1, old, 1);
+                              (*pTess).VerEdgeQty[tmpver] - 1, old, 1);
 
     if (verbosity >= 3)
     {
       for (j = 0; j <= (*pTess).VerEdgeQty[tmpver] - 1; j++)
-	printf ("%d ", (*pTess).VerEdgeNb[tmpver][j]);
+        printf ("%d ", (*pTess).VerEdgeNb[tmpver][j]);
       printf ("\n");
     }
   }
@@ -349,21 +348,21 @@ DeleteFace (struct TESS *pTess, int face, int edge, int verbosity)
   }
   (*pTess).EdgeState[old] = -1;
 
-  if ((*pTess).EdgeDom[old][0] == 1)	// means old is tronger than nnew since nnew
+  if ((*pTess).EdgeDom[old][0] == 1)    // means old is tronger than nnew since nnew
     // should not have a domain edge
   {
     if (verbosity >= 3)
     {
       ut_print_lineheader (-1);
       printf ("    Changing bound data of edge %d to the one of edge %d\n",
-	      nnew, old);
+              nnew, old);
       ut_print_lineheader (-1);
       printf ("    %d %d becomes %d %d\n", (*pTess).EdgeDom[nnew][0],
-	      (*pTess).EdgeDom[nnew][1], (*pTess).EdgeDom[old][0],
-	      (*pTess).EdgeDom[old][1]);
+              (*pTess).EdgeDom[nnew][1], (*pTess).EdgeDom[old][0],
+              (*pTess).EdgeDom[old][1]);
     }
 
-    ut_array_1d_int_memcpy ((*pTess).EdgeDom[nnew], 2, (*pTess).EdgeDom[old]);
+    ut_array_1d_int_memcpy ((*pTess).EdgeDom[old], 2, (*pTess).EdgeDom[nnew]);
   }
 
   /* ut_print_lineheader(-1); printf("      Setting face %d ver qty to 0\n",face); */

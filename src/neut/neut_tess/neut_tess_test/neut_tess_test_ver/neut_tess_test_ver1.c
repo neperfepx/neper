@@ -13,8 +13,8 @@ neut_tess_test_ver (struct TESS Tess, int i, int verbosity)
   if (neut_tess_test_verEdgeQtyNNb (Tess, i, verbosity) != 0
       || neut_tess_test_verEdgeReciprocity (Tess, i, verbosity) != 0
       || neut_tess_test_verBoundNCoo (Tess, i, verbosity) != 0
-      || ((strcmp (Tess.DomType, "cylinder") || strcmp (Tess.DomType, "cut")) &&
-         neut_tess_test_verFaceCoplaneity (Tess, i, verbosity) != 0))
+      || ((strcmp (Tess.DomType, "cylinder") || strcmp (Tess.DomType, "cut"))
+          && neut_tess_test_verFaceCoplaneity (Tess, i, verbosity) != 0))
     return -1;
   else
     return 0;

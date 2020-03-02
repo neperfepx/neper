@@ -5,8 +5,9 @@
 #include "nem_reconstruct_tesr_.h"
 
 void
-nem_reconstruct_tesr (struct TESR *pTesr, struct TESS *pTess, struct NODES
-		      *pNodes, struct MESH *Mesh, struct NSET *NSet)
+nem_reconstruct_tesr (struct TESR *pTesr, struct TESS *pTess,
+                      struct NODES *pNodes, struct MESH *Mesh,
+                      struct NSET *NSet)
 {
   // Setting VoxCell at the domain boundary
   nem_reconstruct_tesr_domain (pTesr);

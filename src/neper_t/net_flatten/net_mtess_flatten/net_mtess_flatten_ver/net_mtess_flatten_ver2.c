@@ -5,10 +5,9 @@
 #include"net_mtess_flatten_ver_.h"
 
 void
-net_mtess_flatten_ver_init_fvertessver (struct TESS *Tess,
-    				  int *CTessIds, int CTessQty,
-				  struct TESSE *TessE,
-				  struct FLATTEN *pFlatten)
+net_mtess_flatten_ver_init_fvertessver (struct TESS *Tess, int *CTessIds,
+                                        int CTessQty, struct TESSE *TessE,
+                                        struct FLATTEN *pFlatten)
 {
   int i, j, id, fver;
 
@@ -19,7 +18,7 @@ net_mtess_flatten_ver_init_fvertessver (struct TESS *Tess,
 
     for (j = 1; j <= Tess[id].VerQty; j++)
       if (TessE[id].VerFVer[j] == 0)
-	ut_error_reportbug ();
+        ut_print_neperbug ();
   }
 
   // Init VerTessVerQty and VerTessVerNb from TessE[].VerFVer
@@ -33,13 +32,13 @@ net_mtess_flatten_ver_init_fvertessver (struct TESS *Tess,
     {
       fver = TessE[id].VerFVer[j];
       (*pFlatten).VerTessVerQty[fver]++;
-      (*pFlatten).VerTessVerNb[fver]
-	= ut_realloc_2d_int_addline ((*pFlatten).VerTessVerNb[fver],
-				     (*pFlatten).VerTessVerQty[fver], 2);
+      (*pFlatten).VerTessVerNb[fver] =
+        ut_realloc_2d_int_addline ((*pFlatten).VerTessVerNb[fver],
+                                   (*pFlatten).VerTessVerQty[fver], 2);
       (*pFlatten).VerTessVerNb[fver][(*pFlatten).VerTessVerQty[fver] - 1][0] =
-	id;
+        id;
       (*pFlatten).VerTessVerNb[fver][(*pFlatten).VerTessVerQty[fver] - 1][1] =
-	j;
+        j;
     }
   }
 

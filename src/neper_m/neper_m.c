@@ -16,10 +16,10 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   struct TESS Tess;
   struct TESR Tesr;
   struct MESHPARA MeshPara;
-  struct NODES RNodes;		// input nodes (remeshing)
-  struct MESH *RMesh = NULL;	// input mesh (remeshing)
-  struct NODES Nodes;		// output nodes
-  struct MESH *Mesh = NULL;	// output mesh
+  struct NODES RNodes;          // input nodes (remeshing)
+  struct MESH *RMesh = NULL;    // input mesh (remeshing)
+  struct NODES Nodes;           // output nodes
+  struct MESH *Mesh = NULL;     // output mesh
   struct PART Part;
   struct NSET *NSet = NULL;
   struct POINT Point;
@@ -65,7 +65,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.tess)
   {
     ut_print_message (0, 2, "Loading tessellation...\n");
-    neut_tess_name_fscanf (In.tess, &Tess);
+    neut_tess_fnscanf (In.tess, &Tess);
     nem_input_init_dim_tess (&In, Tess);
   }
 
@@ -73,7 +73,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.tesr)
   {
     ut_print_message (0, 2, "Loading raster tessellation...\n");
-    neut_tesr_name_fscanf (In.tesr, &Tesr);
+    neut_tesr_fnscanf (In.tesr, &Tesr);
     if (Tesr.Dim == 3 && !strcmp (In.elttype, "tri"))
       ut_print_message (2, 3, "Free meshing not available for 3D tesrs.\n");
 
@@ -86,8 +86,8 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 
       if (Tess.Dim >= 2 && strcmp (In.tesrsmooth, "none"))
       {
-	ut_print_message (0, 2, "Smoothing mesh...\n");
-	nem_smoothing (In, &Tess, &RNodes, RMesh);
+        ut_print_message (0, 2, "Smoothing mesh...\n");
+        nem_smoothing (In, &Tess, &RNodes, RMesh);
       }
     }
   }
@@ -96,8 +96,8 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.mesh)
   {
     ut_print_message (0, 2, "Loading mesh...\n");
-    neut_mesh_name_fscanf_msh (In.mesh, &RNodes, RMesh, RMesh + 1, RMesh + 2,
-			       RMesh + 3, RMesh + 4);
+    neut_mesh_fnscanf_msh (In.mesh, &RNodes, RMesh, RMesh + 1, RMesh + 2,
+                           RMesh + 3, RMesh + 4);
     nem_input_init_dim_mesh (&In, RMesh);
 
     if (!strcmp (In.elttype, "tri"))
@@ -111,7 +111,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.loadpoint)
   {
     ut_print_message (0, 2, "Loading points...\n");
-    neut_point_name_fscanf (In.loadpoint, &Point);
+    neut_point_fnscanf (In.loadpoint, &Point);
   }
 
   // Loading output mesh ###
@@ -123,26 +123,27 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
       status = nem_input_init_dim_mesh (&In, Mesh);
 
     if (Nodes.NodeQty == 0)
-      ut_print_message (1, 3, "Mesh is void (%d node(s), 0 elt).\n", Nodes.NodeQty);
+      ut_print_message (1, 3, "Mesh is void (%d node(s), 0 elt).\n",
+                        Nodes.NodeQty);
 
     else
     {
       status = 0;
       for (i = 0; i <= 2; i++)
-	if (ut_string_inlist_int (In.dimout, NEUT_SEP_NODEP, i)
-	    && Mesh[i].EltQty == 0)
-	{
-	  status = 1;
-	  break;
-	}
+        if (ut_list_testelt_int (In.dimout, NEUT_SEP_NODEP, i)
+            && Mesh[i].EltQty == 0)
+        {
+          status = 1;
+          break;
+        }
 
       if (status || (Tess.PolyQty == 0 && strcmp (In.nset, "none") != 0))
       {
-	ut_print_message (0, 2, "Reconstructing mesh...\n");
-	nem_reconstruct_mesh ((Tess.PolyQty == 0
-			       && strcmp (In.nset,
-					  "none") != 0) ? "all" : In.dimout,
-			      &Nodes, Mesh, &Tess);
+        ut_print_message (0, 2, "Reconstructing mesh...\n");
+        nem_reconstruct_mesh ((Tess.PolyQty == 0
+                               && strcmp (In.nset,
+                                          "none") != 0) ? "all" : In.dimout,
+                              &Nodes, Mesh, &Tess);
       }
     }
   }
@@ -160,26 +161,26 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
       nem_meshing_para (In, &Tess, &Tesr, &RNodes, RMesh, &MeshPara);
 
       if (!strcmp (In.elttype, "tri"))
-	nem_meshing (In, &MeshPara, &Tess, RNodes, RMesh, &Nodes, Mesh);
+        nem_meshing (In, &MeshPara, &Tess, RNodes, RMesh, &Nodes, Mesh);
 
       else if (!strncmp (In.elttype, "quad", 4))
       {
-	if (In.tess)
-	  nem_meshing_tess_str (In, MeshPara, Tess, &Nodes, Mesh, NSet);
-	else if (In.tesr)
-	  nem_meshing_tesr_str (In, MeshPara, Tesr, &Nodes, Mesh, NSet);
+        if (In.tess)
+          nem_meshing_tess_str (In, MeshPara, Tess, &Nodes, Mesh, NSet);
+        else if (In.tesr)
+          nem_meshing_tesr_str (In, MeshPara, Tesr, &Nodes, Mesh, NSet);
       }
 
       else
-        ut_error_reportbug ();
+        ut_print_neperbug ();
 
       // Post-scaling of input / mesh if necessary (use of clratio) ###
       nem_meshing_para_post (MeshPara, &Tess, &Tesr, &RNodes, &Nodes, Mesh);
     }
   }
 
-  if (ut_string_inlist (In.interface, NEUT_SEP_DEP, "discontinuous")
-      || ut_string_inlist (In.interface, NEUT_SEP_DEP, "cohesive"))
+  if (ut_list_testelt (In.interface, NEUT_SEP_DEP, "discontinuous")
+      || ut_list_testelt (In.interface, NEUT_SEP_DEP, "cohesive"))
   {
     ut_print_message (0, 2, "Processing mesh at interfaces...\n");
     nem_interface (In, Tess, &Nodes, Mesh, &Bound);
@@ -249,7 +250,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     nem_writemesh (In, Tess, Nodes, Mesh, NSet, Part, Bound);
   }
 
-  if (ut_string_inlist (In.format, NEUT_SEP_NODEP, "tess"))
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "tess"))
   {
     ut_print_message (0, 1, "Writing geometry results...\n");
     neut_tess_name_fprintf (In.outtess, Tess);
@@ -274,9 +275,8 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 // ### MESH STATISTICS ###############################################
 
   if (In.stn || In.stelt[0] || In.stelt[1] || In.stelt[2] || In.stelt[3]
-      || In.stelt[4]
-      || In.stelset[0] || In.stelset[1] || In.stelset[2] || In.stelset[3]
-      || In.stelset[4] || In.stpt)
+      || In.stelt[4] || In.stelset[0] || In.stelset[1] || In.stelset[2]
+      || In.stelset[3] || In.stelset[4] || In.stpt)
   {
     ut_print_message (0, 1, "Writing mesh statistics...\n");
 

@@ -5,7 +5,8 @@
 #include"nem_order_.h"
 
 void
-nem_order (struct IN_M In, struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh)
+nem_order (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
+           struct MESH *Mesh)
 {
   int i, NodeQty_before = (*pNodes).NodeQty, *domesh = ut_alloc_1d_int (5);
   int dim = neut_mesh_array_dim (Mesh);
@@ -26,7 +27,7 @@ nem_order (struct IN_M In, struct TESS Tess, struct NODES *pNodes, struct MESH *
 
   nem_order_post (In, NodeQty_before, pNodes);
 
-  ut_free_1d_int (domesh);
+  ut_free_1d_int (&domesh);
 
   return;
 }

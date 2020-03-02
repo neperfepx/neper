@@ -35,7 +35,7 @@ main (int argc, char **argv)
 
   if (argc > 1)
   {
-    status = ut_string_comp (argv[1], modlist, modqty, &mod);
+    status = ut_string_completion (argv[1], modlist, modqty, &mod);
 
     if (status == 1)
     {
@@ -84,7 +84,7 @@ main (int argc, char **argv)
     else
       sprintf (rcfile, "%s/.neperrc", getenv ("HOME"));
 
-    status = ut_string_comp (argv[arg_pos + 1], modlist, modqty, &mod);
+    status = ut_string_completion (argv[arg_pos + 1], modlist, modqty, &mod);
 
     fargc = 0;
     fargv = NULL;
@@ -94,7 +94,7 @@ main (int argc, char **argv)
       {
         ut_print_message (0, 0, "Loading initialization file `%s'...\n",
                           rcfile);
-        ut_option_read (rcfile, &fargc, &fargv, "neper", mod);
+        ut_arg_readfromfile (rcfile, "neper", mod, &fargc, &fargv);
       }
       else
         ut_print_message (0, 0, "No initialization file found (`%s').\n",
@@ -122,10 +122,10 @@ main (int argc, char **argv)
     neper_foot ();
   }
 
-  ut_free_2d_char (fargv, fargc + 1);
-  ut_free_2d_char (modlist, modqty + 1);
-  ut_free_1d_char (mod);
-  ut_free_1d_char (rcfile);
+  ut_free_2d_char (&fargv, fargc + 1);
+  ut_free_2d_char (&modlist, modqty + 1);
+  ut_free_1d_char (&mod);
+  ut_free_1d_char (&rcfile);
 
   return EXIT_SUCCESS;
 }

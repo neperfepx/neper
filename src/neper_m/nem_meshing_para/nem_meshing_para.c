@@ -5,10 +5,9 @@
 #include"nem_meshing_para_.h"
 
 void
-nem_meshing_para (struct IN_M In,
-		  struct TESS *pTess,
-		  struct TESR *pTesr, struct NODES *pRNodes,
-		  struct MESH *RMesh, struct MESHPARA *pMeshPara)
+nem_meshing_para (struct IN_M In, struct TESS *pTess, struct TESR *pTesr,
+                  struct NODES *pRNodes, struct MESH *RMesh,
+                  struct MESHPARA *pMeshPara)
 {
   int i;
   double min, max;
@@ -17,10 +16,10 @@ nem_meshing_para (struct IN_M In,
 
   nem_meshing_para_param (In, *pTess, pTesr, *pRNodes, RMesh, pMeshPara);
 
-  nem_meshing_para_cl (In, *pTess, pTesr, *pRNodes,
-		       RMesh, pMeshPara);
+  nem_meshing_para_cl (In, *pTess, pTesr, *pRNodes, RMesh, pMeshPara);
 
-  nem_meshing_para_mesh3dclreps (In.mesh3dclrepsstring, *pTess, *pTesr, pMeshPara);
+  nem_meshing_para_mesh3dclreps (In.mesh3dclrepsstring, *pTess, *pTesr,
+                                 pMeshPara);
 
   if ((*pTess).VerQty > 0)
   {
@@ -50,16 +49,15 @@ nem_meshing_para (struct IN_M In,
 
   if ((*pMeshPara).dim < In.dim)
     ut_print_message (1, 3, "Meshing will be applied in %dD (not %dD).\n",
-		      (*pMeshPara).dim, In.dim);
+                      (*pMeshPara).dim, In.dim);
 
   return;
 }
 
 void
-nem_meshing_para_post (struct MESHPARA MeshPara,
-		       struct TESS *pTess,
-		       struct TESR *pTesr, struct NODES *pRNodes,
-		       struct NODES *pNodes, struct MESH *Mesh)
+nem_meshing_para_post (struct MESHPARA MeshPara, struct TESS *pTess,
+                       struct TESR *pTesr, struct NODES *pRNodes,
+                       struct NODES *pNodes, struct MESH *Mesh)
 {
   nem_meshing_para_unscale (MeshPara, pTess, pTesr, pRNodes, pNodes, Mesh);
 

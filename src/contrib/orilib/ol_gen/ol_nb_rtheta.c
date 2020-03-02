@@ -51,7 +51,7 @@ ol_nb_max_theta (double n4, double thetamax, double *ptheta)
 
 void
 ol_nb_max_rtheta_rad (double n1, double n2, double n3,
-		      double thetamax, double *r, double *ptheta)
+                      double thetamax, double *r, double *ptheta)
 {
   ol_nb_r (n1, n2, r);
   ol_nb_max_theta_rad (n3, thetamax, ptheta);
@@ -61,7 +61,7 @@ ol_nb_max_rtheta_rad (double n1, double n2, double n3,
 
 void
 ol_nb_max_rtheta (double n1, double n2, double n3,
-		  double thetamax, double *r, double *ptheta)
+                  double thetamax, double *r, double *ptheta)
 {
   ol_nb_r (n1, n2, r);
   ol_nb_max_theta (n3, thetamax, ptheta);
@@ -93,7 +93,7 @@ ol_nb_max_theta_mis (double n4, double thetamax, double *ptheta)
 
 void
 ol_nb_max_rtheta_mis_rad (double n1, double n2, double n3,
-			  double thetamax, double *r, double *ptheta)
+                          double thetamax, double *r, double *ptheta)
 {
   ol_nb_r (n1, n2, r);
   ol_nb_max_theta_mis_rad (n3, thetamax, ptheta);
@@ -103,7 +103,7 @@ ol_nb_max_rtheta_mis_rad (double n1, double n2, double n3,
 
 void
 ol_nb_max_rtheta_mis (double n1, double n2, double n3,
-		      double thetamax, double *r, double *ptheta)
+                      double thetamax, double *r, double *ptheta)
 {
   ol_nb_r (n1, n2, r);
   ol_nb_max_theta_mis (n3, thetamax, ptheta);

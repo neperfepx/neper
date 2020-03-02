@@ -6,9 +6,9 @@
 
 void
 nev_print_mesh_2d_print_faces (FILE * file, struct PRINT Print,
-			       struct NODES N, struct MESH M2D,
-			       struct NODEDATA NodeData,
-			       struct MESHDATA *MeshData)
+                               struct NODES N, struct MESH M2D,
+                               struct NODEDATA NodeData,
+                               struct MESHDATA *MeshData)
 {
   int i;
   int **rgb = NULL;
@@ -24,15 +24,15 @@ nev_print_mesh_2d_print_faces (FILE * file, struct PRINT Print,
     rgb = ut_alloc_2d_int (M2D.EltQty + 1, 3);
 
     for (i = 1; i <= M2D.EltQty; i++)
-      ut_array_1d_int_memcpy (rgb[i], 3, MeshData[2].Col[i]);
+      ut_array_1d_int_memcpy (MeshData[2].Col[i], 3, rgb[i]);
 
     for (i = 1; i <= N.NodeQty; i++)
-      ut_array_1d_memcpy (N.NodeCoo[i], 3, NodeData.Coo[i]);
+      ut_array_1d_memcpy (NodeData.Coo[i], 3, N.NodeCoo[i]);
 
     nev_print_mesh2d (file, N, M2D, Print.showelt2d, rgb, "elt",
-		      Print.showshadow);
+                      Print.showshadow);
 
-    ut_free_2d_int (rgb, M2D.EltQty + 1);
+    ut_free_2d_int (&rgb, M2D.EltQty + 1);
   }
 
   else
@@ -40,26 +40,25 @@ nev_print_mesh_2d_print_faces (FILE * file, struct PRINT Print,
     rgb = ut_alloc_2d_int (N.NodeQty + 1, 3);
 
     for (i = 1; i <= N.NodeQty; i++)
-      ut_array_1d_int_memcpy (rgb[i], 3, NodeData.Col[i]);
+      ut_array_1d_int_memcpy (NodeData.Col[i], 3, rgb[i]);
 
     for (i = 1; i <= N.NodeQty; i++)
-      ut_array_1d_memcpy (N.NodeCoo[i], 3, NodeData.Coo[i]);
+      ut_array_1d_memcpy (NodeData.Coo[i], 3, N.NodeCoo[i]);
 
     nev_print_mesh2d (file, N, M2D, Print.showelt2d, rgb, "node",
-		      Print.showshadow);
+                      Print.showshadow);
 
-    ut_free_2d_int (rgb, N.NodeQty + 1);
+    ut_free_2d_int (&rgb, N.NodeQty + 1);
   }
 
-  ut_free_1d_char (coldatatype);
+  ut_free_1d_char (&coldatatype);
 
   return;
 }
 
 void
-nev_print_mesh_2d_print_edges (FILE * file, int showshadow,
-			       struct NODES N, struct MESH M1D,
-			       struct MESHDATA *MeshData)
+nev_print_mesh_2d_print_edges (FILE * file, int showshadow, struct NODES N,
+                               struct MESH M1D, struct MESHDATA *MeshData)
 {
   int i;
   double Rad;
@@ -69,9 +68,9 @@ nev_print_mesh_2d_print_edges (FILE * file, int showshadow,
   int *Col = ut_alloc_1d_int (3);
 
   if (MeshData[3].EltQty > 0)
-    ut_array_1d_int_memcpy (Col, 3, MeshData[3].BCol);
+    ut_array_1d_int_memcpy (MeshData[3].BCol, 3, Col);
   else if (MeshData[2].EltQty > 0)
-    ut_array_1d_int_memcpy (Col, 3, MeshData[2].BCol);
+    ut_array_1d_int_memcpy (MeshData[2].BCol, 3, Col);
   else
     ut_array_1d_int_zero (Col, 3);
 
@@ -81,24 +80,24 @@ nev_print_mesh_2d_print_edges (FILE * file, int showshadow,
     Rad = MeshData[2].BRad;
   else
   {
-    ut_error_reportbug ();
+    ut_print_neperbug ();
     abort ();
   }
 
   fprintf (file,
-	   "#declare elt3dedge =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
-	   Col[0] / 255., Col[1] / 255., Col[2] / 255., ambient);
+           "#declare elt3dedge =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
+           Col[0] / 255., Col[1] / 255., Col[2] / 255., ambient);
 
   strcpy (texture, "elt3dedge");
   sprintf (string, "%.12f", Rad);
 
   for (i = 1; i <= M1D.EltQty; i++)
     nev_print_segment_wsph (file, N.NodeCoo[M1D.EltNodes[i][0]],
-			    N.NodeCoo[M1D.EltNodes[i][1]], string, texture);
+                            N.NodeCoo[M1D.EltNodes[i][1]], string, texture);
 
-  ut_free_1d_char (string);
-  ut_free_1d_char (texture);
-  ut_free_1d_int (Col);
+  ut_free_1d_char (&string);
+  ut_free_1d_char (&texture);
+  ut_free_1d_int (&Col);
 
   return;
 }

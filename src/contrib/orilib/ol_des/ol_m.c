@@ -59,7 +59,7 @@ ol_m_set_this (int *m, int h, int k, int l, int u, int v, int w)
 void
 ol_m_memcpy (int *msrc, int *mdest)
 {
-  ut_array_1d_int_memcpy (mdest, 6, msrc);
+  ut_array_1d_int_memcpy (msrc, 6, mdest);
 
   return;
 }
@@ -71,10 +71,10 @@ ol_m_g (int *m, double **g)
 
   M =
     sqrt ((double) m[0] * (double) m[0] + (double) m[1] * (double) m[1] +
-	  (double) m[2] * (double) m[2]);
+          (double) m[2] * (double) m[2]);
   N =
     sqrt ((double) m[3] * (double) m[3] + (double) m[4] * (double) m[4] +
-	  (double) m[5] * (double) m[5]);
+          (double) m[5] * (double) m[5]);
 
   g[0][0] = (double) m[3] / N;
   g[1][0] = (double) m[4] / N;
@@ -95,8 +95,8 @@ ol_m_g (int *m, double **g)
 }
 
 void
-ol_g_m (double **g, char* crysym, int maxid, int maxres, int **allm, double *mstat,
-	int *pqty)
+ol_g_m (double **g, char *crysym, int maxid, int maxres, int **allm,
+        double *mstat, int *pqty)
 {
   ol_g_m_quality (g, crysym, maxid, maxres, 0.5, allm, mstat, pqty);
 
@@ -104,7 +104,8 @@ ol_g_m (double **g, char* crysym, int maxid, int maxres, int **allm, double *mst
 }
 
 void
-ol_g_m_quality (double **g, char* crysym, int maxid, int maxres, double alpha, int **allm, double *mstat, int *pqty)
+ol_g_m_quality (double **g, char *crysym, int maxid, int maxres, double alpha,
+                int **allm, double *mstat, int *pqty)
 {
   int i, j, test, pos, hklpos, uvwpos, ID;
   double A;
@@ -114,7 +115,7 @@ ol_g_m_quality (double **g, char* crysym, int maxid, int maxres, double alpha, i
   double *a = ut_alloc_1d (3);
   int *qty = ut_alloc_1d_int (2);
 
-  int ***id = ut_alloc_3d_int (2, 5 * maxid, 3);	/* empirical */
+  int ***id = ut_alloc_3d_int (2, 5 * maxid, 3);        /* empirical */
   double *theta, *mq;
   int *Sig;
   int *srt;
@@ -126,17 +127,17 @@ ol_g_m_quality (double **g, char* crysym, int maxid, int maxres, double alpha, i
   /*** Building a set of potential miller indices. ***/
   for (ID = 0; ID <= 1; ID++)
   {
-    if (ID == 0)		/* Searching hkl */
+    if (ID == 0)                /* Searching hkl */
       for (i = 0; i < 3; i++)
       {
-	v[i] = fabs (g[i][2]);
-	vsgn[i] = ut_num_sgn (g[i][2]);
+        v[i] = fabs (g[i][2]);
+        vsgn[i] = ut_num_sgn (g[i][2]);
       }
-    else			/* Searching uvw */
+    else                        /* Searching uvw */
       for (i = 0; i < 3; i++)
       {
-	v[i] = fabs (g[i][0]);
-	vsgn[i] = ut_num_sgn (g[i][0]);
+        v[i] = fabs (g[i][0]);
+        vsgn[i] = ut_num_sgn (g[i][0]);
       }
 
     qty[ID] = 0;
@@ -144,33 +145,33 @@ ol_g_m_quality (double **g, char* crysym, int maxid, int maxres, double alpha, i
     do
     {
       for (i = 0; i < 3; i++)
-	a[i] = (floor (vp[i] + 0.5) + 0.5) / v[i];
+        a[i] = (floor (vp[i] + 0.5) + 0.5) / v[i];
       A = ut_array_1d_min (a, 3);
       /* A is the number by which to multiply v to get the
        * next id (one index incremented) */
 
       for (i = 0; i < 3; i++)
       {
-	vp[i] = A * (1 + 1e-6) * v[i];
-	id[ID][qty[ID]][i] = ut_num_d2ri (vp[i]);
+        vp[i] = A * (1 + 1e-6) * v[i];
+        id[ID][qty[ID]][i] = ut_num_d2ri (vp[i]);
       }
 
-      test = 1;			/* if test = 1, recording under conditions; else, no */
-      for (j = 0; j < qty[ID]; j++)	/* checking whether not the same as previously */
-	if (ut_vector_int_angle (id[ID][j], id[ID][qty[ID]]) < 1e-3)
-	{
-	  test = 0;
-	  break;
-	}
+      test = 1;                 /* if test = 1, recording under conditions; else, no */
+      for (j = 0; j < qty[ID]; j++)     /* checking whether not the same as previously */
+        if (ut_vector_int_angle (id[ID][j], id[ID][qty[ID]]) < 1e-3)
+        {
+          test = 0;
+          break;
+        }
 
       if (test == 1 && ut_array_1d_int_max (id[ID][qty[ID]], 3) <= maxid)
-	qty[ID]++;
+        qty[ID]++;
     }
     while (ut_array_1d_max (vp, 3) <= maxid + .5);
 
     for (i = 0; i < qty[ID]; i++)
       for (j = 0; j < 3; j++)
-	id[ID][i][j] *= vsgn[j];
+        id[ID][i][j] *= vsgn[j];
   }
   /*** Built a set of potential miller indices. ***/
 
@@ -182,27 +183,27 @@ ol_g_m_quality (double **g, char* crysym, int maxid, int maxres, double alpha, i
   resqty = qty[0] * qty[1];
   for (i = 0; i < qty[0]; i++)
   {
-    ut_array_1d_int_memcpy (m, 3, id[0][i]);
+    ut_array_1d_int_memcpy (id[0][i], 3, m);
 
     for (j = 0; j < qty[1]; j++)
     {
       pos = i * qty[1] + j;
 
-      ut_array_1d_int_memcpy (m + 3, 3, id[1][j]);
+      ut_array_1d_int_memcpy (id[1][j], 3, m + 3);
 
       scalprod = m[0] * m[3] + m[1] * m[4] + m[2] * m[5];
       if (scalprod != 0)
-	resqty--;
+        resqty--;
 
       ol_m_g (m, g2);
       ol_g_g_disori (g, g2, crysym, &(theta[pos]));
 
       Sig[pos] = (fabs (m[0]) + fabs (m[1]) + fabs (m[2])) +
-	(fabs (m[3]) + fabs (m[4]) + fabs (m[5]));
+        (fabs (m[3]) + fabs (m[4]) + fabs (m[5]));
 
       mq[pos] =
-	(1 - alpha) * (double) Sig[pos] + alpha * theta[pos] +
-	(double) (fabs (scalprod) * 1e7);
+        (1 - alpha) * (double) Sig[pos] + alpha * theta[pos] +
+        (double) (fabs (scalprod) * 1e7);
       /* if scalprod != 0, mq is set to a very high value to reject the
        * set of indices. */
     }
@@ -217,23 +218,23 @@ ol_g_m_quality (double **g, char* crysym, int maxid, int maxres, double alpha, i
     hklpos = pos / qty[1];
     uvwpos = pos % qty[1];
 
-    ut_array_1d_int_memcpy (allm[i], 3, id[0][hklpos]);
-    ut_array_1d_int_memcpy (allm[i] + 3, 3, id[1][uvwpos]);
+    ut_array_1d_int_memcpy (id[0][hklpos], 3, allm[i]);
+    ut_array_1d_int_memcpy (id[1][uvwpos], 3, allm[i] + 3);
     mstat[i] = mq[pos];
   }
 
   /* freeing memory */
-  ut_free_1d (v);
-  ut_free_1d_int (vsgn);
-  ut_free_1d (vp);
-  ut_free_1d (a);
-  ut_free_1d_int (qty);
+  ut_free_1d (&v);
+  ut_free_1d_int (&vsgn);
+  ut_free_1d (&vp);
+  ut_free_1d (&a);
+  ut_free_1d_int (&qty);
 
-  ut_free_3d_int (id, 2, 5 * maxid);
-  ut_free_1d (theta);
-  ut_free_1d_int (Sig);
-  ut_free_1d (mq);
-  ut_free_1d_int (srt);
+  ut_free_3d_int (&id, 2, 5 * maxid);
+  ut_free_1d (&theta);
+  ut_free_1d_int (&Sig);
+  ut_free_1d (&mq);
+  ut_free_1d_int (&srt);
 
   ol_m_free (m);
   ol_g_free (g2);
@@ -242,8 +243,8 @@ ol_g_m_quality (double **g, char* crysym, int maxid, int maxres, double alpha, i
 }
 
 void
-ol_e_m (double *e, char* crysym, int maxid, int maxres, int **allm, double *mstat,
-	int *pqty)
+ol_e_m (double *e, char *crysym, int maxid, int maxres, int **allm,
+        double *mstat, int *pqty)
 {
   double **g = ol_g_alloc ();
   ol_e_g (e, g);
@@ -256,7 +257,8 @@ ol_e_m (double *e, char* crysym, int maxid, int maxres, int **allm, double *msta
 }
 
 void
-ol_e_m_quality (double *e, char* crysym, int maxid, int maxres, double alpha, int **allm, double *mstat, int *pqty)
+ol_e_m_quality (double *e, char *crysym, int maxid, int maxres, double alpha,
+                int **allm, double *mstat, int *pqty)
 {
   double **g = ol_g_alloc ();
   ol_e_g (e, g);
@@ -269,7 +271,8 @@ ol_e_m_quality (double *e, char* crysym, int maxid, int maxres, double alpha, in
 }
 
 void
-ol_rtheta_m (double *r, double theta, char* crysym, int maxid, int maxres, int **allm, double *mstat, int *pqty)
+ol_rtheta_m (double *r, double theta, char *crysym, int maxid, int maxres,
+             int **allm, double *mstat, int *pqty)
 {
   double **g = ol_g_alloc ();
   ol_rtheta_g (r, theta, g);
@@ -282,7 +285,9 @@ ol_rtheta_m (double *r, double theta, char* crysym, int maxid, int maxres, int *
 }
 
 void
-ol_rtheta_m_quality (double *r, double theta, char* crysym, int maxid, int maxres, double alpha, int **allm, double *mstat, int *pqty)
+ol_rtheta_m_quality (double *r, double theta, char *crysym, int maxid,
+                     int maxres, double alpha, int **allm, double *mstat,
+                     int *pqty)
 {
   double **g = ol_g_alloc ();
   ol_rtheta_g (r, theta, g);
@@ -295,8 +300,8 @@ ol_rtheta_m_quality (double *r, double theta, char* crysym, int maxid, int maxre
 }
 
 void
-ol_R_m (double *R, char* crysym, int maxid, int maxres, int **allm, double *mstat,
-	int *pqty)
+ol_R_m (double *R, char *crysym, int maxid, int maxres, int **allm,
+        double *mstat, int *pqty)
 {
   double **g = ol_g_alloc ();
   ol_R_g (R, g);
@@ -309,7 +314,8 @@ ol_R_m (double *R, char* crysym, int maxid, int maxres, int **allm, double *msta
 }
 
 void
-ol_R_m_quality (double *R, char* crysym, int maxid, int maxres, double alpha, int **allm, double *mstat, int *pqty)
+ol_R_m_quality (double *R, char *crysym, int maxid, int maxres, double alpha,
+                int **allm, double *mstat, int *pqty)
 {
   double **g = ol_g_alloc ();
   ol_R_g (R, g);
@@ -322,8 +328,8 @@ ol_R_m_quality (double *R, char* crysym, int maxid, int maxres, double alpha, in
 }
 
 void
-ol_q_m (double *q, char* crysym, int maxid, int maxres, int **allm, double *mstat,
-	int *pqty)
+ol_q_m (double *q, char *crysym, int maxid, int maxres, int **allm,
+        double *mstat, int *pqty)
 {
   double **g = ol_g_alloc ();
   ol_q_g (q, g);
@@ -336,7 +342,8 @@ ol_q_m (double *q, char* crysym, int maxid, int maxres, int **allm, double *msta
 }
 
 void
-ol_q_m_quality (double *q, char* crysym, int maxid, int maxres, double alpha, int **allm, double *mstat, int *pqty)
+ol_q_m_quality (double *q, char *crysym, int maxid, int maxres, double alpha,
+                int **allm, double *mstat, int *pqty)
 {
   double **g = ol_g_alloc ();
   ol_q_g (q, g);
@@ -352,7 +359,7 @@ int
 ol_m_fscanf (FILE * file, int *m)
 {
   if (fscanf (file, "%d%d%d%d%d%d",
-	      &m[0], &m[1], &m[2], &m[3], &m[4], &m[5]) == 6)
+              &m[0], &m[1], &m[2], &m[3], &m[4], &m[5]) == 6)
     return 1;
   else
     return 0;

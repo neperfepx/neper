@@ -11,7 +11,8 @@ nem_order_dim_record (struct MESH *pMesh, int *nodes, int node_o2)
   int *pos = ut_alloc_1d_int (2);
   int comelt, *comelts = NULL, comeltqty;
 
-  neut_elt_orderarrays ((*pMesh).EltType, (*pMesh).Dimension, NULL, NULL, &sec, &nodeqty_o1);
+  neut_elt_orderarrays ((*pMesh).EltType, (*pMesh).Dimension, NULL, NULL,
+                        &sec, &nodeqty_o1);
 
   neut_mesh_nodes_comelts (*pMesh, nodes, 2, &comelts, &comeltqty);
 
@@ -20,21 +21,24 @@ nem_order_dim_record (struct MESH *pMesh, int *nodes, int node_o2)
     comelt = comelts[i];
 
     for (j = 0; j < 2; j++)
-      pos[j] = ut_array_1d_int_eltpos ((*pMesh).EltNodes[comelt],
-                                       nodeqty_o1, nodes[j]);
+      pos[j] =
+        ut_array_1d_int_eltpos ((*pMesh).EltNodes[comelt], nodeqty_o1,
+                                nodes[j]);
     (*pMesh).EltNodes[comelt][sec[pos[0]][pos[1]]] = node_o2;
   }
 
-  ut_free_1d_int (pos);
-  ut_free_1d_int (comelts);
+  ut_free_1d_int (&pos);
+  ut_free_1d_int (&comelts);
 
   return;
 }
 
 void
-nem_order_periodic_edges (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh)
+nem_order_periodic_edges (struct TESS Tess, struct NODES *pNodes,
+                          struct MESH *Mesh)
 {
-  int i, j, k, l, nodeqty_tot, nodeqty_o1, nodes[2], nodemasters[2], node, nodemaster;
+  int i, j, k, l, nodeqty_tot, nodeqty_o1, nodes[2], nodemasters[2], node,
+    nodemaster;
   int **fir = NULL;
   int *node_slave = ut_alloc_1d_int ((*pNodes).NodeQty);
   int *shift = ut_alloc_1d_int (3);
@@ -47,7 +51,7 @@ nem_order_periodic_edges (struct TESS Tess, struct NODES *pNodes, struct MESH *M
       for (j = 1; j <= Mesh[1].Elsets[i][0]; j++)
         for (k = nodeqty_o1; k < nodeqty_tot; k++)
         {
-          ut_array_1d_int_memcpy (shift, 3, Tess.PerEdgeShift[i]);
+          ut_array_1d_int_memcpy (Tess.PerEdgeShift[i], 3, shift);
           ut_array_1d_int_scale (shift, 3, -1);
 
           for (l = 0; l < 2; l++)
@@ -57,27 +61,32 @@ nem_order_periodic_edges (struct TESS Tess, struct NODES *pNodes, struct MESH *M
                                            nodemasters + l);
           }
 
-          neut_mesh_order1nodes_order2node (Mesh[1], nodes[0], nodes[1], &node);
-          neut_mesh_order1nodes_order2node (Mesh[1], nodemasters[0], nodemasters[1], &nodemaster);
+          neut_mesh_order1nodes_order2node (Mesh[1], nodes[0], nodes[1],
+                                            &node);
+          neut_mesh_order1nodes_order2node (Mesh[1], nodemasters[0],
+                                            nodemasters[1], &nodemaster);
 
           if (!node_slave[node])
           {
-            neut_nodes_markasslave (pNodes, node, nodemaster, Tess.PerEdgeShift[i]);
+            neut_nodes_markasslave (pNodes, node, nodemaster,
+                                    Tess.PerEdgeShift[i]);
             node_slave[node] = 1;
           }
         }
 
-  ut_free_2d_int (fir, nodeqty_tot);
-  ut_free_1d_int (node_slave);
-  ut_free_1d_int (shift);
+  ut_free_2d_int (&fir, nodeqty_tot);
+  ut_free_1d_int (&node_slave);
+  ut_free_1d_int (&shift);
 
   return;
 }
 
 void
-nem_order_periodic_faces (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh)
+nem_order_periodic_faces (struct TESS Tess, struct NODES *pNodes,
+                          struct MESH *Mesh)
 {
-  int i, j, k, l, nodeqty_tot, nodeqty_o1, nodes[2], nodemasters[2], node, nodemaster;
+  int i, j, k, l, nodeqty_tot, nodeqty_o1, nodes[2], nodemasters[2], node,
+    nodemaster;
   int **fir = NULL;
   int *node_slave = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
   int *shift = ut_alloc_1d_int (3);
@@ -90,7 +99,7 @@ nem_order_periodic_faces (struct TESS Tess, struct NODES *pNodes, struct MESH *M
       for (j = 1; j <= Mesh[2].Elsets[i][0]; j++)
         for (k = nodeqty_o1; k < nodeqty_tot; k++)
         {
-          ut_array_1d_int_memcpy (shift, 3, Tess.PerFaceShift[i]);
+          ut_array_1d_int_memcpy (Tess.PerFaceShift[i], 3, shift);
           ut_array_1d_int_scale (shift, 3, -1);
 
           for (l = 0; l < 2; l++)
@@ -100,19 +109,24 @@ nem_order_periodic_faces (struct TESS Tess, struct NODES *pNodes, struct MESH *M
                                            nodemasters + l);
           }
 
-          neut_mesh_order1nodes_order2node (Mesh[2], nodes[0], nodes[1], &node);
-          neut_mesh_order1nodes_order2node (Mesh[2], nodemasters[0], nodemasters[1], &nodemaster);
+          neut_mesh_order1nodes_order2node (Mesh[2], nodes[0], nodes[1],
+                                            &node);
+          neut_mesh_order1nodes_order2node (Mesh[2], nodemasters[0],
+                                            nodemasters[1], &nodemaster);
 
-          if (neut_mesh_node_dim_min (Mesh[0], Mesh[1], Mesh[2], Mesh[3], node) > 1 && !node_slave[node])
+          if (neut_mesh_node_dim_min
+              (Mesh[0], Mesh[1], Mesh[2], Mesh[3], node) > 1
+              && !node_slave[node])
           {
-            neut_nodes_markasslave (pNodes, node, nodemaster, Tess.PerFaceShift[i]);
+            neut_nodes_markasslave (pNodes, node, nodemaster,
+                                    Tess.PerFaceShift[i]);
             node_slave[node] = 1;
           }
         }
 
-  ut_free_2d_int (fir, nodeqty_tot);
-  ut_free_1d_int (node_slave);
-  ut_free_1d_int (shift);
+  ut_free_2d_int (&fir, nodeqty_tot);
+  ut_free_1d_int (&node_slave);
+  ut_free_1d_int (&shift);
 
   return;
 }

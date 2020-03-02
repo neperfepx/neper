@@ -5,9 +5,9 @@
 #include"neut_mesh_fscanf_gmsh_.h"
 
 void
-neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH
-		      *pMesh0D, struct MESH *pMesh1D, struct MESH *pMesh2D,
-		      struct MESH *pMesh3D, struct MESH *pMeshCo)
+neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
+                      struct MESH *pMesh1D, struct MESH *pMesh2D,
+                      struct MESH *pMesh3D, struct MESH *pMeshCo)
 {
   int *node_nbs = NULL;
   int leftelts;
@@ -37,18 +37,30 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH
   if (!strcmp (mode, "binary"))
     if (fscanf (file, "%c", &c) != 1)
       abort ();
-  leftelts -= ReadMeshOfDim (file, mode, pMesh0D ? pMesh0D : &Trash, node_nbs, 0, leftelts);
-  leftelts -= ReadMeshOfDim (file, mode, pMesh1D ? pMesh1D : &Trash, node_nbs, 1, leftelts);
-  leftelts -= ReadMeshOfDim (file, mode, pMesh2D ? pMesh2D : &Trash, node_nbs, 2, leftelts);
-  leftelts -= ReadMeshOfDim (file, mode, pMesh3D ? pMesh3D : &Trash, node_nbs, 3, leftelts);
-  leftelts -= ReadMeshOfDim (file, mode, pMeshCo ? pMeshCo : &Trash, node_nbs, 3, leftelts);
+  leftelts -=
+    ReadMeshOfDim (file, mode, pMesh0D ? pMesh0D : &Trash, node_nbs, 0,
+                   leftelts);
+  leftelts -=
+    ReadMeshOfDim (file, mode, pMesh1D ? pMesh1D : &Trash, node_nbs, 1,
+                   leftelts);
+  leftelts -=
+    ReadMeshOfDim (file, mode, pMesh2D ? pMesh2D : &Trash, node_nbs, 2,
+                   leftelts);
+  leftelts -=
+    ReadMeshOfDim (file, mode, pMesh3D ? pMesh3D : &Trash, node_nbs, 3,
+                   leftelts);
+  leftelts -=
+    ReadMeshOfDim (file, mode, pMeshCo ? pMeshCo : &Trash, node_nbs, 3,
+                   leftelts);
 
   neut_mesh_free (&Trash);
 
-  ut_free_1d_int (node_nbs);
+  ut_free_1d_int (&node_nbs);
 
   if (leftelts != 0)
-    ut_print_message (2, 0, "Reading of mesh file failed! (Element quantity does not match (leftelts = %d.)\n", leftelts);
+    ut_print_message (2, 0,
+                      "Reading of mesh file failed! (Element quantity does not match (leftelts = %d.)\n",
+                      leftelts);
 
   ReadEltsFoot (file);
 
@@ -97,40 +109,52 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH
         abort ();
 
       if (dim == 0)
-        status = fscanf (file, "%s", pMesh0D && id <= (*pMesh0D).ElsetQty ? (*pMesh0D).ElsetLabels[id] : string);
+        status = fscanf (file, "%s", pMesh0D
+                         && id <=
+                         (*pMesh0D).ElsetQty ? (*pMesh0D).
+                         ElsetLabels[id] : string);
       else if (dim == 1)
-        status = fscanf (file, "%s", pMesh1D && id <= (*pMesh1D).ElsetQty ? (*pMesh1D).ElsetLabels[id] : string);
+        status = fscanf (file, "%s", pMesh1D
+                         && id <=
+                         (*pMesh1D).ElsetQty ? (*pMesh1D).
+                         ElsetLabels[id] : string);
       else if (dim == 2)
-        status = fscanf (file, "%s", pMesh2D && id <= (*pMesh2D).ElsetQty ? (*pMesh2D).ElsetLabels[id] : string);
+        status = fscanf (file, "%s", pMesh2D
+                         && id <=
+                         (*pMesh2D).ElsetQty ? (*pMesh2D).
+                         ElsetLabels[id] : string);
       else if (dim == 3)
-        status = fscanf (file, "%s", pMesh3D && id <= (*pMesh3D).ElsetQty ? (*pMesh3D).ElsetLabels[id] : string);
+        status = fscanf (file, "%s", pMesh3D
+                         && id <=
+                         (*pMesh3D).ElsetQty ? (*pMesh3D).
+                         ElsetLabels[id] : string);
 
       if (status != 1)
         abort ();
     }
   }
 
-  ut_free_1d_char (string);
-  ut_free_1d_char (mode);
+  ut_free_1d_char (&string);
+  ut_free_1d_char (&mode);
 
   return;
 }
 
 void
-neut_mesh_name_fscanf_msh (char *name, struct NODES *pNodes, struct MESH
-			   *pMesh0D, struct MESH *pMesh1D,
-			   struct MESH *pMesh2D, struct MESH *pMesh3D,
-                           struct MESH *pMeshCo)
+neut_mesh_fnscanf_msh (char *name, struct NODES *pNodes, struct MESH *pMesh0D,
+                       struct MESH *pMesh1D, struct MESH *pMesh2D,
+                       struct MESH *pMesh3D, struct MESH *pMeshCo)
 {
   FILE *file = NULL;
   char **list = NULL;
   int qty;
 
-  ut_string_separate (name, NEUT_SEP_DEP, &list, &qty);
+  ut_list_break (name, NEUT_SEP_DEP, &list, &qty);
 
   file = ut_file_open (list[0], "r");
 
-  neut_mesh_fscanf_msh (file, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D, pMeshCo);
+  neut_mesh_fscanf_msh (file, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D,
+                        pMeshCo);
 
   ut_file_close (file, list[0], "r");
 
@@ -141,7 +165,7 @@ neut_mesh_name_fscanf_msh (char *name, struct NODES *pNodes, struct MESH
     ut_file_close (file, list[1], "r");
   }
 
-  ut_free_2d_char (list, qty);
+  ut_free_2d_char (&list, qty);
 
   return;
 }

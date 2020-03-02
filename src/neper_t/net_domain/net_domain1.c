@@ -12,9 +12,9 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
   char *domain = NULL, **strings = NULL;
   int stringqty = 0;
 
-  ut_string_separate (In.domain, NEUT_SEP_DEP, &strings, &stringqty);
+  ut_list_break (In.domain, NEUT_SEP_DEP, &strings, &stringqty);
 
-  ut_string_function_separate (strings[0], &domain, NULL, NULL, NULL);
+  ut_string_function (strings[0], &domain, NULL, NULL, NULL);
 
   neut_poly_set_zero (&Poly);
 
@@ -62,8 +62,8 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
     (*pDomain).FacePoly[i][1] = -i;
 
   neut_poly_free (&Poly);
-  ut_free_1d_char (domain);
-  ut_free_2d_char (strings, stringqty);
+  ut_free_1d_char (&domain);
+  ut_free_2d_char (&strings, stringqty);
 
   return;
 }

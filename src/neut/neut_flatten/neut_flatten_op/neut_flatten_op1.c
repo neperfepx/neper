@@ -55,14 +55,14 @@ neut_flatten_addver (struct FLATTEN *pFlatten, int *dom)
 {
   (*pFlatten).VerQty++;
 
-  (*pFlatten).VerDom = ut_realloc_2d_int_addline ((*pFlatten).VerDom,
-						  (*pFlatten).VerQty + 1, 2);
-  ut_array_1d_int_memcpy ((*pFlatten).VerDom[(*pFlatten).VerQty], 2, dom);
+  (*pFlatten).VerDom =
+    ut_realloc_2d_int_addline ((*pFlatten).VerDom, (*pFlatten).VerQty + 1, 2);
+  ut_array_1d_int_memcpy (dom, 2, (*pFlatten).VerDom[(*pFlatten).VerQty]);
 
-  (*pFlatten).VerTessVerQty = ut_realloc_1d_int ((*pFlatten).VerTessVerQty,
-                                                 (*pFlatten).VerQty + 1);
-  (*pFlatten).VerTessVerNb = ut_realloc_1d_ppint ((*pFlatten).VerTessVerNb,
-                                                 (*pFlatten).VerQty + 1);
+  (*pFlatten).VerTessVerQty =
+    ut_realloc_1d_int ((*pFlatten).VerTessVerQty, (*pFlatten).VerQty + 1);
+  (*pFlatten).VerTessVerNb =
+    ut_realloc_1d_ppint ((*pFlatten).VerTessVerNb, (*pFlatten).VerQty + 1);
   (*pFlatten).VerTessVerNb[(*pFlatten).VerQty] = NULL;
 
   (*pFlatten).VerDom[0] = NULL;
@@ -75,10 +75,10 @@ neut_flatten_addedge (struct FLATTEN *pFlatten, int *dom)
 {
   (*pFlatten).EdgeQty++;
 
-  (*pFlatten).EdgeDom = ut_realloc_2d_int_addline ((*pFlatten).EdgeDom,
-						   (*pFlatten).EdgeQty + 1,
-						   2);
-  ut_array_1d_int_memcpy ((*pFlatten).EdgeDom[(*pFlatten).EdgeQty], 2, dom);
+  (*pFlatten).EdgeDom =
+    ut_realloc_2d_int_addline ((*pFlatten).EdgeDom, (*pFlatten).EdgeQty + 1,
+                               2);
+  ut_array_1d_int_memcpy (dom, 2, (*pFlatten).EdgeDom[(*pFlatten).EdgeQty]);
 
   (*pFlatten).EdgeDom[0] = NULL;
 
@@ -90,10 +90,10 @@ neut_flatten_addface (struct FLATTEN *pFlatten, int *dom)
 {
   (*pFlatten).FaceQty++;
 
-  (*pFlatten).FaceDom = ut_realloc_2d_int_addline ((*pFlatten).FaceDom,
-						   (*pFlatten).FaceQty + 1,
-						   2);
-  ut_array_1d_int_memcpy ((*pFlatten).FaceDom[(*pFlatten).FaceQty], 2, dom);
+  (*pFlatten).FaceDom =
+    ut_realloc_2d_int_addline ((*pFlatten).FaceDom, (*pFlatten).FaceQty + 1,
+                               2);
+  ut_array_1d_int_memcpy (dom, 2, (*pFlatten).FaceDom[(*pFlatten).FaceQty]);
 
   (*pFlatten).FaceDom[0] = NULL;
 
@@ -105,10 +105,10 @@ neut_flatten_addpoly (struct FLATTEN *pFlatten, int *dom)
 {
   (*pFlatten).PolyQty++;
 
-  (*pFlatten).PolyDom = ut_realloc_2d_int_addline ((*pFlatten).PolyDom,
-						   (*pFlatten).PolyQty + 1,
-						   2);
-  ut_array_1d_int_memcpy ((*pFlatten).PolyDom[(*pFlatten).PolyQty], 2, dom);
+  (*pFlatten).PolyDom =
+    ut_realloc_2d_int_addline ((*pFlatten).PolyDom, (*pFlatten).PolyQty + 1,
+                               2);
+  ut_array_1d_int_memcpy (dom, 2, (*pFlatten).PolyDom[(*pFlatten).PolyQty]);
 
   (*pFlatten).PolyDom[0] = NULL;
 
@@ -116,8 +116,8 @@ neut_flatten_addpoly (struct FLATTEN *pFlatten, int *dom)
 }
 
 void
-neut_flatten_init_domstuff_fromver (struct FLATTEN *pFlatten, struct
-				    TESS DTess)
+neut_flatten_init_domstuff_fromver (struct FLATTEN *pFlatten,
+                                    struct TESS DTess)
 {
   int i, j, k, dver, fver, dedge, dface, dpoly;
 
@@ -139,31 +139,31 @@ neut_flatten_init_domstuff_fromver (struct FLATTEN *pFlatten, struct
     {
       dedge = (*pFlatten).VerDom[i][1];
       (*pFlatten).DomEdgeBTessVerQty[dedge]++;
-      (*pFlatten).DomEdgeBTessVerNb[dedge]
-	= ut_realloc_1d_int ((*pFlatten).DomEdgeBTessVerNb[dedge],
-			     (*pFlatten).DomEdgeBTessVerQty[dedge]);
-      (*pFlatten).DomEdgeBTessVerNb[dedge]
-	[(*pFlatten).DomEdgeBTessVerQty[dedge] - 1] = i;
+      (*pFlatten).DomEdgeBTessVerNb[dedge] =
+        ut_realloc_1d_int ((*pFlatten).DomEdgeBTessVerNb[dedge],
+                           (*pFlatten).DomEdgeBTessVerQty[dedge]);
+      (*pFlatten).DomEdgeBTessVerNb[dedge][(*pFlatten).
+                                           DomEdgeBTessVerQty[dedge] - 1] = i;
     }
     else if ((*pFlatten).VerDom[i][0] == 2)
     {
       dface = (*pFlatten).VerDom[i][1];
       (*pFlatten).DomFaceBTessVerQty[dface]++;
-      (*pFlatten).DomFaceBTessVerNb[dface]
-	= ut_realloc_1d_int ((*pFlatten).DomFaceBTessVerNb[dface],
-			     (*pFlatten).DomFaceBTessVerQty[dface]);
-      (*pFlatten).DomFaceBTessVerNb[dface]
-	[(*pFlatten).DomFaceBTessVerQty[dface] - 1] = i;
+      (*pFlatten).DomFaceBTessVerNb[dface] =
+        ut_realloc_1d_int ((*pFlatten).DomFaceBTessVerNb[dface],
+                           (*pFlatten).DomFaceBTessVerQty[dface]);
+      (*pFlatten).DomFaceBTessVerNb[dface][(*pFlatten).
+                                           DomFaceBTessVerQty[dface] - 1] = i;
     }
     else if ((*pFlatten).VerDom[i][0] == 3)
     {
       dpoly = (*pFlatten).VerDom[i][1];
       (*pFlatten).DomPolyBTessVerQty[dpoly]++;
-      (*pFlatten).DomPolyBTessVerNb[dpoly]
-	= ut_realloc_1d_int ((*pFlatten).DomPolyBTessVerNb[dpoly],
-			     (*pFlatten).DomPolyBTessVerQty[dpoly]);
-      (*pFlatten).DomPolyBTessVerNb[dpoly]
-	[(*pFlatten).DomPolyBTessVerQty[dpoly] - 1] = i;
+      (*pFlatten).DomPolyBTessVerNb[dpoly] =
+        ut_realloc_1d_int ((*pFlatten).DomPolyBTessVerNb[dpoly],
+                           (*pFlatten).DomPolyBTessVerQty[dpoly]);
+      (*pFlatten).DomPolyBTessVerNb[dpoly][(*pFlatten).
+                                           DomPolyBTessVerQty[dpoly] - 1] = i;
     }
     else
       abort ();
@@ -181,22 +181,22 @@ neut_flatten_init_domstuff_fromver (struct FLATTEN *pFlatten, struct
     (*pFlatten).DomEdgeTessVerNb[i] =
       ut_alloc_1d_int ((*pFlatten).DomEdgeTessVerQty[i]);
 
-    ut_array_1d_int_memcpy ((*pFlatten).DomEdgeTessVerNb[i],
-			    (*pFlatten).DomEdgeBTessVerQty[i],
-			    (*pFlatten).DomEdgeBTessVerNb[i]);
+    ut_array_1d_int_memcpy ((*pFlatten).DomEdgeBTessVerNb[i],
+                            (*pFlatten).DomEdgeBTessVerQty[i],
+                            (*pFlatten).DomEdgeTessVerNb[i]);
 
     for (j = 0; j < 2; j++)
     {
       dver = DTess.EdgeVerNb[i][j];
       fver = (*pFlatten).DomVerTessVerNb[dver];
       if ((*pFlatten).VerDom[fver][0] != 0)
-	abort ();
+        abort ();
 
-      (*pFlatten).DomEdgeTessVerNb[i]
-	= ut_realloc_1d_int ((*pFlatten).DomEdgeTessVerNb[i],
-			     ++(*pFlatten).DomEdgeTessVerQty[i]);
-      (*pFlatten).DomEdgeTessVerNb[i]
-	[(*pFlatten).DomEdgeTessVerQty[i] - 1] = fver;
+      (*pFlatten).DomEdgeTessVerNb[i] =
+        ut_realloc_1d_int ((*pFlatten).DomEdgeTessVerNb[i],
+                           ++(*pFlatten).DomEdgeTessVerQty[i]);
+      (*pFlatten).DomEdgeTessVerNb[i][(*pFlatten).DomEdgeTessVerQty[i] - 1] =
+        fver;
     }
   }
 
@@ -213,9 +213,9 @@ neut_flatten_init_domstuff_fromver (struct FLATTEN *pFlatten, struct
     (*pFlatten).DomFaceTessVerNb[i] =
       ut_alloc_1d_int ((*pFlatten).DomFaceTessVerQty[i]);
 
-    ut_array_1d_int_memcpy ((*pFlatten).DomFaceTessVerNb[i],
-			    (*pFlatten).DomFaceBTessVerQty[i],
-			    (*pFlatten).DomFaceBTessVerNb[i]);
+    ut_array_1d_int_memcpy ((*pFlatten).DomFaceBTessVerNb[i],
+                            (*pFlatten).DomFaceBTessVerQty[i],
+                            (*pFlatten).DomFaceTessVerNb[i]);
 
     // Adding vers of the edge bodies
     for (j = 1; j <= DTess.FaceVerQty[i]; j++)
@@ -223,20 +223,20 @@ neut_flatten_init_domstuff_fromver (struct FLATTEN *pFlatten, struct
       dedge = DTess.FaceEdgeNb[i][j];
       for (k = 0; k < (*pFlatten).DomEdgeBTessVerQty[dedge]; k++)
       {
-	fver = (*pFlatten).DomEdgeBTessVerNb[dedge][k];
-	if (fver < 1)
-	{
-	  printf ("dedge = %d fver = %d < 1\n", dedge, fver);
-	  ut_error_reportbug ();
-	}
-	if ((*pFlatten).VerDom[fver][0] != 1)
-	  abort ();
+        fver = (*pFlatten).DomEdgeBTessVerNb[dedge][k];
+        if (fver < 1)
+        {
+          printf ("dedge = %d fver = %d < 1\n", dedge, fver);
+          ut_print_neperbug ();
+        }
+        if ((*pFlatten).VerDom[fver][0] != 1)
+          abort ();
 
-	(*pFlatten).DomFaceTessVerNb[i]
-	  = ut_realloc_1d_int ((*pFlatten).DomFaceTessVerNb[i],
-			       ++(*pFlatten).DomFaceTessVerQty[i]);
-	(*pFlatten).DomFaceTessVerNb[i]
-	  [(*pFlatten).DomFaceTessVerQty[i] - 1] = fver;
+        (*pFlatten).DomFaceTessVerNb[i] =
+          ut_realloc_1d_int ((*pFlatten).DomFaceTessVerNb[i],
+                             ++(*pFlatten).DomFaceTessVerQty[i]);
+        (*pFlatten).DomFaceTessVerNb[i][(*pFlatten).DomFaceTessVerQty[i] -
+                                        1] = fver;
       }
     }
 
@@ -247,21 +247,21 @@ neut_flatten_init_domstuff_fromver (struct FLATTEN *pFlatten, struct
       fver = (*pFlatten).DomVerTessVerNb[dver];
       if (dver < 1 || fver < 1)
       {
-	printf ("dver = %d < 1 || fver = %d < 1\n", dver, fver);
-	ut_error_reportbug ();
+        printf ("dver = %d < 1 || fver = %d < 1\n", dver, fver);
+        ut_print_neperbug ();
       }
       if ((*pFlatten).VerDom[fver][0] != 0)
       {
-	printf ("(*pFlatten).VerDom[%d][0] == %d != 0\n",
-		fver, (*pFlatten).VerDom[fver][0]);
-	abort ();
+        printf ("(*pFlatten).VerDom[%d][0] == %d != 0\n", fver,
+                (*pFlatten).VerDom[fver][0]);
+        abort ();
       }
 
-      (*pFlatten).DomFaceTessVerNb[i]
-	= ut_realloc_1d_int ((*pFlatten).DomFaceTessVerNb[i],
-			     ++(*pFlatten).DomFaceTessVerQty[i]);
-      (*pFlatten).DomFaceTessVerNb[i]
-	[(*pFlatten).DomFaceTessVerQty[i] - 1] = fver;
+      (*pFlatten).DomFaceTessVerNb[i] =
+        ut_realloc_1d_int ((*pFlatten).DomFaceTessVerNb[i],
+                           ++(*pFlatten).DomFaceTessVerQty[i]);
+      (*pFlatten).DomFaceTessVerNb[i][(*pFlatten).DomFaceTessVerQty[i] - 1] =
+        fver;
     }
   }
 
@@ -269,8 +269,8 @@ neut_flatten_init_domstuff_fromver (struct FLATTEN *pFlatten, struct
 }
 
 void
-neut_flatten_init_domstuff_fromedge (struct FLATTEN *pFlatten, struct
-				     TESS DTess)
+neut_flatten_init_domstuff_fromedge (struct FLATTEN *pFlatten,
+                                     struct TESS DTess)
 {
   int i, j, k, dedge, dface, fedge, dpoly;
 
@@ -290,31 +290,33 @@ neut_flatten_init_domstuff_fromedge (struct FLATTEN *pFlatten, struct
     {
       dedge = (*pFlatten).EdgeDom[i][1];
       (*pFlatten).DomEdgeTessEdgeQty[dedge]++;
-      (*pFlatten).DomEdgeTessEdgeNb[dedge]
-	= ut_realloc_1d_int ((*pFlatten).DomEdgeTessEdgeNb[dedge],
-			     (*pFlatten).DomEdgeTessEdgeQty[dedge]);
-      (*pFlatten).DomEdgeTessEdgeNb[dedge]
-	[(*pFlatten).DomEdgeTessEdgeQty[dedge] - 1] = i;
+      (*pFlatten).DomEdgeTessEdgeNb[dedge] =
+        ut_realloc_1d_int ((*pFlatten).DomEdgeTessEdgeNb[dedge],
+                           (*pFlatten).DomEdgeTessEdgeQty[dedge]);
+      (*pFlatten).DomEdgeTessEdgeNb[dedge][(*pFlatten).
+                                           DomEdgeTessEdgeQty[dedge] - 1] = i;
     }
     else if ((*pFlatten).EdgeDom[i][0] == 2)
     {
       dface = (*pFlatten).EdgeDom[i][1];
       (*pFlatten).DomFaceBTessEdgeQty[dface]++;
-      (*pFlatten).DomFaceBTessEdgeNb[dface]
-	= ut_realloc_1d_int ((*pFlatten).DomFaceBTessEdgeNb[dface],
-			     (*pFlatten).DomFaceBTessEdgeQty[dface]);
-      (*pFlatten).DomFaceBTessEdgeNb[dface]
-	[(*pFlatten).DomFaceBTessEdgeQty[dface] - 1] = i;
+      (*pFlatten).DomFaceBTessEdgeNb[dface] =
+        ut_realloc_1d_int ((*pFlatten).DomFaceBTessEdgeNb[dface],
+                           (*pFlatten).DomFaceBTessEdgeQty[dface]);
+      (*pFlatten).DomFaceBTessEdgeNb[dface][(*pFlatten).
+                                            DomFaceBTessEdgeQty[dface] - 1] =
+        i;
     }
     else if ((*pFlatten).EdgeDom[i][0] == 3)
     {
       dpoly = (*pFlatten).EdgeDom[i][1];
       (*pFlatten).DomPolyBTessEdgeQty[dpoly]++;
-      (*pFlatten).DomPolyBTessEdgeNb[dpoly]
-	= ut_realloc_1d_int ((*pFlatten).DomPolyBTessEdgeNb[dpoly],
-			     (*pFlatten).DomPolyBTessEdgeQty[dpoly]);
-      (*pFlatten).DomPolyBTessEdgeNb[dpoly]
-	[(*pFlatten).DomPolyBTessEdgeQty[dpoly] - 1] = i;
+      (*pFlatten).DomPolyBTessEdgeNb[dpoly] =
+        ut_realloc_1d_int ((*pFlatten).DomPolyBTessEdgeNb[dpoly],
+                           (*pFlatten).DomPolyBTessEdgeQty[dpoly]);
+      (*pFlatten).DomPolyBTessEdgeNb[dpoly][(*pFlatten).
+                                            DomPolyBTessEdgeQty[dpoly] - 1] =
+        i;
     }
     else
       abort ();
@@ -332,22 +334,22 @@ neut_flatten_init_domstuff_fromedge (struct FLATTEN *pFlatten, struct
     (*pFlatten).DomFaceTessEdgeNb[i] =
       ut_alloc_1d_int ((*pFlatten).DomFaceTessEdgeQty[i]);
 
-    ut_array_1d_int_memcpy ((*pFlatten).DomFaceTessEdgeNb[i],
-			    (*pFlatten).DomFaceBTessEdgeQty[i],
-			    (*pFlatten).DomFaceBTessEdgeNb[i]);
+    ut_array_1d_int_memcpy ((*pFlatten).DomFaceBTessEdgeNb[i],
+                            (*pFlatten).DomFaceBTessEdgeQty[i],
+                            (*pFlatten).DomFaceTessEdgeNb[i]);
 
     for (j = 1; j <= DTess.FaceVerQty[i]; j++)
     {
       dedge = DTess.FaceEdgeNb[i][j];
       for (k = 0; k < (*pFlatten).DomEdgeTessEdgeQty[dedge]; k++)
       {
-	fedge = (*pFlatten).DomEdgeTessEdgeNb[dedge][k];
+        fedge = (*pFlatten).DomEdgeTessEdgeNb[dedge][k];
 
-	(*pFlatten).DomFaceTessEdgeNb[i]
-	  = ut_realloc_1d_int ((*pFlatten).DomFaceTessEdgeNb[i],
-			       ++(*pFlatten).DomFaceTessEdgeQty[i]);
-	(*pFlatten).DomFaceTessEdgeNb[i]
-	  [(*pFlatten).DomFaceTessEdgeQty[i] - 1] = fedge;
+        (*pFlatten).DomFaceTessEdgeNb[i] =
+          ut_realloc_1d_int ((*pFlatten).DomFaceTessEdgeNb[i],
+                             ++(*pFlatten).DomFaceTessEdgeQty[i]);
+        (*pFlatten).DomFaceTessEdgeNb[i][(*pFlatten).DomFaceTessEdgeQty[i] -
+                                         1] = fedge;
       }
     }
   }
@@ -372,21 +374,22 @@ neut_flatten_init_domstuff_fromface (struct FLATTEN *pFlatten)
     {
       dface = (*pFlatten).FaceDom[i][1];
       (*pFlatten).DomFaceTessFaceQty[dface]++;
-      (*pFlatten).DomFaceTessFaceNb[dface]
-	= ut_realloc_1d_int ((*pFlatten).DomFaceTessFaceNb[dface],
-			     (*pFlatten).DomFaceTessFaceQty[dface]);
-      (*pFlatten).DomFaceTessFaceNb[dface]
-	[(*pFlatten).DomFaceTessFaceQty[dface] - 1] = i;
+      (*pFlatten).DomFaceTessFaceNb[dface] =
+        ut_realloc_1d_int ((*pFlatten).DomFaceTessFaceNb[dface],
+                           (*pFlatten).DomFaceTessFaceQty[dface]);
+      (*pFlatten).DomFaceTessFaceNb[dface][(*pFlatten).
+                                           DomFaceTessFaceQty[dface] - 1] = i;
     }
     else if ((*pFlatten).FaceDom[i][0] == 3)
     {
       dpoly = (*pFlatten).FaceDom[i][1];
       (*pFlatten).DomPolyBTessFaceQty[dpoly]++;
-      (*pFlatten).DomPolyBTessFaceNb[dpoly]
-	= ut_realloc_1d_int ((*pFlatten).DomPolyBTessFaceNb[dpoly],
-			     (*pFlatten).DomPolyBTessFaceQty[dpoly]);
-      (*pFlatten).DomPolyBTessFaceNb[dpoly]
-	[(*pFlatten).DomPolyBTessFaceQty[dpoly] - 1] = i;
+      (*pFlatten).DomPolyBTessFaceNb[dpoly] =
+        ut_realloc_1d_int ((*pFlatten).DomPolyBTessFaceNb[dpoly],
+                           (*pFlatten).DomPolyBTessFaceQty[dpoly]);
+      (*pFlatten).DomPolyBTessFaceNb[dpoly][(*pFlatten).
+                                            DomPolyBTessFaceQty[dpoly] - 1] =
+        i;
     }
     else
       abort ();
@@ -399,46 +402,48 @@ neut_flatten_free (struct FLATTEN *pFlatten)
 {
   int i;
 
-  ut_free_2d_int ((*pFlatten).VerDom, (*pFlatten).VerQty + 1);
-  ut_free_2d_int ((*pFlatten).EdgeDom, (*pFlatten).EdgeQty + 1);
-  ut_free_2d_int ((*pFlatten).FaceDom, (*pFlatten).FaceQty + 1);
-  ut_free_2d_int ((*pFlatten).PolyDom, (*pFlatten).PolyQty + 1);
+  ut_free_2d_int (&(*pFlatten).VerDom, (*pFlatten).VerQty + 1);
+  ut_free_2d_int (&(*pFlatten).EdgeDom, (*pFlatten).EdgeQty + 1);
+  ut_free_2d_int (&(*pFlatten).FaceDom, (*pFlatten).FaceQty + 1);
+  ut_free_2d_int (&(*pFlatten).PolyDom, (*pFlatten).PolyQty + 1);
 
-  ut_free_1d_int ((*pFlatten).DomVerTessVerNb);
-  ut_free_1d_int ((*pFlatten).DomEdgeBTessVerQty);
-  ut_free_2d_int ((*pFlatten).DomEdgeBTessVerNb, (*pFlatten).DEdgeQty + 1);
-  ut_free_1d_int ((*pFlatten).DomEdgeTessVerQty);
-  ut_free_2d_int ((*pFlatten).DomEdgeTessVerNb, (*pFlatten).DEdgeQty + 1);
-  ut_free_1d_int ((*pFlatten).DomFaceBTessVerQty);
-  ut_free_2d_int ((*pFlatten).DomFaceBTessVerNb, (*pFlatten).DFaceQty + 1);
-  ut_free_1d_int ((*pFlatten).DomFaceTessVerQty);
-  ut_free_2d_int ((*pFlatten).DomFaceTessVerNb, (*pFlatten).DFaceQty + 1);
-  ut_free_1d_int ((*pFlatten).DomPolyBTessVerQty);
-  ut_free_2d_int ((*pFlatten).DomPolyBTessVerNb, (*pFlatten).DPolyQty + 1);
+  ut_free_1d_int (&(*pFlatten).DomVerTessVerNb);
+  ut_free_1d_int (&(*pFlatten).DomEdgeBTessVerQty);
+  ut_free_2d_int (&(*pFlatten).DomEdgeBTessVerNb, (*pFlatten).DEdgeQty + 1);
+  ut_free_1d_int (&(*pFlatten).DomEdgeTessVerQty);
+  ut_free_2d_int (&(*pFlatten).DomEdgeTessVerNb, (*pFlatten).DEdgeQty + 1);
+  ut_free_1d_int (&(*pFlatten).DomFaceBTessVerQty);
+  ut_free_2d_int (&(*pFlatten).DomFaceBTessVerNb, (*pFlatten).DFaceQty + 1);
+  ut_free_1d_int (&(*pFlatten).DomFaceTessVerQty);
+  ut_free_2d_int (&(*pFlatten).DomFaceTessVerNb, (*pFlatten).DFaceQty + 1);
+  ut_free_1d_int (&(*pFlatten).DomPolyBTessVerQty);
+  ut_free_2d_int (&(*pFlatten).DomPolyBTessVerNb, (*pFlatten).DPolyQty + 1);
 
-  ut_free_1d_int ((*pFlatten).DomEdgeTessEdgeQty);
-  ut_free_2d_int ((*pFlatten).DomEdgeTessEdgeNb, (*pFlatten).DEdgeQty + 1);
-  ut_free_1d_int ((*pFlatten).DomFaceBTessEdgeQty);
-  ut_free_2d_int ((*pFlatten).DomFaceBTessEdgeNb, (*pFlatten).DFaceQty + 1);
-  ut_free_1d_int ((*pFlatten).DomFaceTessEdgeQty);
-  ut_free_2d_int ((*pFlatten).DomFaceTessEdgeNb, (*pFlatten).DFaceQty + 1);
-  ut_free_1d_int ((*pFlatten).DomPolyBTessEdgeQty);
-  ut_free_2d_int ((*pFlatten).DomPolyBTessEdgeNb, (*pFlatten).DPolyQty + 1);
+  ut_free_1d_int (&(*pFlatten).DomEdgeTessEdgeQty);
+  ut_free_2d_int (&(*pFlatten).DomEdgeTessEdgeNb, (*pFlatten).DEdgeQty + 1);
+  ut_free_1d_int (&(*pFlatten).DomFaceBTessEdgeQty);
+  ut_free_2d_int (&(*pFlatten).DomFaceBTessEdgeNb, (*pFlatten).DFaceQty + 1);
+  ut_free_1d_int (&(*pFlatten).DomFaceTessEdgeQty);
+  ut_free_2d_int (&(*pFlatten).DomFaceTessEdgeNb, (*pFlatten).DFaceQty + 1);
+  ut_free_1d_int (&(*pFlatten).DomPolyBTessEdgeQty);
+  ut_free_2d_int (&(*pFlatten).DomPolyBTessEdgeNb, (*pFlatten).DPolyQty + 1);
 
-  ut_free_1d_int ((*pFlatten).DomFaceTessFaceQty);
-  ut_free_2d_int ((*pFlatten).DomFaceTessFaceNb, (*pFlatten).DFaceQty + 1);
-  ut_free_1d_int ((*pFlatten).DomPolyBTessFaceQty);
-  ut_free_2d_int ((*pFlatten).DomPolyBTessFaceNb, (*pFlatten).DPolyQty + 1);
+  ut_free_1d_int (&(*pFlatten).DomFaceTessFaceQty);
+  ut_free_2d_int (&(*pFlatten).DomFaceTessFaceNb, (*pFlatten).DFaceQty + 1);
+  ut_free_1d_int (&(*pFlatten).DomPolyBTessFaceQty);
+  ut_free_2d_int (&(*pFlatten).DomPolyBTessFaceNb, (*pFlatten).DPolyQty + 1);
 
   for (i = 1; i <= (*pFlatten).VerQty; i++)
-    ut_free_2d_int ((*pFlatten).VerTessVerNb[i], (*pFlatten).VerTessVerQty[i]);
-  ut_free_1d_ppint ((*pFlatten).VerTessVerNb);
-  ut_free_1d_int ((*pFlatten).VerTessVerQty);
+    ut_free_2d_int (&(*pFlatten).VerTessVerNb[i],
+                    (*pFlatten).VerTessVerQty[i]);
+  ut_free_1d_ppint (&(*pFlatten).VerTessVerNb);
+  ut_free_1d_int (&(*pFlatten).VerTessVerQty);
 
   for (i = 1; i <= (*pFlatten).EdgeQty; i++)
-    ut_free_2d_int ((*pFlatten).EdgeTessEdgeNb[i], (*pFlatten).EdgeTessEdgeQty[i]);
+    ut_free_2d_int (&(*pFlatten).EdgeTessEdgeNb[i],
+                    (*pFlatten).EdgeTessEdgeQty[i]);
   free ((*pFlatten).EdgeTessEdgeNb);
-  ut_free_1d_int ((*pFlatten).EdgeTessEdgeQty);
+  ut_free_1d_int (&(*pFlatten).EdgeTessEdgeQty);
 
   (*pFlatten).VerQty = 0;
   (*pFlatten).EdgeQty = 0;

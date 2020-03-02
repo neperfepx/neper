@@ -26,7 +26,7 @@ net_tess_opt_comp_objective_fval_gen (struct TOPT *pTOpt, int var)
         net_tess_opt_comp_objective_fval_gen_diameq (pTOpt, var, cell);
 
       else if (strstr ((*pTOpt).tarvar[var], "sphericity")
-            || strstr ((*pTOpt).tarvar[var], "1-sphericity"))
+               || strstr ((*pTOpt).tarvar[var], "1-sphericity"))
         net_tess_opt_comp_objective_fval_gen_sphericity (pTOpt, var, cell);
 
       else if (!strcmp ((*pTOpt).tarvar[var], "convexity"))
@@ -36,7 +36,7 @@ net_tess_opt_comp_objective_fval_gen (struct TOPT *pTOpt, int var)
         net_tess_opt_comp_objective_fval_gen_centroid (pTOpt, var, cell);
 
       else if (!strcmp ((*pTOpt).tarvar[var], "centroidsize")
-            || !strcmp ((*pTOpt).tarvar[var], "centroiddiameq"))
+               || !strcmp ((*pTOpt).tarvar[var], "centroiddiameq"))
         net_tess_opt_comp_objective_fval_gen_centroidsize (pTOpt, var, cell);
 
       else
@@ -54,7 +54,7 @@ net_tess_opt_comp_objective_fval_gen (struct TOPT *pTOpt, int var)
   if (isnan ((*pTOpt).curval[var]))
   {
     printf ("(*pTOpt).curval[%d] is not-a-number.\n", var);
-    ut_error_reportbug ();
+    ut_print_neperbug ();
   }
 
   gettimeofday (&t3, NULL);
@@ -62,5 +62,5 @@ net_tess_opt_comp_objective_fval_gen (struct TOPT *pTOpt, int var)
   (*pTOpt).TDyn.val_val_cellval_dur += ut_time_subtract (&t1, &t2);
   (*pTOpt).TDyn.val_val_comp_dur += ut_time_subtract (&t2, &t3);
 
-return;
+  return;
 }

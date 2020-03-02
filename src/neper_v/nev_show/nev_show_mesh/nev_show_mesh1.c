@@ -33,9 +33,8 @@ nev_show_mesh_slice (char **argv, int *pi, struct PRINT *pPrint)
 }
 
 void
-nev_show_mesh_elt (char **argv, int *pi, struct TESS Tess,
-		   struct NODES Nodes,
-		   struct MESH *Mesh, struct PART Part, struct PRINT *pPrint)
+nev_show_mesh_elt (char **argv, int *pi, struct TESS Tess, struct NODES Nodes,
+                   struct MESH *Mesh, struct PART Part, struct PRINT *pPrint)
 {
   int i, j, status, varqty, qty;
   char **vars = NULL;
@@ -54,7 +53,7 @@ nev_show_mesh_elt (char **argv, int *pi, struct TESS Tess,
   else if (!strcmp (argv[(*pi)], "-showelt"))
     sprintf (entity, "elt%dd", neut_mesh_array_dim (Mesh));
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   if (!strcmp (entity, "elt0d"))
   {
@@ -94,35 +93,35 @@ nev_show_mesh_elt (char **argv, int *pi, struct TESS Tess,
     for (i = 1; i <= qty; i++)
     {
       for (j = 0; j < varqty; j++)
-	if (strstr (argv[(*pi)], vars[j]))
+        if (strstr (argv[(*pi)], vars[j]))
           neut_mesh_var_val_one (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
                                  Part, Tess, (*pPrint).showelt0d,
                                  (*pPrint).showelt1d, (*pPrint).showelt2d,
                                  (*pPrint).showelt3d, 0, entity, i, vars[j],
                                  vals + j, NULL);
 
-      status = ut_math_eval_int (argv[(*pi)], varqty, vars, vals,
-				 &((*pshowarray)[i]));
+      status =
+        ut_math_eval_int (argv[(*pi)], varqty, vars, vals,
+                          &((*pshowarray)[i]));
       if (status != 0)
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  argv[(*pi)]);
+        ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
+                          argv[(*pi)]);
     }
   }
 
   (*pshowarray)[0] = ut_array_1d_int_sum ((*pshowarray) + 1, qty);
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
-  ut_free_1d_char (entity);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
+  ut_free_1d_char (&entity);
 
   return;
 }
 
 void
 nev_show_mesh_nodes (char **argv, int *pi, struct TESS Tess,
-		     struct NODES Nodes,
-		     struct MESH *Mesh, struct PART Part,
-		     struct PRINT *pPrint)
+                     struct NODES Nodes, struct MESH *Mesh, struct PART Part,
+                     struct PRINT *pPrint)
 {
   int i, j, status, varqty;
   char **vars = NULL;
@@ -142,34 +141,35 @@ nev_show_mesh_nodes (char **argv, int *pi, struct TESS Tess,
     for (i = 1; i <= Nodes.NodeQty; i++)
     {
       for (j = 0; j < varqty; j++)
-	if (strstr (argv[(*pi)], vars[j]))
-	  neut_mesh_var_val_one (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
-                                 Part, Tess,
-                                 (*pPrint).showelt0d, (*pPrint).showelt1d,
-                                 (*pPrint).showelt2d, (*pPrint).showelt3d,
-                                 0, "node", i, vars[j], vals + j, NULL);
+        if (strstr (argv[(*pi)], vars[j]))
+          neut_mesh_var_val_one (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
+                                 Part, Tess, (*pPrint).showelt0d,
+                                 (*pPrint).showelt1d, (*pPrint).showelt2d,
+                                 (*pPrint).showelt3d, 0, "node", i, vars[j],
+                                 vals + j, NULL);
 
-      status = ut_math_eval_int (argv[(*pi)], varqty, vars, vals,
-				 &((*pPrint).shownode[i]));
+      status =
+        ut_math_eval_int (argv[(*pi)], varqty, vars, vals,
+                          &((*pPrint).shownode[i]));
       if (status != 0)
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  argv[(*pi)]);
+        ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
+                          argv[(*pi)]);
     }
   }
 
-  (*pPrint).shownode[0] = ut_array_1d_int_sum ((*pPrint).shownode + 1,
-					       Nodes.NodeQty);
+  (*pPrint).shownode[0] =
+    ut_array_1d_int_sum ((*pPrint).shownode + 1, Nodes.NodeQty);
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
 
   return;
 }
 
 void
 nev_show_mesh_elset (char **argv, int *pi, struct TESS Tess,
-		     struct NODES Nodes, struct MESH *Mesh,
-		     struct PART Part, struct PRINT *pPrint)
+                     struct NODES Nodes, struct MESH *Mesh, struct PART Part,
+                     struct PRINT *pPrint)
 {
   int i, j, status, varqty;
   char **vars = NULL;
@@ -191,7 +191,7 @@ nev_show_mesh_elset (char **argv, int *pi, struct TESS Tess,
   else if (!strcmp (argv[(*pi)], "-showelset"))
     sprintf (entity, "elset%dd", neut_mesh_array_dim (Mesh));
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   if (!strcmp (entity, "elset0d"))
   {
@@ -240,32 +240,32 @@ nev_show_mesh_elset (char **argv, int *pi, struct TESS Tess,
     for (i = 1; i <= elsetqty; i++)
     {
       for (j = 0; j < varqty; j++)
-	if (strstr (argv[(*pi)], vars[j]))
-	  neut_mesh_var_val_one (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
-                                 Part, Tess,
-                                 (*pPrint).showelt0d, (*pPrint).showelt1d,
-                                 (*pPrint).showelt2d, (*pPrint).showelt3d,
-                                 0, entity, i, vars[j], vals + j, NULL);
+        if (strstr (argv[(*pi)], vars[j]))
+          neut_mesh_var_val_one (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
+                                 Part, Tess, (*pPrint).showelt0d,
+                                 (*pPrint).showelt1d, (*pPrint).showelt2d,
+                                 (*pPrint).showelt3d, 0, entity, i, vars[j],
+                                 vals + j, NULL);
 
-      status = ut_math_eval_int (argv[(*pi)], varqty, vars, vals,
-				 &(showelset3d[i]));
+      status =
+        ut_math_eval_int (argv[(*pi)], varqty, vars, vals, &(showelset3d[i]));
       if (status != 0)
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  argv[(*pi)]);
+        ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
+                          argv[(*pi)]);
     }
   }
 
   for (i = 1; i <= elsetqty; i++)
     if (showelset3d[i])
       for (j = 1; j <= elsets[i][0]; j++)
-	(*pshowelt)[elsets[i][j]] = 1;
+        (*pshowelt)[elsets[i][j]] = 1;
 
   (*pshowelt)[0] = ut_array_1d_int_sum ((*pshowelt) + 1, eltqty);
 
-  ut_free_1d_int (showelset3d);
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
-  ut_free_1d_char (entity);
+  ut_free_1d_int (&showelset3d);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
+  ut_free_1d_char (&entity);
 
   return;
 }

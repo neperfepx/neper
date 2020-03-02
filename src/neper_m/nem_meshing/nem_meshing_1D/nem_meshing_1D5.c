@@ -6,7 +6,7 @@
 
 void
 nem_mesh_1d_unitsegment (double cl1, double cl2, double clt, double pl,
-			 int *pqty, double **pcoo, double **pcl)
+                         int *pqty, double **pcoo, double **pcl)
 {
   int i, id, n1p, n2p, add;
   double I;
@@ -20,7 +20,7 @@ nem_mesh_1d_unitsegment (double cl1, double cl2, double clt, double pl,
   if (cl1 > clt || cl2 > clt || cl2 < cl1 || pl <= 1 || cl1 <= 0 || cl2 <= 0)
   {
     printf ("cl1 = %f cl2 = %f clt = %f pl = %f\n", cl1, cl2, clt, pl);
-    ut_error_reportbug ();
+    ut_print_neperbug ();
   }
 
   // I is the intersection point between the cl progressions from both
@@ -55,37 +55,37 @@ nem_mesh_1d_unitsegment (double cl1, double cl2, double clt, double pl,
     // only 2 segments
     if (l1p + l2p > 1)
     {
-      n1p = cl1_pl_x_i (cl1, pl, I);	// number of nodes before I
-      n2p = cl1_pl_x_i (cl2, pl, 1 - I);	// number of nodes before I
-      l1p = cl1_pl_n_l (cl1, pl, n1p);	// length before I
-      l2p = cl1_pl_n_l (cl2, pl, n2p);	// length before I
+      n1p = cl1_pl_x_i (cl1, pl, I);    // number of nodes before I
+      n2p = cl1_pl_x_i (cl2, pl, 1 - I);        // number of nodes before I
+      l1p = cl1_pl_n_l (cl1, pl, n1p);  // length before I
+      l2p = cl1_pl_n_l (cl2, pl, n2p);  // length before I
 
-      n1p_cl = cl1_pl_i_cl (cl1, pl, n1p);	// cl at last point
-      n2p_cl = cl1_pl_i_cl (cl2, pl, n2p);	// cl at last point
-      cltp = ut_num_min (n1p_cl, n2p_cl);	// min of the two
+      n1p_cl = cl1_pl_i_cl (cl1, pl, n1p);      // cl at last point
+      n2p_cl = cl1_pl_i_cl (cl2, pl, n2p);      // cl at last point
+      cltp = ut_num_min (n1p_cl, n2p_cl);       // min of the two
 
       // Distance between the two progression segments
       Dl = 1 - l1p - l2p;
       if (Dl < 0)
       {
-	printf ("Dl < 0\n");
-	ut_error_reportbug ();
+        printf ("Dl < 0\n");
+        ut_print_neperbug ();
       }
 
       // If Dl < cltp, adding a segment of length cltp then scaling the
       // node coo to get a full segment of length 1
       if (Dl < cltp)
       {
-	lp = l1p + l2p + cltp;
+        lp = l1p + l2p + cltp;
 
-	id = 0;
-	(*pqty) = n1p + n2p;
-	(*pcoo) = ut_alloc_1d ((*pqty));
-	for (i = 1; i <= n1p; i++)
-	  (*pcoo)[id++] = cl1_pl_i_x (cl1, pl, i);
-	for (i = n2p; i >= 1; i--)
-	  (*pcoo)[id++] = lp - cl1_pl_i_x (cl2, pl, i);
-	ut_array_1d_scale ((*pcoo), (*pqty), 1 / lp);
+        id = 0;
+        (*pqty) = n1p + n2p;
+        (*pcoo) = ut_alloc_1d ((*pqty));
+        for (i = 1; i <= n1p; i++)
+          (*pcoo)[id++] = cl1_pl_i_x (cl1, pl, i);
+        for (i = n2p; i >= 1; i--)
+          (*pcoo)[id++] = lp - cl1_pl_i_x (cl2, pl, i);
+        ut_array_1d_scale ((*pcoo), (*pqty), 1 / lp);
       }
 
       // otherwise, adding a node by extending the 2 progression
@@ -93,20 +93,20 @@ nem_mesh_1d_unitsegment (double cl1, double cl2, double clt, double pl,
       // length 1
       else
       {
-	// taking 1 more node for each progression segment; both last
-	// nodes will be only one in the final mesh
-	l1p = cl1_pl_n_l (cl1, pl, n1p + 1);
-	l2p = cl1_pl_n_l (cl2, pl, n2p + 1);
-	lp = l1p + l2p;
+        // taking 1 more node for each progression segment; both last
+        // nodes will be only one in the final mesh
+        l1p = cl1_pl_n_l (cl1, pl, n1p + 1);
+        l2p = cl1_pl_n_l (cl2, pl, n2p + 1);
+        lp = l1p + l2p;
 
-	id = 0;
-	(*pqty) = n1p + n2p + 1;
-	(*pcoo) = ut_alloc_1d ((*pqty));
-	for (i = 1; i <= n1p + 1; i++)	// + 1 for the 1 more node
-	  (*pcoo)[id++] = cl1_pl_i_x (cl1, pl, i);
-	for (i = n2p; i >= 1; i--)
-	  (*pcoo)[id++] = lp - cl1_pl_i_x (cl2, pl, i);
-	ut_array_1d_scale ((*pcoo), (*pqty), 1 / lp);
+        id = 0;
+        (*pqty) = n1p + n2p + 1;
+        (*pcoo) = ut_alloc_1d ((*pqty));
+        for (i = 1; i <= n1p + 1; i++)  // + 1 for the 1 more node
+          (*pcoo)[id++] = cl1_pl_i_x (cl1, pl, i);
+        for (i = n2p; i >= 1; i--)
+          (*pcoo)[id++] = lp - cl1_pl_i_x (cl2, pl, i);
+        ut_array_1d_scale ((*pcoo), (*pqty), 1 / lp);
       }
     }
 
@@ -130,11 +130,11 @@ nem_mesh_1d_unitsegment (double cl1, double cl2, double clt, double pl,
       // allowed.
       if (lp < 1)
       {
-	cltp = (1 - l1p - l2p) / (add + 1);
-	lp = 1;
+        cltp = (1 - l1p - l2p) / (add + 1);
+        lp = 1;
       }
       else
-	cltp = clt;
+        cltp = clt;
 
       // Computing coos
 
@@ -142,14 +142,14 @@ nem_mesh_1d_unitsegment (double cl1, double cl2, double clt, double pl,
       (*pqty) = n1p + n2p + add;
       (*pcoo) = ut_alloc_1d ((*pqty));
       for (i = 1; i <= n1p; i++)
-	(*pcoo)[id++] = cl1_pl_i_x (cl1, pl, i);
+        (*pcoo)[id++] = cl1_pl_i_x (cl1, pl, i);
       for (i = 1; i <= add; i++)
       {
-	(*pcoo)[id] = (*pcoo)[id - 1] + cltp;
-	id++;
+        (*pcoo)[id] = (*pcoo)[id - 1] + cltp;
+        id++;
       }
       for (i = n2p; i >= 1; i--)
-	(*pcoo)[id++] = lp - cl1_pl_i_x (cl2, pl, i);
+        (*pcoo)[id++] = lp - cl1_pl_i_x (cl2, pl, i);
       ut_array_1d_scale ((*pcoo), (*pqty), 1 / lp);
     }
   }
@@ -175,9 +175,9 @@ nem_mesh_1d_unitsegment (double cl1, double cl2, double clt, double pl,
   (*pcl)[(*pqty) - 1] = cl2;
 
   (*pcl)[0] = ut_num_max ((*pcl)[0], (*pcoo)[1]);
-  (*pcl)[(*pqty) - 1]
-    = ut_num_max ((*pcl)[(*pqty) - 1],
-		  (*pcoo)[(*pqty) - 1] - (*pcoo)[(*pqty) - 2]);
+  (*pcl)[(*pqty) - 1] =
+    ut_num_max ((*pcl)[(*pqty) - 1],
+                (*pcoo)[(*pqty) - 1] - (*pcoo)[(*pqty) - 2]);
 
   (*pqty) -= 2;
 
@@ -199,7 +199,7 @@ nem_meshing_1d_edge_proj_fixcl (struct MESH M, struct NODES *pN)
     (*pN).NodeCl[i] = ut_num_max ((*pN).NodeCl[i], length[i]);
   }
 
-  ut_free_1d (length);
+  ut_free_1d (&length);
 
   return;
 }

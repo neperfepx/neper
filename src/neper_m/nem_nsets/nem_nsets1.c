@@ -22,15 +22,14 @@ nem_nsets (struct IN_M In, struct TESS Tess, struct TESR Tesr,
     if (Tess.Dim >= 1 || Tesr.Dim >= 1)
       nem_nsets_0d_tess (Tess, Mesh, NSet);
 
-    if (ut_string_finds (In.nset, "all") != -1
-	|| ut_string_finds (In.nset, "body") != -1
-	|| ut_string_finds (In.nset, "bodies") != -1)
+    if (strstr (In.nset, "all") || strstr (In.nset, "body")
+        || strstr (In.nset, "bodies"))
     {
       if (Tess.Dim == 3 || Tesr.Dim == 3)
-	nem_nsets_2dbody_tess (Tess, NSet);
+        nem_nsets_2dbody_tess (Tess, NSet);
 
       if (Tess.Dim >= 2 || Tesr.Dim >= 2)
-	nem_nsets_1dbody_tess (Tess, NSet);
+        nem_nsets_1dbody_tess (Tess, NSet);
     }
   }
 
@@ -41,29 +40,27 @@ nem_nsets (struct IN_M In, struct TESS Tess, struct TESR Tesr,
       nem_nsets_1d_tess_str (Tess, NSet);
       nem_nsets_0d_tess_str (Tess, NSet);
 
-      if (ut_string_finds (In.nset, "all") != -1
-	  || ut_string_finds (In.nset, "body") != -1
-	  || ut_string_finds (In.nset, "bodies") != -1)
+      if (strstr (In.nset, "all") || strstr (In.nset, "body")
+          || strstr (In.nset, "bodies"))
       {
-	nem_nsets_2dbody_tess (Tess, NSet);
-	nem_nsets_1dbody_tess (Tess, NSet);
+        nem_nsets_2dbody_tess (Tess, NSet);
+        nem_nsets_1dbody_tess (Tess, NSet);
       }
     }
 
     else
     {
       if (NSet[2].qty > 0)
-	nem_nsets_1d_str (NSet);
+        nem_nsets_1d_str (NSet);
 
       if (NSet[1].qty > 0)
-	nem_nsets_0d_str (NSet);
+        nem_nsets_0d_str (NSet);
 
-      if (ut_string_finds (In.nset, "all") != -1
-	  || ut_string_finds (In.nset, "body") != -1
-	  || ut_string_finds (In.nset, "bodies") != -1)
+      if (strstr (In.nset, "all") || strstr (In.nset, "body")
+          || strstr (In.nset, "bodies"))
       {
-	nem_nsets_2dbody_str (NSet);
-	nem_nsets_1dbody_str (NSet);
+        nem_nsets_2dbody_str (NSet);
+        nem_nsets_1dbody_str (NSet);
       }
     }
   }

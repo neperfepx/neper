@@ -83,7 +83,8 @@ ol_rtheta_set_id (double *r, double *ptheta)
 }
 
 void
-ol_rtheta_set_this (double *r, double *ptheta, double r1, double r2, double r3, double thetaval)
+ol_rtheta_set_this (double *r, double *ptheta, double r1, double r2,
+                    double r3, double thetaval)
 {
   r[0] = r1;
   r[1] = r2;
@@ -96,7 +97,7 @@ ol_rtheta_set_this (double *r, double *ptheta, double r1, double r2, double r3, 
 void
 ol_theta_deg2rad (double theta, double *ptheta2)
 {
-  (*ptheta2) = theta * .01745329251994329576;	/* OL_PI/180 */
+  (*ptheta2) = theta * .01745329251994329576;   /* OL_PI/180 */
 
   return;
 }
@@ -104,7 +105,7 @@ ol_theta_deg2rad (double theta, double *ptheta2)
 void
 ol_theta_rad2deg (double theta, double *ptheta2)
 {
-  (*ptheta2) = theta * 57.29577951308232087721;	/* 180/OL_PI */
+  (*ptheta2) = theta * 57.29577951308232087721; /* 180/OL_PI */
 
   return;
 }
@@ -112,16 +113,16 @@ ol_theta_rad2deg (double theta, double *ptheta2)
 void
 ol_r_memcpy (double *rsrc, double *rdest)
 {
-  ut_array_1d_memcpy (rdest, 3, rsrc);
+  ut_array_1d_memcpy (rsrc, 3, rdest);
 
   return;
 }
 
 void
 ol_rtheta_memcpy (double *rsrc, double thetasrc, double *rdest,
-		  double *pthetadest)
+                  double *pthetadest)
 {
-  ut_array_1d_memcpy (rdest, 3, rsrc);
+  ut_array_1d_memcpy (rsrc, 3, rdest);
   (*pthetadest) = thetasrc;
 
   return;
@@ -131,7 +132,7 @@ int
 ol_g_rtheta (double **g, double *r, double *ptheta)
 {
   int status;
-  
+
   status = ol_g_rtheta_rad (g, r, ptheta);
   ol_theta_rad2deg (*ptheta, ptheta);
 
@@ -165,8 +166,8 @@ ol_g_rtheta_rad (double **g, double *r, double *ptheta)
   else if ((*ptheta) < (1 - OL_EPS_RAD) * OL_PI)
   {
     if (ut_num_equal (g[1][2], g[2][1], OL_EPS) != 1
-     || ut_num_equal (g[1][2], g[2][1], OL_EPS) != 1
-     || ut_num_equal (g[1][2], g[2][1], OL_EPS) != 1)
+        || ut_num_equal (g[1][2], g[2][1], OL_EPS) != 1
+        || ut_num_equal (g[1][2], g[2][1], OL_EPS) != 1)
       status = -1;
 
     r[0] = (g[1][2] - g[2][1]) / (2 * sin (*ptheta));
@@ -182,12 +183,12 @@ ol_g_rtheta_rad (double **g, double *r, double *ptheta)
     m = ut_array_1d_max_index (r, 3);
     for (i = 0; i < 3; i++)
       if (i != m)
-	r[i] *= ut_num_sgn (g[i][m]);
+        r[i] *= ut_num_sgn (g[i][m]);
   }
 
   ol_r_set_unit (r);
 
-  return status; // -1;
+  return status;                // -1;
 }
 
 void

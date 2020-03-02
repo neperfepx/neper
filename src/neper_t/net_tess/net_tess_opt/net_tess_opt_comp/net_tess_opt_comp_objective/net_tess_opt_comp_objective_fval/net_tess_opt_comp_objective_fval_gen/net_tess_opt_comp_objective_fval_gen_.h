@@ -14,6 +14,7 @@ extern "C"
 #include<float.h>
 #include<limits.h>
 #include<signal.h>
+#include<sys/time.h>
 
 #include"ut.h"
 #include"neut_t.h"

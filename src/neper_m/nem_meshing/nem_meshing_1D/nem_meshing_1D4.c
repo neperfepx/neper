@@ -5,10 +5,10 @@
 #include"nem_meshing_1D_.h"
 
 void
-nem_meshing_1D_edge_algo_mesh (int node1, int node2,
-                               int edge, double l, double cl, double pl,
-                               struct NODES Nodes, double *Node0DCl,
-                               struct NODES *pN, struct MESH *pM)
+nem_meshing_1D_edge_algo_mesh (int node1, int node2, int edge, double l,
+                               double cl, double pl, struct NODES Nodes,
+                               double *Node0DCl, struct NODES *pN,
+                               struct MESH *pM)
 {
   int i, j, ptqty, flip;
   double cl1, cl2, dist1, dist2, *Coo = NULL, *Cl = NULL;
@@ -19,9 +19,9 @@ nem_meshing_1D_edge_algo_mesh (int node1, int node2,
   if (cl < 1e-15 || pl < 1)
   {
     printf ("\n");
-    printf ("Bad meshing parameters for edge %d: cl = %f pl = %f\n",
-	    edge, cl, pl);
-    ut_error_reportbug ();
+    printf ("Bad meshing parameters for edge %d: cl = %f pl = %f\n", edge, cl,
+            pl);
+    ut_print_neperbug ();
   }
 
   // trick to support cl < cli
@@ -58,8 +58,8 @@ nem_meshing_1D_edge_algo_mesh (int node1, int node2,
 
   // recording coo of the boundary nodes (which are actually recorded as
   // 0D-mesh nodes)
-  ut_array_1d_memcpy ((*pN).NodeCoo[1], 3, Nodes.NodeCoo[node1]);
-  ut_array_1d_memcpy ((*pN).NodeCoo[ptqty + 2], 3, Nodes.NodeCoo[node2]);
+  ut_array_1d_memcpy (Nodes.NodeCoo[node1], 3, (*pN).NodeCoo[1]);
+  ut_array_1d_memcpy (Nodes.NodeCoo[node2], 3, (*pN).NodeCoo[ptqty + 2]);
 
   // recording properties for the body nodes (coo + cl)
   for (i = 1; i <= ptqty; i++)
@@ -67,8 +67,8 @@ nem_meshing_1D_edge_algo_mesh (int node1, int node2,
     // i'st body node has pos i + 1
     for (j = 0; j < 3; j++)
       (*pN).NodeCoo[i + 1][j] =
-	(1 - Coo[i]) * Nodes.NodeCoo[node1][j]
-	+ Coo[i] * Nodes.NodeCoo[node2][j];
+        (1 - Coo[i]) * Nodes.NodeCoo[node1][j] +
+        Coo[i] * Nodes.NodeCoo[node2][j];
 
     (*pN).NodeCl[i + 1] = Cl[i] * l;
   }
@@ -95,15 +95,16 @@ nem_meshing_1D_edge_algo_mesh (int node1, int node2,
   ut_array_1d_int_set_id ((*pM).Elsets[1], (*pM).EltQty + 1);
   (*pM).Elsets[1][0] = (*pM).EltQty;
 
-  ut_free_1d (Coo);
-  ut_free_1d (Cl);
+  ut_free_1d (&Coo);
+  ut_free_1d (&Cl);
 
   return;
 }
 
 void
 nem_meshing_1D_edge_projontomesh (struct TESS Tess, int edge, struct NODES N0,
-                                  struct MESH M0, struct NODES *pN, struct MESH M)
+                                  struct MESH M0, struct NODES *pN,
+                                  struct MESH M)
 {
   int i, j, elt, node1, node2, ver1, ver2;
   double l, alpha, eps;
@@ -126,8 +127,8 @@ nem_meshing_1D_edge_projontomesh (struct TESS Tess, int edge, struct NODES N0,
   }
 
   if (!ut_num_equal (rccoo[0], 0, 1e-6)
-   || !ut_num_equal (rccoo[M0.Elsets[1][0]], 1, 1e-6))
-    ut_error_reportbug ();
+      || !ut_num_equal (rccoo[M0.Elsets[1][0]], 1, 1e-6))
+    ut_print_neperbug ();
 
   // recording N0 node curvilinear coos
   ver1 = Tess.EdgeVerNb[edge][0];
@@ -157,20 +158,20 @@ nem_meshing_1D_edge_projontomesh (struct TESS Tess, int edge, struct NODES N0,
       }
 
     if (elt == -1)
-      ut_print_reportbug ();
+      ut_print_neperbug ();
 
     node1 = M0.EltNodes[elt][0];
     node2 = M0.EltNodes[elt][1];
 
     for (j = 0; j < 3; j++)
-      (*pN).NodeCoo[i + 1][j] = (1 - alpha) * N0.NodeCoo[node1][j]
-        + alpha * N0.NodeCoo[node2][j];
+      (*pN).NodeCoo[i + 1][j] =
+        (1 - alpha) * N0.NodeCoo[node1][j] + alpha * N0.NodeCoo[node2][j];
   }
 
   nem_meshing_1d_edge_proj_fixcl (M, pN);
 
-  ut_free_1d (rccoo);
-  ut_free_1d (ccoo);
+  ut_free_1d (&rccoo);
+  ut_free_1d (&ccoo);
 
   return;
 }
@@ -186,10 +187,9 @@ nem_meshing_1D_edge_projontodomain (struct TESS Tess, int edge,
 
   for (i = 2; i < (*pN).NodeQty; i++)
     neut_tess_domfaces_point_proj (Tess, domfaces, domfaceqty,
-                                   (*pN).NodeCoo[i],
-                                   (*pN).NodeCoo[i]);
+                                   (*pN).NodeCoo[i], (*pN).NodeCoo[i]);
 
-  ut_free_1d_int (domfaces);
+  ut_free_1d_int (&domfaces);
 
   nem_meshing_1d_edge_proj_fixcl (M, pN);
 

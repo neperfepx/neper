@@ -27,7 +27,8 @@ net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
   vals[1] = (*pOSet).size * (*pOSet).nc;
   vals[2] = M_PI;
 
-  ut_math_eval (In.orioptineigh[level], varqty, vars, vals, &((*pOOpt).neighd));
+  ut_math_eval (In.orioptineigh[level], varqty, vars, vals,
+                &((*pOOpt).neighd));
 
   (*pOOpt).neighd = ut_num_min ((*pOOpt).neighd, M_PI - OL_EPS_RAD);
 
@@ -40,9 +41,10 @@ net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
 
   if (!strcmp (In.orioptiini[level], "random"))
     net_ori_random (random, pOSet);
-  else if (ut_string_filename (In.orioptiini[level]))
+  else if (ut_string_isfilename (In.orioptiini[level]))
   {
-    ut_print_message (0, verbositylevel, "Loading orientations from file...\n");
+    ut_print_message (0, verbositylevel,
+                      "Loading orientations from file...\n");
     net_ori_file (In.orioptiini[level], pOSet);
   }
   else
@@ -56,8 +58,9 @@ net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
 
     char *mid = NULL;
     neut_mtess_tess_poly_mid (MTess, Tess[dtess], dcell, &mid);
-    net_multiscale_arg_1d_int_fscanf (In.orioptifix[level], mid, (*pOOpt).fixori, (*pOOpt).n);
-    ut_free_1d_char (mid);
+    net_multiscale_arg_1d_int_fscanf (In.orioptifix[level], mid,
+                                      (*pOOpt).fixori, (*pOOpt).n);
+    ut_free_1d_char (&mid);
 
     FILE *fp = ut_file_open (In.orioptifix[level], "r");
     ut_array_1d_int_fscanf (fp, (*pOOpt).fixori, (*pOOpt).n);
@@ -73,21 +76,23 @@ net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
                                            &(*pOOpt).logvar);
 
   // terminal output
-  ut_print_message (0, verbositylevel, "Crystal symmetry: %s", (*pOSet).crysym);
+  ut_print_message (0, verbositylevel, "Crystal symmetry: %s",
+                    (*pOSet).crysym);
   if ((*pOOpt).neighd < M_PI - OL_EPS_RAD)
     printf (", neighbour cut-off: %.6f", (*pOOpt).neighd);
   else
     printf (", no cut-off");
   printf ("\n");
 
-  ut_free_1d (vals);
-  ut_free_2d_char (vars, varqty);
+  ut_free_1d (&vals);
+  ut_free_2d_char (&vars, varqty);
 
   return;
 }
 
 int
-net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet, int verbositylevel)
+net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet,
+                     int verbositylevel)
 {
   int iter, stop_iter = 0;
   double alpha = DBL_MAX, **fc = NULL, **qc = NULL;
@@ -95,7 +100,7 @@ net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet, i
   char *prevmessage = ut_alloc_1d_char (1000);
   double *Etot = NULL;
   double **f = ut_alloc_2d ((*pOSet).size, 3);
-  double  *E = ut_alloc_1d ((*pOSet).size);
+  double *E = ut_alloc_1d ((*pOSet).size);
   my_kd_tree_t *qindex = nullptr;
   struct QCLOUD qcloud;
   double **dq = NULL;
@@ -137,8 +142,8 @@ net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet, i
     // determining alpha
     net_ori_uniform_opt_alpha (pOOpt, *pOSet, dq, iter, f, fc, &alpha);
 
-    ut_array_2d_memcpy (qc, (*pOSet).size, 4, (*pOSet).q);
-    ut_array_2d_memcpy (fc, (*pOSet).size, 3, f);
+    ut_array_2d_memcpy ((*pOSet).q, (*pOSet).size, 4, qc);
+    ut_array_2d_memcpy (f, (*pOSet).size, 3, fc);
 
     // evolving orientations
     net_ori_uniform_opt_rot (pOOpt, f, alpha, pOSet, dq);
@@ -151,7 +156,8 @@ net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet, i
 
     net_ori_uniform_opt_energy (iter, pOSet, E, &Etot, pOOpt);
 
-    net_ori_uniform_opt_verbosity (*pOOpt, iter, prevmessage, message, verbositylevel);
+    net_ori_uniform_opt_verbosity (*pOOpt, iter, prevmessage, message,
+                                   verbositylevel);
 
     net_ori_uniform_log (In, iter, *pOSet, *pOOpt);
 
@@ -164,13 +170,13 @@ net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet, i
 
   printf ("\n");
 
-  ut_free_1d_char (message);
-  ut_free_1d_char (prevmessage);
+  ut_free_1d_char (&message);
+  ut_free_1d_char (&prevmessage);
   neut_oopt_free (pOOpt);
-  ut_free_2d (f, (*pOSet).size);
-  ut_free_1d (E);
-  ut_free_2d (fc, (*pOSet).size);
-  ut_free_2d (qc, (*pOSet).size);
+  ut_free_2d (&f, (*pOSet).size);
+  ut_free_1d (&E);
+  ut_free_2d (&fc, (*pOSet).size);
+  ut_free_2d (&qc, (*pOSet).size);
 
   delete qindex;
 

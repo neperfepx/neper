@@ -22,7 +22,7 @@ nev_show_genexpr (char *expr, int *val, int valqty)
     return 0;
   }
 
-  else if (ut_string_filename (expr))
+  else if (ut_string_isfilename (expr))
   {
     file = ut_file_open (expr, "r");
     while (fscanf (file, "%d", &id) != EOF)

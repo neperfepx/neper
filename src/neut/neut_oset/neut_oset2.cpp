@@ -30,7 +30,8 @@ neut_oset_kdtree_cloud (struct OL_SET *pOSet, struct QCLOUD *pqcloud)
   for (i = 2; i <= nc; i++)
     for (j = 0; j < (*pOSet).size * 2; j++)
     {
-      ol_q_crysym_nopos ((*pqcloud).pts[j].q, (*pOSet).crysym, i, (*pqcloud).pts[id].q);
+      ol_q_crysym_nopos ((*pqcloud).pts[j].q, (*pOSet).crysym, i,
+                         (*pqcloud).pts[id].q);
       id++;
     }
 
@@ -38,11 +39,10 @@ neut_oset_kdtree_cloud (struct OL_SET *pOSet, struct QCLOUD *pqcloud)
 }
 
 void
-neut_oset_kdtree_build (struct QCLOUD *pqcloud,
-                          my_kd_tree_t** pqindex)
+neut_oset_kdtree_build (struct QCLOUD *pqcloud, my_kd_tree_t ** pqindex)
 {
   (*pqindex) = new my_kd_tree_t (4, *pqcloud);
-                      // KDTreeSingleIndexAdaptorParams (10 /* max leaf */ ));
+  // KDTreeSingleIndexAdaptorParams (10 /* max leaf */ ));
   (*pqindex)->buildIndex ();
 
   return;

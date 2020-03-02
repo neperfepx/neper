@@ -19,28 +19,28 @@ DeleteFaceFromItsPoly (struct TESS *pTess, int face)
   for (i = 0; i <= 1; i++)
   {
     tmppoly = (*pTess).FacePoly[face][i];
-    if (tmppoly >= 1)		/* ie real tmppoly */
+    if (tmppoly >= 1)           /* ie real tmppoly */
     {
       /* printf("%d ",tmppoly); */
 
-      pos = oneDIntEltPos ((*pTess).PolyFaceNb[tmppoly], 1,
-			   (*pTess).PolyFaceQty[tmppoly], face);
+      pos =
+        oneDIntEltPos ((*pTess).PolyFaceNb[tmppoly], 1,
+                       (*pTess).PolyFaceQty[tmppoly], face);
 
       qty =
-	ut_array_1d_int_deletencompress ((*pTess).PolyFaceNb[tmppoly] + 1,
-					 (*pTess).PolyFaceQty[tmppoly], face,
-					 1);
+        ut_array_1d_int_rmelt ((*pTess).PolyFaceNb[tmppoly] + 1,
+                               (*pTess).PolyFaceQty[tmppoly], face, 1);
       for (k = pos; k <= (*pTess).PolyFaceQty[tmppoly] - 1; k++)
-	(*pTess).PolyFaceOri[tmppoly][k] =
-	  (*pTess).PolyFaceOri[tmppoly][k + 1];
+        (*pTess).PolyFaceOri[tmppoly][k] =
+          (*pTess).PolyFaceOri[tmppoly][k + 1];
 
       (*pTess).PolyFaceQty[tmppoly]--;
 
       if (qty != 1)
       {
-	ut_print_lineheader (2);
-	printf ("face %d not found in poly %d!\n", face, tmppoly);
-	abort ();
+        ut_print_lineheader (2);
+        printf ("face %d not found in poly %d!\n", face, tmppoly);
+        abort ();
       }
     }
   }
@@ -50,9 +50,9 @@ DeleteFaceFromItsPoly (struct TESS *pTess, int face)
 
 void
 SearchNewNOldEdges (struct TESS *pTess, int face, int edge, int *pnew,
-		    int *pold)
+                    int *pold)
 {
-  ut_array_1d_int_deletencompress ((*pTess).FaceEdgeNb[face] + 1, 3, edge, 1);
+  ut_array_1d_int_rmelt ((*pTess).FaceEdgeNb[face] + 1, 3, edge, 1);
 
   (*pnew) = ut_array_1d_int_min ((*pTess).FaceEdgeNb[face] + 1, 2);
   (*pold) = ut_array_1d_int_max ((*pTess).FaceEdgeNb[face] + 1, 2);

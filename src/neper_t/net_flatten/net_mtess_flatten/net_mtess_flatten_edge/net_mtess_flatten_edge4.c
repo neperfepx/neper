@@ -6,18 +6,18 @@
 
 void
 net_mtess_flatten_edge_domedge_linkedge (int fedge, struct TESSE *TessE,
-				   int tess, int edge, int ori)
+                                         int tess, int edge, int ori)
 {
   TessE[tess].EdgeFEdgeQty[edge]++;
-  TessE[tess].EdgeFEdgeNb[edge]
-    = ut_realloc_1d_int (TessE[tess].EdgeFEdgeNb[edge],
-			 TessE[tess].EdgeFEdgeQty[edge]);
-  TessE[tess].EdgeFEdgeOri[edge]
-    = ut_realloc_1d_int (TessE[tess].EdgeFEdgeOri[edge],
-			 TessE[tess].EdgeFEdgeQty[edge]);
+  TessE[tess].EdgeFEdgeNb[edge] =
+    ut_realloc_1d_int (TessE[tess].EdgeFEdgeNb[edge],
+                       TessE[tess].EdgeFEdgeQty[edge]);
+  TessE[tess].EdgeFEdgeOri[edge] =
+    ut_realloc_1d_int (TessE[tess].EdgeFEdgeOri[edge],
+                       TessE[tess].EdgeFEdgeQty[edge]);
 
   if (ori != -1 && ori != 1)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   TessE[tess].EdgeFEdgeNb[edge][TessE[tess].EdgeFEdgeQty[edge] - 1] = fedge;
   TessE[tess].EdgeFEdgeOri[edge][TessE[tess].EdgeFEdgeQty[edge] - 1] = ori;

@@ -6,16 +6,15 @@
 
 void
 net_tess_opt_init (struct IN_T In, int level, char *morpho,
-                   struct MTESS MTess,
-                   struct TESS *Tess, int dtess, int dcell,
-                   struct SEEDSET *SSet, struct TOPT *pTOpt)
+                   struct MTESS MTess, struct TESS *Tess, int dtess,
+                   int dcell, struct SEEDSET *SSet, struct TOPT *pTOpt)
 {
   // general, dim, domain0
   net_tess_opt_init_general (In, level, MTess, Tess, dtess, dcell, pTOpt);
 
   // target properties
-  net_tess_opt_init_target (In, MTess, Tess, dtess, dcell, level,
-                            morpho, pTOpt);
+  net_tess_opt_init_target (In, MTess, Tess, dtess, dcell, level, morpho,
+                            pTOpt);
 
   // domain to tessellate
   net_tess_opt_init_domain (In, Tess[dtess], dcell, pTOpt);

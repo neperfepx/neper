@@ -6,7 +6,7 @@
 
 void
 net_mtess_flatten_gen (struct TESS *Tess, int TessId, struct TESS *pFTess,
-		       struct FLATTEN *pFlatten)
+                       struct FLATTEN *pFlatten)
 {
   (*pFTess).Dim = 3;
   (*pFTess).Level = Tess[TessId].Level;

@@ -39,38 +39,38 @@ void
 neut_pointdata_free (struct POINTDATA *pPointData)
 {
   if ((*pPointData).ColData)
-    ut_free_2d ((*pPointData).ColData, (*pPointData).PointQty + 1);
+    ut_free_2d (&(*pPointData).ColData, (*pPointData).PointQty + 1);
 
-  ut_free_1d_char ((*pPointData).ColDataType);
-  ut_free_1d_char ((*pPointData).ColScheme);
+  ut_free_1d_char (&(*pPointData).ColDataType);
+  ut_free_1d_char (&(*pPointData).ColScheme);
 
   if ((*pPointData).Col)
-    ut_free_2d_int ((*pPointData).Col, (*pPointData).PointQty + 1);
+    ut_free_2d_int (&(*pPointData).Col, (*pPointData).PointQty + 1);
 
   if ((*pPointData).RadData)
-    ut_free_2d ((*pPointData).RadData, (*pPointData).PointQty + 1);
+    ut_free_2d (&(*pPointData).RadData, (*pPointData).PointQty + 1);
 
-  ut_free_1d_char ((*pPointData).RadDataType);
-  ut_free_1d ((*pPointData).Rad);
+  ut_free_1d_char (&(*pPointData).RadDataType);
+  ut_free_1d (&(*pPointData).Rad);
 
-  ut_free_1d_char ((*pPointData).Scale);
-  ut_free_1d_char ((*pPointData).ScaleTitle);
+  ut_free_1d_char (&(*pPointData).Scale);
+  ut_free_1d_char (&(*pPointData).ScaleTitle);
 
   if ((*pPointData).CooData)
-    ut_free_2d ((*pPointData).CooData, (*pPointData).PointQty + 1);
+    ut_free_2d (&(*pPointData).CooData, (*pPointData).PointQty + 1);
 
-  ut_free_1d_char ((*pPointData).CooDataType);
+  ut_free_1d_char (&(*pPointData).CooDataType);
 
   if ((*pPointData).Coo)
-    ut_free_2d ((*pPointData).Coo, (*pPointData).PointQty + 1);
+    ut_free_2d (&(*pPointData).Coo, (*pPointData).PointQty + 1);
 
   if ((*pPointData).trsdata)
-    ut_free_2d ((*pPointData).trsdata, (*pPointData).PointQty + 1);
+    ut_free_2d (&(*pPointData).trsdata, (*pPointData).PointQty + 1);
 
-  ut_free_1d_char ((*pPointData).trsdatatype);
-  ut_free_1d_char ((*pPointData).trscheme);
-  ut_free_1d ((*pPointData).trs);
-  ut_free_1d_char ((*pPointData).Space);
+  ut_free_1d_char (&(*pPointData).trsdatatype);
+  ut_free_1d_char (&(*pPointData).trscheme);
+  ut_free_1d (&(*pPointData).trs);
+  ut_free_1d_char (&(*pPointData).Space);
 
   return;
 }
@@ -82,11 +82,11 @@ neut_pointdata_coldatatype_size (struct POINTDATA PointData, int *psize)
       || !strcmp (PointData.ColDataType, "ori"))
     (*psize) = 3;
   else if (!strcmp (PointData.ColDataType, "rad")
-	   || !strcmp (PointData.ColDataType, "scal")
-	   || !strcmp (PointData.ColDataType, "trs"))
+           || !strcmp (PointData.ColDataType, "scal")
+           || !strcmp (PointData.ColDataType, "trs"))
     (*psize) = 1;
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   return;
 }

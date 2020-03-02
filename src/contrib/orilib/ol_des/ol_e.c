@@ -51,7 +51,7 @@ ol_e_set_this (double *e, double phi1, double phi, double phi2)
 void
 ol_e_memcpy (double *esrc, double *edest)
 {
-  ut_array_1d_memcpy (edest, 3, esrc);
+  ut_array_1d_memcpy (esrc, 3, edest);
 
   return;
 }
@@ -164,7 +164,7 @@ ol_e_e_rad (double *e, double *e2)
     e2[0] += e2[2];
     e2[2] = 0;
   }
-  else				/* the same at phi = 180 */
+  else                          /* the same at phi = 180 */
   {
     e2[0] -= e2[2];
     e2[2] = 0;
@@ -308,7 +308,7 @@ ol_e_theta (double *e, double *ptheta)
 }
 
 void
-ol_e_er_rad (double* e, double* er)
+ol_e_er_rad (double *e, double *er)
 {
   er[0] = e[0] - OL_PI / 2.;
   er[1] = e[1];
@@ -319,7 +319,7 @@ ol_e_er_rad (double* e, double* er)
 }
 
 void
-ol_e_ek_rad (double* e, double* ek)
+ol_e_ek_rad (double *e, double *ek)
 {
   ek[0] = e[0] - OL_PI / 2.;
   ek[1] = e[1];
@@ -330,7 +330,7 @@ ol_e_ek_rad (double* e, double* ek)
 }
 
 void
-ol_er_e_rad (double* er, double* e)
+ol_er_e_rad (double *er, double *e)
 {
   e[0] = er[0] + OL_PI / 2.;
   e[1] = er[1];
@@ -341,7 +341,7 @@ ol_er_e_rad (double* er, double* e)
 }
 
 void
-ol_ek_e_rad (double* ek, double* e)
+ol_ek_e_rad (double *ek, double *e)
 {
   e[0] = ek[0] + OL_PI / 2.;
   e[1] = ek[1];
@@ -352,41 +352,41 @@ ol_ek_e_rad (double* ek, double* e)
 }
 
 void
-ol_e_er (double* e, double* er)
+ol_e_er (double *e, double *er)
 {
-  ol_e_deg2rad (e , er);
-  ol_e_er_rad  (er, er);
+  ol_e_deg2rad (e, er);
+  ol_e_er_rad (er, er);
   ol_e_rad2deg (er, er);
 
   return;
 }
 
 void
-ol_e_ek (double* e, double* ek)
+ol_e_ek (double *e, double *ek)
 {
-  ol_e_deg2rad (e , ek);
-  ol_e_ek_rad  (ek, ek);
+  ol_e_deg2rad (e, ek);
+  ol_e_ek_rad (ek, ek);
   ol_e_rad2deg (ek, ek);
 
   return;
 }
 
 void
-ol_er_e (double* er, double* e)
+ol_er_e (double *er, double *e)
 {
   ol_e_deg2rad (er, e);
-  ol_er_e_rad  (e , e);
-  ol_e_rad2deg (e , e);
+  ol_er_e_rad (e, e);
+  ol_e_rad2deg (e, e);
 
   return;
 }
 
 void
-ol_ek_e (double* ek, double* e)
+ol_ek_e (double *ek, double *e)
 {
   ol_e_deg2rad (ek, e);
-  ol_ek_e_rad  (e , e);
-  ol_e_rad2deg (e , e);
+  ol_ek_e_rad (e, e);
+  ol_e_rad2deg (e, e);
 
   return;
 }

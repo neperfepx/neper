@@ -17,15 +17,15 @@ nev_camera_tess_expr_coo (struct TESS Tess, char *expr, double *coo)
 
   nev_camera_expr_coo (bbox, NULL, v, expr, coo);
 
-  ut_free_1d (v);
-  ut_free_2d (bbox, 3);
+  ut_free_1d (&v);
+  ut_free_2d (&bbox, 3);
 
   return;
 }
 
 void
-nev_camera_mesh_expr_coo (struct NODES Nodes, struct MESH Mesh,
-			  char *expr, double *coo)
+nev_camera_mesh_expr_coo (struct NODES Nodes, struct MESH Mesh, char *expr,
+                          double *coo)
 {
   double *v = ut_alloc_1d (3);
   double **bbox = ut_alloc_2d (3, 2);
@@ -38,13 +38,13 @@ nev_camera_mesh_expr_coo (struct NODES Nodes, struct MESH Mesh,
     if (Nodes.NodeQty > 0)
       neut_nodes_bbox (Nodes, bbox);
     else
-      ut_error_reportbug ();
+      ut_print_neperbug ();
   }
 
   nev_camera_expr_coo (bbox, NULL, v, expr, coo);
 
-  ut_free_1d (v);
-  ut_free_2d (bbox, 3);
+  ut_free_1d (&v);
+  ut_free_2d (&bbox, 3);
 
   return;
 }
@@ -67,9 +67,9 @@ nev_camera_tesr_expr_coo (struct TESR Tesr, char *expr, double *coo)
 
   nev_camera_expr_coo (bbox, centre, v, expr, coo);
 
-  ut_free_1d (v);
-  ut_free_2d (bbox, 3);
-  ut_free_1d (centre);
+  ut_free_1d (&v);
+  ut_free_2d (&bbox, 3);
+  ut_free_1d (&centre);
 
   return;
 }
@@ -87,8 +87,8 @@ nev_camera_point_expr_coo (struct POINT Point, char *expr, double *coo)
 
   nev_camera_expr_coo (bbox, NULL, v, expr, coo);
 
-  ut_free_1d (v);
-  ut_free_2d (bbox, 3);
+  ut_free_1d (&v);
+  ut_free_2d (&bbox, 3);
 
   return;
 }
@@ -99,16 +99,16 @@ nev_camera_expr_sky (char *expr, double *coo)
   char **vals = NULL;
   int i, qty;
 
-  ut_string_separate (expr, NEUT_SEP_DEP, &vals, &qty);
+  ut_list_break (expr, NEUT_SEP_DEP, &vals, &qty);
 
   if (qty != 3)
     ut_print_message (2, 2, "Expression `%s' could not be processed.\n",
-		      expr);
+                      expr);
 
   for (i = 0; i < 3; i++)
     ut_string_real (vals[i], &(coo[i]));
 
-  ut_free_2d_char (vals, qty);
+  ut_free_2d_char (&vals, qty);
 
   return;
 }

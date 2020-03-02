@@ -7,6 +7,8 @@
 #include<string.h>
 #include<limits.h>
 #include<gsl/gsl_rng.h>
+#include<time.h>
+#include<sys/time.h>
 
 #include"structIn_t.h"
 #include"ut.h"

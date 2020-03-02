@@ -5,17 +5,17 @@
 #include"net_polycomp_poly_.h"
 #include"neut/neut_structs/neut_nanoflann_struct.hpp"
 
-extern void net_polycomp_seed_tdyn (struct SEEDSET SSet, int id,
-                                    int, NFTREE ** pnf_tree,
-                                    int *ptid_seedid, struct TDYN *pTD);
+extern void net_polycomp_seed_tdyn (struct SEEDSET SSet, int id, int,
+                                    NFTREE ** pnf_tree, int *ptid_seedid,
+                                    struct TDYN *pTD);
 
 /* net_polycomp_poly searches out the polyhedron associated
 * to the considered seed.
 */
 void
 net_polycomp_poly (struct POLY Domain, struct SEEDSET SSet,
-                   NFTREE ** pnf_tree, int *ptid_seedid,
-                   int id, struct POLY *pPoly, struct TDYN *pTD)
+                   NFTREE ** pnf_tree, int *ptid_seedid, int id,
+                   struct POLY *pPoly, struct TDYN *pTD)
 {
   int i, j, cutqty;
   struct POLYMOD Polymod;
@@ -58,8 +58,8 @@ net_polycomp_poly (struct POLY Domain, struct SEEDSET SSet,
       if (i > (*pTD).neighqty[id])
       {
         gettimeofday (&time, NULL);
-        net_polycomp_seed_tdyn (SSet, id, 2 * (*pTD).neighqty[id],
-                                pnf_tree, ptid_seedid, pTD);
+        net_polycomp_seed_tdyn (SSet, id, 2 * (*pTD).neighqty[id], pnf_tree,
+                                ptid_seedid, pTD);
         (*pTD).cell_neigh_dur += ut_time_subtract (&time, NULL);
       }
 
@@ -91,36 +91,36 @@ net_polycomp_poly (struct POLY Domain, struct SEEDSET SSet,
   for (j = 0; j < qty1; j++)
     if (ut_array_1d_int_eltpos (tmp2, qty2, tmp1[j]) == -1)
 #pragma omp critical
-      ut_array_1d_int_list_addelt (&(*pTD).changedneighs,
+      ut_array_1d_int_list_addval (&(*pTD).changedneighs,
                                    &(*pTD).changedneighqty, tmp1[j]);
   for (j = 0; j < qty2; j++)
     if (ut_array_1d_int_eltpos (tmp1, qty1, tmp2[j]) == -1)
 #pragma omp critical
-      ut_array_1d_int_list_addelt (&(*pTD).changedneighs,
+      ut_array_1d_int_list_addval (&(*pTD).changedneighs,
                                    &(*pTD).changedneighqty, tmp2[j]);
 
 #pragma omp critical
-  ut_array_1d_int_list_addelt (&(*pTD).cellchanged,
-                               &(*pTD).cellchangedqty, id);
+  ut_array_1d_int_list_addval (&(*pTD).cellchanged, &(*pTD).cellchangedqty,
+                               id);
 
   if (cutqty == 0)
 #pragma omp critical
-    ut_array_1d_int_list_addelt (&(*pTD).domcells, &(*pTD).domcellqty, id);
+    ut_array_1d_int_list_addval (&(*pTD).domcells, &(*pTD).domcellqty, id);
   else
 #pragma omp critical
-    ut_array_1d_int_list_rmelt (&(*pTD).domcells, &(*pTD).domcellqty, id);
+    ut_array_1d_int_list_rmval (&(*pTD).domcells, &(*pTD).domcellqty, id);
 
   if (neut_poly_isvoid (*pPoly))
 #pragma omp critical
-    ut_array_1d_int_list_addelt (&(*pTD).cellvoid, &(*pTD).cellvoidqty, id);
+    ut_array_1d_int_list_addval (&(*pTD).cellvoid, &(*pTD).cellvoidqty, id);
   else
 #pragma omp critical
-    ut_array_1d_int_list_rmelt (&(*pTD).cellvoid, &(*pTD).cellvoidqty, id);
+    ut_array_1d_int_list_rmval (&(*pTD).cellvoid, &(*pTD).cellvoidqty, id);
 
   neut_polymod_free (&Polymod);
 
-  ut_free_1d_int_ (&tmp1);
-  ut_free_1d_int_ (&tmp2);
+  ut_free_1d_int (&tmp1);
+  ut_free_1d_int (&tmp2);
 
   return;
 }

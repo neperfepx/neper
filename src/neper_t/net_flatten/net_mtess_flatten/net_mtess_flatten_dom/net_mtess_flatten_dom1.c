@@ -5,7 +5,8 @@
 #include"net_mtess_flatten_dom_.h"
 
 void
-net_mtess_flatten_dom (struct TESS *Tess, int TessId, struct TESS *pFTess, struct TESSE *TessE)
+net_mtess_flatten_dom (struct TESS *Tess, int TessId, struct TESS *pFTess,
+                       struct TESSE *TessE)
 {
   net_mtess_flatten_dom_gen (Tess[TessId], pFTess);
 

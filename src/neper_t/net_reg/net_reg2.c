@@ -34,7 +34,7 @@ net_reg_init (struct IN_T In, struct TESS Tess, struct REG *pReg)
   if (!strcmp (In.seltype, "rel"))
     for (i = 1; i <= Tess.CellQty; i++)
       rsel2sel ((*pcellsel)[i], In.dim, size, Tess.CellQty,
-		&((*pcellsel)[i]));
+                &((*pcellsel)[i]));
 
   if (!strcmp (Tess.DomType, "cylinder"))
   {
@@ -61,7 +61,7 @@ net_reg_init (struct IN_T In, struct TESS Tess, struct REG *pReg)
     neut_tess_val_face2edge (Tess, (*pReg).FaceSel, (*pReg).EdgeSel);
   }
 
-  ut_free_1d_char (entity);
+  ut_free_1d_char (&entity);
 
   return;
 }

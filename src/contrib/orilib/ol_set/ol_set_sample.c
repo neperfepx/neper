@@ -35,7 +35,7 @@ void
 ol_set_sample_nb (struct OL_SET Set1, int nb, struct OL_SET *pSet2)
 {
   unsigned int qty, id;
-  double factor   = nb / (double) Set1.size;
+  double factor = nb / (double) Set1.size;
   double factorinv = 1. / factor;
 
   qty = (unsigned int) ((double) Set1.size * factor) + 10;
