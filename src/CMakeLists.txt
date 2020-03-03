@@ -1,11 +1,11 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2019, Romain Quey.
+# Copyright (C) 2003-2020, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.5.2-35\")
+set (NEPER_VERSION \"3.5.2-36\")
 
 # should we use the optional libraries?
 set (HAVE_GSL ON)

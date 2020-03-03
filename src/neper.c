@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neper_.h"
@@ -234,7 +234,7 @@ neper_info ()
   ut_print_message (0, 0, "<http://neper.info>\n");
 
   ut_print_message (0, 0,
-                    "Copyright (C) 2003-2019, and GNU GPL'd, by Romain Quey.\n");
+                    "Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.\n");
 
   return;
 }
