@@ -143,7 +143,7 @@ nev_print_point (FILE * file, struct POINT Point, struct POINTDATA PointData,
     }
 
   ut_print_message (0, 4,
-                    "Number of points      reduced by %3.0f\%% (to %d).\n",
+                    "Number of points      reduced by %3.0f%% (to %d).\n",
                     100 * (double) hidden[0] / (double) point_qty,
                     point_qty - hidden[0]);
 

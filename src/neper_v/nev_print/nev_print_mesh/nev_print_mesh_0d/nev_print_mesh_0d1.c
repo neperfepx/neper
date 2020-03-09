@@ -44,7 +44,7 @@ nev_print_mesh_0d (FILE * file, struct PRINT Print, struct MESH *Mesh,
       }
 
     ut_print_message (0, 4,
-                      "Number of 0D elts    reduced by %3.0f\%% (to %d).\n",
+                      "Number of 0D elts      reduced by %3.0f%% (to %d).\n",
                       100 * (double) (MeshData[0].EltQty -
                                       printelt0d_qty) /
                       (double) MeshData[0].EltQty, printelt0d_qty);

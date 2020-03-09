@@ -107,7 +107,7 @@ nev_print_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
     }
 
   ut_print_message (0, 4,
-                    "Number of 1D elts    reduced by %3.0f\%% (to %d).\n",
+                    "Number of 1D elts      reduced by %3.0f%% (to %d).\n",
                     100 * (double) hidden[0] / (double) elt1d_qty,
                     elt1d_qty - hidden[0]);
 

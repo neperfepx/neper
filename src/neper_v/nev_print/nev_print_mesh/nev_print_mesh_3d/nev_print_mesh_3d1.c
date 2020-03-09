@@ -37,14 +37,14 @@ nev_print_mesh_3d (FILE * file, struct PRINT Print, struct NODES Nodes,
 
   if (Print.showelt3d[0])
     ut_print_message (0, 4,
-                      "Number of 3D elt faces reduced by %2.0f\%% (to %d).\n",
+                      "Number of 3D elt faces reduced by %3.0f%% (to %d).\n",
                       100 * (1 -
                              M2D.EltQty / (Print.showelt3d[0] *
                                            elt3dfaceqty)), M2D.EltQty);
 
   if (M2D.EltQty)
     ut_print_message (0, 4,
-                      "Number of 3D elt edges reduced by %2.0f\%% (to %d).\n",
+                      "Number of 3D elt edges reduced by %3.0f%% (to %d).\n",
                       100 * (1 - M1D.EltQty / (M2D.EltQty * elt2dnodeqty)),
                       M1D.EltQty);
 
