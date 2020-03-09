@@ -22,10 +22,12 @@ int ut_array_1d_sort_index_comp (const void *, const void *);
 void
 ut_array_1d_scale (double *array, int size, double factor)
 {
+  int i;
+
   if (factor == 1)
     return;
 
-  for (int i = 0; i < size; i++)
+  for (i = 0; i < size; i++)
     array[i] *= factor;
 
   return;

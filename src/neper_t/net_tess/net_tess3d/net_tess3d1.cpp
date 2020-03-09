@@ -16,6 +16,7 @@ int
 net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet, char *algoneigh,
             int TessId, struct MTESS *pMTess, struct TESS *pTess)
 {
+  int i;
   struct POLY DomPoly, *Poly = NULL;
   struct TDYN TD;
   NFTREE *nf_index = nullptr;
@@ -33,7 +34,7 @@ net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet, char *algoneigh,
   // FacePoly must not contain positive polys; quickfix
   if (ut_array_1d_int_max (DomPoly.FacePoly + 1, DomPoly.FaceQty) > 0)
   {
-    for (int i = 1; i <= DomPoly.FaceQty; i++)
+    for (i = 1; i <= DomPoly.FaceQty; i++)
       DomPoly.FacePoly[i] = -i;
   }
 

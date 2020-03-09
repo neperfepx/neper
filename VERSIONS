@@ -1,4 +1,4 @@
-New in 3.5.2-37 (09 Mar 2020):
+New in 3.5.2-38 (09 Mar 2020):
 - module -T: fixed -morphooptiobjective, fixed -statface nfaces, added
   tessellation keys nfaces_samedomain, nfacenb_samedomain, npolys_samedomain
   and npolynb_samedomain, fixed -transform planecut, added -transform
