@@ -69,7 +69,7 @@ neut_nset_expand (struct NSET NSet0D, struct NSET NSet1D, struct NSET NSet2D,
     if (!strcmp (list[i], "faces"))
     {
       for (j = 1; j <= NSet2D.qty; j++)
-        if (strstr (NSet2D.names[j], "body"))
+        if (!strstr (NSet2D.names[j], "body"))
         {
           (*pout) =
             ut_realloc_1d_char ((*pout),
@@ -97,7 +97,7 @@ neut_nset_expand (struct NSET NSet0D, struct NSET NSet1D, struct NSET NSet2D,
     else if (!strcmp (list[i], "edges"))
     {
       for (j = 1; j <= NSet1D.qty; j++)
-        if (strstr (NSet1D.names[j], "body"))
+        if (!strstr (NSet1D.names[j], "body"))
         {
           (*pout) =
             ut_realloc_1d_char ((*pout),
