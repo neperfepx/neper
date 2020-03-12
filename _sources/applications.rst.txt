@@ -12,9 +12,26 @@ This list is also available on Neper's `Google Scholar page <https://scholar.goo
    :depth: 2
    :local:
 
+Journal covers
+--------------
+
+On a few occasions, Neper images made journal covers.  Congratulations to the authors!
+
+- B. Flipon, C. Keller, R. Quey and F. Barbe, *A full-field crystal-plasticity analysis of bimodal polycrystals*, **International Journal of Solids and Structures**, vol. 184, pp. 178--192, 2020. `Journal cover <docs/cover-ijss-2020.png>`_
+- R. Carson, M. Obstalecki, M. Miller and P. Dawson, *Characterizing Heterogeneous Intragranular Deformations in Polycrystalline Solids Using Diffraction-Based and Mechanics-Based Metrics*, **Modelling and Simulation in Materials Science and Engineering**,  vol. 25,  pp. 055008, 2017. `Journal cover <docs/MSMSE-2505-OFC.png>`_
+
 2020
 ----
 
+M. Kasemer, E. Zepeda-Alarcon, R. Carson, P. Dawson and H.-R. Wenk, *Deformation heterogeneity and intragrain lattice misorientations in high strength contrast dual-phase bridgmanite/periclase*, **Acta Materialia**, doi://10.1016/j.actamat.2020.02.061.
+- A. Ask, S. Forest, B. Appolaire and K. Ammar, *Microstructure evolution in deformed polycrystals predicted by a diffuse interface Cosserat approach*, **Advanced Modeling and Simulation in Engineering Sciences**, doi://10.1186/s40323-020-00146-5.
+T.-F. Fu, T. Xu, M.J. Heap, P.G. Meredith and T.M. Mitchell, *Mesoscopic time-dependent behavior of rocks based on three-dimensional discrete element grain-based model*, **Computers and Geotechnics**, vol 121, pp. 103472, 2020.
+- X. Liang, C. Robert, A. Hor and F. Morel, *A numerical investigation of the high cycle fatigue sensitivity to microstructure and defect*, **International Journal of Fatigue**, doi://10.1016/j.ijfatigue.2020.105541.
+- X.F. Li and H.B. Li and L.W. Liu and Y.Q. Liu and M.H. Ju and J. Zhao, *Investigating the crack initiation and propagation mechanism in brittle
+  rocks using grain-based finite-discrete element method*, **International Journal of Rock Mechanics and Mining Sciences**, doi://10.1016/j.ijrmms.2020.104219.
+- R. Ma and W. Sun, *FFT-based solver for higher-order and multi-phase-field fracture models applied to strongly anisotropic brittle materials*, **Computer Methods in Applied Mechanics and Engineering**, vol. 362, pp. 112781, 2020.
+- T. Rousseau, Y. Song, W. Wang, S. Rastogi, G.Z. Voyiadjis and J.W. Kysar, *Order in polycrystalline plasticity deformation fields: Short-range intermittency and long-range persistency*, **International Journal of Plasticity**, doi://10.1016/j.ijplas.2020.102674.
+- B. Flipon, C. Keller, R. Quey and F. Barbe, *A full-field crystal-plasticity analysis of bimodal polycrystals*, **International Journal of Solids and Structures**, vol. 184, pp. 178--192, 2020. `made cover of the Journal <docs/cover-ijss-2020.png>`_
 - K.A. Taylor, E. Gjonaj and H. de Gersem, *Coupled Simulation of Current Flow and Residual Thermal Stress in ZnO Varistors*, **IEEE Transactions on Magnetics**, vol. 56, pp. 7504504, 2020.
 - D. Wicht, M. Schneider and T. Bohlke, *On Quasi‐Newton methods in FFT‐based micromechanics*, **International Journal for Numerical Methods in Engineering**, doi://10.1002/nme.6283.
 - M. Marvi-Mashhadi, C.S. Lopes and J. LLorca, *High fidelity simulation of the mechanical behavior of closed-cell polyurethane foams*, **Journal of the Mechanics and Physics of Solids**, vol. 135, pp. 103814, 2020.
@@ -33,7 +50,6 @@ This list is also available on Neper's `Google Scholar page <https://scholar.goo
 2019
 ----
 
-- B. Flipon, C. Keller, R. Quey and F. Barbe, *A full-field crystal-plasticity analysis of bimodal polycrystals*, **International Journal of Solids and Structures**, doi:10.1016/j.ijsolstr.2019.02.005. `made cover of the Journal <docs/cover-ijss-2020.png>`_
 - Y. Charles, H.T. Nguyen, K. Ardon and M. Gasperini, chapter *Scale Transition in Finite Element Simulations of Hydrogen–Plasticity Interactions* in *Mechanics and Physics of Solids at Micro‐ and Nano‐Scales*, **book edited by Wiley**, 2019.
 - Y. Zhang, G. Xiao, C. Xu, T. Zhou, M. Yi and Z. Chen, *Cohesive Element Model for Fracture Behavior Analysis of Al2O3/Graphene Composite Ceramic Tool Material*, **Crystals**, vol. 9, pp. 669, 2019.
 - R. Ma and T.J. Truster, * Combined crystal plasticity and grain boundary modeling of creep in Ferritic-Martensitic Steels, part 1: Theory and implementation*, **Modelling and Simulation in Materials Science and Engineering**, vol. 27, pp. 075009, 2019.
