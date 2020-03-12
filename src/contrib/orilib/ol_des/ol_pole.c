@@ -41,7 +41,7 @@ ol_pole_free (int *pole)
   if (!pole)
     return;
   else
-    ut_free_1d_int (pole);
+    ut_free_1d_int (&pole);
 
   return;
 }
@@ -52,7 +52,7 @@ ol_hpole_free (int *hpole)
   if (!hpole)
     return;
   else
-    ut_free_1d_int (hpole);
+    ut_free_1d_int (&hpole);
 
   return;
 }
@@ -63,7 +63,7 @@ ol_vect_free (double *vect)
   if (!vect)
     return;
   else
-    ut_free_1d (vect);
+    ut_free_1d (&vect);
 
   return;
 }
@@ -74,7 +74,7 @@ ol_p_free (double *p)
   if (!p)
     return;
   else
-    ut_free_1d (p);
+    ut_free_1d (&p);
 
   return;
 }
@@ -116,7 +116,7 @@ int
 ol_hpole_fscanf (FILE * file, int *hpole)
 {
   return fscanf (file, "%d%d%d%d", &hpole[0], &hpole[1], &hpole[2],
-		 &hpole[3]);
+                 &hpole[3]);
 }
 
 int
@@ -165,9 +165,9 @@ ol_pole_vect (int *m, double *vect)
   int i;
   double norm;
 
-  norm = ut_array_1d_norm_int (m, 3);
+  norm = ut_array_1d_int_norm (m, 3);
 
-  for (i = 0; i < 3; i++)	/* cannot copy using ut_; int to double ... */
+  for (i = 0; i < 3; i++)       /* cannot copy using ut_; int to double ... */
     vect[i] = (double) m[i];
   ut_array_1d_scale (vect, 3, 1 / norm);
 
@@ -197,7 +197,7 @@ ol_hpole_vect (int *hm, double *vect)
   norm = ut_array_1d_norm (vect, 3);
   ut_array_1d_scale (vect, 3, 1 / norm);
 
-  ut_free_2d (a, 4);
+  ut_free_2d (&a, 4);
 
   return;
 }
@@ -223,7 +223,7 @@ ol_pole_set_this (int *pole, int x, int y, int z)
 void
 ol_pole_memcpy (int *polesrc, int *poledest)
 {
-  ut_array_1d_int_memcpy (poledest, 3, polesrc);
+  ut_array_1d_int_memcpy (polesrc, 3, poledest);
 
   return;
 }
@@ -249,7 +249,7 @@ ol_vect_set_this (double *vect, double x, double y, double z)
 void
 ol_vect_memcpy (double *vectsrc, double *vectdest)
 {
-  ut_array_1d_memcpy (vectdest, 3, vectsrc);
+  ut_array_1d_memcpy (vectsrc, 3, vectdest);
 
   return;
 }
@@ -274,7 +274,7 @@ ol_p_set_this (double *p, double x, double y)
 void
 ol_p_memcpy (double *psrc, double *pdest)
 {
-  ut_array_1d_memcpy (pdest, 2, psrc);
+  ut_array_1d_memcpy (psrc, 2, pdest);
 
   return;
 }
@@ -288,7 +288,7 @@ ol_vect_stproj_rad (double *vect, double *p)
 
   alpha = ut_num_acos (vect[2]);
 
-  if (fabs (alpha) < 1e-6)	/* beta is undefined; choosing 0 */
+  if (fabs (alpha) < 1e-6)      /* beta is undefined; choosing 0 */
     beta = 0;
   else
     beta = atan2 (vect[1] / sin (alpha), vect[0] / sin (alpha));
@@ -398,7 +398,7 @@ ol_g_pf_stproj_rad (double **g, double *vect, double *p)
 
   for (i = 0; i < 3; i++)
     for (j = 0; j < 3; j++)
-      tmp[i] += g[j][i] * vect[j];	/* [j][i] == using the inverse of g */
+      tmp[i] += g[j][i] * vect[j];      /* [j][i] == using the inverse of g */
 
   ol_vect_stproj_rad (tmp, p);
 
@@ -518,7 +518,7 @@ ol_g_ipf_eaproj_rad (double **g, double *vect, double *p)
 }
 
 void
-ol_g_ipf_crysym_stproj (double **g, double *vect, char* crysym, double *p)
+ol_g_ipf_crysym_stproj (double **g, double *vect, char *crysym, double *p)
 {
   ol_g_ipf_crysym_stproj_rad (g, vect, crysym, p);
   ol_theta_rad2deg (p[1], &(p[1]));
@@ -527,7 +527,7 @@ ol_g_ipf_crysym_stproj (double **g, double *vect, char* crysym, double *p)
 }
 
 void
-ol_g_ipf_crysym_stprojxy (double **g, double *vect, char* crysym, double *p)
+ol_g_ipf_crysym_stprojxy (double **g, double *vect, char *crysym, double *p)
 {
   double x, y;
 
@@ -544,7 +544,7 @@ ol_g_ipf_crysym_stprojxy (double **g, double *vect, char* crysym, double *p)
 /* could really be improved for cpu efficiency */
 /* Does this work for crystals other than cubic??????? */
 void
-ol_g_ipf_crysym_stproj_rad (double **g, double *vect, char* crysym, double *p)
+ol_g_ipf_crysym_stproj_rad (double **g, double *vect, char *crysym, double *p)
 {
   int i, j;
   double alpha, beta;
@@ -572,7 +572,7 @@ ol_g_ipf_crysym_stproj_rad (double **g, double *vect, char* crysym, double *p)
 
   alpha = ut_num_acos (tmp[2]);
 
-  if (fabs (alpha) < 1e-6)	/* beta is undefined; choosing 0 */
+  if (fabs (alpha) < 1e-6)      /* beta is undefined; choosing 0 */
     beta = 0;
   else
     beta = atan2 (tmp[1] / sin (alpha), tmp[0] / sin (alpha));
@@ -589,7 +589,7 @@ ol_g_ipf_crysym_stproj_rad (double **g, double *vect, char* crysym, double *p)
   p[0] = tan (alpha / 2);
   p[1] = beta;
 
-  ut_free_1d (tmp);
+  ut_free_1d (&tmp);
   ol_g_free (gsym);
   ol_vect_free (v);
   ol_e_free (weight);
@@ -598,7 +598,7 @@ ol_g_ipf_crysym_stproj_rad (double **g, double *vect, char* crysym, double *p)
 }
 
 void
-ol_g_ipf_crysym_eaproj (double **g, double *vect, char* crysym, double *p)
+ol_g_ipf_crysym_eaproj (double **g, double *vect, char *crysym, double *p)
 {
   ol_g_ipf_crysym_eaproj_rad (g, vect, crysym, p);
   ol_theta_rad2deg (p[1], &(p[1]));
@@ -607,7 +607,7 @@ ol_g_ipf_crysym_eaproj (double **g, double *vect, char* crysym, double *p)
 }
 
 void
-ol_g_ipf_crysym_eaprojxy (double **g, double *vect, char* crysym, double *p)
+ol_g_ipf_crysym_eaprojxy (double **g, double *vect, char *crysym, double *p)
 {
   double x, y;
 
@@ -622,7 +622,7 @@ ol_g_ipf_crysym_eaprojxy (double **g, double *vect, char* crysym, double *p)
 }
 
 void
-ol_g_ipf_crysym_eaproj_rad (double **g, double *vect, char* crysym, double *p)
+ol_g_ipf_crysym_eaproj_rad (double **g, double *vect, char *crysym, double *p)
 {
   ol_g_ipf_crysym_stproj_rad (g, vect, crysym, p);
 
@@ -799,8 +799,8 @@ ol_vect_ipfweight (double *v, double *weight)
       t = -v[0] / (sqrt (2) * v[2]);
     else
       t =
-	(sqrt (2) * v[2] -
-	 sqrt (2 * v[2] * v[2] + 4 * v[0] * v[1])) / (2 * v[1]);
+        (sqrt (2) * v[2] -
+         sqrt (2 * v[2] * v[2] + 4 * v[0] * v[1])) / (2 * v[1]);
 
     ol_theta_rad2deg (2 * atan (t), &theta);
 
@@ -1003,7 +1003,7 @@ ol_q_ipf_eaproj_rad (double *q, double *vect, double *p)
 }
 
 void
-ol_q_ipf_crysym_stproj (double *q, double *vect, char* crysym, double *p)
+ol_q_ipf_crysym_stproj (double *q, double *vect, char *crysym, double *p)
 {
   double **g = ol_g_alloc ();
   ol_q_g (q, g);
@@ -1016,7 +1016,7 @@ ol_q_ipf_crysym_stproj (double *q, double *vect, char* crysym, double *p)
 }
 
 void
-ol_q_ipf_crysym_stprojxy (double *q, double *vect, char* crysym, double *p)
+ol_q_ipf_crysym_stprojxy (double *q, double *vect, char *crysym, double *p)
 {
   double **g = ol_g_alloc ();
   ol_q_g (q, g);
@@ -1029,7 +1029,7 @@ ol_q_ipf_crysym_stprojxy (double *q, double *vect, char* crysym, double *p)
 }
 
 void
-ol_q_ipf_crysym_stproj_rad (double *q, double *vect, char* crysym, double *p)
+ol_q_ipf_crysym_stproj_rad (double *q, double *vect, char *crysym, double *p)
 {
   double **g = ol_g_alloc ();
   ol_q_g (q, g);
@@ -1042,7 +1042,7 @@ ol_q_ipf_crysym_stproj_rad (double *q, double *vect, char* crysym, double *p)
 }
 
 void
-ol_q_ipf_crysym_eaproj (double *q, double *vect, char* crysym, double *p)
+ol_q_ipf_crysym_eaproj (double *q, double *vect, char *crysym, double *p)
 {
   double **g = ol_g_alloc ();
   ol_q_g (q, g);
@@ -1055,7 +1055,7 @@ ol_q_ipf_crysym_eaproj (double *q, double *vect, char* crysym, double *p)
 }
 
 void
-ol_q_ipf_crysym_eaprojxy (double *q, double *vect, char* crysym, double *p)
+ol_q_ipf_crysym_eaprojxy (double *q, double *vect, char *crysym, double *p)
 {
   double **g = ol_g_alloc ();
   ol_q_g (q, g);
@@ -1068,7 +1068,7 @@ ol_q_ipf_crysym_eaprojxy (double *q, double *vect, char* crysym, double *p)
 }
 
 void
-ol_q_ipf_crysym_eaproj_rad (double *q, double *vect, char* crysym, double *p)
+ol_q_ipf_crysym_eaproj_rad (double *q, double *vect, char *crysym, double *p)
 {
   double **g = ol_g_alloc ();
   ol_q_g (q, g);

@@ -6,11 +6,11 @@
 
 void
 ol_map_filter_kuwahara_iter (struct OL_MAP Map, size_t size,
-			     struct OL_MAP *pMap2, double *pdis)
+                             struct OL_MAP *pMap2, double *pdis)
 {
   double prevdis, ratio;
   struct OL_MAP Map3 = ol_map_alloc (Map.xsize, Map.ysize, Map.stepsize,
-				     Map.crysym);
+                                     Map.crysym);
 
   ol_map_memcpy (Map, &Map3);
 
@@ -22,7 +22,7 @@ ol_map_filter_kuwahara_iter (struct OL_MAP Map, size_t size,
     ratio = fabs (prevdis - (*pdis)) / prevdis;
     prevdis = (*pdis);
   }
-  while (ratio > 0.01);		/* until convergence */
+  while (ratio > 0.01);         /* until convergence */
 
   ol_map_memcpy (Map3, pMap2);
   ol_map_free (Map3);
@@ -38,7 +38,7 @@ ol_map_filter_kuwahara (struct OL_MAP Map, size_t size,
   int qty, skip;
   double tmpdis;
   struct OL_MAP SubMap = ol_map_alloc (size, size, Map.stepsize,
-				       Map.crysym);
+                                       Map.crysym);
 
   /* (*pMap2).xsize    = Map.xsize;
      (*pMap2).ysize    = Map.ysize;
@@ -56,12 +56,12 @@ ol_map_filter_kuwahara (struct OL_MAP Map, size_t size,
   qty = 0;
   for (i = skip; i < (*pMap2).xsize - skip; i++)
     for (j = skip; j < (*pMap2).ysize - skip; j++)
-      if (Map.id[i][j] == 1)	/* treating indexed orientations only */
+      if (Map.id[i][j] == 1)    /* treating indexed orientations only */
       {
-	ol_map_submap_center (Map, i, j, size, size, &SubMap);
-	ol_map_filter_kuwahara_region (SubMap, (*pMap2).q[i][j], &tmpdis);
-	qty++;
-	(*pdis) += tmpdis;
+        ol_map_submap_center (Map, i, j, size, size, &SubMap);
+        ol_map_filter_kuwahara_region (SubMap, (*pMap2).q[i][j], &tmpdis);
+        qty++;
+        (*pdis) += tmpdis;
       }
   (*pdis) /= qty;
 
@@ -102,15 +102,15 @@ ol_map_filter_kuwahara_region (struct OL_MAP Map, double *q, double *pdis)
     ol_set_mean_ref (SubSet, qref, mean[i]);
     ol_set_disori (SubSet, mean[i], &(dis[i]));
     ol_set_free (SubSet);
-  }				/* insert correction according to the number of available data */
+  }                             /* insert correction according to the number of available data */
 
   id = ut_array_1d_min_index (dis, 4);
   ol_q_memcpy (mean[id], q);
   (*pdis) = dis[id];
 
-  ut_free_2d_int (coo, 4);
-  ut_free_2d (mean, 4);
-  ut_free_1d (dis);
+  ut_free_2d_int (&coo, 4);
+  ut_free_2d (&mean, 4);
+  ut_free_1d (&dis);
   ol_q_free (qref);
 
   return;

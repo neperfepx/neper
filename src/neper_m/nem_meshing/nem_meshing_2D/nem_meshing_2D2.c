@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_2D_.h"
@@ -18,7 +18,7 @@ nem_meshing_2D_progress (struct MULTIM Multim, int face, int faceqty,
            (face > 0) ? ut_array_1d_mean (Multim.O + 1, face) : 0);
 
   if (face > 0)
-    ut_array_1d_int_percent (Multim.algohit, Multim.algoqty, pct);
+    ut_stat_scaletopercent_int (Multim.algohit, Multim.algoqty, pct);
 
   for (a = 0; a < Multim.algoqty; a++)
   {
@@ -29,9 +29,9 @@ nem_meshing_2D_progress (struct MULTIM Multim, int face, int faceqty,
 
   ut_print_progress (stdout, face, faceqty, format, message);
 
-  ut_free_1d_int (pct);
-  ut_free_1d_char (format);
-  ut_free_1d_char (tmp);
+  ut_free_1d_int (&pct);
+  ut_free_1d_char (&format);
+  ut_free_1d_char (&tmp);
 
   return;
 }
@@ -77,8 +77,8 @@ nem_meshing_2D_face (struct IN_M In, struct MESHPARA MeshPara,
         *pbnodeqty = bnodeqty2;
         (*pbnodes) = ut_realloc_1d_int (*pbnodes, *pbnodeqty);
         (*plbnodes) = ut_realloc_1d_int (*plbnodes, *pbnodeqty);
-        ut_array_1d_int_memcpy (*pbnodes, *pbnodeqty, bnodes2);
-        ut_array_1d_int_memcpy (*plbnodes, *pbnodeqty, lbnodes2);
+        ut_array_1d_int_memcpy (bnodes2, *pbnodeqty, *pbnodes);
+        ut_array_1d_int_memcpy (lbnodes2, *pbnodeqty, *plbnodes);
       }
 
       // if mesh quality criterion reached, breaking
@@ -95,19 +95,17 @@ nem_meshing_2D_face (struct IN_M In, struct MESHPARA MeshPara,
 
   neut_nodes_free (&N2);
   neut_mesh_free (&M2);
-  ut_free_1d_int (bnodes2);
-  ut_free_1d_int (lbnodes2);
+  ut_free_1d_int (&bnodes2);
+  ut_free_1d_int (&lbnodes2);
 
   return 0;
 }
 
 int
 nem_meshing_2D_face_per (struct TESS Tess, struct NODES Nodes,
-                         struct NODES *N,
-                         struct MESH *M, struct NODES *pN,
-                         struct MESH *pM, int **pmaster_id,
-                         int ***pbnodes, int ***plbnodes, int **pbnodeqty,
-                         int face)
+                         struct NODES *N, struct MESH *M, struct NODES *pN,
+                         struct MESH *pM, int **pmaster_id, int ***pbnodes,
+                         int ***plbnodes, int **pbnodeqty, int face)
 {
   int i, status, master = Tess.PerFaceMaster[face];
 
@@ -117,8 +115,7 @@ nem_meshing_2D_face_per (struct TESS Tess, struct NODES Nodes,
   neut_nodes_memcpy (N[master], pN);
   neut_mesh_memcpy (M[master], pM);
 
-  neut_nodes_shift (pN,
-                    Tess.PerFaceShift[face][0] * Tess.PeriodicDist[0],
+  neut_nodes_shift (pN, Tess.PerFaceShift[face][0] * Tess.PeriodicDist[0],
                     Tess.PerFaceShift[face][1] * Tess.PeriodicDist[1],
                     Tess.PerFaceShift[face][2] * Tess.PeriodicDist[2]);
 
@@ -126,24 +123,27 @@ nem_meshing_2D_face_per (struct TESS Tess, struct NODES Nodes,
   ut_array_1d_int_set_id (*pmaster_id, N[master].NodeQty + 1);
 
   (*pbnodeqty)[face] = (*pbnodeqty)[master];
-  (*plbnodes)[face]  = ut_realloc_1d_int ((*plbnodes)[face], (*pbnodeqty)[face]);
-  (*pbnodes)[face]   = ut_realloc_1d_int ((*pbnodes)[face], (*pbnodeqty)[face]);
+  (*plbnodes)[face] =
+    ut_realloc_1d_int ((*plbnodes)[face], (*pbnodeqty)[face]);
+  (*pbnodes)[face] = ut_realloc_1d_int ((*pbnodes)[face], (*pbnodeqty)[face]);
 
-  ut_array_1d_int_memcpy ((*plbnodes)[face], (*pbnodeqty)[face], (*plbnodes)[master]);
-  ut_array_1d_int_memcpy ((*pbnodes)[face], (*pbnodeqty)[face], (*pbnodes)[master]);
+  ut_array_1d_int_memcpy ((*plbnodes)[master], (*pbnodeqty)[face],
+                          (*plbnodes)[face]);
+  ut_array_1d_int_memcpy ((*pbnodes)[master], (*pbnodeqty)[face],
+                          (*pbnodes)[face]);
 
   int *shift = ut_alloc_1d_int (3);
-  ut_array_1d_int_memcpy (shift, 3, Tess.PerFaceShift[face]);
+  ut_array_1d_int_memcpy (Tess.PerFaceShift[face], 3, shift);
   ut_array_1d_int_scale (shift, 3, 1);
   for (i = 0; i < (*pbnodeqty)[face]; i++)
   {
-    status = neut_nodes_node_shift_pernode (Nodes, (*pbnodes)[master][i],
-                                            shift,
-                                            (*pbnodes)[face] + i);
+    status =
+      neut_nodes_node_shift_pernode (Nodes, (*pbnodes)[master][i], shift,
+                                     (*pbnodes)[face] + i);
     if (status)
       abort ();
   }
-  ut_free_1d_int (shift);
+  ut_free_1d_int (&shift);
 
   if (Tess.PerFaceOri[face] == 1)
     neut_mesh_reversenodes (pM);

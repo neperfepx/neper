@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_cube_.h"
 
 void
 net_tess_cube_ids (int *N, int ***verid, int ****edgeid, int ****faceid,
-		   int ***polyid)
+                   int ***polyid)
 {
   int i, j, k, id;
 
@@ -14,45 +14,45 @@ net_tess_cube_ids (int *N, int ***verid, int ****edgeid, int ****faceid,
   for (k = 0; k <= N[2]; k++)
     for (j = 0; j <= N[1]; j++)
       for (i = 0; i <= N[0]; i++)
-	verid[i][j][k] = ++id;
+        verid[i][j][k] = ++id;
 
   id = 0;
   for (k = 0; k <= N[2]; k++)
     for (j = 0; j <= N[1]; j++)
       for (i = 0; i < N[0]; i++)
-	edgeid[0][i][j][k] = ++id;
+        edgeid[0][i][j][k] = ++id;
 
   for (k = 0; k <= N[2]; k++)
     for (j = 0; j < N[1]; j++)
       for (i = 0; i <= N[0]; i++)
-	edgeid[1][i][j][k] = ++id;
+        edgeid[1][i][j][k] = ++id;
 
   for (k = 0; k < N[2]; k++)
     for (j = 0; j <= N[1]; j++)
       for (i = 0; i <= N[0]; i++)
-	edgeid[2][i][j][k] = ++id;
+        edgeid[2][i][j][k] = ++id;
 
   id = 0;
   for (k = 0; k < N[2]; k++)
     for (j = 0; j < N[1]; j++)
       for (i = 0; i <= N[0]; i++)
-	faceid[0][i][j][k] = ++id;
+        faceid[0][i][j][k] = ++id;
 
   for (k = 0; k < N[2]; k++)
     for (j = 0; j <= N[1]; j++)
       for (i = 0; i < N[0]; i++)
-	faceid[1][i][j][k] = ++id;
+        faceid[1][i][j][k] = ++id;
 
   for (k = 0; k <= N[2]; k++)
     for (j = 0; j < N[1]; j++)
       for (i = 0; i < N[0]; i++)
-	faceid[2][i][j][k] = ++id;
+        faceid[2][i][j][k] = ++id;
 
   id = 0;
   for (k = 0; k < N[2]; k++)
     for (j = 0; j < N[1]; j++)
       for (i = 0; i < N[0]; i++)
-	polyid[i][j][k] = ++id;
+        polyid[i][j][k] = ++id;
 
   return;
 }
@@ -94,8 +94,7 @@ net_tess_cube_sset (struct TESS Tess, struct SEEDSET *pSSet)
 }
 
 void
-net_tess_cube_vers (int *N, double **bbox, int ***verid,
-		    struct TESS *pTess)
+net_tess_cube_vers (int *N, double **bbox, int ***verid, struct TESS *pTess)
 {
   int i, j, k, id;
   double *size = ut_alloc_1d (3);
@@ -111,13 +110,13 @@ net_tess_cube_vers (int *N, double **bbox, int ***verid,
     for (j = 0; j <= N[1]; j++)
       for (i = 0; i <= N[0]; i++)
       {
-	id = verid[i][j][k];
-	(*pTess).VerCoo[id][0] = (double) i / N[0] * size[0];
-	(*pTess).VerCoo[id][1] = (double) j / N[1] * size[1];
-	(*pTess).VerCoo[id][2] = (double) k / N[2] * size[2];
+        id = verid[i][j][k];
+        (*pTess).VerCoo[id][0] = (double) i / N[0] * size[0];
+        (*pTess).VerCoo[id][1] = (double) j / N[1] * size[1];
+        (*pTess).VerCoo[id][2] = (double) k / N[2] * size[2];
       }
 
-  ut_free_1d (size);
+  ut_free_1d (&size);
 
   return;
 }
@@ -128,8 +127,9 @@ net_tess_cube_edges (int *N, int ***verid, int ****edgeid, struct TESS *pTess)
   int i, j, k, id;
 
   // Edges
-  (*pTess).EdgeQty = (N[0] + 1) * (N[1] + 1) * (N[2])
-    + (N[0] + 1) * (N[1]) * (N[2] + 1) + (N[0]) * (N[1] + 1) * (N[2] + 1);
+  (*pTess).EdgeQty =
+    (N[0] + 1) * (N[1] + 1) * (N[2]) + (N[0] + 1) * (N[1]) * (N[2] + 1) +
+    (N[0]) * (N[1] + 1) * (N[2] + 1);
 
   (*pTess).EdgeVerNb = ut_alloc_2d_int ((*pTess).EdgeQty + 1, 3);
   (*pTess).EdgeState = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
@@ -139,27 +139,27 @@ net_tess_cube_edges (int *N, int ***verid, int ****edgeid, struct TESS *pTess)
     for (j = 0; j <= N[1]; j++)
       for (i = 0; i < N[0]; i++)
       {
-	id = edgeid[0][i][j][k];
-	(*pTess).EdgeVerNb[id][0] = verid[i][j][k];
-	(*pTess).EdgeVerNb[id][1] = verid[i + 1][j][k];
+        id = edgeid[0][i][j][k];
+        (*pTess).EdgeVerNb[id][0] = verid[i][j][k];
+        (*pTess).EdgeVerNb[id][1] = verid[i + 1][j][k];
       }
 
   for (k = 0; k <= N[2]; k++)
     for (j = 0; j < N[1]; j++)
       for (i = 0; i <= N[0]; i++)
       {
-	id = edgeid[1][i][j][k];
-	(*pTess).EdgeVerNb[id][0] = verid[i][j][k];
-	(*pTess).EdgeVerNb[id][1] = verid[i][j + 1][k];
+        id = edgeid[1][i][j][k];
+        (*pTess).EdgeVerNb[id][0] = verid[i][j][k];
+        (*pTess).EdgeVerNb[id][1] = verid[i][j + 1][k];
       }
 
   for (k = 0; k < N[2]; k++)
     for (j = 0; j <= N[1]; j++)
       for (i = 0; i <= N[0]; i++)
       {
-	id = edgeid[2][i][j][k];
-	(*pTess).EdgeVerNb[id][0] = verid[i][j][k];
-	(*pTess).EdgeVerNb[id][1] = verid[i][j][k + 1];
+        id = edgeid[2][i][j][k];
+        (*pTess).EdgeVerNb[id][0] = verid[i][j][k];
+        (*pTess).EdgeVerNb[id][1] = verid[i][j][k + 1];
       }
 
   neut_tess_init_edgelength (pTess);
@@ -168,14 +168,15 @@ net_tess_cube_edges (int *N, int ***verid, int ****edgeid, struct TESS *pTess)
 }
 
 void
-net_tess_cube_faces (int *N, int ***verid, int ****edgeid,
-		     int ****faceid, struct TESS *pTess)
+net_tess_cube_faces (int *N, int ***verid, int ****edgeid, int ****faceid,
+                     struct TESS *pTess)
 {
   int i, j, k, id;
 
   // Faces
-  (*pTess).FaceQty = (N[0] + 1) * (N[1]) * (N[2])
-    + (N[0]) * (N[1] + 1) * (N[2]) + (N[0]) * (N[1]) * (N[2] + 1);
+  (*pTess).FaceQty =
+    (N[0] + 1) * (N[1]) * (N[2]) + (N[0]) * (N[1] + 1) * (N[2]) +
+    (N[0]) * (N[1]) * (N[2] + 1);
   (*pTess).FaceVerQty = ut_alloc_1d_int ((*pTess).FaceQty + 1);
   (*pTess).FaceVerNb = ut_alloc_2d_int ((*pTess).FaceQty + 1, 5);
   (*pTess).FaceEdgeNb = ut_alloc_2d_int ((*pTess).FaceQty + 1, 5);
@@ -189,69 +190,69 @@ net_tess_cube_faces (int *N, int ***verid, int ****edgeid,
     for (j = 0; j < N[1]; j++)
       for (i = 0; i <= N[0]; i++)
       {
-	id = faceid[0][i][j][k];
-	(*pTess).FaceVerQty[id] = 4;
-	(*pTess).FaceVerNb[id][1] = verid[i][j + 1][k];
-	(*pTess).FaceVerNb[id][2] = verid[i][j + 1][k + 1];
-	(*pTess).FaceVerNb[id][3] = verid[i][j][k + 1];
-	(*pTess).FaceVerNb[id][4] = verid[i][j][k];
-	(*pTess).FaceEdgeNb[id][1] = edgeid[1][i][j][k];
-	(*pTess).FaceEdgeNb[id][2] = edgeid[2][i][j + 1][k];
-	(*pTess).FaceEdgeNb[id][3] = edgeid[1][i][j][k + 1];
-	(*pTess).FaceEdgeNb[id][4] = edgeid[2][i][j][k];
-	(*pTess).FaceEdgeOri[id][1] = -1;
-	(*pTess).FaceEdgeOri[id][2] = -1;
-	(*pTess).FaceEdgeOri[id][3] = 1;
-	(*pTess).FaceEdgeOri[id][4] = 1;
-	(*pTess).FaceEq[id][0] =
-	  (*pTess).VerCoo[(*pTess).FaceVerNb[id][1]][0];
-	(*pTess).FaceEq[id][1] = 1;
+        id = faceid[0][i][j][k];
+        (*pTess).FaceVerQty[id] = 4;
+        (*pTess).FaceVerNb[id][1] = verid[i][j + 1][k];
+        (*pTess).FaceVerNb[id][2] = verid[i][j + 1][k + 1];
+        (*pTess).FaceVerNb[id][3] = verid[i][j][k + 1];
+        (*pTess).FaceVerNb[id][4] = verid[i][j][k];
+        (*pTess).FaceEdgeNb[id][1] = edgeid[1][i][j][k];
+        (*pTess).FaceEdgeNb[id][2] = edgeid[2][i][j + 1][k];
+        (*pTess).FaceEdgeNb[id][3] = edgeid[1][i][j][k + 1];
+        (*pTess).FaceEdgeNb[id][4] = edgeid[2][i][j][k];
+        (*pTess).FaceEdgeOri[id][1] = -1;
+        (*pTess).FaceEdgeOri[id][2] = -1;
+        (*pTess).FaceEdgeOri[id][3] = 1;
+        (*pTess).FaceEdgeOri[id][4] = 1;
+        (*pTess).FaceEq[id][0] =
+          (*pTess).VerCoo[(*pTess).FaceVerNb[id][1]][0];
+        (*pTess).FaceEq[id][1] = 1;
       }
 
   for (k = 0; k < N[2]; k++)
     for (j = 0; j <= N[1]; j++)
       for (i = 0; i < N[0]; i++)
       {
-	id = faceid[1][i][j][k];
-	(*pTess).FaceVerQty[id] = 4;
-	(*pTess).FaceVerNb[id][1] = verid[i][j][k + 1];
-	(*pTess).FaceVerNb[id][2] = verid[i + 1][j][k + 1];
-	(*pTess).FaceVerNb[id][3] = verid[i + 1][j][k];
-	(*pTess).FaceVerNb[id][4] = verid[i][j][k];
-	(*pTess).FaceEdgeNb[id][1] = edgeid[2][i][j][k];
-	(*pTess).FaceEdgeNb[id][2] = edgeid[0][i][j][k + 1];
-	(*pTess).FaceEdgeNb[id][3] = edgeid[2][i + 1][j][k];
-	(*pTess).FaceEdgeNb[id][4] = edgeid[0][i][j][k];
-	(*pTess).FaceEdgeOri[id][1] = -1;
-	(*pTess).FaceEdgeOri[id][2] = -1;
-	(*pTess).FaceEdgeOri[id][3] = 1;
-	(*pTess).FaceEdgeOri[id][4] = 1;
-	(*pTess).FaceEq[id][0] =
-	  (*pTess).VerCoo[(*pTess).FaceVerNb[id][1]][1];
-	(*pTess).FaceEq[id][2] = 1;
+        id = faceid[1][i][j][k];
+        (*pTess).FaceVerQty[id] = 4;
+        (*pTess).FaceVerNb[id][1] = verid[i][j][k + 1];
+        (*pTess).FaceVerNb[id][2] = verid[i + 1][j][k + 1];
+        (*pTess).FaceVerNb[id][3] = verid[i + 1][j][k];
+        (*pTess).FaceVerNb[id][4] = verid[i][j][k];
+        (*pTess).FaceEdgeNb[id][1] = edgeid[2][i][j][k];
+        (*pTess).FaceEdgeNb[id][2] = edgeid[0][i][j][k + 1];
+        (*pTess).FaceEdgeNb[id][3] = edgeid[2][i + 1][j][k];
+        (*pTess).FaceEdgeNb[id][4] = edgeid[0][i][j][k];
+        (*pTess).FaceEdgeOri[id][1] = -1;
+        (*pTess).FaceEdgeOri[id][2] = -1;
+        (*pTess).FaceEdgeOri[id][3] = 1;
+        (*pTess).FaceEdgeOri[id][4] = 1;
+        (*pTess).FaceEq[id][0] =
+          (*pTess).VerCoo[(*pTess).FaceVerNb[id][1]][1];
+        (*pTess).FaceEq[id][2] = 1;
       }
 
   for (k = 0; k <= N[2]; k++)
     for (j = 0; j < N[1]; j++)
       for (i = 0; i < N[0]; i++)
       {
-	id = faceid[2][i][j][k];
-	(*pTess).FaceVerQty[id] = 4;
-	(*pTess).FaceVerNb[id][1] = verid[i + 1][j][k];
-	(*pTess).FaceVerNb[id][2] = verid[i + 1][j + 1][k];
-	(*pTess).FaceVerNb[id][3] = verid[i][j + 1][k];
-	(*pTess).FaceVerNb[id][4] = verid[i][j][k];
-	(*pTess).FaceEdgeNb[id][1] = edgeid[0][i][j][k];
-	(*pTess).FaceEdgeNb[id][2] = edgeid[1][i + 1][j][k];
-	(*pTess).FaceEdgeNb[id][3] = edgeid[0][i][j + 1][k];
-	(*pTess).FaceEdgeNb[id][4] = edgeid[1][i][j][k];
-	(*pTess).FaceEdgeOri[id][1] = -1;
-	(*pTess).FaceEdgeOri[id][2] = -1;
-	(*pTess).FaceEdgeOri[id][3] = 1;
-	(*pTess).FaceEdgeOri[id][4] = 1;
-	(*pTess).FaceEq[id][0] =
-	  (*pTess).VerCoo[(*pTess).FaceVerNb[id][1]][2];
-	(*pTess).FaceEq[id][3] = 1;
+        id = faceid[2][i][j][k];
+        (*pTess).FaceVerQty[id] = 4;
+        (*pTess).FaceVerNb[id][1] = verid[i + 1][j][k];
+        (*pTess).FaceVerNb[id][2] = verid[i + 1][j + 1][k];
+        (*pTess).FaceVerNb[id][3] = verid[i][j + 1][k];
+        (*pTess).FaceVerNb[id][4] = verid[i][j][k];
+        (*pTess).FaceEdgeNb[id][1] = edgeid[0][i][j][k];
+        (*pTess).FaceEdgeNb[id][2] = edgeid[1][i + 1][j][k];
+        (*pTess).FaceEdgeNb[id][3] = edgeid[0][i][j + 1][k];
+        (*pTess).FaceEdgeNb[id][4] = edgeid[1][i][j][k];
+        (*pTess).FaceEdgeOri[id][1] = -1;
+        (*pTess).FaceEdgeOri[id][2] = -1;
+        (*pTess).FaceEdgeOri[id][3] = 1;
+        (*pTess).FaceEdgeOri[id][4] = 1;
+        (*pTess).FaceEq[id][0] =
+          (*pTess).VerCoo[(*pTess).FaceVerNb[id][1]][2];
+        (*pTess).FaceEq[id][3] = 1;
       }
 
   return;
@@ -259,7 +260,7 @@ net_tess_cube_faces (int *N, int ***verid, int ****edgeid,
 
 void
 net_tess_cube_polys (int *N, int ****faceid, int ***polyid,
-		     struct TESS *pTess)
+                     struct TESS *pTess)
 {
   int i, j, k, id;
 
@@ -273,20 +274,20 @@ net_tess_cube_polys (int *N, int ****faceid, int ***polyid,
     for (j = 0; j < N[1]; j++)
       for (i = 0; i < N[0]; i++)
       {
-	id = polyid[i][j][k];
-	(*pTess).PolyFaceQty[id] = 6;
-	(*pTess).PolyFaceNb[id][1] = faceid[0][i][j][k];
-	(*pTess).PolyFaceNb[id][2] = faceid[0][i + 1][j][k];
-	(*pTess).PolyFaceNb[id][3] = faceid[1][i][j][k];
-	(*pTess).PolyFaceNb[id][4] = faceid[1][i][j + 1][k];
-	(*pTess).PolyFaceNb[id][5] = faceid[2][i][j][k];
-	(*pTess).PolyFaceNb[id][6] = faceid[2][i][j][k + 1];
-	(*pTess).PolyFaceOri[id][1] = -1;
-	(*pTess).PolyFaceOri[id][2] = 1;
-	(*pTess).PolyFaceOri[id][3] = -1;
-	(*pTess).PolyFaceOri[id][4] = 1;
-	(*pTess).PolyFaceOri[id][5] = -1;
-	(*pTess).PolyFaceOri[id][6] = 1;
+        id = polyid[i][j][k];
+        (*pTess).PolyFaceQty[id] = 6;
+        (*pTess).PolyFaceNb[id][1] = faceid[0][i][j][k];
+        (*pTess).PolyFaceNb[id][2] = faceid[0][i + 1][j][k];
+        (*pTess).PolyFaceNb[id][3] = faceid[1][i][j][k];
+        (*pTess).PolyFaceNb[id][4] = faceid[1][i][j + 1][k];
+        (*pTess).PolyFaceNb[id][5] = faceid[2][i][j][k];
+        (*pTess).PolyFaceNb[id][6] = faceid[2][i][j][k + 1];
+        (*pTess).PolyFaceOri[id][1] = -1;
+        (*pTess).PolyFaceOri[id][2] = 1;
+        (*pTess).PolyFaceOri[id][3] = -1;
+        (*pTess).PolyFaceOri[id][4] = 1;
+        (*pTess).PolyFaceOri[id][5] = -1;
+        (*pTess).PolyFaceOri[id][6] = 1;
       }
 
   return;

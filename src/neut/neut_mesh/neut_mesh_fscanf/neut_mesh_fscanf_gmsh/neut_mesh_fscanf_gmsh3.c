@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fscanf_gmsh_.h"
@@ -28,7 +28,9 @@ ReadNodesFoot (FILE * msh, char *mode)
   (void) mode;
 
   if (fscanf (msh, "%s", foot) != 1 || strcmp (foot, "$EndNodes") != 0)
-    ut_print_message (2, 0, "Reading msh file: error (`%s' instead of $EndNodes).\n", foot);
+    ut_print_message (2, 0,
+                      "Reading msh file: error (`%s' instead of $EndNodes).\n",
+                      foot);
 
   return;
 }
@@ -46,11 +48,11 @@ ReadNodesProp (FILE * msh, char *mode, struct NODES *pNodes, int *node_nbs)
     {
       status = fscanf (msh, "%d", node_nbs ? node_nbs + i : &tmp);
       if (status != 1)
-	abort ();
+        abort ();
 
       status = ut_array_1d_fscanf (msh, (*pNodes).NodeCoo[i], 3);
       if (status != 1)
-	abort ();
+        abort ();
     }
 
   else
@@ -60,9 +62,9 @@ ReadNodesProp (FILE * msh, char *mode, struct NODES *pNodes, int *node_nbs)
     for (i = 1; i <= (*pNodes).NodeQty; i++)
     {
       if (fread (node_nbs ? node_nbs + i : &tmp, sizeof (int), 1, msh) != 1)
-	abort ();
+        abort ();
       if (fread ((*pNodes).NodeCoo[i], sizeof (double), 3, msh) != 3)
-	abort ();
+        abort ();
     }
   }
 
@@ -71,7 +73,7 @@ ReadNodesProp (FILE * msh, char *mode, struct NODES *pNodes, int *node_nbs)
 
 int
 ReadMeshOfDim (FILE * msh, char *mode, struct MESH *pMesh, int *node_nbs,
-	       int Dimension, int MaxEltQty)
+               int Dimension, int MaxEltQty)
 {
   int *elt_nbs = NULL;
   int *elset_nbs = NULL;
@@ -88,7 +90,8 @@ ReadMeshOfDim (FILE * msh, char *mode, struct MESH *pMesh, int *node_nbs,
 
     ReadEltsProp (msh, mode, pMesh, node_nbs ? &elt_nbs : NULL, MaxEltQty);
 
-    SetElsets (pMesh, node_nbs ? elt_nbs : NULL, node_nbs ? &elset_nbs : NULL);
+    SetElsets (pMesh, node_nbs ? elt_nbs : NULL,
+               node_nbs ? &elset_nbs : NULL);
 
     if (node_nbs)
       neut_mesh_renumber_continuous (pMesh, node_nbs, elt_nbs, elset_nbs);
@@ -98,12 +101,12 @@ ReadMeshOfDim (FILE * msh, char *mode, struct MESH *pMesh, int *node_nbs,
   if (elset_nbs)
   {
     (*pMesh).ElsetId = ut_alloc_1d_int ((*pMesh).ElsetQty + 1);
-    ut_array_1d_int_memcpy ((*pMesh).ElsetId + 1, (*pMesh).ElsetQty,
-			    elset_nbs + 1);
+    ut_array_1d_int_memcpy (elset_nbs + 1, (*pMesh).ElsetQty,
+                            (*pMesh).ElsetId + 1);
   }
 
-  ut_free_1d_int (elt_nbs);
-  ut_free_1d_int (elset_nbs);
+  ut_free_1d_int (&elt_nbs);
+  ut_free_1d_int (&elset_nbs);
 
   return (*pMesh).EltQty;
 }

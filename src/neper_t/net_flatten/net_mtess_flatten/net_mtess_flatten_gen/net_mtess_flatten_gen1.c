@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_mtess_flatten_gen_.h"
 
 void
 net_mtess_flatten_gen (struct TESS *Tess, int TessId, struct TESS *pFTess,
-		       struct FLATTEN *pFlatten)
+                       struct FLATTEN *pFlatten)
 {
   (*pFTess).Dim = 3;
   (*pFTess).Level = Tess[TessId].Level;

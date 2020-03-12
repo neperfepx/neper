@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_multim_.h"
@@ -28,18 +28,18 @@ void
 neut_multim_free (struct MULTIM *pMultim, int PolyQty)
 {
 
-  ut_free_3d_char ((*pMultim).algos, (*pMultim).algoqty, 2);
-  ut_free_1d_int ((*pMultim).algohit);
+  ut_free_3d_char (&(*pMultim).algos, (*pMultim).algoqty, 2);
+  ut_free_1d_int (&(*pMultim).algohit);
 
-  ut_free_2d ((*pMultim).mOdis, PolyQty + 1);
-  ut_free_2d ((*pMultim).mOsize, PolyQty + 1);
-  ut_free_2d ((*pMultim).mO, PolyQty + 1);
+  ut_free_2d (&(*pMultim).mOdis, PolyQty + 1);
+  ut_free_2d (&(*pMultim).mOsize, PolyQty + 1);
+  ut_free_2d (&(*pMultim).mO, PolyQty + 1);
 
-  ut_free_1d_int ((*pMultim).Oalgo);
+  ut_free_1d_int (&(*pMultim).Oalgo);
 
-  ut_free_1d ((*pMultim).Odis);
-  ut_free_1d ((*pMultim).Osize);
-  ut_free_1d ((*pMultim).O);
+  ut_free_1d (&(*pMultim).Odis);
+  ut_free_1d (&(*pMultim).Osize);
+  ut_free_1d (&(*pMultim).O);
 
   return;
 }
@@ -53,34 +53,30 @@ neut_multim_init (int dim, char *list, int cellqty, struct MULTIM *pMultim)
   char *deflist = ut_alloc_1d_char (100);
 
   if (dim == 3)
-    sprintf (deflist, "netg%sgmsh%snetg%snetg%snetg%sgmne",
-	     NEUT_SEP_DEP, NEUT_SEP_NODEP, NEUT_SEP_DEP,
-	     NEUT_SEP_NODEP, NEUT_SEP_DEP);
+    sprintf (deflist, "netg%sgmsh%snetg%snetg%snetg%sgmne", NEUT_SEP_DEP,
+             NEUT_SEP_NODEP, NEUT_SEP_DEP, NEUT_SEP_NODEP, NEUT_SEP_DEP);
   else if (dim == 2)
     sprintf (deflist, "mead%sdela%sfron", NEUT_SEP_NODEP, NEUT_SEP_NODEP);
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
-  ut_string_separate ((!strcmp (list, "default")) ? deflist : list,
-		      NEUT_SEP_NODEP, &ind_algo, &(*pMultim).algoqty);
+  ut_list_break ((!strcmp (list, "default")) ? deflist : list, NEUT_SEP_NODEP,
+                 &ind_algo, &(*pMultim).algoqty);
 
   (*pMultim).algos = ut_alloc_3d_char ((*pMultim).algoqty, 2, 5);
   (*pMultim).algohit = ut_alloc_1d_int ((*pMultim).algoqty);
 
   for (i = 0; i < (*pMultim).algoqty; i++)
   {
-    ut_string_separate (ind_algo[i], NEUT_SEP_DEP, &ind_algo2, &qty);
+    ut_list_break (ind_algo[i], NEUT_SEP_DEP, &ind_algo2, &qty);
     sprintf ((*pMultim).algos[i][0], "%s", ind_algo2[0]);
     if (qty == 2)
       sprintf ((*pMultim).algos[i][1], "%s", ind_algo2[1]);
     else
-    {
-      ut_free_1d_char ((*pMultim).algos[i][1]);
-      (*pMultim).algos[i][1] = NULL;
-    }
-    ut_free_2d_char (ind_algo2, qty);
+      ut_free_1d_char (&(*pMultim).algos[i][1]);
+    ut_free_2d_char (&ind_algo2, qty);
   }
-  ut_free_2d_char (ind_algo, (*pMultim).algoqty);
+  ut_free_2d_char (&ind_algo, (*pMultim).algoqty);
 
   // Alloc
 
@@ -94,7 +90,7 @@ neut_multim_init (int dim, char *list, int cellqty, struct MULTIM *pMultim)
   (*pMultim).Osize = ut_alloc_1d (cellqty + 1);
   (*pMultim).O = ut_alloc_1d (cellqty + 1);
 
-  ut_free_1d_char (deflist);
+  ut_free_1d_char (&deflist);
 
   return;
 }

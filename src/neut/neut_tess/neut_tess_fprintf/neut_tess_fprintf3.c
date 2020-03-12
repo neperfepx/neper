@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_fprintf_.h"
@@ -121,7 +121,8 @@ neut_tess_fprintf_scale_cellid (struct TESS Tess, FILE * file)
   for (i = 1; i <= Tess.CellQty; i++)
   {
     fprintf (file, "   %d ", i);
-    ut_array_1d_int_fprintf (file, Tess.ScaleCellId[i] + 1, Tess.ScaleQty, "%d");
+    ut_array_1d_int_fprintf (file, Tess.ScaleCellId[i] + 1, Tess.ScaleQty,
+                             "%d");
   }
 
   return;

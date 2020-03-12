@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -23,20 +23,19 @@ extern "C"
   extern void neut_mesh_elt_centre_z (struct NODES Nodes, struct MESH Mesh,
 				      int elt, double *coo);
 
-/// \brief Get the length of an elt of a 1D mesh.
+/// \brief Get the (average edge) length of an elt
 ///
 ///
 ///
-  extern int neut_mesh_elt_length (struct NODES Nodes, struct MESH Mesh,
-				   int elt, double *plength);
+  extern void neut_mesh_elt_length (struct NODES Nodes, struct MESH Mesh,
+				    int elt, double *plength);
 
-/// \brief Get the average, min and max lengths of an elt of a 2D or 3D mesh.
+/// \brief Get the edge lengths of an elt
 ///
 ///
 ///
   extern void neut_mesh_elt_lengths (struct NODES Nodes, struct MESH Mesh,
-				     int elt, double *pavlength,
-				     double *pminlength, double *pmaxlength);
+				     int elt, double *lengths);
 
 /// \brief Get the area of an elt of a 2D mesh.
 ///
@@ -111,6 +110,18 @@ extern "C"
 ///
   extern int neut_mesh_elset_volume (struct NODES Nodes, struct MESH Mesh,
 				     int elset, double *pvol);
+
+  extern int neut_mesh_elset_diameq (struct NODES Nodes, struct MESH Mesh,
+				     int elset, double *pdiameq);
+
+  extern int neut_mesh_elset_radeq (struct NODES Nodes, struct MESH Mesh,
+				     int elset, double *pradeq);
+
+  extern int neut_mesh_elt_diameq (struct NODES Nodes, struct MESH Mesh,
+				     int elt, double *pdiameq);
+
+  extern int neut_mesh_elt_radeq (struct NODES Nodes, struct MESH Mesh,
+				     int elt, double *pradeq);
 
 /// \brief Get the area of an elset of a 2D mesh.
 ///

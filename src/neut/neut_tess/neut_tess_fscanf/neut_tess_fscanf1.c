@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_fscanf_.h"
@@ -54,14 +54,14 @@ neut_tess_fscanf (FILE * file, struct TESS *pTess)
   neut_tess_init_celltrue (pTess);
   neut_tess_init_cellbody (pTess);
 
-  ut_free_1d_char (version);
-  ut_free_1d_char (tmp);
+  ut_free_1d_char (&version);
+  ut_free_1d_char (&tmp);
 
   return;
 }
 
 void
-neut_tess_name_fscanf (char *name, struct TESS *pTess)
+neut_tess_fnscanf (char *name, struct TESS *pTess)
 {
   FILE *file = NULL;
   char **list = NULL;
@@ -70,7 +70,7 @@ neut_tess_name_fscanf (char *name, struct TESS *pTess)
   int *bounds = NULL;
   double *scale = NULL;
 
-  ut_string_separate (name, NEUT_SEP_DEP, &list, &qty);
+  ut_list_break (name, NEUT_SEP_DEP, &list, &qty);
 
   file = ut_file_open (list[0], "r");
   neut_tess_fscanf (file, pTess);
@@ -80,23 +80,24 @@ neut_tess_name_fscanf (char *name, struct TESS *pTess)
   {
     if (!strncmp (list[i], "scale", 5))
     {
-      ut_string_fnr (list[i], ',', ' ');
+      ut_string_fnrs (list[i], ",", " ", INT_MAX);
       list[i][strlen (list[i]) - 1] = '\0';
 
       scale = ut_alloc_1d (3);
-      qty2 = sscanf (list[i], "scale(%s%s%s", string[0], string[1], string[2]);
+      qty2 =
+        sscanf (list[i], "scale(%s%s%s", string[0], string[1], string[2]);
 
       if (qty2 == 1)
       {
-	ut_math_eval (string[0], 0, NULL, NULL, &(scale[0]));
-	ut_array_1d_set (scale, 3, scale[0]);
+        ut_math_eval (string[0], 0, NULL, NULL, &(scale[0]));
+        ut_array_1d_set (scale, 3, scale[0]);
       }
       else
       {
-	for (j = 0; j < qty2; j++)
-	  ut_math_eval (string[j], 0, NULL, NULL, &(scale[j]));
-	for (j = qty2; j < 3; j++)
-	  scale[j] = 1;
+        for (j = 0; j < qty2; j++)
+          ut_math_eval (string[j], 0, NULL, NULL, &(scale[j]));
+        for (j = qty2; j < 3; j++)
+          scale[j] = 1;
       }
 
       neut_tess_scale (pTess, scale[0], scale[1], scale[2]);
@@ -105,10 +106,10 @@ neut_tess_name_fscanf (char *name, struct TESS *pTess)
       ut_print_message (2, 0, "Failed to process expression `%s'.\n", name);
   }
 
-  ut_free_1d_int (bounds);
-  ut_free_1d (scale);
-  ut_free_2d_char (string, 6);
-  ut_free_2d_char (list, qty);
+  ut_free_1d_int (&bounds);
+  ut_free_1d (&scale);
+  ut_free_2d_char (&string, 6);
+  ut_free_2d_char (&list, qty);
 
   return;
 }

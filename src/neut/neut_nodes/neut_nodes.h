@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -81,7 +81,7 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_nodes_addnode (struct NODES *pNodes, double *NodeCoo,
+  extern int neut_nodes_addnode (struct NODES *pNodes, double *NodeCoo,
 				  double NodeCl);
 
 /// \brief Project nodes along a given direction onto a Mesh.

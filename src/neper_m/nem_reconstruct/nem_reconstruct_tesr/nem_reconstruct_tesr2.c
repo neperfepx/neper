@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nem_reconstruct_tesr_.h"
@@ -40,8 +40,8 @@ nem_reconstruct_tesr_domain (struct TESR *pTesr)
 
 void
 nem_reconstruct_tesr_tesr (struct TESR Tesr, struct TESS *pTess,
-			   struct NODES *pNodes, struct MESH *Mesh,
-			   struct NSET *NSet)
+                           struct NODES *pNodes, struct MESH *Mesh,
+                           struct NSET *NSet)
 {
   int i, j, k, elt;
   double *dsize = ut_alloc_1d (3);
@@ -52,15 +52,15 @@ nem_reconstruct_tesr_tesr (struct TESR Tesr, struct TESS *pTess,
   for (i = 0; i < Tesr.Dim; i++)
     dsize[i] = Tesr.size[i] * Tesr.vsize[i];
 
-  neut_mesh_str (Tesr.Dim, Tesr.size, pNodes, Mesh + Tesr.Dim, NSet +
-		 Tesr.Dim - 1);
+  neut_mesh_str (Tesr.Dim, Tesr.size, pNodes, Mesh + Tesr.Dim,
+                 NSet + Tesr.Dim - 1);
   neut_nodes_scale (pNodes, dsize[0], dsize[1], dsize[2]);
 
   elt = 0;
   for (k = 1; k <= Tesr.size[2]; k++)
     for (j = 1; j <= Tesr.size[1]; j++)
       for (i = 1; i <= Tesr.size[0]; i++)
-	Mesh[Tesr.Dim].EltElset[++elt] = Tesr.VoxCell[i][j][k];
+        Mesh[Tesr.Dim].EltElset[++elt] = Tesr.VoxCell[i][j][k];
 
   neut_mesh_init_elsets (Mesh + Tesr.Dim);
 
@@ -69,7 +69,7 @@ nem_reconstruct_tesr_tesr (struct TESR Tesr, struct TESS *pTess,
 
   neut_mesh_free (Mesh + Tesr.Dim);
 
-  ut_free_1d (dsize);
+  ut_free_1d (&dsize);
 
   return;
 }

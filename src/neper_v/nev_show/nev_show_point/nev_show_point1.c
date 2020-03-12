@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_show_point_.h"
 
 void
 nev_show_points (char **argv, int *pi, struct POINT Point,
-		 struct PRINT *pPrint)
+                 struct PRINT *pPrint)
 {
   // int i, j, varqty;
   int status;
@@ -47,11 +47,11 @@ nev_show_points (char **argv, int *pi, struct POINT Point,
      }
    */
 
-  (*pPrint).showpoint[0] = ut_array_1d_int_sum ((*pPrint).showpoint + 1,
-						Point.PointQty);
+  (*pPrint).showpoint[0] =
+    ut_array_1d_int_sum ((*pPrint).showpoint + 1, Point.PointQty);
 
-  // ut_free_2d_char (vars, varqty);
-  // ut_free_1d (vals);
+  // ut_free_2d_char (&vars, varqty);
+  // ut_free_1d (&vals);
 
   return;
 }

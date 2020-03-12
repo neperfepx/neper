@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_partition_.h"
@@ -7,7 +7,7 @@
 
 void
 nem_partition (struct IN_M In, struct NODES *pNodes, struct MESH *Mesh,
-	       struct PART *pPart)
+               struct PART *pPart)
 {
   int dim = neut_mesh_array_dim (Mesh);
 

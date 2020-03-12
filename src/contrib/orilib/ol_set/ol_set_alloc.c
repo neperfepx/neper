@@ -4,7 +4,7 @@
 #include "ol_set_alloc.h"
 
 struct OL_SET
-ol_set_alloc (size_t size, char* crysym)
+ol_set_alloc (size_t size, char *crysym)
 {
   struct OL_SET Set;
 
@@ -15,6 +15,7 @@ ol_set_alloc (size_t size, char* crysym)
   Set.id = ut_alloc_1d_int (size);
   ut_array_1d_int_set (Set.id, size, 1);
   Set.label = ut_alloc_1d_pchar (size);
+  Set.crysym = NULL;
 
   if (crysym)
   {
@@ -34,11 +35,11 @@ ol_set_alloc (size_t size, char* crysym)
 void
 ol_set_free (struct OL_SET Set)
 {
-  ut_free_2d (Set.q, Set.size);
-  ut_free_1d (Set.weight);
-  ut_free_1d_int (Set.id);
-  ut_free_2d_char (Set.label, Set.size);
-  ut_free_1d_char (Set.crysym);
+  ut_free_2d (&Set.q, Set.size);
+  ut_free_1d (&Set.weight);
+  ut_free_1d_int (&Set.id);
+  ut_free_2d_char (&Set.label, Set.size);
+  ut_free_1d_char (&Set.crysym);
 
   return;
 }
@@ -49,11 +50,11 @@ ol_set_fscanf (FILE * file, struct OL_SET *pSet, char *format)
   size_t i;
   double *e = ol_e_alloc ();
   int size, test, firstline_nbw, whole_nbw;
-  char* format2 = ut_alloc_1d_char (100);
+  char *format2 = ut_alloc_1d_char (100);
 
   // checking the number of string on the first line
   // can be 1, 3 or 4. 
-  ut_file_line_nbwords_pointer (file, &firstline_nbw);
+  ut_file_nextlinenbwords (file, &firstline_nbw);
   whole_nbw = ut_file_nbwords_pointer (file);
 
   /* required because size_t cannot be scanf (???) neither
@@ -104,21 +105,21 @@ ol_set_fscanf (FILE * file, struct OL_SET *pSet, char *format)
       ol_e_fscanf (file, e);
       ol_e_q (e, (*pSet).q[i]);
       if (fscanf (file, "%lf", &((*pSet).weight[i])) != 1)
-	return -1;
+        return -1;
     }
     else if (!strcmp (format2, "id,e,w"))
     {
       if (fscanf (file, "%d", &((*pSet).id[i])) != 1)
-	return -1;
+        return -1;
       ol_e_fscanf (file, e);
       ol_e_q (e, (*pSet).q[i]);
       if (fscanf (file, "%lf", &((*pSet).weight[i])) != 1)
-	return -1;
+        return -1;
     }
     else if (!strcmp (format2, "id,e"))
     {
       if (fscanf (file, "%d", &((*pSet).id[i])) != 1)
-	return -1;
+        return -1;
       ol_e_fscanf (file, e);
       ol_e_q (e, (*pSet).q[i]);
     }
@@ -127,14 +128,14 @@ ol_set_fscanf (FILE * file, struct OL_SET *pSet, char *format)
   }
 
   ol_e_free (e);
-  ut_free_1d_char (format2);
+  ut_free_1d_char (&format2);
 
   return 1;
 }
 
 int
 ol_set_fscanf_sample (FILE * file, double factor, struct OL_SET *pSet,
-		      char* format)
+                      char *format)
 {
   /* needed for -O3 opti */
   struct OL_SET Setb = ol_set_alloc (1, NULL);
@@ -148,7 +149,7 @@ ol_set_fscanf_sample (FILE * file, double factor, struct OL_SET *pSet,
 
 int
 ol_set_fscanf_sample_nb (FILE * file, int nb, struct OL_SET *pSet,
-			char* format)
+                         char *format)
 {
   /* needed for -O3 opti */
   struct OL_SET Setb = ol_set_alloc (1, NULL);
@@ -201,7 +202,7 @@ ol_set_fprintf (FILE * file, struct OL_SET Set, char *format)
   }
 
   ol_e_free (e);
-  ut_free_1d_char (fmt);
+  ut_free_1d_char (&fmt);
 
   return test;
 }
@@ -262,18 +263,18 @@ ol_set_orthotropic (struct OL_SET Set1, struct OL_SET *pSet2)
     }
   }
 
-  ut_free_2d (qsym, 3);
+  ut_free_2d (&qsym, 3);
 
   return;
 }
-  
+
 void
-ol_set_memcpy (struct OL_SET Set1, struct OL_SET* pSet2)
+ol_set_memcpy (struct OL_SET Set1, struct OL_SET *pSet2)
 {
   (*pSet2).size = Set1.size;
-  ut_array_2d_memcpy ((*pSet2).q, Set1.size, 4, Set1.q);
-  ut_array_1d_memcpy ((*pSet2).weight, Set1.size, Set1.weight);
-  ut_array_1d_int_memcpy ((*pSet2).id, Set1.size, Set1.id);
+  ut_array_2d_memcpy (Set1.q, Set1.size, 4, (*pSet2).q);
+  ut_array_1d_memcpy (Set1.weight, Set1.size, (*pSet2).weight);
+  ut_array_1d_int_memcpy (Set1.id, Set1.size, (*pSet2).id);
 
   return;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_geom_.h"
@@ -7,7 +7,7 @@
 
 int
 neut_mesh_elset_points_closestelts_search (struct MESH Mesh, int elset,
-                                           double *coo, NFTREE *nf_tree,
+                                           double *coo, NFTREE * nf_tree,
                                            int qty, int *pelt)
 {
   qty = ut_num_min (qty, Mesh.Elsets[elset][0]);

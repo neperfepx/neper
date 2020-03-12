@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesr_fprintf_.h"
@@ -28,14 +28,14 @@ neut_tesr_fprintf (FILE * file, char *format, struct TESR Tesr)
     neut_tesr_fprintf_oridata (file, "q", format, Tesr);
   neut_tesr_fprintf_foot (file);
 
-  ut_free_1d_char (format2);
+  ut_free_1d_char (&format2);
 
   return;
 }
 
 void
 neut_tesr_name_fprintf_raw (char *tesr, char *raw, char *format,
-			    struct TESR Tesr)
+                            struct TESR Tesr)
 {
   char *format2 = ut_alloc_1d_char (100);
   FILE *fp1 = NULL;
@@ -61,7 +61,7 @@ neut_tesr_name_fprintf_raw (char *tesr, char *raw, char *format,
 
   ut_file_close (fp1, tesr, "w");
 
-  ut_free_1d_char (format2);
+  ut_free_1d_char (&format2);
 
   return;
 }
@@ -74,20 +74,25 @@ neut_tesr_fprintf_ami (FILE * file, char *format, struct TESR Tesr)
 
   // .vtk files are always written in big endians.  So, setting format2 appropriately below.
 
-  if (!strcmp (format, "binary8") || (!strcmp (format, "ascii") && Tesr.CellQty < pow (2, 8) - 1))
+  if (!strcmp (format, "binary8")
+      || (!strcmp (format, "ascii") && Tesr.CellQty < pow (2, 8) - 1))
   {
     ut_string_string ("unsigned_char", &format_ami);
     ut_string_string ("binary8", &format2);
   }
-  else if (!strncmp (format, "binary16", 8) || (!strcmp (format, "ascii") && Tesr.CellQty < pow (2, 16) - 1))
+  else if (!strncmp (format, "binary16", 8)
+           || (!strcmp (format, "ascii") && Tesr.CellQty < pow (2, 16) - 1))
   {
     ut_string_string ("short", &format_ami);
-    ut_string_string (!ut_sys_endian ()? "binary16_big" : "binary16", &format2);
+    ut_string_string (!ut_sys_endian ()? "binary16_big" : "binary16",
+                      &format2);
   }
-  else if (!strncmp (format, "binary32", 8) || (!strcmp (format, "ascii") && Tesr.CellQty < pow (2, 32) - 1))
+  else if (!strncmp (format, "binary32", 8)
+           || (!strcmp (format, "ascii") && Tesr.CellQty < pow (2, 32) - 1))
   {
     ut_string_string ("int", &format_ami);
-    ut_string_string (!ut_sys_endian ()? "binary32_big" : "binary32", &format2);
+    ut_string_string (!ut_sys_endian ()? "binary32_big" : "binary32",
+                      &format2);
   }
   else
     abort ();
@@ -99,17 +104,20 @@ neut_tesr_fprintf_ami (FILE * file, char *format, struct TESR Tesr)
   fprintf (file, "Materiau\n");
   fprintf (file, "BINARY\n");
   fprintf (file, "DATASET STRUCTURED_POINTS\n");
-  fprintf (file, "DIMENSIONS    %d   %d   %d\n", Tesr.size[0] + 1, Tesr.size[1] + 1, Tesr.size[2] + 1);
-  fprintf (file, "ORIGIN    %.12f %.12f %.12f\n", Tesr.Origin[0], Tesr.Origin[1], Tesr.Origin[2]);
-  fprintf (file, "SPACING    %.12f    %.12f   %.12f\n", Tesr.vsize[0], Tesr.vsize[1], Tesr.vsize[2]);
+  fprintf (file, "DIMENSIONS    %d   %d   %d\n", Tesr.size[0] + 1,
+           Tesr.size[1] + 1, Tesr.size[2] + 1);
+  fprintf (file, "ORIGIN    %.12f %.12f %.12f\n", Tesr.Origin[0],
+           Tesr.Origin[1], Tesr.Origin[2]);
+  fprintf (file, "SPACING    %.12f    %.12f   %.12f\n", Tesr.vsize[0],
+           Tesr.vsize[1], Tesr.vsize[2]);
   fprintf (file, "CELL_DATA   %d\n", ut_array_1d_int_prod (Tesr.size, 3));
   fprintf (file, "SCALARS MaterialId %s\n", format_ami);
   fprintf (file, "LOOKUP_TABLE default\n");
 
   neut_tesr_fprintf_data_noheader (file, format2, Tesr, Tesr.CellId);
 
-  ut_free_1d_char (format_ami);
-  ut_free_1d_char (format2);
+  ut_free_1d_char (&format_ami);
+  ut_free_1d_char (&format2);
 
   return;
 }

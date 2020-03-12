@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_reg_.h"
@@ -21,10 +21,10 @@ net_reg_set_zero (struct REG *pReg)
 void
 net_reg_free (struct REG Reg)
 {
-  ut_free_1d_char (Reg.seltype);
-  ut_free_1d (Reg.PolySel);
-  ut_free_1d (Reg.FaceSel);
-  ut_free_1d (Reg.EdgeSel);
+  ut_free_1d_char (&Reg.seltype);
+  ut_free_1d (&Reg.PolySel);
+  ut_free_1d (&Reg.FaceSel);
+  ut_free_1d (&Reg.EdgeSel);
 
   return;
 }

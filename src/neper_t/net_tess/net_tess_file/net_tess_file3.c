@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_file_.h"
@@ -14,20 +14,20 @@ net_tess_file_mtess_vers (struct MTESS *pMTess, struct TESS *Tess, int dtess,
   neut_tess_poly_vercoos (Tess[dtess], dcell, &vers, &vercoos, &verqty);
 
   pos = ut_alloc_1d_int (verqty);
-  status = ut_array_2d_pair (Tess[TessId].DomVerCoo + 1, Tess[TessId].DomVerQty, 3,
-                             vercoos, verqty, 3, pos, &dist);
+  status =
+    ut_array_2d_pair (Tess[TessId].DomVerCoo + 1, Tess[TessId].DomVerQty, 3,
+                      vercoos, verqty, 3, pos, &dist);
   if (status || dist > 1e-6)
     abort ();
 
-  (*pMTess).TessDomVerNb
-    = ut_realloc_2d_int_addline ((*pMTess).TessDomVerNb,
-                                 (*pMTess).TessQty + 1,
-                                 Tess[TessId].DomVerQty + 1);
+  (*pMTess).TessDomVerNb =
+    ut_realloc_2d_int_addline ((*pMTess).TessDomVerNb, (*pMTess).TessQty + 1,
+                               Tess[TessId].DomVerQty + 1);
   for (i = 0; i < verqty; i++)
     (*pMTess).TessDomVerNb[TessId][i + 1] = vers[pos[i]];
 
-  ut_free_1d_int (pos);
-  ut_free_2d (vercoos, verqty);
+  ut_free_1d_int (&pos);
+  ut_free_2d (&vercoos, verqty);
 
   return 0;
 }
@@ -43,26 +43,27 @@ net_tess_file_mtess_edges (struct MTESS *pMTess, struct TESS *Tess, int dtess,
   int **tess_edgevers = ut_alloc_2d_int (Tess[TessId].DomEdgeQty, 2);
   for (i = 0; i < Tess[TessId].DomEdgeQty; i++)
     for (j = 0; j < 2; j++)
-      tess_edgevers[i][j] = (*pMTess).TessDomVerNb[TessId][Tess[TessId].DomEdgeVerNb[i + 1][j]];
+      tess_edgevers[i][j] =
+        (*pMTess).TessDomVerNb[TessId][Tess[TessId].DomEdgeVerNb[i + 1][j]];
 
   pos = ut_alloc_1d_int (edgeqty);
-  status = ut_array_2d_int_list_pair (tess_edgevers,
-                                      Tess[TessId].DomEdgeQty, 2,
-                                      edgevers, edgeqty, 2, pos);
+  status =
+    ut_array_1d_int_lists_pair_samelength (tess_edgevers, 2,
+                                           Tess[TessId].DomEdgeQty, edgevers,
+                                           2, edgeqty, pos);
   if (status)
     abort ();
 
-  (*pMTess).TessDomEdgeNb
-    = ut_realloc_2d_int_addline ((*pMTess).TessDomEdgeNb,
-                                 (*pMTess).TessQty + 1,
-                                 Tess[TessId].DomEdgeQty + 1);
+  (*pMTess).TessDomEdgeNb =
+    ut_realloc_2d_int_addline ((*pMTess).TessDomEdgeNb, (*pMTess).TessQty + 1,
+                               Tess[TessId].DomEdgeQty + 1);
   for (i = 0; i < edgeqty; i++)
     (*pMTess).TessDomEdgeNb[TessId][i + 1] = edges[pos[i]];
 
-  ut_free_1d_int (edges);
-  ut_free_2d_int (edgevers, edgeqty);
-  ut_free_2d_int (tess_edgevers, edgeqty);
-  ut_free_1d_int (pos);
+  ut_free_1d_int (&edges);
+  ut_free_2d_int (&edgevers, edgeqty);
+  ut_free_2d_int (&tess_edgevers, edgeqty);
+  ut_free_1d_int (&pos);
 
   return 0;
 }
@@ -71,11 +72,13 @@ int
 net_tess_file_mtess_faces (struct MTESS *pMTess, struct TESS *Tess, int dtess,
                            int dcell, int TessId)
 {
-  int i, j, *pos = NULL, *faces = NULL, **faceedges = NULL, *faceedgeqty = NULL, faceqty;
+  int i, j, *pos = NULL, *faces = NULL, **faceedges = NULL, *faceedgeqty =
+    NULL, faceqty;
   int status;
   int pos2, face;
 
-  neut_tess_poly_faceedges (Tess[dtess], dcell, &faces, &faceedges, &faceedgeqty, &faceqty);
+  neut_tess_poly_faceedges (Tess[dtess], dcell, &faces, &faceedges,
+                            &faceedgeqty, &faceqty);
 
   int **tess_faceedges = ut_alloc_1d_pint (Tess[TessId].DomFaceQty);
   int *tess_faceedgeqty = ut_alloc_1d_int (Tess[TessId].DomFaceQty);
@@ -84,20 +87,23 @@ net_tess_file_mtess_faces (struct MTESS *pMTess, struct TESS *Tess, int dtess,
     tess_faceedgeqty[i] = Tess[TessId].DomFaceEdgeQty[i + 1];
     tess_faceedges[i] = ut_alloc_1d_int (tess_faceedgeqty[i]);
     for (j = 0; j < tess_faceedgeqty[i]; j++)
-      tess_faceedges[i][j] = (*pMTess).TessDomEdgeNb[TessId][Tess[TessId].DomFaceEdgeNb[i + 1][j + 1]];
+      tess_faceedges[i][j] =
+        (*pMTess).TessDomEdgeNb[TessId][Tess[TessId].
+                                        DomFaceEdgeNb[i + 1][j + 1]];
   }
 
   pos = ut_alloc_1d_int (faceqty);
-  status = ut_array_2d_int_list_pair_2 (tess_faceedges,
-                                      Tess[TessId].DomFaceQty, Tess[TessId].DomFaceEdgeQty + 1,
-                                      faceedges, faceqty, faceedgeqty, pos);
+  status =
+    ut_array_1d_int_lists_pair (tess_faceedges,
+                                Tess[TessId].DomFaceEdgeQty + 1,
+                                Tess[TessId].DomFaceQty, faceedges,
+                                faceedgeqty, faceqty, pos);
   if (status)
     abort ();
 
-  (*pMTess).TessDomFaceNb
-    = ut_realloc_2d_int_addline ((*pMTess).TessDomFaceNb,
-                                 (*pMTess).TessQty + 1,
-                                 Tess[TessId].DomFaceQty + 1);
+  (*pMTess).TessDomFaceNb =
+    ut_realloc_2d_int_addline ((*pMTess).TessDomFaceNb, (*pMTess).TessQty + 1,
+                               Tess[TessId].DomFaceQty + 1);
 
   for (i = 0; i < faceqty; i++)
     (*pMTess).TessDomFaceNb[TessId][i + 1] = faces[pos[i]];
@@ -112,10 +118,10 @@ net_tess_file_mtess_faces (struct MTESS *pMTess, struct TESS *Tess, int dtess,
     (*pMTess).DomTessFaceNb[dtess][face][pos2] = i;
   }
 
-  ut_free_1d_int (faces);
-  ut_free_2d_int (faceedges, faceqty);
-  ut_free_2d_int (tess_faceedges, Tess[TessId].DomFaceQty);
-  ut_free_1d_int (tess_faceedgeqty);
+  ut_free_1d_int (&faces);
+  ut_free_2d_int (&faceedges, faceqty);
+  ut_free_2d_int (&tess_faceedges, Tess[TessId].DomFaceQty);
+  ut_free_1d_int (&tess_faceedgeqty);
 
   return 0;
 }

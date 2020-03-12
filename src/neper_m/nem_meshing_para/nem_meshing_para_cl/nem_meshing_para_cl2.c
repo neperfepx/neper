@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_para_cl_.h"
 
 int
 nem_meshing_para_cl_cell (char *clstring, struct MESHPARA *pMeshPara,
-			  struct TESS Tess)
+                          struct TESS Tess)
 {
   double **pcell_cl = NULL;
 
@@ -28,7 +28,7 @@ nem_meshing_para_cl_cell (char *clstring, struct MESHPARA *pMeshPara,
 
 int
 nem_meshing_para_cl_face (char *clstring, struct MESHPARA *pMeshPara,
-			  struct TESS Tess)
+                          struct TESS Tess)
 {
   neut_tess_entity_expr_val (Tess, "face", clstring, (*pMeshPara).face_cl);
 
@@ -40,7 +40,7 @@ nem_meshing_para_cl_face (char *clstring, struct MESHPARA *pMeshPara,
 
 int
 nem_meshing_para_cl_edge (char *clstring, struct MESHPARA *pMeshPara,
-			  struct TESS Tess)
+                          struct TESS Tess)
 {
   if (!(*pMeshPara).edge_cl)
     (*pMeshPara).edge_cl = ut_alloc_1d (Tess.FaceQty + 1);
@@ -55,7 +55,7 @@ nem_meshing_para_cl_edge (char *clstring, struct MESHPARA *pMeshPara,
 
 int
 nem_meshing_para_cl_ver (char *clstring, struct MESHPARA *pMeshPara,
-			  struct TESS Tess)
+                         struct TESS Tess)
 {
   if (!(*pMeshPara).ver_cl)
     (*pMeshPara).ver_cl = ut_alloc_1d (Tess.FaceQty + 1);
@@ -70,7 +70,7 @@ nem_meshing_para_cl_ver (char *clstring, struct MESHPARA *pMeshPara,
 
 int
 nem_meshing_para_cl_cell_tesr (char *clstring, struct MESHPARA *pMeshPara,
-			       struct TESR Tesr)
+                               struct TESR Tesr)
 {
   double **pcell_cl = NULL;
 
@@ -96,19 +96,20 @@ nem_meshing_para_cl_cell_tesr (char *clstring, struct MESHPARA *pMeshPara,
 
 int
 nem_meshing_para_cl_poly_mesh (char *clstring, struct MESHPARA *pMeshPara,
-			       struct NODES Nodes, struct MESH *Mesh,
-			       struct TESS Tess)
+                               struct NODES Nodes, struct MESH *Mesh,
+                               struct TESS Tess)
 {
   struct PART Part;
   neut_part_set_zero (&Part);
 
   (*pMeshPara).poly_cl = ut_alloc_1d (Tess.PolyQty + 1);
-  neut_mesh_entity_expr_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
-			     Part, Tess, NULL, NULL, NULL, NULL,
-			     "elset3d", clstring, (*pMeshPara).poly_cl);
+  neut_mesh_entity_expr_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Part,
+                             Tess, NULL, NULL, NULL, NULL, "elset3d",
+                             clstring, (*pMeshPara).poly_cl);
 
   if (!strcmp ((*pMeshPara).cltype, "rel"))
-    nem_meshing_para_rcl2cl (pMeshPara, Tess.CellQty, Tess.Dim, (*pMeshPara).poly_cl);
+    nem_meshing_para_rcl2cl (pMeshPara, Tess.CellQty, Tess.Dim,
+                             (*pMeshPara).poly_cl);
 
   neut_part_free (Part);
 

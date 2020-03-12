@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_polycomp_poly_.h"
@@ -29,8 +29,8 @@ UpdFaceEq (struct POLYMOD *pPolymod, double *plane)
 void
 UpdFaceUse (struct POLYMOD *pPolymod)
 {
-  (*pPolymod).FaceUse
-    = ut_realloc_1d_int ((*pPolymod).FaceUse, (*pPolymod).FaceQty + 1);
+  (*pPolymod).FaceUse =
+    ut_realloc_1d_int ((*pPolymod).FaceUse, (*pPolymod).FaceQty + 1);
 
   (*pPolymod).FaceUse[(*pPolymod).FaceQty] = 1;
 
@@ -40,8 +40,8 @@ UpdFaceUse (struct POLYMOD *pPolymod)
 void
 UpdFacePoly (struct POLYMOD *pPolymod, int Nei)
 {
-  (*pPolymod).FacePoly
-    = ut_realloc_1d_int ((*pPolymod).FacePoly, (*pPolymod).FaceQty + 1);
+  (*pPolymod).FacePoly =
+    ut_realloc_1d_int ((*pPolymod).FacePoly, (*pPolymod).FaceQty + 1);
 
   (*pPolymod).FacePoly[(*pPolymod).FaceQty] = Nei;
 
@@ -70,8 +70,9 @@ UpdVerUse (struct POLYMOD *pPolymod)
 void
 UpdVerFace (struct POLYMOD *pPolymod, int first, int second, int third)
 {
-  (*pPolymod).VerFace = ut_realloc_2d_int_addline ((*pPolymod).VerFace,
-						   (*pPolymod).VerQty + 1, 3);
+  (*pPolymod).VerFace =
+    ut_realloc_2d_int_addline ((*pPolymod).VerFace, (*pPolymod).VerQty + 1,
+                               3);
 
   (*pPolymod).VerFace[(*pPolymod).VerQty][0] = first;
   (*pPolymod).VerFace[(*pPolymod).VerQty][1] = second;
@@ -81,15 +82,17 @@ UpdVerFace (struct POLYMOD *pPolymod, int first, int second, int third)
 }
 
 void
-UpdVerCoo (struct POLYMOD *pPolymod, int first, int second, int third, double *coo)
+UpdVerCoo (struct POLYMOD *pPolymod, int first, int second, int third,
+           double *coo)
 {
-  (*pPolymod).VerCoo = ut_realloc_2d_addline ((*pPolymod).VerCoo,
-					      (*pPolymod).VerQty + 1, 3);
+  (*pPolymod).VerCoo =
+    ut_realloc_2d_addline ((*pPolymod).VerCoo, (*pPolymod).VerQty + 1, 3);
 
   if (!coo)
-    neut_polymod_faces_inter (*pPolymod, first, second, third, (*pPolymod).VerCoo[(*pPolymod).VerQty]);
+    neut_polymod_faces_inter (*pPolymod, first, second, third,
+                              (*pPolymod).VerCoo[(*pPolymod).VerQty]);
   else
-    ut_array_1d_memcpy ((*pPolymod).VerCoo[(*pPolymod).VerQty], 3, coo);
+    ut_array_1d_memcpy (coo, 3, (*pPolymod).VerCoo[(*pPolymod).VerQty]);
 
   return;
 }
@@ -105,13 +108,13 @@ UpdFaceVerQty (struct POLYMOD *pPolymod)
 void
 UpdFaceVerNb (struct POLYMOD *pPolymod)
 {
-  (*pPolymod).FaceVerNb[(*pPolymod).FaceQty]
-    = ut_realloc_1d_int ((*pPolymod).FaceVerNb[(*pPolymod).FaceQty],
-			 (*pPolymod).FaceVerQty[(*pPolymod).FaceQty] + 1);
+  (*pPolymod).FaceVerNb[(*pPolymod).FaceQty] =
+    ut_realloc_1d_int ((*pPolymod).FaceVerNb[(*pPolymod).FaceQty],
+                       (*pPolymod).FaceVerQty[(*pPolymod).FaceQty] + 1);
 
   (*pPolymod).FaceVerNb[(*pPolymod).FaceQty][(*pPolymod).
-					     FaceVerQty[(*pPolymod).
-							FaceQty]] =
+                                             FaceVerQty[(*pPolymod).
+                                                        FaceQty]] =
     (*pPolymod).VerQty;
 
   return;
@@ -137,8 +140,8 @@ NeiVer (struct POLYMOD Polymod, int face, int sum, int near)
 
   NeiPos =
     1 + ut_array_1d_int_eltpos (Polymod.FaceVerNb[face] + 1,
-				Polymod.FaceVerQty[face], sum);
-  NeiPos = ut_num_rotpos (1, Polymod.FaceVerQty[face], NeiPos, near);
+                                Polymod.FaceVerQty[face], sum);
+  NeiPos = ut_array_rotpos (1, Polymod.FaceVerQty[face], NeiPos, near);
 
   return Polymod.FaceVerNb[face][NeiPos];
 }
@@ -153,9 +156,9 @@ CommonFaces (POLYMOD pPolymod, int first, int second, int *res)
     for (j = 0; j < 3; j++)
       if (pPolymod.VerFace[first][i] == pPolymod.VerFace[second][j])
       {
-	res[nb] = pPolymod.VerFace[first][i];
-	nb++;
-	break;
+        res[nb] = pPolymod.VerFace[first][i];
+        nb++;
+        break;
       }
 
   return nb;
@@ -166,8 +169,8 @@ CommonFaces (POLYMOD pPolymod, int first, int second, int *res)
  */
 int
 VerCoupleNFaces (struct POLYMOD *pPolymod, int *BadVer, int Face, int pFace,
-		 int *couple1, int *couple2, int *faces1, int *faces2,
-		 int *pNbBadVer)
+                 int *couple1, int *couple2, int *faces1, int *faces2,
+                 int *pNbBadVer)
 {
   /* FaceVerNb[Face] is rotated to put all the bad vertices at the end.
    * The amount of bad vertices is recorded.
@@ -186,7 +189,7 @@ VerCoupleNFaces (struct POLYMOD *pPolymod, int *BadVer, int Face, int pFace,
     (*pPolymod).FaceVerNb[Face][(*pPolymod).FaceVerQty[Face] - (*pNbBadVer)];
   couple2[1] =
     (*pPolymod).FaceVerNb[Face][(*pPolymod).FaceVerQty[Face] - (*pNbBadVer) +
-				1];
+                                1];
 
   /* Recording of the common faces of couple1 vertices and couple2
    * vertices.
@@ -230,7 +233,8 @@ FaceModif1stNewVer (struct POLYMOD *pPolymod, int Face)
 /* Adding of the second new vertex.
  */
 void
-FaceModif2ndNewVer (struct POLYMOD *pPolymod, int Face, int bel2, int next, double *coo)
+FaceModif2ndNewVer (struct POLYMOD *pPolymod, int Face, int bel2, int next,
+                    double *coo)
 {
   /* The FaceVerQty is incremented.
    */
@@ -243,18 +247,17 @@ FaceModif2ndNewVer (struct POLYMOD *pPolymod, int Face, int bel2, int next, doub
 
   /* Adding of this vertex
    */
-  (*pPolymod).FaceVerNb[Face]
-    =
+  (*pPolymod).FaceVerNb[Face] =
     ut_realloc_1d_int ((*pPolymod).FaceVerNb[Face],
-		       (*pPolymod).FaceVerQty[Face] + 1);
+                       (*pPolymod).FaceVerQty[Face] + 1);
 
   (*pPolymod).FaceVerNb[Face][(*pPolymod).FaceVerQty[Face]] =
     (*pPolymod).VerQty;
 
   if (bel2 == -1)
     ut_array_1d_int_switch ((*pPolymod).FaceVerNb[Face],
-			    (*pPolymod).FaceVerQty[Face] - 1,
-			    (*pPolymod).FaceVerQty[Face]);
+                            (*pPolymod).FaceVerQty[Face] - 1,
+                            (*pPolymod).FaceVerQty[Face]);
 
   return;
 }
@@ -266,16 +269,15 @@ FaceModifAddBegVer (struct POLYMOD *pPolymod, int Face, int last, int bel2)
 {
   (*pPolymod).FaceVerQty[Face]++;
 
-  (*pPolymod).FaceVerNb[Face]
-    =
+  (*pPolymod).FaceVerNb[Face] =
     ut_realloc_1d_int ((*pPolymod).FaceVerNb[Face],
-		       (*pPolymod).FaceVerQty[Face] + 1);
+                       (*pPolymod).FaceVerQty[Face] + 1);
 
   (*pPolymod).FaceVerNb[Face][(*pPolymod).FaceVerQty[Face]] = last;
   if (bel2 == -1)
     ut_array_1d_int_switch ((*pPolymod).FaceVerNb[Face],
-			    (*pPolymod).FaceVerQty[Face] - 1,
-			    (*pPolymod).FaceVerQty[Face]);
+                            (*pPolymod).FaceVerQty[Face] - 1,
+                            (*pPolymod).FaceVerQty[Face]);
 
   return;
 }

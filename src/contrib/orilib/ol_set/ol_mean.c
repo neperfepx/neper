@@ -27,7 +27,7 @@ ol_set_mean_ref (struct OL_SET set, double *qref, double *qm)
       ol_q_q_qdisori_cur (qref, set.q[i], set.crysym, qb);
 
       for (j = 0; j < 4; j++)
-	qm[j] += qb[j] * set.weight[i];
+        qm[j] += qb[j] * set.weight[i];
     }
 
   qnorm = ut_array_1d_norm (qm, 4);

@@ -1,15 +1,15 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_meshdata_.h"
 
 void
-nev_meshdata_init (struct MESH Mesh,
-		   double size, int Qty, struct MESHDATA *pMeshData)
+nev_meshdata_init (struct MESH Mesh, double size, int Qty,
+                   struct MESHDATA *pMeshData)
 {
   if (Qty == 0)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   if (Mesh.EltQty == 0)
     return;
@@ -31,18 +31,18 @@ nev_meshdata_init (struct MESH Mesh,
 
   if (Mesh.Dimension == 0)
     ut_array_1d_set ((*pMeshData).Rad + 1, (*pMeshData).EltQty,
-		     pow (size,
-			  1. / 3) * 0.02 * sqrt (Mesh.Dimension +
-						 1) / pow (Qty, 0.25));
+                     pow (size,
+                          1. / 3) * 0.02 * sqrt (Mesh.Dimension +
+                                                 1) / pow (Qty, 0.25));
   else if (Mesh.Dimension == 1)
     ut_array_1d_set ((*pMeshData).Rad + 1, (*pMeshData).EltQty,
-		     pow (size, 1. / 3) * 0.01414 / pow (Qty, 0.25));
+                     pow (size, 1. / 3) * 0.01414 / pow (Qty, 0.25));
   else if (Mesh.Dimension == 2)
     ut_array_1d_set ((*pMeshData).Rad + 1, (*pMeshData).EltQty,
-		     pow (size, 1. / 3) * 0.01000 / pow (Qty, 0.25));
+                     pow (size, 1. / 3) * 0.01000 / pow (Qty, 0.25));
   else if (Mesh.Dimension == 3)
     ut_array_1d_set ((*pMeshData).Rad + 1, (*pMeshData).EltQty,
-		     pow (size, 1. / 3) * 0.00707 / pow (Qty, 0.25));
+                     pow (size, 1. / 3) * 0.00707 / pow (Qty, 0.25));
 
   if (!(*pMeshData).BCol)
   {
@@ -62,57 +62,55 @@ nev_meshdata_init (struct MESH Mesh,
   {
     if (Mesh.Dimension == 0)
       (*pMeshData).BRad =
-	pow (size, 1. / 3) * 0.02 / pow (Mesh.ElsetQty, 0.25);
+        pow (size, 1. / 3) * 0.02 / pow (Mesh.ElsetQty, 0.25);
     else if (Mesh.Dimension == 1)
       (*pMeshData).BRad =
-	pow (size, 1. / 3) * 0.01414 / pow (Mesh.ElsetQty, 0.25);
+        pow (size, 1. / 3) * 0.01414 / pow (Mesh.ElsetQty, 0.25);
     else if (Mesh.Dimension == 2)
       (*pMeshData).BRad =
-	pow (size, 1. / 3) * 0.01000 / pow (Mesh.ElsetQty, 0.25);
+        pow (size, 1. / 3) * 0.01000 / pow (Mesh.ElsetQty, 0.25);
     else if (Mesh.Dimension == 3)
       (*pMeshData).BRad =
-	pow (size, 1. / 3) * 0.00707 / pow (Mesh.ElsetQty, 0.25);
+        pow (size, 1. / 3) * 0.00707 / pow (Mesh.ElsetQty, 0.25);
   }
 
   if ((*pMeshData).ColDataType)
   {
     if (!strcmp ((*pMeshData).ColDataType, "from_nodes"))
     {
-    }				// do nothing
+    }                           // do nothing
 
     else if (!strcmp ((*pMeshData).ColDataType, "id"))
       nev_data_id_colour ((*pMeshData).ColData, (*pMeshData).EltQty,
-			  (*pMeshData).Col);
+                          (*pMeshData).Col);
 
     else if (!strcmp ((*pMeshData).ColDataType, "col"))
       nev_data_col_colour ((*pMeshData).ColData, (*pMeshData).EltQty,
-			   (*pMeshData).Col);
+                           (*pMeshData).Col);
 
     else if (!strncmp ((*pMeshData).ColDataType, "ori", 3))
       nev_data_ori_colour ((*pMeshData).ColData, (*pMeshData).EltQty,
-			   (*pMeshData).ColScheme, (*pMeshData).Col);
+                           (*pMeshData).ColScheme, (*pMeshData).Col);
 
     else if (!strcmp ((*pMeshData).ColDataType, "scal"))
-      nev_data_scal_colour ((*pMeshData).ColData, NULL,
-			    (*pMeshData).EltQty, (*pMeshData).Scale,
-			    (*pMeshData).ColScheme,
-			    (*pMeshData).Col, &((*pMeshData).Scale));
+      nev_data_scal_colour ((*pMeshData).ColData, NULL, (*pMeshData).EltQty,
+                            (*pMeshData).Scale, (*pMeshData).ColScheme,
+                            (*pMeshData).Col, &((*pMeshData).Scale));
 
     else
-      ut_error_reportbug ();
+      ut_print_exprbug ((*pMeshData).ColDataType);
   }
 
   if ((*pMeshData).RadData)
     nev_data_rad_radius ((*pMeshData).RadData, (*pMeshData).EltQty,
-			 (*pMeshData).Rad);
+                         (*pMeshData).Rad);
 
   return;
 }
 
 void
-nev_meshdata_fscanf (struct MESH *Mesh,
-		     char *entity, char *type, char *argument,
-		     struct MESHDATA *MeshData)
+nev_meshdata_fscanf (struct MESH *Mesh, char *entity, char *type,
+                     char *argument, struct MESHDATA *MeshData)
 {
   int dim, elset;
   struct MESHDATA MeshDataSet;
@@ -152,10 +150,10 @@ nev_meshdata_fscanf (struct MESH *Mesh,
   // copying elset data in elts
   if (elset)
     nev_meshdata_elset2elt (Mesh[dim], entity, type, MeshDataSet,
-			    MeshData + dim);
+                            MeshData + dim);
 
   neut_meshdata_free (&MeshDataSet);
-  ut_free_1d_char (entity2);
+  ut_free_1d_char (&entity2);
 
   return;
 }

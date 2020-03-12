@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_utils_.h"
@@ -119,77 +119,77 @@ net_in_set_zero (struct IN_T *pIn)
 void
 net_in_free (struct IN_T *pIn)
 {
-  ut_free_1d_char ((*pIn).domain);
-  ut_free_1d_char ((*pIn).transform);
-  ut_free_1d_char ((*pIn).format);
-  ut_free_1d_char ((*pIn).tesrformat);
-  ut_free_1d_char ((*pIn).oristring);
-  ut_free_2d_char ((*pIn).ori, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).orides);
-  ut_free_1d_char ((*pIn).oriformat);
-  ut_free_1d_char ((*pIn).body);
-  ut_free_1d_char ((*pIn).load);
-  ut_free_1d_char ((*pIn).loadpoint);
-  ut_free_1d_char ((*pIn).tess);
-  ut_free_1d_char ((*pIn).mtess);
-  ut_free_1d_char ((*pIn).tesr);
-  ut_free_1d_char ((*pIn).vtk);
-  ut_free_1d_char ((*pIn).raw);
-  ut_free_1d_char ((*pIn).geo);
-  ut_free_1d_char ((*pIn).mgeo);
-  ut_free_1d_char ((*pIn).ply);
-  ut_free_1d_char ((*pIn).stl);
-  ut_free_1d_char ((*pIn).stc);
-  ut_free_1d_char ((*pIn).stv);
-  ut_free_1d_char ((*pIn).ste);
-  ut_free_1d_char ((*pIn).stf);
-  ut_free_1d_char ((*pIn).stp);
-  ut_free_1d_char ((*pIn).sts);
-  ut_free_1d_char ((*pIn).dec);
-  ut_free_1d_char ((*pIn).obj);
-  ut_free_1d_char ((*pIn).orif);
-  ut_free_1d_char ((*pIn).debug);
-  ut_free_1d_char ((*pIn).sortstring);
-  ut_free_1d_char ((*pIn).stpt);
-  ut_free_1d_char ((*pIn).tesrsizestring);
+  ut_free_1d_char (&(*pIn).domain);
+  ut_free_1d_char (&(*pIn).transform);
+  ut_free_1d_char (&(*pIn).format);
+  ut_free_1d_char (&(*pIn).tesrformat);
+  ut_free_1d_char (&(*pIn).oristring);
+  ut_free_2d_char (&(*pIn).ori, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).orides);
+  ut_free_1d_char (&(*pIn).oriformat);
+  ut_free_1d_char (&(*pIn).body);
+  ut_free_1d_char (&(*pIn).load);
+  ut_free_1d_char (&(*pIn).loadpoint);
+  ut_free_1d_char (&(*pIn).tess);
+  ut_free_1d_char (&(*pIn).mtess);
+  ut_free_1d_char (&(*pIn).tesr);
+  ut_free_1d_char (&(*pIn).vtk);
+  ut_free_1d_char (&(*pIn).raw);
+  ut_free_1d_char (&(*pIn).geo);
+  ut_free_1d_char (&(*pIn).mgeo);
+  ut_free_1d_char (&(*pIn).ply);
+  ut_free_1d_char (&(*pIn).stl);
+  ut_free_1d_char (&(*pIn).stc);
+  ut_free_1d_char (&(*pIn).stv);
+  ut_free_1d_char (&(*pIn).ste);
+  ut_free_1d_char (&(*pIn).stf);
+  ut_free_1d_char (&(*pIn).stp);
+  ut_free_1d_char (&(*pIn).sts);
+  ut_free_1d_char (&(*pIn).dec);
+  ut_free_1d_char (&(*pIn).obj);
+  ut_free_1d_char (&(*pIn).orif);
+  ut_free_1d_char (&(*pIn).debug);
+  ut_free_1d_char (&(*pIn).sortstring);
+  ut_free_1d_char (&(*pIn).stpt);
+  ut_free_1d_char (&(*pIn).tesrsizestring);
 
-  ut_free_1d_char ((*pIn).input);
-  ut_free_1d_char ((*pIn).periodicstring);
-  ut_free_1d_int ((*pIn).periodic);
-  ut_free_1d_char ((*pIn).seltype);
-  ut_free_1d_char ((*pIn).selstring);
-  ut_free_1d_char ((*pIn).nstring);
-  ut_free_2d_char ((*pIn).n, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).idstring);
-  ut_free_2d_char ((*pIn).id, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).mode);
+  ut_free_1d_char (&(*pIn).input);
+  ut_free_1d_char (&(*pIn).periodicstring);
+  ut_free_1d_int (&(*pIn).periodic);
+  ut_free_1d_char (&(*pIn).seltype);
+  ut_free_1d_char (&(*pIn).selstring);
+  ut_free_1d_char (&(*pIn).nstring);
+  ut_free_2d_char (&(*pIn).n, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).idstring);
+  ut_free_2d_char (&(*pIn).id, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).mode);
 
-  ut_free_1d_char ((*pIn).morphostring);
-  ut_free_2d_char ((*pIn).morpho, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).morphooptialgostring);
-  ut_free_2d_char ((*pIn).morphooptialgo, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).morphooptiobjectivestring);
-  ut_free_2d_char ((*pIn).morphooptiobjective, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).morphooptismoothstring);
-  ut_free_2d_char ((*pIn).morphooptismooth, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).morphooptistopstring);
-  ut_free_2d_char ((*pIn).morphooptistop, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).oricrysymstring);
-  ut_free_2d_char ((*pIn).oricrysym, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).orioptistopstring);
-  ut_free_2d_char ((*pIn).orioptistop, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).morphooptilogtimestring);
-  ut_free_2d_char ((*pIn).morphooptilogtime, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).morphooptilogvarstring);
-  ut_free_2d_char ((*pIn).morphooptilogvar, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).morphooptidofstring);
-  ut_free_2d_char ((*pIn).morphooptidof, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).morphooptideltamaxstring);
-  ut_free_2d_char ((*pIn).morphooptideltamax, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).morphooptimultiseedstring);
-  ut_free_2d_char ((*pIn).morphooptimultiseed, (*pIn).levelqty + 1);
-  ut_free_1d_char ((*pIn).morphooptiinistepstring);
-  ut_free_2d_char ((*pIn).morphooptiinistep, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).morphostring);
+  ut_free_2d_char (&(*pIn).morpho, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).morphooptialgostring);
+  ut_free_2d_char (&(*pIn).morphooptialgo, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).morphooptiobjectivestring);
+  ut_free_2d_char (&(*pIn).morphooptiobjective, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).morphooptismoothstring);
+  ut_free_2d_char (&(*pIn).morphooptismooth, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).morphooptistopstring);
+  ut_free_2d_char (&(*pIn).morphooptistop, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).oricrysymstring);
+  ut_free_2d_char (&(*pIn).oricrysym, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).orioptistopstring);
+  ut_free_2d_char (&(*pIn).orioptistop, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).morphooptilogtimestring);
+  ut_free_2d_char (&(*pIn).morphooptilogtime, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).morphooptilogvarstring);
+  ut_free_2d_char (&(*pIn).morphooptilogvar, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).morphooptidofstring);
+  ut_free_2d_char (&(*pIn).morphooptidof, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).morphooptideltamaxstring);
+  ut_free_2d_char (&(*pIn).morphooptideltamax, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).morphooptimultiseedstring);
+  ut_free_2d_char (&(*pIn).morphooptimultiseed, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).morphooptiinistepstring);
+  ut_free_2d_char (&(*pIn).morphooptiinistep, (*pIn).levelqty + 1);
 
   net_in_set_zero (pIn);
 
@@ -250,7 +250,7 @@ net_tess_poly (struct TESS Tess, int poly, struct POLY *pPoly)
     ver = vers[i - 1];
 
     neut_tess_ver_poly_faces (Tess, ver, poly, &((*pPoly).VerFace[i]),
-			      &verfaceqty);
+                              &verfaceqty);
 
     if (verfaceqty != 3)
     {
@@ -258,7 +258,7 @@ net_tess_poly (struct TESS Tess, int poly, struct POLY *pPoly)
       abort ();
     }
 
-    ut_array_1d_memcpy ((*pPoly).VerCoo[i], 3, Tess.VerCoo[ver]);
+    ut_array_1d_memcpy (Tess.VerCoo[ver], 3, (*pPoly).VerCoo[i]);
   }
 
   (*pPoly).FaceQty = Tess.PolyFaceQty[poly];
@@ -273,15 +273,16 @@ net_tess_poly (struct TESS Tess, int poly, struct POLY *pPoly)
   {
     face = Tess.PolyFaceNb[poly][i];
 
-    (*pPoly).FacePoly[i] = (Tess.FacePoly[face][0] == poly) ?
-      Tess.FacePoly[face][1] : Tess.FacePoly[face][0];
+    (*pPoly).FacePoly[i] =
+      (Tess.FacePoly[face][0] ==
+       poly) ? Tess.FacePoly[face][1] : Tess.FacePoly[face][0];
 
     (*pPoly).FaceVerQty[i] = Tess.FaceVerQty[face];
     (*pPoly).FaceVerNb[i] = ut_alloc_1d_int ((*pPoly).FaceVerQty[i] + 1);
-    ut_array_1d_int_memcpy ((*pPoly).FaceVerNb[i] + 1,
-			    (*pPoly).FaceVerQty[i], Tess.FaceVerNb[face] + 1);
+    ut_array_1d_int_memcpy (Tess.FaceVerNb[face] + 1, (*pPoly).FaceVerQty[i],
+                            (*pPoly).FaceVerNb[i] + 1);
 
-    ut_array_1d_memcpy ((*pPoly).FaceEq[i], 4, Tess.FaceEq[face]);
+    ut_array_1d_memcpy (Tess.FaceEq[face], 4, (*pPoly).FaceEq[i]);
 
     // reversing face to get it pointing outwards, if necessary
     neut_tess_poly_face_ori (Tess, poly, face, &ori);
@@ -290,7 +291,7 @@ net_tess_poly (struct TESS Tess, int poly, struct POLY *pPoly)
     {
       ut_array_1d_scale ((*pPoly).FaceEq[i], 4, -1);
       ut_array_1d_int_reverseelts ((*pPoly).FaceVerNb[i] + 1,
-				   (*pPoly).FaceVerQty[i]);
+                                   (*pPoly).FaceVerQty[i]);
     }
   }
 
@@ -309,7 +310,7 @@ net_tess_poly (struct TESS Tess, int poly, struct POLY *pPoly)
 
   // renumbering faces
   faces = ut_alloc_1d_int (faceqty);
-  ut_array_1d_int_memcpy (faces, faceqty, Tess.PolyFaceNb[poly] + 1);
+  ut_array_1d_int_memcpy (Tess.PolyFaceNb[poly] + 1, faceqty, faces);
 
   int facemin = ut_array_1d_int_min (faces, faceqty);
   ut_array_1d_int_addval (faces, faceqty, -facemin, faces);
@@ -324,19 +325,19 @@ net_tess_poly (struct TESS Tess, int poly, struct POLY *pPoly)
     }
 
   /*
-  // This is needed by multiscale
-  // Actually, this seems only needed for multiscale + call to net_tess3d,
-  // which happens only in net_tess_lam or net_tess_tocta.
-  // This broke net_tess_clip, for example
-  // so, the patch was moved to net_tess3d
-  for (i = 1; i <= (*pPoly).FaceQty; i++)
-    (*pPoly).FacePoly[i] = -i;
-    */
+     // This is needed by multiscale
+     // Actually, this seems only needed for multiscale + call to net_tess3d,
+     // which happens only in net_tess_lam or net_tess_tocta.
+     // This broke net_tess_clip, for example
+     // so, the patch was moved to net_tess3d
+     for (i = 1; i <= (*pPoly).FaceQty; i++)
+     (*pPoly).FacePoly[i] = -i;
+   */
 
-  ut_free_1d_int (faces);
-  ut_free_1d_int (vers);
-  ut_free_1d_int (faces_inv);
-  ut_free_1d_int (vers_inv);
+  ut_free_1d_int (&faces);
+  ut_free_1d_int (&vers);
+  ut_free_1d_int (&faces_inv);
+  ut_free_1d_int (&vers_inv);
 
   return;
 }
@@ -357,7 +358,7 @@ net_poly_tesl (struct POLY Poly, double *coo, struct TESL *pTesl)
   SSet.Id = 1;
 
   SSet.SeedCoo = ut_alloc_2d (2, 3);
-  ut_array_1d_memcpy (SSet.SeedCoo[1], 3, coo);
+  ut_array_1d_memcpy (coo, 3, SSet.SeedCoo[1]);
 
   net_tesl (SSet, PolyArray, pTesl);
 
@@ -389,7 +390,7 @@ net_poly_tess (struct POLY Poly, double *coo, struct TESS *pTess)
   ut_string_string ("standard", &(SSet.Type));
 
   if (coo)
-    ut_array_1d_memcpy (coob, 3, coo);
+    ut_array_1d_memcpy (coo, 3, coob);
   else
     neut_poly_centroid (Poly, coob);
 
@@ -403,7 +404,7 @@ net_poly_tess (struct POLY Poly, double *coo, struct TESS *pTess)
 
   neut_tesl_free (&Tesl);
   neut_seedset_free (&SSet);
-  ut_free_1d (coob);
+  ut_free_1d (&coob);
 
   return;
 }
@@ -432,31 +433,33 @@ net_poly_centroid (struct POLY Poly, double *coo)
   for (f = 1; f <= Poly.FaceQty; f++)
   {
     ver = Poly.FaceVerNb[f][1];
-    ut_array_1d_memcpy (p0, 3, Poly.VerCoo[ver]);
+    ut_array_1d_memcpy (Poly.VerCoo[ver], 3, p0);
 
     for (i = 1; i <= Poly.FaceVerQty[f]; i++)
     {
       p1 = Poly.VerCoo[Poly.FaceVerNb[f][i]];
-      p2 = Poly.VerCoo[Poly.FaceVerNb[f]
-		       [ut_num_rotpos (1, Poly.FaceVerQty[f], i, 1)]];
+      p2 =
+        Poly.VerCoo[Poly.
+                    FaceVerNb[f][ut_array_1d_rotpos
+                                 (1, Poly.FaceVerQty[f], i, 1)]];
 
       area = ut_space_triangle_area (p0, p1, p2);
 
       if (area > 1e-20)
       {
-	ut_space_tet_centre (tmpcoo, p0, p1, p2, tmp);
-	vol = ut_space_tet_volume (tmpcoo, p0, p1, p2);
-	ut_array_1d_scale (tmp, 3, vol);
-	ut_array_1d_add (coo, tmp, 3, coo);
-	totvol += vol;
+        ut_space_tet_centre (tmpcoo, p0, p1, p2, tmp);
+        vol = ut_space_tet_volume (tmpcoo, p0, p1, p2);
+        ut_array_1d_scale (tmp, 3, vol);
+        ut_array_1d_add (coo, tmp, 3, coo);
+        totvol += vol;
       }
     }
   }
 
   ut_array_1d_scale (coo, 3, 1. / totvol);
 
-  ut_free_1d (p0);
-  ut_free_1d (tmp);
+  ut_free_1d (&p0);
+  ut_free_1d (&tmp);
 
   return;
 }
@@ -480,8 +483,8 @@ net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
   if (Tess.CellId)
   {
     (*pTesr).CellId = ut_alloc_1d_int (Tess.CellQty + 1);
-    ut_array_1d_int_memcpy ((*pTesr).CellId + 1, Tess.CellQty,
-			    Tess.CellId + 1);
+    ut_array_1d_int_memcpy (Tess.CellId + 1, Tess.CellQty,
+                            (*pTesr).CellId + 1);
   }
   else if (Tess.CellOri)
   {
@@ -492,8 +495,8 @@ net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
   if (Tess.CellOri)
   {
     (*pTesr).CellOri = ut_alloc_2d (Tess.CellQty + 1, 4);
-    ut_array_2d_memcpy ((*pTesr).CellOri + 1, Tess.CellQty, 4,
-			Tess.CellOri + 1);
+    ut_array_2d_memcpy (Tess.CellOri + 1, Tess.CellQty, 4,
+                        (*pTesr).CellOri + 1);
   }
 
 #pragma omp parallel for schedule(dynamic)
@@ -504,52 +507,39 @@ net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
 
   neut_tesr_init_hasvoid (pTesr);
 
-  ut_free_2d (bbox, 3);
+  ut_free_2d (&bbox, 3);
 
   return;
 }
 
 void
-net_clip (char *clip, struct SEEDSET SSet, struct TESS *pTess)
+net_tess_clip_expr (struct TESS *pTess, char *clip)
 {
-  int i, qty, status;
-  FILE *fp = NULL;
-  char *tmp = NULL;
+  int j, exprqty;
   double *eq = ut_alloc_1d (4);
-  char *input = ut_alloc_1d_char (strlen (clip) + 1);
-  char *file = ut_alloc_1d_char (strlen (clip) + 1);
+  char *fct = NULL, **exprs = NULL;
 
-  ut_string_string (clip, &tmp);
+  ut_string_function_expr (clip, &fct, &exprs, &exprqty);
 
-  ut_string_fnr (tmp, '(', ' ');
-  ut_string_fnr (tmp, ')', ' ');
-  ut_string_fnr (tmp, ',', ' ');
-  if (sscanf (tmp, "%s%s", input, file) != 2)
-    ut_print_message (2, 2, "Failed to read argument `%s'.\n", clip);
+  if (exprqty != 4)
+    ut_print_message (2, 2, "Failed to parse expression `%s'.\n", clip);
 
-  fp = ut_file_open (file, "r");
-  if (fscanf (fp, "%d", &qty) != 1)
-    abort ();
-  for (i = 0; i < qty; i++)
-  {
-    status = ut_array_1d_fscanf (fp, eq, 4);
-    if (status != 1)
-      abort ();
-    ut_array_1d_scale (eq, 4, 1. / ut_vector_norm (eq + 1));
-    net_tess_clip (SSet, pTess, eq);
-  }
-  ut_file_close (fp, file, "r");
+  for (j = 0; j < 4; j++)
+    sscanf (exprs[j], "%lf", eq + j);
 
-  ut_free_1d_char (tmp);
-  ut_free_1d_char (input);
-  ut_free_1d_char (file);
-  ut_free_1d (eq);
+  ut_array_1d_scale (eq, 4, 1. / ut_array_1d_norm (eq + 1, 3));
+
+  net_tess_clip (pTess, eq);
+
+  ut_free_1d (&eq);
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&exprs, exprqty);
 
   return;
 }
 
 int
-net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
+net_tess_clip (struct TESS *pTess, double *eq)
 {
   int i, side, level, tessid, domface;
   struct POLY *Poly = calloc ((*pTess).CellQty + 1, sizeof (struct POLY));
@@ -558,11 +548,16 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
   struct TESL Tesl;
   struct TESS TessCpy;
   int plane_id;
+  struct SEEDSET SSet;
+
+  neut_seedset_set_zero (&SSet);
+  net_tess_seedset (*pTess, &SSet);
 
   level = (*pTess).Level;
   tessid = (*pTess).TessId;
 
-  plane_id = ut_array_2d_int_min ((*pTess).FacePoly + 1, (*pTess).FaceQty, 2) - 1;
+  plane_id =
+    ut_array_2d_int_min ((*pTess).FacePoly + 1, (*pTess).FaceQty, 2) - 1;
 
   neut_tesl_set_zero (&Tesl);
   neut_tess_set_zero (&TessCpy);
@@ -574,21 +569,21 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
   {
     neut_tess_cell_planeside (*pTess, i, eq, &side);
 
-    if (side == -1) // downward
+    if (side == -1)             // downward
       net_tess_poly (*pTess, i, Poly + i);
-    else if (side == 0) // cut
+    else if (side == 0)         // cut
     {
       net_tess_poly (*pTess, i, Poly + i);
       net_poly_clip (Poly + i, eq, plane_id);
     }
-    else // upward, i.e. removed
+    else                        // upward, i.e. removed
       neut_poly_set_zero (Poly + i);
   }
 
   net_tesl (SSet, Poly, &Tesl);
   neut_tesl_tess (Tesl, SSet, level, tessid, pTess);
 
-  ut_free_1d_int (BadVer);
+  ut_free_1d_int (&BadVer);
   neut_tesl_free (&Tesl);
 
   int j;
@@ -599,7 +594,7 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
   for (i = 1; i <= (*pTess).FaceQty; i++)
     for (j = 0; j < 2; j++)
       if ((*pTess).FacePoly[i][j] < 0)
-	domfaces[domfaceqty++] = -(*pTess).FacePoly[i][j];
+        domfaces[domfaceqty++] = -(*pTess).FacePoly[i][j];
 
   ut_array_1d_int_sort_uniq (domfaces, domfaceqty, &domfaceqty);
 
@@ -608,10 +603,10 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
   for (i = 1; i <= (*pTess).FaceQty; i++)
     for (j = 0; j < 2; j++)
       if ((*pTess).FacePoly[i][j] < 0)
-	(*pTess).FacePoly[i][j] = -domfaceinv[-(*pTess).FacePoly[i][j]] - 1;
+        (*pTess).FacePoly[i][j] = -domfaceinv[-(*pTess).FacePoly[i][j]] - 1;
 
-  ut_free_1d_int (domfaces);
-  ut_free_1d_int (domfaceinv);
+  ut_free_1d_int (&domfaces);
+  ut_free_1d_int (&domfaceinv);
 
   ut_string_string ("clipped", &((*pTess)).DomType);
   neut_tess_init_domain (pTess);
@@ -632,22 +627,96 @@ net_tess_clip (struct SEEDSET SSet, struct TESS *pTess, double *eq)
   neut_tess_tess_seed (TessCpy, pTess);
   neut_tess_tess_scale (TessCpy, pTess);
 
+  neut_tess_compress (pTess);
+
   neut_tess_free (&TessCpy);
 
   return domface;
 }
 
+void
+net_tess_crop_expr (struct TESS *pTess, char *crop)
+{
+  int i, j, exprqty;
+  char *fct = NULL, **exprs = NULL;
+  double **bounds = ut_alloc_2d (3, 2);
+  char *crop2 = NULL;
+
+  ut_string_string (crop, &crop2);
+  crop2[strlen (crop2) - 1] = '\0';
+  ut_string_fnrs (crop2, "crop(", "", 1);
+
+  if (strstr (crop2, "cube"))
+  {
+    ut_string_function_expr (crop2, &fct, &exprs, &exprqty);
+
+    if (exprqty != 6)
+      ut_print_message (2, 2, "Failed to parse expression `%s'.\n", crop2);
+
+    for (i = 0; i < 3; i++)
+      for (j = 0; j < 2; j++)
+        sscanf (exprs[2 * i + j], "%lf", bounds[i] + j);
+
+    net_tess_crop_cube (pTess, bounds);
+
+    ut_free_2d (&bounds, 3);
+  }
+
+  else
+    ut_print_message (2, 2, "Failed to parse expression `%s'.\n", crop2);
+
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&exprs, exprqty);
+  ut_free_1d_char (&crop2);
+
+  return;
+}
+
 int
-net_multiscale_mtess_arg_0d_char_fscanf (int level, struct MTESS MTess, struct TESS *Tess,
-                                         int domtess, int dompoly,
-					 char *string, char **pval)
+net_tess_crop_cube (struct TESS *pTess, double **bounds)
+{
+  int i, dir, bound;
+  double **eqs = ut_alloc_2d (6, 4);
+  double **bbox = ut_alloc_2d (3, 2);
+
+  ut_array_1d_set_4 (eqs[0], -bounds[0][0], -1, 0, 0);
+  ut_array_1d_set_4 (eqs[1], bounds[0][1], 1, 0, 0);
+  ut_array_1d_set_4 (eqs[2], -bounds[1][0], 0, -1, 0);
+  ut_array_1d_set_4 (eqs[3], bounds[1][1], 0, 1, 0);
+  ut_array_1d_set_4 (eqs[4], -bounds[2][0], 0, 0, -1);
+  ut_array_1d_set_4 (eqs[5], bounds[2][1], 0, 0, 1);
+
+  neut_tess_bbox (*pTess, bbox);
+
+  for (i = 0; i < 6; i++)
+  {
+    dir = i / 2;
+    bound = i % 2;
+
+    // skipping cuts that are out of (or coincide with) the bbox
+    if ((bound == 0 && -eqs[i][0] > bbox[dir][0])
+        || (bound == 1 && eqs[i][0] < bbox[dir][1]))
+      net_tess_clip (pTess, eqs[i]);
+  }
+
+  ut_free_2d (&eqs, 6);
+  ut_free_2d (&bbox, 3);
+
+  return 0;
+}
+
+int
+net_multiscale_mtess_arg_0d_char_fscanf (int level, struct MTESS MTess,
+                                         struct TESS *Tess, int domtess,
+                                         int dompoly, char *string,
+                                         char **pval)
 {
   char *mid = NULL;
 
   if (level == 1 && strncmp (string, "msfile(", 7))
     ut_string_string (string, pval);
 
-  else if (ut_string_filename (string))
+  else if (ut_string_isfilename (string))
   {
     (*pval) = ut_alloc_1d_char (1000);
     neut_mtess_tess_poly_mid (MTess, Tess[domtess], dompoly, &mid);
@@ -658,7 +727,7 @@ net_multiscale_mtess_arg_0d_char_fscanf (int level, struct MTESS MTess, struct T
   else
     ut_string_string (string, pval);
 
-  ut_free_1d_char (mid);
+  ut_free_1d_char (&mid);
 
   return 0;
 }
@@ -669,12 +738,12 @@ net_multiscale_arg_0d_char_fscanf (char *string, char *flag, char *val)
   int status;
   FILE *file = NULL;
 
-  if (!ut_string_filename (string))
+  if (!ut_string_isfilename (string))
     strcpy (val, string);
   else
   {
     file = ut_file_open (string, "R");
-    status = ut_array_0d_char_fscanf_filter_prefix (file, val, flag);
+    status = ut_array_0d_string_fscanf_prefix (file, val, flag);
     if (status != 1)
       ut_print_message (2, 0, "Failed to read file.\n");
 
@@ -685,20 +754,19 @@ net_multiscale_arg_0d_char_fscanf (char *string, char *flag, char *val)
 }
 
 int
-net_multiscale_arg_0d_fscanf (char *string, char *flag,
-			      int varqty, char **vars, double *vals,
-			      double *pval)
+net_multiscale_arg_0d_fscanf (char *string, char *flag, int varqty,
+                              char **vars, double *vals, double *pval)
 {
   int status;
   FILE *file = NULL;
   char *tmp = ut_alloc_1d_char (1000);
 
-  if (!ut_string_filename (string))
+  if (!ut_string_isfilename (string))
     strcpy (tmp, string);
   else
   {
     file = ut_file_open (string, "R");
-    status = ut_array_0d_char_fscanf_filter_prefix (file, tmp, flag);
+    status = ut_array_0d_string_fscanf_prefix (file, tmp, flag);
     if (status != 1)
       ut_print_message (2, 0, "Failed to read file `%s'.\n", string);
 
@@ -707,33 +775,32 @@ net_multiscale_arg_0d_fscanf (char *string, char *flag,
 
   ut_math_eval (tmp, varqty, vars, vals, pval);
 
-  ut_free_1d_char (tmp);
+  ut_free_1d_char (&tmp);
 
   return 0;
 }
 
 int
-net_multiscale_arg_0d_int_fscanf (char *string, char *flag,
-				  int varqty, char **vars, double *vals,
-				  int *pval)
+net_multiscale_arg_0d_int_fscanf (char *string, char *flag, int varqty,
+                                  char **vars, double *vals, int *pval)
 {
   double val;
 
-  net_multiscale_arg_0d_fscanf (string, flag, varqty, vars, vals,
-				&val);
+  net_multiscale_arg_0d_fscanf (string, flag, varqty, vars, vals, &val);
   (*pval) = ut_num_d2ri (val);
 
   return 0;
 }
 
 int
-net_multiscale_arg_1d_fscanf (char *string, char *flag, double *val, int valqty)
+net_multiscale_arg_1d_fscanf (char *string, char *flag, double *val,
+                              int valqty)
 {
   int status;
   FILE *file = NULL;
 
   file = ut_file_open (string, "R");
-  status = ut_array_1d_fscanf_filter_prefix (file, val, valqty, flag);
+  status = ut_array_1d_fscanf_prefix (file, val, valqty, flag);
   if (status != 1)
     ut_print_message (2, 0, "Failed to read file `%s'.\n", string);
   ut_file_close (file, string, "R");
@@ -742,13 +809,14 @@ net_multiscale_arg_1d_fscanf (char *string, char *flag, double *val, int valqty)
 }
 
 int
-net_multiscale_arg_1d_int_fscanf (char *string, char *flag, int *val, int valqty)
+net_multiscale_arg_1d_int_fscanf (char *string, char *flag, int *val,
+                                  int valqty)
 {
   int status;
   FILE *file = NULL;
 
   file = ut_file_open (string, "R");
-  status = ut_array_1d_int_fscanf_filter_prefix (file, val, valqty, flag);
+  status = ut_array_1d_int_fscanf_prefix (file, val, valqty, flag);
   if (status != 1)
     ut_print_message (2, 0, "Failed to read file `%s'.\n", string);
   ut_file_close (file, string, "R");
@@ -757,13 +825,14 @@ net_multiscale_arg_1d_int_fscanf (char *string, char *flag, int *val, int valqty
 }
 
 int
-net_multiscale_arg_2d_fscanf (char *string, char *flag, double **val, int size1, int size2)
+net_multiscale_arg_2d_fscanf (char *string, char *flag, double **val,
+                              int size1, int size2)
 {
   int status;
   FILE *file = NULL;
 
   file = ut_file_open (string, "R");
-  status = ut_array_2d_fscanf_filter_prefix (file, val, size1, size2, flag);
+  status = ut_array_2d_fscanf_prefix (file, val, size1, size2, flag);
   if (status != 1)
     ut_print_message (2, 0, "Failed to read file `%s'.\n", string);
   ut_file_close (file, string, "R");
@@ -788,18 +857,19 @@ net_cubetess (double **size, struct TESS *pTess)
   neut_tess_init_domain (pTess);
 
   neut_poly_free (&Poly);
-  ut_free_1d (coo);
+  ut_free_1d (&coo);
 
   return;
 }
 
 void
-net_pts_convexhull (double **coos, int qty, int dim, struct NODES *pN, struct MESH *pM)
+net_pts_convexhull (double **coos, int qty, int dim, struct NODES *pN,
+                    struct MESH *pM)
 {
   int i, **FacePoly = NULL, FaceQty;
   int **EdgeFaceNb = NULL, *EdgeFaceQty = NULL, EdgeQty;
   double **cubesize = ut_alloc_2d (3, 2);
-  double* coo = ut_alloc_1d (3);
+  double *coo = ut_alloc_1d (3);
   struct SEEDSET SSet;
   struct POLY DomPoly;
   struct TESS Dom, Tess, Tess2;
@@ -816,9 +886,9 @@ net_pts_convexhull (double **coos, int qty, int dim, struct NODES *pN, struct ME
   SSet.Nall = qty;
   ut_string_string ("standard", &(SSet.Type));
   SSet.SeedCoo0 = ut_alloc_2d (qty + 1, 3);
-  ut_array_2d_memcpy (SSet.SeedCoo0 + 1, qty, dim, coos);
+  ut_array_2d_memcpy (coos, qty, dim, SSet.SeedCoo0 + 1);
   SSet.SeedCoo = ut_alloc_2d (qty + 1, 3);
-  ut_array_2d_memcpy (SSet.SeedCoo + 1, SSet.N, dim, coos);
+  ut_array_2d_memcpy (coos, SSet.N, dim, SSet.SeedCoo + 1);
   SSet.SeedWeight = ut_alloc_1d (qty + 1);
 
   for (i = 0; i < 3; i++)
@@ -841,13 +911,14 @@ net_pts_convexhull (double **coos, int qty, int dim, struct NODES *pN, struct ME
   if (dim == 3)
     neut_mesh3d_mesh2d (*pN, Mesh, pM, &FacePoly, &FaceQty, 0);
   else if (dim == 2)
-    neut_mesh2d_mesh1d (*pN, Mesh, pM, &EdgeFaceNb, &EdgeFaceQty, &EdgeQty, 0);
+    neut_mesh2d_mesh1d (*pN, Mesh, pM, &EdgeFaceNb, &EdgeFaceQty, &EdgeQty,
+                        0);
 
-  ut_free_2d_int (FacePoly, FaceQty);
-  ut_free_2d_int (EdgeFaceNb, EdgeQty);
-  ut_free_1d_int (EdgeFaceQty);
-  ut_free_2d (cubesize, 3);
-  ut_free_1d (coo);
+  ut_free_2d_int (&FacePoly, FaceQty);
+  ut_free_2d_int (&EdgeFaceNb, EdgeQty);
+  ut_free_1d_int (&EdgeFaceQty);
+  ut_free_2d (&cubesize, 3);
+  ut_free_1d (&coo);
   neut_seedset_free (&SSet);
   neut_poly_free (&DomPoly);
   neut_tess_free (&Dom);
@@ -864,21 +935,55 @@ net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet)
   neut_seedset_free (pSSet);
   neut_seedset_set_zero (pSSet);
 
-  (*pSSet).N = Tess.SeedQty;
+  (*pSSet).Dim = Tess.Dim;
+  (*pSSet).N = Tess.CellQty;
   (*pSSet).Nall = Tess.SeedQty;
   ut_string_string (Tess.Type, &(*pSSet).Type);
 
-  if (!strcmp ((*pSSet).Type, "periodic"))
-    abort ();
+  ut_string_string (Tess.CellCrySym, &(*pSSet).crysym);
+
+  (*pSSet).Size = ut_alloc_2d (3, 2);
+  neut_tess_bbox (Tess, (*pSSet).Size);
 
   (*pSSet).SeedCoo = ut_alloc_2d ((*pSSet).Nall + 1, 3);
-  ut_array_2d_memcpy ((*pSSet).SeedCoo + 1, (*pSSet).Nall, 3, Tess.SeedCoo + 1);
+  ut_array_2d_memcpy (Tess.SeedCoo + 1, (*pSSet).Nall, 3,
+                      (*pSSet).SeedCoo + 1);
 
   (*pSSet).SeedCoo0 = ut_alloc_2d ((*pSSet).N + 1, 3);
-  ut_array_2d_memcpy ((*pSSet).SeedCoo0 + 1, (*pSSet).N, 3, (*pSSet).SeedCoo + 1);
+  ut_array_2d_memcpy ((*pSSet).SeedCoo + 1, (*pSSet).N, 3,
+                      (*pSSet).SeedCoo0 + 1);
 
   (*pSSet).SeedWeight = ut_alloc_1d ((*pSSet).Nall + 1);
-  ut_array_1d_memcpy ((*pSSet).SeedWeight + 1, (*pSSet).Nall, Tess.SeedWeight + 1);
+  ut_array_1d_memcpy (Tess.SeedWeight + 1, (*pSSet).Nall,
+                      (*pSSet).SeedWeight + 1);
+
+  if (Tess.CellOri)
+  {
+    (*pSSet).q = ut_alloc_2d ((*pSSet).N + 1, 4);
+    ut_array_2d_memcpy (Tess.CellOri + 1, (*pSSet).N, 4, (*pSSet).q + 1);
+  }
+
+  (*pSSet).Periodic = ut_alloc_1d_int (3);
+  ut_array_1d_int_memcpy (Tess.Periodic, 3, (*pSSet).Periodic);
+  (*pSSet).PeriodicDist = ut_alloc_1d (3);
+  ut_array_1d_memcpy (Tess.PeriodicDist, 3, (*pSSet).PeriodicDist);
+
+  if (!strcmp ((*pSSet).Type, "periodic"))
+  {
+    (*pSSet).PerSeedMaster = ut_alloc_1d_int ((*pSSet).Nall + 1);
+    ut_array_1d_int_memcpy (Tess.PerSeedMaster + 1, (*pSSet).Nall,
+                            (*pSSet).PerSeedMaster + 1);
+    (*pSSet).PerSeedShift = ut_alloc_2d_int ((*pSSet).Nall + 1, 3);
+    ut_array_2d_int_memcpy (Tess.PerSeedShift + 1, (*pSSet).Nall, 3,
+                            (*pSSet).PerSeedShift + 1);
+    (*pSSet).PerSeedSlaveQty = ut_alloc_1d_int ((*pSSet).N + 1);
+    ut_array_1d_int_set ((*pSSet).PerSeedSlaveQty + 1, (*pSSet).N,
+                         pow (3, (*pSSet).Dim));
+    (*pSSet).PerSeedSlaveNb =
+      ut_alloc_2d_int ((*pSSet).N + 1, pow (3, (*pSSet).Dim));
+    ut_array_2d_int_memcpy (Tess.PerSeedShift + 1, (*pSSet).N,
+                            pow (3, (*pSSet).Dim), (*pSSet).PerSeedShift + 1);
+  }
 
   return 0;
 }
@@ -896,7 +1001,8 @@ net_seedset_tess (struct SEEDSET SSet, struct TESS *pTess)
   {
     (*pTess).CellOri = ut_alloc_2d ((*pTess).CellQty + 1, 4);
 
-    ut_array_2d_memcpy ((*pTess).CellOri + 1, (*pTess).CellQty, 4, SSet.q + 1);
+    ut_array_2d_memcpy (SSet.q + 1, (*pTess).CellQty, 4,
+                        (*pTess).CellOri + 1);
   }
 
   return;

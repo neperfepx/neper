@@ -1,16 +1,17 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_data_utils_.h"
 
 void
-nev_data_fscanf_ori_file (char *value, int qty,
-                          double ***pColData, char **pColDataType)
+nev_data_fscanf_ori_file (char *value, int qty, double ***pColData,
+                          char **pColDataType)
 {
   int i, qty0 = ol_des_size (*pColDataType + 3);
   if (qty0 == -1)
-    ut_print_message (2, 2, "Failed to process expression `%s'.\n", *pColDataType + 3);
+    ut_print_message (2, 2, "Failed to process expression `%s'.\n",
+                      *pColDataType + 3);
 
   double *tmpd = ut_alloc_1d (4);
   int *tmpi = ut_alloc_1d_int (6);
@@ -55,11 +56,11 @@ nev_data_fscanf_ori_file (char *value, int qty,
       ol_g_q (tmpdd, (*pColData)[i]);
     }
     else
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
-  ut_free_1d (tmpd);
-  ut_free_1d_int (tmpi);
-  ut_free_2d (tmpdd, 3);
+  ut_free_1d (&tmpd);
+  ut_free_1d_int (&tmpi);
+  ut_free_2d (&tmpdd, 3);
 
   return;
 }

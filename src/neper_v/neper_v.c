@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neper_v_.h"
@@ -77,76 +77,72 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
     {
       // tessellation / mesh loading -------------------------------------
       if (expargv[i][0] != '-')
-	nev_load (expargv[i], &Tess, &Tesr, &Nodes, Mesh, &Point,
-		  &TessData, &TesrData, &NodeData, MeshData, &PointData);
+        nev_load (expargv[i], &Tess, &Tesr, &Nodes, Mesh, &Point, &TessData,
+                  &TesrData, &NodeData, MeshData, &PointData);
 
       // data loading and settings ---------------------------------------
       else if (strncmp (expargv[i], "-data", 5) == 0)
-	nev_data (expargv, &i, Tess, Tesr, Mesh, &TessData, &TesrData,
-		  &NodeData, MeshData, &CsysData, &PointData);
+        nev_data (expargv, &i, Tess, Tesr, Mesh, &TessData, &TesrData,
+                  &NodeData, MeshData, &CsysData, &PointData);
 
       // show settings ---------------------------------------------------
       else if (strncmp (expargv[i], "-show", 5) == 0)
-	nev_show (expargv, &i, Tess, Tesr, Nodes, Mesh, Point, &Print);
+        nev_show (expargv, &i, Tess, Tesr, Nodes, Mesh, Point, &Print);
 
       // slicing ---------------------------------------------------------
       else if (strncmp (expargv[i], "-slice", 5) == 0)
-	nev_slice (expargv, &i, &Print);
+        nev_slice (expargv, &i, &Print);
 
       // camera settings -------------------------------------------------
       else if (strncmp (expargv[i], "-camera", 7) == 0)
-	nev_camera (expargv, &i, &Print);
+        nev_camera (expargv, &i, &Print);
 
       // image settings --------------------------------------------------
       else if (strncmp (expargv[i], "-image", 6) == 0)
-	nev_image (expargv, &i, &Print);
+        nev_image (expargv, &i, &Print);
 
       // include settings ------------------------------------------------
       else if (strncmp (expargv[i], "-include", 8) == 0)
-	nev_include (expargv, &i, &Print);
+        nev_include (expargv, &i, &Print);
 
       // povray settings -------------------------------------------------
       else if (strcmp (expargv[i], "-povray") == 0)
-	nev_povray (expargv, &i, &Print);
+        nev_povray (expargv, &i, &Print);
 
       // image printing --------------------------------------------------
       else if (strcmp (expargv[i], "-print") == 0)
       {
-	nev_data_init (Tess, &TessData, Tesr, &TesrData, Nodes, Mesh,
-		       Point, &NodeData, MeshData, &CsysData, &PointData);
+        nev_data_init (Tess, &TessData, Tesr, &TesrData, Nodes, Mesh, Point,
+                       &NodeData, MeshData, &CsysData, &PointData);
 
-	if (Print.slice)
-	  nev_slice_mesh (Nodes, Mesh[3], NodeData, MeshData, Print.slice,
-			  &SQty, &SNodes, &SMesh, &SNodeData,
-			  &SMeshData, &SElt2dElt3d);
+        if (Print.slice)
+          nev_slice_mesh (Nodes, Mesh[3], NodeData, MeshData, Print.slice,
+                          &SQty, &SNodes, &SMesh, &SNodeData, &SMeshData,
+                          &SElt2dElt3d);
 
-	int j;
-	for (j = 0; j < SQty; j++)
-	{
+        int j;
+        for (j = 0; j < SQty; j++)
+        {
 
-	  nev_nodedata_init (SNodes[j], Mesh[3].ElsetQty, &(SNodeData[j]));
-	  nev_meshdata_init (SMesh[j], 1, Mesh[3].ElsetQty, &(SMeshData[j][2]));
-	}
+          nev_nodedata_init (SNodes[j], Mesh[3].ElsetQty, &(SNodeData[j]));
+          nev_meshdata_init (SMesh[j], 1, Mesh[3].ElsetQty,
+                             &(SMeshData[j][2]));
+        }
 
-	nev_show_init (Tess, Tesr, Nodes, Mesh, SQty, Point, &Print);
+        nev_show_init (Tess, Tesr, Nodes, Mesh, SQty, Point, &Print);
 
-	nev_camera_init (Tess, Tesr, Nodes, Mesh, Point, NodeData, &Print);
+        nev_camera_init (Tess, Tesr, Nodes, Mesh, Point, NodeData, &Print);
 
-	nev_print (expargv, &i, Print, Tess, TessData,
-		   Tesr, TesrData, Nodes, Mesh,
-		   NodeData, MeshData, SQty, SNodes, SMesh, SNodeData,
-		   SMeshData, SElt2dElt3d, CsysData, Point, PointData);
+        nev_print (expargv, &i, Print, Tess, TessData, Tesr, TesrData, Nodes,
+                   Mesh, NodeData, MeshData, SQty, SNodes, SMesh, SNodeData,
+                   SMeshData, SElt2dElt3d, CsysData, Point, PointData);
       }
-
-      // process image(s) ------------------------------------------------
-      else if (strncmp (expargv[i], "-processimage", 13) == 0)
-	nev_processimage (expargv, &i);
 
       else
       {
-	ut_print_message (2, 0, "Unknown option %s (i = %d)\n", expargv[i],
-			  i);
-	abort ();
+        ut_print_message (2, 0, "Unknown option %s (i = %d)\n", expargv[i],
+                          i);
+        abort ();
       }
     }
   }
@@ -162,7 +158,7 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
   neut_tessdata_free (&TessData);
   neut_nodedata_free (&NodeData);
 
-  // ut_free_2d_char (expargv, argc);
+  // ut_free_2d_char (&expargv, argc);
 
   return 0;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_gen_.h"
@@ -12,14 +12,14 @@ neut_tess_cell (struct TESS Tess, char **pcell)
   else if (Tess.Dim == 3)
     ut_string_string ("poly", pcell);
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   return;
 }
 
 void
 neut_tess_var_list (struct TESS Tess, char *entity, char ***pvar,
-		    int *pvarqty)
+                    int *pvarqty)
 {
   int id = 0;
 
@@ -37,9 +37,9 @@ neut_tess_var_list (struct TESS Tess, char *entity, char ***pvar,
     strcpy ((*pvar)[id++], "e");
   }
   else if (!strcmp (entity, "poly")
-	   || (!(strcmp (entity, "cell")) && Tess.Dim == 3))
+           || (!(strcmp (entity, "cell")) && Tess.Dim == 3))
   {
-    (*pvarqty) = 45;
+    (*pvarqty) = 46;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
     strcpy ((*pvar)[id++], "default");
     strcpy ((*pvar)[id++], "id");
@@ -78,8 +78,9 @@ neut_tess_var_list (struct TESS Tess, char *entity, char ***pvar,
     strcpy ((*pvar)[id++], "edges");
     strcpy ((*pvar)[id++], "vers");
     strcpy ((*pvar)[id++], "npolys");
-    strcpy ((*pvar)[id++], "ncells");
     strcpy ((*pvar)[id++], "npolynb");
+    strcpy ((*pvar)[id++], "npolys_samedomain");
+    strcpy ((*pvar)[id++], "npolynb_samedomain");
     strcpy ((*pvar)[id++], "nseeds");
     strcpy ((*pvar)[id++], "nseednb");
     strcpy ((*pvar)[id++], "faceareas");
@@ -88,7 +89,7 @@ neut_tess_var_list (struct TESS Tess, char *entity, char ***pvar,
     strcpy ((*pvar)[id++], "e");
   }
   else if (!strcmp (entity, "face")
-	   || (!(strcmp (entity, "cell")) && Tess.Dim == 2))
+           || (!(strcmp (entity, "cell")) && Tess.Dim == 2))
   {
     (*pvarqty) = 47;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
@@ -123,13 +124,11 @@ neut_tess_var_list (struct TESS Tess, char *entity, char ***pvar,
     strcpy ((*pvar)[id++], "vernb");
     strcpy ((*pvar)[id++], "edgenb");
     strcpy ((*pvar)[id++], "polynb");
-    strcpy ((*pvar)[id++], "cellnb");
     strcpy ((*pvar)[id++], "neighnb");
     strcpy ((*pvar)[id++], "ff");
     strcpy ((*pvar)[id++], "domtype");
     strcpy ((*pvar)[id++], "domface");
     strcpy ((*pvar)[id++], "poly_shown");
-    strcpy ((*pvar)[id++], "cell_shown");
     strcpy ((*pvar)[id++], "scaleid");
     strcpy ((*pvar)[id++], "theta");
     strcpy ((*pvar)[id++], "polys");
@@ -137,6 +136,8 @@ neut_tess_var_list (struct TESS Tess, char *entity, char ***pvar,
     strcpy ((*pvar)[id++], "vers");
     strcpy ((*pvar)[id++], "nfaces");
     strcpy ((*pvar)[id++], "nfacenb");
+    strcpy ((*pvar)[id++], "nfaces_samedomain");
+    strcpy ((*pvar)[id++], "nfacenb_samedomain");
     strcpy ((*pvar)[id++], "vercoos");
     strcpy ((*pvar)[id++], "e");
   }
@@ -202,7 +203,7 @@ neut_tess_var_list (struct TESS Tess, char *entity, char ***pvar,
     strcpy ((*pvar)[id++], "edges");
   }
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   return;
 }
@@ -212,8 +213,7 @@ neut_tess_var_dim (int dim, char *entity, char *var, int *pdim)
 {
   if (!strcmp (entity, "seed"))
     (*pdim) = 0;
-  else if (!strcmp (entity, "poly")
-           || (!strcmp (entity, "cell") && dim == 3))
+  else if (!strcmp (entity, "poly") || (!strcmp (entity, "cell") && dim == 3))
   {
     if (!strcmp (var, "vol") || !strcmp (var, "size"))
       (*pdim) = 3;
@@ -226,8 +226,7 @@ neut_tess_var_dim (int dim, char *entity, char *var, int *pdim)
     else
       (*pdim) = 0;
   }
-  else if (!strcmp (entity, "face")
-           || (!strcmp (entity, "cell") && dim == 2))
+  else if (!strcmp (entity, "face") || (!strcmp (entity, "cell") && dim == 2))
   {
     if (!strcmp (var, "area") || !strcmp (var, "size"))
       (*pdim) = 2;
@@ -240,9 +239,8 @@ neut_tess_var_dim (int dim, char *entity, char *var, int *pdim)
   }
   else if (!strcmp (entity, "edge"))
   {
-    if (!strcmp (var, "length")
-	|| !strcmp (var, "size") || !strcmp (var, "diameq")
-	|| !strcmp (var, "radeq"))
+    if (!strcmp (var, "length") || !strcmp (var, "size")
+        || !strcmp (var, "diameq") || !strcmp (var, "radeq"))
       (*pdim) = 1;
     else
       (*pdim) = 0;
@@ -252,17 +250,15 @@ neut_tess_var_dim (int dim, char *entity, char *var, int *pdim)
   else if (!strcmp (entity, "point"))
     (*pdim) = 0;
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   return;
 }
 
 int
-neut_tess_var_val (struct TESS Tess,
-		   int *showedge,
-		   int *showface, int *showpoly,
-		   char *entity, int id, char *var,
-		   double **pvals, int *pvalqty, char **ptype)
+neut_tess_var_val (struct TESS Tess, int *showedge, int *showface,
+                   int *showpoly, char *entity, int id, char *var,
+                   double **pvals, int *pvalqty, char **ptype)
 {
   if (!strcmp (var, "default"))
     return 0;
@@ -338,16 +334,16 @@ neut_tess_var_val (struct TESS Tess,
       status = -1;
   }
   else if (!strcmp (entity, "poly")
-	   || (!strcmp (entity, "cell") && Tess.Dim == 3))
+           || (!strcmp (entity, "cell") && Tess.Dim == 3))
   {
     status = 0;
 
     if (!strcmp (var2, "id"))
     {
       if (!strcmp (entity, "poly"))
-	(*pvals)[0] = id;
+        (*pvals)[0] = id;
       else
-	(*pvals)[0] = Tess.CellId ? Tess.CellId[id] : id;
+        (*pvals)[0] = Tess.CellId ? Tess.CellId[id] : id;
 
       strcpy (typetmp, "%d");
     }
@@ -422,23 +418,23 @@ neut_tess_var_val (struct TESS Tess,
     }
     else if (!strcmp (var2, "lamid"))
     {
-      (*pvals)[0] = Tess.CellLamId? Tess.CellLamId[id] : -1;
+      (*pvals)[0] = Tess.CellLamId ? Tess.CellLamId[id] : -1;
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var2, "modeid"))
     {
-      (*pvals)[0] = Tess.CellModeId? Tess.CellModeId[id] : -1;
+      (*pvals)[0] = Tess.CellModeId ? Tess.CellModeId[id] : -1;
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var2, "state"))
     {
       (*pvals)[0] = 0;
       for (i = 1; i <= Tess.PolyFaceQty[id]; i++)
-	if (Tess.FaceState[Tess.PolyFaceNb[id][i]] != 0)
-	{
-	  (*pvals)[0] = 1;
-	  break;
-	}
+        if (Tess.FaceState[Tess.PolyFaceNb[id][i]] != 0)
+        {
+          (*pvals)[0] = 1;
+          break;
+        }
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var2, "vol") || !strcmp (var2, "size"))
@@ -485,7 +481,7 @@ neut_tess_var_val (struct TESS Tess,
       (*pvals)[0] = ut_array_1d_mean (tmp, qty);
       strcpy (typetmp, "%f");
 
-      ut_free_1d (tmp);
+      ut_free_1d (&tmp);
     }
     else if (!strcmp (var2, "dihanglemin"))
     {
@@ -496,7 +492,7 @@ neut_tess_var_val (struct TESS Tess,
       (*pvals)[0] = ut_array_1d_min (tmp, qty);
       strcpy (typetmp, "%f");
 
-      ut_free_1d (tmp);
+      ut_free_1d (&tmp);
     }
     else if (!strcmp (var2, "dihanglemax"))
     {
@@ -507,7 +503,7 @@ neut_tess_var_val (struct TESS Tess,
       (*pvals)[0] = ut_array_1d_max (tmp, qty);
       strcpy (typetmp, "%f");
 
-      ut_free_1d (tmp);
+      ut_free_1d (&tmp);
     }
     else if (!strcmp (var2, "vernb"))
     {
@@ -529,14 +525,15 @@ neut_tess_var_val (struct TESS Tess,
     else if (!strncmp (var2, "scaleid(", 8))
     {
       sscanf (var2, "scaleid(%d)", &scale);
-      (*pvals)[0] = (scale <= Tess.ScaleQty && Tess.ScaleCellId) ? Tess.ScaleCellId[id][scale] : -1;
+      (*pvals)[0] = (scale <= Tess.ScaleQty
+                     && Tess.ScaleCellId) ? Tess.ScaleCellId[id][scale] : -1;
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var2, "faces") || !strcmp (var2, "facelist"))
     {
       (*pvalqty) = Tess.PolyFaceQty[id];
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, Tess.PolyFaceNb[id] + 1);
+      ut_array_1d_memcpy_fromint (Tess.PolyFaceNb[id] + 1, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var2, "faceareas") || !strcmp (var2, "facearealist"))
@@ -552,7 +549,8 @@ neut_tess_var_val (struct TESS Tess,
       (*pvalqty) = 4 * Tess.PolyFaceQty[id];
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
       for (i = 0; i < Tess.PolyFaceQty[id]; i++)
-        ut_array_1d_memcpy ((*pvals) + 4 * i, 4, Tess.FaceEq[Tess.PolyFaceNb[id][i + 1]]);
+        ut_array_1d_memcpy (Tess.FaceEq[Tess.PolyFaceNb[id][i + 1]], 4,
+                            (*pvals) + 4 * i);
       strcpy (typetmp, "%f");
     }
     else if (!strcmp (var2, "edges") || !strcmp (var2, "edgelist"))
@@ -560,29 +558,55 @@ neut_tess_var_val (struct TESS Tess,
       int *edges = NULL;
       neut_tess_poly_edges (Tess, id, &edges, pvalqty);
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, edges);
+      ut_array_1d_memcpy_fromint (edges, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
-      ut_free_1d_int (edges);
+      ut_free_1d_int (&edges);
     }
     else if (!strcmp (var2, "vers") || !strcmp (var2, "verlist"))
     {
       int *vers = NULL;
       neut_tess_poly_vers (Tess, id, &vers, pvalqty);
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, vers);
+      ut_array_1d_memcpy_fromint (vers, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
-      ut_free_1d_int (vers);
+      ut_free_1d_int (&vers);
     }
-    else if (!strcmp (var2, "npolys") || !strcmp (var2, "ncells"))
+    else if (!strcmp (var2, "npolys"))
     {
       if (Tess.Dim == 3)
       {
         int *npolys = NULL;
         neut_tess_poly_neighpoly (Tess, id, &npolys, pvalqty);
-      (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-        ut_array_1d_memcpy_fromint (*pvals, *pvalqty, npolys);
+        (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
+        ut_array_1d_memcpy_fromint (npolys, *pvalqty, *pvals);
         strcpy (typetmp, "%d");
-        ut_free_1d_int (npolys);
+        ut_free_1d_int (&npolys);
+      }
+      else
+        (*pvalqty) = 0;
+    }
+    else if (!strcmp (var2, "npolys_samedomain"))
+    {
+      if (Tess.Dim == 3)
+      {
+        int *npolys = NULL;
+        neut_tess_poly_neighpoly_samedomain (Tess, id, &npolys, pvalqty);
+        (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
+        ut_array_1d_memcpy_fromint (npolys, *pvalqty, *pvals);
+        strcpy (typetmp, "%d");
+        ut_free_1d_int (&npolys);
+      }
+      else
+        (*pvalqty) = 0;
+    }
+    else if (!strcmp (var2, "npolynb_samedomain"))
+    {
+      if (Tess.Dim == 3)
+      {
+        int tmp;
+        neut_tess_poly_neighpoly_samedomain (Tess, id, NULL, &tmp);
+        (*pvals)[0] = tmp;
+        strcpy (typetmp, "%d");
       }
       else
         (*pvalqty) = 0;
@@ -599,17 +623,9 @@ neut_tess_var_val (struct TESS Tess,
       int *nseeds = NULL;
       neut_tess_poly_neighseeds (Tess, id, &nseeds, pvalqty);
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, nseeds);
+      ut_array_1d_memcpy_fromint (nseeds, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
-      ut_free_1d_int (nseeds);
-    }
-    else if (!strcmp (var2, "nseednb"))
-    {
-      int tmp;
-      neut_tess_poly_neighseeds (Tess, id, NULL, &tmp);
-      (*pvals)[0] = tmp;
-      strcpy (typetmp, "%d");
-      ut_free_1d_int (nseeds);
+      ut_free_1d_int (&nseeds);
     }
     else if (!strcmp (var2, "nseednb"))
     {
@@ -625,27 +641,9 @@ neut_tess_var_val (struct TESS Tess,
       (*pvalqty) = verqty * 3;
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
       for (i = 0; i < verqty; i++)
-        ut_array_1d_memcpy ((*pvals) + 3 * i, 3, Tess.VerCoo[vers[i]]);
+        ut_array_1d_memcpy (Tess.VerCoo[vers[i]], 3, (*pvals) + 3 * i);
       strcpy (typetmp, "%f");
-      ut_free_1d_int (vers);
-    }
-    else if (!strcmp (var2, "e"))
-    {
-      (*pvalqty) = 3;
-      (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-      ol_q_e (Tess.CellOri[id], *pvals);
-      strcpy (typetmp, "%f");
-    }
-    else if (!strcmp (var2, "vercoos") || !strcmp (var2, "vercoolist"))
-    {
-      int *vers = NULL, verqty;
-      neut_tess_poly_vers (Tess, id, &vers, &verqty);
-      (*pvalqty) = verqty * 3;
-      (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-      for (i = 0; i < verqty; i++)
-        ut_array_1d_memcpy ((*pvals) + 3 * i, 3, Tess.VerCoo[vers[i]]);
-      strcpy (typetmp, "%f");
-      ut_free_1d_int (vers);
+      ut_free_1d_int (&vers);
     }
     else if (!strcmp (var2, "e"))
     {
@@ -658,16 +656,16 @@ neut_tess_var_val (struct TESS Tess,
       status = -1;
   }
   else if (!strcmp (entity, "face")
-	   || (!strcmp (entity, "cell") && Tess.Dim == 2))
+           || (!strcmp (entity, "cell") && Tess.Dim == 2))
   {
     status = 0;
 
     if (!strcmp (var2, "id"))
     {
       if (!strcmp (entity, "face"))
-	(*pvals)[0] = id;
+        (*pvals)[0] = id;
       else
-	(*pvals)[0] = Tess.CellId ? Tess.CellId[id] : id;
+        (*pvals)[0] = Tess.CellId ? Tess.CellId[id] : id;
 
       strcpy (typetmp, "%d");
     }
@@ -739,12 +737,12 @@ neut_tess_var_val (struct TESS Tess,
     }
     else if (!strcmp (var2, "lamid"))
     {
-      (*pvals)[0] = Tess.CellLamId? Tess.CellLamId[id] : -1;
+      (*pvals)[0] = Tess.CellLamId ? Tess.CellLamId[id] : -1;
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var2, "modeid"))
     {
-      (*pvals)[0] = Tess.CellModeId? Tess.CellModeId[id] : -1;
+      (*pvals)[0] = Tess.CellModeId ? Tess.CellModeId[id] : -1;
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var2, "area") || !strcmp (var2, "size"))
@@ -778,7 +776,7 @@ neut_tess_var_val (struct TESS Tess,
       neut_tess_face_dihangles (Tess, id, pvals, pvalqty);
       strcpy (typetmp, "%f");
 
-      ut_free_1d (tmp);
+      ut_free_1d (&tmp);
     }
     else if (!strcmp (var2, "dihangleav"))
     {
@@ -789,7 +787,7 @@ neut_tess_var_val (struct TESS Tess,
       (*pvals)[0] = ut_array_1d_mean (tmp, qty);
       strcpy (typetmp, "%f");
 
-      ut_free_1d (tmp);
+      ut_free_1d (&tmp);
     }
     else if (!strcmp (var2, "dihanglemin"))
     {
@@ -800,7 +798,7 @@ neut_tess_var_val (struct TESS Tess,
       (*pvals)[0] = ut_array_1d_min (tmp, qty);
       strcpy (typetmp, "%f");
 
-      ut_free_1d (tmp);
+      ut_free_1d (&tmp);
     }
     else if (!strcmp (var2, "dihanglemax"))
     {
@@ -811,7 +809,7 @@ neut_tess_var_val (struct TESS Tess,
       (*pvals)[0] = ut_array_1d_max (tmp, qty);
       strcpy (typetmp, "%f");
 
-      ut_free_1d (tmp);
+      ut_free_1d (&tmp);
     }
     else if (!strcmp (var2, "state"))
     {
@@ -857,7 +855,8 @@ neut_tess_var_val (struct TESS Tess,
     else if (!strncmp (var2, "scaleid(", 8))
     {
       sscanf (var2, "scaleid(%d)", &scale);
-      (*pvals)[0] = (scale <= Tess.ScaleQty) ? Tess.ScaleCellId[id][scale] : -1;
+      (*pvals)[0] =
+        (scale <= Tess.ScaleQty) ? Tess.ScaleCellId[id][scale] : -1;
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var2, "scale"))
@@ -869,18 +868,18 @@ neut_tess_var_val (struct TESS Tess,
     else if (!strcmp (var2, "theta"))
     {
       if (Tess.Dim != 3)
-	(*pvals)[0] = -1;
+        (*pvals)[0] = -1;
       else
       {
-	int qty, *tmp = NULL;
-	neut_tess_face_cells (Tess, id, &tmp, &qty);
+        int qty, *tmp = NULL;
+        neut_tess_face_cells (Tess, id, &tmp, &qty);
 
-	if (qty == 1)
-	  (*pvals)[0] = -1;
-	else
-	  ol_q_q_disori (Tess.CellOri[tmp[0]], Tess.CellOri[tmp[1]],
-	      Tess.CellCrySym, *pvals);
-	ut_free_1d_int_ (&tmp);
+        if (qty == 1)
+          (*pvals)[0] = -1;
+        else
+          ol_q_q_disori (Tess.CellOri[tmp[0]], Tess.CellOri[tmp[1]],
+                         Tess.CellCrySym, *pvals);
+        ut_free_1d_int (&tmp);
       }
       strcpy (typetmp, "%f");
     }
@@ -888,23 +887,24 @@ neut_tess_var_val (struct TESS Tess,
     {
       int *polys = NULL;
       neut_tess_face_polys (Tess, id, &polys, pvalqty);
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, polys);
+      ut_array_1d_memcpy_fromint (polys, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
-      ut_free_1d_int (polys);
+      ut_free_1d_int (&polys);
     }
     else if (!strcmp (var2, "edges") || !strcmp (var2, "edgelist"))
     {
       (*pvalqty) = Tess.FaceVerQty[id];
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, Tess.FaceEdgeNb[id] + 1);
+      ut_array_1d_memcpy_fromint (Tess.FaceEdgeNb[id] + 1, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var2, "nfaces") || !strcmp (var2, "nfacelist"))
     {
       int *nfaces = NULL;
       neut_tess_face_neighfaces (Tess, id, &nfaces, pvalqty);
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, nfaces);
+      (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
+      ut_array_1d_memcpy_fromint (nfaces, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
-      ut_free_1d_int (nfaces);
+      ut_free_1d_int (&nfaces);
     }
     else if (!strcmp (var2, "nfacenb") || !strcmp (var2, "neighnb"))
     {
@@ -913,11 +913,37 @@ neut_tess_var_val (struct TESS Tess,
       (*pvals)[0] = qty;
       strcpy (typetmp, "%d");
     }
+    else if (!strcmp (var2, "nfaces_samedomain"))
+    {
+      if (Tess.Dim == 2)
+      {
+        int *nfaces = NULL;
+        neut_tess_face_neighfaces_samedomain (Tess, id, &nfaces, pvalqty);
+        (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
+        ut_array_1d_memcpy_fromint (nfaces, *pvalqty, *pvals);
+        strcpy (typetmp, "%d");
+        ut_free_1d_int (&nfaces);
+      }
+      else
+        (*pvalqty) = 0;
+    }
+    else if (!strcmp (var2, "nfacenb_samedomain"))
+    {
+      if (Tess.Dim == 2)
+      {
+        int tmp;
+        neut_tess_face_neighfaces_samedomain (Tess, id, NULL, &tmp);
+        (*pvals)[0] = tmp;
+        strcpy (typetmp, "%d");
+      }
+      else
+        (*pvalqty) = 0;
+    }
     else if (!strcmp (var2, "vers") || !strcmp (var2, "verlist"))
     {
       (*pvalqty) = Tess.FaceVerQty[id];
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, Tess.FaceVerNb[id] + 1);
+      ut_array_1d_memcpy_fromint (Tess.FaceVerNb[id] + 1, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var2, "vercoos"))
@@ -927,9 +953,9 @@ neut_tess_var_val (struct TESS Tess,
       (*pvalqty) = verqty * 3;
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
       for (i = 0; i < verqty; i++)
-        ut_array_1d_memcpy ((*pvals) + 3 * i, 3, Tess.VerCoo[vers[i]]);
+        ut_array_1d_memcpy (Tess.VerCoo[vers[i]], 3, (*pvals) + 3 * i);
       strcpy (typetmp, "%f");
-      ut_free_1d_int (vers);
+      ut_free_1d_int (&vers);
     }
     else if (!strcmp (var2, "e"))
     {
@@ -954,9 +980,9 @@ neut_tess_var_val (struct TESS Tess,
     if (!strcmp (var2, "id"))
     {
       if (!strcmp (entity, "edge"))
-	(*pvals)[0] = id;
+        (*pvals)[0] = id;
       else
-	(*pvals)[0] = Tess.CellId ? Tess.CellId[id] : id;
+        (*pvals)[0] = Tess.CellId ? Tess.CellId[id] : id;
 
       strcpy (typetmp, "%d");
     }
@@ -1036,8 +1062,8 @@ neut_tess_var_val (struct TESS Tess,
       (*pvals)[0] = Tess.EdgeState[id];
       strcpy (typetmp, "%d");
     }
-    else if (!strcmp (var2, "length")
-	     || !strcmp (var2, "size") || !strcmp (var2, "diameq"))
+    else if (!strcmp (var2, "length") || !strcmp (var2, "size")
+             || !strcmp (var2, "diameq"))
     {
       (*pvals)[0] = Tess.EdgeLength[id];
       strcpy (typetmp, "%f");
@@ -1073,16 +1099,16 @@ neut_tess_var_val (struct TESS Tess,
       (*pvals)[0] = 0;
       if (showpoly)
       {
-	int polyqty;
-	int *poly = NULL;
-	neut_tess_edge_polys (Tess, id, &poly, &polyqty);
-	for (j = 0; j < polyqty; j++)
-	  if (poly[j] > 0 && showpoly[poly[j]] == 1)
-	  {
-	    (*pvals)[0] = 1;
-	    break;
-	  }
-	ut_free_1d_int (poly);
+        int polyqty;
+        int *poly = NULL;
+        neut_tess_edge_polys (Tess, id, &poly, &polyqty);
+        for (j = 0; j < polyqty; j++)
+          if (poly[j] > 0 && showpoly[poly[j]] == 1)
+          {
+            (*pvals)[0] = 1;
+            break;
+          }
+        ut_free_1d_int (&poly);
       }
     }
     else if (!strcmp (var2, "face_shown"))
@@ -1090,33 +1116,33 @@ neut_tess_var_val (struct TESS Tess,
       (*pvals)[0] = 0;
       if (showface)
       {
-	int face;
-	for (j = 0; j < Tess.EdgeFaceQty[id]; j++)
-	{
-	  face = Tess.EdgeFaceNb[id][j];
-	  if (showface[face])
-	  {
-	    (*pvals)[0] = 1;
-	    break;
-	  }
-	}
+        int face;
+        for (j = 0; j < Tess.EdgeFaceQty[id]; j++)
+        {
+          face = Tess.EdgeFaceNb[id][j];
+          if (showface[face])
+          {
+            (*pvals)[0] = 1;
+            break;
+          }
+        }
       }
     }
     else if (!strcmp (var2, "theta"))
     {
       if (Tess.Dim != 2)
-	(*pvals)[0] = -1;
+        (*pvals)[0] = -1;
       else
       {
-	int qty, *tmp = NULL;
-	neut_tess_edge_cells (Tess, id, &tmp, &qty);
+        int qty, *tmp = NULL;
+        neut_tess_edge_cells (Tess, id, &tmp, &qty);
 
-	if (qty == 1)
-	  (*pvals)[0] = -1;
-	else
-	  ol_q_q_disori (Tess.CellOri[tmp[0]], Tess.CellOri[tmp[1]],
-	      Tess.CellCrySym, *pvals);
-	ut_free_1d_int_ (&tmp);
+        if (qty == 1)
+          (*pvals)[0] = -1;
+        else
+          ol_q_q_disori (Tess.CellOri[tmp[0]], Tess.CellOri[tmp[1]],
+                         Tess.CellCrySym, *pvals);
+        ut_free_1d_int (&tmp);
       }
       strcpy (typetmp, "%f");
     }
@@ -1130,24 +1156,24 @@ neut_tess_var_val (struct TESS Tess,
       int *polys = NULL;
       neut_tess_edge_polys (Tess, id, &polys, pvalqty);
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, polys);
+      ut_array_1d_memcpy_fromint (polys, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
-      ut_free_1d_int (polys);
+      ut_free_1d_int (&polys);
     }
     else if (!strcmp (var2, "faces") || !strcmp (var2, "facelist"))
     {
       int *faces = NULL;
       neut_tess_edge_faces (Tess, id, &faces, pvalqty);
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, faces);
+      ut_array_1d_memcpy_fromint (faces, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
-      ut_free_1d_int (faces);
+      ut_free_1d_int (&faces);
     }
     else if (!strcmp (var2, "vers") || !strcmp (var2, "verlist"))
     {
       (*pvalqty) = 2;
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, Tess.EdgeVerNb[id]);
+      ut_array_1d_memcpy_fromint (Tess.EdgeVerNb[id], *pvalqty, *pvals);
       strcpy (typetmp, "%d");
     }
     else
@@ -1223,16 +1249,16 @@ neut_tess_var_val (struct TESS Tess,
       (*pvals)[0] = 0;
       if (showpoly)
       {
-	int polyqty;
-	int *poly = NULL;
-	neut_tess_ver_polys (Tess, id, &poly, &polyqty);
-	for (j = 0; j < polyqty; j++)
-	  if (poly[j] > 0 && showpoly[poly[j]])
-	  {
-	    (*pvals)[0] = 1;
-	    break;
-	  }
-	ut_free_1d_int (poly);
+        int polyqty;
+        int *poly = NULL;
+        neut_tess_ver_polys (Tess, id, &poly, &polyqty);
+        for (j = 0; j < polyqty; j++)
+          if (poly[j] > 0 && showpoly[poly[j]])
+          {
+            (*pvals)[0] = 1;
+            break;
+          }
+        ut_free_1d_int (&poly);
       }
     }
     else if (!strcmp (var2, "face_shown"))
@@ -1240,16 +1266,16 @@ neut_tess_var_val (struct TESS Tess,
       (*pvals)[0] = 0;
       if (showface)
       {
-	int faceqty;
-	int *face = NULL;
-	neut_tess_ver_faces (Tess, id, &face, &faceqty);
-	for (j = 0; j < faceqty; j++)
-	  if (face[j] > 0 && showface[face[j]])
-	  {
-	    (*pvals)[0] = 1;
-	    break;
-	  }
-	ut_free_1d_int (face);
+        int faceqty;
+        int *face = NULL;
+        neut_tess_ver_faces (Tess, id, &face, &faceqty);
+        for (j = 0; j < faceqty; j++)
+          if (face[j] > 0 && showface[face[j]])
+          {
+            (*pvals)[0] = 1;
+            break;
+          }
+        ut_free_1d_int (&face);
       }
     }
     else if (!strcmp (var2, "edge_shown"))
@@ -1257,16 +1283,16 @@ neut_tess_var_val (struct TESS Tess,
       (*pvals)[0] = 0;
       if (showedge)
       {
-	int edge;
-	for (j = 0; j < Tess.VerEdgeQty[id]; j++)
-	{
-	  edge = Tess.VerEdgeNb[id][j];
-	  if (showedge[edge])
-	  {
-	    (*pvals)[0] = 1;
-	    break;
-	  }
-	}
+        int edge;
+        for (j = 0; j < Tess.VerEdgeQty[id]; j++)
+        {
+          edge = Tess.VerEdgeNb[id][j];
+          if (showedge[edge])
+          {
+            (*pvals)[0] = 1;
+            break;
+          }
+        }
       }
     }
     else if (!strcmp (var2, "domver"))
@@ -1279,65 +1305,63 @@ neut_tess_var_val (struct TESS Tess,
       int *polys = NULL;
       neut_tess_ver_polys (Tess, id, &polys, pvalqty);
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, polys);
+      ut_array_1d_memcpy_fromint (polys, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
-      ut_free_1d_int (polys);
+      ut_free_1d_int (&polys);
     }
     else if (!strcmp (var2, "faces") || !strcmp (var2, "facelist"))
     {
       int *faces = NULL;
       neut_tess_ver_faces (Tess, id, &faces, pvalqty);
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, faces);
+      ut_array_1d_memcpy_fromint (faces, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
-      ut_free_1d_int (faces);
+      ut_free_1d_int (&faces);
     }
     else if (!strcmp (var2, "edges") || !strcmp (var2, "edgelist"))
     {
       int *edges = NULL;
       neut_tess_ver_edges (Tess, id, &edges, pvalqty);
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
-      ut_array_1d_memcpy_fromint (*pvals, *pvalqty, edges);
+      ut_array_1d_memcpy_fromint (edges, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
-      ut_free_1d_int (edges);
+      ut_free_1d_int (&edges);
     }
     else
       status = -1;
   }
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   if (ptype)
   {
-    ut_free_1d_char (*ptype);
+    ut_free_1d_char (ptype);
     (*ptype) = ut_alloc_1d_char (strlen (typetmp) + 1);
     strcpy (*ptype, typetmp);
   }
 
-  ut_free_1d (c);
-  ut_free_2d (bbox, 3);
-  ut_free_1d_char (typetmp);
-  ut_free_1d_char (var2);
+  ut_free_1d (&c);
+  ut_free_2d (&bbox, 3);
+  ut_free_1d_char (&typetmp);
+  ut_free_1d_char (&var2);
 
   return status;
 }
 
 int
-neut_tess_var_val_one (struct TESS Tess,
-		       int *showedge,
-		       int *showface, int *showpoly,
-		       char *entity, int id, char *var,
-		       double *pvals, char **ptype)
+neut_tess_var_val_one (struct TESS Tess, int *showedge, int *showface,
+                       int *showpoly, char *entity, int id, char *var,
+                       double *pvals, char **ptype)
 {
   double *tmp = NULL;
   int qty;
 
-  neut_tess_var_val (Tess, showedge, showface, showpoly, entity, id, var, &tmp,
-                     &qty, ptype);
+  neut_tess_var_val (Tess, showedge, showface, showpoly, entity, id, var,
+                     &tmp, &qty, ptype);
 
   (*pvals) = tmp[0];
 
-  ut_free_1d (tmp);
+  ut_free_1d (&tmp);
 
   return qty == 1 ? 0 : -1;
 }
@@ -1401,7 +1425,7 @@ neut_tess_entity_qty (struct TESS Tess, char *entity, int *pqty)
 
 int
 neut_tess_expr_celllist (struct TESS Tess, char *expr, int **pcells,
-			 int *pcellqty)
+                         int *pcellqty)
 {
   int status = -1;
 
@@ -1417,7 +1441,7 @@ neut_tess_expr_celllist (struct TESS Tess, char *expr, int **pcells,
 
 int
 neut_tess_expr_polylist (struct TESS Tess, char *expr, int **ppoly,
-			 int *ppolyqty)
+                         int *ppolyqty)
 {
   int i, j, status;
   double res;
@@ -1434,7 +1458,7 @@ neut_tess_expr_polylist (struct TESS Tess, char *expr, int **ppoly,
       (*ppoly)[i - 1] = i;
   }
 
-  else if (ut_string_filename (expr))
+  else if (ut_string_isfilename (expr))
   {
     (*ppolyqty) = ut_file_nbwords (expr);
     (*ppoly) = ut_alloc_1d_int (*ppolyqty);
@@ -1456,22 +1480,22 @@ neut_tess_expr_polylist (struct TESS Tess, char *expr, int **ppoly,
     for (i = 1; i <= Tess.PolyQty; i++)
     {
       for (j = 0; j < var_qty; j++)
-	if (strstr (expr, vars[j]))
-	  neut_tess_var_val_one (Tess, NULL, NULL, NULL, "poly", i,
-			         vars[j], vals + j, NULL);
+        if (strstr (expr, vars[j]))
+          neut_tess_var_val_one (Tess, NULL, NULL, NULL, "poly", i, vars[j],
+                                 vals + j, NULL);
 
       status = ut_math_eval (expr, var_qty, vars, vals, &res);
       if (status == -1)
-	abort ();
+        abort ();
       if (ut_num_equal (res, 1, 1e-6))
       {
-	(*ppoly) = ut_realloc_1d_int (*ppoly, ++(*ppolyqty));
-	(*ppoly)[(*ppolyqty) - 1] = i;
+        (*ppoly) = ut_realloc_1d_int (*ppoly, ++(*ppolyqty));
+        (*ppoly)[(*ppolyqty) - 1] = i;
       }
     }
 
-    ut_free_2d_char (vars, var_qty);
-    ut_free_1d (vals);
+    ut_free_2d_char (&vars, var_qty);
+    ut_free_1d (&vals);
   }
 
   // for consistency with neut_tess_expr_facelist
@@ -1482,7 +1506,7 @@ neut_tess_expr_polylist (struct TESS Tess, char *expr, int **ppoly,
 
 int
 neut_tess_expr_facelist (struct TESS Tess, char *expr, int **pface,
-			 int *pfaceqty)
+                         int *pfaceqty)
 {
   int i, j, status;
   double res;
@@ -1499,7 +1523,7 @@ neut_tess_expr_facelist (struct TESS Tess, char *expr, int **pface,
       (*pface)[i - 1] = i;
   }
 
-  else if (ut_string_filename (expr))
+  else if (ut_string_isfilename (expr))
   {
     (*pfaceqty) = ut_file_nbwords (expr);
     (*pface) = ut_alloc_1d_int (*pfaceqty);
@@ -1520,22 +1544,22 @@ neut_tess_expr_facelist (struct TESS Tess, char *expr, int **pface,
     for (i = 1; i <= Tess.FaceQty; i++)
     {
       for (j = 0; j < var_qty; j++)
-	if (strstr (expr, vars[j]))
-	  neut_tess_var_val_one (Tess, NULL, NULL, NULL, "face", i,
-			         vars[j], vals + j, NULL);
+        if (strstr (expr, vars[j]))
+          neut_tess_var_val_one (Tess, NULL, NULL, NULL, "face", i, vars[j],
+                                 vals + j, NULL);
 
       status = ut_math_eval (expr, var_qty, vars, vals, &res);
       if (status == -1)
-	abort ();
+        abort ();
       if (ut_num_equal (res, 1, 1e-6))
       {
-	(*pface) = ut_realloc_1d_int (*pface, ++(*pfaceqty));
-	(*pface)[(*pfaceqty) - 1] = i;
+        (*pface) = ut_realloc_1d_int (*pface, ++(*pfaceqty));
+        (*pface)[(*pfaceqty) - 1] = i;
       }
     }
 
-    ut_free_2d_char (vars, var_qty);
-    ut_free_1d (vals);
+    ut_free_2d_char (&vars, var_qty);
+    ut_free_1d (&vals);
   }
 
   // this is needed e.g. in nem_meshing_2D
@@ -1546,7 +1570,7 @@ neut_tess_expr_facelist (struct TESS Tess, char *expr, int **pface,
 
 void
 neut_tess_entity_expr_val (struct TESS Tess, char *entity, char *expr,
-			   double *val)
+                           double *val)
 {
   int j, k, status, entityqty, varqty;
   char **vars = NULL;
@@ -1557,7 +1581,7 @@ neut_tess_entity_expr_val (struct TESS Tess, char *entity, char *expr,
   neut_tess_var_list (Tess, entity, &vars, &varqty);
   vals = ut_alloc_1d (varqty);
 
-  if (ut_string_filename (expr))
+  if (ut_string_isfilename (expr))
   {
     file = ut_file_open (expr, "R");
     ut_array_1d_fscanf (file, val + 1, entityqty);
@@ -1583,8 +1607,8 @@ neut_tess_entity_expr_val (struct TESS Tess, char *entity, char *expr,
     }
   }
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
 
   return;
 }
@@ -1601,7 +1625,7 @@ neut_tess_dim_entityqty (struct TESS Tess, int dim)
   else if (dim == 3)
     return Tess.PolyQty;
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   return -1;
 }
@@ -1617,23 +1641,23 @@ neut_tess_val_poly2face (struct TESS Tess, double *polyval, double *faceval)
     if (ut_array_1d_int_max (Tess.FacePoly[i], 2) > 0)
       for (j = 0; j < 2; j++)
       {
-	seed = Tess.FacePoly[i][j];
-	if (seed > 0 && seed <= Tess.PolyQty)
-	{
-	  if (seed <= Tess.PolyQty)
-	    faceval[i] = ut_num_min (faceval[i], polyval[seed]);
-	  else
-	  {
-	    master = Tess.PerSeedMaster[seed];
-	    faceval[i] = ut_num_min (faceval[i], polyval[master]);
-	  }
-	}
+        seed = Tess.FacePoly[i][j];
+        if (seed > 0 && seed <= Tess.PolyQty)
+        {
+          if (seed <= Tess.PolyQty)
+            faceval[i] = ut_num_min (faceval[i], polyval[seed]);
+          else
+          {
+            master = Tess.PerSeedMaster[seed];
+            faceval[i] = ut_num_min (faceval[i], polyval[master]);
+          }
+        }
       }
     else
       abort ();
 
   // This does not look necessary
-  if (!strncmp (Tess.Type, "periodic", 8))
+  if (!strcmp (Tess.Type, "periodic"))
     for (i = 1; i <= Tess.PerFaceQty; i++)
     {
       face = Tess.PerFaceNb[i];
@@ -1655,15 +1679,15 @@ neut_tess_val_face2edge (struct TESS Tess, double *faceval, double *edgeval)
     if (Tess.EdgeFaceQty[i] > 0)
       for (j = 0; j < Tess.EdgeFaceQty[i]; j++)
       {
-	face = Tess.EdgeFaceNb[i][j];
-	if (face > 0 && face <= Tess.FaceQty)
-	  edgeval[i] = ut_num_min (edgeval[i], faceval[face]);
+        face = Tess.EdgeFaceNb[i][j];
+        if (face > 0 && face <= Tess.FaceQty)
+          edgeval[i] = ut_num_min (edgeval[i], faceval[face]);
       }
     else
       abort ();
 
   // This does not look necessary
-  if (!strncmp (Tess.Type, "periodic", 8))
+  if (!strcmp (Tess.Type, "periodic"))
     for (i = 1; i <= Tess.PerEdgeQty; i++)
     {
       edge = Tess.PerEdgeNb[i];
@@ -1685,15 +1709,15 @@ neut_tess_val_edge2ver (struct TESS Tess, double *edgeval, double *verval)
     if (Tess.VerEdgeQty[i] > 0)
       for (j = 0; j < Tess.VerEdgeQty[i]; j++)
       {
-	edge = Tess.VerEdgeNb[i][j];
-	if (edge > 0)
-	  verval[i] = ut_num_min (verval[i], edgeval[edge]);
+        edge = Tess.VerEdgeNb[i][j];
+        if (edge > 0)
+          verval[i] = ut_num_min (verval[i], edgeval[edge]);
       }
     else
       abort ();
 
   // This does not look necessary
-  if (!strncmp (Tess.Type, "periodic", 8))
+  if (!strcmp (Tess.Type, "periodic"))
     for (i = 1; i <= Tess.PerVerQty; i++)
     {
       ver = Tess.PerVerNb[i];
@@ -1706,7 +1730,7 @@ neut_tess_val_edge2ver (struct TESS Tess, double *edgeval, double *verval)
 
 int
 neut_tess_poly_projection (struct TESS Tess, int cell, double *eq,
-			   double ***pcoo, int *pqty)
+                           double ***pcoo, int *pqty)
 {
   int i, j, verqty, *vers = NULL;
   int *ids = NULL;
@@ -1721,23 +1745,23 @@ neut_tess_poly_projection (struct TESS Tess, int cell, double *eq,
   tmp = ut_alloc_2d (verqty, 3);
 
   for (i = 0; i < verqty; i++)
-    ut_array_1d_memcpy (tmp[i], 3, Tess.VerCoo[vers[i]]);
+    ut_array_1d_memcpy (Tess.VerCoo[vers[i]], 3, tmp[i]);
 
   for (i = 0; i < verqty; i++)
-    ut_space_projpoint_alongonto (tmp[i], eq + 1, eq);
+    ut_space_point_dir_plane_proj (tmp[i], eq + 1, eq, tmp[i]);
 
   // merging points
   for (i = 0; i < verqty; i++)
     for (j = i + 1; j < verqty; j++)
       if (ut_space_dist (tmp[i], tmp[j]) < 1e-6)
       {
-	ut_array_2d_memcpy (tmp + j, verqty - j - 1, 3, tmp + j + 1);
-	j--;
-	verqty--;
+        ut_array_2d_memcpy (tmp + j + 1, verqty - j - 1, 3, tmp + j);
+        j--;
+        verqty--;
       }
 
   // shifting toward origin
-  ut_space_bary3d (tmp, verqty, bary);
+  ut_space_bary (tmp, verqty, bary);
   for (i = 0; i < verqty; i++)
     ut_array_1d_sub (bary, tmp[i], 3, tmp[i]);
 
@@ -1750,14 +1774,14 @@ neut_tess_poly_projection (struct TESS Tess, int cell, double *eq,
 
   for (i = 0; i < verqty; i++)
     if (fabs (tmp[i][2]) > 1e-6)
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
   srand48 (1);
   for (i = 0; i < verqty; i++)
     for (j = 0; j < 2; j++)
       tmp[i][j] += drand48 () * 1e-12;
 
-  ut_space_pts_convexhull_2d (tmp, verqty, &ids, pqty);
+  ut_space_points_convexhull_2d (tmp, verqty, &ids, pqty);
   (*pcoo) = ut_alloc_2d (*pqty, 3);
   for (i = 0; i < *pqty; i++)
   {
@@ -1765,10 +1789,10 @@ neut_tess_poly_projection (struct TESS Tess, int cell, double *eq,
     ut_array_1d_add ((*pcoo)[i], bary, 3, (*pcoo)[i]);
   }
 
-  ut_free_2d (tmp, verqty);
-  ut_free_1d_int (ids);
-  ut_free_1d (bary);
-  ut_free_1d (z);
+  ut_free_2d (&tmp, verqty);
+  ut_free_1d_int (&ids);
+  ut_free_1d (&bary);
+  ut_free_1d (&z);
   ol_g_free (g);
 
   return 0;
@@ -1776,7 +1800,7 @@ neut_tess_poly_projection (struct TESS Tess, int cell, double *eq,
 
 int
 neut_tess_poly_projection_ontoline (struct TESS Tess, int cell, double *eq,
-				    double ***pcoo, int *pqty)
+                                    double ***pcoo, int *pqty)
 {
   int i, verqty, *vers = NULL;
   double *proj = NULL;
@@ -1789,12 +1813,12 @@ neut_tess_poly_projection_ontoline (struct TESS Tess, int cell, double *eq,
 
   (*pqty) = 2;
   (*pcoo) = ut_alloc_2d (2, 3);
-  ut_array_1d_memcpy ((*pcoo)[0], 3, eq);
+  ut_array_1d_memcpy (eq, 3, (*pcoo)[0]);
   ut_array_1d_scale ((*pcoo)[0], 3, ut_array_1d_min (proj, verqty));
-  ut_array_1d_memcpy ((*pcoo)[1], 3, eq);
+  ut_array_1d_memcpy (eq, 3, (*pcoo)[1]);
   ut_array_1d_scale ((*pcoo)[1], 3, ut_array_1d_max (proj, verqty));
 
-  ut_free_1d (proj);
+  ut_free_1d (&proj);
 
   return 0;
 }
@@ -1812,15 +1836,15 @@ neut_tess_delaunay (struct TESS Tess, struct NODES *pNodes,
 
   (*pNodes).NodeQty = Tess.SeedQty;
   (*pNodes).NodeCoo = ut_alloc_2d ((*pNodes).NodeQty + 1, 3);
-  ut_array_2d_memcpy ((*pNodes).NodeCoo + 1, (*pNodes).NodeQty, 3,
-                      Tess.SeedCoo + 1);
+  ut_array_2d_memcpy (Tess.SeedCoo + 1, (*pNodes).NodeQty, 3,
+                      (*pNodes).NodeCoo + 1);
 
   for (i = 1; i <= Tess.VerQty; i++)
     if (Tess.VerDom[i][0] == -1)
     {
       neut_tess_ver_seeds (Tess, i, &cells, &cellqty);
       if (cellqty != Tess.Dim + 1)
-	abort ();
+        abort ();
 
       neut_mesh_addelt (pMesh, cells);
       neut_mesh_elset_addelt (pMesh, 1, i);
@@ -1831,16 +1855,16 @@ neut_tess_delaunay (struct TESS Tess, struct NODES *pNodes,
 
   neut_mesh_init_nodeelts (pMesh, (*pNodes).NodeQty);
 
-  ut_free_1d_int (cells);
+  ut_free_1d_int (&cells);
 
   return 0;
 }
 
 int
-neut_tess_expr_vars_vals (struct TESS Tess, char* expr, int *showedge,
-                          int *showface, int *showpoly, char *entity,
-			  int id, char ***pvars, double **pvals, char ***ptypes,
-			  int *pvarqty)
+neut_tess_expr_vars_vals (struct TESS Tess, char *expr, int *showedge,
+                          int *showface, int *showpoly, char *entity, int id,
+                          char ***pvars, double **pvals, char ***ptypes,
+                          int *pvarqty)
 {
   int i;
 
@@ -1853,7 +1877,8 @@ neut_tess_expr_vars_vals (struct TESS Tess, char* expr, int *showedge,
 
   for (i = 0; i < *pvarqty; i++)
     neut_tess_var_val_one (Tess, showedge, showface, showpoly, entity, id,
-	                   (*pvars)[i], (*pvals) + i, ptypes? (*ptypes) + i : NULL);
+                           (*pvars)[i], (*pvals) + i,
+                           ptypes ? (*ptypes) + i : NULL);
 
   return 0;
 }
@@ -1867,5 +1892,8 @@ neut_tess_isvoid (struct TESS Tess)
 int
 neut_tess_cell_isvoid (struct TESS Tess, int cell)
 {
-  return (Tess.Dim == 3 && Tess.PolyFaceQty[cell] == 0) || (Tess.Dim == 2 && Tess.FaceVerQty[cell] == 0);
+  return (Tess.Dim == 3 && Tess.PolyFaceQty[cell] == 0) || (Tess.Dim == 2
+                                                            && Tess.
+                                                            FaceVerQty[cell]
+                                                            == 0);
 }

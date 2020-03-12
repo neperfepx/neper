@@ -39,10 +39,7 @@ ol_R_set_id (double *R)
 }
 
 void
-ol_R_set_this (double *R,
-double R1, 
-double R2, 
-double R3)
+ol_R_set_this (double *R, double R1, double R2, double R3)
 {
   R[0] = R1;
   R[1] = R2;
@@ -55,7 +52,7 @@ double R3)
 void
 ol_R_memcpy (double *Rsrc, double *Rdest)
 {
-  ut_array_1d_memcpy (Rdest, 3, Rsrc);
+  ut_array_1d_memcpy (Rsrc, 3, Rdest);
 
   return;
 }

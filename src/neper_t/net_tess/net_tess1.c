@@ -1,13 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_.h"
 
 int
-net_tess (struct IN_T In, int level, struct TESS *Tess, int dtess,
-	  int dcell, struct SEEDSET *SSet, int TessId,
-	  struct MTESS *pMTess)
+net_tess (struct IN_T In, int level, struct TESS *Tess, int dtess, int dcell,
+          struct SEEDSET *SSet, int TessId, struct MTESS *pMTess)
 {
   int status = -1, periodic;
   int dim = (In.levelqty > 1 && In.dim == 2) ? 3 : In.dim;
@@ -17,7 +16,8 @@ net_tess (struct IN_T In, int level, struct TESS *Tess, int dtess,
 
   neut_tess_set_zero (&Dom);
 
-  if (ut_string_filename (In.morpho[level]) && !ut_filename_istess (In.morpho[level]))
+  if (ut_string_isfilename (In.morpho[level])
+      && !ut_file_testformat (In.morpho[level], "tess"))
   {
     neut_mtess_tess_poly_mid (*pMTess, Tess[dtess], dcell, &mid);
 
@@ -37,30 +37,34 @@ net_tess (struct IN_T In, int level, struct TESS *Tess, int dtess,
     neut_tess_poly_tess (Tess[dtess], dcell, &Dom);
 
   // regular tessellations: cube and square
-  if (!strncmp (morpho, "cube", 4)
-   || !strncmp (morpho, "square", 6))
-    status = net_tess_cube (In, level, morpho, pMTess, Tess, dtess, dcell,
-			    TessId, SSet);
+  if (!strncmp (morpho, "cube", 4) || !strncmp (morpho, "square", 6))
+    status =
+      net_tess_cube (In, level, morpho, pMTess, Tess, dtess, dcell, TessId,
+                     SSet);
 
   // standard Voronoi/Laguerre tessellation
   else if (!strncmp (morpho, "lamellar", 8))
-    status = net_tess_lam (In, level, morpho, pMTess, Tess, dtess, dcell,
-			   TessId, SSet);
+    status =
+      net_tess_lam (In, level, morpho, pMTess, Tess, dtess, dcell, TessId,
+                    SSet);
 
   // standard Voronoi/Laguerre tessellation
   else if (!strncmp (morpho, "tocta", 5))
-    status = net_tess_tocta (In, level, morpho, pMTess, Tess, dtess, dcell,
-			     TessId, SSet);
+    status =
+      net_tess_tocta (In, level, morpho, pMTess, Tess, dtess, dcell, TessId,
+                      SSet);
 
   // standard Voronoi/Laguerre tessellation
-  else if (ut_string_filename (morpho) && ut_filename_istess (morpho))
-    status = net_tess_file (level, morpho, pMTess, Tess, dtess, dcell,
-			    TessId, SSet);
+  else if (ut_string_isfilename (morpho)
+           && ut_file_testformat (morpho, "tess"))
+    status =
+      net_tess_file (level, morpho, pMTess, Tess, dtess, dcell, TessId, SSet);
 
   // other tessellations
   else
-    status = net_tess_opt (In, level, morpho, Tess, dtess, dcell, TessId,
-			   pMTess, SSet);
+    status =
+      net_tess_opt (In, level, morpho, Tess, dtess, dcell, TessId, pMTess,
+                    SSet);
 
 
   // finalizing
@@ -73,8 +77,8 @@ net_tess (struct IN_T In, int level, struct TESS *Tess, int dtess,
   }
 
   neut_tess_free (&Dom);
-  ut_free_1d_char (mid);
-  ut_free_1d_char (morpho);
+  ut_free_1d_char (&mid);
+  ut_free_1d_char (&morpho);
 
   return status;
 }

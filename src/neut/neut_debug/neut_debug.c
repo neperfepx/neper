@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_debug_.h"
@@ -8,7 +8,7 @@ void
 neut_debug_nodes (FILE * file, struct NODES Nodes)
 {
   fprintf (file,
-	   "====== Beginning of Nodes ================================\n");
+           "====== Beginning of Nodes ================================\n");
   fprintf (file, "Nodes:\n");
   fprintf (file, "NodeQty = %d\n", Nodes.NodeQty);
 
@@ -28,16 +28,15 @@ neut_debug_nodes (FILE * file, struct NODES Nodes)
   {
     int i, id;
     fprintf (file, "PerNodeNb = \n");
-    ut_array_1d_int_fprintf (file, Nodes.PerNodeNb + 1,
-			     Nodes.PerNodeQty, "%d");
+    ut_array_1d_int_fprintf (file, Nodes.PerNodeNb + 1, Nodes.PerNodeQty,
+                             "%d");
     fprintf (file, "PerNodeNb PerNodeMaster PerNodeShift\n");
     for (i = 1; i <= Nodes.PerNodeQty; i++)
     {
       id = Nodes.PerNodeNb[i];
       fprintf (file, "%d %d %d %d %d\n", id, Nodes.PerNodeMaster[id],
-					     Nodes.PerNodeShift[id][0],
-					     Nodes.PerNodeShift[id][1],
-					     Nodes.PerNodeShift[id][2]);
+               Nodes.PerNodeShift[id][0], Nodes.PerNodeShift[id][1],
+               Nodes.PerNodeShift[id][2]);
     }
 
     fprintf (file, "i PerNodeSlaveQty PerNodeSlaveNb\n");
@@ -45,7 +44,7 @@ neut_debug_nodes (FILE * file, struct NODES Nodes)
     {
       fprintf (file, "%d %d ", i, Nodes.PerNodeSlaveQty[i]);
       ut_array_1d_int_fprintf (stdout, Nodes.PerNodeSlaveNb[i] + 1,
-                                       Nodes.PerNodeSlaveQty[i], "%d");
+                               Nodes.PerNodeSlaveQty[i], "%d");
     }
   }
 
@@ -54,16 +53,16 @@ neut_debug_nodes (FILE * file, struct NODES Nodes)
   {
     int i;
     fprintf (file, "DupNodeNb = \n");
-    ut_array_1d_int_fprintf (file, Nodes.DupNodeNb + 1,
-			     Nodes.DupNodeQty, "%d");
+    ut_array_1d_int_fprintf (file, Nodes.DupNodeNb + 1, Nodes.DupNodeQty,
+                             "%d");
     fprintf (file, "DupNodeNb DupNodeMaster DupNodeSeed\n");
     for (i = Nodes.NodeQty - Nodes.DupNodeQty + 1; i <= Nodes.NodeQty; i++)
       fprintf (file, "%d %d %d\n", i, Nodes.DupNodeMaster[i],
-				      Nodes.DupNodeSeed[i]);
+               Nodes.DupNodeSeed[i]);
   }
 
   fprintf (file,
-	   "====== End of Nodes ======================================\n");
+           "====== End of Nodes ======================================\n");
 
   return;
 }
@@ -86,7 +85,7 @@ neut_debug_mesh (FILE * file, struct MESH Mesh)
     neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder);
 
   fprintf (file,
-	   "====== Beginning of Mesh =================================\n");
+           "====== Beginning of Mesh =================================\n");
   fprintf (file, "Mesh:\n");
   fprintf (file, "Dimension = %d\n", Mesh.Dimension);
   fprintf (file, "EltOrder = %d\n", Mesh.EltOrder);
@@ -103,7 +102,7 @@ neut_debug_mesh (FILE * file, struct MESH Mesh)
     fprintf (file, "EltElset = \n");
     if (Mesh.EltElset != NULL)
       for (i = 1; i <= Mesh.EltQty; i++)
-	fprintf (file, "%d\n", Mesh.EltElset[i]);
+        fprintf (file, "%d\n", Mesh.EltElset[i]);
     else
       fprintf (file, "(null)\n");
     fprintf (file, "ElsetQty = %d\n", Mesh.ElsetQty);
@@ -124,12 +123,12 @@ neut_debug_mesh (FILE * file, struct MESH Mesh)
     {
       fprintf (file, "%2d  ", i);
       ut_array_1d_int_fprintf (file, Mesh.NodeElts[i] + 1,
-			       Mesh.NodeElts[i][0], "%d");
+                               Mesh.NodeElts[i][0], "%d");
     }
   }
 
   fprintf (file,
-	   "====== End of Mesh =======================================\n");
+           "====== End of Mesh =======================================\n");
   return;
 }
 
@@ -149,7 +148,7 @@ neut_debug_nset (FILE * file, struct NSET NSet)
   int i;
 
   fprintf (file,
-	   "====== Beginning of NSet =================================\n");
+           "====== Beginning of NSet =================================\n");
   fprintf (file, "NSet:\n");
   fprintf (file, "qty = %d\n", NSet.qty);
 
@@ -166,7 +165,7 @@ neut_debug_nset (FILE * file, struct NSET NSet)
     ut_array_1d_int_fprintf (file, NSet.nodes[i], NSet.nodeqty[i], "%d");
 
   fprintf (file,
-	   "====== End of NSet =======================================\n");
+           "====== End of NSet =======================================\n");
   return;
 }
 
@@ -186,7 +185,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
   int i;
 
   fprintf (file,
-	   "====== Beginning of Tess ==================================\n");
+           "====== Beginning of Tess ==================================\n");
   fprintf (file, "Dim = %d\n", Tess.Dim);
   fprintf (file, "Level = %d\n", Tess.Level);
   fprintf (file, "TessId = %d\n", Tess.TessId);
@@ -279,8 +278,8 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     else
       for (i = 1; i <= Tess.VerQty; i++)
       {
-	fprintf (file, "%d ", i);
-	ut_array_1d_fprintf (file, Tess.VerCoo[i], 3, "%f");
+        fprintf (file, "%d ", i);
+        ut_array_1d_fprintf (file, Tess.VerCoo[i], 3, "%f");
       }
 
     fprintf (file, "[id] VerEdgeQty then VerEdgeNb =\n");
@@ -289,9 +288,9 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     else
       for (i = 1; i <= Tess.VerQty; i++)
       {
-	fprintf (file, "%d %d ", i, Tess.VerEdgeQty[i]);
-	ut_array_1d_int_fprintf (file, Tess.VerEdgeNb[i], Tess.VerEdgeQty[i],
-				 "%d");
+        fprintf (file, "%d %d ", i, Tess.VerEdgeQty[i]);
+        ut_array_1d_int_fprintf (file, Tess.VerEdgeNb[i], Tess.VerEdgeQty[i],
+                                 "%d");
       }
 
     fprintf (file, "[id] VerDom =\n");
@@ -300,8 +299,8 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     else
       for (i = 1; i <= Tess.VerQty; i++)
       {
-	fprintf (file, "%d ", i);
-	ut_array_1d_int_fprintf (file, Tess.VerDom[i], 2, "%d");
+        fprintf (file, "%d ", i);
+        ut_array_1d_int_fprintf (file, Tess.VerDom[i], 2, "%d");
       }
 
     fprintf (file, "[id] VerState =\n");
@@ -309,7 +308,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       fprintf (file, "is NULL\n");
     else
       for (i = 1; i <= Tess.VerQty; i++)
-	fprintf (file, "%d %d\n", i, Tess.VerState[i]);
+        fprintf (file, "%d %d\n", i, Tess.VerState[i]);
   }
 
   fprintf (file, "== Edges =================\n");
@@ -321,8 +320,8 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       fprintf (file, "is NULL\n");
     else
       for (i = 1; i <= Tess.EdgeQty; i++)
-	fprintf (file, "%d %d %d\n", i, Tess.EdgeVerNb[i][0],
-		 Tess.EdgeVerNb[i][1]);
+        fprintf (file, "%d %d %d\n", i, Tess.EdgeVerNb[i][0],
+                 Tess.EdgeVerNb[i][1]);
 
     fprintf (file, "[id] EdgeFaceQty then EdgeFaceNb =\n");
     if (Tess.EdgeFaceQty == NULL || Tess.EdgeFaceNb == NULL)
@@ -330,9 +329,9 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     else
       for (i = 1; i <= Tess.EdgeQty; i++)
       {
-	fprintf (file, "%d %d ", i, Tess.EdgeFaceQty[i]);
-	ut_array_1d_int_fprintf (file, Tess.EdgeFaceNb[i],
-				 Tess.EdgeFaceQty[i], "%d");
+        fprintf (file, "%d %d ", i, Tess.EdgeFaceQty[i]);
+        ut_array_1d_int_fprintf (file, Tess.EdgeFaceNb[i],
+                                 Tess.EdgeFaceQty[i], "%d");
       }
 
     fprintf (file, "[id] EdgeLength =\n");
@@ -340,21 +339,21 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       fprintf (file, "is NULL\n");
     else
       for (i = 1; i <= Tess.EdgeQty; i++)
-	fprintf (file, "%d %f\n", i, Tess.EdgeLength[i]);
+        fprintf (file, "%d %f\n", i, Tess.EdgeLength[i]);
 
     fprintf (file, "[id] EdgeState =\n");
     if (Tess.EdgeState == NULL)
       fprintf (file, "is NULL\n");
     else
       for (i = 1; i <= Tess.EdgeQty; i++)
-	fprintf (file, "%d %d\n", i, Tess.EdgeState[i]);
+        fprintf (file, "%d %d\n", i, Tess.EdgeState[i]);
 
     fprintf (file, "[id] EdgeDel =\n");
     if (Tess.EdgeDel == NULL)
       fprintf (file, "is NULL\n");
     else
       for (i = 1; i <= Tess.EdgeQty; i++)
-	fprintf (file, "%d %d\n", i, Tess.EdgeDel[i]);
+        fprintf (file, "%d %d\n", i, Tess.EdgeDel[i]);
 
     fprintf (file, "[id] EdgeDom =\n");
     if (Tess.EdgeDom == NULL)
@@ -362,8 +361,8 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     else
       for (i = 1; i <= Tess.EdgeQty; i++)
       {
-	fprintf (file, "%d ", i);
-	ut_array_1d_int_fprintf (file, Tess.EdgeDom[i], 2, "%d");
+        fprintf (file, "%d ", i);
+        ut_array_1d_int_fprintf (file, Tess.EdgeDom[i], 2, "%d");
       }
   }
 
@@ -376,8 +375,8 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       fprintf (file, "is NULL\n");
     else
       for (i = 1; i <= Tess.FaceQty; i++)
-	fprintf (file, "%d %d %d\n", i, Tess.FacePoly[i][0],
-		 Tess.FacePoly[i][1]);
+        fprintf (file, "%d %d %d\n", i, Tess.FacePoly[i][0],
+                 Tess.FacePoly[i][1]);
 
     fprintf (file, "[id] FaceVerQty then FaceVerNb =\n");
     if (Tess.FaceVerQty == NULL || Tess.FaceVerNb == NULL)
@@ -385,9 +384,9 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     else
       for (i = 1; i <= Tess.FaceQty; i++)
       {
-	fprintf (file, "%d %d ", i, Tess.FaceVerQty[i]);
-	ut_array_1d_int_fprintf (file, Tess.FaceVerNb[i] + 1,
-				 Tess.FaceVerQty[i], "%d");
+        fprintf (file, "%d %d ", i, Tess.FaceVerQty[i]);
+        ut_array_1d_int_fprintf (file, Tess.FaceVerNb[i] + 1,
+                                 Tess.FaceVerQty[i], "%d");
       }
 
     fprintf (file, "[id] FaceEdgeQty then FaceEdgeNb =\n");
@@ -396,9 +395,9 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     else
       for (i = 1; i <= Tess.FaceQty; i++)
       {
-	fprintf (file, "%d %d ", i, Tess.FaceVerQty[i]);
-	ut_array_1d_int_fprintf (file, Tess.FaceEdgeNb[i] + 1,
-				 Tess.FaceVerQty[i], "%d");
+        fprintf (file, "%d %d ", i, Tess.FaceVerQty[i]);
+        ut_array_1d_int_fprintf (file, Tess.FaceEdgeNb[i] + 1,
+                                 Tess.FaceVerQty[i], "%d");
       }
 
     fprintf (file, "[id] FaceEdgeQty then Ori =\n");
@@ -407,9 +406,9 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     else
       for (i = 1; i <= Tess.FaceQty; i++)
       {
-	fprintf (file, "%d %d ", i, Tess.FaceVerQty[i]);
-	ut_array_1d_int_fprintf (file, Tess.FaceEdgeOri[i] + 1,
-				 Tess.FaceVerQty[i], "%d");
+        fprintf (file, "%d %d ", i, Tess.FaceVerQty[i]);
+        ut_array_1d_int_fprintf (file, Tess.FaceEdgeOri[i] + 1,
+                                 Tess.FaceVerQty[i], "%d");
       }
 
     fprintf (file, "[id] FaceEq =\n");
@@ -417,21 +416,21 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       fprintf (file, "is NULL\n");
     else
       for (i = 1; i <= Tess.FaceQty; i++)
-	ut_array_1d_fprintf (file, Tess.FaceEq[i], 4, "%f");
+        ut_array_1d_fprintf (file, Tess.FaceEq[i], 4, "%f");
 
     fprintf (file, "[id] FaceState =\n");
     if (Tess.FaceState == NULL)
       fprintf (file, "is NULL\n");
     else
       for (i = 1; i <= Tess.FaceQty; i++)
-	fprintf (file, "%d %d\n", i, Tess.FaceState[i]);
+        fprintf (file, "%d %d\n", i, Tess.FaceState[i]);
 
     fprintf (file, "[id] FacePt =\n");
     if (Tess.FacePt == NULL)
       fprintf (file, "is NULL\n");
     else
       for (i = 1; i <= Tess.FaceQty; i++)
-	fprintf (file, "%d %d\n", i, Tess.FacePt[i]);
+        fprintf (file, "%d %d\n", i, Tess.FacePt[i]);
 
     fprintf (file, "[id] FacePtCoo =\n");
     if (Tess.FacePtCoo == NULL)
@@ -439,8 +438,8 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     else
       for (i = 1; i <= Tess.FaceQty; i++)
       {
-	fprintf (file, "%d ", i);
-	ut_array_1d_fprintf (file, Tess.FacePtCoo[i], 3, "%f");
+        fprintf (file, "%d ", i);
+        ut_array_1d_fprintf (file, Tess.FacePtCoo[i], 3, "%f");
       }
 
     fprintf (file, "[id] FaceDom =\n");
@@ -449,8 +448,8 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     else
       for (i = 1; i <= Tess.FaceQty; i++)
       {
-	fprintf (file, "%d ", i);
-	ut_array_1d_int_fprintf (file, Tess.FaceDom[i], 2, "%d");
+        fprintf (file, "%d ", i);
+        ut_array_1d_int_fprintf (file, Tess.FaceDom[i], 2, "%d");
       }
   }
 
@@ -464,9 +463,9 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     else
       for (i = 1; i <= Tess.PolyQty; i++)
       {
-	fprintf (file, "%d: %d ", i, Tess.PolyFaceQty[i]);
-	ut_array_1d_int_fprintf (file, Tess.PolyFaceNb[i] + 1,
-				 Tess.PolyFaceQty[i], "%d");
+        fprintf (file, "%d: %d ", i, Tess.PolyFaceQty[i]);
+        ut_array_1d_int_fprintf (file, Tess.PolyFaceNb[i] + 1,
+                                 Tess.PolyFaceQty[i], "%d");
       }
 
     fprintf (file, "[id] PolyFaceQty then PolyFaceOri =\n");
@@ -475,9 +474,9 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     else
       for (i = 1; i <= Tess.PolyQty; i++)
       {
-	fprintf (file, "%d: %d ", i, Tess.PolyFaceQty[i]);
-	ut_array_1d_int_fprintf (file, Tess.PolyFaceOri[i] + 1,
-				 Tess.PolyFaceQty[i], "%d");
+        fprintf (file, "%d: %d ", i, Tess.PolyFaceQty[i]);
+        ut_array_1d_int_fprintf (file, Tess.PolyFaceOri[i] + 1,
+                                 Tess.PolyFaceQty[i], "%d");
       }
 
     fprintf (file, "[id] PolyState =\n");
@@ -485,7 +484,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       fprintf (file, "is NULL\n");
     else
       for (i = 1; i <= Tess.PolyQty; i++)
-	fprintf (file, "%d %d\n", i, Tess.PolyState[i]);
+        fprintf (file, "%d %d\n", i, Tess.PolyState[i]);
   }
 
   fprintf (file, "== Domain =================\n");
@@ -526,8 +525,8 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     {
       fprintf (file, "%d ", Tess.DomVerEdgeQty[i]);
       if (Tess.DomVerEdgeQty[i] > 0)
-	ut_array_1d_int_fprintf (file, Tess.DomVerEdgeNb[i],
-				 Tess.DomVerEdgeQty[i], "%d");
+        ut_array_1d_int_fprintf (file, Tess.DomVerEdgeNb[i],
+                                 Tess.DomVerEdgeQty[i], "%d");
     }
     else
       fprintf (file, "\n");
@@ -547,7 +546,8 @@ neut_debug_tess (FILE * file, struct TESS Tess)
   fprintf (file, "[id] DomEdgeLabel =\n");
   if (!Tess.DomEdgeLabel)
     fprintf (file, "is NULL\n");
-  else if (sizeof (Tess.DomEdgeLabel) / sizeof (char*) < (unsigned) Tess.DomEdgeQty + 1)
+  else if (sizeof (Tess.DomEdgeLabel) / sizeof (char *) <
+           (unsigned) Tess.DomEdgeQty + 1)
     fprintf (file, "is underallocated\n");
   else
     for (i = 1; i <= Tess.DomEdgeQty; i++)
@@ -622,7 +622,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     {
       fprintf (file, "%d %d ", i, Tess.DomFaceVerQty[i]);
       ut_array_1d_int_fprintf (file, Tess.DomFaceVerNb[i] + 1,
-			       Tess.DomFaceVerQty[i], "%d");
+                               Tess.DomFaceVerQty[i], "%d");
     }
   else
     fprintf (file, "is NULL\n");
@@ -634,7 +634,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     {
       fprintf (file, "%d %d ", i, Tess.DomFaceEdgeQty[i]);
       ut_array_1d_int_fprintf (file, Tess.DomFaceEdgeNb[i] + 1,
-			       Tess.DomFaceEdgeQty[i], "%d");
+                               Tess.DomFaceEdgeQty[i], "%d");
     }
   else
     fprintf (file, "is NULL\n");
@@ -646,7 +646,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     {
       fprintf (file, "%d %d ", i, Tess.DomTessFaceQty[i]);
       ut_array_1d_int_fprintf (file, Tess.DomTessFaceNb[i] + 1,
-			       Tess.DomTessFaceQty[i], "%d");
+                               Tess.DomTessFaceQty[i], "%d");
     }
   else
     fprintf (file, "is NULL\n");
@@ -670,12 +670,11 @@ neut_debug_tess (FILE * file, struct TESS Tess)
 
   fprintf (file, "id | PerSeedMaster | PerSeedShift =\n");
   for (i = 1; i <= Tess.SeedQty; i++)
-    fprintf (file, "%2d %2d %2d %2d %2d\n",
-      i,
-      Tess.PerSeedMaster ? Tess.PerSeedMaster[i] : -1,
-      Tess.PerSeedShift ? Tess.PerSeedShift[i][0] : -2,
-      Tess.PerSeedShift ? Tess.PerSeedShift[i][1] : -2,
-      Tess.PerSeedShift ? Tess.PerSeedShift[i][2] : -2);
+    fprintf (file, "%2d %2d %2d %2d %2d\n", i,
+             Tess.PerSeedMaster ? Tess.PerSeedMaster[i] : -1,
+             Tess.PerSeedShift ? Tess.PerSeedShift[i][0] : -2,
+             Tess.PerSeedShift ? Tess.PerSeedShift[i][1] : -2,
+             Tess.PerSeedShift ? Tess.PerSeedShift[i][2] : -2);
 
   fprintf (file, "id | PerSeedSlave =\n");
   if (Tess.PerSeedSlave)
@@ -694,12 +693,11 @@ neut_debug_tess (FILE * file, struct TESS Tess)
 
   fprintf (file, "id | PerVerMaster | PerVerShift =\n");
   for (i = 1; i <= Tess.VerQty; i++)
-    fprintf (file, "%2d %2d %2d %2d %2d\n",
-      i,
-      Tess.PerVerMaster ? Tess.PerVerMaster[i] : -1,
-      Tess.PerVerShift ? Tess.PerVerShift[i][0] : -2,
-      Tess.PerVerShift ? Tess.PerVerShift[i][1] : -2,
-      Tess.PerVerShift ? Tess.PerVerShift[i][2] : -2);
+    fprintf (file, "%2d %2d %2d %2d %2d\n", i,
+             Tess.PerVerMaster ? Tess.PerVerMaster[i] : -1,
+             Tess.PerVerShift ? Tess.PerVerShift[i][0] : -2,
+             Tess.PerVerShift ? Tess.PerVerShift[i][1] : -2,
+             Tess.PerVerShift ? Tess.PerVerShift[i][2] : -2);
 
   fprintf (file, "id | PerVerSlaveQty | PerVerSlaveNb =\n");
   if (Tess.PerVerSlaveQty)
@@ -707,7 +705,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     {
       fprintf (file, "%2d %2d ", i, Tess.PerVerSlaveQty[i]);
       ut_array_1d_int_fprintf (file, Tess.PerVerSlaveNb[i] + 1,
-			       Tess.PerVerSlaveQty[i], "%2d");
+                               Tess.PerVerSlaveQty[i], "%2d");
     }
   else
     fprintf (file, "NULL\n");
@@ -721,13 +719,12 @@ neut_debug_tess (FILE * file, struct TESS Tess)
 
   fprintf (file, "id | PerEdgeMaster | PerEdgeShift | PerEdgeOri =\n");
   for (i = 1; i <= Tess.EdgeQty; i++)
-    fprintf (file, "%2d %2d %2d %2d %2d %2d\n",
-      i,
-      Tess.PerEdgeMaster ? Tess.PerEdgeMaster[i] : -1,
-      Tess.PerEdgeShift ? Tess.PerEdgeShift[i][0] : -2,
-      Tess.PerEdgeShift ? Tess.PerEdgeShift[i][1] : -2,
-      Tess.PerEdgeShift ? Tess.PerEdgeShift[i][2] : -2,
-      Tess.PerEdgeOri ? Tess.PerEdgeOri[i] : -2);
+    fprintf (file, "%2d %2d %2d %2d %2d %2d\n", i,
+             Tess.PerEdgeMaster ? Tess.PerEdgeMaster[i] : -1,
+             Tess.PerEdgeShift ? Tess.PerEdgeShift[i][0] : -2,
+             Tess.PerEdgeShift ? Tess.PerEdgeShift[i][1] : -2,
+             Tess.PerEdgeShift ? Tess.PerEdgeShift[i][2] : -2,
+             Tess.PerEdgeOri ? Tess.PerEdgeOri[i] : -2);
 
   fprintf (file, "id | PerEdgeSlaveQty | PerEdgeSlaveNb =\n");
   if (Tess.PerEdgeSlaveQty)
@@ -735,7 +732,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     {
       fprintf (file, "%2d %2d ", i, Tess.PerEdgeSlaveQty[i]);
       ut_array_1d_int_fprintf (file, Tess.PerEdgeSlaveNb[i] + 1,
-			       Tess.PerEdgeSlaveQty[i], "%2d");
+                               Tess.PerEdgeSlaveQty[i], "%2d");
     }
 
   // PerFace
@@ -747,13 +744,12 @@ neut_debug_tess (FILE * file, struct TESS Tess)
 
   fprintf (file, "id | PerFaceMaster | PerFaceShift | PerFaceOri =\n");
   for (i = 1; i <= Tess.FaceQty; i++)
-    fprintf (file, "%2d %2d %2d %2d %2d %2d\n",
-      i,
-      Tess.PerFaceMaster ? Tess.PerFaceMaster[i] : -1,
-      Tess.PerFaceShift ? Tess.PerFaceShift[i][0] : -2,
-      Tess.PerFaceShift ? Tess.PerFaceShift[i][1] : -2,
-      Tess.PerFaceShift ? Tess.PerFaceShift[i][2] : -2,
-      Tess.PerFaceOri ? Tess.PerFaceOri[i] : -2);
+    fprintf (file, "%2d %2d %2d %2d %2d %2d\n", i,
+             Tess.PerFaceMaster ? Tess.PerFaceMaster[i] : -1,
+             Tess.PerFaceShift ? Tess.PerFaceShift[i][0] : -2,
+             Tess.PerFaceShift ? Tess.PerFaceShift[i][1] : -2,
+             Tess.PerFaceShift ? Tess.PerFaceShift[i][2] : -2,
+             Tess.PerFaceOri ? Tess.PerFaceOri[i] : -2);
 
   fprintf (file, "id | PerFaceSlaveNb =\n");
   if (Tess.PerFaceSlaveNb)
@@ -761,7 +757,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       fprintf (file, "%2d %2d\n", i, Tess.PerFaceSlaveNb[i]);
 
   fprintf (file,
-	   "====== End of Tess ========================================\n");
+           "====== End of Tess ========================================\n");
   fflush (file);
 
   return;
@@ -816,7 +812,7 @@ neut_debug_seedset (FILE * file, struct SEEDSET SSet)
   if (!SSet.q)
     fprintf (file, "is NULL.\n");
   else
-    for (i = 1; i <= SSet.Nall; i++)
+    for (i = 1; i <= SSet.N; i++)
       ut_array_1d_fprintf (file, SSet.q[i], 4, "%f");
 
   fprintf (file, "LamEq = ");
@@ -1097,7 +1093,7 @@ neut_debug_poly (FILE * file, struct POLY Poly)
   int i;
 
   fprintf (file,
-	   "====== Beginning of Poly ================================\n");
+           "====== Beginning of Poly ================================\n");
 
   fprintf (file, "VerQty = %d\n", Poly.VerQty);
   fprintf (file, "FaceQty = %d\n", Poly.FaceQty);
@@ -1119,11 +1115,11 @@ neut_debug_poly (FILE * file, struct POLY Poly)
   {
     fprintf (file, "%d: ", Poly.FaceVerQty[i]);
     ut_array_1d_int_fprintf (file, Poly.FaceVerNb[i] + 1, Poly.FaceVerQty[i],
-			     "%d");
+                             "%d");
   }
 
   fprintf (file,
-	   "====== End of Poly ======================================\n");
+           "====== End of Poly ======================================\n");
 
   return;
 }
@@ -1144,7 +1140,7 @@ neut_debug_polymod (FILE * file, struct POLYMOD Polymod)
   int i;
 
   fprintf (file,
-	   "====== Beginning of Polymod =============================\n");
+           "====== Beginning of Polymod =============================\n");
 
   fprintf (file, "VerQty = %d\n", Polymod.VerQty);
   fprintf (file, "FaceQty = %d\n", Polymod.FaceQty);
@@ -1157,7 +1153,7 @@ neut_debug_polymod (FILE * file, struct POLYMOD Polymod)
 
   fprintf (file, "VerFace = \n");
   ut_array_2d_int_fprintf (file, Polymod.VerFace + 1, Polymod.VerQty, 3,
-			   "%d");
+                           "%d");
 
   fprintf (file, "FaceUse = \n");
   ut_array_1d_int_fprintf (file, Polymod.FaceUse + 1, Polymod.FaceQty, "%d");
@@ -1173,11 +1169,11 @@ neut_debug_polymod (FILE * file, struct POLYMOD Polymod)
   {
     fprintf (file, "%d: ", Polymod.FaceVerQty[i]);
     ut_array_1d_int_fprintf (file, Polymod.FaceVerNb[i] + 1,
-			     Polymod.FaceVerQty[i], "%d");
+                             Polymod.FaceVerQty[i], "%d");
   }
 
   fprintf (file,
-	   "====== End of Polymod ===================================\n");
+           "====== End of Polymod ===================================\n");
 
   return;
 }
@@ -1204,13 +1200,13 @@ neut_debug_meshdata (FILE * file, struct MESHDATA MeshData)
   if (MeshData.ColData)
   {
     if (!strcmp (MeshData.ColDataType, "col")
-	|| !strncmp (MeshData.ColDataType, "ori", 3))
+        || !strncmp (MeshData.ColDataType, "ori", 3))
       ut_array_2d_fprintf (file, MeshData.ColData + 1, MeshData.EltQty, 3,
-			   "%f");
+                           "%f");
     else if (!strcmp (MeshData.ColDataType, "rad")
-	     || !strcmp (MeshData.ColDataType, "scal"))
+             || !strcmp (MeshData.ColDataType, "scal"))
       ut_array_2d_fprintf (file, MeshData.ColData + 1, MeshData.EltQty, 1,
-			   "%f");
+                           "%f");
     else
       abort ();
   }
@@ -1218,7 +1214,7 @@ neut_debug_meshdata (FILE * file, struct MESHDATA MeshData)
   fprintf (file, "Col = \n");
   if (MeshData.Col)
     ut_array_2d_int_fprintf (file, MeshData.Col + 1, MeshData.EltQty, 3,
-			     "%d");
+                             "%d");
 
   fprintf (file, "ColScheme = %s\n", MeshData.ColScheme);
 
@@ -1227,7 +1223,7 @@ neut_debug_meshdata (FILE * file, struct MESHDATA MeshData)
   fprintf (file, "RadData = \n");
   if (MeshData.RadData)
     ut_array_2d_fprintf (file, MeshData.RadData + 1, MeshData.EltQty, 3,
-			 "%f");
+                         "%f");
 
   fprintf (file, "Rad = \n");
   if (MeshData.Rad)
@@ -1303,14 +1299,14 @@ neut_debug_tesr (FILE * file, struct TESR Tesr)
   for (k = 1; k <= Tesr.size[2]; k++)
     for (j = 1; j <= Tesr.size[1]; j++)
       for (i = 1; i <= Tesr.size[0]; i++)
-	fprintf (file, "%d ", Tesr.VoxCell[i][j][k]);
+        fprintf (file, "%d ", Tesr.VoxCell[i][j][k]);
   fprintf (file, "\n");
 
   return;
 }
 
 void
-neut_debug_prim (FILE *file, struct PRIM Prim)
+neut_debug_prim (FILE * file, struct PRIM Prim)
 {
   fprintf (file, "Type = ");
   fprintf (file, "%s\n", Prim.Type);
@@ -1348,7 +1344,7 @@ neut_debug_prim (FILE *file, struct PRIM Prim)
 }
 
 void
-neut_debug_mtess (FILE *file, struct MTESS MTess, struct TESS *Tess)
+neut_debug_mtess (FILE * file, struct MTESS MTess, struct TESS *Tess)
 {
   int i, j;
 
@@ -1358,14 +1354,16 @@ neut_debug_mtess (FILE *file, struct MTESS MTess, struct TESS *Tess)
   if (!MTess.LevelTessQty)
     fprintf (file, "is NULL\n");
   else
-    ut_array_1d_int_fprintf (file, MTess.LevelTessQty + 1, MTess.LevelQty, "%d");
+    ut_array_1d_int_fprintf (file, MTess.LevelTessQty + 1, MTess.LevelQty,
+                             "%d");
 
   fprintf (file, "LevelTess =\n");
   if (!MTess.LevelTess)
     fprintf (file, "is NULL\n");
   else
     for (i = 1; i <= MTess.LevelQty; i++)
-      ut_array_1d_int_fprintf (file, MTess.LevelTess[i] + 1, MTess.LevelTessQty[i], "%d");
+      ut_array_1d_int_fprintf (file, MTess.LevelTess[i] + 1,
+                               MTess.LevelTessQty[i], "%d");
 
   fprintf (file, "TessQty = %d\n", MTess.TessQty);
 
@@ -1385,21 +1383,24 @@ neut_debug_mtess (FILE *file, struct MTESS MTess, struct TESS *Tess)
     fprintf (file, "is NULL\n");
   else
     for (i = 1; i <= MTess.TessQty; i++)
-      ut_array_1d_int_fprintf (file, MTess.TessDomVerNb[i] + 1, Tess[i].DomVerQty, "%d");
+      ut_array_1d_int_fprintf (file, MTess.TessDomVerNb[i] + 1,
+                               Tess[i].DomVerQty, "%d");
 
   fprintf (file, "TessDomEdgeNb =\n");
   if (!MTess.TessDomEdgeNb)
     fprintf (file, "is NULL\n");
   else
     for (i = 1; i <= MTess.TessQty; i++)
-      ut_array_1d_int_fprintf (file, MTess.TessDomEdgeNb[i] + 1, Tess[i].DomEdgeQty, "%d");
+      ut_array_1d_int_fprintf (file, MTess.TessDomEdgeNb[i] + 1,
+                               Tess[i].DomEdgeQty, "%d");
 
   fprintf (file, "TessDomFaceNb =\n");
   if (!MTess.TessDomFaceNb)
     fprintf (file, "is NULL\n");
   else
     for (i = 1; i <= MTess.TessQty; i++)
-      ut_array_1d_int_fprintf (file, MTess.TessDomFaceNb[i] + 1, Tess[i].DomFaceQty, "%d");
+      ut_array_1d_int_fprintf (file, MTess.TessDomFaceNb[i] + 1,
+                               Tess[i].DomFaceQty, "%d");
 
   fprintf (file, "DomTessFaceNb =\n");
   if (!MTess.DomTessFaceNb)

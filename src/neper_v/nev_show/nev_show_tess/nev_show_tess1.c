@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_show_tess_.h"
@@ -20,7 +20,7 @@ nev_show_tess (char **argv, int *pi, struct PRINT *pPrint)
 
 void
 nev_show_tess_seed (char **argv, int *pi, struct TESS Tess,
-		    struct PRINT *pPrint)
+                    struct PRINT *pPrint)
 {
   int i, j, status, varqty;
   double res;
@@ -43,32 +43,32 @@ nev_show_tess_seed (char **argv, int *pi, struct TESS Tess,
     for (i = 1; i <= SeedQty; i++)
     {
       for (j = 0; j < varqty; j++)
-	if (strstr (argv[(*pi)], vars[j]))
-	  neut_tess_var_val_one (Tess, (*pPrint).showedge,
-			         (*pPrint).showface, (*pPrint).showpoly, "seed",
-			         i, vars[j], vals + j, NULL);
+        if (strstr (argv[(*pi)], vars[j]))
+          neut_tess_var_val_one (Tess, (*pPrint).showedge, (*pPrint).showface,
+                                 (*pPrint).showpoly, "seed", i, vars[j],
+                                 vals + j, NULL);
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);
       if (status == 0)
-	(*pPrint).showseed[i] = res;
+        (*pPrint).showseed[i] = res;
       else
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  argv[(*pi)]);
+        ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
+                          argv[(*pi)]);
     }
   }
 
   (*pPrint).showseed[0] =
     ut_array_1d_int_sum ((*pPrint).showseed + 1, SeedQty);
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
 
   return;
 }
 
 void
 nev_show_tess_ver (char **argv, int *pi, struct TESS Tess,
-		   struct PRINT *pPrint)
+                   struct PRINT *pPrint)
 {
   int i, j, status, varqty;
   double res;
@@ -90,32 +90,32 @@ nev_show_tess_ver (char **argv, int *pi, struct TESS Tess,
     for (i = 1; i <= Tess.VerQty; i++)
     {
       for (j = 0; j < varqty; j++)
-	if (strstr (argv[(*pi)], vars[j]))
-	  neut_tess_var_val_one (Tess, (*pPrint).showedge,
-                                 (*pPrint).showface, (*pPrint).showpoly, "ver", i,
-                                 vars[j], vals + j, NULL);
+        if (strstr (argv[(*pi)], vars[j]))
+          neut_tess_var_val_one (Tess, (*pPrint).showedge, (*pPrint).showface,
+                                 (*pPrint).showpoly, "ver", i, vars[j],
+                                 vals + j, NULL);
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);
       if (status == 0)
-	(*pPrint).showver[i] = res;
+        (*pPrint).showver[i] = res;
       else
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  argv[(*pi)]);
+        ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
+                          argv[(*pi)]);
     }
   }
 
-  (*pPrint).showver[0] = ut_array_1d_int_sum ((*pPrint).showver + 1,
-					      Tess.VerQty);
+  (*pPrint).showver[0] =
+    ut_array_1d_int_sum ((*pPrint).showver + 1, Tess.VerQty);
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
 
   return;
 }
 
 void
 nev_show_tess_edge (char **argv, int *pi, struct TESS Tess,
-		    struct PRINT *pPrint)
+                    struct PRINT *pPrint)
 {
   int i, j, status, varqty;
   double res;
@@ -138,33 +138,32 @@ nev_show_tess_edge (char **argv, int *pi, struct TESS Tess,
     for (i = 1; i <= Tess.EdgeQty; i++)
     {
       for (j = 0; j < varqty; j++)
-	if (strstr (argv[(*pi)], vars[j]))
-	  neut_tess_var_val_one (Tess,
-			         (*pPrint).showedge,
-			         (*pPrint).showface, (*pPrint).showpoly,
-			         "edge", i, vars[j], vals + j, NULL);
+        if (strstr (argv[(*pi)], vars[j]))
+          neut_tess_var_val_one (Tess, (*pPrint).showedge, (*pPrint).showface,
+                                 (*pPrint).showpoly, "edge", i, vars[j],
+                                 vals + j, NULL);
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);
       if (status == 0)
-	(*pPrint).showedge[i] = res;
+        (*pPrint).showedge[i] = res;
       else
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  argv[(*pi)]);
+        ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
+                          argv[(*pi)]);
     }
   }
 
-  (*pPrint).showedge[0] = ut_array_1d_int_sum ((*pPrint).showedge + 1,
-					       Tess.EdgeQty);
+  (*pPrint).showedge[0] =
+    ut_array_1d_int_sum ((*pPrint).showedge + 1, Tess.EdgeQty);
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
 
   return;
 }
 
 void
 nev_show_tess_face (char **argv, int *pi, struct TESS Tess,
-		    struct PRINT *pPrint)
+                    struct PRINT *pPrint)
 {
   int i, j, status, varqty;
   double res;
@@ -187,32 +186,31 @@ nev_show_tess_face (char **argv, int *pi, struct TESS Tess,
     for (i = 1; i <= Tess.FaceQty; i++)
     {
       for (j = 0; j < varqty; j++)
-	if (strstr (argv[(*pi)], vars[j]))
-	  neut_tess_var_val_one (Tess, NULL, NULL,
-			         (*pPrint).showface, "face", i, vars[j],
-			         vals + j, NULL);
+        if (strstr (argv[(*pi)], vars[j]))
+          neut_tess_var_val_one (Tess, NULL, NULL, (*pPrint).showface, "face",
+                                 i, vars[j], vals + j, NULL);
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);
       if (status == 0)
-	(*pPrint).showface[i] = res;
+        (*pPrint).showface[i] = res;
       else
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  argv[(*pi)]);
+        ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
+                          argv[(*pi)]);
     }
   }
 
-  (*pPrint).showface[0] = ut_array_1d_int_sum ((*pPrint).showface + 1,
-					       Tess.FaceQty);
+  (*pPrint).showface[0] =
+    ut_array_1d_int_sum ((*pPrint).showface + 1, Tess.FaceQty);
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
 
   return;
 }
 
 void
 nev_show_tess_poly (char **argv, int *pi, struct TESS Tess,
-		    struct PRINT *pPrint)
+                    struct PRINT *pPrint)
 {
   int i, j, status, varqty;
   double res;
@@ -235,31 +233,31 @@ nev_show_tess_poly (char **argv, int *pi, struct TESS Tess,
     for (i = 1; i <= Tess.PolyQty; i++)
     {
       for (j = 0; j < varqty; j++)
-	if (strstr (argv[(*pi)], vars[j]))
-	  neut_tess_var_val_one (Tess, NULL, NULL, NULL, "poly", i, vars[j],
-			         vals + j, NULL);
+        if (strstr (argv[(*pi)], vars[j]))
+          neut_tess_var_val_one (Tess, NULL, NULL, NULL, "poly", i, vars[j],
+                                 vals + j, NULL);
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);
       if (status == 0)
-	(*pPrint).showpoly[i] = res;
+        (*pPrint).showpoly[i] = res;
       else
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  argv[(*pi)]);
+        ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
+                          argv[(*pi)]);
     }
   }
 
-  (*pPrint).showpoly[0] = ut_array_1d_int_sum ((*pPrint).showpoly + 1,
-					       Tess.PolyQty);
+  (*pPrint).showpoly[0] =
+    ut_array_1d_int_sum ((*pPrint).showpoly + 1, Tess.PolyQty);
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
 
   return;
 }
 
 void
 nev_show_tess_cell (char **argv, int *pi, struct TESS Tess,
-		    struct PRINT *pPrint)
+                    struct PRINT *pPrint)
 {
   int i, j, status, varqty;
   double res;
@@ -283,21 +281,21 @@ nev_show_tess_cell (char **argv, int *pi, struct TESS Tess,
     for (i = 1; i <= Tess.CellQty; i++)
     {
       for (j = 0; j < varqty; j++)
-	if (strstr (argv[(*pi)], vars[j]))
-	{
-	  if (!strcmp (vars[j], "id"))
-	    vals[j] = Tess.CellId ? Tess.CellId[i] : i;
-	  else
-	    neut_tess_var_val_one (Tess, NULL, NULL, NULL, cell, i, vars[j],
-			           vals + j, NULL);
-	}
+        if (strstr (argv[(*pi)], vars[j]))
+        {
+          if (!strcmp (vars[j], "id"))
+            vals[j] = Tess.CellId ? Tess.CellId[i] : i;
+          else
+            neut_tess_var_val_one (Tess, NULL, NULL, NULL, cell, i, vars[j],
+                                   vals + j, NULL);
+        }
 
       status = ut_math_eval (argv[(*pi)], varqty, vars, vals, &res);
       if (status == 0)
-	showcell[i] = res;
+        showcell[i] = res;
       else
-	ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
-			  argv[(*pi)]);
+        ut_print_message (2, 0, "Expression `%s' could not be processed.\n",
+                          argv[(*pi)]);
     }
   }
 
@@ -307,19 +305,19 @@ nev_show_tess_cell (char **argv, int *pi, struct TESS Tess,
   {
     (*pPrint).showpoly =
       ut_realloc_1d_int ((*pPrint).showpoly, Tess.PolyQty + 1);
-    ut_array_1d_int_memcpy ((*pPrint).showpoly, Tess.PolyQty + 1, showcell);
+    ut_array_1d_int_memcpy (showcell, Tess.PolyQty + 1, (*pPrint).showpoly);
   }
   else if (Tess.Dim == 2)
   {
     (*pPrint).showface =
       ut_realloc_1d_int ((*pPrint).showface, Tess.FaceQty + 1);
-    ut_array_1d_int_memcpy ((*pPrint).showface, Tess.FaceQty + 1, showcell);
+    ut_array_1d_int_memcpy (showcell, Tess.FaceQty + 1, (*pPrint).showface);
   }
 
-  ut_free_1d_int (showcell);
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
-  ut_free_1d_char (cell);
+  ut_free_1d_int (&showcell);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
+  ut_free_1d_char (&cell);
 
   return;
 }

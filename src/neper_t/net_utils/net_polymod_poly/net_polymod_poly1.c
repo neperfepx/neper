@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_polymod_poly_.h"
@@ -70,10 +70,10 @@ net_polymod_poly (struct POLYMOD Polymod, struct POLY *pPoly)
 
   /* Memory allocation of temporary used arrays.
    */
-  ut_free_1d_int (CompVer);
-  ut_free_1d_int (CompVerInv);
-  ut_free_1d_int (CompFace);
-  ut_free_1d_int (CompFaceInv);
+  ut_free_1d_int (&CompVer);
+  ut_free_1d_int (&CompVerInv);
+  ut_free_1d_int (&CompFace);
+  ut_free_1d_int (&CompFaceInv);
 
   return;
 }

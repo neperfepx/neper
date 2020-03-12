@@ -21,7 +21,7 @@ ol_g_free (double **g)
   if (!g)
     return;
   else
-    ut_free_2d (g, 3);
+    ut_free_2d (&g, 3);
 
   return;
 }
@@ -46,7 +46,8 @@ ol_g_set_id (double **g)
 }
 
 void
-ol_g_set_this (double **g, double g11, double g12, double g13, double g21, double g22, double g23, double g31, double g32, double g33)
+ol_g_set_this (double **g, double g11, double g12, double g13, double g21,
+               double g22, double g23, double g31, double g32, double g33)
 {
   g[0][0] = g11;
   g[0][1] = g12;
@@ -64,7 +65,7 @@ ol_g_set_this (double **g, double g11, double g12, double g13, double g21, doubl
 void
 ol_g_memcpy (double **gsrc, double **gdest)
 {
-  ut_array_2d_memcpy (gdest, 3, 3, gsrc);
+  ut_array_2d_memcpy (gsrc, 3, 3, gdest);
 
   return;
 }
@@ -73,9 +74,9 @@ int
 ol_g_fscanf (FILE * file, double **g)
 {
   if (fscanf (file, "%lf%lf%lf%lf%lf%lf%lf%lf%lf",
-	      &g[0][0], &g[0][1], &g[0][2],
-	      &g[1][0], &g[1][1], &g[1][2],
-	      &g[2][0], &g[2][1], &g[2][2]) == 9)
+              &g[0][0], &g[0][1], &g[0][2],
+              &g[1][0], &g[1][1], &g[1][2],
+              &g[2][0], &g[2][1], &g[2][2]) == 9)
     return 1;
   else
     return 0;

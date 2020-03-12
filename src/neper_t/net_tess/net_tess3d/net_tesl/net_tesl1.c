@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tesl_.h"
@@ -71,8 +71,8 @@ net_tesl (struct SEEDSET SSet, struct POLY *Poly, struct TESL *pTesl)
    */
   status = IniTessEdge (pTesl);
 
-  ut_free_2d_int (TVNb, (*pTesl).PolyQty + 1);
-  ut_free_2d_int (TFNb, (*pTesl).PolyQty + 1);
+  ut_free_2d_int (&TVNb, (*pTesl).PolyQty + 1);
+  ut_free_2d_int (&TFNb, (*pTesl).PolyQty + 1);
 
 /* ************************************************************************
  * Recording of the edge lengths from the edge properties, and of the

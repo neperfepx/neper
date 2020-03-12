@@ -1,15 +1,15 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_fepx_.h"
 
 void
-neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess,
-			     struct NODES Nodes, struct MESH Mesh2D,
-			     struct MESH Mesh3D, struct NSET NSet0D,
-			     struct NSET NSet1D, struct NSET NSet2D,
-			     char *nset, char *faset, char *version)
+neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess, struct NODES Nodes,
+                             struct MESH Mesh2D, struct MESH Mesh3D,
+                             struct NSET NSet0D, struct NSET NSet1D,
+                             struct NSET NSet2D, char *nset, char *faset,
+                             char *version)
 {
   FILE *file = NULL;
   int printparms, printmesh, printsurf, printgrain, printbcs, printkocks;
@@ -35,7 +35,7 @@ neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess,
   }
   else
   {
-    ut_error_reportbug ();
+    ut_print_neperbug ();
     abort ();
   }
 
@@ -75,8 +75,8 @@ neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess,
       neut_mesh_fprintf_fepx_elts (file, Tess, NSet2D, Mesh3D);
       neut_mesh_fprintf_fepx_nodes (file, Nodes);
       neut_mesh_fprintf_fepx_skinelts (file, Tess, Mesh2D, Mesh3D, Nodes,
-				       fasetexpand);
-      ut_free_1d_char (fasetexpand);
+                                       fasetexpand);
+      ut_free_1d_char (&fasetexpand);
     }
 
     ut_file_close (file, mesh, "w");
@@ -89,9 +89,9 @@ neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess,
     neut_nset_expand (NSet0D, NSet1D, NSet2D, faset, &fasetexpand);
     file = ut_file_open (surf, "w");
     neut_mesh_fprintf_fepx_skinelts (file, Tess, Mesh2D, Mesh3D, Nodes,
-				     fasetexpand);
+                                     fasetexpand);
     ut_file_close (file, surf, "w");
-    ut_free_1d_char (fasetexpand);
+    ut_free_1d_char (&fasetexpand);
   }
 
   /* fepx4, grain = element sets */
@@ -106,7 +106,8 @@ neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess,
   if (printbcs)
   {
     file = ut_file_open (bcs, "w");
-    neut_mesh_fprintf_fepx_nsets (file, NSet0D, NSet1D, NSet2D, nset, version);
+    neut_mesh_fprintf_fepx_nsets (file, NSet0D, NSet1D, NSet2D, nset,
+                                  version);
     ut_file_close (file, bcs, "w");
   }
 
@@ -120,7 +121,8 @@ neut_mesh_fprintf_fepx_name (char *body, struct TESS Tess,
       ut_file_close (file, kocks, "w");
     }
     else
-      ut_print_message (1, 3, "Skipping kocks file (CellOri not defined)...\n");
+      ut_print_message (1, 3,
+                        "Skipping kocks file (CellOri not defined)...\n");
   }
 
   return;

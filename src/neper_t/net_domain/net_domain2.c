@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_domain_.h"
@@ -20,7 +20,7 @@ net_domain_cylinder_string (char *domain, char *nstring, struct POLY *pPoly)
     (*pPoly).PseudoSize = pseudosize;
   }
 
-  ut_free_1d (parms);
+  ut_free_1d (&parms);
 
   return;
 }
@@ -37,7 +37,7 @@ net_domain_cylinderparms (char *domain, char *nstring, double *parms,
   *ppseudodim = -1;
   *ppseudosize = -DBL_MAX;
 
-  ut_string_function_separate (domain, &fct, NULL, &vars, &varqty);
+  ut_string_function (domain, &fct, NULL, &vars, &varqty);
 
   if (!strncmp (fct, "cylinder", 8))
   {
@@ -62,7 +62,7 @@ net_domain_cylinderparms (char *domain, char *nstring, double *parms,
   }
 
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   if (ut_num_d2ri (parms[2]) != -1 && ut_num_d2ri (parms[2]) < 3)
   {
@@ -87,16 +87,18 @@ net_domain_cylinderparms (char *domain, char *nstring, double *parms,
       abort ();
 
     if (!strcmp (nstring, "from_morpho"))
-      ut_print_messagewnc (2, 72, "The number of facets must be specified in `-morpho cylinder' when using `-n from_morpho'.");
+      ut_print_messagewnc (2, 72,
+                           "The number of facets must be specified in `-morpho cylinder' when using `-n from_morpho'.");
 
     ut_math_eval (nstring, 1, vars, vals, &res);
     res = ut_num_max (res, 1);
 
-    ut_free_2d_char (vars, varqty);
-    ut_free_1d (vals);
+    ut_free_2d_char (&vars, varqty);
+    ut_free_1d (&vals);
 
     if (!strcmp (fct, "cylinder"))
-      rcl2cl (1, 3, M_PI * parms[0] * parms[0] * parms[1] / 4, ut_num_d2ri (res), NULL, &cl);
+      rcl2cl (1, 3, M_PI * parms[0] * parms[0] * parms[1] / 4,
+              ut_num_d2ri (res), NULL, &cl);
     else if (!strcmp (fct, "circle"))
       rcl2cl (1, 3, M_PI * parms[1] / 4, ut_num_d2ri (res), NULL, &cl);
     else
@@ -107,8 +109,8 @@ net_domain_cylinderparms (char *domain, char *nstring, double *parms,
   }
   parms[2] += 2;
 
-  ut_free_1d_char (fct);
-  ut_free_2d_char (vars, varqty);
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vars, varqty);
 
   return;
 }
@@ -120,7 +122,7 @@ net_domain_cylinder (double *parms, struct POLY *pPoly)
 
   net_domain_cylinder_planes (parms[0], parms[1] / 2, parms[2] - 2, eq);
   net_domain_clip (pPoly, eq, parms[2]);
-  ut_free_2d (eq, parms[2]);
+  ut_free_2d (&eq, parms[2]);
 
   return;
 }
@@ -133,7 +135,7 @@ net_domain_stdtriangle_string (char *domain, struct POLY *pPoly)
   net_domain_stdtriangleparms (domain, parms);
   net_domain_stdtriangle (parms, pPoly);
 
-  ut_free_1d (parms);
+  ut_free_1d (&parms);
 
   return;
 }
@@ -144,7 +146,7 @@ net_domain_stdtriangleparms (char *domain, double *parms)
   int varqty;
   char **vars = NULL;
 
-  ut_string_function_separate (domain, NULL, NULL, &vars, &varqty);
+  ut_string_function (domain, NULL, NULL, &vars, &varqty);
 
   if (varqty != 1)
     ut_print_message (2, 0, "Unknown expression `%s'.\n", domain);
@@ -153,7 +155,7 @@ net_domain_stdtriangleparms (char *domain, double *parms)
 
   parms[0] += 4;
 
-  ut_free_2d_char (vars, varqty);
+  ut_free_2d_char (&vars, varqty);
 
   return;
 }
@@ -170,7 +172,7 @@ net_domain_stdtriangle (double *parms, struct POLY *pPoly)
   (*pPoly).PseudoDim = 2;
   (*pPoly).PseudoSize = 1e-6;
 
-  ut_free_2d (eq, qty);
+  ut_free_2d (&eq, qty);
 
   return;
 }
@@ -183,7 +185,7 @@ net_domain_sphere_string (char *domain, struct POLY *pPoly)
   net_domain_sphereparms (domain, parms);
   net_domain_sphere (parms, pPoly);
 
-  ut_free_1d (parms);
+  ut_free_1d (&parms);
 
   return;
 }
@@ -196,7 +198,7 @@ net_domain_sphereparms (char *domain, double *parms)
 
   parms[1] = 100;
 
-  ut_string_function_separate (domain, NULL, NULL, &vars, &varqty);
+  ut_string_function (domain, NULL, NULL, &vars, &varqty);
 
   if (varqty != 1 && varqty != 2)
     ut_print_message (2, 0, "Unknown expression `%s'.\n", domain);
@@ -212,7 +214,7 @@ net_domain_sphereparms (char *domain, double *parms)
     parms[1] = 4;
   }
 
-  ut_free_2d_char (vars, varqty);
+  ut_free_2d_char (&vars, varqty);
 
   return;
 }
@@ -225,7 +227,7 @@ net_domain_sphere (double *parms, struct POLY *pPoly)
   net_domain_sphere_planes (parms[0] / 2, parms[1], eq);
   net_domain_clip (pPoly, eq, parms[1]);
 
-  ut_free_2d (eq, parms[1]);
+  ut_free_2d (&eq, parms[1]);
 
   return;
 }
@@ -238,7 +240,7 @@ net_domain_rodrigues_string (char *domain, struct POLY *pPoly)
   net_domain_rodriguesparms (domain, &crysym);
   net_domain_rodrigues (crysym, pPoly);
 
-  ut_free_1d_char (crysym);
+  ut_free_1d_char (&crysym);
 
   return;
 }
@@ -249,14 +251,14 @@ net_domain_rodriguesparms (char *domain, char **pcrysym)
   int varqty;
   char **vars = NULL;
 
-  ut_string_function_separate (domain, NULL, NULL, &vars, &varqty);
+  ut_string_function (domain, NULL, NULL, &vars, &varqty);
 
   if (varqty != 1)
     ut_print_message (2, 0, "Unknown expression `%s'.\n", domain);
 
   ut_string_string (vars[0], pcrysym);
 
-  ut_free_2d_char (vars, varqty);
+  ut_free_2d_char (&vars, varqty);
 
   return;
 }
@@ -280,7 +282,8 @@ net_domain_rodrigues (char *crysym, struct POLY *pPoly)
   net_domain_cube (cubesize, pPoly);
 
   if (!strcmp (crysym, "m-3"))
-    ut_print_message (1, 2, "Face positions are randomized a bit to avoid degeneracy.\n");
+    ut_print_message (1, 2,
+                      "Face positions are randomized a bit to avoid degeneracy.\n");
 
   eqqty = 0;
   for (i = 2; i <= n; i++)
@@ -292,7 +295,7 @@ net_domain_rodrigues (char *crysym, struct POLY *pPoly)
 
     eq = ut_realloc_2d_addline (eq, ++eqqty, 4);
 
-    ut_array_1d_memcpy (eq[eqqty - 1] + 1, 3, r);
+    ut_array_1d_memcpy (r, 3, eq[eqqty - 1] + 1);
     eq[eqqty - 1][0] = tan (theta / 4);
     if (eq[eqqty - 1][0] < 0)
       ut_array_1d_scale (eq[eqqty - 1], 4, -1);
@@ -300,7 +303,7 @@ net_domain_rodrigues (char *crysym, struct POLY *pPoly)
     if (theta > M_PI - OL_EPS)
     {
       eq = ut_realloc_2d_addline (eq, ++eqqty, 4);
-      ut_array_1d_memcpy (eq[eqqty - 1], 4, eq[eqqty - 2]);
+      ut_array_1d_memcpy (eq[eqqty - 2], 4, eq[eqqty - 1]);
       ut_array_1d_scale (eq[eqqty - 1] + 1, 3, -1);
     }
   }
@@ -308,12 +311,12 @@ net_domain_rodrigues (char *crysym, struct POLY *pPoly)
   if (eqqty > 0)
     net_domain_clip (pPoly, eq, eqqty);
 
-  ut_free_2d (cubesize, 3);
-  ut_free_1d (O);
+  ut_free_2d (&cubesize, 3);
+  ut_free_1d (&O);
   ol_r_free (r);
   ol_q_free (q1);
   ol_q_free (q2);
-  ut_free_2d (eq, eqqty);
+  ut_free_2d (&eq, eqqty);
 
   return;
 }
@@ -327,7 +330,7 @@ net_domain_planes_string (char *domain, int dim, struct POLY *pPoly)
   net_domain_planesparms (domain, dim, &eqs, &eqqty);
   net_domain_planes (eqs, eqqty, pPoly);
 
-  ut_free_2d (eqs, eqqty);
+  ut_free_2d (&eqs, eqqty);
 
   return;
 }
@@ -339,7 +342,7 @@ net_domain_planesparms (char *domain, int dim, double ***peqs, int *peqqty)
   char **vars = NULL, *filename = NULL;
   FILE *file = NULL;
 
-  ut_string_function_separate (domain, NULL, NULL, &vars, &varqty);
+  ut_string_function (domain, NULL, NULL, &vars, &varqty);
 
   if (varqty != 1)
     ut_print_message (2, 0, "Unknown expression `%s'.\n", domain);
@@ -377,31 +380,10 @@ net_domain_planesparms (char *domain, int dim, double ***peqs, int *peqqty)
       ut_print_message (2, 3, "Face %d: normal norm is zero.\n", i - 1);
     ut_array_1d_scale ((*peqs)[i], 4, 1. / ut_vector_norm ((*peqs)[i] + 1));
   }
-  else
-    shift = 0;
 
-  (*peqs) = ut_alloc_2d (*peqqty, 4);
-
-  // recording z0 and z1 faces
-  if (dim == 2)
-  {
-    (*peqs)[0][3] = -1;
-    (*peqs)[1][3] = 1;
-    (*peqs)[1][0] = 1e-6;
-  }
-
-  // recording faces
-  for (i = shift; i < *peqqty; i++)
-  {
-    ut_array_1d_fscanf (file, (*peqs)[i], 4);
-    if (ut_array_1d_norm ((*peqs)[i] + 1, 3) == 0)
-      ut_print_message (2, 3, "Face %d: normal norm is zero.\n", i - 1);
-    ut_array_1d_scale ((*peqs)[i], 4, 1. / ut_vector_norm ((*peqs)[i] + 1));
-  }
-
-  ut_free_2d_char (vars, varqty);
+  ut_free_2d_char (&vars, varqty);
   ut_file_close (file, filename, "r");
-  ut_free_1d_char (filename);
+  ut_free_1d_char (&filename);
 
   return;
 }
@@ -423,7 +405,7 @@ net_domain_cell_string (char *domain, struct POLY *pPoly)
   net_domain_cellparms (domain, &filename, &cell);
   net_domain_cell (filename, cell, pPoly);
 
-  ut_free_1d_char (filename);
+  ut_free_1d_char (&filename);
 
   return;
 }
@@ -434,7 +416,7 @@ net_domain_cellparms (char *domain, char **pfilename, int *pcell)
   int varqty;
   char **vars = NULL, *filename = NULL;
 
-  ut_string_function_separate (domain, NULL, NULL, &vars, &varqty);
+  ut_string_function (domain, NULL, NULL, &vars, &varqty);
 
   if (varqty != 2)
     ut_print_message (2, 0, "Unknown expression `%s'.\n", domain);
@@ -442,8 +424,8 @@ net_domain_cellparms (char *domain, char **pfilename, int *pcell)
   ut_string_string (vars[0], pfilename);
   ut_string_int (vars[1], pcell);
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d_char (filename);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d_char (&filename);
 
   return;
 }
@@ -455,63 +437,7 @@ net_domain_cell (char *filename, int cell, struct POLY *pPoly)
 
   neut_tess_set_zero (&Tessb);
 
-  ut_free_2d_char (vars, varqty);
-  ut_file_close (file, filename, "r");
-  ut_free_1d_char (filename);
-
-  return;
-}
-
-void
-net_domain_planes (double **eqs, int eqqty, struct POLY *pPoly)
-{
-  net_domain_clip (pPoly, eqs, eqqty);
-
-  return;
-}
-
-void
-net_domain_cell_string (char *domain, struct POLY *pPoly)
-{
-  int cell;
-  char *filename = NULL;
-
-  net_domain_cellparms (domain, &filename, &cell);
-  net_domain_cell (filename, cell, pPoly);
-
-  ut_free_1d_char (filename);
-
-  return;
-}
-
-void
-net_domain_cellparms (char *domain, char **pfilename, int *pcell)
-{
-  int varqty;
-  char **vars = NULL, *filename = NULL;
-
-  ut_string_function_separate (domain, NULL, NULL, &vars, &varqty);
-
-  if (varqty != 2)
-    ut_print_message (2, 0, "Unknown expression `%s'.\n", domain);
-
-  ut_string_string (vars[0], pfilename);
-  ut_string_int (vars[1], pcell);
-
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d_char (filename);
-
-  return;
-}
-
-void
-net_domain_cell (char *filename, int cell, struct POLY *pPoly)
-{
-  struct TESS Tessb;
-
-  neut_tess_set_zero (&Tessb);
-
-  neut_tess_name_fscanf (filename, &Tessb);
+  neut_tess_fnscanf (filename, &Tessb);
   net_tess_poly (Tessb, cell, pPoly);
 
   neut_tess_free (&Tessb);
@@ -520,7 +446,7 @@ net_domain_cell (char *filename, int cell, struct POLY *pPoly)
 }
 
 void
-net_domain_transform (struct TESS *pPoly, int dim, char* string)
+net_domain_transform (struct TESS *pPoly, int dim, char *string)
 {
   int dir, status;
   double *v = ol_r_alloc ();
@@ -532,7 +458,8 @@ net_domain_transform (struct TESS *pPoly, int dim, char* string)
   if (!strncmp (string, "rotate(", 7))
   {
     ut_array_1d_set_3 (v, 0., 0., 1.);
-    status = sscanf (string, "rotate(%lf,%lf,%lf,%lf)", v, v + 1, v + 2, &theta);
+    status =
+      sscanf (string, "rotate(%lf,%lf,%lf,%lf)", v, v + 1, v + 2, &theta);
     if (status != 1 && status != 4)
       abort ();
     ol_r_set_unit (v);
@@ -561,19 +488,14 @@ net_domain_transform (struct TESS *pPoly, int dim, char* string)
   else if (!strncmp (string, "split(", 6))
   {
     double **bbox = ut_alloc_2d (3, 2);
-    struct SEEDSET SSet;
-    neut_seedset_set_zero (&SSet);
-    SSet.Type = ut_alloc_1d_char (1);
-    neut_seedset_addseed (&SSet, coo, 0);
     neut_tess_bbox (*pPoly, bbox);
     dir = string[6] - 'x';
     if (dir < 0 || dir > 2)
       ut_print_message (2, 3, "Cannot read `%s'.\n", string);
 
-    eq[0] = - 0.5 * (bbox[dir][1] + bbox[dir][0]);
+    eq[0] = -0.5 * (bbox[dir][1] + bbox[dir][0]);
     eq[dir + 1] = -1;
-    net_tess_clip (SSet, pPoly, eq);
-    neut_seedset_free (&SSet);
+    net_tess_clip (pPoly, eq);
   }
 
   else
@@ -581,8 +503,8 @@ net_domain_transform (struct TESS *pPoly, int dim, char* string)
 
   ol_r_free (v);
   ol_g_free (g);
-  ut_free_1d (eq);
-  ut_free_1d (coo);
+  ut_free_1d (&eq);
+  ut_free_1d (&coo);
 
   return;
 }

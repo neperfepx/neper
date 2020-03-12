@@ -1,11 +1,11 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2019, Romain Quey.
+# Copyright (C) 2003-2020, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set (NEPER_VERSION \"3.5.1\")
+set (NEPER_VERSION \"3.5.2\")
 
 # should we use the optional libraries?
 set (HAVE_GSL ON)
@@ -31,10 +31,10 @@ set (MUPARSER_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/muparser")
 set (MUPARSER_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/muparser/include")
 
 include_directories("${PROJECT_SOURCE_DIR}/contrib/openGJK")
-include_directories("${PROJECT_SOURCE_DIR}/contrib/ut")
-set (UT_SOURCE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut")
-set (UT_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/ut")
-set (UT_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut/include")
+include_directories("${PROJECT_SOURCE_DIR}/contrib/ut/src")
+set (UT_SOURCE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut/src")
+set (UT_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/ut/src")
+set (UT_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut/src/include")
 
 include_directories("${PROJECT_SOURCE_DIR}/contrib/orilib")
 include_directories("${PROJECT_SOURCE_DIR}/neut")
@@ -44,7 +44,7 @@ include_directories("${PROJECT_SOURCE_DIR}/neper_v")
 
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_BINARY_DIR}/contrib/openGJK")
-include_directories("${PROJECT_BINARY_DIR}/contrib/ut")
+include_directories("${PROJECT_BINARY_DIR}/contrib/ut/src")
 include_directories("${PROJECT_BINARY_DIR}/contrib/orilib")
 include_directories("${PROJECT_BINARY_DIR}/contrib/muparser")
 include_directories("${PROJECT_BINARY_DIR}/neut")
@@ -83,7 +83,7 @@ set(MESSAGE_QUIET ON)
 
 add_subdirectory(contrib/openGJK)
 add_subdirectory(contrib/muparser)
-add_subdirectory(contrib/ut)
+add_subdirectory(contrib/ut/src)
 add_subdirectory(contrib/orilib)
 add_subdirectory(neut)
 add_subdirectory(neper_t)
@@ -190,10 +190,10 @@ add_test (T_morpho_aspratio_gg     ./neper --rcfile none -T -n 2 -morpho "asprat
 add_test (T_morphooptini_packing   ./neper --rcfile none -T -n 2 -morpho gg -morphooptiini coo:packing,weight:radeq -morphooptistop itermax=10)
 add_test (T_morphooptini_random    ./neper --rcfile none -T -n 2 -morpho gg -morphooptiini coo:random,weight:avradeq -morphooptistop itermax=10)
 # add_test (T_multiseed)
-add_test (T_morphooptiobj_cvm      ./neper --rcfile none -T -n 2 -morpho gg -morphooptiobjective cvm -morphooptistop itermax=10)
-add_test (T_morphooptiobj_ad       ./neper --rcfile none -T -n 2 -morpho gg -morphooptiobjective ad -morphooptistop itermax=10)
-add_test (T_morphooptiobj_FL2      ./neper --rcfile none -T -n 2 -morpho gg -morphooptiobjective FL2 -morphooptistop itermax=10)
-add_test (T_morphooptiobj_FL2w     ./neper --rcfile none -T -n 2 -morpho gg -morphooptiobjective FL2w -morphooptistop itermax=10)
+add_test (T_morphooptiobj_cvm      ./neper --rcfile none -T -n 2 -morpho gg -morphooptiobjective diameq:cvm -morphooptistop itermax=10)
+add_test (T_morphooptiobj_ad       ./neper --rcfile none -T -n 2 -morpho gg -morphooptiobjective diameq:ad -morphooptistop itermax=10)
+add_test (T_morphooptiobj_FL2      ./neper --rcfile none -T -n 2 -morpho gg -morphooptiobjective dimaeq:FL2 -morphooptistop itermax=10)
+add_test (T_morphooptiobj_FL2w     ./neper --rcfile none -T -n 2 -morpho gg -morphooptiobjective dimaeq:FL2w -morphooptistop itermax=10)
 add_test (T_morphooptidof          ./neper --rcfile none -T -n 2 -morpho gg -morphooptidof x,z -morphooptistop itermax=10)
 add_test (T_morphooptistop_val     ./neper --rcfile none -T -n 2 -morpho gg -morphooptistop val=10)
 add_test (T_morphooptistop_time    ./neper --rcfile none -T -n 2 -morpho gg -morphooptistop time=0.1)

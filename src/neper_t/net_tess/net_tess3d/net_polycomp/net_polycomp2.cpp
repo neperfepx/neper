@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_polycomp_.h"
@@ -46,9 +46,9 @@ net_polycomp_inittdyn (struct POLY Domain, struct SEEDSET SSet,
 }
 
 void
-net_polycomp_kdtree (struct SEEDSET SSet,
-                     NFCLOUD * pnf_cloud, NFTREE ** pnf_tree,
-                     int **pptid_seedid, int **pseedid_ptid, struct TDYN *pTD)
+net_polycomp_kdtree (struct SEEDSET SSet, NFCLOUD * pnf_cloud,
+                     NFTREE ** pnf_tree, int **pptid_seedid,
+                     int **pseedid_ptid, struct TDYN *pTD)
 {
   struct timeval time;
 
@@ -111,15 +111,15 @@ net_polycomp_updatedseeds (struct SEEDSET SSet, struct TDYN *pTD,
     for (i = 1; i <= SSet.N; i++)
       if ((*pTD).iter == 1 || (*pTD).shift[i] > 1e-20
           || (*pTD).shiftw[i] > 1e-20)
-        ut_array_1d_int_list_addelt_nocheck (pupdatedseeds, pupdatedseedqty,
+        ut_array_1d_int_list_addval_nocheck (pupdatedseeds, pupdatedseedqty,
                                              i);
   }
   else
   {
     (*pupdatedseedqty) = updatedseedqty_in;
     (*pupdatedseeds) = ut_alloc_1d_int (*pupdatedseedqty);
-    ut_array_1d_int_memcpy (*pupdatedseeds, *pupdatedseedqty,
-                            updatedseeds_in);
+    ut_array_1d_int_memcpy (updatedseeds_in, *pupdatedseedqty,
+                            *pupdatedseeds);
   }
 
   return;
@@ -127,9 +127,8 @@ net_polycomp_updatedseeds (struct SEEDSET SSet, struct TDYN *pTD,
 
 void
 net_polycomp_cells (struct POLY Domain, struct SEEDSET SSet,
-                    NFTREE ** pnf_tree, int *ptid_seedid,
-                    int *updatedseeds, int updatedseedqty,
-                    struct TDYN *pTD, struct POLY **pPoly)
+                    NFTREE ** pnf_tree, int *ptid_seedid, int *updatedseeds,
+                    int updatedseedqty, struct TDYN *pTD, struct POLY **pPoly)
 {
   int i;
   int oldneighqty, *oldneighs = NULL;
@@ -190,8 +189,8 @@ net_polycomp_cells (struct POLY Domain, struct SEEDSET SSet,
                                      pPoly, pTD);
 
   // Free'ing memory
-  ut_free_1d_int (oldneighs);
-  ut_free_1d_int (newneighs);
+  ut_free_1d_int (&oldneighs);
+  ut_free_1d_int (&newneighs);
 
   return;
 }

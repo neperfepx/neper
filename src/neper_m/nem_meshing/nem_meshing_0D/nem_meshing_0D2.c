@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_0D_.h"
 
 void
 nem_meshing_0D_ver (struct TESS Tess, int ver, struct MESHPARA MeshPara,
-		    struct NODES *pNodes, struct MESH *Mesh)
+                    struct NODES *pNodes, struct MESH *Mesh)
 {
   int i, edge;
   double mindist;
@@ -24,7 +24,7 @@ nem_meshing_0D_ver (struct TESS Tess, int ver, struct MESHPARA MeshPara,
   (*pNodes).NodeCoo = ut_alloc_2d (2, 3);
   (*pNodes).NodeCl = ut_alloc_1d (2);
 
-  ut_array_1d_memcpy ((*pNodes).NodeCoo[1], 3, Tess.VerCoo[ver]);
+  ut_array_1d_memcpy (Tess.VerCoo[ver], 3, (*pNodes).NodeCoo[1]);
 
   /* mesh */
   Mesh[0].Dimension = 0;
@@ -53,7 +53,7 @@ nem_meshing_0D_ver (struct TESS Tess, int ver, struct MESHPARA MeshPara,
     {
       edge = edgelist[i];
       if (edge > 0)
-	mindist = ut_num_min (mindist, Tess.EdgeLength[edge]);
+        mindist = ut_num_min (mindist, Tess.EdgeLength[edge]);
     }
 
     if (mindist > cl / (1 + pl))
@@ -66,15 +66,15 @@ nem_meshing_0D_ver (struct TESS Tess, int ver, struct MESHPARA MeshPara,
   else
     (*pNodes).NodeCl[1] = cl;
 
-  ut_free_1d_int (edgelist);
+  ut_free_1d_int (&edgelist);
 
   return;
 }
 
 void
-nem_meshing_0D_addvermesh (struct NODES N, struct MESH M,
-			   int master, int *shift,
-			   struct NODES *pNodes, struct MESH *Mesh)
+nem_meshing_0D_addvermesh (struct NODES N, struct MESH M, int master,
+                           int *shift, struct NODES *pNodes,
+                           struct MESH *Mesh)
 {
   /* renumbering mesh nodes / elts to match global nodes */
   M.EltNodes[1][0] = (*pNodes).NodeQty + 1;

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tesl_.h"
@@ -75,7 +75,7 @@ IniTessFaceOr (struct TESL *pTesl, struct POLY *Poly, int **TFNb)
 /* For each polyhedron, recording of FaceVerNb */
 void
 IniTessFaceBound (struct TESL *pTesl, struct POLY *Poly, int **TFNb,
-		  int **TVNb)
+                  int **TVNb)
 {
   int i, j, k;
   int FNb;
@@ -86,14 +86,14 @@ IniTessFaceBound (struct TESL *pTesl, struct POLY *Poly, int **TFNb,
       /* if it has not been treated previously */
       if (i < Poly[i].FacePoly[j] || Poly[i].FacePoly[j] < 0)
       {
-	/* the face tesl number is recorded */
-	FNb = TFNb[i][j];
+        /* the face tesl number is recorded */
+        FNb = TFNb[i][j];
 
-	(*pTesl).FaceVerNb[FNb] =
-	  ut_alloc_1d_int ((*pTesl).FaceVerQty[FNb] + 1);
+        (*pTesl).FaceVerNb[FNb] =
+          ut_alloc_1d_int ((*pTesl).FaceVerQty[FNb] + 1);
 
-	for (k = 1; k <= (*pTesl).FaceVerQty[FNb]; k++)
-	  (*pTesl).FaceVerNb[FNb][k] = TVNb[i][Poly[i].FaceVerNb[j][k]];
+        for (k = 1; k <= (*pTesl).FaceVerQty[FNb]; k++)
+          (*pTesl).FaceVerNb[FNb][k] = TVNb[i][Poly[i].FaceVerNb[j][k]];
       }
 
   return;
@@ -114,7 +114,7 @@ IniTessVer (struct TESL *pTesl, struct POLY *Poly, int **TVNb)
 /* Recording of the numbers of face and vertex of the polyhedra */
 void
 IniTessPolyCenNXQty (struct SEEDSET SSet, struct TESL *pTesl,
-		     struct POLY *Poly)
+                     struct POLY *Poly)
 {
   int num;
   int i;
@@ -126,7 +126,7 @@ IniTessPolyCenNXQty (struct SEEDSET SSet, struct TESL *pTesl,
     if (!SSet.LamWidth)
     {
       if (SSet.SeedWeight)
-	(*pTesl).SeedWeight[num] = SSet.SeedWeight[num];
+        (*pTesl).SeedWeight[num] = SSet.SeedWeight[num];
     }
     else
       (*pTesl).SeedWeight[num] = SSet.LamWidth[num];
@@ -166,11 +166,11 @@ IniTessPolyXNb (struct TESL *pTesl, struct POLY *Poly, int **TVNb, int **TFNb)
 int
 IniTessEdge (struct TESL *pTesl)
 {
-  int i, j;			/* mute variable.                                           */
-  int nb = 0;			/* nb of the currently added edge.                          */
-  int S1, S2;			/* numbers of the two vertices on which studied segment is  */
+  int i, j;                     /* mute variable.                                           */
+  int nb = 0;                   /* nb of the currently added edge.                          */
+  int S1, S2;                   /* numbers of the two vertices on which studied segment is  */
   /* based.                                                   */
-  int PrevF;			/* number of the previous face, in which the studied        */
+  int PrevF;                    /* number of the previous face, in which the studied        */
   /* edge has been recorded.                                  */
 
   /* For every face, for every couple of neighbor vertices, we search
@@ -197,9 +197,9 @@ IniTessEdge (struct TESL *pTesl)
       /* Recording of the 2 vertex numbers */
       S1 = (*pTesl).FaceVerNb[i][j];
       if (j != (*pTesl).FaceVerQty[i])
-	S2 = (*pTesl).FaceVerNb[i][j + 1];
+        S2 = (*pTesl).FaceVerNb[i][j + 1];
       else
-	S2 = (*pTesl).FaceVerNb[i][1];
+        S2 = (*pTesl).FaceVerNb[i][1];
 
       /* TreatFaceVer returns a (strictly) positive value if the
        * ver been recorded previously, 0 else.
@@ -209,19 +209,19 @@ IniTessEdge (struct TESL *pTesl)
        */
       PrevF = TreatFaceVer (pTesl, i, S1, S2);
       if (PrevF == 0)
-	/* Creation of new edge nb through the incrementation of nb
-	 * and the writing of:
-	 * EdgeVerNb[nb][0,1]
-	 * FaceEdgeNb[i][S1]
-	 */
-	nb = AddEdge (pTesl, i, j, S1, S2, nb);
+        /* Creation of new edge nb through the incrementation of nb
+         * and the writing of:
+         * EdgeVerNb[nb][0,1]
+         * FaceEdgeNb[i][S1]
+         */
+        nb = AddEdge (pTesl, i, j, S1, S2, nb);
       else if (PrevF > 0)
-	/* Search of the previously-given number of the edge
-	 * to record it in FaceEdgeNb.
-	 */
-	SearchEdge (pTesl, i, PrevF, S1, S2, j);
+        /* Search of the previously-given number of the edge
+         * to record it in FaceEdgeNb.
+         */
+        SearchEdge (pTesl, i, PrevF, S1, S2, j);
       else
-	return -1;
+        return -1;
     }
   }
 
@@ -244,9 +244,9 @@ IniTessEdge (struct TESL *pTesl)
 void
 IniTessVernEdge (struct TESL *pTesl)
 {
-  int i, j;			/* mute variables */
-  int ver;			/* tmp variable = ver nb */
-  int *nb;			/* tmp variable = id of the ver parent edge to be recorded */
+  int i, j;                     /* mute variables */
+  int ver;                      /* tmp variable = ver nb */
+  int *nb;                      /* tmp variable = id of the ver parent edge to be recorded */
 
   (*pTesl).VerOfDomain = ut_alloc_1d_int (1);
   (*pTesl).VerEdge = ut_alloc_2d_int ((*pTesl).VerQty + 1, 4);
@@ -274,12 +274,12 @@ IniTessVernEdge (struct TESL *pTesl)
     {
       (*pTesl).VerOfDomain[0]++;
       (*pTesl).VerOfDomain =
-	ut_realloc_1d_int ((*pTesl).VerOfDomain, (*pTesl).VerOfDomain[0] + 1);
+        ut_realloc_1d_int ((*pTesl).VerOfDomain, (*pTesl).VerOfDomain[0] + 1);
       (*pTesl).VerOfDomain[(*pTesl).VerOfDomain[0]] = i;
     }
   }
 
-  ut_free_1d_int (nb);
+  ut_free_1d_int (&nb);
 
   return;
 }

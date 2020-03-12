@@ -283,7 +283,6 @@ jargon:
 @item @code{rcl} 	@tab relative characteristic length
 @item @code{res} 	@tab resolution
 @item @code{rmax}   	@tab relative maximum
-@item @code{sig} 	@tab sigma (standard deviation)
 @item @code{sing} 	@tab singular
 @item @code{stat}  	@tab statistics
 @item @code{surf}  	@tab surface

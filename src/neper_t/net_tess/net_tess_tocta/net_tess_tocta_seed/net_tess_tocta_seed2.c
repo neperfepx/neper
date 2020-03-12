@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tess_tocta_seed_.h"
@@ -11,15 +11,15 @@ net_tess_tocta_seed_readargs (char *morpho, int *pn)
   int varqty;
   char **vars = NULL, **vals = NULL;
 
-  ut_string_function_separate (morpho, NULL, &vars, &vals, &varqty);
+  ut_string_function (morpho, NULL, &vars, &vals, &varqty);
 
   if (varqty != 1)
     abort ();
 
   sscanf (vals[0], "%d", pn);
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_2d_char (vals, varqty);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_2d_char (&vals, varqty);
 
   return 0;
 }
@@ -33,7 +33,8 @@ net_tess_tocta_seed_set (struct IN_T In, int level, struct MTESS MTess,
   char *ori = NULL, *crysym = NULL;
 
   ut_print_message (0, 2, "Setting seeds...\n");
-  net_tess_opt_init_sset_general (In, MTess, Tess, dtess, dcell, SSet, pSSet, 1, NULL);
+  net_tess_opt_init_sset_general (In, MTess, Tess, dtess, dcell, SSet, pSSet,
+                                  1, NULL);
 
   (*pSSet).N = net_tess_opt_init_sset_coo_bcc (Dom, n, &(*pSSet).SeedCoo);
 
@@ -42,8 +43,8 @@ net_tess_tocta_seed_set (struct IN_T In, int level, struct MTESS MTess,
   ut_print_message (0, 2, "Generating crystal orientations...\n");
   net_ori (In, level, MTess, Tess, SSet, dtess, dcell, pSSet, 3);
 
-  ut_free_1d_char (ori);
-  ut_free_1d_char (crysym);
+  ut_free_1d_char (&ori);
+  ut_free_1d_char (&crysym);
 
   return 0;
 }

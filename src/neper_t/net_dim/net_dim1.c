@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_dim_.h"
@@ -13,12 +13,12 @@ net_dim (int dim, struct TESS *pTess)
   neut_tess_set_zero (&T2);
 
   if (dim != 2)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   status = neut_tess_domface_label_id (*pTess, "z0", &id);
 
   if (status != 0)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   neut_tess_domface_tess (*pTess, id, &T2);
 

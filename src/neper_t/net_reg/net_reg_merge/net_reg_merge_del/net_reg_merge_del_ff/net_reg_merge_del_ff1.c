@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_reg_merge_del_ff_.h"
@@ -20,8 +20,8 @@ net_reg_merge_del_ff (struct TESS *pTess, int ver)
 
   res = ut_array_1d_max (FFF, faceqty);
 
-  ut_free_1d_int (face);
-  ut_free_1d (FFF);
+  ut_free_1d_int (&face);
+  ut_free_1d (&FFF);
 
   return res;
 }

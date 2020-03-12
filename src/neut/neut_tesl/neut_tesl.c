@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tesl_.h"
@@ -45,31 +45,31 @@ neut_tesl_set_zero (struct TESL *pTesl)
 void
 neut_tesl_free (struct TESL *pTesl)
 {
-  ut_free_1d_char ((*pTesl).morpho);
-  ut_free_2d_int ((*pTesl).VerSeed, (*pTesl).VerQty + 1);
-  ut_free_2d_int ((*pTesl).VerEdge, (*pTesl).VerQty + 1);
-  ut_free_2d ((*pTesl).VerCoo, (*pTesl).VerQty + 1);
-  ut_free_1d_int ((*pTesl).VerOfDomain);
+  ut_free_1d_char (&(*pTesl).morpho);
+  ut_free_2d_int (&(*pTesl).VerSeed, (*pTesl).VerQty + 1);
+  ut_free_2d_int (&(*pTesl).VerEdge, (*pTesl).VerQty + 1);
+  ut_free_2d (&(*pTesl).VerCoo, (*pTesl).VerQty + 1);
+  ut_free_1d_int (&(*pTesl).VerOfDomain);
 
-  ut_free_2d_int ((*pTesl).EdgeVerNb, (*pTesl).EdgeQty + 1);
-  ut_free_1d ((*pTesl).EdgeLength);
-  ut_free_2d_int ((*pTesl).FacePoly, (*pTesl).FaceQty + 1);
-  ut_free_2d ((*pTesl).FaceEq, (*pTesl).FaceQty + 1);
-  ut_free_1d_int ((*pTesl).FaceVerQty);
-  ut_free_2d_int ((*pTesl).FaceVerNb, (*pTesl).FaceQty + 1);
-  ut_free_2d_int ((*pTesl).FaceEdgeNb, (*pTesl).FaceQty + 1);
-  ut_free_2d_int ((*pTesl).FaceEdgeOri, (*pTesl).FaceQty + 1);
-  ut_free_2d ((*pTesl).SeedCoo, (*pTesl).PolyQty + 1);
-  ut_free_1d ((*pTesl).SeedWeight);
-  ut_free_1d_int ((*pTesl).PolyVerQty);
-  ut_free_2d_int ((*pTesl).PolyVerNb, (*pTesl).PolyQty + 1);
-  ut_free_1d_int ((*pTesl).PolyEdgeQty);
-  ut_free_2d_int ((*pTesl).PolyEdgeNb, (*pTesl).PolyQty + 1);
-  ut_free_1d_int ((*pTesl).PolyFaceQty);
-  ut_free_2d_int ((*pTesl).PolyFaceNb, (*pTesl).PolyQty + 1);
-  ut_free_2d_int ((*pTesl).PolyFaceOri, (*pTesl).PolyQty + 1);
-  ut_free_1d_int ((*pTesl).CellTrue);
-  ut_free_1d_int ((*pTesl).CellBody);
+  ut_free_2d_int (&(*pTesl).EdgeVerNb, (*pTesl).EdgeQty + 1);
+  ut_free_1d (&(*pTesl).EdgeLength);
+  ut_free_2d_int (&(*pTesl).FacePoly, (*pTesl).FaceQty + 1);
+  ut_free_2d (&(*pTesl).FaceEq, (*pTesl).FaceQty + 1);
+  ut_free_1d_int (&(*pTesl).FaceVerQty);
+  ut_free_2d_int (&(*pTesl).FaceVerNb, (*pTesl).FaceQty + 1);
+  ut_free_2d_int (&(*pTesl).FaceEdgeNb, (*pTesl).FaceQty + 1);
+  ut_free_2d_int (&(*pTesl).FaceEdgeOri, (*pTesl).FaceQty + 1);
+  ut_free_2d (&(*pTesl).SeedCoo, (*pTesl).PolyQty + 1);
+  ut_free_1d (&(*pTesl).SeedWeight);
+  ut_free_1d_int (&(*pTesl).PolyVerQty);
+  ut_free_2d_int (&(*pTesl).PolyVerNb, (*pTesl).PolyQty + 1);
+  ut_free_1d_int (&(*pTesl).PolyEdgeQty);
+  ut_free_2d_int (&(*pTesl).PolyEdgeNb, (*pTesl).PolyQty + 1);
+  ut_free_1d_int (&(*pTesl).PolyFaceQty);
+  ut_free_2d_int (&(*pTesl).PolyFaceNb, (*pTesl).PolyQty + 1);
+  ut_free_2d_int (&(*pTesl).PolyFaceOri, (*pTesl).PolyQty + 1);
+  ut_free_1d_int (&(*pTesl).CellTrue);
+  ut_free_1d_int (&(*pTesl).CellBody);
 
   neut_tesl_set_zero (pTesl);
 
@@ -112,12 +112,12 @@ neut_tesl_domainface (struct TESL Tesl, int **Face)
     for (j = 0; j <= 1; j++)
       if (Tesl.FacePoly[i][j] < 0)
       {
-	face = -Tesl.FacePoly[i][j];
+        face = -Tesl.FacePoly[i][j];
 
-	Face[face][0]++;
-	Face[face][Face[face][0]] = i;
+        Face[face][0]++;
+        Face[face][Face[face][0]] = i;
 
-	continue;
+        continue;
       }
   }
 
@@ -143,19 +143,19 @@ neut_tesl_domainfacever (struct TESL Tesl, int **Ver)
       face = DFace[i][j];
       for (k = 1; k <= Tesl.FaceVerQty[face]; k++)
       {
-	FaceVer[0]++;
-	FaceVer[FaceVer[0]] = Tesl.FaceVerNb[face][k];
+        FaceVer[0]++;
+        FaceVer[FaceVer[0]] = Tesl.FaceVerNb[face][k];
       }
     }
 
     ut_array_1d_int_sort_uniq (FaceVer + 1, FaceVer[0], &(FaceVer[0]));
 
-    ut_array_1d_int_memcpy (Ver[i], FaceVer[0] + 1, FaceVer);
+    ut_array_1d_int_memcpy (FaceVer, FaceVer[0] + 1, Ver[i]);
 
-    ut_free_1d_int (FaceVer);
+    ut_free_1d_int (&FaceVer);
   }
 
-  ut_free_2d_int (DFace, 7);
+  ut_free_2d_int (&DFace, 7);
 
   return;
 }
@@ -179,15 +179,15 @@ neut_tesl_cell_true (struct TESL Tesl, int nb)
 
     for (j = 0; j < 3; j++)
       for (k = 0; k < 2; k++)
-	if (fabs (Tesl.VerCoo[ver][j] - size[j][k]) < 0.999 * ctov)
-	{
-	  res = 0;
-	  break;
-	}
+        if (fabs (Tesl.VerCoo[ver][j] - size[j][k]) < 0.999 * ctov)
+        {
+          res = 0;
+          break;
+        }
   }
 
-  ut_free_1d (coo);
-  ut_free_2d (size, 3);
+  ut_free_1d (&coo);
+  ut_free_2d (&size, 3);
 
   return res;
 }
@@ -207,9 +207,9 @@ neut_tesl_ver_true (struct TESL Tesl, int *TruePoly, int nb)
     if (poly > 0)
     {
       if (TruePoly[poly] == 1)
-	res = 1;
+        res = 1;
       else
-	all = 0;
+        all = 0;
     }
   }
 
@@ -236,16 +236,16 @@ neut_tesl_edge_true (struct TESL Tesl, int *TruePoly, int nb)
     if (poly[j] > 0)
     {
       if (TruePoly[poly[j]] == 1)
-	res = 1;
+        res = 1;
       else
-	all = 0;
+        all = 0;
     }
   }
 
   if (res == 1 && all == 1)
     res = 2;
 
-  ut_free_1d_int (poly);
+  ut_free_1d_int (&poly);
 
   return res;
 }
@@ -259,12 +259,12 @@ neut_tesl_edge_poly (struct TESL Tesl, int edge, int *poly)
   ver2 = Tesl.EdgeVerNb[edge][1];
 
   ut_array_1d_int_inter (Tesl.VerSeed[ver1], 4, Tesl.VerSeed[ver2], 4,
-			 poly + 1, &(poly[0]));
+                         poly + 1, &(poly[0]));
 
   ut_array_1d_int_sort (poly + 1, poly[0]);
 
   for (i = -1; i >= -6; i--)
-    poly[0] -= ut_array_1d_int_deletencompress (poly + 1, poly[0], i, 1);
+    poly[0] -= ut_array_1d_int_rmelt (poly + 1, poly[0], i, 1);
 
   return;
 }
@@ -283,9 +283,9 @@ neut_tesl_face_true (struct TESL Tesl, int *TruePoly, int nb)
     if (Tesl.FacePoly[nb][j] > 0)
     {
       if (TruePoly[Tesl.FacePoly[nb][j]] == 1)
-	res = 1;
+        res = 1;
       else
-	all = 0;
+        all = 0;
     }
     else
     {
@@ -319,24 +319,25 @@ neut_tesl_init_celltrue (struct TESL *pTess)
     for (i = 1; i <= (*pTess).PolyQty; i++)
       if ((*pTess).CellTrue[i] == tru - 1)
       {
-	all = 1;
-	for (j = 1; j <= (*pTess).PolyFaceQty[i]; j++)
-	{
-	  face = (*pTess).PolyFaceNb[i][j];
-	  p = ((*pTess).FacePoly[face][0] != i) ?
-	    (*pTess).FacePoly[face][0] : (*pTess).FacePoly[face][1];
+        all = 1;
+        for (j = 1; j <= (*pTess).PolyFaceQty[i]; j++)
+        {
+          face = (*pTess).PolyFaceNb[i][j];
+          p =
+            ((*pTess).FacePoly[face][0] !=
+             i) ? (*pTess).FacePoly[face][0] : (*pTess).FacePoly[face][1];
 
-	  if ((*pTess).CellTrue[p] < tru - 1)
-	  {
-	    all = 0;
-	    break;
-	  }
-	}
-	if (all == 1)
-	{
-	  (*pTess).CellTrue[i] = tru;
-	  status = 1;
-	}
+          if ((*pTess).CellTrue[p] < tru - 1)
+          {
+            all = 0;
+            break;
+          }
+        }
+        if (all == 1)
+        {
+          (*pTess).CellTrue[i] = tru;
+          status = 1;
+        }
       }
   }
 
@@ -380,7 +381,7 @@ neut_tesl_face_area (struct TESL Tesl, int face, double *parea)
   p2 = Tesl.VerCoo[Tesl.FaceVerNb[face][1]];
   (*parea) += ut_space_triangle_area (p0, p1, p2);
 
-  ut_free_1d (p0);
+  ut_free_1d (&p0);
 
   return 0;
 }
@@ -408,14 +409,14 @@ neut_tesl_poly_volume (struct TESL Tesl, int poly, double *pvol)
 
     neut_tesl_face_area (Tesl, face, &area);
 
-    ut_array_1d_memcpy (proj, 3, Tesl.SeedCoo[poly]);
-    ut_space_projpoint_alongonto (proj, Tesl.FaceEq[face] + 1,
-				  Tesl.FaceEq[face]);
+    ut_array_1d_memcpy (Tesl.SeedCoo[poly], 3, proj);
+    ut_space_point_dir_plane_proj (proj, Tesl.FaceEq[face] + 1,
+                                   Tesl.FaceEq[face], proj);
     h = ut_space_dist (Tesl.SeedCoo[poly], proj);
     (*pvol) += area * h * 0.3333333333333333333333;
   }
 
-  ut_free_1d (proj);
+  ut_free_1d (&proj);
 
   return 0;
 }
@@ -476,24 +477,25 @@ neut_tesl_init_cellbody (struct TESL *pTess)
     {
       if ((*pTess).CellBody[i] == body - 1)
       {
-	all = 1;
-	for (j = 1; j <= (*pTess).PolyFaceQty[i]; j++)
-	{
-	  face = (*pTess).PolyFaceNb[i][j];
-	  p = ((*pTess).FacePoly[face][0] != i) ?
-	    (*pTess).FacePoly[face][0] : (*pTess).FacePoly[face][1];
+        all = 1;
+        for (j = 1; j <= (*pTess).PolyFaceQty[i]; j++)
+        {
+          face = (*pTess).PolyFaceNb[i][j];
+          p =
+            ((*pTess).FacePoly[face][0] !=
+             i) ? (*pTess).FacePoly[face][0] : (*pTess).FacePoly[face][1];
 
-	  if ((*pTess).CellBody[p] < body - 1)
-	  {
-	    all = 0;
-	    break;
-	  }
-	}
-	if (all == 1)
-	{
-	  (*pTess).CellBody[i] = body;
-	  status = 1;
-	}
+          if ((*pTess).CellBody[p] < body - 1)
+          {
+            all = 0;
+            break;
+          }
+        }
+        if (all == 1)
+        {
+          (*pTess).CellBody[i] = body;
+          status = 1;
+        }
       }
     }
   }

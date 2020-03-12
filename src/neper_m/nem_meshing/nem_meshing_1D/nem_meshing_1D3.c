@@ -1,13 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_1D_.h"
 
 void
 nem_meshing_1D_edge_algo (struct TESS Tess, struct NODES RNodes,
-                          struct MESH *RMesh,
-                          int edge, double cl, double pl,
+                          struct MESH *RMesh, int edge, double cl, double pl,
                           struct NODES Nodes, double *Node0DCl,
                           struct NODES *pN, struct MESH *pM)
 {
@@ -43,8 +42,8 @@ nem_meshing_1D_edge_algo (struct TESS Tess, struct NODES RNodes,
   else if (neut_tess_edge_iscurved (Tess, edge))
   {
     nem_meshing_1D_edge_algo_mesh (Tess.EdgeVerNb[edge][0],
-                                   Tess.EdgeVerNb[edge][1],
-                                   edge, l, cl, pl, Nodes, Node0DCl, pN, pM);
+                                   Tess.EdgeVerNb[edge][1], edge, l, cl, pl,
+                                   Nodes, Node0DCl, pN, pM);
 
     nem_meshing_1D_edge_projontodomain (Tess, edge, pN, *pM);
 
@@ -57,8 +56,9 @@ nem_meshing_1D_edge_algo (struct TESS Tess, struct NODES RNodes,
       neut_mesh_elset_length (N0, M0, 1, Tess.EdgeLength + edge);
 
       nem_meshing_1D_edge_algo_mesh (Tess.EdgeVerNb[edge][0],
-                                     Tess.EdgeVerNb[edge][1],
-                                     edge, Tess.EdgeLength[edge], cl, pl, Nodes, Node0DCl, pN, pM);
+                                     Tess.EdgeVerNb[edge][1], edge,
+                                     Tess.EdgeLength[edge], cl, pl, Nodes,
+                                     Node0DCl, pN, pM);
 
       nem_meshing_1D_edge_projontomesh (Tess, edge, N0, M0, pN, *pM);
       nem_meshing_1D_edge_projontodomain (Tess, edge, pN, *pM);
@@ -95,7 +95,8 @@ nem_meshing_1D_edge_record_nodes (struct TESS Tess, int edge, struct NODES N,
 
     if (master_id)
       neut_nodes_markasslave (pNodes, (*pNodes).NodeQty,
-                              N_global_id[Tess.PerEdgeMaster[edge]][master_id[i]],
+                              N_global_id[Tess.
+                                          PerEdgeMaster[edge]][master_id[i]],
                               Tess.PerEdgeShift[edge]);
   }
 
@@ -103,8 +104,8 @@ nem_meshing_1D_edge_record_nodes (struct TESS Tess, int edge, struct NODES N,
 }
 
 void
-nem_meshing_1D_edge_record_elts (int edge, struct MESH M,
-                                 int *N_global_id, struct MESH *Mesh)
+nem_meshing_1D_edge_record_elts (int edge, struct MESH M, int *N_global_id,
+                                 struct MESH *Mesh)
 {
   int i, j, *elt_nbs = NULL;
 
@@ -127,9 +128,9 @@ nem_meshing_1D_edge_record_elts (int edge, struct MESH M,
   neut_mesh_addelset (Mesh + 1, M.Elsets[1] + 1, M.Elsets[1][0]);
 
   if (Mesh[1].ElsetQty != edge)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
-  ut_free_1d_int (elt_nbs);
+  ut_free_1d_int (&elt_nbs);
 
   return;
 }

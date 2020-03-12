@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesl_tess_.h"
@@ -86,8 +86,8 @@ neut_tesl_tessEdgeFace (struct TESL Tesl, struct TESS *pTess)
       tmpedge = Tesl.FaceEdgeNb[i][j];
 
       (*pTess).EdgeFaceNb[tmpedge] =
-	ut_realloc_1d_int ((*pTess).EdgeFaceNb[tmpedge],
-			   ++(*pTess).EdgeFaceQty[tmpedge]);
+        ut_realloc_1d_int ((*pTess).EdgeFaceNb[tmpedge],
+                           ++(*pTess).EdgeFaceQty[tmpedge]);
 
       (*pTess).EdgeFaceNb[tmpedge][(*pTess).EdgeFaceQty[tmpedge] - 1] = i;
     }
@@ -238,14 +238,6 @@ neut_tesl_tessPolyQty (struct TESL Tesl, struct TESS *pTess)
 }
 
 void
-neut_tesl_tessPolyState (struct TESS *pTess)
-{
-  (*pTess).PolyState = ut_alloc_1d_int ((*pTess).PolyQty + 1);
-
-  return;
-}
-
-void
 neut_tesl_tessPolyFace (struct TESL Tesl, struct TESS *pTess)
 {
   int i, j;
@@ -266,6 +258,20 @@ neut_tesl_tessPolyFace (struct TESL Tesl, struct TESS *pTess)
       (*pTess).PolyFaceOri[i][j] = Tesl.PolyFaceOri[i][j];
     }
   }
+
+  return;
+}
+
+void
+neut_tesl_tessPolyState (struct TESS *pTess)
+{
+  int i;
+
+  (*pTess).PolyState = ut_alloc_1d_int ((*pTess).PolyQty + 1);
+
+  for (i = 1; i <= (*pTess).PolyQty; i++)
+    if ((*pTess).PolyFaceQty[i] == 0)
+      (*pTess).PolyState[i] = -1;
 
   return;
 }

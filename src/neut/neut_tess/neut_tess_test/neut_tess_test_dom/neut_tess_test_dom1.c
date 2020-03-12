@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_test_dom_.h"
@@ -8,7 +8,7 @@ int
 neut_tess_test_dom (struct TESS Tess, int verbosity)
 {
   // disabling test for periodic tessellations
-  if (!strncmp (Tess.Type, "periodic", 8))
+  if (!strcmp (Tess.Type, "periodic"))
     return 0;
 
   if (neut_tess_test_dom_def (Tess, verbosity) != 0

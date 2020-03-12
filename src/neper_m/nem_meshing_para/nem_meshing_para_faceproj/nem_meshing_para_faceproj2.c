@@ -1,13 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_para_faceproj_.h"
 
 int
 nem_meshing_para_faceproj_eq (struct TESS Tess, struct NODES RNodes,
-                              struct MESH *RMesh, int face,
-                              double *face_eq)
+                              struct MESH *RMesh, int face, double *face_eq)
 {
   int i;
   int status, iter, res;
@@ -25,7 +24,7 @@ nem_meshing_para_faceproj_eq (struct TESS Tess, struct NODES RNodes,
   // Fixing self-intersecting faces ------------------------------------
   srand48 (face);
 
-  ut_array_1d_memcpy (face_eq, 4, Tess.FaceEq[face]);
+  ut_array_1d_memcpy (Tess.FaceEq[face], 4, face_eq);
 
   res = 0;
   status = 0;
@@ -33,15 +32,17 @@ nem_meshing_para_faceproj_eq (struct TESS Tess, struct NODES RNodes,
   do
   {
     if (mesh2d_defined)
-      neut_mesh_face_boundnodecoos (RNodes, RMesh[1], Tess, face, &nodecoos, &nodeqty);
+      neut_mesh_face_boundnodecoos (RNodes, RMesh[1], Tess, face, &nodecoos,
+                                    &nodeqty);
     else
       neut_tess_face_vercoos (Tess, face, &nodecoos, &nodeqty);
 
     // copying / projecting node coos
     for (i = 0; i < nodeqty; i++)
-      ut_space_projpoint_alongonto (nodecoos[i], face_eq + 1, Tess.FaceEq[face]);
+      ut_space_point_dir_plane_proj (nodecoos[i], face_eq + 1,
+                                     Tess.FaceEq[face], nodecoos[i]);
 
-    status = ut_space_contour_intersect (nodecoos, nodeqty);
+    status = ut_space_contour_selfintersect (nodecoos, nodeqty);
 
     if (status == 0 && mesh2d_defined)
       for (i = 1; i <= RMesh[2].Elsets[face][0]; i++)
@@ -76,11 +77,11 @@ nem_meshing_para_faceproj_eq (struct TESS Tess, struct NODES RNodes,
   if (iter > itermax)
     res = -1;
 
-  ut_free_1d_int (nodes);
+  ut_free_1d_int (&nodes);
   ol_r_free (r);
   ol_g_free (g);
-  ut_free_1d (n);
-  ut_free_2d (nodecoos, nodeqty);
+  ut_free_1d (&n);
+  ut_free_2d (&nodecoos, nodeqty);
 
   return res;
 }

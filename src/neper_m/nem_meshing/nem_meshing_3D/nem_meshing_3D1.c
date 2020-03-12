@@ -1,20 +1,22 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_3D_.h"
 
 void
-nem_meshing_3D (struct IN_M In, struct MESHPARA MeshPara,
-		struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh)
+nem_meshing_3D (struct IN_M In, struct MESHPARA MeshPara, struct TESS Tess,
+                struct NODES *pNodes, struct MESH *Mesh)
 {
   int i, id, polyqty, *poly = NULL, qty;
   double allowed_t, max_elapsed_t = 0;
   char *message = NULL;
   struct MULTIM Multim;
   struct timeval ctrlc_t = { 0, 0 };
-  struct NODES *N = (struct NODES*) calloc (Tess.PolyQty + 1, sizeof (struct NODES));
-  struct MESH *M = (struct MESH*) calloc (Tess.PolyQty + 1, sizeof (struct MESH));
+  struct NODES *N =
+    (struct NODES *) calloc (Tess.PolyQty + 1, sizeof (struct NODES));
+  struct MESH *M =
+    (struct MESH *) calloc (Tess.PolyQty + 1, sizeof (struct MESH));
 
   for (i = 1; i <= Tess.PolyQty; i++)
     neut_nodes_set_zero (N + i);
@@ -43,10 +45,10 @@ nem_meshing_3D (struct IN_M In, struct MESHPARA MeshPara,
       {
         id = poly[i];
 
-        nem_meshing_3D_poly (In, MeshPara.poly_cl[id], MeshPara.mesh3dclreps[id],
-                             &Multim,
-                             &ctrlc_t, &allowed_t, &max_elapsed_t, Tess,
-                             pNodes, Mesh, N + id, M + id, id);
+        nem_meshing_3D_poly (In, MeshPara.poly_cl[id],
+                             MeshPara.mesh3dclreps[id], &Multim, &ctrlc_t,
+                             &allowed_t, &max_elapsed_t, Tess, pNodes, Mesh,
+                             N + id, M + id, id);
 
 #pragma omp critical
         nem_meshing_3D_progress (Multim, ++qty, polyqty, message);
@@ -83,8 +85,8 @@ nem_meshing_3D (struct IN_M In, struct MESHPARA MeshPara,
     remove (message);
 #endif
 
-    ut_free_1d_char (message);
-    ut_free_1d_int (poly);
+    ut_free_1d_char (&message);
+    ut_free_1d_int (&poly);
   }
 
   // if input is 2D, extruding mesh
@@ -96,10 +98,10 @@ nem_meshing_3D (struct IN_M In, struct MESHPARA MeshPara,
   }
 
   for (i = 1; i <= Tess.PolyQty; i++)
-      neut_nodes_free (N + i);
+    neut_nodes_free (N + i);
   free (N);
   for (i = 1; i <= Tess.PolyQty; i++)
-      neut_mesh_free (M + i);
+    neut_mesh_free (M + i);
   free (M);
 
   return;

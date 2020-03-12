@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_2D_.h"
@@ -7,14 +7,13 @@
 void
 nem_meshing_2D_face_mesh (struct IN_M In, struct MESHPARA MeshPara,
                           struct MULTIM *pMultim, int algo,
-                          struct timeval *pctrlc_t,
-                          double *pallowed_t, double *pmax_elapsed_t,
-                          struct TESS Tess, struct NODES RNodes,
-                          struct MESH *RMesh, struct NODES Nodes,
-                          struct MESH *Mesh, int face,
-                          struct NODES *pN, struct MESH *pM,
-                          int **pbnodes, int **plbnodes, int *pbnodeqty,
-                          double *pmOsize, double *pelapsed_t)
+                          struct timeval *pctrlc_t, double *pallowed_t,
+                          double *pmax_elapsed_t, struct TESS Tess,
+                          struct NODES RNodes, struct MESH *RMesh,
+                          struct NODES Nodes, struct MESH *Mesh, int face,
+                          struct NODES *pN, struct MESH *pM, int **pbnodes,
+                          int **plbnodes, int *pbnodeqty, double *pmOsize,
+                          double *pelapsed_t)
 {
   int iter, status = -1;
   double rnd;
@@ -23,8 +22,8 @@ nem_meshing_2D_face_mesh (struct IN_M In, struct MESHPARA MeshPara,
   double *vals = ut_alloc_1d (var_qty);
 
   (*pbnodeqty) = 0;
-  ut_free_1d_int_ (pbnodes);
-  ut_free_1d_int_ (plbnodes);
+  ut_free_1d_int (pbnodes);
+  ut_free_1d_int (plbnodes);
 
   strcpy (vars[0], "Odis");
   strcpy (vars[1], "Osize");
@@ -68,8 +67,8 @@ nem_meshing_2D_face_mesh (struct IN_M In, struct MESHPARA MeshPara,
 
     if (!strcmp (In.meshqualexpr, "Odis^0.8*Osize^0.2"))
       (*pMultim).mO[face][algo] =
-        pow ((*pMultim).mOdis[face][algo], 0.8)
-        * pow ((*pMultim).mOsize[face][algo], 0.2);
+        pow ((*pMultim).mOdis[face][algo],
+             0.8) * pow ((*pMultim).mOsize[face][algo], 0.2);
     else
     {
       vals[0] = (*pMultim).mOdis[face][algo];
@@ -97,8 +96,8 @@ nem_meshing_2D_face_mesh (struct IN_M In, struct MESHPARA MeshPara,
     (*pMultim).mO[face][algo] = 0;
   }
 
-  ut_free_2d_char (vars, var_qty);
-  ut_free_1d (vals);
+  ut_free_2d_char (&vars, var_qty);
+  ut_free_1d (&vals);
 
   return;
 }
@@ -106,8 +105,7 @@ nem_meshing_2D_face_mesh (struct IN_M In, struct MESHPARA MeshPara,
 void
 nem_meshing_2D_face_record_nodes (struct TESS Tess, int face, struct NODES N,
                                   int *bnodes, int *lbnodes, int bnodeqty,
-                                  int *master_id,
-                                  int **N_global_id,
+                                  int *master_id, int **N_global_id,
                                   struct NODES *pNodes)
 {
   int i, bak, nb, tmp;
@@ -139,7 +137,9 @@ nem_meshing_2D_face_record_nodes (struct TESS Tess, int face, struct NODES N,
 
       if (master_id)
         neut_nodes_markasslave (pNodes, (*pNodes).NodeQty,
-                                N_global_id[Tess.PerFaceMaster[face]][master_id[i]],
+                                N_global_id[Tess.
+                                            PerFaceMaster[face]][master_id
+                                                                 [i]],
                                 Tess.PerFaceShift[face]);
     }
 
@@ -171,9 +171,9 @@ nem_meshing_2D_face_record_elts (int face, struct MESH M, int *N_global_id,
   neut_mesh_addelset (Mesh + 2, M.Elsets[1] + 1, M.Elsets[1][0]);
 
   if (Mesh[2].ElsetQty != face)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
-  ut_free_1d_int (elt_nbs);
+  ut_free_1d_int (&elt_nbs);
 
   return;
 }

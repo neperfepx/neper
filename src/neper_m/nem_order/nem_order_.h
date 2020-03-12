@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -15,9 +15,11 @@
 
 #include"nem_order.h"
 
-extern void nem_order_init_3d (char *elttype, int ***pfir3, int ***psec3,
-			       int *pnodeqty_3d1, int *pnodeqty_3d);
-extern void nem_order_init_2d (char *elttype, int ***pfir2, int ***psec2,
-			       int *pnodeqty_2d1, int *pnodeqty_2d);
-extern void nem_order_init_1d (char *elttype, int ***pfir1, int ***psec1,
-			       int *pnodeqty_1d1, int *pnodeqty_1d);
+extern void nem_order_pre (struct IN_M In, struct MESH *Mesh, int *domesh);
+extern void nem_order_dim (struct IN_M In, struct NODES *pNodes, struct MESH *pMeshU, struct MESH *pMesh);
+extern void nem_order_periodic (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh);
+extern void nem_order_periodic_edges (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh);
+extern void nem_order_periodic_faces (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh);
+extern void nem_order_post (struct IN_M In, int NodeQty_before, struct NODES *pNodes);
+extern void nem_order_newnode (struct NODES *pNodes, struct MESH *pMesh, int *nodes);
+extern void nem_order_dim_record (struct MESH *pMesh, int *nodes, int node_o2);

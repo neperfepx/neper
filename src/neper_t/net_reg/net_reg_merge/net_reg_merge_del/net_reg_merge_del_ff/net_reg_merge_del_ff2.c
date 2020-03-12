@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_reg_merge_del_ff_.h"
@@ -28,8 +28,7 @@ net_reg_merge_del_ff_interpolate (struct TESS *pTess, int face)
     if ((*pTess).FaceDom[face][0] == 2)
     {
       domface = (*pTess).FaceDom[face][1];
-      if (strcmp ((*pTess).DomFaceType[domface], "plane")
-          && ff[i] < 90)
+      if (strcmp ((*pTess).DomFaceType[domface], "plane") && ff[i] < 90)
         ff[i] = 0;
     }
   }
@@ -37,13 +36,13 @@ net_reg_merge_del_ff_interpolate (struct TESS *pTess, int face)
   (*pTess).FacePt[face] =
     ut_array_1d_min_index (ff, (*pTess).FaceVerQty[face] + 1);
   if ((*pTess).FacePt[face] > 0)
-    ut_array_1d_memcpy ((*pTess).FacePtCoo[face], 3,
-			(*pTess).VerCoo[(*pTess).
-					FaceVerNb[face][(*pTess).
-							FacePt[face]]]);
+    ut_array_1d_memcpy ((*pTess).
+                        VerCoo[(*pTess).
+                               FaceVerNb[face][(*pTess).FacePt[face]]], 3,
+                        (*pTess).FacePtCoo[face]);
   minff = ff[(*pTess).FacePt[face]];
 
-  ut_free_1d (ff);
+  ut_free_1d (&ff);
 
   return minff;
 }

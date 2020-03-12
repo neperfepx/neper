@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_mesh_nodes_.h"
 
 void
-nev_print_mesh_nodes (FILE * file, struct PRINT Print, struct NODES
-		      Nodes, struct MESH *Mesh, struct NODEDATA NodeData)
+nev_print_mesh_nodes (FILE * file, struct PRINT Print, struct NODES Nodes,
+                      struct MESH *Mesh, struct NODEDATA NodeData)
 {
   int i, node_qty, printnode_qty;
   double ambient = (Print.showshadow == 1) ? 0.6 : 1;
@@ -30,10 +30,9 @@ nev_print_mesh_nodes (FILE * file, struct PRINT Print, struct NODES
     if (Print.shownode[i])
     {
       fprintf (file,
-	       "#declare node%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
-	       i,
-	       NodeData.Col[i][0] / 255.,
-	       NodeData.Col[i][1] / 255., NodeData.Col[i][2] / 255., ambient);
+               "#declare node%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
+               i, NodeData.Col[i][0] / 255., NodeData.Col[i][1] / 255.,
+               NodeData.Col[i][2] / 255., ambient);
 
       sprintf (texture, "node%d", i);
 
@@ -42,13 +41,13 @@ nev_print_mesh_nodes (FILE * file, struct PRINT Print, struct NODES
       nev_print_sphere (file, NodeData.Coo[i], string, texture);
 
       printnode_qty++;
-      ut_free_1d_char (string);
+      ut_free_1d_char (&string);
     }
 
   ut_print_message (0, 4,
-		    "Number of nodes      reduced by %3.0f\%% (to %d).\n",
-		    100 * (double) hidden[0] / (double) node_qty,
-		    node_qty - hidden[0]);
+                    "Number of nodes        reduced by %3.0f%% (to %d).\n",
+                    100 * (double) hidden[0] / (double) node_qty,
+                    node_qty - hidden[0]);
 
   return;
 }

@@ -1,13 +1,13 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_uniform_.h"
 
 void
-net_ori_uniform_opt_forces (struct OL_SET *pOSet,
-                    double **f, double *E, struct OOPT *pOOpt,
-                    struct QCLOUD *pqcloud, my_kd_tree_t *qindex)
+net_ori_uniform_opt_forces (struct OL_SET *pOSet, double **f, double *E,
+                            struct OOPT *pOOpt, struct QCLOUD *pqcloud,
+                            my_kd_tree_t * qindex)
 {
   struct timeval beg_time, end_time;
 
@@ -18,7 +18,8 @@ net_ori_uniform_opt_forces (struct OL_SET *pOSet,
   if ((*pOOpt).neighd > M_PI - OL_EPS_RAD)
     net_ori_uniform_opt_forces_ser (pOSet, f, E);
   else
-    net_ori_uniform_opt_forces_ser_neigh (pOSet, f, E, pOOpt, pqcloud, qindex);
+    net_ori_uniform_opt_forces_ser_neigh (pOSet, f, E, pOOpt, pqcloud,
+                                          qindex);
 
   gettimeofday (&end_time, NULL);
 
@@ -27,9 +28,11 @@ net_ori_uniform_opt_forces (struct OL_SET *pOSet,
   if ((*pOOpt).avforce_ini == DBL_MAX)
     (*pOOpt).avforce_ini = (*pOOpt).avforce;
 
-  (*pOOpt).f = ((*pOOpt).f == DBL_MAX) ? 1 : (*pOOpt).avforce / (*pOOpt).avforce_ini;
+  (*pOOpt).f =
+    ((*pOOpt).f == DBL_MAX) ? 1 : (*pOOpt).avforce / (*pOOpt).avforce_ini;
 
-  (*pOOpt).fmin = ((*pOOpt).fmin == DBL_MAX) ? 1 : ut_num_min ((*pOOpt).fmin, (*pOOpt).f);
+  (*pOOpt).fmin =
+    ((*pOOpt).fmin == DBL_MAX) ? 1 : ut_num_min ((*pOOpt).fmin, (*pOOpt).f);
 
   if (pOOpt)
     (*pOOpt).force_dur = ut_time_subtract (&beg_time, &end_time);
@@ -38,8 +41,8 @@ net_ori_uniform_opt_forces (struct OL_SET *pOSet,
 }
 
 int
-net_ori_uniform_opt_energy (int iter, struct OL_SET *pOSet,
-                    double *E, double **pEtot, struct OOPT *pOOpt)
+net_ori_uniform_opt_energy (int iter, struct OL_SET *pOSet, double *E,
+                            double **pEtot, struct OOPT *pOOpt)
 {
   struct timeval beg_time, end_time;
 
@@ -58,8 +61,9 @@ net_ori_uniform_opt_energy (int iter, struct OL_SET *pOSet,
 }
 
 void
-net_ori_uniform_opt_alpha (struct OOPT *pOOpt, struct OL_SET OSet, double **dq,
-                   int iter, double **f, double **fc, double *palpha)
+net_ori_uniform_opt_alpha (struct OOPT *pOOpt, struct OL_SET OSet,
+                           double **dq, int iter, double **f, double **fc,
+                           double *palpha)
 {
   unsigned int i;
   double r, tmp1, tmp2;
@@ -79,7 +83,7 @@ net_ori_uniform_opt_alpha (struct OOPT *pOOpt, struct OL_SET OSet, double **dq,
     }
 
     (*palpha) = 0.8 * pow (r, 3) / 3.4;
-    ut_free_1d (qdotnorm);
+    ut_free_1d (&qdotnorm);
   }
 
   // Barzilai-Borwein
@@ -116,7 +120,7 @@ net_ori_uniform_opt_alpha (struct OOPT *pOOpt, struct OL_SET OSet, double **dq,
 
 void
 net_ori_uniform_opt_rot (struct OOPT *pOOpt, double **f, double alpha,
-                 struct OL_SET *pOSet, double **dq)
+                         struct OL_SET *pOSet, double **dq)
 {
   unsigned int i;
   struct timeval beg_time, end_time;
@@ -137,22 +141,21 @@ net_ori_uniform_opt_rot (struct OOPT *pOOpt, double **f, double alpha,
 }
 
 void
-net_ori_uniform_opt_verbosity (struct OOPT OOpt, int iter,
-                               char *prevmessage, char *message,
-                               int verbositylevel)
+net_ori_uniform_opt_verbosity (struct OOPT OOpt, int iter, char *prevmessage,
+                               char *message, int verbositylevel)
 {
   /*
-  if (0 && iter == 0)
-  {
-    ut_print_message (0, verbositylevel, "");
-    sprintf (message, "[initial] reps = %.6f", 1.);
-    ut_print_progress_nonl (stdout, 100, 100, message, prevmessage);
-    printf ("\n");
-  }
+     if (0 && iter == 0)
+     {
+     ut_print_message (0, verbositylevel, "");
+     sprintf (message, "[initial] reps = %.6f", 1.);
+     ut_print_progress_nonl (stdout, 100, 100, message, prevmessage);
+     printf ("\n");
+     }
 
-  else
-  {
-  */
+     else
+     {
+   */
   if (iter == 1)
   {
     ut_print_message (0, verbositylevel, "Initial solution: f   =%.9f\n", 1.);
@@ -165,14 +168,15 @@ net_ori_uniform_opt_verbosity (struct OOPT OOpt, int iter,
       ut_print_message (0, verbositylevel, prevmessage);
     }
 
-    sprintf (message, "Iteration %6d: fmin=%.9f, f=%.9f", iter, OOpt.fmin, OOpt.f);
+    sprintf (message, "Iteration %6d: fmin=%.9f, f=%.9f", iter, OOpt.fmin,
+             OOpt.f);
     ut_print_progress (stdout, verbositylevel, INT_MAX, message, prevmessage);
     strcpy (prevmessage, message);
   }
 
   /*
-  }
-  */
+     }
+   */
 
   fflush (stdout);
 
@@ -203,14 +207,15 @@ net_ori_uniform_opt_stop (struct OOPT *pOOpt, int iter)
   if ((*pOOpt).n == 1)
     stop = 1;
 
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
 
   return stop;
 }
 
 void
-net_ori_uniform_log (struct IN_T In, int iter, struct OL_SET OSet, struct OOPT OOpt)
+net_ori_uniform_log (struct IN_T In, int iter, struct OL_SET OSet,
+                     struct OOPT OOpt)
 {
   if (strcmp (OOpt.logvar, "none"))
     net_ori_uniform_log_var (In, iter, OSet, OOpt);

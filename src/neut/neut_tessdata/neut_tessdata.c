@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tessdata_.h"
@@ -41,25 +41,25 @@ neut_tessdata_free (struct TESSDATA *pTessData)
   for (i = 0; i < 5; i++)
   {
     neut_tessdata_dim_qty (*pTessData, i, &qty);
-    ut_free_2d ((*pTessData).ColData[i], qty);
-    ut_free_2d ((*pTessData).trsdata[i], qty);
-    ut_free_2d ((*pTessData).RadData[i], qty);
-    ut_free_2d_int ((*pTessData).Col[i], qty);
+    ut_free_2d (&(*pTessData).ColData[i], qty);
+    ut_free_2d (&(*pTessData).trsdata[i], qty);
+    ut_free_2d (&(*pTessData).RadData[i], qty);
+    ut_free_2d_int (&(*pTessData).Col[i], qty);
   }
-  ut_free_1d_ppdouble ((*pTessData).ColData);
-  ut_free_1d_ppdouble ((*pTessData).RadData);
-  ut_free_1d_ppint ((*pTessData).Col);
-  ut_free_2d_char ((*pTessData).ColDataType, 5);
-  ut_free_2d_char ((*pTessData).ColScheme, 5);
-  ut_free_2d_char ((*pTessData).trsdatatype, 5);
-  ut_free_2d_char ((*pTessData).trscheme, 5);
-  ut_free_2d ((*pTessData).trs, 5);
+  ut_free_1d_ppdouble (&(*pTessData).ColData);
+  ut_free_1d_ppdouble (&(*pTessData).RadData);
+  ut_free_1d_ppint (&(*pTessData).Col);
+  ut_free_2d_char (&(*pTessData).ColDataType, 5);
+  ut_free_2d_char (&(*pTessData).ColScheme, 5);
+  ut_free_2d_char (&(*pTessData).trsdatatype, 5);
+  ut_free_2d_char (&(*pTessData).trscheme, 5);
+  ut_free_2d (&(*pTessData).trs, 5);
 
-  ut_free_2d ((*pTessData).Rad, 5);
-  ut_free_2d_char ((*pTessData).RadDataType, 5);
+  ut_free_2d (&(*pTessData).Rad, 5);
+  ut_free_2d_char (&(*pTessData).RadDataType, 5);
 
-  ut_free_2d_char ((*pTessData).Scale, 5);
-  ut_free_2d_char ((*pTessData).ScaleTitle, 5);
+  ut_free_2d_char (&(*pTessData).Scale, 5);
+  ut_free_2d_char (&(*pTessData).ScaleTitle, 5);
 
   return;
 }
@@ -95,7 +95,7 @@ neut_tessdata_entity_qty (struct TESSDATA TessData, char *entity, int *pqty)
   else if (!strcmp (entity, "seed"))
     (*pqty) = TessData.SeedQty;
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   return;
 }

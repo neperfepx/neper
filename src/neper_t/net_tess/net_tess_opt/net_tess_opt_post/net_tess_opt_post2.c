@@ -1,14 +1,13 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_post_.h"
 
 void
-net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess,
-                        int dtess, int dcell, int tessid,
-                        struct POLY *Poly, struct TOPT TOpt,
-                        struct SEEDSET *SSet)
+net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess, int dtess,
+                        int dcell, int tessid, struct POLY *Poly,
+                        struct TOPT TOpt, struct SEEDSET *SSet)
 {
   int i, cell;
   struct TESS *pTess = Tess + tessid;
@@ -17,10 +16,11 @@ net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess,
   net_polys_tess (Tess[dtess].Level + 1, TOpt.SSet, tessid, Poly, pTess);
 
   if (TOpt.aspratio)
-    neut_tess_scale (pTess, TOpt.aspratio[0], TOpt.aspratio[1], TOpt.aspratio[2]);
+    neut_tess_scale (pTess, TOpt.aspratio[0], TOpt.aspratio[1],
+                     TOpt.aspratio[2]);
 
   net_tess3d_domain (Tess[dtess], dcell, tessid, pMTess, pTess);
-  if (!strncmp ((*pTess).Type, "periodic", 8))
+  if (!strcmp ((*pTess).Type, "periodic"))
     net_tess3d_periodic (pTess);
 
 #ifdef DEVEL_DEBUGGING_TEST
@@ -35,9 +35,9 @@ net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess,
     {
       cell = TOpt.SCellCell[i];
       if (TOpt.tartesr.CellId)
-	(*pTess).CellId[i] = TOpt.tartesr.CellId[cell];
+        (*pTess).CellId[i] = TOpt.tartesr.CellId[cell];
       else
-	(*pTess).CellId[i] = cell;
+        (*pTess).CellId[i] = cell;
     }
 
     if (TOpt.tartesr.CellOri)
@@ -45,9 +45,9 @@ net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess,
       (*pTess).CellOri = ut_alloc_2d ((*pTess).CellQty + 1, 4);
       for (i = 1; i <= (*pTess).CellQty; i++)
       {
-	cell = TOpt.SCellCell[i];
-	ut_array_1d_memcpy ((*pTess).CellOri[i], 4,
-			    TOpt.tartesr.CellOri[cell]);
+        cell = TOpt.SCellCell[i];
+        ut_array_1d_memcpy (TOpt.tartesr.CellOri[cell], 4,
+                            (*pTess).CellOri[i]);
       }
     }
   }
@@ -63,8 +63,8 @@ net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess,
 
   double **coo = ut_alloc_2d (TOpt.SSet.N + 1, 3);
   double *weight = ut_alloc_1d (TOpt.SSet.N + 1);
-  ut_array_2d_memcpy (coo + 1, (*pTess).CellQty, 3, (*pTess).SeedCoo + 1);
-  ut_array_1d_memcpy (weight + 1, (*pTess).CellQty, (*pTess).SeedWeight + 1);
+  ut_array_2d_memcpy ((*pTess).SeedCoo + 1, (*pTess).CellQty, 3, coo + 1);
+  ut_array_1d_memcpy ((*pTess).SeedWeight + 1, (*pTess).CellQty, weight + 1);
 
   neut_seedset_memcpy (TOpt.SSet, pSSet);
 
@@ -75,27 +75,25 @@ net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess,
   // is not recorded yet in the TESS structure.
   for (i = 1; i <= (*pTess).CellQty; i++)
   {
-    ut_array_1d_memcpy ((*pTess).SeedCoo[i], 3,
-			coo[TOpt.CellSCellList[i][0]]);
+    ut_array_1d_memcpy (coo[TOpt.CellSCellList[i][0]], 3,
+                        (*pTess).SeedCoo[i]);
     (*pTess).SeedWeight[i] = weight[TOpt.CellSCellList[i][0]];
 
-    ut_array_1d_memcpy ((*pSSet).SeedCoo[i], 3,
-			coo[TOpt.CellSCellList[i][0]]);
+    ut_array_1d_memcpy (coo[TOpt.CellSCellList[i][0]], 3,
+                        (*pSSet).SeedCoo[i]);
     (*pSSet).SeedWeight[i] = weight[TOpt.CellSCellList[i][0]];
   }
 
   if (TOpt.tartesrscale)
   {
-    neut_tess_scale (pTess,
-	             1 / TOpt.tartesrscale[0],
-	             1 / TOpt.tartesrscale[1],
-	             1 / TOpt.tartesrscale[2]);
+    neut_tess_scale (pTess, 1 / TOpt.tartesrscale[0],
+                     1 / TOpt.tartesrscale[1], 1 / TOpt.tartesrscale[2]);
   }
 
   net_tess_opt_post_modes (TOpt, Tess, tessid);
 
-  ut_free_2d (coo, (*pTess).CellQty + 1);
-  ut_free_1d (weight);
+  ut_free_2d (&coo, (*pTess).CellQty + 1);
+  ut_free_1d (&weight);
 
   return;
 }

@@ -1,14 +1,13 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_polycomp_.h"
 #include"neut/neut_structs/neut_nanoflann_struct.hpp"
 
-extern void net_polycomp_kdtree (struct SEEDSET SSet,
-                                 NFCLOUD * pnf_cloud, NFTREE ** pnf_tree,
-                                 int **pptid_seedid, int **pseedid_ptid,
-                                 struct TDYN *pTD);
+extern void net_polycomp_kdtree (struct SEEDSET SSet, NFCLOUD * pnf_cloud,
+                                 NFTREE ** pnf_tree, int **pptid_seedid,
+                                 int **pseedid_ptid, struct TDYN *pTD);
 extern void net_polycomp_cells (struct POLY Domain, struct SEEDSET SSet,
                                 NFTREE ** pnf_tree, int *ptid_seedid,
                                 int *updatedseeds, int updatedcellqty,
@@ -18,11 +17,10 @@ extern void net_polycomp_cells (struct POLY Domain, struct SEEDSET SSet,
  * of seed and the initial domain.
  */
 void
-net_polycomp (struct POLY Domain, struct SEEDSET SSet,
-              NFCLOUD * pnf_cloud, NFTREE ** pnf_tree,
-              int **pptid_seedid, int **pseedid_ptid,
-              struct POLY **pPoly,
-              int *updatedseeds_in, int updatedseedqty_in, struct TDYN *pTD)
+net_polycomp (struct POLY Domain, struct SEEDSET SSet, NFCLOUD * pnf_cloud,
+              NFTREE ** pnf_tree, int **pptid_seedid, int **pseedid_ptid,
+              struct POLY **pPoly, int *updatedseeds_in,
+              int updatedseedqty_in, struct TDYN *pTD)
 {
   int updatedseedqty, *updatedseeds = NULL;
   struct timeval time;
@@ -53,15 +51,15 @@ net_polycomp (struct POLY Domain, struct SEEDSET SSet,
 
   // Calculating cells -------------------------------------------------
 
-  net_polycomp_cells (Domain, SSet, pnf_tree, *pptid_seedid,
-                      updatedseeds, updatedseedqty, pTD, pPoly);
+  net_polycomp_cells (Domain, SSet, pnf_tree, *pptid_seedid, updatedseeds,
+                      updatedseedqty, pTD, pPoly);
 
   // Closing ----------------------------------------------------------
 
   (*pTD).cell_total_dur = ut_time_subtract (&time, NULL);
   neut_tdyn_init_otherdur (pTD);
 
-  ut_free_1d_int (updatedseeds);
+  ut_free_1d_int (&updatedseeds);
 
   return;
 }

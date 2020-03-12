@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_part_.h"
@@ -20,11 +20,11 @@ neut_part_set_zero (struct PART *pPart)
 void
 neut_part_free (struct PART Part)
 {
-  ut_free_1d_int (Part.node_parts);
-  ut_free_1d_int (Part.elt_parts);
-  ut_free_1d_int (Part.nodeqty);
-  ut_free_1d_int (Part.eltqty);
-  ut_free_1d_int (Part.targeteltqty);
+  ut_free_1d_int (&Part.node_parts);
+  ut_free_1d_int (&Part.elt_parts);
+  ut_free_1d_int (&Part.nodeqty);
+  ut_free_1d_int (&Part.eltqty);
+  ut_free_1d_int (&Part.targeteltqty);
 
   return;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_input_.h"
@@ -76,55 +76,55 @@ nem_in_set_zero (struct IN_M *pIn)
 void
 nem_in_free (struct IN_M In)
 {
-  ut_free_1d_char (In.body);
-  ut_free_1d_char (In.gmsh);
-  ut_free_1d_char (In.tmp);
-  ut_free_1d_char (In.format);
-  ut_free_1d_char (In.performat);
-  ut_free_1d_char (In.mesh2dalgo);
-  ut_free_1d_char (In.mesh3dalgo);
-  ut_free_1d_char (In.nset);
-  ut_free_1d_char (In.elset);
-  ut_free_1d_char (In.faset);
-  ut_free_1d_char (In.partstring);
-  ut_free_1d_char (In.transform);
-  ut_free_1d_char (In.partmethod);
-  ut_free_1d_char (In.tess);
-  ut_free_1d_char (In.tesr);
-  ut_free_1d_char (In.stn);
-  ut_free_2d_char (In.stelt, 5);
-  ut_free_2d_char (In.stelset, 5);
-  ut_free_1d_char (In.stpt);
-  ut_free_1d_char (In.msh);
-  ut_free_1d_char (In.per);
-  ut_free_1d_char (In.abq);
-  ut_free_1d_char (In.geof);
-  ut_free_1d_char (In.fepx1);
-  ut_free_1d_char (In.fepx2);
-  ut_free_1d_char (In.fepx3);
-  ut_free_1d_char (In.fepx4);
-  ut_free_1d_char (In.fepx5);
-  ut_free_1d_char (In.outtess);
-  ut_free_1d_char (In.dimstring);
-  ut_free_1d_char (In.dimout);
-  ut_free_1d_char (In.dimout_msh);
-  ut_free_1d_char (In.meshqualexpr);
-  ut_free_1d_char (In.meshqualdisexpr);
-  ut_free_1d_char (In.elttype);
-  ut_free_1d_char (In.cltype);
-  ut_free_1d_char (In.clstring);
-  ut_free_1d_char (In.clfacetype);
-  ut_free_1d_char (In.clfacestring);
-  ut_free_1d_char (In.cledgetype);
-  ut_free_1d_char (In.cledgestring);
-  ut_free_1d_char (In.clvertype);
-  ut_free_1d_char (In.clverstring);
-  ut_free_1d_char (In.clratiostring);
-  ut_free_1d_char (In.transportstring);
-  ut_free_1d_char (In.transportfepxstring);
-  ut_free_1d_char (In.transporteltmethodstring);
-  ut_free_1d_char (In.interface);
-  ut_free_1d_char (In.intf);
+  ut_free_1d_char (&In.body);
+  ut_free_1d_char (&In.gmsh);
+  ut_free_1d_char (&In.tmp);
+  ut_free_1d_char (&In.format);
+  ut_free_1d_char (&In.performat);
+  ut_free_1d_char (&In.mesh2dalgo);
+  ut_free_1d_char (&In.mesh3dalgo);
+  ut_free_1d_char (&In.nset);
+  ut_free_1d_char (&In.elset);
+  ut_free_1d_char (&In.faset);
+  ut_free_1d_char (&In.partstring);
+  ut_free_1d_char (&In.transform);
+  ut_free_1d_char (&In.partmethod);
+  ut_free_1d_char (&In.tess);
+  ut_free_1d_char (&In.tesr);
+  ut_free_1d_char (&In.stn);
+  ut_free_2d_char (&In.stelt, 5);
+  ut_free_2d_char (&In.stelset, 5);
+  ut_free_1d_char (&In.stpt);
+  ut_free_1d_char (&In.msh);
+  ut_free_1d_char (&In.per);
+  ut_free_1d_char (&In.abq);
+  ut_free_1d_char (&In.geof);
+  ut_free_1d_char (&In.fepx1);
+  ut_free_1d_char (&In.fepx2);
+  ut_free_1d_char (&In.fepx3);
+  ut_free_1d_char (&In.fepx4);
+  ut_free_1d_char (&In.fepx5);
+  ut_free_1d_char (&In.outtess);
+  ut_free_1d_char (&In.dimstring);
+  ut_free_1d_char (&In.dimout);
+  ut_free_1d_char (&In.dimout_msh);
+  ut_free_1d_char (&In.meshqualexpr);
+  ut_free_1d_char (&In.meshqualdisexpr);
+  ut_free_1d_char (&In.elttype);
+  ut_free_1d_char (&In.cltype);
+  ut_free_1d_char (&In.clstring);
+  ut_free_1d_char (&In.clfacetype);
+  ut_free_1d_char (&In.clfacestring);
+  ut_free_1d_char (&In.cledgetype);
+  ut_free_1d_char (&In.cledgestring);
+  ut_free_1d_char (&In.clvertype);
+  ut_free_1d_char (&In.clverstring);
+  ut_free_1d_char (&In.clratiostring);
+  ut_free_1d_char (&In.transportstring);
+  ut_free_1d_char (&In.transportfepxstring);
+  ut_free_1d_char (&In.transporteltmethodstring);
+  ut_free_1d_char (&In.interface);
+  ut_free_1d_char (&In.intf);
 
   return;
 }
@@ -166,16 +166,18 @@ nem_input_init_dim_datadim (struct IN_M *pIn, int datadim)
   int i;
 
   if (strstr ((*pIn).dimstring, "."))
-    ut_print_message (2, 2, "Failed to process expression `%s' (option -dim).\n", (*pIn).dimstring);
+    ut_print_message (2, 2,
+                      "Failed to process expression `%s' (option -dim).\n",
+                      (*pIn).dimstring);
 
-  if (ut_string_inlist ((*pIn).dimstring, NEUT_SEP_NODEP, "none"))
+  if (ut_list_testelt ((*pIn).dimstring, NEUT_SEP_NODEP, "none"))
   {
     (*pIn).dim = -1;
     (*pIn).dimout = ut_alloc_1d_char (1);
     (*pIn).dimout_msh = ut_alloc_1d_char (1);
     return;
   }
-  else if (ut_string_inlist ((*pIn).dimstring, NEUT_SEP_NODEP, "all"))
+  else if (ut_list_testelt ((*pIn).dimstring, NEUT_SEP_NODEP, "all"))
   {
     (*pIn).dim = datadim;
     (*pIn).dimout = ut_alloc_1d_char (10);
@@ -198,8 +200,8 @@ nem_input_init_dim_datadim (struct IN_M *pIn, int datadim)
     ut_string_fnrs (string, "inputdim", datadimstring, INT_MAX);
 
     // Setting dim
-    ut_string_separate (string, NEUT_SEP_DEP, &list0, &qty0);
-    ut_string_separate (list0[0], NEUT_SEP_NODEP, &list, &qty);
+    ut_list_break (string, NEUT_SEP_DEP, &list0, &qty0);
+    ut_list_break (list0[0], NEUT_SEP_NODEP, &list, &qty);
 
     (*pIn).dim = -1;
     (*pIn).dimout = ut_alloc_1d_char (strlen (string) + 1);
@@ -210,7 +212,7 @@ nem_input_init_dim_datadim (struct IN_M *pIn, int datadim)
 
       (*pIn).dim = ut_num_max ((*pIn).dim, dim);
       sprintf ((*pIn).dimout + strlen ((*pIn).dimout), "%s%d",
-	       (strlen ((*pIn).dimout) == 0) ? "" : NEUT_SEP_NODEP, dim);
+               (strlen ((*pIn).dimout) == 0) ? "" : NEUT_SEP_NODEP, dim);
     }
 
     // dimout_msh
@@ -219,13 +221,13 @@ nem_input_init_dim_datadim (struct IN_M *pIn, int datadim)
       strcpy ((*pIn).dimout_msh, (*pIn).dimout);
     else
       for (i = 0; i <= (*pIn).dim; i++)
-	sprintf ((*pIn).dimout_msh + strlen ((*pIn).dimout_msh), "%s%d",
-		 (strlen ((*pIn).dimout_msh) == 0) ? "" : NEUT_SEP_NODEP, i);
+        sprintf ((*pIn).dimout_msh + strlen ((*pIn).dimout_msh), "%s%d",
+                 (strlen ((*pIn).dimout_msh) == 0) ? "" : NEUT_SEP_NODEP, i);
 
-    ut_free_2d_char (list0, qty0);
-    ut_free_2d_char (list, qty);
-    ut_free_1d_char (string);
-    ut_free_1d_char (datadimstring);
+    ut_free_2d_char (&list0, qty0);
+    ut_free_2d_char (&list, qty);
+    ut_free_1d_char (&string);
+    ut_free_1d_char (&datadimstring);
   }
 
   return;
@@ -234,10 +236,9 @@ nem_input_init_dim_datadim (struct IN_M *pIn, int datadim)
 int
 nem_input_outputismesh (struct IN_M In)
 {
-  if (strstr (In.format, "msh")
-      || strstr (In.format, "geof")
-      || strstr (In.format, "inp")
-      || strstr (In.format, "vtk") || strstr (In.format, "fepx"))
+  if (strstr (In.format, "msh") || strstr (In.format, "geof")
+      || strstr (In.format, "inp") || strstr (In.format, "vtk")
+      || strstr (In.format, "fepx"))
     return 1;
   else
     return 0;

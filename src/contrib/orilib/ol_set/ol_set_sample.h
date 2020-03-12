@@ -13,7 +13,7 @@ extern "C"
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-#include"../ut/ut.h"
+#include"../ut/src/ut.h"
 #include"../ol_set.h"
 
 #endif /* OL_SET_SAMPLE_H */

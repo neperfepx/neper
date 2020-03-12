@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_csysdata_.h"
@@ -19,12 +19,9 @@ nev_csysdata_init (struct CSYSDATA *pCsysData)
   {
     if ((*pCsysData).ColDataType && !strcmp ((*pCsysData).ColDataType, "col"))
       for (i = 0; i < 3; i++)
-	(*pCsysData).Col[i] = ut_num_d2ri ((*pCsysData).ColData[i]);
+        (*pCsysData).Col[i] = ut_num_d2ri ((*pCsysData).ColData[i]);
     else
-    {
-      printf ("(*pCsysData).ColDataType = %s\n", (*pCsysData).ColDataType);
-      ut_error_reportbug ();
-    }
+      ut_print_exprbug ((*pCsysData).ColDataType);
   }
 
   if ((*pCsysData).RadData)
@@ -37,7 +34,7 @@ nev_csysdata_init (struct CSYSDATA *pCsysData)
   {
     if (!strcmp ((*pCsysData).CooDataType, "coo"))
       for (i = 0; i < 3; i++)
-	(*pCsysData).Coo[i] = (*pCsysData).CooData[i];
+        (*pCsysData).Coo[i] = (*pCsysData).CooData[i];
     else
       abort ();
   }
@@ -61,19 +58,19 @@ nev_csysdata_fscanf (char *type, char *argument, struct CSYSDATA *pCsysData)
 {
   char **args = NULL;
   int i, argqty;
-  ut_string_separate (argument, NEUT_SEP_DEP, &args, &argqty);
+  ut_list_break (argument, NEUT_SEP_DEP, &args, &argqty);
   char *value = NULL;
 
   if (!strcmp (type, "col"))
   {
-    nev_data_typearg_args ("col", argument, &(*pCsysData).ColDataType,
-			   &value, NULL);
+    nev_data_typearg_args ("col", argument, &(*pCsysData).ColDataType, &value,
+                           NULL);
 
     if (!strcmp ((*pCsysData).ColDataType, "col"))
     {
       (*pCsysData).ColData = ut_alloc_1d (3);
-      ut_array_1d_fscanfn_wcard (value, (*pCsysData).ColData,
-				 3, "colour,size");
+      ut_array_1d_fnscanf_wcard (value, (*pCsysData).ColData, 3,
+                                 "colour,size");
     }
     else
       abort ();
@@ -89,8 +86,8 @@ nev_csysdata_fscanf (char *type, char *argument, struct CSYSDATA *pCsysData)
 
     if (!strcmp ((*pCsysData).RadDataType, "rad"))
     {
-      ut_array_1d_fscanfn_wcard (args[0], &(*pCsysData).RadData,
-				 1, "numeral,size");
+      ut_array_1d_fnscanf_wcard (args[0], &(*pCsysData).RadData, 1,
+                                 "numeral,size");
     }
     else
       abort ();
@@ -106,8 +103,8 @@ nev_csysdata_fscanf (char *type, char *argument, struct CSYSDATA *pCsysData)
 
     if (!strcmp ((*pCsysData).LengthDataType, "length"))
     {
-      ut_array_1d_fscanfn_wcard (args[0], &(*pCsysData).LengthData,
-				 1, "numeral,size");
+      ut_array_1d_fnscanf_wcard (args[0], &(*pCsysData).LengthData, 1,
+                                 "numeral,size");
     }
     else
       abort ();
@@ -118,9 +115,9 @@ nev_csysdata_fscanf (char *type, char *argument, struct CSYSDATA *pCsysData)
     {
       ut_string_string ("coo", &(*pCsysData).CooDataType);
       if ((*pCsysData).CooData == NULL)
-	(*pCsysData).CooData = ut_alloc_1d (3);
+        (*pCsysData).CooData = ut_alloc_1d (3);
       for (i = 0; i < 3; i++)
-	sscanf (args[i], "%lf", (*pCsysData).CooData + i);
+        sscanf (args[i], "%lf", (*pCsysData).CooData + i);
     }
     else
       abort ();
@@ -130,10 +127,10 @@ nev_csysdata_fscanf (char *type, char *argument, struct CSYSDATA *pCsysData)
     if (argqty == 3)
     {
       if ((*pCsysData).Label == NULL)
-	(*pCsysData).Label = ut_alloc_1d_pchar (3);
+        (*pCsysData).Label = ut_alloc_1d_pchar (3);
 
       for (i = 0; i < 3; i++)
-	ut_string_string (args[i], (*pCsysData).Label + i);
+        ut_string_string (args[i], (*pCsysData).Label + i);
     }
     else
       abort ();
@@ -146,9 +143,9 @@ nev_csysdata_fscanf (char *type, char *argument, struct CSYSDATA *pCsysData)
       abort ();
   }
   else
-    ut_error_reportbug ();
+    ut_print_exprbug (type);
 
-  ut_free_1d_char (value);
+  ut_free_1d_char (&value);
 
   return;
 }

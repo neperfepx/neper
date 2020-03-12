@@ -1,19 +1,19 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nem_reconstruct_mesh_.h"
 
 void
-nem_reconstruct_mesh_2d (struct NODES Nodes, struct MESH *Mesh,
-			 int mode, struct TESS *pTess)
+nem_reconstruct_mesh_2d (struct NODES Nodes, struct MESH *Mesh, int mode,
+                         struct TESS *pTess)
 {
   int i, FaceQty;
 
   // Tests on the input and output
   for (i = 2; i <= 3; i++)
     if (Mesh[i].EltQty > 0 && Mesh[i].Dimension != i)
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
   // If 3D mesh present and 2D mesh void, reconstructing the 2D mesh
   // If mode, setting FacePoly & Poly*
@@ -35,18 +35,18 @@ nem_reconstruct_mesh_2d (struct NODES Nodes, struct MESH *Mesh,
 
       if (mode == 2)
       {
-	(*pTess).FaceQty = FaceQty;
-	(*pTess).FacePoly = ut_alloc_2d_int ((*pTess).FaceQty + 1, 2);
-	for (i = 1; i <= (*pTess).FaceQty; i++)
-	  ut_array_1d_int_memcpy ((*pTess).FacePoly[i], 2, FacePoly[i - 1]);
+        (*pTess).FaceQty = FaceQty;
+        (*pTess).FacePoly = ut_alloc_2d_int ((*pTess).FaceQty + 1, 2);
+        for (i = 1; i <= (*pTess).FaceQty; i++)
+          ut_array_1d_int_memcpy (FacePoly[i - 1], 2, (*pTess).FacePoly[i]);
       }
     }
     else
     {
       if (mode == 2)
       {
-	(*pTess).FaceQty = Mesh[2].ElsetQty;
-	neut_mesh_facepoly (Nodes, Mesh[2], Mesh[3], &((*pTess).FacePoly));
+        (*pTess).FaceQty = Mesh[2].ElsetQty;
+        neut_mesh_facepoly (Nodes, Mesh[2], Mesh[3], &((*pTess).FacePoly));
       }
     }
 
@@ -55,7 +55,7 @@ nem_reconstruct_mesh_2d (struct NODES Nodes, struct MESH *Mesh,
     if (mode == 2)
       neut_tess_init_polytopo_fromfacepoly (pTess);
 
-    ut_free_2d_int (FacePoly, FaceQty);
+    ut_free_2d_int (&FacePoly, FaceQty);
   }
   else
   {
@@ -85,15 +85,15 @@ nem_reconstruct_mesh_2d (struct NODES Nodes, struct MESH *Mesh,
 }
 
 void
-nem_reconstruct_mesh_1d (struct NODES Nodes, struct MESH *Mesh,
-			 int mode, struct TESS *pTess)
+nem_reconstruct_mesh_1d (struct NODES Nodes, struct MESH *Mesh, int mode,
+                         struct TESS *pTess)
 {
   int i, EdgeQty;
 
   // Tests on the input and output
   for (i = 1; i <= 2; i++)
     if (Mesh[i].EltQty > 0 && Mesh[i].Dimension != i)
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
   // If 2D mesh present, reconstructing the 1D mesh (if not void) and
   // setting FacePoly & Poly*
@@ -110,39 +110,39 @@ nem_reconstruct_mesh_1d (struct NODES Nodes, struct MESH *Mesh,
       neut_mesh_init_nodeelts (Mesh + 2, Nodes.NodeQty);
       neut_mesh_init_eltelset (Mesh + 2, NULL);
       neut_mesh2d_mesh1d (Nodes, Mesh[2], Mesh + 1, &EdgeFaceNb, &EdgeFaceQty,
-			  &EdgeQty, 1);
+                          &EdgeQty, 1);
 
       if (mode == 2)
       {
-	(*pTess).EdgeQty = EdgeQty;
-	(*pTess).EdgeFaceQty = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
-	ut_array_1d_int_memcpy ((*pTess).EdgeFaceQty + 1, (*pTess).EdgeQty,
-				EdgeFaceQty);
-	(*pTess).EdgeFaceNb = ut_alloc_1d_pint ((*pTess).EdgeQty + 1);
-	(*pTess).EdgeFaceNb[0] = ut_alloc_1d_int (1);
-	for (i = 1; i <= (*pTess).EdgeQty; i++)
-	{
-	  (*pTess).EdgeFaceNb[i] = ut_alloc_1d_int ((*pTess).EdgeFaceQty[i]);
-	  ut_array_1d_int_memcpy ((*pTess).EdgeFaceNb[i],
-				  (*pTess).EdgeFaceQty[i], EdgeFaceNb[i - 1]);
-	}
+        (*pTess).EdgeQty = EdgeQty;
+        (*pTess).EdgeFaceQty = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
+        ut_array_1d_int_memcpy (EdgeFaceQty, (*pTess).EdgeQty,
+                                (*pTess).EdgeFaceQty + 1);
+        (*pTess).EdgeFaceNb = ut_alloc_1d_pint ((*pTess).EdgeQty + 1);
+        (*pTess).EdgeFaceNb[0] = ut_alloc_1d_int (1);
+        for (i = 1; i <= (*pTess).EdgeQty; i++)
+        {
+          (*pTess).EdgeFaceNb[i] = ut_alloc_1d_int ((*pTess).EdgeFaceQty[i]);
+          ut_array_1d_int_memcpy (EdgeFaceNb[i - 1], (*pTess).EdgeFaceQty[i],
+                                  (*pTess).EdgeFaceNb[i]);
+        }
       }
     }
     else
     {
       if (mode == 2)
       {
-	(*pTess).EdgeQty = Mesh[1].ElsetQty;
-	neut_mesh_edgeface (Mesh[1], Mesh[2], &((*pTess).EdgeFaceNb),
-			    &((*pTess).EdgeFaceQty));
+        (*pTess).EdgeQty = Mesh[1].ElsetQty;
+        neut_mesh_edgeface (Mesh[1], Mesh[2], &((*pTess).EdgeFaceNb),
+                            &((*pTess).EdgeFaceQty));
       }
     }
 
     if (mode == 2)
       neut_tess_init_facetopo_fromedge (pTess);
 
-    ut_free_1d_int (EdgeFaceQty);
-    ut_free_2d_int (EdgeFaceNb, EdgeQty);
+    ut_free_1d_int (&EdgeFaceQty);
+    ut_free_2d_int (&EdgeFaceNb, EdgeQty);
   }
   else
   {
@@ -166,15 +166,15 @@ nem_reconstruct_mesh_1d (struct NODES Nodes, struct MESH *Mesh,
 }
 
 void
-nem_reconstruct_mesh_0d (struct NODES Nodes, struct MESH *Mesh,
-			 int mode, struct TESS *pTess)
+nem_reconstruct_mesh_0d (struct NODES Nodes, struct MESH *Mesh, int mode,
+                         struct TESS *pTess)
 {
   int i, VerQty;
 
   // Tests on the input and output
   for (i = 0; i <= 1; i++)
     if (Mesh[i].EltQty != 0 && Mesh[i].Dimension != i)
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
   // If 1D mesh present, reconstructing the 0D mesh (if not void) and
   // setting FacePoly & Poly*
@@ -192,32 +192,32 @@ nem_reconstruct_mesh_0d (struct NODES Nodes, struct MESH *Mesh,
       neut_mesh_init_eltelset (Mesh + 1, NULL);
 
       neut_mesh1d_mesh0d (Mesh[1], Mesh + 0, &VerEdgeNb, &VerEdgeQty, &VerQty,
-			  1);
+                          1);
 
       if (mode == 2)
       {
-	(*pTess).VerQty = VerQty;
+        (*pTess).VerQty = VerQty;
 
-	(*pTess).VerEdgeQty = ut_alloc_1d_int ((*pTess).VerQty + 1);
-	ut_array_1d_int_memcpy ((*pTess).VerEdgeQty + 1, (*pTess).VerQty,
-				VerEdgeQty);
-	(*pTess).VerEdgeNb = ut_alloc_1d_pint ((*pTess).VerQty + 1);
-	(*pTess).VerEdgeNb[0] = ut_alloc_1d_int (1);
-	for (i = 1; i <= (*pTess).VerQty; i++)
-	{
-	  (*pTess).VerEdgeNb[i] = ut_alloc_1d_int ((*pTess).VerEdgeQty[i]);
-	  ut_array_1d_int_memcpy ((*pTess).VerEdgeNb[i],
-				  (*pTess).VerEdgeQty[i], VerEdgeNb[i - 1]);
-	}
+        (*pTess).VerEdgeQty = ut_alloc_1d_int ((*pTess).VerQty + 1);
+        ut_array_1d_int_memcpy (VerEdgeQty, (*pTess).VerQty,
+                                (*pTess).VerEdgeQty + 1);
+        (*pTess).VerEdgeNb = ut_alloc_1d_pint ((*pTess).VerQty + 1);
+        (*pTess).VerEdgeNb[0] = ut_alloc_1d_int (1);
+        for (i = 1; i <= (*pTess).VerQty; i++)
+        {
+          (*pTess).VerEdgeNb[i] = ut_alloc_1d_int ((*pTess).VerEdgeQty[i]);
+          ut_array_1d_int_memcpy (VerEdgeNb[i - 1], (*pTess).VerEdgeQty[i],
+                                  (*pTess).VerEdgeNb[i]);
+        }
       }
     }
     else
     {
       if (mode == 2)
       {
-	(*pTess).VerQty = Mesh[0].ElsetQty;
-	neut_mesh_veredge (Mesh[0], Mesh[1], &((*pTess).VerEdgeNb),
-			   &((*pTess).VerEdgeQty));
+        (*pTess).VerQty = Mesh[0].ElsetQty;
+        neut_mesh_veredge (Mesh[0], Mesh[1], &((*pTess).VerEdgeNb),
+                           &((*pTess).VerEdgeQty));
       }
     }
 
@@ -226,8 +226,8 @@ nem_reconstruct_mesh_0d (struct NODES Nodes, struct MESH *Mesh,
       // Filling out VerCoo
       (*pTess).VerCoo = ut_alloc_2d ((*pTess).VerQty + 1, 3);
       for (i = 1; i <= (*pTess).VerQty; i++)
-	ut_array_1d_memcpy ((*pTess).VerCoo[i], 3,
-			    Nodes.NodeCoo[Mesh[0].EltNodes[i][0]]);
+        ut_array_1d_memcpy (Nodes.NodeCoo[Mesh[0].EltNodes[i][0]], 3,
+                            (*pTess).VerCoo[i]);
 
       neut_tess_init_edgetopo_fromver (pTess);
 
@@ -236,22 +236,24 @@ nem_reconstruct_mesh_0d (struct NODES Nodes, struct MESH *Mesh,
       double dist1, dist2;
       for (i = 1; i <= (*pTess).EdgeQty; i++)
       {
-	elt = Mesh[1].Elsets[i][1];
-	node1 = Mesh[1].EltNodes[elt][0];
-	dist1 = ut_space_dist (Nodes.NodeCoo[node1],
-			       (*pTess).VerCoo[(*pTess).EdgeVerNb[i][0]]);
-	dist2 = ut_space_dist (Nodes.NodeCoo[node1],
-			       (*pTess).VerCoo[(*pTess).EdgeVerNb[i][1]]);
+        elt = Mesh[1].Elsets[i][1];
+        node1 = Mesh[1].EltNodes[elt][0];
+        dist1 =
+          ut_space_dist (Nodes.NodeCoo[node1],
+                         (*pTess).VerCoo[(*pTess).EdgeVerNb[i][0]]);
+        dist2 =
+          ut_space_dist (Nodes.NodeCoo[node1],
+                         (*pTess).VerCoo[(*pTess).EdgeVerNb[i][1]]);
 
-	if (dist1 > dist2)
-	  ut_array_1d_int_reverseelts ((*pTess).EdgeVerNb[i], 2);
+        if (dist1 > dist2)
+          ut_array_1d_int_reverseelts ((*pTess).EdgeVerNb[i], 2);
       }
 
       neut_tess_init_facetopo_fromver (pTess);
     }
 
-    ut_free_2d_int (VerEdgeNb, VerQty);
-    ut_free_1d_int (VerEdgeQty);
+    ut_free_2d_int (&VerEdgeNb, VerQty);
+    ut_free_1d_int (&VerEdgeQty);
   }
   else
   {

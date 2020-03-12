@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -14,6 +14,7 @@ extern "C"
 #include<float.h>
 #include<limits.h>
 #include<signal.h>
+#include<sys/time.h>
 
 #include"ut.h"
 #include"neut_t.h"

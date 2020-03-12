@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -7,6 +7,8 @@
 #include<string.h>
 #include<limits.h>
 #include<gsl/gsl_rng.h>
+#include<time.h>
+#include<sys/time.h>
 
 #include"structIn_t.h"
 #include"ut.h"

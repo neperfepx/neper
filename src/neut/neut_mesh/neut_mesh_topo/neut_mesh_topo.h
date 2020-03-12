@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -147,6 +147,10 @@ extern "C"
   extern void neut_mesh_nodes_comelts (struct MESH Mesh, int *nodes,
 				       int nodeqty, int **pelts,
 				       int *peltqty);
+
+  extern void
+  neut_mesh_nodes_onecomelt (struct MESH Mesh, int *nodes, int nodeqty,
+                             int *pelt);
 
 /// \brief Get the common elt of nodes.
 ///
@@ -385,6 +389,8 @@ extern int neut_mesh_node_domtype (struct TESS Tess, struct MESH Mesh0D,
                                    int *pdomtype);
 
 extern void neut_mesh_elt_domface (struct TESS Tess, struct MESH Mesh2D, int elt, int *pdomface);
+
+extern void neut_mesh_order1nodes_order2node (struct MESH Mesh, int node1, int node2, int *pnode);
 
 #endif /* NEUT_MESH_TOPO_H */
 

@@ -13,7 +13,7 @@ extern "C"
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-#include"../contrib/ut/ut_fct/ut_fct.h"
+#include"../contrib/ut/src/ut_fct/ut_fct.h"
 #include"../ol_des.h"
 
 #endif /* OL_HOMOCHORIC_H */

@@ -15,23 +15,22 @@ ol_map_png (struct OL_MAP Map, char *filename)
   png_bytep *row_pointers;
   png_structp png_ptr;
 
-  ut_png_init_png_file_rgb (Map.xsize, Map.ysize, &png_ptr, &info_ptr,
-		     &row_pointers);
+  ut_png_alloc (Map.xsize, Map.ysize, &png_ptr, &info_ptr, &row_pointers);
 
   for (j = 0; j < Map.ysize; j++)
     for (i = 0; i < Map.xsize; i++)
-      ut_png_set_png_pixel (i, j, Map.rgb[i][j], &row_pointers);
+      ut_png_pixel_set (&row_pointers, i, j, Map.rgb[i][j]);
 
-  ut_png_write_png_file (png_ptr, info_ptr, row_pointers, filename);
+  ut_png_name_fprintf (filename, png_ptr, info_ptr, row_pointers);
 
-  ut_png_free_png_file (png_ptr, info_ptr, row_pointers);
+  ut_png_free (png_ptr, info_ptr, row_pointers);
 
   return;
 }
 
 void
 ol_map_rgb_png (unsigned int xsize, unsigned int ysize, int ***rgb,
-		char *filename)
+                char *filename)
 {
   unsigned int i, j;
 
@@ -39,15 +38,15 @@ ol_map_rgb_png (unsigned int xsize, unsigned int ysize, int ***rgb,
   png_bytep *row_pointers;
   png_structp png_ptr;
 
-  ut_png_init_png_file_rgb (xsize, ysize, &png_ptr, &info_ptr, &row_pointers);
+  ut_png_alloc (xsize, ysize, &png_ptr, &info_ptr, &row_pointers);
 
   for (j = 0; j < ysize; j++)
     for (i = 0; i < xsize; i++)
-      ut_png_set_png_pixel (i, j, rgb[i][j], &row_pointers);
+      ut_png_pixel_set (&row_pointers, i, j, rgb[i][j]);
 
-  ut_png_write_png_file (png_ptr, info_ptr, row_pointers, filename);
+  ut_png_name_fprintf (filename, png_ptr, info_ptr, row_pointers);
 
-  ut_png_free_png_file (png_ptr, info_ptr, row_pointers);
+  ut_png_free (png_ptr, info_ptr, row_pointers);
 
   return;
 }

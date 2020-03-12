@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_print_.h"
@@ -14,12 +14,12 @@ neut_print_set_default (struct PRINT *pPrint)
   // camera ------------------------------------------------------------
   (*pPrint).cameracoostring = ut_alloc_1d_char (100);
   sprintf ((*pPrint).cameracoostring, "x+length*vx%sy+length*vy%sz+length*vz",
-	   NEUT_SEP_DEP, NEUT_SEP_DEP);
+           NEUT_SEP_DEP, NEUT_SEP_DEP);
   (*pPrint).cameracoo = ut_alloc_1d (3);
 
   (*pPrint).cameralookatstring = ut_alloc_1d_char (100);
-  sprintf ((*pPrint).cameralookatstring, "x%sy%sz",
-	   NEUT_SEP_DEP, NEUT_SEP_DEP);
+  sprintf ((*pPrint).cameralookatstring, "x%sy%sz", NEUT_SEP_DEP,
+           NEUT_SEP_DEP);
   (*pPrint).cameralookat = ut_alloc_1d (3);
 
   (*pPrint).cameraskystring = ut_alloc_1d_char (100);
@@ -87,34 +87,34 @@ void
 neut_print_free (struct PRINT *pPrint)
 {
   // camera ------------------------------------------------------------
-  ut_free_1d_char ((*pPrint).cameracoostring);
-  ut_free_1d ((*pPrint).cameracoo);
+  ut_free_1d_char (&(*pPrint).cameracoostring);
+  ut_free_1d (&(*pPrint).cameracoo);
 
-  ut_free_1d_char ((*pPrint).cameralookatstring);
-  ut_free_1d ((*pPrint).cameralookat);
+  ut_free_1d_char (&(*pPrint).cameralookatstring);
+  ut_free_1d (&(*pPrint).cameralookat);
 
-  ut_free_1d_char ((*pPrint).cameraskystring);
-  ut_free_1d ((*pPrint).camerasky);
+  ut_free_1d_char (&(*pPrint).cameraskystring);
+  ut_free_1d (&(*pPrint).camerasky);
 
-  ut_free_1d_char ((*pPrint).cameraprojection);
+  ut_free_1d_char (&(*pPrint).cameraprojection);
 
   // image -------------------------------------------------------------
-  ut_free_1d_char ((*pPrint).imagesize);
-  ut_free_1d_char ((*pPrint).imagebackground);
-  ut_free_1d_int ((*pPrint).showseed);
-  ut_free_1d_int ((*pPrint).showver);
-  ut_free_1d_int ((*pPrint).showedge);
-  ut_free_1d_int ((*pPrint).showface);
-  ut_free_1d_int ((*pPrint).showpoly);
-  ut_free_1d_int ((*pPrint).shownode);
-  ut_free_1d_int ((*pPrint).showelt3d);
-  ut_free_1d_int ((*pPrint).showelt2d);
-  ut_free_1d_int ((*pPrint).showelt1d);
-  ut_free_1d_int ((*pPrint).showelt0d);
-  ut_free_1d_int ((*pPrint).showpoint);
+  ut_free_1d_char (&(*pPrint).imagesize);
+  ut_free_1d_char (&(*pPrint).imagebackground);
+  ut_free_1d_int (&(*pPrint).showseed);
+  ut_free_1d_int (&(*pPrint).showver);
+  ut_free_1d_int (&(*pPrint).showedge);
+  ut_free_1d_int (&(*pPrint).showface);
+  ut_free_1d_int (&(*pPrint).showpoly);
+  ut_free_1d_int (&(*pPrint).shownode);
+  ut_free_1d_int (&(*pPrint).showelt3d);
+  ut_free_1d_int (&(*pPrint).showelt2d);
+  ut_free_1d_int (&(*pPrint).showelt1d);
+  ut_free_1d_int (&(*pPrint).showelt0d);
+  ut_free_1d_int (&(*pPrint).showpoint);
 
-  ut_free_1d_char ((*pPrint).format);
-  ut_free_1d_char ((*pPrint).includepov);
+  ut_free_1d_char (&(*pPrint).format);
+  ut_free_1d_char (&(*pPrint).includepov);
 
   return;
 }

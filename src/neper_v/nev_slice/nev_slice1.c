@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_slice_.h"
@@ -36,18 +36,16 @@ nev_slice (char **argv, int *pi, struct PRINT *pPrint)
 
 void
 nev_slice_mesh (struct NODES Nodes, struct MESH Mesh,
-		struct NODEDATA NodeData,
-		struct MESHDATA *MeshData,
-		char *slice, int *pSQty,
-		struct NODES **pN, struct MESH **pM,
-		struct NODEDATA **pNodeData,
-		struct MESHDATA ***pMeshData, int ***pEltNewOld)
+                struct NODEDATA NodeData, struct MESHDATA *MeshData,
+                char *slice, int *pSQty, struct NODES **pN, struct MESH **pM,
+                struct NODEDATA **pNodeData, struct MESHDATA ***pMeshData,
+                int ***pEltNewOld)
 {
   int i, j;
   char **label = NULL;
   double *eq = ut_alloc_1d (4);
 
-  ut_string_separate (slice, NEUT_SEP_NODEP, &label, pSQty);
+  ut_list_break (slice, NEUT_SEP_NODEP, &label, pSQty);
 
   (*pN) = malloc (*pSQty * sizeof (struct NODES));
   (*pM) = malloc (*pSQty * sizeof (struct MESH));
@@ -81,19 +79,19 @@ nev_slice_mesh (struct NODES Nodes, struct MESH Mesh,
     }
 
     neut_mesh3d_slice (Nodes, Mesh, eq, &((*pN)[i]), &((*pM)[i]),
-		       (*pEltNewOld) + i, &node_newold, &node_fact);
+                       (*pEltNewOld) + i, &node_newold, &node_fact);
 
     if (NodeData.Coo)
       Nodes.NodeCoo = coo;
 
     neut_nodedata_mesh2slice (NodeData, (*pN)[i], node_newold, node_fact,
-			      &((*pNodeData)[i]));
+                              &((*pNodeData)[i]));
     neut_meshdata_mesh2slice (MeshData, (*pM)[i], (*pEltNewOld)[i],
-			      &((*pMeshData)[i]));
+                              &((*pMeshData)[i]));
   }
 
-  ut_free_1d (eq);
-  ut_free_2d_char (label, *pSQty);
+  ut_free_1d (&eq);
+  ut_free_2d_char (&label, *pSQty);
 
   return;
 }

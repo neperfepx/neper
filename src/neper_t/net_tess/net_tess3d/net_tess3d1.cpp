@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess3d_.h"
@@ -9,15 +9,14 @@
 extern void net_polycomp (struct POLY Domain, struct SEEDSET SeedSet,
                           NFCLOUD * pnf_cloud, NFTREE ** pnf_index,
                           int **pptid_seedid, int **pseedid_ptid,
-                          struct POLY **pPoly,
-                          int *seed_changed, int seed_changedqty,
-                          struct TDYN *);
+                          struct POLY **pPoly, int *seed_changed,
+                          int seed_changedqty, struct TDYN *);
 
 int
-net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
-            char *algoneigh, int TessId, struct MTESS *pMTess,
-            struct TESS *pTess)
+net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet, char *algoneigh,
+            int TessId, struct MTESS *pMTess, struct TESS *pTess)
 {
+  int i;
   struct POLY DomPoly, *Poly = NULL;
   struct TDYN TD;
   NFTREE *nf_index = nullptr;
@@ -35,7 +34,7 @@ net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
   // FacePoly must not contain positive polys; quickfix
   if (ut_array_1d_int_max (DomPoly.FacePoly + 1, DomPoly.FaceQty) > 0)
   {
-    for (int i = 1; i <= DomPoly.FaceQty; i++)
+    for (i = 1; i <= DomPoly.FaceQty; i++)
       DomPoly.FacePoly[i] = -i;
   }
 
@@ -46,7 +45,7 @@ net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
 
   net_tess3d_domain (PTess, poly, TessId, pMTess, pTess);
 
-  if (!strncmp ((*pTess).Type, "periodic", 8))
+  if (!strcmp ((*pTess).Type, "periodic"))
     net_tess3d_periodic (pTess);
 
   neut_poly_free (&DomPoly);
@@ -54,8 +53,8 @@ net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
   neut_tdyn_free (&TD);
 
   delete nf_index;
-  ut_free_1d_int (seedid_ptid);
-  ut_free_1d_int (ptid_seedid);
+  ut_free_1d_int (&seedid_ptid);
+  ut_free_1d_int (&ptid_seedid);
 
   return 0;
 }

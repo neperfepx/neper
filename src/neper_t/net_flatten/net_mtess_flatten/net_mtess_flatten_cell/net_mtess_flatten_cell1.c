@@ -1,13 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_mtess_flatten_cell_.h"
 
 void
-net_mtess_flatten_cell (struct TESS *Tess,
-			int *CTessIds, int CTessQty,
-			struct TESS *pFTess)
+net_mtess_flatten_cell (struct TESS *Tess, int *CTessIds, int CTessQty,
+                        struct TESS *pFTess)
 {
   int i, j, id, id2;
 
@@ -23,7 +22,7 @@ net_mtess_flatten_cell (struct TESS *Tess,
       id = CTessIds[i];
 
       for (j = 1; j <= Tess[id].CellQty; j++)
-	(*pFTess).CellLamId[++id2] = Tess[id].CellLamId[j];
+        (*pFTess).CellLamId[++id2] = Tess[id].CellLamId[j];
     }
   }
 

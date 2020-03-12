@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tesl_.h"
@@ -12,10 +12,10 @@ PrevFace (struct POLY *Poly, int PNb, int PrevP)
 {
   if (ut_array_1d_int_eltpos
       (Poly[PrevP].FacePoly + 1, Poly[PrevP].FaceQty, PNb) == -1)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   return 1 + ut_array_1d_int_eltpos (Poly[PrevP].FacePoly + 1,
-				     Poly[PrevP].FaceQty, PNb);
+                                     Poly[PrevP].FaceQty, PNb);
 }
 
 /* The parent seeds of the 3 parent faces of the vertex are
@@ -24,7 +24,7 @@ PrevFace (struct POLY *Poly, int PNb, int PrevP)
 void
 ParFacePoly (struct POLY *Poly, int PNb, int VNb, int PrevP, int *PFG)
 {
-  int i;			/* Mute variable */
+  int i;                        /* Mute variable */
   int pos;
 
   /* First, we search the parent seeds that the vertex of poly PrevP
@@ -53,7 +53,7 @@ SearchInPrevP (struct POLY *Poly, int PrevP, int *PFG)
 {
   int i, j;
   int *ParentFace = ut_alloc_1d_int (3);
-  int ver = 0;			/* Value to return */
+  int ver = 0;                  /* Value to return */
 
   /* Every vertex of the polyhedron is checked. If it has the same parent
    * face parent seeds than the studied vertex, except for seed PNb which
@@ -67,18 +67,18 @@ SearchInPrevP (struct POLY *Poly, int PrevP, int *PFG)
       ParentFace[j] = Poly[PrevP].VerFace[i][j];
 
     if (ut_array_1d_int_eltpos (PFG, 3, Poly[PrevP].FacePoly[ParentFace[0]])
-	!= -1
-	&& ut_array_1d_int_eltpos (PFG, 3,
-				   Poly[PrevP].FacePoly[ParentFace[1]]) != -1
-	&& ut_array_1d_int_eltpos (PFG, 3,
-				   Poly[PrevP].FacePoly[ParentFace[2]]) != -1)
+        != -1
+        && ut_array_1d_int_eltpos (PFG, 3,
+                                   Poly[PrevP].FacePoly[ParentFace[1]]) != -1
+        && ut_array_1d_int_eltpos (PFG, 3,
+                                   Poly[PrevP].FacePoly[ParentFace[2]]) != -1)
     {
       ver = i;
       break;
     }
   }
 
-  ut_free_1d_int (ParentFace);
+  ut_free_1d_int (&ParentFace);
 
   return ver;
 }

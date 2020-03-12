@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_flatten_.h"
@@ -16,24 +16,24 @@ net_flatten (struct MTESS MTess, struct TESS *Tess, struct TESS *pFTess)
     neut_tess_tess (Tess[i], Tess2 + i);
 
   ut_print_message (0, 1, "  [level] Flattening %d-scale tessellation...\n",
-		    MTess.LevelQty);
+                    MTess.LevelQty);
   for (i = MTess.LevelQty - 1; i >= 1; i--)
     for (j = 1; j <= MTess.LevelTessQty[i]; j++)
     {
       id = MTess.LevelTess[i][j];
 
       ut_print_clearline (stdout, 72);
-      ut_print_message (0, 1, "  [%5d]  %d/%d: id=%d%s",
-			i, j, MTess.LevelTessQty[i], id,
-			(j < MTess.LevelTessQty[i]) ? " " : "\n");
+      ut_print_message (0, 1, "  [%5d]  %d/%d: id=%d%s", i, j,
+                        MTess.LevelTessQty[i], id,
+                        (j < MTess.LevelTessQty[i]) ? " " : "\n");
       net_mtess_flatten (MTess, Tess2, id, Tess2 + id);
     }
 
   neut_tess_tess (Tess2[1], pFTess);
 
   (*pFTess).ScaleQty = MTess.LevelQty;
-  (*pFTess).ScaleCellId = ut_alloc_2d_int ((*pFTess).CellQty + 1,
-					 MTess.LevelQty + 1);
+  (*pFTess).ScaleCellId =
+    ut_alloc_2d_int ((*pFTess).CellQty + 1, MTess.LevelQty + 1);
 
   // Recording ScaleCellId
 
@@ -51,16 +51,16 @@ net_flatten (struct MTESS MTess, struct TESS *Tess, struct TESS *pFTess)
     for (j = 1; j <= Tess[tess].PolyQty; j++)
     {
       tmp[MTess.LevelQty] = j;
-      ut_array_1d_int_memcpy ((*pFTess).ScaleCellId[++id],
-			      MTess.LevelQty + 1, tmp);
+      ut_array_1d_int_memcpy (tmp, MTess.LevelQty + 1,
+                              (*pFTess).ScaleCellId[++id]);
     }
   }
 
   for (i = 0; i <= MTess.TessQty; i++)
     neut_tess_free (Tess2 + i);
   free (Tess2);
-  ut_free_1d_int (dom);
-  ut_free_1d_int (tmp);
+  ut_free_1d_int (&dom);
+  ut_free_1d_int (&tmp);
 
   return;
 }
