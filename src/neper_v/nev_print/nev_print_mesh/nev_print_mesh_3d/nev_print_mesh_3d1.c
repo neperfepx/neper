@@ -1,14 +1,13 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_mesh_3d_.h"
 
 void
 nev_print_mesh_3d (FILE * file, struct PRINT Print, struct NODES Nodes,
-		   struct MESH *Mesh,
-		   struct NODEDATA NodeData, struct MESHDATA *MeshData,
-		   int ***pprintelt3dface)
+                   struct MESH *Mesh, struct NODEDATA NodeData,
+                   struct MESHDATA *MeshData, int ***pprintelt3dface)
 {
   struct NODES N;
   struct MESH M1D, M2D;
@@ -31,28 +30,28 @@ nev_print_mesh_3d (FILE * file, struct PRINT Print, struct NODES Nodes,
   ut_print_message (0, 3, "Reducing data...\n");
 
   ut_print_message (0, 4, "3D...\n");
-  nev_print_mesh_3d_compress (Print, Nodes, Mesh[3],
-			      &N, &M2D, pprintelt3dface, &elt2delt3d,
-			      &nodes_new_old);
+  nev_print_mesh_3d_compress (Print, Nodes, Mesh[3], &N, &M2D,
+                              pprintelt3dface, &elt2delt3d, &nodes_new_old);
   ut_print_message (0, 4, "2D...\n");
   nev_print_mesh_2d_compress (M2D, NULL, &M1D);
 
-  ut_print_message (0, 4,
-		    "Number of 3D elt faces reduced by %2.0f\%% (to %d).\n",
-		    100 - ut_num_percent (M2D.EltQty,
-					  Print.showelt3d[0] * elt3dfaceqty),
-		    M2D.EltQty);
+  if (Print.showelt3d[0])
+    ut_print_message (0, 4,
+                      "Number of 3D elt faces reduced by %3.0f%% (to %d).\n",
+                      100 * (1 -
+                             M2D.EltQty / (Print.showelt3d[0] *
+                                           elt3dfaceqty)), M2D.EltQty);
 
-  ut_print_message (0, 4,
-		    "Number of 3D elt edges reduced by %2.0f\%% (to %d).\n",
-		    100 - ut_num_percent (M1D.EltQty,
-					  M2D.EltQty * elt2dnodeqty),
-		    M1D.EltQty);
+  if (M2D.EltQty)
+    ut_print_message (0, 4,
+                      "Number of 3D elt edges reduced by %3.0f%% (to %d).\n",
+                      100 * (1 - M1D.EltQty / (M2D.EltQty * elt2dnodeqty)),
+                      M1D.EltQty);
 
-  nev_print_mesh_3d_print (file, Print, N, M1D, M2D,
-			   elt2delt3d, nodes_new_old, NodeData, MeshData);
+  nev_print_mesh_3d_print (file, Print, N, M1D, M2D, elt2delt3d,
+                           nodes_new_old, NodeData, MeshData);
 
-  ut_free_1d_int (nodes_new_old);
+  ut_free_1d_int (&nodes_new_old);
 
   return;
 }

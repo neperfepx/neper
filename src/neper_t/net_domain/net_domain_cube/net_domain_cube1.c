@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_domain_cube_.h"
@@ -23,7 +23,7 @@ net_domain_cube_string (char *domain, struct POLY *pDomain)
     (*pDomain).PseudoSize = pseudosize;
   }
 
-  ut_free_2d (size, 3);
+  ut_free_2d (&size, 3);
 
   return;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fscanf_gmsh_.h"
@@ -58,17 +58,17 @@ neut_mesh_fscanf_gmshHead (FILE * msh, int *pcontiguous, char **pmode)
     do
     {
       if (fscanf (msh, "%s", string) != 1)
-	abort ();
+        abort ();
 
       if (strcmp (string, "contiguous") == 0)
-	(*pcontiguous) = 1;
+        (*pcontiguous) = 1;
     }
     while (strcmp (string, "$EndComments") != 0);
 
     do
     {
       if (fscanf (msh, "%s", string) != 1)
-	abort ();
+        abort ();
     }
     while (strcmp (string, "$EndMeshFormat") != 0);
   }

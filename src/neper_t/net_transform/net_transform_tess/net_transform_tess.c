@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_transform_tess_.h"
@@ -12,7 +12,7 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
   double theta, *tmp = ol_r_alloc ();
   double **g = ol_g_alloc ();
 
-  ut_string_separate (In.transform, NEUT_SEP_NODEP, &parts, &partqty);
+  ut_list_break (In.transform, NEUT_SEP_NODEP, &parts, &partqty);
 
   for (i = 0; i < partqty; i++)
   {
@@ -28,7 +28,8 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
     else if (!strncmp (parts[i], "rotate", 6))
     {
       ut_print_message (0, 2, "Rotating...\n");
-      sscanf (parts[i], "rotate(%lf,%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2, &theta);
+      sscanf (parts[i], "rotate(%lf,%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2,
+              &theta);
       ol_r_set_unit (tmp);
       ol_rtheta_g (tmp, theta, g);
       neut_tess_rotate (pTess, g);
@@ -37,7 +38,8 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
     else if (!strncmp (parts[i], "translate", 9))
     {
       ut_print_message (0, 2, "Translating...\n");
-      status = sscanf (parts[i], "translate(%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2);
+      status =
+        sscanf (parts[i], "translate(%lf,%lf,%lf)", tmp, tmp + 1, tmp + 2);
       if (status == 2)
         tmp[2] = 1;
       neut_tess_shift (pTess, tmp[0], tmp[1], tmp[2]);
@@ -56,7 +58,7 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
       int j, exprqty, qty;
       char *fct = NULL, **exprs = NULL;
 
-      ut_string_function_separate_exprs (parts[i], &fct, &exprs, &exprqty);
+      ut_string_function_expr (parts[i], &fct, &exprs, &exprqty);
 
       for (j = 0; j < exprqty; j++)
       {
@@ -64,8 +66,8 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
         ut_print_message (0, 3, "Merged %d cells...\n", qty);
       }
 
-      ut_free_1d_char (fct);
-      ut_free_2d_char (exprs, exprqty);
+      ut_free_1d_char (&fct);
+      ut_free_2d_char (&exprs, exprqty);
     }
 
     else if (!strncmp (parts[i], "rmcell", 6))
@@ -75,7 +77,7 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
       int j, exprqty, qty;
       char *fct = NULL, **exprs = NULL;
 
-      ut_string_function_separate_exprs (parts[i], &fct, &exprs, &exprqty);
+      ut_string_function_expr (parts[i], &fct, &exprs, &exprqty);
 
       for (j = 0; j < exprqty; j++)
       {
@@ -83,8 +85,8 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
         ut_print_message (0, 3, "Removed %d cells...\n", qty);
       }
 
-      ut_free_1d_char (fct);
-      ut_free_2d_char (exprs, exprqty);
+      ut_free_1d_char (&fct);
+      ut_free_2d_char (&exprs, exprqty);
     }
 
     else if (!strcmp (parts[i], "resetcellid"))
@@ -95,30 +97,14 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
 
     else if (!strncmp (parts[i], "planecut(", 9))
     {
-      int j, exprqty;
-      double *eq = ut_alloc_1d (4);
-      char *fct = NULL, **exprs = NULL;
-      struct SEEDSET SSet;
-
-      neut_seedset_set_zero (&SSet);
-      net_tess_seedset (*pTess, &SSet);
-
       ut_print_message (0, 2, "Cutting by plane...\n");
+      net_tess_clip_expr (pTess, parts[i]);
+    }
 
-      ut_string_function_separate_exprs (parts[i], &fct, &exprs, &exprqty);
-      if (exprqty != 4)
-        ut_print_message (2, 2, "Failed to parse expression `%s'.\n", parts[i]);
-
-      for (j = 0; j < 4; j++)
-        sscanf (exprs[j], "%lf", eq + j);
-
-      ut_array_1d_scale (eq, 4, 1. / ut_array_1d_norm (eq + 1, 3));
-      net_tess_clip (SSet, pTess, eq);
-
-      ut_free_1d (eq);
-      neut_seedset_free (&SSet);
-      ut_free_1d_char (fct);
-      ut_free_2d_char (exprs, exprqty);
+    else if (!strncmp (parts[i], "crop(", 5))
+    {
+      ut_print_message (0, 2, "Cropping...\n");
+      net_tess_crop_expr (pTess, parts[i]);
     }
 
     else if (!strncmp (parts[i], "slice(", 6))
@@ -127,31 +113,32 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
       double *eq = ut_alloc_1d (4);
       char *fct = NULL, **exprs = NULL;
       struct TESS Tess2;
-      struct SEEDSET SSet;
 
       neut_tess_set_zero (&Tess2);
-      neut_seedset_set_zero (&SSet);
-      net_tess_seedset (*pTess, &SSet);
 
       ut_print_message (0, 2, "Slicing...\n");
 
-      ut_string_function_separate_exprs (parts[i], &fct, &exprs, &exprqty);
+      if (!strcmp ((*pTess).Type, "periodic"))
+        ut_print_message (2, 3,
+                          "Not available for periodic tessellations.\n");
+
+      ut_string_function_expr (parts[i], &fct, &exprs, &exprqty);
       if (exprqty != 4)
-        ut_print_message (2, 2, "Failed to parse expression `%s'.\n", parts[i]);
+        ut_print_message (2, 2, "Failed to parse expression `%s'.\n",
+                          parts[i]);
 
       for (j = 0; j < 4; j++)
         sscanf (exprs[j], "%lf", eq + j);
 
       ut_array_1d_scale (eq, 4, 1. / ut_array_1d_norm (eq + 1, 3));
-      domface = net_tess_clip (SSet, pTess, eq);
+      domface = net_tess_clip (pTess, eq);
       neut_tess_tess (*pTess, &Tess2);
       neut_tess_domface_tess (Tess2, domface, pTess);
 
-      ut_free_1d (eq);
-      ut_free_1d_char (fct);
-      ut_free_2d_char (exprs, exprqty);
+      ut_free_1d (&eq);
+      ut_free_1d_char (&fct);
+      ut_free_2d_char (&exprs, exprqty);
       neut_tess_free (&Tess2);
-      neut_seedset_free (&SSet);
     }
 
     else
@@ -160,7 +147,7 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
 
   ol_g_free (g);
   ol_r_free (tmp);
-  ut_free_2d_char (parts, partqty);
+  ut_free_2d_char (&parts, partqty);
 
   return;
 }

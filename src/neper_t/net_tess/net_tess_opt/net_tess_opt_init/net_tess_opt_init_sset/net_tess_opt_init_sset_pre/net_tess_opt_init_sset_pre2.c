@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_sset_pre_.h"
@@ -21,9 +21,8 @@ net_tess_opt_init_sset_pre_type (struct SEEDSET *pSSet)
 }
 
 void
-net_tess_opt_init_sset_pre_size (struct TESS *Tess, int dtess,
-				 int dcell, struct TOPT *pTOpt,
-                                 struct SEEDSET *pSSet)
+net_tess_opt_init_sset_pre_size (struct TESS *Tess, int dtess, int dcell,
+                                 struct TOPT *pTOpt, struct SEEDSET *pSSet)
 {
   (*pSSet).Size = ut_alloc_2d (3, 2);
 
@@ -44,22 +43,23 @@ net_tess_opt_init_sset_pre_size (struct TESS *Tess, int dtess,
 
 void
 net_tess_opt_init_sset_pre_id (struct IN_T In, struct MTESS MTess,
-			       struct TESS *Tess, int dtess, int dcell,
-			       struct SEEDSET *pSSet)
+                               struct TESS *Tess, int dtess, int dcell,
+                               struct SEEDSET *pSSet)
 {
   char *tmp = ut_alloc_1d_char (100);
 
   neut_mtess_tess_poly_mid (MTess, Tess[dtess], dcell, &tmp);
-  net_multiscale_arg_0d_int_fscanf (In.id[Tess[dtess].Level + 1], tmp,
-				    0, NULL, NULL, &(*pSSet).Id);
+  net_multiscale_arg_0d_int_fscanf (In.id[Tess[dtess].Level + 1], tmp, 0,
+                                    NULL, NULL, &(*pSSet).Id);
 
-  ut_free_1d_char (tmp);
+  ut_free_1d_char (&tmp);
 
   return;
 }
 
 void
-net_tess_opt_init_sset_pre_default_coo (struct TOPT TOpt, int pos, char *var, char **pcooexpr)
+net_tess_opt_init_sset_pre_default_coo (struct TOPT TOpt, int pos, char *var,
+                                        char **pcooexpr)
 {
   if (TOpt.tarqty == 0)
     ut_string_string ("random", pcooexpr);
@@ -83,7 +83,8 @@ net_tess_opt_init_sset_pre_default_coo (struct TOPT TOpt, int pos, char *var, ch
 }
 
 void
-net_tess_opt_init_sset_pre_default_weight (struct TOPT TOpt, char *var, char **pweightexpr)
+net_tess_opt_init_sset_pre_default_weight (struct TOPT TOpt, char *var,
+                                           char **pweightexpr)
 {
   if (TOpt.tarqty == 0)
     ut_string_string ("0", pweightexpr);

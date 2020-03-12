@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_point_.h"
@@ -21,11 +21,11 @@ neut_point_set_zero (struct POINT *pPoint)
 void
 neut_point_free (struct POINT *pPoint)
 {
-  ut_free_2d_ (&(*pPoint).PointCoo, (*pPoint).PointQty + 1);
-  ut_free_1d_ (&(*pPoint).PointRad);
-  ut_free_1d_int_ (&(*pPoint).Periodic);
-  ut_free_1d_int_ (&(*pPoint).activedim);
-  ut_free_2d_ (&(*pPoint).BBox, 3);
+  ut_free_2d (&(*pPoint).PointCoo, (*pPoint).PointQty + 1);
+  ut_free_1d (&(*pPoint).PointRad);
+  ut_free_1d_int (&(*pPoint).Periodic);
+  ut_free_1d_int (&(*pPoint).activedim);
+  ut_free_2d (&(*pPoint).BBox, 3);
 
   (*pPoint).PointQty = 0;
   (*pPoint).Dim = 0;
@@ -50,7 +50,7 @@ neut_point_centre (struct POINT Point, double *centre)
     else
       size = 1;
 
-    ut_array_1d_memcpy (tmp, 3, Point.PointCoo[i]);
+    ut_array_1d_memcpy (Point.PointCoo[i], 3, tmp);
     ut_array_1d_scale (tmp, 3, size);
 
     ut_array_1d_add (centre, tmp, 3, centre);
@@ -58,7 +58,7 @@ neut_point_centre (struct POINT Point, double *centre)
   }
   ut_array_1d_scale (centre, 3, 1. / totsize);
 
-  ut_free_1d (tmp);
+  ut_free_1d (&tmp);
 
   return;
 }
@@ -124,8 +124,8 @@ neut_point_var_list_mesh (char ***pvar, int *pvarqty)
 
 int
 neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
-		    struct NODES Nodes, struct MESH Mesh,
-		    char *var, double **pvals, int *pvalqty, char **ptype)
+                    struct NODES Nodes, struct MESH Mesh, char *var,
+                    double **pvals, int *pvalqty, char **ptype)
 {
   int i, status, tmp;
 
@@ -166,8 +166,8 @@ neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
     for (i = 1; i <= Tess.PolyQty; i++)
       if (neut_tess_point_inpoly (Tess, Point.PointCoo[id], i) == 1)
       {
-	(*pvals)[0] = i;
-	break;
+        (*pvals)[0] = i;
+        break;
       }
     strcpy (*ptype, "%d");
   }
@@ -191,13 +191,14 @@ neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
 
 int
 neut_point_var_val_one (struct POINT Point, int id, struct TESS Tess,
-                        struct NODES Nodes, struct MESH Mesh,
-                        char *var, double *pval, char **ptype)
+                        struct NODES Nodes, struct MESH Mesh, char *var,
+                        double *pval, char **ptype)
 {
   int status, qty;
   double *tmp = NULL;
 
-  status = neut_point_var_val (Point, id, Tess, Nodes, Mesh, var, &tmp, &qty, ptype);
+  status =
+    neut_point_var_val (Point, id, Tess, Nodes, Mesh, var, &tmp, &qty, ptype);
 
   if (qty == 1)
   {
@@ -207,7 +208,7 @@ neut_point_var_val_one (struct POINT Point, int id, struct TESS Tess,
   else
     status = -1;
 
-  ut_free_1d (tmp);
+  ut_free_1d (&tmp);
 
   return status;
 }
@@ -219,13 +220,13 @@ neut_point_addpoint (struct POINT *pPoint, double *coo, double rad)
   if ((*pPoint).PointQty == 1)
     (*pPoint).PointCoo = ut_alloc_2d (1, 3);
 
-  (*pPoint).PointCoo = ut_realloc_2d_addline ((*pPoint).PointCoo,
-					      (*pPoint).PointQty + 1, 3);
-  (*pPoint).PointRad = ut_realloc_1d ((*pPoint).PointRad,
-				      (*pPoint).PointQty + 1);
+  (*pPoint).PointCoo =
+    ut_realloc_2d_addline ((*pPoint).PointCoo, (*pPoint).PointQty + 1, 3);
+  (*pPoint).PointRad =
+    ut_realloc_1d ((*pPoint).PointRad, (*pPoint).PointQty + 1);
 
   if (coo)
-    ut_array_1d_memcpy ((*pPoint).PointCoo[(*pPoint).PointQty], 3, coo);
+    ut_array_1d_memcpy (coo, 3, (*pPoint).PointCoo[(*pPoint).PointQty]);
   (*pPoint).PointRad[(*pPoint).PointQty] = rad;
 
   return;
@@ -251,8 +252,7 @@ neut_point_shift (struct POINT *pPoint, double *s)
   int i;
 
   for (i = 1; i <= (*pPoint).PointQty; i++)
-    ut_array_1d_add ((*pPoint).PointCoo[i], s, 3,
-		     (*pPoint).PointCoo[i]);
+    ut_array_1d_add ((*pPoint).PointCoo[i], s, 3, (*pPoint).PointCoo[i]);
 
   return;
 }
@@ -266,7 +266,7 @@ neut_point_shifttocentre (struct POINT *pPoint)
   ut_array_1d_scale (s, 3, -1);
   neut_point_shift (pPoint, s);
 
-  ut_free_1d (s);
+  ut_free_1d (&s);
 
   return;
 }

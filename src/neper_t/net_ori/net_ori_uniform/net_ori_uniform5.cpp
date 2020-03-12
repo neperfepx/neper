@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_uniform_.h"
 
 void
-net_ori_uniform_opt_forces_comp (struct OL_SET *pOSet, int i, int j, double *fij,
-                         double *pEij)
+net_ori_uniform_opt_forces_comp (struct OL_SET *pOSet, int i, int j,
+                                 double *fij, double *pEij)
 {
   unsigned int k;
   double *w = ol_q_alloc ();
@@ -30,16 +30,16 @@ net_ori_uniform_opt_forces_comp (struct OL_SET *pOSet, int i, int j, double *fij
     (*pEij) += dinv + pimdinv;
   }
 
-  ut_free_1d (w);
-  ut_free_1d (f);
+  ut_free_1d (&w);
+  ut_free_1d (&f);
 
   return;
 }
 
 void
-net_ori_uniform_opt_forces_comp_neigh (struct OL_SET *pOSet,
-                               int i, int orioptineigh, double *fij,
-                               double *pEij, QCLOUD *pqcloud)
+net_ori_uniform_opt_forces_comp_neigh (struct OL_SET *pOSet, int i,
+                                       int orioptineigh, double *fij,
+                                       double *pEij, QCLOUD * pqcloud)
 {
   double d, dinv, *w = ol_q_alloc ();
 
@@ -55,7 +55,7 @@ net_ori_uniform_opt_forces_comp_neigh (struct OL_SET *pOSet,
   ut_array_1d_scale (fij, 3, -dinv * dinv * dinv);
   (*pEij) += dinv;
 
-  ut_free_1d (w);
+  ut_free_1d (&w);
 
   return;
 }

@@ -14,7 +14,7 @@ ol_gnd_crys_b (struct OL_CRYS Crys, double *pb)
   if (!strcmp (Crys.structure, "sc"))
     (*pb) = Crys.a;
   else if (!strcmp (Crys.structure, "fcc"))
-    (*pb) = Crys.a * sqrt (2) / 2;	// fcc {111}<110>
+    (*pb) = Crys.a * sqrt (2) / 2;      // fcc {111}<110>
   else
     abort ();
 
@@ -38,8 +38,7 @@ ol_gnd_nye_rho_sc (struct OL_CRYS Crys, double **nye, double *rho)
 }
 
 void
-ol_gnd_nye_rho_l2 (struct OL_CRYS Crys, double **A, double *nyev,
-		   double *rho)
+ol_gnd_nye_rho_l2 (struct OL_CRYS Crys, double **A, double *nyev, double *rho)
 {
   double **At = ut_alloc_2d (18, 9);
   double **AAt = ut_alloc_2d (9, 9);
@@ -56,10 +55,10 @@ ol_gnd_nye_rho_l2 (struct OL_CRYS Crys, double **A, double *nyev,
   ut_mat_vect_product (B, 18, 9, nyev, 9, rho);
   ut_array_1d_scale (rho, 18, 1 / b);
 
-  ut_free_2d (At, 18);
-  ut_free_2d (AAt, 9);
-  ut_free_2d (AAtm1, 9);
-  ut_free_2d (B, 18);
+  ut_free_2d (&At, 18);
+  ut_free_2d (&AAt, 9);
+  ut_free_2d (&AAtm1, 9);
+  ut_free_2d (&B, 18);
 
   return;
 }
@@ -74,7 +73,8 @@ ol_gnd_nye_rho_l1 (struct OL_CRYS Crys, double **A, double *nyev, double *rho)
 }
 
 void
-ol_gnd_nye_rho_energy (struct OL_CRYS Crys, double **A, double *nyev, double *rho)
+ol_gnd_nye_rho_energy (struct OL_CRYS Crys, double **A, double *nyev,
+                       double *rho)
 {
   ol_gnd_nye_rho_simplex (Crys, A, nyev, rho, "energy");
 
@@ -82,7 +82,8 @@ ol_gnd_nye_rho_energy (struct OL_CRYS Crys, double **A, double *nyev, double *rh
 }
 
 void
-ol_gnd_nye_rho_simplex (struct OL_CRYS Crys, double **A, double *nyev, double *rho, char* type)
+ol_gnd_nye_rho_simplex (struct OL_CRYS Crys, double **A, double *nyev,
+                        double *rho, char *type)
 {
   glp_prob *lp;
   glp_smcp parm;
@@ -96,7 +97,7 @@ ol_gnd_nye_rho_simplex (struct OL_CRYS Crys, double **A, double *nyev, double *r
   glp_term_out (GLP_OFF);
 
   eqqty = 9;
-  varqty  = 18;
+  varqty = 18;
 
   varqty2 = 2 * varqty;
 
@@ -118,19 +119,19 @@ ol_gnd_nye_rho_simplex (struct OL_CRYS Crys, double **A, double *nyev, double *r
   {
     glp_set_col_name (lp, i, "varlb");
     glp_set_col_bnds (lp, i, GLP_LO, 0.0, 0.0);
-    if (! strcmp (type, "L1"))
-      glp_set_obj_coef (lp, i, 1.);	// coef of the objective function.
-    else if (! strcmp (type, "energy"))
+    if (!strcmp (type, "L1"))
+      glp_set_obj_coef (lp, i, 1.);     // coef of the objective function.
+    else if (!strcmp (type, "energy"))
     {
-      if (! strcmp (Crys.structure, "fcc"))
+      if (!strcmp (Crys.structure, "fcc"))
       {
-	if ((i >= 1 && i <= 12) || (i >= 19 && i <= 30)) // edge dislocation
-	  glp_set_obj_coef (lp, i, 1.);
-	else
-	  glp_set_obj_coef (lp, i, 1. / (1 - Crys.nu));
+        if ((i >= 1 && i <= 12) || (i >= 19 && i <= 30))        // edge dislocation
+          glp_set_obj_coef (lp, i, 1.);
+        else
+          glp_set_obj_coef (lp, i, 1. / (1 - Crys.nu));
       }
       else
-	abort ();
+        abort ();
     }
     else
       abort ();
@@ -243,7 +244,7 @@ myconstraint (unsigned n, const double *x, double *grad, void *data)
 
 void
 ol_gnd_nye_rho_norm (struct OL_CRYS Crys, double **A, double *nyev,
-		     double *rho)
+                     double *rho)
 {
   int i;
   int count = 0;
@@ -263,7 +264,7 @@ ol_gnd_nye_rho_norm (struct OL_CRYS Crys, double **A, double *nyev,
 
   ol_gnd_crys_b (Crys, &b);
 
-  nlopt_opt opt = nlopt_create (NLOPT_LN_COBYLA, size2);	// algorithm and dimensionality
+  nlopt_opt opt = nlopt_create (NLOPT_LN_COBYLA, size2);        // algorithm and dimensionality
 
   nlopt_set_min_objective (opt, myfunc, NULL);
 
@@ -272,7 +273,7 @@ ol_gnd_nye_rho_norm (struct OL_CRYS Crys, double **A, double *nyev,
   for (i = 0; i < size1; i++)
   {
     data[i].A_line = ut_alloc_1d (size2);
-    ut_array_1d_memcpy (data[i].A_line, size2, A[i]);
+    ut_array_1d_memcpy (A[i], size2, data[i].A_line);
     data[i].nyev = nyev[i];
   }
 
@@ -288,7 +289,7 @@ ol_gnd_nye_rho_norm (struct OL_CRYS Crys, double **A, double *nyev,
   // for (i = 0; i < size2; i++)
   // rho[i] = ut_num_max (0, rho[i]);
 
-  double minf;			/* the minimum objective value, upon return */
+  double minf;                  /* the minimum objective value, upon return */
 
   if (nlopt_optimize (opt, rho, &minf) < 0)
   {

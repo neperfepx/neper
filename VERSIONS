@@ -1,3 +1,18 @@
+New in 3.5.2-39 (10 Mar 2020):
+- module -T: fixed -morphooptiobjective, fixed -statface nfaces, added
+  tessellation keys nfaces_samedomain, nfacenb_samedomain, npolys_samedomain
+  and npolynb_samedomain, fixed -transform planecut, added -transform
+  crop(cube(...)) for tess, fixed tess loading, modified syntax of -transform
+  crop for tesr, minor fixes.
+- module -M: fixed meshing of tessellation cut by a sphere, fixed .per file for
+  2nd-order meshing, fixed 2nd-order meshing with -interface discontinuous and
+  cohesive, added -transform explode, added -statelt2d length, added -transform
+  slice, fixed -statelt area for quad element, fixed -nset with discontinuous
+  or cohesive (interface) mesh, added mesh keys, improved inp format, minor
+  fixes.
+- module -V: minor improvements.
+- documentation: minor fixes.
+
 New in 3.5.1 (15 Nov 2019):
 - module -T: fixed -morpho from wide grain size distributions, sped up -morpho
   tesr using openGJK, added olmap format.

@@ -1,19 +1,15 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_data_.h"
 
 void
-nev_data (char **argv, int *pi,
-	  struct TESS Tess,
-	  struct TESR Tesr,
-	  struct MESH *Mesh,
-	  struct TESSDATA *pTessData,
-	  struct TESRDATA *pTesrData,
-	  struct NODEDATA *pNodeData,
-	  struct MESHDATA *MeshData,
-	  struct CSYSDATA *pCsysData, struct POINTDATA *pPointData)
+nev_data (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
+          struct MESH *Mesh, struct TESSDATA *pTessData,
+          struct TESRDATA *pTesrData, struct NODEDATA *pNodeData,
+          struct MESHDATA *MeshData, struct CSYSDATA *pCsysData,
+          struct POINTDATA *pPointData)
 {
   int dim;
   char *entity = ut_alloc_1d_char (100);
@@ -55,23 +51,18 @@ nev_data (char **argv, int *pi,
   else
     ut_print_message (1, 0, "Unknown entity `%s'.  Skipping...\n", entity);
 
-  ut_free_1d_char (entity);
-  ut_free_1d_char (type);
+  ut_free_1d_char (&entity);
+  ut_free_1d_char (&type);
 
   return;
 }
 
 void
-nev_data_init (struct TESS Tess,
-	       struct TESSDATA *pTessData,
-	       struct TESR Tesr,
-	       struct TESRDATA *pTesrData,
-	       struct NODES Nodes,
-	       struct MESH *Mesh,
-	       struct POINT Point,
-	       struct NODEDATA *pNodeData,
-	       struct MESHDATA *MeshData,
-	       struct CSYSDATA *pCsysData, struct POINTDATA *pPointData)
+nev_data_init (struct TESS Tess, struct TESSDATA *pTessData, struct TESR Tesr,
+               struct TESRDATA *pTesrData, struct NODES Nodes,
+               struct MESH *Mesh, struct POINT Point,
+               struct NODEDATA *pNodeData, struct MESHDATA *MeshData,
+               struct CSYSDATA *pCsysData, struct POINTDATA *pPointData)
 {
   int dim, meshdim;
   double size;

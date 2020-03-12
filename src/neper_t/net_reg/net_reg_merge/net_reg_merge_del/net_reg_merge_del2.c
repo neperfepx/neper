@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_reg_merge_del_.h"
 
 void
-net_reg_merge_del_buffer (struct TESS Tess, int edge,
-			  int **buf, struct TESS *pTessBuf)
+net_reg_merge_del_buffer (struct TESS Tess, int edge, int **buf,
+                          struct TESS *pTessBuf)
 {
   int i, id;
   int qty, *tmp = NULL;
@@ -17,8 +17,8 @@ net_reg_merge_del_buffer (struct TESS Tess, int edge,
   for (i = 0; i < 2; i++)
   {
     id = Tess.EdgeVerNb[edge][i];
-    ut_array_1d_int_memcpy (buf[1] + buf[1][0] + 1,
-			    Tess.VerEdgeQty[id], Tess.VerEdgeNb[id]);
+    ut_array_1d_int_memcpy (Tess.VerEdgeNb[id], Tess.VerEdgeQty[id],
+                            buf[1] + buf[1][0] + 1);
     buf[1][0] += Tess.VerEdgeQty[id];
   }
   ut_array_1d_int_sort_uniq (buf[1] + 1, buf[1][0], &(buf[1][0]));
@@ -26,27 +26,25 @@ net_reg_merge_del_buffer (struct TESS Tess, int edge,
   // buf vertices: vertices of buf edges
   neut_tess_edges_vers (Tess, buf[1] + 1, buf[1][0], &tmp, &qty);
   buf[0][0] = qty;
-  ut_array_1d_int_memcpy (buf[0] + 1, buf[0][0], tmp);
-  ut_free_1d_int (tmp);
-  tmp = NULL;
+  ut_array_1d_int_memcpy (tmp, buf[0][0], buf[0] + 1);
+  ut_free_1d_int (&tmp);
 
   // buf faces: edge faces + neighbouring faces
   buf[2][0] = Tess.EdgeFaceQty[edge];
-  ut_array_1d_int_memcpy (buf[2] + 1, buf[2][0], Tess.EdgeFaceNb[edge]);
+  ut_array_1d_int_memcpy (Tess.EdgeFaceNb[edge], buf[2][0], buf[2] + 1);
   for (i = 0; i < 2; i++)
   {
     id = Tess.EdgeVerNb[edge][i];
     neut_tess_ver_faces (Tess, id, &tmp, &qty);
-    ut_array_1d_int_memcpy (buf[2] + buf[2][0] + 1, qty, tmp);
+    ut_array_1d_int_memcpy (tmp, qty, buf[2] + buf[2][0] + 1);
     buf[2][0] += qty;
-    ut_free_1d_int (tmp);
-    tmp = NULL;
+    ut_free_1d_int (&tmp);
   }
   ut_array_1d_int_sort_uniq (buf[2] + 1, buf[2][0], &(buf[2][0]));
   /*
      neut_tess_edges_faces (Tess, buf[1] + 1, buf[1][0], &tmp, &qty);
      buf[2][0] = qty;
-     ut_array_1d_int_memcpy (buf[2] + 1, buf[2][0], tmp);
+     ut_array_1d_int_memcpy ( tmp, buf[2][0],buf[2] + 1);
    */
 
   // buf polys: edge polys
@@ -54,9 +52,8 @@ net_reg_merge_del_buffer (struct TESS Tess, int edge,
   {
     neut_tess_edge_polys (Tess, edge, &tmp, &qty);
     buf[3][0] = qty;
-    ut_array_1d_int_memcpy (buf[3] + 1, buf[3][0], tmp);
-    ut_free_1d_int (tmp);
-    tmp = NULL;
+    ut_array_1d_int_memcpy (tmp, buf[3][0], buf[3] + 1);
+    ut_free_1d_int (&tmp);
   }
   else
     buf[3][0] = 0;
@@ -70,16 +67,16 @@ net_reg_merge_del_buffer (struct TESS Tess, int edge,
       id = buf[0][i];
 
       (*pTessBuf).VerCoo[id] = ut_alloc_1d (3);
-      ut_array_1d_memcpy ((*pTessBuf).VerCoo[id], 3, Tess.VerCoo[id]);
+      ut_array_1d_memcpy (Tess.VerCoo[id], 3, (*pTessBuf).VerCoo[id]);
 
       (*pTessBuf).VerEdgeQty[id] = Tess.VerEdgeQty[id];
 
       (*pTessBuf).VerEdgeNb[id] = ut_alloc_1d_int (Tess.VerEdgeQty[id]);
-      ut_array_1d_int_memcpy ((*pTessBuf).VerEdgeNb[id],
-			      Tess.VerEdgeQty[id], Tess.VerEdgeNb[id]);
+      ut_array_1d_int_memcpy (Tess.VerEdgeNb[id], Tess.VerEdgeQty[id],
+                              (*pTessBuf).VerEdgeNb[id]);
 
       (*pTessBuf).VerDom[id] = ut_alloc_1d_int (2);
-      ut_array_1d_int_memcpy ((*pTessBuf).VerDom[id], 2, Tess.VerDom[id]);
+      ut_array_1d_int_memcpy (Tess.VerDom[id], 2, (*pTessBuf).VerDom[id]);
 
       (*pTessBuf).VerState[id] = Tess.VerState[id];
     }
@@ -89,20 +86,20 @@ net_reg_merge_del_buffer (struct TESS Tess, int edge,
       id = buf[1][i];
 
       (*pTessBuf).EdgeVerNb[id] = ut_alloc_1d_int (2);
-      ut_array_1d_int_memcpy ((*pTessBuf).EdgeVerNb[id], 2,
-			      Tess.EdgeVerNb[id]);
+      ut_array_1d_int_memcpy (Tess.EdgeVerNb[id], 2,
+                              (*pTessBuf).EdgeVerNb[id]);
 
       (*pTessBuf).EdgeFaceQty[id] = Tess.EdgeFaceQty[id];
 
       (*pTessBuf).EdgeFaceNb[id] =
-	ut_alloc_1d_int ((*pTessBuf).EdgeFaceQty[id]);
-      ut_array_1d_int_memcpy ((*pTessBuf).EdgeFaceNb[id],
-			      Tess.EdgeFaceQty[id], Tess.EdgeFaceNb[id]);
+        ut_alloc_1d_int ((*pTessBuf).EdgeFaceQty[id]);
+      ut_array_1d_int_memcpy (Tess.EdgeFaceNb[id], Tess.EdgeFaceQty[id],
+                              (*pTessBuf).EdgeFaceNb[id]);
 
       (*pTessBuf).EdgeLength[id] = Tess.EdgeLength[id];
 
       (*pTessBuf).EdgeDom[id] = ut_alloc_1d_int (2);
-      ut_array_1d_int_memcpy ((*pTessBuf).EdgeDom[id], 2, Tess.EdgeDom[id]);
+      ut_array_1d_int_memcpy (Tess.EdgeDom[id], 2, (*pTessBuf).EdgeDom[id]);
 
       (*pTessBuf).EdgeState[id] = Tess.EdgeState[id];
 
@@ -115,40 +112,40 @@ net_reg_merge_del_buffer (struct TESS Tess, int edge,
 
       if ((*pTessBuf).Dim == 3)
       {
-	(*pTessBuf).FacePoly[id] = ut_alloc_1d_int (2);
-	ut_array_1d_int_memcpy ((*pTessBuf).FacePoly[id], 2,
-				Tess.FacePoly[id]);
+        (*pTessBuf).FacePoly[id] = ut_alloc_1d_int (2);
+        ut_array_1d_int_memcpy (Tess.FacePoly[id], 2,
+                                (*pTessBuf).FacePoly[id]);
       }
 
       (*pTessBuf).FaceEq[id] = ut_alloc_1d (4);
-      ut_array_1d_memcpy ((*pTessBuf).FaceEq[id], 4, Tess.FaceEq[id]);
+      ut_array_1d_memcpy (Tess.FaceEq[id], 4, (*pTessBuf).FaceEq[id]);
 
       (*pTessBuf).FaceVerQty[id] = Tess.FaceVerQty[id];
 
       (*pTessBuf).FaceVerNb[id] =
-	ut_alloc_1d_int ((*pTessBuf).FaceVerQty[id] + 1);
-      ut_array_1d_int_memcpy ((*pTessBuf).FaceVerNb[id] + 1,
-			      Tess.FaceVerQty[id], Tess.FaceVerNb[id] + 1);
+        ut_alloc_1d_int ((*pTessBuf).FaceVerQty[id] + 1);
+      ut_array_1d_int_memcpy (Tess.FaceVerNb[id] + 1, Tess.FaceVerQty[id],
+                              (*pTessBuf).FaceVerNb[id] + 1);
 
       (*pTessBuf).FaceEdgeNb[id] =
-	ut_alloc_1d_int ((*pTessBuf).FaceVerQty[id] + 1);
-      ut_array_1d_int_memcpy ((*pTessBuf).FaceEdgeNb[id] + 1,
-			      Tess.FaceVerQty[id], Tess.FaceEdgeNb[id] + 1);
+        ut_alloc_1d_int ((*pTessBuf).FaceVerQty[id] + 1);
+      ut_array_1d_int_memcpy (Tess.FaceEdgeNb[id] + 1, Tess.FaceVerQty[id],
+                              (*pTessBuf).FaceEdgeNb[id] + 1);
 
       (*pTessBuf).FaceEdgeOri[id] =
-	ut_alloc_1d_int ((*pTessBuf).FaceVerQty[id] + 1);
-      ut_array_1d_int_memcpy ((*pTessBuf).FaceEdgeOri[id] + 1,
-			      Tess.FaceVerQty[id], Tess.FaceEdgeOri[id] + 1);
+        ut_alloc_1d_int ((*pTessBuf).FaceVerQty[id] + 1);
+      ut_array_1d_int_memcpy (Tess.FaceEdgeOri[id] + 1, Tess.FaceVerQty[id],
+                              (*pTessBuf).FaceEdgeOri[id] + 1);
 
       (*pTessBuf).FacePt[id] = Tess.FacePt[id];
       (*pTessBuf).FacePtCoo[id] = ut_alloc_1d (3);
 
-      ut_array_1d_memcpy ((*pTessBuf).FacePtCoo[id], 3, Tess.FacePtCoo[id]);
+      ut_array_1d_memcpy (Tess.FacePtCoo[id], 3, (*pTessBuf).FacePtCoo[id]);
 
       if ((*pTessBuf).Dim == 3)
       {
-	(*pTessBuf).FaceDom[id] = ut_alloc_1d_int (2);
-	ut_array_1d_int_memcpy ((*pTessBuf).FaceDom[id], 2, Tess.FaceDom[id]);
+        (*pTessBuf).FaceDom[id] = ut_alloc_1d_int (2);
+        ut_array_1d_int_memcpy (Tess.FaceDom[id], 2, (*pTessBuf).FaceDom[id]);
       }
 
       (*pTessBuf).FaceState[id] = Tess.FaceState[id];
@@ -161,14 +158,14 @@ net_reg_merge_del_buffer (struct TESS Tess, int edge,
       (*pTessBuf).PolyFaceQty[id] = Tess.PolyFaceQty[id];
 
       (*pTessBuf).PolyFaceNb[id] =
-	ut_alloc_1d_int ((*pTessBuf).PolyFaceQty[id] + 1);
-      ut_array_1d_int_memcpy ((*pTessBuf).PolyFaceNb[id] + 1,
-			      Tess.PolyFaceQty[id], Tess.PolyFaceNb[id] + 1);
+        ut_alloc_1d_int ((*pTessBuf).PolyFaceQty[id] + 1);
+      ut_array_1d_int_memcpy (Tess.PolyFaceNb[id] + 1, Tess.PolyFaceQty[id],
+                              (*pTessBuf).PolyFaceNb[id] + 1);
 
       (*pTessBuf).PolyFaceOri[id] =
-	ut_alloc_1d_int ((*pTessBuf).PolyFaceQty[id] + 1);
-      ut_array_1d_int_memcpy ((*pTessBuf).PolyFaceOri[id] + 1,
-			      Tess.PolyFaceQty[id], Tess.PolyFaceOri[id] + 1);
+        ut_alloc_1d_int ((*pTessBuf).PolyFaceQty[id] + 1);
+      ut_array_1d_int_memcpy (Tess.PolyFaceOri[id] + 1, Tess.PolyFaceQty[id],
+                              (*pTessBuf).PolyFaceOri[id] + 1);
     }
   }
 
@@ -220,7 +217,7 @@ UpdateEdgeVerNb (struct TESS *pTess, int delver, int newver, int verbosity)
   {
     ut_print_lineheader (-1);
     printf ("    Changing ver %d to ver %d in edges of ver %d\n", newver,
-	    delver, delver);
+            delver, delver);
   }
 
   for (i = 0; i <= (*pTess).VerEdgeQty[delver] - 1; i++)
@@ -237,13 +234,13 @@ UpdateEdgeVerNb (struct TESS *pTess, int delver, int newver, int verbosity)
 
     if (verbosity >= 3)
       printf ("%d %d become ", (*pTess).EdgeVerNb[tmpedge][0],
-	      (*pTess).EdgeVerNb[tmpedge][1]);
+              (*pTess).EdgeVerNb[tmpedge][1]);
 
     (*pTess).EdgeVerNb[tmpedge][pos] = newver;
 
     if (verbosity >= 3)
       printf ("%d %d\n", (*pTess).EdgeVerNb[tmpedge][0],
-	      (*pTess).EdgeVerNb[tmpedge][1]);
+              (*pTess).EdgeVerNb[tmpedge][1]);
   }
 
   return;
@@ -252,7 +249,7 @@ UpdateEdgeVerNb (struct TESS *pTess, int delver, int newver, int verbosity)
 /* UpdateFace updates the properties of the parent faces of the edge */
 int
 UpdateFaceVerNEdge (struct TESS *pTess, int edge, int delver, int newver,
-		    int verbosity)
+                    int verbosity)
 {
   int i, err = 0;
 
@@ -286,7 +283,7 @@ UpdateFaceVerNEdge (struct TESS *pTess, int edge, int delver, int newver,
 
 int
 UpdateVer (struct TESS *pTess, int edge, int delver, int newver,
-	   int verbosity)
+           int verbosity)
 {
   int err = 0;
 
@@ -313,8 +310,9 @@ net_edgedel_edgedom_fromverdom (struct TESS *pTess, int ver)
   for (i = 0; i < (*pTess).VerEdgeQty[i]; i++)
   {
     edge = (*pTess).VerEdgeNb[ver][i];
-    ver2 = ((*pTess).EdgeVerNb[edge][0] != ver) ? (*pTess).EdgeVerNb[edge][0]
-      : (*pTess).EdgeVerNb[edge][1];
+    ver2 =
+      ((*pTess).EdgeVerNb[edge][0] !=
+       ver) ? (*pTess).EdgeVerNb[edge][0] : (*pTess).EdgeVerNb[edge][1];
 
     // at least one ver is not on the domain: edge not on the domain
     if ((*pTess).VerDom[ver][0] == -1 || (*pTess).VerDom[ver2][0] == -1)
@@ -325,33 +323,33 @@ net_edgedel_edgedom_fromverdom (struct TESS *pTess, int ver)
     {
       // test: vers are on the same domain ver: this should not happen
       if ((*pTess).VerDom[ver][1] == (*pTess).VerDom[ver2][1])
-	ut_error_reportbug ();
+        ut_print_neperbug ();
 
       vers[0] = (*pTess).VerDom[ver][1];
       vers[1] = (*pTess).VerDom[ver2][1];
       if (neut_tess_domvers_comdomedge ((*pTess), vers, 2, &domedge) == 0)
       {
-	(*pTess).EdgeDom[edge][0] = 1;
-	(*pTess).EdgeDom[edge][1] = domedge;
+        (*pTess).EdgeDom[edge][0] = 1;
+        (*pTess).EdgeDom[edge][1] = domedge;
       }
       else
-	ut_error_reportbug ();
+        ut_print_neperbug ();
     }
 
     // one ver is on a boundary ver and the other is not
     else if (((*pTess).VerDom[ver][0] == 0 || (*pTess).VerDom[ver2][0] == 0)
-	     && ((*pTess).VerDom[ver][0] != 0
-		 || (*pTess).VerDom[ver2][0] != 0))
+             && ((*pTess).VerDom[ver][0] != 0
+                 || (*pTess).VerDom[ver2][0] != 0))
     {
       // id is not on the boundary ver
       id = ((*pTess).VerDom[ver][0] != 0) ? ver : ver2;
 
       // id is on a domain edge or face
       if ((*pTess).VerDom[id][0] == 1 || (*pTess).VerDom[id][0] == 2)
-	ut_array_1d_int_memcpy ((*pTess).EdgeDom[edge], 2,
-				(*pTess).VerDom[id]);
+        ut_array_1d_int_memcpy ((*pTess).VerDom[id], 2,
+                                (*pTess).EdgeDom[edge]);
       else
-	ut_error_reportbug ();
+        ut_print_neperbug ();
     }
 
     // both vers are on boundary edges
@@ -359,38 +357,38 @@ net_edgedel_edgedom_fromverdom (struct TESS *pTess, int ver)
     {
       // if on the same edge
       if ((*pTess).VerDom[ver][1] == (*pTess).VerDom[ver2][1])
-	ut_array_1d_int_memcpy ((*pTess).EdgeDom[edge], 2,
-				(*pTess).VerDom[ver]);
+        ut_array_1d_int_memcpy ((*pTess).VerDom[ver], 2,
+                                (*pTess).EdgeDom[edge]);
       // if on different edges
       else
       {
-	if (neut_tess_domedges_comdomface ((*pTess), vers, 2, &domface) == 0)
-	{
-	  (*pTess).EdgeDom[edge][0] = 2;
-	  (*pTess).EdgeDom[edge][1] = domface;
-	}
-	else
-	  ut_error_reportbug ();
+        if (neut_tess_domedges_comdomface ((*pTess), vers, 2, &domface) == 0)
+        {
+          (*pTess).EdgeDom[edge][0] = 2;
+          (*pTess).EdgeDom[edge][1] = domface;
+        }
+        else
+          ut_print_neperbug ();
 
-	ut_array_1d_int_memcpy ((*pTess).EdgeDom[edge], 2,
-				(*pTess).VerDom[ver]);
+        ut_array_1d_int_memcpy ((*pTess).VerDom[ver], 2,
+                                (*pTess).EdgeDom[edge]);
       }
     }
 
     // one ver is on a boundary edge and the other is not
     else if (((*pTess).VerDom[ver][0] == 1 || (*pTess).VerDom[ver2][0] == 1)
-	     && ((*pTess).VerDom[ver][0] != 1
-		 || (*pTess).VerDom[ver2][0] != 1))
+             && ((*pTess).VerDom[ver][0] != 1
+                 || (*pTess).VerDom[ver2][0] != 1))
     {
       // id is not on the boundary edge
       id = ((*pTess).VerDom[ver][0] != 0) ? ver : ver2;
 
       // id is on a domain edge or face
       if ((*pTess).VerDom[id][0] == 2)
-	ut_array_1d_int_memcpy ((*pTess).EdgeDom[edge], 2,
-				(*pTess).VerDom[id]);
+        ut_array_1d_int_memcpy ((*pTess).VerDom[id], 2,
+                                (*pTess).EdgeDom[edge]);
       else
-	ut_error_reportbug ();
+        ut_print_neperbug ();
     }
 
     // both vers are on boundary faces
@@ -398,14 +396,14 @@ net_edgedel_edgedom_fromverdom (struct TESS *pTess, int ver)
     {
       // if on the same face
       if ((*pTess).VerDom[ver][1] == (*pTess).VerDom[ver2][1])
-	ut_array_1d_int_memcpy ((*pTess).EdgeDom[edge], 2,
-				(*pTess).VerDom[ver]);
+        ut_array_1d_int_memcpy ((*pTess).VerDom[ver], 2,
+                                (*pTess).EdgeDom[edge]);
       else
-	(*pTess).EdgeDom[edge][0] = -1;
+        (*pTess).EdgeDom[edge][0] = -1;
     }
   }
 
-  ut_free_1d_int (vers);
+  ut_free_1d_int (&vers);
 
   return;
 }
@@ -424,7 +422,7 @@ net_tess_reg_ver_facedom (struct TESS *pTess, int ver)
 
   neut_tess_init_domtessface (pTess);
 
-  ut_free_1d_int (face);
+  ut_free_1d_int (&face);
 
   return;
 }

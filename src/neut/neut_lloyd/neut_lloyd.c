@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_lloyd_.h"
@@ -24,8 +24,8 @@ neut_lloyd_set_zero (struct LLOYD *pLloyd)
 void
 neut_lloyd_free (struct LLOYD *pLloyd)
 {
-  ut_free_1d_char ((*pLloyd).norm);
-  ut_free_1d_int ((*pLloyd).dims);
+  ut_free_1d_char (&(*pLloyd).norm);
+  ut_free_1d_int (&(*pLloyd).dims);
 
   neut_lloyd_set_zero (pLloyd);
 

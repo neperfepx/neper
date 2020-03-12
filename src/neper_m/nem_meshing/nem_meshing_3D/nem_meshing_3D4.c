@@ -1,13 +1,13 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_3D_.h"
 
 void
 nem_meshing_3D_poly_record_nodes (struct TESS Tess, int poly, struct NODES N,
-				  int **pnode_nbs,
-				  struct NODES *pNodes, struct MESH *Mesh)
+                                  int **pnode_nbs, struct NODES *pNodes,
+                                  struct MESH *Mesh)
 {
   int i, j, bak, skinnodes_qty, nb, tmp;
   int *skinnodes = NULL;
@@ -17,7 +17,7 @@ nem_meshing_3D_poly_record_nodes (struct TESS Tess, int poly, struct NODES N,
    * nodes), the others are new.  We use the node positions. */
 
   neut_mesh_elsets_nodes (Mesh[2], Tess.PolyFaceNb[poly] + 1,
-			  Tess.PolyFaceQty[poly], &skinnodes, &skinnodes_qty);
+                          Tess.PolyFaceQty[poly], &skinnodes, &skinnodes_qty);
 
   (*pnode_nbs) = ut_alloc_1d_int (N.NodeQty + 1);
 
@@ -39,13 +39,13 @@ nem_meshing_3D_poly_record_nodes (struct TESS Tess, int poly, struct NODES N,
     if (fabs (dist[tmp]) > 1e-11 || (*pnode_nbs)[tmp] != 0)
     {
       ut_print_message (2, 0,
-			"nem_meshing_3D: skin node not found or bad node_nbs\n");
+                        "nem_meshing_3D: skin node not found or bad node_nbs\n");
       abort ();
     }
 
     (*pnode_nbs)[tmp] = skinnodes[i];
   }
-  ut_free_1d_int (skinnodes);
+  ut_free_1d_int (&skinnodes);
 
   nb = (*pNodes).NodeQty;
 
@@ -64,14 +64,14 @@ nem_meshing_3D_poly_record_nodes (struct TESS Tess, int poly, struct NODES N,
     if ((*pnode_nbs)[i] > bak)
       neut_nodes_addnode (pNodes, N.NodeCoo[i], -1);
 
-  ut_free_1d (dist);
+  ut_free_1d (&dist);
 
   return;
 }
 
 void
 nem_meshing_3D_poly_record_elts (int poly, struct MESH M, int *node_nbs,
-				 struct MESH *Mesh)
+                                 struct MESH *Mesh)
 {
   int i, j;
   int *elt_nbs = NULL;
@@ -95,9 +95,9 @@ nem_meshing_3D_poly_record_elts (int poly, struct MESH M, int *node_nbs,
   neut_mesh_addelset (Mesh + 3, M.Elsets[1] + 1, M.Elsets[1][0]);
 
   if (Mesh[3].ElsetQty != poly)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
-  ut_free_1d_int (elt_nbs);
+  ut_free_1d_int (&elt_nbs);
 
   return;
 }

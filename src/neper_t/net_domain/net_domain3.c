@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_domain_.h"
@@ -48,7 +48,7 @@ void
 net_domain_stdtriangle_planes (int qty, double **eq)
 {
   int i;
-  double n[3] = {0, 0, 1}, **p = ut_alloc_2d (qty + 1, 3);
+  double n[3] = { 0, 0, 1 }, **p = ut_alloc_2d (qty + 1, 3);
   double *r = ol_r_alloc ();
   double *q = ol_q_alloc ();
   double *q2 = ol_q_alloc ();
@@ -75,7 +75,7 @@ net_domain_stdtriangle_planes (int qty, double **eq)
 
   for (i = 0; i < qty; i++)
   {
-    ut_array_1d_memcpy (p2, 3, p[i]);
+    ut_array_1d_memcpy (p[i], 3, p2);
     p2[2] += 1;
     ut_space_points_plane (p[i], p[i + 1], p2, eq[i + 4]);
   }
@@ -83,7 +83,7 @@ net_domain_stdtriangle_planes (int qty, double **eq)
   ol_r_free (r);
   ol_q_free (q);
   ol_q_free (q2);
-  ut_free_2d (p, qty + 1);
+  ut_free_2d (&p, qty + 1);
 
   return;
 }
@@ -97,7 +97,7 @@ net_domain_tesspoly_planes (struct TESS Tess, int id, int *pqty, double **eq)
   for (i = 1; i <= Tess.PolyFaceQty[id]; i++)
   {
     face = Tess.PolyFaceNb[id][i];
-    ut_array_1d_memcpy (eq[i - 1], 4, Tess.FaceEq[face]);
+    ut_array_1d_memcpy (Tess.FaceEq[face], 4, eq[i - 1]);
     if (Tess.PolyFaceOri[id][i] == -1)
       ut_array_1d_scale (eq[i - 1], 4, -1);
   }
@@ -124,9 +124,9 @@ net_domain_clip (struct POLY *pPoly, double **eq, int qty)
     net_domain_cube (cubesize, pPoly);
   }
 
-  shift = ((*pPoly).FaceQty > 0)
-          ? ut_array_1d_int_min ((*pPoly).FacePoly + 1, (*pPoly).FaceQty)
-	  : 0;
+  shift =
+    ((*pPoly).FaceQty > 0) ? ut_array_1d_int_min ((*pPoly).FacePoly + 1,
+                                                  (*pPoly).FaceQty) : 0;
 
   neut_polymod_set_zero (&Polymod);
 
@@ -140,13 +140,13 @@ net_domain_clip (struct POLY *pPoly, double **eq, int qty)
 
     for (j = 1; j <= Polymod.VerQty; j++)
       if (Polymod.VerUse[j] == 1)
-	if (ut_space_planeside (eq[i], Polymod.VerCoo[j] - 1) == 1)
-	  BadVer[++BadVer[0]] = j;
+        if (ut_space_point_plane_side (Polymod.VerCoo[j] - 1, eq[i]) == 1)
+          BadVer[++BadVer[0]] = j;
 
     if (BadVer[0] != 0)
       PolyhedronModification (shift - i - 1, eq[i], &Polymod, BadVer);
 
-    ut_free_1d_int (BadVer);
+    ut_free_1d_int (&BadVer);
   }
 
   // neut_debug_polymod (stdout, Polymod);
@@ -159,7 +159,7 @@ net_domain_clip (struct POLY *pPoly, double **eq, int qty)
 
   neut_polymod_free (&Polymod);
 
-  ut_free_2d (cubesize, 3);
+  ut_free_2d (&cubesize, 3);
 
   return;
 }
@@ -170,17 +170,17 @@ net_domain_sphere_planes (double rad, int qty, double **eq)
   int i, j;
   double **pts = ut_alloc_2d (qty, 3);
 
-  ut_space_sphere_points (qty, 1, pts);
+  ut_space_sphere_points (1, qty, pts);
 
   for (i = 0; i < qty; i++)
   {
-    ut_array_1d_memcpy (eq[i] + 1, 3, pts[i]);
+    ut_array_1d_memcpy (pts[i], 3, eq[i] + 1);
     eq[i][0] = rad;
     for (j = 0; j < 3; j++)
       eq[i][0] += rad * eq[i][j + 1];
   }
 
-  ut_free_2d (pts, qty);
+  ut_free_2d (&pts, qty);
 
   return;
 }

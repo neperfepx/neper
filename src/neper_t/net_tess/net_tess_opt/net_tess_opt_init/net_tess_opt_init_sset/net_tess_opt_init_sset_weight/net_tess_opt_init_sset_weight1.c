@@ -1,14 +1,14 @@
 /* This file is part of the Neper software sizeage. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_sset_weight_.h"
 
 void
 net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
-			       int dtess, int dcell, struct TOPT TOpt,
-			       char *var, int pos, char *weightexpr,
-			       double *rad)
+                               int dtess, int dcell, struct TOPT TOpt,
+                               char *var, int pos, char *weightexpr,
+                               double *rad)
 {
   int i;
   char *prev = ut_alloc_1d_char (1000);
@@ -24,7 +24,7 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
   strcpy (vars[2], "radeq");
   strcpy (vars[3], "diameq");
 
-  if (ut_string_filename (weightexpr))
+  if (ut_string_isfilename (weightexpr))
   {
     neut_mtess_tess_poly_mid (MTess, Tess[dtess], dcell, &mid);
     if (ut_file_testformat (weightexpr, "tess"))
@@ -32,7 +32,7 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
       neut_tess_set_zero (&Tmp);
       fp = ut_file_open (weightexpr, "R");
       neut_tess_fscanf (fp, &Tmp);
-      ut_array_1d_memcpy (rad + 1, TOpt.CellQty, Tmp.SeedWeight + 1);
+      ut_array_1d_memcpy (Tmp.SeedWeight + 1, TOpt.CellQty, rad + 1);
       ut_file_close (fp, weightexpr, "R");
       neut_tess_free (&Tmp);
     }
@@ -44,7 +44,8 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
   else if (!strcmp (var, "tesr"))
     for (i = 1; i <= TOpt.CellQty; i++)
     {
-      neut_tesr_expr_val_one (TOpt.tartesr, "cell", i, weightexpr, rad + i, NULL);
+      neut_tesr_expr_val_one (TOpt.tartesr, "cell", i, weightexpr, rad + i,
+                              NULL);
       ut_print_progress (stdout, i, TOpt.CellQty, "%.0f%%", prev);
     }
 
@@ -53,7 +54,7 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
   {
     // avradeq and avdiameq
     if (!strcmp (var, "size") || !strcmp (var, "diameq")
-     || !strncmp (var, "centroid", 8))
+        || !strncmp (var, "centroid", 8))
     {
       neut_tess_cellavradeq (TOpt.Dom, TOpt.CellQty, vals);
       vals[1] = 2 * vals[0];
@@ -73,7 +74,7 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
       ut_array_1d_set (radeq + 1, TOpt.CellQty, vals[0]);
     else if (!strcmp (var, "centroiddiameq"))
       for (i = 1; i <= TOpt.CellQty; i++)
-	radeq[i] = 0.5 * TOpt.tarcellval[pos][i][TOpt.SSet.Dim];
+        radeq[i] = 0.5 * TOpt.tarcellval[pos][i][TOpt.SSet.Dim];
     else
       abort ();
 
@@ -86,16 +87,17 @@ net_tess_opt_init_sset_weight (struct MTESS MTess, struct TESS *Tess,
       if (status != 0)
       {
         printf ("\n");
-        ut_print_message (2, 4, "Failed to process expression `%s'.\n", weightexpr);
+        ut_print_message (2, 4, "Failed to process expression `%s'.\n",
+                          weightexpr);
       }
     }
   }
 
-  ut_free_1d_char (prev);
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
-  ut_free_1d (radeq);
-  ut_free_1d_char (mid);
+  ut_free_1d_char (&prev);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
+  ut_free_1d (&radeq);
+  ut_free_1d_char (&mid);
 
   return;
 }

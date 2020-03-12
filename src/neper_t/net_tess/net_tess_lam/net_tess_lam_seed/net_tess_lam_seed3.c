@@ -1,14 +1,13 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tess_lam_seed_.h"
 
 int
-net_tess_lam_seed_readargs_w (char *value,
-			 struct MTESS MTess, struct TESS *Tess,
-			 int domtess, int dompoly,
-			 char **pwtype, double **pw, int *pwqty)
+net_tess_lam_seed_readargs_w (char *value, struct MTESS MTess,
+                              struct TESS *Tess, int domtess, int dompoly,
+                              char **pwtype, double **pw, int *pwqty)
 {
   int i;
   char *string = ut_alloc_1d_char (1000);
@@ -18,7 +17,7 @@ net_tess_lam_seed_readargs_w (char *value,
   (*pwqty) = 0;
 
   // reading string
-  if (ut_string_filename (value))
+  if (ut_string_isfilename (value))
   {
     ut_string_string ("file", pwtype);
     neut_mtess_tess_poly_mid (MTess, Tess[domtess], dompoly, &mid);
@@ -31,25 +30,24 @@ net_tess_lam_seed_readargs_w (char *value,
   }
 
   // converting string into *pw / *pwqty
-  ut_string_separate (string, NEUT_SEP_DEP, &tmp, pwqty);
+  ut_list_break (string, NEUT_SEP_DEP, &tmp, pwqty);
 
   (*pw) = ut_alloc_1d (*pwqty);
   for (i = 0; i < *pwqty; i++)
     if (sscanf (tmp[i], "%lf", (*pw) + i) != 1)
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
-  ut_free_1d_char (string);
-  ut_free_2d_char (tmp, *pwqty);
-  ut_free_1d_char (mid);
+  ut_free_1d_char (&string);
+  ut_free_2d_char (&tmp, *pwqty);
+  ut_free_1d_char (&mid);
 
   return 0;
 }
 
 int
-net_tess_lam_seed_readargs_v (char *value,
-			 struct MTESS MTess, struct TESS *Tess,
-			 int domtess, int dompoly,
-			 char **pvtype, double **pv, int *pvqty)
+net_tess_lam_seed_readargs_v (char *value, struct MTESS MTess,
+                              struct TESS *Tess, int domtess, int dompoly,
+                              char **pvtype, double **pv, int *pvqty)
 {
   char *mid = NULL;
 
@@ -63,7 +61,7 @@ net_tess_lam_seed_readargs_v (char *value,
     ut_string_string (value, pvtype);
   else if (!strncmp (value, "crysdir(", 8))
     ut_string_string (value, pvtype);
-  else if (ut_string_filename (value))
+  else if (ut_string_isfilename (value))
   {
     ut_string_string ("file", pvtype);
     (*pvqty) = 1;
@@ -75,15 +73,14 @@ net_tess_lam_seed_readargs_v (char *value,
   else
     ut_print_message (2, 2, "Failed to read 'v' argument.\n");
 
-  ut_free_1d_char (mid);
+  ut_free_1d_char (&mid);
 
   return 0;
 }
 
 int
-net_tess_lam_seed_readargs_pos (char *value,
-                                struct MTESS MTess, struct TESS *Tess,
-                                int domtess, int dompoly,
+net_tess_lam_seed_readargs_pos (char *value, struct MTESS MTess,
+                                struct TESS *Tess, int domtess, int dompoly,
                                 char **ppostype, char **ppos)
 {
   char *mid = NULL;
@@ -91,7 +88,7 @@ net_tess_lam_seed_readargs_pos (char *value,
   (*ppos) = ut_alloc_1d_char (1000);
 
   // reading string
-  if (ut_string_filename (value))
+  if (ut_string_isfilename (value))
   {
     ut_string_string ("file", ppostype);
     neut_mtess_tess_poly_mid (MTess, Tess[domtess], dompoly, &mid);
@@ -103,7 +100,7 @@ net_tess_lam_seed_readargs_pos (char *value,
     ut_string_string (value, ppos);
   }
 
-  ut_free_1d_char (mid);
+  ut_free_1d_char (&mid);
 
   return 0;
 }
@@ -120,8 +117,8 @@ net_tess_lam_seed_set_init (struct SEEDSET *pSSet)
 
 int
 net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
-                              gsl_rng *r, char *vtype, double *v, int vqty,
-			      double *n)
+                              gsl_rng * r, char *vtype, double *v, int vqty,
+                              double *n)
 {
   int id, dim = SSet[1].Dim;
   double theta;
@@ -131,7 +128,7 @@ net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
     q = SSet[dtess].q[dcell];
 
   if (!strcmp (vtype, "file") && vqty == 1)
-    ut_array_1d_memcpy (n, 3, v);
+    ut_array_1d_memcpy (v, 3, n);
 
   else if (!strcmp (vtype, "random"))
   {
@@ -157,9 +154,9 @@ net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
     ut_space_sphere_points (ptqty, 1, pts);
 
     id = ptqty * gsl_rng_uniform (r);
-    ut_array_1d_memcpy (n, 3, pts[id]);
+    ut_array_1d_memcpy (pts[id], 3, n);
 
-    ut_free_2d (pts, ptqty);
+    ut_free_2d (&pts, ptqty);
   }
 
   else if (!strncmp (vtype, "(", 1))
@@ -186,9 +183,9 @@ net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
 }
 
 int
-net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng *r, double *n,
-		      char *wtype, double *w, int wqty, char* postype,
-		      char *pos, struct SEEDSET *pSSet)
+net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng * r, double *n,
+                           char *wtype, double *w, int wqty, char *postype,
+                           char *pos, struct SEEDSET *pSSet)
 {
   int w_id;
   double coo, distmin, distmax;
@@ -202,7 +199,7 @@ net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng *r, double *n,
   w_id = -1;
   do
   {
-    w_id = ut_num_rotpos (0, wqty - 1, w_id, 1);
+    w_id = ut_array_rotpos (0, wqty - 1, w_id, 1);
     coo += w[w_id];
     if (coo < distmin)
       continue;
@@ -211,7 +208,7 @@ net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng *r, double *n,
   }
   while (coo < distmax);
 
-  ut_free_1d (plane);
+  ut_free_1d (&plane);
 
   return 0;
 }

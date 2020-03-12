@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tdyn_op_.h"
@@ -101,29 +101,29 @@ neut_tdyn_alloc (struct TDYN *pTD, int N, int Nall)
 void
 neut_tdyn_free (struct TDYN *pTD)
 {
-  ut_free_1d_char ((*pTD).algoneigh);
+  ut_free_1d_char (&(*pTD).algoneigh);
 
-  ut_free_2d ((*pTD).neighrefcoo, (*pTD).Nall + 1);
-  ut_free_1d ((*pTD).neighrefw);
-  ut_free_2d_int ((*pTD).neighlist, (*pTD).Nall + 1);
-  ut_free_1d_int ((*pTD).neighqty);
-  ut_free_2d ((*pTD).neighdist, (*pTD).Nall + 1);
+  ut_free_2d (&(*pTD).neighrefcoo, (*pTD).Nall + 1);
+  ut_free_1d (&(*pTD).neighrefw);
+  ut_free_2d_int (&(*pTD).neighlist, (*pTD).Nall + 1);
+  ut_free_1d_int (&(*pTD).neighqty);
+  ut_free_2d (&(*pTD).neighdist, (*pTD).Nall + 1);
 
-  ut_free_1d_int ((*pTD).seedchanged);
-  ut_free_1d_int ((*pTD).cellchanged);
-  ut_free_1d_int ((*pTD).cellvoid);
-  ut_free_1d_int ((*pTD).domcells);
-  ut_free_1d ((*pTD).shift);
-  ut_free_1d ((*pTD).shiftw);
+  ut_free_1d_int (&(*pTD).seedchanged);
+  ut_free_1d_int (&(*pTD).cellchanged);
+  ut_free_1d_int (&(*pTD).cellvoid);
+  ut_free_1d_int (&(*pTD).domcells);
+  ut_free_1d (&(*pTD).shift);
+  ut_free_1d (&(*pTD).shiftw);
 
-  ut_free_1d_char ((*pTD).logtime);
-  ut_free_1d_char ((*pTD).logvar);
-  ut_free_1d_char ((*pTD).logdis);
-  ut_free_1d_char ((*pTD).logtesr);
-  ut_free_1d_char ((*pTD).logval);
-  ut_free_1d_char ((*pTD).body);
+  ut_free_1d_char (&(*pTD).logtime);
+  ut_free_1d_char (&(*pTD).logvar);
+  ut_free_1d_char (&(*pTD).logdis);
+  ut_free_1d_char (&(*pTD).logtesr);
+  ut_free_1d_char (&(*pTD).logval);
+  ut_free_1d_char (&(*pTD).body);
 
-  ut_free_1d_int ((*pTD).changedneighs);
+  ut_free_1d_int (&(*pTD).changedneighs);
 
   neut_tdyn_set_zero (pTD);
 
@@ -133,19 +133,16 @@ neut_tdyn_free (struct TDYN *pTD)
 void
 neut_tdyn_init_otherdur (struct TDYN *pTD)
 {
-  (*pTD).cell_other_dur = (*pTD).cell_total_dur
-			- (*pTD).cell_init_dur
-			- (*pTD).cell_kdtree_dur
-			- (*pTD).cell_shift_dur
-			- (*pTD).cell_neigh_dur
-			- (*pTD).cell_cell_dur;
+  (*pTD).cell_other_dur =
+    (*pTD).cell_total_dur - (*pTD).cell_init_dur - (*pTD).cell_kdtree_dur -
+    (*pTD).cell_shift_dur - (*pTD).cell_neigh_dur - (*pTD).cell_cell_dur;
 
   return;
 }
 
 void
 neut_tdyn_init_avdiameq (struct TDYN *pTD, struct SEEDSET SSet,
-			 struct POLY Domain)
+                         struct POLY Domain)
 {
   double size;
 
@@ -163,13 +160,12 @@ neut_tdyn_init_avdiameq (struct TDYN *pTD, struct SEEDSET SSet,
     if (!strcmp (SSet.Type, "periodic"))
       neut_seedset_bbox_size (SSet, &size);
     else
-      neut_poly_volume_2d (Domain, SSet.Size[2][1] - SSet.Size[2][0],
-			   &size);
+      neut_poly_volume_2d (Domain, SSet.Size[2][1] - SSet.Size[2][0], &size);
     size /= SSet.N;
     ut_space_area_diameq (size, &(*pTD).avdiameq);
   }
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   return;
 }

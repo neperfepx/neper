@@ -1,11 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nem_elsets_.h"
 
 void
-nem_elsets (struct IN_M In, struct TESS Tess, struct NODES Nodes, struct MESH *Mesh, struct PART Part)
+nem_elsets (struct IN_M In, struct TESS Tess, struct NODES Nodes,
+            struct MESH *Mesh, struct PART Part)
 {
   int i, j, qty, *qty2 = NULL;
   char ***parts = NULL;
@@ -17,7 +18,8 @@ nem_elsets (struct IN_M In, struct TESS Tess, struct NODES Nodes, struct MESH *M
 
   neut_part_set_zero (&Part);
 
-  ut_string_separate2 (In.elset, NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty2, &qty);
+  ut_list_break2 (In.elset, NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty2,
+                  &qty);
 
   neut_mesh_var_list ("elt3d", &vars, &varqty);
 
@@ -31,31 +33,31 @@ nem_elsets (struct IN_M In, struct TESS Tess, struct NODES Nodes, struct MESH *M
     if (qty2[i] != 2)
       ut_print_message (2, 2, "Failed to process expression `%s'.", In.elset);
 
-    neut_mesh_entity_expr_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Part,
-                               Tess, NULL, NULL, NULL, NULL, "elt3d",
+    neut_mesh_entity_expr_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
+                               Part, Tess, NULL, NULL, NULL, NULL, "elt3d",
                                parts[i][1], val);
 
     eltqty = 0;
-    elts = ut_alloc_1d_int (Mesh[3].EltQty); // alloc'd in full for CPU efficiency
+    elts = ut_alloc_1d_int (Mesh[3].EltQty);    // alloc'd in full for CPU efficiency
 
-    for(j = 1; j <= Mesh[3].EltQty; j++)
+    for (j = 1; j <= Mesh[3].EltQty; j++)
       if (ut_num_equal (val[j], 1, 1e-6))
         elts[eltqty++] = j;
 
     neut_mesh_addelset (Mesh + 3, elts, eltqty);
-    Mesh[3].ElsetLabels = ut_realloc_1d_pchar (Mesh[3].ElsetLabels, Mesh[3].ElsetQty + 1);
+    Mesh[3].ElsetLabels =
+      ut_realloc_1d_pchar (Mesh[3].ElsetLabels, Mesh[3].ElsetQty + 1);
     Mesh[3].ElsetLabels[Mesh[3].ElsetQty] = NULL;
     ut_string_string (parts[i][0], Mesh[3].ElsetLabels + Mesh[3].ElsetQty);
 
-    ut_free_1d_int_ (&elts);
+    ut_free_1d_int (&elts);
   }
 
-  // ut_free_2d_char (parts, partqty);
-  ut_free_1d_int (qty2);
-  ut_free_2d_char (vars, varqty);
-  ut_free_1d (vals);
-  ut_free_1d (val);
-  ut_free_1d_int (elts);
+  // ut_free_2d_char (&parts, partqty);
+  ut_free_1d_int (&qty2);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
+  ut_free_1d (&val);
   neut_part_free (Part);
 
   return;

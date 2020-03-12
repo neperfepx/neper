@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neper_t_.h"
@@ -42,7 +42,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   {
     // Creating domain ###
     neut_mtess_set_dom (&MTess, &Tess);
-    if (!strcmp (In.mode, "tess") && strcmp (In.input, "tess") != 0 && strcmp (In.input, "tesr") != 0)
+    if (!strcmp (In.mode, "tess") && strcmp (In.input, "tess") != 0
+        && strcmp (In.input, "tesr") != 0)
     {
       ut_print_message (0, 1, "Creating domain...\n");
       net_domain (In, &MTess, Tess);
@@ -59,139 +60,138 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     {
       ut_print_message (0, 1, "Checking tessellation...\n");
       Tess = calloc (2, sizeof (struct TESS));
-      neut_tess_name_fscanf (In.load, &(Tess[1]));
+      neut_tess_fnscanf (In.load, &(Tess[1]));
       return 0;
     }
 
     else if (In.levelqty >= 1)
     {
       MTess.LevelQty = In.levelqty;
-      MTess.LevelTessQty = ut_realloc_1d_int (MTess.LevelTessQty, In.levelqty + 1);
+      MTess.LevelTessQty =
+        ut_realloc_1d_int (MTess.LevelTessQty, In.levelqty + 1);
       for (i = 1; i <= In.levelqty; i++)
-	MTess.LevelTess
-	  = ut_realloc_2d_int_addline (MTess.LevelTess, i + 1, 2);
+        MTess.LevelTess =
+          ut_realloc_2d_int_addline (MTess.LevelTess, i + 1, 2);
 
       ut_print_message (0, 1, "Creating tessellation%s...\n",
-			(In.levelqty <= 1) ? "" : "s");
+                        (In.levelqty <= 1) ? "" : "s");
 
       if (In.levelqty > 1)
-	ut_print_message (0, 1,
-			  "  [level] Running in multiscale mode (%d scales)...\n",
-			  In.levelqty);
+        ut_print_message (0, 1,
+                          "  [level] Running in multiscale mode (%d scales)...\n",
+                          In.levelqty);
 
       int cell, tessqty, level_cellqty, prevlevel_cellqty;
 
       prevlevel_cellqty = 1;
       for (level = 1; level <= In.levelqty; level++)
       {
-	for (tess = 1; tess <= MTess.LevelTessQty[level - 1]; tess++)
-	  ParentTessId = MTess.LevelTess[level - 1][tess];
+        for (tess = 1; tess <= MTess.LevelTessQty[level - 1]; tess++)
+          ParentTessId = MTess.LevelTess[level - 1][tess];
 
-	MTess.LevelTessQty[level] = 0;
+        MTess.LevelTessQty[level] = 0;
 
-	// ###############################################################
-	// ### COMPUTING TESSELLATIONS ###################################
+        // ###############################################################
+        // ### COMPUTING TESSELLATIONS ###################################
 
-	tessqty = 0;
-	level_cellqty = 0;
-	for (tess = 1; tess <= MTess.LevelTessQty[level - 1]; tess++)
-	{
-	  ParentTessId = MTess.LevelTess[level - 1][tess];
+        tessqty = 0;
+        level_cellqty = 0;
+        for (tess = 1; tess <= MTess.LevelTessQty[level - 1]; tess++)
+        {
+          ParentTessId = MTess.LevelTess[level - 1][tess];
 
-	  for (cell = 1; cell <= Tess[ParentTessId].CellQty; cell++)
-	  {
-	    MTess.LevelTessQty[level]++;
+          for (cell = 1; cell <= Tess[ParentTessId].CellQty; cell++)
+          {
+            MTess.LevelTessQty[level]++;
 
-	    MTess.LevelTess[level]
-	      =
-	      ut_realloc_1d_int (MTess.LevelTess[level],
-				 MTess.LevelTessQty[level] + 1);
-	    MTess.LevelTess[level][MTess.LevelTessQty[level]] =
-	      ++MTess.TessQty;
+            MTess.LevelTess[level] =
+              ut_realloc_1d_int (MTess.LevelTess[level],
+                                 MTess.LevelTessQty[level] + 1);
+            MTess.LevelTess[level][MTess.LevelTessQty[level]] =
+              ++MTess.TessQty;
 
-	    MTess.DomTess[ParentTessId][cell] = MTess.TessQty;
+            MTess.DomTess[ParentTessId][cell] = MTess.TessQty;
 
-	    MTess.TessDom =
-	      ut_realloc_2d_int_addline (MTess.TessDom, MTess.TessQty + 1, 2);
-	    MTess.TessDom[MTess.TessQty][0] = ParentTessId;
-	    MTess.TessDom[MTess.TessQty][1] = cell;
+            MTess.TessDom =
+              ut_realloc_2d_int_addline (MTess.TessDom, MTess.TessQty + 1, 2);
+            MTess.TessDom[MTess.TessQty][0] = ParentTessId;
+            MTess.TessDom[MTess.TessQty][1] = cell;
 
-	    Tess = realloc (Tess, (MTess.TessQty + 1) * sizeof (struct TESS));
-	    neut_tess_set_zero (Tess + MTess.TessQty);
+            Tess = realloc (Tess, (MTess.TessQty + 1) * sizeof (struct TESS));
+            neut_tess_set_zero (Tess + MTess.TessQty);
 
-	    SSetQty = MTess.TessQty;
-	    SSet = realloc (SSet, (SSetQty + 1) * sizeof (struct SEEDSET));
-	    neut_seedset_set_zero (SSet + SSetQty);
+            SSetQty = MTess.TessQty;
+            SSet = realloc (SSet, (SSetQty + 1) * sizeof (struct SEEDSET));
+            neut_seedset_set_zero (SSet + SSetQty);
 
-	    // ### COMPUTING TESSELLATION ###############################
+            // ### COMPUTING TESSELLATION ###############################
 
-	    if (In.levelqty == 1)
+            if (In.levelqty == 1)
             {
             }
-	    else
-	    {
-	      ut_print_clearline (stdout, 72);
-	      ut_print_message (0, 1, "  [%5d]  %d/%d ",
-				level, ++tessqty, prevlevel_cellqty);
-	    }
+            else
+            {
+              ut_print_clearline (stdout, 72);
+              ut_print_message (0, 1, "  [%5d]  %d/%d ", level, ++tessqty,
+                                prevlevel_cellqty);
+            }
 
-	    /*
-	    net_seed (In, MTess, Tess, ParentTessId, cell, MTess.TessQty,
-		      &SSet);
-		      */
+            /*
+               net_seed (In, MTess, Tess, ParentTessId, cell, MTess.TessQty,
+               &SSet);
+             */
 
-	    status = net_tess (In, level, Tess, ParentTessId, cell,
-			       SSet, MTess.TessQty, &MTess);
+            status =
+              net_tess (In, level, Tess, ParentTessId, cell, SSet,
+                        MTess.TessQty, &MTess);
 
-	    if (status != 0)
-	      ut_print_message (2, 2, "Tessellation failed.\n");
+            if (status != 0)
+              ut_print_message (2, 2, "Tessellation failed.\n");
 
-	    if (ut_array_1d_int_duplicates (Tess[MTess.TessQty].CellId + 1,
-		                            Tess[MTess.TessQty].CellQty))
-	    {
-	      printf ("\n");
-	      ut_print_message (0, 2, "Merging cells with same ids...");
-	      neut_tess_merge (&(Tess[MTess.TessQty]));
-	    }
+            if (ut_array_1d_int_duplicates
+                (Tess[MTess.TessQty].CellId + 1, Tess[MTess.TessQty].CellQty))
+            {
+              printf ("\n");
+              ut_print_message (0, 2, "Merging cells with same ids...");
+              neut_tess_merge (&(Tess[MTess.TessQty]));
+            }
 
-	    MTess.DomTess
-	      = ut_realloc_2d_int_addline (MTess.DomTess,
-					   MTess.TessQty + 1,
-					   Tess[MTess.TessQty].PolyQty + 1);
+            MTess.DomTess =
+              ut_realloc_2d_int_addline (MTess.DomTess, MTess.TessQty + 1,
+                                         Tess[MTess.TessQty].PolyQty + 1);
 
-	    MTess.DomTessFaceNb
-	      = ut_realloc_3d_int_addarray (MTess.DomTessFaceNb,
-					    MTess.TessQty + 1,
-					    Tess[MTess.TessQty].FaceQty + 1,
-					    2);
+            MTess.DomTessFaceNb =
+              ut_realloc_3d_int_addarray (MTess.DomTessFaceNb,
+                                          MTess.TessQty + 1,
+                                          Tess[MTess.TessQty].FaceQty + 1, 2);
 
-	    level_cellqty += SSet[MTess.TessQty].N;
-	  }
-	}
+            level_cellqty += SSet[MTess.TessQty].N;
+          }
+        }
 
-	prevlevel_cellqty = level_cellqty;
+        prevlevel_cellqty = level_cellqty;
 
-	// Sorting cells ###
-	if (level == 1 && strcmp (In.sortstring, "none"))
-	{
-	  printf ("\n");
-	  if (MTess.LevelQty > 1)
-	    ut_print_message (0, 1, "[%5d] ", level);
-	  else
-	    ut_print_message (0, 2, "", level);
-	  printf ("Sorting cells...");
-	  if ((Tess[1]).CellQty > 0)
-	    net_sort (In, Tess + 1, NULL);
-	}
+        // Sorting cells ###
+        if (level == 1 && strcmp (In.sortstring, "none"))
+        {
+          printf ("\n");
+          if (MTess.LevelQty > 1)
+            ut_print_message (0, 1, "[%5d] ", level);
+          else
+            ut_print_message (0, 2, "", level);
+          printf ("Sorting cells...");
+          if ((Tess[1]).CellQty > 0)
+            net_sort (In, Tess + 1, NULL);
+        }
 
         /*
-	if (strcmp (In.scalestring, "none") && level == 1)
-	{
-	  ut_print_message (0, 1, "[%5d] ", level);
-	  printf ("Scaling tessellation...\n");
-	  neut_tess_scale (Tess + 1, In.scale[0], In.scale[1], In.scale[2]);
-	}
-        */
+           if (strcmp (In.scalestring, "none") && level == 1)
+           {
+           ut_print_message (0, 1, "[%5d] ", level);
+           printf ("Scaling tessellation...\n");
+           neut_tess_scale (Tess + 1, In.scale[0], In.scale[1], In.scale[2]);
+           }
+         */
       }
 
       // #############################################################
@@ -201,32 +201,32 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     {
       ut_print_message (0, 1, "Importing tessellation...\n");
       neut_mtess_set_tess (&MTess, &Tess);
-      neut_tess_name_fscanf (In.load, Tess + 1);
+      neut_tess_fnscanf (In.load, Tess + 1);
 
       // Sorting cells ###
       if (strcmp (In.sortstring, "none"))
       {
-	ut_print_message (0, 1, "Sorting cells...\n");
-	net_sort (In, Tess + 1, NULL);
+        ut_print_message (0, 1, "Sorting cells...\n");
+        net_sort (In, Tess + 1, NULL);
       }
 
       /*
-      if (strcmp (In.scalestring, "none"))
-      {
-	ut_print_message (0, 1, "Scaling tessellation...\n");
-	neut_tess_scale (Tess + 1, In.scale[0], In.scale[1], In.scale[2]);
-      }
-      */
+         if (strcmp (In.scalestring, "none"))
+         {
+         ut_print_message (0, 1, "Scaling tessellation...\n");
+         neut_tess_scale (Tess + 1, In.scale[0], In.scale[1], In.scale[2]);
+         }
+       */
     }
 
     if (In.levelqty > 1)
     {
       ut_print_message (0, 1, "Flattening %d-scale tessellation...\n",
-			MTess.LevelQty);
+                        MTess.LevelQty);
       net_flatten (MTess, Tess, &FTess);
 
       if (In.dim == 2)
-	net_dim (2, &FTess);
+        net_dim (2, &FTess);
     }
     else if (In.levelqty == 1 || strcmp (In.load, "none"))
     {
@@ -241,33 +241,33 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   else if (!strcmp (In.mode, "tesr"))
   {
     if (!strcmp (In.load, "none"))
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
     ut_print_message (0, 1, "Importing raster tessellation...\n");
-    neut_tesr_name_fscanf (In.load, &Tesr);
+    neut_tesr_fnscanf (In.load, &Tesr);
     ut_print_message (0, 2, "Volume has %dx%dx%d (%g) %s and %d %s.\n",
-		      Tesr.size[0], Tesr.size[1], Tesr.size[2],
-		      (double) (Tesr.size[0] * Tesr.size[1] * Tesr.size[2]),
-		      (Tesr.size[0] * Tesr.size[1] * Tesr.size[2] <
-		       2) ? "point" : "points", Tesr.CellQty,
-		      (Tesr.CellQty < 2) ? "cell" : "cells");
+                      Tesr.size[0], Tesr.size[1], Tesr.size[2],
+                      (double) (Tesr.size[0] * Tesr.size[1] * Tesr.size[2]),
+                      (Tesr.size[0] * Tesr.size[1] * Tesr.size[2] <
+                       2) ? "point" : "points", Tesr.CellQty,
+                      (Tesr.CellQty < 2) ? "cell" : "cells");
 
     int i, j, k;
     int min_id = INT_MAX, max_id = INT_MIN;
     for (k = 1; k <= Tesr.size[2]; k++)
       for (j = 1; j <= Tesr.size[1]; j++)
-	for (i = 1; i <= Tesr.size[0]; i++)
-	{
-	  min_id = ut_num_min (min_id, Tesr.VoxCell[i][j][k]);
-	  max_id = ut_num_max (max_id, Tesr.VoxCell[i][j][k]);
-	}
+        for (i = 1; i <= Tesr.size[0]; i++)
+        {
+          min_id = ut_num_min (min_id, Tesr.VoxCell[i][j][k]);
+          max_id = ut_num_max (max_id, Tesr.VoxCell[i][j][k]);
+        }
 
     if (min_id == 1 && max_id == Tesr.CellQty)
       ut_print_message (0, 3,
-			"The polys are numbered contiguously from 1.\n");
+                        "The polys are numbered contiguously from 1.\n");
     else
       ut_print_message (1, 3, "The poly ids range between %d and %d.\n",
-			min_id, max_id);
+                        min_id, max_id);
   }
 
   // ###################################################################
@@ -288,9 +288,9 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   // ### Rastering tessellation if necessary ########################
 
   if (MTess.TessQty > 0
-      && (ut_string_inlist (In.format, NEUT_SEP_NODEP, "tesr") == 1
-	  || ut_string_inlist (In.format, NEUT_SEP_NODEP, "raw") == 1
-	  || ut_string_inlist (In.format, NEUT_SEP_NODEP, "vtk") == 1))
+      && (ut_list_testelt (In.format, NEUT_SEP_NODEP, "tesr") == 1
+          || ut_list_testelt (In.format, NEUT_SEP_NODEP, "raw") == 1
+          || ut_list_testelt (In.format, NEUT_SEP_NODEP, "vtk") == 1))
   {
     ut_print_message (0, 1, "Rasterizing tessellation...\n");
     net_tess_tesr (In.tesrsizestring, FTess, &Tesr);
@@ -317,7 +317,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   if (strcmp (In.loadpoint, "none"))
   {
     ut_print_message (0, 1, "Importing points...\n");
-    neut_point_name_fscanf (In.loadpoint, &Point);
+    neut_point_fnscanf (In.loadpoint, &Point);
   }
 
   // ###################################################################
@@ -329,7 +329,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   // ###################################################################
   // ### WRITING STATISTICS  ###########################################
 
-  if (In.stc || In.stv || In.ste || In.stf || In.stp || In.sts || In.stpt || In.stvox)
+  if (In.stc || In.stv || In.ste || In.stf || In.stp || In.sts || In.stpt
+      || In.stvox)
   {
     ut_print_message (0, 1, "Writing statistics...\n");
     net_stat (In, FTess, &Tesr, Point);

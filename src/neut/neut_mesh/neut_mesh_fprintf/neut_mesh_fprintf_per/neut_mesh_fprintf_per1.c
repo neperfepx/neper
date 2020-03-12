@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_per_.h"
@@ -27,7 +27,9 @@ neut_mesh_fprintf_per_geof (FILE * file, struct NODES Nodes)
 
   for (i = 1; i <= Nodes.PerNodeQty; i++)
     for (j = 1; j <= 3; j++)
-      fprintf (file, "**mpc2 %d U%d %d U%d\n", Nodes.PerNodeMaster[Nodes.PerNodeNb[i]], j, Nodes.PerNodeNb[i], j);
+      fprintf (file, "**mpc2 %d U%d %d U%d\n",
+               Nodes.PerNodeMaster[Nodes.PerNodeNb[i]], j, Nodes.PerNodeNb[i],
+               j);
 
   return;
 }

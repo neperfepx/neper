@@ -4,7 +4,7 @@
 #include "ol_map_alloc.h"
 
 struct OL_MAP
-ol_map_alloc (size_t xsize, size_t ysize, double stepsize, char* crysym)
+ol_map_alloc (size_t xsize, size_t ysize, double stepsize, char *crysym)
 {
   unsigned int i, j, k;
   struct OL_MAP Map;
@@ -22,7 +22,7 @@ ol_map_alloc (size_t xsize, size_t ysize, double stepsize, char* crysym)
   for (i = 0; i < xsize; i++)
     for (j = 0; j < ysize; j++)
       for (k = 0; k < 3; k++)
-	Map.rgb[i][j][k] = 255;
+        Map.rgb[i][j][k] = 255;
 
   if (crysym)
   {
@@ -39,13 +39,13 @@ void
 ol_map_free (struct OL_MAP Map)
 {
   if (Map.id)
-    ut_free_2d_uint (Map.id, Map.xsize);
+    ut_free_2d_uint (&Map.id, Map.xsize);
 
   if (Map.q)
-    ut_free_3d (Map.q, Map.xsize, Map.ysize);
+    ut_free_3d (&Map.q, Map.xsize, Map.ysize);
 
   if (Map.rgb)
-    ut_free_3d_int (Map.rgb, Map.xsize, Map.ysize);
+    ut_free_3d_int (&Map.rgb, Map.xsize, Map.ysize);
 
   if (Map.gmap)
     ol_g_free (Map.gmap);
@@ -61,27 +61,26 @@ ol_map_fscanf (FILE * file, struct OL_MAP *pMap)
   unsigned int id, x, y;
   double *e = ol_e_alloc ();
   unsigned int xsize, ysize;
-  char* crysym = ut_alloc_1d_char (1000);
+  char *crysym = ut_alloc_1d_char (1000);
 
-  ut_file_nextline_nbwords (file, &qty);
+  ut_file_nextlinenbwords (file, &qty);
   if (qty == 3)
   {
-    if (fscanf (file, "%u%u%lf",
-		&xsize, &ysize, &((*pMap).stepsize)) != 3)
+    if (fscanf (file, "%u%u%lf", &xsize, &ysize, &((*pMap).stepsize)) != 3)
       return -1;
     sprintf (crysym, "cubic");
   }
   else if (qty == 4)
   {
     if (fscanf (file, "%u%u%lf%s",
-		&xsize, &ysize, &((*pMap).stepsize), crysym) != 4)
+                &xsize, &ysize, &((*pMap).stepsize), crysym) != 4)
       return -1;
   }
   else
     return -1;
 
-  (*pMap).xsize = (size_t) xsize;	/* stuff useful for compilation with */
-  (*pMap).ysize = (size_t) ysize;	/* -pedantic (code portability) */
+  (*pMap).xsize = (size_t) xsize;       /* stuff useful for compilation with */
+  (*pMap).ysize = (size_t) ysize;       /* -pedantic (code portability) */
 
   (*pMap) = ol_map_alloc ((*pMap).xsize, (*pMap).ysize,
                           (*pMap).stepsize, crysym);
@@ -108,7 +107,7 @@ ol_map_fscanf (FILE * file, struct OL_MAP *pMap)
   }
 
   ol_e_free (e);
-  ut_free_1d_char (crysym);
+  ut_free_1d_char (&crysym);
 
   return 1;
 }
@@ -122,7 +121,7 @@ ol_map_fprintf (FILE * file, struct OL_MAP Map, char *format)
   double *e = ol_e_alloc ();
 
   fprintf (file, "%u %u ", (unsigned int) Map.xsize,
-	   (unsigned int) Map.ysize);
+           (unsigned int) Map.ysize);
   fprintf (file, format, Map.stepsize);
   res = fprintf (file, "\n");
   if (res < 0)
@@ -133,12 +132,12 @@ ol_map_fprintf (FILE * file, struct OL_MAP Map, char *format)
     {
       fprintf (file, "%d %u %u ", Map.id[i][j], i, j);
       if (Map.id[i][j] == 0)
-	res = ol_e_fprintf (file, e0, format);
+        res = ol_e_fprintf (file, e0, format);
       else
       {
-	ol_q_e_rad (Map.q[i][j], e);
-	ol_e_rad2deg (e, e);
-	res = ol_e_fprintf (file, e, format);
+        ol_q_e_rad (Map.q[i][j], e);
+        ol_e_rad2deg (e, e);
+        res = ol_e_fprintf (file, e, format);
       }
     }
 
@@ -204,13 +203,13 @@ ol_map_fscanf_ch5 (FILE * file, struct OL_MAP *pMap)
       res = fscanf (file, "%u", &(*pMap).id[i][j]);
       ut_file_skip (file, 2);
       for (k = 0; k < 3; k++)
-	ut_file_readwcomma (file, &(e[k]));
+        ut_file_readwcomma (file, &(e[k]));
       ol_e_q (e, (*pMap).q[i][j]);
       ut_file_skip (file, 6);
     }
 
   ol_e_free (e);
-  ut_free_2d (coo, 2);
+  ut_free_2d (&coo, 2);
 
   return res;
 }
@@ -271,12 +270,12 @@ ol_map_fscanf_ch5_short (FILE * file, struct OL_MAP *pMap)
       res = fscanf (file, "%u", &(*pMap).id[i][j]);
       ut_file_skip (file, 2);
       for (k = 0; k < 3; k++)
-	ut_file_readwcomma (file, &(e[k]));
+        ut_file_readwcomma (file, &(e[k]));
       ol_e_q (e, (*pMap).q[i][j]);
     }
 
   ol_e_free (e);
-  ut_free_2d (coo, 2);
+  ut_free_2d (&coo, 2);
 
   return res;
 }
@@ -337,13 +336,13 @@ ol_map_fscanf_ch5_rad (FILE * file, struct OL_MAP *pMap)
       res = fscanf (file, "%u", &(*pMap).id[i][j]);
       ut_file_skip (file, 2);
       for (k = 0; k < 3; k++)
-	ut_file_readwcomma (file, &(e[k]));
+        ut_file_readwcomma (file, &(e[k]));
       ol_e_q_rad (e, (*pMap).q[i][j]);
       ut_file_skip (file, 6);
     }
 
   ol_e_free (e);
-  ut_free_2d (coo, 2);
+  ut_free_2d (&coo, 2);
 
   return res;
 }
@@ -404,12 +403,12 @@ ol_map_fscanf_ch5_short_rad (FILE * file, struct OL_MAP *pMap)
       res = fscanf (file, "%u", &(*pMap).id[i][j]);
       ut_file_skip (file, 2);
       for (k = 0; k < 3; k++)
-	ut_file_readwcomma (file, &(e[k]));
+        ut_file_readwcomma (file, &(e[k]));
       ol_e_q_rad (e, (*pMap).q[i][j]);
     }
 
   ol_e_free (e);
-  ut_free_2d (coo, 2);
+  ut_free_2d (&coo, 2);
 
   return res;
 }
@@ -425,7 +424,7 @@ ol_map_fprintf_ch5 (FILE * file, struct OL_MAP Map, char *format)
     for (i = 0; i < Map.xsize; i++)
     {
       fprintf (file, "%d %f %f ", Map.id[i][j], i * Map.stepsize,
-	       j * Map.stepsize);
+               j * Map.stepsize);
       ol_q_e (Map.q[i][j], e);
       ol_e_e (e, e);
       res = ol_e_fprintf (file, e, format);

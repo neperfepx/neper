@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_tesrobj_.h"
@@ -15,20 +15,20 @@ net_tess_opt_init_tesrobj (struct TOPT *pTOpt, int var)
 
   net_tess_opt_init_tesrobj_pre (pTOpt);
 
-  ut_string_separate ((*pTOpt).tarobjective[var], "+", &parts, &partqty);
+  ut_list_break ((*pTOpt).tarobjective[var], "+", &parts, &partqty);
 
   for (i = 0; i < partqty; i++)
   {
-    ut_string_function_separate (parts[i], &fct, &fct_vars, &fct_vals, &fct_varqty);
+    ut_string_function (parts[i], &fct, &fct_vars, &fct_vals, &fct_varqty);
 
     if (!strcmp (fct, "transform"))
     {
       for (j = 0; j < fct_varqty; j++)
       {
-	if (!strcmp (fct_vals[j], "scale"))
-	  net_tess_opt_init_tesrobj_scale (pTOpt);
-	else if (!strcmp (fct_vals[j], "rasterscale"))
-	  net_tess_opt_init_tesrobj_rasterscale (pTOpt);
+        if (!strcmp (fct_vals[j], "scale"))
+          net_tess_opt_init_tesrobj_scale (pTOpt);
+        else if (!strcmp (fct_vals[j], "rasterscale"))
+          net_tess_opt_init_tesrobj_rasterscale (pTOpt);
       }
     }
 
@@ -36,10 +36,10 @@ net_tess_opt_init_tesrobj (struct TOPT *pTOpt, int var)
     {
       for (j = 0; j < fct_varqty; j++)
       {
-	if (!strcmp (fct_vars[j], "region"))
-	  net_tess_opt_init_tesrobj_region (fct_vals[j], pTOpt);
-	else if (!strcmp (fct_vars[j], "res"))
-	  net_tess_opt_init_tesrobj_res (fct_vals[j], pTOpt);
+        if (!strcmp (fct_vars[j], "region"))
+          net_tess_opt_init_tesrobj_region (fct_vals[j], pTOpt);
+        else if (!strcmp (fct_vars[j], "res"))
+          net_tess_opt_init_tesrobj_res (fct_vals[j], pTOpt);
       }
     }
 
@@ -55,9 +55,9 @@ net_tess_opt_init_tesrobj (struct TOPT *pTOpt, int var)
 
   net_tess_opt_init_tesrobj_post (pTOpt);
 
-  ut_free_2d_char (parts, partqty);
-  ut_free_2d_char (fct_vars, fct_varqty);
-  ut_free_2d_char (fct_vals, fct_varqty);
+  ut_free_2d_char (&parts, partqty);
+  ut_free_2d_char (&fct_vars, fct_varqty);
+  ut_free_2d_char (&fct_vals, fct_varqty);
 
   return;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_gmsh_.h"
@@ -31,8 +31,8 @@ neut_gmsh_rc (char *action)
   else
     abort ();
 
-  ut_free_1d_char (s1);
-  ut_free_1d_char (s2);
+  ut_free_1d_char (&s1);
+  ut_free_1d_char (&s2);
 
   return;
 }
@@ -139,6 +139,13 @@ neut_gmsh_elt_nb (char *type, int dim, int order, int *pnb)
       (*pnb) = 3;
     else if (dim == 2 && order == 2)
       (*pnb) = 10;
+    else
+      (*pnb) = -1;
+  }
+  else if (strcmp (type, "quad6") == 0)
+  {
+    if (dim == 2)
+      (*pnb) = 100;
     else
       (*pnb) = -1;
   }

@@ -1,11 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_mtess_flatten_dom_.h"
 
 void
-net_mtess_flatten_dom (struct TESS *Tess, int TessId, struct TESS *pFTess, struct TESSE *TessE)
+net_mtess_flatten_dom (struct TESS *Tess, int TessId, struct TESS *pFTess,
+                       struct TESSE *TessE)
 {
   net_mtess_flatten_dom_gen (Tess[TessId], pFTess);
 

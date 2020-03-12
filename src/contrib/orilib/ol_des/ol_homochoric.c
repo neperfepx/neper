@@ -42,9 +42,8 @@ ol_homochoric_set_id (double *homochoric)
 
 void
 ol_homochoric_set_this (double *homochoric,
-			double homochoric1,
-			double homochoric2,
-			double homochoric3)
+                        double homochoric1,
+                        double homochoric2, double homochoric3)
 {
   homochoric[0] = homochoric1;
   homochoric[1] = homochoric2;
@@ -57,7 +56,7 @@ ol_homochoric_set_this (double *homochoric,
 void
 ol_homochoric_memcpy (double *homochoricsrc, double *homochoricdest)
 {
-  ut_array_1d_memcpy (homochoricdest, 3, homochoricsrc);
+  ut_array_1d_memcpy (homochoricsrc, 3, homochoricdest);
 
   return;
 }
@@ -83,7 +82,8 @@ ol_rtheta_homochoric_rad (double *r, double theta, double *homochoric)
 }
 
 void
-ol_homochoric_rtheta (struct FCT *phfct, double *homochoric, double *r, double *ptheta)
+ol_homochoric_rtheta (struct FCT *phfct, double *homochoric, double *r,
+                      double *ptheta)
 {
   ol_homochoric_rtheta_rad (phfct, homochoric, r, ptheta);
   ol_theta_rad2deg (*ptheta, ptheta);
@@ -119,13 +119,14 @@ ol_homochoric_thetafct (struct FCT *phfct)
   (*phfct).x = (*phfct).y;
   (*phfct).y = ptmp;
 
-  ut_fct_set_init_interp (phfct);
+  ut_fct_init_interp (phfct);
 
   return;
 }
 
 void
-ol_homochoric_rtheta_rad (struct FCT* phfct, double *homochoric, double *r, double *ptheta)
+ol_homochoric_rtheta_rad (struct FCT *phfct, double *homochoric, double *r,
+                          double *ptheta)
 {
   int i;
   double norm;
@@ -169,7 +170,8 @@ ol_homochoric_theta (struct FCT *hfct, double *homochoric, double *ptheta)
 }
 
 void
-ol_homochoric_theta_rad (struct FCT *phfct, double *homochoric, double *ptheta)
+ol_homochoric_theta_rad (struct FCT *phfct, double *homochoric,
+                         double *ptheta)
 {
   if (phfct)
     (*ptheta) = ut_fct_eval (*phfct, ut_array_1d_norm (homochoric, 3));
@@ -217,7 +219,9 @@ ol_homochoric_g (struct FCT *phfct, double *homochoric, double **g)
 int
 ol_homochoric_fscanf (FILE * file, double *homochoric)
 {
-  if (fscanf (file, "%lf%lf%lf", &homochoric[0], &homochoric[1], &homochoric[2]) == 3)
+  if (fscanf
+      (file, "%lf%lf%lf", &homochoric[0], &homochoric[1],
+       &homochoric[2]) == 3)
     return 1;
   else
     return 0;

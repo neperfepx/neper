@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_partition_.h"
@@ -7,7 +7,7 @@
 
 int
 nem_partition_elts_balancing_Q (struct MESH Mesh, struct PART *pPart,
-				double level, int BoundEltQty, int **Q)
+                                double level, int BoundEltQty, int **Q)
 {
   int i, j, prevsum, sum, iter, oldpart, newpart;
   int *A = ut_alloc_1d_int ((*pPart).qty);
@@ -17,7 +17,7 @@ nem_partition_elts_balancing_Q (struct MESH Mesh, struct PART *pPart,
   double *tmp = NULL;
   int *id = NULL;
 
-  srand (1);
+  srand48 (1);
   /* Initializing stuff */
   /* A is the distance to the target number of elements, to be zero'd. */
 
@@ -44,9 +44,9 @@ nem_partition_elts_balancing_Q (struct MESH Mesh, struct PART *pPart,
     for (i = 0; i < BoundEltQty && Q[i][2] == val; i++)
     {
       if (Q[i][2] == val)
-	qty++;
+        qty++;
       else
-	break;
+        break;
     }
 
     tmp = ut_alloc_1d (qty);
@@ -56,7 +56,7 @@ nem_partition_elts_balancing_Q (struct MESH Mesh, struct PART *pPart,
 
     id = ut_alloc_1d_int (qty);
     ut_array_1d_sort_index (tmp, qty, id);
-    ut_free_1d (tmp);
+    ut_free_1d (&tmp);
 
     ut_array_2d_int_sortbycol_des (Q, BoundEltQty, 3, 2);
 
@@ -80,16 +80,16 @@ nem_partition_elts_balancing_Q (struct MESH Mesh, struct PART *pPart,
 
       if (sum < prevsum)
       {
-	prevsum = sum;
+        prevsum = sum;
 
-	for (j = 0; j < BoundEltQty; j++)
-	  if (Q[j][2] == oldpart || Q[j][2] == newpart)
-	    nem_partition_elts_balancing_Q_elt (Mesh, *pPart, A, Q[j]);
-	iter = -1;
+        for (j = 0; j < BoundEltQty; j++)
+          if (Q[j][2] == oldpart || Q[j][2] == newpart)
+            nem_partition_elts_balancing_Q_elt (Mesh, *pPart, A, Q[j]);
+        iter = -1;
 
-	ut_print_progress (stdout, inisum - sum, inisum, "%2.0f", progress);
+        ut_print_progress (stdout, inisum - sum, inisum, "%2.0f", progress);
 
-	break;
+        break;
       }
     }
 
@@ -97,14 +97,14 @@ nem_partition_elts_balancing_Q (struct MESH Mesh, struct PART *pPart,
       break;
 
     iter++;
-    ut_free_1d_int (id);
+    ut_free_1d_int (&id);
   }
-  ut_free_1d_char (progress);
+  ut_free_1d_char (&progress);
   if (sum != 0)
     printf ("\n");
 
-  ut_free_1d_int (A);
-  ut_free_1d_int (localQ);
+  ut_free_1d_int (&A);
+  ut_free_1d_int (&localQ);
 
   return sum;
 }

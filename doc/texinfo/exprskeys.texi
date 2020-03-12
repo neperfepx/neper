@@ -34,7 +34,7 @@ The following table gives an overview of the functions supported by the
 default implementation. It lists the function names, the number of
 arguments and a brief description.
 
-@multitable @columnfractions 0.18 0.83
+@multitable @columnfractions 0.23 0.77
 @headitem Name      @tab Description
 @item @code{sin}    @tab sine function
 @item @code{cos}    @tab cosine function
@@ -68,7 +68,7 @@ arguments and a brief description.
 The following table lists the default binary operators supported by the
 parser.
 
-@multitable @columnfractions 0.18 0.47 0.36
+@multitable @columnfractions 0.23 0.48 0.29
 @headitem Operator      @tab Description    @tab Priority
 @item @code{&&}  @tab logical and               @tab 1
 @item @code{||}  @tab logical or                @tab 2
@@ -89,7 +89,7 @@ parser.
 
 The parser has built in support for the if-then-else operator. It uses lazy evaluation in order to make sure only the necessary branch of the expression is evaluated.
 
-@multitable @columnfractions 0.18 0.83
+@multitable @columnfractions 0.23 0.77
 @headitem Operator      @tab Description
 @item @code{?:}         @tab if-then-else operator, following the C/C++ syntax: @*@code{(test)?value_if_true:value_if_false}.
 @end multitable
@@ -98,7 +98,7 @@ The parser has built in support for the if-then-else operator. It uses lazy eval
 
 The following table lists the statistical distributions.  Arguments enclosed in square brackets (@samp{[} and @samp{]}) are optional.  Custom endpoints (not indicated) can also be added as arguments, as described in the following.
 
-@multitable @columnfractions 0.4 0.25 0.35
+@multitable @columnfractions 0.4 0.31 0.29
 @headitem Operator
           @tab Description
           @tab Information
@@ -179,7 +179,11 @@ Available keys for tessellation seeds, vertices, edges, faces and polyhedra
 are provided below.
 Also note that the descriptors apply to @emph{cells} if they are tagged to
 apply to @emph{polyhedra} and the tessellation is 3D and @emph{faces} and the
-tessellation is 2D.
+tessellation is 2D.  You may also replace, in the tessellation keys themselves,
+@samp{face} by @samp{cell} if the tessellation is 2D and
+@samp{poly} by @samp{cell} if the tessellation is 3D (it applies only on rare
+occasions).  For example, for a 2D tessellation, you may use @option{-statcell
+ncells} instead of @option{-statface nfaces}.
 
 To turn a key value into a value relative to the mean over all entities
 (e.g.@ the relative cell size), append the key expression with
@@ -189,7 +193,7 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
 @dfn{body} or @dfn{true} entities (see below), append @samp{b} or
 @samp{t} to the modifiers, respectively.
 
-@multitable @columnfractions 0.18 0.47 0.36
+@multitable @columnfractions 0.23 0.48 0.29
   @headitem Key   @tab Descriptor                      @tab Apply to
   @item @code{id} @tab identifier                      @tab seed, ver, edge, face, poly
   @item @code{x}  @tab x coordinate                    @tab seed, ver, edge, face, poly
@@ -248,8 +252,12 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
   @item @code{polys}  @tab polyhedra                @tab ver, edge, face
   @item @code{nfacenb}  @tab number of neighbouring faces @tab face
   @item @code{nfaces} @tab neighbouring faces @tab face
+  @item @code{nfacenb_samedomain}  @tab number of neighbouring faces of the same domain (parent cell of a multiscale tessellation)@tab face (in 2D)
+  @item @code{nfaces_samedomain} @tab neighbouring faces of the same domain (parent cell of a multiscale tessellation)@tab face (in 2D)
   @item @code{npolynb} @tab number of neighbouring polyhedra @tab poly
   @item @code{npolys} @tab neighbouring polyhedra            @tab poly
+  @item @code{npolynb_samedomain} @tab number of neighbouring polyhedra of the same domain (parent cell of a multiscale tessellation)@tab poly
+  @item @code{npolys_samedomain} @tab neighbouring polyhedra of the same domain (parent cell of a multiscale tessellation) @tab poly
   @item @code{nseednb} @tab number of neighbouring seeds @tab poly
   @item @code{nseeds} @tab neighbouring seeds
   @footnote{If a polyhedron has no neighbour on a face, a negative value
@@ -340,7 +348,7 @@ the @samp{@SEPDEP{}rel} modifier.  To turn a key value into a value
 which holds for a unit cell size, append the key expression with
 the @samp{@SEPDEP{}uc} modifier.
 
-@multitable @columnfractions 0.18 0.47 0.36
+@multitable @columnfractions 0.23 0.48 0.29
   @headitem Key     @tab Descriptor                   @tab Apply to
   @item @code{id}   @tab identifier                   @tab seed, cell, voxel
   @item @code{x}    @tab x coordinate                 @tab seed, cell, voxel
@@ -380,7 +388,7 @@ below.
 Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is an integer reduction
 factor, to log values only at specific iteration numbers.
 
-@multitable @columnfractions 0.18 0.82
+@multitable @columnfractions 0.23 0.77
   @headitem Key                @tab Descriptor
   @item @code{iter}            @tab iteration number
   @item @code{varupdateqty}    @tab number of updated variables
@@ -416,7 +424,7 @@ below.
 Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is an integer reduction
 factor, to log values only at specific iteration numbers.
 
-@multitable @columnfractions 0.18 0.47 0.36
+@multitable @columnfractions 0.23 0.48 0.29
   @headitem Key    @tab Descriptor                   @tab Apply to
   @item @code{iter}@tab iteration number             @tab n/a
   @item @code{id}  @tab identifier                   @tab seed
@@ -433,7 +441,7 @@ below.
 Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is an integer reduction
 factor, to log values only at specific iteration numbers.
 
-@multitable @columnfractions 0.18 0.47 0.36
+@multitable @columnfractions 0.23 0.48 0.29
   @headitem Key    @tab Descriptor                   @tab Apply to
   @item @code{iter}@tab iteration number             @tab n/a
   @item @code{val}  @tab value 	                     @tab n/a
@@ -456,7 +464,7 @@ for @dfn{cumulative probability density function}.
 Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is a reduction
 factor, to log values only at specific iteration numbers.
 
-@multitable @columnfractions 0.18 0.47 0.36
+@multitable @columnfractions 0.23 0.48 0.29
   @headitem Key    @tab Descriptor              @tab Apply to
   @item @code{iter}@tab iteration number        @tab n/a
   @item @code{x}   @tab x coordinate            @tab n/a
@@ -476,7 +484,7 @@ below.  Values are written for each voxel used to compute the objective function
 Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is a reduction
 factor, to log values only at specific iteration numbers.
 
-@multitable @columnfractions 0.18 0.47 0.36
+@multitable @columnfractions 0.23 0.48 0.29
   @headitem Key     @tab Descriptor              @tab Apply to
   @item @code{iter} @tab iteration number        @tab n/a
   @item @code{id}   @tab cell identifier	 @tab n/a
@@ -496,7 +504,7 @@ below.  For all orientation descriptors but @samp{q}, the returned orientation a
 @c Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is an integer reduction
 @c factor, to log values only at specific iteration numbers.
 
-@multitable @columnfractions 0.18 0.47 0.36
+@multitable @columnfractions 0.23 0.48 0.29
   @headitem Key    @tab Descriptor                          @tab Apply to
   @item @code{iter}@tab iteration number                    @tab n/a
   @item @code{id}  @tab identifier                          @tab seed
@@ -515,7 +523,7 @@ below.  For all orientation descriptors but @samp{q}, the returned orientation a
 Available keys for mesh node, elements and element sets (of all
 dimensions) and points are provided below.
 
-@multitable @columnfractions 0.18 0.47 0.36
+@multitable @columnfractions 0.23 0.48 0.29
   @headitem Key       @tab Descriptor                       @tab Apply to
   @item @code{id}     @tab identifier                       @tab node, @var{n}D elt, @var{n}D elset
   @item @code{x}      @tab x coordinate                     @tab node, @var{n}D elt, @var{n}D elset
@@ -531,7 +539,11 @@ dimensions) and points are provided below.
                         circular part of a cylinder domain @tab 1D elt, 1D elset
   @item @code{vol}    @tab volume                           @tab 3D elt, 3D elset
   @item @code{area}   @tab area                             @tab 2D elt
-  @item @code{length} @tab length                           @tab 1D elt, 3D elt, 1D elset
+  @item @code{diameq}   @tab equivalent diameter@footnote{Equivalent diameter = diameter
+      of the circle of equivalent area/volume in 2D/3D.}    @tab 2D elt, 3D elt, 2D elset, 3D elset
+  @item @code{radeq}   @tab equivalent radius@footnote{Equivalent radius = radius of the circle of equivalent area/volume in 2D/3D.}            @tab 2D elt, 3D elt, 2D elset, 3D elset
+  @item @code{length} @tab average edge length              @tab @math{n}D elt, 1D elset
+  @item @code{lengths} @tab edge lengths                    @tab 2D elt, 3d elt
   @item @code{elsetvol}    @tab elset volume                @tab 3D elt
   @item @code{elsetarea}   @tab elset area                  @tab 2D elt
   @item @code{elsetlength} @tab elset length                @tab 1D elt
@@ -562,7 +574,7 @@ Variables starting by @samp{2dmesh} are only available for statistics
 
 Available keys for points are provided below.
 
-@multitable @columnfractions 0.18 0.47 0.14 0.14
+@multitable @columnfractions 0.23 0.48 0.145 0.145
   @headitem Key   @tab Descriptor                      @tab Apply to @tab Require
   @item @code{id} @tab identifier                      @tab point    @tab
   @item @code{x}  @tab x coordinate                    @tab point    @tab
@@ -584,8 +596,7 @@ Available keys for points are provided below.
 Rotations and orientations can be described using the following
 descriptors (see Orilib, @url{http://orilib.sourceforge.net}, for more
 information).
-
-@multitable @columnfractions 0.18 0.47 0.36
+@multitable @columnfractions 0.23 0.48 0.29
   @headitem Key @tab Descriptor @tab Number of variables
   @item @code{g}  @tab rotation matrix                 @tab 9
   @item @code{rtheta}  @tab rotation axis / angle pair @tab 4
@@ -598,7 +609,7 @@ information).
 
 @sp 1
 Keys are available for ideal orientations:
-@multitable @columnfractions 0.18 0.83
+@multitable @columnfractions 0.23 0.48 0.29
 @iftex
   @item Cube      @tab @math{@left(0@,0@,1@right)@left[1@,0@,0@right]}
   @item Goss      @tab @math{@left(0@,1@,1@right)@left[1@,0@,0@right]}
@@ -636,7 +647,7 @@ Crystal symmetries can be described using the following
 descriptors.
 
 @iftex
-@multitable @columnfractions 0.18 0.47 0.36
+@multitable @columnfractions 0.23 0.48 0.29
   @headitem Key @tab Descriptor @tab Number of operators
   @item @code{triclinic} @tab triclinic (Laue group @math{@overline{1}}) @tab 24
   @item @code{cubic}     @tab cubic				@tab 24
@@ -655,7 +666,7 @@ descriptors.
 @end multitable
 @end iftex
 @ifinfo
-@multitable @columnfractions 0.18 0.47 0.36
+@multitable @columnfractions 0.23 0.48 0.29
   @headitem Key @tab Descriptor @tab Number of operators
   @item @code{triclinic} @tab triclinic (Laue group @math{-1})  @tab 24
   @item @code{cubic}     @tab cubic				@tab 24
@@ -676,7 +687,7 @@ descriptors.
 
 @sp 1
 Keys are available for ideal orientations:
-@multitable @columnfractions 0.18 0.83
+@multitable @columnfractions 0.23 0.48 0.29
 @iftex
   @item Cube      @tab @math{@left(0@,0@,1@right)@left[1@,0@,0@right]}
   @item Goss      @tab @math{@left(0@,1@,1@right)@left[1@,0@,0@right]}

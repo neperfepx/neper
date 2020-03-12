@@ -13,7 +13,7 @@ ol_g_g_g (double **g1, double **g2, double **g3)
   for (i = 0; i <= 2; i++)
     for (j = 0; j <= 2; j++)
       for (k = 0; k <= 2; k++)
-	gcpy[i][j] += g2[i][k] * g1[k][j];
+        gcpy[i][j] += g2[i][k] * g1[k][j];
 
   ol_g_memcpy (gcpy, g3);
 
@@ -83,11 +83,11 @@ ol_q_q_q_ref (double *q1, double *q2, double *q3)
 }
 
 void
-ol_R_R_R (double* R1, double* R2, double* R3)
+ol_R_R_R (double *R1, double *R2, double *R3)
 {
   int i;
   double scalprod;
-  double* tmp = ol_R_alloc ();
+  double *tmp = ol_R_alloc ();
 
   ut_vector_vectprod (R2, R1, tmp);
   scalprod = ut_vector_scalprod (R1, R2);
@@ -144,9 +144,9 @@ ol_q_vect_vect (double *q, double *v1, double *v2)
   ol_q_set_zero (q1);
   ol_q_set_zero (q2);
 
-  ut_array_1d_memcpy (q1 + 1, 3, v1);
+  ut_array_1d_memcpy (v1, 3, q1 + 1);
   ol_q_q_q (q, q1, q2);
-  ut_array_1d_memcpy (v2, 3, q2 + 1);
+  ut_array_1d_memcpy (q2 + 1, 3, v2);
 
   ol_q_free (q1);
   ol_q_free (q2);

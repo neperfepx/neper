@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_.h"
@@ -20,7 +20,8 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
 
   if (!strcmp (ori, "3d") || !strcmp (ori, "3D"))
   {
-    ut_print_message (1, 3, "`-ori 3d' is deprecated and will be removed in future versions.  Use `-ori random' instead.\n");
+    ut_print_message (1, 3,
+                      "`-ori 3d' is deprecated and will be removed in future versions.  Use `-ori random' instead.\n");
     ut_string_string ("random", &ori);
   }
 
@@ -68,7 +69,8 @@ net_ori_pre (struct IN_T In, struct MTESS MTess, struct TESS *Tess,
   for (i = 0; i < 2; i++)
     neut_seedset_set_zero (*pSSet + i);
   sscanf (In.n[1], "%d", &cellqty);
-  net_multiscale_arg_0d_int_fscanf (In.n[1], 0, 0, NULL, NULL, &(*pSSet)[1].N);
+  net_multiscale_arg_0d_int_fscanf (In.n[1], 0, 0, NULL, NULL,
+                                    &(*pSSet)[1].N);
   (*pSSet)[1].Nall = (*pSSet)[1].N;
   net_ori_mtess_id (In, MTess, Tess, 0, 1, *pSSet + 1);
   net_ori_mtess_randseed (MTess, Tess, 0, 1, (*pSSet), cellqty, *pSSet + 1);

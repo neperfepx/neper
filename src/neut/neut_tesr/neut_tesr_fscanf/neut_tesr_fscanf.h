@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -10,7 +10,7 @@ extern "C"
 #ifndef NEUT_VOX_FSCANF_H
 #define NEUT_VOX_FSCANF_H
 
-  extern void neut_tesr_name_fscanf (char *, struct TESR *);
+  extern void neut_tesr_fnscanf (char *, struct TESR *);
 
 #endif				/* NEUT_VOX_FSCANF_H */
 

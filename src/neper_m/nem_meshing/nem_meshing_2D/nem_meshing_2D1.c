@@ -1,13 +1,13 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_2D_.h"
 
 void
-nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
-                struct TESS Tess, struct NODES RNodes, struct MESH *RMesh,
-                struct NODES *pNodes, struct MESH *Mesh)
+nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara, struct TESS Tess,
+                struct NODES RNodes, struct MESH *RMesh, struct NODES *pNodes,
+                struct MESH *Mesh)
 {
   int i, faceqty, face, *faces = NULL, qty;
   double allowed_t, max_elapsed_t = 0;
@@ -49,13 +49,12 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
     {
       face = faces[i];
 
-      if (Tess.Dim == 2 || strncmp (Tess.Type, "periodic", 8)
+      if (Tess.Dim == 2 || strcmp (Tess.Type, "periodic")
           || !Tess.PerFaceMaster[face])
-        nem_meshing_2D_face (In, MeshPara, &Multim,
-                             &ctrlc_t, &allowed_t, &max_elapsed_t, Tess,
-                             RNodes, RMesh, *pNodes, Mesh, N + face,
-                             M + face, bnodes + face, lbnodes + face,
-                             bnodeqty + face, face);
+        nem_meshing_2D_face (In, MeshPara, &Multim, &ctrlc_t, &allowed_t,
+                             &max_elapsed_t, Tess, RNodes, RMesh, *pNodes,
+                             Mesh, N + face, M + face, bnodes + face,
+                             lbnodes + face, bnodeqty + face, face);
 #pragma omp critical
       nem_meshing_2D_progress (Multim, ++qty, faceqty, message);
     }
@@ -67,7 +66,7 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
     {
       face = faces[i];
 
-      if (Tess.Dim != 2 && !strncmp (Tess.Type, "periodic", 8)
+      if (Tess.Dim != 2 && !strcmp (Tess.Type, "periodic")
           && Tess.PerFaceMaster[face])
         nem_meshing_2D_face_per (Tess, *pNodes, N, M, N + face, M + face,
                                  master_id + face, &bnodes, &lbnodes,
@@ -84,10 +83,9 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
       neut_mesh_addelset (Mesh + 2, NULL, 0);
 
     if (Tess.FaceVerQty[face] > 0)
-      nem_meshing_2D_face_record (Tess, face, N[face], M[face],
-                                  bnodes[face], lbnodes[face],
-                                  bnodeqty[face], master_id[face],
-                                  pNodes, N_global_id, Mesh);
+      nem_meshing_2D_face_record (Tess, face, N[face], M[face], bnodes[face],
+                                  lbnodes[face], bnodeqty[face],
+                                  master_id[face], pNodes, N_global_id, Mesh);
     else
       neut_mesh_addelset (Mesh + 2, NULL, 0);
   }
@@ -106,8 +104,8 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
   remove (message);
 #endif
 
-  ut_free_1d_char (message);
-  ut_free_1d_int (faces);
+  ut_free_1d_char (&message);
+  ut_free_1d_int (&faces);
 
   for (i = 1; i <= Tess.FaceQty; i++)
     neut_nodes_free (N + i);
@@ -116,10 +114,10 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara,
     neut_mesh_free (M + i);
   free (M);
 
-  ut_free_1d_int (bnodeqty);
-  ut_free_2d_int (bnodes, Tess.FaceQty + 1);
-  ut_free_2d_int (lbnodes, Tess.FaceQty + 1);
-  ut_free_2d_int (N_global_id, Tess.FaceQty + 1);
+  ut_free_1d_int (&bnodeqty);
+  ut_free_2d_int (&bnodes, Tess.FaceQty + 1);
+  ut_free_2d_int (&lbnodes, Tess.FaceQty + 1);
+  ut_free_2d_int (&N_global_id, Tess.FaceQty + 1);
 
   return;
 }

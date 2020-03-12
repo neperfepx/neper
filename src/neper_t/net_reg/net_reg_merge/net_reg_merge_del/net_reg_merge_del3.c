@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_reg_merge_del_.h"
@@ -30,8 +30,8 @@ UpdateFaceState (struct TESS *pTess, int delver, int newver)
     (*pTess).FaceState[face] = 1;
   }
 
-  ut_free_1d_int (NewVerFace);
-  ut_free_1d_int (DelVerFace);
+  ut_free_1d_int (&NewVerFace);
+  ut_free_1d_int (&DelVerFace);
 
   return;
 }
@@ -61,11 +61,11 @@ UpdateFaceVer (struct TESS *pTess, int delver, int newver, int verbosity)
     {
       ut_print_lineheader (-1);
       printf ("Treating delver face %d (%d/%d) ---\n", face, i,
-	      DelVerFaceQty);
+              DelVerFaceQty);
       ut_print_lineheader (-1);
       printf ("  %d faces: ", (*pTess).FaceVerQty[face]);
       for (j = 1; j <= (*pTess).FaceVerQty[face]; j++)
-	printf ("%d ", (*pTess).FaceVerNb[face][j]);
+        printf ("%d ", (*pTess).FaceVerNb[face][j]);
       printf ("\n");
     }
 
@@ -75,8 +75,8 @@ UpdateFaceVer (struct TESS *pTess, int delver, int newver, int verbosity)
       ReplaceVerInFace (pTess, face, delver, newver);
   }
 
-  ut_free_1d_int (NewVerFace);
-  ut_free_1d_int (DelVerFace);
+  ut_free_1d_int (&NewVerFace);
+  ut_free_1d_int (&DelVerFace);
 
   return;
 }
@@ -101,7 +101,7 @@ UpdateFaceEdge (struct TESS *pTess, int edge, int verbosity)
     {
       ut_print_lineheader (-1);
       printf ("Treating face %d (%d/%d) ---\n", face, i + 1,
-	      (*pTess).EdgeFaceQty[edge]);
+              (*pTess).EdgeFaceQty[edge]);
     }
 
     if ((*pTess).FaceState[face] == -1)
@@ -115,7 +115,7 @@ UpdateFaceEdge (struct TESS *pTess, int edge, int verbosity)
     {
       ut_print_lineheader (0);
       printf ("  - face %d contains %d edges: ", face,
-	      (*pTess).FaceVerQty[face]);
+              (*pTess).FaceVerQty[face]);
     }
 
     /* if it contains almost 4 edges, the edge is removed;
@@ -140,7 +140,7 @@ UpdateVerState (struct TESS *pTess, int delver, int newver, int verbosity)
     printf ("  Updating state of ver %d\n", newver);
     ut_print_lineheader (0);
     printf ("    ver %d: %d and ver %d: %d become ", newver,
-	    (*pTess).VerState[newver], delver, (*pTess).VerState[delver]);
+            (*pTess).VerState[newver], delver, (*pTess).VerState[delver]);
   }
   /* if state of newver is 0, its wgt is 1, else it is the state */
   wgt1 = ut_num_max_int (1, (*pTess).VerState[newver]);
@@ -161,17 +161,16 @@ UpdateVerState (struct TESS *pTess, int delver, int newver, int verbosity)
 /* Updating of VerEdgeQty & VerEdgeNb */
 void
 UpdateVerEdge (struct TESS *pTess, int edge, int delver, int newver,
-	       int verbosity)
+               int verbosity)
 {
   int i;
-  int *array;			/* will be the VerEdgeNb  of newver ver */
-  int qty;			/* will be the VerEdgeQty of newver ver */
+  int *array;                   /* will be the VerEdgeNb  of newver ver */
+  int qty;                      /* will be the VerEdgeQty of newver ver */
 
-  array =
-    ut_array_1d_int_cat ((*pTess).VerEdgeNb[newver],
-			 (*pTess).VerEdgeQty[newver],
-			 (*pTess).VerEdgeNb[delver],
-			 (*pTess).VerEdgeQty[delver]);
+  ut_array_1d_int_cat ((*pTess).VerEdgeNb[newver],
+                       (*pTess).VerEdgeQty[newver],
+                       (*pTess).VerEdgeNb[delver],
+                       (*pTess).VerEdgeQty[delver], &array, NULL);
 
   if (verbosity >= 3)
   {
@@ -190,12 +189,12 @@ UpdateVerEdge (struct TESS *pTess, int edge, int delver, int newver,
   }
 
   qty = (*pTess).VerEdgeQty[delver] + (*pTess).VerEdgeQty[newver];
-  qty -= ut_array_1d_int_deletencompress (array, qty, edge, 2);
+  qty -= ut_array_1d_int_rmelt (array, qty, edge, 2);
 
   (*pTess).VerEdgeQty[newver] = qty;
   (*pTess).VerEdgeNb[newver] =
     ut_realloc_1d_int ((*pTess).VerEdgeNb[newver], qty);
-  ut_array_1d_int_memcpy ((*pTess).VerEdgeNb[newver], qty, array);
+  ut_array_1d_int_memcpy (array, qty, (*pTess).VerEdgeNb[newver]);
 
   if (verbosity >= 3)
   {
@@ -206,7 +205,7 @@ UpdateVerEdge (struct TESS *pTess, int edge, int delver, int newver,
     printf ("\n");
   }
 
-  ut_free_1d_int (array);
+  ut_free_1d_int (&array);
 
   return;
 }
@@ -223,13 +222,13 @@ UpdateVerBound (struct TESS *pTess, int delver, int newver)
   {
     // test: both vertices are domain vertices; this should not happen
     if ((*pTess).VerDom[delver][0] == (*pTess).VerDom[newver][0])
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
     // delver is the domain ver: copying;
     // otherwise newver is the domain ver: no need to copy
     if ((*pTess).VerDom[delver][0] == 0)
-      ut_array_1d_int_memcpy ((*pTess).VerDom[newver], 2,
-			      (*pTess).VerDom[delver]);
+      ut_array_1d_int_memcpy ((*pTess).VerDom[delver], 2,
+                              (*pTess).VerDom[newver]);
   }
 
   // one vertex in on a domain edge
@@ -238,14 +237,14 @@ UpdateVerBound (struct TESS *pTess, int delver, int newver)
     // test: both vertices are on a domain edge, but not on the same
     // becoming a domain vertex
     if (((*pTess).VerDom[delver][0] == (*pTess).VerDom[newver][0])
-	&& ((*pTess).VerDom[delver][1] != (*pTess).VerDom[newver][1]))
-      ut_error_reportbug ();	// the edge should not have been marked for deletion in NextEdgeToDel
+        && ((*pTess).VerDom[delver][1] != (*pTess).VerDom[newver][1]))
+      ut_print_neperbug ();     // the edge should not have been marked for deletion in NextEdgeToDel
 
     // delver is on the domain edge: copying;
     // otherwise newver is on the domain edge: no need to copy
     else if ((*pTess).VerDom[delver][0] == 1)
-      ut_array_1d_int_memcpy ((*pTess).VerDom[newver], 2,
-			      (*pTess).VerDom[delver]);
+      ut_array_1d_int_memcpy ((*pTess).VerDom[delver], 2,
+                              (*pTess).VerDom[newver]);
   }
 
   // one vertex in on a domain face
@@ -253,8 +252,8 @@ UpdateVerBound (struct TESS *pTess, int delver, int newver)
   {
     // if delver: copying, otherwise: no need to copy
     if ((*pTess).VerDom[delver][0] == 2)
-      ut_array_1d_int_memcpy ((*pTess).VerDom[newver], 2,
-			      (*pTess).VerDom[delver]);
+      ut_array_1d_int_memcpy ((*pTess).VerDom[delver], 2,
+                              (*pTess).VerDom[newver]);
   }
 
   return 0;
@@ -279,35 +278,42 @@ UpdateVerCooBary (struct TESS *pTess, int delver, int newver)
   double **ptcoo = ut_alloc_2d (2, 3);
   double **eqs = NULL;
   int *vers = ut_alloc_1d_int (2);
+  double *v = ut_alloc_1d (3);
+  double *n = ut_alloc_1d (3);
 
   vers[0] = delver;
   vers[1] = newver;
 
   neut_tess_vers_alldomedges (*pTess, vers, 2, &domedges, &domedgeqty);
 
-  eqqty = domedgeqty;
+  eqqty = domedgeqty + 1;
+  eqs = ut_alloc_2d (eqqty, 4);
+
+  ut_array_1d_memcpy ((*pTess).FaceEq[1], 4, eqs[0]);
 
   if (domedgeqty > 0)
-  {
-    eqs = ut_alloc_2d (eqqty, 3);
     for (i = 0; i < domedgeqty; i++)
     {
       domedge = domedges[i];
       domver1 = (*pTess).DomEdgeVerNb[domedge][0];
       domver2 = (*pTess).DomEdgeVerNb[domedge][1];
-      ut_space_points_line ((*pTess).DomVerCoo[domver1],
-			    (*pTess).DomVerCoo[domver2], eqs[i]);
+      ut_space_points_uvect ((*pTess).DomVerCoo[domver1],
+                             (*pTess).DomVerCoo[domver2], v);
+      ut_vector_vectprod (v, eqs[0] + 1, n);
+      ut_space_point_normal_plane ((*pTess).DomVerCoo[domver1], n,
+                                   eqs[i + 1]);
     }
-  }
 
-  ut_array_1d_memcpy (ptcoo[0], 3, (*pTess).VerCoo[delver]);
-  ut_array_1d_memcpy (ptcoo[1], 3, (*pTess).VerCoo[newver]);
+  ut_array_1d_memcpy ((*pTess).VerCoo[delver], 3, ptcoo[0]);
+  ut_array_1d_memcpy ((*pTess).VerCoo[newver], 3, ptcoo[1]);
 
-  ut_space_bary2d_constrained (ptcoo, NULL, 2, eqs, eqqty,
-			       (*pTess).VerCoo[newver]);
+  ut_space_points_bary_constrained (ptcoo, NULL, 2, eqs, eqqty,
+                                    (*pTess).VerCoo[newver]);
 
-  ut_free_2d (ptcoo, 2);
-  ut_free_2d (eqs, eqqty);
+  ut_free_2d (&ptcoo, 2);
+  ut_free_2d (&eqs, eqqty);
+  ut_free_1d (&v);
+  ut_free_1d (&n);
 
   return 0;
 }
@@ -323,8 +329,8 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
   double *X = NULL;
   int faceqty;
   int *face = NULL;
-  int N;			// nb of faces
-  int M;			// nb of constrained faces
+  int N;                        // nb of faces
+  int M;                        // nb of constrained faces
 
   verbosity = 0;
 
@@ -333,7 +339,7 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
   if (verbosity > 0)
   {
     printf ("newver = %d has bound: %d %d\n", newver,
-	    (*pTess).VerDom[newver][0], (*pTess).VerDom[newver][1]);
+            (*pTess).VerDom[newver][0], (*pTess).VerDom[newver][1]);
 
     printf ("newver = %d has %d faces of nbs: ", newver, faceqty);
     ut_array_1d_int_fprintf (stdout, face, faceqty, "%d");
@@ -398,7 +404,8 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
                                          constraint[i]);
       if (verbosity > 0)
       {
-        printf ("constraint %d (type = %s): ", i, (*pTess).DomFaceType[tmp[i]]);
+        printf ("constraint %d (type = %s): ", i,
+                (*pTess).DomFaceType[tmp[i]]);
         ut_array_1d_fprintf (stdout, constraint[i], 4, "%f");
       }
     }
@@ -457,17 +464,17 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
 
     dist = ut_space_dist ((*pTess).VerCoo[newver], X);
 
-    ut_array_1d_memcpy ((*pTess).VerCoo[newver], 3, X);
+    ut_array_1d_memcpy (X, 3, (*pTess).VerCoo[newver]);
   }
   while (curved && iter < 1000 && dist > 1e-9);
 
-  ut_free_2d (A, 3 + M);
-  ut_free_1d (B);
-  ut_free_1d (X);
-  ut_free_1d_int (face);
-  ut_free_2d (constraint, M);
-  ut_free_1d_int (domainface);
-  ut_free_1d_int (tmp);
+  ut_free_2d (&A, 3 + M);
+  ut_free_1d (&B);
+  ut_free_1d (&X);
+  ut_free_1d_int (&face);
+  ut_free_2d (&constraint, M);
+  ut_free_1d_int (&domainface);
+  ut_free_1d_int (&tmp);
 
   return status;
 }

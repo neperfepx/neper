@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_nodedata_.h"
@@ -19,51 +19,46 @@ nev_nodedata_init (struct NODES Nodes, int Qty, struct NODEDATA *pNodeData)
   ut_array_2d_int_set ((*pNodeData).Col + 1, (*pNodeData).NodeQty, 3, 0.);
   ut_array_1d_set ((*pNodeData).Rad + 1, (*pNodeData).NodeQty, noderad);
 
-  ut_array_2d_memcpy ((*pNodeData).Coo + 1, (*pNodeData).NodeQty, 3,
-		      Nodes.NodeCoo + 1);
+  ut_array_2d_memcpy (Nodes.NodeCoo + 1, (*pNodeData).NodeQty, 3,
+                      (*pNodeData).Coo + 1);
 
   if ((*pNodeData).ColData)
   {
     if ((*pNodeData).ColDataType && !strcmp ((*pNodeData).ColDataType, "id"))
       nev_data_id_colour ((*pNodeData).ColData, (*pNodeData).NodeQty,
-			  (*pNodeData).Col);
+                          (*pNodeData).Col);
     else if ((*pNodeData).ColDataType
-	     && !strcmp ((*pNodeData).ColDataType, "col"))
+             && !strcmp ((*pNodeData).ColDataType, "col"))
       nev_data_col_colour ((*pNodeData).ColData, (*pNodeData).NodeQty,
-			   (*pNodeData).Col);
+                           (*pNodeData).Col);
     else if ((*pNodeData).ColDataType
-	     && !strncmp ((*pNodeData).ColDataType, "ori", 3))
+             && !strncmp ((*pNodeData).ColDataType, "ori", 3))
       nev_data_ori_colour ((*pNodeData).ColData, (*pNodeData).NodeQty,
-			   (*pNodeData).ColScheme, (*pNodeData).Col);
+                           (*pNodeData).ColScheme, (*pNodeData).Col);
     else if ((*pNodeData).ColDataType
-	     && !strcmp ((*pNodeData).ColDataType, "scal"))
-      nev_data_scal_colour ((*pNodeData).ColData, NULL,
-			    (*pNodeData).NodeQty,
-			    (*pNodeData).Scale,
-			    (*pNodeData).ColScheme,
-			    (*pNodeData).Col, &((*pNodeData).Scale));
+             && !strcmp ((*pNodeData).ColDataType, "scal"))
+      nev_data_scal_colour ((*pNodeData).ColData, NULL, (*pNodeData).NodeQty,
+                            (*pNodeData).Scale, (*pNodeData).ColScheme,
+                            (*pNodeData).Col, &((*pNodeData).Scale));
 
     else
-    {
-      printf ("(*pNodeData).ColDataType = %s\n", (*pNodeData).ColDataType);
-      ut_error_reportbug ();
-    }
+      ut_print_exprbug ((*pNodeData).ColDataType);
   }
 
   if ((*pNodeData).RadData)
     nev_data_rad_radius ((*pNodeData).RadData, (*pNodeData).NodeQty,
-			 (*pNodeData).Rad);
+                         (*pNodeData).Rad);
 
   if ((*pNodeData).CooDataType)
   {
     if (!strcmp ((*pNodeData).CooDataType, "coo"))
       nev_data_coo_coo (Nodes.NodeCoo, (*pNodeData).CooData,
-			(*pNodeData).CooFact, (*pNodeData).NodeQty,
-			(*pNodeData).Coo);
+                        (*pNodeData).CooFact, (*pNodeData).NodeQty,
+                        (*pNodeData).Coo);
     else if (!strcmp ((*pNodeData).CooDataType, "disp"))
       nev_data_disp_coo (Nodes.NodeCoo, (*pNodeData).CooData,
-			 (*pNodeData).CooFact, (*pNodeData).NodeQty,
-			 (*pNodeData).Coo);
+                         (*pNodeData).CooFact, (*pNodeData).NodeQty,
+                         (*pNodeData).Coo);
     else
       abort ();
   }
@@ -78,25 +73,25 @@ nev_nodedata_fscanf (char *type, char *argument, struct NODEDATA *pNodeData)
   int i, argqty;
   char *value = NULL;
 
-  ut_string_separate (argument, NEUT_SEP_DEP, &args, &argqty);
+  ut_list_break (argument, NEUT_SEP_DEP, &args, &argqty);
 
   if (!strcmp (type, "col"))
   {
-    nev_data_typearg_args ("col", argument, &(*pNodeData).ColDataType,
-			   &value, NULL);
+    nev_data_typearg_args ("col", argument, &(*pNodeData).ColDataType, &value,
+                           NULL);
 
     if (!strcmp ((*pNodeData).ColDataType, "id"))
     {
       (*pNodeData).ColData = ut_alloc_2d ((*pNodeData).NodeQty + 1, 3);
 
       for (i = 1; i <= (*pNodeData).NodeQty; i++)
-	(*pNodeData).ColData[i][0] = i;
+        (*pNodeData).ColData[i][0] = i;
     }
     else if (!strcmp ((*pNodeData).ColDataType, "col"))
     {
       (*pNodeData).ColData = ut_alloc_2d ((*pNodeData).NodeQty + 1, 3);
-      ut_array_2d_fscanfn_wcard (value, (*pNodeData).ColData + 1,
-				 (*pNodeData).NodeQty, 3, "colour,size");
+      ut_array_2d_fnscanf_wcard (value, (*pNodeData).ColData + 1,
+                                 (*pNodeData).NodeQty, 3, "colour,size");
     }
     else if (!strncmp ((*pNodeData).ColDataType, "ori", 3))
       nev_data_fscanf_ori (value, (*pNodeData).NodeQty, NULL,
@@ -104,8 +99,8 @@ nev_nodedata_fscanf (char *type, char *argument, struct NODEDATA *pNodeData)
     else if (!strcmp ((*pNodeData).ColDataType, "scal"))
     {
       (*pNodeData).ColData = ut_alloc_2d ((*pNodeData).NodeQty + 1, 1);
-      ut_array_2d_fscanfn_wcard (value, (*pNodeData).ColData + 1,
-				 (*pNodeData).NodeQty, 1, "numeral,size");
+      ut_array_2d_fnscanf_wcard (value, (*pNodeData).ColData + 1,
+                                 (*pNodeData).NodeQty, 1, "numeral,size");
     }
     else
       abort ();
@@ -122,8 +117,8 @@ nev_nodedata_fscanf (char *type, char *argument, struct NODEDATA *pNodeData)
     if (!strcmp ((*pNodeData).RadDataType, "rad"))
     {
       (*pNodeData).RadData = ut_alloc_2d ((*pNodeData).NodeQty + 1, 3);
-      ut_array_2d_fscanfn_wcard (args[0], (*pNodeData).RadData + 1,
-				 (*pNodeData).NodeQty, 1, "numeral,size");
+      ut_array_2d_fnscanf_wcard (args[0], (*pNodeData).RadData + 1,
+                                 (*pNodeData).NodeQty, 1, "numeral,size");
     }
     else
       abort ();
@@ -160,20 +155,20 @@ nev_nodedata_fscanf (char *type, char *argument, struct NODEDATA *pNodeData)
       (*pNodeData).CooData = ut_alloc_2d ((*pNodeData).NodeQty + 1, 3);
 
     if (!strcmp ((*pNodeData).CooDataType, "coo"))
-      ut_array_2d_fscanfn_wcard (args[0], (*pNodeData).CooData + 1,
-				 (*pNodeData).NodeQty, 3, "size");
+      ut_array_2d_fnscanf_wcard (args[0], (*pNodeData).CooData + 1,
+                                 (*pNodeData).NodeQty, 3, "size");
     else if (!strcmp ((*pNodeData).CooDataType, "disp"))
-      ut_array_2d_fscanfn_wcard (args[1], (*pNodeData).CooData + 1,
-				 (*pNodeData).NodeQty, 3, "size");
+      ut_array_2d_fnscanf_wcard (args[1], (*pNodeData).CooData + 1,
+                                 (*pNodeData).NodeQty, 3, "size");
     else
       abort ();
   }
   else if (!strcmp (type, "coofact"))
     sscanf (args[0], "%lf", &((*pNodeData).CooFact));
   else
-    ut_error_reportbug ();
+    ut_print_exprbug (type);
 
-  ut_free_1d_char (value);
+  ut_free_1d_char (&value);
 
   return;
 }

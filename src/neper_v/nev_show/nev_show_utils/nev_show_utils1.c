@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_show_utils_.h"
@@ -22,7 +22,7 @@ nev_show_genexpr (char *expr, int *val, int valqty)
     return 0;
   }
 
-  else if (ut_string_filename (expr))
+  else if (ut_string_isfilename (expr))
   {
     file = ut_file_open (expr, "r");
     while (fscanf (file, "%d", &id) != EOF)

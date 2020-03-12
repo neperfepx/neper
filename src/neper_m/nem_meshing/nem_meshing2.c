@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_.h"
@@ -10,9 +10,9 @@ nem_meshing_gen (struct TESS Tess, struct NODES *pNodes)
   if (Tess.Periodic)
   {
     (*pNodes).Periodic = ut_alloc_1d_int (3);
-    ut_array_1d_int_memcpy ((*pNodes).Periodic, 3, Tess.Periodic);
+    ut_array_1d_int_memcpy (Tess.Periodic, 3, (*pNodes).Periodic);
     (*pNodes).PeriodicDist = ut_alloc_1d (3);
-    ut_array_1d_memcpy ((*pNodes).PeriodicDist, 3, Tess.PeriodicDist);
+    ut_array_1d_memcpy (Tess.PeriodicDist, 3, (*pNodes).PeriodicDist);
   }
 
   return;
@@ -40,10 +40,10 @@ nem_meshing_post (struct TESS Tess, struct MESH *Mesh)
   neut_tess_dim_entity (Tess.Dim, &entity);
 
   for (i = 1; i <= Tess.CellQty; i++)
-    sprintf (Mesh[Tess.Dim].ElsetLabels[i], "%s%d", entity, Mesh[Tess.Dim].ElsetId?
-             Mesh[Tess.Dim].ElsetId[i] : i);
+    sprintf (Mesh[Tess.Dim].ElsetLabels[i], "%s%d", entity,
+             Mesh[Tess.Dim].ElsetId ? Mesh[Tess.Dim].ElsetId[i] : i);
 
-  ut_free_1d_char (entity);
+  ut_free_1d_char (&entity);
 
   return;
 }

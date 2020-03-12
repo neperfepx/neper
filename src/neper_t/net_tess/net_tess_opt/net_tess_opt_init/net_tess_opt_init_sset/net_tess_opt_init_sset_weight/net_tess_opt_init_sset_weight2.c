@@ -1,12 +1,12 @@
 /* This file is part of the Neper software sizeage. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_sset_weight_.h"
 
 int
-net_tess_opt_init_sset_weight_stat_radeq (int pos, char
-				   *var, struct TOPT TOpt, double *weight)
+net_tess_opt_init_sset_weight_stat_radeq (int pos, char *var,
+                                          struct TOPT TOpt, double *weight)
 {
   int i, id, dim;
   double avradeq, totvol, domvol;
@@ -34,36 +34,36 @@ net_tess_opt_init_sset_weight_stat_radeq (int pos, char
 
   for (i = TOpt.tarcdf0[pos].size - 1; i >= 0; i--)
     while (id <= TOpt.CellQty
-	   && TOpt.tarcdf0[pos].y[i] <
-	   (TOpt.CellQty - id + 0.5) / TOpt.CellQty)
+           && TOpt.tarcdf0[pos].y[i] <
+           (TOpt.CellQty - id + 0.5) / TOpt.CellQty)
     {
       weight[id2[id]] = pow (avradeq * TOpt.tarcdf0[pos].x[i], 1. / dim);
 
       if (TOpt.Dim == 2)
-	totvol += M_PI * pow (weight[id2[id]], 2);
+        totvol += M_PI * pow (weight[id2[id]], 2);
       else if (TOpt.Dim == 3)
-	totvol += 4. * M_PI * 0.33333333333 * pow (weight[id2[id]], 3);
+        totvol += 4. * M_PI * 0.33333333333 * pow (weight[id2[id]], 3);
       else
-	abort ();
+        abort ();
 
       id++;
     }
 
   neut_tess_size (TOpt.Dom, &domvol);
 
-  ut_array_1d_scale (weight + 1, TOpt.CellQty, pow (domvol / totvol,
-						    1. / TOpt.Dim));
+  ut_array_1d_scale (weight + 1, TOpt.CellQty,
+                     pow (domvol / totvol, 1. / TOpt.Dim));
 
   gsl_rng_free (r);
-  ut_free_1d (val);
-  ut_free_1d_int (id2);
+  ut_free_1d (&val);
+  ut_free_1d_int (&id2);
 
   return 0;
 }
 
 int
-net_tess_opt_init_sset_weight_celldata_radeq (int pos, char *var, struct TOPT TOpt,
-                                              double *radeq)
+net_tess_opt_init_sset_weight_celldata_radeq (int pos, char *var,
+                                              struct TOPT TOpt, double *radeq)
 {
   int i;
   double avradeq, avsize;
@@ -81,7 +81,8 @@ net_tess_opt_init_sset_weight_celldata_radeq (int pos, char *var, struct TOPT TO
     neut_tess_cellavsize (TOpt.Dom, TOpt.CellQty, &avsize);
 
     for (i = 1; i <= TOpt.CellQty; i++)
-      ut_space_size_radeq (TOpt.Dim, avsize * TOpt.tarcellval[pos][i][0], radeq + i);
+      ut_space_size_radeq (TOpt.Dim, avsize * TOpt.tarcellval[pos][i][0],
+                           radeq + i);
   }
 
   else

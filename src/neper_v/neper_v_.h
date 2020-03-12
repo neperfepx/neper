@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -18,7 +18,6 @@
 #include"nev_slice/nev_slice.h"
 #include"nev_include/nev_include.h"
 #include"nev_show/nev_show.h"
-#include"nev_processimage/nev_processimage.h"
 #include"nev_povray/nev_povray.h"
 
 #include"neper_v.h"

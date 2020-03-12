@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -31,6 +31,14 @@ extern void neut_elt_facet_nodes (char *type, int dim, int order, int* nodes, in
     surfnodes);
 
 extern void neut_elt_tri_shapefct (double *a, double *b, double *c, double *p, double *val);
+
+extern void neut_elt_orderarrays_3d (char *elttype, int ***pfir3, int *pnodeqty_3d, int ***psec3, int *pnodeqty_3d1);
+extern void neut_elt_orderarrays_2d (char *elttype, int ***pfir2, int *pnodeqty_2d, int ***psec2, int *pnodeqty_2d1);
+extern void neut_elt_orderarrays_1d (char *elttype, int ***pfir1, int *pnodeqty_1d, int ***psec1, int *pnodeqty_1d1);
+extern void neut_elt_orderarrays_0d (char *elttype, int ***pfir0, int *pnodeqty_0d, int ***psec0, int *pnodeqty_0d1);
+
+extern void neut_elt_orderarrays (char *elttype, int dim, int ***pfir,  int *pnodeqty, int ***psec,
+                                  int *pnodeqty1);
 
 #endif				/* NEUT_ELT_H */
 

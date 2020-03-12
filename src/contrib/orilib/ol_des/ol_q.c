@@ -64,7 +64,7 @@ ol_q_set_this (double *q, double rho, double lambda, double mu, double nu)
 void
 ol_q_memcpy (double *qsrc, double *qdest)
 {
-  ut_array_1d_memcpy (qdest, 4, qsrc);
+  ut_array_1d_memcpy (qsrc, 4, qdest);
 
   return;
 }
@@ -90,7 +90,7 @@ ol_g_q (double **g, double *q)
     m = 1 + ut_array_1d_max_index (q + 1, 3);
     for (i = 1; i <= 3; i++)
       if (i != m)
-	q[i] *= ut_num_sgn (g[i - 1][m - 1]);
+        q[i] *= ut_num_sgn (g[i - 1][m - 1]);
   }
 
   ol_q_set_unit (q);
@@ -101,12 +101,9 @@ ol_g_q (double **g, double *q)
 void
 ol_q_g (double *q, double **g)
 {
-  g[0][0] =
-    q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3];
-  g[1][1] =
-    q[0] * q[0] - q[1] * q[1] + q[2] * q[2] - q[3] * q[3];
-  g[2][2] =
-    q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3];
+  g[0][0] = q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3];
+  g[1][1] = q[0] * q[0] - q[1] * q[1] + q[2] * q[2] - q[3] * q[3];
+  g[2][2] = q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3];
 
   g[0][1] = 2 * (q[1] * q[2] + q[0] * q[3]);
   g[0][2] = 2 * (q[1] * q[3] - q[0] * q[2]);
@@ -263,7 +260,7 @@ void
 ol_q_e_rad (double *q, double *e)
 {
   e[1] = 2 * atan2 (sqrt (q[1] * q[1] + q[2] * q[2]),
-		    sqrt (q[0] * q[0] + q[3] * q[3]));
+                    sqrt (q[0] * q[0] + q[3] * q[3]));
 
   if (fabs (e[1]) > OL_EPS_DEG && fabs (OL_PI - e[1]) > OL_EPS_DEG)
   {

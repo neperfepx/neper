@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_fscanf_.h"
@@ -8,8 +8,8 @@
 void
 neut_tess_fscanf_head (struct TESS *pTess, FILE * file, char **pversion)
 {
-  if (ut_file_string_scanncomp (file, "***tess") != 0
-      || ut_file_string_scanncomp (file, "**format") != 0)
+  if (!ut_file_string_scanandtest (file, "***tess")
+      || !ut_file_string_scanandtest (file, "**format"))
     ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
 
   (*pversion) = ut_alloc_1d_char (100);
@@ -20,7 +20,7 @@ neut_tess_fscanf_head (struct TESS *pTess, FILE * file, char **pversion)
       && strcmp (*pversion, "3.4"))
     ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
 
-  if (ut_file_string_scanncomp (file, "**general") != 0)
+  if (!ut_file_string_scanandtest (file, "**general"))
     ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
 
   (*pTess).Type = ut_alloc_1d_char (100);
@@ -43,7 +43,7 @@ neut_tess_fscanf_head (struct TESS *pTess, FILE * file, char **pversion)
 void
 neut_tess_fscanf_foot (FILE * file)
 {
-  if (ut_file_string_scanncomp (file, "***end") != 0)
+  if (!ut_file_string_scanandtest (file, "***end"))
     abort ();
 
   return;
@@ -58,11 +58,11 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
   char *string = ut_alloc_1d_char (1000);
   double *des = ut_alloc_1d (9);
 
-  if (ut_file_string_scanncomp (file, "**cell") != 0
+  if (!ut_file_string_scanandtest (file, "**cell")
       || fscanf (file, "%d", &((*pTess).CellQty)) != 1)
     abort ();
 
-  while (!ut_file_nextstring_section_level (file, &level) && level == 1)
+  while (!ut_file_nextstring_sectionlevel (file, &level) && level == 1)
   {
     ut_file_nextstring (file, string);
 
@@ -84,7 +84,8 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
     {
       ut_file_skip (file, 1);
       (*pTess).CellModeId = ut_alloc_1d_int ((*pTess).CellQty + 1);
-      ut_array_1d_int_fscanf (file, (*pTess).CellModeId + 1, (*pTess).CellQty);
+      ut_array_1d_int_fscanf (file, (*pTess).CellModeId + 1,
+                              (*pTess).CellQty);
     }
 
     else if (!strcmp (string, "*crysym"))
@@ -92,7 +93,7 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
       ut_file_skip (file, 1);
       (*pTess).CellCrySym = ut_alloc_1d_char (1000);
       if (fscanf (file, "%s", (*pTess).CellCrySym) != 1)
-	abort ();
+        abort ();
     }
 
     else if (!strcmp (string, "*seed"))
@@ -104,14 +105,14 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
 
       for (i = 1; i <= (*pTess).CellQty; i++)
       {
-	status = fscanf (file, "%d", &id);
-	if (id != i)
-	  abort ();
-	ut_array_1d_fscanf (file, (*pTess).SeedCoo[id], 3);
-	status = fscanf (file, "%lf", &((*pTess).SeedWeight[id]));
+        status = fscanf (file, "%d", &id);
+        if (id != i)
+          abort ();
+        ut_array_1d_fscanf (file, (*pTess).SeedCoo[id], 3);
+        status = fscanf (file, "%lf", &((*pTess).SeedWeight[id]));
 
-	if (status != 1)
-	  abort ();
+        if (status != 1)
+          abort ();
       }
     }
 
@@ -121,54 +122,55 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
       (*pTess).CellOri = ut_alloc_2d ((*pTess).CellQty + 1, 4);
 
       if (fscanf (file, "%s", string) != 1)
-	abort ();
+        abort ();
 
       if (!strcmp (string, "q"))
-	ut_array_2d_fscanf (file, (*pTess).CellOri + 1, (*pTess).CellQty, 4);
+        ut_array_2d_fscanf (file, (*pTess).CellOri + 1, (*pTess).CellQty, 4);
       else if (!strcmp (string, "e"))
-	for (i = 1; i <= (*pTess).CellQty; i++)
-	{
-	  ol_e_fscanf (file, des);
-	  ol_e_q (des, (*pTess).CellOri[i]);
-	}
+        for (i = 1; i <= (*pTess).CellQty; i++)
+        {
+          ol_e_fscanf (file, des);
+          ol_e_q (des, (*pTess).CellOri[i]);
+        }
       else if (!strcmp (string, "er"))
-	for (i = 1; i <= (*pTess).CellQty; i++)
-	{
-	  ol_e_fscanf (file, des);
-	  ol_er_e (des, des);
-	  ol_e_q (des, (*pTess).CellOri[i]);
-	}
+        for (i = 1; i <= (*pTess).CellQty; i++)
+        {
+          ol_e_fscanf (file, des);
+          ol_er_e (des, des);
+          ol_e_q (des, (*pTess).CellOri[i]);
+        }
       else if (!strcmp (string, "ek"))
-	for (i = 1; i <= (*pTess).CellQty; i++)
-	{
-	  ol_e_fscanf (file, des);
-	  ol_ek_e (des, des);
-	  ol_e_q (des, (*pTess).CellOri[i]);
-	}
+        for (i = 1; i <= (*pTess).CellQty; i++)
+        {
+          ol_e_fscanf (file, des);
+          ol_ek_e (des, des);
+          ol_e_q (des, (*pTess).CellOri[i]);
+        }
       else if (!strcmp (string, "rtheta"))
-	for (i = 1; i <= (*pTess).CellQty; i++)
-	{
-	  ol_r_fscanf (file, des);
-	  if (fscanf (file, "%lf", &theta) != 1)
-	    abort ();
-	  ol_rtheta_q (des, theta, (*pTess).CellOri[i]);
-	}
+        for (i = 1; i <= (*pTess).CellQty; i++)
+        {
+          ol_r_fscanf (file, des);
+          if (fscanf (file, "%lf", &theta) != 1)
+            abort ();
+          ol_rtheta_q (des, theta, (*pTess).CellOri[i]);
+        }
       else if (!strcmp (string, "R"))
-	for (i = 1; i <= (*pTess).CellQty; i++)
-	{
-	  ol_R_fscanf (file, des);
-	  ol_R_q (des, (*pTess).CellOri[i]);
-	}
+        for (i = 1; i <= (*pTess).CellQty; i++)
+        {
+          ol_R_fscanf (file, des);
+          ol_R_q (des, (*pTess).CellOri[i]);
+        }
       else
-	ut_print_message (2, 2, "Could not process descriptor `%s'.\n", string);
+        ut_print_message (2, 2, "Could not process descriptor `%s'.\n",
+                          string);
     }
 
     else
       ut_print_message (2, 2, "Could not read field `%s'.\n", string);
   }
 
-  ut_free_1d_char (string);
-  ut_free_1d (des);
+  ut_free_1d_char (&string);
+  ut_free_1d (&des);
 
   return;
 }
@@ -179,7 +181,7 @@ neut_tess_fscanf_ver (struct TESS *pTess, FILE * file)
 {
   int i, ver, status;
 
-  if (ut_file_string_scanncomp (file, "**vertex") != 0
+  if (!ut_file_string_scanandtest (file, "**vertex")
       || fscanf (file, "%d", &((*pTess).VerQty)) != 1)
     abort ();
 
@@ -213,7 +215,7 @@ neut_tess_fscanf_edge (struct TESS *pTess, FILE * file)
 {
   int i, edge, status;
 
-  if (ut_file_string_scanncomp (file, "**edge") != 0
+  if (!ut_file_string_scanandtest (file, "**edge")
       || fscanf (file, "%d", &((*pTess).EdgeQty)) != 1)
     abort ();
 
@@ -243,7 +245,7 @@ neut_tess_fscanf_face (struct TESS *pTess, FILE * file)
 {
   int i, j, face, tmp, status;
 
-  if (ut_file_string_scanncomp (file, "**face") != 0
+  if (!ut_file_string_scanandtest (file, "**face")
       || fscanf (file, "%d", &((*pTess).FaceQty)) != 1)
     abort ();
 
@@ -274,7 +276,7 @@ neut_tess_fscanf_face (struct TESS *pTess, FILE * file)
       ut_alloc_1d_int ((*pTess).FaceVerQty[face] + 1);
 
     ut_array_1d_int_fscanf (file, (*pTess).FaceVerNb[face] + 1,
-			    (*pTess).FaceVerQty[face]);
+                            (*pTess).FaceVerQty[face]);
 
     if (fscanf (file, "%d", &tmp) != 1)
       abort ();
@@ -285,7 +287,7 @@ neut_tess_fscanf_face (struct TESS *pTess, FILE * file)
     for (j = 1; j <= (*pTess).FaceVerQty[face]; j++)
     {
       if (fscanf (file, "%d", &tmp) != 1)
-	abort ();
+        abort ();
       (*pTess).FaceEdgeOri[face][j] = ut_num_sgn_int (tmp);
       (*pTess).FaceEdgeNb[face][j] = tmp * (*pTess).FaceEdgeOri[face][j];
     }
@@ -309,7 +311,7 @@ neut_tess_fscanf_poly (struct TESS *pTess, FILE * file)
 {
   int i, poly, status;
 
-  if (ut_file_string_scanncomp (file, "**polyhedron") != 0
+  if (!ut_file_string_scanandtest (file, "**polyhedron")
       || fscanf (file, "%d", &((*pTess).PolyQty)) != 1)
     abort ();
 
@@ -334,12 +336,12 @@ neut_tess_fscanf_poly (struct TESS *pTess, FILE * file)
       ut_alloc_1d_int ((*pTess).PolyFaceQty[poly] + 1);
 
     ut_array_1d_int_fscanf (file, (*pTess).PolyFaceNb[poly] + 1,
-			    (*pTess).PolyFaceQty[poly]);
+                            (*pTess).PolyFaceQty[poly]);
     ut_array_1d_int_sgn ((*pTess).PolyFaceNb[poly] + 1,
-			 (*pTess).PolyFaceQty[poly],
-			 (*pTess).PolyFaceOri[poly] + 1);
+                         (*pTess).PolyFaceQty[poly],
+                         (*pTess).PolyFaceOri[poly] + 1);
     ut_array_1d_int_abs ((*pTess).PolyFaceNb[poly] + 1,
-			 (*pTess).PolyFaceQty[poly]);
+                         (*pTess).PolyFaceQty[poly]);
   }
 
   (*pTess).PolyState = ut_alloc_1d_int ((*pTess).PolyQty + 1);
@@ -353,8 +355,8 @@ neut_tess_fscanf_domain (struct TESS *pTess, char *version, FILE * file)
 {
   (*pTess).DomType = ut_alloc_1d_char (1000);
 
-  if (ut_file_string_scanncomp (file, "**domain") != 0
-      || ut_file_string_scanncomp (file, "*general") != 0
+  if (!ut_file_string_scanandtest (file, "**domain")
+      || !ut_file_string_scanandtest (file, "*general")
       || fscanf (file, "%s", (*pTess).DomType) != 1)
     abort ();
 

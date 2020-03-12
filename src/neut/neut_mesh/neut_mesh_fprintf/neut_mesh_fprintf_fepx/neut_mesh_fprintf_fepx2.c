@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_fepx_.h"
 
 void
 neut_mesh_fprintf_fepx_parms (FILE * file, struct NODES Nodes,
-			      struct MESH Mesh)
+                              struct MESH Mesh)
 {
   /* fepx1 = nb of elts and nodes */
   fprintf (file, "%d %d 9\n", Mesh.EltQty, Nodes.NodeQty);
@@ -22,8 +22,8 @@ neut_mesh_fprintf_fepx_nodes (FILE * file, struct NODES Nodes)
     fprintf (file, "%d", i - 1);
     for (j = 0; j < 3; j++)
       fprintf (file, "  %.12f",
-	       (fabs (Nodes.NodeCoo[i][j]) <
-		1e-12) ? 0 : Nodes.NodeCoo[i][j]);
+               (fabs (Nodes.NodeCoo[i][j]) <
+                1e-12) ? 0 : Nodes.NodeCoo[i][j]);
     fprintf (file, "\n");
   }
 
@@ -32,7 +32,7 @@ neut_mesh_fprintf_fepx_nodes (FILE * file, struct NODES Nodes)
 
 void
 neut_mesh_fprintf_fepx_elts (FILE * file, struct TESS Tess,
-			     struct NSET NSet2D, struct MESH Mesh)
+                             struct NSET NSet2D, struct MESH Mesh)
 {
   int i, j, fod;
 
@@ -43,7 +43,7 @@ neut_mesh_fprintf_fepx_elts (FILE * file, struct TESS Tess,
     {
       fprintf (file, "%d ", i - 1);
       for (j = 0; j < 3; j++)
-	fprintf (file, " %d", Mesh.EltNodes[i][j] - 1);
+        fprintf (file, " %d", Mesh.EltNodes[i][j] - 1);
 
       fod = -ut_array_1d_int_min (Tess.FacePoly[Mesh.EltElset[i]], 2);
 
@@ -73,7 +73,7 @@ neut_mesh_fprintf_fepx_elts (FILE * file, struct TESS Tess,
     {
       fprintf (file, "%d ", i - 1);
       for (j = 0; j < 4; j++)
-	fprintf (file, " %d", Mesh.EltNodes[i][j] - 1);
+        fprintf (file, " %d", Mesh.EltNodes[i][j] - 1);
       fprintf (file, "\n");
     }
   else if (Mesh.Dimension == 3 && Mesh.EltOrder == 2)
@@ -98,8 +98,8 @@ neut_mesh_fprintf_fepx_elts (FILE * file, struct TESS Tess,
 
 void
 neut_mesh_fprintf_fepx_skinelts (FILE * file, struct TESS Tess,
-				 struct MESH Mesh2D, struct MESH Mesh3D,
-				 struct NODES Nodes, char *surflist)
+                                 struct MESH Mesh2D, struct MESH Mesh3D,
+                                 struct NODES Nodes, char *surflist)
 {
   double res;
   int i, j, k, l, eltnb, eltqty, elt3dqty, id, status;
@@ -111,7 +111,7 @@ neut_mesh_fprintf_fepx_skinelts (FILE * file, struct TESS Tess,
   char **name = NULL;
   int qty;
 
-  ut_string_separate (surflist, NEUT_SEP_NODEP, &name, &qty);
+  ut_list_break (surflist, NEUT_SEP_NODEP, &name, &qty);
 
   fprintf (file, "%d\n", qty);
 
@@ -129,70 +129,70 @@ neut_mesh_fprintf_fepx_skinelts (FILE * file, struct TESS Tess,
 
     fprintf (file, "%d\n", eltqty);
 
-    ut_array_1d_memcpy (n0, 3, Tess.DomFaceEq[id] + 1);
+    ut_array_1d_memcpy (Tess.DomFaceEq[id] + 1, 3, n0);
     ut_array_1d_scale (n0, 3, -1);
 
     for (j = 1; j <= Tess.DomTessFaceQty[id]; j++)
     {
       for (k = 1; k <= Mesh2D.Elsets[Tess.DomTessFaceNb[id][j]][0]; k++)
       {
-	eltnb = Mesh2D.Elsets[Tess.DomTessFaceNb[id][j]][k];
-	neut_mesh_elt_normal (Mesh2D, Nodes, eltnb, n);
+        eltnb = Mesh2D.Elsets[Tess.DomTessFaceNb[id][j]][k];
+        neut_mesh_elt_normal (Mesh2D, Nodes, eltnb, n);
 
-	neut_mesh_elt2d_elts3d (Mesh2D, eltnb, Mesh3D, &elt3d, &elt3dqty);
+        neut_mesh_elt2d_elts3d (Mesh2D, eltnb, Mesh3D, &elt3d, &elt3dqty);
 
-	if (elt3dqty != 1)
-	{
-	  printf ("Nodes:\n");
-	  neut_debug_nodes (stdout, Nodes);
-	  printf ("Mesh2D:\n");
-	  neut_debug_mesh (stdout, Mesh2D);
-	  printf ("Mesh3D:\n");
-	  neut_debug_mesh (stdout, Mesh3D);
+        if (elt3dqty != 1)
+        {
+          printf ("Nodes:\n");
+          neut_debug_nodes (stdout, Nodes);
+          printf ("Mesh2D:\n");
+          neut_debug_mesh (stdout, Mesh2D);
+          printf ("Mesh3D:\n");
+          neut_debug_mesh (stdout, Mesh3D);
 
-	  printf ("elt = %d\n", eltnb);
-	  printf ("elt3dqty != 1 ( = %d)\n", elt3dqty);
-	  ut_array_1d_int_fprintf (stdout, elt3d, elt3dqty, "%d");
-	  abort ();
-	}
+          printf ("elt = %d\n", eltnb);
+          printf ("elt3dqty != 1 ( = %d)\n", elt3dqty);
+          ut_array_1d_int_fprintf (stdout, elt3d, elt3dqty, "%d");
+          abort ();
+        }
 
-	fprintf (file, "%d", elt3d[0] - 1);
+        fprintf (file, "%d", elt3d[0] - 1);
 
-	res = ut_vector_scalprod (n0, n);
-	if (Mesh2D.EltOrder == 1)
-	{
-	  if (res > 0)
-	    for (l = 0; l <= 2; l++)
-	      fprintf (file, " %d", Mesh2D.EltNodes[eltnb][seqo1[l]] - 1);
-	  else
-	    for (l = 2; l >= 0; l--)
-	      fprintf (file, " %d", Mesh2D.EltNodes[eltnb][seqo1[l]] - 1);
-	}
-	else if (Mesh2D.EltOrder == 2)
-	{
-	  if (res > 0)
-	  {
-	    for (l = 0; l < 6; l++)
-	      fprintf (file, " %d", Mesh2D.EltNodes[eltnb][seqo2[l]] - 1);
-	  }
-	  else
-	  {
-	    /* reverse order from 0 (must be from a 1st order node) */
-	    fprintf (file, " %d", Mesh2D.EltNodes[eltnb][seqo2[0]] - 1);
-	    for (l = 5; l >= 1; l--)
-	      fprintf (file, " %d", Mesh2D.EltNodes[eltnb][seqo2[l]] - 1);
-	  }
-	}
+        res = ut_vector_scalprod (n0, n);
+        if (Mesh2D.EltOrder == 1)
+        {
+          if (res > 0)
+            for (l = 0; l <= 2; l++)
+              fprintf (file, " %d", Mesh2D.EltNodes[eltnb][seqo1[l]] - 1);
+          else
+            for (l = 2; l >= 0; l--)
+              fprintf (file, " %d", Mesh2D.EltNodes[eltnb][seqo1[l]] - 1);
+        }
+        else if (Mesh2D.EltOrder == 2)
+        {
+          if (res > 0)
+          {
+            for (l = 0; l < 6; l++)
+              fprintf (file, " %d", Mesh2D.EltNodes[eltnb][seqo2[l]] - 1);
+          }
+          else
+          {
+            /* reverse order from 0 (must be from a 1st order node) */
+            fprintf (file, " %d", Mesh2D.EltNodes[eltnb][seqo2[0]] - 1);
+            for (l = 5; l >= 1; l--)
+              fprintf (file, " %d", Mesh2D.EltNodes[eltnb][seqo2[l]] - 1);
+          }
+        }
 
-	fprintf (file, " \n");
+        fprintf (file, " \n");
       }
     }
   }
 
-  ut_free_1d (n);
-  ut_free_1d (n0);
-  ut_free_1d_int (elt3d);
-  ut_free_2d_char (name, qty);
+  ut_free_1d (&n);
+  ut_free_1d (&n0);
+  ut_free_1d_int (&elt3d);
+  ut_free_2d_char (&name, qty);
 
   return;
 }
@@ -210,8 +210,9 @@ neut_mesh_fprintf_fepx_elsets (FILE * file, struct MESH Mesh3D, char *version)
   // 1 if for the phase
   for (i = 1; i <= Mesh3D.EltQty; i++)
     fprintf (file, "%d 1\n",
-	     (!Mesh3D.ElsetId) ? Mesh3D.EltElset[i]
-	     : Mesh3D.ElsetId[Mesh3D.EltElset[i]]);
+             (!Mesh3D.ElsetId) ? Mesh3D.EltElset[i] : Mesh3D.ElsetId[Mesh3D.
+                                                                     EltElset
+                                                                     [i]]);
 
   if (version && !strcmp (version, "legacy"))
     fprintf (file, "end-options\n");
@@ -221,14 +222,14 @@ neut_mesh_fprintf_fepx_elsets (FILE * file, struct MESH Mesh3D, char *version)
 
 void
 neut_mesh_fprintf_fepx_nsets (FILE * file, struct NSET NSet0D,
-			      struct NSET NSet1D, struct NSET NSet2D,
-			      char *nset, char *version)
+                              struct NSET NSet1D, struct NSET NSet2D,
+                              char *nset, char *version)
 {
   int i, j, status;
   char **name;
   int qty;
 
-  ut_string_separate (nset, NEUT_SEP_NODEP, &name, &qty);
+  ut_list_break (nset, NEUT_SEP_NODEP, &name, &qty);
 
   /* first pass, for calculating total number of bcs */
   int bcqty = 0;
@@ -239,9 +240,9 @@ neut_mesh_fprintf_fepx_nsets (FILE * file, struct NSET NSet0D,
     for (j = 1; j <= NSet0D.qty; j++)
       if (!strcmp (name[i], NSet0D.names[j]))
       {
-	bcqty += NSet0D.nodeqty[j];
-	status = 0;
-	break;
+        bcqty += NSet0D.nodeqty[j];
+        status = 0;
+        break;
       }
 
     if (status == 0)
@@ -250,9 +251,9 @@ neut_mesh_fprintf_fepx_nsets (FILE * file, struct NSET NSet0D,
     for (j = 1; j <= NSet1D.qty; j++)
       if (!strcmp (name[i], NSet1D.names[j]))
       {
-	bcqty += NSet1D.nodeqty[j];
-	status = 0;
-	break;
+        bcqty += NSet1D.nodeqty[j];
+        status = 0;
+        break;
       }
 
     if (status == 0)
@@ -261,9 +262,9 @@ neut_mesh_fprintf_fepx_nsets (FILE * file, struct NSET NSet0D,
     for (j = 1; j <= NSet2D.qty; j++)
       if (!strcmp (name[i], NSet2D.names[j]))
       {
-	bcqty += NSet2D.nodeqty[j];
-	status = 0;
-	break;
+        bcqty += NSet2D.nodeqty[j];
+        status = 0;
+        break;
       }
 
     if (status == 0)
@@ -274,10 +275,10 @@ neut_mesh_fprintf_fepx_nsets (FILE * file, struct NSET NSet0D,
   }
 
   /* header */
-  if (version && !strcmp(version,"legacy"))
+  if (version && !strcmp (version, "legacy"))
     fprintf (file, "0\n");
 
-  fprintf(file, "%d\n", bcqty);
+  fprintf (file, "%d\n", bcqty);
 
   for (i = 0; i < qty; i++)
   {
@@ -286,10 +287,10 @@ neut_mesh_fprintf_fepx_nsets (FILE * file, struct NSET NSet0D,
     for (j = 1; j <= NSet0D.qty; j++)
       if (!strcmp (name[i], NSet0D.names[j]))
       {
-	neut_mesh_fprintf_fepx_nset (file, NSet0D.names[j], NSet0D.nodeqty[j],
-				     NSet0D.nodes[j]);
-	status = 0;
-	break;
+        neut_mesh_fprintf_fepx_nset (file, NSet0D.names[j], NSet0D.nodeqty[j],
+                                     NSet0D.nodes[j]);
+        status = 0;
+        break;
       }
 
     if (status == 0)
@@ -298,10 +299,10 @@ neut_mesh_fprintf_fepx_nsets (FILE * file, struct NSET NSet0D,
     for (j = 1; j <= NSet1D.qty; j++)
       if (!strcmp (name[i], NSet1D.names[j]))
       {
-	neut_mesh_fprintf_fepx_nset (file, NSet1D.names[j], NSet1D.nodeqty[j],
-				     NSet1D.nodes[j]);
-	status = 0;
-	break;
+        neut_mesh_fprintf_fepx_nset (file, NSet1D.names[j], NSet1D.nodeqty[j],
+                                     NSet1D.nodes[j]);
+        status = 0;
+        break;
       }
 
     if (status == 0)
@@ -310,10 +311,10 @@ neut_mesh_fprintf_fepx_nsets (FILE * file, struct NSET NSet0D,
     for (j = 1; j <= NSet2D.qty; j++)
       if (!strcmp (name[i], NSet2D.names[j]))
       {
-	neut_mesh_fprintf_fepx_nset (file, NSet2D.names[j], NSet2D.nodeqty[j],
-				     NSet2D.nodes[j]);
-	status = 0;
-	break;
+        neut_mesh_fprintf_fepx_nset (file, NSet2D.names[j], NSet2D.nodeqty[j],
+                                     NSet2D.nodes[j]);
+        status = 0;
+        break;
       }
 
     if (status == 0)
@@ -330,7 +331,7 @@ neut_mesh_fprintf_fepx_nsets (FILE * file, struct NSET NSet0D,
 }
 
 void
-neut_mesh_fprintf_fepx_kocks (FILE *file, struct TESS Tess, char *version)
+neut_mesh_fprintf_fepx_kocks (FILE * file, struct TESS Tess, char *version)
 {
   int i;
   double *ek = ol_e_alloc ();
@@ -392,7 +393,7 @@ neut_mesh_bcsfile_update (FILE* filein, FILE* file, struct PART Part)
   fscanf (filein, "%d\n", &tmp);
   fprintf (file, "%d\n", tmp);
 
-  ut_free_1d_char (string);
+  ut_free_1d_char (&string);
 
   return;
 }
@@ -471,7 +472,7 @@ neut_mesh_surffile_update (FILE* filein, FILE* file, struct PART Part)
     fprintf (file, "\n");
   }
 
-  ut_free_1d_char (string);
+  ut_free_1d_char (&string);
 
   return;
 }

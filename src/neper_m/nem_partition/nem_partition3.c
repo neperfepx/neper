@@ -1,13 +1,13 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_partition_.h"
 #ifdef HAVE_LIBSCOTCH
 
 void
-nem_partition_writearch (FILE * file, int procqty, int proccoreqty,
-			 int dcore, int dncor, int dproc)
+nem_partition_writearch (FILE * file, int procqty, int proccoreqty, int dcore,
+                         int dncor, int dproc)
 {
   int i, j, ip;
   int coreqty = procqty * proccoreqty;
@@ -25,11 +25,11 @@ nem_partition_writearch (FILE * file, int procqty, int proccoreqty,
       ip = proccoreqty * (i / proccoreqty);
 
       if (j <= ip)
-	fprintf (file, "%d", dproc);
+        fprintf (file, "%d", dproc);
       else if (j < i)
-	fprintf (file, "%d", dncor);
+        fprintf (file, "%d", dncor);
       else
-	fprintf (file, "%d", dcore);
+        fprintf (file, "%d", dcore);
 
       fprintf (file, (j < i) ? " " : "\n");
     }
@@ -61,61 +61,61 @@ nem_partition_elts_match (struct MESH *Mesh, struct PART *pPart)
     for (i = 1; i <= Mesh[dim].EltQty; i++)
       if ((*pPart).elt_parts[i] == -1)
       {
-	/* if the element has not been assigned to a partition yet */
-	ut_array_1d_int_zero (eltnodepart, partnbr);
+        /* if the element has not been assigned to a partition yet */
+        ut_array_1d_int_zero (eltnodepart, partnbr);
 
-	/* recording eltnodepart: the number of nodes in every partition */
-	for (j = 0; j < eltnodeqty; j++)
-	  eltnodepart[(*pPart).node_parts[Mesh[dim].EltNodes[i][j]]]++;
+        /* recording eltnodepart: the number of nodes in every partition */
+        for (j = 0; j < eltnodeqty; j++)
+          eltnodepart[(*pPart).node_parts[Mesh[dim].EltNodes[i][j]]]++;
 
-	/* maxpnodeqty: max number of nodes in the same partition
-	 * nodemaxpqty: number of partitions for which it is the case */
-	maxpnodeqty = ut_array_1d_int_max (eltnodepart, partnbr);
-	nodemaxpqty =
-	  ut_array_1d_int_eltpos_all (eltnodepart, partnbr, maxpnodeqty, pos);
-	if (nodemaxpqty < 1)
-	  ut_error_reportbug ();
+        /* maxpnodeqty: max number of nodes in the same partition
+         * nodemaxpqty: number of partitions for which it is the case */
+        maxpnodeqty = ut_array_1d_int_max (eltnodepart, partnbr);
+        nodemaxpqty =
+          ut_array_1d_int_eltpos_all (eltnodepart, partnbr, maxpnodeqty, pos);
+        if (nodemaxpqty < 1)
+          ut_print_neperbug ();
 
-	/* if most of the nodes are in one partition or no ambiguity:
-	 * assigning the element to the partition */
-	if (maxpnodeqty == nodeqty)
-	{
-	  partition = -1;
+        /* if most of the nodes are in one partition or no ambiguity:
+         * assigning the element to the partition */
+        if (maxpnodeqty == nodeqty)
+        {
+          partition = -1;
 
-	  if (nodemaxpqty == 1)
-	    partition = pos[0];
-	  else
-	  {
-	    for (k = 0; k < nodemaxpqty; k++)
-	    {
-	      peltqty[k] = (*pPart).eltqty[pos[k]];
-	      partition =
-		pos[ut_array_1d_int_min_index (peltqty, nodemaxpqty)];
-	    }
-	  }
+          if (nodemaxpqty == 1)
+            partition = pos[0];
+          else
+          {
+            for (k = 0; k < nodemaxpqty; k++)
+            {
+              peltqty[k] = (*pPart).eltqty[pos[k]];
+              partition =
+                pos[ut_array_1d_int_min_index (peltqty, nodemaxpqty)];
+            }
+          }
 
-	  if (partition == -1)
-	    ut_error_reportbug ();
+          if (partition == -1)
+            ut_print_neperbug ();
 
-	  (*pPart).elt_parts[i] = partition;
-	  (*pPart).eltqty[partition]++;
-	}
+          (*pPart).elt_parts[i] = partition;
+          (*pPart).eltqty[partition]++;
+        }
       }
 
   if (ut_array_1d_int_eltpos ((*pPart).elt_parts + 1, Mesh[dim].EltQty, -1) !=
       -1)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
-  ut_free_1d_int (pos);
-  ut_free_1d_int (eltnodepart);
-  ut_free_1d_int (peltqty);
+  ut_free_1d_int (&pos);
+  ut_free_1d_int (&eltnodepart);
+  ut_free_1d_int (&peltqty);
 
   return;
 }
 
 int
 nem_partition_elts_balancing (struct MESH *Mesh, struct PART *pPart,
-			      double level)
+                              double level)
 {
   int i;
   int **Q = NULL;
@@ -145,7 +145,7 @@ nem_partition_elts_balancing (struct MESH *Mesh, struct PART *pPart,
   if (sum != 0)
     ut_print_message (1, 3, "Balancing is off by %d elements.\n", sum);
 
-  ut_free_2d_int (Q, BoundEltQty);
+  ut_free_2d_int (&Q, BoundEltQty);
 
   return sum;
 }

@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2019, Romain Quey.
+# Copyright (C) 2003-2020, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
@@ -42,7 +42,6 @@ add_library (neper_v
 ./nev_include/nev_include1.c
 ./nev_image/nev_image1.c
 ./neper_v.c
-./nev_processimage/nev_processimage1.c
 ./nev_load/nev_load1.c
 ./nev_load/nev_load2.c
 ./nev_data/nev_data1.c

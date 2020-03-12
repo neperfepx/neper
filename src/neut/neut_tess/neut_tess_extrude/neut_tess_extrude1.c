@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_extrude_.h"
@@ -8,7 +8,7 @@ void
 neut_tess_extrude (struct TESS Tess, double d, struct TESS *pT)
 {
   if (Tess.Dim != 2)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   neut_tess_free (pT);
 

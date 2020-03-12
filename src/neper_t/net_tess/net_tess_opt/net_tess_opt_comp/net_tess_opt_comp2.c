@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_.h"
@@ -16,10 +16,13 @@ net_tess_opt_comp_nlopt (double *x, struct TOPT *pTOpt)
   {
     // incrementing loop; algo already set -----------------------------
 
-    ut_array_1d_int_list_addelt (&(*pTOpt).loop_start, &(*pTOpt).loop, (*pTOpt).iter + 1);
-    (*pTOpt).loop_plateau_length = ut_realloc_1d_int ((*pTOpt).loop_plateau_length, (*pTOpt).loop);
+    ut_array_1d_int_list_addval (&(*pTOpt).loop_start, &(*pTOpt).loop,
+                                 (*pTOpt).iter + 1);
+    (*pTOpt).loop_plateau_length =
+      ut_realloc_1d_int ((*pTOpt).loop_plateau_length, (*pTOpt).loop);
     (*pTOpt).loop_plateau_length[(*pTOpt).loop - 1] = 0;
-    (*pTOpt).loop_status = ut_realloc_1d_int ((*pTOpt).loop_status, (*pTOpt).loop);
+    (*pTOpt).loop_status =
+      ut_realloc_1d_int ((*pTOpt).loop_status, (*pTOpt).loop);
     (*pTOpt).loop_status[(*pTOpt).loop - 1] = 0;
 
     // running optimization --------------------------------------------
@@ -41,20 +44,20 @@ net_tess_opt_comp_nlopt (double *x, struct TOPT *pTOpt)
       // only this loop ended by a plateau, retrying with the same algorithm
       if (plateauqty == 1)
       {
-	algoid = 0;
-	status = -1;
+        algoid = 0;
+        status = -1;
       }
 
       // previous loops also ended by a plateau, switching algorithm
       else if (plateauqty <= (*pTOpt).algoqty + 1)
       {
-	algoid = plateauqty - 1;
-	status = -1;
+        algoid = plateauqty - 1;
+        status = -1;
       }
 
       // all algos ended by a plateau, giving up
       else
-	status = 0;
+        status = 0;
     }
   }
   while (status != 0);
@@ -90,7 +93,7 @@ net_tess_opt_comp_rand (double *x, struct TOPT *pTOpt)
   net_tess_opt_comp_rand_init (pTOpt);
 
   net_tess_opt_comp_rand_read (*pTOpt, &seedqty, &dimqty, &min, &max, &id,
-			       &alldims, &alldimqty);
+                               &alldims, &alldimqty);
 
   gsl_rng_set (r, id);
 
@@ -100,17 +103,17 @@ net_tess_opt_comp_rand (double *x, struct TOPT *pTOpt)
 
     if ((*pTOpt).iter % 2)
     {
-      ut_array_1d_memcpy (x_cpy, (*pTOpt).xqty, x);
+      ut_array_1d_memcpy (x, (*pTOpt).xqty, x_cpy);
       net_tess_opt_comp_rand_shift (x, pTOpt, seedqty, dimqty, min, max,
-	                            alldims, alldimqty, r);
+                                    alldims, alldimqty, r);
     }
     else
       net_tess_opt_comp_rand_revert (x, *pTOpt, x_cpy);
   }
   while ((*pTOpt).iter <= (*pTOpt).itermax);
 
-  ut_free_1d_int (alldims);
-  ut_free_1d (x_cpy);
+  ut_free_1d_int (&alldims);
+  ut_free_1d (&x_cpy);
   gsl_rng_free (r);
 
   return 0;
@@ -131,15 +134,15 @@ net_tess_opt_comp_lloyd (double *x, struct TOPT *pTOpt)
     if ((*pTOpt).iter > 0)
     {
       for (i = 1; i <= (*pTOpt).CellQty; i++)
-	neut_poly_centroid ((*pTOpt).Poly[i], centroid[i]);
+        neut_poly_centroid ((*pTOpt).Poly[i], centroid[i]);
 
       for (i = 0; i < (*pTOpt).xqty; i++)
       {
-	seed = (*pTOpt).x_seed[i];
-	var = (*pTOpt).x_var[i];
+        seed = (*pTOpt).x_seed[i];
+        var = (*pTOpt).x_var[i];
 
-	if (var >= 0 && var <= 2)
-	  x[i] = x[i] * (1 - fact) + centroid[seed][var] * fact;
+        if (var >= 0 && var <= 2)
+          x[i] = x[i] * (1 - fact) + centroid[seed][var] * fact;
       }
     }
 
@@ -153,7 +156,7 @@ net_tess_opt_comp_lloyd (double *x, struct TOPT *pTOpt)
   }
   while (!status);
 
-  ut_free_2d (centroid, (*pTOpt).CellQty + 1);
+  ut_free_2d (&centroid, (*pTOpt).CellQty + 1);
 
   return 0;
 }

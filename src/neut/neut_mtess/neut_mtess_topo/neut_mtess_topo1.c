@@ -1,31 +1,30 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_mtess_topo_.h"
 
 int
-neut_mtess_tess_level_dom (struct MTESS MTess, struct TESS Tess, int
-			   level, int *dom)
+neut_mtess_tess_level_dom (struct MTESS MTess, struct TESS Tess, int level,
+                           int *dom)
 {
   int i;
 
   if (Tess.TessId <= 0)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   if (level >= Tess.Level)
     return -1;
 
   dom[0] = Tess.TessId;
   for (i = Tess.Level - 1; i >= level; i--)
-    ut_array_1d_int_memcpy (dom, 2, MTess.TessDom[dom[0]]);
+    ut_array_1d_int_memcpy (MTess.TessDom[dom[0]], 2, dom);
 
   return 0;
 }
 
 int
-neut_mtess_tess_doms (struct MTESS MTess, struct TESS Tess,
-		      int **doms)
+neut_mtess_tess_doms (struct MTESS MTess, struct TESS Tess, int **doms)
 {
   int i;
 
@@ -36,18 +35,18 @@ neut_mtess_tess_doms (struct MTESS MTess, struct TESS Tess,
   }
 
   if (Tess.TessId <= 0)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
-  ut_array_1d_int_memcpy (doms[Tess.Level], 2, MTess.TessDom[Tess.TessId]);
+  ut_array_1d_int_memcpy (MTess.TessDom[Tess.TessId], 2, doms[Tess.Level]);
   for (i = Tess.Level - 1; i >= 0; i--)
-    ut_array_1d_int_memcpy (doms[i], 2, MTess.TessDom[doms[i + 1][0]]);
+    ut_array_1d_int_memcpy (MTess.TessDom[doms[i + 1][0]], 2, doms[i]);
 
   return 0;
 }
 
 int
 neut_mtess_tess_domtesses (struct MTESS MTess, struct TESS Tess,
-		           int *domtesses)
+                           int *domtesses)
 {
   int i;
   int **doms = ut_alloc_2d_int (Tess.Level + 1, 2);
@@ -56,14 +55,13 @@ neut_mtess_tess_domtesses (struct MTESS MTess, struct TESS Tess,
   for (i = 0; i < Tess.Level; i++)
     domtesses[i] = doms[i][0];
 
-  ut_free_2d_int (doms, Tess.Level + 1);
+  ut_free_2d_int (&doms, Tess.Level + 1);
 
   return 0;
 }
 
 int
-neut_mtess_tess_dompolys (struct MTESS MTess, struct TESS Tess,
-			  int *dompolys)
+neut_mtess_tess_dompolys (struct MTESS MTess, struct TESS Tess, int *dompolys)
 {
   int i;
   int **doms = ut_alloc_2d_int (Tess.Level + 1, 2);
@@ -72,14 +70,14 @@ neut_mtess_tess_dompolys (struct MTESS MTess, struct TESS Tess,
   for (i = 0; i < Tess.Level; i++)
     dompolys[i] = doms[i][1];
 
-  ut_free_2d_int (doms, Tess.Level + 1);
+  ut_free_2d_int (&doms, Tess.Level + 1);
 
   return 0;
 }
 
 int
 neut_mtess_tess_poly_childtesses (struct MTESS MTess, struct TESS *Tess,
-                                  int tessid, int **ptess, int* ptessqty)
+                                  int tessid, int **ptess, int *ptessqty)
 {
   int i;
 

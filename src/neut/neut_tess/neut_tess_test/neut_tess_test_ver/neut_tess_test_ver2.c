@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_test_ver_.h"
@@ -18,20 +18,19 @@ neut_tess_test_verEdgeQtyNNb (struct TESS Tess, int i, int verbosity)
   {
     if (verbosity)
       ut_print_message (2, 3, "Number of edges = %d < %d.\n",
-			Tess.VerEdgeQty[i], min);
+                        Tess.VerEdgeQty[i], min);
 
     return 1;
   }
 
-  res = Tess.VerEdgeQty[i] - 1;
-  ut_array_1d_int_uniq (Tess.VerEdgeNb[i], &res);
+  ut_array_1d_int_uniq (Tess.VerEdgeNb[i], Tess.VerEdgeQty[i] - 1, &res);
   if (res != Tess.VerEdgeQty[i] - 1)
   {
     if (verbosity)
     {
       ut_print_message (2, 3, "2 identical edges in edge list.\n");
       ut_array_1d_int_fprintf (stdout, Tess.VerEdgeNb[i], Tess.VerEdgeQty[i],
-			       "%d");
+                               "%d");
     }
 
     return 1;
@@ -43,9 +42,9 @@ neut_tess_test_verEdgeQtyNNb (struct TESS Tess, int i, int verbosity)
     if (Tess.EdgeState[edge] == -1)
     {
       if (verbosity)
-	ut_print_message (2, 3,
-			  "edge %d is in edge list, but also marked as removed.\n",
-			  i, edge);
+        ut_print_message (2, 3,
+                          "edge %d is in edge list, but also marked as removed.\n",
+                          i, edge);
 
       return 1;
     }
@@ -67,9 +66,9 @@ neut_tess_test_verEdgeReciprocity (struct TESS Tess, int i, int verbosity)
     if (ut_array_1d_int_eltpos (Tess.EdgeVerNb[edge], 2, i) == -1)
     {
       if (verbosity)
-	ut_print_message (2, 3,
-			  "edge %d is in edge list, but edge not based on ver.\n",
-			  edge);
+        ut_print_message (2, 3,
+                          "edge %d is in edge list, but edge not based on ver.\n",
+                          edge);
 
       return 1;
     }
@@ -93,20 +92,20 @@ neut_tess_test_verBoundNCoo (struct TESS Tess, int ver, int verbosity)
   neut_tess_ver_domfaces (Tess, ver, &face, &qty);
   for (i = 0; i < qty; i++)
   {
-    ut_space_point_plane_dist (Tess.VerCoo[ver], Tess.DomFaceEq[face[i]],
-			       &dist);
+    dist =
+      ut_space_point_plane_dist (Tess.VerCoo[ver], Tess.DomFaceEq[face[i]]);
     if (dist > 1e-8)
     {
       if (verbosity)
-	ut_print_message (2, 3,
-			  "belongs to domain face %d, but does not lie on the face plane (dist = %.g > 1e-8)\n",
-			  face[i], dist);
+        ut_print_message (2, 3,
+                          "belongs to domain face %d, but does not lie on the face plane (dist = %.g > 1e-8)\n",
+                          face[i], dist);
 
       return 1;
     }
   }
 
-  ut_free_1d_int (face);
+  ut_free_1d_int (&face);
 
   return 0;
 }
@@ -130,20 +129,20 @@ neut_tess_test_verFaceCoplaneity (struct TESS Tess, int ver, int verbosity)
       com = 0;
       for (k = 0; k < Tess.EdgeFaceQty[edge1]; k++)
       {
-	face = Tess.EdgeFaceNb[edge1][k];
-	if (ut_array_1d_int_eltpos
-	    (Tess.EdgeFaceNb[edge2], Tess.EdgeFaceQty[edge2], face) != -1)
-	  com++;
+        face = Tess.EdgeFaceNb[edge1][k];
+        if (ut_array_1d_int_eltpos
+            (Tess.EdgeFaceNb[edge2], Tess.EdgeFaceQty[edge2], face) != -1)
+          com++;
       }
 
       if (com > 1)
       {
-	if (verbosity)
-	  ut_print_message (2, 3,
-			    "has edges %d and %d, but these edges share more than 1 (= %d) face.\n",
-			    edge1, edge2, com);
+        if (verbosity)
+          ut_print_message (2, 3,
+                            "has edges %d and %d, but these edges share more than 1 (= %d) face.\n",
+                            edge1, edge2, com);
 
-	return 2;
+        return 2;
       }
     }
   }

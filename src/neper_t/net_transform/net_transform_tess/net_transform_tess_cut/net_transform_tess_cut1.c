@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_transform_tess_cut_.h"
@@ -49,9 +49,9 @@ net_transform_tess_cut (char *expr, struct TESS Dom, struct TESS *pTess)
 
     // removing exterior cells
 
-    net_transform_tess_cut_clean (Prim, PrimQty,
-                                  cutcells, cutcellqty, mirrorseeds,
-                                  mirrorseedprims, mirrorseedqty, pTess);
+    net_transform_tess_cut_clean (Prim, PrimQty, cutcells, cutcellqty,
+                                  mirrorseeds, mirrorseedprims, mirrorseedqty,
+                                  pTess);
     // finalizing
 
     net_transform_tess_cut_post (TessGen, intseed_oldseed, intseedqty, pTess);
@@ -62,15 +62,15 @@ net_transform_tess_cut (char *expr, struct TESS Dom, struct TESS *pTess)
 
   neut_tess_init_edgelength (pTess);
 
-  ut_free_1d_int (intseed_oldseed);
+  ut_free_1d_int (&intseed_oldseed);
   neut_seedset_free (&SSet);
   neut_tess_free (&TessGen);
   for (i = 0; i < PrimQty; i++)
     neut_prim_free (Prim + i);
   free (Prim);
-  ut_free_1d_int (cutcells);
-  ut_free_1d_int (mirrorseeds);
-  ut_free_1d_int (mirrorseedprims);
+  ut_free_1d_int (&cutcells);
+  ut_free_1d_int (&mirrorseeds);
+  ut_free_1d_int (&mirrorseedprims);
 
   return;
 }

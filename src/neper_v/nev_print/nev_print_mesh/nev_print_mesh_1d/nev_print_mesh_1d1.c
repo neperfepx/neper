@@ -1,13 +1,13 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_mesh_1d_.h"
 
 void
 nev_print_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
-		   struct MESH *Mesh, struct NODEDATA NodeData, struct
-		   MESHDATA *MeshData)
+                   struct MESH *Mesh, struct NODEDATA NodeData,
+                   struct MESHDATA *MeshData)
 {
   int i, j, elset, elt1d_qty, elt3dqty, printelt1d_qty, texture_unique;
   double ambient = (Print.showshadow == 1) ? 0.6 : 1;
@@ -32,27 +32,26 @@ nev_print_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
       {
         elset = Mesh[1].EltElset[i];
 
-	if (Tess.EdgeQty == 0)
-	  hidden[i] = 0;
+        if (Tess.EdgeQty == 0)
+          hidden[i] = 0;
         else if (Tess.EdgeQty > 0 && Tess.EdgeDom[elset][0] >= 1)
-	  hidden[i] = 0;
+          hidden[i] = 0;
         else if (!neut_mesh_elt1d_isembedded (Mesh[3], Mesh[1], i))
           hidden[i] = 0;
-	else
-	{
-	  neut_mesh_elt1d_elts3d (Mesh[1], i, Mesh[2], Mesh[3], &elts3d,
-				  &elt3dqty);
+        else
+        {
+          neut_mesh_elt1d_elts3d (Mesh[1], i, Mesh[2], Mesh[3], &elts3d,
+                                  &elt3dqty);
 
-	  for (j = 0; j < elt3dqty; j++)
-	    if (Print.showelt3d[elts3d[j]] == 0)
-	    {
-	      hidden[i] = 0;
-	      break;
-	    }
-	}
+          for (j = 0; j < elt3dqty; j++)
+            if (Print.showelt3d[elts3d[j]] == 0)
+            {
+              hidden[i] = 0;
+              break;
+            }
+        }
 
-	ut_free_1d_int (elts3d);
-	elts3d = NULL;
+        ut_free_1d_int (&elts3d);
       }
     hidden[0] = ut_array_1d_int_sum (hidden + 1, Mesh[1].EltQty);
   }
@@ -63,21 +62,21 @@ nev_print_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
     {
       if (Col == NULL)
       {
-	Col = ut_alloc_1d_int (3);
-	ut_array_1d_int_memcpy (Col, 3, MeshData[1].Col[i]);
+        Col = ut_alloc_1d_int (3);
+        ut_array_1d_int_memcpy (MeshData[1].Col[i], 3, Col);
       }
-      else if (ut_array_1d_int_diff (MeshData[1].Col[i], 3, Col, 3))
+      else if (!ut_array_1d_int_equal (MeshData[1].Col[i], 3, Col, 3))
       {
-	texture_unique = 0;
-	break;
+        texture_unique = 0;
+        break;
       }
     }
 
   if (texture_unique)
   {
     fprintf (file,
-	     "#declare elt1d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
-	     Col[0] / 255., Col[1] / 255., Col[2] / 255., ambient);
+             "#declare elt1d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
+             Col[0] / 255., Col[1] / 255., Col[2] / 255., ambient);
 
     strcpy (texture, "elt1d");
   }
@@ -88,33 +87,31 @@ nev_print_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
     {
       if (!texture_unique)
       {
-	fprintf (file,
-		 "#declare elt1d%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
-		 i,
-		 MeshData[1].Col[i][0] / 255.,
-		 MeshData[1].Col[i][1] / 255.,
-		 MeshData[1].Col[i][2] / 255., ambient);
+        fprintf (file,
+                 "#declare elt1d%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
+                 i, MeshData[1].Col[i][0] / 255.,
+                 MeshData[1].Col[i][1] / 255., MeshData[1].Col[i][2] / 255.,
+                 ambient);
 
-	sprintf (texture, "elt1d%d", i);
+        sprintf (texture, "elt1d%d", i);
       }
 
       char *string = ut_alloc_1d_char (100);
       sprintf (string, "%.12f", MeshData[1].Rad[i]);
-      nev_print_segment_wsph (file,
-			      NodeData.Coo[Mesh[1].EltNodes[i][0]],
-			      NodeData.Coo[Mesh[1].EltNodes[i][1]],
-			      string, texture);
+      nev_print_segment_wsph (file, NodeData.Coo[Mesh[1].EltNodes[i][0]],
+                              NodeData.Coo[Mesh[1].EltNodes[i][1]], string,
+                              texture);
 
       printelt1d_qty++;
-      ut_free_1d_char (string);
+      ut_free_1d_char (&string);
     }
 
   ut_print_message (0, 4,
-		    "Number of 1D elts    reduced by %3.0f\%% (to %d).\n",
-		    100 * (double) hidden[0] / (double) elt1d_qty,
-		    elt1d_qty - hidden[0]);
+                    "Number of 1D elts      reduced by %3.0f%% (to %d).\n",
+                    100 * (double) hidden[0] / (double) elt1d_qty,
+                    elt1d_qty - hidden[0]);
 
-  ut_free_1d_int (hidden);
+  ut_free_1d_int (&hidden);
 
   return;
 }

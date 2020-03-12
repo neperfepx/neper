@@ -13,7 +13,7 @@ extern "C"
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-#include"../ut/ut.h"
+#include"../ut/src/ut.h"
 #include"../ol_map.h"
 
 #endif /* OL_MAP_RGB_H */

@@ -1,15 +1,16 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_mtess_flatten_edge_.h"
 
 void
 net_mtess_flatten_edge_domface_edges (struct MTESS MTess, struct TESS *Tess,
-				int tessid, int face, int *pVerQty,
-				double ***pVerCoo, int **pTessNb,
-				int *pTessQty, int ***pEdgeNb, int **pEdgeQty,
-				int ****pEdgeVerNb, int ***pEdgeVerQty)
+                                      int tessid, int face, int *pVerQty,
+                                      double ***pVerCoo, int **pTessNb,
+                                      int *pTessQty, int ***pEdgeNb,
+                                      int **pEdgeQty, int ****pEdgeVerNb,
+                                      int ***pEdgeVerQty)
 {
   int t, i, j, status, ver, edgeinv, poly;
   double *I = ut_alloc_1d (3);
@@ -49,12 +50,12 @@ net_mtess_flatten_edge_domface_edges (struct MTESS MTess, struct TESS *Tess,
   for (t = 0; t < *pTessQty; t++)
   {
     neut_tess_domface_body_edges (Tess[(*pTessNb)[t]],
-				  MTess.DomTessFaceNb[tessid][face][t],
-				  &((*pEdgeNb)[t]), &((*pEdgeQty)[t]));
+                                  MTess.DomTessFaceNb[tessid][face][t],
+                                  &((*pEdgeNb)[t]), &((*pEdgeQty)[t]));
 
     if ((*pEdgeQty)[t] > 0)
       ut_array_1d_int_inv ((*pEdgeNb)[t], (*pEdgeQty)[t], &(EdgeNbInv[t]),
-			   &(EdgeNbInvQty[t]));
+                           &(EdgeNbInvQty[t]));
 
     (*pEdgeVerQty)[t] = ut_alloc_1d_int ((*pEdgeQty)[t]);
     (*pEdgeVerNb)[t] = ut_alloc_1d_pint ((*pEdgeQty)[t]);
@@ -69,41 +70,37 @@ net_mtess_flatten_edge_domface_edges (struct MTESS MTess, struct TESS *Tess,
 
       for (j = 0; j < (*pEdgeQty)[1]; j++)
       {
-	edge[1] = (*pEdgeNb)[1][j];
-	edgever[1] = Tess[(*pTessNb)[1]].EdgeVerNb[edge[1]];
+        edge[1] = (*pEdgeNb)[1][j];
+        edgever[1] = Tess[(*pTessNb)[1]].EdgeVerNb[edge[1]];
 
-	status
-	  =
-	  ut_space_segments_intersectpt (Tess[(*pTessNb)[0]].VerCoo
-					 [edgever[0][0]],
-					 Tess[(*pTessNb)[0]].VerCoo[edgever[0]
-								    [1]],
-					 Tess[(*pTessNb)[1]].VerCoo[edgever[1]
-								    [0]],
-					 Tess[(*pTessNb)[1]].VerCoo[edgever[1]
-								    [1]], I);
+        status =
+          ut_space_segments_inter (Tess[(*pTessNb)[0]].VerCoo[edgever[0][0]],
+                                   Tess[(*pTessNb)[0]].VerCoo[edgever[0][1]],
+                                   Tess[(*pTessNb)[1]].VerCoo[edgever[1][0]],
+                                   Tess[(*pTessNb)[1]].VerCoo[edgever[1][1]],
+                                   I);
 
-	if (status == 1)
-	{
-	  ver = ++(*pVerQty);
-	  (*pVerCoo) = ut_realloc_2d_addline (*pVerCoo, ver, 3);
-	  ut_array_1d_memcpy ((*pVerCoo)[ver - 1], 3, I);
+        if (status == 1)
+        {
+          ver = ++(*pVerQty);
+          (*pVerCoo) = ut_realloc_2d_addline (*pVerCoo, ver, 3);
+          ut_array_1d_memcpy (I, 3, (*pVerCoo)[ver - 1]);
 
-	  int verqty;
-	  for (t = 0; t < 2; t++)
-	  {
-	    edgeinv = EdgeNbInv[t][edge[t]];
-	    if (edgeinv == -1)
-	    {
-	      printf ("EdgeNbInv[%d][%d] = -1\n", t, edge[t]);
-	      abort ();
-	    }
-	    verqty = ++(*pEdgeVerQty)[t][edgeinv];
-	    (*pEdgeVerNb)[t][edgeinv] = ut_realloc_1d_int
-	      ((*pEdgeVerNb)[t][edgeinv], verqty);
-	    (*pEdgeVerNb)[t][edgeinv][verqty - 1] = ver;
-	  }
-	}
+          int verqty;
+          for (t = 0; t < 2; t++)
+          {
+            edgeinv = EdgeNbInv[t][edge[t]];
+            if (edgeinv == -1)
+            {
+              printf ("EdgeNbInv[%d][%d] = -1\n", t, edge[t]);
+              abort ();
+            }
+            verqty = ++(*pEdgeVerQty)[t][edgeinv];
+            (*pEdgeVerNb)[t][edgeinv] =
+              ut_realloc_1d_int ((*pEdgeVerNb)[t][edgeinv], verqty);
+            (*pEdgeVerNb)[t][edgeinv][verqty - 1] = ver;
+          }
+        }
       }
     }
 
@@ -117,44 +114,42 @@ net_mtess_flatten_edge_domface_edges (struct MTESS MTess, struct TESS *Tess,
       int tess = (*pTessNb)[t];
       for (i = 0; i < (*pEdgeQty)[t]; i++)
       {
-	ver = Tess[tess].EdgeVerNb[(*pEdgeNb)[t][i]][0];
-	if ((*pEdgeVerQty)[t][i] > 1)
-	{
-	  dist = ut_alloc_1d ((*pEdgeVerQty)[t][i]);
+        ver = Tess[tess].EdgeVerNb[(*pEdgeNb)[t][i]][0];
+        if ((*pEdgeVerQty)[t][i] > 1)
+        {
+          dist = ut_alloc_1d ((*pEdgeVerQty)[t][i]);
 
-	  for (j = 0; j < (*pEdgeVerQty)[t][i]; j++)
-	  {
-	    id = (*pEdgeVerNb)[t][i][j];
-	    dist[j] =
-	      ut_space_dist (Tess[tess].VerCoo[ver], (*pVerCoo)[id - 1]);
-	  }
-	  ut_array_1d_sort_permarray_int (dist,
-					  (*pEdgeVerQty)[t][i],
-					  (*pEdgeVerNb)[t][i]);
+          for (j = 0; j < (*pEdgeVerQty)[t][i]; j++)
+          {
+            id = (*pEdgeVerNb)[t][i][j];
+            dist[j] =
+              ut_space_dist (Tess[tess].VerCoo[ver], (*pVerCoo)[id - 1]);
+          }
+          ut_array_1d_sort_permarray_int (dist, (*pEdgeVerQty)[t][i],
+                                          (*pEdgeVerNb)[t][i]);
 
-	  ut_free_1d (dist);
-	  dist = NULL;
-	}
+          ut_free_1d (&dist);
+        }
       }
     }
   }
 
-  ut_free_1d (I);
-  ut_free_1d_pint (edgever);
-  ut_free_1d_int (edge);
-  ut_free_2d_int (EdgeNbInv, *pTessQty);
-  ut_free_1d_int (EdgeNbInvQty);
+  ut_free_1d (&I);
+  ut_free_1d_pint (&edgever);
+  ut_free_1d_int (&edge);
+  ut_free_2d_int (&EdgeNbInv, *pTessQty);
+  ut_free_1d_int (&EdgeNbInvQty);
 
   return;
 }
 
 void
 net_mtess_flatten_edge_domface_addedge (struct TESS *pFTess, struct TESS Tess,
-				  struct TESSE *pTessE, int edge,
-				  int *dom, struct FLATTEN *pFlatten)
+                                        struct TESSE *pTessE, int edge,
+                                        int *dom, struct FLATTEN *pFlatten)
 {
   neut_tess_addedge (pFTess, (*pTessE).VerFVer[Tess.EdgeVerNb[edge][0]],
-		     (*pTessE).VerFVer[Tess.EdgeVerNb[edge][1]]);
+                     (*pTessE).VerFVer[Tess.EdgeVerNb[edge][1]]);
 
   (*pTessE).EdgeFEdgeQty[edge] = 1;
   (*pTessE).EdgeFEdgeNb[edge] =
@@ -170,26 +165,33 @@ net_mtess_flatten_edge_domface_addedge (struct TESS *pFTess, struct TESS Tess,
 }
 
 void
-net_mtess_flatten_edge_domface_addedge_ivers (struct TESS *pFTess, struct TESS Tess,
-					struct TESSE *pTessE, int edge,
-					int *EdgeVerNb, int EdgeVerQty,
-					int *dom, struct FLATTEN *pFlatten)
+net_mtess_flatten_edge_domface_addedge_ivers (struct TESS *pFTess,
+                                              struct TESS Tess,
+                                              struct TESSE *pTessE, int edge,
+                                              int *EdgeVerNb, int EdgeVerQty,
+                                              int *dom,
+                                              struct FLATTEN *pFlatten)
 {
   int i, ver1, ver2;
 
   (*pTessE).EdgeFEdgeQty[edge] = EdgeVerQty + 1;
-  (*pTessE).EdgeFEdgeNb[edge] = ut_realloc_1d_int
-    ((*pTessE).EdgeFEdgeNb[edge], (*pTessE).EdgeFEdgeQty[edge]);
-  (*pTessE).EdgeFEdgeOri[edge] = ut_realloc_1d_int
-    ((*pTessE).EdgeFEdgeOri[edge], (*pTessE).EdgeFEdgeQty[edge]);
+  (*pTessE).EdgeFEdgeNb[edge] =
+    ut_realloc_1d_int ((*pTessE).EdgeFEdgeNb[edge],
+                       (*pTessE).EdgeFEdgeQty[edge]);
+  (*pTessE).EdgeFEdgeOri[edge] =
+    ut_realloc_1d_int ((*pTessE).EdgeFEdgeOri[edge],
+                       (*pTessE).EdgeFEdgeQty[edge]);
 
   // adding subedges
   for (i = 0; i < EdgeVerQty + 1; i++)
   {
-    ver1 = (i == 0) ? (*pTessE).VerFVer[Tess.EdgeVerNb[edge][0]]
-      : EdgeVerNb[i - 1];
-    ver2 = (i < EdgeVerQty) ? EdgeVerNb[i]
-      : (*pTessE).VerFVer[Tess.EdgeVerNb[edge][1]];
+    ver1 =
+      (i ==
+       0) ? (*pTessE).VerFVer[Tess.EdgeVerNb[edge][0]] : EdgeVerNb[i - 1];
+    ver2 =
+      (i <
+       EdgeVerQty) ? EdgeVerNb[i] : (*pTessE).VerFVer[Tess.
+                                                      EdgeVerNb[edge][1]];
 
     neut_tess_addedge (pFTess, ver1, ver2);
     neut_flatten_addedge (pFlatten, dom);
@@ -203,10 +205,9 @@ net_mtess_flatten_edge_domface_addedge_ivers (struct TESS *pFTess, struct TESS T
 
 void
 net_mtess_flatten_edge_domedge_edges (struct MTESS MTess, struct TESS *Tess,
-				int tessid, int edge,
-				int **pTessNb, int *pTessQty,
-				int ***pEdgeNb, int ***pEdgeOri,
-				int **pEdgeQty)
+                                      int tessid, int edge, int **pTessNb,
+                                      int *pTessQty, int ***pEdgeNb,
+                                      int ***pEdgeOri, int **pEdgeQty)
 {
   int t, id, pos;
   int *polys = NULL;
@@ -226,28 +227,30 @@ net_mtess_flatten_edge_domedge_edges (struct MTESS MTess, struct TESS *Tess,
   for (t = 0; t < *pTessQty; t++)
   {
     id = (*pTessNb)[t];
-    pos = ut_array_1d_int_eltpos
-      (MTess.TessDomEdgeNb[id] + 1, Tess[id].DomEdgeQty, edge);
+    pos =
+      ut_array_1d_int_eltpos (MTess.TessDomEdgeNb[id] + 1,
+                              Tess[id].DomEdgeQty, edge);
     if (pos == -1)
-      ut_error_reportbug ();
+      ut_print_neperbug ();
     pos++;
 
     neut_tess_domedge_edges_sorted (Tess[id], pos, &((*pEdgeNb)[t]),
-				    &((*pEdgeOri)[t]), &((*pEdgeQty)[t]));
+                                    &((*pEdgeOri)[t]), &((*pEdgeQty)[t]));
   }
 
-  ut_free_1d_int (polys);
+  ut_free_1d_int (&polys);
 
   return;
 }
 
 void
-net_mtess_flatten_edge_domedge_addedges (struct TESS *pFTess, struct TESSE
-				   *TessE, struct TESS *Tess,
-				   int domtess, int domedge,
-				   int *TessNb, int TessQty,
-				   int **EdgeNb, int **EdgeOri,
-				   int *EdgeQty, struct FLATTEN *pFlatten)
+net_mtess_flatten_edge_domedge_addedges (struct TESS *pFTess,
+                                         struct TESSE *TessE,
+                                         struct TESS *Tess, int domtess,
+                                         int domedge, int *TessNb,
+                                         int TessQty, int **EdgeNb,
+                                         int **EdgeOri, int *EdgeQty,
+                                         struct FLATTEN *pFlatten)
 {
   int i, j, tess, pos, edge, ori;
   int *dom = ut_alloc_1d_int (2);
@@ -289,17 +292,17 @@ net_mtess_flatten_edge_domedge_addedges (struct TESS *pFTess, struct TESSE
 
       if (EdgePos[i] < EdgeQty[i] - 1)
       {
-	// looking for the number of the end node (depends on orientation)
-	edge = EdgeNb[i][EdgePos[i]];
-	pos = (EdgeOri[i][EdgePos[i]] == 1) ? 1 : 0;
-	ver[i] = Tess[tess].EdgeVerNb[edge][pos];
-	ver[i] = TessE[tess].VerFVer[ver[i]];
-	vercoo = (*pFTess).VerCoo[ver[i]];
+        // looking for the number of the end node (depends on orientation)
+        edge = EdgeNb[i][EdgePos[i]];
+        pos = (EdgeOri[i][EdgePos[i]] == 1) ? 1 : 0;
+        ver[i] = Tess[tess].EdgeVerNb[edge][pos];
+        ver[i] = TessE[tess].VerFVer[ver[i]];
+        vercoo = (*pFTess).VerCoo[ver[i]];
 
-	dist[i] = ut_space_dist (firstvercoo, vercoo);
+        dist[i] = ut_space_dist (firstvercoo, vercoo);
       }
       else
-	dist[i] = DBL_MAX;
+        dist[i] = DBL_MAX;
     }
 
     // looking for the tessellation / edge which has the next node
@@ -309,13 +312,13 @@ net_mtess_flatten_edge_domedge_addedges (struct TESS *pFTess, struct TESSE
     endver = ver[id];
     ori = EdgeOri[id][EdgePos[id]];
     if (ori != -1 && ori != 1)
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
     neut_tess_addedge (pFTess, begver, endver);
     neut_flatten_addedge (pFlatten, dom);
 
     net_mtess_flatten_edge_domedge_linkedge ((*pFTess).EdgeQty, TessE,
-				       domtess, domedge, 1);
+                                             domtess, domedge, 1);
 
     for (i = 0; i < TessQty; i++)
     {
@@ -323,7 +326,7 @@ net_mtess_flatten_edge_domedge_addedges (struct TESS *pFTess, struct TESSE
       edge = EdgeNb[i][EdgePos[i]];
       ori = EdgeOri[i][EdgePos[i]];
       net_mtess_flatten_edge_domedge_linkedge ((*pFTess).EdgeQty, TessE, tess,
-					 edge, ori);
+                                               edge, ori);
     }
     EdgePos[id]++;
 
@@ -334,14 +337,14 @@ net_mtess_flatten_edge_domedge_addedges (struct TESS *pFTess, struct TESSE
     for (i = 0; i < TessQty; i++)
       if (EdgePos[i] < EdgeQty[i] - 1)
       {
-	status = 1;
-	break;
+        status = 1;
+        break;
       }
   }
 
   for (i = 0; i < TessQty; i++)
     if (EdgePos[i] != EdgeQty[i] - 1)
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
   // recording last edge
   endver = lastver;
@@ -350,7 +353,7 @@ net_mtess_flatten_edge_domedge_addedges (struct TESS *pFTess, struct TESSE
   neut_flatten_addedge (pFlatten, dom);
 
   net_mtess_flatten_edge_domedge_linkedge ((*pFTess).EdgeQty, TessE, domtess,
-				     domedge, 1);
+                                           domedge, 1);
 
   for (i = 0; i < TessQty; i++)
   {
@@ -358,7 +361,7 @@ net_mtess_flatten_edge_domedge_addedges (struct TESS *pFTess, struct TESSE
     edge = EdgeNb[i][EdgePos[i]];
     ori = EdgeOri[i][EdgePos[i]];
     net_mtess_flatten_edge_domedge_linkedge ((*pFTess).EdgeQty, TessE, tess,
-				       edge, ori);
+                                             edge, ori);
   }
 
   // Depending on the orientation of the edge in the L2 tessellations
@@ -375,15 +378,15 @@ net_mtess_flatten_edge_domedge_addedges (struct TESS *pFTess, struct TESSE
 
       if (ori == -1)
       {
-	ut_array_1d_int_reverseelts (TessE[tess].EdgeFEdgeNb[edge],
-				     TessE[tess].EdgeFEdgeQty[edge]);
-	ut_array_1d_int_reverseelts (TessE[tess].EdgeFEdgeOri[edge],
-				     TessE[tess].EdgeFEdgeQty[edge]);
+        ut_array_1d_int_reverseelts (TessE[tess].EdgeFEdgeNb[edge],
+                                     TessE[tess].EdgeFEdgeQty[edge]);
+        ut_array_1d_int_reverseelts (TessE[tess].EdgeFEdgeOri[edge],
+                                     TessE[tess].EdgeFEdgeQty[edge]);
       }
     }
   }
 
-  ut_free_1d_int (dom);
+  ut_free_1d_int (&dom);
 
   return;
 }

@@ -24,13 +24,13 @@ ol_set_disori (struct OL_SET set, double *qmean, double *pdisori)
 }
 
 void
-ol_set_disoriset (struct OL_SET set1, struct OL_SET* psetd)
+ol_set_disoriset (struct OL_SET set1, struct OL_SET *psetd)
 {
   unsigned int i;
   double *qm = ol_q_alloc ();
 
   ol_set_mean_iter (set1, qm);
-  
+
   (*psetd).size = set1.size;
   for (i = 0; i < set1.size; i++)
   {
@@ -45,13 +45,13 @@ ol_set_disoriset (struct OL_SET set1, struct OL_SET* psetd)
 }
 
 void
-ol_set_disoriset_cur (struct OL_SET set1, struct OL_SET* psetd)
+ol_set_disoriset_cur (struct OL_SET set1, struct OL_SET *psetd)
 {
   unsigned int i;
   double *qm = ol_q_alloc ();
 
   ol_set_mean_iter (set1, qm);
-  
+
   (*psetd).size = set1.size;
   for (i = 0; i < set1.size; i++)
   {
@@ -66,10 +66,10 @@ ol_set_disoriset_cur (struct OL_SET set1, struct OL_SET* psetd)
 }
 
 void
-ol_set_mean_disoriset (struct OL_SET set1, double* qm, struct OL_SET* psetd)
+ol_set_mean_disoriset (struct OL_SET set1, double *qm, struct OL_SET *psetd)
 {
   unsigned int i;
-  
+
   (*psetd).size = set1.size;
   for (i = 0; i < set1.size; i++)
   {
@@ -81,10 +81,11 @@ ol_set_mean_disoriset (struct OL_SET set1, double* qm, struct OL_SET* psetd)
 }
 
 void
-ol_set_mean_disoriset_cur (struct OL_SET set1, double* qm, struct OL_SET* psetd)
+ol_set_mean_disoriset_cur (struct OL_SET set1, double *qm,
+                           struct OL_SET *psetd)
 {
   unsigned int i;
-  
+
   (*psetd).size = set1.size;
   for (i = 0; i < set1.size; i++)
   {
@@ -96,7 +97,8 @@ ol_set_mean_disoriset_cur (struct OL_SET set1, double* qm, struct OL_SET* psetd)
 }
 
 int
-ol_set_filter (struct OL_SET set1, double rel, struct OL_SET *pset2, double* qmean, double* pdis)
+ol_set_filter (struct OL_SET set1, double rel, struct OL_SET *pset2,
+               double *qmean, double *pdis)
 {
   unsigned int i;
   double *qm = ol_q_alloc ();
@@ -130,7 +132,7 @@ ol_set_filter (struct OL_SET set1, double rel, struct OL_SET *pset2, double* qme
       (*pset2).id[i] = 0;
 
   ol_q_free (qm);
-  ut_free_1d (dis);
+  ut_free_1d (&dis);
 
   if (pdis != NULL)
     (*pdis) = mdis;
@@ -147,7 +149,8 @@ ol_set_filter (struct OL_SET set1, double rel, struct OL_SET *pset2, double* qme
 }
 
 int
-ol_set_filter_iter (struct OL_SET set1, double rel, struct OL_SET *pset2, double* qmean, double* pdis)
+ol_set_filter_iter (struct OL_SET set1, double rel, struct OL_SET *pset2,
+                    double *qmean, double *pdis)
 {
   ol_set_filter (set1, rel, pset2, qmean, pdis);
 
@@ -184,16 +187,16 @@ ol_set_anifilter (struct OL_SET set1, double rel, struct OL_SET *pset2)
   for (i = 0; i < set1.size; i++)
   {
     ol_q_aniso_theta (setd.q[i], v, dis);
-    if (!(fabs (dis[0]) < mdis[0] + OL_EPS_DEG 
-       && fabs (dis[1]) < mdis[1] + OL_EPS_DEG
-       && fabs (dis[2]) < mdis[2] + OL_EPS_DEG))
+    if (!(fabs (dis[0]) < mdis[0] + OL_EPS_DEG
+          && fabs (dis[1]) < mdis[1] + OL_EPS_DEG
+          && fabs (dis[2]) < mdis[2] + OL_EPS_DEG))
       (*pset2).id[i] = 0;
   }
 
   ol_q_free (qm);
-  ut_free_2d (v, 3);
-  ut_free_1d (mdis);
-  ut_free_1d (dis);
+  ut_free_2d (&v, 3);
+  ut_free_1d (&mdis);
+  ut_free_1d (&dis);
   ol_set_free (setd);
 
   if ((*pset2).size == 0)
@@ -206,7 +209,8 @@ ol_set_anifilter (struct OL_SET set1, double rel, struct OL_SET *pset2)
 }
 
 int
-ol_set_mean_anifilter (struct OL_SET set1, double* qm, double rel, struct OL_SET *pset2)
+ol_set_mean_anifilter (struct OL_SET set1, double *qm, double rel,
+                       struct OL_SET *pset2)
 {
   unsigned int i, j;
   double **v = ut_alloc_2d (3, 3);
@@ -240,10 +244,10 @@ ol_set_mean_anifilter (struct OL_SET set1, double* qm, double rel, struct OL_SET
       (*pset2).id[i] = 0;
   }
 
-  ut_free_2d (v, 3);
-  ut_free_1d (mdis);
-  ut_free_1d (relmdis);
-  ut_free_1d (dis);
+  ut_free_2d (&v, 3);
+  ut_free_1d (&mdis);
+  ut_free_1d (&relmdis);
+  ut_free_1d (&dis);
   ol_set_free (setd);
 
   if (ut_array_1d_int_eltpos ((*pset2).id, (*pset2).size, 1) == -1)
@@ -257,7 +261,8 @@ ol_set_mean_anifilter (struct OL_SET set1, double* qm, double rel, struct OL_SET
 
 
 int
-ol_set_mean_aniso_anifilter (struct OL_SET set1, double* qm, double** v, double* mdis, double rel, struct OL_SET *pset2)
+ol_set_mean_aniso_anifilter (struct OL_SET set1, double *qm, double **v,
+                             double *mdis, double rel, struct OL_SET *pset2)
 {
   unsigned int i, j;
   double radius;
@@ -288,8 +293,8 @@ ol_set_mean_aniso_anifilter (struct OL_SET set1, double* qm, double** v, double*
       (*pset2).id[i] = 0;
   }
 
-  ut_free_1d (relmdis);
-  ut_free_1d (dis);
+  ut_free_1d (&relmdis);
+  ut_free_1d (&dis);
   ol_set_free (setd);
 
   if ((*pset2).size == 0)
@@ -302,50 +307,55 @@ ol_set_mean_aniso_anifilter (struct OL_SET set1, double* qm, double** v, double*
 }
 
 int
-ol_set_mean_aniso_anifilter_iter (struct OL_SET set1, double* qm0,
-    double** v0, double* mdis0, double rel, struct OL_SET
-    *pset2, double* qm, double** v, double* mdis)
+ol_set_mean_aniso_anifilter_iter (struct OL_SET set1, double *qm0,
+                                  double **v0, double *mdis0, double rel,
+                                  struct OL_SET *pset2, double *qm,
+                                  double **v, double *mdis)
 {
   return ol_set_mean_aniso_anifilter_iter_itermax (set1, qm0, v0, mdis0,
-      rel, OL_ITERMAX2, pset2, qm, v, mdis);
+                                                   rel, OL_ITERMAX2, pset2,
+                                                   qm, v, mdis);
 }
 
 
 int
 ol_set_anifilter_iter (struct OL_SET set1, double rel,
-			  struct OL_SET *pset2, double* qm,
-			  double** v, double* mdis)
+                       struct OL_SET *pset2, double *qm,
+                       double **v, double *mdis)
 {
   return ol_set_anifilter_iter_itermax (set1, rel, OL_ITERMAX2,
-      pset2, qm, v, mdis);
+                                        pset2, qm, v, mdis);
 }
 
 
 int
 ol_set_anifilter_iter_itermax (struct OL_SET set1, double rel,
-			  int maxiter, struct OL_SET *pset2, double* qm,
-			  double** v, double* mdis)
+                               int maxiter, struct OL_SET *pset2, double *qm,
+                               double **v, double *mdis)
 {
   return ol_set_mean_aniso_anifilter_iter_itermax (set1, NULL, NULL,
-      NULL, rel, maxiter, pset2, qm, v, mdis);
+                                                   NULL, rel, maxiter, pset2,
+                                                   qm, v, mdis);
 }
 
 
 int
-ol_set_mean_aniso_anifilter_iter_itermax (struct OL_SET set1, double*
-    qmean0, double** v0, double* mdis0, double rel, int
-    maxiter, struct OL_SET *pset2, double* qm, double** v, double* mdis)
+ol_set_mean_aniso_anifilter_iter_itermax (struct OL_SET set1, double *qmean0,
+                                          double **v0, double *mdis0,
+                                          double rel, int maxiter,
+                                          struct OL_SET *pset2, double *qm,
+                                          double **v, double *mdis)
 {
   int i;
-  double* q = ol_q_alloc ();
-  double* qmean = ol_q_alloc ();
-  double* r = ol_r_alloc ();
+  double *q = ol_q_alloc ();
+  double *qmean = ol_q_alloc ();
+  double *r = ol_r_alloc ();
   double theta;
-  double** gshake = ol_g_alloc ();
-  double* mdis_cur = ut_alloc_1d (3);
-  double** v_cur = ol_g_alloc ();
-  double* mdis_prev = ut_alloc_1d (3);
-  double** v_prev = ol_g_alloc ();
+  double **gshake = ol_g_alloc ();
+  double *mdis_cur = ut_alloc_1d (3);
+  double **v_cur = ol_g_alloc ();
+  double *mdis_prev = ut_alloc_1d (3);
+  double **v_prev = ol_g_alloc ();
   struct OL_SET Setd;
   struct OL_SET set1cpy = ol_set_alloc (set1.size, set1.crysym);
   ol_set_memcpy (set1, &set1cpy);
@@ -364,9 +374,9 @@ ol_set_mean_aniso_anifilter_iter_itermax (struct OL_SET set1, double*
     if (i == 1)
     {
       if (qmean0)
-	ol_q_memcpy (qmean0, qmean);
+        ol_q_memcpy (qmean0, qmean);
       else
-	ol_set_mean_iter (*pset2, qmean);
+        ol_set_mean_iter (*pset2, qmean);
     }
     // if not first increment, computing mean using the previous one as
     // reference orientation.
@@ -395,31 +405,33 @@ ol_set_mean_aniso_anifilter_iter_itermax (struct OL_SET set1, double*
     // orientations and anisotropy properties
     if (i % 50 != 0)
       ol_set_mean_aniso_anifilter (set1cpy, qmean, v_cur, mdis_cur,
-	                           rel, pset2);
+                                   rel, pset2);
 
     // once in a while, for speeding up convergence
     else
     {
       // moving sligthly the average orientation
-      ol_nb_max_rtheta (drand48(), drand48(), drand48(), 2 * 50 / i * mdis_cur[2], r, &theta);
+      ol_nb_max_rtheta (drand48 (), drand48 (), drand48 (),
+                        2 * 50 / i * mdis_cur[2], r, &theta);
       ol_rtheta_q (r, theta, q);
       ol_q_q_q (qmean, q, qmean);
 
       // filtering
       ol_set_mean_aniso_anifilter (set1cpy, qmean, v_cur, mdis_cur,
-				   rel, pset2);
+                                   rel, pset2);
 
       // if the filtered set is void, rotating slightly the eigen
       // vectors until it gets non-void
       int actualsize = ut_array_1d_int_sum ((*pset2).id, (*pset2).size);
       while (actualsize == 0)
       {
-	ol_nb_max_rtheta (drand48(), drand48(), drand48(), 2 * 50 / i * mdis_cur[2], r, &theta);
-	ol_rtheta_g (r, theta, gshake);
-	ol_g_g_g (v_cur, gshake, v_cur);
-	ol_set_mean_aniso_anifilter (set1cpy, qmean, v_cur, mdis_cur,
-	                             rel, pset2);
-	actualsize = ut_array_1d_int_sum ((*pset2).id, (*pset2).size);
+        ol_nb_max_rtheta (drand48 (), drand48 (), drand48 (),
+                          2 * 50 / i * mdis_cur[2], r, &theta);
+        ol_rtheta_g (r, theta, gshake);
+        ol_g_g_g (v_cur, gshake, v_cur);
+        ol_set_mean_aniso_anifilter (set1cpy, qmean, v_cur, mdis_cur,
+                                     rel, pset2);
+        actualsize = ut_array_1d_int_sum ((*pset2).id, (*pset2).size);
       }
     }
 
@@ -429,10 +441,13 @@ ol_set_mean_aniso_anifilter_iter_itermax (struct OL_SET set1, double*
     // if less than 2 degrees, and each of the eigen values have changed
     // by less than 1%, considering that we are converged.
     if (theta < 2)
-      if (2 * fabs (mdis_cur[0] - mdis_prev[0])/(mdis_cur[0] + mdis_prev[0]) < 0.01 
-       && 2 * fabs (mdis_cur[1] - mdis_prev[1])/(mdis_cur[1] + mdis_prev[1]) < 0.01 
-       && 2 * fabs (mdis_cur[2] - mdis_prev[2])/(mdis_cur[2] + mdis_prev[2]) < 0.01)
-      break;
+      if (2 * fabs (mdis_cur[0] - mdis_prev[0]) /
+          (mdis_cur[0] + mdis_prev[0]) < 0.01
+          && 2 * fabs (mdis_cur[1] - mdis_prev[1]) / (mdis_cur[1] +
+                                                      mdis_prev[1]) < 0.01
+          && 2 * fabs (mdis_cur[2] - mdis_prev[2]) / (mdis_cur[2] +
+                                                      mdis_prev[2]) < 0.01)
+        break;
 
     // if not converged (have not exited the loop), copying eigen
     // decomposition in mdis_prev / v_prev
@@ -456,15 +471,15 @@ ol_set_mean_aniso_anifilter_iter_itermax (struct OL_SET set1, double*
 }
 
 void
-ol_set_aniso_modes (struct OL_SET Set, double* qmean,
-		    struct OL_SET* pSet1, struct OL_SET* pSet2)
+ol_set_aniso_modes (struct OL_SET Set, double *qmean,
+                    struct OL_SET *pSet1, struct OL_SET *pSet2)
 {
   unsigned int i;
-  
+
   struct OL_SET Setd = ol_set_alloc (Set.size, Set.crysym);
 
-  double** v = ol_g_alloc ();
-  double* theta = ol_e_alloc ();
+  double **v = ol_g_alloc ();
+  double *theta = ol_e_alloc ();
 
   (*pSet1) = ol_set_alloc (Set.size, Set.crysym);
   (*pSet2) = ol_set_alloc (Set.size, Set.crysym);
@@ -473,7 +488,7 @@ ol_set_aniso_modes (struct OL_SET Set, double* qmean,
     ol_q_q_qdisori (qmean, Set.q[i], Set.crysym, Setd.q[i]);
 
   ol_set_aniso (Setd, v, theta);
-      
+
   (*pSet1).size = 0;
   (*pSet2).size = 0;
   for (i = 0; i < Setd.size; i++)
@@ -504,8 +519,8 @@ ol_set_aniso_modes (struct OL_SET Set, double* qmean,
 }
 
 void
-ol_set_aniso_v_modes (struct OL_SET Set, double* qmean, double** v,
-		      struct OL_SET* pSet1, struct OL_SET* pSet2)
+ol_set_aniso_v_modes (struct OL_SET Set, double *qmean, double **v,
+                      struct OL_SET *pSet1, struct OL_SET *pSet2)
 {
   ol_set_aniso_v_thetatr_modes (Set, qmean, v, 0, pSet1, pSet2);
 
@@ -513,20 +528,21 @@ ol_set_aniso_v_modes (struct OL_SET Set, double* qmean, double** v,
 }
 
 void
-ol_set_aniso_v_thetatr_modes (struct OL_SET Set, double* qmean, double** v,
-	        double thetatr, struct OL_SET* pSet1, struct OL_SET* pSet2)
+ol_set_aniso_v_thetatr_modes (struct OL_SET Set, double *qmean, double **v,
+                              double thetatr, struct OL_SET *pSet1,
+                              struct OL_SET *pSet2)
 {
   unsigned int i;
-  int* id = ut_alloc_1d_int (Set.size);
+  int *id = ut_alloc_1d_int (Set.size);
   int size1, size2;
 
   ol_set_aniso_v_thetatr_modes_id (Set, qmean, v, thetatr, id);
-  
-  size1 = ut_array_1d_int_nbofthisval (id, Set.size, 1);
-  size2 = ut_array_1d_int_nbofthisval (id, Set.size, 2);
+
+  size1 = ut_array_1d_int_valnb (id, Set.size, 1);
+  size2 = ut_array_1d_int_valnb (id, Set.size, 2);
   (*pSet1) = ol_set_alloc (size1, Set.crysym);
   (*pSet2) = ol_set_alloc (size2, Set.crysym);
-  
+
   (*pSet1).size = 0;
   (*pSet2).size = 0;
   for (i = 0; i < Set.size; i++)
@@ -547,18 +563,18 @@ ol_set_aniso_v_thetatr_modes (struct OL_SET Set, double* qmean, double** v,
     }
   }
 
-  ut_free_1d_int (id);
+  ut_free_1d_int (&id);
 
   return;
 }
 
 void
-ol_set_aniso_v_thetatr_modes_id (struct OL_SET Set, double* qmean,
-				 double** v, double thetatr, int* id)
+ol_set_aniso_v_thetatr_modes_id (struct OL_SET Set, double *qmean,
+                                 double **v, double thetatr, int *id)
 {
   unsigned int i;
   struct OL_SET Setd = ol_set_alloc (Set.size, Set.crysym);
-  double* theta = ol_e_alloc ();
+  double *theta = ol_e_alloc ();
 
   for (i = 0; i < Set.size; i++)
     ol_q_q_qdisori (qmean, Set.q[i], Set.crysym, Setd.q[i]);

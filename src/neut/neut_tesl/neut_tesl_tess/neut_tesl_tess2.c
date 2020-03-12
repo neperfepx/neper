@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesl_tess_.h"
 
 void
-neut_tesl_tess_general (struct TESL Tesl, struct SEEDSET SSet,
-			int level, int tessid, struct TESS *pTess)
+neut_tesl_tess_general (struct TESL Tesl, struct SEEDSET SSet, int level,
+                        int tessid, struct TESS *pTess)
 {
   (*pTess).CellQty = Tesl.PolyQty;
 
@@ -20,11 +20,12 @@ neut_tesl_tess_general (struct TESL Tesl, struct SEEDSET SSet,
   (*pTess).Periodic = ut_alloc_1d_int (3);
   (*pTess).PeriodicDist = ut_alloc_1d (3);
   if (SSet.Periodic)
-    ut_array_1d_int_memcpy ((*pTess).Periodic, 3, SSet.Periodic);
+    ut_array_1d_int_memcpy (SSet.Periodic, 3, (*pTess).Periodic);
   if (SSet.PeriodicDist)
-    ut_array_1d_memcpy ((*pTess).PeriodicDist, 3, SSet.PeriodicDist);
+    ut_array_1d_memcpy (SSet.PeriodicDist, 3, (*pTess).PeriodicDist);
 
-  ut_string_string (SSet.crysym ? SSet.crysym : "triclinic", &(*pTess).CellCrySym);
+  ut_string_string (SSet.crysym ? SSet.crysym : "triclinic",
+                    &(*pTess).CellCrySym);
 
   return;
 }
@@ -82,8 +83,8 @@ neut_tesl_tess_poly (struct TESL Tesl, struct TESS *pTess)
   (*pTess).CellTrue = ut_alloc_1d_int (Tesl.PolyQty + 1);
   (*pTess).CellBody = ut_alloc_1d_int (Tesl.PolyQty + 1);
 
-  neut_tesl_tessPolyState (pTess);
   neut_tesl_tessPolyFace (Tesl, pTess);
+  neut_tesl_tessPolyState (pTess);
 
   return;
 }
@@ -101,28 +102,28 @@ neut_tesl_tess_seed (struct SEEDSET SSet, struct TESS *pTess)
   (*pTess).SeedCoo = ut_alloc_2d (SSet.Nall + 1, 3);
   (*pTess).SeedWeight = ut_alloc_1d (SSet.Nall + 1);
 
-  ut_array_2d_memcpy ((*pTess).SeedCoo + 1, SSet.Nall, 3, SSet.SeedCoo + 1);
-  ut_array_1d_memcpy ((*pTess).SeedWeight + 1, SSet.Nall,
-		      SSet.SeedWeight + 1);
+  ut_array_2d_memcpy (SSet.SeedCoo + 1, SSet.Nall, 3, (*pTess).SeedCoo + 1);
+  ut_array_1d_memcpy (SSet.SeedWeight + 1, SSet.Nall,
+                      (*pTess).SeedWeight + 1);
 
   if (!strcmp ((*pTess).Type, "periodic"))
   {
     (*pTess).PerSeedMaster = ut_alloc_1d_int (SSet.Nall + 1);
     if (SSet.PerSeedMaster)
-      ut_array_1d_int_memcpy ((*pTess).PerSeedMaster + 1, SSet.Nall,
-			      SSet.PerSeedMaster + 1);
+      ut_array_1d_int_memcpy (SSet.PerSeedMaster + 1, SSet.Nall,
+                              (*pTess).PerSeedMaster + 1);
 
     (*pTess).PerSeedShift = ut_alloc_2d_int (SSet.Nall + 1, 3);
     if (SSet.PerSeedShift)
-      ut_array_2d_int_memcpy ((*pTess).PerSeedShift + 1, SSet.Nall, 3,
-			      SSet.PerSeedShift + 1);
+      ut_array_2d_int_memcpy (SSet.PerSeedShift + 1, SSet.Nall, 3,
+                              (*pTess).PerSeedShift + 1);
   }
 
   if (SSet.LamWidthId)
   {
     (*pTess).CellLamId = ut_alloc_1d_int (SSet.N + 1);
-    ut_array_1d_int_memcpy ((*pTess).CellLamId + 1, SSet.N,
-			    SSet.LamWidthId + 1);
+    ut_array_1d_int_memcpy (SSet.LamWidthId + 1, SSet.N,
+                            (*pTess).CellLamId + 1);
   }
 
   return;

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_fprintf_.h"
@@ -75,7 +75,7 @@ neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
     {
       fprintf (file, " %3d ", i);
       for (j = 0; j < 3; j++)
-	fprintf (file, "%.12f ", Tess.SeedCoo[i][j]);
+        fprintf (file, "%.12f ", Tess.SeedCoo[i][j]);
       fprintf (file, "%.12f\n", Tess.SeedWeight[i]);
     }
   }
@@ -128,8 +128,8 @@ neut_tess_fprintf_edge (struct TESS Tess, FILE * file)
   for (i = 1; i <= Tess.EdgeQty; i++)
   {
     fprintf (file, " %3d ", i);
-    fprintf (file, " %d %d %d\n", Tess.EdgeVerNb[i][0],
-	     Tess.EdgeVerNb[i][1], Tess.EdgeState[i]);
+    fprintf (file, " %d %d %d\n", Tess.EdgeVerNb[i][0], Tess.EdgeVerNb[i][1],
+             Tess.EdgeState[i]);
   }
 
   return;
@@ -147,9 +147,10 @@ neut_tess_fprintf_face (struct TESS Tess, FILE * file)
   {
     fprintf (file, " %3d", i);
 
-    fprintf (file, " %d%s", Tess.FaceVerQty[i], Tess.FaceVerQty[i]? " " : "");
+    fprintf (file, " %d%s", Tess.FaceVerQty[i],
+             Tess.FaceVerQty[i] ? " " : "");
     ut_array_1d_int_fprintf (file, Tess.FaceVerNb[i] + 1, Tess.FaceVerQty[i],
-			     "%d");
+                             "%d");
 
     fprintf (file, "     %d", Tess.FaceVerQty[i]);
     for (j = 1; j <= Tess.FaceVerQty[i]; j++)
@@ -219,13 +220,15 @@ neut_tess_fprintf_dom (struct TESS Tess, FILE * file)
     for (i = 1; i <= Tess.DomEdgeQty; i++)
     {
       fprintf (file, " %3d ", i);
-      fprintf (file, "%d%s", Tess.DomEdgeVerQty[i], Tess.DomEdgeVerQty[i]? " " : "");
+      fprintf (file, "%d%s", Tess.DomEdgeVerQty[i],
+               Tess.DomEdgeVerQty[i] ? " " : "");
       ut_array_1d_int_fprintf (file, Tess.DomEdgeVerNb[i],
-                                     Tess.DomEdgeVerQty[i], "%d");
+                               Tess.DomEdgeVerQty[i], "%d");
       fprintf (file, "     %s\n", Tess.DomEdgeLabel[i]);
-      fprintf (file, "     %d%s", Tess.DomTessEdgeQty[i], Tess.DomTessEdgeQty[i]? " " : "");
+      fprintf (file, "     %d%s", Tess.DomTessEdgeQty[i],
+               Tess.DomTessEdgeQty[i] ? " " : "");
       ut_array_1d_int_fprintf (file, Tess.DomTessEdgeNb[i] + 1,
-			       Tess.DomTessEdgeQty[i], "%d");
+                               Tess.DomTessEdgeQty[i], "%d");
     }
   }
 
@@ -238,13 +241,15 @@ neut_tess_fprintf_dom (struct TESS Tess, FILE * file)
     {
       fprintf (file, " %3d ", i);
 
-      fprintf (file, "%d%s", Tess.DomFaceVerQty[i], Tess.DomFaceVerQty[i]? " " : "");
+      fprintf (file, "%d%s", Tess.DomFaceVerQty[i],
+               Tess.DomFaceVerQty[i] ? " " : "");
       ut_array_1d_int_fprintf (file, Tess.DomFaceVerNb[i] + 1,
-			       Tess.DomFaceVerQty[i], "%d");
+                               Tess.DomFaceVerQty[i], "%d");
       fprintf (file, "     ");
-      fprintf (file, "%d%s", Tess.DomFaceEdgeQty[i], Tess.DomFaceEdgeQty[i]? " " : "");
+      fprintf (file, "%d%s", Tess.DomFaceEdgeQty[i],
+               Tess.DomFaceEdgeQty[i] ? " " : "");
       ut_array_1d_int_fprintf (file, Tess.DomFaceEdgeNb[i] + 1,
-			       Tess.DomFaceEdgeQty[i], "%d");
+                               Tess.DomFaceEdgeQty[i], "%d");
 
       fprintf (file, "     %s\n", Tess.DomFaceType[i]);
 
@@ -254,13 +259,13 @@ neut_tess_fprintf_dom (struct TESS Tess, FILE * file)
         ut_array_1d_fprintf (file, Tess.DomFaceEq[i], 4, "%.12f");
       else
         ut_array_1d_fprintf (file, Tess.DomFaceParms[i],
-                                   Tess.DomFaceParmQty[i], "%.12f");
+                             Tess.DomFaceParmQty[i], "%.12f");
 
       fprintf (file, "     %s\n", Tess.DomFaceLabel[i]);
 
       fprintf (file, "   %3d ", Tess.DomTessFaceQty[i]);
       ut_array_1d_int_fprintf (file, Tess.DomTessFaceNb[i] + 1,
-			       Tess.DomTessFaceQty[i], "%d");
+                               Tess.DomTessFaceQty[i], "%d");
     }
   }
 

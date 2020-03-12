@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_.h"
@@ -48,15 +48,18 @@ net_ori_fibre (long random, char *distrib, struct OL_SET *pOSet)
   rnd = gsl_rng_alloc (gsl_rng_ranlxd2);
   gsl_rng_set (rnd, random - 1);
 
-  if (sscanf (distrib, "fibre(%lf,%lf,%lf,%lf,%lf,%lf)", dirs, dirs + 1,
-                   dirs + 2, dirc, dirc + 1, dirc + 2) == 6)
+  if (sscanf
+      (distrib, "fibre(%lf,%lf,%lf,%lf,%lf,%lf)", dirs, dirs + 1, dirs + 2,
+       dirc, dirc + 1, dirc + 2) == 6)
   {
     ut_vector_uvect (dirs, dirs);
     ut_vector_uvect (dirc, dirc);
   }
 
   // legacy
-  else if (sscanf (distrib, "fibre(%c,%lf,%lf,%lf)", &c, dirc, dirc + 1, dirc + 2) == 4)
+  else
+    if (sscanf
+        (distrib, "fibre(%c,%lf,%lf,%lf)", &c, dirc, dirc + 1, dirc + 2) == 4)
   {
     if (c == 'x' || c == 'y' || c == 'z')
       for (i = 0; i < 3; i++)
@@ -64,7 +67,9 @@ net_ori_fibre (long random, char *distrib, struct OL_SET *pOSet)
     else
       ut_print_message (2, 2, "Failed to parse expression `%s'.\n", distrib);
 
-    ut_print_message (1, 2, "Argument `%s' is deprecated and will not be supported in future versions.  See the documentation.\n", distrib);
+    ut_print_message (1, 2,
+                      "Argument `%s' is deprecated and will not be supported in future versions.  See the documentation.\n",
+                      distrib);
 
     ut_vector_uvect (dirc, dirc);
   }
@@ -91,31 +96,30 @@ net_ori_fibre (long random, char *distrib, struct OL_SET *pOSet)
 }
 
 void
-net_ori_equal (struct SEEDSET *SSet, int dtess,
-               int dcell, struct OL_SET *pOSet)
+net_ori_equal (struct SEEDSET *SSet, int dtess, int dcell,
+               struct OL_SET *pOSet)
 {
   unsigned int i;
 
   for (i = 0; i < (*pOSet).size; i++)
-    ut_array_1d_memcpy ((*pOSet).q[i], 4, SSet[dtess].q[dcell]);
+    ut_array_1d_memcpy (SSet[dtess].q[dcell], 4, (*pOSet).q[i]);
 
   return;
 }
 
 void
-net_ori_spread (char *ori,
-                struct SEEDSET *SSet, int dtess,
-                int dcell, struct OL_SET *pOSet)
+net_ori_spread (char *ori, struct SEEDSET *SSet, int dtess, int dcell,
+                struct OL_SET *pOSet)
 {
   unsigned int i, j;
   double sig, mean;
   double *v = ol_r_alloc ();
   double *q = ol_q_alloc ();
   int varqty;
-  char** vars = NULL;
-  char** vals = NULL;
+  char **vars = NULL;
+  char **vals = NULL;
 
-  ut_string_function_separate (ori, NULL, &vars, &vals, &varqty);
+  ut_string_function (ori, NULL, &vars, &vals, &varqty);
 
   if (varqty != 1)
     abort ();
@@ -143,8 +147,8 @@ net_ori_spread (char *ori,
 
   gsl_rng_free (rand);
   ol_q_free (q);
-  ut_free_2d_char (vars, varqty);
-  ut_free_2d_char (vals, varqty);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_2d_char (&vals, varqty);
 
   return;
 }
@@ -162,7 +166,7 @@ net_ori_label (char *label, struct OL_SET *pOSet)
   {
     ol_g_q (g, (*pOSet).q[0]);
     for (i = 0; i < (*pOSet).size; i++)
-      ut_array_1d_memcpy ((*pOSet).q[i], 4, (*pOSet).q[0]);
+      ut_array_1d_memcpy ((*pOSet).q[0], 4, (*pOSet).q[i]);
   }
 
   ol_g_free (g);
@@ -181,7 +185,7 @@ net_ori_file (char *filename, struct OL_SET *pOSet)
   double **g = ol_g_alloc ();
   FILE *fp = NULL;
 
-  ut_string_separate (filename, NEUT_SEP_DEP, &parts, &partqty);
+  ut_list_break (filename, NEUT_SEP_DEP, &parts, &partqty);
   if (partqty == 1)
     ut_string_string ("e", &des);
   else
@@ -234,8 +238,8 @@ net_ori_file (char *filename, struct OL_SET *pOSet)
 
   ut_file_close (fp, filename, "r");
 
-  ut_free_2d_char (parts, partqty);
-  ut_free_1d (vect);
+  ut_free_2d_char (&parts, partqty);
+  ut_free_1d (&vect);
   ol_g_free (g);
 
   return;
@@ -312,9 +316,9 @@ net_ori_mtess_randseed_rand (int *N, int *id, int *poly, int levelqty)
     tmp = 1;
     for (i = 1; i <= levelqty; i++)
     {
-      tmp += 100 * gsl_rng_uniform (r) * N[i]
-	+ 100 * gsl_rng_uniform (r) * id[i]
-	+ 100 * gsl_rng_uniform (r) * poly[i];
+      tmp +=
+        100 * gsl_rng_uniform (r) * N[i] + 100 * gsl_rng_uniform (r) * id[i] +
+        100 * gsl_rng_uniform (r) * poly[i];
     }
     while (tmp > INT_MAX)
       tmp *= 0.5;
@@ -323,7 +327,7 @@ net_ori_mtess_randseed_rand (int *N, int *id, int *poly, int levelqty)
   }
 
   if (Rand < 0)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   gsl_rng_free (r);
 
@@ -337,25 +341,24 @@ net_ori_mtess_id (struct IN_T In, struct MTESS MTess, struct TESS *Tess,
   char *tmp = ut_alloc_1d_char (100);
 
   neut_mtess_tess_poly_mid (MTess, Tess[dtess], dcell, &tmp);
-  net_multiscale_arg_0d_int_fscanf (In.id[Tess[dtess].Level + 1], tmp,
-				    0, NULL, NULL, &(*pSSet).Id);
+  net_multiscale_arg_0d_int_fscanf (In.id[Tess[dtess].Level + 1], tmp, 0,
+                                    NULL, NULL, &(*pSSet).Id);
 
-  ut_free_1d_char (tmp);
+  ut_free_1d_char (&tmp);
 
   return;
 }
 
 void
 net_ori_mtess_params (struct IN_T In, int level, struct MTESS MTess,
-                      struct TESS *Tess, int dtess, int dcell,
-                      char **pori, char **pcrysym)
+                      struct TESS *Tess, int dtess, int dcell, char **pori,
+                      char **pcrysym)
 {
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.ori[level], pori);
 
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
-                                           In.oricrysym[level],
-					   pcrysym);
+                                           In.oricrysym[level], pcrysym);
 
   return;
 }
@@ -386,12 +389,13 @@ net_ori_mtess_randseed (struct MTESS MTess, struct TESS *Tess, int domtess,
   ns[levelqty] = CellQty;
   polys[levelqty] = dompoly;
 
-  (*pSSet).Random = net_ori_mtess_randseed_rand (ns, ids, polys, Tess[domtess].Level + 1);
+  (*pSSet).Random =
+    net_ori_mtess_randseed_rand (ns, ids, polys, Tess[domtess].Level + 1);
 
-  ut_free_1d_int (ns);
-  ut_free_1d_int (ids);
-  ut_free_1d_int (polys);
-  ut_free_2d_int (doms, levelqty + 1);
+  ut_free_1d_int (&ns);
+  ut_free_1d_int (&ids);
+  ut_free_1d_int (&polys);
+  ut_free_2d_int (&doms, levelqty + 1);
 
   return;
 }
@@ -400,7 +404,7 @@ void
 net_ori_memcpy (struct SEEDSET *pSSet, struct OL_SET OSet)
 {
   (*pSSet).q = ut_alloc_2d ((*pSSet).N + 1, 4);
-  ut_array_2d_memcpy ((*pSSet).q + 1, OSet.size, 4, OSet.q);
+  ut_array_2d_memcpy (OSet.q, OSet.size, 4, (*pSSet).q + 1);
 
   return;
 }

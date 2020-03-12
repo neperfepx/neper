@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_test_edge_.h"
@@ -30,12 +30,12 @@ neut_tess_test_edgeReciprocityVer (struct TESS Tess, int i, int verbosity)
   {
     ver = Tess.EdgeVerNb[i][j];
     if (ut_array_1d_int_eltpos (Tess.VerEdgeNb[ver], Tess.VerEdgeQty[ver], i)
-	== -1)
+        == -1)
     {
       if (verbosity)
-	ut_print_message (2, 3,
-			  "based on ver %d, but edge not in ver edge list.\n",
-			  ver);
+        ut_print_message (2, 3,
+                          "based on ver %d, but edge not in ver edge list.\n",
+                          ver);
 
       return 2;
     }
@@ -55,7 +55,7 @@ neut_tess_test_edgeReciprocityFace (struct TESS Tess, int i, int verbosity)
   {
     if (verbosity)
       ut_print_message (2, 3, "number of faces = %d < 2.\n",
-			Tess.EdgeFaceQty[i]);
+                        Tess.EdgeFaceQty[i]);
 
     return 2;
   }
@@ -65,12 +65,12 @@ neut_tess_test_edgeReciprocityFace (struct TESS Tess, int i, int verbosity)
     face = Tess.EdgeFaceNb[i][j];
 
     if (ut_array_1d_int_eltpos
-	(Tess.FaceEdgeNb[face] + 1, Tess.FaceVerQty[face], i) == -1)
+        (Tess.FaceEdgeNb[face] + 1, Tess.FaceVerQty[face], i) == -1)
     {
       if (verbosity)
-	ut_print_message (2, 3,
-			  "face %d is in face list, but face not based on edge.\n",
-			  face);
+        ut_print_message (2, 3,
+                          "face %d is in face list, but face not based on edge.\n",
+                          face);
 
       return 2;
     }

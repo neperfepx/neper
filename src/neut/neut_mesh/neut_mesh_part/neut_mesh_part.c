@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_part_.h"
 
 int
 neut_mesh_elt_coms (struct MESH Mesh, int elt, int partqty, int *parttab,
-		    int *parttab2, int **coms, int *pcomqty)
+                    int *parttab2, int **coms, int *pcomqty)
 {
   int i, j, pos, eltpart, nodepart, comtotalqty;
   int eltnodeqty =
@@ -26,19 +26,19 @@ neut_mesh_elt_coms (struct MESH Mesh, int elt, int partqty, int *parttab,
       comtotalqty++;
       pos = -1;
       for (j = 0; j < *pcomqty; j++)
-	if (coms[j][0] == nodepart)
-	{
-	  pos = j;
-	  break;
-	}
+        if (coms[j][0] == nodepart)
+        {
+          pos = j;
+          break;
+        }
 
       if (pos != -1)
-	coms[pos][1]++;
+        coms[pos][1]++;
       else
       {
-	coms[(*pcomqty)][0] = nodepart;
-	coms[(*pcomqty)][1] = 1;
-	(*pcomqty)++;
+        coms[(*pcomqty)][0] = nodepart;
+        coms[(*pcomqty)][1] = 1;
+        (*pcomqty)++;
       }
     }
   }

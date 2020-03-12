@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tesl_.h"
@@ -20,7 +20,7 @@ TFaceQty (struct SEEDSET SSet, struct POLY *Poly)
   for (i = 1; i <= SSet.N; i++)
     for (j = 1; j <= Poly[i].FaceQty; j++)
       if (Poly[i].FacePoly[j] > i || Poly[i].FacePoly[j] < 0)
-	nb++;
+        nb++;
 
   return nb;
 }
@@ -34,12 +34,12 @@ TVerQty (struct SEEDSET SSet, struct POLY *Poly)
   for (i = 1; i <= SSet.N; i++)
     for (j = 1; j <= Poly[i].VerQty; j++)
       if (Poly[i].FacePoly[Poly[i].VerFace[j][0]] > i
-	  || Poly[i].FacePoly[Poly[i].VerFace[j][0]] < 0)
-	if (Poly[i].FacePoly[Poly[i].VerFace[j][1]] > i
-	    || Poly[i].FacePoly[Poly[i].VerFace[j][1]] < 0)
-	  if (Poly[i].FacePoly[Poly[i].VerFace[j][2]] > i
-	      || Poly[i].FacePoly[Poly[i].VerFace[j][2]] < 0)
-	    nb++;
+          || Poly[i].FacePoly[Poly[i].VerFace[j][0]] < 0)
+        if (Poly[i].FacePoly[Poly[i].VerFace[j][1]] > i
+            || Poly[i].FacePoly[Poly[i].VerFace[j][1]] < 0)
+          if (Poly[i].FacePoly[Poly[i].VerFace[j][2]] > i
+              || Poly[i].FacePoly[Poly[i].VerFace[j][2]] < 0)
+            nb++;
 
   return nb;
 }
@@ -62,9 +62,9 @@ TEdgeQty (struct SEEDSET SSet, struct POLY *Poly)
 void
 IniTFNb (struct TESL Tesl, struct POLY *Poly, int **TFNb)
 {
-  int i, j, PrevF;		/* mute variables */
-  int nb = 0;			/* tmp variable containing the face nb (in TFace).   */
-  int PrevP;			/* temporary variable containing the number of the   */
+  int i, j, PrevF;              /* mute variables */
+  int nb = 0;                   /* tmp variable containing the face nb (in TFace).   */
+  int PrevP;                    /* temporary variable containing the number of the   */
   /* previous polyhedron in which the face has already */
   /* been recorded.                                    */
 
@@ -76,18 +76,18 @@ IniTFNb (struct TESL Tesl, struct POLY *Poly, int **TFNb)
        */
       if (i < Poly[i].FacePoly[j] || Poly[i].FacePoly[j] < 0)
       {
-	nb++;
-	TFNb[i][j] = nb;
+        nb++;
+        TFNb[i][j] = nb;
       }
     /* Else, we search the number of the concerned vertex.
      */
       else if (Poly[i].FacePoly[j] > 0)
       {
-	PrevP = Poly[i].FacePoly[j];
-	PrevF =
-	  1 + ut_array_1d_int_eltpos (Poly[PrevP].FacePoly + 1,
-				      Poly[PrevP].FaceQty, i);
-	TFNb[i][j] = TFNb[PrevP][PrevF];
+        PrevP = Poly[i].FacePoly[j];
+        PrevF =
+          1 + ut_array_1d_int_eltpos (Poly[PrevP].FacePoly + 1,
+                                      Poly[PrevP].FaceQty, i);
+        TFNb[i][j] = TFNb[PrevP][PrevF];
       }
   }
 
@@ -99,12 +99,12 @@ IniTFNb (struct TESL Tesl, struct POLY *Poly, int **TFNb)
 void
 IniTVNb (struct TESL Tesl, struct POLY *Poly, int **TVNb)
 {
-  int PNb, VNb;			/* mute variables representing a polyhedron number and
-				 * a polyhedron vertex.
-				 */
-  int nb = 0;			/* internal variable representing the number of real
-				 * vertices.
-				 */
+  int PNb, VNb;                 /* mute variables representing a polyhedron number and
+                                 * a polyhedron vertex.
+                                 */
+  int nb = 0;                   /* internal variable representing the number of real
+                                 * vertices.
+                                 */
 
   /* All vertices of all polyhedra are studied successively.
    */
@@ -118,15 +118,15 @@ IniTVNb (struct TESL Tesl, struct POLY *Poly, int **TVNb)
        */
       if (TreatVer (Poly, PNb, VNb) == 1)
       {
-	/* Creation of a new ver
-	 */
-	nb = AddVer (TVNb, PNb, VNb, nb);
+        /* Creation of a new ver
+         */
+        nb = AddVer (TVNb, PNb, VNb, nb);
       }
       else
       {
-	/* Search of a previously-created ver
-	 */
-	SearchVer (Poly, PNb, VNb, TVNb);
+        /* Search of a previously-created ver
+         */
+        SearchVer (Poly, PNb, VNb, TVNb);
       }
   }
 
@@ -138,16 +138,16 @@ IniTVNb (struct TESL Tesl, struct POLY *Poly, int **TVNb)
 void
 IniTessFacePoly (struct TESL *pTesl, struct POLY *Poly, int **TFNb)
 {
-  int i, j;			/* mute variables */
+  int i, j;                     /* mute variables */
   int FNb;
 
   for (i = 1; i <= (*pTesl).PolyQty; i++)
     for (j = 1; j <= Poly[i].FaceQty; j++)
       if (i < Poly[i].FacePoly[j] || Poly[i].FacePoly[j] < 0)
       {
-	FNb = TFNb[i][j];
-	(*pTesl).FacePoly[FNb][0] = i;
-	(*pTesl).FacePoly[FNb][1] = Poly[i].FacePoly[j];
+        FNb = TFNb[i][j];
+        (*pTesl).FacePoly[FNb][0] = i;
+        (*pTesl).FacePoly[FNb][1] = Poly[i].FacePoly[j];
       }
 
   return;
@@ -170,30 +170,30 @@ IniTessFaceEq (struct TESL *pTesl, struct POLY *Poly, int **TFNb)
     for (j = 1; j <= Poly[i].FaceQty; j++)
       if (i < Poly[i].FacePoly[j] || Poly[i].FacePoly[j] < 0)
       {
-	FNb = TFNb[i][j];
-	for (k = 0; k < 4; k++)
-	  (*pTesl).FaceEq[FNb][k] = Poly[i].FaceEq[j][k];
+        FNb = TFNb[i][j];
+        for (k = 0; k < 4; k++)
+          (*pTesl).FaceEq[FNb][k] = Poly[i].FaceEq[j][k];
 
-	/* Then, we check if the face is correctly oriented,    */
-	/* (if not, modification eq. <-- -eq)                   */
-	first = Poly[i].FaceVerNb[j][1];
-	second = Poly[i].FaceVerNb[j][2];
-	third = Poly[i].FaceVerNb[j][3];
+        /* Then, we check if the face is correctly oriented,    */
+        /* (if not, modification eq. <-- -eq)                   */
+        first = Poly[i].FaceVerNb[j][1];
+        second = Poly[i].FaceVerNb[j][2];
+        third = Poly[i].FaceVerNb[j][3];
 
-	for (k = 1; k < 4; k++)
-	{
-	  a[k] = Poly[i].VerCoo[second][k - 1] - Poly[i].VerCoo[first][k - 1];
-	  b[k] = Poly[i].VerCoo[third][k - 1] - Poly[i].VerCoo[second][k - 1];
-	}
-	ut_vector_vectprod (a + 1, b + 1, c + 1);
-	if (ut_vector_scalprod ((*pTesl).FaceEq[FNb] + 1, c + 1) < 0)
-	  for (k = 0; k < 4; k++)
-	    (*pTesl).FaceEq[FNb][k] *= -1;
+        for (k = 1; k < 4; k++)
+        {
+          a[k] = Poly[i].VerCoo[second][k - 1] - Poly[i].VerCoo[first][k - 1];
+          b[k] = Poly[i].VerCoo[third][k - 1] - Poly[i].VerCoo[second][k - 1];
+        }
+        ut_vector_vectprod (a + 1, b + 1, c + 1);
+        if (ut_vector_scalprod ((*pTesl).FaceEq[FNb] + 1, c + 1) < 0)
+          for (k = 0; k < 4; k++)
+            (*pTesl).FaceEq[FNb][k] *= -1;
       }
 
-  ut_free_1d (a);
-  ut_free_1d (b);
-  ut_free_1d (c);
+  ut_free_1d (&a);
+  ut_free_1d (&b);
+  ut_free_1d (&c);
 
   return;
 }
@@ -210,8 +210,8 @@ IniTessFaceVerQty (struct TESL *pTesl, struct POLY *Poly, int **TFNb)
     for (j = 1; j <= Poly[i].FaceQty; j++)
       if (Poly[i].FacePoly[j] > i || Poly[i].FacePoly[j] < 0)
       {
-	FNb = TFNb[i][j];
-	(*pTesl).FaceVerQty[FNb] = Poly[i].FaceVerQty[j];
+        FNb = TFNb[i][j];
+        (*pTesl).FaceVerQty[FNb] = Poly[i].FaceVerQty[j];
       }
 
   return;
@@ -240,18 +240,18 @@ IniTessVerSeed (struct TESL *pTesl, struct POLY *Poly, int **TVNb)
       VNb = TVNb[i][j];
       if (Treat[VNb] == 0)
       {
-	(*pTesl).VerSeed[VNb][0] = i;
-	for (k = 1; k <= 3; k++)
-	{
-	  ParF = Poly[i].VerFace[j][k - 1];
-	  ParG = Poly[i].FacePoly[ParF];
-	  (*pTesl).VerSeed[VNb][k] = ParG;
-	}
-	Treat[VNb] = 1;
+        (*pTesl).VerSeed[VNb][0] = i;
+        for (k = 1; k <= 3; k++)
+        {
+          ParF = Poly[i].VerFace[j][k - 1];
+          ParG = Poly[i].FacePoly[ParF];
+          (*pTesl).VerSeed[VNb][k] = ParG;
+        }
+        Treat[VNb] = 1;
       }
     }
 
-  ut_free_1d_int (Treat);
+  ut_free_1d_int (&Treat);
 
   return;
 }
@@ -269,7 +269,7 @@ IniTessVerCoo (struct TESL *pTesl, struct POLY *Poly, int **TVNb)
     {
       VNb = TVNb[i][j];
       for (k = 0; k < 3; k++)
-	(*pTesl).VerCoo[VNb][k] = Poly[i].VerCoo[j][k];
+        (*pTesl).VerCoo[VNb][k] = Poly[i].VerCoo[j][k];
     }
 
   return;
@@ -294,12 +294,7 @@ TreatFaceVer (struct TESL *pTesl, int FNb, int S1, int S2)
    */
   status = CommonSeeds (*pTesl, S1, S2, PPNb);
   if (status != 3)
-  {
-    printf ("number of common seeds = %d != 3\n", status);
-    printf ("seeds = ");
-    ut_array_1d_int_fprintf (stdout, PPNb, status, "%d");
-    ut_error_reportbug ();
-  }
+    ut_print_message (2, 3, "Found degenerate configuration.\n");
 
   /* BissFace returns the bissecting face of segment based on the two
    * specified polyhedron centers.
@@ -327,8 +322,8 @@ TreatFaceVer (struct TESL *pTesl, int FNb, int S1, int S2)
       break;
     }
 
-  ut_free_1d_int (PFNb);
-  ut_free_1d_int (PPNb);
+  ut_free_1d_int (&PFNb);
+  ut_free_1d_int (&PPNb);
 
   return status;
 }
@@ -375,10 +370,10 @@ SearchEdge (struct TESL *pTesl, int FNb, int PrevF, int S1, int S2, int p)
    */
   pos1 =
     1 + ut_array_1d_int_eltpos ((*pTesl).FaceVerNb[PrevF] + 1,
-				(*pTesl).FaceVerQty[PrevF], S1);
+                                (*pTesl).FaceVerQty[PrevF], S1);
   pos2 =
     1 + ut_array_1d_int_eltpos ((*pTesl).FaceVerNb[PrevF] + 1,
-				(*pTesl).FaceVerQty[PrevF], S2);
+                                (*pTesl).FaceVerQty[PrevF], S2);
 
   /* nb is the minimum value between pos1 and pos2...
    */
@@ -416,11 +411,11 @@ IniTessFaceEdgeOri (struct TESL *pTesl)
       ver = (*pTesl).FaceVerNb[i][j];
       edge = (*pTesl).FaceEdgeNb[i][j];
       if ((*pTesl).EdgeVerNb[edge][0] == ver)
-	(*pTesl).FaceEdgeOri[i][j] = 1;
+        (*pTesl).FaceEdgeOri[i][j] = 1;
       else if ((*pTesl).EdgeVerNb[edge][1] == ver)
-	(*pTesl).FaceEdgeOri[i][j] = -1;
+        (*pTesl).FaceEdgeOri[i][j] = -1;
       else
-	ut_error_reportbug ();
+        ut_print_neperbug ();
     }
   }
 
@@ -459,9 +454,9 @@ IniPolyFaceOri (struct TESL *pTesl, int poly, int i)
 
   face = (*pTesl).PolyFaceNb[poly][i];
 
-  d = -ut_space_planeside ((*pTesl).FaceEq[face], centre - 1);
+  d = -ut_space_point_plane_side (centre - 1, (*pTesl).FaceEq[face]);
 
-  ut_free_1d (centre);
+  ut_free_1d (&centre);
 
   return d;
 }

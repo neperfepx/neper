@@ -1,33 +1,39 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_fval_gen_stat_.h"
 
 void
-net_tess_opt_comp_objective_fval_gen_stat_smoothed_update_cell (struct TOPT *pTOpt, int var, int cell)
+net_tess_opt_comp_objective_fval_gen_stat_smoothed_update_cell (struct TOPT
+                                                                *pTOpt,
+                                                                int var,
+                                                                int cell)
 {
   int i, minpos, maxpos;
   double val, min, max;
 
-  if ((*pTOpt).oldcellpenalty[cell] == 0 && (*pTOpt).curcellpenalty[cell] == 0)
+  if ((*pTOpt).oldcellpenalty[cell] == 0
+      && (*pTOpt).curcellpenalty[cell] == 0)
   {
-    min = ut_num_min ((*pTOpt).oldcellval[var][cell][0],
-                      (*pTOpt).curcellval[var][cell][0])
-        - 5 * (*pTOpt).cvlsig[var];
+    min =
+      ut_num_min ((*pTOpt).oldcellval[var][cell][0],
+                  (*pTOpt).curcellval[var][cell][0]) -
+      5 * (*pTOpt).cvlsig[var];
 
-    minpos = ut_fct_x_pos ((*pTOpt).curcdf[var], min);
+    minpos = ut_fct_x_bin ((*pTOpt).curcdf[var], min);
 
     if (minpos < 1)
       abort ();
 
     minpos--;
 
-    max = ut_num_max ((*pTOpt).oldcellval[var][cell][0],
-                      (*pTOpt).curcellval[var][cell][0])
-        + 5 * (*pTOpt).cvlsig[var];
+    max =
+      ut_num_max ((*pTOpt).oldcellval[var][cell][0],
+                  (*pTOpt).curcellval[var][cell][0]) +
+      5 * (*pTOpt).cvlsig[var];
 
-    maxpos = ut_fct_x_pos ((*pTOpt).curcdf[var], max);
+    maxpos = ut_fct_x_bin ((*pTOpt).curcdf[var], max);
 
     if (maxpos > (*pTOpt).curcdf[var].size - 1)
       abort ();
@@ -35,12 +41,15 @@ net_tess_opt_comp_objective_fval_gen_stat_smoothed_update_cell (struct TOPT *pTO
     maxpos++;
 
     for (i = minpos; i < maxpos; i++)
-    // for (i = 0; i < (*pTOpt).curcdf[var].size; i++)
+      // for (i = 0; i < (*pTOpt).curcdf[var].size; i++)
     {
-      val = erf (((*pTOpt).curcdf[var].x[i] - (*pTOpt).curcellval[var][cell][0])
-	         / (OL_S2 * (*pTOpt).cvlsig[var]))
-          - erf (((*pTOpt).curcdf[var].x[i] - (*pTOpt).oldcellval[var][cell][0])
-	         / (OL_S2 * (*pTOpt).cvlsig[var]));
+      val =
+        erf (((*pTOpt).curcdf[var].x[i] -
+              (*pTOpt).curcellval[var][cell][0]) / (OL_S2 *
+                                                    (*pTOpt).cvlsig[var])) -
+        erf (((*pTOpt).curcdf[var].x[i] -
+              (*pTOpt).oldcellval[var][cell][0]) / (OL_S2 *
+                                                    (*pTOpt).cvlsig[var]));
 
       (*pTOpt).curcdf[var].y[i] += val / (2 * (*pTOpt).CellQty);
     }
@@ -58,7 +67,7 @@ net_tess_opt_comp_objective_fval_gen_stat_smoothed_update_cell (struct TOPT *pTO
 // chi2
 void
 net_tess_opt_comp_objective_fval_gen_stat_evaluate_chi2 (struct TOPT *pTOpt,
-							  int var)
+                                                         int var)
 {
   int i;
   double val = 0;
@@ -66,13 +75,14 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_chi2 (struct TOPT *pTOpt,
   for (i = 0; i < (*pTOpt).tarpdf[var].size; i++)
   {
     if ((*pTOpt).tarpdf[var].y[i] > 0)
-      val += pow ((*pTOpt).curpdf[var].y[i] -
-	  (*pTOpt).tarpdf[var].y[i], 2)
-	/ (*pTOpt).tarpdf[var].y[i];
+      val +=
+        pow ((*pTOpt).curpdf[var].y[i] - (*pTOpt).tarpdf[var].y[i],
+             2) / (*pTOpt).tarpdf[var].y[i];
     else
-      val += pow ((*pTOpt).curpdf[var].y[i] -
-	  (*pTOpt).tarpdf[var].y[i], 2)
-	/ (.5 * ((*pTOpt).curpdf[var].y[i] + (*pTOpt).tarpdf[var].y[i]));
+      val +=
+        pow ((*pTOpt).curpdf[var].y[i] - (*pTOpt).tarpdf[var].y[i],
+             2) / (.5 * ((*pTOpt).curpdf[var].y[i] +
+                         (*pTOpt).tarpdf[var].y[i]));
   }
 
   (*pTOpt).curval[var] = val;
@@ -83,11 +93,10 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_chi2 (struct TOPT *pTOpt,
 // Kolmogorov Sminrnov
 void
 net_tess_opt_comp_objective_fval_gen_stat_evaluate_ks (struct TOPT *pTOpt,
-					 int var)
+                                                       int var)
 {
   ut_stat_test_ks ((*pTOpt).tarcdf[var].y, (*pTOpt).curcdf[var].y,
-		   (*pTOpt).tarcdf[var].size,
-		   (*pTOpt).curval + var);
+                   (*pTOpt).tarcdf[var].size, (*pTOpt).curval + var);
 
   return;
 }
@@ -95,12 +104,10 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_ks (struct TOPT *pTOpt,
 // Kuiper
 void
 net_tess_opt_comp_objective_fval_gen_stat_evaluate_kuiper (struct TOPT *pTOpt,
-					     int var)
+                                                           int var)
 {
-  ut_stat_test_kuiper ((*pTOpt).tarcdf[var].y,
-		       (*pTOpt).curcdf[var].y,
-		       (*pTOpt).tarcdf[var].size,
-		       (*pTOpt).curval + var);
+  ut_stat_test_kuiper ((*pTOpt).tarcdf[var].y, (*pTOpt).curcdf[var].y,
+                       (*pTOpt).tarcdf[var].size, (*pTOpt).curval + var);
 
   return;
 }
@@ -108,7 +115,7 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_kuiper (struct TOPT *pTOpt,
 // Cramer Von-Mises
 void
 net_tess_opt_comp_objective_fval_gen_stat_evaluate_cvm (struct TOPT *pTOpt,
-					  int var)
+                                                        int var)
 {
   int i, N = (*pTOpt).CellQty;;
   double x, w, F, val;
@@ -143,23 +150,24 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_cvm (struct TOPT *pTOpt,
     {
       x = (*pTOpt).curcdf[var].x[i];
       w = ut_fct_binwidth ((*pTOpt).curcdf[var], i);
-      val += w * pow ((*pTOpt).curcdf[var].y[i]
-		    - ut_fct_eval ((*pTOpt).tarcdf[var], x), 2)
-	       * ut_fct_eval ((*pTOpt).tarpdf[var], x);
+      val +=
+        w * pow ((*pTOpt).curcdf[var].y[i] -
+                 ut_fct_eval ((*pTOpt).tarcdf[var], x),
+                 2) * ut_fct_eval ((*pTOpt).tarpdf[var], x);
     }
 
     (*pTOpt).curval[var] = val;
   }
 
-  ut_free_1d (array);
+  ut_free_1d (&array);
 
   return;
 }
 
 // Anderson–Darling
 void
-net_tess_opt_comp_objective_fval_gen_stat_evaluate_ad (struct TOPT
-    *pTOpt, int var)
+net_tess_opt_comp_objective_fval_gen_stat_evaluate_ad (struct TOPT *pTOpt,
+                                                       int var)
 {
   int i, N = (*pTOpt).CellQty;
   double w, weight, val1, val2, S, val;
@@ -203,26 +211,28 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_ad (struct TOPT
     {
       w = ut_fct_binwidth ((*pTOpt).tarcdf[var], i);
 
-      weight = ut_num_min (1 / ((*pTOpt).tarcdf[var].y[i]
-			        * (1 - (*pTOpt).tarcdf[var].y[i])),
-			    DBL_MAX);
+      weight =
+        ut_num_min (1 /
+                    ((*pTOpt).tarcdf[var].y[i] *
+                     (1 - (*pTOpt).tarcdf[var].y[i])), DBL_MAX);
 
-      val += w * weight * pow ((*pTOpt).curcdf[var].y[i] -
-			       (*pTOpt).tarcdf[var].y[i], 2)
-			* (*pTOpt).tarpdf[var].y[i];
+      val +=
+        w * weight * pow ((*pTOpt).curcdf[var].y[i] -
+                          (*pTOpt).tarcdf[var].y[i],
+                          2) * (*pTOpt).tarpdf[var].y[i];
     }
 
     (*pTOpt).curval[var] = val;
   }
 
-  ut_free_1d (array);
+  ut_free_1d (&array);
 
   return;
 }
 
 void
-net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2w (struct TOPT
-    *pTOpt, int var)
+net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2w (struct TOPT *pTOpt,
+                                                         int var)
 {
   int i, j;
   double w, weight, val;
@@ -234,12 +244,14 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2w (struct TOPT
 
     weight = 1 / (*pTOpt).tarcdf[var].y[i];
     for (j = 0; j < (*pTOpt).tarexprdisqty[var] - 1; j++)
-      weight /= fabs ((*pTOpt).tarcdf[var].y[i] - (*pTOpt).tarexprdisprop[var][j]);
+      weight /= fabs ((*pTOpt).tarcdf[var].y[i] -
+                      (*pTOpt).tarexprdisprop[var][j]);
     weight /= fabs ((*pTOpt).tarcdf[var].y[i] - 1);
     weight = ut_num_min (weight, 1e3);
 
-    val += w * weight * pow ((*pTOpt).curcdf[var].y[i] -
-			     (*pTOpt).tarcdf[var].y[i], 2);
+    val +=
+      w * weight * pow ((*pTOpt).curcdf[var].y[i] - (*pTOpt).tarcdf[var].y[i],
+                        2);
   }
 
   (*pTOpt).curval[var] = val;
@@ -253,12 +265,14 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2w (struct TOPT
 
       weight = 1 / (*pTOpt).tarcdf0[var].y[i];
       for (j = 0; j < (*pTOpt).tarexprdisqty[var] - 1; j++)
-	weight /= fabs ((*pTOpt).tarcdf0[var].y[i] - (*pTOpt).tarexprdisprop[var][j]);
+        weight /= fabs ((*pTOpt).tarcdf0[var].y[i] -
+                        (*pTOpt).tarexprdisprop[var][j]);
       weight /= fabs ((*pTOpt).tarcdf0[var].y[i] - 1);
       weight = ut_num_min (weight, 1e3);
 
-      val += w * weight * pow ((*pTOpt).curcdf0[var].y[i] -
-			       (*pTOpt).tarcdf0[var].y[i], 2);
+      val +=
+        w * weight * pow ((*pTOpt).curcdf0[var].y[i] -
+                          (*pTOpt).tarcdf0[var].y[i], 2);
     }
 
     (*pTOpt).curval0[var] = val;
@@ -268,8 +282,8 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2w (struct TOPT
 }
 
 void
-net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2wu (struct TOPT
-    *pTOpt, int var)
+net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2wu (struct TOPT *pTOpt,
+                                                          int var)
 {
   int i;
   double w, weight, val;
@@ -279,11 +293,13 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2wu (struct TOPT
   {
     w = ut_fct_binwidth ((*pTOpt).tarcdf[var], i);
 
-    weight = 1 / ((*pTOpt).tarcdf[var].y[i] * (1 - (*pTOpt).tarcdf[var].y[i]));
+    weight =
+      1 / ((*pTOpt).tarcdf[var].y[i] * (1 - (*pTOpt).tarcdf[var].y[i]));
     weight = ut_num_min (weight, 1e3);
 
-    val += w * weight * pow ((*pTOpt).curcdf[var].y[i] -
-			     (*pTOpt).tarcdf[var].y[i], 2);
+    val +=
+      w * weight * pow ((*pTOpt).curcdf[var].y[i] - (*pTOpt).tarcdf[var].y[i],
+                        2);
   }
 
   (*pTOpt).curval[var] = val;
@@ -295,11 +311,13 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2wu (struct TOPT
     {
       w = ut_fct_binwidth ((*pTOpt).tarcdf0[var], i);
 
-      weight = 1 / ((*pTOpt).tarcdf0[var].y[i] * (1 - (*pTOpt).tarcdf0[var].y[i]));
+      weight =
+        1 / ((*pTOpt).tarcdf0[var].y[i] * (1 - (*pTOpt).tarcdf0[var].y[i]));
       weight = ut_num_min (weight, 1e3);
 
-      val += w * weight * pow ((*pTOpt).curcdf0[var].y[i] -
-			       (*pTOpt).tarcdf0[var].y[i], 2);
+      val +=
+        w * weight * pow ((*pTOpt).curcdf0[var].y[i] -
+                          (*pTOpt).tarcdf0[var].y[i], 2);
     }
 
     (*pTOpt).curval0[var] = val;
@@ -309,8 +327,8 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2wu (struct TOPT
 }
 
 void
-net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2 (struct TOPT
-    *pTOpt, int var)
+net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2 (struct TOPT *pTOpt,
+                                                        int var)
 {
   int i;
   double w, val;
@@ -320,8 +338,7 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2 (struct TOPT
   {
     w = ut_fct_binwidth ((*pTOpt).tarcdf[var], i);
 
-    val += w * pow ((*pTOpt).curcdf[var].y[i] -
-		    (*pTOpt).tarcdf[var].y[i], 2);
+    val += w * pow ((*pTOpt).curcdf[var].y[i] - (*pTOpt).tarcdf[var].y[i], 2);
   }
 
   (*pTOpt).curval[var] = val;

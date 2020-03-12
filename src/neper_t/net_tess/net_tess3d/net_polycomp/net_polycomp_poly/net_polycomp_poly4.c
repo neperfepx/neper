@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_polycomp_poly_.h"
@@ -17,7 +17,7 @@ VerUseUpdating (POLYMOD * pPolymod, int *BadVer)
     (*pPolymod).VerUse[BadVer[i]] = 0;
 
   return ut_array_1d_int_sum ((*pPolymod).VerUse + 1,
-			      (*pPolymod).VerQty) > 0 ? 0 : -1;
+                              (*pPolymod).VerQty) > 0 ? 0 : -1;
 }
 
 /* FaceUseUpdating modifies pPolymod.FaceUse: FaceUse[i]<--0 if the ith
@@ -60,7 +60,7 @@ CheckFace (int *BadVer, struct POLYMOD Polymod, int face)
      * the face must be kept: the value 1 is returned.
      */
     if (ut_array_1d_int_eltpos
-	(BadVer + 1, BadVer[0], Polymod.FaceVerNb[face][sum]) == -1)
+        (BadVer + 1, BadVer[0], Polymod.FaceVerNb[face][sum]) == -1)
       return 1;
 
   /* Else, 0 is returned. */
@@ -85,12 +85,12 @@ NewFace (int Nei, POLYMOD * pPolymod, double *plane)
   /* The seed of which the new face is associated is recorded. */
   UpdFacePoly (pPolymod, Nei);
 
-  (*pPolymod).FaceVerQty
-    = ut_realloc_1d_int ((*pPolymod).FaceVerQty, (*pPolymod).FaceQty + 1);
+  (*pPolymod).FaceVerQty =
+    ut_realloc_1d_int ((*pPolymod).FaceVerQty, (*pPolymod).FaceQty + 1);
   (*pPolymod).FaceVerQty[(*pPolymod).FaceQty] = 0;
 
-  (*pPolymod).FaceVerNb
-    = ut_realloc_1d_pint ((*pPolymod).FaceVerNb, (*pPolymod).FaceQty + 1);
+  (*pPolymod).FaceVerNb =
+    ut_realloc_1d_pint ((*pPolymod).FaceVerNb, (*pPolymod).FaceQty + 1);
   (*pPolymod).FaceVerNb[(*pPolymod).FaceQty] = ut_alloc_1d_int (1);
 
   return;
@@ -108,11 +108,11 @@ NewFace (int Nei, POLYMOD * pPolymod, double *plane)
 void
 FnLFacesDet (POLYMOD Polymod, int *BadVer, int *FnLFaces)
 {
-  int i;			/* mute variable                                        */
-  int ns, nf;			/* number of the vertex in BadVer and number of the     */
+  int i;                        /* mute variable                                        */
+  int ns, nf;                   /* number of the vertex in BadVer and number of the     */
   /* considered face.                                     */
-  int nb;			/* in fine, to delete                                   */
-  int *Ver;			/* Ver[1] <-- number of the considered vertex           */
+  int nb;                       /* in fine, to delete                                   */
+  int *Ver;                     /* Ver[1] <-- number of the considered vertex           */
   /* Ver[0] <-- number of the "previous" neighbour        */
   /* Ver[2] <-- number of the "next" neighbour            */
 
@@ -140,16 +140,16 @@ FnLFacesDet (POLYMOD Polymod, int *BadVer, int *FnLFaces)
        */
 
       for (i = 0; i <= 2; i = i + 2)
-	if (ut_array_1d_int_eltpos (BadVer + 1, BadVer[0], Ver[i]) == -1)
-	{
-	  nb = CommonFaces (Polymod, Ver[i], Ver[1], FnLFaces);
-	  /* simple verification... */
-	  if (nb != 2)
-	    ut_error_reportbug ();
+        if (ut_array_1d_int_eltpos (BadVer + 1, BadVer[0], Ver[i]) == -1)
+        {
+          nb = CommonFaces (Polymod, Ver[i], Ver[1], FnLFaces);
+          /* simple verification... */
+          if (nb != 2)
+            ut_print_neperbug ();
 
-	  ut_free_1d_int (Ver);
-	  return;
-	}
+          ut_free_1d_int (&Ver);
+          return;
+        }
     }
 
   return;
@@ -161,7 +161,7 @@ FnLFacesDet (POLYMOD Polymod, int *BadVer, int *FnLFaces)
 int
 FaceModif (int pFace, int Face, POLYMOD * pPolymod, int *BadVer, int last)
 {
-  int next = 0;			/* next face to modify */
+  int next = 0;                 /* next face to modify */
   /* The 2 couples of vertices whose segment is cut by the new plane
    * are recorded as couple1 & couple2.
    * Difference between these
@@ -184,9 +184,9 @@ FaceModif (int pFace, int Face, POLYMOD * pPolymod, int *BadVer, int last)
   int *faces1;
   int *faces2;
 
-  int bel2;			/* (see above) */
+  int bel2;                     /* (see above) */
 
-  int NbBadVer;			/* Number of bad vertices of the face */
+  int NbBadVer;                 /* Number of bad vertices of the face */
   int *pNbBadVer = &NbBadVer;
 
   double *coo = ut_alloc_1d (3);
@@ -201,7 +201,7 @@ FaceModif (int pFace, int Face, POLYMOD * pPolymod, int *BadVer, int last)
    */
   bel2 =
     VerCoupleNFaces (pPolymod, BadVer, Face, pFace, couple1, couple2, faces1,
-		     faces2, pNbBadVer);
+                     faces2, pNbBadVer);
 
   /* Recording of the next face to modify.
    */
@@ -236,11 +236,11 @@ FaceModif (int pFace, int Face, POLYMOD * pPolymod, int *BadVer, int last)
 
   /* Memory freeing for local temporary arrays.
    */
-  ut_free_1d_int (couple1);
-  ut_free_1d_int (couple2);
-  ut_free_1d_int (faces1);
-  ut_free_1d_int (faces2);
-  ut_free_1d (coo);
+  ut_free_1d_int (&couple1);
+  ut_free_1d_int (&couple2);
+  ut_free_1d_int (&faces1);
+  ut_free_1d_int (&faces2);
+  ut_free_1d (&coo);
 
   return next;
 }

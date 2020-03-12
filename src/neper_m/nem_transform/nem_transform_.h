@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -15,3 +15,9 @@
 
 extern void nem_transform_smooth (char *smooth, struct TESS Tess,
                                   struct NODES *pNodes, struct MESH *Mesh);
+
+extern void nem_transform_explode (char *explode, struct NODES *pNodes,
+                                   struct MESH *Mesh);
+
+extern void nem_transform_slice (char *explode, struct NODES *pNodes,
+                                 struct MESH *Mesh);

@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fscanf_fepx_.h"
 
 void
 neut_mesh_fscanf_fepx (FILE * parms, FILE * mesh, FILE * elsets,
-		       struct NODES *pNodes, struct MESH *pMesh)
+                       struct NODES *pNodes, struct MESH *pMesh)
 {
   int i, tmp, eltnodeqty = 0;
   char *string = ut_alloc_1d_char (1000);
@@ -22,7 +22,7 @@ neut_mesh_fscanf_fepx (FILE * parms, FILE * mesh, FILE * elsets,
 
   /* determining the elt order from the number of words on the first
    * line (elt_id + its nodes) */
-  ut_file_line_nbwords_pointer (mesh, &eltnodeqty);
+  ut_file_nextlinenbwords (mesh, &eltnodeqty);
   eltnodeqty--;
   fseek (mesh, 0, 0);
 
@@ -59,14 +59,14 @@ neut_mesh_fscanf_fepx (FILE * parms, FILE * mesh, FILE * elsets,
       status += fscanf (mesh, "%d", &((*pMesh).EltNodes[i][8]));
       status += fscanf (mesh, "%d", &((*pMesh).EltNodes[i][3]));
       if (status != 10)
-	abort ();
+        abort ();
     }
 
     ut_array_1d_int_addval ((*pMesh).EltNodes[i], eltnodeqty, 1,
-			    (*pMesh).EltNodes[i]);
+                            (*pMesh).EltNodes[i]);
   }
 
-  ut_file_skip (mesh, 3);	/* skipping 1.0 1.0 1.0 */
+  ut_file_skip (mesh, 3);       /* skipping 1.0 1.0 1.0 */
 
   /* read nodes ----------------------------------------------------- */
   node_nbs = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
@@ -82,14 +82,14 @@ neut_mesh_fscanf_fepx (FILE * parms, FILE * mesh, FILE * elsets,
   }
 
   /* read elsets ---------------------------------------------------- */
-  ut_file_skip (elsets, 1);	// skipping "grain-input"
+  ut_file_skip (elsets, 1);     // skipping "grain-input"
   if (fscanf (elsets, "%d", &tmp) != 1)
     abort ();
 
   if (tmp != (*pMesh).EltQty)
   {
     ut_print_message (2, 0,
-		      "Elt quantities in parms and opt do not match!\n");
+                      "Elt quantities in parms and opt do not match!\n");
     abort ();
   }
   if (fscanf (elsets, "%d", &((*pMesh).ElsetQty)) != 1)
@@ -102,14 +102,14 @@ neut_mesh_fscanf_fepx (FILE * parms, FILE * mesh, FILE * elsets,
     if (fscanf (elsets, "%d", &tmp) != 1)
       abort ();
 
-    ut_file_skip (elsets, 1);	// skipping phase
+    ut_file_skip (elsets, 1);   // skipping phase
     elset_eltqty[tmp]++;
   }
 
   (*pMesh).Elsets = ut_alloc_1d_pint ((*pMesh).ElsetQty + 1);
   for (i = 1; i <= (*pMesh).ElsetQty; i++)
     (*pMesh).Elsets[i] = ut_alloc_1d_int (elset_eltqty[i] + 1);
-  ut_free_1d_int (elset_eltqty);
+  ut_free_1d_int (&elset_eltqty);
 
   fseek (elsets, 0, SEEK_SET);
   ut_file_skip (elsets, 3);
@@ -120,13 +120,13 @@ neut_mesh_fscanf_fepx (FILE * parms, FILE * mesh, FILE * elsets,
     if (fscanf (elsets, "%d", &tmp) != 1)
       abort ();
 
-    ut_file_skip (elsets, 1);	// skipping phase
+    ut_file_skip (elsets, 1);   // skipping phase
     (*pMesh).Elsets[tmp][++(*pMesh).Elsets[tmp][0]] = i;
   }
 
-  ut_free_1d_char (string);
-  ut_free_1d_int (node_nbs);
-  ut_free_1d_int (elt_nbs);
+  ut_free_1d_char (&string);
+  ut_free_1d_int (&node_nbs);
+  ut_free_1d_int (&elt_nbs);
 
   return;
 }

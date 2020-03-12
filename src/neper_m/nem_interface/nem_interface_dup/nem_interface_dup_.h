@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -26,8 +26,9 @@ extern void nem_interface_dup_edge (struct TESS Tess, int *edges, int edgeqty,
 extern void nem_interface_dup_face (struct TESS Tess, int *faces, int faceqty,
                                         struct NODES *pNodes, struct MESH *Mesh);
 
-extern void nem_interface_duplicate (int dim, int *polys, int polyqty,
-    int *nodes, int nodeqty, struct NODES *pNodes, struct MESH *Mesh);
+extern void nem_interface_duplicate (int *polys, int polyqty, int *nodes,
+                                     int nodeqty, struct NODES *pNodes,
+                                     struct MESH *Mesh);
 
 extern void nem_interface_dup_boundelts_3d (struct TESS Tess, int *faces, int faceqty,
                                             struct NODES Nodes,

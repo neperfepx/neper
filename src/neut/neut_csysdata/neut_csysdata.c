@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_csysdata_.h"
@@ -32,21 +32,21 @@ neut_csysdata_set_default (struct CSYSDATA *pCsysData)
 void
 neut_csysdata_free (struct CSYSDATA *pCsysData)
 {
-  ut_free_1d ((*pCsysData).ColData);
-  ut_free_1d_char ((*pCsysData).ColDataType);
-  ut_free_1d_int ((*pCsysData).Col);
+  ut_free_1d (&(*pCsysData).ColData);
+  ut_free_1d_char (&(*pCsysData).ColDataType);
+  ut_free_1d_int (&(*pCsysData).Col);
   (*pCsysData).RadData = 0;
-  ut_free_1d_char ((*pCsysData).RadDataType);
+  ut_free_1d_char (&(*pCsysData).RadDataType);
   (*pCsysData).Rad = 0;
   (*pCsysData).LengthData = 0;
-  ut_free_1d_char ((*pCsysData).LengthDataType);
+  ut_free_1d_char (&(*pCsysData).LengthDataType);
   (*pCsysData).Length = 0;
 
-  ut_free_1d ((*pCsysData).CooData);
-  ut_free_1d_char ((*pCsysData).CooDataType);
-  ut_free_1d ((*pCsysData).Coo);
+  ut_free_1d (&(*pCsysData).CooData);
+  ut_free_1d_char (&(*pCsysData).CooDataType);
+  ut_free_1d (&(*pCsysData).Coo);
 
-  ut_free_2d_char ((*pCsysData).Label, 3);
+  ut_free_2d_char (&(*pCsysData).Label, 3);
   (*pCsysData).FontSize = -1;
 
   return;
@@ -59,10 +59,10 @@ neut_csysdata_coldatatype_size (struct CSYSDATA CsysData, int *psize)
       || !strcmp (CsysData.ColDataType, "ori"))
     (*psize) = 3;
   else if (!strcmp (CsysData.ColDataType, "rad")
-	   || !strcmp (CsysData.ColDataType, "scal"))
+           || !strcmp (CsysData.ColDataType, "scal"))
     (*psize) = 1;
   else
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   return;
 }

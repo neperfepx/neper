@@ -1,6 +1,8 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
+
+#include<orilib.h>
 
 #ifdef __cplusplus
 extern "C"
@@ -9,8 +11,6 @@ extern "C"
 
 #ifndef  NEUT_VOX_GEN_H
 #define  NEUT_VOX_GEN_H
-
-#include<orilib.h>
 
   extern void neut_tesr_cell (struct TESR Tesr, char **pcell);
   extern void neut_tesr_entity_qty (struct TESR Tesr, char *entity,

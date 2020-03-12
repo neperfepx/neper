@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_smoothing_.h"
@@ -12,7 +12,7 @@
 // always be reached.
 void
 nem_smoothing_laplacian (struct TESS Tess, struct NODES *pNodes,
-			 struct MESH *Mesh, int dim, double A, int itermax,
+                         struct MESH *Mesh, int dim, double A, int itermax,
                          char *nodetype)
 {
   int i, j, nodeqty, nodeqty2, domtype;
@@ -27,17 +27,18 @@ nem_smoothing_laplacian (struct TESS Tess, struct NODES *pNodes,
   neut_mesh_nodes (Mesh[dim - 1], &nodes2, &nodeqty2);
 
   for (i = 0; i < nodeqty2; i++)
-    nodeqty -= ut_array_1d_int_deletencompress (nodes, nodeqty, nodes2[i], 1);
+    nodeqty -= ut_array_1d_int_rmelt (nodes, nodeqty, nodes2[i], 1);
 
   if (!strcmp (nodetype, "interior"))
   {
     for (i = 0; i < nodeqty; i++)
     {
-      neut_mesh_node_domtype (Tess, Mesh[0], Mesh[1], Mesh[2], Mesh[3], nodes[i], &domtype);
+      neut_mesh_node_domtype (Tess, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
+                              nodes[i], &domtype);
       if (domtype != -1)
         nodes[i] = 0;
     }
-    nodeqty -= ut_array_1d_int_deletencompress (nodes, nodeqty, 0, INT_MAX);
+    nodeqty -= ut_array_1d_int_rmelt (nodes, nodeqty, 0, INT_MAX);
   }
 
   NodeCoo = ut_alloc_2d (Mesh[dim].NodeQty + 1, 3);
@@ -53,26 +54,26 @@ nem_smoothing_laplacian (struct TESS Tess, struct NODES *pNodes,
       double *NeighCoo = ut_alloc_1d (3);
 
       neut_mesh_node_neighnodes (Mesh[dim], nodes[j], &neighnodes,
-				 &neighnodeqty);
+                                 &neighnodeqty);
       nem_smoothing_neighnodeweights (*pNodes, Mesh, nodes[j], neighnodes,
-				      neighnodeqty, &neighnodeweights);
+                                      neighnodeqty, &neighnodeweights);
       nem_smoothing_barypos (*pNodes, neighnodes, neighnodeweights,
-			     neighnodeqty, NeighCoo);
+                             neighnodeqty, NeighCoo);
 
       nem_smoothing_newcoo ((*pNodes).NodeCoo[nodes[j]], NeighCoo, A,
-			    NodeCoo[nodes[j]]);
+                            NodeCoo[nodes[j]]);
 
-      ut_free_1d_int_ (&neighnodes);
-      ut_free_1d_ (&neighnodeweights);
-      ut_free_1d_ (&NeighCoo);
+      ut_free_1d_int (&neighnodes);
+      ut_free_1d (&neighnodeweights);
+      ut_free_1d (&NeighCoo);
     }
 
     nem_smoothing_nodes_updatecoo (pNodes, nodes, nodeqty, NodeCoo);
   }
 
-  ut_free_1d_int (nodes);
-  ut_free_1d_int (nodes2);
-  ut_free_2d (NodeCoo, Mesh[dim].NodeQty + 1);
+  ut_free_1d_int (&nodes);
+  ut_free_1d_int (&nodes2);
+  ut_free_2d (&NodeCoo, Mesh[dim].NodeQty + 1);
 
   return;
 }

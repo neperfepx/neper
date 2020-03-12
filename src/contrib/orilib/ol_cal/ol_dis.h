@@ -15,7 +15,7 @@ extern "C"
 #include<string.h>
 #include<math.h>
 #include<float.h>
-#include"../ut/ut.h"
+#include"../ut/src/ut.h"
 #include"../ol_cal.h"
 
 #define isNaN(x) ((x) != (x))

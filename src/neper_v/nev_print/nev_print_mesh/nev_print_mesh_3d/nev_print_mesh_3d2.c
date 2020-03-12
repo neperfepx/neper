@@ -1,16 +1,14 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_mesh_3d_.h"
 
 void
 nev_print_mesh_3d_compress (struct PRINT Print, struct NODES Nodes,
-			    struct MESH Mesh3D,
-			    struct NODES *pN,
-			    struct MESH *pM2D,
-			    int ***pprintelt3dface,
-			    int **pelt2delt3d, int **pnodes_new_old)
+                            struct MESH Mesh3D, struct NODES *pN,
+                            struct MESH *pM2D, int ***pprintelt3dface,
+                            int **pelt2delt3d, int **pnodes_new_old)
 {
   int i, j, k, eltqty, elt3d, elt3dqty;
   int *elts = ut_alloc_1d_int (Mesh3D.EltQty);
@@ -37,7 +35,8 @@ nev_print_mesh_3d_compress (struct PRINT Print, struct NODES Nodes,
   nodes = ut_alloc_1d_int (elt2dnodeqty);
 
   eltqty = 0;
-  if (ut_array_1d_int_sum (Print.showelt3d + 1, Mesh3D.EltQty) == Mesh3D.EltQty)
+  if (ut_array_1d_int_sum (Print.showelt3d + 1, Mesh3D.EltQty) ==
+      Mesh3D.EltQty)
   {
     eltqty = Mesh3D.EltQty;
     eltmax = Mesh3D.EltQty;
@@ -64,11 +63,11 @@ nev_print_mesh_3d_compress (struct PRINT Print, struct NODES Nodes,
     ut_array_1d_int_set (elset_full + 1, Mesh3D.ElsetQty, 1);
     for (i = 1; i <= Mesh3D.ElsetQty; i++)
       for (j = 1; j <= Mesh3D.Elsets[i][0]; j++)
-	if (Print.showelt3d[Mesh3D.Elsets[i][j]] == 0)
-	{
-	  elset_full[i] = 0;
-	  break;
-	}
+        if (Print.showelt3d[Mesh3D.Elsets[i][j]] == 0)
+        {
+          elset_full[i] = 0;
+          break;
+        }
 
     if (eltqty > 0)
       neut_mesh_elts_boundelts (Mesh3D, elts, eltqty, &leftelts, &lefteltqty);
@@ -91,45 +90,45 @@ nev_print_mesh_3d_compress (struct PRINT Print, struct NODES Nodes,
     for (j = 0; j < elt3dfaceqty; j++)
     {
       for (k = 0; k < elt2dnodeqty; k++)
-	nodes[k] = Mesh3D.EltNodes[elt3d][seq3[j][k]];
+        nodes[k] = Mesh3D.EltNodes[elt3d][seq3[j][k]];
 
       neut_mesh_nodes_comelts (Mesh3D, nodes, elt2dnodeqty, &elts3d,
-			       &elt3dqty);
+                               &elt3dqty);
 
       int print;
 
       print = 0;
 
       if (elt3dqty == 1)
-	print = 1;
+        print = 1;
 
       else if (elt3dqty == 2)
       {
-	// keep the first condition, or combine w the second
-	// (because of the `else if')
-	if ((Mesh3D.EltElset[elts3d[0]] == Mesh3D.EltElset[elts3d[1]]))
-	{
-	  if (elset_full[Mesh3D.EltElset[elts3d[0]]] == 1)
-	    print = 0;
-	  else if (printelt3d[elts3d[0]] == 0 || printelt3d[elts3d[1]] == 0)
-	    print = 1;
-	}
-	else
-	{
-	  if (elset_full[Mesh3D.EltElset[elts3d[0]]] == 1
-	      && elset_full[Mesh3D.EltElset[elts3d[1]]] == 1)
-	    print = 0;
-	  else
-	    print = 1;
-	}
+        // keep the first condition, or combine w the second
+        // (because of the `else if')
+        if ((Mesh3D.EltElset[elts3d[0]] == Mesh3D.EltElset[elts3d[1]]))
+        {
+          if (elset_full[Mesh3D.EltElset[elts3d[0]]] == 1)
+            print = 0;
+          else if (printelt3d[elts3d[0]] == 0 || printelt3d[elts3d[1]] == 0)
+            print = 1;
+        }
+        else
+        {
+          if (elset_full[Mesh3D.EltElset[elts3d[0]]] == 1
+              && elset_full[Mesh3D.EltElset[elts3d[1]]] == 1)
+            print = 0;
+          else
+            print = 1;
+        }
       }
 
       if (print)
       {
-	(*pprintelt3dface)[elt3d][j] = 1;
-	neut_mesh_addelt (pM2D, nodes);
-	(*pelt2delt3d) = ut_realloc_1d_int (*pelt2delt3d, (*pM2D).EltQty + 1);
-	(*pelt2delt3d)[(*pM2D).EltQty] = elt3d;
+        (*pprintelt3dface)[elt3d][j] = 1;
+        neut_mesh_addelt (pM2D, nodes);
+        (*pelt2delt3d) = ut_realloc_1d_int (*pelt2delt3d, (*pM2D).EltQty + 1);
+        (*pelt2delt3d)[(*pM2D).EltQty] = elt3d;
       }
     }
   }
@@ -159,22 +158,21 @@ nev_print_mesh_3d_compress (struct PRINT Print, struct NODES Nodes,
   neut_mesh_switch (pM2D, nodes_old_new, NULL, NULL);
   neut_mesh_init_nodeelts (pM2D, Nodes.NodeQty);
 
-  ut_free_1d_int (elts);
-  ut_free_1d_int (node_status);
-  ut_free_1d_int (nodes_old_new);
+  ut_free_1d_int (&elts);
+  ut_free_1d_int (&node_status);
+  ut_free_1d_int (&nodes_old_new);
 
   return;
 }
 
 void
 nev_print_mesh_3d_print (FILE * file, struct PRINT Print, struct NODES N,
-			 struct MESH M1D, struct MESH M2D,
-			 int *elt2delt3d, int *nodes_new_old,
-			 struct NODEDATA NodeData, struct MESHDATA *MeshData)
+                         struct MESH M1D, struct MESH M2D, int *elt2delt3d,
+                         int *nodes_new_old, struct NODEDATA NodeData,
+                         struct MESHDATA *MeshData)
 {
-  nev_print_mesh_3d_print_faces (file, Print, N, M2D,
-				 elt2delt3d, nodes_new_old,
-				 NodeData, MeshData);
+  nev_print_mesh_3d_print_faces (file, Print, N, M2D, elt2delt3d,
+                                 nodes_new_old, NodeData, MeshData);
 
   nev_print_mesh_3d_print_edges (file, Print.showshadow, N, M1D, MeshData);
 

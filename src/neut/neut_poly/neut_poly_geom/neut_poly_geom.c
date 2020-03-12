@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_poly_geom_.h"
@@ -47,27 +47,39 @@ neut_poly_volume (struct POLY Poly, double *pvol)
 
     for (i = 1; i < Poly.FaceVerQty[f]; i++)
     {
-      area = ut_space_triangle_area (Poly.VerCoo[ver], Poly.VerCoo[Poly.FaceVerNb[f][i]], Poly.VerCoo[Poly.FaceVerNb[f][i + 1]]);
+      area =
+        ut_space_triangle_area (Poly.VerCoo[ver],
+                                Poly.VerCoo[Poly.FaceVerNb[f][i]],
+                                Poly.VerCoo[Poly.FaceVerNb[f][i + 1]]);
       if (!isnan (area))
       {
-	ut_array_1d_memcpy (proj, 3, centre);
-	ut_space_points_plane (Poly.VerCoo[ver], Poly.VerCoo[Poly.FaceVerNb[f][i]], Poly.VerCoo[Poly.FaceVerNb[f][i + 1]], eq);
-	ut_space_projpoint_alongonto (proj, eq + 1, eq);
-	h = ut_space_dist (centre, proj);
-	if (!isnan (h))
-	  (*pvol) += area * h * 0.3333333333333333333333;
+        ut_array_1d_memcpy (centre, 3, proj);
+        ut_space_points_plane (Poly.VerCoo[ver],
+                               Poly.VerCoo[Poly.FaceVerNb[f][i]],
+                               Poly.VerCoo[Poly.FaceVerNb[f][i + 1]], eq);
+        ut_space_point_dir_plane_proj (proj, eq + 1, eq, proj);
+        h = ut_space_dist (centre, proj);
+        if (!isnan (h))
+          (*pvol) += area * h * 0.3333333333333333333333;
       }
     }
 
-    area = ut_space_triangle_area (Poly.VerCoo[ver], Poly.VerCoo[Poly.FaceVerNb[f][Poly.FaceVerQty[f]]], Poly.VerCoo[Poly.FaceVerNb[f][1]]);
+    area =
+      ut_space_triangle_area (Poly.VerCoo[ver],
+                              Poly.VerCoo[Poly.
+                                          FaceVerNb[f][Poly.FaceVerQty[f]]],
+                              Poly.VerCoo[Poly.FaceVerNb[f][1]]);
     if (!isnan (area))
     {
-      ut_array_1d_memcpy (proj, 3, centre);
-      ut_space_points_plane (Poly.VerCoo[ver], Poly.VerCoo[Poly.FaceVerNb[f][Poly.FaceVerQty[f]]], Poly.VerCoo[Poly.FaceVerNb[f][1]], eq);
-      ut_space_projpoint_alongonto (proj, eq + 1, eq);
+      ut_array_1d_memcpy (centre, 3, proj);
+      ut_space_points_plane (Poly.VerCoo[ver],
+                             Poly.VerCoo[Poly.
+                                         FaceVerNb[f][Poly.FaceVerQty[f]]],
+                             Poly.VerCoo[Poly.FaceVerNb[f][1]], eq);
+      ut_space_point_dir_plane_proj (proj, eq + 1, eq, proj);
       h = ut_space_dist (centre, proj);
       if (!isnan (h))
-	(*pvol) += area * h * 0.3333333333333333333333;
+        (*pvol) += area * h * 0.3333333333333333333333;
     }
   }
 
@@ -101,7 +113,8 @@ neut_polys_volume (struct POLY *Poly, int *polys, int polyqty, double *pvol)
 }
 
 int
-neut_polys_volume_2d (struct POLY *Poly, int *polys, int polyqty, double Size, double *pval)
+neut_polys_volume_2d (struct POLY *Poly, int *polys, int polyqty, double Size,
+                      double *pval)
 {
   neut_polys_volume (Poly, polys, polyqty, pval);
   (*pval) /= Size;
@@ -171,7 +184,8 @@ neut_polys_diameq (struct POLY *Poly, int *polys, int polyqty, double *pval)
 }
 
 void
-neut_polys_diameq_2d (struct POLY *Poly, int *polys, int polyqty, double h, double *pval)
+neut_polys_diameq_2d (struct POLY *Poly, int *polys, int polyqty, double h,
+                      double *pval)
 {
   neut_polys_volume (Poly, polys, polyqty, pval);
   (*pval) /= h;
@@ -223,31 +237,33 @@ neut_poly_centroid (struct POLY Poly, double *coo)
   for (f = 1; f <= Poly.FaceQty; f++)
   {
     ver = Poly.FaceVerNb[f][1];
-    ut_array_1d_memcpy (p0, 3, Poly.VerCoo[ver]);
+    ut_array_1d_memcpy (Poly.VerCoo[ver], 3, p0);
 
     for (i = 1; i <= Poly.FaceVerQty[f]; i++)
     {
       p1 = Poly.VerCoo[Poly.FaceVerNb[f][i]];
-      p2 = Poly.VerCoo[Poly.FaceVerNb[f]
-		       [ut_num_rotpos (1, Poly.FaceVerQty[f], i, 1)]];
+      p2 =
+        Poly.VerCoo[Poly.
+                    FaceVerNb[f][ut_array_rotpos
+                                 (1, Poly.FaceVerQty[f], i, 1)]];
 
       area = ut_space_triangle_area (p0, p1, p2);
 
       if (area > 1e-20)
       {
-	ut_space_tet_centre (C, p0, p1, p2, tmp);
-	vol = ut_space_tet_volume (C, p0, p1, p2);
-	ut_array_1d_scale (tmp, 3, vol);
-	ut_array_1d_add (coo, tmp, 3, coo);
-	totvol += vol;
+        ut_space_tet_centre (C, p0, p1, p2, tmp);
+        vol = ut_space_tet_volume (C, p0, p1, p2);
+        ut_array_1d_scale (tmp, 3, vol);
+        ut_array_1d_add (coo, tmp, 3, coo);
+        totvol += vol;
       }
     }
   }
 
   ut_array_1d_scale (coo, 3, 1. / totvol);
-  ut_free_1d (p0);
-  ut_free_1d (tmp);
-  ut_free_1d (C);
+  ut_free_1d (&p0);
+  ut_free_1d (&tmp);
+  ut_free_1d (&C);
   return 0;
 }
 
@@ -262,21 +278,22 @@ neut_poly_point_in (struct POLY Poly, double *coo)
 
   status = 1;
   for (i = 1; i <= Poly.FaceQty; i++)
-    if (ut_space_planeside (Poly.FaceEq[i], coo - 1)
-	!= ut_space_planeside (Poly.FaceEq[i], C - 1))
+    if (ut_space_point_plane_side (coo - 1, Poly.FaceEq[i]) !=
+        ut_space_point_plane_side (C - 1, Poly.FaceEq[i]))
     {
       status = 0;
       break;
     }
 
-  ut_free_1d (C);
+  ut_free_1d (&C);
 
   return status;
 }
 
 // distance function from the poly boundary
 int
-neut_poly_point_distfromboundary (struct POLY Poly, double *coo, double *pdist)
+neut_poly_point_distfromboundary (struct POLY Poly, double *coo,
+                                  double *pdist)
 {
   int i, status, edgeqty, **edges = NULL;
   double t, tmp;
@@ -291,7 +308,7 @@ neut_poly_point_distfromboundary (struct POLY Poly, double *coo, double *pdist)
     {
       (*pdist) = tmp;
       if (verbosity)
-	printf ("closest ver = %d with dist = %f\n", i, *pdist);
+        printf ("closest ver = %d with dist = %f\n", i, *pdist);
     }
   }
 
@@ -302,16 +319,16 @@ neut_poly_point_distfromboundary (struct POLY Poly, double *coo, double *pdist)
   for (i = 0; i < edgeqty; i++)
   {
     ut_space_segment_point_proj (Poly.VerCoo[edges[i][0]],
-				 Poly.VerCoo[edges[i][1]],
-				 coo, &t, &tmp, NULL);
+                                 Poly.VerCoo[edges[i][1]], coo, NULL, &t,
+                                 &tmp);
     if (t >= 1e-6 && t <= 1 - 1e-6)
     {
       if (tmp < *pdist)
       {
-	(*pdist) = tmp;
-	if (verbosity)
-	  printf ("closest edge = %d-%d with dist = %f\n",
-		  edges[i][0], edges[i][1], *pdist);
+        (*pdist) = tmp;
+        if (verbosity)
+          printf ("closest edge = %d-%d with dist = %f\n", edges[i][0],
+                  edges[i][1], *pdist);
       }
     }
   }
@@ -323,30 +340,31 @@ neut_poly_point_distfromboundary (struct POLY Poly, double *coo, double *pdist)
 
     if (status)
     {
-      ut_space_point_plane_dist (coo, Poly.FaceEq[i], &tmp);
+      tmp = ut_space_point_plane_dist (coo, Poly.FaceEq[i]);
       if (tmp < *pdist)
       {
-	(*pdist) = tmp;
-	if (verbosity)
-	{
-	  printf ("closest face = ");
-	  ut_array_1d_int_fprintf_nonl (stdout, Poly.FaceVerNb[i] + 1,
-	      Poly.FaceVerQty[i], "%d");
-	  printf (" with dist = %f\n", *pdist);
-	}
+        (*pdist) = tmp;
+        if (verbosity)
+        {
+          printf ("closest face = ");
+          ut_array_1d_int_fprintf_nonl (stdout, Poly.FaceVerNb[i] + 1,
+                                        Poly.FaceVerQty[i], "%d");
+          printf (" with dist = %f\n", *pdist);
+        }
       }
       (*pdist) = ut_num_min (*pdist, tmp);
     }
   }
 
-  ut_free_2d_int (edges, edgeqty);
+  ut_free_2d_int (&edges, edgeqty);
 
   return 0;
 }
 
 // distance function from the poly boundary
 int
-neut_poly_point_distfromboundary_2d (struct POLY Poly, double *coo, double *pdist)
+neut_poly_point_distfromboundary_2d (struct POLY Poly, double *coo,
+                                     double *pdist)
 {
   int i, status, edgeqty, **edges = NULL;
   double t, tmp;
@@ -361,7 +379,7 @@ neut_poly_point_distfromboundary_2d (struct POLY Poly, double *coo, double *pdis
     {
       (*pdist) = tmp;
       if (verbosity)
-	printf ("closest ver = %d with dist = %f\n", i, *pdist);
+        printf ("closest ver = %d with dist = %f\n", i, *pdist);
     }
   }
 
@@ -372,16 +390,16 @@ neut_poly_point_distfromboundary_2d (struct POLY Poly, double *coo, double *pdis
   for (i = 0; i < edgeqty; i++)
   {
     ut_space_segment_point_proj (Poly.VerCoo[edges[i][0]],
-				 Poly.VerCoo[edges[i][1]],
-				 coo, &t, &tmp, NULL);
+                                 Poly.VerCoo[edges[i][1]], coo, &t, &tmp,
+                                 NULL);
     if (t >= 1e-6 && t <= 1 - 1e-6)
     {
       if (tmp < *pdist)
       {
-	(*pdist) = tmp;
-	if (verbosity)
-	  printf ("closest edge = %d-%d with dist = %f\n",
-		  edges[i][0], edges[i][1], *pdist);
+        (*pdist) = tmp;
+        if (verbosity)
+          printf ("closest edge = %d-%d with dist = %f\n", edges[i][0],
+                  edges[i][1], *pdist);
       }
     }
   }
@@ -396,30 +414,31 @@ neut_poly_point_distfromboundary_2d (struct POLY Poly, double *coo, double *pdis
 
     if (status)
     {
-      ut_space_point_plane_dist (coo, Poly.FaceEq[i], &tmp);
+      tmp = ut_space_point_plane_dist (coo, Poly.FaceEq[i]);
       if (tmp < *pdist)
       {
-	(*pdist) = tmp;
-	if (verbosity)
-	{
-	  printf ("closest face = ");
-	  ut_array_1d_int_fprintf_nonl (stdout, Poly.FaceVerNb[i] + 1,
-	      Poly.FaceVerQty[i], "%d");
-	  printf (" with dist = %f\n", *pdist);
-	}
+        (*pdist) = tmp;
+        if (verbosity)
+        {
+          printf ("closest face = ");
+          ut_array_1d_int_fprintf_nonl (stdout, Poly.FaceVerNb[i] + 1,
+                                        Poly.FaceVerQty[i], "%d");
+          printf (" with dist = %f\n", *pdist);
+        }
       }
       (*pdist) = ut_num_min (*pdist, tmp);
     }
   }
 
-  ut_free_2d_int (edges, edgeqty);
+  ut_free_2d_int (&edges, edgeqty);
 
   return 0;
 }
 
 // signed distance function from the poly boundary
 int
-neut_poly_point_distfromboundary_signed (struct POLY Poly, double *coo, double *pdist)
+neut_poly_point_distfromboundary_signed (struct POLY Poly, double *coo,
+                                         double *pdist)
 {
   neut_poly_point_distfromboundary (Poly, coo, pdist);
 
@@ -431,7 +450,8 @@ neut_poly_point_distfromboundary_signed (struct POLY Poly, double *coo, double *
 
 // signed distance function from the poly boundary
 int
-neut_poly_point_distfromboundary_2d_signed (struct POLY Poly, double *coo, double *pdist)
+neut_poly_point_distfromboundary_2d_signed (struct POLY Poly, double *coo,
+                                            double *pdist)
 {
   neut_poly_point_distfromboundary_2d (Poly, coo, pdist);
 
@@ -465,17 +485,17 @@ neut_poly_point_inface (struct POLY Poly, double *coo, int face)
   {
     ver1 = Poly.FaceVerNb[face][i];
     ver2 =
-      Poly.FaceVerNb[face][ut_num_rotpos (1, Poly.FaceVerQty[face], i, 1)];
+      Poly.FaceVerNb[face][ut_array_rotpos (1, Poly.FaceVerQty[face], i, 1)];
 
-    if (ut_space_triangle_point_in (centre, Poly.VerCoo[ver1],
-				    Poly.VerCoo[ver2], coo, 1e-6, 0))
+    if (ut_space_triangle_point_in
+        (centre, Poly.VerCoo[ver1], Poly.VerCoo[ver2], coo, 1e-6, 0))
     {
       status = 1;
       break;
     }
   }
 
-  ut_free_1d (centre);
+  ut_free_1d (&centre);
 
   return status;
 }
@@ -489,12 +509,12 @@ neut_poly_face_area (struct POLY Poly, int face, double *parea)
   double *p2 = NULL;
 
   if (face < 1 || face > Poly.FaceQty)
-    ut_error_reportbug ();
+    ut_print_neperbug ();
 
   p0 = ut_alloc_1d (3);
 
   ver = Poly.FaceVerNb[face][1];
-  ut_array_1d_memcpy (p0, 3, Poly.VerCoo[ver]);
+  ut_array_1d_memcpy (Poly.VerCoo[ver], 3, p0);
 
   (*parea) = 0;
   for (i = 1; i < Poly.FaceVerQty[face]; i++)
@@ -508,7 +528,7 @@ neut_poly_face_area (struct POLY Poly, int face, double *parea)
   p2 = Poly.VerCoo[Poly.FaceVerNb[face][1]];
   (*parea) += ut_space_triangle_area (p0, p1, p2);
 
-  ut_free_1d (p0);
+  ut_free_1d (&p0);
 
   return 0;
 }
@@ -523,14 +543,14 @@ neut_poly_face_centre (struct POLY Poly, int face, double *centre)
 
   ut_array_1d_zero (centre, 3);
   totval = 0;
-  ut_array_1d_memcpy (coo, 3, Poly.VerCoo[Poly.FaceVerNb[face][1]]);
+  ut_array_1d_memcpy (Poly.VerCoo[Poly.FaceVerNb[face][1]], 3, coo);
 
   // i to last-1 because we are using ver 1 as ref pt
   for (i = 2; i < Poly.FaceVerQty[face]; i++)
   {
     ver1 = Poly.FaceVerNb[face][i];
     ver2 =
-      Poly.FaceVerNb[face][ut_num_rotpos (1, Poly.FaceVerQty[face], i, 1)];
+      Poly.FaceVerNb[face][ut_array_rotpos (1, Poly.FaceVerQty[face], i, 1)];
     ut_space_triangle_centre (Poly.VerCoo[ver1], Poly.VerCoo[ver2], coo, tmp);
     val = ut_space_triangle_area (Poly.VerCoo[ver1], Poly.VerCoo[ver2], coo);
 
@@ -540,8 +560,8 @@ neut_poly_face_centre (struct POLY Poly, int face, double *centre)
   }
   ut_array_1d_scale (centre, 3, 1 / totval);
 
-  ut_free_1d (coo);
-  ut_free_1d (tmp);
+  ut_free_1d (&coo);
+  ut_free_1d (&tmp);
 
   return;
 }
@@ -575,11 +595,11 @@ neut_polys_area (struct POLY *Poly, int *polys, int polyqty, double *pval)
 
     for (j = 1; j <= Poly[poly].FaceQty; j++)
     {
-      if (ut_array_1d_int_eltpos (polys, polyqty,
-				  Poly[poly].FacePoly[j]) == -1)
+      if (ut_array_1d_int_eltpos (polys, polyqty, Poly[poly].FacePoly[j]) ==
+          -1)
       {
-	neut_poly_face_area (Poly[poly], j, &tmp);
-	(*pval) += tmp;
+        neut_poly_face_area (Poly[poly], j, &tmp);
+        (*pval) += tmp;
       }
     }
   }
@@ -626,9 +646,10 @@ neut_poly_sphericity_2d (struct POLY Poly, double Size, double *pval)
     {
       for (j = 1; j <= Poly.FaceVerQty[i]; j++)
       {
-	ver1 = Poly.FaceVerNb[i][j];
-	ver2 = Poly.FaceVerNb[i][ut_num_rotpos (1, Poly.FaceVerQty[i], j, 1)];
-	tmp += ut_space_dist (Poly.VerCoo[ver1], Poly.VerCoo[ver2]);
+        ver1 = Poly.FaceVerNb[i][j];
+        ver2 =
+          Poly.FaceVerNb[i][ut_array_rotpos (1, Poly.FaceVerQty[i], j, 1)];
+        tmp += ut_space_dist (Poly.VerCoo[ver1], Poly.VerCoo[ver2]);
       }
 
       break;
@@ -640,7 +661,8 @@ neut_poly_sphericity_2d (struct POLY Poly, double Size, double *pval)
 }
 
 int
-neut_polys_sphericity (struct POLY *Poly, int *polys, int polyqty, double *pval)
+neut_polys_sphericity (struct POLY *Poly, int *polys, int polyqty,
+                       double *pval)
 {
   double diameq, tmp;
 
@@ -652,18 +674,20 @@ neut_polys_sphericity (struct POLY *Poly, int *polys, int polyqty, double *pval)
 }
 
 int
-neut_polys_size_sphericity (struct POLY *Poly, int *polys, int polyqty, double size, double *pval)
+neut_polys_size_sphericity (struct POLY *Poly, int *polys, int polyqty,
+                            double size, double *pval)
 {
   double tmp;
 
   neut_polys_area (Poly, polys, polyqty, &tmp);
-  (*pval) = M_PI * pow (6 /  M_PI  * size, 0.666666666666666666666666) / tmp;
+  (*pval) = M_PI * pow (6 / M_PI * size, 0.666666666666666666666666) / tmp;
 
   return 0;
 }
 
 int
-neut_polys_convexity (struct POLY *Poly, int *polys, int polyqty, double *pval)
+neut_polys_convexity (struct POLY *Poly, int *polys, int polyqty,
+                      double *pval)
 {
   double vol, vol2;
   struct NODES N;
@@ -692,7 +716,7 @@ neut_polys_convexity (struct POLY *Poly, int *polys, int polyqty, double *pval)
     printf ("vol  = %.15f\n", vol);
     printf ("vol2 = %.15f\n", vol2);
     printf ("convexity = %.15f\n", *pval);
-    ut_error_reportbug ();
+    ut_print_neperbug ();
   }
 
   neut_nodes_free (&N);
@@ -703,7 +727,8 @@ neut_polys_convexity (struct POLY *Poly, int *polys, int polyqty, double *pval)
 }
 
 int
-neut_polys_sphericity_2d (struct POLY *Poly, int *polys, int polyqty, double pseudosize, double *pval)
+neut_polys_sphericity_2d (struct POLY *Poly, int *polys, int polyqty,
+                          double pseudosize, double *pval)
 {
   double size;
 
@@ -714,7 +739,8 @@ neut_polys_sphericity_2d (struct POLY *Poly, int *polys, int polyqty, double pse
 }
 
 int
-neut_polys_size_sphericity_2d (struct POLY *Poly, int *polys, int polyqty, double size, double *pval)
+neut_polys_size_sphericity_2d (struct POLY *Poly, int *polys, int polyqty,
+                               double size, double *pval)
 {
   int i, j, k, ver1, ver2, poly;
   double diameq, tmp;
@@ -729,24 +755,30 @@ neut_polys_size_sphericity_2d (struct POLY *Poly, int *polys, int polyqty, doubl
     for (j = 1; j <= Poly[poly].FaceQty; j++)
       if (fabs (Poly[poly].FaceEq[j][3]) > 0.99)
       {
-	for (k = 1; k <= Poly[poly].FaceVerQty[j]; k++)
-	{
-	  ver1 = Poly[poly].FaceVerNb[j][k];
-	  ver2 = Poly[poly].FaceVerNb[j][ut_num_rotpos (1, Poly[poly].FaceVerQty[j], k, 1)];
-	  neut_poly_verpair_compolys (Poly[poly], ver1, ver2, &polys2, &polyqty2);
-	  if (polyqty2 > 1)
-	    abort ();
-	  if (polyqty2 == 0 || ut_array_1d_int_eltpos (polys, polyqty, polys2[0]) == -1)
-	    tmp += ut_space_dist (Poly[poly].VerCoo[ver1], Poly[poly].VerCoo[ver2]);
-	}
+        for (k = 1; k <= Poly[poly].FaceVerQty[j]; k++)
+        {
+          ver1 = Poly[poly].FaceVerNb[j][k];
+          ver2 =
+            Poly[poly].
+            FaceVerNb[j][ut_array_rotpos (1, Poly[poly].FaceVerQty[j], k, 1)];
+          neut_poly_verpair_compolys (Poly[poly], ver1, ver2, &polys2,
+                                      &polyqty2);
+          if (polyqty2 > 1)
+            abort ();
+          if (polyqty2 == 0
+              || ut_array_1d_int_eltpos (polys, polyqty, polys2[0]) == -1)
+            tmp +=
+              ut_space_dist (Poly[poly].VerCoo[ver1],
+                             Poly[poly].VerCoo[ver2]);
+        }
 
-	break;
+        break;
       }
   }
 
   (*pval) = M_PI * diameq / tmp;
 
-  ut_free_1d_int (polys2);
+  ut_free_1d_int (&polys2);
 
   return 0;
 }
@@ -792,21 +824,22 @@ neut_polys_centroid (struct POLY *Poly, int *polys, int polyqty, double *coo)
   }
   ut_array_1d_scale (coo, 3, 1. / ut_array_1d_sum (vols, polyqty));
 
-  ut_free_2d (coos, polyqty);
-  ut_free_1d (vols);
+  ut_free_2d (&coos, polyqty);
+  ut_free_1d (&vols);
 
   return 0;
 }
 
 int
-neut_polys_point_dist (struct POLY *Poly, int *polys, int polyqty, double *coo, double *pdist)
+neut_polys_point_dist (struct POLY *Poly, int *polys, int polyqty,
+                       double *coo, double *pdist)
 {
   int i, poly, scanqty;
-  double* tmp = ut_alloc_1d (polyqty);
-  int* polys2 = ut_alloc_1d_int (polyqty);
+  double *tmp = ut_alloc_1d (polyqty);
+  int *polys2 = ut_alloc_1d_int (polyqty);
   int *ids = ut_alloc_1d_int (polyqty);
 
-  ut_array_1d_int_memcpy (polys2, polyqty, polys);
+  ut_array_1d_int_memcpy (polys, polyqty, polys2);
 
   (*pdist) = DBL_MAX;
   scanqty = 0;
@@ -826,15 +859,16 @@ neut_polys_point_dist (struct POLY *Poly, int *polys, int polyqty, double *coo, 
 
   (*pdist) = tmp[ids[0]];
 
-  ut_free_1d (tmp);
-  ut_free_1d_int (ids);
-  ut_free_1d_int (polys2);
+  ut_free_1d (&tmp);
+  ut_free_1d_int (&ids);
+  ut_free_1d_int (&polys2);
 
   return 0;
 }
 
 int
-neut_polys_point_dist_legacy (struct POLY *Poly, int *polys, int polyqty, double *coo, double *pdist)
+neut_polys_point_dist_legacy (struct POLY *Poly, int *polys, int polyqty,
+                              double *coo, double *pdist)
 {
   int i, poly;
   double tmp;
@@ -857,8 +891,8 @@ neut_poly_point_dist (struct POLY Poly, double *ptcoo, double *pdist)
 {
   int status;
 
-  status = ut_space_polypts_point_dist (Poly.VerCoo + 1, Poly.VerQty,
-					ptcoo, pdist);
+  status =
+    ut_space_polypts_point_dist (Poly.VerCoo + 1, Poly.VerQty, ptcoo, pdist);
   if (status == -1)
 #ifdef DEVEL_DEBUGGING_TEST
     abort ();
@@ -893,7 +927,7 @@ neut_poly_convexity (struct POLY Poly, double *pval)
     printf ("vol  = %.15f\n", vol);
     printf ("vol2 = %.15f\n", vol2);
     printf ("convexity = %.15f\n", *pval);
-    ut_error_reportbug ();
+    ut_print_neperbug ();
   }
 
   neut_nodes_free (&N);
@@ -921,7 +955,7 @@ neut_poly_convexhull (struct POLY Poly, struct NODES *pN, struct MESH *pM)
   vercoos = ut_alloc_2d (Poly.VerQty, 3);
   verqty = Poly.VerQty;
   for (i = 0; i < verqty; i++)
-    ut_array_1d_memcpy (vercoos[i], 3, Poly.VerCoo[i + 1]);
+    ut_array_1d_memcpy (Poly.VerCoo[i + 1], 3, vercoos[i]);
 
   for (i = 0; i < verqty; i++)
     for (j = 0; j < 3; j++)
@@ -938,25 +972,26 @@ neut_poly_convexhull (struct POLY Poly, struct NODES *pN, struct MESH *pM)
       dist = ut_space_dist (vercoos[i], (*pN).NodeCoo[j]);
       if (dist < distmin)
       {
-	distmin = dist;
-	distminid = j;
+        distmin = dist;
+        distminid = j;
       }
     }
 
     if (distmin < eps)
-      ut_array_1d_memcpy ((*pN).NodeCoo[distminid], 3, Poly.VerCoo[i + 1]);
+      ut_array_1d_memcpy (Poly.VerCoo[i + 1], 3, (*pN).NodeCoo[distminid]);
   }
 
-  ut_free_1d (coo);
-  ut_free_1d_int (pt);
+  ut_free_1d (&coo);
+  ut_free_1d_int (&pt);
 
-  ut_free_2d (vercoos, verqty);
+  ut_free_2d (&vercoos, verqty);
 
   return;
 }
 
 void
-neut_polys_convexhull (struct POLY *Poly, int *polys, int polyqty, struct NODES *pN, struct MESH *pM)
+neut_polys_convexhull (struct POLY *Poly, int *polys, int polyqty,
+                       struct NODES *pN, struct MESH *pM)
 {
   int i, j, verqty, poly, id;
   double eps = 1e-6;
@@ -984,11 +1019,11 @@ neut_polys_convexhull (struct POLY *Poly, int *polys, int polyqty, struct NODES 
   {
     poly = polys[i];
     for (j = 1; j <= Poly[poly].VerQty; j++)
-      ut_array_1d_memcpy (vercoos0[id++], 3, Poly[poly].VerCoo[j]);
+      ut_array_1d_memcpy (Poly[poly].VerCoo[j], 3, vercoos0[id++]);
   }
 
   vercoos = ut_alloc_2d (verqty, 3);
-  ut_array_2d_memcpy (vercoos, verqty, 3, vercoos0);
+  ut_array_2d_memcpy (vercoos0, verqty, 3, vercoos);
   for (i = 0; i < verqty; i++)
     for (j = 0; j < 3; j++)
       vercoos[i][j] += eps * drand48 ();
@@ -1004,19 +1039,19 @@ neut_polys_convexhull (struct POLY *Poly, int *polys, int polyqty, struct NODES 
       dist = ut_space_dist (vercoos[i], (*pN).NodeCoo[j]);
       if (dist < distmin)
       {
-	distmin = dist;
-	distminid = j;
+        distmin = dist;
+        distminid = j;
       }
     }
 
     if (distmin < eps)
-      ut_array_1d_memcpy ((*pN).NodeCoo[distminid], 3, vercoos0[i]);
+      ut_array_1d_memcpy (vercoos0[i], 3, (*pN).NodeCoo[distminid]);
   }
 
-  ut_free_1d (coo);
-  ut_free_1d_int (pt);
+  ut_free_1d (&coo);
+  ut_free_1d_int (&pt);
 
-  ut_free_2d (vercoos, verqty);
+  ut_free_2d (&vercoos, verqty);
 
   return;
 }

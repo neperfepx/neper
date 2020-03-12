@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_test_.h"
@@ -10,7 +10,7 @@ neut_tess_test (struct TESS Tess, int verbosity)
   int i;
   int res = 0;
 
-  if (!strncmp (Tess.Type, "periodic", 8))
+  if (!strcmp (Tess.Type, "periodic"))
     return res;
 
   if (verbosity)
@@ -19,7 +19,7 @@ neut_tess_test (struct TESS Tess, int verbosity)
   for (i = 1; i <= Tess.VerQty; i++)
     if (Tess.VerState[i] != -1)
       if (neut_tess_test_ver (Tess, i, verbosity) != 0)
-	return -1;
+        return -1;
 
   if (verbosity)
     ut_print_message (0, 1, "Checking edges:\n");
@@ -27,7 +27,7 @@ neut_tess_test (struct TESS Tess, int verbosity)
   for (i = 1; i <= Tess.EdgeQty; i++)
     if (Tess.EdgeState[i] == 0)
       if (neut_tess_test_edge (Tess, i, verbosity) != 0)
-	return -1;
+        return -1;
 
   if (verbosity)
     ut_print_message (0, 1, "Checking faces:\n");
@@ -35,7 +35,7 @@ neut_tess_test (struct TESS Tess, int verbosity)
   for (i = 1; i <= Tess.FaceQty; i++)
     if (Tess.FaceState[i] >= 0)
       if (neut_tess_test_face (Tess, i, verbosity) != 0)
-	return -1;
+        return -1;
 
   if (verbosity)
     ut_print_message (0, 1, "Checking polyhedra:\n");
@@ -79,7 +79,7 @@ neut_tess_testAroundVer (struct TESS Tess, int ver, int verbosity)
     if (res != 0)
     {
       if (verbosity >= 4)
-	printf ("ver %d: nok\n", ver);
+        printf ("ver %d: nok\n", ver);
       return res;
     }
   }
@@ -98,13 +98,13 @@ neut_tess_testAroundVer (struct TESS Tess, int ver, int verbosity)
     if (Tess.EdgeState[edge] == 0)
     {
       if (verbosity >= 4)
-	printf ("%d:", edge);
+        printf ("%d:", edge);
       res = neut_tess_test_edge (Tess, edge, 0);
       if (res != 0)
       {
-	if (verbosity >= 4)
-	  printf ("edge %d: nok\n", edge);
-	return res;
+        if (verbosity >= 4)
+          printf ("edge %d: nok\n", edge);
+        return res;
       }
     }
     else
@@ -127,14 +127,14 @@ neut_tess_testAroundVer (struct TESS Tess, int ver, int verbosity)
     if (Tess.FaceState[face[i]] >= 0)
     {
       if (verbosity >= 4)
-	printf ("%d:", face[i]);
+        printf ("%d:", face[i]);
 
       res = neut_tess_test_face (Tess, face[i], 0);
       if (res != 0)
       {
-	if (verbosity >= 4)
-	  printf ("face[i] %d: nok\n", face[i]);
-	return res;
+        if (verbosity >= 4)
+          printf ("face[i] %d: nok\n", face[i]);
+        return res;
       }
     }
     else
@@ -163,7 +163,7 @@ neut_tess_testAroundVer (struct TESS Tess, int ver, int verbosity)
     if (res != 0)
     {
       if (verbosity >= 4)
-	printf ("poly %d: nok\n", poly[i]);
+        printf ("poly %d: nok\n", poly[i]);
       return res;
     }
   }
@@ -175,8 +175,8 @@ neut_tess_testAroundVer (struct TESS Tess, int ver, int verbosity)
     printf ("\nChecking domain: ");
   res = neut_tess_test_dom (Tess, 0);
 
-  ut_free_1d_int (face);
-  ut_free_1d_int (poly);
+  ut_free_1d_int (&face);
+  ut_free_1d_int (&poly);
 
   return res;
 }
@@ -214,12 +214,13 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
     {
       face = Tess.PolyFaceNb[polys[i]][j];
 
-      ut_array_1d_int_list_addelt (&faces, &faceqty, face);
+      ut_array_1d_int_list_addval (&faces, &faceqty, face);
 
       for (k = 1; k <= Tess.FaceVerQty[face]; k++)
       {
-        ut_array_1d_int_list_addelt (&edges, &edgeqty, Tess.FaceEdgeNb[face][k]);
-        ut_array_1d_int_list_addelt (&vers,  &verqty,  Tess.FaceVerNb[face][k] );
+        ut_array_1d_int_list_addval (&edges, &edgeqty,
+                                     Tess.FaceEdgeNb[face][k]);
+        ut_array_1d_int_list_addval (&vers, &verqty, Tess.FaceVerNb[face][k]);
       }
     }
   }
@@ -239,17 +240,17 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
     if (Tess.VerState[ver] != -1)
     {
       if (verbosity >= 4)
-	printf ("%d:", ver);
+        printf ("%d:", ver);
       res = neut_tess_test_ver (Tess, ver, verbosity);
       if (res != 0)
       {
-	if (verbosity >= 4)
-	  printf ("ver %d: nok\n", ver);
-	ut_free_1d_int (vers);
-	ut_free_1d_int (edges);
-	ut_free_1d_int (faces);
-	ut_free_1d_int (polys);
-	return res;
+        if (verbosity >= 4)
+          printf ("ver %d: nok\n", ver);
+        ut_free_1d_int (&vers);
+        ut_free_1d_int (&edges);
+        ut_free_1d_int (&faces);
+        ut_free_1d_int (&polys);
+        return res;
       }
     }
   }
@@ -268,17 +269,17 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
     if (Tess.EdgeState[edge] == 0)
     {
       if (verbosity >= 4)
-	printf ("%d:", edge);
+        printf ("%d:", edge);
       res = neut_tess_test_edge (Tess, edge, verbosity);
       if (res != 0)
       {
-	if (verbosity >= 4)
-	  printf ("edge %d: nok\n", edge);
-	ut_free_1d_int (vers);
-	ut_free_1d_int (edges);
-	ut_free_1d_int (faces);
-	ut_free_1d_int (polys);
-	return res;
+        if (verbosity >= 4)
+          printf ("edge %d: nok\n", edge);
+        ut_free_1d_int (&vers);
+        ut_free_1d_int (&edges);
+        ut_free_1d_int (&faces);
+        ut_free_1d_int (&polys);
+        return res;
       }
     }
   }
@@ -297,17 +298,17 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
     if (Tess.FaceState[face] >= 0)
     {
       if (verbosity >= 4)
-	printf ("%d:", face);
+        printf ("%d:", face);
       res = neut_tess_test_face (Tess, face, verbosity);
       if (res != 0)
       {
-	if (verbosity >= 4)
-	  printf ("face %d: nok\n", face);
-	ut_free_1d_int (vers);
-	ut_free_1d_int (edges);
-	ut_free_1d_int (faces);
-	ut_free_1d_int (polys);
-	return res;
+        if (verbosity >= 4)
+          printf ("face %d: nok\n", face);
+        ut_free_1d_int (&vers);
+        ut_free_1d_int (&edges);
+        ut_free_1d_int (&faces);
+        ut_free_1d_int (&polys);
+        return res;
       }
     }
   }
@@ -331,11 +332,11 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
     if (res != 0)
     {
       if (verbosity >= 4)
-	printf ("polys %d: nok\n", polys[i]);
-      ut_free_1d_int (vers);
-      ut_free_1d_int (edges);
-      ut_free_1d_int (faces);
-      ut_free_1d_int (polys);
+        printf ("polys %d: nok\n", polys[i]);
+      ut_free_1d_int (&vers);
+      ut_free_1d_int (&edges);
+      ut_free_1d_int (&faces);
+      ut_free_1d_int (&polys);
       return res;
     }
   }
@@ -349,10 +350,10 @@ neut_tess_testAroundVer2 (struct TESS Tess, int ver, int verbosity)
      res = neut_tess_test_dom (Tess, 0);
    */
 
-  ut_free_1d_int (vers);
-  ut_free_1d_int (edges);
-  ut_free_1d_int (faces);
-  ut_free_1d_int (polys);
+  ut_free_1d_int (&vers);
+  ut_free_1d_int (&edges);
+  ut_free_1d_int (&faces);
+  ut_free_1d_int (&polys);
 
   return res;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_camera_.h"
@@ -10,27 +10,25 @@ nev_camera (char **argv, int *pi, struct PRINT *pPrint)
   if (!strcmp (argv[*pi], "-cameracoo"))
   {
     (*pi)++;
-    (*pPrint).cameracoostring
-      = ut_realloc_1d_char ((*pPrint).cameracoostring,
-			    strlen (argv[*pi]) + 1);
+    (*pPrint).cameracoostring =
+      ut_realloc_1d_char ((*pPrint).cameracoostring, strlen (argv[*pi]) + 1);
     strcpy ((*pPrint).cameracoostring, argv[*pi]);
   }
 
   else if (!strcmp (argv[*pi], "-cameralookat"))
   {
     (*pi)++;
-    (*pPrint).cameralookatstring
-      = ut_realloc_1d_char ((*pPrint).cameralookatstring,
-			    strlen (argv[*pi]) + 1);
+    (*pPrint).cameralookatstring =
+      ut_realloc_1d_char ((*pPrint).cameralookatstring,
+                          strlen (argv[*pi]) + 1);
     strcpy ((*pPrint).cameralookatstring, argv[*pi]);
   }
 
   else if (!strcmp (argv[*pi], "-camerasky"))
   {
     (*pi)++;
-    (*pPrint).cameraskystring
-      = ut_realloc_1d_char ((*pPrint).cameraskystring,
-			    strlen (argv[*pi]) + 1);
+    (*pPrint).cameraskystring =
+      ut_realloc_1d_char ((*pPrint).cameraskystring, strlen (argv[*pi]) + 1);
     strcpy ((*pPrint).cameraskystring, argv[*pi]);
   }
 
@@ -50,10 +48,9 @@ nev_camera (char **argv, int *pi, struct PRINT *pPrint)
 }
 
 void
-nev_camera_init (struct TESS Tess, struct TESR Tesr,
-		 struct NODES Nodes, struct MESH *Mesh,
-		 struct POINT Point,
-		 struct NODEDATA NodeData, struct PRINT *pPrint)
+nev_camera_init (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
+                 struct MESH *Mesh, struct POINT Point,
+                 struct NODEDATA NodeData, struct PRINT *pPrint)
 {
   int dim = -1;
   struct NODES Nodes2;
@@ -65,14 +62,13 @@ nev_camera_init (struct TESS Tess, struct TESR Tesr,
     neut_nodes_memcpy (Nodes, &Nodes2);
 
     if (!strcmp (NodeData.CooDataType, "coo"))
-      ut_array_2d_memcpy (Nodes2.NodeCoo + 1, Nodes.NodeQty, 3,
-			  NodeData.CooData + 1);
+      ut_array_2d_memcpy (NodeData.CooData + 1, Nodes.NodeQty, 3,
+                          Nodes2.NodeCoo + 1);
     else if (!strcmp (NodeData.CooDataType, "disp"))
-      ut_array_2d_add (Nodes2.NodeCoo + 1,
-		       NodeData.CooData + 1,
-		       Nodes.NodeQty, 3, Nodes2.NodeCoo + 1);
+      ut_array_2d_add (Nodes2.NodeCoo + 1, NodeData.CooData + 1,
+                       Nodes.NodeQty, 3, Nodes2.NodeCoo + 1);
     else
-      ut_error_reportbug ();
+      ut_print_neperbug ();
   }
   else
     Nodes2 = Nodes;
@@ -82,38 +78,38 @@ nev_camera_init (struct TESS Tess, struct TESR Tesr,
     dim = Tess.Dim;
 
     nev_camera_tess_expr_coo (Tess, (*pPrint).cameracoostring,
-			      (*pPrint).cameracoo);
+                              (*pPrint).cameracoo);
     nev_camera_tess_expr_coo (Tess, (*pPrint).cameralookatstring,
-			      (*pPrint).cameralookat);
+                              (*pPrint).cameralookat);
   }
   else if (Nodes.NodeQty > 0)
   {
     dim = neut_nodes_dim (Nodes);
     if (dim == -1)
-      ut_error_reportbug ();
+      ut_print_neperbug ();
 
     nev_camera_mesh_expr_coo (Nodes2, Mesh[dim], (*pPrint).cameracoostring,
-			      (*pPrint).cameracoo);
+                              (*pPrint).cameracoo);
     nev_camera_mesh_expr_coo (Nodes2, Mesh[dim], (*pPrint).cameralookatstring,
-			      (*pPrint).cameralookat);
+                              (*pPrint).cameralookat);
   }
   else if (Tesr.CellQty > 0)
   {
     dim = Tesr.Dim;
 
     nev_camera_tesr_expr_coo (Tesr, (*pPrint).cameracoostring,
-			      (*pPrint).cameracoo);
+                              (*pPrint).cameracoo);
     nev_camera_tesr_expr_coo (Tesr, (*pPrint).cameralookatstring,
-			      (*pPrint).cameralookat);
+                              (*pPrint).cameralookat);
   }
   else if (Point.PointQty > 0)
   {
     dim = Tesr.Dim;
 
     nev_camera_point_expr_coo (Point, (*pPrint).cameracoostring,
-			       (*pPrint).cameracoo);
+                               (*pPrint).cameracoo);
     nev_camera_point_expr_coo (Point, (*pPrint).cameralookatstring,
-			       (*pPrint).cameralookat);
+                               (*pPrint).cameralookat);
   }
 
   nev_camera_expr_sky ((*pPrint).cameraskystring, (*pPrint).camerasky);

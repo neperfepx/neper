@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2019, Romain Quey. */
+/* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_tessdata_.h"
@@ -49,24 +49,23 @@ nev_tessdata_init (struct TESS Tess, struct TESSDATA *pTessData)
     if ((*pTessData).ColData[dim])
     {
       if (!strcmp ((*pTessData).ColDataType[dim], "id")
-       || !strncmp ((*pTessData).ColDataType[dim], "scaleid", 7)
-       || !strcmp ((*pTessData).ColDataType[dim], "modeid"))
-	nev_data_id_colour ((*pTessData).ColData[dim], qty,
-			    (*pTessData).Col[dim]);
+          || !strncmp ((*pTessData).ColDataType[dim], "scaleid", 7)
+          || !strcmp ((*pTessData).ColDataType[dim], "modeid"))
+        nev_data_id_colour ((*pTessData).ColData[dim], qty,
+                            (*pTessData).Col[dim]);
       else if (!strcmp ((*pTessData).ColDataType[dim], "col"))
-	nev_data_col_colour ((*pTessData).ColData[dim], qty,
-			     (*pTessData).Col[dim]);
+        nev_data_col_colour ((*pTessData).ColData[dim], qty,
+                             (*pTessData).Col[dim]);
       else if (!strncmp ((*pTessData).ColDataType[dim], "ori", 3))
-	nev_data_ori_colour ((*pTessData).ColData[dim], qty,
-			     "R", (*pTessData).Col[dim]);
+        nev_data_ori_colour ((*pTessData).ColData[dim], qty, "R",
+                             (*pTessData).Col[dim]);
       else if (!strcmp ((*pTessData).ColDataType[dim], "scal"))
-	nev_data_scal_colour ((*pTessData).ColData[dim], NULL, qty,
-			      (*pTessData).Scale[dim],
-			      "blue,cyan,yellow,red",
-			      (*pTessData).Col[dim],
-			      &((*pTessData).Scale[dim]));
+        nev_data_scal_colour ((*pTessData).ColData[dim], NULL, qty,
+                              (*pTessData).Scale[dim], "blue,cyan,yellow,red",
+                              (*pTessData).Col[dim],
+                              &((*pTessData).Scale[dim]));
       else
-	ut_error_reportbug ();
+        ut_print_exprbug ((*pTessData).ColDataType[dim]);
     }
 
     if ((*pTessData).trsdata[dim])
@@ -74,7 +73,7 @@ nev_tessdata_init (struct TESS Tess, struct TESSDATA *pTessData)
 
     if ((*pTessData).RadData[dim])
       nev_data_rad_radius ((*pTessData).RadData[dim], qty,
-			   (*pTessData).Rad[dim]);
+                           (*pTessData).Rad[dim]);
   }
 
   return;
@@ -82,16 +81,17 @@ nev_tessdata_init (struct TESS Tess, struct TESSDATA *pTessData)
 
 void
 nev_tessdata_fscanf (struct TESS Tess, char *entity, char *prop,
-		     char *argument, struct TESSDATA *pTessData)
+                     char *argument, struct TESSDATA *pTessData)
 {
   int id, entityqty;
   char *type = NULL, *value = NULL;
 
-  nev_tessdata_fscanf_init (Tess, entity, prop, argument,
-			    &id, &entityqty, &type, &value);
+  nev_tessdata_fscanf_init (Tess, entity, prop, argument, &id, &entityqty,
+                            &type, &value);
 
   if (!strcmp (prop, "col"))
-    nev_tessdata_fscanf_col (Tess, pTessData, entity, id, entityqty, type, value);
+    nev_tessdata_fscanf_col (Tess, pTessData, entity, id, entityqty, type,
+                             value);
   else if (!strcmp (prop, "trs"))
     nev_tessdata_fscanf_trs (pTessData, id, entityqty, type, value);
   else if (!strcmp (prop, "rad"))
@@ -103,10 +103,10 @@ nev_tessdata_fscanf (struct TESS Tess, char *entity, char *prop,
   else if (!strcmp (prop, "scaletitle"))
     nev_tessdata_fscanf_scaletitle (pTessData, id, value);
   else
-    ut_error_reportbug ();
+    ut_print_exprbug (prop);
 
-  ut_free_1d_char (type);
-  ut_free_1d_char (value);
+  ut_free_1d_char (&type);
+  ut_free_1d_char (&value);
 
   return;
 }
