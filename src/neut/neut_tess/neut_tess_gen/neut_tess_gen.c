@@ -894,6 +894,7 @@ neut_tess_var_val (struct TESS Tess, int *showedge, int *showface,
     else if (!strcmp (var2, "edges") || !strcmp (var2, "edgelist"))
     {
       (*pvalqty) = Tess.FaceVerQty[id];
+      (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
       ut_array_1d_memcpy_fromint (Tess.FaceEdgeNb[id] + 1, *pvalqty, *pvals);
       strcpy (typetmp, "%d");
     }
