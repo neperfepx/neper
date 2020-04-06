@@ -60,7 +60,7 @@ preferred, especially for bug reports):
 @c
 @code{neper-announce}
 (@url{https://lists.sourceforge.net/lists/listinfo/neper-announce}), the
-``read-only'' list for release announcement
+``read-only'' list for release announcement,
 and @code{neper-users}
 (@url{https://lists.sourceforge.net/lists/listinfo/neper-users}), the
 ``read-write'' list for users.
@@ -94,25 +94,29 @@ Use option @samp{-j} for a multithreaded compilation.
 
 @end itemize
 
-This procedure uses the default configuration options and should work out-of-the-box if the required dependencies are available in standard system locations.  If needed, a finer configuration can be achieved, before building Neper, by running
+This procedure uses the default configuration options and should work out-of-the-box if the required dependencies are available in standard system locations.  If needed, a finer configuration of which dependencies are included can be achieved, before building Neper, by setting variables @code{HAVE_@var{DEPENDENCY}}, where @code{@var{DEPENDENCY}} is the name of the dependency. This can be done using
 
-@comc{ccmake ..@ @ @ , (for a command-line tool)}
+@comc{ccmake ..@ @ @ , (for an interactive command-line tool)}
 
 or
 
-@comc{cmake-gui .., (for a graphical tool)}
+@comc{cmake-gui .., (for an interactive graphical tool)},
 
-Several of Neper's dependencies can be managed at this stage.  Some of them are optional and can be enabled or disabled through variables @code{HAVE_@var{LIBRARY}}:
+or directly at the command line, by using @code{cmake}'s @code{-D} option (which can be used several times),
+
+@com{cmake -DHAVE_@var{DEPENDENCY}=@{ON,OFF@} ..}
+
+The dependencies which are managed at compilation time are the following:
 
 @itemize
 
-@item The GNU Scientific Library (GSL, mandatory).  It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{http://www.gnu.org/software/gsl}.
+@item The GNU Scientific Library (GSL, mandatory, variable @samp{HAVE_GSL}).  It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{http://www.gnu.org/software/gsl}.
 
-@item The NLopt library (optional, enabled by default).  It is needed by @mT{} for tessellation generation from cell properties. It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{http://ab-initio.mit.edu/wiki/index.php/NLopt}.
+@item The NLopt library (optional, enabled by default, variable @samp{HAVE_NLOPT}).  It is needed by @mT{} for tessellation generation from cell properties. It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{http://ab-initio.mit.edu/wiki/index.php/NLopt}.
 
-@item The OpenMP library (optional, enabled by default).  It is likely to be available on your system or from your system package manager.
+@item The OpenMP library (optional, enabled by default, variable @samp{HAVE_OPENMP}).  It is likely to be available on your system or from your system package manager.
 
-@item The libScotch library (version @code{6.0.0} or higher, optional, disabled by default).  It is needed by @mM{} for mesh partitioning.  The source code can be downloaded from @url{www.labri.fr/perso/pelegrin/scotch}.
+@item The libScotch library (version @code{6.0.0} or higher, optional, disabled by default, variable @samp{HAVE_LIBSCOTCH}).  It is needed by @mM{} for mesh partitioning.  The source code can be downloaded from @url{www.labri.fr/perso/pelegrin/scotch}.
 
 @item The pthread library (mandatory if libScotch enabled). It is likely to be available on your system or from your system package manager.
 
@@ -162,14 +166,16 @@ general-purpose, self-explanatory arguments:
 @com{neper --license}
 
 This section provides information on how to call Neper's modules,
-properly format option arguments, and set up an initialization file.
+properly format option arguments and set up an initialization file.
 
 @subsection Modules
 
 To call a module, run
 @com{neper @var{module_name} @var{module_arguments}}
 
-where the module name can be @option{-T}, @option{-M} or @option{-V}, and the module arguments can include both required input data and options.  Input data (when not a file name) and options start @w{by @samp{-}}.  Options can be provided in arbitrary order, each of them being followed by a single argument (containing no space).  American-english variants of options can be used.  String completion is available for all options, so they may be abbreviated as long as the abbreviation is not ambiguous. For instance, in module @code{-T}, option @option{-regularization} can be abbreviated to @option{-reg}.  Logical options can be enabled or disabled by providing argument @w{values of @samp{1}} @w{or @samp{0}}, respectively.  Integer or real argument values can be written as such, or as mathematical or logical expressions (for details, see @ref{Mathematical and Logical Expressions}).  For instance, in @mT{}, option @option{@w{-rcl 0.5}} can also be written as @option{@w{-rcl 1/2}} or @option{@w{-rcl "cos(pi/3)"}}.  @MV{} shows some exceptions with respect to these rules: the argument cannot be listed in arbitrary order, string completion is not available, and option @option{-loop} takes several arguments.
+where the module name can be @option{-T}, @option{-M} or @option{-V}, and the module arguments can include both required input data and options.  Input data (when not a file name) and options start @w{by @samp{-}}.  Options can be provided in arbitrary order, each of them being followed by a single argument (containing no space).  American-english variants of options can be used.  String completion is available for all options, so they may be abbreviated as long as the abbreviation is not ambiguous. For instance, in module @code{-T}, option @option{-regularization} can be abbreviated to @option{-reg}.  Logical options can be enabled or disabled by providing argument @w{values of @samp{1}} @w{or @samp{0}}, respectively.  Integer or real argument values can be written as such, or as mathematical or logical expressions (for details, see @ref{Mathematical and Logical Expressions}).  For instance, in @mT{}, option @option{@w{-rcl 0.5}} can also be written as @option{@w{-rcl 1/2}} or @option{@w{-rcl "cos(pi/3)"}}.  For some options, it may be desirable to specify different values to different entities; for instance, cells of a tessellation can be meshed into elements of different characteristic lengths using @option{-rcl "file(@var{file_name})"} in @mM{}.  In such a case, file @file{@var{file_name}} must contain the expected number of values (information such as the cell identifiers in the above instance must not be included), and its format can be arbitrary (i.e., it can contain any number of spaces, tabs or newlines).  For the more complex case of a multiscale tessellation, a @var{multiscale cell file} can also be used, for which details are provided in @ref{Multiscale Cell File}.
+@c
+@MV{} shows some exceptions with respect to the rules detailed previously: the argument cannot be listed in arbitrary order, string completion is not available, and option @option{-loop} takes several arguments.
 
 @subsection Argument Separators
 

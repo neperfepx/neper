@@ -579,11 +579,11 @@ available strategies for mesh partitioning. The first one creates
 partitions and arranges them independently of each other, while the second one
 consists in optimizing the size and arrangment of the partitions based
 on a given computer cluster architecture to minimize computation time
-further. For those clusters that contain processors made of
-several cores, the communication time between cores of a processor
+further. For those clusters that are made of nodes containing several cores
+each, the communication time between cores of a node
 is much lower than the communication time between cores of different
-processors. To minimize the global communication time, partitions which
-are processed by cores of the same processor can be grouped together.
+nodes. To minimize the global communication time, partitions which
+are processed by cores of the same node can be grouped together.
 Partitioning is applied to the higher-dimension mesh.  On top
 of defining the partitions, it renumbers the nodes
 and elements by increasing partition identifier and writes partitions
