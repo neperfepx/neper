@@ -270,7 +270,10 @@ tessellation;@*
 grain-growth statistical properties@comma{} which correspond to a wider grain size
 distribution and higher grain sphericities than in a Voronoi tessellation
 (it actually is an alias for
-@samp{@code{diameq:lognormal(1,0.35),1-sphericity:lognormal(0.145,0.03)}}@comma{}
+@samp{@code{diameq:lognormal(1,0.42),1-sphericity:lognormal(0.100,0.03)}}
+in 2D and
+@samp{@code{diameq:lognormal(1,0.35),1-sphericity:lognormal(0.145,0.03)}}
+in 3D@comma{}
 @w{see below}); the @samp{@code{graingrowth(@var{mean})}} and
 @samp{@code{gg}(@var{mean})} variants can be used to provide an absolute
 mean grain size@comma{} @code{@var{mean}} (in which case @option{-n
