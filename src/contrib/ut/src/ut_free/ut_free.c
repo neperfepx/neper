@@ -6,46 +6,46 @@
 #include"ut.h"
 
 void
-ut_free_1d_pint (int ***pres)
+ut_free_1d_pint (int ***parray)
 {
-  free (*pres);
-  (*pres) = NULL;
+  free (*parray);
+  (*parray) = NULL;
 
   return;
 }
 
 void
-ut_free_1d_pdouble (double ***pres)
+ut_free_1d_pdouble (double ***parray)
 {
-  free (*pres);
-  (*pres) = NULL;
+  free (*parray);
+  (*parray) = NULL;
 
   return;
 }
 
 void
-ut_free_1d_ppint (int ****pres)
+ut_free_1d_ppint (int ****parray)
 {
-  free (*pres);
-  (*pres) = NULL;
+  free (*parray);
+  (*parray) = NULL;
 
   return;
 }
 
 void
-ut_free_1d_ppdouble (double ****pres)
+ut_free_1d_ppdouble (double ****parray)
 {
-  free (*pres);
-  (*pres) = NULL;
+  free (*parray);
+  (*parray) = NULL;
 
   return;
 }
 
 void
-ut_free_1d_ppchar (char ****pres)
+ut_free_1d_ppchar (char ****parray)
 {
-  free (*pres);
-  (*pres) = NULL;
+  free (*parray);
+  (*parray) = NULL;
 
   return;
 }
@@ -62,6 +62,7 @@ ut_free_2d_int (int ***parray, unsigned int line)
     free ((*parray)[i]);
 
   free ((*parray));
+  (*parray) = NULL;
 
   return;
 }
@@ -78,6 +79,7 @@ ut_free_2d_uint (unsigned int ***parray, unsigned int line)
     free ((*parray)[i]);
 
   free ((*parray));
+  (*parray) = NULL;
 
   return;
 }
@@ -94,6 +96,7 @@ ut_free_2d (double ***parray, unsigned int line)
     free ((*parray)[i]);
 
   free ((*parray));
+  (*parray) = NULL;
 
   return;
 }
@@ -110,6 +113,7 @@ ut_free_2d_char (char ***parray, unsigned int line)
     free ((*parray)[i]);
 
   free ((*parray));
+  (*parray) = NULL;
 
   return;
 }
@@ -276,46 +280,46 @@ ut_free_4d_int (int *****parray, unsigned int line, unsigned int column,
 }
 
 void
-ut_free_1d_int (int **pres)
+ut_free_1d_int (int **parray)
 {
-  free (*pres);
-  (*pres) = NULL;
+  free (*parray);
+  (*parray) = NULL;
 
   return;
 }
 
 void
-ut_free_1d_ushort (unsigned short **pres)
+ut_free_1d_ushort (unsigned short **parray)
 {
-  free (*pres);
-  (*pres) = NULL;
+  free (*parray);
+  (*parray) = NULL;
 
   return;
 }
 
 void
-ut_free_1d_uchar (unsigned char **pres)
+ut_free_1d_uchar (unsigned char **parray)
 {
-  free (*pres);
-  (*pres) = NULL;
+  free (*parray);
+  (*parray) = NULL;
 
   return;
 }
 
 void
-ut_free_1d (double **pres)
+ut_free_1d (double **parray)
 {
-  free (*pres);
-  (*pres) = NULL;
+  free (*parray);
+  (*parray) = NULL;
 
   return;
 }
 
 void
-ut_free_1d_char (char **pres)
+ut_free_1d_char (char **parray)
 {
-  free (*pres);
-  (*pres) = NULL;
+  free (*parray);
+  (*parray) = NULL;
 
   return;
 }

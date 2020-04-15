@@ -80,42 +80,42 @@ extern "C"
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
   extern void ut_free_3d (double ****parray, unsigned int size1,
-                           unsigned int size2);
+                          unsigned int size2);
 
 /// \brief Free a 3-D array of \c int and set it to NULL
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
   extern void ut_free_3d_int (int ****parray, unsigned int size1,
-                               unsigned int size2);
+                              unsigned int size2);
 
 /// \brief Free a 3-D array of \c unsigned \c short and set it to NULL
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
   extern void ut_free_3d_ushort (unsigned short ****parray,
-                                  unsigned int size1, unsigned int size2);
+                                 unsigned int size1, unsigned int size2);
 
 /// \brief Free a 3-D array of \c unsigned \c char and set it to NULL
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
   extern void ut_free_3d_uchar (unsigned char ****parray, unsigned int size1,
-                                 unsigned int size2);
+                                unsigned int size2);
 
 /// \brief Free a 3-D array of \c char and set it to NULL
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
   extern void ut_free_3d_char (char ****parray, unsigned int size1,
-                                unsigned int size2);
+                               unsigned int size2);
 
 /// \brief Free a 3-D array of \c float and set it to NULL
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
   extern void ut_free_3d_float (float ****parray, unsigned int size1,
-                                 unsigned int size2);
+                                unsigned int size2);
 
 /// \brief Free a 4-D array of \c unsigned \c char
 /// \param array: array
@@ -123,7 +123,7 @@ extern "C"
 /// \param size2: 2nd-index size of the array
 /// \param size3: 3rd-index size of the array
   extern void ut_free_4d (double *****parray, unsigned int size1,
-                           unsigned int size2, unsigned int size3);
+                          unsigned int size2, unsigned int size3);
 
 /// \brief Free a 4-D array of \c int
 /// \param array: array
@@ -131,7 +131,7 @@ extern "C"
 /// \param size2: 2nd-index size of the array
 /// \param size3: 3rd-index size of the array
   extern void ut_free_4d_int (int *****parray, unsigned int size1,
-                               unsigned int size2, unsigned int size3);
+                              unsigned int size2, unsigned int size3);
 
 #endif                          /* UT_FREE_H */
 
