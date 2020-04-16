@@ -18,9 +18,9 @@ tessellations are provided in scalar (vectorial) or raster formats.
 @dfn{Tessellations} can be generated from various types of
 morphological cell properties (option @option{-morpho}).  Several
 predefined properties are available, such as those obtained by grain
-growth in metals (which are described by cell size and sphericity
+growth in metals (which are described by cell size and sphericity (circularity, in 2D)
 distributions). Custom properties can be specified using various
-metrics, including the size, the sphericity, the centroid
+metrics, including the size, the sphericity (circularity, in 2D), the centroid
 or even the actual shape (using a raster tessellation), in terms
 of either distributions (when applicable) or individual cell values.
 Global morphological properties, such as a cell aspect ratio or a
@@ -122,7 +122,7 @@ Here is what a typical run of @mT{} looks like,
 @inp{-n, integer or char_string,
 Specify the number of cells of the tessellation.
 The argument can be an integer@comma{} an expression based on the tessellation cell variables (@pxref{Tessellation Keys})@comma{} or @samp{from_morpho} to set the value from
-the morphology (see @option{-morpho}).
+the morphology (see option @option{-morpho}).
 , any, none}
 
 @kindex -id
@@ -270,10 +270,10 @@ tessellation;@*
 grain-growth statistical properties@comma{} which correspond to a wider grain size
 distribution and higher grain sphericities than in a Voronoi tessellation
 (it actually is an alias for
-@samp{@code{diameq:lognormal(1,0.42),1-sphericity:lognormal(0.100,0.03)}}
-in 2D and
 @samp{@code{diameq:lognormal(1,0.35),1-sphericity:lognormal(0.145,0.03)}}
-in 3D@comma{}
+in 3D and
+@samp{@code{diameq:lognormal(1,0.42),1-circularity:lognormal(0.100,0.03)}}
+in 2D@comma{}
 @w{see below}); the @samp{@code{graingrowth(@var{mean})}} and
 @samp{@code{gg}(@var{mean})} variants can be used to provide an absolute
 mean grain size@comma{} @code{@var{mean}} (in which case @option{-n
@@ -329,13 +329,19 @@ The available properties are the following:@*
 @bullet{} @samp{@code{size}} for the size (volume in 3D and area in 2D)
 and @samp{@code{diameq}} for the equivalent diameter;@*
 @bullet{} @samp{@code{sphericity}} for the sphericity and
-@samp{@code{1-sphericity}} for 1 @math{-} the sphericity@footnote{The reason
-behind the @samp{@code{1-sphericity}} variable is that, for a grain growth
+@samp{@code{1-sphericity}} for 1 @math{-} the sphericity
+(or @samp{@code{circularity}} and @samp{@code{1-circularity}});
+@footnote{Terms @samp{@code{sphericity}} and @samp{@code{circularity}} apply to 3D and 2D@comma{} respectively@comma{} but can be used interchangeably.
+The sphericity of a polyhedron corresponds to the ratio of the surface area of the sphere of equivalent volume to the surface area of the polyhedron.
+Similarly@comma{} the circularity of a polygon corresponds to the ratio of the perimeter of the circle of equivalent surface area to the perimeter of the polygon.
+}
+@footnote{The reason
+behind the @samp{@code{1-sphericity}} (or @samp{@code{1-circularity}}) variable is that, for a grain growth
 microstructure, 1 @math{-} the sphericity follows a lognormal distribution; see
 @cite{R.@ Quey and L.@ Renversade, Optimal polyhedral description of 3D
 polycrystals: Method and application to statistical and synchrotron X-ray
 diffraction data, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 330, pp.@
-308-333, 2018}.};@*
+308-333, 2018}.}@*
 @bullet{} @samp{@code{centroid}} for the centroid;@*
 @bullet{} @samp{@code{centroidtol}} for the centroid with a tolerance ---
 centroids with a tolerance higher than 1000 times the minimum tolerance are
@@ -380,7 +386,7 @@ coordinate axis @samp{@var{dir}}@comma{} where @samp{@var{dir}} can be
 where @samp{@var{r1}}@comma{} @samp{@var{r1}} and @samp{@var{r3}} represents
 relative length along the coordinate axes. For a 2D tessellation@comma{}
 @samp{@var{r3}} can be omitted.  When provided@comma{} other
-properties@comma{} such as the equivalent diameter or the sphericity@comma{}
+properties@comma{} such as the equivalent diameter or the sphericity (circularity@comma{} in 2D)@comma{}
 are considered to apply to the cells as if they had no aspect ratio.
 @*
 @emph{(iv)} A tessellation can be loaded using @samp{@code{file(@var{file_name})}}@comma{}
@@ -460,7 +466,7 @@ An objective function depends on the property and its definition.
 @*
 @mybullet For properties defined by a statistical distribution (which can be
 @samp{size}@comma{} @samp{diameq}@comma{} @samp{sphericity} or
-@samp{1-sphericity})@comma{} the available values are @samp{chi2} (Chi-square
+@samp{1-sphericity} (or @samp{circularity} and @samp{1-circularity}))@comma{} the available values are @samp{chi2} (Chi-square
   test)@comma{} @samp{ks} (Kolmogorov-Smirnov test)@comma{} @samp{kuiper}
 (Kuiper's test)@comma{} @samp{cmv} (Cram@'er-Von Mises test)@comma{} @samp{ad}
 (Anderson-Darling test)@comma{} @samp{FL2} (L@math{^2}-norm on
@@ -533,7 +539,7 @@ a value of the objective function@comma{} @samp{@var{val}}@comma{}
 a maximum number of iterations@comma{} @samp{@var{itermax}}@comma{}
 a maximum computation time@comma{} @samp{@var{time}}@comma{} or a maximum
 number of iteration loops@comma{} @samp{@var{loopmax}}
-(see option @samp{@option{-morphooptialgomaxiter}}).
+(see option @option{-morphooptialgomaxiter}).
 Combine them with @samp{@SEPNODEP}.
 Optimization stops as soon as one stopping criterion is verified.
 Optimization can also be stopped anytime using the Ctrl+C
@@ -583,7 +589,7 @@ any, nanoflann}
 Specify the grids used to discretize the distributions. Provide the values using the syntax
 @samp{@var{var}@SEPDEP{}@var{grid}}@comma{} where @var{var} is
 the variable@comma{} among @code{diameq}@comma{} @code{size}@comma{} @code{sphericity} and
-@code{1-sphericity}@comma{} and @var{grid} is the grid.
+@code{1-sphericity} (or @code{circularity} and @code{1-circularity})@comma{} and @var{grid} is the grid.
 The grid must be of the form @samp{regular(@var{min},@var{max},@var{bin_nb})}@comma{}
 where @code{@var{min}} and @code{@var{max}} are the minimum and maximum
 values of the grid interval@comma{} respectively@comma{} and
@@ -596,7 +602,8 @@ Specify the standard deviations of the Gaussian distributions which are
 assigned to each cell data to compute the distributions.  Provide the values
 using the syntax @samp{@var{var}@SEPDEP{}@var{val}}@comma{} where @var{var} is
 the variable@comma{} among @code{diameq}@comma{} @code{size}@comma{}
-@code{sphericity} and @code{1-sphericity}@comma{} and @var{val} is the value.
+@code{sphericity} and @code{1-sphericity} (or @code{circularity} and
+@code{1-circularity})@comma{} and @var{val} is the value.
 It is also possible to specify how the convolution functions should be treated: provide @samp{analytical} for analytical functions or @samp{numerical} for numerical functions (the default@comma{} recommended).
 Combine with @samp{@SEPNODEP}.
 ,

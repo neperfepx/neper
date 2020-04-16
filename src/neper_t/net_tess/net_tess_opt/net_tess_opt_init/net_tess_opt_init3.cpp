@@ -111,6 +111,8 @@ net_tess_opt_init_parms_objective (char *morphooptiobjective,
   int i, j, match, partqty1, *partqty2 = NULL;
   char ***parts = NULL;
 
+  ut_string_fnrs (morphooptiobjective, "circularity", "sphericity", INT_MAX);
+
   ut_list_break2 (morphooptiobjective, NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts,
                   &partqty2, &partqty1);
 
@@ -291,6 +293,9 @@ net_tess_opt_init_target_grid (struct IN_T In, int level, struct MTESS MTess,
 
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptigrid[level], &string);
+
+  ut_string_fnrs (string, "circularity", "sphericity", INT_MAX);
+
   ut_list_break2 (string, NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty2, &qty);
 
   status = -1;
@@ -328,6 +333,9 @@ net_tess_opt_init_target_cvl (struct IN_T In, int level, struct MTESS MTess,
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.morphooptismooth[level],
                                            &string);
+
+  ut_string_fnrs (string, "circularity", "sphericity", INT_MAX);
+
   ut_list_break2 (string, NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty2, &qty);
 
   status = -1;

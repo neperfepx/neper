@@ -1,5 +1,6 @@
-New in 3.5.3-5 (15 Apr 2020):
-- module -T: minor fixes.
+New in 3.5.3-6 (16 Apr 2020):
+- module -T: added circularity variable (as a synonym of sphericity), minor
+  fixes.
 - documentation: minor fixes.
 
 New in 3.5.2 (12 Mar 2020):

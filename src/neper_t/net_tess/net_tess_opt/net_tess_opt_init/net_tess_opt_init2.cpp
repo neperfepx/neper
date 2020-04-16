@@ -48,6 +48,8 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
 
   morpho2 = ut_alloc_1d_char (1000);
 
+  ut_string_fnrs (morpho, "circularity", "sphericity", INT_MAX);
+
   ut_list_break (morpho, NEUT_SEP_NODEP, &parts, &partqty);
 
   for (i = 0; i < partqty; i++)

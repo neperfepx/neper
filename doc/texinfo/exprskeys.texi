@@ -225,11 +225,11 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
   @item @code{radeq}  @tab equivalent
     radius@footnote{Equivalent radius = radius of the
     circle of equivalent area/volume in 2D/3D.}        @tab face, poly
-  @item @code{circularity}  @tab circularity (2D counterpart of sphericity)          @tab face
   @item @code{sphericity}  @tab sphericity@footnote{Sphericity of a
     polyhedron = ratio of the surface area of
       the sphere of equivalent volume to the surface area of the
       polyhedron.} @tab poly
+  @item @code{circularity}  @tab circularity@footnote{Circularity of a polygon = ratio of the perimeter of the circle of equivalent area to the perimeter of the polygon.} (2D counterpart of sphericity)          @tab face
   @item @code{convexity}  @tab convexity@footnote{Convexity of a
     polyhedron (face) = ratio of the volume (area) of the polyhedron
       (face) to the volume (area) of the convex hull of the polyhedron
