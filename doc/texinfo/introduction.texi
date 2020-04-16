@@ -112,7 +112,7 @@ The dependencies which are managed at compilation time are the following:
 
 @item The GNU Scientific Library (GSL, mandatory, variable @samp{HAVE_GSL}).  It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{http://www.gnu.org/software/gsl}.
 
-@item The NLopt library (optional, enabled by default, variable @samp{HAVE_NLOPT}).  It is needed by @mT{} for tessellation generation from cell properties. It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{http://ab-initio.mit.edu/wiki/index.php/NLopt}.
+@item The NLopt library (version @code{2.6.0} or higher, optional, enabled by default, variable @samp{HAVE_NLOPT}).  It is needed by @mT{} for tessellation generation from cell properties. It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{http://ab-initio.mit.edu/wiki/index.php/NLopt}.
 
 @item The OpenMP library (optional, enabled by default, variable @samp{HAVE_OPENMP}).  It is likely to be available on your system or from your system package manager.
 
