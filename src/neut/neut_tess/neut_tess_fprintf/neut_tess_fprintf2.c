@@ -83,14 +83,8 @@ neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
   if (Tess.CellOri)
   {
     fprintf (file, "  *ori\n");
-    fprintf (file, "   e\n");
-    qty = 0;
-    for (i = 1; i <= Tess.CellQty; i++)
-    {
-      fprintf (file, "   ");
-      ol_q_e (Tess.CellOri[i], e);
-      ol_e_fprintf (file, e, "%17.12f");
-    }
+    fprintf (file, "   %s\n", Tess.CellOriDes);
+    neut_ori_fprintf (file, Tess.CellOriDes, Tess.CellOri + 1, Tess.CellQty);
   }
 
   ol_e_free (e);

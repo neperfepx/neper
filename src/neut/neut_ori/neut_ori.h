@@ -23,6 +23,12 @@ extern "C"
 
   extern void neut_ori_f_norm (double **f, int N, double *pnorm);
 
+  extern int neut_ori_expr_desconv (char *expr, char **pdes, char **pconv);
+  extern int neut_ori_expr_desconv_fepx (char *expr, char **pdes, char **pconv);
+
+  extern void neut_ori_fscanf (FILE *file, char *desconv, double **q, int qty);
+  extern void neut_ori_fprintf (FILE *file, char *desconv, double **q, int qty);
+
 #ifdef __cplusplus
 }
 #endif

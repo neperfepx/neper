@@ -233,6 +233,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
       neut_tess_tess (Tess[1], &FTess);
       FTess.ScaleQty = 1;
     }
+
+    ut_string_string (In.orides, &FTess.CellOriDes);
   }
 
   // ###################################################################
@@ -268,6 +270,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     else
       ut_print_message (1, 3, "The poly ids range between %d and %d.\n",
                         min_id, max_id);
+
+    ut_string_string (In.orides, &Tesr.CellOriDes);
   }
 
   // ###################################################################
@@ -282,6 +286,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     net_ori (In, 1, MTess, Tess, SSet, 0, 1, SSet + 1, 2);
 
     net_seedset_tess (SSet[1], &FTess);
+
+    ut_string_string (In.orides, &FTess.CellOriDes);
   }
 
   // #################################################################

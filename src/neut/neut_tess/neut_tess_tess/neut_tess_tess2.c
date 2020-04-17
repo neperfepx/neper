@@ -53,6 +53,9 @@ neut_tess_tess_cell (struct TESS TessA, struct TESS *pTessB)
                         (*pTessB).CellOri + 1);
   }
 
+  if (TessA.CellOriDes)
+    ut_string_string (TessA.CellOriDes, &(*pTessB).CellOriDes);
+
   if (TessA.CellCrySym)
     ut_string_string (TessA.CellCrySym, &((*pTessB).CellCrySym));
 

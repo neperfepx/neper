@@ -971,21 +971,24 @@ combine the values with @samp{@SEPDEP}.
 ,
 any, 20}
 
-@opt{-oridescriptor, char_string,
-Specify the orientation descriptor used in the @file{.tess}@comma{} @file{.tesr}
-and @file{.ori} files. It can be Euler angles in
-Bunge@comma{} Kocks or Roe convention (@code{e}@comma{}
-@code{ek}@comma{} @code{er})@comma{} rotation matrix (@code{g})@comma{}
-@w{axis /} angle of rotation (@code{rtheta})@comma{}
-angle of rotation (@code{theta})@comma{} Rodrigues vector
-(@code{R}) or quaternion (@code{q}).,
+@opt{-oridescriptor, char_string[:char_string],
+Specify the orientation descriptor and (optionally) the orientation convention
+used in the @file{.tess}@comma{} @file{.tesr} and @file{.ori} files@comma{}
+under the form @option{@var{descriptor}@SEPDEP@var{convention}}.  The
+descriptor can be Euler angles in Bunge@comma{} Kocks or Roe convention
+(@code{e}@comma{} @code{ek}@comma{} @code{er})@comma{} rotation matrix
+(@code{g})@comma{} @w{axis /} angle of rotation (@code{rtheta})@comma{} angle
+of rotation (@code{theta})@comma{} Rodrigues vector (@code{R}) or quaternion
+(@code{q}).  The convention can be @code{active} or @code{passive}@comma{} and
+is @code{active} by default.,
 above-mentioned values, e}
 
 @opt{-oriformat, char_string,
 Specify the format of the @file{.ori} output file. The available formats are:
 the Neper-native @code{plain} (i.e.@: only the descriptors on
 successive lines)@comma{} the Zset/Z@'ebulon @code{geof} and the
-FEpX @code{fepx}.
+FEpX @code{fepx} (for the FEpX legacy format@comma{} provide
+@samp{fepx@SEPDEP{}legacy}).
 ,
 above-mentioned values, plain}
 

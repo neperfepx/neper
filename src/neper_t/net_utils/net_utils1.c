@@ -499,6 +499,8 @@ net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
                         (*pTesr).CellOri + 1);
   }
 
+  ut_string_string (Tess.CellOriDes, &(*pTesr).CellOriDes);
+
 #pragma omp parallel for schedule(dynamic)
   for (i = 1; i <= Tess.CellQty; i++)
     net_tess_tesr_cell (Tess, i, pTesr);

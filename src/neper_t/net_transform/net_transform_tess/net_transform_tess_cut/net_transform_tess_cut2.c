@@ -219,6 +219,9 @@ net_transform_tess_cut_post (struct TESS TessGen, int *intseed_oldseed,
                           (*pTess).CellOri[i]);
   }
 
+  // CellOriDes
+  ut_string_string (TessGen.CellOriDes, &(*pTess).CellOriDes);
+
   // CellLamId
   if (TessGen.CellLamId)
   {

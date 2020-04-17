@@ -54,6 +54,8 @@ neut_tess_set_zero (struct TESS *pTess)
   (*pTess).FaceDom = NULL;
   (*pTess).CellId = NULL;
   (*pTess).CellOri = NULL;
+  (*pTess).CellOriDes = NULL;
+  ut_string_string ("e", &(*pTess).CellOriDes);
   (*pTess).CellCrySym = NULL;
   (*pTess).PolyFaceQty = NULL;
   (*pTess).PolyFaceNb = NULL;
@@ -225,6 +227,7 @@ neut_tess_free (struct TESS *pTess)
 
   ut_free_1d_int (&(*pTess).CellId);
   ut_free_2d (&(*pTess).CellOri, (*pTess).CellQty + 1);
+  ut_free_1d_char (&(*pTess).CellOriDes);
   ut_free_1d_char (&(*pTess).CellCrySym);
 
   ut_free_1d_int (&(*pTess).PolyFaceQty);

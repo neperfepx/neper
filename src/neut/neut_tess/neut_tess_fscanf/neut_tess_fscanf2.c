@@ -54,9 +54,7 @@ void
 neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
 {
   int i, status, id, level;
-  double theta;
   char *string = ut_alloc_1d_char (1000);
-  double *des = ut_alloc_1d (9);
 
   if (!ut_file_string_scanandtest (file, "**cell")
       || fscanf (file, "%d", &((*pTess).CellQty)) != 1)
@@ -120,49 +118,11 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
     {
       ut_file_skip (file, 1);
       (*pTess).CellOri = ut_alloc_2d ((*pTess).CellQty + 1, 4);
-
-      if (fscanf (file, "%s", string) != 1)
+      (*pTess).CellOriDes = ut_alloc_1d_char (20);
+      if (fscanf (file, "%s", (*pTess).CellOriDes) != 1)
         abort ();
 
-      if (!strcmp (string, "q"))
-        ut_array_2d_fscanf (file, (*pTess).CellOri + 1, (*pTess).CellQty, 4);
-      else if (!strcmp (string, "e"))
-        for (i = 1; i <= (*pTess).CellQty; i++)
-        {
-          ol_e_fscanf (file, des);
-          ol_e_q (des, (*pTess).CellOri[i]);
-        }
-      else if (!strcmp (string, "er"))
-        for (i = 1; i <= (*pTess).CellQty; i++)
-        {
-          ol_e_fscanf (file, des);
-          ol_er_e (des, des);
-          ol_e_q (des, (*pTess).CellOri[i]);
-        }
-      else if (!strcmp (string, "ek"))
-        for (i = 1; i <= (*pTess).CellQty; i++)
-        {
-          ol_e_fscanf (file, des);
-          ol_ek_e (des, des);
-          ol_e_q (des, (*pTess).CellOri[i]);
-        }
-      else if (!strcmp (string, "rtheta"))
-        for (i = 1; i <= (*pTess).CellQty; i++)
-        {
-          ol_r_fscanf (file, des);
-          if (fscanf (file, "%lf", &theta) != 1)
-            abort ();
-          ol_rtheta_q (des, theta, (*pTess).CellOri[i]);
-        }
-      else if (!strcmp (string, "R"))
-        for (i = 1; i <= (*pTess).CellQty; i++)
-        {
-          ol_R_fscanf (file, des);
-          ol_R_q (des, (*pTess).CellOri[i]);
-        }
-      else
-        ut_print_message (2, 2, "Could not process descriptor `%s'.\n",
-                          string);
+      neut_ori_fscanf (file, (*pTess).CellOriDes, (*pTess).CellOri + 1, (*pTess).CellQty);
     }
 
     else
@@ -170,7 +130,6 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
   }
 
   ut_free_1d_char (&string);
-  ut_free_1d (&des);
 
   return;
 }

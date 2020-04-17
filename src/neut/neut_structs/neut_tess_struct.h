@@ -52,6 +52,9 @@ extern "C"
     // [1...CellQty][0...3]
     double **CellOri;
 
+    // Orientation descriptor used in the tess file
+    char *CellOriDes;
+
     // For a lamellar tessellation, lamella ids of the cells, in terms
     // of imposed width [1...CellQty] (starts at 1)
     int *CellLamId;

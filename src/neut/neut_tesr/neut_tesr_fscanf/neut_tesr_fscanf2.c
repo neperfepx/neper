@@ -116,7 +116,6 @@ void
 neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file)
 {
   int i, status, id;
-  double theta;
   char *string = ut_alloc_1d_char (1000);
   double *des = ut_alloc_1d (9);
 
@@ -160,55 +159,13 @@ neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file)
 
       else if (!strcmp (string, "*ori"))
       {
-        if (!(*pTesr).CellId)
-          ut_print_message (2, 2, "Field *ori requires *id.\n");
-
         ut_file_skip (file, 1);
         (*pTesr).CellOri = ut_alloc_2d ((*pTesr).CellQty + 1, 4);
-
-        if (fscanf (file, "%s", string) != 1)
+        (*pTesr).CellOriDes = ut_alloc_1d_char (20);
+        if (fscanf (file, "%s", (*pTesr).CellOriDes) != 1)
           abort ();
 
-        if (!strcmp (string, "q"))
-          ut_array_2d_fscanf (file, (*pTesr).CellOri + 1, (*pTesr).CellQty,
-                              4);
-        else if (!strcmp (string, "e"))
-          for (i = 1; i <= (*pTesr).CellQty; i++)
-          {
-            ol_e_fscanf (file, des);
-            ol_e_q (des, (*pTesr).CellOri[i]);
-          }
-        else if (!strcmp (string, "er"))
-          for (i = 1; i <= (*pTesr).CellQty; i++)
-          {
-            ol_e_fscanf (file, des);
-            ol_er_e (des, des);
-            ol_e_q (des, (*pTesr).CellOri[i]);
-          }
-        else if (!strcmp (string, "ek"))
-          for (i = 1; i <= (*pTesr).CellQty; i++)
-          {
-            ol_e_fscanf (file, des);
-            ol_ek_e (des, des);
-            ol_e_q (des, (*pTesr).CellOri[i]);
-          }
-        else if (!strcmp (string, "rtheta"))
-          for (i = 1; i <= (*pTesr).CellQty; i++)
-          {
-            ol_r_fscanf (file, des);
-            if (fscanf (file, "%lf", &theta) != 1)
-              abort ();
-            ol_rtheta_q (des, theta, (*pTesr).CellOri[i]);
-          }
-        else if (!strcmp (string, "R"))
-          for (i = 1; i <= (*pTesr).CellQty; i++)
-          {
-            ol_R_fscanf (file, des);
-            ol_R_q (des, (*pTesr).CellOri[i]);
-          }
-        else
-          ut_print_message (2, 2, "Could not process descriptor `%s'.\n",
-                            string);
+        neut_ori_fscanf (file, (*pTesr).CellOriDes, (*pTesr).CellOri + 1, (*pTesr).CellQty);
       }
 
       else if (!strcmp (string, "*coo"))
