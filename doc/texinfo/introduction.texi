@@ -100,7 +100,7 @@ This procedure uses the default configuration options and should work out-of-the
 
 or
 
-@comc{cmake-gui .., (for an interactive graphical tool)},
+@comc{cmake-gui .., (for an interactive graphical tool)}
 
 or directly at the command line, by using @code{cmake}'s @code{-D} option (which can be used several times),
 
