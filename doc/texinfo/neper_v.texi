@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2019 Romain Quey
+@c Copyright (C) 2003-2020 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Visualization Module (-V)
@@ -40,7 +40,7 @@ Here is what a typical run of @mV{} looks like,
     Info   : Version 3.5.0
     Info   : Built with: gsl nlopt muparser
     Info   : <http://neper.info> <http://neper.info/community>
-    Info   : Copyright (C) 2003-2019, and GNU GPL'd, by Romain Quey.
+    Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
     Info   : Loading initialization file `/home/rquey/.neperrc'...
     Info   : ---------------------------------------------------------------
     Info   : MODULE  -V loaded with arguments:
