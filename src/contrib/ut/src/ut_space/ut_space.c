@@ -1016,7 +1016,7 @@ ut_space_segments_inter (double *P, double *B, double *Q, double *D,
   t = QmPxS[id] / RxS[id];
   u = QmPxR[id] / RxS[id];
 
-  if (t > 0 && t < 1 && u > 0 && u < 1)
+  if (ut_vector_norm (RxS) > 1e-12 && t > 0 && t < 1 && u > 0 && u < 1)
   {
     if (I)
       for (i = 0; i < 3; i++)
