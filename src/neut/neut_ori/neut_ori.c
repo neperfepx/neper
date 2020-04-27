@@ -232,7 +232,8 @@ neut_ori_fscanf (FILE *file, char *desconv, double **q, int qty)
     ut_print_exprbug (desconv);
 
   if (!strcmp (conv, "passive"))
-    ol_q_inverse (q[i], q[i]);
+    for (i = 0; i < qty; i++)
+      ol_q_inverse (q[i], q[i]);
 
   ut_free_1d_char (&des);
   ut_free_1d_char (&conv);
