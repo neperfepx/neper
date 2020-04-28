@@ -135,7 +135,12 @@ ol_q_q_disori_rad (double *q1, double *q2, char *crysym, double *ptheta)
   ol_q_inverse (q1, qd);
   ol_q_q_q (qd, q2, qd);
 
-  if (strcmp (crysym, "cubic") == 0)
+  if (!crysym || !strcmp (crysym, "none") || !strcmp (crysym, "triclinic"))
+  {
+    maxrho = fabs (qd[0]);
+    nb = 1;
+  }
+  else if (strcmp (crysym, "cubic") == 0)
   {
     crysym_maxrho = .92387953251128675613;      /* = cos (45/2) */
 
@@ -172,11 +177,6 @@ ol_q_q_disori_rad (double *q1, double *q2, char *crysym, double *ptheta)
           break;
       }
     }
-  }
-  else if (strcmp (crysym, "triclinic") == 0)
-  {
-    maxrho = fabs (qd[0]);
-    nb = 1;
   }
   else
     abort ();
@@ -222,10 +222,10 @@ ol_q_q_disori_fr_rad (double *q1, double *q2, char *crysym, double *ptheta)
   ol_q_inverse (q1, qd);
   ol_q_q_q (qd, q2, qd);
 
-  if (strcmp (crysym, "cubic") == 0)
-    crysym_maxrho = .92387953251128675613;      /* = cos (45/2) */
-  else
+  if (!crysym || strcmp (crysym, "cubic"))
     crysym_maxrho = 1e3;
+  else if (!strcmp (crysym, "cubic"))
+    crysym_maxrho = .92387953251128675613;      /* = cos (45/2) */
 
   maxrho = 0;
   nb = 1;

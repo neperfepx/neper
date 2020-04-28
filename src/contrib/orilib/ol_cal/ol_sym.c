@@ -329,7 +329,9 @@ ol_crysym_qty (char *lauegroup)
 int
 ol_lauegroup_qty (char *lauegroup)
 {
-  if (strcmp (lauegroup, "-1") == 0)
+  if (!lauegroup || !strcmp (lauegroup, "none"))
+    return 1;
+  else if (strcmp (lauegroup, "-1") == 0)
     return 1;
   else if (strcmp (lauegroup, "2/m") == 0)
     return 2;

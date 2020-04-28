@@ -1,8 +1,9 @@
-New in 3.5.3-13 (27 Apr 2020):
+New in 3.5.3-14 (28 Apr 2020):
 - module -T: added support for active and passive orientation conventions to
   -oridescriptor, added circularity variable (as a synonym of sphericity),
   minor fixes.
 - module -M: minor fixes.
+- module -V: minor fixes.
 - documentation: minor fixes.
 
 New in 3.5.2 (12 Mar 2020):
