@@ -30,7 +30,7 @@ Several, complementary resources describing Neper are available:
 
 @item The Neper website, @url{http://neper.info} gives a general introduction to Neper (including examples with illustrations) and is where Neper can be downloaded from.  Official versions are released on the website every few months, as zipped tarballs (@file{tgz} files), while the latest, development version is available from the development repository, @url{https://github.com/rquey/neper}.  The best way to get and keep up-to-date with development versions is to clone the repository, using
 
-@com{git clone https://github.com/rquey/neper.git},
+@com{git clone https://github.com/rquey/neper.git}
 
 which gives access to the latest development version on the default, @code{devel} branch (so as to all previous development versions), but also to all official versions (which can be listed using @command{git tag}).  To update the repository, run @command{git pull} from within the repository.
 
