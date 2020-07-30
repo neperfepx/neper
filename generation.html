@@ -3,13 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Generation &#8212; Neper 3.5.2 documentation</title>
+    <title>Generation &#8212; Neper 4.0.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.5.2',
+        VERSION:     '4.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -28,7 +28,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Meshing" href="meshing.html" />
-    <link rel="prev" title="Neper: polycrystal generation and meshing" href="index.html" />
+    <link rel="prev" title="Neper: Polycrystal Generation and Meshing" href="index.html" />
 <meta charset='utf-8'>
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
@@ -48,7 +48,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Neper</a>
-        <span class="navbar-text navbar-version pull-left"><b>version 3.5.2 (12 Mar 2020)</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>version 4.0.0 (30 Jul 2020)</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -67,6 +67,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Generation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#generalities">Generalities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tessellations-from-morphological-properties">Tessellations from morphological properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cell-groups-to-represent-phases">Cell groups to represent phases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#multiscale-tessellations">Multiscale tessellations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#periodic-and-semi-periodic-tessellations">Periodic and semi-periodic tessellations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#new-non-convex-domains">[new] Non-convex domains</a></li>
@@ -85,28 +86,34 @@
 <li class="toctree-l2"><a class="reference internal" href="meshing.html#statistics">Statistics</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="simulation.html">Simulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#generalities">Generalities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simulation.html#post-processing">Post-processing</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="visualization.html#generalities">Generalities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="visualization.html#colour-transparency-etc">Colour, transparency, etc.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="visualization.html#entity-selection">Entity selection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="visualization.html#mesh-slicing">Mesh slicing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#simulation">Simulation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="applications.html#journal-covers">Journal covers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="applications.html#id2">2020</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id5">2019</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id6">2018</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id7">2017</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id9">2016</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id10">2015</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id11">2014</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id12">2013</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id13">2012</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id14">2011</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id15">2009</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id16">2008</a></li>
-<li class="toctree-l2"><a class="reference internal" href="applications.html#id17">2007</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id3">2019</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id4">2018</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id5">2017</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id7">2016</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id8">2015</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id9">2014</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id10">2013</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id11">2012</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id12">2011</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id13">2009</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id14">2008</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applications.html#id15">2007</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="downloads.html">Downloads</a><ul>
@@ -139,6 +146,7 @@
 <li><a class="reference internal" href="#">Generation</a><ul>
 <li><a class="reference internal" href="#generalities">Generalities</a></li>
 <li><a class="reference internal" href="#tessellations-from-morphological-properties">Tessellations from morphological properties</a></li>
+<li><a class="reference internal" href="#cell-groups-to-represent-phases">Cell groups to represent phases</a></li>
 <li><a class="reference internal" href="#multiscale-tessellations">Multiscale tessellations</a></li>
 <li><a class="reference internal" href="#periodic-and-semi-periodic-tessellations">Periodic and semi-periodic tessellations</a></li>
 <li><a class="reference internal" href="#new-non-convex-domains">[new] Non-convex domains</a></li>
@@ -157,7 +165,7 @@
               
                 
   <li>
-    <a href="index.html" title="Previous Chapter: Neper: polycrystal generation and meshing"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Neper: polycr...</span>
+    <a href="index.html" title="Previous Chapter: Neper: Polycrystal Generation and Meshing"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Neper: Polycr...</span>
     </a>
   </li>
   <li>
@@ -197,9 +205,11 @@
       
   <div class="section" id="generation">
 <span id="generation-link"></span><h1>Generation<a class="headerlink" href="#generation" title="Permalink to this headline">¶</a></h1>
-<p>Module -T generates polycrystals as tessellations. The two main
+<p>Module -T generates polycrystals as tessellations. The primary
 capabilities are: (i) the generation of tessellations from cell
-properties (e.g. a size distribution) and (ii) the generation of
+properties (e.g. a size distribution) and (ii) the definition of
+cell groups (to represent different material phases) and (iii) the
+generation of
 multiscale tessellations (i.e. including cell subdivisions). These
 capabilities can also be used together. Tessellations are Laguerre (or
 Voronoi) tessellations and are therefore composed of convex cells.
@@ -212,13 +222,14 @@ file written at a scalar (vectorial) or raster format.</p>
 <ul class="simple">
 <li><a class="reference internal" href="#generalities" id="id1">Generalities</a></li>
 <li><a class="reference internal" href="#tessellations-from-morphological-properties" id="id2">Tessellations from morphological properties</a></li>
-<li><a class="reference internal" href="#multiscale-tessellations" id="id3">Multiscale tessellations</a></li>
-<li><a class="reference internal" href="#periodic-and-semi-periodic-tessellations" id="id4">Periodic and semi-periodic tessellations</a></li>
-<li><a class="reference internal" href="#new-non-convex-domains" id="id5">[new] Non-convex domains</a></li>
-<li><a class="reference internal" href="#new-crystal-orientation-distribution" id="id6">[new] Crystal orientation distribution</a></li>
-<li><a class="reference internal" href="#regularization" id="id7">Regularization</a></li>
-<li><a class="reference internal" href="#scalar-and-raster-formats" id="id8">Scalar and raster formats</a></li>
-<li><a class="reference internal" href="#statistics" id="id9">Statistics</a></li>
+<li><a class="reference internal" href="#cell-groups-to-represent-phases" id="id3">Cell groups to represent phases</a></li>
+<li><a class="reference internal" href="#multiscale-tessellations" id="id4">Multiscale tessellations</a></li>
+<li><a class="reference internal" href="#periodic-and-semi-periodic-tessellations" id="id5">Periodic and semi-periodic tessellations</a></li>
+<li><a class="reference internal" href="#new-non-convex-domains" id="id6">[new] Non-convex domains</a></li>
+<li><a class="reference internal" href="#new-crystal-orientation-distribution" id="id7">[new] Crystal orientation distribution</a></li>
+<li><a class="reference internal" href="#regularization" id="id8">Regularization</a></li>
+<li><a class="reference internal" href="#scalar-and-raster-formats" id="id9">Scalar and raster formats</a></li>
+<li><a class="reference internal" href="#statistics" id="id10">Statistics</a></li>
 </ul>
 </div>
 <div class="section" id="generalities">
@@ -253,14 +264,29 @@ below. Such a collection of algorithms enables to generate a wide
 variety of microstructures.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -T -n 1000 -morpho voronoi (or $ neper -T -n 1000)
 $ neper -T -n 1000 -morpho graingrowth
-$ neper -T -n 1000 -morpho &quot;diameq:dirac(1),sphericity:lognormal(0.145,0.03,1-x)&quot;
+$ neper -T -n 1000 -morpho &quot;diameq:dirac(1),1-sphericity:lognormal(0.145,0.03)&quot;
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/gene_morp.png"><img alt="_images/gene_morp.png" src="_images/gene_morp.png" style="width: 100%;" /></a>
 <p><a class="reference download internal" href="_downloads/gene_morp.sh" download=""><code class="xref download docutils literal"><span class="pre">gene_morp.sh</span></code></a></p>
 </div>
+<div class="section" id="cell-groups-to-represent-phases">
+<h2><a class="toc-backref" href="#id3">Cell groups to represent phases</a><a class="headerlink" href="#cell-groups-to-represent-phases" title="Permalink to this headline">¶</a></h2>
+<p>Cell groups can be defined to represent different phases of a material.
+Groups can be defined (post-tessellation) from
+arbitrary cell properties but are typically associated to the
+different modes of a multi-modal morphological property (e.g. the cell size
+distribution).</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -T -n 1000 -group &quot;id&lt;=500?1:2&quot; -o gene_grou_1
+$ neper -T -n 1000 -group &quot;vol&gt;=0.001?1:2&quot; -o gene_grou_2
+$ neper -T -n 1000 -morpho &quot;diameq:diameq:0.8*lognormal(1,0.35)+0.2*lognormal(2,0.6),1-sphericity:lognormal(0.230,0.03)&quot; -group mode -o gene_grou_3
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/gene_grou.png"><img alt="_images/gene_grou.png" src="_images/gene_grou.png" style="width: 100%;" /></a>
+<p><a class="reference download internal" href="_downloads/gene_grou.sh" download=""><code class="xref download docutils literal"><span class="pre">gene_grou.sh</span></code></a></p>
+</div>
 <div class="section" id="multiscale-tessellations">
-<h2><a class="toc-backref" href="#id3">Multiscale tessellations</a><a class="headerlink" href="#multiscale-tessellations" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Multiscale tessellations</a><a class="headerlink" href="#multiscale-tessellations" title="Permalink to this headline">¶</a></h2>
 <p>Multiscale tessellations can also be generated. Such tessellations result
 from a tessellation whose each cell is further divided by
 tessellation (and so on). All capabilities available for 1-scale tessellations are
@@ -276,7 +302,7 @@ $ neper -T -n 200::1000*size::from_morpho -morpho &#39;gg::diameq:dirac(1),spher
 <p><a class="reference download internal" href="_downloads/gene_mult.sh" download=""><code class="xref download docutils literal"><span class="pre">gene_mult.sh</span></code></a></p>
 </div>
 <div class="section" id="periodic-and-semi-periodic-tessellations">
-<h2><a class="toc-backref" href="#id4">Periodic and semi-periodic tessellations</a><a class="headerlink" href="#periodic-and-semi-periodic-tessellations" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">Periodic and semi-periodic tessellations</a><a class="headerlink" href="#periodic-and-semi-periodic-tessellations" title="Permalink to this headline">¶</a></h2>
 <p>Full periodicity or semi-periodicity can be prescribed to the domain and
 therefore to the resulting tessellation.  Full periodicity can be used
 to avoid boundary effects and reduce the size of the representative
@@ -294,7 +320,7 @@ $ neper -T -n 1000 -morpho graingrowth -periodicity x
 <p><a class="reference download internal" href="_downloads/gene_peri.sh" download=""><code class="xref download docutils literal"><span class="pre">gene_peri.sh</span></code></a></p>
 </div>
 <div class="section" id="new-non-convex-domains">
-<h2><a class="toc-backref" href="#id5">[new] Non-convex domains</a><a class="headerlink" href="#new-non-convex-domains" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6">[new] Non-convex domains</a><a class="headerlink" href="#new-non-convex-domains" title="Permalink to this headline">¶</a></h2>
 <p>Non-convex domains can be obtained by cutting a tessellation by one or several
 geometrical primitives, such as half-spaces, spheres, cylinders or elliptic
 cylinders.  Due to the current implementation, this feature remains experimental
@@ -310,7 +336,7 @@ $ neper -T -n 1000 -morpho gg -domain &quot;cube(0.6,0.6,1.4):translate(-0.3,-0.
 <p><a class="reference download internal" href="_downloads/gene_cut.sh" download=""><code class="xref download docutils literal"><span class="pre">gene_cut.sh</span></code></a></p>
 </div>
 <div class="section" id="new-crystal-orientation-distribution">
-<h2><a class="toc-backref" href="#id6">[new] Crystal orientation distribution</a><a class="headerlink" href="#new-crystal-orientation-distribution" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7">[new] Crystal orientation distribution</a><a class="headerlink" href="#new-crystal-orientation-distribution" title="Permalink to this headline">¶</a></h2>
 <p>Crystal orientations are assigned to the cells.  The first type of crystal
 orientation distribution is <strong>random</strong>, which corresponds to the standard case
 for which orientations are distributed randomly according to a uniform distribution
@@ -327,7 +353,7 @@ $ neper -T -n 1000 -oricrysym cubic -ori uniform -format ori
 <a class="reference internal image-reference" href="_images/gene_flatori.png"><img alt="_images/gene_flatori.png" src="_images/gene_flatori.png" style="width: 100%;" /></a>
 </div>
 <div class="section" id="regularization">
-<h2><a class="toc-backref" href="#id7">Regularization</a><a class="headerlink" href="#regularization" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8">Regularization</a><a class="headerlink" href="#regularization" title="Permalink to this headline">¶</a></h2>
 <p>Tessellations usually contain a large number of small edges and faces.
 These features are negligible from the point of view of the cell
 morphologies, but they are strongly detrimental to meshing because they
@@ -342,7 +368,7 @@ does not change while most of the small edges are deleted.</p>
 <p><a class="reference download internal" href="_downloads/gene_regu.sh" download=""><code class="xref download docutils literal"><span class="pre">gene_regu.sh</span></code></a></p>
 </div>
 <div class="section" id="scalar-and-raster-formats">
-<h2><a class="toc-backref" href="#id8">Scalar and raster formats</a><a class="headerlink" href="#scalar-and-raster-formats" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9">Scalar and raster formats</a><a class="headerlink" href="#scalar-and-raster-formats" title="Permalink to this headline">¶</a></h2>
 <p>Voronoi tessellations can be written at scalar and raster formats.
 Scalar tessellations can be meshed into tetrahedral using -M while
 raster tessellations are adapted for fast-Fourier transform (FFT)
@@ -356,7 +382,7 @@ constructed on a grid of 64 x 64 x 64 voxels.</p>
 <p><a class="reference download internal" href="_downloads/gene_form.sh" download=""><code class="xref download docutils literal"><span class="pre">gene_form.sh</span></code></a></p>
 </div>
 <div class="section" id="statistics">
-<h2><a class="toc-backref" href="#id9">Statistics</a><a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10">Statistics</a><a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
 <p>A wide variety of statistics are available on the cells and even on
 the faces, edges, vertices and seeds. Morphology and topology
 properties are available. For example, the cell variables include: the

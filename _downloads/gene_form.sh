@@ -13,7 +13,7 @@ mv gene_form_1.tesr gene_form_2.tesr
 
 C="-datacellcol id -cameraangle 12 -imagesize 600:600"
 $NEPER -V gene_form_1.tess $C                   -print gene_form_1
-$NEPER -V gene_form_2.tesr $C -datarptedgerad 0 -print gene_form_2
+$NEPER -V gene_form_2.tesr $C -datavoxedgerad 0 -print gene_form_2
 
 convert +append gene_form_?.png gene_form.png
 

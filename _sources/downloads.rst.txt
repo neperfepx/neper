@@ -17,7 +17,7 @@ It you use Neper for your own work, please mention it explicitly and cite one or
 Current official release
 ------------------------
 
-- `neper-3.5.2.tgz (12 Mar 2020) <tarballs/neper-3.5.2.tgz>`_: source code and documentation
+- `neper-4.0.0.tgz (30 Jul 2020) <tarballs/neper-4.0.0.tgz>`_: source code and documentation
 - `neper.pdf <docs/neper.pdf>`_: documentation
 
 Development repository

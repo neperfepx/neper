@@ -3,7 +3,7 @@
 NEPER="neper --rcfile none"
 
 $NEPER -T -n from_morpho                                                                \
-          -morpho "diameq:lognormal(0.035,0.01),sphericity:lognormal(0.145,0.03,1-x)"   \
+          -morpho "diameq:lognormal(0.035,0.01),1-sphericity:lognormal(0.145,0.03)"     \
            -id 3                                                                        \
            -domain "cube(0.3,0.075,1.5)"                                                \
            -transform "cut(cylinder(0.15,0,0.15,0,1,0,0.075),cylinder(0.15,0,1.35,0,1,0,0.075),cylinder(-1.3,0,0.75,0,1,0,1.37),cylinder(1.6,0,0.75,0,1,0,1.37))" \

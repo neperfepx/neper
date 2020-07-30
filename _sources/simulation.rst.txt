@@ -1,0 +1,92 @@
+.. _simulation_link:
+
+Simulation
+==========
+
+Module -S is dedicated to processing simulation results.  It is able to rewrite
+FEPX raw simulation results into a more human-friendly *simulation directory*, and
+post-process the results further.  The simulation directory can be taken as
+input by module -V for advanced visualization.
+
+.. contents::
+   :depth: 2
+   :local:
+
+Generalities
+------------
+
+The first primary capability is to convert FEPX raw simulation results into a simulation directory, which is as simple as running
+::
+  $ neper -S jobdir
+
+The resulting simulation directory (jobdir.sim) contains both the simulation input and results, and is structured as follows.  Result files are ASCII files and are provided at each simulation step.
+::
+
+  jobdir.sim
+  ├── inputs
+  │   ├── simulation.config
+  │   ├── simulation.msh
+  │   └── simulation.tess
+  ├── report
+  └── results
+      ├── elements
+      │   ├── strain-eq
+      │   │   ├── strain-eq.step0
+      │   │   ├── strain-eq.step1
+      │   │   ├── strain-eq.step2
+      │   │   ...
+      │   ├── ...
+      │   ...
+      └── nodes
+          ├── coo
+          │   ├── coo.step0
+          │   ├── coo.step1
+          │   ├── coo.step2
+          │   ...
+          ├── ...
+          ...
+
+Post-processing
+---------------
+
+Nodal or elemental data can be added to the simulation directory for post-processing.  These data can be any embedeed nodal or elemental data.
+::
+
+  $ neper -S jobdir.sim -eltres coo,vol
+
+The results add to the simulation directory, which becomes
+::
+
+  jobdir.sim
+  ├── inputs
+  │   ├── simulation.config
+  │   ├── simulation.msh
+  │   └── simulation.tess
+  ├── report
+  └── results
+      ├── elements
+      │   ├── strain-eq
+      │   │   ├── strain-eq.step0
+      │   │   ├── strain-eq.step1
+      │   │   ├── strain-eq.step2
+      │   │   ...
+      │   ├── coo
+      │   │   ├── coo.step0
+      │   │   ├── coo.step1
+      │   │   ├── coo.step2
+      │   │   ...
+      │   ├── vol
+      │   │   ├── vol.step0
+      │   │   ├── vol.step1
+      │   │   ├── vol.step2
+      │   │   ...
+      │   ├── ...
+      │   ...
+      └── nodes
+          ├── coo
+          │   ├── coo.step0
+          │   ├── coo.step1
+          │   ├── coo.step2
+          │   ...
+          ├── ...
+          ...

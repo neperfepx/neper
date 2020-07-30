@@ -8,10 +8,9 @@ data is a tessellation as provided by module -T or a mesh to remesh.
 The mesh size can be uniform or defined on a per-grain basis. Cohesive
 elements can be inserted at interfaces. The
 output mesh can be written at several formats, including
-the Gmsh '.msh',
-the Abaqus '.inp',
-the Zset '.geof' and
-the FEpX '.fepx'.
+the native '.msh',
+the Abaqus '.inp'
+and the Zset '.geof'.
 Statistical data also are available.
 
 .. contents::
@@ -54,7 +53,7 @@ element sizes are shown below.
 ::
 
   $ neper -M n1000.tess -rcl 0.5
-  $ neper -M n1000.tess -rcl "1,body>0:0.35"
+  $ neper -M n1000.tess -rcl "body>0?0.35:1"
 
 .. image:: imgs/mesh_size.png
   :width: 66.67%

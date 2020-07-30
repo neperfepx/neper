@@ -3,13 +3,15 @@
 Generation
 ==========
 
-Module -T generates polycrystals as tessellations. The two main
+Module -T generates polycrystals as tessellations. The primary
 capabilities are: (i) the generation of tessellations from cell
-properties (e.g. a size distribution) and (ii) the generation of
+properties (e.g. a size distribution) and (ii) the definition of
+cell groups (to represent different material phases) and (iii) the
+generation of
 multiscale tessellations (i.e. including cell subdivisions). These
 capabilities can also be used together. Tessellations are Laguerre (or
 Voronoi) tessellations and are therefore composed of convex cells.
-Finally, the tessellations can be “regularized” by removing their
+Finally, the tessellations can be "regularized" by removing their
 smallest features (edges and faces), which enables good-quality meshing
 with module -M.  Periodicity conditions can be prescribed. Crystal
 orientations are provided for the grains.  The output is a tessellation
@@ -58,12 +60,32 @@ variety of microstructures.
 
   $ neper -T -n 1000 -morpho voronoi (or $ neper -T -n 1000)
   $ neper -T -n 1000 -morpho graingrowth
-  $ neper -T -n 1000 -morpho "diameq:dirac(1),sphericity:lognormal(0.145,0.03,1-x)"
+  $ neper -T -n 1000 -morpho "diameq:dirac(1),1-sphericity:lognormal(0.145,0.03)"
 
 .. image:: imgs/gene_morp.png
   :width: 100%
 
 :download:`gene_morp.sh <imgs/gene_morp.sh>`
+
+Cell groups to represent phases
+-------------------------------
+
+Cell groups can be defined to represent different phases of a material.
+Groups can be defined (post-tessellation) from
+arbitrary cell properties but are typically associated to the
+different modes of a multi-modal morphological property (e.g. the cell size
+distribution).
+::
+
+  $ neper -T -n 1000 -group "id<=500?1:2" -o gene_grou_1
+  $ neper -T -n 1000 -group "vol>=0.001?1:2" -o gene_grou_2
+  $ neper -T -n 1000 -morpho "diameq:diameq:0.8*lognormal(1,0.35)+0.2*lognormal(2,0.6),1-sphericity:lognormal(0.230,0.03)" -group mode -o gene_grou_3
+
+.. image:: imgs/gene_grou.png
+  :width: 100%
+
+:download:`gene_grou.sh <imgs/gene_grou.sh>`
+
 
 Multiscale tessellations
 ------------------------

@@ -33,8 +33,8 @@ else
   $NEPER -T -n 1000 -morpho gg -o gene_regu_1
 fi
 
-$NEPER -T -loadtess gene_regu_1.tess -statedge length:uc -for ""
-$NEPER -T -loadtess gene_regu_1.tess -statedge length:uc -reg 1 -o gene_regu_2
+$NEPER -T -loadtess gene_regu_1.tess -statedge length -for ""
+$NEPER -T -loadtess gene_regu_1.tess -statedge length -reg 1 -o gene_regu_2
 
 C="-datacellcol id -datacelltrs 0.5 -cameraangle 12 -imagesize 600:600"
 $NEPER -V gene_regu_1.tess $C -print gene_regu_1

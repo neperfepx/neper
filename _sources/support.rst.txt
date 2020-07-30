@@ -1,3 +1,0 @@
-Type: Exact Redirect
-From URL: /dev/install.html
-To URL:   /en/latest/installing-your-site.html

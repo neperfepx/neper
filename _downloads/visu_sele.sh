@@ -18,10 +18,10 @@ fi
 
 C="-cameraangle 12 -imagesize 600:600"
 $NEPER -V visu_sele_1.tess $C -datacellcol id -datacelltrs 0.5 \
-        -showcell "id<=50" -showedge "cell_shown||(domtype==1)" \
+        -showcell "id<=50" -showedge "cell_shown||domtype==1" \
         -print visu_sele_1
 $NEPER -V visu_sele_2.msh $C -dataelsetcol id \
-        -showelt "(z<0.5)||(body>0)"  -showelt1d elt3d_shown \
+        -showelt "z<0.5||body>0"  -showelt1d elt3d_shown \
         -dataelt3dedgerad 0.001 -dataelt1drad 0.0025 \
         -print visu_sele_2
 
