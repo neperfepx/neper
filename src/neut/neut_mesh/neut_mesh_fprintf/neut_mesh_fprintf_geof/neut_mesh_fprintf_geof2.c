@@ -46,32 +46,32 @@ neut_mesh_fprintf_geof_elts (FILE * out, struct MESH Mesh1D,
                              struct MESH Mesh2D, struct MESH Mesh3D,
                              struct MESH MeshCo, char *dim, int *shift)
 {
-  int eltqty;
+  int EltQty;
 
-  eltqty = 0;
+  EltQty = 0;
   if (ut_list_testelt (dim, NEUT_SEP_NODEP, "1"))
   {
     shift[1] = 0;
-    eltqty += Mesh1D.EltQty;
+    EltQty += Mesh1D.EltQty;
   }
   if (ut_list_testelt (dim, NEUT_SEP_NODEP, "2"))
   {
-    shift[2] = eltqty;
-    eltqty += Mesh2D.EltQty;
+    shift[2] = EltQty;
+    EltQty += Mesh2D.EltQty;
   }
   if (ut_list_testelt (dim, NEUT_SEP_NODEP, "3"))
   {
-    shift[3] = eltqty;
-    eltqty += Mesh3D.EltQty;
+    shift[3] = EltQty;
+    EltQty += Mesh3D.EltQty;
   }
   if (MeshCo.EltQty > 0)
   {
-    shift[4] = eltqty;
-    eltqty += MeshCo.EltQty;
+    shift[4] = EltQty;
+    EltQty += MeshCo.EltQty;
   }
 
   fprintf (out, "\n**element\n");
-  fprintf (out, "%d\n", eltqty);
+  fprintf (out, "%d\n", EltQty);
 
   // 1D elts
   if (ut_list_testelt (dim, NEUT_SEP_NODEP, "1") && Mesh1D.EltQty > 0)
@@ -113,7 +113,7 @@ neut_mesh_fprintf_geof_nsets (FILE * file, struct NSET NSet0D,
     for (j = 1; j <= NSet0D.qty; j++)
       if (!strcmp (name[i], NSet0D.names[j]))
       {
-        neut_mesh_fprintf_geof_nset (file, NSet0D.names[j], NSet0D.nodeqty[j],
+        neut_mesh_fprintf_geof_nset (file, NSet0D.names[j], NSet0D.NodeQty[j],
                                      NSet0D.nodes[j]);
         status = 0;
         break;
@@ -125,7 +125,7 @@ neut_mesh_fprintf_geof_nsets (FILE * file, struct NSET NSet0D,
     for (j = 1; j <= NSet1D.qty; j++)
       if (!strcmp (name[i], NSet1D.names[j]))
       {
-        neut_mesh_fprintf_geof_nset (file, NSet1D.names[j], NSet1D.nodeqty[j],
+        neut_mesh_fprintf_geof_nset (file, NSet1D.names[j], NSet1D.NodeQty[j],
                                      NSet1D.nodes[j]);
         status = 0;
         break;
@@ -137,7 +137,7 @@ neut_mesh_fprintf_geof_nsets (FILE * file, struct NSET NSet0D,
     for (j = 1; j <= NSet2D.qty; j++)
       if (!strcmp (name[i], NSet2D.names[j]))
       {
-        neut_mesh_fprintf_geof_nset (file, NSet2D.names[j], NSet2D.nodeqty[j],
+        neut_mesh_fprintf_geof_nset (file, NSet2D.names[j], NSet2D.NodeQty[j],
                                      NSet2D.nodes[j]);
         status = 0;
         break;
@@ -326,15 +326,6 @@ neut_mesh_fprintf_geof_elsets (FILE * file, struct MESH Mesh1D,
 
       fprintf (file, "\n");
     }
-
-  return;
-}
-
-void
-neut_mesh_fprintf_geof_part (FILE * file, struct PART Part)
-{
-  neut_mesh_fprintf_geof_part_nset (file, Part);
-  neut_mesh_fprintf_geof_part_elset (file, Part);
 
   return;
 }

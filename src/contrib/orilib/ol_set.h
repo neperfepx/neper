@@ -74,6 +74,7 @@ extern void ol_set_aniso_v_thetatr_modes (struct OL_SET, double*, double**,
 	        double, struct OL_SET*, struct OL_SET*);
 extern void ol_set_aniso_v_thetatr_modes_id (struct OL_SET, double*,
 					     double**, double, int*);
+extern void ol_set_misoridistrib (char *distrib, long int, struct OL_SET *pOSet);
 
 #endif /* OL_SSET */
 #ifndef OL_SETx

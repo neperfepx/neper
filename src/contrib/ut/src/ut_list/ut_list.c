@@ -89,13 +89,41 @@ ut_list_break2 (const char *string, const char *c, const char *c2,
   return;
 }
 
+void
+ut_list_break_double (const char *string, const char *sep, double **pparts, int *pqty)
+{
+  int i, qty;
+  char **tmp = NULL;
+
+  ut_list_break (string, sep, &tmp, &qty);
+
+  if (pparts)
+  {
+    (*pparts) = ut_alloc_1d (qty);
+    for (i = 0; i < qty; i++)
+      (*pparts)[i] = atof (tmp[i]);
+  }
+
+  if (pqty)
+    (*pqty) = qty;
+
+  ut_free_2d_char (&tmp, qty);
+
+  return;
+}
+
 /* could be optimized: do not break the list */
 int
 ut_list_testelt (const char *string, const char *c, const char *part)
 {
   int res;
-  char *tmp = ut_alloc_1d_char (strlen (string) + 3);
-  char *tmp2 = ut_alloc_1d_char (strlen (part) + 3);
+  char *tmp = NULL, *tmp2 = NULL;
+
+  if (!string)
+    return 0;
+
+  tmp = ut_alloc_1d_char (strlen (string) + 3);
+  tmp2 = ut_alloc_1d_char (strlen (part) + 3);
 
   sprintf (tmp, "%s%s%s", c, string, c);
   sprintf (tmp2, "%s%s%s", c, part, c);
@@ -178,4 +206,21 @@ ut_list_iter_test (char *string, char *sep, int iter)
   ut_free_2d_char (&vars, varqty);
 
   return (iterstep == 1 || (iter - 1) % iterstep == 0);
+}
+
+void
+ut_list_create (char **parts, int size, const char *sep, char **plist)
+{
+  int i, length = 0;
+
+  for (i = 0; i < size; i++)
+    length += strlen (parts[i]);
+  length += (size - 1) * strlen (sep);
+
+  (*plist) = ut_alloc_1d_char (length + 1);
+
+  for (i = 0; i < size; i++)
+    sprintf ((*plist) + strlen (*plist), "%s%s", parts[i], i < size - 1? sep : "");
+
+  return;
 }

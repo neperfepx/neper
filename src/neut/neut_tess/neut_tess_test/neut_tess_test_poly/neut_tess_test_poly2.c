@@ -177,7 +177,7 @@ neut_tess_test_poly_pinching (struct TESS Tess, int poly, int verbosity)
         status = -1;
 
       // if they have 3 common vertices and if one of them is not a
-      // neighbour of the 2 others, this happens.
+      // neighbor of the 2 others, this happens.
       else if (verqty == 3)
       {
         for (k = 0; k < 2; k++)

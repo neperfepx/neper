@@ -29,7 +29,7 @@ net_reg_init (struct IN_T In, struct TESS Tess, struct REG *pReg)
   neut_tess_cell (Tess, &entity);
 
   (*pcellsel) = ut_alloc_1d (Tess.CellQty + 1);
-  neut_tess_entity_expr_val (Tess, entity, In.selstring, *pcellsel);
+  neut_tess_entity_expr_val (Tess, entity, In.selstring, *pcellsel, NULL);
 
   if (!strcmp (In.seltype, "rel"))
     for (i = 1; i <= Tess.CellQty; i++)

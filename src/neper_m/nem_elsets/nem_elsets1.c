@@ -6,7 +6,7 @@
 
 void
 nem_elsets (struct IN_M In, struct TESS Tess, struct NODES Nodes,
-            struct MESH *Mesh, struct PART Part)
+            struct MESH *Mesh)
 {
   int i, j, qty, *qty2 = NULL;
   char ***parts = NULL;
@@ -14,9 +14,7 @@ nem_elsets (struct IN_M In, struct TESS Tess, struct NODES Nodes,
   double *vals = NULL;
   double *val = ut_alloc_1d (Mesh[3].EltQty + 1);
   int varqty;
-  int *elts = NULL, eltqty;
-
-  neut_part_set_zero (&Part);
+  int *elts = NULL, EltQty;
 
   ut_list_break2 (In.elset, NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty2,
                   &qty);
@@ -34,17 +32,17 @@ nem_elsets (struct IN_M In, struct TESS Tess, struct NODES Nodes,
       ut_print_message (2, 2, "Failed to process expression `%s'.", In.elset);
 
     neut_mesh_entity_expr_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
-                               Part, Tess, NULL, NULL, NULL, NULL, "elt3d",
-                               parts[i][1], val);
+                               Mesh[4], Tess, NULL, NULL, NULL, NULL, "elt3d",
+                               parts[i][1], val, NULL);
 
-    eltqty = 0;
+    EltQty = 0;
     elts = ut_alloc_1d_int (Mesh[3].EltQty);    // alloc'd in full for CPU efficiency
 
     for (j = 1; j <= Mesh[3].EltQty; j++)
       if (ut_num_equal (val[j], 1, 1e-6))
-        elts[eltqty++] = j;
+        elts[EltQty++] = j;
 
-    neut_mesh_addelset (Mesh + 3, elts, eltqty);
+    neut_mesh_addelset (Mesh + 3, elts, EltQty);
     Mesh[3].ElsetLabels =
       ut_realloc_1d_pchar (Mesh[3].ElsetLabels, Mesh[3].ElsetQty + 1);
     Mesh[3].ElsetLabels[Mesh[3].ElsetQty] = NULL;
@@ -53,12 +51,11 @@ nem_elsets (struct IN_M In, struct TESS Tess, struct NODES Nodes,
     ut_free_1d_int (&elts);
   }
 
-  // ut_free_2d_char (&parts, partqty);
+  // ut_free_2d_char (&parts, PartQty);
   ut_free_1d_int (&qty2);
   ut_free_2d_char (&vars, varqty);
   ut_free_1d (&vals);
   ut_free_1d (&val);
-  neut_part_free (Part);
 
   return;
 }

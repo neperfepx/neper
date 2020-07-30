@@ -38,6 +38,7 @@ nem_meshing_3D (struct IN_M In, struct MESHPARA MeshPara, struct TESS Tess,
     // polys to mesh; default is 'all'
     neut_tess_expr_polylist (Tess, In.meshpoly, &poly, &polyqty);
 
+    allowed_t = In.mesh3dmaxtime;
     qty = 0;
 #pragma omp parallel for schedule(dynamic) private(i,id)
     for (i = 0; i < polyqty; i++)

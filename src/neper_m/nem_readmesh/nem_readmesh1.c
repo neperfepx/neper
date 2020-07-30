@@ -8,8 +8,7 @@ void
 nem_readmesh (char *filename, struct NODES *pNodes, struct MESH *Mesh)
 {
   int i;
-  FILE *file = NULL, *file2 = NULL, *file3 = NULL;
-  char *parms = NULL, *mesh = NULL, *opt = NULL;
+  FILE *file = NULL;
   char *filetype = NULL;
 
   char *meshname = NULL;
@@ -42,57 +41,6 @@ nem_readmesh (char *filename, struct NODES *pNodes, struct MESH *Mesh)
     file = ut_file_open (meshname, "r");
     neut_mesh_fscanf_geof (file, pNodes, Mesh + 3);
     ut_file_close (file, meshname, "r");
-  }
-  else if (strcmp (filetype, "fepx") == 0)
-  {
-    /* initializing file names */
-    if (ut_file_exist ("%s.fepx1", meshname))
-      parms = ut_string_paste (meshname, ".fepx1");
-    else if (ut_file_exist ("%s.parms", meshname))
-      parms = ut_string_paste (meshname, ".parms");
-
-    if (parms == NULL)
-    {
-      ut_print_message (2, 2, "no .fepx1 or .parms file found.\n");
-      abort ();
-    }
-
-    if (ut_file_exist ("%s.fepx2", meshname))
-      mesh = ut_string_paste (meshname, ".fepx2");
-    else if (ut_file_exist ("%s.mesh", meshname))
-      mesh = ut_string_paste (meshname, ".mesh");
-
-    if (mesh == NULL)
-    {
-      ut_print_message (2, 2, "no .fepx2 or .mesh file found.\n");
-      abort ();
-    }
-
-    if (ut_file_exist ("%s.fepx4", meshname))
-      opt = ut_string_paste (meshname, ".fepx4");
-    else if (ut_file_exist ("%s.opt", meshname))
-      opt = ut_string_paste (meshname, ".opt");
-
-    if (opt == NULL)
-    {
-      ut_print_message (2, 2, "no .fepx4 or .opt file found.\n");
-      abort ();
-    }
-
-    file = ut_file_open (parms, "r");
-    file2 = ut_file_open (mesh, "r");
-    file3 = ut_file_open (opt, "r");
-    neut_mesh_fscanf_fepx (file, file2, file3, pNodes, Mesh + 3);
-    ut_file_close (file, parms, "r");
-    ut_file_close (file2, mesh, "r");
-    ut_file_close (file3, opt, "r");
-
-    ut_free_1d_char (&parms);
-    ut_free_1d_char (&mesh);
-    ut_free_1d_char (&opt);
-
-    neut_mesh_init_nodeelts (Mesh + 3, (*pNodes).NodeQty);
-    // neut_mesh3d_mesh2d (*pNodes, *pMesh[3], pMesh[2], &Elsets, &ElsetQty);
   }
 
   // should not be NodeQty below (should be smaller (RAM))

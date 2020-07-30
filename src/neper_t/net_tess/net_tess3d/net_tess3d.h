@@ -8,7 +8,7 @@ extern "C"
 #endif
 
   extern int net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
-			 char *algoneigh, int TessId, struct MTESS *pMTess,
+			 int TessId, struct MTESS *pMTess,
 			 struct TESS *pTess);
 
   extern void net_polys_tess (int level, struct SEEDSET SSet, int TessId,

@@ -15,6 +15,7 @@
 #include"net_domain/net_domain.h"
 #include"net_tess/net_tess.h"
 #include"net_flatten/net_flatten.h"
+#include"net_group/net_group.h"
 #include"net_transform/net_transform.h"
 #include"net_utils/net_utils.h"
 #include"net_sort/net_sort.h"

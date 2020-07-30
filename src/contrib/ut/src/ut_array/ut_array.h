@@ -19,7 +19,6 @@ extern "C"
 /// \author Romain Quey
 /// \bug No known bugs
 /// \todo move sort array to ut_sort?
-/// \todo move output of memcpy functions to the end?
 
 /// \brief Set a 1D array of \c double to 0
 /// \param array: array
@@ -162,7 +161,17 @@ extern "C"
   extern void ut_array_1d_int_addval (int *array1, int size, int val,
                                       int *array2);
 
-/// \brief Add a value to a 1D array of \c double
+/// \brief Add a value to a 2D array of \c double
+/// \param array1: input array
+/// \param size1: 1st-index size of the input array
+/// \param size2: 2nd-index size of the input array
+/// \param val: value
+/// \param array2: output array
+/// \remark Input and output arrays can be the same.
+  extern void ut_array_2d_addval (double **array1, int size1, int size2,
+                                  double val, double **array2);
+
+/// \brief Add a value to a 2D array of \c int
 /// \param array1: input array
 /// \param size1: 1st-index size of the input array
 /// \param size2: 2nd-index size of the input array
@@ -685,7 +694,8 @@ extern "C"
 /// \param fact: sampling factor
 /// \param *parray2: output array
 /// \param *psize2: size of the output array
-  extern void ut_array_1d_sample (double *array, int size, double fact, double **parray2, int *psize2);
+  extern void ut_array_1d_sample (double *array, int size, double fact,
+                                  double **parray2, int *psize2);
 
 /// \brief Get a sample of a 2D array of \c double
 /// \param array: array
@@ -694,7 +704,8 @@ extern "C"
 /// \param fact: sampling factor
 /// \param *parray2: output array
 /// \param *psize2: size of the output array
-  extern void ut_array_2d_sample (double **array, int size1, int size2, double fact, double ***parray2,
+  extern void ut_array_2d_sample (double **array, int size1, int size2,
+                                  double fact, double ***parray2,
                                   int *psize2);
 
 /// \brief Get the signs of the elements of an array
@@ -704,83 +715,89 @@ extern "C"
   extern void ut_array_1d_int_sgn (int *array, int size, int *sarray);
 
 /// \brief Copy a \c double array
-/// \param dest: destination array
-/// \param size: size of the array
 /// \param src: source array
-  extern void ut_array_1d_memcpy (double *dest, int size, double *src);
+/// \param size: size of the array
+/// \param dest: destination array
+  extern void ut_array_1d_memcpy (double *src, int size, double *dest);
 
 /// \brief Copy a 1D \c int array into a \c double array
-/// \param dest: destination array
-/// \param size: size of the array
 /// \param src: source array
+/// \param size: size of the array
+/// \param dest: destination array
   extern void ut_array_1d_memcpy_fromint (int *src, int size, double *dest);
 
 /// \brief Copy a 1D \c int array
-/// \param dest: destination array
-/// \param size: size of the array
 /// \param src: source array
-  extern void ut_array_1d_int_memcpy (int *dest, int size, int *src);
+/// \param size: size of the array
+/// \param dest: destination array
+  extern void ut_array_1d_int_memcpy (int *src, int size, int *dest);
 
 /// \brief Copy a 1D \c unsigned \c int array
-/// \param dest: destination array
-/// \param size: size of the array
 /// \param src: source array
-  extern void ut_array_1d_uint_memcpy (unsigned int *dest, int size, unsigned int *src);
+/// \param size: size of the array
+/// \param dest: destination array
+  extern void ut_array_1d_uint_memcpy (unsigned int *src, int size,
+                                       unsigned int *dest);
 
 /// \brief Copy a 2D \c double array
-/// \param dest: destination array
+/// \param src: source array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
-/// \param src: source array
-  extern void ut_array_2d_memcpy (double **dest, int size1, int size2, double **src);
+/// \param dest: destination array
+  extern void ut_array_2d_memcpy (double **src, int size1, int size2,
+                                  double **dest);
 
 /// \brief Copy a 2D \c int array
-/// \param dest: destination array
+/// \param src: source array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
-/// \param src: source array
-  extern void ut_array_2d_int_memcpy (int **dest, int size1, int size2, int **src);
+/// \param dest: destination array
+  extern void ut_array_2d_int_memcpy (int **src, int size1, int size2,
+                                      int **dest);
 
 /// \brief Copy a 1D \c char* array
-/// \param dest: destination array
-/// \param size: size of the array
 /// \param src: source array
-  extern void ut_array_1d_pchar_memcpy (char **dest, int size, char **src);
+/// \param size: size of the array
+/// \param dest: destination array
+  extern void ut_array_1d_pchar_memcpy (char **src, int size, char **dest);
 
 /// \brief Copy a 3D \c double array
-/// \param dest: destination array
+/// \param src: source array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
 /// \param size3: 3rd-index size of the array
-/// \param src: source array
-  extern void ut_array_3d_memcpy (double ***dest, int size1, int size2, int size3, double ***src);
+/// \param dest: destination array
+  extern void ut_array_3d_memcpy (double ***src, int size1, int size2,
+                                  int size3, double ***dest);
 
 /// \brief Copy a 4D \c int array
-/// \param dest: destination array
+/// \param src: source array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
 /// \param size3: 3rd-index size of the array
-/// \param src: source array
-  extern void ut_array_3d_int_memcpy (int ***dest, int size1, int size2, int size3, int ***src);
+/// \param dest: destination array
+  extern void ut_array_3d_int_memcpy (int ***src, int size1, int size2,
+                                      int size3, int ***dest);
 
 /// \brief Copy a 4D \c unsigned \c char array
-/// \param dest: destination array
+/// \param src: source array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
 /// \param size3: 3rd-index size of the array
-/// \param src: source array
-  extern void ut_array_3d_uchar_memcpy (unsigned char ***dest, int size1, int size2, int size3,
-                                        unsigned char ***src);
+/// \param dest: destination array
+  extern void ut_array_3d_uchar_memcpy (unsigned char ***src, int size1,
+                                        int size2, int size3,
+                                        unsigned char ***dest);
 
 /// \brief Copy a 4D \c double array
-/// \param dest: destination array
+/// \param src: source array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
 /// \param size3: 3rd-index size of the array
 /// \param size4: 4th-index size of the array
-/// \param src: source array
-  extern void ut_array_4d_memcpy (double ****dest, int size1, int size2, int size3, int size4,
-                                  double ****src);
+/// \param dest: destination array
+  extern void ut_array_4d_memcpy (double ****src, int size1, int size2,
+                                  int size3, int size4, double ****dest);
 
 /// \brief Switch 2 elements of a 1D \c double array
 /// \param array: array
@@ -799,14 +816,16 @@ extern "C"
 /// \param linelength: line length
 /// \param id1: id of the 1st line (1st-index)
 /// \param id2: id of the 2nd line (1st-index)
-  extern void ut_array_2d_switchlines (double **array, int linelength, int id1, int id2);
+  extern void ut_array_2d_switchlines (double **array, int linelength,
+                                       int id1, int id2);
 
 /// \brief Switch 2 lines of a 2D \c int array
 /// \param array: array
 /// \param linelength: line length
 /// \param id1: id of the 1st line (1st-index)
 /// \param id2: id of the 2nd line (1st-index)
-  extern void ut_array_2d_int_switchlines (int **array, int linelength, int id1, int id2);
+  extern void ut_array_2d_int_switchlines (int **array, int linelength,
+                                           int id1, int id2);
 
 /// \brief Switch 2 lines of a 2D \c int array, with lines of different lengths
 /// \param array: array
@@ -814,8 +833,9 @@ extern "C"
 /// \param id1length: 1st line length
 /// \param id2: id of the 2nd line (1st-index)
 /// \param id2length: 2nd line length
-  extern void ut_array_2d_int_switchlines_length (int **array, int id1, int id1length,
-                                                  int id2, int id2length);
+  extern void ut_array_2d_int_switchlines_length (int **array, int id1,
+                                                  int id1length, int id2,
+                                                  int id2length);
 
 /// \brief Switch 2 subarrays of a 3D \c double array
 /// \param array: array
@@ -875,7 +895,8 @@ extern "C"
 /// \param array: array
 /// \param size: size of the array
 /// \param idarray: index array
-  extern void ut_array_1d_abssort_index (double *array, int size, int *idarray);
+  extern void ut_array_1d_abssort_index (double *array, int size,
+                                         int *idarray);
 
 /// \brief Sort a 1D \c int array, get the indices
 /// \param array: array
@@ -887,33 +908,38 @@ extern "C"
 /// \param array: array
 /// \param size: size of the array
 /// \param idarray: index array
-  extern void ut_array_1d_sort_des_index (double *array, int size, int *idarray);
+  extern void ut_array_1d_sort_des_index (double *array, int size,
+                                          int *idarray);
 
 /// \brief Sort a 1D \c int array in descending order, get the indices
 /// \param array: array
 /// \param size: size of the array
 /// \param idarray: index array
-  extern void ut_array_1d_int_sort_des_index (int *array, int size, int *idarray);
+  extern void ut_array_1d_int_sort_des_index (int *array, int size,
+                                              int *idarray);
 
 /// \brief Sort a 1D \c int array in terms of absolute values, get the indices
 /// \param array: array
 /// \param size: size of the array
 /// \param idarray: index array
-  extern void ut_array_1d_int_abssort_index (int *array, int size, int *idarray);
+  extern void ut_array_1d_int_abssort_index (int *array, int size,
+                                             int *idarray);
 
 /// \brief Sort a 2D \c int array based on a column (i.e., rearrange lines)
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
 /// \param col: column (2nd-index)
-  extern void ut_array_2d_int_sortbycol (int **array, int size1, int size2, int col);
+  extern void ut_array_2d_int_sortbycol (int **array, int size1, int size2,
+                                         int col);
 
 /// \brief Sort a 2D \c int array in descending order based on a column (i.e., rearrange lines)
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
 /// \param col: column (2nd-index)
-  extern void ut_array_2d_int_sortbycol_des (int **array, int size1, int size2, int col);
+  extern void ut_array_2d_int_sortbycol_des (int **array, int size1,
+                                             int size2, int col);
 
 /// \brief Sort a 1D \c double array, but apply permutation to another array
 /// \param array: array
@@ -946,7 +972,8 @@ extern "C"
 /// \param size: size of the array
 /// \param elt1: replaced element
 /// \param elt2: replacing element
-  extern void ut_array_1d_int_findnreplace (int *array, int size, int elt1, int elt2);
+  extern void ut_array_1d_int_findnreplace (int *array, int size, int elt1,
+                                            int elt2);
 
 /// \brief Rotate the elements of a 1D \c double array
 /// \param array: array
@@ -986,14 +1013,16 @@ extern "C"
 /// \param array: array
 /// \param size: size of the array
 /// \param val: value
-  extern void ut_array_1d_uint_set (unsigned int *array, int size, unsigned int val);
+  extern void ut_array_1d_uint_set (unsigned int *array, int size,
+                                    unsigned int val);
 
 /// \brief Set a 2D \c double array to a value
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
 /// \param val: value
-  extern void ut_array_2d_set (double **array, int size1, int size2, double val);
+  extern void ut_array_2d_set (double **array, int size1, int size2,
+                               double val);
 
 /// \brief Set a 2D \c int array to a value
 /// \param array: array
@@ -1007,14 +1036,16 @@ extern "C"
 /// \param size1: 1st-index size of the array
 /// \param col: column
 /// \param val: value
-  extern void ut_array_2d_col_set (double **array, int size, int size2, double val);
+  extern void ut_array_2d_col_set (double **array, int size, int size2,
+                                   double val);
 
 /// \brief Set the column of a 2D \c int array to a value
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param col: column
 /// \param val: value
-  extern void ut_array_2d_int_col_set (int **array, int size, int col, int val);
+  extern void ut_array_2d_int_col_set (int **array, int size, int col,
+                                       int val);
 
 /// \brief Set a 3D \c double array to a value
 /// \param array: array
@@ -1022,7 +1053,8 @@ extern "C"
 /// \param size2: 2nd-index size of the array
 /// \param size3: 3rd-index size of the array
 /// \param val: value
-  extern void ut_array_3d_set (double ***array, int size, int size2, int size3, double val);
+  extern void ut_array_3d_set (double ***array, int size, int size2,
+                               int size3, double val);
 
 /// \brief Set a 3D \c int array to a value
 /// \param array: array
@@ -1030,7 +1062,8 @@ extern "C"
 /// \param size2: 2nd-index size of the array
 /// \param size3: 3rd-index size of the array
 /// \param val: value
-  extern void ut_array_3d_int_set (int ***array, int size, int size2, int size3, int val);
+  extern void ut_array_3d_int_set (int ***array, int size, int size2,
+                                   int size3, int val);
 
 /// \brief Determine whether 2 \c double arrays are equal to a given tolerance
 /// \param array1: 1st array
@@ -1038,7 +1071,8 @@ extern "C"
 /// \param size: size of the arrays
 /// \param tol: tolerancy
 /// \return 1 if equal and 0 otherwise
-  extern int ut_array_1d_equal (double *array, double *array2, int size, double tol);
+  extern int ut_array_1d_equal (double *array, double *array2, int size,
+                                double tol);
 
 /// \brief Determine whether 2 \c int arrays are equal
 /// \param array1: 1st array
@@ -1046,7 +1080,8 @@ extern "C"
 /// \param array2: 2nd array
 /// \param size2: size of the 2nd array
 /// \return 1 if equal and 0 otherwise
-  extern int ut_array_1d_int_equal (int *array1, int size1, int *array2, int size2);
+  extern int ut_array_1d_int_equal (int *array1, int size1, int *array2,
+                                    int size2);
 
 /// \brief Determine whether 2 \c double arrays are equal to a given relative tolerance
 /// \param array1: 1st array
@@ -1054,7 +1089,8 @@ extern "C"
 /// \param size: size of the arrays
 /// \param tol: tolerance
 /// \return 1 if equal and 0 otherwise
-  extern int ut_array_1d_requal (double *array1, double *array2, int size, double tol);
+  extern int ut_array_1d_requal (double *array1, double *array2, int size,
+                                 double tol);
 
 /// \brief Determine whether 2 \c int arrays are opposite
 /// \param array1: 1st array
@@ -1070,7 +1106,8 @@ extern "C"
 /// \param size1: 2nd-index size of the arrays
 /// \param tol: tolerancy
 /// \return 1 if equal and 0 otherwise
-  extern int ut_array_2d_equal (double **array1, double **array2, int size1, int size2, double tol);
+  extern int ut_array_2d_equal (double **array1, double **array2, int size1,
+                                int size2, double tol);
 
 /// \brief Permute the element of a 1D \c double array
 /// \param array: array
@@ -1089,7 +1126,8 @@ extern "C"
 /// \param size2: 1st-index size of the array
 /// \param size1: 2nd-index size of the array
 /// \param permute: index permutation array
-  extern void ut_array_2d_int_permute (int **array, int size1, int size2, int *permute);
+  extern void ut_array_2d_int_permute (int **array, int size1, int size2,
+                                       int *permute);
 
 /// \brief Get a rotated position within an array
 /// \param start: start position
@@ -1114,7 +1152,8 @@ extern "C"
 /// \param value: value
 /// \return position
 /// \note The array must be sorted in ascending order.
-  extern double ut_array_1d_eltpos_interpolate (double *array, int size, double value);
+  extern double ut_array_1d_eltpos_interpolate (double *array, int size,
+                                                double value);
 
 /// \brief Get the position of an element within a 1D \c int array
 /// \param array: array
@@ -1144,7 +1183,8 @@ extern "C"
 /// \param value: value
 /// \param pos: positions
 /// \return number of positions
-  extern int ut_array_1d_int_eltpos_all (int *array, int size, int value, int *pos);
+  extern int ut_array_1d_int_eltpos_all (int *array, int size, int value,
+                                         int *pos);
 
 /// \brief Get the position of an element within a 2D \c int array
 /// \param array: array
@@ -1154,7 +1194,8 @@ extern "C"
 /// \param *ppos1: 1st-index position
 /// \param *ppos2: 2nd-index position
 /// \return 1 if found and -1 otherwise
-  extern int ut_array_2d_int_eltpos (int **array, int size1, int size2, int value, int *ppos1, int *ppos2);
+  extern int ut_array_2d_int_eltpos (int **array, int size1, int size2,
+                                     int value, int *ppos1, int *ppos2);
 
 /// \brief Get the position of a line within a 2D \c int array
 /// \param array: array
@@ -1162,7 +1203,8 @@ extern "C"
 /// \param size2: 2nd-index size of the array
 /// \param subarray: subarray
 /// \return position if found and -1 otherwise
-  extern int ut_array_2d_int_linepos (int **array, int size1, int size2, int *values);
+  extern int ut_array_2d_int_linepos (int **array, int size1, int size2,
+                                      int *values);
 
 /// \brief Get the position of a line within a non-square 2D \c int array
 /// \param array: array
@@ -1171,7 +1213,8 @@ extern "C"
 /// \param subarray: subarray
 /// \param subsize: size of the subarray
 /// \return position if found and -1 otherwise
-  extern int ut_array_2dns_int_linepos (int **array, int size1, int *size2, int *subarray, int subsize);
+  extern int ut_array_2dns_int_linepos (int **array, int size1, int *size2,
+                                        int *subarray, int subsize);
 
 /// \brief Get the number of occurrence of a value within a 1D \c int array
 /// \param array: array
@@ -1187,14 +1230,16 @@ extern "C"
 /// \param *pvalnbs: numbers of occurrence of the values
 /// \param *pvalnb: number of values
 /// \return number of values
-  extern void ut_array_1d_int_valnbs (int *array, int size, int **pvals, int **pvalnbs, int *pvalnb);
+  extern void ut_array_1d_int_valnbs (int *array, int size, int **pvals,
+                                      int **pvalnbs, int *pvalnb);
 
 /// \brief Get the number of occurrence of a value within a 1D \c unsigned \c int array
 /// \param array: array
 /// \param size: size of the array
 /// \param value: value
 /// \return number of values
-  extern int ut_array_1d_uint_nbofthisval (unsigned int *array, int size, unsigned int value);
+  extern int ut_array_1d_uint_nbofthisval (unsigned int *array, int size,
+                                           unsigned int value);
 
 /// \brief Get the intersection between two \c int arrays
 /// \param array1: first array
@@ -1203,7 +1248,8 @@ extern "C"
 /// \param size2: size of the second array
 /// \param array3: result array
 /// \param size3: size of the result array
-  extern void ut_array_1d_int_inter (int *array1, int size1, int *array2, int size2, int *array3, int *psize3);
+  extern void ut_array_1d_int_inter (int *array1, int size1, int *array2,
+                                     int size2, int *array3, int *psize3);
 
 /// \brief Concatenate two \c int arrays
 /// \param array1: first array
@@ -1212,7 +1258,8 @@ extern "C"
 /// \param size2: size of the second array
 /// \param *parray3: result array
 /// \param *psize3: size of the result array
-  extern void ut_array_1d_int_cat (int *array1, int size1, int *array2, int size2, int **parray3, int *size3);
+  extern void ut_array_1d_int_cat (int *array1, int size1, int *array2,
+                                   int size2, int **parray3, int *size3);
 
 /// \brief Remove an element of a 1D \c int array
 /// \param array: array
@@ -1221,28 +1268,32 @@ extern "C"
 /// \param loop: number of loops
 /// \return number of removed elements
 /// \note The array is "compressed" upon element removal.
-  extern int ut_array_1d_int_rmelt (int *array, int size, int value, int loop);
+  extern int ut_array_1d_int_rmelt (int *array, int size, int value,
+                                    int loop);
 
 /// \brief Transpose a 2D \c double arrays
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
 /// \param *parray2: transposed array
-  extern void ut_array_2d_transpose (double **array, int size1, int size2, double ***parray2);
+  extern void ut_array_2d_transpose (double **array, int size1, int size2,
+                                     double ***parray2);
 
 /// \brief Transpose a 2D \c int arrays
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
 /// \param *parray2: transposed array
-  extern void ut_array_2d_int_transpose (int **array, int size1, int size2, int ***parray2);
+  extern void ut_array_2d_int_transpose (int **array, int size1, int size2,
+                                         int ***parray2);
 
 /// \brief Add a value to a 1D list \c int array
 /// \param *parray: array
 /// \param *psize: size of the array
 /// \param value: value to remove
 /// \note The element is added only if it does not exist
-  extern int ut_array_1d_int_list_addval (int **parray, int *psize, int value);
+  extern int ut_array_1d_int_list_addval (int **parray, int *psize,
+                                          int value);
 
 /// \brief Add a value to a 1D list \c int array, do not check for existence
 /// \param *parray: array
@@ -1265,7 +1316,8 @@ extern "C"
 /// \param *parray: array
 /// \param *psize: size of the array
 /// \param value: value to remove
-  extern void ut_array_1d_int_list_rmval (int **parray, int *psize, int value);
+  extern void ut_array_1d_int_list_rmval (int **parray, int *psize,
+                                          int value);
 
 /// \brief Remove values from a 1D list \c int array
 /// \param *parray: array
@@ -1292,9 +1344,9 @@ extern "C"
 /// \param valnb2: nb of values of the second list
 /// \param *pvals: values
 /// \param *pvalnb: number of values
-  extern int ut_array_1d_int_listpair_merge (int *vals1, int valnb1, int *vals2,
-                                             int valnb2, int **pvals,
-                                             int *pvalnb);
+  extern int ut_array_1d_int_listpair_merge (int *vals1, int valnb1,
+                                             int *vals2, int valnb2,
+                                             int **pvals, int *pvalnb);
 
 /// \brief Test if two lists are equal
 /// \param vals1: values of the first list
@@ -1303,8 +1355,8 @@ extern "C"
 /// \param valnb2: nb of values of the second list
 /// \param *pvals: values
 /// \param *pvalnb: number of values
-  extern int ut_array_1d_int_listpair_equal (int *vals1, int valnb1, int *vals2,
-                                             int valnb2);
+  extern int ut_array_1d_int_listpair_equal (int *vals1, int valnb1,
+                                             int *vals2, int valnb2);
 
 /// \brief Pair lists of same lengths
 /// \param listvals1: array of list values, 1st array
@@ -1317,9 +1369,12 @@ extern "C"
 /// \note list i of listvals1 corresponds to list pair[i] of listvals2
 /// \return 0 on success and -1 on failure
 /// \todo Use ut_array_1d_int_lists_pair inside
-  extern int ut_array_1d_int_lists_pair_samelength (int **listvals1, int listvalnbs1, int listnb1,
-                                                   int **listvals2, int listvalnbs2, int listnb2,
-                                                   int *pair);
+  extern int ut_array_1d_int_lists_pair_samelength (int **listvals1,
+                                                    int listvalnbs1,
+                                                    int listnb1,
+                                                    int **listvals2,
+                                                    int listvalnbs2,
+                                                    int listnb2, int *pair);
 
 /// \brief Pair lists
 /// \param listvals1: array of list values, 1st array
@@ -1331,9 +1386,10 @@ extern "C"
 /// \param pair: correspondance between the lists of the two arrays
 /// \note list i of listvals1 corresponds to list pair[i] of listvals2
 /// \return 0 on success and -1 on failure
-  extern int ut_array_1d_int_lists_pair (int **listvals1, int *listvalnbs1, int listnb1,
-                                        int **listvals2, int *listvalnbs2, int listnb2,
-                                        int *pair);
+  extern int ut_array_1d_int_lists_pair (int **listvals1, int *listvalnbs1,
+                                         int listnb1, int **listvals2,
+                                         int *listvalnbs2, int listnb2,
+                                         int *pair);
 
 /// \brief Pair the lines of 2D \c int array
 /// \param a: 1st array
@@ -1369,7 +1425,8 @@ extern "C"
 /// \param *pinvarray: inverse array
 /// \param *pinvsize: size of the inverse array
 /// \note The inverse array is such that invarray[array[i]] = i.
-  extern void ut_array_1d_int_inv (int *array, int size, int **invarray, int *invsize);
+  extern void ut_array_1d_int_inv (int *array, int size, int **invarray,
+                                   int *invsize);
 
 /// \brief Set a 1D \c int array of 2 entries to values
 /// \param array: array
@@ -1382,7 +1439,8 @@ extern "C"
 /// \param val1: 1st value
 /// \param val2: 2nd value
 /// \param val3: 3rd value
-  extern void ut_array_1d_int_set_3 (int *array, int val1, int val2, int val3);
+  extern void ut_array_1d_int_set_3 (int *array, int val1, int val2,
+                                     int val3);
 
 /// \brief Set a 1D \c int array of 4 entries to values
 /// \param array: array
@@ -1391,7 +1449,7 @@ extern "C"
 /// \param val3: 3rd value
 /// \param val4: 4th value
   extern void ut_array_1d_int_set_4 (int *array, int val1, int val2, int val3,
-                                    int val4);
+                                     int val4);
 
 /// \brief Set a 1D \c int array of 5 entries to values
 /// \param array: array
@@ -1401,7 +1459,7 @@ extern "C"
 /// \param val4: 4th value
 /// \param val5: 5th value
   extern void ut_array_1d_int_set_5 (int *array, int val1, int val2, int val3,
-                                    int val4, int val5);
+                                     int val4, int val5);
 
 /// \brief Set a 1D \c double array of 2 entries to values
 /// \param array: array
@@ -1415,7 +1473,7 @@ extern "C"
 /// \param val2: 2nd value
 /// \param val3: 3rd value
   extern void ut_array_1d_set_3 (double *array, double val1, double val2,
-                                double val3);
+                                 double val3);
 
 /// \brief Set a 1D \c double array of 2 entries to values
 /// \param array: array
@@ -1424,7 +1482,7 @@ extern "C"
 /// \param val3: 3rd value
 /// \param val4: 4th value
   extern void ut_array_1d_set_4 (double *array, double val1, double val2,
-                                double val3, double val4);
+                                 double val3, double val4);
 
 /// \brief Set a 1D \c double array of 2 entries to values
 /// \param array: array
@@ -1434,7 +1492,7 @@ extern "C"
 /// \param val4: 4th value
 /// \param val5: 5th value
   extern void ut_array_1d_set_5 (double *array, double val1, double val2,
-                                double val3, double val4, double val5);
+                                 double val3, double val4, double val5);
 
 /// \brief Set a 1D \c double array of 2 entries to values
 /// \param array: array
@@ -1445,7 +1503,8 @@ extern "C"
 /// \param val5: 5th value
 /// \param val6: 6th value
   extern void ut_array_1d_set_6 (double *array, double val1, double val2,
-                                double val3, double val4, double val5, double val6);
+                                 double val3, double val4, double val5,
+                                 double val6);
 
 /// \brief Set a 1D \c double array of 2 entries to values
 /// \param array: array
@@ -1457,8 +1516,8 @@ extern "C"
 /// \param val6: 6th value
 /// \param val7: 7th value
   extern void ut_array_1d_set_7 (double *array, double val1, double val2,
-                                 double val3, double val4, double val5, double val6,
-                                 double val7);
+                                 double val3, double val4, double val5,
+                                 double val6, double val7);
 
 /// \brief Get the number of duplicate entries of a 1D array of \c int
 /// \param array: array
@@ -1474,8 +1533,8 @@ extern "C"
 /// \param min: minimal value
 /// \param max: maximal value
 /// \param r: GSL random number algo
-  extern void ut_array_1d_set_rand (double *array, int size, double min, double max,
-                                    gsl_rng * r);
+  extern void ut_array_1d_set_rand (double *array, int size, double min,
+                                    double max, gsl_rng * r);
 
 /// \brief Set a 1D array of \c int to random values
 /// \param array: array
@@ -1483,8 +1542,8 @@ extern "C"
 /// \param min: minimal value
 /// \param max: maximal value
 /// \param r: GSL random number algo
-  extern void ut_array_1d_int_set_rand (int *array, int size, int min, int max,
-                                        gsl_rng * r);
+  extern void ut_array_1d_int_set_rand (int *array, int size, int min,
+                                        int max, gsl_rng * r);
 
 /// \brief Choose randomly elements from a 1D array of \c int
 /// \param srcarray: source array
@@ -1492,8 +1551,9 @@ extern "C"
 /// \param destarray: destination array
 /// \param destsize: size of the destination array
 /// \param r: GSL random number algo
-  extern void ut_array_1d_int_choose (int *srcarray, int srcsize, int *destarray,
-                                      int destsize, gsl_rng * r);
+  extern void ut_array_1d_int_choose (int *srcarray, int srcsize,
+                                      int *destarray, int destsize,
+                                      gsl_rng * r);
 #endif
 
 /// \brief Round a 1D array of \c double
@@ -1506,7 +1566,8 @@ extern "C"
 /// \param array: array
 /// \param size: size of the array
 /// \param array2: result array
-  extern void ut_array_1d_round_keepsum (double *array, int size, double *array2);
+  extern void ut_array_1d_round_keepsum (double *array, int size,
+                                         double *array2);
 
 /// \brief Get the absolute value of a 1D array of \c double
 /// \param array: array
@@ -1534,21 +1595,21 @@ extern "C"
 /// \param array: array
 /// \param size: size of the array
 /// \return 1 on success, undefined otherwise
-  extern int ut_array_1d_fscanf (FILE *file, double *array, int size);
+  extern int ut_array_1d_fscanf (FILE * file, double *array, int size);
 
 /// \brief Read a 1D array of \c int
 /// \param file: file pointer
 /// \param array: array
 /// \param size: size of the array
 /// \return 1 on success, undefined otherwise
-  extern int ut_array_1d_int_fscanf (FILE *file, int *array, int size);
+  extern int ut_array_1d_int_fscanf (FILE * file, int *array, int size);
 
 /// \brief Read a 1D array of \c char*
 /// \param file: file pointer
 /// \param array: array
 /// \param size: size of the array
 /// \return 1 on success, undefined otherwise
-  extern int ut_array_1d_string_fscanf (FILE *file, char **array, int size);
+  extern int ut_array_1d_string_fscanf (FILE * file, char **array, int size);
 
 /// \brief Read a 2D array of \c double
 /// \param file: file pointer
@@ -1556,7 +1617,8 @@ extern "C"
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
 /// \return 1 on success, undefined otherwise
-  extern int ut_array_2d_fscanf (FILE *file, double **array, int size1, int size2);
+  extern int ut_array_2d_fscanf (FILE * file, double **array, int size1,
+                                 int size2);
 
 /// \brief Read a 2D array of \c int
 /// \param file: file pointer
@@ -1564,12 +1626,15 @@ extern "C"
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
 /// \return 1 on success, undefined otherwise
-  extern int ut_array_2d_int_fscanf (FILE *file, int **array, int size1, int size2);
+  extern int ut_array_2d_int_fscanf (FILE * file, int **array, int size1,
+                                     int size2);
 
 /// \brief Read a 1D array of \c double, from filename
 /// \param filename: file name
 /// \param array: array
 /// \param size: size of the array
+/// \note filename can be written as filename,col=... to fscanf only a specific column of a file.
+/// \note col=0 assigns 0 and col=-x assigns the opposite values of column x
 /// \return 1 on success, undefined otherwise
   extern int ut_array_1d_fnscanf (char *filename, double *array, int size);
 
@@ -1577,6 +1642,7 @@ extern "C"
 /// \param filename: file name
 /// \param array: array
 /// \param size: size of the array
+/// \note filename can be written as filename,col=... to fscanf only a specific column of a file.
 /// \return 1 on success, undefined otherwise
   extern int ut_array_1d_int_fnscanf (char *filename, int *array, int size);
 
@@ -1585,8 +1651,21 @@ extern "C"
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
+/// \note filename can be written as filename,col=... to fscanf only specific columns of a file, e.g. filename,col=1:2:6
+/// \note col=0 assigns 0 and col=-x assigns the opposite values of column x
 /// \return 1 on success, undefined otherwise
-  extern int ut_array_2d_fnscanf (char *filename, double **array, int size1, int size2);
+  extern int ut_array_2d_fnscanf (char *filename, double **array, int size1,
+                                  int size2);
+
+/// \brief Read a 2D array of \c int, from filename
+/// \param filename: file name
+/// \param array: array
+/// \param size1: 1st-index size of the array
+/// \param size2: 2nd-index size of the array
+/// \note filename can be written as filename,col=... to fscanf only specific columns of a file, e.g. filename,col=1:2:6
+/// \return 1 on success, undefined otherwise
+  extern int ut_array_2d_int_fnscanf (char *filename, int **array, int size1,
+                                      int size2);
 
 /// \brief Read a sample of a 1D array of \c double
 /// \param file: file pointer
@@ -1595,8 +1674,9 @@ extern "C"
 /// \param *parray: array (non preallocated)
 /// \param *psize: size of array
 /// \return 1 on success, undefined otherwise
-  extern int ut_array_1d_fscanf_sample (FILE * file, int realsize, double fact,
-                                        double **parray, int *psize);
+  extern int ut_array_1d_fscanf_sample (FILE * file, int realsize,
+                                        double fact, double **parray,
+                                        int *psize);
 
 /// \brief Read a sample of a 2D array of \c double
 /// \param file: file pointer
@@ -1605,7 +1685,7 @@ extern "C"
 /// \param *parray: array (non preallocated)
 /// \param *psize1: 1st-index size of array
 /// \return 1 on success, undefined otherwise
-  extern int ut_array_2d_fscanf_sample (FILE *file, int realsize1,
+  extern int ut_array_2d_fscanf_sample (FILE * file, int realsize1,
                                         int realsize2, double fact,
                                         double ***parray, int *psize);
 
@@ -1614,14 +1694,16 @@ extern "C"
 /// \param string: character string
 /// \param prefix: line prefix ("none" for none)
 /// \return 1 on success, undefined otherwise
-  extern int ut_array_0d_string_fscanf_prefix (FILE * file, char *string, char *prefix);
+  extern int ut_array_0d_string_fscanf_prefix (FILE * file, char *string,
+                                               char *prefix);
 
 /// \brief Read a \c double using a line prefix
 /// \param file: file pointer
 /// \param *pval: value
 /// \param prefix: line prefix ("none" for none)
 /// \return 1 on success, undefined otherwise
-  extern int ut_array_0d_fscanf_prefix (FILE * file, double *pval, char *prefix);
+  extern int ut_array_0d_fscanf_prefix (FILE * file, double *pval,
+                                        char *prefix);
 
 /// \brief Read a 1D array of \c double using a line prefix
 /// \param file: file pointer
@@ -1639,7 +1721,7 @@ extern "C"
 /// \param prefix: line prefix ("none" for none)
 /// \return 1 on success, undefined otherwise
   extern int ut_array_1d_int_fscanf_prefix (FILE * file, int *array,
-                                                   int size, char *prefix);
+                                            int size, char *prefix);
 
 /// \brief Read a 1D array of \c char strings using a line prefix
 /// \param file: file pointer
@@ -1648,7 +1730,7 @@ extern "C"
 /// \param prefix: line prefix ("none" for none)
 /// \return 1 on success, undefined otherwise
   extern int ut_array_1d_string_fscanf_prefix (FILE * file, char **array,
-                                             int size, char *prefix);
+                                               int size, char *prefix);
 
 /// \brief Read a 2D array of \c double using a line prefix
 /// \param file: file pointer
@@ -1658,8 +1740,7 @@ extern "C"
 /// \param prefix: line prefix ("none" for none)
 /// \return 1 on success, undefined otherwise
   extern int ut_array_2d_fscanf_prefix (FILE * file, double **array,
-                                               int size1, int size2,
-                                               char *prefix);
+                                        int size1, int size2, char *prefix);
 
 /// \brief Read a 2D array of \c int using a line prefix
 /// \param file: file pointer
@@ -1678,8 +1759,9 @@ extern "C"
 /// \param size: 1st-index size of the array
 /// \param wcard: wildcard
 /// \return 1 on success, undefined otherwise
-/// \note If file \c filename exists, the data are read from it.  Otherwise, \c wcard is used.  \c wcard can be: "numeral" for initializing \c array from a number, "colour" for initializing \c array from the RGB values of \c filename (if a valid colour name; if equal to "id", the colour palette is used)
-  extern int ut_array_1d_fnscanf_wcard (char *filename, double *array, int size, char *wcard);
+/// \note If file \c filename exists, the data are read from it.  Otherwise, \c wcard is used.  \c wcard can be: "numeral" for initializing \c array from a number, "color" for initializing \c array from the RGB values of \c filename (if a valid color name; if equal to "id", the color palette is used)
+  extern int ut_array_1d_fnscanf_wcard (char *filename, double *array,
+                                        int size, char *wcard);
 
 /// \brief Read a 1D array of \c int, from filename, enable wildcard
 /// \param filename: file name
@@ -1687,8 +1769,9 @@ extern "C"
 /// \param size: 1st-index size of the array
 /// \param wcard: wildcard
 /// \return 1 on success, undefined otherwise
-/// \note If file \c filename exists, the data are read from it.  Otherwise, \c wcard is used.  \c wcard can be: "numeral" for initializing \c array from a number, "colour" for initializing \c array from the RGB values of \c filename (if a valid colour name; if equal to "id", the colour palette is used)
-  extern int ut_array_1d_int_fnscanf_wcard (char *filename, int *array, int size, char *wcard);
+/// \note If file \c filename exists, the data are read from it.  Otherwise, \c wcard is used.  \c wcard can be: "numeral" for initializing \c array from a number, "color" for initializing \c array from the RGB values of \c filename (if a valid color name; if equal to "id", the color palette is used)
+  extern int ut_array_1d_int_fnscanf_wcard (char *filename, int *array,
+                                            int size, char *wcard);
 
 /// \brief Read a 2D array of \c double, from filename, enable wildcard
 /// \param filename: file name
@@ -1697,9 +1780,9 @@ extern "C"
 /// \param size2: 2nd-index size of the array
 /// \param wcard: wildcard
 /// \return 1 on success, undefined otherwise
-/// \note If file \c filename exists, the data are read from it.  Otherwise, \c wcard is used.  \c wcard can be: "numeral" for initializing \c array from a number, "colour" for initializing \c array from the RGB values of \c filename (if a valid colour name; if equal to "id", the colour palette is used)
-extern int ut_array_2d_fnscanf_wcard (char *filename, double **array, int size1,
-                                        int size2, char *wcard);
+/// \note If file \c filename exists, the data are read from it.  Otherwise, \c wcard is used.  \c wcard can be: "numeral" for initializing \c array from a number, "color" for initializing \c array from the RGB values of \c filename (if a valid color name; if equal to "id", the color palette is used)
+  extern int ut_array_2d_fnscanf_wcard (char *filename, double **array,
+                                        int size1, int size2, char *wcard);
 
 /// \brief Write a 1D array of \c double
 /// \param file: file pointer
@@ -1709,7 +1792,8 @@ extern int ut_array_2d_fnscanf_wcard (char *filename, double **array, int size1,
 /// \return 1 on success, undefined otherwise
 /// \note A newline is written at the end.
 /// \note \c format can be %d, in which case values rounded to the nearest integers are written.
-  extern int ut_array_1d_fprintf (FILE *file, double *array, int size, const char *format);
+  extern int ut_array_1d_fprintf (FILE * file, double *array, int size,
+                                  const char *format);
 
 /// \brief Write a 1D array of \c int
 /// \param file: file pointer
@@ -1718,7 +1802,18 @@ extern int ut_array_2d_fnscanf_wcard (char *filename, double **array, int size1,
 /// \param format: format (usually "%d")
 /// \return 1 on success, undefined otherwise
 /// \note A newline is written at the end.
-  extern int ut_array_1d_int_fprintf (FILE *file, int *array, int size, const char *format);
+  extern int ut_array_1d_int_fprintf (FILE * file, int *array, int size,
+                                      const char *format);
+
+/// \brief Write a 1D array of \c int in reverse order
+/// \param file: file pointer
+/// \param array: array
+/// \param size: size of the array
+/// \param format: format (usually "%d")
+/// \return 1 on success, undefined otherwise
+/// \note A newline is written at the end.
+  extern int ut_array_1d_int_fprintf_reverse (FILE * file, int *array, int size,
+                                              const char *format);
 
 /// \brief Write a 1D array of \c double
 /// \param file: file pointer
@@ -1728,7 +1823,8 @@ extern int ut_array_2d_fnscanf_wcard (char *filename, double **array, int size1,
 /// \return 1 on success, undefined otherwise
 /// \note A newline is written at the end.
 /// \note \c format can be %d, in which case values rounded to the nearest integers are written.
-  extern int ut_array_1d_fprintf_nonl (FILE *file, double *array, int size, const char *format);
+  extern int ut_array_1d_fprintf_nonl (FILE * file, double *array, int size,
+                                       const char *format);
 
 /// \brief Write a 1D array of \c int
 /// \param file: file pointer
@@ -1737,7 +1833,8 @@ extern int ut_array_2d_fnscanf_wcard (char *filename, double **array, int size1,
 /// \param format: format (usually "%d")
 /// \return 1 on success, undefined otherwise
 /// \note No newline is written at the end.
-  extern int ut_array_1d_int_fprintf_nonl (FILE *file, int *array, int size, const char *format);
+  extern int ut_array_1d_int_fprintf_nonl (FILE * file, int *array, int size,
+                                           const char *format);
 
 /// \brief Write a 1D array of \c unsigned \c int
 /// \param file: file pointer
@@ -1746,7 +1843,8 @@ extern int ut_array_2d_fnscanf_wcard (char *filename, double **array, int size1,
 /// \param format: format (usually "%ld")
 /// \return 1 on success, undefined otherwise
 /// \note A newline is written at the end.
-  extern int ut_array_1d_uint_fprintf (FILE *file, unsigned int *array, int size, const char *format);
+  extern int ut_array_1d_uint_fprintf (FILE * file, unsigned int *array,
+                                       int size, const char *format);
 
 /// \brief Write a 2D array of \c double
 /// \param file: file pointer
@@ -1756,7 +1854,8 @@ extern int ut_array_2d_fnscanf_wcard (char *filename, double **array, int size1,
 /// \param format: format (usually "%f")
 /// \return 1 on success, undefined otherwise
 /// \note A newline is written at the end of each line.
-  extern int ut_array_2d_fprintf (FILE *file, double **array, int size1, int size2, const char *format);
+  extern int ut_array_2d_fprintf (FILE * file, double **array, int size1,
+                                  int size2, const char *format);
 
 /// \brief Write a 2D array of \c int
 /// \param file: file pointer
@@ -1766,7 +1865,8 @@ extern int ut_array_2d_fnscanf_wcard (char *filename, double **array, int size1,
 /// \param format: format (usually "%d")
 /// \return 1 on success, undefined otherwise
 /// \note A newline is written at the end of each line.
-  extern int ut_array_2d_int_fprintf (FILE *file, int **array, int size1, int size2, const char *format);
+  extern int ut_array_2d_int_fprintf (FILE * file, int **array, int size1,
+                                      int size2, const char *format);
 
 /// \brief Write a 2D array of \c double
 /// \param file: file pointer
@@ -1801,8 +1901,8 @@ extern int ut_array_2d_fnscanf_wcard (char *filename, double **array, int size1,
 /// \param format: format (usually "%d")
 /// \return 1 on success, undefined otherwise
 /// \note A newline is written at the end of each line.
-  extern int ut_array_2dns_int_fprintf (FILE *file, int **array, int size1, int *size2,
-                                        const char *format);
+  extern int ut_array_2dns_int_fprintf (FILE * file, int **array, int size1,
+                                        int *size2, const char *format);
 
 /// \brief Write a 3D array of \c int
 /// \param file: file pointer
@@ -1813,7 +1913,8 @@ extern int ut_array_2d_fnscanf_wcard (char *filename, double **array, int size1,
 /// \param format: format (usually "%d")
 /// \return 1 on success, undefined otherwise
 /// \note A newline is written at the end of each line.
-  extern int ut_array_3d_int_fprintf (FILE *file, int ***array, int size1, int size2, int size3,
+  extern int ut_array_3d_int_fprintf (FILE * file, int ***array, int size1,
+                                      int size2, int size3,
                                       const char *format);
 
 #endif                          /* UT_ARRAY_H */

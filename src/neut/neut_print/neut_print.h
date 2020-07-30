@@ -17,6 +17,7 @@ extern "C"
 
   extern void neut_print_set_default (struct PRINT *);
   extern void neut_print_free (struct PRINT *);
+  extern void neut_print_outdir (struct PRINT Print, struct SIM Sim, char *format, char **pdir);
 
 #endif				/* NEUT_PRINT_H */
 

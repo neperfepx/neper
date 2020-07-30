@@ -95,7 +95,7 @@ neut_polys_contiguous (struct POLY *Poly, int *PerSeedSlaveQty,
 
   ut_array_1d_int_inv (polys, polyqty, &polyinv, &polymax);
 
-  // for each poly, recording neighbours
+  // for each poly, recording neighbors
   neighs = ut_alloc_1d_pint (polyqty);
   neighqty = ut_alloc_1d_int (polyqty);
   for (i = 0; i < polyqty; i++)

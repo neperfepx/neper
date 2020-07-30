@@ -21,7 +21,7 @@ net_tess_tocta (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
                        SSet, pSSet);
 
   ut_print_message (0, 2, "Running tessellation...\n");
-  net_tess3d (Tess[dtess], dcell, *pSSet, "nanoflann", TessId, pMTess, pTess);
+  net_tess3d (Tess[dtess], dcell, *pSSet, TessId, pMTess, pTess);
 
   net_tess_tocta_cellid (*pSSet, pTess);
 

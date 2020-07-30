@@ -11,7 +11,7 @@ net_reg_merge_del_buffer (struct TESS Tess, int edge, int **buf,
   int i, id;
   int qty, *tmp = NULL;
 
-  // buf edges: del edge + neighbouring edges
+  // buf edges: del edge + neighboring edges
   buf[1][0] = 0;
   buf[1][++buf[1][0]] = edge;
   for (i = 0; i < 2; i++)
@@ -29,7 +29,7 @@ net_reg_merge_del_buffer (struct TESS Tess, int edge, int **buf,
   ut_array_1d_int_memcpy (tmp, buf[0][0], buf[0] + 1);
   ut_free_1d_int (&tmp);
 
-  // buf faces: edge faces + neighbouring faces
+  // buf faces: edge faces + neighboring faces
   buf[2][0] = Tess.EdgeFaceQty[edge];
   ut_array_1d_int_memcpy (Tess.EdgeFaceNb[edge], buf[2][0], buf[2] + 1);
   for (i = 0; i < 2; i++)

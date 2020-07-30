@@ -36,6 +36,10 @@ struct NODES
   int* DupNodeSeed;		// cell of nodes [NodeQty + 1...]
   int* DupNodeSlaveQty;		// number of duplicates of a master [NodeQty + 1...]
   int** DupNodeSlaveNb;		// duplicates of a master [NodeQty + 1...][1...]
+
+  int PartQty;                  // total number of partitions
+  int **Parts;                  // partitions (same format as struct MESH.Elsets)
+  int *NodePart;                // partition of a node
 };
 typedef struct NODES NODES;
 

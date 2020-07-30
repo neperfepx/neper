@@ -1,45 +1,45 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2020, Romain Quey.
+# Copyright(C) 2003-2020, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
 project(neut)
 
-# for nanoflann (on some systems) =======
-if (CMAKE_VERSION VERSION_LESS "3.1")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
-else ()
-    set (CMAKE_CXX_STANDARD 11)
-endif ()
+# for nanoflann(on some systems) =======
+if(CMAKE_VERSION VERSION_LESS "3.1")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+else()
+    set(CMAKE_CXX_STANDARD 11)
+endif()
 add_definitions(-Wno-deprecated-declarations)
 
 # should we use the optional libraries?
-option (HAVE_GSL       "Use the GNU Scientific Library (GSL)" ON)
-option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
-option (HAVE_NLOPT       "Use NLopt"                            ON )
-option (HAVE_OPENMP      "Use OpenMP"                           ON )
-option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
-option (DEVEL_DEBUGGING_TEST "Enable debugging tests (OFF for production use)"   OFF)
-option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)"   OFF)
-option (DEVEL_PROFILING   "Enable profiling (OFF for production use)" OFF)
+option(HAVE_GSL       "Use the GNU Scientific Library(GSL)" ON)
+option(HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
+option(HAVE_NLOPT       "Use NLopt"                            ON )
+option(HAVE_OPENMP      "Use OpenMP"                           ON )
+option(DEVEL_OPTIMIZATION "Enable optimization(ON for production use)" ON)
+option(DEVEL_DEBUGGING_TEST "Enable debugging tests(OFF for production use)"   OFF)
+option(DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag(OFF for production use)"   OFF)
+option(DEVEL_PROFILING   "Enable profiling(OFF for production use)" OFF)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
 add_definitions(-Wall -W -Wno-unknown-pragmas)
-if (DEVEL_OPTIMIZATION)
+if(DEVEL_OPTIMIZATION)
   add_definitions(-O3)
-endif ()
+endif()
 
-if (DEVEL_DEBUGGING_FLAG)
+if(DEVEL_DEBUGGING_FLAG)
   add_definitions(-g -Werror)
-endif ()
+endif()
 
-if (DEVEL_PROFILING)
+if(DEVEL_PROFILING)
   add_definitions(-pg)
-  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
-endif ()
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
+endif()
 
-add_library (neut
+add_library(neut
 ./neut_tesl/neut_tesl.c
 ./neut_tesl/neut_tesl_tess/neut_tesl_tess3.c
 ./neut_tesl/neut_tesl_tess/neut_tesl_tess2.c
@@ -52,12 +52,11 @@ add_library (neut
 ./neut_poly/neut_poly_op/neut_poly_op.c
 ./neut_poly/neut_poly_topo/neut_poly_topo.c
 ./neut_polymod/neut_polymod.c
-./neut_tessdata/neut_tessdata.c
-./neut_tesrdata/neut_tesrdata.c
-./neut_meshdata/neut_meshdata.c
-./neut_nodedata/neut_nodedata.c
-./neut_pointdata/neut_pointdata.c
-./neut_csysdata/neut_csysdata.c
+./neut_data/neut_data_fscanf/neut_data_fscanf2.c
+./neut_data/neut_data_fscanf/neut_data_fscanf1.c
+./neut_data/neut_data_gen/neut_data_gen1.cpp
+./neut_data/neut_data_gen/neut_data_gen2.cpp
+./neut_data/neut_data_op/neut_data_op.c
 ./neut_part/neut_part.c
 ./neut_multim/neut_multim.c
 ./neut_elt/neut_elt.c
@@ -70,19 +69,18 @@ add_library (neut
 ./neut_boundary/neut_boundary1.c
 ./neut_boundary/neut_boundary2.c
 ./neut_meshpara/neut_meshpara.c
-./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_fepx/neut_mesh_fscanf_fepx1.c
 ./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_geof/neut_mesh_fscanf_geof1.c
-./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_gmsh/neut_mesh_fscanf_gmsh1.c
-./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_gmsh/neut_mesh_fscanf_gmsh2.c
-./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_gmsh/neut_mesh_fscanf_gmsh3.c
-./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_gmsh/neut_mesh_fscanf_gmsh4.c
-./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_gmsh/neut_mesh_fprintf_gmsh1.c
-./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_gmsh/neut_mesh_fprintf_gmsh2.c
+./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_msh/neut_mesh_fscanf_msh1.c
+./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_msh/neut_mesh_fscanf_msh2.c
+./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_msh/neut_mesh_fscanf_msh3.c
+./neut_mesh/neut_mesh_fscanf/neut_mesh_fscanf_msh/neut_mesh_fscanf_msh4.c
+./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_msh/neut_mesh_fprintf_msh1.c
+./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_msh/neut_mesh_fprintf_msh2.c
+./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_msh/neut_mesh_fprintf_msh3.c
+./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_ori/neut_mesh_fprintf_ori1.c
+./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_bcs/neut_mesh_fprintf_bcs1.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_per/neut_mesh_fprintf_per1.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_vtk/neut_mesh_fprintf_vtk1.c
-./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_fepx/neut_mesh_fprintf_fepx1.c
-./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_fepx/neut_mesh_fprintf_fepx2.c
-./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_fepx/neut_mesh_fprintf_fepx3.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_geof/neut_mesh_fprintf_geof1.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_geof/neut_mesh_fprintf_geof2.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_geof/neut_mesh_fprintf_geof3.c
@@ -95,6 +93,7 @@ add_library (neut
 ./neut_mesh/neut_mesh_topo/neut_mesh_topo.c
 ./neut_mesh/neut_mesh_test/neut_mesh_test.c
 ./neut_mesh/neut_mesh_gen/neut_mesh_gen.c
+./neut_mesh/neut_mesh_slice/neut_mesh_slice.c
 ./neut_mesh/neut_mesh_part/neut_mesh_part.c
 ./neut_mesh/neut_mesh_str/neut_mesh_str.c
 ./neut_gmsh/neut_gmsh1.c
@@ -167,47 +166,56 @@ add_library (neut
 ./neut_topt/neut_topt.c
 ./neut_sopt/neut_sopt.c
 ./neut_oopt/neut_oopt.c
-./neut_ori/neut_ori.c
+./neut_ori/neut_ori1.c
+./neut_ori/neut_ori2.c
 ./neut_oset/neut_oset1.cpp
 ./neut_oset/neut_oset2.cpp
 ./neut_prim/neut_prim.c
+./neut_sim/neut_sim_op/neut_sim_op.c
+./neut_sim/neut_sim_gen/neut_sim_gen.c
 )
 
 ## Link libraries
 
-set (EXTRA_LIBS ${EXTRA_LIBS} ut)
-set (EXTRA_LIBS ${EXTRA_LIBS} orilib)
+set(EXTRA_LIBS ${EXTRA_LIBS} ut)
+set(EXTRA_LIBS ${EXTRA_LIBS} orilib)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake
 			${CMAKE_MODULE_PATH})
 
-find_library (MATHLIB m)
-if (MATHLIB)
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${MATHLIB})
-endif ()
+find_library(MATHLIB m)
+if(MATHLIB)
+  set(EXTRA_LIBS ${EXTRA_LIBS} ${MATHLIB})
+endif()
 
-if (HAVE_GSL)
+if(HAVE_GSL)
   find_package(GSL REQUIRED)
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
+  set(EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
   include_directories(${GSL_INCLUDE_DIRS})
-endif (HAVE_GSL)
+endif(HAVE_GSL)
 
-if (HAVE_LIBSCOTCH)
-  find_package (LIBSCOTCH REQUIRED)
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${Scotch_LIBRARIES})
-  include_directories (${Scotch_INCLUDE_DIRS})
-endif ()
+if(HAVE_LIBSCOTCH)
+  find_package(LIBSCOTCH REQUIRED)
+  set(EXTRA_LIBS ${EXTRA_LIBS} ${Scotch_LIBRARIES})
+  include_directories(${Scotch_INCLUDE_DIRS})
+endif()
 
-if (HAVE_NLOPT)
-  find_package (NLOPT REQUIRED)
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES})
-  include_directories (${NLOPT_INCLUDE_DIRS})
-endif ()
+if(HAVE_NLOPT)
+  find_package(NLOPT REQUIRED)
+  set(EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES})
+  include_directories(${NLOPT_INCLUDE_DIRS})
+endif()
 
-if (HAVE_OPENMP)
-  find_package (OpenMP REQUIRED)
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${OpenMP_C_FLAGS})
+if(HAVE_OPENMP)
+  if(APPLE AND XCODE)
+      set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include" CACHE INTERNAL "OpenMP flags for Xcode toolchain.")
+      set(OpenMP_CXX_LIB_NAMES "omp" CACHE INTERNAL "OpenMP lib name for Xcode toolchain.")
+      set(OpenMP_omp_LIBRARY "/usr/local/opt/libomp/lib/libomp.dylib" CACHE INTERNAL "OpenMP lib name for Xcode toolchain.")
+  endif()
+
+  find_package(OpenMP REQUIRED)
+  set(EXTRA_LIBS ${EXTRA_LIBS} ${OpenMP_C_FLAGS})
   add_definitions(${OpenMP_C_FLAGS})
-endif ()
+endif()
 
-target_link_libraries (neut ${EXTRA_LIBS})
+target_link_libraries(neut ${EXTRA_LIBS})

@@ -4,147 +4,31 @@
 
 #include "net_res_ori_.h"
 
-extern void
+void
 net_res_ori (struct IN_T In, struct TESS Tess)
 {
   FILE *file = NULL;
-  int i, j;
-  char *des = ut_alloc_1d_char (10);
-  char *format = ut_alloc_1d_char (10);
+  int i, j, status;
+  char *des = NULL, *conv = NULL;
 
   file = ut_file_open (In.orif, "w");
 
-  strcpy (des, In.orides);
-  strcpy (format, In.oriformat);
+  status = neut_ori_expr_desconv (In.orides, &des, &conv);
+  if (status)
+    ut_print_exprbug (In.orides);
 
-  // plain format
-  if (strcmp (format, "plain") == 0)
+  if (strcmp (In.oriformat, "plain") == 0)
+    neut_ori_fprintf (file, Tess.CellOriDes, Tess.CellOri + 1, Tess.CellQty, NULL);
+
+  else if (strcmp (In.oriformat, "geof") == 0)
   {
-    if (strcmp (des, "e") == 0)
-    {
-      double *e = ol_e_alloc ();
-      for (i = 1; i <= Tess.CellQty; i++)
-      {
-        ol_q_e (Tess.CellOri[i], e);
-        ol_e_fprintf (file, e, "%17.12f");
-      }
-      ol_e_free (e);
-    }
-    else if (strcmp (des, "ek") == 0)
-    {
-      double *e = ol_e_alloc ();
-      for (i = 1; i <= Tess.CellQty; i++)
-      {
-        ol_q_e (Tess.CellOri[i], e);
-        ol_e_ek (e, e);
-        ol_e_fprintf (file, e, "%17.12f");
-      }
-      ol_e_free (e);
-    }
-    else if (strcmp (des, "er") == 0)
-    {
-      double *e = ol_e_alloc ();
-      for (i = 1; i <= Tess.CellQty; i++)
-      {
-        ol_q_e (Tess.CellOri[i], e);
-        ol_e_er (e, e);
-        ol_e_fprintf (file, e, "%17.12f");
-      }
-      ol_e_free (e);
-    }
-    else if (strcmp (des, "g") == 0)
-    {
-      double **g = ol_g_alloc ();
-      for (i = 1; i <= Tess.CellQty; i++)
-      {
-        ol_q_g (Tess.CellOri[i], g);
-        ol_g_fprintf (file, g, "%17.12f");
-      }
-      ol_g_free (g);
-    }
-    else if (strcmp (des, "rtheta") == 0)
-    {
-      double *r = ol_r_alloc ();
-      double theta;
-      for (i = 1; i <= Tess.CellQty; i++)
-      {
-        ol_q_rtheta (Tess.CellOri[i], r, &theta);
-        ol_rtheta_fprintf (file, r, theta, "%17.12f");
-      }
-      ol_r_free (r);
-    }
-    else if (strcmp (des, "theta") == 0)
-    {
-      double theta;
-      for (i = 1; i <= Tess.CellQty; i++)
-      {
-        ol_q_theta (Tess.CellOri[i], &theta);
-        ol_theta_fprintf (file, theta, "%17.12f");
-      }
-    }
-    else if (strcmp (des, "R") == 0)
-    {
-      double *R = ol_R_alloc ();
-      for (i = 1; i <= Tess.CellQty; i++)
-      {
-        ol_q_R (Tess.CellOri[i], R);
-        ol_R_fprintf (file, R, "%17.12f");
-      }
-      ol_R_free (R);
-    }
-    else if (strcmp (des, "q") == 0)
-    {
-      for (i = 1; i <= Tess.CellQty; i++)
-        ol_q_fprintf (file, Tess.CellOri[i], "%17.12f");
-    }
-    else if (strcmp (des, "Rcol") == 0)
-    {
-      double *R = ol_R_alloc ();
-      int *rgb = ut_alloc_1d_int (3);
-      double SQRT2 = 1.41421356237309504880;
-      for (i = 1; i <= Tess.CellQty; i++)
-      {
-        if (strcmp (In.oricrysym[In.levelqty], "cubic"))
-          ut_print_message (2, 1, "Rcol requires `-oricrysym cubic'.\n");
-
-        ol_q_R (Tess.CellOri[i], R);
-        for (j = 0; j < 3; j++)
-          rgb[j] =
-            ut_num_d2ri (255 * (R[j] + (SQRT2 - 1)) / (2 * (SQRT2 - 1)));
-
-        ut_array_1d_int_fprintf (file, rgb, 3, "%3d");
-      }
-      ol_R_free (R);
-      ut_free_1d_int (&rgb);
-    }
-    else
-      ut_print_message (2, 1, "Format %s not available.\n", des);
-  }
-
-  // fepx format
-  else if (strcmp (format, "fepx") == 0)
-  {
-    fprintf (file, "grain-orientations\n%d\n", Tess.CellQty);
+    char *cell = NULL;
     double *e = ol_e_alloc ();
+
+    neut_tess_cell (Tess, &cell);
     for (i = 1; i <= Tess.CellQty; i++)
     {
-      ol_q_e (Tess.CellOri[i], e);
-      ol_e_ek (e, e);
-      for (j = 0; j < 3; j++)
-        fprintf (file, "%17.12f ", e[j]);
-      fprintf (file, "%d\n", i);
-    }
-    ol_e_free (e);
-    fprintf (file, "EOF\n");
-  }
-
-  // geof format
-  else if (strcmp (format, "geof") == 0)
-  {
-    double *e = ol_e_alloc ();
-    for (i = 1; i <= Tess.CellQty; i++)
-    {
-      fprintf (file, "**elset poly%d  *rotation ", i);
+      fprintf (file, "**elset %s%d  *rotation ", cell, i);
       ol_q_e (Tess.CellOri[i], e);
       ol_e_e (e, e);
       for (j = 0; j < 3; j++)
@@ -152,12 +36,14 @@ net_res_ori (struct IN_T In, struct TESS Tess)
       fprintf (file, "\n");
     }
     ol_e_free (e);
+
+    ut_free_1d_char (&cell);
   }
 
   ut_file_close (file, In.orif, "w");
 
   ut_free_1d_char (&des);
-  ut_free_1d_char (&format);
+  ut_free_1d_char (&conv);
 
   return;
 }

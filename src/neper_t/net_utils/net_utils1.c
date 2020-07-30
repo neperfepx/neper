@@ -19,8 +19,6 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).morphooptiini = NULL;
   (*pIn).morphooptialgostring = NULL;
   (*pIn).morphooptialgo = NULL;
-  (*pIn).morphooptialgoneighstring = NULL;
-  (*pIn).morphooptialgoneigh = NULL;
   (*pIn).morphooptialgomaxiterstring = NULL;
   (*pIn).morphooptialgomaxiter = NULL;
   (*pIn).morphooptiobjectivestring = NULL;
@@ -76,6 +74,8 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).domain = NULL;
   (*pIn).transform = NULL;
 
+  (*pIn).group = NULL;
+
   (*pIn).tesrsizestring = NULL;
 
   (*pIn).checktess = 0;
@@ -86,6 +86,8 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).ori = NULL;
   (*pIn).orides = NULL;
   (*pIn).oriformat = NULL;
+  (*pIn).oridistribstring = NULL;
+  (*pIn).oridistrib = NULL;
   (*pIn).body = NULL;
   (*pIn).load = NULL;
   (*pIn).loadpoint = NULL;
@@ -98,6 +100,8 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).mgeo = NULL;
   (*pIn).ply = NULL;
   (*pIn).stl = NULL;
+  (*pIn).sttess = NULL;
+  (*pIn).sttesr = NULL;
   (*pIn).stc = NULL;
   (*pIn).stv = NULL;
   (*pIn).ste = NULL;
@@ -121,10 +125,13 @@ net_in_free (struct IN_T *pIn)
 {
   ut_free_1d_char (&(*pIn).domain);
   ut_free_1d_char (&(*pIn).transform);
+  ut_free_1d_char (&(*pIn).group);
   ut_free_1d_char (&(*pIn).format);
   ut_free_1d_char (&(*pIn).tesrformat);
   ut_free_1d_char (&(*pIn).oristring);
   ut_free_2d_char (&(*pIn).ori, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).oridistribstring);
+  ut_free_2d_char (&(*pIn).oridistrib, (*pIn).levelqty + 1);
   ut_free_1d_char (&(*pIn).orides);
   ut_free_1d_char (&(*pIn).oriformat);
   ut_free_1d_char (&(*pIn).body);
@@ -139,6 +146,8 @@ net_in_free (struct IN_T *pIn)
   ut_free_1d_char (&(*pIn).mgeo);
   ut_free_1d_char (&(*pIn).ply);
   ut_free_1d_char (&(*pIn).stl);
+  ut_free_1d_char (&(*pIn).sttess);
+  ut_free_1d_char (&(*pIn).sttesr);
   ut_free_1d_char (&(*pIn).stc);
   ut_free_1d_char (&(*pIn).stv);
   ut_free_1d_char (&(*pIn).ste);
@@ -499,6 +508,8 @@ net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
                         (*pTesr).CellOri + 1);
   }
 
+  ut_string_string (Tess.CellOriDes, &(*pTesr).CellOriDes);
+
 #pragma omp parallel for schedule(dynamic)
   for (i = 1; i <= Tess.CellQty; i++)
     net_tess_tesr_cell (Tess, i, pTesr);
@@ -847,7 +858,7 @@ net_cubetess (double **size, struct TESS *pTess)
   double *coo = ut_alloc_1d (3);
 
   neut_poly_set_zero (&Poly);
-  neut_tess_free (pTess);
+  neut_tess_reset (pTess);
 
   net_domain_cube (size, &Poly);
   neut_poly_centroid (Poly, coo);
@@ -898,7 +909,7 @@ net_pts_convexhull (double **coos, int qty, int dim, struct NODES *pN,
   net_poly_tess (DomPoly, coo, &Dom);
   ut_string_string ("cube", &Dom.DomType);
 
-  net_tess3d (Dom, 1, SSet, "nanoflann", 1, NULL, &Tess);
+  net_tess3d (Dom, 1, SSet, 1, NULL, &Tess);
   neut_tess_init_domain_poly (&Tess, Dom, 1, NULL, NULL, NULL);
   if (dim == 2)
   {
@@ -959,8 +970,8 @@ net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet)
 
   if (Tess.CellOri)
   {
-    (*pSSet).q = ut_alloc_2d ((*pSSet).N + 1, 4);
-    ut_array_2d_memcpy (Tess.CellOri + 1, (*pSSet).N, 4, (*pSSet).q + 1);
+    (*pSSet).SeedOri = ut_alloc_2d ((*pSSet).N + 1, 4);
+    ut_array_2d_memcpy (Tess.CellOri + 1, (*pSSet).N, 4, (*pSSet).SeedOri + 1);
   }
 
   (*pSSet).Periodic = ut_alloc_1d_int (3);
@@ -991,18 +1002,28 @@ net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet)
 void
 net_seedset_tess (struct SEEDSET SSet, struct TESS *pTess)
 {
+  int i;
+
   neut_tess_set_zero (pTess);
 
   (*pTess).Dim = 0;
 
   (*pTess).CellQty = SSet.N;
 
-  if (SSet.q)
+  if (SSet.SeedOri)
   {
     (*pTess).CellOri = ut_alloc_2d ((*pTess).CellQty + 1, 4);
 
-    ut_array_2d_memcpy (SSet.q + 1, (*pTess).CellQty, 4,
+    ut_array_2d_memcpy (SSet.SeedOri + 1, (*pTess).CellQty, 4,
                         (*pTess).CellOri + 1);
+  }
+
+  if (SSet.SeedOriDistrib)
+  {
+    (*pTess).CellOriDistrib = ut_alloc_1d_pchar ((*pTess).CellQty + 1);
+
+    for (i = 0; i <= (*pTess).CellQty; i++)
+      ut_string_string (SSet.SeedOriDistrib[i], (*pTess).CellOriDistrib + i);
   }
 
   return;

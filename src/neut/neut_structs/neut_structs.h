@@ -30,15 +30,9 @@ extern "C"
 #include "neut_nset_struct.h"
 #include "neut_meshpara_struct.h"
 #include "neut_print_struct.h"
-#include "neut_data_struct.h"
 #include "neut_multim_struct.h"
 #include "neut_seedset_struct.h"
-#include "neut_tessdata_struct.h"
-#include "neut_tesrdata_struct.h"
-#include "neut_meshdata_struct.h"
-#include "neut_nodedata_struct.h"
-#include "neut_pointdata_struct.h"
-#include "neut_csysdata_struct.h"
+#include "neut_data_struct.h"
 #include "neut_poly_struct.h"
 #include "neut_polymod_struct.h"
 #include "neut_point_struct.h"
@@ -54,6 +48,8 @@ extern "C"
 #include "neut_oopt_struct.h"
 
 #include "neut_prim_struct.h"
+
+#include "neut_sim_struct.h"
 
 #endif				/* NEUT_STRUCTS_H */
 

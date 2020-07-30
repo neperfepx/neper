@@ -283,7 +283,7 @@ nev_show_tess_cell (char **argv, int *pi, struct TESS Tess,
       for (j = 0; j < varqty; j++)
         if (strstr (argv[(*pi)], vars[j]))
         {
-          if (!strcmp (vars[j], "id"))
+          if (!strcmp (vars[j], "int"))
             vals[j] = Tess.CellId ? Tess.CellId[i] : i;
           else
             neut_tess_var_val_one (Tess, NULL, NULL, NULL, cell, i, vars[j],

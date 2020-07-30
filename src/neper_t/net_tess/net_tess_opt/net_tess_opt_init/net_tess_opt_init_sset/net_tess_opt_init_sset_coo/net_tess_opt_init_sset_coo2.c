@@ -159,7 +159,7 @@ net_tess_opt_init_sset_coo_lllfp2011 (struct TOPT *pTOpt)
   struct TESS T;
   neut_tess_set_zero (&T);
 
-  net_tess3d ((*pTOpt).Dom, 1, (*pTOpt).SSet, "nanoflann", 1, NULL, &T);
+  net_tess3d ((*pTOpt).Dom, 1, (*pTOpt).SSet, 1, NULL, &T);
 
   for (i = 1; i <= (*pTOpt).SSet.N; i++)
   {

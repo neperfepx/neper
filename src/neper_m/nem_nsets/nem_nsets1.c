@@ -8,9 +8,6 @@ void
 nem_nsets (struct IN_M In, struct TESS Tess, struct TESR Tesr,
            struct MESH *Mesh, struct NSET *NSet)
 {
-  if (In.nset == NULL || strlen (In.nset) == 0 || !strcmp (In.nset, "none"))
-    return;
-
   if (!strcmp (In.elttype, "tri"))
   {
     if (Tess.Dim == 3 || Tesr.Dim == 3)

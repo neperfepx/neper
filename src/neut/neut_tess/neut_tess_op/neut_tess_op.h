@@ -24,6 +24,18 @@ extern "C"
   extern void neut_tess_free (struct TESS *pTess);
   extern void neut_tess_free_domain (struct TESS *pTess);
 
+/// \brief Reset a TESS structure
+///
+///
+///
+  extern void neut_tess_reset (struct TESS *pTess);
+
+/// \brief Reset the domain of a TESS structure
+///
+///
+///
+  extern void neut_tess_reset_domain (struct TESS *pTess);
+
 /// \brief Alloc a TESS structure
 ///
 ///

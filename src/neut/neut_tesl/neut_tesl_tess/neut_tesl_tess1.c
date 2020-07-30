@@ -8,8 +8,7 @@ void
 neut_tesl_tess (struct TESL Tesl, struct SEEDSET SSet, int level, int tessid,
                 struct TESS *pTess)
 {
-  neut_tess_free (pTess);
-  neut_tess_set_zero (pTess);
+  neut_tess_reset (pTess);
 
   neut_tesl_tess_general (Tesl, SSet, level, tessid, pTess);
   neut_tesl_tess_ver (Tesl, pTess);

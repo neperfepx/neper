@@ -125,14 +125,6 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
 #endif
   }
 
-  if ((!(*pIn).partstring)
-      && ut_list_testelt ((*pIn).format, NEUT_SEP_DEP, "fepx"))
-  {
-    ut_print_message (1, 3,
-                      "Options `-part ...' should be used for parallel\n");
-    ut_print_message (1, 3, "calculations with FEpX.\n");
-  }
-
   /* Recording body */
   if ((*pIn).body == NULL)
   {
@@ -151,14 +143,12 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   {
     (*pIn).geof = ut_string_addextension ((*pIn).body, ".geof");
     (*pIn).msh = ut_string_addextension ((*pIn).body, ".msh");
+    (*pIn).msh4 = ut_string_addextension ((*pIn).body, ".msh4");
     (*pIn).per = ut_string_addextension ((*pIn).body, ".per");
     (*pIn).abq = ut_string_addextension ((*pIn).body, ".inp");
+    (*pIn).ori = ut_string_addextension ((*pIn).body, ".ori");
+    (*pIn).bcs = ut_string_addextension ((*pIn).body, ".bcs");
     (*pIn).vtk = ut_string_addextension ((*pIn).body, ".vtk");
-    (*pIn).fepx1 = ut_string_addextension ((*pIn).body, ".parms");
-    (*pIn).fepx2 = ut_string_addextension ((*pIn).body, ".mesh");
-    (*pIn).fepx3 = ut_string_addextension ((*pIn).body, ".surf");
-    (*pIn).fepx4 = ut_string_addextension ((*pIn).body, ".opt");
-    (*pIn).fepx5 = ut_string_addextension ((*pIn).body, ".bcs");
     (*pIn).outtess = ut_string_addextension ((*pIn).body, ".tess");
     (*pIn).intf = ut_string_addextension ((*pIn).body, ".intf");
   }

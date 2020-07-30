@@ -4,20 +4,21 @@
 #include "ol_des_gen.h"
 
 int
-ol_des_size (char *des)
+ol_des_size (char* des)
 {
-  if (!strcmp (des, "g"))
+  if (! strcmp (des, "g") || !strcmp (des, "rotmat"))
     return 9;
-  else if (!strcmp (des, "e") || !strcmp (des, "eb")
-           || !strcmp (des, "er") || !strcmp (des, "ek"))
+  else if (!strcmp (des, "e")  || !strcmp (des, "eb")
+	|| !strcmp (des, "er") || !strcmp (des, "ek")
+	|| !strncmp (des, "euler", 5))
     return 3;
-  else if (!strcmp (des, "m"))
+  else if (!strcmp (des, "m") || !strcmp (des, "miller"))
     return 6;
-  else if (!strcmp (des, "rtheta"))
+  else if (!strcmp (des, "rtheta") || !strcmp (des, "axis-angle"))
     return 4;
-  else if (!strcmp (des, "R"))
+  else if (!strcmp (des, "R") || !strcmp (des, "rodrigues"))
     return 3;
-  else if (!strcmp (des, "q"))
+  else if (!strcmp (des, "q") || !strcmp (des, "quaternion"))
     return 4;
   else
     return -1;

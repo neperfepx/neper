@@ -16,11 +16,11 @@ struct OOPT
   char *crysym;                         // crystal symmetry
   unsigned int nc;                      // number of crystallographic variants (24 for cubic)
 
-  double neighd;                        // neighbour cutoff distance - geodesic
-  double neighdE;                       // neighbour cutoff distance - Euclidean
+  double neighd;                        // neighbor cutoff distance - geodesic
+  double neighdE;                       // neighbor cutoff distance - Euclidean
 
   char *orioptistop;                    // termination criterion
-  char *orioptineigh;                   // neighbour definition character string
+  char *orioptineigh;                   // neighbor definition character string
 
   int fixoriqty;                        // number of fixed orientations
   int *fixori;                          // fixori[0...n-1] = 1 means fixed, 0 otherwise
@@ -33,7 +33,7 @@ struct OOPT
   double avforce;                       // current average force
   double f;                             // value of the residual
   double fmin;                          // minimal value of the residual
-  double avneighqty;                    // current average number of neighbours
+  double avneighqty;                    // current average number of neighbors
 
   // profiling information
   struct timeval beg_time;              // start time

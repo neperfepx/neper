@@ -22,45 +22,19 @@ net_polycomp_seed_tdyn (struct SEEDSET SSet, int id, int neighqty,
   (*pTD).neighrefw[id] = SSet.SeedWeight[id];
   (*pTD).shift[id] = 0;
 
-  if (!strcmp ((*pTD).algoneigh, "nanoflann"))
-  {
-    std::vector < size_t > ret_index ((*pTD).neighqty[id]);
-    std::vector < double >out_dist_sqr ((*pTD).neighqty[id]);
-    nanoflann::KNNResultSet < double >resultSet ((*pTD).neighqty[id]);
-    resultSet.init (&ret_index[0], &out_dist_sqr[0]);
-    (*pnf_tree)->findNeighbors (resultSet, &((*pTD).neighrefcoo[id][0]),
-                                nanoflann::SearchParams (INT_MAX));
+  std::vector < size_t > ret_index ((*pTD).neighqty[id]);
+  std::vector < double >out_dist_sqr ((*pTD).neighqty[id]);
+  nanoflann::KNNResultSet < double >resultSet ((*pTD).neighqty[id]);
+  resultSet.init (&ret_index[0], &out_dist_sqr[0]);
+  (*pnf_tree)->findNeighbors (resultSet, &((*pTD).neighrefcoo[id][0]),
+                              nanoflann::SearchParams (INT_MAX));
 
-    for (i = 1; i <= (*pTD).neighqty[id]; i++)
-      (*pTD).neighlist[id][i] = ptid_seedid[ret_index[i - 1]];
+  for (i = 1; i <= (*pTD).neighqty[id]; i++)
+    (*pTD).neighlist[id][i] = ptid_seedid[ret_index[i - 1]];
 
-    // squared distances, so taking sqrt ()
-    for (i = 1; i <= (*pTD).neighqty[id]; i++)
-      (*pTD).neighdist[id][i] = sqrt (out_dist_sqr[i - 1]);
-  }
-
-  else if (!strcmp ((*pTD).algoneigh, "qsort"))
-  {
-    double *dist = ut_alloc_1d (SSet.Nall + 1);
-    int *index = ut_alloc_1d_int (SSet.Nall + 1);
-
-    for (i = 1; i <= SSet.Nall; i++)
-      dist[i] = ut_space_dist (SSet.SeedCoo[id], SSet.SeedCoo[i]);
-    ut_array_1d_sort_index (dist + 1, SSet.Nall, index + 1);
-    ut_array_1d_int_memcpy (index + 1, (*pTD).neighqty[id],
-                            (*pTD).neighlist[id] + 1);
-    for (i = 1; i <= (*pTD).neighqty[id]; i++)
-      (*pTD).neighdist[id][i] = dist[(*pTD).neighlist[id][i] + 1];
-
-    ut_array_1d_int_addval ((*pTD).neighlist[id] + 1, (*pTD).neighqty[id], 1,
-                            (*pTD).neighlist[id] + 1);
-
-    ut_free_1d (&dist);
-    ut_free_1d_int (&index);
-  }
-
-  else
-    ut_print_neperbug ();
+  // squared distances, so taking sqrt ()
+  for (i = 1; i <= (*pTD).neighqty[id]; i++)
+    (*pTD).neighdist[id][i] = sqrt (out_dist_sqr[i - 1]);
 
   return;
 }
@@ -98,7 +72,7 @@ CurrentPolyTest (struct POLYMOD Polymod, struct SEEDSET SSet, int id,
 }
 
 /* NewPolyhedron modifies the current polyhedron to take into
- * account neighbour Nei.
+ * account neighbor Nei.
  */
 int
 NewPolyhedron (struct SEEDSET SSet, int PolyId, int NeiId,
@@ -116,15 +90,15 @@ NewPolyhedron (struct SEEDSET SSet, int PolyId, int NeiId,
   /* BadVer[i] are the number these vertices.                            */
   int *BadVer = NULL;
 
-  /* A new neighbour will be considered. The first step is to search out
-     the bissecting plane between the center and the neighbour.
+  /* A new neighbor will be considered. The first step is to search out
+     the bissecting plane between the center and the neighbor.
      Then, we look at the polyhedron vertices which are on the "bad"
-     hand side of the plane -that of the neighbour-, i.e. vertices
-     that are nearer from the neighbour than from the center. If they
+     hand side of the plane -that of the neighbor-, i.e. vertices
+     that are nearer from the neighbor than from the center. If they
      exist, the polyhedron must be modified.                             */
 
   /* ut_space_points_bisplane_power calculates the equation of the bissecting plane of segment */
-  /* which lies the center to the considered neighbour.                  */
+  /* which lies the center to the considered neighbor.                  */
   ut_space_points_bisplane_power (SSet.SeedCoo[PolyId], SSet.SeedCoo[NeiId],
                                   SSet.SeedWeight[PolyId],
                                   SSet.SeedWeight[NeiId], plane);
@@ -137,7 +111,7 @@ NewPolyhedron (struct SEEDSET SSet, int PolyId, int NeiId,
   if (BadVer[0] != 0)
   {
     /* PolyhedronModification modifies the polyhedron to take into account
-     * the new neighbour.
+     * the new neighbor.
      */
     PolyhedronModification (NeiId, plane, pPolymod, BadVer);
     status = 1;

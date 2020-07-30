@@ -57,6 +57,8 @@ neut_tess_compress_movepoly (struct TESS *pTess, int old, int new)
     (*pTess).CellLamId[new] = (*pTess).CellLamId[old];
   if ((*pTess).CellModeId)
     (*pTess).CellModeId[new] = (*pTess).CellModeId[old];
+  if ((*pTess).CellGroup)
+    (*pTess).CellGroup[new] = (*pTess).CellGroup[old];
 
   if ((*pTess).SeedCoo)
     ut_array_1d_memcpy ((*pTess).SeedCoo[old], 3, (*pTess).SeedCoo[new]);
@@ -164,6 +166,8 @@ neut_tess_compress_moveface (struct TESS *pTess, int old, int new)
       (*pTess).CellLamId[new] = (*pTess).CellLamId[old];
     if ((*pTess).CellModeId)
       (*pTess).CellModeId[new] = (*pTess).CellModeId[old];
+    if ((*pTess).CellGroup)
+      (*pTess).CellGroup[new] = (*pTess).CellGroup[old];
   }
 
   return;

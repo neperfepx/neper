@@ -1,31 +1,31 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2020, Romain Quey.
+# Copyright(C) 2003-2020, Romain Quey.
 # See the COPYING file in the top-level directory.
 
-cmake_minimum_required (VERSION 2.8)
-project (muparser CXX)
+cmake_minimum_required(VERSION 2.8)
+project(muparser CXX)
 
-option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
-option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)" OFF)
+option(DEVEL_OPTIMIZATION "Enable optimization(ON for production use)" ON)
+option(DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag(OFF for production use)" OFF)
 
-file (GLOB headers "include/*.h")
-file (GLOB sources "src/*.cpp")
+file(GLOB headers "include/*.h")
+file(GLOB sources "src/*.cpp")
 
-if (DEVEL_OPTIMIZATION)
+if(DEVEL_OPTIMIZATION)
   add_definitions(-O3)
-endif ()
+endif()
 
-if (DEVEL_DEBUGGING_FLAG)
+if(DEVEL_DEBUGGING_FLAG)
   add_definitions(-g)
-endif ()
+endif()
 
 # disabling all compilation warnings
 add_definitions(-w)
 
-set (CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
+set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library(muparser ${sources})
 
-target_link_libraries (muparser  ${EXTRA_LIBS})
+target_link_libraries(muparser  ${EXTRA_LIBS})
 
-include_directories (include)
+include_directories(include)

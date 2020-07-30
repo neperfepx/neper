@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2019 Romain Quey
+@c Copyright (C) 2003-2020 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Meshing Module (-M)
@@ -12,26 +12,30 @@ creates a conforming mesh into tetrahedral elements (triangular in 2D).
 non-conforming mesh into regular hexahedral elements (quadrangular in
 2D). Free meshing is carried out so that the elements have
 sizes as close as possible to the target value, and show high
-quality, that is, equilateral shapes.  The input file is a tessellation
+quality, that is, with shapes as close to equilateral as possible.  The input file is a tessellation
 file (@file{.tess}) or a raster tessellation file (@file{.tesr}), as
-provided by @mT{}.  Standard tessellations, multiscale tessellations and
+provided by @mT{}.  Standard tessellations, multiscale tessellations, and
 periodic (or semi-periodic) tessellations are supported.
 Free meshing of raster tessellations works for 2D tessellations only.
-The output mesh can be written in various formats.
+The output mesh can be written in written at the msh format, which can be
+readily used by FEPX, or other formats.
 
 The target element size of the mesh can be specified through the element
-@dfn{characteristic @w{length (@samp{cl})}}.  It stands for the length of a
+@dfn{characteristic @w{length (@samp{cl})}}.  It corresponds to the length of a
 1D element, the length of
-the edge of a triangular or quadrangular element (2D) and the length of
+the edge of a triangular or quadrangular element (2D), and the length of
 an edge of a tetrahedral or hexahedral element (3D). For convenience, a
 @dfn{relative characteristic length (@code{rcl})} is also defined, whose
 value is relative to the average cell size and provides a medium number
 of elements.  It is also possible to specify @code{cl} (or @code{rcl})
-values on a per-cell basis, or to specify different values along the
-three coordinate axes.
+values on a per-cell basis, or to specify different values along @var{x},
+@var{y} and @var{z}.
 
 For free meshing,  mesh quality is ensured to the greatest extent
-possible using several advanced capabilities,
+possible using several advanced capabilities,@footnote{See @cite{R.@ Quey,
+P.R.@ Dawson and F.@ Barbe, Large-scale 3D random polycrystals for the finite
+element method: Generation, meshing and remeshing, Comput.@ Methods Appl.@
+Mech.@ Engrg., vol.@ 200, pp.@ 1729-1745, 2011}.}
 
 @itemize
 @item Optimized meshing rules.  The mesh properties are controlled by
@@ -41,7 +45,7 @@ gradient parameter used for 1D meshing (option @option{-pl}).
 @item Multimeshing.  Each tessellation face and volume is meshed
 separately of the others, with several meshing algorithms, until a
 target mesh quality is reached.  This is controlled by options
-starting by @option{-meshqual}, and options @option{-mesh2dalgo} and
+beginning with @option{-meshqual}, and options @option{-mesh2dalgo} and
 @option{-mesh3dalgo}.
 
 @end itemize
@@ -53,22 +57,23 @@ necessary to ensure good-quality meshing, see @ref{Tessellation Module
 Remeshing can also be applied to generate a new, good-quality
 mesh from a mesh containing poor-quality elements.  The variables
 defined on the parent mesh can be transported on the child mesh (options
-starting by @option{-transport}).
+beginning with @option{-transport}).
 
-For mapped meshing, mesh cleaning options enable to remove
+For mapped meshing, mesh cleaning options enable the removal of
 isolated elements or duplicate nodes, or to duplicate nodes subjected to
-singularity behaviour (options @option{-clean}, @option{-dupnodemerge}
+singularity behavior (options @option{-clean}, @option{-dupnodemerge}
 and @option{-singnodedup}).
 
-Mesh partitioning enables to divide the mesh nodes and
+Mesh partitioning allows for the division the mesh nodes and
 elements into several sets while minimizing the interfaces between
-them@footnote{Each partition being assigned to a processor in the finite
+them@footnote{Each partition being assigned to a computation core in the finite
 element calculation, the minimization of the interfaces between the
 partitions is done in terms of the number of necessary communications
-between processors.}, for parallel finite element calculations.
-Partitioning can return any number of partitions, or more efficiently,
+between computation cores.}, for parallel finite element calculations.  It is
+mandatory for parallel simulations with FEPX.
+Partitioning can return any number of partitions or, more efficiently,
 can be carried out according to a given parallel computer architecture
-(option @option{-part}).
+(options beginning with @option{-part}).
 
 In the output mesh, the individual entities of the tessellations (the
 vertices, edges, faces and polyhedra) can be described by element
@@ -79,11 +84,10 @@ surface element sets are also provided (option @option{-faset}).
 Element sets other than those corresponding to the tessellation cells can be
 defined (option @option{-elset}). The
 mesh order can be 1 or 2 (option @option{-order}).
-Statistical data can be obtained on the meshes (options starting by
+Statistical data can be obtained on the meshes (options beginning with
 @option{-stat}).
 
-@page
-Here is what a typical run of @mM{} looks like,
+Here is what a typical run of @mM{} looks like:
 @sp 2
 
 @c typical_start
@@ -95,7 +99,7 @@ Here is what a typical run of @mM{} looks like,
     Info   : Version 3.5.0
     Info   : Built with: gsl nlopt muparser
     Info   : <http://neper.info> <http://neper.info/community>
-    Info   : Copyright (C) 2003-2019, and GNU GPL'd, by Romain Quey.
+    Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
     Info   : Loading initialization file `/home/rquey/.neperrc'...
     Info   : ---------------------------------------------------------------
     Info   : MODULE  -M loaded with arguments:
@@ -171,7 +175,7 @@ where
 @samp{@var{zmin}} and @samp{@var{zmax}} are the minimum and maximum positions along
 @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.
 For 2D raster tessellations@comma{} the @var{z} boundaries can be omitted.
-To scale the number of points of a raster tessellation@comma{} use the syntax
+To scale the number of points of a raster tessellation@comma{} use
 @samp{@var{file_name}:scale(@var{factor})}@comma{}
 where @code{@var{factor}} is the
 scaling factor@comma{} or
@@ -184,7 +188,7 @@ For 2D raster tessellations@comma{} the @var{z} factor can be omitted.
 ,
 any, none}
 
-It is also possible to load a result mesh from a file (use @w{option @option{-o}} not to overwrite the file).  If the file contains meshes of dimensions lower than the tessellation's dimension, these meshes are used and only higher-dimension meshes are generated.
+It is also possible to load a mesh to be considered as output mesh (in contrast to loading it as input file).  Use @w{option @option{-o}} to avoid overwriting the file.  If the file contains meshes of dimensions lower than the tessellation's dimension, these meshes are used and only higher-dimension meshes are generated.
 
 @kindex -loadmesh
 @inp{-loadmesh, file_name,
@@ -212,7 +216,7 @@ Specify the type of elements@comma{} among
 @samp{quad9} for 9-node quadrangular elements@comma{}
 @samp{tet}   for tetrahedral elements and
 @samp{hex}   for hexahedral elements.
-(In 2D@comma{} @samp{tet} and @samp{hex} are allowed and interprated as @samp{tri} and
+(In 2D@comma{} @samp{tet} and @samp{hex} are treated as @samp{tri} and
 @samp{quad}@comma{} respectively.)
 ,
 see above, tet in 3D and tri in 2D}
@@ -226,37 +230,37 @@ For free meshing@comma{} it is also possible to define the characteristic length
 on a per-cell basis@comma{} using any mathematical expression based on the
 variables defined in @ref{Tessellation Keys} (or @ref{Raster Tessellation Keys} for a
 2D raster tessellation).
-A typical use is @samp{@code{-rcl
-(body>0)?@var{val1}:@var{val2}}} to get interior cells
+A typical use is @samp{-rcl
+(body>0)?@var{val1}:@var{val2}} to get interior cells
 meshed with @code{@var{rcl}=@var{val1}} and boundary cells
 meshed with @code{@var{rcl}=@var{val2}}.
 The second way is to load values from an external file using
-the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
+@samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
 is the name of the file containing the characteristic length values.
 ,
 any, -rcl 1}
 
 @opt{-dim, char_string,
 Specify the meshing dimension. By default@comma{} it is equal to the
-input data dimension (@w{@code{@samp{inputdim}}}). To get meshes of
+input data dimension@comma{} @w{@code{@samp{inputdim}}}. To get meshes of
 several dimensions in output@comma{} provide the values combined @w{with
 @samp{@SEPNODEP{}}}. Provide @code{@samp{all}} for all and
 @code{@samp{none}} for none.  Note that the meshes of all dimensions are
 always written into a @file{.msh} mesh file unless
 @samp{@SEPDEP{}msh} is appended to the option argument.
 If a mesh dimension of 3 is required@comma{} but the input data is 2D@comma{}
-the 3D mesh is obtained by extrusion of the 2D mesh.
-With @samp{@option{-format geof}}@comma{} use @samp{@code{1,inputdim}}
-to get the 1D mesh written as lisets (for visualization).
+the 2D mesh is extruded into a 3D mesh (still made of tetahedra).
+With @samp{-format geof}@comma{} use @samp{1,inputdim}
+to get the 1D mesh written as lisets.
 ,
 0 to 3@comma{} all@comma{} none@comma{} inputdim, inputdim}
 
 @opt{-order, integer,
 Specify the mesh order.
-1 means 2-node linear elements@comma{} 3-node triangular elements@comma{}
+A value of 1 corresponds to 2-node linear elements@comma{} 3-node triangular elements@comma{}
 4-node quadrangular elements@comma{} 4-node tetrahedral elements and
-8-node hexahedral elements.
-2 means 3-node linear elements@comma{} 6-node triangular elements@comma{}
+8-node hexahedral elements@comma{}
+and a value of 2 corresponds to 3-node linear elements@comma{} 6-node triangular elements@comma{}
 8-node or 9-node quadrangular elements@comma{} 10-node tetrahedral elements and
 20-node hexahedral elements.
 ,
@@ -267,10 +271,10 @@ Specify the absolute or relative characteristic length of the elements@comma{} o
 Provide as argument any mathematical expression based on the
 variables defined in @ref{Tessellation Keys}
 or @samp{default} (the value inherited from the parent polyhedra).
-A typical use is @samp{@code{-rcl
-(domface==@var{id})?@var{val}:default}} to get a finer mesh at domain surface @code{@var{id}}.
+A typical use is @samp{-rcl
+(domface==@var{id})?@var{val}:default} to get a finer mesh at domain surface @code{@var{id}}.
 The second way is to load values from an external file using
-the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
+@samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
 is the name of the file containing the characteristic length values.
 ,
 any, none}
@@ -280,10 +284,10 @@ Specify the absolute or relative characteristic length of the elements@comma{} o
 Provide as argument any mathematical expression based on the
 variables defined in @ref{Tessellation Keys}
 or @samp{default} (the value inherited from the parent faces).
-A typical use is @samp{@code{-rcl
-(domedge==@var{id})?@var{val}:default}} to get a finer mesh at domain edge @code{@var{id}}.
+A typical use is @samp{-rcl
+(domedge==@var{id})?@var{val}:default} to get a finer mesh at domain edge @code{@var{id}}.
 The second way is to load values from an external file using
-the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
+@samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
 is the name of the file containing the characteristic length values.
 ,
 any, none}
@@ -293,10 +297,10 @@ Specify the absolute or relative characteristic length of the elements@comma{} o
 Provide as argument any mathematical expression based on the
 variables defined in @ref{Tessellation Keys}
 or @samp{default} (the value inherited from the parent edges).
-A typical use is @samp{@code{-rcl
-(domver==@var{id})?@var{val}:default}} to get a finer mesh at domain vertex @code{@var{id}}.
+A typical use is @samp{-rcl
+(domver==@var{id})?@var{val}:default} to get a finer mesh at domain vertex @code{@var{id}}.
 The second way is to load values from an external file using
-the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
+@samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
 is the name of the file containing the characteristic length values.
 ,
 any, none}
@@ -307,7 +311,7 @@ the maximum ratio between the lengths of two adjacent 1D elements.,
 any >= 1, 2}
 
 @optsec{-clratio, char_string,
-Specify the ratios between the @var{cl}-values along the different
+Specify the ratios between the @var{cl} values along the different
 coordinate axes. Provide the values combined with
 @samp{@SEPDEP{}}. For example@comma{} @samp{2:1:1} leads to elements
 twice as long in the x direction as in the y and z directions.
@@ -339,7 +343,7 @@ any, none}
 
 @sp 1
 The following options define the multimeshing algorithm (for 2D and 3D
-free meshings). @dfn{Multimeshing} consists in using several meshing
+free meshings). @dfn{Multimeshing} consists of using several meshing
 algorithms concurrently, for each face or polyhedron, until a minimum,
 target mesh quality is reached. The mesh quality factor, @math{O},
 accounts for both the element sizes and aspect ratios. It is given by
@@ -355,8 +359,10 @@ O = O_dis^alpha x O_size^(1-alpha),
 @end ifinfo
 where @math{O_{dis}} and @math{O_{size}} range from 0 (poor quality) to
 1 (high quality) and @math{\alpha} is a factor equal to 0.8.  Therefore,
-@math{O} also ranges from 0 (poor quality) to 1 (high quality).
-See the Neper reference paper for more information.
+@math{O} also ranges from 0 (poor quality) to 1 (high quality).@footnote{See @cite{R.@ Quey,
+P.R.@ Dawson and F.@ Barbe, Large-scale 3D random polycrystals for the finite
+element method: Generation, meshing and remeshing, Comput.@ Methods Appl.@
+Mech.@ Engrg., vol.@ 200, pp.@ 1729-1745, 2011}.}
 The minimum quality value can be modified using option @option{-meshqualmin}.
 The values of @math{O} and @math{O_{dis}} can be modified using options
 @option{-meshqualexpr} and @option{-meshqualdisexpr}.
@@ -365,7 +371,7 @@ speed and output mesh quality. A value of 0 provides the fastest
 meshing while a value of 1 provides the best-quality meshing. The
 default value provides an effective balance.
 @c
-The meshing algorithms are taken from the Gmsh@footnote{@cite{Ch.@
+2D and 3D meshings are achieved using the Gmsh@footnote{@cite{Ch.@
 Geuzaine and J.-F. Remacle, Gmsh: a three-dimensional finite element
 mesh generator with built-in pre- and post-processing facilities,
 International Journal for Numerical Methods in Engineering, 79,
@@ -387,11 +393,11 @@ any, Odis^0.8*Osize^0.2}
 @optsec{-meshqualdisexpr, char_string,
 Specify the expression of the mesh element distortion parameter@comma{}
 @math{@var{Odis}}@comma{} as a function of the element distortion
-parameter @var{dis} (see the Neper reference paper).,
+parameter @var{dis}.,
 any, dis^(exp((dis^0.1)/(dis^0.1-1)))}
 
 @optsec{-mesh2dalgo, char_string,
-Specify the 2D meshing algorithms (combine with @samp{@SEPNODEP}).
+Specify the 2D meshing algorithms@comma{} combined with @samp{@SEPNODEP}.
 The available
 values are @code{mead} (MeshAdapt)@comma{} @code{dela} (Delaunay) and
 @code{fron} (Frontal).,
@@ -399,15 +405,15 @@ mead@comma{} dela@comma{} fron,
 mead@SEPNODEP{}dela@SEPNODEP{}fron}
 
 @optsec{-mesh3dalgo, char_string,
-Specify the 3D meshing algorithms (combine with @samp{@SEPNODEP}).
+Specify the 3D meshing algorithms@comma{} combined with @samp{@SEPNODEP}.
 Each algorithm has format
 @samp{@var{mesh}@SEPDEP{}@var{opti}}@comma{} where
 @code{@var{mesh}} and @code{@var{opti}} stand for the meshing and mesh
 optimization algorithms. The available values of @code{@var{mesh}}
 are currently limited to @code{netg}
 (Netgen).  The available values of @code{@var{opti}} are @samp{gmsh}
-(Gmsh)@comma{} @samp{netg} (Netgen) and @samp{gmne} (@w{Gmsh + Netgen}).
-Use @samp{none} for none.
+(Gmsh)@comma{} @samp{netg} (Netgen)@comma{} @samp{gmne} (@w{Gmsh + Netgen}) and
+@samp{none} for none.
 ,
 netg@SEPDEP{}none@comma{} netg@SEPDEP{}gmsh@comma{} netg@SEPDEP{}netg@comma{}
 netg@SEPDEP{}gmne,
@@ -416,9 +422,9 @@ netg@SEPDEP{}gmsh@SEPNODEP{}netg@SEPDEP{}netg@SEPNODEP{}netg@SEPDEP{}gmne}
 @optsec{-interface, char_string,
 Specify the type of interface meshing. Provide @samp{continuous} for a
 continuous mesh at interfaces@comma{} with shared nodes between
-neighbour element sets (which are associated to the tessellation cells).  Provide
+neighbor element sets (which are associated to the tessellation cells).  Provide
 @samp{discontinuous} for a discontinuous mesh at interfaces@comma{} with
-distinct nodes for the neighbour element sets.  Provide @samp{cohesive} for
+distinct nodes for the neighbor element sets.  Provide @samp{cohesive} for
 cohesive elements at interfaces@comma{} joining the neigbour element
 sets.
 In the case of a multiscale tessellation@comma{} it is possible to provide
@@ -440,7 +446,7 @@ Apply 2D-mesh pinches correction after 2D meshing.  Disable only if you really k
 @subsection Raster Tessellation Meshing Options
 
 Raster tessellation meshing implies interface reconstruction, interface
-mesh smoothing then remeshing. The following options enable to control
+mesh smoothing then remeshing. The following options enable the control of
 interface smoothing.
 
 @iftex
@@ -448,13 +454,13 @@ interface smoothing.
 Method for smoothing the interface meshes reconstructed from raster tessellations.
 Laplacian smoothing (@samp{laplacian}) is an iterative method that
 modifies the coordinates of a node
-using the coordinates of the neighbouring nodes.
+using the coordinates of the neighboring nodes.
 At iteration @var{i}@comma{} the position of a node@comma{}
 @math{X_i}@comma{} is calculated from its previous position@comma{}
 @math{X_{i-1}}@comma{} and the position of the barycentre of the
-neighbouring nodes (weighted barycentre@comma{} considering the inverse of
+neighboring nodes (weighted barycentre@comma{} considering the inverse of
 the distance between the
-node and the neighbour)@comma{} @math{X^n_{i-1}}@comma{} as follows:
+node and the neighbor)@comma{} @math{X^n_{i-1}}@comma{} as follows:
 @math{X_i=(1-A)@,X_{i-1} + A@,X^n_{i-1}}.
 @math{A@in@left[0,@,1@right]} is an
 adjustable parameter (see option @option{-tesrsmoothfact}). The number
@@ -469,9 +475,9 @@ laplacian or none, laplacian}
 Specify the method for smoothing the interface meshes reconstructed from raster tessellations.
 A common algorithm is laplacian smoothing (@samp{laplacian}) consists
 in modifying the coordinates of a node@comma{} @math{X}@comma{}
-using the coordinates of the neighbouring nodes:
+using the coordinates of the neighboring nodes:
 @math{X=(1-A)@,X_n + A@,X_n} where @math{X_n} is the barycentre of the
-neighbouring nodes. @math{A}@comma{} which belongs to
+neighboring nodes. @math{A}@comma{} which belongs to
 @math{[0,\,1]}@comma{} is an
 adjustable parameter (see option @option{-tesrsmoothfact}). Several
 iterations are applied (see option @option{-tesrsmoothitermax}).
@@ -509,15 +515,15 @@ are not connected to the main skeleton are removed.
 @optsec{-singnodedup, logical,
 Duplicate nodes which are the subject of singularity.  Such a node
 belongs to several elements which share only a node or an
-edge@comma{} which provides a singularity behaviour.
-In Mechanics@comma{} it corresponds to imposing a common
-displacement@comma{} while the point can carry no stress.
-In Thermics@comma{} it corresponds to imposing a given temperature at a
-particular location shared by two bodies@comma{} but not enabling heat
-flux to operate at that location.
+edge@comma{} which provides a singular behavior:
+in Mechanics@comma{} it corresponds to imposing a common
+displacement@comma{} while the point can carry no stress@comma{} and
+in Thermics@comma{} it corresponds to imposing a given temperature at a
+particular location shared by two bodies@comma{} while the location can carry
+no heat flux.
 When this option is enabled@comma{}
 such a node is duplicated@comma{} so that each body has its own node.
-Option @option{-dupnodemerge} enables to merge back duplicate nodes.
+Option @option{-dupnodemerge} allows one to merge back duplicate nodes.
 ,
 0 or 1,0}
 
@@ -534,34 +540,34 @@ meshes with duplicate nodes@comma{} except using options
 @opt{-transform, char_string(...),
 Apply transformations to a mesh.
 The following transformations can be applied:@*
-@mybullet @samp{@code{scale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}}
+@mybullet @samp{scale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}
 scales a mesh by @code{@var{x_fact}}@comma{} @code{@var{y_fact}} and
 @code{@var{z_fact}} along directions @var{x}@comma{} @code{@var{y}} and
 @code{@var{z}}@comma{} respectively. For a 2D mesh@comma{} @code{@var{z_fact}}
 can be omitted.@*
 @mybullet @samp{rotate(@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{angle})}
-for a rotation about the centre and by an axis/angle pair.@*
+rotates a mesh about the centre and by an axis/angle pair.@*
 @mybullet @samp{translate(@var{dist_x}@comma{}@var{dist_y}@comma{}@var{dist_z})}
 translates a mesh by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} and @code{@var{dist_z}}
 along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
-@mybullet @samp{@code{smooth(@var{fact}@comma{}@var{itermax}@comma{}@var{type})}}
+@mybullet @samp{mooth(@var{fact}@comma{}@var{itermax}@comma{}@var{type})}
 smooths the interfaces of a mesh by Laplacian smoothing (use only if you know
 what you are doing).  Laplacian smoothing is an iterative method that modifies
-the coordinates of a node using the coordinates of the neighbouring nodes.  At
+the coordinates of a node using the coordinates of the neighboring nodes.  At
 iteration @var{i}@comma{} the position of a node@comma{} @math{X_i}@comma{} is
 calculated from its previous position@comma{} @math{X_{i-1}}@comma{} and the
-position of the barycentre of the neighbouring nodes (weighted
+position of the barycentre of the neighboring nodes (weighted
 barycentre@comma{} considering the inverse of the distance between the node and
-the neighbour)@comma{} @math{X^n_{i-1}}@comma{} as follows:
+the neighbor)@comma{} @math{X^n_{i-1}}@comma{} as follows:
 @math{X_i=(1-fact)@,X_{i-1} + fact@,X^n_{i-1};@,0@leq{}fact@leq{}1}.
 @var{itermax} iterations are applied. @var{type} defines the nodes used for
 smoothing and can be @samp{all} for all nodes or @samp{interior} for interior
 nodes.@*
-@mybullet @samp{@code{explode(@var{fact})}} to produce an ``exploded'' mesh@comma{}
+@mybullet @samp{explode(@var{fact})} to produce a roughly ``exploded'' mesh@comma{}
 for which elsets are apart from each other (or cohesive elements become thick).
 To be used in conjunction with @option{-interface discontinuous or cohesive}.
 @samp{@var{fact}} is a factor controlling the distance between elsets.@*
-@mybullet @samp{slice(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for slicing a 3D mesh by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d} (yielding to a 2D mesh).
+@mybullet @samp{slice(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} slices a 3D mesh by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d} (yielding to a 2D mesh).
 ,
 see above, none}
 
@@ -571,24 +577,23 @@ Mesh partitioning is achieved using the libScotch
 library@footnote{@cite{F.
 Pellegrini, Scotch and libScotch 5.1 User's Guide, INRIA Bordeaux
 Sud-Ouest, ENSEIRB & LaBRI, UMR CNRS 5800, 2008.}}.  The
-principle of mesh partitioning is to create partitions of same size
-while minimizing the interfaces between them. This affects the same load
+principle of mesh partitioning is to create partitions of the same size
+while minimizing the interfaces between them. This attempts to distribute an equal load
 to all computation units and minimizes communications between them,
-therefore minimizes the total computation time.  There are two
+and therefore minimizes the total computation time.  There are two
 available strategies for mesh partitioning. The first one creates
 partitions and arranges them independently of each other, while the second one
-consists in optimizing the size and arrangment of the partitions based
+consists of optimizing the size and arrangment of the partitions based
 on a given computer cluster architecture to minimize computation time
-further. For those clusters that contain processors made of
-several cores, the communication time between cores of a processor
+further. For those clusters that are made of nodes containing several cores
+each, the communication time between cores on a common node
 is much lower than the communication time between cores of different
-processors. To minimize the global communication time, partitions which
-are processed by cores of the same processor can be grouped together.
-Partitioning is applied to the higher-dimension mesh.  On top
-of defining the partitions, it renumbers the nodes
-and elements by increasing partition identifier and writes partitions
-as element and node sets (@file{vtk}, @file{inp} and @file{geof}
-formats).  This can be managed using option @option{-part}.
+nodes. To minimize the global communication time, partitions which
+are processed by cores of the same node can be grouped together (on modern
+architectures, the gain remains marginal).
+Partitioning is applied to the higher-dimension mesh and renumbers nodes
+and elements by ascending partition number.
+This can be managed using options beginning with @option{-part}.
 
 @opt{-part, integer or char_string,
 Specify the number of partitions or a computer cluster architecture.
@@ -596,28 +601,28 @@ Using the first option@comma{} the number of partition can be any.
 At the opposite@comma{} for a computer cluster architecture@comma{}
 the total number of partitions must be a power of 2. An
 architecture can be specified in two ways.  First@comma{} for clusters
-that contain processors made of several cores@comma{} the number of
-processors and the number of cores per processor can be combined using
+that contain nodes made of several cores@comma{} the number of
+nodes and the number of cores per node can be combined using
 the @samp{@SEPDEP{}} separator. A ratio of 10 is
 considered between the computation time between cores located on
-different processors and the one between cores of the same processor.
-Second@comma{} the name of a file describing the cluster architecture at
+different nodes and the one between cores of the same node.
+Second@comma{} the name of a file describing the cluster architecture in
 the Scotch format can be provided.
 ,
 any, none}
 
 @optsec{-partbalancing, real,
-Specify the rate of element partition balancing.
-The partitioning algorithm applies to the nodes; the element partitions
-are determined afterwards and can
-be somewhat unbalanced.  This option enables to enforce
-balancing@comma{} but getting a full balancing is highly CPU-demanding.,
+Specify the rate of element partition balancing (the nominal partitioning
+  applies to the nodes@comma{} while the element partitions are
+determined afterwards and can be somewhat unbalanced).
+This option allows for the enforcement of equal balancing@comma{} but getting
+equal balance is highly CPU-intensive.,
 0 to 1,0.5}
 
 @optsec{-partmethod, char_string,
 Specify the partitioning method. Provide the partitioning expression
 in Scotch's jargon@comma{} or @samp{none} for none.,
-any, see_the_source}
+any, see the source}
 
 @subsection Field Transport Options
 
@@ -640,23 +645,6 @@ as specified by @option{-transporteltmethod}.
 ,
 any,none}
 
-@opt{-transportfepx, char_string@SEPDEP{}char_string...,
-Transport FEpX data from a parent mesh to a child mesh.
-The parent mesh is the input mesh and the child mesh is the result mesh
-(created by remeshing or loaded
-with @option{-loadmesh}).
-A transport entry must have format
-@samp{@var{orientation_file}@SEPDEP{}@var{tau_file}}@comma{}
-where
-@samp{@var{orientation_file}} is the orientation file (a list of Euler angles in Kocks convention)
-and
-@samp{@var{tau_file}} is the critical resolved shear strength file (a list of scalars).
-These elemental data are transported as specified by @option{-transporteltmethod}.
-Moreover@comma{} the @file{.kocks} and @file{.opt} FEpX files
-are generated from these data and can be used to run a new simulation.
-,
-any,none}
-
 @optsec{-transporteltmethod, char_string@SEPDEP{}char_string...,
 Specify the method to transport elemental data from the parent mesh to the
 child mesh. For each element of the child mesh@comma{} its centre@comma{}
@@ -671,17 +659,20 @@ see above,distance}
 
 @opt{-o, file_name,
 Specify the output file name.,
-any, none}
+any, input basename}
 
 @opt{-format, char_string,
 Specify the format of the output file(s). Mesh
-formats are: the Gmsh @samp{msh}@comma{} the @w{VTK @samp{vtk}}@comma{}
-the @w{Abaqus @samp{inp}}@comma{} the Zset/Z@'ebulon @samp{geof} and the
-FEpX @samp{fepx} (for the FEpX legacy format@comma{} provide
-@samp{fepx@SEPDEP{}legacy}). For @samp{msh}@comma{} append
+formats are: the native (Gmsh-style) @samp{msh}@comma{} the Gmsh @w{version 4} @samp{msh4}@comma{}
+the @w{VTK @samp{vtk}}@comma{}
+the @w{Abaqus @samp{inp}} and the Z-set @samp{geof}.
+For @samp{msh}@comma{} append
 @samp{@SEPDEP{}@var{format}} to specify the format@comma{}
 which can be @samp{ascii} or @samp{binary} (default @samp{ascii}).
-The tessellation file format @samp{tess} is also available.
+To get the orientation section of the @samp{msh} file (optional FEPX input)@comma{} provide @samp{ori}.
+To get a boundary conditions file (optional FEPX input)@comma{} provide @samp{bcs}.
+To get a periodicity file@comma{} provide @samp{per}.
+To get a tessellation file (reconstructed from the mesh) @comma{} provide @samp{tess}.
 Combine arguments with @samp{@SEPNODEP}.,
 see above, msh}
 
@@ -690,7 +681,7 @@ Specify the node sets to provide@comma{} among:
 @code{faces}@comma{} @code{edges}@comma{} @code{vertices} for all
 domain faces@comma{} edges and vertices@comma{}
 and @code{facebodies} and @code{edgebodies} for all face and edge
-bodies. Provide @code{all} for all and @code{none} for none.
+bodies (interiors). Provide @code{all} for all and @code{none} for none.
 To get the node sets corresponding to individual entities@comma{}
 provide their labels. For a cuboidal domain@comma{} they are
 @code{[x-z][0@comma{}1]} for the
@@ -708,26 +699,24 @@ vertex labels are obtained from the face labels as for cuboidal domains.
 For a 2D mesh (generated from a 2D tessellation)@comma{} the labels are
 @code{[x-y][0,1]} for the edges and @code{[x-y][0,1][x-y][0,1]} for the
 vertices.
-Append @samp{body} to a label to get only the body nodes of
+Append @samp{body} to a label to get only the body (interior) nodes of
 the set. Combine labels with @samp{@SEPNODEP}.
 ,
 see above, faces in 3D and edges in 2D}
 
 @opt{-faset, char_string,
-Specify the element surface meshes (edge meshes in 2D) to provide. Use
+Specify the element surface meshes (edge meshes in 2D) to output. Use
 @samp{faces} for all domain faces.  To get the meshes of individual
 faces@comma{} provide their labels (see option @option{-nset}).  For
-internal mesh faces (edges in 2D) as created by @samp{@option{-interface
-discontinuous}}@comma{} provide @samp{internal}.
-@footnote{In a @file{.msh} file@comma{} the elements are assigned to fasets
-using a 4th element tag@comma{} and the fasets are defined as physical entities.}
+internal mesh faces (edges in 2D) as created by @samp{-interface
+discontinuous}@comma{} provide @samp{internal}.
 Combine
 them @w{with @samp{@SEPNODEP}}.  Provide @code{none} for none.
 ,
-see above, none}
+see above, all}
 
 @optsec{-elset, char_string,
-Specify the element sets to provide.  The argument can be:
+Specify the element sets to output.  The argument can be:
 @code{default} for the default element sets (those corresponding to the
 input tessellation cells)@comma{} or an expression of the form
 @samp{@var{elset_label}@SEPDEP@var{elset_definition}}@comma{}
@@ -739,95 +728,162 @@ Combine arguments with @samp{@SEPNODEP}.
 ,
 see above, default}
 
-@opt{-oriformat, char_string,
+@opt{-performat, char_string,
 Specify the format of the @file{.per} output file. The available formats are:
-the Neper-native @code{plain} and the Zset/Z@'ebulon @code{geof}.
+the native @code{msh}@comma{} the plain @code{plain} and the Z-set @code{geof}.
 ,
-see above, plain}
+see above, msh}
 
 @subsection Post-Processing Options
 
+The following options provide general statistics on the
+(highest-dimension) mesh (@samp{mesh}),
+0D mesh (@samp{mesh0d}),
+1D mesh (@samp{mesh1d}),
+2D mesh (@samp{mesh2d}),
+3D mesh (@samp{mesh3d}) and
+cohesive-element mesh (@samp{meshco}).
+
+@post{-statmesh, char_string,
+Provide statistics on the highest-dimension mesh.  Provide as argument
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
+,
+any, none,
+.stmesh}
+
+@post{-statmesh0d, char_string,
+Provide statistics on the 0D mesh.  Provide as argument
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
+,
+any, none,
+.stmesh0d}
+
+@post{-statmesh1d, char_string,
+Provide statistics on the 1D mesh.  Provide as argument
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
+,
+any, none,
+.stmesh1d}
+
+@post{-statmesh2d, char_string,
+Provide statistics on the 2D mesh.  Provide as argument
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
+,
+any, none,
+.stmesh2d}
+
+@post{-statmesh3d, char_string,
+Provide statistics on the 3D mesh.  Provide as argument
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
+,
+any, none,
+.stmesh3d}
+
+@post{-statmeshco, char_string,
+Provide statistics on the cohesive-element mesh.  Provide as argument
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
+,
+any, none,
+.stmeshco}
+
 The following options provide statistics on the nodes (@samp{nodes}),
+(highest-dimension) elements (@samp{elt}) and element sets (@samp{elset}),
 0D elements (@samp{elt0d}) and element sets (@samp{elset0d}),
 1D elements (@samp{elt1d}) and element sets (@samp{elset1d}),
-2D elements (@samp{elt2d}) and element sets (@samp{elset2d}) and
-3D elements (@samp{elt3d}) and element sets (@samp{elset3d}).
-Also note that the @samp{@dfn{elt}} and
-@samp{@dfn{elset}} labels can be used in place of @samp{elt@var{n}d} and
-@samp{elset@var{n}d}, where @code{@var{n}} is the higher mesh dimension.  This
-enables to use the same command whatever the higher mesh dimension is.
+2D elements (@samp{elt2d}) and element sets (@samp{elset2d}),
+3D elements (@samp{elt3d}) and element sets (@samp{elset3d}), and
+cohesive elements (@samp{eltco}) and element sets (@samp{elsetco}).
 
 @post{-statnode, char_string,
 Provide statistics on the nodes.  Provide as argument
-the keys as described in @ref{Mesh Keys} (combine with
-@samp{@SEPNODEP}).
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
 ,
 any, none,
 .stnode}
 
-@kindex -statelt
-@kindex -statelset
+@post{-statelt, char_string,
+Provide statistics on the highest-dimension elements.  Provide as argument
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
+,
+any, none,
+.stelt}
 
 @post{-statelt0d, char_string,
 Provide statistics on the 0D elements.  Provide as argument
-the keys as described in @ref{Mesh Keys} (combine with
-@samp{@SEPNODEP}).
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
 ,
 any, none,
 .stelt0d}
 
 @post{-statelt1d, char_string,
 Provide statistics on the 1D elements.  Provide as argument
-the keys as described in @ref{Mesh Keys} (combine with
-@samp{@SEPNODEP}).
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
 ,
 any, none,
 .stelt1d}
 
 @post{-statelt2d, char_string,
 Provide statistics on the 2D elements.  Provide as argument
-the keys as described in @ref{Mesh Keys} (combine with
-@samp{@SEPNODEP}).
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
 ,
 any, none,
 .stelt2d}
 
 @post{-statelt3d, char_string,
 Provide statistics on the 3D elements.  Provide as argument
-the keys as described in @ref{Mesh Keys} (combine with
-@samp{@SEPNODEP}).
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
 ,
 any, none,
 .stelt3d}
 
+@post{-statelset, char_string,
+Provide statistics on the highest-dimension element sets.  Provide as argument
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
+,
+any, none,
+.stelset}
+
 @post{-statelset0d, char_string,
 Provide statistics on the 0D element sets.  Provide as argument
-the keys as described in @ref{Mesh Keys} (combine with
-@samp{@SEPNODEP}).
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
 ,
 any, none,
 .stelset0d}
 
 @post{-statelset1d, char_string,
 Provide statistics on the 1D element sets.  Provide as argument
-the keys as described in @ref{Mesh Keys} (combine with
-@samp{@SEPNODEP}).
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
 ,
 any, none,
 .stelset1d}
 
 @post{-statelset2d, char_string,
 Provide statistics on the 2D element sets.  Provide as argument
-the keys as described in @ref{Mesh Keys} (combine with
-@samp{@SEPNODEP}).
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
 ,
 any, none,
 .stelset2d}
 
 @post{-statelset3d, char_string,
 Provide statistics on the 3D element sets.  Provide as argument
-the keys as described in @ref{Mesh Keys} (combine with
-@samp{@SEPNODEP}).
+the keys as described in @ref{Mesh Keys}@comma{} combined with
+@samp{@SEPNODEP}.
 ,
 any, none,
 .stelset3d}
@@ -835,8 +891,8 @@ any, none,
 @post{-statpoint, char_string,
 Provide statistics on points.  The points must be loaded with option
 @option{-loadpoint}. Provide as argument
-the keys as described in @ref{Point Keys} (combine @w{with
-@samp{@SEPNODEP}}).
+the keys as described in @ref{Point Keys}@comma{} combined @w{with
+@samp{@SEPNODEP}}.
 ,
 any, none,
 .stpoint}
@@ -844,7 +900,7 @@ any, none,
 @subsection Advanced Options
 
 These advanced options set running conditions for the meshing libraries
-(triangle and tetrahedral meshing),
+(2D and 3D meshing),
 
 @optsec{-mesh3dclreps, real,
 Specify the relative tolerance on the average element characteristic length
@@ -853,10 +909,10 @@ The value can also be defined on a per-cell basis@comma{}
 using any mathematical expression based on the
 variables defined in @ref{Tessellation Keys}
 or by loading values from an external file@comma{} using
-the syntax @samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
+@samp{file(@var{file_name})}@comma{} where @code{@var{file_name}}
 is the name of the file containing the values.
 As Neper proceeds iteratively to adjust the average element characteristic
-length@comma{} this is a highly CPU-sensitive capability@comma{}
+length@comma{} this is a highly CPU-intensive capability@comma{}
 and low values will increase computation time significantly.
 ,
 any, 0.02}
@@ -878,7 +934,7 @@ any, 100}
 
 @optsec{-mesh2diter, integer,
 Specify the maximum number of 2D meshing attempts for a particular face
-(in case of failure).
+(in the rare case of failure).
 ,
 any, 3}
 
@@ -899,7 +955,7 @@ any, 100}
 
 @optsec{-mesh3diter, integer,
 Specify the maximum number of 3D meshing attempts for a particular
-polyhedron (in case of failure).
+polyhedron (in the rare case of failure).
 ,
 any, 3}
 
@@ -911,29 +967,21 @@ any, 3}
 The mesh can be written in the following formats,
 
 @itemize
-@item Gmsh format: file @file{.msh}
+@item native format: file @file{.msh}. @xref{Mesh File (@file{.msh})} for the file syntax.
+
+@item native format / orientations (optional FEPX file): file @file{.ori}.  It contains the @samp{$ElsetOrientations} and @samp{$ElementOrientations} sections of the msh file.
+
+@item native format / periodicity: file @file{.per}.
+
+@item native format / boundary conditions (optional FEPX file): file @file{.bcs}.
+
+@item Gmsh format version 4: file @file{.msh4}
 
 @item VTK format: file @file{.vtk}
 
 @item Abaqus format: file @file{.inp}
 
-@item Zset/Z@'ebulon format: file @file{.geof}
-
-@item FEpX format: files @file{.mesh}, @file{.grain} and @file{.bcs}
-(@file{.parms}, @file{.mesh}, @file{.surf}, @file{.opt}, @file{.bcs}
-and @file{.kocks} in legacy mode)
-@end itemize
-
-@subsection Periodicity
-
-@itemize
-@item File @file{.per}.
-
-It contains the mesh periodicity conditions, written following the
-convention specified by option @option{-performat}.  For format @samp{plain},
-for each slave node, the file provides (one slave node per line): the node id,
-the master node id and the shift vector of the slave.  For format @samp{geof},
-the file provides the displacement relationships between master and slaves nodes.
+@item Z-set format: file @file{.geof}
 
 @end itemize
 
@@ -955,8 +1003,14 @@ data specified to the corresponding @option{-stat} option and described in
 
 @itemize
   @item Node statistics file, @file{.stnode}.
-  @item (Higher-dimension) element statistics file, @file{.stelt}.
-  @item (Higher-dimension) element set statistics file, @file{.stelset}.
+  @item (Highest-dimension) mesh statistics file, @file{.stmesh}.
+  @item (Highest-dimension) element statistics file, @file{.stelt}.
+  @item (Highest-dimension) element set statistics file, @file{.stelset}.
+  @item 0D mesh statistics file, @file{.stmesh0d}.
+  @item 1D mesh statistics file, @file{.stmesh1d}.
+  @item 2D mesh statistics file, @file{.stmesh2d}.
+  @item 3D mesh statistics file, @file{.stmesh3d}.
+  @item Cohesive-element mesh statistics file, @file{.stmeshco}.
   @item 0D element statistics file, @file{.stelt0d}.
   @item 1D element statistics file, @file{.stelt1d}.
   @item 2D element statistics file, @file{.stelt2d}.
@@ -970,7 +1024,7 @@ data specified to the corresponding @option{-stat} option and described in
 
 @section Examples
 
-Below are some examples of use of neper -M,
+Below are some examples of use of neper -M.
 
 @enumerate
 @c Example_beg
@@ -982,7 +1036,7 @@ Below are some examples of use of neper -M,
 @com{neper -M n100-id1.tess -rcl 0.5 -order 2}
 @item    Mesh tessellation @file{n100-id1.tess} with small elements for the
 interior cells and bigger elements for the boundary cells.
-@com{neper -M n100-id1.tess -rcl "0.2,body==0:0.5"}
+@com{neper -M n100-id1.tess -rcl "body!=0?0.2:0.5"}
 @item    Remesh mesh @file{n150_def.msh} (comprising poor-quality
 elements) into a clean, new mesh. Transport the scalar data of file
 @file{n150_def.data} from the deformed mesh to the new mesh.
@@ -996,5 +1050,7 @@ elements (non-conformal mesh).
 @item    Mesh tessellation @file{n100-id1.tess} and get, for each
 element, its radius ratio and its volume.
 @com{neper -M n100-id1.tess -statelt rr,vol}
+@item    Mesh tessellation @file{n100-id1.tess} and get the number of nodes and elements of the mesh.
+@com{neper -M n100-id1.tess -statmesh nodenb,eltnb}
 @c Example_end
 @end enumerate

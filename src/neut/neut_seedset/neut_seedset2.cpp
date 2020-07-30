@@ -33,6 +33,8 @@ neut_seedset_memcpy_general (struct SEEDSET SSetA, struct SEEDSET *pSSetB)
 void
 neut_seedset_memcpy_seeds (struct SEEDSET SSetA, struct SEEDSET *pSSetB)
 {
+  int i;
+
   if (SSetA.LamEq)
   {
     (*pSSetB).LamEq = ut_alloc_2d ((*pSSetB).N + 1, 4);
@@ -65,8 +67,12 @@ neut_seedset_memcpy_seeds (struct SEEDSET SSetA, struct SEEDSET *pSSetB)
   ut_array_1d_memcpy (SSetA.SeedWeight + 1, (*pSSetB).Nall,
                       (*pSSetB).SeedWeight + 1);
 
-  (*pSSetB).q = ut_alloc_2d ((*pSSetB).N + 1, 4);
-  ut_array_2d_memcpy (SSetA.q + 1, (*pSSetB).N, 4, (*pSSetB).q + 1);
+  (*pSSetB).SeedOri = ut_alloc_2d ((*pSSetB).N + 1, 4);
+  ut_array_2d_memcpy (SSetA.SeedOri + 1, (*pSSetB).N, 4, (*pSSetB).SeedOri + 1);
+
+  (*pSSetB).SeedOriDistrib = ut_alloc_2d_char ((*pSSetB).N + 1, 1);
+  for (i = 1; i <= (*pSSetB).N; i++)
+    ut_string_string (SSetA.SeedOriDistrib[i], (*pSSetB).SeedOriDistrib + i);
 
   ut_string_string (SSetA.crysym, &(*pSSetB).crysym);
 
@@ -170,7 +176,7 @@ neut_seedset_kdtree_update_seed (struct SEEDSET SSet, int seed,
   (*pnf_cloud).pts.resize ((*pnf_cloud).pts.size () + 1);
   // to my understanding, this should not be necessary, but it turns out that
   // with the current implementation, a removed point can be returned as
-  // neighbours by findNeighbors
+  // neighbors by findNeighbors
   ut_array_1d_set_3 ((*pnf_cloud).pts[oldpt].p, DBL_MAX, DBL_MAX, DBL_MAX);
 
   newpt = (*pnf_cloud).pts.size () - 1;

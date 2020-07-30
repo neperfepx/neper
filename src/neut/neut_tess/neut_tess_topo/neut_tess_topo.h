@@ -292,7 +292,7 @@ extern "C"
 					 int polyqty, int **pface,
 					 int **pfacepoly, int *pfaceqty);
 
-/// \brief Get the neighbouring polyhedra of a polyhedron
+/// \brief Get the neighboring polyhedra of a polyhedron
 ///
 ///
 ///
@@ -303,7 +303,7 @@ extern "C"
   extern void neut_tess_poly_neighseeds (struct TESS Tess, int poly,
                                          int **pnseeds, int *pnseedqty);
 
-/// \brief Get the neighbouring faces of a face
+/// \brief Get the neighboring faces of a face
 ///
 ///
 ///
@@ -312,7 +312,7 @@ extern "C"
   extern void neut_tess_face_neighfaces_samedomain (struct TESS Tess, int face,
 					int **pnface, int *pnfaceqty);
 
-/// \brief Get the neighbouring faces of faces (may contain some of the input faces);
+/// \brief Get the neighboring faces of faces (may contain some of the input faces);
 ///
 ///
 ///
@@ -326,14 +326,14 @@ extern "C"
   extern int neut_tess_edgepair_neigh (struct TESS Tess, int edge1, int
       edge2);
 
-/// \brief Get the neighbouring edges of a edge
+/// \brief Get the neighboring edges of a edge
 ///
 ///
 ///
   extern void neut_tess_edge_neighedges (struct TESS Tess, int edge,
 					int **pnedge, int *pnedgeqty);
 
-/// \brief Get the neighbouring cells of a cell
+/// \brief Get the neighboring cells of a cell
 ///
 ///
 ///

@@ -71,7 +71,8 @@ nem_meshing_1D (struct MESHPARA *pMeshPara, struct TESS Tess,
   free (M);
   free (N);
 
-  neut_nodes_init_nodeslave (pNodes);
+  if (!strcmp (Tess.Type, "periodic"))
+    neut_nodes_init_nodeslave (pNodes);
 
   ut_free_2d_int (&master_id, Tess.EdgeQty + 1);
 

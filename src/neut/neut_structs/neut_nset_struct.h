@@ -15,7 +15,7 @@ extern "C"
     int qty;			// quantity of nsets (recorded 1 ... qty)
 
     char **names;		// names
-    int *nodeqty;		// number of nodes
+    int *NodeQty;		// number of nodes
     int **nodes;		// 0 indexed
   };
   typedef struct NSET NSET;

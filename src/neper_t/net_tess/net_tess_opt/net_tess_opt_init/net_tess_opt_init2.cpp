@@ -38,7 +38,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
                           struct TESS *Tess, int dtess, int dpoly, int level,
                           char *morpho, struct TOPT *pTOpt)
 {
-  int i, j, partqty, status, diameq_pos[2], isval = 0;
+  int i, j, PartQty, status, diameq_pos[2], isval = 0;
   double mean = 1;
   double sum;
   char **tmp = NULL;
@@ -48,9 +48,11 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
 
   morpho2 = ut_alloc_1d_char (1000);
 
-  ut_list_break (morpho, NEUT_SEP_NODEP, &parts, &partqty);
+  ut_string_fnrs (morpho, "circularity", "sphericity", INT_MAX);
 
-  for (i = 0; i < partqty; i++)
+  ut_list_break (morpho, NEUT_SEP_NODEP, &parts, &PartQty);
+
+  for (i = 0; i < PartQty; i++)
   {
     if (!strcmp (parts[i], "graingrowth") || !strcmp (parts[i], "gg"))
     {
@@ -170,18 +172,6 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
     }
     else
     {
-      if (!strcmp (parts[i] + strlen (parts[i]) - 5, ",1-x)"))
-      {
-        ut_print_message (1, 2,
-                          "Flag `1-x' is deprecated and will be removed in future versions.  Use variable `1-sphericity' instead.\n");
-        char *tmp = NULL;
-        ut_string_string (parts[i], &tmp);
-        ut_string_fnrs (tmp, ",1-x", "", 1);
-        parts[i] = ut_realloc_1d_char (parts[i], strlen (tmp) + 3);
-        sprintf (parts[i], "1-%s", tmp);
-        ut_free_1d_char (&tmp);
-      }
-
       if (strlen (morpho2) > 0)
         morpho2 = strcat (morpho2, NEUT_SEP_NODEP);
       morpho2 = strcat (morpho2, parts[i]);
@@ -239,14 +229,14 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
   for (i = 0; i < (*pTOpt).tarqty; i++)
   {
     // Recording tarvar, tarexpr
-    ut_list_break (tmp[i], NEUT_SEP_DEP, &parts, &partqty);
-    if (partqty != 2 && partqty != 3)
+    ut_list_break (tmp[i], NEUT_SEP_DEP, &parts, &PartQty);
+    if (PartQty != 2 && PartQty != 3)
       ut_print_message (2, 2, "Unknown argument `%s'.\n", tmp[i]);
 
     ut_string_string (parts[0], (*pTOpt).tarvar + i);
     ut_string_string (parts[1], (*pTOpt).tarexpr + i);
 
-    ut_free_2d_char (&parts, partqty);
+    ut_free_2d_char (&parts, PartQty);
     parts = NULL;
 
     isval = ut_string_isnumber ((*pTOpt).tarexpr[i]);
@@ -707,10 +697,6 @@ net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTess,
   ut_string_string (In.body, &((*pTOpt).TDyn.body));
 
   net_tess_opt_init_parms_algo (In, level, MTess, Tess, dtess, dcell, pTOpt);
-
-  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
-                                           In.morphooptialgoneigh[level],
-                                           &(*pTOpt).TDyn.algoneigh);
 
   for (i = 0; i < (*pTOpt).tarqty; i++)
     if (!strcmp ((*pTOpt).tarvar[i], "tesr"))

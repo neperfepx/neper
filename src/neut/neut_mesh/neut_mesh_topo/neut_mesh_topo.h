@@ -96,17 +96,17 @@ extern "C"
 ///
 ///
   extern void neut_mesh_elts_elsets (struct MESH Mesh, int *elts,
-				     int eltqty, int **pelsets,
+				     int EltQty, int **pelsets,
 				     int *pelsetqty);
 
-/// \brief Get the neighbouring elts of an elt.
+/// \brief Get the neighboring elts of an elt.
 ///
 ///
 ///
   extern int neut_mesh_elt_neighelts (struct MESH Mesh, int elt, int **pnelts,
 				      int *pneltqty);
 
-/// \brief Get the neighbouring elts of an elt, which are in a given elset.
+/// \brief Get the neighboring elts of an elt, which are in a given elset.
 ///
 ///
 ///
@@ -114,7 +114,7 @@ extern "C"
 					    elset, int **pnelts,
 					    int *pneltqty);
 
-/// \brief Get the neighbouring elts of an elt, which are in a given elset and share at least maxnodeqty nodes with the elt.
+/// \brief Get the neighboring elts of an elt, which are in a given elset and share at least maxnodeqty nodes with the elt.
 ///
 ///
 ///
@@ -129,7 +129,7 @@ extern "C"
 /// The output elements are part of the input set of elts.
 ///
   extern void neut_mesh_elts_boundelts (struct MESH Mesh, int *elts,
-					int eltqty, int **pboundelts,
+					int EltQty, int **pboundelts,
 					int *pboundeltqty);
 
 /// \brief Get all elts of nodes.
@@ -137,7 +137,7 @@ extern "C"
 ///
 ///
   extern void neut_mesh_nodes_allelts (struct MESH Mesh, int *nodes,
-				       int nodeqty, int **pelts,
+				       int NodeQty, int **pelts,
 				       int *peltqty);
 
 /// \brief Get the common elts of nodes.
@@ -145,11 +145,11 @@ extern "C"
 ///
 ///
   extern void neut_mesh_nodes_comelts (struct MESH Mesh, int *nodes,
-				       int nodeqty, int **pelts,
+				       int NodeQty, int **pelts,
 				       int *peltqty);
 
   extern void
-  neut_mesh_nodes_onecomelt (struct MESH Mesh, int *nodes, int nodeqty,
+  neut_mesh_nodes_onecomelt (struct MESH Mesh, int *nodes, int NodeQty,
                              int *pelt);
 
 /// \brief Get the common elt of nodes.
@@ -157,7 +157,7 @@ extern "C"
 ///
 ///
   extern int neut_mesh_nodes_comelt (struct MESH Mesh, int *nodes, int
-				     nodeqty, int *pelt);
+				     NodeQty, int *pelt);
 
 /// \brief Get the common elts of nodes, with the elts belonging to
 /// particular elsets.
@@ -165,7 +165,7 @@ extern "C"
 ///
 ///
   extern int neut_mesh_nodes_elsets_comelts (struct MESH Mesh, int *nodes,
-					     int nodeqty, int *elsets,
+					     int NodeQty, int *elsets,
 					     int elsetqty, int **pelts,
 					     int *peltqty);
 
@@ -174,7 +174,7 @@ extern "C"
 ///
 ///
   extern void neut_mesh_elts_comnodes (struct MESH Mesh, int *elts,
-				       int eltqty, int **pnodes,
+				       int EltQty, int **pnodes,
 				       int *pnodeqty);
 
 /// \brief Get the common nodes of a pair of elts.
@@ -189,7 +189,7 @@ extern "C"
 ///
 ///
   extern void neut_mesh_elts_allnodes (struct MESH Mesh, int *elts, int
-				       eltqty, int **pnodes, int *pnodeqty);
+				       EltQty, int **pnodes, int *pnodeqty);
 
 /// \brief Get the nodes of an elset.
 ///
@@ -292,7 +292,7 @@ extern "C"
 				     struct MESH Mesh2D, struct MESH Mesh3D,
 				     int node);
 
-/// \brief Get the neighbouring nodes of a node of a mesh.
+/// \brief Get the neighboring nodes of a node of a mesh.
 ///
 ///
 ///
@@ -363,7 +363,7 @@ extern int neut_mesh_elt1d_elsets2d_elts2d (struct MESH Mesh1D, int elt1d,
 				   int *pelt2dqty);
 
 extern int neut_mesh_elt2d_nodes_ordering (struct MESH Mesh, int elt2d,
-    int* nodes, int nodeqty);
+    int* nodes, int NodeQty);
 
 extern void neut_mesh_fasets_bound (struct TESS Tess, struct NODES
     Nodes, struct MESH Mesh2D, struct MESH Mesh3D, char *fasetlist,

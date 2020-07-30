@@ -1674,3 +1674,14 @@ ut_print_elapsedtime (struct timeval beg_time, struct timeval end_time)
 
   return;
 }
+
+void
+ut_print_whitespaces (FILE * file, int qty)
+{
+  int i;
+
+  for (i = 0; i < qty; i++)
+    fprintf (file, " ");
+
+  return;
+}

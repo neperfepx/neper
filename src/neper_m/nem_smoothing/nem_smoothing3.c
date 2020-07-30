@@ -27,12 +27,12 @@ nem_smoothing_newcoo (double *coo, double *neighcoo, double A, double *newcoo)
 }
 
 void
-nem_smoothing_nodes_updatecoo (struct NODES *pNodes, int *nodes, int nodeqty,
+nem_smoothing_nodes_updatecoo (struct NODES *pNodes, int *nodes, int NodeQty,
                                double **NodeCoo)
 {
   int i;
 
-  for (i = 0; i < nodeqty; i++)
+  for (i = 0; i < NodeQty; i++)
     ut_array_1d_memcpy (NodeCoo[nodes[i]], 3, (*pNodes).NodeCoo[nodes[i]]);
 
   return;

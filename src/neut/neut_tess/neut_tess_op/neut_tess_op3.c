@@ -106,7 +106,7 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
     for (j = 0; j < domfaceqty; j++)
       ut_string_string ((*pTess).DomFaceLabel[domface[j]], fnames + j);
     ut_array_1d_pchar_sort (fnames, domfaceqty);
-    (*pTess).DomVerLabel[i] = ut_string_array_paste (fnames, domfaceqty);
+    (*pTess).DomVerLabel[i] = ut_string_array_paste (fnames, domfaceqty, NULL);
 
     ut_free_2d_char (&fnames, domfaceqty);
     ut_free_1d_int (&domface);
@@ -186,7 +186,7 @@ neut_tess_init_domain_label_2d (struct TESS *pTess)
                         enames + j);
     ut_array_1d_pchar_sort (enames, (*pTess).DomVerEdgeQty[i]);
     (*pTess).DomVerLabel[i] =
-      ut_string_array_paste (enames, (*pTess).DomVerEdgeQty[i]);
+      ut_string_array_paste (enames, (*pTess).DomVerEdgeQty[i], NULL);
 
     ut_free_2d_char (&enames, (*pTess).DomVerEdgeQty[i]);
   }

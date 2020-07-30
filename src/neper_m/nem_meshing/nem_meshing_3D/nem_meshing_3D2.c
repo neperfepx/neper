@@ -17,10 +17,11 @@ nem_meshing_3D_poly (struct IN_M In, double cl, double mesh3dclreps,
   struct NODES N2;
   struct MESH M2;
 
-  neut_nodes_set_zero (pN);
-  neut_mesh_set_zero (pM);
   neut_nodes_set_zero (&N2);
   neut_mesh_set_zero (&M2);
+
+  neut_nodes_reset (pN);
+  neut_mesh_set_zero (pM);
 
   (*pMultim).Oalgo[poly] = -1;
   for (a = 0; a < (*pMultim).algoqty; a++)

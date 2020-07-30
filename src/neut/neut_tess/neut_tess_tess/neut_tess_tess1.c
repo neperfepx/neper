@@ -7,7 +7,7 @@
 void
 neut_tess_tess (struct TESS TessA, struct TESS *pTessB)
 {
-  neut_tess_free (pTessB);
+  neut_tess_reset (pTessB);
 
   neut_tess_tess_gen (TessA, pTessB);
   neut_tess_tess_cell (TessA, pTessB);

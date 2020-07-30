@@ -13,8 +13,8 @@ nem_meshing_0D_ver (struct TESS Tess, int ver, struct MESHPARA MeshPara,
   double cl, pl;
   double clmin = MeshPara.clmin;
 
-  neut_nodes_free (pNodes);
-  neut_mesh_free (Mesh + 0);
+  neut_nodes_reset (pNodes);
+  neut_mesh_reset (Mesh);
 
 /***********************************************************************
  * Initializing nodes and mesh */

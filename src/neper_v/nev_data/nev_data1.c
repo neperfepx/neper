@@ -5,93 +5,54 @@
 #include"nev_data_.h"
 
 void
-nev_data (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
-          struct MESH *Mesh, struct TESSDATA *pTessData,
-          struct TESRDATA *pTesrData, struct NODEDATA *pNodeData,
-          struct MESHDATA *MeshData, struct CSYSDATA *pCsysData,
-          struct POINTDATA *pPointData)
+nev_data (char **argv, int *pi, struct SIM Sim, struct TESS *pTess,
+          struct TESR *pTesr, struct NODES *pNodes,
+          struct MESH **pMesh, struct POINT *pPoint,
+          struct DATA *TessData,
+          struct DATA *pTesrData, struct DATA *pNodeData,
+          struct DATA *MeshData, struct DATA *pCsysData,
+          struct DATA *pPointData)
 {
-  int dim;
+  int dim = neut_mesh_array_dim (*pMesh);
   char *entity = ut_alloc_1d_char (100);
-  char *type = ut_alloc_1d_char (100);
+  char *attribute = ut_alloc_1d_char (100);
 
-  dim = neut_mesh_array_dim (Mesh);
-  nev_data_string_entity_type (argv[(*pi)], entity, type);
+  neut_data_string_entity_attribute (argv[(*pi)], entity, attribute);
 
-  if (!strcmp (entity, "elt"))
+  if (!strcmp (entity, "cell") && !neut_tess_isvoid (*pTess))
+    neut_tess_cell (*pTess, &entity);
+  else if (!strcmp (entity, "elt"))
     sprintf (entity, "elt%dd", dim);
-  if (!strcmp (entity, "elset"))
+  else if (!strcmp (entity, "elset"))
     sprintf (entity, "elset%dd", dim);
 
-  if (!strcmp (entity, "poly") || !strcmp (entity, "edge")
-      || !strcmp (entity, "face") || !strcmp (entity, "ver")
-      || !strcmp (entity, "cell") || !strcmp (entity, "seed"))
-  {
-    if ((*pTessData).VerQty > 0)
-      nev_tessdata_fscanf (Tess, entity, type, argv[++(*pi)], pTessData);
-    else if ((*pTesrData).Qty > 0)
-      nev_tesrdata_fscanf (Tesr, entity, type, argv[++(*pi)], pTesrData);
-    else
-      abort ();
-  }
-  else if (!strncmp (entity, "vox", 3))
-    nev_tesrdata_fscanf (Tesr, entity, type, argv[++(*pi)], pTesrData);
-  else if (!strncmp (entity, "elt", 3) || !strncmp (entity, "elset", 5))
-    nev_meshdata_fscanf (Mesh, entity, type, argv[++(*pi)], MeshData);
+  if ((!strcmp (entity, "poly") || !strcmp (entity, "edge")
+    || !strcmp (entity, "face") || !strcmp (entity, "ver")
+    || !strcmp (entity, "seed")) && !neut_tess_isvoid (*pTess))
+      nev_data_tess (Sim, pTess, entity, attribute, argv[++(*pi)], TessData);
+
+  else if ((!strcmp (entity, "cell") || !strncmp (entity, "vox", 3))
+      && !neut_tesr_isvoid (*pTesr))
+    nev_data_tesr (Sim, pTesr, entity, attribute, argv[++(*pi)], pTesrData);
 
   else if (!strcmp (entity, "node"))
-    nev_nodedata_fscanf (type, argv[++(*pi)], pNodeData);
+    nev_data_nodes (Sim, pTess, pNodes, pMesh, attribute, argv[++(*pi)], pNodeData);
+
+  else if (!strncmp (entity, "elt", 3) || !strncmp (entity, "elset", 5))
+    nev_data_mesh (Sim, pTess, pNodes, pMesh, entity, attribute,
+                          argv[++(*pi)], MeshData);
 
   else if (!strcmp (entity, "csys"))
-    nev_csysdata_fscanf (type, argv[++(*pi)], pCsysData);
+    nev_data_csys (Sim, attribute, argv[++(*pi)], pCsysData);
 
-  else if (!strcmp (entity, "point"))
-    nev_pointdata_fscanf (type, argv[++(*pi)], pPointData);
+  else if (!strncmp (entity, "point", 5))
+    nev_data_points (Sim, pPoint, pTess, pNodes, pMesh, entity, attribute, argv[++(*pi)], pPointData);
 
   else
     ut_print_message (1, 0, "Unknown entity `%s'.  Skipping...\n", entity);
 
   ut_free_1d_char (&entity);
-  ut_free_1d_char (&type);
-
-  return;
-}
-
-void
-nev_data_init (struct TESS Tess, struct TESSDATA *pTessData, struct TESR Tesr,
-               struct TESRDATA *pTesrData, struct NODES Nodes,
-               struct MESH *Mesh, struct POINT Point,
-               struct NODEDATA *pNodeData, struct MESHDATA *MeshData,
-               struct CSYSDATA *pCsysData, struct POINTDATA *pPointData)
-{
-  int dim, meshdim;
-  double size;
-
-  if (Tess.Dim == 0 && Tess.CellQty < 1)
-    Tess.CellQty = 1;
-
-  if ((*pTessData).VerQty > 0)
-    nev_tessdata_init (Tess, pTessData);
-
-  if ((*pTesrData).Qty > 0)
-    nev_tesrdata_init (Tesr, pTesrData);
-
-  if (Nodes.NodeQty > 0)
-    nev_nodedata_init (Nodes, Tess.CellQty, pNodeData);
-
-  meshdim = neut_mesh_array_dim (Mesh);
-  if (meshdim > 0)
-  {
-    neut_mesh_size (Nodes, Mesh[meshdim], &size);
-
-    for (dim = 0; dim <= 3; dim++)
-      nev_meshdata_init (Mesh[dim], size, Tess.CellQty, MeshData + dim);
-  }
-
-  nev_csysdata_init (pCsysData);
-
-  if (Point.PointQty > 0)
-    nev_pointdata_init (Point, pPointData);
+  ut_free_1d_char (&attribute);
 
   return;
 }

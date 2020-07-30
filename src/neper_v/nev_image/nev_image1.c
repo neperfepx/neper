@@ -17,7 +17,7 @@ nev_image (char **argv, int *pi, struct PRINT *pPrint)
     sscanf (argv[++(*pi)], "%s", (*pPrint).imagebackground);
 
   else if (strcmp (argv[*pi], "-imageformat") == 0)
-    sscanf (argv[++(*pi)], "%s", (*pPrint).format);
+    ut_string_string (argv[++(*pi)], &(*pPrint).format);
 
   else
   {

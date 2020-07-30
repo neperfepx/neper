@@ -67,10 +67,6 @@ net_ori_fibre (long random, char *distrib, struct OL_SET *pOSet)
     else
       ut_print_message (2, 2, "Failed to parse expression `%s'.\n", distrib);
 
-    ut_print_message (1, 2,
-                      "Argument `%s' is deprecated and will not be supported in future versions.  See the documentation.\n",
-                      distrib);
-
     ut_vector_uvect (dirc, dirc);
   }
 
@@ -102,7 +98,7 @@ net_ori_equal (struct SEEDSET *SSet, int dtess, int dcell,
   unsigned int i;
 
   for (i = 0; i < (*pOSet).size; i++)
-    ut_array_1d_memcpy (SSet[dtess].q[dcell], 4, (*pOSet).q[i]);
+    ut_array_1d_memcpy (SSet[dtess].SeedOri[dcell], 4, (*pOSet).q[i]);
 
   return;
 }
@@ -111,44 +107,16 @@ void
 net_ori_spread (char *ori, struct SEEDSET *SSet, int dtess, int dcell,
                 struct OL_SET *pOSet)
 {
-  unsigned int i, j;
-  double sig, mean;
-  double *v = ol_r_alloc ();
-  double *q = ol_q_alloc ();
-  int varqty;
-  char **vars = NULL;
-  char **vals = NULL;
+  unsigned int i;
 
-  ut_string_function (ori, NULL, &vars, &vals, &varqty);
+  ut_string_fnrs (ori, "spread", "normal", 1);
 
-  if (varqty != 1)
-    abort ();
+  ol_set_fprintf (stdout, *pOSet, "%f");
 
-  if (!vars || !vars[0] || !strcmp (vars[0], "mean"))
-  {
-    sscanf (vals[0], "%lf", &mean);
-    sig = mean / (2 * sqrt (2 / M_PI)); // Glez and Driver, J. Appl. Cryst., 2001
-  }
-  else
-    abort ();
-
-  gsl_rng *rand = gsl_rng_alloc (gsl_rng_ranlxd2);
-  gsl_rng_set (rand, SSet[dtess].Random);
+  ol_set_misoridistrib (ori, SSet[dtess].Random, pOSet);
 
   for (i = 0; i < (*pOSet).size; i++)
-  {
-    for (j = 0; j < 3; j++)
-      v[j] = gsl_ran_gaussian (rand, sig / 2);
-
-    ol_lnq_q (v, q);
-
-    ol_q_q_q (SSet[dtess].q[dcell], q, (*pOSet).q[i]);
-  }
-
-  gsl_rng_free (rand);
-  ol_q_free (q);
-  ut_free_2d_char (&vars, varqty);
-  ut_free_2d_char (&vals, varqty);
+    ol_q_q_q (SSet[dtess].SeedOri[dcell], (*pOSet).q[i], (*pOSet).q[i]);
 
   return;
 }
@@ -178,56 +146,60 @@ void
 net_ori_file (char *filename, struct OL_SET *pOSet)
 {
   unsigned int i;
-  int partqty;
-  char **parts = NULL;
   char *des = NULL;
   double *vect = ut_alloc_1d (4);
   double **g = ol_g_alloc ();
   FILE *fp = NULL;
+  char *fct = NULL;
+  int varqty;
+  char **vars = NULL;
+  char **vals = NULL;
 
-  ut_list_break (filename, NEUT_SEP_DEP, &parts, &partqty);
-  if (partqty == 1)
-    ut_string_string ("e", &des);
-  else
-    ut_string_string (parts[1], &des);
+  ut_string_function (filename, &fct, &vars, &vals, &varqty);
 
-  fp = ut_file_open (parts[0], "r");
+  if (varqty == 1)
+    ut_string_string (NEUT_DEFAULT_ORIDES, &des);
+  else if (varqty == 2)
+    if (!ut_string_strcmp (vars[1], "des"))
+    ut_string_string (vals[1], &des);
+
+  fp = ut_file_open (vals[0], "r");
 
   for (i = 0; i < (*pOSet).size; i++)
   {
-    if (!strcmp (des, "e"))
+    if (!strcmp (des, "euler-bunge"))
     {
       ol_e_fscanf (fp, vect);
       ol_e_q (vect, (*pOSet).q[i]);
     }
-    else if (!strcmp (des, "ek"))
+    else if (!strcmp (des, "euler-kocks"))
     {
       ol_e_fscanf (fp, vect);
       ol_ek_e (vect, vect);
       ol_e_q (vect, (*pOSet).q[i]);
     }
-    else if (!strcmp (des, "er"))
+    else if (!strcmp (des, "euler-roe"))
     {
       ol_e_fscanf (fp, vect);
       ol_er_e (vect, vect);
       ol_e_q (vect, (*pOSet).q[i]);
     }
-    else if (!strcmp (des, "rtheta"))
+    else if (!strcmp (des, "axis-angle"))
     {
       ol_rtheta_fscanf (fp, vect, vect + 3);
       ol_rtheta_q (vect, vect[3], (*pOSet).q[i]);
     }
-    else if (!strcmp (des, "q"))
+    else if (!strcmp (des, "quaternion"))
     {
       ol_q_fscanf (fp, vect);
       ol_q_q (vect, (*pOSet).q[i]);
     }
-    else if (!strcmp (des, "R"))
+    else if (!strcmp (des, "rodrigues"))
     {
       ol_R_fscanf (fp, vect);
       ol_R_q (vect, (*pOSet).q[i]);
     }
-    else if (!strcmp (des, "g"))
+    else if (!strcmp (des, "rotmat"))
     {
       ol_g_fscanf (fp, g);
       ol_g_q (g, (*pOSet).q[i]);
@@ -238,9 +210,10 @@ net_ori_file (char *filename, struct OL_SET *pOSet)
 
   ut_file_close (fp, filename, "r");
 
-  ut_free_2d_char (&parts, partqty);
   ut_free_1d (&vect);
   ol_g_free (g);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_2d_char (&vals, varqty);
 
   return;
 }
@@ -352,10 +325,13 @@ net_ori_mtess_id (struct IN_T In, struct MTESS MTess, struct TESS *Tess,
 void
 net_ori_mtess_params (struct IN_T In, int level, struct MTESS MTess,
                       struct TESS *Tess, int dtess, int dcell, char **pori,
-                      char **pcrysym)
+                      char **poridistrib, char **pcrysym)
 {
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.ori[level], pori);
+
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
+                                           In.oridistrib[level], poridistrib);
 
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.oricrysym[level], pcrysym);
@@ -401,10 +377,29 @@ net_ori_mtess_randseed (struct MTESS MTess, struct TESS *Tess, int domtess,
 }
 
 void
-net_ori_memcpy (struct SEEDSET *pSSet, struct OL_SET OSet)
+net_ori_memcpy (struct OL_SET OSet, struct SEEDSET *pSSet)
 {
-  (*pSSet).q = ut_alloc_2d ((*pSSet).N + 1, 4);
-  ut_array_2d_memcpy (OSet.q, OSet.size, 4, (*pSSet).q + 1);
+  (*pSSet).SeedOri = ut_alloc_2d ((*pSSet).N + 1, 4);
+  ut_array_2d_memcpy (OSet.q, OSet.size, 4, (*pSSet).SeedOri + 1);
+
+  ut_string_string (OSet.crysym, &(*pSSet).crysym);
+
+  return;
+}
+
+void
+net_oridistrib (char *oridistrib, struct SEEDSET *pSSet)
+{
+  int i;
+
+  (*pSSet).SeedOriDistrib = ut_alloc_2d_char ((*pSSet).N +  1, 1);
+
+  if (!strncmp (oridistrib, "file(", 5))
+    net_oridistrib_file (oridistrib, pSSet);
+
+  else
+    for (i = 1; i <= (*pSSet).N; i++)
+      ut_string_string (oridistrib, (*pSSet).SeedOriDistrib + i);
 
   return;
 }

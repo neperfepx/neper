@@ -14,7 +14,7 @@ nem_input_options_default (struct IN_M *pIn)
   strcpy ((*pIn).nset, "default");
   ut_string_string ("default", &(*pIn).elset);
   (*pIn).faset = ut_alloc_1d_char (100);
-  strcpy ((*pIn).faset, "none");
+  strcpy ((*pIn).faset, "all");
 
   (*pIn).tess = NULL;
   (*pIn).tesr = NULL;
@@ -22,21 +22,20 @@ nem_input_options_default (struct IN_M *pIn)
   (*pIn).msh = NULL;
   (*pIn).per = NULL;
   (*pIn).geof = NULL;
-  (*pIn).fepx1 = NULL;
-  (*pIn).fepx2 = NULL;
-  (*pIn).fepx3 = NULL;
   (*pIn).intf = NULL;
-  (*pIn).stn = NULL;
+  (*pIn).stnode = NULL;
   (*pIn).stelt[0] = NULL;
   (*pIn).stelt[1] = NULL;
   (*pIn).stelt[2] = NULL;
   (*pIn).stelt[3] = NULL;
   (*pIn).stelt[4] = NULL;
+  (*pIn).stelt[5] = NULL;
   (*pIn).stelset[0] = NULL;
   (*pIn).stelset[1] = NULL;
   (*pIn).stelset[2] = NULL;
   (*pIn).stelset[3] = NULL;
   (*pIn).stelset[4] = NULL;
+  (*pIn).stelset[5] = NULL;
   (*pIn).body = NULL;
 
   (*pIn).format = ut_alloc_1d_char (5);
@@ -61,7 +60,7 @@ nem_input_options_default (struct IN_M *pIn)
   ut_string_string ("default", &(*pIn).cledgestring);
   ut_string_string ("rel", &(*pIn).clvertype);
   ut_string_string ("default", &(*pIn).clverstring);
-  ut_string_string ("plain", &(*pIn).performat);
+  ut_string_string ("msh", &(*pIn).performat);
 
   (*pIn).clmin = 0;
   (*pIn).pl = 2;
@@ -106,15 +105,13 @@ nem_input_options_default (struct IN_M *pIn)
 
   /* Options for remeshing --------------------------------- */
   (*pIn).transportstring = NULL;
-  (*pIn).transportfepxstring = NULL;
   (*pIn).transporteltmethodstring = NULL;
   ut_string_string ("distance", &(*pIn).transporteltmethodstring);
 
   (*pIn).loadmesh = NULL;
   (*pIn).loadpoint = NULL;
 
-  (*pIn).tesrsmooth = ut_alloc_1d_char (21);
-  strcpy ((*pIn).tesrsmooth, "laplacian");
+  ut_string_string ("laplacian", &(*pIn).tesrsmooth);
 
   (*pIn).tesrsmoothfact = 0.5;
   (*pIn).tesrsmoothitermax = 5;
@@ -190,12 +187,17 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-format");
   strcpy (ArgList[++ArgQty], "-elset");
   strcpy (ArgList[++ArgQty], "-nset");
-  strcpy (ArgList[++ArgQty], "-surf");  // deprecated
   strcpy (ArgList[++ArgQty], "-faset");
   strcpy (ArgList[++ArgQty], "-performat");
 
   // Tessellation and mesh statistics options ------------------------------
   strcpy (ArgList[++ArgQty], "-statnode");
+  strcpy (ArgList[++ArgQty], "-statmesh");
+  strcpy (ArgList[++ArgQty], "-statmesh0d");
+  strcpy (ArgList[++ArgQty], "-statmesh1d");
+  strcpy (ArgList[++ArgQty], "-statmesh2d");
+  strcpy (ArgList[++ArgQty], "-statmesh3d");
+  strcpy (ArgList[++ArgQty], "-statmeshco");
   strcpy (ArgList[++ArgQty], "-statelt");
   strcpy (ArgList[++ArgQty], "-statelt0d");
   strcpy (ArgList[++ArgQty], "-statelt1d");
@@ -215,12 +217,10 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-mesh3dmaxtime");
   strcpy (ArgList[++ArgQty], "-mesh3drmaxtime");
   strcpy (ArgList[++ArgQty], "-mesh3diter");
-  strcpy (ArgList[++ArgQty], "-mesh3dclconv");
   strcpy (ArgList[++ArgQty], "-mesh3dclreps");
 
   // Field transport ---------------------------------------------------
   strcpy (ArgList[++ArgQty], "-transport");
-  strcpy (ArgList[++ArgQty], "-transportfepx");
   strcpy (ArgList[++ArgQty], "-transporteltmethod");
 
   // Restart a job -----------------------------------------------------
@@ -401,29 +401,41 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
       else if (!strcmp (Arg, "-dim"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).dimstring));
       else if ((!strcmp (Arg, "-elttype")))
-        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).elttype));
+        ut_arg_nextasstring (argv, &i, Arg, &(*pIn).elttype);
       else if (!strcmp (Arg, "-statnode"))
-        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).stn));
+        ut_arg_nextasstring (argv, &i, Arg, &(*pIn).stnode);
+      else if (!strcmp (Arg, "-statmesh0d"))
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stmesh);
+      else if (!strcmp (Arg, "-statmesh1d"))
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stmesh + 1);
+      else if (!strcmp (Arg, "-statmesh2d"))
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stmesh + 2);
+      else if (!strcmp (Arg, "-statmesh3d"))
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stmesh + 3);
+      else if (!strcmp (Arg, "-statmeshco"))
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stmesh + 4);
+      else if (!strcmp (Arg, "-statmesh"))
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stmesh + 5);
       else if (!strcmp (Arg, "-statelt0d"))
-        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[0])));
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelt);
       else if (!strcmp (Arg, "-statelt1d"))
-        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[1])));
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelt + 1);
       else if (!strcmp (Arg, "-statelt2d"))
-        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[2])));
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelt + 2);
       else if (!strcmp (Arg, "-statelt3d"))
-        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[3])));
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelt + 3);
       else if (!strcmp (Arg, "-statelt"))
-        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelt[4])));
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelt + 5);
       else if (!strcmp (Arg, "-statelset0d"))
-        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[0])));
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelset);
       else if (!strcmp (Arg, "-statelset1d"))
-        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[1])));
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelset + 1);
       else if (!strcmp (Arg, "-statelset2d"))
-        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[2])));
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelset + 2);
       else if (!strcmp (Arg, "-statelset3d"))
-        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[3])));
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelset + 3);
       else if (!strcmp (Arg, "-statelset"))
-        ut_arg_nextasstring (argv, &i, Arg, &(((*pIn).stelset[4])));
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelset + 5);
       else if (!strcmp (Arg, "-statpoint"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).stpt));
       else if (!strcmp (Arg, "-mesh3dmaxtime"))
@@ -442,12 +454,6 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
                            &((*pIn).mesh3drmaxtime));
       else if (!strcmp (Arg, "-mesh3diter"))
         ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).mesh3diter));
-      else if (!strcmp (Arg, "-mesh3dclconv"))
-      {
-        ut_print_message (1, 1,
-                          "Option `-mesh3dclconv' is deprecated and will be removed in future versions.  Use `-mesh3dclreps' instead.\n");
-        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dclrepsstring));
-      }
       else if (!strcmp (Arg, "-mesh3dclreps"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).mesh3dclrepsstring));
       else if (!strcmp (Arg, "-elset"))
@@ -468,8 +474,6 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).loadpoint));
       else if ((!strcmp (Arg, "-transport")))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transportstring));
-      else if ((!strcmp (Arg, "-transportfepx")))
-        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transportfepxstring));
       else if ((!strcmp (Arg, "-transporteltmethod")))
         ut_arg_nextasstring (argv, &i, Arg,
                              &((*pIn).transporteltmethodstring));

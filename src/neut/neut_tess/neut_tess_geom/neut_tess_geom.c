@@ -173,6 +173,15 @@ neut_tess_diameq (struct TESS Tess, double *pval)
   return 0;
 }
 
+int
+neut_tess_radeq (struct TESS Tess, double *pval)
+{
+  neut_tess_diameq (Tess, pval);
+  (*pval) *= .5;
+
+  return 0;
+}
+
 void
 neut_tess_cellavdiameq (struct TESS Tess, int CellQty, double *pdiameq)
 {

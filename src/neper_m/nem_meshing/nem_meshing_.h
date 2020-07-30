@@ -20,6 +20,4 @@
 
 #include"nem_meshing.h"
 
-extern void nem_meshing_gen (struct TESS Tess, struct NODES *pNodes);
-
 extern void nem_meshing_post (struct TESS Tess, struct MESH *Mesh);

@@ -5,7 +5,7 @@
 #include"neut_mesh_part_.h"
 
 int
-neut_mesh_elt_coms (struct MESH Mesh, int elt, int partqty, int *parttab,
+neut_mesh_elt_coms (struct MESH Mesh, int elt, int PartQty, int *parttab,
                     int *parttab2, int **coms, int *pcomqty)
 {
   int i, j, pos, eltpart, nodepart, comtotalqty;
@@ -14,7 +14,7 @@ neut_mesh_elt_coms (struct MESH Mesh, int elt, int partqty, int *parttab,
 
   comtotalqty = 0;
   (*pcomqty) = 0;
-  ut_array_2d_int_zero (coms, partqty, 2);
+  ut_array_2d_int_zero (coms, PartQty, 2);
 
   eltpart = parttab2[elt];
   for (i = 0; i < eltnodeqty; i++)

@@ -5,8 +5,8 @@
 #include"nem_smoothing_.h"
 
 // Laplacian smoothing consists in modifying the coordinates of a node,
-// X, using the coordinates of the neighbouring nodes: X = (1 - A) X_n +
-// A X_n where X_n is the barycentre of the neighbouring nodes.  A
+// X, using the coordinates of the neighboring nodes: X = (1 - A) X_n +
+// A X_n where X_n is the barycentre of the neighboring nodes.  A
 // belongs to [0, 1] and is an adjustable parameter. Several iterations
 // are applied (itermax).  There is no stop criterion, itermax will
 // always be reached.
@@ -15,7 +15,7 @@ nem_smoothing_laplacian (struct TESS Tess, struct NODES *pNodes,
                          struct MESH *Mesh, int dim, double A, int itermax,
                          char *nodetype)
 {
-  int i, j, nodeqty, nodeqty2, domtype;
+  int i, j, NodeQty, nodeqty2, domtype;
   int *nodes = NULL;
   int *nodes2 = NULL;
   double **NodeCoo = NULL;
@@ -23,22 +23,22 @@ nem_smoothing_laplacian (struct TESS Tess, struct NODES *pNodes,
   if (dim <= 0)
     return;
 
-  neut_mesh_nodes (Mesh[dim], &nodes, &nodeqty);
+  neut_mesh_nodes (Mesh[dim], &nodes, &NodeQty);
   neut_mesh_nodes (Mesh[dim - 1], &nodes2, &nodeqty2);
 
   for (i = 0; i < nodeqty2; i++)
-    nodeqty -= ut_array_1d_int_rmelt (nodes, nodeqty, nodes2[i], 1);
+    NodeQty -= ut_array_1d_int_rmelt (nodes, NodeQty, nodes2[i], 1);
 
   if (!strcmp (nodetype, "interior"))
   {
-    for (i = 0; i < nodeqty; i++)
+    for (i = 0; i < NodeQty; i++)
     {
       neut_mesh_node_domtype (Tess, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
                               nodes[i], &domtype);
       if (domtype != -1)
         nodes[i] = 0;
     }
-    nodeqty -= ut_array_1d_int_rmelt (nodes, nodeqty, 0, INT_MAX);
+    NodeQty -= ut_array_1d_int_rmelt (nodes, NodeQty, 0, INT_MAX);
   }
 
   NodeCoo = ut_alloc_2d (Mesh[dim].NodeQty + 1, 3);
@@ -46,7 +46,7 @@ nem_smoothing_laplacian (struct TESS Tess, struct NODES *pNodes,
   for (i = 0; i < itermax; i++)
   {
 #pragma omp parallel for private (j) schedule(dynamic)
-    for (j = 0; j < nodeqty; j++)
+    for (j = 0; j < NodeQty; j++)
     {
       int neighnodeqty;
       int *neighnodes = NULL;
@@ -68,7 +68,7 @@ nem_smoothing_laplacian (struct TESS Tess, struct NODES *pNodes,
       ut_free_1d (&NeighCoo);
     }
 
-    nem_smoothing_nodes_updatecoo (pNodes, nodes, nodeqty, NodeCoo);
+    nem_smoothing_nodes_updatecoo (pNodes, nodes, NodeQty, NodeCoo);
   }
 
   ut_free_1d_int (&nodes);

@@ -85,8 +85,8 @@ nem_partition_prep (struct NODES *pNodes, struct MESH *Mesh,
   int i, total;
   int dim = neut_mesh_array_dim (Mesh);
 
-  (*pPart).nodeqty = ut_alloc_1d_int ((*pPart).qty);
-  (*pPart).eltqty = ut_alloc_1d_int ((*pPart).qty);
+  (*pPart).NodeQty = ut_alloc_1d_int ((*pPart).qty);
+  (*pPart).EltQty = ut_alloc_1d_int ((*pPart).qty);
   (*pPart).targeteltqty = ut_alloc_1d_int ((*pPart).qty);
 
   total = 0;
@@ -184,7 +184,7 @@ nem_partition_nodes (struct IN_M In, SCOTCH_Mesh * pSCMesh,
   /* end */
 
   for (i = 0; i < (*pPart).qty; i++)
-    (*pPart).nodeqty[i] =
+    (*pPart).NodeQty[i] =
       ut_array_1d_int_valnb ((*pPart).node_parts + 1, (*pNodes).NodeQty, i);
 
   ut_free_1d_int (&node_nbs);
@@ -194,9 +194,9 @@ nem_partition_nodes (struct IN_M In, SCOTCH_Mesh * pSCMesh,
 }
 
 void
-nem_partition_elts (struct IN_M In, struct MESH *Mesh, struct PART *pPart)
+nem_partition_elts (struct IN_M In, struct NODES *pNodes, struct MESH *Mesh, struct PART *pPart)
 {
-  int i, j, qty, partqty;
+  int i, j, qty, PartQty;
   int **coms = ut_alloc_2d_int ((*pPart).qty, 2);
   int *elt_nbs = NULL;
   int dim = neut_mesh_array_dim (Mesh);
@@ -207,7 +207,7 @@ nem_partition_elts (struct IN_M In, struct MESH *Mesh, struct PART *pPart)
 
   elt_nbs = ut_alloc_1d_int (Mesh[dim].EltQty + 1);
 
-  ut_array_1d_int_zero ((*pPart).eltqty, (*pPart).qty);
+  ut_array_1d_int_zero ((*pPart).EltQty, (*pPart).qty);
 
   if (strcmp (In.partmethod, "none") != 0)
   {
@@ -240,11 +240,29 @@ nem_partition_elts (struct IN_M In, struct MESH *Mesh, struct PART *pPart)
   for (i = 1; i <= Mesh[dim].EltQty; i++)
     if (neut_mesh_elt_isbound (Mesh[dim], i, (*pPart).node_parts))
       neut_mesh_elt_coms (Mesh[dim], i, (*pPart).qty, (*pPart).node_parts,
-                          (*pPart).elt_parts, coms, &partqty);
+                          (*pPart).elt_parts, coms, &PartQty);
 
   // reinitializing eltelset (brute force method)
   if (Mesh[dim].EltElset != NULL)
     neut_mesh_init_eltelset (Mesh + dim, NULL);
+
+  Mesh[dim].PartQty = (*pPart).qty;
+
+  Mesh[dim].EltPart = ut_alloc_1d_int (Mesh[dim].EltQty + 1);
+
+  ut_array_1d_int_memcpy ((*pPart).elt_parts + 1, Mesh[dim].EltQty,
+                          Mesh[dim].EltPart + 1);
+  ut_array_1d_int_addval (Mesh[dim].EltPart + 1, Mesh[dim].EltQty, 1, Mesh[dim].EltPart + 1);
+
+  neut_mesh_init_parts (Mesh + dim);
+
+  (*pNodes).NodePart = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+
+  ut_array_1d_int_memcpy ((*pPart).node_parts + 1, (*pNodes).NodeQty,
+                          (*pNodes).NodePart + 1);
+  ut_array_1d_int_addval ((*pNodes).NodePart + 1, (*pNodes).NodeQty, 1, (*pNodes).NodePart + 1);
+
+  neut_nodes_init_parts (pNodes);
 
   ut_free_2d_int (&coms, (*pPart).qty);
   ut_free_1d_int (&elt_nbs);
@@ -258,10 +276,10 @@ nem_partition_stats (int partnbr, struct MESH Mesh, struct PART Part)
   int i, cutqty;
   int nmin, nmax, emin, emax;
 
-  emin = ut_array_1d_int_min (Part.eltqty, partnbr);
-  emax = ut_array_1d_int_max (Part.eltqty, partnbr);
-  nmin = ut_array_1d_int_min (Part.nodeqty, partnbr);
-  nmax = ut_array_1d_int_max (Part.nodeqty, partnbr);
+  emin = ut_array_1d_int_min (Part.EltQty, partnbr);
+  emax = ut_array_1d_int_max (Part.EltQty, partnbr);
+  nmin = ut_array_1d_int_min (Part.NodeQty, partnbr);
+  nmax = ut_array_1d_int_max (Part.NodeQty, partnbr);
 
   cutqty = 0;
   for (i = 1; i <= Mesh.EltQty; i++)

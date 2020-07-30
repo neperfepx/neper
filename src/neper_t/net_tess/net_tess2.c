@@ -13,7 +13,7 @@ net_tess_perdomain (struct IN_T In, struct TESS PTess, int cell,
   if (ut_array_1d_int_sum (In.periodic, 3) == 0)
     ut_print_neperbug ();
 
-  neut_tess_free (pDom);
+  neut_tess_reset (pDom);
 
   neut_tess_cell_centroid (PTess, cell, coo);
   neut_tess_poly_tess (PTess, cell, pDom);
@@ -63,6 +63,8 @@ net_tess_3dto2d (struct TESS *pTess)
 int
 net_tess_finalize (struct TESS PTess, struct SEEDSET SSet, struct TESS *pTess)
 {
+  int i;
+
   if ((*pTess).CellQty == 0)
     return 1;
 
@@ -110,8 +112,15 @@ net_tess_finalize (struct TESS PTess, struct SEEDSET SSet, struct TESS *pTess)
   if (!(*pTess).CellOri)
   {
     (*pTess).CellOri = ut_alloc_2d ((*pTess).CellQty + 1, 4);
-    ut_array_2d_memcpy (SSet.q + 1, (*pTess).CellQty, 4,
+    ut_array_2d_memcpy (SSet.SeedOri + 1, (*pTess).CellQty, 4,
                         (*pTess).CellOri + 1);
+  }
+
+  if (!(*pTess).CellOriDistrib)
+  {
+    (*pTess).CellOriDistrib = ut_alloc_1d_pchar ((*pTess).CellQty + 1);
+    for (i = 0; i <= (*pTess).CellQty; i++)
+      ut_string_string (SSet.SeedOriDistrib[i], (*pTess).CellOriDistrib + i);
   }
 
 #ifdef DEVEL_DEBUGGING_TEST

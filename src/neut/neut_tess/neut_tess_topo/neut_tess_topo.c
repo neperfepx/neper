@@ -1022,7 +1022,7 @@ neut_tess_poly_vercoos (struct TESS Tess, int poly, int **pvers,
 }
 
 void
-neut_tess_poly_edges (struct TESS Tess, int poly, int **pedge, int *pedgeqty)
+neut_tess_poly_edges (struct TESS Tess, int poly, int **pedges, int *pedgeqty)
 {
   int i, j, face;
   int *tmp = NULL;
@@ -1041,11 +1041,11 @@ neut_tess_poly_edges (struct TESS Tess, int poly, int **pedge, int *pedgeqty)
       }
   }
 
-  if (pedge)
+  if (pedges)
   {
-    (*pedge) = ut_alloc_1d_int (*pedgeqty);
-    ut_array_1d_int_memcpy (tmp, *pedgeqty, *pedge);
-    ut_array_1d_int_sort (*pedge, *pedgeqty);
+    (*pedges) = ut_realloc_1d_int (*pedges, *pedgeqty);
+    ut_array_1d_int_memcpy (tmp, *pedgeqty, *pedges);
+    ut_array_1d_int_sort (*pedges, *pedgeqty);
   }
 
   ut_free_1d_int (&tmp);
@@ -2037,8 +2037,8 @@ neut_tess_face_interpolmesh (struct TESS Tess, int face, struct NODES *pN,
 
   p0 = ut_alloc_1d (3);
 
-  neut_nodes_set_zero (pN);
-  neut_mesh_set_zero (pM);
+  neut_nodes_reset (pN);
+  neut_mesh_reset (pM);
   (*pM).Dimension = 2;
   (*pM).EltOrder = 1;
   ut_string_string ("tri", &(*pM).EltType);
@@ -3237,7 +3237,7 @@ neut_tess_faces_contiguousfaces (struct TESS Tess, double coplanar,
     ut_array_1d_int_list_addval ((*pfaces) + id, (*pfaceqty) + id, tmp[0]);
     ut_array_1d_int_list_rmval (&tmp, &qty, tmp[0]);
 
-    // adding neighbours of the faces in the set
+    // adding neighbors of the faces in the set
     for (i = 0; i < (*pfaceqty)[id]; i++)
     {
       face = (*pfaces)[id][i];
@@ -3305,7 +3305,7 @@ neut_tess_edges_contiguousedges (struct TESS Tess, double colinear,
     ut_array_1d_int_list_addval ((*pedges) + id, (*pedgeqty) + id, tmp[0]);
     ut_array_1d_int_list_rmval (&tmp, &qty, tmp[0]);
 
-    // adding neighbours of the edges in the set
+    // adding neighbors of the edges in the set
     for (i = 0; i < (*pedgeqty)[id]; i++)
     {
       edge = (*pedges)[id][i];

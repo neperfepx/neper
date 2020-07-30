@@ -5,11 +5,11 @@
 #include"nem_interface_dup_.h"
 
 void
-nem_interface_duplicate (int *seeds, int seedqty, int *nodes, int nodeqty,
+nem_interface_duplicate (int *seeds, int seedqty, int *nodes, int NodeQty,
                          struct NODES *pNodes, struct MESH *Mesh)
 {
   int i, j, k, node, newnode, eltnodeqty, seed;
-  int eltqty, *elts = NULL;
+  int EltQty, *elts = NULL;
   int dim = neut_mesh_array_dim (Mesh);
 
   eltnodeqty =
@@ -19,7 +19,7 @@ nem_interface_duplicate (int *seeds, int seedqty, int *nodes, int nodeqty,
   if (!(*pNodes).DupNodeSeed)
     (*pNodes).DupNodeSeed = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
 
-  for (j = 0; j < nodeqty; j++)
+  for (j = 0; j < NodeQty; j++)
   {
     node = nodes[j];
 
@@ -51,13 +51,13 @@ nem_interface_duplicate (int *seeds, int seedqty, int *nodes, int nodeqty,
 
       // Updating node numbers in the elements of the upper-dimension mesh
 
-      neut_mesh_node_elset_elts (Mesh[dim], node, seed, &elts, &eltqty);
+      neut_mesh_node_elset_elts (Mesh[dim], node, seed, &elts, &EltQty);
 
       // This can happen in the case of a periodic (slave) seed, i.e. a seed > CellQty
-      // if (eltqty == 0)
+      // if (EltQty == 0)
       //   abort ();
 
-      for (k = 0; k < eltqty; k++)
+      for (k = 0; k < EltQty; k++)
         ut_array_1d_int_findnreplace (Mesh[dim].EltNodes[elts[k]], eltnodeqty,
                                       node, newnode);
     }

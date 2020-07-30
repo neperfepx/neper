@@ -8,13 +8,13 @@ void
 nem_transform (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
                struct MESH *Mesh)
 {
-  int i, partqty, status;
+  int i, PartQty, status;
   double *tmp = ut_alloc_1d (4);
   char **parts = NULL;
 
-  ut_list_break (In.transform, NEUT_SEP_NODEP, &parts, &partqty);
+  ut_list_break (In.transform, NEUT_SEP_NODEP, &parts, &PartQty);
 
-  for (i = 0; i < partqty; i++)
+  for (i = 0; i < PartQty; i++)
   {
     if (!strncmp (parts[i], "scale", 5))
     {

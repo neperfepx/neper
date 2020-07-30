@@ -113,8 +113,8 @@ FnLFacesDet (POLYMOD Polymod, int *BadVer, int *FnLFaces)
   /* considered face.                                     */
   int nb;                       /* in fine, to delete                                   */
   int *Ver;                     /* Ver[1] <-- number of the considered vertex           */
-  /* Ver[0] <-- number of the "previous" neighbour        */
-  /* Ver[2] <-- number of the "next" neighbour            */
+  /* Ver[0] <-- number of the "previous" neighbor        */
+  /* Ver[2] <-- number of the "next" neighbor            */
 
   Ver = ut_alloc_1d_int (3);
 
@@ -128,7 +128,7 @@ FnLFacesDet (POLYMOD Polymod, int *BadVer, int *FnLFaces)
     for (nf = 0; nf <= 2; nf++)
     {
       /* SnNS returns the number of the considered vertex Ver[1], and
-       * those of its two neighbours: Ver[0] & Ver[2].
+       * those of its two neighbors: Ver[0] & Ver[2].
        */
       SnNS (Polymod, ns, nf, Ver, BadVer);
 

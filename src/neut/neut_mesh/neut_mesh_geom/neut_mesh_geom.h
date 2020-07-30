@@ -23,6 +23,12 @@ extern "C"
   extern void neut_mesh_elt_centre_z (struct NODES Nodes, struct MESH Mesh,
 				      int elt, double *coo);
 
+  extern void neut_mesh_elt_bbox (struct NODES Nodes, struct MESH Mesh,
+                                  int elt, double **bbox);
+
+  extern void neut_mesh_elset_bbox (struct NODES Nodes, struct MESH Mesh,
+                                    int elset, double **bbox);
+
 /// \brief Get the (average edge) length of an elt
 ///
 ///
@@ -178,6 +184,15 @@ extern "C"
 ///
   extern void neut_mesh_centre (struct NODES Nodes, struct MESH Mesh,
 				double *centre);
+
+  extern void neut_mesh_centre_x (struct NODES Nodes, struct MESH Mesh,
+				double *px);
+
+  extern void neut_mesh_centre_y (struct NODES Nodes, struct MESH Mesh,
+				double *py);
+
+  extern void neut_mesh_centre_z (struct NODES Nodes, struct MESH Mesh,
+				double *pz);
 
 /// \brief Get the volume of a 3D mesh.
 ///

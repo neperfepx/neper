@@ -32,7 +32,7 @@ extern void nem_partition_nodes (struct IN_M, SCOTCH_Mesh *, SCOTCH_Arch *,
 				 struct NODES *, struct MESH *,
 				 struct PART *);
 
-extern void nem_partition_elts (struct IN_M, struct MESH *, struct PART *);
+extern void nem_partition_elts (struct IN_M, struct NODES *, struct MESH *, struct PART *);
 extern void nem_partition_elts_match (struct MESH *, struct PART *);
 
 extern int nem_partition_elts_balancing (struct MESH *, struct PART *,

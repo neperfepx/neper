@@ -1,44 +1,44 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2020, Romain Quey.
+# Copyright(C) 2003-2020, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
 project(neper_t)
 
 # for nanoflann =======
-if (CMAKE_VERSION VERSION_LESS "3.1")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
-else ()
-    set (CMAKE_CXX_STANDARD 11)
-endif ()
+if(CMAKE_VERSION VERSION_LESS "3.1")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+else()
+    set(CMAKE_CXX_STANDARD 11)
+endif()
 add_definitions(-Wno-deprecated-declarations)
 
-option (HAVE_GSL         "Use the GNU Scientific Library (GSL)" ON )
-option (HAVE_NLOPT       "Use NLopt"                            ON )
-option (HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
-option (HAVE_OPENMP      "Use OpenMP"                           ON )
-option (DEVEL_OPTIMIZATION "Enable optimization (ON for production use)" ON)
-option (DEVEL_DEBUGGING_TEST "Enable debugging tests (OFF for production use)"   OFF)
-option (DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag (OFF for production use)"   OFF)
-option (DEVEL_PROFILING   "Enable profiling (OFF for production use)" OFF)
+option(HAVE_GSL         "Use the GNU Scientific Library(GSL)" ON )
+option(HAVE_NLOPT       "Use NLopt"                            ON )
+option(HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
+option(HAVE_OPENMP      "Use OpenMP"                           ON )
+option(DEVEL_OPTIMIZATION "Enable optimization(ON for production use)" ON)
+option(DEVEL_DEBUGGING_TEST "Enable debugging tests(OFF for production use)"   OFF)
+option(DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag(OFF for production use)"   OFF)
+option(DEVEL_PROFILING   "Enable profiling(OFF for production use)" OFF)
 
 include_directories("${PROJECT_BINARY_DIR}")
 
 add_definitions(-Wall -W -Wno-unknown-pragmas)
-if (DEVEL_OPTIMIZATION)
+if(DEVEL_OPTIMIZATION)
   add_definitions(-O3)
-endif ()
+endif()
 
-if (DEVEL_DEBUGGING_FLAG)
+if(DEVEL_DEBUGGING_FLAG)
   add_definitions(-g -Werror)
-endif ()
+endif()
 
-if (DEVEL_PROFILING)
+if(DEVEL_PROFILING)
   add_definitions(-pg)
-  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
-endif ()
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
+endif()
 
-add_library (neper_t
+add_library(neper_t
 ./net_reg/net_reg_merge/net_reg_merge2.c
 ./net_reg/net_reg_merge/net_reg_merge1.c
 ./net_reg/net_reg_merge/net_reg_merge_del/net_reg_merge_del1.c
@@ -50,6 +50,7 @@ add_library (neper_t
 ./net_reg/net_reg_merge/net_reg_merge_del/net_reg_merge_del4.c
 ./net_reg/net_reg1.c
 ./net_reg/net_reg2.c
+./net_group/net_group1.c
 ./net_transform/net_transform1.c
 ./net_transform/net_transform_tess/net_transform_tess.c
 ./net_transform/net_transform_tess/net_transform_tess_cut/net_transform_tess_cut1.c
@@ -178,6 +179,7 @@ add_library (neper_t
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_ori/net_tess_opt_init_sset_ori1.c
 ./net_ori/net_ori1.c
 ./net_ori/net_ori2.c
+./net_ori/net_ori3.c
 ./net_ori/net_ori_uniform/net_ori_uniform1.cpp
 ./net_ori/net_ori_uniform/net_ori_uniform2.cpp
 ./net_ori/net_ori_uniform/net_ori_uniform3.cpp
@@ -193,39 +195,45 @@ add_library (neper_t
 ./neper_t.c
 )
 
-set (EXTRA_LIBS ${EXTRA_LIBS} ut)
-set (EXTRA_LIBS ${EXTRA_LIBS} neut)
-set (EXTRA_LIBS ${EXTRA_LIBS} orilib)
+set(EXTRA_LIBS ${EXTRA_LIBS} ut)
+set(EXTRA_LIBS ${EXTRA_LIBS} neut)
+set(EXTRA_LIBS ${EXTRA_LIBS} orilib)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
-find_library (MATHLIB m)
-if (MATHLIB)
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${MATHLIB})
-endif ()
+find_library(MATHLIB m)
+if(MATHLIB)
+  set(EXTRA_LIBS ${EXTRA_LIBS} ${MATHLIB})
+endif()
 
-if (HAVE_NLOPT)
-  find_package (NLOPT REQUIRED)
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES})
-  include_directories (${NLOPT_INCLUDE_DIRS})
-endif ()
+if(HAVE_NLOPT)
+  find_package(NLOPT REQUIRED)
+  set(EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES})
+  include_directories(${NLOPT_INCLUDE_DIRS})
+endif()
 
-if (HAVE_GSL)
+if(HAVE_GSL)
   find_package(GSL REQUIRED)
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
+  set(EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
   include_directories(${GSL_INCLUDE_DIRS})
-endif ()
+endif()
 
-if (HAVE_LIBSCOTCH)
-  find_package (LIBSCOTCH REQUIRED)
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${Scotch_LIBRARIES})
-  include_directories (${Scotch_INCLUDE_DIRS})
-endif ()
+if(HAVE_LIBSCOTCH)
+  find_package(LIBSCOTCH REQUIRED)
+  set(EXTRA_LIBS ${EXTRA_LIBS} ${Scotch_LIBRARIES})
+  include_directories(${Scotch_INCLUDE_DIRS})
+endif()
 
-if (HAVE_OPENMP)
-  find_package (OpenMP REQUIRED)
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${OpenMP_C_FLAGS})
+if(HAVE_OPENMP)
+  if(APPLE AND XCODE)
+      set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include" CACHE INTERNAL "OpenMP flags for Xcode toolchain.")
+      set(OpenMP_CXX_LIB_NAMES "omp" CACHE INTERNAL "OpenMP lib name for Xcode toolchain.")
+      set(OpenMP_omp_LIBRARY "/usr/local/opt/libomp/lib/libomp.dylib" CACHE INTERNAL "OpenMP lib name for Xcode toolchain.")
+  endif()
+
+  find_package(OpenMP REQUIRED)
+  set(EXTRA_LIBS ${EXTRA_LIBS} ${OpenMP_C_FLAGS})
   add_definitions(${OpenMP_C_FLAGS})
-endif ()
+endif()
 
-target_link_libraries (neper_t ${EXTRA_LIBS})
+target_link_libraries(neper_t ${EXTRA_LIBS})

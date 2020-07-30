@@ -125,7 +125,7 @@ net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
   double *q = NULL;
 
   if (dtess != 0)
-    q = SSet[dtess].q[dcell];
+    q = SSet[dtess].SeedOri[dcell];
 
   if (!strcmp (vtype, "file") && vqty == 1)
     ut_array_1d_memcpy (v, 3, n);

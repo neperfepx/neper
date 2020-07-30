@@ -10,9 +10,8 @@ extern "C"
 #ifndef NEUT_MESH_FSCANF_H
 #define NEUT_MESH_FSCANF_H
 
-#include "neut_mesh_fscanf_gmsh/neut_mesh_fscanf_gmsh.h"
+#include "neut_mesh_fscanf_msh/neut_mesh_fscanf_msh.h"
 #include "neut_mesh_fscanf_geof/neut_mesh_fscanf_geof.h"
-#include "neut_mesh_fscanf_fepx/neut_mesh_fscanf_fepx.h"
 
 #endif				/* NEUT_MESH_FSCANF_H */
 

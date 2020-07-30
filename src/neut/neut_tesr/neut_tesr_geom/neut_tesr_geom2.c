@@ -30,10 +30,10 @@ neut_tesr_cell_boundpoints_test_3d (struct TESR Tesr, int cell, int i, int j,
   // surface boundaries.
 
   // The lower res is, the more it is a surface voxel:
-  // -1: has a  face  -neighbour different than cell;
-  //  0: has an edge  -neighbour different than cell;
-  //  1: has a  vertex-neighbour different than cell;
-  //  2: has no        neighbour different than cell.
+  // -1: has a  face  -neighbor different than cell;
+  //  0: has an edge  -neighbor different than cell;
+  //  1: has a  vertex-neighbor different than cell;
+  //  2: has no        neighbor different than cell.
 
   if (connec < 0 || connec > 2)
     ut_print_message (2, 0, "connectivity = %d!\n", connec);

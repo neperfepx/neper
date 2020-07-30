@@ -2,7 +2,8 @@
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #ifndef UT_TIME_H
@@ -17,9 +18,10 @@ extern "C" {
 /// \param timeval1: start time
 /// \param timeval2: end time
 /// \return time difference
-extern double ut_time_subtract (struct timeval* timeval1, struct timeval* timeval2);
+  extern double ut_time_subtract (struct timeval *timeval1,
+                                  struct timeval *timeval2);
 
-#endif /* UT_TIME_H */
+#endif                          /* UT_TIME_H */
 
 #ifdef __cplusplus
 }

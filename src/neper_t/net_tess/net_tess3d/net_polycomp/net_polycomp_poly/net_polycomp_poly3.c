@@ -5,7 +5,7 @@
 #include"net_polycomp_poly_.h"
 
 /* BadVerDet searches the vertices that are on the bad side of the
- * bissecting plane, i.e. that of the neighbour
+ * bissecting plane, i.e. that of the neighbor
  */
 void
 BadVerDet (double *plane, int CenterSide, struct POLYMOD Polymod,
@@ -45,7 +45,7 @@ BadVerDet (double *plane, int CenterSide, struct POLYMOD Polymod,
 }
 
 /* PolyhedronModification modifies the polyhedron to take into account
- * the new neighbour.
+ * the new neighbor.
  */
 int
 PolyhedronModification (int Nei, double *plane, struct POLYMOD *pPolymod,

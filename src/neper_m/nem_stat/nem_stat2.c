@@ -6,7 +6,7 @@
 
 void
 nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
-                struct MESH *Mesh, struct PART Part, struct TESS Tess)
+                struct MESH *Mesh, struct TESS Tess)
 {
   int i, j, status, invalqty, var_qty, valqty;
   double *vals = NULL;
@@ -34,7 +34,7 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
     for (j = 0; j < invalqty; j++)
     {
       status =
-        neut_mesh_var_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Part,
+        neut_mesh_var_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Mesh[4],
                            Tess, NULL, NULL, NULL, NULL, 0, "node", i,
                            invar[j], &vals, &valqty, &type);
 
@@ -73,17 +73,35 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
 }
 
 void
-nem_stat_elts (FILE * file, int dim, char *format, struct NODES Nodes,
-               struct MESH *Mesh, struct PART Part, struct TESS Tess)
+nem_stat_elts (FILE *file, char *entity, int dim, int realdim, char *format, struct NODES Nodes,
+               struct MESH *Mesh, struct MESHPARA MeshPara, struct TESS Tess)
 {
-  int i, j, invalqty, var_qty, qty, meshx_init, valqty, status;
-  double *vals = NULL;
-  char **invar = NULL, *valstring = NULL, *type = NULL, **vars = NULL;
-  char *entity = ut_alloc_1d_char (10);
+  int i, j, invalqty, varqty, qty, meshx_init, valqty, status;
+  double *vals = NULL, cl;
+  char **invar = NULL, *type = NULL, **vars = NULL;
+  char *entity2 = ut_alloc_1d_char (10);
   double **meshp = NULL, *meshd = NULL, **meshv = NULL, **meshn = NULL;
 
+  if (!strcmp (entity, "elt"))
+    qty = Mesh[realdim].EltQty;
+  else if (!strcmp (entity, "elset"))
+    qty = Mesh[realdim].ElsetQty;
+  else if (!strcmp (entity, "mesh"))
+    qty = 1;
+  else
+    abort ();
+
+  if (dim != 4)
+    sprintf (entity2, "%s%dd", entity, realdim);
+  else
+    sprintf (entity2, "%sco", entity);
+
+  ut_list_break (format, NEUT_SEP_NODEP, &invar, &invalqty);
+
+  neut_mesh_var_list (entity2, &vars, &varqty);
+
   meshx_init = 0;
-  if (dim == 3
+  if (!strcmp (entity, "elt") && realdim == 3
       && (ut_list_testelt (format, NEUT_SEP_NODEP, "2dmeshp")
           || ut_list_testelt (format, NEUT_SEP_NODEP, "2dmeshd")
           || ut_list_testelt (format, NEUT_SEP_NODEP, "2dmeshv")
@@ -98,34 +116,32 @@ nem_stat_elts (FILE * file, int dim, char *format, struct NODES Nodes,
                                meshv, meshn);
   }
 
-  sprintf (entity, "elt%dd", dim);
-
-  qty = Mesh[dim].EltQty;
-
-  ut_list_break (format, NEUT_SEP_NODEP, &invar, &invalqty);
-
-  neut_mesh_var_list (entity, &vars, &var_qty);
-
   for (i = 1; i <= qty; i++)
+  {
+    if (!strcmp (entity, "elset") && realdim == 3)
+      cl = (MeshPara.poly_cl) ? MeshPara.poly_cl[i] : DBL_MAX;
+    else
+      cl = -1;
+
     for (j = 0; j < invalqty; j++)
     {
       status =
-        neut_mesh_var_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Part,
-                           Tess, NULL, NULL, NULL, NULL, 0, entity, i,
+        neut_mesh_var_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Mesh[4],
+                           Tess, NULL, NULL, NULL, NULL, cl, entity2, i,
                            invar[j], &vals, &valqty, &type);
 
       if (!status)
         ut_array_1d_fprintf_nonl (file, vals, valqty,
                                   !strcmp (type, "%f") ? "%.12f" : type);
-      else if (dim == 3 && !strcmp (invar[j], "2dmeshp"))
+      else if (realdim == 3 && !strcmp (invar[j], "2dmeshp"))
         fprintf (file, "%.12f %.12f %.12f", meshp[i][0], meshp[i][1],
                  meshp[i][2]);
-      else if (dim == 3 && !strcmp (invar[j], "2dmeshd"))
+      else if (realdim == 3 && !strcmp (invar[j], "2dmeshd"))
         fprintf (file, "%.12f", meshd[i]);
-      else if (dim == 3 && !strcmp (invar[j], "2dmeshv"))
+      else if (realdim == 3 && !strcmp (invar[j], "2dmeshv"))
         fprintf (file, "%.12f %.12f %.12f", meshv[i][0], meshv[i][1],
                  meshv[i][2]);
-      else if (dim == 3 && !strcmp (invar[j], "2dmeshn"))
+      else if (realdim == 3 && !strcmp (invar[j], "2dmeshn"))
         fprintf (file, "%.12f %.12f %.12f", meshn[i][0], meshn[i][1],
                  meshn[i][2]);
       else
@@ -133,11 +149,12 @@ nem_stat_elts (FILE * file, int dim, char *format, struct NODES Nodes,
 
       fprintf (file, (j < invalqty - 1) ? " " : "\n");
     }
+  }
 
   ut_free_2d_char (&invar, invalqty);
-  ut_free_2d_char (&vars, var_qty);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d_char (&entity2);
   ut_free_1d_char (&type);
-  ut_free_1d_char (&valstring);
   ut_free_1d (&vals);
 
   if (meshx_init)
@@ -147,59 +164,6 @@ nem_stat_elts (FILE * file, int dim, char *format, struct NODES Nodes,
     ut_free_2d (&meshv, Mesh[3].EltQty + 1);
     ut_free_2d (&meshn, Mesh[3].EltQty + 1);
   }
-
-  return;
-}
-
-void
-nem_stat_elsets (FILE * file, int dim, char *format, struct NODES Nodes,
-                 struct MESH *Mesh, struct PART Part,
-                 struct MESHPARA MeshPara, struct TESS Tess)
-{
-  int i, j, status, qty;
-  char **vars = NULL;
-  char **invar = NULL;
-  int invalqty, varqty;
-  double val, cl;
-  char *type = NULL;
-  char *entity = ut_alloc_1d_char (100);
-
-  qty = Mesh[dim].ElsetQty;
-
-  sprintf (entity, "elset%dd", dim);
-
-  ut_list_break (format, NEUT_SEP_NODEP, &invar, &invalqty);
-
-  neut_mesh_var_list (entity, &vars, &varqty);
-
-  for (i = 1; i <= qty; i++)
-  {
-    if (dim == 3)
-      cl = (MeshPara.poly_cl) ? MeshPara.poly_cl[i] : DBL_MAX;
-    else
-      cl = -1;
-
-    for (j = 0; j < invalqty; j++)
-    {
-      status =
-        neut_mesh_var_val_one (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
-                               Part, Tess, NULL, NULL, NULL, NULL, cl, entity,
-                               i, invar[j], &val, &type);
-
-      if (!status)
-        ut_array_1d_fprintf_nonl (file, &val, 1,
-                                  !strcmp (type, "%f") ? "%.12f" : type);
-      else
-        ut_print_exprbug (invar[j]);
-
-      fprintf (file, (j < invalqty - 1) ? " " : "\n");
-    }
-  }
-
-  ut_free_1d_char (&type);
-  ut_free_2d_char (&invar, invalqty);
-  ut_free_2d_char (&vars, varqty);
-  ut_free_1d_char (&entity);
 
   return;
 }

@@ -7,8 +7,6 @@
 void
 neut_tdyn_set_zero (struct TDYN *pTD)
 {
-  (*pTD).algoneigh = NULL;
-
   (*pTD).iter = 0;
 
   (*pTD).N = 0;
@@ -101,8 +99,6 @@ neut_tdyn_alloc (struct TDYN *pTD, int N, int Nall)
 void
 neut_tdyn_free (struct TDYN *pTD)
 {
-  ut_free_1d_char (&(*pTD).algoneigh);
-
   ut_free_2d (&(*pTD).neighrefcoo, (*pTD).Nall + 1);
   ut_free_1d (&(*pTD).neighrefw);
   ut_free_2d_int (&(*pTD).neighlist, (*pTD).Nall + 1);

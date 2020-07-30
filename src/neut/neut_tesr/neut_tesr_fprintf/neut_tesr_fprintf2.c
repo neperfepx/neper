@@ -91,13 +91,8 @@ neut_tesr_fprintf_cell (FILE * file, struct TESR Tesr)
   if (Tesr.CellOri)
   {
     fprintf (file, "  *ori\n");
-    fprintf (file, "   e\n");
-    for (i = 1; i <= Tesr.CellQty; i++)
-    {
-      fprintf (file, "   ");
-      ol_q_e (Tesr.CellOri[i], e);
-      ol_e_fprintf (file, e, "%17.12f");
-    }
+    fprintf (file, "   %s\n", Tesr.CellOriDes);
+    neut_ori_fprintf (file, Tesr.CellOriDes, Tesr.CellOri + 1, Tesr.CellQty, NULL);
   }
 
   if (Tesr.CellCoo)

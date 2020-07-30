@@ -64,7 +64,6 @@ neut_multim_init (int dim, char *list, int cellqty, struct MULTIM *pMultim)
                  &ind_algo, &(*pMultim).algoqty);
 
   (*pMultim).algos = ut_alloc_3d_char ((*pMultim).algoqty, 2, 5);
-  (*pMultim).algohit = ut_alloc_1d_int ((*pMultim).algoqty);
 
   for (i = 0; i < (*pMultim).algoqty; i++)
   {

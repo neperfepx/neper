@@ -740,7 +740,7 @@ namespace mu
       iStat += EqnTest( _T("-(1+1)'"),-4, true);
       iStat += EqnTest( _T("2+-(1+1)'"),-2, true);
       iStat += EqnTest( _T("2+-2'"), -2, true);
-      // This is the classic behaviour of the infix sign operator (here: "$") which is
+      // This is the classic behavior of the infix sign operator (here: "$") which is
       // now deprecated:
       iStat += EqnTest( _T("$2^2"),4, true);
       iStat += EqnTest( _T("$(a+b)^2"),9, true);

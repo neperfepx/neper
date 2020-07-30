@@ -7,13 +7,13 @@
 void
 neut_mesh_fprintf_vtk (FILE * file, char *dim, struct NODES Nodes,
                        struct MESH Mesh1D, struct MESH Mesh2D,
-                       struct MESH Mesh3D, struct PART Part)
+                       struct MESH Mesh3D)
 {
   neut_meshheader_fprintf_vtk (file);
 
   neut_nodes_fprintf_vtk (file, Nodes);
 
-  neut_elts_fprintf_vtk (file, dim, Nodes, Mesh1D, Mesh2D, Mesh3D, Part);
+  neut_elts_fprintf_vtk (file, dim, Nodes, Mesh1D, Mesh2D, Mesh3D);
 
   return;
 }
@@ -22,7 +22,7 @@ void
 neut_meshheader_fprintf_vtk (FILE * file)
 {
   fprintf (file, "# vtk DataFile Version 3.0\n");
-  fprintf (file, "Fepx Data\n");
+  fprintf (file, "mesh\n");
   fprintf (file, "ASCII\n");
   fprintf (file, "DATASET UNSTRUCTURED_GRID\n");
 
@@ -32,12 +32,13 @@ neut_meshheader_fprintf_vtk (FILE * file)
 void
 neut_elts_fprintf_vtk (FILE * file, char *dim, struct NODES Nodes,
                        struct MESH Mesh1D, struct MESH Mesh2D,
-                       struct MESH Mesh3D, struct PART Part)
+                       struct MESH Mesh3D)
 {
   int i, j, elset;
   int eltnodeqty1D, eltnodeqty2D, eltnodeqty3D, elttype_1D, elttype_2D,
     elttype_3D;
   int *shift = ut_alloc_1d_int (4);
+  (void) Nodes;
 
   eltnodeqty1D =
     neut_elt_nodeqty (Mesh1D.EltType, Mesh1D.Dimension, Mesh1D.EltOrder);
@@ -72,7 +73,7 @@ neut_elts_fprintf_vtk (FILE * file, char *dim, struct NODES Nodes,
     elttype_3D = 10;
   else if (Mesh3D.EltType && !strcmp (Mesh3D.EltType, "tri")
            && Mesh3D.EltOrder == 2)
-    elttype_2D = 24;
+    elttype_3D = 24;
   else if (Mesh3D.EltType && !strcmp (Mesh3D.EltType, "quad")
            && Mesh3D.EltOrder == 1)
     elttype_3D = 12;
@@ -98,7 +99,6 @@ neut_elts_fprintf_vtk (FILE * file, char *dim, struct NODES Nodes,
     for (i = 1; i <= Mesh1D.EltQty; i++)
       fprintf (file, "%d\n", elttype_1D);
 
-    fprintf (file, "POINT_DATA %d\n", Nodes.NodeQty);
     fprintf (file, "CELL_DATA %d\n", Mesh1D.EltQty);
     fprintf (file, "SCALARS edge double\n");
     fprintf (file, "LOOKUP_TABLE default\n");
@@ -143,7 +143,6 @@ neut_elts_fprintf_vtk (FILE * file, char *dim, struct NODES Nodes,
     for (i = 1; i <= Mesh2D.EltQty; i++)
       fprintf (file, "%d\n", elttype_2D);
 
-    fprintf (file, "POINT_DATA %d\n", Nodes.NodeQty);
     fprintf (file, "CELL_DATA %d\n", Mesh2D.EltQty);
     fprintf (file, "SCALARS face double\n");
     fprintf (file, "LOOKUP_TABLE default\n");
@@ -220,7 +219,6 @@ neut_elts_fprintf_vtk (FILE * file, char *dim, struct NODES Nodes,
     for (i = 1; i <= Mesh3D.EltQty; i++)
       fprintf (file, "%d\n", elttype_3D);
 
-    fprintf (file, "POINT_DATA %d\n", Nodes.NodeQty);
     fprintf (file, "CELL_DATA %d\n", Mesh3D.EltQty);
     fprintf (file, "SCALARS poly double\n");
     fprintf (file, "LOOKUP_TABLE default\n");
@@ -233,19 +231,19 @@ neut_elts_fprintf_vtk (FILE * file, char *dim, struct NODES Nodes,
     }
   }
 
-  if (Part.qty > 0)
+  if (Mesh3D.PartQty > 0)
   {
     fprintf (file, "SCALARS part double\n");
     fprintf (file, "LOOKUP_TABLE default\n");
     if (Mesh3D.EltQty > 0)
       for (i = 1; i <= Mesh3D.EltQty; i++)
-        fprintf (file, "%f\n", (double) Part.elt_parts[i] + 1);
+        fprintf (file, "%f\n", (double) Mesh3D.EltPart[i]);
     else if (Mesh2D.EltQty > 0)
       for (i = 1; i <= Mesh2D.EltQty; i++)
-        fprintf (file, "%f\n", (double) Part.elt_parts[i] + 1);
+        fprintf (file, "%f\n", (double) Mesh3D.EltPart[i]);
     else if (Mesh1D.EltQty > 0)
       for (i = 1; i <= Mesh1D.EltQty; i++)
-        fprintf (file, "%f\n", (double) Part.elt_parts[i] + 1);
+        fprintf (file, "%f\n", (double) Mesh3D.EltPart[i]);
     else
       abort ();
   }

@@ -50,8 +50,6 @@ nem_meshing_1D_edge_algo_mesh (int node1, int node2, int edge, double l,
 
   // Recording N -------------------------------------------------------
 
-  neut_nodes_set_zero (pN);
-
   (*pN).NodeQty = 2 + ptqty;
   (*pN).NodeCoo = ut_alloc_2d (3 + ptqty, 3);
   (*pN).NodeCl = ut_alloc_1d (3 + ptqty);

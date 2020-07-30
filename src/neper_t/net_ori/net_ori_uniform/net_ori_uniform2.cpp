@@ -79,7 +79,7 @@ net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
   ut_print_message (0, verbositylevel, "Crystal symmetry: %s",
                     (*pOSet).crysym);
   if ((*pOOpt).neighd < M_PI - OL_EPS_RAD)
-    printf (", neighbour cut-off: %.6f", (*pOOpt).neighd);
+    printf (", neighbor cut-off: %.6f", (*pOOpt).neighd);
   else
     printf (", no cut-off");
   printf ("\n");

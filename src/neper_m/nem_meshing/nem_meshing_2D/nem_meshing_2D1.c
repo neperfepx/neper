@@ -93,7 +93,8 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara, struct TESS Tess,
   neut_mesh_init_nodeelts (Mesh + 2, (*pNodes).NodeQty);
   neut_mesh_init_eltelset (Mesh + 2, NULL);
   neut_mesh_init_elsetlabels (Mesh + 2);
-  neut_nodes_init_nodeslave (pNodes);
+  if (!strcmp (Tess.Type, "periodic"))
+    neut_nodes_init_nodeslave (pNodes);
 
   neut_multim_free (&Multim, Tess.FaceQty);
 
@@ -118,6 +119,7 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara, struct TESS Tess,
   ut_free_2d_int (&bnodes, Tess.FaceQty + 1);
   ut_free_2d_int (&lbnodes, Tess.FaceQty + 1);
   ut_free_2d_int (&N_global_id, Tess.FaceQty + 1);
+  ut_free_2d_int (&master_id, Tess.FaceQty + 1);
 
   return;
 }

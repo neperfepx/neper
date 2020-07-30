@@ -10,7 +10,7 @@ neut_tess_extrude (struct TESS Tess, double d, struct TESS *pT)
   if (Tess.Dim != 2)
     ut_print_neperbug ();
 
-  neut_tess_free (pT);
+  neut_tess_reset (pT);
 
   neut_tess_extrude_gen (Tess, pT);
 

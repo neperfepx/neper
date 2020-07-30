@@ -42,7 +42,7 @@ nem_transform_explode (char *explode, struct NODES *pNodes, struct MESH *Mesh)
   double factor, dist;
   double *c = ut_alloc_1d (3), *C = ut_alloc_1d (3);
   double *v = ut_alloc_1d (3);
-  int nodeqty, *nodes = NULL;
+  int NodeQty, *nodes = NULL;
 
   neut_mesh_centre (*pNodes, Mesh[dim], C);
 
@@ -56,9 +56,9 @@ nem_transform_explode (char *explode, struct NODES *pNodes, struct MESH *Mesh)
     dist = ut_array_1d_norm (v, 3);
     ut_array_1d_scale (v, 3, dist * factor);
 
-    neut_mesh_elset_nodes (Mesh[dim], i, &nodes, &nodeqty);
+    neut_mesh_elset_nodes (Mesh[dim], i, &nodes, &NodeQty);
 
-    for (j = 0; j < nodeqty; j++)
+    for (j = 0; j < NodeQty; j++)
       ut_array_1d_add ((*pNodes).NodeCoo[nodes[j]], v, 3,
                        (*pNodes).NodeCoo[nodes[j]]);
   }
@@ -92,9 +92,9 @@ nem_transform_slice (char *slice, struct NODES *pNodes, struct MESH *Mesh)
   neut_mesh_memcpy (SMesh, Mesh + 2);
   neut_nodes_free (&SNodes);
   neut_mesh_free (&SMesh);
-  neut_mesh_free (Mesh + 3);
-  neut_mesh_free (Mesh + 1);
-  neut_mesh_free (Mesh + 0);
+  neut_mesh_reset (Mesh + 3);
+  neut_mesh_reset (Mesh + 1);
+  neut_mesh_reset (Mesh + 0);
 
   ut_free_1d (&eq);
   ut_free_1d_int (&elt_newold);

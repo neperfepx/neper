@@ -18,7 +18,6 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("voronoi", &(*pIn).morphostring);
   ut_string_string ("default", &(*pIn).morphooptialgostring);
   ut_string_string ("default", &(*pIn).morphooptiinistring);
-  ut_string_string ("nanoflann", &(*pIn).morphooptialgoneighstring);
   ut_string_string ("max(varnb,1000)", &(*pIn).morphooptialgomaxiterstring);
   ut_string_string ("default", &(*pIn).morphooptiobjectivestring);
   ut_string_string ("default", &(*pIn).morphooptigridstring);
@@ -49,7 +48,8 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("none", &(*pIn).format);
   ut_string_string ("binary16", &(*pIn).tesrformat);
 
-  ut_string_string ("default", &((*pIn).oristring));
+  ut_string_string ("default", &(*pIn).oristring);
+  ut_string_string ("none", &(*pIn).oridistribstring);
   ut_string_string ("default", &(*pIn).orioptistopstring);
   ut_string_string ("default", &(*pIn).orioptineighstring);
   ut_string_string ("default", &(*pIn).orioptiinistring);
@@ -57,7 +57,7 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("default", &((*pIn).oricrysymstring));
   ut_string_string ("none", &(*pIn).orioptilogvarstring);
 
-  ut_string_string ("e", &((*pIn).orides));
+  ut_string_string (NEUT_DEFAULT_ORIDESFULL, &((*pIn).orides));
   ut_string_string ("plain", &((*pIn).oriformat));
 
   // copying defaults to first line of multiscale parameters
@@ -71,9 +71,6 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ((*pIn).morphooptiinistring, (*pIn).morphooptiini);
   (*pIn).morphooptialgo = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).morphooptialgostring, (*pIn).morphooptialgo);
-  (*pIn).morphooptialgoneigh = ut_alloc_1d_pchar (1);
-  ut_string_string ((*pIn).morphooptialgoneighstring,
-                    (*pIn).morphooptialgoneigh);
   (*pIn).morphooptialgomaxiter = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).morphooptialgomaxiterstring,
                     (*pIn).morphooptialgomaxiter);
@@ -121,6 +118,8 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ((*pIn).orioptifixstring, (*pIn).orioptifix);
   (*pIn).orioptilogvar = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).orioptilogvarstring, (*pIn).orioptilogvar);
+  (*pIn).oridistrib = ut_alloc_1d_pchar (1);
+  ut_string_string ((*pIn).oridistribstring, (*pIn).oridistrib);
 
   return;
 }
@@ -141,7 +140,6 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-morpho");
   strcpy (ArgList[++ArgQty], "-morphooptiini");
   strcpy (ArgList[++ArgQty], "-morphooptialgo");
-  strcpy (ArgList[++ArgQty], "-morphooptialgoneigh");
   strcpy (ArgList[++ArgQty], "-morphooptialgoini");
   strcpy (ArgList[++ArgQty], "-morphooptialgomaxiter");
   strcpy (ArgList[++ArgQty], "-morphooptiobjective");
@@ -167,6 +165,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-domain");
   strcpy (ArgList[++ArgQty], "-domainfacet");
   strcpy (ArgList[++ArgQty], "-transform");
+  strcpy (ArgList[++ArgQty], "-group");
   // Regularization options --------------------------------------------
   strcpy (ArgList[++ArgQty], "-regularization");
   strcpy (ArgList[++ArgQty], "-fmax");
@@ -187,7 +186,10 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-oricrysym");
   strcpy (ArgList[++ArgQty], "-oriformat");
   strcpy (ArgList[++ArgQty], "-orioptilogvar");
+  strcpy (ArgList[++ArgQty], "-oridistrib");
   // Post-processing ---------------------------------------------------
+  strcpy (ArgList[++ArgQty], "-stattess");
+  strcpy (ArgList[++ArgQty], "-stattesr");
   strcpy (ArgList[++ArgQty], "-statver");
   strcpy (ArgList[++ArgQty], "-statedge");
   strcpy (ArgList[++ArgQty], "-statface");
@@ -261,9 +263,6 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptiinistring));
     else if (!strcmp (Arg, "-morphooptialgo"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).morphooptialgostring));
-    else if (!strcmp (Arg, "-morphooptialgoneigh"))
-      ut_arg_nextasstring (argv, &i, Arg,
-                           &((*pIn).morphooptialgoneighstring));
     else if (!strcmp (Arg, "-morphooptialgomaxiter"))
       ut_arg_nextasstring (argv, &i, Arg,
                            &((*pIn).morphooptialgomaxiterstring));
@@ -314,6 +313,8 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).domain));
     else if (!strcmp (Arg, "-transform"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transform));
+    else if (!strcmp (Arg, "-group"))
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).group));
 
 /*----------------------------------------------------------------------
 * regularization options */
@@ -362,8 +363,14 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oriformat));
     else if (!strcmp (Arg, "-orioptilogvar"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).orioptilogvarstring));
+    else if (!strcmp (Arg, "-oridistrib"))
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oridistribstring));
     else if (!strcmp (Arg, "-statcell"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).stc));
+    else if (!strcmp (Arg, "-stattess"))
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).sttess));
+    else if (!strcmp (Arg, "-stattesr"))
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).sttesr));
     else if (!strcmp (Arg, "-statver"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).stv));
     else if (!strcmp (Arg, "-statedge"))

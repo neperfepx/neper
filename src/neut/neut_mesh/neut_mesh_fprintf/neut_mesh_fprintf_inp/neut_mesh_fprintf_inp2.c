@@ -265,7 +265,7 @@ neut_mesh_fprintf_inp_nsets (FILE * file, struct NSET NSet0D,
     for (j = 1; j <= NSet0D.qty; j++)
       if (!strcmp (name[i], NSet0D.names[j]))
       {
-        neut_mesh_fprintf_inp_nset (file, NSet0D.names[j], NSet0D.nodeqty[j],
+        neut_mesh_fprintf_inp_nset (file, NSet0D.names[j], NSet0D.NodeQty[j],
                                     NSet0D.nodes[j], instance);
         status = 0;
         break;
@@ -277,7 +277,7 @@ neut_mesh_fprintf_inp_nsets (FILE * file, struct NSET NSet0D,
     for (j = 1; j <= NSet1D.qty; j++)
       if (!strcmp (name[i], NSet1D.names[j]))
       {
-        neut_mesh_fprintf_inp_nset (file, NSet1D.names[j], NSet1D.nodeqty[j],
+        neut_mesh_fprintf_inp_nset (file, NSet1D.names[j], NSet1D.NodeQty[j],
                                     NSet1D.nodes[j], instance);
         status = 0;
         break;
@@ -289,7 +289,7 @@ neut_mesh_fprintf_inp_nsets (FILE * file, struct NSET NSet0D,
     for (j = 1; j <= NSet2D.qty; j++)
       if (!strcmp (name[i], NSet2D.names[j]))
       {
-        neut_mesh_fprintf_inp_nset (file, NSet2D.names[j], NSet2D.nodeqty[j],
+        neut_mesh_fprintf_inp_nset (file, NSet2D.names[j], NSet2D.NodeQty[j],
                                     NSet2D.nodes[j], instance);
         status = 0;
         break;
@@ -322,60 +322,6 @@ neut_mesh_fprintf_inp_nset (FILE * file, char *name, int qty, int *nodeset,
     ut_print_wnc_wnelts (file, &Col, 72, &call, 16,
                          (i < qty - 1) ? "%d," : "%d\n", nodeset[i]);
   fprintf (file, "\n");
-
-  return;
-}
-
-void
-neut_mesh_fprintf_inp_part_nset (FILE * file, struct PART Part)
-{
-  int p, i, Col, call, nodeqty;
-  int *nodes = ut_alloc_1d_int (Part.node_parts[0]);
-
-  for (p = 0; p < Part.qty; p++)
-  {
-    nodeqty = 0;
-    for (i = 1; i <= Part.node_parts[0]; i++)
-      if (Part.node_parts[i] == p)
-        nodes[nodeqty++] = i;
-
-    fprintf (file, "*Nset, nset=part%d\n", p + 1);
-    Col = 0;
-    call = 0;
-    for (i = 0; i < nodeqty; i++)
-      ut_print_wnc_wnelts (file, &Col, 72, &call, 16,
-                           (i < nodeqty - 1) ? "%d," : "%d\n", nodes[i]);
-
-    fprintf (file, "\n");
-  }
-
-  ut_free_1d_int (&nodes);
-
-  return;
-}
-
-void
-neut_mesh_fprintf_inp_part_elset (FILE * file, struct PART Part)
-{
-  int p, i, Col, eltqty, call;
-  int *elts = ut_alloc_1d_int (Part.elt_parts[0]);
-
-  for (p = 0; p < Part.qty; p++)
-  {
-    eltqty = 0;
-    for (i = 1; i <= Part.elt_parts[0]; i++)
-      if (Part.elt_parts[i] == p)
-        elts[eltqty++] = i;
-
-    fprintf (file, "*Elset, elset=part%d\n", p + 1);
-    Col = 0;
-    call = 0;
-    for (i = 0; i < eltqty; i++)
-      ut_print_wnc_wnelts (file, &Col, 72, &call, 16,
-                           (i < eltqty - 1) ? "%d," : "%d\n", elts[i]);
-
-    fprintf (file, "\n");
-  }
 
   return;
 }

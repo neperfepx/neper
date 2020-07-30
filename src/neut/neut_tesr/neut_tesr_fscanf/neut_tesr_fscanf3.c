@@ -97,7 +97,7 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
 {
   int i, j, k, l, endian = ut_sys_endian ();
 
-  if (!strcmp (des, "g"))
+  if (!strcmp (des, "rotmat"))
   {
     double **g = ol_g_alloc ();
     for (k = 1; k <= (*pTesr).size[2]; k++)
@@ -120,7 +120,7 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
     ol_g_free (g);
   }
 
-  else if (!strcmp (des, "rtheta"))
+  else if (!strcmp (des, "axis-angle"))
   {
     double theta, *r = ol_r_alloc ();
     for (k = 1; k <= (*pTesr).size[2]; k++)
@@ -149,7 +149,7 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
     ol_r_free (r);
   }
 
-  else if (!strcmp (des, "R"))
+  else if (!strcmp (des, "rodrigues"))
   {
     double *R = ol_R_alloc ();
     for (k = 1; k <= (*pTesr).size[2]; k++)
@@ -172,7 +172,7 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
     ol_R_free (R);
   }
 
-  else if (!strcmp (des, "q"))
+  else if (!strcmp (des, "quaternion"))
   {
     for (k = 1; k <= (*pTesr).size[2]; k++)
       for (j = 1; j <= (*pTesr).size[1]; j++)
@@ -192,7 +192,7 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
             }
   }
 
-  else if (!strcmp (des, "e"))
+  else if (!strcmp (des, "euler-bunge"))
   {
     double *e = ol_e_alloc ();
     for (k = 1; k <= (*pTesr).size[2]; k++)
@@ -215,7 +215,7 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
     ol_e_free (e);
   }
 
-  else if (!strcmp (des, "ek"))
+  else if (!strcmp (des, "euler-kocks"))
   {
     double *e = ol_e_alloc ();
     for (k = 1; k <= (*pTesr).size[2]; k++)
@@ -239,7 +239,7 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
     ol_e_free (e);
   }
 
-  else if (!strcmp (des, "er"))
+  else if (!strcmp (des, "euler-roe"))
   {
     double *e = ol_e_alloc ();
     for (k = 1; k <= (*pTesr).size[2]; k++)

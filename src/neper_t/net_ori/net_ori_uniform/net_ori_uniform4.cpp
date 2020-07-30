@@ -156,7 +156,7 @@ net_ori_uniform_log_var (struct IN_T In, int iter, struct OL_SET OSet,
         fprintf (OOpt.logvar_fp, "%d", iter);
       else if (!strcmp (vars[j], "id"))
         fprintf (OOpt.logvar_fp, "%d", i + 1);
-      else if (!strcmp (vars[j], "g"))
+      else if (!strcmp (vars[j], "rotmat"))
       {
         ol_q_g (q, g);
         for (k = 0; k < 3; k++)
@@ -166,31 +166,31 @@ net_ori_uniform_log_var (struct IN_T In, int iter, struct OL_SET OSet,
             fprintf (OOpt.logvar_fp, " ");
         }
       }
-      else if (!strcmp (vars[j], "rtheta"))
+      else if (!strcmp (vars[j], "angle-axis"))
       {
         ol_q_rtheta (q, r, &theta);
         ut_array_1d_fprintf_nonl (OOpt.logvar_fp, r, 3, "%.12f");
         fprintf (OOpt.logvar_fp, " %.12f", theta);
       }
-      else if (!strcmp (vars[j], "R"))
+      else if (!strcmp (vars[j], "rodrigues"))
       {
         ol_q_R (q, R);
         ut_array_1d_fprintf_nonl (OOpt.logvar_fp, R, 3, "%.12f");
       }
-      else if (!strcmp (vars[j], "q"))
+      else if (!strcmp (vars[j], "quaternion"))
         ut_array_1d_fprintf_nonl (OOpt.logvar_fp, OSet.q[i], 4, "%.12f");
-      else if (!strcmp (vars[j], "e"))
+      else if (!strcmp (vars[j], "euler-bunge"))
       {
         ol_q_e (q, tmp);
         ut_array_1d_fprintf_nonl (OOpt.logvar_fp, tmp, 3, "%.12f");
       }
-      else if (!strcmp (vars[j], "ek"))
+      else if (!strcmp (vars[j], "euler-kocks"))
       {
         ol_q_e (q, tmp);
         ol_e_ek (tmp, tmp);
         ut_array_1d_fprintf_nonl (OOpt.logvar_fp, tmp, 3, "%.12f");
       }
-      else if (!strcmp (vars[j], "er"))
+      else if (!strcmp (vars[j], "euler-roe"))
       {
         ol_q_e (q, tmp);
         ol_e_er (tmp, tmp);

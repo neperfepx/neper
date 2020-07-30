@@ -351,6 +351,13 @@ ut_string_function (char *string, char **pfct, char ***pvars, char ***pvals,
     return;
   }
 
+  if (!strstr (string, "("))
+  {
+    ut_string_string (string, pfct);
+    *pqty = 0;
+    return;
+  }
+
   string3 = ut_alloc_1d_char (strlen (string) + 1);
   tmp = ut_alloc_1d_char (strlen (string) + 1);
 
@@ -501,7 +508,32 @@ ut_string_paste (char *string1, char *string2)
 }
 
 char *
-ut_string_array_paste (char **string, int qty)
+ut_string_paste3 (char *string1, char *string2, char *string3)
+{
+  char *res;
+
+  res = ut_alloc_1d_char (strlen (string1) + strlen (string2) + strlen (string3) + 1);
+
+  sprintf (res, "%s%s%s", string1, string2, string3);
+
+  return res;
+}
+
+char *
+ut_string_paste4 (char *string1, char *string2, char *string3, char *string4)
+{
+  char *res;
+
+  res = ut_alloc_1d_char (strlen (string1) + strlen (string2)
+                        + strlen (string3) + strlen (string4) + 1);
+
+  sprintf (res, "%s%s%s%s", string1, string2, string3, string4);
+
+  return res;
+}
+
+char *
+ut_string_array_paste (char **string, int qty, char *sep)
 {
   int i;
   char *res;
@@ -510,9 +542,15 @@ ut_string_array_paste (char **string, int qty)
   for (i = 0; i < qty; i++)
     length += strlen (string[i]);
 
-  res = ut_alloc_1d_char (length + 1);
+  int seplength = sep ? (qty - 1) * strlen (sep) : 0;
+
+  res = ut_alloc_1d_char (length + seplength + 1);
   for (i = 0; i < qty; i++)
+  {
     res = strcat (res, string[i]);
+    if (i < qty - 1 && sep && strlen (sep) > 0)
+      res = strcat (res, sep);
+  }
 
   return res;
 }
@@ -640,6 +678,28 @@ ut_string_string (const char *input, char **poutput)
     ut_free_1d_char (poutput);
 
   return;
+}
+
+int
+ut_string_strcmp (const char *string1, const char *string2)
+{
+  if (!string1 && !string2)
+    return 0;
+  else if (!string1 || !string2)
+    return -1;
+  else
+    return strcmp (string1, string2);
+}
+
+int
+ut_string_strncmp (const char *string1, const char *string2, int length)
+{
+  if (!string1 && !string2)
+    return 0;
+  else if (!string1 || !string2)
+    return -1;
+  else
+    return strncmp (string1, string2, length);
 }
 
 int

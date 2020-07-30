@@ -418,6 +418,19 @@ neut_tess_tess_cellmodeid (struct TESS TessA, struct TESS *pTessB)
 }
 
 void
+neut_tess_tess_cellgroupid (struct TESS TessA, struct TESS *pTessB)
+{
+  if (!TessA.CellGroup)
+    return;
+
+  (*pTessB).CellGroup = ut_alloc_1d_int (TessA.CellQty + 1);
+  ut_array_1d_int_memcpy (TessA.CellGroup + 1, TessA.CellQty,
+                          (*pTessB).CellGroup + 1);
+
+  return;
+}
+
+void
 neut_tess_tess_cellbody (struct TESS TessA, struct TESS *pTessB)
 {
   if (!TessA.CellBody)

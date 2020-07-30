@@ -33,8 +33,12 @@ extern void net_ori_spread (char *ori, struct SEEDSET *SSet, int dtess,
 
 extern void net_ori_mtess_params (struct IN_T In, int level, struct MTESS MTess,
                                   struct TESS *Tess, int dtess, int dcell,
-                                  char **pori, char **pcrysym);
+                                  char **pori, char **poridistrib, char **pcrysym);
 
 extern int net_ori_mtess_randseed_rand (int *N, int *id, int *poly, int levelqty);
 
-extern void net_ori_memcpy (struct SEEDSET *pSSet, struct OL_SET OSet);
+extern void net_ori_memcpy (struct OL_SET OSet, struct SEEDSET *pSSet);
+
+extern void net_oridistrib (char *oridistrib, struct SEEDSET *pSSet);
+
+extern void net_oridistrib_file (char *oridistrib, struct SEEDSET *pSSet);

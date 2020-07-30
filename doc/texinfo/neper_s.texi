@@ -1,0 +1,151 @@
+@c This file is part of the Neper software package.
+@c Copyright (C) 2003-2018 Romain Quey
+@c See the COPYING file in the top-level directory.
+
+@node Simulation Module (-S)
+@chapter Simulation Module (-S)
+
+@MS{} is the module for post-processing simulation results.  Its primarily aims at reformatting an FEPX raw result directory into a @dfn{simulation directory} (@pxref{Simulation Directory (@file{.sim})}), which is as simple as running @samp{neper -S @var{fepx_res_dir}}, where @samp{@var{fepx_res_dir}} is the FEPX raw result directory.  All FEPX raw results are reformatted by default, but a list of specific results (or new results) can be specified using options @option{-noderes} and @option{-eltres}.
+The simulation directory has a simple structure and can be loaded in @mV{} for result visualization.
+
+@sp 1
+Here is what a typical run of @mS{} looks like:
+
+@example
+$ neper -S fepx-simulation
+
+========================    N   e   p   e   r    =======================
+Info   : A software package for polycrystal generation and meshing.
+Info   : Version 3.5.3-108-neper-fepx
+Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
+Info   : Running on 8 threads.
+Info   : <http://neper.info>
+Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
+Info   : Loading initialization file `/home/rquey/.neperrc'...
+Info   : ---------------------------------------------------------------
+Info   : MODULE  -S loaded with arguments:
+Info   : [ini file] (none)
+Info   : [com line] fepx-simulation
+Info   : ---------------------------------------------------------------
+Info   : Reading input data...
+Info   :   - Reading arguments...
+Info   : Writing simulation directory from FEPX result directory...
+Info   :     [o] Writing directory `fepx-simulation.sim'...
+Info   :   - Parsing FEPX results...
+Info   :     [i] Parsing file `fepx-simulation/post.report'...
+Info   :     [i] Parsed file `fepx-simulation/post.report'.
+Info   :     > Partition number: 8.
+Info   :     > Step      number: 10.
+Info   :     > Node      number: 2752.
+Info   :     > Element   number: 1596.
+Info   :   - Writing report file...
+Info   :     [o] Writing file `fepx-simulation.sim/report'...
+Info   :     [o] Wrote file `fepx-simulation.sim/report'.
+Info   :   - Writing inputs...
+Info   :     [o] Writing directory `fepx-simulation.sim/inputs'...
+Info   :       . simulation.tess...
+Info   :       . simulation.msh...
+Info   :       . simulation.config...
+Info   :     [o] Wrote directory `fepx-simulation.sim/inputs'.
+Info   :   - Writing results...
+Info   :     [o] Writing directory `fepx-simulation.sim/results'...
+Info   :       . coo...       100%
+Info   :       . ori...       100%
+Info   :     [o] Wrote directory `fepx-simulation.sim/results'.
+Info   :     [o] Wrote directory `fepx-simulation.sim'.
+Info   : Elapsed time: 0.075 secs.
+========================================================================
+
+@end example
+
+@section Arguments
+
+@subsection Input Data
+
+@inp{, directory_name,
+Specify the name of the input directory.  It can be an FEPX raw result directory
+or a simulation directory.,
+any, none}
+
+@subsection Results Options
+
+Below are options to define the results to write.  In the case where a
+simulation directory is loaded as input, the specified results add to the
+existing results.
+
+@opt{-noderes, char_string,
+Specify the nodal results to output. Provide @samp{none} for none@comma{}
+@samp{inputres} for all FEPX raw results@comma{} @samp{@var{res}}
+for a specific FEPX raw results@comma{}
+or any expression based on the variables listed in @ref{Mesh Keys}.
+To provide several values@comma{} combine them with @samp{@SEPNODEP{}}.,
+any, inputres}
+
+@opt{-eltres, char_string,
+Specify the elemental results to output. Provide @samp{none} for none@comma{}
+@samp{inputres} for all FEPX raw results@comma{} @samp{@var{res}}
+for a specific FEPX raw results@comma{}
+or any expression based on the variables listed in @ref{Mesh Keys}.
+To provide several values@comma{} combine them with @samp{@SEPNODEP{}}.,
+any, inputres}
+
+@subsection Output Options
+
+@kindex -o
+@opt{-o, directory_name,
+Specify the name of the output simulation directory (the default @file{.sim} extension
+is not added to the argument).,
+any, @var{fepx_result_directory}.sim}
+
+@c @subsection Post-Processing Options
+@c
+@c @kindex -outdata
+@c @opt{-outdata, char_string,
+@c Specify the output data (variables)@comma{}
+@c which can be the following:@*
+@c @bullet{} @samp{@var{sig}} for the stress;@*
+@c @bullet{} @samp{@var{eel}} for the elastic strain;@*
+@c @bullet{} @samp{@var{ori}} for the crystal orientation;@*
+@c @bullet{} @samp{@var{gdt}} for the slip rates;@*
+@c @bullet{} @samp{@var{tau}} for the slip strengths;@*
+@c @bullet{} @samp{@var{gam}} for the slip amplitudes;@*
+@c @bullet{} @samp{@var{gsm}} for the sum of the slip amplitudes;@*
+@c @bullet{} @samp{@var{wpl}} for the plastic work;@*
+@c @bullet{} @samp{@var{all}} for all.
+@c ,
+@c see above list, none}
+@c
+@c @kindex -grainextract
+@c @opt{-grainextract, char_string,
+@c Specify the grains to extract.  Provide a list of numbers or @samp{all} for all.,
+@c see above list, none}
+@c
+@c @kindex -grainoutdata
+@c @opt{-grainoutdata, char_string,
+@c Specify the grain output data (variables).,
+@c any, none}
+
+@section Output Directory
+
+The output directory is
+
+@itemize
+
+@item Simulation directory @code{.sim}
+
+It contains the input files and the results of the simulation.  @xref{Simulation Directory (@file{.sim})} for details on its content.
+
+@end itemize
+
+@section Examples
+
+Below are some examples of use of neper -S.
+
+@enumerate
+@c Example_beg
+@item    Transform an FEPX raw result directory into a simulation directory of specified name.
+@com{neper -S fepx-simulation -o @var{foo}}
+
+@item    Transform an FEPX raw result directory into a simulation directory of specified results: the nodal @samp{coo} and the elemental @samp{ori}.
+@com{neper -S fepx-simulation -noderes coo -eltres ori}
+@end enumerate

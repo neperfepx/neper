@@ -220,7 +220,7 @@ namespace mu
   }
 
   //---------------------------------------------------------------------------
-  /** \brief Set Flag that controls behaviour in case of undefined variables being found. 
+  /** \brief Set Flag that controls behavior in case of undefined variables being found. 
   
     If true, the parser does not throw an exception if an undefined variable is found. 
     otherwise it does. This variable is used internally only!

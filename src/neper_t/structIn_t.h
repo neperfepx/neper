@@ -28,8 +28,6 @@ extern "C"
     char **morphooptialgo;		//
     char *morphooptiinistring;		// opti algorithm
     char **morphooptiini;		//
-    char *morphooptialgoneighstring;    // opti algorithm / neighbour search
-    char **morphooptialgoneigh;		//
     char *morphooptialgomaxiterstring;  // max number of iterations without
     					// decreasing the objective function
     char **morphooptialgomaxiter;	//
@@ -66,7 +64,7 @@ extern "C"
     char **oricrysym;			//
     char *orioptistopstring;            // orientation opti / termination criterion
     char **orioptistop;                 //
-    char *orioptineighstring;           // orientation opti / neighbour string
+    char *orioptineighstring;           // orientation opti / neighbor string
     char **orioptineigh;                //
     char *orioptiinistring;             // orientation opti initial orientations
     char **orioptiini;                  //
@@ -74,6 +72,9 @@ extern "C"
     char **orioptifix;                  //
     char *orioptilogvarstring;           // variable log
     char **orioptilogvar;		//
+
+    char *oridistribstring;		// orientation spread string
+    char **oridistrib;                   // orientation spreads
 
     // post-tessellation options
     int reg;				// regularization
@@ -86,6 +87,8 @@ extern "C"
     int checktess;			// checking tess?
 
     char *transform;			// transformation
+
+    char *group;                      // cell sets
 
     // internal variables
     int *periodic;			// periodicity
@@ -115,6 +118,8 @@ extern "C"
     char *stl;				// stl file
     char *dec;				// 3dec file
     char *fe;				// fe file
+    char *sttess;			// tess stat file
+    char *sttesr;			// tesr stat file
     char *stc;				// cell stat file
     char *stv;				// ver stat file
     char *ste;				// edge stat file

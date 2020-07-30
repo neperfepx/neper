@@ -120,6 +120,7 @@ neut_elt_nodeqty (char *type, int dim, int order)
 
   ut_free_2d_int (&TriNodesPerElt, 4);
   ut_free_2d_int (&QuadNodesPerElt, 4);
+  ut_free_2d_int (&Quad6NodesPerElt, 4);
   ut_free_2d_int (&Quad9NodesPerElt, 4);
   ut_free_2d_int (&TriPrismNodesPerElt, 4);
 
@@ -163,15 +164,15 @@ int
 neut_elt_boundlist (char *type, int dim, int ***pbounds, int *pboundqty,
                     int *pnodeqty)
 {
-  int nodeqty;
+  int NodeQty;
 
   (*pboundqty) = neut_elt_boundqty (type, dim);
-  nodeqty = neut_elt_nodeqty (type, dim - 1, 1);
+  NodeQty = neut_elt_nodeqty (type, dim - 1, 1);
 
   if (pnodeqty)
-    (*pnodeqty) = nodeqty;
+    (*pnodeqty) = NodeQty;
 
-  (*pbounds) = ut_alloc_2d_int (*pboundqty, nodeqty);
+  (*pbounds) = ut_alloc_2d_int (*pboundqty, NodeQty);
 
   if (dim == 1)
   {
@@ -255,7 +256,7 @@ neut_elt_boundlist (char *type, int dim, int ***pbounds, int *pboundqty,
 }
 
 int
-neut_elt_order (char *type, int dim, int nodeqty)
+neut_elt_order (char *type, int dim, int NodeQty)
 {
   int res = -1;
 
@@ -263,23 +264,23 @@ neut_elt_order (char *type, int dim, int nodeqty)
   {
     if (dim == 3)
     {
-      if (nodeqty == 4)
+      if (NodeQty == 4)
         res = 1;
-      else if (nodeqty == 10)
+      else if (NodeQty == 10)
         res = 2;
     }
     if (dim == 2)
     {
-      if (nodeqty == 3)
+      if (NodeQty == 3)
         res = 1;
-      else if (nodeqty == 6)
+      else if (NodeQty == 6)
         res = 2;
     }
     if (dim == 1)
     {
-      if (nodeqty == 2)
+      if (NodeQty == 2)
         res = 1;
-      else if (nodeqty == 3)
+      else if (NodeQty == 3)
         res = 2;
     }
     if (dim == 0)

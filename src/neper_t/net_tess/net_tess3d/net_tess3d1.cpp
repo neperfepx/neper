@@ -13,7 +13,7 @@ extern void net_polycomp (struct POLY Domain, struct SEEDSET SeedSet,
                           int seed_changedqty, struct TDYN *);
 
 int
-net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet, char *algoneigh,
+net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
             int TessId, struct MTESS *pMTess, struct TESS *pTess)
 {
   int i;
@@ -26,7 +26,6 @@ net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet, char *algoneigh,
   neut_tess_set_zero (pTess);
 
   neut_tdyn_set_zero (&TD);
-  ut_string_string (algoneigh, &TD.algoneigh);
   neut_poly_set_zero (&DomPoly);
 
   net_tess_poly (PTess, poly, &DomPoly);

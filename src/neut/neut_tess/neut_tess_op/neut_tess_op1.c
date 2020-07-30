@@ -54,6 +54,9 @@ neut_tess_set_zero (struct TESS *pTess)
   (*pTess).FaceDom = NULL;
   (*pTess).CellId = NULL;
   (*pTess).CellOri = NULL;
+  (*pTess).CellOriDistrib = NULL;
+  (*pTess).CellOriDes = ut_alloc_1d_char (100); // must be sufficiently allocated
+  sprintf ((*pTess).CellOriDes, NEUT_DEFAULT_ORIDESFULL);
   (*pTess).CellCrySym = NULL;
   (*pTess).PolyFaceQty = NULL;
   (*pTess).PolyFaceNb = NULL;
@@ -64,6 +67,7 @@ neut_tess_set_zero (struct TESS *pTess)
   (*pTess).CellBody = NULL;
   (*pTess).CellLamId = NULL;
   (*pTess).CellModeId = NULL;
+  (*pTess).CellGroup = NULL;
   (*pTess).SeedCoo = NULL;
   (*pTess).SeedWeight = NULL;
 
@@ -225,6 +229,8 @@ neut_tess_free (struct TESS *pTess)
 
   ut_free_1d_int (&(*pTess).CellId);
   ut_free_2d (&(*pTess).CellOri, (*pTess).CellQty + 1);
+  ut_free_2d_char (&(*pTess).CellOriDistrib, (*pTess).CellQty + 1);
+  ut_free_1d_char (&(*pTess).CellOriDes);
   ut_free_1d_char (&(*pTess).CellCrySym);
 
   ut_free_1d_int (&(*pTess).PolyFaceQty);
@@ -236,6 +242,7 @@ neut_tess_free (struct TESS *pTess)
   ut_free_1d_int (&(*pTess).CellBody);
   ut_free_1d_int (&(*pTess).CellLamId);
   ut_free_1d_int (&(*pTess).CellModeId);
+  ut_free_1d_int (&(*pTess).CellGroup);
 
   ut_free_1d_char (&(*pTess).Type);
   ut_free_1d_int (&(*pTess).Periodic);
@@ -243,14 +250,12 @@ neut_tess_free (struct TESS *pTess)
 
   ut_free_2d_int (&(*pTess).ScaleCellId, (*pTess).CellQty + 1);
 
-  (*pTess).PerFaceQty = 0;
   ut_free_1d_int (&(*pTess).PerFaceNb);
   ut_free_1d_int (&(*pTess).PerFaceMaster);
   ut_free_2d_int (&(*pTess).PerFaceShift, (*pTess).FaceQty + 1);
   ut_free_1d_int (&(*pTess).PerFaceOri);
   ut_free_1d_int (&(*pTess).PerFaceSlaveNb);
 
-  (*pTess).PerEdgeQty = 0;
   ut_free_1d_int (&(*pTess).PerEdgeNb);
   ut_free_1d_int (&(*pTess).PerEdgeMaster);
   ut_free_2d_int (&(*pTess).PerEdgeShift, (*pTess).EdgeQty + 1);
@@ -258,7 +263,6 @@ neut_tess_free (struct TESS *pTess)
   ut_free_1d_int (&(*pTess).PerEdgeSlaveQty);
   ut_free_2d_int (&(*pTess).PerEdgeSlaveNb, (*pTess).EdgeQty + 1);
 
-  (*pTess).PerVerQty = 0;
   ut_free_1d_int (&(*pTess).PerVerNb);
   ut_free_1d_int (&(*pTess).PerVerMaster);
   ut_free_2d_int (&(*pTess).PerVerShift, (*pTess).VerQty + 1);
@@ -267,7 +271,25 @@ neut_tess_free (struct TESS *pTess)
 
   neut_tess_free_domain (pTess);
 
+  return;
+}
+
+void
+neut_tess_reset (struct TESS *pTess)
+{
+  neut_tess_free (pTess);
+
   neut_tess_set_zero (pTess);
+
+  return;
+}
+
+void
+neut_tess_reset_domain (struct TESS *pTess)
+{
+  neut_tess_free_domain (pTess);
+
+  neut_tess_set_zero_domain (pTess);
 
   return;
 }
@@ -291,18 +313,16 @@ neut_tess_free_domain (struct TESS *pTess)
   ut_free_2d_int (&(*pTess).DomTessEdgeNb, (*pTess).DomEdgeQty + 1);
 
   ut_free_2d_char (&(*pTess).DomFaceLabel, (*pTess).DomFaceQty + 1);
-  // ut_free_2d_char (&(*pTess).DomFaceType, (*pTess).DomFaceQty + 1);
+  ut_free_2d_char (&(*pTess).DomFaceType, (*pTess).DomFaceQty + 1);
   ut_free_2d (&(*pTess).DomFaceEq, (*pTess).DomFaceQty + 1);
-  // ut_free_1d_int (&(*pTess).DomFaceParmQty);
-  // ut_free_2d (&(*pTess).DomFaceParms, (*pTess).DomFaceQty + 1);
+  ut_free_1d_int (&(*pTess).DomFaceParmQty);
+  ut_free_2d (&(*pTess).DomFaceParms, (*pTess).DomFaceQty + 1);
   ut_free_1d_int (&(*pTess).DomFaceVerQty);
   ut_free_2d_int (&(*pTess).DomFaceVerNb, (*pTess).DomFaceQty + 1);
   ut_free_1d_int (&(*pTess).DomFaceEdgeQty);
   ut_free_2d_int (&(*pTess).DomFaceEdgeNb, (*pTess).DomFaceQty + 1);
   ut_free_1d_int (&(*pTess).DomTessFaceQty);
   ut_free_2d_int (&(*pTess).DomTessFaceNb, (*pTess).DomFaceQty + 1);
-
-  neut_tess_set_zero_domain (pTess);
 
   return;
 }
@@ -550,6 +570,10 @@ neut_tess_poly_switch (struct TESS *pTess, int p1, int p2)
   // CellModeId
   if ((*pTess).CellModeId != NULL)
     ut_array_1d_int_switch ((*pTess).CellModeId, p1, p2);
+
+  // CellGroup
+  if ((*pTess).CellGroup != NULL)
+    ut_array_1d_int_switch ((*pTess).CellGroup, p1, p2);
 
   // PolyFace* (keep FaceQty at the end)
   ut_array_2d_int_switchlines_length ((*pTess).PolyFaceNb, p1,
@@ -903,7 +927,7 @@ neut_tess_init_celltrue (struct TESS *pTess)
       if (qty == 0)
         continue;
 
-      // if trueval is 1 lower and the cell has all neighbours
+      // if trueval is 1 lower and the cell has all neighbors
       if ((*pTess).CellTrue[i] == trueval - 1 && neighcellqty[i] == qty)
       {
         all = 1;
@@ -974,7 +998,7 @@ neut_tess_init_cellbody (struct TESS *pTess)
       if (qty == 0)
         continue;
 
-      // if body is 1 lower and the cell has all neighbours
+      // if body is 1 lower and the cell has all neighbors
       if ((*pTess).CellBody[i] == body - 1 && neighcellqty[i] == qty)
       {
         all = 1;
@@ -2219,7 +2243,7 @@ neut_tess_poly_tess (struct TESS Tess, int poly, struct TESS *pTess)
     ut_array_1d_memcpy (Tess.FaceEq[face], 4, (*pTess).FaceEq[i]);
 
     (*pTess).FacePoly[i][0] = 1;
-    (*pTess).FacePoly[i][1] = -i;       // here, loosing link with real neighbours
+    (*pTess).FacePoly[i][1] = -i;       // here, loosing link with real neighbors
 
     (*pTess).FaceVerQty[i] = Tess.FaceVerQty[face];
     (*pTess).FaceVerNb[i] = ut_alloc_1d_int ((*pTess).FaceVerQty[i] + 1);
@@ -2486,6 +2510,11 @@ neut_tess_addcell_alloc (struct TESS *pTess)
     ut_realloc_1d_int ((*pTess).CellModeId, (*pTess).CellQty + 1);
   (*pTess).CellModeId[0] = 0;
   (*pTess).CellModeId[cell] = 0;
+
+  (*pTess).CellGroup =
+    ut_realloc_1d_int ((*pTess).CellGroup, (*pTess).CellQty + 1);
+  (*pTess).CellGroup[0] = 0;
+  (*pTess).CellGroup[cell] = 0;
 
   (*pTess).SeedQty = (*pTess).CellQty;
 

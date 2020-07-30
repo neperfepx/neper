@@ -34,6 +34,8 @@ neut_tess_tess_gen (struct TESS TessA, struct TESS *pTessB)
 void
 neut_tess_tess_cell (struct TESS TessA, struct TESS *pTessB)
 {
+  int i;
+
   (*pTessB).CellQty = TessA.CellQty;
 
   if (TessA.Type)
@@ -52,6 +54,16 @@ neut_tess_tess_cell (struct TESS TessA, struct TESS *pTessB)
     ut_array_2d_memcpy (TessA.CellOri + 1, TessA.CellQty, 4,
                         (*pTessB).CellOri + 1);
   }
+
+  if (TessA.CellOriDistrib)
+  {
+    (*pTessB).CellOriDistrib = ut_alloc_2d_char (TessA.CellQty + 1, 1);
+    for (i = 0; i <= TessA.CellQty; i++)
+      ut_string_string (TessA.CellOriDistrib[i], (*pTessB).CellOriDistrib + i);
+  }
+
+  if (TessA.CellOriDes)
+    ut_string_string (TessA.CellOriDes, &(*pTessB).CellOriDes);
 
   if (TessA.CellCrySym)
     ut_string_string (TessA.CellCrySym, &((*pTessB).CellCrySym));
@@ -74,6 +86,7 @@ neut_tess_tess_cell (struct TESS TessA, struct TESS *pTessB)
   neut_tess_tess_cellbody (TessA, pTessB);
   neut_tess_tess_celllamid (TessA, pTessB);
   neut_tess_tess_cellmodeid (TessA, pTessB);
+  neut_tess_tess_cellgroupid (TessA, pTessB);
 
   return;
 }

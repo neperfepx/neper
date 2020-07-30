@@ -15,17 +15,23 @@ extern "C"
 #ifndef NEUT_NODES_H
 #define NEUT_NODES_H
 
-/// \brief Free a NODES structure.
+/// \brief Set a NODES structure to zero.
+/// \note Some members are allocated.
 ///
+///
+  extern void neut_nodes_set_zero (struct NODES *);
+
+/// \brief Free a NODES structure.
+/// \node The memory is completely free'd.
 ///
 ///
   extern void neut_nodes_free (struct NODES *pNodes);
 
-/// \brief Set a NODES structure to zero.
+/// \brief Reset a NODES structure.
+/// \note Equivalent to free + set_zero.  Some members are allocated.
 ///
 ///
-///
-  extern void neut_nodes_set_zero (struct NODES *);
+  extern void neut_nodes_reset (struct NODES *pNodes);
 
 /// \brief Copy a NODES structure to another NODES structure.
 ///
@@ -107,6 +113,7 @@ extern "C"
 ///
 ///
   extern void neut_nodes_bbox (struct NODES Nodes, double **bbox);
+  extern void neut_nodes_nodes_bbox (struct NODES Nodes, int *nodes, int NodeQty, double **bbox);
   extern void neut_nodes_bbox_vect (struct NODES Nodes, double *bbox);
 
 /// \brief Get the closest node of a point.
@@ -127,14 +134,14 @@ extern "C"
 ///
 ///
   extern void neut_nodes_bary (struct NODES Nodes, int *nodes, int
-			       nodeqty, double *coo, double *pcl);
+			       NodeQty, double *coo, double *pcl);
 
 /// \brief Get the weighted barycenter of nodes
 ///
 ///
 ///
   extern void neut_nodes_wbary (struct NODES Nodes, int *nodes,
-				double *nodeweights, int nodeqty,
+				double *nodeweights, int NodeQty,
 				double *coo, double *pcl);
 
 /// \brief Switch nodes of a NODES structure.
@@ -164,6 +171,10 @@ extern int neut_nodes_node_shift_pernode (struct NODES Nodes, int node,
     int* shift, int *ppernode);
 
 extern void neut_nodes_permasters (struct NODES Nodes, int **pmasters, int *pmasterqty);
+
+extern void neut_nodes_init_parts (struct NODES *pNodes);
+
+extern int neut_nodes_isvoid (struct NODES Nodes);
 
 #endif /* NEUT_NODES_H */
 

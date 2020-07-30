@@ -135,7 +135,7 @@ ut_vector_set_eigen (double **v, int qty, int dim, double **evect,
 {
   double **covar = ut_alloc_2d (dim, dim);
 
-  ut_vector_set_covar (v, dim, qty, covar);
+  ut_vector_set_covar (v, qty, dim, covar);
   ut_mat_eigen (covar, dim, eval, evect);
 
   ut_free_2d (&covar, dim);

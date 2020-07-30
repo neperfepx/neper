@@ -46,9 +46,9 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
   // if loading from a file, setting mode to its format
   if (strcmp ((*pIn).load, "none"))
   {
-    int partqty;
+    int PartQty;
     char **parts = NULL;
-    ut_list_break ((*pIn).load, NEUT_SEP_DEP, &parts, &partqty);
+    ut_list_break ((*pIn).load, NEUT_SEP_DEP, &parts, &PartQty);
     if (!ut_file_exist (parts[0]))
       ut_print_message (2, 0, "%s: no such file.\n", parts[0]);
     ut_file_format (parts[0], &(*pIn).mode);

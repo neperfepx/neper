@@ -11,7 +11,7 @@ neut_mesh_fprintf_inp (FILE * file, char *dim, struct TESS Tess,
                        struct MESH Mesh3D, struct MESH MeshCo,
                        struct NSET NSet0D, struct NSET NSet1D,
                        struct NSET NSet2D, char *nset, char *faset,
-                       struct PART Part, struct BOUNDARY Bound)
+                       struct BOUNDARY Bound)
 {
   int i, j, meshdim;
   int shift_elt1D = 0, shift_elt2D = 0, shift_elt3D = 0, shift_eltCo = 0;
@@ -106,9 +106,6 @@ neut_mesh_fprintf_inp (FILE * file, char *dim, struct TESS Tess,
   if (MeshCo.EltQty > 0)
     neut_mesh_fprintf_inp_elsets (file, MeshCo, shift_eltCo);
 
-  if (Part.qty > 0)
-    neut_mesh_fprintf_inp_part_elset (file, Part);
-
 // node sets -----------------------------------------------------------
 
   if (Bound.BoundQty > 0)
@@ -123,9 +120,6 @@ neut_mesh_fprintf_inp (FILE * file, char *dim, struct TESS Tess,
   if (nset != NULL)
     neut_mesh_fprintf_inp_nsets (file, NSet0D, NSet1D, NSet2D, nset,
                                  (Bound.BoundQty > 0) ? "tess" : NULL);
-
-  if (Part.qty > 0)
-    neut_mesh_fprintf_inp_part_nset (file, Part);
 
 // fasets --------------------------------------------------------------
 

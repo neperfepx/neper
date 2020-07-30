@@ -16,6 +16,8 @@ nem_meshing_0D (struct TESS Tess, struct MESHPARA MeshPara,
   neut_nodes_set_zero (&N);
   neut_mesh_set_zero (&M);
 
+  ut_array_1d_int_memcpy (Tess.Periodic, 3, (*pNodes).Periodic);
+
   Mesh[0] = neut_mesh_alloc (0, "tri", 1, 0, 0);
 
   ut_print_message (0, 2, "0D meshing... ");
@@ -50,7 +52,8 @@ nem_meshing_0D (struct TESS Tess, struct MESHPARA MeshPara,
 
   neut_mesh_init_nodeelts (Mesh + 0, (*pNodes).NodeQty);
   neut_mesh_init_eltelset (Mesh + 0, NULL);
-  neut_nodes_init_nodeslave (pNodes);
+  if (!strcmp (Tess.Type, "periodic"))
+    neut_nodes_init_nodeslave (pNodes);
 
   neut_nodes_free (&N);
   neut_mesh_free (&M);

@@ -23,7 +23,7 @@ nem_partition_elts_balancing_Q (struct MESH Mesh, struct PART *pPart,
 
   /* initializing */
   for (i = 0; i < (*pPart).qty; i++)
-    A[i] = (*pPart).eltqty[i] - (*pPart).targeteltqty[i];
+    A[i] = (*pPart).EltQty[i] - (*pPart).targeteltqty[i];
 
   for (i = 0; i < BoundEltQty; i++)
     nem_partition_elts_balancing_Q_elt (Mesh, *pPart, A, Q[i]);
@@ -66,10 +66,10 @@ nem_partition_elts_balancing_Q (struct MESH Mesh, struct PART *pPart,
 
       ut_array_2d_int_switchlines (Q, 3, 0, val);
 
-      (*pPart).eltqty[(*pPart).elt_parts[Q[0][0]]]--;
+      (*pPart).EltQty[(*pPart).elt_parts[Q[0][0]]]--;
       A[(*pPart).elt_parts[Q[0][0]]]--;
       (*pPart).elt_parts[Q[0][0]] = Q[0][1];
-      (*pPart).eltqty[(*pPart).elt_parts[Q[0][0]]]++;
+      (*pPart).EltQty[(*pPart).elt_parts[Q[0][0]]]++;
       A[(*pPart).elt_parts[Q[0][0]]]++;
 
       oldpart = Q[0][1];

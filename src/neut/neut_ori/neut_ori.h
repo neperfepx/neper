@@ -7,6 +7,8 @@ extern "C"
 {
 #endif
 
+  extern void neut_ori_des_expand (char *des, char **pdes2);
+
   extern void neut_ori_volthetafct (struct FCT *pvolfct);
   extern void neut_ori_vol_theta (struct FCT *pvolfct, double vol,
                               double *ptheta);
@@ -22,6 +24,15 @@ extern "C"
   extern void neut_ori_f_qdot (double *f, double *qdot);
 
   extern void neut_ori_f_norm (double **f, int N, double *pnorm);
+
+  extern int neut_ori_expr_desconv (char *expr, char **pdes, char **pconv);
+
+  extern int neut_ori_fscanf (FILE *file, char *desconv, double **q, int qty, char *prefix);
+  extern int neut_ori_fnscanf (char *filename, char *desconv, double **q, int qty, char *prefix);
+  extern void neut_ori_fprintf (FILE *file, char *desconv, double **q, int qty, char *prefix);
+
+  extern void neut_ori_desconv_expr (char *des, char *conv, char **pexpr);
+  extern void neut_ori_desconv_expr_fepx (char *des, char *conv, char **pexpr);
 
 #ifdef __cplusplus
 }

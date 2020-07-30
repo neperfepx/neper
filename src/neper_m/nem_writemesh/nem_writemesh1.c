@@ -6,22 +6,22 @@
 
 void
 nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
-               struct MESH *Mesh, struct NSET *NSet, struct PART Part,
+               struct MESH *Mesh, struct NSET *NSet,
                struct BOUNDARY Bound)
 {
   int i, dim;
   double size;
   FILE *file = NULL;
-  char *expandnset = NULL;
-  char *expandfaset = NULL;
+  char *nsetlist = NULL;
+  char *fasetlist = NULL;
   char **sizestring = ut_alloc_2d_char (4, 10);
 
   strcpy (sizestring[1], "length");
   strcpy (sizestring[2], "area");
   strcpy (sizestring[3], "volume");
 
-  neut_nset_expand (NSet[0], NSet[1], NSet[2], In.nset, &expandnset);
-  neut_nset_expand (NSet[0], NSet[1], NSet[2], In.faset, &expandfaset);
+  neut_nset_expand (NSet[0], NSet[1], NSet[2], In.nset, &nsetlist);
+  neut_nset_expand (NSet[0], NSet[1], NSet[2], In.faset, &fasetlist);
 
   ut_print_message (0, 2, "Preparing mesh...\n");
   for (i = 3; i >= 0; i--)
@@ -52,7 +52,8 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
 
   if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "msh")
       || ut_list_testelt (In.format, NEUT_SEP_NODEP, "msh:ascii")
-      || ut_list_testelt (In.format, NEUT_SEP_NODEP, "msh:binary"))
+      || ut_list_testelt (In.format, NEUT_SEP_NODEP, "msh:binary")
+      || ut_list_testelt (In.format, NEUT_SEP_NODEP, "msh4"))
   {
     for (i = 3; i >= 0; i--)
     {
@@ -62,19 +63,44 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
         ut_print_message (1, 3, "%dD mesh is void.\n", i);
     }
 
-    char *format = NULL;
-    if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "msh:ascii")
-        || ut_list_testelt (In.format, NEUT_SEP_NODEP, "msh"))
-      ut_string_string ("ascii", &format);
-    else if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "msh:binary"))
-      ut_string_string ("binary", &format);
+    char *mode = NULL, *version = NULL;
+    if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "msh4"))
+      ut_string_string ("msh4", &version);
+    else
+      ut_string_string ("msh", &version);
 
-    file = ut_file_open (In.msh, "w");
-    neut_mesh_fprintf_gmsh (file, In.dimout_msh, Tess, Nodes, Mesh[0],
-                            Mesh[1], Mesh[2], Mesh[3], Part, Mesh[4],
-                            expandfaset, NULL, format);
-    ut_file_close (file, In.msh, "w");
-    ut_free_1d_char (&format);
+    if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "msh:ascii")
+        || ut_list_testelt (In.format, NEUT_SEP_NODEP, "msh")
+        || ut_list_testelt (In.format, NEUT_SEP_NODEP, "msh4"))
+      ut_string_string ("ascii", &mode);
+    else if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "msh:binary"))
+      ut_string_string ("binary", &mode);
+
+    file = ut_file_open (!strcmp (version, "msh") ? In.msh : In.msh4, "w");
+
+    neut_mesh_fprintf_msh (file, In.dimout_msh, Tess, Nodes, Mesh[0],
+                           Mesh[1], Mesh[2], Mesh[3], Mesh[4],
+                           NSet[0], NSet[1], NSet[2], nsetlist,
+                           fasetlist, NULL, version, mode);
+
+    ut_file_close (file, !strcmp (version, "msh") ? In.msh : In.msh4, "w");
+
+    ut_free_1d_char (&mode);
+    ut_free_1d_char (&version);
+  }
+
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "ori"))
+  {
+    file = ut_file_open (In.ori, "w");
+    neut_mesh_fprintf_ori (file, Mesh[dim]);
+    ut_file_close (file, In.ori, "w");
+  }
+
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "bcs"))
+  {
+    file = ut_file_open (In.bcs, "w");
+    neut_mesh_fprintf_bcs (file, NSet[0], NSet[1], NSet[2], nsetlist);
+    ut_file_close (file, In.bcs, "w");
   }
 
   if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "vtk"))
@@ -88,8 +114,7 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
     }
 
     file = ut_file_open (In.vtk, "w");
-    neut_mesh_fprintf_vtk (file, In.dimout, Nodes, Mesh[1], Mesh[2], Mesh[3],
-                           Part);
+    neut_mesh_fprintf_vtk (file, In.dimout, Nodes, Mesh[1], Mesh[2], Mesh[3]);
     ut_file_close (file, In.vtk, "w");
   }
 
@@ -99,7 +124,7 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
     file = ut_file_open (In.abq, "w");
     neut_mesh_fprintf_inp (file, In.dimout, Tess, Nodes, Mesh[0], Mesh[1],
                            Mesh[2], Mesh[3], Mesh[4], NSet[0], NSet[1],
-                           NSet[2], expandnset, expandfaset, Part, Bound);
+                           NSet[2], nsetlist, fasetlist, Bound);
     ut_file_close (file, In.abq, "w");
   }
 
@@ -109,29 +134,18 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
 
     file = ut_file_open (In.geof, "w");
     neut_mesh_fprintf_geof (file, Nodes, Mesh[1], Mesh[2], Mesh[3], Mesh[4],
-                            NSet[0], NSet[1], NSet[2], expandnset,
-                            expandfaset, In.dimout, Part, Bound);
+                            NSet[0], NSet[1], NSet[2], nsetlist,
+                            fasetlist, In.dimout, Bound);
     ut_file_close (file, In.geof, "w");
   }
 
-  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "fepx")
-      || ut_list_testelt (In.format, NEUT_SEP_NODEP, "fepx:legacy"))
-  {
-    char *version = NULL;
-    if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "fepx:legacy"))
-      ut_string_string ("legacy", &version);
-
-    neut_mesh_fprintf_fepx_name (In.body, Tess, Nodes, Mesh[2], Mesh[3],
-                                 NSet[0], NSet[1], NSet[2], expandnset,
-                                 expandfaset, version);
-
-    ut_free_1d_char (&version);
-  }
-
-  if (Nodes.Periodic && ut_array_1d_int_sum (Nodes.Periodic, 3) > 0)
+  if (Nodes.Periodic && ut_array_1d_int_sum (Nodes.Periodic, 3) > 0
+    && ut_list_testelt (In.format, NEUT_SEP_NODEP, "per"))
   {
     file = ut_file_open (In.per, "w");
-    if (!strcmp (In.performat, "plain"))
+    if (!strcmp (In.performat, "msh"))
+      neut_mesh_fprintf_per (file, Nodes);
+    else if (!strcmp (In.performat, "plain"))
       neut_mesh_fprintf_per_plain (file, Nodes);
     else if (!strcmp (In.performat, "geof"))
       neut_mesh_fprintf_per_geof (file, Nodes);
@@ -148,8 +162,8 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
     ut_file_close (file, In.intf, "w");
   }
 
-  ut_free_1d_char (&expandnset);
-  ut_free_1d_char (&expandfaset);
+  ut_free_1d_char (&nsetlist);
+  ut_free_1d_char (&fasetlist);
   ut_free_2d_char (&sizestring, 4);
 
   return;

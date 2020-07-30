@@ -16,7 +16,7 @@ extern "C"
 #define NEUT_MESHPARA_H
 
   extern void neut_meshpara_set_zero (struct MESHPARA *);
-  extern void neut_meshpara_free (struct MESHPARA);
+  extern void neut_meshpara_free (struct MESHPARA *);
 
 #endif				/* NEUT_MESHPARA_H */
 

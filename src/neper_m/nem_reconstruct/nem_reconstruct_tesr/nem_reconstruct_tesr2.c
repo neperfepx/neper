@@ -45,9 +45,6 @@ nem_reconstruct_tesr_tesr (struct TESR Tesr, struct TESS *pTess,
 {
   int i, j, k, elt;
   double *dsize = ut_alloc_1d (3);
-  struct MESH Tmp;
-
-  neut_mesh_set_zero (&Tmp);
 
   for (i = 0; i < Tesr.Dim; i++)
     dsize[i] = Tesr.size[i] * Tesr.vsize[i];
@@ -67,7 +64,7 @@ nem_reconstruct_tesr_tesr (struct TESR Tesr, struct TESS *pTess,
   neut_tess_set_zero (pTess);
   nem_reconstruct_mesh ("all", pNodes, Mesh, pTess);
 
-  neut_mesh_free (Mesh + Tesr.Dim);
+  neut_mesh_reset (Mesh + Tesr.Dim);
 
   ut_free_1d (&dsize);
 

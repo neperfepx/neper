@@ -17,10 +17,6 @@ extern "C"
   {
     // GENERAL INFORMATION -----------------------------------------------
 
-    char *algoneigh;		// algorithm to compute the neighbours
-
-    // GENERAL INFORMATION -----------------------------------------------
-
     int iter;			// iteration number
 
     // GENERAL TESSELLATION INFORMATION ----------------------------------
@@ -62,7 +58,7 @@ extern "C"
     double shiftwmax;
     double shiftwmean;
 
-    // seed neighbours information
+    // seed neighbors information
     int **neighlist;
     int *neighqty;
     double **neighdist;
@@ -90,7 +86,7 @@ extern "C"
     double cell_init_dur; 	// initialization duration
     double cell_kdtree_dur; 	// KD-tree duration
     double cell_shift_dur;	// cell calculation shift duration
-    double cell_neigh_dur;    	// cell calculation neighbour-search duration
+    double cell_neigh_dur;    	// cell calculation neighbor-search duration
     double cell_cell_dur;   	// cell calculation per se duration
     double cell_other_dur;   	// cell calculation per se duration
     double cell_total_dur;      // cell calculation total duration

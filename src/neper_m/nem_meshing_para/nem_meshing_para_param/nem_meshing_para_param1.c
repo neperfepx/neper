@@ -12,6 +12,11 @@ nem_meshing_para_param (struct IN_M In, struct TESS Tess, struct TESR *pTesr,
   int cellqty, dim;
   double size;
 
+  (*pMeshPara).VerQty = Tess.VerQty;
+  (*pMeshPara).EdgeQty = Tess.EdgeQty;
+  (*pMeshPara).FaceQty = Tess.FaceQty;
+  (*pMeshPara).PolyQty = Tess.PolyQty;
+
   (*pMeshPara).pl = In.pl;
   (*pMeshPara).clmin = In.clmin;
   ut_string_string (In.cltype, &(*pMeshPara).cltype);

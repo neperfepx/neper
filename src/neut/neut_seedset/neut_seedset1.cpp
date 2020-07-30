@@ -36,7 +36,8 @@ neut_seedset_set_zero (struct SEEDSET *pSSet)
   (*pSSet).LamWidth = NULL;
   (*pSSet).LamWidthId = NULL;
 
-  (*pSSet).q = NULL;
+  (*pSSet).SeedOri = NULL;
+  (*pSSet).SeedOriDistrib = NULL;
   (*pSSet).crysym = NULL;
 
   (*pSSet).Size = NULL;
@@ -68,7 +69,8 @@ neut_seedset_free (struct SEEDSET *pSSet)
   // ut_free_2d (&(*pSSet).LamEq, (*pSSet).N + 1);
   ut_free_1d (&(*pSSet).LamWidth);
   ut_free_1d_int (&(*pSSet).LamWidthId);
-  ut_free_2d (&(*pSSet).q, (*pSSet).N + 1);
+  ut_free_2d (&(*pSSet).SeedOri, (*pSSet).N + 1);
+  ut_free_2d_char (&(*pSSet).SeedOriDistrib, (*pSSet).N + 1);
   ut_free_1d_char (&(*pSSet).crysym);
   ut_free_1d_char (&(*pSSet).Type);
   ut_free_1d_int (&(*pSSet).Periodic);
@@ -341,7 +343,8 @@ neut_seedset_memcpy_seed_addseed (struct SEEDSET SSetA, int seed,
 
   if (newseed == 1)
   {
-    (*pSSetB).q = ut_alloc_2d (1, 1);
+    (*pSSetB).SeedOri = ut_alloc_2d (1, 1);
+    (*pSSetB).SeedOriDistrib = ut_alloc_2d_char (1, 1);
     (*pSSetB).SeedCoo0 = ut_alloc_2d (1, 3);
     (*pSSetB).SeedCoo = ut_alloc_2d (1, 3);
     if (SSetA.LamEq)
@@ -380,8 +383,10 @@ neut_seedset_memcpy_seed_addseed (struct SEEDSET SSetA, int seed,
     ut_realloc_1d ((*pSSetB).SeedWeight, (*pSSetB).N + 1);
   (*pSSetB).SeedWeight[newseed] = SSetA.SeedWeight[seed];
 
-  (*pSSetB).q = ut_realloc_2d_addline ((*pSSetB).q, (*pSSetB).N + 1, 4);
-  ut_array_1d_memcpy (SSetA.q[seed], 4, (*pSSetB).q[newseed]);
+  (*pSSetB).SeedOri = ut_realloc_2d_addline ((*pSSetB).SeedOri, (*pSSetB).N + 1, 4);
+  ut_array_1d_memcpy (SSetA.SeedOri[seed], 4, (*pSSetB).SeedOri[newseed]);
+
+  ut_string_string (SSetA.SeedOriDistrib[seed], &(*pSSetB).SeedOriDistrib[newseed]);
 
   return;
 }

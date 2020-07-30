@@ -80,6 +80,9 @@ neut_print_set_default (struct PRINT *pPrint)
 
   (*pPrint).slice = NULL;
 
+  (*pPrint).outdir = NULL;
+  ut_string_string (".", &(*pPrint).outdir);
+
   return;
 }
 
@@ -115,6 +118,39 @@ neut_print_free (struct PRINT *pPrint)
 
   ut_free_1d_char (&(*pPrint).format);
   ut_free_1d_char (&(*pPrint).includepov);
+
+  return;
+}
+
+void
+neut_print_outdir (struct PRINT Print, struct SIM Sim, char *format, char **pdir)
+{
+  int i, qty;
+  char **parts = NULL;
+
+  ut_list_break (Print.outdir, NEUT_SEP_NODEP, &parts, &qty);
+
+  ut_string_string (".", pdir);
+
+  for (i = 0; i < qty; i++)
+  {
+    if (!strcmp (parts[i], "sim_dir"))
+    {
+      if (!neut_sim_isvoid (Sim))
+      {
+        (*pdir) = ut_string_paste3 (Sim.simdir, "/images/", format);
+        break;
+      }
+    }
+
+    else
+    {
+      ut_string_string (parts[i], pdir);
+      break;
+    }
+  }
+
+  ut_free_2d_char (&parts, qty);
 
   return;
 }

@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2019 Romain Quey
+@c Copyright (C) 2003-2020 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Expressions and Keys
@@ -13,16 +13,17 @@
 * Orientation Optimization Keys::
 * Mesh Keys::
 * Point Keys::
+* Simulation Results::
 * Rotations and Orientations::
 * Crystal Symmetries::
-* Colours::
+* Colors and Color Maps::
 @end menu
 
 @node Mathematical and Logical Expressions
 @section Mathematical and Logical Expressions
 
-@neper{} can handle mathematical expressions.  It makes use of
-the @code{muparser} library. The expression must contain no space,
+@neper{} handles mathematical expressions thanks to the
+@code{muparser} library. The expression must contain no space,
 tabulation or new-line characters, and match the following
 syntax@footnote{Taken from the @code{muparser} documentation, see
 @url{http://beltoforion.de/article.php?a=muparser} for more
@@ -68,7 +69,7 @@ arguments and a brief description.
 The following table lists the default binary operators supported by the
 parser.
 
-@multitable @columnfractions 0.23 0.48 0.29
+@multitable @columnfractions 0.23 0.43 0.34
 @headitem Operator      @tab Description    @tab Priority
 @item @code{&&}  @tab logical and               @tab 1
 @item @code{||}  @tab logical or                @tab 2
@@ -149,21 +150,21 @@ The following table lists the statistical distributions.  Arguments enclosed in 
       @tab default @math{gamma = sigma}
 @end multitable
 
-@samp{@code{mean}} represents the mean (or centre), and @samp{@code{sigma}} (@math{>} 0)
-represents the standard deviation (or scale). @samp{@code{gamma}}
+@samp{mean} represents the mean (or centre), and @samp{sigma} (@math{>} 0)
+represents the standard deviation (or scale). @samp{gamma}
 depends on the distribution function (see the above table).
 @c
 For all distributions, custom endpoints can be added as last arguments, @samp{@var{from},@var{to}}, where @samp{@var{from}} is the lower end point and @samp{@var{to}} is the upper endpoint.
 @c
-@c @samp{@code{fromtype}} and @samp{@code{totype}} are not
+@c @samp{fromtype} and @samp{totype} are not
 @c keywords per se, but serve to change the type of the endpoints without using
 @c keywords to explicitly assign one to them (0 = disable/ignore limit, 1 =
 @c inclusive limit, 2 = exclusive limit).
 @c
 If the parameter keywords are used, the parameters can be given in any order; e.g.,
-@samp{@code{moffat(@var{gamma}=1,@var{from}=0,@var{to}=1,@var{sigma}=0.1,@var{mean}=0.5)}}.
+@samp{moffat(@var{gamma}=1,@var{from}=0,@var{to}=1,@var{sigma}=0.1,@var{mean}=0.5)}.
 Otherwise, the parameters are read based on their positions; e.g.,
-@samp{@code{lognormal(0.25,0.01)}} yields @math{mean=0.25} and @math{sigma=0.01}.
+@samp{lognormal(0.25,0.01)} yields @math{mean=0.25} and @math{sigma=0.01}.
 It is also possible (but not recommended) to specify some variables by keyword
 and let others be read by position.  Endpoints are considered inclusive by default, but exclusive endpoints can be specified using @samp{fromexclusive=@var{from}} and @samp{toexclusive=@var{to}}
 (@samp{frominclusive=@var{from}} and @samp{toinclusive=@var{to}} can be used for inclusive endpoints).
@@ -175,6 +176,26 @@ e.g., @samp{0.3*lognormal(0.5,0.1)+0.7*normal(1,0.1)}.
 @node Tessellation Keys
 @section Tessellation Keys
 
+Available keys for a tessellation itself are provided below.
+
+@multitable @columnfractions 0.23 0.43 0.34
+  @headitem Key   @tab Descriptor                      @tab Apply to
+  @item @code{dim} @tab dimension                      @tab tess
+  @item @code{vernb} @tab number of vertices           @tab tess
+  @item @code{edgenb} @tab number of edges             @tab tess
+  @item @code{facenb} @tab number of faces             @tab tess
+  @item @code{polynb} @tab number of polyhedra         @tab tess
+  @item @code{cellnb} @tab number of cells             @tab tess
+  @item @code{x}  @tab x coordinate                    @tab tess
+  @item @code{y}  @tab y coordinate                    @tab tess
+  @item @code{z}  @tab z coordinate                    @tab tess
+  @item @code{coo}  @tab x, y and z coordinates        @tab tess
+  @item @code{area}  @tab area                         @tab tess
+  @item @code{vol} @tab volume                         @tab tess
+  @item @code{size}  @tab size (area/volume in 2D/3D)  @tab tess
+@end multitable
+
+@sp 1
 Available keys for tessellation seeds, vertices, edges, faces and polyhedra
 are provided below.
 Also note that the descriptors apply to @emph{cells} if they are tagged to
@@ -183,7 +204,9 @@ tessellation is 2D.  You may also replace, in the tessellation keys themselves,
 @samp{face} by @samp{cell} if the tessellation is 2D and
 @samp{poly} by @samp{cell} if the tessellation is 3D (it applies only on rare
 occasions).  For example, for a 2D tessellation, you may use @option{-statcell
-ncells} instead of @option{-statface nfaces}.
+ncells} instead of @option{-statface nfaces}. Keys specific to cells are defined
+accordingly in the following but also apply to @emph{faces} is the tessellations is 2D
+and @emph{polys} is the tessellation is 3D.
 
 To turn a key value into a value relative to the mean over all entities
 (e.g.@ the relative cell size), append the key expression with
@@ -193,12 +216,20 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
 @dfn{body} or @dfn{true} entities (see below), append @samp{b} or
 @samp{t} to the modifiers, respectively.
 
-@multitable @columnfractions 0.23 0.48 0.29
+@multitable @columnfractions 0.23 0.43 0.34
   @headitem Key   @tab Descriptor                      @tab Apply to
+  @item @code{dim} @tab dimension                      @tab tess
+  @item @code{vernb} @tab number of vertices           @tab tess
+  @item @code{edgenb} @tab number of edges             @tab tess
+  @item @code{facenb} @tab number of faces             @tab tess
+  @item @code{polynb} @tab number of polyhedra         @tab tess
+  @item @code{cellnb} @tab number of cells             @tab tess
+  @item @code{vernb} @tab number of vertices           @tab tess
   @item @code{id} @tab identifier                      @tab seed, ver, edge, face, poly
-  @item @code{x}  @tab x coordinate                    @tab seed, ver, edge, face, poly
-  @item @code{y}  @tab y coordinate                    @tab seed, ver, edge, face, poly
-  @item @code{z}  @tab z coordinate                    @tab seed, ver, edge, face, poly
+  @item @code{x}  @tab x coordinate                    @tab tess, seed, ver, edge, face, poly
+  @item @code{y}  @tab y coordinate                    @tab tess, seed, ver, edge, face, poly
+  @item @code{z}  @tab z coordinate                    @tab tess, seed, ver, edge, face, poly
+  @item @code{coo}  @tab x, y and z coordinates        @tab tess, seed, ver, edge, face, poly
   @item @code{xmin}  @tab minimum x coordinate         @tab edge, face, poly
   @item @code{ymin}  @tab minimum y coordinate         @tab edge, face, poly
   @item @code{zmin}  @tab minimum z coordinate         @tab edge, face, poly
@@ -216,20 +247,20 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
   @item @code{domver}  @tab domain vertex (-1 if undefined) @tab ver
   @item @code{scale}  @tab scale @tab face@footnote{Applies only to a 3D tessellation and relevant for multiscale tessellations.  The scale of a face is the scale at which the face was created, and it ranges from 0 (for domain faces) to the number of scales of the tessellation (for the last created faces).}
   @item @code{length}  @tab length                     @tab edge
-  @item @code{area}  @tab area                         @tab face, poly
-  @item @code{vol} @tab volume                         @tab poly
-  @item @code{size}  @tab size (area/volume in 2D/3D) @tab cell
+  @item @code{area}  @tab area                         @tab tess, face, poly
+  @item @code{vol} @tab volume                         @tab tess, poly
+  @item @code{size}  @tab size (area/volume in 2D/3D)  @tab tess, cell
   @item @code{diameq}  @tab equivalent
     diameter@footnote{Equivalent diameter = diameter
-    of the circle of equivalent area/volume in 2D/3D.} @tab face, poly
+    of the circle of equivalent area/volume in 2D/3D.} @tab tess, face, poly
   @item @code{radeq}  @tab equivalent
     radius@footnote{Equivalent radius = radius of the
-    circle of equivalent area/volume in 2D/3D.}        @tab face, poly
-  @item @code{circularity}  @tab circularity (2D counterpart of sphericity)          @tab face
+    circle of equivalent area/volume in 2D/3D.}        @tab tess, face, poly
   @item @code{sphericity}  @tab sphericity@footnote{Sphericity of a
     polyhedron = ratio of the surface area of
       the sphere of equivalent volume to the surface area of the
       polyhedron.} @tab poly
+  @item @code{circularity}  @tab circularity@footnote{Circularity of a polygon = ratio of the perimeter of the circle of equivalent area to the perimeter of the polygon.} (2D counterpart of sphericity)          @tab face
   @item @code{convexity}  @tab convexity@footnote{Convexity of a
     polyhedron (face) = ratio of the volume (area) of the polyhedron
       (face) to the volume (area) of the convex hull of the polyhedron
@@ -250,34 +281,35 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
   @item @code{faces}  @tab faces                    @tab ver, edge, poly
   @item @code{polynb}  @tab number of polyhedra        @tab ver, edge, face
   @item @code{polys}  @tab polyhedra                @tab ver, edge, face
-  @item @code{nfacenb}  @tab number of neighbouring faces @tab face
-  @item @code{nfaces} @tab neighbouring faces @tab face
-  @item @code{nfacenb_samedomain}  @tab number of neighbouring faces of the same domain (parent cell of a multiscale tessellation)@tab face (in 2D)
-  @item @code{nfaces_samedomain} @tab neighbouring faces of the same domain (parent cell of a multiscale tessellation)@tab face (in 2D)
-  @item @code{npolynb} @tab number of neighbouring polyhedra @tab poly
-  @item @code{npolys} @tab neighbouring polyhedra            @tab poly
-  @item @code{npolynb_samedomain} @tab number of neighbouring polyhedra of the same domain (parent cell of a multiscale tessellation)@tab poly
-  @item @code{npolys_samedomain} @tab neighbouring polyhedra of the same domain (parent cell of a multiscale tessellation) @tab poly
-  @item @code{nseednb} @tab number of neighbouring seeds @tab poly
-  @item @code{nseeds} @tab neighbouring seeds
-  @footnote{If a polyhedron has no neighbour on a face, a negative value
-    is returned.} @tab poly
+  @item @code{nfacenb}  @tab number of neighboring faces @tab face
+  @item @code{nfaces} @tab neighboring faces @tab face
+  @item @code{nfacenb_samedomain}  @tab number of neighboring faces of the same domain (parent cell of a multiscale tessellation)@tab face (in 2D)
+  @item @code{nfaces_samedomain} @tab neighboring faces of the same domain (parent cell of a multiscale tessellation)@tab face (in 2D)
+  @item @code{npolynb} @tab number of neighboring polyhedra @tab poly
+  @item @code{npolys} @tab neighboring polyhedra            @tab poly
+  @item @code{npolynb_samedomain} @tab number of neighboring polyhedra of the same domain (parent cell of a multiscale tessellation)@tab poly
+  @item @code{npolys_samedomain} @tab neighboring polyhedra of the same domain (parent cell of a multiscale tessellation) @tab poly
   @item @code{vercoos}  @tab vertex coordinates @tab face, poly
   @item @code{faceareas} @tab face surface areas @tab poly
   @item @code{faceeqs} @tab face equations@footnote{A face equation is specified by
 the parameters @math{d}, @math{a}, @math{b} and @math{c}, with the equation being: @math{a x + b y + c z = d}.  The vector
 @math{(a, b, c)} is pointing outwards of the polyhedron.}
   @tab poly
+  @item @code{nseednb} @tab number of neighboring seeds @tab poly
+  @item @code{nseeds} @tab neighboring seeds
+  @footnote{If a polyhedron has no neighbor on a face, a negative value
+    is returned.} @tab poly
   @item @code{scaleid(@var{scale})}  @tab identifier of the corresponding cell at scale
   @var{scale} @tab cell
-  @item @code{lamid}  @tab lamella width id@footnote{In the case of a
+  @item @code{lam}  @tab lamella width id@footnote{In the case of a
     lamellar tessellation with several lamella
-      widths@comma{} @var{lamid} stands for the actual lamellar width
-  of the cell (starting from 1).}            @tab face, poly
-  @item @code{modeid}  @tab mode id@footnote{In the case of a
+      widths@comma{} @var{lam} stands for the actual lamella width
+  of the cell (starting from 1).}            @tab cell
+  @item @code{mode}  @tab mode@footnote{In the case of a
     multimodal tessellation (e.g.@ in terms of cell size)@comma{}
-    @var{modeid} stands for the actual mode (starting from 1).}            @tab face, poly
-  @item @code{e}  @tab Euler angles (Bunge convention) @tab seed, face (in 2D), poly
+    @var{mode} stands for the actual mode (starting from 1).}            @tab cell
+  @item @code{group}  @tab group  @tab cell
+  @item @code{per}  @tab periodic (1 if periodic, 0 otherwise)  @tab ver, edge, face (in 3D)
 @end multitable
 
 Variables consisting of several values (@samp{vers}, etc.) are not available for sorting
@@ -339,7 +371,32 @@ to.
 @node Raster Tessellation Keys
 @section Raster Tessellation Keys
 
-Available keys for raster tessellation seeds and cells are provided below.
+Available keys for raster tessellation itself are provided below.
+
+@multitable @columnfractions 0.23 0.43 0.34
+  @headitem Key         @tab Descriptor                 @tab Apply to
+  @item @code{dim}      @tab dimension                  @tab tesr
+  @item @code{voxnbx}   @tab number of voxels in direction x @tab tesr
+  @item @code{voxnby}   @tab number of voxels in direction y @tab tesr
+  @item @code{voxnbz}   @tab number of voxels in direction z @tab tesr
+  @item @code{voxnb}    @tab number of voxels in total  @tab tesr
+  @item @code{originx}  @tab origin x coordinate        @tab tesr
+  @item @code{originy}  @tab origin y coordinate        @tab tesr
+  @item @code{originz}  @tab origin z coordinate        @tab tesr
+  @item @code{voxsizex} @tab voxel size in direction x  @tab tesr
+  @item @code{voxsizey} @tab voxel size in direction y  @tab tesr
+  @item @code{voxsizez} @tab voxel size in direction z  @tab tesr
+  @item @code{domsizex} @tab domain size in direction x @tab tesr
+  @item @code{domsizey} @tab domain size in direction y @tab tesr
+  @item @code{domsizez} @tab domain size in direction z @tab tesr
+  @item @code{x}        @tab x coordinate               @tab tesr
+  @item @code{y}        @tab y coordinate               @tab tesr
+  @item @code{z}        @tab z coordinate               @tab tesr
+  @item @code{coo}      @tab x, y and z coordinates     @tab tesr
+@end multitable
+
+@sp 1
+Available keys for raster tessellation seeds, cells and voxels are provided below.
 Mathematical and logical expressions based on these keys can also be
 used.
 To turn a key value into a value relative to the mean over all entities
@@ -348,18 +405,26 @@ the @samp{@SEPDEP{}rel} modifier.  To turn a key value into a value
 which holds for a unit cell size, append the key expression with
 the @samp{@SEPDEP{}uc} modifier.
 
-@multitable @columnfractions 0.23 0.48 0.29
+@multitable @columnfractions 0.23 0.43 0.34
   @headitem Key     @tab Descriptor                   @tab Apply to
+  @item @code{originx} @tab origin x coordinate       @tab tesr
+  @item @code{originy} @tab origin y coordinate       @tab tesr
+  @item @code{originz} @tab origin z coordinate       @tab tesr
+  @item @code{voxsizex} @tab voxel size in direction x  @tab tesr
+  @item @code{voxsizey} @tab voxel size in direction y  @tab tesr
+  @item @code{voxsizez} @tab voxel size in direction z  @tab tesr
+  @item @code{domsizex} @tab domain size in direction x @tab tesr
+  @item @code{domsizey} @tab domain size in direction y @tab tesr
+  @item @code{domsizez} @tab domain size in direction z @tab tesr
   @item @code{id}   @tab identifier                   @tab seed, cell, voxel
-  @item @code{x}    @tab x coordinate                 @tab seed, cell, voxel
-  @item @code{y}    @tab y coordinate                 @tab seed, cell, voxel
-  @item @code{z}    @tab z coordinate                 @tab seed, cell, voxel
-  @item @code{xyz}  @tab x, y and z coordinates       @tab seed, cell, voxel
+  @item @code{x}    @tab x coordinate                 @tab tesr, seed, cell, voxel
+  @item @code{y}    @tab y coordinate                 @tab tesr, seed, cell, voxel
+  @item @code{z}    @tab z coordinate                 @tab tesr, seed, cell, voxel
+  @item @code{coo}  @tab x, y and z coordinates       @tab tesr, seed, cell, voxel
   @item @code{vx}   @tab x coordinate (in voxel)      @tab voxel
   @item @code{vy}   @tab y coordinate (in voxel)      @tab voxel
   @item @code{vz}   @tab z coordinate (in voxel)      @tab voxel
-  @item @code{vxyz} @tab x, y and z coordinates (in voxel) @tab voxel
-  @item @code{e}    @tab Euler angles (Bunge convention) @tab cell, voxel
+  @item @code{vcoo} @tab x, y and z coordinates (in voxel) @tab voxel
   @item @code{cell} @tab cell                         @tab voxel
   @item @code{w}    @tab Laguerre weight              @tab seed
   @item @code{size}  @tab size (area/volume in 2D/3D) @tab cell
@@ -370,12 +435,6 @@ the @samp{@SEPDEP{}uc} modifier.
     radius@footnote{Equivalent radius = radius of the
     circle of equivalent area/volume in 2D/3D.}       @tab cell
   @item @code{convexity}  @tab convexity@footnote{Convexity of a cell = ratio of the volume of the cell to the volume of the convex hull of the cell.} @tab cell
-  @item @code{voxsizex} @tab Voxel  size in direction x @tab general
-  @item @code{voxsizey} @tab Voxel  size in direction y @tab general
-  @item @code{voxsizez} @tab Voxel  size in direction z @tab general
-  @item @code{domsizex} @tab Domain size in direction x @tab general
-  @item @code{domsizey} @tab Domain size in direction y @tab general
-  @item @code{domsizez} @tab Domain size in direction z @tab general
 @end multitable
 
 @node Tessellation Optimization Keys
@@ -424,7 +483,7 @@ below.
 Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is an integer reduction
 factor, to log values only at specific iteration numbers.
 
-@multitable @columnfractions 0.23 0.48 0.29
+@multitable @columnfractions 0.23 0.43 0.34
   @headitem Key    @tab Descriptor                   @tab Apply to
   @item @code{iter}@tab iteration number             @tab n/a
   @item @code{id}  @tab identifier                   @tab seed
@@ -441,7 +500,7 @@ below.
 Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is an integer reduction
 factor, to log values only at specific iteration numbers.
 
-@multitable @columnfractions 0.23 0.48 0.29
+@multitable @columnfractions 0.23 0.43 0.34
   @headitem Key    @tab Descriptor                   @tab Apply to
   @item @code{iter}@tab iteration number             @tab n/a
   @item @code{val}  @tab value 	                     @tab n/a
@@ -464,7 +523,7 @@ for @dfn{cumulative probability density function}.
 Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is a reduction
 factor, to log values only at specific iteration numbers.
 
-@multitable @columnfractions 0.23 0.48 0.29
+@multitable @columnfractions 0.23 0.43 0.34
   @headitem Key    @tab Descriptor              @tab Apply to
   @item @code{iter}@tab iteration number        @tab n/a
   @item @code{x}   @tab x coordinate            @tab n/a
@@ -484,7 +543,7 @@ below.  Values are written for each voxel used to compute the objective function
 Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is a reduction
 factor, to log values only at specific iteration numbers.
 
-@multitable @columnfractions 0.23 0.48 0.29
+@multitable @columnfractions 0.23 0.43 0.34
   @headitem Key     @tab Descriptor              @tab Apply to
   @item @code{iter} @tab iteration number        @tab n/a
   @item @code{id}   @tab cell identifier	 @tab n/a
@@ -500,41 +559,61 @@ factor, to log values only at specific iteration numbers.
 @subsection Variable Keys
 
 The available keys for option @option{-orioptilogvar} are provided
-below.  For all orientation descriptors but @samp{q}, the returned orientation are located in the fundamental region.
+below.  For all orientation descriptors but @samp{quaternion}, the returned orientation are located in the fundamental region.
 @c Use @samp{iter(@var{factor})}, where @samp{@var{factor}} is an integer reduction
 @c factor, to log values only at specific iteration numbers.
 
-@multitable @columnfractions 0.23 0.48 0.29
+@multitable @columnfractions 0.23 0.43 0.34
   @headitem Key    @tab Descriptor                          @tab Apply to
   @item @code{iter}@tab iteration number                    @tab n/a
   @item @code{id}  @tab identifier                          @tab seed
-  @item @code{g}  @tab rotation matrix                      @tab seed
-  @item @code{rtheta}  @tab rotation axis / angle pair      @tab seed
-  @item @code{R}  @tab Rodrigues vector                     @tab seed
-  @item @code{q}  @tab quaternion                           @tab seed
-  @item @code{e}  @tab Euler angles (Bunge convention)      @tab seed
-  @item @code{ek} @tab Euler angles (Kocks convention)      @tab seed
-  @item @code{er} @tab Euler angles (Roe convention)        @tab seed
+  @item @code{rodrigues}  @tab Rodrigues vector                     @tab seed
+  @item @code{euler-bunge}  @tab Euler angles (Bunge convention)      @tab seed
+  @item @code{euler-kocks} @tab Euler angles (Kocks convention)      @tab seed
+  @item @code{euler-roe} @tab Euler angles (Roe convention)        @tab seed
+  @item @code{rotmat}  @tab rotation matrix                      @tab seed
+  @item @code{axis-angle}  @tab rotation axis / angle pair      @tab seed
+  @item @code{quaternion}  @tab quaternion                           @tab seed
 @end multitable
 
 @node Mesh Keys
 @section Mesh Keys
 
+Available keys for a mesh itself are provided below.
+
+@multitable @columnfractions 0.23 0.43 0.34
+  @headitem Key   @tab Descriptor                      @tab Apply to
+  @item @code{eltnb}  @tab element number              @tab @var{n}D mesh, cohesive-elt mesh
+  @item @code{nodenb}  @tab node number                @tab @var{n}D mesh
+  @item @code{partnb}  @tab partition number           @tab highest-dimension mesh
+  @item @code{x}  @tab x coordinate                    @tab @var{n}D mesh
+  @item @code{y}  @tab y coordinate                    @tab @var{n}D mesh
+  @item @code{z}  @tab z coordinate                    @tab @var{n}D mesh
+  @item @code{coo}  @tab x, y and z coordinates        @tab @var{n}D mesh
+  @item @code{length} @tab length                      @tab 1D mesh
+  @item @code{area}  @tab area                         @tab 2D mesh
+  @item @code{vol} @tab volume                         @tab 3D mesh
+  @item @code{size}  @tab size (length/area/volume in 1D/2D/ 3D)  @tab 1D mesh, 2D mesh, 3D mesh
+@end multitable
+
+@sp 1
 Available keys for mesh node, elements and element sets (of all
 dimensions) and points are provided below.
 
-@multitable @columnfractions 0.23 0.48 0.29
+@multitable @columnfractions 0.23 0.43 0.34
   @headitem Key       @tab Descriptor                       @tab Apply to
   @item @code{id}     @tab identifier                       @tab node, @var{n}D elt, @var{n}D elset
   @item @code{x}      @tab x coordinate                     @tab node, @var{n}D elt, @var{n}D elset
   @item @code{y}      @tab y coordinate                     @tab node, @var{n}D elt, @var{n}D elset
   @item @code{z}      @tab z coordinate                     @tab node, @var{n}D elt, @var{n}D elset
+  @item @code{coo}    @tab x, y and z coordinates           @tab node, @var{n}D elt, @var{n}D elset
   @item @code{dim}    @tab dimension (= lowest parent elt dimension) @tab node
   @item @code{elset0d} @tab 0D elset                        @tab 0D elt
   @item @code{elset1d} @tab 1D elset                        @tab 1D elt
   @item @code{elset2d} @tab 2D elset                        @tab 2D elt
   @item @code{elset3d} @tab 3D elset                        @tab 3D elt
   @item @code{part}   @tab partition                       @tab @var{n}D elt, node
+  @item @code{group}  @tab group                            @tab @var{n}D elt, @var{n}D elset
   @item @code{cyl} @tab whether or not is used to describe the
                         circular part of a cylinder domain @tab 1D elt, 1D elset
   @item @code{vol}    @tab volume                           @tab 3D elt, 3D elset
@@ -543,7 +622,7 @@ dimensions) and points are provided below.
       of the circle of equivalent area/volume in 2D/3D.}    @tab 2D elt, 3D elt, 2D elset, 3D elset
   @item @code{radeq}   @tab equivalent radius@footnote{Equivalent radius = radius of the circle of equivalent area/volume in 2D/3D.}            @tab 2D elt, 3D elt, 2D elset, 3D elset
   @item @code{length} @tab average edge length              @tab @math{n}D elt, 1D elset
-  @item @code{lengths} @tab edge lengths                    @tab 2D elt, 3d elt
+  @item @code{lengths} @tab edge lengths                    @tab 2D elt, 3D elt
   @item @code{elsetvol}    @tab elset volume                @tab 3D elt
   @item @code{elsetarea}   @tab elset area                  @tab 2D elt
   @item @code{elsetlength} @tab elset length                @tab 1D elt
@@ -562,19 +641,19 @@ dimensions) and points are provided below.
   @item @code{2dmeshv}@tab vector to @samp{2dmeshp}   @tab node, 3D elt
   @item @code{2dmeshn}@tab outgoing normal vector of the 2D mesh
 		     at @samp{2dmeshp}                @tab node, 3D elt
-  @item @code{e}  @tab Euler angles (Bunge convention) @tab 2D elt, 3D elt, 2D elset, 3D elset
+  @item @code{per}  @tab periodic (1 if periodic, 0 otherwise)  @tab 0D elt, 1D elt, 2D elt (in 3D), 0D elset, 1D elset, 2D elset (in 3D)
 @end multitable
 
 @dfn{@var{n}D} stands for an arbitrary dimension (from 0D to 3D).
-Variables starting by @samp{2dmesh} are only available for statistics
-(options starting by @option{-stat} of @mM{}); for elements, they apply to the centroids.
+Variables beginning with @samp{2dmesh} are only available for statistics
+(options beginning with @option{-stat} of @mM{}); for elements, they apply to the centroids.
 
 @node Point Keys
 @section Point Keys
 
 Available keys for points are provided below.
 
-@multitable @columnfractions 0.23 0.48 0.145 0.145
+@multitable @columnfractions 0.23 0.43 0.17 0.17
   @headitem Key   @tab Descriptor                      @tab Apply to @tab Require
   @item @code{id} @tab identifier                      @tab point    @tab
   @item @code{x}  @tab x coordinate                    @tab point    @tab
@@ -590,26 +669,32 @@ Available keys for points are provided below.
 		     at @samp{2dmeshp}                @tab point    @tab 3D mesh
 @end multitable
 
+@node Simulation Results
+@section Simulation Results
+
+A result of the simulation directory can be invoked simply from its name (@pxref{Simulation Directory (@file{.sim})}).  A component of a vectorial or tensorial result can be invoked by prefixing the component to the name, as in @code{coo1}, @code{stress11}, etc.  For a symmetrical tensor, both @code{@var{tij}} and @code{@var{tji}} are valid.  The type of a result of the simulation directory is determined automatically.
+
 @node Rotations and Orientations
 @section Rotations and Orientations
 
 Rotations and orientations can be described using the following
-descriptors (see Orilib, @url{http://orilib.sourceforge.net}, for more
-information).
-@multitable @columnfractions 0.23 0.48 0.29
-  @headitem Key @tab Descriptor @tab Number of variables
-  @item @code{g}  @tab rotation matrix                 @tab 9
-  @item @code{rtheta}  @tab rotation axis / angle pair @tab 4
-  @item @code{R}  @tab Rodrigues vector                @tab 3
-  @item @code{q}  @tab quaternion                      @tab 4
-  @item @code{e}  @tab Euler angles (Bunge convention) @tab 3
-  @item @code{ek} @tab Euler angles (Kocks convention) @tab 3
-  @item @code{er} @tab Euler angles (Roe convention)   @tab 3
+descriptors.
+@multitable @columnfractions 0.23 0.43 0.34
+  @headitem Key @tab Descriptor @tab Number of parameters
+  @item @code{rodrigues}  @tab Rodrigues vector                @tab 3
+  @item @code{euler-bunge}  @tab Euler angles (Bunge convention) @tab 3
+  @item @code{euler-kocks} @tab Euler angles (Kocks convention) @tab 3
+  @item @code{euler-roe} @tab Euler angles (Roe convention)   @tab 3
+  @item @code{rotmat}  @tab rotation matrix                 @tab 9
+  @item @code{axis-angle}  @tab rotation axis / angle pair @tab 4
+  @item @code{quaternion}  @tab quaternion                      @tab 4
 @end multitable
 
+Some options can take orientations as argument, in which case the orientation must be expressed as @samp{@var{descriptor}(@var{parameters})}, where the parameters are separated by @samp{,}, such as @samp{rodrigues(0.1,0.2,0.3}).
+
 @sp 1
-Keys are available for ideal orientations:
-@multitable @columnfractions 0.23 0.48 0.29
+Keys are available for ideal orientations (lowercased is accepted):
+@multitable @columnfractions 0.23 0.43 0.34
 @iftex
   @item Cube      @tab @math{@left(0@,0@,1@right)@left[1@,0@,0@right]}
   @item Goss      @tab @math{@left(0@,1@,1@right)@left[1@,0@,0@right]}
@@ -640,6 +725,8 @@ Keys are available for ideal orientations:
 @end ifinfo
 @end multitable
 
+When loading orientations from an external file, @samp{file(@var{file_name})} assumes orientations described by Euler angles in Bunge convention (and active convention).  To specify a different descriptor, use @samp{file(@var{file_name},des=@var{descriptor})}, where @samp{@var{descriptor}} is among the descriptors listed above.
+
 @node Crystal Symmetries
 @section Crystal Symmetries
 
@@ -647,7 +734,7 @@ Crystal symmetries can be described using the following
 descriptors.
 
 @iftex
-@multitable @columnfractions 0.23 0.48 0.29
+@multitable @columnfractions 0.23 0.43 0.34
   @headitem Key @tab Descriptor @tab Number of operators
   @item @code{triclinic} @tab triclinic (Laue group @math{@overline{1}}) @tab 24
   @item @code{cubic}     @tab cubic				@tab 24
@@ -666,7 +753,7 @@ descriptors.
 @end multitable
 @end iftex
 @ifinfo
-@multitable @columnfractions 0.23 0.48 0.29
+@multitable @columnfractions 0.23 0.43 0.34
   @headitem Key @tab Descriptor @tab Number of operators
   @item @code{triclinic} @tab triclinic (Laue group @math{-1})  @tab 24
   @item @code{cubic}     @tab cubic				@tab 24
@@ -686,8 +773,8 @@ descriptors.
 @end ifinfo
 
 @sp 1
-Keys are available for ideal orientations:
-@multitable @columnfractions 0.23 0.48 0.29
+Keys are available for ideal orientations (lowercased is accepted):
+@multitable @columnfractions 0.23 0.43 0.34
 @iftex
   @item Cube      @tab @math{@left(0@,0@,1@right)@left[1@,0@,0@right]}
   @item Goss      @tab @math{@left(0@,1@,1@right)@left[1@,0@,0@right]}
@@ -718,11 +805,13 @@ Keys are available for ideal orientations:
 @end ifinfo
 @end multitable
 
-@node Colours
-@section Colours
+@node Colors and Color Maps
+@section Colors and Color Maps
 
-The available colours are provided below, with their corresponding RGB
-channel values. Any other colour can be defined from the RGB channel
+@section Colors
+
+The available colors are provided below, with their corresponding RGB
+channel values. Any other color can be defined from the RGB channel
 values, under format
 @samp{@w{@var{R_value}|@var{G_value}|@var{B_value}}}.
 
@@ -1010,11 +1099,14 @@ values, under format
 @end multitable
 @end ifinfo
 
-The default colour palette (used for options @option{-datacellcol},
-@option{-dataelt3dcol}, etc.) is defined from the above colour list,
-by excluding colours of brightness below 0.2 and above 0.8.  The
-brightness is defined as the average of the channel values divided by
-255.  The resulting list of colours is:
+@section Color Maps
+
+@subsection Color Map for Integer Values
+
+The color map (also called @dfn{palette}) used to represent integer values is
+defined from the above color list, by excluding colors of brightness below 0.2
+and above 0.8.  The brightness is defined as the average of the channel values
+divided by 255.  The resulting list of colors is:
 @code{red}, @code{green}, @code{blue}, @code{yellow}, @code{magenta},
 @code{cyan}, @code{chartreuse}, @code{springgreen}, @code{olive},
 @code{purple}, @code{teal}, @code{grey}, @code{deepskyblue},
@@ -1042,3 +1134,22 @@ brightness is defined as the average of the channel values divided by
 @code{sienna}, @code{firebrick}, @code{indianred}, @code{dimgrey},
 @code{chocolate}, @code{brown}, @code{goldenrod}, @code{plum} and
 @code{cadetblue}.
+
+@subsection Color Maps for Real Values
+
+The color @dfn{map} used to represent real values is smooth and obtained by
+interpolation between nominal colors. Tinycolormap
+(@url{https://github.com/yuki-koyama/tinycolormap}) is used to generate standard color maps:
+@c
+@multitable @columnfractions 0.25 0.25 0.25
+@headitem Python-style  @tab Matlab-style  @tab GitHub-style
+@item @code{magma}      @tab @code{parula} @tab @code{github}
+@item @code{inferno}    @tab @code{heat}
+@item @code{plasma}     @tab @code{hot}
+@item @code{viridis}    @tab @code{jet}
+@item @code{cividis}    @tab @code{gray}
+@end multitable
+@c
+and @samp{viridis} is the default.  See @url{https://github.com/yuki-koyama/tinycolormap} for illustrations.
+
+Alternatively, any series of colors can be used to define a color map.  Neper's legacy color map (@w{version @math{< 4}}) is @samp{blue,cyan,yellow,green} and can be obtained using @samp{legacy}.

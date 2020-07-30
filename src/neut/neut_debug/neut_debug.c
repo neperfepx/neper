@@ -156,13 +156,13 @@ neut_debug_nset (FILE * file, struct NSET NSet)
   for (i = 1; i <= NSet.qty; i++)
     fprintf (file, "%s\n", NSet.names[i]);
 
-  fprintf (file, "nodeqty = \n");
+  fprintf (file, "NodeQty = \n");
   for (i = 1; i <= NSet.qty; i++)
-    fprintf (file, "%d\n", NSet.nodeqty[i]);
+    fprintf (file, "%d\n", NSet.NodeQty[i]);
 
   fprintf (file, "nodes = \n");
   for (i = 1; i <= NSet.qty; i++)
-    ut_array_1d_int_fprintf (file, NSet.nodes[i], NSet.nodeqty[i], "%d");
+    ut_array_1d_int_fprintf (file, NSet.nodes[i], NSet.NodeQty[i], "%d");
 
   fprintf (file,
            "====== End of NSet =======================================\n");
@@ -808,12 +808,12 @@ neut_debug_seedset (FILE * file, struct SEEDSET SSet)
     for (i = 1; i <= SSet.Nall; i++)
       fprintf (file, "%f\n", SSet.SeedWeight[i]);
 
-  fprintf (file, "q =\n");
-  if (!SSet.q)
+  fprintf (file, "SeedOri =\n");
+  if (!SSet.SeedOri)
     fprintf (file, "is NULL.\n");
   else
     for (i = 1; i <= SSet.N; i++)
-      ut_array_1d_fprintf (file, SSet.q[i], 4, "%f");
+      ut_array_1d_fprintf (file, SSet.SeedOri[i], 4, "%f");
 
   fprintf (file, "LamEq = ");
   if (SSet.LamEq == NULL)
@@ -857,235 +857,6 @@ neut_debug_seedset_name (char *filename, struct SEEDSET SSet)
 
   return;
 }
-
-/*
-void
-neut_debug_tessdata (FILE* file, struct TESSDATA TessData)
-{
-  int i;
-
-  // Poly stuff
-  fprintf (file, "polydataqty = %d\n", TessData.polydataqty);
-
-  if (TessData.polydatatype != NULL)
-  {
-    fprintf (file, "polydatatype =\n");
-    for (i = 0; i < TessData.polydataqty; i++)
-      fprintf (file, "%d: %s\n", i, TessData.polydatatype[i]);
-  }
-  else
-    fprintf (file, "polydatatype = NULL\n");
-
-  if (TessData.polydatasize != NULL)
-  {
-    fprintf (file, "polydatasize =\n");
-    for (i = 0; i < TessData.polydataqty; i++)
-      fprintf (file, "%d: %d %d\n", i, TessData.polydatasize[i][0], TessData.polydatasize[i][1]);
-  }
-  else
-    fprintf (file, "polydatasize = NULL\n");
-
-  if (TessData.polydata != NULL)
-  {
-    for (i = 0; i < TessData.polydataqty; i++)
-    {
-      fprintf (file, "polydata =\n");
-      fprintf (file, "%d:\n", i);
-      ut_array_2d_fprintf (file, TessData.polydata[i] + 1,
-			   TessData.polydatasize[i][0], TessData.polydatasize[i][1], "%f");
-    }
-  }
-  else
-    fprintf (file, "polydata = NULL\n");
-
-  if (TessData.polycol != NULL)
-  {
-    fprintf (file, "polycol =\n");
-    ut_array_2d_int_fprintf (file, TessData.polycol + 1,
-                             TessData.polyqty, 3, "%d");
-  }
-  else
-    fprintf (file, "polycol = NULL\n");
-
-  if (TessData.polycolourscheme != NULL)
-    fprintf (file, "polycolourscheme = %s\n", TessData.polycolourscheme);
-  else
-    fprintf (file, "polycolourscheme = NULL\n");
-
-  // Face stuff
-  fprintf (file, "facedataqty = %d\n", TessData.facedataqty);
-
-  if (TessData.facedatatype != NULL)
-  {
-    fprintf (file, "facedatatype =\n");
-    for (i = 0; i < TessData.facedataqty; i++)
-      fprintf (file, "%d: %s\n", i, TessData.facedatatype[i]);
-  }
-  else
-    fprintf (file, "facedatatype = NULL\n");
-
-  if (TessData.facedatasize != NULL)
-  {
-    fprintf (file, "facedatasize =\n");
-    for (i = 0; i < TessData.facedataqty; i++)
-      fprintf (file, "%d: %d %d\n", i, TessData.facedatasize[i][0], TessData.facedatasize[i][1]);
-  }
-  else
-    fprintf (file, "facedatasize = NULL\n");
-
-  if (TessData.facedata != NULL)
-  {
-    for (i = 0; i < TessData.facedataqty; i++)
-    {
-      fprintf (file, "facedata =\n");
-      fprintf (file, "%d:\n", i);
-      ut_array_2d_fprintf (file, TessData.facedata[i] + 1,
-			   TessData.facedatasize[i][0], TessData.facedatasize[i][1], "%f");
-    }
-  }
-  else
-    fprintf (file, "facedata = NULL\n");
-
-  if (TessData.facewidth != NULL)
-  {
-    fprintf (file, "facewidth =\n");
-    ut_array_1d_fprintf (file, TessData.facewidth + 1,
-			 TessData.faceqty, "%f");
-  }
-  else
-    fprintf (file, "facewidth = NULL\n");
-
-  if (TessData.facecol != NULL)
-  {
-    fprintf (file, "facecol =\n");
-    ut_array_2d_int_fprintf (file, TessData.facecol + 1,
-                             TessData.faceqty, 3, "%d");
-  }
-  else
-    fprintf (file, "facecol = NULL\n");
-
-  if (TessData.facecolourscheme != NULL)
-    fprintf (file, "facecolourscheme = %s\n", TessData.facecolourscheme);
-  else
-    fprintf (file, "facecolourscheme = NULL\n");
-
-  // Edge stuff
-  fprintf (file, "edgedataqty = %d\n", TessData.edgedataqty);
-
-  if (TessData.edgedatatype != NULL)
-  {
-    fprintf (file, "edgedatatype =\n");
-    for (i = 0; i < TessData.edgedataqty; i++)
-      fprintf (file, "%d: %s\n", i, TessData.edgedatatype[i]);
-  }
-  else
-    fprintf (file, "edgedatatype = NULL\n");
-
-  if (TessData.edgedatasize != NULL)
-  {
-    fprintf (file, "edgedatasize =\n");
-    for (i = 0; i < TessData.edgedataqty; i++)
-      fprintf (file, "%d: %d %d\n", i, TessData.edgedatasize[i][0], TessData.edgedatasize[i][1]);
-  }
-  else
-    fprintf (file, "edgedatasize = NULL\n");
-
-  if (TessData.edgedata != NULL)
-  {
-    for (i = 0; i < TessData.edgedataqty; i++)
-    {
-      fprintf (file, "edgedata =\n");
-      fprintf (file, "%d:\n", i);
-      ut_array_2d_fprintf (file, TessData.edgedata[i] + 1,
-			   TessData.edgedatasize[i][0], TessData.edgedatasize[i][1], "%f");
-    }
-  }
-  else
-    fprintf (file, "edgedata = NULL\n");
-
-  if (TessData.edgerad != NULL)
-  {
-    fprintf (file, "edgerad =\n");
-    ut_array_1d_fprintf (file, TessData.edgerad + 1,
-			 TessData.edgeqty, "%f");
-  }
-  else
-    fprintf (file, "edgerad = NULL\n");
-
-  if (TessData.edgecol != NULL)
-  {
-    fprintf (file, "edgecol =\n");
-    ut_array_2d_int_fprintf (file, TessData.edgecol + 1,
-                             TessData.edgeqty, 3, "%d");
-  }
-  else
-    fprintf (file, "edgecol = NULL\n");
-
-  if (TessData.edgecolourscheme != NULL)
-    fprintf (file, "edgecolourscheme = %s\n", TessData.edgecolourscheme);
-  else
-    fprintf (file, "edgecolourscheme = NULL\n");
-
-  // Ver stuff
-  fprintf (file, "verdataqty = %d\n", TessData.edgedataqty);
-
-  if (TessData.verdatatype != NULL)
-  {
-    fprintf (file, "verdatatype =\n");
-    for (i = 0; i < TessData.verdataqty; i++)
-      fprintf (file, "%d: %s\n", i, TessData.verdatatype[i]);
-  }
-  else
-    fprintf (file, "verdatatype = NULL\n");
-
-  if (TessData.verdatasize != NULL)
-  {
-    fprintf (file, "verdatasize =\n");
-    for (i = 0; i < TessData.verdataqty; i++)
-      fprintf (file, "%d: %d %d\n", i, TessData.verdatasize[i][0], TessData.edgedatasize[i][1]);
-  }
-  else
-    fprintf (file, "verdatasize = NULL\n");
-
-  if (TessData.verdata != NULL)
-  {
-    for (i = 0; i < TessData.verdataqty; i++)
-    {
-      fprintf (file, "verdata =\n");
-      fprintf (file, "%d:\n", i);
-      ut_array_2d_fprintf (file, TessData.verdata[i] + 1,
-			   TessData.verdatasize[i][0], TessData.edgedatasize[i][1], "%f");
-    }
-  }
-  else
-    fprintf (file, "verdata = NULL\n");
-
-  if (TessData.verrad != NULL)
-  {
-    fprintf (file, "verrad =\n");
-    ut_array_1d_fprintf (file, TessData.verrad + 1,
-			 TessData.verqty, "%f");
-  }
-  else
-    fprintf (file, "verrad = NULL\n");
-
-  if (TessData.vercol != NULL)
-  {
-    fprintf (file, "vercol =\n");
-    ut_array_2d_int_fprintf (file, TessData.vercol + 1,
-                             TessData.verqty, 3, "%d");
-  }
-  else
-    fprintf (file, "vercol = NULL\n");
-
-  if (TessData.vercolourscheme != NULL)
-    fprintf (file, "vercolourscheme = %s\n", TessData.edgecolourscheme);
-  else
-    fprintf (file, "vercolourscheme = NULL\n");
-
-  return;
-}
-*/
 
 void
 neut_debug_poly (FILE * file, struct POLY Poly)
@@ -1189,63 +960,63 @@ neut_debug_polymod_name (char *filename, struct POLYMOD Polymod)
 }
 
 void
-neut_debug_meshdata (FILE * file, struct MESHDATA MeshData)
+neut_debug_data (FILE * file, struct DATA Data)
 {
-  fprintf (file, "EltQty = %d\n", MeshData.EltQty);
-  fprintf (file, "Dimension = %d\n", MeshData.Dimension);
+  fprintf (file, "Qty = %d\n", Data.Qty);
+  fprintf (file, "Dim = %d\n", Data.Dim);
 
-  fprintf (file, "ColDataType = %s\n", MeshData.ColDataType);
+  fprintf (file, "ColDataType = %s\n", Data.ColDataType);
 
   fprintf (file, "ColData = \n");
-  if (MeshData.ColData)
+  if (Data.ColData)
   {
-    if (!strcmp (MeshData.ColDataType, "col")
-        || !strncmp (MeshData.ColDataType, "ori", 3))
-      ut_array_2d_fprintf (file, MeshData.ColData + 1, MeshData.EltQty, 3,
+    if (!strcmp (Data.ColDataType, "col")
+        || !strncmp (Data.ColDataType, "ori", 3))
+      ut_array_2d_fprintf (file, Data.ColData + 1, Data.Qty, 3,
                            "%f");
-    else if (!strcmp (MeshData.ColDataType, "rad")
-             || !strcmp (MeshData.ColDataType, "scal"))
-      ut_array_2d_fprintf (file, MeshData.ColData + 1, MeshData.EltQty, 1,
+    else if (!strcmp (Data.ColDataType, "rad")
+             || !strcmp (Data.ColDataType, "real"))
+      ut_array_2d_fprintf (file, Data.ColData + 1, Data.Qty, 1,
                            "%f");
     else
       abort ();
   }
 
   fprintf (file, "Col = \n");
-  if (MeshData.Col)
-    ut_array_2d_int_fprintf (file, MeshData.Col + 1, MeshData.EltQty, 3,
+  if (Data.Col)
+    ut_array_2d_int_fprintf (file, Data.Col + 1, Data.Qty, 3,
                              "%d");
 
-  fprintf (file, "ColScheme = %s\n", MeshData.ColScheme);
+  fprintf (file, "ColScheme = %s\n", Data.ColScheme);
 
-  fprintf (file, "RadDataType = %s\n", MeshData.RadDataType);
+  fprintf (file, "RadDataType = %s\n", Data.RadDataType);
 
   fprintf (file, "RadData = \n");
-  if (MeshData.RadData)
-    ut_array_2d_fprintf (file, MeshData.RadData + 1, MeshData.EltQty, 3,
+  if (Data.RadData)
+    ut_array_2d_fprintf (file, Data.RadData + 1, Data.Qty, 3,
                          "%f");
 
   fprintf (file, "Rad = \n");
-  if (MeshData.Rad)
-    ut_array_1d_fprintf (file, MeshData.Rad + 1, MeshData.EltQty, "%f\n");
+  if (Data.Rad)
+    ut_array_1d_fprintf (file, Data.Rad + 1, Data.Qty, "%f\n");
 
-  fprintf (file, "Scale = %s\n", MeshData.Scale);
+  fprintf (file, "Scale = %s\n", Data.Scale);
 
   fprintf (file, "BCol = \n");
-  if (MeshData.BCol)
-    ut_array_1d_int_fprintf (file, MeshData.BCol, 3, "%d\n");
+  if (Data.BCol)
+    ut_array_1d_int_fprintf (file, Data.BCol, 3, "%d\n");
 
-  fprintf (file, "BRad = %f\n", MeshData.BRad);
+  fprintf (file, "BRad = %f\n", Data.BRad);
 
   return;
 }
 
 void
-neut_debug_meshdata_name (char *filename, struct MESHDATA MeshData)
+neut_debug_data_name (char *filename, struct DATA Data)
 {
   FILE *file = ut_file_open (filename, "W");
 
-  neut_debug_meshdata (file, MeshData);
+  neut_debug_data (file, Data);
 
   ut_file_close (file, filename, "W");
 

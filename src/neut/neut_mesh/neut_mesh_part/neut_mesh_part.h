@@ -18,7 +18,7 @@ extern "C"
 /// coms[i][1] the numbers of communications with it.
 ///
   extern int
-    neut_mesh_elt_coms (struct MESH Mesh, int elt, int partqty, int *parttab,
+    neut_mesh_elt_coms (struct MESH Mesh, int elt, int PartQty, int *parttab,
 			int *parttab2, int **coms, int *pcomqty);
 
 /// \brief Get the number of communications of an elt.

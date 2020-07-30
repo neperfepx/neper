@@ -142,10 +142,10 @@ nem_cleaning_dupnodemerge (struct NODES *pNodes, struct MESH *Mesh,
 
   // Removing useless nodes
   int *node_nbs = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
-  int nodeqty = 0;
+  int NodeQty = 0;
 
   for (i = 1; i <= (*pNodes).NodeQty; i++)
-    node_nbs[i] = (slave_master[i] == i) ? ++nodeqty : -1;
+    node_nbs[i] = (slave_master[i] == i) ? ++NodeQty : -1;
 
   for (i = 1; i <= (*pNodes).NodeQty; i++)
     if (node_nbs[i] != -1)
@@ -155,10 +155,10 @@ nem_cleaning_dupnodemerge (struct NODES *pNodes, struct MESH *Mesh,
   for (i = 0; i <= 3; i++)
     neut_mesh_switch (Mesh + i, node_nbs, NULL, NULL);
 
-  ut_print_message (0, 3, "%d %s removed.\n", (*pNodes).NodeQty - nodeqty,
-                    ((*pNodes).NodeQty - nodeqty <= 1) ? "node" : "nodes");
+  ut_print_message (0, 3, "%d %s removed.\n", (*pNodes).NodeQty - NodeQty,
+                    ((*pNodes).NodeQty - NodeQty <= 1) ? "node" : "nodes");
 
-  (*pNodes).NodeQty = nodeqty;
+  (*pNodes).NodeQty = NodeQty;
 
   ut_free_1d_char (&message);
   ut_free_1d_int (&slave_master);

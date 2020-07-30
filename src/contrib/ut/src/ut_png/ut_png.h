@@ -37,7 +37,7 @@ extern "C"
 /// \param *prow_ptr: image row ptr
 /// \param x: x coordinate
 /// \param y: y coordinate
-/// \param rgb: RGB colour (0-255)
+/// \param rgb: RGB color (0-255)
 /// \see ut_png_init_png_file_rgb
   extern void ut_png_pixel_set (png_bytep ** prow_ptr, int x, int y,
                                 int *rgb);

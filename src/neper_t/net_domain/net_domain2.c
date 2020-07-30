@@ -206,8 +206,6 @@ net_domain_sphereparms (char *domain, double *parms)
   for (i = 0; i < varqty; i++)
     ut_string_real (vars[i], parms + i);
 
-  parms[0] += 4;
-
   if (parms[1] != -1 && parms[1] < 4)
   {
     ut_print_message (1, 2, "Increasing the number of facets to 4.\n");

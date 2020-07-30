@@ -326,7 +326,7 @@ neut_tess_fprintf_stl (FILE * file, struct TESS Tess)
     }
 
     neut_mesh_free (&M);
-    neut_nodes_free (&N);
+    neut_nodes_reset (&N);
   }
 
   fprintf (file, "endsoliddart\n");
@@ -403,7 +403,7 @@ neut_tess_cell_fprintf_stl (FILE * file, struct TESS Tess, int cell)
     }
 
     neut_mesh_free (&M);
-    neut_nodes_free (&N);
+    neut_nodes_reset (&N);
   }
 
   fprintf (file, "endsoliddart\n");

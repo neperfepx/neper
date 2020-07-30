@@ -19,8 +19,8 @@ extern "C"
     int *node_parts;		/* new node numbers */
     int *elt_parts;		/* new elt  numbers */
 
-    int *nodeqty;		/* quantities of nodes in the partitions (0-based) */
-    int *eltqty;		/* quantities of elts  in the partitions (0-based) */
+    int *NodeQty;		/* quantities of nodes in the partitions (0-based) */
+    int *EltQty;		/* quantities of elts  in the partitions (0-based) */
     int *targeteltqty;		/* target quantities of elts in the partitions
 				   (0-based) */
   };

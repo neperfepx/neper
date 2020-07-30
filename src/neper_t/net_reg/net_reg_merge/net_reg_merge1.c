@@ -78,7 +78,7 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
             if (verbosity >= 2)
             {
               printf ("newver = %d\n", newver);
-              printf ("Deleting neighbouring edges, in turn: %d: ",
+              printf ("Deleting neighboring edges, in turn: %d: ",
                       (*pTess).VerEdgeQty[newver]);
               for (i = 0; i <= (*pTess).VerEdgeQty[newver] - 1; i++)
                 printf ("%d ", (*pTess).VerEdgeNb[newver][i]);

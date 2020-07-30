@@ -628,6 +628,8 @@ int *
 ut_realloc_1d_int (int *array, unsigned int size)
 {
   array = realloc (array, size * sizeof (int));
+  if (size == 0)
+    free (array);
 
   return size ? array : NULL;
 }
@@ -636,6 +638,8 @@ unsigned short *
 ut_realloc_1d_ushort (unsigned short *array, unsigned int size)
 {
   array = realloc (array, size * sizeof (unsigned short));
+  if (size == 0)
+    free (array);
 
   return size ? array : NULL;
 }
@@ -644,6 +648,8 @@ unsigned char *
 ut_realloc_1d_uchar (unsigned char *array, unsigned int size)
 {
   array = realloc (array, size * sizeof (unsigned char));
+  if (size == 0)
+    free (array);
 
   return size ? array : NULL;
 }
@@ -658,6 +664,8 @@ double *
 ut_realloc_1d_double (double *array, unsigned int size)
 {
   array = realloc (array, size * sizeof (double));
+  if (size == 0)
+    free (array);
 
   return size ? array : NULL;
 }
@@ -666,6 +674,8 @@ char *
 ut_realloc_1d_char (char *array, unsigned int size)
 {
   array = realloc (array, size * sizeof (char));
+  if (size == 0)
+    free (array);
 
   return size ? array : NULL;
 }
@@ -674,6 +684,8 @@ int **
 ut_realloc_1d_pint (int **array, unsigned int size)
 {
   array = realloc (array, size * sizeof (int *));
+  if (size == 0)
+    free (array);
 
   return size ? array : NULL;
 }
@@ -682,6 +694,8 @@ unsigned short **
 ut_realloc_1d_pushort (unsigned short **array, unsigned int size)
 {
   array = realloc (array, size * sizeof (unsigned short *));
+  if (size == 0)
+    free (array);
 
   return size ? array : NULL;
 }
@@ -690,6 +704,8 @@ unsigned char **
 ut_realloc_1d_puchar (unsigned char **array, unsigned int size)
 {
   array = realloc (array, size * sizeof (unsigned char *));
+  if (size == 0)
+    free (array);
 
   return size ? array : NULL;
 }
@@ -698,6 +714,8 @@ char **
 ut_realloc_1d_pchar (char **array, unsigned int size)
 {
   array = realloc (array, size * sizeof (char *));
+  if (size == 0)
+    free (array);
 
   return size ? array : NULL;
 }
@@ -706,6 +724,8 @@ double **
 ut_realloc_1d_pdouble (double **array, unsigned int size)
 {
   array = realloc (array, size * sizeof (double *));
+  if (size == 0)
+    free (array);
 
   return size ? array : NULL;
 }
@@ -714,6 +734,8 @@ double ***
 ut_realloc_1d_ppdouble (double ***array, unsigned int size)
 {
   array = realloc (array, size * sizeof (double **));
+  if (size == 0)
+    free (array);
 
   return size ? array : NULL;
 }
@@ -722,6 +744,8 @@ int ***
 ut_realloc_1d_ppint (int ***array, unsigned int size)
 {
   array = realloc (array, size * sizeof (int **));
+  if (size == 0)
+    free (array);
 
   return size ? array : NULL;
 }

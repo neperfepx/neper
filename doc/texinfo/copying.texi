@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2019 Romain Quey
+@c Copyright (C) 2003-2020 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Conditions of Use
@@ -47,7 +47,7 @@ If you use Neper for your own work, please, mention it explicitly in your report
 ...)
 @end ifinfo
 and
-cite one of several of the following papers (depending of your use of Neper):
+cite one or several of the following papers (depending of your use of Neper):
 @c
 @itemize
 @item @cite{R. Quey, P.R. Dawson, F. Barbe. Large-scale 3D random
@@ -58,7 +58,7 @@ remeshing.  Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 200, pp.@ 1729--1745, 2
 polycrystals: Method and application to statistical and synchrotron X-ray
 diffraction data, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 330, pp.@
 308-333, 2018}
-(for tessellation from experimental properties with option @option{-morpho});
+(for tessellation from custom or experimental properties with option @option{-morpho});
 @item @cite{R.@ Quey, A.@ Villani and C.@ Maurice, Nearly uniform sampling
 of crystal orientations, J.@ Appl.@ Crystallogr., vol. 51, pp.@ 1162-1173, 2018}
 (for uniform crystal orientation distribution with option @option{-ori uniform}).

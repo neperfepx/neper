@@ -11,8 +11,7 @@ extern "C"
 
   extern void neut_mesh_fprintf_vtk (FILE * file, char *dim,
 				     struct NODES Nodes, struct MESH Mesh1D,
-				     struct MESH Mesh2D, struct MESH Mesh3D,
-				     struct PART Part);
+				     struct MESH Mesh2D, struct MESH Mesh3D);
 
 #endif				// NEUT_MESH_FPRINTF_VTK
 

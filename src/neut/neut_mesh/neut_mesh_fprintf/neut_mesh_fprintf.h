@@ -10,8 +10,9 @@ extern "C"
 #ifndef NEUT_MESH_FPRINTF_H
 #define NEUT_MESH_FPRINTF_H
 
-#include "neut_mesh_fprintf_fepx/neut_mesh_fprintf_fepx.h"
-#include "neut_mesh_fprintf_gmsh/neut_mesh_fprintf_gmsh.h"
+#include "neut_mesh_fprintf_msh/neut_mesh_fprintf_msh.h"
+#include "neut_mesh_fprintf_ori/neut_mesh_fprintf_ori.h"
+#include "neut_mesh_fprintf_bcs/neut_mesh_fprintf_bcs.h"
 #include "neut_mesh_fprintf_geof/neut_mesh_fprintf_geof.h"
 #include "neut_mesh_fprintf_inp/neut_mesh_fprintf_inp.h"
 #include "neut_mesh_fprintf_vtk/neut_mesh_fprintf_vtk.h"

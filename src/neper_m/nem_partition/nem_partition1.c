@@ -25,7 +25,7 @@ nem_partition (struct IN_M In, struct NODES *pNodes, struct MESH *Mesh,
   nem_partition_nodes (In, &SCMesh, &Arch, pNodes, Mesh, pPart);
 
   ut_print_message (0, 2, "Partitioning elements...\n");
-  nem_partition_elts (In, Mesh, pPart);
+  nem_partition_elts (In, pNodes, Mesh, pPart);
 
   ut_print_message (0, 2, "Partitioning properties:\n");
   nem_partition_stats ((*pPart).qty, Mesh[dim], *pPart);

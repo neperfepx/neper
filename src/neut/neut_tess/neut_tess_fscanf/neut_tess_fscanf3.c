@@ -292,9 +292,6 @@ neut_tess_fscanf_domain_faces_v3p3 (struct TESS *pTess, FILE * file)
 void
 neut_tess_fscanf_per_gen (struct TESS *pTess, FILE * file)
 {
-  (*pTess).Periodic = ut_alloc_1d_int (3);
-  (*pTess).PeriodicDist = ut_alloc_1d (3);
-
   if (!ut_file_string_scanandtest (file, "**periodicity")
       || !ut_file_string_scanandtest (file, "*general")
       || ut_array_1d_int_fscanf (file, (*pTess).Periodic, 3) != 1

@@ -7,13 +7,10 @@
 void
 neut_tess_fscanf (FILE * file, struct TESS *pTess)
 {
-  char *version = ut_alloc_1d_char (10);
+  char *version = NULL;
   char *tmp = ut_alloc_1d_char (100);
 
-  if ((*pTess).PolyQty > 0)
-    neut_tess_free (pTess);
-
-  neut_tess_set_zero (pTess);
+  neut_tess_reset (pTess);
 
   neut_tess_fscanf_head (pTess, file, &version);
 

@@ -151,6 +151,19 @@ ut_array_2d_int_addval (int **array1, int size1, int size2, int val,
   return;
 }
 
+void
+ut_array_2d_addval (double **array1, int size1, int size2, double val,
+                    double **array2)
+{
+  int i, j;
+
+  for (i = 0; i < size1; i++)
+    for (j = 0; j < size2; j++)
+      array2[i][j] = array1[i][j] + val;
+
+  return;
+}
+
 double
 ut_array_1d_norm (double *array, int size)
 {
@@ -305,11 +318,54 @@ int
 ut_array_1d_fnscanf (char *filename, double *array, int d1)
 {
   FILE *file = NULL;
-  int status;
+  int status = 0, varqty;
+  char *fct = NULL, **vals = NULL, **vars = NULL;
 
-  file = ut_file_open (filename, "r");
-  status = ut_array_1d_fscanf (file, array, d1);
-  ut_file_close (file, filename, "r");
+  ut_string_function (filename, &fct, &vars, &vals, &varqty);
+
+  if (varqty == 1)
+  {
+    file = ut_file_open (filename, "r");
+    status = ut_array_1d_fscanf (file, array, d1);
+    ut_file_close (file, filename, "r");
+  }
+
+  else if (varqty == 2 && !strcmp (vars[1], "col"))
+  {
+    int i, j, col, totcolqty;
+    double *tmp = NULL;
+
+    col = atoi (vals[1]);
+
+    file = ut_file_open (vals[0], "r");
+
+    for (i = 0; i < d1; i++)
+    {
+      ut_file_nextlinenbwords (file, &totcolqty);
+
+      tmp = ut_alloc_1d (totcolqty);
+      for (j = 0; j < totcolqty; j++)
+        if (fscanf (file, "%lf", tmp + j) != 1)
+          abort ();
+
+      ut_file_goto_nextline (file);
+
+      array[i] = col ? tmp[abs (col) - 1] : 0;
+
+      if (col < 0)
+        array[i] *= -1;
+
+      ut_free_1d (&tmp);
+    }
+
+    ut_file_close (file, vals[0], "r");
+  }
+  else
+    abort ();
+
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vals, varqty);
+  ut_free_2d_char (&vars, varqty);
 
   return status;
 }
@@ -318,11 +374,51 @@ int
 ut_array_1d_int_fnscanf (char *filename, int *array, int d1)
 {
   FILE *file = NULL;
-  int status;
+  int status = 0, varqty;
+  char *fct = NULL, **vals = NULL, **vars = NULL;
 
-  file = ut_file_open (filename, "r");
-  status = ut_array_1d_int_fscanf (file, array, d1);
-  ut_file_close (file, filename, "r");
+  ut_string_function (filename, &fct, &vars, &vals, &varqty);
+
+  if (varqty == 1)
+  {
+    file = ut_file_open (filename, "r");
+    status = ut_array_1d_int_fscanf (file, array, d1);
+    ut_file_close (file, filename, "r");
+  }
+
+  else if (varqty == 2 && !strcmp (vars[1], "col"))
+  {
+    int i, j, col, totcolqty;
+    int *tmp = NULL;
+
+    col = atoi (vals[1]);
+
+    file = ut_file_open (vals[0], "r");
+
+    for (i = 0; i < d1; i++)
+    {
+      ut_file_nextlinenbwords (file, &totcolqty);
+
+      tmp = ut_alloc_1d_int (totcolqty);
+      for (j = 0; j < totcolqty; j++)
+        if (fscanf (file, "%d", tmp + j) != 1)
+          abort ();
+
+      ut_file_goto_nextline (file);
+
+      array[i] = tmp[col - 1];
+
+      ut_free_1d_int (&tmp);
+    }
+
+    ut_file_close (file, vals[0], "r");
+  }
+  else
+    abort ();
+
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vals, varqty);
+  ut_free_2d_char (&vars, varqty);
 
   return status;
 }
@@ -330,12 +426,159 @@ ut_array_1d_int_fnscanf (char *filename, int *array, int d1)
 int
 ut_array_2d_fnscanf (char *filename, double **array, int d1, int d2)
 {
+  int i, j, varqty;
   FILE *file = NULL;
-  int status;
+  int status = 0;
+  char *fct = NULL, **vals = NULL, **vars = NULL;
+  char *filename2 = ut_alloc_1d_char (strlen (filename) + 10);
 
-  file = ut_file_open (filename, "r");
-  status = ut_array_2d_fscanf (file, array, d1, d2);
-  ut_file_close (file, filename, "r");
+  if (!strncmp (filename, "file(", 5))
+    ut_string_function (filename, &fct, &vars, &vals, &varqty);
+  else
+  {
+    sprintf (filename2, "file(%s)", filename);
+    ut_string_function (filename2, &fct, &vars, &vals, &varqty);
+  }
+
+  ut_free_1d_char (&filename2);
+
+  if (varqty == 1)
+  {
+    file = ut_file_open (filename, "r");
+    status = ut_array_2d_fscanf (file, array, d1, d2);
+    ut_file_close (file, filename, "r");
+  }
+
+  else if (varqty == 2 && !strcmp (vars[1], "col"))
+  {
+    int colqty, totcolqty;
+    char **parts = NULL;
+    int *cols = NULL;
+    double *tmp = NULL;
+
+    ut_list_break (vals[1], ":", &parts, &colqty);
+
+    if (colqty != d2)
+      return -1;
+
+    cols = ut_alloc_1d_int (colqty);
+
+    for (i = 0; i < colqty; i++)
+      cols[i] = atoi (parts[i]);
+
+    totcolqty = ut_file_nbcolumns (vals[0]);
+
+    file = ut_file_open (vals[0], "r");
+
+    for (i = 0; i < d1; i++)
+    {
+      ut_file_nextlinenbwords (file, &totcolqty);
+
+      tmp = ut_alloc_1d (totcolqty);
+      for (j = 0; j < totcolqty; j++)
+        if (fscanf (file, "%lf", tmp + j) != 1)
+          abort ();
+
+      ut_file_goto_nextline (file);
+
+      for (j = 0; j < colqty; j++)
+      {
+        array[i][j] = cols[j] ? tmp[abs (cols[j]) - 1] : 0;
+        if (cols[j] < 0)
+          array[i][j] *= -1;
+      }
+
+      ut_free_1d (&tmp);
+    }
+    ut_file_close (file, vals[0], "r");
+
+    ut_free_2d_char (&parts, colqty);
+  }
+
+  else
+    abort ();
+
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vals, varqty);
+  ut_free_2d_char (&vars, varqty);
+
+  return status;
+}
+
+int
+ut_array_2d_int_fnscanf (char *filename, int **array, int d1, int d2)
+{
+  int i, j, varqty;
+  FILE *file = NULL;
+  int status = 0;
+  char *fct = NULL, **vals = NULL, **vars = NULL;
+  char *filename2 = ut_alloc_1d_char (strlen (filename) + 10);
+
+  if (!strncmp (filename, "file(", 5))
+    ut_string_function (filename, &fct, &vars, &vals, &varqty);
+  else
+  {
+    sprintf (filename2, "file(%s)", filename);
+    ut_string_function (filename2, &fct, &vars, &vals, &varqty);
+  }
+
+  ut_free_1d_char (&filename2);
+
+  if (varqty == 1)
+  {
+    file = ut_file_open (filename, "r");
+    status = ut_array_2d_int_fscanf (file, array, d1, d2);
+    ut_file_close (file, filename, "r");
+  }
+
+  else if (varqty == 2 && !strcmp (vars[1], "col"))
+  {
+    int colqty, totcolqty;
+    char **parts = NULL;
+    int *cols = NULL;
+    int *tmp = NULL;
+
+    ut_list_break (vals[1], ":", &parts, &colqty);
+
+    if (colqty != d2)
+      return -1;
+
+    cols = ut_alloc_1d_int (colqty);
+
+    for (i = 0; i < colqty; i++)
+      cols[i] = atoi (parts[i]);
+
+    totcolqty = ut_file_nbcolumns (vals[0]);
+
+    file = ut_file_open (vals[0], "r");
+
+    for (i = 0; i < d1; i++)
+    {
+      ut_file_nextlinenbwords (file, &totcolqty);
+
+      tmp = ut_alloc_1d_int (totcolqty);
+      for (j = 0; j < totcolqty; j++)
+        if (fscanf (file, "%d", tmp + j) != 1)
+          abort ();
+
+      ut_file_goto_nextline (file);
+
+      for (j = 0; j < colqty; j++)
+        array[i][j] = tmp[cols[j] - 1];
+
+      ut_free_1d_int (&tmp);
+    }
+    ut_file_close (file, vals[0], "r");
+
+    ut_free_2d_char (&parts, colqty);
+  }
+
+  else
+    abort ();
+
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vals, varqty);
+  ut_free_2d_char (&vars, varqty);
 
   return status;
 }
@@ -344,6 +587,8 @@ int
 ut_array_2d_fnscanf_wcard (char *filename, double **array, int d1, int d2,
                            char *wcard)
 {
+  int i;
+
   // if file not found and filename is a number, fill the array with
   // this number.
   if (!ut_file_exist (filename) && ut_list_testelt (wcard, ",", "numeral")
@@ -354,9 +599,9 @@ ut_array_2d_fnscanf_wcard (char *filename, double **array, int d1, int d2,
     ut_array_2d_set (array, d1, d2, val);
   }
 
-  // if file not found and filename is a colour, fill the array with
-  // this colour.
-  else if (!ut_file_exist (filename) && ut_list_testelt (wcard, ",", "colour")
+  // if file not found and filename is a color, fill the array with
+  // this color.
+  else if (!ut_file_exist (filename) && ut_list_testelt (wcard, ",", "color")
            && ut_color_name_isvalid (filename))
   {
     int *val = ut_alloc_1d_int (3);
@@ -371,9 +616,9 @@ ut_array_2d_fnscanf_wcard (char *filename, double **array, int d1, int d2,
   }
 
   // if file not found and filename is a `palette', fill the array with
-  // the colour palette.
-  else if (!ut_file_exist (filename) && ut_list_testelt (wcard, ",", "colour")
-           && !strcmp (filename, "id"))
+  // the color palette.
+  else if (!ut_file_exist (filename) && ut_list_testelt (wcard, ",", "color")
+           && !strcmp (filename, "palette"))
   {
     int i, j;
     int **tmp = ut_alloc_2d_int (d1, 3);
@@ -386,6 +631,31 @@ ut_array_2d_fnscanf_wcard (char *filename, double **array, int d1, int d2,
     ut_free_2d_int (&tmp, d1);
   }
 
+  else if (ut_file_exist (filename) && ut_list_testelt (wcard, ",", "color"))
+  {
+    char *name = ut_alloc_1d_char (100);
+    int *val = ut_alloc_1d_int (3);
+
+    // check that the file does not have more data than goes in the
+    // array.
+    if (ut_list_testelt (wcard, ",", "size") == 1)
+      ut_file_nbwords_testwmessage (filename, d1);
+
+    FILE *file = NULL;
+    file = ut_file_open (filename, "r");
+    for (i = 0; i < d1; i++)
+    {
+      if (fscanf (file, "%s", name) != 1)
+        abort ();
+      ut_color_name_rgb (name, val);
+      ut_array_1d_memcpy_fromint (val, 3, array[i]);
+    }
+    ut_file_close (file, filename, "r");
+
+    ut_free_1d_int (&val);
+    ut_free_1d_char (&name);
+  }
+
   else
   {
     // check that the file does not have more data than goes in the
@@ -393,10 +663,7 @@ ut_array_2d_fnscanf_wcard (char *filename, double **array, int d1, int d2,
     if (ut_list_testelt (wcard, ",", "size") == 1)
       ut_file_nbwords_testwmessage (filename, d1 * d2);
 
-    FILE *file = NULL;
-    file = ut_file_open (filename, "r");
-    ut_array_2d_fscanf (file, array, d1, d2);
-    ut_file_close (file, filename, "r");
+    ut_array_2d_fnscanf (filename, array, d1, d2);
   }
 
   return 0;
@@ -445,6 +712,24 @@ ut_array_1d_int_fprintf (FILE * file, int *array, int size,
   }
   if (size > 0)
     fprintf (file, format, array[size - 1]);
+  res = fprintf (file, "\n");
+
+  return res;
+}
+
+int
+ut_array_1d_int_fprintf_reverse (FILE * file, int *array, int size,
+                                 const char *format)
+{
+  int i, res;
+
+  for (i = size - 1; i > 0; i--)
+  {
+    fprintf (file, format, array[i]);
+    fprintf (file, " ");
+  }
+  if (size > 0)
+    fprintf (file, format, array[0]);
   res = fprintf (file, "\n");
 
   return res;

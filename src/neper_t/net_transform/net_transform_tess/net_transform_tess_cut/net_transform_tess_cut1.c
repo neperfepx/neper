@@ -58,7 +58,7 @@ net_transform_tess_cut (char *expr, struct TESS Dom, struct TESS *pTess)
   }
 
   else
-    neut_tess_free (pTess);
+    neut_tess_reset (pTess);
 
   neut_tess_init_edgelength (pTess);
 

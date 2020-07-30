@@ -568,8 +568,8 @@ namespace nanoflann
 			checks(checks_IGNORED_), eps(eps_), sorted(sorted_) {}
 
 		int   checks;  //!< Ignored parameter (Kept for compatibility with the FLANN interface).
-		float eps;  //!< search for eps-approximate neighbours (default: 0)
-		bool sorted; //!< only for radius search, require neighbours sorted by distance (default: true)
+		float eps;  //!< search for eps-approximate neighbors (default: 0)
+		bool sorted; //!< only for radius search, require neighbors sorted by distance (default: true)
 	};
 	/** @} */
 
@@ -815,7 +815,7 @@ namespace nanoflann
 		/** Define "distance_vector_t" as a fixed-size or variable-size container depending on "DIM" */
 		typedef typename array_or_vector_selector<DIM, DistanceType>::container_t distance_vector_t;
 
-		/** The KD-tree used to find neighbours */
+		/** The KD-tree used to find neighbors */
 		
 		BoundingBox root_bbox;
 

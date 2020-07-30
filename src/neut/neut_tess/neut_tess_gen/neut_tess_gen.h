@@ -35,7 +35,9 @@ extern "C"
 				      int *);
   extern void neut_tess_cell (struct TESS Tess, char **pcell);
   extern void neut_tess_entity_expr_val (struct TESS Tess, char *entity,
-					 char *expr, double *val);
+					 char *expr, double *val, char **ptype);
+  extern void neut_tess_entity_expr_val_int (struct TESS Tess, char *entity,
+					 char *expr, int *val);
   extern int neut_tess_dim_entityqty (struct TESS Tess, int dim);
 
   extern int neut_tess_val_poly2face (struct TESS, double *polyval,
@@ -62,6 +64,10 @@ extern "C"
   extern int neut_tess_isvoid (struct TESS Tess);
 
   extern int neut_tess_cell_isvoid (struct TESS Tess, int cell);
+
+  extern int neut_tess_hascelloridistrib (struct TESS Tess);
+
+  extern int neut_tess_exprisvar (struct TESS Tess, char *entity, char *expr);
 
 #endif				/* NEUT_TESS_GEN_H */
 

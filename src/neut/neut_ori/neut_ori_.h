@@ -14,3 +14,5 @@
 #include"orilib.h"
 
 #include"neut.h"
+
+extern int neut_ori_fscanf_id (FILE *file, char *prefix, int i, int *pid);

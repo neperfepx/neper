@@ -18,6 +18,8 @@ neut_tesr_set_zero (struct TESR *pTesr)
   (*pTesr).Dim = 0;
   (*pTesr).CellId = NULL;
   (*pTesr).CellOri = NULL;
+  (*pTesr).CellOriDes = NULL;
+  ut_string_string (NEUT_DEFAULT_ORIDESFULL, &(*pTesr).CellOriDes);
   (*pTesr).CellBBox = NULL;
   (*pTesr).CellCoo = NULL;
   (*pTesr).CellVol = NULL;
@@ -67,6 +69,7 @@ neut_tesr_free (struct TESR *pTesr)
   ut_free_1d (&(*pTesr).vsize);
   ut_free_1d_int (&(*pTesr).CellId);
   ut_free_2d (&(*pTesr).CellOri, (*pTesr).CellQty + 1);
+  ut_free_1d_char (&(*pTesr).CellOriDes);
   ut_free_2d (&(*pTesr).CellCoo, (*pTesr).CellQty + 1);
   ut_free_1d (&(*pTesr).CellVol);
   ut_free_1d (&(*pTesr).CellConvexity);
@@ -78,6 +81,14 @@ neut_tesr_free (struct TESR *pTesr)
     ut_free_4d (&(*pTesr).VoxOri, (*pTesr).size[0] + 1, (*pTesr).size[1] + 1,
                 (*pTesr).size[2] + 1);
   ut_free_1d_int (&(*pTesr).size);
+
+  return;
+}
+
+void
+neut_tesr_reset (struct TESR *pTesr)
+{
+  neut_tesr_free (pTesr);
 
   neut_tesr_set_zero (pTesr);
 
@@ -143,6 +154,8 @@ neut_tesr_memcpy_parms (struct TESR Tesr1, struct TESR *pTesr2)
     ut_array_2d_memcpy (Tesr1.CellOri + 1, (*pTesr2).CellQty, 4,
                         (*pTesr2).CellOri + 1);
   }
+
+  ut_string_string (Tesr1.CellOriDes, &(*pTesr2).CellOriDes);
 
   if (Tesr1.CellCoo)
   {
@@ -583,7 +596,7 @@ neut_tesr_cell_pos_neighpos (struct TESR Tesr, int cell, int *pos, int dim,
   return;
 }
 
-// cell == NULL has a special behaviour: it takes all cells
+// cell == NULL has a special behavior: it takes all cells
 // cellqty = -1 takes all cells + void (VoxCell = 0)
 void
 neut_tesr_cells_pos_neighpos (struct TESR Tesr, int *cell, int cellqty,
@@ -724,7 +737,7 @@ neut_tesr_cells_pos_neighpos_3d (struct TESR Tesr, int *cell, int cellqty,
   return;
 }
 
-// cell == NULL has a special behaviour: it takes all cells
+// cell == NULL has a special behavior: it takes all cells
 // cellqty = -1 takes all cells + void (VoxCell = 0)
 void
 neut_tesr_cells_pos_neighpos_2d (struct TESR Tesr, int *cell, int cellqty,

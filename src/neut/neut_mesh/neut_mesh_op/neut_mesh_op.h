@@ -41,6 +41,12 @@ extern "C"
 ///
   extern void neut_mesh_set_zero (struct MESH *pMesh);
 
+/// \brief Reset a MESH structure.
+///
+///
+///
+  extern void neut_mesh_reset (struct MESH *pMesh);
+
 /// \brief Copy a mesh structure.
 ///
 ///
@@ -81,6 +87,14 @@ extern "C"
 /// Input: EltElset
 ///
   extern void neut_mesh_init_elsets (struct MESH *pMesh);
+
+  extern void neut_mesh_init_elsets_2 (struct MESH *pMesh, int *elt_nbs, int **pelset_nbs);
+
+/// \brief Initialize Parts of a MESH structure.
+///
+/// Input: EltPart
+///
+  extern void neut_mesh_init_parts (struct MESH *pMesh);
 
 /// \brief Initialize Elsets labels
 ///
@@ -245,6 +259,8 @@ extern "C"
 
   extern void neut_mesh_2d_laplaciansmooth (struct NODES *pN, struct MESH M,
                                             int *bnodes, int bnodeqty);
+
+  extern void neut_mesh_init_eltori (struct MESH *pMesh);
 
 #endif				/* NEUT_MESH_OP_H */
 

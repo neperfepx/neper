@@ -58,7 +58,7 @@ nem_meshing_pinching_inter (struct MESHPARA MeshPara, struct TESS *pTess,
 
   neut_tess_face_interpolmesh (*pTess, elset, &Nint, &Mint);
 
-  neut_mesh_elset2d_bodynodes (*pTess, Mesh, elset, &bodynodes, &bodynodeqty);
+  neut_mesh_elset_bodynodes_2d (*pTess, Mesh[1], Mesh[2], elset, &bodynodes, &bodynodeqty);
 
   for (i = 0; i < bodynodeqty; i++)
     neut_node_proj_alongontomesh ((*pNodes).NodeCoo[bodynodes[i]],
@@ -108,10 +108,10 @@ nem_meshing_pinching_fix (struct MESHPARA MeshPara, struct TESS *pTess,
 
     if (neut_tess_face_iscurved (*pTess, elset))
     {
-      int *nodes = NULL, nodeqty;
-      neut_mesh_elset2d_bodynodes (*pTess, Mesh, elset, &nodes, &nodeqty);
+      int *nodes = NULL, NodeQty;
+      neut_mesh_elset_bodynodes_2d (*pTess, Mesh[1], Mesh[2], elset, &nodes, &NodeQty);
 
-      for (k = 0; k < nodeqty; k++)
+      for (k = 0; k < NodeQty; k++)
         neut_tess_domfaces_point_proj (*pTess, &(*pTess).FaceDom[elset][1], 1,
                                        (*pNodes).NodeCoo[nodes[k]],
                                        (*pNodes).NodeCoo[nodes[k]]);

@@ -9,19 +9,19 @@ nem_interface_dup_pre (struct IN_M In, struct TESS Tess, int **pvers,
                        int *pverqty, int **pedges, int *pedgeqty,
                        int **pfaces, int *pfaceqty)
 {
-  int i, scale, partqty;
+  int i, scale, PartQty;
   char **parts = NULL;
   char **interface = ut_alloc_1d_pchar (Tess.ScaleQty + 1);
 
-  ut_list_break (In.interface, NEUT_SEP_FRAC, &parts, &partqty);
+  ut_list_break (In.interface, NEUT_SEP_FRAC, &parts, &PartQty);
 
-  partqty = ut_num_min (partqty, Tess.ScaleQty);
+  PartQty = ut_num_min (PartQty, Tess.ScaleQty);
 
   ut_string_string ("continuous", interface);
-  for (i = 1; i <= partqty; i++)
+  for (i = 1; i <= PartQty; i++)
     ut_string_string (parts[i - 1], interface + i);
-  for (i = partqty + 1; i <= Tess.ScaleQty; i++)
-    ut_string_string (parts[partqty - 1], interface + i);
+  for (i = PartQty + 1; i <= Tess.ScaleQty; i++)
+    ut_string_string (parts[PartQty - 1], interface + i);
 
   if (Tess.Dim == 3)
   {
@@ -53,7 +53,7 @@ nem_interface_dup_pre (struct IN_M In, struct TESS Tess, int **pvers,
   }
 
   ut_free_2d_char (&interface, Tess.ScaleQty + 1);
-  ut_free_2d_char (&parts, partqty);
+  ut_free_2d_char (&parts, PartQty);
 
   return;
 }
@@ -67,7 +67,7 @@ nem_interface_dup_ver (struct TESS Tess, int *vers, int verqty,
 {
   int i, ver;
   int seedqty, *seeds = NULL;
-  int nodeqty, *nodes = NULL;
+  int NodeQty, *nodes = NULL;
 
   for (i = 0; i < verqty; i++)
   {
@@ -77,8 +77,8 @@ nem_interface_dup_ver (struct TESS Tess, int *vers, int verqty,
     if (neut_tess_ver_isperslave (Tess, ver))
       neut_tess_ver_masterseeds (Tess, ver, &seeds, &seedqty);
 
-    neut_mesh_elset_nodes (Mesh[0], ver, &nodes, &nodeqty);
-    nem_interface_duplicate (seeds, seedqty, nodes, nodeqty, pNodes, Mesh);
+    neut_mesh_elset_nodes (Mesh[0], ver, &nodes, &NodeQty);
+    nem_interface_duplicate (seeds, seedqty, nodes, NodeQty, pNodes, Mesh);
   }
 
   ut_free_1d_int (&nodes);
@@ -93,7 +93,7 @@ nem_interface_dup_edge (struct TESS Tess, int *edges, int edgeqty,
 {
   int i, edge;
   int seedqty, *seeds = NULL;
-  int nodeqty, *nodes = NULL;
+  int NodeQty, *nodes = NULL;
 
   for (i = 0; i < edgeqty; i++)
   {
@@ -103,8 +103,8 @@ nem_interface_dup_edge (struct TESS Tess, int *edges, int edgeqty,
     if (neut_tess_edge_isperslave (Tess, edge))
       neut_tess_edge_masterseeds (Tess, edge, &seeds, &seedqty);
 
-    neut_mesh_elset1d_bodynodes (Tess, Mesh, edge, &nodes, &nodeqty);
-    nem_interface_duplicate (seeds, seedqty, nodes, nodeqty, pNodes, Mesh);
+    neut_mesh_elset_bodynodes_1d (Tess, Mesh[0], Mesh[1], edge, &nodes, &NodeQty);
+    nem_interface_duplicate (seeds, seedqty, nodes, NodeQty, pNodes, Mesh);
   }
 
   ut_free_1d_int (&nodes);
@@ -119,7 +119,7 @@ nem_interface_dup_face (struct TESS Tess, int *faces, int faceqty,
 {
   int i, face;
   int seedqty, *seeds = NULL;
-  int nodeqty, *nodes = NULL;
+  int NodeQty, *nodes = NULL;
 
   for (i = 0; i < faceqty; i++)
   {
@@ -129,8 +129,8 @@ nem_interface_dup_face (struct TESS Tess, int *faces, int faceqty,
     if (neut_tess_face_isperslave (Tess, face))
       neut_tess_face_masterseeds (Tess, face, &seeds, &seedqty);
 
-    neut_mesh_elset2d_bodynodes (Tess, Mesh, face, &nodes, &nodeqty);
-    nem_interface_duplicate (seeds, seedqty, nodes, nodeqty, pNodes, Mesh);
+    neut_mesh_elset_bodynodes_2d (Tess, Mesh[1], Mesh[2], face, &nodes, &NodeQty);
+    nem_interface_duplicate (seeds, seedqty, nodes, NodeQty, pNodes, Mesh);
   }
 
   ut_free_1d_int (&nodes);
@@ -146,7 +146,7 @@ nem_interface_dup_boundelts_3d (struct TESS Tess, int *faces, int faceqty,
 {
   int i, j, k, l, elt2d, elt3d, surf, surfori, face;
   int *nodes2d = ut_alloc_1d_int (3);
-  int nodeqty, *nodes = NULL;
+  int NodeQty, *nodes = NULL;
 
   (*pBound).BoundQty = Tess.FaceQty;
   (*pBound).BoundDom = ut_alloc_2d_int ((*pBound).BoundQty + 1, 2);
@@ -200,15 +200,15 @@ nem_interface_dup_boundelts_3d (struct TESS Tess, int *faces, int faceqty,
         }
 
       // initializing BoundNodes and BoundNodeQty
-      neut_boundary_bound_nodes (Mesh[3], *pBound, face, 0, &nodes, &nodeqty);
+      neut_boundary_bound_nodes (Mesh[3], *pBound, face, 0, &nodes, &NodeQty);
 
-      if (nodeqty != 3 * (*pBound).BoundEltQty[face])
+      if (NodeQty != 3 * (*pBound).BoundEltQty[face])
         abort ();
 
-      (*pBound).BoundNodeQty[face] = nodeqty;
-      (*pBound).BoundNodes[face] = ut_alloc_2d_int (2, nodeqty + 1);
+      (*pBound).BoundNodeQty[face] = NodeQty;
+      (*pBound).BoundNodes[face] = ut_alloc_2d_int (2, NodeQty + 1);
 
-      ut_array_1d_int_memcpy (nodes, nodeqty,
+      ut_array_1d_int_memcpy (nodes, NodeQty,
                               (*pBound).BoundNodes[face][0] + 1);
 
       for (j = 1; j <= (*pBound).BoundNodeQty[face]; j++)
@@ -237,7 +237,7 @@ nem_interface_dup_boundelts_2d (struct TESS Tess, struct NODES Nodes,
 {
   int i, j, k, l, elt1d, elt2d, surf, surfori;
   int *nodes1d = ut_alloc_1d_int (3);
-  int nodeqty, *nodes = NULL;
+  int NodeQty, *nodes = NULL;
 
   (*pBound).BoundQty = Tess.EdgeQty;
   (*pBound).BoundDom = ut_alloc_2d_int ((*pBound).BoundQty + 1, 2);
@@ -295,15 +295,15 @@ nem_interface_dup_boundelts_2d (struct TESS Tess, struct NODES Nodes,
             (*pBound).BoundEltFacets[i][j][k] = surf;
           }
 
-      neut_boundary_bound_nodes (Mesh[2], *pBound, i, 0, &nodes, &nodeqty);
-      if (nodeqty != (*pBound).BoundEltQty[i] + 1)
+      neut_boundary_bound_nodes (Mesh[2], *pBound, i, 0, &nodes, &NodeQty);
+      if (NodeQty != (*pBound).BoundEltQty[i] + 1)
         abort ();
 
-      (*pBound).BoundNodeQty[i] = nodeqty;
+      (*pBound).BoundNodeQty[i] = NodeQty;
       (*pBound).BoundNodes[i] =
         ut_alloc_2d_int (2, (*pBound).BoundEltQty[i] + 2);
 
-      ut_array_1d_int_memcpy (nodes, nodeqty, (*pBound).BoundNodes[i][0] + 1);
+      ut_array_1d_int_memcpy (nodes, NodeQty, (*pBound).BoundNodes[i][0] + 1);
 
       for (j = 1; j <= (*pBound).BoundEltQty[i] + 1; j++)
       {

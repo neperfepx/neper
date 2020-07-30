@@ -77,12 +77,6 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
                                     &(*pIn).morphooptiinistring,
                                     (*pIn).levelqty, &((*pIn).morphooptiini));
 
-    // morphooptialgoneigh
-    net_input_treatargs_multiscale ("-morphooptialgoneigh",
-                                    &(*pIn).morphooptialgoneighstring,
-                                    (*pIn).levelqty,
-                                    &((*pIn).morphooptialgoneigh));
-
     // morphooptialgomaxiter
     net_input_treatargs_multiscale ("-morphooptialgomaxiter",
                                     &(*pIn).morphooptialgomaxiterstring,
@@ -250,6 +244,10 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     net_input_treatargs_multiscale ("-orioptilogvar",
                                     &(*pIn).orioptilogvarstring,
                                     (*pIn).levelqty, &((*pIn).orioptilogvar));
+
+    // oridistrib
+    net_input_treatargs_multiscale ("-oridistrib", &(*pIn).oridistribstring,
+                                    (*pIn).levelqty, &((*pIn).oridistrib));
 
     // Processing periodicstring & periodic
     (*pIn).periodic = ut_alloc_1d_int (3);

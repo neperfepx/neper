@@ -66,6 +66,8 @@ extern "C"
     char *includepov;
 
     char *slice;
+
+    char *outdir;
   };
   typedef struct PRINT PRINT;
 

@@ -307,8 +307,8 @@ extern "C"
 /// \param max: max
 /// \param size: size
 /// \param method: \c center for interprating \c min and \c max as bin centers, and \c bounds for interprating \c min and \c max as bin extreme bounds
-  extern void ut_fct_set_xaxis (struct FCT *pFct, double min, double max, int size,
-                                char *method);
+  extern void ut_fct_set_xaxis (struct FCT *pFct, double min, double max,
+                                int size, char *method);
 
 /// \brief Print debugging information of a function
 /// \param file: file

@@ -1,6 +1,6 @@
 \input texinfo.tex
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2019 Romain Quey
+@c Copyright (C) 2003-2020 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @afourpaper
@@ -12,7 +12,7 @@
 @c %**start of header
 @setfilename        neper.info
 @include version.texi
-@set COPYRIGHT @copyright{} 2003--2019 Romain Quey
+@set COPYRIGHT @copyright{} 2003--2020 Romain Quey
 @c
 @settitle Neper @value{NEPER_VERSION}
 @footnotestyle separate
@@ -100,9 +100,10 @@ This is the @cite{Neper Reference Manual} for Neper
 * Introduction::
 * Tessellation Module (-T)::
 * Meshing Module (-M)::
+* Simulation Module (-S)::
 * Visualization Module (-V)::
 * Expressions and Keys::
-* File Formats::
+* File and Directory Formats::
 * Developer's Guide::
 * Versions::
 * GNU General Public License::
@@ -138,6 +139,14 @@ Neper
 
 @macro MV
 @w{Module -V}
+@end macro
+
+@macro mS
+@w{module -S}
+@end macro
+
+@macro MS
+@w{Module -S}
 @end macro
 
 @macro SEPNODEP
@@ -314,6 +323,7 @@ Result file: extension @file{\e\}.
 @include introduction.texi
 @include neper_t.texi
 @include neper_m.texi
+@include neper_s.texi
 @include neper_v.texi
 @include exprskeys.texi
 @include fileformat.texi

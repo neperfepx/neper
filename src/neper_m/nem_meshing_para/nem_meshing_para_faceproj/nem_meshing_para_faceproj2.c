@@ -10,7 +10,7 @@ nem_meshing_para_faceproj_eq (struct TESS Tess, struct NODES RNodes,
 {
   int i;
   int status, iter, res;
-  int nodeqty;
+  int NodeQty;
   int *nodes = NULL;
   double **nodecoos = NULL;
   double theta;
@@ -33,16 +33,16 @@ nem_meshing_para_faceproj_eq (struct TESS Tess, struct NODES RNodes,
   {
     if (mesh2d_defined)
       neut_mesh_face_boundnodecoos (RNodes, RMesh[1], Tess, face, &nodecoos,
-                                    &nodeqty);
+                                    &NodeQty);
     else
-      neut_tess_face_vercoos (Tess, face, &nodecoos, &nodeqty);
+      neut_tess_face_vercoos (Tess, face, &nodecoos, &NodeQty);
 
     // copying / projecting node coos
-    for (i = 0; i < nodeqty; i++)
+    for (i = 0; i < NodeQty; i++)
       ut_space_point_dir_plane_proj (nodecoos[i], face_eq + 1,
                                      Tess.FaceEq[face], nodecoos[i]);
 
-    status = ut_space_contour_selfintersect (nodecoos, nodeqty);
+    status = ut_space_contour_selfintersect (nodecoos, NodeQty);
 
     if (status == 0 && mesh2d_defined)
       for (i = 1; i <= RMesh[2].Elsets[face][0]; i++)
@@ -81,7 +81,7 @@ nem_meshing_para_faceproj_eq (struct TESS Tess, struct NODES RNodes,
   ol_r_free (r);
   ol_g_free (g);
   ut_free_1d (&n);
-  ut_free_2d (&nodecoos, nodeqty);
+  ut_free_2d (&nodecoos, NodeQty);
 
   return res;
 }

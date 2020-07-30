@@ -388,18 +388,18 @@ neut_mesh_elt_centre (struct NODES Nodes, struct MESH Mesh, int elt,
                       double *coo)
 {
   int i, j, node;
-  int nodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, 1);
+  int NodeQty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, 1);
 
   /* averaging the coo of the vertex nodes */
   ut_array_1d_zero (coo, 3);
-  for (i = 0; i < nodeqty; i++)
+  for (i = 0; i < NodeQty; i++)
   {
     node = Mesh.EltNodes[elt][i];
     for (j = 0; j < 3; j++)
       coo[j] += Nodes.NodeCoo[node][j];
   }
 
-  ut_array_1d_scale (coo, 3, 1. / nodeqty);
+  ut_array_1d_scale (coo, 3, 1. / NodeQty);
 
   return;
 }
@@ -409,16 +409,16 @@ neut_mesh_elt_centre_x (struct NODES Nodes, struct MESH Mesh, int elt,
                         double *px)
 {
   int i, node;
-  int nodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, 1);
+  int NodeQty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, 1);
 
   (*px) = 0;
-  for (i = 0; i < nodeqty; i++)
+  for (i = 0; i < NodeQty; i++)
   {
     node = Mesh.EltNodes[elt][i];
     (*px) += Nodes.NodeCoo[node][0];
   }
 
-  (*px) /= nodeqty;
+  (*px) /= NodeQty;
 
   return;
 }
@@ -428,16 +428,16 @@ neut_mesh_elt_centre_y (struct NODES Nodes, struct MESH Mesh, int elt,
                         double *py)
 {
   int i, node;
-  int nodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, 1);
+  int NodeQty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, 1);
 
   (*py) = 0;
-  for (i = 0; i < nodeqty; i++)
+  for (i = 0; i < NodeQty; i++)
   {
     node = Mesh.EltNodes[elt][i];
     (*py) += Nodes.NodeCoo[node][1];
   }
 
-  (*py) /= nodeqty;
+  (*py) /= NodeQty;
 
   return;
 }
@@ -447,16 +447,16 @@ neut_mesh_elt_centre_z (struct NODES Nodes, struct MESH Mesh, int elt,
                         double *pz)
 {
   int i, node;
-  int nodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, 1);
+  int NodeQty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, 1);
 
   (*pz) = 0;
-  for (i = 0; i < nodeqty; i++)
+  for (i = 0; i < NodeQty; i++)
   {
     node = Mesh.EltNodes[elt][i];
     (*pz) += Nodes.NodeCoo[node][2];
   }
 
-  (*pz) /= nodeqty;
+  (*pz) /= NodeQty;
 
   return;
 }
@@ -851,6 +851,48 @@ neut_mesh_centre (struct NODES Nodes, struct MESH Mesh, double *centre)
 }
 
 void
+neut_mesh_centre_x (struct NODES Nodes, struct MESH Mesh, double *px)
+{
+  double *c = ut_alloc_1d (3);
+
+  neut_mesh_centre (Nodes, Mesh, c);
+
+  (*px) = c[0];
+
+  ut_free_1d (&c);
+
+  return;
+}
+
+void
+neut_mesh_centre_y (struct NODES Nodes, struct MESH Mesh, double *px)
+{
+  double *c = ut_alloc_1d (3);
+
+  neut_mesh_centre (Nodes, Mesh, c);
+
+  (*px) = c[1];
+
+  ut_free_1d (&c);
+
+  return;
+}
+
+void
+neut_mesh_centre_z (struct NODES Nodes, struct MESH Mesh, double *px)
+{
+  double *c = ut_alloc_1d (3);
+
+  neut_mesh_centre (Nodes, Mesh, c);
+
+  (*px) = c[2];
+
+  ut_free_1d (&c);
+
+  return;
+}
+
+void
 neut_mesh_elt_lengths (struct NODES Nodes, struct MESH Mesh, int elt,
                        double *lengths)
 {
@@ -1178,7 +1220,7 @@ neut_mesh_elset_points_closestelts (struct MESH Mesh, struct NODES Nodes,
 
   nf_tree = new NFTREE (3, nf_cloud);
 
-  // finding neighbour
+  // finding neighbor
 
   for (i = 0; i < qty; i++)
   {
@@ -1282,15 +1324,15 @@ int
 neut_mesh_point_closestnode (struct MESH Mesh, struct NODES Nodes,
                              double *coo, int *pnode)
 {
-  int i, n, nodeqty;
+  int i, n, NodeQty;
   int *nodes = NULL;
   double dist, distmin;
 
-  neut_mesh_nodes (Mesh, &nodes, &nodeqty);
+  neut_mesh_nodes (Mesh, &nodes, &NodeQty);
 
   (*pnode) = -1;
   distmin = DBL_MAX;
-  for (i = 0; i < nodeqty; i++)
+  for (i = 0; i < NodeQty; i++)
   {
     n = nodes[i];
     dist = ut_space_dist (coo, Nodes.NodeCoo[n]);
@@ -1376,13 +1418,13 @@ neut_mesh_elt2dpair_angle (struct NODES Nodes, struct MESH Mesh, int elt1,
 {
   double *n1 = ut_alloc_1d (3);
   double *n2 = ut_alloc_1d (3);
-  int nodeqty, *nodes = NULL;
+  int NodeQty, *nodes = NULL;
   int status;
   int order1, order2;
 
-  neut_mesh_eltpair_comnodes (Mesh, elt1, elt2, &nodes, &nodeqty);
+  neut_mesh_eltpair_comnodes (Mesh, elt1, elt2, &nodes, &NodeQty);
 
-  if (nodeqty == 3)
+  if (NodeQty == 3)
   {
     status = 2;
     (*pangle) = 180;
@@ -1392,8 +1434,8 @@ neut_mesh_elt2dpair_angle (struct NODES Nodes, struct MESH Mesh, int elt1,
   {
     status = 0;
 
-    order1 = neut_mesh_elt2d_nodes_ordering (Mesh, elt1, nodes, nodeqty);
-    order2 = neut_mesh_elt2d_nodes_ordering (Mesh, elt2, nodes, nodeqty);
+    order1 = neut_mesh_elt2d_nodes_ordering (Mesh, elt1, nodes, NodeQty);
+    order2 = neut_mesh_elt2d_nodes_ordering (Mesh, elt2, nodes, NodeQty);
 
     neut_mesh_elt_normal (Mesh, Nodes, elt1, n1);
     neut_mesh_elt_normal (Mesh, Nodes, elt2, n2);
@@ -1408,4 +1450,40 @@ neut_mesh_elt2dpair_angle (struct NODES Nodes, struct MESH Mesh, int elt1,
   ut_free_1d_int (&nodes);
 
   return status;
+}
+
+void
+neut_mesh_elt_bbox (struct NODES Nodes, struct MESH Mesh, int elt, double **bbox)
+{
+  int i, j, node, eltnodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder);
+
+  for (j = 0; j < 3; j++)
+    ut_array_1d_set_2 (bbox[j], DBL_MAX, -DBL_MAX);
+
+  for (i = 0; i < eltnodeqty; i++)
+  {
+    node = Mesh.EltNodes[elt][i];
+
+    for (j = 0; j < 3; j++)
+    {
+      bbox[j][0] = ut_num_min (bbox[j][0], Nodes.NodeCoo[node][j]);
+      bbox[j][1] = ut_num_max (bbox[j][1], Nodes.NodeCoo[node][j]);
+    }
+  }
+
+  return;
+}
+
+void
+neut_mesh_elset_bbox (struct NODES Nodes, struct MESH Mesh, int elset, double **bbox)
+{
+  int *nodes = NULL, NodeQty;
+
+  neut_mesh_elset_nodes (Mesh, elset, &nodes, &NodeQty);
+
+  neut_nodes_nodes_bbox (Nodes, nodes, NodeQty, bbox);
+
+  ut_free_1d_int (&nodes);
+
+  return;
 }

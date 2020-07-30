@@ -12,6 +12,11 @@ extern "C"
 
   struct MESHPARA
   {
+    int VerQty;
+    int EdgeQty;
+    int FaceQty;
+    int PolyQty;
+
     char input;
     char *elttype;
     int dim;

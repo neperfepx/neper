@@ -46,7 +46,7 @@ extern "C"
                                     char *var, int **pvals, int *pvalqty, char **ptype);
 
   extern void neut_tesr_entity_expr_val (struct TESR Tesr, char *entity,
-					 char *expr, double *val);
+					 char *expr, double *val, char **ptype);
 
   extern void neut_tesr_var_dim (int dim, char *entity, char *var, int *pdim);
 
@@ -56,6 +56,8 @@ extern "C"
   extern void neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet);
 
   extern void neut_tesr_olmap (struct TESR Tesr, struct OL_MAP *pMap);
+
+  extern int neut_tesr_isvoid (struct TESR Tesr);
 
 #endif				/* NEUT_VOX_GEN_H */
 

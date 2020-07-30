@@ -60,7 +60,9 @@ extern "C"
     double *SeedWeight;
 
     /// Orientations (quaternion)
-    double **q;
+    double **SeedOri;
+
+    char **SeedOriDistrib;
 
     // Crystal symmetry
     char *crysym;

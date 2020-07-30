@@ -174,6 +174,9 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
       else
         ut_print_neperbug ();
 
+      if (!neut_mesh_isvoid (Mesh[Tess.Dim]))
+        nem_ori (Tess, Mesh);
+
       // Post-scaling of input / mesh if necessary (use of clratio) ###
       nem_meshing_para_post (MeshPara, &Tess, &Tesr, &RNodes, &Nodes, Mesh);
     }
@@ -219,7 +222,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   }
 
 // Partitioning mesh ###
-  if (In.partstring)
+  if (In.partstring && strcmp (In.partstring, "0"))
   {
 #ifdef HAVE_LIBSCOTCH
     ut_print_message (0, 1, "Partitioning mesh...\n");
@@ -228,9 +231,9 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   }
 
 // Searching node sets ###
-  if (strcmp (In.nset, "none") != 0 && dim >= 1)
+  if ((strcmp (In.nset, "none") || strcmp (In.faset, "none")) && dim >= 1)
   {
-    ut_print_message (0, 1, "Searching nsets...\n");
+    ut_print_message (0, 1, "Searching nsets and fasets...\n");
     nem_nsets (In, Tess, Tesr, Mesh, NSet);
   }
 
@@ -238,7 +241,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (strcmp (In.elset, "default"))
   {
     ut_print_message (0, 1, "Searching elsets...\n");
-    nem_elsets (In, Tess, Nodes, Mesh, Part);
+    nem_elsets (In, Tess, Nodes, Mesh);
   }
 
 // ###################################################################
@@ -247,7 +250,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (dim >= 0)
   {
     ut_print_message (0, 1, "Writing mesh results...\n");
-    nem_writemesh (In, Tess, Nodes, Mesh, NSet, Part, Bound);
+    nem_writemesh (In, Tess, Nodes, Mesh, NSet, Bound);
   }
 
   if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "tess"))
@@ -265,40 +268,40 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     nem_transport (In, Tess, RNodes, RMesh, Nodes, Mesh);
   }
 
-  if (In.transportfepxstring)
-  {
-    ut_print_message (0, 1, "Transporting FEpX data...\n");
-    nem_transportfepx (In, Tess, RNodes, RMesh, Nodes, Mesh);
-  }
-
 // ###################################################################
 // ### MESH STATISTICS ###############################################
 
-  if (In.stn || In.stelt[0] || In.stelt[1] || In.stelt[2] || In.stelt[3]
-      || In.stelt[4] || In.stelset[0] || In.stelset[1] || In.stelset[2]
-      || In.stelset[3] || In.stelset[4] || In.stpt)
+  if (In.stnode || In.stelt[0] || In.stelt[1] || In.stelt[2] || In.stelt[3] ||
+      In.stelt[4] || In.stelt[5] || In.stelset[0] || In.stelset[1] ||
+      In.stelset[2] || In.stelset[3] || In.stelset[4] || In.stelset[5] ||
+      In.stpt || In.stmesh[0] || In.stmesh[1] || In.stmesh[2] || In.stmesh[3]
+      || In.stmesh[4] || In.stmesh[5])
   {
     ut_print_message (0, 1, "Writing mesh statistics...\n");
 
     if (!neut_tess_isvoid (Tess) && !Tess.CellTrue)
       neut_tess_init_celltrue (&Tess);
 
-    nem_stat (Nodes, Mesh, Part, In, MeshPara, Tess, Point);
+    nem_stat (Nodes, Mesh, In, MeshPara, Tess, Point);
   }
 
 // ###################################################################
 // ### CLOSING #######################################################
 
   nem_in_free (In);
-  neut_meshpara_free (MeshPara);
+  neut_meshpara_free (&MeshPara);
   neut_tess_free (&Tess);
+  neut_tesr_free (&Tesr);
   neut_nodes_free (&Nodes);
-  for (i = 0; i <= 4; i++)
+  for (i = 0; i < 5; i++)
     neut_mesh_free (Mesh + i);
-  for (i = 0; i <= 4; i++)
+  free (Mesh);
+  for (i = 0; i < 5; i++)
     neut_mesh_free (RMesh + i);
-  for (i = 0; i <= 2; i++)
+  free (RMesh);
+  for (i = 0; i < 3; i++)
     neut_nset_free (NSet + i);
+  free (NSet);
 
   neut_part_free (Part);
   neut_nodes_free (&RNodes);

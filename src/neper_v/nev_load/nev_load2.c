@@ -5,19 +5,17 @@
 #include"nev_load_.h"
 
 void
-nev_load_init_tessdata (struct TESS Tess, struct TESSDATA *pTessData)
+nev_load_init_data_tess (struct TESS Tess, int dim, struct DATA *pTessData)
 {
-  (*pTessData).VerQty = Tess.VerQty;
-  (*pTessData).EdgeQty = Tess.EdgeQty;
-  (*pTessData).FaceQty = Tess.FaceQty;
-  (*pTessData).PolyQty = Tess.PolyQty;
-  (*pTessData).SeedQty = Tess.CellQty;
+  (*pTessData).Dim = dim;
+  neut_tess_dim_entity (dim, &(*pTessData).type);
+  neut_tess_entity_qty (Tess, (*pTessData).type, &(*pTessData).Qty);
 
   return;
 }
 
 void
-nev_load_init_tesrdata (struct TESR Tesr, struct TESRDATA *pTesrData)
+nev_load_init_data_tesr (struct TESR Tesr, struct DATA *pTesrData)
 {
   (*pTesrData).Qty = ut_array_1d_int_prod (Tesr.size, 3);
 
@@ -25,26 +23,26 @@ nev_load_init_tesrdata (struct TESR Tesr, struct TESRDATA *pTesrData)
 }
 
 void
-nev_load_init_nodedata (struct NODES Nodes, struct NODEDATA *pNodeData)
+nev_load_init_data_node (struct NODES Nodes, struct DATA *pData)
 {
-  (*pNodeData).NodeQty = Nodes.NodeQty;
+  (*pData).Qty = Nodes.NodeQty;
 
   return;
 }
 
 void
-nev_load_init_pointdata (struct POINT Point, struct POINTDATA *pPointData)
+nev_load_init_data_point (struct POINT Point, struct DATA *pPointData)
 {
-  (*pPointData).PointQty = Point.PointQty;
+  (*pPointData).Qty = Point.PointQty;
 
   return;
 }
 
 void
-nev_load_init_meshdata (struct MESH Mesh, struct MESHDATA *pMeshData)
+nev_load_init_data_mesh (struct MESH Mesh, struct DATA *pMeshData)
 {
-  (*pMeshData).EltQty = Mesh.EltQty;
-  (*pMeshData).Dimension = Mesh.Dimension;
+  (*pMeshData).Qty = Mesh.EltQty;
+  (*pMeshData).Dim = Mesh.Dimension;
 
   return;
 }

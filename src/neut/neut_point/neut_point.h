@@ -23,9 +23,9 @@ extern "C"
   extern int neut_point_var_val (struct POINT Point, int id, struct TESS
 				 Tess, struct NODES Nodes, struct MESH Mesh,
 				 char *var, double **pvals, int *pvalqty, char **ptype);
-  extern int neut_point_var_val_one (struct POINT Point, int id, struct TESS
+  extern int neut_point_var_val_one (struct POINT Point, struct TESS
                                      Tess, struct NODES Nodes, struct MESH Mesh,
-                                     char *var, double *pval, char **ptype);
+                                     int id, char *var, double *pval, char **ptype);
   extern void neut_point_addpoint (struct POINT *pPoint, double *coo, double rad);
 
   extern void neut_point_pt_size (struct POINT Point, int pt, double
@@ -33,6 +33,13 @@ extern "C"
   extern void neut_point_shift (struct POINT *pPoint, double *s);
   extern void neut_point_shifttocentre (struct POINT *pPoint);
   extern void neut_point_bbox (struct POINT Point, double **bbox);
+
+  extern void neut_point_entity_expr_val (struct POINT Point,
+                                          struct TESS Tess, struct NODES Nodes,
+                                          struct MESH Mesh,
+                                          char *expr, double *val, char **ptype);
+
+  extern int neut_point_isvoid (struct POINT Point);
 
 #include "neut_point_fscanf/neut_point_fscanf.h"
 

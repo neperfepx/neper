@@ -2,4 +2,13 @@
 /* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern int neper_v (int, char **, int, char **);
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+  extern int neper_v (int, char **, int, char **);
+
+#ifdef __cplusplus
+}
+#endif

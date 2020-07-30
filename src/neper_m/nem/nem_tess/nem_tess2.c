@@ -88,7 +88,7 @@ nem_tess_updatefrommesh_geom_face (struct TESS *pTess, struct NODES Nodes,
   // the elt normals are averaged, so as the constant for the equation
   // the constant does not really matter because it does not change the
   // projection (which is done along the normal).
-  if ((*pTess).FaceState == NULL)
+  if (!(*pTess).FaceState)
     (*pTess).FaceState = ut_alloc_1d_int ((*pTess).FaceQty + 1);
 
   ut_array_1d_int_set ((*pTess).FaceState + 1, (*pTess).FaceQty, 1);

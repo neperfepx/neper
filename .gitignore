@@ -17,6 +17,7 @@ updatelib.sh*
 *.png
 *.pdf
 *.info
+*.info*
 *.aux
 *.cp
 *.fn
@@ -31,7 +32,6 @@ updatelib.sh*
 *.fig
 *.kys
 data
-utils
 tags
 
 *.orig

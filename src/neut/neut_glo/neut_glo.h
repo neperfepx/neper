@@ -14,6 +14,10 @@ extern "C"
 #define NEUT_SEP_DEP   ":"
 #define NEUT_SEP_FRAC  "::"
 
+#define NEUT_DEFAULT_ORIDES "rodrigues"
+#define NEUT_DEFAULT_ORIDESFULL "rodrigues:active"
+#define NEUT_DEFAULT_COLSCHEME_REAL "viridis"
+
 #endif				/* NEUT_GLO_H */
 
 #ifdef __cplusplus

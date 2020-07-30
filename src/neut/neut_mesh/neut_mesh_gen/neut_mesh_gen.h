@@ -105,7 +105,7 @@ extern void neut_mesh_face_boundnodecoos (struct NODES Nodes, struct MESH
   extern void neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty);
   extern int neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D,
 				struct MESH Mesh1D, struct MESH Mesh2D,
-				struct MESH Mesh3D, struct PART Part,
+				struct MESH Mesh3D, struct MESH MeshCo,
 				struct TESS Tess, int *showelt0d,
 				int *showelt1d, int *showelt2d,
 				int *showelt3d, double cl, char *entity,
@@ -113,7 +113,7 @@ extern void neut_mesh_face_boundnodecoos (struct NODES Nodes, struct MESH
                                 int *pvalqty, char **ptype);
   extern int neut_mesh_var_val_one (struct NODES Nodes, struct MESH Mesh0D,
                                     struct MESH Mesh1D, struct MESH Mesh2D,
-                                    struct MESH Mesh3D, struct PART Part,
+                                    struct MESH Mesh3D, struct MESH MeshCo,
                                     struct TESS Tess, int *showelt0d,
                                     int *showelt1d, int *showelt2d,
                                     int *showelt3d, double cl, char *entity,
@@ -123,19 +123,23 @@ extern void neut_mesh_face_boundnodecoos (struct NODES Nodes, struct MESH
   extern void neut_mesh_entity_expr_val (struct NODES Nodes,
 					 struct MESH Mesh0D,
 					 struct MESH Mesh1D,
-					 struct MESH Mesh2D,
-					 struct MESH Mesh3D, struct PART Part,
+					 struct MESH Mesh2D, struct MESH Mesh3D,
+					 struct MESH MeshCo,
 					 struct TESS Tess, int *showelt0d,
 					 int *showelt1d, int *showelt2d,
 					 int *showelt3d, char *entity,
-					 char *expr, double *val);
+					 char *expr, double *val, char **ptype);
 
   extern int neut_mesh_array_dim (struct MESH *Mesh);
 
-extern void neut_mesh_elset1d_bodynodes (struct TESS Tess, struct MESH
-    *Mesh, int elset, int **pnodes, int *pnodeqty);
-extern void neut_mesh_elset2d_bodynodes (struct TESS Tess, struct MESH
-    *Mesh, int elset, int **pnodes, int *pnodeqty);
+extern void neut_mesh_elset_bodynodes (struct TESS Tess, struct MESH
+    MeshL, struct MESH MeshU, int elset, int **pnodes, int *pnodeqty);
+extern void neut_mesh_elset_bodynodes_1d (struct TESS Tess, struct MESH
+    Mesh0D, struct MESH Mesh1D, int elset, int **pnodes, int *pnodeqty);
+extern void neut_mesh_elset_bodynodes_2d (struct TESS Tess, struct MESH
+    Mesh1D, struct MESH Mesh2D, int elset, int **pnodes, int *pnodeqty);
+extern void neut_mesh_elset_bodynodes_3d (struct TESS Tess, struct MESH
+    Mesh2D, struct MESH Mesh3D, int elset, int **pnodes, int *pnodeqty);
 
 extern void neut_mesh2d_mesh3d (struct NODES *pNodes, struct MESH
 				Mesh2D, struct MESH *pMesh3D);
@@ -146,6 +150,8 @@ extern void neut_mesh_entity_qty (struct NODES Nodes, struct MESH Mesh0D,
                                   struct MESH Mesh1D, struct MESH Mesh2D,
                                   struct MESH Mesh3D, char *entity,
                                   int *pentityqty);
+
+extern int neut_mesh_exprisvar (char *entity, char *expr);
 
 #endif /* NEUT_MESH_GEN_H */
 

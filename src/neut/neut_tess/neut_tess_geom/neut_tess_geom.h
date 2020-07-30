@@ -92,6 +92,8 @@ extern "C"
 
   extern int neut_tess_diameq (struct TESS Tess, double *);
 
+  extern int neut_tess_radeq (struct TESS Tess, double *);
+
 /// \brief Get the average cell equivalent diameter of a TESS
 ///
 ///

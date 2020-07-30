@@ -6,10 +6,10 @@ extern void nev_show_mesh (char **argv, int *pi, struct PRINT *pPrint);
 extern void nev_show_mesh_slice (char **argv, int *pi, struct PRINT *pPrint);
 extern void nev_show_mesh_elt (char **argv, int *pi, struct TESS Tess, struct
 			       NODES Nodes, struct MESH *Mesh,
-			       struct PART Part, struct PRINT *pPrint);
+			       struct PRINT *pPrint);
 extern void nev_show_mesh_elset (char **argv, int *pi, struct TESS Tess,
 				 struct NODES Nodes, struct MESH *Mesh,
-				 struct PART Part, struct PRINT *pPrint);
+				 struct PRINT *pPrint);
 extern void nev_show_mesh_nodes (char **argv, int *pi, struct TESS Tess,
 				 struct NODES Nodes, struct MESH *Mesh,
-				 struct PART Part, struct PRINT *pPrint);
+				 struct PRINT *pPrint);

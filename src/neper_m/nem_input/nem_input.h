@@ -3,8 +3,6 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nem_input (struct IN_M *, int, char **, int, char **);
-extern void nem_in_set_zero (struct IN_M *);
-extern void nem_in_free (struct IN_M);
 
 extern void nem_input_init_dim_tess (struct IN_M *pIn, struct TESS Tess);
 extern void nem_input_init_dim_tesr (struct IN_M *pIn, struct TESR Tesr);

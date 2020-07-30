@@ -20,6 +20,7 @@ extern "C"
     int CellQty;		// number of polyhedra
     int *CellId;		// identifiers of the cells
     double **CellOri;		// crystal orientations of the cells
+    char *CellOriDes;
     int ***CellBBox;		// bbox of a cell [cell][0...2][0,1]
     double **CellCoo;		// centroids of the cells (absolute coordinates)
     double *CellVol;		// volumes/areas of the cells

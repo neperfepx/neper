@@ -233,6 +233,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
       neut_tess_tess (Tess[1], &FTess);
       FTess.ScaleQty = 1;
     }
+
+    neut_ori_des_expand (In.orides, &FTess.CellOriDes);
   }
 
   // ###################################################################
@@ -268,6 +270,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     else
       ut_print_message (1, 3, "The poly ids range between %d and %d.\n",
                         min_id, max_id);
+
+    neut_ori_des_expand (In.orides, &Tesr.CellOriDes);
   }
 
   // ###################################################################
@@ -282,6 +286,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     net_ori (In, 1, MTess, Tess, SSet, 0, 1, SSet + 1, 2);
 
     net_seedset_tess (SSet[1], &FTess);
+
+    neut_ori_des_expand (In.orides, &FTess.CellOriDes);
   }
 
   // #################################################################
@@ -311,6 +317,12 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     net_reg (In, &FTess, &Reg);
   }
 
+  if (In.group)
+  {
+    ut_print_message (0, 1, "Computing cell sets...\n");
+    net_group (In, &FTess);
+  }
+
   // ###################################################################
   // ### IMPORTING POINTS ##############################################
 
@@ -330,7 +342,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   // ### WRITING STATISTICS  ###########################################
 
   if (In.stc || In.stv || In.ste || In.stf || In.stp || In.sts || In.stpt
-      || In.stvox)
+      || In.stvox || In.sttess || In.sttesr)
   {
     ut_print_message (0, 1, "Writing statistics...\n");
     net_stat (In, FTess, &Tesr, Point);

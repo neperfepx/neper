@@ -2,9 +2,9 @@
 /* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nev_load (char *, struct TESS *, struct TESR *,
+extern void nev_load (char *, struct SIM *, struct TESS *, struct TESR *,
 		      struct NODES *, struct MESH *,
 		      struct POINT *,
-		      struct TESSDATA *, struct TESRDATA *,
-		      struct NODEDATA *, struct MESHDATA *,
-		      struct POINTDATA *);
+		      struct DATA *, struct DATA *,
+		      struct DATA *, struct DATA *,
+		      struct DATA *);

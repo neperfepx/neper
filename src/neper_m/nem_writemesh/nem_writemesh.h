@@ -3,5 +3,4 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nem_writemesh (struct IN_M, struct TESS, struct NODES,
-			   struct MESH *, struct NSET *, struct PART,
-			   struct BOUNDARY);
+                           struct MESH *, struct NSET *, struct BOUNDARY);

@@ -1,38 +1,39 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2019 Romain Quey
+@c Copyright (C) 2003-2020 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Developer's Guide
 @appendix Developer's Guide
 
-This chapter provides information useful to anyone who plans to contribute to
+This chapter provides information for anyone who plans to contribute to
 Neper or wishes to better understand how it works. The code structure is
 detailed and information are given on how to efficiently contribute to it.  If
 you are missing information, complain!
 
 @section Code Structure
 
-The Neper root directory content is as follows (the slash character @samp{/} denotes directories),
+The Neper root directory content is as follows (the slash character @samp{/} is employed to denote directories),
 @itemize
   @item @code{COPYING}: license terms;
-  @item @code{README}:  information about other files and directories in the directory;
+  @item @code{README.md}: generation information on Neper;
   @item @code{VERSIONS}: information on the versions of Neper;
   @item @code{src/}: source code directory;
-  @item @code{doc/}: documentation directory.
+  @item @code{doc/}: documentation directory;
+  @item @code{utils/}: utilities directory.
 @end itemize
 
 Details on the  @samp{src/} and @samp{doc/} directories are provided in the following.
 
 @subsection Source Code
 
-Neper's source code is located in directory @file{src/} and consists of roughly 120,000 lines shared between 250 directories and 1000 text files.  The @samp{src/} directory contains the following files and directories,
+Neper's source code is located in directory @file{src/} and roughly consists of 150,000 lines shared between 320 directories and 1200 text files.  The @samp{src/} directory contains the following files and directories,
 
 @itemize
   @item @code{neper_.h} and @code{neper.c}
 
   These are the main source code header file and source code file of Neper. @samp{neper.c} contains Neper's @samp{main} function.  It reads the arguments passed at the command line and runs the corresponding functions, which  can be one of the program module.
 
-  @item @code{neper_t/}, @code{neper_m/} and @code{neper_v/}
+  @item @code{neper_t/}, @code{neper_m/}, @code{neper_s/} and @code{neper_v/}
 
   These are directories that contain the source code of each of the program modules.  The modules aim to be independent from each other; that is, a function of one module will never calls a function of another module (with a few exceptions).
 
@@ -40,30 +41,30 @@ Neper's source code is located in directory @file{src/} and consists of roughly 
 
   @samp{neut} stands for @dfn{Neper utilities}.  The directory contains utility functions specific to Neper and used by several modules.
 
-  @item @code{contrib/}
+  @item @code{contrib}
 
-  This directory contains utility functions not specific to Neper.  The first one is @samp{ut}, which is a collection of general-purpose, low-level C functions (memory allocation, etc.). The second one is @samp{orilib}, which is a collection of routines for orientation manipulation (see @url{http://orilib.sourceforge.net}). The third one is nanoflann, a library for nearest neighbour searching (see @url{https://github.com/jlblancoc/nanoflann}), the fourth one is openGJK, a library for fast point-simplex distance computations (@url{https://github.com/MattiaMontanari/openGJK}), and the last one is muparser, a library for interprating mathematical and logical expressions (see @url{http://beltoforion.de/article.php?a=muparser}).  Although these libraries are also distributed alone (and might be already installed on your system), they are included into Neper instead of being considered as dependencies (contrary to the GSL, @dots{}) to make installation easier.
+  This directory contains utility functions not specific to Neper.  The first one is @samp{ut}, which is a collection of general-purpose, low-level C functions (memory allocation, etc.). The second one is @samp{orilib}, which is a collection of routines for orientation manipulation (see @url{http://orilib.sourceforge.net}). The third one is nanoflann, a library for nearest neighbor searching (see @url{https://github.com/jlblancoc/nanoflann}), the fourth one is openGJK, a library for fast point-simplex distance computations (@url{https://github.com/MattiaMontanari/openGJK}), the firsth one is muparser, a library for interprating mathematical and logical expressions (see @url{http://beltoforion.de/article.php?a=muparser}), and the last one is tinycolormap, a library for color maps (@url{https://github.com/yuki-koyama/tinycolormap}).  Although these libraries are also distributed alone (and might be already installed on your system), they are included into Neper instead of being considered as dependencies (contrary to the GSL, for example) to facilitate installation.
 
-  @item @code{CMakeLists.txt}, @code{neper_config.h.in} and @code{cmake/}
+  @item @code{CMakeLists.txt}, @code{neper_config.h.in} and @code{cmake}
 
-  These files and directories are specific to the building system, CMake.  @file{CMakeLists.txt} is the CMake source file, which tells CMake where to find the program source files, how to manage dependencies, where to install Neper, etc.  @file{neper_config.h.in} is a small configuration file that is useful to CMake for managing dependencies and program version numbers.  @file{cmake/} contains @file{.cmake} files which help CMake locating the dependencies on the system (library and header files).
+  These files and directories are specific to the building system, CMake.  @file{CMakeLists.txt} is the CMake source file, which tells CMake where to find the program source files, how to manage dependencies, where to install Neper, etc.  @file{neper_config.h.in} is a small configuration file that is useful to CMake for managing dependencies and program version numbers.  @file{cmake} contains @file{.cmake} files which help CMake locating the dependencies on the system (library and header files).
 
 @end itemize
 
-A module directory, @dfn{@code{neper_@var{X}/}}, where @samp{@var{X}} stands for the module letter (one of @samp{t}, @samp{m} or @samp{v}), is structured as follows,
+A module directory, @dfn{@code{neper_@var{X}}}, where @samp{@var{X}} stands for the module letter (one of @samp{t}, @samp{m}, @samp{s} or @samp{v}), is structured as follows,
 
 @itemize
   @item @code{neper_@var{X}.h}, @code{neper_@var{X}_.h} and @code{neper_@var{X}.c}
 
-  These are the source code header files and source code file of the module. @file{neper_@var{X}.c} contains the module function, @samp{@code{neper_@var{X}}}. @file{neper_@var{X}_.h} is the source code header file, which is @code{#include}'ed in @file{neper_@var{X}.c} and contains a bunch of @code{#include}s to all necessary library header files.  @file{neper_@var{X}.h} contains the prototype of the module function and is @code{#include}'ed in @file{neper_.h}.  Hence, files @file{_.h} are local header files while files @file{.h} are header files @code{#include}'ed into a upper-level source code header file.  This is true everywhere in the source code.  Moreover, any function specific to module @code{@var{X}} is prefixed @samp{@code{ne@var{X}_}}.
+  These are the source code header files and source code file of the module. @file{neper_@var{X}.c} contains the module function, @samp{neper_@var{X}}. @file{neper_@var{X}_.h} is the source code header file, which is @code{#include}'ed in @file{neper_@var{X}.c} and contains a bunch of @code{#include}s to all necessary library header files.  @file{neper_@var{X}.h} contains the prototype of the module function and is @code{#include}'ed in @file{neper_.h}.  Hence, files @file{_.h} are local header files while files @file{.h} are header files @code{#include}'ed into an upper-level source code header file.  This is true everywhere in the source code.  Moreover, any function specific to module @code{@var{X}} is prefixed @samp{ne@var{X}_}.
 
-  @item @code{ne@var{X}_input/} and @code{structIn_@var{X}.h}
+  @item @code{ne@var{X}_input} and @code{structIn_@var{X}.h}
 
-  The @samp{@code{ne@var{X}_input/}} directory contains functions for reading the value of the arguments passed to module @code{@var{X}} from the command line.  The information are recorded into an @samp{@code{IN_@var{X}}} C structure, which is declared in file @samp{@code{structIn_@var{X}.h}}.
+  The @samp{ne@var{X}_input} directory contains functions for reading the value of the arguments passed to module @code{@var{X}} from the command line.  The information are recorded into an @samp{IN_@var{X}} C structure, which is declared in file @samp{structIn_@var{X}.h}.
 
-  @item @code{ne@var{X}_@var{foo}/}, @code{ne@var{X}_@var{bar}/}, etc.
+  @item @code{ne@var{X}_@var{foo}}, @code{ne@var{X}_@var{bar}}, etc.
 
-  Each of these directories is associated to a specific task of the module and contains a function of the same name (@samp{@code{ne@var{X}_@var{foo}}}, etc.) which is called from function @samp{@code{neper_@var{X}}}. Each directory contains a directory tree structure.
+  Each of these directories is associated to a specific task of the module and contains a function of the same name (@samp{ne@var{X}_@var{foo}}, etc.) which is called from function @samp{neper_@var{X}}. Each directory contains a directory tree structure.
 
   @item @code{CMakeLists.txt}
 
@@ -78,23 +79,23 @@ The @file{neut} directory is roughly structured as follows,
 
   This file tells CMake where to find the source files and how to manage dependencies in the module. It is used by the upper-level @file{CMakeLists.txt} file (there is no lower-level @file{CMakeLists.txt} file).
 
-  @item @code{neut.h}, @code{neut_t.h}, @code{neut_m.h} and @code{neut_v.h}
+  @item @code{neut.h} and @code{neut_X.h}
 
   These files are source code header files that @code{#include} header files of @code{neut} (which contain function prototypes) and are @code{#include}d in the modules. @file{neut.h} @code{#include}s all header files while the three others @code{#include} header files only necessary to the corresponding module (this speeds up compilation at development stage).
 
-  @item @code{neut_structs/}
+  @item @code{neut_structs}
 
   This directory contains header files which defines all C structures used in the program.
 
-  @item @code{neut_@var{foo}/}, @code{neut_@var{bar}/}, etc.
+  @item @code{neut_@var{foo}}, @code{neut_@var{bar}}, etc.
 
-  Each of these directories contain functions specific to a particular C structure.  For example, @file{neut_tess} contains functions relative to the @samp{@code{TESS}} structure, which describes a tessellation.
+  Each of these directories contain functions specific to a particular C structure.  For example, @file{neut_tess} contains functions relative to the @samp{TESS} structure, which describes a tessellation.
 
 @end itemize
 
 @subsection Documentation
 
-Neper's documentation is located in directory @file{doc/}.  It is written in Texinfo, the GNU software documentation system.  The documentation consists of a collection of @file{.texi} files (text files).  The documentation may be compiled in PDF, info or html format by running @command{make pdf}, @command{make info} or @command{make html}, respectively. In official releases, both the PDF and info documentation files are built and included in the archive.
+Neper's documentation is located in directory @file{doc}.  It is written in Texinfo, the GNU software documentation system.  The documentation consists of a collection of @file{.texi} files (text files).  The documentation may be compiled in PDF, info or html format by running @command{make pdf}, @command{make info} or @command{make html}, respectively. In official releases, both the PDF and info documentation files are built and included in the archive.
 
 @page
 @section Contributing to Neper
@@ -126,7 +127,7 @@ In modules -T and -M, adding a new option can be done by following these steps:
 
 @itemize
 
-  @item Add a variable to the @samp{@code{IN_@var{X}}} structure to record the value of the option (file @file{structIn_@var{X}.h}).
+  @item Add a variable to the @samp{IN_@var{X}} structure to record the value of the option (file @file{structIn_@var{X}.h}).
 
   @item If necessary, allocate / free the variable in the @code{ne@var{X}_in_set_zero} and @code{ne@var{X}_in_free} functions (file @file{ne@var{X}_input1.c}) Assign it a default value in @code{net_input_options_default} (file @file{ne@var{X}_input3.c}).
 
@@ -151,7 +152,7 @@ For development, several compilation options can be changed from their default v
 @itemize
   @item @code{DEVEL_DEBUGGING_FLAG}
 
-  Setting the option to @code{ON} turns on the debugging compilation flag @samp{@code{-g}}, which is required for debugging with @command{gdb} and @command{valgrind}, and turns on the compilation flag @samp{@code{-Werror}}, which makes all compilation warnings into errors.
+  Setting the option to @code{ON} turns on the debugging compilation flag @samp{-g}, which is required for debugging with @command{gdb} and @command{valgrind}, and turns on the compilation flag @samp{-Werror}, which makes all compilation warnings into errors.
 
   @item @code{DEVEL_DEBUGGING_TEST}
 
@@ -163,9 +164,35 @@ For development, several compilation options can be changed from their default v
 
   @item @code{DEVEL_PROFILING}
 
-  Setting this option to @code{ON} turns on the code profiling compilation flag @samp{@code{-pg}}, which is required for profiling with @command{gprof}.  This is a highy CPU-sensitive option, which should be used  only when profiling is actually carried out.
+  Setting this option to @code{ON} turns on the code profiling compilation flag @samp{-pg}, which is required for profiling with @command{gprof}.  This is a highy CPU-sensitive option, which should be used  only when profiling is actually carried out.
 
 @end itemize
+
+@subsection Making a Commit
+
+A @file{neper-commit} script is available in the @file{utils} directory.  Running this script creates a Git commit (just as @command{git commit}) and handles the additional tasks of updating Neper's version number wherever needed in the code and documentation, and opening the @file{VERSIONS} file for you to update as needed.  The @command{neper-commit} command should be used instead of @command{git commit} for all commits.
+
+Please write good commit messages.  A good commit message looks like this@footnote{Mostly taken from Linus Torvalds's directives, @url{https://github.com/torvalds/subsurface-for-dirk/blob/a48494d2fbed58c751e9b7e8fbff88582f9b2d02/README#L88}. See also @url{https://chris.beams.io/posts/git-commit}.}:
+
+@example
+Header line: explain the commit in one line (use the imperative),
+50 characters max.
+
+Body of commit message is a few lines of text, explaining things
+in more detail, possibly giving some background about the issue
+being fixed, etc etc.
+
+The body of the commit message can be several paragraphs, and
+please do proper word-wrap and keep columns shorter than about
+74 characters or so. That way "git log" will show things
+nicely even when it's indented.
+
+Make sure you explain your solution and why you're doing what you're
+doing, as opposed to describing what you're doing. Reviewers and your
+future self can read the patch, but might not understand why a
+particular solution was implemented.
+@end example
+
 
 @subsection Testing
 

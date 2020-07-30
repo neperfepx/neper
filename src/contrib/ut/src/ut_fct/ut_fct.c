@@ -490,8 +490,8 @@ ut_fct_eval (struct FCT Fct, double x)
            && x < 1) ? tgamma (Fct.mean + Fct.sigma) * pow (x,
                                                             Fct.mean -
                                                             1.) * pow (1. - x,
-                                                                       Fct.
-                                                                       sigma -
+                                                                       Fct.sigma
+                                                                       -
                                                                        1.) /
       (tgamma (Fct.mean) * tgamma (Fct.sigma)) : 0;
   }

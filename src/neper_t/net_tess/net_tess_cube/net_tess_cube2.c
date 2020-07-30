@@ -86,7 +86,7 @@ net_tess_cube_sset (struct TESS Tess, struct SEEDSET *pSSet)
   (*pSSet).N = Tess.CellQty;
   (*pSSet).Nall = (*pSSet).N;
   (*pSSet).SeedCoo = ut_alloc_2d ((*pSSet).N + 1, 3);
-  (*pSSet).q = ut_alloc_2d ((*pSSet).N + 1, 4);
+  (*pSSet).SeedOri = ut_alloc_2d ((*pSSet).N + 1, 4);
   for (i = 1; i <= Tess.CellQty; i++)
     neut_tess_cell_centroid (Tess, i, (*pSSet).SeedCoo[i]);
 

@@ -20,7 +20,7 @@ extern void nem_smoothing_barypos (struct NODES Nodes,
 extern void nem_smoothing_newcoo (double *coo, double *neighcoo, double
 				  A, double *newcoo);
 extern void nem_smoothing_nodes_updatecoo (struct NODES *pNodes, int *nodes,
-					   int nodeqty, double **NodeCoo);
+					   int NodeQty, double **NodeCoo);
 extern void nem_smoothing_neighnodeweights (struct NODES Nodes,
 					    struct MESH *Mesh, int node,
 					    int *neighnodes, int neighnodeqty,

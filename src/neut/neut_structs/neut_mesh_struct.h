@@ -45,6 +45,18 @@ extern "C"
     int **NodeElts;		// for each node:
     // [0]: total number of elts
     // [1...NodeElts[][0]]: ids of the elts
+
+    int PartQty;                 // total number of partitions
+    int **Parts;                 // partitions (same format as Elsets)
+    int *EltPart;                // partition of an elt
+
+    double **ElsetOri;           // orientations of the elsets [1...ElsetQty][0...3]
+    char *ElsetOriDes;           // orientation descriptor
+
+    double **EltOri;             // orientations of the elts [1...EltQty][0...3]
+    char *EltOriDes;             // orientation descriptor
+
+    int *ElsetGroup;         // groups of the elsets [1...ElsetQty][0...3]
   };
   typedef struct MESH MESH;
 

@@ -29,6 +29,12 @@ extern "C"
 ///
   extern void neut_tesr_free (struct TESR *pTesr);
 
+/// \brief Reset a TESR structure.
+///
+///
+///
+  extern void neut_tesr_reset (struct TESR *pTesr);
+
 /// \brief Copy a TESR structure into another TESR structure.
 ///
 /// The new structure does not need to be preallocated.
@@ -62,17 +68,17 @@ extern "C"
   extern void neut_tesr_rasterscale (struct TESR *pTesr, double scale1,
 				     double scale2, double scale3);
 
-/// \brief Return the neighbouring points of a given point, within a certain cell.
+/// \brief Return the neighboring points of a given point, within a certain cell.
 ///
 ///
 ///
   extern void neut_tesr_cell_pos_neighpos (struct TESR, int cell, int *pos,
 					   int type, int ***ppos, int *pqty);
 
-/// \brief Return the neighbouring points of a given point, within certain cells.
+/// \brief Return the neighboring points of a given point, within certain cells.
 ///
 /// If cell == NULL, then all cells (id different from 0) are considered.
-/// type = 1: 26 neighbours, type = 2: 6 neighbours
+/// type = 1: 26 neighbors, type = 2: 6 neighbors
 ///
   extern void neut_tesr_cells_pos_neighpos (struct TESR Tesr, int *cell,
 					    int cellqty, int *pos, int type,

@@ -30,6 +30,7 @@ main (int argc, char **argv)
   strcpy (modlist[++modqty], "-T");
   strcpy (modlist[++modqty], "-M");
   strcpy (modlist[++modqty], "-V");
+  strcpy (modlist[++modqty], "-S");
 
   // Testing input -----------------------------------------------------
 
@@ -87,7 +88,6 @@ main (int argc, char **argv)
     status = ut_string_completion (argv[arg_pos + 1], modlist, modqty, &mod);
 
     fargc = 0;
-    fargv = NULL;
     if (strcmp (rcfile, "none") != 0)
     {
       if (ut_file_exist (rcfile))
@@ -111,6 +111,8 @@ main (int argc, char **argv)
       neper_m (fargc, fargv, argc - 1 - arg_pos, argv + 1 + arg_pos);
     else if (!strcmp (mod, "-V"))
       neper_v (fargc, fargv, argc - 1 - arg_pos, argv + 1 + arg_pos);
+    else if (!strcmp (mod, "-S"))
+      neper_s (fargc, fargv, argc - 1 - arg_pos, argv + 1 + arg_pos);
 
     // Closing ---
 
@@ -122,9 +124,9 @@ main (int argc, char **argv)
     neper_foot ();
   }
 
-  ut_free_2d_char (&fargv, fargc + 1);
-  ut_free_2d_char (&modlist, modqty + 1);
+  ut_free_2d_char (&modlist, 10);
   ut_free_1d_char (&mod);
+  ut_free_2d_char (&fargv, fargc + 1);
   ut_free_1d_char (&rcfile);
 
   return EXIT_SUCCESS;

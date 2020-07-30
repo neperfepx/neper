@@ -9,7 +9,7 @@ neut_tess_init_domain_memcpy (struct TESS *pTess, struct TESS DomTess)
 {
   int i;
 
-  neut_tess_free_domain (pTess);
+  neut_tess_reset_domain (pTess);
 
   ut_string_string (DomTess.DomType, &((*pTess).DomType));
 
@@ -324,11 +324,25 @@ neut_tess_domface_tess_cells (struct TESS Tess, int *oldface_newface,
       ut_array_1d_memcpy (Tess.CellOri[face_oldpoly[i]], 4, (*pT).CellOri[i]);
   }
 
+  if (Tess.CellOriDistrib)
+  {
+    (*pT).CellOriDistrib = ut_alloc_1d_pchar (Tess.CellQty + 1);
+    for (i = 0; i <= (*pT).CellQty; i++)
+      ut_string_string (Tess.CellOriDistrib[face_oldpoly[i]], (*pT).CellOriDistrib + i);
+  }
+
   if (Tess.CellModeId)
   {
     (*pT).CellModeId = ut_alloc_1d_int (Tess.CellQty + 1);
     for (i = 1; i <= (*pT).CellQty; i++)
       (*pT).CellModeId[i] = Tess.CellModeId[face_oldpoly[i]];
+  }
+
+  if (Tess.CellGroup)
+  {
+    (*pT).CellGroup = ut_alloc_1d_int (Tess.CellQty + 1);
+    for (i = 1; i <= (*pT).CellQty; i++)
+      (*pT).CellGroup[i] = Tess.CellGroup[face_oldpoly[i]];
   }
 
   if (Tess.CellLamId)
@@ -343,6 +357,13 @@ neut_tess_domface_tess_cells (struct TESS Tess, int *oldface_newface,
     (*pT).CellModeId = ut_alloc_1d_int ((*pT).CellQty + 1);
     ut_array_1d_int_memcpy (Tess.CellModeId + 1, (*pT).CellQty,
                             (*pT).CellModeId + 1);
+  }
+
+  if (Tess.CellGroup)
+  {
+    (*pT).CellGroup = ut_alloc_1d_int ((*pT).CellQty + 1);
+    ut_array_1d_int_memcpy (Tess.CellGroup + 1, (*pT).CellQty,
+                            (*pT).CellGroup + 1);
   }
 
   ut_string_string (Tess.CellCrySym, &((*pT).CellCrySym));

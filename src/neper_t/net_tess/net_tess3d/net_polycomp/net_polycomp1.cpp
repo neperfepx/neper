@@ -36,9 +36,8 @@ net_polycomp (struct POLY Domain, struct SEEDSET SSet, NFCLOUD * pnf_cloud,
 
   // Computing KD tree -------------------------------------------------
 
-  if (strcmp ((*pTD).algoneigh, "qsort"))
-    net_polycomp_kdtree (SSet, pnf_cloud, pnf_tree, pptid_seedid,
-                         pseedid_ptid, pTD);
+  net_polycomp_kdtree (SSet, pnf_cloud, pnf_tree, pptid_seedid,
+                       pseedid_ptid, pTD);
 
   // Computing shifts --------------------------------------------------
 

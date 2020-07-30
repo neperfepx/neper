@@ -7,14 +7,14 @@
 void
 net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
 {
-  int i, partqty, status;
+  int i, PartQty, status;
   char **parts = NULL;
   double theta, *tmp = ol_r_alloc ();
   double **g = ol_g_alloc ();
 
-  ut_list_break (In.transform, NEUT_SEP_NODEP, &parts, &partqty);
+  ut_list_break (In.transform, NEUT_SEP_NODEP, &parts, &PartQty);
 
-  for (i = 0; i < partqty; i++)
+  for (i = 0; i < PartQty; i++)
   {
     if (!strncmp (parts[i], "scale", 5))
     {
@@ -147,7 +147,7 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
 
   ol_g_free (g);
   ol_r_free (tmp);
-  ut_free_2d_char (&parts, partqty);
+  ut_free_2d_char (&parts, PartQty);
 
   return;
 }

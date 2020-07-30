@@ -2,5 +2,5 @@
 /* Copyright (C) 2003-2020, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nem_stat (struct NODES, struct MESH *, struct PART,
+extern void nem_stat (struct NODES, struct MESH *,
 		      struct IN_M, struct MESHPARA, struct TESS, struct POINT);

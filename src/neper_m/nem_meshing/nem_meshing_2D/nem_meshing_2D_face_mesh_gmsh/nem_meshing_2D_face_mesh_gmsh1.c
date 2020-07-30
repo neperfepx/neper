@@ -27,12 +27,10 @@ nem_meshing_2D_face_mesh_gmsh (struct TESS Tess, struct NODES RNodes,
   double *bnodecls = NULL;
   double *face_eq = MeshPara.face_eq ? MeshPara.face_eq[face] : NULL;
 
-  neut_nodes_free (pN);
-  neut_mesh_free (pM);
-  neut_mesh_set_zero (pM);
-  neut_nodes_set_zero (pN);
-  neut_mesh_set_zero (pM);
   neut_mesh_set_zero (&M1D);
+
+  neut_nodes_reset (pN);
+  neut_mesh_reset (pM);
 
   neut_gmsh_rc ("bak");
 

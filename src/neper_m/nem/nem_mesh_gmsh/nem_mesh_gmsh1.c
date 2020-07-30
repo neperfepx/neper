@@ -21,7 +21,7 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
   int match;
   struct MESH Skin;
   struct MESH Garbage;
-  struct PART PGarbage;
+  struct NSET NSetGarbage;
   char *filename = ut_alloc_1d_char (100);
   char *filename_surf = ut_alloc_1d_char (100);
   char *filename_msh = ut_alloc_1d_char (100);
@@ -43,15 +43,13 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
 
   double speed = 0.2;
 
-  neut_nodes_free (pN);
-  neut_mesh_free (pM);
+  neut_nodes_reset (pN);
+  neut_mesh_reset (pM);
 
-  neut_nodes_set_zero (pN);
-  neut_mesh_set_zero (pM);
   neut_mesh_set_zero (&Skin);
   neut_mesh_set_zero (&M2);
   neut_mesh_set_zero (&Garbage);
-  neut_part_set_zero (&PGarbage);
+  neut_nset_set_zero (&NSetGarbage);
 
   neut_gmsh_rc ("bak");
 
@@ -61,8 +59,9 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
   neut_mesh_poly_boundmesh (Tess, poly, Mesh[2], &Skin);
 
   file2 = ut_file_open (filename_surf, "W");
-  neut_mesh_fprintf_gmsh (file2, "2", Tess, Nodes, Garbage, Garbage, Skin,
-                          Garbage, PGarbage, Garbage, NULL, NULL, "binary");
+  neut_mesh_fprintf_msh (file2, "2", Tess, Nodes, Garbage, Garbage, Skin,
+                         Garbage, Garbage, NSetGarbage, NSetGarbage,
+                         NSetGarbage, NULL, NULL, NULL, "msh2", "binary");
   ut_file_close (file2, filename_surf, "W");
 
   clmod = cl;
@@ -151,8 +150,8 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
 
     if (redo == 1)
     {
-      neut_nodes_free (pN);
-      neut_mesh_free (pM);
+      neut_nodes_reset (pN);
+      neut_mesh_reset (pM);
     }
 
     // printf ("\niter = %d clmod = %f lmean = %f cl = %f\n", iter, clmod, lmean, cl);
@@ -205,6 +204,7 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
   neut_mesh_free (&Skin);
   neut_mesh_free (&M2);
   ut_free_1d_char (&filename);
+  ut_free_1d_char (&filename_surf);
   ut_free_1d_char (&filename_msh);
 
   neut_gmsh_rc ("unbak");

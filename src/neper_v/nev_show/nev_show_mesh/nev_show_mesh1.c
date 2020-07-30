@@ -34,7 +34,7 @@ nev_show_mesh_slice (char **argv, int *pi, struct PRINT *pPrint)
 
 void
 nev_show_mesh_elt (char **argv, int *pi, struct TESS Tess, struct NODES Nodes,
-                   struct MESH *Mesh, struct PART Part, struct PRINT *pPrint)
+                   struct MESH *Mesh, struct PRINT *pPrint)
 {
   int i, j, status, varqty, qty;
   char **vars = NULL;
@@ -95,7 +95,7 @@ nev_show_mesh_elt (char **argv, int *pi, struct TESS Tess, struct NODES Nodes,
       for (j = 0; j < varqty; j++)
         if (strstr (argv[(*pi)], vars[j]))
           neut_mesh_var_val_one (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
-                                 Part, Tess, (*pPrint).showelt0d,
+                                 Mesh[4], Tess, (*pPrint).showelt0d,
                                  (*pPrint).showelt1d, (*pPrint).showelt2d,
                                  (*pPrint).showelt3d, 0, entity, i, vars[j],
                                  vals + j, NULL);
@@ -120,7 +120,7 @@ nev_show_mesh_elt (char **argv, int *pi, struct TESS Tess, struct NODES Nodes,
 
 void
 nev_show_mesh_nodes (char **argv, int *pi, struct TESS Tess,
-                     struct NODES Nodes, struct MESH *Mesh, struct PART Part,
+                     struct NODES Nodes, struct MESH *Mesh,
                      struct PRINT *pPrint)
 {
   int i, j, status, varqty;
@@ -143,7 +143,7 @@ nev_show_mesh_nodes (char **argv, int *pi, struct TESS Tess,
       for (j = 0; j < varqty; j++)
         if (strstr (argv[(*pi)], vars[j]))
           neut_mesh_var_val_one (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
-                                 Part, Tess, (*pPrint).showelt0d,
+                                 Mesh[4], Tess, (*pPrint).showelt0d,
                                  (*pPrint).showelt1d, (*pPrint).showelt2d,
                                  (*pPrint).showelt3d, 0, "node", i, vars[j],
                                  vals + j, NULL);
@@ -168,14 +168,14 @@ nev_show_mesh_nodes (char **argv, int *pi, struct TESS Tess,
 
 void
 nev_show_mesh_elset (char **argv, int *pi, struct TESS Tess,
-                     struct NODES Nodes, struct MESH *Mesh, struct PART Part,
+                     struct NODES Nodes, struct MESH *Mesh,
                      struct PRINT *pPrint)
 {
   int i, j, status, varqty;
   char **vars = NULL;
   double *vals = NULL;
   int *showelset3d = NULL;
-  int elsetqty, eltqty;
+  int elsetqty, EltQty;
   char *entity = ut_alloc_1d_char (10);
   int **elsets = NULL;
   int **pshowelt = NULL;
@@ -197,28 +197,28 @@ nev_show_mesh_elset (char **argv, int *pi, struct TESS Tess,
   {
     elsets = Mesh[0].Elsets;
     elsetqty = Mesh[0].ElsetQty;
-    eltqty = Mesh[0].EltQty;
+    EltQty = Mesh[0].EltQty;
     pshowelt = &((*pPrint).showelt0d);
   }
   else if (!strcmp (entity, "elset1d"))
   {
     elsets = Mesh[1].Elsets;
     elsetqty = Mesh[1].ElsetQty;
-    eltqty = Mesh[1].EltQty;
+    EltQty = Mesh[1].EltQty;
     pshowelt = &((*pPrint).showelt1d);
   }
   else if (!strcmp (entity, "elset2d"))
   {
     elsets = Mesh[2].Elsets;
     elsetqty = Mesh[2].ElsetQty;
-    eltqty = Mesh[2].EltQty;
+    EltQty = Mesh[2].EltQty;
     pshowelt = &((*pPrint).showelt2d);
   }
   else if (!strcmp (entity, "elset3d"))
   {
     elsets = Mesh[3].Elsets;
     elsetqty = Mesh[3].ElsetQty;
-    eltqty = Mesh[3].EltQty;
+    EltQty = Mesh[3].EltQty;
     pshowelt = &((*pPrint).showelt3d);
   }
   else
@@ -227,8 +227,8 @@ nev_show_mesh_elset (char **argv, int *pi, struct TESS Tess,
   (*pi)++;
 
   showelset3d = ut_alloc_1d_int (elsetqty + 1);
-  (*pshowelt) = ut_realloc_1d_int ((*pshowelt), eltqty + 1);
-  ut_array_1d_int_zero ((*pshowelt), eltqty + 1);
+  (*pshowelt) = ut_realloc_1d_int ((*pshowelt), EltQty + 1);
+  ut_array_1d_int_zero ((*pshowelt), EltQty + 1);
 
   status = nev_show_genexpr (argv[(*pi)], showelset3d, elsetqty);
 
@@ -242,7 +242,7 @@ nev_show_mesh_elset (char **argv, int *pi, struct TESS Tess,
       for (j = 0; j < varqty; j++)
         if (strstr (argv[(*pi)], vars[j]))
           neut_mesh_var_val_one (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
-                                 Part, Tess, (*pPrint).showelt0d,
+                                 Mesh[4], Tess, (*pPrint).showelt0d,
                                  (*pPrint).showelt1d, (*pPrint).showelt2d,
                                  (*pPrint).showelt3d, 0, entity, i, vars[j],
                                  vals + j, NULL);
@@ -260,7 +260,7 @@ nev_show_mesh_elset (char **argv, int *pi, struct TESS Tess,
       for (j = 1; j <= elsets[i][0]; j++)
         (*pshowelt)[elsets[i][j]] = 1;
 
-  (*pshowelt)[0] = ut_array_1d_int_sum ((*pshowelt) + 1, eltqty);
+  (*pshowelt)[0] = ut_array_1d_int_sum ((*pshowelt) + 1, EltQty);
 
   ut_free_1d_int (&showelset3d);
   ut_free_2d_char (&vars, varqty);

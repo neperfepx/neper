@@ -22,7 +22,7 @@ net_tess_lam (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
   net_tess_lam_seed (In, level, morpho, *pMTess, Tess, dtess, dcell, Dom,
                      SSet, pSSet);
 
-  net_tess3d (Tess[dtess], dcell, *pSSet, "nanoflann", TessId, pMTess, pTess);
+  net_tess3d (Tess[dtess], dcell, *pSSet, TessId, pMTess, pTess);
 
   neut_tess_init_seeds_fromcell (pTess);
 

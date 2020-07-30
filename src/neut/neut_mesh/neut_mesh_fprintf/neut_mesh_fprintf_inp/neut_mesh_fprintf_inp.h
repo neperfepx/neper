@@ -15,8 +15,7 @@ extern "C"
                                      struct MESH Mesh3D, struct MESH MeshCo,
                                      struct NSET NSet0D, struct NSET NSet1D,
                                      struct NSET NSet2D, char *nset, char
-                                     *faset, struct PART Part, struct BOUNDARY
-                                     Bound);
+                                     *faset, struct BOUNDARY Bound);
 
 #endif				// NEUT_MESH_FPRINTF_INP
 

@@ -12,15 +12,15 @@
 
 #include "nev_load.h"
 
-extern void nev_load_init_tessdata (struct TESS Tess,
-				    struct TESSDATA *pTessData);
-extern void nev_load_init_tesrdata (struct TESR Tesr,
-				    struct TESRDATA *pTesrData);
+extern void nev_load_init_data_tess (struct TESS Tess, int dim,
+				    struct DATA *pTessData);
+extern void nev_load_init_data_tesr (struct TESR Tesr,
+				    struct DATA *pTesrData);
 
-extern void nev_load_init_nodedata (struct NODES Nodes,
-				    struct NODEDATA *pNodeData);
-extern void nev_load_init_meshdata (struct MESH Mesh,
-				    struct MESHDATA *pMeshData);
+extern void nev_load_init_data_node (struct NODES Nodes,
+				    struct DATA *pData);
+extern void nev_load_init_data_mesh (struct MESH Mesh,
+				    struct DATA *pMeshData);
 
-extern void nev_load_init_pointdata (struct POINT Point,
-				     struct POINTDATA *pPointData);
+extern void nev_load_init_data_point (struct POINT Point,
+				     struct DATA *pPointData);

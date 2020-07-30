@@ -7,15 +7,15 @@
 void
 net_transform_tesr (struct IN_T In, struct TESR *pTesr)
 {
-  int i, partqty, status;
+  int i, PartQty, status;
   double theta, *tmp = ol_r_alloc ();
   char **parts = NULL;
   double *val = ut_alloc_1d (3);
   double **g = ol_g_alloc ();
 
-  ut_list_break (In.transform, NEUT_SEP_NODEP, &parts, &partqty);
+  ut_list_break (In.transform, NEUT_SEP_NODEP, &parts, &PartQty);
 
-  for (i = 0; i < partqty; i++)
+  for (i = 0; i < PartQty; i++)
   {
     if (!strncmp (parts[i], "scale", 5))
     {
@@ -99,7 +99,7 @@ net_transform_tesr (struct IN_T In, struct TESR *pTesr)
                         parts[i]);
   }
 
-  ut_free_2d_char (&parts, partqty);
+  ut_free_2d_char (&parts, PartQty);
   ol_r_free (tmp);
   ol_g_free (g);
 

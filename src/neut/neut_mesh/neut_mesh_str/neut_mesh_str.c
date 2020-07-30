@@ -120,7 +120,7 @@ neut_mesh_str_3d (int *size, struct NODES *pNodes, struct MESH *pMesh,
   {
     (*pNSet2D).qty = 6;
     (*pNSet2D).names = ut_alloc_2d_char (7, 10);
-    (*pNSet2D).nodeqty = ut_alloc_1d_int ((*pNSet2D).qty + 1);
+    (*pNSet2D).NodeQty = ut_alloc_1d_int ((*pNSet2D).qty + 1);
     (*pNSet2D).nodes = ut_alloc_1d_pint ((*pNSet2D).qty + 1);
 
     strcpy ((*pNSet2D).names[1], "x0");
@@ -148,8 +148,8 @@ neut_mesh_str_3d (int *size, struct NODES *pNodes, struct MESH *pMesh,
             tmp[++tmp[0]] = i;
       }
 
-      (*pNSet2D).nodeqty[face] = tmp[0];
-      (*pNSet2D).nodes[face] = ut_alloc_1d_int ((*pNSet2D).nodeqty[face]);
+      (*pNSet2D).NodeQty[face] = tmp[0];
+      (*pNSet2D).nodes[face] = ut_alloc_1d_int ((*pNSet2D).NodeQty[face]);
       ut_array_1d_int_memcpy (tmp + 1, tmp[0], (*pNSet2D).nodes[face]);
     }
   }
@@ -245,7 +245,7 @@ neut_mesh_str_2d (int *size, struct NODES *pNodes, struct MESH *pMesh,
   {
     (*pNSet1D).qty = 4;
     (*pNSet1D).names = ut_alloc_2d_char (5, 10);
-    (*pNSet1D).nodeqty = ut_alloc_1d_int ((*pNSet1D).qty + 1);
+    (*pNSet1D).NodeQty = ut_alloc_1d_int ((*pNSet1D).qty + 1);
     (*pNSet1D).nodes = ut_alloc_1d_pint ((*pNSet1D).qty + 1);
 
     strcpy ((*pNSet1D).names[1], "x0");
@@ -271,8 +271,8 @@ neut_mesh_str_2d (int *size, struct NODES *pNodes, struct MESH *pMesh,
             tmp[++tmp[0]] = i;
       }
 
-      (*pNSet1D).nodeqty[edge] = tmp[0];
-      (*pNSet1D).nodes[edge] = ut_alloc_1d_int ((*pNSet1D).nodeqty[edge]);
+      (*pNSet1D).NodeQty[edge] = tmp[0];
+      (*pNSet1D).nodes[edge] = ut_alloc_1d_int ((*pNSet1D).NodeQty[edge]);
       ut_array_1d_int_memcpy (tmp + 1, tmp[0], (*pNSet1D).nodes[edge]);
     }
   }
@@ -356,7 +356,7 @@ neut_mesh_str_1d (int *size, struct NODES *pNodes, struct MESH *pMesh,
   {
     (*pNSet1D).qty = 2;
     (*pNSet1D).names = ut_alloc_2d_char (3, 10);
-    (*pNSet1D).nodeqty = ut_alloc_1d_int ((*pNSet1D).qty + 1);
+    (*pNSet1D).NodeQty = ut_alloc_1d_int ((*pNSet1D).qty + 1);
     (*pNSet1D).nodes = ut_alloc_1d_pint ((*pNSet1D).qty + 1);
 
     strcpy ((*pNSet1D).names[1], "x0");
@@ -378,8 +378,8 @@ neut_mesh_str_1d (int *size, struct NODES *pNodes, struct MESH *pMesh,
             tmp[++tmp[0]] = i;
       }
 
-      (*pNSet1D).nodeqty[ver] = tmp[0];
-      (*pNSet1D).nodes[ver] = ut_alloc_1d_int ((*pNSet1D).nodeqty[ver]);
+      (*pNSet1D).NodeQty[ver] = tmp[0];
+      (*pNSet1D).nodes[ver] = ut_alloc_1d_int ((*pNSet1D).NodeQty[ver]);
       ut_array_1d_int_memcpy (tmp + 1, tmp[0], (*pNSet1D).nodes[ver]);
     }
   }

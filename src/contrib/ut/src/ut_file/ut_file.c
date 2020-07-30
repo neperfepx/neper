@@ -103,7 +103,7 @@ ut_file_exist (const char *name, ...)
   va_list args;
   char *fullname = ut_alloc_1d_char (1000);
   char *fullname2 = ut_alloc_1d_char (1000);
-  FILE *file;
+  FILE *file = NULL;
 
   va_start (args, name);
   vsprintf (fullname, name, args);
@@ -117,7 +117,12 @@ ut_file_exist (const char *name, ...)
   else
     fullname2 = strcpy (fullname2, fullname);
 
-  file = fopen (fullname2, "r");
+  int qty;
+  char **vals = NULL;
+
+  ut_list_break (fullname2, ",", &vals, &qty);
+
+  file = fopen (vals[0], "r");
   if (file == NULL)
     res = 0;
   else
@@ -126,6 +131,7 @@ ut_file_exist (const char *name, ...)
     res = 1;
   }
 
+  ut_free_2d_char (&vals, qty);
   ut_free_1d_char (&fullname);
   ut_free_1d_char (&fullname2);
   va_end (args);
@@ -155,6 +161,26 @@ ut_file_open (const char *name, const char *mode)
   }
   else if (mode[0] == 'w' || mode[0] == 'W')
   {
+    // if file is to be in a directory and the directory does not exist,
+    // create it
+
+    if (strstr (name2, "/"))
+    {
+      int i;
+      char *dir = NULL;
+
+      ut_string_string (name2, &dir);
+      for (i = strlen (dir) - 1; i >= 0; i--)
+        if (dir[i] == '/')
+        {
+          dir[i] = '\0';
+          break;
+        }
+
+      ut_sys_mkdir (dir);
+      ut_free_1d_char (&dir);
+    }
+
     file = fopen (name2, "w");
     if (file == NULL)
     {
@@ -200,6 +226,40 @@ ut_file_openmessage (const char *name, const char *mode)
   {
     ut_print_lineheader (0);
     printf ("    [o] Writing file `%s'...\n", name);
+  }
+
+  return;
+}
+
+void
+ut_dir_openmessage (const char *name, const char *mode)
+{
+  if (mode[0] == 'r')
+  {
+    ut_print_lineheader (0);
+    printf ("    [i] Parsing directory `%s'...\n", name);
+  }
+  else if (mode[0] == 'w')
+  {
+    ut_print_lineheader (0);
+    printf ("    [o] Writing directory `%s'...\n", name);
+  }
+  else if (mode[0] == 'a')
+  {
+    ut_print_lineheader (0);
+    printf ("    [o] Writing directory `%s'...\n", name);
+  }
+
+  return;
+}
+
+void
+ut_file_createmessage (const char *name, const char *mode)
+{
+  if (mode[0] == 'c')
+  {
+    ut_print_lineheader (0);
+    printf ("    [o] Creating directory `%s'...\n", name);
   }
 
   return;
@@ -253,6 +313,32 @@ ut_file_closemessage (const char *name, const char *mode)
   {
     ut_print_lineheader (0);
     printf ("    [o] Wrote file `%s'.", name2);
+  }
+
+  ut_free_1d_char (&name2);
+
+  if ((mode[0] == 'r' || mode[0] == 'w' || mode[0] == 'a')
+      && !strstr (mode, "nonl"))
+    printf ("\n");
+
+  return;
+}
+
+void
+ut_dir_closemessage (const char *name, const char *mode)
+{
+  char *name2 = NULL;
+
+  ut_file_squashname (name, &name2);
+  if (mode[0] == 'r')
+  {
+    ut_print_lineheader (0);
+    printf ("    [i] Parsed directory `%s'.", name2);
+  }
+  else if (mode[0] == 'w' || mode[0] == 'a')
+  {
+    ut_print_lineheader (0);
+    printf ("    [o] Wrote directory `%s'.", name2);
   }
 
   ut_free_1d_char (&name2);
@@ -469,6 +555,19 @@ ut_file_string_goto (FILE * file, const char *string)
 }
 
 int
+ut_file_goto_nextline (FILE * file)
+{
+  int status;
+  char c = 'a';
+
+  do
+    status = fscanf (file, "%c", &c);
+  while (status == 1 &&  (c != '\n' && c != EOF));
+
+  return c == '\n' ? 0 : -1;
+}
+
+int
 ut_file_string_scanandtest (FILE * file, const char *string)
 {
   int status;
@@ -629,13 +728,47 @@ ut_file_nextstring (FILE * file, char *string)
   fpos_t pos;
 
   fgetpos (file, &pos);
-  if (fscanf (file, "%s", string) != 1)
-    return -1;
+  if (string)
+  {
+    if (fscanf (file, "%s", string) != 1)
+      return -1;
+    else
+    {
+      fsetpos (file, &pos);
+      return 1;
+    }
+  }
   else
   {
-    fsetpos (file, &pos);
-    return 1;
+    int status;
+    char *tmp = ut_alloc_1d_char (1000);
+
+    if (fscanf (file, "%s", tmp) != 1)
+      status = -1;
+    else
+    {
+      fsetpos (file, &pos);
+      status = 1;
+    }
+
+    ut_free_1d_char (&tmp);
+
+    return status;
   }
+}
+
+int
+ut_file_nextstring_test (FILE * file, char *string)
+{
+  int status;
+  char *string0 = ut_alloc_1d_char (10000);
+
+  ut_file_nextstring (file, string0);
+  status = !strcmp (string0, string);
+
+  ut_free_1d_char (&string0);
+
+  return status;
 }
 
 void
@@ -778,6 +911,8 @@ ut_file_squashname (const char *name, char **pname)
 
   (*pname) = ut_realloc_1d_char (*pname, strlen (*pname) + 1);
 
+  ut_string_untilchar (*pname, ',', NULL, *pname);
+
   return;
 }
 
@@ -834,3 +969,4 @@ ut_file_nextstring_sectionlevel (FILE * file, int *plevel)
 
   return status;
 }
+

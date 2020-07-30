@@ -190,8 +190,8 @@ neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
 }
 
 int
-neut_point_var_val_one (struct POINT Point, int id, struct TESS Tess,
-                        struct NODES Nodes, struct MESH Mesh, char *var,
+neut_point_var_val_one (struct POINT Point, struct TESS Tess,
+                        struct NODES Nodes, struct MESH Mesh, int id, char *var,
                         double *pval, char **ptype)
 {
   int status, qty;
@@ -269,4 +269,61 @@ neut_point_shifttocentre (struct POINT *pPoint)
   ut_free_1d (&s);
 
   return;
+}
+
+void
+neut_point_entity_expr_val (struct POINT Point, struct TESS Tess, struct NODES Nodes,
+                            struct MESH Mesh, char *expr, double *val, char **ptype)
+{
+  int j, k, status, varqty;
+  char **vars = NULL;
+  double *vals = NULL;
+  FILE *file = NULL;
+  char *type = NULL;
+
+  if (ptype)
+    ut_string_string ("%d", ptype);
+
+  neut_point_var_list (&vars, &varqty);
+  vals = ut_alloc_1d (varqty);
+
+  if (ut_string_isfilename (expr))
+  {
+    file = ut_file_open (expr, "R");
+    ut_array_1d_fscanf (file, val + 1, Point.PointQty);
+    ut_file_close (file, expr, "R");
+  }
+  else
+  {
+    for (j = 1; j <= Point.PointQty; j++)
+    {
+      for (k = 0; k < varqty; k++)
+        if (strstr (expr, vars[k]))
+        {
+          if (!strcmp (vars[k], "default"))
+            vals[k] = val[j];
+
+          neut_point_var_val_one (Point, Tess, Nodes, Mesh, j, vars[k],
+                                  vals + k, &type);
+          if (ptype && !strcmp (type, "%f"))
+            ut_string_string ("%f", ptype);
+        }
+
+      status = ut_math_eval (expr, varqty, vars, vals, val + j);
+      if (status == -1)
+        abort ();
+    }
+  }
+
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&vals);
+  ut_free_1d_char (&type);
+
+  return;
+}
+
+int
+neut_point_isvoid (struct POINT Point)
+{
+  return Point.PointQty == 0;
 }

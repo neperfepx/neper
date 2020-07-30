@@ -138,7 +138,7 @@ void
 net_transform_tess_cut_tess (struct TESS Dom, struct SEEDSET SSet,
                              struct TESS TessGen, struct TESS *pTess)
 {
-  net_tess3d (Dom, 1, SSet, "nanoflann", TessGen.TessId, NULL, pTess);
+  net_tess3d (Dom, 1, SSet, TessGen.TessId, NULL, pTess);
   net_tess3d_domain (Dom, 1, TessGen.TessId, NULL, pTess);
 
   return;
@@ -218,6 +218,9 @@ net_transform_tess_cut_post (struct TESS TessGen, int *intseed_oldseed,
       ut_array_1d_memcpy (TessGen.CellOri[intseed_oldseed[i]], 4,
                           (*pTess).CellOri[i]);
   }
+
+  // CellOriDes
+  ut_string_string (TessGen.CellOriDes, &(*pTess).CellOriDes);
 
   // CellLamId
   if (TessGen.CellLamId)

@@ -30,7 +30,4 @@ extern void neut_mesh_fprintf_inp_fasets (FILE *, struct TESS Tess, struct MESH
 
 extern void neut_mesh_fprintf_inp_nset (FILE *, char *, int, int *, char*);
 
-extern void neut_mesh_fprintf_inp_part_nset (FILE * file, struct PART Part);
-extern void neut_mesh_fprintf_inp_part_elset (FILE * file, struct PART Part);
-
 extern void neut_mesh_fprintf_inp_boundary (FILE* file, struct BOUNDARY Bound);

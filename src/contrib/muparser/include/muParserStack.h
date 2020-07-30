@@ -43,7 +43,7 @@ namespace mu
 
   /** \brief Parser stack implementation. 
 
-      Stack implementation based on a std::stack. The behaviour of pop() had been
+      Stack implementation based on a std::stack. The behavior of pop() had been
       slightly changed in order to get an error code if the stack is empty.
       The stack is used within the Parser both as a value stack and as an operator stack.
 

@@ -119,6 +119,17 @@ neut_tesr_voxqty (struct TESR Tesr)
   return vqty;
 }
 
+int
+neut_tesr_totvoxqty (struct TESR Tesr)
+{
+  if (Tesr.Dim == 2)
+    return Tesr.size[0] * Tesr.size[1];
+  else if (Tesr.Dim == 3)
+    return Tesr.size[0] * Tesr.size[1] * Tesr.size[2];
+  else
+    return 0;
+}
+
 double
 neut_tesr_avcellvoxqty (struct TESR Tesr)
 {
@@ -265,6 +276,45 @@ neut_tesr_centre (struct TESR Tesr, double *coo)
 }
 
 void
+neut_tesr_centre_x (struct TESR Tesr, double *px)
+{
+  double *c = ut_alloc_1d (3);
+
+  neut_tesr_centre (Tesr, c);
+  (*px) = c[0];
+
+  ut_free_1d (&c);
+
+  return;
+}
+
+void
+neut_tesr_centre_y (struct TESR Tesr, double *py)
+{
+  double *c = ut_alloc_1d (3);
+
+  neut_tesr_centre (Tesr, c);
+  (*py) = c[1];
+
+  ut_free_1d (&c);
+
+  return;
+}
+
+void
+neut_tesr_centre_z (struct TESR Tesr, double *pz)
+{
+  double *c = ut_alloc_1d (3);
+
+  neut_tesr_centre (Tesr, c);
+  (*pz) = c[2];
+
+  ut_free_1d (&c);
+
+  return;
+}
+
+void
 neut_tesr_cell_diameq (struct TESR Tesr, int cell, double *pval)
 {
   if (Tesr.Dim == 3)
@@ -379,39 +429,39 @@ neut_tesr_cell_cornerpoints (struct TESR Tesr, int cell, int ***ppts,
       for (i = Tesr.CellBBox[cell][0][0]; i <= Tesr.CellBBox[cell][0][1]; i++)
         if (Tesr.VoxCell[i][j][k] == cell)
         {
-          // neighbours along x
+          // neighbors along x
           if (Tesr.VoxCell[i - 1][j][k] == cell
               && Tesr.VoxCell[i + 1][j][k] == cell)
             continue;
-          // neighbours along y
+          // neighbors along y
           if (Tesr.VoxCell[i][j - 1][k] == cell
               && Tesr.VoxCell[i][j + 1][k] == cell)
             continue;
-          // neighbours along z
+          // neighbors along z
           if (Tesr.VoxCell[i][j][k - 1] == cell
               && Tesr.VoxCell[i][j][k + 1] == cell)
             continue;
-          // neighbours along x y
+          // neighbors along x y
           if (Tesr.VoxCell[i - 1][j - 1][k] == cell
               && Tesr.VoxCell[i + 1][j + 1][k] == cell)
             continue;
-          // neighbours along x -y
+          // neighbors along x -y
           if (Tesr.VoxCell[i - 1][j + 1][k] == cell
               && Tesr.VoxCell[i + 1][j - 1][k] == cell)
             continue;
-          // neighbours along y z
+          // neighbors along y z
           if (Tesr.VoxCell[i][j - 1][k - 1] == cell
               && Tesr.VoxCell[i][j + 1][k + 1] == cell)
             continue;
-          // neighbours along y -z
+          // neighbors along y -z
           if (Tesr.VoxCell[i][j - 1][k + 1] == cell
               && Tesr.VoxCell[i][j + 1][k - 1] == cell)
             continue;
-          // neighbours along z x
+          // neighbors along z x
           if (Tesr.VoxCell[i - 1][j][k - 1] == cell
               && Tesr.VoxCell[i + 1][j][k + 1] == cell)
             continue;
-          // neighbours along z -x
+          // neighbors along z -x
           if (Tesr.VoxCell[i + 1][j][k - 1] == cell
               && Tesr.VoxCell[i - 1][j][k + 1] == cell)
             continue;
@@ -629,4 +679,26 @@ neut_tesr_bboxsize (struct TESR Tesr, double *bboxsize)
   ut_free_2d (&bbox, 3);
 
   return;
+}
+
+int
+neut_tesr_diameq (struct TESR Tesr, double *pval)
+{
+  neut_tesr_size (Tesr, pval);
+
+  if (Tesr.Dim == 3)
+    (*pval) = sqrt ((4 / M_PI) * (*pval));
+  else if (Tesr.Dim == 2)
+    (*pval) = pow ((6 / M_PI) * (*pval), 0.3333333333333333333333333);
+
+  return 0;
+}
+
+int
+neut_tesr_radeq (struct TESR Tesr, double *pval)
+{
+  neut_tesr_diameq (Tesr, pval);
+  (*pval) *= .5;
+
+  return 0;
 }

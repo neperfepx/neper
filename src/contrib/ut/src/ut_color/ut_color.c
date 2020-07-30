@@ -388,7 +388,7 @@ ut_color_bar_val_color (char *bar, double beg, double end, double val,
   int *col0 = ut_alloc_1d_int (3);
   int *col1 = ut_alloc_1d_int (3);
   int status = 0;
-  if (bar != NULL)
+  if (ut_string_strcmp (bar, "legacy"))
     ut_list_break (bar, ",", &color, &colqty);
   else
     ut_list_break ("blue,cyan,yellow,red", ",", &color, &colqty);

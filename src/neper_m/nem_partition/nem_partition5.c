@@ -12,8 +12,8 @@ void
 nem_partition_elts_balancing_Q_elt (struct MESH Mesh, struct PART Part,
                                     int *A, int *Q)
 {
-  int partqty;
-  int elt, eltpart, j, neighpartqty, srcpart, destpart;
+  int PartQty;
+  int elt, eltpart, j, neighPartQty, srcpart, destpart;
   int eltnodeqty = neut_elt_nodeqty ("tri", Mesh.Dimension, Mesh.EltOrder);
   int *neighpart = ut_alloc_1d_int (eltnodeqty);
   int **coms = ut_alloc_2d_int (Part.qty, 2);
@@ -22,19 +22,19 @@ nem_partition_elts_balancing_Q_elt (struct MESH Mesh, struct PART Part,
   elt = Q[0];
   eltpart = Part.elt_parts[elt];
 
-  /* determining neighbouring partitions */
+  /* determining neighboring partitions */
   for (j = 0; j < eltnodeqty; j++)
     neighpart[j] = Part.node_parts[Mesh.EltNodes[elt][j]];
 
-  ut_array_1d_int_sort_uniq (neighpart, eltnodeqty, &neighpartqty);
-  if (ut_array_1d_int_rmelt (neighpart, neighpartqty, eltpart, 1) != 1)
+  ut_array_1d_int_sort_uniq (neighpart, eltnodeqty, &neighPartQty);
+  if (ut_array_1d_int_rmelt (neighpart, neighPartQty, eltpart, 1) != 1)
     ut_print_neperbug ();
 
-  neighpartqty--;
+  neighPartQty--;
 
   /* looking for the better partition to go into */
   neut_mesh_elt_coms (Mesh, elt, Part.qty, Part.node_parts, Part.elt_parts,
-                      coms, &partqty);
+                      coms, &PartQty);
 
   srcpart = Part.elt_parts[elt];
   srccom = neut_mesh_elt_comqty (Mesh, elt, Part.node_parts, Part.elt_parts);

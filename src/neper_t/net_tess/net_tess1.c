@@ -66,7 +66,6 @@ net_tess (struct IN_T In, int level, struct TESS *Tess, int dtess, int dcell,
       net_tess_opt (In, level, morpho, Tess, dtess, dcell, TessId, pMTess,
                     SSet);
 
-
   // finalizing
   if (!status)
   {

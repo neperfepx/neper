@@ -69,7 +69,6 @@ struct IN_M
   int mesh3dreport;		// report statistics on the 3D mesh (logical)
 
   char *transportstring;	// Data to transport
-  char *transportfepxstring;	// Data to transport / specific to FEpX
   char *transporteltmethodstring; // Method to transport elemental data
 
   int singnodedup;		// duplicate singular nodes (logical)
@@ -93,19 +92,18 @@ struct IN_M
 
   char *body;			// output file name, without extension
   char *msh;			// mesh file at the msh format
+  char *msh4;			// mesh file at the msh4 format
+  char *ori;			// mesh file at the ori format
+  char *bcs;			// mesh file at the bcs format
   char *vtk;			// mesh file at the vtk format
   char *abq;			// mesh file at the Abaqus format
   char *geof;			// mesh file at the Zset/Zebulon format
-  char *fepx1;			// mesh file at the fepx format, parms file
-  char *fepx2;			// mesh file at the fepx format, mesh  file
-  char *fepx3;			// mesh file at the fepx format, surf  file
-  char *fepx4;			// mesh file at the fepx format, opt   file
-  char *fepx5;			// mesh file at the fepx format, bcs   file
   char *outtess;		// output tessellation
   char *per;			// periodicity file
   char *intf;	        	// interface file
 
-  char *stn;			// statistics on the nodes
+  char **stmesh;		// statistics on the 0D, 1D, 2D, 3D and Co meshes
+  char *stnode;			// statistics on the nodes
   char **stelt;			// statistics on the 0D, 1D, 2D and 3D elts
   char **stelset;		// statistics on the 0D, 1D, 2D and 3D elsets
   char *stpt;			// statistics on points

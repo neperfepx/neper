@@ -15,6 +15,7 @@
 #include"structIn_m.h"
 #include"neper_config.h"
 
+#include"nem_utils/nem_utils.h"
 #include"nem_input/nem_input.h"
 #include"nem_meshing_para/nem_meshing_para.h"
 #include"nem_meshing/nem_meshing.h"
@@ -28,6 +29,7 @@
 #include"nem_reconstruct/nem_reconstruct.h"
 #include"nem_smoothing/nem_smoothing.h"
 #include"nem_partition/nem_partition.h"
+#include"nem_ori/nem_ori.h"
 #include"nem_transport/nem_transport.h"
 #include"nem_interface/nem_interface.h"
 #include"nem_order/nem_order.h"

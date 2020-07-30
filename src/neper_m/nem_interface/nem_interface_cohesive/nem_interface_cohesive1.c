@@ -9,7 +9,7 @@ nem_interface_cohesive (struct TESS Tess, struct NODES Nodes,
                         struct MESH *Mesh, struct BOUNDARY Bound)
 {
   int i, j, k, elt, facet, slaveseed, dim = Tess.Dim;
-  int eltqty, *elts = NULL;
+  int EltQty, *elts = NULL;
   int feltnodeqty, eltnodeqty, *nodes = NULL;
 
   Mesh[4].Dimension = dim;
@@ -34,8 +34,8 @@ nem_interface_cohesive (struct TESS Tess, struct NODES Nodes,
   for (i = 1; i <= Bound.BoundQty; i++)
     if (Bound.BoundDom[i][0] == -1)
     {
-      eltqty = Bound.BoundEltQty[i];
-      elts = ut_alloc_1d_int (eltqty);
+      EltQty = Bound.BoundEltQty[i];
+      elts = ut_alloc_1d_int (EltQty);
       for (j = 1; j <= Bound.BoundEltQty[i]; j++)
       {
         elt = Bound.BoundElts[i][0][j];
@@ -59,7 +59,7 @@ nem_interface_cohesive (struct TESS Tess, struct NODES Nodes,
         elts[j - 1] = Mesh[4].EltQty;
       }
 
-      neut_mesh_addelset (Mesh + 4, elts, eltqty);
+      neut_mesh_addelset (Mesh + 4, elts, EltQty);
       Mesh[4].ElsetId =
         ut_realloc_1d_int (Mesh[4].ElsetId, Mesh[4].ElsetQty + 1);
       Mesh[4].ElsetId[Mesh[4].ElsetQty] = Mesh[dim].ElsetQty + i;

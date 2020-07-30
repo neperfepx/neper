@@ -12,23 +12,58 @@ extern "C"
 
   struct DATA
   {
-    int *qty;
+    // needed by: mesh nodes point tesr tess
+    int Qty;
+    int Dim;
+    char *type;                 // rename
 
-    char *entity;
-    char *type;
+    // needed by: csys mesh nodes point tesr tess
+    double **ColData;		// Colour data
+    char *ColDataType;		// Type of color data (col, ori, ...)
+    char *ColDataName;          // Name of the color data
+    int ColDataSize;           // size of the color data
+    char *ColScheme;		// ColourScheme (legend)
+    int **Col;			// Colour
+    int *ColDataDef;		// 1 if data defined, 0 otherwise <-- tesr
 
-    double **val;
+    // needed by: point tesr tess
+    double **TrsData;		// Transparency data
+    char *TrsDataType;		// Type of transparency data
+    char *TrsScheme;		// Transparency scheme
+    double *Trs;		// Transparency
 
-    // size stuff
-    double *size;
+    // needed by: csys mesh nodes point tess
+    double **RadData;		// Radius data
+    char *RadDataType;		// Type of radius data
+    double *Rad;		// Radius
 
-    // colour stuff
-    int **Col;
-    char *colourscheme;
-    char *min;
-    char *max;
-    double height;
-    char *ticks;
+    // needed by: csys nodes point
+    double **CooData;
+    char *CooDataType;
+    char *CooDataName;          // Name of the coo data
+    double **Coo;
+    double CooFact;
+
+    // needed by: csys
+    double **LengthData;
+    char *LengthDataType;
+    double *Length;
+
+    // needed by: mesh tesr
+    int *BCol;			// Element boundary color
+    double BRad;		// Element boundary radius
+
+    // needed by: mesh nodes point tesr tess
+    char *Scale;		// Scale
+    char *ScaleTitle;		// Scale title
+
+    // needed by: point
+    double *Axes;
+    char *Space;
+
+    // needed by: csys
+    char **Label;
+    double FontSize;
   };
   typedef struct DATA DATA;
 

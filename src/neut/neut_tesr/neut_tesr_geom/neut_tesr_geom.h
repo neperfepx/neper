@@ -42,6 +42,7 @@ extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
   extern int neut_tesr_cell_voxqty (struct TESR Tesr, int cell);
 
   extern int neut_tesr_voxqty (struct TESR Tesr);
+  extern int neut_tesr_totvoxqty (struct TESR Tesr);
   extern double neut_tesr_avcellvoxqty (struct TESR Tesr);
 
 /// \brief Get the volume of a cell of a TESR structure.
@@ -55,6 +56,10 @@ extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
   extern void neut_tesr_rastercentre (struct TESR Tesr, double *coo);
 
   extern void neut_tesr_centre (struct TESR Tesr, double *coo);
+
+  extern void neut_tesr_centre_x (struct TESR Tesr, double *coo);
+  extern void neut_tesr_centre_y (struct TESR Tesr, double *coo);
+  extern void neut_tesr_centre_z (struct TESR Tesr, double *coo);
 
   extern void neut_tesr_cell_diameq (struct TESR Tesr, int cell,
 				     double *pval);

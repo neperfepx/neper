@@ -42,7 +42,7 @@ void
 nem_partition_elts_match (struct MESH *Mesh, struct PART *pPart)
 {
   int i, j, partition, maxpnodeqty, eltnodeqty;
-  int nodemaxpqty, nodeqty, k;
+  int nodemaxpqty, NodeQty, k;
   int *eltnodepart = ut_alloc_1d_int ((*pPart).qty);
   int *pos = ut_alloc_1d_int ((*pPart).qty);
   int *peltqty = ut_alloc_1d_int ((*pPart).qty);
@@ -57,7 +57,7 @@ nem_partition_elts_match (struct MESH *Mesh, struct PART *pPart)
    * belong.  In case of ambiguity, it is assigned to the partition with
    * the least number of elements. */
 
-  for (nodeqty = eltnodeqty; nodeqty >= 1; nodeqty--)
+  for (NodeQty = eltnodeqty; NodeQty >= 1; NodeQty--)
     for (i = 1; i <= Mesh[dim].EltQty; i++)
       if ((*pPart).elt_parts[i] == -1)
       {
@@ -78,7 +78,7 @@ nem_partition_elts_match (struct MESH *Mesh, struct PART *pPart)
 
         /* if most of the nodes are in one partition or no ambiguity:
          * assigning the element to the partition */
-        if (maxpnodeqty == nodeqty)
+        if (maxpnodeqty == NodeQty)
         {
           partition = -1;
 
@@ -88,7 +88,7 @@ nem_partition_elts_match (struct MESH *Mesh, struct PART *pPart)
           {
             for (k = 0; k < nodemaxpqty; k++)
             {
-              peltqty[k] = (*pPart).eltqty[pos[k]];
+              peltqty[k] = (*pPart).EltQty[pos[k]];
               partition =
                 pos[ut_array_1d_int_min_index (peltqty, nodemaxpqty)];
             }
@@ -98,7 +98,7 @@ nem_partition_elts_match (struct MESH *Mesh, struct PART *pPart)
             ut_print_neperbug ();
 
           (*pPart).elt_parts[i] = partition;
-          (*pPart).eltqty[partition]++;
+          (*pPart).EltQty[partition]++;
         }
       }
 
@@ -159,7 +159,7 @@ nem_partition_elts_bynumber (struct MESH *Mesh, struct PART *pPart)
   for (j = 1; j <= Mesh[dim].EltQty; j++)
   {
     (*pPart).elt_parts[j] = (*pPart).qty * (j - 1) / Mesh[dim].EltQty;
-    (*pPart).eltqty[(*pPart).elt_parts[j]]++;
+    (*pPart).EltQty[(*pPart).elt_parts[j]]++;
   }
 
   return;

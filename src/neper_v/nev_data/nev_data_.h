@@ -10,11 +10,10 @@
 #include"orilib.h"
 #include"neut_v.h"
 
-#include"nev_data_utils/nev_data_utils.h"
-#include"nev_tessdata/nev_tessdata.h"
-#include"nev_meshdata/nev_meshdata.h"
-#include"nev_nodedata/nev_nodedata.h"
-#include"nev_pointdata/nev_pointdata.h"
-#include"nev_csysdata/nev_csysdata.h"
+#include"nev_data_tess/nev_data_tess.h"
+#include"nev_data_mesh/nev_data_mesh.h"
+#include"nev_data_nodes/nev_data_nodes.h"
+#include"nev_data_points/nev_data_points.h"
+#include"nev_data_csys/nev_data_csys.h"
 
 #include "nev_data.h"

@@ -66,9 +66,7 @@ ut_arg_nextasstring (char **argv, int *pi, char *option, char **pstring)
   {
   }
 
-  ut_free_1d_char (&*pstring);
-  (*pstring) = ut_alloc_1d_char (strlen (argv[*pi]) + 1);
-  strcpy (*pstring, argv[*pi]);
+  ut_string_string (argv[*pi], pstring);
 
   return;
 }

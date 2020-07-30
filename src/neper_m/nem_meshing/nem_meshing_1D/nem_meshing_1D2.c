@@ -24,7 +24,7 @@ nem_meshing_1D_pre (struct MESHPARA *pMeshPara, struct TESS Tess,
   for (i = 1; i <= Tess.FaceQty; i++)
     if (Tess.FaceVerQty[i] > 0 && Tess.FaceVerQty[i] <= 2)
     {
-      int eltqty = 0;
+      int EltQty = 0;
       double *edgel = ut_alloc_1d (Tess.FaceVerQty[i]);
       for (j = 1; j <= Tess.FaceVerQty[i]; j++)
       {
@@ -33,13 +33,13 @@ nem_meshing_1D_pre (struct MESHPARA *pMeshPara, struct TESS Tess,
                              (*pMeshPara).edge_cl[edge], (*pMeshPara).pl,
                              Nodes, *pNodeCl, &N, &M);
         edgel[j - 1] = Tess.EdgeLength[edge];
-        eltqty += M.EltQty;
+        EltQty += M.EltQty;
       }
       int id = 1 + ut_array_1d_max_index (edgel, Tess.FaceVerQty[i]);
       edge = Tess.FaceEdgeNb[i][id];
 
       // if < 3, we add elt(s) to the longest edge
-      if (eltqty < 3)
+      if (EltQty < 3)
         (*pMeshPara).edge_cl[edge] =
           ut_num_min ((*pMeshPara).edge_cl[edge],
                       Tess.EdgeLength[edge] / (4 - Tess.FaceVerQty[i]));

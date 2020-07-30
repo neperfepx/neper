@@ -17,13 +17,13 @@ nem_nsets_2d_tess (struct TESS Tess, struct MESH *Mesh, struct NSET *NSet)
     ut_string_string (Tess.DomFaceLabel[i], NSet[2].names + i);
 
   // Computing nsets
-  NSet[2].nodeqty = ut_alloc_1d_int (Tess.DomFaceQty + 1);
+  NSet[2].NodeQty = ut_alloc_1d_int (Tess.DomFaceQty + 1);
   NSet[2].nodes = ut_alloc_1d_pint (Tess.DomFaceQty + 1);
 
   for (i = 1; i <= Tess.DomFaceQty; i++)
     neut_mesh_elsets_nodes (Mesh[2], Tess.DomTessFaceNb[i] + 1,
                             Tess.DomTessFaceQty[i], NSet[2].nodes + i,
-                            NSet[2].nodeqty + i);
+                            NSet[2].NodeQty + i);
 
   return;
 }
@@ -36,7 +36,7 @@ nem_nsets_1d_tess (struct TESS Tess, struct MESH *Mesh, struct NSET *NSet)
   // Edges
   NSet[1].qty = Tess.DomEdgeQty;
   NSet[1].names = ut_alloc_1d_pchar (Tess.DomEdgeQty + 1);
-  NSet[1].nodeqty = ut_alloc_1d_int (Tess.DomEdgeQty + 1);
+  NSet[1].NodeQty = ut_alloc_1d_int (Tess.DomEdgeQty + 1);
   NSet[1].nodes = ut_alloc_1d_pint (Tess.DomEdgeQty + 1);
 
   for (i = 1; i <= Tess.DomEdgeQty; i++)
@@ -45,7 +45,7 @@ nem_nsets_1d_tess (struct TESS Tess, struct MESH *Mesh, struct NSET *NSet)
 
     neut_mesh_elsets_nodes (Mesh[1], Tess.DomTessEdgeNb[i] + 1,
                             Tess.DomTessEdgeQty[i], NSet[1].nodes + i,
-                            NSet[1].nodeqty + i);
+                            NSet[1].NodeQty + i);
   }
 
   return;
@@ -59,7 +59,7 @@ nem_nsets_0d_tess (struct TESS Tess, struct MESH *Mesh, struct NSET *NSet)
   // Vertices
   NSet[0].qty = Tess.DomVerQty;
   NSet[0].names = ut_alloc_1d_pchar (Tess.DomVerQty + 1);
-  NSet[0].nodeqty = ut_alloc_1d_int (Tess.DomVerQty + 1);
+  NSet[0].NodeQty = ut_alloc_1d_int (Tess.DomVerQty + 1);
   NSet[0].nodes = ut_alloc_1d_pint (Tess.DomVerQty + 1);
 
   for (i = 1; i <= Tess.DomVerQty; i++)
@@ -68,7 +68,7 @@ nem_nsets_0d_tess (struct TESS Tess, struct MESH *Mesh, struct NSET *NSet)
 
     if (Tess.DomTessVerNb[i] > 0)
       neut_mesh_elset_nodes (Mesh[0], Tess.DomTessVerNb[i], NSet[0].nodes + i,
-                             NSet[0].nodeqty + i);
+                             NSet[0].NodeQty + i);
   }
 
   return;
@@ -82,7 +82,7 @@ nem_nsets_2dbody_tess (struct TESS Tess, struct NSET *NSet)
 
   NSet[2].qty *= 2;
   NSet[2].names = ut_realloc_1d_pchar (NSet[2].names, NSet[2].qty + 1);
-  NSet[2].nodeqty = ut_realloc_1d_int (NSet[2].nodeqty, NSet[2].qty + 1);
+  NSet[2].NodeQty = ut_realloc_1d_int (NSet[2].NodeQty, NSet[2].qty + 1);
   NSet[2].nodes = ut_realloc_1d_pint (NSet[2].nodes, NSet[2].qty + 1);
 
   for (i = prevqty + 1; i <= NSet[2].qty; i++)
@@ -92,23 +92,23 @@ nem_nsets_2dbody_tess (struct TESS Tess, struct NSET *NSet)
     NSet[2].names[i] = ut_alloc_1d_char (strlen (NSet[2].names[ref]) + 5);
     sprintf (NSet[2].names[i], "%sbody", NSet[2].names[ref]);
 
-    NSet[2].nodeqty[i] = NSet[2].nodeqty[ref];
-    NSet[2].nodes[i] = ut_alloc_1d_int (NSet[2].nodeqty[i]);
-    ut_array_1d_int_memcpy (NSet[2].nodes[ref], NSet[2].nodeqty[i],
+    NSet[2].NodeQty[i] = NSet[2].NodeQty[ref];
+    NSet[2].nodes[i] = ut_alloc_1d_int (NSet[2].NodeQty[i]);
+    ut_array_1d_int_memcpy (NSet[2].nodes[ref], NSet[2].NodeQty[i],
                             NSet[2].nodes[i]);
 
     for (j = 1; j <= Tess.DomFaceEdgeQty[ref]; j++)
     {
       edge = Tess.DomFaceEdgeNb[ref][j];
 
-      for (k = 0; k < NSet[1].nodeqty[edge]; k++)
-        NSet[2].nodeqty[i] -=
-          ut_array_1d_int_rmelt (NSet[2].nodes[i], NSet[2].nodeqty[i],
+      for (k = 0; k < NSet[1].NodeQty[edge]; k++)
+        NSet[2].NodeQty[i] -=
+          ut_array_1d_int_rmelt (NSet[2].nodes[i], NSet[2].NodeQty[i],
                                  NSet[1].nodes[edge][k], 1);
     }
 
     NSet[2].nodes[i] =
-      ut_realloc_1d_int (NSet[2].nodes[i], NSet[2].nodeqty[i]);
+      ut_realloc_1d_int (NSet[2].nodes[i], NSet[2].NodeQty[i]);
   }
 
   return;
@@ -122,7 +122,7 @@ nem_nsets_1dbody_tess (struct TESS Tess, struct NSET *NSet)
 
   NSet[1].qty *= 2;
   NSet[1].names = ut_realloc_1d_pchar (NSet[1].names, NSet[1].qty + 1);
-  NSet[1].nodeqty = ut_realloc_1d_int (NSet[1].nodeqty, NSet[1].qty + 1);
+  NSet[1].NodeQty = ut_realloc_1d_int (NSet[1].NodeQty, NSet[1].qty + 1);
   NSet[1].nodes = ut_realloc_1d_pint (NSet[1].nodes, NSet[1].qty + 1);
 
   for (i = prevqty + 1; i <= NSet[1].qty; i++)
@@ -132,23 +132,23 @@ nem_nsets_1dbody_tess (struct TESS Tess, struct NSET *NSet)
     NSet[1].names[i] = ut_alloc_1d_char (strlen (NSet[1].names[ref]) + 5);
     sprintf (NSet[1].names[i], "%sbody", NSet[1].names[ref]);
 
-    NSet[1].nodeqty[i] = NSet[1].nodeqty[ref];
-    NSet[1].nodes[i] = ut_alloc_1d_int (NSet[1].nodeqty[i]);
-    ut_array_1d_int_memcpy (NSet[1].nodes[ref], NSet[1].nodeqty[i],
+    NSet[1].NodeQty[i] = NSet[1].NodeQty[ref];
+    NSet[1].nodes[i] = ut_alloc_1d_int (NSet[1].NodeQty[i]);
+    ut_array_1d_int_memcpy (NSet[1].nodes[ref], NSet[1].NodeQty[i],
                             NSet[1].nodes[i]);
 
     for (j = 0; j < 2; j++)
     {
       ver = Tess.DomEdgeVerNb[ref][j];
 
-      for (k = 0; k < NSet[0].nodeqty[ver]; k++)
-        NSet[1].nodeqty[i] -=
-          ut_array_1d_int_rmelt (NSet[1].nodes[i], NSet[1].nodeqty[i],
+      for (k = 0; k < NSet[0].NodeQty[ver]; k++)
+        NSet[1].NodeQty[i] -=
+          ut_array_1d_int_rmelt (NSet[1].nodes[i], NSet[1].NodeQty[i],
                                  NSet[0].nodes[ver][k], 1);
     }
 
     NSet[1].nodes[i] =
-      ut_realloc_1d_int (NSet[1].nodes[i], NSet[1].nodeqty[i]);
+      ut_realloc_1d_int (NSet[1].nodes[i], NSet[1].NodeQty[i]);
   }
 
   return;
@@ -161,13 +161,13 @@ nem_nsets_1d_tess_str (struct TESS Tess, struct NSET *NSet)
 
   NSet[1].qty = Tess.DomEdgeQty;
   NSet[1].names = ut_alloc_1d_pchar (NSet[1].qty + 1);
-  NSet[1].nodeqty = ut_alloc_1d_int (NSet[1].qty + 1);
+  NSet[1].NodeQty = ut_alloc_1d_int (NSet[1].qty + 1);
   NSet[1].nodes = ut_alloc_1d_pint (NSet[1].qty + 1);
 
   for (i = 1; i <= Tess.DomEdgeQty; i++)
     neut_nsets_inter (NSet[2], Tess.DomEdgeFaceNb[i][0],
                       Tess.DomEdgeFaceNb[i][1], &(NSet[1].names[i]),
-                      &(NSet[1].nodes[i]), &(NSet[1].nodeqty[i]));
+                      &(NSet[1].nodes[i]), &(NSet[1].NodeQty[i]));
 
   return;
 }
@@ -179,7 +179,7 @@ nem_nsets_0d_tess_str (struct TESS Tess, struct NSET *NSet)
 
   NSet[0].qty = Tess.DomVerQty;
   NSet[0].names = ut_alloc_1d_pchar (NSet[0].qty + 1);
-  NSet[0].nodeqty = ut_alloc_1d_int (NSet[0].qty + 1);
+  NSet[0].NodeQty = ut_alloc_1d_int (NSet[0].qty + 1);
   NSet[0].nodes = ut_alloc_1d_pint (NSet[0].qty + 1);
 
   for (i = 1; i <= Tess.DomVerQty; i++)
@@ -188,7 +188,7 @@ nem_nsets_0d_tess_str (struct TESS Tess, struct NSET *NSet)
 
     neut_nsets_inter (NSet[1], Tess.DomVerEdgeNb[i][0],
                       Tess.DomVerEdgeNb[i][1], NULL, &(NSet[0].nodes[i]),
-                      &(NSet[0].nodeqty[i]));
+                      &(NSet[0].NodeQty[i]));
   }
 
   return;
@@ -249,14 +249,14 @@ nem_nsets_1d_str (struct NSET *NSet)
 
   NSet[1].qty = 12;
   NSet[1].names = ut_alloc_1d_pchar (13);
-  NSet[1].nodeqty = ut_alloc_1d_int (13);
+  NSet[1].NodeQty = ut_alloc_1d_int (13);
   NSet[1].nodes = ut_alloc_1d_pint (13);
 
   for (i = 1; i <= 12; i++)
   {
     neut_nsets_inter (NSet[2], edgeface[i][0], edgeface[i][1],
                       &(NSet[1].names[i]), &(NSet[1].nodes[i]),
-                      &(NSet[1].nodeqty[i]));
+                      &(NSet[1].NodeQty[i]));
   }
 
   ut_free_2d_char (&edgelabel, 13);
@@ -310,13 +310,13 @@ nem_nsets_0d_str (struct NSET *NSet)
 
     NSet[0].qty = 8;
     NSet[0].names = ut_alloc_2d_char (9, 7);
-    NSet[0].nodeqty = ut_alloc_1d_int (9);
+    NSet[0].NodeQty = ut_alloc_1d_int (9);
     NSet[0].nodes = ut_alloc_1d_pint (9);
 
     for (i = 1; i <= 8; i++)
     {
       neut_nsets_inter (NSet[1], veredge[i][0], veredge[i][1], NULL,
-                        &(NSet[0].nodes[i]), &(NSet[0].nodeqty[i]));
+                        &(NSet[0].nodes[i]), &(NSet[0].NodeQty[i]));
       strcpy (NSet[0].names[i], verlabel[i]);
     }
 
@@ -344,13 +344,13 @@ nem_nsets_0d_str (struct NSET *NSet)
 
     NSet[0].qty = 4;
     NSet[0].names = ut_alloc_2d_char (NSet[0].qty + 1, 7);
-    NSet[0].nodeqty = ut_alloc_1d_int (NSet[0].qty + 1);
+    NSet[0].NodeQty = ut_alloc_1d_int (NSet[0].qty + 1);
     NSet[0].nodes = ut_alloc_1d_pint (NSet[0].qty + 1);
 
     for (i = 1; i <= NSet[0].qty; i++)
     {
       neut_nsets_inter (NSet[1], veredge[i][0], veredge[i][1], NULL,
-                        &(NSet[0].nodes[i]), &(NSet[0].nodeqty[i]));
+                        &(NSet[0].nodes[i]), &(NSet[0].NodeQty[i]));
       strcpy (NSet[0].names[i], verlabel[i]);
     }
 
@@ -395,7 +395,7 @@ nem_nsets_2dbody_str (struct NSET *NSet)
 
   NSet[2].qty *= 2;
   NSet[2].names = ut_realloc_1d_pchar (NSet[2].names, NSet[2].qty + 1);
-  NSet[2].nodeqty = ut_realloc_1d_int (NSet[2].nodeqty, NSet[2].qty + 1);
+  NSet[2].NodeQty = ut_realloc_1d_int (NSet[2].NodeQty, NSet[2].qty + 1);
   NSet[2].nodes = ut_realloc_1d_pint (NSet[2].nodes, NSet[2].qty + 1);
 
   for (i = prevqty + 1; i <= NSet[2].qty; i++)
@@ -405,23 +405,23 @@ nem_nsets_2dbody_str (struct NSET *NSet)
     NSet[2].names[i] = ut_alloc_1d_char (strlen (NSet[2].names[ref]) + 5);
     sprintf (NSet[2].names[i], "%sbody", NSet[2].names[ref]);
 
-    NSet[2].nodeqty[i] = NSet[2].nodeqty[ref];
-    NSet[2].nodes[i] = ut_alloc_1d_int (NSet[2].nodeqty[i]);
-    ut_array_1d_int_memcpy (NSet[2].nodes[ref], NSet[2].nodeqty[i],
+    NSet[2].NodeQty[i] = NSet[2].NodeQty[ref];
+    NSet[2].nodes[i] = ut_alloc_1d_int (NSet[2].NodeQty[i]);
+    ut_array_1d_int_memcpy (NSet[2].nodes[ref], NSet[2].NodeQty[i],
                             NSet[2].nodes[i]);
 
     for (j = 0; j < 4; j++)
     {
       edge = faceedge[ref][j];
 
-      for (k = 0; k < NSet[1].nodeqty[edge]; k++)
-        NSet[2].nodeqty[i] -=
-          ut_array_1d_int_rmelt (NSet[2].nodes[i], NSet[2].nodeqty[i],
+      for (k = 0; k < NSet[1].NodeQty[edge]; k++)
+        NSet[2].NodeQty[i] -=
+          ut_array_1d_int_rmelt (NSet[2].nodes[i], NSet[2].NodeQty[i],
                                  NSet[1].nodes[edge][k], 1);
     }
 
     NSet[2].nodes[i] =
-      ut_realloc_1d_int (NSet[2].nodes[i], NSet[2].nodeqty[i]);
+      ut_realloc_1d_int (NSet[2].nodes[i], NSet[2].NodeQty[i]);
   }
 
   ut_free_2d_int (&faceedge, 7);
@@ -484,7 +484,7 @@ nem_nsets_1dbody_str (struct NSET *NSet)
 
   NSet[1].qty *= 2;
   NSet[1].names = ut_realloc_1d_pchar (NSet[1].names, NSet[1].qty + 1);
-  NSet[1].nodeqty = ut_realloc_1d_int (NSet[1].nodeqty, NSet[1].qty + 1);
+  NSet[1].NodeQty = ut_realloc_1d_int (NSet[1].NodeQty, NSet[1].qty + 1);
   NSet[1].nodes = ut_realloc_1d_pint (NSet[1].nodes, NSet[1].qty + 1);
 
   for (i = prevqty + 1; i <= NSet[1].qty; i++)
@@ -494,23 +494,23 @@ nem_nsets_1dbody_str (struct NSET *NSet)
     NSet[1].names[i] = ut_alloc_1d_char (strlen (NSet[1].names[ref]) + 5);
     sprintf (NSet[1].names[i], "%sbody", NSet[1].names[ref]);
 
-    NSet[1].nodeqty[i] = NSet[1].nodeqty[ref];
-    NSet[1].nodes[i] = ut_alloc_1d_int (NSet[1].nodeqty[i]);
-    ut_array_1d_int_memcpy (NSet[1].nodes[ref], NSet[1].nodeqty[i],
+    NSet[1].NodeQty[i] = NSet[1].NodeQty[ref];
+    NSet[1].nodes[i] = ut_alloc_1d_int (NSet[1].NodeQty[i]);
+    ut_array_1d_int_memcpy (NSet[1].nodes[ref], NSet[1].NodeQty[i],
                             NSet[1].nodes[i]);
 
     for (j = 0; j < 2; j++)
     {
       ver = edgever[ref][j];
 
-      for (k = 0; k < NSet[0].nodeqty[ver]; k++)
-        NSet[1].nodeqty[i] -=
-          ut_array_1d_int_rmelt (NSet[1].nodes[i], NSet[1].nodeqty[i],
+      for (k = 0; k < NSet[0].NodeQty[ver]; k++)
+        NSet[1].NodeQty[i] -=
+          ut_array_1d_int_rmelt (NSet[1].nodes[i], NSet[1].NodeQty[i],
                                  NSet[0].nodes[ver][k], 1);
     }
 
     NSet[1].nodes[i] =
-      ut_realloc_1d_int (NSet[1].nodes[i], NSet[1].nodeqty[i]);
+      ut_realloc_1d_int (NSet[1].nodes[i], NSet[1].NodeQty[i]);
   }
 
   ut_free_2d_int (&edgever, NSet[2].qty + 1);

@@ -130,8 +130,6 @@ nem_meshing_2D_face_mesh_gmsh_backproj (struct TESS Tess, struct NODES RNodes,
                                         struct NODES *pN, struct MESH M)
 {
   int i, domface = (Tess.Dim == 3) ? Tess.FaceDom[face][1] : -1;
-  struct NODES Nint;
-  struct MESH Mint;
 
   // Below, we proceed in different ways based on the type of the face
 
@@ -145,6 +143,9 @@ nem_meshing_2D_face_mesh_gmsh_backproj (struct TESS Tess, struct NODES RNodes,
   else if (!strcmp (MeshPara.face_op[face], "planeproj"))
   {
     // back-projecting
+    struct NODES Nint;
+    struct MESH Mint;
+
     neut_nodes_set_zero (&Nint);
     neut_mesh_set_zero (&Mint);
 

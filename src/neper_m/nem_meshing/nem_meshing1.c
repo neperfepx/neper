@@ -24,8 +24,6 @@ nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
      }
    */
 
-  nem_meshing_gen (*pTess, pNodes);
-
   if ((*pMeshPara).dim >= 0)
   {
     if (!neut_mesh_isvoid (Mesh[0]))

@@ -15,7 +15,6 @@ extern "C"
 				      struct NSET NSet0D, struct NSET NSet1D,
 				      struct NSET NSet2D, char *nsets,
 				      char *fasets, char *dim,
-				      struct PART Part,
 				      struct BOUNDARY Bound);
 
 #endif				// NEUT_MESH_FPRINTF_GEOF

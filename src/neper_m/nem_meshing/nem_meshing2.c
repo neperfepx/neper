@@ -5,20 +5,6 @@
 #include"nem_meshing_.h"
 
 void
-nem_meshing_gen (struct TESS Tess, struct NODES *pNodes)
-{
-  if (Tess.Periodic)
-  {
-    (*pNodes).Periodic = ut_alloc_1d_int (3);
-    ut_array_1d_int_memcpy (Tess.Periodic, 3, (*pNodes).Periodic);
-    (*pNodes).PeriodicDist = ut_alloc_1d (3);
-    ut_array_1d_memcpy (Tess.PeriodicDist, 3, (*pNodes).PeriodicDist);
-  }
-
-  return;
-}
-
-void
 nem_meshing_post (struct TESS Tess, struct MESH *Mesh)
 {
   int i, j;
@@ -26,22 +12,36 @@ nem_meshing_post (struct TESS Tess, struct MESH *Mesh)
 
   // meshes of lower dimensions
   for (i = 0; i < Tess.Dim; i++)
-  {
-    neut_tess_dim_entity (i, &entity);
+    if (!neut_mesh_isvoid (Mesh[i]))
+    {
+      neut_tess_dim_entity (i, &entity);
 
-    Mesh[i].ElsetLabels = ut_alloc_2d_char (Mesh[i].ElsetQty + 1, 20);
-    for (j = 1; j <= Mesh[i].ElsetQty; j++)
-      sprintf (Mesh[i].ElsetLabels[j], "%s%d", entity, j);
-  }
+      if (!Mesh[i].ElsetLabels)
+        Mesh[i].ElsetLabels = ut_alloc_2d_char (Mesh[i].ElsetQty + 1, 20);
+      for (j = 1; j <= Mesh[i].ElsetQty; j++)
+        sprintf (Mesh[i].ElsetLabels[j], "%s%d", entity, j);
+    }
 
   // mesh of upper dimension
-  Mesh[Tess.Dim].ElsetLabels = ut_alloc_2d_char (Tess.CellQty + 1, 20);
+  if (!neut_mesh_isvoid (Mesh[Tess.Dim]))
+  {
+    if (!Mesh[Tess.Dim].ElsetLabels)
+      Mesh[Tess.Dim].ElsetLabels = ut_alloc_2d_char (Mesh[Tess.Dim].ElsetQty + 1, 20);
 
-  neut_tess_dim_entity (Tess.Dim, &entity);
+    neut_tess_dim_entity (Tess.Dim, &entity);
 
-  for (i = 1; i <= Tess.CellQty; i++)
-    sprintf (Mesh[Tess.Dim].ElsetLabels[i], "%s%d", entity,
-             Mesh[Tess.Dim].ElsetId ? Mesh[Tess.Dim].ElsetId[i] : i);
+    for (i = 1; i <= Tess.CellQty; i++)
+      sprintf (Mesh[Tess.Dim].ElsetLabels[i], "%s%d", entity,
+               Mesh[Tess.Dim].ElsetId ? Mesh[Tess.Dim].ElsetId[i] : i);
+  }
+
+  // ElsetGroup
+  if (Tess.CellGroup && !neut_mesh_isvoid (Mesh[Tess.Dim]))
+  {
+    Mesh[Tess.Dim].ElsetGroup = ut_alloc_1d_int (Mesh[Tess.Dim].ElsetQty + 1);
+    ut_array_1d_int_memcpy (Tess.CellGroup + 1, Mesh[Tess.Dim].ElsetQty,
+                            Mesh[Tess.Dim].ElsetGroup + 1);
+  }
 
   ut_free_1d_char (&entity);
 

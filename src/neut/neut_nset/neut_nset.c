@@ -156,7 +156,7 @@ neut_nset_set_zero (struct NSET *pNSet)
   (*pNSet).qty = 0;
   (*pNSet).names = NULL;
   (*pNSet).nodes = NULL;
-  (*pNSet).nodeqty = NULL;
+  (*pNSet).NodeQty = NULL;
 
   return;
 }
@@ -164,7 +164,7 @@ neut_nset_set_zero (struct NSET *pNSet)
 void
 neut_nset_free (struct NSET *pNSet)
 {
-  ut_free_1d_int (&(*pNSet).nodeqty);
+  ut_free_1d_int (&(*pNSet).NodeQty);
   if ((*pNSet).qty > 0)
   {
     ut_free_2d_char (&(*pNSet).names, (*pNSet).qty + 1);
@@ -186,10 +186,10 @@ neut_nsets_inter (struct NSET NSet, int id1, int id2, char **pname,
     sprintf ((*pname), "%s%s", NSet.names[id1], NSet.names[id2]);
   }
 
-  (*pnodes) = ut_alloc_1d_int (NSet.nodeqty[id1] + NSet.nodeqty[id2]);
+  (*pnodes) = ut_alloc_1d_int (NSet.NodeQty[id1] + NSet.NodeQty[id2]);
 
-  ut_array_1d_int_inter (NSet.nodes[id1], NSet.nodeqty[id1], NSet.nodes[id2],
-                         NSet.nodeqty[id2], (*pnodes), pnodeqty);
+  ut_array_1d_int_inter (NSet.nodes[id1], NSet.NodeQty[id1], NSet.nodes[id2],
+                         NSet.NodeQty[id2], (*pnodes), pnodeqty);
 
   (*pnodes) = ut_realloc_1d_int ((*pnodes), (*pnodeqty));
 

@@ -31,8 +31,8 @@ net_polycomp_poly (struct POLY Domain, struct SEEDSET SSet,
 
   // FIXME
   // in input, *pneighqty is taken as the average of the number of
-  // neighbours used in previous computations. If 0, a default value of
-  // 100 is taken instead. In output, the number of neighbours used is
+  // neighbors used in previous computations. If 0, a default value of
+  // 100 is taken instead. In output, the number of neighbors used is
   // returned.
 
   wmax = ut_array_1d_max (SSet.SeedWeight + 1, SSet.N);
@@ -53,8 +53,8 @@ net_polycomp_poly (struct POLY Domain, struct SEEDSET SSet,
 
     for (i = 2; i <= SSet.Nall; i++)
     {
-      // The number of recorded neighbours is exceeded.  Recomputing a
-      // larger number of neighbours.
+      // The number of recorded neighbors is exceeded.  Recomputing a
+      // larger number of neighbors.
       if (i > (*pTD).neighqty[id])
       {
         gettimeofday (&time, NULL);

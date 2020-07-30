@@ -7,6 +7,13 @@
 void
 neut_meshpara_set_zero (struct MESHPARA *pMeshPara)
 {
+  (*pMeshPara).VerQty = 0;
+  (*pMeshPara).EdgeQty = 0;
+  (*pMeshPara).FaceQty = 0;
+  (*pMeshPara).PolyQty = 0;
+
+  (*pMeshPara).elttype = NULL;
+
   (*pMeshPara).cltype = NULL;
   (*pMeshPara).elttype = NULL;
   (*pMeshPara).clratio = NULL;
@@ -26,17 +33,30 @@ neut_meshpara_set_zero (struct MESHPARA *pMeshPara)
 }
 
 void
-neut_meshpara_free (struct MESHPARA MeshPara)
+neut_meshpara_free (struct MESHPARA *pMeshPara)
 {
-  ut_free_1d_char (&MeshPara.cltype);
-  ut_free_1d (&MeshPara.clratio);
+  ut_free_1d_char (&(*pMeshPara).elttype);
 
-  ut_free_1d (&MeshPara.poly_cl);
-  ut_free_1d (&MeshPara.face_cl);
-  ut_free_1d (&MeshPara.edge_cl);
-  ut_free_1d (&MeshPara.ver_cl);
+  ut_free_1d_char (&(*pMeshPara).cltype);
+  ut_free_1d (&(*pMeshPara).clratio);
 
-  ut_free_1d (&MeshPara.mesh3dclreps);
+  ut_free_1d (&(*pMeshPara).poly_cl);
+  ut_free_1d (&(*pMeshPara).face_cl);
+  ut_free_1d (&(*pMeshPara).edge_cl);
+  ut_free_1d (&(*pMeshPara).ver_cl);
+
+  ut_free_1d (&(*pMeshPara).mesh3dclreps);
+
+  ut_free_1d_char (&(*pMeshPara).elttype);
+
+  ut_free_2d_char (&(*pMeshPara).face_op, (*pMeshPara).FaceQty + 1);
+  ut_free_2d_char (&(*pMeshPara).edge_op, (*pMeshPara).EdgeQty + 1);
+  ut_free_2d (&(*pMeshPara).face_eq, (*pMeshPara).FaceQty + 1);
+
+  (*pMeshPara).VerQty = 0;
+  (*pMeshPara).EdgeQty = 0;
+  (*pMeshPara).FaceQty = 0;
+  (*pMeshPara).PolyQty = 0;
 
   return;
 }

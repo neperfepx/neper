@@ -5,19 +5,34 @@
 #include"nev_load_.h"
 
 void
-nev_load (char *string, struct TESS *pTess, struct TESR *pTesr,
+nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr,
           struct NODES *pNodes, struct MESH *Mesh, struct POINT *pPoint,
-          struct TESSDATA *pTessData, struct TESRDATA *pTesrData,
-          struct NODEDATA *pNodeData, struct MESHDATA *MeshData,
-          struct POINTDATA *pPointData)
+          struct DATA *TessData, struct DATA *pTesrData,
+          struct DATA *pData, struct DATA *MeshData,
+          struct DATA *pPointData)
 {
-  int i, j, qty, dim;
+  int i, j, qty, dim, isdir = ut_sys_isdir (string);
   char **list = NULL;
 
   if ((*pTess).VerQty == 0 && (*pTesr).CellQty == 0 && (*pNodes).NodeQty == 0
       && (*pPoint).PointQty == 0)
   {
-    ut_list_break (string, NEUT_SEP_NODEP, &list, &qty);
+    if (!isdir)
+      ut_list_break (string, NEUT_SEP_NODEP, &list, &qty);
+
+    else
+    {
+      neut_sim_fscanf (string, pSim);
+
+      qty = 0;
+      list = ut_alloc_1d_pchar (3);
+      if (ut_file_exist ("%s/inputs/%s", string, (*pSim).tess))
+        list[qty++] = ut_string_paste3 (string, "/inputs/", (*pSim).tess);
+      if (ut_file_exist ("%s/inputs/simulation.tesr", string))
+        list[qty++] = ut_string_paste4 (string, "/inputs/", (*pSim).body, ".tesr");
+      if (ut_file_exist ("%s/inputs/%s", string, (*pSim).msh))
+        list[qty++] = ut_string_paste3 (string, "/inputs/", (*pSim).msh);
+    }
 
     for (i = 0; i < qty; i++)
     {
@@ -84,21 +99,22 @@ nev_load (char *string, struct TESS *pTess, struct TESR *pTesr,
     abort ();
   }
 
-  if ((*pTess).VerQty > 0)
-    nev_load_init_tessdata (*pTess, pTessData);
+  if (!neut_tess_isvoid (*pTess))
+    for (dim = 0; dim <= 4; dim++)
+      nev_load_init_data_tess (*pTess, dim, TessData + dim);
 
-  if ((*pTesr).CellQty > 0)
-    nev_load_init_tesrdata (*pTesr, pTesrData);
+  if (!neut_tesr_isvoid (*pTesr))
+    nev_load_init_data_tesr (*pTesr, pTesrData);
 
-  if ((*pNodes).NodeQty > 0)
+  if (!neut_nodes_isvoid (*pNodes))
   {
-    nev_load_init_nodedata (*pNodes, pNodeData);
+    nev_load_init_data_node (*pNodes, pData);
     for (dim = 0; dim <= 3; dim++)
-      nev_load_init_meshdata (Mesh[dim], &(MeshData[dim]));
+      nev_load_init_data_mesh (Mesh[dim], MeshData + dim);
   }
 
-  if ((*pPoint).PointQty > 0)
-    nev_load_init_pointdata (*pPoint, pPointData);
+  if (!neut_point_isvoid (*pPoint))
+    nev_load_init_data_point (*pPoint, pPointData);
 
   return;
 }

@@ -97,7 +97,7 @@ struct TOPT
   // OPTIMIZATION INFORMATION -----------------------------------------
 
   // optimization variables
-  char *optitype;               // type of variables: seeds or behaviour
+  char *optitype;               // type of variables: seeds or behavior
   int xqty;        		// total number of variables
   int *x_seed;     		// seed to which the variable is related
   int *x_var;     		// variable to which the variable is related

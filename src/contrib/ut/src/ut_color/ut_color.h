@@ -52,7 +52,8 @@ extern "C"
 /// \param intensity: intensity
 /// \param col: output color
 /// \note intensity = 0 -> black, 1 -> white, 0.5 -> original color
-  extern void ut_color_changeintensity (int *col, double intensity, int *col2);
+  extern void ut_color_changeintensity (int *col, double intensity,
+                                        int *col2);
 
 #ifdef __cplusplus
 }

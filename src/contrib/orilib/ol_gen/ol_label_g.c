@@ -77,8 +77,9 @@ ol_label_g (char *label, double **g)
   else if (!strncmp (label, "g(", 2))
   {
     sscanf (label, "g(%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf)",
-            g[0], g[0] + 1, g[0] + 2,
-            g[1], g[1] + 1, g[1] + 2, g[2], g[2] + 1, g[2] + 2);
+	    g[0], g[0] + 1, g[0] + 2,
+	    g[1], g[1] + 1, g[1] + 2,
+	    g[2], g[2] + 1, g[2] + 2);
   }
   else if (!strncmp (label, "e(", 2))
   {
@@ -100,7 +101,7 @@ ol_label_g (char *label, double **g)
   else if (!strncmp (label, "m(", 2))
   {
     sscanf (label, "m(%d,%d,%d,%d,%d,%d)",
-            m, m + 1, m + 2, m + 3, m + 4, m + 5);
+	    m, m + 1, m + 2, m + 3, m + 4, m + 5);
     ol_m_g (m, g);
   }
   else if (!strncmp (label, "rtheta(", 7))
@@ -116,6 +117,51 @@ ol_label_g (char *label, double **g)
   else if (!strncmp (label, "q(", 2))
   {
     sscanf (label, "q(%lf,%lf,%lf,%lf)", des, des + 1, des + 2, des + 3);
+    ol_q_g (des, g);
+  }
+  else if (!strncmp (label, "rotmat(", 7))
+  {
+    sscanf (label, "rotmat(%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf)",
+	    g[0], g[0] + 1, g[0] + 2,
+	    g[1], g[1] + 1, g[1] + 2,
+	    g[2], g[2] + 1, g[2] + 2);
+  }
+  else if (!strncmp (label, "euler-bunge(", 12))
+  {
+    sscanf (label, "euler-bunge(%lf,%lf,%lf)", des, des + 1, des + 2);
+    ol_e_g (des, g);
+  }
+  else if (!strncmp (label, "euler-kocks(", 12))
+  {
+    sscanf (label, "euler-kocks(%lf,%lf,%lf)", des, des + 1, des + 2);
+    ol_ek_e (des, des);
+    ol_e_g (des, g);
+  }
+  else if (!strncmp (label, "euler-roe(", 10))
+  {
+    sscanf (label, "euler-roe(%lf,%lf,%lf)", des, des + 1, des + 2);
+    ol_er_e (des, des);
+    ol_e_g (des, g);
+  }
+  else if (!strncmp (label, "miller(", 7))
+  {
+    sscanf (label, "miller(%d,%d,%d,%d,%d,%d)",
+	    m, m + 1, m + 2, m + 3, m + 4, m + 5);
+    ol_m_g (m, g);
+  }
+  else if (!strncmp (label, "axis-angle(", 11))
+  {
+    sscanf (label, "axis-angle(%lf,%lf,%lf,%lf)", des, des + 1, des + 2, des + 3);
+    ol_rtheta_g (des, des[3], g);
+  }
+  else if (!strncmp (label, "rodrigues(", 10))
+  {
+    sscanf (label, "rodrigues(%lf,%lf,%lf)", des, des + 1, des + 2);
+    ol_R_g (des, g);
+  }
+  else if (!strncmp (label, "quaternion(", 11))
+  {
+    sscanf (label, "quaternion(%lf,%lf,%lf,%lf)", des, des + 1, des + 2, des + 3);
     ol_q_g (des, g);
   }
   else

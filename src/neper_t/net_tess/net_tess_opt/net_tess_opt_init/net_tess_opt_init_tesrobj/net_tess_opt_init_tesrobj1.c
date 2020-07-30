@@ -7,7 +7,7 @@
 void
 net_tess_opt_init_tesrobj (struct TOPT *pTOpt, int var)
 {
-  int i, j, partqty, fct_varqty = 0;
+  int i, j, PartQty, fct_varqty = 0;
   char **parts = NULL;
   char *fct = NULL;
   char **fct_vars = NULL;
@@ -15,9 +15,9 @@ net_tess_opt_init_tesrobj (struct TOPT *pTOpt, int var)
 
   net_tess_opt_init_tesrobj_pre (pTOpt);
 
-  ut_list_break ((*pTOpt).tarobjective[var], "+", &parts, &partqty);
+  ut_list_break ((*pTOpt).tarobjective[var], "+", &parts, &PartQty);
 
-  for (i = 0; i < partqty; i++)
+  for (i = 0; i < PartQty; i++)
   {
     ut_string_function (parts[i], &fct, &fct_vars, &fct_vals, &fct_varqty);
 
@@ -55,7 +55,7 @@ net_tess_opt_init_tesrobj (struct TOPT *pTOpt, int var)
 
   net_tess_opt_init_tesrobj_post (pTOpt);
 
-  ut_free_2d_char (&parts, partqty);
+  ut_free_2d_char (&parts, PartQty);
   ut_free_2d_char (&fct_vars, fct_varqty);
   ut_free_2d_char (&fct_vals, fct_varqty);
 

@@ -54,16 +54,13 @@ net_polycomp_kdtree (struct SEEDSET SSet, NFCLOUD * pnf_cloud,
 
   gettimeofday (&time, NULL);
 
-  if (!strcmp ((*pTD).algoneigh, "nanoflann"))
-  {
-    if ((*pTD).iter == 1)
-      neut_seedset_kdtree (SSet, pnf_cloud, pnf_tree, pptid_seedid,
-                           pseedid_ptid);
-    else if ((*pTD).seedmovedqty > 0)
-      neut_seedset_kdtree_update (SSet, (*pTD).seedmoved, (*pTD).seedmovedqty,
-                                  pnf_cloud, pnf_tree, pptid_seedid,
-                                  pseedid_ptid);
-  }
+  if ((*pTD).iter == 1)
+    neut_seedset_kdtree (SSet, pnf_cloud, pnf_tree, pptid_seedid,
+                         pseedid_ptid);
+  else if ((*pTD).seedmovedqty > 0)
+    neut_seedset_kdtree_update (SSet, (*pTD).seedmoved, (*pTD).seedmovedqty,
+                                pnf_cloud, pnf_tree, pptid_seedid,
+                                pseedid_ptid);
 
   (*pTD).cell_kdtree_dur = ut_time_subtract (&time, NULL);
 
@@ -161,20 +158,20 @@ net_polycomp_cells (struct POLY Domain, struct SEEDSET SSet,
   neut_polys_neighpolys (*pPoly, SSet, updatedseeds, updatedseedqty,
                          &newneighs, &newneighqty);
 
-  // Updating old first-neighbours of updatedseeds
+  // Updating old first-neighbors of updatedseeds
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < oldneighqty; i++)
     net_polycomp_cells_updatecell (Domain, SSet, pnf_tree, ptid_seedid,
                                    oldneighs[i], pPoly, pTD);
 
-  // Updating new first-neighbours of updatedseeds
+  // Updating new first-neighbors of updatedseeds
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < newneighqty; i++)
     net_polycomp_cells_updatecell (Domain, SSet, pnf_tree, ptid_seedid,
                                    newneighs[i], pPoly, pTD);
 
-  // Updating second-and-more-neighbours of updateseeds (changedneighs)
-  // We start from the second-neighbours, but third-and-more-neighbours
+  // Updating second-and-more-neighbors of updateseeds (changedneighs)
+  // We start from the second-neighbors, but third-and-more-neighbors
   // may be added to changedneighs along the way.
 #pragma omp parallel for schedule(dynamic)
   for (i = 0; i < (*pTD).changedneighqty; i++)

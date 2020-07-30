@@ -52,6 +52,13 @@ extern "C"
     // [1...CellQty][0...3]
     double **CellOri;
 
+    // Crystal orientation spreads of the cells
+    // [1...CellQty], NULL is uninitialized
+    char **CellOriDistrib;
+
+    // Orientation descriptor used in the tess file
+    char *CellOriDes;
+
     // For a lamellar tessellation, lamella ids of the cells, in terms
     // of imposed width [1...CellQty] (starts at 1)
     int *CellLamId;
@@ -59,6 +66,9 @@ extern "C"
     // For a multimodal tessellation, mode ids of the cells, in terms of
     // imposed size [1...CellQty] (starts at 1)
     int *CellModeId;
+
+    // Group of the cells [1...CellQty]
+    int *CellGroup;
 
     // Crystal symmetry of the cells ("triclinic", "cubic" or
     // "hexagonal").  Defined once for all cells, but this could be

@@ -44,7 +44,7 @@ neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
 
   if (Tess.CellLamId)
   {
-    fprintf (file, "  *lamid\n");
+    fprintf (file, "  *lam\n");
     qty = 0;
     for (i = 1; i <= Tess.CellQty; i++)
       ut_print_wnc_int_header (file, Tess.CellLamId[i], &qty, 72, "  ");
@@ -53,10 +53,19 @@ neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
 
   if (Tess.CellModeId)
   {
-    fprintf (file, "  *modeid\n");
+    fprintf (file, "  *mode\n");
     qty = 0;
     for (i = 1; i <= Tess.CellQty; i++)
       ut_print_wnc_int_header (file, Tess.CellModeId[i], &qty, 72, "  ");
+    fprintf (file, "\n");
+  }
+
+  if (Tess.CellGroup)
+  {
+    fprintf (file, "  *group\n");
+    qty = 0;
+    for (i = 1; i <= Tess.CellQty; i++)
+      ut_print_wnc_int_header (file, Tess.CellGroup[i], &qty, 72, "  ");
     fprintf (file, "\n");
   }
 
@@ -83,14 +92,15 @@ neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
   if (Tess.CellOri)
   {
     fprintf (file, "  *ori\n");
-    fprintf (file, "   e\n");
-    qty = 0;
+    fprintf (file, "   %s\n", Tess.CellOriDes);
+    neut_ori_fprintf (file, Tess.CellOriDes, Tess.CellOri + 1, Tess.CellQty, NULL);
+  }
+
+  if (neut_tess_hascelloridistrib (Tess))
+  {
+    fprintf (file, "  *oridistrib\n");
     for (i = 1; i <= Tess.CellQty; i++)
-    {
-      fprintf (file, "   ");
-      ol_q_e (Tess.CellOri[i], e);
-      ol_e_fprintf (file, e, "%17.12f");
-    }
+      fprintf (file, "   %s\n", Tess.CellOriDistrib[i]);
   }
 
   ol_e_free (e);

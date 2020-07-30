@@ -5,6 +5,20 @@
 #include"neut_mesh_fprintf_per_.h"
 
 void
+neut_mesh_fprintf_per (FILE * file, struct NODES Nodes)
+{
+  fprintf (file, "$Periodicity\n");
+
+  fprintf (file, "%d\n", Nodes.PerNodeQty);
+
+  neut_mesh_fprintf_per_plain (file, Nodes);
+
+  fprintf (file, "$EndPeriodicity\n");
+
+  return;
+}
+
+void
 neut_mesh_fprintf_per_plain (FILE * file, struct NODES Nodes)
 {
   int i, id;
