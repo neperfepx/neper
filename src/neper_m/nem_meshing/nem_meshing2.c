@@ -30,7 +30,7 @@ nem_meshing_post (struct TESS Tess, struct MESH *Mesh)
 
     neut_tess_dim_entity (Tess.Dim, &entity);
 
-    for (i = 1; i <= Tess.CellQty; i++)
+    for (i = 1; i <= Mesh[Tess.Dim].ElsetQty; i++)
       sprintf (Mesh[Tess.Dim].ElsetLabels[i], "%s%d", entity,
                Mesh[Tess.Dim].ElsetId ? Mesh[Tess.Dim].ElsetId[i] : i);
   }

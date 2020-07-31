@@ -47,7 +47,7 @@ nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
     else
       nem_meshing_2D (In, *pMeshPara, *pTess, RNodes, RMesh, pNodes, Mesh);
 
-    if (Mesh[2].EltQty > 0 && In.mesh2dpinchfix)
+    if (Mesh[2].EltQty > 0 && (*pTess).Dim == 3 && In.mesh2dpinchfix)
       nem_meshing_pinching (In, *pMeshPara, pTess, RNodes, RMesh, pNodes,
                             Mesh);
   }

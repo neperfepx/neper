@@ -233,16 +233,17 @@ neut_mesh_fprintf_inp_elsets (FILE * file, struct MESH Mesh, int shift_elt)
   int i, j, Col, call;
 
   for (i = 1; i <= Mesh.ElsetQty; i++)
-  {
-    fprintf (file, "*Elset, elset=%s\n", Mesh.ElsetLabels[i]);
-    Col = 0;
-    call = 0;
-    for (j = 1; j <= Mesh.Elsets[i][0]; j++)
-      ut_print_wnc_wnelts (file, &Col, 72, &call, 16,
-                           (j < Mesh.Elsets[i][0]) ? "%d," : "%d\n",
-                           Mesh.Elsets[i][j] + shift_elt);
-    fprintf (file, "\n");
-  }
+    if (Mesh.Elsets[i][0] > 0)
+    {
+      fprintf (file, "*Elset, elset=%s\n", Mesh.ElsetLabels[i]);
+      Col = 0;
+      call = 0;
+      for (j = 1; j <= Mesh.Elsets[i][0]; j++)
+        ut_print_wnc_wnelts (file, &Col, 72, &call, 16,
+                             (j < Mesh.Elsets[i][0]) ? "%d," : "%d\n",
+                             Mesh.Elsets[i][j] + shift_elt);
+      fprintf (file, "\n");
+    }
 
   return;
 }

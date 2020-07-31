@@ -9,14 +9,11 @@ nem_ori (struct TESS Tess, struct MESH *Mesh)
 {
   int i, j, dim = neut_mesh_array_dim (Mesh);
 
-  if (Tess.CellQty != Mesh[dim].ElsetQty)
-    ut_print_neperbug ();
-
   if (Tess.CellOri)
   {
     ut_string_string (Tess.CellOriDes, &(Mesh[dim].ElsetOriDes));
     Mesh[dim].ElsetOri = ut_alloc_2d (Mesh[dim].ElsetQty + 1, 4);
-    ut_array_2d_memcpy (Tess.CellOri + 1, Tess.CellQty, 4, Mesh[dim].ElsetOri + 1);
+    ut_array_2d_memcpy (Tess.CellOri + 1, Mesh[dim].ElsetQty, 4, Mesh[dim].ElsetOri + 1);
   }
 
   if (Tess.CellOriDistrib)
