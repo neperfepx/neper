@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set(NEPER_VERSION \"4.0.1-3\")
+set(NEPER_VERSION \"4.0.1-4\")
 
 # should we use the optional libraries?
 set(HAVE_GSL ON)
@@ -238,7 +238,7 @@ add_test(T_format                 ./neper --rcfile none -T -n 2 -format tess,geo
 add_test(T_tesrformat             ./neper --rcfile none -T -n 2 -format tesr -tesrformat binary8)
 add_test(T_tesrsize               ./neper --rcfile none -T -n 2 -format tesr -tesrsize 10)
 add_test(T_oridescriptor          ./neper --rcfile none -T -n 2 -oridescriptor R)
-add_test(T_oriformat              ./neper --rcfile none -T -n 2 -oriformat geof)
+add_test(T_oriformat              ./neper --rcfile none -T -n 2 -oriformat plain,geof)
 add_test(T_statcell              ./neper --rcfile none -T -n 2 -statcell "id,x,y,z,true,body,state,area,vol,size,diameq,radeq,sphericity,convexity,dihangleav,dihanglemin,dihanglemax,dihangles,vernb,edgenb,facenb,neighnb,vers,edges,faces,npolys,faceareas,faceeqs,vercoos,scaleid(1)")
 add_test(T_statseed              ./neper --rcfile none -T -n 2 -statseed id,x,y,z,w)
 add_test(T_statver               ./neper --rcfile none -T -n 2 -statver  id,x,y,z,true,body,state,domtype,edgenb,facenb,polynb)

@@ -80,6 +80,12 @@ extern "C"
 /// \todo To improve
   extern int ut_list_iter_test (char *list, char *sep, int iter);
 
+/// \brief Get the number of elements of a list
+/// \param list: list
+/// \param sep: separator, e.g. "," or ":"
+/// \return number of elements
+  extern int ut_list_eltnb (const char *list, const char *sep);
+
 #endif                          /* UT_LIST_H */
 
 #ifdef __cplusplus

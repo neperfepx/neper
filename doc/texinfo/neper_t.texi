@@ -973,9 +973,12 @@ is @code{active} by default.,
 see above, rodrigues}
 
 @opt{-oriformat, char_string,
-Specify the format of the @file{.ori} output file. The available formats are:
+Specify the format(s) of the @file{.ori} output file(s). The available formats are:
 @code{plain} (i.e.@: only the descriptors on
 successive lines) and the Z-set @code{geof}@footnote{Euler angles in Bunge convention are written.}.
+Combine with @samp{@SEPNODEP}.  If several formats are requested@comma{} the format is
+appended to the file name as in @samp{@var{filename}.ori-plain} and
+@samp{@var{filename}.ori-geof}.
 ,
 see above, plain}
 

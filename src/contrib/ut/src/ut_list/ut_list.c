@@ -224,3 +224,16 @@ ut_list_create (char **parts, int size, const char *sep, char **plist)
 
   return;
 }
+
+int
+ut_list_eltnb (const char *list, const char *sep)
+{
+  int qty;
+  char **parts = NULL;
+
+  ut_list_break (list, sep, &parts, &qty);
+
+  ut_free_2d_char (&parts, qty);
+
+  return qty;
+}
