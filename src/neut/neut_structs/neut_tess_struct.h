@@ -53,7 +53,7 @@ extern "C"
     double **CellOri;
 
     // Crystal orientation spreads of the cells
-    // [1...CellQty], NULL is uninitialized
+    // [1...CellQty], NULL if uninitialized
     char **CellOriDistrib;
 
     // Orientation descriptor used in the tess file

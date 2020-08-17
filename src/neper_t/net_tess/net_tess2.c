@@ -116,7 +116,7 @@ net_tess_finalize (struct TESS PTess, struct SEEDSET SSet, struct TESS *pTess)
                         (*pTess).CellOri + 1);
   }
 
-  if (!(*pTess).CellOriDistrib)
+  if (SSet.SeedOriDistrib && !(*pTess).CellOriDistrib)
   {
     (*pTess).CellOriDistrib = ut_alloc_1d_pchar ((*pTess).CellQty + 1);
     for (i = 0; i <= (*pTess).CellQty; i++)
