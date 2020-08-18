@@ -2124,3 +2124,9 @@ neut_tess_hascelloridistrib (struct TESS Tess)
 
   return 0;
 }
+
+int
+neut_tess_isreg (struct TESS Tess)
+{
+  return ut_array_1d_int_max (Tess.VerState + 1, Tess.VerQty) > 0;
+}

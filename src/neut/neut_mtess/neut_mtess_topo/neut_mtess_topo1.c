@@ -11,7 +11,10 @@ neut_mtess_tess_level_dom (struct MTESS MTess, struct TESS Tess, int level,
   int i;
 
   if (Tess.TessId <= 0)
-    ut_print_neperbug ();
+    // ut_print_neperbug (); // this may happen when the domain is void (empty
+    // cell of the parent tessellation), which can happen when -morphooptiini
+    // is used.  It seems fine to let this pass through.
+    return -1;
 
   if (level >= Tess.Level)
     return -1;

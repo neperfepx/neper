@@ -69,6 +69,8 @@ extern "C"
 
   extern int neut_tess_exprisvar (struct TESS Tess, char *entity, char *expr);
 
+  extern int neut_tess_isreg (struct TESS Tess);
+
 #endif				/* NEUT_TESS_GEN_H */
 
 #ifdef __cplusplus

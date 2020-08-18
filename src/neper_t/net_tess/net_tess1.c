@@ -14,7 +14,19 @@ net_tess (struct IN_T In, int level, struct TESS *Tess, int dtess, int dcell,
   char *mid = NULL;
   char *morpho = NULL;
 
+  if (neut_tess_isreg (Tess[dtess]))
+  {
+    printf ("\n");
+    ut_print_message (2, 2, "Parent tessellation is regularized.\n");
+  }
+
   neut_tess_set_zero (&Dom);
+
+  // case where the domain is void (empty cell of the parent tessellation),
+  // which can happen when -morphooptiini is used.  It seems fine to let this
+  // pass through.
+  if (neut_tess_cell_isvoid (Tess[dtess], dcell))
+    return 0;
 
   if (ut_string_isfilename (In.morpho[level])
       && !ut_file_testformat (In.morpho[level], "tess"))
