@@ -671,8 +671,13 @@ ut_string_string (const char *input, char **poutput)
 {
   if (input)
   {
-    (*poutput) = ut_realloc_1d_char (*poutput, strlen (input) + 1);
-    strcpy (*poutput, input);
+    char *input2 = ut_alloc_1d_char (strlen (input) + 1);
+    input2 = strcpy (input2, input);
+
+    (*poutput) = ut_realloc_1d_char (*poutput, strlen (input2) + 1);
+    strcpy (*poutput, input2);
+
+    ut_free_1d_char (&input2);
   }
   else
     ut_free_1d_char (poutput);

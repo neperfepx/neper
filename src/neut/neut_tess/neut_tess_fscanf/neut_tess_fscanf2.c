@@ -128,6 +128,7 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
       (*pTess).CellOri = ut_alloc_2d ((*pTess).CellQty + 1, 4);
       if (fscanf (file, "%s", (*pTess).CellOriDes) != 1)
         abort ();
+      neut_ori_des_expand ((*pTess).CellOriDes, &(*pTess).CellOriDes);
 
       neut_ori_fscanf (file, (*pTess).CellOriDes, (*pTess).CellOri + 1, (*pTess).CellQty, NULL);
     }

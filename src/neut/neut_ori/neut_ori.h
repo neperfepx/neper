@@ -7,6 +7,7 @@ extern "C"
 {
 #endif
 
+  extern void neut_ori_des_des (char *des, char **pdes);
   extern void neut_ori_des_expand (char *des, char **pdes2);
 
   extern void neut_ori_volthetafct (struct FCT *pvolfct);

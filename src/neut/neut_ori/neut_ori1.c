@@ -5,6 +5,29 @@
 #include"neut_ori_.h"
 
 void
+neut_ori_des_des (char *des, char **pdes)
+{
+  if (!strcmp (des, "e"))
+    ut_string_string ("euler-bunge", pdes);
+  else if (!strcmp (des, "ek"))
+    ut_string_string ("euler-kocks", pdes);
+  else if (!strcmp (des, "er"))
+    ut_string_string ("euler-roe", pdes);
+  else if (!strcmp (des, "R"))
+    ut_string_string ("rodrigues", pdes);
+  else if (!strcmp (des, "rtheta"))
+    ut_string_string ("axis-angle", pdes);
+  else if (!strcmp (des, "q"))
+    ut_string_string ("quaternion", pdes);
+  else if (!strcmp (des, "m"))
+    ut_string_string ("miller", pdes);
+  else
+    ut_string_string (des, pdes);
+
+  return;
+}
+
+void
 neut_ori_des_expand (char *des, char **pdes2)
 {
   int qty;
@@ -198,6 +221,8 @@ neut_ori_expr_desconv (char *expr, char **pdes, char **pconv)
 
   if (strcmp (*pconv, "active") && strcmp (*pconv, "passive"))
     status = -1;
+
+  neut_ori_des_des (*pdes, pdes);
 
   ut_free_2d_char (&tmp, qty);
 

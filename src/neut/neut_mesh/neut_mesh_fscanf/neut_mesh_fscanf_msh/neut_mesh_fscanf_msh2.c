@@ -290,6 +290,7 @@ neut_mesh_fscanf_msh_orientations (FILE *file, char *entity, struct MESH *pMesh)
     if (!strcmp (entity, "elset"))
     {
       ut_string_string (des, &(*pMesh).ElsetOriDes);
+      neut_ori_des_expand ((*pMesh).ElsetOriDes, &(*pMesh).ElsetOriDes);
 
       (*pMesh).ElsetOri = ut_alloc_2d ((*pMesh).ElsetQty + 1, 4);
 
@@ -299,6 +300,7 @@ neut_mesh_fscanf_msh_orientations (FILE *file, char *entity, struct MESH *pMesh)
     else if (!strcmp (entity, "elt"))
     {
       ut_string_string (des, &(*pMesh).EltOriDes);
+      neut_ori_des_expand ((*pMesh).EltOriDes, &(*pMesh).EltOriDes);
 
       (*pMesh).EltOri = ut_alloc_2d ((*pMesh).EltQty + 1, 4);
 

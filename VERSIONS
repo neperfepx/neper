@@ -1,7 +1,7 @@
-New in 4.0.1-5 (18 Aug 2020):
+New in 4.0.1-6 (03 Sep 2020):
 - module -T: fixed -morpho "file(tess_file)", improved -oriformat, made minor
   fixes.
-- module -M: fixed -meshface.
+- module -M: fixed support for pre-version 4 tessellations, fixed -meshface.
 
 New in 4.0.0 (30 Jul 2020):
 - general: Neper now has a companion program for polycrystal plasticity, the
