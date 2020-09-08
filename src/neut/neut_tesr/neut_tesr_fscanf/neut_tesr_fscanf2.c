@@ -338,7 +338,7 @@ neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
   char *tmp = ut_alloc_1d_char (10);
   char *tmp2 = ut_alloc_1d_char (1000);
   fpos_t pos;
-  char des[10];
+  char *des = ut_alloc_1d_char (100);
 
   if (bounds || scale)
     ut_print_neperbug ();
@@ -391,6 +391,7 @@ neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
 
   ut_free_1d_char (&tmp);
   ut_free_1d_char (&tmp2);
+  ut_free_1d_char (&des);
 
   return;
 }
