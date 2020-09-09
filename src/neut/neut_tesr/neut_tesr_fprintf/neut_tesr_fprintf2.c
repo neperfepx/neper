@@ -285,7 +285,7 @@ neut_tesr_fprintf_oridata_noheader (FILE * file, char *des, char *format,
 {
   int i, j, k, l;
 
-  if (strcmp (des, "q"))
+  if (strcmp (des, "quaternion:active"))
     abort ();
 
   for (k = 1; k <= Tesr.size[2]; k++)

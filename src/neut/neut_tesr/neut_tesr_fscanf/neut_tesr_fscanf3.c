@@ -92,10 +92,13 @@ neut_tesr_fscanf_data_default (struct TESR *pTesr, char *format, FILE * file)
 }
 
 void
-neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
+neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *desconv, char *format,
                                   FILE * file)
 {
   int i, j, k, l, endian = ut_sys_endian ();
+  char *des = NULL, *conv = NULL;
+
+  neut_ori_expr_desconv (desconv, &des, &conv);
 
   if (!strcmp (des, "rotmat"))
   {
@@ -265,6 +268,15 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *des, char *format,
 
   else
     ut_print_exprbug (des);
+
+  if (!strcmp (conv, "passive"))
+    for (k = 1; k <= (*pTesr).size[2]; k++)
+      for (j = 1; j <= (*pTesr).size[1]; j++)
+        for (i = 1; i <= (*pTesr).size[0]; i++)
+          ol_q_inverse ((*pTesr).VoxOri[i][j][k], (*pTesr).VoxOri[i][j][k]);
+
+  ut_free_1d_char (&des);
+  ut_free_1d_char (&conv);
 
   return;
 }
