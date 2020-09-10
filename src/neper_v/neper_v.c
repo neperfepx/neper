@@ -61,9 +61,6 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
   // Printing module header --------------------------------------------
   ut_print_moduleheader ("-V", fargc, fargv, argc, argv);
 
-  // Checking if povray is present -------------------------------------
-  neut_povray_check_error ();
-
   for (type = 0; type < 2; type++)
   {
     int expargc = expargcs[type];

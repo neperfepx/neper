@@ -137,7 +137,7 @@ Other dependencies are only needed at run-time (they are not necessary for compi
 
 @item The Gmsh program (version @code{2.4.2} or higher, excluding version @code{2.5.1}, mandatory for @mM{}). Both binary and source-code versions can be downloaded from @url{http://www.geuz.org/gmsh} (compiling from the source code significantly speeds up meshing).  Gmsh must be available at the terminal as the command @command{gmsh}, or the path to its binary must be specified with option @option{-gmsh} (in @mM{}).
 
-@item The POV-Ray program (mandatory for module -V).  It is likely to be available on your system or from your system package manager (binary package); alternatively, a binary, or the source code, can be downloaded from @url{http://www.povray.org}.  POV-Ray must be available at the terminal as the command @command{povray}, or the path to its binary must be specified with option @option{-povray} (in @mV{}).
+@item The POV-Ray program (version @code{3.7} or higher, mandatory for module -V).  It is likely to be available on your system or from your system package manager (binary package); alternatively, a binary, or the source code, can be downloaded from @url{http://www.povray.org}.  POV-Ray must be available at the terminal as the command @command{povray}, or the path to its binary must be specified with option @option{-povray} (in @mV{}).
 
 @end itemize
 

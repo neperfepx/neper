@@ -11,6 +11,8 @@ nev_print_png_pov2png (char *povray, char *filename, int imagewidth,
   char *outfilename = NULL;
   char *command = ut_alloc_1d_char (1000);
 
+  neut_povray_check (povray);
+
   ut_string_string (filename, &outfilename);
   outfilename[strlen (outfilename) - 2] = 'n';
   outfilename[strlen (outfilename) - 1] = 'g';
@@ -32,9 +34,6 @@ nev_print_png_pov2png (char *povray, char *filename, int imagewidth,
   {
     ut_print_message (2, 3, "File `%s' could not be generated!\n",
                       outfilename);
-
-    // checking (again) if povray is present
-    neut_povray_check_error ();
 
     sprintf (command, "%s Input_File_Name=%s +O%s +W%d +H%d -D %s", povray,
              filename, outfilename, imagewidth, imageheight,
