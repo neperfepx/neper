@@ -220,7 +220,7 @@ neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty)
   }
   else if (!strcmp (entity, "vox"))
   {
-    (*pvarqty) = 11;
+    (*pvarqty) = 10;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
     strcpy ((*pvar)[0], "id");
     strcpy ((*pvar)[1], "cell");
@@ -230,8 +230,8 @@ neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[5], "vx");
     strcpy ((*pvar)[6], "vy");
     strcpy ((*pvar)[7], "vz");
-    strcpy ((*pvar)[9], "coo");
-    strcpy ((*pvar)[10], "vcoo");
+    strcpy ((*pvar)[8], "coo");
+    strcpy ((*pvar)[9], "vcoo");
   }
   else
     ut_print_neperbug ();
@@ -332,7 +332,8 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
     double *coo = ut_alloc_1d (3);
     neut_tesr_vox_coo (Tesr, id, coo);
     (*pvals)[0] = coo[var[0] - 'x'];
-    ut_string_string ("%f", ptype);
+    if (ptype)
+      ut_string_string ("%f", ptype);
     ut_free_1d (&coo);
 
     return 1;

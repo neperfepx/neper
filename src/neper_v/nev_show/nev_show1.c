@@ -92,7 +92,7 @@ nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
 
   else if (!strcmp (argv[(*pi)], "-showvox"))
   {
-    if (Tesr.Dim == 3)
+    if (!neut_tesr_isvoid (Tesr))
       nev_show_tesr_vox (argv, pi, Tesr, pPrint);
     else
       ut_print_message (2, 0, "Cannot process `%s'.\n", argv[(*pi)]);

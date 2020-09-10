@@ -1,4 +1,4 @@
-New in 4.0.1-9 (10 Sep 2020):
+New in 4.0.1-10 (10 Sep 2020):
 - module -T: fixed -morpho "file(tess_file)", improved -oriformat, made minor
   fixes.
 - module -M: fixed support for pre-version 4 tessellations, fixed -meshface.

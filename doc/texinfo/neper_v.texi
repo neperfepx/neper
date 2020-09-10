@@ -1003,7 +1003,7 @@ Specify the voxels to show. The argument can be: @samp{all} for
 all@comma{} @samp{none} for none@comma{}
 @samp{file(@var{file_name})} to load voxel identifiers from
 a file@comma{} or any expression based on the keys listed in
-@ref{Tessellation Keys}.
+@ref{Raster Tessellation Keys}.
 ,
 any, all}
 
