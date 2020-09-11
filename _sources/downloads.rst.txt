@@ -17,7 +17,7 @@ It you use Neper for your own work, please mention it explicitly and cite one or
 Current official release
 ------------------------
 
-- `neper-4.0.0.tgz (30 Jul 2020) <tarballs/neper-4.0.0.tgz>`_: source code and documentation
+- `neper-4.0.1.tgz (11 Sep 2020) <tarballs/neper-4.0.1.tgz>`_: source code and documentation
 - `neper.pdf <docs/neper.pdf>`_: documentation
 
 Development repository
@@ -36,7 +36,7 @@ Supplementary software
   `Gmsh <http://gmsh.info/>`_,
   `libScotch <http://www.labri.fr/perso/pelegrin/scotch>`_,
   `POV-Ray <http://www.povray.org>`_
-- Old versions of Neper can be accessed from the `GitHub repository <https://github.com/rquey/neper/releases>`_ (documentation not compiled) or `here <tarballs>`_.
+- Old versions of Neper can be accessed from the `GitHub repository <https://github.com/rquey/neper/releases>`_ (documentation not compiled) or `here <releases.html>`_.
 
 References
 ----------

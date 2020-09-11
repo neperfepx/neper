@@ -23,6 +23,13 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2020
 ----
 
+- AM Schönhöbel, R Madugundo, JM Barandiarán, GC Hadjipanayis, D Palanisamy, T Schwarz, B Gault, D Raabe, K Skokov, O Gutfleisch, J Fischbacher and T Schrefl, *Nanocrystalline Sm-based 1: 12 magnets*, **Acta Materialia**, doi://10.1016/j.actamat.2020.08.075.
+- Z Pawlas, I Karafiatova and L Heller, *Random tessellations marked with crystallographic orientations*, **Spatial Statistics**, doi://10.1016/j.spasta.2020.100469.
+- M Bouchedjra, A Amrouche, T Kanit and MEA Belouchrani, *Microstructural features effect on the evolution of cyclic damage for polycrystalline metals using a multiscale approach*, **International Journal of Damage Mechanics**, doi://10.1177/1056789520950409.
+- A Charmi, R Falkenberg, L Ávila, G Mohr, K Sommer, A Ulbricht, M Sprengel, R Saliwan Neumann, B Skrotzki and A Evans, *Mechanical anisotropy of additively manufactured stainless steel 316L: An experimental and numerical study*, **Materials Science and Engineering: A**, doi://10.1016/j.msea.2020.140154.
+- PR Prakash, B Polatsu, PB Lourenco, M Azenha and JA Pereira, *A meso-scale discrete element method framework to simulate thermo-mechanical failure of concrete subjected to elevated temperatures*, **Engineering Fracture Mechanics**, doi://10.1016/j.engfracmech.2020.107269.
+- T Xu, T-F Fu, MJ Heap, PG Meredith, TM Mitchell and P Baud, *Mesoscopic Damage and Fracturing of Heterogeneous Brittle Rocks Based on Three-dimensional Polycrystalline Discrete Element Method*, **Rock Mechanics and Rock Engineering**, doi://10.1007/s00603-020-02223-y.
+- A Saini, S Unnikirishnakurup, CV Krishnamurthy, K Balasubramanian and T Sundarajan, *Numerical study using finite element method for heat conduction on heterogeneous materials with varying volume fraction, shape and size of fillers*, **International Journal of Thermal Sciences**, doi://10.1016/j.ijthermalsci.2020.106545.
 - D An, X Zhang and S Zaefferer, *The combined and interactive effects of orientation, strain amplitude, cycle number, stacking fault energy and hydrogen doping on microstructure evolution of polycrystalline high-manganese steels under low-cycle fatigue*, **International Journal of Plasticity**, doi://10.1016/j.ijplas.2020.102803.
 - S Sakout, D Weisz-Patrault and A Ehrlacher, *Energetic upscaling strategy for grain growth. i: Fast mesoscopic model based on dissipation*, **Acta Materialia**, doi://10.1016/j.actamat.2020.06.032.
 - B Pulatsu, E Erdogmus, PB Lourenço, JV Lemos and K Tuncay, *Numerical modeling of the tension stiffening in reinforced concrete members via discontinuum models*, **Computational Particle Mechanics**, doi://10.1007/s40571-020-00342-5.
