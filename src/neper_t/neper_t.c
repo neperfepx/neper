@@ -229,10 +229,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
         net_dim (2, &FTess);
     }
     else if (In.levelqty == 1 || strcmp (In.load, "none"))
-    {
       neut_tess_tess (Tess[1], &FTess);
-      FTess.ScaleQty = 1;
-    }
 
     neut_ori_des_expand (In.orides, &FTess.CellOriDes);
   }
