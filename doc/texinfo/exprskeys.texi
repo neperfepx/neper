@@ -642,6 +642,8 @@ dimensions) and points are provided below.
   @item @code{2dmeshn}@tab outgoing normal vector of the 2D mesh
 		     at @samp{2dmeshp}                @tab node, 3D elt
   @item @code{per}  @tab periodic (1 if periodic, 0 otherwise)  @tab 0D elt, 1D elt, 2D elt (in 3D), 0D elset, 1D elset, 2D elset (in 3D)
+  @item @code{col_rodrigues} @tab color according to the Rodrigues vector color convention@footnote{Applies to a mesh of Rodrigues space.} @tab node
+  @item @code{col_stdtriangle} @tab color according to the stereographic triangle (IPF) color convention@footnote{Applies to a mesh of the stereographic triangle.} @tab node
 @end multitable
 
 @dfn{@var{n}D} stands for an arbitrary dimension (from 0D to 3D).
@@ -832,10 +834,10 @@ values, under format
 @item (128, 128, @phantom{00}0) @tab @code{olive}
 @tab  (128, @phantom{00}0, 128) @tab @code{purple}
 @item (@phantom{00}0, 128, 128) @tab @code{teal}
-@tab  (128, 128, 128) @tab @code{grey}
+@tab  (128, 128, 128) @tab @code{gray}
 @item (@phantom{00}0, 191, 255) @tab @code{deepskyblue}
 @tab  (124, 252, @phantom{00}0) @tab @code{lawngreen}
-@item (@phantom{0}64, @phantom{0}64, @phantom{0}64) @tab @code{darkgrey}
+@item (@phantom{0}64, @phantom{0}64, @phantom{0}64) @tab @code{darkgray}
 @tab  (255, @phantom{0}69, @phantom{00}0) @tab @code{orangered}
 @item (192, 192, 192) @tab @code{silver}
 @tab  (255, 250, 250) @tab @code{snow}
@@ -880,7 +882,7 @@ values, under format
 @item (255, 218, 185) @tab @code{peachpuff}
 @tab  (245, 245, 245) @tab @code{whitesmoke}
 @item (255, @phantom{0}99, @phantom{0}71) @tab @code{tomato}
-@tab  (112, 128, 144) @tab @code{slategrey}
+@tab  (112, 128, 144) @tab @code{slategray}
 @item (255, 105, 180) @tab @code{hotpink}
 @tab  (253, 245, 230) @tab @code{oldlace}
 @item (255, 235, 205) @tab @code{blanchedalmond}
@@ -898,7 +900,7 @@ values, under format
 @item (139, @phantom{0}69, @phantom{0}19) @tab @code{saddlebrown}
 @tab  (148, @phantom{00}0, 211) @tab @code{darkviolet}
 @item (@phantom{0}30, 144, 255) @tab @code{dodgerblue}
-@tab  (119, 136, 153) @tab @code{lightslategrey}
+@tab  (119, 136, 153) @tab @code{lightslategray}
 @item (222, 184, 135) @tab @code{burlywood}
 @tab  (255, 222, 173) @tab @code{navajowhite}
 @item (250, 240, 230) @tab @code{linen}
@@ -923,7 +925,7 @@ values, under format
 @tab  (240, 230, 140) @tab @code{khaki}
 @item (144, 238, 144) @tab @code{lightgreen}
 @tab  (175, 238, 238) @tab @code{paleturquoise}
-@item (@phantom{0}47, @phantom{0}79, @phantom{0}79) @tab @code{darkslategrey}
+@item (@phantom{0}47, @phantom{0}79, @phantom{0}79) @tab @code{darkslategray}
 @tab  (153, @phantom{0}50, 204) @tab @code{darkorchid}
 @item (@phantom{0}46, 139, @phantom{0}87) @tab @code{seagreen}
 @tab  (154, 205, @phantom{0}50) @tab @code{yellowgreen}
@@ -939,14 +941,14 @@ values, under format
 @tab  (@phantom{0}34, 139, @phantom{0}34) @tab @code{forestgreen}
 @item (@phantom{0}25, @phantom{0}25, 112) @tab @code{midnightblue}
 @tab  (@phantom{0}32, 178, 170) @tab @code{lightseagreen}
-@item (211, 211, 211) @tab @code{lightgrey}
+@item (211, 211, 211) @tab @code{lightgray}
 @tab  (218, 112, 214) @tab @code{orchid}
 @item (100, 149, 237) @tab @code{cornflowerblue}
 @tab  (160, @phantom{0}82, @phantom{0}45) @tab @code{sienna}
 @item (178, @phantom{0}34, @phantom{0}34) @tab @code{firebrick}
 @tab  (176, 224, 230) @tab @code{powderblue}
 @item (205, @phantom{0}92, @phantom{0}92) @tab @code{indianred}
-@tab  (105, 105, 105) @tab @code{dimgrey}
+@tab  (105, 105, 105) @tab @code{dimgray}
 @item (173, 216, 230) @tab @code{lightblue}
 @tab  (210, 105, @phantom{0}30) @tab @code{chocolate}
 @item (165, @phantom{0}42, @phantom{0}42) @tab @code{brown}
@@ -974,10 +976,10 @@ values, under format
 @item (128, 128, @ @ 0) @tab @code{olive}
 @tab  (128, @ @ 0, 128) @tab @code{purple}
 @item (@ @ 0, 128, 128) @tab @code{teal}
-@tab  (128, 128, 128) @tab @code{grey}
+@tab  (128, 128, 128) @tab @code{gray}
 @item (@ @ 0, 191, 255) @tab @code{deepskyblue}
 @tab  (124, 252, @ @ 0) @tab @code{lawngreen}
-@item (@ 64, @ 64, @ 64) @tab @code{darkgrey}
+@item (@ 64, @ 64, @ 64) @tab @code{darkgray}
 @tab  (255, @ 69, @ @ 0) @tab @code{orangered}
 @item (192, 192, 192) @tab @code{silver}
 @tab  (255, 250, 250) @tab @code{snow}
@@ -1022,7 +1024,7 @@ values, under format
 @item (255, 218, 185) @tab @code{peachpuff}
 @tab  (245, 245, 245) @tab @code{whitesmoke}
 @item (255, @ 99, @ 71) @tab @code{tomato}
-@tab  (112, 128, 144) @tab @code{slategrey}
+@tab  (112, 128, 144) @tab @code{slategray}
 @item (255, 105, 180) @tab @code{hotpink}
 @tab  (253, 245, 230) @tab @code{oldlace}
 @item (255, 235, 205) @tab @code{blanchedalmond}
@@ -1040,7 +1042,7 @@ values, under format
 @item (139, @ 69, @ 19) @tab @code{saddlebrown}
 @tab  (148, @ @ 0, 211) @tab @code{darkviolet}
 @item (@ 30, 144, 255) @tab @code{dodgerblue}
-@tab  (119, 136, 153) @tab @code{lightslategrey}
+@tab  (119, 136, 153) @tab @code{lightslategray}
 @item (222, 184, 135) @tab @code{burlywood}
 @tab  (255, 222, 173) @tab @code{navajowhite}
 @item (250, 240, 230) @tab @code{linen}
@@ -1065,7 +1067,7 @@ values, under format
 @tab  (240, 230, 140) @tab @code{khaki}
 @item (144, 238, 144) @tab @code{lightgreen}
 @tab  (175, 238, 238) @tab @code{paleturquoise}
-@item (@ 47, @ 79, @ 79) @tab @code{darkslategrey}
+@item (@ 47, @ 79, @ 79) @tab @code{darkslategray}
 @tab  (153, @ 50, 204) @tab @code{darkorchid}
 @item (@ 46, 139, @ 87) @tab @code{seagreen}
 @tab  (154, 205, @ 50) @tab @code{yellowgreen}
@@ -1081,14 +1083,14 @@ values, under format
 @tab  (@ 34, 139, @ 34) @tab @code{forestgreen}
 @item (@ 25, @ 25, 112) @tab @code{midnightblue}
 @tab  (@ 32, 178, 170) @tab @code{lightseagreen}
-@item (211, 211, 211) @tab @code{lightgrey}
+@item (211, 211, 211) @tab @code{lightgray}
 @tab  (218, 112, 214) @tab @code{orchid}
 @item (100, 149, 237) @tab @code{cornflowerblue}
 @tab  (160, @ 82, @ 45) @tab @code{sienna}
 @item (178, @ 34, @ 34) @tab @code{firebrick}
 @tab  (176, 224, 230) @tab @code{powderblue}
 @item (205, @ 92, @ 92) @tab @code{indianred}
-@tab  (105, 105, 105) @tab @code{dimgrey}
+@tab  (105, 105, 105) @tab @code{dimgray}
 @item (173, 216, 230) @tab @code{lightblue}
 @tab  (210, 105, @ 30) @tab @code{chocolate}
 @item (165, @ 42, @ 42) @tab @code{brown}
@@ -1107,33 +1109,98 @@ The color map (also called @dfn{palette}) used to represent integer values is
 defined from the above color list, by excluding colors of brightness below 0.2
 and above 0.8.  The brightness is defined as the average of the channel values
 divided by 255.  The resulting list of colors is:
-@code{red}, @code{green}, @code{blue}, @code{yellow}, @code{magenta},
-@code{cyan}, @code{chartreuse}, @code{springgreen}, @code{olive},
-@code{purple}, @code{teal}, @code{grey}, @code{deepskyblue},
-@code{lawngreen}, @code{darkgrey}, @code{orangered}, @code{silver},
-@code{darkorange}, @code{mediumblue}, @code{indigo}, @code{lightcoral},
-@code{coral}, @code{salmon}, @code{aquamarine}, @code{gold},
-@code{orange}, @code{darkmagenta}, @code{darkcyan}, @code{peru},
-@code{steelblue}, @code{mediumspringgreen}, @code{darkslateblue},
-@code{darkgoldenrod}, @code{lightsalmon}, @code{lightskyblue},
-@code{tomato}, @code{slategrey}, @code{hotpink}, @code{darkkhaki},
-@code{darkturquoise}, @code{mediumseagreen}, @code{mediumvioletred},
-@code{violet}, @code{greenyellow}, @code{darkseagreen},
-@code{rosybrown}, @code{deeppink}, @code{saddlebrown},
-@code{darkviolet}, @code{dodgerblue}, @code{lightslategrey},
-@code{burlywood}, @code{mediumslateblue}, @code{turquoise},
-@code{skyblue}, @code{mediumturquoise}, @code{tan}, @code{limegreen},
-@code{darksalmon}, @code{lightsteelblue}, @code{royalblue},
-@code{palegreen}, @code{crimson}, @code{mediumorchid}, @code{khaki},
-@code{lightgreen}, @code{darkslategrey}, @code{darkorchid},
-@code{seagreen}, @code{yellowgreen}, @code{blueviolet},
-@code{palevioletred}, @code{olivedrab}, @code{mediumpurple},
-@code{sandybrown}, @code{darkolivegreen}, @code{mediumaquamarine},
-@code{slateblue}, @code{forestgreen}, @code{midnightblue},
-@code{lightseagreen}, @code{orchid}, @code{cornflowerblue},
-@code{sienna}, @code{firebrick}, @code{indianred}, @code{dimgrey},
-@code{chocolate}, @code{brown}, @code{goldenrod}, @code{plum} and
-@code{cadetblue}.
+@w{(1) @code{red}},
+@w{(2) @code{green}},
+@w{(3) @code{blue}},
+@w{(4) @code{yellow}},
+@w{(5) @code{magenta}},
+@w{(6) @code{cyan}},
+@w{(7) @code{chartreuse}},
+@w{(8) @code{springgreen}},
+@w{(9) @code{olive}},
+@w{(10) @code{purple}},
+@w{(11) @code{teal}},
+@w{(12) @code{gray}},
+@w{(13) @code{deepskyblue}},
+@w{(14) @code{lawngreen}},
+@w{(15) @code{darkgray}},
+@w{(16) @code{orangered}},
+@w{(17) @code{silver}},
+@w{(18) @code{darkorange}},
+@w{(19) @code{mediumblue}},
+@w{(20) @code{indigo}},
+@w{(21) @code{lightcoral}},
+@w{(22) @code{coral}},
+@w{(23) @code{salmon}},
+@w{(24) @code{aquamarine}},
+@w{(25) @code{gold}},
+@w{(26) @code{orange}},
+@w{(27) @code{darkmagenta}},
+@w{(28) @code{darkcyan}},
+@w{(29) @code{peru}},
+@w{(30) @code{steelblue}},
+@w{(31) @code{mediumspringgreen}},
+@w{(32) @code{darkslateblue}},
+@w{(33) @code{darkgoldenrod}},
+@w{(34) @code{lightsalmon}},
+@w{(35) @code{lightskyblue}},
+@w{(36) @code{tomato}},
+@w{(37) @code{slategray}},
+@w{(38) @code{hotpink}},
+@w{(39) @code{darkkhaki}},
+@w{(40) @code{darkturquoise}},
+@w{(41) @code{mediumseagreen}},
+@w{(42) @code{mediumvioletred}},
+@w{(43) @code{violet}},
+@w{(44) @code{greenyellow}},
+@w{(45) @code{darkseagreen}},
+@w{(46) @code{rosybrown}},
+@w{(47) @code{deeppink}},
+@w{(48) @code{saddlebrown}},
+@w{(49) @code{darkviolet}},
+@w{(50) @code{dodgerblue}},
+@w{(51) @code{lightslategray}},
+@w{(52) @code{burlywood}},
+@w{(53) @code{mediumslateblue}},
+@w{(54) @code{turquoise}},
+@w{(55) @code{skyblue}},
+@w{(56) @code{mediumturquoise}},
+@w{(57) @code{tan}},
+@w{(58) @code{limegreen}},
+@w{(59) @code{darksalmon}},
+@w{(60) @code{lightsteelblue}},
+@w{(61) @code{royalblue}},
+@w{(62) @code{palegreen}},
+@w{(63) @code{crimson}},
+@w{(64) @code{mediumorchid}},
+@w{(65) @code{khaki}},
+@w{(66) @code{lightgreen}},
+@w{(67) @code{darkslategray}},
+@w{(68) @code{darkorchid}},
+@w{(69) @code{seagreen}},
+@w{(70) @code{yellowgreen}},
+@w{(71) @code{blueviolet}},
+@w{(72) @code{palevioletred}},
+@w{(73) @code{olivedrab}},
+@w{(74) @code{mediumpurple}},
+@w{(75) @code{sandybrown}},
+@w{(76) @code{darkolivegreen}},
+@w{(77) @code{mediumaquamarine}},
+@w{(78) @code{slateblue}},
+@w{(79) @code{forestgreen}},
+@w{(80) @code{midnightblue}},
+@w{(81) @code{lightseagreen}},
+@w{(82) @code{orchid}},
+@w{(83) @code{cornflowerblue}},
+@w{(84) @code{sienna}},
+@w{(85) @code{firebrick}},
+@w{(86) @code{indianred}},
+@w{(87) @code{dimgray}},
+@w{(88) @code{chocolate}},
+@w{(89) @code{brown}},
+@w{(90) @code{goldenrod}},
+@w{(91) @code{plum}} and
+@w{(92) @code{cadetblue}}.
 
 @subsection Color Maps for Real Values
 

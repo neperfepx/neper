@@ -49,10 +49,7 @@ neut_mesh_fprintf_msh_pre (struct TESS Tess, char *fasetlist,
 }
 
 void
-neut_mesh_fprintf_msh_header (FILE * file, char *mode, char *version,
-                               struct MESH Mesh0D, struct MESH Mesh1D,
-                               struct MESH Mesh2D, struct MESH Mesh3D)
-
+neut_mesh_fprintf_msh_header (FILE * file, char *mode, char *version)
 {
   int filetype, one = 1;
 
@@ -78,13 +75,6 @@ neut_mesh_fprintf_msh_header (FILE * file, char *mode, char *version,
     fprintf (file, "\n");
   }
 
-  if (!Mesh0D.ElsetId && !Mesh1D.ElsetId && !Mesh2D.ElsetId
-      && !Mesh3D.ElsetId)
-  {
-    fprintf (file, "$Comments\n");
-    fprintf (file, "contiguous\n");
-    fprintf (file, "$EndComments\n");
-  }
   fprintf (file, "$EndMeshFormat\n");
 
   return;

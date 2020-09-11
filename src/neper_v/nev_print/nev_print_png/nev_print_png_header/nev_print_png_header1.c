@@ -9,6 +9,7 @@ nev_print_png_header (FILE * file, struct PRINT Print)
 {
   if (!ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects"))
   {
+    fprintf (file, "#version 3.7;\n");
     fprintf (file, "#include \"shapes.inc\"\n");
 
     if (Print.imagebackground)
@@ -42,7 +43,6 @@ nev_print_png_header (FILE * file, struct PRINT Print)
                "light_source { <%f, %f, %f> rgb<1, 1, 1>  shadowless }\n\n",
                Print.cameracoo[0], Print.cameracoo[2], Print.cameracoo[1]);
 
-    fprintf (file, "#version 3.7;\n");
     fprintf (file, "global_settings { assumed_gamma 2.2 }\n");
   }
 

@@ -53,6 +53,9 @@ extern "C"
     int *BCol;			// Element boundary color
     double BRad;		// Element boundary radius
 
+    // needed by tesr
+    int *VoidCol;               // Void color
+
     // needed by: mesh nodes point tesr tess
     char *Scale;		// Scale
     char *ScaleTitle;		// Scale title

@@ -17,11 +17,7 @@ extern void neut_mesh_fprintf_msh_pre (struct TESS Tess,
                                         int **pfasetids, int *pfasetqty);
 
 extern void neut_mesh_fprintf_msh_header (FILE * file, char *mode,
-                                           char *version,
-                                           struct MESH Mesh0D,
-                                           struct MESH Mesh1D,
-                                           struct MESH Mesh2D,
-                                           struct MESH Mesh3D);
+                                           char *version);
 extern void neut_mesh_fprintf_msh_elts (FILE * file, char *mode,
                                          struct TESS Tess, struct MESH Mesh0D,
                                          struct MESH Mesh1D,

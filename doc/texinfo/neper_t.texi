@@ -80,39 +80,36 @@ tessellations.}
 Here is what a typical run of @mT{} looks like:
 
 @sp 1
-@c typical_start
-@verbatim
-    $ neper -T -n 10 -id 1 -reg 1
-    ========================    N   e   p   e   r    =======================
-    Info   : A software package for polycrystal generation and meshing.
-    Info   : Version 3.5.0
-    Info   : Built with: gsl nlopt muparser
-    Info   : <http://neper.info> <http://neper.info/community>
-    Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
-    Info   : Loading initialization file `/home/rquey/.neperrc'...
-    Info   : ---------------------------------------------------------------
-    Info   : MODULE  -T loaded with arguments:
-    Info   : [ini file]
-    Info   : [com line] -n 10 -id 1 -morpho gg -reg 1
-    Info   : ---------------------------------------------------------------
-    Info   : Reading input data...
-    Info   : Creating domain...
-    Info   : Creating tessellation...
-    Info   :   - Running tessellation...
-    Info   :     > Entering optimization...
-    Info   :     > Setting seeds... 100%
-    Info   :     > Initial solution: f   =3.623581896
-    Info   :     > Iteration   2864: fmin=0.077875850 f=0.077875946
-    Info   :     > Reached `reps' criterion.
-    Info   : Regularizing tessellation...
-    Info   :   - loop 1/2: 100% del=2
-    Info   : Writing tessellation...
-    Info   :     [o] Writing file `n10-id1.tess'...
-    Info   :     [o] Wrote file `n10-id1.tess'.
-    Info   : Elapsed time: 3.333 secs.
-    ========================================================================
-@end verbatim
-@c typical_end
+@example
+$ neper -T -n 10 -reg 1
+
+========================    N   e   p   e   r    =======================
+Info   : A software package for polycrystal generation and meshing.
+Info   : Version 4.0.0
+Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
+Info   : Running on 8 threads.
+Info   : <http://neper.info>
+Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
+Info   : No initialization file found (`/home/rquey/.neperrc').
+Info   : ---------------------------------------------------------------
+Info   : MODULE  -T loaded with arguments:
+Info   : [ini file] (none)
+Info   : [com line] -n 10 -reg 1
+Info   : ---------------------------------------------------------------
+Info   : Reading input data...
+Info   : Creating domain...
+Info   : Creating tessellation...
+Info   :   - Setting seeds...
+Info   :   - Generating crystal orientations...
+Info   :   - Running tessellation...
+Info   : Regularizing tessellation...
+Info   :   - loop 2/2: 100% del=14
+Info   : Writing results...
+Info   :     [o] Writing file `n10-id1.tess'...
+Info   :     [o] Wrote file `n10-id1.tess'.
+Info   : Elapsed time: 0.036 secs.
+========================================================================
+@end example
 
 @section Arguments
 
@@ -814,6 +811,7 @@ for a rotation about the centre and by an axis/angle pair.@*
 for a translation by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} and @code{@var{dist_z}}
 along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
 @mybullet @samp{renumber} renumbers a tessellation to remove cells that are empty or have a zero id.@*
+@mybullet @samp{unindex} assigns a zero cell id to voxels of orientation @math{(0,@,0,@,0)} (in Rodrigues vector).@*
 @mybullet @samp{oriaverage} sets the cell orientations (field @samp{**cell/*ori}) as the averages of the cell voxel orientations (field @samp{**oridata}).@*
 @mybullet @samp{crop(@var{primitive})} crops the raster tessellation by a primitive.
 The primitive can be:@*

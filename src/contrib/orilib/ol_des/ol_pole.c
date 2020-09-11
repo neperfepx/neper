@@ -734,6 +734,9 @@ ol_vect_ipfweight (double *v, double *weight)
 
   ol_e_set_zero (weight);
 
+  if (v[0] > v[1] && v[0] < v[1] + OL_EPS)
+    v[0] = v[1];
+
   if (v[0] > v[1])
     test = -1;
 

@@ -89,6 +89,20 @@ nev_data_tesr_voxedge (struct DATA *pData, char *attribute, char *datastring)
 }
 
 void
+nev_data_tesr_voidvox (struct DATA *pData, char *attribute, char *datastring)
+{
+  if (!strcmp (attribute, "col"))
+  {
+    (*pData).VoidCol = ut_alloc_1d_int (3);
+    ut_array_1d_int_fnscanf_wcard (datastring, (*pData).VoidCol, 3, "color");
+  }
+  else
+    ut_print_exprbug (attribute);
+
+  return;
+}
+
+void
 nev_data_tesr_cell2vox (struct TESR Tesr, char *attribute,
                        struct DATA TesrDataCell, struct DATA *pData)
 {

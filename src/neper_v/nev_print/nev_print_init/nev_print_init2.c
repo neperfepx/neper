@@ -325,7 +325,7 @@ nev_print_init_camera (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
                                (*pPrint).cameralookat);
   }
 
-  nev_print_init_camera_sky ((*pPrint).cameraskystring, (*pPrint).camerasky);
+  nev_print_init_camera_sky ((*pPrint).cameraskystring, dim, (*pPrint).camerasky);
 
   if (!strcmp ((*pPrint).cameraprojection, "default"))
   {

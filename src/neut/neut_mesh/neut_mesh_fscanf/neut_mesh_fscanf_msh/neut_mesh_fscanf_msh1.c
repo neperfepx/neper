@@ -9,7 +9,7 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
                       struct MESH *pMesh1D, struct MESH *pMesh2D,
                       struct MESH *pMesh3D, struct MESH *pMeshCo)
 {
-  int contiguous, *node_nbs = NULL;
+  int *node_nbs = NULL;
   char *mode = NULL;
   struct MESH *pMesh = NULL;
 
@@ -20,9 +20,9 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
   neut_mesh_free (pMesh3D);
   neut_mesh_free (pMeshCo);
 
-  neut_mesh_fscanf_msh_head (file, &contiguous, &mode);
+  neut_mesh_fscanf_msh_head (file, &mode);
 
-  neut_mesh_fscanf_msh_nodes (file, contiguous, mode, pNodes, &node_nbs);
+  neut_mesh_fscanf_msh_nodes (file, mode, pNodes, &node_nbs);
 
   neut_mesh_fscanf_msh_elts (file, mode, node_nbs, pMesh0D, pMesh1D, pMesh2D,
                              pMesh3D, pMeshCo, &pMesh);

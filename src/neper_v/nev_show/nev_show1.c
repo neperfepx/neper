@@ -90,10 +90,11 @@ nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
       ut_print_message (2, 0, "Cannot process `%s'.\n", argv[(*pi)]);
   }
 
-  else if (!strcmp (argv[(*pi)], "-showvox"))
+  else if (!strcmp (argv[(*pi)], "-showvox")
+        || !strcmp (argv[(*pi)], "-showvoidvox"))
   {
     if (!neut_tesr_isvoid (Tesr))
-      nev_show_tesr_vox (argv, pi, Tesr, pPrint);
+      nev_show_tesr_vox (argv[(*pi)], argv, pi, Tesr, pPrint);
     else
       ut_print_message (2, 0, "Cannot process `%s'.\n", argv[(*pi)]);
   }

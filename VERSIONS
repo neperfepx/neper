@@ -1,8 +1,11 @@
-New in 4.0.1-11 (11 Sep 2020):
-- module -T: fixed -loadtess, fixed -morpho "file(tess_file)", improved
-  -oriformat, made minor fixes.
-- module -M: fixed support for pre-version 4 tessellations, fixed -meshface.
-- module -V: made minor fixes.
+New in 4.0.1 (11 Sep 2020):
+- module -T: added -transform unindex, fixed -morpho "file(tess_file)",
+  improved -oriformat, made minor fixes.
+- module -M: added col_stdtriangle and col_rodrigues mesh keys, fixed loading
+  of pre-version 4 tessellations, fixed -meshface, made minor improvements.
+- module -V: added -showvoidvox and -datavoidvoxcol, made minor fixes and code
+  cleaning.
+- documentation: made minor fixes and improvements.
 
 New in 4.0.0 (30 Jul 2020):
 - general: Neper now has a companion program for polycrystal plasticity, the

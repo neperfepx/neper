@@ -18,7 +18,7 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
 
   neut_mesh_fprintf_msh_pre (Tess, fasetlist, &fasets, &fasetids, &fasetqty);
 
-  neut_mesh_fprintf_msh_header (file, mode, version, Mesh0D, Mesh1D, Mesh2D, Mesh3D);
+  neut_mesh_fprintf_msh_header (file, mode, version);
 
   if (!strcmp (version, "msh") || !strcmp (version, "msh2") || version[0] == '2')
   {

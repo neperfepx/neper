@@ -21,7 +21,7 @@ neut_mesh_fscanf_msh_nodes_head (FILE * file, int *pnodeqty)
 void
 neut_mesh_fscanf_msh_nodes_prop (FILE * file, char *mode, struct NODES *pNodes, int *node_nbs)
 {
-  int status, i, tmp;
+  int status, i;
   char c;
 
   (*pNodes).NodeCoo = ut_alloc_2d ((*pNodes).NodeQty + 1, 3);
@@ -29,7 +29,7 @@ neut_mesh_fscanf_msh_nodes_prop (FILE * file, char *mode, struct NODES *pNodes, 
   if (!strcmp (mode, "ascii"))
     for (i = 1; i <= (*pNodes).NodeQty; i++)
     {
-      status = fscanf (file, "%d", node_nbs ? node_nbs + i : &tmp);
+      status = fscanf (file, "%d", node_nbs + i);
       if (status != 1)
         abort ();
 
@@ -44,7 +44,7 @@ neut_mesh_fscanf_msh_nodes_prop (FILE * file, char *mode, struct NODES *pNodes, 
       abort ();
     for (i = 1; i <= (*pNodes).NodeQty; i++)
     {
-      if (fread (node_nbs ? node_nbs + i : &tmp, sizeof (int), 1, file) != 1)
+      if (fread (node_nbs + i, sizeof (int), 1, file) != 1)
         abort ();
       if (fread ((*pNodes).NodeCoo[i], sizeof (double), 3, file) != 3)
         abort ();
@@ -83,15 +83,12 @@ neut_mesh_fscanf_msh_elts_dim (FILE * file, char *mode, struct MESH *pMesh, int 
   {
     (*pMesh).Dimension = Dimension;
 
-    neut_mesh_fscanf_msh_elts_dim_prop (file, mode, pMesh,
-                                        node_nbs ? &elt_nbs : NULL,
+    neut_mesh_fscanf_msh_elts_dim_prop (file, mode, pMesh, &elt_nbs,
                                         MaxEltQty);
 
-    neut_mesh_init_elsets_2 (pMesh, node_nbs ? elt_nbs : NULL,
-                                    node_nbs ? &elset_nbs : NULL);
+    neut_mesh_init_elsets_2 (pMesh, elt_nbs, &elset_nbs);
 
-    if (node_nbs)
-      neut_mesh_renumber_continuous (pMesh, node_nbs, elt_nbs, elset_nbs);
+    neut_mesh_renumber_continuous (pMesh, node_nbs, elt_nbs, elset_nbs);
   }
 
   // recording elset_nbs in ElsetId

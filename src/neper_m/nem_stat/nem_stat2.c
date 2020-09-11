@@ -39,8 +39,13 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
                            invar[j], &vals, &valqty, &type);
 
       if (!status)
-        ut_array_1d_fprintf_nonl (file, vals, valqty,
-                                  !strcmp (type, "%f") ? "%.12f" : type);
+      {
+        if (!strncmp (invar[j], "col:", 4))
+          fprintf (file, "%.0f|%.0f|%.0f", vals[0], vals[1], vals[2]);
+        else
+          ut_array_1d_fprintf_nonl (file, vals, valqty,
+                                    !strcmp (type, "%f") ? "%.12f" : type);
+      }
       else if (!strcmp (invar[j], "2dmeshp"))
         fprintf (file, "%.12f %.12f %.12f", meshp[i][0], meshp[i][1],
                  meshp[i][2]);

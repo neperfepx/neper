@@ -12,46 +12,48 @@ Contrary to other modules, @mV{} processes the command arguments one after the o
 @sp 1
 Here is what a typical run of @mV{} looks like:
 
-@c typical_start
-@verbatim
-    $ neper -V n10-id1.tess,n10-id1.msh -dataelsetcol id -print img
+@sp 1
+@example
+$ neper -V n10-id1.tess,n10-id1.msh -dataelsetcol id -print img
 
-    ========================    N   e   p   e   r    =======================
-    Info   : A software package for polycrystal generation and meshing.
-    Info   : Version 3.5.0
-    Info   : Built with: gsl nlopt muparser
-    Info   : <http://neper.info> <http://neper.info/community>
-    Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
-    Info   : Loading initialization file `/home/rquey/.neperrc'...
-    Info   : ---------------------------------------------------------------
-    Info   : MODULE  -V loaded with arguments:
-    Info   : [ini file]
-    Info   : [com line] n10-id1.tess,n10-id1.msh -dataelsetcol id -print img
-    Info   : ---------------------------------------------------------------
-    Info   : Loading tessellation...
-    Info   :     [i] Parsing file `n10-id1.tess'...
-    Info   :     [i] Parsed file `n10-id1.tess'.
-    Info   : Loading mesh...
-    Info   :     [i] Parsing file `n10-id1.msh'...
-    Info   :     [i] Parsed file `n10-id1.msh'.
-    Info   : Reconstructing mesh...
-    Info   : Reading data (elset3d, col)...
-    Info   : Printing image...
-    Info   :     [o] Writing file `img.pov'...
-    Info   :   - Printing mesh...
-    Info   :     > Reducing data...
-    Info   :       . Number of 3D elt faces reduced by 90% (to 410).
-    Info   :       . Number of 3D elt edges reduced by 50% (to 615).
-    Info   :       . Number of 0D elts    reduced by 100% (to 0).
-    Info   :     [o] Wrote file `img.pov'.
-    Info   :   - Generating png file (1080x1080 pixels)...
-    Info   :     [o] Writing file `img.png'...
-    Info   :     [o] Wrote file `img.png'.
-    Info   : Printing scale...
-    Info   : Elapsed time: 1.620 secs.
-    ========================================================================
-@end verbatim
-@c typical_end
+========================    N   e   p   e   r    =======================
+Info   : A software package for polycrystal generation and meshing.
+Info   : Version 4.0.0
+Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
+Info   : Running on 8 threads.
+Info   : <http://neper.info>
+Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
+Info   : No initialization file found (`/home/rquey/.neperrc').
+Info   : ---------------------------------------------------------------
+Info   : MODULE  -V loaded with arguments:
+Info   : [ini file] (none)
+Info   : [com line] n10-id1.tess,n10-id1.msh -dataelsetcol id -print img
+Info   : ---------------------------------------------------------------
+Info   : Loading tessellation...
+Info   :     [i] Parsing file `n10-id1.tess'...
+Info   :     [i] Parsed file `n10-id1.tess'.
+Info   : Loading mesh...
+Info   :     [i] Parsing file `n10-id1.msh'...
+Info   :     [i] Parsed file `n10-id1.msh'.
+Info   : Reconstructing mesh...
+Info   : Reading data (elset3d, col)...
+Info   : Printing image...
+Info   :     [o] Writing file `img.pov'...
+Info   :   - Printing mesh...
+Info   :     > Reducing data...
+Info   :       . 3D...
+Info   :       . 2D...
+Info   :       . Number of 3D elt faces reduced by  90% (to 418).
+Info   :       . Number of 3D elt edges reduced by  50% (to 627).
+Info   :       . Number of 0D elts      reduced by 100% (to 0).
+Info   :     [o] Wrote file `img.pov'.
+Info   :   - Generating png file (1200x900 pixels)...
+Info   :     [o] Writing file `img.png'...
+Info   :     [o] Wrote file `img.png'.
+Info   : Printing scale...
+Info   : Elapsed time: 1.546 secs.
+========================================================================
+@end example
 
 @section Arguments
 
@@ -349,7 +351,7 @@ any, tessellation dependent}
 Set the colors of the tessellation seeds.  See option @option{-datacellcol}
 for the argument format.
 ,
-any, grey}
+any, gray}
 
 @opt{-dataseedcolscheme, char_string,
 Set the color scheme used to get colors from the data of
@@ -447,6 +449,13 @@ Provide as argument the name of a color that will be used for all
 points (@pxref{Colors and Color Maps}).
 ,
 any, black}
+
+It is also possible to assign a color to void voxels (i.e., voxels do not belong to any cell). (The edge radius and edge color of void voxels are the same as those of non-void voxels and are set with @option{-datavoxedgerad} and @option{-datavoxedgecol}.).
+
+@opt{-datavoidvoxcol, char_string,
+Set the color of void voxels (@pxref{Colors and Color Maps}).
+,
+any, gray}
 
 @subsection Mesh Data Loading and Rendering
 
@@ -805,7 +814,7 @@ any, point set dependent}
 Set the colors of the points.
 See option @option{-dataelt3dcol} for the argument format.
 ,
-any, grey}
+any, gray}
 
 @opt{-datapointcolscheme, char_string,
 Set the color scheme used to get colors from the data of
@@ -934,7 +943,7 @@ a file@comma{} or any expression based on the keys listed in
 any, all}
 
 @need 800
-For a tessellation, it is also possible to set visibility on a per-entity
+For a tessellation, it is also possible to set the visibility on a per-entity
 basis,
 
 @opt{-showpoly, char_string,
@@ -990,16 +999,26 @@ any, none}
 
 @optsec{-showfaceinter, logical,
 Show the interpolations of the tessellation faces (if any).
-The interpolation edges are printed in grey with a radius equal to
+The interpolation edges are printed in gray with a radius equal to
 the radius of the face edges.
 ,
 0 or 1, 0}
 
-For a raster tessellation, it is possible to set visibility of the individual
-voxels,
+For a raster tessellation, it is possible to set the visibility of the
+individual voxels of the tessellation and of the individual voxels that
+are void (that do not belong to any cell).
 
 @opt{-showvox, char_string,
-Specify the voxels to show. The argument can be: @samp{all} for
+Specify the (non-void) voxels to show. The argument can be: @samp{all} for
+all@comma{} @samp{none} for none@comma{}
+@samp{file(@var{file_name})} to load voxel identifiers from
+a file@comma{} or any expression based on the keys listed in
+@ref{Raster Tessellation Keys}.
+,
+any, all}
+
+@opt{-showvoidvox, char_string,
+Specify the void voxels to show. The argument can be: @samp{all} for
 all@comma{} @samp{none} for none@comma{}
 @samp{file(@var{file_name})} to load voxel identifiers from
 a file@comma{} or any expression based on the keys listed in
@@ -1128,7 +1147,7 @@ any, 25}
 Specify the sky vector of the camera (vertical direction).
 Provide as argument the coordinates combined with @samp{@SEPDEP{}}.
 ,
-any,0@SEPDEP{}0@SEPDEP{}1}
+any,0@SEPDEP{}1@SEPDEP{}0 in 2D and 0@SEPDEP{}0@SEPDEP{}1 in 3D}
 
 @opt{-cameraprojection, char_string,
 Specify the type of projection of the camera.

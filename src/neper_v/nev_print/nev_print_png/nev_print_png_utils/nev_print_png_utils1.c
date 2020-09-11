@@ -659,6 +659,9 @@ nev_print_png_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle
 
   double min, max;
 
+  neut_nodes_set_zero (&N);
+  neut_mesh_set_zero (&M);
+
   ut_list_break (scale, NEUT_SEP_DEP, &parts, &qty);
   if (qty < 2)
     ut_print_neperbug ();
@@ -696,12 +699,8 @@ nev_print_png_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle
     }
   }
 
-  neut_nodes_set_zero (&N);
-  neut_mesh_set_zero (&M);
-
   M.Dimension = 2;
-  M.EltType = ut_alloc_1d_char (4);
-  strcpy (M.EltType, "tri");
+  ut_string_string ("tri", &(M.EltType));
   M.EltOrder = 1;
 
   // adding bottom nodes

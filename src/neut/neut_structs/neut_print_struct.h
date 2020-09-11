@@ -52,6 +52,8 @@ extern "C"
     int showfaceinter;
     int *showpoly;
     int ***showvox;
+    char *showvoxstring;
+    char *showvoidvoxstring;
 
     int *showpoint;
 

@@ -7,26 +7,14 @@
 void
 neut_data_ori_color_rodrigues (double **data, int size, char *scheme, int **Col)
 {
-  int i, j, varqty = 0;
-  double length;
+  int i, varqty = 0;
   char *fct = NULL, **vars = NULL, **vals = NULL;
 
   ut_string_function (scheme ? scheme : (char *) "rodrigues", &fct, &vars, &vals, &varqty);
 
-  length = !scheme? OL_S2 - 1 : !varqty? OL_S2 - 1 : atof (vals[0]);
-
-#pragma omp parallel for private(j)
+#pragma omp parallel for
   for (i = 1; i <= size; i++)
-  {
-    double *R = ol_R_alloc ();
-    ol_q_R (data[i], R);
-    ol_R_Rcrysym (R, (char *) "cubic", R);
-    for (j = 0; j < 3; j++)
-      Col[i][j] =
-        ut_num_bound (ut_num_d2ri (127.5 * (R[j] + length) / length), 0,
-                      255);
-    ol_R_free (R);
-  }
+    neut_ori_rodriguescol_int (data[i], (char *) "cubic", Col[i]);
 
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vals, varqty);

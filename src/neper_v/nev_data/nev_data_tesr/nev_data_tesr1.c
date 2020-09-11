@@ -27,8 +27,12 @@ nev_data_tesr (struct SIM Sim, struct TESR *pTesr, char *entity, char *attribute
   else if (!strcmp (entity, "vox"))
     nev_data_tesr_vox (Sim, pTesr, pData, attribute, datastring);
 
+  else if (!strcmp (entity, "voidvox"))
+    nev_data_tesr_voidvox (pData, attribute, datastring);
+
   else if (!strcmp (entity, "voxedge"))
     nev_data_tesr_voxedge (pData, attribute, datastring);
+
   else
     abort ();
 

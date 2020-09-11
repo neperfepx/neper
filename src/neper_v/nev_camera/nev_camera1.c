@@ -8,29 +8,13 @@ void
 nev_camera (char **argv, int *pi, struct PRINT *pPrint)
 {
   if (!strcmp (argv[*pi], "-cameracoo"))
-  {
-    (*pi)++;
-    (*pPrint).cameracoostring =
-      ut_realloc_1d_char ((*pPrint).cameracoostring, strlen (argv[*pi]) + 1);
-    strcpy ((*pPrint).cameracoostring, argv[*pi]);
-  }
+    ut_string_string (argv[++(*pi)], &(*pPrint).cameracoostring);
 
   else if (!strcmp (argv[*pi], "-cameralookat"))
-  {
-    (*pi)++;
-    (*pPrint).cameralookatstring =
-      ut_realloc_1d_char ((*pPrint).cameralookatstring,
-                          strlen (argv[*pi]) + 1);
-    strcpy ((*pPrint).cameralookatstring, argv[*pi]);
-  }
+    ut_string_string (argv[++(*pi)], &(*pPrint).cameralookatstring);
 
   else if (!strcmp (argv[*pi], "-camerasky"))
-  {
-    (*pi)++;
-    (*pPrint).cameraskystring =
-      ut_realloc_1d_char ((*pPrint).cameraskystring, strlen (argv[*pi]) + 1);
-    strcpy ((*pPrint).cameraskystring, argv[*pi]);
-  }
+    ut_string_string (argv[++(*pi)], &(*pPrint).cameraskystring);
 
   else if (strcmp (argv[*pi], "-cameraangle") == 0)
     ut_string_real (argv[++(*pi)], &((*pPrint).cameraangle));
@@ -39,10 +23,7 @@ nev_camera (char **argv, int *pi, struct PRINT *pPrint)
     sprintf ((*pPrint).cameraprojection, "%s", argv[++(*pi)]);
 
   else
-  {
     ut_print_message (2, 0, "Unknown command %s\n", argv[(*pi)]);
-    abort ();
-  }
 
   return;
 }

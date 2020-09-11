@@ -537,3 +537,52 @@ neut_ori_fprintf (FILE *file, char *desconv, double **q0, int qty, char *prefix)
 
   return;
 }
+
+void
+neut_ori_rodriguescol_R (double *R, char *crysym, double *col)
+{
+  int i;
+
+  if (!crysym || !strcmp (crysym, "cubic"))
+  {
+    if (crysym)
+      ol_R_Rcrysym (R, crysym, R);
+
+    for (i = 0; i < 3; i++)
+      col[i] =
+        ut_num_bound (ut_num_d2ri (127.5 * (R[i] + OL_S2 - 1) / (OL_S2 - 1)), 0,
+                      255);
+  }
+
+  return;
+}
+
+void
+neut_ori_rodriguescol_int (double *q, char *crysym, int *col)
+{
+  int i;
+  double *tmp = ut_alloc_1d (3);
+
+  neut_ori_rodriguescol (q, crysym, tmp);
+
+  for (i = 0; i < 3; i++)
+    col[i] = ut_num_d2ri (tmp[i]);
+
+  ut_free_1d (&tmp);
+
+  return;
+}
+
+void
+neut_ori_rodriguescol (double *q, char *crysym, double *col)
+{
+  double *R = ol_R_alloc ();
+
+  ol_q_R (q, R);
+
+  neut_ori_rodriguescol_R (R, crysym, col);
+
+  ol_R_free (R);
+
+  return;
+}

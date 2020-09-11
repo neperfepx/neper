@@ -88,52 +88,50 @@ Statistical data can be obtained on the meshes (options beginning with
 @option{-stat}).
 
 Here is what a typical run of @mM{} looks like:
-@sp 2
+@sp 1
 
-@c typical_start
-@verbatim
-    $ neper -M n10-id1.tess
+@example
+$ neper -M n10-id1.tess
 
-    ========================    N   e   p   e   r    =======================
-    Info   : A software package for polycrystal generation and meshing.
-    Info   : Version 3.5.0
-    Info   : Built with: gsl nlopt muparser
-    Info   : <http://neper.info> <http://neper.info/community>
-    Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
-    Info   : Loading initialization file `/home/rquey/.neperrc'...
-    Info   : ---------------------------------------------------------------
-    Info   : MODULE  -M loaded with arguments:
-    Info   : [ini file] -gmsh /foo/bar/bin/gmsh
-    Info   : [com line] n10-id1.tess
-    Info   : ---------------------------------------------------------------
-    Info   : Reading input data...
-    Info   :   - Reading arguments...
-    Info   : Loading input data...
-    Info   :   - Loading tessellation...
-    Info   :     [i] Parsing file `n10-id1.tess'...
-    Info   :     [i] Parsed file `n10-id1.tess'.
-    Info   : Meshing...
-    Info   :   - Preparing... (cl = 0.2321) 100%
-    Info   :   - 0D meshing... 100%
-    Info   :   - 1D meshing... 100%
-    Info   :   - 2D meshing... 100% (0.72|0.87/83%|11%| 6%)
-    Info   :     > Checking 2D mesh for pinching out...
-    Info   :   - 3D meshing... 100% (0.89|0.91/100%| 0%| 0%)
-    Info   : Searching nsets...
-    Info   : Writing mesh results...
-    Info   :   - Preparing mesh...
-    Info   :   - Mesh properties:
-    Info   :     > Node number:      287
-    Info   :     > Elt  number:     1006
-    Info   :     > Mesh volume:    1.000
-    Info   :   - Writing mesh...
-    Info   :     [o] Writing file `n10-id1.msh'...
-    Info   :     [o] Wrote file `n10-id1.msh'.
-    Info   : Elapsed time: 8.537 secs.
-    ========================================================================
-
-@end verbatim
-@c typical_end
+========================    N   e   p   e   r    =======================
+Info   : A software package for polycrystal generation and meshing.
+Info   : Version 4.0.0
+Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
+Info   : Running on 8 threads.
+Info   : <http://neper.info>
+Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
+Info   : No initialization file found (`/home/rquey/.neperrc').
+Info   : ---------------------------------------------------------------
+Info   : MODULE  -M loaded with arguments:
+Info   : [ini file] (none)
+Info   : [com line] n10-id1.tess
+Info   : ---------------------------------------------------------------
+Info   : Reading input data...
+Info   :   - Reading arguments...
+Info   : Loading input data...
+Info   :   - Loading tessellation...
+Info   :     [i] Parsing file `n10-id1.tess'...
+Info   :     [i] Parsed file `n10-id1.tess'.
+Info   : Meshing...
+Info   :   - Preparing... (cl = 0.2321) 100%
+Info   :   - 0D meshing... 100%
+Info   :   - 1D meshing... 100%
+Info   :   - 2D meshing... 100% (0.69|0.86/92%| 4%| 4%)
+Info   :   - Fixing 2D-mesh pinches...
+Info   :   - 3D meshing... 100% (0.89|0.91/100%| 0%| 0%)
+Info   : Searching nsets and fasets...
+Info   : Writing mesh results...
+Info   :   - Preparing mesh...
+Info   :   - Mesh properties:
+Info   :     > Node number:      295
+Info   :     > Elt  number:     1063
+Info   :     > Mesh volume:    1.000
+Info   :   - Writing mesh...
+Info   :     [o] Writing file `n10-id1.msh'...
+Info   :     [o] Wrote file `n10-id1.msh'.
+Info   : Elapsed time: 1.127 secs.
+========================================================================
+@end example
 
 @page
 @section Arguments

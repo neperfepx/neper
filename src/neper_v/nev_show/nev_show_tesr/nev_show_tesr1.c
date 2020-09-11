@@ -78,55 +78,63 @@ nev_show_tesr_cell (char **argv, int *pi, struct TESR Tesr,
 }
 
 void
-nev_show_tesr_vox (char **argv, int *pi, struct TESR Tesr,
+nev_show_tesr_vox (char *option, char **argv, int *pi, struct TESR Tesr,
                    struct PRINT *pPrint)
 {
   int i, j, k, varqty;
+  char *expr = NULL;
   char **vars = NULL;
 
   (*pi)++;
 
-  (*pPrint).showvox =
-    ut_alloc_3d_int (Tesr.size[0] + 1, Tesr.size[1] + 1, Tesr.size[2] + 1);
+  ut_string_string (argv[(*pi)], &expr);
+  if (!strcmp (expr, "all"))
+    ut_string_string ("1", &expr);
+  else if (!strcmp (expr, "none"))
+    ut_string_string ("0", &expr);
+
+  if (!strcmp (option, "-showvox"))
+    ut_string_string (expr, &(*pPrint).showvoxstring);
+  else if (!strcmp (option, "-showvoidvox"))
+    ut_string_string (expr, &(*pPrint).showvoidvoxstring);
+  else
+    abort ();
+
+  if (!(*pPrint).showvox)
+    (*pPrint).showvox =
+      ut_alloc_3d_int (Tesr.size[0] + 1, Tesr.size[1] + 1, Tesr.size[2] + 1);
 
   neut_tesr_var_list ("vox", &vars, &varqty);
 
-  if (!strcmp (argv[(*pi)], "all") || !strcmp (argv[(*pi)], "1"))
-    ut_array_3d_int_set ((*pPrint).showvox, Tesr.size[0] + 1,
-                         Tesr.size[1] + 1, Tesr.size[2] + 1, 1);
-  else if (!strcmp (argv[(*pi)], "none") || !strcmp (argv[(*pi)], "0"))
-    ut_array_3d_int_set ((*pPrint).showvox, Tesr.size[0] + 1,
-                         Tesr.size[1] + 1, Tesr.size[2] + 1, 0);
-  else
-  {
 #pragma omp parallel for schedule(dynamic) private (i,j,k)
-    for (k = 1; k <= Tesr.size[2]; k++)
-      for (j = 1; j <= Tesr.size[1]; j++)
-        for (i = 1; i <= Tesr.size[0]; i++)
-          if (Tesr.VoxCell[i][j][k])
-          {
-            int l, pos;
-            double res;
-            double *vals = ut_alloc_1d (varqty);
+  for (k = 1; k <= Tesr.size[2]; k++)
+    for (j = 1; j <= Tesr.size[1]; j++)
+      for (i = 1; i <= Tesr.size[0]; i++)
+        if ((!strcmp (option, "-showvox") && Tesr.VoxCell[i][j][k])
+         || (!strcmp (option, "-showvoidvox") && !Tesr.VoxCell[i][j][k]))
+        {
+          int l, pos;
+          double res;
+          double *vals = ut_alloc_1d (varqty);
 
-            neut_tesr_pos3_vox (Tesr, i, j, k, &pos);
-            for (l = 0; l < varqty; l++)
-              if (strstr (argv[(*pi)], vars[l]))
-                neut_tesr_var_val_one (Tesr, "vox", pos, vars[l], vals + l,
-                                       NULL);
+          neut_tesr_pos3_vox (Tesr, i, j, k, &pos);
+          for (l = 0; l < varqty; l++)
+            if (strstr (expr, vars[l]))
+              neut_tesr_var_val_one (Tesr, "vox", pos, vars[l], vals + l,
+                                     NULL);
 
-            if (!ut_math_eval (argv[(*pi)], varqty, vars, vals, &res))
-              (*pPrint).showvox[i][j][k] = res;
-            else
-              ut_print_message (2, 0,
-                                "Expression `%s' could not be processed.\n",
-                                argv[(*pi)]);
+          if (!ut_math_eval (expr, varqty, vars, vals, &res))
+            (*pPrint).showvox[i][j][k] = res;
+          else
+            ut_print_message (2, 0,
+                              "Expression `%s' could not be processed.\n",
+                              expr);
 
-            ut_free_1d (&vals);
-          }
-  }
+          ut_free_1d (&vals);
+        }
 
   ut_free_2d_char (&vars, varqty);
+  ut_free_1d_char (&expr);
 
   return;
 }

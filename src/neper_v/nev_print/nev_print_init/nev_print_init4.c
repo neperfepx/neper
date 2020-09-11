@@ -36,6 +36,7 @@ nev_print_init_camera_coo (double **bbox, double *centre, double *v, char *expr,
   int i, status, var_qty, qty;
   double *X = ut_alloc_1d (3);
   double length, *L = ut_alloc_1d (3);
+
   ut_list_break (expr, NEUT_SEP_DEP, &expr2, &qty);
   if (qty != 3)
     ut_print_message (2, 2, "Expression `%s' could not be processed.\n",

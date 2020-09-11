@@ -41,6 +41,8 @@ neut_data_set_default (struct DATA *pData)
   (*pData).BCol = NULL;
   (*pData).BRad = -1;
 
+  (*pData).VoidCol = NULL;
+
   (*pData).Scale = NULL;
   (*pData).ScaleTitle = NULL;
 
@@ -84,6 +86,8 @@ neut_data_free (struct DATA *pData)
 
   ut_free_1d_int (&(*pData).BCol);
   (*pData).BRad = 0;
+
+  ut_free_1d_int (&(*pData).VoidCol);
 
   ut_free_1d_char (&(*pData).Scale);
   ut_free_1d_char (&(*pData).ScaleTitle);

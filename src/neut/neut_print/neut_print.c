@@ -23,9 +23,8 @@ neut_print_set_default (struct PRINT *pPrint)
   (*pPrint).cameralookat = ut_alloc_1d (3);
 
   (*pPrint).cameraskystring = ut_alloc_1d_char (100);
-  sprintf ((*pPrint).cameraskystring, "0%s0%s1", NEUT_SEP_DEP, NEUT_SEP_DEP);
+  ut_string_string ("default", &(*pPrint).cameraskystring);
   (*pPrint).camerasky = ut_alloc_1d (3);
-  (*pPrint).camerasky[2] = 1;
 
   (*pPrint).cameraangle = 25;
 
@@ -70,6 +69,8 @@ neut_print_set_default (struct PRINT *pPrint)
   (*pPrint).showshadow = -1;
   (*pPrint).showcsys = -1;
   (*pPrint).showvox = NULL;
+  (*pPrint).showvoxstring = NULL;
+  (*pPrint).showvoidvoxstring = NULL;
 
   (*pPrint).datareduction = 1;
 

@@ -5,7 +5,7 @@
 #include"neut_mesh_fscanf_msh_.h"
 
 void
-neut_mesh_fscanf_msh_head (FILE * file, int *pcontiguous, char **pmode)
+neut_mesh_fscanf_msh_head (FILE * file, char **pmode)
 {
   int status, type;
   char string[1000];
@@ -47,8 +47,6 @@ neut_mesh_fscanf_msh_head (FILE * file, int *pcontiguous, char **pmode)
       abort ();
   }
 
-  (*pcontiguous) = 0;
-
   status = fscanf (file, "%s", string);
   if (status != 1)
     abort ();
@@ -59,9 +57,6 @@ neut_mesh_fscanf_msh_head (FILE * file, int *pcontiguous, char **pmode)
     {
       if (fscanf (file, "%s", string) != 1)
         abort ();
-
-      if (strcmp (string, "contiguous") == 0)
-        (*pcontiguous) = 1;
     }
     while (strcmp (string, "$EndComments") != 0);
 
@@ -79,16 +74,13 @@ neut_mesh_fscanf_msh_head (FILE * file, int *pcontiguous, char **pmode)
 }
 
 void
-neut_mesh_fscanf_msh_nodes (FILE * file, int contiguous, char *mode,
+neut_mesh_fscanf_msh_nodes (FILE * file, char *mode,
                             struct NODES *pNodes, int **pnode_nbs)
 {
   neut_mesh_fscanf_msh_nodes_head (file, &(*pNodes).NodeQty);
 
-  if (!contiguous)
-  {
-    (*pnode_nbs) = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
-    (*pnode_nbs)[0] = (*pNodes).NodeQty;
-  }
+  (*pnode_nbs) = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+  (*pnode_nbs)[0] = (*pNodes).NodeQty;
 
   neut_mesh_fscanf_msh_nodes_prop (file, mode, pNodes, *pnode_nbs);
 

@@ -31,8 +31,8 @@ nev_data (char **argv, int *pi, struct SIM Sim, struct TESS *pTess,
     || !strcmp (entity, "seed")) && !neut_tess_isvoid (*pTess))
       nev_data_tess (Sim, pTess, entity, attribute, argv[++(*pi)], TessData);
 
-  else if ((!strcmp (entity, "cell") || !strncmp (entity, "vox", 3))
-      && !neut_tesr_isvoid (*pTesr))
+  else if ((!strcmp (entity, "cell") || !strncmp (entity, "vox", 3)
+         || !strncmp (entity, "voidvox", 7)) && !neut_tesr_isvoid (*pTesr))
     nev_data_tesr (Sim, pTesr, entity, attribute, argv[++(*pi)], pTesrData);
 
   else if (!strcmp (entity, "node"))

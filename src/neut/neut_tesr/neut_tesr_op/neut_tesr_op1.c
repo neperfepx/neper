@@ -1659,3 +1659,21 @@ neut_tesr_oriaverage (struct TESR *pTesr)
 
   return;
 }
+
+void
+neut_tesr_unindex (struct TESR *pTesr)
+{
+  int i, j, k;
+
+  for (i = 1; i <= (*pTesr).size[0]; i++)
+    for (j = 1; j <= (*pTesr).size[1]; j++)
+      for (k = 1; k <= (*pTesr).size[2]; k++)
+        if ((*pTesr).VoxCell[i][j][k] != 0)
+        {
+          if (ut_num_equal ((*pTesr).VoxOri[i][j][k][0], 1, 1e-6)
+           || ut_num_equal ((*pTesr).VoxOri[i][j][k][0], -1, 1e-6))
+            (*pTesr).VoxCell[i][j][k] = 0;
+        }
+
+  return;
+}

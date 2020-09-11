@@ -35,6 +35,10 @@ extern "C"
   extern void neut_ori_desconv_expr (char *des, char *conv, char **pexpr);
   extern void neut_ori_desconv_expr_fepx (char *des, char *conv, char **pexpr);
 
+  extern void neut_ori_rodriguescol (double *q, char *crysym, double *col);
+  extern void neut_ori_rodriguescol_R (double *R, char *crysym, double *col);
+  extern void neut_ori_rodriguescol_int (double *q, char *crysym, int *col);
+
 #ifdef __cplusplus
 }
 #endif

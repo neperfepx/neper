@@ -110,6 +110,8 @@ neut_data_string_entity_attribute (char *string, char *entity, char *attribute)
     strcpy (entity, "voxedge");
   else if (!strncmp (stringcpy, "vox", 3))
     strcpy (entity, "vox");
+  else if (!strncmp (stringcpy, "voidvox", 7))
+    strcpy (entity, "voidvox");
   else if (!strncmp (stringcpy, "csys", 4))
     strcpy (entity, "csys");
   else if (!strncmp (stringcpy, "pointedge", 9))
@@ -476,6 +478,7 @@ neut_data_colscheme_istinycolormap (char *colscheme)
    || !strcmp (colscheme, "hot")
    || !strcmp (colscheme, "jet")
    || !strcmp (colscheme, "gray")
+   || !strcmp (colscheme, "grey")
    || !strcmp (colscheme, "magma")
    || !strcmp (colscheme, "inferno")
    || !strcmp (colscheme, "plasma")
@@ -500,7 +503,8 @@ neut_data_colscheme_tinycolormaptype (char *colscheme)
     type = tinycolormap::ColormapType::Hot;
   else if (!strcmp (colscheme, "Jet") || !strcmp (colscheme, "jet"))
     type = tinycolormap::ColormapType::Jet;
-  else if (!strcmp (colscheme, "Gray") || !strcmp (colscheme, "gray"))
+  else if (!strcmp (colscheme, "Gray") || !strcmp (colscheme, "gray")
+        || !strcmp (colscheme, "Grey") || !strcmp (colscheme, "grey"))
     type = tinycolormap::ColormapType::Gray;
   else if (!strcmp (colscheme, "Magma") || !strcmp (colscheme, "magma"))
     type = tinycolormap::ColormapType::Magma;

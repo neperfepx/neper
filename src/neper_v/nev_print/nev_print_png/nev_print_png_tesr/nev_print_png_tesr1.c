@@ -8,7 +8,7 @@ void
 nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
                 struct DATA TesrData)
 {
-  int i, j, k, elt, dim;
+  int i, j, k, elt, dim, voidelset = Tesr.CellQty + 1;
   double *size = ut_alloc_1d (3);
   struct TESS Tess;
   struct NODES Nodes;
@@ -42,28 +42,23 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
   for (k = 1; k <= Tesr.size[2]; k++)
     for (j = 1; j <= Tesr.size[1]; j++)
       for (i = 1; i <= Tesr.size[0]; i++)
-        Mesh[dim].EltElset[++elt] = (!Print.showvox
-                                     || Print.showvox[i][j][k]) ? Tesr.
-          VoxCell[i][j][k] : 0;
+      {
+        elt++;
+        if (Tesr.VoxCell[i][j][k]
+         && (!Print.showvoxstring || Print.showvox[i][j][k]))
+          Mesh[dim].EltElset[elt] = Tesr.VoxCell[i][j][k];
+        else if (Print.showvoidvoxstring && Print.showvox[i][j][k])
+          Mesh[dim].EltElset[elt] = voidelset;
+      }
 
   neut_mesh_init_elsets (Mesh + dim);
+
   neut_mesh_rmelset (Mesh + dim, Nodes, 0);
+
   neut_nodes_rmorphans (&Nodes, Mesh + dim, NULL);
   neut_mesh_init_nodeelts (Mesh + dim, Nodes.NodeQty);
 
-  if (dim == 1)
-  {
-    Print.shownode = ut_alloc_1d_int (Nodes.NodeQty + 1);
-    ut_array_1d_int_set (Print.shownode + 1, Nodes.NodeQty, 1);
-    Print.showelt1d = ut_alloc_1d_int (Mesh[dim].EltQty + 1);
-    if (Print.showedge)
-#pragma omp parallel for
-      for (i = 1; i <= Mesh[dim].EltQty; i++)
-        Print.showelt1d[i] = Print.showedge[Mesh[dim].EltElset[i]];
-    else
-      ut_array_1d_int_set (Print.showelt1d + 1, Mesh[dim].EltQty, 1);
-  }
-  else if (dim == 2)
+  if (dim == 2)
   {
     Print.showelt2d = ut_alloc_1d_int (Mesh[dim].EltQty + 1);
     if (Print.showface)
@@ -72,6 +67,10 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
         Print.showelt2d[i] = Print.showface[Mesh[dim].EltElset[i]];
     else
       ut_array_1d_int_set (Print.showelt2d + 1, Mesh[dim].EltQty, 1);
+
+    for (i = 1; i <= Mesh[dim].EltQty; i++)
+      if (Mesh[dim].EltElset[i] == voidelset)
+        Print.showelt2d[i] = 1;
   }
   else if (dim == 3)
   {
@@ -82,6 +81,10 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
         Print.showelt3d[i] = Print.showpoly[Mesh[dim].EltElset[i]];
     else
       ut_array_1d_int_set (Print.showelt3d + 1, Mesh[dim].EltQty, 1);
+
+    for (i = 1; i <= Mesh[dim].EltQty; i++)
+      if (Mesh[dim].EltElset[i] == voidelset)
+        Print.showelt3d[i] = 1;
   }
 
   MeshData[dim].Qty = Mesh[dim].EltQty;
@@ -100,42 +103,23 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
                                               1) * (Tesr.size[1] *
                                                     Tesr.size[0]);
 
-    ut_array_1d_int_memcpy (TesrData.Col[id], 3, MeshData[dim].Col[i]);
+    if (Tesr.VoxCell[pos[0]][pos[1]][pos[2]])
+      ut_array_1d_int_memcpy (TesrData.Col[id], 3, MeshData[dim].Col[i]);
+    else
+      ut_array_1d_int_memcpy (TesrData.VoidCol, 3, MeshData[dim].Col[i]);
+
     ut_free_1d_int (&pos);
     ut_free_1d (&coo);
   }
 
-  if (dim == 1)
-  {
-    NodeData.Qty = Nodes.NodeQty;
-    NodeData.Col = ut_alloc_2d_int (NodeData.Qty + 1, 3);
-    MeshData[dim].Rad = ut_alloc_1d (MeshData[dim].Qty + 1);
-    ut_array_1d_set (MeshData[dim].Rad + 1, MeshData[dim].Qty,
-                     Tesr.vsize[0]);
-    NodeData.Rad = ut_alloc_1d (NodeData.Qty + 1);
-    ut_array_1d_set (NodeData.Rad + 1, NodeData.Qty, TesrData.BRad);
-
-    NodeData.Col = ut_alloc_2d_int (NodeData.Qty + 1, 3);
-    for (i = 1; i <= NodeData.Qty; i++)
-      ut_array_1d_int_memcpy (TesrData.BCol, 3, NodeData.Col[i]);
-  }
-
-  if (dim >= 2)
-  {
-    MeshData[dim].BRad = TesrData.BRad;
-    ut_array_1d_int_memcpy (TesrData.BCol, 3, MeshData[dim].BCol);
-  }
+  MeshData[dim].BRad = TesrData.BRad;
+  ut_array_1d_int_memcpy (TesrData.BCol, 3, MeshData[dim].BCol);
 
   NodeData.Qty = Nodes.NodeQty;
   NodeData.Coo = ut_alloc_2d (Nodes.NodeQty + 1, 3);
   ut_array_2d_memcpy (Nodes.NodeCoo + 1, Nodes.NodeQty, 3, NodeData.Coo + 1);
 
-  if (dim == 1)
-  {
-    nev_print_png_mesh_nodes (file, Print, Nodes, Mesh, NodeData);
-    nev_print_png_mesh_1d (file, Print, Tess, Mesh, NodeData, MeshData);
-  }
-  else if (dim == 2)
+  if (dim == 2)
     nev_print_png_mesh_2d (file, Print, Nodes, Mesh, NodeData, MeshData);
   else if (dim == 3)
     nev_print_png_mesh_3d (file, Print, Nodes, Mesh, NodeData, MeshData, &tmp);

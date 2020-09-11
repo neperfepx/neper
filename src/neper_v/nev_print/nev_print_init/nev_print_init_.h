@@ -48,4 +48,4 @@ extern void nev_print_init_camera_lookat (char *expr, struct TESS Tess,
                                           struct NODES Nodes, struct MESH Mesh,
                                           struct PRINT *pPrint);
 extern void nev_print_init_camera_v (int dim, double *v);
-extern void nev_print_init_camera_sky (char *expr, double *coo);
+extern void nev_print_init_camera_sky (char *expr, int dim, double *coo);

@@ -342,6 +342,12 @@ nev_print_init_data_tesr (struct TESR Tesr, struct DATA *pTesrData)
   if (!(*pTesrData).BCol)
     (*pTesrData).BCol = ut_alloc_1d_int (3);
 
+  if (!(*pTesrData).VoidCol)
+  {
+    (*pTesrData).VoidCol = ut_alloc_1d_int (3);
+    ut_array_1d_int_set ((*pTesrData).VoidCol, 3, 128);
+  }
+
   return;
 }
 
@@ -507,19 +513,32 @@ nev_print_init_camera_coo_points (struct POINT Point, char *expr, double *coo)
 }
 
 void
-nev_print_init_camera_sky (char *expr, double *coo)
+nev_print_init_camera_sky (char *expr, int dim, double *coo)
 {
-  char **vals = NULL;
   int i, qty;
+  char **vals = NULL;
 
-  ut_list_break (expr, NEUT_SEP_DEP, &vals, &qty);
+  if (!strcmp (expr, "default"))
+  {
+    if (dim == 2)
+      ut_array_1d_set_3 (coo, 0, 1, 0);
+    else if (dim == 3)
+      ut_array_1d_set_3 (coo, 0, 0, 1);
+    else
+      abort ();
+  }
 
-  if (qty != 3)
-    ut_print_message (2, 2, "Expression `%s' could not be processed.\n",
-                      expr);
+  else
+  {
+    ut_list_break (expr, NEUT_SEP_DEP, &vals, &qty);
 
-  for (i = 0; i < 3; i++)
-    ut_string_real (vals[i], &(coo[i]));
+    if (qty != 3)
+      ut_print_message (2, 2, "Expression `%s' could not be processed.\n",
+                        expr);
+
+    for (i = 0; i < 3; i++)
+      ut_string_real (vals[i], coo + i);
+  }
 
   ut_free_2d_char (&vals, qty);
 

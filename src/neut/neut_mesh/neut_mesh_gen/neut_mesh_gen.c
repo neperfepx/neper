@@ -943,7 +943,7 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
   }
   else if (!strcmp (entity, "node"))
   {
-    (*pvarqty) = 11;
+    (*pvarqty) = 13;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
     strcpy ((*pvar)[id++], "id");
     strcpy ((*pvar)[id++], "x");
@@ -956,6 +956,8 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[id++], "elt2d_shown");
     strcpy ((*pvar)[id++], "elt3d_shown");
     strcpy ((*pvar)[id++], "part");
+    strcpy ((*pvar)[id++], "col_rodrigues");
+    strcpy ((*pvar)[id++], "col_stdtriangle");
   }
   else
     ut_print_neperbug ();
@@ -2066,6 +2068,27 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     {
       (*pvals)[0] = Nodes.NodePart ? Nodes.NodePart[id] : 0;
       strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "col_rodrigues"))
+    {
+      neut_ori_rodriguescol_R (Nodes.NodeCoo[id], NULL, *pvals);
+      (*pvalqty) = 3;
+    }
+    else if (!strcmp (var, "col_stdtriangle"))
+    {
+      int *col = ut_alloc_1d_int (3);
+      double *xy = ut_alloc_1d (2), *v = ut_alloc_1d (3), *weight = ut_alloc_1d (2);
+      ut_array_1d_set_2 (xy, Nodes.NodeCoo[id][1], Nodes.NodeCoo[id][0]);
+      ol_stprojxy_vect (xy, v);
+      ol_vect_ipfweight (v, weight);
+      ol_ipfweight_rgb (weight, col);
+      ut_array_1d_memcpy_fromint (col, 3, *pvals);
+      (*pvalqty) = 3;
+      strcpy (typetmp, "%d");
+      ut_free_1d_int (&col);
+      ut_free_1d (&v);
+      ut_free_1d (&xy);
+      ut_free_1d (&weight);
     }
     else
       status = -1;
