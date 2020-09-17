@@ -23,6 +23,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2020
 ----
 
+- S Tian, R Cao, J Zhou, F Xue, Y Liu, P Zhang, ZM Sun, *A comparative study on the growth behaviors of Sn whiskers and hillocks in a Sn-Al alloy coating under different environments*, **Journal of Alloys and Compounds**, doi://10.1016/j.jallcom.2020.157101.
+- Y Guo, J He, H Jiang, Y Zhou, F Jin, C Song, *A Simple Approach for Generating Random Aggregate Model of Concrete Based on Laguerre Tessellation and Its Application Analyses*, **Materials**, vol. 13, pp. 3896, 2020.
 - AM Schönhöbel, R Madugundo, JM Barandiarán, GC Hadjipanayis, D Palanisamy, T Schwarz, B Gault, D Raabe, K Skokov, O Gutfleisch, J Fischbacher and T Schrefl, *Nanocrystalline Sm-based 1: 12 magnets*, **Acta Materialia**, doi://10.1016/j.actamat.2020.08.075.
 - Z Pawlas, I Karafiatova and L Heller, *Random tessellations marked with crystallographic orientations*, **Spatial Statistics**, doi://10.1016/j.spasta.2020.100469.
 - M Bouchedjra, A Amrouche, T Kanit and MEA Belouchrani, *Microstructural features effect on the evolution of cyclic damage for polycrystalline metals using a multiscale approach*, **International Journal of Damage Mechanics**, doi://10.1177/1056789520950409.
