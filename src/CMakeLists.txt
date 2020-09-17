@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set(NEPER_VERSION \"4.0.1\")
+set(NEPER_VERSION \"4.0.2\")
 
 # should we use the optional libraries?
 set(HAVE_GSL ON)
@@ -256,7 +256,7 @@ add_test(Tm2_domain_cube           ./neper --rcfile none -T -n 2::2 -domain "cub
 add_test(Tm2_domain_cylinder       ./neper --rcfile none -T -n 2::2 -domain "cylinder(1,2,10)")
 add_test(Tm2_domain_sphere         ./neper --rcfile none -T -n 2::2 -domain "sphere(2,10)")
 add_test(Tm2_morpho_voronoi        ./neper --rcfile none -T -n 2::2 -morpho voronoi::voronoi)
-add_test(Tm2_morpho_centroidal     ./neper --rcfile none -T -n 2::2 -morpho centroidal::centroidal)
+add_test(Tm2_morpho_centroidal     ./neper --rcfile none -T -n 2::2 -morpho voronoi::centroidal)
 if(HAVE_NLOPT)
 add_test(Tm2_morpho_gg             ./neper --rcfile none -T -n 2::2 -morpho gg::gg -morphooptistop itermax=10::itermax=10)
 add_test(Tm2_morpho_columnar_gg    ./neper --rcfile none -T -n 2::2 -morpho "columnar(x),gg::columnar(y),gg" -morphooptistop itermax=10::itermax=10)
@@ -281,7 +281,7 @@ add_test(Tm3_domain_cube           ./neper --rcfile none -T -n 2::2::2 -domain "
 add_test(Tm3_domain_cylinder       ./neper --rcfile none -T -n 2::2::2 -domain "cylinder(1,2,100)")
 add_test(Tm3_domain_sphere         ./neper --rcfile none -T -n 2::2::2 -domain "sphere(2,100)")
 add_test(Tm3_morpho_voronoi        ./neper --rcfile none -T -n 2::2::2 -morpho voronoi::voronoi::voronoi)
-add_test(Tm3_morpho_centroidal     ./neper --rcfile none -T -n 7::2::2 -morpho centroidal::centroidal::centroidal)
+add_test(Tm3_morpho_centroidal     ./neper --rcfile none -T -n 7::2::2 -morpho voronoi::voronoi::centroidal)
 add_test(Tm3_morpho_cube           ./neper --rcfile none -T -n from_morpho::2::2 -morpho "cube(2)::voronoi::voronoi")
 add_test(Tm3_morpho_square         ./neper --rcfile none -T -n from_morpho::2::2 -dim 2 -morpho "square(2)::voronoi::voronoi")
 if(HAVE_NLOPT)

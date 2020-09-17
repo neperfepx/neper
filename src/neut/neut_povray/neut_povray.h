@@ -15,7 +15,8 @@ extern "C"
 #ifndef NEUT_POVRAY_H
 #define NEUT_POVRAY_H
 
-  extern void neut_povray_check (char *);
+  extern int neut_povray_check (char *povray);
+  extern int neut_povray_check_error (char *povray);
 
 #endif				/* NEUT_POVRAY_H */
 
