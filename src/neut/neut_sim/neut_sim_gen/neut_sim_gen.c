@@ -497,7 +497,7 @@ neut_sim_res_exist (struct SIM Sim, char *entity, char *res)
   }
 
   else
-    abort ();
+    status = 0;
 
   ut_free_1d_char (&entity2);
   ut_free_1d_char (&res2);
