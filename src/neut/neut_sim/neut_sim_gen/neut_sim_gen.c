@@ -130,6 +130,11 @@ neut_sim_fscanf (char *dir, struct SIM *pSim)
     }
   }
 
+  if (!(*pSim).EltQty)
+    ut_print_message (2, 3, "`number_of_elements' is missing.\n");
+  if (!(*pSim).NodeQty)
+    ut_print_message (2, 3, "`number_of_nodes' is missing.\n");
+
   ut_file_close (file, filename, "r");
 
   ut_free_1d_char (&var);
@@ -146,7 +151,9 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
   char *filename = ut_string_paste (dir, "/report");
   FILE *file = ut_file_open (filename, mode);
 
-  fprintf (file, "number_of_steps %d\n", Sim.StepQty);
+  fprintf (file, "number_of_nodes %d\n", Sim.NodeQty);
+  fprintf (file, "number_of_elements %d\n", Sim.EltQty);
+  fprintf (file, "number_of_slip_systems %d\n", Sim.SlipSystemQty);
 
   fprintf (file, "orientation_definition %s\n", Sim.OriDes);
 
@@ -161,6 +168,8 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
     if (Sim.EltResWritten[i])
       fprintf (file, " %s", Sim.EltRes[i]);
   fprintf (file, "\n");
+
+  fprintf (file, "number_of_steps %d\n", Sim.StepQty);
 
   ut_file_close (file, filename, mode);
   ut_free_1d_char (&filename);
