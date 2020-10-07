@@ -23,6 +23,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2020
 ----
 
+- J Chen, P Zhang, Y Cheng, J Liu, *On the crushing response of the functionally graded metallic foams based on 3D Voronoi model*, **Thin-Walled Structures**, vol. 157, pp. 107085.
+- Y Huillca, M Silva, C Ovalle, JC Quezada, S Carrasco, GE Villavicencio, *Modelling size effect on rock aggregates strength using a DEM bonded-cell model*, **Acta Geotechnica**, doi://10.1007/s11440-020-01054-z.
 - S Tian, R Cao, J Zhou, F Xue, Y Liu, P Zhang, ZM Sun, *A comparative study on the growth behaviors of Sn whiskers and hillocks in a Sn-Al alloy coating under different environments*, **Journal of Alloys and Compounds**, doi://10.1016/j.jallcom.2020.157101.
 - Y Guo, J He, H Jiang, Y Zhou, F Jin, C Song, *A Simple Approach for Generating Random Aggregate Model of Concrete Based on Laguerre Tessellation and Its Application Analyses*, **Materials**, vol. 13, pp. 3896, 2020.
 - AM Schönhöbel, R Madugundo, JM Barandiarán, GC Hadjipanayis, D Palanisamy, T Schwarz, B Gault, D Raabe, K Skokov, O Gutfleisch, J Fischbacher and T Schrefl, *Nanocrystalline Sm-based 1: 12 magnets*, **Acta Materialia**, doi://10.1016/j.actamat.2020.08.075.
