@@ -426,7 +426,10 @@ The default depends on the value of option @samp{-morpho}:
 for @samp{voronoi}@comma{} it is @samp{random}@comma{}
 for a cell-size statistical distribution@comma{} it is @samp{none}@comma{}
 and for cell-based coordinate values
-(including @code{-morpho tesr})@comma{} it is @samp{centroid}.
+(including @code{-morpho tesr})@comma{} it is @samp{centroid}.@*
+Finally@comma{} to load the seed coordinates and weights from
+the same tessellation file (thereby replicating the tessellation)@comma{}
+simply use @samp{file(@file{file_name})} as argument.
 ,
 see above, default}
 
