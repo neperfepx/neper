@@ -1,7 +1,15 @@
-New in 4.0.3-3 (15 Oct 2020):
-- module -S: made minor fixes.
-- module -V: made minor fixes.
-- documentation: made minor improvements.
+New in 4.1.0 (21 Oct 2020):
+- module -T: extended -group to tesr, added -statgroup, added raster
+  tessellation keys area, vol, size and oridisaniso*, made minor fixes.
+- module -M: sped up -part, added options -sortnode and -sortelt.
+- module -V: added options -showedge and -dataedgerad for 2D tesrs, made small
+  improvements, made minor fixes.
+- module -S: extended support of FEPX raw results, extended -*res options to
+  general expressions based on the mesh and simulation results (or subresults),
+  added ability to import results from external files, added ability to remove
+  results, improved terminal output, cleaned code, made minor fixes and
+  improvements.
+- documentation: added several -S examples, made minor fixes and improvements.
 
 New in 4.0.2 (17 Sep 2020):
 - module -V: fixed png output (disabled defective povray's version test).

@@ -11,6 +11,27 @@
 #include"ut.h"
 
 void
+ut_list_break_2 (const char *string, const char *sep, char **ppart1, char **ppart2)
+{
+  int qty;
+  char **tmp = NULL;
+
+  ut_free_1d_char (ppart1);
+  ut_free_1d_char (ppart2);
+
+  ut_list_break (string, sep, &tmp, &qty);
+
+  ut_string_string (tmp[0], ppart1);
+
+  if (qty == 2)
+    ut_string_string (tmp[1], ppart2);
+
+  ut_free_2d_char (&tmp, qty);
+
+  return;
+}
+
+void
 ut_list_break (const char *string, const char *sep, char ***pparts, int *pqty)
 {
   int i, pos, bracket;

@@ -18,62 +18,68 @@ net_stat (struct IN_T In, struct TESS Tess, struct TESR *pTesr,
 
   if (In.stv)
   {
-    ut_string_string ("ver", &(data[qty][0]));
-    ut_string_string (In.stv, &(data[qty][1]));
+    ut_string_string ("ver", data[qty]);
+    ut_string_string (In.stv, data[qty] + 1);
     qty++;
   }
   if (In.ste)
   {
-    ut_string_string ("edge", &(data[qty][0]));
-    ut_string_string (In.ste, &(data[qty][1]));
+    ut_string_string ("edge", data[qty]);
+    ut_string_string (In.ste, data[qty] + 1);
     qty++;
   }
   if (In.stf)
   {
-    ut_string_string ("face", &(data[qty][0]));
-    ut_string_string (In.stf, &(data[qty][1]));
+    ut_string_string ("face", data[qty]);
+    ut_string_string (In.stf, data[qty] + 1);
     qty++;
   }
   if (In.stp)
   {
-    ut_string_string ("poly", &(data[qty][0]));
-    ut_string_string (In.stp, &(data[qty][1]));
+    ut_string_string ("poly", data[qty]);
+    ut_string_string (In.stp, data[qty] + 1);
     qty++;
   }
   if (In.stc)
   {
-    ut_string_string ("cell", &(data[qty][0]));
-    ut_string_string (In.stc, &(data[qty][1]));
+    ut_string_string ("cell", data[qty]);
+    ut_string_string (In.stc, data[qty] + 1);
     qty++;
   }
   if (In.sttess)
   {
-    ut_string_string ("tess", &(data[qty][0]));
-    ut_string_string (In.sttess, &(data[qty][1]));
+    ut_string_string ("tess", data[qty]);
+    ut_string_string (In.sttess, data[qty] + 1);
     qty++;
   }
   if (In.sttesr)
   {
-    ut_string_string ("tesr", &(data[qty][0]));
-    ut_string_string (In.sttesr, &(data[qty][1]));
+    ut_string_string ("tesr", data[qty]);
+    ut_string_string (In.sttesr, data[qty] + 1);
     qty++;
   }
   if (In.stpt)
   {
-    ut_string_string ("point", &(data[qty][0]));
-    ut_string_string (In.stpt, &(data[qty][1]));
+    ut_string_string ("point", data[qty]);
+    ut_string_string (In.stpt, data[qty] + 1);
     qty++;
   }
   if (In.sts)
   {
-    ut_string_string ("seed", &(data[qty][0]));
-    ut_string_string (In.sts, &(data[qty][1]));
+    ut_string_string ("seed", data[qty]);
+    ut_string_string (In.sts, data[qty] + 1);
     qty++;
   }
   if (In.stvox)
   {
-    ut_string_string ("vox", &(data[qty][0]));
-    ut_string_string (In.stvox, &(data[qty][1]));
+    ut_string_string ("vox", data[qty]);
+    ut_string_string (In.stvox, data[qty] + 1);
+    qty++;
+  }
+  if (In.stgroup)
+  {
+    ut_string_string ("group", data[qty]);
+    ut_string_string (In.stgroup, data[qty] + 1);
     qty++;
   }
 
@@ -85,6 +91,13 @@ net_stat (struct IN_T In, struct TESS Tess, struct TESR *pTesr,
     name = ut_string_addextension (In.body, ext);
 
     if (!strcmp (data[i][0], "seed") || !strcmp (data[i][0], "cell"))
+    {
+      if (Tess.Dim > 0)
+        stattess = 1;
+      else if ((*pTesr).Dim > 0)
+        stattesr = 1;
+    }
+    if (!strcmp (data[i][0], "group"))
     {
       if (Tess.Dim > 0)
         stattess = 1;

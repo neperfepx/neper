@@ -67,6 +67,7 @@ nes_sim_write_results_entity (struct IN_S In, struct SIM *pSim, char *entity)
   for (i = 0; i < resqty; i++)
   {
     status = nes_sim_write_results_prop (*pSim, res[i], &startstep, &colqty);
+
     if (!status)
     {
       ut_print_message (0, 4, "%s ", res[i]);
@@ -75,10 +76,10 @@ nes_sim_write_results_entity (struct IN_S In, struct SIM *pSim, char *entity)
       printf (" ");
 
       nes_sim_write_results_entity_step (In, *pSim, res[i], entity, startstep, colqty);
-    }
 
-    reswritten[i] = 1;
-    neut_sim_fprintf (In.simdir, *pSim, "W");
+      reswritten[i] = 1;
+      neut_sim_fprintf (In.simdir, *pSim, "W");
+    }
   }
 
   ut_dir_closemessage (dir, "w");
@@ -86,40 +87,6 @@ nes_sim_write_results_entity (struct IN_S In, struct SIM *pSim, char *entity)
   ut_free_1d_char (&dir);
   // do not free res
   // do not free reswritten
-
-  return;
-}
-
-void
-nes_sim_write_avg (struct IN_S In, struct SIM Sim)
-{
-  int i, qty;
-  double **res = ut_alloc_2d (1, 6);
-  char *filename = NULL;
-  FILE *fileid = NULL;
-
-  char *res_filename = ut_string_paste (In.simdir, "/results/avg");
-  FILE *res_fileid = ut_file_open (res_filename, "W");
-
-  ut_sys_mkdir ("%s/results/avg", In.simdir);
-
-  filename = ut_string_paste (Sim.fepxdir, "/post.force1");
-
-  fileid = ut_file_open (filename, "R");
-
-  nes_sim_write_read_writeforce (fileid, &res, &qty);
-  for (i = 0; i < qty; i++)
-    res[i][0] += res[Sim.StepQty - 1][0];
-
-  ut_array_2d_fprintf (res_fileid, res, qty, 6, "%.8f");
-
-  ut_file_close (fileid, filename, "R");
-  ut_free_1d_char (&filename);
-
-  ut_file_close (res_fileid, res_filename, "W");
-
-  ut_free_1d_char (&res_filename);
-  ut_free_2d (&res, qty);
 
   return;
 }

@@ -288,6 +288,10 @@ extern "C"
   extern void neut_tess_coo_percoos (struct TESS Tess, double *coo,
                                      double ***ppercoos, int *ppercooqty);
 
+  extern void neut_tess_group_area (struct TESS Tess, int group, double *parea);
+  extern void neut_tess_group_vol (struct TESS Tess, int group, double *pvol);
+  extern void neut_tess_group_size (struct TESS Tess, int group, double *psize);
+
 #endif				/* NEUT_TESS_GEOM_H */
 
 #ifdef __cplusplus

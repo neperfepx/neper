@@ -42,7 +42,7 @@ neut_data_value_type (struct SIM Sim, char *entity, char *attribute,
       status = -1;
   }
 
-  else if (!neut_sim_isvoid (Sim) && neut_sim_res_exist (Sim, entity, value))
+  else if (!neut_sim_isvoid (Sim) && neut_sim_res_exist (Sim, entity, value, NULL, NULL))
     neut_sim_res_type (Sim, entity, value, ptype, &colqty);
 
   else

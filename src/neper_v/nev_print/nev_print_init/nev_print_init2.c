@@ -205,19 +205,7 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
 
   else if ((*pPrint).showtesr == 1)
   {
-    if (Tesr.Dim == 1)
-    {
-      (*pPrint).showedge =
-        ut_realloc_1d_int ((*pPrint).showedge, Tesr.CellQty + 1);
-      ut_array_1d_int_set ((*pPrint).showedge + 1, Tess.EdgeQty, 0);
-
-      if ((*pPrint).showedge[0] == -1)
-      {
-        (*pPrint).showedge[0] = Tesr.CellQty;
-        ut_array_1d_int_set ((*pPrint).showedge + 1, Tesr.CellQty, 1);
-      }
-    }
-    else if (Tesr.Dim == 2)
+    if (Tesr.Dim == 2)
     {
       (*pPrint).showface =
         ut_realloc_1d_int ((*pPrint).showface, Tesr.CellQty + 1);
@@ -228,6 +216,13 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
         (*pPrint).showface[0] = Tesr.CellQty;
         ut_array_1d_int_set ((*pPrint).showface + 1, Tesr.CellQty, 1);
       }
+
+      if (!(*pPrint).showedgestring)
+        ut_string_string ("0", &(*pPrint).showedgestring);
+      else if (!strcmp ((*pPrint).showedgestring, "all"))
+        ut_string_string ("1", &(*pPrint).showedgestring);
+      else if (!strcmp ((*pPrint).showedgestring, "none"))
+        ut_string_string ("0", &(*pPrint).showedgestring);
     }
     else if (Tesr.Dim == 3)
     {

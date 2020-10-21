@@ -77,6 +77,8 @@ add_library(neper_m
 ./nem_order/nem_order3.c
 ./nem_transform/nem_transform1.c
 ./nem_transform/nem_transform2.c
+./nem_sort/nem_sort1.c
+./nem_sort/nem_sort2.c
 ./nem_cleaning/nem_cleaning1.c
 ./nem_utils/nem_utils.c
 ./nem_input/nem_input1.c
@@ -94,7 +96,6 @@ add_library(neper_m
 ./nem_transport/nem_transport1.c
 ./nem_transport/nem_transport2.c
 ./nem_transport/nem_transport3.c
-./nem_partition/nem_partition5.c
 ./nem_partition/nem_partition1.c
 ./nem_partition/nem_partition4.c
 ./nem_partition/nem_partition3.c

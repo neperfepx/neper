@@ -11,6 +11,8 @@ nev_data_nodes (struct SIM Sim, struct TESS *pTess,
 {
   char *datatype = NULL, *datavalue = NULL;
 
+  ut_print_message (0, 1, "Reading data (%s, %s)...\n", "node", attribute);
+
   neut_data_datastring_type_value ("nodes", attribute, datastring, &datatype, &datavalue);
 
   if (!strcmp (attribute, "col"))

@@ -25,6 +25,16 @@ extern "C"
   extern int ut_math_eval (char *expr, int varqty, char **vars, double *vals,
                            double *pres);
 
+/// \brief Evaluate a mathematical expression, multiple
+/// \param expr: expression
+/// \param varqty: number of variables
+/// \param vars: variables
+/// \param evalqty: number of evaluations
+/// \param *pres: expression values
+/// \return 0 on success, -1 on failure
+  extern int ut_math_evals (char *inexpr, int varqty, char **vars, double **vals,
+                            int evalqty, double *res);
+
 /// \brief Evaluate a mathematical expression as an \c int
 /// \param expr: expression
 /// \param varqty: number of variables

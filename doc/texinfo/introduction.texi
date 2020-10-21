@@ -31,7 +31,7 @@ Several, complementary resources describing Neper are available:
 @itemize
 @item The Neper reference manual, which is this document, describes all Neper's capabilities.  Each module is dedicated a specific chapter, which describes the available commands and result files, and provides examples.  The manual is available at the PDF and info formats.@footnote{Provided that the info file is properly installed at your site, it can be accessed by the command: @command{info neper}.}
 
-@item The Neper website, @url{http://neper.info}, gives a general introduction to Neper (including examples with illustrations) and is where Neper can be downloaded from.  Official versions are released on the website every few months, as zipped tarballs (@file{tgz} files), while the latest, development version is available from the development repository, @url{https://github.com/rquey/neper}.  The best way to get and keep up-to-date with development versions is to clone the repository, using
+@item The Neper website, @url{https://neper.info}, gives a general introduction to Neper (including examples with illustrations) and is where Neper can be downloaded from.  Official versions are released on the website every few months, as zipped tarballs (@file{tgz} files), while the latest, development version is available from the development repository, @url{https://github.com/rquey/neper}.  The best way to get and keep up-to-date with development versions is to clone the repository, using
 
 @com{git clone https://github.com/rquey/neper.git}
 
@@ -45,7 +45,7 @@ which gives access to the latest development version on the default, @code{devel
   1729-1745, 2011}'' describes the @w{regularization /} meshing
   methodologies.  It can be downloaded from the Neper homepage or directly
   from this link:
-  @url{http://neper.info/docs/neper-reference-paper.pdf};
+  @url{https://neper.info/docs/neper-reference-paper.pdf};
   @item ``@cite{R.@ Quey and L.@ Renversade, Optimal polyhedral description of 3D
   polycrystals: Method and application to statistical and synchrotron X-ray
   diffraction data, Comput.@ Methods Appl.@ Mech.@ Engrg., vol.@ 330, pp.@

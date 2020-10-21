@@ -23,7 +23,7 @@ net_tess_opt_init_sset_multiseed (struct IN_T In, int level, struct TOPT TOpt,
   }
   else if (ut_string_isfilename (In.morphooptimultiseed[level]))
     ut_array_1d_int_fnscanf (In.morphooptimultiseed[level], qty + 1,
-                             TOpt.CellQty);
+                             TOpt.CellQty, "r");
 
   else
   {

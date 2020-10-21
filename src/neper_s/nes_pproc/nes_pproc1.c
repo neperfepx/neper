@@ -19,21 +19,16 @@ nes_pproc (struct IN_S In, struct SIM *pSim)
   for (i = 0; i < 5; i++)
     neut_mesh_set_zero (Mesh + i);
 
-  neut_sim_fscanf (In.simdir, pSim);
-  neut_sim_fprintf (In.simdir, *pSim, "w");
+  neut_sim_fscanf (In.simdir, pSim, "R");
+  neut_sim_fprintf (In.simdir, *pSim, "W");
 
   nes_pproc_loadmesh (*pSim, &Tess, &Nodes, Mesh);
 
   if (strcmp (In.noderes, "none") && strcmp (In.noderes, "inputres"))
-    nes_pproc_node (In, pSim, Tess, &Nodes, Mesh);
+    nes_pproc_entity (In, pSim, Tess, &Nodes, Mesh, "node");
 
   if (strcmp (In.eltres, "none") && strcmp (In.eltres, "inputres"))
-    nes_pproc_elt (In, pSim, Tess, &Nodes, Mesh);
-
-  /*
-  if (strcmp (In.elsetres, "none"))
-    nes_pproc_elset (In, Sim, Mesh);
-  */
+    nes_pproc_entity (In, pSim, Tess, &Nodes, Mesh, "element");
 
   neut_tess_free (&Tess);
   neut_nodes_free (&Nodes);

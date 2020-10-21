@@ -25,6 +25,7 @@ neut_tesr_set_zero (struct TESR *pTesr)
   (*pTesr).CellVol = NULL;
   (*pTesr).CellConvexity = NULL;
   (*pTesr).CellCrySym = NULL;
+  (*pTesr).CellGroup = NULL;
   (*pTesr).SeedCoo = NULL;
   (*pTesr).SeedWeight = NULL;
 
@@ -74,6 +75,7 @@ neut_tesr_free (struct TESR *pTesr)
   ut_free_1d (&(*pTesr).CellVol);
   ut_free_1d (&(*pTesr).CellConvexity);
   ut_free_1d_char (&(*pTesr).CellCrySym);
+  ut_free_1d_int (&(*pTesr).CellGroup);
   ut_free_2d (&(*pTesr).SeedCoo, (*pTesr).CellQty + 1);
   ut_free_1d (&(*pTesr).SeedWeight);
   ut_free_3d_int (&(*pTesr).CellBBox, (*pTesr).CellQty + 1, 3);
@@ -176,6 +178,13 @@ neut_tesr_memcpy_parms (struct TESR Tesr1, struct TESR *pTesr2)
     (*pTesr2).CellConvexity = ut_alloc_1d ((*pTesr2).CellQty + 1);
     ut_array_1d_memcpy (Tesr1.CellConvexity + 1, (*pTesr2).CellQty,
                         (*pTesr2).CellConvexity + 1);
+  }
+
+  if (Tesr1.CellGroup)
+  {
+    (*pTesr2).CellGroup = ut_alloc_1d_int ((*pTesr2).CellQty + 1);
+    ut_array_1d_int_memcpy (Tesr1.CellGroup + 1, (*pTesr2).CellQty,
+                            (*pTesr2).CellGroup + 1);
   }
 
   if (Tesr1.CellCrySym)
@@ -847,6 +856,7 @@ neut_tesr_renumber_continuous (struct TESR *pTesr)
   double **CellOri_old = NULL;
   double **CellCoo_old = NULL;
   double *CellVol_old = NULL;
+  int *CellGroup_old = NULL;
   double *CellConvexity_old = NULL;
   double **SeedCoo_old = NULL;
   double *SeedWeight_old = NULL;
@@ -888,6 +898,13 @@ neut_tesr_renumber_continuous (struct TESR *pTesr)
     CellOri_old = ut_alloc_2d (CellQty_old + 1, 4);
     ut_array_2d_memcpy ((*pTesr).CellOri + 1, CellQty_old, 4,
                         CellOri_old + 1);
+  }
+
+  if ((*pTesr).CellGroup)
+  {
+    CellGroup_old = ut_alloc_1d_int (CellQty_old + 1);
+    ut_array_1d_int_memcpy ((*pTesr).CellGroup + 1, CellQty_old,
+                            CellGroup_old + 1);
   }
 
   if ((*pTesr).CellCoo)
@@ -973,6 +990,10 @@ neut_tesr_renumber_continuous (struct TESR *pTesr)
       ut_array_1d_memcpy (CellOri_old[CellId_old_inv[(*pTesr).CellId[i]]], 4,
                           (*pTesr).CellOri[i]);
 
+  if (CellGroup_old)
+    for (i = 1; i <= (*pTesr).CellQty; i++)
+      (*pTesr).CellGroup[i] = CellGroup_old[CellId_old_inv[(*pTesr).CellId[i]]];
+
   if (CellCoo_old)
     for (i = 1; i <= (*pTesr).CellQty; i++)
       ut_array_1d_memcpy (CellCoo_old[CellId_old_inv[(*pTesr).CellId[i]]], 4,
@@ -1001,6 +1022,7 @@ neut_tesr_renumber_continuous (struct TESR *pTesr)
   ut_free_1d_int (&CellId_inv);
   ut_free_1d_int (&CellId_old);
   ut_free_1d_int (&CellId_old_inv);
+  ut_free_1d_int (&CellGroup_old);
   if (CellOri_old)
     ut_free_2d (&CellOri_old, CellQty_old);
   if (CellCoo_old)
@@ -1134,7 +1156,7 @@ neut_tesr_crop (struct TESR *pTesr, char *crop)
 
   ut_string_function (shape, &fct, &vars, &vals, &qty);
 
-  if (!strcmp (fct, "cylinder"))
+  if (!strcmp (fct, "cylinder") || !strcmp (fct, "circle"))
   {
     if (qty != 3)
       ut_print_message (2, 3, "Failed to parse `%s'.\n", shape);
@@ -1177,6 +1199,32 @@ neut_tesr_crop (struct TESR *pTesr, char *crop)
                 break;
               }
           }
+  }
+  else if (!strcmp (fct, "square"))
+  {
+    if (qty != 4)
+      ut_print_message (2, 3, "Failed to parse `%s'.\n", shape);
+
+    if ((*pTesr).Dim == 3)
+      ut_print_message (2, 3, "`square' available for 2D tessellation only.\n");
+
+    for (i = 0; i < 4; i++)
+      neut_tesr_expr_val_one (*pTesr, "general", 0, vals[i], cube + i, NULL);
+
+    for (j = 1; j <= (*pTesr).size[1]; j++)
+      for (i = 1; i <= (*pTesr).size[0]; i++)
+        if ((*pTesr).VoxCell[i][j][1])
+        {
+          ut_array_1d_int_set_3 (pt, i, j, 1);
+          neut_tesr_pos_coo (*pTesr, pt, coo2);
+
+          for (id = 0; id < 2; id++)
+            if (coo2[id] < cube[2 * id] || coo2[id] > cube[2 * id + 1])
+            {
+              (*pTesr).VoxCell[i][j][1] = 0;
+              break;
+            }
+        }
   }
   else
     ut_print_message (2, 2, "Unknown shape `%s'.\n", shape);
@@ -1294,8 +1342,20 @@ neut_tesr_autocrop (struct TESR *pTesr)
                                                                        [2][0]
                                                                        - 1];
 
+  if ((*pTesr).VoxOri)
+  {
+    Tesr2.VoxOri = ut_alloc_4d (Tesr2.size[0] + 1, Tesr2.size[1] + 1, Tesr2.size[2] + 1, 4);
+    for (i = 1; i <= size[0]; i++)
+      for (j = 1; j <= size[1]; j++)
+        for (k = 1; k <= size[2]; k++)
+          ol_q_memcpy ((*pTesr).VoxOri[i + bounds[0][0] - 1]
+                                      [j + bounds[1][0] - 1]
+                                      [k + bounds[2][0] - 1],
+                       Tesr2.VoxOri[i][j][k]);
+  }
+
   for (i = 0; i < 3; i++)
-    Tesr2.Origin[i] += bounds[i][0] * Tesr2.vsize[i];
+    Tesr2.Origin[i] += (bounds[i][0] - 1) * Tesr2.vsize[i];
 
   for (i = 1; i <= (*pTesr).CellQty; i++)
     for (j = 0; j < 3; j++)

@@ -42,7 +42,7 @@ neut_data_fscanf_ori_file (struct SIM Sim, char *datavalue, int qty, double ***p
   FILE *file = NULL;
   char *tmp = ut_alloc_1d_char (1000);
 
-  neut_sim_file_simfile (Sim, "element", datavalue, tmp);
+  neut_sim_res_file (Sim, "element", datavalue, tmp);
 
   file = ut_file_open (tmp, "r");
 
@@ -108,7 +108,7 @@ neut_data_fscanf_col_col (int entityqty, char *value,
   (*pData).ColData = ut_alloc_2d (entityqty + 1, (*pData).ColDataSize);
 
   ut_array_2d_fnscanf_wcard (value, (*pData).ColData + 1, entityqty,
-                             3, "color,size");
+                             3, "color,size", "r");
 
   return;
 }
@@ -130,11 +130,11 @@ neut_data_fscanf_col_scal (char *input, struct SIM Sim,
 
   (*pData).ColData = ut_alloc_2d (entityqty + 1, (*pData).ColDataSize);
 
-  neut_sim_file_simfile (Sim, entity, value, simfile);
+  neut_sim_res_file (Sim, entity, value, simfile);
 
   if (ut_file_exist (simfile))
     ut_array_2d_fnscanf_wcard (simfile, (*pData).ColData + 1,
-                               entityqty, 1, NULL);
+                               entityqty, 1, NULL, "r");
   else
   {
     double *data = ut_alloc_1d (entityqty + 1);
@@ -189,7 +189,7 @@ neut_data_fscanf_col_tensor (struct SIM Sim,
 
   ut_string_string (value, &(*pData).ColDataName);
 
-  neut_sim_file_simfile (Sim, entity, value, simfile);
+  neut_sim_res_file (Sim, entity, value, simfile);
 
   (*pData).ColDataSize = ut_file_nbcolumns (simfile);
 
@@ -197,7 +197,7 @@ neut_data_fscanf_col_tensor (struct SIM Sim,
 
   if (ut_file_exist (simfile))
     ut_array_2d_fnscanf_wcard (simfile, (*pData).ColData + 1,
-                               entityqty, (*pData).ColDataSize, NULL);
+                               entityqty, (*pData).ColDataSize, NULL, "r");
   else
     abort ();
 

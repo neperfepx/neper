@@ -14,6 +14,9 @@ extern void nev_data_tesr_cell (struct SIM Sim, struct TESR *pTesr, struct DATA 
 				      char *type, char *argument);
 extern void nev_data_tesr_vox (struct SIM Sim, struct TESR *pTesr, struct DATA *pTD,
                                      char *prop, char *argument);
+
+extern void nev_data_tesr_edge (struct DATA *pData, char *attribute, char *datastring);
+
 extern void nev_data_tesr_voidvox (struct DATA *pTD,
                                          char *type, char *argument);
 extern void nev_data_tesr_voxedge (struct DATA *pTD,

@@ -9,18 +9,24 @@ struct SIM
 {
   char *simdir;         // simulation directory
   int StepQty;          // number of steps
-  int NodeResQty;       // number of result files
-  int EltResQty;        // number of result files
-  char **NodeRes;       // nodal result files (extensions)
-  char **EltRes;        // elemental result files (extensions)
-  int *NodeResWritten;  // nodal result files (extensions), written?
-  int *EltResWritten;   // elemental result files (extensions), written?
+  int NodeResQty;       // number of nodal results
+  int EltResQty;        // number of elemental results
+  char **NodeRes;       // nodal results
+  char **EltRes;        // elemental results
+  char **NodeResExpr;   // nodal result expressions (optional)
+  char **EltResExpr;    // elemental result expressions (optional)
+  int *NodeResWritten;  // nodal results, written?
+  int *EltResWritten;   // elemental results, written?
   char *OriDes;         // orientation descriptor
+  int *StepState;       // 1 if step written, 0 otherwise
 
   // hardwired
   char *body;           // name of the simulation
   char *tess;		// tessellation
   char *msh;		// mesh
+  char *bcs;		// bcs
+  char *ori;		// ori
+  char *phase;		// phase
 
   // Only set when reading an FEPX raw result directory and used to transform
   // it into a simulation directory
@@ -32,7 +38,6 @@ struct SIM
   int *PartEltQty;      // number of elements of the partitions
   int SlipSystemQty;    // number of slip systems
 
-  // Only used by -V
   int step;             // current step
 };
 typedef struct SIM SIM;

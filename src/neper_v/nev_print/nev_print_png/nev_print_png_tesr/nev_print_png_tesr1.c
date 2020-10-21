@@ -58,6 +58,17 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
   neut_nodes_rmorphans (&Nodes, Mesh + dim, NULL);
   neut_mesh_init_nodeelts (Mesh + dim, Nodes.NodeQty);
 
+  if (ut_string_strcmp (Print.showedgestring, "0"))
+  {
+    neut_mesh_init_eltelset (Mesh + 2, NULL);
+    neut_mesh2d_mesh1d (Nodes, Mesh[2], Mesh + 1, NULL, NULL, NULL, 0);
+    Print.showelt1d = ut_alloc_1d_int (Mesh[1].EltQty + 1);
+
+    neut_mesh_entity_expr_val_int (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
+                                   Mesh[4], Tess, NULL, NULL, NULL, NULL,
+                                   "elt1d", Print.showedgestring, Print.showelt1d);
+  }
+
   if (dim == 2)
   {
     Print.showelt2d = ut_alloc_1d_int (Mesh[dim].EltQty + 1);
@@ -120,7 +131,20 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
   ut_array_2d_memcpy (Nodes.NodeCoo + 1, Nodes.NodeQty, 3, NodeData.Coo + 1);
 
   if (dim == 2)
+  {
+    // printing edges and subedges
+    MeshData[1].Col = ut_alloc_2d_int (Mesh[1].EltQty + 1, 3);
+    MeshData[1].Rad = ut_alloc_1d (Mesh[1].EltQty + 1);
+
+    neut_mesh_entity_expr_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
+                               Mesh[4], Tess, NULL, NULL, NULL, NULL,
+                               "elt1d", TesrData.RadDataName, MeshData[1].Rad, NULL);
+
+    nev_print_png_mesh_1d (file, Print, Tess, Mesh, NodeData, MeshData);
+
+    // printing tesr
     nev_print_png_mesh_2d (file, Print, Nodes, Mesh, NodeData, MeshData);
+  }
   else if (dim == 3)
     nev_print_png_mesh_3d (file, Print, Nodes, Mesh, NodeData, MeshData, &tmp);
 
@@ -135,6 +159,8 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
   for (i = 0; i < 4; i++)
     neut_data_free (MeshData + i);
   free (MeshData);
+
+  neut_tess_free (&Tess);
 
   return;
 }

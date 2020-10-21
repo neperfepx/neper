@@ -20,7 +20,7 @@ neut_data_fscanf_ori (struct SIM Sim, char *datavalue, int qty,
   {
     char *filename = ut_alloc_1d_char (1000);
 
-    neut_sim_file_simfile (Sim, "element", "ori", filename);
+    neut_sim_res_file (Sim, "element", "ori", filename);
     if (neut_ori_fnscanf (filename, Sim.OriDes, *pColData + 1, qty, NULL) != 1)
       ut_print_message (2, 3, "Failed to read file.\n");
 
@@ -89,8 +89,8 @@ neut_data_fscanf_scal (struct SIM Sim, char *datavalue, int qty, double **dataem
   if (!datavalue && dataembed)
     ut_array_2d_memcpy (dataembed + 1, qty, 1, *pColData + 1);
 
-  else if (!neut_sim_file_simfile (Sim, NULL, datavalue, value2))
-    ut_array_2d_fnscanf_wcard (value2, (*pColData) + 1, qty, 1, "numeral,size");
+  else if (!neut_sim_res_file (Sim, NULL, datavalue, value2))
+    ut_array_2d_fnscanf_wcard (value2, (*pColData) + 1, qty, 1, "numeral,size", "r");
 
   else
     ut_print_message (2, 3, "No scalar data available.\n");
@@ -263,7 +263,7 @@ neut_data_fscanf_trs (int entityqty, char *type, char *value,
   {
     (*pData).TrsData = ut_alloc_2d (entityqty + 1, 3);
     ut_array_2d_fnscanf_wcard (value, (*pData).TrsData + 1, entityqty,
-                               1, "numeral,size");
+                               1, "numeral,size", "r");
   }
   else
     abort ();
@@ -282,43 +282,43 @@ neut_data_fscanf_rad (int entityqty, char *type, char *value,
   {
     (*pData).RadData = ut_alloc_2d (entityqty + 1, 3);
     ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1, entityqty,
-                               1, "numeral,size");
+                               1, "numeral,size", "r");
   }
   else if (!strcmp ((*pData).RadDataType, "cube"))
   {
     (*pData).RadData = ut_alloc_2d ((*pData).Qty + 1, 10);
     ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1,
-                               (*pData).Qty, 10, "numeral,size");
+                               (*pData).Qty, 10, "numeral,size", "r");
   }
   else if (!strcmp ((*pData).RadDataType, "cyl"))
   {
     (*pData).RadData = ut_alloc_2d ((*pData).Qty + 1, 5);
     ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1,
-                               (*pData).Qty, 5, "numeral,size");
+                               (*pData).Qty, 5, "numeral,size", "r");
   }
   else if (!strcmp ((*pData).RadDataType, "arr"))
   {
     (*pData).RadData = ut_alloc_2d ((*pData).Qty + 1, 5);
     ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1,
-                               (*pData).Qty, 5, "numeral,size");
+                               (*pData).Qty, 5, "numeral,size", "r");
   }
   else if (!strcmp ((*pData).RadDataType, "tor"))
   {
     (*pData).RadData = ut_alloc_2d ((*pData).Qty + 1, 5);
     ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1,
-                               (*pData).Qty, 5, "numeral,size");
+                               (*pData).Qty, 5, "numeral,size", "r");
   }
   else if (!strcmp ((*pData).RadDataType, "disc"))
   {
     (*pData).RadData = ut_alloc_2d ((*pData).Qty + 1, 4);
     ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1,
-                               (*pData).Qty, 4, "numeral,size");
+                               (*pData).Qty, 4, "numeral,size", "r");
   }
   else if (!strcmp ((*pData).RadDataType, "ell"))
   {
     (*pData).RadData = ut_alloc_2d ((*pData).Qty + 1, 12);
     ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1,
-                               (*pData).Qty, 12, "numeral,size");
+                               (*pData).Qty, 12, "numeral,size", "r");
   }
   else
     abort ();
@@ -334,7 +334,7 @@ neut_data_fscanf_length (int entityqty, char *type, char *value,
 
   (*pData).LengthData = ut_alloc_2d (entityqty + 1, 3);
   ut_array_2d_fnscanf_wcard (value, (*pData).LengthData + 1, entityqty,
-                             1, "numeral,size");
+                             1, "numeral,size", "r");
 
   return;
 }
@@ -363,21 +363,21 @@ neut_data_fscanf_coo (struct SIM Sim, char *entity, int entityqty, char *type,
 
     char *filename = ut_alloc_1d_char (1000);
     if (!strncmp (entity, "node", 4) && !strcmp (value, "coo"))
-      neut_sim_file_simfile (Sim, "node", "coo", filename);
+      neut_sim_res_file (Sim, "node", "coo", filename);
     else
       strcpy (filename, value);
 
     ut_array_2d_fnscanf_wcard (filename, (*pData).CooData + 1,
-                               entityqty, 3, "size");
+                               entityqty, 3, "size", "r");
 
     ut_free_1d_char (&filename);
   }
 
   else if (!strcmp ((*pData).CooDataType, "disp"))
     ut_array_2d_fnscanf_wcard (value, (*pData).CooData + 1,
-                               entityqty, 3, "size");
+                               entityqty, 3, "size", "r");
   else
-    abort ();
+    ut_print_message (2, 2, "Failed to process `%s'.\n", value);
 }
 
 void

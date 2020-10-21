@@ -11,6 +11,8 @@ nev_data_tesr (struct SIM Sim, struct TESR *pTesr, char *entity, char *attribute
   struct DATA TesrDataCell;
   struct DATA *pData = NULL;
 
+  ut_print_message (0, 1, "Reading data (%s, %s)...\n", entity, attribute);
+
   neut_data_set_default (&TesrDataCell);
 
   if (strcmp (entity, "cell"))
@@ -26,6 +28,9 @@ nev_data_tesr (struct SIM Sim, struct TESR *pTesr, char *entity, char *attribute
 
   else if (!strcmp (entity, "vox"))
     nev_data_tesr_vox (Sim, pTesr, pData, attribute, datastring);
+
+  else if (!strcmp (entity, "edge"))
+    nev_data_tesr_edge (pData, attribute, datastring);
 
   else if (!strcmp (entity, "voidvox"))
     nev_data_tesr_voidvox (pData, attribute, datastring);

@@ -85,9 +85,8 @@ nem_input_options_default (struct IN_M *pIn)
   ut_string_string ("continuous", &((*pIn).interface));
 
   (*pIn).partmethod = ut_alloc_1d_char (10);
-  strcpy ((*pIn).partmethod, "default");
+  strcpy ((*pIn).partmethod, "scotch");
   (*pIn).partstring = NULL;
-  (*pIn).partbalancing = .5;
 
   ut_string_string ("none", &(*pIn).transform);
 
@@ -177,10 +176,11 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
 
   // transformation options
   strcpy (ArgList[++ArgQty], "-transform");
+  strcpy (ArgList[++ArgQty], "-sortelt");
+  strcpy (ArgList[++ArgQty], "-sortnode");
 
   // Mesh partitionning options ----------------------------------------
   strcpy (ArgList[++ArgQty], "-part");
-  strcpy (ArgList[++ArgQty], "-partbalancing");
   strcpy (ArgList[++ArgQty], "-partmethod");
 
   // Output options ----------------------------------------------------
@@ -483,10 +483,12 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).partstring));
       else if (!strcmp (Arg, "-partmethod"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).partmethod));
-      else if (!strcmp (Arg, "-partbalancing"))
-        ut_arg_nextasreal (argv, &i, Arg, 0, 1, &((*pIn).partbalancing));
       else if (!strcmp (Arg, "-transform"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).transform));
+      else if (!strcmp (Arg, "-sortelt"))
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).sortelt));
+      else if (!strcmp (Arg, "-sortnode"))
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).sortnode));
       else
         ut_arg_error (Arg, "");
     }

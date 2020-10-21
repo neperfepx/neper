@@ -1238,8 +1238,8 @@ extern "C"
 /// \param size: size of the array
 /// \param value: value
 /// \return number of values
-  extern int ut_array_1d_uint_nbofthisval (unsigned int *array, int size,
-                                           unsigned int value);
+  extern int ut_array_1d_uint_valnb (unsigned int *array, int size,
+                                     unsigned int value);
 
 /// \brief Get the intersection between two \c int arrays
 /// \param array1: first array
@@ -1633,39 +1633,43 @@ extern "C"
 /// \param filename: file name
 /// \param array: array
 /// \param size: size of the array
+/// \param mode: file opening mode, "r" (verbose) or "R" (not verbose)
 /// \note filename can be written as filename,col=... to fscanf only a specific column of a file.
 /// \note col=0 assigns 0 and col=-x assigns the opposite values of column x
 /// \return 1 on success, undefined otherwise
-  extern int ut_array_1d_fnscanf (char *filename, double *array, int size);
+  extern int ut_array_1d_fnscanf (char *filename, double *array, int size, char *mode);
 
 /// \brief Read a 1D array of \c int, from filename
 /// \param filename: file name
 /// \param array: array
 /// \param size: size of the array
+/// \param mode: file opening mode, "r" (verbose) or "R" (not verbose)
 /// \note filename can be written as filename,col=... to fscanf only a specific column of a file.
 /// \return 1 on success, undefined otherwise
-  extern int ut_array_1d_int_fnscanf (char *filename, int *array, int size);
+  extern int ut_array_1d_int_fnscanf (char *filename, int *array, int size, char *mode);
 
 /// \brief Read a 2D array of \c double, from filename
 /// \param filename: file name
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
+/// \param mode: file opening mode, "r" (verbose) or "R" (not verbose)
 /// \note filename can be written as filename,col=... to fscanf only specific columns of a file, e.g. filename,col=1:2:6
 /// \note col=0 assigns 0 and col=-x assigns the opposite values of column x
 /// \return 1 on success, undefined otherwise
   extern int ut_array_2d_fnscanf (char *filename, double **array, int size1,
-                                  int size2);
+                                  int size2, char *mode);
 
 /// \brief Read a 2D array of \c int, from filename
 /// \param filename: file name
 /// \param array: array
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
+/// \param mode: file opening mode, "r" (verbose) or "R" (not verbose)
 /// \note filename can be written as filename,col=... to fscanf only specific columns of a file, e.g. filename,col=1:2:6
 /// \return 1 on success, undefined otherwise
   extern int ut_array_2d_int_fnscanf (char *filename, int **array, int size1,
-                                      int size2);
+                                      int size2, char *mode);
 
 /// \brief Read a sample of a 1D array of \c double
 /// \param file: file pointer
@@ -1758,20 +1762,22 @@ extern "C"
 /// \param array: array
 /// \param size: 1st-index size of the array
 /// \param wcard: wildcard
+/// \param mode: file opening mode, "r" (verbose) or "R" (not verbose)
 /// \return 1 on success, undefined otherwise
 /// \note If file \c filename exists, the data are read from it.  Otherwise, \c wcard is used.  \c wcard can be: "numeral" for initializing \c array from a number, "color" for initializing \c array from the RGB values of \c filename (if a valid color name; if equal to "id", the color palette is used)
   extern int ut_array_1d_fnscanf_wcard (char *filename, double *array,
-                                        int size, char *wcard);
+                                        int size, char *wcard, char *mode);
 
 /// \brief Read a 1D array of \c int, from filename, enable wildcard
 /// \param filename: file name
 /// \param array: array
 /// \param size: 1st-index size of the array
 /// \param wcard: wildcard
+/// \param mode: file opening mode, "r" (verbose) or "R" (not verbose)
 /// \return 1 on success, undefined otherwise
 /// \note If file \c filename exists, the data are read from it.  Otherwise, \c wcard is used.  \c wcard can be: "numeral" for initializing \c array from a number, "color" for initializing \c array from the RGB values of \c filename (if a valid color name; if equal to "id", the color palette is used)
   extern int ut_array_1d_int_fnscanf_wcard (char *filename, int *array,
-                                            int size, char *wcard);
+                                            int size, char *wcard, char *mode);
 
 /// \brief Read a 2D array of \c double, from filename, enable wildcard
 /// \param filename: file name
@@ -1779,10 +1785,11 @@ extern "C"
 /// \param size1: 1st-index size of the array
 /// \param size2: 2nd-index size of the array
 /// \param wcard: wildcard
+/// \param mode: file opening mode, "r" (verbose) or "R" (not verbose)
 /// \return 1 on success, undefined otherwise
 /// \note If file \c filename exists, the data are read from it.  Otherwise, \c wcard is used.  \c wcard can be: "numeral" for initializing \c array from a number, "color" for initializing \c array from the RGB values of \c filename (if a valid color name; if equal to "id", the color palette is used)
   extern int ut_array_2d_fnscanf_wcard (char *filename, double **array,
-                                        int size1, int size2, char *wcard);
+                                        int size1, int size2, char *wcard, char *mode);
 
 /// \brief Write a 1D array of \c double
 /// \param file: file pointer

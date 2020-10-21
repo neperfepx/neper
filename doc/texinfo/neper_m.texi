@@ -98,7 +98,7 @@ Info   : A software package for polycrystal generation and meshing.
 Info   : Version 4.0.0
 Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
 Info   : Running on 8 threads.
-Info   : <http://neper.info>
+Info   : <https://neper.info>
 Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
 Info   : No initialization file found (`/home/rquey/.neperrc').
 Info   : ---------------------------------------------------------------
@@ -548,7 +548,7 @@ rotates a mesh about the centre and by an axis/angle pair.@*
 @mybullet @samp{translate(@var{dist_x}@comma{}@var{dist_y}@comma{}@var{dist_z})}
 translates a mesh by distances @code{@var{dist_x}}@comma{} @code{@var{dist_y}} and @code{@var{dist_z}}
 along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
-@mybullet @samp{mooth(@var{fact}@comma{}@var{itermax}@comma{}@var{type})}
+@mybullet @samp{smooth(@var{fact}@comma{}@var{itermax}@comma{}@var{type})}
 smooths the interfaces of a mesh by Laplacian smoothing (use only if you know
 what you are doing).  Laplacian smoothing is an iterative method that modifies
 the coordinates of a node using the coordinates of the neighboring nodes.  At
@@ -568,6 +568,18 @@ To be used in conjunction with @option{-interface discontinuous or cohesive}.
 @mybullet @samp{slice(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} slices a 3D mesh by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d} (yielding to a 2D mesh).
 ,
 see above, none}
+
+@optsec{-sortnode, char_string,
+Sort the mesh nodes.  Provide as argument the expression used for sorting and
+based on the variables defined in (@pxref{Mesh Keys}). Sorting is done in ascending order.
+,
+any, none}
+
+@optsec{-sortelt, char_string,
+Sort the mesh elements.  Provide as argument the expression used for sorting and
+based on the variables defined in (@pxref{Mesh Keys}). Sorting is done in ascending order.
+,
+any, none}
 
 @subsection Mesh Partitioning Options
 
@@ -609,18 +621,11 @@ the Scotch format can be provided.
 ,
 any, none}
 
-@optsec{-partbalancing, real,
-Specify the rate of element partition balancing (the nominal partitioning
-  applies to the nodes@comma{} while the element partitions are
-determined afterwards and can be somewhat unbalanced).
-This option allows for the enforcement of equal balancing@comma{} but getting
-equal balance is highly CPU-intensive.,
-0 to 1,0.5}
-
 @optsec{-partmethod, char_string,
-Specify the partitioning method. Provide the partitioning expression
-in Scotch's jargon@comma{} or @samp{none} for none.,
-any, see the source}
+Specify the partitioning method. Provide @samp{scotch} for partitioning
+using Scotch@comma{} or @samp{linear} for linear partitioning (i.e.@comma{}
+partitioning based on the node and element numbers@comma{} not recommended).,
+any, scotch}
 
 @subsection Field Transport Options
 

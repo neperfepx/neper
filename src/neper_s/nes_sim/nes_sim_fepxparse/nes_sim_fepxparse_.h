@@ -8,8 +8,12 @@
 #include<string.h>
 
 #include"ut.h"
-#include"orilib.h"
 #include"neut.h"
+#include"orilib.h"
 #include"structIn_s.h"
 
-#include"nes_pproc_node.h"
+#include"nes_sim_fepxparse.h"
+
+extern void nes_sim_fepxparse_init (struct IN_S In, struct SIM *pSim);
+
+extern void nes_sim_fepxparse_post (struct SIM Sim);

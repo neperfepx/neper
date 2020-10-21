@@ -26,6 +26,9 @@ extern "C"
     double *CellVol;		// volumes/areas of the cells
     double *CellConvexity;      // Convexity of the cells
 
+    // Group of the cells [1...CellQty]
+    int *CellGroup;
+
     // Crystal symmetry of the cells ("triclinic", "cubic" or
     // "hexagonal").  Defined once for all cells, but this could be
     // improved

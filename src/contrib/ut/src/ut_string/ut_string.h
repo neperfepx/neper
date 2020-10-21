@@ -166,6 +166,12 @@ extern "C"
   extern int ut_string_completion (char *string1, char **array, int size,
                                    char **pstring2);
 
+/// \brief Get a random string
+/// \param length: length of the string
+/// \param rand: seed of the random number generator
+/// \param *pstring: output string
+  extern void ut_string_random (int length, int rand, char **pstring);
+
 // only used internally
 /// @cond INTERNAL
   extern int ut_string_thischarqty (char *, char);

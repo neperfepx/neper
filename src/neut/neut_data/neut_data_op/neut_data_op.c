@@ -28,6 +28,7 @@ neut_data_set_default (struct DATA *pData)
   (*pData).RadData = NULL;
   (*pData).RadDataType = NULL;
   (*pData).Rad = NULL;
+  (*pData).RadDataName = NULL;
 
   (*pData).CooData = NULL;
   (*pData).CooDataType = NULL;

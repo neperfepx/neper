@@ -13,6 +13,9 @@ the local shape curvature approaches the cell size.}).  Periodicity and
 semi-periodicity conditions can be prescribed.  @MT{} also enables the
 @dfn{regularization} of the tessellations for meshing with high quality elements. The
 tessellations are provided in scalar (vectorial) or raster formats.
+A raster tessellation can include an orientation field, which also makes it suitable
+to describe microstructures obtained experimentally by
+EBSD or X-ray diffraction techniques.
 @MT{} also generates crystal orientations for the tessellation cells.
 
 @dfn{Tessellations} can be generated from various types of
@@ -30,7 +33,7 @@ tessellations whose seed attributes are set by optimization to
 obtain the desired cell properties.  Of course, it is also possible to
 generate standard tessellations (e.g.@ Poisson-Voronoi or regular
 tessellations).
-Cell @dfn{groups} can be defined to represent the different
+Cell @dfn{groups} can be defined to represent, for example, the different
 phases of a multiphased polycrystalline material (option @option{-group}).
 
 @dfn{Multiscale tessellations} are characterized by the subdivision of
@@ -88,7 +91,7 @@ Info   : A software package for polycrystal generation and meshing.
 Info   : Version 4.0.0
 Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
 Info   : Running on 8 threads.
-Info   : <http://neper.info>
+Info   : <https://neper.info>
 Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
 Info   : No initialization file found (`/home/rquey/.neperrc').
 Info   : ---------------------------------------------------------------
@@ -665,12 +668,15 @@ any, max(varnb@comma{}1000)}
 @c ,
 @c see above, none}
 
-These options can be used to define cell groups (each cell is assigned to a group).
-Groups are defined after tessellation and so can be defined from the cell properties.
+The following option can be used to define cell groups (each cell is assigned to a group).
+Groups are defined after tessellation and so can be defined from the cell properties
+(if scalar and raster tessellations are written in output@comma{} groups are
+computed independently; i.e.@comma{} rasterization preceeds group
+computation).
 
 @opt{-group, char_string,
 Specify the groups of the cells.  Provide an expression based on the variables
-defined in @ref{Tessellation Keys} or @samp{file(@var{file_name})} to load values from a file.,
+defined in @ref{Tessellation Keys} an expression based on the variables defined in @ref{Raster Tessellation Keys}@comma{} or @samp{file(@var{file_name})} to load values from a file.,
 any, none}
 
 @subsection Crystal Orientation Options
@@ -819,7 +825,9 @@ along directions @var{x}@comma{} @var{y} and @var{z}@comma{} respectively.@*
 @mybullet @samp{crop(@var{primitive})} crops the raster tessellation by a primitive.
 The primitive can be:@*
 @emph{(i)} @samp{cube(@var{xmin}@comma{}@var{xmax}@comma{}@var{ymin}@comma{}@var{ymax}@comma{}@var{zmin}@comma{}@var{zmax})} for a cube defined by its @math{x}@comma{} @math{y} and @math{z} bounds;@*
-@emph{(ii)} @samp{cylinder(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{diameter})} for a cylinder of @math{z} axis.@*
+@emph{(ii)} @samp{cylinder(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{diameter})} for a cylinder of centre (@math{centre_x}@comma{} @math{centre_y})) of @math{z} axis@comma{}@*
+@emph{(iii)} @samp{square(@var{xmin}@comma{}@var{xmax}@comma{}@var{ymin}@comma{}@var{ymax})} for a square defined by its @math{x} and @math{y} bounds (2D tessellation only)@comma{}@*
+@emph{(iv)} @samp{circle(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{diameter})} for a circle (2D tessellation only);@*
 @mybullet @samp{autocrop} reduces the raster to its minimal size.@*
 @mybullet
 @samp{rasterscale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}
@@ -924,8 +932,7 @@ the Wavefront @code{@samp{obj}}@comma{}
 the 3dec @code{@samp{3dec}}
 and the Surface Evolver @code{@samp{fe}}.
 For raster tessellations@comma{} the available formats are
-the Neper @code{@samp{tesr}}@comma{}
-the Orilib map format @code{@samp{olmap}}@comma{}
+the Neper @code{@samp{tesr}}
 and the VTK format @code{@samp{vtk}}.
 Orientations for the cells can be obtained using @code{@samp{ori}} (see
 also options beginning with @code{@samp{-ori}}).
@@ -1001,7 +1008,7 @@ the keys as described in @ref{Raster Tessellation Keys}@comma{} combined with @s
 any, none,
 .sttesr}
 
-The next options apply to the cells and seeds of a tessellation or a
+The next options apply to the cells, seeds or cell groups of a tessellation or a
 raster tessellation, independently of its dimension,
 
 @post{-statcell, char_string,
@@ -1021,6 +1028,15 @@ the keys as described in @ref{Tessellation Keys} for a tessellation and
 ,
 any, none,
 .stseed}
+
+@post{-statgroup, char_string,
+Provide statistics on the tessellation cell groups.  Give as argument
+the keys as described in @ref{Tessellation Keys} for a tessellation and
+@ref{Raster Tessellation Keys} for a raster tessellation@comma{} combined with
+@samp{@SEPNODEP}.
+,
+any, none,
+.stgroup}
 
 For a tessellation, it is also possible to get statistics on an
 per-entity basis,
@@ -1105,11 +1121,6 @@ It contains a scalar description of the tessellation.
 It contains a raster description of the tessellation.
 @xref{Raster Tessellation File (@file{.tesr})} for details.
 
-@item Orilib map file: @file{.olmap}
-
-It contains a description of a 2D raster tessellation as an orientation map and
-written under the Orilib format @file{.olmap}.
-
 @item Gmsh geometry file: @file{.geo}
 
 It contains a minimal description of the tessellation written under the
@@ -1177,6 +1188,7 @@ data specified to the corresponding @option{-stat} option and described in
 @itemize
   @item Tessellation cell statistics file, @file{.stcell}.
   @item Tessellation seed statistics file, @file{.stseed}.
+  @item Tessellation cell group statistics file, @file{.stgroup}.
   @item Tessellation vertex statistics file, @file{.stver}.
   @item Tessellation edge statistics file, @file{.stedge}.
   @item Tessellation face statistics file, @file{.stface}.

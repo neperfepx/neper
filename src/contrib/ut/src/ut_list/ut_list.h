@@ -23,6 +23,15 @@ extern "C"
   extern void ut_list_break (const char *list, const char *sep,
                              char ***pparts, int *psize);
 
+/// \brief Break a list into 2 parts
+/// \param list: list
+/// \param sep: separator, e.g. "," or ":"
+/// \param *ppart1: part 1
+/// \param *ppart2: part 2
+/// \note values not found are set to NULL
+  extern void ut_list_break_2 (const char *list, const char *sep,
+                               char **ppart1, char **ppart2);
+
 /// \brief Break a list twice
 /// \param list: list
 /// \param sep1: first separator, e.g. ","

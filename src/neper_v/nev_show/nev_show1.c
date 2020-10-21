@@ -64,8 +64,8 @@ nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
   {
     if (Tess.Dim >= 1)
       nev_show_tess_edge (argv, pi, Tess, pPrint);
-    else if (Tesr.Dim == 1)
-      nev_show_tesr_cell (argv, pi, Tesr, pPrint);
+    else if (Tesr.Dim > 0)
+      nev_show_tesr_edge (argv, pi, pPrint);
     else
       ut_print_message (2, 0, "Cannot process `%s'.\n", argv[(*pi)]);
   }

@@ -39,115 +39,36 @@ nem_partition_writearch (FILE * file, int procqty, int proccoreqty, int dcore,
 }
 
 void
-nem_partition_elts_match (struct MESH *Mesh, struct PART *pPart)
+nem_partition_elts_direct (struct MESH *Mesh, struct PART *pPart)
 {
-  int i, j, partition, maxpnodeqty, eltnodeqty;
-  int nodemaxpqty, NodeQty, k;
-  int *eltnodepart = ut_alloc_1d_int ((*pPart).qty);
-  int *pos = ut_alloc_1d_int ((*pPart).qty);
-  int *peltqty = ut_alloc_1d_int ((*pPart).qty);
-  int dim = neut_mesh_array_dim (Mesh);
-  SCOTCH_Num partnbr = (*pPart).qty;
-
-  eltnodeqty =
+  int part, elt, dim = neut_mesh_array_dim (Mesh);
+  int eltnodeqty =
     neut_elt_nodeqty ("tri", Mesh[dim].Dimension, Mesh[dim].EltOrder);
+  int *eltnodepartqty = NULL, **eltnodeparts = NULL, **eltnodepartnodeqty = NULL;
+  int **nodeparteltqty = NULL, ***nodepartelts = NULL;
 
-  /* each elt is assigned to a partition according to:
-   * an elt is assigned to the partition of which most of its nodes
-   * belong.  In case of ambiguity, it is assigned to the partition with
-   * the least number of elements. */
+  nem_partition_elts_direct_pre (Mesh, *pPart, &eltnodepartqty, &eltnodeparts,
+                                 &eltnodepartnodeqty, &nodepartelts,
+                                 &nodeparteltqty);
 
-  for (NodeQty = eltnodeqty; NodeQty >= 1; NodeQty--)
-    for (i = 1; i <= Mesh[dim].EltQty; i++)
-      if ((*pPart).elt_parts[i] == -1)
-      {
-        /* if the element has not been assigned to a partition yet */
-        ut_array_1d_int_zero (eltnodepart, partnbr);
+  nem_partition_elts_direct_recordinteriorelts (pPart, eltnodeqty,
+                                                nodepartelts, nodeparteltqty);
 
-        /* recording eltnodepart: the number of nodes in every partition */
-        for (j = 0; j < eltnodeqty; j++)
-          eltnodepart[(*pPart).node_parts[Mesh[dim].EltNodes[i][j]]]++;
+  while (!nem_partition_elts_direct_findelt (Mesh[dim], *pPart, eltnodeparts, eltnodepartqty,
+                                             eltnodepartnodeqty,
+                                             nodepartelts, nodeparteltqty,
+                                             eltnodeqty, &part, &elt))
+    nem_partition_elts_direct_recordelt (pPart, part, elt, eltnodepartqty,
+                                         eltnodeparts, eltnodepartnodeqty,
+                                         nodepartelts, nodeparteltqty);
 
-        /* maxpnodeqty: max number of nodes in the same partition
-         * nodemaxpqty: number of partitions for which it is the case */
-        maxpnodeqty = ut_array_1d_int_max (eltnodepart, partnbr);
-        nodemaxpqty =
-          ut_array_1d_int_eltpos_all (eltnodepart, partnbr, maxpnodeqty, pos);
-        if (nodemaxpqty < 1)
-          ut_print_neperbug ();
-
-        /* if most of the nodes are in one partition or no ambiguity:
-         * assigning the element to the partition */
-        if (maxpnodeqty == NodeQty)
-        {
-          partition = -1;
-
-          if (nodemaxpqty == 1)
-            partition = pos[0];
-          else
-          {
-            for (k = 0; k < nodemaxpqty; k++)
-            {
-              peltqty[k] = (*pPart).EltQty[pos[k]];
-              partition =
-                pos[ut_array_1d_int_min_index (peltqty, nodemaxpqty)];
-            }
-          }
-
-          if (partition == -1)
-            ut_print_neperbug ();
-
-          (*pPart).elt_parts[i] = partition;
-          (*pPart).EltQty[partition]++;
-        }
-      }
-
-  if (ut_array_1d_int_eltpos ((*pPart).elt_parts + 1, Mesh[dim].EltQty, -1) !=
-      -1)
-    ut_print_neperbug ();
-
-  ut_free_1d_int (&pos);
-  ut_free_1d_int (&eltnodepart);
-  ut_free_1d_int (&peltqty);
+  ut_free_2d_int (&nodeparteltqty, (*pPart).qty);
+  ut_free_3d_int (&nodepartelts, (*pPart).qty, eltnodeqty + 1);
+  ut_free_1d_int (&eltnodepartqty);
+  ut_free_2d_int (&eltnodeparts, Mesh[dim].EltQty + 1);
+  ut_free_2d_int (&eltnodepartnodeqty, Mesh[dim].EltQty + 1);
 
   return;
-}
-
-int
-nem_partition_elts_balancing (struct MESH *Mesh, struct PART *pPart,
-                              double level)
-{
-  int i;
-  int **Q = NULL;
-  int BoundEltQty;
-  int sum;
-  int dim = neut_mesh_array_dim (Mesh);
-
-  /* recording elements whose nodes are in > 1 partitions */
-
-  /* first loop for allocation */
-  /* BoundEltQty = number of boundary elements (i.e. which have node in
-   * different partitions */
-
-  BoundEltQty = 0;
-  Q = ut_alloc_2d_int (BoundEltQty, 1);
-  for (i = 1; i <= Mesh[dim].EltQty; i++)
-    if (neut_mesh_elt_isbound (Mesh[dim], i, (*pPart).node_parts) == 1)
-    {
-      BoundEltQty++;
-      Q = ut_realloc_2d_int_addline (Q, BoundEltQty, 3);
-      Q[BoundEltQty - 1][0] = i;
-    }
-
-  sum =
-    nem_partition_elts_balancing_Q (Mesh[dim], pPart, level, BoundEltQty, Q);
-
-  if (sum != 0)
-    ut_print_message (1, 3, "Balancing is off by %d elements.\n", sum);
-
-  ut_free_2d_int (&Q, BoundEltQty);
-
-  return sum;
 }
 
 void

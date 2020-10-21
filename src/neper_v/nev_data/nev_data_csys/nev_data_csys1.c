@@ -9,6 +9,8 @@ nev_data_csys (struct SIM Sim, char *attribute, char *datastring, struct DATA *p
 {
   char *datatype = NULL, *datavalue = NULL;
 
+  ut_print_message (0, 1, "Reading data (%s, %s)...\n", "csys", attribute);
+
   neut_data_datastring_type_value ("csys", attribute, datastring, &datatype, &datavalue);
 
   if (!strcmp (attribute, "col"))

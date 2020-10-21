@@ -743,3 +743,27 @@ ut_string_isnumber (char *s)
   strtod (s, &p);
   return *p == '\0';
 }
+
+void
+ut_string_random (int length, int rand, char **pstring)
+{
+  int i, key;
+  const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  srand48 (rand);
+
+  (*pstring) = ut_alloc_1d_char (length + 1);
+
+  if (length)
+  {
+    --length;
+    for (i = 0; i < length; i++)
+    {
+      key = (int) (drand48 () * (sizeof charset - 1));
+      (*pstring)[i] = charset[key];
+    }
+    (*pstring)[length] = '\0';
+  }
+
+  return;
+}

@@ -7,9 +7,13 @@
 void
 neut_part_set_zero (struct PART *pPart)
 {
+  (*pPart).mode = NULL;
+  (*pPart).mapping = NULL;
   (*pPart).qty = 0;
+
   (*pPart).node_parts = NULL;
   (*pPart).elt_parts = NULL;
+
   (*pPart).NodeQty = NULL;
   (*pPart).EltQty = NULL;
   (*pPart).targeteltqty = NULL;

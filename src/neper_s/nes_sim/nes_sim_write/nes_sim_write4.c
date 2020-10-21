@@ -4,61 +4,9 @@
 
 #include "nes_sim_write_.h"
 
-void
-nes_sim_write_read_writeforce (FILE * fileid, double ***pdata, int *pstepqty)
-{
-  int step;
-  double time, fx, fy, fz, area;
-
-  (*pdata) = ut_alloc_1d_pdouble (1);
-
-  ut_file_skip (fileid, 17);
-
-  while (fscanf (fileid, "%d %*d %lf %lf %lf %lf %lf", &step, &fx,
-                 &fy, &fz, &area, &time) == 6)
-  {
-    (*pstepqty) = step;
-    (*pdata) = ut_realloc_2d_addline (*pdata, step, 6);
-    (*pdata)[step - 1][0] = time;
-    (*pdata)[step - 1][1] = -1;
-    (*pdata)[step - 1][2] = area;
-    (*pdata)[step - 1][3] = fx;
-    (*pdata)[step - 1][4] = fy;
-    (*pdata)[step - 1][5] = fz;
-  }
-
-  return;
-}
-
-int
-nes_sim_write_fscanf_stepheader (FILE * fileid, char *type, int *step,
-                                 int *qty)
-{
-  int id1, id2;
-
-  if (!strcmp (type, "node"))
-  {
-    if (fscanf (fileid, "%% %d %d %d", step, &id1, &id2) != 3)
-      return -1;
-
-    *qty = ((id2 - id1) + 1) / 3;
-  }
-  else if (!strcmp (type, "elt"))
-  {
-    if (fscanf (fileid, "%% %d %*d %d %d", step, &id1, &id2) != 3)
-      return -1;
-
-    *qty = ((id2 - id1) + 1);
-  }
-  else
-    return -1;
-
-  return 0;
-}
-
 int
 nes_sim_write_results_prop (struct SIM Sim, char *var,
-                            int *pstartstep, int *pcolqty)
+                           int *pstartstep, int *pcolqty)
 {
   int status;
   char *filename = ut_alloc_1d_char (1000);
@@ -109,13 +57,7 @@ nes_sim_write_results_entity_step (struct IN_S In, struct SIM Sim, char *res,
   char *message = ut_alloc_1d_char (100);
   char *line = ut_alloc_1d_char (1000);
   double *zeros = ut_alloc_1d (colqty);
-  char *dir = ut_alloc_1d_char (10);
-
-  char *filename = ut_string_paste (In.simdir, "/report");
-
-  FILE *fp = ut_file_open (filename, "A");
-  fprintf (fp, " %s", res);
-  ut_file_close (fp, filename, "A");
+  char *dir = ut_alloc_1d_char (100);
 
   neut_sim_entity_dir (entity, &dir);
 
@@ -141,25 +83,26 @@ nes_sim_write_results_entity_step (struct IN_S In, struct SIM Sim, char *res,
     fp1 = ut_file_open (post_filename, "R");
 
     for (i = 0; i <= Sim.StepQty; ++i)
-    {
-      sprintf (step_filename, "%s%d", step_filepref, i);
-
-      fp2 = ut_file_open (step_filename, (part == 1) ? "W" : "A");
-
-      if (i >= startstep)
-        ut_file_skip_line (fp1, 1);
-      for (j = 0; j < qty_part[part]; j++)
+      if (!Sim.StepState[i])
       {
+        sprintf (step_filename, "%s%d", step_filepref, i);
+
+        fp2 = ut_file_open (step_filename, (part == 1) ? "W" : "A");
+
         if (i >= startstep)
+          ut_file_skip_line (fp1, 1);
+        for (j = 0; j < qty_part[part]; j++)
         {
-          line = fgets (line, 1000, fp1);
-          fprintf (fp2, "%s", line);
+          if (i >= startstep)
+          {
+            line = fgets (line, 1000, fp1);
+            fprintf (fp2, "%s", line);
+          }
+          else
+            ut_array_1d_fprintf (fp2, zeros, colqty, "%.0f");
         }
-        else
-          ut_array_1d_fprintf (fp2, zeros, colqty, "%.0f");
+        ut_file_close (fp2, step_filename, "A");
       }
-      ut_file_close (fp2, step_filename, "A");
-    }
 
     ut_file_close (fp1, post_filename, "R");
   }

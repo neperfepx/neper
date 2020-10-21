@@ -315,19 +315,28 @@ ut_array_2d_fscanf (FILE * file, double **array, int d1, int d2)
 }
 
 int
-ut_array_1d_fnscanf (char *filename, double *array, int d1)
+ut_array_1d_fnscanf (char *filename, double *array, int d1, char *mode)
 {
   FILE *file = NULL;
   int status = 0, varqty;
   char *fct = NULL, **vals = NULL, **vars = NULL;
+  char *filename2 = NULL;
 
-  ut_string_function (filename, &fct, &vars, &vals, &varqty);
+  if (!strncmp (filename, "file(", 5))
+    ut_string_string (filename, &filename2);
+  else
+  {
+    filename2 = ut_alloc_1d_char (strlen (filename) + 7);
+    sprintf (filename2, "file(%s)", filename);
+  }
+
+  ut_string_function (filename2, &fct, &vars, &vals, &varqty);
 
   if (varqty == 1)
   {
-    file = ut_file_open (filename, "r");
+    file = ut_file_open (filename2, mode ? mode : "r");
     status = ut_array_1d_fscanf (file, array, d1);
-    ut_file_close (file, filename, "r");
+    ut_file_close (file, filename2, mode ? mode : "r");
   }
 
   else if (varqty == 2 && !strcmp (vars[1], "col"))
@@ -337,7 +346,7 @@ ut_array_1d_fnscanf (char *filename, double *array, int d1)
 
     col = atoi (vals[1]);
 
-    file = ut_file_open (vals[0], "r");
+    file = ut_file_open (vals[0], mode ? mode : "r");
 
     for (i = 0; i < d1; i++)
     {
@@ -358,7 +367,7 @@ ut_array_1d_fnscanf (char *filename, double *array, int d1)
       ut_free_1d (&tmp);
     }
 
-    ut_file_close (file, vals[0], "r");
+    ut_file_close (file, vals[0], mode ? mode : "r");
   }
   else
     abort ();
@@ -366,12 +375,13 @@ ut_array_1d_fnscanf (char *filename, double *array, int d1)
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vals, varqty);
   ut_free_2d_char (&vars, varqty);
+  ut_free_1d_char (&filename2);
 
   return status;
 }
 
 int
-ut_array_1d_int_fnscanf (char *filename, int *array, int d1)
+ut_array_1d_int_fnscanf (char *filename, int *array, int d1, char *mode)
 {
   FILE *file = NULL;
   int status = 0, varqty;
@@ -381,9 +391,9 @@ ut_array_1d_int_fnscanf (char *filename, int *array, int d1)
 
   if (varqty == 1)
   {
-    file = ut_file_open (filename, "r");
+    file = ut_file_open (filename, mode ? mode : "r");
     status = ut_array_1d_int_fscanf (file, array, d1);
-    ut_file_close (file, filename, "r");
+    ut_file_close (file, filename, mode ? mode : "r");
   }
 
   else if (varqty == 2 && !strcmp (vars[1], "col"))
@@ -393,7 +403,7 @@ ut_array_1d_int_fnscanf (char *filename, int *array, int d1)
 
     col = atoi (vals[1]);
 
-    file = ut_file_open (vals[0], "r");
+    file = ut_file_open (vals[0], mode ? mode : "r");
 
     for (i = 0; i < d1; i++)
     {
@@ -411,7 +421,7 @@ ut_array_1d_int_fnscanf (char *filename, int *array, int d1)
       ut_free_1d_int (&tmp);
     }
 
-    ut_file_close (file, vals[0], "r");
+    ut_file_close (file, vals[0], mode ? mode : "r");
   }
   else
     abort ();
@@ -424,7 +434,7 @@ ut_array_1d_int_fnscanf (char *filename, int *array, int d1)
 }
 
 int
-ut_array_2d_fnscanf (char *filename, double **array, int d1, int d2)
+ut_array_2d_fnscanf (char *filename, double **array, int d1, int d2, char *mode)
 {
   int i, j, varqty;
   FILE *file = NULL;
@@ -444,9 +454,9 @@ ut_array_2d_fnscanf (char *filename, double **array, int d1, int d2)
 
   if (varqty == 1)
   {
-    file = ut_file_open (filename, "r");
+    file = ut_file_open (filename, mode ? mode : "r");
     status = ut_array_2d_fscanf (file, array, d1, d2);
-    ut_file_close (file, filename, "r");
+    ut_file_close (file, filename, mode ? mode : "r");
   }
 
   else if (varqty == 2 && !strcmp (vars[1], "col"))
@@ -468,7 +478,7 @@ ut_array_2d_fnscanf (char *filename, double **array, int d1, int d2)
 
     totcolqty = ut_file_nbcolumns (vals[0]);
 
-    file = ut_file_open (vals[0], "r");
+    file = ut_file_open (vals[0], mode ? mode : "r");
 
     for (i = 0; i < d1; i++)
     {
@@ -490,7 +500,7 @@ ut_array_2d_fnscanf (char *filename, double **array, int d1, int d2)
 
       ut_free_1d (&tmp);
     }
-    ut_file_close (file, vals[0], "r");
+    ut_file_close (file, vals[0], mode ? mode : "r");
 
     ut_free_2d_char (&parts, colqty);
   }
@@ -506,7 +516,7 @@ ut_array_2d_fnscanf (char *filename, double **array, int d1, int d2)
 }
 
 int
-ut_array_2d_int_fnscanf (char *filename, int **array, int d1, int d2)
+ut_array_2d_int_fnscanf (char *filename, int **array, int d1, int d2, char *mode)
 {
   int i, j, varqty;
   FILE *file = NULL;
@@ -526,9 +536,9 @@ ut_array_2d_int_fnscanf (char *filename, int **array, int d1, int d2)
 
   if (varqty == 1)
   {
-    file = ut_file_open (filename, "r");
+    file = ut_file_open (filename, mode ? mode : "r");
     status = ut_array_2d_int_fscanf (file, array, d1, d2);
-    ut_file_close (file, filename, "r");
+    ut_file_close (file, filename, mode ? mode : "r");
   }
 
   else if (varqty == 2 && !strcmp (vars[1], "col"))
@@ -550,7 +560,7 @@ ut_array_2d_int_fnscanf (char *filename, int **array, int d1, int d2)
 
     totcolqty = ut_file_nbcolumns (vals[0]);
 
-    file = ut_file_open (vals[0], "r");
+    file = ut_file_open (vals[0], mode ? mode : "r");
 
     for (i = 0; i < d1; i++)
     {
@@ -568,7 +578,7 @@ ut_array_2d_int_fnscanf (char *filename, int **array, int d1, int d2)
 
       ut_free_1d_int (&tmp);
     }
-    ut_file_close (file, vals[0], "r");
+    ut_file_close (file, vals[0], mode ? mode : "r");
 
     ut_free_2d_char (&parts, colqty);
   }
@@ -585,7 +595,7 @@ ut_array_2d_int_fnscanf (char *filename, int **array, int d1, int d2)
 
 int
 ut_array_2d_fnscanf_wcard (char *filename, double **array, int d1, int d2,
-                           char *wcard)
+                           char *wcard, char *mode)
 {
   int i;
 
@@ -642,7 +652,7 @@ ut_array_2d_fnscanf_wcard (char *filename, double **array, int d1, int d2,
       ut_file_nbwords_testwmessage (filename, d1);
 
     FILE *file = NULL;
-    file = ut_file_open (filename, "r");
+    file = ut_file_open (filename, mode ? mode : "r");
     for (i = 0; i < d1; i++)
     {
       if (fscanf (file, "%s", name) != 1)
@@ -650,7 +660,7 @@ ut_array_2d_fnscanf_wcard (char *filename, double **array, int d1, int d2,
       ut_color_name_rgb (name, val);
       ut_array_1d_memcpy_fromint (val, 3, array[i]);
     }
-    ut_file_close (file, filename, "r");
+    ut_file_close (file, filename, mode ? mode : "r");
 
     ut_free_1d_int (&val);
     ut_free_1d_char (&name);
@@ -663,18 +673,18 @@ ut_array_2d_fnscanf_wcard (char *filename, double **array, int d1, int d2,
     if (ut_list_testelt (wcard, ",", "size") == 1)
       ut_file_nbwords_testwmessage (filename, d1 * d2);
 
-    ut_array_2d_fnscanf (filename, array, d1, d2);
+    ut_array_2d_fnscanf (filename, array, d1, d2, mode);
   }
 
   return 0;
 }
 
 int
-ut_array_1d_fnscanf_wcard (char *filename, double *array, int d1, char *wcard)
+ut_array_1d_fnscanf_wcard (char *filename, double *array, int d1, char *wcard, char *mode)
 {
   double **tmp = ut_alloc_2d (1, d1);
 
-  ut_array_2d_fnscanf_wcard (filename, tmp, 1, d1, wcard);
+  ut_array_2d_fnscanf_wcard (filename, tmp, 1, d1, wcard, mode);
 
   ut_array_1d_memcpy (tmp[0], d1, array);
 
@@ -685,12 +695,12 @@ ut_array_1d_fnscanf_wcard (char *filename, double *array, int d1, char *wcard)
 
 int
 ut_array_1d_int_fnscanf_wcard (char *filename, int *array, int d1,
-                               char *wcard)
+                               char *wcard, char *mode)
 {
   int i;
   double *tmp = ut_alloc_1d (d1);
 
-  ut_array_1d_fnscanf_wcard (filename, tmp, d1, wcard);
+  ut_array_1d_fnscanf_wcard (filename, tmp, d1, wcard, mode);
   for (i = 0; i < d1; i++)
     array[i] = ut_num_d2ri (tmp[i]);
 
@@ -3040,7 +3050,7 @@ ut_array_1d_int_valnb (int *array, int size, int val)
 }
 
 int
-ut_array_1d_uint_nbofthisval (unsigned int *array, int size, unsigned int val)
+ut_array_1d_uint_valnb (unsigned int *array, int size, unsigned int val)
 {
   int qty = 0;
   int i;
@@ -3274,15 +3284,19 @@ ut_array_2dns_int_linepos (int **array, int line, int *col, int *array2,
 void
 ut_array_1d_int_inv (int *array, int qty, int **pbinv, int *pbinqty)
 {
-  int i;
+  int i, max;
 
-  (*pbinqty) = ut_array_1d_int_max (array, qty) + 1;
+  max = ut_array_1d_int_max (array, qty) + 1;
 
-  (*pbinv) = ut_alloc_1d_int ((*pbinqty));
-  ut_array_1d_int_set (*pbinv, *pbinqty, -1);
+  ut_free_1d_int (pbinv);
+  (*pbinv) = ut_alloc_1d_int (max);
+  ut_array_1d_int_set (*pbinv, max, -1);
 
   for (i = 0; i < qty; i++)
     (*pbinv)[array[i]] = i;
+
+  if (pbinqty)
+    *pbinqty = max;
 
   return;
 }

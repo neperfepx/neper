@@ -2,4 +2,4 @@
 /* Copyright (C) 2003-2013, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nes_pproc_elset (struct IN_S In, struct SIM Sim, struct MESH Mesh);
+extern void nes_sim_fepxparse (struct IN_S In, struct SIM *pSim);

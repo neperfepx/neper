@@ -21,7 +21,7 @@ Info   : A software package for polycrystal generation and meshing.
 Info   : Version 4.0.0
 Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
 Info   : Running on 8 threads.
-Info   : <http://neper.info>
+Info   : <https://neper.info>
 Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
 Info   : No initialization file found (`/home/rquey/.neperrc').
 Info   : ---------------------------------------------------------------
@@ -381,7 +381,7 @@ any, none
 
 Below are options specific to raster tessellations.
 For a raster tessellation, it is also possible to set data on a per-voxel
-basis,
+basis, or for the edges,
 
 @opt{-datavoxcol, char_string,
 Set the colors of the voxels@comma{} which can be done in two
@@ -456,6 +456,16 @@ It is also possible to assign a color to void voxels (i.e., voxels do not belong
 Set the color of void voxels (@pxref{Colors and Color Maps}).
 ,
 any, gray}
+
+It is also possible to set the radius of the edges of a 2D raster tessellation
+(just as for a tessellation),
+
+@opt{-dataedgerad, char_string,
+Set the radii of the raster tessellation edges.
+The argument can be any expression based on the keys listed in
+@ref{Raster Tessellation Keys}.
+,
+any, tessellation dependent}
 
 @subsection Mesh Data Loading and Rendering
 
@@ -1005,8 +1015,9 @@ the radius of the face edges.
 0 or 1, 0}
 
 For a raster tessellation, it is possible to set the visibility of the
-individual voxels of the tessellation and of the individual voxels that
-are void (that do not belong to any cell).
+individual voxels of the tessellation, of the individual voxels that
+are void (that do not belong to any cell), and of the raster tessellation edges
+(just as for a tessellation, but based on the voxel edges).
 
 @opt{-showvox, char_string,
 Specify the (non-void) voxels to show. The argument can be: @samp{all} for
@@ -1025,6 +1036,13 @@ a file@comma{} or any expression based on the keys listed in
 @ref{Raster Tessellation Keys}.
 ,
 any, all}
+
+@opt{-showedge, char_string,
+Specify the edges to show. The argument can be: @samp{all} for all@comma{}
+@samp{none} for none@comma{} or any expression based on the keys listed in
+ @ref{Raster Tessellation Keys}.
+,
+any, none}
 
 The following options apply to the entities of the mesh.
 The options apply to 3D elements (@samp{elt3d}) and element sets

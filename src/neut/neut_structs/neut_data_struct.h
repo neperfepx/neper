@@ -36,6 +36,7 @@ extern "C"
     double **RadData;		// Radius data
     char *RadDataType;		// Type of radius data
     double *Rad;		// Radius
+    char *RadDataName;          // Name of the rad data
 
     // needed by: csys nodes point
     double **CooData;

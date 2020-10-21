@@ -7,8 +7,17 @@
 void
 nev_sim (char **argv, int *pi, struct SIM *pSim)
 {
+  int status, tmp;
+
   if (!strcmp (argv[*pi], "-simstep"))
-    sscanf (argv[++(*pi)], "%d", &(*pSim).step);
+  {
+    ut_print_message (0, 0, "Setting simulation step...\n");
+
+    sscanf (argv[++(*pi)], "%d", &tmp);
+    status = neut_sim_setstep (pSim, tmp);
+    if (status)
+      ut_print_message (2, 2, "Step %d not available.\n", tmp);
+  }
   else
   {
     ut_print_message (2, 0, "Unknown command %s\n", argv[(*pi)]);

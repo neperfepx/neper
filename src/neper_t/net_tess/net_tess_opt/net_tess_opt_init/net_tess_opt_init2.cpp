@@ -397,7 +397,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
               ut_array_2d_fnscanf ((*pTOpt).tarexpr[i],
                                    (*pTOpt).tarcellval[i] + 1,
                                    (*pTOpt).CellQty,
-                                   (*pTOpt).tarcellvalqty[i]);
+                                   (*pTOpt).tarcellvalqty[i], (char *) "r");
             if (status != 1)
               abort ();
           }

@@ -609,7 +609,7 @@ neut_nodes_wbary (struct NODES Nodes, int *nodes, double *nodeweights,
   return;
 }
 
-/* node_nbs[...] = node qty then new pos */
+/* node_nbs[...] = new pos */
 /* RAM could be improved by more elegant exchange of lines (not through
  * a big copy coo array */
 void

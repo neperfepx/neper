@@ -128,19 +128,6 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
                         In.vtk);
   }
 
-  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "olmap"))     // olmap file
-  {
-    if (Tesr.CellQty != 0)
-    {
-      file = ut_file_open (In.olmap, "w");
-      neut_tesr_fprintf_olmap (file, Tesr);
-      ut_file_close (file, In.olmap, "w");
-    }
-    else
-      ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n",
-                        In.olmap);
-  }
-
   if (FTess.VerQty > 0
       && ut_list_testelt (In.format, NEUT_SEP_NODEP, "debug"))
   {

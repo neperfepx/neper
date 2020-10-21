@@ -15,17 +15,17 @@ nes_input/nes_input1.c
 nes_input/nes_input2.c
 nes_input/nes_input3.c
 nes_sim/nes_sim1.c
-nes_sim/nes_sim_parse/nes_sim_parse1.c
-nes_sim/nes_sim_parse/nes_sim_parse2.c
-nes_sim/nes_sim_parse/nes_sim_parse3.c
+nes_sim/nes_sim2.c
+nes_sim/nes_sim3.c
+nes_sim/nes_sim_fepxparse/nes_sim_fepxparse1.c
 nes_sim/nes_sim_write/nes_sim_write1.c
 nes_sim/nes_sim_write/nes_sim_write2.c
 nes_sim/nes_sim_write/nes_sim_write3.c
 nes_sim/nes_sim_write/nes_sim_write4.c
 nes_pproc/nes_pproc1.c
 nes_pproc/nes_pproc2.c
-nes_pproc/nes_pproc_elt/nes_pproc_elt1.c
-nes_pproc/nes_pproc_node/nes_pproc_node1.c
+nes_pproc/nes_pproc_entity/nes_pproc_entity1.c
+nes_pproc/nes_pproc_entity/nes_pproc_entity2.c
 )
 
 set(EXTRA_LIBS ${EXTRA_LIBS} ut)

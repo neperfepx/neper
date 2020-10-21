@@ -316,8 +316,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
 
   if (In.group)
   {
-    ut_print_message (0, 1, "Computing cell sets...\n");
-    net_group (In, &FTess);
+    ut_print_message (0, 1, "Computing cell groups...\n");
+    net_group (In, &FTess, &Tesr);
   }
 
   // ###################################################################
@@ -339,9 +339,11 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   // ### WRITING STATISTICS  ###########################################
 
   if (In.stc || In.stv || In.ste || In.stf || In.stp || In.sts || In.stpt
-      || In.stvox || In.sttess || In.sttesr)
+      || In.stvox || In.sttess || In.sttesr || In.stgroup)
   {
     ut_print_message (0, 1, "Writing statistics...\n");
+    if (!ut_list_testelt (In.format, NEUT_SEP_NODEP, "tess"))
+      neut_tess_reset (&FTess);
     net_stat (In, FTess, &Tesr, Point);
   }
 

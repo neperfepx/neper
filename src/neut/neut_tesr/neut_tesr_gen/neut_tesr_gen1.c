@@ -32,147 +32,12 @@ neut_tesr_entity_qty (struct TESR Tesr, char *entity, int *pqty)
     (*pqty) = Tesr.CellQty;
   else if (!strcmp (entity, "vox"))
     (*pqty) = ut_array_1d_int_prod (Tesr.size, 3);
+  else if (!strcmp (entity, "group"))
+    (*pqty) = Tesr.CellGroup ? ut_array_1d_int_max (Tesr.CellGroup + 1, Tesr.CellQty) : 0;
   else
     (*pqty) = -1;
 
   return;
-}
-
-void
-neut_tesr_tesrqty (struct TESR Tesr, int *pqty)
-{
-  (*pqty) = ut_array_1d_int_prod (Tesr.size, Tesr.Dim);
-
-  return;
-}
-
-int
-neut_tesr_grid_area (struct TESR Tesr, double *parea)
-{
-  if (Tesr.Dim == 2)
-  {
-    (*parea) = Tesr.vsize[0] * Tesr.size[0] * Tesr.vsize[1] * Tesr.size[1];
-    return 0;
-  }
-  else
-  {
-    (*parea) = 0;
-    return -1;
-  }
-}
-
-int
-neut_tesr_area (struct TESR Tesr, double *parea)
-{
-  int i, j, qty;
-
-  if (Tesr.Dim == 2)
-  {
-    qty = 0;
-    for (j = 1; j <= Tesr.size[1]; j++)
-      for (i = 1; i <= Tesr.size[0]; i++)
-        if (Tesr.VoxCell[i][j] != 0)
-          qty++;
-
-    (*parea) = ut_array_1d_prod (Tesr.vsize, 2) * qty;
-    return 0;
-  }
-  else
-  {
-    (*parea) = 0;
-    return -1;
-  }
-}
-
-int
-neut_tesr_voxsize (struct TESR Tesr, double *pvol)
-{
-  if (Tesr.Dim == 2)
-    return neut_tesr_voxarea (Tesr, pvol);
-  else if (Tesr.Dim == 3)
-    return neut_tesr_voxvolume (Tesr, pvol);
-  else
-    abort ();
-
-  return 0;
-}
-
-int
-neut_tesr_voxarea (struct TESR Tesr, double *pvol)
-{
-  (*pvol) = ut_array_1d_prod (Tesr.vsize, 2);
-
-  return 0;
-}
-
-int
-neut_tesr_voxvolume (struct TESR Tesr, double *pvol)
-{
-  (*pvol) = ut_array_1d_prod (Tesr.vsize, 3);
-
-  return 0;
-}
-
-int
-neut_tesr_voxlengtheq (struct TESR Tesr, double *plengtheq)
-{
-  (*plengtheq) = ut_array_1d_gmean (Tesr.vsize, Tesr.Dim);
-
-  return 0;
-}
-
-int
-neut_tesr_volume (struct TESR Tesr, double *pvol)
-{
-  if (Tesr.Dim == 3)
-  {
-    (*pvol) =
-      Tesr.vsize[0] * Tesr.size[0] * Tesr.vsize[1] * Tesr.size[1] *
-      Tesr.vsize[2] * Tesr.size[2];
-    return 0;
-  }
-  else
-  {
-    (*pvol) = 0;
-    return -1;
-  }
-}
-
-int
-neut_tesr_grid_volume (struct TESR Tesr, double *pvol)
-{
-  int i, j, k, qty;
-
-  if (Tesr.Dim == 3)
-  {
-    qty = 0;
-    for (k = 1; k <= Tesr.size[1]; k++)
-      for (j = 1; j <= Tesr.size[1]; j++)
-        for (i = 1; i <= Tesr.size[0]; i++)
-          if (Tesr.VoxCell[i][j] != 0)
-            qty++;
-
-    (*pvol) = ut_array_1d_prod (Tesr.vsize, 3) * qty;
-    return 0;
-  }
-  else
-  {
-    (*pvol) = 0;
-    return -1;
-  }
-}
-
-int
-neut_tesr_size (struct TESR Tesr, double *psize)
-{
-  if (Tesr.Dim == 2)
-    neut_tesr_area (Tesr, psize);
-  else if (Tesr.Dim == 3)
-    neut_tesr_volume (Tesr, psize);
-  else
-    abort ();
-
-  return 0;
 }
 
 void
@@ -182,7 +47,7 @@ neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty)
 
   if (!strcmp (entity, "tesr"))
   {
-    (*pvarqty) = 18;
+    (*pvarqty) = 22;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
     strcpy ((*pvar)[id++], "dim");
     strcpy ((*pvar)[id++], "voxnbx");
@@ -195,9 +60,13 @@ neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[id++], "voxsizex");
     strcpy ((*pvar)[id++], "voxsizey");
     strcpy ((*pvar)[id++], "voxsizez");
-    strcpy ((*pvar)[id++], "domsizex");
-    strcpy ((*pvar)[id++], "domsizey");
-    strcpy ((*pvar)[id++], "domsizez");
+    strcpy ((*pvar)[id++], "rastersizex");
+    strcpy ((*pvar)[id++], "rastersizey");
+    strcpy ((*pvar)[id++], "rastersizez");
+    strcpy ((*pvar)[id++], "rastersize");
+    strcpy ((*pvar)[id++], "area");
+    strcpy ((*pvar)[id++], "vol");
+    strcpy ((*pvar)[id++], "size");
     strcpy ((*pvar)[id++], "x");
     strcpy ((*pvar)[id++], "y");
     strcpy ((*pvar)[id++], "z");
@@ -205,8 +74,8 @@ neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty)
   }
   else if (!strcmp (entity, "cell"))
   {
-    (*pvarqty) = 10;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
+    (*pvarqty) = 14;
+    (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
     strcpy ((*pvar)[0], "id");
     strcpy ((*pvar)[1], "x");
     strcpy ((*pvar)[2], "y");
@@ -217,6 +86,10 @@ neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[7], "size");
     strcpy ((*pvar)[8], "convexity");
     strcpy ((*pvar)[9], "coo");
+    strcpy ((*pvar)[10], "group");
+    strcpy ((*pvar)[11], "oridisanisoangles");
+    strcpy ((*pvar)[12], "oridisanisoaxes");
+    strcpy ((*pvar)[13], "oridisanisofact");
   }
   else if (!strcmp (entity, "vox"))
   {
@@ -232,6 +105,23 @@ neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[7], "vz");
     strcpy ((*pvar)[8], "coo");
     strcpy ((*pvar)[9], "vcoo");
+  }
+  else if (!strcmp (entity, "group"))
+  {
+    (*pvarqty) = 7;
+    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
+    strcpy ((*pvar)[0], "id");
+    strcpy ((*pvar)[1], "vol");
+    strcpy ((*pvar)[2], "volfrac");
+    strcpy ((*pvar)[3], "area");
+    strcpy ((*pvar)[4], "areafrac");
+    strcpy ((*pvar)[5], "size");
+    strcpy ((*pvar)[6], "sizefrac");
+  }
+  else if (!strcmp (entity, "general"))
+  {
+    (*pvarqty) = 0;
+    (*pvar) = NULL;
   }
   else
     ut_print_neperbug ();
@@ -316,7 +206,6 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
                    double **pvals, int *pvalqty, char **ptype)
 {
   int i, status, b, tmpint, tmpint3[3];
-  double vol;
   double *c = NULL;
   char *typetmp = NULL;
 
@@ -340,7 +229,7 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
   }
 
   c = ut_alloc_1d (3);
-  typetmp = ut_alloc_1d_char (10);
+  ut_string_string ("%f", &typetmp);
 
   // b = (Tess.CellQty > 0) ? Tess.CellBody[id] : 0;
   b = 0;
@@ -357,94 +246,65 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
     if (!strcmp (var, "dim"))
     {
       (*pvals)[0] = Tesr.Dim;
-      strcpy (typetmp, "%d");
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "voxnb"))
     {
       (*pvals)[0] = Tesr.size[0] * Tesr.size[1] * Tesr.size[2];
-      strcpy (typetmp, "%f");
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "voxnbx"))
     {
       (*pvals)[0] = Tesr.size[0];
-      strcpy (typetmp, "%f");
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "voxnby"))
     {
       (*pvals)[0] = Tesr.size[1];
-      strcpy (typetmp, "%f");
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "voxnbz"))
     {
       (*pvals)[0] = Tesr.size[2];
-      strcpy (typetmp, "%f");
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "voxsizex"))
-    {
       (*pvals)[0] = Tesr.vsize[0];
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "voxsizey"))
-    {
       (*pvals)[0] = Tesr.vsize[1];
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "voxsizez"))
-    {
       (*pvals)[0] = Tesr.vsize[2];
-      strcpy (typetmp, "%f");
-    }
-    else if (!strcmp (var, "domsizex"))
-    {
+    else if (!strcmp (var, "rastersizex"))
       (*pvals)[0] = Tesr.vsize[0] * Tesr.size[0];
-      strcpy (typetmp, "%f");
-    }
-    else if (!strcmp (var, "domsizey"))
-    {
+    else if (!strcmp (var, "rastersizey"))
       (*pvals)[0] = Tesr.vsize[1] * Tesr.size[1];
-      strcpy (typetmp, "%f");
-    }
-    else if (!strcmp (var, "domsizez"))
-    {
+    else if (!strcmp (var, "rastersizez"))
       (*pvals)[0] = Tesr.vsize[2] * Tesr.size[2];
-      strcpy (typetmp, "%f");
-    }
+    else if (!strcmp (var, "rastersize"))
+      neut_tesr_rastersize (Tesr, *pvals);
+    else if (!strcmp (var, "area"))
+      neut_tesr_area (Tesr, *pvals);
+    else if (!strcmp (var, "vol"))
+      neut_tesr_volume (Tesr, *pvals);
+    else if (!strcmp (var, "size"))
+      neut_tesr_size (Tesr, *pvals);
     else if (!strcmp (var, "x"))
-    {
       neut_tesr_centre_x (Tesr, *pvals);
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "y"))
-    {
       neut_tesr_centre_y (Tesr, *pvals);
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "z"))
-    {
       neut_tesr_centre_z (Tesr, *pvals);
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "coo"))
     {
       neut_tesr_centre (Tesr, *pvals);
       (*pvalqty) = 3;
-      strcpy (typetmp, "%f");
     }
     else if (!strcmp (var, "originx"))
-    {
       (*pvals)[0] = Tesr.Origin[0];
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "originy"))
-    {
       (*pvals)[0] = Tesr.Origin[1];
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "originz"))
-    {
       (*pvals)[0] = Tesr.Origin[2];
-      strcpy (typetmp, "%f");
-    }
   }
   else if (!strcmp (entity, "cell") || !strcmp (entity, "poly")
         || !strcmp (entity, "face") || !strcmp (entity, "edge"))
@@ -456,89 +316,68 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
         (*pvals)[0] = id;
       else
         (*pvals)[0] = Tesr.CellId ? Tesr.CellId[id] : id;
-      strcpy (typetmp, "%d");
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var, "group"))
+    {
+      (*pvals)[0] = Tesr.CellGroup ? Tesr.CellGroup[id] : -1;
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "body"))
     {
       (*pvals)[0] = b;
-      strcpy (typetmp, "%d");
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "x"))
-    {
       (*pvals)[0] = c[0];
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "y"))
-    {
       (*pvals)[0] = c[1];
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "z"))
-    {
       (*pvals)[0] = c[2];
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "coo"))
     {
       (*pvalqty) = 3;
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
       ut_array_1d_memcpy (c, 3, *pvals);
-      strcpy (typetmp, "%f");
     }
     else if (!strcmp (var, "vol"))
-    {
       neut_tesr_cell_volume (Tesr, id, *pvals);
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "diameq"))
-    {
       neut_tesr_cell_diameq (Tesr, id, *pvals);
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "radeq"))
-    {
       neut_tesr_cell_radeq (Tesr, id, *pvals);
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "size"))
-    {
       neut_tesr_cell_size (Tesr, id, *pvals);
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "convexity"))
-    {
       neut_tesr_cell_convexity (Tesr, id, *pvals);
-      strcpy (typetmp, "%f");
-    }
-    else if (!strcmp (var, "voxsizex"))
+    else if (!strcmp (var, "oridisanisoangles"))
     {
-      (*pvals)[0] = Tesr.vsize[0];
-      strcpy (typetmp, "%f");
+      double **evect = ut_alloc_2d (3, 3);
+      neut_tesr_cell_orianiso (Tesr, id, evect, *pvals);
+      (*pvalqty) = 3;
+      ut_free_2d (&evect, 3);
     }
-    else if (!strcmp (var, "voxsizey"))
+    else if (!strcmp (var, "oridisanisofact"))
     {
-      (*pvals)[0] = Tesr.vsize[1];
-      strcpy (typetmp, "%f");
+      double **evect = ut_alloc_2d (3, 3);
+      double *eval = ut_alloc_1d (3);
+      neut_tesr_cell_orianiso (Tesr, id, evect, eval);
+      (*pvals)[0] = eval[0] / pow (eval[0] * eval[1] * eval[2], 1. / 3);
+      ut_free_2d (&evect, 3);
+      ut_free_1d (&eval);
     }
-    else if (!strcmp (var, "voxsizez"))
+    else if (!strcmp (var, "oridisanisoaxes"))
     {
-      (*pvals)[0] = Tesr.vsize[2];
-      strcpy (typetmp, "%f");
-    }
-    else if (!strcmp (var, "domsizex"))
-    {
-      (*pvals)[0] = Tesr.vsize[0] * Tesr.size[0];
-      strcpy (typetmp, "%f");
-    }
-    else if (!strcmp (var, "domsizey"))
-    {
-      (*pvals)[0] = Tesr.vsize[1] * Tesr.size[1];
-      strcpy (typetmp, "%f");
-    }
-    else if (!strcmp (var, "domsizez"))
-    {
-      (*pvals)[0] = Tesr.vsize[2] * Tesr.size[2];
-      strcpy (typetmp, "%f");
+      double **evect = ut_alloc_2d (3, 3);
+      double *eval = ut_alloc_1d (3);
+      neut_tesr_cell_orianiso (Tesr, id, evect, eval);
+      (*pvals) = ut_realloc_1d (*pvals, 9);
+      ut_array_1d_memcpy (evect[0], 3, *pvals);
+      ut_array_1d_memcpy (evect[1], 3, *pvals + 3);
+      ut_array_1d_memcpy (evect[2], 3, *pvals + 6);
+      (*pvalqty) = 9;
+      ut_free_2d (&evect, 3);
+      ut_free_1d (&eval);
     }
   }
   else if (!strcmp (entity, "seed"))
@@ -547,34 +386,18 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
     if (!strcmp (var, "id"))
     {
       (*pvals)[0] = id;
-      strcpy (typetmp, "%d");
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "x"))
-    {
       (*pvals)[0] = Tesr.SeedCoo[id][0];
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "y"))
-    {
       (*pvals)[0] = Tesr.SeedCoo[id][1];
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "z"))
-    {
       (*pvals)[0] = Tesr.SeedCoo[id][2];
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "w"))
-    {
       (*pvals)[0] = Tesr.SeedWeight[id];
-      strcpy (typetmp, "%f");
-    }
     else if (!strcmp (var, "vol"))
-    {
-      neut_tesr_cell_volume (Tesr, id, &vol);
-      (*pvals)[0] = vol;
-      strcpy (typetmp, "%f");
-    }
+      neut_tesr_cell_volume (Tesr, id, *pvals);
   }
 
   else if (!strcmp (entity, "vox"))
@@ -583,31 +406,31 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
     if (!strcmp (var, "id"))
     {
       (*pvals)[0] = id;
-      strcpy (typetmp, "%d");
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "cell"))
     {
       neut_tesr_vox_cell (Tesr, id, &tmpint);
       (*pvals)[0] = tmpint;
-      strcpy (typetmp, "%d");
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "vx"))
     {
       neut_tesr_vox_pos (Tesr, id, tmpint3);
       (*pvals)[0] = tmpint3[0];
-      strcpy (typetmp, "%d");
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "vy"))
     {
       neut_tesr_vox_pos (Tesr, id, tmpint3);
       (*pvals)[0] = tmpint3[1];
-      strcpy (typetmp, "%d");
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "vz"))
     {
       neut_tesr_vox_pos (Tesr, id, tmpint3);
       (*pvals)[0] = tmpint3[2];
-      strcpy (typetmp, "%d");
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "vcoo"))
     {
@@ -616,33 +439,53 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       neut_tesr_vox_pos (Tesr, id, tmpint3);
       for (i = 0; i < 3; i++)
         (*pvals)[i] = tmpint3[i];
-      strcpy (typetmp, "%d");
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "x"))
     {
       neut_tesr_vox_coo (Tesr, id, c);
       (*pvals)[0] = c[0];
-      strcpy (typetmp, "%f");
     }
     else if (!strcmp (var, "y"))
     {
       neut_tesr_vox_coo (Tesr, id, c);
       (*pvals)[0] = c[1];
-      strcpy (typetmp, "%f");
     }
     else if (!strcmp (var, "z"))
     {
       neut_tesr_vox_coo (Tesr, id, c);
       (*pvals)[0] = c[2];
-      strcpy (typetmp, "%f");
     }
     else if (!strcmp (var, "coo"))
     {
       (*pvalqty) = 3;
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
       neut_tesr_vox_coo (Tesr, id, *pvals);
-      strcpy (typetmp, "%f");
     }
+    else
+      status = -1;
+  }
+
+  else if (!strcmp (entity, "group"))
+  {
+    status = 0;
+    if (!strcmp (var, "id"))
+    {
+      (*pvals)[0] = id;
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var, "vol"))
+      neut_tesr_group_volume (Tesr, id, *pvals);
+    else if (!strcmp (var, "volfrac"))
+      neut_tesr_group_volfrac (Tesr, id, *pvals);
+    else if (!strcmp (var, "area"))
+      neut_tesr_group_area (Tesr, id, *pvals);
+    else if (!strcmp (var, "areafrac"))
+      neut_tesr_group_areafrac (Tesr, id, *pvals);
+    else if (!strcmp (var, "size"))
+      neut_tesr_group_size (Tesr, id, *pvals);
+    else if (!strcmp (var, "sizefrac"))
+      neut_tesr_group_sizefrac (Tesr, id, *pvals);
     else
       status = -1;
   }
@@ -651,11 +494,7 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
     ut_print_message (2, 0, "Failed to process expression `%s'.\n", entity);
 
   if (ptype)
-  {
-    if (strlen (typetmp) == 0)
-      abort ();
     ut_string_string (typetmp, ptype);
-  }
 
   ut_free_1d (&c);
   ut_free_1d_char (&typetmp);
@@ -842,42 +681,26 @@ neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet)
   return;
 }
 
-void
-neut_tesr_olmap (struct TESR Tesr, struct OL_MAP *pMap)
-{
-  unsigned int i, j;
-
-  if (Tesr.Dim != 2)
-    abort ();
-
-  if (ut_array_1d_min (Tesr.vsize, 2) != ut_array_1d_max (Tesr.vsize, 2))
-    abort ();
-
-  (*pMap) =
-    ol_map_alloc (Tesr.size[0], Tesr.size[1], Tesr.vsize[0], Tesr.CellCrySym);
-
-  for (i = 0; i < (*pMap).xsize; i++)
-    for (j = 0; j < (*pMap).ysize; j++)
-    {
-      if (Tesr.VoxCell[i + 1][j + 1][1] != 0)
-      {
-        (*pMap).id[i][j] = 1;
-
-        if (Tesr.VoxOri)
-          ol_q_memcpy (Tesr.VoxOri[i + 1][j + 1][1], (*pMap).q[i][j]);
-        else
-          ol_q_memcpy (Tesr.CellOri[Tesr.VoxCell[i + 1][j + 1][1]],
-                       (*pMap).q[i][j]);
-      }
-      else
-        (*pMap).id[i][j] = 0;
-    }
-
-  return;
-}
-
 int
 neut_tesr_isvoid (struct TESR Tesr)
 {
   return Tesr.CellQty == 0;
+}
+
+void
+neut_tesr_entity_expr_val_int (struct TESR Tesr, char *entity, char *expr,
+                               int *val)
+{
+  int qty;
+  double *tmp = NULL;
+
+  neut_tesr_entity_qty (Tesr, entity, &qty);
+  tmp = ut_alloc_1d (qty + 1);
+
+  neut_tesr_entity_expr_val (Tesr, entity, expr, tmp, NULL);
+  ut_array_1d_round (tmp + 1, qty, val + 1);
+
+  ut_free_1d (&tmp);
+
+  return;
 }

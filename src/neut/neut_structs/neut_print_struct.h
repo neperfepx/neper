@@ -54,6 +54,7 @@ extern "C"
     int ***showvox;
     char *showvoxstring;
     char *showvoidvoxstring;
+    char *showedgestring;
 
     int *showpoint;
 

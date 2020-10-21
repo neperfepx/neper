@@ -53,7 +53,12 @@ extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
   extern int neut_tesr_cell_area (struct TESR Tesr, int cell, double *area);
   extern int neut_tesr_cell_size (struct TESR Tesr, int cell, double *size);
 
-  extern void neut_tesr_rastercentre (struct TESR Tesr, double *coo);
+  extern void neut_tesr_group_volume (struct TESR Tesr, int group, double *pvol);
+  extern void neut_tesr_group_volfrac (struct TESR Tesr, int group, double *pvolfrac);
+  extern void neut_tesr_group_area (struct TESR Tesr, int group, double *parea);
+  extern void neut_tesr_group_areafrac (struct TESR Tesr, int group, double *pareafrac);
+  extern void neut_tesr_group_size (struct TESR Tesr, int group, double *psize);
+  extern void neut_tesr_group_sizefrac (struct TESR Tesr, int group, double *psizefrac);
 
   extern void neut_tesr_centre (struct TESR Tesr, double *coo);
 
@@ -91,6 +96,24 @@ extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
 
   extern int neut_tesr_pos_vox (struct TESR Tesr, int *pos, int *pvox);
   extern int neut_tesr_pos3_vox (struct TESR Tesr, int x, int y, int z, int *pvox);
+
+  extern int neut_tesr_voxlengtheq (struct TESR Tesr, double *plengtheq);
+
+  extern void neut_tesr_rastercentre (struct TESR Tesr, double *coo);
+  extern int neut_tesr_rasterarea (struct TESR Tesr, double *parea);
+  extern int neut_tesr_rastervolume (struct TESR Tesr, double *pvol);
+  extern int neut_tesr_rastersize (struct TESR Tesr, double *psize);
+
+  extern int neut_tesr_voxarea (struct TESR Tesr, double *parea);
+  extern int neut_tesr_voxvolume (struct TESR Tesr, double *pvol);
+  extern int neut_tesr_voxsize (struct TESR Tesr, double *psize);
+
+  extern int neut_tesr_area (struct TESR Tesr, double *parea);
+  extern int neut_tesr_volume (struct TESR Tesr, double *pvol);
+  extern int neut_tesr_size (struct TESR Tesr, double *psize);
+
+  extern void neut_tesr_cell_orianiso (struct TESR Tesr, int cell,
+                                       double **evect, double *eval);
 
 #include"net_utils/net_utils.h"
 

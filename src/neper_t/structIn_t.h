@@ -111,7 +111,6 @@ extern "C"
     char *tess;				// tess file
     char *tesr;				// tesr file
     char *vtk;				// AMITEX-FFT file
-    char *olmap;		        // Orilib map file
     char *raw;				// raw data of tesr file
     char *geo;				// Gmsh geo file
     char *ply;				// Ply file
@@ -128,6 +127,7 @@ extern "C"
     char *sts;				// seed stat file
     char *stpt;				// point stat file
     char *stvox;		        // vox stat file
+    char *stgroup;		        // group stat file
     char *obj;				// Wavefront obj file
     char *orif;				// orientation file
 

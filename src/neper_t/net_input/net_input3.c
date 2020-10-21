@@ -198,6 +198,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-statseed");
   strcpy (ArgList[++ArgQty], "-statpoint");
   strcpy (ArgList[++ArgQty], "-statvox");
+  strcpy (ArgList[++ArgQty], "-statgroup");
   strcpy (ArgList[++ArgQty], "-sort");
   // Restart a job -----------------------------------------------------
   strcpy (ArgList[++ArgQty], "-loadtess");
@@ -385,6 +386,8 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).stpt));
     else if (!strcmp (Arg, "-statvox"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).stvox));
+    else if (!strcmp (Arg, "-statgroup"))
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).stgroup));
     else if (!strcmp (Arg, "-sort"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).sortstring));
 

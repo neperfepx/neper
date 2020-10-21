@@ -15,19 +15,18 @@ nem_partition_init (struct IN_M In, SCOTCH_Arch * pArch, struct PART *pPart)
   char *archfile = NULL;
 
   ut_string_format (In.partstring, format);
-  (*pPart).mode = ut_alloc_1d_char (14);
 
   // partitioning
   if (format[strlen (format) - 1] == 'd')
   {
-    strcpy ((*pPart).mode, "partitioning");
+    ut_string_string ("partitioning", &(*pPart).mode);
     ut_string_int (In.partstring, &((*pPart).qty));
   }
 
   // mapping
   else if (format[strlen (format) - 1] == 's')
   {
-    strcpy ((*pPart).mode, "mapping");
+    ut_string_string ("mapping", &(*pPart).mode);
     (*pPart).mapping = ut_alloc_1d_char (strlen (In.partstring) + 1);
     strcpy ((*pPart).mapping, In.partstring);
 
@@ -144,7 +143,8 @@ nem_partition_nodes (struct IN_M In, SCOTCH_Mesh * pSCMesh,
   }
 
   parttab = ut_alloc_1d_int (Mesh[dim].EltQty * eltnodeqty * 2 + 2);
-  if (strcmp (In.partmethod, "none") != 0)
+
+  if (!strcmp (In.partmethod, "scotch"))
   {
     SCOTCH_meshGraph (pSCMesh, &Graph);
 
@@ -153,9 +153,11 @@ nem_partition_nodes (struct IN_M In, SCOTCH_Mesh * pSCMesh,
     else if (!strcmp ((*pPart).mode, "mapping"))
       SCOTCH_graphMap (&Graph, pArch, &Strat, parttab + 1);
   }
-  else if (!strcmp (In.partmethod, "none"))
+
+  else if (!strcmp (In.partmethod, "linear"))
     for (j = 1; j <= (*pNodes).NodeQty; j++)
       parttab[j] = (*pPart).qty * (j - 1) / (*pNodes).NodeQty;
+
   else
     ut_print_neperbug ();
 
@@ -209,21 +211,15 @@ nem_partition_elts (struct IN_M In, struct NODES *pNodes, struct MESH *Mesh, str
 
   ut_array_1d_int_zero ((*pPart).EltQty, (*pPart).qty);
 
-  if (strcmp (In.partmethod, "none") != 0)
-  {
-    ut_print_message (0, 3, "Minimizing communications...\n");
-    nem_partition_elts_match (Mesh, pPart);
-    if (In.partbalancing > 0)
-    {
-      ut_print_message (0, 3, "Balancing partitions... ");
-      nem_partition_elts_balancing (Mesh, pPart, In.partbalancing);
-    }
-  }
-  else if (strcmp (In.partmethod, "none") == 0)
-  {
-    ut_print_message (0, 3, "Direct partitioning by numbers...\n");
+
+  if (!strcmp (In.partmethod, "scotch"))
+    nem_partition_elts_direct (Mesh, pPart);
+
+  else if (!strcmp (In.partmethod, "linear"))
     nem_partition_elts_bynumber (Mesh, pPart);
-  }
+
+  else
+    abort ();
 
   qty = 0;
   for (i = 0; i < (*pPart).qty; i++)

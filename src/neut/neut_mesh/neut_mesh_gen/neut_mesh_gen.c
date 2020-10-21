@@ -2120,11 +2120,11 @@ neut_mesh_var_val_one (struct NODES Nodes, struct MESH Mesh0D,
   int status, qty;
   double *tmp = NULL;
 
-  neut_mesh_var_val (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo, Tess,
-                     showelt0d, showelt1d, showelt2d, showelt3d, cl, entity,
-                     id, var, &tmp, &qty, ptype);
+  status = neut_mesh_var_val (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo, Tess,
+                              showelt0d, showelt1d, showelt2d, showelt3d, cl, entity,
+                              id, var, &tmp, &qty, ptype);
 
-  if (qty == 1)
+  if (status == 0 && qty == 1)
   {
     (*pval) = tmp[0];
     status = 0;
@@ -2178,7 +2178,7 @@ neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH Mesh0D,
   }
   else
   {
-#pragma omp parallel for private (j)
+#pragma omp parallel for
     for (j = 1; j <= entityqty; j++)
     {
       int k, status;
@@ -2194,7 +2194,9 @@ neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH Mesh0D,
                                  Tess, showelt0d, showelt1d, showelt2d,
                                  showelt3d, 0, entity, j, vars[k], vals + k,
                                  &type);
-          if (ptype && !strcmp (type, "%f"))
+
+          // write only once
+          if (j == entityqty && k== varqty - 1 && ptype && !strcmp (type, "%f"))
             ut_string_string ("%f", ptype);
         }
 
@@ -2208,6 +2210,31 @@ neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH Mesh0D,
 
   ut_free_2d_char (&vars, varqty);
   ut_free_1d_char (&type);
+
+  return;
+}
+
+void
+neut_mesh_entity_expr_val_int (struct NODES Nodes, struct MESH Mesh0D,
+                               struct MESH Mesh1D, struct MESH Mesh2D,
+                               struct MESH Mesh3D, struct MESH MeshCo,
+                               struct TESS Tess, int *showelt0d, int *showelt1d,
+                               int *showelt2d, int *showelt3d, char *entity,
+                               char *expr, int *val)
+{
+  int qty;
+  double *tmp = NULL;
+
+  neut_mesh_entity_qty (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, entity,
+                        &qty);
+  tmp = ut_alloc_1d (qty + 1);
+
+  neut_mesh_entity_expr_val (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo,
+                             Tess, showelt0d, showelt1d, showelt2d, showelt3d,
+                             entity, expr, tmp, NULL);
+  ut_array_1d_round (tmp + 1, qty, val + 1);
+
+  ut_free_1d (&tmp);
 
   return;
 }

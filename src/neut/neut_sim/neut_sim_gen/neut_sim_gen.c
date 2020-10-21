@@ -24,11 +24,13 @@ neut_sim_isvoid (struct SIM Sim)
 }
 
 void
-neut_sim_fscanf (char *dir, struct SIM *pSim)
+neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode)
 {
   int i, status;
   char *filename = NULL, *var = ut_alloc_1d_char (100), *type = NULL;
+  char *tmp = ut_alloc_1d_char (1000);
   FILE *file = NULL;
+  char *res = NULL, *expr = NULL;
 
   status = neut_sim_name_type (dir, &type);
 
@@ -48,10 +50,11 @@ neut_sim_fscanf (char *dir, struct SIM *pSim)
   else
     abort ();
 
+  ut_string_string ("simulation", &(*pSim).body);
   ut_string_string ("simulation.tess", &(*pSim).tess);
   ut_string_string ("simulation.msh", &(*pSim).msh);
 
-  file = ut_file_open (filename, "r");
+  file = ut_file_open (filename, mode);
 
   while (fscanf (file, "%s", var) != EOF)
   {
@@ -59,6 +62,22 @@ neut_sim_fscanf (char *dir, struct SIM *pSim)
     {
       if (fscanf (file, "%d", &(*pSim).StepQty) != 1)
         abort ();
+
+      (*pSim).StepState = ut_alloc_1d_int ((*pSim).StepQty + 1);
+    }
+    else if (!strcmp (var, "printed_steps"))
+    {
+      int qty, step;
+
+      ut_file_nextlinenbwords (file, &qty);
+
+      ut_array_1d_int_set ((*pSim).StepState + 1, (*pSim).StepQty, -1);
+      for (i = 0; i < qty; i++)
+      {
+        if (fscanf (file, "%d", &step) != 1)
+          abort ();
+        (*pSim).StepState[step] = 0;
+      }
     }
     else if (!strcmp (var, "number_of_partitions"))
     {
@@ -97,10 +116,18 @@ neut_sim_fscanf (char *dir, struct SIM *pSim)
     else if (!strcmp (var, "results_nodes"))
     {
       ut_file_nextlinenbwords (file, &(*pSim).NodeResQty);
-      (*pSim).NodeRes = ut_alloc_2d_char ((*pSim).NodeResQty, 20);
+      (*pSim).NodeRes = ut_alloc_2d_char ((*pSim).NodeResQty, 1000);
+      (*pSim).NodeResExpr = ut_alloc_1d_pchar ((*pSim).NodeResQty);
       for (i = 0; i < (*pSim).NodeResQty; i++)
+      {
         if (fscanf (file, "%s", (*pSim).NodeRes[i]) != 1)
           abort ();
+
+        ut_list_break_2 ((*pSim).NodeRes[i], NEUT_SEP_DEP, &res, &expr);
+        ut_string_string (res, (*pSim).NodeRes + i);
+        if (expr)
+          ut_string_string (expr, (*pSim).NodeResExpr + i);
+      }
 
       (*pSim).NodeResWritten = ut_alloc_1d_int ((*pSim).NodeResQty);
       if (!strcmp (type, "sim"))
@@ -109,10 +136,18 @@ neut_sim_fscanf (char *dir, struct SIM *pSim)
     else if (!strcmp (var, "results_elements"))
     {
       ut_file_nextlinenbwords (file, &(*pSim).EltResQty);
-      (*pSim).EltRes = ut_alloc_2d_char ((*pSim).EltResQty, 20);
+      (*pSim).EltRes = ut_alloc_2d_char ((*pSim).EltResQty, 1000);
+      (*pSim).EltResExpr = ut_alloc_1d_pchar ((*pSim).EltResQty);
       for (i = 0; i < (*pSim).EltResQty; i++)
+      {
         if (fscanf (file, "%s", (*pSim).EltRes[i]) != 1)
           abort ();
+
+        ut_list_break_2 ((*pSim).EltRes[i], NEUT_SEP_DEP, &res, &expr);
+        ut_string_string (res, (*pSim).EltRes + i);
+        if (expr)
+          ut_string_string (expr, (*pSim).EltResExpr + i);
+      }
 
       (*pSim).EltResWritten = ut_alloc_1d_int ((*pSim).EltResQty);
       if (!strcmp (type, "sim"))
@@ -135,11 +170,34 @@ neut_sim_fscanf (char *dir, struct SIM *pSim)
   if (!(*pSim).NodeQty)
     ut_print_message (2, 3, "`number_of_nodes' is missing.\n");
 
-  ut_file_close (file, filename, "r");
+  ut_file_close (file, filename, mode);
 
-  ut_free_1d_char (&var);
   ut_free_1d_char (&filename);
+
+  if (!strcmp (type, "fepx"))
+  {
+    filename = ut_string_paste (dir, "/simulation.config");
+
+    file = ut_file_open (filename, "R");
+    while (fscanf (file, "%s", tmp) == 1)
+    {
+      if (!strcmp (tmp, "read_bcs_from_file"))
+        ut_string_string ("simulation.bcs", &(*pSim).bcs);
+      else if (!strcmp (tmp, "read_ori_from_file"))
+        ut_string_string ("simulation.ori", &(*pSim).ori);
+      else if (!strcmp (tmp, "read_phase_from_file"))
+        ut_string_string ("simulation.phase", &(*pSim).phase);
+    }
+    ut_file_close (file, filename, "R");
+
+    ut_free_1d_char (&filename);
+  }
+
+  ut_free_1d_char (&tmp);
+  ut_free_1d_char (&var);
   ut_free_1d_char (&type);
+  ut_free_1d_char (&res);
+  ut_free_1d_char (&expr);
 
   return;
 }
@@ -147,29 +205,48 @@ neut_sim_fscanf (char *dir, struct SIM *pSim)
 void
 neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
 {
-  int i;
+  int i, qty, curqty;
   char *filename = ut_string_paste (dir, "/report");
   FILE *file = ut_file_open (filename, mode);
 
   fprintf (file, "number_of_nodes %d\n", Sim.NodeQty);
   fprintf (file, "number_of_elements %d\n", Sim.EltQty);
+  if (Sim.PartQty > 0)
+    fprintf (file, "number_of_partitions %d\n", Sim.PartQty);
   fprintf (file, "number_of_slip_systems %d\n", Sim.SlipSystemQty);
+  fprintf (file, "number_of_steps %d\n", Sim.StepQty);
+
+  qty = ut_array_1d_int_valnb (Sim.StepState + 1, Sim.StepQty, 0);
+  curqty = 0;
+  if (qty != Sim.StepQty)
+  {
+    fprintf (file, "printed_steps ");
+    for (i = 1; i <= Sim.StepQty; i++)
+      if (!Sim.StepState[i])
+        fprintf (file, "%d%s", i, ++curqty < qty ? " " : "\n");
+  }
 
   fprintf (file, "orientation_definition %s\n", Sim.OriDes);
 
   fprintf (file, "results_nodes");
   for (i = 0; i < Sim.NodeResQty; i++)
     if (Sim.NodeResWritten[i])
+    {
       fprintf (file, " %s", Sim.NodeRes[i]);
+      if (Sim.NodeResExpr[i])
+        fprintf (file, "%s%s", NEUT_SEP_DEP, Sim.NodeResExpr[i]);
+    }
   fprintf (file, "\n");
 
   fprintf (file, "results_elements");
   for (i = 0; i < Sim.EltResQty; i++)
     if (Sim.EltResWritten[i])
+    {
       fprintf (file, " %s", Sim.EltRes[i]);
+      if (Sim.EltResExpr[i])
+        fprintf (file, "%s%s", NEUT_SEP_DEP, Sim.EltResExpr[i]);
+    }
   fprintf (file, "\n");
-
-  fprintf (file, "number_of_steps %d\n", Sim.StepQty);
 
   ut_file_close (file, filename, mode);
   ut_free_1d_char (&filename);
@@ -264,6 +341,12 @@ neut_sim_knownres_type (struct SIM Sim, char *res, char **ptype, int *pcolqty)
     *pcolqty = 6;
   }
 
+  else if (strstr (res, "energy"))
+  {
+    ut_string_string ("real", ptype);
+    *pcolqty = 1;
+  }
+
   else  if ((strlen (res) > 0 && isdigit (res[strlen (res) - 1])) || strstr (res, "-eq"))
   {
     ut_string_string ("real", ptype);
@@ -292,7 +375,7 @@ neut_sim_res_type (struct SIM Sim, char *entity, char *res, char **ptype, int *p
     char *tmp = ut_alloc_1d_char (1000);
     FILE *file = NULL;
 
-    if (!neut_sim_file_simfile (Sim, entity, res, simfile))
+    if (!neut_sim_res_file (Sim, entity, res, simfile))
     {
       *pcolqty = ut_file_nbcolumns (simfile);
       if (*pcolqty == 1)
@@ -327,7 +410,13 @@ neut_sim_res_rescol (struct SIM Sim, char *entity, char *res, char **pres, int *
 
   *pcol = INT_MAX;
 
-  if (strlen (res) >= 2 && isdigit (res[strlen (res) - 2]) && isdigit (res[strlen (res) - 1]))
+  if (neut_sim_res_exist (Sim, entity, res, NULL, NULL) == 1)
+  {
+    ut_string_string (res, pres);
+    (*pcol) = 1;
+  }
+
+  else if (strlen (res) >= 2 && isdigit (res[strlen (res) - 2]) && isdigit (res[strlen (res) - 1]))
   {
     sscanf (res + strlen (res) - 2, "%s", comp);
     *pres = strncpy (*pres, res, strlen (res) - 2);
@@ -426,90 +515,133 @@ neut_sim_res_rescol (struct SIM Sim, char *entity, char *res, char **pres, int *
 }
 
 int
-neut_sim_file_simfile (struct SIM Sim, char *entity_in, char *file, char *simfile)
+neut_sim_res_file (struct SIM Sim, char *entity_in, char *inres, char *filename)
 {
-  int status = -1;
-  char *entity = ut_alloc_1d_char (100);
+  int i, status = -1, col, varqty, step;
+  char *entity = NULL, *basename = NULL, *res = NULL, **vars = NULL, **vals = NULL;
 
+  if (!strncmp (inres, "file(", 5))
+  {
+    ut_string_string (inres, &filename);
+    return 0;
+  }
+
+  ut_string_function (inres, &res, &vars, &vals, &varqty);
+
+  step = Sim.step;
+  for (i = 0; i < varqty; i++)
+    if (!strcmp (vars[i], "step"))
+      sscanf (vals[i], "%d", &step);
+
+  entity = ut_alloc_1d_char (100);
   entity = strcpy (entity, entity_in);
   ut_string_fnrs (entity, "elt3d", "element", 1);
 
-  if (ut_file_exist (file))
+  if (ut_file_exist (inres))
   {
-    sprintf (simfile, "%s", file);
+    sprintf (filename, "%s", inres);
     status = 0;
   }
 
-  else if (!neut_sim_isvoid (Sim) && neut_sim_res_exist (Sim, entity, file))
+  else if (neut_sim_res_exist (Sim, entity, res, &basename, &col))
   {
-    int status2, col;
-    char *res = ut_alloc_1d_char (1000);
+    sprintf (filename, "%s/results/%ss/%s/%s.step%d", Sim.simdir, entity, basename, basename, step);
 
-    status2 = neut_sim_res_rescol (Sim, entity, file, &res, &col);
-
-    sprintf (simfile, "%s/results/%ss/%s/%s.step%d", Sim.simdir, entity, res, res, Sim.step);
-
-    if (ut_file_exist (simfile))
+    if (ut_file_exist (filename))
     {
       status = 0;
 
-      if (!status2)
-        sprintf (simfile, "%s,col=%d", simfile, col);
+      if (col != 0)
+        sprintf (filename, "%s,col=%d", filename, col);
     }
 
-    ut_free_1d_char (&res);
+    ut_free_1d_char (&basename);
   }
 
   else
   {
-    sprintf (simfile, "%s", file);
+    sprintf (filename, "%s", inres);
     status = -1;
   }
 
   ut_free_1d_char (&entity);
+  ut_free_1d_char (&basename);
+  ut_free_1d_char (&res);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_2d_char (&vals, varqty);
 
   return status;
 }
 
 int
-neut_sim_res_exist (struct SIM Sim, char *entity, char *res)
+neut_sim_res_exist (struct SIM Sim, char *entity, char *res, char **pres, int *pcol)
 {
-  int i, status;
-  char *entity2 = ut_alloc_1d_char (100);
-  char *res2 = NULL;
+  int i, status, entityresqty;
+  char *entity2 = ut_alloc_1d_char (100), *res2 = NULL;
+  char **entityres = NULL;
+
+  if (pres)
+    ut_free_1d_char (pres);
+  if (pcol)
+    *pcol = 0;
+
+  if (neut_sim_isvoid (Sim))
+    return 0;
 
   ut_string_string (res, &res2);
   for (i = strlen (res2) - 1; i >= 0; i--)
     if (isdigit (res2[i]))
       res2[i] = '\0';
 
+  // fixing entity
   if (entity)
   {
     entity2 = strcpy (entity2, entity);
     ut_string_fnrs (entity2, "elt3d", "element", 1);
+    ut_string_fnrs (entity2, "nodes", "node", 1);
   }
-
-  status = 0;
 
   if (!strcmp (entity2, "element"))
   {
-    for (i = 0; i < Sim.EltResQty; i++)
-      if (!strcmp (Sim.EltRes[i], res2))
-        status = 1;
+    entityresqty = Sim.EltResQty;
+    entityres = Sim.EltRes;
   }
-
-  else if (!strncmp (entity2, "node", 4))
+  else if (!strcmp (entity2, "node"))
   {
-    for (i = 0; i < Sim.NodeResQty; i++)
-      if (!strcmp (Sim.NodeRes[i], res2))
-        status = 1;
+    entityresqty = Sim.NodeResQty;
+    entityres = Sim.NodeRes;
   }
-
   else
-    status = 0;
+    entityresqty = 0;
+
+  status = 0;
+
+  // looking for occurrence
+  for (i = 0; i < entityresqty; i++)
+    if (!strcmp (entityres[i], res))
+    {
+      status = 1;
+      if (pres)
+        ut_string_string (res, pres);
+      break;
+    }
+
+  // looking for occurrence as subresult
+  if (!status)
+    for (i = 0; i < entityresqty; i++)
+      if (!strcmp (entityres[i], res2))
+      {
+        status = 2;
+        if (pres)
+          ut_string_string (res, pres);
+        if (pcol)
+          neut_sim_res_rescol (Sim, entity, res, pres, pcol);
+        break;
+      }
 
   ut_free_1d_char (&entity2);
   ut_free_1d_char (&res2);
+  // do not free entityres
 
   return status;
 }
@@ -551,6 +683,74 @@ neut_sim_entity_dir (char *entity, char **pdir)
     ut_string_string ("results/mesh", pdir);
   else
     abort ();
+
+  return;
+}
+
+int
+neut_sim_testres (struct SIM Sim, char *entity, char *res)
+{
+  int i;
+
+  if (neut_sim_entityisnode (entity))
+  {
+    for (i = 0; i < Sim.NodeResQty; i++)
+      if (!strcmp (Sim.NodeRes[i], res))
+        return 1;
+  }
+
+  else if (neut_sim_entityiselt (entity))
+  {
+    for (i = 0; i < Sim.EltResQty; i++)
+      if (!strcmp (Sim.EltRes[i], res))
+        return 1;
+  }
+
+  return 0;
+}
+
+void
+neut_sim_verbose (struct SIM Sim)
+{
+  int i, nb;
+
+  ut_print_message (0, 3, "Node number      : %d\n", Sim.NodeQty);
+  ut_print_message (0, 3, "Element number   : %d\n", Sim.EltQty);
+  ut_print_message (0, 3, "Partition number : %d\n", Sim.PartQty);
+  ut_print_message (0, 3, "Step number      : %d\n", Sim.StepQty);
+  ut_print_message (0, 3, "Nodal results    :");
+
+  nb = 35;
+  for (i = 0; i < Sim.NodeResQty; i++)
+  {
+    if (strlen (Sim.NodeRes[i]) + nb > 72)
+    {
+      printf ("\n");
+      for (nb = 0; nb < 33; nb++)
+        printf (" ");
+    }
+
+    printf (" %s", Sim.NodeRes[i]);
+    nb += strlen (Sim.NodeRes[i]) + 1;
+  }
+  printf ("\n");
+
+  ut_print_message (0, 3, "Elemental results:");
+
+  nb = 35;
+  for (i = 0; i < Sim.EltResQty; i++)
+  {
+    if (strlen (Sim.EltRes[i]) + nb > 72)
+    {
+      printf ("\n");
+      for (nb = 0; nb < 33; nb++)
+        printf (" ");
+    }
+
+    printf (" %s", Sim.EltRes[i]);
+    nb += strlen (Sim.EltRes[i]) + 1;
+  }
+  printf ("\n");
 
   return;
 }

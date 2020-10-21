@@ -267,7 +267,6 @@ neut_tesr_centre (struct TESR Tesr, double *coo)
     for (j = 0; j < 3; j++)
       coo[j] += vol[i] * cellcoo[i][j];
   ut_array_1d_scale (coo, 3, 1. / ut_array_1d_sum (vol, Tesr.CellQty));
-  ut_array_1d_add (coo, Tesr.Origin, 3, coo);
 
   ut_free_1d (&vol);
   ut_free_2d (&cellcoo, Tesr.CellQty);
@@ -701,4 +700,249 @@ neut_tesr_radeq (struct TESR Tesr, double *pval)
   (*pval) *= .5;
 
   return 0;
+}
+
+int
+neut_tesr_size (struct TESR Tesr, double *psize)
+{
+  if (Tesr.Dim == 2)
+    neut_tesr_area (Tesr, psize);
+  else if (Tesr.Dim == 3)
+    neut_tesr_volume (Tesr, psize);
+  else
+    abort ();
+
+  return 0;
+}
+
+int
+neut_tesr_rasterarea (struct TESR Tesr, double *parea)
+{
+  if (Tesr.Dim == 2)
+  {
+    (*parea) = Tesr.vsize[0] * Tesr.size[0] * Tesr.vsize[1] * Tesr.size[1];
+    return 0;
+  }
+  else
+  {
+    (*parea) = 0;
+    return -1;
+  }
+}
+
+int
+neut_tesr_rastersize (struct TESR Tesr, double *psize)
+{
+  if (Tesr.Dim == 2)
+    neut_tesr_rasterarea (Tesr, psize);
+  else if (Tesr.Dim == 3)
+    neut_tesr_rastervolume (Tesr, psize);
+  else
+    abort ();
+
+  return 0;
+}
+
+int
+neut_tesr_area (struct TESR Tesr, double *parea)
+{
+  int i, j, qty;
+
+  if (Tesr.Dim == 2)
+  {
+    qty = 0;
+    for (j = 1; j <= Tesr.size[1]; j++)
+      for (i = 1; i <= Tesr.size[0]; i++)
+        if (Tesr.VoxCell[i][j][1] != 0)
+          qty++;
+
+    (*parea) = ut_array_1d_prod (Tesr.vsize, 2) * qty;
+    return 0;
+  }
+  else
+  {
+    (*parea) = 0;
+    return -1;
+  }
+}
+
+int
+neut_tesr_voxsize (struct TESR Tesr, double *pvol)
+{
+  if (Tesr.Dim == 2)
+    return neut_tesr_voxarea (Tesr, pvol);
+  else if (Tesr.Dim == 3)
+    return neut_tesr_voxvolume (Tesr, pvol);
+  else
+    abort ();
+
+  return 0;
+}
+
+int
+neut_tesr_voxarea (struct TESR Tesr, double *pvol)
+{
+  (*pvol) = ut_array_1d_prod (Tesr.vsize, 2);
+
+  return 0;
+}
+
+int
+neut_tesr_voxvolume (struct TESR Tesr, double *pvol)
+{
+  (*pvol) = ut_array_1d_prod (Tesr.vsize, 3);
+
+  return 0;
+}
+
+int
+neut_tesr_voxlengtheq (struct TESR Tesr, double *plengtheq)
+{
+  (*plengtheq) = ut_array_1d_gmean (Tesr.vsize, Tesr.Dim);
+
+  return 0;
+}
+
+int
+neut_tesr_volume (struct TESR Tesr, double *pvol)
+{
+  if (Tesr.Dim == 3)
+  {
+    (*pvol) =
+      Tesr.vsize[0] * Tesr.size[0] * Tesr.vsize[1] * Tesr.size[1] *
+      Tesr.vsize[2] * Tesr.size[2];
+    return 0;
+  }
+  else
+  {
+    (*pvol) = 0;
+    return -1;
+  }
+}
+
+int
+neut_tesr_rastervolume (struct TESR Tesr, double *pvol)
+{
+  int i, j, k, qty;
+
+  if (Tesr.Dim == 3)
+  {
+    qty = 0;
+    for (k = 1; k <= Tesr.size[1]; k++)
+      for (j = 1; j <= Tesr.size[1]; j++)
+        for (i = 1; i <= Tesr.size[0]; i++)
+          if (Tesr.VoxCell[i][j][k] != 0)
+            qty++;
+
+    (*pvol) = ut_array_1d_prod (Tesr.vsize, 3) * qty;
+    return 0;
+  }
+  else
+  {
+    (*pvol) = 0;
+    return -1;
+  }
+}
+
+void
+neut_tesr_group_volume (struct TESR Tesr, int group, double *pvol)
+{
+  int i;
+  double tmp;
+
+  (*pvol) = 0;
+  for (i = 1; i <= Tesr.CellQty; i++)
+    if (Tesr.CellGroup && Tesr.CellGroup[i] == group)
+    {
+      neut_tesr_cell_volume (Tesr, i, &tmp);
+      (*pvol) += tmp;
+    }
+
+  return;
+}
+
+void
+neut_tesr_group_volfrac (struct TESR Tesr, int group, double *pvolfrac)
+{
+  double tesrvol, groupvol;
+
+  neut_tesr_volume (Tesr, &tesrvol);
+  neut_tesr_group_volume (Tesr, group, &groupvol);
+
+  (*pvolfrac) = groupvol / tesrvol;
+
+  return;
+}
+
+void
+neut_tesr_group_area (struct TESR Tesr, int group, double *parea)
+{
+  int i;
+  double tmp;
+
+  (*parea) = 0;
+  for (i = 1; i <= Tesr.CellQty; i++)
+    if (Tesr.CellGroup && Tesr.CellGroup[i] == group)
+    {
+      neut_tesr_cell_area (Tesr, i, &tmp);
+      (*parea) += tmp;
+    }
+
+  return;
+}
+
+void
+neut_tesr_group_areafrac (struct TESR Tesr, int group, double *pareafrac)
+{
+  double tesrarea, grouparea;
+
+  neut_tesr_area (Tesr, &tesrarea);
+  neut_tesr_group_area (Tesr, group, &grouparea);
+
+  (*pareafrac) = grouparea / tesrarea;
+
+  return;
+}
+
+void
+neut_tesr_group_size (struct TESR Tesr, int group, double *psize)
+{
+  (*psize) = 0;
+
+  if (Tesr.Dim == 2)
+    neut_tesr_group_area (Tesr, group, psize);
+  else if (Tesr.Dim == 3)
+    neut_tesr_group_volume (Tesr, group, psize);
+
+  return;
+}
+
+void
+neut_tesr_group_sizefrac (struct TESR Tesr, int group, double *psizefrac)
+{
+  (*psizefrac) = 0;
+
+  if (Tesr.Dim == 2)
+    neut_tesr_group_areafrac (Tesr, group, psizefrac);
+  else if (Tesr.Dim == 3)
+    neut_tesr_group_volfrac (Tesr, group, psizefrac);
+
+  return;
+}
+
+void
+neut_tesr_cell_orianiso (struct TESR Tesr, int cell, double **evect,
+                         double *eval)
+{
+  struct OL_SET Set;
+
+  neut_tesr_cell_olset (Tesr, cell, &Set);
+
+  ol_set_disoriset (Set, &Set);
+
+  ol_set_aniso (Set, evect, eval);
+
+  ol_set_free (Set);
+
+  return;
 }

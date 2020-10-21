@@ -80,10 +80,11 @@ struct IN_M
 
   char *partstring;		// partitioning string
   char *partmethod;		// partitioning method (in Scotch jargon)
-  double partbalancing;		// partitioning balancing factor
 
   // transformation
-  char *transform;        // transform the mesh once generated (or loaded)
+  char *transform;              // transform the mesh once generated (or loaded)
+  char *sortelt;                // sort elements
+  char *sortnode;                // sort nodes
 
   // output details
 

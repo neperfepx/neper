@@ -14,32 +14,147 @@ void ut_math_functions (char ***pfcts, int *pfctqty);
 int ut_math_string_isfunction (char *string);
 
 int
-ut_math_eval (char *expr, int varqty, char **vars, double *vals, double *pres)
+ut_math_eval (char *inexpr, int varqty, char **vars, double *vals, double *pres)
 {
   using namespace mu;
-  int i;
+  int i, j, status;
+  char **newvars = ut_alloc_1d_pchar (varqty);
+  char *expr = ut_alloc_1d_char (strlen (inexpr) * 10);
+  int *length = ut_alloc_1d_int (varqty);
+  int id, *ids = ut_alloc_1d_int (varqty);
+
+  expr = strcpy (expr, inexpr);
 
   if (strstr (expr, "[") || strstr (expr, "]") || strstr (expr, "{")
       || strstr (expr, "}"))
     abort ();
 
+  // will be processing the variables from the longest to the shortest,
+  // in case a short variable is contained in a larger variable, which
+  // would cause erroneous substitution in expr
+  for (i = 0; i < varqty; i++)
+    length[i] = strlen (vars[i]);
+
+  ut_array_1d_int_sort_des_index (length, varqty, ids);
+
+  for (i = 0; i < varqty; i++)
+  {
+    id = ids[i];
+    // testing if it's all letters
+    status = 0;
+    for (j = 0; j < varqty; j++)
+      if (!isalpha (vars[id][j]))
+      {
+        status = -1;
+        break;
+      }
+
+    // if not, we need to replace it, as muparser won't take it
+    if (!status)
+    {
+      ut_string_random (8, id, newvars + id);
+      ut_string_fnrs (expr, vars[id], newvars[id], INT_MAX);
+    }
+    else
+      ut_string_string (vars[id], newvars + id);
+  }
+
+  status = 0;
+
   try
   {
     Parser p;
     for (i = 0; i < varqty; i++)
-      p.DefineVar (vars[i], vals + i);
+      p.DefineVar (newvars[i], vals + i);
     // p.DefineFun("MySqr", MySqr);
     p.SetExpr (expr);
 
-    (*pres) = p.Eval ();
+    *pres = p.Eval ();
   }
 
   catch (Parser::exception_type & e)
   {
-    return -1;
+    status = -1;
   }
 
-  return 0;
+  ut_free_2d_char (&newvars, varqty);
+  ut_free_1d_char (&expr);
+  ut_free_1d_int (&length);
+  ut_free_1d_int (&ids);
+
+  return status;
+}
+
+int
+ut_math_evals (char *inexpr, int varqty, char **vars, double **vals, int evalqty, double *res)
+{
+  using namespace mu;
+  int i, j, status;
+  char **newvars = ut_alloc_1d_pchar (varqty);
+  char *expr = ut_alloc_1d_char (strlen (inexpr) * 10);
+  int *length = ut_alloc_1d_int (varqty);
+  int id, *ids = ut_alloc_1d_int (varqty);
+
+  expr = strcpy (expr, inexpr);
+
+  if (strstr (expr, "[") || strstr (expr, "]") || strstr (expr, "{")
+      || strstr (expr, "}"))
+    abort ();
+
+  // will be processing the variables from the longest to the shortest,
+  // in case a short variable is contained in a larger variable, which
+  // would cause erroneous substitution in expr
+  for (i = 0; i < varqty; i++)
+    length[i] = strlen (vars[i]);
+
+  ut_array_1d_int_sort_des_index (length, varqty, ids);
+
+  for (i = 0; i < varqty; i++)
+  {
+    id = ids[i];
+    // testing if it's all letters
+    status = 0;
+    for (j = 0; j < varqty; j++)
+      if (!isalpha (vars[id][j]))
+      {
+        status = -1;
+        break;
+      }
+
+    // if not, we need to replace it, as muparser won't take it
+    if (!status)
+    {
+      ut_string_random (8, id, newvars + id);
+      ut_string_fnrs (expr, vars[id], newvars[id], INT_MAX);
+    }
+    else
+      ut_string_string (vars[i], newvars + i);
+  }
+
+  status = 0;
+
+  try
+  {
+    Parser p;
+    for (i = 0; i < varqty; i++)
+      p.DefineVar (newvars[i], vals[i]);
+    // p.DefineFun("MySqr", MySqr);
+    p.SetExpr (expr);
+
+    p.Eval (res, evalqty);
+  }
+
+  catch (Parser::exception_type & e)
+  {
+    status = -1;
+  }
+
+  ut_free_2d_char (&newvars, varqty);
+  ut_free_1d_char (&expr);
+  ut_free_1d_int (&length);
+  ut_free_1d_int (&ids);
+
+  return status;
 }
 
 int
@@ -60,7 +175,7 @@ ut_math_eval_int (char *expr, int varqty, char **vars, double *vals,
 int
 ut_math_vars (char *expr, char ***pvars, int *pvarqty)
 {
-  int i, stringqty, fctqty;
+  int i, j, stringqty, fctqty, var, found, bracket;
   char *tmp = NULL;
   char **strings = NULL;
   char **fcts = NULL;
@@ -69,9 +184,57 @@ ut_math_vars (char *expr, char ***pvars, int *pvarqty)
 
   ut_string_string (expr, &tmp);
 
+  var = 0;
+  bracket = 0;
   for (i = 0; i < (int) strlen (tmp); i++)
-    if (!isalpha (tmp[i]))
-      tmp[i] = ' ';
+  {
+    // if not recording a variable
+    if (var == 0)
+    {
+      // if character, start recording
+      if (isalpha (tmp[i]))
+        var = 1;
+
+      // otherwise, erasing
+      if (!isalpha (tmp[i]))
+        tmp[i] = ' ';
+    }
+
+    // if in the process of recording a variable
+    else
+    {
+      // is a character - continue recording
+      if (isalpha (tmp[i])) {}
+
+      // is a digit - continue recording
+      else if (isdigit (tmp[i])) {}
+
+      // is an opening bracket - mark as such and continue recording
+      else if (tmp[i] == '(')
+        bracket++;
+
+      // is a closing bracket - testing
+      else if (tmp[i] == ')')
+      {
+        // closes a bracket - recording
+        if (bracket > 0)
+          bracket--;
+        // does not close a bracket - erasing
+        else
+          tmp[i] = ' ';
+      }
+
+      // is in a bracket - continue
+      else if (bracket > 0) {}
+
+      // erasing
+      else
+      {
+        tmp[i] = ' ';
+        var = 0;
+      }
+    }
+  }
 
   ut_string_substrings (tmp, &strings, &stringqty);
 
@@ -81,6 +244,16 @@ ut_math_vars (char *expr, char ***pvars, int *pvarqty)
   for (i = 0; i < stringqty; i++)
     if (!ut_math_string_isfunction (strings[i]))
     {
+      found = 0;
+      for (j = 0; j < *pvarqty; j++)
+        if (!strcmp ((*pvars)[j], strings[i]))
+        {
+          found = 1;
+          break;
+        }
+      if (found)
+        continue;
+
       (*pvars) =
         ut_realloc_2d_char_addline (*pvars, ++(*pvarqty),
                                     strlen (strings[i]) + 1);

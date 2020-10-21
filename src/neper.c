@@ -233,7 +233,7 @@ neper_foot ()
 void
 neper_info ()
 {
-  ut_print_message (0, 0, "<http://neper.info>\n");
+  ut_print_message (0, 0, "<https://neper.info>\n");
 
   ut_print_message (0, 0,
                     "Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.\n");

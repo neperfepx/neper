@@ -78,7 +78,7 @@ nev_data_mesh_eltedge (char *attribute, char *value, struct DATA *pData)
   if (!strcmp (attribute, "col"))
   {
     (*pData).BCol = ut_alloc_1d_int (3);
-    ut_array_1d_int_fnscanf_wcard (value, (*pData).BCol, 3, "color");
+    ut_array_1d_int_fnscanf_wcard (value, (*pData).BCol, 3, "color", "r");
   }
   else if (!strcmp (attribute, "rad"))
     (*pData).BRad = atof (value);

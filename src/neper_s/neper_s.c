@@ -27,16 +27,25 @@ neper_s (int fargc, char **fargv, int argc, char **argv)
 // #####################################################################
 // ### READING RESULTS #################################################
 
+  // reading fepx simulation
   if (In.fepxdir)
   {
     ut_print_message (0, 1, "Writing simulation directory from FEPX raw result directory...\n");
     nes_sim (In, &Sim);
   }
 
+  // printing simulation content
+  else
+  {
+    neut_sim_fscanf (In.simdir, &Sim, "R");
+    neut_sim_verbose (Sim);
+  }
+
 // #####################################################################
 // ### RUNNING POST-PROCESSING #########################################
 
-  if (In.simdir && strcmp (In.eltres, "inputres"))
+  // going into post-processing
+  if (In.simdir && (strcmp (In.eltres, "inputres") || strcmp (In.noderes, "inputres")))
   {
     ut_print_message (0, 1, "Running post-processing...\n");
     nes_pproc (In, &Sim);

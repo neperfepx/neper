@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set(NEPER_VERSION \"4.0.3-3\")
+set(NEPER_VERSION \"4.1.0\")
 
 # should we use the optional libraries?
 set(HAVE_GSL ON)
@@ -335,7 +335,6 @@ add_test(M_mesh3dalgo_netggmne  ./neper --rcfile none -M n2-id1.tess -mesh3dclre
 if(HAVE_LIBSCOTCH)
   add_test(M_part                 ./neper --rcfile none -M -loadmesh n2-id1.msh -part 4)
   add_test(M_part2                ./neper --rcfile none -M -loadmesh n2-id1.msh -part 2:2)
-  add_test(M_partbalancing        ./neper --rcfile none -M -loadmesh n2-id1.msh -part 2 -partbalan 0)
   add_test(M_part_dim2            ./neper --rcfile none -M n2-id1-dim2.tess -part 4)
 endif()
 

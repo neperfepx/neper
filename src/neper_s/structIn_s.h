@@ -10,11 +10,8 @@ struct IN_S
   char *fepxdir;                // FEPX result directory
   char *simdir;                 // simulation directory
 
-  char *elsetextract;
-
   char *noderes;                // nodal results
   char *eltres;                 // elemental results
-  char *elsetres;               // elset results
 };
 typedef struct IN_S IN_S;
 

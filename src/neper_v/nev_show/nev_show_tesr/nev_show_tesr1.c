@@ -78,6 +78,16 @@ nev_show_tesr_cell (char **argv, int *pi, struct TESR Tesr,
 }
 
 void
+nev_show_tesr_edge (char **argv, int *pi, struct PRINT *pPrint)
+{
+  (*pi)++;
+
+  ut_string_string (argv[(*pi)], &(*pPrint).showedgestring);
+
+  return;
+}
+
+void
 nev_show_tesr_vox (char *option, char **argv, int *pi, struct TESR Tesr,
                    struct PRINT *pPrint)
 {

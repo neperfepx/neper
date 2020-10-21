@@ -5,8 +5,11 @@
 @node Simulation Module (-S)
 @chapter Simulation Module (-S)
 
-@MS{} is the module for post-processing simulation results.  Its primarily aims at reformatting an FEPX raw result directory into a @dfn{simulation directory} (@pxref{Simulation Directory (@file{.sim})}), which is as simple as running @samp{neper -S @var{fepx_res_dir}}, where @samp{@var{fepx_res_dir}} is the FEPX raw result directory.  All FEPX raw results are reformatted by default, but a list of specific results (or new results) can be specified using options @option{-noderes} and @option{-eltres}.
-The simulation directory has a simple structure and can be loaded in @mV{} for result visualization.
+@MS{} is the module for post-processing simulation results.  It can first be used to reformat an FEPX raw result directory into a human-friendly @dfn{simulation directory} (@pxref{Simulation Directory (@file{.sim})}), which is as simple as running @samp{neper -S @var{fepx_res_dir}}, where @samp{@var{fepx_res_dir}} is the FEPX raw result directory.  All FEPX raw results are reformatted by default, but a selection of results can also be specified.
+@c
+@MS{} also enables post-processing, through the computation of new results from mesh results or existing simulation results.  Results can also be imported from external files.  The results can be assigned names and defined from general expressions, such as in @samp{energy:0.1234*(crss-crss(step=0))^2}.
+@c
+The simulation directory can be loaded by @mV{} for result visualization.
 
 @sp 1
 Here is what a typical run of @mS{} looks like:
@@ -20,7 +23,7 @@ Info   : A software package for polycrystal generation and meshing.
 Info   : Version 4.0.0
 Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
 Info   : Running on 8 threads.
-Info   : <http://neper.info>
+Info   : <https://neper.info>
 Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
 Info   : Loading initialization file `/home/rquey/.neperrc'...
 Info   : ---------------------------------------------------------------
@@ -72,22 +75,41 @@ any, none}
 
 Below are options to define the results to write.  In the case where a
 simulation directory is loaded as input, the specified results add to the
-existing results.
+existing results.  The results can be any FEPX raw result (if an FEPX raw
+result is provided as input), subresults (such as vector or tensor components),
+or new results defined from mesh and simulation results.
+It is also possible to import results for files.
+Any result can also be assigned a @dfn{name} alongside its expression.
+@footnote{Defining a name becomes mandatory for expressions containing divisions@comma{} as the @samp{/} character cannot be used in file names.}
 
 @opt{-noderes, char_string,
-Specify the nodal results to output. Provide @samp{none} for none@comma{}
-@samp{inputres} for all FEPX raw results@comma{} @samp{@var{res}}
-for a specific FEPX raw results@comma{}
-or any expression based on the variables listed in @ref{Mesh Keys}.
-To provide several values@comma{} combine them with @samp{@SEPNODEP{}}.,
+Specify the nodal results to output. Provide
+@samp{none} for none@comma{}
+@samp{inputres} for all FEPX raw results@comma{}
+@samp{@var{res}} for a specific FEPX raw result@comma{}
+@samp{@var{resX}} or @samp{@var{resXY}} for a specific component of a result (vectorial or tensorial@comma{} respectively@comma{} 1-indexed)@footnote{The original result@comma{} @var{res}@comma{} must already be available in the simulation directory.}@comma{}
+@samp{@var{res}:file(@var{basename})} for importing results from files of basename @file{@var{basename}} (the files of the different steps must be available as @file{@var{basename}.step*})@comma{}
+or any expression based on the mesh or simulation results (the mesh result can be
+any variables listed in @ref{Mesh Keys}).
+To use a simulation result at a specific step@comma{} use @samp{@var{res}(step=@var{step})}@comma{} where @samp{@var{step}} is the step number.
+To define a name corresponding to a result@comma{} use @samp{@var{name}:@var{expression}}@comma{} where @var{name} is the name and @var{expression} is its expression.
+To remove a result@comma{} use @samp{!@var{res}}@comma{} where @samp{@var{res}} is the result.@footnote{The expression must be enclosed in single quotes.}.
+To provide several values@comma{} combine them @w{with @samp{@SEPNODEP{}}}.,
 any, inputres}
 
 @opt{-eltres, char_string,
-Specify the elemental results to output. Provide @samp{none} for none@comma{}
-@samp{inputres} for all FEPX raw results@comma{} @samp{@var{res}}
-for a specific FEPX raw results@comma{}
-or any expression based on the variables listed in @ref{Mesh Keys}.
-To provide several values@comma{} combine them with @samp{@SEPNODEP{}}.,
+Specify the elemental results to output. Provide
+@samp{none} for none@comma{}
+@samp{inputres} for all FEPX raw results@comma{}
+@samp{@var{res}} for a specific FEPX raw results@comma{}
+@samp{@var{resX}} or @samp{@var{resXY}} for a specific component of a result (vectorial or tensorial@comma{} respectively@comma{} 1-indexed)@footnote{The original result@comma{} @var{res}@comma{} must already be available in the simulation directory.}@comma{}
+@samp{@var{res}:file(@var{basename})} for importing results from files of basename @file{@var{basename}} (the files of the different steps must be available as @file{@var{basename}.step*})@comma{}
+or any expression based on the mesh or simulation results (the mesh result can be
+any variables listed in @ref{Mesh Keys}).
+To use the simulation result corresponding to a specific step@comma{} use @samp{@var{res}(step=@var{step})}@comma{} where @samp{@var{step}} is the step number.
+To define a name corresponding to a result@comma{} use @samp{@var{name}:@var{expression}}@comma{} where @var{name} is the name and @var{expression} is its expression.
+To remove a result@comma{} use @samp{!@var{res}}@comma{} where @samp{@var{res}} is the result.@footnote{The expression must be enclosed in single quotes.}.
+To provide several values@comma{} combine them @w{with @samp{@SEPNODEP{}}}.,
 any, inputres}
 
 @subsection Output Options
@@ -143,10 +165,22 @@ It contains the input files and the results of the simulation.  @xref{Simulation
 Below are some examples of use of neper -S.
 
 @enumerate
-@c Example_beg
-@item    Transform an FEPX raw result directory into a simulation directory of specified name.
+@item    Transform an FEPX raw result directory into a simulation directory (all results).
+@com{neper -S fepx-simulation}
+
+@item    Transform an FEPX raw result directory into a simulation directory of specified name (all results).
 @com{neper -S fepx-simulation -o @var{foo}}
 
 @item    Transform an FEPX raw result directory into a simulation directory of specified results: the nodal @samp{coo} and the elemental @samp{ori}.
 @com{neper -S fepx-simulation -noderes coo -eltres ori}
+
+@item    Transform an FEPX raw result directory into a simulation directory; get all results and the element volumes.
+@com{neper -S fepx-simulation -eltres inputres,vol}
+
+@item    Add the nodal @code{@var{x}} and the elemental @code{@var{vol}} and @code{@var{stress33}} results to a simulation directory.
+@com{neper -S simulation -noderes x -eltres vol,rr}
+
+@item    Add the elemental @code{@var{energy}} result, defined as @code{0.1234*(@var{crss}-@var{crss}(step=0))^2}, to a simulation directory.
+@com{neper -S -eltres "energy:0.1234*(crss-crss(step=0))^2"}
+
 @end enumerate

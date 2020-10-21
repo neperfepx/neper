@@ -383,14 +383,9 @@ neut_mesh_init_eltelset (struct MESH *pMesh, int *elset_nbs)
   (*pMesh).EltElset =
     ut_realloc_1d_int ((*pMesh).EltElset, (*pMesh).EltQty + 1);
 
-  if (elset_nbs != NULL)
-    for (i = 1; i <= (*pMesh).ElsetQty; i++)
-      for (j = 1; j <= (*pMesh).Elsets[i][0]; j++)
-        (*pMesh).EltElset[(*pMesh).Elsets[i][j]] = elset_nbs[i];
-  else
-    for (i = 1; i <= (*pMesh).ElsetQty; i++)
-      for (j = 1; j <= (*pMesh).Elsets[i][0]; j++)
-        (*pMesh).EltElset[(*pMesh).Elsets[i][j]] = i;
+  for (i = 1; i <= (*pMesh).ElsetQty; i++)
+    for (j = 1; j <= (*pMesh).Elsets[i][0]; j++)
+      (*pMesh).EltElset[(*pMesh).Elsets[i][j]] = elset_nbs ? elset_nbs[i] : i;
 
   return;
 }
@@ -1483,7 +1478,7 @@ neut_mesh_elts_switch (struct MESH *pMesh, int *elt_nbs)
 
   eltnodes = ut_alloc_2d_int ((*pMesh).EltQty + 1, eltnodeqty);
 
-  for (i = 1; i <= elt_nbs[0]; i++)
+  for (i = 1; i <= (*pMesh).EltQty; i++)
     ut_array_1d_int_memcpy ((*pMesh).EltNodes[i], eltnodeqty, eltnodes[i]);
 
   for (i = 1; i <= (*pMesh).EltQty; i++)
@@ -1494,7 +1489,9 @@ neut_mesh_elts_switch (struct MESH *pMesh, int *elt_nbs)
     for (j = 1; j <= (*pMesh).Elsets[i][0]; j++)
       (*pMesh).Elsets[i][j] = elt_nbs[(*pMesh).Elsets[i][j]];
 
-  if ((*pMesh).NodeElts != NULL)
+  neut_mesh_init_eltelset (pMesh, NULL);
+
+  if ((*pMesh).NodeElts)
   {
     int NodeQty = (*pMesh).NodeQty;
     ut_free_2d_int (&(*pMesh).NodeElts, NodeQty + 1);

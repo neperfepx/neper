@@ -12,9 +12,7 @@
 #include"orilib.h"
 #include"structIn_s.h"
 
-#include"nes_pproc_node/nes_pproc_node.h"
-#include"nes_pproc_elt/nes_pproc_elt.h"
-#include"nes_pproc_elset/nes_pproc_elset.h"
+#include"nes_pproc_entity/nes_pproc_entity.h"
 
 #include"nes_pproc.h"
 

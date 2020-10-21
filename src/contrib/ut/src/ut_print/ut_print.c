@@ -227,6 +227,10 @@ ut_print_level (int level)
     printf ("    > ");
   else if (level == 4)
     printf ("      . ");
+  else if (level == 5)
+    printf ("          ");
+  else if (level == 6)
+    printf ("            ");
 
   return;
 }

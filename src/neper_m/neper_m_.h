@@ -34,6 +34,7 @@
 #include"nem_interface/nem_interface.h"
 #include"nem_order/nem_order.h"
 #include"nem_transform/nem_transform.h"
+#include"nem_sort/nem_sort.h"
 
 #include"neper_m.h"
 

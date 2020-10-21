@@ -221,6 +221,12 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     nem_transform (In, Tess, &Nodes, Mesh);
   }
 
+  if (In.sortnode || In.sortelt)
+  {
+    ut_print_message (0, 2, "Sorting mesh...\n");
+    nem_sort (In, Tess, &Nodes, Mesh);
+  }
+
 // Partitioning mesh ###
   if (In.partstring && strcmp (In.partstring, "0"))
   {

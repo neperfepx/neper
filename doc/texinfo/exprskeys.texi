@@ -190,13 +190,13 @@ Available keys for a tessellation itself are provided below.
   @item @code{y}  @tab y coordinate                    @tab tess
   @item @code{z}  @tab z coordinate                    @tab tess
   @item @code{coo}  @tab x, y and z coordinates        @tab tess
-  @item @code{area}  @tab area                         @tab tess
+  @item @code{area}  @tab surface area                 @tab tess
   @item @code{vol} @tab volume                         @tab tess
-  @item @code{size}  @tab size (area/volume in 2D/3D)  @tab tess
+  @item @code{size}  @tab size (surface area/volume in 2D/3D)  @tab tess
 @end multitable
 
 @sp 1
-Available keys for tessellation seeds, vertices, edges, faces and polyhedra
+Available keys for tessellation seeds, vertices, edges, faces, polyhedra and cell groups
 are provided below.
 Also note that the descriptors apply to @emph{cells} if they are tagged to
 apply to @emph{polyhedra} and the tessellation is 3D and @emph{faces} and the
@@ -218,25 +218,18 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
 
 @multitable @columnfractions 0.23 0.43 0.34
   @headitem Key   @tab Descriptor                      @tab Apply to
-  @item @code{dim} @tab dimension                      @tab tess
-  @item @code{vernb} @tab number of vertices           @tab tess
-  @item @code{edgenb} @tab number of edges             @tab tess
-  @item @code{facenb} @tab number of faces             @tab tess
-  @item @code{polynb} @tab number of polyhedra         @tab tess
-  @item @code{cellnb} @tab number of cells             @tab tess
-  @item @code{vernb} @tab number of vertices           @tab tess
-  @item @code{id} @tab identifier                      @tab seed, ver, edge, face, poly
-  @item @code{x}  @tab x coordinate                    @tab tess, seed, ver, edge, face, poly
-  @item @code{y}  @tab y coordinate                    @tab tess, seed, ver, edge, face, poly
-  @item @code{z}  @tab z coordinate                    @tab tess, seed, ver, edge, face, poly
-  @item @code{coo}  @tab x, y and z coordinates        @tab tess, seed, ver, edge, face, poly
+  @item @code{id} @tab identifier                      @tab seed, ver, edge, face, poly, group
+  @item @code{x}  @tab x coordinate                    @tab seed, ver, edge, face, poly
+  @item @code{y}  @tab y coordinate                    @tab seed, ver, edge, face, poly
+  @item @code{z}  @tab z coordinate                    @tab seed, ver, edge, face, poly
+  @item @code{coo}  @tab x, y and z coordinates        @tab seed, ver, edge, face, poly
   @item @code{xmin}  @tab minimum x coordinate         @tab edge, face, poly
   @item @code{ymin}  @tab minimum y coordinate         @tab edge, face, poly
   @item @code{zmin}  @tab minimum z coordinate         @tab edge, face, poly
   @item @code{xmax}  @tab maximum x coordinate         @tab edge, face, poly
   @item @code{ymax}  @tab maximum y coordinate         @tab edge, face, poly
   @item @code{zmax}  @tab maximum z coordinate         @tab edge, face, poly
-  @item @code{w}  @tab weight (width for a lamella tessellation) @tab seed, cell
+  @item @code{w}  @tab weight (width for a @w{lamellar tessellation} @tab seed, cell
   @item @code{true}  @tab true level                   @tab ver, edge, face, poly
   @item @code{body}  @tab body level                   @tab ver, edge, face, poly
   @item @code{state}  @tab state                       @tab ver, edge, face, poly
@@ -247,23 +240,23 @@ the @samp{@SEPDEP{}uc} modifier.  To use as a reference only the
   @item @code{domver}  @tab domain vertex (-1 if undefined) @tab ver
   @item @code{scale}  @tab scale @tab face@footnote{Applies only to a 3D tessellation and relevant for multiscale tessellations.  The scale of a face is the scale at which the face was created, and it ranges from 0 (for domain faces) to the number of scales of the tessellation (for the last created faces).}
   @item @code{length}  @tab length                     @tab edge
-  @item @code{area}  @tab area                         @tab tess, face, poly
-  @item @code{vol} @tab volume                         @tab tess, poly
-  @item @code{size}  @tab size (area/volume in 2D/3D)  @tab tess, cell
+  @item @code{area}  @tab surface area                 @tab face, poly, group
+  @item @code{vol} @tab volume                         @tab poly, group
+  @item @code{size}  @tab size (surface area/volume in 2D/3D)  @tab cell, group
   @item @code{diameq}  @tab equivalent
     diameter@footnote{Equivalent diameter = diameter
-    of the circle of equivalent area/volume in 2D/3D.} @tab tess, face, poly
+    of the circle of equivalent area/volume in 2D/3D.} @tab face, poly
   @item @code{radeq}  @tab equivalent
     radius@footnote{Equivalent radius = radius of the
-    circle of equivalent area/volume in 2D/3D.}        @tab tess, face, poly
+    circle of equivalent area/volume in 2D/3D.}        @tab face, poly
   @item @code{sphericity}  @tab sphericity@footnote{Sphericity of a
     polyhedron = ratio of the surface area of
       the sphere of equivalent volume to the surface area of the
       polyhedron.} @tab poly
   @item @code{circularity}  @tab circularity@footnote{Circularity of a polygon = ratio of the perimeter of the circle of equivalent area to the perimeter of the polygon.} (2D counterpart of sphericity)          @tab face
   @item @code{convexity}  @tab convexity@footnote{Convexity of a
-    polyhedron (face) = ratio of the volume (area) of the polyhedron
-      (face) to the volume (area) of the convex hull of the polyhedron
+    polyhedron (face) = ratio of the volume (surface area) of the polyhedron
+      (face) to the volume (surface area) of the convex hull of the polyhedron
       (face).} @tab face@footnote{Applies only to a 2D tessellation.}, poly
   @item @code{dihangleav} @tab average dihedral angle @tab face, poly
   @item @code{dihanglemin} @tab minimum dihedral angle @tab face, poly
@@ -386,9 +379,13 @@ Available keys for raster tessellation itself are provided below.
   @item @code{voxsizex} @tab voxel size in direction x  @tab tesr
   @item @code{voxsizey} @tab voxel size in direction y  @tab tesr
   @item @code{voxsizez} @tab voxel size in direction z  @tab tesr
-  @item @code{domsizex} @tab domain size in direction x @tab tesr
-  @item @code{domsizey} @tab domain size in direction y @tab tesr
-  @item @code{domsizez} @tab domain size in direction z @tab tesr
+  @item @code{rastersizex} @tab raster size in direction x @tab tesr
+  @item @code{rastersizey} @tab raster size in direction y @tab tesr
+  @item @code{rastersizez} @tab raster size in direction z @tab tesr
+  @item @code{rastersize}  @tab raster size (surface area/volume in 2D/3D) @tab tesr
+  @item @code{area}     @tab surface area               @tab tesr
+  @item @code{vol}      @tab volume                     @tab tesr
+  @item @code{size}     @tab size (surface area/volume in 2D/3D) @tab tesr
   @item @code{x}        @tab x coordinate               @tab tesr
   @item @code{y}        @tab y coordinate               @tab tesr
   @item @code{z}        @tab z coordinate               @tab tesr
@@ -396,7 +393,7 @@ Available keys for raster tessellation itself are provided below.
 @end multitable
 
 @sp 1
-Available keys for raster tessellation seeds, cells and voxels are provided below.
+Available keys for raster tessellation seeds, cells, cell groups and voxels are provided below.
 Mathematical and logical expressions based on these keys can also be
 used.
 To turn a key value into a value relative to the mean over all entities
@@ -407,34 +404,33 @@ the @samp{@SEPDEP{}uc} modifier.
 
 @multitable @columnfractions 0.23 0.43 0.34
   @headitem Key     @tab Descriptor                   @tab Apply to
-  @item @code{originx} @tab origin x coordinate       @tab tesr
-  @item @code{originy} @tab origin y coordinate       @tab tesr
-  @item @code{originz} @tab origin z coordinate       @tab tesr
-  @item @code{voxsizex} @tab voxel size in direction x  @tab tesr
-  @item @code{voxsizey} @tab voxel size in direction y  @tab tesr
-  @item @code{voxsizez} @tab voxel size in direction z  @tab tesr
-  @item @code{domsizex} @tab domain size in direction x @tab tesr
-  @item @code{domsizey} @tab domain size in direction y @tab tesr
-  @item @code{domsizez} @tab domain size in direction z @tab tesr
-  @item @code{id}   @tab identifier                   @tab seed, cell, voxel
-  @item @code{x}    @tab x coordinate                 @tab tesr, seed, cell, voxel
-  @item @code{y}    @tab y coordinate                 @tab tesr, seed, cell, voxel
-  @item @code{z}    @tab z coordinate                 @tab tesr, seed, cell, voxel
-  @item @code{coo}  @tab x, y and z coordinates       @tab tesr, seed, cell, voxel
+  @item @code{id}   @tab identifier                   @tab seed, cell, group, voxel
+  @item @code{x}    @tab x coordinate                 @tab seed, cell, voxel
+  @item @code{y}    @tab y coordinate                 @tab seed, cell, voxel
+  @item @code{z}    @tab z coordinate                 @tab seed, cell, voxel
+  @item @code{coo}  @tab x, y and z coordinates       @tab seed, cell, voxel
   @item @code{vx}   @tab x coordinate (in voxel)      @tab voxel
   @item @code{vy}   @tab y coordinate (in voxel)      @tab voxel
   @item @code{vz}   @tab z coordinate (in voxel)      @tab voxel
   @item @code{vcoo} @tab x, y and z coordinates (in voxel) @tab voxel
   @item @code{cell} @tab cell                         @tab voxel
   @item @code{w}    @tab Laguerre weight              @tab seed
-  @item @code{size}  @tab size (area/volume in 2D/3D) @tab cell
-  @item @code{diameq}  @tab equivalent
+  @item @code{area} @tab surface area                 @tab cell, group (in 2D)
+  @item @code{vol}  @tab volume                       @tab cell, group (in 3D)
+  @item @code{size} @tab size (surface area/volume in 2D/3D) @tab cell, group
+  @item @code{areafrac}  @tab surface area fraction    @tab group (in 2D)
+  @item @code{volfrac}   @tab volume fraction          @tab group (in 3D)
+  @item @code{sizefrac}  @tab size fraction (surface area/volume fraction in 2D/3D) @tab group
+  @item @code{diameq}    @tab equivalent
     diameter@footnote{Equivalent diameter = diameter
     of the circle of equivalent area/volume in 2D/3D.}@tab cell
-  @item @code{radeq}  @tab equivalent
+  @item @code{radeq}     @tab equivalent
     radius@footnote{Equivalent radius = radius of the
     circle of equivalent area/volume in 2D/3D.}       @tab cell
-  @item @code{convexity}  @tab convexity@footnote{Convexity of a cell = ratio of the volume of the cell to the volume of the convex hull of the cell.} @tab cell
+  @item @code{convexity} @tab convexity@footnote{Convexity of a cell = ratio of the volume of the cell to the volume of the convex hull of the cell.} @tab cell
+  @item @code{oridisanisoangles} @tab orientation distribution anisotropy / principal angles@footnote{See @cite{R Quey, JH Driver, PR Dawson, Intra-grain orientation distributions in hot-deformed aluminium: orientation dependence and relation to deformation mechanisms, Journal of the Mechanics and Physics of Solids, vol. 84, pp. 506-524, 2015}.} @tab cell
+  @item @code{oridisanisoaxes}   @tab orientation distribution anisotropy / principal axes   @tab cell
+  @item @code{oridisanisofact}   @tab orientation distribution anisotropy factor @tab cell
 @end multitable
 
 @node Tessellation Optimization Keys
@@ -591,7 +587,7 @@ Available keys for a mesh itself are provided below.
   @item @code{z}  @tab z coordinate                    @tab @var{n}D mesh
   @item @code{coo}  @tab x, y and z coordinates        @tab @var{n}D mesh
   @item @code{length} @tab length                      @tab 1D mesh
-  @item @code{area}  @tab area                         @tab 2D mesh
+  @item @code{area}  @tab surface area                 @tab 2D mesh
   @item @code{vol} @tab volume                         @tab 3D mesh
   @item @code{size}  @tab size (length/area/volume in 1D/2D/ 3D)  @tab 1D mesh, 2D mesh, 3D mesh
 @end multitable
@@ -617,7 +613,7 @@ dimensions) and points are provided below.
   @item @code{cyl} @tab whether or not is used to describe the
                         circular part of a cylinder domain @tab 1D elt, 1D elset
   @item @code{vol}    @tab volume                           @tab 3D elt, 3D elset
-  @item @code{area}   @tab area                             @tab 2D elt
+  @item @code{area}   @tab surface area                     @tab 2D elt
   @item @code{diameq}   @tab equivalent diameter@footnote{Equivalent diameter = diameter
       of the circle of equivalent area/volume in 2D/3D.}    @tab 2D elt, 3D elt, 2D elset, 3D elset
   @item @code{radeq}   @tab equivalent radius@footnote{Equivalent radius = radius of the circle of equivalent area/volume in 2D/3D.}            @tab 2D elt, 3D elt, 2D elset, 3D elset

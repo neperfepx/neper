@@ -22,7 +22,7 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
 
     else
     {
-      neut_sim_fscanf (string, pSim);
+      neut_sim_fscanf (string, pSim, "R");
 
       qty = 0;
       list = ut_alloc_1d_pchar (3);

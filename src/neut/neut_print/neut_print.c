@@ -71,6 +71,7 @@ neut_print_set_default (struct PRINT *pPrint)
   (*pPrint).showvox = NULL;
   (*pPrint).showvoxstring = NULL;
   (*pPrint).showvoidvoxstring = NULL;
+  (*pPrint).showedgestring = NULL;
 
   (*pPrint).datareduction = 1;
 

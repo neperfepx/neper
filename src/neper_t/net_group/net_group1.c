@@ -5,21 +5,13 @@
 #include"net_group_.h"
 
 void
-net_group (struct IN_T In, struct TESS *pTess)
+net_group (struct IN_T In, struct TESS *pTess, struct TESR *pTesr)
 {
-  FILE *file = NULL;
+  if (!neut_tess_isvoid (*pTess))
+    net_group_tess (In, pTess);
 
-  (*pTess).CellGroup = ut_alloc_1d_int ((*pTess).CellQty + 1);
-
-  if (ut_string_isfilename (In.group))
-  {
-    file = ut_file_open (In.group, "r");
-    ut_array_1d_int_fscanf (file, (*pTess).CellGroup + 1, (*pTess).CellQty);
-    ut_file_close (file, In.group, "r");
-  }
-
-  else
-    neut_tess_entity_expr_val_int (*pTess, "cell", In.group, (*pTess).CellGroup);
+  if (!neut_tesr_isvoid (*pTesr))
+    net_group_tesr (In, pTesr);
 
   return;
 }

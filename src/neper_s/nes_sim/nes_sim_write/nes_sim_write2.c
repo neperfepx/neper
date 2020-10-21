@@ -5,14 +5,6 @@
 #include "nes_sim_write_.h"
 
 void
-nes_sim_write_report (struct IN_S In, struct SIM Sim)
-{
-  neut_sim_fprintf (In.simdir, Sim, "w");
-
-  return;
-}
-
-void
 nes_sim_write_inputs (struct IN_S In, struct SIM Sim)
 {
   int i, filenameqty = 4;
@@ -24,13 +16,34 @@ nes_sim_write_inputs (struct IN_S In, struct SIM Sim)
   ut_string_string ("simulation.config", filename + 2);
   ut_string_string ("*.sh", filename + 3);
 
+  if (Sim.bcs)
+  {
+    filename = ut_realloc_1d_pchar (filename, ++filenameqty);
+    filename[filenameqty - 1] = NULL;
+    ut_string_string (Sim.bcs, filename + filenameqty - 1);
+  }
+  if (Sim.ori)
+  {
+    filename = ut_realloc_1d_pchar (filename, ++filenameqty);
+    filename[filenameqty - 1] = NULL;
+    ut_string_string (Sim.ori, filename + filenameqty - 1);
+  }
+  if (Sim.phase)
+  {
+    filename = ut_realloc_1d_pchar (filename, ++filenameqty);
+    filename[filenameqty - 1] = NULL;
+    ut_string_string (Sim.phase, filename + filenameqty - 1);
+  }
+
   ut_dir_openmessage (dir, "w");
   ut_sys_mkdir ("%s/inputs", In.simdir);
 
-  for (i = 0; i < 4; i++)
+  for (i = 0; i < filenameqty; i++)
     nes_sim_write_inputs_file (In, Sim, filename[i]);
 
   ut_dir_closemessage (dir, "w");
+
+  neut_sim_fprintf (In.simdir, Sim, "W");
 
   ut_free_1d_char (&dir);
   ut_free_2d_char (&filename, filenameqty);

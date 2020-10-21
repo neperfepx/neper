@@ -203,6 +203,14 @@ neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file)
         }
       }
 
+      else if (!strcmp (string, "*group"))
+      {
+        ut_file_skip (file, 1);
+        (*pTesr).CellGroup = ut_alloc_1d_int ((*pTesr).CellQty + 1);
+        ut_array_1d_int_fscanf (file, (*pTesr).CellGroup + 1,
+                                (*pTesr).CellQty);
+      }
+
       else if (!strcmp (string, "*crysym"))
       {
         ut_file_skip (file, 1);

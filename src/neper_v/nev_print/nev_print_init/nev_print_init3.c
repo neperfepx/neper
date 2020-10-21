@@ -291,6 +291,7 @@ void
 nev_print_init_data_tesr (struct TESR Tesr, struct DATA *pTesrData)
 {
   int Qty = ut_array_1d_int_prod (Tesr.size, 3);
+  double size, rad;
 
   (*pTesrData).Col = ut_alloc_2d_int (Qty + 1, 3);
   (*pTesrData).Trs = ut_alloc_1d (Qty + 1);
@@ -335,9 +336,6 @@ nev_print_init_data_tesr (struct TESR Tesr, struct DATA *pTesrData)
     else
       (*pTesrData).BRad = 1.00070287798127172169 * Tesr.vsize[0];
   }
-  else if (Tesr.Dim == 1)
-    (*pTesrData).BRad =
-      sqrt (pow (Tesr.vsize[0], 2) + pow (.5 * (*pTesrData).BRad, 2));
 
   if (!(*pTesrData).BCol)
     (*pTesrData).BCol = ut_alloc_1d_int (3);
@@ -346,6 +344,14 @@ nev_print_init_data_tesr (struct TESR Tesr, struct DATA *pTesrData)
   {
     (*pTesrData).VoidCol = ut_alloc_1d_int (3);
     ut_array_1d_int_set ((*pTesrData).VoidCol, 3, 128);
+  }
+
+  if (!(*pTesrData).RadDataName)
+  {
+    (*pTesrData).RadDataName = ut_alloc_1d_char (100);
+    neut_tesr_size (Tesr, &size);
+    rad = pow (size, 1. / 3) * 0.01414 / pow (Tesr.CellQty, 0.25);
+    sprintf ((*pTesrData).RadDataName, "%g", rad);
   }
 
   return;

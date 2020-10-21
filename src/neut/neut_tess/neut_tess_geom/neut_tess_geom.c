@@ -1999,3 +1999,51 @@ neut_tess_coo_percoos (struct TESS Tess, double *coo, double ***ppercoos,
 
   return;
 }
+
+void
+neut_tess_group_vol (struct TESS Tess, int group, double *pvol)
+{
+  int i;
+  double tmp;
+
+  (*pvol) = 0;
+  for (i = 1; i <= Tess.CellQty; i++)
+    if (Tess.CellGroup && Tess.CellGroup[i] == group)
+    {
+      neut_tess_poly_volume (Tess, i, &tmp);
+      (*pvol) += tmp;
+    }
+
+  return;
+}
+
+void
+neut_tess_group_area (struct TESS Tess, int group, double *parea)
+{
+  int i;
+  double tmp;
+
+  (*parea) = 0;
+  for (i = 1; i <= Tess.CellQty; i++)
+    if (Tess.CellGroup && Tess.CellGroup[i] == group)
+    {
+      neut_tess_face_area (Tess, i, &tmp);
+      (*parea) += tmp;
+    }
+
+  return;
+}
+
+void
+neut_tess_group_size (struct TESS Tess, int group, double *psize)
+{
+  (*psize) = 0;
+
+  if (Tess.Dim == 2)
+    neut_tess_group_area (Tess, group, psize);
+  else if (Tess.Dim == 3)
+    neut_tess_group_vol (Tess, group, psize);
+
+  return;
+}
+

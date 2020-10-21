@@ -119,6 +119,14 @@ neut_tesr_fprintf_cell (FILE * file, struct TESR Tesr)
       fprintf (file, "   %.12f\n", Tesr.CellConvexity[i]);
   }
 
+  if (Tesr.CellGroup)
+  {
+    fprintf (file, "  *group\n   ");
+    for (i = 1; i <= Tesr.CellQty; i++)
+      ut_print_wnc_int (file, Tesr.CellGroup[i], &count, 72);
+    fprintf (file, "\n");
+  }
+
   if (Tesr.CellCrySym)
   {
     fprintf (file, "  *crysym\n");

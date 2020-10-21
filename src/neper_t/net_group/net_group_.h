@@ -5,7 +5,9 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#include"../structIn_t.h"
 #include"neut_t.h"
 
 #include"net_group.h"
+
+#include"net_group_tess/net_group_tess.h"
+#include"net_group_tesr/net_group_tesr.h"

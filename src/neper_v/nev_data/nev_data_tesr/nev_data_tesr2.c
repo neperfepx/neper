@@ -73,12 +73,27 @@ nev_data_tesr_vox (struct SIM Sim, struct TESR *pTesr, struct DATA *pData, char 
 }
 
 void
+nev_data_tesr_edge (struct DATA *pData, char *attribute, char *datastring)
+{
+  if (!strcmp (attribute, "rad"))
+  {
+    ut_string_string ("expr", &(*pData).RadDataType);
+    ut_string_string (datastring, &(*pData).RadDataName);
+  }
+  else
+    ut_print_exprbug (attribute);
+
+  return;
+}
+
+
+void
 nev_data_tesr_voxedge (struct DATA *pData, char *attribute, char *datastring)
 {
   if (!strcmp (attribute, "col"))
   {
     (*pData).BCol = ut_alloc_1d_int (3);
-    ut_array_1d_int_fnscanf_wcard (datastring, (*pData).BCol, 3, "color");
+    ut_array_1d_int_fnscanf_wcard (datastring, (*pData).BCol, 3, "color", "r");
   }
   else if (!strcmp (attribute, "rad"))
     (*pData).BRad = atof (datastring);
@@ -94,7 +109,7 @@ nev_data_tesr_voidvox (struct DATA *pData, char *attribute, char *datastring)
   if (!strcmp (attribute, "col"))
   {
     (*pData).VoidCol = ut_alloc_1d_int (3);
-    ut_array_1d_int_fnscanf_wcard (datastring, (*pData).VoidCol, 3, "color");
+    ut_array_1d_int_fnscanf_wcard (datastring, (*pData).VoidCol, 3, "color", "r");
   }
   else
     ut_print_exprbug (attribute);
