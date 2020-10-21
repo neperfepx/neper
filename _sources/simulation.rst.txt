@@ -35,6 +35,11 @@ The resulting simulation directory (jobdir.sim) contains both the simulation inp
       │   │   ├── strain-eq.step1
       │   │   ├── strain-eq.step2
       │   │   ...
+      │   ├── stress
+      │   │   ├── stress.step0
+      │   │   ├── stress.step1
+      │   │   ├── stress.step2
+      │   │   ...
       │   ├── ...
       │   ...
       └── nodes
@@ -46,13 +51,14 @@ The resulting simulation directory (jobdir.sim) contains both the simulation inp
           ├── ...
           ...
 
-Post-processing
----------------
+Computing new results
+---------------------
 
-Nodal or elemental data can be added to the simulation directory for post-processing.  These data can be any embedeed nodal or elemental data.
+Nodal or elemental results can be added to the simulation directory.  The data can be mesh results (as also available through Neper -M's -stat* options), simulation subresults (such as vector or tensor components), or new results defined by mathematical expressions based on mesh or simulation results. The results can be assigned names. Existing results at a specific step can be accessed using (step=...).
+
 ::
 
-  $ neper -S jobdir.sim -eltres coo,vol
+  $ neper -S jobdir.sim -eltres vol,stress33,energy:0.1234*(crss-crss(step=0))^2"
 
 The results add to the simulation directory, which becomes
 ::
@@ -65,15 +71,25 @@ The results add to the simulation directory, which becomes
   ├── report
   └── results
       ├── elements
+      │   ├── energy
+      │   │   ├── energy.step0
+      │   │   ├── energy.step1
+      │   │   ├── energy.step2
+      │   │   ...
       │   ├── strain-eq
       │   │   ├── strain-eq.step0
       │   │   ├── strain-eq.step1
       │   │   ├── strain-eq.step2
       │   │   ...
-      │   ├── coo
-      │   │   ├── coo.step0
-      │   │   ├── coo.step1
-      │   │   ├── coo.step2
+      │   ├── stress
+      │   │   ├── stress.step0
+      │   │   ├── stress.step1
+      │   │   ├── stress.step2
+      │   │   ...
+      │   ├── stress33
+      │   │   ├── stress33.step0
+      │   │   ├── stress33.step1
+      │   │   ├── stress33.step2
       │   │   ...
       │   ├── vol
       │   │   ├── vol.step0
@@ -90,3 +106,41 @@ The results add to the simulation directory, which becomes
           │   ...
           ├── ...
           ...
+
+
+Removing results
+----------------
+
+Results can be removed by preceding them by "!" (note the single quotes, below).
+
+::
+
+  $ neper -S jobdir.sim -eltres '!stress,!stress33,!vol,!strain-eq'
+
+The simulation directory becomes
+::
+
+  jobdir.sim
+  ├── inputs
+  │   ├── simulation.config
+  │   ├── simulation.msh
+  │   └── simulation.tess
+  ├── report
+  └── results
+      ├── elements
+      │   ├── energy
+      │   │   ├── energy.step0
+      │   │   ├── energy.step1
+      │   │   ├── energy.step2
+      │   │   ...
+      │   ...
+      └── nodes
+          ├── coo
+          │   ├── coo.step0
+          │   ├── coo.step1
+          │   ├── coo.step2
+          │   ...
+          ├── ...
+          ...
+
+
