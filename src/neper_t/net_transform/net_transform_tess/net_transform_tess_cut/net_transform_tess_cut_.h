@@ -8,6 +8,7 @@
 #include"neut_t.h"
 
 #include"net_tess/net_tess3d/net_tess3d_domain/net_tess3d_domain.h"
+#include"net_tess/net_tess.h"
 #include"net_reg/net_reg_merge/net_reg_merge_del/net_reg_merge_del_ff/net_reg_merge_del_ff.h"
 
 #include"net_transform_tess_cut.h"

@@ -13,7 +13,7 @@ net_transform_tess_cut (char *expr, struct TESS Dom, struct TESS *pTess)
   struct SEEDSET SSet;
   struct TESS TessGen;
   struct PRIM *Prim = NULL;
-  int PrimQty;
+  int PrimQty, dim = (*pTess).Dim;
 
   neut_seedset_set_zero (&SSet);
   neut_tess_set_zero (&TessGen);
@@ -59,6 +59,12 @@ net_transform_tess_cut (char *expr, struct TESS Dom, struct TESS *pTess)
 
   else
     neut_tess_reset (pTess);
+
+  if (dim == 2)
+  {
+    (*pTess).Dim = 3;
+    net_tess_3dto2d (pTess);
+  }
 
   neut_tess_init_edgelength (pTess);
 

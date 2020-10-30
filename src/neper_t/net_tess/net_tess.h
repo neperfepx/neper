@@ -15,6 +15,8 @@ extern "C"
   extern void net_tess_perdomain (struct IN_T In, struct TESS Ptess, int cell,
 				  struct TESS *pDom);
 
+  extern int net_tess_3dto2d (struct TESS *pTess);
+
 #ifdef __cplusplus
 }
 #endif
