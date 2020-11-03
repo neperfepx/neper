@@ -79,7 +79,7 @@ Resources for FEPX can be accessed from @url{http://fepx.info}.
 
 @section Installing Neper
 
-Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system (including MacOS).  Multithreading of the code is achieved via OpenMP and operates on all threads (the actual number of threads can be set throught the @code{@var{OMP_NUM_THREADS}} environment variable).  Compilation is performed via CMake:
+Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system (including MacOS).  Neper also runs on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, but multithreading must be turned off (which also slows down execution significantly).  Multithreading of the code is achieved via OpenMP and operates on all threads (the actual number of threads can be set throught the @code{@var{OMP_NUM_THREADS}} environment variable).  Compilation is performed via CMake:
 
 @itemize
 @item Create a @file{build} directory, for instance as a subdirectory of Neper's @file{src} directory
@@ -90,7 +90,7 @@ Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix
 @file{src} directory
 
 @com{cd build}
-@com{cmake ..}
+@com{cmake ..@ @ @ @ (on Windows: cmake -DHAVE_OPENMP=OFF ..)}
 
 @item Build Neper
 
@@ -247,6 +247,7 @@ This manual is maintained as a Texinfo manual.  Here are the writing conventions
 
 @comc{this,;}
 
+where @samp{$} denotes the terminal prompt.
 @item A program (or command) option is printed like @option{this};
 @item The name of a variable is printed like @code{this};
 @item A meta-syntactic variable (i.e.@: something that stands for another piece of text) is printed like @var{this};

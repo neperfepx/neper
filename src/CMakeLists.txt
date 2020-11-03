@@ -5,7 +5,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(neper)
 
-set(NEPER_VERSION \"4.1.1-1\")
+set(NEPER_VERSION \"4.1.1-2\")
 
 # should we use the optional libraries?
 set(HAVE_GSL ON)
