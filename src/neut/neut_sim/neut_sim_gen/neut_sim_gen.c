@@ -530,7 +530,7 @@ neut_sim_res_file (struct SIM Sim, char *entity_in, char *inres, char *filename)
 
   step = Sim.step;
   for (i = 0; i < varqty; i++)
-    if (!strcmp (vars[i], "step"))
+    if (!ut_string_strcmp (vars[i], "step"))
       sscanf (vals[i], "%d", &step);
 
   entity = ut_alloc_1d_char (100);
