@@ -27,8 +27,8 @@ neut_mtess_tess_poly_mid (struct MTESS MTess, struct TESS Tess, int poly,
     neut_mtess_tess_doms (MTess, Tess, doms);
 
     for (i = 2; i < domqty; i++)
-      sprintf (*pid, "%s%s%d", *pid, i == 2 ? "" : "::", doms[i][1]);
-    sprintf (*pid, "%s%s%d", *pid, strlen (*pid) == 0 ? "" : "::", poly);
+      sprintf (*pid + strlen (*pid), "%s%d", i == 2 ? "" : "::", doms[i][1]);
+    sprintf (*pid + strlen (*pid), "%s%d", strlen (*pid) == 0 ? "" : "::", poly);
 
     (*pid) = ut_realloc_1d_char ((*pid), strlen (*pid) + 1);
 

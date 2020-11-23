@@ -552,7 +552,7 @@ neut_sim_res_file (struct SIM Sim, char *entity_in, char *inres, char *filename)
       status = 0;
 
       if (col != 0)
-        sprintf (filename, "%s,col=%d", filename, col);
+        sprintf (filename + strlen (filename), ",col=%d", col);
     }
 
     ut_free_1d_char (&basename);

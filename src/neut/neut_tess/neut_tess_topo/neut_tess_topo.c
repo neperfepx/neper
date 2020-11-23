@@ -2815,7 +2815,7 @@ neut_tess_seed_master_slave (struct TESS Tess, int master, int *pos, int fact)
   int id =
     (fact * pos[2] + 1) * 9 + (fact * pos[1] + 1) * 3 + (fact * pos[0] + 1);
 
-  if (fabs (fact) != 1)
+  if (abs (fact) != 1)
     abort ();
 
   return Tess.PerSeedSlave[master][id];

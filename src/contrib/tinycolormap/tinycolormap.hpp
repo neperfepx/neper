@@ -27,6 +27,7 @@
 
 #include <cmath>
 #include <array>
+#include <cstdint>
 
 #if defined(TINYCOLORMAP_WITH_EIGEN)
 #include <Eigen/Core>

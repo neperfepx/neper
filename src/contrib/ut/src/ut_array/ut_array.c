@@ -2276,7 +2276,7 @@ ut_array_1d_int_abssort_index (int *array, int size, int *pos)
 
   for (i = 0; i < size; i++)
     for (j = size - 1; j > i; j--)
-      if (fabs (arraycpy[j - 1]) > fabs (arraycpy[j]))
+      if (abs (arraycpy[j - 1]) > abs (arraycpy[j]))
       {
         ut_array_1d_int_switch (arraycpy, j - 1, j);
         ut_array_1d_int_switch (pos, j - 1, j);
@@ -2637,7 +2637,7 @@ ut_array_1d_int_abssum (int *data, int n)
   int res = 0;
 
   for (i = 0; i < n; i++)
-    res += fabs (data[i]);
+    res += abs (data[i]);
   return res;
 }
 

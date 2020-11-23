@@ -198,12 +198,12 @@ ol_g_m_quality (double **g, char *crysym, int maxid, int maxres, double alpha,
       ol_m_g (m, g2);
       ol_g_g_disori (g, g2, crysym, &(theta[pos]));
 
-      Sig[pos] = (fabs (m[0]) + fabs (m[1]) + fabs (m[2])) +
-        (fabs (m[3]) + fabs (m[4]) + fabs (m[5]));
+      Sig[pos] = (abs (m[0]) + abs (m[1]) + abs (m[2])) +
+        (abs (m[3]) + abs (m[4]) + abs (m[5]));
 
       mq[pos] =
         (1 - alpha) * (double) Sig[pos] + alpha * theta[pos] +
-        (double) (fabs (scalprod) * 1e7);
+        (double) (abs (scalprod) * 1e7);
       /* if scalprod != 0, mq is set to a very high value to reject the
        * set of indices. */
     }

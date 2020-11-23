@@ -1482,7 +1482,7 @@ ol_polef_polecrysym (int *polef, char *crysym, int **pole, int *pqty)
   for (i = 0; i < *pqty; i++)
   {
     sort[i] =
-      100 * fabs (pole[i][0]) + 10 * fabs (pole[i][1]) + fabs (pole[i][2]);
+      100 * abs (pole[i][0]) + 10 * abs (pole[i][1]) + abs (pole[i][2]);
     for (j = 0; j < 3; j++)
       if (pole[i][j] < 0)
         sort[i] -= 1000;
