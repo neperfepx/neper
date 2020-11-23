@@ -832,8 +832,9 @@ where
       @code{16} for a 2nd-order quadrangular element (8 nodes),
       @code{10} for a 2nd-order quadrangular element (9 nodes),
       @code{4} for a 1st-order tetrahedral element (4 nodes),
-      @code{5} for a 1st-order hexahedral element (4 nodes),
+      @code{5} for a 1st-order hexahedral element (8 nodes),
       @code{11} for a 2nd-order tetrahedral element (10 nodes),
+      @code{17} for a 2nd-order hexahedral element (20 nodes),
       @code{6} for a 1st-order prismatic element (6 nodes),
       @code{18} for a 2nd-order prismatic element (15 nodes).
 

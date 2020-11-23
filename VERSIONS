@@ -1,7 +1,7 @@
-New in 4.1.1-3 (20 Nov 2020):
+New in 4.1.1-4 (23 Nov 2020):
 - module -T: fixed -transform cut in 2D.
 - module -V: made minor fixes.
-- documentation: made minor improvements.
+- documentation: made minor improvements and fixes.
 
 New in 4.1.0 (21 Oct 2020):
 - module -T: extended -group to tesr, added -statgroup, added raster
