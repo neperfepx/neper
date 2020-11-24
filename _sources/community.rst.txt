@@ -6,7 +6,7 @@ Community
 Keeping up-to-date
 ------------------
 
-On `the GitHub repository <https://github.com/rquey/neper>`_, Neper's official releases are available under the `release tab <https://github.com/rquey/neper/releases>`_.  All official releases are tagged and available from the `master branch <https://github.com/rquey/neper/tree/master>`_.
+On `the GitHub repository <https://github.com/rquey/neper>`_, Neper's official releases are available under the `release tab <https://github.com/rquey/neper/releases>`_.  All official releases are tagged and available from the `main branch <https://github.com/rquey/neper/tree/main>`_.
 Neper is under continuous development, and we push new commits to the `devel branch <https://github.com/rquey/neper/tree/devel>`_ almost everyday.
 
 Make sure to `watch <https://help.github.com/en/articles/watching-and-unwatching-repositories#watching-a-single-repository>`_ `the GitHub repository <https://github.com/rquey/neper>`_ to be notified of new releases (or conversations, etc.).  If you do not have a GitHub account, you will need to create one, which is a matter of minutes.

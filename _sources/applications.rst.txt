@@ -20,9 +20,22 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 - B Flipon, C Keller, R Quey and F Barbe, *A full-field crystal-plasticity analysis of bimodal polycrystals*, **International Journal of Solids and Structures**, vol. 184, pp. 178--192, 2020. `Journal cover <docs/cover-ijss-2020.png>`_
 - R Carson, M Obstalecki, M Miller and P Dawson, *Characterizing Heterogeneous Intragranular Deformations in Polycrystalline Solids Using Diffraction-Based and Mechanics-Based Metrics*, **Modelling and Simulation in Materials Science and Engineering**,  vol. 25,  pp. 055008, 2017. `Journal cover <docs/MSMSE-2505-OFC.png>`_
 
+2021
+----
+
+- GZ Voyiadjis, J Jeong, JW Kysar, *Grain size dependence of polycrystalline plasticity modeling in cylindrical indentation*, **Computational Mechanics**, doi://10.1007/s00466-020-01940-z.
+- XF Li, HB Li and J Zhao, *Transgranular fracturing of crystalline rocks and its influence on rock strengths: Insights from a grain-scale continuum–discontinuum approach*, **Computer Methods in Applied Mechanics and Engineering**, doi://10.1016/j.cma.2020.113462.
+
 2020
 ----
 
+- M Boåsen, CFO Dahlberg, P Efsing, J Faleskog, *A weakest link model for multiple mechanism brittle fracture-Model development and application*, **Journal of the Mechanics and Physics of Solids**, 2020.
+
+- A Sharma, A Vijay, F Sadeghi, *Finite Element Modeling of Fretting Wear in Anisotropic Composite Coatings: Application to HVOF Cr3C2–NiCr Coating*, **Tribology International**, doi://10.1016/j.triboint.2020.106765.
+- L Qiao, J Yang, X Yang, K Han, Z Li, G Xiao, L Yang, *Grain boundary deformation in uniaxial strained Nb3Sn*, **Cryogenics**, doi://10.1016/j.cryogenics.2020.103210.
+- P Wriggers, *Multilevel Material Modeling to Study Plastic Deformation for Sheet-Bulk Metal Forming Under Different Loading Histories*, **Sheet bulk metal forming**, Springer.
+- E Moshkelgosha and M Mamivand, *Concurrent modeling of martensitic transformation and crack growth in polycrystalline Shape Memory Ceramics*, **Engineering Fracture Mechanics**, doi://10.1016/j.engfracmech.2020.107403.
+- R Ma and WC Sun, *Phase field modeling of coupled crystal plasticity and deformation twinning in polycrystals with monolithic and splitting solvers*, **International Journal for Numerical Methods in Engineering**, doi://10.1002/nme.6577.
 - M Huang, G Sha, P Huthwaite, SI Rokhlin and MJS Lowe, *Maximizing the accuracy of finite element simulation of elastic wave propagation in polycrystals*, **The Journal of the Acoustical Society of America**, doi://10.1121/10.0002102.
 - B Pulatsu, S Gonen, E Erdogmus, PB Lourenço, JV Lemos and J Hazzard, *Tensile Fracture Mechanism of Masonry Wallettes Parallel to Bed Joints: A Stochastic Discontinuum Analysis*, **Modelling**, doi://10.3390/modelling1020006.
 - J Chen, P Zhang, Y Cheng, J Liu, *On the crushing response of the functionally graded metallic foams based on 3D Voronoi model*, **Thin-Walled Structures**, vol. 157, pp. 107085.
