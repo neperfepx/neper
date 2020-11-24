@@ -488,6 +488,9 @@ optional fields.
     @var{cell1_param1} @var{cell1_param2} ...
     @var{cell2_param1} @var{cell2_param2} ...
    ...]
+ [*oridistrib
+    @var{cellid_distrib}
+    ... ]
  [*coo
     @var{cell1_x} @var{cell1_y} [@var{cell1_z}]
     @var{cell2_x} @var{cell2_y} [@var{cell2_z}]
@@ -596,6 +599,12 @@ of available descriptors.
 
 @item @code{@var{cellid_param1}}, @code{@var{cellid_param2}}, @dots{} are
 the values of the orientation descriptor of cell @var{id}.
+
+@item @code{*oridistrib} denotes the beginning of an optional crystal
+orientation distribution field.
+
+@item @code{@var{cellid_distrib}} is the value of the orientation distribution
+of cell @var{id}.
 
 @item @code{*coo} denotes the beginning of an optional centroid
 field.

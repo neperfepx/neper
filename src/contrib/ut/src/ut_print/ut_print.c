@@ -250,19 +250,30 @@ void
 ut_print_message (int head, int level, const char *message, ...)
 {
   va_list args;
+  const char *message2 = NULL;
+
+  if (message[0] == '\n')
+  {
+    printf ("\n");
+    message2 = message + 1;
+  }
+  else
+    message2 = message;
 
   ut_print_lineheader (head);
 
   ut_print_level (level);
 
   va_start (args, message);
-  vfprintf (stdout, message, args);
+  vfprintf (stdout, message2, args);
   va_end (args);
 
   fflush (stdout);
 
   if (head == 2)
     abort ();
+
+  // do not free message2
 
   return;
 }

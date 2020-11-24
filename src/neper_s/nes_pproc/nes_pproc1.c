@@ -30,6 +30,9 @@ nes_pproc (struct IN_S In, struct SIM *pSim)
   if (strcmp (In.eltres, "none") && strcmp (In.eltres, "inputres"))
     nes_pproc_entity (In, pSim, Tess, &Nodes, Mesh, "element");
 
+  if (strcmp (In.elsetres, "none") && strcmp (In.elsetres, "inputres"))
+    nes_pproc_entity (In, pSim, Tess, &Nodes, Mesh, "elset");
+
   neut_tess_free (&Tess);
   neut_nodes_free (&Nodes);
 

@@ -1,5 +1,7 @@
-New in 4.1.1-5 (23 Nov 2020):
-- module -T: fixed -transform cut in 2D.
+New in 4.1.1 (24 Nov 2020):
+- module -T: applied -oridistrib to tesr, fixed -transform cut in 2D, added
+  tessellation key oridisanisodeltas, made minor code cleaning.
+- module -S: added -elsetres, made minor improvements.
 - module -V: made minor fixes.
 - documentation: made minor improvements and fixes.
 - general: made minor fixes.

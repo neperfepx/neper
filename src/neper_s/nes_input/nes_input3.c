@@ -13,6 +13,7 @@ nes_input_options_default (struct IN_S *pIn)
 
   ut_string_string ("inputres", &((*pIn).noderes));
   ut_string_string ("inputres", &((*pIn).eltres));
+  ut_string_string ("none", &((*pIn).elsetres));
 
   return;
 }
@@ -30,6 +31,7 @@ nes_input_options_set (struct IN_S *pIn, int argc, char **argv)
   sprintf (ArgList[++ArgQty], "-o");
   sprintf (ArgList[++ArgQty], "-noderes");
   sprintf (ArgList[++ArgQty], "-eltres");
+  sprintf (ArgList[++ArgQty], "-elsetres");
 
   for (i = 1; i <= argc - 1; i++)
     if (argv[i][0] != '-')
@@ -82,6 +84,8 @@ nes_input_options_set (struct IN_S *pIn, int argc, char **argv)
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).noderes));
       else if (!strcmp (Arg, "-eltres"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).eltres));
+      else if (!strcmp (Arg, "-elsetres"))
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).elsetres));
       else
         ut_arg_badarg ();
     }

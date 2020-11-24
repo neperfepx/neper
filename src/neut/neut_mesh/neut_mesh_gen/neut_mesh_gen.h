@@ -163,6 +163,12 @@ extern void neut_mesh_entity_qty (struct NODES Nodes, struct MESH Mesh0D,
 
 extern int neut_mesh_exprisvar (char *entity, char *expr);
 
+extern void neut_mesh_eltdata_elsetdata (struct NODES Nodes, struct MESH Mesh,
+    double **eltdata, int size, double **elsetdata);
+
+extern void neut_mesh_eltdata_elsetdata_ori (struct NODES Nodes, struct MESH
+    Mesh, double **eltdata, char *crysym, double **elsetdata);
+
 #endif /* NEUT_MESH_GEN_H */
 
 #ifdef __cplusplus

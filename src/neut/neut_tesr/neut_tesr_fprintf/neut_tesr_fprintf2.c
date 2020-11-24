@@ -95,6 +95,13 @@ neut_tesr_fprintf_cell (FILE * file, struct TESR Tesr)
     neut_ori_fprintf (file, Tesr.CellOriDes, Tesr.CellOri + 1, Tesr.CellQty, NULL);
   }
 
+  if (neut_tesr_hascelloridistrib (Tesr))
+  {
+    fprintf (file, "  *oridistrib\n");
+    for (i = 1; i <= Tesr.CellQty; i++)
+      fprintf (file, "   %s\n", Tesr.CellOriDistrib[i]);
+  }
+
   if (Tesr.CellCoo)
   {
     fprintf (file, "  *coo\n");

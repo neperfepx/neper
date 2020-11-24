@@ -12,6 +12,7 @@ struct IN_S
 
   char *noderes;                // nodal results
   char *eltres;                 // elemental results
+  char *elsetres;               // element set results
 };
 typedef struct IN_S IN_S;
 

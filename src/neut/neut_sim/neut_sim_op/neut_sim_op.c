@@ -11,12 +11,16 @@ neut_sim_set_zero (struct SIM *pSim)
   (*pSim).StepQty = 0;
   (*pSim).NodeResQty = 0;
   (*pSim).EltResQty = 0;
+  (*pSim).ElsetResQty = 0;
   (*pSim).NodeRes = NULL;
   (*pSim).EltRes = NULL;
+  (*pSim).ElsetRes = NULL;
   (*pSim).NodeResExpr = NULL;
   (*pSim).EltResExpr = NULL;
+  (*pSim).ElsetResExpr = NULL;
   (*pSim).NodeResWritten = NULL;
   (*pSim).EltResWritten = NULL;
+  (*pSim).ElsetResWritten = NULL;
   (*pSim).OriDes = NULL;
   (*pSim).StepState = NULL;
 
@@ -30,6 +34,7 @@ neut_sim_set_zero (struct SIM *pSim)
   (*pSim).fepxdir = NULL;
   (*pSim).EltQty = 0;
   (*pSim).NodeQty = 0;
+  (*pSim).ElsetQty = 0;
   (*pSim).PartQty = 0;
   (*pSim).PartNodeQty = NULL;
   (*pSim).PartEltQty = NULL;
@@ -46,10 +51,13 @@ neut_sim_free (struct SIM *pSim)
   ut_free_1d_char (&(*pSim).simdir);
   ut_free_2d_char (&(*pSim).NodeRes, (*pSim).NodeResQty);
   ut_free_2d_char (&(*pSim).EltRes, (*pSim).EltResQty);
+  ut_free_2d_char (&(*pSim).ElsetRes, (*pSim).ElsetResQty);
   ut_free_2d_char (&(*pSim).NodeResExpr, (*pSim).NodeResQty);
   ut_free_2d_char (&(*pSim).EltResExpr, (*pSim).EltResQty);
+  ut_free_2d_char (&(*pSim).ElsetResExpr, (*pSim).ElsetResQty);
   ut_free_1d_int (&(*pSim).NodeResWritten);
   ut_free_1d_int (&(*pSim).EltResWritten);
+  ut_free_1d_int (&(*pSim).ElsetResWritten);
   ut_free_1d_char (&(*pSim).OriDes);
 
   ut_free_1d_char (&(*pSim).body);
@@ -75,6 +83,9 @@ neut_sim_addres (struct SIM *pSim, char *entity, char *res, char *expr, int writ
   else if (!strncmp (entity, "element", 7)
         || !strncmp (entity, "elt", 3))
     neut_sim_addeltres (pSim, res, expr, written);
+
+  else if (!strcmp (entity, "elset"))
+    neut_sim_addelsetres (pSim, res, expr, written);
 
   else
     abort ();
@@ -125,6 +136,27 @@ neut_sim_addeltres (struct SIM *pSim, char *res, char *expr, int written)
 }
 
 void
+neut_sim_addelsetres (struct SIM *pSim, char *res, char *expr, int written)
+{
+  (*pSim).ElsetResQty++;
+
+  (*pSim).ElsetRes = ut_realloc_1d_pchar ((*pSim).ElsetRes, (*pSim).ElsetResQty);
+  (*pSim).ElsetRes[(*pSim).ElsetResQty - 1] = NULL;
+
+  ut_string_string (res, (*pSim).ElsetRes + (*pSim).ElsetResQty - 1);
+
+  (*pSim).ElsetResWritten = ut_realloc_1d_int ((*pSim).ElsetResWritten, (*pSim).ElsetResQty);
+  (*pSim).ElsetResWritten[(*pSim).ElsetResQty - 1] = written;
+
+  (*pSim).ElsetResExpr = ut_realloc_1d_pchar ((*pSim).ElsetResExpr, (*pSim).ElsetResQty);
+  (*pSim).ElsetResExpr[(*pSim).ElsetResQty - 1] = NULL;
+  if (expr)
+    ut_string_string (expr, (*pSim).ElsetResExpr + (*pSim).ElsetResQty - 1);
+
+  return;
+}
+
+void
 neut_sim_rmres (struct SIM *pSim, char *entity, char *res)
 {
   if (!strncmp (entity, "node", 4))
@@ -133,6 +165,9 @@ neut_sim_rmres (struct SIM *pSim, char *entity, char *res)
   else if (!strncmp (entity, "element", 7)
         || !strncmp (entity, "elt", 3))
     neut_sim_rmeltres (pSim, res);
+
+  else if (!strcmp (entity, "elset"))
+    neut_sim_rmelsetres (pSim, res);
 
   else
     abort ();
@@ -194,6 +229,33 @@ neut_sim_rmeltres (struct SIM *pSim, char *res)
   return;
 }
 
+void
+neut_sim_rmelsetres (struct SIM *pSim, char *res)
+{
+  int i, j;
+  char *rescpy = NULL; // needed in  case where res was among (*pSim), pointerwise
+
+  ut_string_string (res, &rescpy);
+
+  for (i = 0; i < (*pSim).ElsetResQty; i++)
+    if (!strcmp ((*pSim).ElsetRes[i], rescpy))
+    {
+      for (j = i + 1; j < (*pSim).ElsetResQty; j++)
+      {
+        ut_string_string ((*pSim).ElsetRes[j], (*pSim).ElsetRes + j - 1);
+        ut_string_string ((*pSim).ElsetResExpr[j], (*pSim).ElsetResExpr + j - 1);
+      }
+      for (j = i + 1; j < (*pSim).ElsetResQty; j++)
+        (*pSim).ElsetResWritten[j - 1] = (*pSim).ElsetResWritten[j];
+      (*pSim).ElsetResQty--;
+      i--;
+    }
+
+  ut_free_1d_char (&rescpy);
+
+  return;
+}
+
 int
 neut_sim_updatenodes (struct SIM Sim, int step, struct NODES *pNodes)
 {
@@ -229,4 +291,28 @@ neut_sim_setstep (struct SIM *pSim, int step)
   }
   else
     return -1;
+}
+
+void
+neut_sim_init_elsetqty (struct SIM *pSim)
+{
+  int i;
+  char *filename = ut_string_paste3 ((*pSim).simdir, "/inputs/", (*pSim).msh);
+  struct NODES Nodes;
+  struct MESH *Mesh = calloc (5, sizeof (struct MESH));
+
+  neut_nodes_set_zero (&Nodes);
+  for (i = 0; i < 5; i++)
+    neut_mesh_set_zero (Mesh + i);
+
+  neut_mesh_fnscanf_msh (filename, &Nodes, Mesh, Mesh + 1, Mesh + 2, Mesh + 3, Mesh + 4);
+  (*pSim).ElsetQty = Mesh[3].ElsetQty;
+
+  neut_nodes_free (&Nodes);
+  for (i = 0; i < 5; i++)
+    neut_mesh_free (Mesh + i);
+
+  ut_free_1d_char (&filename);
+
+  return;
 }

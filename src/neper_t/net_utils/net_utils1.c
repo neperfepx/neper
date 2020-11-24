@@ -509,6 +509,13 @@ net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
                         (*pTesr).CellOri + 1);
   }
 
+  if (Tess.CellOriDistrib)
+  {
+    (*pTesr).CellOriDistrib = ut_alloc_1d_pchar (Tess.CellQty + 1);
+    for (i = 1; i <= Tess.CellQty; i++)
+      ut_string_string (Tess.CellOriDistrib[i], (*pTesr).CellOriDistrib + i);
+  }
+
   ut_string_string (Tess.CellOriDes, &(*pTesr).CellOriDes);
 
 #pragma omp parallel for schedule(dynamic)

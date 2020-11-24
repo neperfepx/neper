@@ -104,6 +104,25 @@ neut_tesr_cell_voxqty (struct TESR Tesr, int cell)
   return vqty;
 }
 
+void
+neut_tesr_cell_voxs (struct TESR Tesr, int cell, int ***pvoxs, int *pvoxqty)
+{
+  int i, j, k, vqty;
+
+  *pvoxqty = neut_tesr_cell_voxqty (Tesr, cell);
+
+  (*pvoxs) = ut_alloc_2d_int (*pvoxqty, 3);
+
+  vqty = 0;
+  for (k = Tesr.CellBBox[cell][2][0]; k <= Tesr.CellBBox[cell][2][1]; k++)
+    for (j = Tesr.CellBBox[cell][1][0]; j <= Tesr.CellBBox[cell][1][1]; j++)
+      for (i = Tesr.CellBBox[cell][0][0]; i <= Tesr.CellBBox[cell][0][1]; i++)
+        if (Tesr.VoxCell[i][j][k] == cell)
+          ut_array_1d_int_set_3 ((*pvoxs)[vqty++], i, j, k);
+
+  return;
+}
+
 int
 neut_tesr_voxqty (struct TESR Tesr)
 {
@@ -926,23 +945,6 @@ neut_tesr_group_sizefrac (struct TESR Tesr, int group, double *psizefrac)
     neut_tesr_group_areafrac (Tesr, group, psizefrac);
   else if (Tesr.Dim == 3)
     neut_tesr_group_volfrac (Tesr, group, psizefrac);
-
-  return;
-}
-
-void
-neut_tesr_cell_orianiso (struct TESR Tesr, int cell, double **evect,
-                         double *eval)
-{
-  struct OL_SET Set;
-
-  neut_tesr_cell_olset (Tesr, cell, &Set);
-
-  ol_set_disoriset (Set, &Set);
-
-  ol_set_aniso (Set, evect, eval);
-
-  ol_set_free (Set);
 
   return;
 }

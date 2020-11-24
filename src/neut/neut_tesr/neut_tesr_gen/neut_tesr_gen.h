@@ -9,8 +9,8 @@ extern "C"
 {
 #endif
 
-#ifndef  NEUT_VOX_GEN_H
-#define  NEUT_VOX_GEN_H
+#ifndef  NEUT_TESR_GEN_H
+#define  NEUT_TESR_GEN_H
 
   extern void neut_tesr_cell (struct TESR Tesr, char **pcell);
   extern void neut_tesr_entity_qty (struct TESR Tesr, char *entity,
@@ -47,7 +47,9 @@ extern "C"
 
   extern int neut_tesr_isvoid (struct TESR Tesr);
 
-#endif				/* NEUT_VOX_GEN_H */
+  extern int neut_tesr_hascelloridistrib (struct TESR Tesr);
+
+#endif				/* NEUT_TESR_GEN_H */
 
 #ifdef __cplusplus
 }

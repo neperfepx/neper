@@ -10,6 +10,7 @@ nes_pproc_entity (struct IN_S In, struct SIM *pSim, struct TESS Tess,
 {
   int i, j, entityqty, status, resultqty;
   char **results = NULL, *dir = NULL;
+  char *message = ut_alloc_1d_char (1000);
 
   nes_pproc_entity_pre (In, *pSim, entity, &entityqty, &dir, &results,
                         &resultqty);
@@ -29,8 +30,14 @@ nes_pproc_entity (struct IN_S In, struct SIM *pSim, struct TESS Tess,
     // adding result
     if (result[0] != '!')
     {
-      ut_print_message (0, 4, "%s ", result);
-      for (j = 0; j < 49 - (int) strlen (result); j++)
+      if (strcmp (result, "ori"))
+        sprintf (message, "%s", result);
+      else
+        sprintf (message, "%s (%s crystal symmetry)", result,
+                           Tess.CellCrySym ? Tess.CellCrySym : "undefined");
+
+      ut_print_message (0, 4, "%s ", message);
+      for (j = 0; j < 49 - (int) strlen (message); j++)
         printf (".");
       printf (" ");
 
@@ -46,6 +53,10 @@ nes_pproc_entity (struct IN_S In, struct SIM *pSim, struct TESS Tess,
       // result does not exist in the sim directory but is a subresult
       else if (status == 2)
         nes_pproc_entity_subres (pSim, entity, entityqty, dir, result);
+
+      // result does not exist in the sim directory but is an element result (for an elset)
+      else if (status == 3)
+        nes_pproc_entity_eltres (pSim, Tess, pNodes, Mesh, entity, entityqty, dir, result);
 
       else if (expr && !strncmp (expr, "file(", 5))
         nes_pproc_entity_file (pSim, entity, dir, result, expr);
@@ -75,6 +86,7 @@ nes_pproc_entity (struct IN_S In, struct SIM *pSim, struct TESS Tess,
 
   ut_free_2d_char (&results, resultqty);
   ut_free_1d_char (&dir);
+  ut_free_1d_char (&message);
 
   return;
 }

@@ -391,15 +391,15 @@ neut_ori_fscanf (FILE *file, char *desconv, double **q, int qty, char *prefix)
 }
 
 int
-neut_ori_fnscanf (char *filename, char *desconv, double **q, int qty, char *prefix)
+neut_ori_fnscanf (char *filename, char *desconv, double **q, int qty, char *prefix, char *mode)
 {
   int status;
 
-  FILE *file = ut_file_open (filename, "r");
+  FILE *file = ut_file_open (filename, mode);
 
   status = neut_ori_fscanf (file, desconv, q, qty, prefix);
 
-  ut_file_close (file, filename, "r");
+  ut_file_close (file, filename, mode);
 
   return status;
 }
@@ -583,6 +583,23 @@ neut_ori_rodriguescol (double *q, char *crysym, double *col)
   neut_ori_rodriguescol_R (R, crysym, col);
 
   ol_R_free (R);
+
+  return;
+}
+
+void
+neut_ori_oridistrib (double *qmean, char *oridistrib, int qty, int id, double **q)
+{
+  int i;
+
+  struct OL_SET OSet = ol_set_alloc (qty, NULL);
+
+  ol_set_misoridistrib (oridistrib, id, &OSet);
+
+  for (i = 0; i < qty; i++)
+    ol_q_q_q_ref (qmean, OSet.q[i], q[i]);
+
+  ol_set_free (OSet);
 
   return;
 }

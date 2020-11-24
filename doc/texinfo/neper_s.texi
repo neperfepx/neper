@@ -112,6 +112,20 @@ To remove a result@comma{} use @samp{!@var{res}}@comma{} where @samp{@var{res}} 
 To provide several values@comma{} combine them @w{with @samp{@SEPNODEP{}}}.,
 any, inputres}
 
+@opt{-elsetres, char_string,
+Specify the element set results to output. Provide
+@samp{none} for none@comma{}
+@samp{@var{res}} for a specific results that can be computed@comma{}
+by volume-weighted averaging@footnote{Orientations (@code{ori}) are properly averaged using quaternions@comma{} taking the crystal symmetry into account@comma{} as decribed in Orilib's documentation.}@comma{} from the elemental results@comma{}
+@samp{@var{res}:file(@var{basename})} for importing results from files of basename @file{@var{basename}} (the files of the different steps must be available as @file{@var{basename}.step*})@comma{}
+or any expression based on the mesh or simulation results (the mesh result can be
+any variables listed in @ref{Mesh Keys}).
+To use the simulation result corresponding to a specific step@comma{} use @samp{@var{res}(step=@var{step})}@comma{} where @samp{@var{step}} is the step number.
+To define a name corresponding to a result@comma{} use @samp{@var{name}:@var{expression}}@comma{} where @var{name} is the name and @var{expression} is its expression.
+To remove a result@comma{} use @samp{!@var{res}}@comma{} where @samp{@var{res}} is the result.@footnote{The expression must be enclosed in single quotes.}.
+To provide several values@comma{} combine them @w{with @samp{@SEPNODEP{}}}.,
+any, none}
+
 @subsection Output Options
 
 @kindex -o
@@ -182,5 +196,11 @@ Below are some examples of use of neper -S.
 
 @item    Add the elemental @code{@var{energy}} result, defined as @code{0.1234*(@var{crss}-@var{crss}(step=0))^2}, to a simulation directory.
 @com{neper -S -eltres "energy:0.1234*(crss-crss(step=0))^2"}
+
+@item    Override the elemental @code{@var{energy}} result, newly defined as @code{0.5678*(@var{crss}-@var{crss}(step=0))^2}, to a simulation directory.
+@com{neper -S -eltres '!energy,energy:0.5678*(crss-crss(step=0))^2'}
+
+@item    Add the elset @code{@var{stress}} result to a simulation directory (the @code{@var{stress}} result must exist for elements).
+@com{neper -S simulation -eltres stress}
 
 @end enumerate

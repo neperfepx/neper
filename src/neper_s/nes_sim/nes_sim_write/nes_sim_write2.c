@@ -5,45 +5,48 @@
 #include "nes_sim_write_.h"
 
 void
-nes_sim_write_inputs (struct IN_S In, struct SIM Sim)
+nes_sim_write_inputs (struct IN_S In, struct SIM *pSim)
 {
   int i, filenameqty = 4;
   char **filename = ut_alloc_1d_pchar (filenameqty);
   char *dir = ut_string_paste (In.simdir, "/inputs");
 
-  ut_string_string (Sim.tess, filename);
-  ut_string_string (Sim.msh, filename + 1);
+  ut_string_string ((*pSim).tess, filename);
+  ut_string_string ((*pSim).msh, filename + 1);
   ut_string_string ("simulation.config", filename + 2);
   ut_string_string ("*.sh", filename + 3);
 
-  if (Sim.bcs)
+  if ((*pSim).bcs)
   {
     filename = ut_realloc_1d_pchar (filename, ++filenameqty);
     filename[filenameqty - 1] = NULL;
-    ut_string_string (Sim.bcs, filename + filenameqty - 1);
+    ut_string_string ((*pSim).bcs, filename + filenameqty - 1);
   }
-  if (Sim.ori)
+  if ((*pSim).ori)
   {
     filename = ut_realloc_1d_pchar (filename, ++filenameqty);
     filename[filenameqty - 1] = NULL;
-    ut_string_string (Sim.ori, filename + filenameqty - 1);
+    ut_string_string ((*pSim).ori, filename + filenameqty - 1);
   }
-  if (Sim.phase)
+  if ((*pSim).phase)
   {
     filename = ut_realloc_1d_pchar (filename, ++filenameqty);
     filename[filenameqty - 1] = NULL;
-    ut_string_string (Sim.phase, filename + filenameqty - 1);
+    ut_string_string ((*pSim).phase, filename + filenameqty - 1);
   }
 
   ut_dir_openmessage (dir, "w");
   ut_sys_mkdir ("%s/inputs", In.simdir);
 
   for (i = 0; i < filenameqty; i++)
-    nes_sim_write_inputs_file (In, Sim, filename[i]);
+    nes_sim_write_inputs_file (In, *pSim, filename[i]);
 
   ut_dir_closemessage (dir, "w");
 
-  neut_sim_fprintf (In.simdir, Sim, "W");
+  if ((*pSim).ElsetQty == 0)
+    neut_sim_init_elsetqty (pSim);
+
+  neut_sim_fprintf (In.simdir, *pSim, "W");
 
   ut_free_1d_char (&dir);
   ut_free_2d_char (&filename, filenameqty);

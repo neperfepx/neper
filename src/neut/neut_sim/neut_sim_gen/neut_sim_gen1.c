@@ -94,6 +94,11 @@ neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode)
       if (fscanf (file, "%d", &(*pSim).EltQty) != 1)
         abort ();
     }
+    else if (!strcmp (var, "number_of_elsets"))
+    {
+      if (fscanf (file, "%d", &(*pSim).ElsetQty) != 1)
+        abort ();
+    }
     else if (!strcmp (var, "number_of_elements_bypartition"))
     {
       (*pSim).PartEltQty = ut_alloc_1d_int ((*pSim).PartQty + 1);
@@ -153,6 +158,26 @@ neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode)
       if (!strcmp (type, "sim"))
         ut_array_1d_int_set ((*pSim).EltResWritten, (*pSim).EltResQty, 1);
     }
+    else if (!strcmp (var, "results_elsets"))
+    {
+      ut_file_nextlinenbwords (file, &(*pSim).ElsetResQty);
+      (*pSim).ElsetRes = ut_alloc_2d_char ((*pSim).ElsetResQty, 1000);
+      (*pSim).ElsetResExpr = ut_alloc_1d_pchar ((*pSim).ElsetResQty);
+      for (i = 0; i < (*pSim).ElsetResQty; i++)
+      {
+        if (fscanf (file, "%s", (*pSim).ElsetRes[i]) != 1)
+          abort ();
+
+        ut_list_break_2 ((*pSim).ElsetRes[i], NEUT_SEP_DEP, &res, &expr);
+        ut_string_string (res, (*pSim).ElsetRes + i);
+        if (expr)
+          ut_string_string (expr, (*pSim).ElsetResExpr + i);
+      }
+
+      (*pSim).ElsetResWritten = ut_alloc_1d_int ((*pSim).ElsetResQty);
+      if (!strcmp (type, "sim"))
+        ut_array_1d_int_set ((*pSim).ElsetResWritten, (*pSim).ElsetResQty, 1);
+    }
     else if (!strcmp (var, "number_of_slip_systems"))
     {
       if (fscanf (file, "%d", &(*pSim).SlipSystemQty) != 1)
@@ -211,6 +236,7 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
 
   fprintf (file, "number_of_nodes %d\n", Sim.NodeQty);
   fprintf (file, "number_of_elements %d\n", Sim.EltQty);
+  fprintf (file, "number_of_elsets %d\n", Sim.ElsetQty);
   if (Sim.PartQty > 0)
     fprintf (file, "number_of_partitions %d\n", Sim.PartQty);
   fprintf (file, "number_of_slip_systems %d\n", Sim.SlipSystemQty);
@@ -228,25 +254,14 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
 
   fprintf (file, "orientation_definition %s\n", Sim.OriDes);
 
-  fprintf (file, "results_nodes");
-  for (i = 0; i < Sim.NodeResQty; i++)
-    if (Sim.NodeResWritten[i])
-    {
-      fprintf (file, " %s", Sim.NodeRes[i]);
-      if (Sim.NodeResExpr[i])
-        fprintf (file, "%s%s", NEUT_SEP_DEP, Sim.NodeResExpr[i]);
-    }
-  fprintf (file, "\n");
+  neut_sim_fprintf_results (file, "nodes", Sim.NodeRes, Sim.NodeResExpr,
+                            Sim.NodeResWritten, Sim.NodeResQty);
 
-  fprintf (file, "results_elements");
-  for (i = 0; i < Sim.EltResQty; i++)
-    if (Sim.EltResWritten[i])
-    {
-      fprintf (file, " %s", Sim.EltRes[i]);
-      if (Sim.EltResExpr[i])
-        fprintf (file, "%s%s", NEUT_SEP_DEP, Sim.EltResExpr[i]);
-    }
-  fprintf (file, "\n");
+  neut_sim_fprintf_results (file, "elements", Sim.EltRes, Sim.EltResExpr,
+                            Sim.EltResWritten, Sim.EltResQty);
+
+  neut_sim_fprintf_results (file, "elsets", Sim.ElsetRes, Sim.ElsetResExpr,
+                            Sim.ElsetResWritten, Sim.ElsetResQty);
 
   ut_file_close (file, filename, mode);
   ut_free_1d_char (&filename);
@@ -536,6 +551,7 @@ neut_sim_res_file (struct SIM Sim, char *entity_in, char *inres, char *filename)
   entity = ut_alloc_1d_char (100);
   entity = strcpy (entity, entity_in);
   ut_string_fnrs (entity, "elt3d", "element", 1);
+  ut_string_fnrs (entity, "elset3d", "elset", 1);
 
   if (ut_file_exist (inres))
   {
@@ -598,18 +614,24 @@ neut_sim_res_exist (struct SIM Sim, char *entity, char *res, char **pres, int *p
   {
     entity2 = strcpy (entity2, entity);
     ut_string_fnrs (entity2, "elt3d", "element", 1);
+    ut_string_fnrs (entity2, "elset3d", "elset", 1);
     ut_string_fnrs (entity2, "nodes", "node", 1);
   }
 
-  if (!strcmp (entity2, "element"))
+  if (!strcmp (entity2, "node"))
+  {
+    entityresqty = Sim.NodeResQty;
+    entityres = Sim.NodeRes;
+  }
+  else if (!strcmp (entity2, "element"))
   {
     entityresqty = Sim.EltResQty;
     entityres = Sim.EltRes;
   }
-  else if (!strcmp (entity2, "node"))
+  else if (!strcmp (entity2, "elset"))
   {
-    entityresqty = Sim.NodeResQty;
-    entityres = Sim.NodeRes;
+    entityresqty = Sim.ElsetResQty;
+    entityres = Sim.ElsetRes;
   }
   else
     entityresqty = 0;
@@ -638,6 +660,14 @@ neut_sim_res_exist (struct SIM Sim, char *entity, char *res, char **pres, int *p
           neut_sim_res_rescol (Sim, entity, res, pres, pcol);
         break;
       }
+
+  // looking for occurrence as element result
+  if (!status && !strcmp (entity, "elset"))
+  {
+    status = neut_sim_res_exist (Sim, "elt3d", res, pres, pcol);
+    if (status == 1)
+      status = 3;
+  }
 
   ut_free_1d_char (&entity2);
   ut_free_1d_char (&res2);
@@ -712,45 +742,15 @@ neut_sim_testres (struct SIM Sim, char *entity, char *res)
 void
 neut_sim_verbose (struct SIM Sim)
 {
-  int i, nb;
-
   ut_print_message (0, 3, "Node number      : %d\n", Sim.NodeQty);
   ut_print_message (0, 3, "Element number   : %d\n", Sim.EltQty);
+  ut_print_message (0, 3, "Elset number     : %d\n", Sim.ElsetQty);
   ut_print_message (0, 3, "Partition number : %d\n", Sim.PartQty);
   ut_print_message (0, 3, "Step number      : %d\n", Sim.StepQty);
-  ut_print_message (0, 3, "Nodal results    :");
 
-  nb = 35;
-  for (i = 0; i < Sim.NodeResQty; i++)
-  {
-    if (strlen (Sim.NodeRes[i]) + nb > 72)
-    {
-      printf ("\n");
-      for (nb = 0; nb < 33; nb++)
-        printf (" ");
-    }
-
-    printf (" %s", Sim.NodeRes[i]);
-    nb += strlen (Sim.NodeRes[i]) + 1;
-  }
-  printf ("\n");
-
-  ut_print_message (0, 3, "Elemental results:");
-
-  nb = 35;
-  for (i = 0; i < Sim.EltResQty; i++)
-  {
-    if (strlen (Sim.EltRes[i]) + nb > 72)
-    {
-      printf ("\n");
-      for (nb = 0; nb < 33; nb++)
-        printf (" ");
-    }
-
-    printf (" %s", Sim.EltRes[i]);
-    nb += strlen (Sim.EltRes[i]) + 1;
-  }
-  printf ("\n");
+  neut_sim_verbose_results ("Node", Sim.NodeRes, Sim.NodeResQty);
+  neut_sim_verbose_results ("Element", Sim.EltRes, Sim.EltResQty);
+  neut_sim_verbose_results ("Elset", Sim.ElsetRes, Sim.ElsetResQty);
 
   return;
 }

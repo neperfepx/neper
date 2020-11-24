@@ -37,6 +37,7 @@ extern "C"
 #include "neut_point/neut_point.h"
 #include "neut_boundary/neut_boundary.h"
 #include "neut_prim/neut_prim.h"
+#include "neut_ori/neut_ori.h"
 
 #endif				/* NEUT_M_H */
 

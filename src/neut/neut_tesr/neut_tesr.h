@@ -12,16 +12,17 @@ extern "C"
 /// \author Romain Quey
 /// \bug No known bugs
 
-#ifndef NEUT_VOX_H
-#define NEUT_VOX_H
+#ifndef NEUT_TESR_H
+#define NEUT_TESR_H
 
 #include "neut_tesr_fscanf/neut_tesr_fscanf.h"
 #include "neut_tesr_fprintf/neut_tesr_fprintf.h"
 #include "neut_tesr_op/neut_tesr_op.h"
 #include "neut_tesr_geom/neut_tesr_geom.h"
+#include "neut_tesr_ori/neut_tesr_ori.h"
 #include "neut_tesr_gen/neut_tesr_gen.h"
 
-#endif				/* NEUT_VOX_H */
+#endif				/* NEUT_TESR_H */
 
 #ifdef __cplusplus
 }

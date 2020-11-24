@@ -263,6 +263,14 @@ extern "C"
 /// \param sigma: standard deviation
   extern void ut_fct_set_erf (struct FCT *pFct, double mean, double sigma);
 
+/// \brief Set a function from an array
+/// \param *pFct: function
+/// \param array: array
+/// \param size: size of the array
+/// \param xmin: first value along x
+/// \param step: grid step along x
+  extern void ut_fct_set_array (struct FCT *pFct, double *array, int size, double xmin, double step);
+
 /// \brief Set a function to the numerical type
 /// \param *pFct: function
 /// \param min: min

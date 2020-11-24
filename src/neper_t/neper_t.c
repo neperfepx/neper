@@ -297,6 +297,9 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Rasterizing tessellation...\n");
     net_tess_tesr (In.tesrsizestring, FTess, &Tesr);
+
+    if (neut_tesr_hascelloridistrib (Tesr))
+      net_ori_post (&Tesr);
   }
 
   // ###################################################################

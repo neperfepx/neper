@@ -74,8 +74,8 @@ neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty)
   }
   else if (!strcmp (entity, "cell"))
   {
-    (*pvarqty) = 14;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
+    (*pvarqty) = 15;
+    (*pvar) = ut_alloc_2d_char (*pvarqty, 30);
     strcpy ((*pvar)[0], "id");
     strcpy ((*pvar)[1], "x");
     strcpy ((*pvar)[2], "y");
@@ -90,6 +90,7 @@ neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[11], "oridisanisoangles");
     strcpy ((*pvar)[12], "oridisanisoaxes");
     strcpy ((*pvar)[13], "oridisanisofact");
+    strcpy ((*pvar)[14], "oridisanisodeltas");
   }
   else if (!strcmp (entity, "vox"))
   {
@@ -378,6 +379,13 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       (*pvalqty) = 9;
       ut_free_2d (&evect, 3);
       ut_free_1d (&eval);
+    }
+    else if (!strcmp (var, "oridisanisodeltas"))
+    {
+      double **evect = ut_alloc_2d (3, 3);
+      neut_tesr_cell_orianiso_delta (Tesr, id, evect, *pvals);
+      (*pvalqty) = 3;
+      ut_free_2d (&evect, 3);
     }
   }
   else if (!strcmp (entity, "seed"))
@@ -703,4 +711,17 @@ neut_tesr_entity_expr_val_int (struct TESR Tesr, char *entity, char *expr,
   ut_free_1d (&tmp);
 
   return;
+}
+
+int
+neut_tesr_hascelloridistrib (struct TESR Tesr)
+{
+  int i;
+
+  if (Tesr.CellOriDistrib)
+    for (i = 1; i <= Tesr.CellQty; i++)
+      if (strcmp (Tesr.CellOriDistrib[i], "none"))
+        return 1;
+
+  return 0;
 }

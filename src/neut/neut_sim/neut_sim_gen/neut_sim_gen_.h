@@ -13,3 +13,9 @@
 
 #include"ut.h"
 #include"neut.h"
+
+extern void neut_sim_fprintf_results (FILE *fp, char *entity, char **res,
+                                      char **resexpr, int *reswritten,
+                                      int resqty);
+
+extern void neut_sim_verbose_results (char *entity, char **res, int resqty);

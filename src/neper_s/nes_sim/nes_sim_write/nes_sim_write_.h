@@ -14,7 +14,7 @@
 
 #include"nes_sim_write.h"
 
-extern void nes_sim_write_inputs (struct IN_S In, struct SIM Sim);
+extern void nes_sim_write_inputs (struct IN_S In, struct SIM *pSim);
 
 extern int nes_sim_write_inputs_file (struct IN_S In, struct SIM Sim, char *filename);
 

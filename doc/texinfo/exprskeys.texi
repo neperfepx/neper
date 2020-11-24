@@ -431,6 +431,7 @@ the @samp{@SEPDEP{}uc} modifier.
   @item @code{oridisanisoangles} @tab orientation distribution anisotropy / principal angles@footnote{See @cite{R Quey, JH Driver, PR Dawson, Intra-grain orientation distributions in hot-deformed aluminium: orientation dependence and relation to deformation mechanisms, Journal of the Mechanics and Physics of Solids, vol. 84, pp. 506-524, 2015}.} @tab cell
   @item @code{oridisanisoaxes}   @tab orientation distribution anisotropy / principal axes   @tab cell
   @item @code{oridisanisofact}   @tab orientation distribution anisotropy factor @tab cell
+  @item @code{oridisanisodeltas} @tab similar to @code{oridisanisoangles}, but return the angles between cumulative probability densities 0.25 and 0.75@footnote{For Gaussian distributions, they are equal to 1.349 times the values of @code{oridisanisoangles}} @tab cell
 @end multitable
 
 @node Tessellation Optimization Keys

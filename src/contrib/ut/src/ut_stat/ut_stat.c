@@ -65,7 +65,7 @@ ut_stat_distrib (double *data, int n, double step, double first, int length,
   ut_array_1d_zero (distrib, length);
   for (i = 0; i < n; i++)
   {
-    nb = (int) ((data[i] - first - .5 * step) / step);
+    nb = (int) ((data[i] - first + .5 * step) / step);
     if (nb >= 0 && nb < length)
       distrib[nb]++;
   }

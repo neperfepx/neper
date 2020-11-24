@@ -26,7 +26,7 @@ extern void neut_sim_file_res (char *file, char *res);
 extern int neut_sim_name_type (char *name, char **ptype);
 
 /// tells if a result exist, for a given entity
-/// \return 0 if does not exist, 1 if exists, 2 if exists as a subresult
+/// \return 0 if does not exist, 1 if exists, 2 if exists as a subresult, 3 if exists as an element result (for an elset)
 extern int neut_sim_res_exist (struct SIM Sim, char *entity, char *res, char **pres, int *pcol);
 
 /// is entity node?

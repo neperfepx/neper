@@ -36,6 +36,12 @@ extern void neut_sim_addnoderes (struct SIM *pSim, char *res, char *expr, int wr
 /// \param written: is the result written? 0: no, 1 yes
 extern void neut_sim_addeltres (struct SIM *pSim, char *res, char *expr, int written);
 
+/// \brief Add an elset result to a \c struct \c SIM
+/// \param *pSim: simulation
+/// \param res: result
+/// \param written: is the result written? 0: no, 1 yes
+extern void neut_sim_addelsetres (struct SIM *pSim, char *res, char *expr, int written);
+
 /// \brief Remove a result from a \c struct \c SIM
 /// \param *pSim: simulation
 /// \param entity: result entity = node, element, etc.
@@ -52,6 +58,11 @@ extern void neut_sim_rmnoderes (struct SIM *pSim, char *res);
 /// \param res: result
 extern void neut_sim_rmeltres (struct SIM *pSim, char *res);
 
+/// \brief Remove an elset result from a \c struct \c SIM
+/// \param *pSim: simulation
+/// \param res: result
+extern void neut_sim_rmelsetres (struct SIM *pSim, char *res);
+
 /// \brief Set the step of a simulation
 /// \param *pSim: simulation
 /// \param step: simulation step
@@ -62,5 +73,7 @@ extern int neut_sim_setstep (struct SIM *pSim, int step);
 /// \param step: simulation step
 /// \param *pNodes: nodes
 extern int neut_sim_updatenodes (struct SIM Sim, int step, struct NODES *pNodes);
+
+extern void neut_sim_init_elsetqty (struct SIM *pSim);
 
 #endif /* NEUT_SIM_OP_H */

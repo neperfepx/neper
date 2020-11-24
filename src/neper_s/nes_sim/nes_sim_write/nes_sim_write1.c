@@ -11,7 +11,7 @@ nes_sim_write (struct IN_S In, struct SIM *pSim)
     ut_sys_mkdir (In.simdir);
 
   ut_print_message (0, 2, "Writing inputs...\n");
-  nes_sim_write_inputs (In, *pSim);
+  nes_sim_write_inputs (In, pSim);
 
   if ((*pSim).NodeResQty || (*pSim).EltResQty)
   {

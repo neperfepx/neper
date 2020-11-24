@@ -19,20 +19,18 @@ nem_ori (struct TESS Tess, struct MESH *Mesh)
   if (Tess.CellOriDistrib)
   {
     Mesh[dim].EltOri = ut_alloc_2d (Mesh[dim].EltQty + 1, 4);
-
-    struct OL_SET OSet;
+    ut_string_string (Mesh[dim].ElsetOriDes, &Mesh[dim].EltOriDes);
 
     for (i = 1; i <= Mesh[dim].ElsetQty; i++)
     {
-      OSet = ol_set_alloc (Mesh[dim].Elsets[i][0], Tess.CellCrySym);
+      double **q = ut_alloc_2d (Mesh[dim].Elsets[i][0], 4);
 
-      ol_set_misoridistrib (Tess.CellOriDistrib[i], i, &OSet);
+      neut_ori_oridistrib (Tess.CellOri[i], Tess.CellOriDistrib[i], Mesh[dim].Elsets[i][0], i, q);
 
-      ut_string_string (Mesh[dim].ElsetOriDes, &Mesh[dim].EltOriDes);
       for (j = 1; j <= Mesh[dim].Elsets[i][0]; j++)
-        ol_q_q_q_ref (Tess.CellOri[i], OSet.q[j - 1], Mesh[dim].EltOri[Mesh[dim].Elsets[i][j]]);
+        ol_q_memcpy (q[j - 1], Mesh[dim].EltOri[Mesh[dim].Elsets[i][j]]);
 
-      ol_set_free (OSet);
+      ut_free_2d (&q, Mesh[dim].Elsets[i][0]);
     }
   }
 

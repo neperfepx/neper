@@ -45,7 +45,9 @@ neper_s (int fargc, char **fargv, int argc, char **argv)
 // ### RUNNING POST-PROCESSING #########################################
 
   // going into post-processing
-  if (In.simdir && (strcmp (In.eltres, "inputres") || strcmp (In.noderes, "inputres")))
+  if (In.simdir && (strcmp (In.eltres, "inputres")
+                 || strcmp (In.noderes, "inputres")
+                 || strcmp (In.elsetres, "none")))
   {
     ut_print_message (0, 1, "Running post-processing...\n");
     nes_pproc (In, &Sim);

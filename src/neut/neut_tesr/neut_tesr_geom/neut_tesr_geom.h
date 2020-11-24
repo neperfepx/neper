@@ -7,8 +7,8 @@ extern "C"
 {
 #endif
 
-#ifndef  NEUT_VOX_GEOM_H
-#define  NEUT_VOX_GEOM_H
+#ifndef  NEUT_TESR_GEOM_H
+#define  NEUT_TESR_GEOM_H
 
 extern int neut_tesr_vox_pos (struct TESR Tesr, int vox, int *pos);
 extern int neut_tesr_vox_coo (struct TESR Tesr, int vox, double *coo);
@@ -40,6 +40,7 @@ extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
 ///
 ///
   extern int neut_tesr_cell_voxqty (struct TESR Tesr, int cell);
+  extern void neut_tesr_cell_voxs (struct TESR Tesr, int cell, int ***pvoxs, int *pvoxqty);
 
   extern int neut_tesr_voxqty (struct TESR Tesr);
   extern int neut_tesr_totvoxqty (struct TESR Tesr);
@@ -112,12 +113,9 @@ extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
   extern int neut_tesr_volume (struct TESR Tesr, double *pvol);
   extern int neut_tesr_size (struct TESR Tesr, double *psize);
 
-  extern void neut_tesr_cell_orianiso (struct TESR Tesr, int cell,
-                                       double **evect, double *eval);
-
 #include"net_utils/net_utils.h"
 
-#endif				/* NEUT_VOX_GEOM_H */
+#endif				/* NEUT_TESR_GEOM_H */
 
 #ifdef __cplusplus
 }

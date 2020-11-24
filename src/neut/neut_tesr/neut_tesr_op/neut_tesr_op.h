@@ -7,8 +7,8 @@ extern "C"
 {
 #endif
 
-#ifndef  NEUT_VOX_OP_H
-#define  NEUT_VOX_OP_H
+#ifndef  NEUT_TESR_OP_H
+#define  NEUT_TESR_OP_H
 
 /// \brief Set a TESR structure to zero.
 ///
@@ -157,7 +157,7 @@ extern "C"
 
   extern void neut_tesr_unindex (struct TESR *pTesr);
 
-#endif				/* NEUT_VOX_OP_H */
+#endif				/* NEUT_TESR_OP_H */
 
 #ifdef __cplusplus
 }

@@ -175,7 +175,7 @@ ut_math_eval_int (char *expr, int varqty, char **vars, double *vals,
 int
 ut_math_vars (char *expr, char ***pvars, int *pvarqty)
 {
-  int i, j, stringqty, fctqty, var, found, bracket;
+  int i, j, stringqty, fctqty, var, found, bracket, length;
   char *tmp = NULL;
   char **strings = NULL;
   char **fcts = NULL;
@@ -186,6 +186,7 @@ ut_math_vars (char *expr, char ***pvars, int *pvarqty)
 
   var = 0;
   bracket = 0;
+  length = 0;
   for (i = 0; i < (int) strlen (tmp); i++)
   {
     // if not recording a variable
@@ -193,10 +194,13 @@ ut_math_vars (char *expr, char ***pvars, int *pvarqty)
     {
       // if character, start recording
       if (isalpha (tmp[i]))
+      {
         var = 1;
+        length = 1;
+      }
 
       // otherwise, erasing
-      if (!isalpha (tmp[i]))
+      else
         tmp[i] = ' ';
     }
 
@@ -204,14 +208,30 @@ ut_math_vars (char *expr, char ***pvars, int *pvarqty)
     else
     {
       // is a character - continue recording
-      if (isalpha (tmp[i])) {}
+      if (isalpha (tmp[i]))
+        length++;
 
       // is a digit - continue recording
-      else if (isdigit (tmp[i])) {}
+      else if (isdigit (tmp[i]))
+        length++;
 
       // is an opening bracket - mark as such and continue recording
       else if (tmp[i] == '(')
-        bracket++;
+      {
+        char *tmp2 = ut_alloc_1d_char (length + 1);
+        tmp2 = strncpy (tmp2, tmp + i - length, length);
+        if (ut_math_string_isfunction (tmp2))
+        {
+          // erasing function and opening bracket
+          for (j = i - length; j <= i; j++)
+            tmp[j] = ' ';
+          var = 0;
+          tmp[i] = ' ';
+        }
+        else
+          bracket++;
+        ut_free_1d_char (&tmp2);
+      }
 
       // is a closing bracket - testing
       else if (tmp[i] == ')')

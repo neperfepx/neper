@@ -168,6 +168,23 @@ neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file)
         neut_ori_fscanf (file, (*pTesr).CellOriDes, (*pTesr).CellOri + 1, (*pTesr).CellQty, NULL);
       }
 
+      else if (!strcmp (string, "*oridistrib"))
+      {
+        ut_file_skip (file, 1);
+        char *tmp = ut_alloc_1d_char (1000);
+        (*pTesr).CellOriDistrib = ut_alloc_1d_pchar ((*pTesr).CellQty + 1);
+        (*pTesr).CellOriDistrib[0] = NULL;
+
+        for (i = 1; i <= (*pTesr).CellQty; i++)
+        {
+          if (fscanf (file, "%s", tmp) != 1)
+            abort ();
+          ut_string_string (tmp, (*pTesr).CellOriDistrib + i);
+        }
+
+        ut_free_1d_char (&tmp);
+      }
+
       else if (!strcmp (string, "*coo"))
       {
         ut_file_skip (file, 1);

@@ -11,12 +11,16 @@ struct SIM
   int StepQty;          // number of steps
   int NodeResQty;       // number of nodal results
   int EltResQty;        // number of elemental results
+  int ElsetResQty;      // number of element set results
   char **NodeRes;       // nodal results
   char **EltRes;        // elemental results
+  char **ElsetRes;      // element set results
   char **NodeResExpr;   // nodal result expressions (optional)
   char **EltResExpr;    // elemental result expressions (optional)
+  char **ElsetResExpr;  // elemental result expressions (optional)
   int *NodeResWritten;  // nodal results, written?
   int *EltResWritten;   // elemental results, written?
+  int *ElsetResWritten; // elset results, written?
   char *OriDes;         // orientation descriptor
   int *StepState;       // 1 if step written, 0 otherwise
 
@@ -31,8 +35,9 @@ struct SIM
   // Only set when reading an FEPX raw result directory and used to transform
   // it into a simulation directory
   char *fepxdir;        // FEPX simulation directory
-  int EltQty;           // number of elements
   int NodeQty;          // number of nodes
+  int EltQty;           // number of elements
+  int ElsetQty;         // number of elsets
   int PartQty;          // number of partitions
   int *PartNodeQty;     // number of nodes of the partitions
   int *PartEltQty;      // number of elements of the partitions

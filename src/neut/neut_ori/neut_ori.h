@@ -29,7 +29,7 @@ extern "C"
   extern int neut_ori_expr_desconv (char *expr, char **pdes, char **pconv);
 
   extern int neut_ori_fscanf (FILE *file, char *desconv, double **q, int qty, char *prefix);
-  extern int neut_ori_fnscanf (char *filename, char *desconv, double **q, int qty, char *prefix);
+  extern int neut_ori_fnscanf (char *filename, char *desconv, double **q, int qty, char *prefix, char *mode);
   extern void neut_ori_fprintf (FILE *file, char *desconv, double **q, int qty, char *prefix);
 
   extern void neut_ori_desconv_expr (char *des, char *conv, char **pexpr);
@@ -38,6 +38,8 @@ extern "C"
   extern void neut_ori_rodriguescol (double *q, char *crysym, double *col);
   extern void neut_ori_rodriguescol_R (double *R, char *crysym, double *col);
   extern void neut_ori_rodriguescol_int (double *q, char *crysym, int *col);
+
+  extern void neut_ori_oridistrib (double *qmean, char *oridistrib, int qty, int id, double **q);
 
 #ifdef __cplusplus
 }

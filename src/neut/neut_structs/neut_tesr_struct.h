@@ -7,8 +7,8 @@ extern "C"
 {
 #endif
 
-#ifndef STRUCTVOX_H
-#define STRUCTVOX_H
+#ifndef STRUCTTESR_H
+#define STRUCTTESR_H
 
   struct TESR
   {
@@ -20,6 +20,7 @@ extern "C"
     int CellQty;		// number of polyhedra
     int *CellId;		// identifiers of the cells
     double **CellOri;		// crystal orientations of the cells
+    char **CellOriDistrib;      // [1...CellQty], NULL if uninitialized
     char *CellOriDes;
     int ***CellBBox;		// bbox of a cell [cell][0...2][0,1]
     double **CellCoo;		// centroids of the cells (absolute coordinates)
@@ -55,7 +56,7 @@ extern "C"
   };
   typedef struct TESR TESR;
 
-#endif				/* STRUCTVOX_H */
+#endif				/* STRUCTTESR_H */
 
 #ifdef __cplusplus
 }

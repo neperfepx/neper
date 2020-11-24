@@ -80,3 +80,32 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
 
   return;
 }
+
+void
+net_ori_post (struct TESR *pTesr)
+{
+  int i, j;
+
+  (*pTesr).VoxOri = ut_alloc_4d ((*pTesr).size[0] + 1,
+                                 (*pTesr).size[1] + 1,
+                                 (*pTesr).size[2] + 1, 4);
+
+  for (i = 1; i <= (*pTesr).CellQty; i++)
+  {
+    int voxqty, **voxs = NULL;
+    double **q = NULL;
+
+    neut_tesr_cell_voxs (*pTesr, i, &voxs, &voxqty);
+
+    q = ut_alloc_2d (voxqty, 4);
+    neut_ori_oridistrib ((*pTesr).CellOri[i], (*pTesr).CellOriDistrib[i], voxqty, i, q);
+
+    for (j = 0; j < voxqty; j++)
+      ol_q_memcpy (q[j], (*pTesr).VoxOri[voxs[j][0]][voxs[j][1]][voxs[j][2]]);
+
+    ut_free_2d_int (&voxs, voxqty);
+    ut_free_2d (&q, voxqty);
+  }
+
+  return;
+}

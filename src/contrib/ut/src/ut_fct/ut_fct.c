@@ -624,6 +624,9 @@ ut_fct_integralfct (struct FCT Fct, struct FCT *pFct2)
     ut_fct_set_numerical (pFct2, Fct.min, Fct.max, Fct.size, "center");
     ut_array_1d_memcpy (Fct.x, (*pFct2).size, (*pFct2).x);
 
+    (*pFct2).from = Fct.from;
+    (*pFct2).to = Fct.to;
+
     for (i = 0; i < (*pFct2).size; i++)
       if (i == 0)
         (*pFct2).y[i] = 0.5 * ut_fct_binwidth (Fct, i) * Fct.y[i];
@@ -1040,6 +1043,37 @@ ut_fct_x_bin (struct FCT Fct, double x)
     id = -1;
 
   return id;
+}
+
+void
+ut_fct_set_array (struct FCT *pFct, double *array, int size, double xmin, double step)
+{
+  int i;
+
+  ut_string_string ("numerical", &(*pFct).type);
+
+  (*pFct).type_from = 'i';
+  (*pFct).type_to = 'i';
+
+  (*pFct).from = xmin;
+  (*pFct).to = xmin + step * (size - 1);
+  (*pFct).size = size;
+  (*pFct).x = ut_alloc_1d (size);
+  (*pFct).y = ut_alloc_1d (size);
+  for (i = 0; i < size; i++)
+    (*pFct).x[i] = xmin + i * step;
+  ut_array_1d_memcpy (array, size, (*pFct).y);
+
+  (*pFct).mean = ut_array_1d_scalprod ((*pFct).x, (*pFct).y, (*pFct).size)
+               / ut_array_1d_sum ((*pFct).y, (*pFct).size);
+
+  (*pFct).sigma = ut_array_1d_wstddev ((*pFct).x, (*pFct).y, (*pFct).mean, (*pFct).size);
+
+  (*pFct).area = 0;
+  for (i = 0; i < (*pFct).size; i++)
+    (*pFct).area += step * (*pFct).y[i];
+
+  return;
 }
 
 #endif

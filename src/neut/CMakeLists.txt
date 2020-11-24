@@ -161,6 +161,8 @@ add_library(neut
 ./neut_tesr/neut_tesr_op/neut_tesr_op3.c
 ./neut_tesr/neut_tesr_geom/neut_tesr_geom1.c
 ./neut_tesr/neut_tesr_geom/neut_tesr_geom2.c
+./neut_tesr/neut_tesr_ori/neut_tesr_ori1.c
+./neut_tesr/neut_tesr_ori/neut_tesr_ori2.c
 ./neut_tesr/neut_tesr_gen/neut_tesr_gen1.c
 ./neut_crys/neut_crys.c
 ./neut_topt/neut_topt.c
@@ -172,7 +174,8 @@ add_library(neut
 ./neut_oset/neut_oset2.cpp
 ./neut_prim/neut_prim.c
 ./neut_sim/neut_sim_op/neut_sim_op.c
-./neut_sim/neut_sim_gen/neut_sim_gen.c
+./neut_sim/neut_sim_gen/neut_sim_gen1.c
+./neut_sim/neut_sim_gen/neut_sim_gen2.c
 )
 
 ## Link libraries

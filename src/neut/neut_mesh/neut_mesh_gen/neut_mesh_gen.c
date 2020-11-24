@@ -2435,3 +2435,81 @@ neut_mesh2d_mesh3d (struct NODES *pNodes, struct MESH Mesh2D,
 
   return;
 }
+
+void
+neut_mesh_eltdata_elsetdata (struct NODES Nodes, struct MESH Mesh,
+                             double **eltdata, int size,
+                             double **elsetdata)
+{
+  int i;
+
+  ut_array_2d_zero (elsetdata + 1, Mesh.ElsetQty, size);
+
+#pragma omp parallel for private(i)
+  for (i = 1; i <= Mesh.ElsetQty; i++)
+  {
+    int j, k, elt;
+    double vol, totvol;
+
+    totvol = 0;
+    for (j = 1; j <= Mesh.Elsets[i][0]; j++)
+    {
+      elt = Mesh.Elsets[i][j];
+
+      if (Mesh.Dimension == 2)
+        neut_mesh_elt_area (Nodes, Mesh, elt, &vol);
+      else if (Mesh.Dimension == 3)
+        neut_mesh_elt_volume (Nodes, Mesh, elt, &vol);
+      else
+        abort ();
+
+      totvol += vol;
+      for (k = 0; k < size; k++)
+        elsetdata[i][k] += vol * eltdata[elt][k];
+    }
+
+    ut_array_1d_scale (elsetdata[i], size, 1 / totvol);
+  }
+
+  return;
+}
+
+void
+neut_mesh_eltdata_elsetdata_ori (struct NODES Nodes, struct MESH Mesh,
+                                 double **eltdata, char *crysym, double **elsetdata)
+{
+  int i;
+
+  ut_array_2d_zero (elsetdata + 1, Mesh.ElsetQty, 4);
+
+#pragma omp parallel for private(i) schedule(dynamic)
+  for (i = 1; i <= Mesh.ElsetQty; i++)
+  {
+    int j, elt;
+    double vol;
+    struct OL_SET OSet;
+
+    OSet = ol_set_alloc (Mesh.Elsets[i][0], crysym);
+
+    for (j = 1; j <= Mesh.Elsets[i][0]; j++)
+    {
+      elt = Mesh.Elsets[i][j];
+
+      if (Mesh.Dimension == 2)
+        neut_mesh_elt_area (Nodes, Mesh, elt, &vol);
+      else if (Mesh.Dimension == 3)
+        neut_mesh_elt_volume (Nodes, Mesh, elt, &vol);
+      else
+        abort ();
+
+      ol_q_memcpy (eltdata[elt], OSet.q[j - 1]);
+      OSet.weight[j - 1] = vol;
+    }
+
+    ol_set_mean_iter (OSet, elsetdata[i]);
+
+    ol_set_free (OSet);
+  }
+
+  return;
+}

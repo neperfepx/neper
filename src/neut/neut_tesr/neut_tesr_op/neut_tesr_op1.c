@@ -18,6 +18,7 @@ neut_tesr_set_zero (struct TESR *pTesr)
   (*pTesr).Dim = 0;
   (*pTesr).CellId = NULL;
   (*pTesr).CellOri = NULL;
+  (*pTesr).CellOriDistrib = NULL;
   (*pTesr).CellOriDes = NULL;
   ut_string_string (NEUT_DEFAULT_ORIDESFULL, &(*pTesr).CellOriDes);
   (*pTesr).CellBBox = NULL;
@@ -70,6 +71,7 @@ neut_tesr_free (struct TESR *pTesr)
   ut_free_1d (&(*pTesr).vsize);
   ut_free_1d_int (&(*pTesr).CellId);
   ut_free_2d (&(*pTesr).CellOri, (*pTesr).CellQty + 1);
+  ut_free_2d_char (&(*pTesr).CellOriDistrib, (*pTesr).CellQty + 1);
   ut_free_1d_char (&(*pTesr).CellOriDes);
   ut_free_2d (&(*pTesr).CellCoo, (*pTesr).CellQty + 1);
   ut_free_1d (&(*pTesr).CellVol);
