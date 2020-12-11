@@ -126,16 +126,16 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   }
 
   /* Recording body */
-  if ((*pIn).body == NULL)
+  if (!(*pIn).body)
   {
-    if ((*pIn).loadmesh != NULL)
+    if ((*pIn).loadmesh)
       ut_string_body ((*pIn).loadmesh, ".", &((*pIn).body));
     else if ((*pIn).tess && strlen ((*pIn).tess))
       ut_string_body ((*pIn).tess, ".", &((*pIn).body));
     else if ((*pIn).tesr && strlen ((*pIn).tesr))
       ut_string_body ((*pIn).tesr, ".", &((*pIn).body));
     else if ((*pIn).mesh && strlen ((*pIn).mesh))
-      ut_string_body ((*pIn).mesh, ".:", &((*pIn).body));
+      ut_string_body ((*pIn).mesh, ".", &((*pIn).body));
   }
 
   /* Writing all file names */
