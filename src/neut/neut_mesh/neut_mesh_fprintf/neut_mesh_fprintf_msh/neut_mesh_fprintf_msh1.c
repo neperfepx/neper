@@ -46,7 +46,7 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
   if (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3") && strlen (nsetlist))
     neut_mesh_fprintf_msh_nsets (file, NSet0D, NSet1D, NSet2D, nsetlist);
 
-  if (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3") && strlen (fasetlist))
+  if (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3") && fasetlist && strlen (fasetlist))
     neut_mesh_fprintf_msh_fasets (file, Tess, Mesh2D, Mesh3D, fasetlist);
 
   if (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3") && Nodes.PartQty > 0)

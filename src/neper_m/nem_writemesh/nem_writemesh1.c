@@ -16,26 +16,21 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
   char *fasetlist = NULL;
   char **sizestring = ut_alloc_2d_char (4, 10);
 
+  dim = neut_mesh_array_dim (Mesh);
+
   strcpy (sizestring[1], "length");
   strcpy (sizestring[2], "area");
   strcpy (sizestring[3], "volume");
 
   neut_nset_expand (NSet[0], NSet[1], NSet[2], In.nset, &nsetlist);
-  neut_nset_expand (NSet[0], NSet[1], NSet[2], In.faset, &fasetlist);
+  if (!strcmp (Mesh[dim].EltType, "tri"))
+    neut_nset_expand (NSet[0], NSet[1], NSet[2], In.faset, &fasetlist);
 
   ut_print_message (0, 2, "Preparing mesh...\n");
   for (i = 3; i >= 0; i--)
     if (ut_list_testelt_int (In.dimout_msh, NEUT_SEP_NODEP, i)
         && !Mesh[i].EltElset)
       neut_mesh_init_eltelset (Mesh + i, NULL);
-
-  dim = -1;
-  for (i = 3; i >= 0; i--)
-    if (Mesh[i].EltQty > 0)
-    {
-      dim = i;
-      break;
-    }
 
   ut_print_message (0, 2, "Mesh properties:\n");
   ut_print_message (0, 3, "Node number: %8d\n", Nodes.NodeQty);
