@@ -35,7 +35,7 @@ Several, complementary resources describing Neper are available:
 
 @com{git clone https://github.com/rquey/neper.git}
 
-which gives access to the latest development version on the default, @code{devel} branch (so as to all previous development versions), but also to all official versions (which can be listed using @command{git tag}).  To update your local repository, run @command{git pull} from within the repository.
+which gives access to the latest development version on the default, @code{main} branch, but also to all official versions (which can be listed using @command{git tag}).  To update your local repository, run @command{git pull} from within the repository.
 
 @item The three Neper reference papers,
   @itemize
