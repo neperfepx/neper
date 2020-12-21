@@ -108,7 +108,7 @@ void
 net_tess_opt_init_parms_objective (char *morphooptiobjective,
                                    struct TOPT *pTOpt)
 {
-  int i, j, match, PartQty1, *PartQty2 = NULL;
+  int i, j, PartQty1, *PartQty2 = NULL;
   char ***parts = NULL;
 
   ut_string_fnrs (morphooptiobjective, "circularity", "sphericity", INT_MAX);
@@ -124,29 +124,29 @@ net_tess_opt_init_parms_objective (char *morphooptiobjective,
 
   (*pTOpt).tarobjective = ut_alloc_1d_pchar ((*pTOpt).tarqty);
 
+  int *found = ut_alloc_1d_int (PartQty1);
+
   for (i = 0; i < (*pTOpt).tarqty; i++)
   {
     ut_string_string ("default", (*pTOpt).tarobjective + i);
 
     for (j = 0; j < PartQty1; j++)
-    {
-      match = 0;
-      if (PartQty2[i] == 2 && !strcmp (parts[j][0], (*pTOpt).tarvar[i]))
+      if (!strcmp (parts[j][0], (*pTOpt).tarvar[i]))
       {
-        match = 1;
+        found[j] = 1;
         ut_string_string (parts[j][1], (*pTOpt).tarobjective + i);
       }
-
-      if (!match && PartQty2[i] == 2)
-        ut_print_message (1, 4, "Failed to process expression `%s'.\n",
-                          parts[i][0]);
-    }
 
     if (!strcmp ((*pTOpt).tarobjective[i], "default"))
       if (!strcmp ((*pTOpt).tarvar[i], "tesr"))
         ut_string_string ("pts(region=surf,res=5)+val(bounddist)",
                           (*pTOpt).tarobjective + i);
   }
+
+  for (i = 0; i < PartQty1; i++)
+    if (!found[i] && strcmp (parts[i][0], "default"))
+      ut_print_message (1, 4, "Skipped objective function specified for `%s'.\n",
+                        parts[i][0]);
 
   ut_string_string ("L2", &(*pTOpt).objective);
   for (j = 0; j < PartQty1; j++)
@@ -155,6 +155,7 @@ net_tess_opt_init_parms_objective (char *morphooptiobjective,
 
   // ut_free_3d_char (&parts, PartQty1, 2);
   ut_free_1d_int (&PartQty2);
+  ut_free_1d_int (&found);
 
   return;
 }

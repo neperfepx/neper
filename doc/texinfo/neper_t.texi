@@ -508,7 +508,7 @@ using @samp{general:@var{objective_function}}@comma{} where
 @samp{@var{objective_function}} can be @samp{L1}@comma{} @samp{L2} or
 @samp{Linf}; the default is @samp{L2}.
 ,
-any, default}
+any@comma{} e.g. @samp{diameq:FL2,1-sphericity:FL2}@comma{} @samp{centroid:L1} or @samp{tesr:pts(region=all,res=5)+val(intervol)}, default}
 
 @optsec{-morphooptidof, char_string,
 Specify the degrees of freedom. The available values are
