@@ -487,7 +487,7 @@ correct for a global cell elongation or @samp{rasterscale} to scale the raster
 itself to correct for a global voxel elongation (which may result from
 operation @samp{scale}); combine with @samp{@SEPNODEP}.
 Second@comma{} control points can be defined using
-@samp{pts(@var{args})} where @samp{args} can include
+@samp{pts(@var{args})} where @samp{@var{args}} can include
 @samp{region=@var{region}} where @samp{@var{region}} can be @samp{surf}
 for surface voxels or @samp{all} for all voxels@comma{} and
 @samp{res=@var{res}} where @samp{@var{res}} is the resolution@comma{}
@@ -500,7 +500,7 @@ and tessellation cell boundaries@comma{} or @samp{intervol} for maximizing
 the volume of intersection between the raster tessellation and tessellation
 (both provide similar results).  To define the objective
 function@comma{} combine the above factors using @samp{+}.
-The default value is @samp{pts(region=surf,res=5)+val(bounddist)}.
+The default value is @samp{pts(region=surf,res=5)+val(bounddist)}.@*
 It is finally possible to define how the different parts of
 the objective function are combined into the objective function (in the case
 where several properties are specified)@comma{}
