@@ -88,6 +88,7 @@ neut_tess_fprintf_gmsh (FILE * file, struct TESS Tess)
       }
       fprintf (file, "};\n");
       fprintf (file, "Volume (%d) = {%d};\n", i, i);
+      fprintf (file, "Physical Volume (%d) = {%d};\n", i, i);
     }
 
   return;
