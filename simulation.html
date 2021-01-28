@@ -3,13 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Simulation &#8212; Neper 4.1.1 documentation</title>
+    <title>Simulation &#8212; Neper 4.1.2 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.1.1',
+        VERSION:     '4.1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -48,7 +48,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Neper</a>
-        <span class="navbar-text navbar-version pull-left"><b>version 4.1.1 (24 Nov 2020)</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>version 4.1.2 (28 Jan 2021)</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -88,7 +88,8 @@
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Simulation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#generalities">Generalities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#computing-new-results">Computing new results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computing-new-nodal-or-elemental-results">Computing new nodal or elemental results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computing-elset-results">Computing elset results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#removing-results">Removing results</a></li>
 </ul>
 </li>
@@ -147,7 +148,8 @@
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">Simulation</a><ul>
 <li><a class="reference internal" href="#generalities">Generalities</a></li>
-<li><a class="reference internal" href="#computing-new-results">Computing new results</a></li>
+<li><a class="reference internal" href="#computing-new-nodal-or-elemental-results">Computing new nodal or elemental results</a></li>
+<li><a class="reference internal" href="#computing-elset-results">Computing elset results</a></li>
 <li><a class="reference internal" href="#removing-results">Removing results</a></li>
 </ul>
 </li>
@@ -207,8 +209,9 @@ input by module -V for advanced visualization.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
 <li><a class="reference internal" href="#generalities" id="id1">Generalities</a></li>
-<li><a class="reference internal" href="#computing-new-results" id="id2">Computing new results</a></li>
-<li><a class="reference internal" href="#removing-results" id="id3">Removing results</a></li>
+<li><a class="reference internal" href="#computing-new-nodal-or-elemental-results" id="id2">Computing new nodal or elemental results</a></li>
+<li><a class="reference internal" href="#computing-elset-results" id="id3">Computing elset results</a></li>
+<li><a class="reference internal" href="#removing-results" id="id4">Removing results</a></li>
 </ul>
 </div>
 <div class="section" id="generalities">
@@ -249,8 +252,8 @@ input by module -V for advanced visualization.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="computing-new-results">
-<h2><a class="toc-backref" href="#id2">Computing new results</a><a class="headerlink" href="#computing-new-results" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="computing-new-nodal-or-elemental-results">
+<h2><a class="toc-backref" href="#id2">Computing new nodal or elemental results</a><a class="headerlink" href="#computing-new-nodal-or-elemental-results" title="Permalink to this headline">¶</a></h2>
 <p>Nodal or elemental results can be added to the simulation directory.  The data can be mesh results (as also available through Neper -M’s -stat* options), simulation subresults (such as vector or tensor components), or new results defined by mathematical expressions based on mesh or simulation results. The results can be assigned names. Existing results at a specific step can be accessed using (step=…).</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -S jobdir.sim -eltres vol,stress33,energy:0.1234*(crss-crss(step=0))^2&quot;
 </pre></div>
@@ -302,10 +305,74 @@ input by module -V for advanced visualization.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="computing-elset-results">
+<h2><a class="toc-backref" href="#id3">Computing elset results</a><a class="headerlink" href="#computing-elset-results" title="Permalink to this headline">¶</a></h2>
+<p>Elset results can be computed from the elemental results of the simulation directory.  This is simply done by volume-weighted averaging (orientations are also properly averaged, using quaternions). The results are written to directory “elsets”.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -S jobdir.sim -elsetres stress,stress33
+</pre></div>
+</div>
+<p>The results add to the simulation directory, which becomes</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>jobdir.sim
+├── inputs
+│   ├── simulation.config
+│   ├── simulation.msh
+│   └── simulation.tess
+├── report
+└── results
+    ├── elements
+    │   ├── energy
+    │   │   ├── energy.step0
+    │   │   ├── energy.step1
+    │   │   ├── energy.step2
+    │   │   ...
+    │   ├── strain-eq
+    │   │   ├── strain-eq.step0
+    │   │   ├── strain-eq.step1
+    │   │   ├── strain-eq.step2
+    │   │   ...
+    │   ├── stress
+    │   │   ├── stress.step0
+    │   │   ├── stress.step1
+    │   │   ├── stress.step2
+    │   │   ...
+    │   ├── stress33
+    │   │   ├── stress33.step0
+    │   │   ├── stress33.step1
+    │   │   ├── stress33.step2
+    │   │   ...
+    │   ├── vol
+    │   │   ├── vol.step0
+    │   │   ├── vol.step1
+    │   │   ├── vol.step2
+    │   │   ...
+    │   ├── ...
+    │   ...
+    ├── elsets
+    │   ├── stress
+    │   │   ├── stress.step0
+    │   │   ├── stress.step1
+    │   │   ├── stress.step2
+    │   │   ...
+    │   ├── stress33
+    │   │   ├── stress33.step0
+    │   │   ├── stress33.step1
+    │   │   ├── stress33.step2
+    │   │   ...
+    └── nodes
+        ├── coo
+        │   ├── coo.step0
+        │   ├── coo.step1
+        │   ├── coo.step2
+        │   ...
+        ├── ...
+        ...
+</pre></div>
+</div>
+</div>
 <div class="section" id="removing-results">
-<h2><a class="toc-backref" href="#id3">Removing results</a><a class="headerlink" href="#removing-results" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Removing results</a><a class="headerlink" href="#removing-results" title="Permalink to this headline">¶</a></h2>
 <p>Results can be removed by preceding them by “!” (note the single quotes, below).</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -S jobdir.sim -eltres &#39;!stress,!stress33,!vol,!strain-eq&#39;
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -S jobdir.sim -eltres &#39;!stress,!stress33,!vol,!strain-eq&#39; -elsetres &#39;!stress,!stress33&#39;
 </pre></div>
 </div>
 <p>The simulation directory becomes</p>
