@@ -1,5 +1,6 @@
-New in 4.1.2-6 (04 Jan 2021):
-- module -T: made minor improvements, added physical volumes tag to geo file.
+New in 4.1.2 (28 Jan 2021):
+- module -T: added custom (user-defined) statistical distribution, added
+  physical volumes tag to geo file, fixed -statvox, made minor improvements.
 - module -M: fixed -elt hex (faset output disabled), made minor fixes.
 - documentation: made minor fixes and improvements.
 

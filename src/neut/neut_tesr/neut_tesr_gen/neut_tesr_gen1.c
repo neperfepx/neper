@@ -226,7 +226,7 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       ut_string_string ("%f", ptype);
     ut_free_1d (&coo);
 
-    return 1;
+    return 0;
   }
 
   c = ut_alloc_1d (3);

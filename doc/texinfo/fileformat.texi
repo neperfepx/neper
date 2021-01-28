@@ -29,104 +29,101 @@ and
 @sp 1
 @example
 ***tess
-  **format
-    @var{format}
-  **general
-    @var{dim} @var{type}
-  **cell
-    @var{number_of_cells}
+ **format
+   @var{format}
+ **general
+   @var{dim} @var{type}
+ **cell
+   @var{number_of_cells}
  [*id
    @var{cell1_id} @var{cell2_id} ... ]
  [*seed
    @var{seed_id} @var{seed_x} @var{seed_y} @var{seed_z} @var{seed_weight}
-    ... ]
+   ... ]
  [*ori
    @var{descriptor}
-    @var{cellid_param1} @var{cellid_param2} ...
-    ... ]
+   @var{cellid_param1} @var{cellid_param2} ...
+   ... ]
  [*oridistrib
-    @var{cellid_distrib}
-    ... ]
+   @var{cellid_distrib}
+   ... ]
  [*lam
-    @var{cell1_lam} @var{cell2_lam} ... ]
+   @var{cell1_lam} @var{cell2_lam} ... ]
  [*mode
-    @var{cell1_mode} @var{cell2_mode} ... ]
+   @var{cell1_mode} @var{cell2_mode} ... ]
  [*crysym
-    @var{crysym}]
-  **vertex
-    @var{total_number_of_vertices}
-    @var{ver_id}  @var{ver_x} @var{ver_y} @var{ver_z} @var{ver_state}
-    ...
-  **edge
-    @var{total_number_of_edges}
-    @var{edge_id} @var{ver_1} @var{ver_2} @var{edge_state}
-    ...
-  **face
-    @var{total_number_of_faces}
-    @var{face_id} @var{number_of_vertices} @var{ver_1}   @var{ver_2}   ...
-           @var{number_of_edges}    @var{edge_1*} @var{edge_2*} ...
-           @var{face_eq_d} @var{face_eq_a} @var{face_eq_b} @var{face_eq_c}
-           @var{face_state} @var{face_point}
-		    @var{face_point_x} @var{face_point_y} @var{face_point_z}
-    ...
-  **polyhedron
-    @var{total_number_of_polyhedra}
-    @var{poly_id} @var{number_of_faces} @var{face_1*} @var{face_2*} ...
-    ...
-  **domain
-   *general
-    @var{dom_type}
-   *vertex
-    @var{total_number_of_dom_vertices}
-    @var{dom_ver_id}  @var{dom_ver_x} @var{dom_ver_y} @var{dom_ver_z} @var{dom_ver_label}
+   @var{crysym}]
+ **vertex
+   @var{total_number_of_vertices}
+   @var{ver_id}  @var{ver_x} @var{ver_y} @var{ver_z} @var{ver_state}
+   ...
+ **edge
+   @var{total_number_of_edges}
+   @var{edge_id} @var{ver_1} @var{ver_2} @var{edge_state}
+   ...
+ **face
+   @var{total_number_of_faces}
+   @var{face_id} @var{number_of_vertices} @var{ver_1}   @var{ver_2}   ...
+          @var{number_of_edges}    @var{edge_1*} @var{edge_2*} ...
+          @var{face_eq_d} @var{face_eq_a} @var{face_eq_b} @var{face_eq_c}
+          @var{face_state} @var{face_point} @var{face_point_x} @var{face_point_y} @var{face_point_z}
+   ...
+ **polyhedron
+   @var{total_number_of_polyhedra}
+   @var{poly_id} @var{number_of_faces} @var{face_1*} @var{face_2*} ...
+   ...
+ **domain
+  *general
+   @var{dom_type}
+  *vertex
+   @var{total_number_of_dom_vertices}
+   @var{dom_ver_id}  @var{dom_ver_x} @var{dom_ver_y} @var{dom_ver_z} @var{dom_ver_label}
                @var{number_of_dom_tess_vertices} @var{ver_1}
-    ...
-   *edge
-    @var{total_number_of_dom_edges}
-    @var{dom_edge_id} @var{number_of_dom_vertices} [@var{dom_ver_1} @var{dom_ver_2}]
+   ...
+  *edge
+   @var{total_number_of_dom_edges}
+   @var{dom_edge_id} @var{number_of_dom_vertices} [@var{dom_ver_1} @var{dom_ver_2}]
                @var{dom_edge_label}
-               @var{number_of_dom_tess_edges} @var{edge_1}
-							      @var{edge_2} ...
-    ...
-   *face
-    @var{total_number_of_dom_faces}
-    @var{dom_face_id} @var{number_of_dom_vertices} @var{dom_ver_1}  @var{dom_ver_2}  @var{...}
-               @var{number_of_dom_edges}    @var{dom_edge_1} @var{dom_edge_2}
-							            @var{...}
+               @var{number_of_dom_tess_edges} @var{edge_1} @var{edge_2} ...
+   ...
+  *face
+   @var{total_number_of_dom_faces}
+   @var{dom_face_id} @var{number_of_dom_vertices} @var{dom_ver_1}  @var{dom_ver_2}  @var{...}
+               @var{number_of_dom_edges} @var{dom_edge_1} @var{dom_edge_2} @var{...}
                @var{dom_face_type}
                @var{number_of_params} @var{dom_face_param1} @var{dom_face_param2} @var{...}
                @var{dom_face_label}
                @var{number_of_dom_tess_faces}
-			@var{dom_tess_face_1} @var{dom_tess_face_2} @var{...}
+               @var{dom_tess_face_1} @var{dom_tess_face_2} @var{...}
    ...
-  **periodic
-   *general
-    @var{per_x} @var{per_y} @var{per_z}
-    @var{per_dist_x} @var{per_dist_y} @var{per_dist_z}
-   *seed
-    @var{secondary_seed_qty}
-    @var{secondary_seed_id} @var{primary_seed_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z}
-   ...
-   *vertex
-    @var{secondary_ver_qty}
-    @var{secondary_ver_id} @var{primary_ver_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z}
-   ...
-   *edge
-    @var{secondary_edge_qty}
-    @var{secondary_edge_id} @var{primary_edge_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z}
-                                                            @var{secondary_edge_ori}
-   ...
-   *face
-    @var{secondary_face_qty}
-    @var{secondary_face_id} @var{primary_face_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z}
-                                                            @var{secondary_face_ori}
-   ...
-  **scale
-   *general
-    @var{number_of_scales}
-   *cellid
-    @var{cell1_id} @var{cell1_scale1} @var{cell1_scale2} ... @var{cell1_scale@var{number_of_scales}}
-   ...
+ **periodic
+  *general
+   @var{per_x} @var{per_y} @var{per_z}
+   @var{per_dist_x} @var{per_dist_y} @var{per_dist_z}
+  *seed
+   @var{secondary_seed_qty}
+   @var{secondary_seed_id} @var{primary_seed_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z}
+  ...
+  *vertex
+   @var{secondary_ver_qty}
+   @var{secondary_ver_id}  @var{primary_ver_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z}
+  ...
+  *edge
+   @var{secondary_edge_qty}
+   @var{secondary_edge_id} @var{primary_edge_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z}
+                                                           @var{secondary_edge_ori}
+  ...
+  *face
+   @var{secondary_face_qty}
+   @var{secondary_face_id} @var{primary_face_id} @var{per_shift_x} @var{per_shift_y} @var{per_shift_z}
+                                                           @var{secondary_face_ori}
+  ...
+ **scale
+  *general
+   @var{number_of_scales}
+  *cellid
+   @var{cell1_id} @var{cell1_scale1} @var{cell1_scale2} ... @var{cell1_scale@var{number_of_scales}}
+  ...
 ***end                                                                  @*
 @end example
 
@@ -467,17 +464,17 @@ optional fields.
 @sp 1
 @example
 ***tesr
-  **format
-    @var{format} @var{data_format}
-  **general
-    @var{dimension}
-    @var{size_x} @var{size_y} [@var{size_z}]
-    @var{voxsize_x} @var{voxsize_y} [@var{voxsize_z}]
+ **format
+   @var{format} @var{data_format}
+ **general
+   @var{dimension}
+   @var{size_x} @var{size_y} [@var{size_z}]
+   @var{voxsize_x} @var{voxsize_y} [@var{voxsize_z}]
  [*origin
     @var{origin_x} @var{origin_y} [@var{origin_z}]]
  [*hasvoid @var{has_void}]
 [**cell
-    @var{number_of_cells}
+   @var{number_of_cells}
  [*id
     @var{cell1_id} @var{cell2_id} ...]
  [*seed
@@ -485,30 +482,30 @@ optional fields.
     ...]
  [*ori
    @var{descriptor}
-    @var{cell1_param1} @var{cell1_param2} ...
-    @var{cell2_param1} @var{cell2_param2} ...
+   @var{cell1_param1} @var{cell1_param2} ...
+   @var{cell2_param1} @var{cell2_param2} ...
    ...]
  [*oridistrib
-    @var{cellid_distrib}
-    ... ]
+   @var{cellid_distrib}
+   ... ]
  [*coo
-    @var{cell1_x} @var{cell1_y} [@var{cell1_z}]
-    @var{cell2_x} @var{cell2_y} [@var{cell2_z}]
-    ...]
+   @var{cell1_x} @var{cell1_y} [@var{cell1_z}]
+   @var{cell2_x} @var{cell2_y} [@var{cell2_z}]
+   ...]
  [*vol
-    @var{cell1_vol}
-    @var{cell2_vol}
-    ...]
+   @var{cell1_vol}
+   @var{cell2_vol}
+   ...]
  [*convexity
-    @var{cell1_convexity}
-    @var{cell2_convexity}
-    ...]
+   @var{cell1_convexity}
+   @var{cell2_convexity}
+   ...]
 ]
 [*crysym
    @var{crysym}
 ]
-  **data
-    @var{vox1_cell} @var{vox2_cell} ...
+ **data
+   @var{vox1_cell} @var{vox2_cell} ...
  @emph{or}
   *file @var{data_file_name}
 [**oridata
@@ -518,8 +515,8 @@ optional fields.
  @emph{or}
    @var{descriptor}
   *file @var{oridata_file_name}
-]	                                                            	@*
-***end                                                               	@*
+]@*
+***end@*
 @end example
 
 where
@@ -664,9 +661,9 @@ orientation data.   It must be located in the same directory as the parent tesr 
 @section Multiscale Cell File
 
 A multiscale cell file provides cell-by-cell values for a multiscale
-tessellation and can be loaded using @samp{msfile(@var{filename})}@footnote{As
-of version 3.5.0, @samp{msfile(@var{filename})} should be preferred over
-@samp{file(@var{filename})}}.
+tessellation and can be loaded using @samp{msfile(@var{file_name})}@footnote{As
+of version 3.5.0, @samp{msfile(@var{file_name})} should be preferred over
+@samp{file(@var{file_name})}}.
 The file contains, for each cell, its @dfn{multiscale
 identifier}, @var{mid}, and the value(s).  A @dfn{cell multiscale
 identifier} (@var{mid}) is a character string identifying a cell at a
@@ -697,10 +694,10 @@ An example of a multiscale cell file that could be used to define the numbers of
 2::4 8
 @end example
 
-The file could be used in @code{-T} as: @option{-n msfile(@var{filename})::msfile(@var{filename})::msfile(@var{filename})}.
-The first  instance of @samp{msfile(@var{filename})} reads the number of scale-1 cells in line 1,
-the second instance of @samp{msfile(@var{filename})} reads the number of scale-2 cells in lines 2--3, and
-the third  instance of @samp{msfile(@var{filename})} reads the number of scale-3 cells in lines 4--7.
+The file could be used in @code{-T} as: @option{-n msfile(@var{file_name})::msfile(@var{file_name})::msfile(@var{file_name})}.
+The first  instance of @samp{msfile(@var{file_name})} reads the number of scale-1 cells in line 1,
+the second instance of @samp{msfile(@var{file_name})} reads the number of scale-2 cells in lines 2--3, and
+the third  instance of @samp{msfile(@var{file_name})} reads the number of scale-3 cells in lines 4--7.
 
 @node Position File
 @section Position File

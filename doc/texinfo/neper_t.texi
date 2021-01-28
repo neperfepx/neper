@@ -26,6 +26,8 @@ distributions). Custom properties can be specified using various
 metrics, including the size and sphericity (circularity, in 2D), the centroid
 or even the actual shape (using a raster tessellation), in terms
 of either distributions (when applicable) or individual cell values.
+Standard analytical distributions are included, and custom numerical distributions
+can be read from a file.
 Global morphological properties, such as a cell aspect ratio or a
 columnar axis, can also be specified.
 The generated @dfn{tessellations} are Laguerre (or Voronoi)
@@ -42,10 +44,10 @@ on) and are obtained by combining into one, using
 @samp{@SEPFRAC{}}, the option arguments that apply at the
 successive scales.  The same value can be used for defining the
 tessellations at a given scale, or different values can be loaded using
-@samp{msfile(@var{filename})}, where @file{@var{filename}} is a @dfn{multiscale
+@samp{msfile(@var{file_name})}, where @file{@var{file_name}} is a @dfn{multiscale
 cell file} (@pxref{Multiscale Cell File}).@footnote{As of version 3.5.0,
-@samp{msfile(@var{filename})} should be preferred to
-@samp{file(@var{filename})} to load a multiscale cell file.}
+@samp{msfile(@var{file_name})} should be preferred to
+@samp{file(@var{file_name})} to load a multiscale cell file.}
 So, all capabilities available for generating a standard (single-scale)
 tessellations are available for generating the tessellations at the different
 scales of a multiscale tessellation.  Examples are provided in the following.
@@ -700,8 +702,8 @@ cell;@*
 about the one of the parent cell@comma{} according to a 3-variate normal
 distribution so that the average misorientation angle with respect
 to the average orientation is equal to @code{@var{thetam}} (expressed in degree);@*
-@bullet{} @samp{file(@var{filename}@comma{}des=@var{des})} for
-  orientations to be read from file @file{@var{filename}} and written
+@bullet{} @samp{file(@var{file_name}@comma{}des=@var{des})} for
+  orientations to be read from file @file{@var{file_name}} and written
   using the descriptor @code{@var{des}} (@pxref{Rotations and Orientations});
   if Rodrigues vector (@code{rodrigues})@comma{} the descriptor can be omitted.
 ,
@@ -723,8 +725,8 @@ see above, triclinic}
 @optsec{-orioptiini, char_string,
 Specify the initial crystal orientations. Provide
 @samp{random} for random orientations@comma{} or
-@samp{file(@var{filename}@SEPNODEP{}des=@var{des})} for reading
-orientations from file @file{@var{filename}} and written
+@samp{file(@var{file_name}@SEPNODEP{}des=@var{des})} for reading
+orientations from file @file{@var{file_name}} and written
 using the descriptor @code{@var{des}} (@pxref{Rotations and Orientations});
   if Rodrigues vector (@code{rodrigues})@comma{} the descriptor can be omitted.
 ,
@@ -733,7 +735,7 @@ any, random}
 @optsec{-orioptifix, char_string,
 Fix some orientations during optimization.  Provide
 @samp{none} for none@comma{}
-or @samp{file(@var{filename})}@comma{} where @file{@var{filename}} contains
+or @samp{file(@var{file_name})}@comma{} where @file{@var{file_name}} contains
 a logical value for each orientation: @samp{0} if the orientation is not
 fixed and @samp{1} if the orientation is fixed.
 ,
@@ -985,8 +987,8 @@ Specify the format(s) of the @file{.ori} output file(s). The available formats a
 @code{plain} (i.e.@: only the descriptors on
 successive lines) and the Z-set @code{geof}@footnote{Euler angles in Bunge convention are written.}.
 Combine with @samp{@SEPNODEP}.  If several formats are requested@comma{} the format is
-appended to the file name as in @samp{@var{filename}.ori-plain} and
-@samp{@var{filename}.ori-geof}.
+appended to the file name as in @samp{@var{file_name}.ori-plain} and
+@samp{@var{file_name}.ori-geof}.
 ,
 see above, plain}
 
@@ -1082,7 +1084,7 @@ the keys as described in @ref{Raster Tessellation Keys}@comma{} combined with
 @samp{@SEPNODEP}.
 ,
 any, none,
-.stpoly}
+.stvox}
 
 Finally, it is possible to get statistics for a particular set of
 points.

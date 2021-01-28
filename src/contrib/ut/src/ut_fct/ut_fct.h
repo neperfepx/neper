@@ -329,6 +329,19 @@ extern "C"
 /// \return position
   extern int ut_fct_x_bin (struct FCT Fct, double x);
 
+/// \brief Read a numerical function from a file
+/// \param string: file
+/// \param Fct: function
+  extern void ut_fct_numericalfct_fscanf (char *string, struct FCT *pFct);
+
+/// \brief Initialize the area of a function
+/// \param *pFct: function
+  extern void ut_fct_init_area (struct FCT *pFct);
+
+/// \brief Initialize the mean of a function
+/// \param *pFct: function
+  extern void ut_fct_init_mean (struct FCT *pFct);
+
 #endif                          /* UT_FCT_H */
 
 #endif

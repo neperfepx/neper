@@ -31,11 +31,23 @@ Several, complementary resources describing Neper are available:
 @itemize
 @item The Neper reference manual, which is this document, describes all Neper's capabilities.  Each module is dedicated a specific chapter, which describes the available commands and result files, and provides examples.  The manual is available at the PDF and info formats.@footnote{Provided that the info file is properly installed at your site, it can be accessed by the command: @command{info neper}.}
 
-@item The Neper website, @url{https://neper.info}, gives a general introduction to Neper (including examples with illustrations) and is where Neper can be downloaded from.  Official versions are released on the website every few months, as zipped tarballs (@file{tgz} files), while the latest, development version is available from the development repository, @url{https://github.com/rquey/neper}.  The best way to get and keep up-to-date with development versions is to clone the repository, using
+@item The Neper website, @url{https://neper.info}, gives a general introduction to Neper (including examples with illustrations) and is where Neper can be downloaded from.  Official versions are released on the website every few months, as zipped tarballs (@file{tgz} files).
+
+
+@item The Neper GitHub repository, @url{https://github.com/rquey/neper}, is where the latest version is available and where user interactions take place:
+
+@itemize
+@item To get and keep up-to-date with the latest version, clone the repository using
 
 @com{git clone https://github.com/rquey/neper.git}
 
-which gives access to the latest development version on the default, @code{main} branch, but also to all official versions (which can be listed using @command{git tag}).  To update your local repository, run @command{git pull} from within the repository.
+which gives access to the latest stable development release on the default, @code{main} branch. To update your local repository, run @command{git pull} from within the repository.
+
+@item To report bugs, use the issue tracker, @url{https://github.com/rquey/neper/issues}. When reporting bugs, please provide a minimal working example and the Neper terminal output.
+
+@item To ask questions, share comments or request new features, use discussions, @url{https://github.com/rquey/neper/discussions}.
+
+@end itemize
 
 @item The three Neper reference papers,
   @itemize
@@ -58,24 +70,9 @@ which gives access to the latest development version on the default, @code{main}
 @end itemize
 
 @c @sp 1
-The best way to report bugs is directly through the GitHub issue tracker,
-@url{http://github.com/rquey/neper/issues}.  When reporting bugs, please help
-us helping you by providing a minimal working example and the terminal output.
-@c
-Neper also has two dedicated mailing lists (the GitHub issue tracker should be
-preferred, especially for bug reports):
-@c
-@code{neper-announce}
-(@url{https://lists.sourceforge.net/lists/listinfo/neper-announce}), the
-``read-only'' list for release announcement,
-and @code{neper-users}
-(@url{https://lists.sourceforge.net/lists/listinfo/neper-users}), the
-``read-write'' list for users.
-@c
-As of October 2019, Neper also has an IRC channel, @url{#neper}, on the
-@code{freenode} network.
+The @code{neper-announce} (@url{https://lists.sourceforge.net/lists/listinfo/neper-announce}) and @code{neper-users} (@url{https://lists.sourceforge.net/lists/listinfo/neper-users}) mailing lists are now inactive.
 
-Resources for FEPX can be accessed from @url{http://fepx.info}.
+Resources for FEPX can be accessed from @url{https://fepx.info}.
 
 @section Installing Neper
 
@@ -119,13 +116,13 @@ The dependencies which are (optionnally) necessary at compilation time are the f
 
 @itemize
 
-@item The GNU Scientific Library (GSL, mandatory, variable @samp{HAVE_GSL}).  It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{http://www.gnu.org/software/gsl}.
+@item The GNU Scientific Library (GSL, mandatory, variable @samp{HAVE_GSL}).  It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{https://www.gnu.org/software/gsl}.
 
-@item The NLopt library (version @code{2.6.0} or higher, optional, enabled by default, variable @samp{HAVE_NLOPT}).  It is needed by @mT{} for tessellation generation from cell properties. It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{http://ab-initio.mit.edu/wiki/index.php/NLopt}.
+@item The NLopt library (version @code{2.6.0} or higher, optional, enabled by default, variable @samp{HAVE_NLOPT}).  It is needed by @mT{} for tessellation generation from cell properties. It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{https://nlopt.readthedocs.io}.
 
 @item The OpenMP library (optional, enabled by default, variable @samp{HAVE_OPENMP}).  It is likely to be available on your system or from your system package manager.@footnote{On Mac, install @code{llvm} and @code{libomp} via Homebrew.}
 
-@item The libScotch library (version @code{6.0.0} or higher, optional, disabled by default, variable @code{@var{HAVE_LIBSCOTCH}}).  It is needed by @mM{} for mesh partitioning.  The source code can be downloaded from @url{www.labri.fr/perso/pelegrin/scotch}.
+@item The libScotch library (version @code{6.0.0} or higher, optional, disabled by default, variable @code{@var{HAVE_LIBSCOTCH}}).  It is needed by @mM{} for mesh partitioning.  The source code can be downloaded from @url{https://www.labri.fr/perso/pelegrin/scotch}.
 
 @item The pthread library (mandatory if libScotch enabled). It is likely to be available on your system or from your system package manager.
 
@@ -135,14 +132,14 @@ Other dependencies are only needed at run-time (they are not necessary for compi
 
 @itemize
 
-@item The Gmsh program (version @code{2.4.2} or higher, excluding version @code{2.5.1}, mandatory for @mM{}). Both binary and source-code versions can be downloaded from @url{http://www.geuz.org/gmsh} (compiling from the source code significantly speeds up meshing).  Gmsh must be available at the terminal as the command @command{gmsh}, or the path to its binary must be specified with option @option{-gmsh} (in @mM{}).
+@item The Gmsh program (version @code{2.4.2} or higher, excluding version @code{2.5.1}, mandatory for @mM{}). Both binary and source-code versions can be downloaded from @url{https://gmsh.info} (compiling from the source code significantly speeds up meshing).  Gmsh must be available at the terminal as the command @command{gmsh}, or the path to its binary must be specified with option @option{-gmsh} (in @mM{}).
 
 @item The POV-Ray program (version @code{3.7} or higher, mandatory for module -V).  It is likely to be available on your system or from your system package manager (binary package); alternatively, a binary, or the source code, can be downloaded from @url{http://www.povray.org}.  POV-Ray must be available at the terminal as the command @command{povray}, or the path to its binary must be specified with option @option{-povray} (in @mV{}).
 
 @end itemize
 
 Neper has a few more dependencies, which are directly included in the source code (see directory @file{src/contrib}): nanoflann (@url{https://github.com/jlblancoc/nanoflann}), muparser
-(@url{http://beltoforion.de/article.php?a=muparser}), openGJK (@url{https://github.com/MattiaMontanari/openGJK}) and tinycolormap (@url{https://github.com/yuki-koyama/tinycolormap}).
+(@url{https://beltoforion.de/en/muparser}), openGJK (@url{https://github.com/MattiaMontanari/openGJK}) and tinycolormap (@url{https://github.com/yuki-koyama/tinycolormap}).
 
 Finally, the Neper installation can be tested out by
 running

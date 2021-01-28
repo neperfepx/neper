@@ -546,7 +546,7 @@ ut_fct_numericalfct (struct FCT Fct, double min, double max, int size,
 
   ut_fct_set_xaxis (pFct2, min, max, size, "center");
 
-  if (FctC.type && !strcmp (FctC.type, "dirac"))
+  if (!ut_string_strcmp (FctC.type, "dirac"))
   {
     pos = ut_array_1d_eltpos ((*pFct2).x, (*pFct2).size, FctC.mean);
     (*pFct2).y[pos] = 1. / ut_fct_binwidth (*pFct2, pos);
@@ -878,7 +878,9 @@ ut_fct_set (char *string, struct FCT *pFct)
     else
       ut_print_message (2, 0, "%s: missing mean\n", string);
   }
-
+  else if (!strcmp (fct, "custom"))
+  {
+  }
   // makes sure that at least the required parameters were given (mean & sigma)
   else if (!input_switch[0])
     ut_print_message (2, 0, "%s: missing mean\n", string);
@@ -886,7 +888,7 @@ ut_fct_set (char *string, struct FCT *pFct)
     ut_print_message (2, 0, "%s: missing sigma\n", string);
 
   // sigma must be > 0
-  if (strcmp (fct, "dirac") && sigma <= 0)
+  if (strcmp (fct, "dirac") && strcmp (fct, "custom") && sigma <= 0)
     ut_print_message (2, 0, "%s: required sigma > 0\n", string);
 
   // makes sure that gamma has a value assigned
@@ -932,6 +934,8 @@ ut_fct_set (char *string, struct FCT *pFct)
     ut_fct_set_beta (pFct, mean, sigma, fromtype, totype, from, to);
   else if (!strcmp (fct, "weibull"))
     ut_fct_set_weibull (pFct, mean, sigma, fromtype, totype, from, to);
+  else if (!strcmp (fct, "custom"))
+    ut_fct_numericalfct_fscanf (string, pFct);
   else
   {
     status = -1;
@@ -1072,6 +1076,86 @@ ut_fct_set_array (struct FCT *pFct, double *array, int size, double xmin, double
   (*pFct).area = 0;
   for (i = 0; i < (*pFct).size; i++)
     (*pFct).area += step * (*pFct).y[i];
+
+  return;
+}
+
+void
+ut_fct_numericalfct_fscanf (char *string, struct FCT *pFct)
+{
+  int i, qty, status;
+  double step;
+  char *fct = NULL;
+  char **vars = NULL, **vals = NULL;
+  FILE *file = NULL;
+
+  ut_fct_set_zero (pFct);
+
+  ut_string_function (string, &fct, &vars, &vals, &qty);
+
+  if (strcmp (fct, "custom"))
+    abort ();
+
+  ut_string_string ("numerical", &(*pFct).type);
+
+  (*pFct).size = ut_file_nblines (vals[0]) + 2;
+  (*pFct).x = ut_alloc_1d ((*pFct).size);
+  (*pFct).y = ut_alloc_1d ((*pFct).size);
+
+  file = ut_file_open (vals[0], "r");
+  for (i = 1; i <= (*pFct).size - 2; i++)
+  {
+    status = fscanf (file, "%lf%lf", (*pFct).x + i, (*pFct).y + i);
+    if (status != 2)
+      abort ();
+  }
+
+  step = (*pFct).x[2] - (*pFct).x[1];
+  (*pFct).x[0] = (*pFct).x[1] - step;
+  step = (*pFct).x[(*pFct).size - 2] - (*pFct).x[(*pFct).size - 3];
+  (*pFct).x[(*pFct).size - 1] = (*pFct).x[(*pFct).size - 2] + step;
+  ut_file_close (file, vals[0], "r");
+
+  ut_fct_init_area (pFct);
+  ut_fct_scale (pFct, 1. / (*pFct).area);
+  ut_fct_init_mean (pFct);
+
+  ut_fct_init_interp (pFct);
+
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vals, qty);
+  ut_free_2d_char (&vars, qty);
+
+  return;
+}
+
+void
+ut_fct_init_area (struct FCT* pFct)
+{
+  int i;
+
+  (*pFct).area = 0;
+
+  for (i = 0; i < (*pFct).size; i++)
+    (*pFct).area += ut_fct_binwidth (*pFct, i) * (*pFct).y[i];
+
+  return;
+}
+
+void
+ut_fct_init_mean (struct FCT* pFct)
+{
+  int i;
+  double sum = 0;
+
+  (*pFct).mean = 0;
+  sum = 0;
+  for (i = 0; i < (*pFct).size; i++)
+  {
+    (*pFct).mean += (*pFct).x[i] * ut_fct_binwidth (*pFct, i) * (*pFct).y[i];
+    sum += ut_fct_binwidth (*pFct, i) * (*pFct).y[i];
+  }
+  (*pFct).mean /= sum;
 
   return;
 }

@@ -308,6 +308,12 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
         for (j = 0; j < fct_qty; j++)
         {
           Fct[j].mean /= mean;
+          if (!strcmp (Fct[j].type, "numerical"))
+          {
+            ut_array_1d_scale (Fct[j].x, Fct[j].size, 1. / mean);
+            ut_array_1d_scale (Fct[j].y, Fct[j].size, mean);
+          }
+
           Fct[j].sigma /= mean;
         }
       }

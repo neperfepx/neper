@@ -148,6 +148,9 @@ The following table lists the statistical distributions.  Arguments enclosed in 
 @item @code{skewnormal(@var{mean},@var{sigma}[,@var{gamma}])}
       @tab skewed normal
       @tab default @math{gamma = sigma}
+@item @code{custom(@var{file_name})}
+      @tab custom
+      @tab
 @end multitable
 
 @samp{mean} represents the mean (or centre), and @samp{sigma} (@math{>} 0)
@@ -172,6 +175,8 @@ and let others be read by position.  Endpoints are considered inclusive by defau
 String completion is available for the keywords.
 Finally, a sum of distributions of increasing averages can be provided;
 e.g., @samp{0.3*lognormal(0.5,0.1)+0.7*normal(1,0.1)}.
+
+In the case of the @code{custom} distribution, the numerical distribution must be provided in the file. The file must contain the @var{x} and @var{y} values of the distribution on successive lines.  The @var{x} values must be provided in ascending order and form a regular grid.  The distribution must contain at least 3 points and does not need to integrate to 1.
 
 @node Tessellation Keys
 @section Tessellation Keys

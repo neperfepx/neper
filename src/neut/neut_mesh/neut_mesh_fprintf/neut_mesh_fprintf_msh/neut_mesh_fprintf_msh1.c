@@ -31,7 +31,7 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
 
   else if (!strcmp (version, "msh4") || version[0] == '4')
   {
-    // neut_mesh_fprintf_msh_entities (file, mode, Tess, Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D);
+    neut_mesh_fprintf_msh_entities (file, mode, Tess, Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D);
 
     neut_mesh_fprintf_msh_nodes_v4 (file, mode, Tess, Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D);
 
