@@ -254,7 +254,7 @@ neut_data_real_color (double **data, int *datadef, int size, char *scale,
 {
   int i;
   double ScaleBeg, ScaleEnd;
-  double datamin, datamax, val;
+  double datamin, datamax;
   char **parts = NULL;
   int qty;
   char *min = NULL, *max = NULL;
@@ -313,17 +313,19 @@ neut_data_real_color (double **data, int *datadef, int size, char *scale,
 
   if (neut_data_colscheme_istinycolormap (scheme))
   {
+#ifdef HAVE_TINYCOLORMAP
     tinycolormap::ColormapType type =
       neut_data_colscheme_tinycolormaptype (scheme);
 
     for (i = 1; i <= size; i++)
     {
-      val = (data[i][0] - ScaleBeg) / (ScaleEnd - ScaleBeg);
+      double val = (data[i][0] - ScaleBeg) / (ScaleEnd - ScaleBeg);
       tinycolormap::Color col = tinycolormap::GetColor(val, type);
       Col[i][0] = ut_num_d2ri (255 * col.r());
       Col[i][1] = ut_num_d2ri (255 * col.g());
       Col[i][2] = ut_num_d2ri (255 * col.b());
     }
+#endif /* HAVE_TINYCOLORMAP */
   }
 
   else
@@ -485,11 +487,16 @@ neut_data_colscheme_istinycolormap (char *colscheme)
    || !strcmp (colscheme, "viridis")
    || !strcmp (colscheme, "cividis")
    || !strcmp (colscheme, "github"))
+#ifdef HAVE_TINYCOLORMAP
    return 1;
+#else
+  ut_print_message (2, 0, "This color map requires tinycolormap, but it was not included at compilation time.\n");
+#endif /* HAVE_TINYCOLORMAP */
 
   return 0;
 }
 
+#ifdef HAVE_TINYCOLORMAP
 tinycolormap::ColormapType
 neut_data_colscheme_tinycolormaptype (char *colscheme)
 {
@@ -523,3 +530,4 @@ neut_data_colscheme_tinycolormaptype (char *colscheme)
 
   return type;
 }
+#endif /* HAVE_TINYCOLORMAP */

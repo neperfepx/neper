@@ -70,7 +70,7 @@ which gives access to the latest stable development release on the default, @cod
 @end itemize
 
 @c @sp 1
-The @code{neper-announce} (@url{https://lists.sourceforge.net/lists/listinfo/neper-announce}) and @code{neper-users} (@url{https://lists.sourceforge.net/lists/listinfo/neper-users}) mailing lists are now inactive.
+The @code{neper-announce} (@url{https://lists.sourceforge.net/lists/listinfo/neper-announce}) and @code{neper-users} (@url{https://lists.sourceforge.net/lists/listinfo/neper-users}) mailing lists are no longer active.
 
 Resources for FEPX can be accessed from @url{https://fepx.info}.
 
@@ -112,7 +112,7 @@ or directly at the command line, by using @code{cmake}'s @code{-D} option,
 
 @com{cmake -DHAVE_@var{DEPENDENCY1}=@{ON,OFF@} -DHAVE_@var{DEPENDENCY2}=@{ON,OFF@} ..}
 
-The dependencies which are (optionnally) necessary at compilation time are the following:
+The dependencies which are (optionally) necessary at compilation time and must be (optionally) installed on your system before Neper is compiled are the following:
 
 @itemize
 
@@ -122,9 +122,9 @@ The dependencies which are (optionnally) necessary at compilation time are the f
 
 @item The OpenMP library (optional, enabled by default, variable @samp{HAVE_OPENMP}).  It is likely to be available on your system or from your system package manager.@footnote{On Mac, install @code{llvm} and @code{libomp} via Homebrew.}
 
-@item The libScotch library (version @code{6.0.0} or higher, optional, disabled by default, variable @code{@var{HAVE_LIBSCOTCH}}).  It is needed by @mM{} for mesh partitioning.  The source code can be downloaded from @url{https://www.labri.fr/perso/pelegrin/scotch}.
+@item The libScotch library (version @code{6.0.0} or higher, optional, disabled by default, variable @samp{HAVE_LIBSCOTCH}).  It is needed by @mM{} for mesh partitioning.  The source code can be downloaded from @url{https://www.labri.fr/perso/pelegrin/scotch}.
 
-@item The pthread library (mandatory if libScotch enabled). It is likely to be available on your system or from your system package manager.
+@item The pthread library (mandatory if libScotch is enabled). It is likely to be available on your system or from your system package manager.
 
 @end itemize
 
@@ -138,8 +138,19 @@ Other dependencies are only needed at run-time (they are not necessary for compi
 
 @end itemize
 
-Neper has a few more dependencies, which are directly included in the source code (see directory @file{src/contrib}): nanoflann (@url{https://github.com/jlblancoc/nanoflann}), muparser
-(@url{https://beltoforion.de/en/muparser}), openGJK (@url{https://github.com/MattiaMontanari/openGJK}) and tinycolormap (@url{https://github.com/yuki-koyama/tinycolormap}).
+Other third-party libraries are directly included in the source code (see directory @file{src/contrib}) and are not dependencies @emph{per se}:
+
+@itemize
+@item The tinycolormap library (optional, enabled by default, variable @code{@var{HAVE_TINYCOLORMAP}}).  It is needed by @mV{} for generating color maps.  It requires a compiler with C++11 support.
+
+@item The nanoflann library (@url{https://github.com/jlblancoc/nanoflann}).
+
+@item The muparser library (@url{https://beltoforion.de/en/muparser}).
+
+@item The openGJK library (@url{https://github.com/MattiaMontanari/openGJK}).
+
+@end itemize
+
 
 Finally, the Neper installation can be tested out by
 running
