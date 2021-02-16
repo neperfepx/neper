@@ -25,7 +25,8 @@ extern void neut_mesh_fprintf_msh_elts (FILE * file, char *mode,
                                          struct MESH Mesh3D,
                                          struct MESH CMesh, char **fasets,
                                          int *fasetids, int fasetqty,
-                                         char *dim, char *numbering);
+                                         char *dim, char *numbering,
+                                         int *shift);
 extern void neut_mesh_fprintf_msh_elts_v4 (FILE * file, char *mode,
                                          struct TESS Tess, struct MESH Mesh0D,
                                          struct MESH Mesh1D,
@@ -33,7 +34,8 @@ extern void neut_mesh_fprintf_msh_elts_v4 (FILE * file, char *mode,
                                          struct MESH Mesh3D,
                                          struct MESH CMesh, char **fasets,
                                          int *fasetids, int fasetqty,
-                                         char *dim, char *numbering);
+                                         char *dim, char *numbering,
+                                         int *shift);
 extern void neut_mesh_fprintf_msh_nodes (FILE * file, char *mode,
                                           struct NODES Nodes);
 
@@ -46,7 +48,8 @@ extern void neut_mesh_fprintf_msh_nset (FILE * file, char *name, int NodeQty, in
 
 extern void neut_mesh_fprintf_msh_fasets (FILE * file, struct TESS Tess,
                                           struct MESH Mesh2D,
-                                          struct MESH Mesh3D, char *fasetlist);
+                                          struct MESH Mesh3D, int *shift,
+                                          char *fasetlist);
 
 extern void neut_mesh_fprintf_msh_nodeparts (FILE * file, struct NODES Nodes);
 

@@ -15,6 +15,7 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
 {
   int fasetqty, *fasetids = NULL;
   char **fasets = NULL;
+  int *shift = ut_alloc_1d_int (5);
 
   neut_mesh_fprintf_msh_pre (Tess, fasetlist, &fasets, &fasetids, &fasetqty);
 
@@ -26,7 +27,7 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
 
     neut_mesh_fprintf_msh_elts (file, mode, Tess, Mesh0D, Mesh1D, Mesh2D,
                                  Mesh3D, MeshCo, fasets, fasetids, fasetqty,
-                                 dim, numbering);
+                                 dim, numbering, shift);
   }
 
   else if (!strcmp (version, "msh4") || version[0] == '4')
@@ -37,7 +38,7 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
 
     neut_mesh_fprintf_msh_elts_v4 (file, mode, Tess, Mesh0D, Mesh1D, Mesh2D,
                                     Mesh3D, MeshCo, fasets, fasetids, fasetqty,
-                                    dim, numbering);
+                                    dim, numbering, shift);
   }
 
   if (Nodes.PerNodeQty)
@@ -47,7 +48,7 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
     neut_mesh_fprintf_msh_nsets (file, NSet0D, NSet1D, NSet2D, nsetlist);
 
   if (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3") && fasetlist && strlen (fasetlist))
-    neut_mesh_fprintf_msh_fasets (file, Tess, Mesh2D, Mesh3D, fasetlist);
+    neut_mesh_fprintf_msh_fasets (file, Tess, Mesh2D, Mesh3D, shift, fasetlist);
 
   if (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3") && Nodes.PartQty > 0)
     neut_mesh_fprintf_msh_nodeparts (file, Nodes);
@@ -67,6 +68,7 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
 
   ut_free_1d_int (&fasetids);
   ut_free_2d_char (&fasets, fasetqty);
+  ut_free_1d_int (&shift);
 
   return;
 }

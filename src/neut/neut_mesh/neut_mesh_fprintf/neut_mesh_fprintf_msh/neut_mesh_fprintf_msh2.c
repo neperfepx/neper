@@ -175,9 +175,9 @@ neut_mesh_fprintf_msh_elts (FILE * file, char *mode, struct TESS Tess,
                              struct MESH Mesh2D, struct MESH Mesh3D,
                              struct MESH MeshCo, char **fasets,
                              int *fasetids, int fasetqty, char *dim,
-                             char *numbering)
+                             char *numbering, int *shift)
 {
-  int EltQty, *shift = ut_alloc_1d_int (5), *eltfaset = NULL;
+  int EltQty, *eltfaset = NULL;
 
   neut_mesh_fprintf_msh_elts_pre (Tess, Mesh0D, Mesh1D, Mesh2D, Mesh3D,
                                    MeshCo, fasets, fasetqty, fasetids, dim,
@@ -203,7 +203,6 @@ neut_mesh_fprintf_msh_elts (FILE * file, char *mode, struct TESS Tess,
 
   fprintf (file, "$EndElements\n");
 
-  ut_free_1d_int (&shift);
   ut_free_1d_int (&eltfaset);
 
   return;
@@ -215,9 +214,9 @@ neut_mesh_fprintf_msh_elts_v4 (FILE * file, char *mode, struct TESS Tess,
                                 struct MESH Mesh2D, struct MESH Mesh3D,
                                 struct MESH MeshCo, char **fasets,
                                 int *fasetids, int fasetqty, char *dim,
-                                char *numbering)
+                                char *numbering, int *shift)
 {
-  int *shift = ut_alloc_1d_int (5), *eltfaset = NULL, EltQty;
+  int *eltfaset = NULL, EltQty;
 
   neut_mesh_fprintf_msh_elts_pre (Tess, Mesh0D, Mesh1D, Mesh2D, Mesh3D,
                                    MeshCo, fasets, fasetqty, fasetids, dim,
@@ -245,7 +244,6 @@ neut_mesh_fprintf_msh_elts_v4 (FILE * file, char *mode, struct TESS Tess,
 
   fprintf (file, "$EndElements\n");
 
-  ut_free_1d_int (&shift);
   ut_free_1d_int (&eltfaset);
 
   return;
@@ -478,7 +476,7 @@ neut_mesh_fprintf_msh_nsets (FILE * file, struct NSET NSet0D,
 void
 neut_mesh_fprintf_msh_fasets (FILE * file, struct TESS Tess,
                               struct MESH Mesh2D, struct MESH Mesh3D,
-                              char *fasetlist)
+                              int *shift, char *fasetlist)
 {
   int i, j, k, eltnb, EltQty, elt3dqty, id, status, qty, eltnodeqty;
   int *elt3d = NULL;
@@ -522,7 +520,7 @@ neut_mesh_fprintf_msh_fasets (FILE * file, struct TESS Tess,
         if (elt3dqty != 1)
           abort ();
 
-        fprintf (file, "%d ", elt3d[0]);
+        fprintf (file, "%d ", elt3d[0] + shift[3]);
         ut_array_1d_int_fprintf_reverse (file, Mesh2D.EltNodes[eltnb], eltnodeqty, "%d");
       }
   }
