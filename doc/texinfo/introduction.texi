@@ -141,7 +141,7 @@ Other dependencies are only needed at run-time (they are not necessary for compi
 Other third-party libraries are directly included in the source code (see directory @file{src/contrib}) and are not dependencies @emph{per se}:
 
 @itemize
-@item The tinycolormap library (optional, enabled by default, variable @code{@var{HAVE_TINYCOLORMAP}}).  It is needed by @mV{} for generating color maps.  It requires a compiler with C++11 support.
+@item The tinycolormap library (@url{https://github.com/yuki-koyama/tinycolormap}).
 
 @item The nanoflann library (@url{https://github.com/jlblancoc/nanoflann}).
 

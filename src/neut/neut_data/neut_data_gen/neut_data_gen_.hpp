@@ -13,7 +13,5 @@
 
 extern int neut_data_colscheme_istinycolormap (char *colscheme);
 
-#ifdef HAVE_TINYCOLORMAP
 #include "contrib/tinycolormap/tinycolormap.hpp"
 extern tinycolormap::ColormapType neut_data_colscheme_tinycolormaptype (char *colscheme);
-#endif /* HAVE_TINYCOLORMAP */
