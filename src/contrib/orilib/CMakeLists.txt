@@ -3,7 +3,13 @@
 # see the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.6)
-cmake_policy(SET CMP0012 NEW)
+if(POLICY CMP0012)
+  cmake_policy(SET CMP0012 NEW)
+endif()
+if(POLICY CMP0077)
+  cmake_policy(SET CMP0077 NEW)
+endif()
+
 project(orilib C)
 
 set(ORILIB_VERSION_MAJOR 2)

@@ -434,12 +434,12 @@ neut_sim_res_rescol (struct SIM Sim, char *entity, char *res, char **pres, int *
   else if (strlen (res) >= 2 && isdigit (res[strlen (res) - 2]) && isdigit (res[strlen (res) - 1]))
   {
     sscanf (res + strlen (res) - 2, "%s", comp);
-    *pres = strncpy (*pres, res, strlen (res) - 2);
+    *pres = memcpy (*pres, res, strlen (res) - 2);
   }
   else if (strlen (res) >= 1 && isdigit (res[strlen (res) - 1]))
   {
     sscanf (res + strlen (res) - 1, "%s", comp);
-    *pres = strncpy (*pres, res, strlen (res) - 1);
+    *pres = memcpy (*pres, res, strlen (res) - 1);
   }
   else
     *pres = strcpy (*pres, res);

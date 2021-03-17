@@ -3,6 +3,10 @@
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
+if(POLICY CMP0077)
+  cmake_policy(SET CMP0077 NEW)
+endif()
+
 project(neper_t)
 
 # for nanoflann =======
@@ -25,6 +29,9 @@ option(DEVEL_PROFILING   "Enable profiling(OFF for production use)" OFF)
 include_directories("${PROJECT_BINARY_DIR}")
 
 add_definitions(-Wall -W -Wno-unknown-pragmas)
+if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
+  set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wno-deprecated-copy")
+endif()
 if(DEVEL_OPTIMIZATION)
   add_definitions(-O3)
 endif()

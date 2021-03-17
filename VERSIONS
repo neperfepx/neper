@@ -1,5 +1,6 @@
-New in 4.1.3-4 (05 Mar 2021):
+New in 4.1.3-5 (17 Mar 2021):
 - module -M: multithreaded hex meshing, fixed -faset.
+- general: fixed compilation with GCC 9.3.0.
 
 New in 4.1.2 (21 Jan 2021):
 - module -T: added custom (user-defined) statistical distribution, added

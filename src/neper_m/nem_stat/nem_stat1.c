@@ -42,6 +42,8 @@ nem_stat (struct NODES Nodes, struct MESH *Mesh,
         name = ut_string_addextension (In.body, "stmesh");
         realdim = neut_mesh_array_dim (Mesh);
       }
+      else
+        abort ();
 
       if (Mesh[realdim].EltQty == 0)
         ut_print_message (1, 2, "Mesh is void (%d).  Skipping...\n", dim);
@@ -70,6 +72,8 @@ nem_stat (struct NODES Nodes, struct MESH *Mesh,
         name = ut_string_addextension (In.body, "stelt");
         realdim = neut_mesh_array_dim (Mesh);
       }
+      else
+        abort ();
 
       if (Mesh[realdim].EltQty == 0)
         ut_print_message (1, 2, "Mesh is void (%d).  Skipping...\n", dim);
@@ -99,6 +103,8 @@ nem_stat (struct NODES Nodes, struct MESH *Mesh,
           name = ut_string_addextension (In.body, "stelset");
           realdim = neut_mesh_array_dim (Mesh);
         }
+        else
+          abort ();
 
         if (Mesh[realdim].EltQty == 0)
           ut_print_message (1, 2, "Mesh is void (%d).  Skipping...\n", dim);

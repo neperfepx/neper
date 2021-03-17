@@ -1,11 +1,14 @@
 # This file is part of the Neper software package.
-# Copyright(C) 2003-2020, Romain Quey.
+# Copyright(C) 2003-2021, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 2.8)
-project(neper)
+if(POLICY CMP0077)
+  cmake_policy(SET CMP0077 NEW)
+endif()
 
-set(NEPER_VERSION \"4.1.3-4\")
+set(NEPER_VERSION \"4.1.3-5\")
+project(neper)
 
 # should we use the optional libraries?
 set(HAVE_GSL ON)
@@ -62,6 +65,10 @@ configure_file(
 )
 
 add_definitions(-Wall -W -Wno-unknown-pragmas -Wno-deprecated-declarations)
+if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
+  set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wno-deprecated-copy")
+endif()
+
 if(DEVEL_OPTIMIZATION)
   add_definitions(-O3)
 endif()

@@ -1,4 +1,12 @@
+# This file is part of the Neper software package.
+# Copyright(C) 2003-2021, Romain Quey.
+# See the COPYING file in the top-level directory.
+
 cmake_minimum_required(VERSION 2.6)
+if(POLICY CMP0077)
+  cmake_policy(SET CMP0077 NEW)
+endif()
+
 project(neper_s C)
 
 option(HAVE_GSL         "Use the GNU Scientific Library(GSL)" ON )
@@ -6,6 +14,9 @@ option(HAVE_GSL         "Use the GNU Scientific Library(GSL)" ON )
 include_directories("${PROJECT_BINARY_DIR}")
 
 add_definitions(-Wall -W -g -O3)
+if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
+  set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wno-deprecated-copy")
+endif()
 set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
 add_library(neper_s

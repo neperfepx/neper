@@ -546,9 +546,6 @@ neut_debug_tess (FILE * file, struct TESS Tess)
   fprintf (file, "[id] DomEdgeLabel =\n");
   if (!Tess.DomEdgeLabel)
     fprintf (file, "is NULL\n");
-  else if (sizeof (Tess.DomEdgeLabel) / sizeof (char *) <
-           (unsigned) Tess.DomEdgeQty + 1)
-    fprintf (file, "is underallocated\n");
   else
     for (i = 1; i <= Tess.DomEdgeQty; i++)
     {
