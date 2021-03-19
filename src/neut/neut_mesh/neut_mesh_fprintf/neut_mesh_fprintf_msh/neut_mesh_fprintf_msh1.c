@@ -41,7 +41,7 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
                                     dim, numbering, shift);
   }
 
-  if (Nodes.PerNodeQty)
+  if (Nodes.PerNodeQty && !strcmp (mode, "ascii"))
     neut_mesh_fprintf_msh_periodicity (file, Nodes);
 
   if (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3") && strlen (nsetlist))
