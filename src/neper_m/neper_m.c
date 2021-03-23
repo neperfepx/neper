@@ -168,7 +168,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
         if (In.tess)
           nem_meshing_tess_str (In, MeshPara, Tess, &Nodes, Mesh, NSet);
         else if (In.tesr)
-          nem_meshing_tesr_str (In, MeshPara, Tesr, &Nodes, Mesh, NSet);
+          nem_meshing_tesr_str (In, MeshPara, &Tesr, &Nodes, Mesh, NSet);
       }
 
       else

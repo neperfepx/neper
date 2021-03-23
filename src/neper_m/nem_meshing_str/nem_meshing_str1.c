@@ -83,7 +83,7 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
 
 void
 nem_meshing_tesr_str (struct IN_M In, struct MESHPARA MeshPara,
-                      struct TESR Tesr, struct NODES *pNodes,
+                      struct TESR *pTesr, struct NODES *pNodes,
                       struct MESH *Mesh, struct NSET *NSet)
 {
   int i, j, k, elt;
@@ -94,14 +94,14 @@ nem_meshing_tesr_str (struct IN_M In, struct MESHPARA MeshPara,
   double **bbox = ut_alloc_2d (3, 2);
   double *bboxsize = ut_alloc_1d (3);
 
-  neut_tesr_bbox (Tesr, bbox);
-  neut_tesr_bboxsize (Tesr, bboxsize);
+  neut_tesr_bbox (*pTesr, bbox);
+  neut_tesr_bboxsize (*pTesr, bboxsize);
 
-  if (Tesr.Dim == 3)
+  if ((*pTesr).Dim == 3)
     cl = MeshPara.poly_cl[1];
-  else if (Tesr.Dim == 2)
+  else if ((*pTesr).Dim == 2)
     cl = MeshPara.face_cl[1];
-  else if (Tesr.Dim == 1)
+  else if ((*pTesr).Dim == 1)
     cl = MeshPara.edge_cl[1];
   else
     abort ();
@@ -114,23 +114,23 @@ nem_meshing_tesr_str (struct IN_M In, struct MESHPARA MeshPara,
 
   // Creating mapped mesh
   printf ("\n");
-  ut_print_message (0, 2, "%dD meshing... ", Tesr.Dim);
+  ut_print_message (0, 2, "%dD meshing... ", (*pTesr).Dim);
 
-  neut_mesh_str (Tesr.Dim, msize, pNodes, Mesh + Tesr.Dim,
-                 NSet + Tesr.Dim - 1);
+  neut_mesh_str ((*pTesr).Dim, msize, pNodes, Mesh + (*pTesr).Dim,
+                 NSet + (*pTesr).Dim - 1);
 
   neut_nodes_scale (pNodes, bboxsize[1], bboxsize[1],
-                    Tesr.Dim == 3 ? bboxsize[1] : cl);
+                    (*pTesr).Dim == 3 ? bboxsize[1] : cl);
   neut_nodes_shift (pNodes, bbox[0][0], bbox[1][0], bbox[2][0]);
 
   printf ("\n");
 
   ut_array_1d_set (scale, 3, 1);
-  for (i = 0; i < Tesr.Dim; i++)
-    scale[i] = (double) msize[i] / Tesr.size[i];
+  for (i = 0; i < (*pTesr).Dim; i++)
+    scale[i] = (double) msize[i] / (*pTesr).size[i];
 
   neut_tesr_set_zero (&Tesr2);
-  neut_tesr_memcpy (Tesr, &Tesr2);
+  neut_tesr_memcpy ((*pTesr), &Tesr2);
 
   neut_tesr_rasterscale (&Tesr2, scale[0], scale[1], scale[2]);
 
@@ -138,28 +138,28 @@ nem_meshing_tesr_str (struct IN_M In, struct MESHPARA MeshPara,
   for (k = 1; k <= msize[2]; k++)
     for (j = 1; j <= msize[1]; j++)
       for (i = 1; i <= msize[0]; i++)
-        Mesh[Tesr.Dim].EltElset[++elt] = Tesr2.VoxCell[i][j][k];
+        Mesh[(*pTesr).Dim].EltElset[++elt] = Tesr2.VoxCell[i][j][k];
 
-  neut_mesh_init_elsets (Mesh + Tesr.Dim);
-  neut_mesh_init_elsetlabels (Mesh + Tesr.Dim);
+  neut_mesh_init_elsets (Mesh + (*pTesr).Dim);
+  neut_mesh_init_elsetlabels (Mesh + (*pTesr).Dim);
 
-  neut_mesh_rmelset (Mesh + Tesr.Dim, *pNodes, 0);
+  neut_mesh_rmelset (Mesh + (*pTesr).Dim, *pNodes, 0);
 
-  neut_nodes_rmorphans (pNodes, Mesh + Tesr.Dim, NSet + Tesr.Dim - 1);
+  neut_nodes_rmorphans (pNodes, Mesh + (*pTesr).Dim, NSet + (*pTesr).Dim - 1);
 
-  if (Tesr.CellId)
+  if ((*pTesr).CellId)
   {
-    Mesh[Tesr.Dim].ElsetId = ut_alloc_1d_int (Tesr.CellQty + 1);
-    ut_array_1d_int_memcpy (Tesr.CellId + 1, Tesr.CellQty,
-                            Mesh[Tesr.Dim].ElsetId + 1);
+    Mesh[(*pTesr).Dim].ElsetId = ut_alloc_1d_int ((*pTesr).CellQty + 1);
+    ut_array_1d_int_memcpy ((*pTesr).CellId + 1, (*pTesr).CellQty,
+                            Mesh[(*pTesr).Dim].ElsetId + 1);
   }
 
   if (In.meshpoly && strcmp (In.meshpoly, "all") != 0)
   {
-    if (Mesh[Tesr.Dim].ElsetId)
+    if (Mesh[(*pTesr).Dim].ElsetId)
       ut_print_neperbug ();
 
-    nem_meshing_str_meshcell (In.meshpoly, Tesr, Mesh, pNodes, NSet);
+    nem_meshing_str_meshcell (In.meshpoly, pTesr, Mesh, pNodes, NSet);
   }
 
   nem_reconstruct_mesh (In.dimout, pNodes, Mesh, NULL);

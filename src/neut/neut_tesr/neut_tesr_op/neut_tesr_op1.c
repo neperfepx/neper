@@ -217,22 +217,22 @@ neut_tesr_memcpy_parms (struct TESR Tesr1, struct TESR *pTesr2)
 }
 
 int
-neut_tesr_expr_cells (struct TESR Tesr, char *expr, int **pcell,
+neut_tesr_expr_cells (struct TESR *pTesr, char *expr, int **pcells,
                       int *pcellqty)
 {
   int i, id;
   FILE *file;
   (*pcellqty) = 0;
 
-  if (Tesr.Dim != 3)
+  if ((*pTesr).Dim != 3)
     ut_print_neperbug ();
 
   if (strcmp (expr, "all") == 0)
   {
-    (*pcellqty) = Tesr.CellQty;
-    (*pcell) = ut_alloc_1d_int (*pcellqty);
-    for (i = 0; i < Tesr.CellQty; i++)
-      (*pcell)[i] = i + 1;
+    (*pcellqty) = (*pTesr).CellQty;
+    (*pcells) = ut_alloc_1d_int (*pcellqty);
+    for (i = 0; i < (*pTesr).CellQty; i++)
+      (*pcells)[i] = i + 1;
   }
 
   else if (ut_string_isfilename (expr))
@@ -241,11 +241,12 @@ neut_tesr_expr_cells (struct TESR Tesr, char *expr, int **pcell,
     while (fscanf (file, "%d", &id) != EOF)
     {
       (*pcellqty)++;
-      (*pcell) = ut_realloc_1d_int (*pcell, *pcellqty);
-      (*pcell)[(*pcellqty) - 1] = id;
+      (*pcells) = ut_realloc_1d_int (*pcells, *pcellqty);
+      (*pcells)[(*pcellqty) - 1] = id;
     }
     ut_file_close (file, expr, "r");
   }
+  /*
   else
   {
     int var_qty = 1;
@@ -259,6 +260,14 @@ neut_tesr_expr_cells (struct TESR Tesr, char *expr, int **pcell,
     for (i = 1; i <= Tesr.CellQty; i++)
     {
       vals[0] = i;
+
+      int j;
+      printf ("expr = %s\n", expr);
+      for (j = 0; j < var_qty; j++)
+        printf ("vars[%d] = %s\n", j, vars[j]);
+
+      abort ();
+
       status = ut_math_eval (expr, var_qty, vars, vals, &res);
       if (status == -1)
         abort ();
@@ -267,6 +276,39 @@ neut_tesr_expr_cells (struct TESR Tesr, char *expr, int **pcell,
         (*pcellqty)++;
         (*pcell) = ut_realloc_1d_int (*pcell, *pcellqty);
         (*pcell)[(*pcellqty) - 1] = i;
+      }
+    }
+
+    ut_free_2d_char (&vars, var_qty);
+    ut_free_1d (&vals);
+  }
+  */
+  else
+  {
+    int var_qty;
+    char **vars = NULL;
+    double *vals = NULL;
+
+    neut_tesr_var_list ("cell", &vars, &var_qty);
+    vals = ut_alloc_1d (var_qty);
+
+    (*pcells) = 0;
+    for (i = 1; i <= (*pTesr).CellQty; i++)
+    {
+      int j;
+      for (j = 0; j < var_qty; j++)
+        if (strstr (expr, vars[j]))
+          neut_tesr_var_val_one (*pTesr, "cell", i, vars[j],
+                                 vals + j, NULL);
+
+      double res;
+      int status = ut_math_eval (expr, var_qty, vars, vals, &res);
+      if (status == -1)
+        abort ();
+      if (ut_num_equal (res, 1, 1e-6))
+      {
+        (*pcells) = ut_realloc_1d_int (*pcells, ++(*pcellqty));
+        (*pcells)[(*pcellqty) - 1] = i;
       }
     }
 
@@ -1738,4 +1780,48 @@ neut_tesr_unindex (struct TESR *pTesr)
         }
 
   return;
+}
+
+void
+neut_tesr_resetorigin (struct TESR *pTesr)
+{
+  ut_array_1d_zero ((*pTesr).Origin, 3);
+
+  return;
+}
+
+void
+neut_tesr_resetcellid (struct TESS *pTesr)
+{
+  (*pTesr).CellId = ut_realloc_1d_int ((*pTesr).CellId, (*pTesr).CellQty + 1);
+  ut_array_1d_int_set_id ((*pTesr).CellId, (*pTesr).CellQty + 1);
+
+  return;
+}
+
+int
+neut_tesr_cellexpr_remove (struct TESR *pTesr, char *expr)
+{
+  int i, *cells = NULL, cellqty = 0;
+
+  if ((*pTesr).Dim == 2)
+    abort ();
+
+  neut_tesr_expr_cells (pTesr, expr, &cells, &cellqty);
+
+  if (!(*pTesr).CellId)
+  {
+    (*pTesr).CellId = ut_alloc_1d_int ((*pTesr).CellQty + 1);
+    ut_array_1d_int_set_id ((*pTesr).CellId, (*pTesr).CellQty + 1);
+  }
+
+  for (i = 0; i < cellqty; i++)
+    (*pTesr).CellId[cells[i]] = 0;
+
+  if (cellqty)
+    neut_tesr_renumber_continuous (pTesr);
+
+  ut_free_1d_int (&cells);
+
+  return cellqty;
 }

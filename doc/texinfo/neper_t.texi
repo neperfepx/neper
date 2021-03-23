@@ -848,6 +848,12 @@ adds a buffer of @code{@var{buffx}} void voxels on both sides in the x direction
 a buffer of @code{@var{buffy}} void voxels on both sides in the y direction and
 a buffer of @code{@var{buffz}} void voxels on both sides in the z direction.@*
 @mybullet @samp{2d} transforms a 3D tessellation with 1 voxel along z into a 2D tessellation.@*
+@mybullet @samp{resetorigin} resets the origin to (0@comma{} 0@comma{} 0).@*
+@mybullet @samp{resetcellid} for resetting cell ids (contiguous numbering from 1).@*
+@mybullet @samp{rmcell(@var{expr1}@comma{}@var{expr2}@comma{}@dots{})} for removing cells
+matching expression @code{@var{expr1}}@comma{} @code{@var{expr2}}@comma{} etc.@comma{}
+where expressions are based on the variables defined in @ref{Raster Tessellation Keys}.
+Cell removing operates incrementally through expressions.@*
 Several transformations can be applied successively by combining them @w{with @samp{@SEPNODEP}}.
 ,
 any, none}

@@ -15,5 +15,5 @@
 
 extern void nem_meshing_str_tess (struct TESS Tess, struct NODES *,
                                   struct MESH *Mesh);
-extern void nem_meshing_str_meshcell (char *, struct TESR, struct MESH *,
+extern void nem_meshing_str_meshcell (char *, struct TESR *, struct MESH *,
                                       struct NODES *, struct NSET *);

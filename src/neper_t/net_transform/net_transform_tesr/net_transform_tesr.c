@@ -99,6 +99,34 @@ net_transform_tesr (struct IN_T In, struct TESR *pTesr)
       ut_print_message (0, 2, "Averaging orientations...\n");
       neut_tesr_oriaverage (pTesr);
     }
+    else if (!strcmp (parts[i], "resetorigin"))
+    {
+      ut_print_message (0, 2, "Resetting origin...\n");
+      neut_tesr_resetorigin (pTesr);
+    }
+    else if (!strcmp (parts[i], "resetcellid"))
+    {
+      ut_print_message (0, 2, "Resetting cell ids...\n");
+      neut_tesr_resetorigin (pTesr);
+    }
+    else if (!strncmp (parts[i], "rmcell", 6))
+    {
+      ut_print_message (0, 2, "Removing cells...\n");
+
+      int j, exprqty, qty;
+      char *fct = NULL, **exprs = NULL;
+
+      ut_string_function_expr (parts[i], &fct, &exprs, &exprqty);
+
+      for (j = 0; j < exprqty; j++)
+      {
+        qty = neut_tesr_cellexpr_remove (pTesr, exprs[j]);
+        ut_print_message (0, 3, "Removed %d cells...\n", qty);
+      }
+
+      ut_free_1d_char (&fct);
+      ut_free_2d_char (&exprs, exprqty);
+    }
     else
       ut_print_message (2, 3, "Expression `%s' could not be processed.\n",
                         parts[i]);

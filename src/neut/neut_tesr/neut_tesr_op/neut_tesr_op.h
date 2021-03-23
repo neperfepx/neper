@@ -105,7 +105,7 @@ extern "C"
   extern void neut_tesr_cell_tesr (struct TESR Tesr, int cell,
 				   struct TESR *CellTesr);
 
-  extern int neut_tesr_expr_cells (struct TESR Tesr, char *expr, int **pcell,
+  extern int neut_tesr_expr_cells (struct TESR *pTesr, char *expr, int **pcell,
 				   int *pcellqty);
 
 /// \brief Renumber the cells of a TESR structure to get contiguous numbering.
@@ -156,6 +156,11 @@ extern "C"
   extern void neut_tesr_oriaverage (struct TESR *pTesr);
 
   extern void neut_tesr_unindex (struct TESR *pTesr);
+
+  extern void neut_tesr_resetorigin (struct TESR *pTesr);
+  extern void neut_tesr_resetcellid (struct TESS *pTesr);
+
+  extern int neut_tesr_cellexpr_remove (struct TESR *pTesr, char *expr);
 
 #endif				/* NEUT_TESR_OP_H */
 

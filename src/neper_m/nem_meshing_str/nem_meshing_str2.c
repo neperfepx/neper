@@ -76,15 +76,15 @@ nem_meshing_str_tess (struct TESS Tess, struct NODES *pNodes,
 }
 
 void
-nem_meshing_str_meshcell (char *meshcell, struct TESR Tesr, struct MESH *Mesh,
+nem_meshing_str_meshcell (char *meshcell, struct TESR *pTesr, struct MESH *Mesh,
                           struct NODES *pNodes, struct NSET *NSet)
 {
   int i, cellqty;
   int *cell = NULL;
 
-  neut_tesr_expr_cells (Tesr, meshcell, &cell, &cellqty);
+  neut_tesr_expr_cells (pTesr, meshcell, &cell, &cellqty);
 
-  for (i = 1; i <= Tesr.CellQty; i++)
+  for (i = 1; i <= (*pTesr).CellQty; i++)
     if (ut_array_1d_int_eltpos (cell, cellqty, i) == -1)
       neut_mesh_rmelset (Mesh + 3, *pNodes, i);
 

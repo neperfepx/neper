@@ -8,6 +8,6 @@ extern void nem_meshing_tess_str (struct IN_M In, struct MESHPARA
                                   struct NSET *NSet);
 
 extern void nem_meshing_tesr_str (struct IN_M In, struct MESHPARA
-                                  MeshPara, struct TESR Tesr,
+                                  MeshPara, struct TESR *pTesr,
                                   struct NODES *pNodes, struct MESH *Mesh,
                                   struct NSET *NSet);
