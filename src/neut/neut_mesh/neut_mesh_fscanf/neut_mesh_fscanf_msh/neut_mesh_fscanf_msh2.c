@@ -70,6 +70,9 @@ neut_mesh_fscanf_msh_head (FILE * file, char **pmode)
   else if (strcmp (string, "$EndMeshFormat"))
     abort ();
 
+  if (ut_file_nextstring_test (file, "$MeshVersion"))
+    ut_file_skip (file, 3);
+
   return;
 }
 

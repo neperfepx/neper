@@ -77,6 +77,10 @@ neut_mesh_fprintf_msh_header (FILE * file, char *mode, char *version)
 
   fprintf (file, "$EndMeshFormat\n");
 
+  fprintf (file, "$MeshVersion\n");
+  fprintf (file, "2.2.1\n");
+  fprintf (file, "$EndMeshVersion\n");
+
   return;
 }
 

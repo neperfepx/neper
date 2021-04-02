@@ -740,6 +740,9 @@ and
 $MeshFormat
 2.2 @var{file_type} @var{data_size}
 $EndMeshFormat
+$MeshVersion
+2.2 @var{mesh_version}
+$EndMeshVersion
 $Nodes
 number_of_nodes
 @var{node_id} @var{node_x} @var{node_y} @var{node_z}
@@ -813,6 +816,12 @@ where
 @item @code{@var{data_size}} is an integer equal to the size of the floating point numbers used in the file (= @code{sizeof (double)}).
 
 @item @code{$EndMeshFormat} denotes the end of a mesh format field.
+
+@item @code{$MeshVersion} denotes the beginning of a mesh version field.
+
+@item @code{@var{mesh_version}} is the mesh file version.
+
+@item @code{$EndMeshVersion} denotes the end of a mesh version field.
 
 @item @code{$Nodes} denotes the beginning of a node field.
 
