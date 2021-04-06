@@ -139,19 +139,19 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
                               fasetlist, In.dimout, Bound);
       ut_file_close (file, In.geof, "w");
     }
-  }
 
-  if (Nodes.Periodic && ut_array_1d_int_sum (Nodes.Periodic, 3) > 0
-    && !strcmp (formats[i], "per"))
-  {
-    file = ut_file_open (In.per, "w");
-    if (!strcmp (In.performat, "msh"))
-      neut_mesh_fprintf_per (file, Nodes);
-    else if (!strcmp (In.performat, "plain"))
-      neut_mesh_fprintf_per_plain (file, Nodes);
-    else if (!strcmp (In.performat, "geof"))
-      neut_mesh_fprintf_per_geof (file, Nodes);
-    ut_file_close (file, In.per, "w");
+    if (Nodes.Periodic && ut_array_1d_int_sum (Nodes.Periodic, 3) > 0
+      && !strcmp (formats[i], "per"))
+    {
+      file = ut_file_open (In.per, "w");
+      if (!strcmp (In.performat, "msh"))
+        neut_mesh_fprintf_per (file, Nodes);
+      else if (!strcmp (In.performat, "plain"))
+        neut_mesh_fprintf_per_plain (file, Nodes);
+      else if (!strcmp (In.performat, "geof"))
+        neut_mesh_fprintf_per_geof (file, Nodes);
+      ut_file_close (file, In.per, "w");
+    }
   }
 
   if (Bound.BoundQty > 0)
