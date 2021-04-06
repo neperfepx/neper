@@ -653,7 +653,7 @@ neut_mesh_init_elsetlabels (struct MESH *pMesh)
   (*pMesh).ElsetLabels = ut_alloc_2d_char ((*pMesh).ElsetQty + 1, 20);
 
   for (i = 1; i <= (*pMesh).ElsetQty; i++)
-    sprintf ((*pMesh).ElsetLabels[i], "%s%d", tmp, i);
+    sprintf ((*pMesh).ElsetLabels[i], "%s%d", tmp, (*pMesh).ElsetId ? (*pMesh).ElsetId[i] : i);
 
   ut_free_1d_char (&tmp);
 

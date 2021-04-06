@@ -32,7 +32,7 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
     if (ut_file_nextstring_test (file, "$Periodicity"))
       neut_mesh_fscanf_msh_periodicity (file, pNodes);
 
-    if (ut_file_nextstring_test (file, "$PhysicalNames"))
+    else if (ut_file_nextstring_test (file, "$PhysicalNames"))
       neut_mesh_fscanf_msh_physical (file, pMesh0D, pMesh1D, pMesh2D, pMesh3D);
 
     else if (ut_file_nextstring_test (file, "$ElsetOrientations"))

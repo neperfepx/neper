@@ -30,7 +30,7 @@ net_res_ori (struct IN_T In, struct TESS Tess)
       ut_print_exprbug (In.orides);
 
     if (!strcmp (parts[i], "plain"))
-      neut_ori_fprintf (file, Tess.CellOriDes, Tess.CellOri + 1, Tess.CellQty, NULL);
+      neut_ori_fprintf (file, Tess.CellOriDes, Tess.CellOri + 1, NULL, NULL, Tess.CellQty, NULL);
 
     else if (!strcmp (parts[i], "geof"))
     {

@@ -369,13 +369,21 @@ neut_mesh_fprintf_msh_orientations (FILE *file, struct MESH Mesh)
 
   if (Mesh.ElsetOri)
   {
+    int i, *indexed = ut_alloc_1d_int (Mesh.ElsetQty + 1);
+
     fprintf (file, "$ElsetOrientations\n");
 
-    fprintf (file, "%d %s\n", Mesh.ElsetQty, Mesh.ElsetOriDes);
+    for (i = 1; i <= Mesh.ElsetQty; i++)
+      indexed[i] = (Mesh.Elsets[i][0] > 0);
 
-    neut_ori_fprintf (file, Mesh.ElsetOriDes, Mesh.ElsetOri + 1, Mesh.ElsetQty, "id");
+    fprintf (file, "%d %s\n", ut_array_1d_int_sum (indexed + 1, Mesh.ElsetQty), Mesh.ElsetOriDes);
+
+    neut_ori_fprintf (file, Mesh.ElsetOriDes, Mesh.ElsetOri + 1,
+                      Mesh.ElsetId ? Mesh.ElsetId + 1 : NULL, indexed + 1, Mesh.ElsetQty, "id");
 
     fprintf (file, "$EndElsetOrientations\n");
+
+    ut_free_1d_int (&indexed);
   }
 
   // element
@@ -386,7 +394,7 @@ neut_mesh_fprintf_msh_orientations (FILE *file, struct MESH Mesh)
 
     fprintf (file, "%d %s\n", Mesh.EltQty, Mesh.EltOriDes);
 
-    neut_ori_fprintf (file, Mesh.EltOriDes, Mesh.EltOri + 1, Mesh.EltQty, "id");
+    neut_ori_fprintf (file, Mesh.EltOriDes, Mesh.EltOri + 1, NULL, NULL, Mesh.EltQty, "id");
 
     fprintf (file, "$EndElementOrientations\n");
   }

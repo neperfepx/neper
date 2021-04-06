@@ -28,9 +28,14 @@ extern "C"
 
   extern int neut_ori_expr_desconv (char *expr, char **pdes, char **pconv);
 
-  extern int neut_ori_fscanf (FILE *file, char *desconv, double **q, int qty, char *prefix);
-  extern int neut_ori_fnscanf (char *filename, char *desconv, double **q, int qty, char *prefix, char *mode);
-  extern void neut_ori_fprintf (FILE *file, char *desconv, double **q, int qty, char *prefix);
+  // if ids is defined and has non-zero entries, we use it as an input, to copy
+  // the orientations at the correct locations in q.  It it is defined and has
+  // zero entries, we use it as an output, to copy the ids read from file.
+  extern int neut_ori_fscanf (FILE *file, char *desconv, double **q, int *ids, int qty, char *prefix);
+  extern int neut_ori_fnscanf (char *filename, char *desconv, double **q,
+                               int *ids, int qty, char *prefix, char *mode);
+
+  extern void neut_ori_fprintf (FILE *file, char *desconv, double **q, int *ids, int *indexed, int qty, char *prefix);
 
   extern void neut_ori_desconv_expr (char *des, char *conv, char **pexpr);
   extern void neut_ori_desconv_expr_fepx (char *des, char *conv, char **pexpr);

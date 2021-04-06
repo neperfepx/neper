@@ -285,119 +285,112 @@ neut_ori_desconv_expr_fepx (char *des, char *conv, char **pexpr)
 }
 
 int
-neut_ori_fscanf (FILE *file, char *desconv, double **q, int qty, char *prefix)
+neut_ori_fscanf (FILE *file, char *desconv, double **q, int *ids, int qty, char *prefix)
 {
-  int i, id, status;
+  int i, pos, status;
   double theta;
   double **g = ol_g_alloc ();
   double *tmp = ut_alloc_1d (9);
   char *des = NULL, *conv = NULL;
+  int *ids2 = ut_alloc_1d_int (qty), *idinv = NULL;
+  int idinput = (ids && ut_array_1d_int_sum (ids, qty) > 0);
+
+  if (ids)
+    ut_array_1d_int_inv (ids, qty, &idinv, NULL);
 
   status = neut_ori_expr_desconv (desconv, &des, &conv);
 
   if (status)
     ut_print_exprbug (desconv);
 
-  if (!strcmp (des, "quaternion") || !strcmp (des, "q"))
-    for (i = 0; i < qty; i++)
-    {
-      if (neut_ori_fscanf_id (file, prefix, i, &id) != 1)
-        return -1;
+  for (i = 0; i < qty; i++)
+  {
+    if (neut_ori_fscanf_id (file, prefix, i, ids2 + i) != 1)
+      return -1;
 
-      if (ol_q_fscanf (file, q[id - 1]) != 1)
+    pos = idinput ? idinv[ids2[i]] : i;
+
+    if (pos == -1)
+      abort ();
+
+    if (!strcmp (des, "quaternion") || !strcmp (des, "q"))
+    {
+      if (ol_q_fscanf (file, q[pos]) != 1)
         return -1;
     }
-  else if (!strcmp (des, "euler-bunge") || !strcmp (des, "e"))
-    for (i = 0; i < qty; i++)
+    else if (!strcmp (des, "euler-bunge") || !strcmp (des, "e"))
     {
-      if (neut_ori_fscanf_id (file, prefix, i, &id) != 1)
-        return -1;
-
       if (ol_e_fscanf (file, tmp) != 1)
         return -1;
 
-      ol_e_q (tmp, q[id - 1]);
+      ol_e_q (tmp, q[pos]);
     }
-  else if (!strcmp (des, "euler-roe") || !strcmp (des, "er"))
-    for (i = 0; i < qty; i++)
+    else if (!strcmp (des, "euler-roe") || !strcmp (des, "er"))
     {
-      if (neut_ori_fscanf_id (file, prefix, i, &id) != 1)
-        return -1;
-
       if (ol_e_fscanf (file, tmp) != 1)
         return -1;
 
       ol_er_e (tmp, tmp);
-      ol_e_q (tmp, q[id - 1]);
+      ol_e_q (tmp, q[pos]);
     }
-  else if (!strcmp (des, "euler-kocks") || !strcmp (des, "ek"))
-    for (i = 0; i < qty; i++)
+    else if (!strcmp (des, "euler-kocks") || !strcmp (des, "ek"))
     {
-      if (neut_ori_fscanf_id (file, prefix, i, &id) != 1)
-        return -1;
-
       if (ol_e_fscanf (file, tmp) != 1)
         return -1;
 
       ol_ek_e (tmp, tmp);
-      ol_e_q (tmp, q[id - 1]);
+      ol_e_q (tmp, q[pos]);
     }
-  else if (!strcmp (des, "axis-angle") || !strcmp (des, "rtheta"))
-    for (i = 0; i < qty; i++)
+    else if (!strcmp (des, "axis-angle") || !strcmp (des, "rtheta"))
     {
-      if (neut_ori_fscanf_id (file, prefix, i, &id) != 1)
-        return -1;
-
       if (ol_rtheta_fscanf (file, tmp, &theta) != 1)
         return -1;
 
-      ol_rtheta_q (tmp, theta, q[id - 1]);
+      ol_rtheta_q (tmp, theta, q[pos]);
     }
-  else if (!strcmp (des, "rodrigues") || !strcmp (des, "R"))
-    for (i = 0; i < qty; i++)
+    else if (!strcmp (des, "rodrigues") || !strcmp (des, "R"))
     {
-      if (neut_ori_fscanf_id (file, prefix, i, &id) != 1)
-        return -1;
-
       if (ol_R_fscanf (file, tmp) != 1)
         return -1;
 
-      ol_R_q (tmp, q[id - 1]);
+      ol_R_q (tmp, q[pos]);
     }
-  else if (!strcmp (des, "rotmat") || !strcmp (des, "g"))
-    for (i = 0; i < qty; i++)
+    else if (!strcmp (des, "rotmat") || !strcmp (des, "g"))
     {
-      if (neut_ori_fscanf_id (file, prefix, i, &id) != 1)
-        return -1;
-
       if (ol_g_fscanf (file, g) != 1)
         return -1;
 
-      ol_g_q (g, q[id - 1]);
+      ol_g_q (g, q[pos]);
     }
-  else
-    ut_print_exprbug (desconv);
+    else
+      ut_print_exprbug (desconv);
+  }
 
   if (!strcmp (conv, "passive"))
     for (i = 0; i < qty; i++)
       ol_q_inverse (q[i], q[i]);
 
+  if (ids && !idinput)
+    ut_array_1d_int_memcpy (ids2, qty, ids);
+
   ut_free_1d_char (&des);
   ut_free_1d_char (&conv);
   ut_free_1d (&tmp);
   ol_g_free (g);
+  ut_free_1d_int (&ids2);
+  ut_free_1d_int (&idinv);
 
   return 1;
 }
 
 int
-neut_ori_fnscanf (char *filename, char *desconv, double **q, int qty, char *prefix, char *mode)
+neut_ori_fnscanf (char *filename, char *desconv, double **q, int *ids, int qty, char *prefix, char *mode)
 {
   int status;
 
   FILE *file = ut_file_open (filename, mode);
 
-  status = neut_ori_fscanf (file, desconv, q, qty, prefix);
+  status = neut_ori_fscanf (file, desconv, q, ids, qty, prefix);
 
   ut_file_close (file, filename, mode);
 
@@ -405,7 +398,7 @@ neut_ori_fnscanf (char *filename, char *desconv, double **q, int qty, char *pref
 }
 
 void
-neut_ori_fprintf (FILE *file, char *desconv, double **q0, int qty, char *prefix)
+neut_ori_fprintf (FILE *file, char *desconv, double **q0, int *ids, int *indexed, int qty, char *prefix)
 {
   int i, status;
   double **q = ut_alloc_2d (qty, 4);
@@ -425,58 +418,62 @@ neut_ori_fprintf (FILE *file, char *desconv, double **q0, int qty, char *prefix)
   {
     double *e = ol_e_alloc ();
     for (i = 0; i < qty; i++)
-    {
-      if (prefix && !strcmp (prefix, "id"))
-        fprintf (file, "%d ", i + 1);
+      if (!indexed ||  indexed[i])
+      {
+        if (prefix && !strcmp (prefix, "id"))
+          fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-      ol_q_e (q[i], e);
-      ol_e_fprintf (file, e, "%17.12f");
-    }
+        ol_q_e (q[i], e);
+        ol_e_fprintf (file, e, "%17.12f");
+      }
     ol_e_free (e);
   }
   else if (!strcmp (des, "euler-kocks"))
   {
     double *e = ol_e_alloc ();
     for (i = 0; i < qty; i++)
-    {
-      if (prefix && !strcmp (prefix, "id"))
-        fprintf (file, "%d ", i + 1);
+      if (!indexed ||  indexed[i])
+      {
+        if (prefix && !strcmp (prefix, "id"))
+          fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-      ol_q_e (q[i], e);
-      ol_e_ek (e, e);
-      ol_e_fprintf (file, e, "%17.12f");
-    }
+        ol_q_e (q[i], e);
+        ol_e_ek (e, e);
+        ol_e_fprintf (file, e, "%17.12f");
+      }
     ol_e_free (e);
   }
   else if (!strcmp (des, "euler-roe"))
   {
     double *e = ol_e_alloc ();
     for (i = 0; i < qty; i++)
-    {
-      if (prefix && !strcmp (prefix, "id"))
-        fprintf (file, "%d ", i + 1);
+      if (!indexed ||  indexed[i])
+      {
+        if (prefix && !strcmp (prefix, "id"))
+          fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-      ol_q_e (q[i], e);
-      ol_e_er (e, e);
-      ol_e_fprintf (file, e, "%17.12f");
-    }
+        ol_q_e (q[i], e);
+        ol_e_er (e, e);
+        ol_e_fprintf (file, e, "%17.12f");
+      }
     ol_e_free (e);
   }
   else if (!strcmp (des, "rotmat"))
   {
     double **g = ol_g_alloc ();
     for (i = 0; i < qty; i++)
-    {
-      if (prefix && !strcmp (prefix, "id"))
-        fprintf (file, "%d ", i + 1);
+      if (!indexed ||  indexed[i])
+      {
+        if (prefix && !strcmp (prefix, "id"))
+          fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-      ol_q_g (q[i], g);
-      ut_array_1d_fprintf_nonl (file, g[0], 3, "%15.12f");
-      fprintf (file, " ");
-      ut_array_1d_fprintf_nonl (file, g[1], 3, "%15.12f");
-      fprintf (file, " ");
-      ut_array_1d_fprintf      (file, g[2], 3, "%15.12f");
-    }
+        ol_q_g (q[i], g);
+        ut_array_1d_fprintf_nonl (file, g[0], 3, "%15.12f");
+        fprintf (file, " ");
+        ut_array_1d_fprintf_nonl (file, g[1], 3, "%15.12f");
+        fprintf (file, " ");
+        ut_array_1d_fprintf      (file, g[2], 3, "%15.12f");
+      }
     ol_g_free (g);
   }
   else if (!strcmp (des, "axis-angle"))
@@ -484,49 +481,53 @@ neut_ori_fprintf (FILE *file, char *desconv, double **q0, int qty, char *prefix)
     double *r = ol_r_alloc ();
     double theta;
     for (i = 0; i < qty; i++)
-    {
-      if (prefix && !strcmp (prefix, "id"))
-        fprintf (file, "%d ", i + 1);
+      if (!indexed ||  indexed[i])
+      {
+        if (prefix && !strcmp (prefix, "id"))
+          fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-      ol_q_rtheta (q[i], r, &theta);
-      ol_rtheta_fprintf (file, r, theta, "%17.12f");
-    }
+        ol_q_rtheta (q[i], r, &theta);
+        ol_rtheta_fprintf (file, r, theta, "%17.12f");
+      }
     ol_r_free (r);
   }
   else if (strcmp (des, "angle") == 0)
   {
     double theta;
     for (i = 0; i < qty; i++)
-    {
-      if (prefix && !strcmp (prefix, "id"))
-        fprintf (file, "%d ", i + 1);
+      if (!indexed ||  indexed[i])
+      {
+        if (prefix && !strcmp (prefix, "id"))
+          fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-      ol_q_theta (q[i], &theta);
-      ol_theta_fprintf (file, theta, "%17.12f");
-    }
+        ol_q_theta (q[i], &theta);
+        ol_theta_fprintf (file, theta, "%17.12f");
+      }
   }
   else if (!strcmp (des, "rodrigues"))
   {
     double *R = ol_R_alloc ();
     for (i = 0; i < qty; i++)
-    {
-      if (prefix && !strcmp (prefix, "id"))
-        fprintf (file, "%d ", i + 1);
+      if (!indexed ||  indexed[i])
+      {
+        if (prefix && !strcmp (prefix, "id"))
+          fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-      ol_q_R (q[i], R);
-      ol_R_fprintf (file, R, "%17.12f");
-    }
+        ol_q_R (q[i], R);
+        ol_R_fprintf (file, R, "%17.12f");
+      }
     ol_R_free (R);
   }
   else if (!strcmp (des, "quaternion"))
   {
     for (i = 0; i < qty; i++)
-    {
-      if (prefix && !strcmp (prefix, "id"))
-        fprintf (file, "%d ", i + 1);
+      if (!indexed ||  indexed[i])
+      {
+        if (prefix && !strcmp (prefix, "id"))
+          fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-      ol_q_fprintf (file, q[i], "%17.12f");
-    }
+        ol_q_fprintf (file, q[i], "%17.12f");
+      }
   }
   else
     ut_print_message (2, 1, "Format %s not available.\n", des);

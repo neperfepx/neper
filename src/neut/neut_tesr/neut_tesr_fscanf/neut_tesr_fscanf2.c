@@ -165,7 +165,7 @@ neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file)
         if (fscanf (file, "%s", (*pTesr).CellOriDes) != 1)
           abort ();
 
-        neut_ori_fscanf (file, (*pTesr).CellOriDes, (*pTesr).CellOri + 1, (*pTesr).CellQty, NULL);
+        neut_ori_fscanf (file, (*pTesr).CellOriDes, (*pTesr).CellOri + 1, NULL, (*pTesr).CellQty, NULL);
       }
 
       else if (!strcmp (string, "*oridistrib"))

@@ -93,7 +93,7 @@ neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
   {
     fprintf (file, "  *ori\n");
     fprintf (file, "   %s\n", Tess.CellOriDes);
-    neut_ori_fprintf (file, Tess.CellOriDes, Tess.CellOri + 1, Tess.CellQty, NULL);
+    neut_ori_fprintf (file, Tess.CellOriDes, Tess.CellOri + 1, NULL, NULL, Tess.CellQty, NULL);
   }
 
   if (neut_tess_hascelloridistrib (Tess))

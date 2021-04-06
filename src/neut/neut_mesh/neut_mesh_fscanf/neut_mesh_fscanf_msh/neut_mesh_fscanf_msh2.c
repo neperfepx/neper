@@ -289,7 +289,7 @@ neut_mesh_fscanf_msh_orientations (FILE *file, char *entity, struct MESH *pMesh)
 
       (*pMesh).ElsetOri = ut_alloc_2d ((*pMesh).ElsetQty + 1, 4);
 
-      neut_ori_fscanf (file, (*pMesh).ElsetOriDes, (*pMesh).ElsetOri + 1,
+      neut_ori_fscanf (file, (*pMesh).ElsetOriDes, (*pMesh).ElsetOri + 1, (*pMesh).ElsetId + 1,
                        (*pMesh).ElsetQty, "id");
     }
     else if (!strcmp (entity, "elt"))
@@ -299,7 +299,7 @@ neut_mesh_fscanf_msh_orientations (FILE *file, char *entity, struct MESH *pMesh)
 
       (*pMesh).EltOri = ut_alloc_2d ((*pMesh).EltQty + 1, 4);
 
-      neut_ori_fscanf (file, (*pMesh).EltOriDes, (*pMesh).EltOri + 1,
+      neut_ori_fscanf (file, (*pMesh).EltOriDes, (*pMesh).EltOri + 1, NULL,
                        (*pMesh).EltQty, "id");
     }
     else
