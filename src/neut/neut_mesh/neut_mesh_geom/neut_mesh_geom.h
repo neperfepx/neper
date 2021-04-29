@@ -57,6 +57,13 @@ extern "C"
   extern int neut_mesh_elt_volume (struct NODES Nodes, struct MESH Mesh,
 				   int elt, double *pvol);
 
+/// \brief Get the size of an elt of a mesh.
+///
+///
+///
+  extern int neut_mesh_elt_size (struct NODES Nodes, struct MESH Mesh,
+				 int elt, double *psize);
+
 /// \brief Get the normal of an elt of a 2D mesh.
 ///
 ///
@@ -135,6 +142,9 @@ extern "C"
 ///
   extern int neut_mesh_elset_area (struct NODES Nodes, struct MESH Mesh,
 				   int elset, double *parea);
+
+  extern int neut_mesh_elset_size (struct NODES Nodes, struct MESH Mesh,
+				   int elset, double *psize);
 
 /// \brief Get the area of a 2D mesh.
 ///

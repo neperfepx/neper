@@ -169,6 +169,16 @@ extern void neut_mesh_eltdata_elsetdata (struct NODES Nodes, struct MESH Mesh,
 extern void neut_mesh_eltdata_elsetdata_ori (struct NODES Nodes, struct MESH
     Mesh, double **eltdata, char *crysym, double **elsetdata);
 
+extern void neut_mesh_eltdata_elsetdata_oridis (struct NODES Nodes, struct MESH Mesh,
+                                    double **eltdata, char *crysym, double ***elsetevect,
+                                    double **elseteval);
+
+extern void neut_mesh_elset_olset (struct NODES Nodes, struct MESH Mesh,
+                       double **EltOri, char *crysym, int elset, struct OL_SET *pOSet);
+
+extern void neut_mesh_elts_olset (struct NODES Nodes, struct MESH Mesh,
+                       double **EltOri, char *crysym, int* elts, int eltqty, struct OL_SET *pOSet);
+
 #endif /* NEUT_MESH_GEN_H */
 
 #ifdef __cplusplus

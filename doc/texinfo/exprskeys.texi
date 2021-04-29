@@ -678,6 +678,17 @@ Available keys for points are provided below.
 
 A result of the simulation directory can be invoked simply from its name (@pxref{Simulation Directory (@file{.sim})}).  A component of a vectorial or tensorial result can be invoked by prefixing the component to the name, as in @code{coo1}, @code{stress11}, etc.  For a symmetrical tensor, both @code{@var{tij}} and @code{@var{tji}} are valid.  The type of a result of the simulation directory is determined automatically.
 
+Elset results can be obtained from the element results, by averaging or other statistical treatments.
+Available results / keys for elsets and concerning orientation distributions are provided below.
+
+@multitable @columnfractions 0.23 0.77
+  @headitem Key     @tab Descriptor
+  @item @code{ori} @tab average orientation
+  @item @code{oridisanisoangles} @tab orientation distribution anisotropy / principal angles@footnote{See @cite{R Quey, JH Driver, PR Dawson, Intra-grain orientation distributions in hot-deformed aluminium: orientation dependence and relation to deformation mechanisms, Journal of the Mechanics and Physics of Solids, vol. 84, pp. 506-524, 2015}.}
+  @item @code{oridisanisoaxes}   @tab orientation distribution anisotropy / principal axes
+  @item @code{oridisanisofact}   @tab orientation distribution anisotropy factor
+@end multitable
+
 @node Rotations and Orientations
 @section Rotations and Orientations
 

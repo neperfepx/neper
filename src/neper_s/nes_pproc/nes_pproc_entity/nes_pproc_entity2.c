@@ -181,17 +181,7 @@ nes_pproc_entity_eltres (struct SIM *pSim, struct TESS Tess,
 
     file = ut_file_open (filename, "W");
 
-    if (strcmp (type, "ori"))
-    {
-      eltdata = ut_alloc_2d (Mesh[3].EltQty + 1, colqty);
-      elsetdata = ut_alloc_2d (entityqty + 1, colqty);
-      ut_array_2d_fnscanf (simfile, eltdata + 1, Mesh[3].EltQty, colqty, "R");
-      neut_mesh_eltdata_elsetdata (*pNodes, Mesh[3], eltdata, colqty, elsetdata);
-
-      for (i = 1; i <= entityqty; i++)
-        ut_array_1d_fprintf (file, elsetdata[i], colqty, "%.12f");
-    }
-    else
+    if (!strcmp (res, "ori"))
     {
       if (!Tess.CellCrySym)
         ut_print_message (2, 5, "\nCrystal symmetry not defined.\n");
@@ -202,6 +192,40 @@ nes_pproc_entity_eltres (struct SIM *pSim, struct TESS Tess,
       neut_mesh_eltdata_elsetdata_ori (*pNodes, Mesh[3], eltdata, Tess.CellCrySym, elsetdata);
 
       neut_ori_fprintf (file, (*pSim).OriDes, elsetdata + 1, NULL, NULL, entityqty, NULL);
+    }
+
+    else if (!strncmp (res, "oridis", 6))
+    {
+      double ***evect = ut_alloc_3d (Mesh[3].ElsetQty + 1, 3, 3);
+      double **eval = ut_alloc_2d (Mesh[3].ElsetQty + 1, 3);
+
+      eltdata = ut_alloc_2d (Mesh[3].EltQty + 1, 4);
+      neut_ori_fnscanf (simfile, (*pSim).OriDes, eltdata + 1, NULL, Mesh[3].EltQty, NULL, "R");
+      neut_mesh_eltdata_elsetdata_oridis (*pNodes, Mesh[3], eltdata, Tess.CellCrySym, evect, eval);
+
+      for (i = 1; i <= entityqty; i++)
+      {
+        if (!strcmp (res, "oridisanisoangles"))
+          ut_array_1d_fprintf (file, eval[i], 3, "%.12f");
+        else if (!strcmp (res, "oridisanisoaxes"))
+          ut_array_2d_fprintf_oneline (file, evect[i], 3, 3, "%.12f");
+        else if (!strcmp (res, "oridisanisofact"))
+          fprintf (file, "%.12f\n", eval[i][0] / pow (ut_array_1d_prod (eval[i], 3), 1. / 3));
+      }
+
+      ut_free_3d (&evect, Mesh[3].ElsetQty + 1, 3);
+      ut_free_2d (&eval, Mesh[3].ElsetQty + 1);
+    }
+
+    else
+    {
+      eltdata = ut_alloc_2d (Mesh[3].EltQty + 1, colqty);
+      elsetdata = ut_alloc_2d (entityqty + 1, colqty);
+      ut_array_2d_fnscanf (simfile, eltdata + 1, Mesh[3].EltQty, colqty, "R");
+      neut_mesh_eltdata_elsetdata (*pNodes, Mesh[3], eltdata, colqty, elsetdata);
+
+      for (i = 1; i <= entityqty; i++)
+        ut_array_1d_fprintf (file, elsetdata[i], colqty, "%.12f");
     }
 
     ut_file_close (file, filename, "W");

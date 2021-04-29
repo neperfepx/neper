@@ -530,10 +530,13 @@ neut_sim_res_rescol (struct SIM Sim, char *entity, char *res, char **pres, int *
 }
 
 int
-neut_sim_res_file (struct SIM Sim, char *entity_in, char *inres, char *filename)
+neut_sim_res_file (struct SIM Sim, char *entity_in, char *inres0, char *filename)
 {
   int i, status = -1, col, varqty, step;
   char *entity = NULL, *basename = NULL, *res = NULL, **vars = NULL, **vals = NULL;
+  char *inres = NULL;
+
+  ut_string_string (strncmp (inres0, "ori", 3) ? inres0 : "ori", &inres);
 
   if (!strncmp (inres, "file(", 5))
   {
@@ -585,6 +588,7 @@ neut_sim_res_file (struct SIM Sim, char *entity_in, char *inres, char *filename)
   ut_free_1d_char (&res);
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
+  ut_free_1d_char (&inres);
 
   return status;
 }
@@ -665,6 +669,9 @@ neut_sim_res_exist (struct SIM Sim, char *entity, char *res, char **pres, int *p
   if (!status && !strcmp (entity, "elset"))
   {
     status = neut_sim_res_exist (Sim, "elt3d", res, pres, pcol);
+    if (!strncmp (res, "ori", 3))
+      status = neut_sim_res_exist (Sim, "elt3d", "ori", pres, pcol);
+
     if (status == 1)
       status = 3;
   }

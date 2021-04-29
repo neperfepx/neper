@@ -7,7 +7,7 @@
 
 @MS{} is the module for post-processing simulation results.  It can first be used to reformat an FEPX raw result directory into a human-friendly @dfn{simulation directory} (@pxref{Simulation Directory (@file{.sim})}), which is as simple as running @samp{neper -S @var{fepx_res_dir}}, where @samp{@var{fepx_res_dir}} is the FEPX raw result directory.  All FEPX raw results are reformatted by default, but a selection of results can also be specified.
 @c
-@MS{} also enables post-processing, through the computation of new results from mesh results or existing simulation results.  Results can also be imported from external files.  The results can be assigned names and defined from general expressions, such as in @samp{energy:0.1234*(crss-crss(step=0))^2}.
+@MS{} also enables post-processing, through the computation of new results from mesh results or existing simulation results.  Results can be written for the nodes, elements and elsets.  Elset results are obtained from the element results, by averaging or other statistical treatments.  Results can also be imported from external files.  The results can be assigned names and defined from general expressions, such as in @samp{energy:0.1234*(crss-crss(step=0))^2}.
 @c
 The simulation directory can be loaded by @mV{} for result visualization.
 
@@ -93,7 +93,7 @@ or any expression based on the mesh or simulation results (the mesh result can b
 any variables listed in @ref{Mesh Keys}).
 To use a simulation result at a specific step@comma{} use @samp{@var{res}(step=@var{step})}@comma{} where @samp{@var{step}} is the step number.
 To define a name corresponding to a result@comma{} use @samp{@var{name}:@var{expression}}@comma{} where @var{name} is the name and @var{expression} is its expression.
-To remove a result@comma{} use @samp{!@var{res}}@comma{} where @samp{@var{res}} is the result.@footnote{The expression must be enclosed in single quotes.}.
+To remove a result@comma{} use @samp{!@var{res}}@comma{} where @samp{@var{res}} is the result.@footnote{The expression must be enclosed in single quotes.}
 To provide several values@comma{} combine them @w{with @samp{@SEPNODEP{}}}.,
 any, inputres}
 
@@ -108,7 +108,7 @@ or any expression based on the mesh or simulation results (the mesh result can b
 any variables listed in @ref{Mesh Keys}).
 To use the simulation result corresponding to a specific step@comma{} use @samp{@var{res}(step=@var{step})}@comma{} where @samp{@var{step}} is the step number.
 To define a name corresponding to a result@comma{} use @samp{@var{name}:@var{expression}}@comma{} where @var{name} is the name and @var{expression} is its expression.
-To remove a result@comma{} use @samp{!@var{res}}@comma{} where @samp{@var{res}} is the result.@footnote{The expression must be enclosed in single quotes.}.
+To remove a result@comma{} use @samp{!@var{res}}@comma{} where @samp{@var{res}} is the result.@footnote{The expression must be enclosed in single quotes.}
 To provide several values@comma{} combine them @w{with @samp{@SEPNODEP{}}}.,
 any, inputres}
 
@@ -120,6 +120,7 @@ by volume-weighted averaging@footnote{Orientations (@code{ori}) are properly ave
 @samp{@var{res}:file(@var{basename})} for importing results from files of basename @file{@var{basename}} (the files of the different steps must be available as @file{@var{basename}.step*})@comma{}
 or any expression based on the mesh or simulation results (the mesh result can be
 any variables listed in @ref{Mesh Keys}).
+Orientation distribution results can be obtained (@pxref{Simulation Results}).
 To use the simulation result corresponding to a specific step@comma{} use @samp{@var{res}(step=@var{step})}@comma{} where @samp{@var{step}} is the step number.
 To define a name corresponding to a result@comma{} use @samp{@var{name}:@var{expression}}@comma{} where @var{name} is the name and @var{expression} is its expression.
 To remove a result@comma{} use @samp{!@var{res}}@comma{} where @samp{@var{res}} is the result.@footnote{The expression must be enclosed in single quotes.}.

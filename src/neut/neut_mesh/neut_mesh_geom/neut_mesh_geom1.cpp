@@ -1487,3 +1487,29 @@ neut_mesh_elset_bbox (struct NODES Nodes, struct MESH Mesh, int elset, double **
 
   return;
 }
+
+int
+neut_mesh_elt_size (struct NODES Nodes, struct MESH Mesh, int elt, double *psize)
+{
+  if (Mesh.Dimension == 2)
+    neut_mesh_elt_area (Nodes, Mesh, elt, psize);
+  else if (Mesh.Dimension == 3)
+    neut_mesh_elt_volume (Nodes, Mesh, elt, psize);
+  else
+    abort ();
+
+  return 0;
+}
+
+int
+neut_mesh_elset_size (struct NODES Nodes, struct MESH Mesh, int elset, double *psize)
+{
+  if (Mesh.Dimension == 2)
+    neut_mesh_elset_area (Nodes, Mesh, elset, psize);
+  else if (Mesh.Dimension == 3)
+    neut_mesh_elset_volume (Nodes, Mesh, elset, psize);
+  else
+    abort ();
+
+  return 0;
+}

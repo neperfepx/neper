@@ -95,6 +95,7 @@ add_library(neut
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_inp/neut_mesh_fprintf_inp2.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_scotch/neut_mesh_fprintf_scotch1.c
 ./neut_mesh/neut_mesh_op/neut_mesh_op.c
+./neut_mesh/neut_mesh_ori/neut_mesh_ori1.c
 ./neut_mesh/neut_mesh_geom/neut_mesh_geom1.cpp
 ./neut_mesh/neut_mesh_geom/neut_mesh_geom2.cpp
 ./neut_mesh/neut_mesh_topo/neut_mesh_topo.c
