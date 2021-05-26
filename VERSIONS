@@ -1,5 +1,6 @@
-New in 4.1.3-11 (29 Apr 2021):
-- module -T: added -transform resetorigin, resetcellid and rmcell for tesrs.
+New in 4.1.3-12 (26 May 2021):
+- module -T: added -transform resetorigin, resetcellid and rmcell for tesrs,
+  added -transform resetlabels, made minor improvements.
 - module -M: multithreaded hex meshing, fixed -faset and bumped msh version
   file to 2.2.1 accordingly, made minor fixes.
 - module -S: added -elsetres oridisanisoaxes, oridisanisoangles and

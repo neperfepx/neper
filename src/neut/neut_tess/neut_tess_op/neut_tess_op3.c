@@ -23,6 +23,7 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
     double *tmp = ut_alloc_1d (6);
     double *cst = ut_alloc_1d (2);
     int *id = ut_alloc_1d_int (6);
+    int fixqty = 0;
 
     for (i = 1; i <= 3; i++)
     {
@@ -39,8 +40,23 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
         ut_array_1d_int_reverseelts (id, 2);
 
       for (j = 0; j < 2; j++)
-        sprintf ((*pTess).DomFaceLabel[id[j]], "%c%d", 'x' + i - 1, j);
+      {
+        // In the case of a rotated/scaled domain, it may not be possible
+        // to determine which is which.  If a face has already been assigned
+        // a label, we set it to the default 'f*'.
+        if (strlen ((*pTess).DomFaceLabel[id[j]]) == 0)
+          sprintf ((*pTess).DomFaceLabel[id[j]], "%c%d", 'x' + i - 1, j);
+        else
+          sprintf ((*pTess).DomFaceLabel[id[j]], "f%d", ++fixqty);
+      }
     }
+
+    // In the case of a rotated/scaled domain, it may not be possible
+    // to determine which is which.  If a face has not been assigned
+    // a label, we set it to the default 'f*'.
+    for (i = 1; i <= 6; i++)
+      if (strlen ((*pTess).DomFaceLabel[i]) == 0)
+        sprintf ((*pTess).DomFaceLabel[i], "f%d", ++fixqty);
 
     ut_free_1d (&tmp);
     ut_free_1d_int (&id);
@@ -134,6 +150,7 @@ neut_tess_init_domain_label_2d (struct TESS *pTess)
     double *cst = ut_alloc_1d (2);
     int *id = ut_alloc_1d_int (6);
     double **DomEdgeEq = ut_alloc_2d (5, 3);
+    int fixqty = 0;
 
     for (j = 1; j <= 4; j++)
     {
@@ -159,8 +176,23 @@ neut_tess_init_domain_label_2d (struct TESS *pTess)
         ut_array_1d_int_reverseelts (id, 2);
 
       for (j = 0; j < 2; j++)
-        sprintf ((*pTess).DomEdgeLabel[id[j]], "%c%d", 'x' + i - 1, j);
+      {
+        // In the case of a rotated/scaled domain, it may not be possible
+        // to determine which is which.  If an edge has already been assigned
+        // a label, we set it to the default 'f*'.
+        if (strlen ((*pTess).DomEdgeLabel[id[j]]) == 0)
+          sprintf ((*pTess).DomEdgeLabel[id[j]], "%c%d", 'x' + i - 1, j);
+        else
+          sprintf ((*pTess).DomEdgeLabel[id[j]], "f%d", ++fixqty);
+      }
     }
+
+    // In the case of a rotated/scaled domain, it may not be possible
+    // to determine which is which.  If an edge has not been assigned
+    // a label, we set it to the default 'f*'.
+    for (i = 1; i <= 4; i++)
+      if (strlen ((*pTess).DomEdgeLabel[i]) == 0)
+        sprintf ((*pTess).DomEdgeLabel[i], "f%d", ++fixqty);
 
     ut_free_1d (&tmp);
     ut_free_1d_int (&id);

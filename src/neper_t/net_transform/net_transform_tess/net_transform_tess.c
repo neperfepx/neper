@@ -141,6 +141,12 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
       neut_tess_free (&Tess2);
     }
 
+    else if (!strcmp (parts[i], "resetlabels"))
+    {
+      ut_print_message (0, 2, "Resetting labels...\n");
+      neut_tess_init_domain_label (pTess);
+    }
+
     else
       ut_print_message (1, 3, "Skipping `%s'...\n", parts[i]);
   }

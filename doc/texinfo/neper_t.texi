@@ -808,6 +808,7 @@ matching expression @code{@var{expr1}}@comma{} @code{@var{expr2}}@comma{} etc.@c
 where expressions are based on the variables defined in @ref{Tessellation Keys}.
 Cell removing operates incrementally through expressions.@*
 @mybullet @samp{resetcellid} for resetting cell ids (contiguous numbering from 1).@*
+@mybullet @samp{resetlabels} for resetting the domain face@comma{} edge and vertex labels.@*
 @*
 The following transformations apply to a raster tessellation:@*
 @mybullet @samp{scale(@var{x_fact}@comma{}@var{y_fact}@comma{}@var{z_fact})}
