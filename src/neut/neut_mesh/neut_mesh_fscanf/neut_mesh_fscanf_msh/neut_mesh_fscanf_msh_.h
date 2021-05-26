@@ -10,7 +10,7 @@
 #include"ut.h"
 #include"neut.h"
 
-extern void neut_mesh_fscanf_msh_head (FILE *, char **);
+extern void neut_mesh_fscanf_msh_head (FILE *, char **, int *);
 extern void neut_mesh_fscanf_msh_nodes (FILE *, char *, struct NODES *, int **);
 extern void neut_mesh_fscanf_msh_nodes_head (FILE *, int *);
 extern void neut_mesh_fscanf_msh_nodes_prop (FILE *, char *, struct NODES *, int *);

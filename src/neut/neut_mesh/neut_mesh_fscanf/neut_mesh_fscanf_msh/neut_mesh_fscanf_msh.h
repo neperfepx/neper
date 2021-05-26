@@ -14,14 +14,14 @@ extern "C"
 				    struct MESH *pMesh1D,
 				    struct MESH *pMesh2D,
 				    struct MESH *pMesh3D,
-				    struct MESH *pMeshCo);
+				    struct MESH *pMeshCo, int *ptopology);
 
   extern void neut_mesh_fnscanf_msh (char *filename, struct NODES *pNodes,
 					 struct MESH *pMesh0D,
 					 struct MESH *pMesh1D,
 					 struct MESH *pMesh2D,
 					 struct MESH *pMesh3D,
-					 struct MESH *pMeshCo);
+					 struct MESH *pMeshCo, int *ptopology);
 
 #endif				// NEUT_MESH_FSCANF_GMSH
 

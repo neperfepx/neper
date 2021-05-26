@@ -743,6 +743,9 @@ $EndMeshFormat
 $MeshVersion
 2.2 @var{mesh_version}
 $EndMeshVersion
+$Topology
+reconstruct_topology
+$EndTopology
 $Nodes
 number_of_nodes
 @var{node_id} @var{node_x} @var{node_y} @var{node_z}
@@ -822,6 +825,12 @@ where
 @item @code{@var{mesh_version}} is the mesh file version.
 
 @item @code{$EndMeshVersion} denotes the end of a mesh version field.
+
+@item @code{$Topology} denotes the beginning of an optional topology field.
+
+@item @code{@var{reconstruct_topology}} is a boolean indicating whether the topology is to be reconstructed upon parsing or not (use @samp{0} to solve parsing issues).
+
+@item @code{$EndTopology} denotes the end of an optional topology field.
 
 @item @code{$Nodes} denotes the beginning of a node field.
 

@@ -305,7 +305,7 @@ neut_sim_init_elsetqty (struct SIM *pSim)
   for (i = 0; i < 5; i++)
     neut_mesh_set_zero (Mesh + i);
 
-  neut_mesh_fnscanf_msh (filename, &Nodes, Mesh, Mesh + 1, Mesh + 2, Mesh + 3, Mesh + 4);
+  neut_mesh_fnscanf_msh (filename, &Nodes, Mesh, Mesh + 1, Mesh + 2, Mesh + 3, Mesh + 4, NULL);
   (*pSim).ElsetQty = Mesh[3].ElsetQty;
 
   neut_nodes_free (&Nodes);

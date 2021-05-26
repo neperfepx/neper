@@ -39,7 +39,7 @@ nes_loadmesh (struct SIM Sim, struct NODES *pNodes, struct MESH *pMesh)
   sprintf (filename, "%s/inputs/%s", Sim.simdir, Sim.msh);
 
   file = ut_file_open (filename, "R");
-  neut_mesh_fscanf_msh (file, pNodes, NULL, NULL, NULL, pMesh, NULL);
+  neut_mesh_fscanf_msh (file, pNodes, NULL, NULL, NULL, pMesh, NULL, NULL);
   ut_file_close (file, filename, "R");
 
   ut_free_1d_char (&filename);

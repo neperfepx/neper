@@ -5,10 +5,13 @@
 #include"neut_mesh_fscanf_msh_.h"
 
 void
-neut_mesh_fscanf_msh_head (FILE * file, char **pmode)
+neut_mesh_fscanf_msh_head (FILE * file, char **pmode, int *ptopology)
 {
   int status, type;
   char string[1000];
+
+  if (ptopology)
+    (*ptopology) = 1;
 
   /* Reading of the 2 first strings, which must be "$MeshFormat" and "2". */
   if (fscanf (file, "%s", string) != 1 || strcmp (string, "$MeshFormat") != 0)
@@ -72,6 +75,18 @@ neut_mesh_fscanf_msh_head (FILE * file, char **pmode)
 
   if (ut_file_nextstring_test (file, "$MeshVersion"))
     ut_file_skip (file, 3);
+
+  if (ut_file_nextstring_test (file, "$Topology"))
+  {
+    ut_file_skip (file, 1);
+
+    if (ptopology)
+      fscanf (file, "%d", ptopology);
+    else
+      ut_file_skip (file, 1);
+
+    ut_file_skip (file, 1);
+  }
 
   return;
 }

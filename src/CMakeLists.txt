@@ -7,7 +7,7 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"4.1.3-12\")
+set(NEPER_VERSION \"4.1.3-13\")
 project(neper)
 
 # should we use the optional libraries?

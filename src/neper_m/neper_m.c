@@ -95,12 +95,14 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   // Loading input mesh (remeshing and / or transport) ###
   if (In.mesh)
   {
+    int topology;
+
     ut_print_message (0, 2, "Loading mesh...\n");
     neut_mesh_fnscanf_msh (In.mesh, &RNodes, RMesh, RMesh + 1, RMesh + 2,
-                           RMesh + 3, RMesh + 4);
+                           RMesh + 3, RMesh + 4, &topology);
     nem_input_init_dim_mesh (&In, RMesh);
 
-    if (!strcmp (In.elttype, "tri"))
+    if (!strcmp (In.elttype, "tri") && topology)
     {
       ut_print_message (0, 2, "Reconstructing topology...\n");
       nem_reconstruct_mesh ("all", &RNodes, RMesh, &Tess);

@@ -7,7 +7,8 @@
 void
 neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
                       struct MESH *pMesh1D, struct MESH *pMesh2D,
-                      struct MESH *pMesh3D, struct MESH *pMeshCo)
+                      struct MESH *pMesh3D, struct MESH *pMeshCo,
+                      int *ptopology)
 {
   int *node_nbs = NULL;
   char *mode = NULL;
@@ -20,7 +21,7 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
   neut_mesh_free (pMesh3D);
   neut_mesh_free (pMeshCo);
 
-  neut_mesh_fscanf_msh_head (file, &mode);
+  neut_mesh_fscanf_msh_head (file, &mode, ptopology);
 
   neut_mesh_fscanf_msh_nodes (file, mode, pNodes, &node_nbs);
 
@@ -65,7 +66,8 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
 void
 neut_mesh_fnscanf_msh (char *name, struct NODES *pNodes, struct MESH *pMesh0D,
                        struct MESH *pMesh1D, struct MESH *pMesh2D,
-                       struct MESH *pMesh3D, struct MESH *pMeshCo)
+                       struct MESH *pMesh3D, struct MESH *pMeshCo,
+                       int *ptopology)
 {
   FILE *file = NULL;
   char **list = NULL;
@@ -76,7 +78,7 @@ neut_mesh_fnscanf_msh (char *name, struct NODES *pNodes, struct MESH *pMesh0D,
   file = ut_file_open (list[0], "r");
 
   neut_mesh_fscanf_msh (file, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D,
-                        pMeshCo);
+                        pMeshCo, ptopology);
 
   ut_file_close (file, list[0], "r");
 
