@@ -61,6 +61,10 @@ nes_pproc_entity (struct IN_S In, struct SIM *pSim, struct TESS Tess,
       else if (expr && !strncmp (expr, "file(", 5))
         nes_pproc_entity_file (pSim, entity, dir, result, expr);
 
+      // result is a known result
+      else if (!strcmp (entity, "node") && !strcmp (result, "disp"))
+        nes_pproc_entity_known (pSim, entity, entityqty, dir, result);
+
       // result is an expression
       else
         nes_pproc_entity_expr (pSim, Tess, pNodes, Mesh, entity, entityqty, dir, result, expr);

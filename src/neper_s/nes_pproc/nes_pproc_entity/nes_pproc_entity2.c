@@ -249,6 +249,63 @@ nes_pproc_entity_eltres (struct SIM *pSim, struct TESS Tess,
 }
 
 void
+nes_pproc_entity_known (struct SIM *pSim, char *entity, int entityqty,
+                        char *dir, char *res)
+{
+  int step;
+  char *simfile = ut_alloc_1d_char (1000);
+  char *filename = ut_alloc_1d_char (1000);
+  char *prev = ut_alloc_1d_char (1000);
+  FILE *file = NULL;
+
+  if (!strcmp (entity, "node") && !strcmp (res, "disp"))
+  {
+    double ***coo = ut_alloc_3d (2, entityqty, 3);
+    double **disp = ut_alloc_2d (entityqty, 3);
+
+    neut_sim_setstep (pSim, 0);
+
+    neut_sim_res_file (*pSim, "node", "coo", simfile);
+
+    ut_array_2d_fnscanf (simfile, coo[0], entityqty, 3, "R");
+
+    for (step = 0; step <= (*pSim).StepQty; step++)
+    {
+      neut_sim_setstep (pSim, step);
+
+      neut_sim_res_file (*pSim, "node", "coo", simfile);
+
+      if (!ut_file_exist (simfile))
+        abort ();
+
+      ut_array_2d_fnscanf (simfile, coo[1], entityqty, 3, "R");
+
+      ut_array_2d_sub (coo[0], coo[1], entityqty, 3, disp);
+
+      sprintf (filename, "%s/%s/%s.step%d", dir, res, res, step);
+
+      file = ut_file_open (filename, "W");
+      ut_array_2d_fprintf (file, disp, entityqty, 3, "%.12f");
+      ut_file_close (file, filename, "W");
+
+      ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1, "%3.0f%%", prev);
+    }
+
+    ut_free_3d (&coo, 2, entityqty);
+    ut_free_2d (&disp, entityqty);
+  }
+
+  neut_sim_addres (pSim, entity, res, NULL, 1);
+  neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
+
+  ut_free_1d_char (&simfile);
+  ut_free_1d_char (&filename);
+  ut_free_1d_char (&prev);
+
+  return;
+}
+
+void
 nes_pproc_entity_expr (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
                        struct MESH *Mesh, char *entity, int entityqty,
                        char *dir, char *res, char *expr)

@@ -28,6 +28,9 @@ extern void nes_pproc_entity_eltres (struct SIM *pSim, struct TESS Tess, struct 
                                      struct MESH *Mesh, char *entity,
                                      int entityqty, char *dir, char *res);
 
+extern void nes_pproc_entity_known (struct SIM *pSim, char *entity, int entityqty,
+                                    char *dir, char *res);
+
 extern void nes_pproc_entity_expr (struct SIM *pSim, struct TESS Tess,
                                    struct NODES *pNodes, struct MESH *Mesh,
                                    char *entity, int entityqty, char *dim,
