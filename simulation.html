@@ -2,27 +2,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Simulation &#8212; Neper 4.1.2 documentation</title>
+    <title>Simulation &#8212; Neper 4.2.0 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '4.1.2',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="shortcut icon" href="_static/neper.ico"/>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -33,9 +22,12 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
 
-  </head>
-  <body>
+  </head><body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -48,7 +40,7 @@
         </button>
         <a class="navbar-brand" href="index.html">
           Neper</a>
-        <span class="navbar-text navbar-version pull-left"><b>version 4.1.2 (28 Jan 2021)</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>version 4.2.0 (28 Jan 2021)</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -198,7 +190,7 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12 content">
+    <div class="body col-md-12 content" role="main">
       
   <div class="section" id="simulation">
 <span id="simulation-link"></span><h1>Simulation<a class="headerlink" href="#simulation" title="Permalink to this headline">¶</a></h1>
@@ -217,11 +209,11 @@ input by module -V for advanced visualization.</p>
 <div class="section" id="generalities">
 <h2><a class="toc-backref" href="#id1">Generalities</a><a class="headerlink" href="#generalities" title="Permalink to this headline">¶</a></h2>
 <p>The first primary capability is to convert FEPX raw simulation results into a simulation directory, which is as simple as running</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -S jobdir
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ neper -S jobdir
 </pre></div>
 </div>
 <p>The resulting simulation directory (jobdir.sim) contains both the simulation input and results, and is structured as follows.  Result files are ASCII files and are provided at each simulation step.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>jobdir.sim
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>jobdir.sim
 ├── inputs
 │   ├── simulation.config
 │   ├── simulation.msh
@@ -255,11 +247,11 @@ input by module -V for advanced visualization.</p>
 <div class="section" id="computing-new-nodal-or-elemental-results">
 <h2><a class="toc-backref" href="#id2">Computing new nodal or elemental results</a><a class="headerlink" href="#computing-new-nodal-or-elemental-results" title="Permalink to this headline">¶</a></h2>
 <p>Nodal or elemental results can be added to the simulation directory.  The data can be mesh results (as also available through Neper -M’s -stat* options), simulation subresults (such as vector or tensor components), or new results defined by mathematical expressions based on mesh or simulation results. The results can be assigned names. Existing results at a specific step can be accessed using (step=…).</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -S jobdir.sim -eltres vol,stress33,energy:0.1234*(crss-crss(step=0))^2&quot;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ neper -S jobdir.sim -eltres vol,stress33,energy:0.1234*(crss-crss(step=0))^2&quot;
 </pre></div>
 </div>
 <p>The results add to the simulation directory, which becomes</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>jobdir.sim
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>jobdir.sim
 ├── inputs
 │   ├── simulation.config
 │   ├── simulation.msh
@@ -308,11 +300,11 @@ input by module -V for advanced visualization.</p>
 <div class="section" id="computing-elset-results">
 <h2><a class="toc-backref" href="#id3">Computing elset results</a><a class="headerlink" href="#computing-elset-results" title="Permalink to this headline">¶</a></h2>
 <p>Elset results can be computed from the elemental results of the simulation directory.  This is simply done by volume-weighted averaging (orientations are also properly averaged, using quaternions). The results are written to directory “elsets”.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -S jobdir.sim -elsetres stress,stress33
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ neper -S jobdir.sim -elsetres stress,stress33
 </pre></div>
 </div>
 <p>The results add to the simulation directory, which becomes</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>jobdir.sim
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>jobdir.sim
 ├── inputs
 │   ├── simulation.config
 │   ├── simulation.msh
@@ -372,11 +364,11 @@ input by module -V for advanced visualization.</p>
 <div class="section" id="removing-results">
 <h2><a class="toc-backref" href="#id4">Removing results</a><a class="headerlink" href="#removing-results" title="Permalink to this headline">¶</a></h2>
 <p>Results can be removed by preceding them by “!” (note the single quotes, below).</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>$ neper -S jobdir.sim -eltres &#39;!stress,!stress33,!vol,!strain-eq&#39; -elsetres &#39;!stress,!stress33&#39;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ neper -S jobdir.sim -eltres &#39;!stress,!stress33,!vol,!strain-eq&#39; -elsetres &#39;!stress,!stress33&#39;
 </pre></div>
 </div>
 <p>The simulation directory becomes</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>jobdir.sim
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>jobdir.sim
 ├── inputs
 │   ├── simulation.config
 │   ├── simulation.msh

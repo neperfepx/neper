@@ -23,9 +23,29 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2021
 ----
 
+- C-N Nguyen, G Cailletaud, F Barbe, B Marini, D-D Nguyen and H-T Phan, *Identification of crystal plasticity parameters for a non-irradiated and irradiated A508 bainite steel*, **Metallurgical Research and Technology**, doi://10.1051/metal/2021006.
+- S El Shawish, T Mede, J Hure, *A single grain boundary parameter to characterize normal stress fluctuations in materials with elastic cubic grains*, **European Journal of Mechanics-A/Solids**, doi://10.1016/j.euromechsol.2021.104293.
+- Y Liu, MK Kalkowski, M Huang, MJS Lowe, V Samaitis, V Cicenas and A Schumm, *Can ultrasound attenuation measurement be used to characterise grain statistics in castings?*, **Ultrasonics**, doi://10.1016/j.ultras.2021.106441.
+- MP Echlin, M Kasemer, K Chatterjee, D Boyce, JC Stinville, PG Callahan, E Wielewski, J-S Park, JC Williams, RM Suter, TM Pollock, MP Miller and PR Dawson, *Microstructure-Based Estimation of Strength and Ductility Distributions for alpha + beta Titanium Alloys*, **Metallurgical and Materials Transactions A**, doi://10.1007/s11661-021-06233-5.
+- M Huang, G Sha, P Huthwaite, SI Rokhlin and MJS Lowe, *Longitudinal wave attenuation in polycrystals with elongated grains: 3D numerical and analytical modeling*, **The Journal of the Acoustical Society of America**, doi://10.1121/10.0003955.
+- Z Wang, S Yang, L Li, Y Tang and G Xu, *A 3D Voronoi clump based model for simulating failure behavior of brittle rock*, **Engineering Fracture Mechanics**, doi://10.1016/j.engfracmech.2021.107720.
+- D Weisz-Patrault, S Sakout and A Ehrlacher, *Energetic upscaling strategy for grain growth. II: Probabilistic macroscopic model identified by Bayesian techniques*, **Acta Materialia**, doi://10.1016/j.actamat.2021.116805.
+- C Böhm, B Hudobivnik, M Marino and P Wriggers, *Electro-magneto-mechanically response of polycrystalline materials: Computational homogenization via the Virtual Element Method*, **Computer Methods in Applied Mechanics and Engineering**, doi://10.1016/j.cma.2021.113775.
+- KO Coelho, PRB Devloo and SM Gomes, *Error estimates for the Scaled Boundary Finite Element Method*, **Computer Methods in Applied Mechanics and Engineering**, doi://10.1016/j.cma.2021.113765.
+
+- R Quey, G-H Fan, Y Zhang and D Juul Jensen, *Importance of deformation-induced local orientation distributions for nucleation of recrystallisation*, **Acta Materialia**, doi://10.1016/j.actamat.2021.116808.
+- B Yan, S Jiang, L Hu, Y Zhang and D Sun, *Crystal plasticity finite element simulation of NiTi shape memory alloy under canning compression based on constitutive model containing dislocation density*, **Mechanics of Materials**, doi://10.1016/j.mechmat.2021.103830.
+- M Gusenbauer, A Kovacs, H Oezelt, J Fischbacher, P Zhao, TG Woodcock and T Schrefl, *Insights into MnAl-C nano-twin defects by micromagnetic characterization*, **Journal of Applied Physics**, doi://10.1063/5.0035387.
+- XF Li, HB Li, GK Zhang, MH Ju, J Zhao, *Rate dependency mechanism of crystalline rocks induced by impacts: Insights from grain-scale fracturing and micro heterogeneity*, **International Journal of Impact Engineering**, doi://10.1016/j.ijimpeng.2021.103855.
+- CS Kim, SL Ding, JH Kim, C Yun, WY Yang, JZ Han, SQ Liu, HL Du, CS Wand and JB Zhang, *Micromagnetic study of sphericity effect in bulk permanent magnets*, **Journal of Applied Physics**,
+  doi://10.1063/5.0040434.
+- S Chandra, MK Samal, NN Kumar, VM Chavan, *Atomistically informed crystal plasticity analysis of deformation behavior of alloy 690 including grain boundary effects*, **Materialia**,
+  doi://10.1016/j.mtla.2021.101053.
+- B Ravaji and SP Joshi, *A crystal plasticity investigation of grain size-texture interaction in magnesium alloys*, **Acta Materialia**, doi://10.1016/j.actamat.2021.116743.
+- T Fischer, S Ulan kyzy, O Munz and E Werner, *Structure-property relationship of a nickel-based honeycomb sealing composite*, **Computational Materials Science**, doi://10.1016/j.commatsci.2020.110270.
 - H Yu, AD Taleghani, Z Lian, *A New Look at Rock Mechanical Behavior from the Meso-Scale Grain*, **Journal of Petroleum Science and Engineering**, doi://10.1016/j.petrol.2021.108373.
 - N Grilli, E Tarleton, ACF Cocks, *Neper2CAE and PyCiGen: Scripts to generate polycrystals and interface elements in Abaqus*, **SoftwareX**, doi://10.1016/j.softx.2020.100651.
-- M Huang, G Sha, P Huthwaite, SI Rokhlin and MJS Lowe, *Elastic wave velocity dispersion in polycrystals with elongated grains: Theoretical and numerical analysis, **The Journal of the Acoustical Society of America**, doi://10.1121/10.0002916.
+- M Huang, G Sha, P Huthwaite, SI Rokhlin and MJS Lowe, *Elastic wave velocity dispersion in polycrystals with elongated grains: Theoretical and numerical analysis*, **The Journal of the Acoustical Society of America**, doi://10.1121/10.0002916.
 - L Qiao, Y He, H Wang, Z Shi, Z Li, G Xiao and L Yang, *Effect of grain boundary deformation on the critical temperature degradation of superconducting Nb3Sn under hydrostatic pressure*, **Journal of Alloys and Compounds**, doi://10.1016/j.jallcom.2020.158116.
 - J Cappola, JC Stinville, MA Charpagne, PG Callahan, MP Echlin, TM Pollock, A Pilchak and M Kasemer, *On the Localization of Plastic Strain in Microtextured Regions of Ti-6Al-4V*, **Acta Materialia**, doi://10.1016/j.actamat.2020.116492.
 - S Ganesan, M Yaghoobi, A Githens, Z Chen, S Daly, J Allison and VSundararaghavan, *The effects of heat treatment on the response of WE43 Mg alloy: crystal plasticity finite element simulation and SEM-DIC experiment*, **International Journal of Plasticity**, doi://10.1016/j.ijplas.2020.102917.
@@ -35,6 +55,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2020
 ----
 
+- F Barbe, I Benedetti, V Gulizzi, M Calvat and C Keller, *Elucidating the effect of bimodal grain size distribution on plasticity and fracture behavior of polycrystalline materials*, **Journal of Multiscale Modelling**, doi://10.1142/S1756973720500079.
 - TF Fu, T Xu, PLP Wasantha, TH Yang, Y Nara and Z Heng, *Time-dependent deformation and fracture evolution around underground excavations*, **Geomatics, Natural Hazards and Risk**, doi://10.1080/19475705.2020.1856202.
 - CT Nguyen, J Guilleminot, F Detrez, V Langlois, M Bornert, A Duval and C Perrot, *Micro-Macro Acoustic Modeling of Heterogeneous Foams with Nucleation Perturbation*, **SAE Technical Paper**, doi://10.4271/2020-01-1526.
 - M Boåsen, CFO Dahlberg, P Efsing, J Faleskog, *A weakest link model for multiple mechanism brittle fracture-Model development and application*, **Journal of the Mechanics and Physics of Solids**, 2020.
