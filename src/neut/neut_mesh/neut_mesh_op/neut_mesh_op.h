@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -9,6 +9,10 @@ extern "C"
 
 #ifndef NEUT_MESH_OP_H
 #define NEUT_MESH_OP_H
+
+#ifdef HAVE_LIBSCOTCH
+#include <scotch.h>
+#endif /* HAVE_LIBSCOTCH */
 
 /// \brief Allocate a MESH structure.
 ///
@@ -60,14 +64,13 @@ extern "C"
   extern int neut_mesh_cmp (struct NODES N1, struct MESH M1, struct NODES N2,
 			    struct MESH M2);
 
-#ifdef HAVE_LIBSCOTCH
-#include <scotch.h>
 /// \brief Convert a mesh into a mesh at the Scotch format.
 ///
 ///
 ///
+#ifdef HAVE_LIBSCOTCH
   extern void neut_mesh_scotchmesh (struct MESH, int, SCOTCH_Mesh *);
-#endif
+#endif /* HAVE_LIBSCOTCH */
 
 /// \brief Initialize NodeElts of a MESH structure.
 ///

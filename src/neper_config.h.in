@@ -3,9 +3,6 @@
 #cmakedefine HAVE_PTHREAD
 #cmakedefine HAVE_LIBSCOTCH
 #cmakedefine HAVE_OPENMP
-#cmakedefine DEVEL_PROFILING
-#cmakedefine DEVEL_OPTIMIZATION
-#cmakedefine DEVEL_DEBUGGING_FLAG
-#cmakedefine DEVEL_DEBUGGING_TEST
+#cmakedefine CMAKE_BUILD_TYPE
 
 #define NEPER_VERSION @NEPER_VERSION@

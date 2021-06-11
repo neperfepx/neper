@@ -15,7 +15,7 @@ nes_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   nes_input_options_set (pIn, argc, argv);
 
   /* input */
-  if (!(*pIn).fepxdir && !(*pIn).simdir)
+  if (!(*pIn).fepxdir && !(*pIn).mergedir && !(*pIn).simdir)
     ut_print_message (2, 2,
 		      "Missing input data.\n");
 
@@ -30,13 +30,27 @@ nes_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     while ((*pIn).fepxdir[strlen ((*pIn).fepxdir) - 1] == '/')
       (*pIn).fepxdir[strlen ((*pIn).fepxdir) - 1] = '\0';
 
+ if ((*pIn).mergedir)
+ {
+    while ((*pIn).mergedir[strlen ((*pIn).mergedir) - 1] == '/')
+      (*pIn).mergedir[strlen ((*pIn).mergedir) - 1] = '\0';
+    ut_string_fnrs ((*pIn).mergedir, "/,", ",", INT_MAX);
+ }
+
   if ((*pIn).simdir)
     while ((*pIn).simdir[strlen ((*pIn).simdir) - 1] == '/')
       (*pIn).simdir[strlen ((*pIn).simdir) - 1] = '\0';
 
   if (!(*pIn).simdir)
+  {
     if ((*pIn).fepxdir)
       (*pIn).simdir = ut_string_addextension ((*pIn).fepxdir, ".sim");
+    else if ((*pIn).mergedir)
+    {
+      ut_string_string ((*pIn).mergedir, &(*pIn).simdir);
+      ut_string_fnrs ((*pIn).simdir, NEUT_SEP_NODEP, "-", INT_MAX);
+    }
+  }
 
   return;
 }

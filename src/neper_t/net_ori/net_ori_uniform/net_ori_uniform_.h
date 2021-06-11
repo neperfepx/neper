@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -18,7 +18,7 @@
 #include"net_ori_uniform.h"
 #include"../net_ori.h"
 
-#include "neut/neut_structs/neut_qcloud_struct.hpp"
+#include "neut_qcloud_struct.hpp"
 #include "neut/neut_oset/neut_oset.hpp"
 
 extern void net_ori_uniform_log (struct IN_T In, int iter, struct OL_SET OSet, struct OOPT OOpt);

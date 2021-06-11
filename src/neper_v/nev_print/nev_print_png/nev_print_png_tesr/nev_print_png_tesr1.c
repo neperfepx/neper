@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_png_tesr_.h"
@@ -12,9 +12,9 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
   double *size = ut_alloc_1d (3);
   struct TESS Tess;
   struct NODES Nodes;
-  struct MESH *Mesh = calloc (4, sizeof (MESH));
+  struct MESH *Mesh = calloc (5, sizeof (MESH));
   struct DATA NodeData;
-  struct DATA *MeshData = calloc (4, sizeof (DATA));
+  struct DATA *MeshData = calloc (5, sizeof (DATA));
   int **tmp = NULL;
 
   dim = Tesr.Dim;
@@ -27,7 +27,7 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
   ut_print_message (0, 3, "Converting to mesh...\n");
 
   neut_nodes_set_zero (&Nodes);
-  for (i = 0; i < 4; i++)
+  for (i = 0; i < 5; i++)
   {
     neut_mesh_set_zero (Mesh + i);
     neut_data_set_default (MeshData + i);
@@ -58,7 +58,7 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
   neut_nodes_rmorphans (&Nodes, Mesh + dim, NULL);
   neut_mesh_init_nodeelts (Mesh + dim, Nodes.NodeQty);
 
-  if (ut_string_strcmp (Print.showedgestring, "0"))
+  if (Print.showedgestring && strcmp (Print.showedgestring, "0"))
   {
     neut_mesh_init_eltelset (Mesh + 2, NULL);
     neut_mesh2d_mesh1d (Nodes, Mesh[2], Mesh + 1, NULL, NULL, NULL, 0);
@@ -151,13 +151,14 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
   ut_free_1d (&size);
 
   neut_nodes_free (&Nodes);
-  for (i = 0; i < 4; i++)
-    neut_mesh_free (Mesh + i);
-  free (Mesh);
-
   neut_data_free (&NodeData);
-  for (i = 0; i < 4; i++)
+
+  for (i = 0; i < 5; i++)
+  {
+    neut_mesh_free (Mesh + i);
     neut_data_free (MeshData + i);
+  }
+  free (Mesh);
   free (MeshData);
 
   neut_tess_free (&Tess);

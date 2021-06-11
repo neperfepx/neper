@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_post_.h"
@@ -24,10 +24,10 @@ net_tess_opt_post_modes (struct TOPT TOpt, struct TESS *Tess, int tessid)
       break;
     }
 
-  Tess[tessid].CellModeId = ut_alloc_1d_int (Tess[tessid].CellQty + 1);
-
   if (tar != -1)
   {
+    Tess[tessid].CellModeId = ut_alloc_1d_int (Tess[tessid].CellQty + 1);
+
     size = TOpt.tarmodecdf0[tar][0].size;
     x = ut_alloc_1d (size);
     ut_array_1d_memcpy (TOpt.tarmodecdf0[tar][0].x, size, x);
@@ -85,7 +85,7 @@ net_tess_opt_post_modes (struct TOPT TOpt, struct TESS *Tess, int tessid)
     ut_free_1d (&tmpval);
 
     for (i = 1; i <= Tess[tessid].CellQty; i++)
-      Tess[tessid].CellModeId[i] = mode[Tess[tessid].CellId[i] - 1];
+      Tess[tessid].CellModeId[i] = mode[neut_tess_cell_id (Tess[tessid], i) - 1];
 
     if (ut_array_1d_int_eltpos
         (Tess[tessid].CellModeId + 1, Tess[tessid].CellQty, 0) != -1)
@@ -95,8 +95,7 @@ net_tess_opt_post_modes (struct TOPT TOpt, struct TESS *Tess, int tessid)
   }
 
   else
-    ut_array_1d_int_set (Tess[tessid].CellModeId + 1, Tess[tessid].CellQty,
-                         1);
+    ut_free_1d_int (&(Tess[tessid].CellModeId));
 
   ut_free_1d (&val);
   ut_free_1d_int (&id);

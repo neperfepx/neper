@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tess_lam_seed_.h"
@@ -48,13 +48,17 @@ net_tess_lam_seed_set_addlam (double distcur, double *n, double w, int w_id,
   (*pSSet).N++;
   (*pSSet).LamEq = ut_realloc_2d_addline ((*pSSet).LamEq, (*pSSet).N + 1, 4);
   (*pSSet).LamWidth = ut_realloc_1d ((*pSSet).LamWidth, (*pSSet).N + 1);
-  (*pSSet).LamWidthId =
-    ut_realloc_1d_int ((*pSSet).LamWidthId, (*pSSet).N + 1);
 
   ut_array_1d_memcpy (n, 3, (*pSSet).LamEq[(*pSSet).N] + 1);
   (*pSSet).LamEq[(*pSSet).N][0] = distcur;
   (*pSSet).LamWidth[(*pSSet).N] = w;
-  (*pSSet).LamWidthId[(*pSSet).N] = w_id + 1;
+
+  if (w_id != -1)
+  {
+    (*pSSet).LamWidthId =
+      ut_realloc_1d_int ((*pSSet).LamWidthId, (*pSSet).N + 1);
+    (*pSSet).LamWidthId[(*pSSet).N] = w_id + 1;
+  }
 
   return 0;
 }

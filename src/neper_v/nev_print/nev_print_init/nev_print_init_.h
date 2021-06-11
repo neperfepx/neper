@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -21,7 +21,7 @@ extern void nev_print_init_data (struct PRINT, struct TESS, struct DATA *,
 extern void nev_print_init_data_csys (struct DATA *);
 extern void nev_print_init_data_nodes (struct NODES Nodes, int Qty, struct DATA *pData);
 extern void nev_print_init_data_mesh (struct MESH, double size, int Qty,
-                                      struct DATA *);
+                                      int dim, struct DATA *);
 extern void nev_print_init_data_tesr (struct TESR, struct DATA *);
 extern void nev_print_init_data_tess (struct TESS, struct DATA *);
 extern void nev_print_init_data_points (struct POINT, struct DATA *);

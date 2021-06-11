@@ -1,9 +1,9 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_polycomp_poly_.h"
-#include"neut/neut_structs/neut_nanoflann_struct.hpp"
+#include"neut_nanoflann_struct.hpp"
 
 void
 net_polycomp_seed_tdyn (struct SEEDSET SSet, int id, int neighqty,

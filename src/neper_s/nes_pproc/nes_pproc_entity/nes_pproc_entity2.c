@@ -188,10 +188,10 @@ nes_pproc_entity_eltres (struct SIM *pSim, struct TESS Tess,
 
       eltdata = ut_alloc_2d (Mesh[3].EltQty + 1, 4);
       elsetdata = ut_alloc_2d (entityqty + 1, 4);
-      neut_ori_fnscanf (simfile, (*pSim).OriDes, eltdata + 1, NULL, Mesh[3].EltQty, NULL, "R");
+      neut_ori_fnscanf (simfile, (*pSim).OriDes, "ascii", eltdata + 1, NULL, Mesh[3].EltQty, NULL, "R");
       neut_mesh_eltdata_elsetdata_ori (*pNodes, Mesh[3], eltdata, Tess.CellCrySym, elsetdata);
 
-      neut_ori_fprintf (file, (*pSim).OriDes, elsetdata + 1, NULL, NULL, entityqty, NULL);
+      neut_ori_fprintf (file, (*pSim).OriDes, "ascii", elsetdata + 1, NULL, NULL, entityqty, NULL);
     }
 
     else if (!strncmp (res, "oridis", 6))
@@ -200,7 +200,7 @@ nes_pproc_entity_eltres (struct SIM *pSim, struct TESS Tess,
       double **eval = ut_alloc_2d (Mesh[3].ElsetQty + 1, 3);
 
       eltdata = ut_alloc_2d (Mesh[3].EltQty + 1, 4);
-      neut_ori_fnscanf (simfile, (*pSim).OriDes, eltdata + 1, NULL, Mesh[3].EltQty, NULL, "R");
+      neut_ori_fnscanf (simfile, (*pSim).OriDes, "ascii", eltdata + 1, NULL, Mesh[3].EltQty, NULL, "R");
       neut_mesh_eltdata_elsetdata_oridis (*pNodes, Mesh[3], eltdata, Tess.CellCrySym, evect, eval);
 
       for (i = 1; i <= entityqty; i++)

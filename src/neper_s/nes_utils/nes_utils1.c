@@ -9,6 +9,7 @@ nes_in_set_zero (struct IN_S *pIn)
 {
   (*pIn).fepxdir = NULL;
   (*pIn).simdir = NULL;
+  (*pIn).mergedir = NULL;
   (*pIn).noderes = NULL;
   (*pIn).eltres = NULL;
   (*pIn).elsetres = NULL;
@@ -21,6 +22,7 @@ nes_in_free (struct IN_S In)
 {
   ut_free_1d_char (&In.fepxdir);
   ut_free_1d_char (&In.simdir);
+  ut_free_1d_char (&In.mergedir);
   ut_free_1d_char (&In.noderes);
   ut_free_1d_char (&In.eltres);
   ut_free_1d_char (&In.elsetres);

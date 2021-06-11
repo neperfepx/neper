@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -15,7 +15,7 @@ extern "C"
 #ifndef NEUT_POLY_GEOM_H
 #define NEUT_POLY_GEOM_H
 
-  extern void neut_poly_bbox (struct POLY, double *);
+  extern void neut_poly_bbox (struct POLY, double **);
   extern int neut_poly_vercentroid (struct POLY Poly, double *coo);
   extern int neut_poly_centroid (struct POLY Poly, double *coo);
   extern int neut_poly_volume (struct POLY Poly, double *coo);

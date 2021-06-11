@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Ctopoyright (C) 2003-2020, Romain Quey. */
+/* Ctopoyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the ttopo-level directory. */
 
 #include "neut_flatten_topo_.h"
@@ -11,7 +11,7 @@ neut_flatten_domface_edges (struct FLATTEN Flatten, struct TESS DTess,
   ut_free_1d_int (pedges);
   (*pedgeqty) = 0;
 
-  DTess = DTess;
+  (void) DTess;
 
   (*pedgeqty) = Flatten.DomFaceTessEdgeQty[dface];
   (*pedges) = ut_alloc_1d_int (*pedgeqty);

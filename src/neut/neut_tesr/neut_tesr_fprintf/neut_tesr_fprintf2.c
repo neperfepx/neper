@@ -1,17 +1,17 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesr_fprintf_.h"
 
 void
-neut_tesr_fprintf_head (FILE * file, char *format, struct TESR Tesr)
+neut_tesr_fprintf_head (FILE * file, struct TESR Tesr)
 {
   int i, origin = 0;
 
   fprintf (file, "***tesr\n");
   fprintf (file, " **format\n");
-  fprintf (file, "   2.0 %s\n", format);
+  fprintf (file, "   2.1\n");
   fprintf (file, " **general\n");
   fprintf (file, "   %d\n", Tesr.Dim);
   fprintf (file, "   ");
@@ -43,18 +43,22 @@ void
 neut_tesr_fprintf_data (FILE * file, char *format, struct TESR Tesr)
 {
   fprintf (file, " **data\n");
-  neut_tesr_fprintf_data_noheader (file, format, Tesr, NULL);
+  fprintf (file, "   %s\n", format);
+  neut_tesr_fprintf_data_noheader (file, format, NULL, Tesr, NULL);
 
   return;
 }
 
 void
-neut_tesr_fprintf_oridata (FILE * file, char *des, char *format,
+neut_tesr_fprintf_oridata (FILE * file, char *format,
                            struct TESR Tesr)
 {
-  fprintf (file, "\n **oridata\n");
-  fprintf (file, "   %s\n", des);
-  neut_tesr_fprintf_oridata_noheader (file, des, format, Tesr);
+  fprintf (file, " **oridata\n");
+  fprintf (file, "   %s\n", Tesr.CellOriDes);
+  fprintf (file, "   %s\n", !strcmp (format, "ascii") ? "ascii" : "binary16");
+  neut_tesr_fprintf_oridata_noheader (file, format, Tesr);
+  if (strcmp (format, "ascii"))
+    fprintf (file, "\n");
 
   return;
 }
@@ -92,7 +96,7 @@ neut_tesr_fprintf_cell (FILE * file, struct TESR Tesr)
   {
     fprintf (file, "  *ori\n");
     fprintf (file, "   %s\n", Tesr.CellOriDes);
-    neut_ori_fprintf (file, Tesr.CellOriDes, Tesr.CellOri + 1, NULL, NULL, Tesr.CellQty, NULL);
+    neut_ori_fprintf (file, Tesr.CellOriDes, "ascii", Tesr.CellOri + 1, NULL, NULL, Tesr.CellQty, NULL);
   }
 
   if (neut_tesr_hascelloridistrib (Tesr))
@@ -147,28 +151,29 @@ neut_tesr_fprintf_cell (FILE * file, struct TESR Tesr)
 
 void
 neut_tesr_fprintf_data_raw (FILE * file, char *rawname, char *format,
-                            struct TESR Tesr)
+                            char *wildcard, struct TESR Tesr)
 {
   fprintf (file, " **data\n");
+  fprintf (file, "   %s\n", format);
   fprintf (file, "  *file %s", rawname);
 
   FILE *file2 = ut_file_open (rawname, "w");
-  neut_tesr_fprintf_data_noheader (file2, format, Tesr, NULL);
+  neut_tesr_fprintf_data_noheader (file2, format, wildcard, Tesr, NULL);
   ut_file_close (file2, rawname, "w");
 
   return;
 }
 
 void
-neut_tesr_fprintf_oridata_raw (FILE * file, char *rawname, char *des,
+neut_tesr_fprintf_oridata_raw (FILE * file, char *rawname,
                                char *format, struct TESR Tesr)
 {
   fprintf (file, " **oridata\n");
-  fprintf (file, "   %s\n", des);
+  fprintf (file, "   %s\n", Tesr.CellOriDes);
   fprintf (file, "  *file %s", rawname);
 
   FILE *file2 = ut_file_open (rawname, "w");
-  neut_tesr_fprintf_oridata_noheader (file2, des, format, Tesr);
+  neut_tesr_fprintf_oridata_noheader (file2, format, Tesr);
   ut_file_close (file2, rawname, "w");
 
   return;
@@ -176,8 +181,8 @@ neut_tesr_fprintf_oridata_raw (FILE * file, char *rawname, char *des,
 
 
 void
-neut_tesr_fprintf_data_noheader (FILE * file, char *format, struct TESR Tesr,
-                                 int *CellId)
+neut_tesr_fprintf_data_noheader (FILE * file, char *format, char *wildcard,
+                                 struct TESR Tesr, int *CellId)
 {
   int i, j, k, count;
   int *size = ut_alloc_1d_int (3);
@@ -288,6 +293,9 @@ neut_tesr_fprintf_data_noheader (FILE * file, char *format, struct TESR Tesr,
   else
     abort ();
 
+  if (ut_string_strcmp (wildcard, "nonl"))
+    fprintf (file, "\n");
+
   // ut_free_1d_char (&progress);
   ut_free_1d_int (&size);
 
@@ -295,27 +303,15 @@ neut_tesr_fprintf_data_noheader (FILE * file, char *format, struct TESR Tesr,
 }
 
 void
-neut_tesr_fprintf_oridata_noheader (FILE * file, char *des, char *format,
+neut_tesr_fprintf_oridata_noheader (FILE * file, char *format,
                                     struct TESR Tesr)
 {
-  int i, j, k, l;
-
-  if (strcmp (des, "quaternion:active"))
-    abort ();
+  int i, j, k;
 
   for (k = 1; k <= Tesr.size[2]; k++)
     for (j = 1; j <= Tesr.size[1]; j++)
       for (i = 1; i <= Tesr.size[0]; i++)
-        if (!strcmp (format, "ascii"))
-        {
-          if (i < Tesr.size[0] || j < Tesr.size[1] || k < Tesr.size[2])
-            ut_array_1d_fprintf (file, Tesr.VoxOri[i][j][k], 4, "%.12f");
-          else
-            ut_array_1d_fprintf_nonl (file, Tesr.VoxOri[i][j][k], 4, "%.12f");
-        }
-        else
-          for (l = 0; l < 4; l++)
-            fwrite (Tesr.VoxOri[i][j][k] + l, sizeof (double), 1, file);
+        neut_ori_fprintf (file, Tesr.CellOriDes, format, &(Tesr.VoxOri[i][j][k]), NULL, NULL, 1, NULL);
 
   return;
 }
@@ -323,7 +319,7 @@ neut_tesr_fprintf_oridata_noheader (FILE * file, char *des, char *format,
 void
 neut_tesr_fprintf_foot (FILE * file)
 {
-  fprintf (file, "\n***end\n");
+  fprintf (file, "***end\n");
 
   return;
 }

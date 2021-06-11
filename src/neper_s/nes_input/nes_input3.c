@@ -39,9 +39,9 @@ nes_input_options_set (struct IN_S *pIn, int argc, char **argv)
       if (readinput)
         ut_print_message (2, 0, "Input directory already loaded.\n");
 
-      status = neut_sim_name_type (argv[i], &type);
+      status = neut_sim_name_type (argv[i], &type, NULL, NULL);
 
-      if (status)
+      if (status == -1)
         ut_print_message (2, 2, "Failed to parse directory.\n");
 
       if (!strcmp (type, "fepx"))
@@ -52,6 +52,8 @@ nes_input_options_set (struct IN_S *pIn, int argc, char **argv)
           ut_print_messagewnc (2, 72, "Using `-o' and loading a simulation directory as input are mutually exclusive.\n");
         ut_string_string (argv[i], &(*pIn).simdir);
       }
+      else if (!strcmp (type, "merge"))
+        ut_string_string (argv[i], &(*pIn).mergedir);
       else
         abort ();
 

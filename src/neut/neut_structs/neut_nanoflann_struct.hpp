@@ -1,6 +1,6 @@
 #pragma once
 
-#include"contrib/nanoflann/nanoflann.hpp"
+#include"nanoflann.hpp"
 
 struct NFCLOUD
 {

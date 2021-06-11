@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -13,6 +13,7 @@ extern "C"
 extern int neut_tesr_vox_pos (struct TESR Tesr, int vox, int *pos);
 extern int neut_tesr_vox_coo (struct TESR Tesr, int vox, double *coo);
 extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
+extern int neut_tesr_vox_cellid (struct TESR Tesr, int vox, int *pcell);
 
 /// \brief Get the rpoint a point belongs to.
 /// mode>=0 picks the voxel after, mode < 0 picks the voxel before
@@ -34,6 +35,8 @@ extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
 ///
 ///
   extern int neut_tesr_cell_centre (struct TESR Tesr, int cell, double *coo);
+
+  extern void neut_tesr_cells_centre (struct TESR Tesr, int* cells, int cellqty, double *coo);
 
 /// \brief Get the number of voxels in a cell of a TESR structure.
 /// \return 0 on success, -1 on failure.
@@ -78,7 +81,11 @@ extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
 
   extern void neut_tesr_cell_boundpoints (struct TESR Tesr, int cell,
 					  int ***pts, int *pptqty,
-					  int connectivity, int boundary);
+					  int connectivity, char* boundary);
+
+  extern void neut_tesr_cell_boundcoos (struct TESR Tesr, int cell,
+					  double ***coos, int *pcooqty,
+					  int connectivity, char* boundary);
 
   extern void neut_tesr_cell_cornerpoints (struct TESR Tesr, int cell,
 					   int ***pts, int *pptqty);
@@ -112,6 +119,8 @@ extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
   extern int neut_tesr_area (struct TESR Tesr, double *parea);
   extern int neut_tesr_volume (struct TESR Tesr, double *pvol);
   extern int neut_tesr_size (struct TESR Tesr, double *psize);
+
+  extern void neut_tesr_cell_bbox_coo (struct TESR Tesr, int cell, double **coo);
 
 #include"net_utils/net_utils.h"
 

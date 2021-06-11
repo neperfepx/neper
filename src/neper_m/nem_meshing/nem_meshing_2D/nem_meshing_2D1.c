@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_2D_.h"
@@ -37,7 +37,7 @@ nem_meshing_2D (struct IN_M In, struct MESHPARA MeshPara, struct TESS Tess,
   Mesh[2] = neut_mesh_alloc (2, "tri", 1, 0, 0);
 
   // faces to mesh; default is 'all'
-  neut_tess_expr_facelist (Tess, In.meshface, &faces, &faceqty);
+  neut_tess_expr_faces (Tess, In.meshface, &faces, &faceqty);
 
   nem_meshing_2D_progress (Multim, 0, faceqty, message);
 

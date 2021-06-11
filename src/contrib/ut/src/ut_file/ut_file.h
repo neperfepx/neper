@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2020, Romain Quey */
+/* Copyright (C) 2003-2021, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -164,7 +164,7 @@ extern "C"
 /// \param file: file pointer
 /// \param string: string (must be preallocated)
 /// \return 1 on success and -1 on failure
-/// \note ^c string can be \c NULL
+/// \note string can be \c NULL
   extern int ut_file_nextstring (FILE * file, char *string);
 
 /// \brief Test if the next entry of a file is a specified string
@@ -178,6 +178,12 @@ extern "C"
 /// \param *plevel: level
 /// \return 0 on success and -1 on failure
   extern int ut_file_nextstring_sectionlevel (FILE * file, int *plevel);
+
+/// \brief Determine if we are at the end of the file (excluding spaces, newlines and tabs)
+/// \param file: file pointer
+/// \return 1 on success and 0 otherwise
+/// \note The position in the file is not changed
+  extern int ut_file_isendoffile (FILE * file);
 
 /// @cond INTERNAL
   extern void ut_file_nextline (FILE * file, char **pline);

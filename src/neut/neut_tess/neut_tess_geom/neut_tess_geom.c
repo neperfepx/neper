@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_geom_.h"
@@ -994,6 +994,18 @@ neut_tess_point_inpoly_reg (struct TESS Tess, double *coo, int nb)
 }
 
 int
+neut_tess_point_in (struct TESS Tess, double *coo)
+{
+  int i;
+
+  for (i = 1; i <= Tess.CellQty; i++)
+    if (neut_tess_point_incell (Tess, coo, i))
+      return 1;
+
+  return 0;
+}
+
+int
 neut_tess_point_incell (struct TESS Tess, double *coo, int nb)
 {
   if (Tess.Dim == 3)
@@ -1052,7 +1064,7 @@ neut_tess_point_inface (struct TESS Tess, double *coo, int face)
           coob[j] = coo[j] + per[j] * PeriodicDist[j];
 
         if (ut_space_triangle_point_in
-            (centre, Tess.VerCoo[ver1], Tess.VerCoo[ver2], coob, 1e-6, 0))
+            (centre, Tess.VerCoo[ver1], Tess.VerCoo[ver2], coob, 1e-6, 0, NULL))
         {
           status = 1;
           break;

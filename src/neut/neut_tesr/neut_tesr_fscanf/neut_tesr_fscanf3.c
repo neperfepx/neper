@@ -1,11 +1,11 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesr_fscanf_.h"
 
 void
-neut_tesr_fscanf_data_default (struct TESR *pTesr, char *format, FILE * file)
+neut_tesr_fscanf_data_default (struct TESR *pTesr, char *format, int readfromfile, FILE * file)
 {
   int i, j, k;
 
@@ -88,195 +88,44 @@ neut_tesr_fscanf_data_default (struct TESR *pTesr, char *format, FILE * file)
           ut_print_message (2, 2, "Unknown format `%s'.\n", format);
       }
 
+  if (readfromfile && !ut_file_isendoffile (file))
+    ut_print_message (2, 4, "File contains more data than needed.\n");
+
   return;
 }
 
 void
-neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *desconv, char *format,
-                                  FILE * file)
+neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *desconv, char *oridataformat,
+                                  int readfromfile, FILE * file)
 {
-  int i, j, k, l, endian = ut_sys_endian ();
+  int i, j, k, id, qty = ut_array_1d_int_prod ((*pTesr).size, 3);
   char *des = NULL, *conv = NULL;
+  double **q = ut_alloc_2d (qty, 4);
 
   neut_ori_expr_desconv (desconv, &des, &conv);
 
-  if (!strcmp (des, "rotmat"))
-  {
-    double **g = ol_g_alloc ();
+  neut_ori_fscanf (file, desconv, oridataformat, q, NULL, qty, NULL);
+
+  if (readfromfile && !ut_file_isendoffile (file))
+    ut_print_message (2, 4, "File contains more data than needed.\n");
+
+  id = 0;
+
+  if (!strcmp (conv, "active"))
     for (k = 1; k <= (*pTesr).size[2]; k++)
       for (j = 1; j <= (*pTesr).size[1]; j++)
         for (i = 1; i <= (*pTesr).size[0]; i++)
-        {
-          if (!strcmp (format, "ascii"))
-            ol_g_fscanf (file, g);
-          else
-            for (l = 0; l < 9; l++)
-            {
-              if (fread (g[l / 3] + l % 3, sizeof (double), 1, file) != 1)
-                abort ();
-              if (endian)
-                g[l / 3][l % 3] = ut_num_reverseendian (g[l / 3][l % 3]);
-            }
-
-          ol_g_q (g, (*pTesr).VoxOri[i][j][k]);
-        }
-    ol_g_free (g);
-  }
-
-  else if (!strcmp (des, "axis-angle"))
-  {
-    double theta, *r = ol_r_alloc ();
-    for (k = 1; k <= (*pTesr).size[2]; k++)
-      for (j = 1; j <= (*pTesr).size[1]; j++)
-        for (i = 1; i <= (*pTesr).size[0]; i++)
-        {
-          if (!strcmp (format, "ascii"))
-            ol_rtheta_fscanf (file, r, &theta);
-          else
-          {
-            for (l = 0; l < 3; l++)
-            {
-              if (fread (r + l, sizeof (double), 1, file) != 1)
-                abort ();
-              if (endian)
-                r[l] = ut_num_reverseendian (r[l]);
-            }
-            if (fread (&theta, sizeof (double), 1, file) != 1)
-              abort ();
-            if (endian)
-              theta = ut_num_reverseendian (theta);
-          }
-
-          ol_rtheta_q (r, theta, (*pTesr).VoxOri[i][j][k]);
-        }
-    ol_r_free (r);
-  }
-
-  else if (!strcmp (des, "rodrigues"))
-  {
-    double *R = ol_R_alloc ();
-    for (k = 1; k <= (*pTesr).size[2]; k++)
-      for (j = 1; j <= (*pTesr).size[1]; j++)
-        for (i = 1; i <= (*pTesr).size[0]; i++)
-        {
-          if (!strcmp (format, "ascii"))
-            ol_R_fscanf (file, R);
-          else
-            for (l = 0; l < 3; l++)
-            {
-              if (fread (R + l, sizeof (double), 1, file) != 1)
-                abort ();
-              if (endian)
-                R[l] = ut_num_reverseendian (R[l]);
-            }
-
-          ol_R_q (R, (*pTesr).VoxOri[i][j][k]);
-        }
-    ol_R_free (R);
-  }
-
-  else if (!strcmp (des, "quaternion"))
-  {
-    for (k = 1; k <= (*pTesr).size[2]; k++)
-      for (j = 1; j <= (*pTesr).size[1]; j++)
-        for (i = 1; i <= (*pTesr).size[0]; i++)
-          if (!strcmp (format, "ascii"))
-            ol_q_fscanf (file, (*pTesr).VoxOri[i][j][k]);
-          else
-            for (l = 0; l < 4; l++)
-            {
-              if (fread
-                  ((*pTesr).VoxOri[i][j][k] + l, sizeof (double), 1,
-                   file) != 1)
-                abort ();
-              if (endian)
-                (*pTesr).VoxOri[i][j][k][l] =
-                  ut_num_reverseendian ((*pTesr).VoxOri[i][j][k][l]);
-            }
-  }
-
-  else if (!strcmp (des, "euler-bunge"))
-  {
-    double *e = ol_e_alloc ();
-    for (k = 1; k <= (*pTesr).size[2]; k++)
-      for (j = 1; j <= (*pTesr).size[1]; j++)
-        for (i = 1; i <= (*pTesr).size[0]; i++)
-        {
-          if (!strcmp (format, "ascii"))
-            ol_e_fscanf (file, e);
-          else
-            for (l = 0; l < 3; l++)
-            {
-              if (fread (e + l, sizeof (double), 1, file) != 1)
-                abort ();
-              if (endian)
-                e[l] = ut_num_reverseendian (e[l]);
-            }
-
-          ol_e_q (e, (*pTesr).VoxOri[i][j][k]);
-        }
-    ol_e_free (e);
-  }
-
-  else if (!strcmp (des, "euler-kocks"))
-  {
-    double *e = ol_e_alloc ();
-    for (k = 1; k <= (*pTesr).size[2]; k++)
-      for (j = 1; j <= (*pTesr).size[1]; j++)
-        for (i = 1; i <= (*pTesr).size[0]; i++)
-        {
-          if (!strcmp (format, "ascii"))
-            ol_e_fscanf (file, e);
-          else
-            for (l = 0; l < 3; l++)
-            {
-              if (fread (e + l, sizeof (double), 1, file) != 1)
-                abort ();
-              if (endian)
-                e[l] = ut_num_reverseendian (e[l]);
-            }
-
-          ol_ek_e (e, e);
-          ol_e_q (e, (*pTesr).VoxOri[i][j][k]);
-        }
-    ol_e_free (e);
-  }
-
-  else if (!strcmp (des, "euler-roe"))
-  {
-    double *e = ol_e_alloc ();
-    for (k = 1; k <= (*pTesr).size[2]; k++)
-      for (j = 1; j <= (*pTesr).size[1]; j++)
-        for (i = 1; i <= (*pTesr).size[0]; i++)
-        {
-          if (!strcmp (format, "ascii"))
-            ol_e_fscanf (file, e);
-          else
-            for (l = 0; l < 3; l++)
-            {
-              if (fread (e + l, sizeof (double), 1, file) != 1)
-                abort ();
-              if (endian)
-                e[l] = ut_num_reverseendian (e[l]);
-            }
-
-          ol_er_e (e, e);
-          ol_e_q (e, (*pTesr).VoxOri[i][j][k]);
-        }
-    ol_e_free (e);
-  }
-
-  else
-    ut_print_exprbug (des);
+          ut_array_1d_memcpy (q[id++], 4, (*pTesr).VoxOri[i][j][k]);
 
   if (!strcmp (conv, "passive"))
     for (k = 1; k <= (*pTesr).size[2]; k++)
       for (j = 1; j <= (*pTesr).size[1]; j++)
         for (i = 1; i <= (*pTesr).size[0]; i++)
-          ol_q_inverse ((*pTesr).VoxOri[i][j][k], (*pTesr).VoxOri[i][j][k]);
+          ol_q_inverse (q[id++], (*pTesr).VoxOri[i][j][k]);
 
   ut_free_1d_char (&des);
   ut_free_1d_char (&conv);
+  ut_free_2d (&q, qty);
 
   return;
 }
@@ -389,9 +238,9 @@ neut_tesr_fscanf_data_bounds (struct TESR *pTesr, int *bounds, char *format,
 
 void
 neut_tesr_fscanf_data_scale (struct TESR *pTesr, double *scale, char *format,
-                             FILE * file)
+                             int readfromfile, FILE * file)
 {
-  neut_tesr_fscanf_data_default (pTesr, format, file);
+  neut_tesr_fscanf_data_default (pTesr, format, readfromfile, file);
 
   neut_tesr_rasterscale (pTesr, scale[0], scale[1], scale[2]);
 

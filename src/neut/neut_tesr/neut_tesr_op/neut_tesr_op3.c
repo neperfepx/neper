@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tesr_op_.h"
@@ -14,7 +14,7 @@ net_tesr_cell_segment (struct TESR Tesr, int cell, int dim, struct TESR *pSeg)
 
   neut_tesr_free (pSeg);
   neut_tesr_set_zero (pSeg);
-  neut_tesr_alloc (pSeg, Tesr.Dim, Tesr.size, Tesr.vsize);
+  neut_tesr_alloc (pSeg, Tesr.Dim, Tesr.size, Tesr.vsize, NULL);
 
   for (k = 1; k <= Tesr.size[2]; k++)
     for (j = 1; j <= Tesr.size[1]; j++)
@@ -77,7 +77,7 @@ net_tesr_segment (struct TESR Tesr, int dim, struct TESR *pSeg)
   int **tmp = NULL;
 
   neut_tesr_set_zero (pSeg);
-  neut_tesr_alloc (pSeg, Tesr.Dim, Tesr.size, Tesr.vsize);
+  neut_tesr_alloc (pSeg, Tesr.Dim, Tesr.size, Tesr.vsize, NULL);
 
   for (k = 1; k <= Tesr.size[2]; k++)
     for (j = 1; j <= Tesr.size[1]; j++)

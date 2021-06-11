@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<orilib.h>
@@ -48,6 +48,10 @@ extern "C"
   extern int neut_tesr_isvoid (struct TESR Tesr);
 
   extern int neut_tesr_hascelloridistrib (struct TESR Tesr);
+
+  extern int neut_tesr_cellid_cell (struct TESR Tesr, int cellid, int *pcell);
+
+  extern int neut_tesr_cell_id (struct TESR Tesr, int cell);
 
 #endif				/* NEUT_TESR_GEN_H */
 

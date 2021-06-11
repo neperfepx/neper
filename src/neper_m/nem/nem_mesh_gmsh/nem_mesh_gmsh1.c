@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_mesh_gmsh_.h"
@@ -76,7 +76,7 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
     // writing master file - general options + poly
 
     file = ut_file_open (filename, "W");
-    fprintf (file, "// Poly %d\n", Tess.CellId ? Tess.CellId[poly] : poly);
+    fprintf (file, "// Poly %d\n", neut_tess_cell_id (Tess, poly));
     if (neut_gmsh_meshalgo3d_nb (algo, &nb) != 0)
     {
       printf ("\n");

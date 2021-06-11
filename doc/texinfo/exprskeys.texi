@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2020 Romain Quey
+@c Copyright (C) 2003-2021 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Expressions and Keys
@@ -418,6 +418,18 @@ the @samp{@SEPDEP{}uc} modifier.
   @item @code{vy}   @tab y coordinate (in voxel)      @tab voxel
   @item @code{vz}   @tab z coordinate (in voxel)      @tab voxel
   @item @code{vcoo} @tab x, y and z coordinates (in voxel) @tab voxel
+  @item @code{vxmin}@tab minimum x coordinate (in voxel) @tab cell
+  @item @code{vymin}@tab minimum y coordinate (in voxel) @tab cell
+  @item @code{vzmin}@tab minimum z coordinate (in voxel) @tab cell
+  @item @code{vxmax}@tab maximum x coordinate (in voxel) @tab cell
+  @item @code{vymax}@tab maximum y coordinate (in voxel) @tab cell
+  @item @code{vzmax}@tab maximum z coordinate (in voxel) @tab cell
+  @item @code{domvxmin}@tab domain minimum x coordinate (in voxel), always 1 @tab domain
+  @item @code{domvymin}@tab domain minimum y coordinate (in voxel), always 1 @tab domain
+  @item @code{domvzmin}@tab domain minimum z coordinate (in voxel), always 1 @tab domain
+  @item @code{domvxmax}@tab domain maximum x coordinate (in voxel) @tab domain
+  @item @code{domvymax}@tab domain maximum y coordinate (in voxel) @tab domain
+  @item @code{domvzmax}@tab domain maximum z coordinate (in voxel) @tab domain
   @item @code{cell} @tab cell                         @tab voxel
   @item @code{w}    @tab Laguerre weight              @tab seed
   @item @code{area} @tab surface area                 @tab cell, group (in 2D)

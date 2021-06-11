@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_topt_.h"
@@ -14,6 +14,8 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   neut_tess_set_zero (&(*pTOpt).Dom);
   neut_poly_set_zero (&(*pTOpt).DomPoly);
   neut_tess_set_zero (&(*pTOpt).DomPer);
+  (*pTOpt).PrimQty = 0;
+  (*pTOpt).Prim = NULL;
   neut_seedset_set_zero (&(*pTOpt).SSet);
   neut_crys_set_zero (&(*pTOpt).Crys);
   (*pTOpt).Poly = NULL;

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_3D_.h"
@@ -36,7 +36,7 @@ nem_meshing_3D (struct IN_M In, struct MESHPARA MeshPara, struct TESS Tess,
     Mesh[3] = neut_mesh_alloc (3, "tri", 1, 0, 0);
 
     // polys to mesh; default is 'all'
-    neut_tess_expr_polylist (Tess, In.meshpoly, &poly, &polyqty);
+    neut_tess_expr_polys (Tess, In.meshpoly, &poly, &polyqty);
 
     allowed_t = In.mesh3dmaxtime;
     qty = 0;

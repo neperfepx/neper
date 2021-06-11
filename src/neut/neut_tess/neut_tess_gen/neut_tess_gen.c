@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_gen_.h"
@@ -462,7 +462,7 @@ neut_tess_var_val (struct TESS Tess, int *showedge, int *showface,
       if (!strcmp (entity, "poly"))
         (*pvals)[0] = id;
       else
-        (*pvals)[0] = Tess.CellId ? Tess.CellId[id] : id;
+        (*pvals)[0] = neut_tess_cell_id (Tess, id);
 
       ut_string_string ("%d", &typetmp);
     }
@@ -753,7 +753,7 @@ neut_tess_var_val (struct TESS Tess, int *showedge, int *showface,
       if (!strcmp (entity, "face"))
         (*pvals)[0] = id;
       else
-        (*pvals)[0] = Tess.CellId ? Tess.CellId[id] : id;
+        (*pvals)[0] = neut_tess_cell_id (Tess, id);
 
       ut_string_string ("%d", &typetmp);
     }
@@ -1033,7 +1033,7 @@ neut_tess_var_val (struct TESS Tess, int *showedge, int *showface,
       if (!strcmp (entity, "edge"))
         (*pvals)[0] = id;
       else
-        (*pvals)[0] = Tess.CellId ? Tess.CellId[id] : id;
+        (*pvals)[0] = neut_tess_cell_id (Tess, id);
 
       ut_string_string ("%d", &typetmp);
     }
@@ -1489,15 +1489,15 @@ neut_tess_entity_qty (struct TESS Tess, char *entity, int *pqty)
 }
 
 int
-neut_tess_expr_celllist (struct TESS Tess, char *expr, int **pcells,
+neut_tess_expr_cells (struct TESS Tess, char *expr, int **pcells,
                          int *pcellqty)
 {
   int status = -1;
 
   if (Tess.Dim == 3)
-    status = neut_tess_expr_polylist (Tess, expr, pcells, pcellqty);
+    status = neut_tess_expr_polys (Tess, expr, pcells, pcellqty);
   else if (Tess.Dim == 2)
-    status = neut_tess_expr_facelist (Tess, expr, pcells, pcellqty);
+    status = neut_tess_expr_faces (Tess, expr, pcells, pcellqty);
   else
     abort ();
 
@@ -1505,7 +1505,7 @@ neut_tess_expr_celllist (struct TESS Tess, char *expr, int **pcells,
 }
 
 int
-neut_tess_expr_polylist (struct TESS Tess, char *expr, int **ppoly,
+neut_tess_expr_polys (struct TESS Tess, char *expr, int **ppoly,
                          int *ppolyqty)
 {
   int i, j, status;
@@ -1563,14 +1563,14 @@ neut_tess_expr_polylist (struct TESS Tess, char *expr, int **ppoly,
     ut_free_1d (&vals);
   }
 
-  // for consistency with neut_tess_expr_facelist
+  // for consistency with neut_tess_expr_faces
   ut_array_1d_int_sort (*ppoly, *ppolyqty);
 
   return 0;
 }
 
 int
-neut_tess_expr_facelist (struct TESS Tess, char *expr, int **pface,
+neut_tess_expr_faces (struct TESS Tess, char *expr, int **pface,
                          int *pfaceqty)
 {
   int i, j, status;
@@ -2015,4 +2015,10 @@ int
 neut_tess_isreg (struct TESS Tess)
 {
   return ut_array_1d_int_max (Tess.VerState + 1, Tess.VerQty) > 0;
+}
+
+int
+neut_tess_cell_id (struct TESS Tess, int cell)
+{
+  return Tess.CellId ? Tess.CellId[cell] : cell;
 }

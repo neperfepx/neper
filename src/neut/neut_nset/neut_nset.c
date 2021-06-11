@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_nset_.h"
@@ -9,7 +9,7 @@ neut_nset_expand (struct NSET NSet0D, struct NSET NSet1D, struct NSET NSet2D,
                   char *in, char **pout)
 {
   int i, j;
-  int qty;
+  int qty = 0;
   char **list = NULL;
 
   ut_free_1d_char (pout);
@@ -58,6 +58,9 @@ neut_nset_expand (struct NSET NSet0D, struct NSET NSet1D, struct NSET NSet2D,
       qty = 1;
       list = ut_alloc_2d_char (qty, 11);
       list[0] = strcpy (list[4], "vertices");
+    }
+    else
+    {
     }
   }
 

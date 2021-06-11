@@ -1,10 +1,11 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
+#include <iostream>
 using namespace std;
 #include"neut_oset.hpp"
-#include "neut/neut_structs/neut_qcloud_struct.hpp"
+#include "neut_qcloud_struct.hpp"
 
 #ifdef __cplusplus
 extern "C"

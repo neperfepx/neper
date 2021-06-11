@@ -1,9 +1,9 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_geom_.h"
-#include"neut/neut_structs/neut_nanoflann_struct.hpp"
+#include"neut_nanoflann_struct.hpp"
 
 /* neut_mesh_elt_area computes the area of a 2D element */
 int
@@ -1272,7 +1272,7 @@ neut_mesh_point_closestpoint (struct MESH Mesh, struct NODES Nodes,
     if (ut_space_triangle_point_in
         (Nodes.NodeCoo[Mesh.EltNodes[j][0]],
          Nodes.NodeCoo[Mesh.EltNodes[j][1]],
-         Nodes.NodeCoo[Mesh.EltNodes[j][2]], coo, 1e-6, 1e-6))
+         Nodes.NodeCoo[Mesh.EltNodes[j][2]], coo, 1e-6, 1e-6, NULL))
     {
       ut_array_1d_memcpy (coo, 3, proj);
       neut_mesh_elt_eq (Mesh, Nodes, j, eq);
@@ -1374,7 +1374,7 @@ neut_mesh_point_proj_alongonto (double *Coo, double *n, struct NODES N,
 
     if (ut_space_triangle_point_in
         (N.NodeCoo[M.EltNodes[elt][0]], N.NodeCoo[M.EltNodes[elt][1]],
-         N.NodeCoo[M.EltNodes[elt][2]], coo, 1e-6, 1e-6) == 1)
+         N.NodeCoo[M.EltNodes[elt][2]], coo, 1e-6, 1e-6, NULL) == 1)
     {
       ut_array_1d_memcpy (coo, 3, Coo);
       status = elt;
@@ -1407,7 +1407,7 @@ neut_mesh_point_elt_in (struct MESH Mesh, struct NODES Nodes, double *coo,
     return ut_space_triangle_point_in (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
                                        Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
                                        Nodes.NodeCoo[Mesh.EltNodes[elt][2]],
-                                       coo, 1e-6, 1e-6);
+                                       coo, 1e-6, 1e-6, NULL);
   else
     abort ();
 }

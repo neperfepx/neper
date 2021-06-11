@@ -19,5 +19,11 @@ nes_sim_write (struct IN_S In, struct SIM *pSim)
     nes_sim_write_results (In, pSim);
   }
 
+  if ((*pSim).RestartFiles)
+  {
+    ut_print_message (0, 2, "Writing restart...\n");
+    nes_sim_write_restart ((*pSim).fepxdir, (*pSim).simdir, *pSim);
+  }
+
   return;
 }

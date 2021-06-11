@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_input_.h"
@@ -117,12 +117,6 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
        abort ();
        }
      */
-
-#ifndef HAVE_LIBSCOTCH
-    ut_print_messagewnc (2, 72,
-                         "Options `-part*' (mesh partitioning) are not available since this version of Neper has been built without libscotch.");
-    abort ();
-#endif
   }
 
   /* Recording body */

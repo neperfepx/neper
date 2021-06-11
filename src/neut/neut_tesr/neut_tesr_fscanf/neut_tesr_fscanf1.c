@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesr_fscanf_.h"
@@ -76,18 +76,27 @@ void
 neut_tesr_fscanf (FILE * file, char *dirname, double *bounds, double *scale,
                   struct TESR *pTesr)
 {
-  char *format = NULL, string[1000];
+  char *version = NULL, *dataformat = NULL, *oridataformat = NULL, string[1000];
   int *voxbounds = NULL;
 
   neut_tesr_free (pTesr);
 
-  neut_tesr_fscanf_head (pTesr, bounds, &voxbounds, &format, file);
-  neut_tesr_fscanf_cell (pTesr, file);
-  neut_tesr_fscanf_data (pTesr, dirname, voxbounds, scale, format, file);
+  neut_tesr_fscanf_head (pTesr, bounds, &voxbounds, &version, &dataformat, &oridataformat, file);
 
-  ut_file_nextstring (file, string);
-  if (!strcmp (string, "**oridata"))
-    neut_tesr_fscanf_oridata (pTesr, dirname, voxbounds, scale, format, file);
+  neut_tesr_fscanf_cell (pTesr, file);
+
+  do
+  {
+    ut_file_nextstring (file, string);
+
+    if (!strcmp (string, "**data"))
+      neut_tesr_fscanf_data (pTesr, dirname, voxbounds, scale, version, &dataformat, file);
+
+    else if (!strcmp (string, "**oridata"))
+      neut_tesr_fscanf_oridata (pTesr, dirname, voxbounds, scale, version, &oridataformat, file);
+  }
+  while (strcmp (string, "***end"));
+
   neut_tesr_fscanf_foot (file);
 
   neut_tesr_init_cellbbox (pTesr);
@@ -96,7 +105,9 @@ neut_tesr_fscanf (FILE * file, char *dirname, double *bounds, double *scale,
     if ((*pTesr).size[2] == 1)
       (*pTesr).Dim = 2;
 
-  ut_free_1d_char (&format);
+  ut_free_1d_char (&version);
+  ut_free_1d_char (&dataformat);
+  ut_free_1d_char (&oridataformat);
   ut_free_1d_int (&voxbounds);
 
   return;

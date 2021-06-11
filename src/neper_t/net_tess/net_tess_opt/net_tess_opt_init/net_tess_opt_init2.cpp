@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_.h"
@@ -549,6 +549,19 @@ net_tess_opt_init_domain (struct IN_T In, struct TESS PTess, int cell,
     net_tess_poly ((*pTOpt).Dom, 1, &(*pTOpt).DomPoly);
   else
     net_tess_poly ((*pTOpt).DomPer, 1, &(*pTOpt).DomPoly);
+
+  // if -transform cut, we load the primitives
+
+  int i, partqty;
+  char **parts = NULL;
+
+  ut_list_break (In.transform, NEUT_SEP_NODEP, &parts, &partqty);
+
+  for (i = 0; i < partqty; i++)
+    if (!strncmp (parts[i], "cut", 3))
+      net_transform_tess_cut_pre_prim (parts[i], &(*pTOpt).Prim, &(*pTOpt).PrimQty);
+
+  ut_free_2d_char (&parts, partqty);
 
   return;
 }

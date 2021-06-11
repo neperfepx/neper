@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2020, Romain Quey */
+/* Copyright (C) 2003-2021, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -608,7 +608,7 @@ ut_space_points_invect_plane_new (double *p1, double *p2, double *invect,
 
 int
 ut_space_triangle_point_in (double *A, double *B, double *C, double *P,
-                            double tol1, double tol2)
+                            double tol1, double tol2, double *ptol)
 {
   double v0[3], v1[3], v2[3], dot00, dot01, dot02, dot11, dot12, u, v,
     invDenom;
@@ -630,7 +630,25 @@ ut_space_triangle_point_in (double *A, double *B, double *C, double *P,
   v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
   // Check if point is in triangle
-  return (u >= -tol1) && (v >= -tol1) && (u + v <= 1 + tol2);
+  if ((u >= -tol1) && (v >= -tol1) && (u + v <= 1 + tol2))
+  {
+    if (ptol)
+      *ptol = 0;
+
+    return 1;
+  }
+  else
+  {
+    if (ptol)
+    {
+      *ptol = DBL_MAX;
+      *ptol = ut_num_min (*ptol, fabs (-u));
+      *ptol = ut_num_min (*ptol, fabs (-v));
+      *ptol = ut_num_min (*ptol, fabs (u + v - 1));
+    }
+
+    return 0;
+  }
 }
 
 int
@@ -2315,7 +2333,7 @@ ut_space_polygon_triangles (double *eq, double **coos, int cooqty,
           if (j != triid[0] && j != triid[1] && j != triid[2])
             if (ut_space_triangle_point_in
                 (coos[triid[0]], coos[triid[1]], coos[triid[2]], coos[j], 0,
-                 0))
+                 0, NULL))
             {
               in = 0;
               break;

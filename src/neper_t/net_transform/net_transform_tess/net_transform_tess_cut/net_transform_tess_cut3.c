@@ -1,9 +1,39 @@
 
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_transform_tess_cut_.h"
+
+void
+net_transform_tess_cut_pre_prim (char *expr, struct PRIM **pPrim, int *pPrimQty)
+{
+  int i, status;
+  char *fct = NULL;
+  char **exprs = NULL;
+
+  ut_string_function (expr, &fct, NULL, &exprs, pPrimQty);
+
+  if (strcmp (fct, "cut"))
+    abort ();
+
+  (*pPrim) = calloc (*pPrimQty, sizeof (struct PRIM));
+
+  for (i = 0; i < *pPrimQty; i++)
+  {
+    neut_prim_set_zero (*pPrim + i);
+    status = neut_prim_sscanf (exprs[i], *pPrim + i);
+    if (status == 0)
+      ut_print_message (0, 3, "%s...\n", exprs[i]);
+    else
+      ut_print_message (2, 3, "Parsing argument `%s' failed\n", exprs[i]);
+  }
+
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&exprs, *pPrimQty);
+
+  return;
+}
 
 // merge mirror cells and remove the resulting cell
 void

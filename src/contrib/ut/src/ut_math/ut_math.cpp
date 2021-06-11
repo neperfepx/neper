@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2020, Romain Quey */
+/* Copyright (C) 2003-2021, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -7,8 +7,13 @@
 #include<ctype.h>
 #include"ut.h"
 
+#ifdef HAVE_OPENMP
+#include <omp.h>
+#endif /* HAVE_OPENMP */
+
 #ifdef HAVE_MUPARSER
 #include "muParser.h"
+#endif
 
 void ut_math_functions (char ***pfcts, int *pfctqty);
 int ut_math_string_isfunction (char *string);
@@ -16,6 +21,15 @@ int ut_math_string_isfunction (char *string);
 int
 ut_math_eval (char *inexpr, int varqty, char **vars, double *vals, double *pres)
 {
+#ifdef HAVE_OPENMP
+  if (omp_get_thread_num() != 0)
+  {
+    printf ("ut_math_eval should not be multithreaded.\n");
+    abort ();
+  }
+#endif /* HAVE_OPENMP */
+
+#ifdef HAVE_MUPARSER
   using namespace mu;
   int i, j, status;
   char **newvars = ut_alloc_1d_pchar (varqty);
@@ -83,11 +97,23 @@ ut_math_eval (char *inexpr, int varqty, char **vars, double *vals, double *pres)
   ut_free_1d_int (&ids);
 
   return status;
+
+#else
+  (void) inexpr;
+  (void) varqty;
+  (void) vars;
+  (void) vals;
+  (void) pres;
+  ut_print_message (2, 0, "compiled without muparser\n");
+  abort ();
+
+#endif /* HAVE_MUPARSER */
 }
 
 int
 ut_math_evals (char *inexpr, int varqty, char **vars, double **vals, int evalqty, double *res)
 {
+#ifdef HAVE_MUPARSER
   using namespace mu;
   int i, j, status;
   char **newvars = ut_alloc_1d_pchar (varqty);
@@ -155,6 +181,18 @@ ut_math_evals (char *inexpr, int varqty, char **vars, double **vals, int evalqty
   ut_free_1d_int (&ids);
 
   return status;
+
+#else
+  (void) inexpr;
+  (void) varqty;
+  (void) vars;
+  (void) vals;
+  (void) evalqty;
+  (void) res;
+  ut_print_message (2, 0, "compiled without muparser\n");
+  abort ();
+
+#endif /* HAVE_MUPARSER */
 }
 
 int
@@ -193,7 +231,7 @@ ut_math_vars (char *expr, char ***pvars, int *pvarqty)
     if (var == 0)
     {
       // if character, start recording
-      if (isalpha (tmp[i]))
+      if (isalpha (tmp[i]) || tmp[i] == '_')
       {
         var = 1;
         length = 1;
@@ -208,7 +246,7 @@ ut_math_vars (char *expr, char ***pvars, int *pvarqty)
     else
     {
       // is a character - continue recording
-      if (isalpha (tmp[i]))
+      if (isalpha (tmp[i]) || tmp[i] == '_')
         length++;
 
       // is a digit - continue recording
@@ -343,4 +381,3 @@ ut_math_string_isfunction (char *string)
 
   return status;
 }
-#endif // HAVE_MUPARSER

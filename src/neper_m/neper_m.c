@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neper_m_.h"
@@ -232,10 +232,12 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 // Partitioning mesh ###
   if (In.partstring && strcmp (In.partstring, "0"))
   {
-#ifdef HAVE_LIBSCOTCH
     ut_print_message (0, 1, "Partitioning mesh...\n");
+#ifdef HAVE_LIBSCOTCH
     nem_partition (In, &Nodes, Mesh, &Part);
-#endif
+#else
+    ut_print_message (2, 0, "Compiled without libscotch.\n");
+#endif /* HAVE_LIBSCOTCH */
   }
 
 // Searching node sets ###

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fscanf_msh_.h"
@@ -81,7 +81,10 @@ neut_mesh_fscanf_msh_head (FILE * file, char **pmode, int *ptopology)
     ut_file_skip (file, 1);
 
     if (ptopology)
-      fscanf (file, "%d", ptopology);
+    {
+      if (fscanf (file, "%d", ptopology) != 1)
+        abort ();
+    }
     else
       ut_file_skip (file, 1);
 
@@ -304,7 +307,7 @@ neut_mesh_fscanf_msh_orientations (FILE *file, char *entity, struct MESH *pMesh)
 
       (*pMesh).ElsetOri = ut_alloc_2d ((*pMesh).ElsetQty + 1, 4);
 
-      neut_ori_fscanf (file, (*pMesh).ElsetOriDes, (*pMesh).ElsetOri + 1, (*pMesh).ElsetId + 1,
+      neut_ori_fscanf (file, (*pMesh).ElsetOriDes, "ascii", (*pMesh).ElsetOri + 1, (*pMesh).ElsetId + 1,
                        (*pMesh).ElsetQty, "id");
     }
     else if (!strcmp (entity, "elt"))
@@ -314,7 +317,7 @@ neut_mesh_fscanf_msh_orientations (FILE *file, char *entity, struct MESH *pMesh)
 
       (*pMesh).EltOri = ut_alloc_2d ((*pMesh).EltQty + 1, 4);
 
-      neut_ori_fscanf (file, (*pMesh).EltOriDes, (*pMesh).EltOri + 1, NULL,
+      neut_ori_fscanf (file, (*pMesh).EltOriDes, "ascii", (*pMesh).EltOri + 1, NULL,
                        (*pMesh).EltQty, "id");
     }
     else

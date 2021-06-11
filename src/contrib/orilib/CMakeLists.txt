@@ -2,7 +2,7 @@
 # Copyright(C) 2007-2009, 2012 Romain Quey
 # see the COPYING file in the top-level directory.
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0)
 if(POLICY CMP0012)
   cmake_policy(SET CMP0012 NEW)
 endif()
@@ -23,8 +23,6 @@ option(HAVE_PNG      "Use the libpng library"               ON) # PNG
 option(HAVE_GLPK     "Use glpk"                             OFF) # GLPK
 option(HAVE_NLOPT    "Use nlopt"                            OFF)# NLOPT
 option(HAVE_OPENMP   "Use OpenMP"                           ON)
-option(DEVEL_OPTIMIZATION "Enable optimization(ON for production use)" ON)
-option(DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag(OFF for production use)" OFF)
 
 # configure a header file to pass some of the CMake settings
 # to the source code
@@ -46,13 +44,6 @@ else()
 endif()
 
 add_definitions(-Wall -W)
-if(DEVEL_OPTIMIZATION)
-  add_definitions(-O3)
-endif()
-
-if(DEVEL_DEBUGGING_FLAG)
-  add_definitions(-g -Werror)
-endif()
 
 set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
@@ -119,7 +110,9 @@ if(HAVE_GLPK)                                      # GLPK
 endif()                                            # GLPK
 
 if(HAVE_NLOPT)                                     # NLOPT
-  find_package(NLOPT REQUIRED)                      # NLOPT
+  if (NOT DEFINED NLOPT_LIBRARIES)
+    find_package(NLOPT REQUIRED)                      # NLOPT
+  endif()
   set(EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES}) # NLOPT
   include_directories(${NLOPT_INCLUDE_DIRS})       # NLOPT
 endif()                                            # NLOPT

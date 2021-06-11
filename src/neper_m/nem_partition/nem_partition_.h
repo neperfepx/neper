@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -19,7 +19,6 @@
 #include "nem_partition.h"
 
 #ifdef HAVE_LIBSCOTCH
-
 extern void nem_partition_init (struct IN_M In, SCOTCH_Arch * pArch,
 				struct PART *pPart);
 

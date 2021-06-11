@@ -195,9 +195,9 @@ myfunc (unsigned n, const double *x, double *grad, void *my_func_data)
 {
   count++;
 
-  n = n;
-  grad = grad;
-  my_func_data = my_func_data;
+  (void) n;
+  (void) grad;
+  (void) my_func_data;
 
   int i;
   double value = 0;
@@ -224,8 +224,8 @@ myconstraint (unsigned n, const double *x, double *grad, void *data)
 {
   my_constraint_data *d = (my_constraint_data *) data;
 
-  n = n;
-  grad = grad;
+  (void) n;
+  (void) grad;
 
   int i;
   double value = 0;

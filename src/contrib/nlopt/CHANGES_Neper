@@ -1,0 +1,2 @@
+Bumped cmake_minimum_required to 3.0.
+Added cmake policy.

@@ -1,8 +1,9 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_partition_.h"
+
 #ifdef HAVE_LIBSCOTCH
 
 void
@@ -33,4 +34,4 @@ nem_partition (struct IN_M In, struct NODES *pNodes, struct MESH *Mesh,
   return;
 }
 
-#endif
+#endif /* HAVE_LIBSCOTCH */

@@ -34,8 +34,16 @@ neper_s (int fargc, char **fargv, int argc, char **argv)
     nes_sim (In, &Sim);
   }
 
-  // printing simulation content
-  else
+  // merging simulations and loading resulting simulation
+  else if (In.mergedir)
+  {
+    ut_print_message (0, 1, "Merging simulation directories...\n");
+    nes_merge (In, &Sim);
+    neut_sim_verbose (Sim);
+  }
+
+  // reading simulation and printing simulation content to terminal
+  else if (In.simdir)
   {
     neut_sim_fscanf (In.simdir, &Sim, "R");
     neut_sim_verbose (Sim);

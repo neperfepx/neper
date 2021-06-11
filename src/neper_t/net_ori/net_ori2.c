@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_.h"
@@ -35,7 +35,7 @@ net_ori_random (long random, struct OL_SET *pOSet)
 // Author: L. Renversade.
 // fixed rq
 void
-net_ori_fibre (long random, char *distrib, struct OL_SET *pOSet)
+net_ori_fiber (long random, char *distrib, struct OL_SET *pOSet)
 {
   unsigned int i;
   unsigned char c;
@@ -43,13 +43,15 @@ net_ori_fibre (long random, char *distrib, struct OL_SET *pOSet)
   double *q_align = ol_q_alloc ();
   double *q_rand = ol_q_alloc ();
 
+  ut_string_fnrs (distrib, "fibre", "fiber", 1);
+
   gsl_rng *rnd = NULL;
 
   rnd = gsl_rng_alloc (gsl_rng_ranlxd2);
   gsl_rng_set (rnd, random - 1);
 
   if (sscanf
-      (distrib, "fibre(%lf,%lf,%lf,%lf,%lf,%lf)", dirs, dirs + 1, dirs + 2,
+      (distrib, "fiber(%lf,%lf,%lf,%lf,%lf,%lf)", dirs, dirs + 1, dirs + 2,
        dirc, dirc + 1, dirc + 2) == 6)
   {
     ut_vector_uvect (dirs, dirs);
@@ -59,7 +61,7 @@ net_ori_fibre (long random, char *distrib, struct OL_SET *pOSet)
   // legacy
   else
     if (sscanf
-        (distrib, "fibre(%c,%lf,%lf,%lf)", &c, dirc, dirc + 1, dirc + 2) == 4)
+        (distrib, "fiber(%c,%lf,%lf,%lf)", &c, dirc, dirc + 1, dirc + 2) == 4)
   {
     if (c == 'x' || c == 'y' || c == 'z')
       for (i = 0; i < 3; i++)
@@ -73,10 +75,10 @@ net_ori_fibre (long random, char *distrib, struct OL_SET *pOSet)
   else
     ut_print_message (2, 2, "Failed to parse expression `%s'.\n", distrib);
 
-  // 1st rotation, to get in the fibre
+  // 1st rotation, to get in the fiber
   ol_vect_vect_q (dirc, dirs, q_align);
 
-  // 2nd rotation, about the fibre
+  // 2nd rotation, about the fiber
   for (i = 0; i < (*pOSet).size; i++)
   {
     theta = 2.0 * M_PI * gsl_rng_uniform (rnd);

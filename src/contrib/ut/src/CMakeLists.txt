@@ -1,7 +1,7 @@
-# Copyright(C) 2003-2020, Romain Quey
+# Copyright(C) 2003-2021, Romain Quey
 # see the COPYING file in the top-level directory.
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0)
 if(POLICY CMP0012)
   cmake_policy(SET CMP0012 NEW)
 endif()
@@ -21,8 +21,6 @@ option(HAVE_OPENGJK  "Use openGJK"                          OFF)
 option(HAVE_NLOPT    "Use NLopt"                            OFF)
 option(HAVE_OPENMP   "Use OpenMP"                           ON)
 option(HAVE_PNG      "Use the libpng library"               ON)
-option(DEVEL_OPTIMIZATION "Enable optimization(ON for production use)" ON)
-option(DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag(OFF for production use)" OFF)
 
 # configure a header file to pass some of the CMake settings
 # to the source code
@@ -54,13 +52,6 @@ if(HAVE_OPENGJK)
 endif()
 
 add_definitions(-Wall -W -Wno-unknown-pragmas -Wno-deprecated-declarations)
-if(DEVEL_OPTIMIZATION)
-  add_definitions(-O3)
-endif()
-
-if(DEVEL_DEBUGGING_FLAG)
-  add_definitions(-g -Werror)
-endif()
 
 set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 

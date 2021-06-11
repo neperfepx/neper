@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_data_fscanf_.h"
@@ -21,7 +21,7 @@ neut_data_fscanf_ori (struct SIM Sim, char *datavalue, int qty,
     char *filename = ut_alloc_1d_char (1000);
 
     neut_sim_res_file (Sim, "element", "ori", filename);
-    if (neut_ori_fnscanf (filename, Sim.OriDes, *pColData + 1, NULL, qty, NULL, "r") != 1)
+    if (neut_ori_fnscanf (filename, Sim.OriDes, "ascii", *pColData + 1, NULL, qty, NULL, "r") != 1)
       ut_print_message (2, 3, "Failed to read file.\n");
 
     ut_free_1d_char (&filename);

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_merge_.h"
@@ -54,7 +54,7 @@ neut_tess_cellexpr_merge (struct TESS *pTess, char *expr, double coplanar)
 {
   int newcell, cellqty, *cells = NULL;
 
-  neut_tess_expr_celllist (*pTess, expr, &cells, &cellqty);
+  neut_tess_expr_cells (*pTess, expr, &cells, &cellqty);
 
   newcell = neut_tess_cells_merge (pTess, cells, cellqty, coplanar);
 

@@ -17,7 +17,7 @@ extern "C"
 #define UT_NLOPT_H
 
 #ifdef HAVE_NLOPT
-#include<nlopt.h>
+#include"nlopt.h"
 
 /// \brief Set NLopt algorithm variable from name
 /// \param optialgo: algorithm

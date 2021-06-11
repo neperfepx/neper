@@ -2,23 +2,27 @@
 # Copyright(C) 2003-2021, Romain Quey.
 # See the COPYING file in the top-level directory.
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"4.1.3-14\")
+set(NEPER_VERSION \"4.2.0\")
 project(neper)
 
+# Set the build type for appropriate compile flags
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build: Debug Release" FORCE)
+endif()
+
 # should we use the optional libraries?
-set(HAVE_GSL ON)
-option(HAVE_NLOPT           "Use NLopt"                                 ON )
-option(HAVE_LIBSCOTCH     "Use libscotch"                               OFF)
-option(HAVE_OPENMP        "Use OpenMP"                                  ON )
-option(DEVEL_OPTIMIZATION "Enable optimization(ON for production use)" ON )
-option(DEVEL_DEBUGGING_TEST "Enable debugging tests(OFF for production use)"   OFF)
-option(DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag(OFF for production use)"   OFF)
-option(DEVEL_PROFILING    "Enable profiling(OFF for production use)"   OFF)
+set(HAVE_NLOPT     ON  CACHE BOOL "Use NLopt")
+set(HAVE_OPENMP    ON  CACHE BOOL "Use OpenMP")
+set(HAVE_GSL       ON  CACHE BOOL "Use GSL")
+set(HAVE_MUPARSER  ON  CACHE BOOL "Use muParser") # sets to ON in ut, etc.
+set(HAVE_OPENGJK   ON  CACHE BOOL "Use openGJK") # sets to ON in ut, etc.
+set(HAVE_LIBSCOTCH ON  CACHE BOOL "Use Scotch") # sets to ON in ut, etc.
+set(HAVE_PNG      OFF CACHE BOOL "Use the libpng library") # sets to OFF in ut, etc.
 
 function(message)
   if(NOT MESSAGE_QUIET)
@@ -26,36 +30,7 @@ function(message)
   endif()
 endfunction()
 
-include_directories("${PROJECT_SOURCE_DIR}")
-
-include_directories("${PROJECT_SOURCE_DIR}/contrib/muparser")
-set(MUPARSER_SOURCE_DIR "${PROJECT_SOURCE_DIR}/contrib/muparser")
-set(MUPARSER_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/muparser")
-set(MUPARSER_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/muparser/include")
-
-include_directories("${PROJECT_SOURCE_DIR}/contrib/openGJK")
-include_directories("${PROJECT_SOURCE_DIR}/contrib/ut/src")
-set(UT_SOURCE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut/src")
-set(UT_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/ut/src")
-set(UT_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut/src/include")
-
-include_directories("${PROJECT_SOURCE_DIR}/contrib/orilib")
-include_directories("${PROJECT_SOURCE_DIR}/neut")
-include_directories("${PROJECT_SOURCE_DIR}/neper_t")
-include_directories("${PROJECT_SOURCE_DIR}/neper_m")
-include_directories("${PROJECT_SOURCE_DIR}/neper_v")
-include_directories("${PROJECT_SOURCE_DIR}/neper_s")
-
-include_directories("${PROJECT_BINARY_DIR}")
-include_directories("${PROJECT_BINARY_DIR}/contrib/openGJK")
-include_directories("${PROJECT_BINARY_DIR}/contrib/ut/src")
-include_directories("${PROJECT_BINARY_DIR}/contrib/orilib")
-include_directories("${PROJECT_BINARY_DIR}/contrib/muparser")
-include_directories("${PROJECT_BINARY_DIR}/neut")
-include_directories("${PROJECT_BINARY_DIR}/neper_t")
-include_directories("${PROJECT_BINARY_DIR}/neper_m")
-include_directories("${PROJECT_BINARY_DIR}/neper_v")
-include_directories("${PROJECT_BINARY_DIR}/neper_s")
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 # configure a header file to pass some of the CMake settings to the
 # source code
@@ -64,76 +39,53 @@ configure_file(
   "${PROJECT_BINARY_DIR}/neper_config.h"
 )
 
-add_definitions(-Wall -W -Wno-unknown-pragmas -Wno-deprecated-declarations)
-if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
-  set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wno-deprecated-copy")
-endif()
+################################################################################
+# Including directories ########################################################
+################################################################################
 
-if(DEVEL_OPTIMIZATION)
-  add_definitions(-O3)
-endif()
+# allow to #include random files, from anywhere, by specifying its path
+# relative to ${PROJECT_SOURCE_DIR}
+include_directories("${PROJECT_SOURCE_DIR}")
 
-if(DEVEL_DEBUGGING_FLAG)
-  add_definitions(-g -Werror)
-endif()
+# path to neper_config.h, which is only in ${PROJECT_BINARY_DIR}
+include_directories("${PROJECT_BINARY_DIR}")
 
-if(DEVEL_PROFILING)
-  add_definitions(-pg)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
-endif()
+# including all subdirectories, whick makes sure that they have access to each
+# other's include files (all need ut, neper_* need neut, neut needs neper_t,
+# etc.).  The order does not matter.
+include_directories("${PROJECT_SOURCE_DIR}/neper_t")
+include_directories("${PROJECT_SOURCE_DIR}/neper_m")
+include_directories("${PROJECT_SOURCE_DIR}/neper_s")
+include_directories("${PROJECT_SOURCE_DIR}/neper_v")
+include_directories("${PROJECT_SOURCE_DIR}/neut")
+include_directories("${PROJECT_SOURCE_DIR}/neut/neut_structs")
+include_directories("${PROJECT_SOURCE_DIR}/contrib/ut/src")
+include_directories("${PROJECT_SOURCE_DIR}/contrib/orilib")
+include_directories("${PROJECT_SOURCE_DIR}/contrib/tinycolormap")
+include_directories("${PROJECT_SOURCE_DIR}/contrib/nanoflann")
 
-SET(HAVE_MUPARSER ON CACHE BOOL "Use muParser") # sets to ON in ut, etc.
-SET(HAVE_OPENGJK ON CACHE BOOL "Use openGJK") # sets to ON in ut, etc.
-SET(HAVE_PNG OFF CACHE BOOL "Use the libpng library") # sets to OFF in ut, etc.
+include_directories("${PROJECT_SOURCE_DIR}/contrib/muparser")
+set(MUPARSER_SOURCE_DIR "${PROJECT_SOURCE_DIR}/contrib/muparser")
+set(MUPARSER_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/muparser")
+set(MUPARSER_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/muparser/include")
 
-set(BUILD_SHARED_LIBS OFF)
+# The following include_directories are due to the presence of local
+# *_config.h files (built in their subdirectories).  These subdirectories are
+# #included by other subdirectories. UT_BINARY_DIR and UT_INCLUDE_DIR are
+# useful to orilib.
+include_directories("${PROJECT_BINARY_DIR}/contrib/orilib")
+include_directories("${PROJECT_BINARY_DIR}/contrib/ut/src")
+set(UT_BINARY_DIR "${PROJECT_BINARY_DIR}/contrib/ut/src")
+set(UT_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/contrib/ut/src")
 
-set(MESSAGE_QUIET ON)
-
-add_subdirectory(contrib/openGJK)
-add_subdirectory(contrib/muparser)
-add_subdirectory(contrib/ut/src)
-add_subdirectory(contrib/orilib)
-add_subdirectory(neut)
-add_subdirectory(neper_t)
-add_subdirectory(neper_m)
-add_subdirectory(neper_v)
-add_subdirectory(neper_s)
-
-set(MESSAGE_QUIET OFF)
-
-unset(HAVE_MUPARSER CACHE) # hide from ccmake(comes from ut)
-unset(HAVE_OPENGJK CACHE) # hide from ccmake(comes from ut)
-unset(HAVE_GLPK CACHE)     # hide from ccmake(comes from orilib)
-unset(HAVE_PNG CACHE)      # hide from ccmake(comes from ut)
-unset(VERSION_ACCURATE CACHE) # hide from ccmake(comes from openGJK)
-
-add_executable(neper neper.c)
-
-set(EXTRA_LIBS ${EXTRA_LIBS} openGJKlib)
-set(EXTRA_LIBS ${EXTRA_LIBS} muparser)
-set(EXTRA_LIBS ${EXTRA_LIBS} ut)
-set(EXTRA_LIBS ${EXTRA_LIBS} orilib)
-set(EXTRA_LIBS ${EXTRA_LIBS} neut)
-set(EXTRA_LIBS ${EXTRA_LIBS} neper_t)
-set(EXTRA_LIBS ${EXTRA_LIBS} neper_m)
-set(EXTRA_LIBS ${EXTRA_LIBS} neper_v)
-set(EXTRA_LIBS ${EXTRA_LIBS} neper_s)
-
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+################################################################################
+# Managing dependencies ########################################################
+################################################################################
 
 if(HAVE_GSL)
   find_package(GSL REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
+  list (APPEND EXTRA_LIBS ${GSL_LIBRARIES})
   include_directories(${GSL_INCLUDE_DIRS})
-endif()
-
-if(HAVE_LIBSCOTCH)
-  find_package(LIBSCOTCH REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${Scotch_LIBRARIES})
-  include_directories(${Scotch_INCLUDE_DIRS})
-  find_package(Threads REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 endif()
 
 if(HAVE_OPENMP)
@@ -144,23 +96,117 @@ if(HAVE_OPENMP)
   endif()
 
   find_package(OpenMP REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${OpenMP_C_FLAGS})
+  list (APPEND EXTRA_LIBS ${OpenMP_C_FLAGS})
   add_definitions(${OpenMP_C_FLAGS})
 endif()
 
-if(HAVE_NLOPT)                                     # NLOPT
-  find_package(NLOPT REQUIRED)                      # NLOPT
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES}) # NLOPT
-  include_directories(${NLOPT_INCLUDE_DIRS})       # NLOPT
+if(HAVE_LIBSCOTCH)
+  find_package(LIBSCOTCH QUIET)
+  if (EXISTS "${scotch_LIBRARY}")
+    message("-- Found Scotch: ${scotch_LIBRARY}")
+    list (APPEND EXTRA_LIBS ${Scotch_LIBRARIES})
+    include_directories(${Scotch_INCLUDE_DIRS})
+    find_package(Threads REQUIRED QUIET)
+    list (APPEND EXTRA_LIBS ${CMAKE_THREAD_LIBS_INIT})
+  else (${Scotch_LIBRARIES})
+    add_subdirectory(contrib/scotch)
+    find_package(Threads REQUIRED QUIET)
+    list (APPEND EXTRA_LIBS ${CMAKE_THREAD_LIBS_INIT})
+    message("-- Could NOT find Scotch - using built-in")
+    unset (Scotch_INCLUDE_DIR CACHE)
+    set(scotch_LIBRARY scotch)
+    set(scotcherr_LIBRARY scotcherr)
+    set(scotcherrexit_LIBRARY scotcherrexit)
+    set(Scotch_LIBRARIES ${scotch_LIBRARY} ${scotcherr_LIBRARY}
+                         ${scotcherrexit_LIBRARY})
+    list(APPEND EXTRA_LIBS scotch scotcherr scotcherrexit)
+    include_directories("${PROJECT_SOURCE_DIR}/contrib/scotch/src/libscotch")
+    include_directories("${PROJECT_BINARY_DIR}/contrib/scotch")
+  endif()
 endif()
+
+if (HAVE_NLOPT)
+  find_package(NLOPT QUIET)
+  if(EXISTS "${NLOPT_LIBRARIES}")
+    message("-- Found NLopt: ${NLOPT_LIBRARIES}")
+    list (APPEND EXTRA_LIBS ${NLOPT_LIBRARIES})
+    include_directories(${NLOPT_INCLUDE_DIRS})
+  else(${NLOPT_LIBRARIES})
+    message("-- Could NOT find NLopt - using built-in")
+    set(NLOPT_CXX ON)
+    set(NLOPT_FORTRAN OFF)
+    set(NLOPT_GUILE OFF)
+    set(NLOPT_MATLAB OFF)
+    set(NLOPT_OCTAVE OFF)
+    set(NLOPT_PYTHON OFF)
+    set(NLOPT_SWIG OFF)
+    set(NLOPT_TESTS OFF)
+    set(MESSAGE_QUIET ON)
+    add_subdirectory(contrib/nlopt)
+    set(MESSAGE_QUIET OFF)
+    set(NLOPT_INCLUDE_DIR "${PROJECT_BINARY_DIR}/contrib/nlopt/src/api")
+    set(NLOPT_INCLUDE_DIRS "${NLOPT_INCLUDE_DIR}")
+    set(NLOPT_LIBRARY "nlopt")
+    set(NLOPT_LIBRARIES "nlopt")
+    list(APPEND EXTRA_LIBS nlopt)
+    include_directories("${PROJECT_SOURCE_DIR}/contrib/nlopt")
+    include_directories("${PROJECT_BINARY_DIR}/contrib/nlopt/src/api")
+  endif()
+endif()
+
+add_definitions(-Wall -W -Wno-unknown-pragmas -Wno-deprecated-declarations)
+if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
+  set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wno-deprecated-copy")
+endif()
+
+set(BUILD_SHARED_LIBS OFF)
+
+set(MESSAGE_QUIET ON)
+
+add_subdirectory(contrib/openGJK)
+add_subdirectory(contrib/muparser)
+add_subdirectory(contrib/ut/src)
+add_subdirectory(contrib/orilib)
+add_subdirectory(neut)
+set(MESSAGE_QUIET OFF)
+add_subdirectory(neper_t)
+add_subdirectory(neper_m)
+add_subdirectory(neper_v)
+add_subdirectory(neper_s)
+
+set(MESSAGE_QUIET OFF)
+
+add_executable(neper neper.c)
+
+list(APPEND EXTRA_LIBS openGJKlib)
+list(APPEND EXTRA_LIBS muparser)
+list(APPEND EXTRA_LIBS ut)
+list(APPEND EXTRA_LIBS orilib)
+list(APPEND EXTRA_LIBS neut)
+list(APPEND EXTRA_LIBS neper_t)
+list(APPEND EXTRA_LIBS neper_m)
+list(APPEND EXTRA_LIBS neper_v)
+list(APPEND EXTRA_LIBS neper_s)
+
+# Hide variables that come from subdirectories #################################
+unset(HAVE_GLPK CACHE)           # hide from ccmake (comes from orilib)
+unset(VERSION_ACCURATE CACHE)    # hide from ccmake (comes from openGJK)
+unset(INSTALL_BIN_DIR CACHE)     # hide from ccmake (comes from NLopt)
+unset(INSTALL_CMAKE_DIR CACHE)   # hide from ccmake (comes from NLopt)
+unset(INSTALL_DATA_DIR CACHE)    # hide from ccmake (comes from NLopt)
+unset(INSTALL_INCLUDE_DIR CACHE) # hide from ccmake (comes from NLopt)
+unset(INSTALL_LIB_DIR CACHE)     # hide from ccmake (comes from NLopt)
+unset(INSTALL_MAN_DIR CACHE)     # hide from ccmake (comes from NLopt)
+unset(THREADLOCAL CACHE)         # hide from ccmake (comes from NLopt)
+unset(WITH_THREADLOCAL CACHE)    # hide from ccmake (comes from NLopt)
+unset(NLOPT_TESTS CACHE)         # hide from ccmake (comes from NLopt)
+unset(HAVE_PNG CACHE)            # hide from ccmake (comes from Orilib)
 
 target_link_libraries(neper ${EXTRA_LIBS})
 
 install(TARGETS neper DESTINATION bin
          PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ
 	 GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
-
-unset(HAVE_GSL CACHE) # hides it in ccmake
 
 # CTEST
 enable_testing()
@@ -339,11 +385,9 @@ add_test(M_mesh3dalgo_netgnetg  ./neper --rcfile none -M n2-id1.tess -mesh3dclre
 add_test(M_mesh3dalgo_netggmsh  ./neper --rcfile none -M n2-id1.tess -mesh3dclreps 1 -mesh3dalgo netg:gmsh)
 add_test(M_mesh3dalgo_netggmne  ./neper --rcfile none -M n2-id1.tess -mesh3dclreps 1 -mesh3dalgo netg:gmne)
 
-if(HAVE_LIBSCOTCH)
-  add_test(M_part                 ./neper --rcfile none -M -loadmesh n2-id1.msh -part 4)
-  add_test(M_part2                ./neper --rcfile none -M -loadmesh n2-id1.msh -part 2:2)
-  add_test(M_part_dim2            ./neper --rcfile none -M n2-id1-dim2.tess -part 4)
-endif()
+add_test(M_part                 ./neper --rcfile none -M -loadmesh n2-id1.msh -part 4)
+add_test(M_part2                ./neper --rcfile none -M -loadmesh n2-id1.msh -part 2:2)
+add_test(M_part_dim2            ./neper --rcfile none -M n2-id1-dim2.tess -part 4)
 
 add_test(M_o                    ./neper --rcfile none -M -loadmesh n2-id1.msh -o foo)
 add_test(M_format_inp           ./neper --rcfile none -M -loadmesh n2-id1.msh -for inp)

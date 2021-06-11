@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_show_point_.h"
@@ -19,10 +19,10 @@ nev_show_points (char **argv, int *pi, struct POINT Point,
   ut_array_1d_int_zero ((*pPrint).showpoint, Point.PointQty + 1);
 
   status =
-    nev_show_genexpr (argv[(*pi)], (*pPrint).showpoint, Point.PointQty);
+    nev_show_genexpr (argv[(*pi)], NULL, (*pPrint).showpoint, Point.PointQty);
 
-  if (status != 0)
-    abort ();
+  if (status)
+    ut_print_exprbug (argv[(*pi)]);
   /*
      {
      neut_point_var_list ("point", &vars, &varqty);

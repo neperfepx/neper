@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_tesrobj_.h"
@@ -67,7 +67,7 @@ net_tess_opt_init_tesrobj_region (char *region, struct TOPT *pTOpt)
 
     if (!strcmp (region, "surf"))
       neut_tesr_cell_boundpoints ((*pTOpt).tartesr, i, &pts,
-                                  &(*pTOpt).tarcellptqty[i], 0, 1);
+                                  &(*pTOpt).tarcellptqty[i], 0, "xyz");
     else if (!strcmp (region, "vol") || !strcmp (region, "all"))
       neut_tesr_cell_points ((*pTOpt).tartesr, i, &pts,
                              &(*pTOpt).tarcellptqty[i]);

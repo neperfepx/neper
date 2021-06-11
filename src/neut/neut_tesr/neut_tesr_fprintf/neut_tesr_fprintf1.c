@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesr_fprintf_.h"
@@ -21,11 +21,11 @@ neut_tesr_fprintf (FILE * file, char *format, struct TESR Tesr)
   else
     strcpy (format2, format);
 
-  neut_tesr_fprintf_head (file, format2, Tesr);
+  neut_tesr_fprintf_head (file, Tesr);
   neut_tesr_fprintf_cell (file, Tesr);
   neut_tesr_fprintf_data (file, format2, Tesr);
   if (Tesr.VoxOri)
-    neut_tesr_fprintf_oridata (file, "quaternion:active", format, Tesr);
+    neut_tesr_fprintf_oridata (file, format, Tesr);
   neut_tesr_fprintf_foot (file);
 
   ut_free_1d_char (&format2);
@@ -54,9 +54,9 @@ neut_tesr_name_fprintf_raw (char *tesr, char *raw, char *format,
   else
     strcpy (format2, format);
 
-  neut_tesr_fprintf_head (fp1, format2, Tesr);
+  neut_tesr_fprintf_head (fp1, Tesr);
   neut_tesr_fprintf_cell (fp1, Tesr);
-  neut_tesr_fprintf_data_raw (fp1, raw, format2, Tesr);
+  neut_tesr_fprintf_data_raw (fp1, raw, format2, "nonl", Tesr);
   neut_tesr_fprintf_foot (fp1);
 
   ut_file_close (fp1, tesr, "w");
@@ -114,7 +114,7 @@ neut_tesr_fprintf_ami (FILE * file, char *format, struct TESR Tesr)
   fprintf (file, "SCALARS MaterialId %s\n", format_ami);
   fprintf (file, "LOOKUP_TABLE default\n");
 
-  neut_tesr_fprintf_data_noheader (file, format2, Tesr, Tesr.CellId);
+  neut_tesr_fprintf_data_noheader (file, format2, "nonl", Tesr, Tesr.CellId);
 
   ut_free_1d_char (&format_ami);
   ut_free_1d_char (&format2);

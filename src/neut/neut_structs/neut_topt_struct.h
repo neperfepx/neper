@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tdyn_struct.h"
@@ -151,6 +151,8 @@ struct TOPT
                                 // - for tesr, it may be 'vol', 'surf', etc.
   char *objective;		// global objective functions:
   char *objective_tesrval;
+  int PrimQty;
+  struct PRIM *Prim;
 
   // value of the objective function
   double *curval0;		// current values, no smoothing

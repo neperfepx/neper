@@ -9,6 +9,7 @@ struct IN_S
 {
   char *fepxdir;                // FEPX result directory
   char *simdir;                 // simulation directory
+  char *mergedir;               // simulation directories to merge
 
   char *noderes;                // nodal results
   char *eltres;                 // elemental results

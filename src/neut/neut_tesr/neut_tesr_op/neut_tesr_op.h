@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -21,7 +21,7 @@ extern "C"
 ///
 ///
   extern void neut_tesr_alloc (struct TESR *pTesr, int dim, int *size,
-			       double *vsize);
+			       double *vsize, char *wildcard);
 
 /// \brief Free a TESR structure.
 ///
@@ -147,20 +147,30 @@ extern "C"
   extern void neut_tesr_tessinter (struct TESR *pTesr, char *crop, int
       verbosity);
 
-  extern void neut_tesr_addbuffer (struct TESR *pTesr, char *addbuffer);
+  extern void neut_tesr_addbuffer (struct TESR *pTesr, int *buffer);
+  extern void neut_tesr_addbuffer_string (struct TESR *pTesr, char *string);
 
   extern void neut_tesr_rotate (struct TESR *pTesr, double **g);
 
   extern void neut_tesr_init_voxori (struct TESR *pTesr);
 
+  extern void neut_tesr_cell_oriaverage (struct TESR *pTesr, int cell);
   extern void neut_tesr_oriaverage (struct TESR *pTesr);
 
   extern void neut_tesr_unindex (struct TESR *pTesr);
 
+  extern void neut_tesr_cell_orirotate (struct TESR *pTesr, int cell, double *r, double theta, char *csys);
+
+  extern int neut_tesr_cellexpr_merge (struct TESR *pTesr, char *cellexpr);
+
+  extern void neut_tesr_addcell (struct TESR *pTesr);
+
   extern void neut_tesr_resetorigin (struct TESR *pTesr);
-  extern void neut_tesr_resetcellid (struct TESS *pTesr);
+  extern void neut_tesr_resetcellid (struct TESR *pTesr);
 
   extern int neut_tesr_cellexpr_remove (struct TESR *pTesr, char *expr);
+
+  extern void neut_tesr_bbox_posbbox (struct TESR Tesr, double **bbox, int **posbbox);
 
 #endif				/* NEUT_TESR_OP_H */
 

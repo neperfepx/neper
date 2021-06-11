@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_post_.h"
@@ -51,7 +51,7 @@ net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess, int dtess,
       }
     }
   }
-  else
+  else if (TOpt.CellSCellQty && ut_array_1d_int_max (TOpt.CellSCellQty + 1, TOpt.CellQty) > 1)
   {
     (*pTess).CellId = ut_alloc_1d_int ((*pTess).CellQty + 1);
     for (i = 1; i <= (*pTess).CellQty; i++)

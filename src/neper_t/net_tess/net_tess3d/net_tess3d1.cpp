@@ -1,10 +1,9 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess3d_.h"
-#include"neut/neut_structs/neut_nanoflann_struct.hpp"
-// #include"contrib/nanoflann/nanoflann.hpp"
+#include"neut_nanoflann_struct.hpp"
 
 extern void net_polycomp (struct POLY Domain, struct SEEDSET SeedSet,
                           NFCLOUD * pnf_cloud, NFTREE ** pnf_index,

@@ -3,7 +3,7 @@
 #ifndef STRUCTQCLOUD_H
 #define STRUCTQCLOUD_H
 
-#include"contrib/nanoflann/nanoflann.hpp"
+#include"nanoflann.hpp"
 
 struct QCLOUD
 {

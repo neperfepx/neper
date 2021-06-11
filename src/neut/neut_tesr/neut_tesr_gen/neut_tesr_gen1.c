@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tesr_gen_.h"
@@ -74,7 +74,7 @@ neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty)
   }
   else if (!strcmp (entity, "cell"))
   {
-    (*pvarqty) = 15;
+    (*pvarqty) = 27;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 30);
     strcpy ((*pvar)[0], "id");
     strcpy ((*pvar)[1], "x");
@@ -91,6 +91,18 @@ neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[12], "oridisanisoaxes");
     strcpy ((*pvar)[13], "oridisanisofact");
     strcpy ((*pvar)[14], "oridisanisodeltas");
+    strcpy ((*pvar)[15], "vxmin");
+    strcpy ((*pvar)[16], "vymin");
+    strcpy ((*pvar)[17], "vzmin");
+    strcpy ((*pvar)[18], "vxmax");
+    strcpy ((*pvar)[19], "vymax");
+    strcpy ((*pvar)[20], "vzmax");
+    strcpy ((*pvar)[21], "domvxmin");
+    strcpy ((*pvar)[22], "domvymin");
+    strcpy ((*pvar)[23], "domvzmin");
+    strcpy ((*pvar)[24], "domvxmax");
+    strcpy ((*pvar)[25], "domvymax");
+    strcpy ((*pvar)[26], "domvzmax");
   }
   else if (!strcmp (entity, "vox"))
   {
@@ -118,11 +130,6 @@ neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[4], "areafrac");
     strcpy ((*pvar)[5], "size");
     strcpy ((*pvar)[6], "sizefrac");
-  }
-  else if (!strcmp (entity, "general"))
-  {
-    (*pvarqty) = 0;
-    (*pvar) = NULL;
   }
   else
     ut_print_neperbug ();
@@ -316,7 +323,7 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       if (strcmp (entity, "cell") != 0)
         (*pvals)[0] = id;
       else
-        (*pvals)[0] = Tesr.CellId ? Tesr.CellId[id] : id;
+        (*pvals)[0] = neut_tesr_cell_id (Tesr, id);
       ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "group"))
@@ -387,6 +394,66 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       (*pvalqty) = 3;
       ut_free_2d (&evect, 3);
     }
+    else if (!strcmp (var, "vxmin"))
+    {
+      (*pvals)[0] = Tesr.CellBBox[id][0][0];
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var, "vymin"))
+    {
+      (*pvals)[0] = Tesr.CellBBox[id][1][0];
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var, "vzmin"))
+    {
+      (*pvals)[0] = Tesr.CellBBox[id][2][0];
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var, "vxmax"))
+    {
+      (*pvals)[0] = Tesr.CellBBox[id][0][1];
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var, "vymax"))
+    {
+      (*pvals)[0] = Tesr.CellBBox[id][1][1];
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var, "vzmax"))
+    {
+      (*pvals)[0] = Tesr.CellBBox[id][2][1];
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var, "domvxmin"))
+    {
+      (*pvals)[0] = 1;
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var, "domvymin"))
+    {
+      (*pvals)[0] = 1;
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var, "domvzmin"))
+    {
+      (*pvals)[0] = 1;
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var, "domvxmax"))
+    {
+      (*pvals)[0] = Tesr.size[0];
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var, "domvymax"))
+    {
+      (*pvals)[0] = Tesr.size[1];
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var, "domvzmax"))
+    {
+      (*pvals)[0] = Tesr.size[2];
+      ut_string_string ("%d", &typetmp);
+    }
   }
   else if (!strcmp (entity, "seed"))
   {
@@ -418,7 +485,7 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
     }
     else if (!strcmp (var, "cell"))
     {
-      neut_tesr_vox_cell (Tesr, id, &tmpint);
+      neut_tesr_vox_cellid (Tesr, id, &tmpint);
       (*pvals)[0] = tmpint;
       ut_string_string ("%d", &typetmp);
     }
@@ -724,4 +791,38 @@ neut_tesr_hascelloridistrib (struct TESR Tesr)
         return 1;
 
   return 0;
+}
+
+int
+neut_tesr_cellid_cell (struct TESR Tesr, int cellid, int *pcell)
+{
+  if (pcell)
+    *pcell = -1;
+
+  if (!Tesr.CellId)
+  {
+    if (pcell)
+      (*pcell) = cellid;
+    return 0;
+  }
+
+  else
+  {
+    int i;
+    for (i = 1; i <= Tesr.CellQty; i++)
+      if (Tesr.CellId[i] == cellid)
+      {
+        if (pcell)
+          *pcell = i;
+        return 0;
+      }
+  }
+
+  return -1;
+}
+
+int
+neut_tesr_cell_id (struct TESR Tesr, int cell)
+{
+  return Tesr.CellId ? Tesr.CellId[cell] : cell;
 }

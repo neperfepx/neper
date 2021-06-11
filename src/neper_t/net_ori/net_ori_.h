@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -19,7 +19,7 @@
 
 #include"net_ori_uniform/net_ori_uniform.h"
 
-extern void net_ori_fibre (long random, char *distrib, struct OL_SET *pOSet);
+extern void net_ori_fiber (long random, char *distrib, struct OL_SET *pOSet);
 
 extern void net_ori_equal (struct SEEDSET *SSet,
                            int dtess, int dcell, struct OL_SET *pOSet);

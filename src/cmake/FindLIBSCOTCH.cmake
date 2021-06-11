@@ -19,7 +19,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-find_path (Scotch_INCLUDE_DIR NAMES scotch.h)
+find_path (Scotch_INCLUDE_DIR PATHS /usr/local NAMES scotch.h PATH_SUFFIXES scotch)
 
 set (Scotch_INCLUDE_DIRS ${Scotch_INCLUDE_DIR})
 
@@ -29,14 +29,13 @@ find_library(scotcherr_LIBRARY NAMES scotcherr)
 
 find_library(scotcherrexit_LIBRARY NAMES scotcherrexit)
 
-set (Scotch_LIBRARIES ${scotch_LIBRARY} ${scotcherr_LIBRARY}
-		      ${scotcherrexit_LIBRARY})
+set(Scotch_LIBRARIES ${scotch_LIBRARY} ${scotcherr_LIBRARY}
+                     ${scotcherrexit_LIBRARY})
 
 # handle the QUIETLY and REQUIRED arguments and set Scotch_FOUND to
 # TRUE if all listed variables are TRUE
-include( FindPackageHandleStandardArgs )
-find_package_handle_standard_args( Scotch DEFAULT_MSG
-	Scotch_INCLUDE_DIR scotch_LIBRARY scotcherr_LIBRARY scotcherrexit_LIBRARY)
+# include( FindPackageHandleStandardArgs )
+# find_package_handle_standard_args(Scotch DEFAULT_MSG Scotch_INCLUDE_DIR scotch_LIBRARY scotcherr_LIBRARY scotcherrexit_LIBRARY)
 
 # mark_as_advanced(scotch_LIBRARY scotcherr_LIBRARY scotcherrexit_LIBRARY)
 # mark_as_advanced(Scotch_INCLUDE_DIRS Scotch_LIBRARIES)

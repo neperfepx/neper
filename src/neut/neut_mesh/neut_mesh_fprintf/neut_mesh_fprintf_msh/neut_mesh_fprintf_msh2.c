@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_msh_.h"
@@ -306,7 +306,7 @@ neut_mesh_fprintf_msh_physical (FILE * file, struct MESH Mesh0D,
       if (Mesh0D.ElsetLabels)
         fprintf (file, "0 %d %s\n", i, Mesh0D.ElsetLabels[i]);
       else
-        fprintf (file, "0 %d ver%d\n", i, i);
+        fprintf (file, "0 %d ver%d\n", Mesh0D.ElsetId ? Mesh0D.ElsetId[i] : i, Mesh0D.ElsetId ? Mesh0D.ElsetId[i] : i);
     }
 
   // 1D mesh
@@ -316,7 +316,7 @@ neut_mesh_fprintf_msh_physical (FILE * file, struct MESH Mesh0D,
       if (Mesh1D.ElsetLabels)
         fprintf (file, "1 %d %s\n", i, Mesh1D.ElsetLabels[i]);
       else
-        fprintf (file, "1 %d edge%d\n", i, i);
+        fprintf (file, "1 %d edge%d\n", Mesh1D.ElsetId ? Mesh1D.ElsetId[i] : i, Mesh1D.ElsetId ? Mesh1D.ElsetId[i] : i);
     }
 
   // 2D mesh
@@ -325,9 +325,9 @@ neut_mesh_fprintf_msh_physical (FILE * file, struct MESH Mesh0D,
     for (i = 1; i <= Mesh2D.ElsetQty; i++)
     {
       if (Mesh2D.ElsetLabels)
-        fprintf (file, "2 %d %s\n", i, Mesh2D.ElsetLabels[i]);
+        fprintf (file, "2 %d %s\n", Mesh2D.ElsetId ? Mesh2D.ElsetId[i] : i, Mesh2D.ElsetLabels[i]);
       else
-        fprintf (file, "2 %d face%d\n", i, i);
+        fprintf (file, "2 %d face%d\n", Mesh2D.ElsetId ? Mesh2D.ElsetId[i] : i, i);
     }
 
     for (i = 0; i < fasetqty; i++)
@@ -339,9 +339,9 @@ neut_mesh_fprintf_msh_physical (FILE * file, struct MESH Mesh0D,
     for (i = 1; i <= Mesh3D.ElsetQty; i++)
     {
       if (Mesh3D.ElsetLabels)
-        fprintf (file, "3 %d %s\n", i, Mesh3D.ElsetLabels[i]);
+        fprintf (file, "3 %d %s\n", Mesh3D.ElsetId ? Mesh3D.ElsetId[i] : i, Mesh3D.ElsetLabels[i]);
       else
-        fprintf (file, "3 %d poly%d\n", i, i);
+        fprintf (file, "3 %d poly%d\n", Mesh3D.ElsetId ? Mesh3D.ElsetId[i] : i, Mesh3D.ElsetId ? Mesh3D.ElsetId[i] : i);
     }
 
   // Co mesh
@@ -378,7 +378,7 @@ neut_mesh_fprintf_msh_orientations (FILE *file, struct MESH Mesh)
 
     fprintf (file, "%d %s\n", ut_array_1d_int_sum (indexed + 1, Mesh.ElsetQty), Mesh.ElsetOriDes);
 
-    neut_ori_fprintf (file, Mesh.ElsetOriDes, Mesh.ElsetOri + 1,
+    neut_ori_fprintf (file, Mesh.ElsetOriDes, "ascii", Mesh.ElsetOri + 1,
                       Mesh.ElsetId ? Mesh.ElsetId + 1 : NULL, indexed + 1, Mesh.ElsetQty, "id");
 
     fprintf (file, "$EndElsetOrientations\n");
@@ -394,7 +394,7 @@ neut_mesh_fprintf_msh_orientations (FILE *file, struct MESH Mesh)
 
     fprintf (file, "%d %s\n", Mesh.EltQty, Mesh.EltOriDes);
 
-    neut_ori_fprintf (file, Mesh.EltOriDes, Mesh.EltOri + 1, NULL, NULL, Mesh.EltQty, "id");
+    neut_ori_fprintf (file, Mesh.EltOriDes, "ascii", Mesh.EltOri + 1, NULL, NULL, Mesh.EltQty, "id");
 
     fprintf (file, "$EndElementOrientations\n");
   }
@@ -413,7 +413,7 @@ neut_mesh_fprintf_msh_elsetgroups (FILE *file, struct MESH Mesh)
   fprintf (file, "%d\n", Mesh.ElsetQty);
 
   for (i = 1; i <= Mesh.ElsetQty; i++)
-    fprintf (file, "%d %d\n", i, Mesh.ElsetGroup[i]);
+    fprintf (file, "%d %d\n", Mesh.ElsetId ? Mesh.ElsetId[i] : i, Mesh.ElsetGroup[i]);
 
   fprintf (file, "$EndGroups\n");
 

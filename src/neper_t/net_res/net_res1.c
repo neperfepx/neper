@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_res_.h"
@@ -137,7 +137,7 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
   }
 
   if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "ori"))
-    net_res_ori (In, FTess);
+    net_res_ori (In, FTess, Tesr);
 
   return;
 }

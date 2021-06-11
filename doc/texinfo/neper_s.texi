@@ -9,6 +9,8 @@
 @c
 @MS{} also enables post-processing, through the computation of new results from mesh results or existing simulation results.  Results can be written for the nodes, elements and elsets.  Elset results are obtained from the element results, by averaging or other statistical treatments.  Results can also be imported from external files.  The results can be assigned names and defined from general expressions, such as in @samp{energy:0.1234*(crss-crss(step=0))^2}.
 @c
+It is also possible to merge simulation directories that represent successive parts of a simulation (e.g.@ resulting from FEPX restarts).
+@c
 The simulation directory can be loaded by @mV{} for result visualization.
 
 @sp 1
@@ -24,7 +26,7 @@ Info   : Version 4.0.0
 Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
 Info   : Running on 8 threads.
 Info   : <https://neper.info>
-Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
+Info   : Copyright (C) 2003-2021, and GNU GPL'd, by Romain Quey.
 Info   : Loading initialization file `/home/rquey/.neperrc'...
 Info   : ---------------------------------------------------------------
 Info   : MODULE  -S loaded with arguments:
@@ -67,8 +69,10 @@ Info   : Elapsed time: 0.075 secs.
 @subsection Input Data
 
 @inp{, directory_name,
-Specify the name of the input directory.  It can be an FEPX raw result directory
-or a simulation directory.,
+Specify the name of the input directory.  It can be
+@emph{(i)} an FEPX raw result directory@footnote{For a restarted FEPX simulation@comma{} append @samp{@SEPDEP@var{restart_number}} to the directory name to specify the restart number; otherwise, Neper attempts to find the simulation restart files with the highest index.} (to convert into a simulation directory)@comma{}
+@emph{(ii)} a simulation directory or
+@emph{(iii)} a series of simulation directories@comma{} combined with @samp{@SEPNODEP} (to merge).,
 any, none}
 
 @subsection Results Options
@@ -91,7 +95,7 @@ Specify the nodal results to output. Provide
 @samp{@var{res}:file(@var{basename})} for importing results from files of basename @file{@var{basename}} (the files of the different steps must be available as @file{@var{basename}.step*})@comma{}
 or any expression based on the mesh or simulation results (the mesh result can be
 any variables listed in @ref{Mesh Keys}).
-To use a simulation result at a specific step@comma{} use @samp{@var{res}(step=@var{step})}@comma{} where @samp{@var{step}} is the step number.
+@samp{disp} can be used to get the node displacements (from the node coordinates). To use a simulation result at a specific step@comma{} use @samp{@var{res}(step=@var{step})}@comma{} where @samp{@var{step}} is the step number.
 To define a name corresponding to a result@comma{} use @samp{@var{name}:@var{expression}}@comma{} where @var{name} is the name and @var{expression} is its expression.
 To remove a result@comma{} use @samp{!@var{res}}@comma{} where @samp{@var{res}} is the result.@footnote{The expression must be enclosed in single quotes.}
 To provide several values@comma{} combine them @w{with @samp{@SEPNODEP{}}}.,
@@ -203,5 +207,8 @@ Below are some examples of use of neper -S.
 
 @item    Add the elset @code{@var{stress}} result to a simulation directory (the @code{@var{stress}} result must exist for elements).
 @com{neper -S simulation -eltres stress}
+
+@item    Merge two simulation directories into a single simulation directory.
+@com{neper -S cycle1.sim,cycle2.sim -o cycle1-2}
 
 @end enumerate

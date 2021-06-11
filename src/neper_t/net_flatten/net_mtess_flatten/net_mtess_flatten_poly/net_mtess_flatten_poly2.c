@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_mtess_flatten_poly_.h"
@@ -15,6 +15,18 @@ net_mtess_flatten_cell_body (struct MTESS MTess, struct TESS *Tess,
   for (i = 0; i < CTessQty; i++)
   {
     id = CTessIds[i];
+
+    if (i == 0)
+    {
+      if (Tess[id].CellId)
+        (*pFTess).CellId = ut_alloc_1d_int (1);
+      if (Tess[id].CellOri)
+        (*pFTess).CellOri = ut_alloc_2d (1, 4);
+      if (Tess[id].CellTrue)
+        (*pFTess).CellTrue = ut_alloc_1d_int (1);
+      if (Tess[id].CellBody)
+        (*pFTess).CellBody = ut_alloc_1d_int (1);
+    }
 
     ut_array_1d_int_set_2 (dom, 3, MTess.TessDom[id][1]);
 
@@ -44,7 +56,9 @@ net_mtess_flatten_cell_body (struct MTESS MTess, struct TESS *Tess,
 
       domtess = MTess.TessDom[id][0];
       dompoly = MTess.TessDom[id][1];
-      (*pFTess).CellTrue[poly] = Tess[domtess].CellTrue[dompoly];
+      if (Tess[domtess].CellTrue)
+        (*pFTess).CellTrue[poly] = Tess[domtess].CellTrue[dompoly];
+      if (Tess[domtess].CellBody)
       (*pFTess).CellBody[poly] = Tess[domtess].CellBody[dompoly];
 
       neut_tesse_poly_addpoly (&(*pTessE)[id], j, poly);

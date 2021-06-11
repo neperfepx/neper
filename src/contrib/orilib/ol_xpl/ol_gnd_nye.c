@@ -21,7 +21,7 @@ ol_gnd_map_nye_region_method (struct OL_MAP Map, struct OL_CRYS Crys,
   unsigned int i, j;
   double *qmap = NULL;
 
-  Crys = Crys;
+  (void) Crys;
 
   if (!
       ((Map.xsize == 2 && Map.ysize == 2)

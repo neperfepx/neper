@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_uniform_.h"
@@ -169,6 +169,7 @@ net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet,
   }
 
   printf ("\n");
+  ut_print_message (0, verbositylevel, "Final solution  : f   =%.9f\n", (*pOOpt).fmin);
 
   ut_free_1d_char (&message);
   ut_free_1d_char (&prevmessage);

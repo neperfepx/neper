@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neper_.h"
@@ -12,7 +12,7 @@ void neper_info (void);
 int
 main (int argc, char **argv)
 {
-  int modqty, status, fargc;
+  int modqty, status, fargc = 0;
   double t;
   char **modlist = NULL, *mod = NULL, **fargv = NULL, *rcfile = NULL;
   struct timeval beg_time, end_time;
@@ -182,34 +182,10 @@ neper_head (char *neper_version)
   alldeps = 0;
 #endif
 
-#ifdef HAVE_LIBSCOTCH
   printf ("%slibscotch", comma ? "|" : ":");
   comma = 1;
-#else
-  alldeps = 0;
-#endif
 
   printf ("%s\n", alldeps ? " (full)" : "");
-
-#ifndef DEVEL_OPTIMIZATION
-  ut_print_message (1, 0,
-                    "Built with: no optimization.            NOT FOR PRODUCTION USE.\n");
-#endif
-
-#ifdef DEVEL_PROFILING
-  ut_print_message (1, 0,
-                    "Built with: profiling.                  NOT FOR PRODUCTION USE.\n");
-#endif
-
-#ifdef DEVEL_DEBUGGING_TEST
-  ut_print_message (1, 0,
-                    "Built with: debugging tests.            NOT FOR PRODUCTION USE.\n");
-#endif
-
-#ifdef DEVEL_DEBUGGING_FLAG
-  ut_print_message (1, 0,
-                    "Built with: debugging compilation flag. NOT FOR PRODUCTION USE.\n");
-#endif
 
 #ifdef HAVE_OPENMP
 #pragma omp parallel
@@ -236,7 +212,7 @@ neper_info ()
   ut_print_message (0, 0, "<https://neper.info>\n");
 
   ut_print_message (0, 0,
-                    "Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.\n");
+                    "Copyright (C) 2003-2021, and GNU GPL'd, by Romain Quey.\n");
 
   return;
 }

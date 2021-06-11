@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_png_mesh_3d_.h"
@@ -106,7 +106,7 @@ nev_print_png_mesh_3d_compress (struct PRINT Print, struct NODES Nodes,
       {
         // keep the first condition, or combine w the second
         // (because of the `else if')
-        if ((Mesh3D.EltElset[elts3d[0]] == Mesh3D.EltElset[elts3d[1]]))
+        if (Mesh3D.EltElset[elts3d[0]] == Mesh3D.EltElset[elts3d[1]])
         {
           if (elset_full[Mesh3D.EltElset[elts3d[0]]] == 1)
             print = 0;

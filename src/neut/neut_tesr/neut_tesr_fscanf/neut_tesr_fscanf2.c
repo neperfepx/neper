@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesr_fscanf_.h"
@@ -7,42 +7,41 @@
 /* Tessellation exportation: head */
 void
 neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds, int **pvoxbounds,
-                       char **pformat, FILE * file)
+                       char **pversion, char **pdataformat, char **poridataformat, FILE *file)
 {
   int i, status;
   char *string = ut_alloc_1d_char (1000);
 
-  (*pformat) = ut_alloc_1d_char (10);
+  (*pdataformat) = ut_alloc_1d_char (10);
 
   if (!ut_file_string_scanandtest (file, "***tesr"))
-  {
     ut_print_message (2, 0,
                       "Input file is not a valid raster tessellation file.\n");
-    abort ();
-  }
 
-  if (!ut_file_string_scanandtest (file, "**format")
-      || !ut_file_string_scanandtest (file, "2.0"))
-  {
+  if (!ut_file_string_scanandtest (file, "**format"))
     ut_print_message (2, 0,
                       "Input file is not a valid raster tessellation file.\n");
-    abort ();
-  }
 
-  if (fscanf (file, "%s", *pformat) != 1
-      || (!strcmp (*pformat, "ascii") && !strncmp (*pformat, "bin", 3)))
+  status = fscanf (file, "%s", string);
+  ut_string_string (string, pversion);
+
+  if (!strcmp (*pversion, "2.0"))
   {
-    ut_print_message (2, 0,
-                      "Input file is not a valid raster tessellation file.\n");
-    abort ();
+    if (fscanf (file, "%s", *pdataformat) != 1
+        || (!strcmp (*pdataformat, "ascii") && !strncmp (*pdataformat, "bin", 3)))
+      ut_print_message (2, 0,
+                        "Input file is not a valid raster tessellation file.\n");
+    ut_string_string (*pdataformat, poridataformat);
   }
+  else if (!strcmp (*pversion, "2.1"))
+  {
+  }
+  else
+    ut_print_message (2, 0, "Unknown version.\n");
 
   if (!ut_file_string_scanandtest (file, "**general"))
-  {
     ut_print_message (2, 0,
                       "Input file is not a valid raster tessellation file.\n");
-    abort ();
-  }
 
   status = fscanf (file, "%d", &((*pTesr).Dim));
 
@@ -165,7 +164,8 @@ neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file)
         if (fscanf (file, "%s", (*pTesr).CellOriDes) != 1)
           abort ();
 
-        neut_ori_fscanf (file, (*pTesr).CellOriDes, (*pTesr).CellOri + 1, NULL, (*pTesr).CellQty, NULL);
+        neut_ori_fscanf (file, (*pTesr).CellOriDes, "ascii", (*pTesr).CellOri + 1,
+                         NULL, (*pTesr).CellQty, NULL);
       }
 
       else if (!strcmp (string, "*oridistrib"))
@@ -263,9 +263,9 @@ neut_tesr_fscanf_foot (FILE * file)
 
 void
 neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
-                       double *scale, char *format, FILE * file)
+                       double *scale, char *version, char **pdataformat, FILE * file)
 {
-  int i;
+  int i, readfromfile = 0;
   char c;
   FILE *file2 = NULL;
   char *filename = NULL;
@@ -291,6 +291,15 @@ neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
   if (strcmp (tmp, "**data") != 0)
     abort ();
 
+  if (strcmp (version, "2.0"))
+  {
+    (*pdataformat) = ut_alloc_1d_char (10);
+
+    if (fscanf (file, "%s", *pdataformat) != 1
+        || (!strcmp (*pdataformat, "ascii") && !strncmp (*pdataformat, "bin", 3)))
+      abort ();
+  }
+
   do
   {
     fgetpos (file, &pos);
@@ -307,6 +316,7 @@ neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
 
   if (!strcmp (tmp, "*file"))
   {
+    readfromfile = 1;
     filename = ut_alloc_1d_char (1000);
     if (fscanf (file, "%s", tmp2) != 1)
       abort ();
@@ -317,11 +327,11 @@ neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
     file2 = file;
 
   if (!scale && !bounds)
-    neut_tesr_fscanf_data_default (pTesr, format, file2);
+    neut_tesr_fscanf_data_default (pTesr, *pdataformat, readfromfile, file2);
   else if (bounds)
-    neut_tesr_fscanf_data_bounds (pTesr, bounds, format, file2);
+    neut_tesr_fscanf_data_bounds (pTesr, bounds, *pdataformat, file2);
   else if (scale)
-    neut_tesr_fscanf_data_scale (pTesr, scale, format, file2);
+    neut_tesr_fscanf_data_scale (pTesr, scale, *pdataformat, readfromfile, file2);
 
   if (!strcmp (tmp, "*file"))
   {
@@ -355,8 +365,10 @@ neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
 
 void
 neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
-                          double *scale, char *format, FILE * file)
+                          double *scale, char *version, char **poridataformat,
+                          FILE * file)
 {
+  int readfromfile = 0;
   char c;
   FILE *file2 = NULL;
   char *filename = NULL;
@@ -381,6 +393,15 @@ neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
   if (fscanf (file, "%s", des) != 1)
     abort ();
 
+  if (strcmp (version, "2.0"))
+  {
+    (*poridataformat) = ut_alloc_1d_char (10);
+
+    if (fscanf (file, "%s", *poridataformat) != 1
+        || (!strcmp (*poridataformat, "ascii") && !strncmp (*poridataformat, "bin", 3)))
+      abort ();
+  }
+
   do
   {
     fgetpos (file, &pos);
@@ -397,6 +418,7 @@ neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
 
   if (!strcmp (tmp, "*file"))
   {
+    readfromfile = 1;
     filename = ut_alloc_1d_char (1000);
     if (fscanf (file, "%s", tmp2) != 1)
       abort ();
@@ -406,7 +428,7 @@ neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
   else
     file2 = file;
 
-  neut_tesr_fscanf_oridata_default (pTesr, des, format, file2);
+  neut_tesr_fscanf_oridata_default (pTesr, des, *poridataformat, readfromfile, file2);
 
   if (!strcmp (tmp, "*file"))
   {

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -30,6 +30,7 @@ extern "C"
 #include"net_tess_opt_init.h"
 #include"net_tess_opt_init_sset/net_tess_opt_init_sset.h"
 #include"net_tess_opt_init_tesrobj/net_tess_opt_init_tesrobj.h"
+#include"net_transform/net_transform_tess/net_transform_tess_cut/net_transform_tess_cut.h"
 
 extern void net_tess_opt_init_general (struct IN_T In, int level, struct MTESS
     MTess, struct TESS *Tess, int dtess, int dcell, struct TOPT *pTOpt);

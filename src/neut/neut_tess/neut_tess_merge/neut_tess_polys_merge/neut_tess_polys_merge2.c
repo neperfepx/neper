@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_polys_merge_.h"
@@ -9,7 +9,7 @@ neut_tess_polys_merge_polylists (struct TESS *pTess, int *polys, int polyqty,
                                  int *pkeeppoly, int **pdelpolys,
                                  int *pdelpolyqty)
 {
-  pTess = pTess;
+  (void) pTess;
   (*pkeeppoly) = polys[0];
   (*pdelpolyqty) = polyqty - 1;
   (*pdelpolys) = ut_alloc_1d_int (*pdelpolyqty);

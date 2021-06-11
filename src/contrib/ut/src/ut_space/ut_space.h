@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2020, Romain Quey */
+/* Copyright (C) 2003-2021, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -611,7 +611,7 @@ extern "C"
 /// \note Barycentric approach from http://www.blackpawn.com/texts/pointinpoly/
   extern int ut_space_triangle_point_in (double *tript1, double *tript2,
                                          double *tript3, double *pt,
-                                         double eps1, double eps2);
+                                         double eps1, double eps2, double *ptol);
 
 /// \brief Determine whether a point belongs to a tetrahedron
 /// \param tetpt1: 1st tet point

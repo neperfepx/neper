@@ -2,16 +2,12 @@
 # Copyright(C) 2003-2021, Romain Quey.
 # See the COPYING file in the top-level directory.
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0)
 if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
 project(neper_s C)
-
-option(HAVE_GSL         "Use the GNU Scientific Library(GSL)" ON )
-
-include_directories("${PROJECT_BINARY_DIR}")
 
 add_definitions(-Wall -W -g -O3)
 if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
@@ -19,12 +15,19 @@ if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
 endif()
 set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 
+# Set the build type for appropriate compile flags
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build: Debug Release" FORCE)
+endif()
+
 add_library(neper_s
 neper_s.c
 nes_utils/nes_utils1.c
 nes_input/nes_input1.c
 nes_input/nes_input2.c
 nes_input/nes_input3.c
+nes_merge/nes_merge1.c
+nes_merge/nes_merge2.c
 nes_sim/nes_sim1.c
 nes_sim/nes_sim2.c
 nes_sim/nes_sim3.c
@@ -39,40 +42,5 @@ nes_pproc/nes_pproc_entity/nes_pproc_entity1.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity2.c
 )
 
-set(EXTRA_LIBS ${EXTRA_LIBS} ut)
-set(EXTRA_LIBS ${EXTRA_LIBS} orilib)
-
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
-
-find_library(MATHLIB m)
-if(MATHLIB)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${MATHLIB})
-endif()
-
-if(HAVE_GSL)
-  find_package(GSL REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
-  include_directories(${GSL_INCLUDE_DIRS})
-endif()
-
-if(HAVE_LIBSCOTCH)
-  find_package(LIBSCOTCH REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${Scotch_LIBRARIES})
-  include_directories(${Scotch_INCLUDE_DIRS})
-  find_package(Threads REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${CMAKE_THREAD_LIBS_INIT})
-endif()
-
-if(HAVE_OPENMP)
-  find_package(OpenMP REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${OpenMP_C_FLAGS})
-  add_definitions(${OpenMP_C_FLAGS})
-endif()
-
-if(HAVE_NLOPT)                                     # NLOPT
-  find_package(NLOPT REQUIRED)                      # NLOPT
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES}) # NLOPT
-  include_directories(${NLOPT_INCLUDE_DIRS})       # NLOPT
-endif()
-
+list (APPEND EXTRA_LIBS neut)
 target_link_libraries(neper_s ${EXTRA_LIBS})

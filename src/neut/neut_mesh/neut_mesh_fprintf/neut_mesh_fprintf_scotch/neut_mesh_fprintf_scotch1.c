@@ -1,14 +1,14 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#ifdef HAVE_LIBSCOTCH
 #include"neut_mesh_fprintf_scotch_.h"
 
 void
 neut_mesh_fprintf_scotch (char *body, struct NODES Nodes, struct MESH Mesh)
 {
-  FILE *NULL;
+#ifdef HAVE_LIBSCOTCH
+  FILE *file = NULL;
   SCOTCH_Mesh SCMesh;
   char *scm, *scg;
 
@@ -30,6 +30,13 @@ neut_mesh_fprintf_scotch (char *body, struct NODES Nodes, struct MESH Mesh)
   ut_free_1d_char (&scm);
   ut_free_1d_char (&scg);
 
+#else
+  (void) body;
+  (void) Nodes;
+  (void) Mesh;
+  ut_print_message (2, 0, "Compiled without libscotch.\n");
+#endif /* HAVE_LIBSCOTCH */
+
   return;
 }
 
@@ -49,5 +56,3 @@ neut_nodes_fprintf_scotch (FILE * out, struct NODES Nodes)
 
   return;
 }
-
-#endif

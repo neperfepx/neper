@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_init_.h"
@@ -32,7 +32,7 @@ nev_print_init (struct PRINT *pPrint, struct TESS Tess,
     {
       nev_print_init_data_nodes ((*pSNodes)[i], (*pSNodes)[i].NodeQty, (*pSNodeData) + i);
       nev_print_init_data_mesh ((*pSMesh2D)[i], 1, Mesh[3].ElsetQty,
-                               (*pSMeshData)[i] + 2);
+                               3, (*pSMeshData)[i] + 2);
     }
 
     nev_print_init_show (Tess, Tesr, Nodes, Mesh, *pSQty, Point, pPrint);

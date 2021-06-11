@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_op_.h"
@@ -308,8 +308,7 @@ neut_tess_domface_tess_cells (struct TESS Tess, int *oldface_newface,
   ut_array_1d_int_set_id ((*pT).CellId, (*pT).CellQty + 1);
   for (i = 1; i <= (*pT).CellQty; i++)
     if (newface_oldface)
-      (*pT).CellId[i] =
-        Tess.CellId ? Tess.CellId[face_oldpoly[i]] : face_oldpoly[i];
+      (*pT).CellId[i] = neut_tess_cell_id (Tess, face_oldpoly[i]);
 
   (*pT).ScaleCellId = ut_alloc_2d_int ((*pT).CellQty + 1, (*pT).ScaleQty + 1);
   for (i = 1; i <= (*pT).CellQty; i++)

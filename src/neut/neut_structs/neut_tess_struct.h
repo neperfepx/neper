@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -46,6 +46,7 @@ extern "C"
     int CellQty;
 
     // Identifiers of the cells [1...CellQty]
+    // defined only if necessary
     int *CellId;
 
     // Crystal orientations of the cells, in quaternions
@@ -61,13 +62,16 @@ extern "C"
 
     // For a lamellar tessellation, lamella ids of the cells, in terms
     // of imposed width [1...CellQty] (starts at 1)
+    // defined only if necessary
     int *CellLamId;
 
     // For a multimodal tessellation, mode ids of the cells, in terms of
     // imposed size [1...CellQty] (starts at 1)
+    // define only if necessary
     int *CellModeId;
 
     // Group of the cells [1...CellQty]
+    // defined only if necessary
     int *CellGroup;
 
     // Crystal symmetry of the cells ("triclinic", "cubic" or

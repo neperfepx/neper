@@ -13,7 +13,7 @@ nes_sim_write_results_prop (struct SIM Sim, char *var,
   char *string = ut_alloc_1d_char (1000);
   FILE *file = NULL;
 
-  sprintf (filename, "%s/post.%s.core1", Sim.fepxdir, var);
+  neut_sim_res_fepxfile (Sim, var, 1, filename);
 
   if (ut_file_exist (filename))
   {
@@ -78,7 +78,7 @@ nes_sim_write_results_entity_step (struct IN_S In, struct SIM Sim, char *res,
     ut_print_progress (stdout, part, Sim.PartQty, "%3.0f%%",
                        message);
 
-    sprintf (post_filename, "%s.core%d", post_filepref, part);
+    neut_sim_res_fepxfile (Sim, res, part, post_filename);
 
     fp1 = ut_file_open (post_filename, "R");
 

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_data_gen_.hpp"
@@ -241,6 +241,9 @@ neut_data_ori_color (double **data, int size, char *scheme, int **Col)
 
   else if (!strcmp (fct, "ipf"))
     neut_data_ori_color_ipf (data, size, scheme, Col);
+
+  else
+    ut_print_exprbug (fct);
 
   ut_free_2d_char (&vals, varqty);
   ut_free_2d_char (&vars, varqty);

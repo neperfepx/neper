@@ -24,6 +24,18 @@ neut_sim_fprintf_results (FILE *file, char *entity, char **res, char **resexpr,
 }
 
 void
+neut_sim_fprintf_restart (FILE *file, struct SIM Sim)
+{
+  if (Sim.RestartId || Sim.RestartFiles)
+    fprintf (file, "restart_id %d\n", Sim.RestartId);
+
+  if (Sim.RestartId || Sim.RestartFiles)
+    fprintf (file, "restart_files %d\n", Sim.RestartFiles);
+
+  return;
+}
+
+void
 neut_sim_verbose_results (char *entity, char **res, int resqty)
 {
   int i, nb;

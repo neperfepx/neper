@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2020 Romain Quey
+@c Copyright (C) 2003-2021 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Visualization Module (-V)
@@ -22,7 +22,7 @@ Info   : Version 4.0.0
 Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
 Info   : Running on 8 threads.
 Info   : <https://neper.info>
-Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
+Info   : Copyright (C) 2003-2021, and GNU GPL'd, by Romain Quey.
 Info   : No initialization file found (`/home/rquey/.neperrc').
 Info   : ---------------------------------------------------------------
 Info   : MODULE  -V loaded with arguments:
@@ -119,7 +119,7 @@ main different ways.@*
 @mybullet{} @samp{ori:@var{data_value}} for the crystal orientations (when applicable)@comma{} where @samp{@var{data_value}} can be an orientation (@pxref{Rotations and Orientations})@comma{} @samp{internal} to use the internal orientations@comma{} or @samp{file(@var{file_name},[des=@var{descriptor}])} for a file containing the individual values (@pxref{Rotations and Orientations}). Because @samp{ori} is self-defined@comma{} @samp{@var{data_value}} can also be omitted in the case where internal orientations are to be used. @*
 The color schemes used to determine the colors from the data can be fine-tuned using options @option{-data*colscheme}.
 ,
-any, white}
+any, id}
 
 @opt{-datacellcolscheme, char_string,
 Set the color scheme used to get colors from the data of
@@ -441,7 +441,7 @@ any, none
 @opt{-datavoxedgerad, real,
 Set the radius of the edges of the voxels.
 ,
-any, proportional to the voxel size}
+any, 0}
 
 @opt{-datavoxedgecol, char_string,
 Set the color of the edges of the voxels.
@@ -510,7 +510,7 @@ main different ways.@*
 @mybullet{} @samp{ori:@var{data_value}} for the crystal orientations (when applicable)@comma{} where @samp{@var{data_value}} can be an orientation (@pxref{Rotations and Orientations})@comma{} @samp{internal} to use the internal orientations@comma{} or @samp{file(@var{file_name},[des=@var{descriptor}])} for a file containing the individual values (@pxref{Rotations and Orientations}). Because @samp{ori} is self-defined@comma{} @samp{@var{data_value}} can also be omitted in the case where internal orientations are to be used. @*
 The color schemes used to determine the colors from the data can be fine-tuned using options @option{-dataelt3dcolscheme}.
 ,
-any, white}
+any, -dataelsetcol id}
 
 @kindex -dataelset3dcolscheme
 @opt{-dataelt3dcolscheme, char_string,
@@ -581,7 +581,7 @@ by changing @samp{elt} to @samp{elset}.
 Set the colors of the 2D elements.
 See option @option{-dataelt3dcol} for the argument format.
 ,
-any, white}
+any, -dataelsetcol id if 2D mesh and white if 3D mesh}
 
 @kindex -dataelset2dcolscheme
 @opt{-dataelt2dcolscheme, char_string,

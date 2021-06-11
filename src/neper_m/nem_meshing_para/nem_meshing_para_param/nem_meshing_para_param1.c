@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_para_param_.h"
@@ -10,7 +10,7 @@ nem_meshing_para_param (struct IN_M In, struct TESS Tess, struct TESR *pTesr,
                         struct MESHPARA *pMeshPara)
 {
   int cellqty, dim;
-  double size;
+  double size = 0;
 
   (*pMeshPara).VerQty = Tess.VerQty;
   (*pMeshPara).EdgeQty = Tess.EdgeQty;

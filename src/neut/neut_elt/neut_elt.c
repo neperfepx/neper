@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_elt_.h"
@@ -682,7 +682,7 @@ void
 neut_elt_facet_nodes (char *type, int dim, int order, int *nodes, int facet,
                       int facetori, int *facetnodes)
 {
-  type = type;
+  (void) type;
 
   if (dim == 2)
   {
@@ -770,7 +770,7 @@ neut_elt_facet_nodes (char *type, int dim, int order, int *nodes, int facet,
   }
 
   return;
-}
+  }
 
 // http://pages.suddenlink.net/physics/FEA/FEM_basis_functions_for_a_triangle.pdf
 void

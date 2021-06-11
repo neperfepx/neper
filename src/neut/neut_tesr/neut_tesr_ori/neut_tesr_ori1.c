@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the tori-level directory. */
 
 #include "neut_tesr_ori_.h"
@@ -20,8 +20,6 @@ neut_tesr_cell_orianiso (struct TESR Tesr, int cell, double **evect,
 
   return;
 }
-
-int count;
 
 void
 neut_tesr_cell_orianiso_delta (struct TESR Tesr, int cell, double **evect,

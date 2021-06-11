@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_.h"
@@ -73,41 +73,6 @@ net_tess_finalize (struct TESS PTess, struct SEEDSET SSet, struct TESS *pTess)
 
   (*pTess).PseudoDim = PTess.PseudoDim;
   (*pTess).PseudoSize = PTess.PseudoSize;
-
-  if (!(*pTess).CellId)
-  {
-    /*
-       if (!strcmp (SSet.morpho, "square")
-       || !strcmp (SSet.morpho, "cube") || !strcmp (SSet.morpho, "tocta"))
-       {
-       int i;
-       double *randval = ut_alloc_1d (SSet.N + 1);
-       gsl_rng *r;
-
-       r = gsl_rng_alloc (gsl_rng_ranlxd2);
-       gsl_rng_set (r, SSet.Random);
-
-       randval = ut_alloc_1d (SSet.N);
-       for (i = 0; i < SSet.N; i++)
-       randval[i] = gsl_rng_uniform (r);
-
-       (*pTess).CellId = ut_alloc_1d_int (SSet.N + 1);
-       ut_array_1d_sort_index (randval, SSet.N, (*pTess).CellId + 1);
-       ut_array_1d_int_addval ((*pTess).CellId + 1, SSet.N, 1,
-       (*pTess).CellId + 1);
-
-       ut_free_1d (&randval);
-       gsl_rng_free (r);
-       }
-       else
-       {
-     */
-    (*pTess).CellId = ut_alloc_1d_int ((*pTess).CellQty + 1);
-    ut_array_1d_int_set_id ((*pTess).CellId, (*pTess).CellQty + 1);
-    /*
-       }
-     */
-  }
 
   if (!(*pTess).CellOri)
   {

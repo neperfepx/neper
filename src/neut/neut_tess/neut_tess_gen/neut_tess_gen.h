@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -27,11 +27,11 @@ extern "C"
   extern void neut_tess_dim_entity (int dim, char **pentity);
   extern void neut_tess_entity_qty (struct TESS Tess, char *entity, int
 				    *pqty);
-  extern int neut_tess_expr_celllist (struct TESS Tess, char *, int **,
+  extern int neut_tess_expr_cells (struct TESS Tess, char *, int **,
 				      int *);
-  extern int neut_tess_expr_polylist (struct TESS Tess, char *, int **,
+  extern int neut_tess_expr_polys (struct TESS Tess, char *, int **,
 				      int *);
-  extern int neut_tess_expr_facelist (struct TESS Tess, char *, int **,
+  extern int neut_tess_expr_faces (struct TESS Tess, char *, int **,
 				      int *);
   extern void neut_tess_cell (struct TESS Tess, char **pcell);
   extern void neut_tess_entity_expr_val (struct TESS Tess, char *entity,
@@ -70,6 +70,8 @@ extern "C"
   extern int neut_tess_exprisvar (struct TESS Tess, char *entity, char *expr);
 
   extern int neut_tess_isreg (struct TESS Tess);
+
+  extern int neut_tess_cell_id (struct TESS Tess, int cell);
 
 #endif				/* NEUT_TESS_GEN_H */
 

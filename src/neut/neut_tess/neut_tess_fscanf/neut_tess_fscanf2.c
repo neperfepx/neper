@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_fscanf_.h"
@@ -130,7 +130,7 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
         abort ();
       neut_ori_des_expand ((*pTess).CellOriDes, &(*pTess).CellOriDes);
 
-      neut_ori_fscanf (file, (*pTess).CellOriDes, (*pTess).CellOri + 1, NULL, (*pTess).CellQty, NULL);
+      neut_ori_fscanf (file, (*pTess).CellOriDes, "ascii", (*pTess).CellOri + 1, NULL, (*pTess).CellQty, NULL);
     }
 
     else if (!strcmp (string, "*oridistrib"))

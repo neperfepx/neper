@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the tgeom-level directory. */
 
 #include "neut_tesr_geom_.h"
@@ -61,6 +61,16 @@ neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell)
 }
 
 int
+neut_tesr_vox_cellid (struct TESR Tesr, int vox, int *pcell)
+{
+  neut_tesr_vox_cell (Tesr, vox, pcell);
+  if (Tesr.CellId)
+    (*pcell) = Tesr.CellId[(*pcell)];
+
+  return 0;
+}
+
+int
 neut_tesr_coo_pos (struct TESR Tesr, double *coo, int mode, int *voxpos)
 {
   int i;
@@ -70,7 +80,7 @@ neut_tesr_coo_pos (struct TESR Tesr, double *coo, int mode, int *voxpos)
     voxpos[i] =
       ceil ((coo[i] - Tesr.Origin[i]) / Tesr.vsize[i] +
             ut_num_sgn_int (mode) * 1e-6);
-    voxpos[i] = ut_num_min_int (voxpos[i], Tesr.size[i]);
+    // voxpos[i] = ut_num_min_int (voxpos[i], Tesr.size[i]);
   }
   for (i = Tesr.Dim; i < 3; i++)
     voxpos[i] = 1;
@@ -250,6 +260,33 @@ neut_tesr_cell_centre (struct TESR Tesr, int cell, double *coo)
 }
 
 void
+neut_tesr_cells_centre (struct TESR Tesr, int *cells, int cellqty, double *coo)
+{
+  int i, cell;
+  double size, totsize, *tmp = ut_alloc_1d (3);
+
+  ut_array_1d_zero (coo, 3);
+
+  totsize = 0;
+  for (i = 0; i < cellqty; i++)
+  {
+    cell = cells[i];
+    neut_tesr_cell_centre (Tesr, cell, tmp);
+    neut_tesr_cell_size (Tesr, cell, &size);
+    totsize += size;
+
+    ut_array_1d_scale (tmp, 3, size);
+    ut_array_1d_add (coo, tmp, 3, coo);
+  }
+
+  ut_array_1d_scale (coo, 3, 1. / totsize);
+
+  ut_free_1d (&tmp);
+
+  return;
+}
+
+void
 neut_tesr_rastercentre (struct TESR Tesr, double *coo)
 {
   int i;
@@ -409,7 +446,7 @@ neut_tesr_cell_coos (struct TESR Tesr, int cell, double ***pcoos,
 
 void
 neut_tesr_cell_boundpoints (struct TESR Tesr, int cell, int ***ppts,
-                            int *pptqty, int connec, int interior)
+                            int *pptqty, int connec, char* interior)
 {
   int i, j, k;
 
@@ -428,6 +465,24 @@ neut_tesr_cell_boundpoints (struct TESR Tesr, int cell, int ***ppts,
             (*ppts) = ut_realloc_2d_int_addline (*ppts, *pptqty, 3);
             ut_array_1d_int_set_3 ((*ppts)[(*pptqty) - 1], i, j, k);
           }
+
+  return;
+}
+
+void
+neut_tesr_cell_boundcoos (struct TESR Tesr, int cell, double ***pcoos,
+                          int *pcooqty, int connec, char* interior)
+{
+  int i, **pts = NULL;
+
+  neut_tesr_cell_boundpoints (Tesr, cell, &pts, pcooqty, connec, interior);
+
+  (*pcoos) = ut_alloc_2d (*pcooqty, 3);
+
+  for (i = 0; i < *pcooqty; i++)
+    neut_tesr_pos_coo (Tesr, pts[i], (*pcoos)[i]);
+
+  ut_free_2d_int (&pts, *pcooqty);
 
   return;
 }
@@ -945,6 +1000,31 @@ neut_tesr_group_sizefrac (struct TESR Tesr, int group, double *psizefrac)
     neut_tesr_group_areafrac (Tesr, group, psizefrac);
   else if (Tesr.Dim == 3)
     neut_tesr_group_volfrac (Tesr, group, psizefrac);
+
+  return;
+}
+
+void
+neut_tesr_cell_bbox_coo (struct TESR Tesr, int cell, double **bbox_coo)
+{
+  int i, j;
+  int *pos = ut_alloc_1d_int (3);
+  double *coo = ut_alloc_1d (3);
+
+  for (j = 0; j < 2; j++)
+  {
+    ut_array_1d_int_set_3 (pos, Tesr.CellBBox[cell][0][j],
+                                Tesr.CellBBox[cell][1][j],
+                                Tesr.CellBBox[cell][2][j]);
+
+    neut_tesr_pos_coo (Tesr, pos, coo);
+
+    for (i = 0; i < 3; i++)
+      bbox_coo[i][j] = coo[i];
+  }
+
+  ut_free_1d (&coo);
+  ut_free_1d_int (&pos);
 
   return;
 }

@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2020 Romain Quey
+@c Copyright (C) 2003-2021 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Tessellation Module (-T)
@@ -65,7 +65,7 @@ Periodicity or semi-periodicity conditions can be applied to the tessellation
 
 @dfn{Crystal orientations} can be randomly distributed (according to a
 uniform distribution function), either in the 3D space or along a specific
-orientation fibre, or uniformly distributed (also according to a uniform
+orientation fiber, or uniformly distributed (also according to a uniform
 distribution function, option @option{-ori}).
 Uniform crystal orientation distributions ensure that all possible
 crystal orientations are equally represented (no orientation clustering).
@@ -502,7 +502,9 @@ and tessellation cell boundaries@comma{} or @samp{intervol} for maximizing
 the volume of intersection between the raster tessellation and tessellation
 (both provide similar results).  To define the objective
 function@comma{} combine the above factors using @samp{+}.
-The default value is @samp{pts(region=surf,res=5)+val(bounddist)}.@*
+The default value is @samp{pts(region=surf,res=5)+val(bounddist)}.
+A penalty is automatically added to the objective function in the case of empty
+cells (including when @option{-transform cut} is used).@*
 It is finally possible to define how the different parts of
 the objective function are combined into the objective function (in the case
 where several properties are specified)@comma{}
@@ -689,8 +691,8 @@ It can be:@*
 @bullet{} @samp{random} for randomly-distributed orientations in 3D space;@*
 @bullet{} @samp{uniform} for uniformly-distributed orientations in 3D space
 (the crystal symmetry must be specified using @option{-oricrysym});@*
-@bullet{} @samp{fibre(@var{dirs_x}@comma{}@var{dirs_y}@comma{}@var{dirs_z}@comma{}@var{dirc_x}@comma{}@var{dirc_y}@comma{}@var{dirc_z})}
-for randomly-distributed orientations about the fibre defined by crystal direction
+@bullet{} @samp{fiber(@var{dirs_x}@comma{}@var{dirs_y}@comma{}@var{dirs_z}@comma{}@var{dirc_x}@comma{}@var{dirc_y}@comma{}@var{dirc_z})}
+for randomly-distributed orientations about the fiber defined by crystal direction
 (@code{@var{dirc_x}}@comma{} @code{@var{dirc_y}}@comma{} @code{@var{dirc_z}})
 parallel to sample direction
 (@code{@var{dirs_x}}@comma{} @code{@var{dirs_y}}@comma{} @code{@var{dirs_z}});@*
@@ -791,7 +793,8 @@ The primitives can be:@*
 @emph{(i)} @samp{hspace(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for the half-space of equation @math{a@,x+b@,y+c@,z@geq{}d};@*
 @emph{(ii)} @samp{sphere(@var{centre_x}@comma{}@var{centre_y}@comma{}@var{centre_z}@comma{}@var{rad})} for a sphere of centre @math{(@var{centre_x}@comma{} @var{centre_y}@comma{} @var{centre_z})} and radius @var{rad};@*
 @emph{(iii)} @samp{cylinder(@var{basis_x}@comma{}@var{basis_y}@comma{}@var{basis_z}@comma{}@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{rad})} for a cylinder of basis point @math{(@var{basis_x}@comma{} @var{basis_y}@comma{} @var{basis_z})}@comma{} axis @math{(@var{axis_x}@comma{} @var{axis_y}@comma{} @var{axis_z})} and radius @var{rad};@*
-@emph{(iv)} @samp{ecylinder(@var{basis_x}@comma{}@var{basis_y}@comma{}@var{basis_z}@comma{}@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{esaxis1_x}@comma{}@var{esaxis1_y}@comma{} @var{esaxis1_z}@comma{}@var{esaxis2_x}@comma{}@var{esaxis2_y}@comma{}@var{esaxis2_z}@comma{}@var{srad1}@comma{}@var{srad2})} for an elliptic cylinder of basis point @math{(@var{basis_x}@comma{} @var{basis_y}@comma{} @var{basis_z})}@comma{} axis @math{(@var{axis_x}@comma{} @var{axis_y}@comma{} @var{axis_z})}@comma{} ellipse section first axis @math{(@var{esaxis1_x}@comma{} @var{esaxis1_y}@comma{} @var{esaxis1_z})}@comma{} ellipse section second axis @math{(@var{esaxis2_x}@comma{} @var{esaxis2_y}@comma{} @var{esaxis2_z})}@comma{} ellipse section first radius @var{esrad1} and ellipse section second radius @var{esrad2}.@*
+@emph{(iv)} @samp{ecylinder(@var{basis_x}@comma{}@var{basis_y}@comma{}@var{basis_z}@comma{}@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{esaxis1_x}@comma{}@var{esaxis1_y}@comma{} @var{esaxis1_z}@comma{}@var{esaxis2_x}@comma{}@var{esaxis2_y}@comma{}@var{esaxis2_z}@comma{}@var{srad1}@comma{}@var{srad2})} for an elliptic cylinder of basis point @math{(@var{basis_x}@comma{} @var{basis_y}@comma{} @var{basis_z})}@comma{} axis @math{(@var{axis_x}@comma{} @var{axis_y}@comma{} @var{axis_z})}@comma{} ellipse section first axis @math{(@var{esaxis1_x}@comma{} @var{esaxis1_y}@comma{} @var{esaxis1_z})}@comma{} ellipse section second axis @math{(@var{esaxis2_x}@comma{} @var{esaxis2_y}@comma{} @var{esaxis2_z})}@comma{} ellipse section first radius @var{esrad1} and ellipse section second radius @var{esrad2};@*
+@emph{(v)} @samp{torus(@var{basis_x}@comma{}@var{basis_y}@comma{}@var{basis_z}@comma{}@var{axis_x}@comma{}@var{axis_y}@comma{}@var{axis_z}@comma{}@var{rad}@comma{}@var{srad})}@comma{} for a torus of basis point @math{(@var{basis_x}@comma{} @var{basis_y}@comma{} @var{basis_z})}@comma{} axis @math{(@var{axis_x}@comma{} @var{axis_y}@comma{} @var{axis_z})}@comma{} radius @var{rad} and section radius @var{srad}.@*
 Append @samp{i} to a primitive name (to get @samp{cylinderi}@comma{} etc.) for the complementary shape.
 @*
 @mybullet @samp{planecut(@var{d}@comma{}@var{a}@comma{}@var{b}@comma{}@var{c})} for cutting by the (oriented) plane of equation @math{a@,x+b@,y+c@,z=d}.@*
@@ -849,12 +852,6 @@ adds a buffer of @code{@var{buffx}} void voxels on both sides in the x direction
 a buffer of @code{@var{buffy}} void voxels on both sides in the y direction and
 a buffer of @code{@var{buffz}} void voxels on both sides in the z direction.@*
 @mybullet @samp{2d} transforms a 3D tessellation with 1 voxel along z into a 2D tessellation.@*
-@mybullet @samp{resetorigin} resets the origin to (0@comma{} 0@comma{} 0).@*
-@mybullet @samp{resetcellid} for resetting cell ids (contiguous numbering from 1).@*
-@mybullet @samp{rmcell(@var{expr1}@comma{}@var{expr2}@comma{}@dots{})} for removing cells
-matching expression @code{@var{expr1}}@comma{} @code{@var{expr2}}@comma{} etc.@comma{}
-where expressions are based on the variables defined in @ref{Raster Tessellation Keys}.
-Cell removing operates incrementally through expressions.@*
 Several transformations can be applied successively by combining them @w{with @samp{@SEPNODEP}}.
 ,
 any, none}

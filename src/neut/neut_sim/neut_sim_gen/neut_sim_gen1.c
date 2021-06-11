@@ -5,16 +5,61 @@
 #include"neut_sim_gen_.h"
 
 int
-neut_sim_name_type (char *name, char **ptype)
+neut_sim_name_type (char *name, char **ptype, char **pname, int *prestart)
 {
-  if (ut_file_exist ("%s/post.report", name))
-    ut_string_string ("fepx", ptype);
+  int i, qty1, *qty2 = NULL, status;
+  char ***parts = NULL;
+
+  ut_list_break2 (name, NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty2, &qty1);
+
+  status = 0;
+  if (pname)
+    ut_string_string (name, pname);
+  if (prestart)
+    (*prestart) = 0;
+
+  if (qty1 > 1)
+    ut_string_string ("merge", ptype);
   else if (ut_file_exist ("%s/report", name))
     ut_string_string ("sim", ptype);
-  else
-    return -1;
+  else if (qty2[0] == 1 && ut_file_exist ("%s/post.report", name))
+    ut_string_string ("fepx", ptype);
+  else if (qty2[0] == 2 && ut_file_exist ("%s/post.report.rst%s", parts[0][0], parts[0][1]))
+  {
+    ut_string_string ("fepx", ptype);
+    if (pname)
+      ut_string_string (parts[0][0], pname);
+    if (prestart)
+      *prestart = atoi (parts[0][1]);
+  }
+  else if (qty2[0] == 1)
+  {
+    int found = 0;
 
-  return 0;
+    for (i = 1e3; i >= 1; i--)
+      if (ut_file_exist ("%s/post.report.rst%d", parts[0][0], i))
+      {
+        ut_string_string ("fepx", ptype);
+        if (pname)
+          ut_string_string (parts[0][0], pname);
+        if (prestart)
+          *prestart = i;
+
+        found = 1;
+        status = 1;
+        break;
+      }
+
+    if (!found)
+      status = -1;
+  }
+  else
+    status = -1;
+
+  // ut_free_3d_char (&parts, ...);
+  ut_free_1d_int (&qty2);
+
+  return status;
 }
 
 int
@@ -26,32 +71,48 @@ neut_sim_isvoid (struct SIM Sim)
 void
 neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode)
 {
-  int i, status;
+  int i, status, restart;
   char *filename = NULL, *var = ut_alloc_1d_char (100), *type = NULL;
   char *tmp = ut_alloc_1d_char (1000);
   FILE *file = NULL;
   char *res = NULL, *expr = NULL;
+  char *name = NULL;
 
-  status = neut_sim_name_type (dir, &type);
+  neut_sim_free (pSim);
+  neut_sim_set_zero (pSim);
 
-  if (status)
-    ut_print_message (2, 2, "Failed to parse directory.\n");
+  status = neut_sim_name_type (dir, &type, &name, &restart);
+
+  if (status == -1)
+    ut_print_message (2, 3, "Failed to parse directory.\n");
 
   if (!strcmp (type, "fepx"))
   {
-    filename = ut_string_paste (dir, "/post.report");
-    ut_string_string (dir, &(*pSim).fepxdir);
+    ut_string_string (name, &(*pSim).fepxdir);
+    (*pSim).RestartId = restart;
+
+    if (!restart)
+      filename = ut_string_paste ((*pSim).fepxdir, "/post.report");
+    else
+    {
+      filename = ut_alloc_1d_char (1000);
+      sprintf (filename, "%s/post.report.rst%d", (*pSim).fepxdir, restart);
+    }
+
+    if (ut_file_exist ("%s/rst%d.control", (*pSim).fepxdir, restart))
+      (*pSim).RestartFiles = 1;
   }
   else if (!strcmp (type, "sim"))
   {
-    filename = ut_string_paste (dir, "/report");
-    ut_string_string (dir, &(*pSim).simdir);
+    filename = ut_string_paste (name, "/report");
+    ut_string_string (name, &(*pSim).simdir);
   }
   else
     abort ();
 
   ut_string_string ("simulation", &(*pSim).body);
   ut_string_string ("simulation.tess", &(*pSim).tess);
+  ut_string_string ("simulation.tesr", &(*pSim).tesr);
   ut_string_string ("simulation.msh", &(*pSim).msh);
 
   file = ut_file_open (filename, mode);
@@ -94,10 +155,32 @@ neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode)
       if (fscanf (file, "%d", &(*pSim).EltQty) != 1)
         abort ();
     }
+    else if (!strcmp (var, "number_of_phases"))
+    {
+      if (fscanf (file, "%d", &(*pSim).GroupQty) != 1)
+        abort ();
+    }
     else if (!strcmp (var, "number_of_elsets"))
     {
       if (fscanf (file, "%d", &(*pSim).ElsetQty) != 1)
         abort ();
+    }
+    else if (!strcmp (var, "number_of_slip_systems"))
+    {
+      if (!(*pSim).GroupQty)
+        (*pSim).GroupQty = 1;
+
+      int *tmp = ut_alloc_1d_int ((*pSim).GroupQty);
+
+      if (ut_array_1d_int_fscanf (file, tmp, (*pSim).GroupQty) != 1)
+        abort ();
+      ut_array_1d_int_uniq (tmp, (*pSim).GroupQty, &(*pSim).GroupQty);
+      if ((*pSim).GroupQty != 1)
+        ut_print_message (2, 0, "Different numbers of slip systems are not supported (complain!).\n");
+
+      (*pSim).SlipSystemQty = tmp[0];
+
+      ut_free_1d_int (&tmp);
     }
     else if (!strcmp (var, "number_of_elements_bypartition"))
     {
@@ -178,9 +261,14 @@ neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode)
       if (!strcmp (type, "sim"))
         ut_array_1d_int_set ((*pSim).ElsetResWritten, (*pSim).ElsetResQty, 1);
     }
-    else if (!strcmp (var, "number_of_slip_systems"))
+    else if (!strcmp (var, "restart_id"))
     {
-      if (fscanf (file, "%d", &(*pSim).SlipSystemQty) != 1)
+      if (fscanf (file, "%d\n", &(*pSim).RestartId) != 1)
+        abort ();
+    }
+    else if (!strcmp (var, "restart_files"))
+    {
+      if (fscanf (file, "%d\n", &(*pSim).RestartFiles) != 1)
         abort ();
     }
     else
@@ -201,7 +289,7 @@ neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode)
 
   if (!strcmp (type, "fepx"))
   {
-    filename = ut_string_paste (dir, "/simulation.config");
+    filename = ut_string_paste (name, "/simulation.config");
 
     file = ut_file_open (filename, "R");
     while (fscanf (file, "%s", tmp) == 1)
@@ -223,6 +311,7 @@ neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode)
   ut_free_1d_char (&type);
   ut_free_1d_char (&res);
   ut_free_1d_char (&expr);
+  ut_free_1d_char (&name);
 
   return;
 }
@@ -262,6 +351,8 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
 
   neut_sim_fprintf_results (file, "elsets", Sim.ElsetRes, Sim.ElsetResExpr,
                             Sim.ElsetResWritten, Sim.ElsetResQty);
+
+  neut_sim_fprintf_restart (file, Sim);
 
   ut_file_close (file, filename, mode);
   ut_free_1d_char (&filename);
@@ -749,6 +840,11 @@ neut_sim_testres (struct SIM Sim, char *entity, char *res)
 void
 neut_sim_verbose (struct SIM Sim)
 {
+  if (Sim.RestartId || Sim.RestartFiles)
+  {
+    ut_print_message (0, 3, "Restart id       : %d\n", Sim.RestartId);
+    ut_print_message (0, 3, "Restart files    : %s\n", Sim.RestartFiles ? "yes" : "no");
+  }
   ut_print_message (0, 3, "Node number      : %d\n", Sim.NodeQty);
   ut_print_message (0, 3, "Element number   : %d\n", Sim.EltQty);
   ut_print_message (0, 3, "Elset number     : %d\n", Sim.ElsetQty);
@@ -758,6 +854,84 @@ neut_sim_verbose (struct SIM Sim)
   neut_sim_verbose_results ("Node", Sim.NodeRes, Sim.NodeResQty);
   neut_sim_verbose_results ("Element", Sim.EltRes, Sim.EltResQty);
   neut_sim_verbose_results ("Elset", Sim.ElsetRes, Sim.ElsetResQty);
+
+  return;
+}
+
+void
+neut_sim_res_fepxfile (struct SIM Sim, char *res, int core, char *filename)
+{
+  char *type = NULL, *name = NULL;
+
+  if (!Sim.RestartId)
+    sprintf (filename, "%s/post.%s.core%d", Sim.fepxdir, res, core);
+  else
+    sprintf (filename, "%s/post.%s.rst%d.core%d", Sim.fepxdir, res, Sim.RestartId, core);
+
+  ut_free_1d_char (&type);
+  ut_free_1d_char (&name);
+
+  return;
+}
+
+void
+neut_sim_input_files (struct SIM Sim, char ***pfullfiles, char ***pfiles, int *pfileqty)
+{
+  *pfileqty = 0;
+  *pfullfiles = ut_alloc_1d_pchar (10);
+  *pfiles = ut_alloc_1d_pchar (10);
+
+  if (ut_file_exist ("%s/inputs/%s", Sim.simdir, Sim.tess))
+  {
+    if (pfullfiles)
+      (*pfullfiles)[(*pfileqty)] = ut_string_paste3 (Sim.simdir, "/inputs/", Sim.tess);
+    if (pfiles)
+      ut_string_string (Sim.tess, (*pfiles) + (*pfileqty));
+    (*pfileqty)++;
+  }
+
+  if (ut_file_exist ("%s/inputs/%s", Sim.simdir, Sim.tesr))
+  {
+    if (pfullfiles)
+      (*pfullfiles)[(*pfileqty)] = ut_string_paste3 (Sim.simdir, "/inputs/", Sim.tesr);
+    if (pfiles)
+      ut_string_string (Sim.tesr, (*pfiles) + (*pfileqty));
+    (*pfileqty)++;
+  }
+
+  if (ut_file_exist ("%s/inputs/%s", Sim.simdir, Sim.msh))
+  {
+    if (pfullfiles)
+      (*pfullfiles)[(*pfileqty)] = ut_string_paste3 (Sim.simdir, "/inputs/", Sim.msh);
+    if (pfiles)
+      ut_string_string (Sim.msh, (*pfiles) + (*pfileqty));
+    (*pfileqty)++;
+  }
+
+  if (ut_file_exist ("%s/inputs/%s", Sim.simdir, "simulation.config"))
+  {
+    if (pfullfiles)
+      (*pfullfiles)[(*pfileqty)] = ut_string_paste3 (Sim.simdir, "/inputs/", "simulation.config");
+    if (pfiles)
+      ut_string_string ("simulation.config", (*pfiles) + (*pfileqty));
+    (*pfileqty)++;
+  }
+
+  return;
+}
+
+void
+neut_sim_entity_res (struct SIM Sim, char *entity, char ***pres, int *presqty)
+{
+  int i;
+
+  if (neut_sim_entityisnode (entity))
+  {
+    *presqty = Sim.NodeResQty;
+    *pres = ut_alloc_1d_pchar (*presqty);
+    for (i = 0; i < *presqty; i++)
+      ut_string_string (Sim.NodeRes[i], (*pres) + i);
+  }
 
   return;
 }

@@ -1,0 +1,2 @@
+Bumped Cmake's minimum_required_version to 3.0 (CMakeLists.txt).
+Added CMake policy (CMakeLists.txt).

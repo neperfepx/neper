@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nem_reconstruct_mesh_.h"
@@ -8,7 +8,7 @@ void
 nem_reconstruct_mesh_2d (struct NODES Nodes, struct MESH *Mesh, int mode,
                          struct TESS *pTess)
 {
-  int i, FaceQty;
+  int i, FaceQty = 0;
 
   // Tests on the input and output
   for (i = 2; i <= 3; i++)
@@ -88,7 +88,7 @@ void
 nem_reconstruct_mesh_1d (struct NODES Nodes, struct MESH *Mesh, int mode,
                          struct TESS *pTess)
 {
-  int i, EdgeQty;
+  int i, EdgeQty = 0;
 
   // Tests on the input and output
   for (i = 1; i <= 2; i++)

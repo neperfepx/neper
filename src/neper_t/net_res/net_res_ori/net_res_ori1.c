@@ -1,11 +1,11 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_res_ori_.h"
 
 void
-net_res_ori (struct IN_T In, struct TESS Tess)
+net_res_ori (struct IN_T In, struct TESS Tess, struct TESR Tesr)
 {
   FILE *file = NULL;
   int i, j, status;
@@ -13,6 +13,24 @@ net_res_ori (struct IN_T In, struct TESS Tess)
   int partqty;
   char **parts = NULL;
   char *filename = ut_alloc_1d_char (strlen (In.orif) + 10);
+  int CellQty;
+  char *CellOriDes = NULL;
+  double **CellOri = NULL;
+
+  if (!neut_tess_isvoid (Tess))
+  {
+    CellQty = Tess.CellQty;
+    CellOriDes = Tess.CellOriDes;
+    CellOri = Tess.CellOri;
+  }
+  else if (Tesr.CellOri)
+  {
+    CellQty = Tesr.CellQty;
+    CellOriDes = Tesr.CellOriDes;
+    CellOri = Tesr.CellOri;
+  }
+  else
+    abort ();
 
   ut_list_break (In.oriformat, NEUT_SEP_NODEP, &parts, &partqty);
 
@@ -30,7 +48,7 @@ net_res_ori (struct IN_T In, struct TESS Tess)
       ut_print_exprbug (In.orides);
 
     if (!strcmp (parts[i], "plain"))
-      neut_ori_fprintf (file, Tess.CellOriDes, Tess.CellOri + 1, NULL, NULL, Tess.CellQty, NULL);
+      neut_ori_fprintf (file, CellOriDes, "ascii", CellOri + 1, NULL, NULL, CellQty, NULL);
 
     else if (!strcmp (parts[i], "geof"))
     {
@@ -42,10 +60,10 @@ net_res_ori (struct IN_T In, struct TESS Tess)
       else
         ut_string_string ("poly", &cell);
 
-      for (i = 1; i <= Tess.CellQty; i++)
+      for (i = 1; i <= CellQty; i++)
       {
         fprintf (file, "**elset %s%d  *rotation ", cell, i);
-        ol_q_e (Tess.CellOri[i], e);
+        ol_q_e (CellOri[i], e);
         ol_e_e (e, e);
         for (j = 0; j < 3; j++)
           fprintf (file, "%17.12f ", e[j]);

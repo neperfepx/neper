@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_init_.h"
@@ -37,7 +37,7 @@ nev_print_init_data (struct PRINT Print,
 
     for (dim = 0; dim <= meshdim; dim++)
       if (!neut_mesh_isvoid (Mesh[dim]))
-        nev_print_init_data_mesh (Mesh[dim], size, Mesh[dim].ElsetQty, MeshData + dim);
+        nev_print_init_data_mesh (Mesh[dim], size, Mesh[dim].ElsetQty, meshdim, MeshData + dim);
   }
 
   if (Print.showcsys)
@@ -241,7 +241,8 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
   if ((*pPrint).showshadow == -1)
   {
     if ((*pPrint).showmesh == 1)
-      dim = dim;
+    {
+    }
     else if ((*pPrint).showtess == 1)
       dim = Tess.Dim;
     else if ((*pPrint).showtesr == 1)

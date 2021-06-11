@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_nodes_.h"
@@ -403,6 +403,8 @@ neut_node_proj_alongontomesh (double *coo, double *n, struct NODES N,
 
   status = 0;
 
+  double *tol = ut_alloc_1d (M.Elsets[elset][0] + 1);
+
   for (j = 1; j <= M.Elsets[elset][0]; j++)
   {
     elt = M.Elsets[elset][j];
@@ -413,7 +415,7 @@ neut_node_proj_alongontomesh (double *coo, double *n, struct NODES N,
 
     if (ut_space_triangle_point_in
         (N.NodeCoo[M.EltNodes[elt][0]], N.NodeCoo[M.EltNodes[elt][1]],
-         N.NodeCoo[M.EltNodes[elt][2]], coo2, 1e-4, 1e-4) == 1)
+         N.NodeCoo[M.EltNodes[elt][2]], coo2, 1e-4, 1e-4, tol + j))
     {
       ut_array_1d_memcpy (coo2, 3, coo);
       status = 1;
@@ -423,10 +425,21 @@ neut_node_proj_alongontomesh (double *coo, double *n, struct NODES N,
 
   if (status == 0)
   {
-    printf ("\nnode not caught during backward projection\n");
-    ut_print_neperbug ();
+    int id = 1 + ut_array_1d_min_index (tol + 1, M.Elsets[elset][0]);
+
+    elt = M.Elsets[elset][id];
+    ut_array_1d_memcpy (coo, 3, coo2);
+    neut_mesh_elt_eq (M, N, elt, eq);
+
+    ut_space_point_dir_plane_proj (coo2, n, eq, coo2);
+
+    ut_space_triangle_point_in
+        (N.NodeCoo[M.EltNodes[elt][0]], N.NodeCoo[M.EltNodes[elt][1]],
+         N.NodeCoo[M.EltNodes[elt][2]], coo2, 1, 1, NULL);
+    ut_array_1d_memcpy (coo2, 3, coo);
   }
 
+  ut_free_1d (&tol);
   ut_free_1d (&coo2);
   ut_free_1d (&eq);
 

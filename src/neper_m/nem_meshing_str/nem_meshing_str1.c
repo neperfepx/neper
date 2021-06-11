@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nem_meshing_str_.h"
@@ -66,7 +66,7 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
 
     ut_print_message (0, 2, "Removing elsets other than `%s'... \n",
                       In.meshpoly);
-    neut_tess_expr_polylist (Tess, In.meshpoly, &poly, &polyqty);
+    neut_tess_expr_polys (Tess, In.meshpoly, &poly, &polyqty);
     for (i = 1; i <= Tess.PolyQty; i++)
       if (ut_array_1d_int_eltpos (poly, polyqty, i) == -1)
         neut_mesh_rmelset (Mesh + Tess.Dim, *pNodes, i);

@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2020, Romain Quey */
+/* Copyright (C) 2003-2021, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -970,3 +970,26 @@ ut_file_nextstring_sectionlevel (FILE * file, int *plevel)
   return status;
 }
 
+int
+ut_file_isendoffile (FILE * file)
+{
+  int status;
+  char c;
+  fpos_t pos;
+
+  fgetpos (file, &pos);
+
+  status = 1;
+  while (fscanf (file, "%c", &c) != EOF)
+    if (c == ' ' || c == '\n' || c == '\t')
+      continue;
+    else
+    {
+      status = 0;
+      break;
+    }
+
+  fsetpos (file, &pos);
+
+  return status;
+}

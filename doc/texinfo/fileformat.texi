@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2020 Romain Quey
+@c Copyright (C) 2003-2021 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node File and Directory Formats
@@ -449,7 +449,8 @@ which the cell belongs to.
 @section Raster Tessellation File (@file{.tesr})
 
 Here are details on the @file{.tesr} file format version
-@code{2.0}.  Developers should note that read and write functions are
+@code{2.1} (format @code{2.1} was used up to version 4.1.2 and can still be read).
+Developers should note that read and write functions are
 available as @samp{neut_tesr_fscanf} and @samp{neut_tesr_fprintf},
 defined in directories @file{neut/neut_tesr/neut_tesr_fscanf}
 and
@@ -465,7 +466,7 @@ optional fields.
 @example
 ***tesr
  **format
-   @var{format} @var{data_format}
+   @var{format}
  **general
    @var{dimension}
    @var{size_x} @var{size_y} [@var{size_z}]
@@ -505,11 +506,13 @@ optional fields.
    @var{crysym}
 ]
  **data
+   @var{data_format}
    @var{vox1_cell} @var{vox2_cell} ...
  @emph{or}
   *file @var{data_file_name}
 [**oridata
    @var{descriptor}
+   @var{oridata_format}
    @var{vox1_param1} @var{vox1_param2} ...
    @var{vox2_param1} @var{vox2_param2} ...
  @emph{or}
@@ -529,16 +532,6 @@ where
 
 @item @code{@var{format}} is the file format, currently @samp{2.0}
 (character string).
-
-@item @code{@var{data_format}} is the format of the data in field
-@code{**data}.
-It can be either
-@code{ascii},
-@code{binary8} (8-bit binary),
-@code{binary16} (16-bit binary, Little@-Endian),
-@code{binary16_big} (16-bit binary, Big@-Endian),
-@code{binary32} (32-bit binary, Little@-Endian) or
-@code{binary32_big} (32-bit binary, Big@-Endian).
 
 @item @code{**general} denotes the beginning of the general information field.
 
@@ -630,6 +623,15 @@ field.
 provided in the @file{.tesr} file or in a separate file, using
 @option{*file}, see below.
 
+@item @code{@var{data_format}} is the format of the data.
+It can be either
+@code{ascii},
+@code{binary8} (8-bit binary),
+@code{binary16} (16-bit binary, Little@-Endian),
+@code{binary16_big} (16-bit binary, Big@-Endian),
+@code{binary32} (32-bit binary, Little@-Endian) or
+@code{binary32_big} (32-bit binary, Big@-Endian).
+
 @item @code{@var{voxid_cell}} is the cell voxel @code{@var{id}} belongs
 to.  Voxels must be listed in column-major order (x varying first, y
 varying second and z varying last).  The cell identifiers should start from 1.
@@ -643,6 +645,10 @@ data.  It must be located in the same directory as the parent tesr file, or its 
 @item @code{**oridata} denotes the beginning of the orientation data field.  Data can be
 provided in the @file{.tesr} file or in a separate file, using
 @option{*file}, see below.
+
+@item @code{@var{oridata_format}} is the format of the data.
+It can be either
+@code{ascii} or @code{binary} (double-precision number).
 
 @item @code{@var{voxid_param1}}, @code{@var{voxid_param2}}, @dots{} are
 the values of the orientation descriptor of voxel @var{id}.
@@ -990,10 +996,11 @@ simulation.sim
     |   `-- ...
     `-- nodes
         |-- coo
-        |   |-- coo.step0
-        |   |-- coo.step1
-        |   `-- ...
-        `-- ...
+.       |   |-- coo.step0
+.       |   |-- coo.step1
+.       |   `-- ...
+|       `-- ...
+`-- [restart]
 @end example
 
 where
@@ -1010,7 +1017,9 @@ where
 
 @item @file{results/elements} is the element result directory.
 
-@item @file{results/nodes or elements/@var{res}} is the directory for result @samp{@var{res}}. The directory contains one file per simulation step, named @file{@var{res}.step@var{nb}}, where @samp{@var{nb}} is the step number, ranging from 0 (for the initial state) to the total number of steps.
+@item @file{results/nodes/@var{res}} or @file{results/elements/@var{res}} is the directory for result @samp{@var{res}}. The directory contains one file per simulation step, named @file{@var{res}.step@var{nb}}, where @samp{@var{nb}} is the step number, ranging from 0 (for the initial state) to the total number of steps.
+
+@item @file{restart} is the restart directory.  It is present only if @dfn{restart} was switched on in FEPX and contains raw FEPX restart files (requires FEPX version 1.2 or higher).
 
 @end itemize
 

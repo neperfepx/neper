@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_fprintf_.h"
@@ -93,7 +93,7 @@ neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
   {
     fprintf (file, "  *ori\n");
     fprintf (file, "   %s\n", Tess.CellOriDes);
-    neut_ori_fprintf (file, Tess.CellOriDes, Tess.CellOri + 1, NULL, NULL, Tess.CellQty, NULL);
+    neut_ori_fprintf (file, Tess.CellOriDes, "ascii", Tess.CellOri + 1, NULL, NULL, Tess.CellQty, NULL);
   }
 
   if (neut_tess_hascelloridistrib (Tess))

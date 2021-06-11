@@ -13,6 +13,7 @@
 
 #include"nes_utils/nes_utils.h"
 #include"nes_input/nes_input.h"
+#include"nes_merge/nes_merge.h"
 #include"nes_sim/nes_sim.h"
 #include"nes_pproc/nes_pproc.h"
 

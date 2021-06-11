@@ -1,5 +1,5 @@
 /* This file is part of the Neper software sizeage. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_sset_multiseed_.h"

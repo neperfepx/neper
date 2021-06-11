@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_3D_.h"
@@ -48,7 +48,7 @@ nem_meshing_3D_poly (struct IN_M In, double cl, double mesh3dclreps,
     (*pMultim).algohit[(*pMultim).Oalgo[poly]]++;
   else
     ut_print_message (2, 3, "Meshing of poly %d (%d) failed\n", poly,
-                      Tess.CellId ? Tess.CellId[poly] : poly);
+                      neut_tess_cell_id (Tess, poly));
 
   neut_nodes_free (&N2);
   neut_mesh_free (&M2);

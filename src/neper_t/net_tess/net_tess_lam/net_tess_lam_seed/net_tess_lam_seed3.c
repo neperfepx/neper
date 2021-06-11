@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tess_lam_seed_.h"
@@ -204,7 +204,7 @@ net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng * r, double *n,
     if (coo < distmin)
       continue;
 
-    net_tess_lam_seed_set_addlam (coo, n, w[w_id], w_id, pSSet);
+    net_tess_lam_seed_set_addlam (coo, n, w[w_id], wqty > 1 ? w_id : -1, pSSet);
   }
   while (coo < distmax);
 

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_.h"
@@ -68,6 +68,9 @@ net_tess_opt_comp_nlopt (double *x, struct TOPT *pTOpt)
     nlopt_optimize ((*pTOpt).opt, x, &val);
     nlopt_set_force_stop ((*pTOpt).opt, forcestop);
   }
+
+  printf ("\n");
+  ut_print_message (0, 3, "Final solution  : f   =%.9f", (*pTOpt).objvalmin[(*pTOpt).iter]);
 
   // nlopt_destroy ((*pTOpt).opt);
 

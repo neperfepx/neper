@@ -1,13 +1,12 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2020 Romain Quey
+@c Copyright (C) 2003-2021 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Introduction
 @chapter Introduction
 
-@section The Neper Project
-
-@subsection Description
+@node Description
+@section Description
 
 Neper is a software package for polycrystal generation and meshing.  The polycrystals can be 2D or 3D. Neper is built around four modules:
 
@@ -24,7 +23,8 @@ Neper is a software package for polycrystal generation and meshing.  The polycry
 
 Neper strives to be an easy-to-use, efficient and robust tool.  All the input data are prescribed non-interactively, using command lines and / or ASCII files, so that all treatments can be automated.
 
-@subsection Resources and Support
+@node Resources and Support
+@section Resources and Support
 
 Several, complementary resources describing Neper are available:
 
@@ -118,13 +118,9 @@ The dependencies which are (optionally) necessary at compilation time and must b
 
 @item The GNU Scientific Library (GSL, mandatory, variable @samp{HAVE_GSL}).  It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{https://www.gnu.org/software/gsl}.
 
-@item The NLopt library (version @code{2.6.0} or higher, optional, enabled by default, variable @samp{HAVE_NLOPT}).  It is needed by @mT{} for tessellation generation from cell properties. It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from @uref{https://nlopt.readthedocs.io}.
-
 @item The OpenMP library (optional, enabled by default, variable @samp{HAVE_OPENMP}).  It is likely to be available on your system or from your system package manager.@footnote{On Mac, install @code{llvm} and @code{libomp} via Homebrew.}
 
-@item The libScotch library (version @code{6.0.0} or higher, optional, disabled by default, variable @samp{HAVE_LIBSCOTCH}).  It is needed by @mM{} for mesh partitioning.  The source code can be downloaded from @url{https://www.labri.fr/perso/pelegrin/scotch}.
-
-@item The pthread library (mandatory if libScotch is enabled). It is likely to be available on your system or from your system package manager.
+@item The pthread library (mandatory). It is likely to be available on your system or from your system package manager.
 
 @end itemize
 
@@ -141,6 +137,10 @@ Other dependencies are only needed at run-time (they are not necessary for compi
 Other third-party libraries are directly included in the source code (see directory @file{src/contrib}) and are not dependencies @emph{per se}:
 
 @itemize
+@item The NLopt library (@uref{https://nlopt.readthedocs.io}).  If it is already available on your system, the system version will be used instead.
+
+@item The libscotch library (@url{https://www.labri.fr/perso/pelegrin/scotch}). If it is already available on your system, the system version will be used instead.
+
 @item The tinycolormap library (@url{https://github.com/yuki-koyama/tinycolormap}).
 
 @item The nanoflann library (@url{https://github.com/jlblancoc/nanoflann}).
@@ -164,6 +164,7 @@ or (equivalently)
 @c @file{neper.info} into an info directory (usually @file{/usr/info},
 @c @file{/usr/local/info} or @file{/usr/doc/info}).
 
+@node Getting Started
 @section Getting Started
 
 The @samp{neper} binary must be run in a terminal, followed by a list of arguments,
@@ -246,6 +247,7 @@ neper comments --------------------------------------  <-- comment
 @c @medskip
 If the initialization file is not found, or if @samp{neper @var{module_name}} is not found inside it, Neper will consider only the command line arguments.  Also, if an argument is initialized several times (for instance, both in the initialization file and at the command line), only the last specified value is used.
 
+@node Reading this Manual
 @section Reading this Manual
 
 This manual is maintained as a Texinfo manual.  Here are the writing conventions used in the document:

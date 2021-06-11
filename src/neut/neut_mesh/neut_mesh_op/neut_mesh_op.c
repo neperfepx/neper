@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_op_.h"
@@ -314,7 +314,7 @@ neut_mesh_scotchmesh (struct MESH Mesh, int vnodnbr, SCOTCH_Mesh * pSCMesh)
 
   return;
 }
-#endif
+#endif /* HAVE_LIBSCOTCH */
 
 /* nodes & elements are considered to be numbered contiguously from 1 */
 void

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_png_mesh_nodes_.h"
@@ -13,7 +13,7 @@ nev_print_png_mesh_nodes (FILE * file, struct PRINT Print, struct NODES Nodes,
   char *texture = NULL;
   int *hidden = NULL;
 
-  Mesh = Mesh;
+  (void) Mesh;
 
   node_qty = ut_array_1d_int_sum (Print.shownode + 1, Nodes.NodeQty);
   if (node_qty == 0)

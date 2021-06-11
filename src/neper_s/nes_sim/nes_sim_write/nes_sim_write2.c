@@ -72,3 +72,40 @@ nes_sim_write_results (struct IN_S In, struct SIM *pSim)
 
   return;
 }
+
+void
+nes_sim_write_restart (char *indir, char *outdir, struct SIM Sim)
+{
+  int i;
+  char *dir = ut_string_paste (outdir, "/restart");
+  char *filename = ut_alloc_1d_char (1000);
+  char *infile = ut_alloc_1d_char (1000);
+  char *outfile = ut_alloc_1d_char (1000);
+
+  ut_dir_openmessage (dir, "w");
+  ut_sys_mkdir (dir);
+
+  sprintf (filename, "rst%d.control", Sim.RestartId);
+  sprintf (infile, "%s/%s", indir, filename);
+  sprintf (outfile, "%s/restart/%s", outdir, filename);
+
+  ut_print_message (0, 4, "%s...\n", filename);
+  ut_file_cp (infile, outfile);
+
+  ut_print_message (0, 4, "rst%d.field.core*...\n", Sim.RestartId);
+  for (i = 1; i <= Sim.PartQty; i++)
+  {
+    sprintf (filename, "rst%d.field.core%d", Sim.RestartId, i);
+    sprintf (infile, "%s/%s", indir, filename);
+    sprintf (outfile, "%s/restart/%s", outdir, filename);
+
+    ut_file_cp (infile, outfile);
+  }
+
+  ut_free_1d_char (&dir);
+  ut_free_1d_char (&filename);
+  ut_free_1d_char (&infile);
+  ut_free_1d_char (&outfile);
+
+  return;
+}

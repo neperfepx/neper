@@ -23,9 +23,12 @@ neut_sim_set_zero (struct SIM *pSim)
   (*pSim).ElsetResWritten = NULL;
   (*pSim).OriDes = NULL;
   (*pSim).StepState = NULL;
+  (*pSim).RestartFiles = 0;
+  (*pSim).RestartId = 0;
 
   (*pSim).body = NULL;
   (*pSim).tess = NULL;
+  (*pSim).tesr = NULL;
   (*pSim).msh = NULL;
   (*pSim).bcs = NULL;
   (*pSim).ori = NULL;
@@ -35,6 +38,7 @@ neut_sim_set_zero (struct SIM *pSim)
   (*pSim).EltQty = 0;
   (*pSim).NodeQty = 0;
   (*pSim).ElsetQty = 0;
+  (*pSim).GroupQty = 0;
   (*pSim).PartQty = 0;
   (*pSim).PartNodeQty = NULL;
   (*pSim).PartEltQty = NULL;
@@ -62,6 +66,7 @@ neut_sim_free (struct SIM *pSim)
 
   ut_free_1d_char (&(*pSim).body);
   ut_free_1d_char (&(*pSim).tess);
+  ut_free_1d_char (&(*pSim).tesr);
   ut_free_1d_char (&(*pSim).msh);
   ut_free_1d_char (&(*pSim).bcs);
   ut_free_1d_char (&(*pSim).ori);

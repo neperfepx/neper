@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_transform_tess_cut_.h"
@@ -9,32 +9,10 @@ net_transform_tess_cut_pre (struct TESS Tess, char *expr,
                             struct TESS *pTessGen, struct PRIM **pPrim,
                             int *pPrimQty)
 {
-  int i, status;
-  char *fct = NULL;
-  char **exprs = NULL;
-
   neut_tess_tess_gen (Tess, pTessGen);
   neut_tess_tess_cell (Tess, pTessGen);
 
-  ut_string_function (expr, &fct, NULL, &exprs, pPrimQty);
-
-  if (strcmp (fct, "cut"))
-    abort ();
-
-  (*pPrim) = calloc (*pPrimQty, sizeof (struct PRIM));
-
-  for (i = 0; i < *pPrimQty; i++)
-  {
-    neut_prim_set_zero (*pPrim + i);
-    status = neut_prim_sscanf (exprs[i], *pPrim + i);
-    if (status == 0)
-      ut_print_message (0, 3, "%s...\n", exprs[i]);
-    else
-      ut_print_message (2, 3, "Parsing argument `%s' failed\n", exprs[i]);
-  }
-
-  ut_free_1d_char (&fct);
-  ut_free_2d_char (&exprs, *pPrimQty);
+  net_transform_tess_cut_pre_prim (expr, pPrim, pPrimQty);
 
   return;
 }
@@ -206,9 +184,12 @@ net_transform_tess_cut_post (struct TESS TessGen, int *intseed_oldseed,
     ut_array_1d_int_set_id (TessGen.CellId, oldseed_max + 1);
   }
 
-  (*pTess).CellId = ut_alloc_1d_int ((*pTess).CellQty + 1);
-  for (i = 1; i <= (*pTess).CellQty; i++)
-    (*pTess).CellId[i] = TessGen.CellId[intseed_oldseed[i]];
+  if (TessGen.CellId)
+  {
+    (*pTess).CellId = ut_alloc_1d_int ((*pTess).CellQty + 1);
+    for (i = 1; i <= (*pTess).CellQty; i++)
+      (*pTess).CellId[i] = TessGen.CellId[intseed_oldseed[i]];
+  }
 
   // CellOri
   if (TessGen.CellOri)

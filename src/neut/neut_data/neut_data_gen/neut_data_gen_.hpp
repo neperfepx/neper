@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -13,5 +13,5 @@
 
 extern int neut_data_colscheme_istinycolormap (char *colscheme);
 
-#include "contrib/tinycolormap/tinycolormap.hpp"
+#include "tinycolormap.hpp"
 extern tinycolormap::ColormapType neut_data_colscheme_tinycolormaptype (char *colscheme);

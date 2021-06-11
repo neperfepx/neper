@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2020 Romain Quey
+@c Copyright (C) 2003-2021 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Meshing Module (-M)
@@ -99,7 +99,7 @@ Info   : Version 4.0.0
 Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
 Info   : Running on 8 threads.
 Info   : <https://neper.info>
-Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
+Info   : Copyright (C) 2003-2021, and GNU GPL'd, by Romain Quey.
 Info   : No initialization file found (`/home/rquey/.neperrc').
 Info   : ---------------------------------------------------------------
 Info   : MODULE  -M loaded with arguments:

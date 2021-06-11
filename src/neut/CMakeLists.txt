@@ -1,8 +1,8 @@
 # This file is part of the Neper software package.
-# Copyright(C) 2003-2020, Romain Quey.
+# Copyright(C) 2003-2021, Romain Quey.
 # See the COPYING file in the top-level directory.
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
@@ -17,33 +17,14 @@ else()
 endif()
 add_definitions(-Wno-deprecated-declarations)
 
-# should we use the optional libraries?
-option(HAVE_GSL       "Use the GNU Scientific Library(GSL)" ON)
-option(HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
-option(HAVE_NLOPT       "Use NLopt"                            ON )
-option(HAVE_OPENMP      "Use OpenMP"                           ON )
-option(DEVEL_OPTIMIZATION "Enable optimization(ON for production use)" ON)
-option(DEVEL_DEBUGGING_TEST "Enable debugging tests(OFF for production use)"   OFF)
-option(DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag(OFF for production use)"   OFF)
-option(DEVEL_PROFILING   "Enable profiling(OFF for production use)" OFF)
-
-include_directories("${PROJECT_BINARY_DIR}")
-
 add_definitions(-Wall -W -Wno-unknown-pragmas)
 if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
   set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wno-deprecated-copy")
 endif()
-if(DEVEL_OPTIMIZATION)
-  add_definitions(-O3)
-endif()
 
-if(DEVEL_DEBUGGING_FLAG)
-  add_definitions(-g -Werror)
-endif()
-
-if(DEVEL_PROFILING)
-  add_definitions(-pg)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
+# Set the build type for appropriate compile flags
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build: Debug Release" FORCE)
 endif()
 
 add_library(neut
@@ -188,45 +169,7 @@ add_library(neut
 
 ## Link libraries
 
-set(EXTRA_LIBS ${EXTRA_LIBS} ut)
-set(EXTRA_LIBS ${EXTRA_LIBS} orilib)
-
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake
-			${CMAKE_MODULE_PATH})
-
-find_library(MATHLIB m)
-if(MATHLIB)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${MATHLIB})
-endif()
-
-if(HAVE_GSL)
-  find_package(GSL REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
-  include_directories(${GSL_INCLUDE_DIRS})
-endif(HAVE_GSL)
-
-if(HAVE_LIBSCOTCH)
-  find_package(LIBSCOTCH REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${Scotch_LIBRARIES})
-  include_directories(${Scotch_INCLUDE_DIRS})
-endif()
-
-if(HAVE_NLOPT)
-  find_package(NLOPT REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES})
-  include_directories(${NLOPT_INCLUDE_DIRS})
-endif()
-
-if(HAVE_OPENMP)
-  if(APPLE AND XCODE)
-      set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include" CACHE INTERNAL "OpenMP flags for Xcode toolchain.")
-      set(OpenMP_CXX_LIB_NAMES "omp" CACHE INTERNAL "OpenMP lib name for Xcode toolchain.")
-      set(OpenMP_omp_LIBRARY "/usr/local/opt/libomp/lib/libomp.dylib" CACHE INTERNAL "OpenMP lib name for Xcode toolchain.")
-  endif()
-
-  find_package(OpenMP REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${OpenMP_C_FLAGS})
-  add_definitions(${OpenMP_C_FLAGS})
-endif()
-
+list (APPEND EXTRA_LIBS ut)
+list (APPEND EXTRA_LIBS orilib)
+list (APPEND EXTRA_LIBS neper_t)
 target_link_libraries(neut ${EXTRA_LIBS})

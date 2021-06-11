@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_op_.h"
@@ -556,23 +556,23 @@ neut_tess_poly_switch (struct TESS *pTess, int p1, int p2)
     ut_array_1d_switch ((*pTess).SeedWeight, p1, p2);
 
   // CellTrue
-  if ((*pTess).CellTrue != NULL)
+  if ((*pTess).CellTrue)
     ut_array_1d_int_switch ((*pTess).CellTrue, p1, p2);
 
   // CellBody
-  if ((*pTess).CellBody != NULL)
+  if ((*pTess).CellBody)
     ut_array_1d_int_switch ((*pTess).CellBody, p1, p2);
 
   // CellLamId
-  if ((*pTess).CellLamId != NULL)
+  if ((*pTess).CellLamId)
     ut_array_1d_int_switch ((*pTess).CellLamId, p1, p2);
 
   // CellModeId
-  if ((*pTess).CellModeId != NULL)
+  if ((*pTess).CellModeId)
     ut_array_1d_int_switch ((*pTess).CellModeId, p1, p2);
 
   // CellGroup
-  if ((*pTess).CellGroup != NULL)
+  if ((*pTess).CellGroup)
     ut_array_1d_int_switch ((*pTess).CellGroup, p1, p2);
 
   // PolyFace* (keep FaceQty at the end)
@@ -2205,8 +2205,6 @@ neut_tess_poly_tess (struct TESS Tess, int poly, struct TESS *pTess)
 
   (*pTess).CellTrue = ut_alloc_1d_int (2);
   (*pTess).CellBody = ut_alloc_1d_int (2);
-  (*pTess).CellLamId = ut_alloc_1d_int (2);
-  (*pTess).CellModeId = ut_alloc_1d_int (2);
 
   (*pTess).PolyFaceQty = ut_alloc_1d_int (2);
   (*pTess).PolyFaceNb = ut_alloc_1d_pint (2);
@@ -2482,39 +2480,60 @@ neut_tess_addcell_alloc (struct TESS *pTess)
 {
   int cell = ++(*pTess).CellQty;
 
-  (*pTess).CellId = ut_realloc_1d_int ((*pTess).CellId, (*pTess).CellQty + 1);
-  (*pTess).CellId[0] = 0;
-  (*pTess).CellId[cell] = cell;
+  if ((*pTess).CellId)
+  {
+    (*pTess).CellId = ut_realloc_1d_int ((*pTess).CellId, (*pTess).CellQty + 1);
+    (*pTess).CellId[0] = 0;
+    (*pTess).CellId[cell] = cell;
+  }
 
-  (*pTess).CellOri =
-    ut_realloc_1d_pdouble ((*pTess).CellOri, (*pTess).CellQty + 1);
-  (*pTess).CellOri[0] = NULL;
-  (*pTess).CellOri[cell] = ut_alloc_1d (4);
+  if ((*pTess).CellOri)
+  {
+    (*pTess).CellOri =
+      ut_realloc_1d_pdouble ((*pTess).CellOri, (*pTess).CellQty + 1);
+    (*pTess).CellOri[0] = NULL;
+    (*pTess).CellOri[cell] = ut_alloc_1d (4);
+  }
 
-  (*pTess).CellTrue =
-    ut_realloc_1d_int ((*pTess).CellTrue, (*pTess).CellQty + 1);
-  (*pTess).CellTrue[0] = 0;
-  (*pTess).CellTrue[cell] = 0;
+  if ((*pTess).CellTrue)
+  {
+    (*pTess).CellTrue =
+      ut_realloc_1d_int ((*pTess).CellTrue, (*pTess).CellQty + 1);
+    (*pTess).CellTrue[0] = 0;
+    (*pTess).CellTrue[cell] = 0;
+  }
 
-  (*pTess).CellBody =
-    ut_realloc_1d_int ((*pTess).CellBody, (*pTess).CellQty + 1);
-  (*pTess).CellBody[0] = 0;
-  (*pTess).CellBody[cell] = 0;
+  if ((*pTess).CellBody)
+  {
+    (*pTess).CellBody =
+      ut_realloc_1d_int ((*pTess).CellBody, (*pTess).CellQty + 1);
+    (*pTess).CellBody[0] = 0;
+    (*pTess).CellBody[cell] = 0;
+  }
 
-  (*pTess).CellLamId =
-    ut_realloc_1d_int ((*pTess).CellLamId, (*pTess).CellQty + 1);
-  (*pTess).CellLamId[0] = 0;
-  (*pTess).CellLamId[cell] = 0;
+  if ((*pTess).CellLamId)
+  {
+    (*pTess).CellLamId =
+      ut_realloc_1d_int ((*pTess).CellLamId, (*pTess).CellQty + 1);
+    (*pTess).CellLamId[0] = 0;
+    (*pTess).CellLamId[cell] = 0;
+  }
 
-  (*pTess).CellModeId =
-    ut_realloc_1d_int ((*pTess).CellModeId, (*pTess).CellQty + 1);
-  (*pTess).CellModeId[0] = 0;
-  (*pTess).CellModeId[cell] = 0;
+  if ((*pTess).CellModeId)
+  {
+    (*pTess).CellModeId =
+      ut_realloc_1d_int ((*pTess).CellModeId, (*pTess).CellQty + 1);
+    (*pTess).CellModeId[0] = 0;
+    (*pTess).CellModeId[cell] = 0;
+  }
 
-  (*pTess).CellGroup =
-    ut_realloc_1d_int ((*pTess).CellGroup, (*pTess).CellQty + 1);
-  (*pTess).CellGroup[0] = 0;
-  (*pTess).CellGroup[cell] = 0;
+  if ((*pTess).CellGroup)
+  {
+    (*pTess).CellGroup =
+      ut_realloc_1d_int ((*pTess).CellGroup, (*pTess).CellQty + 1);
+    (*pTess).CellGroup[0] = 0;
+    (*pTess).CellGroup[cell] = 0;
+  }
 
   (*pTess).SeedQty = (*pTess).CellQty;
 
@@ -3582,7 +3601,7 @@ neut_tess_cellexpr_remove (struct TESS *pTess, char *expr)
   if ((*pTess).Dim == 2)
     abort ();
 
-  neut_tess_expr_celllist (*pTess, expr, &cells, &cellqty);
+  neut_tess_expr_cells (*pTess, expr, &cells, &cellqty);
 
   neut_tess_polys_remove (pTess, cells, cellqty);
 
@@ -3594,8 +3613,7 @@ neut_tess_cellexpr_remove (struct TESS *pTess, char *expr)
 void
 neut_tess_resetcellid (struct TESS *pTess)
 {
-  (*pTess).CellId = ut_realloc_1d_int ((*pTess).CellId, (*pTess).CellQty + 1);
-  ut_array_1d_int_set_id ((*pTess).CellId, (*pTess).CellQty + 1);
+  ut_free_1d_int (&(*pTess).CellId);
 
   return;
 }

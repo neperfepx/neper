@@ -1,22 +1,22 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_poly_geom_.h"
 
 void
-neut_poly_bbox (struct POLY Poly, double *size)
+neut_poly_bbox (struct POLY Poly, double **bbox)
 {
   int i, j;
 
-  size[1] = size[3] = size[5] = DBL_MAX;
-  size[2] = size[4] = size[6] = -DBL_MAX;
+  bbox[0][0] = bbox[1][0] = bbox[2][0] = DBL_MAX;
+  bbox[0][1] = bbox[1][1] = bbox[2][1] = -DBL_MAX;
 
   for (j = 0; j < 3; j++)
     for (i = 1; i <= Poly.VerQty; i++)
     {
-      size[2 * j + 1] = ut_num_min (size[2 * j + 1], Poly.VerCoo[i][j]);
-      size[2 * j + 2] = ut_num_max (size[2 * j + 2], Poly.VerCoo[i][j]);
+      bbox[j][0] = ut_num_min (bbox[j][0], Poly.VerCoo[i][j]);
+      bbox[j][1] = ut_num_min (bbox[j][1], Poly.VerCoo[i][j]);
     }
 
   return;
@@ -488,7 +488,7 @@ neut_poly_point_inface (struct POLY Poly, double *coo, int face)
       Poly.FaceVerNb[face][ut_array_rotpos (1, Poly.FaceVerQty[face], i, 1)];
 
     if (ut_space_triangle_point_in
-        (centre, Poly.VerCoo[ver1], Poly.VerCoo[ver2], coo, 1e-6, 0))
+        (centre, Poly.VerCoo[ver1], Poly.VerCoo[ver2], coo, 1e-6, 0, NULL))
     {
       status = 1;
       break;

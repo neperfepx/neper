@@ -1,48 +1,31 @@
 # This file is part of the Neper software package.
-# Copyright(C) 2003-2020, Romain Quey.
+# Copyright(C) 2003-2021, Romain Quey.
 # See the COPYING file in the top-level directory.
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
 project(neper_t)
 
-# for nanoflann =======
+# for nanoflann #######
 if(CMAKE_VERSION VERSION_LESS "3.1")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 else()
     set(CMAKE_CXX_STANDARD 11)
 endif()
+
 add_definitions(-Wno-deprecated-declarations)
-
-option(HAVE_GSL         "Use the GNU Scientific Library(GSL)" ON )
-option(HAVE_NLOPT       "Use NLopt"                            ON )
-option(HAVE_LIBSCOTCH   "Use libscotch"                        OFF)
-option(HAVE_OPENMP      "Use OpenMP"                           ON )
-option(DEVEL_OPTIMIZATION "Enable optimization(ON for production use)" ON)
-option(DEVEL_DEBUGGING_TEST "Enable debugging tests(OFF for production use)"   OFF)
-option(DEVEL_DEBUGGING_FLAG "Enable debugging compilation flag(OFF for production use)"   OFF)
-option(DEVEL_PROFILING   "Enable profiling(OFF for production use)" OFF)
-
-include_directories("${PROJECT_BINARY_DIR}")
-
 add_definitions(-Wall -W -Wno-unknown-pragmas)
+
 if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
   set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wno-deprecated-copy")
 endif()
-if(DEVEL_OPTIMIZATION)
-  add_definitions(-O3)
-endif()
 
-if(DEVEL_DEBUGGING_FLAG)
-  add_definitions(-g -Werror)
-endif()
-
-if(DEVEL_PROFILING)
-  add_definitions(-pg)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
+# Set the build type for appropriate compile flags
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build: Debug Release" FORCE)
 endif()
 
 add_library(neper_t
@@ -65,7 +48,15 @@ add_library(neper_t
 ./net_transform/net_transform_tess/net_transform_tess_cut/net_transform_tess_cut1.c
 ./net_transform/net_transform_tess/net_transform_tess_cut/net_transform_tess_cut2.c
 ./net_transform/net_transform_tess/net_transform_tess_cut/net_transform_tess_cut3.c
-./net_transform/net_transform_tesr/net_transform_tesr.c
+./net_transform/net_transform_tesr/net_transform_tesr1.c
+./net_transform/net_transform_tesr/net_transform_tesr2.c
+./net_transform/net_transform_tesr/net_transform_tesr_tesrmerge/net_transform_tesr_tesrmerge1.c
+./net_transform/net_transform_tesr/net_transform_tesr_tesrmerge/net_transform_tesr_tesrmerge2.c
+./net_transform/net_transform_tesr/net_transform_tesr_tesrmerge/net_transform_tesr_tesrmerge3.c
+./net_transform/net_transform_tesr/net_transform_tesr_tesrmerge/net_transform_tesr_tesrmerge4.c
+./net_transform/net_transform_tesr/net_transform_tesr_tesrtranslate/net_transform_tesr_tesrtranslate1.c
+./net_transform/net_transform_tesr/net_transform_tesr_tesrtranslate/net_transform_tesr_tesrtranslate2.c
+./net_transform/net_transform_tesr/net_transform_tesr_tesrtranslate/net_transform_tesr_tesrtranslate_bounds/net_transform_tesr_tesrtranslate_bounds1.c
 ./net_sort/net_sort1.c
 ./net_sort/net_sort2.c
 ./net_utils/net_utils1.c
@@ -204,45 +195,5 @@ add_library(neper_t
 ./neper_t.c
 )
 
-set(EXTRA_LIBS ${EXTRA_LIBS} ut)
-set(EXTRA_LIBS ${EXTRA_LIBS} neut)
-set(EXTRA_LIBS ${EXTRA_LIBS} orilib)
-
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
-
-find_library(MATHLIB m)
-if(MATHLIB)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${MATHLIB})
-endif()
-
-if(HAVE_NLOPT)
-  find_package(NLOPT REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${NLOPT_LIBRARIES})
-  include_directories(${NLOPT_INCLUDE_DIRS})
-endif()
-
-if(HAVE_GSL)
-  find_package(GSL REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${GSL_LIBRARIES})
-  include_directories(${GSL_INCLUDE_DIRS})
-endif()
-
-if(HAVE_LIBSCOTCH)
-  find_package(LIBSCOTCH REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${Scotch_LIBRARIES})
-  include_directories(${Scotch_INCLUDE_DIRS})
-endif()
-
-if(HAVE_OPENMP)
-  if(APPLE AND XCODE)
-      set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include" CACHE INTERNAL "OpenMP flags for Xcode toolchain.")
-      set(OpenMP_CXX_LIB_NAMES "omp" CACHE INTERNAL "OpenMP lib name for Xcode toolchain.")
-      set(OpenMP_omp_LIBRARY "/usr/local/opt/libomp/lib/libomp.dylib" CACHE INTERNAL "OpenMP lib name for Xcode toolchain.")
-  endif()
-
-  find_package(OpenMP REQUIRED)
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${OpenMP_C_FLAGS})
-  add_definitions(${OpenMP_C_FLAGS})
-endif()
-
+list (APPEND EXTRA_LIBS neut)
 target_link_libraries(neper_t ${EXTRA_LIBS})

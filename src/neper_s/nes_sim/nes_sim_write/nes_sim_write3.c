@@ -11,6 +11,8 @@ nes_sim_write_inputs_file (struct IN_S In, struct SIM Sim, char *filename)
   char *infile = ut_string_paste3 (Sim.fepxdir, "/", filename);
   char *outfile = ut_string_paste3 (In.simdir, "/inputs/", filename);
 
+  infile = ut_string_paste3 (Sim.fepxdir, "/", filename);
+
   if (ut_file_exist (infile))
   {
     ut_print_message (0, 4, "%s...\n", filename);

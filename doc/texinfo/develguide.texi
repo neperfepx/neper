@@ -1,5 +1,5 @@
 @c This file is part of the Neper software package.
-@c Copyright (C) 2003-2020 Romain Quey
+@c Copyright (C) 2003-2021 Romain Quey
 @c See the COPYING file in the top-level directory.
 
 @node Developer's Guide
@@ -144,29 +144,6 @@ In modules -T and -M, adding a new option can be done by following these steps:
 @end itemize
 
 In module -V, options are processed differently.  Instead of being recorded in a C structure, they are read one after the other and associated functions are executed along the way.  To add a new option, take an existing option as an example.
-
-@subsection Compilation Options
-
-For development, several compilation options can be changed from their default values. This must be done at configuration stage, using commands @samp{@command{ccmake ..}} or @samp{@command{cmake-gui ..}}.  The compilation options are
-
-@itemize
-  @item @code{DEVEL_DEBUGGING_FLAG}
-
-  Setting the option to @code{ON} turns on the debugging compilation flag @samp{-g}, which is required for debugging with @command{gdb} and @command{valgrind}, and turns on the compilation flag @samp{-Werror}, which makes all compilation warnings into errors.
-
-  @item @code{DEVEL_DEBUGGING_TEST}
-
-  Setting the option to @code{ON} runs internal tests during Neper execution at places where the code is otherwise considered robust.
-
-  @item @code{DEVEL_OPTIMIZATION}
-
-  Setting this option to @code{OFF} disables code optimization, which is useful for debugging with @command{gdb} and @command{valgrind}.
-
-  @item @code{DEVEL_PROFILING}
-
-  Setting this option to @code{ON} turns on the code profiling compilation flag @samp{-pg}, which is required for profiling with @command{gprof}.  This is a highy CPU-sensitive option, which should be used  only when profiling is actually carried out.
-
-@end itemize
 
 @subsection Making a Commit
 

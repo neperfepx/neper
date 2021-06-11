@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_seedset_.h"
@@ -90,8 +90,8 @@ neut_seedset_free (struct SEEDSET *pSSet)
 int
 neut_seedset_seed_master (struct SEEDSET SSet, int seed)
 {
-  SSet = SSet;
-  seed = seed;
+  (void) SSet;
+  (void) seed;
 
   printf ("FIXME\n");
   abort ();

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -198,6 +198,12 @@ extern "C"
 ///
 ///
   extern int neut_tess_point_incell (struct TESS Tess, double *, int);
+
+/// \brief Determine whether a point is within a tess
+///
+///
+///
+  extern int neut_tess_point_in (struct TESS Tess, double *);
 
 /// \brief Determine whether a point is within a polyhedron
 ///

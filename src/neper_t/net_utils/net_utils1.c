@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_utils_.h"
@@ -482,9 +482,11 @@ net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
 
   (*pTesr).Dim = Tess.Dim;
   neut_tesr_init_tesrsize (pTesr, Tess, Tess.Dim, tesrsizestring);
-  neut_tesr_alloc (pTesr, Tess.Dim, (*pTesr).size, (*pTesr).vsize);
+  neut_tesr_alloc (pTesr, Tess.Dim, (*pTesr).size, (*pTesr).vsize, NULL);
   (*pTesr).CellQty = Tess.CellQty;
   (*pTesr).CellBBox = ut_alloc_3d_int ((*pTesr).CellQty + 1, 3, 2);
+  if (Tess.CellCrySym)
+    ut_string_string (Tess.CellCrySym, &(*pTesr).CellCrySym);
 
   neut_tess_bbox (Tess, bbox);
   for (i = 0; i < 3; i++)
@@ -656,7 +658,7 @@ net_tess_clip (struct TESS *pTess, double *eq)
 void
 net_tess_crop_expr (struct TESS *pTess, char *crop)
 {
-  int i, j, exprqty;
+  int i, j, exprqty = 0;
   char *fct = NULL, **exprs = NULL;
   double **bounds = ut_alloc_2d (3, 2);
   char *crop2 = NULL;
@@ -885,8 +887,8 @@ void
 net_pts_convexhull (double **coos, int qty, int dim, struct NODES *pN,
                     struct MESH *pM)
 {
-  int i, **FacePoly = NULL, FaceQty;
-  int **EdgeFaceNb = NULL, *EdgeFaceQty = NULL, EdgeQty;
+  int i, **FacePoly = NULL, FaceQty = 0;
+  int **EdgeFaceNb = NULL, *EdgeFaceQty = NULL, EdgeQty = 0;
   double **cubesize = ut_alloc_2d (3, 2);
   double *coo = ut_alloc_1d (3);
   struct SEEDSET SSet;

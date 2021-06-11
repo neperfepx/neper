@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neper_t_.h"
@@ -148,7 +148,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
             if (status != 0)
               ut_print_message (2, 2, "Tessellation failed.\n");
 
-            if (ut_array_1d_int_duplicates
+            if (Tess[MTess.TessQty].CellId && ut_array_1d_int_duplicates
                 (Tess[MTess.TessQty].CellId + 1, Tess[MTess.TessQty].CellQty))
             {
               printf ("\n");
@@ -261,11 +261,15 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
           max_id = ut_num_max (max_id, Tesr.VoxCell[i][j][k]);
         }
 
-    if (min_id == 1 && max_id == Tesr.CellQty)
+    if ((min_id == 0 || min_id == 1) && max_id == Tesr.CellQty)
+    {
       ut_print_message (0, 3,
-                        "The polys are numbered contiguously from 1.\n");
+                        "The cells are numbered contiguously from 1.\n");
+      if (min_id == 0)
+        ut_print_message (0, 3, "Some voxels are empty.\n");
+    }
     else
-      ut_print_message (1, 3, "The poly ids range between %d and %d.\n",
+      ut_print_message (1, 3, "The cell ids range between %d and %d.\n",
                         min_id, max_id);
 
     neut_ori_des_expand (In.orides, &Tesr.CellOriDes);

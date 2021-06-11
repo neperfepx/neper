@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2020, Romain Quey. */
+/* Copyright (C) 2003-2021, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tesr_op_.h"
@@ -34,7 +34,7 @@ neut_tesr_set_zero (struct TESR *pTesr)
 }
 
 void
-neut_tesr_alloc (struct TESR *pTesr, int dim, int *size, double *vsize)
+neut_tesr_alloc (struct TESR *pTesr, int dim, int *size, double *vsize, char *wildcard)
 {
   (*pTesr).Dim = dim;
 
@@ -56,6 +56,15 @@ neut_tesr_alloc (struct TESR *pTesr, int dim, int *size, double *vsize)
 
   // FIXME for memory usage
   (*pTesr).VoxCell = ut_alloc_3d_int (size[0] + 2, size[1] + 2, size[2] + 2);
+
+  if (wildcard && strstr (wildcard, "CellBBox"))
+  {
+    (*pTesr).CellBBox = ut_alloc_1d_ppint (1);
+    (*pTesr).CellBBox[0] = NULL;
+  }
+
+  if (wildcard && strstr (wildcard, "VoxOri"))
+    (*pTesr).VoxOri = ut_alloc_4d (size[0] + 1, size[1] + 1, size[2] + 1, 4);
 
   return;
 }
@@ -367,7 +376,7 @@ neut_tesr_rotate (struct TESR *pTesr, double **g)
   neut_tesr_set_zero (&Tesr2);
 
   neut_tesr_memcpy_parms (*pTesr, &Tesr2);
-  neut_tesr_alloc (&Tesr2, (*pTesr).Dim, (*pTesr).size, (*pTesr).vsize);
+  neut_tesr_alloc (&Tesr2, (*pTesr).Dim, (*pTesr).size, (*pTesr).vsize, NULL);
 
   neut_tesr_rastercentre (Tesr2, c);
 
@@ -414,7 +423,7 @@ neut_tesr_rotate (struct TESR *pTesr, double **g)
     neut_tesr_init_cellvol (&Tesr2);
 
   if ((*pTesr).CellConvexity)
-    neut_tesr_init_cellconvexity (&Tesr2);
+    ut_free_1d (&(*pTesr).CellConvexity);
 
   if ((*pTesr).hasvoid != -1)
     neut_tesr_init_hasvoid (&Tesr2);
@@ -907,24 +916,26 @@ neut_tesr_renumber_continuous (struct TESR *pTesr)
   int *CellId_inv = NULL;
   int CellId_max;
 
-  if ((*pTesr).CellOri && !(*pTesr).CellId)
-    ut_print_neperbug ();
+  if (!(*pTesr).CellId)
+  {
+    (*pTesr).CellId = ut_alloc_1d_int ((*pTesr).CellQty + 1);
+    ut_array_1d_int_set_id ((*pTesr).CellId, (*pTesr).CellQty + 1);
+  }
 
-  if ((*pTesr).CellId)
-    for (l = 1; l <= (*pTesr).CellQty; l++)
-      if ((*pTesr).CellId[l] == 0)
-      {
-        for (k = (*pTesr).CellBBox[l][2][0]; k <= (*pTesr).CellBBox[l][2][1];
-             k++)
-          for (j = (*pTesr).CellBBox[l][1][0];
-               j <= (*pTesr).CellBBox[l][1][1]; j++)
-            for (i = (*pTesr).CellBBox[l][0][0];
-                 i <= (*pTesr).CellBBox[l][0][1]; i++)
-              if ((*pTesr).VoxCell[i][j][k] == l)
-                (*pTesr).VoxCell[i][j][k] = 0;
+  for (l = 1; l <= (*pTesr).CellQty; l++)
+    if ((*pTesr).CellId[l] == 0)
+    {
+      for (k = (*pTesr).CellBBox[l][2][0]; k <= (*pTesr).CellBBox[l][2][1];
+           k++)
+        for (j = (*pTesr).CellBBox[l][1][0];
+             j <= (*pTesr).CellBBox[l][1][1]; j++)
+          for (i = (*pTesr).CellBBox[l][0][0];
+               i <= (*pTesr).CellBBox[l][0][1]; i++)
+            if ((*pTesr).VoxCell[i][j][k] == l)
+              (*pTesr).VoxCell[i][j][k] = 0;
 
-        ut_array_2d_int_zero ((*pTesr).CellBBox[l], 3, 2);
-      }
+      ut_array_2d_int_zero ((*pTesr).CellBBox[l], 3, 2);
+    }
 
   if ((*pTesr).CellId)
   {
@@ -1079,6 +1090,17 @@ neut_tesr_renumber_continuous (struct TESR *pTesr)
     ut_free_2d (&SeedCoo_old, CellQty_old);
   ut_free_1d (&SeedWeight_old);
 
+  int useful = 0;
+  for (i = 0; i <= (*pTesr).CellQty; i++)
+    if ((*pTesr).CellId[i] != i)
+    {
+      useful = 1;
+      break;
+    }
+
+  if (!useful)
+    ut_free_1d_int (&(*pTesr).CellId);
+
   return 0;
 }
 
@@ -1205,9 +1227,9 @@ neut_tesr_crop (struct TESR *pTesr, char *crop)
     if (qty != 3)
       ut_print_message (2, 3, "Failed to parse `%s'.\n", shape);
 
-    neut_tesr_expr_val_one (*pTesr, "general", 0, vals[0], coo, NULL);
-    neut_tesr_expr_val_one (*pTesr, "general", 0, vals[1], coo + 1, NULL);
-    neut_tesr_expr_val_one (*pTesr, "general", 0, vals[2], &d, NULL);
+    neut_tesr_expr_val_one (*pTesr, "tesr", 0, vals[0], coo, NULL);
+    neut_tesr_expr_val_one (*pTesr, "tesr", 0, vals[1], coo + 1, NULL);
+    neut_tesr_expr_val_one (*pTesr, "tesr", 0, vals[2], &d, NULL);
 
     for (j = 1; j <= (*pTesr).size[1]; j++)
       for (i = 1; i <= (*pTesr).size[0]; i++)
@@ -1226,7 +1248,7 @@ neut_tesr_crop (struct TESR *pTesr, char *crop)
       ut_print_message (2, 3, "Failed to parse `%s'.\n", shape);
 
     for (i = 0; i < 6; i++)
-      neut_tesr_expr_val_one (*pTesr, "general", 0, vals[i], cube + i, NULL);
+      neut_tesr_expr_val_one (*pTesr, "tesr", 0, vals[i], cube + i, NULL);
 
     for (k = 1; k <= (*pTesr).size[2]; k++)
       for (j = 1; j <= (*pTesr).size[1]; j++)
@@ -1253,7 +1275,7 @@ neut_tesr_crop (struct TESR *pTesr, char *crop)
       ut_print_message (2, 3, "`square' available for 2D tessellation only.\n");
 
     for (i = 0; i < 4; i++)
-      neut_tesr_expr_val_one (*pTesr, "general", 0, vals[i], cube + i, NULL);
+      neut_tesr_expr_val_one (*pTesr, "tesr", 0, vals[i], cube + i, NULL);
 
     for (j = 1; j <= (*pTesr).size[1]; j++)
       for (i = 1; i <= (*pTesr).size[0]; i++)
@@ -1283,7 +1305,7 @@ neut_tesr_crop (struct TESR *pTesr, char *crop)
   if ((*pTesr).CellCoo)
     neut_tesr_init_cellcoo (pTesr);
   if ((*pTesr).CellConvexity)
-    neut_tesr_init_cellconvexity (pTesr);
+    ut_free_1d (&(*pTesr).CellConvexity);
   if ((*pTesr).hasvoid != -1)
     neut_tesr_init_hasvoid (pTesr);
 
@@ -1375,7 +1397,7 @@ neut_tesr_autocrop (struct TESR *pTesr)
     size[i] = bounds[i][1] - bounds[i][0] + 1;
 
   neut_tesr_memcpy_parms (*pTesr, &Tesr2);
-  neut_tesr_alloc (&Tesr2, (*pTesr).Dim, size, (*pTesr).vsize);
+  neut_tesr_alloc (&Tesr2, (*pTesr).Dim, size, (*pTesr).vsize, NULL);
 
   for (i = 1; i <= size[0]; i++)
     for (j = 1; j <= size[1]; j++)
@@ -1399,7 +1421,7 @@ neut_tesr_autocrop (struct TESR *pTesr)
   }
 
   for (i = 0; i < 3; i++)
-    Tesr2.Origin[i] += (bounds[i][0] - 1) * Tesr2.vsize[i];
+    Tesr2.Origin[i] = (*pTesr).Origin[i] + (bounds[i][0] - 1) * Tesr2.vsize[i];
 
   for (i = 1; i <= (*pTesr).CellQty; i++)
     for (j = 0; j < 3; j++)
@@ -1421,7 +1443,7 @@ neut_tesr_autocrop (struct TESR *pTesr)
   if ((*pTesr).CellVol)
     neut_tesr_init_cellvol (pTesr);
   if ((*pTesr).CellConvexity)
-    neut_tesr_init_cellconvexity (pTesr);
+    ut_free_1d (&(*pTesr).CellConvexity);
   if ((*pTesr).hasvoid != -1)
     neut_tesr_init_hasvoid (pTesr);
 
@@ -1624,36 +1646,75 @@ neut_tesr_grow (struct TESR *pTesr, char *grow, int verbosity)
 void
 neut_tesr_tessinter (struct TESR *pTesr, char *crop, int verbosity)
 {
-  int i, qty = 0;
+  int qty = 0, i;
   struct TESS Tess;
-  int *pos = ut_alloc_1d_int (3);
-  double *coo = ut_alloc_1d (3);
   char *tess = ut_alloc_1d_char (strlen (crop) + 1);
-  double *centre = ut_alloc_1d (3);
+  int ***found = ut_alloc_3d_int ((*pTesr).size[0] + 1,
+                                  (*pTesr).size[1] + 1,
+                                  (*pTesr).size[2] + 1);
 
   neut_tess_set_zero (&Tess);
   sscanf (crop, "tessinter(%s", tess);
   tess[strlen (tess) - 1] = '\0';
   neut_tess_fnscanf (tess, &Tess);
-  neut_tess_centre (Tess, centre);
 
-  for (pos[2] = 1; pos[2] <= (*pTesr).size[2]; pos[2]++)
-    for (pos[1] = 1; pos[1] <= (*pTesr).size[1]; pos[1]++)
-      for (pos[0] = 1; pos[0] <= (*pTesr).size[0]; pos[0]++)
-        if ((*pTesr).VoxCell[pos[0]][pos[1]][pos[2]] != 0)
-        {
-          neut_tesr_pos_coo (*pTesr, pos, coo);
-          for (i = 1; i <= Tess.DomFaceQty; i++)
+#pragma omp parallel for private(i)
+  for (i = 1; i <= Tess.CellQty; i++)
+  {
+    int j, x, y, z;
+    double **bbox = ut_alloc_2d (3, 2);
+    double *coo = ut_alloc_1d (3);
+    int *posmin = ut_alloc_1d_int (3);
+    int *posmax = ut_alloc_1d_int (3);
+    int *pos = ut_alloc_1d_int (3);
+
+    neut_tess_cell_bbox (Tess, i, bbox);
+
+    for (j = 0; j < 3; j++)
+      coo[j] = bbox[j][0];
+    neut_tesr_coo_pos (*pTesr, coo, -1, posmin);
+
+    for (j = 0; j < 3; j++)
+      coo[j] = bbox[j][1];
+    neut_tesr_coo_pos (*pTesr, coo, 1, posmax);
+
+    for (z = posmin[2]; z <= posmax[2]; z++)
+      for (y = posmin[1]; y <= posmax[1]; y++)
+        for (x = posmin[0]; x <= posmax[0]; x++)
+          if ((*pTesr).VoxCell[x][y][z])
           {
-            if (ut_space_point_plane_side (coo - 1, Tess.DomFaceEq[i]) !=
-                ut_space_point_plane_side (centre - 1, Tess.DomFaceEq[i]))
+            ut_array_1d_int_set_3 (pos, x, y, z);
+            neut_tesr_pos_coo (*pTesr, pos, coo);
+
+            if (neut_tess_point_incell (Tess, coo, i))
             {
-              (*pTesr).VoxCell[pos[0]][pos[1]][pos[2]] = 0;
-              qty++;
-              break;
+              if (found[x][y][z])
+                abort ();
+              found[x][y][z] = i;
             }
           }
+
+    ut_free_2d (&bbox, 3);
+    ut_free_1d (&coo);
+    ut_free_1d_int (&posmin);
+    ut_free_1d_int (&posmax);
+    ut_free_1d_int (&pos);
+  }
+
+  int z;
+
+#pragma omp parallel for private(z)
+  for (z = 1; z <= (*pTesr).size[2]; z++)
+  {
+    int x, y;
+    for (y = 1; y <= (*pTesr).size[1]; y++)
+      for (x = 1; x <= (*pTesr).size[0]; x++)
+        if ((*pTesr).VoxCell[x][y][z] && !found[x][y][z])
+        {
+          (*pTesr).VoxCell[x][y][z] = 0;
+          qty++;
         }
+  }
 
   if (verbosity)
     ut_print_message (0, verbosity, "%d voxels removed.\n", qty);
@@ -1662,63 +1723,135 @@ neut_tesr_tessinter (struct TESR *pTesr, char *crop, int verbosity)
     neut_tesr_init_hasvoid (pTesr);
 
   ut_free_1d_char (&tess);
-  ut_free_1d_int (&pos);
-  ut_free_1d (&coo);
-  ut_free_1d (&centre);
   neut_tess_free (&Tess);
+  ut_free_3d_int (&found, (*pTesr).size[0] + 1, (*pTesr).size[1] + 1);
 
   return;
 }
 
 void
-neut_tesr_addbuffer (struct TESR *pTesr, char *addbuffer)
+neut_tesr_addbuffer_string (struct TESR *pTesr, char *string)
 {
-  int i, j, k, ii, jj, kk, status, buff[3];
-  int ***VoxCellCpy = ut_alloc_3d_int ((*pTesr).size[0] + 2,
-                                       (*pTesr).size[1] + 2,
-                                       (*pTesr).size[2] + 2);
-  int *sizecpy = ut_alloc_1d_int (3);
+  int i, valqty;
+  char *fct = NULL, **vars = NULL, **vals = NULL;
+  int *buff = ut_alloc_1d_int (6);
 
-  status =
-    sscanf (addbuffer, "addbuffer(%d,%d,%d)", buff, buff + 1, buff + 2);
-  if (status != 3)
+  ut_string_function (string, &fct, &vars, &vals, &valqty);
+
+  if (valqty == 6)
+    for (i = 0; i < 6; i++)
+      buff[i] = atoi (vals[i]);
+
+  else if (valqty == 3)
+    for (i = 0; i < 3; i++)
+    {
+      buff[2 * i] = atoi (vals[i]);
+      buff[2 * i + 1] = atoi (vals[i]);
+    }
+  else
     abort ();
 
-  for (i = 0; i < 3; i++)
-    (*pTesr).Origin[i] -= buff[i] * (*pTesr).vsize[i];
+  neut_tesr_addbuffer (pTesr, buff);
 
-  if (ut_array_1d_int_sum (buff, 3) > 0)
+  ut_free_1d_int (&buff);
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vars, valqty);
+  ut_free_2d_char (&vals, valqty);
+
+  return;
+}
+
+void
+neut_tesr_addbuffer (struct TESR *pTesr, int *buff)
+{
+  int i, j, k, ii, jj, kk;
+  int *sizecpy = ut_alloc_1d_int (3);
+
+  // general
+
+  for (i = 0; i < 3; i++)
+    (*pTesr).Origin[i] -= buff[2 * i] * (*pTesr).vsize[i];
+
+  if (ut_array_1d_int_sum (buff, 6) > 0)
     (*pTesr).hasvoid = 1;
 
   ut_array_1d_int_memcpy ((*pTesr).size, 3, sizecpy);
-  ut_array_3d_int_memcpy ((*pTesr).VoxCell, (*pTesr).size[0] + 2,
-                          (*pTesr).size[1] + 2, (*pTesr).size[2] + 2,
-                          VoxCellCpy);
 
-  ut_free_3d_int (&(*pTesr).VoxCell, (*pTesr).size[0] + 2,
-                  (*pTesr).size[1] + 2);
   for (i = 0; i < 3; i++)
-    (*pTesr).size[i] += 2 * buff[i];
+    (*pTesr).size[i] += buff[2 * i] + buff[2 * i + 1];
 
-  (*pTesr).VoxCell =
-    ut_alloc_3d_int ((*pTesr).size[0] + 2, (*pTesr).size[1] + 2,
-                     (*pTesr).size[2] + 2);
+  for (i = 1; i <= (*pTesr).CellQty; i++)
+    for (j = 0; j < 3; j++)
+      ut_array_1d_int_addval ((*pTesr).CellBBox[i][j], 2, buff[2 * j], (*pTesr).CellBBox[i][j]);
 
-  for (k = 1; k <= sizecpy[2]; k++)
+  // VoxCell
+
+  if ((*pTesr).VoxCell)
   {
-    kk = k + buff[2];
-    for (j = 1; j <= sizecpy[1]; j++)
+    int ***VoxCellCpy = ut_alloc_3d_int (sizecpy[0] + 2,
+                                         sizecpy[1] + 2,
+                                         sizecpy[2] + 2);
+
+    ut_array_3d_int_memcpy ((*pTesr).VoxCell, sizecpy[0] + 2,
+                            sizecpy[1] + 2, sizecpy[2] + 2,
+                            VoxCellCpy);
+
+    ut_free_3d_int (&(*pTesr).VoxCell, sizecpy[0] + 2,
+                    sizecpy[1] + 2);
+
+    (*pTesr).VoxCell =
+      ut_alloc_3d_int ((*pTesr).size[0] + 2, (*pTesr).size[1] + 2, (*pTesr).size[2] + 2);
+
+    for (k = 1; k <= sizecpy[2]; k++)
     {
-      jj = j + buff[1];
-      for (i = 1; i <= sizecpy[0]; i++)
+      kk = k + buff[4];
+      for (j = 1; j <= sizecpy[1]; j++)
       {
-        ii = i + buff[0];
-        (*pTesr).VoxCell[ii][jj][kk] = VoxCellCpy[i][j][k];
+        jj = j + buff[2];
+        for (i = 1; i <= sizecpy[0]; i++)
+        {
+          ii = i + buff[0];
+          (*pTesr).VoxCell[ii][jj][kk] = VoxCellCpy[i][j][k];
+        }
       }
     }
+
+    ut_free_3d_int (&VoxCellCpy, sizecpy[0] + 2, sizecpy[1] + 2);
   }
 
-  ut_free_3d_int (&VoxCellCpy, sizecpy[0] + 2, sizecpy[1] + 2);
+  // VoxOri
+
+  if ((*pTesr).VoxOri)
+  {
+    double ****VoxOriCpy = ut_alloc_4d (sizecpy[0] + 1,
+                                        sizecpy[1] + 1,
+                                        sizecpy[2] + 1, 4);
+
+    ut_array_4d_memcpy ((*pTesr).VoxOri, sizecpy[0] + 1, sizecpy[1] + 1,
+                        sizecpy[2] + 1, 4, VoxOriCpy);
+
+    ut_free_4d (&(*pTesr).VoxOri, sizecpy[0] + 1, sizecpy[1] + 1, sizecpy[2] + 1);
+
+    (*pTesr).VoxOri =
+      ut_alloc_4d ((*pTesr).size[0] + 1, (*pTesr).size[1] + 1, (*pTesr).size[2] + 1, 4);
+
+    for (k = 1; k <= sizecpy[2]; k++)
+    {
+      kk = k + buff[4];
+      for (j = 1; j <= sizecpy[1]; j++)
+      {
+        jj = j + buff[2];
+        for (i = 1; i <= sizecpy[0]; i++)
+        {
+          ii = i + buff[0];
+          ut_array_1d_memcpy (VoxOriCpy[i][j][k], 4, (*pTesr).VoxOri[ii][jj][kk]);
+        }
+      }
+    }
+
+    ut_free_4d (&VoxOriCpy, sizecpy[0] + 1, sizecpy[1] + 1, sizecpy[2] + 1);
+  }
+
   ut_free_1d_int (&sizecpy);
 
   return;
@@ -1749,17 +1882,32 @@ void
 neut_tesr_oriaverage (struct TESR *pTesr)
 {
   int i;
-  struct OL_SET OSet;
+
+  if (!(*pTesr).CellOri)
+    (*pTesr).CellOri = ut_alloc_2d ((*pTesr).CellQty + 1, 4);
 
   if (!(*pTesr).VoxOri)
     return;
 
   for (i = 1; i <= (*pTesr).CellQty; i++)
-  {
-    neut_tesr_cell_olset (*pTesr, i, &OSet);
-    if (OSet.size > 0)
-      ol_set_mean_iter (OSet, (*pTesr).CellOri[i]);
-  }
+    neut_tesr_cell_oriaverage (pTesr, i);
+
+  return;
+}
+
+void
+neut_tesr_cell_oriaverage (struct TESR *pTesr, int cell)
+{
+  struct OL_SET OSet;
+
+  if (!(*pTesr).VoxOri)
+    return;
+
+  neut_tesr_cell_olset (*pTesr, cell, &OSet);
+  if (OSet.size > 0)
+    ol_set_mean_iter (OSet, (*pTesr).CellOri[cell]);
+
+  ol_set_free (OSet);
 
   return;
 }
@@ -1783,6 +1931,128 @@ neut_tesr_unindex (struct TESR *pTesr)
 }
 
 void
+neut_tesr_cell_orirotate (struct TESR *pTesr, int cell, double *r, double theta, char *csys)
+{
+  int i, j, k;
+  double *q = ol_q_alloc ();
+
+  ol_rtheta_q (r, theta, q);
+
+  if ((*pTesr).CellOri)
+  {
+    if (!csys || !strcmp (csys, "ref"))
+      ol_q_q_q_ref ((*pTesr).CellOri[cell], q, (*pTesr).CellOri[cell]);
+    else
+      ol_q_q_q_cur ((*pTesr).CellOri[cell], q, (*pTesr).CellOri[cell]);
+  }
+
+  if ((*pTesr).VoxOri)
+    for (k = (*pTesr).CellBBox[cell][2][0]; k <= (*pTesr).CellBBox[cell][2][1]; k++)
+      for (j = (*pTesr).CellBBox[cell][1][0]; j <= (*pTesr).CellBBox[cell][1][1]; j++)
+        for (i = (*pTesr).CellBBox[cell][0][0]; i <= (*pTesr).CellBBox[cell][0][1]; i++)
+          if ((*pTesr).VoxCell[i][j][k] == cell)
+          {
+            if (!csys || !strcmp (csys, "ref"))
+              ol_q_q_q_ref ((*pTesr).VoxOri[i][j][k], q, (*pTesr).VoxOri[i][j][k]);
+            else
+              ol_q_q_q_cur ((*pTesr).VoxOri[i][j][k], q, (*pTesr).VoxOri[i][j][k]);
+          }
+
+  ol_q_free (q);
+
+  return;
+}
+
+int
+neut_tesr_cellexpr_merge (struct TESR *pTesr, char *cellexpr)
+{
+  int i, j, k, l, mergecell, cell, cellqty, *cells = NULL;
+
+  neut_tesr_expr_cells (pTesr, cellexpr, &cells, &cellqty);
+
+  mergecell = cells[0];
+
+  for (i = 1; i < cellqty; i++)
+  {
+    cell = cells[i];
+
+    for (l = (*pTesr).CellBBox[cell][2][0]; l <= (*pTesr).CellBBox[cell][2][1]; l++)
+      for (k = (*pTesr).CellBBox[cell][1][0]; k <= (*pTesr).CellBBox[cell][1][1]; k++)
+        for (j = (*pTesr).CellBBox[cell][0][0]; j <= (*pTesr).CellBBox[cell][0][1]; j++)
+          if ((*pTesr).VoxCell[j][k][l] == cell)
+            (*pTesr).VoxCell[j][k][l] = mergecell;
+
+    if ((*pTesr).CellOri)
+      ol_q_set_zero ((*pTesr).CellOri[cell]);
+    if ((*pTesr).CellId)
+      (*pTesr).CellId[cell] = 0;
+  }
+
+  ut_free_1d_int (&cells);
+
+  return cellqty;
+}
+
+void
+neut_tesr_addcell (struct TESR *pTesr)
+{
+  (*pTesr).CellQty++;
+
+  if ((*pTesr).CellId)
+    (*pTesr).CellId = ut_realloc_1d_int ((*pTesr).CellId, (*pTesr).CellQty + 1);
+
+  if ((*pTesr).CellOri)
+  {
+    (*pTesr).CellOri = ut_realloc_2d_addline ((*pTesr).CellOri, (*pTesr).CellQty + 1, 4);
+    if ((*pTesr).CellQty == 1)
+      (*pTesr).CellOri[0] = ut_alloc_1d (4);
+  }
+
+  if ((*pTesr).CellOriDistrib)
+  {
+    (*pTesr).CellOriDistrib = ut_realloc_1d_pchar ((*pTesr).CellOriDistrib, (*pTesr).CellQty + 1);
+    if ((*pTesr).CellQty == 1)
+      (*pTesr).CellOriDistrib[0] = NULL;
+  }
+
+  if ((*pTesr).CellBBox)
+  {
+    (*pTesr).CellBBox = ut_realloc_1d_ppint ((*pTesr).CellBBox, (*pTesr).CellQty + 1);
+    (*pTesr).CellBBox[(*pTesr).CellQty] = ut_alloc_2d_int (3, 2);
+    if ((*pTesr).CellQty == 1)
+      (*pTesr).CellBBox[0] = ut_alloc_2d_int (3, 2);
+  }
+
+  if ((*pTesr).CellCoo)
+  {
+    (*pTesr).CellCoo = ut_realloc_2d_addline ((*pTesr).CellOri, (*pTesr).CellQty + 1, 3);
+    if ((*pTesr).CellQty == 1)
+      (*pTesr).CellCoo[0] = NULL;
+  }
+
+  if ((*pTesr).CellVol)
+    (*pTesr).CellVol = ut_realloc_1d ((*pTesr).CellVol, (*pTesr).CellQty + 1);
+
+  if ((*pTesr).CellConvexity)
+    (*pTesr).CellConvexity = ut_realloc_1d ((*pTesr).CellConvexity, (*pTesr).CellQty + 1);
+
+  if ((*pTesr).CellGroup)
+    (*pTesr).CellGroup = ut_realloc_1d_int ((*pTesr).CellGroup, (*pTesr).CellQty + 1);
+
+  if ((*pTesr).SeedCoo)
+  {
+    (*pTesr).SeedCoo = ut_realloc_2d_addline ((*pTesr).SeedCoo, (*pTesr).CellQty + 1, 3);
+    if ((*pTesr).CellQty == 1)
+      (*pTesr).SeedCoo[0] = NULL;
+  }
+
+  if ((*pTesr).SeedWeight)
+    (*pTesr).SeedWeight = ut_realloc_1d ((*pTesr).SeedWeight, (*pTesr).CellQty + 1);
+
+  return;
+}
+
+void
 neut_tesr_resetorigin (struct TESR *pTesr)
 {
   ut_array_1d_zero ((*pTesr).Origin, 3);
@@ -1791,10 +2061,9 @@ neut_tesr_resetorigin (struct TESR *pTesr)
 }
 
 void
-neut_tesr_resetcellid (struct TESS *pTesr)
+neut_tesr_resetcellid (struct TESR *pTesr)
 {
-  (*pTesr).CellId = ut_realloc_1d_int ((*pTesr).CellId, (*pTesr).CellQty + 1);
-  ut_array_1d_int_set_id ((*pTesr).CellId, (*pTesr).CellQty + 1);
+  ut_free_1d_int (&(*pTesr).CellId);
 
   return;
 }
@@ -1824,4 +2093,33 @@ neut_tesr_cellexpr_remove (struct TESR *pTesr, char *expr)
   ut_free_1d_int (&cells);
 
   return cellqty;
+}
+
+void
+neut_tesr_bbox_posbbox (struct TESR Tesr, double **bbox, int **posbbox)
+{
+  int i;
+  double *coo = ut_alloc_1d (3);
+  int *posmin = ut_alloc_1d_int (3);
+  int *posmax = ut_alloc_1d_int (3);
+
+  for (i = 0; i < 3; i++)
+    coo[i] = bbox[i][0];
+  neut_tesr_coo_pos (Tesr, coo, -1, posmin);
+
+  for (i = 0; i < 3; i++)
+    coo[i] = bbox[i][1];
+  neut_tesr_coo_pos (Tesr, coo, 1, posmax);
+
+  for (i = 0; i < 3; i++)
+  {
+    posbbox[i][0] = posmin[i];
+    posbbox[i][1] = posmax[i];
+  }
+
+  ut_free_1d (&coo);
+  ut_free_1d_int (&posmin);
+  ut_free_1d_int (&posmax);
+
+  return;
 }
