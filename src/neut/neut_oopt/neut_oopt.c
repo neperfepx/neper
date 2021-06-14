@@ -26,6 +26,7 @@ neut_oopt_set_zero (struct OOPT *pOOpt)
   (*pOOpt).avforce = DBL_MAX;
   (*pOOpt).f = DBL_MAX;
   (*pOOpt).fmin = DBL_MAX;
+  (*pOOpt).iter = 0;
   (*pOOpt).avneighqty = INT_MAX;
 
   (*pOOpt).fixoriqty = 0;

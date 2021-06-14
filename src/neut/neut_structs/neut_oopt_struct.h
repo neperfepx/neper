@@ -34,6 +34,7 @@ struct OOPT
   double f;                             // value of the residual
   double fmin;                          // minimal value of the residual
   double avneighqty;                    // current average number of neighbors
+  int iter;                             // iteration number
 
   // profiling information
   struct timeval beg_time;              // start time

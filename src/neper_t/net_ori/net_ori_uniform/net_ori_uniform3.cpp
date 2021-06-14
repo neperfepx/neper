@@ -41,16 +41,16 @@ net_ori_uniform_opt_forces (struct OL_SET *pOSet, double **f, double *E,
 }
 
 int
-net_ori_uniform_opt_energy (int iter, struct OL_SET *pOSet, double *E,
+net_ori_uniform_opt_energy (struct OL_SET *pOSet, double *E,
                             double **pEtot, struct OOPT *pOOpt)
 {
   struct timeval beg_time, end_time;
 
-  (*pEtot) = ut_realloc_1d (*pEtot, iter + 1);
+  (*pEtot) = ut_realloc_1d (*pEtot, (*pOOpt).iter + 1);
 
   gettimeofday (&beg_time, NULL);
 
-  (*pEtot)[iter] = ut_array_1d_sum (E, (*pOSet).size);
+  (*pEtot)[(*pOOpt).iter] = ut_array_1d_sum (E, (*pOSet).size);
 
   gettimeofday (&end_time, NULL);
 
@@ -62,7 +62,7 @@ net_ori_uniform_opt_energy (int iter, struct OL_SET *pOSet, double *E,
 
 void
 net_ori_uniform_opt_alpha (struct OOPT *pOOpt, struct OL_SET OSet,
-                           double **dq, int iter, double **f, double **fc,
+                           double **dq, double **f, double **fc,
                            double *palpha)
 {
   unsigned int i;
@@ -71,7 +71,7 @@ net_ori_uniform_opt_alpha (struct OOPT *pOOpt, struct OL_SET OSet,
   neut_ori_n_avradeq (&((*pOOpt).thetafct), OSet.size, OSet.crysym, &r);
 
   // first iteration
-  if (iter == 1 && ((*palpha) == 0 || (*palpha) == DBL_MAX))
+  if ((*pOOpt).iter == 1 && ((*palpha) == 0 || (*palpha) == DBL_MAX))
   {
     double *qdotnorm = ut_alloc_1d (OSet.size);
 #pragma omp parallel for
@@ -96,7 +96,7 @@ net_ori_uniform_opt_alpha (struct OOPT *pOOpt, struct OL_SET OSet,
     {
       double deltaf[3];
       ut_array_1d_sub (fc[i], f[i], 3, deltaf);
-      if (iter % 2 == 0)        // alterning between alpha1 and alpha2
+      if ((*pOOpt).iter % 2 == 0)        // alterning between alpha1 and alpha2
       {
 #pragma omp atomic
         tmp1 += ut_array_1d_scalprod (dq[i], dq[i], 3);
@@ -141,7 +141,7 @@ net_ori_uniform_opt_rot (struct OOPT *pOOpt, double **f, double alpha,
 }
 
 void
-net_ori_uniform_opt_verbosity (struct OOPT OOpt, int iter, char *prevmessage,
+net_ori_uniform_opt_verbosity (struct OOPT OOpt, char *prevmessage,
                                char *message, int verbositylevel)
 {
   /*
@@ -156,19 +156,19 @@ net_ori_uniform_opt_verbosity (struct OOPT OOpt, int iter, char *prevmessage,
      else
      {
    */
-  if (iter == 1)
+  if (OOpt.iter == 1)
   {
     ut_print_message (0, verbositylevel, "Initial solution: f   =%.9f\n", 1.);
   }
   else
   {
-    if (iter == 2)
+    if (OOpt.iter == 2)
     {
       strcpy (prevmessage, " ");
       ut_print_message (0, verbositylevel, prevmessage);
     }
 
-    sprintf (message, "Iteration %6d: fmin=%.9f, f=%.9f", iter, OOpt.fmin,
+    sprintf (message, "Iteration %6d: fmin=%.9f, f=%.9f", OOpt.iter, OOpt.fmin,
              OOpt.f);
     ut_print_progress (stdout, verbositylevel, INT_MAX, message, prevmessage);
     strcpy (prevmessage, message);
@@ -184,7 +184,7 @@ net_ori_uniform_opt_verbosity (struct OOPT OOpt, int iter, char *prevmessage,
 }
 
 int
-net_ori_uniform_opt_stop (struct OOPT *pOOpt, int iter)
+net_ori_uniform_opt_stop (struct OOPT *pOOpt)
 {
   int res, stop, varqty = 2;
   char **vars = NULL;
@@ -196,7 +196,7 @@ net_ori_uniform_opt_stop (struct OOPT *pOOpt, int iter)
   ut_string_string ("iter", vars);
   ut_string_string ("reps", vars + 1);
 
-  vals[0] = iter;
+  vals[0] = (*pOOpt).iter;
   vals[1] = (*pOOpt).f;
 
   res = ut_math_eval_int ((*pOOpt).orioptistop, varqty, vars, vals, &stop);
@@ -214,11 +214,11 @@ net_ori_uniform_opt_stop (struct OOPT *pOOpt, int iter)
 }
 
 void
-net_ori_uniform_log (struct IN_T In, int iter, struct OL_SET OSet,
+net_ori_uniform_log (struct IN_T In, struct OL_SET OSet,
                      struct OOPT OOpt)
 {
   if (strcmp (OOpt.logvar, "none"))
-    net_ori_uniform_log_var (In, iter, OSet, OOpt);
+    net_ori_uniform_log_var (In, OSet, OOpt);
 
   return;
 }

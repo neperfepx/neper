@@ -94,7 +94,7 @@ int
 net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet,
                      int verbositylevel)
 {
-  int iter, stop_iter = 0;
+  int stop_iter = 0;
   double alpha = DBL_MAX, **fc = NULL, **qc = NULL;
   char *message = ut_alloc_1d_char (1000);
   char *prevmessage = ut_alloc_1d_char (1000);
@@ -111,7 +111,7 @@ net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet,
 
   (*pOOpt).nc = ol_crysym_qty ((*pOSet).crysym);
 
-  iter = 0;
+  (*pOOpt).iter = 0;
 
   if (!strcmp ((*pOOpt).orioptistop, "iter==-1"))
     return 0;
@@ -123,24 +123,24 @@ net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet,
   net_ori_uniform_opt_forces (pOSet, f, E, pOOpt, &qcloud, qindex);
 
   // computing energy
-  net_ori_uniform_opt_energy (iter, pOSet, E, &Etot, pOOpt);
+  net_ori_uniform_opt_energy (pOSet, E, &Etot, pOOpt);
 
   neut_oopt_finalize (pOOpt);
 
   // printing results
   // net_ori_uniform_opt_verbosity (*pOOpt, iter, alpha, prevmessage, message);
 
-  net_ori_uniform_log (In, iter, *pOSet, *pOOpt);
+  net_ori_uniform_log (In, *pOSet, *pOOpt);
 
   neut_oopt_time_set_zero (pOOpt);
 
-  stop_iter = net_ori_uniform_opt_stop (pOOpt, iter);
+  stop_iter = net_ori_uniform_opt_stop (pOOpt);
   while (!stop_iter)
   {
-    iter++;
+    (*pOOpt).iter++;
 
     // determining alpha
-    net_ori_uniform_opt_alpha (pOOpt, *pOSet, dq, iter, f, fc, &alpha);
+    net_ori_uniform_opt_alpha (pOOpt, *pOSet, dq, f, fc, &alpha);
 
     ut_array_2d_memcpy ((*pOSet).q, (*pOSet).size, 4, qc);
     ut_array_2d_memcpy (f, (*pOSet).size, 3, fc);
@@ -154,22 +154,23 @@ net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet,
     // computing forces
     net_ori_uniform_opt_forces (pOSet, f, E, pOOpt, &qcloud, qindex);
 
-    net_ori_uniform_opt_energy (iter, pOSet, E, &Etot, pOOpt);
+    net_ori_uniform_opt_energy (pOSet, E, &Etot, pOOpt);
 
-    net_ori_uniform_opt_verbosity (*pOOpt, iter, prevmessage, message,
+    net_ori_uniform_opt_verbosity (*pOOpt, prevmessage, message,
                                    verbositylevel);
 
-    net_ori_uniform_log (In, iter, *pOSet, *pOOpt);
+    net_ori_uniform_log (In, *pOSet, *pOOpt);
 
     neut_oopt_finalize (pOOpt);
 
     neut_oopt_time_set_zero (pOOpt);
 
-    stop_iter = net_ori_uniform_opt_stop (pOOpt, iter);
+    stop_iter = net_ori_uniform_opt_stop (pOOpt);
   }
 
   printf ("\n");
-  ut_print_message (0, verbositylevel, "Final solution  : f   =%.9f\n", (*pOOpt).fmin);
+  ut_print_message (0, verbositylevel, "Final solution  : f   =%.9f (%d iterations)\n",
+                    (*pOOpt).fmin, (*pOOpt).iter);
 
   ut_free_1d_char (&message);
   ut_free_1d_char (&prevmessage);

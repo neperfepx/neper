@@ -123,7 +123,7 @@ net_ori_uniform_opt_rot_ori (double **f, double alpha, int i,
 }
 
 void
-net_ori_uniform_log_var (struct IN_T In, int iter, struct OL_SET OSet,
+net_ori_uniform_log_var (struct IN_T In, struct OL_SET OSet,
                          struct OOPT OOpt)
 {
   int i, j, k;
@@ -142,7 +142,7 @@ net_ori_uniform_log_var (struct IN_T In, int iter, struct OL_SET OSet,
    */
 
   filename = ut_string_addextension (In.body, ".logorivar");
-  OOpt.logvar_fp = ut_file_open (filename, iter == 0 ? "W" : "A");
+  OOpt.logvar_fp = ut_file_open (filename, OOpt.iter == 0 ? "W" : "A");
 
   ut_list_break (OOpt.logvar, NEUT_SEP_NODEP, &vars, &varqty);
 
@@ -153,7 +153,7 @@ net_ori_uniform_log_var (struct IN_T In, int iter, struct OL_SET OSet,
     for (j = 0; j < varqty; j++)
     {
       if (!strncmp (vars[j], "iter", 4))
-        fprintf (OOpt.logvar_fp, "%d", iter);
+        fprintf (OOpt.logvar_fp, "%d", OOpt.iter);
       else if (!strcmp (vars[j], "id"))
         fprintf (OOpt.logvar_fp, "%d", i + 1);
       else if (!strcmp (vars[j], "rotmat"))
@@ -205,7 +205,7 @@ net_ori_uniform_log_var (struct IN_T In, int iter, struct OL_SET OSet,
     fprintf (OOpt.logvar_fp, "\n");
   }
 
-  ut_file_close (OOpt.logvar_fp, filename, iter == 0 ? "W" : "A");
+  ut_file_close (OOpt.logvar_fp, filename, OOpt.iter == 0 ? "W" : "A");
 
   ut_free_2d_char (&vars, varqty);
   ut_free_1d_char (&filename);

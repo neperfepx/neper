@@ -70,7 +70,8 @@ net_tess_opt_comp_nlopt (double *x, struct TOPT *pTOpt)
   }
 
   printf ("\n");
-  ut_print_message (0, 3, "Final solution  : f   =%.9f", (*pTOpt).objvalmin[(*pTOpt).iter]);
+  ut_print_message (0, 3, "Final solution  : f   =%.9f (%d iterations)",
+                    (*pTOpt).objvalmin[(*pTOpt).iter], (*pTOpt).iter);
 
   // nlopt_destroy ((*pTOpt).opt);
 
