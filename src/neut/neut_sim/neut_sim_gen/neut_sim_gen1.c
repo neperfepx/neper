@@ -933,5 +933,21 @@ neut_sim_entity_res (struct SIM Sim, char *entity, char ***pres, int *presqty)
       ut_string_string (Sim.NodeRes[i], (*pres) + i);
   }
 
+  else if (neut_sim_entityiselt (entity))
+  {
+    *presqty = Sim.EltResQty;
+    *pres = ut_alloc_1d_pchar (*presqty);
+    for (i = 0; i < *presqty; i++)
+      ut_string_string (Sim.EltRes[i], (*pres) + i);
+  }
+
+  else if (neut_sim_entityiselset (entity))
+  {
+    *presqty = Sim.ElsetResQty;
+    *pres = ut_alloc_1d_pchar (*presqty);
+    for (i = 0; i < *presqty; i++)
+      ut_string_string (Sim.ElsetRes[i], (*pres) + i);
+  }
+
   return;
 }

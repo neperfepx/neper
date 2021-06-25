@@ -1,5 +1,6 @@
-New in 4.2.1-1 (14 Jun 2021):
+New in 4.2.1-2 (25 Jun 2021):
 - module -T: made minor improvements.
+- module -S: fixed merging of simulation directories.
 
 New in 4.2.0 (11 Jun 2021):
 - module -T: added -transform "cut(torus)" for tesses, -transform tesrrenumber,

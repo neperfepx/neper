@@ -42,9 +42,8 @@ nes_merge_entity_res (struct SIM Sim, char *entity, int step, char *sim2)
 
   for (i = 0; i < resqty; i++)
   {
-    neut_sim_res_file (Sim, "node", Sim.NodeRes[i], filename1);
-    sprintf (filename2, "%s/%s/%s/%s.step%d",
-             sim2, dir, Sim.NodeRes[i], Sim.NodeRes[i], step);
+    neut_sim_res_file (Sim, entity, res[i], filename1);
+    sprintf (filename2, "%s/%s/%s/%s.step%d", sim2, dir, res[i], res[i], step);
     ut_file_cp (filename1, filename2);
   }
 
