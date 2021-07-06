@@ -184,31 +184,31 @@ It contains the input files and the results of the simulation.  @xref{Simulation
 Below are some examples of use of neper -S.
 
 @enumerate
-@item    Transform an FEPX raw result directory into a simulation directory (all results).
+@item Transform an FEPX raw result directory into a simulation directory (all results).
 @com{neper -S fepx-simulation}
 
-@item    Transform an FEPX raw result directory into a simulation directory of specified name (all results).
+@item Transform an FEPX raw result directory into a simulation directory of specified name (all results).
 @com{neper -S fepx-simulation -o @var{foo}}
 
-@item    Transform an FEPX raw result directory into a simulation directory of specified results: the nodal @samp{coo} and the elemental @samp{ori}.
+@item Transform an FEPX raw result directory into a simulation directory of specified results: the nodal @samp{coo} and the elemental @samp{ori}.
 @com{neper -S fepx-simulation -noderes coo -eltres ori}
 
-@item    Transform an FEPX raw result directory into a simulation directory; get all results and the element volumes.
+@item Transform an FEPX raw result directory into a simulation directory; get all results and the element volumes.
 @com{neper -S fepx-simulation -eltres inputres,vol}
 
-@item    Add the nodal @code{@var{x}} and the elemental @code{@var{vol}} and @code{@var{stress33}} results to a simulation directory.
+@item Add the nodal @code{@var{x}} and the elemental @code{@var{vol}} and @code{@var{stress33}} results to a simulation directory.
 @com{neper -S simulation -noderes x -eltres vol,rr}
 
-@item    Add the elemental @code{@var{energy}} result, defined as @code{0.1234*(@var{crss}-@var{crss}(step=0))^2}, to a simulation directory.
-@com{neper -S -eltres "energy:0.1234*(crss-crss(step=0))^2"}
+@item Add the elemental @code{@var{energy}} result, defined as @code{0.12*(@var{crss}-@var{crss}(step=0))^2}, to a simulation directory.
+@com{neper -S simulation -eltres "energy:0.12*(crss-crss(step=0))^2"}
 
-@item    Override the elemental @code{@var{energy}} result, newly defined as @code{0.5678*(@var{crss}-@var{crss}(step=0))^2}, to a simulation directory.
-@com{neper -S -eltres '!energy,energy:0.5678*(crss-crss(step=0))^2'}
+@item Override the elemental @code{@var{energy}} result, newly defined as @code{0.34*(@var{crss}-@var{crss}(step=0))^2}, in a simulation directory.
+@com{neper -S simulation -eltres '!energy,energy:0.34*(crss-crss(step=0))^2'}
 
-@item    Add the elset @code{@var{stress}} result to a simulation directory (the @code{@var{stress}} result must exist for elements).
+@item Add the elset @code{@var{stress}} result to a simulation directory (the @code{@var{stress}} result must exist for elements).
 @com{neper -S simulation -eltres stress}
 
-@item    Merge two simulation directories into a single simulation directory.
+@item Merge two simulation directories into a single simulation directory.
 @com{neper -S cycle1.sim,cycle2.sim -o cycle1-2}
 
 @end enumerate
