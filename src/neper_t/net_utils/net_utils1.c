@@ -562,7 +562,7 @@ net_tess_clip_expr (struct TESS *pTess, char *clip)
 int
 net_tess_clip (struct TESS *pTess, double *eq)
 {
-  int i, side, level, tessid, domface;
+  int i, side, level, tessid, domface, status;
   struct POLY *Poly = calloc ((*pTess).CellQty + 1, sizeof (struct POLY));
   struct POLYMOD Polymod;
   int *BadVer = ut_alloc_1d_int (1000);
@@ -588,11 +588,11 @@ net_tess_clip (struct TESS *pTess, double *eq)
 
   for (i = 1; i <= (*pTess).CellQty; i++)
   {
-    neut_tess_cell_planeside (*pTess, i, eq, &side);
+    status = neut_tess_cell_planeside (*pTess, i, eq, &side);
 
-    if (side == -1)             // downward
+    if (!status && side == -1)             // downward
       net_tess_poly (*pTess, i, Poly + i);
-    else if (side == 0)         // cut
+    else if (!status && side == 0)         // cut
     {
       net_tess_poly (*pTess, i, Poly + i);
       net_poly_clip (Poly + i, eq, plane_id);
