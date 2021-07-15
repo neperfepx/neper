@@ -1,5 +1,6 @@
-New in 4.2.1-3 (06 Jul 2021):
+New in 4.2.1-4 (15 Jul 2021):
 - module -T: made minor improvements.
+- module -M: made minor fixes.
 - module -S: fixed merging of simulation directories.
 - documentation: made minor fixes.
 

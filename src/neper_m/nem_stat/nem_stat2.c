@@ -40,7 +40,7 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
 
       if (!status)
       {
-        if (!strncmp (invar[j], "col:", 4))
+        if (!strncmp (invar[j], "col_", 4))
           fprintf (file, "%.0f|%.0f|%.0f", vals[0], vals[1], vals[2]);
         else
           ut_array_1d_fprintf_nonl (file, vals, valqty,
