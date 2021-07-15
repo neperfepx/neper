@@ -30,8 +30,8 @@ nev_print_init (struct PRINT *pPrint, struct TESS Tess,
 
     for (i = 0; i < *pSQty; i++)
     {
-      nev_print_init_data_nodes ((*pSNodes)[i], (*pSNodes)[i].NodeQty, (*pSNodeData) + i);
-      nev_print_init_data_mesh ((*pSMesh2D)[i], 1, Mesh[3].ElsetQty,
+      nev_print_init_data_nodes (*pPrint, (*pSNodes)[i], (*pSNodes)[i].NodeQty, (*pSNodeData) + i);
+      nev_print_init_data_mesh (*pPrint, (*pSMesh2D)[i], 1, Mesh[3].ElsetQty,
                                3, (*pSMeshData)[i] + 2);
     }
 
@@ -41,7 +41,7 @@ nev_print_init (struct PRINT *pPrint, struct TESS Tess,
   }
 
   else if (ut_list_testelt ((*pPrint).format, NEUT_SEP_DEP, "vtk"))
-    nev_print_init_data_nodes (Nodes, Nodes.NodeQty, pNodeData);
+    nev_print_init_data_nodes (*pPrint, Nodes, Nodes.NodeQty, pNodeData);
 
   return;
 }

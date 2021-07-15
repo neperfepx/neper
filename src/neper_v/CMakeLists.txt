@@ -75,6 +75,7 @@ add_library(neper_v
 ./nev_print/nev_print_png/nev_print_png_tesr/nev_print_png_tesr1.c
 ./nev_print/nev_print_png/nev_print_png_point/nev_print_png_point1.c
 ./nev_print/nev_print_vtk/nev_print_vtk1.c
+./nev_print/nev_print_vtk/nev_print_vtk2.c
 )
 
 list (APPEND EXTRA_LIBS neut)

@@ -9,7 +9,6 @@ nev_print_vtk (char *basename, struct PRINT *pPrint,
                struct SIM Sim, struct NODES Nodes, struct MESH *Mesh,
                struct DATA *pNodeData, struct DATA *MeshData)
 {
-  int i;
   FILE *file = NULL;
   char *filename = NULL;
   char *outdir = NULL;
@@ -41,61 +40,25 @@ nev_print_vtk (char *basename, struct PRINT *pPrint,
 
   ut_print_message (0, 2, "Printing data...\n");
 
-  if ((*pNodeData).CooData)
+  // node data
+
+  if ((*pNodeData).CooData || (*pNodeData).ColData)
   {
     fprintf (file, "POINT_DATA %d\n", (*pNodeData).Qty);
-    fprintf (file, "VECTORS %s double\n", (*pNodeData).CooDataName);
-    ut_array_2d_fprintf (file, (*pNodeData).Coo + 1, (*pNodeData).Qty, 3, "%g");
-  }
+
+    if ((*pNodeData).CooData)
+      nev_print_vtk_coodata (file, *pNodeData);
+
+    if ((*pNodeData).ColDataType)
+      nev_print_vtk_coldata (file, *pNodeData);
+   }
+
+  // element data
 
   if (MeshData[3].ColDataType)
+  {
     fprintf (file, "CELL_DATA %d\n", MeshData[3].Qty);
-
-  if (!ut_string_strcmp (MeshData[3].ColDataType, "int"))
-  {
-    fprintf (file, "SCALARS %s int\n", MeshData[3].ColDataName);
-    fprintf (file, "LOOKUP_TABLE default\n");
-    ut_array_2d_fprintf (file, MeshData[3].ColData + 1, MeshData[3].Qty, 1, "%.0f");
-  }
-  else if (!ut_string_strcmp (MeshData[3].ColDataType, "real"))
-  {
-    fprintf (file, "SCALARS %s double\n", MeshData[3].ColDataName);
-    fprintf (file, "LOOKUP_TABLE default\n");
-    ut_array_2d_fprintf (file, MeshData[3].ColData + 1, MeshData[3].Qty, 1, "%g");
-  }
-  else if (!ut_string_strcmp (MeshData[3].ColDataType, "vector"))
-  {
-    if (MeshData[3].ColDataSize == 3)
-    {
-      fprintf (file, "VECTORS %s double\n", MeshData[3].ColDataName);
-
-      ut_array_2d_fprintf (file, MeshData[3].ColData + 1, MeshData[3].Qty, MeshData[3].ColDataSize, "%g");
-    }
-    else
-    {
-      fprintf (file, "FIELD %s 1\n", MeshData[3].ColDataName);
-      fprintf (file, "%s %d %d double\n", MeshData[3].ColDataName,
-                                          MeshData[3].ColDataSize,
-                                          MeshData[3].Qty);
-
-      ut_array_2d_fprintf (file, MeshData[3].ColData + 1, MeshData[3].Qty, MeshData[3].ColDataSize, "%g");
-    }
-  }
-  else if (!ut_string_strcmp (MeshData[3].ColDataType, "tensor"))
-  {
-    fprintf (file, "TENSORS %s double\n", MeshData[3].ColDataName);
-
-    if (MeshData[3].ColDataSize == 9) // all components
-      ut_array_2d_fprintf (file, MeshData[3].ColData + 1, MeshData[3].Qty, MeshData[3].ColDataSize, "%g");
-
-    else if (MeshData[3].ColDataSize == 6) // Voigt convention
-      for (i = 1; i <= MeshData[3].Qty; i++)
-        fprintf (file, "%g %g %g %g %g %g %g %g %g\n",
-                 MeshData[3].ColData[i][0], MeshData[3].ColData[i][5],
-                 MeshData[3].ColData[i][4], MeshData[3].ColData[i][5],
-                 MeshData[3].ColData[i][1], MeshData[3].ColData[i][3],
-                 MeshData[3].ColData[i][4], MeshData[3].ColData[i][3],
-                 MeshData[3].ColData[i][2]);
+    nev_print_vtk_coldata (file, MeshData[3]);
   }
 
   ut_file_close (file, filename, "w");

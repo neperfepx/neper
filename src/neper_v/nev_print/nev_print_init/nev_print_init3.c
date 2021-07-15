@@ -5,7 +5,7 @@
 #include"nev_print_init_.h"
 
 void
-nev_print_init_data_csys (struct DATA *pData)
+nev_print_init_data_csys (struct PRINT Print, struct DATA *pData)
 {
   int i;
 
@@ -22,7 +22,9 @@ nev_print_init_data_csys (struct DATA *pData)
     if (!strcmp ((*pData).ColDataType, "col"))
       for (i = 0; i < 3; i++)
         (*pData).Col[1][i] = ut_num_d2ri ((*pData).ColData[1][i]);
-    else
+    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
       ut_print_exprbug ((*pData).ColDataType);
   }
 
@@ -51,7 +53,7 @@ nev_print_init_data_csys (struct DATA *pData)
 }
 
 void
-nev_print_init_data_mesh (struct MESH Mesh, double size, int Qty,
+nev_print_init_data_mesh (struct PRINT Print, struct MESH Mesh, double size, int Qty,
                           int dim, struct DATA *pData)
 {
   int i;
@@ -145,7 +147,9 @@ nev_print_init_data_mesh (struct MESH Mesh, double size, int Qty,
       neut_data_ori_color ((*pData).ColData, (*pData).Qty,
                            (*pData).ColScheme, (*pData).Col);
 
-    else
+    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
       ut_print_exprbug ((*pData).ColDataName);
   }
 
@@ -170,7 +174,7 @@ nev_print_init_data_mesh (struct MESH Mesh, double size, int Qty,
 }
 
 void
-nev_print_init_data_nodes (struct NODES Nodes, int Qty, struct DATA *pData)
+nev_print_init_data_nodes (struct PRINT Print, struct NODES Nodes, int Qty, struct DATA *pData)
 {
   double noderad;
 
@@ -206,7 +210,9 @@ nev_print_init_data_nodes (struct NODES Nodes, int Qty, struct DATA *pData)
       neut_data_ori_color ((*pData).ColData, (*pData).Qty,
                            (*pData).ColScheme, (*pData).Col);
 
-    else
+    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
       ut_print_exprbug ((*pData).ColDataType);
   }
 
@@ -233,7 +239,7 @@ nev_print_init_data_nodes (struct NODES Nodes, int Qty, struct DATA *pData)
 }
 
 void
-nev_print_init_data_points (struct POINT Point, struct DATA *pData)
+nev_print_init_data_points (struct PRINT Print, struct POINT Point, struct DATA *pData)
 {
   double pointrad;
 
@@ -268,7 +274,9 @@ nev_print_init_data_points (struct POINT Point, struct DATA *pData)
       neut_data_ori_color ((*pData).ColData, (*pData).Qty,
                            (*pData).ColScheme, (*pData).Col);
 
-    else
+    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
       ut_print_exprbug ((*pData).ColDataType);
   }
 
@@ -303,7 +311,7 @@ nev_print_init_data_points (struct POINT Point, struct DATA *pData)
 }
 
 void
-nev_print_init_data_tesr (struct TESR Tesr, struct DATA *pData)
+nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pData)
 {
   int i, j, k, id, Qty = ut_array_1d_int_prod (Tesr.size, 3);
   double size, rad;
@@ -334,7 +342,9 @@ nev_print_init_data_tesr (struct TESR Tesr, struct DATA *pData)
       neut_data_ori_color ((*pData).ColData, Qty, (*pData).ColScheme,
                            (*pData).Col);
 
-    else
+    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
       ut_print_exprbug ((*pData).ColDataType);
   }
 
@@ -388,7 +398,7 @@ nev_print_init_data_tesr (struct TESR Tesr, struct DATA *pData)
 }
 
 void
-nev_print_init_data_tess (struct TESS Tess, struct DATA *pData)
+nev_print_init_data_tess (struct PRINT Print, struct TESS Tess, struct DATA *pData)
 {
   int i;
   double size, rad, dim = (*pData).Dim;
@@ -446,7 +456,9 @@ nev_print_init_data_tess (struct TESS Tess, struct DATA *pData)
       neut_data_ori_color ((*pData).ColData, (*pData).Qty, (*pData).ColScheme,
                             (*pData).Col);
 
-    else
+    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
       ut_print_exprbug ((*pData).ColDataType);
   }
 

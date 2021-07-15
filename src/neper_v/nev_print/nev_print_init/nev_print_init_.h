@@ -18,13 +18,13 @@ extern void nev_print_init_data (struct PRINT, struct TESS, struct DATA *,
                                  struct DATA *, struct DATA *,
                                  struct DATA *, struct DATA *);
 
-extern void nev_print_init_data_csys (struct DATA *);
-extern void nev_print_init_data_nodes (struct NODES Nodes, int Qty, struct DATA *pData);
-extern void nev_print_init_data_mesh (struct MESH, double size, int Qty,
+extern void nev_print_init_data_csys (struct PRINT Print, struct DATA *);
+extern void nev_print_init_data_nodes (struct PRINT Print, struct NODES Nodes, int Qty, struct DATA *pData);
+extern void nev_print_init_data_mesh (struct PRINT Print, struct MESH, double size, int Qty,
                                       int dim, struct DATA *);
-extern void nev_print_init_data_tesr (struct TESR, struct DATA *);
-extern void nev_print_init_data_tess (struct TESS, struct DATA *);
-extern void nev_print_init_data_points (struct POINT, struct DATA *);
+extern void nev_print_init_data_tesr (struct PRINT Print, struct TESR, struct DATA *);
+extern void nev_print_init_data_tess (struct PRINT Print, struct TESS, struct DATA *);
+extern void nev_print_init_data_points (struct PRINT Print, struct POINT, struct DATA *);
 
 extern void nev_print_init_show (struct TESS Tess, struct TESR Tesr,
                                  struct NODES Nodes, struct MESH *Mesh,

@@ -22,13 +22,13 @@ nev_print_init_data (struct PRINT Print,
 
   if (Print.showtess && !neut_tess_isvoid (Tess))
     for (dim = 0; dim <= 4; dim++)
-      nev_print_init_data_tess (Tess, TessData + dim);
+      nev_print_init_data_tess (Print, Tess, TessData + dim);
 
   if (Print.showtesr && (*pTesrData).Qty > 0)
-    nev_print_init_data_tesr (Tesr, pTesrData);
+    nev_print_init_data_tesr (Print, Tesr, pTesrData);
 
   if ((Print.shownode || Print.showmesh || Print.showslice) && Nodes.NodeQty > 0)
-    nev_print_init_data_nodes (Nodes, Nodes.NodeQty, pData);
+    nev_print_init_data_nodes (Print, Nodes, Nodes.NodeQty, pData);
 
   meshdim = neut_mesh_array_dim (Mesh);
   if ((Print.showmesh || Print.showslice) && meshdim > 0)
@@ -37,14 +37,14 @@ nev_print_init_data (struct PRINT Print,
 
     for (dim = 0; dim <= meshdim; dim++)
       if (!neut_mesh_isvoid (Mesh[dim]))
-        nev_print_init_data_mesh (Mesh[dim], size, Mesh[dim].ElsetQty, meshdim, MeshData + dim);
+        nev_print_init_data_mesh (Print, Mesh[dim], size, Mesh[dim].ElsetQty, meshdim, MeshData + dim);
   }
 
   if (Print.showcsys)
-    nev_print_init_data_csys (pCsysData);
+    nev_print_init_data_csys (Print, pCsysData);
 
   if (Print.showpoint && Point.PointQty > 0)
-    nev_print_init_data_points (Point, pPointData);
+    nev_print_init_data_points (Print, Point, pPointData);
 
   return;
 }

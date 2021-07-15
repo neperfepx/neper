@@ -1,6 +1,7 @@
-New in 4.2.1-5 (15 Jul 2021):
+New in 4.2.1-6 (15 Jul 2021):
 - module -T: made minor fixes and improvements.
 - module -M: made minor fixes.
+- module -V: added support for -datanodecol in vtk file.
 - module -S: fixed merging of simulation directories.
 - documentation: made minor fixes.
 

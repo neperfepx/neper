@@ -10,3 +10,6 @@
 #include"ut.h"
 #include"neut_v.h"
 #include "nev_print_vtk.h"
+
+extern void nev_print_vtk_coodata (FILE *file, struct DATA Data);
+extern void nev_print_vtk_coldata (FILE *file, struct DATA Data);
