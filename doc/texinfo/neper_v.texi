@@ -898,6 +898,11 @@ detailed in @ref{Colors and Color Maps}.
 ,
 any, 32|32|32}
 
+@opt{-datacsysfontsize, real,
+Set the font size of the labels of the coordinate system axes.
+,
+any, 1}
+
 @subsection Slice Settings
 
 @opt{-slicemesh, char_string,
