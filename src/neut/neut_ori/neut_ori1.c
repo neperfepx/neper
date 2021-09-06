@@ -319,9 +319,6 @@ neut_ori_fscanf (FILE *file, char *desconv, char *format, double **q, int *ids, 
 
     if (!strcmp (des, "quaternion") || !strcmp (des, "q"))
     {
-      if (ol_q_fscanf (file, q[pos]) != 1)
-        return -1;
-
       if (!strcmp (format, "ascii"))
       {
         if (ol_q_fscanf (file, q[pos]) != 1)
