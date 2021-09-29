@@ -195,7 +195,7 @@ ut_arg_expand (int argc, char **argv, int *pexpargc, char ***pexpargv)
           sprintf ((*pexpargv)[(*pexpargc)], "%s", tmp);
         }
       }
-      i++;                      // skipping -endloop
+      // i++;                      // skipping -endloop
     }
     else
     {
