@@ -63,7 +63,7 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
 
   if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "stl"))
   {
-    if (FTess.PolyQty != 0)
+    if (FTess.FaceQty != 0)
     {
       file = ut_file_open (In.stl, "w");
       neut_tess_fprintf_stl (file, FTess);
@@ -75,7 +75,7 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
 
   if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "stl:bycell"))
   {
-    if (FTess.PolyQty != 0)
+    if (FTess.FaceQty != 0)
       neut_tess_name_fprintf_stl_bycell (In.body, FTess);
     else
       ut_print_message (1, 0, "Tess is void; cannot export; skipping\n");

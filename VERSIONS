@@ -1,4 +1,4 @@
-New in 4.2.1-11 (26 Oct 2021):
+New in 4.2.1-12 (28 Oct 2021):
 - module -T: made minor fixes and improvements.
 - module -M: fixed inp output, made minor fixes.
 - module -V: added support for -datanodecol in vtk file, made minor fixes.
