@@ -752,7 +752,7 @@ Keys are available for ideal orientations (lowercased is accepted):
 @end ifinfo
 @end multitable
 
-When loading orientations from an external file, @samp{file(@var{file_name})} assumes orientations described by Euler angles in Bunge convention (and active convention).  To specify a different descriptor, use @samp{file(@var{file_name},des=@var{descriptor})}, where @samp{@var{descriptor}} is among the descriptors listed above.
+When loading orientations from an external file, @samp{file(@var{file_name})} assumes orientations described by Rodrigues vectors (and active convention).  To specify a different descriptor, use @samp{file(@var{file_name},des=@var{descriptor})}, where @samp{@var{descriptor}} is among the descriptors listed above.
 
 @node Crystal Symmetries
 @section Crystal Symmetries
