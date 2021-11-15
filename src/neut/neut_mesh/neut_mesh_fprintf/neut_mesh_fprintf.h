@@ -12,6 +12,7 @@ extern "C"
 
 #include "neut_mesh_fprintf_msh/neut_mesh_fprintf_msh.h"
 #include "neut_mesh_fprintf_ori/neut_mesh_fprintf_ori.h"
+#include "neut_mesh_fprintf_phase/neut_mesh_fprintf_phase.h"
 #include "neut_mesh_fprintf_bcs/neut_mesh_fprintf_bcs.h"
 #include "neut_mesh_fprintf_geof/neut_mesh_fprintf_geof.h"
 #include "neut_mesh_fprintf_inp/neut_mesh_fprintf_inp.h"

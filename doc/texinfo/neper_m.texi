@@ -673,6 +673,7 @@ For @samp{msh}@comma{} append
 @samp{@SEPDEP{}@var{format}} to specify the format@comma{}
 which can be @samp{ascii} or @samp{binary} (default @samp{ascii}).
 To get the orientation section of the @samp{msh} file (optional FEPX input)@comma{} provide @samp{ori}.
+To get the group section of the @samp{msh} file (optional @samp{.phase} FEPX input)@comma{} provide @samp{phase}.
 To get a boundary conditions file (optional FEPX input)@comma{} provide @samp{bcs}.
 To get a periodicity file@comma{} provide @samp{per}.
 To get a tessellation file (reconstructed from the mesh) @comma{} provide @samp{tess}.
@@ -973,6 +974,8 @@ The mesh can be written in the following formats,
 @item native format: file @file{.msh}. @xref{Mesh File (@file{.msh})} for the file syntax.
 
 @item native format / orientations (optional FEPX file): file @file{.ori}.  It contains the @samp{$ElsetOrientations} and @samp{$ElementOrientations} sections of the msh file.
+
+@item native format / groups (optional FEPX file): file @file{.phase}.  It contains the @samp{$Groups} section of the msh file.
 
 @item native format / periodicity: file @file{.per}.
 

@@ -97,6 +97,13 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
       ut_file_close (file, In.ori, "w");
     }
 
+    if (!strcmp (formats[i], "phase"))
+    {
+      file = ut_file_open (In.phase, "w");
+      neut_mesh_fprintf_phase (file, Mesh[dim]);
+      ut_file_close (file, In.phase, "w");
+    }
+
     if (!strcmp (formats[i], "bcs"))
     {
       file = ut_file_open (In.bcs, "w");

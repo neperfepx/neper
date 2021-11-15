@@ -61,10 +61,6 @@ extern void neut_mesh_fprintf_msh_physical (FILE * file, struct MESH Mesh0D,
                                              char **fasets, int *fasetids,
                                              int fasetqty, char *dim);
 
-extern void neut_mesh_fprintf_msh_orientations (FILE *file, struct MESH Mesh);
-
-extern void neut_mesh_fprintf_msh_elsetgroups (FILE *file, struct MESH Mesh);
-
 extern void neut_mesh_fprintf_msh_elts_dim (FILE * file, char *mode,
                                              int shift, struct MESH Mesh);
 extern void neut_mesh_fprintf_msh_elts_dim_v4 (FILE * file, char *mode,

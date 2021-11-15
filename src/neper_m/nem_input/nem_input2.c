@@ -141,6 +141,7 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     (*pIn).per = ut_string_addextension ((*pIn).body, ".per");
     (*pIn).abq = ut_string_addextension ((*pIn).body, ".inp");
     (*pIn).ori = ut_string_addextension ((*pIn).body, ".ori");
+    (*pIn).phase = ut_string_addextension ((*pIn).body, ".phase");
     (*pIn).bcs = ut_string_addextension ((*pIn).body, ".bcs");
     (*pIn).vtk = ut_string_addextension ((*pIn).body, ".vtk");
     (*pIn).outtess = ut_string_addextension ((*pIn).body, ".tess");

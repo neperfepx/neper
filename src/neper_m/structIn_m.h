@@ -95,6 +95,7 @@ struct IN_M
   char *msh;			// mesh file at the msh format
   char *msh4;			// mesh file at the msh4 format
   char *ori;			// mesh file at the ori format
+  char *phase;			// mesh file at the phase format
   char *bcs;			// mesh file at the bcs format
   char *vtk;			// mesh file at the vtk format
   char *abq;			// mesh file at the Abaqus format

@@ -20,6 +20,8 @@ extern "C"
 
   extern void neut_mesh_fprintf_msh_orientations (FILE *file, struct MESH Mesh);
 
+  extern void neut_mesh_fprintf_msh_elsetgroups (FILE *file, struct MESH Mesh);
+
 #endif                          // NEUT_MESH_FPRINTF_MSH
 
 #ifdef __cplusplus

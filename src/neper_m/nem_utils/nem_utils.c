@@ -27,6 +27,7 @@ nem_in_set_zero (struct IN_M *pIn)
   (*pIn).msh = NULL;
   (*pIn).msh4 = NULL;
   (*pIn).ori = NULL;
+  (*pIn).phase = NULL;
   (*pIn).bcs = NULL;
   (*pIn).vtk = NULL;
   (*pIn).per = NULL;
@@ -101,6 +102,7 @@ nem_in_free (struct IN_M In)
   ut_free_1d_char (&In.msh);
   ut_free_1d_char (&In.msh4);
   ut_free_1d_char (&In.ori);
+  ut_free_1d_char (&In.phase);
   ut_free_1d_char (&In.bcs);
   ut_free_1d_char (&In.vtk);
   ut_free_1d_char (&In.per);
