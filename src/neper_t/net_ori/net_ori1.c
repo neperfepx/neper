@@ -64,7 +64,7 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
     status = net_ori_label (ori, &OSet);
 
     if (status)
-      abort ();
+      ut_print_message (2, 3, "Failed to process `%s'.\n", ori);
   }
 
   net_ori_crysym (&OSet);

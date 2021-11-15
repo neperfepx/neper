@@ -3660,8 +3660,10 @@ ut_array_0d_string_fscanf_prefix (FILE * file, char *val, char *flag)
         status = sscanf (tmp, "%s", lineflag);
         qty = ut_string_nbwords (tmp);
       }
+      if (qty > -1)
+        status = 1;
     }
-    while ((status == 1 && strcmp (lineflag, flag)) || qty < 2);
+    while (status == 1 && strcmp (lineflag, flag));
 
     if (status == 1 && !strcmp (lineflag, flag))
       status = sscanf (tmp, "%s%s", lineflag, val);
