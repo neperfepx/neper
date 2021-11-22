@@ -23,6 +23,31 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2021
 ----
 
+- E Natkowski, P Sonnweber-Ribic, S Münstermann, *Determination of fatigue lifetimes with a micromechanical short crack model for the high-strength steel SAE 4150*, **International Journal of Fatigue**, doi://10.1016/j.ijfatigue.2021.106621.
+- AG Neto, B Hudobivnik, TF Moherdaui and P Wriggers, *Flexible polyhedra modeled by the virtual element method in a discrete element context*, **Computer Methods in Applied Mechanics and Engineering**, doi://10.1016/j.cma.2021.114163.
+- C Fang, J Gong, M Jia, Z Nie, B Li, A Mohammed and L Zhao, *DEM simulation of the shear behaviour of breakable granular materials with various angularities*, **Advanced Powder Technology**, doi://10.1016/j.apt.2021.09.009.
+- T Grabec, IA Veres and M Ryzy, *Surface acoustic wave attenuation in polycrystals: Numerical modeling using a statistical digital twin of an actual sample*, **Ultrasonics**, doi://10.1016/j.ultras.2021.106585.
+- S Rezaei, A Asheri and BX Xu, *A consistent framework for chemo-mechanical cohesive fracture and its application in solid-state batteries*, **Journal of the Mechanics and Physics of Solids**, doi://10.1016/j.jmps.2021.104612.
+- U Ro, S Kim, Y Kim and MK Kim, *Creep-Fatigue damage analysis of modified 9Cr–1Mo steel based on a Voronoi crystalline model*, **International Journal of Pressure Vessels and Piping**, doi://10.1016/j.ijpvp.2021.104541.
+- W Zhao, J Sun and Z Huang, *Three-dimensional graphene-carbon nanotube reinforced ceramics and computer simulation*, **Ceramics International**, doi://10.1016/j.ceramint.2021.08.304.
+- KA Meyer and A Menzel, *A distortional hardening model for finite plasticity*, **International Journal of Solids and Structures**, doi://10.1016/j.ijsolstr.2021.111055.
+- X Zhang and C Oskay, Modeling and Numerical Investigation of Mechanical Twinning in β-HMX Crystals Subjected to Shock Loading, Modelling and Simulation in Materials Science and Engineering, doi://10.1088/1361-651X/ac21a6.
+- A Vuppala, A Krämer and J Lohmar, On Sampling Discrete Orientations from XRD for Texture Representation in Aggregates with Varying Grain Size, Crystals, doi://10.3390/cryst11091021.
+- IAR Lopes, FMA Pires, *Unlocking the Potential of Second-order Computational Homogenisation: An Overview of Distinct Formulations and a Guide for their Implementation*, **Archives of Computational Methods in Engineering**, doi://10.1007/s11831-021-09611-9.
+- T Beck, B Engel, L Mäde and S Ohneseit, *Influence of Grain Orientation Distribution on the High Temperature Fatigue Behaviour of Notched Specimen Made of Polycrystalline Nickel-Base Superalloy*, **Metals**, doi://10.3390/met11050731.
+- L Fourel, JP Noyel, E Bossy, X Kleber, P Sainsot and F Ville, *Towards a Grain-scale Modeling of Crack Initiation in Rolling Contact Fatigue-Part 1: Shear Stress Considerations*, **Tribology International**, doi://10.1016/j.triboint.2021.107224.
+- RJ Lane, AM Momen, MS Kesler, J Brechtl, O Rios, K Nawaz and R Mirzaeifar, *Developing an experimental-computational framework to investigate the deformation mechanisms and mechanical properties of Al-8Ce-10Mg alloys at micro and macroscales*, **Materials Today Communications**, doi://10.1016/j.mtcomm.2021.102674.
+  - D Depriester, R Kubler, *Grain size estimation in polycrystals: solving the corpuscle problem using Maximum Likelihood Estimation*, **Journal of Structural Geology**, doi://10.1016/j.jsg.2021.104418.
+- S Zhang, S Qiu, P Kou, S Li, P Li, S Yan, *Investigation of Damage Evolution in Heterogeneous Rock Based on the Grain-Based Finite-Discrete Element Model*, **Materials**, doi://10.3390/ma14143969.
+- H Ding and Y Gao, *Analysis of the strain dependence of the superconducting critical properties of single-crystal and polycrystalline Nb3Sn*, **Superconductor Science and Technology**, vol 34, pp 075006.
+- SS Kulkarni, V Gupta, D Senor, T Truster, A Soulami, *A microstructure-based modeling approach to predict the mechanical properties of Zr alloy with hydride precipitates*, **Computational Materials Science** doi://10.1016/j.commatsci.2021.110654.
+- H Ge, JC Quezada, V Le Houerou, C Chazallon, *Three-dimensional simulation of asphalt mixture incorporating aggregate size and morphology distribution based on contact dynamics method*, **Construction and Building Materials**, doi://10.1016/j.conbuildmat.2021.124124.
+- L Fourel, JP Noyel, E Bossy, X Kleber, P Sainsot, F Ville, *Towards a Grain-scale Modeling of Crack Initiation in Rolling Contact Fatigue-Part 2: Persistent Slip Band Modeling*, **Tribology International**, doi://10.1016/j.triboint.2021.107173.
+- Y Bai, DA Santos, S Rezaei, P Stein, S Banerjee, B-X Xu, *A chemo-mechanical damage model at large deformation: numerical and experimental studies on polycrystalline energy materials*, **International Journal of Solids and Structures**, doi://10.1016/j.ijsolstr.2021.111099.
+- J Wang, Y Wang, L Yang, T Chang and Q Jiang, *Effects of Bedding Geometry and Cementation Strength on Shale Tensile Strength Based on Discrete Element Method*, **Shock and Vibration**, doi://10.1155/2021/7805617.
+- S Chandra, MK Samal, NN Kumar and VM Chavan, *Simulation of Hall–Petch effect in alloy 690 using crystal plasticity model considering effect of grain boundaries*, **Materials Letters**, doi://10.1016/j.matlet.2021.129915.
+- IAR Lopes, BP Ferreira and FMA Pires, *On the efficient enforcement of uniform traction and mortar periodic boundary conditions in computational homogenisation*, **Computer Methods in Applied Mechanics and Engineering**, doi://10.1016/j.cma.2021.113930.
+- M Huang, SI Rokhlin and MJS Lowe, *Finite element evaluation of a simple model for elastic waves in strongly scattering elongated polycrystals*, **JASA Express Letters**, doi://10.1121/10.0005266.
 - C-N Nguyen, G Cailletaud, F Barbe, B Marini, D-D Nguyen and H-T Phan, *Identification of crystal plasticity parameters for a non-irradiated and irradiated A508 bainite steel*, **Metallurgical Research and Technology**, doi://10.1051/metal/2021006.
 - S El Shawish, T Mede, J Hure, *A single grain boundary parameter to characterize normal stress fluctuations in materials with elastic cubic grains*, **European Journal of Mechanics-A/Solids**, doi://10.1016/j.euromechsol.2021.104293.
 - Y Liu, MK Kalkowski, M Huang, MJS Lowe, V Samaitis, V Cicenas and A Schumm, *Can ultrasound attenuation measurement be used to characterise grain statistics in castings?*, **Ultrasonics**, doi://10.1016/j.ultras.2021.106441.
@@ -123,6 +148,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2019
 ----
 
+- K Frydrych and K Kowalczyk-Gajewska, *Grain refinement in the equal channel angular pressing process: simulations using the crystal plasticity finite element method*, **Modelling and Simulation in Materials Science and Engineering**, vol. 26, pp. 065015, 2018.
 - Y Charles, HT Nguyen, K Ardon and M Gasperini, chapter *Scale Transition in Finite Element Simulations of Hydrogen–Plasticity Interactions* in *Mechanics and Physics of Solids at Micro‐ and Nano‐Scales*, **book edited by Wiley**, 2019.
 - Y Zhang, G Xiao, C Xu, T Zhou, M Yi and Z Chen, *Cohesive Element Model for Fracture Behavior Analysis of Al2O3/Graphene Composite Ceramic Tool Material*, **Crystals**, vol. 9, pp. 669, 2019.
 - R Ma and TJ Truster, * Combined crystal plasticity and grain boundary modeling of creep in Ferritic-Martensitic Steels, part 1: Theory and implementation*, **Modelling and Simulation in Materials Science and Engineering**, vol. 27, pp. 075009, 2019.
@@ -149,7 +175,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 - AC Poshadel, MA Gharghouri and P Dawson, *Initiation and Propagation of Plastic Yielding in Duplex Stainless Steel*, **Metallurgical and Materials Transactions A**, vol. 50, pp. 1202-1230, 2019.
 - AC Poshadel, MA Gharghouri and P Dawson, *Sensitivity of crystal stress distributions to the definition of virtual two-phase samples*, **Metallurgical and Materials Transactions A**, vol. 50, pp. 1231-1249, 2019.
 - A Vijay and F Sadeghi, *A continuum damage mechanics framework for modeling the effect of crystalline anisotropy on rolling contact fatigue*, **Tribology International**, doi:10.1016/j.triboint.2019.105845.
-- RR Tenreiro Vieira, Dde Bortoli, MVieira de Carvalho and FM AndradePires, *The role of elastic anisotropy on the macroscopic constitutive response and yield onset of cubic oligo- and polycrystals*, **International Journal of Plasticity**, doi:10.1016/j.ijplas.2019.06.007.
+- RR Tenreiro Vieira, Dde Bortoli, MVieira de Carvalho and FM Andrade Pires, *The role of elastic anisotropy on the macroscopic constitutive response and yield onset of cubic oligo- and polycrystals*, **International Journal of Plasticity**, doi:10.1016/j.ijplas.2019.06.007.
 - K Frydrych, K Kowalczyk-Gajewska and A Prakash, *On solution mapping and remeshing in crystal plasticity finite element simulations: Application to equal channel angular pressing*, **Modelling and Simulation in Materials Science and Engineering**, doi:10.1088/1361-651X/ab28e3.
 - S Shivaprasad, C V Krishnamurthy, A Pandala, A Saini, A Ramachandran and K Balasubramaniam, *Numerical Modelling Methods for Ultrasonic Wave Propagation Through Polycrystalline Materials*, **Transactions of the Indian Institute of Metals**, doi:10.1007/s12666-019-01739-4.
 - A Biswas, MRG Prasad, N Vajragupta, H ul Hassan, F Brenne, T Niendorf and A Hartmaier, *Influence of Microstructural Features on the Strain Hardening Behavior of Additively Manufactured Metallic Components*, **Advanced Engineering Materials**, doi:10.1002/adem.201900275.
