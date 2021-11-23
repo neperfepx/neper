@@ -74,6 +74,7 @@ The @code{neper-announce} (@url{https://lists.sourceforge.net/lists/listinfo/nep
 
 Resources for FEPX can be accessed from @url{https://fepx.info}.
 
+@node Installing Neper
 @section Installing Neper
 
 Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system (including MacOS).  Neper also runs on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, but multithreading must be turned off (which also slows down execution significantly).  Multithreading of the code is achieved via OpenMP and operates on all threads (the actual number of threads can be set throught the @code{@var{OMP_NUM_THREADS}} environment variable).  Compilation is performed via CMake:

@@ -1,9 +1,9 @@
-New in 4.2.1-15 (15 Nov 2021):
+New in 4.2.1-16 (23 Nov 2021):
 - module -T: made minor fixes and improvements.
 - module -M: added -format phase, fixed inp output, made minor fixes.
 - module -V: added support for -datanodecol in vtk file, made minor fixes.
 - module -S: fixed merging of simulation directories.
-- documentation: made minor fixes.
+- documentation: made minor fixes and improvements.
 
 New in 4.2.0 (11 Jun 2021):
 - module -T: added -transform "cut(torus)" for tesses, -transform tesrrenumber,

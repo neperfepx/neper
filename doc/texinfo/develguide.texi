@@ -19,14 +19,13 @@ The Neper root directory content is as follows (the slash character @samp{/} is 
   @item @code{VERSIONS}: information on the versions of Neper;
   @item @code{src/}: source code directory;
   @item @code{doc/}: documentation directory;
-  @item @code{utils/}: utilities directory.
 @end itemize
 
 Details on the  @samp{src/} and @samp{doc/} directories are provided in the following.
 
 @subsection Source Code
 
-Neper's source code is located in directory @file{src/} and roughly consists of 150,000 lines shared between 320 directories and 1200 text files.  The @samp{src/} directory contains the following files and directories,
+Neper's source code is located in the @file{src/} directory and roughly consists of 150,000 lines shared between 320 directories and 1200 text files.  The @samp{src/} directory contains the following files and directories,
 
 @itemize
   @item @code{neper_.h} and @code{neper.c}
@@ -39,11 +38,11 @@ Neper's source code is located in directory @file{src/} and roughly consists of 
 
   @item @code{neut/}
 
-  @samp{neut} stands for @dfn{Neper utilities}.  The directory contains utility functions specific to Neper and used by several modules.
+  This directory contains Neper utilities (hence the name), which are used by the modules.
 
-  @item @code{contrib}
+  @item @code{contrib/}
 
-  This directory contains utility functions not specific to Neper.  The first one is @samp{ut}, which is a collection of general-purpose, low-level C functions (memory allocation, etc.). The second one is @samp{orilib}, which is a collection of routines for orientation manipulation (see @url{http://orilib.sourceforge.net}). The third one is nanoflann, a library for nearest neighbor searching (see @url{https://github.com/jlblancoc/nanoflann}), the fourth one is openGJK, a library for fast point-simplex distance computations (@url{https://github.com/MattiaMontanari/openGJK}), the firsth one is muparser, a library for interprating mathematical and logical expressions (see @url{http://beltoforion.de/article.php?a=muparser}), and the last one is tinycolormap, a library for color maps (@url{https://github.com/yuki-koyama/tinycolormap}).  Although these libraries are also distributed alone (and might be already installed on your system), they are included into Neper instead of being considered as dependencies (contrary to the GSL, for example) to facilitate installation.
+  This directory contains libraries not specific to Neper: @code{ut} and @code{orilib} (developed by Neper's authors), @code{nlopt}, @code{scotch} (libscotch), @code{tinycolormap}, @code{nanoflann}, @code{muparser} and @code{openGJK}. @xref{Installing Neper}.
 
   @item @code{CMakeLists.txt}, @code{neper_config.h.in} and @code{cmake}
 
@@ -95,17 +94,19 @@ The @file{neut} directory is roughly structured as follows,
 
 @subsection Documentation
 
-Neper's documentation is located in directory @file{doc}.  It is written in Texinfo, the GNU software documentation system.  The documentation consists of a collection of @file{.texi} files (text files).  The documentation may be compiled in PDF, info or html format by running @command{make pdf}, @command{make info} or @command{make html}, respectively. In official releases, both the PDF and info documentation files are built and included in the archive.
+Neper's documentation is located in the @file{doc/} directory.  It is written in Texinfo, the GNU software documentation system.  The documentation consists of a collection of @file{.texi} files (text files).  The documentation may be compiled in PDF, info or html format by running @command{make pdf}, @command{make info} or @command{make html}, respectively. In official releases, both the PDF and info documentation files are built and included in the archive.
 
-@page
 @section Contributing to Neper
 
-The Neper development repository is hosted on GitHub: @url{https://github.com/rquey/neper}.  Code contributions to be included in Neper's official (public) version should be submitted as pull requests on this repository.
+The Neper 
+epository is hosted on GitHub: @url{https://github.com/rquey/neper}.  Code contributions to be included in Neper's official (public) version should be submitted as @dfn{pull requests} on this repository.
 
 @subsection Coding Conventions
 
-Neper is written following the GNU Coding Standards (@url{http://www.gnu.org/prep/standards}), with the exception that braces are not indented (because there is so often 3+ loop levels in Neper). Please follow this convention. Here are a few tips and other remarks,
+Neper is written following the GNU Coding Standards (@url{http://www.gnu.org/prep/standards}), with the exception that braces are not indented (because there is so often 3+ loop levels in Neper).
+The code is broken up into meaningful chunks using blank lines (never more than one).
 
+Here are a few tips that can help you following these conventions:
 @itemize
   @item For Vim, put the following commands in file @file{$HOME/.vimrc}:
 @verbatim
@@ -115,82 +116,40 @@ Neper is written following the GNU Coding Standards (@url{http://www.gnu.org/pre
     :set textwidth=72
 @end verbatim
 
-  @item You can run @command{indent -bli0 @var{source_files}} for automatic formatting.
-  @item Break up the code into meaningful chunks using blank lines.  Always use a single blank line to separate parts of the code.
-  @item Neper admits no compilation warnings. Please fix up all of them.
-  @item Please help us maintaining good documentation by documenting any capability you may add.
+  @item Run @command{indent -bli0 @var{source_files}} for automatic formatting.
 @end itemize
 
 @subsection Adding a New Option
 
-In modules -T and -M, adding a new option can be done by following these steps:
+In modules -T, -M and -S, adding a new option can be done by following these steps:
 
 @itemize
 
   @item Add a variable to the @samp{IN_@var{X}} structure to record the value of the option (file @file{structIn_@var{X}.h}).
 
-  @item If necessary, allocate / free the variable in the @code{ne@var{X}_in_set_zero} and @code{ne@var{X}_in_free} functions (file @file{ne@var{X}_input1.c}) Assign it a default value in @code{net_input_options_default} (file @file{ne@var{X}_input3.c}).
+  @item If necessary, allocate / free the variable in the @code{ne@var{X}_in_set_zero} and @code{ne@var{X}_in_free} functions (file @file{ne@var{X}_input1.c}).  Assign it a default value in @code{net_input_options_default} (file @file{ne@var{X}_input3.c}).
 
   @item Add the option to the option list in @code{net_input_options_set} (file @file{ne@var{X}_input3.c}), taking as an example another option of the same type (integer, etc.).
 
   @item Where appropriate in the source code, add a new function for the new option (if necessary in a new file or directory).  The function should be executed depending on the value of the option.
 
   @item If adding one or several files or directories, add the source file(s) to the source file list in the @file{CMakeLists.txt} file of the corresponding module.
-
-  @item Make sure the whole thing compiles and runs properly for your purpose.
-
-  @item Make sure your own changes did not break anything in the rest of the code by running full testing, using @command{make test} (or @command{ctest}).  You may also want to add a test specific to the new option.
-
 @end itemize
 
-In module -V, options are processed differently.  Instead of being recorded in a C structure, they are read one after the other and associated functions are executed along the way.  To add a new option, take an existing option as an example.
+In module -V, options are processed differently.  Instead of being recorded in a C structure, they are read one after the other and associated functions are executed accordingly.  To add a new option, take an existing option as an example.
 
-@subsection Making a Commit
+@subsection Validating Code Changes
 
-A @file{neper-commit} script is available in the @file{utils} directory.  Running this script creates a Git commit (just as @command{git commit}) and handles the additional tasks of updating Neper's version number wherever needed in the code and documentation, and opening the @file{VERSIONS} file for you to update as needed.  The @command{neper-commit} command should be used instead of @command{git commit} for all commits.
+Here are a few things to do after any code change:
 
-Please write good commit messages.  A good commit message looks like this@footnote{Mostly taken from Linus Torvalds's directives, @url{https://github.com/torvalds/subsurface-for-dirk/blob/a48494d2fbed58c751e9b7e8fbff88582f9b2d02/README#L88}. See also @url{https://chris.beams.io/posts/git-commit}.}:
-
-@example
-Header line: explain the commit in one line (use the imperative),
-50 characters max.
-
-Body of commit message is a few lines of text, explaining things
-in more detail, possibly giving some background about the issue
-being fixed, etc etc.
-
-The body of the commit message can be several paragraphs, and
-please do proper word-wrap and keep columns shorter than about
-74 characters or so. That way "git log" will show things
-nicely even when it's indented.
-
-Make sure you explain your solution and why you're doing what you're
-doing, as opposed to describing what you're doing. Reviewers and your
-future self can read the patch, but might not understand why a
-particular solution was implemented.
-@end example
-
-
-@subsection Testing
-
-The code can be tested using @command{CTest}.  The usual way is as follows:
-@com{ctest}
-
-It is also possible to run only some of the tests.
 @itemize
-@item
-Option @option{-R} selects the tests whose name contains a character string:
-@com{ctest -R @var{string}}
+  @item Check that the code compiles without any warnings and runs properly for your purpose.
 
-As test names start by the letter of the module they refer to, followed by @w{character @samp{_}}, it becomes handy to run tests on a specific module, for example:
-@com{ctest -R T_}
+  @item Check that the changes did not break anything in the rest of the code by running the tests, using @command{make test} (or @command{ctest}).  You may also add a test for your change.
 
-@item
-Option @option{-E} selects the tests that do not contain a character string:
-@com{ctest -E @var{string}}
-
-@item
-Option @option{-I} selects the tests from their numbers, for example:
-@com{ctest -I 3,5}
-
+  @item Make sure to complete the documentation as needed.
 @end itemize
+
+@subsection Submitting Changes
+
+Any changes to the code (or documentation) should be made on a dedicated Git branch, based on @code{main}, and recorded as a Git commit (the branch should be up-to-date with respect to @code{main}).  The changes should be submitted as a @dfn{pull request} to the @code{main} branch on the GitHub repository.
