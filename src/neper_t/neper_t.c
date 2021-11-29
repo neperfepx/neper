@@ -349,7 +349,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
       || In.stvox || In.sttess || In.sttesr || In.stgroup)
   {
     ut_print_message (0, 1, "Writing statistics...\n");
-    if (!ut_list_testelt (In.format, NEUT_SEP_NODEP, "tess"))
+    if (!strcmp (In.load, "none") && !ut_list_testelt (In.format, NEUT_SEP_NODEP, "tess"))
       neut_tess_reset (&FTess);
     net_stat (In, FTess, &Tesr, Point);
   }
