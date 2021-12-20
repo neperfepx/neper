@@ -896,11 +896,15 @@ ut_file_squashname (const char *name, char **pname)
 {
   (*pname) = ut_alloc_1d_char (strlen (name) + 1);
 
-  if (sscanf (name, "file(%[^)])", *pname) == 1)
+  if (!strncmp (name, "file(", 5))
   {
+    ut_string_string (name + 5, pname);
+    (*pname)[strlen ((*pname)) - 1] = '\0';
   }
-  else if (sscanf (name, "msfile(%[^)])", *pname) == 1)
+  else if (!strncmp (name, "msfile(", 7))
   {
+    ut_string_string (name + 7, pname);
+    (*pname)[strlen ((*pname)) - 1] = '\0';
   }
   else if (sscanf (name, "@%s", *pname) == 1)
   {
