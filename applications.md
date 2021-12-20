@@ -18,19 +18,27 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 - B Flipon, C Keller, R Quey and F Barbe, *A full-field crystal-plasticity analysis of bimodal polycrystals*, **International Journal of Solids and Structures**, vol. 184, pp. 178--192, 2020. [Journal cover](docs/cover-ijss-2020.png)
 - R Carson, M Obstalecki, M Miller and P Dawson, *Characterizing Heterogeneous Intragranular Deformations in Polycrystalline Solids Using Diffraction-Based and Mechanics-Based Metrics*, **Modelling and Simulation in Materials Science and Engineering**,  vol. 25,  pp. 055008, 2017. [Journal cover](docs/cover-MSMSE-2505-OFC.png)
 
+## 2022
+
+- E Natkowski, P Sonnweber-Ribic, S Münstermann, *Determination of fatigue lifetimes with a micromechanical short crack model for the high-strength steel SAE 4150*, **International Journal of Fatigue**, doi://10.1016/j.ijfatigue.2021.106621.
+- D Zhu, W Zhang and Z Ding, *Dislocation Density Evolution in Low-Cycle Fatigue of Steels Using Dislocation-Based Crystal Plasticity*, **Journal of Engineering Mechanics**, doi:///10.1061/(ASCE)EM.1943-7889.0002063.
+- T Grabec, IA Veres and M Ryzy, *Surface acoustic wave attenuation in polycrystals: Numerical modeling using a statistical digital twin of an actual sample*, **Ultrasonics**, doi://10.1016/j.ultras.2021.106585.
+
 ## 2021
 
+- L Yin and O Umezawa, *Crystal plasticity analysis of temperature-sensitive dwell fatigue in Ti-6Al-4V titanium alloy for an aero-engine fan disc*, **International Journal of Fatigue**, doi://10.1016/j.ijfatigue.2021.106688.
+- X Hu, X Gong, N Xie, Q Zhu, P Guo, H Hu and J Ma, *Modeling crack propagation in heterogeneous granite using grain-based phase field method*, **Theoretical and Applied Fracture Mechanics**, doi://10.1016/j.tafmec.2021.103203.
+- JY Zheng, JQ Ran and MW Fu, *Constitutive Modeling of Multiscale Polycrystals Considering Grain Structures and Orientations*, **International Journal of Mechanical Sciences**, doi://10.1016/j.ijmecsci.2021.106992.
+- K Zhong, S Wang, K Liu, D Xu, J Yao, *Fourier Transform Analysis on Random Quasi-Phase-Matched Nonlinear Optical Interactions*, **IEEE Photonics Journal**, doi://10.1109/JPHOT.2021.3134666.
 - N Grilli, D Hu, D Yushu, F Chen, W Yan, *Crystal plasticity model of residual stress in additive manufacturing using the element elimination and reactivation method*, **Computational Mechanics**, doi://10.1007/s00466-021-02116-z.
-- E Natkowski, P Sonnweber-Ribic, S Münstermann, *Determination of fatigue lifetimes with a micromechanical short crack model for the high-strength steel SAE 4150*, **International Journal of Fatigue**, doi://10.1016/j.ijfatigue.2021.106621.
 - AG Neto, B Hudobivnik, TF Moherdaui and P Wriggers, *Flexible polyhedra modeled by the virtual element method in a discrete element context*, **Computer Methods in Applied Mechanics and Engineering**, doi://10.1016/j.cma.2021.114163.
 - C Fang, J Gong, M Jia, Z Nie, B Li, A Mohammed and L Zhao, *DEM simulation of the shear behaviour of breakable granular materials with various angularities*, **Advanced Powder Technology**, doi://10.1016/j.apt.2021.09.009.
-- T Grabec, IA Veres and M Ryzy, *Surface acoustic wave attenuation in polycrystals: Numerical modeling using a statistical digital twin of an actual sample*, **Ultrasonics**, doi://10.1016/j.ultras.2021.106585.
 - S Rezaei, A Asheri and BX Xu, *A consistent framework for chemo-mechanical cohesive fracture and its application in solid-state batteries*, **Journal of the Mechanics and Physics of Solids**, doi://10.1016/j.jmps.2021.104612.
 - U Ro, S Kim, Y Kim and MK Kim, *Creep-Fatigue damage analysis of modified 9Cr–1Mo steel based on a Voronoi crystalline model*, **International Journal of Pressure Vessels and Piping**, doi://10.1016/j.ijpvp.2021.104541.
 - W Zhao, J Sun and Z Huang, *Three-dimensional graphene-carbon nanotube reinforced ceramics and computer simulation*, **Ceramics International**, doi://10.1016/j.ceramint.2021.08.304.
 - KA Meyer and A Menzel, *A distortional hardening model for finite plasticity*, **International Journal of Solids and Structures**, doi://10.1016/j.ijsolstr.2021.111055.
-- X Zhang and C Oskay, Modeling and Numerical Investigation of Mechanical Twinning in β-HMX Crystals Subjected to Shock Loading, Modelling and Simulation in Materials Science and Engineering, doi://10.1088/1361-651X/ac21a6.
-- A Vuppala, A Krämer and J Lohmar, On Sampling Discrete Orientations from XRD for Texture Representation in Aggregates with Varying Grain Size, Crystals, doi://10.3390/cryst11091021.
+- X Zhang and C Oskay, *Modeling and Numerical Investigation of Mechanical Twinning in β-HMX Crystals Subjected to Shock Loading*, **Modelling and Simulation in Materials Science and Engineering**, doi://10.1088/1361-651X/ac21a6.
+- A Vuppala, A Krämer and J Lohmar, *On Sampling Discrete Orientations from XRD for Texture Representation in Aggregates with Varying Grain Size*, **Crystals**, doi://10.3390/cryst11091021.
 - IAR Lopes, FMA Pires, *Unlocking the Potential of Second-order Computational Homogenisation: An Overview of Distinct Formulations and a Guide for their Implementation*, **Archives of Computational Methods in Engineering**, doi://10.1007/s11831-021-09611-9.
 - T Beck, B Engel, L Mäde and S Ohneseit, *Influence of Grain Orientation Distribution on the High Temperature Fatigue Behaviour of Notched Specimen Made of Polycrystalline Nickel-Base Superalloy*, **Metals**, doi://10.3390/met11050731.
 - L Fourel, JP Noyel, E Bossy, X Kleber, P Sainsot and F Ville, *Towards a Grain-scale Modeling of Crack Initiation in Rolling Contact Fatigue-Part 1: Shear Stress Considerations*, **Tribology International**, doi://10.1016/j.triboint.2021.107224.
