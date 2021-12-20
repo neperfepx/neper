@@ -155,7 +155,7 @@ neut_tesr_fprintf_data_raw (FILE * file, char *rawname, char *format,
 {
   fprintf (file, " **data\n");
   fprintf (file, "   %s\n", format);
-  fprintf (file, "  *file %s", rawname);
+  fprintf (file, "  *file %s\n", rawname);
 
   FILE *file2 = ut_file_open (rawname, "w");
   neut_tesr_fprintf_data_noheader (file2, format, wildcard, Tesr, NULL);
