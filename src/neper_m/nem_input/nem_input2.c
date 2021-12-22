@@ -36,7 +36,7 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     ut_string_string ("faces", &(*pIn).faset);
 
   char *tmp = ut_alloc_1d_char (1000);
-  sprintf (tmp, "%s --version 2> .nepertmp", (*pIn).gmsh);
+  sprintf (tmp, "%s --version > .nepertmp 2> .nepertmp", (*pIn).gmsh);
   if (system (tmp) == -1)
     abort ();
 
