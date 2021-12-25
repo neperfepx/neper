@@ -26,6 +26,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 
 ## 2021
 
+- A Rajaei, Y Deng, O Schenk, S Rooein, A Bezold and C Broeckmann, *Numerical Modelling of the Powder Metallurgical Manufacturing Chain of High Strength Sintered Gears*, **Chinese Journal of Mechanical Engineering**, doi://10.1186/s10033-021-00646-4.
 - L Yin and O Umezawa, *Crystal plasticity analysis of temperature-sensitive dwell fatigue in Ti-6Al-4V titanium alloy for an aero-engine fan disc*, **International Journal of Fatigue**, doi://10.1016/j.ijfatigue.2021.106688.
 - X Hu, X Gong, N Xie, Q Zhu, P Guo, H Hu and J Ma, *Modeling crack propagation in heterogeneous granite using grain-based phase field method*, **Theoretical and Applied Fracture Mechanics**, doi://10.1016/j.tafmec.2021.103203.
 - JY Zheng, JQ Ran and MW Fu, *Constitutive Modeling of Multiscale Polycrystals Considering Grain Structures and Orientations*, **International Journal of Mechanical Sciences**, doi://10.1016/j.ijmecsci.2021.106992.
