@@ -35,7 +35,7 @@ Neper's dependencies include
 
 ## Reference papers
 
-- Romain Quey, Paul Dawson and Fabrice Barbe, Large-scale 3D random polycrystals for the finite element method: Generation, meshing and remeshing, Comput. Methods Appl. Mech. Engrg., vol. 200, pp. 1729-1745, 2011: [paper](neper-reference-paper.pdf)
+- Romain Quey, Paul Dawson and Fabrice Barbe, Large-scale 3D random polycrystals for the finite element method: Generation, meshing and remeshing, Comput. Methods Appl. Mech. Engrg., vol. 200, pp. 1729-1745, 2011: [paper](docs/neper-reference-paper.pdf)
 
 - Romain Quey and Loïc Renversade, Optimal polyhedral description of 3D polycrystals: Method and application to statistical and synchrotron X-ray diffraction data, Comput. Methods Appl. Mech. Engrg., vol. 330, pp. 308-333, 2018: [postprint](https://hal.archives-ouvertes.fr/hal-01626440) [link](https://www.sciencedirect.com/science/article/pii/S0045782517307028)
 
