@@ -301,8 +301,14 @@ the specification of the absolute lamella width @code{@var{w}}.  For specifying
 several widths@comma{} combine them @w{with @samp{@SEPDEP}}.
 Argument
 @samp{v=@var{v}} allows one to specify the lamella plane @w{normals
-@code{@var{v}}}.  For randomly-distributed normals taken from a uniform
-distribution@comma{} use @samp{random} (the default).  For a direction of space@comma{} use
+@code{@var{v}}}.
+For randomly-distributed normals taken from a uniform
+distribution@comma{} use @samp{random} (the default).
+For randomly-distributed normals taken from a uniform
+distribution but non-zero components about some directions only@comma{}
+use @samp{random(@var{dir1},...)}@comma{} where @code{@var{dir1}}@comma{} ...
+are the directions@comma{} among @code{x}@comma{} @code{y}@comma{} and @code{z}.
+For a direction of space@comma{} use
 @samp{(@var{dir_x}@comma{}@var{dir_y}@comma{}@var{dir_z})}@comma{}
 where @math{(@var{dir_x}@comma{}@var{dir_y}@comma{}@var{dir_z})} is the
 direction.

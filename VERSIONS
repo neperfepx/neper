@@ -1,5 +1,6 @@
-New in 4.2.1-20 (22 Dec 2021):
-- module -T: made minor fixes and improvements.
+New in 4.2.1-21 (05 Jan 2022):
+- module -T: added -morpho "lamellar(v=random(...))", made minor fixes and
+  improvements.
 - module -M: added -format phase, fixed inp output, made minor fixes.
 - module -V: added support for -datanodecol in vtk file, made minor fixes.
 - module -S: fixed merging of simulation directories.

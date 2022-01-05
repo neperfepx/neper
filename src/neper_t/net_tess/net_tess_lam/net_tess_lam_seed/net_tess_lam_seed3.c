@@ -120,7 +120,7 @@ net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
                               gsl_rng * r, char *vtype, double *v, int vqty,
                               double *n)
 {
-  int id, dim = SSet[1].Dim;
+  int dim = SSet[1].Dim;
   double theta;
   double *q = NULL;
 
@@ -130,33 +130,46 @@ net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
   if (!strcmp (vtype, "file") && vqty == 1)
     ut_array_1d_memcpy (v, 3, n);
 
-  else if (!strcmp (vtype, "random"))
+  else if (!strncmp (vtype, "random", 6))
   {
-    if (dim == 3)
+    char *fct = NULL, **vars = NULL, **vals = NULL;
+    int i, valqty, *qty = ut_alloc_1d_int (3);
+
+    ut_string_function (vtype, &fct, &vars, &vals, &valqty);
+    for (i = 0; i < valqty; i++)
+      if (strcmp (vals[i], "x") && strcmp (vals[i], "y") && strcmp (vals[i], "z"))
+        ut_print_message (2, 3, "Unknown direction `%s'\n", vals[i]);
+      else if (++qty[vals[i][0] - 'x'] > 1)
+        ut_print_message (2, 3, "Duplicate direction `%s'\n", vals[i]);
+
+    if (dim == 3 && (valqty == 0 || valqty == 3))
       ol_nb_r (gsl_rng_uniform (r), gsl_rng_uniform (r), n);
-    else if (dim == 2)
+    else if (dim == 2 || valqty == 1 || valqty == 2)
     {
       theta = 2 * M_PI * gsl_rng_uniform (r);
-      n[0] = cos (theta);
-      n[1] = sin (theta);
+
+      if (dim == 2)
+      {
+        n[0] = cos (theta);
+        n[1] = sin (theta);
+      }
+      else if (valqty == 1)
+        n[vals[0][0] - 'x'] = 1;
+      else if (valqty == 2)
+      {
+        n[vals[0][0] - 'x'] = cos (theta);
+        n[vals[1][0] - 'x'] = sin (theta);
+      }
+      else
+        abort ();
     }
     else
       abort ();
-  }
 
-  else if (!strncmp (vtype, "random(", 7))
-  {
-    int ptqty;
-    double **pts = NULL;
-    sscanf (vtype, "random(%d)", &ptqty);
-    pts = ut_alloc_2d (ptqty, 3);
-
-    ut_space_sphere_points (ptqty, 1, pts);
-
-    id = ptqty * gsl_rng_uniform (r);
-    ut_array_1d_memcpy (pts[id], 3, n);
-
-    ut_free_2d (&pts, ptqty);
+    ut_free_1d_char (&fct);
+    ut_free_2d_char (&vars, valqty);
+    ut_free_2d_char (&vals, valqty);
+    ut_free_1d_int (&qty);
   }
 
   else if (!strncmp (vtype, "(", 1))
