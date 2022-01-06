@@ -399,7 +399,7 @@ neut_tess_var_val (struct TESS Tess, int *showedge, int *showface,
       neut_tess_centre (Tess, c);
       (*pvals)[0] = c[2];
     }
-    if (!strcmp (var2, "coo"))
+    else if (!strcmp (var2, "coo"))
     {
       neut_tess_centre (Tess, *pvals);
       (*pvalqty) = 3;
