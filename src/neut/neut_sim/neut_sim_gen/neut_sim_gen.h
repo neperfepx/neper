@@ -50,7 +50,7 @@ extern void neut_sim_entity_dir (char *entity, char **pdir);
 extern void neut_sim_entity_res (struct SIM Sim, char *entity, char ***pres, int *presqty);
 
 /// returns the type of a result: int, real, ori, vector, tensor
-extern int neut_sim_knownres_type (struct SIM Sim, char *res, char **ptype, int *pcolqty);
+extern int neut_sim_knownres_type (char *res, char **ptype, int *pcolqty);
 
 /// returns the type of a result: int, real, ori, vector, tensor
 extern int neut_sim_res_type (struct SIM Sim, char *entity, char *res, char **ptype, int *pcolqty);

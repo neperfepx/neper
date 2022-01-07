@@ -42,7 +42,7 @@ nes_sim_write_inputs_file (struct IN_S In, struct SIM Sim, char *filename)
 void
 nes_sim_write_results_entity (struct IN_S In, struct SIM *pSim, char *entity)
 {
-  int i, j, startstep, colqty, status, resqty, *reswritten = NULL;
+  int i, j, startstep, status, resqty, *reswritten = NULL;
   char *dir = NULL;
   char **res = NULL;
 
@@ -68,7 +68,7 @@ nes_sim_write_results_entity (struct IN_S In, struct SIM *pSim, char *entity)
 
   for (i = 0; i < resqty; i++)
   {
-    status = nes_sim_write_results_prop (*pSim, res[i], &startstep, &colqty);
+    status = nes_sim_write_results_prop (*pSim, res[i], &startstep);
 
     if (!status)
     {
@@ -77,7 +77,7 @@ nes_sim_write_results_entity (struct IN_S In, struct SIM *pSim, char *entity)
         printf (".");
       printf (" ");
 
-      nes_sim_write_results_entity_step (In, *pSim, res[i], entity, startstep, colqty);
+      nes_sim_write_results_entity_step (In, *pSim, res[i], entity, startstep);
 
       reswritten[i] = 1;
       neut_sim_fprintf (In.simdir, *pSim, "W");

@@ -353,7 +353,7 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
 }
 
 int
-neut_sim_knownres_type (struct SIM Sim, char *res, char **ptype, int *pcolqty)
+neut_sim_knownres_type (char *res, char **ptype, int *pcolqty)
 {
   if (!strcmp (res, "coo"))
   {
@@ -466,7 +466,7 @@ neut_sim_res_type (struct SIM Sim, char *entity, char *res, char **ptype, int *p
 
   *pcolqty = 0;
 
-  if (!neut_sim_knownres_type (Sim, res, ptype, pcolqty))
+  if (!neut_sim_knownres_type (res, ptype, pcolqty))
     return 0;
 
   else
