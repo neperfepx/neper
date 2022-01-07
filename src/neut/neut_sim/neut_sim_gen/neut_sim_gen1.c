@@ -167,20 +167,10 @@ neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode)
     }
     else if (!strcmp (var, "number_of_slip_systems"))
     {
-      if (!(*pSim).GroupQty)
-        (*pSim).GroupQty = 1;
+      (*pSim).SlipSystemQty = ut_alloc_1d_int ((*pSim).GroupQty);
 
-      int *tmp = ut_alloc_1d_int ((*pSim).GroupQty);
-
-      if (ut_array_1d_int_fscanf (file, tmp, (*pSim).GroupQty) != 1)
+      if (ut_array_1d_int_fscanf (file, (*pSim).SlipSystemQty, (*pSim).GroupQty) != 1)
         abort ();
-      ut_array_1d_int_uniq (tmp, (*pSim).GroupQty, &(*pSim).GroupQty);
-      if ((*pSim).GroupQty != 1)
-        ut_print_message (2, 0, "Different numbers of slip systems are not supported (complain!).\n");
-
-      (*pSim).SlipSystemQty = tmp[0];
-
-      ut_free_1d_int (&tmp);
     }
     else if (!strcmp (var, "number_of_elements_bypartition"))
     {
@@ -326,9 +316,11 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
   fprintf (file, "number_of_nodes %d\n", Sim.NodeQty);
   fprintf (file, "number_of_elements %d\n", Sim.EltQty);
   fprintf (file, "number_of_elsets %d\n", Sim.ElsetQty);
+  fprintf (file, "number_of_phases %d\n", Sim.GroupQty);
   if (Sim.PartQty > 0)
     fprintf (file, "number_of_partitions %d\n", Sim.PartQty);
-  fprintf (file, "number_of_slip_systems %d\n", Sim.SlipSystemQty);
+  fprintf (file, "number_of_slip_systems ");
+  ut_array_1d_int_fprintf (file, Sim.SlipSystemQty, Sim.GroupQty, "%d");
   fprintf (file, "number_of_steps %d\n", Sim.StepQty);
 
   qty = ut_array_1d_int_valnb (Sim.StepState + 1, Sim.StepQty, 0);
@@ -381,6 +373,7 @@ neut_sim_knownres_type (struct SIM Sim, char *res, char **ptype, int *pcolqty)
     *pcolqty = 3;
   }
 
+  /*
   else if (!strcmp (res, "slip"))
   {
     ut_string_string ("vector", ptype);
@@ -392,6 +385,7 @@ neut_sim_knownres_type (struct SIM Sim, char *res, char **ptype, int *pcolqty)
     ut_string_string ("vector", ptype);
     *pcolqty = Sim.SlipSystemQty;
   }
+  */
 
   else if (!strcmp (res, "spinrate"))
   {

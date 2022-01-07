@@ -42,7 +42,7 @@ neut_sim_set_zero (struct SIM *pSim)
   (*pSim).PartQty = 0;
   (*pSim).PartNodeQty = NULL;
   (*pSim).PartEltQty = NULL;
-  (*pSim).SlipSystemQty = 0;
+  (*pSim).SlipSystemQty = NULL;
 
   (*pSim).step = 0;
 
@@ -75,6 +75,7 @@ neut_sim_free (struct SIM *pSim)
   ut_free_1d_char (&(*pSim).fepxdir);
   ut_free_1d_int (&(*pSim).PartNodeQty);
   ut_free_1d_int (&(*pSim).PartEltQty);
+  ut_free_1d_int (&(*pSim).SlipSystemQty);
 
   return;
 }

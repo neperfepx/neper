@@ -45,7 +45,7 @@ struct SIM
   int PartQty;          // number of partitions
   int *PartNodeQty;     // number of nodes of the partitions
   int *PartEltQty;      // number of elements of the partitions
-  int SlipSystemQty;    // number of slip systems
+  int *SlipSystemQty;   // number of slip systems
 
   int step;             // current step
 };
