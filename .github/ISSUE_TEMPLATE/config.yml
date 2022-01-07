@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question and help request
+    url: https://github.com/rquey/neper/discussions
+    about: Ask questions and discuss with other community members
