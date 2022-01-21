@@ -3,6 +3,7 @@
 # This script is used to add bash completion feature to the Neper software
 # Author: Xiao Shang (93xshang@gmail.com)
 # https://github.com/xshang93/neper_bash_comp
+# v1.0.0-2 (20 Jan 2022)
 
 _neper_completions() {
 
