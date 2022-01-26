@@ -13,7 +13,13 @@ Provide a clear and concise description of what the bug is.
 
 **To Reproduce**
 
-Provide a minimal working example that can be used to reproduce the bug, that is, complete but excluding unnecessary options, large inputs and excessive computation times.  The example should include the program commands and terminal output as *plain text* (no screenshot, etc.), and be provided between triple backticks (Markdown formatting), as shown below:
+Provide a *minimal working example* that can be used to reproduce the bug, that is, *complete* but *excluding unnecessary options*, *large inputs* and *excessive computation times*.  The example should include the program commands and other necessary input, and the terminal output.
+
+*Formatting is important*.  An example should be written as *plain text* (no screenshot, etc.) and provided between triple backticks (Markdown formatting).  Input or output text files that are too large to be provided in-text can be attached (GitHub requires a .txt extension).  Images can be used if necessary.
+
+To preview your message, use "Preview".  To edit your message after it is published, use "Edit".
+
+Here is an example of properly formatted example:
 
 ```
 $ neper -T -n 10
@@ -44,4 +50,4 @@ Info   : Elapsed time: 0.012 secs.
 ========================================================================
 ```
 
-To preview your message, use "Preview".  To edit your message, use "Edit".
+You may cut parts of the terminal output as long as all information needed for debugging is not removed.
