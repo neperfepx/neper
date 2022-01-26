@@ -60,6 +60,10 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
       || fscanf (file, "%d", &((*pTess).CellQty)) != 1)
     abort ();
 
+  // ModeId set to 1 by default
+  (*pTess).CellModeId = ut_alloc_1d_int ((*pTess).CellQty + 1);
+  ut_array_1d_int_set ((*pTess).CellModeId + 1, (*pTess).CellQty, 1);
+
   while (!ut_file_nextstring_sectionlevel (file, &level) && level == 1)
   {
     ut_file_nextstring (file, string);
@@ -81,7 +85,6 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
     else if (!strcmp (string, "*mode") || !strcmp (string, "*modeid"))
     {
       ut_file_skip (file, 1);
-      (*pTess).CellModeId = ut_alloc_1d_int ((*pTess).CellQty + 1);
       ut_array_1d_int_fscanf (file, (*pTess).CellModeId + 1,
                               (*pTess).CellQty);
     }

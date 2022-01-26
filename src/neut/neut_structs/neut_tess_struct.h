@@ -67,7 +67,7 @@ extern "C"
 
     // For a multimodal tessellation, mode ids of the cells, in terms of
     // imposed size [1...CellQty] (starts at 1)
-    // define only if necessary
+    // set to 1 by default (no multimodal)
     int *CellModeId;
 
     // Group of the cells [1...CellQty]

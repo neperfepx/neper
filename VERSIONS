@@ -1,4 +1,4 @@
-New in 4.2.1-28 (26 Jan 2022):
+New in 4.2.1-29 (26 Jan 2022):
 - module -T: added -morpho "lamellar(v=random(...))", made minor fixes and
   improvements.
 - module -M: added -format phase, fixed inp output, made minor fixes.

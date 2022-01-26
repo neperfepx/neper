@@ -305,7 +305,7 @@ the parameters @math{d}, @math{a}, @math{b} and @math{c}, with the equation bein
   of the cell (starting from 1).}            @tab cell
   @item @code{mode}  @tab mode@footnote{In the case of a
     multimodal tessellation (e.g.@ in terms of cell size)@comma{}
-    @var{mode} stands for the actual mode (starting from 1).}            @tab cell
+    @var{mode} stands for the actual mode (starting from 1).  Otherwise@comma{} it is equal to 1.}            @tab cell
   @item @code{group}  @tab group  @tab cell
   @item @code{per}  @tab periodic (1 if periodic, 0 otherwise)  @tab ver, edge, face (in 3D)
 @end multitable

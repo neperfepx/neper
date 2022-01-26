@@ -16,6 +16,8 @@ net_tess_opt_post_modes (struct TOPT TOpt, struct TESS *Tess, int tessid)
   int *mode = ut_alloc_1d_int (TOpt.CellQty);
   double *tmpval = NULL;
 
+  Tess[tessid].CellModeId = ut_alloc_1d_int (Tess[tessid].CellQty + 1);
+
   tar = -1;
   for (i = 0; i < TOpt.tarqty; i++)
     if (TOpt.tarmodeqty[i] > 1)
@@ -26,8 +28,6 @@ net_tess_opt_post_modes (struct TOPT TOpt, struct TESS *Tess, int tessid)
 
   if (tar != -1)
   {
-    Tess[tessid].CellModeId = ut_alloc_1d_int (Tess[tessid].CellQty + 1);
-
     size = TOpt.tarmodecdf0[tar][0].size;
     x = ut_alloc_1d (size);
     ut_array_1d_memcpy (TOpt.tarmodecdf0[tar][0].x, size, x);
@@ -95,7 +95,7 @@ net_tess_opt_post_modes (struct TOPT TOpt, struct TESS *Tess, int tessid)
   }
 
   else
-    ut_free_1d_int (&(Tess[tessid].CellModeId));
+    ut_array_1d_int_set (Tess[tessid].CellModeId + 1, Tess[tessid].CellQty, 1);
 
   ut_free_1d (&val);
   ut_free_1d_int (&id);

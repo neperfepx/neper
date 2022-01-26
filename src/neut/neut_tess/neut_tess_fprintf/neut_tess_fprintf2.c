@@ -51,7 +51,8 @@ neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
     fprintf (file, "\n");
   }
 
-  if (Tess.CellModeId)
+  if (Tess.CellModeId
+      && ut_array_1d_int_valnb (Tess.CellModeId + 1, Tess.CellQty, 1) != Tess.CellQty)
   {
     fprintf (file, "  *mode\n");
     qty = 0;
