@@ -36,8 +36,14 @@ extern void neut_mesh_fprintf_msh_elts_v4 (FILE * file, char *mode,
                                          int *fasetids, int fasetqty,
                                          char *dim, char *numbering,
                                          int *shift);
-extern void neut_mesh_fprintf_msh_nodes (FILE * file, char *mode,
-                                          struct NODES Nodes);
+extern void neut_mesh_fprintf_msh_nodes (FILE *file, char *mode, struct NODES Nodes,
+                                         struct MESH Mesh0D, struct MESH Mesh1D,
+                                         struct MESH Mesh2D, struct MESH Mesh3D, char *dim);
+extern void neut_mesh_fprintf_msh_nodes_print (struct NODES Nodes,
+                                   struct MESH Mesh0D, struct MESH Mesh1D,
+                                   struct MESH Mesh2D, struct MESH Mesh3D,
+                                   char *dim, int *print);
+extern void neut_mesh_fprintf_msh_nodes_print_mesh (struct MESH Mesh, int *print);
 
 extern void neut_mesh_fprintf_msh_periodicity (FILE *file, struct NODES Nodes);
 
