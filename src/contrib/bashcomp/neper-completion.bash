@@ -2,8 +2,6 @@
 
 # This script is used to add bash completion feature to the Neper software
 # Author: Xiao Shang (93xshang@gmail.com)
-# https://github.com/xshang93/neper_bash_comp
-# v1.0.0-2 (20 Jan 2022)
 
 _neper_completions() {
 
@@ -38,6 +36,8 @@ _neper_completions() {
 
   -checktess "
 
+  opts_load_T="-loadtesr -loadtess -loadpoint "
+
   opts_M="-gmsh -tmp \
 
   -loadmesh -loadpoint \
@@ -64,6 +64,8 @@ _neper_completions() {
 
   -mesh3dclreps -mesh2dmaxtime -mesh2drmaxtime -mesh2diter -mesh3dmaxtime \
   -mesh3drmaxtime -mesh3diter "
+
+  opts_load_M="-loadmesh -loadpoint "
 
   opts_S="-noderes -eltres -elsetres \
 
@@ -141,6 +143,8 @@ _neper_completions() {
       # done
       if [[ ${prev} != -* ]]; then
         COMPREPLY=( $(compgen -W "${opts_T}" -- ${cur}) )
+      elif [[ ${cur} == -* ]]; then
+        COMPREPLY=( $(compgen -W "${opts_load_T}" -- ${cur}) )
       fi
       ;;
 
@@ -151,7 +155,9 @@ _neper_completions() {
       #     opts_M="${opts_M//$word2rm /}"
       #   fi
       # done
-      if [[ ${COMP_CWORD} -eq 2 ]] || [[ $cur == *, ]]; then
+      if [[ ${COMP_CWORD} -eq 2 ]] && [[ ${cur} == -* ]]; then
+        COMPREPLY=( $(compgen -W "${opts_load_M}" -- ${cur}) )
+      elif [[ ${COMP_CWORD} -eq 2 ]] || [[ $cur == *, ]]; then
         COMP_WORDBREAKS=${COMP_WORDBREAKS},
       elif [[ ${prev} != -* ]]; then
         COMPREPLY=( $(compgen -W "${opts_M}" -- ${cur}) )
