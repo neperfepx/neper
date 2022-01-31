@@ -148,7 +148,7 @@ void
 net_ori_file (char *filename, struct OL_SET *pOSet)
 {
   unsigned int i;
-  char *des = NULL;
+  char *des = NULL, *conv = NULL, *tmp = NULL;
   double *vect = ut_alloc_1d (4);
   double **g = ol_g_alloc ();
   FILE *fp = NULL;
@@ -159,11 +159,21 @@ net_ori_file (char *filename, struct OL_SET *pOSet)
 
   ut_string_function (filename, &fct, &vars, &vals, &varqty);
 
+  ut_string_string ("active", &conv);
+
   if (varqty == 1)
     ut_string_string (NEUT_DEFAULT_ORIDES, &des);
   else if (varqty == 2)
+  {
     if (!ut_string_strcmp (vars[1], "des"))
-    ut_string_string (vals[1], &des);
+    {
+      ut_list_break_2 (vals[1], NEUT_SEP_DEP, &des, &tmp);
+      if (tmp)
+        ut_string_string (tmp, &conv);
+    }
+    else
+      abort ();
+  }
 
   fp = ut_file_open (vals[0], "r");
 
@@ -210,8 +220,15 @@ net_ori_file (char *filename, struct OL_SET *pOSet)
       abort ();
   }
 
+  if (!strcmp (conv, "passive"))
+    for (i = 0; i < (*pOSet).size; i++)
+        ol_q_inverse ((*pOSet).q[i], (*pOSet).q[i]);
+
   ut_file_close (fp, filename, "r");
 
+  ut_free_1d_char (&des);
+  ut_free_1d_char (&conv);
+  ut_free_1d_char (&tmp);
   ut_free_1d (&vect);
   ol_g_free (g);
   ut_free_2d_char (&vars, varqty);
