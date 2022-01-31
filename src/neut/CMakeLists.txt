@@ -65,7 +65,6 @@ add_library(neut
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_msh/neut_mesh_fprintf_msh1.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_msh/neut_mesh_fprintf_msh2.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_msh/neut_mesh_fprintf_msh3.c
-./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_msh/neut_mesh_fprintf_msh4.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_ori/neut_mesh_fprintf_ori1.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_phase/neut_mesh_fprintf_phase1.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_bcs/neut_mesh_fprintf_bcs1.c

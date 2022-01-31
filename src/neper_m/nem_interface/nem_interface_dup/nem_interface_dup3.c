@@ -5,7 +5,7 @@
 #include"nem_interface_dup_.h"
 
 void
-nem_interface_duplicate (int *seeds, int seedqty, int *nodes, int NodeQty,
+nem_interface_duplicate (int *seeds, int seedqty, int *nodes, int nodeqty,
                          struct NODES *pNodes, struct MESH *Mesh)
 {
   int i, j, k, node, newnode, eltnodeqty, seed;
@@ -19,7 +19,7 @@ nem_interface_duplicate (int *seeds, int seedqty, int *nodes, int NodeQty,
   if (!(*pNodes).DupNodeSeed)
     (*pNodes).DupNodeSeed = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
 
-  for (j = 0; j < NodeQty; j++)
+  for (j = 0; j < nodeqty; j++)
   {
     node = nodes[j];
 

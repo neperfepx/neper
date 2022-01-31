@@ -67,18 +67,18 @@ nem_interface_dup_ver (struct TESS Tess, int *vers, int verqty,
 {
   int i, ver;
   int seedqty, *seeds = NULL;
-  int NodeQty, *nodes = NULL;
+  int nodeqty, *nodes = NULL;
 
   for (i = 0; i < verqty; i++)
   {
     ver = vers[i];
 
-    neut_tess_ver_seeds (Tess, ver, &seeds, &seedqty);
+    neut_tess_ver_seeds_positive (Tess, ver, &seeds, &seedqty);
     if (neut_tess_ver_isperslave (Tess, ver))
       neut_tess_ver_masterseeds (Tess, ver, &seeds, &seedqty);
 
-    neut_mesh_elset_nodes (Mesh[0], ver, &nodes, &NodeQty);
-    nem_interface_duplicate (seeds, seedqty, nodes, NodeQty, pNodes, Mesh);
+    neut_mesh_elset_nodes (Mesh[0], ver, &nodes, &nodeqty);
+    nem_interface_duplicate (seeds, seedqty, nodes, nodeqty, pNodes, Mesh);
   }
 
   ut_free_1d_int (&nodes);
@@ -99,7 +99,7 @@ nem_interface_dup_edge (struct TESS Tess, int *edges, int edgeqty,
   {
     edge = edges[i];
 
-    neut_tess_edge_seeds (Tess, edge, &seeds, &seedqty);
+    neut_tess_edge_seeds_positive (Tess, edge, &seeds, &seedqty);
     if (neut_tess_edge_isperslave (Tess, edge))
       neut_tess_edge_masterseeds (Tess, edge, &seeds, &seedqty);
 
@@ -125,7 +125,7 @@ nem_interface_dup_face (struct TESS Tess, int *faces, int faceqty,
   {
     face = faces[i];
 
-    neut_tess_face_seeds (Tess, face, &seeds, &seedqty);
+    neut_tess_face_seeds_positive (Tess, face, &seeds, &seedqty);
     if (neut_tess_face_isperslave (Tess, face))
       neut_tess_face_masterseeds (Tess, face, &seeds, &seedqty);
 

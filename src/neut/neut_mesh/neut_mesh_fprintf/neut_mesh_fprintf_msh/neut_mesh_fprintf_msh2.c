@@ -112,44 +112,34 @@ neut_mesh_fprintf_msh_entities (FILE * file, char *mode, struct TESS Tess,
 }
 
 void
-neut_mesh_fprintf_msh_nodes (FILE *file, char *mode, struct NODES Nodes,
-                             struct MESH Mesh0D, struct MESH Mesh1D,
-                             struct MESH Mesh2D, struct MESH Mesh3D, char *dim)
+neut_mesh_fprintf_msh_nodes (FILE *file, char *mode, struct NODES Nodes)
 {
   int i, j;
-  int *print = ut_alloc_1d_int (Nodes.NodeQty + 1);
-
-  neut_mesh_fprintf_msh_nodes_print (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D,
-                                     dim, print);
 
   fprintf (file, "$Nodes\n");
-  fprintf (file, "%d\n", print[0]);
+  fprintf (file, "%d\n", Nodes.NodeQty);
   if (!strcmp (mode, "ascii"))
   {
     for (i = 1; i <= Nodes.NodeQty; i++)
-      if (print[i])
-      {
-        fprintf (file, "%d", i);
-        for (j = 0; j < 3; j++)
-          fprintf (file, " %.12f",
-                   (fabs (Nodes.NodeCoo[i][j]) <
-                    1e-12) ? 0 : Nodes.NodeCoo[i][j]);
-        fprintf (file, "\n");
-      }
+    {
+      fprintf (file, "%d", i);
+      for (j = 0; j < 3; j++)
+        fprintf (file, " %.12f",
+                 (fabs (Nodes.NodeCoo[i][j]) <
+                  1e-12) ? 0 : Nodes.NodeCoo[i][j]);
+      fprintf (file, "\n");
+    }
   }
   else
   {
     for (i = 1; i <= Nodes.NodeQty; i++)
-      if (print[i])
-      {
-        fwrite (&i, sizeof (int), 1, file);
-        fwrite (Nodes.NodeCoo[i], sizeof (double), 3, file);
-      }
+    {
+      fwrite (&i, sizeof (int), 1, file);
+      fwrite (Nodes.NodeCoo[i], sizeof (double), 3, file);
+    }
     fprintf (file, "\n");
   }
   fprintf (file, "$EndNodes\n");
-
-  ut_free_1d_int (&print);
 
   return;
 }

@@ -5,58 +5,6 @@
 #include"neut_mesh_fprintf_msh_.h"
 
 void
-neut_mesh_fprintf_msh_nodes_print (struct NODES Nodes,
-                                   struct MESH Mesh0D, struct MESH Mesh1D,
-                                   struct MESH Mesh2D, struct MESH Mesh3D,
-                                   char *dim, int *print)
-{
-  int i, meshdim = -1;
-  int *dim_write = ut_alloc_1d_int (4);
-  char *tmp = ut_alloc_1d_char (2);
-
-  if (!neut_mesh_isvoid (Mesh3D))
-    meshdim = 3;
-  else if (!neut_mesh_isvoid (Mesh2D))
-    meshdim = 2;
-  else if (!neut_mesh_isvoid (Mesh1D))
-    meshdim = 1;
-  else if (!neut_mesh_isvoid (Mesh0D))
-    meshdim = 0;
-
-  for (i = 0; i <= 3; i++)
-  {
-    sprintf (tmp, "%d", i);
-    if (ut_list_testelt (dim, NEUT_SEP_NODEP, tmp))
-      dim_write[i] = 1;
-  }
-
-  if (meshdim >= 0 && ut_array_1d_int_sum (dim_write, meshdim + 1) != meshdim + 1)
-  {
-    if (meshdim >= 3 && dim_write[3])
-      neut_mesh_fprintf_msh_nodes_print_mesh (Mesh3D, print);
-    if (meshdim >= 1 && dim_write[2])
-      neut_mesh_fprintf_msh_nodes_print_mesh (Mesh2D, print);
-    if (meshdim >= 2 && dim_write[1])
-      neut_mesh_fprintf_msh_nodes_print_mesh (Mesh1D, print);
-    if (meshdim >= 0 && dim_write[0])
-      neut_mesh_fprintf_msh_nodes_print_mesh (Mesh0D, print);
-
-    print[0] = ut_array_1d_int_sum (print + 1, Nodes.NodeQty);
-  }
-
-  else
-  {
-    ut_array_1d_int_set (print + 1, Nodes.NodeQty, 1);
-    print[0] = Nodes.NodeQty;
-  }
-
-  ut_free_1d_int (&dim_write);
-  ut_free_1d_char (&tmp);
-
-  return;
-}
-
-void
 neut_mesh_fprintf_msh_entities_dim (FILE * file, char *mode, struct TESS Tess,
                                      struct NODES Nodes, struct MESH Mesh)
 {
