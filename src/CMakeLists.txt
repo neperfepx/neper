@@ -7,7 +7,7 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"4.2.1-31\")
+set(NEPER_VERSION \"4.2.1-34\")
 project(neper)
 
 # Set the build type for appropriate compile flags
@@ -205,8 +205,18 @@ unset(HAVE_PNG CACHE)            # hide from ccmake (comes from Orilib)
 target_link_libraries(neper ${EXTRA_LIBS})
 
 install(TARGETS neper DESTINATION bin
-         PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ
-	 GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+        PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ
+	GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+  set (completiondir "/usr/share/bash-completion/completions")
+elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+  set (completiondir "/usr/local/etc/bash_completion.d")
+endif()
+
+install(FILES contrib/bashcomp/neper-completion.bash
+        DESTINATION ${completiondir}
+        RENAME neper)
 
 # CTEST
 enable_testing()
