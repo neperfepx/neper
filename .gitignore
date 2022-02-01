@@ -1,5 +1,6 @@
 src
-doc
+build
 *.orig
 *.swp
 *~
+__pycache__
