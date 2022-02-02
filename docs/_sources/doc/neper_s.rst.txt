@@ -1,0 +1,200 @@
+.. _neper_s:
+
+.. index::
+   single: -S
+
+Simulation Module (-S)
+======================
+
+Module -S is the module for post-processing simulation results.  It can first be used to convert an FEPX raw result directory into a human-friendly :ref:`simulation_directory`, which is as simple as running:
+
+.. code-block:: console
+
+  $ neper -S <fepx_raw_result_directory>
+
+It can also be used for post-processing, to compute new results from existing simulation results or from the mesh.  New results can be computed for the nodes, elements, elsets and mesh. New *entities* can also be defined, which are sets of elements (just as the *mesh* represents the set of all elements), and new results can be computed from these entities too.  The results of sets of elements (:data:`elset`, :data:`mesh` and new entities) are computed from the element results, by averaging or other statistical processing.  Results can also be imported from external files.  The results can be assigned names and defined from general expressions, as in :data:`energy:0.1234*(crss-crss(step=0))^2`.  Results can also be removed or updated.
+It is also possible to merge simulation directories that represent successive parts of a simulation (e.g. resulting from FEPX restarts).
+The simulation directory can be loaded by module -V for result visualization.
+
+Here is what a typical run of module -S looks like:
+
+.. code-block:: console
+
+  $ neper -S fepx-simulation
+
+  ========================    N   e   p   e   r    =======================
+  Info   : A software package for polycrystal generation and meshing.
+  Info   : Version 4.0.0
+  Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
+  Info   : Running on 8 threads.
+  Info   : <https://neper.info>
+  Info   : Copyright (C) 2003-2021, and GNU GPL'd, by Romain Quey.
+  Info   : Loading initialization file `/home/rquey/.neperrc'...
+  Info   : ---------------------------------------------------------------
+  Info   : MODULE  -S loaded with arguments:
+  Info   : [ini file] (none)
+  Info   : [com line] fepx-simulation
+  Info   : ---------------------------------------------------------------
+  Info   : Reading input data...
+  Info   :   - Reading arguments...
+  Info   : Writing simulation directory from FEPX result directory...
+  Info   :     [o] Writing directory `fepx-simulation.sim'...
+  Info   :   - Parsing FEPX results...
+  Info   :     [i] Parsing file `fepx-simulation/post.report'...
+  Info   :     [i] Parsed file `fepx-simulation/post.report'.
+  Info   :     > Partition number: 8.
+  Info   :     > Step      number: 10.
+  Info   :     > Node      number: 2752.
+  Info   :     > Element   number: 1596.
+  Info   :   - Writing report file...
+  Info   :     [o] Writing file `fepx-simulation.sim/report'...
+  Info   :     [o] Wrote file `fepx-simulation.sim/report'.
+  Info   :   - Writing inputs...
+  Info   :     [o] Writing directory `fepx-simulation.sim/inputs'...
+  Info   :       . simulation.tess...
+  Info   :       . simulation.msh...
+  Info   :       . simulation.config...
+  Info   :     [o] Wrote directory `fepx-simulation.sim/inputs'.
+  Info   :   - Writing results...
+  Info   :     [o] Writing directory `fepx-simulation.sim/results'...
+  Info   :       . coo...       100%
+  Info   :       . ori...       100%
+  Info   :     [o] Wrote directory `fepx-simulation.sim/results'.
+  Info   :     [o] Wrote directory `fepx-simulation.sim'.
+  Info   : Elapsed time: 0.075 secs.
+  ========================================================================
+
+Arguments
+---------
+
+Input Data
+~~~~~~~~~~
+
+.. option:: <directory_name>
+
+  Specify the name of the input directory, which can be:
+
+  - an FEPX raw result directory [#f1]_  (to convert into a simulation directory);
+  - a simulation directory;
+  - a series of simulation directories combined with :data:`,` (to merge).
+
+  **Default value**: -.
+
+.. option:: -orispace <file_name>
+
+  Specify the mesh of orientation space used for ODF computation.
+
+  **Default value**: -.
+
+Entity Options
+~~~~~~~~~~~~~~
+
+.. option:: -entity <name>:<logical_expression>
+
+  Define a new entity (based on elements) from one or several logical expressions based on the variables described in :ref:`mesh_keys`. The argument can be:
+
+  - a single logical expression;
+  - :data:`file(<file_name>)`: logical expressions to load from a file.
+
+  An entity corresponds to one or several sets of elements (just as :data:`mesh` represents the set of all elements and :data:`elset` represents the sets of elements of the mesh and corresponding to the tessellation cells).
+
+  **Default value**: -.
+
+Results Options
+~~~~~~~~~~~~~~~
+
+Below are options to define the results to add to a simulation directory.  The results can be new results defined from mesh and simulation results, or  subresults (such as vector or tensor components).  It is also possible to import results for files.  Any result can also be assigned a *name* alongside its expression. [#f2]_  Results of element-based entities (including :data:`elset` and :data:`mesh`) are computed from the mesh (in the case of known variables) or by volume-weighted averaging of the element results (if they exist), in this order of priority.
+
+.. option:: -res{node,elt,elset,mesh,<entity>} <res1>,<res2>,...
+
+  Specify the results to add, remove or update.  Provide as argument :data:`<res>`, :data:`'!<res>'` [#quotes]_  or :data:`\\\<res\>` to add, remove or update result :data:`<res>`, respectively.  Provide :data:`<res><X>` or :data:`<res>\<X\>\<Y\>` to get a specific component of an existing result (:data:`<X>` or :data:`<X>\<Y\>`, vectorial or tensorial, respectively, 1-indexed) [#f3]_ , :data:`<res>:data(<basename>)` to import results from files of basename :data:`<basename>` (the files of the different steps must be available as :data:`<basename>.step*`), or any expression based on the mesh or simulation results (the mesh results can be any variables described in :ref:`mesh_keys`). For nodes, :data:`disp` can be used to get the node displacements from the node coordinates. To use a simulation result at a specific step, use :data:`<res>(step=<step_nb>)`, where :data:`<res>` is the result and :data:`<step_nb>` is the step number. To define a name corresponding to a result, use :data:`<name>:\<expression\>`, where :data:`<name>` is the name and :data:`<expression>` is its expression. To provide several values, combine them with :data:`,`.
+
+  **Default value**: -.
+
+Output Options
+~~~~~~~~~~~~~~
+
+.. option:: -o <directory_name>
+
+  Specify the name of the output simulation directory (the default :data:`.sim` extension is not added to the argument).
+
+  **Default value**: :data:`<fepx_result_directory>.sim`
+
+Output Directory
+----------------
+
+- :data:`.sim`: simulation directory (see :ref:`simulation_directory`).
+
+Examples
+--------
+
+Below are some examples of use of neper -S.
+
+- Convert an FEPX raw result directory into a simulation directory:
+
+  .. code-block:: console
+
+    $ neper -S fepx-simulation
+
+- Convert an FEPX raw result directory into a simulation directory of specified name:
+
+  .. code-block:: console
+
+    $ neper -S fepx-simulation -o foo
+
+- Add the nodal :data:`x` and the elemental :data:`vol` and :data:`stress33` results to a simulation directory:
+
+  .. code-block:: console
+
+    $ neper -S simulation -resnode x -reselt vol,rr
+
+- Add the elemental :data:`energy` result, defined as :data:`0.12*(crss-crss(step=0))^2`, to a simulation directory:
+
+  .. code-block:: console
+
+    $ neper -S simulation -reselt "energy:0.12*(crss-crss(step=0))^2"
+
+- Override the elemental :data:`energy` result, newly defined as :data:`0.34*(crss-crss(step=0))^2`, in a simulation directory:
+
+  .. code-block:: console
+
+    $ neper -S simulation -reselt '!energy,energy:0.34*(crss-crss(step=0))^2'
+
+- Add the elset and mesh :data:`stress` results to a simulation directory (the :data:`stress` result must exist for elements):
+
+  .. code-block:: console
+
+    $ neper -S simulation -reselset stress -resmesh stress
+
+- Define a new entity named :data:`tophalf`, corresponding to the top half of the sample along :data:`z`, and compute its stress:
+
+  .. code-block:: console
+
+    $ neper -S simulation -entity "tophalf:z>0.5" -restophalf stress
+
+- Define a new entity named :data:`halves`, corresponding to the bottom and top halves of the sample along :data:`z`, and compute its stresses:
+
+  .. code-block:: console
+
+    $ neper -S simulation -entity "halves:file(foo)" -reshalves stress
+
+  where :file:`foo` contains:
+
+  .. code-block:: console
+
+    z<=0.5
+    z>0.5
+
+- Merge two simulation directories into a single simulation directory:
+
+  .. code-block:: console
+
+    $ neper -S cycle1.sim,cycle2.sim -o cycle1-2
+
+.. [#f1] For a restarted FEPX simulation, append :data:`:\<restart_number\>` to the directory name to specify the restart number; otherwise, Neper attempts to find the simulation restart files with the highest index.
+
+.. [#f2] Defining a name is mandatory for expressions containing divisions, as the :data:`/` character cannot be used in file names.  The name cannot be a known variable.
+
+.. [#f3] The original result, :data:`<res>`, must already be available in the simulation directory.
+
+.. [#quotes] Note the single quotes.

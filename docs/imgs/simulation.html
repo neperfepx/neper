@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulation &mdash; Neper 4.2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Visualization" href="visualization.html" />
+    <link rel="prev" title="Meshing" href="meshing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Neper
+          </a>
+              <div class="version">
+                4.2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="features.html">Features</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="generation.html">Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meshing.html">Meshing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Simulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#generalities">Generalities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#computing-new-nodal-or-elemental-results">Computing New Nodal or Elemental Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#computing-elset-and-mesh-results">Computing Elset and Mesh Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#removing-results">Removing Results</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html">Visualization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="doc/index.html">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="papers.html">Reference Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="talks.html">Talks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="others.html">Other Resources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Neper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="features.html">Features</a> &raquo;</li>
+      <li>Simulation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/simulation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="simulation">
+<span id="id1"></span><h1>Simulation<a class="headerlink" href="#simulation" title="Permalink to this headline"></a></h1>
+<p>Module -S is dedicated to processing simulation results.  It is able to rewrite FEPX raw simulation results into a more human-friendly <em>simulation directory</em>, and post-process the results further.  The simulation directory can be taken as input by module -V for advanced visualization of the tessellation, mesh and simulation results.</p>
+<div class="section" id="generalities">
+<h2>Generalities<a class="headerlink" href="#generalities" title="Permalink to this headline"></a></h2>
+<p>The first primary capability is to convert FEPX raw simulation results into a simulation directory, which is as simple as running</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ neper -S jobdir
+</pre></div>
+</div>
+<p>The resulting simulation directory (<code class="file docutils literal notranslate"><span class="pre">jobdir.sim</span></code>) contains both the simulation input and results, and is structured as follows.  Result files are ASCII files and are provided at each simulation step.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>jobdir.sim
+├── inputs
+│   ├── simulation.config
+│   ├── simulation.msh
+│   └── simulation.tess
+├── report
+└── results
+    ├── elements
+    │   ├── strain-eq
+    │   │   ├── strain-eq.step0
+    │   │   ├── strain-eq.step1
+    │   │   ├── strain-eq.step2
+    │   │   ...
+    │   ├── stress
+    │   │   ├── stress.step0
+    │   │   ├── stress.step1
+    │   │   ├── stress.step2
+    │   │   ...
+    │   ├── ...
+    │   ...
+    └── nodes
+        ├── coo
+        │   ├── coo.step0
+        │   ├── coo.step1
+        │   ├── coo.step2
+        │   ...
+        ├── ...
+        ...
+</pre></div>
+</div>
+</div>
+<div class="section" id="computing-new-nodal-or-elemental-results">
+<h2>Computing New Nodal or Elemental Results<a class="headerlink" href="#computing-new-nodal-or-elemental-results" title="Permalink to this headline"></a></h2>
+<p>Nodal or elemental results can be added to the simulation directory.  The data can be mesh results (as also available through Neper -M’s <code class="xref py py-data docutils literal notranslate"><span class="pre">-stat*</span></code> options), simulation subresults (such as vector or tensor components), or new results defined by mathematical expressions based on mesh or simulation results. The results can be assigned names. Existing results at a specific step can be accessed using <code class="xref py py-data docutils literal notranslate"><span class="pre">(step=...)</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ neper -S jobdir.sim -eltres vol,stress33,energy:0.1234*(crss-crss(step=0))^2&quot;
+</pre></div>
+</div>
+<p>The results add to the simulation directory, which becomes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>jobdir.sim
+├── inputs
+│   ├── simulation.config
+│   ├── simulation.msh
+│   └── simulation.tess
+├── report
+└── results
+    ├── elements
+    │   ├── energy
+    │   │   ├── energy.step0
+    │   │   ├── energy.step1
+    │   │   ├── energy.step2
+    │   │   ...
+    │   ├── strain-eq
+    │   │   ├── strain-eq.step0
+    │   │   ├── strain-eq.step1
+    │   │   ├── strain-eq.step2
+    │   │   ...
+    │   ├── stress
+    │   │   ├── stress.step0
+    │   │   ├── stress.step1
+    │   │   ├── stress.step2
+    │   │   ...
+    │   ├── stress33
+    │   │   ├── stress33.step0
+    │   │   ├── stress33.step1
+    │   │   ├── stress33.step2
+    │   │   ...
+    │   ├── vol
+    │   │   ├── vol.step0
+    │   │   ├── vol.step1
+    │   │   ├── vol.step2
+    │   │   ...
+    │   ├── ...
+    │   ...
+    └── nodes
+        ├── coo
+        │   ├── coo.step0
+        │   ├── coo.step1
+        │   ├── coo.step2
+        │   ...
+        ├── ...
+        ...
+</pre></div>
+</div>
+</div>
+<div class="section" id="computing-elset-and-mesh-results">
+<h2>Computing Elset and Mesh Results<a class="headerlink" href="#computing-elset-and-mesh-results" title="Permalink to this headline"></a></h2>
+<p>Elset and mesh results can be computed from the elemental results of the simulation directory.  This is simply done by volume-weighted averaging (orientations are also properly averaged, using quaternions). The results are written to directory <code class="xref py py-data docutils literal notranslate"><span class="pre">elsets</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">mesh</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ neper -S jobdir.sim -elsetres stress,stress33
+</pre></div>
+</div>
+<p>The results add to the simulation directory, which becomes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>jobdir.sim
+├── inputs
+│   ├── simulation.config
+│   ├── simulation.msh
+│   └── simulation.tess
+├── report
+└── results
+    ├── elements
+    │   ├── energy
+    │   │   ├── energy.step0
+    │   │   ├── energy.step1
+    │   │   ├── energy.step2
+    │   │   ...
+    │   ├── strain-eq
+    │   │   ├── strain-eq.step0
+    │   │   ├── strain-eq.step1
+    │   │   ├── strain-eq.step2
+    │   │   ...
+    │   ├── stress
+    │   │   ├── stress.step0
+    │   │   ├── stress.step1
+    │   │   ├── stress.step2
+    │   │   ...
+    │   ├── stress33
+    │   │   ├── stress33.step0
+    │   │   ├── stress33.step1
+    │   │   ├── stress33.step2
+    │   │   ...
+    │   ├── vol
+    │   │   ├── vol.step0
+    │   │   ├── vol.step1
+    │   │   ├── vol.step2
+    │   │   ...
+    │   ├── ...
+    │   ...
+    ├── elsets
+    │   ├── stress
+    │   │   ├── stress.step0
+    │   │   ├── stress.step1
+    │   │   ├── stress.step2
+    │   │   ...
+    │   ├── stress33
+    │   │   ├── stress33.step0
+    │   │   ├── stress33.step1
+    │   │   ├── stress33.step2
+    │   │   ...
+    └── nodes
+        ├── coo
+        │   ├── coo.step0
+        │   ├── coo.step1
+        │   ├── coo.step2
+        │   ...
+        ├── ...
+        ...
+</pre></div>
+</div>
+</div>
+<div class="section" id="removing-results">
+<h2>Removing Results<a class="headerlink" href="#removing-results" title="Permalink to this headline"></a></h2>
+<p>Results can be removed by preceding them by <cite>!</cite> (note the single quotes, below):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ neper -S jobdir.sim -eltres &#39;!stress,!stress33,!vol,!strain-eq&#39; -elsetres &#39;!stress,!stress33&#39;
+</pre></div>
+</div>
+<p>The simulation directory becomes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>jobdir.sim
+├── inputs
+│   ├── simulation.config
+│   ├── simulation.msh
+│   └── simulation.tess
+├── report
+└── results
+    ├── elements
+    │   ├── energy
+    │   │   ├── energy.step0
+    │   │   ├── energy.step1
+    │   │   ├── energy.step2
+    │   │   ...
+    │   ...
+    └── nodes
+        ├── coo
+        │   ├── coo.step0
+        │   ├── coo.step1
+        │   ├── coo.step2
+        │   ...
+        ├── ...
+        ...
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="meshing.html" class="btn btn-neutral float-left" title="Meshing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="visualization.html" class="btn btn-neutral float-right" title="Visualization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Romain Quey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
