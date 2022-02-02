@@ -4,21 +4,21 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Generating and Meshing a Simple Tessellation &mdash; Neper 4.3.0 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
+    <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Generating a Tessellation from Statistical Cell Properties" href="../morpho_statistics/morpho_statistics.html" />
-    <link rel="prev" title="Tutorials" href="../../tutorials.html" /> 
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Generating a Tessellation from Statistical Cell Properties" href="morpho_statistics.html" />
+    <link rel="prev" title="Tutorials" href="../tutorials.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -26,13 +26,13 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Neper
+            <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
                 4.3.0
               </div>
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -40,9 +40,9 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../doc/index.html">Documentation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/index.html">Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Generating and Meshing a Simple Tessellation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#generating-a-tessellation">Generating a Tessellation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#meshing-a-tessellation">Meshing a Tessellation</a></li>
@@ -50,16 +50,16 @@
 <li class="toctree-l3"><a class="reference internal" href="#setting-mesh-properties">Setting Mesh Properties</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../morpho_statistics/morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../tesr_mesh/tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../papers.html">Reference Papers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../talks.html">Talks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../downloads.html">Downloads</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../community.html">Community</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../others.html">Other Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../papers.html">Reference Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../talks.html">Talks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../others.html">Other Resources</a></li>
 </ul>
 
         </div>
@@ -68,18 +68,18 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Neper</a>
+          <a href="../index.html">Neper</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../tutorials.html">Tutorials</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../tutorials.html">Tutorials</a> &raquo;</li>
       <li>Generating and Meshing a Simple Tessellation</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/tutorials/simple_model/simple_model.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tutorials/simple_model.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -89,7 +89,7 @@
              
   <div class="section" id="generating-and-meshing-a-simple-tessellation">
 <span id="simple-model"></span><h1>Generating and Meshing a Simple Tessellation<a class="headerlink" href="#generating-and-meshing-a-simple-tessellation" title="Permalink to this headline"></a></h1>
-<p>The only necessary input to generate and mesh a simple tessellation is the number of cells.  By default, a 3D Voronoi tessellation is generated <a class="reference internal" href="#cmame2011" id="id1"><span>[CMAME2011]</span></a>.  2D is also available (option <a class="reference internal" href="../../doc/neper_t.html#cmdoption-dim"><code class="xref std std-option docutils literal notranslate"><span class="pre">-dim</span></code></a>).</p>
+<p>The only required input to generate and mesh a simple tessellation is the number of cells.  By default, a 3D Voronoi tessellation is generated <a class="reference internal" href="#cmame2011" id="id1"><span>[CMAME2011]</span></a>.  2D is also available (option <a class="reference internal" href="../doc/neper_t.html#cmdoption-dim"><code class="xref std std-option docutils literal notranslate"><span class="pre">-dim</span></code></a>).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>To reproduce <em>exactly</em> the images below, add the following line to your <code class="file docutils literal notranslate"><span class="pre">$HOME/.neperrc</span></code> file (or to a local configuration file to be loaded with <code class="xref std std-option docutils literal notranslate"><span class="pre">--rcfile</span></code>):</p>
@@ -99,37 +99,37 @@
 </div>
 <div class="section" id="generating-a-tessellation">
 <h2>Generating a Tessellation<a class="headerlink" href="#generating-a-tessellation" title="Permalink to this headline"></a></h2>
-<p>The number of cells can be specified using option <a class="reference internal" href="../../doc/neper_t.html#cmdoption-n"><code class="xref std std-option docutils literal notranslate"><span class="pre">-n</span></code></a> of the <a class="reference internal" href="../../doc/neper_t.html#neper-t"><span class="std std-ref">Tessellation Module (-T)</span></a>.
+<p>The number of cells can be specified using option <a class="reference internal" href="../doc/neper_t.html#cmdoption-n"><code class="xref std std-option docutils literal notranslate"><span class="pre">-n</span></code></a> of the <a class="reference internal" href="../doc/neper_t.html#neper-t"><span class="std std-ref">Tessellation Module (-T)</span></a>.
 A 100-cell tessellation can be generated as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span>
 </pre></div>
 </div>
-<p>This produces a <a class="reference internal" href="../../doc/fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a> named <code class="file docutils literal notranslate"><span class="pre">n100-id1.tess</span></code>.</p>
-<p>The tessellation can be visualized using the <a class="reference internal" href="../../doc/neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>:</p>
+<p>This produces a <a class="reference internal" href="../doc/fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a> named <code class="file docutils literal notranslate"><span class="pre">n100-id1.tess</span></code>.</p>
+<p>The tessellation can be visualized using the <a class="reference internal" href="../doc/neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100-id1.tess -print img1
 </pre></div>
 </div>
-<p>This produces a PNG file named <code class="file docutils literal notranslate"><span class="pre">img1.png</span></code> where cells are colored arbitrarily from the ids.</p>
-<img alt="../../_images/img11.png" src="../../_images/img11.png" />
-<p>Another tessellation with the same number of cells but different cell properties can be generated using <a class="reference internal" href="../../doc/neper_t.html#cmdoption-id"><code class="xref std std-option docutils literal notranslate"><span class="pre">-id</span></code></a> (the default value is <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>):</p>
+<p>This produces a PNG file named <code class="file docutils literal notranslate"><span class="pre">img1.png</span></code> where cells are colored arbitrarily from their ids.</p>
+<img alt="../_images/img11.png" src="../_images/img11.png" />
+<p>Another tessellation with the same number of cells but different cell properties can be generated using <a class="reference internal" href="../doc/neper_t.html#cmdoption-id"><code class="xref std std-option docutils literal notranslate"><span class="pre">-id</span></code></a> (the default value is <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>):</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -id <span class="m">2</span>
 </pre></div>
 </div>
-<p>This produces a <a class="reference internal" href="../../doc/fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a> named <code class="file docutils literal notranslate"><span class="pre">n100-id2.tess</span></code>.</p>
+<p>This produces a <a class="reference internal" href="../doc/fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a> named <code class="file docutils literal notranslate"><span class="pre">n100-id2.tess</span></code>.</p>
 <p>The tessellation can be visualized as before:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100-id2.tess -print img1b
 </pre></div>
 </div>
-<img alt="../../_images/img1b.png" src="../../_images/img1b.png" />
+<img alt="../_images/img1b.png" src="../_images/img1b.png" />
 </div>
 <div class="section" id="meshing-a-tessellation">
 <h2>Meshing a Tessellation<a class="headerlink" href="#meshing-a-tessellation" title="Permalink to this headline"></a></h2>
-<p>A mesh can be obtained by passing <code class="file docutils literal notranslate"><span class="pre">n100-id1.tess</span></code> to the <a class="reference internal" href="../../doc/neper_m.html#neper-m"><span class="std std-ref">Meshing Module (-M)</span></a>:</p>
+<p>A mesh can be obtained by passing <code class="file docutils literal notranslate"><span class="pre">n100-id1.tess</span></code> to the <a class="reference internal" href="../doc/neper_m.html#neper-m"><span class="std std-ref">Meshing Module (-M)</span></a>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -M n100-id1.tess
 </pre></div>
 </div>
-<p>This produces a <a class="reference internal" href="../../doc/fileformat.html#mesh-file"><span class="std std-ref">Mesh File (.msh)</span></a> named <code class="file docutils literal notranslate"><span class="pre">n100-id1.msh</span></code>.</p>
-<p>The mesh can be visualized using the <a class="reference internal" href="../../doc/neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>:</p>
+<p>This produces a <a class="reference internal" href="../doc/fileformat.html#mesh-file"><span class="std std-ref">Mesh File (.msh)</span></a> named <code class="file docutils literal notranslate"><span class="pre">n100-id1.msh</span></code>.</p>
+<p>The mesh can be visualized using the <a class="reference internal" href="../doc/neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100-id1.tess,n100-id1.msh -print img2
 </pre></div>
 </div>
@@ -137,16 +137,16 @@ A 100-cell tessellation can be generated as follows:</p>
 <p class="admonition-title">Note</p>
 <p>When both the tess file and mesh file are available, it is a good practice to pass both of them to <code class="xref std std-option docutils literal notranslate"><span class="pre">-V</span></code> by using the <code class="xref py py-data docutils literal notranslate"><span class="pre">,</span></code> separator.  Only the mesh is printed.</p>
 </div>
-<img alt="../../_images/img21.png" src="../../_images/img21.png" />
+<img alt="../_images/img21.png" src="../_images/img21.png" />
 <p>The cell boundaries can be highlighted via the 1D elements, using <code class="xref std std-option docutils literal notranslate"><span class="pre">-showelt1d</span></code> and <code class="xref std std-option docutils literal notranslate"><span class="pre">-dataelt1drad</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100-id1.tess,n100-id1.msh -showelt1d all -dataelt1drad <span class="m">0</span>.005 -print img3
 </pre></div>
 </div>
-<img alt="../../_images/img31.png" src="../../_images/img31.png" />
+<img alt="../_images/img31.png" src="../_images/img31.png" />
 </div>
 <div class="section" id="regularizing-a-tessellation">
 <h2>Regularizing a Tessellation<a class="headerlink" href="#regularizing-a-tessellation" title="Permalink to this headline"></a></h2>
-<p>It is clear from the above image that the mesh is overrefined at some locations, which is where <em>small edges</em> typical of Voronoi tessellations are.  Neper includes <em>regularization</em> (option <a class="reference internal" href="../../doc/neper_t.html#cmdoption-regularization"><code class="xref std std-option docutils literal notranslate"><span class="pre">-regularization</span></code></a>), which removes the smallest edges of the tessellation <a class="reference internal" href="#cmame2011" id="id2"><span>[CMAME2011]</span></a>:</p>
+<p>It is quite clear from the above image that the mesh is overrefined at some locations, which is where <em>small edges</em> typical of Voronoi tessellations are.  Neper includes <em>regularization</em> (option <a class="reference internal" href="../doc/neper_t.html#cmdoption-regularization"><code class="xref std std-option docutils literal notranslate"><span class="pre">-regularization</span></code></a>), which removes the smallest edges of the tessellation <a class="reference internal" href="#cmame2011" id="id2"><span>[CMAME2011]</span></a>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -reg <span class="m">1</span>
 <span class="gp">$ </span>neper -V n100-id1.tess -print img4
 </pre></div>
@@ -155,28 +155,28 @@ A 100-cell tessellation can be generated as follows:</p>
 <p class="admonition-title">Note</p>
 <p>An option name may be abbreviated as long as the abbreviation is not ambiguous.  Specifically, <code class="xref py py-data docutils literal notranslate"><span class="pre">-regularization</span></code> can be abbreviated to <code class="xref py py-data docutils literal notranslate"><span class="pre">-reg</span></code>.</p>
 </div>
-<img alt="../../_images/img41.png" src="../../_images/img41.png" />
+<img alt="../_images/img41.png" src="../_images/img41.png" />
 <p>The resulting tessellation is very similar to the original one, as only slight morphological changes occur during regularization.  However, no local mesh overrefinements will be present anymore.</p>
 <p>The new tessellation can be meshed, and the mesh can be visualized as before:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -M n100-id1.tess
 <span class="gp">$ </span>neper -V n100-id1.tess,n100-id1.msh -showelt1d all -dataelt1drad <span class="m">0</span>.005 -print img5
 </pre></div>
 </div>
-<img alt="../../_images/img51.png" src="../../_images/img51.png" />
+<img alt="../_images/img51.png" src="../_images/img51.png" />
 </div>
 <div class="section" id="setting-mesh-properties">
 <h2>Setting Mesh Properties<a class="headerlink" href="#setting-mesh-properties" title="Permalink to this headline"></a></h2>
 <p>Mesh properties can be specified, such as the element size or <em>characteristic length</em>, the element type, etc.</p>
-<p>For example, smaller elements than shown above can be obtained using option <code class="xref std std-option docutils literal notranslate"><span class="pre">-rcl</span></code>, and 2nd-order elements can be obtained using option <a class="reference internal" href="../../doc/neper_m.html#cmdoption-order"><code class="xref std std-option docutils literal notranslate"><span class="pre">-order</span></code></a>:</p>
+<p>For example, smaller elements than shown above can be obtained using option <code class="xref std std-option docutils literal notranslate"><span class="pre">-rcl</span></code>, and 2nd-order elements can be obtained using option <a class="reference internal" href="../doc/neper_m.html#cmdoption-order"><code class="xref std std-option docutils literal notranslate"><span class="pre">-order</span></code></a>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -M n100-id1.tess -rcl <span class="m">0</span>.7 -order <span class="m">2</span>
 <span class="gp">$ </span>neper -V n100-id1.tess,n100-id1.msh -showelt1d all -dataelt1drad <span class="m">0</span>.005 -print img6
 </pre></div>
 </div>
-<img alt="../../_images/img6.png" src="../../_images/img6.png" />
+<img alt="../_images/img6.png" src="../_images/img6.png" />
 <p>This mesh can be used by <a class="reference external" href="https://fepx.info">FEPX</a>.</p>
 <dl class="citation">
 <dt class="label" id="cmame2011"><span class="brackets">CMAME2011</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
-<dd><p><a class="reference internal" href="../../papers.html#px"><span class="std std-ref">R Quey, PR Dawson and F Barbe, Large-scale 3D random polycrystals for the finite element method: Generation, meshing and remeshing, Computer Methods in Applied Mechanics and Engineering, vol. 200, pp.  1729-1745, 2011.</span></a>.</p>
+<dd><p><a class="reference internal" href="../papers.html#px"><span class="std std-ref">R Quey, PR Dawson and F Barbe, Large-scale 3D random polycrystals for the finite element method: Generation, meshing and remeshing, Computer Methods in Applied Mechanics and Engineering, vol. 200, pp.  1729-1745, 2011.</span></a>.</p>
 </dd>
 </dl>
 </div>
@@ -186,8 +186,8 @@ A 100-cell tessellation can be generated as follows:</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../../tutorials.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../morpho_statistics/morpho_statistics.html" class="btn btn-neutral float-right" title="Generating a Tessellation from Statistical Cell Properties" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../tutorials.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="morpho_statistics.html" class="btn btn-neutral float-right" title="Generating a Tessellation from Statistical Cell Properties" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -3,7 +3,7 @@
 Generating and Meshing a Simple Tessellation
 ============================================
 
-The only necessary input to generate and mesh a simple tessellation is the number of cells.  By default, a 3D Voronoi tessellation is generated [CMAME2011]_.  2D is also available (option :option:`-dim`).
+The only required input to generate and mesh a simple tessellation is the number of cells.  By default, a 3D Voronoi tessellation is generated [CMAME2011]_.  2D is also available (option :option:`-dim`).
 
 .. note::
 
@@ -29,9 +29,9 @@ The tessellation can be visualized using the :ref:`neper_v`:
 
   $ neper -V n100-id1.tess -print img1
 
-This produces a PNG file named :file:`img1.png` where cells are colored arbitrarily from the ids.
+This produces a PNG file named :file:`img1.png` where cells are colored arbitrarily from their ids.
 
-.. image:: img1.png
+.. image:: simple_model/img1.png
 
 Another tessellation with the same number of cells but different cell properties can be generated using :option:`-id` (the default value is :data:`1`):
 
@@ -47,7 +47,7 @@ The tessellation can be visualized as before:
 
   $ neper -V n100-id2.tess -print img1b
 
-.. image:: img1b.png
+.. image:: simple_model/img1b.png
 
 Meshing a Tessellation
 ----------------------
@@ -70,7 +70,7 @@ The mesh can be visualized using the :ref:`neper_v`:
 
   When both the tess file and mesh file are available, it is a good practice to pass both of them to :option:`-V` by using the :data:`,` separator.  Only the mesh is printed.
 
-.. image:: img2.png
+.. image:: simple_model/img2.png
 
 The cell boundaries can be highlighted via the 1D elements, using :option:`-showelt1d` and :option:`-dataelt1drad`:
 
@@ -78,12 +78,12 @@ The cell boundaries can be highlighted via the 1D elements, using :option:`-show
 
   $ neper -V n100-id1.tess,n100-id1.msh -showelt1d all -dataelt1drad 0.005 -print img3
 
-.. image:: img3.png
+.. image:: simple_model/img3.png
 
 Regularizing a Tessellation
 ---------------------------
 
-It is clear from the above image that the mesh is overrefined at some locations, which is where *small edges* typical of Voronoi tessellations are.  Neper includes *regularization* (option :option:`-regularization`), which removes the smallest edges of the tessellation [CMAME2011]_:
+It is quite clear from the above image that the mesh is overrefined at some locations, which is where *small edges* typical of Voronoi tessellations are.  Neper includes *regularization* (option :option:`-regularization`), which removes the smallest edges of the tessellation [CMAME2011]_:
 
 .. code-block:: console
 
@@ -92,7 +92,7 @@ It is clear from the above image that the mesh is overrefined at some locations,
 
 .. note:: An option name may be abbreviated as long as the abbreviation is not ambiguous.  Specifically, :data:`-regularization` can be abbreviated to :data:`-reg`.
 
-.. image:: img4.png
+.. image:: simple_model/img4.png
 
 The resulting tessellation is very similar to the original one, as only slight morphological changes occur during regularization.  However, no local mesh overrefinements will be present anymore.
 
@@ -103,7 +103,7 @@ The new tessellation can be meshed, and the mesh can be visualized as before:
   $ neper -M n100-id1.tess
   $ neper -V n100-id1.tess,n100-id1.msh -showelt1d all -dataelt1drad 0.005 -print img5
 
-.. image:: img5.png
+.. image:: simple_model/img5.png
 
 Setting Mesh Properties
 -----------------------
@@ -117,7 +117,7 @@ For example, smaller elements than shown above can be obtained using option :opt
     $ neper -M n100-id1.tess -rcl 0.7 -order 2
     $ neper -V n100-id1.tess,n100-id1.msh -showelt1d all -dataelt1drad 0.005 -print img6
 
-.. image:: img6.png
+.. image:: simple_model/img6.png
 
 This mesh can be used by `FEPX <https://fepx.info>`_.
 

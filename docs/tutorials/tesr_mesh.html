@@ -4,22 +4,22 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction &mdash; Neper 4.3.0 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
+    <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Reference Papers" href="../../papers.html" />
-    <link rel="prev" title="Generating a Tessellation from Statistical Cell Properties" href="../morpho_statistics/morpho_statistics.html" /> 
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Reference Papers" href="../papers.html" />
+    <link rel="prev" title="Generating a Tessellation from Statistical Cell Properties" href="morpho_statistics.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -27,13 +27,13 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Neper
+            <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
                 4.3.0
               </div>
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -41,11 +41,11 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../doc/index.html">Documentation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../tutorials.html">Tutorials</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../simple_model/simple_model.html">Generating and Meshing a Simple Tessellation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../morpho_statistics/morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/index.html">Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simple_model.html">Generating and Meshing a Simple Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#generating-a-clean-raster-tessellation-tesr">Generating a Clean Raster Tessellation (<code class="file docutils literal notranslate"><span class="pre">.tesr</span></code>)</a><ul>
@@ -62,12 +62,12 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../papers.html">Reference Papers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../talks.html">Talks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../downloads.html">Downloads</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../community.html">Community</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../others.html">Other Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../papers.html">Reference Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../talks.html">Talks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../others.html">Other Resources</a></li>
 </ul>
 
         </div>
@@ -76,18 +76,18 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">Neper</a>
+          <a href="../index.html">Neper</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../tutorials.html">Tutorials</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../tutorials.html">Tutorials</a> &raquo;</li>
       <li>Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/tutorials/tesr_mesh/tesr_mesh.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tutorials/tesr_mesh.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -107,24 +107,24 @@
 <div class="section" id="converting-the-raw-files-dat-orientations-into-a-neper-tesr-file">
 <h3>Converting the Raw Files (<code class="file docutils literal notranslate"><span class="pre">.dat</span></code>, Orientations) into a Neper <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code> File<a class="headerlink" href="#converting-the-raw-files-dat-orientations-into-a-neper-tesr-file" title="Permalink to this headline"></a></h3>
 <p>Neper uses a (standalone) <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code> (<em>raster tessellation</em>) file to describe a DCT-type polycrystal, which embeeds not only the information contained in the <code class="file docutils literal notranslate"><span class="pre">.dat</span></code> file and the grain orientations, but also the numbers of voxels, the voxel size, the crystal type, etc.  The raw <code class="file docutils literal notranslate"><span class="pre">.dat</span></code> file can be read by Neper using a minimal tesr file, named e.g. <code class="file docutils literal notranslate"><span class="pre">AlLi-load.tesr</span></code>, with the following content:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">***</span><span class="n">tesr</span>
- <span class="o">**</span><span class="nb">format</span>
-   <span class="mf">2.1</span>
- <span class="o">**</span><span class="n">general</span>
-   <span class="mi">3</span>
-   <span class="mi">214</span> <span class="mi">214</span> <span class="mi">462</span>
-   <span class="mf">3.5e-6</span> <span class="mf">3.5e-6</span> <span class="mf">3.5e-6</span>
- <span class="o">**</span><span class="n">data</span>
-   <span class="n">binary16</span>
-  <span class="o">*</span><span class="n">file</span> <span class="n">AlLi</span><span class="o">.</span><span class="n">dat</span>
-<span class="o">***</span><span class="n">end</span>
+<div class="highlight-plain notranslate"><div class="highlight"><pre><span></span>***tesr
+ **format
+   2.1
+ **general
+   3
+   214 214 462
+   3.5e-6 3.5e-6 3.5e-6
+ **data
+   binary16
+  *file AlLi.dat
+***end
 </pre></div>
 </div>
 <p>It is possible to visualize the polycrystal as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V AlLi-load.tesr -print AlLi
 </pre></div>
 </div>
-<img alt="../../_images/AlLi.png" src="../../_images/AlLi.png" />
+<img alt="../_images/AlLi.png" src="../_images/AlLi.png" />
 <p>where the grains are colored by their ids.</p>
 <p>The grain orientations (and the crystal symmetry) can be added to the file through a <code class="xref py py-data docutils literal notranslate"><span class="pre">**cell</span></code> section:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>***tesr
@@ -147,18 +147,18 @@
 ***end
 </pre></div>
 </div>
-<p>where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;number_of_cells&gt;</span></code> is the number of cells, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysym&gt;</span></code> is the <span class="xref std std-ref">crystal symmetry</span> is the <a class="reference internal" href="../../doc/exprskeys.html#rotation-and-orientation-descriptors"><span class="std std-ref">orientation descriptor</span></a> (e.g., <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues:active</span></code>) and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;orientations&gt;</span></code> is the list of orientations (the crystal symmetry could also have been defined a posteriori, using the <a class="reference internal" href="../../doc/neper_t.html#cmdoption-oricrysym"><code class="xref std std-option docutils literal notranslate"><span class="pre">-oricrysym</span></code></a> option). If the grains are not numbered contiguously from 1, their ids must be provided in the <code class="xref py py-data docutils literal notranslate"><span class="pre">**cell/*id</span></code> section in order to be able to provide an <code class="xref py py-data docutils literal notranslate"><span class="pre">*ori</span></code> section.</p>
+<p>where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;number_of_cells&gt;</span></code> is the number of cells, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysym&gt;</span></code> is the <span class="xref std std-ref">crystal symmetry</span> is the <a class="reference internal" href="../doc/exprskeys.html#rotation-and-orientation-descriptors"><span class="std std-ref">orientation descriptor</span></a> (e.g., <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues:active</span></code>) and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;orientations&gt;</span></code> is the list of orientations (the crystal symmetry could also have been defined a posteriori, using the <a class="reference internal" href="../doc/neper_t.html#cmdoption-oricrysym"><code class="xref std std-option docutils literal notranslate"><span class="pre">-oricrysym</span></code></a> option). If the grains are not numbered contiguously from 1, their ids must be provided in the <code class="xref py py-data docutils literal notranslate"><span class="pre">**cell/*id</span></code> section in order to be able to provide an <code class="xref py py-data docutils literal notranslate"><span class="pre">*ori</span></code> section.</p>
 <p>It is now possible to visualize the polycrystal colored by its grain orientations:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V AlLi-load.tesr -datacellcol ori -print AlLi-ori
 </pre></div>
 </div>
-<img alt="../../_images/AlLi-ori.png" src="../../_images/AlLi-ori.png" />
+<img alt="../_images/AlLi-ori.png" src="../_images/AlLi-ori.png" />
 <p>The tesr file can be made a standalone file (not reading from <code class="file docutils literal notranslate"><span class="pre">AlLi.dat</span></code> any more), as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -loadtesr AlLi-load.tesr -o AlLi
 </pre></div>
 </div>
-<p>The new file is written using Neper’s default behavior.   Optionally, the data encoding format can be specified using <a class="reference internal" href="../../doc/neper_t.html#cmdoption-tesrformat"><code class="xref std std-option docutils literal notranslate"><span class="pre">-tesrformat</span></code></a>.  (The tesr can be written back to a raw data format anytime using <a class="reference internal" href="../../doc/neper_t.html#cmdoption-tesrformat"><code class="xref std std-option docutils literal notranslate"><span class="pre">-tesrformat</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">raw</span></code>.)</p>
-<p>The resulting tesr describes all of the data obtained by DCT, and later operations to the file will be applied using Neper -T options.  The procedure is to load it using <a class="reference internal" href="../../doc/neper_t.html#cmdoption-loadtesr"><code class="xref std std-option docutils literal notranslate"><span class="pre">-loadtesr</span></code></a> and apply transformations using <a class="reference internal" href="../../doc/neper_t.html#cmdoption-transform"><code class="xref std std-option docutils literal notranslate"><span class="pre">-transform</span></code></a>.  Several transformations can be applied successively, on a single run, by combining them with <code class="xref py py-data docutils literal notranslate"><span class="pre">,</span></code>.  It is generally a good idea to write the resulting tesr to a different file, using <a class="reference internal" href="../../doc/neper_t.html#cmdoption-o"><code class="xref std std-option docutils literal notranslate"><span class="pre">-o</span></code></a>.</p>
+<p>The new file is written using Neper’s default behavior.   Optionally, the data encoding format can be specified using <a class="reference internal" href="../doc/neper_t.html#cmdoption-tesrformat"><code class="xref std std-option docutils literal notranslate"><span class="pre">-tesrformat</span></code></a>.  (The tesr can be written back to a raw data format anytime using <a class="reference internal" href="../doc/neper_t.html#cmdoption-tesrformat"><code class="xref std std-option docutils literal notranslate"><span class="pre">-tesrformat</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">raw</span></code>.)</p>
+<p>The resulting tesr describes all of the data obtained by DCT, and later operations to the file will be applied using Neper -T options.  The procedure is to load it using <a class="reference internal" href="../doc/neper_t.html#cmdoption-loadtesr"><code class="xref std std-option docutils literal notranslate"><span class="pre">-loadtesr</span></code></a> and apply transformations using <a class="reference internal" href="../doc/neper_t.html#cmdoption-transform"><code class="xref std std-option docutils literal notranslate"><span class="pre">-transform</span></code></a>.  Several transformations can be applied successively, on a single run, by combining them with <code class="xref py py-data docutils literal notranslate"><span class="pre">,</span></code>.  It is generally a good idea to write the resulting tesr to a different file, using <a class="reference internal" href="../doc/neper_t.html#cmdoption-o"><code class="xref std std-option docutils literal notranslate"><span class="pre">-o</span></code></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>To reproduce <em>exactly</em> the images below, add the following line to your <code class="file docutils literal notranslate"><span class="pre">$HOME/.neperrc</span></code> file (or to a local configuration file to be loaded with <code class="xref std std-option docutils literal notranslate"><span class="pre">--rcfile</span></code>):</p>
@@ -185,7 +185,7 @@
           -cameracoo x:y:z+8 -print AlLi-c-z
 </pre></div>
 </div>
-<img alt="../../_images/AlLi-c.png" src="../../_images/AlLi-c.png" />
+<img alt="../_images/AlLi-c.png" src="../_images/AlLi-c.png" />
 <p>It is possible to determine by elementary image processing that the polycrystal is tilted by -0.6° around the <em>x</em> axis, 1° around the <em>y</em> axis, and 2° around the <em>z</em> axis.  This can be corrected simply by applying the rotations successively, but, before the rotations, a 10-voxel buffer is added around the polycrystal to accommodate the new positions, and, after the rotations, the raster is cropped again. Of course, Neper rotates the whole polycrystal (including the grain orientations).  The command is as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -loadtesr AlLi-c.tesr <span class="se">\</span>
            -transform <span class="s2">&quot;addbuffer(10,10,10),rotate(1,0,0,0.6),rotate(0,1,0,-1.0),rotate(0,0,1,2),autocrop,resetorigin&quot;</span> <span class="se">\</span>
@@ -200,7 +200,7 @@
           -cameracoo x:y:z+8 -print AlLi-cr-z
 </pre></div>
 </div>
-<img alt="../../_images/AlLi-cr.png" src="../../_images/AlLi-cr.png" />
+<img alt="../_images/AlLi-cr.png" src="../_images/AlLi-cr.png" />
 <p>In general, but especially as a result of this transformation, the top and bottom surfaces are not flat nor perfectly horizontal, while this is usually desired for simulations.  This can be fixed by cropping the tessellation by a few voxels along the z axis, as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -loadtesr AlLi-cr.tesr <span class="se">\</span>
            -transform <span class="s2">&quot;crop(cube(-10,10,-10,10,originz+5*voxsizez,originz+(voxnbz-5)*voxsizez)),autocrop,resetorigin,renumber,resetcellid&quot;</span>
@@ -215,7 +215,7 @@
           -cameracoo x:y:z+8 -print AlLi-crc-z
 </pre></div>
 </div>
-<img alt="../../_images/AlLi-crc.png" src="../../_images/AlLi-crc.png" />
+<img alt="../_images/AlLi-crc.png" src="../_images/AlLi-crc.png" />
 </div>
 <div class="section" id="defining-the-domain">
 <h3>Defining the Domain<a class="headerlink" href="#defining-the-domain" title="Permalink to this headline"></a></h3>
@@ -249,7 +249,7 @@
           -cameracoo x:y:z-8 -print AlLi-crcd-zm
 </pre></div>
 </div>
-<img alt="../../_images/AlLi-crcd.png" src="../../_images/AlLi-crcd.png" />
+<img alt="../_images/AlLi-crcd.png" src="../_images/AlLi-crcd.png" />
 <p>This shows how closely the domain fits the polycrystal.</p>
 </div>
 </div>
@@ -291,7 +291,7 @@
           -cameracoo x:y:z+8 -print AlLi-crcfs-z
 </pre></div>
 </div>
-<img alt="../../_images/AlLi-crcfs.png" src="../../_images/AlLi-crcfs.png" />
+<img alt="../_images/AlLi-crcfs.png" src="../_images/AlLi-crcfs.png" />
 <p>The tesr is now perfectly clean and ready for further processing.</p>
 </div>
 <div class="section" id="generating-a-tessellation-tess">
@@ -309,7 +309,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V AlLi.tess -print AlLi-tess
 </pre></div>
 </div>
-<img alt="../../_images/AlLi-tesr-tess.png" src="../../_images/AlLi-tesr-tess.png" />
+<img alt="../_images/AlLi-tesr-tess.png" src="../_images/AlLi-tesr-tess.png" />
 <p>It is also useful to apply regularization, for future meshing; we choose to reduce the small edge length (threshold) to 0.25 times its default value:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -loadtess AlLi.tess -reg <span class="m">1</span> -rsel <span class="m">0</span>.25
 </pre></div>
@@ -322,10 +322,10 @@
 <span class="gp">$ </span>neper -V AlLi-r.tess,AlLi-r.msh -showelt1d all -print AlLi-mesh
 </pre></div>
 </div>
-<img alt="../../_images/AlLi-tesr-tess-mesh.png" src="../../_images/AlLi-tesr-tess-mesh.png" />
+<img alt="../_images/AlLi-tesr-tess-mesh.png" src="../_images/AlLi-tesr-tess-mesh.png" />
 <dl class="citation">
 <dt class="label" id="cmame2018"><span class="brackets"><a class="fn-backref" href="#id1">CMAME2018</a></span></dt>
-<dd><p><a class="reference internal" href="../../papers.html#singlescale"><span class="std std-ref">R Quey and L Renversade, Optimal polyhedral description of 3D polycrystals: method and application to statistical and synchrotron X-ray diffraction data, Computer Methods in Applied Mechanics and Engineering, vol. 330, pp. 308-333, 2018.</span></a>.</p>
+<dd><p><a class="reference internal" href="../papers.html#singlescale"><span class="std std-ref">R Quey and L Renversade, Optimal polyhedral description of 3D polycrystals: method and application to statistical and synchrotron X-ray diffraction data, Computer Methods in Applied Mechanics and Engineering, vol. 330, pp. 308-333, 2018.</span></a>.</p>
 </dd>
 </dl>
 </div>
@@ -335,8 +335,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../morpho_statistics/morpho_statistics.html" class="btn btn-neutral float-left" title="Generating a Tessellation from Statistical Cell Properties" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../../papers.html" class="btn btn-neutral float-right" title="Reference Papers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="morpho_statistics.html" class="btn btn-neutral float-left" title="Generating a Tessellation from Statistical Cell Properties" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../papers.html" class="btn btn-neutral float-right" title="Reference Papers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

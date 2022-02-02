@@ -8,6 +8,6 @@ Tutorials
 .. toctree::
    :maxdepth: 1
 
-   tutorials/simple_model/simple_model.rst
-   tutorials/morpho_statistics/morpho_statistics.rst
-   tutorials/tesr_mesh/tesr_mesh.rst
+   tutorials/simple_model.rst
+   tutorials/morpho_statistics.rst
+   tutorials/tesr_mesh.rst
