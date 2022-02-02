@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_stat_.h"
@@ -28,7 +28,7 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
 
   ut_list_break (format, NEUT_SEP_NODEP, &invar, &invalqty);
 
-  neut_mesh_var_list ("node", &vars, &var_qty);
+  neut_mesh_var_list (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Mesh[4], "node", &vars, &var_qty);
 
   for (i = 1; i <= Nodes.NodeQty; i++)
     for (j = 0; j < invalqty; j++)
@@ -103,7 +103,7 @@ nem_stat_elts (FILE *file, char *entity, int dim, int realdim, char *format, str
 
   ut_list_break (format, NEUT_SEP_NODEP, &invar, &invalqty);
 
-  neut_mesh_var_list (entity2, &vars, &varqty);
+  neut_mesh_var_list (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Mesh[4], entity2, &vars, &varqty);
 
   meshx_init = 0;
   if (!strcmp (entity, "elt") && realdim == 3

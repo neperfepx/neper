@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tesr_gen_.h"
@@ -781,7 +781,7 @@ neut_tesr_entity_expr_val_int (struct TESR Tesr, char *entity, char *expr,
 }
 
 int
-neut_tesr_hascelloridistrib (struct TESR Tesr)
+neut_tesr_hascellorispread (struct TESR Tesr)
 {
   int i;
 

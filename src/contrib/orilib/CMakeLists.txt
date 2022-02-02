@@ -68,7 +68,7 @@ ol_des/ol_R.c
 ol_des/ol_homochoric.c
 ol_des/ol_rtheta.c
 ol_gen/ol_nb_e.c
-ol_gen/ol_label_g.c
+ol_gen/ol_label.c
 ol_gen/ol_nb_rtheta.c
 ol_map/ol_map_alloc.c     # PNG
 ol_map/ol_map_copy.c      # PNG
@@ -150,6 +150,3 @@ set(INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ol_glo.h)
 set(INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/ol_xpl.h)
 set(INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_BINARY_DIR}/ol_config.h)
 set(INCLUDE_FILES ${INCLUDE_FILES} ${PROJECT_SOURCE_DIR}/orilib.h)
-
-install(TARGETS orilib DESTINATION lib PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
-install(FILES ${INCLUDE_FILES} DESTINATION include/orilib PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_domain_cube_.h"
@@ -17,10 +17,11 @@ net_domain_cubeparms (char *domain, double **size, int *ppseudodim,
   ut_string_function (domain, &fct, NULL, &vars, &varqty);
 
   if ((!strcmp (fct, "square") && varqty != 2)
-      || (!strcmp (fct, "cube") && varqty != 3))
+      || (!strcmp (fct, "cube") && varqty != 3)
+      || (!strncmp (fct, "euler", 5) && varqty != 3))
     ut_print_message (2, 0, "Failed to process expression `%s'.\n", domain);
 
-  if (!strcmp (fct, "cube"))
+  if (!strcmp (fct, "cube") || !strncmp (fct, "euler", 5))
   {
     for (i = 0; i < 3; i++)
       ut_string_real (vars[i], &(size[i][1]));

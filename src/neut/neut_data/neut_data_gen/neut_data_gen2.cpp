@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_data_gen_.hpp"
@@ -48,7 +48,7 @@ neut_data_ori_color_axis (double **data, int size, char *scheme, int **Col)
 void
 neut_data_ori_color_angle (double **data, int size, char *scheme, int **Col)
 {
-  int i, j, varqty;
+  int i, varqty;
   double length;
   char *fct = NULL, **vars = NULL, **vals = NULL;
 
@@ -57,14 +57,19 @@ neut_data_ori_color_angle (double **data, int size, char *scheme, int **Col)
   // 1.09606677025243897430 = 62.8 * pi / 180
   length = !varqty? 1.09606677025243897430 : atof (vals[0]);
 
-#pragma omp parallel for private(j)
+#pragma omp parallel for
   for (i = 1; i <= size; i++)
   {
     double theta, *q = ol_q_alloc ();
     ol_q_qcrysym (data[i], (char *) "cubic", q);
     ol_q_theta_rad (q, &theta);
-    for (j = 0; j < 3; j++)
-      Col[i][j] = ut_num_bound (ut_num_d2ri (225 * theta / length), 0, 255);
+    double val = theta / length;
+    tinycolormap::ColormapType type =
+      neut_data_colscheme_tinycolormaptype ((char *) NEUT_DEFAULT_COLSCHEME_REAL);
+    tinycolormap::Color col = tinycolormap::GetColor(val, type);
+    Col[i][0] = ut_num_d2ri (255 * col.r());
+    Col[i][1] = ut_num_d2ri (255 * col.g());
+    Col[i][2] = ut_num_d2ri (255 * col.b());
     ol_q_free (q);
   }
 
@@ -78,14 +83,22 @@ neut_data_ori_color_angle (double **data, int size, char *scheme, int **Col)
 void
 neut_data_ori_color_axisangle (double **data, int size, char *scheme, int **Col)
 {
-  int i, j, varqty;
+  int i, j, varqty, absolute;
   double length;
   char *fct = NULL, **vars = NULL, **vals = NULL;
 
   ut_string_function (scheme, &fct, &vars, &vals, &varqty);
 
   // 1.09606677025243897430 = 62.8 * pi / 180
-  length = !varqty? 1.09606677025243897430 : atof (vals[0]);
+  absolute = 0;
+  length = 1.09606677025243897430;
+  for (i = 0; i < varqty; i++)
+  {
+    if (!strcmp (vals[i], "absolute"))
+      absolute = 1;
+    else
+      length = atof (vals[i]);
+  }
 
 #pragma omp parallel for private(i,j)
   for (i = 1; i <= size; i++)
@@ -94,9 +107,14 @@ neut_data_ori_color_axisangle (double **data, int size, char *scheme, int **Col)
     ol_q_qcrysym (data[i], (char *) "cubic", q);
     ol_q_rtheta_rad (q, r, &theta);
     for (j = 0; j < 3; j++)
-      Col[i][j] =
-        ut_num_bound (ut_num_d2ri
-                      (127.5 * (r[j] * theta + length) / length), 0, 255);
+    {
+      Col[i][j] = absolute?
+        ut_num_d2ri (255 * fabs (r[j] * theta) / length)
+      : ut_num_d2ri (127.5 * (r[j] * theta + length) / length);
+
+      Col[i][j] = ut_num_bound (Col[i][j], 0, 255);
+    }
+
     ol_q_free (q);
     ol_r_free (r);
   }

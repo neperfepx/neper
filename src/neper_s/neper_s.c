@@ -30,8 +30,8 @@ neper_s (int fargc, char **fargv, int argc, char **argv)
   // reading fepx simulation
   if (In.fepxdir)
   {
-    ut_print_message (0, 1, "Writing simulation directory from FEPX raw result directory...\n");
-    nes_sim (In, &Sim);
+    ut_print_message (0, 1, "Converting FEPX result directory into simulation directory...\n");
+    nes_convert (In, &Sim);
   }
 
   // merging simulations and loading resulting simulation
@@ -50,22 +50,40 @@ neper_s (int fargc, char **fargv, int argc, char **argv)
   }
 
 // #####################################################################
+// ### DEFINING NEW ENTITIES ###########################################
+
+  // defining new entities
+  if (In.entity)
+  {
+    ut_print_message (0, 1, "Adding entity...\n");
+    nes_entity (In, &Sim);
+  }
+
+// #####################################################################
 // ### RUNNING POST-PROCESSING #########################################
 
+  // loading orientation space
+  if (In.simdir && strcmp (In.orispace, "none"))
+  {
+    ut_print_message (0, 1, "Loading orientation space...\n");
+    nes_orispace (In, &Sim);
+  }
+
   // going into post-processing
-  if (In.simdir && (strcmp (In.eltres, "inputres")
-                 || strcmp (In.noderes, "inputres")
-                 || strcmp (In.elsetres, "none")))
+  if (In.simdir && In.entityqty)
   {
     ut_print_message (0, 1, "Running post-processing...\n");
     nes_pproc (In, &Sim);
   }
 
+  // printing report file (may be updates, e.g. from -entity)
+  neut_sim_fprintf (Sim.simdir, Sim, "W");
+
 // #####################################################################
 // ### FREEING MEMORY ##################################################
 
   neut_sim_free (&Sim);
-  nes_in_free (In);
+  nes_in_free (&In);
 
   return EXIT_SUCCESS;
 }

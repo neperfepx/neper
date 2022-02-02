@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifndef STRUCTIN_H
@@ -103,6 +103,7 @@ struct IN_M
   char *outtess;		// output tessellation
   char *per;			// periodicity file
   char *intf;	        	// interface file
+  char *sim;			// simulation directory
 
   char **stmesh;		// statistics on the 0D, 1D, 2D, 3D and Co meshes
   char *stnode;			// statistics on the nodes

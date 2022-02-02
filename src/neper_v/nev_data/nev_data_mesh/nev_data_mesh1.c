@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_data_mesh_.h"
@@ -22,16 +22,16 @@ nev_data_mesh (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes,
                               &value, &MeshDataSet);
 
   // element data: elt0d, elt1d, elt2d or elt3d
-  if (strlen (entity) == 5)
+  if (strstr (entity, "elt") && !strstr (entity, "edge"))
     nev_data_mesh_elt (Sim, pTess, pNodes, pMesh, entity_in, dim, entityqty,
                               attribute, type, value, pData);
 
   // element boundary data
-  else
+  else if (strstr (entity, "edge"))
     nev_data_mesh_eltedge (attribute, datastring, pData);
 
   // copying elset data to elts
-  if (!strncmp (entity_in, "elset", 5))
+  if (!strncmp (entity_in, "elset", 5) || !strncmp (entity_in, "mesh", 4))
     nev_data_mesh_elset2elt ((*pMesh)[dim], entity_in, attribute, MeshDataSet,
                              MeshData + dim);
 

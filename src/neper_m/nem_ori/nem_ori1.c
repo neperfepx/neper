@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_ori_.h"
@@ -25,7 +25,7 @@ nem_ori (struct TESS Tess, struct MESH *Mesh)
     {
       double **q = ut_alloc_2d (Mesh[dim].Elsets[i][0], 4);
 
-      neut_ori_oridistrib (Tess.CellOri[i], Tess.CellOriDistrib[i], Mesh[dim].Elsets[i][0], i, q);
+      neut_ori_orispread (Tess.CellOri[i], Tess.CellOriDistrib[i], Mesh[dim].Elsets[i][0], i, q);
 
       for (j = 1; j <= Mesh[dim].Elsets[i][0]; j++)
         ol_q_memcpy (q[j - 1], Mesh[dim].EltOri[Mesh[dim].Elsets[i][j]]);

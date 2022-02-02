@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_png_.h"
@@ -85,10 +85,10 @@ nev_print_png (char *basename, struct PRINT *pPrint, struct SIM Sim,
 
       if (ut_string_strcmp (SMeshData[i][2].ColDataType, "from_nodes"))
         nev_print_png_mesh2d (file, SNodes[i], SMesh2D[i], showelt2d,
-                          SMeshData[i][2].Col, "elt", (*pPrint).showshadow);
+                          SMeshData[i][2].Col, "elt", (*pPrint).sceneshadow);
       else
         nev_print_png_mesh2d (file, SNodes[i], SMesh2D[i], showelt2d,
-                              SNodeData[i].Col, "node", (*pPrint).showshadow);
+                              SNodeData[i].Col, "node", (*pPrint).sceneshadow);
 
       ut_free_1d_int (&showelt2d);
     }

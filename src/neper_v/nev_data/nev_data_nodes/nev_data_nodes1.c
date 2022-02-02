@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_data_nodes_.h"
@@ -16,7 +16,7 @@ nev_data_nodes (struct SIM Sim, struct TESS *pTess,
   neut_data_datastring_type_value ("nodes", attribute, datastring, &datatype, &datavalue);
 
   if (!strcmp (attribute, "col"))
-    neut_data_fscanf_col (Sim, pTess, pNodes, pMesh, NULL, "nodes", "node", 0,
+    neut_data_fscanf_col (Sim, pTess, pNodes, pMesh, NULL, "node", "node", 0,
                          (*pNodes).NodeQty, datatype, datavalue, pData);
 
   else if (!strcmp (attribute, "rad"))
@@ -32,7 +32,7 @@ nev_data_nodes (struct SIM Sim, struct TESS *pTess,
     ut_string_string (datastring, &(*pData).ScaleTitle);
 
   else if (!strcmp (attribute, "coo"))
-    neut_data_fscanf_coo (Sim, "nodes", (*pNodes).NodeQty, datatype, datavalue, pData);
+    neut_data_fscanf_coo (Sim, "node", (*pNodes).NodeQty, datatype, datavalue, pData);
 
   else if (!strcmp (attribute, "coofact"))
     (*pData).CooFact = atof (datavalue);

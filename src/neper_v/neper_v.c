@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neper_v_.h"
@@ -68,6 +68,8 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
 
     for (i = 1; i < expargc; i++)
     {
+      nev_fixarg (expargv + i);
+
       // tessellation / mesh loading -------------------------------------
       if (expargv[i][0] != '-')
         nev_load (expargv[i], &Sim, &Tess, &Tesr, &Nodes, Mesh, &Point,
@@ -105,6 +107,10 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
       // image settings --------------------------------------------------
       else if (!strncmp (expargv[i], "-image", 6))
         nev_image (expargv, &i, &Print);
+
+      // image settings --------------------------------------------------
+      else if (!strncmp (expargv[i], "-scene", 6))
+        nev_scene (expargv, &i, &Print);
 
       // include settings ------------------------------------------------
       else if (!strncmp (expargv[i], "-include", 8))

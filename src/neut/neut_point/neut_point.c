@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_point_.h"
@@ -129,7 +129,8 @@ neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
 {
   int i, status, tmp;
 
-  (*ptype) = ut_alloc_1d_char (10);
+  if (ptype)
+    (*ptype) = ut_alloc_1d_char (10);
 
   (*pvalqty) = 1;
   *pvals = ut_realloc_1d (*pvals, *pvalqty);
@@ -138,27 +139,32 @@ neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
   if (!strcmp (var, "id"))
   {
     (*pvals)[0] = id;
-    strcpy (*ptype, "%d");
+    if (ptype)
+      strcpy (*ptype, "%d");
   }
   else if (!strcmp (var, "x"))
   {
     (*pvals)[0] = Point.PointCoo[id][0];
-    strcpy (*ptype, "%f");
+    if (ptype)
+      strcpy (*ptype, "%f");
   }
   else if (!strcmp (var, "y"))
   {
     (*pvals)[0] = Point.PointCoo[id][1];
-    strcpy (*ptype, "%f");
+    if (ptype)
+      strcpy (*ptype, "%f");
   }
   else if (!strcmp (var, "z"))
   {
     (*pvals)[0] = Point.PointCoo[id][2];
-    strcpy (*ptype, "%f");
+    if (ptype)
+      strcpy (*ptype, "%f");
   }
   else if (!strcmp (var, "rad"))
   {
     (*pvals)[0] = Point.PointRad[id];
-    strcpy (*ptype, "%f");
+    if (ptype)
+      strcpy (*ptype, "%f");
   }
   else if (!strcmp (var, "poly") || !strcmp (var, "cell"))
   {
@@ -169,19 +175,22 @@ neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
         (*pvals)[0] = i;
         break;
       }
-    strcpy (*ptype, "%d");
+    if (ptype)
+      strcpy (*ptype, "%d");
   }
   else if (!strcmp (var, "elt"))
   {
     neut_mesh_point_elt (Mesh, Nodes, Point.PointCoo[id], &tmp);
     (*pvals)[0] = tmp;
-    strcpy (*ptype, "%d");
+    if (ptype)
+      strcpy (*ptype, "%d");
   }
   else if (!strcmp (var, "elset"))
   {
     neut_mesh_point_elset (Mesh, Nodes, Point.PointCoo[id], NULL, 0, &tmp);
     (*pvals)[0] = tmp;
-    strcpy (*ptype, "%d");
+    if (ptype)
+      strcpy (*ptype, "%d");
   }
   else
     status = -1;

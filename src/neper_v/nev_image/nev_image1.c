@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_image_.h"
@@ -12,9 +12,6 @@ nev_image (char **argv, int *pi, struct PRINT *pPrint)
 
   else if (strcmp (argv[*pi], "-imageantialias") == 0)
     ut_string_int (argv[++(*pi)], &((*pPrint).imageantialias));
-
-  else if (strcmp (argv[*pi], "-imagebackground") == 0)
-    sscanf (argv[++(*pi)], "%s", (*pPrint).imagebackground);
 
   else if (strcmp (argv[*pi], "-imageformat") == 0)
     ut_string_string (argv[++(*pi)], &(*pPrint).format);

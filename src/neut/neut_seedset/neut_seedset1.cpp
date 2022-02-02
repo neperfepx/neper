@@ -1,9 +1,9 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_seedset_.h"
-#include "neut_structs/neut_nanoflann_struct.hpp"
+#include "neut_structs/neut_nfcloud_struct.hpp"
 
 extern void neut_seedset_kdtree_cloud (struct SEEDSET SSet,
                                        NFCLOUD * pnf_cloud,

@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2021, Romain Quey */
+/* Copyright (C) 2003-2022, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdlib.h>
@@ -84,8 +84,7 @@ ut_sys_runwtime (char *exec, char *command, double tmax,
   sigaction (SIGALRM, &act, 0);
 
   ut_list_break (command, " ", &list, &qty);
-  list = ut_realloc_1d_pchar (list, qty + 1);
-  list[qty] = NULL;
+  list = ut_realloc_1d_pchar_null (list, qty + 1, 1);
   pid = fork ();
   if (pid == 0)
   {

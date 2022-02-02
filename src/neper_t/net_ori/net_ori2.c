@@ -1,8 +1,42 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_.h"
+
+void
+net_ori_qty (struct SEEDSET *pSSet, char **parts, int partqty, int **pqty)
+{
+  int i;
+  double *fact = NULL;
+  fact = ut_alloc_1d (partqty);
+  *pqty = ut_alloc_1d_int (partqty);
+
+  for (i = 0; i < partqty; i++)
+  {
+    int qty2;
+    char **parts2 = NULL;
+
+    ut_list_break (parts[i], "*", &parts2, &qty2);
+
+    if (qty2 == 1)
+      fact[i] = 1;
+    else if (qty2 == 2)
+      sscanf (parts2[0], "%lf", fact + i);
+    else
+      abort ();
+    ut_string_string (parts2[qty2 - 1], parts + i);
+
+    ut_free_2d_char (&parts2, qty2);
+  }
+
+  ut_array_1d_scale (fact, partqty, (*pSSet).N / ut_array_1d_sum (fact, partqty));
+  ut_array_1d_round_keepsum (fact, partqty, fact);
+  ut_array_1d_memcpy_toint (fact, partqty, *pqty);
+  ut_free_1d (&fact);
+
+  return;
+}
 
 void
 net_ori_random (long random, struct OL_SET *pOSet)
@@ -35,113 +69,64 @@ net_ori_random (long random, struct OL_SET *pOSet)
 // Author: L. Renversade.
 // fixed rq
 void
-net_ori_fiber (long random, char *distrib, struct OL_SET *pOSet)
+net_ori_fiber (struct SEEDSET *SSet, int dtess, int dcell, long random,
+               char *distrib, struct OL_SET *pOSet)
 {
-  unsigned int i;
-  unsigned char c;
-  double theta, dirs[3], dirc[3];
-  double *q_align = ol_q_alloc ();
-  double *q_rand = ol_q_alloc ();
+  double theta;
+  double *dirc = ut_alloc_1d (3);
+  double *dirs = ut_alloc_1d (3);
+  char *spread = NULL;
 
-  ut_string_fnrs (distrib, "fibre", "fiber", 1);
+  neut_ori_fiber_sscanf (distrib, dirc, dirs, &theta, &spread);
 
-  gsl_rng *rnd = NULL;
+  neut_ori_fiber (dirc, dirs, random, (*pOSet).size, (*pOSet).q);
 
-  rnd = gsl_rng_alloc (gsl_rng_ranlxd2);
-  gsl_rng_set (rnd, random - 1);
+  neut_ori_fiber_spread (spread, dirs, SSet[dtess].Random + dcell,
+                         (*pOSet).size, (*pOSet).crysym, (*pOSet).q);
 
-  if (sscanf
-      (distrib, "fiber(%lf,%lf,%lf,%lf,%lf,%lf)", dirs, dirs + 1, dirs + 2,
-       dirc, dirc + 1, dirc + 2) == 6)
-  {
-    ut_vector_uvect (dirs, dirs);
-    ut_vector_uvect (dirc, dirc);
-  }
-
-  // legacy
-  else
-    if (sscanf
-        (distrib, "fiber(%c,%lf,%lf,%lf)", &c, dirc, dirc + 1, dirc + 2) == 4)
-  {
-    if (c == 'x' || c == 'y' || c == 'z')
-      for (i = 0; i < 3; i++)
-        dirs[i] = c == 'x' + i;
-    else
-      ut_print_message (2, 2, "Failed to parse expression `%s'.\n", distrib);
-
-    ut_vector_uvect (dirc, dirc);
-  }
-
-  else
-    ut_print_message (2, 2, "Failed to parse expression `%s'.\n", distrib);
-
-  // 1st rotation, to get in the fiber
-  ol_vect_vect_q (dirc, dirs, q_align);
-
-  // 2nd rotation, about the fiber
-  for (i = 0; i < (*pOSet).size; i++)
-  {
-    theta = 2.0 * M_PI * gsl_rng_uniform (rnd);
-    ol_rtheta_q_rad (dirs, theta, q_rand);
-    ol_q_q_q_ref (q_align, q_rand, (*pOSet).q[i]);
-  }
-
-  gsl_rng_free (rnd);
-  ol_q_free (q_align);
-  ol_q_free (q_rand);
+  ut_free_1d_char (&spread);
+  ut_free_1d (&dirc);
+  ut_free_1d (&dirs);
 
   return;
 }
 
 void
-net_ori_equal (struct SEEDSET *SSet, int dtess, int dcell,
-               struct OL_SET *pOSet)
+net_ori_label (char *label, struct SEEDSET *SSet, int dtess, int dcell, struct OL_SET *pOSet)
 {
   unsigned int i;
+  int status, partqty;
+  double *q = ol_q_alloc ();
+  char **parts = NULL;
+  char *spread = NULL;
 
-  for (i = 0; i < (*pOSet).size; i++)
-    ut_array_1d_memcpy (SSet[dtess].SeedOri[dcell], 4, (*pOSet).q[i]);
+  ut_list_break (label, NEUT_SEP_DEP, &parts, &partqty);
 
-  return;
-}
+  if (partqty == 2)
+    ut_string_string (parts[1], &spread);
 
-void
-net_ori_spread (char *ori, struct SEEDSET *SSet, int dtess, int dcell,
-                struct OL_SET *pOSet)
-{
-  unsigned int i;
-
-  ut_string_fnrs (ori, "spread", "normal", 1);
-
-  ol_set_fprintf (stdout, *pOSet, "%f");
-
-  ol_set_misoridistrib (ori, SSet[dtess].Random, pOSet);
-
-  for (i = 0; i < (*pOSet).size; i++)
-    ol_q_q_q (SSet[dtess].SeedOri[dcell], (*pOSet).q[i], (*pOSet).q[i]);
-
-  return;
-}
-
-int
-net_ori_label (char *label, struct OL_SET *pOSet)
-{
-  unsigned int i;
-  int status;
-  double **g = ol_g_alloc ();
-
-  status = ol_label_g (label, g);
+  status = 0;
+  if (!strcmp (parts[0], "parent"))
+    ol_q_memcpy (SSet[dtess].SeedOri[dcell], q);
+  else
+    status = ol_label_q (parts[0], q);
 
   if (!status)
   {
-    ol_g_q (g, (*pOSet).q[0]);
+    ol_set_misorispread (spread, 3, SSet[dtess].Random + dcell, pOSet);
+
     for (i = 0; i < (*pOSet).size; i++)
-      ut_array_1d_memcpy ((*pOSet).q[0], 4, (*pOSet).q[i]);
+      ol_q_q_q_ref (q, (*pOSet).q[i], (*pOSet).q[i]);
   }
 
-  ol_g_free (g);
+  if (status)
+    abort ();
 
-  return status;
+  ol_q_free (q);
+  ut_free_2d_char (&parts, partqty);
+  ut_free_1d_char (&spread);
+
+  return;
 }
 
 void
@@ -238,7 +223,7 @@ net_ori_file (char *filename, struct OL_SET *pOSet)
 }
 
 void
-net_ori_crysym (struct OL_SET *pOSet)
+net_ori_oricrysym (struct OL_SET *pOSet)
 {
   unsigned int i;
 
@@ -344,16 +329,20 @@ net_ori_mtess_id (struct IN_T In, struct MTESS MTess, struct TESS *Tess,
 void
 net_ori_mtess_params (struct IN_T In, int level, struct MTESS MTess,
                       struct TESS *Tess, int dtess, int dcell, char **pori,
-                      char **poridistrib, char **pcrysym)
+                      char **porispread, char **pcrysym)
 {
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.ori[level], pori);
+  ut_string_fnrs (*pori, "fibre", "fiber", 1);
 
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
-                                           In.oridistrib[level], poridistrib);
+                                           In.orispread[level], porispread);
 
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.oricrysym[level], pcrysym);
+
+  if (level == 1 && !strncmp (*pori, "parent", 6))
+    ut_print_message (2, 3, "`parent' not available at scale 1.\n");
 
   return;
 }
@@ -407,18 +396,18 @@ net_ori_memcpy (struct OL_SET OSet, struct SEEDSET *pSSet)
 }
 
 void
-net_oridistrib (char *oridistrib, struct SEEDSET *pSSet)
+net_ori_orispread (char *orispread, struct SEEDSET *pSSet)
 {
   int i;
 
   (*pSSet).SeedOriDistrib = ut_alloc_2d_char ((*pSSet).N +  1, 1);
 
-  if (!strncmp (oridistrib, "file(", 5))
-    net_oridistrib_file (oridistrib, pSSet);
+  if (!strncmp (orispread, "file(", 5))
+    net_orispread_file (orispread, pSSet);
 
   else
     for (i = 1; i <= (*pSSet).N; i++)
-      ut_string_string (oridistrib, (*pSSet).SeedOriDistrib + i);
+      ut_string_string (orispread, (*pSSet).SeedOriDistrib + i);
 
   return;
 }

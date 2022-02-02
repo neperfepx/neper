@@ -11,9 +11,13 @@ struct IN_S
   char *simdir;                 // simulation directory
   char *mergedir;               // simulation directories to merge
 
-  char *noderes;                // nodal results
-  char *eltres;                 // elemental results
-  char *elsetres;               // element set results
+  char *orispace;               // orientation space
+
+  char *entity;               // new entity/entities based on elements
+
+  int entityqty;                // number of different -res* options
+  char **entities;              // -res* entities
+  char **entityresexpr;         // -res* results
 };
 typedef struct IN_S IN_S;
 

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Ctopoyright (C) 2003-2021, Romain Quey. */
+/* Ctopoyright (C) 2003-2022, Romain Quey. */
 /* See the CTOPOYING file in the ttopo-level directory. */
 
 #ifdef __cplusplus

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_show_tesr_.h"
@@ -46,7 +46,7 @@ nev_show_tesr_cell (char **argv, int *pi, struct TESR Tesr,
   ut_array_1d_int_zero ((*pshowarray) + 1, Tesr.CellQty);
 
   // checking for a general expression
-  status = nev_show_genexpr (argv[(*pi)], Tesr.CellId, *pshowarray, Tesr.CellQty);
+  status = nev_show_genexpr (argv[(*pi)], *pshowarray, Tesr.CellQty);
 
   if (status != 0)
   {

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_png_tess_.h"
@@ -97,7 +97,7 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
 
   double *p = ut_alloc_1d (3);
   double *p2 = NULL;
-  double ambient = (Print.showshadow == 1) ? 0.6 : 1;
+  double ambient = (Print.sceneshadow == 1) ? 0.6 : 1;
 
   // Writing poly faces
   if (Tess.Dim == 3)

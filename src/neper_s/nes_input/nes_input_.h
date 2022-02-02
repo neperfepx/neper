@@ -16,6 +16,7 @@
 #include"neut.h"
 
 #include"nes_input.h"
+#include"../nes_utils/nes_utils.h"
 
 extern void nes_input_treatargs (int, char **, int, char **, struct IN_S *);
 extern void nes_input_options_default (struct IN_S *);

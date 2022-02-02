@@ -14,7 +14,7 @@ extern "C"
 #include<stdlib.h>
 #include<math.h>
 #include<string.h>
-#include"../ut/src/ut.h"
+#include"ut.h"
 #include"../ol_des.h"
 
 #endif /* OL_POLE_H */

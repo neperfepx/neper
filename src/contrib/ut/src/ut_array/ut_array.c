@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2021, Romain Quey */
+/* Copyright (C) 2003-2022, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -368,6 +368,7 @@ ut_array_1d_fnscanf (char *filename, double *array, int d1, char *mode)
     }
 
     ut_file_close (file, vals[0], mode ? mode : "r");
+    status = 1;
   }
   else
     abort ();
@@ -988,6 +989,27 @@ ut_array_1d_mean (double *array, int size)
   for (i = 0; i < size; i++)
     mean += array[i];
   mean /= size;
+
+  return mean;
+}
+
+double
+ut_array_1d_wmean (double *array, double *weight, int size)
+{
+  int i;
+  double sum, mean = 0;
+
+  if (size <= 0)
+    abort ();
+
+  sum = 0;
+  for (i = 0; i < size; i++)
+  {
+    mean += array[i] * weight[i];
+    sum += weight[i];
+  }
+
+  mean /= sum;
 
   return mean;
 }
@@ -1944,6 +1966,17 @@ ut_array_1d_memcpy_fromint (int *src, int size, double *dest)
 
   for (i = 0; i < size; i++)
     dest[i] = src[i];
+
+  return;
+}
+
+void
+ut_array_1d_memcpy_toint (double *src, int size, int *dest)
+{
+  int i;
+
+  for (i = 0; i < size; i++)
+    dest[i] = ut_num_d2ri (src[i]);
 
   return;
 }

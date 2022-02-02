@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_data_gen_.hpp"
@@ -25,8 +25,11 @@ int
 neut_data_value_type (struct SIM Sim, char *entity, char *attribute,
                       char *value, char **ptype)
 {
-  int colqty, status = 0;
+  int status = 0;
   double **g = ol_g_alloc ();
+  struct SIMRES SimRes;
+
+  neut_simres_set_zero (&SimRes);
 
   if (ut_color_name_isvalid (value))
     ut_string_string ("col", ptype);
@@ -42,13 +45,19 @@ neut_data_value_type (struct SIM Sim, char *entity, char *attribute,
       status = -1;
   }
 
-  else if (!neut_sim_isvoid (Sim) && neut_sim_res_exist (Sim, entity, value, NULL, NULL))
-    neut_sim_res_type (Sim, entity, value, ptype, &colqty);
+  else if (!neut_sim_isvoid (Sim))
+  {
+    neut_sim_simres (Sim, entity, value, &SimRes);
+    if (SimRes.type && strlen (SimRes.type) > 0)
+      ut_string_string (SimRes.type, ptype);
+  }
 
   else
     ut_string_string ("expr", ptype);
 
   ol_g_free (g);
+
+  neut_simres_free (&SimRes);
 
   return status;
 }
@@ -118,6 +127,8 @@ neut_data_string_entity_attribute (char *string, char *entity, char *attribute)
     strcpy (entity, "pointedge");
   else if (!strncmp (stringcpy, "point", 5))
     strcpy (entity, "point");
+  else if (!strncmp (stringcpy, "mesh", 4))
+    strcpy (entity, "mesh");
   else
   {
     ut_print_message (2, 0, "option -data*: entity not supported");

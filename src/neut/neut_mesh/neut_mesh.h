@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -26,6 +26,7 @@ extern "C"
 #include "neut_mesh_fscanf/neut_mesh_fscanf.h"
 #include "neut_mesh_fprintf/neut_mesh_fprintf.h"
 #include "neut_mesh_str/neut_mesh_str.h"
+#include "neut_mesh_sim/neut_mesh_sim.h"
 
 #endif				/* NEUT_MESH_H */
 

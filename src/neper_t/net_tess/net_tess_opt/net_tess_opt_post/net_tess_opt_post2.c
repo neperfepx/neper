@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_post_.h"
@@ -20,6 +20,7 @@ net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess, int dtess,
                      TOpt.aspratio[2]);
 
   net_tess3d_domain (Tess[dtess], dcell, tessid, pMTess, pTess);
+
   if (!strcmp ((*pTess).Type, "periodic"))
     net_tess3d_periodic (pTess);
 

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_data_fscanf_.h"
@@ -10,6 +10,9 @@ neut_data_fscanf_ori (struct SIM Sim, char *datavalue, int qty,
                      int *pColDataSize)
 {
   double **g = ol_g_alloc ();
+  struct SIMRES SimRes;
+
+  neut_simres_set_zero (&SimRes);
 
   *pColDataSize = 4;
   (*pColData) = ut_alloc_2d (qty + 1, *pColDataSize);
@@ -18,13 +21,10 @@ neut_data_fscanf_ori (struct SIM Sim, char *datavalue, int qty,
     ut_array_2d_memcpy (dataembed + 1, qty, 4, *pColData + 1);
   else if ((!strcmp (datavalue, "internal") || !strcmp (datavalue, "from_sim")) && Sim.simdir)
   {
-    char *filename = ut_alloc_1d_char (1000);
+    neut_sim_simres (Sim, "element", "ori", &SimRes);
 
-    neut_sim_res_file (Sim, "element", "ori", filename);
-    if (neut_ori_fnscanf (filename, Sim.OriDes, "ascii", *pColData + 1, NULL, qty, NULL, "r") != 1)
+    if (neut_ori_fnscanf (SimRes.file, Sim.OriDes, "ascii", *pColData + 1, NULL, qty, NULL, "r") != 1)
       ut_print_message (2, 3, "Failed to read file.\n");
-
-    ut_free_1d_char (&filename);
   }
   else if (!ol_label_g (datavalue, g))
     neut_data_fscanf_ori_label (g, qty, pColData, pColDataType);
@@ -35,6 +35,7 @@ neut_data_fscanf_ori (struct SIM Sim, char *datavalue, int qty,
     neut_data_fscanf_ori_file (Sim, datavalue, qty, pColData);
 
   ol_g_free (g);
+  neut_simres_free (&SimRes);
 
   return;
 }
@@ -82,20 +83,26 @@ void
 neut_data_fscanf_scal (struct SIM Sim, char *datavalue, int qty, double **dataembed,
                       double ***pColData)
 {
-  char *value2 = ut_alloc_1d_char (1000);
-
   (*pColData) = ut_alloc_2d (qty + 1, 1);
 
   if (!datavalue && dataembed)
     ut_array_2d_memcpy (dataembed + 1, qty, 1, *pColData + 1);
 
-  else if (!neut_sim_res_file (Sim, NULL, datavalue, value2))
-    ut_array_2d_fnscanf_wcard (value2, (*pColData) + 1, qty, 1, "numeral,size", "r");
-
   else
-    ut_print_message (2, 3, "No scalar data available.\n");
+  {
+    struct SIMRES SimRes;
+    neut_simres_set_zero (&SimRes);
 
-  ut_free_1d_char (&value2);
+    neut_sim_simres (Sim, NULL, datavalue, &SimRes);
+
+    if (SimRes.file)
+      ut_array_2d_fnscanf_wcard (SimRes.file, (*pColData) + 1, qty, 1, "numeral,size", "r");
+    else
+      ut_print_message (2, 3, "No scalar data available.\n");
+
+    neut_simres_free (&SimRes);
+  }
+
 
   return;
 }
@@ -116,7 +123,7 @@ neut_data_fscanf_col (struct SIM Sim, void *pdata1, void *pdata2, void *pdata3,
     pTess = (struct TESS *) pdata1;
   if (!strcmp (input, "tesr"))
     pTesr = (struct TESR *) pdata1;
-  else if (!strcmp (input, "nodes") || !strcmp (input, "mesh"))
+  else if (!strncmp (input, "node", 4) || !strncmp (input, "mesh", 4))
   {
     pTess = (struct TESS *) pdata1;
     pNodes = (struct NODES *) pdata2;
@@ -343,7 +350,11 @@ void
 neut_data_fscanf_coo (struct SIM Sim, char *entity, int entityqty, char *type,
                      char *value, struct DATA *pData)
 {
+  struct SIMRES SimRes;
+
   ut_string_string (type, &(*pData).CooDataType);
+
+  neut_simres_set_zero (&SimRes);
 
   if (strcmp (type, "none"))
     ut_string_string (type, &(*pData).CooDataType);
@@ -363,7 +374,10 @@ neut_data_fscanf_coo (struct SIM Sim, char *entity, int entityqty, char *type,
 
     char *filename = ut_alloc_1d_char (1000);
     if (!strncmp (entity, "node", 4) && !strcmp (value, "coo"))
-      neut_sim_res_file (Sim, "node", "coo", filename);
+    {
+      neut_sim_simres (Sim, "node", "coo", &SimRes);
+      ut_string_string (SimRes.file, &filename);
+    }
     else
       strcpy (filename, value);
 
@@ -378,6 +392,8 @@ neut_data_fscanf_coo (struct SIM Sim, char *entity, int entityqty, char *type,
                                entityqty, 3, "size", "r");
   else
     ut_print_message (2, 2, "Failed to process `%s'.\n", value);
+
+  neut_simres_free (&SimRes);
 }
 
 void

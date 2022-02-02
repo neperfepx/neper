@@ -14,7 +14,7 @@
 
 #include"nes_merge.h"
 
-#include "../nes_sim/nes_sim_write/nes_sim_write.h"
+#include "../nes_convert/nes_convert_write/nes_convert_write.h"
 
 extern void nes_merge_input (struct SIM Sim, char *sim2);
 extern void nes_merge_entity_res (struct SIM Sim, char *entity, int cstep, char *sim2);

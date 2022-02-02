@@ -138,6 +138,13 @@ ol_g_vect_vect (double **g, double *v1, double *v2)
 void
 ol_q_vect_vect (double *q, double *v1, double *v2)
 {
+  double **g = ol_g_alloc ();
+
+  ol_q_g (q, g);
+  ol_g_vect_vect (g, v1, v2);
+
+  ol_g_free (g);
+  /* This rotates only by half the amount
   double *q1 = ol_q_alloc ();
   double *q2 = ol_q_alloc ();
 
@@ -150,6 +157,7 @@ ol_q_vect_vect (double *q, double *v1, double *v2)
 
   ol_q_free (q1);
   ol_q_free (q2);
+  */
 
   return;
 }

@@ -283,17 +283,6 @@ if (NOT BUILD_SHARED_LIBS)
   endif ()
 endif ()
 
-install ( TARGETS ${nlopt_lib}
-          EXPORT  NLoptLibraryDepends
-          RUNTIME DESTINATION ${RELATIVE_INSTALL_BIN_DIR}
-          LIBRARY DESTINATION ${RELATIVE_INSTALL_LIB_DIR}
-          ARCHIVE DESTINATION ${RELATIVE_INSTALL_LIB_DIR}
-        )
-
-if (MSVC AND BUILD_SHARED_LIBS AND NOT CMAKE_VERSION VERSION_LESS 3.1)
-  install (FILES $<TARGET_PDB_FILE:${nlopt_lib}> DESTINATION ${RELATIVE_INSTALL_BIN_DIR} CONFIGURATIONS Debug RelWithDebInfo COMPONENT Debug)
-endif ()
-
 add_subdirectory (src/api)
 
 if (NLOPT_PYTHON)
@@ -360,12 +349,6 @@ include (CPack)
 # configuration files
 export (TARGETS ${nlopt_lib} NAMESPACE NLopt:: FILE ${PROJECT_BINARY_DIR}/NLoptLibraryDepends.cmake)
 
-# Install the export set for use with the install-tree
-install(EXPORT NLoptLibraryDepends
-        NAMESPACE NLopt::
-        DESTINATION ${RELATIVE_INSTALL_CMAKE_DIR}
-        COMPONENT Development)
-
 # Create a NLOPTConfig.cmake file for the use from the install tree
 # and install it
 set (NLOPT_LIBRARIES "NLopt::${nlopt_lib}")
@@ -379,8 +362,3 @@ list (APPEND RELATIVE_NLOPT_LIB_DIR ${rel_lib_dir})
 
 configure_file (cmake/NLoptConfig.cmake.in NLoptConfig.cmake @ONLY)
 configure_file (cmake/NLoptConfigVersion.cmake.in NLoptConfigVersion.cmake @ONLY)
-install (FILES
-          ${CMAKE_CURRENT_BINARY_DIR}/NLoptConfig.cmake
-          ${CMAKE_CURRENT_BINARY_DIR}/NLoptConfigVersion.cmake
-         DESTINATION ${RELATIVE_INSTALL_CMAKE_DIR}
-         COMPONENT Development)

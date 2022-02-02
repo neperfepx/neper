@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright(C) 2003-2021, Romain Quey.
+# Copyright(C) 2003-2022, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 3.0)
@@ -28,18 +28,21 @@ nes_input/nes_input2.c
 nes_input/nes_input3.c
 nes_merge/nes_merge1.c
 nes_merge/nes_merge2.c
-nes_sim/nes_sim1.c
-nes_sim/nes_sim2.c
-nes_sim/nes_sim3.c
-nes_sim/nes_sim_fepxparse/nes_sim_fepxparse1.c
-nes_sim/nes_sim_write/nes_sim_write1.c
-nes_sim/nes_sim_write/nes_sim_write2.c
-nes_sim/nes_sim_write/nes_sim_write3.c
-nes_sim/nes_sim_write/nes_sim_write4.c
+nes_convert/nes_convert1.c
+nes_convert/nes_convert_fepxparse/nes_convert_fepxparse1.c
+nes_convert/nes_convert_write/nes_convert_write1.c
+nes_convert/nes_convert_write/nes_convert_write2.c
+nes_convert/nes_convert_write/nes_convert_write3.c
+nes_convert/nes_convert_write/nes_convert_write4.c
+nes_orispace/nes_orispace1.c
+nes_entity/nes_entity1.c
 nes_pproc/nes_pproc1.c
 nes_pproc/nes_pproc2.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity1.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity2.c
+nes_pproc/nes_pproc_entity/nes_pproc_entity_builtin/nes_pproc_entity_builtin1.c
+nes_pproc/nes_pproc_entity/nes_pproc_entity_builtin/nes_pproc_entity_builtin2.c
+nes_pproc/nes_pproc_entity/nes_pproc_entity_builtin/nes_pproc_entity_builtin3.c
 )
 
 list (APPEND EXTRA_LIBS neut)

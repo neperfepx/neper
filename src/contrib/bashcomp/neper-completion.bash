@@ -110,11 +110,12 @@ _neper_completions() {
   -showtess -showtesr -showmesh -showmeshslice -showpoint -showcell -showpoly \
   -showface -showedge -showver -showseed -showfaceinter -showvox -showvoidvox \
   -showedge -showelt3d -showelt2d -showelt1d -showelt0d -shownode -showcsys \
-  -showshadow \
 
   -cameracoo -cameralookat -cameraangle -camerasky -cameraprojection \
 
-  -imagesize -imagebackground -imageantialias -imageformat \
+  -imagesize -imageantialias -imageformat \
+
+  -sceneshadow -scenebackground \
 
   -loop -endloop \
 

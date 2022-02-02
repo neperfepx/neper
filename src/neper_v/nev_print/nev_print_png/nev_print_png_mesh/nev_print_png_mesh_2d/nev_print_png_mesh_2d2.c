@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_png_mesh_2d_.h"
@@ -11,7 +11,7 @@ nev_print_png_mesh_2d_print (FILE * file, struct PRINT Print, struct NODES N,
 {
   nev_print_png_mesh_2d_print_faces (file, Print, N, M2D, NodeData, MeshData);
 
-  nev_print_png_mesh_2d_print_edges (file, Print.showshadow, N, M1D, MeshData);
+  nev_print_png_mesh_2d_print_edges (file, Print.sceneshadow, N, M1D, MeshData);
 
   return;
 }

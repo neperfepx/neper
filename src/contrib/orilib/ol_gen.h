@@ -14,6 +14,7 @@ extern "C"
 #include "ol_glo.h"
 
 extern int  ol_label_g (char *, double **);
+extern int  ol_label_q (char *, double *);
 
 extern void ol_nb_e (double, double, double, double *);
 extern void ol_nb_e_rad (double, double, double, double *);
@@ -45,18 +46,7 @@ extern void ol_nb_max_rtheta_rad (double, double, double, double, double *,
 #include"ut.h"
 #define isNaN(x) ((x) != (x))
 #endif /* OL_GENx */
-#ifndef OL_GENx
-#define OL_GENx
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<math.h>
-#include"ut.h"
-#define isNaN(x) ((x) != (x))
-#include "ol_glo.h"
-#include "ol_des.h"
-#endif /* OL_GENx */
 #ifdef __cplusplus
 }
 #endif

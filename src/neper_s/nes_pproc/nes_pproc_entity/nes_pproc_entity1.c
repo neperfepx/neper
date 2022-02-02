@@ -5,15 +5,18 @@
 #include "nes_pproc_entity_.h"
 
 void
-nes_pproc_entity (struct IN_S In, struct SIM *pSim, struct TESS Tess,
-                  struct NODES *pNodes, struct MESH *Mesh, char *entity)
+nes_pproc_entity (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
+                  struct MESH *Mesh, char *entity, char *entityresexpr)
 {
-  int i, j, entityqty, status, resultqty;
-  char **results = NULL, *dir = NULL;
+  int i, j, memberqty, status, resultqty;
+  char **results = NULL, *dir = NULL, *result = NULL;
   char *message = ut_alloc_1d_char (1000);
+  struct SIMRES SimRes;
 
-  nes_pproc_entity_pre (In, *pSim, entity, &entityqty, &dir, &results,
-                        &resultqty);
+  neut_simres_set_zero (&SimRes);
+
+  nes_pproc_entity_pre (pSim, entity, entityresexpr, &memberqty, &dir,
+                        &results, &resultqty);
 
   if (resultqty)
   {
@@ -21,19 +24,26 @@ nes_pproc_entity (struct IN_S In, struct SIM *pSim, struct TESS Tess,
     ut_dir_openmessage (dir, "w");
   }
 
+  // The option initializes the entity elements only if needed
+  neut_sim_entity_init_members (pSim, Tess, *pNodes, Mesh, entity);
+
   for (i = 0; i < resultqty; i++)
   {
-    char *result = NULL, *expr = NULL;
+    // special case: removing result
+    if (results[i][0] == '!' || results[i][0] == '\\')
+      nes_pproc_entity_remove (pSim, entity, results[i] + 1);
 
-    ut_list_break_2 (results[i], NEUT_SEP_DEP, &result, &expr);
-
-    // adding result
-    if (result[0] != '!')
+    // general case: adding result
+    else if (results[i][0] != '!')
     {
-      if (strcmp (result, "ori"))
-        sprintf (message, "%s", result);
+      result = (results[i][0] == '\\') ? results[i] + 1 : results[i];
+
+      neut_sim_simres (*pSim, entity, result, &SimRes);
+
+      if (strcmp (SimRes.res, "ori"))
+        sprintf (message, "%s", SimRes.res);
       else
-        sprintf (message, "%s (%s crystal symmetry)", result,
+        sprintf (message, "%s (%s crystal symmetry)", SimRes.res,
                            Tess.CellCrySym ? Tess.CellCrySym : "undefined");
 
       ut_print_message (0, 4, "%s ", message);
@@ -41,48 +51,33 @@ nes_pproc_entity (struct IN_S In, struct SIM *pSim, struct TESS Tess,
         printf (".");
       printf (" ");
 
-      if (result[0] != '!')
-        ut_sys_mkdir ("%s/%s", dir, result);
-
-      status = neut_sim_res_exist (*pSim, entity, result, NULL, NULL);
+      ut_sys_mkdir (SimRes.dir);
 
       // result exists
-      if (status == 1)
+      if (!strcmp (SimRes.status, "result"))
         printf ("\b\b\b exists\n");
 
-      // result does not exist in the sim directory but is a subresult
-      else if (status == 2)
-        nes_pproc_entity_subres (pSim, entity, entityqty, dir, result);
+      // result is a subresult (some specificities, do not merge with res_expr)
+      else if (!strcmp (SimRes.status, "subresult"))
+        nes_pproc_entity_subres (pSim, entity, &SimRes);
 
-      // result does not exist in the sim directory but is an element result (for an elset)
-      else if (status == 3)
-        nes_pproc_entity_eltres (pSim, Tess, pNodes, Mesh, entity, entityqty, dir, result);
+      // result is a file result
+      else if (!strcmp (SimRes.status, "file"))
+        nes_pproc_entity_file (pSim, entity, dir, SimRes.res, SimRes.expr);
 
-      else if (expr && !strncmp (expr, "file(", 5))
-        nes_pproc_entity_file (pSim, entity, dir, result, expr);
+      // treating result as an expression and then as a built-in result
+      // (an expression is necessarily 1D while a built-in result is not).
+      else if (!strcmp (SimRes.status, "unknown"))
+      {
+        status = nes_pproc_entity_expr (pSim, Tess, pNodes, Mesh, entity, &SimRes);
 
-      // result is a known result
-      else if (!strcmp (entity, "node") && !strcmp (result, "disp"))
-        nes_pproc_entity_known (pSim, entity, entityqty, dir, result);
+        if (status)
+          status = nes_pproc_entity_builtin (pSim, Tess, pNodes, Mesh, entity, &SimRes);
+      }
 
-      // result is an expression
       else
-        nes_pproc_entity_expr (pSim, Tess, pNodes, Mesh, entity, entityqty, dir, result, expr);
+        abort ();
     }
-
-    // removing result
-    else
-    {
-      ut_print_message (0, 4, "%s removal ", result + 1);
-      for (j = 0; j < 41 - (int) strlen (result + 1); j++)
-        printf (".");
-      printf (" ");
-
-      nes_pproc_entity_remove (pSim, entity, dir, result);
-    }
-
-    ut_free_1d_char (&result);
-    ut_free_1d_char (&expr);
   }
 
   if (resultqty)
@@ -91,6 +86,7 @@ nes_pproc_entity (struct IN_S In, struct SIM *pSim, struct TESS Tess,
   ut_free_2d_char (&results, resultqty);
   ut_free_1d_char (&dir);
   ut_free_1d_char (&message);
+  neut_simres_free (&SimRes);
 
   return;
 }

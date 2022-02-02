@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright(C) 2003-2021, Romain Quey.
+# Copyright(C) 2003-2022, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 3.0)
@@ -7,7 +7,7 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"4.2.1-36\")
+set(NEPER_VERSION \"4.3.0\")
 project(neper)
 
 # Set the build type for appropriate compile flags
@@ -205,12 +205,12 @@ unset(HAVE_PNG CACHE)            # hide from ccmake (comes from Orilib)
 target_link_libraries(neper ${EXTRA_LIBS})
 
 install(TARGETS neper DESTINATION bin
-        PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ
-	GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+         PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ
+	 GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
   set (completiondir "/usr/share/bash-completion/completions")
-elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+elseif (compare MATCHES CMAKE_SYSTEM_NAME "Darwin" OR APPLE)
   set (completiondir "/usr/local/etc/bash_completion.d")
 endif()
 

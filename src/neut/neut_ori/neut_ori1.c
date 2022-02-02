@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_ori_.h"
@@ -676,13 +676,13 @@ neut_ori_rodriguescol (double *q, char *crysym, double *col)
 }
 
 void
-neut_ori_oridistrib (double *qmean, char *oridistrib, int qty, int id, double **q)
+neut_ori_orispread (double *qmean, char *orispread, int qty, int id, double **q)
 {
   int i;
 
   struct OL_SET OSet = ol_set_alloc (qty, NULL);
 
-  ol_set_misoridistrib (oridistrib, id, &OSet);
+  ol_set_misorispread (orispread, 3, id, &OSet);
 
   for (i = 0; i < qty; i++)
     ol_q_q_q_ref (qmean, OSet.q[i], q[i]);
@@ -690,4 +690,166 @@ neut_ori_oridistrib (double *qmean, char *oridistrib, int qty, int id, double **
   ol_set_free (OSet);
 
   return;
+}
+
+void
+neut_ori_fiber_sscanf (char *fiber, double *dirc, double *dirs, double *ptheta, char **pspread)
+{
+  int i, partqty;
+  double theta = 0;
+  char **parts = NULL;
+  char tmp;
+
+  ut_list_break (fiber, NEUT_SEP_DEP, &parts, &partqty);
+
+  if (partqty == 2 && pspread)
+    ut_string_string (parts[1], pspread);
+
+  if (sscanf
+      (parts[0], "fiber(%lf,%lf,%lf,%lf,%lf,%lf,%lf)", dirc, dirc + 1, dirc + 2,
+       dirs, dirs + 1, dirs + 2, &theta) == 7)
+  {
+    ut_vector_uvect (dirs, dirs);
+    ut_vector_uvect (dirc, dirc);
+    if (ptheta)
+      *ptheta = theta;
+  }
+
+  else if (sscanf
+      (parts[0], "fiber(%lf,%lf,%lf,%lf,%lf,%lf)", dirc, dirc + 1, dirc + 2,
+       dirs, dirs + 1, dirs + 2) == 6)
+  {
+    ut_vector_uvect (dirs, dirs);
+    ut_vector_uvect (dirc, dirc);
+  }
+
+  // legacy
+  else
+    if (sscanf
+        (parts[0], "fiber(%c,%lf,%lf,%lf)", &tmp, dirc, dirc + 1, dirc + 2) == 4)
+  {
+    if (tmp == 'x' || tmp == 'y' || tmp == 'z')
+      for (i = 0; i < 3; i++)
+        dirs[i] = tmp == 'x' + i;
+    else
+      abort ();
+
+    ut_vector_uvect (dirc, dirc);
+  }
+
+  else
+    abort ();
+
+  ut_free_2d_char (&parts, partqty);
+
+  return;
+}
+
+void
+neut_ori_fiber (double *dirc, double *dirs, long random, int qty, double **q)
+{
+  int i;
+  double theta;
+  double *q_align = ol_q_alloc ();
+  double *q_rand = ol_q_alloc ();
+
+  gsl_rng *rnd = NULL;
+  rnd = gsl_rng_alloc (gsl_rng_ranlxd2);
+  gsl_rng_set (rnd, random - 1);
+
+  // 1st rotation, to get in the fiber
+  ol_vect_vect_q (dirc, dirs, q_align);
+
+  // 2nd rotation, about the fiber
+  for (i = 0; i < qty; i++)
+  {
+    theta = 2.0 * M_PI * gsl_rng_uniform (rnd);
+    ol_rtheta_q_rad (dirs, theta, q_rand);
+    ol_q_q_q_ref (q_align, q_rand, q[i]);
+  }
+
+  ol_q_free (q_align);
+  ol_q_free (q_rand);
+  gsl_rng_free (rnd);
+
+  return;
+}
+
+void
+neut_ori_fiber_spread (char *spread, double *dirs, long random, int qty, char *crysym, double **q)
+{
+  int i;
+  double *z = ol_vect_alloc ();
+  double *q_align = ol_q_alloc ();
+  struct OL_SET OSet2 = ol_set_alloc (qty, crysym);
+
+  ol_set_misorispread (spread, 2, random, &OSet2);
+
+  ut_array_1d_set_3 (z, 0, 0, 1);
+  ol_vect_vect_q (dirs, z, q_align);
+  for (i = 0; i < qty; i++)
+  {
+    ol_q_csys (OSet2.q[i], q_align, OSet2.q[i]);
+    if (!ut_num_equal (ut_vector_scalprod (OSet2.q[i] + 1, dirs), 0, 1e-6))
+      abort ();
+    ol_q_q_q_ref (q[i], OSet2.q[i], q[i]);
+  }
+
+  ut_free_1d (&z);
+  ol_set_free (OSet2);
+  ol_q_free (q_align);
+
+  return;
+}
+
+void
+neut_ori_fiber_rodfiber (double *dirc, double *dirs, double *P, double *v)
+{
+  int i;
+  double **q = ut_alloc_2d (2, 4);
+  double **R = ut_alloc_2d (2, 3);
+
+  neut_ori_fiber (dirc, dirs, 1, 2, q);
+  for (i = 0; i < 2; i++)
+    ol_q_R (q[i], R[i]);
+
+  ut_array_1d_memcpy (R[0], 3, P);
+  ut_space_points_uvect (R[0], R[1], v);
+
+  ut_free_2d (&q, 2);
+  ut_free_2d (&R, 2);
+
+  return;
+}
+
+int
+neut_ori_fiber_in (double *q, char *crysym, double *dirc, double *dirs, double theta)
+{
+  int status = 0;
+  int i, qty = ol_crysym_qty (crysym);
+  double *qc = ol_q_alloc ();
+  double tmp;
+  double *dirc2 = ol_vect_alloc ();
+
+  for (i = 1; i <= qty; i++)
+  {
+    ol_q_crysym (q, crysym, i, qc);
+
+    ol_q_inverse (qc, qc);
+    ol_q_vect_vect (qc, dirc, dirc2);
+    ol_vect_vect_theta (dirc2, dirs, &tmp);
+
+    tmp = ut_num_min (tmp, 180 - tmp);
+
+    if (tmp < theta)
+    {
+      status = 1;
+      break;
+    }
+  }
+
+  ol_q_free (qc);
+  ol_vect_free (dirc2);
+
+  return status;
 }

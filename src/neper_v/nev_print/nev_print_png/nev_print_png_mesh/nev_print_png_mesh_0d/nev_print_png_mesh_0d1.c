@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_png_mesh_0d_.h"
@@ -9,7 +9,7 @@ nev_print_png_mesh_0d (FILE * file, struct PRINT Print, struct MESH *Mesh,
                    struct DATA NodeData, struct DATA *MeshData)
 {
   int i;
-  double ambient = (Print.showshadow == 1) ? 0.6 : 1;
+  double ambient = (Print.sceneshadow == 1) ? 0.6 : 1;
   char *texture = ut_alloc_1d_char (100);
 
   if (MeshData[0].Qty > 0)

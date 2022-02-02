@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_input_.h"
@@ -245,9 +245,9 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
                                     &(*pIn).orioptilogvarstring,
                                     (*pIn).levelqty, &((*pIn).orioptilogvar));
 
-    // oridistrib
-    net_input_treatargs_multiscale ("-oridistrib", &(*pIn).oridistribstring,
-                                    (*pIn).levelqty, &((*pIn).oridistrib));
+    // orispread
+    net_input_treatargs_multiscale ("-orispread", &(*pIn).orispreadstring,
+                                    (*pIn).levelqty, &((*pIn).orispread));
 
     // Processing periodicstring & periodic
     (*pIn).periodic = ut_alloc_1d_int (3);

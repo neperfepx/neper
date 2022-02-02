@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_input_.h"
@@ -121,7 +121,8 @@ int
 nem_input_outputismesh (struct IN_M In)
 {
   if (strstr (In.format, "msh") || strstr (In.format, "geof")
-      || strstr (In.format, "inp") || strstr (In.format, "vtk"))
+      || strstr (In.format, "inp") || strstr (In.format, "vtk")
+      || strstr (In.format, "sim"))
     return 1;
   else
     return 0;

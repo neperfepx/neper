@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 
 #include "neut_tess_op_.h"
 
@@ -13,9 +13,8 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
 
   if ((!strcmp ((*pTess).DomType, "cube")
        || !strcmp ((*pTess).DomType, "square")
-       || (strcmp ((*pTess).DomType, "cut") && (*pTess).DomVerQty == 8
+       || (!strcmp ((*pTess).DomType, "cut") && (*pTess).DomVerQty == 8
            && (*pTess).DomEdgeQty == 12 && (*pTess).DomFaceQty == 6)))
-
   {
     strcpy ((*pTess).DomType, "cube");
     (*pTess).DomFaceLabel = ut_alloc_2d_char (7, 3);

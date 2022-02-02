@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -102,7 +102,10 @@ extern void neut_mesh_face_boundnodecoos (struct NODES Nodes, struct MESH
 					 struct MESH Mesh3D, double **p,
 					 double *d, double **v, double **n);
 
-  extern void neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty);
+  extern void neut_mesh_var_list (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
+                                  struct MESH Mesh2D, struct MESH Mesh3D, struct MESH MeshCo,
+                                  char *entity, char ***pvar, int *pvarqty);
+
   extern int neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D,
 				struct MESH Mesh1D, struct MESH Mesh2D,
 				struct MESH Mesh3D, struct MESH MeshCo,
@@ -141,6 +144,9 @@ extern void neut_mesh_face_boundnodecoos (struct NODES Nodes, struct MESH
 					 char *expr, int *val);
 
   extern int neut_mesh_array_dim (struct MESH *Mesh);
+  extern int neut_mesh_all_dim (struct MESH Mesh0D, struct MESH Mesh1D,
+                                struct MESH Mesh2D, struct MESH Mesh3D,
+                                struct MESH MeshCo);
 
 extern void neut_mesh_elset_bodynodes (struct TESS Tess, struct MESH
     MeshL, struct MESH MeshU, int elset, int **pnodes, int *pnodeqty);
@@ -161,23 +167,31 @@ extern void neut_mesh_entity_qty (struct NODES Nodes, struct MESH Mesh0D,
                                   struct MESH Mesh3D, char *entity,
                                   int *pentityqty);
 
-extern int neut_mesh_exprisvar (char *entity, char *expr);
+extern int neut_mesh_exprisvar (struct NODES Nodes, struct MESH Mesh0D,
+                                struct MESH Mesh1D, struct MESH Mesh2D,
+                                struct MESH Mesh3D, struct MESH MeshCo,
+                                char *entity, char *expr);
 
 extern void neut_mesh_eltdata_elsetdata (struct NODES Nodes, struct MESH Mesh,
-    double **eltdata, int size, double **elsetdata);
+    int **elsets, int elsetqty, double **eltdata, int size, double **elsetdata);
 
 extern void neut_mesh_eltdata_elsetdata_ori (struct NODES Nodes, struct MESH
-    Mesh, double **eltdata, char *crysym, double **elsetdata);
+    Mesh, int **elsets, int elsetqty, double **eltdata, char *crysym, double **elsetdata);
 
 extern void neut_mesh_eltdata_elsetdata_oridis (struct NODES Nodes, struct MESH Mesh,
+                                    int **elsets, int elsetqty,
                                     double **eltdata, char *crysym, double ***elsetevect,
                                     double **elseteval);
 
-extern void neut_mesh_elset_olset (struct NODES Nodes, struct MESH Mesh,
-                       double **EltOri, char *crysym, int elset, struct OL_SET *pOSet);
+extern void neut_mesh_aselsets (struct MESH Mesh, int ***pelsets, int *pelsetqty);
 
-extern void neut_mesh_elts_olset (struct NODES Nodes, struct MESH Mesh,
-                       double **EltOri, char *crysym, int* elts, int eltqty, struct OL_SET *pOSet);
+extern void neut_mesh_entity_expr_matches (struct TESS Tess, struct NODES Nodes,
+                               struct MESH Mesh0D, struct MESH Mesh1D,
+                               struct MESH Mesh2D, struct MESH Mesh3D,
+                               struct MESH MeshCo, char *entity,
+                               char *expr, int **pmatches, int *pmatchqty);
+
+extern int neut_mesh_entity_known (char *entity);
 
 #endif /* NEUT_MESH_GEN_H */
 

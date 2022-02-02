@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_png_utils_.h"
@@ -343,7 +343,7 @@ nev_print_png_triangle_edge (FILE * file, double *coo1, double *coo2,
 
 void
 nev_print_png_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
-                  int *showelt, int **rgb, char *coltype, int showshadow)
+                  int *showelt, int **rgb, char *coltype, int sceneshadow)
 {
   int i, showeltqty;
 
@@ -373,7 +373,7 @@ nev_print_png_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
 
   // texture_list
   fprintf (file, "  texture_list {\n");
-  double ambient = showshadow ? 0.6 : 1;
+  double ambient = sceneshadow ? 0.6 : 1;
   int *elt_text = ut_alloc_1d_int (Mesh.EltQty + 1);
 
   if (strcmp (coltype, "elt") == 0)
@@ -754,14 +754,14 @@ nev_print_png_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle
   Print.cameraangle = 6;
   sprintf (Print.cameraprojection, "orthographic");
 
-  Print.showshadow = 1;
+  Print.sceneshadow = 1;
 
   int **rgb = ut_alloc_2d_int (N.NodeQty + 1, 3);
 
   neut_data_real_color (data, NULL, N.NodeQty, scale, ColScheme, rgb, NULL);
 
   nev_print_png_header (file, Print);
-  nev_print_png_mesh2d (file, N, M, NULL, rgb, (char *) "elt", Print.showshadow);
+  nev_print_png_mesh2d (file, N, M, NULL, rgb, (char *) "elt", Print.sceneshadow);
   nev_print_png_foot (file, Print);
 
   fprintf (file, "union {\n");

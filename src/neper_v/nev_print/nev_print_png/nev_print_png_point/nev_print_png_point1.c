@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_png_point_.h"
@@ -9,7 +9,7 @@ nev_print_png_point (FILE * file, struct POINT Point, struct DATA PointData,
                  struct PRINT Print)
 {
   int i, point_qty, printpoint_qty, size;
-  double ambient = (Print.showshadow == 1) ? 0.6 : 1;
+  double ambient = (Print.sceneshadow == 1) ? 0.6 : 1;
   char *texture = NULL, *bordertexture = NULL;
   int *hidden = NULL;
   double *data = ut_alloc_1d (12);

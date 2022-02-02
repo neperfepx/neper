@@ -34,4 +34,19 @@ updatelib.sh*
 data
 tags
 
+*.bak
+
+# Ignore meld backups
+*_BACKUP_*
+*_BASE_*
+*_LOCAL_*
+*_REMOTE_*
 *.orig
+
+# Mac files
+.DS_Store
+
+docs
+
+# Sphinx files
+__pycache__

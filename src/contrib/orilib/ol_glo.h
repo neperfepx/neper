@@ -33,6 +33,7 @@ extern "C"
 #define OL_ITERMAX2 1000
 
 #endif /* OL_GLO_H */
+
 #ifdef __cplusplus
 }
 #endif

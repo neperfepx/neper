@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2021, Romain Quey */
+/* Copyright (C) 2003-2022, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -79,6 +79,16 @@ extern "C"
 /// \param string: string
 /// \return 1 on success and 0 on failure
   extern int ut_string_isdigits (char *string);
+
+/// \brief Remove trailing digits from a string
+/// \param string: string
+/// \return 1 on success and 0 on failure
+  extern void ut_string_removetrailingdigits (char *string, char **pstring2);
+
+/// \brief Get the trailing digits of a string
+/// \param string: string
+/// \return 1 on success and 0 on failure
+  extern void ut_string_trailingdigits (char *string, char **pstring2);
 
 /// \brief Test if a string is a number
 /// \param string: string

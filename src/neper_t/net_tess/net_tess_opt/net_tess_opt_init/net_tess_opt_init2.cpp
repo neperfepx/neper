@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_.h"
@@ -49,6 +49,8 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
   morpho2 = ut_alloc_1d_char (1000);
 
   ut_string_fnrs (morpho, "circularity", "sphericity", INT_MAX);
+  if (strstr (morpho, "1-x"))
+    ut_print_message (2, 2, "'1-x' is no longer supported, use '1-sphericity:...' instead.\n");
 
   ut_list_break (morpho, NEUT_SEP_NODEP, &parts, &PartQty);
 

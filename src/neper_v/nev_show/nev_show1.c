@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_show_.h"
@@ -16,9 +16,6 @@ nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
 
   if (!strcmp (argv[(*pi)], "-showcsys"))
     nev_show_csys (argv, pi, pPrint);
-
-  if (!strcmp (argv[(*pi)], "-showshadow"))
-    nev_show_shadow (argv, pi, pPrint);
 
   else if (!strcmp (argv[(*pi)], "-showtess"))
     nev_show_tess (argv, pi, pPrint);

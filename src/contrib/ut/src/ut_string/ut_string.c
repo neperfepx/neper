@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2021, Romain Quey */
+/* Copyright (C) 2003-2022, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -632,6 +632,47 @@ ut_string_isdigits (char *string)
     status = isdigit (string[i]);
 
   return status;
+}
+
+void
+ut_string_removetrailingdigits (char *string, char **pstring2)
+{
+  int i, qty = 0, length;
+
+  ut_string_string (string, pstring2);
+  for (i = strlen (string) - 1; i >= 0; i--)
+  {
+    if (isdigit (string[i]))
+      qty++;
+    else
+      break;
+  }
+
+  length = strlen (string) - qty;
+  *pstring2 = ut_alloc_1d_char (strlen (string) - qty + 1);
+  *pstring2 = strncpy (*pstring2, string, length);
+
+  return;
+}
+
+void
+ut_string_trailingdigits (char *string, char **pstring2)
+{
+  int i, qty = 0;
+
+  ut_string_string (string, pstring2);
+  for (i = strlen (string) - 1; i >= 0; i--)
+  {
+    if (isdigit (string[i]))
+      qty++;
+    else
+      break;
+  }
+
+  *pstring2 = ut_alloc_1d_char (qty + 1);
+  *pstring2 = strcpy (*pstring2, string + strlen (string) - qty);
+
+  return;
 }
 
 void

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_utils_.h"
@@ -86,8 +86,8 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).ori = NULL;
   (*pIn).orides = NULL;
   (*pIn).oriformat = NULL;
-  (*pIn).oridistribstring = NULL;
-  (*pIn).oridistrib = NULL;
+  (*pIn).orispreadstring = NULL;
+  (*pIn).orispread = NULL;
   (*pIn).body = NULL;
   (*pIn).load = NULL;
   (*pIn).loadpoint = NULL;
@@ -131,8 +131,8 @@ net_in_free (struct IN_T *pIn)
   ut_free_1d_char (&(*pIn).tesrformat);
   ut_free_1d_char (&(*pIn).oristring);
   ut_free_2d_char (&(*pIn).ori, (*pIn).levelqty + 1);
-  ut_free_1d_char (&(*pIn).oridistribstring);
-  ut_free_2d_char (&(*pIn).oridistrib, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).orispreadstring);
+  ut_free_2d_char (&(*pIn).orispread, (*pIn).levelqty + 1);
   ut_free_1d_char (&(*pIn).orides);
   ut_free_1d_char (&(*pIn).oriformat);
   ut_free_1d_char (&(*pIn).body);

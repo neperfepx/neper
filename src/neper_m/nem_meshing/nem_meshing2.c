@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_.h"
@@ -9,6 +9,8 @@ nem_meshing_post (struct TESS Tess, struct MESH *Mesh)
 {
   int i, j;
   char *entity = NULL;
+
+  ut_string_string (Tess.DomType, &(Mesh[Tess.Dim].Domain));
 
   // meshes of lower dimensions
   for (i = 0; i < Tess.Dim; i++)

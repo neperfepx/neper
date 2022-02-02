@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -30,7 +30,6 @@ extern "C"
     char *cameraprojection;
 
     // image settings
-    char *imagebackground;
     char *imagesize;
     int imageantialias;
 
@@ -58,8 +57,10 @@ extern "C"
 
     int *showpoint;
 
-    int showshadow;
     int showcsys;
+
+    char *scenebackground;
+    int sceneshadow;
 
     // miscellaneous
     int datareduction;

@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2021, Romain Quey */
+/* Copyright (C) 2003-2022, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -190,9 +190,8 @@ ut_arg_expand (int argc, char **argv, int *pexpargc, char ***pexpargv)
           ut_string_fnrs (tmp, var, tmp2, 100);
 
           (*pexpargc)++;
-          (*pexpargv) = ut_realloc_1d_pchar ((*pexpargv), (*pexpargc) + 1);
-          (*pexpargv)[(*pexpargc)] = ut_alloc_1d_char (strlen (tmp) + 1);
-          sprintf ((*pexpargv)[(*pexpargc)], "%s", tmp);
+          (*pexpargv) = ut_realloc_1d_pchar_null ((*pexpargv), (*pexpargc) + 1, 1);
+          ut_string_string (tmp, (*pexpargv) + (*pexpargc));
         }
       }
       // i++;                      // skipping -endloop
@@ -200,9 +199,8 @@ ut_arg_expand (int argc, char **argv, int *pexpargc, char ***pexpargv)
     else
     {
       (*pexpargc)++;
-      (*pexpargv) = ut_realloc_1d_pchar ((*pexpargv), (*pexpargc) + 1);
-      (*pexpargv)[(*pexpargc)] = ut_alloc_1d_char (strlen (argv[i]) + 1);
-      sprintf ((*pexpargv)[(*pexpargc)], "%s", argv[i]);
+      (*pexpargv) = ut_realloc_1d_pchar_null ((*pexpargv), (*pexpargc) + 1, 1);
+      ut_string_string (argv[i], (*pexpargv) + (*pexpargc));
     }
   }
 

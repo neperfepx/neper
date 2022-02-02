@@ -13,7 +13,8 @@
 #include"structIn_s.h"
 
 #include"nes_pproc_entity/nes_pproc_entity.h"
+#include"../nes_utils/nes_utils.h"
 
 #include"nes_pproc.h"
 
-extern void nes_pproc_loadmesh (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes, struct MESH *pMesh);
+extern void nes_pproc_load (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes, struct MESH *Mesh);

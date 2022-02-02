@@ -14,7 +14,7 @@ extern "C"
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
-#include "../ut/src/ut.h"
+#include "ut.h"
 #include"../ol_xpl.h"
 
 #endif /* OL_GND_ALLOC_H */

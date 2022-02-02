@@ -1,8 +1,0 @@
-@c This file is part of the Neper software package.
-@c Copyright (C) 2003-2021 Romain Quey
-@c See the COPYING file in the top-level directory.
-
-@node Versions
-@appendix Versions
-
-@verbatiminclude ../../VERSIONS

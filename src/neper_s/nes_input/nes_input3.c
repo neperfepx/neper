@@ -10,10 +10,7 @@ nes_input_options_default (struct IN_S *pIn)
 {
   (*pIn).fepxdir = NULL;
   (*pIn).simdir = NULL;
-
-  ut_string_string ("inputres", &((*pIn).noderes));
-  ut_string_string ("inputres", &((*pIn).eltres));
-  ut_string_string ("none", &((*pIn).elsetres));
+  ut_string_string ("none", &((*pIn).orispace));
 
   return;
 }
@@ -27,11 +24,10 @@ nes_input_options_set (struct IN_S *pIn, int argc, char **argv)
   char *type = NULL;
 
   /* This is the possible argument list. */
-  ArgQty = 0;
+  ArgQty = 3;
   sprintf (ArgList[++ArgQty], "-o");
-  sprintf (ArgList[++ArgQty], "-noderes");
-  sprintf (ArgList[++ArgQty], "-eltres");
-  sprintf (ArgList[++ArgQty], "-elsetres");
+  sprintf (ArgList[++ArgQty], "-orispace");
+  sprintf (ArgList[++ArgQty], "-entity");
 
   for (i = 1; i <= argc - 1; i++)
     if (argv[i][0] != '-')
@@ -70,9 +66,14 @@ nes_input_options_set (struct IN_S *pIn, int argc, char **argv)
       }
       else if (Res == -1)
       {
-        ut_print_lineheader (2);
-        printf ("Unknown option `%s'.\n", argv[i]);
-        ut_arg_badarg ();
+        if (!strncmp (argv[i], "-res", 4))
+          ut_string_string (argv[i], &Arg);
+        else
+        {
+          ut_print_lineheader (2);
+          printf ("Unknown option `%s'.\n", argv[i]);
+          ut_arg_badarg ();
+        }
       }
 
       if (!strcmp (Arg, "-o"))
@@ -82,12 +83,12 @@ nes_input_options_set (struct IN_S *pIn, int argc, char **argv)
 
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).simdir));
       }
-      else if (!strcmp (Arg, "-noderes"))
-        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).noderes));
-      else if (!strcmp (Arg, "-eltres"))
-        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).eltres));
-      else if (!strcmp (Arg, "-elsetres"))
-        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).elsetres));
+      else if (!strcmp (Arg, "-orispace"))
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).orispace));
+      else if (!strncmp (Arg, "-res", 4))
+        nes_in_addres (Arg, argv[++i], pIn);
+      else if (!strcmp (Arg, "-entity"))
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).entity));
       else
         ut_arg_badarg ();
     }

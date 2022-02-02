@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_load_.h"
@@ -61,7 +61,7 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
       {
         ut_print_message (0, 1, "Loading mesh...\n");
         neut_mesh_fnscanf_msh (list[i], pNodes, Mesh, Mesh + 1, Mesh + 2,
-                               Mesh + 3, Mesh + 4, &topology);
+                               Mesh + 3, Mesh + 4, &topology, "r");
 
         if (topology && Mesh[3].EltQty > 0)
         {

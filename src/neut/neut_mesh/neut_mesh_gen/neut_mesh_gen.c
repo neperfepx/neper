@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_gen_.h"
@@ -713,9 +713,32 @@ neut_mesh_points_mesh2ddist (struct TESS Tess, struct NODES Nodes,
 }
 
 void
-neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
+neut_mesh_var_list (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
+                    struct MESH Mesh2D, struct MESH Mesh3D, struct MESH MeshCo,
+                    char *entity_in, char ***pvar, int *pvarqty)
 {
   int id = 0;
+  char *entity = NULL;
+  (void) Nodes;
+  (void) MeshCo;
+
+  if (!strcmp (entity_in, "elt") || !strcmp (entity_in, "elts")
+   || !strcmp (entity_in, "elset") || !strcmp (entity_in, "elsets")
+   || !strcmp (entity_in, "mesh"))
+  {
+    if (Mesh3D.ElsetQty > 0)
+      entity = ut_string_paste (entity_in, "3d");
+    else if (Mesh2D.ElsetQty > 0)
+      entity = ut_string_paste (entity_in, "2d");
+    else if (Mesh1D.ElsetQty > 0)
+      entity = ut_string_paste (entity_in, "1d");
+    else if (Mesh0D.ElsetQty > 0)
+      entity = ut_string_paste (entity_in, "0d");
+    else
+      abort ();
+  }
+  else
+    ut_string_string (entity_in, &entity);
 
   if (!strcmp (entity, "mesh0d"))
   {
@@ -778,7 +801,7 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
   }
   else if (!strcmp (entity, "elset3d"))
   {
-    (*pvarqty) = 17;
+    (*pvarqty) = 18;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
     strcpy ((*pvar)[id++], "id");
     strcpy ((*pvar)[id++], "x");
@@ -797,6 +820,7 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[id++], "body");
     strcpy ((*pvar)[id++], "domtype");
     strcpy ((*pvar)[id++], "group");
+    strcpy ((*pvar)[id++], "fiber");
   }
   else if (!strcmp (entity, "elset2d"))
   {
@@ -853,7 +877,7 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
   }
   else if (!strcmp (entity, "elt3d"))
   {
-    (*pvarqty) = 18;
+    (*pvarqty) = 19;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
     strcpy ((*pvar)[id++], "id");
     strcpy ((*pvar)[id++], "x");
@@ -873,6 +897,7 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
     strcpy ((*pvar)[id++], "part");
     strcpy ((*pvar)[id++], "elsetvol");
     strcpy ((*pvar)[id++], "group");
+    strcpy ((*pvar)[id++], "fiber");
   }
   else if (!strcmp (entity, "elt2d"))
   {
@@ -962,28 +987,9 @@ neut_mesh_var_list (char *entity, char ***pvar, int *pvarqty)
   else
     ut_print_neperbug ();
 
+  ut_free_1d_char (&entity);
+
   return;
-}
-
-int
-neut_mesh_exprisvar (char *entity, char *expr)
-{
-  int i, status, varqty;
-  char **vars = NULL;
-
-  neut_mesh_var_list (entity, &vars, &varqty);
-
-  status = 0;
-  for (i = 0; i < varqty; i++)
-    if (!strcmp (expr, vars[i]))
-    {
-      status = 1;
-      break;
-    }
-
-  ut_free_2d_char (&vars, varqty);
-
-  return status;
 }
 
 void
@@ -1001,6 +1007,17 @@ neut_mesh_entity_qty (struct NODES Nodes, struct MESH Mesh0D,
     (*pentityqty) = Mesh1D.ElsetQty;
   else if (!strcmp (entity, "elset0d"))
     (*pentityqty) = Mesh0D.ElsetQty;
+  else if (!strcmp (entity, "elset"))
+  {
+    if (Mesh3D.ElsetQty > 0)
+      (*pentityqty) = Mesh3D.ElsetQty;
+    else if (Mesh2D.ElsetQty > 0)
+      (*pentityqty) = Mesh2D.ElsetQty;
+    else if (Mesh1D.ElsetQty > 0)
+      (*pentityqty) = Mesh1D.ElsetQty;
+    else if (Mesh0D.ElsetQty > 0)
+      (*pentityqty) = Mesh0D.ElsetQty;
+  }
   else if (!strcmp (entity, "elt3d"))
     (*pentityqty) = Mesh3D.EltQty;
   else if (!strcmp (entity, "elt2d"))
@@ -1009,8 +1026,21 @@ neut_mesh_entity_qty (struct NODES Nodes, struct MESH Mesh0D,
     (*pentityqty) = Mesh1D.EltQty;
   else if (!strcmp (entity, "elt0d"))
     (*pentityqty) = Mesh0D.EltQty;
+  else if (!strcmp (entity, "elt"))
+  {
+    if (Mesh3D.EltQty > 0)
+      (*pentityqty) = Mesh3D.EltQty;
+    else if (Mesh2D.EltQty > 0)
+      (*pentityqty) = Mesh2D.EltQty;
+    else if (Mesh1D.EltQty > 0)
+      (*pentityqty) = Mesh1D.EltQty;
+    else if (Mesh0D.EltQty > 0)
+      (*pentityqty) = Mesh0D.EltQty;
+  }
   else if (!strcmp (entity, "node"))
     (*pentityqty) = Nodes.NodeQty;
+  else if (!strncmp (entity, "mesh", 4))
+    (*pentityqty) = 1;
   else
     ut_print_neperbug ();
 
@@ -1021,13 +1051,58 @@ int
 neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
                    struct MESH Mesh2D, struct MESH Mesh3D, struct MESH MeshCo,
                    struct TESS Tess, int *showelt0d, int *showelt1d,
-                   int *showelt2d, int *showelt3d, double cl, char *entity,
+                   int *showelt2d, int *showelt3d, double cl, char *entity_in,
                    int id, char *var, double **pvals, int *pvalqty,
                    char **ptype)
 {
   int j, status;
   double rrmean, rrmin, rrmax;
   char *typetmp = ut_alloc_1d_char (10);
+  char *entity = NULL;
+
+  if (!strcmp (entity_in, "nodes"))
+    ut_string_string ("node", &entity);
+  else if (!strcmp (entity_in, "elt") || !strcmp (entity_in, "elts"))
+  {
+    if (!neut_mesh_isvoid (Mesh3D))
+      ut_string_string ("elt3d", &entity);
+    else if (!neut_mesh_isvoid (Mesh2D))
+      ut_string_string ("elt2d", &entity);
+    else if (!neut_mesh_isvoid (Mesh1D))
+      ut_string_string ("elt1d", &entity);
+    else if (!neut_mesh_isvoid (Mesh0D))
+      ut_string_string ("elt0d", &entity);
+    else
+      abort ();
+  }
+  else if (!strcmp (entity_in, "elset") || !strcmp (entity_in, "elsets"))
+  {
+    if (!neut_mesh_isvoid (Mesh3D))
+      ut_string_string ("elset3d", &entity);
+    else if (!neut_mesh_isvoid (Mesh2D))
+      ut_string_string ("elset2d", &entity);
+    else if (!neut_mesh_isvoid (Mesh1D))
+      ut_string_string ("elset1d", &entity);
+    else if (!neut_mesh_isvoid (Mesh0D))
+      ut_string_string ("elset0d", &entity);
+    else
+      abort ();
+  }
+  else if (!strcmp (entity_in, "mesh"))
+  {
+    if (!neut_mesh_isvoid (Mesh3D))
+      ut_string_string ("mesh3d", &entity);
+    else if (!neut_mesh_isvoid (Mesh2D))
+      ut_string_string ("mesh2d", &entity);
+    else if (!neut_mesh_isvoid (Mesh1D))
+      ut_string_string ("mesh1d", &entity);
+    else if (!neut_mesh_isvoid (Mesh0D))
+      ut_string_string ("mesh0d", &entity);
+    else
+      abort ();
+  }
+  else
+    ut_string_string (entity_in, &entity);
 
   (*pvals) = ut_realloc_1d (*pvals, 1);
 
@@ -1129,6 +1204,20 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     {
       (*pvals)[0] = Mesh3D.ElsetGroup? Mesh3D.ElsetGroup[id] : -1;
       strcpy (typetmp, "%d");
+    }
+    else if (!strncmp (var, "fiber", 5))
+    {
+      double theta;
+      double *dirc = ut_alloc_1d (3);
+      double *dirs = ut_alloc_1d (3);
+      double *ori = Mesh3D.ElsetOri[id];
+
+      neut_ori_fiber_sscanf (var, dirc, dirs, &theta, NULL);
+      (*pvals)[0] = neut_ori_fiber_in (ori, Tess.CellCrySym, dirc, dirs, theta);
+      strcpy (typetmp, "%d");
+
+      ut_free_1d (&dirc);
+      ut_free_1d (&dirs);
     }
     else
       status = -1;
@@ -1418,6 +1507,20 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     {
       (*pvals)[0] = Mesh3D.ElsetGroup? Mesh3D.ElsetGroup[Mesh3D.EltElset[id]] : -1;
       strcpy (typetmp, "%d");
+    }
+    else if (!strncmp (var, "fiber", 5))
+    {
+      double theta;
+      double *dirc = ut_alloc_1d (3);
+      double *dirs = ut_alloc_1d (3);
+      double *ori = Mesh3D.EltOri ? Mesh3D.EltOri[id] : Mesh3D.ElsetOri[Mesh3D.EltElset[id]];
+
+      neut_ori_fiber_sscanf (var, dirc, dirs, &theta, NULL);
+      (*pvals)[0] = neut_ori_fiber_in (ori, Tess.CellCrySym, dirc, dirs, theta);
+      strcpy (typetmp, "%d");
+
+      ut_free_1d (&dirc);
+      ut_free_1d (&dirs);
     }
     else
       status = -1;
@@ -2094,7 +2197,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
       status = -1;
   }
   else
-    ut_print_neperbug ();
+    status = -1;
 
   if (ptype)
   {
@@ -2103,10 +2206,10 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
   }
 
   ut_free_1d_char (&typetmp);
+  ut_free_1d_char (&entity);
 
   return status;
 }
-
 
 int
 neut_mesh_var_val_one (struct NODES Nodes, struct MESH Mesh0D,
@@ -2149,6 +2252,27 @@ neut_mesh_array_dim (struct MESH *Mesh)
   return -1;
 }
 
+int
+neut_mesh_all_dim (struct MESH Mesh0D, struct MESH Mesh1D,
+                   struct MESH Mesh2D, struct MESH Mesh3D,
+                   struct MESH MeshCo)
+{
+  if (MeshCo.EltQty)
+    return 4;
+  else if (Mesh3D.EltQty)
+    return 3;
+  else if (Mesh2D.EltQty)
+    return 2;
+  else if (Mesh1D.EltQty)
+    return 1;
+  else if (Mesh0D.EltQty)
+    return 0;
+  else
+    abort ();
+
+  return -1;
+}
+
 void
 neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH Mesh0D,
                            struct MESH Mesh1D, struct MESH Mesh2D,
@@ -2168,7 +2292,7 @@ neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH Mesh0D,
   neut_mesh_entity_qty (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, entity,
                         &entityqty);
 
-  neut_mesh_var_list (entity, &vars, &varqty);
+  neut_mesh_var_list (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo, entity, &vars, &varqty);
 
   if (ut_string_isfilename (expr))
   {
@@ -2176,6 +2300,15 @@ neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH Mesh0D,
     ut_array_1d_fscanf (file, val + 1, entityqty);
     ut_file_close (file, expr, "R");
   }
+
+  else if (neut_mesh_exprisvar (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo,
+           entity, expr))
+    for (j = 1; j <= entityqty; j++)
+      neut_mesh_var_val_one (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo,
+                             Tess, showelt0d, showelt1d, showelt2d,
+                             showelt3d, 0, entity, j, expr, val + j,
+                             ptype);
+
   else
   {
 #pragma omp parallel for
@@ -2438,23 +2571,24 @@ neut_mesh2d_mesh3d (struct NODES *pNodes, struct MESH Mesh2D,
 
 void
 neut_mesh_eltdata_elsetdata (struct NODES Nodes, struct MESH Mesh,
+                             int **elsets, int elsetqty,
                              double **eltdata, int size,
                              double **elsetdata)
 {
   int i;
 
-  ut_array_2d_zero (elsetdata + 1, Mesh.ElsetQty, size);
+  ut_array_2d_zero (elsetdata + 1, elsetqty, size);
 
 #pragma omp parallel for private(i)
-  for (i = 1; i <= Mesh.ElsetQty; i++)
+  for (i = 1; i <= elsetqty; i++)
   {
     int j, k, elt;
     double vol, totvol;
 
     totvol = 0;
-    for (j = 1; j <= Mesh.Elsets[i][0]; j++)
+    for (j = 1; j <= elsets[i][0]; j++)
     {
-      elt = Mesh.Elsets[i][j];
+      elt = elsets[i][j];
 
       if (Mesh.Dimension == 2)
         neut_mesh_elt_area (Nodes, Mesh, elt, &vol);
@@ -2475,80 +2609,186 @@ neut_mesh_eltdata_elsetdata (struct NODES Nodes, struct MESH Mesh,
 }
 
 void
-neut_mesh_elset_olset (struct NODES Nodes, struct MESH Mesh,
-                       double **EltOri, char *crysym, int elset, struct OL_SET *pOSet)
-{
-  neut_mesh_elts_olset (Nodes, Mesh, EltOri, crysym, Mesh.Elsets[elset] + 1,
-                        Mesh.Elsets[elset][0], pOSet);
-
-  return;
-}
-
-void
-neut_mesh_elts_olset (struct NODES Nodes, struct MESH Mesh,
-                      double **EltOri, char *crysym, int *elts, int eltqty, struct OL_SET *pOSet)
-{
-  int i, elt;
-
-  *pOSet = ol_set_alloc (eltqty, crysym);
-
-  for (i = 0; i < eltqty; i++)
-  {
-    elt = elts[i];
-    neut_mesh_elt_size (Nodes, Mesh, elt, (*pOSet).weight + i);
-    ol_q_memcpy (EltOri ? EltOri[elt] : Mesh.EltOri[elt], (*pOSet).q[i]);
-  }
-
-  if (crysym)
-    ut_string_string (crysym, &(*pOSet).crysym);
-
-  return;
-}
-
-void
 neut_mesh_eltdata_elsetdata_ori (struct NODES Nodes, struct MESH Mesh,
-                                 double **eltdata, char *crysym, double **elsetdata)
+                                 int **elsets, int elsetqty, double **eltdata,
+                                 char *crysym, double **elsetdata)
 {
   int i;
 
-  ut_array_2d_zero (elsetdata + 1, Mesh.ElsetQty, 4);
+  ut_array_2d_zero (elsetdata + 1, elsetqty, 4);
 
 #pragma omp parallel for private(i) schedule(dynamic)
-  for (i = 1; i <= Mesh.ElsetQty; i++)
-  {
-    struct OL_SET OSet;
-
-    neut_mesh_elset_olset (Nodes, Mesh, eltdata, crysym, i, &OSet);
-
-    ol_set_mean_iter (OSet, elsetdata[i]);
-
-    ol_set_free (OSet);
-  }
+  for (i = 1; i <= elsetqty; i++)
+    neut_mesh_elts_orimean (Nodes, Mesh, elsets[i] + 1, elsets[i][0],
+                            eltdata, crysym, elsetdata[i]);
 
   return;
 }
 
 void
 neut_mesh_eltdata_elsetdata_oridis (struct NODES Nodes, struct MESH Mesh,
+                                    int **elsets, int elsetqty,
                                     double **eltdata, char *crysym, double ***elsetevect,
                                     double **elseteval)
 {
   int i;
-  double ***evect = ut_alloc_3d (Mesh.ElsetQty + 1, 3, 3);
-  double **eval = ut_alloc_2d (Mesh.ElsetQty + 1, 3);
+  double ***evect = ut_alloc_3d (elsetqty + 1, 3, 3);
+  double **eval = ut_alloc_2d (elsetqty + 1, 3);
 
 #pragma omp parallel for private(i) schedule(dynamic)
-  for (i = 1; i <= Mesh.ElsetQty; i++)
-    neut_mesh_elset_orianiso (Nodes, Mesh, eltdata, crysym, i, evect[i],
-                              eval[i]);
+  for (i = 1; i <= elsetqty; i++)
+    neut_mesh_elts_orianiso (Nodes, Mesh, elsets[i] + 1, elsets[i][0],
+                             eltdata, crysym, evect[i], eval[i]);
 
   if (elseteval)
-    ut_array_2d_memcpy (eval + 1, Mesh.ElsetQty, 3, elseteval + 1);
+    ut_array_2d_memcpy (eval + 1, elsetqty, 3, elseteval + 1);
   if (elsetevect)
-    ut_array_3d_memcpy (evect + 1, Mesh.ElsetQty, 3, 3, elsetevect + 1);
+    ut_array_3d_memcpy (evect + 1, elsetqty, 3, 3, elsetevect + 1);
 
-  ut_free_2d (&eval, Mesh.ElsetQty + 1);
-  ut_free_3d (&evect, Mesh.ElsetQty + 1, 3);
+  ut_free_2d (&eval, elsetqty + 1);
+  ut_free_3d (&evect, elsetqty + 1, 3);
 
   return;
+}
+
+void
+neut_mesh_aselsets (struct MESH Mesh, int ***pelsets, int *pelsetqty)
+{
+  *pelsetqty = 1;
+  (*pelsets) = ut_alloc_1d_pint (2);
+  (*pelsets)[1] = ut_alloc_1d_int (Mesh.EltQty + 1);
+  ut_array_1d_int_set_id ((*pelsets)[1], Mesh.EltQty + 1);
+  (*pelsets)[1][0] = Mesh.EltQty;
+
+  return;
+}
+
+void
+neut_mesh_entity_expr_matches (struct TESS Tess, struct NODES Nodes,
+                               struct MESH Mesh0D, struct MESH Mesh1D,
+                               struct MESH Mesh2D, struct MESH Mesh3D,
+                               struct MESH MeshCo, char *entity,
+                               char *expr, int **pmatches, int *pmatchqty)
+{
+  int i, entityqty;
+  double *tmp = NULL;
+
+  neut_mesh_entity_qty (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, entity,
+                        &entityqty);
+
+  tmp = ut_alloc_1d (entityqty + 1);
+
+  neut_mesh_entity_expr_val (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D,
+                             MeshCo, Tess, NULL, NULL, NULL, NULL,
+                             entity, expr, tmp, NULL);
+
+  (*pmatchqty) = 0;
+  (*pmatches) = ut_alloc_1d_int (entityqty);
+
+  for (i = 1; i <= entityqty; i++)
+    if (ut_num_equal (tmp[i], 1, 1e-6))
+      (*pmatches)[(*pmatchqty)++] = i;
+
+  (*pmatches) = ut_realloc_1d_int (*pmatches, *pmatchqty);
+
+  ut_free_1d (&tmp);
+
+  return;
+}
+
+int
+neut_mesh_exprisvar (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
+                     struct MESH Mesh2D, struct MESH Mesh3D, struct MESH MeshCo,
+                     char *entity_in, char *expr)
+{
+  int i, status;
+  char *entity = NULL;
+
+  if (!strcmp (entity_in, "elt") || !strcmp (entity_in, "elts")
+   || !strcmp (entity_in, "elset") || !strcmp (entity_in, "elsets")
+   || !strcmp (entity_in, "mesh"))
+  {
+    if (Mesh3D.ElsetQty > 0)
+      entity = ut_string_paste (entity_in, "3d");
+    else if (Mesh2D.ElsetQty > 0)
+      entity = ut_string_paste (entity_in, "2d");
+    else if (Mesh1D.ElsetQty > 0)
+      entity = ut_string_paste (entity_in, "1d");
+    else if (Mesh0D.ElsetQty > 0)
+      entity = ut_string_paste (entity_in, "0d");
+    else
+      abort ();
+  }
+  else
+    ut_string_string (entity_in, &entity);
+
+  if (!strncmp (expr, "scaleid(", 8))
+    status = 1;
+
+  else
+  {
+    int varqty;
+    char **vars = NULL;
+
+    neut_mesh_var_list (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo,
+                        entity, &vars, &varqty);
+
+    status = 0;
+    for (i = 0; i < varqty; i++)
+    {
+      if (!strstr (vars[i], "("))
+      {
+        if (!strcmp (expr, vars[i]))
+        {
+          status = 1;
+          break;
+        }
+      }
+      else
+      {
+        char *tmp = ut_alloc_1d_char (strlen (expr) + 1);
+        ut_string_untilchar (expr, '(', NULL, tmp);
+
+        if (!strncmp (tmp, vars[i], strlen (tmp)))
+          status = 1;
+
+        ut_free_1d_char (&tmp);
+
+        if (status == 1)
+          break;
+      }
+    }
+
+    ut_free_2d_char (&vars, varqty);
+  }
+
+  ut_free_1d_char (&entity);
+
+  return status;
+}
+
+int
+neut_mesh_entity_known (char *entity)
+{
+  if (!strcmp (entity, "elt")
+   || !strcmp (entity, "elt0d")
+   || !strcmp (entity, "elt1d")
+   || !strcmp (entity, "elt2d")
+   || !strcmp (entity, "elt3d")
+   || !strcmp (entity, "elts")
+   || !strcmp (entity, "elset")
+   || !strcmp (entity, "elset0d")
+   || !strcmp (entity, "elset1d")
+   || !strcmp (entity, "elset2d")
+   || !strcmp (entity, "elset3d")
+   || !strcmp (entity, "elsets")
+   || !strcmp (entity, "mesh")
+   || !strcmp (entity, "mesh0d")
+   || !strcmp (entity, "mesh1d")
+   || !strcmp (entity, "mesh2d")
+   || !strcmp (entity, "mesh3d")
+   || !strcmp (entity, "nodes"))
+    return 1;
+  else
+    return 0;
 }

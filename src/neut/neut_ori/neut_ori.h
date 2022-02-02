@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -42,7 +42,15 @@ extern "C"
   extern void neut_ori_rodriguescol_R (double *R, char *crysym, double *col);
   extern void neut_ori_rodriguescol_int (double *q, char *crysym, int *col);
 
-  extern void neut_ori_oridistrib (double *qmean, char *oridistrib, int qty, int id, double **q);
+  extern void neut_ori_orispread (double *qmean, char *orispread, int qty, int id, double **q);
+
+  extern void neut_ori_fiber_sscanf (char *fiber, double *dirc, double *dirs, double *ptheta, char **pspread);
+  extern void neut_ori_fiber (double *dirc, double *dirs, long random, int qty, double **q);
+  extern void neut_ori_fiber_spread (char *spread, double *dirs, long random, int qty, char *crysym, double **q);
+
+  extern void neut_ori_fiber_rodfiber (double *dirc, double *dirs, double *P, double *v);
+
+  extern int neut_ori_fiber_in (double *q, char *crysym, double *dirc, double *dirs, double theta);
 
 #ifdef __cplusplus
 }

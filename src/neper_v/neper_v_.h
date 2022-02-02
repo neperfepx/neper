@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -16,6 +16,8 @@
 #include"nev_load/nev_load.h"
 #include"nev_camera/nev_camera.h"
 #include"nev_image/nev_image.h"
+#include"nev_utils/nev_utils.h"
+#include"nev_scene/nev_scene.h"
 #include"nev_data/nev_data.h"
 #include"nev_slice/nev_slice.h"
 #include"nev_outdir/nev_outdir.h"

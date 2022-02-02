@@ -82,20 +82,7 @@ extern void ol_map_transform (struct OL_MAP, double **, size_t, size_t,
 #include"ut.h"
 #define isNaN(x) ((x) != (x))
 #endif /* OL_MAPx */
-#ifndef OL_MAPx
-#define OL_MAPx
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<math.h>
-#include"ut.h"
-#define isNaN(x) ((x) != (x))
-#include <png.h>
-#include "ol_glo.h"
-#include "ol_des.h"
-#include "ol_set.h"
-#endif /* OL_MAPx */
 #ifdef __cplusplus
 }
 #endif

@@ -13,7 +13,7 @@ extern "C"
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-#include"../ut/src/ut.h"
+#include"ut.h"
 #include"../ol_cal.h"
 
 #endif /* OL_INV_H */

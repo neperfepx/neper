@@ -1,9 +1,9 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_polycomp_.h"
-#include"neut_nanoflann_struct.hpp"
+#include"neut_nfcloud_struct.hpp"
 
 extern void net_polycomp_poly (struct POLY Domain, struct SEEDSET SSet,
                                NFTREE ** pnf_tree, int *ptid_seedid,

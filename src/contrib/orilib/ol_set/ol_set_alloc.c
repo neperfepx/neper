@@ -278,3 +278,60 @@ ol_set_memcpy (struct OL_SET Set1, struct OL_SET *pSet2)
 
   return;
 }
+
+void
+ol_set_cat (struct OL_SET* OSets, int SetQty, struct OL_SET *pOSet)
+{
+  int i, j, id, size;
+
+  size = 0;
+  for (i = 0; i < SetQty; i++)
+    size += OSets[i].size;
+
+  (*pOSet) = ol_set_alloc (size, OSets[0].crysym);
+
+  id = 0;
+  for (i = 0; i < SetQty; i++)
+    for (j = 0; j < (int) OSets[i].size; j++)
+    {
+      ut_array_1d_memcpy (OSets[i].q[j], 4, (*pOSet).q[id]);
+      (*pOSet).weight[id] = OSets[i].weight[j];
+      (*pOSet).id[id] = OSets[i].id[j];
+      id++;
+    }
+
+  return;
+}
+
+void
+ol_set_shuf (struct OL_SET *pOSet, int random)
+{
+  int i, *id = ut_alloc_1d_int ((*pOSet).size);
+  struct OL_SET OSetCpy;
+
+  OSetCpy = ol_set_alloc ((*pOSet).size, (*pOSet).crysym);
+
+  ol_set_memcpy (*pOSet, &OSetCpy);
+
+  ut_array_1d_int_set_id (id, (*pOSet).size);
+
+  gsl_rng *r = NULL;
+  r = gsl_rng_alloc (gsl_rng_ranlxd2);
+  gsl_rng_set (r, random - 1);
+
+  gsl_ran_shuffle (r, id, (*pOSet).size, sizeof (int));
+
+  for (i = 0; i < (int) (*pOSet).size; i++)
+  {
+    ol_q_memcpy (OSetCpy.q[id[i]], (*pOSet).q[i]);
+    (*pOSet).weight[i] = OSetCpy.weight[id[i]];
+    if (OSetCpy.id)
+      (*pOSet).id[i] = OSetCpy.id[id[i]];
+  }
+
+  gsl_rng_free (r);
+  ut_free_1d_int (&id);
+  ol_set_free (OSetCpy);
+
+  return;
+}

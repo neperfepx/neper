@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_png_mesh_2d_.h"
@@ -30,7 +30,7 @@ nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
       ut_array_1d_memcpy (NodeData.Coo[i], 3, N.NodeCoo[i]);
 
     nev_print_png_mesh2d (file, N, M2D, Print.showelt2d, rgb, "elt",
-                      Print.showshadow);
+                      Print.sceneshadow);
 
     ut_free_2d_int (&rgb, M2D.EltQty + 1);
   }
@@ -46,7 +46,7 @@ nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
       ut_array_1d_memcpy (NodeData.Coo[i], 3, N.NodeCoo[i]);
 
     nev_print_png_mesh2d (file, N, M2D, Print.showelt2d, rgb, "node",
-                      Print.showshadow);
+                      Print.sceneshadow);
 
     ut_free_2d_int (&rgb, N.NodeQty + 1);
   }
@@ -57,12 +57,12 @@ nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
 }
 
 void
-nev_print_png_mesh_2d_print_edges (FILE * file, int showshadow, struct NODES N,
+nev_print_png_mesh_2d_print_edges (FILE * file, int sceneshadow, struct NODES N,
                                struct MESH M1D, struct DATA *MeshData)
 {
   int i;
   double Rad;
-  double ambient = showshadow ? 0.6 : 1;
+  double ambient = sceneshadow ? 0.6 : 1;
   char *texture = ut_alloc_1d_char (100);
   char *string = ut_alloc_1d_char (100);
   int *Col = ut_alloc_1d_int (3);

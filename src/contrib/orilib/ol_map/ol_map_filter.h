@@ -14,7 +14,7 @@ extern "C"
 #include <stdlib.h>
 #include <math.h>
 
-#include "../ut/src/ut.h"
+#include "ut.h"
 #include "../ol_map.h"
 
 #endif /* OL_MAP_FILTER_H */

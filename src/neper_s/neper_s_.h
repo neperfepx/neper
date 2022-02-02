@@ -14,7 +14,9 @@
 #include"nes_utils/nes_utils.h"
 #include"nes_input/nes_input.h"
 #include"nes_merge/nes_merge.h"
-#include"nes_sim/nes_sim.h"
+#include"nes_convert/nes_convert.h"
+#include"nes_orispace/nes_orispace.h"
+#include"nes_entity/nes_entity.h"
 #include"nes_pproc/nes_pproc.h"
 
 #include"neper_s.h"

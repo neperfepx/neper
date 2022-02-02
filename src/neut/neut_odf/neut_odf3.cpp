@@ -3,6 +3,8 @@
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_odf_.h"
+#include "neut/neut_oset/neut_oset.hpp"
+#include "neut_qcloud_struct.hpp"
 
 void
 neut_odf_comp_elts_all (struct OL_SET *pOSet, double *q, struct ODF *pOdf, int id)
@@ -89,4 +91,3 @@ neut_odf_comp_nodes_neigh (double *q, double cut_fact, my_kd_tree_t *nano_index,
 
   return;
 }
-

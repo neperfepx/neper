@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -81,6 +81,7 @@ extern "C"
 #include "neut_ori/neut_ori.h"
 #include "neut_prim/neut_prim.h"
 #include "neut_sim/neut_sim.h"
+#include "neut_odf/neut_odf.h"
 
 #endif				/* NEUT_H */
 

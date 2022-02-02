@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_init_.h"
@@ -238,7 +238,7 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
     }
   }
 
-  if ((*pPrint).showshadow == -1)
+  if ((*pPrint).sceneshadow == -1)
   {
     if ((*pPrint).showmesh == 1)
     {
@@ -250,7 +250,7 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
     else
       dim = 3;
 
-    (*pPrint).showshadow = (dim == 3) ? 1 : 0;
+    (*pPrint).sceneshadow = (dim == 3) ? 1 : 0;
   }
 
   return;

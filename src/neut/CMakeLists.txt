@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright(C) 2003-2021, Romain Quey.
+# Copyright(C) 2003-2022, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 3.0)
@@ -86,6 +86,7 @@ add_library(neut
 ./neut_mesh/neut_mesh_slice/neut_mesh_slice.c
 ./neut_mesh/neut_mesh_part/neut_mesh_part.c
 ./neut_mesh/neut_mesh_str/neut_mesh_str.c
+./neut_mesh/neut_mesh_sim/neut_mesh_sim.c
 ./neut_gmsh/neut_gmsh1.c
 ./neut_debug/neut_debug.c
 ./neut_seedset/neut_seedset1.cpp
@@ -165,7 +166,14 @@ add_library(neut
 ./neut_prim/neut_prim.c
 ./neut_sim/neut_sim_op/neut_sim_op.c
 ./neut_sim/neut_sim_gen/neut_sim_gen1.c
-./neut_sim/neut_sim_gen/neut_sim_gen2.c
+./neut_sim/neut_sim_simres/neut_sim_simres1.c
+./neut_sim/neut_sim_simres/neut_sim_simres2.c
+./neut_sim/neut_sim_fscanf/neut_sim_fscanf1.c
+./neut_sim/neut_sim_fprintf/neut_sim_fprintf1.c
+./neut_sim/neut_sim_fprintf/neut_sim_fprintf2.c
+./neut_odf/neut_odf1.cpp
+./neut_odf/neut_odf2.cpp
+./neut_odf/neut_odf3.cpp
 )
 
 ## Link libraries

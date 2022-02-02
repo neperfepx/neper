@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neper_m_.h"
@@ -99,7 +99,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
 
     ut_print_message (0, 2, "Loading mesh...\n");
     neut_mesh_fnscanf_msh (In.mesh, &RNodes, RMesh, RMesh + 1, RMesh + 2,
-                           RMesh + 3, RMesh + 4, &topology);
+                           RMesh + 3, RMesh + 4, &topology, "r");
     nem_input_init_dim_mesh (&In, RMesh);
 
     if (!strcmp (In.elttype, "tri") && topology)

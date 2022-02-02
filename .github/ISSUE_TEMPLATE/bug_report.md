@@ -49,5 +49,3 @@ Info   :     [o] Wrote file `n10-id1.tess'.
 Info   : Elapsed time: 0.012 secs.
 ========================================================================
 ```
-
-You may cut parts of the terminal output as long as all information needed for debugging is not removed.

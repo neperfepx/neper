@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -18,6 +18,9 @@ extern void neut_mesh_fprintf_msh_pre (struct TESS Tess,
 
 extern void neut_mesh_fprintf_msh_header (FILE * file, char *mode,
                                            char *version);
+
+extern void neut_mesh_fprintf_msh_domain (FILE * file, char *Domain);
+
 extern void neut_mesh_fprintf_msh_elts (FILE * file, char *mode,
                                          struct TESS Tess, struct MESH Mesh0D,
                                          struct MESH Mesh1D,

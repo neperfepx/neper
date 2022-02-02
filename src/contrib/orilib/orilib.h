@@ -20,6 +20,7 @@ extern "C"
 #include "ol_xpl.h"
 
 #endif /* ORILIB_H */
+
 #ifdef __cplusplus
 }
 #endif

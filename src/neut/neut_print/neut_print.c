@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_print_.h"
@@ -34,8 +34,6 @@ neut_print_set_default (struct PRINT *pPrint)
   // image -------------------------------------------------------------
   (*pPrint).imagesize = ut_alloc_1d_char (100);
   sprintf ((*pPrint).imagesize, "1200%s900", NEUT_SEP_DEP);
-  (*pPrint).imagebackground = ut_alloc_1d_char (6);
-  strcpy ((*pPrint).imagebackground, "white");
   (*pPrint).imageantialias = 1;
 
   (*pPrint).showtess = -1;
@@ -66,12 +64,15 @@ neut_print_set_default (struct PRINT *pPrint)
   (*pPrint).showelt1d[0] = -1;
   (*pPrint).showelt2d[0] = -1;
   (*pPrint).showpoint[0] = -1;
-  (*pPrint).showshadow = -1;
   (*pPrint).showcsys = -1;
   (*pPrint).showvox = NULL;
   (*pPrint).showvoxstring = NULL;
   (*pPrint).showvoidvoxstring = NULL;
   (*pPrint).showedgestring = NULL;
+  (*pPrint).scenebackground = NULL;
+
+  ut_string_string ("white", &(*pPrint).scenebackground);
+  (*pPrint).sceneshadow = -1;
 
   (*pPrint).datareduction = 1;
 
@@ -105,7 +106,7 @@ neut_print_free (struct PRINT *pPrint)
 
   // image -------------------------------------------------------------
   ut_free_1d_char (&(*pPrint).imagesize);
-  ut_free_1d_char (&(*pPrint).imagebackground);
+  ut_free_1d_char (&(*pPrint).scenebackground);
   ut_free_1d_int (&(*pPrint).showseed);
   ut_free_1d_int (&(*pPrint).showver);
   ut_free_1d_int (&(*pPrint).showedge);

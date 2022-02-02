@@ -32,11 +32,16 @@ ol_lnq_q (double *lnq, double *q)
 {
   double theta, *r = ol_r_alloc ();
 
-  theta = 2 * ut_array_1d_norm (lnq, 3);
-  ut_array_1d_memcpy (lnq, 3, r);
-  ol_r_set_unit (r);
+  if (ut_array_1d_norm (lnq, 3) > OL_EPS_RAD)
+  {
+    theta = 2 * ut_array_1d_norm (lnq, 3);
+    ut_array_1d_memcpy (lnq, 3, r);
+    ol_r_set_unit (r);
 
-  ol_rtheta_q (r, theta, q);
+    ol_rtheta_q (r, theta, q);
+  }
+  else
+    ol_q_set_id (q);
 
   ol_r_free (r);
 

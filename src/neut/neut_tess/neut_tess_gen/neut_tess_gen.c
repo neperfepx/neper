@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_gen_.h"
@@ -58,7 +58,7 @@ neut_tess_var_list (struct TESS Tess, char *entity, char ***pvar,
   else if (!strcmp (entity, "poly")
            || (!(strcmp (entity, "cell")) && Tess.Dim == 3))
   {
-    (*pvarqty) = 47;
+    (*pvarqty) = 48;
     (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
     strcpy ((*pvar)[id++], "default");
     strcpy ((*pvar)[id++], "id");
@@ -107,6 +107,7 @@ neut_tess_var_list (struct TESS Tess, char *entity, char ***pvar,
     strcpy ((*pvar)[id++], "faceeqs");
     strcpy ((*pvar)[id++], "vercoos");
     strcpy ((*pvar)[id++], "group");
+    strcpy ((*pvar)[id++], "fiber");
   }
   else if (!strcmp (entity, "face")
            || (!(strcmp (entity, "cell")) && Tess.Dim == 2))
@@ -543,11 +544,6 @@ neut_tess_var_val (struct TESS Tess, int *showedge, int *showface,
       (*pvals)[0] = Tess.CellModeId ? Tess.CellModeId[id] : -1;
       ut_string_string ("%d", &typetmp);
     }
-    else if (!strcmp (var2, "group"))
-    {
-      (*pvals)[0] = Tess.CellGroup ? Tess.CellGroup[id] : -1;
-      ut_string_string ("%d", &typetmp);
-    }
     else if (!strcmp (var2, "state"))
     {
       (*pvals)[0] = 0;
@@ -740,6 +736,19 @@ neut_tess_var_val (struct TESS Tess, int *showedge, int *showface,
         ut_array_1d_memcpy (Tess.VerCoo[vers[i]], 3, (*pvals) + 3 * i);
       ut_free_1d_int (&vers);
     }
+    else if (!strncmp (var, "fiber", 5))
+    {
+      double theta;
+      double *dirc = ut_alloc_1d (3);
+      double *dirs = ut_alloc_1d (3);
+
+      neut_ori_fiber_sscanf (var, dirc, dirs, &theta, NULL);
+      (*pvals)[0] = neut_ori_fiber_in (Tess.CellOri[id], Tess.CellCrySym, dirc, dirs, theta);
+      strcpy (typetmp, "%d");
+
+      ut_free_1d (&dirc);
+      ut_free_1d (&dirs);
+    }
     else
       status = -1;
   }
@@ -927,20 +936,15 @@ neut_tess_var_val (struct TESS Tess, int *showedge, int *showface,
     }
     else if (!strcmp (var2, "theta"))
     {
-      if (Tess.Dim != 3)
+      int qty, *tmp = NULL;
+      neut_tess_face_cells (Tess, id, &tmp, &qty);
+
+      if (qty == 1)
         (*pvals)[0] = -1;
       else
-      {
-        int qty, *tmp = NULL;
-        neut_tess_face_cells (Tess, id, &tmp, &qty);
-
-        if (qty == 1)
-          (*pvals)[0] = -1;
-        else
-          ol_q_q_disori (Tess.CellOri[tmp[0]], Tess.CellOri[tmp[1]],
-                         Tess.CellCrySym, *pvals);
-        ut_free_1d_int (&tmp);
-      }
+        ol_q_q_disori (Tess.CellOri[tmp[0]], Tess.CellOri[tmp[1]],
+                       Tess.CellCrySym, *pvals);
+      ut_free_1d_int (&tmp);
     }
     else if (!strcmp (var2, "polys") || !strcmp (var2, "polylist"))
     {
@@ -1999,7 +2003,7 @@ neut_tess_cell_isvoid (struct TESS Tess, int cell)
 }
 
 int
-neut_tess_hascelloridistrib (struct TESS Tess)
+neut_tess_hascellorispread (struct TESS Tess)
 {
   int i;
 

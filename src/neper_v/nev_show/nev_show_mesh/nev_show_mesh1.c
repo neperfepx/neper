@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_show_mesh_.h"
@@ -83,7 +83,7 @@ nev_show_mesh_elt (char **argv, int *pi, struct TESS Tess, struct NODES Nodes,
   ut_array_1d_int_zero ((*pshowarray), qty + 1);
 
   // checking for a general expression
-  status = nev_show_genexpr (argv[(*pi)], NULL, (*pshowarray), qty);
+  status = nev_show_genexpr (argv[(*pi)], *pshowarray, qty);
 
   if (status != 0)
   {
@@ -135,7 +135,7 @@ nev_show_mesh_nodes (char **argv, int *pi, struct TESS Tess,
   (*pPrint).shownode =
     ut_realloc_1d_int ((*pPrint).shownode, Nodes.NodeQty + 1);
 
-  status = nev_show_genexpr (argv[(*pi)], NULL, (*pPrint).shownode, Nodes.NodeQty);
+  status = nev_show_genexpr (argv[(*pi)], (*pPrint).shownode, Nodes.NodeQty);
 
   if (status != 0)
   {
@@ -238,7 +238,7 @@ nev_show_mesh_elset (char **argv, int *pi, struct TESS Tess,
   (*pshowelt) = ut_realloc_1d_int ((*pshowelt), EltQty + 1);
   ut_array_1d_int_zero ((*pshowelt), EltQty + 1);
 
-  status = nev_show_genexpr (argv[(*pi)], NULL, showelset3d, elsetqty);
+  status = nev_show_genexpr (argv[(*pi)], showelset3d, elsetqty);
 
   if (status != 0)
   {

@@ -1,9 +1,9 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_polycomp_poly_.h"
-#include"neut_nanoflann_struct.hpp"
+#include"neut_nfcloud_struct.hpp"
 
 extern void net_polycomp_seed_tdyn (struct SEEDSET SSet, int id, int,
                                     NFTREE ** pnf_tree, int *ptid_seedid,

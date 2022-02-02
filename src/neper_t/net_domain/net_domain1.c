@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_domain_.h"
@@ -18,7 +18,8 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
 
   neut_poly_set_zero (&Poly);
 
-  if (!strncmp (strings[0], "cube", 4) || !strncmp (strings[0], "square", 6))
+  if (!strncmp (strings[0], "cube", 4) || !strncmp (strings[0], "square", 6)
+   || !strncmp (strings[0], "euler", 5))
     net_domain_cube_string (strings[0], &Poly);
 
   else if (!strcmp (domain, "cylinder") || !strcmp (domain, "circle"))
@@ -44,7 +45,10 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
 
   net_poly_tess (Poly, NULL, pDomain);
 
-  ut_string_string (domain, &(*pDomain).DomType);
+  if (!strstr (In.domain, "rodrigues") && !strstr (In.domain, "euler"))
+    ut_string_string (domain, &(*pDomain).DomType);
+  else
+    ut_string_string (In.domain, &(*pDomain).DomType);
 
   (*pDomain).VerDom = ut_alloc_2d_int ((*pDomain).VerQty + 1, 2);
   (*pDomain).EdgeDom = ut_alloc_2d_int ((*pDomain).EdgeQty + 1, 2);

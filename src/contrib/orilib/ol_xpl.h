@@ -95,20 +95,7 @@ extern void ol_crys_ss_schmids (struct OL_CRYS Crys, double** g,
 #include"ut.h"
 #define isNaN(x) ((x) != (x))
 #endif /* OL_GNDx */
-#ifndef OL_GNDx
-#define OL_GNDx
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<math.h>
-#include"ut.h"
-#define isNaN(x) ((x) != (x))
-#include "ol_glo.h"
-#include "ol_des.h"
-#include "ol_cal.h"
-#include "ol_map.h"
-#endif /* OL_GNDx */
 #ifdef __cplusplus
 }
 #endif

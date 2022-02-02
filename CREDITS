@@ -1,36 +1,52 @@
-		   Neper is copyright (C) 2003-2018
+		   Neper is copyright (C) 2003-2022
 
                              Romain Quey
-                       <rquey at users.sf.net>
+                 <romain.quey at mines-stetienne.fr>
 
-Contributors include: Fabrice Barbe who is at the origin of Neper and
-has provided fresh ideas; Kamel Ibn Hassen Derouiche for Cmake
-integration; Loic Renversade for 2.5D meshing and tessellation
-optimization; Thierry Auger for MacOS port and process management.
+Code contributions to Neper have been provided by (in chronological order):
+Kamel Ibn Hassen Derouiche (Cmake integration), Loic Renversade (tessellation
+optimization and 2.5D meshing), Thierry Auger (MacOS port and process
+management), Michael Burgardt (statistical distributions, PR #12), Xiao Shang
+(autocompletion, PR #378).
 
-The ANN tree code (src/contrib/ann), excluding the CMakeLists.txt file, is
-copyright (C) 1997-2010 University of Maryland and Sunil Arya and David
-Mount and licensed under the the GNU Lesser Public License as published
-by the Free Software Foundation; either version 2.1 of the License, or
-(at your option) any later version.
+Since version 4.0 (2020), Neper as a companion program, FEPX, developed by
+Matthew Kasemer.
+
+Thanks to Fabrice Barbe, who is at the origin of Neper and has provided many
+ideas (2003-2010), and Paul Dawson, for boosting Neper's development
+(2010-2011).
 
 The muparser tree code (src/contrib/muparser), excluding the
 CMakeLists.txt file, is copyright (C) 2011 Ingo Berg and licensed under
 the MIT License.
 
+The nanoflann tree code (src/contrib/nanoflann) is copyright (C) Marius Muja,
+David G. Lowe and Jose Luis Blanco and licensed under the the BSD License.
+
+The nlopt tree code (src/contrib/nlopt) is copyright (C) Massachusetts
+Institute of Technology and and other contributors and licensed under the terms
+provided in src/contrib/nlopt.
+
+The openGJK tree code (src/contrib/openGJK) is copyright (C) Mattia Montanari
+and licensed under the terms of the GNU General Public License, version 3 or
+any later version.
+
+The scotch tree code (src/contrib/scotch) is copyright (C)
+2004,2007,2008,2010,2011 ENSEIRB, INRIA & CNRS and licensed under the terms of
+the the CeCILL-C license under French law and abiding by the rules of
+distribution of free software.
+
+The tinycolormap tree code (src/contrib/tinycolormap) is copyright (C) 2018
+Yuki Koyama and licensed under the terms provided in src/contrib/tinycolormap.
+
 This version of Neper may use as a library: Gmsh, copyright (C)
 1997-2014 by Christophe Geuzaine and Jean-François Remacle and
-distributed under the terms of the GNU General Public License, Version 2
+distributed under the terms of the GNU General Public License, version 2
 or later, with an exception to allow for easier linking with external
 libraries.  See the Gmsh code for more information.
 
-This version of Neper may use as a library: libScotch, copyright (C)
-2004,2007,2008,2010,2011 ENSEIRB, INRIA & CNRS.  This software is
-governed by the CeCILL-C license under French law and abiding by the
-rules of distribution of free software. You can use, modify and/or
-redistribute the software under the terms of the CeCILL-C license as
-circulated by CEA, CNRS and INRIA at the following URL:
-"http://www.cecill.info".
+This version of Neper may use as a library: Povray, licensed under the terms of
+the GNU Affero General Public License.
 
 Thanks to the following forks for punctual help: Christophe Geuzaine for
 Gmsh; Francois Pellegrini for libScotch.

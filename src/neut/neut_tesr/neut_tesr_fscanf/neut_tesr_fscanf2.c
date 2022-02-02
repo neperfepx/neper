@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesr_fscanf_.h"
@@ -168,7 +168,7 @@ neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file)
                          NULL, (*pTesr).CellQty, NULL);
       }
 
-      else if (!strcmp (string, "*oridistrib"))
+      else if (!strcmp (string, "*orispread") || !strcmp (string, "*orispread"))
       {
         ut_file_skip (file, 1);
         char *tmp = ut_alloc_1d_char (1000);

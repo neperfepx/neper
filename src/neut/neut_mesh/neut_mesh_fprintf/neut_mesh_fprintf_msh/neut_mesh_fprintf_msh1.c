@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_msh_.h"
@@ -20,6 +20,9 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
   neut_mesh_fprintf_msh_pre (Tess, fasetlist, &fasets, &fasetids, &fasetqty);
 
   neut_mesh_fprintf_msh_header (file, mode, version);
+
+  if (Mesh3D.Domain)
+    neut_mesh_fprintf_msh_domain (file, Mesh3D.Domain);
 
   if (!strcmp (version, "msh") || !strcmp (version, "msh2") || version[0] == '2')
   {

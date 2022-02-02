@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_.h"
@@ -30,53 +30,62 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
          struct SEEDSET *SSet, int dtess, int dcell, struct SEEDSET *pSSet,
          int verbositylevel)
 {
-  int status;
-  char *ori = NULL;
-  char *oridistrib = NULL;
-  char *crysym = NULL;
-  struct OL_SET OSet;
+  char *ori = NULL, *orispread = NULL, *oricrysym = NULL;
+  int i, partqty, *qty = NULL;
+  char **parts = NULL;
+  struct OL_SET OSet, *OSets = NULL;
 
-  net_ori_mtess_params (In, level, MTess, Tess, dtess, dcell, &ori, &oridistrib, &crysym);
+  net_ori_mtess_params (In, level, MTess, Tess, dtess, dcell, &ori, &orispread, &oricrysym);
 
-  OSet = ol_set_alloc ((*pSSet).N, crysym);
+  OSet = ol_set_alloc ((*pSSet).N, oricrysym);
 
-  if (!strcmp (ori, "random"))
-    net_ori_random ((*pSSet).Random, &OSet);
+  ut_list_break (ori, "+", &parts, &partqty);
 
-  else if (!strcmp (ori, "uniform"))
-    net_ori_uniform (In, level, MTess, Tess, dtess, dcell, (*pSSet).Random,
-                     &OSet, verbositylevel);
+  net_ori_qty (pSSet, parts, partqty, &qty);
 
-  else if (!strcmp (ori, "equal"))
-    net_ori_equal (SSet, dtess, dcell, &OSet);
+  OSets = malloc (partqty * sizeof (struct OL_SET));
+  for (i = 0; i < partqty; i++)
+    OSets[i] = ol_set_alloc (qty[i], oricrysym);
 
-  else if (!strncmp (ori, "spread(", 7))
-    net_ori_spread (ori, SSet, dtess, dcell, &OSet);
-
-  else if (!strncmp (ori, "fibre", 5) || !strncmp (ori, "fiber", 5))
-    net_ori_fiber ((*pSSet).Random, ori, &OSet);
-
-  else if (!strncmp (ori, "file(", 5))
-    net_ori_file (ori, &OSet);
-
-  else
+  for (i = 0; i < partqty; i++)
   {
-    status = net_ori_label (ori, &OSet);
+    if (!strcmp (parts[i], "random"))
+      net_ori_random ((*pSSet).Random, OSets + i);
 
-    if (status)
-      ut_print_message (2, 3, "Failed to process `%s'.\n", ori);
+    else if (!strncmp (parts[i], "fiber", 5))
+      net_ori_fiber (SSet, dtess, dcell, (*pSSet).Random, parts[i], OSets + i);
+
+    else if (!strcmp (parts[i], "uniform"))
+      net_ori_uniform (In, level, MTess, Tess, dtess, dcell, (*pSSet).Random,
+                       OSets + i, verbositylevel);
+
+    else if (!strncmp (ori, "file(", 5))
+      net_ori_file (ori, OSets + i);
+
+    else
+      net_ori_label (parts[i], SSet, dtess, dcell, OSets + i);
   }
 
-  net_ori_crysym (&OSet);
+  ol_set_cat (OSets, partqty, &OSet);
+  ol_set_shuf (&OSet, (*pSSet).Random);
+
+  for (i = 0; i < partqty; i++)
+    ol_set_free (OSets[i]);
+  free (OSets);
+
+  net_ori_oricrysym (&OSet);
 
   net_ori_memcpy (OSet, pSSet);
 
-  net_oridistrib (oridistrib, pSSet);
+  // processing -orispread
+  net_ori_orispread (orispread, pSSet);
 
-  ol_set_free (OSet);
+  ut_free_1d_int (&qty);
+  ut_free_2d_char (&parts, partqty);
   ut_free_1d_char (&ori);
-  ut_free_1d_char (&oridistrib);
-  ut_free_1d_char (&crysym);
+  ut_free_1d_char (&orispread);
+  ut_free_1d_char (&oricrysym);
+  ol_set_free (OSet);
 
   return;
 }
@@ -98,7 +107,7 @@ net_ori_post (struct TESR *pTesr)
     neut_tesr_cell_voxs (*pTesr, i, &voxs, &voxqty);
 
     q = ut_alloc_2d (voxqty, 4);
-    neut_ori_oridistrib ((*pTesr).CellOri[i], (*pTesr).CellOriDistrib[i], voxqty, i, q);
+    neut_ori_orispread ((*pTesr).CellOri[i], (*pTesr).CellOriDistrib[i], voxqty, i, q);
 
     for (j = 0; j < voxqty; j++)
       ol_q_memcpy (q[j], (*pTesr).VoxOri[voxs[j][0]][voxs[j][1]][voxs[j][2]]);

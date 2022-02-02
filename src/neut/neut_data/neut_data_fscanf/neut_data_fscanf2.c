@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_data_fscanf_.h"
@@ -25,8 +25,6 @@ neut_data_fscanf_ori_file (struct SIM Sim, char *datavalue, int qty, double ***p
 
   ut_string_function (datavalue, &fct, &vars, &vals, &varqty);
 
-  ut_string_string (vals[0], &filename);
-
   ut_string_string (NEUT_DEFAULT_ORIDES, &des);
   for (i = 0; i < varqty; i++)
     if (!ut_string_strcmp (vars[i], "des"))
@@ -40,13 +38,21 @@ neut_data_fscanf_ori_file (struct SIM Sim, char *datavalue, int qty, double ***p
   int *tmpi = ut_alloc_1d_int (6);
   double **tmpdd = ut_alloc_2d (3, 3);
   FILE *file = NULL;
-  char *tmp = ut_alloc_1d_char (1000);
 
-  neut_sim_res_file (Sim, "element", datavalue, tmp);
+  if (neut_sim_isvoid (Sim))
+  {
+    struct SIMRES SimRes;
+    neut_simres_set_zero (&SimRes);
+    neut_sim_simres (Sim, "element", datavalue, &SimRes);
+    ut_string_string (SimRes.file, &filename);
+    neut_simres_free (&SimRes);
+  }
+  else
+    ut_string_string (datavalue, &filename);
 
-  file = ut_file_open (tmp, "r");
+  file = ut_file_open (filename, "r");
 
-  ut_file_nbwords_testwmessage (tmp, qty * qty0);
+  ut_file_nbwords_testwmessage (filename, qty * qty0);
 
   for (i = 1; i <= qty; i++)
     if (!strcmp (des, "euler-bunge"))
@@ -86,10 +92,11 @@ neut_data_fscanf_ori_file (struct SIM Sim, char *datavalue, int qty, double ***p
     else
       ut_print_neperbug ();
 
+  ut_file_close (file, filename, "r");
+
   ut_free_1d (&tmpd);
   ut_free_1d_int (&tmpi);
   ut_free_2d (&tmpdd, 3);
-  ut_free_1d_char (&tmp);
   ut_free_1d_char (&des);
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
@@ -122,7 +129,9 @@ neut_data_fscanf_col_scal (char *input, struct SIM Sim,
 {
   int i;
   char *vartype = NULL;
-  char *simfile = ut_alloc_1d_char (1000);
+  struct SIMRES SimRes;
+
+  neut_simres_set_zero (&SimRes);
 
   ut_string_string (value, &(*pData).ColDataName);
 
@@ -130,10 +139,10 @@ neut_data_fscanf_col_scal (char *input, struct SIM Sim,
 
   (*pData).ColData = ut_alloc_2d (entityqty + 1, (*pData).ColDataSize);
 
-  neut_sim_res_file (Sim, entity, value, simfile);
+  neut_sim_simres (Sim, entity, value, &SimRes);
 
-  if (ut_file_exist (simfile))
-    ut_array_2d_fnscanf_wcard (simfile, (*pData).ColData + 1,
+  if (SimRes.file)
+    ut_array_2d_fnscanf_wcard (SimRes.file, (*pData).ColData + 1,
                                entityqty, 1, NULL, "r");
   else
   {
@@ -145,7 +154,7 @@ neut_data_fscanf_col_scal (char *input, struct SIM Sim,
     else if (!strcmp (input, "tesr"))
       neut_tesr_entity_expr_val (*pTesr, entity, value, data, &vartype);
 
-    else if (!strcmp (input, "mesh") || !strcmp (input, "nodes"))
+    else if (!strcmp (input, "mesh") || !strncmp (input, "node", 4))
       neut_mesh_entity_expr_val (*pNodes, (*pMesh)[0], (*pMesh)[1],
                                  (*pMesh)[2], (*pMesh)[3], (*pMesh)[4],
                                  *pTess, NULL, NULL, NULL, NULL, entity, value,
@@ -175,7 +184,7 @@ neut_data_fscanf_col_scal (char *input, struct SIM Sim,
   }
 
   ut_free_1d_char (&vartype);
-  ut_free_1d_char (&simfile);
+  neut_simres_free (&SimRes);
 
   return;
 }
@@ -185,23 +194,25 @@ neut_data_fscanf_col_tensor (struct SIM Sim,
                              char *entity, int entityqty,
                              char *value, struct DATA *pData)
 {
-  char *simfile = ut_alloc_1d_char (1000);
+  struct SIMRES SimRes;
+
+  neut_simres_set_zero (&SimRes);
 
   ut_string_string (value, &(*pData).ColDataName);
 
-  neut_sim_res_file (Sim, entity, value, simfile);
+  neut_sim_simres (Sim, entity, value, &SimRes);
 
-  (*pData).ColDataSize = ut_file_nbcolumns (simfile);
+  (*pData).ColDataSize = ut_file_nbcolumns (SimRes.file);
 
   (*pData).ColData = ut_alloc_2d (entityqty + 1, (*pData).ColDataSize);
 
-  if (ut_file_exist (simfile))
-    ut_array_2d_fnscanf_wcard (simfile, (*pData).ColData + 1,
+  if (SimRes.file)
+    ut_array_2d_fnscanf_wcard (SimRes.file, (*pData).ColData + 1,
                                entityqty, (*pData).ColDataSize, NULL, "r");
   else
     abort ();
 
-  ut_free_1d_char (&simfile);
+  neut_simres_free (&SimRes);
 
   return;
 }

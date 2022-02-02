@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_png_header_.h"
@@ -12,10 +12,10 @@ nev_print_png_header (FILE * file, struct PRINT Print)
     fprintf (file, "#version 3.7;\n");
     fprintf (file, "#include \"shapes.inc\"\n");
 
-    if (Print.imagebackground)
+    if (Print.scenebackground)
     {
       int *rgb = ut_alloc_1d_int (3);
-      ut_color_name_rgb (Print.imagebackground, rgb);
+      ut_color_name_rgb (Print.scenebackground, rgb);
       fprintf (file, "background {color rgb<%f,%f,%f>}\n", rgb[0] / 255.,
                rgb[1] / 255., rgb[2] / 255.);
       ut_free_1d_int (&rgb);
@@ -38,7 +38,7 @@ nev_print_png_header (FILE * file, struct PRINT Print)
 
     fprintf (file, "}\n");
 
-    if (Print.showshadow == 1)
+    if (Print.sceneshadow == 1)
       fprintf (file,
                "light_source { <%f, %f, %f> rgb<1, 1, 1>  shadowless }\n\n",
                Print.cameracoo[0], Print.cameracoo[2], Print.cameracoo[1]);

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -65,7 +65,7 @@ extern "C"
 
   extern int neut_tess_cell_isvoid (struct TESS Tess, int cell);
 
-  extern int neut_tess_hascelloridistrib (struct TESS Tess);
+  extern int neut_tess_hascellorispread (struct TESS Tess);
 
   extern int neut_tess_exprisvar (struct TESS Tess, char *entity, char *expr);
 

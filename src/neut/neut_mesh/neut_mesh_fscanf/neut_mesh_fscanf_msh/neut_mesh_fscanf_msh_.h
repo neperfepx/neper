@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -10,14 +10,14 @@
 #include"ut.h"
 #include"neut.h"
 
-extern void neut_mesh_fscanf_msh_head (FILE *, char **, int *);
+extern void neut_mesh_fscanf_msh_head (FILE *, char **, char **, int *);
 extern void neut_mesh_fscanf_msh_nodes (FILE *, char *, struct NODES *, int **);
 extern void neut_mesh_fscanf_msh_nodes_head (FILE *, int *);
 extern void neut_mesh_fscanf_msh_nodes_prop (FILE *, char *, struct NODES *, int *);
 extern void neut_mesh_fscanf_msh_nodes_foot (FILE  *);
 
 
-extern void neut_mesh_fscanf_msh_elts (FILE * file, char *mode, int *node_nbs,
+extern void neut_mesh_fscanf_msh_elts (FILE * file, char *mode, char *domain, int *node_nbs,
     struct MESH *pMesh0D, struct MESH *pMesh1D, struct
     MESH *pMesh2D, struct MESH *pMesh3D, struct MESH *pMeshCo, struct MESH **ppMesh);
 extern int neut_mesh_fscanf_msh_elts_dim (FILE *, char *, struct MESH *, int *, int, int);

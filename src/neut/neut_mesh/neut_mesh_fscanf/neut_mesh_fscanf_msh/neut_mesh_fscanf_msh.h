@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -21,7 +21,8 @@ extern "C"
 					 struct MESH *pMesh1D,
 					 struct MESH *pMesh2D,
 					 struct MESH *pMesh3D,
-					 struct MESH *pMeshCo, int *ptopology);
+					 struct MESH *pMeshCo, int *ptopology,
+                                         char *mode);
 
 #endif				// NEUT_MESH_FSCANF_GMSH
 

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fscanf_msh_.h"
@@ -11,7 +11,7 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
                       int *ptopology)
 {
   int *node_nbs = NULL;
-  char *mode = NULL;
+  char *mode = NULL, *domain = NULL;
   struct MESH *pMesh = NULL;
 
   neut_nodes_reset (pNodes);
@@ -21,11 +21,11 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
   neut_mesh_free (pMesh3D);
   neut_mesh_free (pMeshCo);
 
-  neut_mesh_fscanf_msh_head (file, &mode, ptopology);
+  neut_mesh_fscanf_msh_head (file, &mode, &domain, ptopology);
 
   neut_mesh_fscanf_msh_nodes (file, mode, pNodes, &node_nbs);
 
-  neut_mesh_fscanf_msh_elts (file, mode, node_nbs, pMesh0D, pMesh1D, pMesh2D,
+  neut_mesh_fscanf_msh_elts (file, mode, domain, node_nbs, pMesh0D, pMesh1D, pMesh2D,
                              pMesh3D, pMeshCo, &pMesh);
 
   while (ut_file_nextstring (file, NULL) == 1)
@@ -67,7 +67,7 @@ void
 neut_mesh_fnscanf_msh (char *name, struct NODES *pNodes, struct MESH *pMesh0D,
                        struct MESH *pMesh1D, struct MESH *pMesh2D,
                        struct MESH *pMesh3D, struct MESH *pMeshCo,
-                       int *ptopology)
+                       int *ptopology, char *mode)
 {
   FILE *file = NULL;
   char **list = NULL;
@@ -75,18 +75,18 @@ neut_mesh_fnscanf_msh (char *name, struct NODES *pNodes, struct MESH *pMesh0D,
 
   ut_list_break (name, NEUT_SEP_DEP, &list, &qty);
 
-  file = ut_file_open (list[0], "r");
+  file = ut_file_open (list[0], mode ? mode : "r");
 
   neut_mesh_fscanf_msh (file, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D,
                         pMeshCo, ptopology);
 
-  ut_file_close (file, list[0], "r");
+  ut_file_close (file, list[0], mode ? mode : "r");
 
   if (qty == 2)
   {
-    file = ut_file_open (list[1], "r");
+    file = ut_file_open (list[1], mode ? mode : "r");
     ut_array_2d_fscanf (file, (*pNodes).NodeCoo + 1, (*pNodes).NodeQty, 3);
-    ut_file_close (file, list[1], "r");
+    ut_file_close (file, list[1], mode ? mode : "r");
   }
 
   ut_free_2d_char (&list, qty);

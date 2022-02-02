@@ -325,18 +325,7 @@ extern void ol_rtheta_e_rad (double *, double, double *);
 #include"ut.h"
 #define isNaN(x) ((x) != (x))
 #endif /* OL_DESx */
-#ifndef OL_DESx
-#define OL_DESx
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<math.h>
-#include"ut.h"
-#define isNaN(x) ((x) != (x))
-#include "ol_glo.h"
-#include "ol_cal.h"
-#endif /* OL_DESx */
 #ifdef __cplusplus
 }
 #endif

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -15,12 +15,13 @@ extern "C"
 #ifndef NEUT_STRUCTS_H
 #define NEUT_STRUCTS_H
 
+#include "neut_mesh_struct.h"
+#include "neut_nodes_struct.h"
+#include "neut_odf_struct.h" // nodes and mesh must be defined before
 #include "neut_tesl_struct.h"
 #include "neut_crys_struct.h"
 #include "neut_reg_struct.h"
 #include "neut_lloyd_struct.h"
-#include "neut_mesh_struct.h"
-#include "neut_nodes_struct.h"
 #include "neut_tess_struct.h"
 #include "neut_tesse_struct.h"
 #include "neut_mtess_struct.h"
@@ -50,6 +51,7 @@ extern "C"
 #include "neut_prim_struct.h"
 
 #include "neut_sim_struct.h"
+#include "neut_simres_struct.h"
 
 #endif				/* NEUT_STRUCTS_H */
 

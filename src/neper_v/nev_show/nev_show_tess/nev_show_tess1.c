@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_show_tess_.h"
@@ -33,7 +33,7 @@ nev_show_tess_seed (char **argv, int *pi, struct TESS Tess,
   ut_array_1d_int_zero ((*pPrint).showseed, SeedQty + 1);
 
   // checking for a general expression
-  status = nev_show_genexpr (argv[(*pi)], NULL, (*pPrint).showseed, SeedQty);
+  status = nev_show_genexpr (argv[(*pi)], (*pPrint).showseed, SeedQty);
 
   if (status != 0)
   {
@@ -83,7 +83,7 @@ nev_show_tess_ver (char **argv, int *pi, struct TESS Tess,
   ut_array_1d_int_zero ((*pPrint).showver, Tess.VerQty + 1);
 
   // checking for a general expression
-  status = nev_show_genexpr (argv[(*pi)], NULL, (*pPrint).showver, Tess.VerQty);
+  status = nev_show_genexpr (argv[(*pi)], (*pPrint).showver, Tess.VerQty);
 
   if (status != 0)
   {
@@ -134,7 +134,7 @@ nev_show_tess_edge (char **argv, int *pi, struct TESS Tess,
   ut_array_1d_int_zero ((*pPrint).showedge, Tess.EdgeQty + 1);
 
   // checking for a general expression
-  status = nev_show_genexpr (argv[(*pi)], NULL, (*pPrint).showedge, Tess.EdgeQty);
+  status = nev_show_genexpr (argv[(*pi)], (*pPrint).showedge, Tess.EdgeQty);
 
   if (status != 0)
   {
@@ -184,7 +184,7 @@ nev_show_tess_face (char **argv, int *pi, struct TESS Tess,
   ut_array_1d_int_zero ((*pPrint).showface + 1, Tess.FaceQty);
 
   // checking for a general expression
-  status = nev_show_genexpr (argv[(*pi)], NULL, (*pPrint).showface, Tess.FaceQty);
+  status = nev_show_genexpr (argv[(*pi)], (*pPrint).showface, Tess.FaceQty);
 
   if (status != 0)
   {
@@ -233,7 +233,7 @@ nev_show_tess_poly (char **argv, int *pi, struct TESS Tess,
   ut_array_1d_int_zero ((*pPrint).showpoly + 1, Tess.PolyQty);
 
   // checking for a general expression
-  status = nev_show_genexpr (argv[(*pi)], NULL, (*pPrint).showpoly, Tess.PolyQty);
+  status = nev_show_genexpr (argv[(*pi)], (*pPrint).showpoly, Tess.PolyQty);
 
   if (status != 0)
   {
@@ -283,7 +283,7 @@ nev_show_tess_cell (char **argv, int *pi, struct TESS Tess,
   (*pi)++;
 
   // checking for a general expression
-  status = nev_show_genexpr (argv[(*pi)], Tess.CellId, showcell, Tess.CellQty);
+  status = nev_show_genexpr (argv[(*pi)], showcell, Tess.CellQty);
 
   if (status != 0)
   {

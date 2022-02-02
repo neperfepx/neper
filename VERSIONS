@@ -1,13 +1,26 @@
-New in 4.2.1-36 (31 Jan 2022):
-- module -T: added -morpho "lamellar(v=random(...))", made minor fixes and
-  improvements.
+New in 4.3.0 (02 Feb 2022):
+- website: general overhaul, now includes the documentation, tutorials, etc.
+- module -T: added -morpho "lamellar(v=random(...))", added fiber() tess key,
+  made minor fixes and improvements.
 - module -M: added -format phase, fixed -interface discontinuous|cohesive,
-  fixed inp output, made minor fixes.
-- module -V: added support for -datanodecol in vtk file, made minor fixes.
-- module -S: fixed merging of simulation directories, improved support for
-  multiphase simulations.
-- general: added autocompletion.
-- documentation: made minor fixes and improvements.
+  fixed inp output, added fiber() mesh key, made minor fixes.
+- module -S: renamed result options into -resnode, -reselt and -reselset; added
+  -resmesh and -res<entity>, added -orispace and -entity, added orientation
+  distribution computation (-resmesh odf and odfn), fixed merging of simulation
+  directories, rewrote and cleaned code, made minor improvements.
+- module -V: revised options -show* file(<file_name>); added support for
+  -datanodecol in vtk file, renamed -imagebackground into -scenebackground,
+  rename -showshadow into -sceneshadow, made minor fixes.
+- documentation: moved to html documentation using Sphinx and reStructuredText,
+  revised description of -V, made minor fixes and improvements.
+- general: improved testing, added FORCE_BUILTIN_LIBSCOTCH and
+  FORCE_BUILTIN_NLOPT.
+
+* Incompatible changes:  In -S, renamed options -noderes, -eltres and -elsetres
+  into -resnode, -reselt and -reselset.  -show* file(<file_name>) now takes
+  individual logical values for the entities instead of a list of entities.  In
+  -V, renamed (rarely used) -imagebackground into -scenebackground and
+  -showshadow into -sceneshadow.
 
 New in 4.2.0 (11 Jun 2021):
 - module -T: added -transform "cut(torus)" for tesses, -transform tesrrenumber,

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neper_t_.h"
@@ -20,6 +20,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   struct SEEDSET *SSet = NULL;
   struct TESR Tesr;
   struct POINT Point;
+  // struct ODF Odf;
 
   net_in_set_zero (&In);
   net_reg_set_zero (&Reg);
@@ -28,6 +29,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   neut_tess_set_zero (&FTess);
   neut_point_set_zero (&Point);
   SSetQty = 0;
+  SSet = realloc (SSet, sizeof (struct SEEDSET));
+  neut_seedset_set_zero (SSet);
 
   // Printing program header ###
   ut_print_moduleheader ("-T", fargc, fargv, argc, argv);
@@ -302,7 +305,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     ut_print_message (0, 1, "Rasterizing tessellation...\n");
     net_tess_tesr (In.tesrsizestring, FTess, &Tesr);
 
-    if (neut_tesr_hascelloridistrib (Tesr))
+    if (neut_tesr_hascellorispread (Tesr))
       net_ori_post (&Tesr);
   }
 

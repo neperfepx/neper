@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_op_.h"
@@ -78,6 +78,8 @@ neut_mesh_free (struct MESH *pMesh)
   if (!pMesh)
     return;
 
+  ut_free_1d_char (&(*pMesh).Domain);
+
   ut_free_1d_char (&(*pMesh).EltType);
 
   if ((*pMesh).EltNodes)
@@ -114,6 +116,8 @@ neut_mesh_free (struct MESH *pMesh)
 void
 neut_mesh_set_zero (struct MESH *pMesh)
 {
+  (*pMesh).Domain = NULL;
+
   (*pMesh).Dimension = 0;
   (*pMesh).EltOrder = 0;
   (*pMesh).EltType = NULL;

@@ -74,7 +74,9 @@ extern void ol_set_aniso_v_thetatr_modes (struct OL_SET, double*, double**,
 	        double, struct OL_SET*, struct OL_SET*);
 extern void ol_set_aniso_v_thetatr_modes_id (struct OL_SET, double*,
 					     double**, double, int*);
-extern void ol_set_misoridistrib (char *distrib, long int, struct OL_SET *pOSet);
+extern void ol_set_misorispread (char *distrib, int, long int, struct OL_SET *pOSet);
+extern void ol_set_cat (struct OL_SET* Sets, int SetQty, struct OL_SET *pSet);
+extern void ol_set_shuf (struct OL_SET* pSet, int random);
 
 #endif /* OL_SSET */
 #ifndef OL_SETx
@@ -87,20 +89,7 @@ extern void ol_set_misoridistrib (char *distrib, long int, struct OL_SET *pOSet)
 #include"ut.h"
 #define isNaN(x) ((x) != (x))
 #endif /* OL_SETx */
-#ifndef OL_SETx
-#define OL_SETx
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<math.h>
-#include"ut.h"
-#define isNaN(x) ((x) != (x))
-#include <string.h>
-#include "ol_glo.h"
-#include "ol_des.h"
-#include "ol_gen.h"
-#endif /* OL_SETx */
 #ifdef __cplusplus
 }
 #endif

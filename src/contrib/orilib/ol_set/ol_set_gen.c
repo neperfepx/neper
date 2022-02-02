@@ -4,7 +4,7 @@
 #include "ol_set_gen.h"
 
 void
-ol_set_misoridistrib (char *distrib, long int random, struct OL_SET *pOSet)
+ol_set_misorispread (char *distrib, int dim, long int random, struct OL_SET *pOSet)
 {
   int i, j;
   int varqty;
@@ -14,7 +14,7 @@ ol_set_misoridistrib (char *distrib, long int random, struct OL_SET *pOSet)
   gsl_rng *rand = gsl_rng_alloc (gsl_rng_ranlxd2);
   gsl_rng_set (rand, random);
 
-  ut_string_function (distrib, &fct, &vars, &vals, &varqty);
+  ut_string_function (distrib? distrib : "none", &fct, &vars, &vals, &varqty);
 
   if (!strcmp (fct, "none"))
   {
@@ -24,19 +24,44 @@ ol_set_misoridistrib (char *distrib, long int random, struct OL_SET *pOSet)
 
   else if (!strcmp (fct, "normal"))
   {
-    double mean, sig, *v = ut_alloc_1d (3);
+    double *sig = ut_alloc_1d (dim), *v = ut_alloc_1d (3);
 
-    sscanf (vals[0], "%lf", &mean);
-    sig = mean / (2 * sqrt (2 / M_PI)); // Glez and Driver, J. Appl. Cryst., 2001
+    for (i = 0; i < varqty; i++)
+    {
+      if (!vars[i] || !strcmp (vars[i], "theta"))
+      {
+        sscanf (vals[i], "%lf", sig);
+        ut_array_1d_set (sig, dim, sig[0]);
+      }
+      else if (!strcmp (vars[i], "theta1"))
+        sscanf (vals[i], "%lf", sig);
+      else if (!strcmp (vars[i], "theta2"))
+        sscanf (vals[i], "%lf", sig + 1);
+      else if (!strcmp (vars[i], "theta3"))
+        sscanf (vals[i], "%lf", sig + 2);
+      else if (!strcmp (vars[i], "thetam"))
+      {
+        // Glez and Driver, J. Appl. Cryst., 2001
+        // we use sig[0] as a tmp variable
+        sscanf (vals[i], "%lf", sig);
+        if (dim == 3)
+          ut_array_1d_set (sig, dim, sig[0] / (2 * sqrt (2 / M_PI)));
+        else if (dim == 2)
+          ut_array_1d_set (sig, dim, sig[0] / sqrt (M_PI / 2));
+        else if (dim == 1)
+          ut_array_1d_set (sig, dim, sig[0] / sqrt (2 / M_PI));
+      }
+    }
 
     for (i = 0; i < (int) (*pOSet).size; i++)
     {
-      for (j = 0; j < 3; j++)
-        v[j] = gsl_ran_gaussian (rand, sig / 2);
+      for (j = 0; j < dim; j++)
+        v[j] = (sig[j] > 0) ? gsl_ran_gaussian (rand, sig[j] / 2) : 0;
 
       ol_lnq_q (v, (*pOSet).q[i]);
     }
 
+    ut_free_1d (&sig);
     ut_free_1d (&v);
   }
 

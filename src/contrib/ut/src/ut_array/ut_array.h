@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2021, Romain Quey */
+/* Copyright (C) 2003-2022, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -481,6 +481,14 @@ extern "C"
   extern double ut_array_3d_mean (double ***array, int size1, int size2,
                                   int size3);
 
+/// \brief Get the mean of a 1D array of weighted \c double
+/// \param array: array
+/// \param weight: weight array
+/// \param size: size of the array
+/// \return mean
+/// \remark Failure if \c size <= 0
+  extern double ut_array_1d_wmean (double *array, double *weight, int size);
+
 /// \brief Get the Lp mean of a 1D array of \c double
 /// \param array: array
 /// \param size: size of the array
@@ -725,6 +733,12 @@ extern "C"
 /// \param size: size of the array
 /// \param dest: destination array
   extern void ut_array_1d_memcpy_fromint (int *src, int size, double *dest);
+
+/// \brief Copy a 1D \c double array into a \c int array
+/// \param src: source array
+/// \param size: size of the array
+/// \param dest: destination array
+  extern void ut_array_1d_memcpy_toint (double *src, int size, int *dest);
 
 /// \brief Copy a 1D \c int array
 /// \param src: source array

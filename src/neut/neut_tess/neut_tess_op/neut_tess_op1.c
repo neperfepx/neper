@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_op_.h"
@@ -2972,8 +2972,7 @@ neut_tess_adddomver (struct TESS *pTess, double *coo)
   (*pTess).DomVerEdgeNb[(*pTess).DomVerQty] = NULL;
 
   (*pTess).DomVerLabel =
-    ut_realloc_1d_pchar ((*pTess).DomVerLabel, (*pTess).DomVerQty + 1);
-  (*pTess).DomVerLabel[(*pTess).DomVerQty] = NULL;
+    ut_realloc_1d_pchar_null ((*pTess).DomVerLabel, (*pTess).DomVerQty + 1, 1);
 
   (*pTess).DomTessVerNb =
     ut_realloc_1d_int ((*pTess).DomTessVerNb, (*pTess).DomVerQty + 1);
@@ -3004,8 +3003,7 @@ neut_tess_adddomedge (struct TESS *pTess, int ver1, int ver2)
   (*pTess).DomEdgeFaceNb[(*pTess).DomEdgeQty] = ut_alloc_1d_int (2);
 
   (*pTess).DomEdgeLabel =
-    ut_realloc_1d_pchar ((*pTess).DomEdgeLabel, (*pTess).DomEdgeQty + 1);
-  (*pTess).DomEdgeLabel[(*pTess).DomEdgeQty] = NULL;
+    ut_realloc_1d_pchar_null ((*pTess).DomEdgeLabel, (*pTess).DomEdgeQty + 1, 1);
 
   (*pTess).DomTessEdgeQty =
     ut_realloc_1d_int ((*pTess).DomTessEdgeQty, (*pTess).DomEdgeQty + 1);
@@ -3025,13 +3023,11 @@ neut_tess_adddomface_alloc (struct TESS *pTess)
   (*pTess).DomFaceQty++;
 
   (*pTess).DomFaceLabel =
-    ut_realloc_1d_pchar ((*pTess).DomFaceLabel, (*pTess).DomFaceQty + 1);
-  (*pTess).DomFaceLabel[(*pTess).DomFaceQty] = NULL;
+    ut_realloc_1d_pchar_null ((*pTess).DomFaceLabel, (*pTess).DomFaceQty + 1, 1);
 
   (*pTess).DomFaceType =
-    ut_realloc_1d_pchar ((*pTess).DomFaceType, (*pTess).DomFaceQty + 1);
+    ut_realloc_1d_pchar_null ((*pTess).DomFaceType, (*pTess).DomFaceQty + 1, 1);
   (*pTess).DomFaceType[0] = NULL;
-  (*pTess).DomFaceType[(*pTess).DomFaceQty] = NULL;
 
   (*pTess).DomFaceEq =
     ut_realloc_2d_addline ((*pTess).DomFaceEq, (*pTess).DomFaceQty + 1, 4);

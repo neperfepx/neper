@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_debug_.h"
@@ -43,7 +43,7 @@ neut_debug_nodes (FILE * file, struct NODES Nodes)
     for (i = 1; i <= Nodes.PerNodeQty; i++)
     {
       fprintf (file, "%d %d ", i, Nodes.PerNodeSlaveQty[i]);
-      ut_array_1d_int_fprintf (stdout, Nodes.PerNodeSlaveNb[i] + 1,
+      ut_array_1d_int_fprintf (file, Nodes.PerNodeSlaveNb[i] + 1,
                                Nodes.PerNodeSlaveQty[i], "%d");
     }
   }
@@ -1180,6 +1180,65 @@ neut_debug_mtess (FILE * file, struct MTESS MTess, struct TESS *Tess)
         fprintf (file, "tess %d face %d: ", i, j);
         ut_array_1d_int_fprintf (file, MTess.DomTessFaceNb[i][j], 2, "%d");
       }
+
+  return;
+}
+
+void
+neut_debug_sim (FILE *file, struct SIM Sim)
+{
+  int i, j;
+
+  fprintf (file, "simdir = %s\n", Sim.simdir);
+  fprintf (file, "StepQty = %d\n", Sim.StepQty);
+  fprintf (file, "OriDes = %s\n", Sim.OriDes);
+  fprintf (file, "StepState = ");
+  ut_array_1d_int_fprintf (file, Sim.StepState, Sim.StepQty, "%d");
+  fprintf (file, "RestartId = %d\n", Sim.RestartId);
+  fprintf (file, "RestartFiles = %d\n", Sim.RestartFiles);
+  fprintf (file, "\n");
+  fprintf (file, "EntityQty = %d\n", Sim.EntityQty);
+  fprintf (file, "Entities =");
+  for (i = 0; i < Sim.EntityQty; i++)
+    fprintf (file, " %s", Sim.Entities[i]);
+  fprintf (file, "\n");
+
+  fprintf (file, "EntityType =\n");
+  for (i = 0; i < Sim.EntityQty; i++)
+    fprintf (file, "%s: %s\n", Sim.Entities[i], Sim.EntityType[i]);
+
+  fprintf (file, "EntityMemberQty =\n");
+  for (i = 0; i < Sim.EntityQty; i++)
+    fprintf (file, "%s: %d\n", Sim.Entities[i], Sim.EntityMemberQty[i]);
+
+  fprintf (file, "EntityMemberExpr =\n");
+  for (i = 0; i < Sim.EntityQty; i++)
+  {
+    fprintf (file, "%s: ", Sim.Entities[i]);
+    if (Sim.EntityMemberExpr[i])
+      for (j = 0; j < Sim.EntityMemberQty[i]; j++)
+        fprintf (file, " %s", Sim.EntityMemberExpr[i][j]);
+    else
+      fprintf (file, "unalloc'ed\n");
+    fprintf (file, "\n");
+  }
+
+  fprintf (file, "EntityMembers =\n");
+  for (i = 0; i < Sim.EntityQty; i++)
+  {
+    fprintf (file, "%s: ", Sim.Entities[i]);
+    for (j = 0; j < Sim.EntityMemberQty[i]; j++)
+    {
+      if (Sim.EntityMembers[i] && Sim.EntityMembers[i][j])
+        ut_array_1d_int_fprintf (file, Sim.EntityMembers[i][j] + 1, Sim.EntityMembers[i][j][0], "%d");
+      else
+        fprintf (file, "unalloc'ed\n");
+    }
+  }
+
+  fprintf (file, "EntityResQty =\n");
+  for (i = 0; i < Sim.EntityQty; i++)
+    fprintf (file, "%s: %d\n", Sim.Entities[i], Sim.EntityResQty[i]);
 
   return;
 }

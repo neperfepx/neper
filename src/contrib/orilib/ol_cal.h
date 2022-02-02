@@ -1,6 +1,12 @@
 /* This file is part of the 'orilib' software. */
 /* Copyright (C) 2007-2009, 2012 Romain Quey */
 /* see the COPYING file in the top-level directory.*/
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #ifndef OL_CAL
 #define OL_CAL
 
@@ -156,15 +162,7 @@ extern void ol_lnq_q (double*, double*);
 #include"ut.h"
 #define isNaN(x) ((x) != (x))
 #endif /* OL_CALx */
-#ifndef OL_CALx
-#define OL_CALx
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<math.h>
-#include"ut.h"
-#define isNaN(x) ((x) != (x))
-#include "ol_glo.h"
-#include "ol_des.h"
-#endif /* OL_CALx */
+#ifdef __cplusplus
+}
+#endif

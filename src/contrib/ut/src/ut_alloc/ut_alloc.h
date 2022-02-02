@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2021, Romain Quey */
+/* Copyright (C) 2003-2022, Romain Quey */
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -295,6 +295,12 @@ extern "C"
 /// \return pointer to the array
   extern int *ut_realloc_1d_int (int *array, unsigned int size);
 
+/// \brief Reallocate a 1-D array of \c int, set zero last to zero
+/// \param array: array
+/// \param size: size of the array
+/// \return pointer to the array
+  extern int *ut_realloc_1d_int_zero (int *array, unsigned int size, unsigned int zero);
+
 /// \brief Reallocate a 1-D array of \char
 /// \param array: array
 /// \param size: size of the array
@@ -333,6 +339,12 @@ extern "C"
 /// \return pointer to the array
   extern char **ut_realloc_1d_pchar (char **array, unsigned int size);
 
+/// \brief Reallocate a 1-D array of \c char, add one element and set to NULL
+/// \param array: array
+/// \param size: size of the array
+/// \return pointer to the array
+  extern char **ut_realloc_1d_pchar_null (char **array, unsigned int size, unsigned int null);
+
 /// \brief Reallocate a 1-D array of \c unsigned \c short*
 /// \param array: array
 /// \param size: size of the array
@@ -353,12 +365,36 @@ extern "C"
 /// \return pointer to the array
   extern int ***ut_realloc_1d_ppint (int ***array, unsigned int size);
 
+/// \brief Reallocate a 1-D array of \c int**, set null last to null
+/// \param array: array
+/// \param size: size of the array
+/// \return pointer to the array
+  extern int **ut_realloc_1d_pint_null (int **array, unsigned int size, unsigned int null);
+
+/// \brief Reallocate a 1-D array of \c int**, set null last to null
+/// \param array: array
+/// \param size: size of the array
+/// \return pointer to the array
+  extern int ***ut_realloc_1d_ppint_null (int ***array, unsigned int size, unsigned int null);
+
 /// \brief Reallocate a 1-D array of \c double**
 /// \param array: array
 /// \param size: size of the array
 /// \return pointer to the array
   extern double ***ut_realloc_1d_ppdouble (double ***array,
                                            unsigned int size);
+
+/// \brief Reallocate a 1-D array of \c char**
+/// \param array: array
+/// \param size: size of the array
+/// \return pointer to the array
+  extern char ***ut_realloc_1d_ppchar (char ***array, unsigned int size);
+
+/// \brief Reallocate a 1-D array of \c char**, set null last to null
+/// \param array: array
+/// \param size: size of the array
+/// \return pointer to the array
+  extern char ***ut_realloc_1d_ppchar_null (char ***array, unsigned int size, unsigned int null);
 
 /// \brief Reallocate a 2-D array of \c int
 /// \param array: array

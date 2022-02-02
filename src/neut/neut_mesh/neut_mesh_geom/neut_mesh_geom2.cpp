@@ -1,9 +1,9 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_geom_.h"
-#include"neut_nanoflann_struct.hpp"
+#include"neut_nfcloud_struct.hpp"
 
 int
 neut_mesh_elset_points_closestelts_search (struct MESH Mesh, int elset,

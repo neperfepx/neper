@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neper_.h"
@@ -8,6 +8,7 @@
 void neper_head (char *);
 void neper_foot (void);
 void neper_info (void);
+int neper_diff (int argc, char **argv);
 
 int
 main (int argc, char **argv)
@@ -27,6 +28,7 @@ main (int argc, char **argv)
   strcpy (modlist[++modqty], "--version");
   strcpy (modlist[++modqty], "--license");
   strcpy (modlist[++modqty], "--rcfile");
+  strcpy (modlist[++modqty], "--diff");
   strcpy (modlist[++modqty], "-T");
   strcpy (modlist[++modqty], "-M");
   strcpy (modlist[++modqty], "-V");
@@ -66,6 +68,9 @@ main (int argc, char **argv)
 
   else if (argc >= 2 && !strcmp (mod, "--license"))
     ut_print_gplv3 (stdout);
+
+  else if (argc >= 2 && !strcmp (mod, "--diff"))
+    return neper_diff (argc, argv);
 
   else
   {
@@ -212,7 +217,64 @@ neper_info ()
   ut_print_message (0, 0, "<https://neper.info>\n");
 
   ut_print_message (0, 0,
-                    "Copyright (C) 2003-2021, and GNU GPL'd, by Romain Quey.\n");
+                    "Copyright (C) 2003-2022, and GNU GPL'd, by Romain Quey.\n");
 
   return;
+}
+
+int
+neper_diff (int argc, char **argv)
+{
+  int status, diff = 0;
+  double val1, val2, eps = 1e-6;
+  char *string1 = NULL, *string2 = NULL;
+  FILE *file1 = NULL, *file2 = NULL;
+
+  if (argc < 4)
+  {
+    printf ("Usage: neper --diff file1 file2 [eps]\n");
+    return -1;
+  }
+
+  string1 = ut_alloc_1d_char (10000);
+  string2 = ut_alloc_1d_char (10000);
+  file1 = ut_file_open (argv[2], "R");
+  file2 = ut_file_open (argv[3], "R");
+
+  if (argc == 5)
+    eps = atof (argv[4]);
+
+  while (fscanf (file1, "%s", string1) == 1)
+  {
+    status = fscanf (file2, "%s", string2);
+
+    if (status != 1)
+    {
+      diff = 1;
+      break;
+    }
+
+    else if (sscanf (string1, "%lf", &val1))
+    {
+      status = sscanf (string2, "%lf", &val2);
+      if (status != 1 || (!ut_num_equal (val1, val2, eps) && !ut_num_requal (val1, val2, eps)))
+      {
+        diff = 1;
+        break;
+      }
+    }
+
+    else if (strcmp (string1, string2))
+    {
+      diff = 1;
+      break;
+    }
+  }
+
+  ut_file_close (file1, argv[2], "R");
+  ut_file_close (file2, argv[3], "R");
+  ut_free_1d_char (&string1);
+  ut_free_1d_char (&string2);
+
+  return diff;
 }

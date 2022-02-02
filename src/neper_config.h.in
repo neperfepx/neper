@@ -4,5 +4,7 @@
 #cmakedefine HAVE_LIBSCOTCH
 #cmakedefine HAVE_OPENMP
 #cmakedefine CMAKE_BUILD_TYPE
+#cmakedefine FORCE_BUILTIN_LIBSCOTCH
+#cmakedefine FORCE_BUILTIN_NLOPT
 
 #define NEPER_VERSION @NEPER_VERSION@

@@ -9,42 +9,27 @@
 #endif
 
 void
-nes_pproc_entity_pre (struct IN_S In, struct SIM Sim, char *entity,
-                      int *pentityqty, char **pdir, char ***presults,
-                      int *presultqty)
+nes_pproc_entity_pre (struct SIM *pSim, char *entity,
+                      char *entityresexpr, int *pmemberqty, char **pdir,
+                      char ***presults, int *presultqty)
 {
-  int i;
-  char *tmp = NULL;
+  int i, pos;
 
-  if (neut_sim_entityisnode (entity))
+  neut_sim_entity_pos (*pSim, entity, &pos);
+
+  if (pos == -1)
   {
-    (*pentityqty) = Sim.NodeQty;
-    (*pdir) = ut_string_paste (In.simdir, "/results/nodes");
-    ut_string_string (In.noderes, &tmp);
-    ut_list_rmelt (&tmp, NEUT_SEP_NODEP, "inputres");
-    ut_list_break (tmp, NEUT_SEP_NODEP, presults, presultqty);
+    neut_sim_addentity (pSim, entity);
+    pos = (*pSim).EntityQty - 1;
   }
-  else if (neut_sim_entityiselt (entity))
-  {
-    (*pentityqty) = Sim.EltQty;
-    (*pdir) = ut_string_paste (In.simdir, "/results/elements");
-    ut_string_string (In.eltres, &tmp);
-    ut_list_rmelt (&tmp, NEUT_SEP_NODEP, "inputres");
-    ut_list_break (tmp, NEUT_SEP_NODEP, presults, presultqty);
-  }
-  else if (neut_sim_entityiselset (entity))
-  {
-    (*pentityqty) = Sim.ElsetQty;
-    (*pdir) = ut_string_paste (In.simdir, "/results/elsets");
-    ut_string_string (In.elsetres, &tmp);
-    ut_list_rmelt (&tmp, NEUT_SEP_NODEP, "inputres");
-    ut_list_break (tmp, NEUT_SEP_NODEP, presults, presultqty);
-  }
-  else
-    abort ();
+
+  (*pmemberqty) = (*pSim).EntityMemberQty[pos];
+
+  (*pdir) = ut_string_paste3 ((*pSim).simdir, "/results/", entity);
+
+  ut_list_break (entityresexpr, NEUT_SEP_NODEP, presults, presultqty);
 
   // testing
-
   for (i = 0; i < *presultqty; i++)
   {
     char *result = NULL, *expr = NULL;
@@ -65,7 +50,43 @@ nes_pproc_entity_pre (struct IN_S In, struct SIM Sim, char *entity,
     ut_free_1d_char (&expr);
   }
 
-  ut_free_1d_char (&tmp);
+  return;
+}
+
+void
+nes_pproc_entity_remove (struct SIM *pSim, char *entity, char *result)
+{
+  int i, j;
+  struct SIMRES SimRes;
+
+  neut_simres_set_zero (&SimRes);
+
+  neut_sim_simres (*pSim, entity, result, &SimRes);
+
+  ut_print_message (0, 4, "%s removal ", result);
+  for (j = 0; j < 41 - (int) strlen (result); j++)
+    printf (".");
+  printf (" ");
+
+  if (strcmp (SimRes.status, "result"))
+    printf ("\b\b\b\b missing\n");
+
+  else
+  {
+    for (i = 0; i <= (*pSim).StepQty; i++)
+    {
+      neut_simres_setstep (&SimRes, i);
+      remove (SimRes.file);
+    }
+    remove (SimRes.dir);
+
+    neut_sim_rmres (pSim, entity, result);
+    neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
+
+    printf ("100%%\n");
+  }
+
+  neut_simres_free (&SimRes);
 
   return;
 }
@@ -92,7 +113,7 @@ nes_pproc_entity_file (struct SIM *pSim, char *entity, char *dir, char *res, cha
     ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1, "%3.0f%%", prev);
   }
 
-  neut_sim_addres (pSim, entity, res, NULL, 1);
+  neut_sim_addres (pSim, entity, res, NULL);
   neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
 
   ut_free_1d_char (&simfile);
@@ -103,327 +124,192 @@ nes_pproc_entity_file (struct SIM *pSim, char *entity, char *dir, char *res, cha
 }
 
 void
-nes_pproc_entity_subres (struct SIM *pSim, char *entity, int entityqty, char *dir, char *res)
+nes_pproc_entity_subres (struct SIM *pSim, char *entity,
+                         struct SIMRES *pSimRes)
 {
-  int i, step;
-  char *simfile = ut_alloc_1d_char (1000);
-  char *filename = ut_alloc_1d_char (1000);
+  int i, step, pos;
   FILE *file = NULL;
-  double *tmp = ut_alloc_1d (entityqty + 1);
+  double *tmp = NULL;
   char *prev = ut_alloc_1d_char (1000);
+
+  neut_sim_entity_pos (*pSim, entity, &pos);
+  if (pos == -1)
+    abort ();
+
+  tmp = ut_alloc_1d ((*pSim).EntityMemberQty[pos]);
 
   ut_print_progress (stdout, 0, (*pSim).StepQty + 1, "%3.0f%%", prev);
 
   for (step = 0; step <= (*pSim).StepQty; step++)
   {
     neut_sim_setstep (pSim, step);
+    neut_simres_setstep (pSimRes, step);
 
-    neut_sim_res_file (*pSim, entity, res, simfile);
-    if (!ut_file_exist (simfile))
+    if (!ut_file_exist ((*pSimRes).parentfile))
       abort ();
 
-    sprintf (filename, "%s/%s/%s.step%d", dir, res, res, step);
-    file = ut_file_open (filename, "W");
+    file = ut_file_open ((*pSimRes).newfile, "W");
 
-    ut_array_1d_fnscanf (simfile, tmp + 1, entityqty, "R");
-    for (i = 1; i <= entityqty; i++)
+    ut_array_1d_fnscanf ((*pSimRes).file, tmp, (*pSim).EntityMemberQty[pos], "R");
+    for (i = 0; i < (*pSim).EntityMemberQty[pos]; i++)
       fprintf (file, "%.12f\n", tmp[i]);
 
-    ut_file_close (file, filename, "W");
+    ut_file_close (file, (*pSimRes).file, "W");
 
     ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1, "%3.0f%%", prev);
   }
 
   neut_sim_setstep (pSim, 0);
-  neut_sim_addres (pSim, entity, res, NULL, 1);
+  neut_sim_addres (pSim, entity, (*pSimRes).res, NULL);
   neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
 
-  ut_free_1d_char (&simfile);
-  ut_free_1d_char (&filename);
   ut_free_1d (&tmp);
   ut_free_1d_char (&prev);
 
   return;
 }
 
-void
-nes_pproc_entity_eltres (struct SIM *pSim, struct TESS Tess,
-                         struct NODES *pNodes, struct MESH *Mesh, char *entity,
-                         int entityqty, char *dir, char *res)
+int
+nes_pproc_entity_expr (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
+                       struct MESH *Mesh, char *entity, struct SIMRES *pSimRes)
 {
-  int i, step, colqty;
-  char *simfile = ut_alloc_1d_char (1000);
-  char *filename = ut_alloc_1d_char (1000);
-  FILE *file = NULL;
+  int i, j, status, status2, step, varqty, pos;
+  double *resval = NULL, **simvals = NULL;
+  char **vars = NULL;
   char *prev = ut_alloc_1d_char (1000);
-  char *type = NULL;
+  char *expression = (*pSimRes).expr ? (*pSimRes).expr : (*pSimRes).res;
+  FILE *file = NULL;
+  struct SIMRES SimRes2;
 
-  if (strncmp (entity, "elset", 5))
+  neut_sim_entity_pos (*pSim, entity, &pos);
+  if (pos == -1)
     abort ();
 
-  neut_sim_res_type (*pSim, "element", res, &type, &colqty);
+  neut_simres_set_zero (&SimRes2);
+
+  ut_math_vars (expression, &vars, &varqty);
+
+  resval = ut_alloc_1d ((*pSim).EntityMemberQty[pos]);
+  simvals = ut_alloc_2d (varqty, (*pSim).EntityMemberQty[pos]);
+
+  status = -1;
 
   ut_print_progress (stdout, 0, (*pSim).StepQty + 1, "%3.0f%%", prev);
 
   for (step = 0; step <= (*pSim).StepQty; step++)
   {
     neut_sim_setstep (pSim, step);
+    neut_simres_setstep (pSimRes, step);
 
-    neut_sim_res_file (*pSim, "element", res, simfile);
+    status = -1;
 
-    if (!ut_file_exist (simfile))
-      abort ();
-
-    sprintf (filename, "%s/%s/%s.step%d", dir, res, res, step);
-
-    double **eltdata = NULL;
-    double **elsetdata = NULL;
-
-    file = ut_file_open (filename, "W");
-
-    if (!strcmp (res, "ori"))
+    for (i = 0; i < varqty; i++)
     {
-      if (!Tess.CellCrySym)
-        ut_print_message (2, 5, "\nCrystal symmetry not defined.\n");
+      neut_sim_simres (*pSim, entity, vars[i], &SimRes2);
 
-      eltdata = ut_alloc_2d (Mesh[3].EltQty + 1, 4);
-      elsetdata = ut_alloc_2d (entityqty + 1, 4);
-      neut_ori_fnscanf (simfile, (*pSim).OriDes, "ascii", eltdata + 1, NULL, Mesh[3].EltQty, NULL, "R");
-      neut_mesh_eltdata_elsetdata_ori (*pNodes, Mesh[3], eltdata, Tess.CellCrySym, elsetdata);
-
-      neut_ori_fprintf (file, (*pSim).OriDes, "ascii", elsetdata + 1, NULL, NULL, entityqty, NULL);
-    }
-
-    else if (!strncmp (res, "oridis", 6))
-    {
-      double ***evect = ut_alloc_3d (Mesh[3].ElsetQty + 1, 3, 3);
-      double **eval = ut_alloc_2d (Mesh[3].ElsetQty + 1, 3);
-
-      eltdata = ut_alloc_2d (Mesh[3].EltQty + 1, 4);
-      neut_ori_fnscanf (simfile, (*pSim).OriDes, "ascii", eltdata + 1, NULL, Mesh[3].EltQty, NULL, "R");
-      neut_mesh_eltdata_elsetdata_oridis (*pNodes, Mesh[3], eltdata, Tess.CellCrySym, evect, eval);
-
-      for (i = 1; i <= entityqty; i++)
+      if (ut_file_exist (SimRes2.file))
       {
-        if (!strcmp (res, "oridisanisoangles"))
-          ut_array_1d_fprintf (file, eval[i], 3, "%.12f");
-        else if (!strcmp (res, "oridisanisoaxes"))
-          ut_array_2d_fprintf_oneline (file, evect[i], 3, 3, "%.12f");
-        else if (!strcmp (res, "oridisanisofact"))
-          fprintf (file, "%.12f\n", eval[i][0] / pow (ut_array_1d_prod (eval[i], 3), 1. / 3));
+        if (SimRes2.colqty != 1)
+          ut_print_message (2, 5, "\nVariable `%s' is not scalar (%d value%s).\n",
+                            vars[i], SimRes2.colqty, SimRes2.colqty ? "s" : "");
+
+        status2 = ut_array_1d_fnscanf (SimRes2.file, simvals[i], (*pSim).EntityMemberQty[pos], "R");
+        if (status2 != 1)
+          ut_print_message (2, 5, "\nFailed to read file `%s' (%d values vs %d entities)\n",
+                            SimRes2.file, ut_file_nbwords (SimRes2.file), (*pSim).EntityMemberQty[pos]);
+
+        status = 0;
       }
 
-      ut_free_3d (&evect, Mesh[3].ElsetQty + 1, 3);
-      ut_free_2d (&eval, Mesh[3].ElsetQty + 1);
+      else
+      {
+        if (neut_mesh_entity_known (entity))
+        {
+          int *tmp = ut_alloc_1d_int ((*pSim).EntityMemberQty[pos]);
+#pragma mp parallel for private(j)
+          for (j = 0; j < (*pSim).EntityMemberQty[pos]; j++)
+            tmp[j] = neut_mesh_var_val_one (*pNodes, Mesh[0], Mesh[1], Mesh[2],
+                                            Mesh[3], Mesh[4], Tess, NULL, NULL,
+                                            NULL, NULL, 0, entity, j + 1,
+                                            vars[i], simvals[i] + j, NULL);
+          status = ut_array_1d_int_sum (tmp, (*pSim).EntityMemberQty[pos]);
+          ut_free_1d_int (&tmp);
+        }
+
+        else
+        {
+          if (!strcmp ((*pSim).EntityType[pos], "elset"))
+          {
+            int *tmp = ut_alloc_1d_int (Mesh[Tess.Dim].EltQty);
+            double **eltdata = ut_alloc_2d (Mesh[Tess.Dim].EltQty + 1, 1);
+            double **elsetdata = ut_alloc_2d ((*pSim).EntityMemberQty[pos] + 1, 1);
+
+#pragma mp parallel for private(j)
+            for (j = 0; j < Mesh[Tess.Dim].EltQty; j++)
+              tmp[j] = neut_mesh_var_val_one (*pNodes, Mesh[0], Mesh[1], Mesh[2],
+                                     Mesh[3], Mesh[4], Tess, NULL, NULL,
+                                     NULL, NULL, 0, "elt", j + 1,
+                                     vars[i], eltdata[j + 1], NULL);
+            status = ut_array_1d_int_sum (tmp, Mesh[Tess.Dim].EltQty);
+            ut_free_1d_int (&tmp);
+
+            if (!status)
+            {
+#pragma mp parallel for private(j)
+              for (j = 0; j < (*pSim).EntityMemberQty[pos]; j++)
+                neut_mesh_eltdata_elsetdata (*pNodes, Mesh[Tess.Dim], (*pSim).EntityMembers[pos] - 1,
+                                             (*pSim).EntityMemberQty[pos],
+                                             eltdata, 1, elsetdata);
+
+              for (j = 0; j < (*pSim).EntityMemberQty[pos]; j++)
+                simvals[i][j] = elsetdata[j + 1][0];
+            }
+
+            ut_free_2d (&eltdata, Mesh[Tess.Dim].EltQty + 1);
+            ut_free_2d (&elsetdata, (*pSim).EntityMemberQty[pos] + 1);
+          }
+
+          else
+            abort ();
+        }
+      }
+
+      if (status)
+        break;
     }
 
-    else
+    if (!status)
     {
-      eltdata = ut_alloc_2d (Mesh[3].EltQty + 1, colqty);
-      elsetdata = ut_alloc_2d (entityqty + 1, colqty);
-      ut_array_2d_fnscanf (simfile, eltdata + 1, Mesh[3].EltQty, colqty, "R");
-      neut_mesh_eltdata_elsetdata (*pNodes, Mesh[3], eltdata, colqty, elsetdata);
+      file = ut_file_open ((*pSimRes).file, "W");
 
-      for (i = 1; i <= entityqty; i++)
-        ut_array_1d_fprintf (file, elsetdata[i], colqty, "%.12f");
-    }
+      // running multiparser in multithreading
+      ut_math_evals (expression, varqty, vars, simvals, (*pSim).EntityMemberQty[pos], resval);
 
-    ut_file_close (file, filename, "W");
+      for (i = 0; i < (*pSim).EntityMemberQty[pos]; i++)
+        fprintf (file, "%.12f\n", resval[i]);
 
-    ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1, "%3.0f%%", prev);
-
-    ut_free_2d (&eltdata, Mesh[3].EltQty + 1);
-    ut_free_2d (&elsetdata, entityqty + 1);
-  }
-
-  neut_sim_setstep (pSim, 0);
-  neut_sim_addres (pSim, entity, res, NULL, 1);
-  neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
-
-  ut_free_1d_char (&simfile);
-  ut_free_1d_char (&filename);
-  ut_free_1d_char (&prev);
-  ut_free_1d_char (&type);
-
-  return;
-}
-
-void
-nes_pproc_entity_known (struct SIM *pSim, char *entity, int entityqty,
-                        char *dir, char *res)
-{
-  int step;
-  char *simfile = ut_alloc_1d_char (1000);
-  char *filename = ut_alloc_1d_char (1000);
-  char *prev = ut_alloc_1d_char (1000);
-  FILE *file = NULL;
-
-  if (!strcmp (entity, "node") && !strcmp (res, "disp"))
-  {
-    double ***coo = ut_alloc_3d (2, entityqty, 3);
-    double **disp = ut_alloc_2d (entityqty, 3);
-
-    neut_sim_setstep (pSim, 0);
-
-    neut_sim_res_file (*pSim, "node", "coo", simfile);
-
-    ut_array_2d_fnscanf (simfile, coo[0], entityqty, 3, "R");
-
-    for (step = 0; step <= (*pSim).StepQty; step++)
-    {
-      neut_sim_setstep (pSim, step);
-
-      neut_sim_res_file (*pSim, "node", "coo", simfile);
-
-      if (!ut_file_exist (simfile))
-        abort ();
-
-      ut_array_2d_fnscanf (simfile, coo[1], entityqty, 3, "R");
-
-      ut_array_2d_sub (coo[0], coo[1], entityqty, 3, disp);
-
-      sprintf (filename, "%s/%s/%s.step%d", dir, res, res, step);
-
-      file = ut_file_open (filename, "W");
-      ut_array_2d_fprintf (file, disp, entityqty, 3, "%.12f");
-      ut_file_close (file, filename, "W");
+      ut_file_close (file, (*pSimRes).file, "W");
 
       ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1, "%3.0f%%", prev);
     }
 
-    ut_free_3d (&coo, 2, entityqty);
-    ut_free_2d (&disp, entityqty);
+    else
+      break;
   }
 
-  neut_sim_addres (pSim, entity, res, NULL, 1);
-  neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
-
-  ut_free_1d_char (&simfile);
-  ut_free_1d_char (&filename);
-  ut_free_1d_char (&prev);
-
-  return;
-}
-
-void
-nes_pproc_entity_expr (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
-                       struct MESH *Mesh, char *entity, int entityqty,
-                       char *dir, char *res, char *expr)
-{
-  int i, step;
-  double **simvals = NULL;
-  char *filename = ut_alloc_1d_char (1000);
-  char *simfile = ut_alloc_1d_char (1000);
-  char *prev = ut_alloc_1d_char (1000);
-  FILE *file = NULL;
-  char *entity2 = NULL;
-  int varqty;
-  char **vars = NULL;
-  char *expression = expr ? expr : res;
-
-  if (neut_sim_entityisnode (entity))
-    ut_string_string ("node", &entity2);
-  else if (neut_sim_entityiselt (entity))
-    ut_string_string ("elt3d", &entity2);
-  else if (neut_sim_entityiselset (entity))
-    ut_string_string ("elset3d", &entity2);
-  else
-    abort ();
-
-  ut_print_progress (stdout, 0, (*pSim).StepQty + 1, "%3.0f%%", prev);
-
-  ut_math_vars (expression, &vars, &varqty);
-
-  simvals = ut_alloc_2d (varqty, entityqty);
-
-  for (step = 0; step <= (*pSim).StepQty; step++)
+  if (!status)
   {
-    neut_sim_setstep (pSim, step);
-
-    int j, status;
-    for (i = 0; i < varqty; i++)
-    {
-      if (neut_sim_res_file (*pSim, entity, vars[i], simfile) == 0)
-      {
-        status = ut_array_1d_fnscanf (simfile, simvals[i], entityqty, "R");
-        if (status != 1)
-          ut_print_message (2, 5, "\nFailed to read file `%s' (%d values vs %d entities)\n",
-                            simfile, ut_file_nbwords (simfile), entityqty);
-      }
-
-      else
-#pragma omp parallel for private(j,status)
-        for (j = 0; j < entityqty; j++)
-        {
-          status = neut_mesh_var_val_one (*pNodes, Mesh[0], Mesh[1], Mesh[2],
-                                          Mesh[3], Mesh[4], Tess, NULL, NULL,
-                                          NULL, NULL, 0, entity2, j + 1,
-                                          vars[i], simvals[i] + j, NULL);
-          if (status != 0)
-#ifdef HAVE_OPENMP
-            if (omp_get_thread_num() == 0)
-#endif
-            ut_print_message (2, 5, "\nVariable `%s' could not be processed.\n", vars[i]);
-        }
-    }
-
-    sprintf (filename, "%s/%s/%s.step%d", dir, res, res, step);
-    file = ut_file_open (filename, "W");
-
-    double *resval = ut_alloc_1d (entityqty);
-
-    // this will run in multithreaded muparser
-    ut_math_evals (expression, varqty, vars, simvals, entityqty, resval);
-
-    for (i = 0; i < entityqty; i++)
-      fprintf (file, "%.12f\n", resval[i]);
-
-    ut_free_1d (&resval);
-
-    ut_file_close (file, filename, "W");
-
-    ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1, "%3.0f%%", prev);
+    neut_sim_addres (pSim, entity, (*pSimRes).res, (*pSimRes).expr);
+    neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
   }
-
-  neut_sim_addres (pSim, entity, res, expr, 1);
-  neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
+  else
+    printf ("\b\b\b\b");
 
   ut_free_2d (&simvals, varqty);
-  ut_free_1d_char (&filename);
-  ut_free_1d_char (&simfile);
   ut_free_1d_char (&prev);
-  ut_free_1d_char (&entity2);
   ut_free_2d_char (&vars, varqty);
+  ut_free_1d (&resval);
+  neut_simres_free (&SimRes2);
 
-  return;
-}
-
-void
-nes_pproc_entity_remove (struct SIM *pSim, char *entity, char *dir, char *result)
-{
-  int i;
-  char *tmp = ut_alloc_1d_char (1000);
-
-  if (!neut_sim_res_exist (*pSim, entity, result + 1, NULL, NULL))
-    printf ("\b\b\b\b\b\b\b\b\b\b\b does not exist\n");
-
-  else
-  {
-    for (i = 0; i <= (*pSim).StepQty; i++)
-    {
-      sprintf (tmp, "%s/%s/%s.step%d", dir, result + 1, result + 1, i);
-      remove (tmp);
-    }
-    sprintf (tmp, "%s/%s", dir, result + 1);
-    remove (tmp);
-
-    neut_sim_rmres (pSim, entity, result + 1);
-    neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
-
-    printf ("100%%\n");
-  }
-
-  ut_free_1d_char (&tmp);
-
-  return;
+  return status;
 }

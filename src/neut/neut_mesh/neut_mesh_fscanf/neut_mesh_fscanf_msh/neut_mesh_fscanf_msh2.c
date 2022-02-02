@@ -1,11 +1,11 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fscanf_msh_.h"
 
 void
-neut_mesh_fscanf_msh_head (FILE * file, char **pmode, int *ptopology)
+neut_mesh_fscanf_msh_head (FILE * file, char **pmode, char **pdomain, int *ptopology)
 {
   int status, type;
   char string[1000];
@@ -76,6 +76,15 @@ neut_mesh_fscanf_msh_head (FILE * file, char **pmode, int *ptopology)
   if (ut_file_nextstring_test (file, "$MeshVersion"))
     ut_file_skip (file, 3);
 
+  if (ut_file_nextstring_test (file, "$Domain"))
+  {
+    ut_file_skip (file, 1);
+    (*pdomain) = ut_alloc_1d_char (100);
+    if (fscanf (file, "%s", *pdomain) != 1)
+      abort ();
+    ut_file_skip (file, 1);
+  }
+
   if (ut_file_nextstring_test (file, "$Topology"))
   {
     ut_file_skip (file, 1);
@@ -111,7 +120,7 @@ neut_mesh_fscanf_msh_nodes (FILE * file, char *mode,
 }
 
 void
-neut_mesh_fscanf_msh_elts (FILE * file, char *mode, int *node_nbs,
+neut_mesh_fscanf_msh_elts (FILE * file, char *mode, char *domain, int *node_nbs,
                            struct MESH *pMesh0D, struct MESH *pMesh1D,
                            struct MESH *pMesh2D, struct MESH *pMesh3D,
                            struct MESH *pMeshCo, struct MESH **ppMesh)
@@ -171,7 +180,11 @@ neut_mesh_fscanf_msh_elts (FILE * file, char *mode, int *node_nbs,
   if (pMesh2D)
     neut_mesh_init_elsetlabels (pMesh2D);
   if (pMesh3D)
+  {
     neut_mesh_init_elsetlabels (pMesh3D);
+    if (domain)
+      ut_string_string (domain, &((*pMesh3D).Domain));
+  }
 
   if (pMesh3D && (*pMesh3D).EltQty > 0)
     *ppMesh = pMesh3D;

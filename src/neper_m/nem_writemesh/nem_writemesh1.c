@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_writemesh_.h"
@@ -90,28 +90,71 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
       ut_free_1d_char (&version);
     }
 
-    if (!strcmp (formats[i], "ori"))
+    else if (!strcmp (formats[i], "sim"))
+    {
+      struct SIM Sim;
+      char *simmsh = ut_alloc_1d_char (1000);
+      char *simtess = ut_alloc_1d_char (1000);
+
+      neut_sim_set_zero (&Sim);
+      neut_mesh_sim (In.sim, Tess, Nodes, Mesh, &Sim);
+
+      sprintf (simmsh, "%s/inputs/simulation.msh", In.sim);
+      sprintf (simtess, "%s/inputs/simulation.tess", In.sim);
+
+      for (j = 3; j >= 0; j--)
+      {
+        if (Tess.Dim == j
+            && ut_list_testelt (In.dimout_msh, NEUT_SEP_NODEP, "3") == 1
+            && !Mesh[3].EltType)
+          ut_print_message (1, 3, "%dD mesh is void.\n", j);
+      }
+
+      ut_dir_openmessage (In.sim, "w");
+
+      file = ut_file_open (simtess, "W");
+      neut_tess_fprintf (file, Tess);
+      ut_file_close (file, simtess, "W");
+
+      file = ut_file_open (simmsh, "W");
+      neut_mesh_fprintf_msh (file, In.dimout_msh, Tess, Nodes, Mesh[0],
+                             Mesh[1], Mesh[2], Mesh[3], Mesh[4],
+                             NSet[0], NSet[1], NSet[2], nsetlist,
+                             fasetlist, NULL, "msh", "ascii");
+      ut_file_close (file, simmsh, "W");
+
+      neut_sim_fprintf (In.sim, Sim, "W");
+
+      ut_dir_closemessage (In.sim, "w");
+
+      neut_sim_free (&Sim);
+
+      ut_free_1d_char (&simmsh);
+      ut_free_1d_char (&simtess);
+    }
+
+    else if (!strcmp (formats[i], "ori"))
     {
       file = ut_file_open (In.ori, "w");
       neut_mesh_fprintf_ori (file, Mesh[dim]);
       ut_file_close (file, In.ori, "w");
     }
 
-    if (!strcmp (formats[i], "phase"))
+    else if (!strcmp (formats[i], "phase"))
     {
       file = ut_file_open (In.phase, "w");
       neut_mesh_fprintf_phase (file, Mesh[dim]);
       ut_file_close (file, In.phase, "w");
     }
 
-    if (!strcmp (formats[i], "bcs"))
+    else if (!strcmp (formats[i], "bcs"))
     {
       file = ut_file_open (In.bcs, "w");
       neut_mesh_fprintf_bcs (file, NSet[0], NSet[1], NSet[2], nsetlist);
       ut_file_close (file, In.bcs, "w");
     }
 
-    if (!strcmp (formats[i], "vtk"))
+    else if (!strcmp (formats[i], "vtk"))
     {
       for (j = 3; j >= 0; j--)
       {
@@ -126,7 +169,7 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
       ut_file_close (file, In.vtk, "w");
     }
 
-    if (!strcmp (formats[i], "abq")
+    else if (!strcmp (formats[i], "abq")
         || !strcmp (formats[i], "inp"))
     {
       file = ut_file_open (In.abq, "w");
@@ -136,7 +179,7 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
       ut_file_close (file, In.abq, "w");
     }
 
-    if (!strcmp (formats[i], "geof"))
+    else if (!strcmp (formats[i], "geof"))
     {
       ut_alloc_1d_int (Mesh[3].EltQty + 1);
 

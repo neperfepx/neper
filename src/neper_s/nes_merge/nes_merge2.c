@@ -33,24 +33,26 @@ nes_merge_entity_res (struct SIM Sim, char *entity, int step, char *sim2)
 {
   int i, resqty;
   char **res = NULL;
-  char *dir = NULL;
-  char *filename1 = ut_alloc_1d_char (1000);
+  char *entitydir = NULL;
   char *filename2 = ut_alloc_1d_char (1000);
+  struct SIMRES SimRes;
+
+  neut_simres_set_zero (&SimRes);
 
   neut_sim_entity_res (Sim, entity, &res, &resqty);
-  neut_sim_entity_dir (entity, &dir);
+  neut_sim_entity_entitydir (entity, &entitydir);
 
   for (i = 0; i < resqty; i++)
   {
-    neut_sim_res_file (Sim, entity, res[i], filename1);
-    sprintf (filename2, "%s/%s/%s/%s.step%d", sim2, dir, res[i], res[i], step);
-    ut_file_cp (filename1, filename2);
+    neut_sim_simres (Sim, entity, res[i], &SimRes);
+    sprintf (filename2, "%s/results/%s/%s/%s.step%d", sim2, entitydir, res[i], res[i], step);
+    ut_file_cp (SimRes.file, filename2);
   }
 
-  ut_free_1d_char (&filename1);
   ut_free_1d_char (&filename2);
   ut_free_2d_char (&res, resqty);
-  ut_free_1d_char (&dir);
+  ut_free_1d_char (&entitydir);
+  neut_simres_free (&SimRes);
 
   return;
 }
@@ -58,7 +60,7 @@ nes_merge_entity_res (struct SIM Sim, char *entity, int step, char *sim2)
 void
 nes_merge_restart (struct SIM Sim, char *sim1, char *sim2)
 {
-  nes_sim_write_restart (ut_string_paste (sim1, "/restart"), sim2, Sim);
+  nes_convert_write_restart (ut_string_paste (sim1, "/restart"), sim2, Sim);
 
   return;
 }

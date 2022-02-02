@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2021, Romain Quey. */
+/* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_input_.h"
@@ -49,7 +49,7 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("binary16", &(*pIn).tesrformat);
 
   ut_string_string ("default", &(*pIn).oristring);
-  ut_string_string ("none", &(*pIn).oridistribstring);
+  ut_string_string ("none", &(*pIn).orispreadstring);
   ut_string_string ("default", &(*pIn).orioptistopstring);
   ut_string_string ("default", &(*pIn).orioptineighstring);
   ut_string_string ("default", &(*pIn).orioptiinistring);
@@ -118,8 +118,8 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ((*pIn).orioptifixstring, (*pIn).orioptifix);
   (*pIn).orioptilogvar = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).orioptilogvarstring, (*pIn).orioptilogvar);
-  (*pIn).oridistrib = ut_alloc_1d_pchar (1);
-  ut_string_string ((*pIn).oridistribstring, (*pIn).oridistrib);
+  (*pIn).orispread = ut_alloc_1d_pchar (1);
+  ut_string_string ((*pIn).orispreadstring, (*pIn).orispread);
 
   return;
 }
@@ -186,7 +186,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-oricrysym");
   strcpy (ArgList[++ArgQty], "-oriformat");
   strcpy (ArgList[++ArgQty], "-orioptilogvar");
-  strcpy (ArgList[++ArgQty], "-oridistrib");
+  strcpy (ArgList[++ArgQty], "-orispread");
   // Post-processing ---------------------------------------------------
   strcpy (ArgList[++ArgQty], "-stattess");
   strcpy (ArgList[++ArgQty], "-stattesr");
@@ -364,8 +364,8 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oriformat));
     else if (!strcmp (Arg, "-orioptilogvar"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).orioptilogvarstring));
-    else if (!strcmp (Arg, "-oridistrib"))
-      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oridistribstring));
+    else if (!strcmp (Arg, "-orispread"))
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).orispreadstring));
     else if (!strcmp (Arg, "-statcell"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).stc));
     else if (!strcmp (Arg, "-stattess"))
@@ -441,10 +441,8 @@ net_input_treatargs_multiscale (char *option, char **pargstring, int scaleqty,
   if (scaleqty < 0)
     scaleqty = argqty;
 
-  (*pvals) = ut_realloc_1d_pchar (*pvals, scaleqty + 1);
-  // start at 1, not 0 (0 is already filled)
-  for (i = 1; i <= scaleqty; i++)
-    (*pvals)[i] = NULL;
+  // start null at 1, not 0 (0 is already filled)
+  (*pvals) = ut_realloc_1d_pchar_null (*pvals, scaleqty + 1, scaleqty);
   ut_string_string (def, *pvals);
 
   for (i = 1; i <= argqty; i++)
