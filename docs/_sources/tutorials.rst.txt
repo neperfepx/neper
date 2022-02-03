@@ -9,5 +9,6 @@ Tutorials
    :maxdepth: 1
 
    tutorials/simple_model.rst
+   tutorials/regular_tess.rst
    tutorials/morpho_statistics.rst
-   tutorials/tesr_mesh.rst
+   tutorials/morpho_tesr_mesh.rst

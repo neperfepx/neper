@@ -38,7 +38,7 @@ It is possible to visualize the polycrystal as follows:
 
   $ neper -V AlLi-load.tesr -print AlLi
 
-.. image:: tesr_mesh/AlLi.png
+.. image:: morpho_tesr_mesh/AlLi.png
 
 
 where the grains are colored by their ids.
