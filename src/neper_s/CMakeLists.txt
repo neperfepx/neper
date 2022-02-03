@@ -38,6 +38,7 @@ nes_orispace/nes_orispace1.c
 nes_entity/nes_entity1.c
 nes_pproc/nes_pproc1.c
 nes_pproc/nes_pproc2.c
+nes_pproc/nes_pproc3.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity1.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity2.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity_builtin/nes_pproc_entity_builtin1.c

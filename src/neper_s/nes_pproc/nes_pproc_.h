@@ -18,3 +18,5 @@
 #include"nes_pproc.h"
 
 extern void nes_pproc_load (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes, struct MESH *Mesh);
+
+extern void nes_pproc_load_crysym (struct TESS *pTess, char **GroupCrySym, int GroupQty);

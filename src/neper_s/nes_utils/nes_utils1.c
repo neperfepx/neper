@@ -129,12 +129,12 @@ nes_loadconfig (struct SIM Sim, char ***pGroupCrySym, int *pGroupQty, int verbos
         }
       }
     }
+
+    ut_file_close (fp, filename, "R");
   }
 
   else
     *pGroupQty = 0;
-
-  ut_file_close (fp, filename, "R");
 
   ut_free_1d_char (&string);
   ut_free_1d_char (&filename);

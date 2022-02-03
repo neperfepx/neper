@@ -7,7 +7,7 @@
 void
 nes_pproc_load (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes, struct MESH *Mesh)
 {
-  int i, GroupQty, differ;
+  int GroupQty;
   char **GroupCrySym = NULL;
 
   ut_print_message (0, 2, "Loading inputs...\n");
@@ -18,31 +18,7 @@ nes_pproc_load (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes, struct
 
   nes_loadconfig (Sim, &GroupCrySym, &GroupQty, 2);
 
-  // checking consistency between Tess and Sim crysym
-
-  differ = 0;
-  for (i = 1; i < GroupQty; i++)
-    if (strcmp (GroupCrySym[0], GroupCrySym[i]))
-    {
-      differ = 1;
-      break;
-    }
-
-  if (!differ)
-  {
-    if ((*pTess).CellCrySym && strcmp ((*pTess).CellCrySym, GroupCrySym[0]))
-    {
-      if (!strcmp ((*pTess).CellCrySym, "triclinic"))
-        ut_string_string (GroupCrySym[0], &((*pTess).CellCrySym));
-      else
-        ut_print_message (2, 3, "The crystal symmetries of tessellation and configuration file differ.\n");
-    }
-    else
-      ut_string_string (GroupCrySym[0], &((*pTess).CellCrySym));
-  }
-
-  else
-    ut_string_string ("triclinic", &((*pTess).CellCrySym));
+  nes_pproc_load_crysym (pTess, GroupCrySym, GroupQty);
 
   ut_free_2d_char (&GroupCrySym, GroupQty);
 
