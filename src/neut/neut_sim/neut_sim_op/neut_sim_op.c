@@ -30,7 +30,6 @@ neut_sim_set_zero (struct SIM *pSim)
 
   (*pSim).OriSpace = NULL;
 
-  (*pSim).body = NULL;
   (*pSim).tess = NULL;
   (*pSim).tesr = NULL;
   (*pSim).msh = NULL;
@@ -39,13 +38,12 @@ neut_sim_set_zero (struct SIM *pSim)
   (*pSim).phase = NULL;
   (*pSim).config = NULL;
 
-  (*pSim).fepxdir = NULL;
+  (*pSim).CellQty  = 0;
+
   (*pSim).EltQty = 0;
   (*pSim).NodeQty = 0;
   (*pSim).ElsetQty = 0;
   (*pSim).PartQty = 0;
-  (*pSim).PartNodeQty = NULL;
-  (*pSim).PartEltQty = NULL;
 
   (*pSim).step = 0;
 
@@ -90,7 +88,6 @@ neut_sim_free (struct SIM *pSim)
 
   ut_free_1d_char (&(*pSim).OriSpace);
 
-  ut_free_1d_char (&(*pSim).body);
   ut_free_1d_char (&(*pSim).tess);
   ut_free_1d_char (&(*pSim).tesr);
   ut_free_1d_char (&(*pSim).msh);
@@ -98,10 +95,6 @@ neut_sim_free (struct SIM *pSim)
   ut_free_1d_char (&(*pSim).ori);
   ut_free_1d_char (&(*pSim).phase);
   ut_free_1d_char (&(*pSim).config);
-
-  ut_free_1d_char (&(*pSim).fepxdir);
-  ut_free_1d_int (&(*pSim).PartNodeQty);
-  ut_free_1d_int (&(*pSim).PartEltQty);
 
   return;
 }
@@ -190,6 +183,16 @@ neut_sim_addentity (struct SIM *pSim, char *entity_in)
   else if (!strcmp (entity, "mesh")) // mesh treated as an elset, internally
   {
     ut_string_string ("elset", (*pSim).EntityType + (*pSim).EntityQty - 1);
+    (*pSim).EntityMemberQty[(*pSim).EntityQty - 1] = 1;
+  }
+  else if (!strcmp (entity, "cell"))
+  {
+    ut_string_string ("cell", (*pSim).EntityType + (*pSim).EntityQty - 1);
+    (*pSim).EntityMemberQty[(*pSim).EntityQty - 1] = (*pSim).CellQty;
+  }
+  else if (!strcmp (entity, "tess"))
+  {
+    ut_string_string ("tess", (*pSim).EntityType + (*pSim).EntityQty - 1);
     (*pSim).EntityMemberQty[(*pSim).EntityQty - 1] = 1;
   }
   else
@@ -295,7 +298,6 @@ neut_sim_rmres (struct SIM *pSim, char *entity, char *res)
   char *rescpy = NULL; // needed in  case where res was among (*pSim), pointerwise
 
   neut_sim_entity_pos (*pSim, entity, &pos);
-
   if (pos == -1)
     abort ();
 
@@ -346,7 +348,10 @@ neut_sim_updatenodes (struct SIM Sim, int step, struct NODES *pNodes)
 int
 neut_sim_setstep (struct SIM *pSim, int step)
 {
-  if (step >= 0 && step <= (*pSim).StepQty && !(*pSim).StepState[step])
+  // if step is valid (>= 0 && <= (*pSim).StepQty) AND
+  // ((StepQty > 0 && state) OR (StepQty == 0))
+  if (step >= 0 && step <= (*pSim).StepQty
+      && (((*pSim).StepQty && !(*pSim).StepState[step]) || !(*pSim).StepQty))
   {
     (*pSim).step = step;
     return 0;
@@ -441,6 +446,62 @@ neut_sim_entity_init_members (struct SIM *pSim, struct TESS Tess,
     ut_array_1d_int_memcpy (elts, eltqty, (*pSim).EntityMembers[pos][i] + 1);
     ut_free_1d_int (&elts);
   }
+
+  return;
+}
+
+void
+neut_sim_reset (struct SIM *pSim)
+{
+  neut_sim_free (pSim);
+
+  neut_sim_set_zero (pSim);
+
+  return;
+}
+
+void
+neut_sim_entity_init_type (struct SIM *pSim, char *entity)
+{
+  int pos;
+
+  neut_sim_entity_pos (*pSim, entity, &pos);
+  if (pos == -1)
+    abort ();
+
+  if (!strcmp (entity, "node"))
+    ut_string_string ("node", (*pSim).EntityType + pos);
+  else if (!strcmp (entity, "elt"))
+    ut_string_string ("elt", (*pSim).EntityType + pos);
+  else if (!strcmp (entity, "elset"))
+    ut_string_string ("elset", (*pSim).EntityType + pos);
+  else if (!strcmp (entity, "mesh"))
+    ut_string_string ("mesh", (*pSim).EntityType + pos);
+  else if (!strcmp (entity, "cell"))
+    ut_string_string ("cell", (*pSim).EntityType + pos);
+
+  return;
+}
+
+void
+neut_sim_entity_init_memberqty (struct SIM *pSim, char *entity)
+{
+  int pos;
+
+  neut_sim_entity_pos (*pSim, entity, &pos);
+  if (pos == -1)
+    abort ();
+
+  if (!strcmp (entity, "cell"))
+    (*pSim).EntityMemberQty[pos] = (*pSim).CellQty;
+  else if (!strcmp (entity, "node"))
+    (*pSim).EntityMemberQty[pos] = (*pSim).NodeQty;
+  else if (!strcmp (entity, "elt"))
+    (*pSim).EntityMemberQty[pos] = (*pSim).EltQty;
+  else if (!strcmp (entity, "elset"))
+    (*pSim).EntityMemberQty[pos] = (*pSim).ElsetQty;
+  else if (!strcmp (entity, "mesh"))
+    (*pSim).EntityMemberQty[pos] = 1;
 
   return;
 }

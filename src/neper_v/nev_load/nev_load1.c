@@ -29,7 +29,7 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
       if (ut_file_exist ("%s/inputs/%s", string, (*pSim).tess))
         list[qty++] = ut_string_paste3 (string, "/inputs/", (*pSim).tess);
       if (ut_file_exist ("%s/inputs/simulation.tesr", string))
-        list[qty++] = ut_string_paste4 (string, "/inputs/", (*pSim).body, ".tesr");
+        list[qty++] = ut_string_paste3 (string, "/inputs/", (*pSim).tesr);
       if (ut_file_exist ("%s/inputs/%s", string, (*pSim).msh))
         list[qty++] = ut_string_paste3 (string, "/inputs/", (*pSim).msh);
     }

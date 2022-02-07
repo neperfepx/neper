@@ -111,6 +111,7 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).dec = NULL;
   (*pIn).obj = NULL;
   (*pIn).orif = NULL;
+  (*pIn).sim = NULL;
   (*pIn).debug = NULL;
 
   (*pIn).sortstring = NULL;
@@ -158,6 +159,7 @@ net_in_free (struct IN_T *pIn)
   ut_free_1d_char (&(*pIn).dec);
   ut_free_1d_char (&(*pIn).obj);
   ut_free_1d_char (&(*pIn).orif);
+  ut_free_1d_char (&(*pIn).sim);
   ut_free_1d_char (&(*pIn).debug);
   ut_free_1d_char (&(*pIn).sortstring);
   ut_free_1d_char (&(*pIn).stpt);

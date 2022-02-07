@@ -95,7 +95,7 @@ Prerequisites
 
   Specify the path to the temporary directory (used by Gmsh).
 
-  **Default value**: :data:`.`.
+  **Default value**: :option:`.`.
 
 Input Data
 ~~~~~~~~~~
@@ -505,7 +505,7 @@ The following options provide general statistics on the highest-dimension mesh (
 
   **Default value**: -.
 
-  **File extension**: :data:`.stmesh`, :data:`.stmesh{0-3}d`, :data:`.stmeshco`.
+  **File extension**: :option:`.stmesh`, :option:`.stmesh{0-3}d`, :option:`.stmeshco`.
 
 The following options provide statistics on the nodes (:data:`nodes`), highest-dimension elements (:data:`elt`) and element sets (:data:`elset`), 0D elements (:data:`elt0d`) and element sets (:data:`elset0d`), 1D elements (:data:`elt1d`) and element sets (:data:`elset1d`), 2D elements (:data:`elt2d`) and element sets (:data:`elset2d`), 3D elements (:data:`elt3d`) and element sets (:data:`elset3d`), cohesive elements (:data:`eltco`) and element sets (:data:`elsetco`), and points (:data:`point`).
 
@@ -515,7 +515,7 @@ The following options provide statistics on the nodes (:data:`nodes`), highest-d
 
   **Default value**: -.
 
-  **File extension**: :data:`.stnode`, :data:`.stelt`, :data:`.stelt{0-3}d`, :data:`.stelset`, :data:`.stelset{0-3}d`, :data:`.steltco`, :data:`.stelsetco`.
+  **File extension**: :option:`.stnode`, :option:`.stelt`, :option:`.stelt{0-3}d`, :option:`.stelset`, :option:`.stelset{0-3}d`, :option:`.steltco`, :option:`.stelsetco`.
 
 .. option:: -statpoint <key1>,<key2>,...
 
@@ -524,7 +524,7 @@ The following options provide statistics on the nodes (:data:`nodes`), highest-d
 
   **Default value**: -.
 
-  **File extension**: :data:`.stpoint`.
+  **File extension**: :option:`.stpoint`.
 
 Advanced Options
 ~~~~~~~~~~~~~~~~

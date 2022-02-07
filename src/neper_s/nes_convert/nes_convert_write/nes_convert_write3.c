@@ -5,13 +5,13 @@
 #include "nes_convert_write_.h"
 
 int
-nes_convert_write_inputs_file (struct IN_S In, struct SIM Sim, char *filename)
+nes_convert_write_inputs_file (struct IN_S In, struct FEPXSIM FSim, char *filename)
 {
   int status = -1;
-  char *infile = ut_string_paste3 (Sim.fepxdir, "/", filename);
+  char *infile = ut_string_paste3 (FSim.fepxdir, "/", filename);
   char *outfile = ut_string_paste3 (In.simdir, "/inputs/", filename);
 
-  infile = ut_string_paste3 (Sim.fepxdir, "/", filename);
+  infile = ut_string_paste3 (FSim.fepxdir, "/", filename);
 
   if (ut_file_exist (infile))
   {
@@ -25,7 +25,7 @@ nes_convert_write_inputs_file (struct IN_S In, struct SIM Sim, char *filename)
   {
     ut_print_message (0, 4, "%s...\n", filename);
     char *command = ut_alloc_1d_char (1000);
-    sprintf (command, "cp %s/%s %s/inputs/", Sim.fepxdir, filename, In.simdir);
+    sprintf (command, "cp %s/%s %s/inputs/", FSim.fepxdir, filename, In.simdir);
     status = system (command);
     ut_free_1d_char (&command);
   }
@@ -40,25 +40,32 @@ nes_convert_write_inputs_file (struct IN_S In, struct SIM Sim, char *filename)
 }
 
 void
-nes_convert_write_results_entity (struct IN_S In, struct SIM *pSim, int pos)
+nes_convert_write_results_entity (struct IN_S In, struct FEPXSIM *pFSim, char *entity)
 {
   int i, j, startstep, status, resqty;
   char *dir = NULL;
   char **res = NULL;
-  char *entitydir = NULL;
 
-  neut_sim_entity_entitydir ((*pSim).Entities[pos], &entitydir);
-
-  dir = ut_string_paste3 (In.simdir, "/results/", entitydir);
-  resqty = (*pSim).EntityResQty[pos];
-  res = (*pSim).EntityRes[pos];
+  dir = ut_string_paste3 (In.simdir, "/results/", entity);
+  if (!strcmp (entity, "nodes"))
+  {
+    resqty = (*pFSim).NodeResQty;
+    res = (*pFSim).NodeRes;
+  }
+  else if (!strcmp (entity, "elts"))
+  {
+    resqty = (*pFSim).EltResQty;
+    res = (*pFSim).EltRes;
+  }
+  else
+    abort ();
 
   ut_dir_openmessage (dir, "w");
   ut_sys_mkdir ("%s", dir);
 
   for (i = 0; i < resqty; i++)
   {
-    status = nes_convert_write_results_prop (*pSim, res[i], &startstep);
+    status = nes_convert_write_results_prop (*pFSim, res[i], &startstep);
 
     if (!status)
     {
@@ -67,17 +74,14 @@ nes_convert_write_results_entity (struct IN_S In, struct SIM *pSim, int pos)
         printf (".");
       printf (" ");
 
-      nes_convert_write_results_entity_step (In, *pSim, res[i],
-                                         (*pSim).Entities[pos], startstep);
-
-      neut_sim_fprintf (In.simdir, *pSim, "W");
+      nes_convert_write_results_entity_step (In, *pFSim, res[i],
+                                             entity, startstep);
     }
   }
 
   ut_dir_closemessage (dir, "w");
 
   ut_free_1d_char (&dir);
-  ut_free_1d_char (&entitydir);
   // do not free res
 
   return;

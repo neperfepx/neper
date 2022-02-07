@@ -30,8 +30,17 @@ if ("${test_mode}" MATCHES "Normal" AND NOT "${test_mode_force_minimal}" EQUAL 1
     if(RESVAR)
       file(RENAME ${test_file} ${test_file}.bak)
       message(FATAL_ERROR "Test failed - files differ")
-    else()
       file (REMOVE ${test_file})
+    endif()
+  endforeach()
+
+  file(GLOB test_files test.*)
+  foreach(test_file ${test_files})
+    if (NOT "${test_file}" MATCHES "test.cmake")
+      string (FIND ${test_file} ".bak" RESVAR)
+      if (RESVAR EQUAL -1)
+        file (REMOVE ${test_file})
+      endif()
     endif()
   endforeach()
 

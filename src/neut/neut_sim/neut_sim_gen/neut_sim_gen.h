@@ -16,9 +16,6 @@ extern void neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode);
 /// writes a simulation report file
 extern void neut_sim_fprintf (char *dir, struct SIM Sim, char *mode);
 
-/// returns the actual simulation file of a file
-extern void neut_sim_res_fepxfile (struct SIM Sim, char *res, int core, char *filename);
-
 /// returns the result of a filename
 extern void neut_sim_file_res (char *file, char *res);
 
@@ -64,5 +61,9 @@ extern int neut_sim_entity_qty (struct SIM Sim, char *entity, int *pqty);
 extern void neut_sim_entity_name (char *entity, char **pname);
 
 extern int neut_sim_entity_hasexpr (struct SIM Sim, char *entity);
+
+extern int neut_sim_entity_internal (char *entity);
+
+extern int neut_sim_entity_parent (struct SIM Sim, char *entity, char **pparent);
 
 #endif /* NEUT_SIM_GEN_H */

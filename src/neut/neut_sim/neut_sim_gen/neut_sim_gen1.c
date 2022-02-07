@@ -22,6 +22,8 @@ neut_sim_name_type (char *name, char **ptype, char **pname, int *prestart)
     ut_string_string ("merge", ptype);
   else if (ut_file_exist ("%s/report", name))
     ut_string_string ("sim", ptype);
+  else if (ut_file_exist ("%s/.sim", name))
+    ut_string_string ("sim", ptype);
   else if (qty2[0] == 1 && ut_file_exist ("%s/post.report", name))
     ut_string_string ("fepx", ptype);
   else if (qty2[0] == 2 && ut_file_exist ("%s/post.report.rst%s", parts[0][0], parts[0][1]))
@@ -130,22 +132,6 @@ int
 neut_sim_entityismesh (char *entity)
 {
   return !strncmp (entity, "mesh", 4);
-}
-
-void
-neut_sim_res_fepxfile (struct SIM Sim, char *res, int core, char *filename)
-{
-  char *type = NULL, *name = NULL;
-
-  if (!Sim.RestartId)
-    sprintf (filename, "%s/post.%s.core%d", Sim.fepxdir, res, core);
-  else
-    sprintf (filename, "%s/post.%s.rst%d.core%d", Sim.fepxdir, res, Sim.RestartId, core);
-
-  ut_free_1d_char (&type);
-  ut_free_1d_char (&name);
-
-  return;
 }
 
 void
@@ -307,4 +293,42 @@ neut_sim_entity_hasexpr (struct SIM Sim, char *entity)
   neut_sim_entity_pos (Sim, entity, &pos);
 
   return (pos == -1) ? 0 : (Sim.EntityMemberExpr[pos] != NULL);
+}
+
+int
+neut_sim_entity_internal (char *entity)
+{
+  if (!strcmp (entity, "elt")
+   || !strcmp (entity, "elset")
+   || !strcmp (entity, "mesh")
+   || !strcmp (entity, "node")
+   || !strcmp (entity, "cell")
+   || !strcmp (entity, "tess"))
+    return 1;
+  else
+    return 0;
+}
+
+int
+neut_sim_entity_parent (struct SIM Sim, char *entity, char **pparent)
+{
+  ut_free_1d_char (pparent);
+
+  if (!strncmp (entity, "elt", 3)
+   || !strncmp (entity, "elset", 5)
+   || !strcmp (entity, "mesh"))
+  {
+    ut_string_string ("mesh", pparent);
+    return Sim.msh ? 0 : -1;
+  }
+
+  else if (!strcmp (entity, "cell")
+        || !strcmp (entity, "tess"))
+  {
+    ut_string_string ("tess", pparent);
+    return Sim.tess ? 0 : -1;
+  }
+
+  else
+    return -1;
 }

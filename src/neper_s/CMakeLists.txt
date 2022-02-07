@@ -29,7 +29,7 @@ nes_input/nes_input3.c
 nes_merge/nes_merge1.c
 nes_merge/nes_merge2.c
 nes_convert/nes_convert1.c
-nes_convert/nes_convert_fepxparse/nes_convert_fepxparse1.c
+nes_convert/nes_convert2.c
 nes_convert/nes_convert_write/nes_convert_write1.c
 nes_convert/nes_convert_write/nes_convert_write2.c
 nes_convert/nes_convert_write/nes_convert_write3.c

@@ -50,6 +50,7 @@ extern "C"
 
 #include "neut_prim_struct.h"
 
+#include "neut_fepxsim_struct.h"
 #include "neut_sim_struct.h"
 #include "neut_simres_struct.h"
 

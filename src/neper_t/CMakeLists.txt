@@ -173,6 +173,7 @@ add_library(neper_t
 ./net_input/net_input2.c
 ./net_input/net_input3.c
 ./net_res/net_res1.c
+./net_res/net_res2.c
 ./net_stat/net_stat1.c
 ./net_stat/net_stat2.c
 ./net_res/net_res_ori/net_res_ori1.c

@@ -11,6 +11,7 @@ nes_pproc_entity (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
   int i, j, memberqty, status, resultqty;
   char **results = NULL, *dir = NULL, *result = NULL;
   char *message = ut_alloc_1d_char (1000);
+  char *parent = NULL;
   struct SIMRES SimRes;
 
   neut_simres_set_zero (&SimRes);
@@ -24,7 +25,12 @@ nes_pproc_entity (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
     ut_dir_openmessage (dir, "w");
   }
 
-  // The option initializes the entity elements only if needed
+  status = neut_sim_entity_parent (*pSim, entity, &parent);
+
+  if (status)
+    ut_print_message (2, 3, "Entity `%s' has no parent.\n", entity);
+
+  // The option initializes the entity members only if needed
   neut_sim_entity_init_members (pSim, Tess, *pNodes, Mesh, entity);
 
   for (i = 0; i < resultqty; i++)
@@ -87,6 +93,7 @@ nes_pproc_entity (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
   ut_free_1d_char (&dir);
   ut_free_1d_char (&message);
   neut_simres_free (&SimRes);
+  ut_free_1d_char (&parent);
 
   return;
 }

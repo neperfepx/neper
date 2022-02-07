@@ -26,6 +26,7 @@ extern "C"
 #include "neut_tess_topo/neut_tess_topo.h"
 #include "neut_tess_geom/neut_tess_geom.h"
 #include "neut_tess_gen/neut_tess_gen.h"
+#include "neut_tess_sim/neut_tess_sim.h"
 
 #endif				/* NEUT_TESS_H */
 

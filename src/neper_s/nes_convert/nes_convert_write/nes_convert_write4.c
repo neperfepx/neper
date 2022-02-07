@@ -5,7 +5,7 @@
 #include "nes_convert_write_.h"
 
 int
-nes_convert_write_results_prop (struct SIM Sim, char *var,
+nes_convert_write_results_prop (struct FEPXSIM FSim, char *var,
                            int *pstartstep)
 {
   int status;
@@ -13,7 +13,7 @@ nes_convert_write_results_prop (struct SIM Sim, char *var,
   char *string = ut_alloc_1d_char (1000);
   FILE *file = NULL;
 
-  neut_sim_res_fepxfile (Sim, var, 1, filename);
+  neut_fepxsim_res_file (FSim, var, 1, filename);
 
   if (ut_file_exist (filename))
   {
@@ -41,7 +41,7 @@ nes_convert_write_results_prop (struct SIM Sim, char *var,
 }
 
 void
-nes_convert_write_results_entity_step (struct IN_S In, struct SIM Sim, char *res,
+nes_convert_write_results_entity_step (struct IN_S In, struct FEPXSIM FSim, char *res,
                                        char *entity, int startstep)
 {
   int i, j, k, part;
@@ -56,33 +56,30 @@ nes_convert_write_results_entity_step (struct IN_S In, struct SIM Sim, char *res
   FILE *fp1 = NULL, *fp2 = NULL, *fp3 = NULL;
   char *message = ut_alloc_1d_char (100);
   char *line = ut_alloc_1d_char (1000);
-  char *entitydir = NULL;
 
-  neut_sim_entity_entitydir (entity, &entitydir);
+  ut_sys_mkdir ("%s/results/%s/%s", In.simdir, entity, res);
 
-  ut_sys_mkdir ("%s/results/%s/%s", In.simdir, entitydir, res);
-
-  if (neut_sim_entityisnode (entity))
-    qty_part = Sim.PartNodeQty;
-  else if (neut_sim_entityiselt (entity))
-    qty_part = Sim.PartEltQty;
+  if (!strcmp (entity, "nodes"))
+    qty_part = FSim.PartNodeQty;
+  else if (!strcmp (entity, "elts"))
+    qty_part = FSim.PartEltQty;
   else
     abort ();
 
-  sprintf (post_filepref, "%s/post.%s", Sim.fepxdir, res);
-  sprintf (step_filepref, "%s/results/%s/%s/%s.step", In.simdir, entitydir, res, res);
+  sprintf (post_filepref, "%s/post.%s", FSim.fepxdir, res);
+  sprintf (step_filepref, "%s/results/%s/%s/%s.step", In.simdir, entity, res, res);
 
-  for (part = 1; part <= Sim.PartQty; part++)
+  for (part = 1; part <= FSim.PartQty; part++)
   {
-    ut_print_progress (stdout, part, Sim.PartQty, "%3.0f%%",
+    ut_print_progress (stdout, part, FSim.PartQty, "%3.0f%%",
                        message);
 
-    neut_sim_res_fepxfile (Sim, res, part, post_filename);
+    neut_fepxsim_res_file (FSim, res, part, post_filename);
 
     fp1 = ut_file_open (post_filename, "R");
 
-    for (i = 0; i <= Sim.StepQty; ++i)
-      if (!Sim.StepState[i])
+    for (i = 0; i <= FSim.StepQty; ++i)
+      if (!FSim.StepState[i])
       {
         sprintf (step_filename, "%s%d", step_filepref, i);
         sprintf (step_filename0, "%s%d", step_filepref, 0);
@@ -127,7 +124,6 @@ nes_convert_write_results_entity_step (struct IN_S In, struct SIM Sim, char *res
   ut_free_1d_char (&message);
   ut_free_1d_char (&tmp);
   ut_free_1d_char (&line);
-  ut_free_1d_char (&entitydir);
 
   return;
 }

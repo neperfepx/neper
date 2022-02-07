@@ -351,6 +351,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   (*pIn).vtk = ut_string_addextension ((*pIn).body, ".vtk");
   (*pIn).raw = ut_string_addextension ((*pIn).body, ".raw");
   (*pIn).orif = ut_string_addextension ((*pIn).body, ".ori");
+  (*pIn).sim = ut_string_addextension ((*pIn).body, ".sim");
   (*pIn).geo = ut_string_addextension ((*pIn).body, ".geo");
   (*pIn).ply = ut_string_addextension ((*pIn).body, ".ply");
   (*pIn).stl = ut_string_addextension ((*pIn).body, ".stl");

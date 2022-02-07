@@ -2,277 +2,65 @@
 /* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-#include"neut_sim_fscanf_.h"
+#include "neut_sim_fscanf_.h"
 
 void
 neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode)
 {
-  int i, status, restart;
-  char *filename = NULL, *var = ut_alloc_1d_char (100), *type = NULL;
-  char *tmp = ut_alloc_1d_char (1000);
+  int level;
+  char *string = ut_alloc_1d_char (1000);
+  char *version = NULL;
+  char *sim = NULL;
   FILE *file = NULL;
-  char *res = NULL, *expr = NULL;
-  char *name = NULL;
-  int groupqty; // backward compatibility w versions <= 4.2.0
 
-  neut_sim_free (pSim);
-  neut_sim_set_zero (pSim);
+  neut_sim_fscanf_version (dir, &version);
 
-  status = neut_sim_name_type (dir, &type, &name, &restart);
+  if (!strcmp (version, "report"))
+    neut_sim_fscanf_report (dir, pSim, mode);
 
-  if (status == -1)
-    ut_print_message (2, 3, "Failed to parse directory.\n");
-
-  if (!strcmp (type, "fepx"))
-  {
-    ut_string_string (name, &(*pSim).fepxdir);
-    (*pSim).RestartId = restart;
-
-    if (!restart)
-      filename = ut_string_paste ((*pSim).fepxdir, "/post.report");
-    else
-    {
-      filename = ut_alloc_1d_char (1000);
-      sprintf (filename, "%s/post.report.rst%d", (*pSim).fepxdir, restart);
-    }
-
-    if (ut_file_exist ("%s/rst%d.control", (*pSim).fepxdir, restart))
-      (*pSim).RestartFiles = 1;
-  }
-  else if (!strcmp (type, "sim"))
-  {
-    filename = ut_string_paste (name, "/report");
-    ut_string_string (name, &(*pSim).simdir);
-  }
   else
-    abort ();
-
-  ut_string_string ("simulation", &(*pSim).body);
-  ut_string_string ("simulation.tess", &(*pSim).tess);
-  ut_string_string ("simulation.tesr", &(*pSim).tesr);
-  ut_string_string ("simulation.msh", &(*pSim).msh);
-  ut_string_string ("simulation.config", &(*pSim).config);
-
-  file = ut_file_open (filename, mode);
-
-  while (fscanf (file, "%s", var) != EOF)
   {
-    if (!strcmp (var, "number_of_steps"))
+    sim = ut_string_paste (dir, "/.sim");
+    file = ut_file_open (sim, mode);
+
+    neut_sim_reset (pSim);
+
+    ut_string_string (dir, &(*pSim).simdir);
+
+    neut_sim_fscanf_head (file, &version);
+
+    while (!ut_file_nextstring_sectionlevel (file, &level) && level == 2)
     {
-      if (fscanf (file, "%d", &(*pSim).StepQty) != 1)
-        abort ();
+      ut_file_nextstring (file, string);
 
-      (*pSim).StepState = ut_alloc_1d_int ((*pSim).StepQty + 1);
+      if (!strcmp (string, "**input"))
+        neut_sim_fscanf_input (pSim, file);
+
+      else if (!strcmp (string, "**general"))
+        neut_sim_fscanf_general (pSim, file);
+
+      else if (!strcmp (string, "**entity"))
+        neut_sim_fscanf_entity (pSim, file);
+
+      else if (!strcmp (string, "**orispace"))
+        neut_sim_fscanf_orispace (pSim, file);
+
+      else if (!strcmp (string, "**step"))
+        neut_sim_fscanf_step (pSim, file);
+
+      else
+        ut_print_message (2, 2, "Could not read field `%s'.\n", string);
     }
-    else if (!strcmp (var, "printed_steps"))
-    {
-      int qty, step;
 
-      ut_file_nextlinenbwords (file, &qty);
+    neut_sim_fscanf_foot (file);
 
-      ut_array_1d_int_set ((*pSim).StepState + 1, (*pSim).StepQty, -1);
-      for (i = 0; i < qty; i++)
-      {
-        if (fscanf (file, "%d", &step) != 1)
-          abort ();
-        (*pSim).StepState[step] = 0;
-      }
-    }
-    else if (!strcmp (var, "number_of_partitions"))
-    {
-      if (fscanf (file, "%d", &(*pSim).PartQty) != 1)
-        abort ();
-    }
-    else if (!strcmp (var, "number_of_nodes"))
-    {
-      if (fscanf (file, "%d", &(*pSim).NodeQty) != 1)
-        abort ();
-    }
-    else if (!strcmp (var, "number_of_elements"))
-    {
-      if (fscanf (file, "%d", &(*pSim).EltQty) != 1)
-        abort ();
-    }
-    // number_of_phases and number_of_slip_systems are for backward compatibility ---
-    else if (!strcmp (var, "number_of_phases"))
-    {
-      if (fscanf (file, "%d", &groupqty) != 1)
-        abort ();
-    }
-    else if (!strcmp (var, "number_of_slip_systems"))
-      ut_file_skip (file, groupqty);
-    // ------------------------------------------------------------------------------
-    else if (!strcmp (var, "number_of_elsets"))
-    {
-      if (fscanf (file, "%d", &(*pSim).ElsetQty) != 1)
-        abort ();
-    }
-    else if (!strcmp (var, "number_of_elements_bypartition"))
-    {
-      (*pSim).PartEltQty = ut_alloc_1d_int ((*pSim).PartQty + 1);
-      if (ut_array_1d_int_fscanf (file, (*pSim).PartEltQty + 1, (*pSim).PartQty) != 1)
-        abort ();
-    }
-    else if (!strcmp (var, "number_of_nodes_bypartition"))
-    {
-      (*pSim).PartNodeQty = ut_alloc_1d_int ((*pSim).PartQty + 1);
-      if (ut_array_1d_int_fscanf (file, (*pSim).PartNodeQty + 1, (*pSim).PartQty) != 1)
-          abort ();
-    }
-    else if (!strcmp (var, "orientation_definition"))
-    {
-      (*pSim).OriDes = ut_alloc_1d_char (100);
+    ut_file_close (file, sim, mode);
 
-      if (fscanf (file, "%s", (*pSim).OriDes) != 1)
-        abort ();
-    }
-    else if (!strcmp (var, "orientation_space"))
-    {
-      (*pSim).OriSpace = ut_alloc_1d_char (1000);
-
-      if (fscanf (file, "%s", (*pSim).OriSpace) != 1)
-        abort ();
-    }
-    else if (!strcmp (var, "entities"))
-    {
-      int qty;
-      char *entityexpr = ut_alloc_1d_char (1000);
-
-      ut_file_nextlinenbwords (file, &qty);
-
-      for (i = 0; i < qty; i++)
-      {
-        if (fscanf (file, "%s", entityexpr) != 1)
-          abort ();
-
-        neut_sim_addentity (pSim, entityexpr);
-      }
-
-      ut_free_1d_char (&entityexpr);
-    }
-    else if (!strcmp (var, "entity_type"))
-    {
-      int pos;
-      char *entity = ut_alloc_1d_char (1000);
-      char *type = ut_alloc_1d_char (1000);
-
-      if (fscanf (file, "%s", entity) != 1)
-        abort ();
-
-      neut_sim_entity_pos (*pSim, entity, &pos);
-      if (pos == -1)
-        abort ();
-
-      if (fscanf (file, "%s", type) != 1)
-        abort ();
-
-      ut_string_string (type, (*pSim).EntityType + pos);
-
-      ut_free_1d_char (&entity);
-      ut_free_1d_char (&type);
-    }
-    else if (!strcmp (var, "entity_expr"))
-    {
-      int qty, pos;
-      char *entity = ut_alloc_1d_char (1000);
-      char *expr = ut_alloc_1d_char (1000);
-
-      if (fscanf (file, "%s", entity) != 1)
-        abort ();
-
-      neut_sim_entity_pos (*pSim, entity, &pos);
-      if (pos == -1)
-        abort ();
-
-      ut_file_nextlinenbwords (file, &qty);
-
-      for (i = 0; i < qty; i++)
-      {
-        if (fscanf (file, "%s", expr) != 1)
-          abort ();
-
-        neut_sim_entity_addexpr (pSim, entity, expr);
-      }
-
-      ut_free_1d_char (&entity);
-      ut_free_1d_char (&expr);
-    }
-    else if (!strncmp (var, "results_", 8))
-    {
-      int qty;
-      char *entity = NULL;
-      char *resexpr = ut_alloc_1d_char (1000);
-
-      ut_string_string (var + 8, &entity);
-      neut_sim_entity_entity (entity, &entity);
-
-      if (!neut_sim_entity_exist (*pSim, entity))
-        neut_sim_addentity (pSim, entity);
-
-      ut_file_nextlinenbwords (file, &qty);
-
-      for (i = 0; i < qty; i++)
-      {
-        if (fscanf (file, "%s", resexpr) != 1)
-          abort ();
-
-        neut_sim_addres (pSim, entity, resexpr, NULL);
-      }
-
-      ut_free_1d_char (&resexpr);
-      ut_free_1d_char (&entity);
-    }
-    else if (!strcmp (var, "restart_id"))
-    {
-      if (fscanf (file, "%d\n", &(*pSim).RestartId) != 1)
-        abort ();
-    }
-    else if (!strcmp (var, "restart_files"))
-    {
-      if (fscanf (file, "%d\n", &(*pSim).RestartFiles) != 1)
-        abort ();
-    }
-    else
-    {
-      printf ("var = %s\n", var);
-      ut_print_message (2, 3, "Failed to read file.\n");
-    }
+    ut_free_1d_char (&sim);
   }
 
-  if (!(*pSim).EltQty)
-    ut_print_message (2, 3, "`number_of_elements' is missing.\n");
-  if (!(*pSim).NodeQty)
-    ut_print_message (2, 3, "`number_of_nodes' is missing.\n");
-
-  ut_file_close (file, filename, mode);
-
-  ut_free_1d_char (&filename);
-
-  if (!strcmp (type, "fepx"))
-  {
-    filename = ut_string_paste (name, "/simulation.config");
-
-    file = ut_file_open (filename, "R");
-    while (fscanf (file, "%s", tmp) == 1)
-    {
-      if (!strcmp (tmp, "read_bcs_from_file"))
-        ut_string_string ("simulation.bcs", &(*pSim).bcs);
-      else if (!strcmp (tmp, "read_ori_from_file"))
-        ut_string_string ("simulation.ori", &(*pSim).ori);
-      else if (!strcmp (tmp, "read_phase_from_file"))
-        ut_string_string ("simulation.phase", &(*pSim).phase);
-    }
-    ut_file_close (file, filename, "R");
-
-    ut_free_1d_char (&filename);
-  }
-
-  ut_free_1d_char (&tmp);
-  ut_free_1d_char (&var);
-  ut_free_1d_char (&type);
-  ut_free_1d_char (&res);
-  ut_free_1d_char (&expr);
-  ut_free_1d_char (&name);
+  ut_free_1d_char (&version);
+  ut_free_1d_char (&string);
 
   return;
 }

@@ -58,14 +58,6 @@ nes_merge_entity_res (struct SIM Sim, char *entity, int step, char *sim2)
 }
 
 void
-nes_merge_restart (struct SIM Sim, char *sim1, char *sim2)
-{
-  nes_convert_write_restart (ut_string_paste (sim1, "/restart"), sim2, Sim);
-
-  return;
-}
-
-void
 nes_merge_post (struct IN_S In, char *sim, int stepqty,
                 struct SIM LastSim, struct SIM *pFullSim)
 {
@@ -75,6 +67,43 @@ nes_merge_post (struct IN_S In, char *sim, int stepqty,
   (*pFullSim).RestartFiles = LastSim.RestartFiles;
 
   neut_sim_fprintf (In.simdir, *pFullSim, "W");
+
+  return;
+}
+
+void
+nes_merge_restart (struct SIM Sim, char *indir, char *outdir)
+{
+  int i;
+  char *dir = ut_string_paste (outdir, "/restart");
+  char *filename = ut_alloc_1d_char (1000);
+  char *infile = ut_alloc_1d_char (1000);
+  char *outfile = ut_alloc_1d_char (1000);
+
+  ut_dir_openmessage (dir, "w");
+  ut_sys_mkdir (dir);
+
+  sprintf (filename, "rst%d.control", Sim.RestartId);
+  sprintf (infile, "%s/%s", indir, filename);
+  sprintf (outfile, "%s/restart/%s", outdir, filename);
+
+  ut_print_message (0, 4, "%s...\n", filename);
+  ut_file_cp (infile, outfile);
+
+  ut_print_message (0, 4, "rst%d.field.core*...\n", Sim.RestartId);
+  for (i = 1; i <= Sim.PartQty; i++)
+  {
+    sprintf (filename, "rst%d.field.core%d", Sim.RestartId, i);
+    sprintf (infile, "%s/%s", indir, filename);
+    sprintf (outfile, "%s/restart/%s", outdir, filename);
+
+    ut_file_cp (infile, outfile);
+  }
+
+  ut_free_1d_char (&dir);
+  ut_free_1d_char (&filename);
+  ut_free_1d_char (&infile);
+  ut_free_1d_char (&outfile);
 
   return;
 }

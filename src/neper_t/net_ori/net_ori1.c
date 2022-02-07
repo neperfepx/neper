@@ -67,7 +67,8 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
   }
 
   ol_set_cat (OSets, partqty, &OSet);
-  ol_set_shuf (&OSet, (*pSSet).Random);
+  if (partqty > 1)
+      ol_set_shuf (&OSet, (*pSSet).Random);
 
   for (i = 0; i < partqty; i++)
     ol_set_free (OSets[i]);

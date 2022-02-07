@@ -95,6 +95,7 @@ add_library(neper_m
 ./nem_reconstruct/nem_reconstruct_tesr/nem_reconstruct_tesr1.c
 ./nem_reconstruct/nem_reconstruct_tesr/nem_reconstruct_tesr2.c
 ./nem_writemesh/nem_writemesh1.c
+./nem_writemesh/nem_writemesh2.c
 ./nem_nsets/nem_nsets1.c
 ./nem_nsets/nem_nsets2.c
 ./nem_elsets/nem_elsets1.c

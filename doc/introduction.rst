@@ -148,7 +148,7 @@ or (equivalently):
 
   $ ctest
 
-This runs the tests in :code:`Normal` mode, for which the produced output files are compared to reference ones. The (packaged) reference output files are generated on Ubuntu 20.04, using compiler GCC 9.3.0, (built-in) NLopt 2.6.1, (built-in) libscotch 6.0, Gmsh 4.8.4 and POV-Ray 3.7.0. It is expected that different versions may result in minor (insignificant) changes to the output, though this will generally result in failed tests.  If this happens, you may switch to the :code:`Minimal` mode as described in the following.
+This runs the tests in :code:`Normal` mode, for which the produced output files are compared to reference ones. The (packaged) reference output files are generated on Ubuntu 20.04, using compiler GCC 9.3.0, (built-in) NLopt 2.6.1, (built-in) libscotch 6.0, Gmsh 4.9.4 and POV-Ray 3.7.0. It is expected that different versions may result in minor (insignificant) changes to the output, though this will generally result in failed tests.  If this happens, you may switch to the :code:`Minimal` mode as described in the following.
 
 The testing mode is controlled by variable :code:`BUILD_TESTING_MODE`, which may be changed as described :ref:`previously <have_dependency>` for :code:`HAVE_<DEPENDENCY>`.
 

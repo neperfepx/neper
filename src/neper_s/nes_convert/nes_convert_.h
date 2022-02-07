@@ -12,7 +12,8 @@
 #include"orilib.h"
 #include"structIn_s.h"
 
-#include"nes_convert_fepxparse/nes_convert_fepxparse.h"
 #include"nes_convert_write/nes_convert_write.h"
 
 #include"nes_convert.h"
+
+extern void nes_convert_parse (struct IN_S In, struct FEPXSIM *pFSim, struct SIM *pSim);

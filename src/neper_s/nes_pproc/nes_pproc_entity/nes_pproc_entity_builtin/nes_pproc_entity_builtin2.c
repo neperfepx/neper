@@ -9,7 +9,7 @@
 #endif
 
 int
-nes_pproc_entity_builtin_nodes (struct SIM *pSim, char *dir, char *res)
+nes_pproc_entity_builtin_nodes (struct SIM *pSim, struct NODES Nodes, char *dir, char *res)
 {
   int status;
   struct SIMRES SimRes;
@@ -19,7 +19,7 @@ nes_pproc_entity_builtin_nodes (struct SIM *pSim, char *dir, char *res)
   neut_sim_simres (*pSim, "node", "coo", &SimRes);
 
   if (!strcmp (res, "disp"))
-    status = nes_pproc_entity_builtin_nodes_disp (pSim, dir, res, &SimRes);
+    status = nes_pproc_entity_builtin_nodes_disp (pSim, Nodes, dir, res, &SimRes);
   else
     status = -1;
 

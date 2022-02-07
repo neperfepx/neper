@@ -24,6 +24,9 @@ nes_entity (struct IN_S In, struct SIM *pSim)
   else
     ut_print_message (2, 2, "Entity `%s' already exists.\n", name);
 
+  // updating report file
+  neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
+
   ut_free_1d_char (&name);
 
   return;

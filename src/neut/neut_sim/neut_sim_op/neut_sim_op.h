@@ -67,4 +67,9 @@ extern void neut_sim_entity_init_members (struct SIM *pSim, struct TESS Tess,
                                           struct NODES Nodes, struct MESH *Mesh,
                                           char *entity);
 
+extern void neut_sim_reset (struct SIM *pSim);
+
+extern void neut_sim_entity_init_type (struct SIM *pSim, char *entity);
+extern void neut_sim_entity_init_memberqty (struct SIM *pSim, char *entity);
+
 #endif /* NEUT_SIM_OP_H */

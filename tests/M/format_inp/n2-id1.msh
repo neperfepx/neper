@@ -4,6 +4,9 @@ $EndMeshFormat
 $MeshVersion
 2.2.1
 $EndMeshVersion
+$Domain
+cubic
+$EndDomain
 $Nodes
 98
 1 1.000000000000 0.000000000000 0.000000000000

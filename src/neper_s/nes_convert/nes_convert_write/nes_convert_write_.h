@@ -14,12 +14,13 @@
 
 #include"nes_convert_write.h"
 
-extern int nes_convert_write_inputs_file (struct IN_S In, struct SIM Sim, char *filename);
-extern void nes_convert_write_inputs (struct IN_S In, struct SIM *pSim);
+extern void nes_convert_write_restart (char *indir, char *outdir, struct FEPXSIM FSim);
+extern int nes_convert_write_inputs_file (struct IN_S In, struct FEPXSIM FSim, char *filename);
+extern void nes_convert_write_inputs (struct IN_S In, struct FEPXSIM *pFSim);
 
-extern void nes_convert_write_results (struct IN_S IN_S, struct SIM *pSim);
-extern void nes_convert_write_results_entity (struct IN_S IN_S, struct SIM *pSim, int pos);
-extern int  nes_convert_write_results_prop (struct SIM Sim, char *var,
+extern void nes_convert_write_results (struct IN_S IN_S, struct FEPXSIM *pFSim);
+extern void nes_convert_write_results_entity (struct IN_S IN_S, struct FEPXSIM *pFSim, char *entity);
+extern int  nes_convert_write_results_prop (struct FEPXSIM FSim, char *var,
                                             int *pstartstep);
-extern void nes_convert_write_results_entity_step (struct IN_S In, struct SIM Sim, char *var,
+extern void nes_convert_write_results_entity_step (struct IN_S In, struct FEPXSIM FSim, char *var,
                               char *entity, int startstep);

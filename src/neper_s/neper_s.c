@@ -76,9 +76,6 @@ neper_s (int fargc, char **fargv, int argc, char **argv)
     nes_pproc (In, &Sim);
   }
 
-  // printing report file (may be updates, e.g. from -entity)
-  neut_sim_fprintf (Sim.simdir, Sim, "W");
-
 // #####################################################################
 // ### FREEING MEMORY ##################################################
 

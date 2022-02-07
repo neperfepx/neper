@@ -137,6 +137,7 @@ add_library(neut
 ./neut_tess/neut_tess_geom/neut_tess_geom.c
 ./neut_tess/neut_tess_gen/neut_tess_gen.c
 ./neut_tesse/neut_tesse_op/neut_tesse_op1.c
+./neut_tess/neut_tess_sim/neut_tess_sim.c
 ./neut_mtess/neut_mtess_op/neut_mtess_op1.c
 ./neut_mtess/neut_mtess_topo/neut_mtess_topo1.c
 ./neut_mtess/neut_mtess_gen/neut_mtess_gen1.c
@@ -169,8 +170,14 @@ add_library(neut
 ./neut_sim/neut_sim_simres/neut_sim_simres1.c
 ./neut_sim/neut_sim_simres/neut_sim_simres2.c
 ./neut_sim/neut_sim_fscanf/neut_sim_fscanf1.c
+./neut_sim/neut_sim_fscanf/neut_sim_fscanf2.c
+./neut_sim/neut_sim_fscanf/neut_sim_fscanf_report/neut_sim_fscanf_report1.c
 ./neut_sim/neut_sim_fprintf/neut_sim_fprintf1.c
 ./neut_sim/neut_sim_fprintf/neut_sim_fprintf2.c
+./neut_fepxsim/neut_fepxsim_sim/neut_fepxsim_sim.c
+./neut_fepxsim/neut_fepxsim_fscanf/neut_fepxsim_fscanf1.c
+./neut_fepxsim/neut_fepxsim_op/neut_fepxsim_op.c
+./neut_fepxsim/neut_fepxsim_gen/neut_fepxsim_gen.c
 ./neut_odf/neut_odf1.cpp
 ./neut_odf/neut_odf2.cpp
 ./neut_odf/neut_odf3.cpp

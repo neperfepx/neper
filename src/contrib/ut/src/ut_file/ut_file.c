@@ -93,7 +93,10 @@ ut_file_nbwords_pointer (FILE * file)
 int
 ut_file_nbcolumns (const char *filename)
 {
-  return ut_file_nbwords (filename) / ut_file_nblines (filename);
+  if (!ut_file_exist (filename))
+    return -1;
+  else
+    return ut_file_nbwords (filename) / ut_file_nblines (filename);
 }
 
 int

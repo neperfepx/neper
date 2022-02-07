@@ -12,8 +12,9 @@ neut_mesh_sim (char *simdir, struct TESS Tess, struct NODES Nodes, struct MESH *
   (*pSim).NodeQty = Nodes.NodeQty;
   (*pSim).EltQty = Mesh[Tess.Dim].EltQty;
   (*pSim).ElsetQty = Mesh[Tess.Dim].ElsetQty;
-  (*pSim).PartQty = Mesh[Tess.Dim].PartQty;
   ut_string_string (Mesh[Tess.Dim].ElsetOriDes, &((*pSim).OriDes));
+
+  ut_string_string ("simulation.msh", &(*pSim).msh);
 
   return;
 }

@@ -136,6 +136,10 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
     ut_file_close (file, In.debug, "w");
   }
 
+  if (FTess.VerQty > 0
+      && ut_list_testelt (In.format, NEUT_SEP_NODEP, "sim"))
+    net_res_sim (In, FTess);
+
   if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "ori"))
     net_res_ori (In, FTess, Tesr);
 

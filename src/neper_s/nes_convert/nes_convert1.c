@@ -7,15 +7,17 @@
 void
 nes_convert (struct IN_S In, struct SIM *pSim)
 {
-  ut_dir_openmessage (In.simdir, "w");
+  struct FEPXSIM FSim;
 
-  nes_convert_fepxparse (In, pSim);
+  neut_fepxsim_set_zero (&FSim);
 
-  neut_sim_verbose (*pSim);
+  nes_convert_parse (In, &FSim, pSim);
 
-  nes_convert_write (In, pSim);
+  nes_convert_write (In, &FSim);
 
-  ut_dir_closemessage (In.simdir, "w");
+  neut_sim_fprintf (In.simdir, *pSim, "W");
+
+  neut_fepxsim_free (&FSim);
 
   return;
 }

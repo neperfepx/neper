@@ -14,11 +14,4 @@
 #include"ut.h"
 #include"neut.h"
 
-extern void neut_sim_fprintf_entities (FILE *file, struct SIM Sim);
-
-extern void neut_sim_fprintf_results (FILE *fp, char *entity, char **res,
-                                      char **resexpr, int resqty);
-
-extern void neut_sim_fprintf_restart (FILE *file, struct SIM Sim);
-
 extern void neut_sim_verbose_results (char *entity, char **res, int resqty);

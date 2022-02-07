@@ -9,22 +9,23 @@
 #endif
 
 int
-nes_pproc_entity_builtin_nodes_disp (struct SIM *pSim, char *dir, char *res,
-                                  struct SIMRES *pSimRes)
+nes_pproc_entity_builtin_nodes_disp (struct SIM *pSim, struct NODES Nodes,
+                                     char *dir, char *res,
+                                     struct SIMRES *pSimRes)
 {
   int step;
   char *simfile = ut_alloc_1d_char (1000);
   char *filename = ut_alloc_1d_char (1000);
   char *prev = ut_alloc_1d_char (1000);
   FILE *file = NULL;
-  double ***coo = ut_alloc_3d (2, (*pSim).NodeQty, 3);
-  double **disp = ut_alloc_2d ((*pSim).NodeQty, 3);
+  double ***coo = ut_alloc_3d (2, Nodes.NodeQty, 3);
+  double **disp = ut_alloc_2d (Nodes.NodeQty, 3);
 
   ut_print_progress (stdout, 0, (*pSim).StepQty + 1, "%3.0f%%", prev);
 
   neut_sim_setstep (pSim, 0);
 
-  ut_array_2d_fnscanf ((*pSimRes).file, coo[0], (*pSim).NodeQty, 3, "R");
+  ut_array_2d_fnscanf ((*pSimRes).file, coo[0], Nodes.NodeQty, 3, "R");
 
   for (step = 0; step <= (*pSim).StepQty; step++)
   {
@@ -34,21 +35,21 @@ nes_pproc_entity_builtin_nodes_disp (struct SIM *pSim, char *dir, char *res,
     if (!ut_file_exist ((*pSimRes).file))
       abort ();
 
-    ut_array_2d_fnscanf ((*pSimRes).file, coo[1], (*pSim).NodeQty, 3, "R");
+    ut_array_2d_fnscanf ((*pSimRes).file, coo[1], Nodes.NodeQty, 3, "R");
 
-    ut_array_2d_sub (coo[0], coo[1], (*pSim).NodeQty, 3, disp);
+    ut_array_2d_sub (coo[0], coo[1], Nodes.NodeQty, 3, disp);
 
     sprintf (filename, "%s/%s.step%d", dir, res, step);
 
     file = ut_file_open (filename, "W");
-    ut_array_2d_fprintf (file, disp, (*pSim).NodeQty, 3, "%.12f");
+    ut_array_2d_fprintf (file, disp, Nodes.NodeQty, 3, "%.12f");
     ut_file_close (file, filename, "W");
 
     ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1, "%3.0f%%", prev);
   }
 
-  ut_free_3d (&coo, 2, (*pSim).NodeQty);
-  ut_free_2d (&disp, (*pSim).NodeQty);
+  ut_free_3d (&coo, 2, Nodes.NodeQty);
+  ut_free_2d (&disp, Nodes.NodeQty);
 
   neut_sim_addres (pSim, "node", res, NULL);
   neut_sim_fprintf ((*pSim).simdir, *pSim, "W");

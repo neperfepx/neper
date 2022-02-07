@@ -15,13 +15,15 @@
 
 #include"nes_pproc_entity_builtin.h"
 
-extern int nes_pproc_entity_builtin_nodes (struct SIM *pSim, char *dir, char *res);
+extern int nes_pproc_entity_builtin_nodes (struct SIM *pSim, struct NODES Nodes, char *dir,
+                                           char *res);
 
 extern int nes_pproc_entity_builtin_elsets (struct SIM *pSim, struct TESS Tess,
                                          struct NODES *pNodes, struct MESH
                                          *Mesh, char *entity, char *res);
 
-extern int nes_pproc_entity_builtin_nodes_disp (struct SIM *pSim, char *dir, char *res,
+extern int nes_pproc_entity_builtin_nodes_disp (struct SIM *pSim, struct NODES Nodes,
+                                             char *dir, char *res,
                                              struct SIMRES *pSimRes);
 
 extern void nes_pproc_entity_builtin_elsets_pre (struct SIM *pSim, struct TESS Tess,

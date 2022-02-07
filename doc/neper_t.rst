@@ -442,7 +442,7 @@ The following option can be used to define cell groups (each cell is assigned to
   Specify the groups of the cells.  The expression can be:
 
   - an integer number or an expression based on the variables defined in :ref:`tessellation_keys` or :ref:`raster_tessellation_keys`, for example :data:`"vol<0.1?1:2"`;
-  - :data:`file(<file_name>)`: values to load from a file.
+  - :data:`file(<file_name>)`: values to load from a :ref:`data_file`.
 
   **Default value**: -.
 
@@ -471,7 +471,7 @@ Crystal Orientation Options
 
   - :data:`parent[:normal(<var>=<val>)]`: orientations inherited from the ones of the parent cells, with an optional disorientation (defined as for :data:`orientation`);
 
-  - :data:`file(<file_name>[,des=<val>])`: orientations to be read from file :data:`<file_name>` and written using the descriptor :data:`<val>` (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
+  - :data:`file(<file_name>[,des=<descriptor>])`: orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
 
   Finally, a sum of distributions can be provided; e.g., :data:`0.5*random+0.1*cube`.
 
@@ -482,7 +482,7 @@ Crystal Orientation Options
   Specify the type of (in-cell) orientation spreads.  It can be:
 
   - :data:`normal(<thetam>)`: a 3-variate normal distribution corresponding to an average misorientation angle (with respect to the average orientation) of :data:`<thetam>` (expressed in degree), to be applied to all cells.
-  - :data:`file(<file_name>)`: different cell distributions (of the type :data:`normal...`), to load from a file.
+  - :data:`file(<file_name>)`: different cell distributions (of the type :data:`normal...`), to load from a :ref:`data_file`.
   - :data:`none`: none.
 
   **Default value**: :data:`none`.
@@ -500,7 +500,7 @@ Crystal Orientation Options
   Specify the initial crystal orientations, which can be:
 
   - :data:`random`: random orientations;
-  - :data:`file(<file_name>[,des=<des>])`: orientations to load from :data:`<file_name>` and written using :ref:`orientation descriptor <rotation_and_orientation_descriptors>` :data:`<des>` (default :data:`rodrigues`).
+  - :data:`file(<file_name>[,des=<descriptor>])`: orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
 
   **Default value**: :data:`random`.
 
@@ -508,7 +508,7 @@ Crystal Orientation Options
 
   Specify some orientations to fix during optimization.  The argument can be:
 
-  - :data:`file(<file_name>)`: logical values to load from :data:`<file_name>`, a :ref:`data_file`;
+  - :data:`file(<file_name>)`: logical values to load from a :ref:`data_file`;
   - :data:`none`: none.
 
   **Default value**: :data:`none`.
@@ -676,7 +676,7 @@ Output Options
 
   Specify the format(s) of the output file(s), which can be:
 
-    - tessellation: :data:`tess`, :data:`geo`, :data:`ply`, :data:`stl[:bycell]`, :data:`obj`, :data:`3dec`, :data:`fe`;
+    - tessellation: :data:`tess`, :data:`sim`, :data:`geo`, :data:`ply`, :data:`stl[:bycell]`, :data:`obj`, :data:`3dec`, :data:`fe`;
     - raster tessellation: :data:`tesr`, :data:`vtk`;
     - orientations: :data:`ori`.
 
@@ -846,9 +846,9 @@ Tessellation
 
 - :file:`.tess`: Neper (scalar) tessellation file (see :ref:`tess_file`);
 
-
 - :file:`.tesr`: Neper raster tessellation file (see :ref:`tesr_file`);
 
+- :file:`.sim`: Neper simulation directory (see :ref:`simulation_directory`);
 
 -  :file:`.geo`: Gmsh geometry file describing (under a minimal form) the tessellation and can be used for interactive visualization with Gmsh;
 

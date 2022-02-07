@@ -130,6 +130,7 @@ extern "C"
     char *stgroup;		        // group stat file
     char *obj;				// Wavefront obj file
     char *orif;				// orientation file
+    char *sim;				// simulation file
 
     // output files for development
     char *debug;			// tess debug file

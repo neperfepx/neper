@@ -19,7 +19,7 @@ nes_pproc_entity_builtin (struct SIM *pSim, struct TESS Tess,
   neut_sim_entity_type (*pSim, entity, &type);
 
   if (!strcmp (type, "node"))
-    status = nes_pproc_entity_builtin_nodes (pSim, (*pSimRes).dir,
+    status = nes_pproc_entity_builtin_nodes (pSim, *pNodes, (*pSimRes).dir,
                                           (*pSimRes).res);
 
   // entity is "elsets", "mesh" or a custom entity

@@ -1,5 +1,10 @@
-New in 4.3.1-1 (03 Feb 2022):
-- module -S: made minor fixes.
+New in 4.3.1 (07 Feb 2022):
+- module -T: fixed -ori, added -format sim.
+- module -S: added -rescell and -restess, removed report file from simulation
+  directory (replaced by a hidden file, .sim), made minor fixes and code
+  improvements.
+- documentation: made small fixes and improvements.
+- general: fixed tests, improved Bash completion.
 
 New in 4.3.0 (02 Feb 2022):
 - website: general overhaul, now includes the documentation, tutorials, etc.

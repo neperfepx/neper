@@ -43,6 +43,7 @@ extern "C"
 #include "neut_oopt/neut_oopt.h"
 #include "neut_prim/neut_prim.h"
 #include "neut_odf/neut_odf.h"
+#include "neut_sim/neut_sim.h"
 
 #endif				/* NEUT_T_H */
 

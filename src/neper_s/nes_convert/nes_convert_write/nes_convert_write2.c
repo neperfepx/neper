@@ -5,45 +5,40 @@
 #include "nes_convert_write_.h"
 
 void
-nes_convert_write_inputs (struct IN_S In, struct SIM *pSim)
+nes_convert_write_inputs (struct IN_S In, struct FEPXSIM *pFSim)
 {
   int i, filenameqty = 4;
   char **filename = ut_alloc_1d_pchar (filenameqty);
   char *dir = ut_string_paste (In.simdir, "/inputs");
 
-  ut_string_string ((*pSim).tess, filename);
-  ut_string_string ((*pSim).msh, filename + 1);
+  ut_string_string ((*pFSim).tess, filename);
+  ut_string_string ((*pFSim).msh, filename + 1);
   ut_string_string ("simulation.config", filename + 2);
   ut_string_string ("*.sh", filename + 3);
 
-  if ((*pSim).bcs)
+  if ((*pFSim).bcs)
   {
     filename = ut_realloc_1d_pchar_null (filename, ++filenameqty, 1);
-    ut_string_string ((*pSim).bcs, filename + filenameqty - 1);
+    ut_string_string ((*pFSim).bcs, filename + filenameqty - 1);
   }
-  if ((*pSim).ori)
+  if ((*pFSim).ori)
   {
     filename = ut_realloc_1d_pchar_null (filename, ++filenameqty, 1);
-    ut_string_string ((*pSim).ori, filename + filenameqty - 1);
+    ut_string_string ((*pFSim).ori, filename + filenameqty - 1);
   }
-  if ((*pSim).phase)
+  if ((*pFSim).phase)
   {
     filename = ut_realloc_1d_pchar_null (filename, ++filenameqty, 1);
-    ut_string_string ((*pSim).phase, filename + filenameqty - 1);
+    ut_string_string ((*pFSim).phase, filename + filenameqty - 1);
   }
 
   ut_dir_openmessage (dir, "w");
   ut_sys_mkdir ("%s/inputs", In.simdir);
 
   for (i = 0; i < filenameqty; i++)
-    nes_convert_write_inputs_file (In, *pSim, filename[i]);
+    nes_convert_write_inputs_file (In, *pFSim, filename[i]);
 
   ut_dir_closemessage (dir, "w");
-
-  if ((*pSim).ElsetQty == 0)
-    neut_sim_init_elsetqty (pSim);
-
-  neut_sim_fprintf (In.simdir, *pSim, "W");
 
   ut_free_1d_char (&dir);
   ut_free_2d_char (&filename, filenameqty);
@@ -52,16 +47,15 @@ nes_convert_write_inputs (struct IN_S In, struct SIM *pSim)
 }
 
 void
-nes_convert_write_results (struct IN_S In, struct SIM *pSim)
+nes_convert_write_results (struct IN_S In, struct FEPXSIM *pFSim)
 {
-  int i;
   char *dir = ut_string_paste (In.simdir, "/results");
 
   ut_dir_openmessage (dir, "w");
   ut_sys_mkdir (dir);
 
-  for (i = 0; i < (*pSim).EntityQty; i++)
-    nes_convert_write_results_entity (In, pSim, i);
+  nes_convert_write_results_entity (In, pFSim, "nodes");
+  nes_convert_write_results_entity (In, pFSim, "elts");
 
   ut_free_1d_char (&dir);
 
@@ -69,7 +63,7 @@ nes_convert_write_results (struct IN_S In, struct SIM *pSim)
 }
 
 void
-nes_convert_write_restart (char *indir, char *outdir, struct SIM Sim)
+nes_convert_write_restart (char *indir, char *outdir, struct FEPXSIM FSim)
 {
   int i;
   char *dir = ut_string_paste (outdir, "/restart");
@@ -80,17 +74,17 @@ nes_convert_write_restart (char *indir, char *outdir, struct SIM Sim)
   ut_dir_openmessage (dir, "w");
   ut_sys_mkdir (dir);
 
-  sprintf (filename, "rst%d.control", Sim.RestartId);
+  sprintf (filename, "rst%d.control", FSim.RestartId);
   sprintf (infile, "%s/%s", indir, filename);
   sprintf (outfile, "%s/restart/%s", outdir, filename);
 
   ut_print_message (0, 4, "%s...\n", filename);
   ut_file_cp (infile, outfile);
 
-  ut_print_message (0, 4, "rst%d.field.core*...\n", Sim.RestartId);
-  for (i = 1; i <= Sim.PartQty; i++)
+  ut_print_message (0, 4, "rst%d.field.core*...\n", FSim.RestartId);
+  for (i = 1; i <= FSim.PartQty; i++)
   {
-    sprintf (filename, "rst%d.field.core%d", Sim.RestartId, i);
+    sprintf (filename, "rst%d.field.core%d", FSim.RestartId, i);
     sprintf (infile, "%s/%s", indir, filename);
     sprintf (outfile, "%s/restart/%s", outdir, filename);
 

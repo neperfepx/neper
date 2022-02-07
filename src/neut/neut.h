@@ -80,6 +80,7 @@ extern "C"
 #include "neut_oopt/neut_oopt.h"
 #include "neut_ori/neut_ori.h"
 #include "neut_prim/neut_prim.h"
+#include "neut_fepxsim/neut_fepxsim.h"
 #include "neut_sim/neut_sim.h"
 #include "neut_odf/neut_odf.h"
 

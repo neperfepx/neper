@@ -11,3 +11,11 @@
 #include"neut_m.h"
 #include"../nem/nem.h"
 #include "nem_writemesh.h"
+
+extern void nem_writemesh_msh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
+                   struct MESH *Mesh, struct NSET *NSet, char *nsetlist,
+                   char *fasetlist, char* format);
+
+extern void nem_writemesh_sim (struct IN_M In, struct TESS Tess, struct NODES Nodes,
+                   struct MESH *Mesh, struct NSET *NSet, char *nsetlist,
+                   char *fasetlist);

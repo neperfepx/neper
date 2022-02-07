@@ -5,67 +5,6 @@
 #include"neut_sim_fprintf_.h"
 
 void
-neut_sim_fprintf_results (FILE *file, char *entity, char **res, char **resexpr,
-                          int resqty)
-{
-  int i;
-
-  fprintf (file, "results_%s", entity);
-
-  for (i = 0; i < resqty; i++)
-  {
-    fprintf (file, " %s", res[i]);
-    if (resexpr[i] && strlen (resexpr[i]))
-      fprintf (file, "%s%s", NEUT_SEP_DEP, resexpr[i]);
-  }
-  fprintf (file, "\n");
-
-  return;
-}
-
-void
-neut_sim_fprintf_entities (FILE *file, struct SIM Sim)
-{
-  int i, j;
-
-  fprintf (file, "entities");
-
-  for (i = 0; i < Sim.EntityQty; i++)
-    fprintf (file, " %s", Sim.Entities[i]);
-  fprintf (file, "\n");
-
-  for (i = 0; i < Sim.EntityQty; i++)
-    if (Sim.EntityType[i])
-    {
-      fprintf (file, "entity_type %s %s", Sim.Entities[i], Sim.EntityType[i]);
-      fprintf (file, "\n");
-    }
-
-  for (i = 0; i < Sim.EntityQty; i++)
-    if (Sim.EntityMemberExpr[i])
-    {
-      fprintf (file, "entity_expr %s", Sim.Entities[i]);
-      for (j = 0; j < Sim.EntityMemberQty[i]; j++)
-        fprintf (file, " %s", Sim.EntityMemberExpr[i][j]);
-      fprintf (file, "\n");
-    }
-
-  return;
-}
-
-void
-neut_sim_fprintf_restart (FILE *file, struct SIM Sim)
-{
-  if (Sim.RestartId || Sim.RestartFiles)
-    fprintf (file, "restart_id %d\n", Sim.RestartId);
-
-  if (Sim.RestartId || Sim.RestartFiles)
-    fprintf (file, "restart_files %d\n", Sim.RestartFiles);
-
-  return;
-}
-
-void
 neut_sim_verbose_results (char *entity_in, char **res, int resqty)
 {
   int i, nb;

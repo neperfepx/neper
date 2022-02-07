@@ -67,7 +67,7 @@ _neper_completions() {
 
   opts_load_M="-loadmesh -loadpoint "
 
-  opts_S="-noderes -eltres -elsetres \
+  opts_S="-resnode -reselt -reselset -resmesh -rescell -restess \
 
   -o "
 
@@ -195,4 +195,5 @@ _neper_completions() {
   esac
 }
 
-complete -o default -o nospace -F _neper_completions neper
+# rquey 07 Feb 2022: removed "-o nospace"
+complete -o default -F _neper_completions neper

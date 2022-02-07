@@ -7,5 +7,4 @@
 
 /// \brief Transform an FEPX raw result directory into a simulation directory
 /// \param In: neper -S's In
-/// \param *pSim: simulation
 extern void nes_convert (struct IN_S In, struct SIM *pSim);
