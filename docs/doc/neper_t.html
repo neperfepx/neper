@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tessellation Module (-T) &mdash; Neper 4.3.0 documentation</title>
+  <title>Tessellation Module (-T) &mdash; Neper 4.3.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.3.0
+                4.3.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -528,7 +528,7 @@
 <dd><p>Specify the groups of the cells.  The expression can be:</p>
 <ul class="simple">
 <li><p>an integer number or an expression based on the variables defined in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a> or <a class="reference internal" href="exprskeys.html#raster-tessellation-keys"><span class="std std-ref">Raster Tessellation Keys</span></a>, for example <code class="xref py py-data docutils literal notranslate"><span class="pre">&quot;vol&lt;0.1?1:2&quot;</span></code>;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: values to load from a file.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.</p></li>
 </ul>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
@@ -555,7 +555,7 @@
 </li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">fiber(&lt;dirc_x&gt;,&lt;dirc_y&gt;,&lt;dirc_z&gt;,&lt;dirs_x&gt;,&lt;dirs_y&gt;,&lt;dirs_z&gt;)[:normal(&lt;var&gt;=&lt;val&gt;)]</span></code>: randomly-distributed orientations along the fiber, see <a class="reference internal" href="exprskeys.html#orientation-fibers"><span class="std std-ref">Orientation Fibers</span></a>;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">parent[:normal(&lt;var&gt;=&lt;val&gt;)]</span></code>: orientations inherited from the ones of the parent cells, with an optional disorientation (defined as for <code class="xref py py-data docutils literal notranslate"><span class="pre">orientation</span></code>);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;[,des=&lt;val&gt;])</span></code>: orientations to be read from file <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;file_name&gt;</span></code> and written using the descriptor <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;val&gt;</span></code> (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code>: orientations to be read from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> written using a specific descriptor (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).</p></li>
 </ul>
 <p>Finally, a sum of distributions can be provided; e.g., <code class="xref py py-data docutils literal notranslate"><span class="pre">0.5*random+0.1*cube</span></code>.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">random</span></code>.</p>
@@ -567,7 +567,7 @@
 <dd><p>Specify the type of (in-cell) orientation spreads.  It can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">normal(&lt;thetam&gt;)</span></code>: a 3-variate normal distribution corresponding to an average misorientation angle (with respect to the average orientation) of <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;thetam&gt;</span></code> (expressed in degree), to be applied to all cells.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: different cell distributions (of the type <code class="xref py py-data docutils literal notranslate"><span class="pre">normal...</span></code>), to load from a file.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: different cell distributions (of the type <code class="xref py py-data docutils literal notranslate"><span class="pre">normal...</span></code>), to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>: none.</p></li>
 </ul>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>.</p>
@@ -587,7 +587,7 @@
 <dd><p>Specify the initial crystal orientations, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">random</span></code>: random orientations;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;[,des=&lt;des&gt;])</span></code>: orientations to load from <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;file_name&gt;</span></code> and written using <a class="reference internal" href="exprskeys.html#rotation-and-orientation-descriptors"><span class="std std-ref">orientation descriptor</span></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;des&gt;</span></code> (default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code>: orientations to be read from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> written using a specific descriptor (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).</p></li>
 </ul>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">random</span></code>.</p>
 </dd></dl>
@@ -597,7 +597,7 @@
 <span class="sig-name descname"><span class="pre">-orioptifix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;orientations&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptifix" title="Permalink to this definition"></a></dt>
 <dd><p>Specify some orientations to fix during optimization.  The argument can be:</p>
 <ul class="simple">
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: logical values to load from <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;file_name&gt;</span></code>, a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: logical values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>: none.</p></li>
 </ul>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>.</p>
@@ -759,7 +759,7 @@ The value can be:</p>
 <dd><p>Specify the format(s) of the output file(s), which can be:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>tessellation: <code class="xref py py-data docutils literal notranslate"><span class="pre">tess</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">geo</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">ply</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">stl[:bycell]</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">obj</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">3dec</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">fe</span></code>;</p></li>
+<li><p>tessellation: <code class="xref py py-data docutils literal notranslate"><span class="pre">tess</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">sim</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">geo</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">ply</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">stl[:bycell]</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">obj</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">3dec</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">fe</span></code>;</p></li>
 <li><p>raster tessellation: <code class="xref py py-data docutils literal notranslate"><span class="pre">tesr</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">vtk</span></code>;</p></li>
 <li><p>orientations: <code class="xref py py-data docutils literal notranslate"><span class="pre">ori</span></code>.</p></li>
 </ul>
@@ -931,6 +931,7 @@ the domain, which can be:</p>
 <ul class="simple">
 <li><p><code class="file docutils literal notranslate"><span class="pre">.tess</span></code>: Neper (scalar) tessellation file (see <a class="reference internal" href="fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a>);</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.tesr</span></code>: Neper raster tessellation file (see <a class="reference internal" href="fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a>);</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.sim</span></code>: Neper simulation directory (see <a class="reference internal" href="fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a>);</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.geo</span></code>: Gmsh geometry file describing (under a minimal form) the tessellation and can be used for interactive visualization with Gmsh;</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.ply</span></code>: Ply (“Polygon File Format”) file describing the tessellation;</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.stl</span></code>: STL (“STereoLithography”) file describing the tessellation.  If <code class="xref py py-data docutils literal notranslate"><span class="pre">-format</span> <span class="pre">stl:bycell</span></code> is used, a separate file is written for each cell, whose name ends in <code class="file docutils literal notranslate"><span class="pre">-&lt;id&gt;.stl</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">id</span></code> is the cell identifier written with leading zeros;</p></li>

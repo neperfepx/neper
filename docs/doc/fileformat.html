@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>File and Directory Formats &mdash; Neper 4.3.0 documentation</title>
+  <title>File and Directory Formats &mdash; Neper 4.3.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.3.0
+                4.3.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -571,7 +571,6 @@ $EndGroups
 <span id="simulation-directory"></span><h2>Simulation Directory (<code class="file docutils literal notranslate"><span class="pre">.sim</span></code>)<a class="headerlink" href="#simulation-directory-sim" title="Permalink to this headline"></a></h2>
 <p>Here are details on the <code class="file docutils literal notranslate"><span class="pre">.sim</span></code> simulation directory (the <code class="file docutils literal notranslate"><span class="pre">.sim</span></code> extension is entirely optional).  The directory is structured as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">simulation.sim</span>
-<span class="go">|-- report</span>
 <span class="go">|-- inputs</span>
 <span class="go">|   |-- job.sh</span>
 <span class="go">|   |-- simulation.config</span>
@@ -608,7 +607,6 @@ $EndGroups
 </div>
 <p>where</p>
 <ul class="simple">
-<li><p><code class="file docutils literal notranslate"><span class="pre">report</span></code> is a report file containing information on the simulation and the content of the simulation directory.  This file is mainly for internal use.</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">inputs</span></code> is an input file directory containing the tessellation file (<code class="file docutils literal notranslate"><span class="pre">.tess</span></code>, if found in the input directory), the mesh file (<code class="file docutils literal notranslate"><span class="pre">.msh</span></code>), the FEPX configuration file (<code class="file docutils literal notranslate"><span class="pre">.config</span></code>), and all script files (<code class="file docutils literal notranslate"><span class="pre">*.sh</span></code>, likely including a job submission file).</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">results</span></code> is the result directory.</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">results/nodes</span></code> is the node result directory.</p></li>
@@ -619,6 +617,41 @@ $EndGroups
 <li><p><code class="file docutils literal notranslate"><span class="pre">restart</span></code> is the restart directory.  It is present only if <code class="xref py py-data docutils literal notranslate"><span class="pre">restart</span></code> was switched on in FEPX and contains raw FEPX restart files (requires FEPX version 1.2 or higher).</p></li>
 </ul>
 <p>Results can have integer values, real values, vectorial values or tensorial values. In the result files, values for the different entities (nodes, elements, etc.) are written on successive lines, with components written on successive columns (space delimited). The components of a vector, <code class="xref py py-data docutils literal notranslate"><span class="pre">v</span></code>, are written as <code class="xref py py-data docutils literal notranslate"><span class="pre">v1</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">v2</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">v3</span></code>. The components of a symmetrical tensor, <code class="xref py py-data docutils literal notranslate"><span class="pre">t</span></code>, are written using Voigt notation, as <code class="xref py py-data docutils literal notranslate"><span class="pre">t11</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t22</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t33</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t23</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t31</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t12</span></code>. The components of a skwe-symmetrical tensor, <code class="xref py py-data docutils literal notranslate"><span class="pre">t</span></code>, are written using <code class="xref py py-data docutils literal notranslate"><span class="pre">t12</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t13</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t23</span></code>. The components of a non-symmetrical tensor, <code class="xref py py-data docutils literal notranslate"><span class="pre">t</span></code>, are written as <code class="xref py py-data docutils literal notranslate"><span class="pre">t11</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t12</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t13</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t21</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t22</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t23</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t31</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t32</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t33</span></code>.</p>
+<p>The directory also contains a hidden simulation file, <code class="file docutils literal notranslate"><span class="pre">.sim</span></code>, containing information on the simulation and the content of the simulation directory.  This file is only for internal use and is formatted as follows:</p>
+<div class="highlight-plain notranslate"><div class="highlight"><pre><span></span>***sim
+ **format
+   &lt;format&gt;
+ **input
+  *tess
+   &lt;tess_file&gt;
+  *tesr
+   &lt;tesr_file&gt;
+  *msh
+   &lt;msh_file&gt;
+  *ori
+   &lt;ori_file&gt;
+  *bcs
+   &lt;bcs_file&gt;
+  *phase
+   &lt;phase_file&gt;
+  *config
+   &lt;config_file&gt;
+ **general
+   &lt;cell_nb&gt; &lt;node_nb&gt; &lt;elt_nb&gt; &lt;elset_nb&gt; &lt;part_nb&gt;
+  *orides
+   &lt;orientation_descriptor&gt;
+ **entity &lt;entity&gt;                                     \
+  *member                                              |
+   &lt;member_nb&gt;                                         |
+   &lt;member1&gt; &lt;member2&gt; ...                             | section repeated for each entity
+  *result                                              |
+   &lt;result_nb&gt;                                         |
+   &lt;result1&gt; &lt;result2&gt; ...                             /
+ **orispace
+  *rodrigues &lt;space_file&gt;
+***end
+</pre></div>
+</div>
 </div>
 <div class="section" id="multiscale-cell-file">
 <span id="id1"></span><h2>Multiscale Cell File<a class="headerlink" href="#multiscale-cell-file" title="Permalink to this headline"></a></h2>
@@ -638,7 +671,7 @@ $EndGroups
 </div>
 <div class="section" id="data-file">
 <span id="id3"></span><h2>Data File<a class="headerlink" href="#data-file" title="Permalink to this headline"></a></h2>
-<p>A data file provides a number of data to be assigned to seeds, cells, points, etc.  It must contain the expected number of data.  It is a general, simply-formatted ASCII file that only contains one data per entity, and the data can be an integer or a real number.  A real number can have an arbitrary number of digits, but the decimal mark must be <code class="xref py py-data docutils literal notranslate"></code>.  The data can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with one data per line.  An example of a data file containing 5 points in 3D is:</p>
+<p>A data file provides a number of data to be assigned to entities (seeds, cells, points, etc.).  It must contain the expected number of data.  It is a general, simply-formatted ASCII file that contains a fixed number of data per entity, and the data can be integers, real numbers or character strings.  A real number can have an arbitrary number of digits, but the decimal mark must be <code class="xref std std-option docutils literal notranslate"><span class="pre">.</span></code>.  The data can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with the data of one entity per line.  An example of a data file containing 5 values is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.1235</span>
 <span class="mf">5.9564</span>
 <span class="mf">2.2547</span>
@@ -646,16 +679,36 @@ $EndGroups
 <span class="mf">0.5874</span>
 </pre></div>
 </div>
+<p>An example of a data file containing 5 crystal orientations is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mf">0.308690123821</span>   <span class="o">-</span><span class="mf">0.220269180809</span>    <span class="mf">0.059535375094</span>
+<span class="o">-</span><span class="mf">0.135706415585</span>   <span class="o">-</span><span class="mf">0.060152174145</span>    <span class="mf">0.393001001388</span>
+<span class="o">-</span><span class="mf">0.109314835214</span>    <span class="mf">0.385212719832</span>    <span class="mf">0.395088636982</span>
+ <span class="mf">0.303226023477</span>    <span class="mf">0.088490873532</span>   <span class="o">-</span><span class="mf">0.075079986629</span>
+ <span class="mf">0.120106944081</span>   <span class="o">-</span><span class="mf">0.211545552905</span>   <span class="o">-</span><span class="mf">0.286940925534</span>
+</pre></div>
+</div>
+<p>An example of a data file containing 5 colors is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">red</span>
+<span class="n">green</span>
+<span class="n">blue</span>
+<span class="n">yellow</span>
+<span class="n">magenta</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="position-file">
 <span id="id4"></span><h2>Position File<a class="headerlink" href="#position-file" title="Permalink to this headline"></a></h2>
-<p>A position file lists the coordinates of a given number of points.  The file must contain 1 coordinate per point in 1D, 2 coordinates per point in 2D and 3 coordinates per point in 3D.  While the dimension can be known from the context in which the file is read, it can also be specified by appending <code class="xref py py-data docutils literal notranslate"><span class="pre">:dim</span></code> to the name of the position file, where <code class="xref py py-data docutils literal notranslate"><span class="pre">dim</span></code> is the dimension.  A coordinate can be an integer or real number. A real number can have an arbitrary number of digits, but the decimal mark must be <code class="xref py py-data docutils literal notranslate"></code>.  The coordinates can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with one point per line.  An example of a position file containing 5 points in 3D is:</p>
+<p>A position file lists the coordinates of a given number of points.  The file must contain 1 coordinate per point in 1D, 2 coordinates per point in 2D and 3 coordinates per point in 3D.  While the dimension can be known from the context in which the file is read, it can also be specified by appending <code class="xref py py-data docutils literal notranslate"><span class="pre">:dim</span></code> to the name of the position file, where <code class="xref py py-data docutils literal notranslate"><span class="pre">dim</span></code> is the dimension.  A coordinate can be an integer or real number. A real number can have an arbitrary number of digits, but the decimal mark must be <code class="xref std std-option docutils literal notranslate"><span class="pre">.</span></code>.  The coordinates can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with one point per line.  An example of a position file containing 5 points in 3D is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.1235</span> <span class="mf">9.4544</span> <span class="mf">5.2145</span>
 <span class="mf">5.9564</span> <span class="mf">3.6884</span> <span class="mf">9.2145</span>
 <span class="mf">2.2547</span> <span class="mf">3.2658</span> <span class="mf">8.2514</span>
 <span class="mf">8.2515</span> <span class="mf">9.4157</span> <span class="mf">2.9454</span>
 <span class="mf">0.5874</span> <span class="mf">4.2848</span> <span class="mf">2.4874</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A <a class="reference internal" href="#position-file"><span class="std std-ref">Position File</span></a> is a <a class="reference internal" href="#data-file"><span class="std std-ref">Data File</span></a> with as many data per entity as dimensions.</p>
 </div>
 <dl class="footnote brackets">
 <dt class="label" id="msfile"><span class="brackets"><a class="fn-backref" href="#id2">1</a></span></dt>

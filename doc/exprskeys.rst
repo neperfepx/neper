@@ -170,7 +170,7 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 :data:`dihangles`                                 dihedral angles                                                                                     face, poly
 :data:`ff`                                        flatness fault (in degrees)                                                                         face
 :data:`theta`                                     disorientation angle (in degrees)                                                                   edge (in 2D), face (in 3D)
-:data:`cyl`                                       whether or not is used to describe the circular part of a cylinder domain                           edge
+:data:`cyl`                                       cylinder polygonization [#cyl]_                                                                     edge
 :data:`vernb`                                     number of vertices                                                                                  edge, face, poly
 :data:`vers`                                      vertices                                                                                            edge, face, poly
 :data:`edgenb`                                    number of edges                                                                                     ver, face, poly
@@ -451,48 +451,48 @@ Available keys for a mesh itself are provided below.
 
 Available keys for mesh node, elements and element sets (of all dimensions) and points are provided below.
 
-================================================= ========================================================================== ================================================================
-**Key**                                           **Descriptor**                                                             **Apply to**
-:data:`id`                                        identifier                                                                 node, {0-3}D elt, {0-3}D elset
-:data:`x`                                         x coordinate                                                               node, {0-3}D elt, {0-3}D elset
-:data:`y`                                         y coordinate                                                               node, {0-3}D elt, {0-3}D elset
-:data:`z`                                         z coordinate                                                               node, {0-3}D elt, {0-3}D elset
-:data:`coo`                                       x, y and z coordinates                                                     node, {0-3}D elt, {0-3}D elset
-:data:`dim`                                       dimension (= lowest parent elt dimension)                                  node
-:data:`elset0d`                                   0D elset                                                                   0D elt
-:data:`elset1d`                                   1D elset                                                                   1D elt
-:data:`elset2d`                                   2D elset                                                                   2D elt
-:data:`elset3d`                                   3D elset                                                                   3D elt
-:data:`part`                                      partition                                                                  {0-3}D elt, node
-:data:`group`                                     group                                                                      {0-3}D elt, {0-3}D elset
-:data:`cyl`                                       1 if polygonize the circular part of a cylindrical domain and 0 otherwise  1D elt, 1D elset
-:data:`vol`                                       volume                                                                     3D elt, 3D elset
-:data:`area`                                      surface area                                                               2D elt
-:data:`diameq`                                    equivalent diameter                                                        {2,3}D elt, {2,3}D elset
-:data:`radeq`                                     equivalent radius                                                          {2,3}D elt, {2,3}D elset
-:data:`length`                                    average edge length                                                        {0-3}D elt, 1D elset
-:data:`lengths`                                   edge lengths                                                               2D elt, 3D elt
-:data:`elsetvol`                                  elset volume                                                               3D elt
-:data:`elsetarea`                                 elset area                                                                 2D elt
-:data:`elsetlength`                               elset length                                                               1D elt
-:data:`rr`                                        radius ratio                                                               3D elt
-:data:`rrav`                                      average radius ratio                                                       3D elset
-:data:`rrmin`                                     min radius ratio                                                           3D elset
-:data:`rrmax`                                     max radius ratio                                                           3D elset
-:data:`Osize`                                     Osize                                                                      3D elset
-:data:`eltnb`                                     number of elements                                                         {0-3}D elset
-:data:`true`                                      true level                                                                 {0-3}D elt, {0-3}D elset
-:data:`body`                                      body level                                                                 {0-3}D elt, {0-3}D elset
-:data:`domtype`                                   type of domain [#domtype]_                                                 {0-2}D elt, {0-2}D elset
-:data:`2dmeshp`                                   coordinates of the closest point of the 2D mesh                            node, 3D elt
-:data:`2dmeshd`                                   distance to :data:`2dmeshp`                                                node, 3D elt
-:data:`2dmeshv`                                   vector to :data:`2dmeshp`                                                  node, 3D elt
-:data:`2dmeshn`                                   outgoing normal vector of the 2D mesh at :data:`2dmeshp`                   node, 3D elt
-:data:`per`                                       periodic (1 if periodic, 0 otherwise)                                      {0,1}D elt, 2D elt (in 3D), {0,1}D elset, 2D elset (in 3D)
-:data:`col_rodrigues`                             color according to the Rodrigues vector convention [#col_rodrigues]_       node
-:data:`col_stdtriangle`                           color according to the IPF convention [#col_stdtriangle]_                  node
-:data:`fiber(...)`, see :ref:`orientation_fibers` 1 if in orientation fiber and 0 otherwise                                  3D elt, 3D elset
-================================================= ========================================================================== ================================================================
+================================================= ========================================================= ================================================================
+**Key**                                           **Descriptor**                                            **Apply to**
+:data:`id`                                        identifier                                                node, {0-3}D elt, {0-3}D elset
+:data:`x`                                         x coordinate                                              node, {0-3}D elt, {0-3}D elset
+:data:`y`                                         y coordinate                                              node, {0-3}D elt, {0-3}D elset
+:data:`z`                                         z coordinate                                              node, {0-3}D elt, {0-3}D elset
+:data:`coo`                                       x, y and z coordinates                                    node, {0-3}D elt, {0-3}D elset
+:data:`dim`                                       lowest parent elt dimension                               node
+:data:`elset0d`                                   0D elset                                                  0D elt
+:data:`elset1d`                                   1D elset                                                  1D elt
+:data:`elset2d`                                   2D elset                                                  2D elt
+:data:`elset3d`                                   3D elset                                                  3D elt
+:data:`part`                                      partition                                                 {0-3}D elt, node
+:data:`group`                                     group                                                     {0-3}D elt, {0-3}D elset
+:data:`cyl`                                       cylinder polygonization [#cyl]_                           1D elt, 1D elset
+:data:`vol`                                       volume                                                    3D elt, 3D elset
+:data:`area`                                      surface area                                              2D elt
+:data:`diameq`                                    equivalent diameter                                       {2,3}D elt, {2,3}D elset
+:data:`radeq`                                     equivalent radius                                         {2,3}D elt, {2,3}D elset
+:data:`length`                                    average edge length                                       {0-3}D elt, 1D elset
+:data:`lengths`                                   edge lengths                                              2D elt, 3D elt
+:data:`elsetvol`                                  elset volume                                              3D elt
+:data:`elsetarea`                                 elset area                                                2D elt
+:data:`elsetlength`                               elset length                                              1D elt
+:data:`rr`                                        radius ratio                                              3D elt
+:data:`rrav`                                      average radius ratio                                      3D elset
+:data:`rrmin`                                     min radius ratio                                          3D elset
+:data:`rrmax`                                     max radius ratio                                          3D elset
+:data:`Osize`                                     Osize                                                     3D elset
+:data:`eltnb`                                     number of elements                                        {0-3}D elset
+:data:`true`                                      true level                                                {0-3}D elt, {0-3}D elset
+:data:`body`                                      body level                                                {0-3}D elt, {0-3}D elset
+:data:`domtype`                                   type of domain [#domtype]_                                {0-2}D elt, {0-2}D elset
+:data:`2dmeshp`                                   closest point of the 2D mesh                              node, 3D elt
+:data:`2dmeshd`                                   distance to :data:`2dmeshp`                               node, 3D elt
+:data:`2dmeshv`                                   vector to :data:`2dmeshp`                                 node, 3D elt
+:data:`2dmeshn`                                   outgoing normal vector at :data:`2dmeshp`                 node, 3D elt
+:data:`per`                                       periodic (1 if periodic, 0 otherwise)                     {0,1}D elt, 2D elt (in 3D), {0,1}D elset, 2D elset (in 3D)
+:data:`col_rodrigues`                             color in Rodrigues vector convention [#col_rodrigues]_    node
+:data:`col_stdtriangle`                           color in IPF convention [#col_stdtriangle]_               node
+:data:`fiber(...)` [#fiber]_                      1 if in orientation fiber and 0 otherwise                 3D elt, 3D elset
+================================================= ========================================================= ================================================================
 
 Variables beginning with :data:`2dmesh` are only available for statistics (options beginning with :data:`-stat` of module -M); for elements, they apply to the centroids.
 
@@ -834,3 +834,6 @@ Alternatively, any series of colors can be used to define a color map.  Neper's 
 .. [#col_rodrigues] Applies to a mesh of Rodrigues space
 
 .. [#col_stdtriangle] Applies to a mesh of the stereographic triangle
+
+.. [#cyl] 1 if polygonize the circular part of a cylindrical domain and 0 otherwise.
+.. [#fiber] See :ref:`orientation_fibers`.

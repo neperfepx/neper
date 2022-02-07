@@ -701,7 +701,6 @@ Here are details on the :file:`.sim` simulation directory (the :file:`.sim` exte
 .. code-block:: console
 
   simulation.sim
-  |-- report
   |-- inputs
   |   |-- job.sh
   |   |-- simulation.config
@@ -737,8 +736,6 @@ Here are details on the :file:`.sim` simulation directory (the :file:`.sim` exte
 
 where
 
-- :file:`report` is a report file containing information on the simulation and the content of the simulation directory.  This file is mainly for internal use.
-
 - :file:`inputs` is an input file directory containing the tessellation file (:file:`.tess`, if found in the input directory), the mesh file (:file:`.msh`), the FEPX configuration file (:file:`.config`), and all script files (:file:`*.sh`, likely including a job submission file).
 
 - :file:`results` is the result directory.
@@ -756,6 +753,43 @@ where
 - :file:`restart` is the restart directory.  It is present only if :data:`restart` was switched on in FEPX and contains raw FEPX restart files (requires FEPX version 1.2 or higher).
 
 Results can have integer values, real values, vectorial values or tensorial values. In the result files, values for the different entities (nodes, elements, etc.) are written on successive lines, with components written on successive columns (space delimited). The components of a vector, :data:`v`, are written as :data:`v1` :data:`v2` :data:`v3`. The components of a symmetrical tensor, :data:`t`, are written using Voigt notation, as :data:`t11` :data:`t22` :data:`t33` :data:`t23` :data:`t31` :data:`t12`. The components of a skwe-symmetrical tensor, :data:`t`, are written using :data:`t12` :data:`t13` :data:`t23`. The components of a non-symmetrical tensor, :data:`t`, are written as :data:`t11` :data:`t12` :data:`t13` :data:`t21` :data:`t22` :data:`t23` :data:`t31` :data:`t32` :data:`t33`.
+
+The directory also contains a hidden simulation file, :file:`.sim`, containing information on the simulation and the content of the simulation directory.  This file is only for internal use and is formatted as follows:
+
+.. code-block:: plain
+
+  ***sim
+   **format
+     <format>
+   **input
+    *tess
+     <tess_file>
+    *tesr
+     <tesr_file>
+    *msh
+     <msh_file>
+    *ori
+     <ori_file>
+    *bcs
+     <bcs_file>
+    *phase
+     <phase_file>
+    *config
+     <config_file>
+   **general
+     <cell_nb> <node_nb> <elt_nb> <elset_nb> <part_nb>
+    *orides
+     <orientation_descriptor>
+   **entity <entity>                                     \
+    *member                                              |
+     <member_nb>                                         |
+     <member1> <member2> ...                             | section repeated for each entity
+    *result                                              |
+     <result_nb>                                         |
+     <result1> <result2> ...                             /
+   **orispace
+    *rodrigues <space_file>
+  ***end
 
 .. _multiscale_cell_file:
 
@@ -781,9 +815,7 @@ The file could be used in :data:`-T` as :data:`-n msfile(<file_name>)::msfile(<f
 Data File
 ---------
 
-A data file provides a number of data to be assigned to seeds, cells, points, etc.  It must contain the expected number of data.  It is a general, simply-formatted ASCII file that only contains one data per entity, and the data can be an integer or a real number.  A real number can have an arbitrary number of digits, but the decimal mark must be :data:`.`.  The data can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with one data per line.  An example of a data file containing 5 points in 3D is:
-
-::
+A data file provides a number of data to be assigned to entities (seeds, cells, points, etc.).  It must contain the expected number of data.  It is a general, simply-formatted ASCII file that contains a fixed number of data per entity, and the data can be integers, real numbers or character strings.  A real number can have an arbitrary number of digits, but the decimal mark must be :option:`.`.  The data can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with the data of one entity per line.  An example of a data file containing 5 values is::
 
   2.1235
   5.9564
@@ -791,12 +823,28 @@ A data file provides a number of data to be assigned to seeds, cells, points, et
   8.2515
   0.5874
 
+An example of a data file containing 5 crystal orientations is::
+
+  -0.308690123821   -0.220269180809    0.059535375094
+  -0.135706415585   -0.060152174145    0.393001001388
+  -0.109314835214    0.385212719832    0.395088636982
+   0.303226023477    0.088490873532   -0.075079986629
+   0.120106944081   -0.211545552905   -0.286940925534
+
+An example of a data file containing 5 colors is::
+
+  red
+  green
+  blue
+  yellow
+  magenta
+
 .. _position_file:
 
 Position File
 -------------
 
-A position file lists the coordinates of a given number of points.  The file must contain 1 coordinate per point in 1D, 2 coordinates per point in 2D and 3 coordinates per point in 3D.  While the dimension can be known from the context in which the file is read, it can also be specified by appending :data:`:dim` to the name of the position file, where :data:`dim` is the dimension.  A coordinate can be an integer or real number. A real number can have an arbitrary number of digits, but the decimal mark must be :data:`.`.  The coordinates can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with one point per line.  An example of a position file containing 5 points in 3D is::
+A position file lists the coordinates of a given number of points.  The file must contain 1 coordinate per point in 1D, 2 coordinates per point in 2D and 3 coordinates per point in 3D.  While the dimension can be known from the context in which the file is read, it can also be specified by appending :data:`:dim` to the name of the position file, where :data:`dim` is the dimension.  A coordinate can be an integer or real number. A real number can have an arbitrary number of digits, but the decimal mark must be :option:`.`.  The coordinates can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with one point per line.  An example of a position file containing 5 points in 3D is::
 
   2.1235 9.4544 5.2145
   5.9564 3.6884 9.2145
@@ -804,5 +852,6 @@ A position file lists the coordinates of a given number of points.  The file mus
   8.2515 9.4157 2.9454
   0.5874 4.2848 2.4874
 
+.. note:: A :ref:`position_file` is a :ref:`data_file` with as many data per entity as dimensions.
 
 .. [#msfile] As of version 3.5.0, :data:`msfile(<file_name>)` should be preferred over :data:`file(<file_name>)`.

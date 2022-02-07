@@ -128,7 +128,7 @@ The following options enable the definition of the properties (color and size) o
   **Colors can be specified directly**:
 
   - a color (see :ref:`colors_and_color_maps`);
-  - :data:`file(<file_name>)`: individual colors to load from a file (see :ref:`colors_and_color_maps`).
+  - :data:`file(<file_name>)`: individual colors to load from a :ref:`data_file` (see :ref:`colors_and_color_maps`).
 
   **Colors can be set from data using an argument of the general form** :data:`<data_type>:\<data_value\>`, which can be shortened to :data:`<data_value>` in the frequent case where the data type can be unambiguously determined from the data value.  The possibilities are:
 
@@ -148,13 +148,13 @@ The following options enable the definition of the properties (color and size) o
 
     - :data:`orientation`: an orientation (see :ref:`rotations_and_orientations`);
     - :data:`internal`: internal orientations;
-    - :data:`file(<file_name>,[des=<descriptor>])`: individual values to load from a file (see :ref:`rotations_and_orientations`).
+    - :data:`file(<file_name>,[des=<descriptor>])`: individual values to load from a :ref:`data_file` (see :ref:`rotations_and_orientations`).
 
   - :data:`disori:\<data_value\>` (only for :data:`vox`): crystal disorientations (the rotation with respect to the nominal cell orientation, when applicable), which can be:
 
     - :data:`<disorientation>`: a disorientation (see :ref:`rotations_and_orientations`);
     - :data:`internal`: internal disorientations;
-    - :data:`file(<file_name>,[des=<descriptor>])`: individual values to load from a file (see :ref:`rotations_and_orientations`).
+    - :data:`file(<file_name>,[des=<descriptor>])`: individual values to load from a :ref:`data_file` (see :ref:`rotations_and_orientations`).
 
   See also option :data:`-data...colscheme`.
 
@@ -251,7 +251,7 @@ The following options enable the definition of the properties (color, size, etc.
   **Colors can be specified directly**:
 
   - :data:`<value>`: a color (see :ref:`colors_and_color_maps`);
-  - :data:`file(<file_name>)`: individual colors to load from a file (see :ref:`colors_and_color_maps`);
+  - :data:`file(<file_name>)`: individual colors to load from a :ref:`data_file` (see :ref:`colors_and_color_maps`);
   - :data:`from_nodes`: colors interpolated from the node colors (defined with :data:`-datanodecol`).
 
   **Colors can be set from data using an argument of the general form** :data:`<data_type>:\<data_value\>`, which can be shortened to :data:`<data_value>` in the frequent case where the data type can be unambiguously determined from the data value.  The possibilities are:
@@ -271,18 +271,18 @@ The following options enable the definition of the properties (color, size, etc.
   - :data:`vector:\<data_value\>`: vectorial values (only for VTK output), which can be:
 
     - a simulation result (see :ref:`simulation_results`);
-    - :data:`file(<file_name>)`: individual values to load from a file.
+    - :data:`file(<file_name>)`: individual values to load from a :ref:`data_file`.
 
   - :data:`tensor:\<data_value\>`: tensorial values (only for VTK output), which can be:
 
     - a simulation result (see :ref:`simulation_results`);
-    - :data:`file(<file_name>)`: individual values to load from a file.  The file can contain either 9 components or only 6 components, in which case Voigt notation is assumed.
+    - :data:`file(<file_name>)`: individual values to load from a :ref:`data_file`.  The file can contain either 9 components or only 6 components, in which case Voigt notation is assumed.
 
   - :data:`ori:\<data_value\>`: crystal orientations (when applicable), which can be:
 
     - an orientation (see :ref:`rotations_and_orientations`);
     - :data:`internal`: internal orientations;
-    - :data:`file(<file_name>,[des=<descriptor>])`: individual orientations to load from a file (see :ref:`rotations_and_orientations`).
+    - :data:`file(<file_name>,[des=<descriptor>])`: individual orientations to load from a :ref:`data_file` (see :ref:`rotations_and_orientations`).
 
   The color schemes used to determine the colors from the data can be fine-tuned using options :data:`-dataeltcolscheme` or :data:`-dataelsetcolscheme`.
 
@@ -351,7 +351,7 @@ The following options enable the loading of node positions.
 
   **Coordinates can be set from data using an argument of the general form** :data:`<data_type>:\<data_value\>`:
 
-  - :data:`disp:file(<file_name>)`: individual displacements to load from a file (formatted as a :ref:`position_file`);
+  - :data:`disp:file(<file_name>)`: individual displacements to load from a :ref:`data_file` (formatted as a :ref:`position_file`);
 
   - :data:`coo`: load coordinates from the simulation directory and step specified in input.
 
@@ -375,7 +375,7 @@ The following options enable the definition of the properties (color, shape, siz
   **Colors can be specified directly**:
 
   - a color (see :ref:`colors_and_color_maps`);
-  - :data:`file(<file_name>)`: individual colors to load from a file (see :ref:`colors_and_color_maps`).
+  - :data:`file(<file_name>)`: individual colors to load from a :ref:`data_file` (see :ref:`colors_and_color_maps`).
 
   **Colors can be set from data using an argument of the general form** :data:`<data_type>:\<data_value\>`, which can be shortened to :data:`<data_value>` in the frequent case where the data type can be unambiguously determined from the data value.  The possibilities are:
 
@@ -445,7 +445,7 @@ The following options enable the definition of the properties (color, shape, siz
 
   **Coordinates can be set from data using an argument of the general form** :data:`<data_type>:\<data_value\>`:
 
-  - :data:`disp:file(<file_name>)`: individual displacements to load from a file (formatted as a :ref:`position_file`);
+  - :data:`disp:file(<file_name>)`: individual displacements to load from a :ref:`data_file` (formatted as a :ref:`position_file`);
 
   - :data:`coo`: load coordinates from the simulation directory and step specified in input.
 
@@ -463,12 +463,12 @@ The following options enable the definition of the properties (color, shape, siz
 
   - a real value;
   - :data:`file(<file_name>)`: individual values to load from a :ref:`data_file` (not for :data:`*edge*`).
-  - :data:`cube:file(<file_name>)`: cubes of properties to load from a file.  The file must contain, for each point, the radius (half of the edge length) and the coordinates of the three axes (which also is the rotation matrix that brings the reference axes into coincidence with the cube axes).
-  - :data:`cylinder:file(<file_name>)`: cylinders of properties to load from a file.  The file must contain, for each point, the radius, the length and the coordinates of the axis.
-  - :data:`arr:file(<file_name>)`: arrows of properties to load from a file.  The file must contain, for each point, the radius, the length and the coordinates of the axis.
-  - :data:`disc:file(<file_name>)`: discs of properties to load from a file. The file must contain, for each point, the radius and the coordinates of the axis.
-  - :data:`ell:file(<file_name>)`: ellispoids of properties to load from a file.  The file must contain, for each point, the three radii and the coordinates of the three axes.
-  - :data:`tor:file(<file_name>)`: torus of properties to load from a file.  The file must contain, for each point, the major radius (center to center line), the minor radius and the coordinates of the normal axis.
+  - :data:`cube:file(<file_name>)`: cubes of properties to load from a :ref:`data_file`.  The file must contain, for each point, the radius (half of the edge length) and the coordinates of the three axes (which also is the rotation matrix that brings the reference axes into coincidence with the cube axes).
+  - :data:`cylinder:file(<file_name>)`: cylinders of properties to load from a :ref:`data_file`.  The file must contain, for each point, the radius, the length and the coordinates of the axis.
+  - :data:`arr:file(<file_name>)`: arrows of properties to load from a :ref:`data_file`.  The file must contain, for each point, the radius, the length and the coordinates of the axis.
+  - :data:`disc:file(<file_name>)`: discs of properties to load from a :ref:`data_file`. The file must contain, for each point, the radius and the coordinates of the axis.
+  - :data:`ell:file(<file_name>)`: ellispoids of properties to load from a :ref:`data_file`.  The file must contain, for each point, the three radii and the coordinates of the three axes.
+  - :data:`tor:file(<file_name>)`: torus of properties to load from a :ref:`data_file`.  The file must contain, for each point, the major radius (center to center line), the minor radius and the coordinates of the normal axis.
 
   **Default value**: point set dependent.
 
@@ -675,7 +675,7 @@ Output Options
 
   For example, to write to a simulation directory when loaded as input and to the local directory in other cases, :data:`sim_dir,.` (which may be placed in the initialization file).
 
-  **Default value**: :data:`.`.
+  **Default value**: :option:`.`.
 
 Print Options
 ~~~~~~~~~~~~~

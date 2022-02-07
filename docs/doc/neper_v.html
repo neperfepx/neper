@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Visualization Module (-V) &mdash; Neper 4.3.0 documentation</title>
+  <title>Visualization Module (-V) &mdash; Neper 4.3.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.3.0
+                4.3.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -215,7 +215,7 @@
 <p><strong>Colors can be specified directly</strong>:</p>
 <ul class="simple">
 <li><p>a color (see <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual colors to load from a file (see <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual colors to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> (see <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>).</p></li>
 </ul>
 <p><strong>Colors can be set from data using an argument of the general form</strong> <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_type&gt;:&lt;data_value&gt;</span></code>, which can be shortened to <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_value&gt;</span></code> in the frequent case where the data type can be unambiguously determined from the data value.  The possibilities are:</p>
 <ul class="simple">
@@ -237,14 +237,14 @@
 <ul>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">orientation</span></code>: an orientation (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">internal</span></code>: internal orientations;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;,[des=&lt;descriptor&gt;])</span></code>: individual values to load from a file (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;,[des=&lt;descriptor&gt;])</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>).</p></li>
 </ul>
 </li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">disori:&lt;data_value&gt;</span></code> (only for <code class="xref py py-data docutils literal notranslate"><span class="pre">vox</span></code>): crystal disorientations (the rotation with respect to the nominal cell orientation, when applicable), which can be:</p>
 <ul>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;disorientation&gt;</span></code>: a disorientation (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">internal</span></code>: internal disorientations;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;,[des=&lt;descriptor&gt;])</span></code>: individual values to load from a file (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;,[des=&lt;descriptor&gt;])</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>).</p></li>
 </ul>
 </li>
 </ul>
@@ -326,7 +326,7 @@ The type of color scheme depends on the type of data.</p>
 <p><strong>Colors can be specified directly</strong>:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;value&gt;</span></code>: a color (see <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual colors to load from a file (see <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual colors to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> (see <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">from_nodes</span></code>: colors interpolated from the node colors (defined with <code class="xref py py-data docutils literal notranslate"><span class="pre">-datanodecol</span></code>).</p></li>
 </ul>
 <p><strong>Colors can be set from data using an argument of the general form</strong> <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_type&gt;:&lt;data_value&gt;</span></code>, which can be shortened to <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_value&gt;</span></code> in the frequent case where the data type can be unambiguously determined from the data value.  The possibilities are:</p>
@@ -348,20 +348,20 @@ The type of color scheme depends on the type of data.</p>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vector:&lt;data_value&gt;</span></code>: vectorial values (only for VTK output), which can be:</p>
 <ul>
 <li><p>a simulation result (see <a class="reference internal" href="exprskeys.html#simulation-results"><span class="std std-ref">Simulation Results</span></a>);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a file.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.</p></li>
 </ul>
 </li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">tensor:&lt;data_value&gt;</span></code>: tensorial values (only for VTK output), which can be:</p>
 <ul>
 <li><p>a simulation result (see <a class="reference internal" href="exprskeys.html#simulation-results"><span class="std std-ref">Simulation Results</span></a>);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a file.  The file can contain either 9 components or only 6 components, in which case Voigt notation is assumed.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.  The file can contain either 9 components or only 6 components, in which case Voigt notation is assumed.</p></li>
 </ul>
 </li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ori:&lt;data_value&gt;</span></code>: crystal orientations (when applicable), which can be:</p>
 <ul>
 <li><p>an orientation (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">internal</span></code>: internal orientations;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;,[des=&lt;descriptor&gt;])</span></code>: individual orientations to load from a file (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;,[des=&lt;descriptor&gt;])</span></code>: individual orientations to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>).</p></li>
 </ul>
 </li>
 </ul>
@@ -432,7 +432,7 @@ The type of color scheme depends on the type of data.</p>
 </ul>
 <p><strong>Coordinates can be set from data using an argument of the general form</strong> <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_type&gt;:&lt;data_value&gt;</span></code>:</p>
 <ul class="simple">
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">disp:file(&lt;file_name&gt;)</span></code>: individual displacements to load from a file (formatted as a <a class="reference internal" href="fileformat.html#position-file"><span class="std std-ref">Position File</span></a>);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">disp:file(&lt;file_name&gt;)</span></code>: individual displacements to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> (formatted as a <a class="reference internal" href="fileformat.html#position-file"><span class="std std-ref">Position File</span></a>);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">coo</span></code>: load coordinates from the simulation directory and step specified in input.</p></li>
 </ul>
 <p><strong>Default value</strong>: -.</p>
@@ -456,7 +456,7 @@ The type of color scheme depends on the type of data.</p>
 <p><strong>Colors can be specified directly</strong>:</p>
 <ul class="simple">
 <li><p>a color (see <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual colors to load from a file (see <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual colors to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> (see <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>).</p></li>
 </ul>
 <p><strong>Colors can be set from data using an argument of the general form</strong> <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_type&gt;:&lt;data_value&gt;</span></code>, which can be shortened to <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_value&gt;</span></code> in the frequent case where the data type can be unambiguously determined from the data value.  The possibilities are:</p>
 <ul class="simple">
@@ -532,7 +532,7 @@ The type of color scheme depends on the type of data.</p>
 </ul>
 <p><strong>Coordinates can be set from data using an argument of the general form</strong> <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_type&gt;:&lt;data_value&gt;</span></code>:</p>
 <ul class="simple">
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">disp:file(&lt;file_name&gt;)</span></code>: individual displacements to load from a file (formatted as a <a class="reference internal" href="fileformat.html#position-file"><span class="std std-ref">Position File</span></a>);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">disp:file(&lt;file_name&gt;)</span></code>: individual displacements to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> (formatted as a <a class="reference internal" href="fileformat.html#position-file"><span class="std std-ref">Position File</span></a>);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">coo</span></code>: load coordinates from the simulation directory and step specified in input.</p></li>
 </ul>
 <p><strong>Default value</strong>: -.</p>
@@ -552,12 +552,12 @@ The type of color scheme depends on the type of data.</p>
 <ul class="simple">
 <li><p>a real value;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> (not for <code class="xref py py-data docutils literal notranslate"><span class="pre">*edge*</span></code>).</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cube:file(&lt;file_name&gt;)</span></code>: cubes of properties to load from a file.  The file must contain, for each point, the radius (half of the edge length) and the coordinates of the three axes (which also is the rotation matrix that brings the reference axes into coincidence with the cube axes).</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cylinder:file(&lt;file_name&gt;)</span></code>: cylinders of properties to load from a file.  The file must contain, for each point, the radius, the length and the coordinates of the axis.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">arr:file(&lt;file_name&gt;)</span></code>: arrows of properties to load from a file.  The file must contain, for each point, the radius, the length and the coordinates of the axis.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">disc:file(&lt;file_name&gt;)</span></code>: discs of properties to load from a file. The file must contain, for each point, the radius and the coordinates of the axis.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ell:file(&lt;file_name&gt;)</span></code>: ellispoids of properties to load from a file.  The file must contain, for each point, the three radii and the coordinates of the three axes.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">tor:file(&lt;file_name&gt;)</span></code>: torus of properties to load from a file.  The file must contain, for each point, the major radius (center to center line), the minor radius and the coordinates of the normal axis.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cube:file(&lt;file_name&gt;)</span></code>: cubes of properties to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.  The file must contain, for each point, the radius (half of the edge length) and the coordinates of the three axes (which also is the rotation matrix that brings the reference axes into coincidence with the cube axes).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cylinder:file(&lt;file_name&gt;)</span></code>: cylinders of properties to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.  The file must contain, for each point, the radius, the length and the coordinates of the axis.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">arr:file(&lt;file_name&gt;)</span></code>: arrows of properties to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.  The file must contain, for each point, the radius, the length and the coordinates of the axis.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">disc:file(&lt;file_name&gt;)</span></code>: discs of properties to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>. The file must contain, for each point, the radius and the coordinates of the axis.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ell:file(&lt;file_name&gt;)</span></code>: ellispoids of properties to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.  The file must contain, for each point, the three radii and the coordinates of the three axes.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">tor:file(&lt;file_name&gt;)</span></code>: torus of properties to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.  The file must contain, for each point, the major radius (center to center line), the minor radius and the coordinates of the normal axis.</p></li>
 </ul>
 <p><strong>Default value</strong>: point set dependent.</p>
 </dd></dl>
@@ -787,7 +787,7 @@ The type of color scheme depends on the type of data.</p>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">sim_dir</span></code>: the standard location of the simulation directory, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dir.sim&gt;/images/</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;format&gt;</span></code> is the image format (see option <a class="reference internal" href="#cmdoption-imageformat"><code class="xref std std-option docutils literal notranslate"><span class="pre">-imageformat</span></code></a>). <code class="xref py py-data docutils literal notranslate"><span class="pre">sim_dir</span></code> is only valid if a simulation directory is loaded as input.</p></li>
 </ul>
 <p>For example, to write to a simulation directory when loaded as input and to the local directory in other cases, <code class="xref py py-data docutils literal notranslate"><span class="pre">sim_dir,.</span></code> (which may be placed in the initialization file).</p>
-<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"></code>.</p>
+<p><strong>Default value</strong>: <code class="xref std std-option docutils literal notranslate"><span class="pre">.</span></code>.</p>
 </dd></dl>
 
 </div>
