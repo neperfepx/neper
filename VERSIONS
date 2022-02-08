@@ -1,3 +1,6 @@
+New in 4.3.2-1 (08 Feb 2022):
+- module -S: fixed backward compatibility.
+
 New in 4.3.1 (07 Feb 2022):
 - module -T: fixed -ori, added -format sim.
 - module -S: added -rescell and -restess, removed report file from simulation

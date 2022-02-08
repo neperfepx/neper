@@ -73,8 +73,13 @@ neut_sim_fscanf_report (char *dir, struct SIM *pSim, char *mode)
         abort ();
     }
     else if (!strcmp (var, "number_of_slip_systems"))
-      ut_file_skip (file, groupqty);
+      ut_file_skip (file, ut_num_max (1, groupqty));
     // ------------------------------------------------------------------------------
+    else if (!strcmp (var, "number_of_partitions"))
+    {
+      if (fscanf (file, "%d", &(*pSim).PartQty) != 1)
+        abort ();
+    }
     else if (!strcmp (var, "number_of_cells"))
     {
       if (fscanf (file, "%d", &(*pSim).CellQty) != 1)

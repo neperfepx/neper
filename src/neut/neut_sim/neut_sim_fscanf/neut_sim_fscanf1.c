@@ -16,7 +16,22 @@ neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode)
   neut_sim_fscanf_version (dir, &version);
 
   if (!strcmp (version, "report"))
+  {
     neut_sim_fscanf_report (dir, pSim, mode);
+
+    // remove report and write .sim
+    neut_sim_fprintf (dir, *pSim, "W");
+
+    // rename results/elements into results/elts
+    if (!neut_sim_entity_pos (*pSim, "elt", NULL))
+    {
+      char *elts = ut_string_paste (dir, "/results/elements");
+      char *elts2 = ut_string_paste (dir, "/results/elts");
+      rename (elts, elts2);
+      ut_free_1d_char (&elts);
+      ut_free_1d_char (&elts2);
+    }
+  }
 
   else
   {

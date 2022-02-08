@@ -8,8 +8,12 @@ void
 neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
 {
   int i, j, qty, curqty;
+  char *oldfilename = ut_string_paste (dir, "/report");
   char *filename = ut_string_paste (dir, "/.sim");
   FILE *file = ut_file_open (filename, mode);
+
+  if (ut_file_exist (oldfilename))
+    remove (oldfilename);
 
   fprintf (file, "***sim\n");
   fprintf (file, " **format\n");
@@ -108,6 +112,7 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
   fprintf (file, "***end\n");
 
   ut_file_close (file, filename, mode);
+  ut_free_1d_char (&oldfilename);
   ut_free_1d_char (&filename);
 
   return;

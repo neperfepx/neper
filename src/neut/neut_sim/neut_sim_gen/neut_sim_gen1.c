@@ -183,7 +183,7 @@ neut_sim_input_files (struct SIM Sim, char ***pfullfiles, char ***pfiles, int *p
 int
 neut_sim_entity_pos (struct SIM Sim, char *entity_in, int *ppos)
 {
-  int i;
+  int i, pos;
   char *entity = NULL;
 
   if (!strcmp (entity_in, "elt3d") || !strcmp (entity_in, "elts"))
@@ -195,17 +195,20 @@ neut_sim_entity_pos (struct SIM Sim, char *entity_in, int *ppos)
   else
     ut_string_string (entity_in, &entity);
 
-  *ppos = -1;
+  pos = -1;
   for (i = 0; i < Sim.EntityQty; i++)
     if (!strcmp (Sim.Entities[i], entity))
     {
-      *ppos = i;
+      pos = i;
       break;
     }
 
+  if (ppos)
+    *ppos = pos;
+
   ut_free_1d_char (&entity);
 
-  return (*ppos != -1) ? 0 : -1;
+  return (pos != -1) ? 0 : -1;
 }
 
 int
