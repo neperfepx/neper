@@ -1,5 +1,6 @@
 src
 build
+.DS_Store
 *.orig
 *.swp
 *~
