@@ -7,7 +7,7 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"4.3.2-1\")
+set(NEPER_VERSION \"4.3.2-2\")
 project(neper)
 
 # Set the build type for appropriate compile flags
