@@ -54,7 +54,7 @@ Resources for FEPX can be accessed from https://fepx.info.
 Installing Neper
 ----------------
 
-Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system (including MacOS).  Neper also runs on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, although we do not test nor support this usage and multithreading must be turned off (which slows down execution significantly).  Multithreading of the code is achieved via `OpenMP <https://www.openmp.org/>`_ and operates on all threads (the actual number of threads can be set throught the :code:`OMP_NUM_THREADS` environment variable).  Compilation is performed via `CMake <https://cmake.org>`_:
+Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system (including macOS).  Neper also runs on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, although we do not test nor support this usage and multithreading must be turned off (which slows down execution significantly).  Multithreading of the code is achieved via `OpenMP <https://www.openmp.org/>`_ and operates on all threads (the actual number of threads can be set throught the :code:`OMP_NUM_THREADS` environment variable).  Compilation is performed via `CMake <https://cmake.org>`_:
 
 - Create a :file:`build` directory, for instance as a subdirectory of Neper's :file:`src` directory:
 
@@ -148,13 +148,13 @@ or (equivalently):
 
   $ ctest
 
-This runs the tests in :code:`Normal` mode, for which the produced output files are compared to reference ones. The (packaged) reference output files are generated on Ubuntu 20.04, using compiler GCC 9.3.0, (built-in) NLopt 2.6.1, (built-in) libscotch 6.0, Gmsh 4.9.4 and POV-Ray 3.7.0. It is expected that different versions may result in minor (insignificant) changes to the output, though this will generally result in failed tests.  If this happens, you may switch to the :code:`Minimal` mode as described in the following.
+This runs the tests in :code:`Normal` mode (on Linux), for which the produced output files are compared to reference ones. The (packaged) reference output files are generated on Ubuntu 20.04, using compiler GCC 9.3.0, (built-in) NLopt 2.6.1, (built-in) libscotch 6.0, Gmsh 4.9.4 and POV-Ray 3.7.0. It is expected that different versions may result in minor (insignificant) changes to the output, though this will generally result in failed tests.  If this happens, you may switch to the :code:`Minimal` mode as described in the following.
 
 The testing mode is controlled by variable :code:`BUILD_TESTING_MODE`, which may be changed as described :ref:`previously <have_dependency>` for :code:`HAVE_<DEPENDENCY>`.
 
-- The (default) :code:`Normal` mode checks if the program completes without error and if the produced output is the same as a set of reference output.
+- The :code:`Normal` mode checks if the program completes without error and if the produced output is the same as a set of reference output.  It is the default mode on Linux.
 
-- The :code:`Minimal` mode only checks if the program completes without error. This mode may be useful when installing on a machine which has program or library versions different from the ones with which the reference output was generated.
+- The :code:`Minimal` mode only checks if the program completes without error. This mode may be useful when installing on a machine which has program or library versions different from the ones with which the reference output was generated.  It is the default mode on macOS.
 
 - The :code:`Writing` mode overwrites the reference outputs with the generated output.  This mode may be useful when installing on a machine which has program or library versions different from the ones with which the reference output was generated and the user needs a reference output before making changes to the source code.
 
@@ -345,5 +345,5 @@ jargon:
 :code:`ver`   	 vertex
 ================ =================================
 
-.. [#mac-install] On Mac, install :program:`llvm` and :program:`libomp` via Homebrew.
+.. [#mac-install] On macOS, install :program:`llvm` and :program:`libomp` via Homebrew.
 
