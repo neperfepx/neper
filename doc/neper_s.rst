@@ -1,7 +1,7 @@
-.. _neper_s:
-
 .. index::
    single: -S
+
+.. _neper_s:
 
 Simulation Module (-S)
 ======================
