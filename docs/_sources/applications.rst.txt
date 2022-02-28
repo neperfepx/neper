@@ -19,6 +19,12 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2022
 ----
 
+.. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
+.. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
+- B Selvarajou, MH Jhon, RV Ramanujan and SS Quek, *Temperature dependent anisotropic mechanical behavior of TiAl based alloys*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2021.103175.
+- A Vijay and F Sadeghi, *Rolling Contact Fatigue of Coupled EHL and Anisotropic Polycrystalline Materials*, **Tribology International**, https://doi.org/10.1016/j.triboint.2022.107479.
+- H Ge, JC Quezada, V Le Houerou and C Chazallon, *Multiscale analysis of tire and asphalt pavement interaction via coupling FEM–DEM simulation*, **Engineering Structures**, https://doi.org/10.1016/j.engstruct.2022.113925.
+- J Liu, M Huang, Z Li, L Zhao and Y Zhu, *A deep learning method for predicting microvoid growth in heterogeneous polycrystals*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2022.108332.
 - B Engel, M Huth and C Hyde, *Numerical Investigation into the Influence of Grain Orientation Distribution on the Local and Global Elastic-Plastic Behaviour of Polycrystalline Nickel-Based Superalloy INC-738 LC*, **Crystals**, https://doi.org/10.3390/cryst12010100.
 - O Bulut, SS Acar and T Yalçinkaya, *The influence of thickness/grain size ratio in microforming through crystal plasticity*, **Procedia Structural Integrity**, https://doi.org/10.1016/j.prostr.2021.12.069.
 - HB Boubaker, C Mareau, Y Ayed, G Germain and A Tidu, *A crystal plasticity-based constitutive model for near-β titanium alloys under extreme loading conditions: Application to the Ti17 alloy*, **Mechanics of Materials**, https://doi.org/10.1016/j.mechmat.2021.104198.
