@@ -58,7 +58,12 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#tessellation-keys">Tessellation Keys</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#raster-tessellation-keys">Raster Tessellation Keys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#raster-tessellation-keys">Raster Tessellation Keys</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#general">General</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#geometry">Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#orientation">Orientation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#tessellation-optimization-keys">Tessellation Optimization Keys</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#time-keys">Time Keys</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#variable-keys">Variable Keys</a></li>
@@ -68,7 +73,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#orientation-optimization-keys">Orientation Optimization Keys</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id30">Variable Keys</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id36">Variable Keys</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#mesh-keys">Mesh Keys</a></li>
@@ -85,7 +90,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#colors">Colors</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#color-maps">Color Maps</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#color-map-for-integer-values">Color Map for Integer Values</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#color-maps-for-real-value">Color Maps for Real Value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#color-maps-for-real-values">Color Maps for Real Values</a></li>
 </ul>
 </li>
 </ul>
@@ -136,7 +141,7 @@
 <span id="id2"></span><h2>Mathematical and Logical Expressions<a class="headerlink" href="#mathematical-and-logical-expressions" title="Permalink to this headline"></a></h2>
 <p>Neper handles mathematical expressions thanks to the <strong class="program">muparser</strong> library. The expression must contain no space, tabulation or new-line characters, and match the following syntax. <a class="footnote-reference brackets" href="#muparser-doc" id="id3">1</a></p>
 <div class="section" id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h3>
+<span id="id4"></span><h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h3>
 <p>The following table gives an overview of the functions supported by the default implementation. It lists the function names, the number of arguments and a brief description.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -226,7 +231,7 @@
 </table>
 </div>
 <div class="section" id="binary-operators">
-<h3>Binary Operators<a class="headerlink" href="#binary-operators" title="Permalink to this headline"></a></h3>
+<span id="id5"></span><h3>Binary Operators<a class="headerlink" href="#binary-operators" title="Permalink to this headline"></a></h3>
 <p>The following table lists the default binary operators supported by the parser.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -255,7 +260,7 @@
 <td><p>greater or equal</p></td>
 <td><p>4</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">=</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">!=</span></code></p></td>
 <td><p>not equal</p></td>
 <td><p>4</p></td>
 </tr>
@@ -295,25 +300,25 @@
 </table>
 </div>
 <div class="section" id="ternary-operators">
-<h3>Ternary Operators<a class="headerlink" href="#ternary-operators" title="Permalink to this headline"></a></h3>
+<span id="id6"></span><h3>Ternary Operators<a class="headerlink" href="#ternary-operators" title="Permalink to this headline"></a></h3>
 <p>The parser has built in support for the if-then-else operator. It uses lazy evaluation in order to make sure only the necessary branch of the expression is evaluated.</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 17%" />
-<col style="width: 83%" />
+<col style="width: 16%" />
+<col style="width: 84%" />
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><strong>Operator</strong></p></td>
 <td><p><strong>Description</strong></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">?:</span></code></p></td>
-<td><p>if-then-else operator, following the C/C++ syntax: <code class="xref py py-data docutils literal notranslate"><span class="pre">(test)?value_if_true:value_if_false</span></code>.</p></td>
+<td><p>if-then-else operator, following the C/C++ syntax: <code class="xref py py-data docutils literal notranslate"><span class="pre">(&lt;test&gt;)?&lt;value_if_true&gt;:&lt;value_if_false&gt;</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="statistical-distributions">
-<span id="id4"></span><h3>Statistical Distributions<a class="headerlink" href="#statistical-distributions" title="Permalink to this headline"></a></h3>
+<span id="id7"></span><h3>Statistical Distributions<a class="headerlink" href="#statistical-distributions" title="Permalink to this headline"></a></h3>
 <p>The following table lists the statistical distributions.  Custom endpoints (not indicated) can also be added as arguments, as described in the following.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -389,7 +394,7 @@
 </div>
 </div>
 <div class="section" id="tessellation-keys">
-<span id="id5"></span><h2>Tessellation Keys<a class="headerlink" href="#tessellation-keys" title="Permalink to this headline"></a></h2>
+<span id="id8"></span><h2>Tessellation Keys<a class="headerlink" href="#tessellation-keys" title="Permalink to this headline"></a></h2>
 <p>Available keys for a tessellation itself are provided below.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -456,13 +461,13 @@
 </tr>
 </tbody>
 </table>
-<p>Available keys for tessellation seeds, vertices, edges, faces, polyhedra and cell groups are provided below.  Also note that the descriptors apply to <em>cells</em> if they are tagged to apply to <em>polyhedra</em> and the tessellation is 3D and <em>faces</em> and the tessellation is 2D.  You may also replace, in the tessellation keys themselves, <code class="xref py py-data docutils literal notranslate"><span class="pre">poly</span></code> by <code class="xref py py-data docutils literal notranslate"><span class="pre">cell</span></code> if the tessellation is 3D and <code class="xref py py-data docutils literal notranslate"><span class="pre">face</span></code> by <code class="xref py py-data docutils literal notranslate"><span class="pre">cell</span></code> if the tessellation is 2D (it applies only in rare cases).  For example, for a 2D tessellation, you may use <code class="xref py py-data docutils literal notranslate"><span class="pre">-statcell</span> <span class="pre">ncells</span></code> instead of <code class="xref py py-data docutils literal notranslate"><span class="pre">-statface</span> <span class="pre">nfaces</span></code>. Keys specific to cells are defined accordingly in the following but also apply to <em>polys</em> is the tessellation is 3D and <em>faces</em> is the tessellations is 2D.</p>
+<p>Available keys for tessellation seeds, vertices, edges, faces, polyhedra, crystals and cell groups are provided below.  Also note that the keys apply to <em>cells</em> if they are tagged to apply to <em>polyhedra</em> and the tessellation is 3D and <em>faces</em> and the tessellation is 2D, and that keys apply to <em>crystals</em> if they apply to <em>cells</em>.  You may also replace, in the tessellation keys themselves, <code class="xref py py-data docutils literal notranslate"><span class="pre">poly</span></code> by <code class="xref py py-data docutils literal notranslate"><span class="pre">cell</span></code> if the tessellation is 3D and <code class="xref py py-data docutils literal notranslate"><span class="pre">face</span></code> by <code class="xref py py-data docutils literal notranslate"><span class="pre">cell</span></code> if the tessellation is 2D (it applies only in rare cases).  For example, for a 2D tessellation, you may use <code class="xref py py-data docutils literal notranslate"><span class="pre">-statcell</span> <span class="pre">ncells</span></code> instead of <code class="xref py py-data docutils literal notranslate"><span class="pre">-statface</span> <span class="pre">nfaces</span></code>. Keys specific to cells are defined accordingly in the following but also apply to <em>polys</em> is the tessellation is 3D and <em>faces</em> is the tessellations is 2D.</p>
 <p>To turn a key value into a value relative to the mean over all entities (e.g. the relative cell size), append the key expression with the <code class="xref py py-data docutils literal notranslate"><span class="pre">:rel</span></code> modifier.  To turn a key value into a value which holds for a unit cell size, append the key expression with the <code class="xref py py-data docutils literal notranslate"><span class="pre">:uc</span></code> modifier.  To use as a reference only the <em>body</em> or <em>true</em> entities (see below), append <code class="xref py py-data docutils literal notranslate"><span class="pre">b</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">t</span></code> to the modifiers, respectively.</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 26%" />
-<col style="width: 52%" />
-<col style="width: 22%" />
+<col style="width: 16%" />
+<col style="width: 59%" />
+<col style="width: 25%" />
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><strong>Key</strong></p></td>
@@ -547,7 +552,7 @@
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">scale</span></code></p></td>
 <td><p>scale</p></td>
-<td><p>face <a class="footnote-reference brackets" href="#multiscale-face" id="id6">2</a></p></td>
+<td><p>face <a class="footnote-reference brackets" href="#multiscale-face" id="id9">2</a></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">length</span></code></p></td>
 <td><p>length</p></td>
@@ -566,23 +571,31 @@
 <td><p>cell, group</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">diameq</span></code></p></td>
-<td><p>equivalent diameter <a class="footnote-reference brackets" href="#equivalent-diameter" id="id7">3</a></p></td>
+<td><p>equivalent diameter <a class="footnote-reference brackets" href="#equivalent-diameter" id="id10">3</a></p></td>
 <td><p>face, poly</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">radeq</span></code></p></td>
-<td><p>equivalent radius (half of the eq. diameter</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">avdiameq</span></code></p></td>
+<td><p>average equivalent diameter <a class="footnote-reference brackets" href="#equivalent-diameter" id="id11">3</a></p></td>
+<td><p>face, poly</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">radeq</span></code></p></td>
+<td><p>equivalent radius (half of the eq. diameter)</p></td>
+<td><p>face, poly</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">avradeq</span></code></p></td>
+<td><p>average equivalent radius (half of the eq. diameter)</p></td>
 <td><p>face, poly</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">sphericity</span></code></p></td>
-<td><p>sphericity <a class="footnote-reference brackets" href="#sphericity" id="id8">4</a></p></td>
+<td><p>sphericity <a class="footnote-reference brackets" href="#sphericity" id="id12">4</a></p></td>
 <td><p>poly</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">circularity</span></code></p></td>
-<td><p>circularity <a class="footnote-reference brackets" href="#circularity" id="id9">5</a></p></td>
+<td><p>circularity <a class="footnote-reference brackets" href="#circularity" id="id13">5</a></p></td>
 <td><p>face</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">convexity</span></code></p></td>
-<td><p>convexity <a class="footnote-reference brackets" href="#convexity" id="id10">6</a></p></td>
+<td><p>convexity <a class="footnote-reference brackets" href="#convexity" id="id14">6</a></p></td>
 <td><p>face (only for a 2D tessellation), poly</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">dihangleav</span></code></p></td>
@@ -610,7 +623,7 @@
 <td><p>edge (in 2D), face (in 3D)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cyl</span></code></p></td>
-<td><p>cylinder polygonization <a class="footnote-reference brackets" href="#cyl" id="id11">17</a></p></td>
+<td><p>cylinder polygonization <a class="footnote-reference brackets" href="#cyl" id="id15">18</a></p></td>
 <td><p>edge</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vernb</span></code></p></td>
@@ -686,7 +699,7 @@
 <td><p>poly</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">faceeqs</span></code></p></td>
-<td><p>face equations <a class="footnote-reference brackets" href="#face-equation" id="id12">7</a></p></td>
+<td><p>face equations <a class="footnote-reference brackets" href="#face-equation" id="id16">8</a></p></td>
 <td><p>poly</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">nseednb</span></code></p></td>
@@ -694,7 +707,7 @@
 <td><p>poly</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">nseeds</span></code></p></td>
-<td><p>neighboring seeds <a class="footnote-reference brackets" href="#nseeds" id="id13">8</a></p></td>
+<td><p>neighboring seeds <a class="footnote-reference brackets" href="#nseeds" id="id17">9</a></p></td>
 <td><p>poly</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">scaleid(scale_nb)</span></code></p></td>
@@ -702,11 +715,11 @@
 <td><p>cell</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">lam</span></code></p></td>
-<td><p>lamella width id <a class="footnote-reference brackets" href="#lam" id="id14">9</a></p></td>
+<td><p>lamella width id <a class="footnote-reference brackets" href="#lam" id="id18">10</a></p></td>
 <td><p>cell</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">mode</span></code></p></td>
-<td><p>mode <a class="footnote-reference brackets" href="#mode" id="id15">10</a></p></td>
+<td><p>mode <a class="footnote-reference brackets" href="#mode" id="id19">11</a></p></td>
 <td><p>cell</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">group</span></code></p></td>
@@ -717,8 +730,8 @@
 <td><p>periodic (1 if periodic, 0 otherwise)</p></td>
 <td><p>ver, edge, face (in 3D)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">fiber(...)</span></code>, see <a class="reference internal" href="#orientation-fibers"><span class="std std-ref">Orientation Fibers</span></a></p></td>
-<td><p>1 if in orientation fiber and 0 otherwise</p></td>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">fiber(...)</span></code></p></td>
+<td><p>1 if in orientation fiber and 0 otherwise, see <a class="reference internal" href="#orientation-fibers"><span class="std std-ref">Orientation Fibers</span></a></p></td>
 <td><p>poly</p></td>
 </tr>
 </tbody>
@@ -734,7 +747,7 @@ defined as follows,</p>
 <p>For entities of lower dimension than cells (vertices, edges and faces), <code class="xref py py-data docutils literal notranslate"><span class="pre">body</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">true</span></code> are equal to the maximum <code class="xref py py-data docutils literal notranslate"><span class="pre">body`or</span> <span class="pre">:data:`true</span></code> values of the cells they belong to.</p>
 </div>
 <div class="section" id="raster-tessellation-keys">
-<span id="id16"></span><h2>Raster Tessellation Keys<a class="headerlink" href="#raster-tessellation-keys" title="Permalink to this headline"></a></h2>
+<span id="id20"></span><h2>Raster Tessellation Keys<a class="headerlink" href="#raster-tessellation-keys" title="Permalink to this headline"></a></h2>
 <p>Available keys for raster tessellation itself are provided below.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -838,6 +851,8 @@ defined as follows,</p>
 </tbody>
 </table>
 <p>Available keys for raster tessellation seeds, cells, cell groups and voxels are provided below.  Mathematical and logical expressions based on these keys can also be used.  To turn a key value into a value relative to the mean over all entities (e.g.the relative cell size), append the key expression with the <code class="xref py py-data docutils literal notranslate"><span class="pre">:rel</span></code> modifier.  To turn a key value into a value which holds for a unit cell size, append the key expression with the <code class="xref py py-data docutils literal notranslate"><span class="pre">:uc</span></code> modifier.</p>
+<div class="section" id="general">
+<h3>General<a class="headerlink" href="#general" title="Permalink to this headline"></a></h3>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 21%" />
@@ -853,153 +868,194 @@ defined as follows,</p>
 <td><p>identifier</p></td>
 <td><p>seed, cell, group, voxel</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code></p></td>
-<td><p>x coordinate</p></td>
-<td><p>seed, cell, voxel</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code></p></td>
-<td><p>y coordinate</p></td>
-<td><p>seed, cell, voxel</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code></p></td>
-<td><p>z coordinate</p></td>
-<td><p>seed, cell, voxel</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">coo</span></code></p></td>
-<td><p>x, y and z coordinates</p></td>
-<td><p>seed, cell, voxel</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vx</span></code></p></td>
-<td><p>x coordinate (in voxel)</p></td>
-<td><p>voxel</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vy</span></code></p></td>
-<td><p>y coordinate (in voxel)</p></td>
-<td><p>voxel</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vz</span></code></p></td>
-<td><p>z coordinate (in voxel)</p></td>
-<td><p>voxel</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vcoo</span></code></p></td>
-<td><p>x, y and z coordinates (in voxel)</p></td>
-<td><p>voxel</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vxmin</span></code></p></td>
-<td><p>minimum x coordinate (in voxel)</p></td>
-<td><p>cell</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vymin</span></code></p></td>
-<td><p>minimum y coordinate (in voxel)</p></td>
-<td><p>cell</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vzmin</span></code></p></td>
-<td><p>minimum z coordinate (in voxel)</p></td>
-<td><p>cell</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vxmax</span></code></p></td>
-<td><p>maximum x coordinate (in voxel)</p></td>
-<td><p>cell</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vymax</span></code></p></td>
-<td><p>maximum y coordinate (in voxel)</p></td>
-<td><p>cell</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vzmax</span></code></p></td>
-<td><p>maximum z coordinate (in voxel)</p></td>
-<td><p>cell</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">domvxmin</span></code></p></td>
-<td><p>domain minimum x coordinate (in voxel), always 1</p></td>
-<td><p>domain</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">domvymin</span></code></p></td>
-<td><p>domain minimum y coordinate (in voxel), always 1</p></td>
-<td><p>domain</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">domvzmin</span></code></p></td>
-<td><p>domain minimum z coordinate (in voxel), always 1</p></td>
-<td><p>domain</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">domvxmax</span></code></p></td>
-<td><p>domain maximum x coordinate (in voxel)</p></td>
-<td><p>domain</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">domvymax</span></code></p></td>
-<td><p>domain maximum y coordinate (in voxel)</p></td>
-<td><p>domain</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">domvzmax</span></code></p></td>
-<td><p>domain maximum z coordinate (in voxel)</p></td>
-<td><p>domain</p></td>
-</tr>
 <tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cell</span></code></p></td>
 <td><p>cell</p></td>
 <td><p>voxel</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">w</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">oridef</span></code></p></td>
+<td><p>orientation is defined</p></td>
+<td><p>voxel</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">w</span></code></p></td>
 <td><p>Laguerre weight</p></td>
 <td><p>seed</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">area</span></code></p></td>
+</tbody>
+</table>
+</div>
+<div class="section" id="geometry">
+<h3>Geometry<a class="headerlink" href="#geometry" title="Permalink to this headline"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 53%" />
+<col style="width: 27%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Key</strong></p></td>
+<td><p><strong>Descriptor</strong></p></td>
+<td><p><strong>Applies to</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code></p></td>
+<td><p>x coordinate</p></td>
+<td><p>seed, cell, voxel</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code></p></td>
+<td><p>y coordinate</p></td>
+<td><p>seed, cell, voxel</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code></p></td>
+<td><p>z coordinate</p></td>
+<td><p>seed, cell, voxel</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">coo</span></code></p></td>
+<td><p>x, y and z coordinates</p></td>
+<td><p>seed, cell, voxel</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vx</span></code></p></td>
+<td><p>x coordinate (in voxel)</p></td>
+<td><p>voxel</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vy</span></code></p></td>
+<td><p>y coordinate (in voxel)</p></td>
+<td><p>voxel</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vz</span></code></p></td>
+<td><p>z coordinate (in voxel)</p></td>
+<td><p>voxel</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vcoo</span></code></p></td>
+<td><p>x, y and z coordinates (in voxel)</p></td>
+<td><p>voxel</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vxmin</span></code></p></td>
+<td><p>minimum x coordinate (in voxel)</p></td>
+<td><p>cell</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vymin</span></code></p></td>
+<td><p>minimum y coordinate (in voxel)</p></td>
+<td><p>cell</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vzmin</span></code></p></td>
+<td><p>minimum z coordinate (in voxel)</p></td>
+<td><p>cell</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vxmax</span></code></p></td>
+<td><p>maximum x coordinate (in voxel)</p></td>
+<td><p>cell</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vymax</span></code></p></td>
+<td><p>maximum y coordinate (in voxel)</p></td>
+<td><p>cell</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vzmax</span></code></p></td>
+<td><p>maximum z coordinate (in voxel)</p></td>
+<td><p>cell</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">domvxmin</span></code></p></td>
+<td><p>domain minimum x coordinate (in voxel), always 1</p></td>
+<td><p>domain</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">domvymin</span></code></p></td>
+<td><p>domain minimum y coordinate (in voxel), always 1</p></td>
+<td><p>domain</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">domvzmin</span></code></p></td>
+<td><p>domain minimum z coordinate (in voxel), always 1</p></td>
+<td><p>domain</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">domvxmax</span></code></p></td>
+<td><p>domain maximum x coordinate (in voxel)</p></td>
+<td><p>domain</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">domvymax</span></code></p></td>
+<td><p>domain maximum y coordinate (in voxel)</p></td>
+<td><p>domain</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">domvzmax</span></code></p></td>
+<td><p>domain maximum z coordinate (in voxel)</p></td>
+<td><p>domain</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">area</span></code></p></td>
 <td><p>surface area</p></td>
 <td><p>cell, group (in 2D)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vol</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vol</span></code></p></td>
 <td><p>volume</p></td>
 <td><p>cell, group (in 3D)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">size</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">size</span></code></p></td>
 <td><p>size (surface area/volume in 2D/3D)</p></td>
 <td><p>cell, group</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">areafrac</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">areafrac</span></code></p></td>
 <td><p>surface area fraction</p></td>
 <td><p>group (in 2D)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">volfrac</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">volfrac</span></code></p></td>
 <td><p>volume fraction</p></td>
 <td><p>group (in 3D)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">sizefrac</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">sizefrac</span></code></p></td>
 <td><p>size fraction (surface area/volume fraction in 2D/3D)</p></td>
 <td><p>group</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">diameq</span></code></p></td>
-<td><p>equivalent diameter <a class="footnote-reference brackets" href="#equivalent-diameter" id="id17">3</a></p></td>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">diameq</span></code></p></td>
+<td><p>equivalent diameter <a class="footnote-reference brackets" href="#equivalent-diameter" id="id21">3</a></p></td>
 <td><p>cell</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">radeq</span></code></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">radeq</span></code></p></td>
 <td><p>equivalent radius</p></td>
 <td><p>cell</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">convexity</span></code></p></td>
-<td><p>convexity <a class="footnote-reference brackets" href="#convexity" id="id18">6</a></p></td>
-<td><p>cell</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">oridisanisoangles</span></code></p></td>
-<td><p>orientation distribution anisotropy / principal angles <a class="footnote-reference brackets" href="#jmps2015" id="id19">11</a></p></td>
-<td><p>cell</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">oridisanisoaxes</span></code></p></td>
-<td><p>orientation distribution anisotropy / principal axes <a class="footnote-reference brackets" href="#jmps2015" id="id20">11</a></p></td>
-<td><p>cell</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">oridisanisofact</span></code></p></td>
-<td><p>orientation distribution anisotropy factor <a class="footnote-reference brackets" href="#jmps2015" id="id21">11</a></p></td>
-<td><p>cell</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">oridisanisodeltas</span></code></p></td>
-<td><p>orientation distribution anisotropy / principal delta angles [#deltas]</p></td>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">convexity</span></code></p></td>
+<td><p>convexity <a class="footnote-reference brackets" href="#convexity" id="id22">6</a></p></td>
 <td><p>cell</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<div class="section" id="orientation">
+<h3>Orientation<a class="headerlink" href="#orientation" title="Permalink to this headline"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 53%" />
+<col style="width: 27%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Key</strong></p></td>
+<td><p><strong>Descriptor</strong></p></td>
+<td><p><strong>Applies to</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">gos</span></code></p></td>
+<td><p>grain orientation spread <a class="footnote-reference brackets" href="#gos" id="id23">7</a></p></td>
+<td><p>cell</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">oridisanisoangles</span></code></p></td>
+<td><p>orientation distribution anisotropy / principal angles <a class="footnote-reference brackets" href="#jmps2015" id="id24">12</a></p></td>
+<td><p>cell</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">oridisanisoaxes</span></code></p></td>
+<td><p>orientation distribution anisotropy / principal axes <a class="footnote-reference brackets" href="#jmps2015" id="id25">12</a></p></td>
+<td><p>cell</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">oridisanisofact</span></code></p></td>
+<td><p>orientation distribution anisotropy factor <a class="footnote-reference brackets" href="#jmps2015" id="id26">12</a></p></td>
+<td><p>cell</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">oridisanisodeltas</span></code></p></td>
+<td><p>orientation distribution anisotropy / principal delta angles <a class="footnote-reference brackets" href="#deltas" id="id27">13</a></p></td>
+<td><p>cell</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="section" id="tessellation-optimization-keys">
-<span id="id22"></span><h2>Tessellation Optimization Keys<a class="headerlink" href="#tessellation-optimization-keys" title="Permalink to this headline"></a></h2>
+<span id="id28"></span><h2>Tessellation Optimization Keys<a class="headerlink" href="#tessellation-optimization-keys" title="Permalink to this headline"></a></h2>
 <div class="section" id="time-keys">
-<span id="id23"></span><h3>Time Keys<a class="headerlink" href="#time-keys" title="Permalink to this headline"></a></h3>
+<span id="id29"></span><h3>Time Keys<a class="headerlink" href="#time-keys" title="Permalink to this headline"></a></h3>
 <p>The available keys for option <a class="reference internal" href="neper_t.html#cmdoption-morphooptilogtime"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morphooptilogtime</span></code></a> are provided below. Use <code class="xref py py-data docutils literal notranslate"><span class="pre">iter(&lt;factor&gt;)</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">factor</span></code> is an integer reduction factor, to log values only at specific iteration numbers.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1086,7 +1142,7 @@ defined as follows,</p>
 </table>
 </div>
 <div class="section" id="variable-keys">
-<span id="id24"></span><h3>Variable Keys<a class="headerlink" href="#variable-keys" title="Permalink to this headline"></a></h3>
+<span id="id30"></span><h3>Variable Keys<a class="headerlink" href="#variable-keys" title="Permalink to this headline"></a></h3>
 <p>The available keys for option <a class="reference internal" href="neper_t.html#cmdoption-morphooptilogvar"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morphooptilogvar</span></code></a> are provided below.  Use <code class="xref py py-data docutils literal notranslate"><span class="pre">iter(&lt;factor&gt;)</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">factor</span></code> is an integer reduction factor, to log values only at specific iteration numbers.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1127,7 +1183,7 @@ defined as follows,</p>
 </table>
 </div>
 <div class="section" id="objective-function-value-keys">
-<span id="id25"></span><h3>Objective Function Value Keys<a class="headerlink" href="#objective-function-value-keys" title="Permalink to this headline"></a></h3>
+<span id="id31"></span><h3>Objective Function Value Keys<a class="headerlink" href="#objective-function-value-keys" title="Permalink to this headline"></a></h3>
 <p>The available keys for option <a class="reference internal" href="neper_t.html#cmdoption-morphooptilogval"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morphooptilogval</span></code></a> are provided below.  Use <code class="xref py py-data docutils literal notranslate"><span class="pre">iter(&lt;factor&gt;)</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">factor</span></code> is an integer reduction factor, to log values only at specific iteration numbers.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1169,13 +1225,13 @@ defined as follows,</p>
 <td><p>optimization loop</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">plateaulength</span></code></p></td>
-<td><p>current plateau length <a class="footnote-reference brackets" href="#plateau" id="id26">13</a></p></td>
+<td><p>current plateau length <a class="footnote-reference brackets" href="#plateau" id="id32">14</a></p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="statistical-distribution-keys">
-<span id="id27"></span><h3>Statistical Distribution Keys<a class="headerlink" href="#statistical-distribution-keys" title="Permalink to this headline"></a></h3>
+<span id="id33"></span><h3>Statistical Distribution Keys<a class="headerlink" href="#statistical-distribution-keys" title="Permalink to this headline"></a></h3>
 <p>The available keys for option <a class="reference internal" href="neper_t.html#cmdoption-morphooptilogdis"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morphooptilogdis</span></code></a> are provided below. PDF stands for <em>probability density function</em> and CDF stands for <em>cumulative probability density function</em>.  Use <code class="xref py py-data docutils literal notranslate"><span class="pre">iter(&lt;factor&gt;)</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">factor</span></code> is a reduction factor, to log values only at specific iteration numbers.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1217,7 +1273,7 @@ defined as follows,</p>
 </table>
 </div>
 <div class="section" id="raster-tessellation-voxel-keys">
-<span id="id28"></span><h3>Raster Tessellation Voxel Keys<a class="headerlink" href="#raster-tessellation-voxel-keys" title="Permalink to this headline"></a></h3>
+<span id="id34"></span><h3>Raster Tessellation Voxel Keys<a class="headerlink" href="#raster-tessellation-voxel-keys" title="Permalink to this headline"></a></h3>
 <p>The available keys for option <a class="reference internal" href="neper_t.html#cmdoption-morphooptilogtesr"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morphooptilogtesr</span></code></a> are provided below.  Values are written for each voxel used to compute the objective function.  Use <code class="xref py py-data docutils literal notranslate"><span class="pre">iter(&lt;factor&gt;)</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">factor</span></code> is a reduction factor, to log values only at specific iteration numbers.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1251,9 +1307,9 @@ defined as follows,</p>
 </div>
 </div>
 <div class="section" id="orientation-optimization-keys">
-<span id="id29"></span><h2>Orientation Optimization Keys<a class="headerlink" href="#orientation-optimization-keys" title="Permalink to this headline"></a></h2>
-<div class="section" id="id30">
-<h3>Variable Keys<a class="headerlink" href="#id30" title="Permalink to this headline"></a></h3>
+<span id="id35"></span><h2>Orientation Optimization Keys<a class="headerlink" href="#orientation-optimization-keys" title="Permalink to this headline"></a></h2>
+<div class="section" id="id36">
+<h3>Variable Keys<a class="headerlink" href="#id36" title="Permalink to this headline"></a></h3>
 <p>The available keys for option <a class="reference internal" href="neper_t.html#cmdoption-orioptilogvar"><code class="xref std std-option docutils literal notranslate"><span class="pre">-orioptilogvar</span></code></a> are provided below.  For all orientation descriptors but <code class="xref py py-data docutils literal notranslate"><span class="pre">quaternion</span></code>, the returned orientation are located in the fundamental region. Use <code class="xref py py-data docutils literal notranslate"><span class="pre">iter(&lt;factor&gt;)</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">factor</span></code> is an integer reduction factor, to log values only at specific iteration numbers.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1307,7 +1363,7 @@ defined as follows,</p>
 </div>
 </div>
 <div class="section" id="mesh-keys">
-<span id="id31"></span><h2>Mesh Keys<a class="headerlink" href="#mesh-keys" title="Permalink to this headline"></a></h2>
+<span id="id37"></span><h2>Mesh Keys<a class="headerlink" href="#mesh-keys" title="Permalink to this headline"></a></h2>
 <p>Available keys for a mesh itself are provided below.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1427,7 +1483,7 @@ defined as follows,</p>
 <td><p>{0-3}D elt, {0-3}D elset</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cyl</span></code></p></td>
-<td><p>cylinder polygonization <a class="footnote-reference brackets" href="#cyl" id="id32">17</a></p></td>
+<td><p>cylinder polygonization <a class="footnote-reference brackets" href="#cyl" id="id38">18</a></p></td>
 <td><p>1D elt, 1D elset</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vol</span></code></p></td>
@@ -1499,7 +1555,7 @@ defined as follows,</p>
 <td><p>{0-3}D elt, {0-3}D elset</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">domtype</span></code></p></td>
-<td><p>type of domain <a class="footnote-reference brackets" href="#domtype" id="id33">14</a></p></td>
+<td><p>type of domain <a class="footnote-reference brackets" href="#domtype" id="id39">15</a></p></td>
 <td><p>{0-2}D elt, {0-2}D elset</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">2dmeshp</span></code></p></td>
@@ -1523,14 +1579,14 @@ defined as follows,</p>
 <td><p>{0,1}D elt, 2D elt (in 3D), {0,1}D elset, 2D elset (in 3D)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">col_rodrigues</span></code></p></td>
-<td><p>color in Rodrigues vector convention <a class="footnote-reference brackets" href="#col-rodrigues" id="id34">15</a></p></td>
+<td><p>color in Rodrigues vector convention <a class="footnote-reference brackets" href="#col-rodrigues" id="id40">16</a></p></td>
 <td><p>node</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">col_stdtriangle</span></code></p></td>
-<td><p>color in IPF convention <a class="footnote-reference brackets" href="#col-stdtriangle" id="id35">16</a></p></td>
+<td><p>color in IPF convention <a class="footnote-reference brackets" href="#col-stdtriangle" id="id41">17</a></p></td>
 <td><p>node</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">fiber(...)</span></code> <a class="footnote-reference brackets" href="#fiber" id="id36">18</a></p></td>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">fiber(...)</span></code> <a class="footnote-reference brackets" href="#fiber" id="id42">19</a></p></td>
 <td><p>1 if in orientation fiber and 0 otherwise</p></td>
 <td><p>3D elt, 3D elset</p></td>
 </tr>
@@ -1539,7 +1595,7 @@ defined as follows,</p>
 <p>Variables beginning with <code class="xref py py-data docutils literal notranslate"><span class="pre">2dmesh</span></code> are only available for statistics (options beginning with <code class="xref py py-data docutils literal notranslate"><span class="pre">-stat</span></code> of module -M); for elements, they apply to the centroids.</p>
 </div>
 <div class="section" id="point-keys">
-<span id="id37"></span><h2>Point Keys<a class="headerlink" href="#point-keys" title="Permalink to this headline"></a></h2>
+<span id="id43"></span><h2>Point Keys<a class="headerlink" href="#point-keys" title="Permalink to this headline"></a></h2>
 <p>Available keys for points are provided below.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1613,7 +1669,7 @@ defined as follows,</p>
 </table>
 </div>
 <div class="section" id="simulation-results">
-<span id="id38"></span><h2>Simulation Results<a class="headerlink" href="#simulation-results" title="Permalink to this headline"></a></h2>
+<span id="id44"></span><h2>Simulation Results<a class="headerlink" href="#simulation-results" title="Permalink to this headline"></a></h2>
 <p>A result of a <a class="reference internal" href="fileformat.html#simulation-directory"><span class="std std-ref">simulation directory</span></a> can be invoked simply from its name.  A component of a vectorial or tensorial result can be invoked by prefixing the component to the name, as in <code class="xref py py-data docutils literal notranslate"><span class="pre">coo1</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">stress11</span></code>, etc.  For a symmetrical tensor (for which only 6 values are stored), <code class="xref py py-data docutils literal notranslate"><span class="pre">t</span></code>, both <code class="xref py py-data docutils literal notranslate"><span class="pre">t&lt;i&gt;&lt;j&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">t&lt;j&gt;&lt;i&gt;</span></code> are valid.  The type of a result of the simulation directory is determined automatically. Elset and mesh results can be obtained from the element results, by averaging or other statistical treatments.</p>
 <p>Available results / keys and concerning orientation distributions are provided below.</p>
 <table class="docutils align-default">
@@ -1655,9 +1711,9 @@ defined as follows,</p>
 </table>
 </div>
 <div class="section" id="rotations-and-orientations">
-<span id="id39"></span><h2>Rotations and Orientations<a class="headerlink" href="#rotations-and-orientations" title="Permalink to this headline"></a></h2>
+<span id="id45"></span><h2>Rotations and Orientations<a class="headerlink" href="#rotations-and-orientations" title="Permalink to this headline"></a></h2>
 <div class="section" id="rotation-and-orientation-descriptors">
-<span id="id40"></span><h3>Rotation and Orientation Descriptors<a class="headerlink" href="#rotation-and-orientation-descriptors" title="Permalink to this headline"></a></h3>
+<span id="id46"></span><h3>Rotation and Orientation Descriptors<a class="headerlink" href="#rotation-and-orientation-descriptors" title="Permalink to this headline"></a></h3>
 <p>Rotations and orientations can be described using the following
 descriptors.</p>
 <table class="docutils align-default">
@@ -1705,7 +1761,7 @@ descriptors.</p>
 <p>Some options can take parameter values as argument, in which case the orientation must be expressed as <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;descriptor&gt;(&lt;parameter1&gt;,&lt;parameters2&gt;,...)</span></code>. An example is <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues(0.1,0.2,0.3)</span></code>.</p>
 </div>
 <div class="section" id="ideal-orientations">
-<span id="id41"></span><h3>Ideal Orientations<a class="headerlink" href="#ideal-orientations" title="Permalink to this headline"></a></h3>
+<span id="id47"></span><h3>Ideal Orientations<a class="headerlink" href="#ideal-orientations" title="Permalink to this headline"></a></h3>
 <p>Keys are available for ideal orientations (lowercased is accepted):</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1757,7 +1813,7 @@ descriptors.</p>
 <p>When loading orientations from an external file, use <code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code> where the orientation descriptor is among those listed above and is <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues:active</span></code> by default.</p>
 </div>
 <div class="section" id="orientation-fibers">
-<span id="id42"></span><h3>Orientation Fibers<a class="headerlink" href="#orientation-fibers" title="Permalink to this headline"></a></h3>
+<span id="id48"></span><h3>Orientation Fibers<a class="headerlink" href="#orientation-fibers" title="Permalink to this headline"></a></h3>
 <p>Orientation fibers are defined by a crystal direction being parallel to a sample direction.  Depending on the context, an angular tolerance or distribution with respect to the theoretical fiber can also be defined:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">fiber(&lt;dirc_x&gt;,&lt;dirc_y&gt;,&lt;dirc_z&gt;,&lt;dirs_x&gt;,&lt;dirs_y&gt;,&lt;dirs_z&gt;)</span></code>, where (<code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dirc_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dirc_y&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dirc_z&gt;</span></code>) is the crystal direction and (<code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dirs_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dirs_y&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dirs_z&gt;</span></code>) is the sample direction, corresponds to an ideal orientation fiber;</p></li>
@@ -1767,7 +1823,7 @@ descriptors.</p>
 </div>
 </div>
 <div class="section" id="crystal-symmetries">
-<span id="id43"></span><h2>Crystal Symmetries<a class="headerlink" href="#crystal-symmetries" title="Permalink to this headline"></a></h2>
+<span id="id49"></span><h2>Crystal Symmetries<a class="headerlink" href="#crystal-symmetries" title="Permalink to this headline"></a></h2>
 <p>Crystal symmetries can be described using the following descriptors.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -1840,9 +1896,9 @@ descriptors.</p>
 </table>
 </div>
 <div class="section" id="colors-and-color-maps">
-<span id="id44"></span><h2>Colors and Color Maps<a class="headerlink" href="#colors-and-color-maps" title="Permalink to this headline"></a></h2>
+<span id="id50"></span><h2>Colors and Color Maps<a class="headerlink" href="#colors-and-color-maps" title="Permalink to this headline"></a></h2>
 <div class="section" id="colors">
-<h3>Colors<a class="headerlink" href="#colors" title="Permalink to this headline"></a></h3>
+<span id="id51"></span><h3>Colors<a class="headerlink" href="#colors" title="Permalink to this headline"></a></h3>
 <p>The available colors are provided below, with their corresponding RGB channel values (ranging from 0 to 255). Any other color can be defined from the RGB channel values, under format <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;R_value&gt;:&lt;G_value&gt;:&lt;B_value&gt;</span></code>.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -2268,14 +2324,14 @@ descriptors.</p>
 </table>
 </div>
 <div class="section" id="color-maps">
-<h3>Color Maps<a class="headerlink" href="#color-maps" title="Permalink to this headline"></a></h3>
+<span id="id52"></span><h3>Color Maps<a class="headerlink" href="#color-maps" title="Permalink to this headline"></a></h3>
 </div>
 <div class="section" id="color-map-for-integer-values">
-<h3>Color Map for Integer Values<a class="headerlink" href="#color-map-for-integer-values" title="Permalink to this headline"></a></h3>
+<span id="id53"></span><h3>Color Map for Integer Values<a class="headerlink" href="#color-map-for-integer-values" title="Permalink to this headline"></a></h3>
 <p>The <em>color map</em> or <em>palette</em> used to represent integer values is defined from the above color list, by excluding colors of brightness below 0.2 and above 0.8.  The brightness is defined as the average of the channel values divided by 255.  The resulting list of colors is: (1) <code class="xref py py-data docutils literal notranslate"><span class="pre">red</span></code>, (2) <code class="xref py py-data docutils literal notranslate"><span class="pre">green</span></code>, (3) <code class="xref py py-data docutils literal notranslate"><span class="pre">blue</span></code>, (4) <code class="xref py py-data docutils literal notranslate"><span class="pre">yellow</span></code>, (5) <code class="xref py py-data docutils literal notranslate"><span class="pre">magenta</span></code>, (6) <code class="xref py py-data docutils literal notranslate"><span class="pre">cyan</span></code>, (7) <code class="xref py py-data docutils literal notranslate"><span class="pre">chartreuse</span></code>, (8) <code class="xref py py-data docutils literal notranslate"><span class="pre">springgreen</span></code>, (9) <code class="xref py py-data docutils literal notranslate"><span class="pre">olive</span></code>, (10) <code class="xref py py-data docutils literal notranslate"><span class="pre">purple</span></code>, (11) <code class="xref py py-data docutils literal notranslate"><span class="pre">teal</span></code>, (12) <code class="xref py py-data docutils literal notranslate"><span class="pre">gray</span></code>, (13) <code class="xref py py-data docutils literal notranslate"><span class="pre">deepskyblue</span></code>, (14) <code class="xref py py-data docutils literal notranslate"><span class="pre">lawngreen</span></code>, (15) <code class="xref py py-data docutils literal notranslate"><span class="pre">darkgray</span></code>, (16) <code class="xref py py-data docutils literal notranslate"><span class="pre">orangered</span></code>, (17) <code class="xref py py-data docutils literal notranslate"><span class="pre">silver</span></code>, (18) <code class="xref py py-data docutils literal notranslate"><span class="pre">darkorange</span></code>, (19) <code class="xref py py-data docutils literal notranslate"><span class="pre">mediumblue</span></code>, (20) <code class="xref py py-data docutils literal notranslate"><span class="pre">indigo</span></code>, (21) <code class="xref py py-data docutils literal notranslate"><span class="pre">lightcoral</span></code>, (22) <code class="xref py py-data docutils literal notranslate"><span class="pre">coral</span></code>, (23) <code class="xref py py-data docutils literal notranslate"><span class="pre">salmon</span></code>, (24) <code class="xref py py-data docutils literal notranslate"><span class="pre">aquamarine</span></code>, (25) <code class="xref py py-data docutils literal notranslate"><span class="pre">gold</span></code>, (26) <code class="xref py py-data docutils literal notranslate"><span class="pre">orange</span></code>, (27) <code class="xref py py-data docutils literal notranslate"><span class="pre">darkmagenta</span></code>, (28) <code class="xref py py-data docutils literal notranslate"><span class="pre">darkcyan</span></code>, (29) <code class="xref py py-data docutils literal notranslate"><span class="pre">peru</span></code>, (30) <code class="xref py py-data docutils literal notranslate"><span class="pre">steelblue</span></code>, (31) <code class="xref py py-data docutils literal notranslate"><span class="pre">mediumspringgreen</span></code>, (32) <code class="xref py py-data docutils literal notranslate"><span class="pre">darkslateblue</span></code>, (33) <code class="xref py py-data docutils literal notranslate"><span class="pre">darkgoldenrod</span></code>, (34) <code class="xref py py-data docutils literal notranslate"><span class="pre">lightsalmon</span></code>, (35) <code class="xref py py-data docutils literal notranslate"><span class="pre">lightskyblue</span></code>, (36) <code class="xref py py-data docutils literal notranslate"><span class="pre">tomato</span></code>, (37) <code class="xref py py-data docutils literal notranslate"><span class="pre">slategray</span></code>, (38) <code class="xref py py-data docutils literal notranslate"><span class="pre">hotpink</span></code>, (39) <code class="xref py py-data docutils literal notranslate"><span class="pre">darkkhaki</span></code>, (40) <code class="xref py py-data docutils literal notranslate"><span class="pre">darkturquoise</span></code>, (41) <code class="xref py py-data docutils literal notranslate"><span class="pre">mediumseagreen</span></code>, (42) <code class="xref py py-data docutils literal notranslate"><span class="pre">mediumvioletred</span></code>, (43) <code class="xref py py-data docutils literal notranslate"><span class="pre">violet</span></code>, (44) <code class="xref py py-data docutils literal notranslate"><span class="pre">greenyellow</span></code>, (45) <code class="xref py py-data docutils literal notranslate"><span class="pre">darkseagreen</span></code>, (46) <code class="xref py py-data docutils literal notranslate"><span class="pre">rosybrown</span></code>, (47) <code class="xref py py-data docutils literal notranslate"><span class="pre">deeppink</span></code>, (48) <code class="xref py py-data docutils literal notranslate"><span class="pre">saddlebrown</span></code>, (49) <code class="xref py py-data docutils literal notranslate"><span class="pre">darkviolet</span></code>, (50) <code class="xref py py-data docutils literal notranslate"><span class="pre">dodgerblue</span></code>, (51) <code class="xref py py-data docutils literal notranslate"><span class="pre">lightslategray</span></code>, (52) <code class="xref py py-data docutils literal notranslate"><span class="pre">burlywood</span></code>, (53) <code class="xref py py-data docutils literal notranslate"><span class="pre">mediumslateblue</span></code>, (54) <code class="xref py py-data docutils literal notranslate"><span class="pre">turquoise</span></code>, (55) <code class="xref py py-data docutils literal notranslate"><span class="pre">skyblue</span></code>, (56) <code class="xref py py-data docutils literal notranslate"><span class="pre">mediumturquoise</span></code>, (57) <code class="xref py py-data docutils literal notranslate"><span class="pre">tan</span></code>, (58) <code class="xref py py-data docutils literal notranslate"><span class="pre">limegreen</span></code>, (59) <code class="xref py py-data docutils literal notranslate"><span class="pre">darksalmon</span></code>, (60) <code class="xref py py-data docutils literal notranslate"><span class="pre">lightsteelblue</span></code>, (61) <code class="xref py py-data docutils literal notranslate"><span class="pre">royalblue</span></code>, (62) <code class="xref py py-data docutils literal notranslate"><span class="pre">palegreen</span></code>, (63) <code class="xref py py-data docutils literal notranslate"><span class="pre">crimson</span></code>, (64) <code class="xref py py-data docutils literal notranslate"><span class="pre">mediumorchid</span></code>, (65) <code class="xref py py-data docutils literal notranslate"><span class="pre">khaki</span></code>, (66) <code class="xref py py-data docutils literal notranslate"><span class="pre">lightgreen</span></code>, (67) <code class="xref py py-data docutils literal notranslate"><span class="pre">darkslategray</span></code>, (68) <code class="xref py py-data docutils literal notranslate"><span class="pre">darkorchid</span></code>, (69) <code class="xref py py-data docutils literal notranslate"><span class="pre">seagreen</span></code>, (70) <code class="xref py py-data docutils literal notranslate"><span class="pre">yellowgreen</span></code>, (71) <code class="xref py py-data docutils literal notranslate"><span class="pre">blueviolet</span></code>, (72) <code class="xref py py-data docutils literal notranslate"><span class="pre">palevioletred</span></code>, (73) <code class="xref py py-data docutils literal notranslate"><span class="pre">olivedrab</span></code>, (74) <code class="xref py py-data docutils literal notranslate"><span class="pre">mediumpurple</span></code>, (75) <code class="xref py py-data docutils literal notranslate"><span class="pre">sandybrown</span></code>, (76) <code class="xref py py-data docutils literal notranslate"><span class="pre">darkolivegreen</span></code>, (77) <code class="xref py py-data docutils literal notranslate"><span class="pre">mediumaquamarine</span></code>, (78) <code class="xref py py-data docutils literal notranslate"><span class="pre">slateblue</span></code>, (79) <code class="xref py py-data docutils literal notranslate"><span class="pre">forestgreen</span></code>, (80) <code class="xref py py-data docutils literal notranslate"><span class="pre">midnightblue</span></code>, (81) <code class="xref py py-data docutils literal notranslate"><span class="pre">lightseagreen</span></code>, (82) <code class="xref py py-data docutils literal notranslate"><span class="pre">orchid</span></code>, (83) <code class="xref py py-data docutils literal notranslate"><span class="pre">cornflowerblue</span></code>, (84) <code class="xref py py-data docutils literal notranslate"><span class="pre">sienna</span></code>, (85) <code class="xref py py-data docutils literal notranslate"><span class="pre">firebrick</span></code>, (86) <code class="xref py py-data docutils literal notranslate"><span class="pre">indianred</span></code>, (87) <code class="xref py py-data docutils literal notranslate"><span class="pre">dimgray</span></code>, (88) <code class="xref py py-data docutils literal notranslate"><span class="pre">chocolate</span></code>, (89) <code class="xref py py-data docutils literal notranslate"><span class="pre">brown</span></code>, (90) <code class="xref py py-data docutils literal notranslate"><span class="pre">goldenrod</span></code>, (91) <code class="xref py py-data docutils literal notranslate"><span class="pre">plum</span></code> and (92) <code class="xref py py-data docutils literal notranslate"><span class="pre">cadetblue</span></code>.</p>
 </div>
-<div class="section" id="color-maps-for-real-value">
-<h3>Color Maps for Real Value<a class="headerlink" href="#color-maps-for-real-value" title="Permalink to this headline"></a></h3>
+<div class="section" id="color-maps-for-real-values">
+<span id="color-map-for-real-values"></span><h3>Color Maps for Real Values<a class="headerlink" href="#color-maps-for-real-values" title="Permalink to this headline"></a></h3>
 <p>The color <em>map</em> used to represent real values is smooth and obtained by interpolation between nominal colors. <a class="reference external" href="https://github.com/yuki-koyama/tinycolormap">Tinycolormap</a> is used to generate standard color maps:</p>
 <table class="docutils align-default">
 <colgroup>
@@ -2316,55 +2372,58 @@ descriptors.</p>
 <dt class="label" id="muparser-doc"><span class="brackets"><a class="fn-backref" href="#id3">1</a></span></dt>
 <dd><p>Taken from the <code class="xref py py-data docutils literal notranslate"><span class="pre">muparser</span></code> <a class="reference external" href="http://beltoforion.de/article.php?a=muparser">documentation</a></p>
 </dd>
-<dt class="label" id="multiscale-face"><span class="brackets"><a class="fn-backref" href="#id6">2</a></span></dt>
+<dt class="label" id="multiscale-face"><span class="brackets"><a class="fn-backref" href="#id9">2</a></span></dt>
 <dd><p>Applies only to a 3D tessellation and relevant for multiscale tessellations.  The scale of a face is the scale at which the face was created, and it ranges from 0 (for domain faces) to the number of scales of the tessellation (for the last created faces).</p>
 </dd>
-<dt class="label" id="equivalent-diameter"><span class="brackets">3</span><span class="fn-backref">(<a href="#id7">1</a>,<a href="#id17">2</a>)</span></dt>
+<dt class="label" id="equivalent-diameter"><span class="brackets">3</span><span class="fn-backref">(<a href="#id10">1</a>,<a href="#id11">2</a>,<a href="#id21">3</a>)</span></dt>
 <dd><p>Equivalent diameter = diameter of the circle of equivalent area/volume in 2D/3D</p>
 </dd>
-<dt class="label" id="sphericity"><span class="brackets"><a class="fn-backref" href="#id8">4</a></span></dt>
+<dt class="label" id="sphericity"><span class="brackets"><a class="fn-backref" href="#id12">4</a></span></dt>
 <dd><p>Sphericity of a polyhedron = ratio of the surface area of the sphere of equivalent volume to the surface area of the polyhedron</p>
 </dd>
-<dt class="label" id="circularity"><span class="brackets"><a class="fn-backref" href="#id9">5</a></span></dt>
+<dt class="label" id="circularity"><span class="brackets"><a class="fn-backref" href="#id13">5</a></span></dt>
 <dd><p>Circularity of a polygon = ratio of the perimeter of the circle of equivalent area to the perimeter of the polygon</p>
 </dd>
-<dt class="label" id="convexity"><span class="brackets">6</span><span class="fn-backref">(<a href="#id10">1</a>,<a href="#id18">2</a>)</span></dt>
+<dt class="label" id="convexity"><span class="brackets">6</span><span class="fn-backref">(<a href="#id14">1</a>,<a href="#id22">2</a>)</span></dt>
 <dd><p>Convexity of a polyhedron (face) = ratio of the volume (surface area) of the polyhedron (face) to the volume (surface area) of the convex hull of the polyhedron (face)</p>
 </dd>
-<dt class="label" id="face-equation"><span class="brackets"><a class="fn-backref" href="#id12">7</a></span></dt>
+<dt class="label" id="gos"><span class="brackets"><a class="fn-backref" href="#id23">7</a></span></dt>
+<dd><p>Grain orientation spread = average disorientation (angle) with respect to the average orientation</p>
+</dd>
+<dt class="label" id="face-equation"><span class="brackets"><a class="fn-backref" href="#id16">8</a></span></dt>
 <dd><p>A face equation is specified by the parameters <span class="math notranslate nohighlight">\(d\)</span>, <span class="math notranslate nohighlight">\(a\)</span>, <span class="math notranslate nohighlight">\(b\)</span> and <span class="math notranslate nohighlight">\(c\)</span>, with the equation being: <span class="math notranslate nohighlight">\(a x + b y + c z = d\)</span>.  The vector <span class="math notranslate nohighlight">\((a, b, c)\)</span> is pointing outwards of the polyhedron.</p>
 </dd>
-<dt class="label" id="nseeds"><span class="brackets"><a class="fn-backref" href="#id13">8</a></span></dt>
+<dt class="label" id="nseeds"><span class="brackets"><a class="fn-backref" href="#id17">9</a></span></dt>
 <dd><p>If a polyhedron has no neighbor on a face, a negative value is returned.</p>
 </dd>
-<dt class="label" id="lam"><span class="brackets"><a class="fn-backref" href="#id14">9</a></span></dt>
+<dt class="label" id="lam"><span class="brackets"><a class="fn-backref" href="#id18">10</a></span></dt>
 <dd><p>In the case of a lamellar tessellation with several lamella widths, <code class="xref py py-data docutils literal notranslate"><span class="pre">lam</span></code> stands for the actual lamella width of the cell (starting from 1).</p>
 </dd>
-<dt class="label" id="mode"><span class="brackets"><a class="fn-backref" href="#id15">10</a></span></dt>
+<dt class="label" id="mode"><span class="brackets"><a class="fn-backref" href="#id19">11</a></span></dt>
 <dd><p>In the case of a multimodal tessellation (e.g.in terms of cell size), <code class="xref py py-data docutils literal notranslate"><span class="pre">mode</span></code> stands for the actual mode (starting from 1).  Otherwise, it is equal to 1.</p>
 </dd>
-<dt class="label" id="jmps2015"><span class="brackets">11</span><span class="fn-backref">(<a href="#id19">1</a>,<a href="#id20">2</a>,<a href="#id21">3</a>)</span></dt>
+<dt class="label" id="jmps2015"><span class="brackets">12</span><span class="fn-backref">(<a href="#id24">1</a>,<a href="#id25">2</a>,<a href="#id26">3</a>)</span></dt>
 <dd><p>R Quey, JH Driver, PR Dawson, Intra-grain orientation distributions in hot-deformed aluminium: orientation dependence and relation to deformation mechanisms, Journal of the Mechanics and Physics of Solids, vol. 84, pp. 506-524, 2015.</p>
 </dd>
-<dt class="label" id="deltas"><span class="brackets">12</span></dt>
+<dt class="label" id="deltas"><span class="brackets"><a class="fn-backref" href="#id27">13</a></span></dt>
 <dd><p>For Gaussian distributions, they are equal to 1.349 times the values of <code class="xref py py-data docutils literal notranslate"><span class="pre">oridisanisoangles</span></code>.</p>
 </dd>
-<dt class="label" id="plateau"><span class="brackets"><a class="fn-backref" href="#id26">13</a></span></dt>
+<dt class="label" id="plateau"><span class="brackets"><a class="fn-backref" href="#id32">14</a></span></dt>
 <dd><p>Number of iterations during which the objective function does not decrease</p>
 </dd>
-<dt class="label" id="domtype"><span class="brackets"><a class="fn-backref" href="#id33">14</a></span></dt>
+<dt class="label" id="domtype"><span class="brackets"><a class="fn-backref" href="#id39">15</a></span></dt>
 <dd><p>0 if on a domain vertex, 1 if on a domain edge and 2 if on a domain face</p>
 </dd>
-<dt class="label" id="col-rodrigues"><span class="brackets"><a class="fn-backref" href="#id34">15</a></span></dt>
+<dt class="label" id="col-rodrigues"><span class="brackets"><a class="fn-backref" href="#id40">16</a></span></dt>
 <dd><p>Applies to a mesh of Rodrigues space</p>
 </dd>
-<dt class="label" id="col-stdtriangle"><span class="brackets"><a class="fn-backref" href="#id35">16</a></span></dt>
+<dt class="label" id="col-stdtriangle"><span class="brackets"><a class="fn-backref" href="#id41">17</a></span></dt>
 <dd><p>Applies to a mesh of the stereographic triangle</p>
 </dd>
-<dt class="label" id="cyl"><span class="brackets">17</span><span class="fn-backref">(<a href="#id11">1</a>,<a href="#id32">2</a>)</span></dt>
+<dt class="label" id="cyl"><span class="brackets">18</span><span class="fn-backref">(<a href="#id15">1</a>,<a href="#id38">2</a>)</span></dt>
 <dd><p>1 if polygonize the circular part of a cylindrical domain and 0 otherwise.</p>
 </dd>
-<dt class="label" id="fiber"><span class="brackets"><a class="fn-backref" href="#id36">18</a></span></dt>
+<dt class="label" id="fiber"><span class="brackets"><a class="fn-backref" href="#id42">19</a></span></dt>
 <dd><p>See <a class="reference internal" href="#orientation-fibers"><span class="std std-ref">Orientation Fibers</span></a>.</p>
 </dd>
 </dl>

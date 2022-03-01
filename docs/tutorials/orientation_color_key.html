@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plotting an Orientation Color Key &mdash; Neper 4.3.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Reference Papers" href="../papers.html" />
+    <link rel="prev" title="Visualizing a Tessellation" href="visualize_tessellation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Neper
+          </a>
+              <div class="version">
+                4.3.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc/index.html">Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simple_model.html">Generating and Meshing a Simple Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Plotting an Orientation Color Key</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rodrigues-color-key">Rodrigues Color Key</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ipf-color-key">IPF Color Key</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../papers.html">Reference Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../talks.html">Talks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../others.html">Other Resources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Neper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../tutorials.html">Tutorials</a> &raquo;</li>
+      <li>Plotting an Orientation Color Key</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/orientation_color_key.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="plotting-an-orientation-color-key">
+<span id="orientation-color-key"></span><h1>Plotting an Orientation Color Key<a class="headerlink" href="#plotting-an-orientation-color-key" title="Permalink to this headline"></a></h1>
+<p>The <a class="reference internal" href="../doc/neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a> can color cells, elements, etc. according to their orientations, but an image of the color key itself is not generated.  Color keys can be obtained as described in the following.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>People interested in a color key rather than how it is generated may simply copy the image.</p>
+</div>
+<div class="section" id="rodrigues-color-key">
+<span id="id1"></span><h2>Rodrigues Color Key<a class="headerlink" href="#rodrigues-color-key" title="Permalink to this headline"></a></h2>
+<p>Cubic crystal symmetry is assumed.  The color map onto the fundamental region of Rodrigues space is created by generating a tessellation corresponding to the fundamental region, meshing it, getting the node colors, and visualizing it - as the space is 3D, we also produce a slice view:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1</span> -domain <span class="s2">&quot;rodrigues(cubic)&quot;</span> -o rodrigues
+<span class="gp">$ </span>neper -M rodrigues.tess -cl <span class="m">0</span>.05 -statnode col_rodrigues
+<span class="gp">$ </span>neper -V rodrigues.tess,rodrigues.msh -datanodecol <span class="s2">&quot;col:file(rodrigues.stnode)&quot;</span> -dataeltcol from_nodes -dataelt3dedgerad <span class="m">0</span> -dataelt1drad <span class="m">0</span>.002 -showelt1d all -showcsys <span class="m">1</span> -datacsyscoo <span class="m">0</span>.44:-0.44:0.65 -datacsysrad <span class="m">0</span>.005 -datacsyslength <span class="m">0</span>.15 -datacsyslabel <span class="s2">&quot; : : &quot;</span> -cameracoo <span class="m">4</span>:4:3 -imagesize <span class="m">400</span>:400 -cameraangle <span class="m">14</span> -cameraprojection orthographic -sceneshadow <span class="m">0</span> -print tmp1 -slicemesh <span class="s2">&quot;x=0,y=0,z=0&quot;</span> -showtess <span class="m">1</span> -showcell <span class="m">0</span> -showedge all -dataedgerad <span class="m">0</span>.002 -showmesh <span class="m">0</span> -showmeshslice <span class="m">1</span> -showcsys <span class="m">0</span> -print tmp2
+<span class="gp">$ </span>convert -pointsize <span class="m">20</span> -draw <span class="s2">&quot;text 1,86 &#39;X1&#39; text 55,86 &#39;X2&#39; text 28,17 &#39;X3&#39;&quot;</span> tmp1.png tmp1b.png
+<span class="gp">$ </span>convert +append tmp1b.png tmp2.png rodrigues.png
+</pre></div>
+</div>
+<img alt="../_images/rodrigues.png" src="../_images/rodrigues.png" />
+</div>
+<div class="section" id="ipf-color-key">
+<span id="id2"></span><h2>IPF Color Key<a class="headerlink" href="#ipf-color-key" title="Permalink to this headline"></a></h2>
+<p>Cubic crystal symmetry is assumed.  The color map onto the standard stereographical triangle is created by generating a tessellation corresponding to the triangle, meshing it, getting the node colors, and visualizing it:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1</span> -domain <span class="s2">&quot;stdtriangle(20)&quot;</span> -dim <span class="m">2</span> -o stdtriangle
+<span class="gp">$ </span>neper -M stdtriangle.tess -cl <span class="m">0</span>.02 -statnode col_stdtriangle
+<span class="gp">$ </span>neper -V stdtriangle.msh -datanodecol <span class="s2">&quot;col:file(stdtriangle.stnode)&quot;</span> -dataeltcol from_nodes -dataelt2dedgerad <span class="m">0</span> -dataelt1drad <span class="m">0</span>.001 -showelt1d all -imagesize <span class="m">800</span>:400 -print tmp
+<span class="gp">$ </span>convert -pointsize <span class="m">32</span> -draw <span class="s2">&quot;text 180,390 &#39;[001]&#39; text 545,390 &#39;[011]&#39; text 505,30 &#39;[111]&#39;&quot;</span> tmp.png stdtriangle.png
+</pre></div>
+</div>
+<img alt="../_images/stdtriangle.png" src="../_images/stdtriangle.png" />
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="visualize_tessellation.html" class="btn btn-neutral float-left" title="Visualizing a Tessellation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../papers.html" class="btn btn-neutral float-right" title="Reference Papers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Romain Quey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

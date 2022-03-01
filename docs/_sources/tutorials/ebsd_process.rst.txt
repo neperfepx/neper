@@ -23,6 +23,8 @@ The EBSD map can be visualized, colored by orientation, using the :ref:`neper_v`
 
 .. image:: ebsd_process/img1.png
 
+.. note:: The orientation color key itself is not generated but can be obtained as detailed in :ref:`orientation_color_key`.
+
 In the EBSD map, it may also occur that a voxel is not assigned any orientation.  This can be indicated using the :data:`**oridef` section:
 
 .. literalinclude:: ebsd_process/n2b.tesr
@@ -143,13 +145,8 @@ The map can then be colored following its cell :data:`gos` values:
 .. code-block:: console
 
   $ neper -V n2d.sim -datacellcol real:gos -datacellscale 2.0:3.0 -datacellscaletitle "GOS (degrees)" -print img5
-
-This produces a PNG file named :file:`img5.png` for the map and a PNG file named :file:`img5-scale.png` for the scale bar.
-
-To include the scale bar to the image, ImageMagick can be used:
-
-.. code-block:: console
-
   $ convert img5.png img5-scale.png -gravity East -composite img5.png
+
+This originally produces a PNG file named :file:`img5.png` for the map and a PNG file named :file:`img5-scale.png` for the scale bar, which is included to :file:`img5.png` thanks to :program:`convert`.
 
 .. image:: ebsd_process/img5.png
