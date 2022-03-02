@@ -53,6 +53,9 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="morpho_tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_color_key.html">Plotting an Orientation Color Key</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../papers.html">Reference Papers</a></li>
@@ -111,7 +114,7 @@
 </pre></div>
 </div>
 <p>This produces a PNG file named <code class="file docutils literal notranslate"><span class="pre">img1.png</span></code>.</p>
-<img alt="../_images/img1.png" src="../_images/img1.png" />
+<img alt="../_images/img11.png" src="../_images/img11.png" />
 </div>
 <div class="section" id="specifying-custom-properties">
 <h2>Specifying Custom Properties<a class="headerlink" href="#specifying-custom-properties" title="Permalink to this headline"></a></h2>
@@ -123,7 +126,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100-id1.tess -print img2
 </pre></div>
 </div>
-<img alt="../_images/img2.png" src="../_images/img2.png" />
+<img alt="../_images/img21.png" src="../_images/img21.png" />
 <p>Of course, it is also possible to change the sphericity distribution, for instance to get less spherical grains (smaller average of the sphericity distribution):</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -morpho <span class="s2">&quot;diameq:lognormal(1,0.05),1-sphericity:lognormal(0.245,0.03)&quot;</span>
 </pre></div>
@@ -132,7 +135,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100-id1.tess -print img3
 </pre></div>
 </div>
-<img alt="../_images/img3.png" src="../_images/img3.png" />
+<img alt="../_images/img31.png" src="../_images/img31.png" />
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>See <a class="reference internal" href="../doc/exprskeys.html#statistical-distributions"><span class="std std-ref">Statistical Distributions</span></a> for a list of possible distributions and other possible inputs.</p>
@@ -156,7 +159,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V mytess.tess -print img4
 </pre></div>
 </div>
-<img alt="../_images/img4.png" src="../_images/img4.png" />
+<img alt="../_images/img41.png" src="../_images/img41.png" />
 </div>
 <div class="section" id="specifying-an-experimental-cell-size-distribution">
 <h2>Specifying an Experimental Cell Size Distribution<a class="headerlink" href="#specifying-an-experimental-cell-size-distribution" title="Permalink to this headline"></a></h2>
@@ -196,7 +199,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>convert img5.png img5-scale3.png -gravity East -composite img5.png
 </pre></div>
 </div>
-<img alt="../_images/img5.png" src="../_images/img5.png" />
+<img alt="../_images/img51.png" src="../_images/img51.png" />
 </div>
 <div class="section" id="speeding-up-tessellation">
 <h2>Speeding up Tessellation<a class="headerlink" href="#speeding-up-tessellation" title="Permalink to this headline"></a></h2>

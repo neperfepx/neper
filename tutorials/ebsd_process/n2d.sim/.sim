@@ -1,0 +1,15 @@
+***sim
+ **format
+   1.0
+ **input
+  *tesr
+   simulation.tesr
+ **general
+   2 0 0 0 0
+  *orides
+   rodrigues:active
+ **entity cell
+  *result
+   2
+   ori gos
+***end

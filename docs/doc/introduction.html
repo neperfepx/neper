@@ -143,7 +143,7 @@
 </div>
 <div class="section" id="installing-neper">
 <h2>Installing Neper<a class="headerlink" href="#installing-neper" title="Permalink to this headline"></a></h2>
-<p>Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system (including MacOS).  Neper also runs on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, although we do not test nor support this usage and multithreading must be turned off (which slows down execution significantly).  Multithreading of the code is achieved via <a class="reference external" href="https://www.openmp.org/">OpenMP</a> and operates on all threads (the actual number of threads can be set throught the <code class="code docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> environment variable).  Compilation is performed via <a class="reference external" href="https://cmake.org">CMake</a>:</p>
+<p>Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system (including macOS).  Neper also runs on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, although we do not test nor support this usage and multithreading must be turned off (which slows down execution significantly).  Multithreading of the code is achieved via <a class="reference external" href="https://www.openmp.org/">OpenMP</a> and operates on all threads (the actual number of threads can be set throught the <code class="code docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> environment variable).  Compilation is performed via <a class="reference external" href="https://cmake.org">CMake</a>:</p>
 <ul>
 <li><p>Create a <code class="file docutils literal notranslate"><span class="pre">build</span></code> directory, for instance as a subdirectory of Neper’s <code class="file docutils literal notranslate"><span class="pre">src</span></code> directory:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> src
@@ -212,11 +212,11 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctest
 </pre></div>
 </div>
-<p>This runs the tests in <code class="code docutils literal notranslate"><span class="pre">Normal</span></code> mode, for which the produced output files are compared to reference ones. The (packaged) reference output files are generated on Ubuntu 20.04, using compiler GCC 9.3.0, (built-in) NLopt 2.6.1, (built-in) libscotch 6.0, Gmsh 4.9.4 and POV-Ray 3.7.0. It is expected that different versions may result in minor (insignificant) changes to the output, though this will generally result in failed tests.  If this happens, you may switch to the <code class="code docutils literal notranslate"><span class="pre">Minimal</span></code> mode as described in the following.</p>
+<p>This runs the tests in <code class="code docutils literal notranslate"><span class="pre">Normal</span></code> mode (on Linux), for which the produced output files are compared to reference ones. The (packaged) reference output files are generated on Ubuntu 20.04, using compiler GCC 9.3.0, (built-in) NLopt 2.6.1, (built-in) libscotch 6.0, Gmsh 4.9.4 and POV-Ray 3.7.0. It is expected that different versions may result in minor (insignificant) changes to the output, though this will generally result in failed tests.  If this happens, you may switch to the <code class="code docutils literal notranslate"><span class="pre">Minimal</span></code> mode as described in the following.</p>
 <p>The testing mode is controlled by variable <code class="code docutils literal notranslate"><span class="pre">BUILD_TESTING_MODE</span></code>, which may be changed as described <a class="reference internal" href="#have-dependency"><span class="std std-ref">previously</span></a> for <code class="code docutils literal notranslate"><span class="pre">HAVE_&lt;DEPENDENCY&gt;</span></code>.</p>
 <ul class="simple">
-<li><p>The (default) <code class="code docutils literal notranslate"><span class="pre">Normal</span></code> mode checks if the program completes without error and if the produced output is the same as a set of reference output.</p></li>
-<li><p>The <code class="code docutils literal notranslate"><span class="pre">Minimal</span></code> mode only checks if the program completes without error. This mode may be useful when installing on a machine which has program or library versions different from the ones with which the reference output was generated.</p></li>
+<li><p>The <code class="code docutils literal notranslate"><span class="pre">Normal</span></code> mode checks if the program completes without error and if the produced output is the same as a set of reference output.  It is the default mode on Linux.</p></li>
+<li><p>The <code class="code docutils literal notranslate"><span class="pre">Minimal</span></code> mode only checks if the program completes without error. This mode may be useful when installing on a machine which has program or library versions different from the ones with which the reference output was generated.  It is the default mode on macOS.</p></li>
 <li><p>The <code class="code docutils literal notranslate"><span class="pre">Writing</span></code> mode overwrites the reference outputs with the generated output.  This mode may be useful when installing on a machine which has program or library versions different from the ones with which the reference output was generated and the user needs a reference output before making changes to the source code.</p></li>
 </ul>
 </div>
@@ -485,7 +485,7 @@ jargon:</p>
 </table>
 <dl class="footnote brackets">
 <dt class="label" id="mac-install"><span class="brackets"><a class="fn-backref" href="#id3">1</a></span></dt>
-<dd><p>On Mac, install <strong class="program">llvm</strong> and <strong class="program">libomp</strong> via Homebrew.</p>
+<dd><p>On macOS, install <strong class="program">llvm</strong> and <strong class="program">libomp</strong> via Homebrew.</p>
 </dd>
 </dl>
 </div>

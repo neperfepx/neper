@@ -429,11 +429,11 @@ Output Options
   Specify the format(s) of the output file(s), which can be:
 
   - :data:`msh[:<encoding>]`: native (Gmsh-style) mesh file, where :data:`encoding` can be :data:`ascii` or :data:`binary` (default :data:`ascii`);
+  - :data:`sim`: simulation directory;
   - :data:`msh4`: Gmsh version 4 mesh file;
   - :data:`vtk`: VTK mesh file;
   - :data:`inp`: Abaqus input file;
   - :data:`geof`: Z-set mesh file;
-  - :data:`sim`: simulation directory;
   - :data:`ori`: orientation file (optional FEPX input);
   - :data:`phase`: group file (optional FEPX input);
   - :data:`bcs`: boundary condition file (optional FEPX input);

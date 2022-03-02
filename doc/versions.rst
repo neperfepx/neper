@@ -5,3 +5,4 @@ Versions
 ********
 
 .. literalinclude:: ../VERSIONS
+   :language: plain

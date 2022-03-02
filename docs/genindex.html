@@ -167,6 +167,22 @@
 </li>
       <li><a href="doc/neper_v.html#index-3">-datacelltrs</a>
 </li>
+      <li><a href="doc/neper_v.html#index-1">-datacrystalcol</a>
+</li>
+      <li>
+    -datacrystaledgecol &lt;color&gt;
+
+      <ul>
+        <li><a href="doc/neper_v.html#cmdoption-datacrystaledgecol">command line option</a>
+</li>
+      </ul></li>
+      <li>
+    -datacrystaledgerad &lt;rad&gt;
+
+      <ul>
+        <li><a href="doc/neper_v.html#cmdoption-datacrystaledgerad">command line option</a>
+</li>
+      </ul></li>
       <li>
     -datacsyscol &lt;color&gt;
 
@@ -336,45 +352,45 @@
       <li><a href="doc/neper_v.html#index-2">-datavoxedgecolscheme</a>
 </li>
       <li>
-    -data{cell,poly,face,edge,ver,seed,vox,voidvox,voxedge}col &lt;color&gt;
+    -data{cell,poly,face,edge,ver,seed,crystal,vox,voidvox,voxedge}col &lt;color&gt;
 
       <ul>
-        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-vox-voidvox-voxedge-col">command line option</a>
+        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-voidvox-voxedge-col">command line option</a>
 </li>
       </ul></li>
       <li>
-    -data{cell,poly,face,edge,ver,seed,vox}colscheme &lt;col_scheme&gt;
+    -data{cell,poly,face,edge,ver,seed,crystal,vox}colscheme &lt;col_scheme&gt;
 
       <ul>
-        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-vox-colscheme">command line option</a>
+        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-colscheme">command line option</a>
 </li>
       </ul></li>
       <li>
-    -data{cell,poly,face,edge,ver,seed,vox}scale &lt;scale&gt;
+    -data{cell,poly,face,edge,ver,seed,crystal,vox}scale &lt;scale&gt;
 
       <ul>
-        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-vox-scale">command line option</a>
+        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-scale">command line option</a>
 </li>
       </ul></li>
       <li>
-    -data{cell,poly,face,edge,ver,seed,vox}scaletitle &lt;title&gt;
+    -data{cell,poly,face,edge,ver,seed,crystal,vox}scaletitle &lt;title&gt;
 
       <ul>
-        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-vox-scaletitle">command line option</a>
+        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-scaletitle">command line option</a>
 </li>
       </ul></li>
       <li>
-    -data{cell,poly,face,edge,ver,seed}trs &lt;transparency&gt;
+    -data{cell,poly,face,edge,ver,seed,crystal}trs &lt;transparency&gt;
 
       <ul>
-        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-trs">command line option</a>
+        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-trs">command line option</a>
 </li>
       </ul></li>
       <li>
-    -data{edge,ver,seed,voxedge}rad &lt;rad&gt;
+    -data{edge,ver,seed,crystal,voxedge}rad &lt;rad&gt;
 
       <ul>
-        <li><a href="doc/neper_v.html#cmdoption-data-edge-ver-seed-voxedge-rad">command line option</a>
+        <li><a href="doc/neper_v.html#cmdoption-data-edge-ver-seed-crystal-voxedge-rad">command line option</a>
 </li>
       </ul></li>
       <li>
@@ -639,8 +655,6 @@
         <li><a href="doc/neper_m.html#cmdoption-meshqualmin">command line option</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     -mesh{2,3}diter &lt;iter_number&gt; (secondary option)
 
@@ -683,6 +697,8 @@
         <li><a href="doc/neper_t.html#cmdoption-morphooptialgo">command line option</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     -morphooptialgomaxiter &lt;iter_number&gt; (secondary option)
 
@@ -988,11 +1004,63 @@
         <li><a href="doc/neper_t.html#cmdoption-sel">command line option</a>
 </li>
       </ul></li>
+      <li><a href="doc/neper_v.html#index-5">-showcell</a>
+</li>
+      <li><a href="doc/neper_v.html#index-5">-showcrystal</a>
+</li>
+      <li><a href="doc/neper_v.html#index-4">-showcsys</a>
+</li>
+      <li><a href="doc/neper_v.html#index-5">-showedge</a>
+</li>
+      <li><a href="doc/neper_v.html#index-6">-showelset</a>
+</li>
+      <li><a href="doc/neper_v.html#index-6">-showelset0d</a>
+</li>
+      <li><a href="doc/neper_v.html#index-6">-showelset1d</a>
+</li>
+      <li><a href="doc/neper_v.html#index-6">-showelset2d</a>
+</li>
+      <li><a href="doc/neper_v.html#index-6">-showelset3d</a>
+</li>
+      <li><a href="doc/neper_v.html#index-6">-showelt</a>
+</li>
+      <li><a href="doc/neper_v.html#index-6">-showelt0d</a>
+</li>
+      <li><a href="doc/neper_v.html#index-6">-showelt1d</a>
+</li>
+      <li><a href="doc/neper_v.html#index-6">-showelt2d</a>
+</li>
+      <li><a href="doc/neper_v.html#index-6">-showelt3d</a>
+</li>
+      <li><a href="doc/neper_v.html#index-5">-showface</a>
+</li>
+      <li><a href="doc/neper_v.html#index-5">-showfaceinter</a>
+</li>
+      <li><a href="doc/neper_v.html#index-4">-showmesh</a>
+</li>
+      <li><a href="doc/neper_v.html#index-4">-showmeshslice</a>
+</li>
+      <li><a href="doc/neper_v.html#index-6">-shownode</a>
+</li>
+      <li><a href="doc/neper_v.html#index-4">-showpoint</a>
+</li>
+      <li><a href="doc/neper_v.html#index-5">-showpoly</a>
+</li>
+      <li><a href="doc/neper_v.html#index-5">-showseed</a>
+</li>
+      <li><a href="doc/neper_v.html#index-4">-showtesr</a>
+</li>
+      <li><a href="doc/neper_v.html#index-4">-showtess</a>
+</li>
+      <li><a href="doc/neper_v.html#index-5">-showver</a>
+</li>
+      <li><a href="doc/neper_v.html#index-5">-showvox</a>
+</li>
       <li>
-    -show{cell,poly,face,edge,ver,seed,faceinter,vox,voidvox} &lt;logical&gt;
+    -show{cell,poly,face,edge,ver,seed,crystal,faceinter,vox} &lt;logical&gt;
 
       <ul>
-        <li><a href="doc/neper_v.html#cmdoption-show-cell-poly-face-edge-ver-seed-faceinter-vox-voidvox">command line option</a>
+        <li><a href="doc/neper_v.html#cmdoption-show-cell-poly-face-edge-ver-seed-crystal-faceinter-vox">command line option</a>
 </li>
       </ul></li>
       <li>
@@ -1007,13 +1075,6 @@
 
       <ul>
         <li><a href="doc/neper_v.html#cmdoption-show-tess-tesr-mesh-meshslice-point-csys">command line option</a>
-</li>
-      </ul></li>
-      <li>
-    -simstep &lt;step&gt;
-
-      <ul>
-        <li><a href="doc/neper_v.html#cmdoption-simstep">command line option</a>
 </li>
       </ul></li>
       <li>
@@ -1146,6 +1207,20 @@
         <li><a href="doc/neper_m.html#cmdoption-stat-node-elt-elt-0-3-d-elset-elset-0-3-d-eltco-elsetco">command line option</a>
 </li>
       </ul></li>
+      <li>
+    -step &lt;step&gt;
+
+      <ul>
+        <li><a href="doc/neper_v.html#cmdoption-step">command line option</a>
+</li>
+      </ul></li>
+      <li>
+    -step &lt;step_nb&gt;
+
+      <ul>
+        <li><a href="doc/neper_s.html#cmdoption-step">command line option</a>
+</li>
+      </ul></li>
       <li><a href="doc/neper_t.html#index-0">-T</a>
 </li>
       <li>
@@ -1271,6 +1346,10 @@
 </li>
         <li><a href="doc/neper_m.html#cmdoption-cl-ver-edge-face">-cl{ver,edge,face} or -rcl{ver,edge,face} &lt;characteritic_length&gt; (secondary options</a>
 </li>
+        <li><a href="doc/neper_v.html#cmdoption-datacrystaledgecol">-datacrystaledgecol &lt;color&gt;</a>
+</li>
+        <li><a href="doc/neper_v.html#cmdoption-datacrystaledgerad">-datacrystaledgerad &lt;rad&gt;</a>
+</li>
         <li><a href="doc/neper_v.html#cmdoption-datacsyscol">-datacsyscol &lt;color&gt;</a>
 </li>
         <li><a href="doc/neper_v.html#cmdoption-datacsyscoo">-datacsyscoo &lt;coo_x&gt;:&lt;coo_y&gt;:&lt;coo_z&gt;</a>
@@ -1307,17 +1386,17 @@
 </li>
         <li><a href="doc/neper_v.html#cmdoption-datapointtrs">-datapointtrs &lt;transparency&gt;</a>
 </li>
-        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-vox-voidvox-voxedge-col">-data{cell,poly,face,edge,ver,seed,vox,voidvox,voxedge}col &lt;color&gt;</a>
+        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-voidvox-voxedge-col">-data{cell,poly,face,edge,ver,seed,crystal,vox,voidvox,voxedge}col &lt;color&gt;</a>
 </li>
-        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-vox-colscheme">-data{cell,poly,face,edge,ver,seed,vox}colscheme &lt;col_scheme&gt;</a>
+        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-colscheme">-data{cell,poly,face,edge,ver,seed,crystal,vox}colscheme &lt;col_scheme&gt;</a>
 </li>
-        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-vox-scale">-data{cell,poly,face,edge,ver,seed,vox}scale &lt;scale&gt;</a>
+        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-scale">-data{cell,poly,face,edge,ver,seed,crystal,vox}scale &lt;scale&gt;</a>
 </li>
-        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-vox-scaletitle">-data{cell,poly,face,edge,ver,seed,vox}scaletitle &lt;title&gt;</a>
+        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-scaletitle">-data{cell,poly,face,edge,ver,seed,crystal,vox}scaletitle &lt;title&gt;</a>
 </li>
-        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-trs">-data{cell,poly,face,edge,ver,seed}trs &lt;transparency&gt;</a>
+        <li><a href="doc/neper_v.html#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-trs">-data{cell,poly,face,edge,ver,seed,crystal}trs &lt;transparency&gt;</a>
 </li>
-        <li><a href="doc/neper_v.html#cmdoption-data-edge-ver-seed-voxedge-rad">-data{edge,ver,seed,voxedge}rad &lt;rad&gt;</a>
+        <li><a href="doc/neper_v.html#cmdoption-data-edge-ver-seed-crystal-voxedge-rad">-data{edge,ver,seed,crystal,voxedge}rad &lt;rad&gt;</a>
 </li>
         <li><a href="doc/neper_v.html#cmdoption-data-elt-elset-node-elt-0-3-d-elset-0-3-d-elt-2-3-dedge-mesh-col">-data{elt,elset,node,elt{0-3}d,elset{0-3}d,elt{2,3}dedge,mesh}col &lt;color&gt;</a>
 </li>
@@ -1489,13 +1568,11 @@
 </li>
         <li><a href="doc/neper_t.html#cmdoption-sel">-sel &lt;length&gt; or -rsel &lt;relative_length&gt; [secondary option]</a>
 </li>
-        <li><a href="doc/neper_v.html#cmdoption-show-cell-poly-face-edge-ver-seed-faceinter-vox-voidvox">-show{cell,poly,face,edge,ver,seed,faceinter,vox,voidvox} &lt;logical&gt;</a>
+        <li><a href="doc/neper_v.html#cmdoption-show-cell-poly-face-edge-ver-seed-crystal-faceinter-vox">-show{cell,poly,face,edge,ver,seed,crystal,faceinter,vox} &lt;logical&gt;</a>
 </li>
         <li><a href="doc/neper_v.html#cmdoption-show-elt-elset-elt-0-3-d-elset-0-3-d-node">-show{elt,elset,elt{0-3}d,elset{0-3}d,node} &lt;logical&gt;</a>
 </li>
         <li><a href="doc/neper_v.html#cmdoption-show-tess-tesr-mesh-meshslice-point-csys">-show{tess,tesr,mesh,meshslice,point,csys} &lt;logical&gt;</a>
-</li>
-        <li><a href="doc/neper_v.html#cmdoption-simstep">-simstep &lt;step&gt;</a>
 </li>
         <li><a href="doc/neper_m.html#cmdoption-singnodedup">-singnodedup &lt;logical&gt; (secondary option)</a>
 </li>
@@ -1532,6 +1609,10 @@
         <li><a href="doc/neper_m.html#cmdoption-stat-mesh-mesh-0-3-d-meshco">-stat{mesh,mesh{0-3}d,meshco} &lt;key1&gt;,&lt;key2&gt;,...</a>
 </li>
         <li><a href="doc/neper_m.html#cmdoption-stat-node-elt-elt-0-3-d-elset-elset-0-3-d-eltco-elsetco">-stat{node,elt,elt{0-3}d,elset,elset{0-3}d,eltco,elsetco} &lt;key1&gt;,&lt;key2&gt;,...</a>
+</li>
+        <li><a href="doc/neper_v.html#cmdoption-step">-step &lt;step&gt;</a>
+</li>
+        <li><a href="doc/neper_s.html#cmdoption-step">-step &lt;step_nb&gt;</a>
 </li>
         <li><a href="doc/neper_t.html#cmdoption-tesrformat">-tesrformat &lt;format1&gt;,&lt;format2&gt;,...</a>
 </li>
