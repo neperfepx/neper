@@ -40,103 +40,6 @@ neut_tesr_entity_qty (struct TESR Tesr, char *entity, int *pqty)
   return;
 }
 
-void
-neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty)
-{
-  int id = 0;
-
-  if (!strcmp (entity, "tesr"))
-  {
-    (*pvarqty) = 22;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
-    strcpy ((*pvar)[id++], "dim");
-    strcpy ((*pvar)[id++], "voxnbx");
-    strcpy ((*pvar)[id++], "voxnby");
-    strcpy ((*pvar)[id++], "voxnbz");
-    strcpy ((*pvar)[id++], "voxnb");
-    strcpy ((*pvar)[id++], "originx");
-    strcpy ((*pvar)[id++], "originy");
-    strcpy ((*pvar)[id++], "originz");
-    strcpy ((*pvar)[id++], "voxsizex");
-    strcpy ((*pvar)[id++], "voxsizey");
-    strcpy ((*pvar)[id++], "voxsizez");
-    strcpy ((*pvar)[id++], "rastersizex");
-    strcpy ((*pvar)[id++], "rastersizey");
-    strcpy ((*pvar)[id++], "rastersizez");
-    strcpy ((*pvar)[id++], "rastersize");
-    strcpy ((*pvar)[id++], "area");
-    strcpy ((*pvar)[id++], "vol");
-    strcpy ((*pvar)[id++], "size");
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-  }
-  else if (!strcmp (entity, "cell"))
-  {
-    (*pvarqty) = 27;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 30);
-    strcpy ((*pvar)[0], "id");
-    strcpy ((*pvar)[1], "x");
-    strcpy ((*pvar)[2], "y");
-    strcpy ((*pvar)[3], "z");
-    strcpy ((*pvar)[4], "vol");
-    strcpy ((*pvar)[5], "diameq");
-    strcpy ((*pvar)[6], "radeq");
-    strcpy ((*pvar)[7], "size");
-    strcpy ((*pvar)[8], "convexity");
-    strcpy ((*pvar)[9], "coo");
-    strcpy ((*pvar)[10], "group");
-    strcpy ((*pvar)[11], "oridisanisoangles");
-    strcpy ((*pvar)[12], "oridisanisoaxes");
-    strcpy ((*pvar)[13], "oridisanisofact");
-    strcpy ((*pvar)[14], "oridisanisodeltas");
-    strcpy ((*pvar)[15], "vxmin");
-    strcpy ((*pvar)[16], "vymin");
-    strcpy ((*pvar)[17], "vzmin");
-    strcpy ((*pvar)[18], "vxmax");
-    strcpy ((*pvar)[19], "vymax");
-    strcpy ((*pvar)[20], "vzmax");
-    strcpy ((*pvar)[21], "domvxmin");
-    strcpy ((*pvar)[22], "domvymin");
-    strcpy ((*pvar)[23], "domvzmin");
-    strcpy ((*pvar)[24], "domvxmax");
-    strcpy ((*pvar)[25], "domvymax");
-    strcpy ((*pvar)[26], "domvzmax");
-  }
-  else if (!strcmp (entity, "vox"))
-  {
-    (*pvarqty) = 10;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
-    strcpy ((*pvar)[0], "id");
-    strcpy ((*pvar)[1], "cell");
-    strcpy ((*pvar)[2], "x");
-    strcpy ((*pvar)[3], "y");
-    strcpy ((*pvar)[4], "z");
-    strcpy ((*pvar)[5], "vx");
-    strcpy ((*pvar)[6], "vy");
-    strcpy ((*pvar)[7], "vz");
-    strcpy ((*pvar)[8], "coo");
-    strcpy ((*pvar)[9], "vcoo");
-  }
-  else if (!strcmp (entity, "group"))
-  {
-    (*pvarqty) = 7;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
-    strcpy ((*pvar)[0], "id");
-    strcpy ((*pvar)[1], "vol");
-    strcpy ((*pvar)[2], "volfrac");
-    strcpy ((*pvar)[3], "area");
-    strcpy ((*pvar)[4], "areafrac");
-    strcpy ((*pvar)[5], "size");
-    strcpy ((*pvar)[6], "sizefrac");
-  }
-  else
-    ut_print_neperbug ();
-
-  return;
-}
-
 int
 neut_tesr_expr_val_int (struct TESR Tesr, char *entity, int id, char *expr,
                         int **pvals, int *pvalqty, char **ptype)
@@ -158,35 +61,32 @@ int
 neut_tesr_expr_val (struct TESR Tesr, char *entity, int id, char *expr,
                     double **pvals, int *pvalqty, char **ptype)
 {
-  int i, status, varqty, isvar;
+  int i, status, varqty;
   char **vars = NULL;
   double *vals = NULL;
 
-  neut_tesr_var_list (entity, &vars, &varqty);
+  ut_math_vars (expr, &vars, &varqty);
   vals = ut_alloc_1d (varqty);
 
-  isvar = 0;
-  for (i = 0; i < varqty; i++)
-    if (!strcmp (expr, vars[i]))
-    {
-      isvar = 1;
-      status =
-        neut_tesr_var_val (Tesr, entity, id, expr, pvals, pvalqty, ptype);
-      break;
-    }
+  if (varqty == 1 && !strcmp (expr, vars[0]))
+    status = neut_tesr_var_val (Tesr, entity, id, expr, pvals, pvalqty, ptype);
 
-  if (!isvar)
+  else
   {
     for (i = 0; i < varqty; i++)
-      if (strstr (expr, vars[i]))
-        neut_tesr_var_val_one (Tesr, entity, id, vars[i], vals + i, NULL);
+      neut_tesr_var_val_one (Tesr, entity, id, vars[i], vals + i, NULL);
 
     (*pvalqty) = 1;
     (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
     status = ut_math_eval (expr, varqty, vars, vals, *pvals);
 
     if (ptype)
-      ut_string_string ("%f", ptype);
+    {
+      if (ut_math_eval_exprislogical (expr))
+        ut_string_string ("%d", ptype);
+      else
+        ut_string_string ("%f", ptype);
+    }
   }
 
   ut_free_2d_char (&vars, varqty);
@@ -221,6 +121,17 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
 
   if (pvalqty)
     (*pvalqty) = 1;
+
+  if (!strcmp (var, "all"))
+  {
+    (*pvals)[0] = 1;
+    return 0;
+  }
+  else if (!strcmp (var, "none"))
+  {
+    (*pvals)[0] = 0;
+    return 0;
+  }
 
   // this is for a quick evaluation
   if (!strcmp (entity, "vox")
@@ -313,7 +224,10 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       (*pvals)[0] = Tesr.Origin[1];
     else if (!strcmp (var, "originz"))
       (*pvals)[0] = Tesr.Origin[2];
+    else
+      status = -1;
   }
+
   else if (!strcmp (entity, "cell") || !strcmp (entity, "poly")
         || !strcmp (entity, "face") || !strcmp (entity, "edge"))
   {
@@ -454,7 +368,10 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       (*pvals)[0] = Tesr.size[2];
       ut_string_string ("%d", &typetmp);
     }
+    else
+      status = -1;
   }
+
   else if (!strcmp (entity, "seed"))
   {
     status = 0;
@@ -473,6 +390,8 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       (*pvals)[0] = Tesr.SeedWeight[id];
     else if (!strcmp (var, "vol"))
       neut_tesr_cell_volume (Tesr, id, *pvals);
+    else
+      status = -1;
   }
 
   else if (!strcmp (entity, "vox"))
@@ -537,6 +456,12 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
       neut_tesr_vox_coo (Tesr, id, *pvals);
     }
+    else if (!strcmp (var, "oridef"))
+    {
+      neut_tesr_vox_oridef (Tesr, id, &tmpint);
+      (*pvals)[0] = tmpint;
+      ut_string_string ("%d", &typetmp);
+    }
     else
       status = -1;
   }
@@ -568,6 +493,9 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
   else
     ut_print_message (2, 0, "Failed to process expression `%s'.\n", entity);
 
+  if (status == -1 && Tesr.pSim)
+    status = neut_sim_entity_id_res_val (*(Tesr.pSim), entity, id, var, *pvals);
+
   if (ptype)
     ut_string_string (typetmp, ptype);
 
@@ -581,18 +509,19 @@ int
 neut_tesr_var_val_one (struct TESR Tesr, char *entity, int id, char *var,
                        double *pval, char **ptype)
 {
-  int qty;
+  int status, qty;
   double *tmp = NULL;
 
-  neut_tesr_var_val (Tesr, entity, id, var, &tmp, &qty, ptype);
-  if (qty != 1)
-    abort ();
+  status = neut_tesr_var_val (Tesr, entity, id, var, &tmp, &qty, ptype);
 
   *pval = tmp[0];
 
   ut_free_1d (&tmp);
 
-  return 0;
+  if (status)
+    return status;
+  else
+    return qty == 1 ? 0 : -1;
 }
 
 int
@@ -643,7 +572,7 @@ neut_tesr_entity_expr_val (struct TESR Tesr, char *entity, char *expr,
     ut_string_string ("%d", ptype);
 
   neut_tesr_entity_qty (Tesr, entity, &entityqty);
-  neut_tesr_var_list (entity, &vars, &varqty);
+  ut_math_vars (expr, &vars, &varqty);
   vals = ut_alloc_1d (varqty);
 
   if (ut_string_isfilename (expr))
@@ -657,12 +586,11 @@ neut_tesr_entity_expr_val (struct TESR Tesr, char *entity, char *expr,
     for (j = 1; j <= entityqty; j++)
     {
       for (k = 0; k < varqty; k++)
-        if (strstr (expr, vars[k]))
-        {
-          neut_tesr_var_val_one (Tesr, entity, j, vars[k], vals + k, &type);
-          if (ptype && !strcmp (type, "%f"))
-            ut_string_string ("%f", ptype);
-        }
+      {
+        neut_tesr_var_val_one (Tesr, entity, j, vars[k], vals + k, &type);
+        if (ptype && !strcmp (type, "%f"))
+          ut_string_string ("%f", ptype);
+      }
 
       status = ut_math_eval (expr, varqty, vars, vals, val + j);
 
@@ -749,7 +677,12 @@ neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet)
     for (j = Tesr.CellBBox[cell][1][0]; j <= Tesr.CellBBox[cell][1][1]; j++)
       for (i = Tesr.CellBBox[cell][0][0]; i <= Tesr.CellBBox[cell][0][1]; i++)
         if (Tesr.VoxCell[i][j][k] == cell)
-          ol_q_memcpy (Tesr.VoxOri[i][j][k], (*pOSet).q[qty++]);
+        {
+          qty++;
+          ol_q_memcpy (Tesr.VoxOri[i][j][k], (*pOSet).q[qty -1]);
+          if (Tesr.VoxOriDef)
+           (*pOSet).id[qty -1] = Tesr.VoxOriDef[i][j][k];
+        }
 
   (*pOSet).size = (size_t) qty;
 
@@ -759,7 +692,7 @@ neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet)
 int
 neut_tesr_isvoid (struct TESR Tesr)
 {
-  return Tesr.CellQty == 0;
+  return (Tesr.CellQty == 0 && (!Tesr.size || Tesr.size[0] == 0));
 }
 
 void
@@ -825,4 +758,72 @@ int
 neut_tesr_cell_id (struct TESR Tesr, int cell)
 {
   return Tesr.CellId ? Tesr.CellId[cell] : cell;
+}
+
+int
+neut_tesr_cell_ori (struct TESR Tesr, int cell, double *q)
+{
+  int status = -1;
+
+  if (Tesr.CellOri)
+  {
+    ol_q_memcpy (Tesr.CellOri[cell], q);
+    status = 0;
+  }
+
+  else if (Tesr.pSim)
+  {
+    double *R = ol_R_alloc ();
+    struct SIMRES SimRes;
+
+    neut_simres_set_zero (&SimRes);
+
+    neut_sim_simres (*(Tesr.pSim), "cell", "ori", &SimRes);
+
+    if (SimRes.file)
+    {
+      double **qall = ut_alloc_2d (Tesr.CellQty + 1, 4);
+      neut_ori_fnscanf (SimRes.file, (*(Tesr.pSim)).OriDes, "ascii", qall + 1, NULL, (*(Tesr.pSim)).CellQty, NULL, "R");
+
+      ol_q_memcpy (qall[cell], q);
+
+      ut_free_2d (&qall, Tesr.CellQty + 1);
+    }
+
+    neut_simres_free (&SimRes);
+    ol_R_free (R);
+
+    status = 0;
+  }
+
+  return status;
+}
+
+int
+neut_tesr_cell_gos (struct TESR Tesr, int cell, double *pgos)
+{
+  int i, j, k, qty, status = -1;
+  double theta, *q = ol_q_alloc ();
+
+  neut_tesr_cell_ori (Tesr, cell, q);
+
+  *pgos = 0;
+
+  qty = 0;
+  for (k = Tesr.CellBBox[cell][2][0]; k <= Tesr.CellBBox[cell][2][1]; k++)
+    for (j = Tesr.CellBBox[cell][1][0]; j <= Tesr.CellBBox[cell][1][1]; j++)
+      for (i = Tesr.CellBBox[cell][0][0]; i <= Tesr.CellBBox[cell][0][1]; i++)
+        if (Tesr.VoxCell[i][j][k] == cell)
+          if (!Tesr.VoxOriDef || Tesr.VoxOriDef[i][j][k])
+          {
+            ol_q_q_disori (q, Tesr.VoxOri[i][j][k], Tesr.CellCrySym, &theta);
+            qty++;
+            *pgos += theta;
+          }
+
+  *pgos = (qty > 0) ? *pgos / qty : -1;
+
+  ol_q_free (q);
+
+  return status;
 }

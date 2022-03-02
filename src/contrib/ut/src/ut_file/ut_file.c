@@ -95,6 +95,8 @@ ut_file_nbcolumns (const char *filename)
 {
   if (!ut_file_exist (filename))
     return -1;
+  else if (!ut_file_nbwords (filename))
+    return -1;
   else
     return ut_file_nbwords (filename) / ut_file_nblines (filename);
 }
@@ -125,14 +127,19 @@ ut_file_exist (const char *name, ...)
 
   ut_list_break (fullname2, ",", &vals, &qty);
 
-  file = fopen (vals[0], "r");
-  if (file == NULL)
-    res = 0;
-  else
+  if (qty > 0 && vals[0])
   {
-    fclose (file);
-    res = 1;
+    file = fopen (vals[0], "r");
+    if (file == NULL)
+      res = 0;
+    else
+    {
+      fclose (file);
+      res = 1;
+    }
   }
+  else
+    res = 0;
 
   ut_free_2d_char (&vals, qty);
   ut_free_1d_char (&fullname);
@@ -999,4 +1006,51 @@ ut_file_isendoffile (FILE * file)
   fsetpos (file, &pos);
 
   return status;
+}
+
+void
+ut_file_scan_file (FILE *file, char *dirname, FILE **pfile, char **pfilename)
+{
+  char c;
+  fpos_t pos;
+  char *filename = NULL;
+  char *tmp = ut_alloc_1d_char (1000);
+  char *tmp2 = ut_alloc_1d_char (1000);
+
+  if (pfilename)
+    ut_free_1d_char (pfilename);
+
+  do
+  {
+    fgetpos (file, &pos);
+    if (fscanf (file, "%c", &c) != 1)
+      abort ();
+  }
+  while (c == ' ' || c == '\n' || c == '\t');
+
+  fsetpos (file, &pos);
+
+  if (c == '*')
+    if (fscanf (file, "%s", tmp) != 1)
+      abort ();
+
+  if (!strcmp (tmp, "*file"))
+  {
+    filename = ut_alloc_1d_char (1000);
+    if (fscanf (file, "%s", tmp2) != 1)
+      abort ();
+    sprintf (filename, "%s/%s", dirname, tmp2);
+    *pfile = ut_file_open (filename, "r");
+  }
+  else
+    *pfile = file;
+
+  if (pfilename)
+    ut_string_string (filename, pfilename);
+
+  ut_free_1d_char (&filename);
+  ut_free_1d_char (&tmp);
+  ut_free_1d_char (&tmp2);
+
+  return;
 }

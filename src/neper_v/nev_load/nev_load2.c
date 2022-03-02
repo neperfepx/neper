@@ -8,8 +8,8 @@ void
 nev_load_init_data_tess (struct TESS Tess, int dim, struct DATA *pTessData)
 {
   (*pTessData).Dim = dim;
-  neut_tess_dim_entity (dim, &(*pTessData).type);
-  neut_tess_entity_qty (Tess, (*pTessData).type, &(*pTessData).Qty);
+  neut_tess_dim_entity (dim, &(*pTessData).Entity);
+  neut_tess_entity_qty (Tess, (*pTessData).Entity, &(*pTessData).Qty);
 
   return;
 }

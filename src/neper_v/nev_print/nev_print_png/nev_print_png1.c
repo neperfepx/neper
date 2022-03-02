@@ -5,7 +5,7 @@
 #include"nev_print_png_.h"
 
 void
-nev_print_png (char *basename, struct PRINT *pPrint, struct SIM Sim,
+nev_print_png (char *basename, struct PRINT Print, struct SIM Sim,
                struct TESS Tess, struct DATA *TessData, struct TESR Tesr,
                struct DATA *pTesrData, struct NODES Nodes, struct MESH *Mesh,
                int SQty, struct NODES *SNodes, struct MESH *SMesh2D,
@@ -19,16 +19,17 @@ nev_print_png (char *basename, struct PRINT *pPrint, struct SIM Sim,
   char *filename = NULL, *filename2 = NULL;
   char **vals = NULL;
   char *outdir = NULL;
+  char *suffix = ut_alloc_1d_char (10);
 
-  neut_print_outdir (*pPrint, Sim, "png", &outdir);
+  neut_print_outdir (Print, Sim, "png", &outdir);
   if (strcmp (outdir, "."))
     ut_sys_mkdir (outdir);
 
-  ut_list_break ((*pPrint).imagesize, NEUT_SEP_DEP, &vals, &valqty);
+  ut_list_break (Print.imagesize, NEUT_SEP_DEP, &vals, &valqty);
 
   if (valqty != 2)
     ut_print_message (2, 2, "Expression `%s' could not be processed.\n",
-                      (*pPrint).imagesize);
+                      Print.imagesize);
   ut_string_int (vals[0], &imagewidth);
   ut_string_int (vals[1], &imageheight);
   ut_free_2d_char (&vals, valqty);
@@ -40,36 +41,36 @@ nev_print_png (char *basename, struct PRINT *pPrint, struct SIM Sim,
 
   ut_print_message (0, 1, "Printing image...\n");
   file = ut_file_open (filename, "w");
-  nev_print_png_header (file, *pPrint);
+  nev_print_png_header (file, Print);
 
-  if ((*pPrint).showcsys == 1)
-    nev_print_png_csys (file, *pCsysData, (*pPrint));
+  if (Print.showcsys == 1)
+    nev_print_png_csys (file, *pCsysData, Print);
 
-  if ((*pPrint).showpoint[0] > 0)
-    nev_print_png_point (file, Point, *pPointData, (*pPrint));
+  if (Print.showpoint[0] > 0)
+    nev_print_png_point (file, "point", Point, *pPointData, Print);
 
   // tessellation ------------------------------------------------------
-  if ((*pPrint).showtess == 1)
+  if (Print.showtess == 1)
   {
     ut_print_message (0, 2, "Printing tessellation...\n");
-    nev_print_png_tess (file, (*pPrint), Tess, TessData);
+    nev_print_png_tess (file, Print, Tess, TessData);
   }
 
   // raster tessellation -----------------------------------------------
-  if ((*pPrint).showtesr == 1)
+  if (Print.showtesr == 1)
   {
     ut_print_message (0, 2, "Printing raster tessellation...\n");
-    nev_print_png_tesr (file, *pPrint, Tesr, *pTesrData);
+    nev_print_png_tesr (file, Print, Tesr, *pTesrData);
   }
 
   // mesh --------------------------------------------------------------
-  if ((*pPrint).showmesh == 1)
+  if (Print.showmesh == 1)
   {
     ut_print_message (0, 2, "Printing mesh...\n");
-    nev_print_png_mesh (file, *pPrint, Tess, Nodes, Mesh, *pNodeData, MeshData);
+    nev_print_png_mesh (file, Print, Tess, Nodes, Mesh, *pNodeData, MeshData);
   }
 
-  if (SQty > 0 && (*pPrint).showslice)
+  if (SQty > 0 && Print.showslice)
   {
     ut_print_message (0, 2, "Printing mesh slice%s...\n", SQty > 1? "s" : "");
 
@@ -77,32 +78,32 @@ nev_print_png (char *basename, struct PRINT *pPrint, struct SIM Sim,
     {
       int j, *showelt2d = ut_alloc_1d_int (SMesh2D[i].EltQty + 1);
 
-      if ((*pPrint).showelt3d[0] != -1)
+      if (Print.showelt3d[0] != -1)
         for (j = 1; j <= SMesh2D[i].EltQty; j++)
-          showelt2d[j] = (*pPrint).showelt3d[SElt2dElt3d[i][j]];
+          showelt2d[j] = Print.showelt3d[SElt2dElt3d[i][j]];
       else
         ut_array_1d_int_set (showelt2d + 1, SMesh2D[i].EltQty, 1);
 
       if (ut_string_strcmp (SMeshData[i][2].ColDataType, "from_nodes"))
         nev_print_png_mesh2d (file, SNodes[i], SMesh2D[i], showelt2d,
-                          SMeshData[i][2].Col, "elt", (*pPrint).sceneshadow);
+                          SMeshData[i][2].Col, "elt", Print.sceneshadow);
       else
         nev_print_png_mesh2d (file, SNodes[i], SMesh2D[i], showelt2d,
-                              SNodeData[i].Col, "node", (*pPrint).sceneshadow);
+                              SNodeData[i].Col, "node", Print.sceneshadow);
 
       ut_free_1d_int (&showelt2d);
     }
   }
 
-  nev_print_png_foot (file, *pPrint);
+  nev_print_png_foot (file, Print);
   ut_file_close (file, filename, "w");
 
-  if (ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "png"))
-    nev_print_png_pov2png ((*pPrint).povray, filename, imagewidth, imageheight,
-                       (*pPrint).imageantialias, 2);
+  if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+    nev_print_png_pov2png (Print.povray, filename, imagewidth, imageheight,
+                       Print.imageantialias, 2);
 
-  if (ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov") == 0
-      && ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov:objects") == 0)
+  if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov") == 0
+      && ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects") == 0)
     remove (filename);
 
   ut_print_message (0, 1, "Printing scale...\n");
@@ -124,12 +125,12 @@ nev_print_png (char *basename, struct PRINT *pPrint, struct SIM Sim,
                        MeshData[i].ScaleTitle);
       ut_file_close (file, filename2, "w");
 
-      if (ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "png"))
-        nev_print_png_pov2png ((*pPrint).povray, filename2, 0.3 * imageheight,
-                           imageheight, (*pPrint).imageantialias, 3);
+      if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+        nev_print_png_pov2png (Print.povray, filename2, 0.3 * imageheight,
+                           imageheight, Print.imageantialias, 3);
 
-      if (!ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov")
-          && !ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov:objects"))
+      if (!ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
+          && !ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects"))
         remove (filename2);
     }
 
@@ -147,38 +148,47 @@ nev_print_png (char *basename, struct PRINT *pPrint, struct SIM Sim,
                      (*pNodeData).ScaleTitle);
     ut_file_close (file, filename2, "w");
 
-    if (ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "png"))
-      nev_print_png_pov2png ((*pPrint).povray, filename2, 0.3 * imageheight,
-                         imageheight, (*pPrint).imageantialias, 3);
+    if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+      nev_print_png_pov2png (Print.povray, filename2, 0.3 * imageheight,
+                         imageheight, Print.imageantialias, 3);
 
-    if (!ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov")
-        && !ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov:objects"))
+    if (!ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
+        && !ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects"))
       remove (filename2);
   }
 
-  for (i = 0; i <= 4; i++)
+  for (i = 0; i <= 5; i++)
     if (!ut_string_strcmp (TessData[i].ColDataType, "real"))
     {
       ut_print_message (0, 2, "Printing scale for dim %d...\n", i);
 
       filename2 = ut_alloc_1d_char (strlen (basename) + strlen (outdir) + 100);
 
-      if (!strcmp (outdir, "."))
-        sprintf (filename2, "%s-scale%d.pov", basename, i);
+      if (i < 4)
+        sprintf (suffix, "%d", i);
+      else if (i == 4)
+        sprintf (suffix, "s");
+      else if (i == 5)
+        sprintf (suffix, "c");
       else
-        sprintf (filename2, "%s/%s-scale%d.pov", outdir, basename, i);
+        abort ();
+
+      if (!strcmp (outdir, "."))
+        sprintf (filename2, "%s-scale%s.pov", basename, suffix);
+      else
+        sprintf (filename2, "%s/%s-scale%s.pov", outdir, basename, suffix);
 
       file = ut_file_open (filename2, "w");
       nev_print_png_scale (file, TessData[i].ColScheme, TessData[i].Scale,
                        TessData[i].ScaleTitle);
       ut_file_close (file, filename2, "w");
 
-      if (ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "png"))
-        nev_print_png_pov2png ((*pPrint).povray, filename2, 0.3 * imageheight,
-                           imageheight, (*pPrint).imageantialias, 3);
+      if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+        nev_print_png_pov2png (Print.povray, filename2, 0.3 * imageheight,
+                           imageheight, Print.imageantialias, 3);
 
-      if (!ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov")
-          && !ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov:objects"))
+      if (!ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
+          && !ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects"))
         remove (filename2);
     }
 
@@ -196,12 +206,12 @@ nev_print_png (char *basename, struct PRINT *pPrint, struct SIM Sim,
                          (*pTesrData).ScaleTitle);
     ut_file_close (file, filename2, "w");
 
-    if (ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "png"))
-      nev_print_png_pov2png ((*pPrint).povray, filename2, 0.3 * imageheight,
-                         imageheight, (*pPrint).imageantialias, 3);
+    if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+      nev_print_png_pov2png (Print.povray, filename2, 0.3 * imageheight,
+                         imageheight, Print.imageantialias, 3);
 
-    if (!ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov")
-        && !ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov:objects"))
+    if (!ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
+        && !ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects"))
       remove (filename2);
   }
 
@@ -219,18 +229,19 @@ nev_print_png (char *basename, struct PRINT *pPrint, struct SIM Sim,
                      (*pPointData).ScaleTitle);
     ut_file_close (file, filename2, "w");
 
-    if (ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "png"))
-      nev_print_png_pov2png ((*pPrint).povray, filename2, 0.3 * imageheight,
-                         imageheight, (*pPrint).imageantialias, 3);
+    if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+      nev_print_png_pov2png (Print.povray, filename2, 0.3 * imageheight,
+                         imageheight, Print.imageantialias, 3);
 
-    if (!ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov")
-        && !ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov:objects"))
+    if (!ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
+        && !ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects"))
       remove (filename2);
   }
 
   ut_free_1d_char (&filename);
   ut_free_1d_char (&filename2);
   ut_free_1d_char (&outdir);
+  ut_free_1d_char (&suffix);
 
   return;
 }

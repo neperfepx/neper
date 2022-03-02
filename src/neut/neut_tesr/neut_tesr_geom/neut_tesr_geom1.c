@@ -50,6 +50,28 @@ neut_tesr_vox_coo (struct TESR Tesr, int vox, double *coo)
 }
 
 int
+neut_tesr_vox_oridef (struct TESR Tesr, int vox, int *poridef)
+{
+  int pos[3];
+
+  *poridef = 0;
+
+  neut_tesr_vox_pos (Tesr, vox, pos);
+
+  if (Tesr.VoxOri)
+  {
+    if (!Tesr.VoxOriDef)
+      *poridef = 1;
+    else
+      *poridef = Tesr.VoxOriDef[pos[0]][pos[1]][pos[2]];
+  }
+  else
+    *poridef = 0;
+
+  return 0;
+}
+
+int
 neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell)
 {
   int voxpos[3];
@@ -171,15 +193,9 @@ neut_tesr_cell_volume (struct TESR Tesr, int cell, double *pvol)
   int vqty;
   double voxvol;
 
-  if (Tesr.CellVol)
-    (*pvol) = Tesr.CellVol[cell];
-
-  else
-  {
-    vqty = neut_tesr_cell_voxqty (Tesr, cell);
-    neut_tesr_voxsize (Tesr, &voxvol);
-    (*pvol) = voxvol * vqty;
-  }
+  vqty = neut_tesr_cell_voxqty (Tesr, cell);
+  neut_tesr_voxsize (Tesr, &voxvol);
+  (*pvol) = voxvol * vqty;
 
   return (*pvol > 0) ? 0 : -1;
 }
@@ -192,18 +208,13 @@ neut_tesr_cell_area (struct TESR Tesr, int cell, double *parea)
   if (Tesr.Dim != 2)
     abort ();
 
-  if (Tesr.CellVol)
-    (*parea) = Tesr.CellVol[cell];
-  else
-  {
-    (*parea) = 0;
-    for (j = 1; j <= Tesr.size[1]; j++)
-      for (i = 1; i <= Tesr.size[0]; i++)
-        if (Tesr.VoxCell[i][j][1] == cell)
-          (*parea)++;
+  (*parea) = 0;
+  for (j = 1; j <= Tesr.size[1]; j++)
+    for (i = 1; i <= Tesr.size[0]; i++)
+      if (Tesr.VoxCell[i][j][1] == cell)
+        (*parea)++;
 
-    (*parea) *= (Tesr.vsize[0] * Tesr.vsize[1]);
-  }
+  (*parea) *= (Tesr.vsize[0] * Tesr.vsize[1]);
 
   return 0;
 }
@@ -227,12 +238,6 @@ neut_tesr_cell_centre (struct TESR Tesr, int cell, double *coo)
   int i, j, k, qty;
   int *voxpos = NULL;
   double *voxcoo = NULL;
-
-  if (Tesr.CellCoo)
-  {
-    ut_array_1d_memcpy (Tesr.CellCoo[cell], 3, coo);
-    return 0;
-  }
 
   voxpos = ut_alloc_1d_int (3);
   voxcoo = ut_alloc_1d (3);
@@ -303,7 +308,7 @@ neut_tesr_centre (struct TESR Tesr, double *coo)
   int i, j;
   double *vol = NULL, **cellcoo = NULL;
 
-  if (!Tesr.hasvoid)
+  if (Tesr.hasvoid == -1 || Tesr.hasvoid == 0)
   {
     neut_tesr_rastercentre (Tesr, coo);
     return;
@@ -374,18 +379,12 @@ neut_tesr_cell_diameq (struct TESR Tesr, int cell, double *pval)
 {
   if (Tesr.Dim == 3)
   {
-    if (Tesr.CellVol)
-      (*pval) = Tesr.CellVol[cell];
-    else
-      neut_tesr_cell_volume (Tesr, cell, pval);
+    neut_tesr_cell_volume (Tesr, cell, pval);
     (*pval) = pow ((6 / M_PI) * (*pval), 0.3333333333333333333333333);
   }
   else if (Tesr.Dim == 2)
   {
-    if (Tesr.CellVol)
-      (*pval) = Tesr.CellVol[cell];
-    else
-      neut_tesr_cell_area (Tesr, cell, pval);
+    neut_tesr_cell_area (Tesr, cell, pval);
     (*pval) = sqrt ((4 / M_PI) * (*pval));
   }
 
@@ -559,12 +558,6 @@ neut_tesr_cell_convexity (struct TESR Tesr, int cell, double *pval)
   double eps = 1e-4 * ut_array_1d_min (Tesr.vsize, Tesr.Dim);
   double eps3 = 1e-2 * ut_array_1d_gmean (Tesr.vsize, Tesr.Dim);
   srand48 (1);
-
-  if (Tesr.CellConvexity)
-  {
-    (*pval) = Tesr.CellConvexity[cell];
-    return;
-  }
 
   pt = ut_alloc_1d_int (3);
   coo = ut_alloc_1d (3);
@@ -827,7 +820,7 @@ neut_tesr_area (struct TESR Tesr, double *parea)
     qty = 0;
     for (j = 1; j <= Tesr.size[1]; j++)
       for (i = 1; i <= Tesr.size[0]; i++)
-        if (Tesr.VoxCell[i][j][1] != 0)
+        if (!Tesr.CellQty || Tesr.VoxCell[i][j][1] != 0)
           qty++;
 
     (*parea) = ut_array_1d_prod (Tesr.vsize, 2) * qty;

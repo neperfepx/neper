@@ -59,6 +59,9 @@ extern "C"
     char *EltOriDes;             // orientation descriptor
 
     int *ElsetGroup;         // groups of the elsets [1...ElsetQty][0...3]
+
+    // pointer to SIM structure
+    struct SIM *pSim;
   };
   typedef struct MESH MESH;
 

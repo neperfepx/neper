@@ -15,7 +15,7 @@ extern "C"
     // needed by: mesh nodes point tesr tess
     int Qty;
     int Dim;
-    char *type;                 // rename
+    char *Entity;               // Entity
 
     // needed by: csys mesh nodes point tesr tess
     double **ColData;		// Colour data

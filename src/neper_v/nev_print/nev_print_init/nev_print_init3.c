@@ -135,7 +135,7 @@ nev_print_init_data_mesh (struct PRINT Print, struct MESH Mesh, double size, int
                            (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "int"))
-      neut_data_int_color ((*pData).ColData, (*pData).Qty,
+      neut_data_int_color ((*pData).ColData, (*pData).Qty, (*pData).VoidCol,
                           (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "real"))
@@ -160,7 +160,7 @@ nev_print_init_data_mesh (struct PRINT Print, struct MESH Mesh, double size, int
     for (i = 1; i <= (*pData).Qty; i++)
       (*pData).ColData[i][0] = !Mesh.ElsetId ? Mesh.EltElset[i] : Mesh.ElsetId[Mesh.EltElset[i]];
 
-    neut_data_int_color ((*pData).ColData, (*pData).Qty,
+    neut_data_int_color ((*pData).ColData, (*pData).Qty, (*pData).VoidCol,
                         (*pData).Col);
 
     ut_string_string ("int", &(*pData).ColDataType);
@@ -198,7 +198,7 @@ nev_print_init_data_nodes (struct PRINT Print, struct NODES Nodes, int Qty, stru
                            (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "int"))
-      neut_data_int_color ((*pData).ColData, (*pData).Qty,
+      neut_data_int_color ((*pData).ColData, (*pData).Qty, (*pData).VoidCol,
                           (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "real"))
@@ -261,7 +261,7 @@ nev_print_init_data_points (struct PRINT Print, struct POINT Point, struct DATA 
                            (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "int"))
-      neut_data_int_color ((*pData).ColData, (*pData).Qty,
+      neut_data_int_color ((*pData).ColData, (*pData).Qty, (*pData).VoidCol,
                           (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "real"))
@@ -310,6 +310,66 @@ nev_print_init_data_points (struct PRINT Print, struct POINT Point, struct DATA 
   return;
 }
 
+/*
+void
+nev_print_init_data_crystal (struct PRINT Print, , struct DATA *pData)
+{
+  double pointrad;
+
+  (*pData).Col = ut_alloc_2d_int ((*pData).Qty + 1, 3);
+  (*pData).Rad = ut_alloc_1d ((*pData).Qty + 1);
+  (*pData).Trs = ut_alloc_1d ((*pData).Qty + 1);
+  (*pData).Coo = ut_alloc_2d ((*pData).Qty + 1, 3);
+
+  pointrad = 0.0168 / pow ((*pData).Qty, 0.25);
+  ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, pointrad);
+  ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 128);
+  ut_array_2d_memcpy (Crystal.PointCoo + 1, (*pData).Qty, 3,
+                      (*pData).Coo + 1);
+
+  if ((*pData).ColData)
+  {
+    if (!strcmp ((*pData).ColDataType, "col"))
+      neut_data_col_color ((*pData).ColData, (*pData).Qty,
+                           (*pData).Col);
+
+    else if (!strcmp ((*pData).ColDataType, "int"))
+      neut_data_int_color ((*pData).ColData, (*pData).Qty, (*pData).VoidCol,
+                          (*pData).Col);
+
+    else if (!strcmp ((*pData).ColDataType, "real"))
+      neut_data_real_color ((*pData).ColData, NULL,
+                            (*pData).Qty, (*pData).Scale,
+                            (*pData).ColScheme, (*pData).Col,
+                            &((*pData).Scale));
+
+    else if (!strcmp ((*pData).ColDataType, "ori"))
+      neut_data_ori_color ((*pData).ColData, (*pData).Qty,
+                           (*pData).ColScheme, (*pData).Col);
+
+    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+      ut_print_exprbug ((*pData).ColDataType);
+  }
+
+  if (!(*pData).RadDataType)
+    ut_string_string ("rad", &((*pData).RadDataType));
+  if ((*pData).RadData)
+    neut_data_rad_radius ((*pData).RadData, (*pData).Qty,
+                         (*pData).Rad);
+
+  if ((*pData).TrsData)
+    neut_data_tr_tr ((*pData).TrsData, (*pData).Qty,
+                    (*pData).Trs);
+
+  if (!(*pData).BCol)
+    (*pData).BCol = ut_alloc_1d_int (3);
+
+  return;
+}
+*/
+
 void
 nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pData)
 {
@@ -322,6 +382,12 @@ nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pDa
   ut_array_2d_int_set ((*pData).Col + 1, Qty, 3, 255);
   ut_array_1d_set ((*pData).Trs + 1, Qty, 0);
 
+  if (!(*pData).VoidCol)
+  {
+    (*pData).VoidCol = ut_alloc_1d_int (3);
+    ut_array_1d_int_set ((*pData).VoidCol, 3, 128);
+  }
+
   if ((*pData).ColData)
   {
     ut_print_message (0, 1, "Computing colors...\n");
@@ -330,7 +396,7 @@ nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pDa
       neut_data_col_color ((*pData).ColData, Qty, (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "int"))
-      neut_data_int_color ((*pData).ColData, Qty, (*pData).Col);
+      neut_data_int_color ((*pData).ColData, Qty, (*pData).VoidCol, (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "real"))
       neut_data_real_color ((*pData).ColData, (*pData).ColDataDef,
@@ -339,8 +405,20 @@ nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pDa
 
     else if (!strcmp ((*pData).ColDataType, "ori")
           || !strcmp ((*pData).ColDataType, "disori"))
+    {
       neut_data_ori_color ((*pData).ColData, Qty, (*pData).ColScheme,
                            (*pData).Col);
+      id = 0;
+      if (Tesr.VoxOriDef)
+        for (k = 1; k <= Tesr.size[2]; k++)
+          for (j = 1; j <= Tesr.size[1]; j++)
+            for (i = 1; i <= Tesr.size[0]; i++)
+            {
+              id++;
+              if (!strcmp ((*pData).Entity, "vox") && Tesr.VoxOriDef[i][j][k] == 0)
+                ut_array_1d_int_memcpy ((*pData).VoidCol, 3, (*pData).Col[id]);
+            }
+    }
 
     else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
      || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
@@ -352,18 +430,27 @@ nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pDa
   else
   {
     (*pData).ColData = ut_alloc_2d ((*pData).Qty + 1, 1);
+
     id = 0;
     for (k = 1; k <= Tesr.size[2]; k++)
       for (j = 1; j <= Tesr.size[1]; j++)
         for (i = 1; i <= Tesr.size[0]; i++)
         {
-          (*pData).ColData[++id][0] = Tesr.VoxCell[i][j][k];
-          if (Tesr.CellId)
-            (*pData).ColData[id][0] = Tesr.CellId[ut_num_d2ri ((*pData).ColData[id][0])];
+          if (Tesr.CellQty)
+          {
+            (*pData).ColData[++id][0] = Tesr.VoxCell[i][j][k];
+            if (Tesr.CellId)
+              (*pData).ColData[id][0] = Tesr.CellId[ut_num_d2ri ((*pData).ColData[id][0])];
+          }
         }
 
-    neut_data_int_color ((*pData).ColData, (*pData).Qty,
+    neut_data_int_color ((*pData).ColData, (*pData).Qty, (*pData).VoidCol,
                         (*pData).Col);
+    for (i = 1; i <= (*pData).Qty; i++)
+    {
+      if (ut_array_1d_int_max ((*pData).Col[i], 3) == 0)
+        ut_array_1d_int_memcpy ((*pData).VoidCol, 3, (*pData).Col[i]);
+    }
 
     ut_string_string ("int", &(*pData).ColDataType);
   }
@@ -380,12 +467,6 @@ nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pDa
   if (!(*pData).BCol)
     (*pData).BCol = ut_alloc_1d_int (3);
 
-  if (!(*pData).VoidCol)
-  {
-    (*pData).VoidCol = ut_alloc_1d_int (3);
-    ut_array_1d_int_set ((*pData).VoidCol, 3, 128);
-  }
-
   if (!(*pData).RadDataName)
   {
     (*pData).RadDataName = ut_alloc_1d_char (100);
@@ -400,8 +481,8 @@ nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pDa
 void
 nev_print_init_data_tess (struct PRINT Print, struct TESS Tess, struct DATA *pData)
 {
-  int i;
-  double size, rad, dim = (*pData).Dim;
+  int i, dim = (*pData).Dim;
+  double size, rad;
 
   neut_tess_size (Tess, &size);
 
@@ -435,6 +516,13 @@ nev_print_init_data_tess (struct PRINT Print, struct TESS Tess, struct DATA *pDa
     ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
     ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, rad);
   }
+  else if (dim == 5)
+  {
+    rad = pow (size, 1. / 3) * 0.04000 / pow (Tess.CellQty, 0.25);
+    ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 128);
+    ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
+    ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, rad);
+  }
 
   if ((*pData).ColData)
   {
@@ -443,7 +531,7 @@ nev_print_init_data_tess (struct PRINT Print, struct TESS Tess, struct DATA *pDa
                            (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "int"))
-      neut_data_int_color ((*pData).ColData, (*pData).Qty,
+      neut_data_int_color ((*pData).ColData, (*pData).Qty, (*pData).VoidCol,
                           (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "real"))
@@ -462,8 +550,8 @@ nev_print_init_data_tess (struct PRINT Print, struct TESS Tess, struct DATA *pDa
       ut_print_exprbug ((*pData).ColDataType);
   }
 
-  // by default, we color the cells based on their ids
-  else if ((*pData).Dim == Tess.Dim)
+  // by default, we color the cells and crystals based on their ids
+  else if ((*pData).Dim == Tess.Dim || (*pData).Dim == 5)
   {
     (*pData).ColData = ut_alloc_2d ((*pData).Qty + 1, 1);
     if (!Tess.CellId)
@@ -472,11 +560,14 @@ nev_print_init_data_tess (struct PRINT Print, struct TESS Tess, struct DATA *pDa
     else
       for (i = 1; i <= (*pData).Qty; i++)
         (*pData).ColData[i][0] = Tess.CellId[i];
-    neut_data_int_color ((*pData).ColData, (*pData).Qty,
+    neut_data_int_color ((*pData).ColData, (*pData).Qty, (*pData).VoidCol,
                         (*pData).Col);
 
     ut_string_string ("int", &(*pData).ColDataType);
   }
+
+  if (dim == 5 && !(*pData).BCol)
+      (*pData).BCol = ut_alloc_1d_int (3);
 
   if ((*pData).TrsData)
     neut_data_tr_tr ((*pData).TrsData, (*pData).Qty, (*pData).Trs);
@@ -484,6 +575,15 @@ nev_print_init_data_tess (struct PRINT Print, struct TESS Tess, struct DATA *pDa
   if ((*pData).RadData)
     neut_data_rad_radius ((*pData).RadData, (*pData).Qty,
                          (*pData).Rad);
+  else if (dim == 5)
+    for (i = 1; i <= Tess.CellQty; i++)
+      neut_tess_cell_radeq (Tess, i, (*pData).Rad + i);
+
+  if (dim == 5 && (*pData).BRad < 0)
+  {
+    neut_tess_cellavradeq (Tess, Tess.CellQty, &(*pData).BRad);
+    (*pData).BRad *= 0.01;
+  }
 
   return;
 }

@@ -69,13 +69,9 @@ neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds, int **pvoxbounds,
       ut_array_1d_fscanf (file, (*pTesr).Origin, (*pTesr).Dim);
     }
 
+    // backward compatibility
     else if (!strcmp (string, "*hasvoid"))
-    {
-      ut_file_skip (file, 1);
-      if (fscanf (file, "%d", &(*pTesr).hasvoid) != 1)
-        ut_print_message (2, 0,
-                          "Input file is not a valid raster tessellation file.\n");
-    }
+      ut_file_skip (file, 2);
 
     else
       ut_print_message (2, 2, "Failed to read tesr file.\n");
@@ -123,8 +119,11 @@ neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file)
   if (!strcmp (string, "**cell"))
   {
     ut_file_skip (file, 1);
-    if (fscanf (file, "%d", &(*pTesr).CellQty) != 1)
-      abort ();
+
+    (*pTesr).CellQty = 0;
+    if (ut_file_nextstring (file, string) == 1 && string[0] != '*')
+      if (fscanf (file, "%d", &(*pTesr).CellQty) != 1)
+        abort ();
 
     while (ut_file_nextstring (file, string) == 1
            && strncmp (string, "**", 2))
@@ -186,39 +185,10 @@ neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file)
       }
 
       else if (!strcmp (string, "*coo"))
-      {
-        ut_file_skip (file, 1);
-        (*pTesr).CellCoo = ut_alloc_2d ((*pTesr).CellQty + 1, 3);
+        ut_file_skip (file, (*pTesr).CellQty * (*pTesr).Dim + 1);
 
-        for (i = 1; i <= (*pTesr).CellQty; i++)
-          ut_array_1d_fscanf (file, (*pTesr).CellCoo[i], (*pTesr).Dim);
-      }
-
-      else if (!strcmp (string, "*vol"))
-      {
-        ut_file_skip (file, 1);
-        (*pTesr).CellVol = ut_alloc_1d ((*pTesr).CellQty + 1);
-
-        for (i = 1; i <= (*pTesr).CellQty; i++)
-        {
-          status = fscanf (file, "%lf", &(*pTesr).CellVol[i]);
-          if (status != 1)
-            abort ();
-        }
-      }
-
-      else if (!strcmp (string, "*convexity"))
-      {
-        ut_file_skip (file, 1);
-        (*pTesr).CellConvexity = ut_alloc_1d ((*pTesr).CellQty + 1);
-
-        for (i = 1; i <= (*pTesr).CellQty; i++)
-        {
-          status = fscanf (file, "%lf", &(*pTesr).CellConvexity[i]);
-          if (status != 1)
-            abort ();
-        }
-      }
+      else if (!strcmp (string, "*vol") || !strcmp (string, "*convexity"))
+        ut_file_skip (file, (*pTesr).CellQty + 1);
 
       else if (!strcmp (string, "*group"))
       {
@@ -265,13 +235,11 @@ void
 neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
                        double *scale, char *version, char **pdataformat, FILE * file)
 {
-  int i, readfromfile = 0;
-  char c;
+  int i;
   FILE *file2 = NULL;
   char *filename = NULL;
   char *tmp = ut_alloc_1d_char (10);
   char *tmp2 = ut_alloc_1d_char (1000);
-  fpos_t pos;
 
   if (bounds && scale)
     ut_print_neperbug ();
@@ -300,38 +268,14 @@ neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
       abort ();
   }
 
-  do
-  {
-    fgetpos (file, &pos);
-    if (fscanf (file, "%c", &c) != 1)
-      abort ();
-  }
-  while (c == ' ' || c == '\n' || c == '\t');
-
-  fsetpos (file, &pos);
-
-  if (c == '*')
-    if (fscanf (file, "%s", tmp) != 1)
-      abort ();
-
-  if (!strcmp (tmp, "*file"))
-  {
-    readfromfile = 1;
-    filename = ut_alloc_1d_char (1000);
-    if (fscanf (file, "%s", tmp2) != 1)
-      abort ();
-    sprintf (filename, "%s/%s", dirname, tmp2);
-    file2 = ut_file_open (filename, "r");
-  }
-  else
-    file2 = file;
+  ut_file_scan_file (file, dirname, &file2, &filename);
 
   if (!scale && !bounds)
-    neut_tesr_fscanf_data_default (pTesr, *pdataformat, readfromfile, file2);
+    neut_tesr_fscanf_data_default (pTesr, *pdataformat, filename != NULL, file2, (*pTesr).VoxCell);
   else if (bounds)
-    neut_tesr_fscanf_data_bounds (pTesr, bounds, *pdataformat, file2);
+    neut_tesr_fscanf_data_bounds (pTesr, bounds, *pdataformat, file2, (*pTesr).VoxCell);
   else if (scale)
-    neut_tesr_fscanf_data_scale (pTesr, scale, *pdataformat, readfromfile, file2);
+    neut_tesr_fscanf_data_scale (pTesr, scale, *pdataformat, filename != NULL, file2, (*pTesr).VoxCell);
 
   if (!strcmp (tmp, "*file"))
   {
@@ -368,13 +312,10 @@ neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
                           double *scale, char *version, char **poridataformat,
                           FILE * file)
 {
-  int readfromfile = 0;
-  char c;
   FILE *file2 = NULL;
   char *filename = NULL;
   char *tmp = ut_alloc_1d_char (10);
   char *tmp2 = ut_alloc_1d_char (1000);
-  fpos_t pos;
   char *des = ut_alloc_1d_char (100);
 
   if (bounds || scale)
@@ -402,33 +343,9 @@ neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
       abort ();
   }
 
-  do
-  {
-    fgetpos (file, &pos);
-    if (fscanf (file, "%c", &c) != 1)
-      abort ();
-  }
-  while (c == ' ' || c == '\n' || c == '\t');
+  ut_file_scan_file (file, dirname, &file2, &filename);
 
-  fsetpos (file, &pos);
-
-  if (c == '*')
-    if (fscanf (file, "%s", tmp) != 1)
-      abort ();
-
-  if (!strcmp (tmp, "*file"))
-  {
-    readfromfile = 1;
-    filename = ut_alloc_1d_char (1000);
-    if (fscanf (file, "%s", tmp2) != 1)
-      abort ();
-    sprintf (filename, "%s/%s", dirname, tmp2);
-    file2 = ut_file_open (filename, "r");
-  }
-  else
-    file2 = file;
-
-  neut_tesr_fscanf_oridata_default (pTesr, des, *poridataformat, readfromfile, file2);
+  neut_tesr_fscanf_oridata_default (pTesr, des, *poridataformat, 0, file2);
 
   if (!strcmp (tmp, "*file"))
   {
@@ -439,6 +356,54 @@ neut_tesr_fscanf_oridata (struct TESR *pTesr, char *dirname, int *bounds,
   ut_free_1d_char (&tmp);
   ut_free_1d_char (&tmp2);
   ut_free_1d_char (&des);
+
+  return;
+}
+
+void
+neut_tesr_fscanf_oridef (struct TESR *pTesr, char *dirname, int *bounds,
+                          double *scale, FILE * file)
+{
+  FILE *file2 = NULL;
+  char *filename = NULL;
+  char *tmp = ut_alloc_1d_char (10);
+  char *tmp2 = ut_alloc_1d_char (1000);
+  char *des = ut_alloc_1d_char (100);
+  char *format = ut_alloc_1d_char (10);
+
+  if (bounds || scale)
+    ut_print_neperbug ();
+
+  (*pTesr).VoxOriDef =
+    ut_alloc_3d_int ((*pTesr).size[0] + 1, (*pTesr).size[1] + 1,
+                     (*pTesr).size[2] + 1);
+
+  if (!ut_file_string_scanandtest (file, "**oridef"))
+    ut_print_message (2, 0,
+                      "Input file is not a valid raster tessellation file.\n");
+
+  if (fscanf (file, "%s", format) != 1)
+    abort ();
+
+  ut_file_scan_file (file, dirname, &file2, &filename);
+
+  if (!scale && !bounds)
+    neut_tesr_fscanf_data_default (pTesr, format, filename != NULL, file2, (*pTesr).VoxOriDef);
+  else if (bounds)
+    neut_tesr_fscanf_data_bounds (pTesr, bounds, format, file2, (*pTesr).VoxOriDef);
+  else if (scale)
+    neut_tesr_fscanf_data_scale (pTesr, scale, format, filename != NULL, file2, (*pTesr).VoxOriDef);
+
+  if (!strcmp (tmp, "*file"))
+  {
+    ut_file_close (file2, filename, "r");
+    ut_free_1d_char (&filename);
+  }
+
+  ut_free_1d_char (&tmp);
+  ut_free_1d_char (&tmp2);
+  ut_free_1d_char (&des);
+  ut_free_1d_char (&format);
 
   return;
 }

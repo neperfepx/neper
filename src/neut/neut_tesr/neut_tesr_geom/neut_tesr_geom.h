@@ -12,6 +12,7 @@ extern "C"
 
 extern int neut_tesr_vox_pos (struct TESR Tesr, int vox, int *pos);
 extern int neut_tesr_vox_coo (struct TESR Tesr, int vox, double *coo);
+extern int neut_tesr_vox_oridef (struct TESR Tesr, int vox, int *poridef);
 extern int neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell);
 extern int neut_tesr_vox_cellid (struct TESR Tesr, int vox, int *pcell);
 

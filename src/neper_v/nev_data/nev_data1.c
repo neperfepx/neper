@@ -18,12 +18,11 @@ nev_data (char **argv, int *pi, struct SIM Sim, struct TESS *pTess,
 
   neut_data_string_entity_attribute (argv[(*pi)], entity, attribute);
 
-  if (!strcmp (entity, "cell") && !neut_tess_isvoid (*pTess))
-    neut_tess_cell (*pTess, &entity);
-
   if ((!strcmp (entity, "poly") || !strcmp (entity, "edge")
     || !strcmp (entity, "face") || !strcmp (entity, "ver")
-    || !strcmp (entity, "seed")) && !neut_tess_isvoid (*pTess))
+    || !strcmp (entity, "cell") || !strcmp (entity, "seed")
+    || !strncmp (entity, "crystal", 7))
+    && !neut_tess_isvoid (*pTess))
       nev_data_tess (Sim, pTess, entity, attribute, argv[++(*pi)], TessData);
 
   else if ((!strcmp (entity, "cell") || !strncmp (entity, "vox", 3)

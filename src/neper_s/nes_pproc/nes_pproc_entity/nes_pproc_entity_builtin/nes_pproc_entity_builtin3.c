@@ -165,6 +165,93 @@ nes_pproc_entity_builtin_elsets_ori (struct SIM *pSim, struct TESS Tess,
 }
 
 void
+nes_pproc_entity_builtin_cells_ori (struct SIM *pSim, struct TESS Tess,
+                                    struct TESR Tesr, char *entity, char *res,
+                                    struct SIMRES *pSimRes)
+{
+  int step;
+  char *prev = ut_alloc_1d_char (1000);
+  FILE *file = NULL;
+
+  ut_print_progress (stdout, 0, (*pSim).StepQty + 1, "%3.0f%%", prev);
+
+  for (step = 0; step <= (*pSim).StepQty; step++)
+  {
+    neut_sim_setstep (pSim, step);
+    neut_simres_setstep (pSimRes, step);
+
+    file = ut_file_open ((*pSimRes).file, "W");
+
+    if (!neut_tess_isvoid (Tess) && !Tess.CellCrySym)
+      ut_print_message (2, 5, "\nCrystal symmetry not defined.\n");
+    else if (!neut_tesr_isvoid (Tesr) && !Tesr.CellCrySym)
+      ut_print_message (2, 5, "\nCrystal symmetry not defined.\n");
+
+    neut_tesr_oriaverage (&Tesr);
+    neut_ori_fprintf (file, (*pSim).OriDes, "ascii", Tesr.CellOri + 1, NULL, NULL, Tesr.CellQty, NULL);
+
+    ut_file_close (file, (*pSimRes).file, "W");
+
+    ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1, "%3.0f%%", prev);
+
+  }
+
+  neut_sim_setstep (pSim, 0);
+  neut_sim_addres (pSim, entity, res, NULL);
+  neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
+
+  ut_free_1d_char (&prev);
+
+  return;
+}
+
+void
+nes_pproc_entity_builtin_cells_gos (struct SIM *pSim, struct TESS Tess,
+                                    struct TESR Tesr, char *entity, char *res,
+                                    struct SIMRES *pSimRes)
+{
+  int i, step;
+  double gos;
+  char *prev = ut_alloc_1d_char (1000);
+  FILE *file = NULL;
+
+  ut_print_progress (stdout, 0, (*pSim).StepQty + 1, "%3.0f%%", prev);
+
+  for (step = 0; step <= (*pSim).StepQty; step++)
+  {
+    neut_sim_setstep (pSim, step);
+    neut_simres_setstep (pSimRes, step);
+
+    file = ut_file_open ((*pSimRes).file, "W");
+
+    if (!neut_tess_isvoid (Tess) && !Tess.CellCrySym)
+      ut_print_message (2, 5, "\nCrystal symmetry not defined.\n");
+    else if (!neut_tesr_isvoid (Tesr) && !Tesr.CellCrySym)
+      ut_print_message (2, 5, "\nCrystal symmetry not defined.\n");
+
+    if (!neut_tesr_isvoid (Tesr))
+      for (i = 1; i <= Tesr.CellQty; i++)
+      {
+        neut_tesr_cell_gos (Tesr, i, &gos);
+        fprintf (file, "%.12f\n", gos);
+      }
+
+    ut_file_close (file, (*pSimRes).file, "W");
+
+    ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1, "%3.0f%%", prev);
+  }
+
+  neut_sim_setstep (pSim, 0);
+  neut_sim_addres (pSim, entity, res, NULL);
+  neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
+
+  ut_free_1d_char (&prev);
+
+  return;
+}
+
+
+void
 nes_pproc_entity_builtin_elsets_oridis (struct SIM *pSim, struct TESS Tess,
                                      struct NODES *pNodes, struct MESH *Mesh,
                                      char *entity, char *res, int **elsets,

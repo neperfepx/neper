@@ -121,32 +121,36 @@ neut_data_fscanf_col_col (int entityqty, char *value,
 }
 
 void
-neut_data_fscanf_col_scal (char *input, struct SIM Sim,
-                          struct TESS *pTess, struct TESR *pTesr,
-                          struct NODES *pNodes, struct MESH **pMesh,
-                          struct POINT *pPoints, char *entity, int entityqty,
-                          char *value, struct DATA *pData)
+neut_data_fscanf_scal (char *input, struct SIM *pSim,
+                       struct TESS *pTess, struct TESR *pTesr,
+                       struct NODES *pNodes, struct MESH **pMesh,
+                       struct POINT *pPoints, char *entity, int entityqty,
+                       char *value, char **pColDataName, int *pColDataSize,
+                       double ***pColData, char **pColDataType)
 {
-  int i;
+  int i, size = 1;
   char *vartype = NULL;
   struct SIMRES SimRes;
 
   neut_simres_set_zero (&SimRes);
 
-  ut_string_string (value, &(*pData).ColDataName);
+  if (pColDataName)
+    ut_string_string (value, pColDataName);
 
-  (*pData).ColDataSize = 1;
+  if (pColDataSize)
+    *pColDataSize = 1;
 
-  (*pData).ColData = ut_alloc_2d (entityqty + 1, (*pData).ColDataSize);
+  *pColData = ut_alloc_2d (entityqty + 1, size);
 
-  neut_sim_simres (Sim, entity, value, &SimRes);
+  if (pSim)
+    neut_sim_simres (*pSim, entity, value, &SimRes);
 
-  if (SimRes.file)
-    ut_array_2d_fnscanf_wcard (SimRes.file, (*pData).ColData + 1,
+  if (ut_file_exist (SimRes.file))
+    ut_array_2d_fnscanf_wcard (SimRes.file, *pColData + 1,
                                entityqty, 1, NULL, "r");
   else
   {
-    double *data = ut_alloc_1d (entityqty + 1);
+    double tmp, *data = ut_alloc_1d (entityqty + 1);
 
     if (!strcmp (input, "tess"))
       neut_tess_entity_expr_val (*pTess, entity, value, data, &vartype);
@@ -165,20 +169,26 @@ neut_data_fscanf_col_scal (char *input, struct SIM Sim,
                                   (*pMesh)[(*pTess).Dim], value, data,
                                   &vartype);
 
+    else if (sscanf (value, "%lf", &tmp) == 1)
+    {
+      ut_array_1d_set (data + 1, entityqty, tmp);
+      ut_string_string ("%f", &vartype);
+    }
+
     else
       abort ();
 
     for (i = 1; i <= entityqty; i++)
-      (*pData).ColData[i][0] = data[i];
+      (*pColData)[i][0] = data[i];
     ut_free_1d (&data);
   }
 
-  if (!strcmp ((*pData).ColDataType, "expr"))
+  if (!strcmp (*pColDataType, "expr"))
   {
     if (!strcmp (vartype, "%d"))
-      ut_string_string ("int", &(*pData).ColDataType);
+      ut_string_string ("int", pColDataType);
     else if (!strcmp (vartype, "%f"))
-      ut_string_string ("real", &(*pData).ColDataType);
+      ut_string_string ("real", pColDataType);
     else
       abort ();
   }
@@ -212,6 +222,73 @@ neut_data_fscanf_col_tensor (struct SIM Sim,
   else
     abort ();
 
+  neut_simres_free (&SimRes);
+
+  return;
+}
+
+void
+neut_data_fscanf_rad_scal (char *input, struct SIM Sim,
+                          struct TESS *pTess, struct TESR *pTesr,
+                          struct NODES *pNodes, struct MESH **pMesh,
+                          struct POINT *pPoints, char *entity, int entityqty,
+                          char *value, struct DATA *pData)
+{
+  int i;
+  char *vartype = NULL;
+  struct SIMRES SimRes;
+
+  neut_simres_set_zero (&SimRes);
+
+  ut_string_string (value, &(*pData).RadDataName);
+
+  (*pData).RadData = ut_alloc_2d (entityqty + 1, 1);
+
+  neut_sim_simres (Sim, entity, value, &SimRes);
+
+  if (ut_file_exist (SimRes.file))
+    ut_array_2d_fnscanf_wcard (SimRes.file, (*pData).RadData + 1,
+                               entityqty, 1, NULL, "r");
+  else
+  {
+    double *data = ut_alloc_1d (entityqty + 1);
+
+    if (!strcmp (input, "tess"))
+      neut_tess_entity_expr_val (*pTess, entity, value, data, &vartype);
+
+    else if (!strcmp (input, "tesr"))
+      neut_tesr_entity_expr_val (*pTesr, entity, value, data, &vartype);
+
+    else if (!strcmp (input, "mesh") || !strncmp (input, "node", 4))
+      neut_mesh_entity_expr_val (*pNodes, (*pMesh)[0], (*pMesh)[1],
+                                 (*pMesh)[2], (*pMesh)[3], (*pMesh)[4],
+                                 *pTess, NULL, NULL, NULL, NULL, entity, value,
+                                 data, &vartype);
+
+    else if (!strncmp (input, "point", 5))
+      neut_point_entity_expr_val (*pPoints, *pTess, *pNodes,
+                                  (*pMesh)[(*pTess).Dim], value, data,
+                                  &vartype);
+
+    else
+      abort ();
+
+    for (i = 1; i <= entityqty; i++)
+      (*pData).RadData[i][0] = data[i];
+    ut_free_1d (&data);
+  }
+
+  if (!strcmp ((*pData).RadDataType, "expr"))
+  {
+    if (!strcmp (vartype, "%d"))
+      ut_string_string ("int", &(*pData).RadDataType);
+    else if (!strcmp (vartype, "%f"))
+      ut_string_string ("real", &(*pData).RadDataType);
+    else
+      abort ();
+  }
+
+  ut_free_1d_char (&vartype);
   neut_simres_free (&SimRes);
 
   return;

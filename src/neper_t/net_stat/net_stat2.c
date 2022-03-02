@@ -54,9 +54,9 @@ void
 net_stat_point (FILE * file, char *format, struct POINT Point,
                 struct TESS Tess)
 {
-  int i, j, status, invalqty, var_qty, valqty;
+  int i, j, status, invalqty, valqty;
   double *vals = NULL;
-  char **invar = NULL, *type = NULL, **vars = NULL;
+  char **invar = NULL, *type = NULL;
   struct NODES Nodes;
   struct MESH Mesh;
 
@@ -64,8 +64,6 @@ net_stat_point (FILE * file, char *format, struct POINT Point,
   neut_mesh_set_zero (&Mesh);
 
   ut_list_break (format, NEUT_SEP_NODEP, &invar, &invalqty);
-
-  neut_point_var_list (&vars, &var_qty);
 
   for (i = 1; i <= Point.PointQty; i++)
     for (j = 0; j < invalqty; j++)
@@ -84,7 +82,6 @@ net_stat_point (FILE * file, char *format, struct POINT Point,
     }
 
   ut_free_2d_char (&invar, invalqty);
-  ut_free_2d_char (&vars, var_qty);
   ut_free_1d_char (&type);
   ut_free_1d (&vals);
 
@@ -108,17 +105,6 @@ net_stat_tesr (FILE * file, char *entity, char *format, struct TESR *pTesr)
   neut_tesr_entity_qty (*pTesr, entity, &qty);
 
   ut_list_break (format, NEUT_SEP_NODEP, &invar, &invalqty);
-
-  if (!strcmp (entity, "cell"))
-  {
-    if ((strstr (format, "x") || strstr (format, "y") || strstr (format, "z"))
-        && !(*pTesr).CellCoo)
-      neut_tesr_init_cellcoo (pTesr);
-    if (strstr (format, "vol") && !(*pTesr).CellVol)
-      neut_tesr_init_cellvol (pTesr);
-    if (strstr (format, "convexity") && !(*pTesr).CellConvexity)
-      neut_tesr_init_cellconvexity (pTesr);
-  }
 
   data = ut_alloc_2d (invalqty, qty + 1);
   dataqty = ut_alloc_1d_int (invalqty);

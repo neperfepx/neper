@@ -15,4 +15,4 @@
 
 #include"net_res.h"
 
-extern void net_res_sim (struct IN_T In, struct TESS Tess);
+extern void net_res_sim (struct IN_T In, struct TESS Tess, struct TESR Tesr);

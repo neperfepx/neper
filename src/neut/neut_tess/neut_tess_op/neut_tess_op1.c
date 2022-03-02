@@ -100,6 +100,8 @@ neut_tess_set_zero (struct TESS *pTess)
 
   neut_tess_set_zero_domain (pTess);
 
+  (*pTess).pSim = NULL;
+
   return;
 }
 

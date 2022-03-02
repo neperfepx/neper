@@ -1,8 +1,16 @@
-New in 4.3.2-6 (01 Mar 2022):
+New in 4.4.0 (02 Mar 2022):
+- module -T: added -format sim for tesr, added **oridef to tesr file, removed
+  *hasvoid from tesr file, made minor improvements to tesr file.
 - module -M: made minor fix.
-- module -S: fixed backward compatibility.
-- documentation: made minor fix.
-- general: made small fix to tests, fixed tests on macOS.
+- module -S: fixed backward compatibility, added support of tess- or tesr-only
+  simulation directories, added -rescell and -restesr, added -step, added
+  -rescell gos (tesr), made minor fixes and improvements.
+- module -V: added -showcrystal and -datacrystal*, improved support of
+  simulation directory, improved support of EBSD-type data (orientation +
+  "indexed" fields), generalized -data*rad and -data*trs to take expressions,
+  renamed -simstep into -step, made minor improvements.
+- documentation: made minor fixes and improvements.
+- general: added tutorials, added and fixed tests (especially on macOS).
 
 New in 4.3.1 (07 Feb 2022):
 - module -T: fixed -ori, added -format sim.

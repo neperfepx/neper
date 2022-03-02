@@ -40,6 +40,9 @@ struct NODES
   int PartQty;                  // total number of partitions
   int **Parts;                  // partitions (same format as struct MESH.Elsets)
   int *NodePart;                // partition of a node
+
+  // pointer to SIM structure
+  struct SIM *pSim;
 };
 typedef struct NODES NODES;
 

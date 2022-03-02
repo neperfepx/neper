@@ -127,6 +127,10 @@ neut_data_string_entity_attribute (char *string, char *entity, char *attribute)
     strcpy (entity, "pointedge");
   else if (!strncmp (stringcpy, "point", 5))
     strcpy (entity, "point");
+  else if (!strncmp (stringcpy, "crystaledge", 9))
+    strcpy (entity, "crystaledge");
+  else if (!strncmp (stringcpy, "crystal", 5))
+    strcpy (entity, "crystal");
   else if (!strncmp (stringcpy, "mesh", 4))
     strcpy (entity, "mesh");
   else
@@ -174,7 +178,7 @@ neut_data_type_size (char *type, int *psize)
 }
 
 void
-neut_data_int_color (double **data, int size, int **Col)
+neut_data_int_color (double **data, int size, int *UndefCol, int **Col)
 {
   int i, palettesize, **palette = NULL;
   ut_color_palette_0208 (&palette, &palettesize);
@@ -187,8 +191,10 @@ neut_data_int_color (double **data, int size, int **Col)
     if (pos >= 0)
       for (j = 0; j < 3; j++)
         Col[i][j] = palette[pos][j];
+    else if (UndefCol)
+      ut_array_1d_int_memcpy (UndefCol, 3, Col[i]);
     else
-      ut_array_1d_int_zero (Col[i], 3);
+      ut_array_1d_int_set (Col[i], 3, 128);
   }
 
   ut_free_2d_int (&palette, palettesize);
@@ -417,13 +423,6 @@ neut_data_datastring_type_value (char *entity, char *attribute,
         && !strcmp (attribute, "coo"))
   {
     ut_string_string ("none", pdatatype);
-    ut_string_string (datastring, pdatavalue);
-  }
-
-  else if (!strcmp (attribute, "coo")
-        && !strcmp (datastring, "from_sim"))
-  {
-    ut_string_string (attribute, pdatatype);
     ut_string_string (datastring, pdatavalue);
   }
 

@@ -5,7 +5,7 @@
 #include"nev_print_vtk_.h"
 
 void
-nev_print_vtk (char *basename, struct PRINT *pPrint,
+nev_print_vtk (char *basename, struct PRINT Print,
                struct SIM Sim, struct NODES Nodes, struct MESH *Mesh,
                struct DATA *pNodeData, struct DATA *MeshData)
 {
@@ -13,7 +13,7 @@ nev_print_vtk (char *basename, struct PRINT *pPrint,
   char *filename = NULL;
   char *outdir = NULL;
 
-  neut_print_outdir (*pPrint, Sim, "vtk", &outdir);
+  neut_print_outdir (Print, Sim, "vtk", &outdir);
   if (strcmp (outdir, "."))
     ut_sys_mkdir (outdir);
 

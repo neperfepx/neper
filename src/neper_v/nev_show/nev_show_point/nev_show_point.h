@@ -3,4 +3,4 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nev_show_points (char **argv, int *pi, struct POINT Points,
-			     struct PRINT *pPrint);
+			     int **pshow);

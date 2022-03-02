@@ -56,6 +56,7 @@ extern "C"
     char *showedgestring;
 
     int *showpoint;
+    int *showcrystal;
 
     int showcsys;
 

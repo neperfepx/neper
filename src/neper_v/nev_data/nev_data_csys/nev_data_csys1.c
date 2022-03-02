@@ -9,16 +9,20 @@ nev_data_csys (struct SIM Sim, char *attribute, char *datastring, struct DATA *p
 {
   char *datatype = NULL, *datavalue = NULL;
 
+  struct DATAINPUT DataInput;
+  neut_datainput_set_default (&DataInput);
+  ut_string_string ("csys", &DataInput.input);
+  DataInput.pSim = &Sim;
+
   ut_print_message (0, 1, "Reading data (%s, %s)...\n", "csys", attribute);
 
   neut_data_datastring_type_value ("csys", attribute, datastring, &datatype, &datavalue);
 
   if (!strcmp (attribute, "col"))
-    neut_data_fscanf_col (Sim, NULL, NULL, NULL, NULL, "csys", NULL, 0, 1,
-                              datatype, datavalue, pData);
+    neut_data_fscanf_general (DataInput, "csys", 0, 1, attribute, datatype, datavalue, pData);
 
   else if (!strcmp (attribute, "rad"))
-    neut_data_fscanf_rad (1, datatype, datavalue, pData);
+    neut_data_fscanf_general (DataInput, "csys", 0, 1, attribute, datatype, datavalue, pData);
 
   else if (!strcmp (attribute, "length"))
     neut_data_fscanf_length (1, datatype, datavalue, pData);

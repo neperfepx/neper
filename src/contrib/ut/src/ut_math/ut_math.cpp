@@ -381,3 +381,17 @@ ut_math_string_isfunction (char *string)
 
   return status;
 }
+
+int
+ut_math_eval_exprislogical (char *string)
+{
+  if (strstr (string, "&&")
+   || strstr (string, "||")
+   || strstr (string, "<")
+   || strstr (string, ">")
+   || strstr (string, "=")
+   || strstr (string, "?"))
+    return 1;
+  else
+    return 0;
+}

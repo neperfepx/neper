@@ -7,10 +7,10 @@ extern "C"
 {
 #endif
 
-#ifndef NEUT_TESS_ORI_H
-#define NEUT_TESS_ORI_H
+#ifndef NEUT_TESS_SIM_H
+#define NEUT_TESS_SIM_H
 
-#endif				/* NEUT_TESS_ORI_H */
+#endif				/* NEUT_TESS_SIM_H */
 
 extern void neut_tess_sim (char *simdir, struct TESS Tess, struct SIM *pSim);
 

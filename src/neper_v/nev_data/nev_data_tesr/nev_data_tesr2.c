@@ -5,25 +5,23 @@
 #include"nev_data_tesr_.h"
 
 void
-nev_data_tesr_cell (struct SIM Sim, struct TESR *pTesr, struct DATA *pData, char *attribute,
-                          char *datastring)
+nev_data_tesr_gen (struct SIM Sim, struct TESR *pTesr, struct DATA *pData, char *entity,
+                   char *attribute, char *datastring)
 {
-  int argqty;
-  char **args = NULL;
+  int entityqty;
   char *datatype = NULL, *datavalue = NULL;
+  struct DATAINPUT DataInput;
 
-  neut_data_datastring_type_value ("cell", attribute, datastring, &datatype, &datavalue);
+  neut_datainput_set_default (&DataInput);
+  ut_string_string ("tesr", &DataInput.input);
+  DataInput.pSim = &Sim;
+  DataInput.pTesr = pTesr;
 
-  ut_list_break (datastring, NEUT_SEP_DEP, &args, &argqty);
+  neut_tesr_entity_qty (*pTesr, entity, &entityqty);
 
-  if (!strcmp (attribute, "col"))
-    neut_data_fscanf_col (Sim, pTesr, NULL, NULL, NULL, "tesr", "cell", (*pTesr).Dim,
-                         (*pTesr).CellQty, datatype, datavalue, pData);
+  neut_data_datastring_type_value (entity, attribute, datastring, &datatype, &datavalue);
 
-  else if (!strcmp (attribute, "trs"))
-    neut_data_fscanf_trs ((*pTesr).CellQty, datatype, datavalue, pData);
-
-  else if (!strcmp (attribute, "colscheme"))
+  if (!strcmp (attribute, "colscheme"))
     ut_string_string (datastring, &(*pData).ColScheme);
 
   else if (!strcmp (attribute, "scale"))
@@ -33,38 +31,8 @@ nev_data_tesr_cell (struct SIM Sim, struct TESR *pTesr, struct DATA *pData, char
     ut_string_string (datastring, &(*pData).ScaleTitle);
 
   else
-    ut_print_exprbug (attribute);
-
-  ut_free_2d_char (&args, argqty);
-  ut_free_1d_char (&datatype);
-  ut_free_1d_char (&datavalue);
-
-  return;
-}
-
-void
-nev_data_tesr_vox (struct SIM Sim, struct TESR *pTesr, struct DATA *pData, char *attribute,
-                         char *datastring)
-{
-  char *datatype = NULL, *datavalue = NULL;
-
-  neut_data_datastring_type_value ("vox", attribute, datastring, &datatype, &datavalue);
-
-  if (!strcmp (attribute, "col"))
-    neut_data_fscanf_col (Sim, pTesr, NULL, NULL, NULL, "tesr", "vox", (*pTesr).Dim,
-                         neut_tesr_totvoxqty (*pTesr), datatype, datavalue, pData);
-
-  else if (!strcmp (attribute, "colscheme"))
-    ut_string_string (datastring, &(*pData).ColScheme);
-
-  else if (!strcmp (attribute, "scale"))
-    ut_string_string (datastring, &(*pData).Scale);
-
-  else if (!strcmp (attribute, "scaletitle"))
-    ut_string_string (datastring, &(*pData).ScaleTitle);
-
-  else
-    ut_print_exprbug (attribute);
+    neut_data_fscanf_general (DataInput, entity, (*pTesr).Dim, entityqty,
+                          attribute, datatype, datavalue, pData);
 
   ut_free_1d_char (&datatype);
   ut_free_1d_char (&datavalue);
@@ -130,7 +98,7 @@ nev_data_tesr_cell2vox (struct TESR Tesr, char *attribute,
       for (i = 1; i <= Tesr.size[0]; i++)
         (*pData).ColDataDef[++id] = (Tesr.VoxCell[i][j][k] > 0);
 
-  ut_string_string ("cell", &(*pData).type);
+  ut_string_string ("cell", &(*pData).Entity);
 
   if (!strcmp (attribute, "col"))
   {

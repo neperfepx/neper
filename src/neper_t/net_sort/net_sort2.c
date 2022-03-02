@@ -8,7 +8,7 @@ void
 net_sort_tess (struct TESS *pTess, char *expr)
 {
   int i, j, status;
-  int var_qty;
+  int varqty;
   char **vars = NULL;
   double *vals = NULL;
   double *res = NULL;
@@ -19,19 +19,18 @@ net_sort_tess (struct TESS *pTess, char *expr)
 
   neut_tess_cell (*pTess, &cell);
 
-  neut_tess_var_list (*pTess, cell, &vars, &var_qty);
-  vals = ut_alloc_1d (var_qty);
+  ut_math_vars (expr, &vars, &varqty);
+  vals = ut_alloc_1d (varqty);
 
   res = ut_alloc_1d ((*pTess).CellQty + 1);
   (*pTess).CellId = ut_alloc_1d_int ((*pTess).CellQty + 1);
   for (i = 1; i <= (*pTess).CellQty; i++)
   {
-    for (j = 0; j < var_qty; j++)
-      if (strstr (expr, vars[j]))
-        neut_tess_var_val_one (*pTess, NULL, NULL, NULL, cell, i, vars[j],
-                               vals + j, NULL);
+    for (j = 0; j < varqty; j++)
+      neut_tess_var_val_one (*pTess, NULL, NULL, NULL, cell, i, vars[j],
+                             vals + j, NULL);
 
-    status = ut_math_eval (expr, var_qty, vars, vals, &(res[i]));
+    status = ut_math_eval (expr, varqty, vars, vals, &(res[i]));
     if (status != 0)
       ut_print_message (2, 2,
                         "net_sort_tess: failed to process expression.\n");
@@ -46,7 +45,7 @@ net_sort_tess (struct TESS *pTess, char *expr)
 
   ut_free_1d_int (&tmp);
   ut_free_1d_int (&tmp2);
-  ut_free_2d_char (&vars, var_qty);
+  ut_free_2d_char (&vars, varqty);
   ut_free_1d (&vals);
   ut_free_1d (&res);
   ut_free_1d_char (&cell);

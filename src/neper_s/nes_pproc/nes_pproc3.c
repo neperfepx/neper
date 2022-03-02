@@ -6,7 +6,7 @@
 
 // Checking consistency between Tess and Sim crysym, if simulation.config exists
 void
-nes_pproc_load_crysym (struct TESS *pTess, char **GroupCrySym, int GroupQty)
+nes_pproc_load_crysym (struct TESS *pTess, struct TESR *pTesr, char **GroupCrySym, int GroupQty)
 {
   int i, multiple;
 
@@ -25,10 +25,17 @@ nes_pproc_load_crysym (struct TESS *pTess, char **GroupCrySym, int GroupQty)
   // Not multiple: full check
   if (!multiple)
   {
-    if ((*pTess).CellCrySym && strcmp ((*pTess).CellCrySym, GroupCrySym[0]))
+    if (!neut_tess_isvoid (*pTess) && (*pTess).CellCrySym && strcmp ((*pTess).CellCrySym, GroupCrySym[0]))
     {
       if (!strcmp ((*pTess).CellCrySym, "triclinic"))
         ut_string_string (GroupCrySym[0], &((*pTess).CellCrySym));
+      else
+        ut_print_message (2, 3, "The crystal symmetries of tessellation and configuration file differ.\n");
+    }
+    else if (!neut_tesr_isvoid (*pTesr) && (*pTesr).CellCrySym && strcmp ((*pTesr).CellCrySym, GroupCrySym[0]))
+    {
+      if (!strcmp ((*pTesr).CellCrySym, "triclinic"))
+        ut_string_string (GroupCrySym[0], &((*pTesr).CellCrySym));
       else
         ut_print_message (2, 3, "The crystal symmetries of tessellation and configuration file differ.\n");
     }

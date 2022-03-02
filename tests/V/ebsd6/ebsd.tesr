@@ -1,0 +1,23 @@
+***tesr
+ **format
+   2.1
+ **general
+   2
+   2 2
+   0.500000000000 0.500000000000
+ **cell
+   1
+ **data
+   ascii
+   0 0 1 1
+ **oridata
+   rodrigues:active
+   ascii
+   0.3 0.3 0.3
+   0.4 0 0
+   0 0.4 0
+   0 0 0.4
+ **oridef
+   ascii
+   0 1 1 0
+***end

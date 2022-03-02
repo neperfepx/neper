@@ -178,6 +178,90 @@ nev_print_png_cube (FILE * file, double *coo, double *rad, char *texture,
 }
 
 void
+nev_print_png_hcp (FILE * file, double *coo, double *rad, char *texture,
+                   double brad, char *bordertexture)
+{
+  fprintf (file, "    prism {\n");
+  fprintf (file, "      linear_sweep\n");
+  fprintf (file, "      linear_spline\n");
+  // a = 1, c = 1.633
+  fprintf (file, "      %.12f,\n", -0.5 * 1.633); // c = 1.633
+  fprintf (file, "      %.12f,\n",  0.5 * 1.633); // c = 1.633
+  fprintf (file, "      7,\n");
+  fprintf (file, "<-.5,-.866>, <-1.,0.>, <-.5,.866>, <.5,.866>, <1.,0.>,<.5,-.866>,<-.5,-.866>\n");
+  fprintf (file, "scale %18.15g\n", rad[0]); // scaling to a
+  fprintf (file, "rotate <90.,0.,0.>\n");
+  fprintf (file, "matrix <%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,0.,0.,0.>\n",
+           rad[1], rad[2], rad[3], rad[4], rad[5], rad[6], rad[7], rad[8], rad[9]);
+  fprintf (file, "translate <%18.15g,%18.15g,%18.15g>\n", coo[0], coo[1], coo[2]);
+
+  if (texture)
+    fprintf (file, "    texture { %s }\n", texture);
+  fprintf (file, "  }\n");
+
+  if (brad > 0)
+  {
+    double **vercoo = ut_alloc_2d (12, 3);
+    int i, **edges = ut_alloc_2d_int (18, 2);
+
+    ut_array_1d_set_3 (vercoo[0] , -0.5, -0.866, -0.8165);
+    ut_array_1d_set_3 (vercoo[1] , -1.0,  0.000, -0.8165);
+    ut_array_1d_set_3 (vercoo[2] , -0.5,  0.866, -0.8165);
+    ut_array_1d_set_3 (vercoo[3] ,  0.5,  0.866, -0.8165);
+    ut_array_1d_set_3 (vercoo[4] ,  1.0,  0.000, -0.8165);
+    ut_array_1d_set_3 (vercoo[5] ,  0.5, -0.866, -0.8165);
+
+    ut_array_1d_set_3 (vercoo[6] , -0.5, -0.866,  0.8165);
+    ut_array_1d_set_3 (vercoo[7] , -1.0,  0.000,  0.8165);
+    ut_array_1d_set_3 (vercoo[8] , -0.5,  0.866,  0.8165);
+    ut_array_1d_set_3 (vercoo[9] ,  0.5,  0.866,  0.8165);
+    ut_array_1d_set_3 (vercoo[10],  1.0,  0.000,  0.8165);
+    ut_array_1d_set_3 (vercoo[11],  0.5, -0.866,  0.8165);
+
+    ut_array_1d_int_set_2 (edges[0], 0, 1);
+    ut_array_1d_int_set_2 (edges[1], 1, 2);
+    ut_array_1d_int_set_2 (edges[2], 2, 3);
+    ut_array_1d_int_set_2 (edges[3], 3, 4);
+    ut_array_1d_int_set_2 (edges[4], 4, 5);
+    ut_array_1d_int_set_2 (edges[5], 5, 0);
+
+    ut_array_1d_int_set_2 (edges[6], 6, 7);
+    ut_array_1d_int_set_2 (edges[7], 7, 8);
+    ut_array_1d_int_set_2 (edges[8], 8, 9);
+    ut_array_1d_int_set_2 (edges[9], 9, 10);
+    ut_array_1d_int_set_2 (edges[10], 10, 11);
+    ut_array_1d_int_set_2 (edges[11], 11, 6);
+
+    ut_array_1d_int_set_2 (edges[12], 0, 6);
+    ut_array_1d_int_set_2 (edges[13], 1, 7);
+    ut_array_1d_int_set_2 (edges[14], 2, 8);
+    ut_array_1d_int_set_2 (edges[15], 3, 9);
+    ut_array_1d_int_set_2 (edges[16], 4,10);
+    ut_array_1d_int_set_2 (edges[17], 5,11);
+
+    fprintf (file, "union\n{\n");
+
+    char *string = ut_alloc_1d_char (100);
+    sprintf (string, "%.12f", brad / (2 * rad[0]));
+    for (i = 0; i < 18; i++)
+      nev_print_png_segment_wsph (file, vercoo[edges[i][0]], vercoo[edges[i][1]], string, bordertexture);
+    ut_free_1d_char (&string);
+
+    fprintf (file, "scale %18.15g\n", rad[0]); // scaling to a
+    fprintf (file, "matrix <%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,%18.15g,0.,0.,0.>\n",
+             rad[1], rad[2], rad[3], rad[4], rad[5], rad[6], rad[7], rad[8], rad[9]);
+    fprintf (file, "translate <%18.15g,%18.15g,%18.15g>\n", coo[0], coo[1], coo[2]);
+
+    fprintf (file, "}\n");
+
+    ut_free_2d (&vercoo, 8);
+    ut_free_2d_int (&edges, 12);
+  }
+
+  return;
+}
+
+void
 nev_print_png_cyl (FILE * file, double *coo, double *rad, char *texture)
 {
   double *v = ut_alloc_1d (3);

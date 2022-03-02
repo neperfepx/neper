@@ -41,6 +41,7 @@ neut_sim_fscanf_report (char *dir, struct SIM *pSim, char *mode)
         abort ();
 
       (*pSim).StepState = ut_alloc_1d_int ((*pSim).StepQty + 1);
+      ut_array_1d_int_set ((*pSim).StepState, (*pSim).StepQty + 1, 1);
     }
     else if (!strcmp (var, "printed_steps"))
     {
@@ -48,12 +49,12 @@ neut_sim_fscanf_report (char *dir, struct SIM *pSim, char *mode)
 
       ut_file_nextlinenbwords (file, &qty);
 
-      ut_array_1d_int_set ((*pSim).StepState + 1, (*pSim).StepQty, -1);
+      ut_array_1d_int_set ((*pSim).StepState, (*pSim).StepQty + 1, 0);
       for (i = 0; i < qty; i++)
       {
         if (fscanf (file, "%d", &step) != 1)
           abort ();
-        (*pSim).StepState[step] = 0;
+        (*pSim).StepState[step] = 1;
       }
     }
     else if (!strcmp (var, "number_of_nodes"))

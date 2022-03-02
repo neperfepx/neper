@@ -195,6 +195,11 @@ neut_sim_addentity (struct SIM *pSim, char *entity_in)
     ut_string_string ("tess", (*pSim).EntityType + (*pSim).EntityQty - 1);
     (*pSim).EntityMemberQty[(*pSim).EntityQty - 1] = 1;
   }
+  else if (!strcmp (entity, "tesr"))
+  {
+    ut_string_string ("tesr", (*pSim).EntityType + (*pSim).EntityQty - 1);
+    (*pSim).EntityMemberQty[(*pSim).EntityQty - 1] = 1;
+  }
   else
   {
     ut_string_string ("unknown", (*pSim).EntityType + (*pSim).EntityQty - 1);
@@ -351,7 +356,7 @@ neut_sim_setstep (struct SIM *pSim, int step)
   // if step is valid (>= 0 && <= (*pSim).StepQty) AND
   // ((StepQty > 0 && state) OR (StepQty == 0))
   if (step >= 0 && step <= (*pSim).StepQty
-      && (((*pSim).StepQty && !(*pSim).StepState[step]) || !(*pSim).StepQty))
+      && (((*pSim).StepQty && (*pSim).StepState[step]) || !(*pSim).StepQty))
   {
     (*pSim).step = step;
     return 0;

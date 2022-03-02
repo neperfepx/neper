@@ -5,7 +5,8 @@
 #include "nes_pproc_entity_.h"
 
 void
-nes_pproc_entity (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
+nes_pproc_entity (struct SIM *pSim, struct TESS Tess, struct TESR Tesr,
+                  struct NODES *pNodes,
                   struct MESH *Mesh, char *entity, char *entityresexpr)
 {
   int i, j, memberqty, status, resultqty;
@@ -46,11 +47,14 @@ nes_pproc_entity (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
 
       neut_sim_simres (*pSim, entity, result, &SimRes);
 
-      if (strcmp (SimRes.res, "ori"))
+      if (strcmp (SimRes.res, "ori") || SimRes.expr)
         sprintf (message, "%s", SimRes.res);
-      else
+      else if (!neut_tess_isvoid (Tess))
         sprintf (message, "%s (%s crystal symmetry)", SimRes.res,
                            Tess.CellCrySym ? Tess.CellCrySym : "undefined");
+      else if (!neut_tesr_isvoid (Tesr))
+        sprintf (message, "%s (%s crystal symmetry)", SimRes.res,
+                           Tesr.CellCrySym ? Tesr.CellCrySym : "undefined");
 
       ut_print_message (0, 4, "%s ", message);
       for (j = 0; j < 49 - (int) strlen (message); j++)
@@ -75,10 +79,10 @@ nes_pproc_entity (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
       // (an expression is necessarily 1D while a built-in result is not).
       else if (!strcmp (SimRes.status, "unknown"))
       {
-        status = nes_pproc_entity_expr (pSim, Tess, pNodes, Mesh, entity, &SimRes);
+        status = nes_pproc_entity_expr (pSim, Tess, Tesr, pNodes, Mesh, entity, &SimRes);
 
         if (status)
-          status = nes_pproc_entity_builtin (pSim, Tess, pNodes, Mesh, entity, &SimRes);
+          status = nes_pproc_entity_builtin (pSim, Tess, Tesr, pNodes, Mesh, entity, &SimRes);
       }
 
       else

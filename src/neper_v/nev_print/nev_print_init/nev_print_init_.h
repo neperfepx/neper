@@ -25,6 +25,7 @@ extern void nev_print_init_data_mesh (struct PRINT Print, struct MESH, double si
 extern void nev_print_init_data_tesr (struct PRINT Print, struct TESR, struct DATA *);
 extern void nev_print_init_data_tess (struct PRINT Print, struct TESS, struct DATA *);
 extern void nev_print_init_data_points (struct PRINT Print, struct POINT, struct DATA *);
+extern void nev_print_init_data_crystal (struct PRINT Print, struct POINT, struct DATA *);
 
 extern void nev_print_init_show (struct TESS Tess, struct TESR Tesr,
                                  struct NODES Nodes, struct MESH *Mesh,

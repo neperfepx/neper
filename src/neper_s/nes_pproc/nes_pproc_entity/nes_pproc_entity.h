@@ -3,5 +3,6 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nes_pproc_entity (struct SIM *pSim, struct TESS Tess,
-                           struct NODES *pNodes, struct MESH *Mesh,
-                           char *entity, char *entityresexpr);
+                              struct TESR Tesr, struct NODES *pNodes,
+                              struct MESH *Mesh, char *entity,
+                              char *entityresexpr);

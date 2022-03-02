@@ -14,6 +14,9 @@ nes_pproc_entity_pre (struct SIM *pSim, char *entity,
                       char ***presults, int *presultqty)
 {
   int i, pos;
+  char *entitydir = NULL;
+
+  neut_sim_entity_entitydir (entity, &entitydir);
 
   neut_sim_entity_pos (*pSim, entity, &pos);
 
@@ -25,7 +28,7 @@ nes_pproc_entity_pre (struct SIM *pSim, char *entity,
 
   (*pmemberqty) = (*pSim).EntityMemberQty[pos];
 
-  (*pdir) = ut_string_paste3 ((*pSim).simdir, "/results/", entity);
+  (*pdir) = ut_string_paste3 ((*pSim).simdir, "/results/", entitydir);
 
   ut_list_break (entityresexpr, NEUT_SEP_NODEP, presults, presultqty);
 
@@ -49,6 +52,8 @@ nes_pproc_entity_pre (struct SIM *pSim, char *entity,
     ut_free_1d_char (&result);
     ut_free_1d_char (&expr);
   }
+
+  ut_free_1d_char (&entitydir);
 
   return;
 }
@@ -170,8 +175,9 @@ nes_pproc_entity_subres (struct SIM *pSim, char *entity,
 }
 
 int
-nes_pproc_entity_expr (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
-                       struct MESH *Mesh, char *entity, struct SIMRES *pSimRes)
+nes_pproc_entity_expr (struct SIM *pSim, struct TESS Tess, struct TESR Tesr,
+                       struct NODES *pNodes, struct MESH *Mesh, char *entity,
+                       struct SIMRES *pSimRes)
 {
   int i, j, status, status2, step, varqty, pos;
   double *resval = NULL, **simvals = NULL;
@@ -228,13 +234,36 @@ nes_pproc_entity_expr (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
 
       else
       {
-        if (!strcmp (parent, "mesh"))
+        if (!strcmp (parent, "tess"))
+      {
+          int *tmp = ut_alloc_1d_int ((*pSim).EntityMemberQty[pos]);
+#pragma omp parallel for private(j)
+          for (j = 0; j < (*pSim).EntityMemberQty[pos]; j++)
+            tmp[j] = neut_tess_var_val_one (Tess, NULL, NULL,
+                                            NULL, entity, j + 1,
+                                            vars[i], simvals[i] + j, NULL);
+          status = ut_array_1d_int_sum (tmp, (*pSim).EntityMemberQty[pos]);
+          ut_free_1d_int (&tmp);
+        }
+
+        else if (!strcmp (parent, "tesr"))
+        {
+          int *tmp = ut_alloc_1d_int ((*pSim).EntityMemberQty[pos]);
+#pragma omp parallel for private(j)
+          for (j = 0; j < (*pSim).EntityMemberQty[pos]; j++)
+            tmp[j] = neut_tesr_var_val_one (Tesr, entity, j + 1,
+                                            vars[i], simvals[i] + j, NULL);
+          status = ut_array_1d_int_sum (tmp, (*pSim).EntityMemberQty[pos]);
+          ut_free_1d_int (&tmp);
+        }
+
+        else if (!strcmp (parent, "mesh"))
         {
           // known entity
           if (neut_mesh_entity_known (entity))
           {
             int *tmp = ut_alloc_1d_int ((*pSim).EntityMemberQty[pos]);
-#pragma mp parallel for private(j)
+#pragma omp parallel for private(j)
             for (j = 0; j < (*pSim).EntityMemberQty[pos]; j++)
               tmp[j] = neut_mesh_var_val_one (*pNodes, Mesh[0], Mesh[1], Mesh[2],
                                               Mesh[3], Mesh[4], Tess, NULL, NULL,
@@ -254,7 +283,7 @@ nes_pproc_entity_expr (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
               double **eltdata = ut_alloc_2d (Mesh[Tess.Dim].EltQty + 1, 1);
               double **elsetdata = ut_alloc_2d ((*pSim).EntityMemberQty[pos] + 1, 1);
 
-#pragma mp parallel for private(j)
+#pragma omp parallel for private(j)
               for (j = 0; j < Mesh[Tess.Dim].EltQty; j++)
                 tmp[j] = neut_mesh_var_val_one (*pNodes, Mesh[0], Mesh[1], Mesh[2],
                                        Mesh[3], Mesh[4], Tess, NULL, NULL,
@@ -265,7 +294,7 @@ nes_pproc_entity_expr (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
 
               if (!status)
               {
-#pragma mp parallel for private(j)
+#pragma omp parallel for private(j)
                 for (j = 0; j < (*pSim).EntityMemberQty[pos]; j++)
                   neut_mesh_eltdata_elsetdata (*pNodes, Mesh[Tess.Dim], (*pSim).EntityMembers[pos] - 1,
                                                (*pSim).EntityMemberQty[pos],
@@ -284,21 +313,6 @@ nes_pproc_entity_expr (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
           }
         }
 
-        else if (!strcmp (parent, "tess"))
-        {
-          if (1) // neut_tess_entity_known (entity))
-          {
-            int *tmp = ut_alloc_1d_int ((*pSim).EntityMemberQty[pos]);
-#pragma mp parallel for private(j)
-            for (j = 0; j < (*pSim).EntityMemberQty[pos]; j++)
-              tmp[j] = neut_tess_var_val_one (Tess, NULL, NULL,
-                                              NULL, entity, j + 1,
-                                              vars[i], simvals[i] + j, NULL);
-            status = ut_array_1d_int_sum (tmp, (*pSim).EntityMemberQty[pos]);
-            ut_free_1d_int (&tmp);
-          }
-        }
-
         if (status)
           break;
       }
@@ -312,7 +326,10 @@ nes_pproc_entity_expr (struct SIM *pSim, struct TESS Tess, struct NODES *pNodes,
       ut_math_evals (expression, varqty, vars, simvals, (*pSim).EntityMemberQty[pos], resval);
 
       for (i = 0; i < (*pSim).EntityMemberQty[pos]; i++)
-        fprintf (file, "%.12f\n", resval[i]);
+        if (ut_math_eval_exprislogical (expression))
+          fprintf (file, "%d\n", ut_num_d2ri (resval[i]));
+        else
+          fprintf (file, "%.12f\n", resval[i]);
 
       ut_file_close (file, (*pSimRes).file, "W");
 

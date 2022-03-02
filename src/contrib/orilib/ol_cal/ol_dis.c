@@ -85,7 +85,7 @@ ol_q_q_disori_rad (double *q1, double *q2, char *crysym, double *ptheta)
   int i, nb;
   double rho, maxrho, crysym_maxrho;
   double *qd = ol_q_alloc ();
-  int qty = ol_lauegroup_qty (crysym);
+  int qty = ol_lauegroup_qty (crysym ? crysym : "triclinic");
 
   double Tcubic[25][4] = {
     {8888, 8888, 8888, 8888},   /* phantom */

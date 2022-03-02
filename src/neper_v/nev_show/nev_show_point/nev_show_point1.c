@@ -5,8 +5,7 @@
 #include"nev_show_point_.h"
 
 void
-nev_show_points (char **argv, int *pi, struct POINT Point,
-                 struct PRINT *pPrint)
+nev_show_points (char **argv, int *pi, struct POINT Point, int **pshow)
 {
   int i, j, varqty, status;
   char** vars = NULL;
@@ -22,38 +21,37 @@ nev_show_points (char **argv, int *pi, struct POINT Point,
   neut_mesh_set_zero (&Mesh);
 
   (*pi)++;
-  (*pPrint).showpoint =
-    ut_realloc_1d_int ((*pPrint).showpoint, Point.PointQty + 1);
-  ut_array_1d_int_zero ((*pPrint).showpoint, Point.PointQty + 1);
+
+  *pshow = ut_realloc_1d_int (*pshow, Point.PointQty + 1);
+  ut_array_1d_int_zero (*pshow, Point.PointQty + 1);
 
   status =
-    nev_show_genexpr (argv[(*pi)], (*pPrint).showpoint, Point.PointQty);
+    nev_show_genexpr (argv[(*pi)], *pshow, Point.PointQty);
 
   if (status)
   {
-    neut_point_var_list (&vars, &varqty);
+    ut_math_vars (argv[(*pi)], &vars, &varqty);
 
     vals = ut_alloc_1d (varqty);
 
     for (i = 1; i <= Point.PointQty; i++)
     {
       for (j = 0; j < varqty; j++)
-        if (strstr (argv[(*pi)], vars[j]))
-        {
-          neut_point_var_val (Point, i, Tess, Nodes, Mesh,
-                              vars[j], &tmp, &tmpqty, NULL);
-          vals[j] = tmp[0];
-        }
+      {
+        neut_point_var_val (Point, i, Tess, Nodes, Mesh,
+                            vars[j], &tmp, &tmpqty, NULL);
+        vals[j] = tmp[0];
+      }
 
-      status = ut_math_eval_int (argv[(*pi)], varqty, vars, vals, &((*pPrint).showpoint[i]));
+      status = ut_math_eval_int (argv[(*pi)], varqty, vars, vals, (*pshow) + i);
 
       if (status != 0)
         ut_print_exprbug (argv[(*pi)]);
     }
   }
 
-  (*pPrint).showpoint[0] =
-    ut_array_1d_int_sum ((*pPrint).showpoint + 1, Point.PointQty);
+  (*pshow)[0] =
+    ut_array_1d_int_sum (*pshow + 1, Point.PointQty);
 
   ut_free_2d_char (&vars, varqty);
   ut_free_1d (&tmp);

@@ -79,7 +79,7 @@ nes_convert_write_results_entity_step (struct IN_S In, struct FEPXSIM FSim, char
     fp1 = ut_file_open (post_filename, "R");
 
     for (i = 0; i <= FSim.StepQty; ++i)
-      if (!FSim.StepState[i])
+      if (FSim.StepState[i])
       {
         sprintf (step_filename, "%s%d", step_filepref, i);
         sprintf (step_filename0, "%s%d", step_filepref, 0);

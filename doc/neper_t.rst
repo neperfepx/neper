@@ -24,7 +24,8 @@ The *domain* of space in which the tessellation is created can be of any convex 
 
 *Regularization* can be applied to the tessellations and consists of removing their small edges and faces (option :option:`-regularization`) which would otherwise be detrimental to generating meshes with high quality elements with :ref:`module -M <neper_m>`).
 
-*Output files* describe the tessellation either at the :ref:`scalar format (.tess) <tess_file>` or at the :ref:`raster format (.tesr) <tesr_file>`.  Both are input files of :ref:`module -M <neper_m>` and :ref:`module -V <neper_v>`.  Third-party software file formats are also available.
+*Output files* describe the tessellation either at the :ref:`scalar format (.tess) <tess_file>` or at the :ref:`raster format (.tesr) <tesr_file>`. A *raster tessellation* also has all required fields to describe data obtained by 2D or 3D orientation mapping methods (such as EBSD).   Tessellation files are input files of the :ref:`neper_m` and the :ref:`neper_v`, and can also be exported as a :ref:`simulation_directory`, which is input to the :ref:`neper_s`, for post-processing.  Third-party software file formats are also available.
+
 
 The methods implemented for tessellation generation are described in [CMAME2011]_, [CMAME2018]_ and [JAC2018]_.
 
@@ -114,7 +115,7 @@ Input Data
 
   - :data:`cell(<file_name>,<cell_id>)`: a tessellation cell, where :data:`<file_name>` is the tessellation file and :data:`<cell_id>` is the cell identifier;
 
-  - :data:`rodrigues(<crysym>)`: a Rodrigues space fundamental region, where :data:`<crysym>` is the :ref:`crystal symmetry <crystal_symmetries>`;
+  - :data:`rodrigues(<crysym>)`: a Rodrigues space fundamental region, where :data:`<crysym>` is the :ref:`Crystal Symmetry <crystal_symmetries>`;
 
   - :data:`euler-bunge(<size_x>,<size_y>,<size_z>)`: the Euler space (Bunge convention), where :data:`<size_x>`, :data:`<size_y>` and :data:`<size_z>` are the space dimensions (in degrees or radians [#euler-bunge]_);
 
@@ -489,7 +490,7 @@ Crystal Orientation Options
 
 .. option:: -oricrysym <crysym>
 
-  Specify the :ref:`crystal symmetry <crystal_symmetries>`.
+  Specify the :ref:`Crystal Symmetry <crystal_symmetries>`.
 
   This is used by option :data:`-ori uniform` and to reduce the domain of definition of the orientation descriptors.
 
@@ -677,7 +678,7 @@ Output Options
   Specify the format(s) of the output file(s), which can be:
 
     - tessellation: :data:`tess`, :data:`sim`, :data:`geo`, :data:`ply`, :data:`stl[:bycell]`, :data:`obj`, :data:`3dec`, :data:`fe`;
-    - raster tessellation: :data:`tesr`, :data:`vtk`;
+    - raster tessellation: :data:`tesr`, :data:`sim`, :data:`vtk`;
     - orientations: :data:`ori`.
 
   See :ref:`output_files` for details on the file formats.

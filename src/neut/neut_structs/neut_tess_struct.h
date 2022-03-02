@@ -465,6 +465,9 @@ extern "C"
     // Numbers of the slave faces of the periodic faces
     // [1...FaceQty][1...PerFaceSlaveQty[i]]
     int *PerFaceSlaveNb;
+
+    // pointer to SIM structure
+    struct SIM *pSim;
   };
   typedef struct TESS TESS;
 

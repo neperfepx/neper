@@ -69,6 +69,15 @@ neper_s (int fargc, char **fargv, int argc, char **argv)
     nes_orispace (In, &Sim);
   }
 
+  // loading number of steps
+  if (In.stepqty != -1)
+  {
+    Sim.StepQty = In.stepqty;
+    Sim.StepState = ut_alloc_1d_int (Sim.StepQty + 1);
+    ut_array_1d_int_set (Sim.StepState, Sim.StepQty + 1, 1);
+    neut_sim_fprintf (In.simdir, Sim, "W");
+  }
+
   // going into post-processing
   if (In.simdir && In.entityqty)
   {

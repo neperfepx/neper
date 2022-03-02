@@ -21,13 +21,13 @@ nev_print_init_data (struct PRINT Print,
   */
 
   if (Print.showtess && !neut_tess_isvoid (Tess))
-    for (dim = 0; dim <= 4; dim++)
+    for (dim = 0; dim <= 5; dim++)
       nev_print_init_data_tess (Print, Tess, TessData + dim);
 
   if (Print.showtesr && (*pTesrData).Qty > 0)
     nev_print_init_data_tesr (Print, Tesr, pTesrData);
 
-  if ((Print.shownode || Print.showmesh || Print.showslice) && Nodes.NodeQty > 0)
+  if ((Print.shownode || Print.showmesh || Print.showslice) && !neut_nodes_isvoid (Nodes))
     nev_print_init_data_nodes (Print, Nodes, Nodes.NodeQty, pData);
 
   meshdim = neut_mesh_array_dim (Mesh);
@@ -43,7 +43,7 @@ nev_print_init_data (struct PRINT Print,
   if (Print.showcsys)
     nev_print_init_data_csys (Print, pCsysData);
 
-  if (Print.showpoint && Point.PointQty > 0)
+  if (Print.showpoint && !neut_point_isvoid (Point))
     nev_print_init_data_points (Print, Point, pPointData);
 
   return;
@@ -55,7 +55,7 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
                struct PRINT *pPrint)
 {
   int dim = neut_mesh_array_dim (Mesh);
-  int i, j, cellqty;
+  int i, j, k, cellqty;
   int *cells = NULL;
 
   if (SQty > 0)
@@ -79,13 +79,13 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
       (*pPrint).showtesr = 0;
   }
 
-  if (Tess.VerQty > 0 && (*pPrint).showtess == -1)
+  if (!neut_tess_isvoid (Tess) && (*pPrint).showtess == -1)
     (*pPrint).showtess = 1;
 
-  if (Tesr.CellQty > 0 && (*pPrint).showtesr == -1)
+  if (!neut_tesr_isvoid (Tesr) && (*pPrint).showtesr == -1)
     (*pPrint).showtesr = 1;
 
-  if (Point.PointQty > 0)
+  if (!neut_point_isvoid (Point))
     if ((*pPrint).showpoint[0] == -1)
     {
       (*pPrint).showpoint =
@@ -201,40 +201,25 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
         ut_realloc_1d_int ((*pPrint).showseed, Tess.SeedQty + 1);
       ut_array_1d_int_set ((*pPrint).showseed, Tess.SeedQty + 1, 0);
     }
+
+    if ((*pPrint).showcrystal[0] == -1)
+    {
+      (*pPrint).showcrystal =
+        ut_realloc_1d_int ((*pPrint).showcrystal, Tess.CellQty + 1);
+      ut_array_1d_int_set ((*pPrint).showcrystal, Tess.CellQty + 1, 0);
+    }
   }
 
   else if ((*pPrint).showtesr == 1)
   {
-    if (Tesr.Dim == 2)
+    if (!(*pPrint).showvox)
     {
-      (*pPrint).showface =
-        ut_realloc_1d_int ((*pPrint).showface, Tesr.CellQty + 1);
-      ut_array_1d_int_set ((*pPrint).showface + 1, Tess.FaceQty, 0);
-
-      if ((*pPrint).showface[0] == -1)
-      {
-        (*pPrint).showface[0] = Tesr.CellQty;
-        ut_array_1d_int_set ((*pPrint).showface + 1, Tesr.CellQty, 1);
-      }
-
-      if (!(*pPrint).showedgestring)
-        ut_string_string ("0", &(*pPrint).showedgestring);
-      else if (!strcmp ((*pPrint).showedgestring, "all"))
-        ut_string_string ("1", &(*pPrint).showedgestring);
-      else if (!strcmp ((*pPrint).showedgestring, "none"))
-        ut_string_string ("0", &(*pPrint).showedgestring);
-    }
-    else if (Tesr.Dim == 3)
-    {
-      (*pPrint).showpoly =
-        ut_realloc_1d_int ((*pPrint).showpoly, Tesr.CellQty + 1);
-      ut_array_1d_int_set ((*pPrint).showpoly + 1, Tess.PolyQty, 0);
-
-      if ((*pPrint).showpoly[0] == -1)
-      {
-        (*pPrint).showpoly[0] = Tesr.CellQty;
-        ut_array_1d_int_set ((*pPrint).showpoly + 1, Tesr.CellQty, 1);
-      }
+      (*pPrint).showvox = ut_alloc_3d_int (Tesr.size[0] + 1, Tesr.size[1] + 1, Tesr.size[2] + 1);
+      for (k = 1; k <= Tesr.size[2]; k++)
+        for (j = 1; j <= Tesr.size[1]; j++)
+          for (i = 1; i <= Tesr.size[0]; i++)
+            if (!Tesr.VoxCell || Tesr.VoxCell[i][j][k])
+              (*pPrint).showvox[i][j][k] = 1;
     }
   }
 
@@ -282,7 +267,7 @@ nev_print_init_camera (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
   else
     Nodes2 = Nodes;
 
-  if (Tess.VerQty > 0 && Nodes.NodeQty == 0)
+  if (!neut_tess_isvoid (Tess) && neut_nodes_isvoid (Nodes))
   {
     dim = Tess.Dim;
 
@@ -291,7 +276,8 @@ nev_print_init_camera (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
     nev_print_init_camera_coo_tess (Tess, (*pPrint).cameralookatstring,
                               (*pPrint).cameralookat);
   }
-  else if (Nodes.NodeQty > 0)
+
+  else if (!neut_nodes_isvoid (Nodes))
   {
     dim = neut_nodes_dim (Nodes);
     if (dim == -1)
@@ -302,7 +288,8 @@ nev_print_init_camera (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
     nev_print_init_camera_coo_mesh (Nodes2, Mesh[dim], (*pPrint).cameralookatstring,
                               (*pPrint).cameralookat);
   }
-  else if (Tesr.CellQty > 0)
+
+  else if (!neut_tesr_isvoid (Tesr))
   {
     dim = Tesr.Dim;
 
@@ -311,7 +298,8 @@ nev_print_init_camera (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
     nev_print_init_camera_coo_tesr (Tesr, (*pPrint).cameralookatstring,
                               (*pPrint).cameralookat);
   }
-  else if (Point.PointQty > 0)
+
+  else if (!neut_point_isvoid (Point))
   {
     dim = Tesr.Dim;
 

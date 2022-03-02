@@ -33,9 +33,6 @@ neut_tesr_fprintf_head (FILE * file, struct TESR Tesr)
     ut_array_1d_fprintf (file, Tesr.Origin, Tesr.Dim, "%.12f");
   }
 
-  if (Tesr.hasvoid != -1)
-    fprintf (file, "  *hasvoid %d\n", Tesr.hasvoid);
-
   return;
 }
 
@@ -59,6 +56,16 @@ neut_tesr_fprintf_oridata (FILE * file, char *format,
   neut_tesr_fprintf_oridata_noheader (file, format, Tesr);
   if (strcmp (format, "ascii"))
     fprintf (file, "\n");
+
+  return;
+}
+
+void
+neut_tesr_fprintf_oridef (FILE * file, char *format, struct TESR Tesr)
+{
+  fprintf (file, " **oridef\n");
+  fprintf (file, "   %s\n", format);
+  neut_tesr_fprintf_oridef_noheader (file, format, NULL, Tesr);
 
   return;
 }
@@ -104,30 +111,6 @@ neut_tesr_fprintf_cell (FILE * file, struct TESR Tesr)
     fprintf (file, "  *orispread\n");
     for (i = 1; i <= Tesr.CellQty; i++)
       fprintf (file, "   %s\n", Tesr.CellOriDistrib[i]);
-  }
-
-  if (Tesr.CellCoo)
-  {
-    fprintf (file, "  *coo\n");
-    for (i = 1; i <= Tesr.CellQty; i++)
-    {
-      fprintf (file, "   ");
-      ut_array_1d_fprintf (file, Tesr.CellCoo[i], Tesr.Dim, "%.12f");
-    }
-  }
-
-  if (Tesr.CellVol)
-  {
-    fprintf (file, "  *vol\n");
-    for (i = 1; i <= Tesr.CellQty; i++)
-      fprintf (file, "   %.12f\n", Tesr.CellVol[i]);
-  }
-
-  if (Tesr.CellConvexity)
-  {
-    fprintf (file, "  *convexity\n");
-    for (i = 1; i <= Tesr.CellQty; i++)
-      fprintf (file, "   %.12f\n", Tesr.CellConvexity[i]);
   }
 
   if (Tesr.CellGroup)
@@ -179,7 +162,50 @@ neut_tesr_fprintf_oridata_raw (FILE * file, char *rawname,
   return;
 }
 
+void
+neut_tesr_fprintf_oridef_noheader (FILE * file, char *format, char *wildcard,
+                                   struct TESR Tesr)
+{
+  int i, j, k, count;
+  int *size = ut_alloc_1d_int (3);
+  // char* progress = ut_alloc_1d_char (10);
 
+  ut_array_1d_int_set (size, 3, 1);
+  ut_array_1d_int_memcpy (Tesr.size, Tesr.Dim, size);
+
+  if (!strcmp (format, "ascii"))
+  {
+    count = 0;
+    for (k = 1; k <= size[2]; k++)
+      for (j = 1; j <= size[1]; j++)
+        for (i = 1; i <= size[0]; i++)
+          ut_print_wnc_int (file, Tesr.VoxOriDef[i][j][k], &count, 72);
+  }
+
+  else if (!strncmp (format, "binary", 6))
+  {
+    unsigned char data;
+
+    for (k = 1; k <= size[2]; k++)
+      for (j = 1; j <= size[1]; j++)
+        for (i = 1; i <= size[0]; i++)
+        {
+          data = Tesr.VoxOriDef[i][j][k];
+          fwrite (&data, sizeof (unsigned char), 1, file);
+        }
+  }
+
+  else
+    abort ();
+
+  if (ut_string_strcmp (wildcard, "nonl"))
+    fprintf (file, "\n");
+
+  // ut_free_1d_char (&progress);
+  ut_free_1d_int (&size);
+
+  return;
+}
 void
 neut_tesr_fprintf_data_noheader (FILE * file, char *format, char *wildcard,
                                  struct TESR Tesr, int *CellId)

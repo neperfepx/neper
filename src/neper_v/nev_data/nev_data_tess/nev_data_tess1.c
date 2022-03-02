@@ -5,30 +5,23 @@
 #include"nev_data_tess_.h"
 
 void
-nev_data_tess (struct SIM Sim, struct TESS *pTess, char *entity_in, char *attribute,
+nev_data_tess (struct SIM Sim, struct TESS *pTess, char *entity, char *attribute,
                      char *datastring, struct DATA *TessData)
 {
   int dim, entityqty;
   struct DATA *pData = NULL;
-  char *entity = NULL, *datatype = NULL, *datavalue = NULL;
+  char *datatype = NULL, *datavalue = NULL;
 
-  ut_string_string (entity_in, &entity);
+  struct DATAINPUT DataInput;
+  neut_datainput_set_default (&DataInput);
+  ut_string_string ("tess", &DataInput.input);
+  DataInput.pSim = &Sim;
+  DataInput.pTess = pTess;
 
-  pData = nev_data_tess_init (*pTess, TessData, &entity, attribute,
-                                     datastring, &dim, &entityqty, &datatype,
-                                     &datavalue);
+  pData = nev_data_tess_init (*pTess, TessData, entity, attribute, datastring,
+                              &dim, &entityqty, &datatype, &datavalue);
 
-  if (!strcmp (attribute, "col"))
-    neut_data_fscanf_col (Sim, pTess, NULL, NULL, NULL, "tess", entity, dim, entityqty,
-                              datatype, datavalue, pData);
-
-  else if (!strcmp (attribute, "trs"))
-    neut_data_fscanf_trs (entityqty, datatype, datavalue, pData);
-
-  else if (!strcmp (attribute, "rad"))
-    neut_data_fscanf_rad (entityqty, datatype, datavalue, pData);
-
-  else if (!strcmp (attribute, "colscheme"))
+  if (!strcmp (attribute, "colscheme"))
     ut_string_string (datastring, &(*pData).ColScheme);
 
   else if (!strcmp (attribute, "scale"))
@@ -37,12 +30,25 @@ nev_data_tess (struct SIM Sim, struct TESS *pTess, char *entity_in, char *attrib
   else if (!strcmp (attribute, "scaletitle"))
     ut_string_string (datastring, &(*pData).ScaleTitle);
 
+  else if (!strcmp (entity, "crystaledge"))
+  {
+    if (!strcmp (attribute, "col"))
+    {
+      TessData[5].BCol = ut_alloc_1d_int (3);
+      ut_array_1d_int_fnscanf_wcard (datavalue, TessData[5].BCol, 3, "color", "r");
+    }
+    else if (!strcmp (attribute, "rad"))
+      TessData[5].BRad = atof (datavalue);
+    else
+      ut_print_exprbug (attribute);
+  }
+
   else
-    ut_print_exprbug (attribute);
+    neut_data_fscanf_general (DataInput, entity, dim, entityqty, attribute, datatype,
+                          datavalue, pData);
 
   ut_free_1d_char (&datatype);
   ut_free_1d_char (&datavalue);
-  ut_free_1d_char (&entity);
 
   return;
 }

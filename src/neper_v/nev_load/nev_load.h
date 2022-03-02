@@ -2,9 +2,8 @@
 /* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nev_load (char *, struct SIM *, struct TESS *, struct TESR *,
-		      struct NODES *, struct MESH *,
-		      struct POINT *,
-		      struct DATA *, struct DATA *,
-		      struct DATA *, struct DATA *,
-		      struct DATA *);
+extern void nev_load (char *string, struct SIM *pSim, struct TESS *pTess,
+                      struct TESR *pTesr, struct NODES *pNodes, struct MESH
+                      *Mesh, struct POINT *pPoint, struct DATA *TessData,
+                      struct DATA *pTesrData, struct DATA *pData, struct DATA
+                      *MeshData, struct DATA *pPointData);

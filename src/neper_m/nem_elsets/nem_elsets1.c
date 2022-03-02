@@ -10,15 +10,11 @@ nem_elsets (struct IN_M In, struct TESS Tess, struct NODES Nodes,
 {
   int i, qty, *qty2 = NULL;
   char ***parts = NULL;
-  char **vars = NULL;
   double *val = ut_alloc_1d (Mesh[3].EltQty + 1);
-  int varqty;
   int *elts = NULL, EltQty;
 
   ut_list_break2 (In.elset, NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty2,
                   &qty);
-
-  neut_mesh_var_list (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Mesh[4], "elt3d", &vars, &varqty);
 
   for (i = 0; i < qty; i++)
   {
@@ -46,7 +42,6 @@ nem_elsets (struct IN_M In, struct TESS Tess, struct NODES Nodes,
 
   // ut_free_2d_char (&parts, PartQty);
   ut_free_1d_int (&qty2);
-  ut_free_2d_char (&vars, varqty);
   ut_free_1d (&val);
 
   return;

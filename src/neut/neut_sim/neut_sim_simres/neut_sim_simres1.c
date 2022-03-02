@@ -141,8 +141,6 @@ neut_sim_simres (struct SIM Sim, char *entity_in, char *res_in, struct SIMRES *p
              (*pSimRes).res, (*pSimRes).res, (*pSimRes).step);
   }
 
-  // ut_string_string (strncmp (inres_in, "ori", 3) ? inres_in : "ori", &inres);
-
   ut_free_1d_char (&tmp);
   ut_free_2d_char (&entityres, entityresqty);
   ut_free_1d_char (&res);

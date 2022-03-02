@@ -713,286 +713,6 @@ neut_mesh_points_mesh2ddist (struct TESS Tess, struct NODES Nodes,
 }
 
 void
-neut_mesh_var_list (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
-                    struct MESH Mesh2D, struct MESH Mesh3D, struct MESH MeshCo,
-                    char *entity_in, char ***pvar, int *pvarqty)
-{
-  int id = 0;
-  char *entity = NULL;
-  (void) Nodes;
-  (void) MeshCo;
-
-  if (!strcmp (entity_in, "elt") || !strcmp (entity_in, "elts")
-   || !strcmp (entity_in, "elset") || !strcmp (entity_in, "elsets")
-   || !strcmp (entity_in, "mesh"))
-  {
-    if (Mesh3D.ElsetQty > 0)
-      entity = ut_string_paste (entity_in, "3d");
-    else if (Mesh2D.ElsetQty > 0)
-      entity = ut_string_paste (entity_in, "2d");
-    else if (Mesh1D.ElsetQty > 0)
-      entity = ut_string_paste (entity_in, "1d");
-    else if (Mesh0D.ElsetQty > 0)
-      entity = ut_string_paste (entity_in, "0d");
-    else
-      abort ();
-  }
-  else
-    ut_string_string (entity_in, &entity);
-
-  if (!strcmp (entity, "mesh0d"))
-  {
-    (*pvarqty) = 7;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-    strcpy ((*pvar)[id++], "size");
-    strcpy ((*pvar)[id++], "eltnb");
-    strcpy ((*pvar)[id++], "nodenb");
-  }
-  else if (!strcmp (entity, "mesh1d"))
-  {
-    (*pvarqty) = 8;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-    strcpy ((*pvar)[id++], "length");
-    strcpy ((*pvar)[id++], "size");
-    strcpy ((*pvar)[id++], "eltnb");
-    strcpy ((*pvar)[id++], "nodenb");
-  }
-  else if (!strcmp (entity, "mesh2d"))
-  {
-    (*pvarqty) = 9;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-    strcpy ((*pvar)[id++], "area");
-    strcpy ((*pvar)[id++], "size");
-    strcpy ((*pvar)[id++], "eltnb");
-    strcpy ((*pvar)[id++], "nodenb");
-    strcpy ((*pvar)[id++], "partnb");
-  }
-  else if (!strcmp (entity, "mesh3d"))
-  {
-    (*pvarqty) = 9;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-    strcpy ((*pvar)[id++], "vol");
-    strcpy ((*pvar)[id++], "size");
-    strcpy ((*pvar)[id++], "eltnb");
-    strcpy ((*pvar)[id++], "nodenb");
-    strcpy ((*pvar)[id++], "partnb");
-  }
-  else if (!strcmp (entity, "meshco"))
-  {
-    (*pvarqty) = 1;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
-    strcpy ((*pvar)[id++], "eltnb");
-  }
-  else if (!strcmp (entity, "elset3d"))
-  {
-    (*pvarqty) = 18;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
-    strcpy ((*pvar)[id++], "id");
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-    strcpy ((*pvar)[id++], "vol");
-    strcpy ((*pvar)[id++], "diameq");
-    strcpy ((*pvar)[id++], "radeq");
-    strcpy ((*pvar)[id++], "eltnb");
-    strcpy ((*pvar)[id++], "Osize");
-    strcpy ((*pvar)[id++], "rrav");
-    strcpy ((*pvar)[id++], "rrmin");
-    strcpy ((*pvar)[id++], "rrmax");
-    strcpy ((*pvar)[id++], "true");
-    strcpy ((*pvar)[id++], "body");
-    strcpy ((*pvar)[id++], "domtype");
-    strcpy ((*pvar)[id++], "group");
-    strcpy ((*pvar)[id++], "fiber");
-  }
-  else if (!strcmp (entity, "elset2d"))
-  {
-    (*pvarqty) = 14;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
-    strcpy ((*pvar)[id++], "id");
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-    strcpy ((*pvar)[id++], "area");
-    strcpy ((*pvar)[id++], "diameq");
-    strcpy ((*pvar)[id++], "radeq");
-    strcpy ((*pvar)[id++], "eltnb");
-    strcpy ((*pvar)[id++], "true");
-    strcpy ((*pvar)[id++], "body");
-    strcpy ((*pvar)[id++], "domtype");
-    strcpy ((*pvar)[id++], "group");
-    strcpy ((*pvar)[id++], "per");
-  }
-  else if (!strcmp (entity, "elset1d"))
-  {
-    (*pvarqty) = 13;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
-    strcpy ((*pvar)[id++], "id");
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-    strcpy ((*pvar)[id++], "cyl");
-    strcpy ((*pvar)[id++], "length");
-    strcpy ((*pvar)[id++], "eltnb");
-    strcpy ((*pvar)[id++], "true");
-    strcpy ((*pvar)[id++], "body");
-    strcpy ((*pvar)[id++], "domtype");
-    strcpy ((*pvar)[id++], "group");
-    strcpy ((*pvar)[id++], "per");
-  }
-  else if (!strcmp (entity, "elset0d"))
-  {
-    (*pvarqty) = 11;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
-    strcpy ((*pvar)[id++], "id");
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-    strcpy ((*pvar)[id++], "eltnb");
-    strcpy ((*pvar)[id++], "true");
-    strcpy ((*pvar)[id++], "body");
-    strcpy ((*pvar)[id++], "domtype");
-    strcpy ((*pvar)[id++], "group");
-    strcpy ((*pvar)[id++], "per");
-  }
-  else if (!strcmp (entity, "elt3d"))
-  {
-    (*pvarqty) = 19;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 10);
-    strcpy ((*pvar)[id++], "id");
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-    strcpy ((*pvar)[id++], "elset3d");
-    strcpy ((*pvar)[id++], "vol");
-    strcpy ((*pvar)[id++], "diameq");
-    strcpy ((*pvar)[id++], "radeq");
-    strcpy ((*pvar)[id++], "length");
-    strcpy ((*pvar)[id++], "lengths");
-    strcpy ((*pvar)[id++], "rr");
-    strcpy ((*pvar)[id++], "true");
-    strcpy ((*pvar)[id++], "body");
-    strcpy ((*pvar)[id++], "domtype");
-    strcpy ((*pvar)[id++], "part");
-    strcpy ((*pvar)[id++], "elsetvol");
-    strcpy ((*pvar)[id++], "group");
-    strcpy ((*pvar)[id++], "fiber");
-  }
-  else if (!strcmp (entity, "elt2d"))
-  {
-    (*pvarqty) = 19;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
-    strcpy ((*pvar)[id++], "id");
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-    strcpy ((*pvar)[id++], "area");
-    strcpy ((*pvar)[id++], "diameq");
-    strcpy ((*pvar)[id++], "radeq");
-    strcpy ((*pvar)[id++], "elset2d");
-    strcpy ((*pvar)[id++], "true");
-    strcpy ((*pvar)[id++], "body");
-    strcpy ((*pvar)[id++], "domtype");
-    strcpy ((*pvar)[id++], "elt3d_shown");
-    strcpy ((*pvar)[id++], "part");
-    strcpy ((*pvar)[id++], "elsetarea");
-    strcpy ((*pvar)[id++], "length");
-    strcpy ((*pvar)[id++], "lengths");
-    strcpy ((*pvar)[id++], "group");
-    strcpy ((*pvar)[id++], "per");
-  }
-  else if (!strcmp (entity, "elt1d"))
-  {
-    (*pvarqty) = 17;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
-    strcpy ((*pvar)[id++], "id");
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-    strcpy ((*pvar)[id++], "cyl");
-    strcpy ((*pvar)[id++], "length");
-    strcpy ((*pvar)[id++], "elset1d");
-    strcpy ((*pvar)[id++], "true");
-    strcpy ((*pvar)[id++], "body");
-    strcpy ((*pvar)[id++], "domtype");
-    strcpy ((*pvar)[id++], "elt2d_shown");
-    strcpy ((*pvar)[id++], "elt3d_shown");
-    strcpy ((*pvar)[id++], "part");
-    strcpy ((*pvar)[id++], "elsetlength");
-    strcpy ((*pvar)[id++], "group");
-    strcpy ((*pvar)[id++], "per");
-  }
-  else if (!strcmp (entity, "elt0d"))
-  {
-    (*pvarqty) = 16;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
-    strcpy ((*pvar)[id++], "id");
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-    strcpy ((*pvar)[id++], "length");
-    strcpy ((*pvar)[id++], "elset0d");
-    strcpy ((*pvar)[id++], "true");
-    strcpy ((*pvar)[id++], "body");
-    strcpy ((*pvar)[id++], "domtype");
-    strcpy ((*pvar)[id++], "elt1d_shown");
-    strcpy ((*pvar)[id++], "elt2d_shown");
-    strcpy ((*pvar)[id++], "elt3d_shown");
-    strcpy ((*pvar)[id++], "part");
-    strcpy ((*pvar)[id++], "group");
-    strcpy ((*pvar)[id++], "per");
-  }
-  else if (!strcmp (entity, "node"))
-  {
-    (*pvarqty) = 13;
-    (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
-    strcpy ((*pvar)[id++], "id");
-    strcpy ((*pvar)[id++], "x");
-    strcpy ((*pvar)[id++], "y");
-    strcpy ((*pvar)[id++], "z");
-    strcpy ((*pvar)[id++], "coo");
-    strcpy ((*pvar)[id++], "dim");
-    strcpy ((*pvar)[id++], "elt0d_shown");
-    strcpy ((*pvar)[id++], "elt1d_shown");
-    strcpy ((*pvar)[id++], "elt2d_shown");
-    strcpy ((*pvar)[id++], "elt3d_shown");
-    strcpy ((*pvar)[id++], "part");
-    strcpy ((*pvar)[id++], "col_rodrigues");
-    strcpy ((*pvar)[id++], "col_stdtriangle");
-  }
-  else
-    ut_print_neperbug ();
-
-  ut_free_1d_char (&entity);
-
-  return;
-}
-
-void
 neut_mesh_entity_qty (struct NODES Nodes, struct MESH Mesh0D,
                       struct MESH Mesh1D, struct MESH Mesh2D,
                       struct MESH Mesh3D, char *entity, int *pentityqty)
@@ -1222,6 +942,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else
       status = -1;
   }
+
   else if (!strcmp (entity, "elset2d"))
   {
     status = 0;
@@ -1293,6 +1014,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else
       status = -1;
   }
+
   else if (!strcmp (entity, "elset1d"))
   {
     status = 0;
@@ -1359,6 +1081,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else
       status = -1;
   }
+
   else if (!strcmp (entity, "elset0d"))
   {
     status = 0;
@@ -1415,6 +1138,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else
       status = -1;
   }
+
   else if (!strcmp (entity, "elt3d"))
   {
     status = 0;
@@ -1525,6 +1249,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else
       status = -1;
   }
+
   else if (!strcmp (entity, "elt2d"))
   {
     status = 0;
@@ -1644,6 +1369,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else
       status = -1;
   }
+
   else if (!strcmp (entity, "elt1d"))
   {
     status = 0;
@@ -1761,6 +1487,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else
       status = -1;
   }
+
   else if (!strcmp (entity, "elt0d"))
   {
     status = 0;
@@ -1881,6 +1608,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else
       status = -1;
   }
+
   else if (!strcmp (entity, "mesh0d"))
   {
     status = 0;
@@ -1924,6 +1652,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else
       status = -1;
   }
+
   else if (!strcmp (entity, "mesh1d"))
   {
     status = 0;
@@ -1972,6 +1701,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else
       status = -1;
   }
+
   else if (!strcmp (entity, "mesh2d"))
   {
     status = 0;
@@ -2020,6 +1750,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else
       status = -1;
   }
+
   else if (!strcmp (entity, "mesh3d"))
   {
     status = 0;
@@ -2073,6 +1804,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else
       status = -1;
   }
+
   else if (!strcmp (entity, "meshco"))
   {
     status = 0;
@@ -2084,6 +1816,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else
       status = -1;
   }
+
   else if (!strcmp (entity, "node"))
   {
     status = 0;
@@ -2199,6 +1932,9 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
   else
     status = -1;
 
+  if (status == -1 && Nodes.pSim)
+    status = neut_sim_entity_id_res_val (*(Nodes.pSim), entity, id, var, *pvals);
+
   if (ptype)
   {
     (*ptype) = ut_realloc_1d_char (*ptype, strlen (typetmp) + 1);
@@ -2292,7 +2028,7 @@ neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH Mesh0D,
   neut_mesh_entity_qty (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, entity,
                         &entityqty);
 
-  neut_mesh_var_list (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo, entity, &vars, &varqty);
+  ut_math_vars (expr, &vars, &varqty);
 
   if (ut_string_isfilename (expr))
   {
@@ -2301,8 +2037,7 @@ neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH Mesh0D,
     ut_file_close (file, expr, "R");
   }
 
-  else if (neut_mesh_exprisvar (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo,
-           entity, expr))
+  else if (varqty == 1 && !strcmp (expr, vars[0]))
     for (j = 1; j <= entityqty; j++)
       neut_mesh_var_val_one (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo,
                              Tess, showelt0d, showelt1d, showelt2d,
@@ -2318,20 +2053,19 @@ neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH Mesh0D,
       double *vals = ut_alloc_1d (varqty);
 
       for (k = 0; k < varqty; k++)
-        if (strstr (expr, vars[k]))
-        {
-          if (!strcmp (vars[k], "default"))
-            vals[k] = val[j];
+      {
+        if (!strcmp (vars[k], "default"))
+          vals[k] = val[j];
 
-          neut_mesh_var_val_one (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo,
-                                 Tess, showelt0d, showelt1d, showelt2d,
-                                 showelt3d, 0, entity, j, vars[k], vals + k,
-                                 &type);
+        neut_mesh_var_val_one (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo,
+                               Tess, showelt0d, showelt1d, showelt2d,
+                               showelt3d, 0, entity, j, vars[k], vals + k,
+                               &type);
 
-          // write only once
-          if (j == entityqty && k== varqty - 1 && ptype && !strcmp (type, "%f"))
-            ut_string_string ("%f", ptype);
-        }
+        // write only once
+        if (j == entityqty && k== varqty - 1 && ptype && !strcmp (type, "%f"))
+          ut_string_string ("%f", ptype);
+      }
 
       status = ut_math_eval (expr, varqty, vars, vals, val + j);
       if (status == -1)
@@ -2694,77 +2428,6 @@ neut_mesh_entity_expr_matches (struct TESS Tess, struct NODES Nodes,
   ut_free_1d (&tmp);
 
   return;
-}
-
-int
-neut_mesh_exprisvar (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
-                     struct MESH Mesh2D, struct MESH Mesh3D, struct MESH MeshCo,
-                     char *entity_in, char *expr)
-{
-  int i, status;
-  char *entity = NULL;
-
-  if (!strcmp (entity_in, "elt") || !strcmp (entity_in, "elts")
-   || !strcmp (entity_in, "elset") || !strcmp (entity_in, "elsets")
-   || !strcmp (entity_in, "mesh"))
-  {
-    if (Mesh3D.ElsetQty > 0)
-      entity = ut_string_paste (entity_in, "3d");
-    else if (Mesh2D.ElsetQty > 0)
-      entity = ut_string_paste (entity_in, "2d");
-    else if (Mesh1D.ElsetQty > 0)
-      entity = ut_string_paste (entity_in, "1d");
-    else if (Mesh0D.ElsetQty > 0)
-      entity = ut_string_paste (entity_in, "0d");
-    else
-      abort ();
-  }
-  else
-    ut_string_string (entity_in, &entity);
-
-  if (!strncmp (expr, "scaleid(", 8))
-    status = 1;
-
-  else
-  {
-    int varqty;
-    char **vars = NULL;
-
-    neut_mesh_var_list (Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D, MeshCo,
-                        entity, &vars, &varqty);
-
-    status = 0;
-    for (i = 0; i < varqty; i++)
-    {
-      if (!strstr (vars[i], "("))
-      {
-        if (!strcmp (expr, vars[i]))
-        {
-          status = 1;
-          break;
-        }
-      }
-      else
-      {
-        char *tmp = ut_alloc_1d_char (strlen (expr) + 1);
-        ut_string_untilchar (expr, '(', NULL, tmp);
-
-        if (!strncmp (tmp, vars[i], strlen (tmp)))
-          status = 1;
-
-        ut_free_1d_char (&tmp);
-
-        if (status == 1)
-          break;
-      }
-    }
-
-    ut_free_2d_char (&vars, varqty);
-  }
-
-  ut_free_1d_char (&entity);
-
-  return status;
 }
 
 int

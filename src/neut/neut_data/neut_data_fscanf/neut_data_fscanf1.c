@@ -5,7 +5,7 @@
 #include "neut_data_fscanf_.h"
 
 void
-neut_data_fscanf_ori (struct SIM Sim, char *datavalue, int qty,
+neut_data_fscanf_ori (struct SIM Sim, char *entity, char *datavalue, int qty,
                      double **dataembed, double ***pColData, char **pColDataType,
                      int *pColDataSize)
 {
@@ -17,15 +17,17 @@ neut_data_fscanf_ori (struct SIM Sim, char *datavalue, int qty,
   *pColDataSize = 4;
   (*pColData) = ut_alloc_2d (qty + 1, *pColDataSize);
 
-  if (!strcmp (datavalue, "internal") && !Sim.simdir && dataembed)
+  if (!strcmp (datavalue, "internal") && dataembed && (!Sim.simdir || Sim.step == 0))
     ut_array_2d_memcpy (dataembed + 1, qty, 4, *pColData + 1);
-  else if ((!strcmp (datavalue, "internal") || !strcmp (datavalue, "from_sim")) && Sim.simdir)
+  else if (!strcmp (datavalue, "internal"))
   {
-    neut_sim_simres (Sim, "element", "ori", &SimRes);
+    neut_sim_simres (Sim, entity, "ori", &SimRes);
 
     if (neut_ori_fnscanf (SimRes.file, Sim.OriDes, "ascii", *pColData + 1, NULL, qty, NULL, "r") != 1)
       ut_print_message (2, 3, "Failed to read file.\n");
   }
+  else if (!strcmp (datavalue, "internal"))
+    ut_print_message (2, 3, "No orientation data available.\n");
   else if (!ol_label_g (datavalue, g))
     neut_data_fscanf_ori_label (g, qty, pColData, pColDataType);
   else if (!datavalue)
@@ -80,105 +82,103 @@ neut_data_fscanf_ori_tesr (struct SIM Sim, struct TESR Tesr,
 }
 
 void
-neut_data_fscanf_scal (struct SIM Sim, char *datavalue, int qty, double **dataembed,
-                      double ***pColData)
+neut_data_fscanf_general (struct DATAINPUT DataInput, char *entity, int dim,
+                          int entityqty, char *attribute, char *type,
+                          char *value, struct DATA *pData)
+
 {
-  (*pColData) = ut_alloc_2d (qty + 1, 1);
+  struct SIM *pSim = DataInput.pSim;
+  struct TESS *pTess = DataInput.pTess;
+  struct TESR *pTesr = DataInput.pTesr;
+  struct NODES *pNodes = DataInput.pNodes;
+  struct MESH **pMesh = DataInput.pMesh;
+  struct POINT *pPoints = DataInput.pPoints;
+  char *input = DataInput.input;
+  char **pDataName = NULL, *DataName = NULL;
+  char **pDataType = NULL;
+  int DataSize, *pDataSize = NULL;
+  double ***pDataArray = NULL;
 
-  if (!datavalue && dataembed)
-    ut_array_2d_memcpy (dataembed + 1, qty, 1, *pColData + 1);
-
-  else
+  if (!strcmp (attribute, "col"))
   {
-    struct SIMRES SimRes;
-    neut_simres_set_zero (&SimRes);
-
-    neut_sim_simres (Sim, NULL, datavalue, &SimRes);
-
-    if (SimRes.file)
-      ut_array_2d_fnscanf_wcard (SimRes.file, (*pColData) + 1, qty, 1, "numeral,size", "r");
-    else
-      ut_print_message (2, 3, "No scalar data available.\n");
-
-    neut_simres_free (&SimRes);
+    pDataSize = &(*pData).ColDataSize;
+    pDataArray = &(*pData).ColData;
+    pDataType = &(*pData).ColDataType;
+    pDataName = &(*pData).ColDataName;
+  }
+  else if (!strcmp (attribute, "rad"))
+  {
+    pDataSize = &DataSize;
+    pDataArray = &(*pData).RadData;
+    pDataType = &(*pData).RadDataType;
+    pDataName = &(*pData).RadDataName;
+  }
+  else if (!strcmp (attribute, "trs"))
+  {
+    pDataSize = &DataSize;
+    pDataArray = &(*pData).TrsData;
+    pDataType = &(*pData).TrsDataType;
+    pDataName = &DataName;
+  }
+  else if (!strcmp (attribute, "coo"))
+  {
+    pDataSize = &DataSize;
+    pDataArray = &(*pData).CooData;
+    pDataType = &(*pData).CooDataType;
+    pDataName = &(*pData).CooDataName;
+  }
+  else if (!strcmp (attribute, "length"))
+  {
+    pDataSize = &DataSize;
+    pDataArray = &(*pData).LengthData;
+    pDataType = &(*pData).LengthDataType;
+    pDataName = &DataName;
   }
 
-
-  return;
-}
-
-void
-neut_data_fscanf_col (struct SIM Sim, void *pdata1, void *pdata2, void *pdata3,
-                     void *pdata4, char *input, char *entity,
-                     int dim, int entityqty, char *type, char *value,
-                     struct DATA *pData)
-{
-  struct TESS *pTess = NULL;
-  struct TESR *pTesr = NULL;
-  struct NODES *pNodes = NULL;
-  struct MESH **pMesh = NULL;
-  struct POINT *pPoints = NULL;
-
-  if (!strcmp (input, "tess"))
-    pTess = (struct TESS *) pdata1;
-  if (!strcmp (input, "tesr"))
-    pTesr = (struct TESR *) pdata1;
-  else if (!strncmp (input, "node", 4) || !strncmp (input, "mesh", 4))
-  {
-    pTess = (struct TESS *) pdata1;
-    pNodes = (struct NODES *) pdata2;
-    pMesh = (struct MESH **) pdata3;
-  }
-  else if (!strncmp (input, "point", 5))
-  {
-    pTess = (struct TESS *) pdata1;
-    pNodes = (struct NODES *) pdata2;
-    pMesh = (struct MESH **) pdata3;
-    pPoints = (struct POINT *) pdata4;
-  }
-  else if (!strcmp (input, "csys"))
-  {
-  }
+  ut_string_string (entity, &(*pData).Entity);
 
   if (!strcmp (value, "from_nodes"))
   {
-    ut_string_string (value, &(*pData).ColDataType);
+    ut_string_string (value, pDataType);
     return;
   }
 
   (*pData).Dim = dim;
 
   if (strcmp (type, "none"))
-    ut_string_string (type, &(*pData).ColDataType);
+    ut_string_string (type, pDataType);
   else
-    if (neut_data_value_type (Sim, entity, "col", value, &(*pData).ColDataType))
+    if (neut_data_value_type (*pSim, entity, "col", value, pDataType))
       ut_print_message (2, 2, "Failed to determine data type for `%s'.\n", value);
 
-  if (!strcmp ((*pData).ColDataType, "col"))
+  if (!*pDataType || !strcmp (*pDataType, "col"))
     neut_data_fscanf_col_col (entityqty, value, pData);
 
-  else if (!strcmp ((*pData).ColDataType, "int")
-       || !strcmp ((*pData).ColDataType, "real")
-       || !strcmp ((*pData).ColDataType, "expr"))
-    neut_data_fscanf_col_scal (input, Sim, pTess, pTesr, pNodes, pMesh, pPoints,
-                              entity, entityqty, value, pData);
+  else if (!strcmp (*pDataType, "int")
+       || !strcmp (*pDataType, "real")
+       || !strcmp (*pDataType, "expr"))
+    neut_data_fscanf_scal (input, pSim, pTess, pTesr, pNodes, pMesh, pPoints,
+                           entity, entityqty, value,
+                           pDataName, pDataSize,
+                           pDataArray, pDataType);
 
-  else if (!strcmp ((*pData).ColDataType, "vector")
-        || !strcmp ((*pData).ColDataType, "tensor"))
-    neut_data_fscanf_col_tensor (Sim, entity, entityqty, value, pData);
+  else if (!strcmp (*pDataType, "vector")
+        || !strcmp (*pDataType, "tensor"))
+    neut_data_fscanf_col_tensor (*pSim, entity, entityqty, value, pData);
 
-  else if (!strcmp ((*pData).ColDataType, "ori"))
+  else if (!strcmp (*pDataType, "ori"))
   {
     if (!strcmp (input, "tess"))
-      neut_data_fscanf_ori (Sim, value, (*pTess).CellQty, (*pTess).CellOri,
-                           &(*pData).ColData,
-                           &(*pData).ColDataType, &(*pData).ColDataSize);
+      neut_data_fscanf_ori (*pSim, entity, value, (*pTess).CellQty, (*pTess).CellOri,
+                           pDataArray,
+                           pDataType, pDataSize);
+
     else if (!strcmp (input, "tesr"))
     {
-      if (!strcmp (entity, "cell"))
-        neut_data_fscanf_ori (Sim, value, (*pTesr).CellQty, (*pTesr).CellOri,
-                              &(*pData).ColData,
-                              &(*pData).ColDataType, &(*pData).ColDataSize);
+      if (!strcmp (entity, "cell") || !strcmp (entity, "crystal"))
+        neut_data_fscanf_ori (*pSim, entity, value, (*pTesr).CellQty, (*pTesr).CellOri,
+                              pDataArray,
+                              pDataType, pDataSize);
 
       else if (!strcmp (entity, "vox"))
       {
@@ -194,9 +194,9 @@ neut_data_fscanf_col (struct SIM Sim, void *pdata1, void *pdata2, void *pdata3,
             for (i = 1; i <= (*pTesr).size[0]; i++)
               ori[++id] = (*pTesr).VoxOri[i][j][k];
 
-        neut_data_fscanf_ori (Sim, value, neut_tesr_totvoxqty (*pTesr), ori,
-                              &(*pData).ColData, &(*pData).ColDataType,
-                              &(*pData).ColDataSize);
+        neut_data_fscanf_ori (*pSim, entity, value, neut_tesr_totvoxqty (*pTesr), ori,
+                              pDataArray, pDataType,
+                              pDataSize);
 
         ut_free_1d_pdouble (&ori);
       }
@@ -206,15 +206,15 @@ neut_data_fscanf_col (struct SIM Sim, void *pdata1, void *pdata2, void *pdata3,
       if (!strncmp (entity, "elt", 3) && !(*pMesh)[dim].EltOri)
         neut_mesh_init_eltori ((*pMesh) + dim);
 
-      neut_data_fscanf_ori (Sim, value, entityqty,
+      neut_data_fscanf_ori (*pSim, entity, value, entityqty,
                            !strncmp (entity, "elset", 5)?
                            (*pMesh)[dim].ElsetOri : (*pMesh)[dim].EltOri,
-                           &(*pData).ColData, &(*pData).ColDataType,
-                           &(*pData).ColDataSize);
+                           pDataArray, pDataType,
+                           pDataSize);
     }
   }
 
-  else if (!strcmp ((*pData).ColDataType, "disori"))
+  else if (!strcmp (*pDataType, "disori"))
   {
     if (!strcmp (input, "tesr"))
     {
@@ -233,16 +233,22 @@ neut_data_fscanf_col (struct SIM Sim, void *pdata1, void *pdata2, void *pdata3,
             {
               cell = (*pTesr).VoxCell[i][j][k];
               if (cell > 0)
-                ol_q_q_qdisori ((*pTesr).CellOri[cell],
-                                (*pTesr).VoxOri[i][j][k],
-                                (*pTesr).CellCrySym ? (*pTesr).CellCrySym : "triclinic", ori[++id]);
+              {
+                double *q = ol_q_alloc ();
+                int status = neut_tesr_cell_ori (*pTesr, cell, q);
+
+                if (!status)
+                  ol_q_q_qdisori (q, (*pTesr).VoxOri[i][j][k],
+                                  (*pTesr).CellCrySym, ori[++id]);
+                ol_q_free (q);
+              }
 
               else
                 ++id;
             }
 
-        neut_data_fscanf_ori (Sim, value, neut_tesr_totvoxqty (*pTesr), ori,
-                              &(*pData).ColData, &(*pData).ColDataType,
+        neut_data_fscanf_ori (*pSim, entity, value, neut_tesr_totvoxqty (*pTesr), ori,
+                              pDataArray, pDataType,
                               &(*pData).ColDataSize);
 
         ut_free_2d (&ori, neut_tesr_totvoxqty (*pTesr) + 1);
@@ -257,78 +263,7 @@ neut_data_fscanf_col (struct SIM Sim, void *pdata1, void *pdata2, void *pdata3,
   else
     abort ();
 
-  return;
-}
-
-void
-neut_data_fscanf_trs (int entityqty, char *type, char *value,
-                     struct DATA *pData)
-{
-  ut_string_string (type, &(*pData).TrsDataType);
-
-  if (!strcmp (type, "none") || !strcmp (type, "real"))
-  {
-    (*pData).TrsData = ut_alloc_2d (entityqty + 1, 3);
-    ut_array_2d_fnscanf_wcard (value, (*pData).TrsData + 1, entityqty,
-                               1, "numeral,size", "r");
-  }
-  else
-    abort ();
-
-  return;
-}
-
-void
-neut_data_fscanf_rad (int entityqty, char *type, char *value,
-                          struct DATA *pData)
-{
-  ut_string_string (type, &(*pData).RadDataType);
-
-  if (!strcmp ((*pData).RadDataType, "none")
-   || !strcmp ((*pData).RadDataType, "rad"))
-  {
-    (*pData).RadData = ut_alloc_2d (entityqty + 1, 3);
-    ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1, entityqty,
-                               1, "numeral,size", "r");
-  }
-  else if (!strcmp ((*pData).RadDataType, "cube"))
-  {
-    (*pData).RadData = ut_alloc_2d ((*pData).Qty + 1, 10);
-    ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1,
-                               (*pData).Qty, 10, "numeral,size", "r");
-  }
-  else if (!strcmp ((*pData).RadDataType, "cyl"))
-  {
-    (*pData).RadData = ut_alloc_2d ((*pData).Qty + 1, 5);
-    ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1,
-                               (*pData).Qty, 5, "numeral,size", "r");
-  }
-  else if (!strcmp ((*pData).RadDataType, "arr"))
-  {
-    (*pData).RadData = ut_alloc_2d ((*pData).Qty + 1, 5);
-    ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1,
-                               (*pData).Qty, 5, "numeral,size", "r");
-  }
-  else if (!strcmp ((*pData).RadDataType, "tor"))
-  {
-    (*pData).RadData = ut_alloc_2d ((*pData).Qty + 1, 5);
-    ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1,
-                               (*pData).Qty, 5, "numeral,size", "r");
-  }
-  else if (!strcmp ((*pData).RadDataType, "disc"))
-  {
-    (*pData).RadData = ut_alloc_2d ((*pData).Qty + 1, 4);
-    ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1,
-                               (*pData).Qty, 4, "numeral,size", "r");
-  }
-  else if (!strcmp ((*pData).RadDataType, "ell"))
-  {
-    (*pData).RadData = ut_alloc_2d ((*pData).Qty + 1, 12);
-    ut_array_2d_fnscanf_wcard (value, (*pData).RadData + 1,
-                               (*pData).Qty, 12, "numeral,size", "r");
-  }
-  else
-    abort ();
+  ut_free_1d_char (&DataName);
 
   return;
 }

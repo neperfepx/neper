@@ -54,3 +54,13 @@ extern void nes_pproc_entity_builtin_elsets_gen (struct SIM *pSim, struct TESS T
                                   char *entity, char *res, int **elsets,
                                   int elsetqty, struct SIMRES *pSimRes,
                                   struct SIMRES *pSimRes2);
+
+extern int nes_pproc_entity_builtin_cells (struct SIM *pSim, struct TESS Tess,
+                                            struct TESR Tesr, char *entity, char *res);
+extern void nes_pproc_entity_builtin_cells_ori (struct SIM *pSim, struct TESS Tess,
+                                    struct TESR Tesr, char *entity, char *res,
+                                    struct SIMRES *pSimRes);
+
+extern void nes_pproc_entity_builtin_cells_gos (struct SIM *pSim, struct TESS Tess,
+                                    struct TESR Tesr, char *entity, char *res,
+                                    struct SIMRES *pSimRes);

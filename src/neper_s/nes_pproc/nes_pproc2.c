@@ -5,23 +5,28 @@
 #include "nes_pproc_.h"
 
 void
-nes_pproc_load (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes, struct MESH *Mesh)
+nes_pproc_load (struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr,
+                struct NODES *pNodes, struct MESH *Mesh)
+
 {
   int GroupQty = 0;
   char **GroupCrySym = NULL;
 
   ut_print_message (0, 2, "Loading inputs...\n");
 
-  if (Sim.tess)
-    nes_loadtess (Sim, pTess, 2);
+  if ((*pSim).tess)
+    nes_loadtess (pSim, pTess, 2);
 
-  if (Sim.msh)
-    nes_loadmesh (Sim, pNodes, Mesh, 2);
+  if ((*pSim).tesr)
+    nes_loadtesr (pSim, pTesr, 2);
 
-  if (Sim.config)
-    nes_loadconfig (Sim, &GroupCrySym, &GroupQty, 2);
+  if ((*pSim).msh)
+    nes_loadmesh (pSim, pNodes, Mesh, 2);
 
-  nes_pproc_load_crysym (pTess, GroupCrySym, GroupQty);
+  if ((*pSim).config)
+    nes_loadconfig (*pSim, &GroupCrySym, &GroupQty, 2);
+
+  nes_pproc_load_crysym (pTess, pTesr, GroupCrySym, GroupQty);
 
   ut_free_2d_char (&GroupCrySym, GroupQty);
 

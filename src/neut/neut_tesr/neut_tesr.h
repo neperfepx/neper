@@ -21,6 +21,7 @@ extern "C"
 #include "neut_tesr_geom/neut_tesr_geom.h"
 #include "neut_tesr_ori/neut_tesr_ori.h"
 #include "neut_tesr_gen/neut_tesr_gen.h"
+#include "neut_tesr_sim/neut_tesr_sim.h"
 
 #endif				/* NEUT_TESR_H */
 

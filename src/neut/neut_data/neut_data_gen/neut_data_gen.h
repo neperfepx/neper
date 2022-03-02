@@ -41,7 +41,7 @@ extern "C"
 
   extern void neut_data_col_color (double **data, int size, int **Col);
 
-  extern void neut_data_int_color (double **data, int size, int **Col);
+  extern void neut_data_int_color (double **data, int size, int *UnDefCol, int **Col);
 
   extern int neut_data_type_size (char *type, int *psize);
 

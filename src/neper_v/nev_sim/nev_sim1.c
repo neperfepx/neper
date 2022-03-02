@@ -9,9 +9,13 @@ nev_sim (char **argv, int *pi, struct SIM *pSim)
 {
   int status, tmp;
 
-  if (!strcmp (argv[*pi], "-simstep"))
+  if (!strcmp (argv[*pi], "-simstep")
+   || !strcmp (argv[*pi], "-step"))
   {
     ut_print_message (0, 0, "Setting simulation step...\n");
+
+    if (!strcmp (argv[*pi], "-simstep"))
+      ut_print_message (1, 1, "Option `-simstep' will be removed in future versions.  Use `-step` instead.\n");
 
     sscanf (argv[++(*pi)], "%d", &tmp);
     status = neut_sim_setstep (pSim, tmp);

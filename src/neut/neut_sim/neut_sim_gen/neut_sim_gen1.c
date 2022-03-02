@@ -104,6 +104,8 @@ neut_sim_entity_entitydir (char *entity,  char **pentitydir)
     ut_string_string ("elts", pentitydir);
   else if (!strcmp (entity, "elset") || !strcmp (entity, "elsets"))
     ut_string_string ("elsets", pentitydir);
+  else if (!strcmp (entity, "cell") || !strcmp (entity, "cells"))
+    ut_string_string ("cells", pentitydir);
   else
     ut_string_string (entity, pentitydir);
 
@@ -306,7 +308,8 @@ neut_sim_entity_internal (char *entity)
    || !strcmp (entity, "mesh")
    || !strcmp (entity, "node")
    || !strcmp (entity, "cell")
-   || !strcmp (entity, "tess"))
+   || !strcmp (entity, "tess")
+   || !strcmp (entity, "tesr"))
     return 1;
   else
     return 0;
@@ -325,13 +328,64 @@ neut_sim_entity_parent (struct SIM Sim, char *entity, char **pparent)
     return Sim.msh ? 0 : -1;
   }
 
-  else if (!strcmp (entity, "cell")
-        || !strcmp (entity, "tess"))
+  else if (!strcmp (entity, "cell"))
+  {
+    if (Sim.tess)
+    {
+      ut_string_string ("tess", pparent);
+      return 0;
+    }
+    else if (Sim.tesr)
+    {
+      ut_string_string ("tesr", pparent);
+      return 0;
+    }
+    else
+      return -1;
+  }
+
+  else if (!strcmp (entity, "tess"))
   {
     ut_string_string ("tess", pparent);
     return Sim.tess ? 0 : -1;
   }
 
+  else if (!strcmp (entity, "tesr"))
+  {
+    ut_string_string ("tesr", pparent);
+    return Sim.tesr ? 0 : -1;
+  }
+
   else
     return -1;
+}
+
+int
+neut_sim_entity_id_res_val (struct SIM Sim, char *entity, int id, char *res, double *pval)
+{
+  int status;
+  struct SIMRES SimRes;
+  FILE *file = NULL;
+
+  neut_simres_set_zero (&SimRes);
+
+  neut_sim_simres (Sim, entity, res, &SimRes);
+  if (ut_file_exist (SimRes.file))
+  {
+    status = 0;
+
+    file = ut_file_open (SimRes.file, "R");
+
+    ut_file_skip (file, id - 1);
+    if (fscanf (file, "%lf", pval) != 1)
+      abort ();
+
+    ut_file_close (file, SimRes.file, "R");
+  }
+  else
+    status = -1;
+
+  neut_simres_free (&SimRes);
+
+  return status;
 }

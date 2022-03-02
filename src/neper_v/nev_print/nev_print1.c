@@ -30,12 +30,12 @@ nev_print (char **expargv, int *pi, struct PRINT *pPrint, struct SIM Sim,
   if (ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov")
    || ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov:objects")
    || ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "png"))
-    nev_print_png (basename, pPrint, Sim, Tess, TessData, Tesr, pTesrData, Nodes,
+    nev_print_png (basename, *pPrint, Sim, Tess, TessData, Tesr, pTesrData, Nodes,
                    Mesh, SQty, SNodes, SMesh2D, pNodeData, MeshData, pCsysData,
                    Point, pPointData, SNodeData, SMeshData, SElt2dElt3d);
 
   if (ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "vtk"))
-    nev_print_vtk (basename, pPrint, Sim, Nodes, Mesh, pNodeData, MeshData);
+    nev_print_vtk (basename, *pPrint, Sim, Nodes, Mesh, pNodeData, MeshData);
 
   ut_free_1d_char (&basename);
 

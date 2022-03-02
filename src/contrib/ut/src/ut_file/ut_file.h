@@ -261,6 +261,12 @@ extern "C"
   extern int ut_file_testpos (FILE *, const char *);
 /// @endcond
 
+/// \brief Scan and test if the next strings of a file is *file <file_name>, and return a pointer to the file
+/// \param file: file pointer
+/// \param dirname: name of the directory of the opened file
+/// \param pfile: new file pointer
+extern void ut_file_scan_file (FILE *file, char *dirname, FILE **pfile, char **pfilename);
+
 #endif                          /* UT_FILE_H */
 
 #ifdef __cplusplus

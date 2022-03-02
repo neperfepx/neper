@@ -18,12 +18,13 @@ extern void neut_data_fscanf_ori_file (struct SIM Sim, char *datavalue, int qty,
 extern void neut_data_fscanf_col_col (int entityqty, char *value,
                                      struct DATA *pData);
 
-extern void neut_data_fscanf_col_scal (char *input, struct SIM Sim,
-                                       struct TESS *pTess, struct TESR *pTesr,
-                                       struct NODES *pNodes, struct MESH
-                                       **pMesh, struct POINT *Point, char
-                                       *entity, int entityqty, char *value,
-                                       struct DATA *pData);
+extern void neut_data_fscanf_scal (char *input, struct SIM *pSim,
+                                   struct TESS *pTess, struct TESR *pTesr,
+                                   struct NODES *pNodes, struct MESH
+                                   **pMesh, struct POINT *Point, char
+                                   *entity, int entityqty, char *value,
+                                   char **pColDataName, int *pColDataSize,
+                                   double ***pColData, char **pColDataType);
 
 extern void neut_data_fscanf_col_tensor (struct SIM Sim,
                                          char *entity, int entityqty,

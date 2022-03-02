@@ -20,6 +20,9 @@ extern "C"
     int PointQty;
     double **PointCoo;
     double *PointRad;
+
+    // pointer to SIM structure
+    struct SIM *pSim;
   };
   typedef struct POINT POINT;
 

@@ -18,6 +18,8 @@ struct IN_S
   int entityqty;                // number of different -res* options
   char **entities;              // -res* entities
   char **entityresexpr;         // -res* results
+
+  int stepqty;                  // number of steps
 };
 typedef struct IN_S IN_S;
 

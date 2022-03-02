@@ -1,0 +1,15 @@
+***tesr
+ **format
+   2.1
+ **general
+   2
+   2 2
+   0.500000000000 0.500000000000
+ **oridata
+   rodrigues:active
+   ascii
+   0.3 0.3 0.3
+   0.4 0 0
+   0 0.4 0
+   0 0 0.4
+***end

@@ -5,7 +5,7 @@
 #include"neut_tesr_fscanf_.h"
 
 void
-neut_tesr_fscanf_data_default (struct TESR *pTesr, char *format, int readfromfile, FILE * file)
+neut_tesr_fscanf_data_default (struct TESR *pTesr, char *format, int readfromfile, FILE * file, int ***VoxData)
 {
   int i, j, k;
 
@@ -19,7 +19,7 @@ neut_tesr_fscanf_data_default (struct TESR *pTesr, char *format, int readfromfil
           if (fscanf (file, "%d", &data) != 1)
             abort ();
 
-          (*pTesr).VoxCell[i][j][k] = data;
+          VoxData[i][j][k] = data;
         }
         else if (!strcmp (format, "binary8"))
         {
@@ -27,7 +27,7 @@ neut_tesr_fscanf_data_default (struct TESR *pTesr, char *format, int readfromfil
           if (fread (&data, sizeof (unsigned char), 1, file) != 1)
             abort ();
 
-          (*pTesr).VoxCell[i][j][k] = data;
+          VoxData[i][j][k] = data;
         }
         else if ((!strcmp (format, "binary16") && !ut_sys_endian ())
                  || (!strcmp (format, "binary16_big") && ut_sys_endian ()))
@@ -36,7 +36,7 @@ neut_tesr_fscanf_data_default (struct TESR *pTesr, char *format, int readfromfil
           if (fread (&data, sizeof (short), 1, file) != 1)
             abort ();
 
-          (*pTesr).VoxCell[i][j][k] = (int) data;
+          VoxData[i][j][k] = (int) data;
         }
         else if ((!strcmp (format, "binary16") && ut_sys_endian ())
                  || (!strcmp (format, "binary16_big") && !ut_sys_endian ()))
@@ -53,7 +53,7 @@ neut_tesr_fscanf_data_default (struct TESR *pTesr, char *format, int readfromfil
           pval2[1] = pval[0];
           pval2[0] = pval[1];
 
-          (*pTesr).VoxCell[i][j][k] = (int) val2;
+          VoxData[i][j][k] = (int) val2;
         }
         else if ((!strcmp (format, "binary32") && !ut_sys_endian ())
                  || (!strcmp (format, "binary32_big") && ut_sys_endian ()))
@@ -62,7 +62,7 @@ neut_tesr_fscanf_data_default (struct TESR *pTesr, char *format, int readfromfil
           if (fread (&data, sizeof (int), 1, file) != 1)
             abort ();
 
-          (*pTesr).VoxCell[i][j][k] = data;
+          VoxData[i][j][k] = data;
         }
         else if ((!strcmp (format, "binary32") && ut_sys_endian ())
                  || (!strcmp (format, "binary32_big") && !ut_sys_endian ()))
@@ -82,7 +82,7 @@ neut_tesr_fscanf_data_default (struct TESR *pTesr, char *format, int readfromfil
           pval2[1] = pval[2];
           pval2[0] = pval[3];
 
-          (*pTesr).VoxCell[i][j][k] = (int) val2;
+          VoxData[i][j][k] = (int) val2;
         }
         else
           ut_print_message (2, 2, "Unknown format `%s'.\n", format);
@@ -132,7 +132,7 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *desconv, char *orida
 
 void
 neut_tesr_fscanf_data_bounds (struct TESR *pTesr, int *bounds, char *format,
-                              FILE * file)
+                              FILE * file, int ***VoxData)
 {
   int i, j, k, ii, jj, kk;
 
@@ -156,7 +156,7 @@ neut_tesr_fscanf_data_bounds (struct TESR *pTesr, int *bounds, char *format,
 
           if (k >= bounds[4] && k <= bounds[5] && j >= bounds[2]
               && j <= bounds[3] && i >= bounds[0] && i <= bounds[1])
-            (*pTesr).VoxCell[ii][jj][kk] = data;
+            VoxData[ii][jj][kk] = data;
         }
         else if (!strcmp (format, "binary8"))
         {
@@ -166,7 +166,7 @@ neut_tesr_fscanf_data_bounds (struct TESR *pTesr, int *bounds, char *format,
 
           if (k >= bounds[4] && k <= bounds[5] && j >= bounds[2]
               && j <= bounds[3] && i >= bounds[0] && i <= bounds[1])
-            (*pTesr).VoxCell[ii][jj][kk] = data;
+            VoxData[ii][jj][kk] = data;
         }
         else if (!strcmp (format, "binary16"))
         {
@@ -176,7 +176,7 @@ neut_tesr_fscanf_data_bounds (struct TESR *pTesr, int *bounds, char *format,
 
           if (k >= bounds[4] && k <= bounds[5] && j >= bounds[2]
               && j <= bounds[3] && i >= bounds[0] && i <= bounds[1])
-            (*pTesr).VoxCell[ii][jj][kk] = (int) data;
+            VoxData[ii][jj][kk] = (int) data;
         }
         else if (!strcmp (format, "binary16*"))
         {
@@ -194,7 +194,7 @@ neut_tesr_fscanf_data_bounds (struct TESR *pTesr, int *bounds, char *format,
 
           if (k >= bounds[4] && k <= bounds[5] && j >= bounds[2]
               && j <= bounds[3] && i >= bounds[0] && i <= bounds[1])
-            (*pTesr).VoxCell[ii][jj][kk] = (int) val2;
+            VoxData[ii][jj][kk] = (int) val2;
         }
         else if (!strcmp (format, "binary32"))
         {
@@ -204,7 +204,7 @@ neut_tesr_fscanf_data_bounds (struct TESR *pTesr, int *bounds, char *format,
 
           if (k >= bounds[4] && k <= bounds[5] && j >= bounds[2]
               && j <= bounds[3] && i >= bounds[0] && i <= bounds[1])
-            (*pTesr).VoxCell[ii][jj][kk] = data;
+            VoxData[ii][jj][kk] = data;
         }
         else if (!strcmp (format, "binary32*"))
         {
@@ -225,7 +225,7 @@ neut_tesr_fscanf_data_bounds (struct TESR *pTesr, int *bounds, char *format,
 
           if (k >= bounds[4] && k <= bounds[5] && j >= bounds[2]
               && j <= bounds[3] && i >= bounds[0] && i <= bounds[1])
-            (*pTesr).VoxCell[ii][jj][kk] = (int) val2;
+            VoxData[ii][jj][kk] = (int) val2;
         }
         else
           abort ();
@@ -238,9 +238,9 @@ neut_tesr_fscanf_data_bounds (struct TESR *pTesr, int *bounds, char *format,
 
 void
 neut_tesr_fscanf_data_scale (struct TESR *pTesr, double *scale, char *format,
-                             int readfromfile, FILE * file)
+                             int readfromfile, FILE * file, int ***VoxData)
 {
-  neut_tesr_fscanf_data_default (pTesr, format, readfromfile, file);
+  neut_tesr_fscanf_data_default (pTesr, format, readfromfile, file, VoxData);
 
   neut_tesr_rasterscale (pTesr, scale[0], scale[1], scale[2]);
 

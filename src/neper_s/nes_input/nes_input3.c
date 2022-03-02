@@ -24,10 +24,11 @@ nes_input_options_set (struct IN_S *pIn, int argc, char **argv)
   char *type = NULL;
 
   /* This is the possible argument list. */
-  ArgQty = 3;
+  ArgQty = 4;
   sprintf (ArgList[++ArgQty], "-o");
   sprintf (ArgList[++ArgQty], "-orispace");
   sprintf (ArgList[++ArgQty], "-entity");
+  sprintf (ArgList[++ArgQty], "-step");
 
   for (i = 1; i <= argc - 1; i++)
     if (argv[i][0] != '-')
@@ -89,6 +90,8 @@ nes_input_options_set (struct IN_S *pIn, int argc, char **argv)
         nes_in_addres (Arg, argv[++i], pIn);
       else if (!strcmp (Arg, "-entity"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).entity));
+      else if (!strcmp (Arg, "-step"))
+        ut_arg_nextasint (argv, &i, Arg, 0, INT_MAX, &((*pIn).stepqty));
       else
         ut_arg_badarg ();
     }

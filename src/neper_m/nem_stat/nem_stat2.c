@@ -8,9 +8,9 @@ void
 nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
                 struct MESH *Mesh, struct TESS Tess)
 {
-  int i, j, status, invalqty, var_qty, valqty;
+  int i, j, status, invalqty, valqty;
   double *vals = NULL;
-  char **invar = NULL, *valstring = NULL, *type = NULL, **vars = NULL;
+  char **invar = NULL, *valstring = NULL, *type = NULL;
   double **meshp = NULL, *meshd = NULL, **meshv = NULL, **meshn = NULL;
 
   if (ut_list_testelt (format, NEUT_SEP_NODEP, "2dmeshp")
@@ -27,8 +27,6 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
   }
 
   ut_list_break (format, NEUT_SEP_NODEP, &invar, &invalqty);
-
-  neut_mesh_var_list (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Mesh[4], "node", &vars, &var_qty);
 
   for (i = 1; i <= Nodes.NodeQty; i++)
     for (j = 0; j < invalqty; j++)
@@ -64,7 +62,6 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
     }
 
   ut_free_2d_char (&invar, invalqty);
-  ut_free_2d_char (&vars, var_qty);
   ut_free_1d_char (&type);
   ut_free_1d_char (&valstring);
 
@@ -81,9 +78,9 @@ void
 nem_stat_elts (FILE *file, char *entity, int dim, int realdim, char *format, struct NODES Nodes,
                struct MESH *Mesh, struct MESHPARA MeshPara, struct TESS Tess)
 {
-  int i, j, invalqty, varqty, qty, meshx_init, valqty, status;
+  int i, j, invalqty, qty, meshx_init, valqty, status;
   double *vals = NULL, cl;
-  char **invar = NULL, *type = NULL, **vars = NULL;
+  char **invar = NULL, *type = NULL;
   char *entity2 = ut_alloc_1d_char (10);
   double **meshp = NULL, *meshd = NULL, **meshv = NULL, **meshn = NULL;
 
@@ -102,8 +99,6 @@ nem_stat_elts (FILE *file, char *entity, int dim, int realdim, char *format, str
     sprintf (entity2, "%sco", entity);
 
   ut_list_break (format, NEUT_SEP_NODEP, &invar, &invalqty);
-
-  neut_mesh_var_list (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Mesh[4], entity2, &vars, &varqty);
 
   meshx_init = 0;
   if (!strcmp (entity, "elt") && realdim == 3
@@ -157,7 +152,6 @@ nem_stat_elts (FILE *file, char *entity, int dim, int realdim, char *format, str
   }
 
   ut_free_2d_char (&invar, invalqty);
-  ut_free_2d_char (&vars, varqty);
   ut_free_1d_char (&entity2);
   ut_free_1d_char (&type);
   ut_free_1d (&vals);
@@ -177,9 +171,9 @@ void
 nem_stat_point (FILE * file, char *format, struct NODES Nodes,
                 struct MESH *Mesh, struct TESS Tess, struct POINT Point)
 {
-  int i, j, invalqty, var_qty, meshx_init = 0, valqty, status;
+  int i, j, invalqty, meshx_init = 0, valqty, status;
   double *vals = NULL;
-  char **invar = NULL, *valstring = NULL, *type = NULL, **vars = NULL;
+  char **invar = NULL, *valstring = NULL, *type = NULL;
   double **meshp = NULL, *meshd = NULL, **meshv = NULL, **meshn = NULL;
   int dim = neut_mesh_array_dim (Mesh);
 
@@ -204,8 +198,6 @@ nem_stat_point (FILE * file, char *format, struct NODES Nodes,
   }
 
   ut_list_break (format, NEUT_SEP_NODEP, &invar, &invalqty);
-
-  neut_point_var_list (&vars, &var_qty);
 
   for (i = 1; i <= Point.PointQty; i++)
     for (j = 0; j < invalqty; j++)
@@ -235,7 +227,6 @@ nem_stat_point (FILE * file, char *format, struct NODES Nodes,
     }
 
   ut_free_2d_char (&invar, invalqty);
-  ut_free_2d_char (&vars, var_qty);
   ut_free_1d_char (&type);
   ut_free_1d_char (&valstring);
   ut_free_1d (&vals);

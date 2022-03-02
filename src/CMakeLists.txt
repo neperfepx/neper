@@ -7,7 +7,7 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"4.3.2-6\")
+set(NEPER_VERSION \"4.4.0\")
 project(neper)
 
 # Set the build type for appropriate compile flags
@@ -15,11 +15,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build: Debug Release" FORCE)
 endif()
 
-if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-  set(BUILD_TESTING_MODE "Normal" CACHE STRING "Choose the testing mode: Normal Minimal Writing")
-elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-  set(BUILD_TESTING_MODE "Minimal" CACHE STRING "Choose the testing mode: Normal Minimal Writing")
-endif()
+set(BUILD_TESTING_MODE "Normal" CACHE STRING "Choose the testing mode: Normal Minimal Writing")
 
 # should we use the optional libraries?
 set(HAVE_NLOPT     ON  CACHE BOOL "Use NLopt")
@@ -232,7 +228,7 @@ install(TARGETS neper DESTINATION bin
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
   set (completiondir "/usr/share/bash-completion/completions")
-elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+elseif (compare MATCHES CMAKE_SYSTEM_NAME "Darwin" OR APPLE)
   set (completiondir "/usr/local/etc/bash_completion.d")
 endif()
 

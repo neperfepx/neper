@@ -146,6 +146,8 @@ neut_nodes_set_zero (struct NODES *pNodes)
   (*pNodes).NodePart = NULL;
   (*pNodes).Parts = NULL;
 
+  (*pNodes).pSim = NULL;
+
   return;
 }
 

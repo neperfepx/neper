@@ -25,3 +25,8 @@ extern void neut_tesr_fprintf_oridata_noheader (FILE * file, char
 extern void neut_tesr_fprintf_oridata_raw (FILE * file, char *rawname,
 					   char *format, struct TESR Tesr);
 extern void neut_tesr_fprintf_foot (FILE *file);
+
+extern void neut_tesr_fprintf_oridef (FILE * file, char *format, struct TESR Tesr);
+
+extern void neut_tesr_fprintf_oridef_noheader (FILE * file, char *format,
+                                               char *wildcard, struct TESR Tesr);

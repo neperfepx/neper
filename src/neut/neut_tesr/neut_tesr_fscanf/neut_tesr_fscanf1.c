@@ -94,12 +94,16 @@ neut_tesr_fscanf (FILE * file, char *dirname, double *bounds, double *scale,
 
     else if (!strcmp (string, "**oridata"))
       neut_tesr_fscanf_oridata (pTesr, dirname, voxbounds, scale, version, &oridataformat, file);
+
+    else if (!strcmp (string, "**oridef"))
+      neut_tesr_fscanf_oridef (pTesr, dirname, voxbounds, scale, file);
   }
   while (strcmp (string, "***end"));
 
   neut_tesr_fscanf_foot (file);
 
   neut_tesr_init_cellbbox (pTesr);
+  neut_tesr_init_hasvoid (pTesr);
 
   if (bounds || scale)
     if ((*pTesr).size[2] == 1)

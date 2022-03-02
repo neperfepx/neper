@@ -7,7 +7,7 @@
 void
 neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
 {
-  int i, j, qty, curqty;
+  int i, j, qty;
   char *oldfilename = ut_string_paste (dir, "/report");
   char *filename = ut_string_paste (dir, "/.sim");
   FILE *file = ut_file_open (filename, mode);
@@ -93,13 +93,15 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
     fprintf (file, "   %d\n", Sim.StepQty);
 
     qty = ut_array_1d_int_valnb (Sim.StepState + 1, Sim.StepQty, 0);
-    curqty = 0;
-    if (qty != Sim.StepQty)
+    if (qty)
     {
       fprintf (file, "  *printed\n");
+      fprintf (file, "   %d\n", Sim.StepQty - qty);
+      fprintf (file, "  ");
       for (i = 1; i <= Sim.StepQty; i++)
         if (!Sim.StepState[i])
-          fprintf (file, "%d%s", i, ++curqty < qty ? " " : "\n");
+          fprintf (file, " %d", i);
+      fprintf (file, "\n");
     }
   }
 

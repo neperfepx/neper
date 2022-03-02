@@ -25,7 +25,7 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
   struct POINT Point;
 
   // Datas
-  struct DATA *TessData = calloc (5, sizeof (DATA)); // ver, edge, face, poly, seed
+  struct DATA *TessData = calloc (6, sizeof (DATA)); // ver, edge, face, poly, seed, crystal
   struct DATA TesrData;
   struct DATA NodeData;
   struct DATA *MeshData = calloc (5, sizeof (DATA));
@@ -51,7 +51,7 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
     neut_mesh_set_zero (Mesh + dim);
     neut_data_set_default (MeshData + dim);
   }
-  for (dim = 0; dim <= 4; dim++)
+  for (dim = 0; dim <= 5; dim++)
     neut_data_set_default (TessData + dim);
 
   neut_data_set_default (&NodeData);
@@ -73,12 +73,14 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
       // tessellation / mesh loading -------------------------------------
       if (expargv[i][0] != '-')
         nev_load (expargv[i], &Sim, &Tess, &Tesr, &Nodes, Mesh, &Point,
-                  TessData, &TesrData, &NodeData, MeshData, &PointData);
+                  TessData, &TesrData, &NodeData, MeshData,
+                  &PointData);
 
       // data loading and settings ---------------------------------------
       else if (!strncmp (expargv[i], "-data", 5))
-        nev_data (expargv, &i, Sim, &Tess, &Tesr, &Nodes, &Mesh, &Point, TessData, &TesrData,
-                  &NodeData, MeshData, &CsysData, &PointData);
+        nev_data (expargv, &i, Sim, &Tess, &Tesr, &Nodes, &Mesh, &Point,
+                  TessData, &TesrData, &NodeData, MeshData,
+                  &CsysData, &PointData);
 
       // show settings ---------------------------------------------------
       else if (!strncmp (expargv[i], "-show", 5))
@@ -140,7 +142,7 @@ neper_v (int fargc, char **fargv, int argc, char **argv)
     neut_mesh_free (Mesh + dim);
     neut_data_free (MeshData + dim);
   }
-  for (dim = 0; dim <= 4; dim++)
+  for (dim = 0; dim <= 5; dim++)
     neut_data_free (TessData + dim);
   neut_data_free (&NodeData);
 

@@ -42,6 +42,7 @@ neut_print_set_default (struct PRINT *pPrint)
   (*pPrint).showslice = -1;
 
   (*pPrint).showseed = ut_alloc_1d_int (1);
+  (*pPrint).showcrystal = ut_alloc_1d_int (1);
   (*pPrint).showver = ut_alloc_1d_int (1);
   (*pPrint).showedge = ut_alloc_1d_int (1);
   (*pPrint).showface = ut_alloc_1d_int (1);
@@ -53,6 +54,7 @@ neut_print_set_default (struct PRINT *pPrint)
   (*pPrint).showelt1d = ut_alloc_1d_int (1);
   (*pPrint).showelt2d = ut_alloc_1d_int (1);
   (*pPrint).showpoint = ut_alloc_1d_int (1);
+  (*pPrint).showcrystal[0] = -1;
   (*pPrint).showseed[0] = -1;
   (*pPrint).showver[0] = -1;
   (*pPrint).showedge[0] = -1;
@@ -108,6 +110,7 @@ neut_print_free (struct PRINT *pPrint)
   ut_free_1d_char (&(*pPrint).imagesize);
   ut_free_1d_char (&(*pPrint).scenebackground);
   ut_free_1d_int (&(*pPrint).showseed);
+  ut_free_1d_int (&(*pPrint).showcrystal);
   ut_free_1d_int (&(*pPrint).showver);
   ut_free_1d_int (&(*pPrint).showedge);
   ut_free_1d_int (&(*pPrint).showface);

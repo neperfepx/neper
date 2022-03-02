@@ -16,9 +16,10 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
   int *edgelist = NULL;
   int *verlist = NULL;
   int *seedlist = NULL;
+  int *crystallist = NULL;
   int neighqty;
   int *neigh = NULL;
-  int poly, allneigh, face, edge, ver, seed;
+  int poly, allneigh, face, edge, ver, seed, crystal;
   char *texture = ut_alloc_1d_char (100);
   double Trs;
 
@@ -30,6 +31,12 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
   for (i = 1; i <= Tess.CellQty; i++)
     if (Print.showseed[i] == 1)
       seedlist[++seedlist[0]] = i;
+
+  crystallist = ut_alloc_1d_int (Tess.CellQty + 1);
+
+  for (i = 1; i <= Tess.CellQty; i++)
+    if (Print.showcrystal[i] == 1)
+      crystallist[++crystallist[0]] = i;
 
   verlist = ut_alloc_1d_int (Tess.VerQty + 1);
 
@@ -295,12 +302,72 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
     ut_free_1d_char (&string);
   }
 
+  // Writing crystals
+  for (i = 1; i <= crystallist[0]; i++)
+  {
+    char *bordertexture = ut_alloc_1d_char (100);
+    crystal = crystallist[i];
+
+    fprintf (file,
+             "#declare crystal%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f} }\n",
+             crystal, TessData[5].Col[crystal][0] / 255.,
+             TessData[5].Col[crystal][1] / 255., TessData[5].Col[crystal][2] / 255.,
+             TessData[5].Trs[crystal], ambient);
+
+    sprintf (texture, "crystal%d", crystal);
+
+    if (TessData[5].BRad > 0)
+      fprintf (file,
+               "#declare crystal%dedge =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f} }\n",
+               crystal, TessData[5].BCol[0] / 255.,
+               TessData[5].BCol[1] / 255., TessData[5].BCol[2] / 255.,
+               TessData[5].BRad, ambient);
+
+    sprintf (bordertexture, "crystal%dedge", crystal);
+
+    char *string = ut_alloc_1d_char (100);
+    double *coo = ut_alloc_1d (3);
+    double *rad = ut_alloc_1d (10);
+    double **g = ol_g_alloc ();
+
+    neut_tess_cell_centroid (Tess, crystal, coo);
+    ol_q_g (Tess.CellOri[crystal], g);
+    for (j = 0; j < 3; j++)
+      ut_array_1d_memcpy (g[j], 3, rad + 1 + 3 * j);
+
+    if (!strcmp (Tess.CellCrySym, "cubic"))
+    {
+      rad[0] = .80599597700823431925 * TessData[5].Rad[crystal];
+      nev_print_png_cube (file, coo, rad, texture, TessData[5].BRad, bordertexture);
+    }
+    else if (!strcmp (Tess.CellCrySym, "hexagonal"))
+    {
+      // .99575107876767219668 = pow (4 * M_PI / (9 * sqrt (2)), 1. / 3)
+      rad[0] = 0.99575107876767219668 * TessData[5].Rad[crystal]; // inner radius
+      nev_print_png_hcp (file, coo, rad, texture, TessData[5].BRad, bordertexture);
+    }
+    else
+    {
+      rad[0] = TessData[5].Rad[crystal];
+      char *string = ut_alloc_1d_char (100);
+      sprintf (string, "%.12f", TessData[5].Rad[crystal]);
+      nev_print_png_sphere (file, coo, string, texture);
+      ut_free_1d_char (&string);
+    }
+    ut_free_1d_char (&string);
+    ut_free_1d (&coo);
+    ut_free_1d (&rad);
+    ol_g_free (g);
+    ut_free_1d_char (&bordertexture);
+  }
+
   ut_free_1d_int (&polylist);
   ut_free_1d_int (&polyfacelist);
   ut_free_1d_int (&facelist);
   ut_free_1d_int (&edgelist);
   ut_free_1d_int (&verlist);
   ut_free_1d_int (&seedlist);
+  ut_free_1d_int (&crystallist);
   ut_free_1d_int (&neigh);
   ut_free_1d_char (&texture);
 

@@ -34,7 +34,7 @@ nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
   else if (!strcmp (argv[(*pi)], "-showcell"))
   {
     if (Tess.Dim > 0)
-      nev_show_tess_cell (argv, pi, Tess, pPrint);
+      nev_show_tess_entity (argv, pi, Tess, "cell", pPrint);
     else if (Tesr.Dim > 0)
       nev_show_tesr_cell (argv, pi, Tesr, pPrint);
     else
@@ -44,7 +44,15 @@ nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
   else if (!strcmp (argv[(*pi)], "-showseed"))
   {
     if (Tess.Dim > 0)
-      nev_show_tess_seed (argv, pi, Tess, pPrint);
+      nev_show_tess_entity (argv, pi, Tess, "seed", pPrint);
+    else
+      ut_print_message (2, 0, "Cannot process `%s'.\n", argv[(*pi)]);
+  }
+
+  else if (!strcmp (argv[(*pi)], "-showcrystal"))
+  {
+    if (Tess.Dim > 0)
+      nev_show_tess_entity (argv, pi, Tess, "crystal", pPrint);
     else
       ut_print_message (2, 0, "Cannot process `%s'.\n", argv[(*pi)]);
   }
@@ -52,7 +60,7 @@ nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
   else if (!strcmp (argv[(*pi)], "-showver"))
   {
     if (Tess.Dim > 0)
-      nev_show_tess_ver (argv, pi, Tess, pPrint);
+      nev_show_tess_entity (argv, pi, Tess, "ver", pPrint);
     else
       ut_print_message (2, 0, "Cannot process `%s'.\n", argv[(*pi)]);
   }
@@ -60,7 +68,7 @@ nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
   else if (!strcmp (argv[(*pi)], "-showedge"))
   {
     if (Tess.Dim >= 1)
-      nev_show_tess_edge (argv, pi, Tess, pPrint);
+      nev_show_tess_entity (argv, pi, Tess, "edge", pPrint);
     else if (Tesr.Dim > 0)
       nev_show_tesr_edge (argv, pi, pPrint);
     else
@@ -70,7 +78,7 @@ nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
   else if (!strcmp (argv[(*pi)], "-showface"))
   {
     if (Tess.Dim >= 2)
-      nev_show_tess_face (argv, pi, Tess, pPrint);
+      nev_show_tess_entity (argv, pi, Tess, "face", pPrint);
     else if (Tesr.Dim == 2)
       nev_show_tesr_cell (argv, pi, Tesr, pPrint);
     else
@@ -80,7 +88,7 @@ nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
   else if (!strcmp (argv[(*pi)], "-showpoly"))
   {
     if (Tess.Dim == 3)
-      nev_show_tess_poly (argv, pi, Tess, pPrint);
+      nev_show_tess_entity (argv, pi, Tess, "poly", pPrint);
     else if (Tesr.Dim == 3)
       nev_show_tesr_cell (argv, pi, Tesr, pPrint);
     else
@@ -118,7 +126,7 @@ nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
   // point -------------------------------------------------------------
 
   else if (!strcmp (argv[(*pi)], "-showpoint"))
-    nev_show_points (argv, pi, Point, pPrint);
+    nev_show_points (argv, pi, Point, &(*pPrint).showpoint);
 
   neut_part_free (Part);
 

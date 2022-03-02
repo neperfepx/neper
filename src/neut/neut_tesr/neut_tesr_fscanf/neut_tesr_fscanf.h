@@ -11,6 +11,7 @@ extern "C"
 #define NEUT_TESR_FSCANF_H
 
   extern void neut_tesr_fnscanf (char *, struct TESR *);
+  extern void neut_tesr_fscanf (FILE *, char *, double *, double *, struct TESR *);
 
 #endif				/* NEUT_TESR_FSCANF_H */
 

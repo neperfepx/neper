@@ -10,10 +10,8 @@
 
 #include "nev_data_tesr.h"
 
-extern void nev_data_tesr_cell (struct SIM Sim, struct TESR *pTesr, struct DATA *pTD,
-				      char *type, char *argument);
-extern void nev_data_tesr_vox (struct SIM Sim, struct TESR *pTesr, struct DATA *pTD,
-                                     char *prop, char *argument);
+extern void nev_data_tesr_gen (struct SIM Sim, struct TESR *pTesr, struct DATA *pTD,
+				      char *entity, char *type, char *argument);
 
 extern void nev_data_tesr_edge (struct DATA *pData, char *attribute, char *datastring);
 

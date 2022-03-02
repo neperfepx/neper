@@ -18,6 +18,8 @@ nes_in_set_zero (struct IN_S *pIn)
   (*pIn).entities = NULL;
   (*pIn).entityresexpr = NULL;
 
+  (*pIn).stepqty = -1; // uninitialized
+
   return;
 }
 
@@ -34,19 +36,21 @@ nes_in_free (struct IN_S *pIn)
   ut_free_2d_char (&(*pIn).entities, (*pIn).entityqty);
   ut_free_2d_char (&(*pIn).entityresexpr, (*pIn).entityqty);
 
+  nes_in_set_zero (pIn);
+
   return;
 }
 
 void
-nes_loadtess (struct SIM Sim, struct TESS *pTess, int verbosity)
+nes_loadtess (struct SIM *pSim, struct TESS *pTess, int verbosity)
 {
-  char *filename = ut_string_paste3 (Sim.simdir, "/inputs/", Sim.tess);
+  char *filename = ut_string_paste3 ((*pSim).simdir, "/inputs/", (*pSim).tess);
   FILE *file = NULL;
 
-  if (Sim.tess && ut_file_exist (filename))
+  if ((*pSim).tess && ut_file_exist (filename))
   {
     if (verbosity)
-      ut_print_message (0, verbosity + 1, "%s...\n", Sim.tess);
+      ut_print_message (0, verbosity + 1, "%s...\n", (*pSim).tess);
 
     file = ut_file_open (filename, "R");
     neut_tess_fscanf (file, pTess);
@@ -55,27 +59,60 @@ nes_loadtess (struct SIM Sim, struct TESS *pTess, int verbosity)
   else
     neut_tess_set_zero (pTess);
 
+  (*pTess).pSim = pSim;
+
   ut_free_1d_char (&filename);
 
   return;
 }
 
 void
-nes_loadmesh (struct SIM Sim, struct NODES *pNodes, struct MESH *Mesh,
-              int verbosity)
+nes_loadtesr (struct SIM *pSim, struct TESR *pTesr, int verbosity)
 {
-  char *filename = ut_string_paste3 (Sim.simdir, "/inputs/", Sim.msh);
+  char *filename = ut_string_paste3 ((*pSim).simdir, "/inputs/", (*pSim).tesr);
+  char *dirname = ut_string_paste ((*pSim).simdir, "/inputs/");
   FILE *file = NULL;
 
-  if (Sim.msh && ut_file_exist (filename))
+  if ((*pSim).tesr && ut_file_exist (filename))
   {
     if (verbosity)
-      ut_print_message (0, verbosity + 1, "%s...\n", Sim.msh);
+      ut_print_message (0, verbosity + 1, "%s...\n", (*pSim).tesr);
+
+    file = ut_file_open (filename, "R");
+    neut_tesr_fscanf (file, dirname, NULL, NULL, pTesr);
+    ut_file_close (file, filename, "R");
+  }
+  else
+    neut_tesr_set_zero (pTesr);
+
+  (*pTesr).pSim = pSim;
+
+  ut_free_1d_char (&filename);
+  ut_free_1d_char (&dirname);
+
+  return;
+}
+
+void
+nes_loadmesh (struct SIM *pSim, struct NODES *pNodes, struct MESH *Mesh,
+              int verbosity)
+{
+  int i;
+  char *filename = ut_string_paste3 ((*pSim).simdir, "/inputs/", (*pSim).msh);
+  FILE *file = NULL;
+
+  if ((*pSim).msh && ut_file_exist (filename))
+  {
+    if (verbosity)
+      ut_print_message (0, verbosity + 1, "%s...\n", (*pSim).msh);
 
     file = ut_file_open (filename, "R");
     neut_mesh_fscanf_msh (file, pNodes, Mesh, Mesh +1, Mesh + 2, Mesh + 3, NULL, NULL);
     ut_file_close (file, filename, "R");
   }
+
+  for (i = 0; i <= 4; i++)
+    Mesh[i].pSim = pSim;
 
   ut_free_1d_char (&filename);
 

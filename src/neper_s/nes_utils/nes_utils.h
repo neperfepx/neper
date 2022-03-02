@@ -13,9 +13,11 @@ extern "C"
   extern void nes_in_free (struct IN_S *pIn);
   extern void nes_in_addres (char *opt, char *resexpr, struct IN_S *pIn);
 
-  extern void nes_loadtess (struct SIM Sim, struct TESS *pTess, int verbosity);
+  extern void nes_loadtess (struct SIM *pSim, struct TESS *pTess, int verbosity);
 
-  extern void nes_loadmesh (struct SIM Sim, struct NODES *pNodes,
+  extern void nes_loadtesr (struct SIM *pSim, struct TESR *pTesr, int verbosity);
+
+  extern void nes_loadmesh (struct SIM *pSim, struct NODES *pNodes,
                             struct MESH *Mesh, int verbosity);
 
   extern void nes_loadconfig (struct SIM Sim, char ***pGroupCrySym, int *pGroupQty, int verbosity);

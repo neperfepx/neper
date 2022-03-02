@@ -8,8 +8,8 @@ void
 neut_data_set_default (struct DATA *pData)
 {
   (*pData).Qty = 0;
-  (*pData).Dim= 0;
-  (*pData).type= NULL;
+  (*pData).Dim = 0;
+  (*pData).Entity = NULL;
 
   (*pData).ColData = NULL;
   (*pData).ColDataType = NULL;
@@ -52,6 +52,20 @@ neut_data_set_default (struct DATA *pData)
 
   (*pData).Label = NULL;
   (*pData).FontSize = -1;
+
+  return;
+}
+
+void
+neut_datainput_set_default (struct DATAINPUT *pDataInput)
+{
+  (*pDataInput).input = NULL;
+  (*pDataInput).pSim = NULL;
+  (*pDataInput).pTess = NULL;
+  (*pDataInput).pTesr = NULL;
+  (*pDataInput).pNodes = NULL;
+  (*pDataInput).pMesh = NULL;
+  (*pDataInput).pPoints = NULL;
 
   return;
 }

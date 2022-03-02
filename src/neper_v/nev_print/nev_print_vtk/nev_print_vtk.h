@@ -2,6 +2,6 @@
 /* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nev_print_vtk (char *basename, struct PRINT *pPrint,
+extern void nev_print_vtk (char *basename, struct PRINT Print,
                            struct SIM Sim, struct NODES Nodes, struct MESH *Mesh,
                            struct DATA *pNodeData, struct DATA *MeshData);

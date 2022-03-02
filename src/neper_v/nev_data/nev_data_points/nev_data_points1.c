@@ -12,23 +12,22 @@ nev_data_points (struct SIM Sim, struct POINT *pPoint, struct TESS *pTess,
 {
   char *datatype = NULL, *datavalue = NULL;
 
-  ut_print_message (0, 1, "Reading data (%s, %s)...\n", "point", attribute);
+  struct DATAINPUT DataInput;
+  neut_datainput_set_default (&DataInput);
+  ut_string_string (!strcmp (entity, "crystal") ? "tess" : "points", &DataInput.input);
+  DataInput.pSim = &Sim;
+  DataInput.pTess = pTess;
+  DataInput.pNodes = pNodes;
+  DataInput.pMesh = pMesh;
+  DataInput.pPoints = pPoint;
 
-  neut_data_datastring_type_value ("points", attribute, datastring, &datatype, &datavalue);
+  ut_print_message (0, 1, "Reading data (%s, %s)...\n", entity, attribute);
+
+  neut_data_datastring_type_value (entity, attribute, datastring, &datatype, &datavalue);
 
   if (!strcmp (entity, "point"))
   {
-    if (!strcmp (attribute, "col"))
-      neut_data_fscanf_col (Sim, pTess, pNodes, pMesh, pPoint, "points", "point", 0,
-                           (*pPoint).PointQty, datatype, datavalue, pData);
-
-    else if (!strcmp (attribute, "trs"))
-      neut_data_fscanf_trs ((*pPoint).PointQty, datatype, datavalue, pData);
-
-    else if (!strcmp (attribute, "rad"))
-      neut_data_fscanf_rad ((*pPoint).PointQty, datatype, datavalue, pData);
-
-    else if (!strcmp (attribute, "colscheme"))
+    if (!strcmp (attribute, "colscheme"))
       ut_string_string (datastring, &(*pData).ColScheme);
 
     else if (!strcmp (attribute, "scale"))
@@ -45,7 +44,8 @@ nev_data_points (struct SIM Sim, struct POINT *pPoint, struct TESS *pTess,
       (*pData).CooFact = atof (datavalue);
 
     else
-      ut_print_exprbug (attribute);
+      neut_data_fscanf_general (DataInput, entity, 0, (*pPoint).PointQty, attribute,
+                            datatype, datavalue, pData);
   }
 
   else if (!strcmp (entity, "pointedge"))

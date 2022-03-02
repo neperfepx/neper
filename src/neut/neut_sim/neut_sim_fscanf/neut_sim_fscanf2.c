@@ -266,11 +266,44 @@ neut_sim_fscanf_orispace (struct SIM *pSim, FILE *file)
 void
 neut_sim_fscanf_step (struct SIM *pSim, FILE *file)
 {
+  int i, id, level, printedqty;
+  char *string = ut_alloc_1d_char (1000);
+
   ut_file_skip (file, 1);
 
   if (fscanf (file, "%d", &(*pSim).StepQty) != 1)
       abort ();
-  (*pSim).StepState = ut_alloc_1d_int ((*pSim).StepQty);
+
+  while (!ut_file_nextstring_sectionlevel (file, &level) && level == 1)
+  {
+    ut_file_nextstring (file, string);
+
+    if (!strcmp (string, "*printed"))
+    {
+      (*pSim).StepState = ut_alloc_1d_int ((*pSim).StepQty + 1);
+
+      ut_file_skip (file, 1);
+      if (fscanf (file, "%d", &printedqty) != 1)
+        abort ();
+      for (i = 1; i <= printedqty; i++)
+      {
+        if (fscanf (file, "%d", &id) != 1)
+          abort ();
+        (*pSim).StepState[id] = 1;
+      }
+    }
+
+    else
+      ut_print_message (2, 2, "Could not read field `%s'.\n", string);
+  }
+
+  if (!(*pSim).StepState)
+  {
+    (*pSim).StepState = ut_alloc_1d_int ((*pSim).StepQty + 1);
+    ut_array_1d_int_set ((*pSim).StepState, (*pSim).StepQty + 1, 1);
+  }
+
+  ut_free_1d_char (&string);
 
   return;
 }

@@ -23,11 +23,8 @@ nev_data_tesr (struct SIM Sim, struct TESR *pTesr, char *entity, char *attribute
     pData = &TesrDataCell;
   }
 
-  if (!strcmp (entity, "cell"))
-    nev_data_tesr_cell (Sim, pTesr, pData, attribute, datastring);
-
-  else if (!strcmp (entity, "vox"))
-    nev_data_tesr_vox (Sim, pTesr, pData, attribute, datastring);
+  if (!strcmp (entity, "cell") || !strcmp (entity, "vox"))
+    nev_data_tesr_gen (Sim, pTesr, pData, entity, attribute, datastring);
 
   else if (!strcmp (entity, "edge"))
     nev_data_tesr_edge (pData, attribute, datastring);

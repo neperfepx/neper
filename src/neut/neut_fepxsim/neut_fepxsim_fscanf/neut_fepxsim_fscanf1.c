@@ -48,6 +48,7 @@ neut_fepxsim_fscanf (char *dir, struct FEPXSIM *pFSim, char *mode)
         abort ();
 
       (*pFSim).StepState = ut_alloc_1d_int ((*pFSim).StepQty + 1);
+      ut_array_1d_int_set ((*pFSim).StepState, (*pFSim).StepQty + 1, 1);
     }
     else if (!strcmp (var, "printed_steps"))
     {
@@ -55,12 +56,12 @@ neut_fepxsim_fscanf (char *dir, struct FEPXSIM *pFSim, char *mode)
 
       ut_file_nextlinenbwords (file, &qty);
 
-      ut_array_1d_int_set ((*pFSim).StepState + 1, (*pFSim).StepQty, -1);
+      ut_array_1d_int_set ((*pFSim).StepState, (*pFSim).StepQty + 1, 0);
       for (i = 0; i < qty; i++)
       {
         if (fscanf (file, "%d", &step) != 1)
           abort ();
-        (*pFSim).StepState[step] = 0;
+        (*pFSim).StepState[step] = 1;
       }
     }
     else if (!strcmp (var, "number_of_partitions"))

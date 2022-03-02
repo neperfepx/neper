@@ -18,6 +18,8 @@ extern void neut_data_mesh2slice_nodes (struct DATA NodeData, struct NODES SNode
                                         int **node_newold, double *node_fact,
                                         struct DATA *pSNodeData);
 
+extern void neut_datainput_set_default (struct DATAINPUT *pDataInput);
+
 #endif				/* NEUT_DATA_OP_H */
 
 #ifdef __cplusplus

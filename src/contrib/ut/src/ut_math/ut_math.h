@@ -56,6 +56,8 @@ extern "C"
   extern int ut_math_derivative_onesided (double *v, int order_acc,
                                           double *pres);
 
+  extern int ut_math_eval_exprislogical (char *string);
+
 #endif                          /* UT_MATH_H */
 
 #ifdef __cplusplus

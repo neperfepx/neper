@@ -16,7 +16,6 @@ extern "C"
   extern void neut_tesr_entity_qty (struct TESR Tesr, char *entity,
 				    int *pqty);
 
-  extern void neut_tesr_var_list (char *entity, char ***pvar, int *pvarqty);
   extern int neut_tesr_expr_val (struct TESR Tesr, char *entity,
 				     int id, char *expr, double **pvals, int *pvalqty, char **ptype);
   extern int neut_tesr_expr_val_one (struct TESR Tesr, char *entity,
@@ -52,6 +51,10 @@ extern "C"
   extern int neut_tesr_cellid_cell (struct TESR Tesr, int cellid, int *pcell);
 
   extern int neut_tesr_cell_id (struct TESR Tesr, int cell);
+
+  extern int neut_tesr_cell_ori (struct TESR Tesr, int cell, double *q);
+
+  extern int neut_tesr_cell_gos (struct TESR Tesr, int cell, double *q);
 
 #endif				/* NEUT_TESR_GEN_H */
 

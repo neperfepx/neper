@@ -5,7 +5,7 @@
 #include"nev_print_png_point_.h"
 
 void
-nev_print_png_point (FILE * file, struct POINT Point, struct DATA PointData,
+nev_print_png_point (FILE * file, char *entity, struct POINT Point, struct DATA PointData,
                  struct PRINT Print)
 {
   int i, point_qty, printpoint_qty, size;
@@ -13,10 +13,16 @@ nev_print_png_point (FILE * file, struct POINT Point, struct DATA PointData,
   char *texture = NULL, *bordertexture = NULL;
   int *hidden = NULL;
   double *data = ut_alloc_1d (12);
+  int *show = NULL;
+
+  if (strstr (entity, "point"))
+    show = Print.showpoint;
+  else if (strstr (entity, "crystal"))
+    show = Print.showcrystal;
 
   neut_data_type_size (PointData.RadDataType, &size);
 
-  point_qty = ut_array_1d_int_sum (Print.showpoint + 1, Point.PointQty);
+  point_qty = ut_array_1d_int_sum (show + 1, Point.PointQty);
   if (point_qty == 0)
     return;
 
@@ -36,7 +42,7 @@ nev_print_png_point (FILE * file, struct POINT Point, struct DATA PointData,
   ut_string_string ("pointedge", &bordertexture);
 
   for (i = 1; i <= Point.PointQty; i++)
-    if (Print.showpoint[i])
+    if (show[i])
     {
       fprintf (file,
                "#declare point%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f} }\n",

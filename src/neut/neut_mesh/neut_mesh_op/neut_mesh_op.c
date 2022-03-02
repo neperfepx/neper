@@ -149,6 +149,8 @@ neut_mesh_set_zero (struct MESH *pMesh)
 
   (*pMesh).ElsetGroup = NULL;
 
+  (*pMesh).pSim = NULL;
+
   return;
 }
 

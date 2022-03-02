@@ -66,4 +66,6 @@ extern int neut_sim_entity_internal (char *entity);
 
 extern int neut_sim_entity_parent (struct SIM Sim, char *entity, char **pparent);
 
+extern int neut_sim_entity_id_res_val (struct SIM Sim, char *entity, int id, char *res, double *pval);
+
 #endif /* NEUT_SIM_GEN_H */

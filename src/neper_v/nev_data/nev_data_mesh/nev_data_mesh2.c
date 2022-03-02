@@ -67,11 +67,15 @@ nev_data_mesh_elt (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes,
                           int dim, int entityqty, char *attribute, char *type,
                           char *value, struct DATA *pData)
 {
-  if (!strcmp (attribute, "col"))
-    neut_data_fscanf_col (Sim, pTess, pNodes, pMesh, NULL, "mesh", entity, dim,
-                         entityqty, type, value, pData);
+  struct DATAINPUT DataInput;
+  neut_datainput_set_default (&DataInput);
+  ut_string_string ("mesh", &DataInput.input);
+  DataInput.pSim = &Sim;
+  DataInput.pTess = pTess;
+  DataInput.pNodes = pNodes;
+  DataInput.pMesh = pMesh;
 
-  else if (!strcmp (attribute, "rad"))
+  if (!strcmp (attribute, "rad"))
     nev_data_mesh_elt_rad (value, pData);
 
   else if (!strcmp (attribute, "colscheme"))
@@ -84,7 +88,8 @@ nev_data_mesh_elt (struct SIM Sim, struct TESS *pTess, struct NODES *pNodes,
     ut_string_string (value, &(*pData).ScaleTitle);
 
   else
-    ut_print_exprbug (attribute);
+    neut_data_fscanf_general (DataInput, entity, dim, entityqty, attribute, type,
+        value, pData);
 
   return;
 }

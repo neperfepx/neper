@@ -25,7 +25,9 @@ neut_tesr_fprintf (FILE * file, char *format, struct TESR Tesr)
   neut_tesr_fprintf_cell (file, Tesr);
   neut_tesr_fprintf_data (file, format2, Tesr);
   if (Tesr.VoxOri)
-    neut_tesr_fprintf_oridata (file, format, Tesr);
+    neut_tesr_fprintf_oridata (file, format2, Tesr);
+  if (Tesr.VoxOriDef)
+    neut_tesr_fprintf_oridef (file, "ascii", Tesr);
   neut_tesr_fprintf_foot (file);
 
   ut_free_1d_char (&format2);

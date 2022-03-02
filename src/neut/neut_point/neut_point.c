@@ -84,44 +84,6 @@ neut_point_bbox (struct POINT Point, double **bbox)
   return;
 }
 
-void
-neut_point_var_list (char ***pvar, int *pvarqty)
-{
-  int id = 0;
-
-  (*pvarqty) = 6;
-  (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
-  strcpy ((*pvar)[id++], "id");
-  strcpy ((*pvar)[id++], "x");
-  strcpy ((*pvar)[id++], "y");
-  strcpy ((*pvar)[id++], "z");
-  strcpy ((*pvar)[id++], "poly");
-  strcpy ((*pvar)[id++], "cell");
-
-  return;
-}
-
-void
-neut_point_var_list_mesh (char ***pvar, int *pvarqty)
-{
-  int id = 0;
-
-  (*pvarqty) = 10;
-  (*pvar) = ut_alloc_2d_char (*pvarqty, 20);
-  strcpy ((*pvar)[id++], "id");
-  strcpy ((*pvar)[id++], "x");
-  strcpy ((*pvar)[id++], "y");
-  strcpy ((*pvar)[id++], "z");
-  strcpy ((*pvar)[id++], "elt");
-  strcpy ((*pvar)[id++], "elset");
-  strcpy ((*pvar)[id++], "2dmeshp");
-  strcpy ((*pvar)[id++], "2dmeshd");
-  strcpy ((*pvar)[id++], "2dmeshv");
-  strcpy ((*pvar)[id++], "2dmeshn");
-
-  return;
-}
-
 int
 neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
                     struct NODES Nodes, struct MESH Mesh, char *var,
@@ -291,9 +253,14 @@ neut_point_entity_expr_val (struct POINT Point, struct TESS Tess, struct NODES N
   char *type = NULL;
 
   if (ptype)
-    ut_string_string ("%d", ptype);
+  {
+    if (strstr (expr, "."))
+      ut_string_string ("%f", ptype);
+    else
+      ut_string_string ("%d", ptype);
+  }
 
-  neut_point_var_list (&vars, &varqty);
+  ut_math_vars (expr, &vars, &varqty);
   vals = ut_alloc_1d (varqty);
 
   if (ut_string_isfilename (expr))
@@ -301,22 +268,22 @@ neut_point_entity_expr_val (struct POINT Point, struct TESS Tess, struct NODES N
     file = ut_file_open (expr, "R");
     ut_array_1d_fscanf (file, val + 1, Point.PointQty);
     ut_file_close (file, expr, "R");
+    ut_string_string ("%f", ptype);
   }
   else
   {
     for (j = 1; j <= Point.PointQty; j++)
     {
       for (k = 0; k < varqty; k++)
-        if (strstr (expr, vars[k]))
-        {
-          if (!strcmp (vars[k], "default"))
-            vals[k] = val[j];
+      {
+        if (!strcmp (vars[k], "default"))
+          vals[k] = val[j];
 
-          neut_point_var_val_one (Point, Tess, Nodes, Mesh, j, vars[k],
-                                  vals + k, &type);
-          if (ptype && !strcmp (type, "%f"))
-            ut_string_string ("%f", ptype);
-        }
+        neut_point_var_val_one (Point, Tess, Nodes, Mesh, j, vars[k],
+                                vals + k, &type);
+        if (ptype && !strcmp (type, "%f"))
+          ut_string_string ("%f", ptype);
+      }
 
       status = ut_math_eval (expr, varqty, vars, vals, val + j);
       if (status == -1)

@@ -2,7 +2,7 @@
 /* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nev_print_png (char *basename, struct PRINT *pPrint, struct SIM Sim,
+extern void nev_print_png (char *basename, struct PRINT Print, struct SIM Sim,
                            struct TESS Tess,
                            struct DATA *TessData, struct TESR Tesr,
                            struct DATA *pTesrData, struct NODES Nodes,

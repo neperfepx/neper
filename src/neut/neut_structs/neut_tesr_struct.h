@@ -14,7 +14,6 @@ extern "C"
   {
     // GENERAL INFORMATION -----------------------------------------------
     double *Origin;             // origin (absolute coordinates)
-    int hasvoid;                // has void voxels? 0 or 1
 
     int Dim;			// Dimension
     int CellQty;		// number of polyhedra
@@ -23,9 +22,6 @@ extern "C"
     char **CellOriDistrib;      // [1...CellQty], NULL if uninitialized
     char *CellOriDes;
     int ***CellBBox;		// bbox of a cell [cell][0...2][0,1]
-    double **CellCoo;		// centroids of the cells (absolute coordinates)
-    double *CellVol;		// volumes/areas of the cells
-    double *CellConvexity;      // Convexity of the cells
 
     // Group of the cells [1...CellQty]
     int *CellGroup;
@@ -53,6 +49,14 @@ extern "C"
     double ****VoxOri;		// VoxOri[i][j][k]: ori of point at
     // position i, j, k, with i in [1...size[0]],
     // j in [1...size[1]] and k in [1...size[2]]
+
+    int ***VoxOriDef;		// VoxOriDef[i][j][k]: 1 of ori defined, 0 otherwise
+
+    // pointer to SIM structure
+    struct SIM *pSim;
+
+    // internal, not written to file, computed upon parsing
+    int hasvoid;                // has void voxels? 0 or 1
   };
   typedef struct TESR TESR;
 

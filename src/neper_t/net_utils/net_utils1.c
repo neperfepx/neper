@@ -674,7 +674,7 @@ net_tess_crop_expr (struct TESS *pTess, char *crop)
     ut_string_function_expr (crop2, &fct, &exprs, &exprqty);
 
     if (exprqty != 6)
-      ut_print_message (2, 2, "Failed to parse expression `%s'.\n", crop2);
+      ut_print_message (2, 3, "Failed to parse expression `%s'.\n", crop2);
 
     for (i = 0; i < 3; i++)
       for (j = 0; j < 2; j++)
@@ -686,7 +686,7 @@ net_tess_crop_expr (struct TESS *pTess, char *crop)
   }
 
   else
-    ut_print_message (2, 2, "Failed to parse expression `%s'.\n", crop2);
+    ut_print_message (1, 3, "Skipping expression `%s' for tess.\n", crop2);
 
   ut_free_1d_char (&fct);
   ut_free_2d_char (&exprs, exprqty);

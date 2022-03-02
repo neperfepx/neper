@@ -138,6 +138,7 @@ add_library(neut
 ./neut_tess/neut_tess_gen/neut_tess_gen.c
 ./neut_tesse/neut_tesse_op/neut_tesse_op1.c
 ./neut_tess/neut_tess_sim/neut_tess_sim.c
+./neut_tess/neut_tess_crystal/neut_tess_crystal.c
 ./neut_mtess/neut_mtess_op/neut_mtess_op1.c
 ./neut_mtess/neut_mtess_topo/neut_mtess_topo1.c
 ./neut_mtess/neut_mtess_gen/neut_mtess_gen1.c
@@ -155,7 +156,8 @@ add_library(neut
 ./neut_tesr/neut_tesr_geom/neut_tesr_geom2.c
 ./neut_tesr/neut_tesr_ori/neut_tesr_ori1.c
 ./neut_tesr/neut_tesr_ori/neut_tesr_ori2.c
-./neut_tesr/neut_tesr_gen/neut_tesr_gen1.c
+./neut_tesr/neut_tesr_gen/neut_tesr_gen.c
+./neut_tesr/neut_tesr_sim/neut_tesr_sim.c
 ./neut_crys/neut_crys.c
 ./neut_topt/neut_topt.c
 ./neut_sopt/neut_sopt.c

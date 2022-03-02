@@ -62,3 +62,28 @@ nes_pproc_entity_builtin_elsets (struct SIM *pSim, struct TESS Tess,
 
   return 0;
 }
+
+int
+nes_pproc_entity_builtin_cells (struct SIM *pSim, struct TESS Tess,
+                                struct TESR Tesr, char *entity, char *res)
+{
+  struct SIMRES SimRes;
+
+  neut_simres_set_zero (&SimRes);
+  neut_sim_simres (*pSim, entity, res, &SimRes);
+
+  if (!strcmp (res, "ori"))
+    nes_pproc_entity_builtin_cells_ori (pSim, Tess, Tesr, entity, res,
+                                        &SimRes);
+
+  else if (!strcmp (res, "gos"))
+    nes_pproc_entity_builtin_cells_gos (pSim, Tess, Tesr, entity, res,
+                                        &SimRes);
+
+  else
+    abort ();
+
+  neut_simres_free (&SimRes);
+
+  return 0;
+}
