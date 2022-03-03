@@ -82,8 +82,10 @@ _neper_completions() {
   -datafacecol -datafacecolscheme -datafacetrs -datafacescale -datafacescaletitle \
   -dataedgerad -dataedgecol -dataedgecolscheme -dataedgetrs -dataedgescale \
   -dataedgescaletitle -dataverrad -datavercol -datavercolscheme -datavertrs \
-  -dataverscale -dataverscaletitle -dataseedrad -dataseedcol -dataseedcolscheme \
-  -dataseedscale -dataseedscaletitle -datavoxcol -datavoxcolscheme -datavoxscale \
+  -dataverscale -dataverscaletitle -dataseedrad -dataseedtrs -dataseedcol -dataseedcolscheme \
+  -dataseedscale -dataseedscaletitle -datacrystalrad -datacrystaltrs -datacrystalcol
+  -datacrystalcolscheme -datacrystalscale -datacrystalscaletitle \
+  -datavoxcol -datavoxcolscheme -datavoxscale \
   -datavoxscaletitle -datavoxedgerad -datavoxedgecol -datavoidvoxcol -dataedgerad \
   -dataelt3dcol -dataelt3dcolscheme -dataelt3dscale -dataelt3dscaletitle \
   -dataelt3dedgerad -dataelt3dedgecol \
@@ -108,7 +110,7 @@ _neper_completions() {
   -slicemesh \
 
   -showtess -showtesr -showmesh -showmeshslice -showpoint -showcell -showpoly \
-  -showface -showedge -showver -showseed -showfaceinter -showvox -showvoidvox \
+  -showface -showedge -showver -showseed -showcrystal -showfaceinter -showvox -showvoidvox \
   -showedge -showelt3d -showelt2d -showelt1d -showelt0d -shownode -showcsys \
 
   -cameracoo -cameralookat -cameraangle -camerasky -cameraprojection \
