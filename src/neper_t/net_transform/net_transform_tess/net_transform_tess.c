@@ -47,7 +47,7 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
 
     else if (!strncmp (parts[i], "cut", 3))
     {
-      ut_print_message (1, 2, "Cutting (experimental)...\n");
+      ut_print_message (0, 2, "Cutting (experimental)...\n");
       net_transform_tess_cut (parts[i], *pDom, pTess);
     }
 

@@ -561,7 +561,7 @@ net_tess_opt_init_domain (struct IN_T In, struct TESS PTess, int cell,
 
   for (i = 0; i < partqty; i++)
     if (!strncmp (parts[i], "cut", 3))
-      net_transform_tess_cut_pre_prim (parts[i], &(*pTOpt).Prim, &(*pTOpt).PrimQty);
+      net_transform_tess_cut_pre_prim (parts[i], &(*pTOpt).Prim, &(*pTOpt).PrimQty, 0);
 
   ut_free_2d_char (&parts, partqty);
 

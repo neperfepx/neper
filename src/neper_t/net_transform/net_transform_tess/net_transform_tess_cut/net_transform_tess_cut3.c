@@ -6,31 +6,69 @@
 #include"net_transform_tess_cut_.h"
 
 void
-net_transform_tess_cut_pre_prim (char *expr, struct PRIM **pPrim, int *pPrimQty)
+net_transform_tess_cut_pre_prim (char *expr, struct PRIM **pPrim, int *pPrimQty, int verbosity)
 {
-  int i, status;
-  char *fct = NULL;
-  char **exprs = NULL;
+  int i, j, status, qty, qty2;
+  char *fct = NULL, *fct2 = NULL;
+  char **tmp = NULL, **tmp2 = NULL;
+  char **prim = NULL;
 
-  ut_string_function (expr, &fct, NULL, &exprs, pPrimQty);
+  ut_string_function (expr, &fct, NULL, &tmp, &qty);
 
   if (strcmp (fct, "cut"))
     abort ();
+
+  (*pPrimQty) = 0;
+  for (i = 0; i < qty; i++)
+  {
+    if (strncmp (tmp[i], "cubei", 5))
+    {
+      prim = ut_realloc_1d_pchar_null (prim, ++(*pPrimQty), 1);
+      ut_string_string (tmp[i], prim + (*pPrimQty) - 1);
+    }
+    else
+    {
+      char **tmp0 = ut_alloc_2d_char (6, 1000);
+      ut_string_function (tmp[i], &fct2, NULL, &tmp2, &qty2);
+      if (qty2 != 6)
+        ut_print_exprbug (tmp[i]);
+
+      sprintf (tmp0[0], "hspace(%g,-1,0,0)", -atof (tmp2[0]));
+      sprintf (tmp0[1], "hspace(%g,1,0,0)", atof (tmp2[1]));
+      sprintf (tmp0[2], "hspace(%g,0,-1,0)", -atof (tmp2[2]));
+      sprintf (tmp0[3], "hspace(%g,0,1,0)", atof (tmp2[3]));
+      sprintf (tmp0[4], "hspace(%g,0,0,-1)", -atof (tmp2[4]));
+      sprintf (tmp0[5], "hspace(%g,0,0,1)", atof (tmp2[5]));
+
+      for (j = 0; j < 6; j++)
+      {
+        prim = ut_realloc_1d_pchar_null (prim, ++(*pPrimQty), 1);
+        ut_string_string (tmp0[j], prim + (*pPrimQty) - 1);
+      }
+      ut_free_2d_char (&tmp0, 6);
+    }
+  }
 
   (*pPrim) = calloc (*pPrimQty, sizeof (struct PRIM));
 
   for (i = 0; i < *pPrimQty; i++)
   {
     neut_prim_set_zero (*pPrim + i);
-    status = neut_prim_sscanf (exprs[i], *pPrim + i);
+    status = neut_prim_sscanf (prim[i], *pPrim + i);
     if (status == 0)
-      ut_print_message (0, 3, "%s...\n", exprs[i]);
+    {
+      if (verbosity > 0)
+        ut_print_message (0, 3, "%s...\n", prim[i]);
+    }
     else
-      ut_print_message (2, 3, "Parsing argument `%s' failed\n", exprs[i]);
+      ut_print_exprbug (prim[i]);
   }
 
   ut_free_1d_char (&fct);
-  ut_free_2d_char (&exprs, *pPrimQty);
+  ut_free_1d_char (&fct2);
+  ut_free_2d_char (&tmp, qty);
+  ut_free_2d_char (&tmp2, qty2);
+  ut_free_2d_char (&prim, *pPrimQty);
 
   return;
 }
@@ -51,7 +89,14 @@ net_transform_tess_cut_clean_remove (struct PRIM Prim, int *seeds,
   ut_string_string ("cut", &(*pTess).DomType);
   *pnewdomface = (*pTess).DomFaceQty;
 
-  ut_string_string (Prim.Type, (*pTess).DomFaceType + *pnewdomface);
+  if (strcmp (Prim.Type, "hspace"))
+    ut_string_string (Prim.Type, (*pTess).DomFaceType + *pnewdomface);
+  else
+  {
+    ut_string_string ("plane", (*pTess).DomFaceType + *pnewdomface);
+    ut_array_1d_memcpy (Prim.Eq, 4, (*pTess).DomFaceEq[*pnewdomface]);
+    ut_array_1d_scale ((*pTess).DomFaceEq[*pnewdomface], 4, -1);
+  }
 
   (*pTess).DomFaceParmQty[*pnewdomface] = Prim.ParmQty;
   (*pTess).DomFaceParms[*pnewdomface] =

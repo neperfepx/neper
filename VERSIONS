@@ -1,4 +1,5 @@
-New in 4.4.1-1 (03 Mar 2022):
+New in 4.4.1-2 (08 Mar 2022):
+- module -T: added -transform cubei.
 - Made minor fix.
 
 New in 4.4.0 (02 Mar 2022):
