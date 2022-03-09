@@ -155,7 +155,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V AlLi-load.tesr -datacellcol ori -print AlLi-ori
 </pre></div>
 </div>
-<img alt="tutorials/tesr_mesh/AlLi-ori.png" src="tutorials/tesr_mesh/AlLi-ori.png" />
+<img alt="../_images/AlLi-ori.png" src="../_images/AlLi-ori.png" />
 <p>The tesr file can be made a standalone file (not reading from <code class="file docutils literal notranslate"><span class="pre">AlLi.dat</span></code> any more), as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -loadtesr AlLi-load.tesr -o AlLi
 </pre></div>
@@ -188,7 +188,7 @@
           -cameracoo x:y:z+8 -print AlLi-c-z
 </pre></div>
 </div>
-<img alt="tutorials/tesr_mesh/AlLi-c.png" src="tutorials/tesr_mesh/AlLi-c.png" />
+<img alt="../_images/AlLi-c.png" src="../_images/AlLi-c.png" />
 <p>It is possible to determine by elementary image processing that the polycrystal is tilted by -0.6° around the <em>x</em> axis, 1° around the <em>y</em> axis, and 2° around the <em>z</em> axis.  This can be corrected simply by applying the rotations successively, but, before the rotations, a 10-voxel buffer is added around the polycrystal to accommodate the new positions, and, after the rotations, the raster is cropped again. Of course, Neper rotates the whole polycrystal (including the grain orientations).  The command is as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -loadtesr AlLi-c.tesr <span class="se">\</span>
            -transform <span class="s2">&quot;addbuffer(10,10,10),rotate(1,0,0,0.6),rotate(0,1,0,-1.0),rotate(0,0,1,2),autocrop,resetorigin&quot;</span> <span class="se">\</span>
@@ -203,7 +203,7 @@
           -cameracoo x:y:z+8 -print AlLi-cr-z
 </pre></div>
 </div>
-<img alt="tutorials/tesr_mesh/AlLi-cr.png" src="tutorials/tesr_mesh/AlLi-cr.png" />
+<img alt="../_images/AlLi-cr.png" src="../_images/AlLi-cr.png" />
 <p>In general, but especially as a result of this transformation, the top and bottom surfaces are not flat nor perfectly horizontal, while this is usually desired for simulations.  This can be fixed by cropping the tessellation by a few voxels along the z axis, as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -loadtesr AlLi-cr.tesr <span class="se">\</span>
            -transform <span class="s2">&quot;crop(cube(-10,10,-10,10,originz+5*voxsizez,originz+(voxnbz-5)*voxsizez)),autocrop,resetorigin,renumber,resetcellid&quot;</span>
@@ -218,7 +218,7 @@
           -cameracoo x:y:z+8 -print AlLi-crc-z
 </pre></div>
 </div>
-<img alt="tutorials/tesr_mesh/AlLi-crc.png" src="tutorials/tesr_mesh/AlLi-crc.png" />
+<img alt="../_images/AlLi-crc.png" src="../_images/AlLi-crc.png" />
 </div>
 <div class="section" id="defining-the-domain">
 <h3>Defining the Domain<a class="headerlink" href="#defining-the-domain" title="Permalink to this headline"></a></h3>
@@ -252,7 +252,7 @@
           -cameracoo x:y:z-8 -print AlLi-crcd-zm
 </pre></div>
 </div>
-<img alt="tutorials/tesr_mesh/AlLi-crcd.png" src="tutorials/tesr_mesh/AlLi-crcd.png" />
+<img alt="../_images/AlLi-crcd.png" src="../_images/AlLi-crcd.png" />
 <p>This shows how closely the domain fits the polycrystal.</p>
 </div>
 </div>
@@ -294,7 +294,7 @@
           -cameracoo x:y:z+8 -print AlLi-crcfs-z
 </pre></div>
 </div>
-<img alt="tutorials/tesr_mesh/AlLi-crcfs.png" src="tutorials/tesr_mesh/AlLi-crcfs.png" />
+<img alt="../_images/AlLi-crcfs.png" src="../_images/AlLi-crcfs.png" />
 <p>The tesr is now perfectly clean and ready for further processing.</p>
 </div>
 <div class="section" id="generating-a-tessellation-tess">
@@ -312,7 +312,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V AlLi.tess -print AlLi-tess
 </pre></div>
 </div>
-<img alt="tutorials/tesr_mesh/AlLi-tesr-tess.png" src="tutorials/tesr_mesh/AlLi-tesr-tess.png" />
+<img alt="../_images/AlLi-tesr-tess.png" src="../_images/AlLi-tesr-tess.png" />
 <p>It is also useful to apply regularization, for future meshing; we choose to reduce the small edge length (threshold) to 0.25 times its default value:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -loadtess AlLi.tess -reg <span class="m">1</span> -rsel <span class="m">0</span>.25
 </pre></div>
@@ -325,7 +325,7 @@
 <span class="gp">$ </span>neper -V AlLi-r.tess,AlLi-r.msh -showelt1d all -print AlLi-mesh
 </pre></div>
 </div>
-<img alt="tutorials/tesr_mesh/AlLi-tesr-tess-mesh.png" src="tutorials/tesr_mesh/AlLi-tesr-tess-mesh.png" />
+<img alt="../_images/AlLi-tesr-tess-mesh.png" src="../_images/AlLi-tesr-tess-mesh.png" />
 <dl class="citation">
 <dt class="label" id="cmame2018"><span class="brackets"><a class="fn-backref" href="#id1">CMAME2018</a></span></dt>
 <dd><p><a class="reference internal" href="../papers.html#singlescale"><span class="std std-ref">R Quey and L Renversade, Optimal polyhedral description of 3D polycrystals: method and application to statistical and synchrotron X-ray diffraction data, Computer Methods in Applied Mechanics and Engineering, vol. 330, pp. 308-333, 2018.</span></a>.</p>

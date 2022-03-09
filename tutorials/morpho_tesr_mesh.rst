@@ -75,7 +75,7 @@ It is now possible to visualize the polycrystal colored by its grain orientation
 
   $ neper -V AlLi-load.tesr -datacellcol ori -print AlLi-ori
 
-.. image:: tesr_mesh/AlLi-ori.png
+.. image:: morpho_tesr_mesh/AlLi-ori.png
 
 
 The tesr file can be made a standalone file (not reading from :file:`AlLi.dat` any more), as follows:
@@ -118,7 +118,7 @@ The polycrystal axes may not perfectly coincide with the tesr axes.  It is gener
             -cameracoo x:y+8:z -print AlLi-c-y    \
             -cameracoo x:y:z+8 -print AlLi-c-z
 
-.. image:: tesr_mesh/AlLi-c.png
+.. image:: morpho_tesr_mesh/AlLi-c.png
 
 It is possible to determine by elementary image processing that the polycrystal is tilted by -0.6° around the *x* axis, 1° around the *y* axis, and 2° around the *z* axis.  This can be corrected simply by applying the rotations successively, but, before the rotations, a 10-voxel buffer is added around the polycrystal to accommodate the new positions, and, after the rotations, the raster is cropped again. Of course, Neper rotates the whole polycrystal (including the grain orientations).  The command is as follows:
 
@@ -138,7 +138,7 @@ The tessellation can be visualized again after the transformation:
             -cameracoo x:y+8:z -print AlLi-cr-y    \
             -cameracoo x:y:z+8 -print AlLi-cr-z
 
-.. image:: tesr_mesh/AlLi-cr.png
+.. image:: morpho_tesr_mesh/AlLi-cr.png
 
 
 In general, but especially as a result of this transformation, the top and bottom surfaces are not flat nor perfectly horizontal, while this is usually desired for simulations.  This can be fixed by cropping the tessellation by a few voxels along the z axis, as follows:
@@ -159,7 +159,7 @@ The tesr can be visualized as before (along x and y, and in perspective):
             -cameracoo x:y+8:z -print AlLi-crc-y   \
             -cameracoo x:y:z+8 -print AlLi-crc-z
 
-.. image:: tesr_mesh/AlLi-crc.png
+.. image:: morpho_tesr_mesh/AlLi-crc.png
 
 Defining the Domain
 ~~~~~~~~~~~~~~~~~~~
@@ -200,7 +200,7 @@ The, we plot the polycrystal as before, but we also include the domain file:
             -cameracoo x:y-8:z -print AlLi-crcd-ym\
             -cameracoo x:y:z-8 -print AlLi-crcd-zm
 
-.. image:: tesr_mesh/AlLi-crcd.png
+.. image:: morpho_tesr_mesh/AlLi-crcd.png
 
 
 This shows how closely the domain fits the polycrystal.
@@ -255,7 +255,7 @@ We can visualize the final tesr, this time taking advantage of the definition of
             -cameracoo x:y+8:z -print AlLi-crcfs-y\
             -cameracoo x:y:z+8 -print AlLi-crcfs-z
 
-.. image:: tesr_mesh/AlLi-crcfs.png
+.. image:: morpho_tesr_mesh/AlLi-crcfs.png
 
 The tesr is now perfectly clean and ready for further processing.
 
@@ -279,7 +279,7 @@ Even if the tesr does not fill the domain, and because of the form of the object
 
   $ neper -V AlLi.tess -print AlLi-tess
 
-.. image:: tesr_mesh/AlLi-tesr-tess.png
+.. image:: morpho_tesr_mesh/AlLi-tesr-tess.png
 
 
 It is also useful to apply regularization, for future meshing; we choose to reduce the small edge length (threshold) to 0.25 times its default value:
@@ -298,6 +298,6 @@ A mesh can be simply obtained from the tess; we adapt the progression factor to 
   $ neper -M AlLi-r.tess -rcl 0.5 -pl 8
   $ neper -V AlLi-r.tess,AlLi-r.msh -showelt1d all -print AlLi-mesh
 
-.. image:: tesr_mesh/AlLi-tesr-tess-mesh.png
+.. image:: morpho_tesr_mesh/AlLi-tesr-tess-mesh.png
 
 .. [CMAME2018] :ref:`singlescale`.
