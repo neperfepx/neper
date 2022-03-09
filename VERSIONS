@@ -1,3 +1,6 @@
+New in 4.4.2-1 (09 Mar 2022):
+- module -M: made minor fix.
+
 New in 4.4.1 (09 Mar 2022):
 - module -T: improved -morpho lamellar to avoid unrealistically small lamellae
   (pos=optimal, reps), added -transform cubei.

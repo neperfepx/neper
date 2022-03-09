@@ -27,7 +27,7 @@ nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
   if ((*pMeshPara).dim >= 0)
   {
     if (!neut_mesh_isvoid (Mesh[0]))
-      ut_print_message (0, 2, "0d meshing... skipped\n");
+      ut_print_message (0, 2, "0D meshing... skipped\n");
     else
       nem_meshing_0d (*pTess, *pMeshPara, pNodes, Mesh);
   }
@@ -35,7 +35,7 @@ nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
   if ((*pMeshPara).dim >= 1)
   {
     if (!neut_mesh_isvoid (Mesh[1]))
-      ut_print_message (0, 2, "1d meshing... skipped\n");
+      ut_print_message (0, 2, "1D meshing... skipped\n");
     else
       nem_meshing_1d (pMeshPara, *pTess, RNodes, RMesh, pNodes, Mesh);
   }
@@ -43,7 +43,7 @@ nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
   if ((*pMeshPara).dim >= 2)
   {
     if (!neut_mesh_isvoid (Mesh[2]))
-      ut_print_message (0, 2, "2d meshing... skipped\n");
+      ut_print_message (0, 2, "2D meshing... skipped\n");
     else
       nem_meshing_2d (In, *pMeshPara, *pTess, RNodes, RMesh, pNodes, Mesh);
 
@@ -55,7 +55,7 @@ nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
   if ((*pMeshPara).dim >= 3)
   {
     if (!neut_mesh_isvoid (Mesh[3]))
-      ut_print_message (0, 2, "3d meshing... skipped\n");
+      ut_print_message (0, 2, "3D meshing... skipped\n");
     else
       nem_meshing_3d (In, *pMeshPara, *pTess, pNodes, Mesh);
   }
