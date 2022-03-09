@@ -13,33 +13,37 @@ net_tess_lam_seed_readargs_w (char *value, struct MTESS MTess,
   char *string = ut_alloc_1d_char (1000);
   char **tmp = NULL;
   char *mid = NULL;
-
-  (*pwqty) = 0;
+  int wqty = 0;
 
   // reading string
   if (ut_string_isfilename (value))
   {
-    ut_string_string ("file", pwtype);
+    if (pwtype)
+      ut_string_string ("file", pwtype);
     neut_mtess_tess_poly_mid (MTess, Tess[domtess], dompoly, &mid);
     net_multiscale_arg_0d_char_fscanf (value, mid, string);
   }
   else
   {
-    ut_string_string ("expression", pwtype);
+    if (pwtype)
+      ut_string_string ("expression", pwtype);
     ut_string_string (value, &string);
   }
 
   // converting string into *pw / *pwqty
-  ut_list_break (string, NEUT_SEP_DEP, &tmp, pwqty);
+  ut_list_break (string, NEUT_SEP_DEP, &tmp, &wqty);
 
-  (*pw) = ut_alloc_1d (*pwqty);
-  for (i = 0; i < *pwqty; i++)
+  (*pw) = ut_alloc_1d (wqty);
+  for (i = 0; i < wqty; i++)
     if (sscanf (tmp[i], "%lf", (*pw) + i) != 1)
       ut_print_neperbug ();
 
   ut_free_1d_char (&string);
-  ut_free_2d_char (&tmp, *pwqty);
+  ut_free_2d_char (&tmp, wqty);
   ut_free_1d_char (&mid);
+
+  if (pwqty)
+    *pwqty = wqty;
 
   return 0;
 }
@@ -198,14 +202,14 @@ net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
 int
 net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng * r, double *n,
                            char *wtype, double *w, int wqty, char *postype,
-                           char *pos, struct SEEDSET *pSSet)
+                           char *pos, double reps, struct SEEDSET *pSSet)
 {
   int w_id;
   double coo, distmin, distmax;
   double *plane = ut_alloc_1d (4);
 
   net_tess_lam_seed_set_w_pre (r, Dom, n, wtype, w, wqty, postype, pos, plane,
-                               &distmin, &distmax);
+                               reps, &distmin, &distmax);
 
   (*pSSet).N = 0;
   coo = plane[0];
@@ -219,7 +223,7 @@ net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng * r, double *n,
 
     net_tess_lam_seed_set_addlam (coo, n, w[w_id], wqty > 1 ? w_id : -1, pSSet);
   }
-  while (coo < distmax);
+  while (coo < distmax - reps * w[w_id]);
 
   ut_free_1d (&plane);
 

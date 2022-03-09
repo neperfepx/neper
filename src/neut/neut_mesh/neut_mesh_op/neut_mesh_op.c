@@ -1064,6 +1064,7 @@ neut_mesh_tri_tet (struct NODES *pNodes, struct MESH Mesh,
   }
 
   neut_mesh_init_elsets (pTMesh);
+  neut_mesh_init_elsetlabels (pTMesh);
 
   neut_mesh_init_nodeelts (pTMesh, (*pNodes).NodeQty);
 

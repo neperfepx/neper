@@ -7,34 +7,11 @@ html
 latex
 bin/
 src/.idea
+*.bak
 
 # src directory
 build
 config
-updatelib.sh*
-
-# doc directory
-*.png
-*.pdf
-*.info
-*.info*
-*.aux
-*.cp
-*.fn
-*.fns
-*.ky
-*.log
-*.pg
-*.toc
-*.tp
-*.tps
-*.vr
-*.fig
-*.kys
-data
-tags
-
-*.bak
 
 # Ignore meld backups
 *_BACKUP_*

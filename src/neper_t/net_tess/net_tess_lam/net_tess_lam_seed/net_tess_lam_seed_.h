@@ -20,7 +20,7 @@ extern int net_tess_lam_seed_readargs (char *morpho,
 				  int domtess, int dompoly,
                                   char **pwtype, double **pw,
 				  int *pwqty, char **pvtype, double **pv, int *pvqty,
-                                  char **ppostype, char **ppos);
+                                  char **ppostype, char **ppos, double *ptol);
 
 extern int net_tess_lam_seed_readargs_w (char *value,
 				    struct MTESS MTess, struct TESS *Tess,
@@ -38,8 +38,8 @@ extern int net_tess_lam_seed_set (struct IN_T In, int level, struct MTESS
                                   MTess, struct TESS *Tess, int dtess, int
                                   dcell, struct TESS Dom, char *wtype, double
                                   *w, int wqty, char *vtype, double *v, int
-                                  vqty, char *postype, char *pos, struct
-                                  SEEDSET *SSet, struct SEEDSET *pSSet);
+                                  vqty, char *postype, char *pos, double reps,
+                                  struct SEEDSET *SSet, struct SEEDSET *pSSet);
 
 extern int net_tess_lam_seed_set_init (struct SEEDSET *pSSet);
 
@@ -50,13 +50,13 @@ extern int net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dc
 extern int net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng *r,
 				 double *n, char *wtype, double *w,
 				 int wqty, char *postype, char *pos,
-                                 struct SEEDSET *pSSet);
+                                 double reps, struct SEEDSET *pSSet);
 
 extern int net_tess_lam_seed_set_finalize (struct SEEDSET *pSSet);
 
 extern int net_tess_lam_seed_set_w_pre (gsl_rng *r, struct TESS Dom, double *n,
 				   char *wtype, double *w, int wqty, char *postype,
-                                   char *pos,
-				   double *plane, double *pdistmin, double *pdistmax);
+                                   char *pos, double *plane, double reps,
+                                   double *pdistmin, double *pdistmax);
 extern int net_tess_lam_seed_set_addlam (double distcur, double *n, double w, int w_id,
 				    struct SEEDSET *pSSet);

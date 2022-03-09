@@ -12,10 +12,10 @@
 #include"neut_m.h"
 #include"ut.h"
 
-#include "nem_meshing_0D/nem_meshing_0D.h"
-#include "nem_meshing_1D/nem_meshing_1D.h"
-#include "nem_meshing_2D/nem_meshing_2D.h"
-#include "nem_meshing_3D/nem_meshing_3D.h"
+#include "nem_meshing_0d/nem_meshing_0d.h"
+#include "nem_meshing_1d/nem_meshing_1d.h"
+#include "nem_meshing_2d/nem_meshing_2d.h"
+#include "nem_meshing_3d/nem_meshing_3d.h"
 #include "nem_meshing_pinching/nem_meshing_pinching.h"
 
 #include"nem_meshing.h"

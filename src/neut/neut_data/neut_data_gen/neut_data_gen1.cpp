@@ -160,9 +160,11 @@ neut_data_type_size (char *type, int *psize)
       || !strcmp (type, "rad") || !strcmp (type, "edgerad")
       || !strcmp (type, "real"))
     (*psize) = 1;
-  else if (!strncmp (type, "ori", 3) || !strcmp (type, "edgecol")
-           || !strcmp (type, "col") || !strcmp (type, "coo"))
+  else if (!strcmp (type, "edgecol") || !strcmp (type, "col")
+           || !strcmp (type, "coo"))
     (*psize) = 3;
+  else if (!strcmp (type, "ori"))
+    (*psize) = 4;
   else if (strcmp (type, "cube"))
     (*psize) = 10;
   else if (strcmp (type, "cyl"))

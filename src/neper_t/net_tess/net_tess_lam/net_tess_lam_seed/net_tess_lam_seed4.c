@@ -7,11 +7,12 @@
 int
 net_tess_lam_seed_set_w_pre (gsl_rng * r, struct TESS Dom, double *n,
                              char *wtype, double *w, int wqty, char *postype,
-                             char *pos, double *plane, double *pdistmin,
-                             double *pdistmax)
+                             char *pos, double *plane, double reps,
+                             double *pdistmin, double *pdistmax)
 {
   int i;
-  double *dist = ut_alloc_1d (Dom.VerQty + 1);
+  double fact, *dist = ut_alloc_1d (Dom.VerQty + 1);
+  double tmp1, tmp2, wall = ut_array_1d_sum (w, wqty);
 
   (void) wtype;
   (void) postype;
@@ -29,9 +30,24 @@ net_tess_lam_seed_set_w_pre (gsl_rng * r, struct TESS Dom, double *n,
   // First plane: shifting it onto the distmin vertex then shifting it
   // further down by a random value within [0,sum_of_widths]
   if (!strcmp (pos, "random"))
-    plane[0] = *pdistmin - gsl_rng_uniform (r) * ut_array_1d_sum (w, wqty);
+    plane[0] = *pdistmin - gsl_rng_uniform (r) * wall;
   else if (!strcmp (pos, "start"))
     plane[0] = *pdistmin;
+  else if (!strcmp (pos, "half"))
+    plane[0] = *pdistmin - 0.5 * w[0];
+  else if (!strcmp (pos, "optimal"))
+  {
+    tmp1 = (*pdistmax - *pdistmin) / wall;
+
+    if (tmp1 - floor (tmp1) < reps)
+      tmp2 = floor (tmp1);
+    else
+      tmp2 = ceil (tmp1);
+
+    plane[0] = *pdistmin - (tmp2 - tmp1) * wall / 2;
+  }
+  else if (sscanf (pos, "%lf", &fact))
+    plane[0] = *pdistmin - fact * w[0];
   else
     ut_print_message (2, 3, "Failed to process expression `pos=%s'.\n",
                       postype);

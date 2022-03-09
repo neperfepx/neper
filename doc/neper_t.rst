@@ -198,7 +198,7 @@ These options can be used to set the cell morphology.
 
   - :data:`tocta(<N>)`: regular tessellation into truncated octahedra, where :data:`<N>` is the number of cells along a direction;
 
-  - :data:`lamellar(w=<width>[,v=<normal>][,pos=<pos>])`: lamellar morphology, where :data:`<width>` is the absolute lamella width or a series of absolute lamella widths combined with :data:`:`, and :data:`<normal>` is the lamella plane normal and can be:
+  - :data:`lamellar(w=<width>[,v=<normal>][,pos=<pos>][,reps=<reps>])`: lamellar morphology, where :data:`<width>` is the absolute lamella width or a series of absolute lamella widths combined with :data:`:`, and :data:`<normal>` is the lamella plane normal and can be:
 
     - :data:`random`: randomly-distributed normals taken from a uniform distribution (the default);
     - :data:`(<dir_x>,<dir_y>,<dir_z>)`: a specific direction of space, (:data:`dir_x`, :data:`dir_y`, :data:`dir_z`);
@@ -207,7 +207,12 @@ These options can be used to set the cell morphology.
     :data:`pos` is the position of the first lamella and can be:
 
     - :data:`random`: random position (the default);
-    - :data:`start`: first lamella starting (full-width) from the start point of the domain (along direction  :data:`<dir>`).
+    - :data:`optimal`: optimal position, i.e. so that lamellae at the start *and* end of the domain are of lengths as close as possible to nominal (along direction :data:`<dir>`);
+    - :data:`start`: first lamella starting full-width from the start point of the domain (along direction  :data:`<dir>`);
+    - :data:`half`: first lamella starting half-width from the start point of the domain (along direction  :data:`<dir>`).
+    - :data:`<factor>`: lamella starting with a width equal to :data:`<factor>` times the nominal width (between :data:`0` and :data:`1`), from the start point of the domain (along direction  :data:`<dir>`).
+
+    :data:`reps` is a relative tolerance on the width of the last lamella (default :data:`1e-2`) - a lamella is allowed to be larger than nominal, within the specified relative tolerance, to avoid the occurence of unrealistically thin lamella.
 
     In the case of a multiscale tessellation, a :ref:`multiscale cell file <multiscale_cell_file>` can be provided as value of :data:`w`, :data:`v`, and :data:`pos`.
 
@@ -543,7 +548,7 @@ Crystal Orientation Options
 Transformation Options
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. option:: -transform <transformation1<,<transformation2>,...
+.. option:: -transform <transformation1>,<transformation2>,...
 
   Apply successive transformations to a tessellation (if scalar and raster tessellations are written in output, they are transformed independently from each other).
 

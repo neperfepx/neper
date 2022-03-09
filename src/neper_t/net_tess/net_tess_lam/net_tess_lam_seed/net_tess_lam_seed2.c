@@ -9,9 +9,10 @@ net_tess_lam_seed_readargs (char *morpho, struct MTESS MTess,
                             struct TESS *Tess, int domtess, int dompoly,
                             char **pwtype, double **pw, int *pwqty,
                             char **pvtype, double **pv, int *pvqty,
-                            char **ppostype, char **ppos)
+                            char **ppostype, char **ppos, double *preps)
 {
   int i, varqty;
+  double *tmp = NULL;
   char **vars = NULL, **vals = NULL;
 
   (*pwqty) = 0;
@@ -20,6 +21,7 @@ net_tess_lam_seed_readargs (char *morpho, struct MTESS MTess,
   ut_string_string ("random", pvtype);
   ut_string_string ("expr", ppostype);
   ut_string_string ("random", ppos);
+  (*preps) = 1e-2;
 
   ut_string_function (morpho, NULL, &vars, &vals, &varqty);
 
@@ -37,6 +39,13 @@ net_tess_lam_seed_readargs (char *morpho, struct MTESS MTess,
       net_tess_lam_seed_readargs_pos (vals[i], MTess, Tess, domtess, dompoly,
                                       ppostype, ppos);
 
+    else if (!strcmp (vars[i], "reps"))
+    {
+      net_tess_lam_seed_readargs_w (vals[i], MTess, Tess, domtess, dompoly,
+                                      NULL, &tmp, NULL);
+      (*preps) = tmp[0];
+    }
+
     else
       abort ();
   }
@@ -46,6 +55,7 @@ net_tess_lam_seed_readargs (char *morpho, struct MTESS MTess,
 
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
+  ut_free_1d (&tmp);
 
   return 0;
 }
@@ -55,7 +65,8 @@ net_tess_lam_seed_set (struct IN_T In, int level, struct MTESS MTess,
                        struct TESS *Tess, int dtess, int dcell,
                        struct TESS Dom, char *wtype, double *w, int wqty,
                        char *vtype, double *v, int vqty, char *postype,
-                       char *pos, struct SEEDSET *SSet, struct SEEDSET *pSSet)
+                       char *pos, double reps, struct SEEDSET *SSet,
+                       struct SEEDSET *pSSet)
 {
   double *n = ut_alloc_1d (3);
   gsl_rng *r = gsl_rng_alloc (gsl_rng_ranlxd2);
@@ -70,7 +81,7 @@ net_tess_lam_seed_set (struct IN_T In, int level, struct MTESS MTess,
   gsl_rng_set (r, (*pSSet).Random);
   net_tess_lam_seed_set_normal (SSet, dtess, dcell, r, vtype, v, vqty, n);
 
-  net_tess_lam_seed_set_lam (Dom, r, n, wtype, w, wqty, postype, pos, pSSet);
+  net_tess_lam_seed_set_lam (Dom, r, n, wtype, w, wqty, postype, pos, reps, pSSet);
 
   net_tess_lam_seed_set_finalize (pSSet);
 
