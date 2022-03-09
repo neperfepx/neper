@@ -198,7 +198,7 @@ These options can be used to set the cell morphology.
 
   - :data:`tocta(<N>)`: regular tessellation into truncated octahedra, where :data:`<N>` is the number of cells along a direction;
 
-  - :data:`lamellar(w=<width>[,v=<normal>][,pos=<pos>])`: lamellar morphology, where :data:`<width>` is the absolute lamella width or a series of absolute lamella widths combined with :data:`:`, and :data:`<normal>` is the lamella plane normal and can be:
+  - :data:`lamellar(w=<width>[,v=<normal>][,pos=<pos>][,reps=<reps>])`: lamellar morphology, where :data:`<width>` is the absolute lamella width or a series of absolute lamella widths combined with :data:`:`, and :data:`<normal>` is the lamella plane normal and can be:
 
     - :data:`random`: randomly-distributed normals taken from a uniform distribution (the default);
     - :data:`(<dir_x>,<dir_y>,<dir_z>)`: a specific direction of space, (:data:`dir_x`, :data:`dir_y`, :data:`dir_z`);
@@ -207,7 +207,12 @@ These options can be used to set the cell morphology.
     :data:`pos` is the position of the first lamella and can be:
 
     - :data:`random`: random position (the default);
-    - :data:`start`: first lamella starting (full-width) from the start point of the domain (along direction  :data:`<dir>`).
+    - :data:`optimal`: optimal position, i.e. so that lamellae at the start *and* end of the domain are of lengths as close as possible to nominal (along direction :data:`<dir>`);
+    - :data:`start`: first lamella starting full-width from the start point of the domain (along direction  :data:`<dir>`);
+    - :data:`half`: first lamella starting half-width from the start point of the domain (along direction  :data:`<dir>`).
+    - :data:`<factor>`: lamella starting with a width equal to :data:`<factor>` times the nominal width (between :data:`0` and :data:`1`), from the start point of the domain (along direction  :data:`<dir>`).
+
+    :data:`reps` is a relative tolerance on the width of the last lamella (default :data:`1e-2`) - a lamella is allowed to be larger than nominal, within the specified relative tolerance, to avoid the occurence of unrealistically thin lamella.
 
     In the case of a multiscale tessellation, a :ref:`multiscale cell file <multiscale_cell_file>` can be provided as value of :data:`w`, :data:`v`, and :data:`pos`.
 
@@ -543,7 +548,7 @@ Crystal Orientation Options
 Transformation Options
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. option:: -transform <transformation1<,<transformation2>,...
+.. option:: -transform <transformation1>,<transformation2>,...
 
   Apply successive transformations to a tessellation (if scalar and raster tessellations are written in output, they are transformed independently from each other).
 
@@ -553,19 +558,22 @@ Transformation Options
   -  |rotate|;
   -  |scale|. For a 2D tessellation, :data:`<fact_z>` can be omitted.
 
-  - :data:`cut(<primitive1>,<primitive2>,...)`: cut by a series of geometrical primitives (experimental). The primitives can be:
+  - :data:`cut(<primitive1>,<primitive2>,...)`: cut by a series of geometrical primitives (experimental).
+    The region interior to the primitives is removed from the tessellation.  Append :data:`i` to a primitive name (as in :data:`spherei`, etc.) for the outer region.
 
-    - :data:`hspace(<d>,<a>,<b>,<c>)`: the half-space of equation :math:`a\,x+b\,y+c\,z \geq d`;
+    The primitives can be:
 
-    - :data:`sphere(<center_x>,<center_y>,<center_z>,<rad>)`: a sphere of center (:data:`<center_x>`, :data:`<center_y>`, :data:`<center_z>`) and radius :data:`<rad>`;
+    - :data:`hspace[i](<d>,<a>,<b>,<c>)`: the half-space of equation :math:`a\,x+b\,y+c\,z \geq d`;
 
-    - :data:`cylinder(<basis_x>,<basis_y>,<basis_z>,<axis_x>,<axis_y>,<axis_z>,<rad>)`: a cylinder of basis point (:data:`<basis_x>`, :data:`<basis_y>`, :data:`<basis_z>`), axis (:data:`<axis_x>`, :data:`<axis_y>`, :data:`<axis_z>`) and radius :data:`<rad>`;
+    - :data:`sphere[i](<center_x>,<center_y>,<center_z>,<rad>)`: a sphere of center (:data:`<center_x>`, :data:`<center_y>`, :data:`<center_z>`) and radius :data:`<rad>`;
 
-    - :data:`ecylinder(<basis_x>,<basis_y>,<basis_z>,<axis_x>,<axis_y>,<axis_z>,<esaxis1_x>,<esaxis1_y>,<esaxis1_z>,<esaxis2_x>,<esaxis2_y>,<esaxis2_z>,<srad1>,<srad2>)`: an elliptic cylinder of basis point (:data:`<basis_x>`, :data:`<basis_y>`, :data:`<basis_z>`), axis (:data:`<axis_x>`, :data:`<axis_y>`, :data:`<axis_z>`), ellipse section first axis (:data:`<esaxis1_x>`, :data:`<esaxis1_y>`, :data:`<esaxis1_z>`), ellipse section second axis (:data:`<esaxis2_x>`, :data:`<esaxis2_y>`, :data:`<esaxis2_z>`), ellipse section first radius :data:`<esrad1>` and ellipse section second radius :data:`<esrad2>`;
+    - :data:`cylinder[i](<basis_x>,<basis_y>,<basis_z>,<axis_x>,<axis_y>,<axis_z>,<rad>)`: a cylinder of basis point (:data:`<basis_x>`, :data:`<basis_y>`, :data:`<basis_z>`), axis (:data:`<axis_x>`, :data:`<axis_y>`, :data:`<axis_z>`) and radius :data:`<rad>`;
 
-    - :data:`torus(<basis_x>,<basis_y>,<basis_z>,<axis_x>,<axis_y>,<axis_z>,<rad>,<srad>)`: a torus of basis point (:data:`<basis_x>`, :data:`<basis_y>`, :data:`<basis_z>`), axis (:data:`<axis_x>`, :data:`<axis_y>`, :data:`<axis_z>`), radius :data:`<rad>` and section radius :data:`<srad>`.
+    - :data:`ecylinder[i](<basis_x>,<basis_y>,<basis_z>,<axis_x>,<axis_y>,<axis_z>,<esaxis1_x>,<esaxis1_y>,<esaxis1_z>,<esaxis2_x>,<esaxis2_y>,<esaxis2_z>,<srad1>,<srad2>)`: an elliptic cylinder of basis point (:data:`<basis_x>`, :data:`<basis_y>`, :data:`<basis_z>`), axis (:data:`<axis_x>`, :data:`<axis_y>`, :data:`<axis_z>`), ellipse section first axis (:data:`<esaxis1_x>`, :data:`<esaxis1_y>`, :data:`<esaxis1_z>`), ellipse section second axis (:data:`<esaxis2_x>`, :data:`<esaxis2_y>`, :data:`<esaxis2_z>`), ellipse section first radius :data:`<esrad1>` and ellipse section second radius :data:`<esrad2>`;
 
-    Append :data:`i` to a primitive name (to get :data:`cylinderi`, etc.): the complementary shape.
+    - :data:`torus[i](<basis_x>,<basis_y>,<basis_z>,<axis_x>,<axis_y>,<axis_z>,<rad>,<srad>)`: a torus of basis point (:data:`<basis_x>`, :data:`<basis_y>`, :data:`<basis_z>`), axis (:data:`<axis_x>`, :data:`<axis_y>`, :data:`<axis_z>`), radius :data:`<rad>` and section radius :data:`<srad>`;
+
+    - :data:`cube[i](<xmin>,<xmax>,<ymin>,<ymax>,<zmin>,<zmax>)`: a cube of :math:`x`, :math:`y` and :math:`z` coordinates in the specified ranges. (Only :data:`cubei` is available).
 
   - :data:`planecut(<d>,<a>,<b>,<c>)`: cut by the (oriented) plane of equation :math:`a\,x+b\,y+c\,z=d`.
 
