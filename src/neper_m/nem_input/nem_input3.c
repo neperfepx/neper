@@ -203,11 +203,13 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-statelt1d");
   strcpy (ArgList[++ArgQty], "-statelt2d");
   strcpy (ArgList[++ArgQty], "-statelt3d");
+  strcpy (ArgList[++ArgQty], "-stateltco");
   strcpy (ArgList[++ArgQty], "-statelset");
   strcpy (ArgList[++ArgQty], "-statelset0d");
   strcpy (ArgList[++ArgQty], "-statelset1d");
   strcpy (ArgList[++ArgQty], "-statelset2d");
   strcpy (ArgList[++ArgQty], "-statelset3d");
+  strcpy (ArgList[++ArgQty], "-statelsetco");
   strcpy (ArgList[++ArgQty], "-statpoint");
 
   // Advanced options --------------------------------------------------
@@ -424,6 +426,8 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
         ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelt + 2);
       else if (!strcmp (Arg, "-statelt3d"))
         ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelt + 3);
+      else if (!strcmp (Arg, "-stateltco"))
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelt + 4);
       else if (!strcmp (Arg, "-statelt"))
         ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelt + 5);
       else if (!strcmp (Arg, "-statelset0d"))
@@ -434,6 +438,8 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
         ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelset + 2);
       else if (!strcmp (Arg, "-statelset3d"))
         ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelset + 3);
+      else if (!strcmp (Arg, "-statelsetco"))
+        ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelset + 4);
       else if (!strcmp (Arg, "-statelset"))
         ut_arg_nextasstring (argv, &i, Arg, (*pIn).stelset + 5);
       else if (!strcmp (Arg, "-statpoint"))

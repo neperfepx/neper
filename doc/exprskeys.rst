@@ -457,11 +457,11 @@ The available keys for option :option:`-orioptilogvar` are provided below.  For 
 Mesh Keys
 ---------
 
-Available keys for a mesh itself are provided below.
+Available keys for a mesh itself are provided below.  "co" stands for "cohesive".
 
 ======================= ================================================= ==============================
 **Key**                 **Descriptor**                                    **Apply to**
-:data:`eltnb`           element number                                    {0-3}D mesh, cohesive-elt mesh
+:data:`eltnb`           element number                                    {0-3}D,co mesh, co-elt mesh
 :data:`nodenb`          node number                                       {0-3}D mesh
 :data:`partnb`          partition number                                  highest-dimension mesh
 :data:`x`               x coordinate                                      {0-3}D mesh
@@ -474,14 +474,14 @@ Available keys for a mesh itself are provided below.
 :data:`size`            size (length/area/volume in 1D/2D/3D)             1D mesh, 2D mesh, 3D mesh
 ======================= ================================================= ==============================
 
-Available keys for mesh node, elements and element sets (of all dimensions) and points are provided below.
+Available keys for mesh node, elements and element sets (of all dimensions) and points are provided below. "co" stands for "cohesive".
 
 ================================================= ========================================================= ================================================================
 **Key**                                           **Descriptor**                                            **Apply to**
-:data:`id`                                        identifier                                                node, {0-3}D elt, {0-3}D elset
-:data:`x`                                         x coordinate                                              node, {0-3}D elt, {0-3}D elset
-:data:`y`                                         y coordinate                                              node, {0-3}D elt, {0-3}D elset
-:data:`z`                                         z coordinate                                              node, {0-3}D elt, {0-3}D elset
+:data:`id`                                        identifier                                                node, {0-3}D,co elt, {0-3}D,co elset
+:data:`x`                                         x coordinate                                              node, {0-3}D,co elt, {0-3}D elset
+:data:`y`                                         y coordinate                                              node, {0-3}D,co elt, {0-3}D elset
+:data:`z`                                         z coordinate                                              node, {0-3}D,co elt, {0-3}D elset
 :data:`coo`                                       x, y and z coordinates                                    node, {0-3}D elt, {0-3}D elset
 :data:`dim`                                       lowest parent elt dimension                               node
 :data:`elset0d`                                   0D elset                                                  0D elt
@@ -505,7 +505,7 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`rrmin`                                     min radius ratio                                          3D elset
 :data:`rrmax`                                     max radius ratio                                          3D elset
 :data:`Osize`                                     Osize                                                     3D elset
-:data:`eltnb`                                     number of elements                                        {0-3}D elset
+:data:`eltnb`                                     number of elements                                        {0-3}D,co elset
 :data:`true`                                      true level                                                {0-3}D elt, {0-3}D elset
 :data:`body`                                      body level                                                {0-3}D elt, {0-3}D elset
 :data:`domtype`                                   type of domain [#domtype]_                                {0-2}D elt, {0-2}D elset

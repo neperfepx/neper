@@ -66,7 +66,10 @@ nem_stat (struct NODES Nodes, struct MESH *Mesh,
         realdim = dim;
       }
       else if (dim == 4)
-        continue;
+      {
+        name = ut_string_addextension (In.body, "steltco", dim);
+        realdim = dim;
+      }
       else if (dim == 5)
       {
         name = ut_string_addextension (In.body, "stelt");
@@ -97,7 +100,10 @@ nem_stat (struct NODES Nodes, struct MESH *Mesh,
           realdim = dim;
         }
         else if (dim == 4)
-          continue;
+        {
+          name = ut_string_addextension (In.body, "stelsetco", dim);
+          realdim = dim;
+        }
         else if (dim == 5)
         {
           name = ut_string_addextension (In.body, "stelset");
