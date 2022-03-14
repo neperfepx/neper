@@ -7,8 +7,12 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"4.4.2-3\")
+set(NEPER_VERSION \"4.4.2-4\")
 project(neper)
+
+if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8.1)
+  message (SEND_ERROR "  GCC 4.8.1 or higher is required.  You are using version ${CMAKE_CXX_COMPILER_VERSION}")
+endif()
 
 # Set the build type for appropriate compile flags
 if(NOT CMAKE_BUILD_TYPE)
@@ -27,6 +31,12 @@ set(HAVE_LIBSCOTCH ON  CACHE BOOL "Use Scotch") # sets to ON in ut, etc.
 set(HAVE_PNG       OFF CACHE BOOL "Use the libpng library") # sets to OFF in ut, etc.
 set(FORCE_BUILTIN_LIBSCOTCH OFF CACHE BOOL "Force to use the built-in libscotch")
 set(FORCE_BUILTIN_NLOPT     OFF CACHE BOOL "Force to use the built-in nlopt")
+
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+  set(CMAKE_INSTALL_PREFIX_COMPLETION "/usr/share" CACHE STRING "Installation directory of Bash completion files")
+elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+  set(CMAKE_INSTALL_PREFIX_COMPLETION "/usr/local/etc" CACHE STRING "Installation directory of Bash completion files")
+endif()
 
 function(message)
   if(NOT MESSAGE_QUIET)
@@ -223,17 +233,19 @@ unset(HAVE_PNG CACHE)            # hide from ccmake (comes from Orilib)
 target_link_libraries(neper ${EXTRA_LIBS})
 
 install(TARGETS neper DESTINATION bin
-         PERMISSIONS OWNER_READ OWNER_EXECUTE GROUP_READ
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
 	 GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
+message(STATUS "Neper is set to be installed in: ${CMAKE_INSTALL_PREFIX}/bin and ${CMAKE_INSTALL_PREFIX_COMPLETION}")
+
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-  set (completiondir "/usr/share/bash-completion/completions")
-elseif (compare MATCHES CMAKE_SYSTEM_NAME "Darwin" OR APPLE)
-  set (completiondir "/usr/local/etc/bash_completion.d")
+  set (CMAKE_INSTALL_PREFIX_COMPLETION_FULL "${CMAKE_INSTALL_PREFIX_COMPLETION}/bash-completion/completions")
+elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+  set (CMAKE_INSTALL_PREFIX_COMPLETION_FULL "${CMAKE_INSTALL_PREFIX_COMPLETION}/bash_completion.d")
 endif()
 
 install(FILES contrib/bashcomp/neper-completion.bash
-        DESTINATION ${completiondir}
+        DESTINATION ${CMAKE_INSTALL_PREFIX_COMPLETION_FULL}
         RENAME neper)
 
 # Testing ######################################################################
