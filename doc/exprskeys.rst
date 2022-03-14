@@ -482,12 +482,13 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`x`                                         x coordinate                                              node, {0-3}D,co elt, {0-3}D elset
 :data:`y`                                         y coordinate                                              node, {0-3}D,co elt, {0-3}D elset
 :data:`z`                                         z coordinate                                              node, {0-3}D,co elt, {0-3}D elset
-:data:`coo`                                       x, y and z coordinates                                    node, {0-3}D elt, {0-3}D elset
+:data:`coo`                                       x, y and z coordinates                                    node, {0-3}D,co elt, {0-3}D elset
 :data:`dim`                                       lowest parent elt dimension                               node
 :data:`elset0d`                                   0D elset                                                  0D elt
 :data:`elset1d`                                   1D elset                                                  1D elt
 :data:`elset2d`                                   2D elset                                                  2D elt
 :data:`elset3d`                                   3D elset                                                  3D elt
+:data:`elsetco`                                   Cohesive elset                                            co elt
 :data:`part`                                      partition                                                 {0-3}D elt, node
 :data:`group`                                     group                                                     {0-3}D elt, {0-3}D elset
 :data:`cyl`                                       cylinder polygonization [#cyl]_                           1D elt, 1D elset
