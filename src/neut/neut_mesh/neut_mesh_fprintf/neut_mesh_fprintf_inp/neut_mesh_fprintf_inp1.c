@@ -135,11 +135,10 @@ neut_mesh_fprintf_inp (FILE * file, char *dim, struct TESS Tess,
 
   if (Bound.BoundQty > 0 && faset
       && ut_list_testelt (faset, NEUT_SEP_NODEP, "internal"))
-  {
     neut_mesh_fprintf_inp_boundary (file, Bound);
 
+  if (Bound.BoundQty > 0)
     fprintf (file, "*End Assembly\n");
-  }
 
   return;
 }
