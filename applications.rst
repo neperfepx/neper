@@ -21,6 +21,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 
 .. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
 .. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
+- M Renouf, L Daridon and A Chrysochoos, *A damage criterion based on energy balance for isotropic cohesive zone model*, **Journal of Theoretical, Computational and Applied Mechanics**, doi://10.46298/jtcam.7056.
+- Y Liu, W Wan and FPE Dunne, *Characterisation and modelling of micro-and macroscale creep and strain rate sensitivity in Zircaloy-4*, **Materials Science and Engineering: A*, doi://10.1016/j.msea.2022.142981.
 - D Zhang, H Li, X Guo, Y Yang, X Yang and Z Feng, *An insight into size effect on fracture behavior of Inconel 718 cross-scaled foils*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103274.
 - B Selvarajou, MH Jhon, RV Ramanujan and SS Quek, *Temperature dependent anisotropic mechanical behavior of TiAl based alloys*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2021.103175.
 - A Vijay and F Sadeghi, *Rolling Contact Fatigue of Coupled EHL and Anisotropic Polycrystalline Materials*, **Tribology International**, https://doi.org/10.1016/j.triboint.2022.107479.
