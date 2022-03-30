@@ -1,6 +1,7 @@
-New in 4.4.2-5 (15 Mar 2022):
+New in 4.4.2-6 (30 Mar 2022):
 - module -M: fixed -stateltco and -statelsetco, made minor fix to inp output,
   made minor fix.
+- module -S: fixed various bugs related to the initial state.
 - general: made various installation improvements.
 
 New in 4.4.1 (09 Mar 2022):

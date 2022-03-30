@@ -44,7 +44,7 @@ void
 nes_convert_write_results_entity_step (struct IN_S In, struct FEPXSIM FSim, char *res,
                                        char *entity, int startstep)
 {
-  int i, j, k, part;
+  int i, j, k, part, colqty;
   int *qty_part = NULL;
   char *fepxvar = ut_alloc_1d_char (10);
   char *post_filepref = ut_alloc_1d_char (1000);
@@ -85,7 +85,6 @@ nes_convert_write_results_entity_step (struct IN_S In, struct FEPXSIM FSim, char
         sprintf (step_filename0, "%s%d", step_filepref, 0);
 
         fp2 = ut_file_open (step_filename, (part == 1) ? "W" : "A");
-        fp3 = ut_file_open (step_filename0, (part == 1) ? "W" : "A");
 
         if (i >= startstep)
           ut_file_skip_line (fp1, 1);
@@ -102,14 +101,18 @@ nes_convert_write_results_entity_step (struct IN_S In, struct FEPXSIM FSim, char
           // writing the initial state with the same number of data
           if (i > 0 && i == startstep)
           {
-            int colqty = ut_string_nbwords (line);
+            // do not open outside of the if, or it will erase data
+            fp3 = ut_file_open (step_filename0, (part == 1) ? "W" : "A");
+            colqty = ut_string_nbwords (line);
             for (k = 0; k < colqty - 1; k++)
               fprintf (fp3, "0 ");
             fprintf (fp3, "0\n");
+            ut_file_close (fp3, step_filename0, "A");
           }
         }
+
         ut_file_close (fp2, step_filename, "A");
-        ut_file_close (fp3, step_filename0, "A");
+
       }
 
     ut_file_close (fp1, post_filename, "R");

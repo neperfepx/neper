@@ -56,7 +56,7 @@ neut_fepxsim_fscanf (char *dir, struct FEPXSIM *pFSim, char *mode)
 
       ut_file_nextlinenbwords (file, &qty);
 
-      ut_array_1d_int_set ((*pFSim).StepState, (*pFSim).StepQty + 1, 0);
+      ut_array_1d_int_set ((*pFSim).StepState + 1, (*pFSim).StepQty, 0);
       for (i = 0; i < qty; i++)
       {
         if (fscanf (file, "%d", &step) != 1)

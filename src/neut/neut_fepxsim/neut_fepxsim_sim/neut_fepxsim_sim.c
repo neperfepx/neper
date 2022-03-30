@@ -8,6 +8,12 @@ void
 neut_fepxsim_sim (struct FEPXSIM FSim, struct SIM *pSim)
 {
   int i;
+  char *filename = ut_string_paste3 (FSim.fepxdir, "/", FSim.msh);
+  struct NODES Nodes;
+  struct MESH Mesh3D;
+
+  neut_nodes_set_zero (&Nodes);
+  neut_mesh_set_zero (&Mesh3D);
 
   neut_sim_set_zero (pSim);
 
@@ -16,7 +22,12 @@ neut_fepxsim_sim (struct FEPXSIM FSim, struct SIM *pSim)
   (*pSim).NodeQty = FSim.NodeQty;
   (*pSim).EltQty = FSim.EltQty;
   (*pSim).PartQty = FSim.PartQty;
-  // (*pSim).ElsetQty
+
+  neut_mesh_fnscanf_msh (filename, &Nodes, NULL, NULL, NULL, &Mesh3D, NULL, NULL, "R");
+  (*pSim).ElsetQty = Mesh3D.ElsetQty;
+
+  neut_nodes_free (&Nodes);
+  neut_mesh_free (&Mesh3D);
 
   if (FSim.NodeResQty > 0)
   {
@@ -51,6 +62,8 @@ neut_fepxsim_sim (struct FEPXSIM FSim, struct SIM *pSim)
 
   (*pSim).RestartId = FSim.RestartId;
   (*pSim).RestartFiles = FSim.RestartFiles;
+
+  ut_free_1d_char (&filename);
 
   return;
 }
