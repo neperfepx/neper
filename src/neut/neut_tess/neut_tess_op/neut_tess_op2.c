@@ -330,6 +330,9 @@ neut_tess_domface_tess_cells (struct TESS Tess, int *oldface_newface,
       ut_string_string (Tess.CellOriDistrib[face_oldpoly[i]], (*pT).CellOriDistrib + i);
   }
 
+  if (Tess.CellOriDes)
+      ut_string_string (Tess.CellOriDes, &(*pT).CellOriDes);
+
   if (Tess.CellModeId)
   {
     (*pT).CellModeId = ut_alloc_1d_int (Tess.CellQty + 1);
