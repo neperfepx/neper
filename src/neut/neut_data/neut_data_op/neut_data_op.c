@@ -188,7 +188,7 @@ neut_data_mesh2slice_nodes (struct DATA NodeData, struct NODES SNodes,
     (*pSNodeData).ColData = ut_alloc_2d ((*pSNodeData).Qty + 1, size);
 
     for (i = 1; i <= (*pSNodeData).Qty; i++)
-      for (j = 0; j < 3; j++)
+      for (j = 0; j < size; j++)
       {
         (*pSNodeData).ColData[i][j] =
           (1 - node_fact[i]) * NodeData.ColData[node_newold[i][0]][j] +
