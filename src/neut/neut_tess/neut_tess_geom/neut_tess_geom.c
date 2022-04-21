@@ -1064,7 +1064,7 @@ neut_tess_point_inface (struct TESS Tess, double *coo, int face)
           coob[j] = coo[j] + per[j] * PeriodicDist[j];
 
         if (ut_space_triangle_point_in
-            (centre, Tess.VerCoo[ver1], Tess.VerCoo[ver2], coob, 1e-6, 0, NULL))
+            (centre, Tess.VerCoo[ver1], Tess.VerCoo[ver2], coob, 1e-6, 1e-6, NULL))
         {
           status = 1;
           break;
