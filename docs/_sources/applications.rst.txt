@@ -21,6 +21,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 
 .. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
 .. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
+- KL Auth, J Brouzoulis and M Ekh, *A fully coupled chemo-mechanical cohesive zone model for oxygen embrittlement of nickel-based superalloys*, **Journal of the Mechanics and Physics of Solids**, https://doi.org/10.1016/j.jmps.2022.104880.
 - K Song, K Wang, L Zhang, L Zhao, L Xu, Y Han and K Hao, *Insighte on low cycle fatigue crack formation and propagation mechanism: a microstructurally-sensitive modeling*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103295.
 - M Renouf, L Daridon and A Chrysochoos, *A damage criterion based on energy balance for isotropic cohesive zone model*, **Journal of Theoretical, Computational and Applied Mechanics**, https://doi.org/10.46298/jtcam.7056.
 - Y Liu, W Wan and FPE Dunne, *Characterisation and modelling of micro-and macroscale creep and strain rate sensitivity in Zircaloy-4*, **Materials Science and Engineering: A*, https://doi.org/10.1016/j.msea.2022.142981.
