@@ -84,7 +84,7 @@ nes_merge_restart (struct SIM Sim, char *indir, char *outdir)
   ut_sys_mkdir (dir);
 
   sprintf (filename, "rst%d.control", Sim.RestartId);
-  sprintf (infile, "%s/%s", indir, filename);
+  sprintf (infile, "%s/restart/%s", indir, filename);
   sprintf (outfile, "%s/restart/%s", outdir, filename);
 
   ut_print_message (0, 4, "%s...\n", filename);
@@ -94,7 +94,7 @@ nes_merge_restart (struct SIM Sim, char *indir, char *outdir)
   for (i = 1; i <= Sim.PartQty; i++)
   {
     sprintf (filename, "rst%d.field.core%d", Sim.RestartId, i);
-    sprintf (infile, "%s/%s", indir, filename);
+    sprintf (infile, "%s/restart/%s", indir, filename);
     sprintf (outfile, "%s/restart/%s", outdir, filename);
 
     ut_file_cp (infile, outfile);

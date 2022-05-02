@@ -307,3 +307,17 @@ neut_sim_fscanf_step (struct SIM *pSim, FILE *file)
 
   return;
 }
+
+void
+neut_sim_fscanf_restart (struct SIM *pSim, FILE *file)
+{
+  ut_file_skip (file, 1);
+
+  if (fscanf (file, "%d", &(*pSim).RestartId) != 1)
+    abort ();
+
+  if (fscanf (file, "%d", &(*pSim).RestartFiles) != 1)
+    abort ();
+
+  return;
+}

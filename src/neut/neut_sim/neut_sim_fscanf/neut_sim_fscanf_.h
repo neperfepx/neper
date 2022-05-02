@@ -19,5 +19,6 @@ extern void neut_sim_fscanf_foot (FILE *file);
 extern void neut_sim_fscanf_entity (struct SIM *pSim, FILE *file);
 extern void neut_sim_fscanf_orispace (struct SIM *pSim, FILE *file);
 extern void neut_sim_fscanf_step (struct SIM *pSim, FILE *file);
+extern void neut_sim_fscanf_restart (struct SIM *pSim, FILE *file);
 
 #include "neut_sim_fscanf_report/neut_sim_fscanf_report.h"

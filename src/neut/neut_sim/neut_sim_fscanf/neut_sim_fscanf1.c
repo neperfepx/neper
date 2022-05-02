@@ -63,6 +63,9 @@ neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode)
       else if (!strcmp (string, "**step"))
         neut_sim_fscanf_step (pSim, file);
 
+      else if (!strcmp (string, "**restart"))
+        neut_sim_fscanf_restart (pSim, file);
+
       else
         ut_print_message (2, 2, "Could not read field `%s'.\n", string);
     }
