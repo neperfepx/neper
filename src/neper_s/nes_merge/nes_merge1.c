@@ -37,7 +37,7 @@ nes_merge (struct IN_S In, struct SIM *pFullSim)
       stepqty++;
 
       nes_merge_entity_res (Sim, "node", stepqty, In.simdir);
-      nes_merge_entity_res (Sim, "element", stepqty, In.simdir);
+      nes_merge_entity_res (Sim, "elt", stepqty, In.simdir);
       nes_merge_entity_res (Sim, "elset", stepqty, In.simdir);
     }
   }

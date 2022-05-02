@@ -1,4 +1,4 @@
-New in 4.4.2-11 (02 May 2022):
+New in 4.4.2-12 (02 May 2022):
 - module -T: made minor fixes.
 - module -M: fixed -stateltco and -statelsetco, made minor fix to inp output,
   made minor fixes, added -stat{elt,elset}{1d,2d} theta.
