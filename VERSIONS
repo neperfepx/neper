@@ -1,7 +1,7 @@
-New in 4.4.2-10 (02 May 2022):
+New in 4.4.2-11 (02 May 2022):
 - module -T: made minor fixes.
 - module -M: fixed -stateltco and -statelsetco, made minor fix to inp output,
-  made minor fixes.
+  made minor fixes, added -stat{elt,elset}{1d,2d} theta.
 - module -S: fixed various bugs related to the initial state, made minor other
   fixes.
 - general: made various installation improvements.

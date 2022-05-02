@@ -518,6 +518,7 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`col_rodrigues`                             color in Rodrigues vector convention [#col_rodrigues]_    node
 :data:`col_stdtriangle`                           color in IPF convention [#col_stdtriangle]_               node
 :data:`fiber(...)` [#fiber]_                      1 if in orientation fiber and 0 otherwise                 3D elt, 3D elset
+:data:`theta`                                     disorientation angle (in degrees)                         1D elt and elset (in 2D), 2D elt and elset (in 3D)
 ================================================= ========================================================= ================================================================
 
 Variables beginning with :data:`2dmesh` are only available for statistics (options beginning with :data:`-stat` of module -M); for elements, they apply to the centroids.

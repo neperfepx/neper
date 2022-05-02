@@ -1011,6 +1011,41 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
       (*pvals)[0] = neut_tess_face_isper (Tess, id);
       strcpy (typetmp, "%d");
     }
+    else if (!strcmp (var, "theta"))
+    {
+      int i, elt, elt3dqty, *elt3d = NULL;
+      double tmp;
+
+      (*pvals)[0] = 0;
+      for (i = 1; i <= Mesh2D.Elsets[id][0]; i++)
+      {
+        elt = Mesh2D.Elsets[id][i];
+
+        neut_mesh_elt2d_elts3d (Mesh2D, elt, Mesh3D, &elt3d, &elt3dqty);
+
+        if (elt3dqty < 2)
+        {
+          (*pvals)[0] = -1;
+          break;
+        }
+        else
+        {
+          if (Mesh3D.EltOri)
+            ol_q_q_disori (Mesh3D.EltOri[elt3d[0]], Mesh3D.EltOri[elt3d[1]], Tess.CellCrySym, &tmp);
+          else
+            ol_q_q_disori (Mesh3D.ElsetOri[Mesh3D.EltElset[elt3d[0]]],
+                           Mesh3D.ElsetOri[Mesh3D.EltElset[elt3d[1]]], Tess.CellCrySym, &tmp);
+
+          (*pvals)[0] += tmp;
+        }
+      }
+
+      if ((*pvals)[0] > 0)
+        (*pvals)[0] /= Mesh2D.Elsets[id][0];
+
+      ut_free_1d_int (&elt3d);
+      strcpy (typetmp, "%f");
+    }
     else
       status = -1;
   }
@@ -1077,6 +1112,41 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     {
       (*pvals)[0] = neut_tess_edge_isper (Tess, id);
       strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "theta"))
+    {
+      int i, elt, elt2dqty, *elt2d = NULL;
+      double tmp;
+
+      (*pvals)[0] = 0;
+      for (i = 1; i <= Mesh1D.Elsets[id][0]; i++)
+      {
+        elt = Mesh1D.Elsets[id][i];
+
+        neut_mesh_elt1d_elts2d (Mesh1D, elt, Mesh2D, &elt2d, &elt2dqty);
+
+        if (elt2dqty < 2)
+        {
+          (*pvals)[0] = -1;
+          break;
+        }
+        else
+        {
+          if (Mesh2D.EltOri)
+            ol_q_q_disori (Mesh2D.EltOri[elt2d[0]], Mesh2D.EltOri[elt2d[1]], Tess.CellCrySym, &tmp);
+          else
+            ol_q_q_disori (Mesh2D.ElsetOri[Mesh2D.EltElset[elt2d[0]]],
+                           Mesh2D.ElsetOri[Mesh2D.EltElset[elt2d[1]]], Tess.CellCrySym, &tmp);
+
+          (*pvals)[0] += tmp;
+        }
+      }
+
+      if ((*pvals)[0] > 0)
+        (*pvals)[0] /= Mesh1D.Elsets[id][0];
+
+      ut_free_1d_int (&elt2d);
+      strcpy (typetmp, "%f");
     }
     else
       status = -1;
@@ -1383,6 +1453,26 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
       (*pvals)[0] = neut_tess_face_isper (Tess, Mesh2D.EltElset[id]);
       strcpy (typetmp, "%d");
     }
+    else if (!strcmp (var, "theta"))
+    {
+      int elt3dqty, *elt3d = NULL;
+
+      neut_mesh_elt2d_elts3d (Mesh2D, id, Mesh3D, &elt3d, &elt3dqty);
+
+      if (elt3dqty < 2)
+        (*pvals)[0] = -1;
+      else
+      {
+        if (Mesh3D.EltOri)
+          ol_q_q_disori (Mesh3D.EltOri[elt3d[0]], Mesh3D.EltOri[elt3d[1]], Tess.CellCrySym, *pvals);
+        else
+          ol_q_q_disori (Mesh3D.ElsetOri[Mesh3D.EltElset[elt3d[0]]],
+                         Mesh3D.ElsetOri[Mesh3D.EltElset[elt3d[1]]], Tess.CellCrySym, *pvals);
+      }
+      strcpy (typetmp, "%f");
+
+      ut_free_1d_int (&elt3d);
+    }
     else
       status = -1;
   }
@@ -1500,6 +1590,26 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     {
       (*pvals)[0] = neut_tess_edge_isper (Tess, Mesh1D.EltElset[id]);
       strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "theta"))
+    {
+      int elt2dqty, *elt2d = NULL;
+
+      neut_mesh_elt1d_elts2d (Mesh1D, id, Mesh2D, &elt2d, &elt2dqty);
+
+      if (elt2dqty < 2)
+        (*pvals)[0] = -1;
+      else
+      {
+        if (Mesh2D.EltOri)
+          ol_q_q_disori (Mesh2D.EltOri[elt2d[0]], Mesh2D.EltOri[elt2d[1]], Tess.CellCrySym, *pvals);
+        else
+          ol_q_q_disori (Mesh2D.ElsetOri[Mesh2D.EltElset[elt2d[0]]],
+                         Mesh2D.ElsetOri[Mesh2D.EltElset[elt2d[1]]], Tess.CellCrySym, *pvals);
+      }
+      strcpy (typetmp, "%f");
+
+      ut_free_1d_int (&elt2d);
     }
     else
       status = -1;
