@@ -45,7 +45,7 @@ nes_convert_write_results_entity_step (struct IN_S In, struct FEPXSIM FSim, char
                                        char *entity, int startstep)
 {
   int i, j, k, part, colqty;
-  int *qty_part = NULL;
+  int *PartEntityQty = NULL;
   char *fepxvar = ut_alloc_1d_char (10);
   char *post_filepref = ut_alloc_1d_char (1000);
   char *step_filepref = ut_alloc_1d_char (1000);
@@ -60,9 +60,9 @@ nes_convert_write_results_entity_step (struct IN_S In, struct FEPXSIM FSim, char
   ut_sys_mkdir ("%s/results/%s/%s", In.simdir, entity, res);
 
   if (!strcmp (entity, "nodes"))
-    qty_part = FSim.PartNodeQty;
+    PartEntityQty = FSim.PartNodeQty;
   else if (!strcmp (entity, "elts"))
-    qty_part = FSim.PartEltQty;
+    PartEntityQty = FSim.PartEltQty;
   else
     abort ();
 
@@ -88,7 +88,7 @@ nes_convert_write_results_entity_step (struct IN_S In, struct FEPXSIM FSim, char
 
         if (i >= startstep)
           ut_file_skip_line (fp1, 1);
-        for (j = 0; j < qty_part[part]; j++)
+        for (j = 0; j < PartEntityQty[part]; j++)
         {
           if (i >= startstep)
           {
@@ -102,8 +102,9 @@ nes_convert_write_results_entity_step (struct IN_S In, struct FEPXSIM FSim, char
           if (i > 0 && i == startstep)
           {
             // do not open outside of the if, or it will erase data
-            fp3 = ut_file_open (step_filename0, (part == 1) ? "W" : "A");
+            fp3 = ut_file_open (step_filename0, (part == 1 && j == 0) ? "W" : "A");
             colqty = ut_string_nbwords (line);
+
             for (k = 0; k < colqty - 1; k++)
               fprintf (fp3, "0 ");
             fprintf (fp3, "0\n");
