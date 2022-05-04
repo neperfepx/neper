@@ -23,4 +23,5 @@ extern void nem_transform_explode (char *explode, struct NODES *pNodes,
 extern void nem_transform_slice (char *explode, struct NODES *pNodes,
                                  struct MESH *Mesh);
 
+extern void nem_transform_node (char *node, struct NODES *pNodes);
 extern void nem_transform_ori (char *ori, struct TESS Tess, struct NODES Nodes, struct MESH *Mesh);
