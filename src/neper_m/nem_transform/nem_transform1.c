@@ -62,6 +62,18 @@ nem_transform (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
       nem_transform_slice (parts[i], pNodes, Mesh);
     }
 
+    else if (!strncmp (parts[i], "node", 4))
+    {
+      ut_print_message (0, 3, "Overriding nodes...\n");
+      nem_transform_node (parts[i], pNodes);
+    }
+
+    else if (!strncmp (parts[i], "ori", 3))
+    {
+      ut_print_message (0, 3, "Overriding orientations...\n");
+      nem_transform_ori (parts[i], Tess, *pNodes, Mesh);
+    }
+
     else
       ut_print_message (1, 3, "Skipping `%s'...\n", parts[i]);
   }

@@ -12,6 +12,7 @@
 
 #include"nem_transform.h"
 #include"../nem_smoothing/nem_smoothing.h"
+#include"neper_t/net_ori/net_ori.h"
 
 extern void nem_transform_smooth (char *smooth, struct TESS Tess,
                                   struct NODES *pNodes, struct MESH *Mesh);
@@ -21,3 +22,5 @@ extern void nem_transform_explode (char *explode, struct NODES *pNodes,
 
 extern void nem_transform_slice (char *explode, struct NODES *pNodes,
                                  struct MESH *Mesh);
+
+extern void nem_transform_ori (char *ori, struct TESS Tess, struct NODES Nodes, struct MESH *Mesh);

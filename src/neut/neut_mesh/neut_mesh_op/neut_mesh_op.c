@@ -1981,3 +1981,17 @@ neut_mesh_init_eltori (struct MESH *pMesh)
 
   return;
 }
+
+void
+neut_mesh_init_elsetori (struct NODES Nodes, struct MESH *pMesh, char *crysym)
+{
+  int i;
+
+  for (i = 1; i <= (*pMesh).ElsetQty; i++)
+    neut_mesh_elts_orimean (Nodes, (*pMesh),
+                            (*pMesh).Elsets[i] + 1, (*pMesh).Elsets[i][0],
+                            (*pMesh).EltOri, crysym,
+                            (*pMesh).ElsetOri[i]);
+
+  return;
+}

@@ -265,6 +265,8 @@ extern "C"
 
   extern void neut_mesh_init_eltori (struct MESH *pMesh);
 
+  extern void neut_mesh_init_elsetori (struct NODES Nodes, struct MESH *pMesh, char *crysym);
+
 #endif				/* NEUT_MESH_OP_H */
 
 #ifdef __cplusplus

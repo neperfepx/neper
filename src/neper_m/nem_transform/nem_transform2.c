@@ -103,3 +103,80 @@ nem_transform_slice (char *slice, struct NODES *pNodes, struct MESH *Mesh)
 
   return;
 }
+
+void
+nem_transform_node (char *node, struct NODES *pNodes)
+{
+  int nblines, nbwords, colqty, valqty;
+  char *fct = NULL, **vars = NULL, **vals = NULL, *filename = ut_alloc_1d_char (1000);
+
+  ut_string_function (node, &fct, &vars, &vals, &valqty);
+
+  if (strcmp (fct, "node"))
+    abort ();
+
+  ut_string_string (vals[0], &filename);
+
+  nblines = ut_file_nblines (filename);
+  nbwords = ut_file_nbwords (filename);
+  colqty = nbwords / nblines;
+
+  if (nblines != (*pNodes).NodeQty)
+    ut_print_message (2, 4, "Wrong number of entries in file `%s'.\n", vals[0]);
+
+  ut_array_2d_fnscanf (filename, (*pNodes).NodeCoo + 1, (*pNodes).NodeQty, colqty, "r");
+
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vars, valqty);
+  ut_free_2d_char (&vals, valqty);
+  ut_free_1d_char (&filename);
+
+  return;
+}
+
+void
+nem_transform_ori (char *ori, struct TESS Tess, struct NODES Nodes, struct MESH *Mesh)
+{
+  int nblines, valqty, dim = Tess.Dim;
+  char *fct = NULL, **vars = NULL, **vals = NULL, *filename = ut_alloc_1d_char (1000);
+  struct OL_SET OSet;
+
+  ut_string_function (ori, &fct, &vars, &vals, &valqty);
+
+  if (strcmp (fct, "ori"))
+    abort ();
+
+  ut_string_string (ori, &filename);
+  ut_string_fnrs (filename, "ori(", "file(", 1);
+
+  nblines = ut_file_nblines (vals[0]);
+
+  OSet = ol_set_alloc (nblines, Tess.CellCrySym);
+
+  net_ori_file (filename, &OSet);
+
+  if (nblines == Mesh[dim].ElsetQty)
+    ut_array_2d_memcpy (OSet.q, Mesh[dim].ElsetQty, 4, Mesh[dim].ElsetOri + 1);
+
+  else if (nblines == Mesh[dim].EltQty)
+  {
+    if (!Mesh[dim].EltOri)
+      Mesh[dim].EltOri = ut_alloc_2d (Mesh[dim].EltQty + 1, 4);
+    if (!Mesh[dim].EltOriDes)
+      ut_string_string (Mesh[dim].ElsetOriDes, &Mesh[dim].EltOriDes);
+    ut_array_2d_memcpy (OSet.q, Mesh[dim].EltQty, 4, Mesh[dim].EltOri + 1);
+
+    neut_mesh_init_elsetori (Nodes, Mesh + 3, Tess.CellCrySym);
+  }
+
+  else
+    ut_print_message (2, 4, "Wrong number of entries in file `%s'.\n", vals[0]);
+
+  ol_set_free (OSet);
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vars, valqty);
+  ut_free_2d_char (&vals, valqty);
+  ut_free_1d_char (&filename);
+
+  return;
+}
