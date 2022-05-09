@@ -1,4 +1,4 @@
-New in 4.4.2-15 (04 May 2022):
+New in 4.4.2-16 (09 May 2022):
 - module -T: made minor fixes.
 - module -M: added -transform node and ori, fixed -stateltco and -statelsetco,
   made minor fix to inp output, made minor fixes, added -stat{elt,elset}{1d,2d}

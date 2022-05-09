@@ -23,6 +23,29 @@ $Elements
 3 3 3 1 1 0 4 5 8 7
 4 3 3 1 1 0 5 6 9 8
 $EndElements
+$NSets
+4
+x0
+3
+1
+4
+7
+x1
+3
+3
+6
+9
+y0
+3
+1
+2
+3
+y1
+3
+7
+8
+9
+$EndNSets
 $PhysicalNames
 2
 2 1 face1

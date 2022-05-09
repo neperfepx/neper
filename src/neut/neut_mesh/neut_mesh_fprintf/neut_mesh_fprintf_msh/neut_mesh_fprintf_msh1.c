@@ -47,13 +47,19 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
   if (Nodes.PerNodeQty && !strcmp (mode, "ascii"))
     neut_mesh_fprintf_msh_periodicity (file, Nodes);
 
-  if (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3") && strlen (nsetlist))
+  if (((Tess.Dim == 2 && ut_list_testelt (dim, NEUT_SEP_NODEP, "2"))
+    || (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3")))
+    && nsetlist)
     neut_mesh_fprintf_msh_nsets (file, NSet0D, NSet1D, NSet2D, nsetlist);
 
-  if (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3") && fasetlist && strlen (fasetlist))
+  if (((Tess.Dim == 2 && ut_list_testelt (dim, NEUT_SEP_NODEP, "2"))
+    || (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3")))
+    && fasetlist && strlen (fasetlist))
     neut_mesh_fprintf_msh_fasets (file, Tess, Mesh2D, Mesh3D, shift, fasetlist);
 
-  if (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3") && Nodes.PartQty > 0)
+  if (((Tess.Dim == 2 && ut_list_testelt (dim, NEUT_SEP_NODEP, "2"))
+    || (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3")))
+    && Nodes.PartQty > 0)
     neut_mesh_fprintf_msh_nodeparts (file, Nodes);
 
   neut_mesh_fprintf_msh_physical (file, Mesh0D, Mesh1D, Mesh2D, Mesh3D,
