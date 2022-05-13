@@ -10,16 +10,16 @@ It you use Neper for your own work, please mention it explicitly and cite one or
 Current Official Release
 ------------------------
 
-The current official release (and previous ones) is available from the `Releases <https://github.com/rquey/neper/releases>`_ section of the `GitHub repository <https://github.com/rquey/neper>`_.  For older versions, see :ref:`old_versions`.
+The current official release (and previous ones) is available from the `Releases <https://github.com/neperfepx/neper/releases>`_ section of the `GitHub repository <https://github.com/neperfepx/neper>`_.  For older versions, see :ref:`old_versions`.
 
 Latest Version
 --------------
 
-The latest version is available on the :code:`main` branch of the `GitHub repository <https://github.com/rquey/neper>`_.  To get the latest version as a Git user, run:
+The latest version is available on the :code:`main` branch of the `GitHub repository <https://github.com/neperfepx/neper>`_.  To get the latest version as a Git user, run:
 
 .. code-block:: console
 
-  $ git clone https://github.com/rquey/neper.git
+  $ git clone https://github.com/neperfepx/neper.git
 
 which will download the repository.  To update the repository at any later time, run:
 
@@ -33,8 +33,8 @@ To get the latest version as a non-Git user, run:
 
 .. code-block:: console
 
-  $ wget https://github.com/rquey/neper/archive/refs/heads/main.zip
+  $ wget https://github.com/neperfepx/neper/archive/refs/heads/main.zip
 
-which will download only the latest version.  Alternatively, you may click on :data:`Code` / :data:`Download ZIP` on the `GitHub repository <https://github.com/rquey/neper>`_.
+which will download only the latest version.  Alternatively, you may click on :data:`Code` / :data:`Download ZIP` on the `GitHub repository <https://github.com/neperfepx/neper>`_.
 
-The `GitHub repository <https://github.com/rquey/neper>`_ is also the place for interactions, see the :ref:`community` page.
+The `GitHub repository <https://github.com/neperfepx/neper>`_ is also the place for interactions, see the :ref:`community` page.
