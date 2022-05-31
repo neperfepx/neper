@@ -4,8 +4,13 @@
 #include "ol_des_gen.h"
 
 int
-ol_des_size (char* des)
+ol_des_size (char* des0)
 {
+  char *des = NULL;
+
+  ut_string_string (des0, &des);
+  ut_string_fnr (des, ':', '\0');
+
   if (! strcmp (des, "g") || !strcmp (des, "rotmat"))
     return 9;
   else if (!strcmp (des, "e")  || !strcmp (des, "eb")

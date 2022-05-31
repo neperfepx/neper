@@ -502,6 +502,12 @@ neut_tess_var_val (struct TESS Tess,
       ut_free_1d (&dirc);
       ut_free_1d (&dirs);
     }
+    else if (neut_ori_des_isvalid (var)) // orientation descriptor
+    {
+      (*pvalqty) = ol_des_size (var);
+      (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
+      neut_ori_des_ori (Tess.CellOri[id], var, *pvals);
+    }
     else
       status = -1;
   }
@@ -779,6 +785,12 @@ neut_tess_var_val (struct TESS Tess,
     {
       (*pvals)[0] = neut_tess_face_isper (Tess, id);
       ut_string_string ("%d", &typetmp);
+    }
+    else if (neut_ori_des_isvalid (var)) // orientation descriptor
+    {
+      (*pvalqty) = ol_des_size (var);
+      (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
+      neut_ori_des_ori (Tess.CellOri[id], var, *pvals);
     }
     else
       status = -1;

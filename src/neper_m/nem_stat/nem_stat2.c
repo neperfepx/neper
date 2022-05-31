@@ -129,7 +129,6 @@ nem_stat_elts (FILE *file, char *entity, int dim, int realdim, char *format, str
         neut_mesh_var_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Mesh[4],
                            Tess, NULL, NULL, NULL, NULL, cl, entity2, i,
                            invar[j], &vals, &valqty, &type);
-
       if (!status)
         ut_array_1d_fprintf_nonl (file, vals, valqty,
                                   !strcmp (type, "%f") ? "%.12f" : type);

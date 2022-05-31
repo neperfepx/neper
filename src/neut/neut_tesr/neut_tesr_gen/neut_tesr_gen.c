@@ -66,6 +66,7 @@ neut_tesr_expr_val (struct TESR Tesr, char *entity, int id, char *expr,
   double *vals = NULL;
 
   ut_math_vars (expr, &vars, &varqty);
+
   vals = ut_alloc_1d (varqty);
 
   if (varqty == 1 && !strcmp (expr, vars[0]))
@@ -117,6 +118,8 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
   double *c = NULL;
   char *typetmp = NULL;
 
+  ut_string_string ("%f", &typetmp);
+
   (*pvals) = ut_realloc_1d (*pvals, 1);
 
   if (pvalqty)
@@ -148,7 +151,6 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
   }
 
   c = ut_alloc_1d (3);
-  ut_string_string ("%f", &typetmp);
 
   // b = (Tess.CellQty > 0) ? Tess.CellBody[id] : 0;
   b = 0;
@@ -368,6 +370,16 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       (*pvals)[0] = Tesr.size[2];
       ut_string_string ("%d", &typetmp);
     }
+    else if (neut_ori_des_isvalid (var)) // orientation descriptor
+    {
+      (*pvalqty) = ol_des_size (var);
+      (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
+
+      double *q = ol_q_alloc ();
+      neut_tesr_cell_ori (Tesr, id, q);
+      neut_ori_des_ori (q, var, *pvals);
+      ol_q_free (q);
+    }
     else
       status = -1;
   }
@@ -461,6 +473,16 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       neut_tesr_vox_oridef (Tesr, id, &tmpint);
       (*pvals)[0] = tmpint;
       ut_string_string ("%d", &typetmp);
+    }
+    else if (neut_ori_des_isvalid (var)) // orientation descriptor
+    {
+      (*pvalqty) = ol_des_size (var);
+      (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
+
+      double *q = ol_q_alloc ();
+      neut_tesr_vox_ori (Tesr, id, q);
+      neut_ori_des_ori (q, var, *pvals);
+      ol_q_free (q);
     }
     else
       status = -1;

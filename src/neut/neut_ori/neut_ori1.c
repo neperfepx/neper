@@ -853,3 +853,90 @@ neut_ori_fiber_in (double *q, char *crysym, double *dirc, double *dirs, double t
 
   return status;
 }
+
+int
+neut_ori_des_isvalid (char *des)
+{
+  int valqty, status;
+  char **vals = NULL;
+
+  ut_list_break (des, NEUT_SEP_DEP, &vals, &valqty);
+
+  status = 1;
+
+  if (valqty < 1 || valqty > 2)
+    status = 0;
+
+  else if (strcmp (vals[0], "euler-bunge")
+   && strcmp (vals[0], "euler-kocks")
+   && strcmp (vals[0], "euler-roe")
+   && strcmp (vals[0], "rotmat")
+   && strcmp (vals[0], "axis-angle")
+   && strcmp (vals[0], "rodrigues")
+   && strcmp (vals[0], "quaternion"))
+   status = 0;
+
+  else if (valqty == 2 && strcmp (vals[1], "active") && strcmp (vals[1], "passive"))
+   status = 0;
+
+  ut_free_2d_char (&vals, valqty);
+
+  return status;
+}
+
+int
+neut_ori_des_ori (double *q0, char *des0, double *ori)
+{
+  int status;
+  double *q = ol_q_alloc ();
+  char *des = NULL, *conv = NULL;
+
+  neut_ori_expr_desconv (des0, &des, &conv);
+
+  ol_q_memcpy (q0, q);
+
+  status = 0;
+
+  if (!strcmp (conv, "passive"))
+    ol_q_inverse (q, q);
+
+  if (!strcmp (des, "euler-bunge"))
+    ol_q_e (q, ori);
+
+  else if (!strcmp (des, "euler-kocks"))
+  {
+    ol_q_e (q, ori);
+    ol_e_ek (ori, ori);
+  }
+  else if (!strcmp (des, "euler-roe"))
+  {
+    ol_q_e (q, ori);
+    ol_e_er (ori, ori);
+  }
+  else if (!strcmp (des, "rotmat"))
+  {
+    double **g = ol_g_alloc ();
+    ol_q_g (q, g);
+    ut_array_1d_memcpy (g[0], 3, ori);
+    ut_array_1d_memcpy (g[1], 3, ori + 3);
+    ut_array_1d_memcpy (g[2], 3, ori + 6);
+    ol_g_free (g);
+  }
+  else if (!strcmp (des, "axis-angle"))
+    ol_q_rtheta (q, ori, ori + 3);
+
+  else if (!strcmp (des, "rodrigues"))
+    ol_q_R (q, ori);
+
+  else if (!strcmp (des, "quaternion"))
+    ol_q_q (q, ori);
+
+  else
+    status = -1;
+
+  ol_q_free (q);
+  ut_free_1d_char (&des);
+  ut_free_1d_char (&conv);
+
+  return status;
+}

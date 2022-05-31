@@ -52,6 +52,10 @@ extern "C"
 
   extern int neut_ori_fiber_in (double *q, char *crysym, double *dirc, double *dirs, double theta);
 
+  extern int neut_ori_des_isvalid (char *des);
+
+  extern int neut_ori_des_ori (double *q0, char *des, double *ori);
+
 #ifdef __cplusplus
 }
 #endif

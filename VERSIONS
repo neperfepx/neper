@@ -1,8 +1,9 @@
-New in 4.4.2-16 (09 May 2022):
-- module -T: made minor fixes.
+New in 4.4.2-17 (31 May 2022):
+- module -T: made minor fixes, added -statcell and -statvox
+  <orientation_descriptor>.
 - module -M: added -transform node and ori, fixed -stateltco and -statelsetco,
   made minor fix to inp output, made minor fixes, added -stat{elt,elset}{1d,2d}
-  theta.
+  theta, added -statelt and -statelset <orientation_descriptor>.
 - module -S: fixed various bugs related to the initial state, made minor other
   fixes.
 - general: made various installation improvements.

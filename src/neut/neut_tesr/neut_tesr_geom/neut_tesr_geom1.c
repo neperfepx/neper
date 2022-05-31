@@ -72,6 +72,31 @@ neut_tesr_vox_oridef (struct TESR Tesr, int vox, int *poridef)
 }
 
 int
+neut_tesr_vox_ori (struct TESR Tesr, int vox, double *ori)
+{
+  int pos[3];
+
+  neut_tesr_vox_pos (Tesr, vox, pos);
+
+  if (Tesr.VoxCell[pos[0]][pos[1]][pos[2]])
+  {
+    if (Tesr.VoxOri)
+      ut_array_1d_memcpy (Tesr.VoxOri[pos[0]][pos[1]][pos[2]], 4, ori);
+    else
+      ut_array_1d_memcpy (Tesr.CellOri[Tesr.VoxCell[pos[0]][pos[1]][pos[2]]], 4, ori);
+
+    return 0;
+  }
+
+  else
+  {
+    ut_array_1d_zero (ori, 4);
+
+    return -1;
+  }
+}
+
+int
 neut_tesr_vox_cell (struct TESR Tesr, int vox, int *pcell)
 {
   int voxpos[3];

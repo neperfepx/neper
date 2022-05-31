@@ -222,6 +222,10 @@ ut_math_vars (char *expr, char ***pvars, int *pvarqty)
 
   ut_string_string (expr, &tmp);
 
+  ut_string_fnrs (tmp, "euler-", "euler_", INT_MAX);
+  ut_string_fnrs (tmp, ":active", "_active", INT_MAX);
+  ut_string_fnrs (tmp, ":passive", "_passive", INT_MAX);
+
   var = 0;
   bracket = 0;
   length = 0;
@@ -317,6 +321,13 @@ ut_math_vars (char *expr, char ***pvars, int *pvarqty)
                                     strlen (strings[i]) + 1);
       strcpy ((*pvars)[*pvarqty - 1], strings[i]);
     }
+
+  for (i = 0; i < *pvarqty; i++)
+  {
+    ut_string_fnrs ((*pvars)[i], "euler_bunge", "euler-bunge", 1);
+    ut_string_fnrs ((*pvars)[i], "_active", ":active", 1);
+    ut_string_fnrs ((*pvars)[i], "_passive", ":passive", 1);
+  }
 
   ut_free_1d_char (&tmp);
   ut_free_2d_char (&strings, stringqty);

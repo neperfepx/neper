@@ -80,3 +80,15 @@ neut_mesh_elts_orianiso (struct NODES Nodes, struct MESH Mesh,
 
   return;
 }
+
+void
+neut_mesh_elt_ori (struct MESH Mesh, int id, double *ori)
+{
+  if (Mesh.EltOri)
+    ol_q_q (Mesh.EltOri[id], ori);
+
+  else
+    ol_q_q (Mesh.ElsetOri[Mesh.EltElset[id]], ori);
+
+  return;
+}

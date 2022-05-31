@@ -139,141 +139,142 @@ Available keys for tessellation seeds, vertices, edges, faces, polyhedra, crysta
 
 To turn a key value into a value relative to the mean over all entities (e.g. the relative cell size), append the key expression with the :data:`:rel` modifier.  To turn a key value into a value which holds for a unit cell size, append the key expression with the :data:`:uc` modifier.  To use as a reference only the *body* or *true* entities (see below), append :data:`b` or :data:`t` to the modifiers, respectively.
 
-=========================== =================================================================================================== =========================================
-**Key**                     **Descriptor**                                                                                      **Apply to**
-:data:`id`                  identifier                                                                                          seed, ver, edge, face, poly, group
-:data:`x`                   x coordinate                                                                                        seed, ver, edge, face, poly
-:data:`y`                   y coordinate                                                                                        seed, ver, edge, face, poly
-:data:`z`                   z coordinate                                                                                        seed, ver, edge, face, poly
-:data:`coo`                 x, y and z coordinates                                                                              seed, ver, edge, face, poly
-:data:`xmin`                minimum x coordinate                                                                                edge, face, poly
-:data:`ymin`                minimum y coordinate                                                                                edge, face, poly
-:data:`zmin`                minimum z coordinate                                                                                edge, face, poly
-:data:`xmax`                maximum x coordinate                                                                                edge, face, poly
-:data:`ymax`                maximum y coordinate                                                                                edge, face, poly
-:data:`zmax`                maximum z coordinate                                                                                edge, face, poly
-:data:`w`                   weight (width for a lamellar tessellation)                                                          seed, cell
-:data:`true`                true level                                                                                          ver, edge, face, poly
-:data:`body`                body level                                                                                          ver, edge, face, poly
-:data:`state`               state                                                                                               ver, edge, face, poly
-:data:`domtype`             type of domain (0 if on a domain vertex, 1 if on a domain edge and 2 if on a domain face)           ver, edge, face
-:data:`domface`             domain face (-1 if undefined)                                                                       face
-:data:`domedge`             domain edge (-1 if undefined)                                                                       edge
-:data:`domver`              domain vertex (-1 if undefined)                                                                     ver
-:data:`scale`               scale                                                                                               face [#multiscale_face]_
-:data:`length`              length                                                                                              edge
-:data:`area`                surface area                                                                                        face, poly, group
-:data:`vol`                 volume                                                                                              poly, group
-:data:`size`                size (surface area/volume in 2D/3D)                                                                 cell, group
-:data:`diameq`              equivalent diameter [#equivalent_diameter]_                                                         face, poly
-:data:`avdiameq`            average equivalent diameter [#equivalent_diameter]_                                                 face, poly
-:data:`radeq`               equivalent radius (half of the eq. diameter)                                                        face, poly
-:data:`avradeq`             average equivalent radius (half of the eq. diameter)                                                face, poly
-:data:`sphericity`          sphericity [#sphericity]_                                                                           poly
-:data:`circularity`         circularity [#circularity]_                                                                         face
-:data:`convexity`           convexity [#convexity]_                                                                             face (only for a 2D tessellation), poly
-:data:`dihangleav`          average dihedral angle                                                                              face, poly
-:data:`dihanglemin`         minimum dihedral angle                                                                              face, poly
-:data:`dihanglemax`         maximum dihedral angle                                                                              face, poly
-:data:`dihangles`           dihedral angles                                                                                     face, poly
-:data:`ff`                  flatness fault (in degrees)                                                                         face
-:data:`theta`               disorientation angle (in degrees)                                                                   edge (in 2D), face (in 3D)
-:data:`cyl`                 cylinder polygonization [#cyl]_                                                                     edge
-:data:`vernb`               number of vertices                                                                                  edge, face, poly
-:data:`vers`                vertices                                                                                            edge, face, poly
-:data:`edgenb`              number of edges                                                                                     ver, face, poly
-:data:`edges`               edges                                                                                               ver, face, poly
-:data:`facenb`              number of faces                                                                                     ver, edge, poly
-:data:`faces`               faces                                                                                               ver, edge, poly
-:data:`polynb`              number of polyhedra                                                                                 ver, edge, face
-:data:`polys`               polyhedra                                                                                           ver, edge, face
-:data:`nfacenb`             number of neighboring faces                                                                         face
-:data:`nfaces`              neighboring faces                                                                                   face
-:data:`nfacenb_samedomain`  number of neighboring faces of the same domain (parent cell of a multiscale tessellation)           face (in 2D)
-:data:`nfaces_samedomain`   neighboring faces of the same domain (parent cell of a multiscale tessellation)                     face (in 2D)
-:data:`npolynb`             number of neighboring polyhedra                                                                     poly
-:data:`npolys`              neighboring polyhedra                                                                               poly
-:data:`npolynb_samedomain`  number of neighboring polyhedra of the same domain (parent cell of a multiscale tessellation)       poly
-:data:`npolys_samedomain`   neighboring polyhedra of the same domain (parent cell of a multiscale tessellation)                 poly
-:data:`vercoos`             vertex coordinates                                                                                  face, poly
-:data:`faceareas`           face surface areas                                                                                  poly
-:data:`faceeqs`             face equations [#face_equation]_                                                                    poly
-:data:`nseednb`             number of neighboring seeds                                                                         poly
-:data:`nseeds`              neighboring seeds [#nseeds]_                                                                        poly
-:data:`scaleid(scale_nb)`   identifier of the corresponding cell at scale scale_nb                                              cell
-:data:`lam`                 lamella width id [#lam]_                                                                            cell
-:data:`mode`                mode [#mode]_                                                                                       cell
-:data:`group`               group                                                                                               cell
-:data:`per`                 periodic (1 if periodic, 0 otherwise)                                                               ver, edge, face (in 3D)
-:data:`fiber(...)`          1 if in orientation fiber and 0 otherwise, see :ref:`orientation_fibers`                            poly
-=========================== =================================================================================================== =========================================
+================================= =================================================================================================== =========================================
+**Key**                           **Descriptor**                                                                                      **Apply to**
+:data:`id`                        identifier                                                                                          seed, ver, edge, face, poly, group
+:data:`x`                         x coordinate                                                                                        seed, ver, edge, face, poly
+:data:`y`                         y coordinate                                                                                        seed, ver, edge, face, poly
+:data:`z`                         z coordinate                                                                                        seed, ver, edge, face, poly
+:data:`coo`                       x, y and z coordinates                                                                              seed, ver, edge, face, poly
+:data:`xmin`                      minimum x coordinate                                                                                edge, face, poly
+:data:`ymin`                      minimum y coordinate                                                                                edge, face, poly
+:data:`zmin`                      minimum z coordinate                                                                                edge, face, poly
+:data:`xmax`                      maximum x coordinate                                                                                edge, face, poly
+:data:`ymax`                      maximum y coordinate                                                                                edge, face, poly
+:data:`zmax`                      maximum z coordinate                                                                                edge, face, poly
+:data:`w`                         weight (width for a lamellar tessellation)                                                          seed, cell
+:data:`true`                      true level                                                                                          ver, edge, face, poly
+:data:`body`                      body level                                                                                          ver, edge, face, poly
+:data:`state`                     state                                                                                               ver, edge, face, poly
+:data:`domtype`                   type of domain (0 if on a domain vertex, 1 if on a domain edge and 2 if on a domain face)           ver, edge, face
+:data:`domface`                   domain face (-1 if undefined)                                                                       face
+:data:`domedge`                   domain edge (-1 if undefined)                                                                       edge
+:data:`domver`                    domain vertex (-1 if undefined)                                                                     ver
+:data:`scale`                     scale                                                                                               face [#multiscale_face]_
+:data:`length`                    length                                                                                              edge
+:data:`area`                      surface area                                                                                        face, poly, group
+:data:`vol`                       volume                                                                                              poly, group
+:data:`size`                      size (surface area/volume in 2D/3D)                                                                 cell, group
+:data:`diameq`                    equivalent diameter [#equivalent_diameter]_                                                         face, poly
+:data:`avdiameq`                  average equivalent diameter [#equivalent_diameter]_                                                 face, poly
+:data:`radeq`                     equivalent radius (half of the eq. diameter)                                                        face, poly
+:data:`avradeq`                   average equivalent radius (half of the eq. diameter)                                                face, poly
+:data:`sphericity`                sphericity [#sphericity]_                                                                           poly
+:data:`circularity`               circularity [#circularity]_                                                                         face
+:data:`convexity`                 convexity [#convexity]_                                                                             face (only for a 2D tessellation), poly
+:data:`dihangleav`                average dihedral angle                                                                              face, poly
+:data:`dihanglemin`               minimum dihedral angle                                                                              face, poly
+:data:`dihanglemax`               maximum dihedral angle                                                                              face, poly
+:data:`dihangles`                 dihedral angles                                                                                     face, poly
+:data:`ff`                        flatness fault (in degrees)                                                                         face
+:data:`theta`                     disorientation angle (in degrees)                                                                   edge (in 2D), face (in 3D)
+:data:`cyl`                       cylinder polygonization [#cyl]_                                                                     edge
+:data:`vernb`                     number of vertices                                                                                  edge, face, poly
+:data:`vers`                      vertices                                                                                            edge, face, poly
+:data:`edgenb`                    number of edges                                                                                     ver, face, poly
+:data:`edges`                     edges                                                                                               ver, face, poly
+:data:`facenb`                    number of faces                                                                                     ver, edge, poly
+:data:`faces`                     faces                                                                                               ver, edge, poly
+:data:`polynb`                    number of polyhedra                                                                                 ver, edge, face
+:data:`polys`                     polyhedra                                                                                           ver, edge, face
+:data:`nfacenb`                   number of neighboring faces                                                                         face
+:data:`nfaces`                    neighboring faces                                                                                   face
+:data:`nfacenb_samedomain`        number of neighboring faces of the same domain (parent cell of a multiscale tessellation)           face (in 2D)
+:data:`nfaces_samedomain`         neighboring faces of the same domain (parent cell of a multiscale tessellation)                     face (in 2D)
+:data:`npolynb`                   number of neighboring polyhedra                                                                     poly
+:data:`npolys`                    neighboring polyhedra                                                                               poly
+:data:`npolynb_samedomain`        number of neighboring polyhedra of the same domain (parent cell of a multiscale tessellation)       poly
+:data:`npolys_samedomain`         neighboring polyhedra of the same domain (parent cell of a multiscale tessellation)                 poly
+:data:`vercoos`                   vertex coordinates                                                                                  face, poly
+:data:`faceareas`                 face surface areas                                                                                  poly
+:data:`faceeqs`                   face equations [#face_equation]_                                                                    poly
+:data:`nseednb`                   number of neighboring seeds                                                                         poly
+:data:`nseeds`                    neighboring seeds [#nseeds]_                                                                        poly
+:data:`scaleid(<scale_nb>)`       identifier of the corresponding cell at scale :data:`<scale_nb>`                                    cell
+:data:`lam`                       lamella width id [#lam]_                                                                            cell
+:data:`mode`                      mode [#mode]_                                                                                       cell
+:data:`group`                     group                                                                                               cell
+:data:`per`                       periodic (1 if periodic, 0 otherwise)                                                               ver, edge, face (in 3D)
+:data:`fiber(...)`                1 if in orientation fiber and 0 otherwise, see :ref:`orientation_fibers`                            poly
+:data:`<orientation_descriptor>`  :ref:`orientation descriptor <rotation_and_orientation_descriptors>`                                face (in 2D), poly (in 3D)
+================================= =================================================================================================== =========================================
 
-Variables consisting of several values (:data:`vers`, etc.) are not available for sorting
-(option :option:`-sort`).
+  Variables consisting of several values (:data:`vers`, etc.) are not available for sorting
+  (option :option:`-sort`).
 
-For a cell, the :data:`body` and :data:`true` variables are
-defined as follows,
+  For a cell, the :data:`body` and :data:`true` variables are
+  defined as follows,
 
-- :data:`body` is an integer equal to :data:`0` if the cell is at the domain boundary, i.e.if it shares at least one face with it (edge in 2D), and is equal to :data:`1` or higher otherwise.  This is determined as follows: if a cell is surrounded by cells with :data:`body` values equal to or higher than :data:`n`, its :data:`body` value is equal to :data:`n + 1`.  Therefore, :data:`body` tends to increase with the distance to the domain boundary and can be used to define cells that may suffer from boundary effects.
+  - :data:`body` is an integer equal to :data:`0` if the cell is at the domain boundary, i.e. if it shares at least one face with it (edge in 2D), and is equal to :data:`1` or higher otherwise.  This is determined as follows: if a cell is surrounded by cells with :data:`body` values equal to or higher than :data:`n`, its :data:`body` value is equal to :data:`n + 1`.  Therefore, :data:`body` tends to increase with the distance to the domain boundary and can be used to define cells that may suffer from boundary effects.
 
-- :data:`true` is an integer equal to :data:`0` it the cell shape is biased by the domain boundary, and is equal to :data:`1` or higher otherwise. A value higher than :data:`0` is achieved if and only if any seed that would have been located outside the domain (where it could not be) would not have affected the shape of the cell. This condition is fulfilled if the distance between the seed of the cell and any of its vertices is lower than the minimum distance between a vertex of the cell and the domain boundary.  :data:`true` is extended to values higher than :data:`1` in the same way as body: if a cell is surrounded by cells with :data:`true` values equal to or higher than :data:`n`, its :data:`true` value is equal to :data:`n + 1`.  As :data:`body`, :data:`true` tends to increase with the distance to the domain boundary, and :math:`true \leq body`.  :data:`true` is especially useful for statistics on the cells (morphology, mesh, etc.), for which only cells with :math:`true \geq 1` should be considered.
+  - :data:`true` is an integer equal to :data:`0` it the cell shape is biased by the domain boundary, and is equal to :data:`1` or higher otherwise. A value higher than :data:`0` is achieved if and only if any seed that would have been located outside the domain (where it could not be) would not have affected the shape of the cell. This condition is fulfilled if the distance between the seed of the cell and any of its vertices is lower than the minimum distance between a vertex of the cell and the domain boundary.  :data:`true` is extended to values higher than :data:`1` in the same way as body: if a cell is surrounded by cells with :data:`true` values equal to or higher than :data:`n`, its :data:`true` value is equal to :data:`n + 1`.  As :data:`body`, :data:`true` tends to increase with the distance to the domain boundary, and :math:`true \leq body`.  :data:`true` is especially useful for statistics on the cells (morphology, mesh, etc.), for which only cells with :math:`true \geq 1` should be considered.
 
-For entities of lower dimension than cells (vertices, edges and faces), :data:`body` and :data:`true` are equal to the maximum :data:`body`or :data:`true` values of the cells they belong to.
+  For entities of lower dimension than cells (vertices, edges and faces), :data:`body` and :data:`true` are equal to the maximum :data:`body`or :data:`true` values of the cells they belong to.
 
-.. _raster_tessellation_keys:
+  .. _raster_tessellation_keys:
 
-Raster Tessellation Keys
-------------------------
+  Raster Tessellation Keys
+  ------------------------
 
-Available keys for raster tessellation itself are provided below.
+  Available keys for raster tessellation itself are provided below.
 
-===================== ============================================ ======================
-**Key**               **Descriptor**                               **Apply to**
-:data:`dim`           dimension                                    tesr
-:data:`voxnbx`        number of voxels in direction x              tesr
-:data:`voxnby`        number of voxels in direction y              tesr
-:data:`voxnbz`        number of voxels in direction z              tesr
-:data:`voxnb`         number of voxels in total                    tesr
-:data:`originx`       origin x coordinate                          tesr
-:data:`originy`       origin y coordinate                          tesr
-:data:`originz`       origin z coordinate                          tesr
-:data:`voxsizex`      voxel size in direction x                    tesr
-:data:`voxsizey`      voxel size in direction y                    tesr
-:data:`voxsizez`      voxel size in direction z                    tesr
-:data:`rastersizex`   raster size in direction x                   tesr
-:data:`rastersizey`   raster size in direction y                   tesr
-:data:`rastersizez`   raster size in direction z                   tesr
-:data:`rastersize`    raster size (surface area/volume in 2D/3D)   tesr
-:data:`area`          surface area                                 tesr
-:data:`vol`           volume                                       tesr
-:data:`size`          size (surface area/volume in 2D/3D)          tesr
-:data:`x`             x coordinate                                 tesr
-:data:`y`             y coordinate                                 tesr
-:data:`z`             z coordinate                                 tesr
-:data:`coo`           x, y and z coordinates                       tesr
-===================== ============================================ ======================
+  ===================== ============================================ ======================
+  **Key**               **Descriptor**                               **Apply to**
+  :data:`dim`           dimension                                    tesr
+  :data:`voxnbx`        number of voxels in direction x              tesr
+  :data:`voxnby`        number of voxels in direction y              tesr
+  :data:`voxnbz`        number of voxels in direction z              tesr
+  :data:`voxnb`         number of voxels in total                    tesr
+  :data:`originx`       origin x coordinate                          tesr
+  :data:`originy`       origin y coordinate                          tesr
+  :data:`originz`       origin z coordinate                          tesr
+  :data:`voxsizex`      voxel size in direction x                    tesr
+  :data:`voxsizey`      voxel size in direction y                    tesr
+  :data:`voxsizez`      voxel size in direction z                    tesr
+  :data:`rastersizex`   raster size in direction x                   tesr
+  :data:`rastersizey`   raster size in direction y                   tesr
+  :data:`rastersizez`   raster size in direction z                   tesr
+  :data:`rastersize`    raster size (surface area/volume in 2D/3D)   tesr
+  :data:`area`          surface area                                 tesr
+  :data:`vol`           volume                                       tesr
+  :data:`size`          size (surface area/volume in 2D/3D)          tesr
+  :data:`x`             x coordinate                                 tesr
+  :data:`y`             y coordinate                                 tesr
+  :data:`z`             z coordinate                                 tesr
+  :data:`coo`           x, y and z coordinates                       tesr
+  ===================== ============================================ ======================
 
-Available keys for raster tessellation seeds, cells, cell groups and voxels are provided below.  Mathematical and logical expressions based on these keys can also be used.  To turn a key value into a value relative to the mean over all entities (e.g.the relative cell size), append the key expression with the :data:`:rel` modifier.  To turn a key value into a value which holds for a unit cell size, append the key expression with the :data:`:uc` modifier.
+  Available keys for raster tessellation seeds, cells, cell groups and voxels are provided below.  Mathematical and logical expressions based on these keys can also be used.  To turn a key value into a value relative to the mean over all entities (e.g.the relative cell size), append the key expression with the :data:`:rel` modifier.  To turn a key value into a value which holds for a unit cell size, append the key expression with the :data:`:uc` modifier.
 
-General
-~~~~~~~
+  General
+  ~~~~~~~
 
-============================ ======================================================================= ====================================
-**Key**                      **Descriptor**                                                          **Applies to**
-:data:`id`                   identifier                                                              seed, cell, group, voxel
-:data:`cell`                 cell                                                                    voxel
-:data:`oridef`               orientation is defined                                                  voxel
-:data:`w`                    Laguerre weight                                                         seed
-============================ ======================================================================= ====================================
+  ============================ ======================================================================= ====================================
+  **Key**                      **Descriptor**                                                          **Applies to**
+  :data:`id`                   identifier                                                              seed, cell, group, voxel
+  :data:`cell`                 cell                                                                    voxel
+  :data:`oridef`               orientation is defined                                                  voxel
+  :data:`w`                    Laguerre weight                                                         seed
+  ============================ ======================================================================= ====================================
 
-Geometry
-~~~~~~~~
+  Geometry
+  ~~~~~~~~
 
-============================ ======================================================================= ====================================
-**Key**                      **Descriptor**                                                          **Applies to**
-:data:`x`                    x coordinate                                                            seed, cell, voxel
-:data:`y`                    y coordinate                                                            seed, cell, voxel
-:data:`z`                    z coordinate                                                            seed, cell, voxel
+  ============================ ======================================================================= ====================================
+  **Key**                      **Descriptor**                                                          **Applies to**
+  :data:`x`                    x coordinate                                                            seed, cell, voxel
+  :data:`y`                    y coordinate                                                            seed, cell, voxel
+  :data:`z`                    z coordinate                                                            seed, cell, voxel
 :data:`coo`                  x, y and z coordinates                                                  seed, cell, voxel
 :data:`vx`                   x coordinate (in voxel)                                                 voxel
 :data:`vy`                   y coordinate (in voxel)                                                 voxel
@@ -304,14 +305,15 @@ Geometry
 
 Orientation
 ~~~~~~~~~~~
-============================ ======================================================================= ====================================
-**Key**                      **Descriptor**                                                          **Applies to**
-:data:`gos`                  grain orientation spread [#gos]_                                        cell
-:data:`oridisanisoangles`    orientation distribution anisotropy / principal angles [#JMPS2015]_     cell
-:data:`oridisanisoaxes`      orientation distribution anisotropy / principal axes [#JMPS2015]_       cell
-:data:`oridisanisofact`      orientation distribution anisotropy factor [#JMPS2015]_                 cell
-:data:`oridisanisodeltas`    orientation distribution anisotropy / principal delta angles [#deltas]_ cell
-============================ ======================================================================= ====================================
+================================ ======================================================================= ====================================
+**Key**                          **Descriptor**                                                          **Applies to**
+:data:`<orientation_descriptor>` :ref:`orientation descriptor <rotation_and_orientation_descriptors>`    voxel, cell
+:data:`gos`                      grain orientation spread [#gos]_                                        cell
+:data:`oridisanisoangles`        orientation distribution anisotropy / principal angles [#JMPS2015]_     cell
+:data:`oridisanisoaxes`          orientation distribution anisotropy / principal axes [#JMPS2015]_       cell
+:data:`oridisanisofact`          orientation distribution anisotropy factor [#JMPS2015]_                 cell
+:data:`oridisanisodeltas`        orientation distribution anisotropy / principal delta angles [#deltas]_ cell
+================================ ======================================================================= ====================================
 
 .. _tessellation_optimization_keys:
 
@@ -384,8 +386,8 @@ The available keys for option :option:`-morphooptilogval` are provided below.  U
 :data:`valmin`          minimal value
 :data:`val0`            value, without smoothing
 :data:`valmin0`         minimal value, without smoothing
-:data:`val(i)`          :math:`i` th subvalue
-:data:`val0(i)`         :math:`i` th subvalue, without smoothing
+:data:`val(<i>)`        :data:`i` th subvalue
+:data:`val0(<i>)`       :data:`i` th subvalue, without smoothing
 :data:`eps`             error on the objective function (see :option:`-morphooptistop`)
 :data:`reps`            relative error on the objective function (see :option:`-morphooptistop`)
 :data:`loop`            optimization loop
@@ -476,50 +478,51 @@ Available keys for a mesh itself are provided below.  "co" stands for "cohesive"
 
 Available keys for mesh node, elements and element sets (of all dimensions) and points are provided below. "co" stands for "cohesive".
 
-================================================= ========================================================= ================================================================
-**Key**                                           **Descriptor**                                            **Apply to**
-:data:`id`                                        identifier                                                node, {0-3}D,co elt, {0-3}D,co elset
-:data:`x`                                         x coordinate                                              node, {0-3}D,co elt, {0-3}D elset
-:data:`y`                                         y coordinate                                              node, {0-3}D,co elt, {0-3}D elset
-:data:`z`                                         z coordinate                                              node, {0-3}D,co elt, {0-3}D elset
-:data:`coo`                                       x, y and z coordinates                                    node, {0-3}D,co elt, {0-3}D elset
-:data:`dim`                                       lowest parent elt dimension                               node
-:data:`elset0d`                                   0D elset                                                  0D elt
-:data:`elset1d`                                   1D elset                                                  1D elt
-:data:`elset2d`                                   2D elset                                                  2D elt
-:data:`elset3d`                                   3D elset                                                  3D elt
-:data:`elsetco`                                   Cohesive elset                                            co elt
-:data:`part`                                      partition                                                 {0-3}D elt, node
-:data:`group`                                     group                                                     {0-3}D elt, {0-3}D elset
-:data:`cyl`                                       cylinder polygonization [#cyl]_                           1D elt, 1D elset
-:data:`vol`                                       volume                                                    3D elt, 3D elset
-:data:`area`                                      surface area                                              2D elt
-:data:`diameq`                                    equivalent diameter                                       {2,3}D elt, {2,3}D elset
-:data:`radeq`                                     equivalent radius                                         {2,3}D elt, {2,3}D elset
-:data:`length`                                    average edge length                                       {0-3}D elt, 1D elset
-:data:`lengths`                                   edge lengths                                              2D elt, 3D elt
-:data:`elsetvol`                                  elset volume                                              3D elt
-:data:`elsetarea`                                 elset area                                                2D elt
-:data:`elsetlength`                               elset length                                              1D elt
-:data:`rr`                                        radius ratio                                              3D elt
-:data:`rrav`                                      average radius ratio                                      3D elset
-:data:`rrmin`                                     min radius ratio                                          3D elset
-:data:`rrmax`                                     max radius ratio                                          3D elset
-:data:`Osize`                                     Osize                                                     3D elset
-:data:`eltnb`                                     number of elements                                        {0-3}D,co elset
-:data:`true`                                      true level                                                {0-3}D elt, {0-3}D elset
-:data:`body`                                      body level                                                {0-3}D elt, {0-3}D elset
-:data:`domtype`                                   type of domain [#domtype]_                                {0-2}D elt, {0-2}D elset
-:data:`2dmeshp`                                   closest point of the 2D mesh                              node, 3D elt
-:data:`2dmeshd`                                   distance to :data:`2dmeshp`                               node, 3D elt
-:data:`2dmeshv`                                   vector to :data:`2dmeshp`                                 node, 3D elt
-:data:`2dmeshn`                                   outgoing normal vector at :data:`2dmeshp`                 node, 3D elt
-:data:`per`                                       periodic (1 if periodic, 0 otherwise)                     {0,1}D elt, 2D elt (in 3D), {0,1}D elset, 2D elset (in 3D)
-:data:`col_rodrigues`                             color in Rodrigues vector convention [#col_rodrigues]_    node
-:data:`col_stdtriangle`                           color in IPF convention [#col_stdtriangle]_               node
-:data:`fiber(...)` [#fiber]_                      1 if in orientation fiber and 0 otherwise                 3D elt, 3D elset
-:data:`theta`                                     disorientation angle (in degrees)                         1D elt and elset (in 2D), 2D elt and elset (in 3D)
-================================================= ========================================================= ================================================================
+================================================= ===================================================================== ===================================================================
+**Key**                                           **Descriptor**                                                        **Apply to**
+:data:`id`                                        identifier                                                            node, {0-3}D,co elt, {0-3}D,co elset
+:data:`x`                                         x coordinate                                                          node, {0-3}D,co elt, {0-3}D elset
+:data:`y`                                         y coordinate                                                          node, {0-3}D,co elt, {0-3}D elset
+:data:`z`                                         z coordinate                                                          node, {0-3}D,co elt, {0-3}D elset
+:data:`coo`                                       x, y and z coordinates                                                node, {0-3}D,co elt, {0-3}D elset
+:data:`dim`                                       lowest parent elt dimension                                           node
+:data:`elset0d`                                   0D elset                                                              0D elt
+:data:`elset1d`                                   1D elset                                                              1D elt
+:data:`elset2d`                                   2D elset                                                              2D elt
+:data:`elset3d`                                   3D elset                                                              3D elt
+:data:`elsetco`                                   Cohesive elset                                                        co elt
+:data:`part`                                      partition                                                             {0-3}D elt, node
+:data:`group`                                     group                                                                 {0-3}D elt, {0-3}D elset
+:data:`cyl`                                       cylinder polygonization [#cyl]_                                       1D elt, 1D elset
+:data:`vol`                                       volume                                                                3D elt, 3D elset
+:data:`area`                                      surface area                                                          2D elt
+:data:`diameq`                                    equivalent diameter                                                   {2,3}D elt, {2,3}D elset
+:data:`radeq`                                     equivalent radius                                                     {2,3}D elt, {2,3}D elset
+:data:`length`                                    average edge length                                                   {0-3}D elt, 1D elset
+:data:`lengths`                                   edge lengths                                                          2D elt, 3D elt
+:data:`elsetvol`                                  elset volume                                                          3D elt
+:data:`elsetarea`                                 elset area                                                            2D elt
+:data:`elsetlength`                               elset length                                                          1D elt
+:data:`rr`                                        radius ratio                                                          3D elt
+:data:`rrav`                                      average radius ratio                                                  3D elset
+:data:`rrmin`                                     min radius ratio                                                      3D elset
+:data:`rrmax`                                     max radius ratio                                                      3D elset
+:data:`Osize`                                     Osize                                                                 3D elset
+:data:`eltnb`                                     number of elements                                                    {0-3}D,co elset
+:data:`true`                                      true level                                                            {0-3}D elt, {0-3}D elset
+:data:`body`                                      body level                                                            {0-3}D elt, {0-3}D elset
+:data:`domtype`                                   type of domain [#domtype]_                                            {0-2}D elt, {0-2}D elset
+:data:`2dmeshp`                                   closest point of the 2D mesh                                          node, 3D elt
+:data:`2dmeshd`                                   distance to :data:`2dmeshp`                                           node, 3D elt
+:data:`2dmeshv`                                   vector to :data:`2dmeshp`                                             node, 3D elt
+:data:`2dmeshn`                                   outgoing normal vector at :data:`2dmeshp`                             node, 3D elt
+:data:`per`                                       periodic (1 if periodic, 0 otherwise)                                 {0,1}D elt, 2D elt (in 3D), {0,1}D elset, 2D elset (in 3D)
+:data:`col_rodrigues`                             color in Rodrigues vector convention [#col_rodrigues]_                node
+:data:`col_stdtriangle`                           color in IPF convention [#col_stdtriangle]_                           node
+:data:`fiber(...)` [#fiber]_                      1 if in orientation fiber and 0 otherwise                             3D elt, 3D elset
+:data:`theta`                                     disorientation angle (in degrees)                                     1D elt and elset (in 2D), 2D elt and elset (in 3D)
+:data:`<orientation_descriptor>`                  :ref:`orientation descriptor <rotation_and_orientation_descriptors>`  2D elt (in 2D), 2D elset (in 2D), 3D elt (in 3D), 3D elset (in 3D)
+================================================= ===================================================================== ===================================================================
 
 Variables beginning with :data:`2dmesh` are only available for statistics (options beginning with :data:`-stat` of module -M); for elements, they apply to the centroids.
 

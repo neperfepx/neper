@@ -25,6 +25,8 @@ extern void neut_mesh_elts_orianiso (struct NODES Nodes, struct MESH Mesh,
                                      char *crysym, double **evect,
                                      double *eval);
 
+extern void neut_mesh_elt_ori (struct MESH Mesh, int id, double *ori);
+
 #endif				/* NEUT_MESH_ORI_H */
 
 #ifdef __cplusplus

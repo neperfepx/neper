@@ -123,6 +123,8 @@ extern int neut_tesr_vox_cellid (struct TESR Tesr, int vox, int *pcell);
 
   extern void neut_tesr_cell_bbox_coo (struct TESR Tesr, int cell, double **coo);
 
+  extern int neut_tesr_vox_ori (struct TESR Tesr, int vox, double *ori);
+
 #include"net_utils/net_utils.h"
 
 #endif				/* NEUT_TESR_GEOM_H */
