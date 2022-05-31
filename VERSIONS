@@ -1,5 +1,5 @@
-New in 4.4.2-17 (31 May 2022):
-- module -T: made minor fixes, added -statcell and -statvox
+New in 4.4.2-18 (31 May 2022):
+- module -T: fixed -morpho cube, made minor fixes, added -statcell and -statvox
   <orientation_descriptor>.
 - module -M: added -transform node and ori, fixed -stateltco and -statelsetco,
   made minor fix to inp output, made minor fixes, added -stat{elt,elset}{1d,2d}

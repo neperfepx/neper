@@ -98,9 +98,13 @@ net_tess_cube_vers (int *N, double **bbox, int ***verid, struct TESS *pTess)
 {
   int i, j, k, id;
   double *size = ut_alloc_1d (3);
+  double *origin = ut_alloc_1d (3);
 
   for (i = 0; i < 3; i++)
+  {
     size[i] = bbox[i][1] - bbox[i][0];
+    origin[i] = bbox[i][0];
+  }
 
   (*pTess).VerQty = (N[0] + 1) * (N[1] + 1) * (N[2] + 1);
   (*pTess).VerCoo = ut_alloc_2d ((*pTess).VerQty + 1, 3);
@@ -111,12 +115,13 @@ net_tess_cube_vers (int *N, double **bbox, int ***verid, struct TESS *pTess)
       for (i = 0; i <= N[0]; i++)
       {
         id = verid[i][j][k];
-        (*pTess).VerCoo[id][0] = (double) i / N[0] * size[0];
-        (*pTess).VerCoo[id][1] = (double) j / N[1] * size[1];
-        (*pTess).VerCoo[id][2] = (double) k / N[2] * size[2];
+        (*pTess).VerCoo[id][0] = (double) i / N[0] * size[0] + origin[0];
+        (*pTess).VerCoo[id][1] = (double) j / N[1] * size[1] + origin[1];
+        (*pTess).VerCoo[id][2] = (double) k / N[2] * size[2] + origin[2];
       }
 
   ut_free_1d (&size);
+  ut_free_1d (&origin);
 
   return;
 }
@@ -140,8 +145,8 @@ net_tess_cube_edges (int *N, int ***verid, int ****edgeid, struct TESS *pTess)
       for (i = 0; i < N[0]; i++)
       {
         id = edgeid[0][i][j][k];
-        (*pTess).EdgeVerNb[id][0] = verid[i][j][k];
-        (*pTess).EdgeVerNb[id][1] = verid[i + 1][j][k];
+        (*pTess).EdgeVerNb[id][0] = verid[i + 1][j][k];
+        (*pTess).EdgeVerNb[id][1] = verid[i][j][k];
       }
 
   for (k = 0; k <= N[2]; k++)
@@ -149,8 +154,8 @@ net_tess_cube_edges (int *N, int ***verid, int ****edgeid, struct TESS *pTess)
       for (i = 0; i <= N[0]; i++)
       {
         id = edgeid[1][i][j][k];
-        (*pTess).EdgeVerNb[id][0] = verid[i][j][k];
-        (*pTess).EdgeVerNb[id][1] = verid[i][j + 1][k];
+        (*pTess).EdgeVerNb[id][0] = verid[i][j + 1][k];
+        (*pTess).EdgeVerNb[id][1] = verid[i][j][k];
       }
 
   for (k = 0; k < N[2]; k++)
@@ -158,8 +163,8 @@ net_tess_cube_edges (int *N, int ***verid, int ****edgeid, struct TESS *pTess)
       for (i = 0; i <= N[0]; i++)
       {
         id = edgeid[2][i][j][k];
-        (*pTess).EdgeVerNb[id][0] = verid[i][j][k];
-        (*pTess).EdgeVerNb[id][1] = verid[i][j][k + 1];
+        (*pTess).EdgeVerNb[id][0] = verid[i][j][k + 1];
+        (*pTess).EdgeVerNb[id][1] = verid[i][j][k];
       }
 
   neut_tess_init_edgelength (pTess);
