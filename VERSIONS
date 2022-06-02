@@ -1,6 +1,6 @@
-New in 4.4.2-18 (31 May 2022):
+New in 4.4.2-19 (02 Jun 2022):
 - module -T: fixed -morpho cube, made minor fixes, added -statcell and -statvox
-  <orientation_descriptor>.
+  <orientation_descriptor>, added -ori :flat.
 - module -M: added -transform node and ori, fixed -stateltco and -statelsetco,
   made minor fix to inp output, made minor fixes, added -stat{elt,elset}{1d,2d}
   theta, added -statelt and -statelset <orientation_descriptor>.

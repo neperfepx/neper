@@ -65,6 +65,37 @@ ol_set_misorispread (char *distrib, int dim, long int random, struct OL_SET *pOS
     ut_free_1d (&v);
   }
 
+  else if (!strcmp (fct, "flat"))
+  {
+    double *r = ol_r_alloc ();
+    double tmp, theta, thetamax = 0;
+
+    for (i = 0; i < varqty; i++)
+    {
+      if (!strcmp (vars[i], "theta"))
+        thetamax = atof (vals[i]);
+    }
+
+    for (i = 0; i < (int) (*pOSet).size; i++)
+    {
+      if (dim == 3)
+      ol_nb_max_rtheta (gsl_rng_uniform (rand), gsl_rng_uniform (rand),
+                        gsl_rng_uniform (rand), thetamax, r, &theta);
+      else if (dim == 2)
+      {
+        tmp = gsl_rng_uniform (rand) * 2 * M_PI;
+        ut_array_1d_set_2 (r, cos (tmp), sin (tmp));
+        theta = thetamax * pow (gsl_rng_uniform (rand), 0.5);
+      }
+      else
+        abort ();
+
+      ol_rtheta_q (r, theta, (*pOSet).q[i]);
+    }
+
+    ol_r_free (r);
+  }
+
   else
     abort ();
 
