@@ -21,6 +21,10 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 
 .. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
 .. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
+- A Vijay and F Sadeghi, *A Crystal Plasticity and Cohesive Element Model for Rolling Contact Fatigue of Bearing Steels*, **Tribology International**, https://doi.org/10.1016/j.triboint.2022.107607.
+- M Wojciechowski, *On generalized boundary conditions for mesoscopic volumes in computational homogenization*, **Composite Structures**, https://doi.org/10.1016/j.compstruct.2022.115718.
+- AI Blair and DP Hampshire, *Critical current density of superconducting-normal-superconducting Josephson junctions and polycrystalline superconductors in high magnetic fields*, **Physical Review Research**, https://doi.org/10.1103/PhysRevResearch.4.023123.
+- Z Fang, L Wang, Z Wang and Y He, *A Comparison of Two Methods Modeling High-Temperature Fatigue Crack Initiation in Ferrite–Pearlite Steel*, **Crystals**, https://doi.org/10.3390/cryst12050718.
 - KL Auth, J Brouzoulis and M Ekh, *A fully coupled chemo-mechanical cohesive zone model for oxygen embrittlement of nickel-based superalloys*, **Journal of the Mechanics and Physics of Solids**, https://doi.org/10.1016/j.jmps.2022.104880.
 - K Song, K Wang, L Zhang, L Zhao, L Xu, Y Han and K Hao, *Insighte on low cycle fatigue crack formation and propagation mechanism: a microstructurally-sensitive modeling*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103295.
 - M Renouf, L Daridon and A Chrysochoos, *A damage criterion based on energy balance for isotropic cohesive zone model*, **Journal of Theoretical, Computational and Applied Mechanics**, https://doi.org/10.46298/jtcam.7056.
