@@ -193,6 +193,7 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 :data:`nfaces_samedomain`         neighboring faces of the same domain (parent cell of a multiscale tessellation)                     face (in 2D)
 :data:`npolynb`                   number of neighboring polyhedra                                                                     poly
 :data:`npolys`                    neighboring polyhedra                                                                               poly
+:data:`npolys_unsort`             neighboring polyhedra, unsorted list                                                                poly
 :data:`npolynb_samedomain`        number of neighboring polyhedra of the same domain (parent cell of a multiscale tessellation)       poly
 :data:`npolys_samedomain`         neighboring polyhedra of the same domain (parent cell of a multiscale tessellation)                 poly
 :data:`vercoos`                   vertex coordinates                                                                                  face, poly

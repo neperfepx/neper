@@ -416,12 +416,26 @@ neut_tess_var_val (struct TESS Tess,
       ut_string_string ("%d", &typetmp);
       ut_free_1d_int (&vers);
     }
+    else if (!strcmp (var2, "npolys_unsort"))
+    {
+      if (Tess.Dim == 3)
+      {
+        int *npolys = NULL;
+        neut_tess_poly_neighpolys_unsort (Tess, id, &npolys, pvalqty);
+        (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
+        ut_array_1d_memcpy_fromint (npolys, *pvalqty, *pvals);
+        ut_string_string ("%d", &typetmp);
+        ut_free_1d_int (&npolys);
+      }
+      else
+        (*pvalqty) = 0;
+    }
     else if (!strcmp (var2, "npolys"))
     {
       if (Tess.Dim == 3)
       {
         int *npolys = NULL;
-        neut_tess_poly_neighpoly (Tess, id, &npolys, pvalqty);
+        neut_tess_poly_neighpolys (Tess, id, &npolys, pvalqty);
         (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
         ut_array_1d_memcpy_fromint (npolys, *pvalqty, *pvals);
         ut_string_string ("%d", &typetmp);
@@ -435,7 +449,7 @@ neut_tess_var_val (struct TESS Tess,
       if (Tess.Dim == 3)
       {
         int *npolys = NULL;
-        neut_tess_poly_neighpoly_samedomain (Tess, id, &npolys, pvalqty);
+        neut_tess_poly_neighpolys_samedomain (Tess, id, &npolys, pvalqty);
         (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
         ut_array_1d_memcpy_fromint (npolys, *pvalqty, *pvals);
         ut_string_string ("%d", &typetmp);
@@ -449,7 +463,7 @@ neut_tess_var_val (struct TESS Tess,
       if (Tess.Dim == 3)
       {
         int tmp;
-        neut_tess_poly_neighpoly_samedomain (Tess, id, NULL, &tmp);
+        neut_tess_poly_neighpolys_samedomain (Tess, id, NULL, &tmp);
         (*pvals)[0] = tmp;
         ut_string_string ("%d", &typetmp);
       }
@@ -459,11 +473,11 @@ neut_tess_var_val (struct TESS Tess,
     else if (!strcmp (var2, "npolynb") || !strcmp (var2, "neighnb"))
     {
       int tmp;
-      neut_tess_poly_neighpoly (Tess, id, NULL, &tmp);
+      neut_tess_poly_neighpolys (Tess, id, NULL, &tmp);
       (*pvals)[0] = tmp;
       ut_string_string ("%d", &typetmp);
     }
-    else if (!strcmp (var2, "nseeds") || !strcmp (var2, "npolylist"))
+    else if (!strcmp (var2, "nseeds"))
     {
       int *nseeds = NULL;
       neut_tess_poly_neighseeds (Tess, id, &nseeds, pvalqty);

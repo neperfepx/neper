@@ -66,7 +66,7 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
       for (i = 1; i <= Tess.PolyQty; i++)
         if (Print.showpoly[i] == 1)
         {
-          neut_tess_poly_neighpoly (Tess, i, &neigh, &neighqty);
+          neut_tess_poly_neighpolys (Tess, i, &neigh, &neighqty);
 
           if (neighqty < Tess.PolyFaceQty[i])
             polylist[++polylist[0]] = i;

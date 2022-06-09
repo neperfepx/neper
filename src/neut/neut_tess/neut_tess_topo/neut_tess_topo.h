@@ -296,9 +296,11 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_tess_poly_neighpoly (struct TESS Tess, int poly,
-					int **pnpoly, int *pnpolyqty);
-  extern void neut_tess_poly_neighpoly_samedomain (struct TESS Tess, int poly,
+  extern void neut_tess_poly_neighpolys_unsort (struct TESS Tess, int poly,
+                                                int **pnpoly, int *pnpolyqty);
+  extern void neut_tess_poly_neighpolys (struct TESS Tess, int poly,
+					 int **pnpoly, int *pnpolyqty);
+  extern void neut_tess_poly_neighpolys_samedomain (struct TESS Tess, int poly,
 					int **pnpoly, int *pnpolyqty);
   extern void neut_tess_poly_neighseeds (struct TESS Tess, int poly,
                                          int **pnseeds, int *pnseedqty);

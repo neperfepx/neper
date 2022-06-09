@@ -550,7 +550,7 @@ neut_tess_face_polys (struct TESS Tess, int face, int **ppoly, int *ppolyqty)
 
   qty = 0;
   for (i = 0; i < 2; i++)
-    if (Tess.FacePoly[face][i] > 0 && Tess.FacePoly[face][i] <= Tess.PolyQty)
+    if (Tess.FacePoly[face][i] > 0)
     {
       qty++;
       tmp[qty - 1] = Tess.FacePoly[face][i];
@@ -1634,7 +1634,7 @@ neut_tess_cell_neighcell (struct TESS Tess, int cell, int **pncell,
                           int *pncellqty)
 {
   if (Tess.Dim == 3)
-    neut_tess_poly_neighpoly (Tess, cell, pncell, pncellqty);
+    neut_tess_poly_neighpolys (Tess, cell, pncell, pncellqty);
 
   else if (Tess.Dim == 2)
     neut_tess_face_neighfaces (Tess, cell, pncell, pncellqty);
@@ -1646,8 +1646,8 @@ neut_tess_cell_neighcell (struct TESS Tess, int cell, int **pncell,
 }
 
 void
-neut_tess_poly_neighpoly (struct TESS Tess, int poly, int **pnpoly,
-                          int *pnpolyqty)
+neut_tess_poly_neighpolys_unsort (struct TESS Tess, int poly, int **pnpoly,
+                                  int *pnpolyqty)
 {
   int i, j, face, *tmp = NULL;
 
@@ -1664,7 +1664,10 @@ neut_tess_poly_neighpoly (struct TESS Tess, int poly, int **pnpoly,
       }
   }
 
-  ut_array_1d_int_sort_uniq (tmp, *pnpolyqty, pnpolyqty);
+  if (!strcmp (Tess.Type, "periodic"))
+    for (i = 0; i < *pnpolyqty; i++)
+      if (tmp[i] > Tess.CellQty)
+        tmp[i] = Tess.PerSeedMaster[tmp[i]];
 
   if (pnpoly)
   {
@@ -1678,12 +1681,24 @@ neut_tess_poly_neighpoly (struct TESS Tess, int poly, int **pnpoly,
 }
 
 void
-neut_tess_poly_neighpoly_samedomain (struct TESS Tess, int poly,
+neut_tess_poly_neighpolys (struct TESS Tess, int poly, int **pnpoly,
+                           int *pnpolyqty)
+{
+  neut_tess_poly_neighpolys_unsort (Tess, poly, pnpoly, pnpolyqty);
+
+  if (pnpoly)
+    ut_array_1d_int_sort (*pnpoly, *pnpolyqty);
+
+  return;
+}
+
+void
+neut_tess_poly_neighpolys_samedomain (struct TESS Tess, int poly,
                                      int **pnpolys, int *pnpolyqty)
 {
   int i, qty, *tmp = NULL, qty2, *tmp2 = NULL, scale = Tess.ScaleQty - 1;
 
-  neut_tess_poly_neighpoly (Tess, poly, &tmp, &qty);
+  neut_tess_poly_neighpolys (Tess, poly, &tmp, &qty);
 
   qty2 = 0;
   for (i = 0; i < qty; i++)
