@@ -1,4 +1,4 @@
-New in 4.4.2-20 (09 Jun 2022):
+New in 4.4.2-21 (13 Jun 2022):
 - module -T: fixed -morpho cube, made minor fixes, added -statcell and -statvox
   <orientation_descriptor>, added -ori :flat, made minor fixes to -statface and
   -statpoly.

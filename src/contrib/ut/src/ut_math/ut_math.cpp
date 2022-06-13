@@ -154,7 +154,7 @@ ut_math_evals (char *inexpr, int varqty, char **vars, double **vals, int evalqty
       ut_string_fnrs (expr, vars[id], newvars[id], INT_MAX);
     }
     else
-      ut_string_string (vars[i], newvars + i);
+      ut_string_string (vars[id], newvars + id);
   }
 
   status = 0;
