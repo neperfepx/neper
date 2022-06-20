@@ -78,6 +78,7 @@ nem_writemesh_sim (struct IN_M In, struct TESS Tess, struct NODES Nodes,
   file = ut_file_open (simtess, "W");
   neut_tess_fprintf (file, Tess);
   ut_file_close (file, simtess, "W");
+  ut_string_string ("simulation.tess", &Sim.tess);
 
   file = ut_file_open (simmsh, "W");
   neut_mesh_fprintf_msh (file, In.dimout_msh, Tess, Nodes, Mesh[0],
