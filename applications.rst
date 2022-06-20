@@ -21,6 +21,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 
 .. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
 .. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
+- N Pai, A Prakash, I Samajdar and A Patra, *Study of grain boundary orientation gradients through combined experiments and strain gradient crystal plasticity modeling*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103360.
+- RRP Purushottam Raj Purohit, S Tardif, O Castelnau, J Eymery, R Guinebretière, O Robach, T Ors and J-S Micha, *LaueNN: neural-network-based hkl recognition of Laue spots and its application to polycrystalline materials*, **Journal of Applied Crystallography**, https://doi.org/10.1107/S1600576722004198.
+- A Deva and RE García, *Apparent microstructurally induced phase separation in porous LiNi1/3Mn1/3Co1/3O2 cathodes*, **Journal of Power Sources**, https://doi.org/10.1016/j.jpowsour.2022.231609.
 - C Fang, J Gong, M Jia, Z Nie, B Li and A Mohammed, *Investigating the effects of elongation and flatness on the shear behaviour of breakable granular materials via the DEM*, **Granular Matter**, https://doi.org/10.1007/s10035-022-01237-3.
   - A Vijay and F Sadeghi, *A Crystal Plasticity and Cohesive Element Model for Rolling Contact Fatigue of Bearing Steels*, **Tribology International**, https://doi.org/10.1016/j.triboint.2022.107607.
 - M Wojciechowski, *On generalized boundary conditions for mesoscopic volumes in computational homogenization*, **Composite Structures**, https://doi.org/10.1016/j.compstruct.2022.115718.
