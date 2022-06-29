@@ -434,6 +434,9 @@ neut_data_datastring_type_value (char *entity, char *attribute,
     char **args = NULL;
 
     ut_list_break (datastring, NEUT_SEP_DEP, &args, &argqty);
+    // patch to let colors provided as <R_value>:<G_value>:<B_value> slide
+    if (isdigit (args[0][0]))
+      ut_list_break (datastring, "fdsk,fdslkf,dsl", &args, &argqty);
 
     if (argqty == 1)
     {
