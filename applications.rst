@@ -21,6 +21,10 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 
 .. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
 .. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
+
+- J He, D Borisov, JD Fleming and M Kasemer, *Subsurface polycrystalline reconstruction based on full waveform inversion-A 2D numerical study*, **Materialia**, https://doi.org/10.1016/j.mtla.2022.101482.
+- H Lyu and A Ruimi, *Understanding the Plastic Deformation of Gradient Interstitial Free (IF) Steel under Uniaxial Loading Using a Dislocation-Based Multiscale Approach*, **Crystals**, https://doi.org/10.3390/cryst12070889.
+- ZY Feng, H Li, D Zhang, XX Guo, YQ Chen and MW Fu, *Multi-aspect size effect transition from micro to macroscale: Modelling and experiment*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103364.
 - N Pai, A Prakash, I Samajdar and A Patra, *Study of grain boundary orientation gradients through combined experiments and strain gradient crystal plasticity modeling*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103360.
 - RRP Purushottam Raj Purohit, S Tardif, O Castelnau, J Eymery, R Guinebretière, O Robach, T Ors and J-S Micha, *LaueNN: neural-network-based hkl recognition of Laue spots and its application to polycrystalline materials*, **Journal of Applied Crystallography**, https://doi.org/10.1107/S1600576722004198.
 - A Deva and RE García, *Apparent microstructurally induced phase separation in porous LiNi1/3Mn1/3Co1/3O2 cathodes*, **Journal of Power Sources**, https://doi.org/10.1016/j.jpowsour.2022.231609.
