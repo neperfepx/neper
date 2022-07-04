@@ -22,6 +22,10 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
 .. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
 
+- J Kuhn, M Schneider, P Sonnweber-Ribic and T Böhlke, *Generating polycrystalline microstructures with prescribed tensorial texture coefficients*, **Computational Mechanics**, https://doi.org/10.1007/s00466-022-02186-7.
+- Y Fu, WE Frazier, KS Choi, L Li, Z Xu, VV Joshi and A Soulami, *Prediction of grain structure after thermomechanical processing of U-10Mo alloy using sensitivity analysis and machine learning surrogate model*, **Scientific Reports**, https://doi.org/10.1038/s41598-022-14731-8.
+- W Cai, C Sun, C Wang, L Qian, Y Li and MW Fu, *Modelling of the Intergranular Fracture of TWIP Steels Working at High Temperature by Using CZM–CPFE Method*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103366.
+- L Li, A Fortier, DR Tamayo, VV Joshi and A Soulami, *Minimizing thickness variation in monolithic U-10Mo fuel foil and Zr interlayer during hot rolling: a microstructure-based finite element method analysis*, **Materials Today Communications**, https://doi.org/10.1016/j.mtcomm.2022.103910.
 - J He, D Borisov, JD Fleming and M Kasemer, *Subsurface polycrystalline reconstruction based on full waveform inversion-A 2D numerical study*, **Materialia**, https://doi.org/10.1016/j.mtla.2022.101482.
 - H Lyu and A Ruimi, *Understanding the Plastic Deformation of Gradient Interstitial Free (IF) Steel under Uniaxial Loading Using a Dislocation-Based Multiscale Approach*, **Crystals**, https://doi.org/10.3390/cryst12070889.
 - ZY Feng, H Li, D Zhang, XX Guo, YQ Chen and MW Fu, *Multi-aspect size effect transition from micro to macroscale: Modelling and experiment*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103364.
