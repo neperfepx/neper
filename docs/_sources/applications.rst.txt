@@ -22,6 +22,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
 .. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
 
+- D Zhu, W Zhang and Z Ding, *A Multiscale Crack Iteration and Remeshing Model for Low-Cycle Crack Propagation Evaluation*, **Journal of Engineering Mechanics**, https://doi.org/10.1061/(ASCE)EM.1943-7889.0002122.
+- N Sayer, E Natkowski, P Sonnweber-Ribic and S Münstermann, *A novel microscale fatigue failure indicator considering plastic irreversibility for microstructure-based lifetime simulation*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2022.107115.
+- K Yoshida, *An alternative formulation of two-grain cluster model for homogenization of elastoviscoplastic behavior of polycrystal*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103368.
 - J Kuhn, M Schneider, P Sonnweber-Ribic and T Böhlke, *Generating polycrystalline microstructures with prescribed tensorial texture coefficients*, **Computational Mechanics**, https://doi.org/10.1007/s00466-022-02186-7.
 - Y Fu, WE Frazier, KS Choi, L Li, Z Xu, VV Joshi and A Soulami, *Prediction of grain structure after thermomechanical processing of U-10Mo alloy using sensitivity analysis and machine learning surrogate model*, **Scientific Reports**, https://doi.org/10.1038/s41598-022-14731-8.
 - W Cai, C Sun, C Wang, L Qian, Y Li and MW Fu, *Modelling of the Intergranular Fracture of TWIP Steels Working at High Temperature by Using CZM–CPFE Method*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103366.
