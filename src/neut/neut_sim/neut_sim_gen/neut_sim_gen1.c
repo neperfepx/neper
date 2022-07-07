@@ -318,8 +318,11 @@ neut_sim_entity_internal (char *entity)
 int
 neut_sim_entity_parent (struct SIM Sim, char *entity, char **pparent)
 {
+  int i;
+
   ut_free_1d_char (pparent);
 
+  // we don't else-if, as each test returns
   if (!strncmp (entity, "elt", 3)
    || !strncmp (entity, "elset", 5)
    || !strcmp (entity, "mesh"))
@@ -328,7 +331,7 @@ neut_sim_entity_parent (struct SIM Sim, char *entity, char **pparent)
     return Sim.msh ? 0 : -1;
   }
 
-  else if (!strcmp (entity, "cell"))
+  if (!strcmp (entity, "cell"))
   {
     if (Sim.tess)
     {
@@ -344,20 +347,26 @@ neut_sim_entity_parent (struct SIM Sim, char *entity, char **pparent)
       return -1;
   }
 
-  else if (!strcmp (entity, "tess"))
+  if (!strcmp (entity, "tess"))
   {
     ut_string_string ("tess", pparent);
     return Sim.tess ? 0 : -1;
   }
 
-  else if (!strcmp (entity, "tesr"))
+  if (!strcmp (entity, "tesr"))
   {
     ut_string_string ("tesr", pparent);
     return Sim.tesr ? 0 : -1;
   }
 
-  else
-    return -1;
+  for (i = 0; i < Sim.EntityQty; i++)
+    if (!strcmp (entity, Sim.Entities[i]))
+    {
+      ut_string_string ("tesr", pparent);
+      return neut_sim_entity_parent (Sim, Sim.EntityType[i], pparent);
+    }
+
+  return -1;
 }
 
 int
