@@ -13,8 +13,9 @@ neut_data_coldatatype_size (struct DATA Data, int *psize)
     (*psize) = 1;
   else if (!strcmp (Data.ColDataType, "col"))
     (*psize) = 3;
+  // for ori, we are talking about coldata (not col), which contains quaternions
   else if (!strcmp (Data.ColDataType, "ori"))
-    (*psize) = 3;
+    (*psize) = 4;
   else
     (*psize) = -1;
 
