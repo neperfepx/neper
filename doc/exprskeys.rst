@@ -510,6 +510,9 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`rrmax`                                     max radius ratio                                                      3D elset
 :data:`Osize`                                     Osize                                                                 3D elset
 :data:`eltnb`                                     number of elements                                                    {0-3}D,co elset
+:data:`elts`                                      elements                                                              {0-3}D,co elset
+:data:`nodenb`                                    number of nodes                                                       {0-3}D,co elset
+:data:`nodes`                                     nodes                                                                 {0-3}D,co elset
 :data:`true`                                      true level                                                            {0-3}D elt, {0-3}D elset
 :data:`body`                                      body level                                                            {0-3}D elt, {0-3}D elset
 :data:`domtype`                                   type of domain [#domtype]_                                            {0-2}D elt, {0-2}D elset

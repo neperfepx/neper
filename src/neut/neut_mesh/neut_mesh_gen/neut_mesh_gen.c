@@ -847,6 +847,30 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
       (*pvals)[0] = Mesh3D.Elsets[id][0];
       strcpy (typetmp, "%d");
     }
+    else if (!strcmp (var, "elts"))
+    {
+      (*pvalqty) = Mesh3D.Elsets[id][0];
+      (*pvals) = ut_alloc_1d (Mesh3D.Elsets[id][0]);
+      ut_array_1d_memcpy_fromint (Mesh3D.Elsets[id] + 1, Mesh3D.Elsets[id][0], *pvals);
+      strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "nodenb"))
+    {
+      int qty;
+      neut_mesh_elset_nodes (Mesh3D, id, NULL, &qty);
+      (*pvals)[0] = qty;
+      strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "nodes"))
+    {
+      int qty, *tmp = NULL;
+      neut_mesh_elset_nodes (Mesh3D, id, &tmp, &qty);
+      (*pvalqty) = qty;
+      (*pvals) = ut_alloc_1d (qty);
+      ut_array_1d_memcpy_fromint (tmp, qty, *pvals);
+      strcpy (typetmp, "%d");
+      ut_free_1d_int (&tmp);
+    }
     else if (!strcmp (var, "x"))
       neut_mesh_elset_centre_x (Nodes, Mesh3D, id, *pvals);
     else if (!strcmp (var, "y"))
@@ -947,6 +971,30 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
       (*pvals)[0] = Mesh2D.Elsets[id][0];
       strcpy (typetmp, "%d");
     }
+    else if (!strcmp (var, "elts"))
+    {
+      (*pvalqty) = Mesh2D.Elsets[id][0];
+      (*pvals) = ut_alloc_1d (Mesh2D.Elsets[id][0]);
+      ut_array_1d_memcpy_fromint (Mesh2D.Elsets[id] + 1, Mesh2D.Elsets[id][0], *pvals);
+      strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "nodenb"))
+    {
+      int qty;
+      neut_mesh_elset_nodes (Mesh2D, id, NULL, &qty);
+      (*pvals)[0] = qty;
+      strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "nodes"))
+    {
+      int qty, *tmp = NULL;
+      neut_mesh_elset_nodes (Mesh2D, id, &tmp, &qty);
+      (*pvalqty) = qty;
+      (*pvals) = ut_alloc_1d (qty);
+      ut_array_1d_memcpy_fromint (tmp, qty, *pvals);
+      strcpy (typetmp, "%d");
+      ut_free_1d_int (&tmp);
+    }
     else if (!strcmp (var, "true"))
     {
       (*pvals)[0] = neut_tess_face_true (Tess, id);
@@ -1028,6 +1076,30 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     {
       (*pvals)[0] = Mesh1D.Elsets[id][0];
       strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "elts"))
+    {
+      (*pvalqty) = Mesh1D.Elsets[id][0];
+      (*pvals) = ut_alloc_1d (Mesh1D.Elsets[id][0]);
+      ut_array_1d_memcpy_fromint (Mesh1D.Elsets[id] + 1, Mesh1D.Elsets[id][0], *pvals);
+      strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "nodenb"))
+    {
+      int qty;
+      neut_mesh_elset_nodes (Mesh1D, id, NULL, &qty);
+      (*pvals)[0] = qty;
+      strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "nodes"))
+    {
+      int qty, *tmp = NULL;
+      neut_mesh_elset_nodes (Mesh1D, id, &tmp, &qty);
+      (*pvalqty) = qty;
+      (*pvals) = ut_alloc_1d (qty);
+      ut_array_1d_memcpy_fromint (tmp, qty, *pvals);
+      strcpy (typetmp, "%d");
+      ut_free_1d_int (&tmp);
     }
     else if (!strcmp (var, "x"))
       neut_mesh_elset_centre_x (Nodes, Mesh1D, id, *pvals);
@@ -1118,6 +1190,30 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
       (*pvals)[0] = Mesh0D.Elsets[id][0];
       strcpy (typetmp, "%d");
     }
+    else if (!strcmp (var, "elts"))
+    {
+      (*pvalqty) = Mesh0D.Elsets[id][0];
+      (*pvals) = ut_alloc_1d (Mesh0D.Elsets[id][0]);
+      ut_array_1d_memcpy_fromint (Mesh0D.Elsets[id] + 1, Mesh0D.Elsets[id][0], *pvals);
+      strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "nodenb"))
+    {
+      int qty;
+      neut_mesh_elset_nodes (Mesh0D, id, NULL, &qty);
+      (*pvals)[0] = qty;
+      strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "nodes"))
+    {
+      int qty, *tmp = NULL;
+      neut_mesh_elset_nodes (Mesh0D, id, &tmp, &qty);
+      (*pvalqty) = qty;
+      (*pvals) = ut_alloc_1d (qty);
+      ut_array_1d_memcpy_fromint (tmp, qty, *pvals);
+      strcpy (typetmp, "%d");
+      ut_free_1d_int (&tmp);
+    }
     else if (!strcmp (var, "x"))
       neut_mesh_elset_centre_x (Nodes, Mesh0D, id, *pvals);
     else if (!strcmp (var, "y"))
@@ -1165,6 +1261,30 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     {
       (*pvals)[0] = MeshCo.Elsets[id][0];
       strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "elts"))
+    {
+      (*pvalqty) = MeshCo.Elsets[id][0];
+      (*pvals) = ut_alloc_1d (MeshCo.Elsets[id][0]);
+      ut_array_1d_memcpy_fromint (MeshCo.Elsets[id] + 1, MeshCo.Elsets[id][0], *pvals);
+      strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "nodenb"))
+    {
+      int qty;
+      neut_mesh_elset_nodes (MeshCo, id, NULL, &qty);
+      (*pvals)[0] = qty;
+      strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "nodes"))
+    {
+      int qty, *tmp = NULL;
+      neut_mesh_elset_nodes (MeshCo, id, &tmp, &qty);
+      (*pvalqty) = qty;
+      (*pvals) = ut_alloc_1d (qty);
+      ut_array_1d_memcpy_fromint (tmp, qty, *pvals);
+      strcpy (typetmp, "%d");
+      ut_free_1d_int (&tmp);
     }
     else
       status = -1;

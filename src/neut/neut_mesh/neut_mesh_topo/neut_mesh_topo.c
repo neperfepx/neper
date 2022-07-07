@@ -273,9 +273,13 @@ neut_mesh_elset_nodes (struct MESH Mesh, int id, int **pnodes, int *pqty)
 
   ut_array_1d_int_sort_uniq (tmp, qty, &qty);
 
-  (*pqty) = qty;
-  (*pnodes) = ut_alloc_1d_int (qty);
-  ut_array_1d_int_memcpy (tmp, qty, *pnodes);
+  if (pqty)
+    (*pqty) = qty;
+  if (pnodes)
+  {
+    (*pnodes) = ut_alloc_1d_int (qty);
+    ut_array_1d_int_memcpy (tmp, qty, *pnodes);
+  }
 
   ut_free_1d_int (&tmp);
 

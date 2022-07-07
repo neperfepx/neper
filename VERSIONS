@@ -1,10 +1,11 @@
-New in 4.4.2-25 (06 Jul 2022):
+New in 4.4.2-26 (07 Jul 2022):
 - module -T: fixed -morpho cube, made minor fixes, added -statcell and -statvox
   <orientation_descriptor>, added -ori :flat, made minor fixes to -statface and
   -statpoly.
 - module -M: added -transform node and ori, fixed -stateltco and -statelsetco,
   made minor fix to inp output, made minor fixes, added -stat{elt,elset}{1d,2d}
-  theta, added -statelt and -statelset <orientation_descriptor>.
+  theta, added -statelt and -statelset <orientation_descriptor>, added
+  -statelset* elts,nodenb,nodes.
 - module -S: fixed various bugs related to the initial state, made minor other
   fixes.
 - module -V: made minor fix.
