@@ -147,6 +147,12 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
       neut_tess_init_domain_label (pTess);
     }
 
+    else if (!strncmp (parts[i], "ori", 3))
+    {
+      ut_print_message (0, 3, "Overriding orientations...\n");
+      net_transform_tess_ori (parts[i], pTess);
+    }
+
     else
       ut_print_message (1, 3, "Skipping `%s'...\n", parts[i]);
   }

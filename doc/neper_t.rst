@@ -599,6 +599,8 @@ Transformation Options
 
   - :data:`resetlabels`: reset the domain face, edge and vertex labels.
 
+  - :data:`ori(<file_name>[,des=<descriptor>])`: override cell orientations with ones defined in a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
+
   **For a raster tessellation**, the transformations can be:
 
   -  |translate|;

@@ -44,7 +44,8 @@ add_library(neper_t
 ./net_group/net_group_tess/net_group_tess1.c
 ./net_group/net_group_tesr/net_group_tesr1.c
 ./net_transform/net_transform1.c
-./net_transform/net_transform_tess/net_transform_tess.c
+./net_transform/net_transform_tess/net_transform_tess1.c
+./net_transform/net_transform_tess/net_transform_tess2.c
 ./net_transform/net_transform_tess/net_transform_tess_cut/net_transform_tess_cut1.c
 ./net_transform/net_transform_tess/net_transform_tess_cut/net_transform_tess_cut2.c
 ./net_transform/net_transform_tess/net_transform_tess_cut/net_transform_tess_cut3.c

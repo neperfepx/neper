@@ -11,3 +11,5 @@
 #include"net_transform_tess.h"
 
 #include"net_transform_tess_cut/net_transform_tess_cut.h"
+
+extern void net_transform_tess_ori (char *ori, struct TESS *pTess);
