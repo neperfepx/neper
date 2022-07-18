@@ -222,60 +222,60 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 
   For entities of lower dimension than cells (vertices, edges and faces), :data:`body` and :data:`true` are equal to the maximum :data:`body`or :data:`true` values of the cells they belong to.
 
-  .. _raster_tessellation_keys:
+.. _raster_tessellation_keys:
 
-  Raster Tessellation Keys
-  ------------------------
+Raster Tessellation Keys
+------------------------
 
-  Available keys for raster tessellation itself are provided below.
+Available keys for raster tessellation itself are provided below.
 
-  ===================== ============================================ ======================
-  **Key**               **Descriptor**                               **Apply to**
-  :data:`dim`           dimension                                    tesr
-  :data:`voxnbx`        number of voxels in direction x              tesr
-  :data:`voxnby`        number of voxels in direction y              tesr
-  :data:`voxnbz`        number of voxels in direction z              tesr
-  :data:`voxnb`         number of voxels in total                    tesr
-  :data:`originx`       origin x coordinate                          tesr
-  :data:`originy`       origin y coordinate                          tesr
-  :data:`originz`       origin z coordinate                          tesr
-  :data:`voxsizex`      voxel size in direction x                    tesr
-  :data:`voxsizey`      voxel size in direction y                    tesr
-  :data:`voxsizez`      voxel size in direction z                    tesr
-  :data:`rastersizex`   raster size in direction x                   tesr
-  :data:`rastersizey`   raster size in direction y                   tesr
-  :data:`rastersizez`   raster size in direction z                   tesr
-  :data:`rastersize`    raster size (surface area/volume in 2D/3D)   tesr
-  :data:`area`          surface area                                 tesr
-  :data:`vol`           volume                                       tesr
-  :data:`size`          size (surface area/volume in 2D/3D)          tesr
-  :data:`x`             x coordinate                                 tesr
-  :data:`y`             y coordinate                                 tesr
-  :data:`z`             z coordinate                                 tesr
-  :data:`coo`           x, y and z coordinates                       tesr
-  ===================== ============================================ ======================
+===================== ============================================ ======================
+**Key**               **Descriptor**                               **Apply to**
+:data:`dim`           dimension                                    tesr
+:data:`voxnbx`        number of voxels in direction x              tesr
+:data:`voxnby`        number of voxels in direction y              tesr
+:data:`voxnbz`        number of voxels in direction z              tesr
+:data:`voxnb`         number of voxels in total                    tesr
+:data:`originx`       origin x coordinate                          tesr
+:data:`originy`       origin y coordinate                          tesr
+:data:`originz`       origin z coordinate                          tesr
+:data:`voxsizex`      voxel size in direction x                    tesr
+:data:`voxsizey`      voxel size in direction y                    tesr
+:data:`voxsizez`      voxel size in direction z                    tesr
+:data:`rastersizex`   raster size in direction x                   tesr
+:data:`rastersizey`   raster size in direction y                   tesr
+:data:`rastersizez`   raster size in direction z                   tesr
+:data:`rastersize`    raster size (surface area/volume in 2D/3D)   tesr
+:data:`area`          surface area                                 tesr
+:data:`vol`           volume                                       tesr
+:data:`size`          size (surface area/volume in 2D/3D)          tesr
+:data:`x`             x coordinate                                 tesr
+:data:`y`             y coordinate                                 tesr
+:data:`z`             z coordinate                                 tesr
+:data:`coo`           x, y and z coordinates                       tesr
+===================== ============================================ ======================
 
-  Available keys for raster tessellation seeds, cells, cell groups and voxels are provided below.  Mathematical and logical expressions based on these keys can also be used.  To turn a key value into a value relative to the mean over all entities (e.g.the relative cell size), append the key expression with the :data:`:rel` modifier.  To turn a key value into a value which holds for a unit cell size, append the key expression with the :data:`:uc` modifier.
+Available keys for raster tessellation seeds, cells, cell groups and voxels are provided below.  Mathematical and logical expressions based on these keys can also be used.  To turn a key value into a value relative to the mean over all entities (e.g.the relative cell size), append the key expression with the :data:`:rel` modifier.  To turn a key value into a value which holds for a unit cell size, append the key expression with the :data:`:uc` modifier.
 
-  General
-  ~~~~~~~
+General
+~~~~~~~
 
-  ============================ ======================================================================= ====================================
-  **Key**                      **Descriptor**                                                          **Applies to**
-  :data:`id`                   identifier                                                              seed, cell, group, voxel
-  :data:`cell`                 cell                                                                    voxel
-  :data:`oridef`               orientation is defined                                                  voxel
-  :data:`w`                    Laguerre weight                                                         seed
-  ============================ ======================================================================= ====================================
+============================ ======================================================================= ====================================
+**Key**                      **Descriptor**                                                          **Applies to**
+:data:`id`                   identifier                                                              seed, cell, group, voxel
+:data:`cell`                 cell                                                                    voxel
+:data:`oridef`               orientation is defined                                                  voxel
+:data:`w`                    Laguerre weight                                                         seed
+============================ ======================================================================= ====================================
 
-  Geometry
-  ~~~~~~~~
+Geometry
+~~~~~~~~
 
-  ============================ ======================================================================= ====================================
-  **Key**                      **Descriptor**                                                          **Applies to**
-  :data:`x`                    x coordinate                                                            seed, cell, voxel
-  :data:`y`                    y coordinate                                                            seed, cell, voxel
-  :data:`z`                    z coordinate                                                            seed, cell, voxel
+============================ ======================================================================= ====================================
+**Key**                      **Descriptor**                                                          **Applies to**
+:data:`x`                    x coordinate                                                            seed, cell, voxel
+:data:`y`                    y coordinate                                                            seed, cell, voxel
+:data:`z`                    z coordinate                                                            seed, cell, voxel
 :data:`coo`                  x, y and z coordinates                                                  seed, cell, voxel
 :data:`vx`                   x coordinate (in voxel)                                                 voxel
 :data:`vy`                   y coordinate (in voxel)                                                 voxel
