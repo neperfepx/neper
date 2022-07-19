@@ -110,7 +110,7 @@ net_tess_opt_comp_objective_fval_tesr_obj (struct TOPT *pTOpt, int var)
         val += (*pTOpt).curcellval[var][i][0];
       else
         val += 1000 * (*pTOpt).curcellpenalty[i];
-    val = 2 / ((*pTOpt).tavoxqtyini * avdiameq) * sqrt (val);
+    val = avdiameq * sqrt (2. / (*pTOpt).tavoxqtyini * val);
   }
 
   else if (!strcmp ((*pTOpt).objective_tesrval, "intervol"))
