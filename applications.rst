@@ -22,6 +22,10 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
 .. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
 
+- CW Adair, H Evans, E Beatty, DL Hansen, S Holladay and O Johnson, *Microstructure Design Using a Human Computation Game*, **Materialia**, https://doi.org/10.1016/j.mtla.2022.101544.
+- X Gao, X Zhang, M Qian, A Li, G Wang, L Geng and H-X Peng, *Enhanced stress concentration sensitivity of SiCp/Al composite with network architecture*, **Journal of Composite Materials**, https://doi.org/10.1177/00219983211072955.
+- SC Ren, B Marini and P Forget, *Modelling the effect of macro-segregation on the fracture toughness of heavy forgings using FFT based crystal plasticity simulations*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2022.108694.
+- V Singh, R Kumar, Y Charles and DK Mahajan, *Coupled diffusion-mechanics framework for simulating hydrogen assisted deformation and failure behavior of metals*, **International Journal of Plasticity, 2022**, https://doi.org/10.1016/j.ijplas.2022.103392.
 - D Zhu, W Zhang and Z Ding, *A Multiscale Crack Iteration and Remeshing Model for Low-Cycle Crack Propagation Evaluation*, **Journal of Engineering Mechanics**, https://doi.org/10.1061/(ASCE)EM.1943-7889.0002122.
 - N Sayer, E Natkowski, P Sonnweber-Ribic and S Münstermann, *A novel microscale fatigue failure indicator considering plastic irreversibility for microstructure-based lifetime simulation*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2022.107115.
 - K Yoshida, *An alternative formulation of two-grain cluster model for homogenization of elastoviscoplastic behavior of polycrystal*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103368.
