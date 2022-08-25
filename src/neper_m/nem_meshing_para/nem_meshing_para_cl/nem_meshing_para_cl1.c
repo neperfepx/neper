@@ -79,7 +79,15 @@ nem_meshing_para_cl (struct IN_M In, struct TESS Tess, struct TESR *pTesr,
   }
   else if ((*pMeshPara).input == 'm')
   {
-    nem_meshing_para_cl_poly_mesh (clstring, pMeshPara, RNodes, Mesh, Tess);
+    // if the mesh of max dimension is available, we use it
+    if (!neut_mesh_isvoid (Mesh[Tess.Dim]))
+      nem_meshing_para_cl_poly_mesh (clstring, pMeshPara, RNodes, Mesh, Tess);
+    // otherwise, we use the tessellation
+    else
+    {
+      nem_meshing_para_cl_cell (clstring, pMeshPara, Tess);
+      ut_print_message (1, 3, "empty %dD mesh - used tess to compute cl.\n", Tess.Dim);
+    }
 
     if (!strcmp ((*pMeshPara).elttype, "tri"))
     {

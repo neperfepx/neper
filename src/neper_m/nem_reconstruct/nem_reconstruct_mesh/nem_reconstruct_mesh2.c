@@ -33,7 +33,7 @@ nem_reconstruct_mesh_2d (struct NODES Nodes, struct MESH *Mesh, int mode,
       neut_mesh_init_eltelset (Mesh + 2, NULL);
       neut_mesh_orderelsets (Mesh + 2);
 
-      if (mode == 2)
+      if (mode == 2 && pTess)
       {
         (*pTess).FaceQty = FaceQty;
         (*pTess).FacePoly = ut_alloc_2d_int ((*pTess).FaceQty + 1, 2);
@@ -43,7 +43,7 @@ nem_reconstruct_mesh_2d (struct NODES Nodes, struct MESH *Mesh, int mode,
     }
     else
     {
-      if (mode == 2)
+      if (mode == 2 && pTess)
       {
         (*pTess).FaceQty = Mesh[2].ElsetQty;
         neut_mesh_facepoly (Nodes, Mesh[2], Mesh[3], &((*pTess).FacePoly));
@@ -69,10 +69,11 @@ nem_reconstruct_mesh_2d (struct NODES Nodes, struct MESH *Mesh, int mode,
   // Setting up Tess face information
   if (mode == 2)
   {
-    if (!(*pTess).FaceState)
-      (*pTess).FaceState = ut_alloc_1d_int ((*pTess).FaceQty + 1);
-
+    (*pTess).FaceState = ut_realloc_1d_int ((*pTess).FaceState, (*pTess).FaceQty + 1);
     ut_array_1d_int_set ((*pTess).FaceState + 1, (*pTess).FaceQty, 1);
+
+    (*pTess).FacePt = ut_realloc_1d_int ((*pTess).FacePt, (*pTess).FaceQty + 1);
+    ut_array_1d_int_set ((*pTess).FacePt + 1, (*pTess).FaceQty, -1);
   }
 
   if (mode >= 1)

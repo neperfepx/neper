@@ -99,14 +99,20 @@ nem_meshing_para_cl_poly_mesh (char *clstring, struct MESHPARA *pMeshPara,
                                struct NODES Nodes, struct MESH *Mesh,
                                struct TESS Tess)
 {
+  char *elset = ut_alloc_1d_char (100);
+
+  sprintf (elset, "elset%dd", Tess.Dim);
+
   (*pMeshPara).poly_cl = ut_alloc_1d (Tess.PolyQty + 1);
   neut_mesh_entity_expr_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Mesh[4],
-                             Tess, NULL, NULL, NULL, NULL, "elset3d",
+                             Tess, NULL, NULL, NULL, NULL, elset,
                              clstring, (*pMeshPara).poly_cl, NULL);
 
   if (!strcmp ((*pMeshPara).cltype, "rel"))
     nem_meshing_para_rcl2cl (pMeshPara, Tess.CellQty, Tess.Dim,
                              (*pMeshPara).poly_cl);
+
+  ut_free_1d_char (&elset);
 
   return 0;
 }

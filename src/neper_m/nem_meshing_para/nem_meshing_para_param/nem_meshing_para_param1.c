@@ -23,7 +23,7 @@ nem_meshing_para_param (struct IN_M In, struct TESS Tess, struct TESR *pTesr,
   ut_string_string (In.elttype, &(*pMeshPara).elttype); // needed by quad9
 
   // Testing type of input: tess or tesr or mesh
-  if (In.mesh)
+  if (In.mesh && !neut_mesh_isvoid (RMesh[Tess.Dim]))
   {
     (*pMeshPara).input = 'm';
     dim = 3;
