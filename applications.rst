@@ -22,6 +22,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
 .. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
 
+- S Wang, K Zhong, H Qiao, F Li, J Li, D Xu and J Yao, *Study of Optical Rectification in Polycrystalline Materials Based on Random Quasi-Phase Matching*, **Crystals**, https://doi.org/10.3390/cryst12091188.
 - X Zhang, Y Liu and C Oskay, *Uncertainty Quantification for Microstructure-Sensitive Fatigue*, **Frontiers in Materials**, https://doi.org/10.3389/fmats.2022.897998.
 - T Saksala, *3D numerical prediction of thermal weakening effects on granite*, **International Journal for Numerical and Analytical Methods in Geomechanics**, https://doi.org/10.1002/nag.3426.
 - CW Adair, H Evans, E Beatty, DL Hansen, S Holladay and O Johnson, *Microstructure Design Using a Human Computation Game*, **Materialia**, https://doi.org/10.1016/j.mtla.2022.101544.
