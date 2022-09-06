@@ -22,6 +22,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
 .. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
 
+- V Guski, W Verestek and S Schmauder, *Microstructural simulations on CrAlN HPPMS coatings*, **Surface and Coatings Technology**, https://doi-org.insis.bib.cnrs.fr/10.1016/j.surfcoat.2022.128814.
+- M Kutsal, HF Poulsen, G Winther, HO Sørensen and Carsten Detlefs, *High-resolution 3D X-ray diffraction microscopy: 3D mapping of deformed metal microstructures*, **Journal of Applied Crystallography**, https://doi.org/10.1107/S1600576722007361.
+- R Quey, *On the statistical significance of grain-scale lattice rotation results*, **Materials Characterization**, https://doi.org/10.1016/j.matchar.2022.112252.
 - J Wendorf, PR Dawson and TM Pollock, *Grain-Scale Stress States in Microtextured Ti64: Implications for Dwell Fatigue*, **JOM**, https://doi.org/10.1007/s11837-022-05423-9.
 - S Wang, K Zhong, H Qiao, F Li, J Li, D Xu and J Yao, *Study of Optical Rectification in Polycrystalline Materials Based on Random Quasi-Phase Matching*, **Crystals**, https://doi.org/10.3390/cryst12091188.
 - X Zhang, Y Liu and C Oskay, *Uncertainty Quantification for Microstructure-Sensitive Fatigue*, **Frontiers in Materials**, https://doi.org/10.3389/fmats.2022.897998.
