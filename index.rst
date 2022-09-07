@@ -26,7 +26,7 @@ Neper is developed by Romain Quey at `CNRS <http://www.cnrs.fr/en>`_ and `Mines 
 
    features.rst
    doc/index.rst
-   tutorials.rst
+   doc/tutorials.rst
    papers.rst
    talks.rst
    applications.rst
