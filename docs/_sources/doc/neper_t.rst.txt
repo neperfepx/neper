@@ -336,7 +336,7 @@ These options can be used to set the cell morphology.
   - :data:`reps`: relative error on the value of the objective function evaluated on a number of degrees of freedom basis (:data:`nlopt_eps` or :data:`nlopt_reps` are the NLopt iteration-based values);
   - :data:`xeps`: absolute error on the components of the solution vector;
   - :data:`xreps`: relative error on the components of the solution vector;
-  - :data:`<val>`: value of the objective function;
+  - :data:`val`: value of the objective function;
   - :data:`itermax`: a maximum number of iterations;
   - :data:`time`: maximum computation time;
   - :data:`loopmax`: maximum number of iteration loops (see option :option:`-morphooptialgomaxiter`).
@@ -463,21 +463,29 @@ Crystal Orientation Options
 
   - :data:`uniform`: uniformly-distributed orientations in 3D space [#uniform-crysym]_;
 
-  - :data:`orientation[:normal(<var>=<val>)]`: a :ref:`discrete orientation <rotations_and_orientations>`, with an optional disorientation chosen from a 3-variate normal distribution, where :data:`<var>` can be:
+  - :data:`<orientation>[:<distribution>]`: a :ref:`discrete orientation <rotations_and_orientations>`, with an optional disorientation distribution (see below);
 
-    - :data:`theta`: the 1D standard deviation;
-    - :data:`theta1`: the standard deviation about direction 1 (:math:`x`);
-    - :data:`theta2`: the standard deviation about direction 2 (:math:`y`);
-    - :data:`theta3`: the standard deviation about direction 3 (:math:`z`);
-    - :data:`thetam`: the average angle of the distribution.
+  - :data:`fiber(<dirc_x>,<dirc_y>,<dirc_z>,<dirs_x>,<dirs_y>,<dirs_z>)[:normal(<var>=<val>)]`: randomly-distributed orientations along the fiber, see :ref:`orientation_fibers`, with an optional disorientation distribution (see below);
 
-    An example is :data:`cube:normal(thetam=5)`;
-
-  - :data:`fiber(<dirc_x>,<dirc_y>,<dirc_z>,<dirs_x>,<dirs_y>,<dirs_z>)[:normal(<var>=<val>)]`: randomly-distributed orientations along the fiber, see :ref:`orientation_fibers`;
-
-  - :data:`parent[:normal(<var>=<val>)]`: orientations inherited from the ones of the parent cells, with an optional disorientation (defined as for :data:`orientation`);
+  - :data:`parent[:normal(<var>=<val>)]`: orientations inherited from the ones of the parent cells, with an optional disorientation distribution (see below);
 
   - :data:`file(<file_name>[,des=<descriptor>])`: orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
+
+  The optional distributions are:
+
+    - :data:`normal(<var>=<val>)`: a 3-variate normal distribution, where :data:`<var>` can be:
+
+      - :data:`theta`: the 1D standard deviation;
+      - :data:`theta1`: the standard deviation about direction 1 (:math:`x`);
+      - :data:`theta2`: the standard deviation about direction 2 (:math:`y`);
+      - :data:`theta3`: the standard deviation about direction 3 (:math:`z`);
+      - :data:`thetam`: the average angle of the distribution;
+
+      and the value is provided in degrees.
+
+    - :data:`flat(theta=<val>)`: a flat (orientation) distribution, where :data:`theta` is the maximum disorientation angle (in degrees).
+
+  An example is :data:`cube:normal(thetam=5)`;
 
   Finally, a sum of distributions can be provided; e.g., :data:`0.5*random+0.1*cube`.
 
@@ -590,6 +598,8 @@ Transformation Options
   - :data:`resetcellid`: reset cell ids to get a contiguous numbering starting from 1.
 
   - :data:`resetlabels`: reset the domain face, edge and vertex labels.
+
+  - :data:`ori(<file_name>[,des=<descriptor>])`: override cell orientations with ones defined in a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
 
   **For a raster tessellation**, the transformations can be:
 

@@ -14,6 +14,7 @@ Documentation
    neper_v.rst
    exprskeys.rst
    fileformat.rst
+   tutorials.rst
    versions.rst
    gpl.rst
    fdl.rst

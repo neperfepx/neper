@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tessellation Module (-T) &mdash; Neper 4.4.1 documentation</title>
+  <title>Tessellation Module (-T) &mdash; Neper 4.5.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.4.1
+                4.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -75,6 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="neper_v.html">Visualization Module (-V)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exprskeys.html">Expressions and Keys</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fileformat.html">File and Directory Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l2"><a class="reference internal" href="versions.html">Versions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpl.html">GNU General Public License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fdl.html">GNU Free Documentation License</a></li>
@@ -416,7 +417,7 @@
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">reps</span></code>: relative error on the value of the objective function evaluated on a number of degrees of freedom basis (<code class="xref py py-data docutils literal notranslate"><span class="pre">nlopt_eps</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">nlopt_reps</span></code> are the NLopt iteration-based values);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">xeps</span></code>: absolute error on the components of the solution vector;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">xreps</span></code>: relative error on the components of the solution vector;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;val&gt;</span></code>: value of the objective function;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">val</span></code>: value of the objective function;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">itermax</span></code>: a maximum number of iterations;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">time</span></code>: maximum computation time;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">loopmax</span></code>: maximum number of iteration loops (see option <a class="reference internal" href="#cmdoption-morphooptialgomaxiter"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morphooptialgomaxiter</span></code></a>).</p></li>
@@ -545,23 +546,31 @@
 <dt class="sig sig-object std" id="cmdoption-ori">
 <span class="sig-name descname"><span class="pre">-ori</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;ori_distrib&gt;</span></span><a class="headerlink" href="#cmdoption-ori" title="Permalink to this definition"></a></dt>
 <dd><p>Specify the type of crystal orientation distribution. It can be:</p>
-<ul>
+<ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">random</span></code>: randomly-distributed orientations in 3D space;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">uniform</span></code>: uniformly-distributed orientations in 3D space <a class="footnote-reference brackets" href="#uniform-crysym" id="id15">7</a>;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">orientation[:normal(&lt;var&gt;=&lt;val&gt;)]</span></code>: a <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">discrete orientation</span></a>, with an optional disorientation chosen from a 3-variate normal distribution, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;var&gt;</span></code> can be:</p>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;orientation&gt;[:&lt;distribution&gt;]</span></code>: a <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">discrete orientation</span></a>, with an optional disorientation distribution (see below);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">fiber(&lt;dirc_x&gt;,&lt;dirc_y&gt;,&lt;dirc_z&gt;,&lt;dirs_x&gt;,&lt;dirs_y&gt;,&lt;dirs_z&gt;)[:normal(&lt;var&gt;=&lt;val&gt;)]</span></code>: randomly-distributed orientations along the fiber, see <a class="reference internal" href="exprskeys.html#orientation-fibers"><span class="std std-ref">Orientation Fibers</span></a>, with an optional disorientation distribution (see below);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">parent[:normal(&lt;var&gt;=&lt;val&gt;)]</span></code>: orientations inherited from the ones of the parent cells, with an optional disorientation distribution (see below);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code>: orientations to be read from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> written using a specific descriptor (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).</p></li>
+</ul>
+<p>The optional distributions are:</p>
+<blockquote>
+<div><ul>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">normal(&lt;var&gt;=&lt;val&gt;)</span></code>: a 3-variate normal distribution, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;var&gt;</span></code> can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">theta</span></code>: the 1D standard deviation;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">theta1</span></code>: the standard deviation about direction 1 (<span class="math notranslate nohighlight">\(x\)</span>);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">theta2</span></code>: the standard deviation about direction 2 (<span class="math notranslate nohighlight">\(y\)</span>);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">theta3</span></code>: the standard deviation about direction 3 (<span class="math notranslate nohighlight">\(z\)</span>);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">thetam</span></code>: the average angle of the distribution.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">thetam</span></code>: the average angle of the distribution;</p></li>
 </ul>
-<p>An example is <code class="xref py py-data docutils literal notranslate"><span class="pre">cube:normal(thetam=5)</span></code>;</p>
+<p>and the value is provided in degrees.</p>
 </li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">fiber(&lt;dirc_x&gt;,&lt;dirc_y&gt;,&lt;dirc_z&gt;,&lt;dirs_x&gt;,&lt;dirs_y&gt;,&lt;dirs_z&gt;)[:normal(&lt;var&gt;=&lt;val&gt;)]</span></code>: randomly-distributed orientations along the fiber, see <a class="reference internal" href="exprskeys.html#orientation-fibers"><span class="std std-ref">Orientation Fibers</span></a>;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">parent[:normal(&lt;var&gt;=&lt;val&gt;)]</span></code>: orientations inherited from the ones of the parent cells, with an optional disorientation (defined as for <code class="xref py py-data docutils literal notranslate"><span class="pre">orientation</span></code>);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code>: orientations to be read from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> written using a specific descriptor (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">flat(theta=&lt;val&gt;)</span></code>: a flat (orientation) distribution, where <code class="xref py py-data docutils literal notranslate"><span class="pre">theta</span></code> is the maximum disorientation angle (in degrees).</p></li>
 </ul>
+</div></blockquote>
+<p>An example is <code class="xref py py-data docutils literal notranslate"><span class="pre">cube:normal(thetam=5)</span></code>;</p>
 <p>Finally, a sum of distributions can be provided; e.g., <code class="xref py py-data docutils literal notranslate"><span class="pre">0.5*random+0.1*cube</span></code>.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">random</span></code>.</p>
 </dd></dl>
@@ -673,6 +682,7 @@ The region interior to the primitives is removed from the tessellation.  Append 
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">rmcell(&lt;expr1&gt;,&lt;expr2&gt;,...)</span></code> remove cells matching successive expressions <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;expr1&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;expr2&gt;</span></code>, etc., where expressions are based on the variables defined in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">resetcellid</span></code>: reset cell ids to get a contiguous numbering starting from 1.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">resetlabels</span></code>: reset the domain face, edge and vertex labels.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ori(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code>: override cell orientations with ones defined in a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> written using a specific descriptor (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).</p></li>
 </ul>
 <p><strong>For a raster tessellation</strong>, the transformations can be:</p>
 <ul class="simple">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Meshing Module (-M) &mdash; Neper 4.4.1 documentation</title>
+  <title>Meshing Module (-M) &mdash; Neper 4.5.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.4.1
+                4.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -76,6 +76,7 @@
 <li class="toctree-l2"><a class="reference internal" href="neper_v.html">Visualization Module (-V)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exprskeys.html">Expressions and Keys</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fileformat.html">File and Directory Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l2"><a class="reference internal" href="versions.html">Versions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpl.html">GNU General Public License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fdl.html">GNU Free Documentation License</a></li>
@@ -469,6 +470,8 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">smooth(&lt;A&gt;,&lt;itermax&gt;,&lt;type&gt;)</span></code>: smooth the interfaces of a mesh by Laplacian smoothing (use only if you know what you are doing).  Laplacian smoothing is an iterative method that modifies the coordinates of a node using the coordinates of the neighboring nodes.  At iteration <span class="math notranslate nohighlight">\(i\)</span>, the position of a node, <span class="math notranslate nohighlight">\(X_i\)</span>, is calculated from its previous position, <span class="math notranslate nohighlight">\(X_{i-1}\)</span>, and the position of the barycenter of the neighboring nodes (weighted barycenter considering the inverse of the distance between the node and the neighbor), <span class="math notranslate nohighlight">\(X^n_{i-1}\)</span> as follows: <span class="math notranslate nohighlight">\(X_i=(1-A)\,X_{i-1} + A\,X^n_{i-1};\,0\leq A \leq 1\)</span>.  <code class="xref py py-data docutils literal notranslate"><span class="pre">itermax</span></code> iterations are applied. <code class="xref py py-data docutils literal notranslate"><span class="pre">type</span></code> defines the nodes used for smoothing and can be <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code> for all nodes or <code class="xref py py-data docutils literal notranslate"><span class="pre">interior</span></code> for interior nodes.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">explode(&lt;fact&gt;)</span></code>: produce a roughly “exploded” mesh for which elsets are apart from each other (or cohesive elements become thick).  To be used in conjunction with <code class="xref py py-data docutils literal notranslate"><span class="pre">-interface</span> <span class="pre">{discontinuous,cohesive}</span></code>.  <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;fact&gt;</span></code> is a factor controlling the distance between elsets.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">slice(&lt;d&gt;,&lt;a&gt;,&lt;b&gt;,&lt;c&gt;)</span></code>: slice a 3D mesh by the (oriented) plane of equation <span class="math notranslate nohighlight">\(a\,x+b\,y+c\,z=d\)</span> (yielding to a 2D mesh).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">node(&lt;file_name&gt;)</span></code>: override node positions with ones defined in a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ori(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code>: override orientations with ones defined in a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> written using a specific descriptor (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).  The file may contain orientations for elsets or for elements, and this is automatically determined from the number of lines (in the case of element orientations, elset orientations are updated accordingly, by averaging).</p></li>
 </ul>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>

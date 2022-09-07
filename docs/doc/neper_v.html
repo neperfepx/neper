@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Visualization Module (-V) &mdash; Neper 4.4.1 documentation</title>
+  <title>Visualization Module (-V) &mdash; Neper 4.5.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.4.1
+                4.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -54,16 +54,19 @@
 <li class="toctree-l4"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#input-data">Input Data</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#space-options">Space Options</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#tessellation-data-loading-and-rendering">Tessellation Data Loading and Rendering</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#mesh-data-loading-and-rendering">Mesh Data Loading and Rendering</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#point-data-loading-and-rendering">Point Data Loading and Rendering</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#coordinate-system-rendering">Coordinate System Rendering</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#slice-settings">Slice Settings</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#show-settings">Show Settings</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#camera-settings">Camera Settings</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#scene-settings">Scene Settings</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#output-image-settings">Output Image Settings</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#scripting">Scripting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tessellation-data-loading-and-rendering-options">Tessellation Data Loading and Rendering Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mesh-data-loading-and-rendering-options">Mesh Data Loading and Rendering Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-input-data-loading-and-rendering-options">Custom Input Data Loading and Rendering Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coordinate-system-rendering-options">Coordinate System Rendering Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#show-options">Show Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#slice-options">Slice Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#camera-options">Camera Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#light-options">Light Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scene-options">Scene Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pole-figure-options">Pole Figure Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#output-image-options">Output Image Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#renderer-options">Renderer Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scripting-options">Scripting Options</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#output-options">Output Options</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#print-options">Print Options</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#advanced-options">Advanced Options</a></li>
@@ -75,6 +78,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="exprskeys.html">Expressions and Keys</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fileformat.html">File and Directory Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l2"><a class="reference internal" href="versions.html">Versions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpl.html">GNU General Public License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fdl.html">GNU Free Documentation License</a></li>
@@ -116,8 +120,15 @@
              
   <div class="section" id="visualization-module-v">
 <span id="neper-v"></span><span id="index-0"></span><h1>Visualization Module (-V)<a class="headerlink" href="#visualization-module-v" title="Permalink to this headline"></a></h1>
-<p>Module -V is the module for visualizing tessellations, meshes and simulation results as publication-quality PNG images or VTK files, for interactive visualization. Results can be defined from internal data, data loaded from external files or a simulation directory as generated by module -S.  For the PNG images, it is possible to set different attributes of the tessellations and meshes such as the node coordinates, or the colors and transparencies of the different entities. Point data can also be represented, using symbols of specified sizes and colors. Slice views can also be generated.</p>
-<p>Contrary to other modules, module -V processes the command arguments one after the other. Typically, module -V can be used to visualize tessellations, meshes, points, or results of a simulation directory (on the mesh).  The aspects of all entities (tessellation polyhedra, faces, edges, vertices, seeds and crystals, 3D, 2D, 1D and 0D mesh elements and nodes, and points) can be set in detail (options <code class="xref py py-data docutils literal notranslate"><span class="pre">-data*</span></code>).  A crystal is plotted at the center of its cell, shaped according to the <a class="reference external" href="crystal_symmetries">Crystal Symmetry</a> and has the same volume as its cell.  In the case of a PNG output file, the scene itself can also be set in detail: visibility of the different entities (options <code class="xref py py-data docutils literal notranslate"><span class="pre">-show*</span></code>), camera position and angle, projection type, image size, etc. (options <code class="xref py py-data docutils literal notranslate"><span class="pre">-camera*</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">-image*</span></code>).  The coordinate system can also be added.</p>
+<p>Module -V is the module for visualizing tessellations, meshes, simulation results and custom data, either as publication-quality (raster) PNG or (vectorial) PDF images, or VTK files, for interactive visualization.  Visualization can be done in real (physical) space, but also on pole figures, which is managed by option <a class="reference internal" href="#cmdoption-space"><code class="xref std std-option docutils literal notranslate"><span class="pre">-space</span></code></a>.</p>
+<p>Virtually any detail of the visualization can be set.  For example, all entities (tessellation polyhedra, faces, edges, vertices, seeds and crystals, 3D, 2D, 1D and 0D mesh elements and nodes, and points) can be assigned a particular color, size, transparency, etc. (options <code class="xref py py-data docutils literal notranslate"><span class="pre">-data*</span></code>), the visibility of the different entities can be adjusted (options <code class="xref std std-option docutils literal notranslate"><span class="pre">-show*</span></code>), or slice views can be generated (option <a class="reference internal" href="#cmdoption-slicemesh"><code class="xref std std-option docutils literal notranslate"><span class="pre">-slicemesh</span></code></a>).  This different capabilities make it possible to carry out standard or advanced visualizations but also post-processing.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The specification of colors, etc. via options <code class="xref std std-option docutils literal notranslate"><span class="pre">-data*</span></code> and visibility via options <code class="xref std std-option docutils literal notranslate"><span class="pre">-show*</span></code> is common to all spaces.</p>
+</div>
+<p>Standard, real space visualizations (default <a class="reference internal" href="#cmdoption-space"><code class="xref std std-option docutils literal notranslate"><span class="pre">-space</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">real</span></code>) are achieved using the POV-Ray ray tracing renderer to produce high-quality (raster) PNG images.  The parameters of the “scene” are assigned default values, but can also be fine-tuned, such as the light positions, camera position and angle, projection type, etc. (options <code class="xref py py-data docutils literal notranslate"><span class="pre">-camera*</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">-light*</span></code>).</p>
+<p>Pole figure visualizations (<a class="reference internal" href="#cmdoption-space"><code class="xref std std-option docutils literal notranslate"><span class="pre">-space</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">pf</span></code>) are achieved using the Asymptote vector graphics rendered to produce high-quality (raster) PNG images (by default), but also high-quality (vectorial) PDF images.  Data can be represented as symbols or a density field, and can be superimposed.</p>
+<p>In contrast to other modules, module -V processes the command arguments one after the other.</p>
 <p>Here is what a typical run of module -V looks like:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n10-id1.tess,n10-id1.msh -dataelsetcol id -print img
 
@@ -167,17 +178,42 @@
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-povray">
 <span class="sig-name descname"><span class="pre">-povray</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;binary&gt;</span></span><a class="headerlink" href="#cmdoption-povray" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the POV-Ray command or the path to the POV-Ray binary (for generating PNG images).</p>
+<dd><p>Specify the POV-Ray command or the path to the POV-Ray binary (for generating standard PNG images).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">povray</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-asymptote">
+<span class="sig-name descname"><span class="pre">-asymptote</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;binary&gt;</span></span><a class="headerlink" href="#cmdoption-asymptote" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the Asymptote command or the path to the Asymptote binary (for generating pole figures).</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">asy</span></code>.</p>
 </dd></dl>
 
 </div>
 <div class="section" id="input-data">
-<h3>Input Data<a class="headerlink" href="#input-data" title="Permalink to this headline"></a></h3>
+<span id="neper-v-input-data"></span><h3>Input Data<a class="headerlink" href="#input-data" title="Permalink to this headline"></a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-file_name1-file_name2-...">
 <span id="cmdoption-arg-file-name1-file-name2"></span><span class="sig-name descname"><span class="pre">&lt;file_name1&gt;,&lt;file_name2&gt;,...</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-file_name1-file_name2-..." title="Permalink to this definition"></a></dt>
-<dd><p>Specify the names of the input file(s) or directory. The file(s) can be a <a class="reference internal" href="fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a>, a <a class="reference internal" href="fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a>, a <a class="reference internal" href="fileformat.html#mesh-file"><span class="std std-ref">Mesh File (.msh)</span></a>, or a <a class="reference internal" href="fileformat.html#position-file"><span class="std std-ref">Position File</span></a> (for points), and the directory can be a <a class="reference internal" href="fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a>.</p>
+<dd><p>Specify the input file(s) or directory. The argument can be:</p>
+<ul class="simple">
+<li><p>a <a class="reference internal" href="fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a>;</p></li>
+<li><p>a <a class="reference internal" href="fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a>;</p></li>
+<li><p>a <a class="reference internal" href="fileformat.html#mesh-file"><span class="std std-ref">Mesh File (.msh)</span></a>;</p></li>
+<li><p>a <a class="reference internal" href="fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a>;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">[&lt;input&gt;[(type=&lt;type&gt;)]:]file(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code>: a custom input (points, vectors, …) to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>, given a custom name, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;input&gt;</span></code> (default <code class="xref py py-data docutils literal notranslate"><span class="pre">point</span></code>), and of a specified type, which can be:</p>
+<ul>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">point</span></code>: points (default in <a class="reference internal" href="#cmdoption-space"><code class="xref std std-option docutils literal notranslate"><span class="pre">-space</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">real</span></code>);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ori</span></code>: orientations (default in <a class="reference internal" href="#cmdoption-space"><code class="xref std std-option docutils literal notranslate"><span class="pre">-space</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">pf</span></code>);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vector</span></code>: vectors.</p></li>
+</ul>
+</li>
+</ul>
+<p>For <code class="xref py py-data docutils literal notranslate"><span class="pre">ori</span></code>, the descriptor can be specified (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As a custom input is loaded, new options such as <a class="reference internal" href="#cmdoption-data-input-col"><code class="xref std std-option docutils literal notranslate"><span class="pre">-data&lt;input&gt;col</span></code></a>, <a class="reference internal" href="#cmdoption-show-input"><code class="xref std std-option docutils literal notranslate"><span class="pre">-show&lt;input&gt;</span></code></a>, etc. are defined, as described in the following.  It is possible to load several custom inputs.</p>
+</div>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
 
@@ -193,25 +229,45 @@
 </div>
 <div class="section" id="space-options">
 <h3>Space Options<a class="headerlink" href="#space-options" title="Permalink to this headline"></a></h3>
-<p>The following option enables the definition of the space which the input data (tessellation, mesh, point, etc.) are defined in.  The space is most generally real (physical) space, but can be defined as Rodrigues orientation space, which makes it possible to account for its distortion <a class="footnote-reference brackets" href="#space" id="id1">1</a>.</p>
+<p>The following option enables the definition of the space in which data (simulation, tessellation, mesh, point, etc.) are represented.  The space is most generally real (physical) space, <code class="xref py py-data docutils literal notranslate"><span class="pre">real</span></code>, but can be defined as pole figure space, <code class="xref py py-data docutils literal notranslate"><span class="pre">pf</span></code>, or tree space, <code class="xref py py-data docutils literal notranslate"><span class="pre">tree</span></code>.  Tree space shows a tree-like structure of a simulation directory.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-space">
-<span class="sig-name descname"><span class="pre">-space</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;space&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-space" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the space which the input data are defined in, which can be:</p>
+<span class="sig-name descname"><span class="pre">-space</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;space&gt;</span></span><a class="headerlink" href="#cmdoption-space" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the space in which data are represented, which can be:</p>
 <ul class="simple">
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">real</span></code> for real space;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code> for Rodrigues orientation space.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">real</span></code>: real (physical) space;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">pf</span></code>: pole figure space;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">tree</span></code>: tree space.</p></li>
 </ul>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">real</span></code>.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="tessellation-data-loading-and-rendering">
-<h3>Tessellation Data Loading and Rendering<a class="headerlink" href="#tessellation-data-loading-and-rendering" title="Permalink to this headline"></a></h3>
-<p>The following options enable the definition of the properties (color and size) of the tessellation cells or entities (polyhedra, faces, edges and vertices), seeds and crystals. This can be done either directly, by providing one or several values (e.g. the RGB channel values for color) or indirectly, e.g. using scalar values that are converted in color using a given <em>color scheme</em>.  In this case (and for real-type data), a scale image is also generated, and its properties (minimum, maximum and tick values) can be set.</p>
+<div class="section" id="tessellation-data-loading-and-rendering-options">
+<h3>Tessellation Data Loading and Rendering Options<a class="headerlink" href="#tessellation-data-loading-and-rendering-options" title="Permalink to this headline"></a></h3>
+<p>The following option enables the definition of the cell data itself (pole figure space only):</p>
 <span class="target" id="index-1"></span><dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-voidvox-voxedge-col">
-<span class="sig-name descname"><span class="pre">-data{cell,poly,face,edge,ver,seed,crystal,vox,voidvox,voxedge}col</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;color&gt;</span></span><a class="headerlink" href="#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-voidvox-voxedge-col" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object std" id="cmdoption-datacell">
+<span class="sig-name descname"><span class="pre">-datacell</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;type&gt;:&lt;value&gt;</span></span><a class="headerlink" href="#cmdoption-datacell" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the cell data type and value, which can be:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ori</span></code>: orientations;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vector:&lt;res&gt;</span></code>: a vectorial result from the <a class="reference internal" href="fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a>.</p></li>
+</ul>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">ori</span></code>.</p>
+</dd></dl>
+
+<p>The following options enable the definition of the properties (color and size) of the tessellation cells or entities (polyhedra, faces, edges and vertices), seeds and crystals.  <em>Crystals</em> are plotted at the centers of their respective cells, shaped according to the <a class="reference external" href="crystal_symmetries">Crystal Symmetry</a> and have the same volumes as their respective cells.  This can be done either directly, by providing one or several values (e.g. the RGB channel values for color) or indirectly, e.g. using scalar values that are converted in color using a given <em>color scheme</em>.  In this case (and for real-type data), a scale image is also generated, and its properties (minimum, maximum and tick values) can be specified.</p>
+<p>For each entity, all attributes can be set, although the may not apply in certain spaces (see option <a class="reference internal" href="#cmdoption-space"><code class="xref std std-option docutils literal notranslate"><span class="pre">-space</span></code></a>). Specifically,</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">-data{cell,poly,face}rad</span></code> applies only in PF space;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">-data*trs</span></code> does not apply in PF space.</p></li>
+</ul>
+</div></blockquote>
+<span class="target" id="index-2"></span><dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-voidvox-crystal-cell-vox-edge-col">
+<span class="sig-name descname"><span class="pre">-data{cell,poly,face,edge,ver,seed,crystal,vox,voidvox,{crystal,cell,vox}edge}col</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;color&gt;</span></span><a class="headerlink" href="#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-voidvox-crystal-cell-vox-edge-col" title="Permalink to this definition"></a></dt>
 <dd><p>Specify the colors, which can be done in two main different ways.</p>
 <p><strong>Colors can be specified directly</strong>:</p>
 <ul class="simple">
@@ -250,17 +306,21 @@
 </li>
 </ul>
 <p>See also option <code class="xref py py-data docutils literal notranslate"><span class="pre">-data...colscheme</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="xref std std-option docutils literal notranslate"><span class="pre">-datacelledgecol</span></code> applied only in PF space.</p>
+</div>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">id</span></code> for cells and crystals, <code class="xref py py-data docutils literal notranslate"><span class="pre">white</span></code> for faces, <code class="xref py py-data docutils literal notranslate"><span class="pre">black</span></code> for edges and vertices, <code class="xref py py-data docutils literal notranslate"><span class="pre">gray</span></code> for seeds, voxels and void voxels, <code class="xref py py-data docutils literal notranslate"><span class="pre">black</span></code> for voxel edges.</p>
 </dd></dl>
 
-<span class="target" id="index-2"></span><dl class="std option">
+<span class="target" id="index-3"></span><dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-colscheme">
 <span class="sig-name descname"><span class="pre">-data{cell,poly,face,edge,ver,seed,crystal,vox}colscheme</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;col_scheme&gt;</span></span><a class="headerlink" href="#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-vox-colscheme" title="Permalink to this definition"></a></dt>
 <dd><p>Specify the color scheme used to get colors from the data loaded with option <code class="xref py py-data docutils literal notranslate"><span class="pre">-data...col</span></code>.
 The type of color scheme depends on the type of data.</p>
 <ul class="simple">
-<li><p>For integer values, the color scheme is <code class="xref py py-data docutils literal notranslate"><span class="pre">palette</span></code> (see <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>);</p></li>
-<li><p>For real values, the available color schemes are described in <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>;</p></li>
+<li><p>For integer values, the color scheme is <code class="xref py py-data docutils literal notranslate"><span class="pre">palette</span></code>, as described in <a class="reference internal" href="exprskeys.html#color-map-for-integer-values"><span class="std std-ref">Color Map for Integer Values</span></a>;</p></li>
+<li><p>For real values, the available color schemes are described in <a class="reference internal" href="exprskeys.html#color-map-for-real-values"><span class="std std-ref">Color Maps for Real Values</span></a>;</p></li>
 <li><p>For crystal orientations (cubic symmetry is assumed), the color scheme can be:</p>
 <ul>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ipf[(&lt;dir&gt;)]</span></code>: IPF coloring using direction <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dir&gt;</span></code>, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code> (default <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code>);</p></li>
@@ -274,7 +334,7 @@ The type of color scheme depends on the type of data.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">palette</span></code> for integer values, <code class="xref py py-data docutils literal notranslate"><span class="pre">viridis</span></code> for real values, and <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code> for crystal orientations.</p>
 </dd></dl>
 
-<span class="target" id="index-3"></span><dl class="std option">
+<span class="target" id="index-4"></span><dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-data-cell-poly-face-edge-ver-seed-crystal-trs">
 <span class="sig-name descname"><span class="pre">-data{cell,poly,face,edge,ver,seed,crystal}trs</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;transparency&gt;</span></span><a class="headerlink" href="#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-trs" title="Permalink to this definition"></a></dt>
 <dd><p>Specify the transparencies (values from 0 to 1), which can be:</p>
@@ -286,14 +346,18 @@ The type of color scheme depends on the type of data.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-data-edge-ver-seed-crystal-voxedge-rad">
-<span class="sig-name descname"><span class="pre">-data{edge,ver,seed,crystal,voxedge}rad</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;rad&gt;</span></span><a class="headerlink" href="#cmdoption-data-edge-ver-seed-crystal-voxedge-rad" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object std" id="cmdoption-data-cell-poly-face-edge-ver-seed-crystal-crystal-cell-vox-edge-rad">
+<span class="sig-name descname"><span class="pre">-data{cell,poly,face,edge,ver,seed,crystal,{crystal,cell,vox}edge}rad</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;rad&gt;</span></span><a class="headerlink" href="#cmdoption-data-cell-poly-face-edge-ver-seed-crystal-crystal-cell-vox-edge-rad" title="Permalink to this definition"></a></dt>
 <dd><p>Specify the radii, which can be:</p>
 <ul class="simple">
 <li><p>a real value;</p></li>
 <li><p>an expression based on the variables described in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>, such as <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">vol</span></code>, or in a <a class="reference internal" href="fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a>, which allows to define individual values;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="xref std std-option docutils literal notranslate"><span class="pre">-datacelledgerad</span></code> applied only in PF space.</p>
+</div>
 <p><strong>Default value</strong>: tessellation dependent.</p>
 </dd></dl>
 
@@ -318,23 +382,28 @@ The type of color scheme depends on the type of data.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-datacrystaledgerad">
-<span class="sig-name descname"><span class="pre">-datacrystaledgerad</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;rad&gt;</span></span><a class="headerlink" href="#cmdoption-datacrystaledgerad" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the radius of the crystals edges, which can be any real value (<span class="math notranslate nohighlight">\(\geq0\)</span>).</p>
-<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>.</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-datacrystaledgecol">
-<span class="sig-name descname"><span class="pre">-datacrystaledgecol</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;color&gt;</span></span><a class="headerlink" href="#cmdoption-datacrystaledgecol" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the color of the crystal edges, which can be a color as described in <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>.</p>
-<p><strong>Default value</strong>: tessellation dependent.</p>
+<dt class="sig sig-object std" id="cmdoption-datacellsymbol">
+<span class="sig-name descname"><span class="pre">-datacellsymbol</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;symbol&gt;</span></span><a class="headerlink" href="#cmdoption-datacellsymbol" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the symbol representing the cells (only for <a class="reference internal" href="#cmdoption-space"><code class="xref std std-option docutils literal notranslate"><span class="pre">-space</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">pf</span></code>), which can be:</p>
+<ul class="simple">
+<li><p>a symbol to apply to all cells (see below);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.</p></li>
+</ul>
+<p>A symbol can be (all arguments are optional, and the radius is taken from option <code class="xref std std-option docutils literal notranslate"><span class="pre">-data&lt;entity&gt;rad</span></code> if defined):</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">circle([rad=&lt;rad&gt;)</span></code>: a circle/disc of specified radius;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">square[(rad=&lt;rad&gt;,theta=&lt;angle&gt;)]</span></code>: a square of specified properties;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">triangle[(rad=&lt;rad&gt;,theta=&lt;angle&gt;)]</span></code>: a triangle of specified properties;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">diamond[(rad=&lt;rad&gt;,theta=&lt;angle&gt;)]</span></code>: a diamond (45° rotated square) of specified properties.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">star[(rad=&lt;rad&gt;,theta=&lt;angle&gt;)]</span></code>: a R-branch star of specified properties.</p></li>
+</ul>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">circle</span></code>.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="mesh-data-loading-and-rendering">
-<h3>Mesh Data Loading and Rendering<a class="headerlink" href="#mesh-data-loading-and-rendering" title="Permalink to this headline"></a></h3>
-<p>The following options enable the definition of the properties (color, size, etc.) of the mesh entities (3D, 2D, 1D and 0D elements and elsets, nodes, and full mesh).  <code class="xref py py-data docutils literal notranslate"><span class="pre">elt</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">elset</span></code> refer to the elements and elsets of higher dimensions.  The dimension can be also be specified explicitly, as in <code class="xref py py-data docutils literal notranslate"><span class="pre">elt2d</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">elset2d</span></code>.  <code class="xref py py-data docutils literal notranslate"><span class="pre">node</span></code> represents all nodes, and <code class="xref py py-data docutils literal notranslate"><span class="pre">mesh</span></code> the full mesh.  This can be done either directly, by providing one or several values (e.g. the RGB channel values for color) or indirectly, e.g. using scalar values that are converted in color using a given <em>color scheme</em>.  In this case (and for real-type data), a scale image is also generated, and its properties (minimum, maximum and tick values) can be set.</p>
+<div class="section" id="mesh-data-loading-and-rendering-options">
+<h3>Mesh Data Loading and Rendering Options<a class="headerlink" href="#mesh-data-loading-and-rendering-options" title="Permalink to this headline"></a></h3>
+<p>The following options enable the definition of the properties (color, size, etc.) of the mesh entities (3D, 2D, 1D and 0D elements and elsets, nodes, and full mesh).  <code class="xref py py-data docutils literal notranslate"><span class="pre">elt</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">elset</span></code> refer to the elements and elsets of higher dimensions.  The dimension can be also be specified explicitly, as in <code class="xref py py-data docutils literal notranslate"><span class="pre">elt2d</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">elset2d</span></code>.  <code class="xref py py-data docutils literal notranslate"><span class="pre">node</span></code> represents all nodes, and <code class="xref py py-data docutils literal notranslate"><span class="pre">mesh</span></code> the full mesh.  This can be done either directly, by providing one or several values (e.g. the RGB channel values for color) or indirectly, e.g. using scalar values that are converted in color using a given <em>color scheme</em>.  In this case (and for real-type data), a scale image is also generated, and its properties (minimum, maximum and tick values) can be specified.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-data-elt-elset-node-elt-0-3-d-elset-0-3-d-elt-2-3-dedge-mesh-col">
 <span class="sig-name descname"><span class="pre">-data{elt,elset,node,elt{0-3}d,elset{0-3}d,elt{2,3}dedge,mesh}col</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;color&gt;</span></span><a class="headerlink" href="#cmdoption-data-elt-elset-node-elt-0-3-d-elset-0-3-d-elt-2-3-dedge-mesh-col" title="Permalink to this definition"></a></dt>
@@ -391,8 +460,8 @@ The type of color scheme depends on the type of data.</p>
 <dd><p>Specify the color scheme used to get colors from the data loaded with option <code class="xref py py-data docutils literal notranslate"><span class="pre">-data...col</span></code>.
 The type of color scheme depends on the type of data.</p>
 <ul class="simple">
-<li><p>For integer values, the color scheme is <code class="xref py py-data docutils literal notranslate"><span class="pre">palette</span></code> (see <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>);</p></li>
-<li><p>For real values, the available color schemes are described in <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>;</p></li>
+<li><p>For integer values, the color scheme is <code class="xref py py-data docutils literal notranslate"><span class="pre">palette</span></code>, as described in <a class="reference internal" href="exprskeys.html#color-map-for-integer-values"><span class="std std-ref">Color Map for Integer Values</span></a>;</p></li>
+<li><p>For real values, the available color schemes are described in <a class="reference internal" href="exprskeys.html#color-map-for-real-values"><span class="std std-ref">Color Maps for Real Values</span></a>;</p></li>
 <li><p>For crystal orientations (cubic symmetry is assumed), the color scheme can be:</p>
 <ul>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ipf[(&lt;dir&gt;)]</span></code>: IPF coloring using direction <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dir&gt;</span></code>, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code> (default <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code>);</p></li>
@@ -462,13 +531,13 @@ The type of color scheme depends on the type of data.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="point-data-loading-and-rendering">
-<h3>Point Data Loading and Rendering<a class="headerlink" href="#point-data-loading-and-rendering" title="Permalink to this headline"></a></h3>
-<p>The following options enable the definition of the properties (color, shape, size, etc.) of points loaded as input. This can be done either directly, by providing one or several values (e.g. the RGB channel values for color) or indirectly, e.g. using scalar values that are converted in color using a given <em>color scheme</em>.  In this case (and for real-type data), a scale image is also generated, and its properties (minimum, maximum and tick values) can be set.</p>
+<div class="section" id="custom-input-data-loading-and-rendering-options">
+<h3>Custom Input Data Loading and Rendering Options<a class="headerlink" href="#custom-input-data-loading-and-rendering-options" title="Permalink to this headline"></a></h3>
+<p>The following options enable the definition of the properties (color, shape, size, etc.) of custom inputs. This can be done either directly, by providing one or several values (e.g. the RGB channel values for color) or indirectly, e.g. using scalar values that are converted in color using a given <em>color scheme</em>.  In this case (and for real-type data), a scale image is also generated, and its properties (minimum, maximum and tick values) can be specified.</p>
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-datapointcol">
-<span class="sig-name descname"><span class="pre">-datapointcol</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;color&gt;</span></span><a class="headerlink" href="#cmdoption-datapointcol" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the colors of the points, which can be done in two main different ways.</p>
+<dt class="sig sig-object std" id="cmdoption-data-input-col">
+<span class="sig-name descname"><span class="pre">-data&lt;input&gt;col</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;color&gt;</span></span><a class="headerlink" href="#cmdoption-data-input-col" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the colors of the input points, which can be done in two main different ways.</p>
 <p><strong>Colors can be specified directly</strong>:</p>
 <ul class="simple">
 <li><p>a color (see <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>);</p></li>
@@ -491,26 +560,26 @@ The type of color scheme depends on the type of data.</p>
 </ul>
 </li>
 </ul>
-<p>See also option <a class="reference internal" href="#cmdoption-datapointcolscheme"><code class="xref std std-option docutils literal notranslate"><span class="pre">-datapointcolscheme</span></code></a>.</p>
-<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">gray</span></code>.</p>
+<p>See also option <a class="reference internal" href="#cmdoption-data-input-colscheme"><code class="xref std std-option docutils literal notranslate"><span class="pre">-data&lt;input&gt;colscheme</span></code></a>.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">id</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-datapointcolscheme">
-<span class="sig-name descname"><span class="pre">-datapointcolscheme</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;col_scheme&gt;</span></span><a class="headerlink" href="#cmdoption-datapointcolscheme" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the color scheme used to get colors from the data loaded with option <a class="reference internal" href="#cmdoption-datapointcol"><code class="xref std std-option docutils literal notranslate"><span class="pre">-datapointcol</span></code></a>.
+<dt class="sig sig-object std" id="cmdoption-data-input-colscheme">
+<span class="sig-name descname"><span class="pre">-data&lt;input&gt;colscheme</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;col_scheme&gt;</span></span><a class="headerlink" href="#cmdoption-data-input-colscheme" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the color scheme used to get colors from the data loaded with option <a class="reference internal" href="#cmdoption-data-input-col"><code class="xref std std-option docutils literal notranslate"><span class="pre">-data&lt;input&gt;col</span></code></a>.
 The type of color scheme depends on the type of data.</p>
 <ul class="simple">
-<li><p>For integer values, the color scheme is <code class="xref py py-data docutils literal notranslate"><span class="pre">palette</span></code> (see <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>);</p></li>
-<li><p>For real values, the available color schemes are described in <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>;</p></li>
+<li><p>For integer values, the color scheme is <code class="xref py py-data docutils literal notranslate"><span class="pre">palette</span></code>, as described in <a class="reference internal" href="exprskeys.html#color-map-for-integer-values"><span class="std std-ref">Color Map for Integer Values</span></a>;</p></li>
+<li><p>For real values, the available color schemes are described in <a class="reference internal" href="exprskeys.html#color-map-for-real-values"><span class="std std-ref">Color Maps for Real Values</span></a>;</p></li>
 </ul>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">palette</span></code> for integer values and <code class="xref py py-data docutils literal notranslate"><span class="pre">viridis</span></code> for real values.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-datapointtrs">
-<span class="sig-name descname"><span class="pre">-datapointtrs</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;transparency&gt;</span></span><a class="headerlink" href="#cmdoption-datapointtrs" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the transparency of the points (a value from 0 to 1), which can be:</p>
+<dt class="sig sig-object std" id="cmdoption-data-input-trs">
+<span class="sig-name descname"><span class="pre">-data&lt;input&gt;trs</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;transparency&gt;</span></span><a class="headerlink" href="#cmdoption-data-input-trs" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the transparency of the input points (a value from 0 to 1), which can be:</p>
 <ul class="simple">
 <li><p>a real value;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.</p></li>
@@ -519,9 +588,9 @@ The type of color scheme depends on the type of data.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-datapointscale">
-<span class="sig-name descname"><span class="pre">-datapointscale</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;scale&gt;</span></span><a class="headerlink" href="#cmdoption-datapointscale" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the scale relative to the <code class="xref py py-data docutils literal notranslate"><span class="pre">-datapointcol</span> <span class="pre">real</span></code> data, which can be:</p>
+<dt class="sig sig-object std" id="cmdoption-data-input-scale">
+<span class="sig-name descname"><span class="pre">-data&lt;input&gt;scale</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;scale&gt;</span></span><a class="headerlink" href="#cmdoption-data-input-scale" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the scale relative to the <code class="xref py py-data docutils literal notranslate"><span class="pre">-data&lt;input&gt;col</span> <span class="pre">real</span></code> data, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;min&gt;:&lt;max&gt;</span></code>: minimal and maximal values;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;min&gt;:&lt;inter1&gt;:...:&lt;max&gt;</span></code>: minimal, intermediate and maximal values.</p></li>
@@ -532,16 +601,16 @@ The type of color scheme depends on the type of data.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-datapointscaletitle">
-<span class="sig-name descname"><span class="pre">-datapointscaletitle</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;title&gt;</span></span><a class="headerlink" href="#cmdoption-datapointscaletitle" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the title of the scale relative to the <code class="xref py py-data docutils literal notranslate"><span class="pre">-datapointcol</span> <span class="pre">real</span></code> data.</p>
+<dt class="sig sig-object std" id="cmdoption-data-input-scaletitle">
+<span class="sig-name descname"><span class="pre">-data&lt;input&gt;scaletitle</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;title&gt;</span></span><a class="headerlink" href="#cmdoption-data-input-scaletitle" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the title of the scale relative to the <code class="xref py py-data docutils literal notranslate"><span class="pre">-data&lt;input&gt;col</span> <span class="pre">real</span></code> data.</p>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-datapointcoo">
-<span class="sig-name descname"><span class="pre">-datapointcoo</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;coo&gt;</span></span><a class="headerlink" href="#cmdoption-datapointcoo" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the coordinates of the points, which can be done in two main different ways.</p>
+<dt class="sig sig-object std" id="cmdoption-data-input-coo">
+<span class="sig-name descname"><span class="pre">-data&lt;input&gt;coo</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;coo&gt;</span></span><a class="headerlink" href="#cmdoption-data-input-coo" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the coordinates of the input points, which can be done in two main different ways.</p>
 <p><strong>Coordinates can be specified directly as follows:</strong></p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual coordinates to load from a <a class="reference internal" href="fileformat.html#position-file"><span class="std std-ref">Position File</span></a>.</p></li>
@@ -555,46 +624,61 @@ The type of color scheme depends on the type of data.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-datapointcoofact">
-<span class="sig-name descname"><span class="pre">-datapointcoofact</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;fact&gt;</span></span><a class="headerlink" href="#cmdoption-datapointcoofact" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the value of the scaling factor to apply to the displacements of the points.</p>
+<dt class="sig sig-object std" id="cmdoption-data-input-coofact">
+<span class="sig-name descname"><span class="pre">-data&lt;input&gt;coofact</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;fact&gt;</span></span><a class="headerlink" href="#cmdoption-data-input-coofact" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the value of the scaling factor to apply to the displacements of the input points.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-datapointrad">
-<span class="sig-name descname"><span class="pre">-datapointrad</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;rad&gt;</span></span><a class="headerlink" href="#cmdoption-datapointrad" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the radii (and shapes) of the points, which can be:</p>
+<dt class="sig sig-object std" id="cmdoption-data-input-rad">
+<span class="sig-name descname"><span class="pre">-data&lt;input&gt;rad</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;rad&gt;</span></span><a class="headerlink" href="#cmdoption-data-input-rad" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the radii of the input points, which can be:</p>
 <ul class="simple">
 <li><p>a real value;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> (not for <code class="xref py py-data docutils literal notranslate"><span class="pre">*edge*</span></code>).</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cube:file(&lt;file_name&gt;)</span></code>: cubes of properties to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.  The file must contain, for each point, the radius (half of the edge length) and the coordinates of the three axes (which also is the rotation matrix that brings the reference axes into coincidence with the cube axes).</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cylinder:file(&lt;file_name&gt;)</span></code>: cylinders of properties to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.  The file must contain, for each point, the radius, the length and the coordinates of the axis.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">arr:file(&lt;file_name&gt;)</span></code>: arrows of properties to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.  The file must contain, for each point, the radius, the length and the coordinates of the axis.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">disc:file(&lt;file_name&gt;)</span></code>: discs of properties to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>. The file must contain, for each point, the radius and the coordinates of the axis.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ell:file(&lt;file_name&gt;)</span></code>: ellispoids of properties to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.  The file must contain, for each point, the three radii and the coordinates of the three axes.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">tor:file(&lt;file_name&gt;)</span></code>: torus of properties to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.  The file must contain, for each point, the major radius (center to center line), the minor radius and the coordinates of the normal axis.</p></li>
 </ul>
-<p><strong>Default value</strong>: point set dependent.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">0.02</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-datapointedgerad">
-<span class="sig-name descname"><span class="pre">-datapointedgerad</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;rad&gt;</span></span><a class="headerlink" href="#cmdoption-datapointedgerad" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the radius of the point edges (represented as symbols), which can be any real value (<span class="math notranslate nohighlight">\(\geq0\)</span>).</p>
+<dt class="sig sig-object std" id="cmdoption-data-input-symbol">
+<span class="sig-name descname"><span class="pre">-data&lt;input&gt;symbol</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;symbol&gt;</span></span><a class="headerlink" href="#cmdoption-data-input-symbol" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the symbol representing the input points, which can be:</p>
+<ul class="simple">
+<li><p>a symbol to apply to all input points (see below);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.</p></li>
+</ul>
+<p>A symbol can be (all arguments are optional, and the radius is taken from option <code class="xref std std-option docutils literal notranslate"><span class="pre">-data&lt;entity&gt;rad</span></code> if defined):</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">sphere([rad=&lt;rad&gt;])</span></code>: a sphere of radius <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;rad&gt;</span></code>;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cube[([rad=&lt;rad&gt;,[ori=&lt;ori&gt;)]</span></code>: a cube of radius (half edge length) <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;rad&gt;</span></code> and orientation <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;ori&gt;</span></code> (default identity);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cylinder[(rad=&lt;rad&gt;,length=&lt;length&gt;,axis=(&lt;axis_x&gt;,&lt;axis_y&gt;,&lt;axis_z&gt;))]</span></code>: a cylinder of specified properties;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">arrow[(rad=&lt;rad&gt;,length=&lt;length&gt;,axis=(&lt;axis_x&gt;,&lt;axis_y&gt;,&lt;axis_z&gt;))]</span></code>: an arrow of specified properties;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">disc[(rad=&lt;rad&gt;,axis=(&lt;axis_x&gt;,&lt;axis_y&gt;,&lt;axis_z&gt;))]</span></code>: a disc of specified properties;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ellipsoid[(rad1=&lt;rad&gt;,rad2=&lt;rad&gt;,rad3=&lt;rad&gt;,axis1=(&lt;axis_x&gt;,&lt;axis_y&gt;,&lt;axis_z&gt;)],axis2=(&lt;axis_x&gt;,&lt;axis_y&gt;,&lt;axis_z&gt;),axis3=(&lt;axis_x&gt;,&lt;axis_y&gt;,&lt;axis_z&gt;))]</span></code>: an ellipsoid of specified properties;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">torus[(rad1=&lt;rad&gt;,rad2=&lt;rad&gt;,axis=(&lt;axis_x&gt;,&lt;axis_y&gt;,&lt;axis_z&gt;)]</span></code>: a torus of specified properties.</p></li>
+</ul>
+<p><strong>Default value</strong>: sphere.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-data-input-edgerad">
+<span class="sig-name descname"><span class="pre">-data&lt;input&gt;edgerad</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;rad&gt;</span></span><a class="headerlink" href="#cmdoption-data-input-edgerad" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the radius of the input point edges (represented as symbols), which can be any real value (<span class="math notranslate nohighlight">\(\geq0\)</span>).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-datapointedgecol">
-<span class="sig-name descname"><span class="pre">-datapointedgecol</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;color&gt;</span></span><a class="headerlink" href="#cmdoption-datapointedgecol" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the color of the point edges (represented as symbols), which can be a color as described in <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>.</p>
+<dt class="sig sig-object std" id="cmdoption-data-input-edgecol">
+<span class="sig-name descname"><span class="pre">-data&lt;input&gt;edgecol</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;color&gt;</span></span><a class="headerlink" href="#cmdoption-data-input-edgecol" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the color of the input point edges (represented as symbols), which can be a color as described in <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">black</span></code>.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="coordinate-system-rendering">
-<h3>Coordinate System Rendering<a class="headerlink" href="#coordinate-system-rendering" title="Permalink to this headline"></a></h3>
+<div class="section" id="coordinate-system-rendering-options">
+<h3>Coordinate System Rendering Options<a class="headerlink" href="#coordinate-system-rendering-options" title="Permalink to this headline"></a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-datacsyscoo">
 <span class="sig-name descname"><span class="pre">-datacsyscoo</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;coo_x&gt;:&lt;coo_y&gt;:&lt;coo_z&gt;</span></span><a class="headerlink" href="#cmdoption-datacsyscoo" title="Permalink to this definition"></a></dt>
@@ -620,7 +704,11 @@ The type of color scheme depends on the type of data.</p>
 <dt class="sig sig-object std" id="cmdoption-datacsyslabel">
 <span class="sig-name descname"><span class="pre">-datacsyslabel</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;label_x&gt;:&lt;label_y&gt;:&lt;label_z&gt;</span></span><a class="headerlink" href="#cmdoption-datacsyslabel" title="Permalink to this definition"></a></dt>
 <dd><p>Specify the labels of the coordinate system axes.</p>
-<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">X1:X2:X3</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A LaTeX (mathematical) syntax can be used, but is interprated as such only by the Asymptote renderer.</p>
+</div>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">$X_1$:$X_2$:$X_3$</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
@@ -638,34 +726,24 @@ The type of color scheme depends on the type of data.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="slice-settings">
-<h3>Slice Settings<a class="headerlink" href="#slice-settings" title="Permalink to this headline"></a></h3>
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-slicemesh">
-<span class="sig-name descname"><span class="pre">-slicemesh</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;plane1&gt;,&lt;plane2&gt;,...</span></span><a class="headerlink" href="#cmdoption-slicemesh" title="Permalink to this definition"></a></dt>
-<dd><p>Plot one (or several) slice(s) of the mesh.  A slicing plane is defined by its equation, such as <code class="xref py py-data docutils literal notranslate"><span class="pre">x=0</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">0.12*x+0.34*y+0.56*z=0.78</span></code>.</p>
-<p><strong>Default value</strong>: -.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="show-settings">
-<h3>Show Settings<a class="headerlink" href="#show-settings" title="Permalink to this headline"></a></h3>
-<p>The following options apply to the full tessellations, mesh or points.</p>
-<span class="target" id="index-4"></span><dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-show-tess-tesr-mesh-meshslice-point-csys">
-<span class="sig-name descname"><span class="pre">-show{tess,tesr,mesh,meshslice,point,csys}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-show-tess-tesr-mesh-meshslice-point-csys" title="Permalink to this definition"></a></dt>
+<div class="section" id="show-options">
+<h3>Show Options<a class="headerlink" href="#show-options" title="Permalink to this headline"></a></h3>
+<p>The following options apply to the full tessellations, mesh, etc.</p>
+<span class="target" id="index-5"></span><dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-show-tess-tesr-mesh-meshslice-csys-scale">
+<span class="sig-name descname"><span class="pre">-show{tess,tesr,mesh,meshslice,csys,scale}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-show-tess-tesr-mesh-meshslice-csys-scale" title="Permalink to this definition"></a></dt>
 <dd><p>Show or hide a full tessellation, mesh, etc.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> for the more informative data (mesh slice <span class="math notranslate nohighlight">\(&gt;\)</span> mesh <span class="math notranslate nohighlight">\(&gt;\)</span> tessellation) and <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> for others.</p>
 </dd></dl>
 
 <p>The following option applies to a tessellation or a raster tessellation.</p>
-<span class="target" id="index-5"></span><dl class="std option">
+<span class="target" id="index-6"></span><dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-show-cell-poly-face-edge-ver-seed-crystal-faceinter-vox">
 <span class="sig-name descname"><span class="pre">-show{cell,poly,face,edge,ver,seed,crystal,faceinter,vox}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-show-cell-poly-face-edge-ver-seed-crystal-faceinter-vox" title="Permalink to this definition"></a></dt>
 <dd><p>Specify the entities to show. The argument can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code>: all;</p></li>
-<li><p>an expression based on the keys listed in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a> or <a class="reference internal" href="exprskeys.html#raster-tessellation-keys"><span class="std std-ref">Raster Tessellation Keys</span></a>, which allows to define individual values;</p></li>
+<li><p>an expression based on the <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a> or <a class="reference internal" href="exprskeys.html#raster-tessellation-keys"><span class="std std-ref">Raster Tessellation Keys</span></a>, which allows to define individual values;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>: none.</p></li>
 </ul>
@@ -674,22 +752,45 @@ The type of color scheme depends on the type of data.</p>
 </dd></dl>
 
 <p>The following options apply to the entities of the mesh.  The options apply to 3D elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">elt3d</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elset3d</span></code>), 2D elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">elt2d</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elset2d</span></code>), 1D elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">elt1d</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elset1d</span></code>), 0D elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">elt0d</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elset0d</span></code>), and nodes (<code class="xref py py-data docutils literal notranslate"><span class="pre">nodes</span></code>). Also note that the <code class="xref py py-data docutils literal notranslate"><span class="pre">elt</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">elset</span></code> can be used to denote the highest-dimension elements and elsets.</p>
-<span class="target" id="index-6"></span><dl class="std option">
+<span class="target" id="index-7"></span><dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-show-elt-elset-elt-0-3-d-elset-0-3-d-node">
 <span class="sig-name descname"><span class="pre">-show{elt,elset,elt{0-3}d,elset{0-3}d,node}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-show-elt-elset-elt-0-3-d-elset-0-3-d-node" title="Permalink to this definition"></a></dt>
 <dd><p>Specify the entities to show. The argument can be:</p>
 <ul class="simple">
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code> for all;</p></li>
-<li><p>an expression based on the keys listed in <a class="reference internal" href="exprskeys.html#mesh-keys"><span class="std std-ref">Mesh Keys</span></a>, which allows to define individual values;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code>: all;</p></li>
+<li><p>an expression based on the <a class="reference internal" href="exprskeys.html#mesh-keys"><span class="std std-ref">Mesh Keys</span></a>, which allows to define individual values;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>: none.</p></li>
 </ul>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> if highest mesh dimension is 3 and <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> otherwise.</p>
 </dd></dl>
 
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-show-input">
+<span class="sig-name descname"><span class="pre">-show&lt;input&gt;</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-show-input" title="Permalink to this definition"></a></dt>
+<dd><p>Show or hide the points of a custom input.  The argument can be:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code>: all;</p></li>
+<li><p>an expression based on the <a class="reference internal" href="exprskeys.html#point-keys"><span class="std std-ref">Point Keys</span></a>, which allows to define individual values;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>: none.</p></li>
+</ul>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="camera-settings">
-<h3>Camera Settings<a class="headerlink" href="#camera-settings" title="Permalink to this headline"></a></h3>
+<div class="section" id="slice-options">
+<h3>Slice Options<a class="headerlink" href="#slice-options" title="Permalink to this headline"></a></h3>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-slicemesh">
+<span class="sig-name descname"><span class="pre">-slicemesh</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;plane1&gt;,&lt;plane2&gt;,...</span></span><a class="headerlink" href="#cmdoption-slicemesh" title="Permalink to this definition"></a></dt>
+<dd><p>Plot one (or several) slice(s) of the mesh.  A slicing plane is defined by its equation, such as <code class="xref py py-data docutils literal notranslate"><span class="pre">x=0</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">0.12*x+0.34*y+0.56*z=0.78</span></code>.</p>
+<p><strong>Default value</strong>: -.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="camera-options">
+<h3>Camera Options<a class="headerlink" href="#camera-options" title="Permalink to this headline"></a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-cameracoo">
 <span class="sig-name descname"><span class="pre">-cameracoo</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;coo_x&gt;:&lt;coo_y&gt;:&lt;coo_z&gt;</span></span><a class="headerlink" href="#cmdoption-cameracoo" title="Permalink to this definition"></a></dt>
@@ -735,8 +836,54 @@ The type of color scheme depends on the type of data.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="scene-settings">
-<h3>Scene Settings<a class="headerlink" href="#scene-settings" title="Permalink to this headline"></a></h3>
+<div class="section" id="light-options">
+<h3>Light Options<a class="headerlink" href="#light-options" title="Permalink to this headline"></a></h3>
+<p>These options set the lights (only for the POV-Ray renderer).</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-lightambient">
+<span class="sig-name descname"><span class="pre">-lightambient</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;ambient&gt;</span></span><a class="headerlink" href="#cmdoption-lightambient" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the amount of ambient light.  Ambient light is light that is scattered everywhere in the scene, and it ranges from <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> to <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">0.6</span></code> in 3D and <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> in 2D.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-lightsource">
+<span class="sig-name descname"><span class="pre">-lightsource</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;light1&gt;:&lt;light2&gt;:...</span></span><a class="headerlink" href="#cmdoption-lightsource" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the light sources. The argument can be:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">point(coo=&lt;coo&gt;[,color=&lt;color&gt;][,shadow={0,1}])</span></code>: a point light source, where:</p>
+<ul>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;coo&gt;</span></code> can be either <code class="xref py py-data docutils literal notranslate"><span class="pre">camera</span></code> (for the camera coordinates) or <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;coo_x&gt;:&lt;coo_y&gt;:&lt;coo_z&gt;</span></code> for actual coordinates.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;color&gt;</span></code> can be any color as described in <a class="reference internal" href="exprskeys.html#colors-and-color-maps"><span class="std std-ref">Colors and Color Maps</span></a>.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;shadow&gt;</span></code> can be <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> for no shadows or <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> for shadows.</p></li>
+</ul>
+</li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>: none.</p></li>
+</ul>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">&quot;point(coo=camera,shadow=0)&quot;</span></code> in 3D and <code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code> in 2D.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-lightdiffuse">
+<span class="sig-name descname"><span class="pre">-lightdiffuse</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;diffuse&gt;</span></span><a class="headerlink" href="#cmdoption-lightdiffuse" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the amount of diffuse reflection, i.e how much of the light coming directly from any light sources is reflected by diffuse reflection.  It ranges from <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> to <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">0.6</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-lightreflection">
+<span class="sig-name descname"><span class="pre">-lightreflection</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;reflection&gt;</span></span><a class="headerlink" href="#cmdoption-lightreflection" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the amount of specular reflection, ranging from <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> to <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">0.0</span></code>.</p>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To disable all light effects, use <code class="xref py py-data docutils literal notranslate"><span class="pre">-lightambient</span> <span class="pre">1</span> <span class="pre">-lightsource</span> <span class="pre">none</span></code>.</p>
+</div>
+</div>
+<div class="section" id="scene-options">
+<h3>Scene Options<a class="headerlink" href="#scene-options" title="Permalink to this headline"></a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-scenebackground">
 <span class="sig-name descname"><span class="pre">-scenebackground</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;color&gt;</span></span><a class="headerlink" href="#cmdoption-scenebackground" title="Permalink to this definition"></a></dt>
@@ -744,46 +891,147 @@ The type of color scheme depends on the type of data.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">white</span></code>.</p>
 </dd></dl>
 
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-sceneshadow">
-<span class="sig-name descname"><span class="pre">-sceneshadow</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-sceneshadow" title="Permalink to this definition"></a></dt>
-<dd><p>Specify whether the scene should include shadows.</p>
-<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> in 2D and <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> in 3D.</p>
-</dd></dl>
-
 </div>
-<div class="section" id="output-image-settings">
-<h3>Output Image Settings<a class="headerlink" href="#output-image-settings" title="Permalink to this headline"></a></h3>
+<div class="section" id="pole-figure-options">
+<h3>Pole Figure Options<a class="headerlink" href="#pole-figure-options" title="Permalink to this headline"></a></h3>
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-imagesize">
-<span class="sig-name descname"><span class="pre">-imagesize</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;size_x&gt;,&lt;size_y&gt;</span></span><a class="headerlink" href="#cmdoption-imagesize" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the size of the image (in pixels).</p>
-<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1200:900</span></code>.</p>
+<dt class="sig sig-object std" id="cmdoption-pfdir">
+<span class="sig-name descname"><span class="pre">-pfdir</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;dir1&gt;:&lt;dir2&gt;</span></span><a class="headerlink" href="#cmdoption-pfdir" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the 2 reference coordinate system directions aligned with the horizontal and vertical directions of the pole figure, respectively, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">-x</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">-y</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">-z</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The resulting normal direction must be pointing upwards.  To set the actual direction labels, see option <a class="reference internal" href="#cmdoption-datacsyslabel"><code class="xref std std-option docutils literal notranslate"><span class="pre">-datacsyslabel</span></code></a>.</p>
+</div>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">x:-y</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-imageantialias">
-<span class="sig-name descname"><span class="pre">-imageantialias</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-imageantialias" title="Permalink to this definition"></a></dt>
-<dd><p>Specify whether antialiasing (which produces a smoother image) should be used.</p>
+<dt class="sig sig-object std" id="cmdoption-pfpole">
+<span class="sig-name descname"><span class="pre">-pfpole</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;h&gt;:&lt;k&gt;:&lt;l&gt;</span></span><a class="headerlink" href="#cmdoption-pfpole" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the pole family (for orientation input).</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1:1:1</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-pfprojection">
+<span class="sig-name descname"><span class="pre">-pfprojection</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;projection&gt;</span></span><a class="headerlink" href="#cmdoption-pfprojection" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the projection, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">stereographic</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">equal-area</span></code>.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">stereographic</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-pfsym">
+<span class="sig-name descname"><span class="pre">-pfsym</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;symmetry&gt;</span></span><a class="headerlink" href="#cmdoption-pfsym" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the symmetry, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">monoclinic</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">orthotropic</span></code>.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">monoclinic</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-pfshape">
+<span class="sig-name descname"><span class="pre">-pfshape</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;shape&gt;</span></span><a class="headerlink" href="#cmdoption-pfshape" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the shape, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">full</span></code> (full circle) or <code class="xref py py-data docutils literal notranslate"><span class="pre">quarter</span></code> (quarter-circle, for orthotropic symmetry).</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">full</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-pfmode">
+<span class="sig-name descname"><span class="pre">-pfmode</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mode1&gt;,&lt;mode2&gt;,...</span></span><a class="headerlink" href="#cmdoption-pfmode" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the representation mode, which can be:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">symbol</span></code>: data represented as symbols;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">density</span></code>: data represented as a distribution density field.</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Modes are processed successively, so that the last one(s) are printed on top of the first  one(s).  In the case of multiple inputs, <code class="xref py py-data docutils literal notranslate"><span class="pre">density</span></code> is applied only to the first input.</p>
+</div>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">point</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-pfkernel">
+<span class="sig-name descname"><span class="pre">-pfkernel</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;kernel&gt;</span></span><a class="headerlink" href="#cmdoption-pfkernel" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the kernel used to smooth pole directions when computing a pole density field, which can be:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">normal(theta=&lt;theta&gt;)</span></code>: a (2-variate) normal distribution of (1-D) standard deviation <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;theta&gt;</span></code> (in degrees).</p></li>
+</ul>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">normal(theta=3)</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-pfgridsize">
+<span class="sig-name descname"><span class="pre">-pfgridsize</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;size&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-pfgridsize" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the size of the density grid (in pixels).</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">200</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-pfclustering">
+<span class="sig-name descname"><span class="pre">-pfclustering</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-pfclustering" title="Permalink to this definition"></a></dt>
+<dd><p>Specify whether data clustering (which speeds up density generation) should be used.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Clustering applies to all representation modes and slightly alters the point positions.  It should be disable for absolute accuracy.</p>
+</div>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>.</p>
 </dd></dl>
 
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-pffont">
+<span class="sig-name descname"><span class="pre">-pffont</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;font&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-pffont" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the character font, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">TimesRoman</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">ComputerModern</span></code>.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">TimesRoman</span></code>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="output-image-options">
+<h3>Output Image Options<a class="headerlink" href="#output-image-options" title="Permalink to this headline"></a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-imageformat">
 <span class="sig-name descname"><span class="pre">-imageformat</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;format1&gt;,&lt;format2&gt;,...</span></span><a class="headerlink" href="#cmdoption-imageformat" title="Permalink to this definition"></a></dt>
 <dd><p>Specify the format(s) of the output image(s), which can be:</p>
 <ul class="simple">
+<li><p>Usual , real space images:</p>
+<ul>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">png</span></code>: the PNG format;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">pov</span></code>: the POV-Ray format;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">pov:objects</span></code>: the POV-Ray format, but containing only the objects (the resulting file can be loaded with <a class="reference internal" href="#cmdoption-includepov"><code class="xref std std-option docutils literal notranslate"><span class="pre">-includepov</span></code></a>, not compatible with <code class="xref py py-data docutils literal notranslate"><span class="pre">png</span></code>);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">vtk</span></code>: the VTK format.</p></li>
 </ul>
+</li>
+<li><p>Pole figure images:</p>
+<ul>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">pdf</span></code>: the PDF format (scalar format, recommended);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">png</span></code>: the PNG format;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">asy</span></code>: the Asymptote format.</p></li>
+</ul>
+</li>
+</ul>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">png</span></code>.</p>
 </dd></dl>
 
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-imagesize">
+<span class="sig-name descname"><span class="pre">-imagesize</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;size_x&gt;:&lt;size_y&gt;</span></span><a class="headerlink" href="#cmdoption-imagesize" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the size of the PNG image (in pixels).</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1200:900</span></code>.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="scripting">
-<h3>Scripting<a class="headerlink" href="#scripting" title="Permalink to this headline"></a></h3>
+<div class="section" id="renderer-options">
+<h3>Renderer Options<a class="headerlink" href="#renderer-options" title="Permalink to this headline"></a></h3>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-povrayantialiasing">
+<span class="sig-name descname"><span class="pre">-povrayantialiasing</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-povrayantialiasing" title="Permalink to this definition"></a></dt>
+<dd><p>Specify whether antialiasing (which produces a smoother PNG image) should be used.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="scripting-options">
+<h3>Scripting Options<a class="headerlink" href="#scripting-options" title="Permalink to this headline"></a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-loop">
 <span class="sig-name descname"><span class="pre">-loop</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variable&gt;</span> <span class="pre">&lt;initial_value&gt;</span> <span class="pre">&lt;increment_value&gt;</span> <span class="pre">&lt;final_value&gt;</span> <span class="pre">&lt;commands&gt;</span> <span class="pre">-endloop</span></span><a class="headerlink" href="#cmdoption-loop" title="Permalink to this definition"></a></dt>
@@ -812,7 +1060,7 @@ The type of color scheme depends on the type of data.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-print">
 <span class="sig-name descname"><span class="pre">-print</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;file_name&gt;</span></span><a class="headerlink" href="#cmdoption-print" title="Permalink to this definition"></a></dt>
-<dd><p>Print the image.  The file name should be extension free.</p>
+<dd><p>Print the image.  The file name should not include the extension.</p>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
 
@@ -853,13 +1101,20 @@ rotation.
 <h2>Output Files<a class="headerlink" href="#output-files" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p><code class="file docutils literal notranslate"><span class="pre">.png</span></code>: PNG file, a bitmapped image (the alpha channel is off);</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.pdf</span></code>: PDF file, a scalar image;</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.pov</span></code>: POV-Ray file, a POV-Ray script file;</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.asy</span></code>: Asymptote file, an Asymptote script file;</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.vtk</span></code>: a VTK file, for interactive visualization.</p></li>
 </ul>
 <p>A PNG image can be obtained from a POV-Ray file by invoking POV-Ray as follows (see the POV-Ray documentation for details and further commands):</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>povray &lt;file.pov&gt; +W&lt;image_width&gt;+H&lt;image_height&gt; -D +A0.2
 </pre></div>
 </div>
+<p>Images can be obtained from an Asymptote file by invoking Asymptote as follows (see the Asymptote documentation for details and further commands):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>asy -f &lt;format&gt; &lt;file.asy&gt;
+</pre></div>
+</div>
+<p>where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;format&gt;</span></code> can be <code class="xref py py-data docutils literal notranslate"><span class="pre">png</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">pdf</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">eps</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">jpg</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">tiff</span></code>, etc.</p>
 </div>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
@@ -916,11 +1171,6 @@ rotation.
 </div>
 </li>
 </ul>
-<dl class="footnote brackets">
-<dt class="label" id="space"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p>It currently only affects the arguments of <a class="reference internal" href="#cmdoption-datapointrad"><code class="xref std std-option docutils literal notranslate"><span class="pre">-datapointrad</span></code></a>.</p>
-</dd>
-</dl>
 </div>
 </div>
 

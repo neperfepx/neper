@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visualizing a Tessellation &mdash; Neper 4.5.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Plotting a Pole Figure" href="pole_figure.html" />
+    <link rel="prev" title="Processing EBSD-type data" href="ebsd_process.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Neper
+          </a>
+              <div class="version">
+                4.5.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../copying.html">Conditions of Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../neper_t.html">Tessellation Module (-T)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../neper_m.html">Meshing Module (-M)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../neper_s.html">Simulation Module (-S)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../neper_v.html">Visualization Module (-V)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exprskeys.html">Expressions and Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fileformat.html">File and Directory Formats</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="simple_model.html">Generating and Meshing a Simple Tessellation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="morpho_tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Visualizing a Tessellation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#generating-a-tessellation-image">Generating a Tessellation Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#showing-specific-entities">Showing Specific Entities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setting-color-transparency-size-etc">Setting Color, Transparency, Size, etc.</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#coloring-cells-by-orientations">Coloring Cells by Orientations</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#coloring-entities-from-integer-values">Coloring Entities from Integer Values</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#coloring-entities-from-real-values">Coloring Entities from Real Values</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#making-entities-transparent">Making Entities Transparent</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#changing-the-entity-radius">Changing the Entity Radius</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#changing-the-general-settings">Changing the General Settings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orientation_color_key.html">Plotting an Orientation Color Key</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../versions.html">Versions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gpl.html">GNU General Public License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fdl.html">GNU Free Documentation License</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../papers.html">Reference Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../talks.html">Talks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../others.html">Other Resources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Documentation</a> &raquo;</li>
+          <li><a href="../tutorials.html">Tutorials</a> &raquo;</li>
+      <li>Visualizing a Tessellation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/doc/tutorials/visualize_tessellation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="visualizing-a-tessellation">
+<span id="visualize-tessellation"></span><h1>Visualizing a Tessellation<a class="headerlink" href="#visualizing-a-tessellation" title="Permalink to this headline"></a></h1>
+<p>A tessellation can be visualized using the <a class="reference internal" href="../neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>.  The entities to show can be specified, so as their size, transparency and other properties.  The crystals can also be visualized.  Advanced visualizations can be realized.</p>
+<p>A simple tessellation is used in this tutorial, which is generated using the command</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">200</span> -morpho gg -oricrysym cubic -o n200
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To reproduce <em>exactly</em> the images below, add the following line to your <code class="file docutils literal notranslate"><span class="pre">$HOME/.neperrc</span></code> file (or to a local configuration file to be loaded with <code class="xref std std-option docutils literal notranslate"><span class="pre">--rcfile</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">neper</span> <span class="o">-</span><span class="n">V</span> <span class="o">-</span><span class="n">imagesize</span> <span class="mi">800</span><span class="p">:</span><span class="mi">400</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generating-a-tessellation-image">
+<h2>Generating a Tessellation Image<a class="headerlink" href="#generating-a-tessellation-image" title="Permalink to this headline"></a></h2>
+<p>The tessellation can be visualized as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -print img1
+</pre></div>
+</div>
+<img alt="../../_images/img112.png" src="../../_images/img112.png" />
+<p>This generates a PNG image named <code class="file docutils literal notranslate"><span class="pre">img1.png</span></code>.  By default, all cells and edges are shown, while other entities are hidden.  Cells are colored from their ids and edges appear in black.</p>
+</div>
+<div class="section" id="showing-specific-entities">
+<h2>Showing Specific Entities<a class="headerlink" href="#showing-specific-entities" title="Permalink to this headline"></a></h2>
+<p>The entities to show can be specified using options <code class="xref std std-option docutils literal notranslate"><span class="pre">-show*</span></code>, using any logical expression based on the <a class="reference internal" href="../exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a> as arguments.  For instance, only some of the cells can be shown:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcell <span class="s2">&quot;z&lt;0.5&quot;</span> -print img2
+</pre></div>
+</div>
+<img alt="../../_images/img29.png" src="../../_images/img29.png" />
+<p>By default, only edges that belong to a shown cell are plotted. However, the edges to show can also be specified.  For example, to show all of them:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcell <span class="s2">&quot;z&lt;0.5&quot;</span> -showedge all -print img3
+</pre></div>
+</div>
+<img alt="../../_images/img34.png" src="../../_images/img34.png" />
+<p>The figure is not very clear, and only the domain edges can be added instead:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcell <span class="s2">&quot;z&lt;0.5&quot;</span> -showedge <span class="s2">&quot;cell_shown||domtype==1&quot;</span> -print img4
+</pre></div>
+</div>
+<img alt="../../_images/img44.png" src="../../_images/img44.png" />
+<p><code class="xref py py-data docutils literal notranslate"><span class="pre">cell_shown</span></code> (or <code class="xref py py-data docutils literal notranslate"><span class="pre">cell_shown==1</span></code>) selects edges for which at least one cell is shown, <code class="xref py py-data docutils literal notranslate"><span class="pre">domtype==1</span></code> selects edges that belong to a domain edge, and <code class="xref py py-data docutils literal notranslate"><span class="pre">||</span></code> is the logical <code class="code docutils literal notranslate"><span class="pre">OR</span></code>.</p>
+<p>A logical expression can be arbitrarily complex.  For example, the following command only shows the cells that have a volume larger than average (0.005, for a 200-cell in a unit cube), have at least 20 faces and are interior to the domain:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcell <span class="s2">&quot;(vol&gt;0.005)&amp;&amp;(facenb&gt;=20)&amp;&amp;(body&gt;0)&quot;</span> -showedge <span class="s2">&quot;cell_shown||domtype==1&quot;</span> -print img5
+</pre></div>
+</div>
+<img alt="../../_images/img54.png" src="../../_images/img54.png" />
+<p>It is also possible to fully hide the cells and visualize the tessellation based on the individual faces, edges, etc.:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcell none -showface <span class="s2">&quot;z&lt;0.5&quot;</span> -showedge <span class="s2">&quot;face_shown||domtype==1&quot;</span> -print img6
+</pre></div>
+</div>
+<img alt="../../_images/img62.png" src="../../_images/img62.png" />
+<p>Faces appear in white by default, but can be assigned colored, as will be covered in the following.</p>
+<p>The vertices can also be shown (as before, the domain edges are shown):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcell none -showedge <span class="s2">&quot;domtype==1&quot;</span> -showver all -print img7
+</pre></div>
+</div>
+<img alt="../../_images/img71.png" src="../../_images/img71.png" />
+<p>Finally, the crystals can be shown (as before, the domain edges are shown):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcell none -showcrystal all -showedge <span class="s2">&quot;domtype==1&quot;</span> -print img8
+</pre></div>
+</div>
+<img alt="../../_images/img81.png" src="../../_images/img81.png" />
+<p>By default, crystals are represented based on the cell crystal symmetry (as specified by option <a class="reference internal" href="../neper_t.html#cmdoption-oricrysym"><code class="xref std std-option docutils literal notranslate"><span class="pre">-oricrysym</span></code></a>), the cell size and the crystal orientations.</p>
+</div>
+<div class="section" id="setting-color-transparency-size-etc">
+<h2>Setting Color, Transparency, Size, etc.<a class="headerlink" href="#setting-color-transparency-size-etc" title="Permalink to this headline"></a></h2>
+<p>The way entities are represented can be specified using options <code class="xref std std-option docutils literal notranslate"><span class="pre">-data*</span></code>.  The entities of a tessellation are the cells (which correspond to polyhedra in 3D and faces in 2D), polyhedra, faces, edges, vertices, seeds and crystals, and their properties include
+the color (options <code class="xref std std-option docutils literal notranslate"><span class="pre">-data&lt;entity&gt;col</span></code>, <code class="xref std std-option docutils literal notranslate"><span class="pre">-data&lt;entity&gt;colscheme</span></code> and <code class="xref std std-option docutils literal notranslate"><span class="pre">-data&lt;entity&gt;scale</span></code> and <code class="xref std std-option docutils literal notranslate"><span class="pre">-data&lt;entity&gt;scaletitle</span></code>),
+transparency (option <code class="xref std std-option docutils literal notranslate"><span class="pre">-data&lt;entity&gt;trs</span></code>) and radius (or size) (option <code class="xref std std-option docutils literal notranslate"><span class="pre">-data&lt;entity&gt;rad</span></code>).
+Similarly to the <code class="xref std std-option docutils literal notranslate"><span class="pre">-show*</span></code> options, the <code class="xref std std-option docutils literal notranslate"><span class="pre">-data*</span></code> options can take (mathematical) expressions as argument.</p>
+<div class="section" id="coloring-cells-by-orientations">
+<h3>Coloring Cells by Orientations<a class="headerlink" href="#coloring-cells-by-orientations" title="Permalink to this headline"></a></h3>
+<p>The following command colors cells by orientation:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -datacellcol ori -print img9
+</pre></div>
+</div>
+<img alt="../../_images/img91.png" src="../../_images/img91.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The orientation color key itself is not generated but can be obtained as detailed in <a class="reference internal" href="../../tutorials/orientation_color_key.html#orientation-color-key"><span class="std std-ref">Plotting an Orientation Color Key</span></a> (<a class="reference internal" href="../../tutorials/orientation_color_key.html#rodrigues-color-key"><span class="std std-ref">Rodrigues Color Key</span></a>).</p>
+</div>
+<p>The color scheme can be changed to IPF as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -datacellcol ori -datacellcolscheme ipf -print img10
+</pre></div>
+</div>
+<img alt="../../_images/img101.png" src="../../_images/img101.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The orientation color key itself is not generated but can be obtained as detailed in <a class="reference internal" href="../../tutorials/orientation_color_key.html#orientation-color-key"><span class="std std-ref">Plotting an Orientation Color Key</span></a> (<a class="reference internal" href="../../tutorials/orientation_color_key.html#ipf-color-key"><span class="std std-ref">IPF Color Key</span></a>).</p>
+</div>
+</div>
+<div class="section" id="coloring-entities-from-integer-values">
+<h3>Coloring Entities from Integer Values<a class="headerlink" href="#coloring-entities-from-integer-values" title="Permalink to this headline"></a></h3>
+<p>Just like the cell id (<code class="xref py py-data docutils literal notranslate"><span class="pre">id</span></code>) is used to color cells by default, different integer values can be used, for example the number of faces:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -datacellcol int:facenb -print img11
+</pre></div>
+</div>
+<img alt="../../_images/img113.png" src="../../_images/img113.png" />
+<p>The different integer values are assigned colors using a color palette (see <a class="reference internal" href="../exprskeys.html#color-map-for-integer-values"><span class="std std-ref">Color Map for Integer Values</span></a>).</p>
+<p>(Mathematical) expressions can be used.  For example, Euler’s polyhedron formula, <span class="math notranslate nohighlight">\(V - E + F = 2\)</span>, where <span class="math notranslate nohighlight">\(V\)</span>, <span class="math notranslate nohighlight">\(E\)</span> and <span class="math notranslate nohighlight">\(F\)</span> are the number of vertices, edges and faces of a cell, respectively, can be verified as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -datacellcol int:vernb-edgenb+facenb -print img12
+</pre></div>
+</div>
+<img alt="../../_images/img122.png" src="../../_images/img122.png" />
+<p>All cells are green, which represents effectively a value of 2 according to the color palette (see <a class="reference internal" href="../exprskeys.html#color-map-for-integer-values"><span class="std std-ref">Color Map for Integer Values</span></a>).</p>
+<p>Other entities can be colored in the same way.  For example, to color the vertices from their cell numbers:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -datavercol int:cellnb -dataverrad <span class="m">0</span>.02 -showcell <span class="s2">&quot;z&lt;0.5&quot;</span> -showedge <span class="s2">&quot;cell_shown||domtype==1&quot;</span> -showver cell_shown -print img13
+</pre></div>
+</div>
+<img alt="../../_images/img131.png" src="../../_images/img131.png" />
+<p>The image shows the vertices having 1, 2, 3 and 4 cells in red, green, blue and yellow, respectively.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In options <code class="xref std std-option docutils literal notranslate"><span class="pre">-data*col</span></code>, the data type may be omitted if it can be determined from the data value, as in <code class="xref py py-data docutils literal notranslate"><span class="pre">-datavercol</span> <span class="pre">cellnb</span></code>.</p>
+</div>
+</div>
+<div class="section" id="coloring-entities-from-real-values">
+<h3>Coloring Entities from Real Values<a class="headerlink" href="#coloring-entities-from-real-values" title="Permalink to this headline"></a></h3>
+<p>Cells can be colored from real values, for example from the cell equivalent diameters:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -datacellcol real:diameq -datacellscale <span class="m">0</span>.00:0.50 -datacellscaletitle <span class="s2">&quot;Equivalent diameter&quot;</span> -print img14
+<span class="gp">$ </span>convert img14.png img14-scale3.png -gravity East -composite img14.png
+</pre></div>
+</div>
+<img alt="../../_images/img141.png" src="../../_images/img141.png" />
+<p>This originally produces a PNG file named <code class="file docutils literal notranslate"><span class="pre">img14.png</span></code> for the map and a PNG file named <code class="file docutils literal notranslate"><span class="pre">img14-scale.png</span></code> for the scale bar, which is included to <code class="file docutils literal notranslate"><span class="pre">img14.png</span></code> thanks to <strong class="program">convert</strong>.</p>
+<p>Again, mathematical expressions can be used:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -datacellcol <span class="s2">&quot;real:x*sqrt(y)*sqrt(z)&quot;</span> -datacellscale <span class="m">0</span>.00:1.00 -datacellscaletitle <span class="s2">&quot;x*sqrt(y)*sqrt(z)&quot;</span> -print img15
+<span class="gp">$ </span>convert img15.png img15-scale3.png -gravity East -composite img15.png
+</pre></div>
+</div>
+<img alt="../../_images/img151.png" src="../../_images/img151.png" />
+<p>The color key (see <a class="reference internal" href="../exprskeys.html#color-map-for-real-values"><span class="std std-ref">Color Maps for Real Values</span></a>) can be changed using option <code class="xref std std-option docutils literal notranslate"><span class="pre">-datacellcolscheme</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -datacellcol <span class="s2">&quot;real:x*sqrt(y)*sqrt(z)&quot;</span> -datacellscale <span class="m">0</span>.00:1.00 -datacellscaletitle <span class="s2">&quot;x*sqrt(y)*sqrt(z)&quot;</span> -datacellcolscheme heat -print img16
+<span class="gp">$ </span>convert img16.png img16-scale3.png -gravity East -composite img16.png
+</pre></div>
+</div>
+<img alt="../../_images/img161.png" src="../../_images/img161.png" />
+<p>Not only cells can be colored.  For example, to color the edges from their lengths:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -datacellcol lightgray -dataedgecol length -dataedgescaletitle <span class="s2">&quot;length&quot;</span> -dataedgescale <span class="m">0</span>.00:0.30 -print img17
+<span class="gp">$ </span>convert img17.png img17-scale1.png -gravity East -composite img17.png
+</pre></div>
+</div>
+<img alt="../../_images/img171.png" src="../../_images/img171.png" />
+<p>Crystals can be colored, for example, from the cell equivalent diameters:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcell none -showcrystal all -datacrystalcol real:diameq -datacrystalscale <span class="m">0</span>.00:0.50 -datacrystalscaletitle <span class="s2">&quot;Equivalent diameter&quot;</span> -showedge <span class="s2">&quot;domtype==1&quot;</span> -print img18
+<span class="gp">$ </span>convert img18.png img18-scalec.png -gravity East -composite img18.png
+</pre></div>
+</div>
+<img alt="../../_images/img181.png" src="../../_images/img181.png" />
+</div>
+<div class="section" id="making-entities-transparent">
+<h3>Making Entities Transparent<a class="headerlink" href="#making-entities-transparent" title="Permalink to this headline"></a></h3>
+<p>The transparency level of entities can be specified using options <code class="xref std std-option docutils literal notranslate"><span class="pre">-data&lt;entity&gt;trs</span></code>.  The transparency ranges from <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> (fully opaque) to <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> (fully transparent).  The example below uses semi-transparency to show the tessellation interior:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -datacelltrs <span class="m">0</span>.5 -print img19
+</pre></div>
+</div>
+<img alt="../../_images/img191.png" src="../../_images/img191.png" />
+<p>Again, this works for all entities.  For example, to show all interior faces colored from their surface areas:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcell none -showface <span class="s2">&quot;domtype==-1&quot;</span> -showedge face_shown -datafacecol area -datafacetrs <span class="m">0</span>.5 -datafacescale <span class="m">0</span>.00:0.01:0.02:0.03:0.04:0.05 -datafacescaletitle <span class="s2">&quot;Surface area&quot;</span> -print img20
+<span class="gp">$ </span>convert img20.png img20-scale2.png -gravity East -composite img20.png
+</pre></div>
+</div>
+<img alt="../../_images/img201.png" src="../../_images/img201.png" />
+</div>
+<div class="section" id="changing-the-entity-radius">
+<h3>Changing the Entity Radius<a class="headerlink" href="#changing-the-entity-radius" title="Permalink to this headline"></a></h3>
+<p>The radius of entities can by modified using options <code class="xref std std-option docutils literal notranslate"><span class="pre">-data&lt;entity&gt;rad</span></code>, and this works for vertices, edges, seeds and crystals.  For example, to plot thick (and colored) edges:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -dataedgerad <span class="m">0</span>.05 -dataedgecol id -print img21
+</pre></div>
+</div>
+<img alt="../../_images/img212.png" src="../../_images/img212.png" />
+<p>The following command plots small crystals in a tessellation for which cells are made gradually transparent:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcrystal all -datacrystalrad <span class="m">0</span>.5*radeq -datacelltrs <span class="s2">&quot;sqrt(z)&quot;</span> -dataedgetrs <span class="m">0</span>.75 -print img22
+</pre></div>
+</div>
+<img alt="../../_images/img222.png" src="../../_images/img222.png" />
+</div>
+<div class="section" id="changing-the-general-settings">
+<h3>Changing the General Settings<a class="headerlink" href="#changing-the-general-settings" title="Permalink to this headline"></a></h3>
+<p>Neper uses POV-Ray, a ray-tracing software, to generate the PNG images.  As such, properties such as the camera position, angle, etc., the type of projection, shadowing effects, etc. can be set.</p>
+<div class="section" id="camera-settings">
+<h4>Camera Settings<a class="headerlink" href="#camera-settings" title="Permalink to this headline"></a></h4>
+<p>The camera position can be changed using option <a class="reference internal" href="../neper_v.html#cmdoption-cameracoo"><code class="xref std std-option docutils literal notranslate"><span class="pre">-cameracoo</span></code></a>, for example to produce orthogonal views - option <a class="reference internal" href="../neper_v.html#cmdoption-camerasky"><code class="xref std std-option docutils literal notranslate"><span class="pre">-camerasky</span></code></a> may also be needed, to define the vertical direction, and option <a class="reference internal" href="../neper_v.html#cmdoption-cameraangle"><code class="xref std std-option docutils literal notranslate"><span class="pre">-cameraangle</span></code></a> sets the opening angle along the horizontal direction:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -datacelltrs <span class="m">0</span>.5 -cameraangle <span class="m">12</span> -imagesize <span class="m">400</span>:400 -print view -cameracoo <span class="m">7</span>:y:z -camerasky <span class="m">0</span>:1:0 -print xview -cameracoo x:7:z -camerasky <span class="m">0</span>:0:1 -print yview -cameracoo x:y:7 -camerasky <span class="m">1</span>:0:0 -print zview
+<span class="gp">$ </span>convert +append view.png xview.png tmp1.png
+<span class="gp">$ </span>convert +append yview.png zview.png tmp2.png
+<span class="gp">$ </span>convert -append tmp1.png tmp2.png img23.png
+</pre></div>
+</div>
+<img alt="../../_images/img231.png" src="../../_images/img231.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Several images can be generated in a single Neper command by using option <a class="reference internal" href="../neper_v.html#cmdoption-print"><code class="xref std std-option docutils literal notranslate"><span class="pre">-print</span></code></a> several times.</p>
+</div>
+<p>The camera projection type can be specified using option <a class="reference internal" href="../neper_v.html#cmdoption-cameraprojection"><code class="xref std std-option docutils literal notranslate"><span class="pre">-cameraprojection</span></code></a> - in 3D, the default is <code class="xref py py-data docutils literal notranslate"><span class="pre">perspective</span></code>, but <code class="xref py py-data docutils literal notranslate"><span class="pre">orthographic</span></code> is also available:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -cameraprojection orthographic -print img24
+</pre></div>
+</div>
+<img alt="../../_images/img241.png" src="../../_images/img241.png" />
+<p>The orthographic projection keeps parallel lines parallel.</p>
+</div>
+<div class="section" id="scene-settings">
+<h4>Scene Settings<a class="headerlink" href="#scene-settings" title="Permalink to this headline"></a></h4>
+<p>Shadowing can be turned on or off using option <code class="xref std std-option docutils literal notranslate"><span class="pre">-showshadow</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -datacellcol real:diameq -datacellscale <span class="m">0</span>.00:0.50 -datacellscaletitle <span class="s2">&quot;Equivalent diameter&quot;</span> -sceneshadow <span class="m">0</span> -print img25
+<span class="gp">$ </span>convert img25.png img25-scale3.png -gravity East -composite img25.png
+</pre></div>
+</div>
+<img alt="../../_images/img251.png" src="../../_images/img251.png" />
+<p>While shadowing generally improves visualization, turning it off may be useful to render “true” colors, which closely match a color key.  Shadowing not only generates shadows between objects, but also affects the color of objects depending on their orientation with respect to the light source.</p>
+<p>The background color of the scene can be specified using option <a class="reference internal" href="../neper_v.html#cmdoption-scenebackground"><code class="xref std std-option docutils literal notranslate"><span class="pre">-scenebackground</span></code></a> (see <a class="reference internal" href="../exprskeys.html#colors"><span class="std std-ref">Colors</span></a>):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -scenebackground <span class="m">41</span>:128:185 -print img26
+</pre></div>
+</div>
+<img alt="../../_images/img261.png" src="../../_images/img261.png" />
+<p>Finally, the image size (in pixels) can be specified using option <a class="reference internal" href="../neper_v.html#cmdoption-imagesize"><code class="xref std std-option docutils literal notranslate"><span class="pre">-imagesize</span></code></a>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -imagesize <span class="m">200</span>:100 -scenebackground <span class="m">41</span>:128:185 -print img27
+</pre></div>
+</div>
+<img alt="../../_images/img271.png" src="../../_images/img271.png" />
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ebsd_process.html" class="btn btn-neutral float-left" title="Processing EBSD-type data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pole_figure.html" class="btn btn-neutral float-right" title="Plotting a Pole Figure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Romain Quey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

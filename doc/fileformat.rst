@@ -807,7 +807,7 @@ The file could be used in :data:`-T` as :data:`-n msfile(<file_name>)::msfile(<f
 Data File
 ---------
 
-A data file provides a number of data to be assigned to entities (seeds, cells, points, etc.).  It must contain the expected number of data.  It is a general, simply-formatted ASCII file that contains a fixed number of data per entity, and the data can be integers, real numbers or character strings.  A real number can have an arbitrary number of digits, but the decimal mark must be :option:`.`.  The data can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with the data of one entity per line.  An example of a data file containing 5 values is::
+A data file contains a number of data to be assigned to entities (seeds, cells, points, etc.).  It must contain the expected number of data.  It is a general, simply-formatted ASCII file that contains a fixed number of data per entity, and the data can be integers, real numbers or character strings.  A real number can have an arbitrary number of digits, but the decimal mark must be :option:`.`.  The data can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with the data of one entity per line.  An example of a data file containing 5 values is::
 
   2.1235
   5.9564
@@ -836,7 +836,7 @@ An example of a data file containing 5 colors is::
 Position File
 -------------
 
-A position file lists the coordinates of a given number of points.  The file must contain 1 coordinate per point in 1D, 2 coordinates per point in 2D and 3 coordinates per point in 3D.  While the dimension can be known from the context in which the file is read, it can also be specified by appending :data:`:dim` to the name of the position file, where :data:`dim` is the dimension.  A coordinate can be an integer or real number. A real number can have an arbitrary number of digits, but the decimal mark must be :option:`.`.  The coordinates can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with one point per line.  An example of a position file containing 5 points in 3D is::
+A position file contains the coordinates of a number of points.  The file must contain 1 coordinate per point in 1D, 2 coordinates per point in 2D and 3 coordinates per point in 3D.  While the dimension can be known from the context in which the file is read, it can also be specified by appending :data:`:dim` to the name of the position file, where :data:`dim` is the dimension.  A coordinate can be an integer or real number. A real number can have an arbitrary number of digits, but the decimal mark must be :option:`.`.  The coordinates can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with one point per line.  An example of a position file containing 5 points in 3D is::
 
   2.1235 9.4544 5.2145
   5.9564 3.6884 9.2145

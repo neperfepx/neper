@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Introduction &mdash; Neper 4.4.1 documentation</title>
+  <title>Introduction &mdash; Neper 4.5.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -30,7 +30,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.4.1
+                4.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -47,15 +47,20 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Introduction</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#description">Description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#resources-and-support">Resources and Support</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#installing-neper">Installing Neper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-neper">Installing Neper</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#general-procedure">General Procedure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fine-configuration">Fine Configuration</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#testing-neper">Testing Neper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getting-started">Getting Started</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#modules">Modules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#argument-separators">Argument Separators</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#initialization-file">Initialization File</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-conditions">Running Conditions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#conventions-used-in-this-manual">Conventions used in this manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conventions-used-in-this-manual">Conventions Used in This Manual</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="neper_t.html">Tessellation Module (-T)</a></li>
@@ -64,6 +69,7 @@
 <li class="toctree-l2"><a class="reference internal" href="neper_v.html">Visualization Module (-V)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exprskeys.html">Expressions and Keys</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fileformat.html">File and Directory Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l2"><a class="reference internal" href="versions.html">Versions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpl.html">GNU General Public License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fdl.html">GNU Free Documentation License</a></li>
@@ -112,14 +118,15 @@
 <p><em>Module -M</em> meshes polycrystals described as tessellation files (<code class="file docutils literal notranslate"><span class="pre">.tess</span></code> and 2D <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code>). Two meshing techniques are available: <em>free</em> (or <em>unstructured</em>) meshing, which generates triangular elements (in 2D) or tetrahedral elements (in 3D) that follow the grain shapes, and <em>mapped</em> (or <em>structured</em>) meshing, which generates regular square elements (in 2D) or regular cubic elements (in 3D) that do not necessarily follow the grain shapes.  Free meshing into good-quality elements is ensured by optimized meshing rules, and multimeshing—a complementary use of several meshing algorithms.  Remeshing is also available and is similar to meshing except that it takes a mesh as input.  Cohesive elements can be inserted at interfaces.  The output is a <em>mesh file</em> written at the <code class="file docutils literal notranslate"><span class="pre">.msh</span></code> format, which can be readily be used as input by Neper’s companion program, <a class="reference external" href="https://fepx.info">FEPX</a>, or other formats.</p>
 <p><em>Module -S</em> processes simulation results from FEPX.  It translates the FEPX raw simulation results into a more friendly <em>simulation directory</em> <code class="file docutils literal notranslate"><span class="pre">.sim</span></code>, and includes various post-processing capabilities to compute new results. The <em>simulation directory</em> can be used as such and loaded by module -V for result visualization.</p>
 <p><em>Module -V</em> generates publication-quality PNG images or VTK files of tessellations, meshes and simulation results.  The results can be defined from internal data, data loaded from external files, or a simulation directory as generated by module -S.  The output PNG images can be highly parameterized, with custom colors and transparency for the different entities, slices, etc., and is generated by ray tracing (using POV-Ray),  while the output VTK file can be used for interactive visualization (e.g., using Paraview).</p>
-<p>Neper strives to be an easy-to-use, efficient and robust tool.  All the input data are prescribed non-interactively, using command lines and / or ASCII files, so that all treatments can be automated.</p>
+<p>Neper strives to be an easy-to-use, efficient and robust tool.  All the input data are prescribed non-interactively, using command lines and / or ASCII files, so that all treatments can be automated.
+Neper is multithreaded and operates on all threads by default.</p>
 </div>
 <div class="section" id="resources-and-support">
 <h2>Resources and Support<a class="headerlink" href="#resources-and-support" title="Permalink to this headline"></a></h2>
 <p>Several, complementary resources describing Neper are available:</p>
 <ul>
 <li><p>The Neper reference manual, which is this document, describes all Neper’s capabilities.</p></li>
-<li><p>The <a class="reference external" href="https://neper.info">Neper website</a> gives a general introduction to Neper and is where Neper can be downloaded from.  Official versions are released every few months.</p></li>
+<li><p>The <a class="reference external" href="https://neper.info">Neper website</a> presents a general introduction to Neper, contains tutorials, and is where Neper can be downloaded from.</p></li>
 <li><p>The <a class="reference external" href="https://github.com/rquey/neper">Neper GitHub repository</a> is where the latest, continuous-integration version is available and where user interactions take place:</p>
 <ul>
 <li><p>To get the code, clone the repository using:</p>
@@ -144,7 +151,10 @@
 </div>
 <div class="section" id="installing-neper">
 <h2>Installing Neper<a class="headerlink" href="#installing-neper" title="Permalink to this headline"></a></h2>
-<p>Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system (including macOS).  Neper also runs on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, although we do not test nor support this usage and multithreading must be turned off (which slows down execution significantly).  Multithreading of the code is achieved via <a class="reference external" href="https://www.openmp.org/">OpenMP</a> and operates on all threads (the actual number of threads can be set throught the <code class="code docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> environment variable).  Compilation is performed via <a class="reference external" href="https://cmake.org">CMake</a>:</p>
+<p>Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system (including macOS).  Neper also runs on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, although we do not test nor support this usage and multithreading must be turned off (which slows down execution significantly).</p>
+<div class="section" id="general-procedure">
+<h3>General Procedure<a class="headerlink" href="#general-procedure" title="Permalink to this headline"></a></h3>
+<p>Compilation is performed via <a class="reference external" href="https://cmake.org">CMake</a> (no root privileges needed):</p>
 <ul>
 <li><p>Create a <code class="file docutils literal notranslate"><span class="pre">build</span></code> directory, for instance as a subdirectory of Neper’s <code class="file docutils literal notranslate"><span class="pre">src</span></code> directory:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> src
@@ -164,44 +174,56 @@
 </div>
 <p>Use option <code class="xref py py-data docutils literal notranslate"><span class="pre">-j</span></code> for a multithreaded compilation.</p>
 </li>
-<li><p>Install Neper on your system (as root):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make install
+</ul>
+<p>This generates the <code class="file docutils literal notranslate"><span class="pre">neper</span></code> binary file.  To make it available system-wide, run (as root):</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make install
 </pre></div>
 </div>
-</li>
-</ul>
-<p id="have-dependency">This procedure uses the default configuration options and should work out-of-the-box if the required dependencies are available in standard system locations.  If needed, a finer configuration of which dependencies are included can be achieved, before building Neper, by setting variables <code class="code docutils literal notranslate"><span class="pre">HAVE_&lt;DEPENDENCY&gt;</span></code>.  This can be done using</p>
+</div></blockquote>
+<p>This procedure uses the default configuration options and should work out-of-the-box if the required dependencies are available in standard system locations.</p>
+</div>
+<div class="section" id="fine-configuration">
+<span id="id2"></span><h3>Fine Configuration<a class="headerlink" href="#fine-configuration" title="Permalink to this headline"></a></h3>
+<p>The locations where files are installed, which dependencies are included and other dependency information can be specified, before installation, using CMake variables.   This can be done using</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ccmake ..
 </pre></div>
 </div>
-<p>for an interactive command-line tool, or</p>
+<p>for an interactive command-line tool, using</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake-gui ..
 </pre></div>
 </div>
 <p>for an interactive graphical tool, or directly at the command line, using Cmake’s <code class="xref py py-data docutils literal notranslate"><span class="pre">-D</span></code> option:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake -DHAVE_&lt;DEPENDENCY1&gt;<span class="o">={</span>ON,OFF<span class="o">}</span> -DHAVE_&lt;DEPENDENCY2&gt;<span class="o">={</span>ON,OFF<span class="o">}</span> ..
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake -D&lt;VARIABLE1&gt;<span class="o">=</span>&lt;VALUE1&gt; -D&lt;VARIABLE2&gt;<span class="o">=</span>&lt;VALUE2&gt; ..
 </pre></div>
 </div>
+<p>The installation directories are:</p>
+<ul class="simple">
+<li><p>The binary directory (variable <code class="code docutils literal notranslate"><span class="pre">CMAKE_BUILD_DIRECTORY</span></code>, default <code class="file docutils literal notranslate"><span class="pre">/usr/local</span></code>);</p></li>
+<li><p>The Bash completion script directory (variable <code class="code docutils literal notranslate"><span class="pre">CMAKE_BUILD_DIRECTORY_COMPLETION</span></code>, default <code class="file docutils literal notranslate"><span class="pre">/usr/share</span></code> on Linux and <code class="file docutils literal notranslate"><span class="pre">/usr/local/etc</span></code> on macOS).</p></li>
+</ul>
 <p>The dependencies which are (optionally) necessary at compilation time and must be (optionally) installed on your system before Neper is compiled are the following:</p>
 <ul class="simple">
-<li><p>The <a class="reference external" href="https://www.gnu.org/software/gsl">GNU Scientific Library</a> (GSL, mandatory, variable <code class="code docutils literal notranslate"><span class="pre">HAVE_GSL</span></code>).  It is likely to be available on your system or from your system package manager (binary and development packages); alternatively, the source code version can be downloaded from the program website.</p></li>
+<li><p>The <a class="reference external" href="https://www.gnu.org/software/gsl">GNU Scientific Library</a> (GSL, mandatory, variable <code class="code docutils literal notranslate"><span class="pre">HAVE_GSL</span></code>).  It is likely to be available on your system or from your system package manager (binary and development packages). Alternatively, the source code version can be downloaded from the program website.</p></li>
 <li><p>The <a class="reference external" href="https://www.openmp.org/">OpenMP</a> library (optional but highly-recommended, enabled by default, variable <code class="code docutils literal notranslate"><span class="pre">HAVE_OPENMP</span></code>).  It is likely to be available on your system or from your system package manager. <a class="footnote-reference brackets" href="#mac-install" id="id3">1</a></p></li>
 <li><p>The pthread library (mandatory). It is likely to be available on your system or from your system package manager.</p></li>
 </ul>
 <p>Other dependencies are only needed at run-time (they are not necessary for compilation):</p>
 <ul class="simple">
-<li><p>The <a class="reference external" href="https://gmsh.info">Gmsh</a> program (version 2.4.2 or higher, excluding version 2.5.1, mandatory for module -M). Both binary and source-code versions can be downloaded from the program website (compiling from the source code significantly speeds up meshing).  Gmsh must be available at the terminal as the command <strong class="program">gmsh</strong>, or the path to its binary must be specified with option <a class="reference internal" href="neper_m.html#cmdoption-gmsh"><code class="xref std std-option docutils literal notranslate"><span class="pre">-gmsh</span></code></a> (in module -M).</p></li>
-<li><p>The <a class="reference external" href="http://www.povray.org">POV-Ray</a> program (version 3.7 or higher, mandatory for module -V).  It is likely to be available on your system or from your system package manager (binary package); alternatively, a binary, or the source code, can be downloaded the program website.  POV-Ray must be available at the terminal as the command <strong class="program">povray</strong>, or the path to its binary must be specified with option <a class="reference internal" href="neper_v.html#cmdoption-povray"><code class="xref std std-option docutils literal notranslate"><span class="pre">-povray</span></code></a> (in module -V).</p></li>
+<li><p>The <a class="reference external" href="https://gmsh.info">Gmsh</a> program (version 2.4.2 or higher, excluding version 2.5.1, mandatory for module -M). It is likely to be available from your system package manager. Alternatively, both binary and source-code versions can be downloaded from the program website (compiling from the source code significantly speeds up meshing).  Gmsh must be available at the terminal as the command <strong class="program">gmsh</strong>, or the path to its binary must be specified with option <a class="reference internal" href="neper_m.html#cmdoption-gmsh"><code class="xref std std-option docutils literal notranslate"><span class="pre">-gmsh</span></code></a> (in module -M).</p></li>
+<li><p>The <a class="reference external" href="http://www.povray.org">POV-Ray</a> program (version 3.7 or higher, mandatory for PNG output in <a class="reference internal" href="neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>).  It is likely to be available on your system or from your system package manager (binary package).  Alternatively, both binary and source-code versions can be downloaded the program website.  POV-Ray must be available at the terminal as the command <strong class="program">povray</strong>, or the path to its binary must be specified with option <a class="reference internal" href="neper_v.html#cmdoption-povray"><code class="xref std std-option docutils literal notranslate"><span class="pre">-povray</span></code></a> (in module -V).</p></li>
+<li><p>The <a class="reference external" href="https://asymptote.sourceforge.io/">Asymptote</a> program (for pole figure plots in <a class="reference internal" href="neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>). It is likely to be available from your system package manager.  Alternatively, both binary and source-code versions can be downloaded from the program website.  Asymptote must be available at the terminal as the command <strong class="program">asy</strong>, or the path to its binary must be specified with option <code class="xref std std-option docutils literal notranslate"><span class="pre">-asy</span></code> (in module -V).</p></li>
 </ul>
-<p>Other third-party libraries are directly included in the source code (see directory <code class="file docutils literal notranslate"><span class="pre">src/contrib</span></code>) and are not dependencies <em>per se</em>:</p>
+<p>Finally, other third-party libraries are directly included in the source code (see directory <code class="file docutils literal notranslate"><span class="pre">src/contrib</span></code>) and are therefore not dependencies <em>per se</em>:</p>
 <ul class="simple">
-<li><p>The <a class="reference external" href="https://nlopt.readthedocs.io">NLopt</a> library.  If it is already available on your system, the system version will be used instead.  To force the use of the built-in version, set <code class="code docutils literal notranslate"><span class="pre">FORCE_BUILTIN_NLOPT</span></code> to <code class="code docutils literal notranslate"><span class="pre">ON</span></code> (default <code class="code docutils literal notranslate"><span class="pre">OFF</span></code>) as described <a class="reference internal" href="#have-dependency"><span class="std std-ref">previously</span></a> for <code class="code docutils literal notranslate"><span class="pre">HAVE_&lt;DEPENDENCY&gt;</span></code>.</p></li>
-<li><p>The <a class="reference external" href="https://www.labri.fr/perso/pelegrin/scotch">libscotch</a> library. If it is already available on your system, the system version will be used instead.  To force the use of the built-in version, set <code class="code docutils literal notranslate"><span class="pre">FORCE_BUILTIN_LIBSCOTCH</span></code> to <code class="code docutils literal notranslate"><span class="pre">ON</span></code> (default <code class="code docutils literal notranslate"><span class="pre">OFF</span></code>) as described <a class="reference internal" href="#have-dependency"><span class="std std-ref">previously</span></a> for <code class="code docutils literal notranslate"><span class="pre">HAVE_&lt;DEPENDENCY&gt;</span></code>.</p></li>
+<li><p>The <a class="reference external" href="https://nlopt.readthedocs.io">NLopt</a> library.  If it is already available on your system, the system version will be used instead.  To force the use of the built-in version, set <code class="code docutils literal notranslate"><span class="pre">FORCE_BUILTIN_NLOPT</span></code> to <code class="code docutils literal notranslate"><span class="pre">ON</span></code> (default <code class="code docutils literal notranslate"><span class="pre">OFF</span></code>).</p></li>
+<li><p>The <a class="reference external" href="https://www.labri.fr/perso/pelegrin/scotch">libscotch</a> library. If it is already available on your system, the system version will be used instead.  To force the use of the built-in version, set <code class="code docutils literal notranslate"><span class="pre">FORCE_BUILTIN_LIBSCOTCH</span></code> to <code class="code docutils literal notranslate"><span class="pre">ON</span></code> (default <code class="code docutils literal notranslate"><span class="pre">OFF</span></code>).</p></li>
 <li><p>The <a class="reference external" href="https://github.com/yuki-koyama/tinycolormap">tinycolormap</a> library.</p></li>
 <li><p>The <a class="reference external" href="https://github.com/jlblancoc/nanoflann">nanoflann</a> library.</p></li>
 <li><p>The <a class="reference external" href="https://beltoforion.de/en/muparser">muparser</a> library.</p></li>
 <li><p>The <a class="reference external" href="https://github.com/MattiaMontanari/openGJK">openGJK</a> library.</p></li>
 </ul>
+</div>
 </div>
 <div class="section" id="testing-neper">
 <h2>Testing Neper<a class="headerlink" href="#testing-neper" title="Permalink to this headline"></a></h2>
@@ -213,8 +235,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctest
 </pre></div>
 </div>
-<p>This runs the tests in <code class="code docutils literal notranslate"><span class="pre">Normal</span></code> mode (on Linux), for which the produced output files are compared to reference ones. The (packaged) reference output files are generated on Ubuntu 20.04, using compiler GCC 9.3.0, (built-in) NLopt 2.6.1, (built-in) libscotch 6.0, Gmsh 4.9.4 and POV-Ray 3.7.0. It is expected that different versions may result in minor (insignificant) changes to the output, though this will generally result in failed tests.  If this happens, you may switch to the <code class="code docutils literal notranslate"><span class="pre">Minimal</span></code> mode as described in the following.</p>
-<p>The testing mode is controlled by variable <code class="code docutils literal notranslate"><span class="pre">BUILD_TESTING_MODE</span></code>, which may be changed as described <a class="reference internal" href="#have-dependency"><span class="std std-ref">previously</span></a> for <code class="code docutils literal notranslate"><span class="pre">HAVE_&lt;DEPENDENCY&gt;</span></code>.</p>
+<p>This runs the tests in <code class="code docutils literal notranslate"><span class="pre">Normal</span></code> mode (<code class="code docutils literal notranslate"><span class="pre">Minimal</span></code> on macOS), for which the produced output files are compared to reference ones. The (packaged) reference output files are generated on Ubuntu 20.04, using compiler GCC 9.3.0, (built-in) NLopt 2.6.1, (built-in) libscotch 6.0, Gmsh 4.9.4 and POV-Ray 3.7.0. It is expected that different versions may result in minor (insignificant) changes to the output, though this will generally result in failed tests.  If this happens, change the testing mode to <code class="code docutils literal notranslate"><span class="pre">Minimal</span></code>.  The testing mode is controlled by variable <code class="code docutils literal notranslate"><span class="pre">BUILD_TESTING_MODE</span></code>, which may be changed as described in <a class="reference internal" href="#fine-configuration"><span class="std std-ref">Fine Configuration</span></a>.</p>
 <ul class="simple">
 <li><p>The <code class="code docutils literal notranslate"><span class="pre">Normal</span></code> mode checks if the program completes without error and if the produced output is the same as a set of reference output.  It is the default mode on Linux.</p></li>
 <li><p>The <code class="code docutils literal notranslate"><span class="pre">Minimal</span></code> mode only checks if the program completes without error. This mode may be useful when installing on a machine which has program or library versions different from the ones with which the reference output was generated.  It is the default mode on macOS.</p></li>
@@ -290,9 +311,17 @@ neper comments -------------------------------------  ## comment
 </div>
 <p>If the initialization file is not found, or if <code class="xref py py-data docutils literal notranslate"><span class="pre">neper</span> <span class="pre">&lt;module_name&gt;</span></code> is not found inside it, Neper will consider only the command line arguments.  Also, if an argument is initialized several times (for instance, both in the initialization file and at the command line), only the last specified value is used.</p>
 </div>
+<div class="section" id="running-conditions">
+<h3>Running Conditions<a class="headerlink" href="#running-conditions" title="Permalink to this headline"></a></h3>
+<p>Neper runs on all threads by default.  The actual number of threads to use can be set at run stage, using the <code class="code docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> environment variable, as in</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">export</span> <span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">8</span>
+</pre></div>
+</div>
+<p>The environment variable is unset by default.</p>
+</div>
 </div>
 <div class="section" id="conventions-used-in-this-manual">
-<h2>Conventions used in this manual<a class="headerlink" href="#conventions-used-in-this-manual" title="Permalink to this headline"></a></h2>
+<h2>Conventions Used in This Manual<a class="headerlink" href="#conventions-used-in-this-manual" title="Permalink to this headline"></a></h2>
 <ul>
 <li><p>A command entered at the terminal is shown like this:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">command</span>
@@ -316,6 +345,7 @@ neper comments -------------------------------------  ## comment
 </li>
 <li><p>File names are printed like <code class="file docutils literal notranslate"><span class="pre">this</span></code>.</p></li>
 </ul>
+<p>Just like the <code class="xref py py-data docutils literal notranslate"><span class="pre">$</span></code> sign, the <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">[</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">]</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">{</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">}</span></code>, etc. signs are used only for formatting and should not be typed.</p>
 <p>Options that are only of secondary importance or for fine tuning are tagged <code class="xref py py-data docutils literal notranslate"><span class="pre">(Secondary</span> <span class="pre">option)</span></code>.</p>
 <p>Some options, such as <code class="xref py py-data docutils literal notranslate"><span class="pre">-datacellcol</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">-datafacecol</span></code>, etc., differ only by the fact that they apply to different entities and are documented together, as <code class="xref py py-data docutils literal notranslate"><span class="pre">-data{cell,...,face,...}col</span></code>.</p>
 <p>Some abbreviations are used consistently for options and contribute to Neper’s
@@ -362,124 +392,127 @@ jargon:</p>
 <tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">dim</span></code></p></td>
 <td><p>dimension</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">dis</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">dir</span></code></p></td>
+<td><p>directory or direction</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">dis</span></code></p></td>
 <td><p>distribution or distortion</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">dof</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">dof</span></code></p></td>
 <td><p>degree of freedom</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">dup</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">dup</span></code></p></td>
 <td><p>duplicate(d)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">elset</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">elset</span></code></p></td>
 <td><p>element set</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">elt</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">elt</span></code></p></td>
 <td><p>element</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">expr</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">expr</span></code></p></td>
 <td><p>expression</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">&lt;fact&gt;</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">fact</span></code></p></td>
 <td><p>factor</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">faset</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">faset</span></code></p></td>
 <td><p>element face set</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">geo</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">geo</span></code></p></td>
 <td><p>geometry</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">id</span></code></p></td>
 <td><p>identifier</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">ini</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">ini</span></code></p></td>
 <td><p>initial</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">inf</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">inf</span></code></p></td>
 <td><p>infinity</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">inter</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">inter</span></code></p></td>
 <td><p>interpolation</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">iter</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">iter</span></code></p></td>
 <td><p>iteration</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">&lt;max&gt;</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">max</span></code></p></td>
 <td><p>maximum</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">&lt;min&gt;</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">min</span></code></p></td>
 <td><p>minimum</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">morpho</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">morpho</span></code></p></td>
 <td><p>morphology</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">nb</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">nb</span></code></p></td>
 <td><p>number</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">neigh</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">neigh</span></code></p></td>
 <td><p>neighbor</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">nset</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">nset</span></code></p></td>
 <td><p>node set</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">opti</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">opti</span></code></p></td>
 <td><p>optimization</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">ori</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">ori</span></code></p></td>
 <td><p>orientation</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">part</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">part</span></code></p></td>
 <td><p>partition</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">poly</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">poly</span></code></p></td>
 <td><p>polyhedron</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">pov</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">pov</span></code></p></td>
 <td><p>POV-Ray file</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">qual</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">qual</span></code></p></td>
 <td><p>quality</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">&lt;rad&gt;</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">rad</span></code></p></td>
 <td><p>radius</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">rcl</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">rcl</span></code></p></td>
 <td><p>relative characteristic length</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">&lt;res&gt;</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">res</span></code></p></td>
 <td><p>resolution</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">rmax</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">rmax</span></code></p></td>
 <td><p>relative maximum</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">sing</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">sing</span></code></p></td>
 <td><p>singular</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">stat</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">stat</span></code></p></td>
 <td><p>statistics</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">surf</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">surf</span></code></p></td>
 <td><p>surface</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">tesr</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">tesr</span></code></p></td>
 <td><p>raster tessellation</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">tess</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">tess</span></code></p></td>
 <td><p>scalar tessellation</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">tmp</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">tmp</span></code></p></td>
 <td><p>temporary</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">trs</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">trs</span></code></p></td>
 <td><p>transparency</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">val</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">val</span></code></p></td>
 <td><p>value</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">var</span></code></p></td>
+<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">var</span></code></p></td>
 <td><p>variable</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="code docutils literal notranslate"><span class="pre">ver</span></code></p></td>
+<tr class="row-odd"><td><p><code class="code docutils literal notranslate"><span class="pre">ver</span></code></p></td>
 <td><p>vertex</p></td>
 </tr>
 </tbody>

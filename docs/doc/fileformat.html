@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>File and Directory Formats &mdash; Neper 4.4.1 documentation</title>
+  <title>File and Directory Formats &mdash; Neper 4.5.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Versions" href="versions.html" />
+    <link rel="next" title="Tutorials" href="tutorials.html" />
     <link rel="prev" title="Expressions and Keys" href="exprskeys.html" /> 
 </head>
 
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.4.1
+                4.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -61,6 +61,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#position-file">Position File</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 <li class="toctree-l2"><a class="reference internal" href="versions.html">Versions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpl.html">GNU General Public License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fdl.html">GNU Free Documentation License</a></li>
@@ -668,7 +669,7 @@ $EndGroups
 </div>
 <div class="section" id="data-file">
 <span id="id3"></span><h2>Data File<a class="headerlink" href="#data-file" title="Permalink to this headline"></a></h2>
-<p>A data file provides a number of data to be assigned to entities (seeds, cells, points, etc.).  It must contain the expected number of data.  It is a general, simply-formatted ASCII file that contains a fixed number of data per entity, and the data can be integers, real numbers or character strings.  A real number can have an arbitrary number of digits, but the decimal mark must be <code class="xref std std-option docutils literal notranslate"><span class="pre">.</span></code>.  The data can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with the data of one entity per line.  An example of a data file containing 5 values is:</p>
+<p>A data file contains a number of data to be assigned to entities (seeds, cells, points, etc.).  It must contain the expected number of data.  It is a general, simply-formatted ASCII file that contains a fixed number of data per entity, and the data can be integers, real numbers or character strings.  A real number can have an arbitrary number of digits, but the decimal mark must be <code class="xref std std-option docutils literal notranslate"><span class="pre">.</span></code>.  The data can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with the data of one entity per line.  An example of a data file containing 5 values is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.1235</span>
 <span class="mf">5.9564</span>
 <span class="mf">2.2547</span>
@@ -695,7 +696,7 @@ $EndGroups
 </div>
 <div class="section" id="position-file">
 <span id="id4"></span><h2>Position File<a class="headerlink" href="#position-file" title="Permalink to this headline"></a></h2>
-<p>A position file lists the coordinates of a given number of points.  The file must contain 1 coordinate per point in 1D, 2 coordinates per point in 2D and 3 coordinates per point in 3D.  While the dimension can be known from the context in which the file is read, it can also be specified by appending <code class="xref py py-data docutils literal notranslate"><span class="pre">:dim</span></code> to the name of the position file, where <code class="xref py py-data docutils literal notranslate"><span class="pre">dim</span></code> is the dimension.  A coordinate can be an integer or real number. A real number can have an arbitrary number of digits, but the decimal mark must be <code class="xref std std-option docutils literal notranslate"><span class="pre">.</span></code>.  The coordinates can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with one point per line.  An example of a position file containing 5 points in 3D is:</p>
+<p>A position file contains the coordinates of a number of points.  The file must contain 1 coordinate per point in 1D, 2 coordinates per point in 2D and 3 coordinates per point in 3D.  While the dimension can be known from the context in which the file is read, it can also be specified by appending <code class="xref py py-data docutils literal notranslate"><span class="pre">:dim</span></code> to the name of the position file, where <code class="xref py py-data docutils literal notranslate"><span class="pre">dim</span></code> is the dimension.  A coordinate can be an integer or real number. A real number can have an arbitrary number of digits, but the decimal mark must be <code class="xref std std-option docutils literal notranslate"><span class="pre">.</span></code>.  The coordinates can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with one point per line.  An example of a position file containing 5 points in 3D is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.1235</span> <span class="mf">9.4544</span> <span class="mf">5.2145</span>
 <span class="mf">5.9564</span> <span class="mf">3.6884</span> <span class="mf">9.2145</span>
 <span class="mf">2.2547</span> <span class="mf">3.2658</span> <span class="mf">8.2514</span>
@@ -720,7 +721,7 @@ $EndGroups
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="exprskeys.html" class="btn btn-neutral float-left" title="Expressions and Keys" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="versions.html" class="btn btn-neutral float-right" title="Versions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tutorials.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
