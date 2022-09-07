@@ -85,7 +85,6 @@ void
 neut_data_fscanf_general (struct DATAINPUT DataInput, char *entity, int dim,
                           int entityqty, char *attribute, char *type,
                           char *value, struct DATA *pData)
-
 {
   struct SIM *pSim = DataInput.pSim;
   struct TESS *pTess = DataInput.pTess;
@@ -99,7 +98,14 @@ neut_data_fscanf_general (struct DATAINPUT DataInput, char *entity, int dim,
   int DataSize, *pDataSize = NULL;
   double ***pDataArray = NULL;
 
-  if (!strcmp (attribute, "col"))
+  if (!strcmp (attribute, ""))
+  {
+    pDataSize = &(*pData).DataSize;
+    pDataArray = &(*pData).Data;
+    pDataType = &(*pData).DataType;
+    pDataName = &(*pData).DataName;
+  }
+  else if (!strcmp (attribute, "col"))
   {
     pDataSize = &(*pData).ColDataSize;
     pDataArray = &(*pData).ColData;
@@ -112,6 +118,12 @@ neut_data_fscanf_general (struct DATAINPUT DataInput, char *entity, int dim,
     pDataArray = &(*pData).RadData;
     pDataType = &(*pData).RadDataType;
     pDataName = &(*pData).RadDataName;
+  }
+  else if (!strcmp (attribute, "symbol"))
+  {
+    pDataSize = &DataSize;
+    pDataType = &(*pData).SymbolDataType;
+    pDataName = &(*pData).SymbolDataName;
   }
   else if (!strcmp (attribute, "trs"))
   {
@@ -154,6 +166,12 @@ neut_data_fscanf_general (struct DATAINPUT DataInput, char *entity, int dim,
   if (!*pDataType || !strcmp (*pDataType, "col"))
     neut_data_fscanf_col_col (entityqty, value, pData);
 
+  else if (!strcmp (attribute, "symbol"))
+    neut_data_fscanf_string (input, pSim, pTess, pTesr, pNodes, pMesh, pPoints,
+                             entity, entityqty, value,
+                             pDataName, pDataSize,
+                             &(*pData).SymbolData, pDataType);
+
   else if (!strcmp (*pDataType, "int")
        || !strcmp (*pDataType, "real")
        || !strcmp (*pDataType, "expr"))
@@ -164,7 +182,8 @@ neut_data_fscanf_general (struct DATAINPUT DataInput, char *entity, int dim,
 
   else if (!strcmp (*pDataType, "vector")
         || !strcmp (*pDataType, "tensor"))
-    neut_data_fscanf_col_tensor (*pSim, entity, entityqty, value, pData);
+    neut_data_fscanf_tensor (*pSim, entity, entityqty, value, pDataName,
+                             pDataSize, pDataArray, pDataType);
 
   else if (!strcmp (*pDataType, "ori"))
   {

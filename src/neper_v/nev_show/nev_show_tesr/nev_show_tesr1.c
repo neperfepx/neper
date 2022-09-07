@@ -25,7 +25,20 @@ nev_show_tesr_cell (char **argv, int *pi, struct TESR Tesr,
   int i, j, k, cell, status, varqty = 0;
   char **vars = NULL;
   double *vals = NULL;
-  int *showcell = ut_alloc_1d_int (Tesr.CellQty + 1);
+  int *showcell = NULL;
+
+  if (Tesr.Dim == 3)
+  {
+    (*pPrint).showpoly = ut_alloc_1d_int (Tesr.CellQty + 1);
+    showcell = (*pPrint).showpoly;
+  }
+  else if (Tesr.Dim == 2)
+  {
+    (*pPrint).showface = ut_alloc_1d_int (Tesr.CellQty + 1);
+    showcell = (*pPrint).showface;
+  }
+
+  // ut_alloc_1d_int (Tesr.CellQty + 1);
 
   (*pi)++;
 
@@ -53,7 +66,7 @@ nev_show_tesr_cell (char **argv, int *pi, struct TESR Tesr,
       }
 
       status = ut_math_eval_int (argv[(*pi)], varqty, vars, vals, showcell + i);
-      if (!status)
+      if (status)
         ut_print_exprbug (argv[(*pi)]);
     }
   }

@@ -22,11 +22,11 @@ nev_show_points (char **argv, int *pi, struct POINT Point, int **pshow)
 
   (*pi)++;
 
-  *pshow = ut_realloc_1d_int (*pshow, Point.PointQty + 1);
-  ut_array_1d_int_zero (*pshow, Point.PointQty + 1);
+  *pshow = ut_realloc_1d_int (*pshow, Point.Qty + 1);
+  ut_array_1d_int_zero (*pshow, Point.Qty + 1);
 
   status =
-    nev_show_genexpr (argv[(*pi)], *pshow, Point.PointQty);
+    nev_show_genexpr (argv[(*pi)], *pshow, Point.Qty);
 
   if (status)
   {
@@ -34,7 +34,7 @@ nev_show_points (char **argv, int *pi, struct POINT Point, int **pshow)
 
     vals = ut_alloc_1d (varqty);
 
-    for (i = 1; i <= Point.PointQty; i++)
+    for (i = 1; i <= Point.Qty; i++)
     {
       for (j = 0; j < varqty; j++)
       {
@@ -51,7 +51,7 @@ nev_show_points (char **argv, int *pi, struct POINT Point, int **pshow)
   }
 
   (*pshow)[0] =
-    ut_array_1d_int_sum (*pshow + 1, Point.PointQty);
+    ut_array_1d_int_sum (*pshow + 1, Point.Qty);
 
   ut_free_2d_char (&vars, varqty);
   ut_free_1d (&tmp);

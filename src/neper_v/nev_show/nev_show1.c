@@ -6,16 +6,19 @@
 
 void
 nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
-          struct NODES Nodes, struct MESH *Mesh, struct POINT Point,
-          struct PRINT *pPrint)
+          struct NODES Nodes, struct MESH *Mesh, struct POINT *Points,
+          int PointQty, struct PRINT *pPrint)
 {
-  struct PART Part;
-  neut_part_set_zero (&Part);
+  int i;
+  char *input = NULL;
 
   // general -----------------------------------------------------------
 
   if (!strcmp (argv[(*pi)], "-showcsys"))
     nev_show_csys (argv, pi, pPrint);
+
+  else if (!strcmp (argv[(*pi)], "-showscale"))
+    nev_show_scale (argv, pi, pPrint);
 
   else if (!strcmp (argv[(*pi)], "-showtess"))
     nev_show_tess (argv, pi, pPrint);
@@ -125,10 +128,25 @@ nev_show (char **argv, int *pi, struct TESS Tess, struct TESR Tesr,
 
   // point -------------------------------------------------------------
 
-  else if (!strcmp (argv[(*pi)], "-showpoint"))
-    nev_show_points (argv, pi, Point, &(*pPrint).showpoint);
+  else if (!strncmp (argv[(*pi)], "-show", 4))
+  {
+    if (!(*pPrint).showpoint)
+      (*pPrint).showpoint = ut_alloc_1d_pint (PointQty);
 
-  neut_part_free (Part);
+    int found = 0;
+    ut_string_string (argv[(*pi)] + 5, &input);
+    for (i = 0; i < PointQty; i++)
+      if (!strcmp (input, Points[i].Name))
+      {
+        nev_show_points (argv, pi, Points[i], (*pPrint).showpoint + i);
+        found = 1;
+      }
+
+    if (!found)
+      ut_print_exprbug (argv[(*pi)]);
+  }
+
+  ut_free_1d_char (&input);
 
   return;
 }

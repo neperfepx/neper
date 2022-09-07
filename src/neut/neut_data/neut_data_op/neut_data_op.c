@@ -11,6 +11,13 @@ neut_data_set_default (struct DATA *pData)
   (*pData).Dim = 0;
   (*pData).Entity = NULL;
 
+  (*pData).Value = NULL;
+
+  (*pData).Data = NULL;
+  (*pData).DataType = NULL;
+  (*pData).DataSize = 0;
+  (*pData).DataName = NULL;
+
   (*pData).ColData = NULL;
   (*pData).ColDataType = NULL;
   (*pData).ColDataSize = 0;
@@ -30,6 +37,11 @@ neut_data_set_default (struct DATA *pData)
   (*pData).Rad = NULL;
   (*pData).RadDataName = NULL;
 
+  (*pData).SymbolData = NULL;
+  (*pData).SymbolDataType = NULL;
+  (*pData).Symbol = NULL;
+  (*pData).SymbolDataName = NULL;
+
   (*pData).CooData = NULL;
   (*pData).CooDataType = NULL;
   (*pData).Coo = NULL;
@@ -48,7 +60,6 @@ neut_data_set_default (struct DATA *pData)
   (*pData).ScaleTitle = NULL;
 
   (*pData).Axes = NULL;
-  (*pData).Space = NULL;
 
   (*pData).Label = NULL;
   (*pData).FontSize = -1;
@@ -88,6 +99,12 @@ neut_data_free (struct DATA *pData)
   ut_free_2d (&(*pData).RadData, (*pData).Qty);
   ut_free_1d_char (&(*pData).RadDataType);
   ut_free_1d (&(*pData).Rad);
+  ut_free_1d_char (&(*pData).RadDataName);
+
+  ut_free_2d_char (&(*pData).SymbolData, (*pData).Qty);
+  ut_free_1d_char (&(*pData).SymbolDataType);
+  ut_free_2d_char (&(*pData).Symbol, (*pData).Qty);
+  ut_free_1d_char (&(*pData).SymbolDataName);
 
   ut_free_2d (&(*pData).CooData, (*pData).Qty);
   ut_free_1d_char (&(*pData).CooDataType);
@@ -108,7 +125,6 @@ neut_data_free (struct DATA *pData)
   ut_free_1d_char (&(*pData).ScaleTitle);
 
   ut_free_1d (&(*pData).Axes);
-  ut_free_1d_char (&(*pData).Space);
 
   ut_free_2d_char (&(*pData).Label, 3);
 

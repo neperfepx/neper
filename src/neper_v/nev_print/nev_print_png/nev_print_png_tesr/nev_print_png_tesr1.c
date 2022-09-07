@@ -6,7 +6,7 @@
 
 void
 nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
-                struct DATA TesrData)
+                struct DATA* TesrData)
 {
   int i, j, k, elt, dim = Tesr.Dim, voidelset = Tesr.CellQty + 1;
   double *size = ut_alloc_1d (3);
@@ -131,14 +131,14 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
                                               1) * (Tesr.size[1] *
                                                     Tesr.size[0]);
 
-    ut_array_1d_int_memcpy (TesrData.Col[id], 3, MeshData[dim].Col[i]);
+    ut_array_1d_int_memcpy (TesrData[1].Col[id], 3, MeshData[dim].Col[i]);
 
     ut_free_1d_int (&pos);
     ut_free_1d (&coo);
   }
 
-  MeshData[dim].BRad = TesrData.BRad;
-  ut_array_1d_int_memcpy (TesrData.BCol, 3, MeshData[dim].BCol);
+  MeshData[dim].BRad = TesrData[1].BRad;
+  ut_array_1d_int_memcpy (TesrData[1].BCol, 3, MeshData[dim].BCol);
 
   NodeData.Qty = Nodes.NodeQty;
   NodeData.Coo = ut_alloc_2d (Nodes.NodeQty + 1, 3);
@@ -152,7 +152,7 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
 
     neut_mesh_entity_expr_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
                                Mesh[4], Tess, NULL, NULL, NULL, NULL,
-                               "elt1d", TesrData.RadDataName, MeshData[1].Rad, NULL);
+                               "elt1d", TesrData[1].RadDataName, MeshData[1].Rad, NULL);
 
     nev_print_png_mesh_1d (file, Print, Tess, Mesh, NodeData, MeshData);
 

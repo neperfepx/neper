@@ -6,22 +6,16 @@
 
 void
 nev_data_tesr (struct SIM Sim, struct TESR *pTesr, char *entity, char *attribute,
-                     char *datastring, struct DATA *pTesrData)
+                     char *datastring, struct DATA *TesrData)
 {
-  struct DATA TesrDataCell;
   struct DATA *pData = NULL;
 
-  ut_print_message (0, 1, "Reading data (%s, %s)...\n", entity, attribute);
+  ut_print_message (0, 1, "Reading data (%s%s%s)...\n", entity, strlen (attribute) ? ", " : "", attribute);
 
-  neut_data_set_default (&TesrDataCell);
-
-  if (strcmp (entity, "cell"))
-    pData = pTesrData;
+  if (!strcmp (entity, "cell"))
+    pData = TesrData;
   else
-  {
-    TesrDataCell.Qty = (*pTesr).CellQty;
-    pData = &TesrDataCell;
-  }
+    pData = TesrData + 1;
 
   if (!strcmp (entity, "cell") || !strcmp (entity, "vox"))
     nev_data_tesr_gen (Sim, pTesr, pData, entity, attribute, datastring);
@@ -39,7 +33,7 @@ nev_data_tesr (struct SIM Sim, struct TESR *pTesr, char *entity, char *attribute
     abort ();
 
   if (!strcmp (entity, "cell"))
-    nev_data_tesr_cell2vox (*pTesr, attribute, TesrDataCell, pTesrData);
+    nev_data_tesr_cell2vox (*pTesr, attribute, TesrData[0], TesrData + 1);
 
   return;
 }

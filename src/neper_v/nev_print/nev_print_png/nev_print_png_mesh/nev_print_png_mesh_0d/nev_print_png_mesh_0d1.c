@@ -9,7 +9,6 @@ nev_print_png_mesh_0d (FILE * file, struct PRINT Print, struct MESH *Mesh,
                    struct DATA NodeData, struct DATA *MeshData)
 {
   int i;
-  double ambient = (Print.sceneshadow == 1) ? 0.6 : 1;
   char *texture = ut_alloc_1d_char (100);
 
   if (MeshData[0].Qty > 0)
@@ -20,10 +19,10 @@ nev_print_png_mesh_0d (FILE * file, struct PRINT Print, struct MESH *Mesh,
       if (Print.showelt0d[i] == 1)
       {
         fprintf (file,
-                 "#declare elt0d%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
+                 "#declare elt0d%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
                  i, MeshData[0].Col[i][0] / 255.,
                  MeshData[0].Col[i][1] / 255., MeshData[0].Col[i][2] / 255.,
-                 ambient);
+                 Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
         sprintf (texture, "elt0d%d", i);
 
@@ -33,13 +32,9 @@ nev_print_png_mesh_0d (FILE * file, struct PRINT Print, struct MESH *Mesh,
 
         if (print == 1)
         {
-          char *string = ut_alloc_1d_char (100);
-          sprintf (string, "%.12f", MeshData[0].Rad[i]);
           nev_print_png_sphere (file, NodeData.Coo[Mesh[0].EltNodes[i][0]],
-                            string, texture);
-
+                                MeshData[0].Rad[i], texture);
           printelt0d_qty++;
-          ut_free_1d_char (&string);
         }
       }
 

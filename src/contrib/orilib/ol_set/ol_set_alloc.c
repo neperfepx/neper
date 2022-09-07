@@ -44,6 +44,7 @@ ol_set_free (struct OL_SET Set)
   return;
 }
 
+// REVISE to use net_ori_file
 int
 ol_set_fscanf (FILE * file, struct OL_SET *pSet, char *format)
 {
@@ -73,7 +74,7 @@ ol_set_fscanf (FILE * file, struct OL_SET *pSet, char *format)
   else if (firstline_nbw == 3)
   {
     (*pSet).size = whole_nbw / 3;
-    strcpy (format2, "e");
+    strcpy (format2, "rodrigues");
   }
   else if (firstline_nbw == 4)
   {

@@ -19,5 +19,3 @@
 #include "nev_print_png_point/nev_print_png_point.h"
 
 #include "nev_print_png.h"
-
-extern void nev_print_png_pov2png (char *, char *, int, int, int, int);

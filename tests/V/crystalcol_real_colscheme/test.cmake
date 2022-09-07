@@ -2,5 +2,5 @@
 # Copyright(C) 2003-2022, Romain Quey.
 # See the COPYING file in the top-level directory.
 
-set (test_command -V n2-id1.tess -showcell none -showcrystal all -datacrystalcol "real:file(n2-id1.stcrystal)" -datacrystalcolscheme black,white -print test)
+set (test_command -V n2-id1.tess -showcell none -showcrystal all -datacrystalcol "real:file(n2-id1.stcrystal)" -datacrystalcolscheme "custom(black,white)" -print test)
 include(../../test.cmake)

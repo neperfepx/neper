@@ -10,11 +10,8 @@ nev_image (char **argv, int *pi, struct PRINT *pPrint)
   if (strcmp (argv[*pi], "-imagesize") == 0)
     strcpy ((*pPrint).imagesize, argv[++(*pi)]);
 
-  else if (strcmp (argv[*pi], "-imageantialias") == 0)
-    ut_string_int (argv[++(*pi)], &((*pPrint).imageantialias));
-
   else if (strcmp (argv[*pi], "-imageformat") == 0)
-    ut_string_string (argv[++(*pi)], &(*pPrint).format);
+    ut_string_string (argv[++(*pi)], &(*pPrint).imageformat);
 
   else
   {

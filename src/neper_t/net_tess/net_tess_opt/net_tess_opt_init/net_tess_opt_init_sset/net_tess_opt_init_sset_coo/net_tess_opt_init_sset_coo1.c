@@ -57,16 +57,6 @@ net_tess_opt_init_sset_coo (struct MTESS MTess, struct TESS *Tess, int dtess,
   int *id = ut_alloc_1d_int ((*pTOpt).CellQty + 1);
   int multiseed = (ut_array_1d_int_max (qty + 1, (*pTOpt).CellQty) > 1);
 
-  Point.Periodic = ut_alloc_1d_int (3);
-  if ((*pTOpt).SSet.Periodic)
-    ut_array_1d_int_memcpy ((*pTOpt).SSet.Periodic, 3, Point.Periodic);
-  if ((*pTOpt).activedim)
-  {
-    Point.activedim = ut_alloc_1d_int (3);
-    ut_array_1d_int_memcpy ((*pTOpt).activedim, 3, Point.activedim);
-  }
-  Point.BBox = ut_alloc_2d (3, 2);
-  ut_array_2d_memcpy ((*pTOpt).SSet.Size, 3, 2, Point.BBox);
   Point.Dim = (*pTOpt).SSet.Dim;
 
   gsl_rng *r = gsl_rng_alloc (gsl_rng_ranlxd2);

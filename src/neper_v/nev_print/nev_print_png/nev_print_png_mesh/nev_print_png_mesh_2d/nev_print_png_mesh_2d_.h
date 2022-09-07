@@ -12,7 +12,7 @@
 #include "nev_print_png_mesh_2d.h"
 #include "../../nev_print_png.h"
 
-extern void nev_print_png_mesh_2d_print_edges (FILE * file, int,
+extern void nev_print_png_mesh_2d_print_edges (FILE * file, struct PRINT Print,
 					   struct NODES N,
 					   struct MESH M1D,
 					   struct DATA *MeshData);

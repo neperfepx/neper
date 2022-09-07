@@ -1724,18 +1724,28 @@ ut_array_3d_uchar_max (unsigned char ***array, int size1, int size2,
 }
 
 double
-ut_array_2d_mean (double **array, int size1, int size2)
+ut_array_2d_sum (double **array, int size1, int size2)
 {
   int i, j;
-  double mean;
+  double sum;
 
   if (size1 <= 0 || size2 <= 0)
     abort ();
 
-  mean = 0;
+  sum = 0;
   for (i = 0; i < size1; i++)
     for (j = 0; j < size2; j++)
-      mean += array[i][j];
+      sum += array[i][j];
+
+  return sum;
+}
+
+double
+ut_array_2d_mean (double **array, int size1, int size2)
+{
+  double mean;
+
+  mean = ut_array_2d_sum (array, size1, size2);
   mean /= (size1 * size2);
 
   return mean;

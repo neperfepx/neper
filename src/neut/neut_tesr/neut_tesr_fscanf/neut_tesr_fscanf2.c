@@ -244,11 +244,11 @@ neut_tesr_fscanf_data (struct TESR *pTesr, char *dirname, int *bounds,
   if (bounds && scale)
     ut_print_neperbug ();
 
-  if (!bounds)
+  if (!bounds && !(*pTesr).VoxCell)
     (*pTesr).VoxCell =
       ut_alloc_3d_int ((*pTesr).size[0] + 2, (*pTesr).size[1] + 2,
                        (*pTesr).size[2] + 2);
-  else
+  else if (!(*pTesr).VoxCell)
     (*pTesr).VoxCell =
       ut_alloc_3d_int (bounds[1] - bounds[0] + 3, bounds[3] - bounds[2] + 3,
                        bounds[5] - bounds[4] + 3);

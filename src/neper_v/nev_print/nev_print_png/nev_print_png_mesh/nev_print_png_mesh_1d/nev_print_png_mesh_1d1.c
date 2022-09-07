@@ -10,7 +10,6 @@ nev_print_png_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
                    struct DATA *MeshData)
 {
   int i, j, elset, elt1d_qty, elt3dqty, printelt1d_qty, texture_unique;
-  double ambient = (Print.sceneshadow == 1) ? 0.6 : 1;
   char *texture = NULL;
   int *hidden = NULL;
   int *elts3d = NULL;
@@ -75,8 +74,8 @@ nev_print_png_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
   if (texture_unique)
   {
     fprintf (file,
-             "#declare elt1d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
-             Col[0] / 255., Col[1] / 255., Col[2] / 255., ambient);
+             "#declare elt1d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
+             Col[0] / 255., Col[1] / 255., Col[2] / 255., Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
     strcpy (texture, "elt1d");
   }
@@ -88,22 +87,19 @@ nev_print_png_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
       if (!texture_unique)
       {
         fprintf (file,
-                 "#declare elt1d%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
+                 "#declare elt1d%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
                  i, MeshData[1].Col[i][0] / 255.,
                  MeshData[1].Col[i][1] / 255., MeshData[1].Col[i][2] / 255.,
-                 ambient);
+                 Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
         sprintf (texture, "elt1d%d", i);
       }
 
-      char *string = ut_alloc_1d_char (100);
-      sprintf (string, "%.12f", MeshData[1].Rad[i]);
       nev_print_png_segment_wsph (file, NodeData.Coo[Mesh[1].EltNodes[i][0]],
-                              NodeData.Coo[Mesh[1].EltNodes[i][1]], string,
+                              NodeData.Coo[Mesh[1].EltNodes[i][1]], MeshData[1].Rad[i],
                               texture);
 
       printelt1d_qty++;
-      ut_free_1d_char (&string);
     }
 
   ut_print_message (0, 4,

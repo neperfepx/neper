@@ -13,12 +13,13 @@ nev_print_png_csys (FILE * file, struct DATA CsysData, struct PRINT Print)
   double **s = ol_g_alloc ();
   char *edge_rad = ut_alloc_1d_char (10);
   char *edge_texture = ut_alloc_1d_char (100);
+  char *tmp = NULL;
 
   fprintf (file, "#declare csys =\n");
   fprintf (file,
-           "  texture { pigment { rgbt <%f,%f,%f,0.> } finish {ambient 0.600000} }",
+           "  texture { pigment { rgbt <%f,%f,%f,0.> } finish {ambient %f diffuse %f reflection %f} }",
            CsysData.Col[1][0] / 255., CsysData.Col[1][1] / 255.,
-           CsysData.Col[1][2] / 255.);
+           CsysData.Col[1][2] / 255., Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
   sprintf (edge_rad, "%f", CsysData.Rad[1]);
   sprintf (edge_texture, "csys");
@@ -28,10 +29,16 @@ nev_print_png_csys (FILE * file, struct DATA CsysData, struct PRINT Print)
 
   ut_array_1d_memcpy (CsysData.Coo[1], 3, O);
 
+  double *data = ut_alloc_1d (5);
+
   for (i = 0; i < 3; i++)
     if (strlen (CsysData.Label[i]) > 0)
     {
-      nev_print_png_arrow (file, O, g[i], edge_rad, edge_texture);
+      data[0] = CsysData.Rad[1];
+      data[1] = CsysData.Length[1];
+      ut_array_1d_memcpy (g[i], 3, data + 2);
+
+      nev_print_png_arr (file, O, data, edge_texture);
 
       fprintf (file, "#declare CamLoc = <%f,%f,%f>;\n", Print.cameracoo[0],
                Print.cameracoo[1], Print.cameracoo[2]);
@@ -53,8 +60,10 @@ nev_print_png_csys (FILE * file, struct DATA CsysData, struct PRINT Print)
       fprintf (file,
                "#declare TransVec3=vnormalize(vcross(TransVec1,TransVec2));\n");
       fprintf (file, "#declare X%d =\n", i + 1);
-      fprintf (file, "text {ttf \"timrom.ttf\" \"%s\" 0, 0\n",
-               CsysData.Label[i]);
+      ut_string_string (CsysData.Label[i], &tmp);
+      ut_string_fnrs (tmp, "_", "", 1);
+      ut_string_fnrs (tmp, "$", "", INT_MAX);
+      fprintf (file, "text {ttf \"timrom.ttf\" \"%s\" 0, 0\n", tmp);
       fprintf (file, "pigment {rgb<0,0,0>}\n");
       fprintf (file, "scale %f\n", 0.1 * CsysData.FontSize);
       fprintf (file,
@@ -66,11 +75,13 @@ nev_print_png_csys (FILE * file, struct DATA CsysData, struct PRINT Print)
                i + 1, s[i][0], s[i][1], s[i][2]);
     }
 
+  ut_free_1d (&data);
   ut_free_1d (&O);
   ol_g_free (g);
   ol_g_free (s);
   ut_free_1d_char (&edge_rad);
   ut_free_1d_char (&edge_texture);
+  ut_free_1d_char (&tmp);
 
   return;
 }

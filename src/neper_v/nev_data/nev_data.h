@@ -5,10 +5,10 @@
 extern void nev_data (char **, int *, struct SIM Sim,
                       struct TESS *pTess, struct TESR *pTesr,
                       struct NODES *, struct MESH **,
-                      struct POINT *,
+                      struct POINT **, int,
 		      struct DATA *, struct DATA *,
 		      struct DATA *, struct DATA *,
-		      struct DATA *, struct DATA *);
+		      struct DATA *, struct DATA **);
 
 #include "nev_data_tess/nev_data_tess.h"
 #include "nev_data_tesr/nev_data_tesr.h"

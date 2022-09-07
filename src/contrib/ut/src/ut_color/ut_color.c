@@ -377,21 +377,28 @@ ut_color_changeintensity (int *rgb, double intensity, int *rgb2)
 
 
 int
-ut_color_bar_val_color (char *bar, double beg, double end, double val,
+ut_color_bar_val_color (char *scheme, double beg, double end, double val,
                         int *col)
 {
   int i, pos;
   double pos2;
-  char **color = NULL;
+  char **cols = NULL;
   int colqty;
   double *vals = NULL;
   int *col0 = ut_alloc_1d_int (3);
   int *col1 = ut_alloc_1d_int (3);
   int status = 0;
-  if (ut_string_strcmp (bar, "legacy"))
-    ut_list_break (bar, ",", &color, &colqty);
+  char *fct = NULL;
+
+  if (ut_string_strcmp (scheme, "legacy"))
+  {
+    ut_string_function (scheme, &fct, NULL, &cols, &colqty);
+    if (strcmp (fct, "custom"))
+      ut_print_exprbug (scheme);
+  }
   else
-    ut_list_break ("blue,cyan,yellow,red", ",", &color, &colqty);
+    ut_string_function ("custom(blue,cyan,yellow,red)", &fct, NULL, &cols, &colqty);
+
   vals = ut_alloc_1d (colqty);
   for (i = 0; i < colqty; i++)
     vals[i] = beg + (end - beg) * i / (colqty - 1);
@@ -402,24 +409,24 @@ ut_color_bar_val_color (char *bar, double beg, double end, double val,
     if (beg < end)
     {
       if (val < vals[0])
-        ut_color_name_rgb (color[0], col);
+        ut_color_name_rgb (cols[0], col);
       else
-        ut_color_name_rgb (color[colqty - 1], col);
+        ut_color_name_rgb (cols[colqty - 1], col);
     }
     else
     {
       if (val < vals[0])
-        ut_color_name_rgb (color[colqty - 1], col);
+        ut_color_name_rgb (cols[colqty - 1], col);
       else
-        ut_color_name_rgb (color[0], col);
+        ut_color_name_rgb (cols[0], col);
     }
   }
   else
   {
     if (pos < colqty - 1)
     {
-      ut_color_name_rgb (color[pos], col0);
-      ut_color_name_rgb (color[pos + 1], col1);
+      ut_color_name_rgb (cols[pos], col0);
+      ut_color_name_rgb (cols[pos + 1], col1);
       if (vals[pos + 1] - vals[pos] != 0)
         pos2 = (val - vals[pos]) / (vals[pos + 1] - vals[pos]);
       else
@@ -428,13 +435,15 @@ ut_color_bar_val_color (char *bar, double beg, double end, double val,
         col[i] = ut_num_d2ri (col0[i] + pos2 * (col1[i] - col0[i]));
     }
     else
-      ut_color_name_rgb (color[pos], col);
+      ut_color_name_rgb (cols[pos], col);
   }
 
   ut_free_1d_int (&col0);
   ut_free_1d_int (&col1);
-  ut_free_2d_char (&color, colqty);
+  ut_free_2d_char (&cols, colqty);
   ut_free_1d (&vals);
+  ut_free_1d_char (&fct);
+
   return status;
 }
 

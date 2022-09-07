@@ -9,7 +9,6 @@ nev_print_png_mesh_nodes (FILE * file, struct PRINT Print, struct NODES Nodes,
                       struct MESH *Mesh, struct DATA NodeData)
 {
   int i, node_qty, printnode_qty;
-  double ambient = (Print.sceneshadow == 1) ? 0.6 : 1;
   char *texture = NULL;
   int *hidden = NULL;
 
@@ -30,18 +29,14 @@ nev_print_png_mesh_nodes (FILE * file, struct PRINT Print, struct NODES Nodes,
     if (Print.shownode[i])
     {
       fprintf (file,
-               "#declare node%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
+               "#declare node%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
                i, NodeData.Col[i][0] / 255., NodeData.Col[i][1] / 255.,
-               NodeData.Col[i][2] / 255., ambient);
+               NodeData.Col[i][2] / 255., Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
       sprintf (texture, "node%d", i);
 
-      char *string = ut_alloc_1d_char (100);
-      sprintf (string, "%.12f", NodeData.Rad[i]);
-      nev_print_png_sphere (file, NodeData.Coo[i], string, texture);
-
+      nev_print_png_sphere (file, NodeData.Coo[i], NodeData.Rad[i], texture);
       printnode_qty++;
-      ut_free_1d_char (&string);
     }
 
   ut_print_message (0, 4,

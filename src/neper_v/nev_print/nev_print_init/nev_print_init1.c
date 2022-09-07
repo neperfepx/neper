@@ -7,21 +7,27 @@
 void
 nev_print_init (struct PRINT *pPrint, struct TESS Tess,
                 struct DATA *TessData, struct TESR Tesr,
-                struct DATA *pTesrData, struct NODES Nodes, struct MESH *Mesh,
+                struct DATA *TesrData, struct NODES Nodes, struct MESH *Mesh,
                 struct DATA *pNodeData, struct DATA *MeshData, int *pSQty,
                 struct NODES **pSNodes, struct MESH **pSMesh2D, struct DATA
                 **pSNodeData, struct DATA ***pSMeshData, int ***pSElt2dElt3d,
                 struct DATA *pCsysData,
-                struct POINT Point, struct DATA *pPointData)
+                struct POINT *Points, int PointQty, struct DATA *PointData)
 {
   int i;
 
-  if (ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov")
-   || ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "pov:objects")
-   || ut_list_testelt ((*pPrint).format, NEUT_SEP_NODEP, "png"))
+  if (PointQty)
   {
-    nev_print_init_data (*pPrint, Tess, TessData, Tesr, pTesrData, Nodes, Mesh,
-                        Point, pNodeData, MeshData, pCsysData, pPointData);
+    (*pPrint).inputqty = PointQty;
+    (*pPrint).inputs = ut_alloc_1d_pchar ((*pPrint).inputqty);
+    for (i = 0; i < (*pPrint).inputqty; i++)
+      ut_string_string (Points[i].Name, (*pPrint).inputs + i);
+  }
+
+  if (strcmp ((*pPrint).imageformat, "vtk"))
+  {
+    nev_print_init_data (*pPrint, Tess, TessData, Tesr, TesrData, Nodes, Mesh,
+                        Points, PointQty, pNodeData, MeshData, pCsysData, PointData);
 
     if ((*pPrint).slice)
       neut_mesh_slice (Nodes, Mesh[3], *pNodeData, MeshData, (*pPrint).slice,
@@ -35,13 +41,17 @@ nev_print_init (struct PRINT *pPrint, struct TESS Tess,
                                3, (*pSMeshData)[i] + 2);
     }
 
-    nev_print_init_show (Tess, Tesr, Nodes, Mesh, *pSQty, Point, pPrint);
+    nev_print_init_show (Tess, Tesr, Nodes, Mesh, *pSQty, Points, PointQty, pPrint);
 
-    nev_print_init_camera (Tess, Tesr, Nodes, Mesh, Point, *pNodeData, pPrint);
+    nev_print_init_camera (Tess, Tesr, Nodes, Mesh, Points, PointQty, *pNodeData, pPrint);
+
+    nev_print_init_light (Tess, Tesr, Mesh, pPrint);
   }
 
-  else if (ut_list_testelt ((*pPrint).format, NEUT_SEP_DEP, "vtk"))
+  else
     nev_print_init_data_nodes (*pPrint, Nodes, Nodes.NodeQty, pNodeData);
+
+  nev_print_init_pf (pPrint);
 
   return;
 }

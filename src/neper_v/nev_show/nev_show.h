@@ -3,5 +3,5 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nev_show (char **, int *, struct TESS, struct TESR,
-		      struct NODES, struct MESH *, struct POINT,
+		      struct NODES, struct MESH *, struct POINT *, int,
 		      struct PRINT *);

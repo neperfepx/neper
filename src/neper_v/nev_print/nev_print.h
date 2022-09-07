@@ -6,5 +6,5 @@ extern void nev_print (char **expargv, int *pi, struct PRINT *pPrint, struct SIM
                        struct TESS Tess, struct DATA *TessData, struct TESR
                        Tesr, struct DATA *pTesrData, struct NODES Nodes, struct
                        MESH *Mesh, struct DATA *pNodeData, struct DATA
-                       *MeshData, struct DATA *pCsysData, struct POINT Point,
-                       struct DATA *pPointData);
+                       *MeshData, struct DATA *pCsysData, struct POINT *Points, int PointQty,
+                       struct DATA *PointData);

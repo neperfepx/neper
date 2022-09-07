@@ -429,6 +429,13 @@ extern "C"
 /// \remark Failure if \c size <= 0
   extern double ut_array_1d_mean (double *array, int size);
 
+/// \brief Get the sum of a 2D array of \c double
+/// \param array: array
+/// \param size1: 1st-index size of the array
+/// \param size2: 2nd-index size of the array
+/// \return mean
+  extern double ut_array_2d_sum (double **array, int size1, int size2);
+
 /// \brief Get the mean of a 2D array of \c double
 /// \param array: array
 /// \param size1: 1st-index size of the array

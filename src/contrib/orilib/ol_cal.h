@@ -141,7 +141,7 @@ extern void ol_m_refsym_orthotropic (int *, int **, int *);
 extern void ol_e_ecrysym_orthotropic_rad (double *, char*, double **, int *);
 extern void ol_e_ecrysym_orthotropic (double *, char*, double **, int *);
 extern int ol_q_qrefsym_orthotropic (double *, double *);
-extern void ol_polef_polecrysym (int *, char*, int **, int *);
+extern void ol_polef_polecrysym (int *, char*, int ***, int *);
 extern void ol_pole_polecrysym (int *, char*, int *);
 
 extern int ol_crysym_qty (char*);

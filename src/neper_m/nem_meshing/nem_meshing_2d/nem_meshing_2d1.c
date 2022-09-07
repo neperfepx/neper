@@ -29,7 +29,7 @@ nem_meshing_2d (struct IN_M In, struct MESHPARA MeshPara, struct TESS Tess,
   for (i = 1; i <= Tess.FaceQty; i++)
     neut_mesh_set_zero (M + i);
 
-  ut_print_message (0, 2, "2d meshing... ");
+  ut_print_message (0, 2, "2D meshing... ");
 
   neut_multim_set_zero (&Multim);
   neut_multim_init (2, In.mesh2dalgo, Tess.FaceQty, &Multim);

@@ -14,8 +14,8 @@
 
 extern void nev_print_init_data (struct PRINT, struct TESS, struct DATA *,
                                  struct TESR, struct DATA *,
-                                 struct NODES, struct MESH *, struct POINT,
-                                 struct DATA *, struct DATA *,
+                                 struct NODES, struct MESH *, struct POINT *,
+                                 int, struct DATA *, struct DATA *,
                                  struct DATA *, struct DATA *);
 
 extern void nev_print_init_data_csys (struct PRINT Print, struct DATA *);
@@ -29,11 +29,11 @@ extern void nev_print_init_data_crystal (struct PRINT Print, struct POINT, struc
 
 extern void nev_print_init_show (struct TESS Tess, struct TESR Tesr,
                                  struct NODES Nodes, struct MESH *Mesh,
-                                 int SQty, struct POINT Point,
+                                 int SQty, struct POINT *Point, int,
                                  struct PRINT *pPrint);
 
 extern void nev_print_init_camera (struct TESS, struct TESR, struct NODES,
-                                   struct MESH *, struct POINT, struct
+                                   struct MESH *, struct POINT *, int, struct
                                    DATA, struct PRINT *);
 extern void nev_print_init_camera_coo (double **bbox, double *centre, double *v, char *expr,
                                        double *coo);
@@ -50,3 +50,7 @@ extern void nev_print_init_camera_lookat (char *expr, struct TESS Tess,
                                           struct PRINT *pPrint);
 extern void nev_print_init_camera_v (int dim, double *v);
 extern void nev_print_init_camera_sky (char *expr, int dim, double *coo);
+
+extern void nev_print_init_light (struct TESS Tess, struct TESR Tesr, struct MESH *Mesh, struct PRINT *pPrint);
+
+extern void nev_print_init_pf (struct PRINT *pPrint);

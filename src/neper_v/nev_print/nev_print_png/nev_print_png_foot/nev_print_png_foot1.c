@@ -54,7 +54,7 @@ nev_print_png_foot (FILE * file, struct PRINT Print)
     }
   }
 
-  if (!ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects"))
+  if (!ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov:objects"))
   {
     fprintf (file, "rotate<-90,  0,  0>\n");
     fprintf (file, "scale <  1,  1, -1>\n");

@@ -10,7 +10,7 @@ nev_data_tess_init (struct TESS Tess, struct DATA *TessData,
                            char *datastring, int *pdim, int *pentityqty,
                            char **ptype, char **pvalue)
 {
-  ut_print_message (0, 1, "Reading data (%s, %s)...\n", entity, attribute);
+  ut_print_message (0, 1, "Reading data (%s%s%s)...\n", entity, strlen (attribute) ? ", " : "", attribute);
 
   neut_tess_entity_dim (Tess, entity, pdim);
 
@@ -22,4 +22,20 @@ nev_data_tess_init (struct TESS Tess, struct DATA *TessData,
   neut_data_datastring_type_value (entity, attribute, datastring, ptype, pvalue);
 
   return TessData + (*pdim);
+}
+
+void
+nev_data_tess_celledge (struct DATA *pData, char *attribute, char *datastring)
+{
+  if (!strcmp (attribute, "col"))
+  {
+    (*pData).BCol = ut_alloc_1d_int (3);
+    ut_array_1d_int_fnscanf_wcard (datastring, (*pData).BCol, 3, "color", "r");
+  }
+  else if (!strcmp (attribute, "rad"))
+    (*pData).BRad = atof (datastring);
+  else
+    ut_print_exprbug (attribute);
+
+  return;
 }

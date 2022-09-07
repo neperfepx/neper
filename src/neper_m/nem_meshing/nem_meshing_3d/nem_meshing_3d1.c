@@ -23,7 +23,7 @@ nem_meshing_3d (struct IN_M In, struct MESHPARA MeshPara, struct TESS Tess,
   for (i = 1; i <= Tess.PolyQty; i++)
     neut_mesh_set_zero (M + i);
 
-  ut_print_message (0, 2, "3d meshing... ");
+  ut_print_message (0, 2, "3D meshing... ");
 
   // this is the default case, input is 3d
   if (Tess.Dim == 3)

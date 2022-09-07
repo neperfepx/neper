@@ -29,8 +29,7 @@ nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
     for (i = 1; i <= N.NodeQty; i++)
       ut_array_1d_memcpy (NodeData.Coo[i], 3, N.NodeCoo[i]);
 
-    nev_print_png_mesh2d (file, N, M2D, Print.showelt2d, rgb, "elt",
-                      Print.sceneshadow);
+    nev_print_png_mesh2d (file, N, M2D, Print.showelt2d, rgb, "elt", Print);
 
     ut_free_2d_int (&rgb, M2D.EltQty + 1);
   }
@@ -45,8 +44,7 @@ nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
     for (i = 1; i <= N.NodeQty; i++)
       ut_array_1d_memcpy (NodeData.Coo[i], 3, N.NodeCoo[i]);
 
-    nev_print_png_mesh2d (file, N, M2D, Print.showelt2d, rgb, "node",
-                      Print.sceneshadow);
+    nev_print_png_mesh2d (file, N, M2D, Print.showelt2d, rgb, "node", Print);
 
     ut_free_2d_int (&rgb, N.NodeQty + 1);
   }
@@ -57,14 +55,12 @@ nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
 }
 
 void
-nev_print_png_mesh_2d_print_edges (FILE * file, int sceneshadow, struct NODES N,
+nev_print_png_mesh_2d_print_edges (FILE * file, struct PRINT Print, struct NODES N,
                                struct MESH M1D, struct DATA *MeshData)
 {
   int i;
   double Rad;
-  double ambient = sceneshadow ? 0.6 : 1;
   char *texture = ut_alloc_1d_char (100);
-  char *string = ut_alloc_1d_char (100);
   int *Col = ut_alloc_1d_int (3);
 
   if (MeshData[2].Qty > 0)
@@ -75,17 +71,15 @@ nev_print_png_mesh_2d_print_edges (FILE * file, int sceneshadow, struct NODES N,
   Rad = MeshData[2].BRad;
 
   fprintf (file,
-           "#declare elt3dedge =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f} }\n",
-           Col[0] / 255., Col[1] / 255., Col[2] / 255., ambient);
+           "#declare elt3dedge =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
+           Col[0] / 255., Col[1] / 255., Col[2] / 255., Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
   strcpy (texture, "elt3dedge");
-  sprintf (string, "%.12f", Rad);
 
   for (i = 1; i <= M1D.EltQty; i++)
     nev_print_png_segment_wsph (file, N.NodeCoo[M1D.EltNodes[i][0]],
-                            N.NodeCoo[M1D.EltNodes[i][1]], string, texture);
+                            N.NodeCoo[M1D.EltNodes[i][1]], Rad, texture);
 
-  ut_free_1d_char (&string);
   ut_free_1d_char (&texture);
   ut_free_1d_int (&Col);
 

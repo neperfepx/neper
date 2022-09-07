@@ -5,6 +5,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<stdarg.h>
+#include<limits.h>
 #include"ut.h"
 
 int
@@ -1051,6 +1052,30 @@ ut_file_scan_file (FILE *file, char *dirname, FILE **pfile, char **pfilename)
   ut_free_1d_char (&filename);
   ut_free_1d_char (&tmp);
   ut_free_1d_char (&tmp2);
+
+  return;
+}
+
+void
+ut_file_dir_basename_extension_filename (char *dir, char *basename,
+                                         char *extension, char **pfilename)
+{
+  char *tmp = NULL;
+  char *filename = ut_alloc_1d_char (strlen (dir) + strlen (basename)
+                                     + strlen (extension) + 10);
+
+  tmp = ut_string_addextension (basename, extension);
+  filename = ut_string_paste3 (dir, "/", tmp);
+
+  while (!strncmp (filename, "./", 2))
+    ut_string_fnrs (filename, "./", "", 1);
+
+  ut_string_fnrs (filename, "//", "/", INT_MAX);
+
+  ut_string_string (filename, pfilename);
+
+  ut_free_1d_char (&filename);
+  ut_free_1d_char (&tmp);
 
   return;
 }

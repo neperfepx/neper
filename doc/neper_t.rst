@@ -336,7 +336,7 @@ These options can be used to set the cell morphology.
   - :data:`reps`: relative error on the value of the objective function evaluated on a number of degrees of freedom basis (:data:`nlopt_eps` or :data:`nlopt_reps` are the NLopt iteration-based values);
   - :data:`xeps`: absolute error on the components of the solution vector;
   - :data:`xreps`: relative error on the components of the solution vector;
-  - :data:`<val>`: value of the objective function;
+  - :data:`val`: value of the objective function;
   - :data:`itermax`: a maximum number of iterations;
   - :data:`time`: maximum computation time;
   - :data:`loopmax`: maximum number of iteration loops (see option :option:`-morphooptialgomaxiter`).
@@ -463,7 +463,7 @@ Crystal Orientation Options
 
   - :data:`uniform`: uniformly-distributed orientations in 3D space [#uniform-crysym]_;
 
-  - :data:`orientation[:<distribution>]`: a :ref:`discrete orientation <rotations_and_orientations>`, with an optional disorientation distribution (see below);
+  - :data:`<orientation>[:<distribution>]`: a :ref:`discrete orientation <rotations_and_orientations>`, with an optional disorientation distribution (see below);
 
   - :data:`fiber(<dirc_x>,<dirc_y>,<dirc_z>,<dirs_x>,<dirs_y>,<dirs_z>)[:normal(<var>=<val>)]`: randomly-distributed orientations along the fiber, see :ref:`orientation_fibers`, with an optional disorientation distribution (see below);
 

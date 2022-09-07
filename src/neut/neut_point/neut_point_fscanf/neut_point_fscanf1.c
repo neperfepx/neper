@@ -7,11 +7,11 @@
 void
 neut_point_fscanf (FILE * file, struct POINT *pPoint)
 {
-  (*pPoint).PointQty = ut_file_nbwords_pointer (file) / 3;
+  (*pPoint).Qty = ut_file_nbwords_pointer (file) / 3;
   (*pPoint).Dim = 3;
 
-  (*pPoint).PointCoo = ut_alloc_2d ((*pPoint).PointQty + 1, 3);
-  ut_array_2d_fscanf (file, (*pPoint).PointCoo + 1, (*pPoint).PointQty,
+  (*pPoint).Coo = ut_alloc_2d ((*pPoint).Qty + 1, 3);
+  ut_array_2d_fscanf (file, (*pPoint).Coo + 1, (*pPoint).Qty,
                       (*pPoint).Dim);
 
   return;

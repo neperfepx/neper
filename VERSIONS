@@ -1,17 +1,33 @@
-New in 4.4.2-34 (25 Aug 2022):
-- module -T: fixed -morpho cube, made minor fixes, added -statcell and -statvox
+New in 4.5.0 (07 Sep 2022):
+- module -T: fixed -morpho cube, added -statcell and -statvox
   <orientation_descriptor>, added -ori :flat, added -transform ori, made minor
   fix to the objective function for tesr (does not change the result), made
-  minor fixes to -statface and -statpoly.
+  minor fixes to -statface and -statpoly, made other minor fixes.
 - module -M: added -transform node and ori, fixed -stateltco and -statelsetco,
-  made minor fix to inp output, made minor fixes, added -stat{elt,elset}{1d,2d}
-  theta, added -statelt and -statelset <orientation_descriptor>, added
-  -statelset* elts,nodenb,nodes, made minor fixes.
-- module -S: fixed various bugs related to the initial state, made minor other
-  fixes.
-- module -V: made minor fixes.
-- general: fixed FORCE_BUILTIN_* configuration options, made various
-  installation improvements.
+  added -stat{elt,elset}{1d,2d} theta, fixed nsets in 2D, added -statelt and
+  -statelset <orientation_descriptor>, added -statelset scaleid, added
+  -statelset* elts,nodenb,nodes, made minor fix to inp output, made minor fixes
+  and improvements.
+- module -S: fixed various bugs related to the initial state, revised odf and
+  odfn, made minor other improvements.
+- module -V: added -datacellsymbol, -datapointsymbol, -lightambient,
+  -lightsource, -lightdiffuse and -lightreflection options, added -space pf to
+  plot pole figures, added -space tree to plot a simulation directory, added
+  -asymptote, added -pfpole, -pfprojection, -pfmode, -pfgrid, -pfkernel,
+  -pfdir, -pfclustering, -pfsym and -pfshape options, renamed -imageantialias
+  into -povrayantialiasing, added :shape transformation to color maps, made
+  minor fixes.
+- documentation: made minor improvements.
+- general: added tutorials to documentation, fixed FORCE_BUILTIN_*
+  configuration options, made various installation improvements.
+
+* Incompatible changes:  In -V, removed -sceneshadow (merged in -light), renamed
+  -imageantialias into -povrayantialiasing, moved point shape definition to
+  -datapointsymbol, rotated long scale title by 180°, changed syntax for custom
+  color maps from <color1>:<color2>:... to custom(<color1>,<color2>,...).
+  In -S, changed odf(sigma=<value>) using radians into odf(theta=<value>) using
+  degrees, changed odfn(sigma=<value>) using radians into odf(theta=<value>) using
+  degrees.
 
 New in 4.4.1 (09 Mar 2022):
 - module -T: improved -morpho lamellar to avoid unrealistically small lamellae

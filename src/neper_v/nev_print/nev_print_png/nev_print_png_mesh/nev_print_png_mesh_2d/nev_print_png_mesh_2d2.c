@@ -11,7 +11,7 @@ nev_print_png_mesh_2d_print (FILE * file, struct PRINT Print, struct NODES N,
 {
   nev_print_png_mesh_2d_print_faces (file, Print, N, M2D, NodeData, MeshData);
 
-  nev_print_png_mesh_2d_print_edges (file, Print.sceneshadow, N, M1D, MeshData);
+  nev_print_png_mesh_2d_print_edges (file, Print, N, M1D, MeshData);
 
   return;
 }

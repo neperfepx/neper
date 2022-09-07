@@ -370,16 +370,17 @@ nes_pproc_entity_builtin_elsets_odf (struct SIM *pSim, struct TESS Tess,
     int user_sigma = 0;
     for (i = 0; i < size; i++)
     {
-      if (!strcmp (vars[i], "sigma"))
+      if (!strcmp (vars[i], "theta"))
       {
-        sscanf (vals[i], "%lf", &Odf.sigma);
+        Odf.sigma = atof (vals[i]);
+        Odf.sigma *= M_PI / 180;
         user_sigma = 1;
       }
     }
     if (!user_sigma)
       neut_odf_sigma ("avthetaeq", &OSet, &Odf);
 
-    printf ("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b (sigma = %8.6f) ", Odf.sigma);
+    printf ("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b (theta = %8.6f°) ", Odf.sigma * 180 / M_PI);
 
     ut_print_progress (stdout, 0, (*pSim).StepQty + 1, "%3.0f%%", prev);
 

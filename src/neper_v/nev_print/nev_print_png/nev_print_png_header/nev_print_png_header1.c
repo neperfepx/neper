@@ -7,7 +7,10 @@
 void
 nev_print_png_header (FILE * file, struct PRINT Print)
 {
-  if (!ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects"))
+  int i;
+  int *rgb = ut_alloc_1d_int (3);
+
+  if (!ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov:objects"))
   {
     fprintf (file, "#version 3.7;\n");
     fprintf (file, "#include \"shapes.inc\"\n");
@@ -38,15 +41,64 @@ nev_print_png_header (FILE * file, struct PRINT Print)
 
     fprintf (file, "}\n");
 
-    if (Print.sceneshadow == 1)
-      fprintf (file,
-               "light_source { <%f, %f, %f> rgb<1, 1, 1>  shadowless }\n\n",
-               Print.cameracoo[0], Print.cameracoo[2], Print.cameracoo[1]);
+    for (i = 0; i < Print.lightsourceqty; i++)
+      if (!strncmp (Print.lightsources[i], "point", 5))
+      {
+        int size;
+        char *fct = NULL, **vars = NULL, **vals = NULL;
+
+        ut_string_function (Print.lightsources[i], &fct, &vars, &vals, &size);
+
+        int j;
+        int shadow = 0;
+        double *coo = ut_alloc_1d (3);
+        char *col = NULL;
+        ut_string_string ("white", &col);
+
+        for (j = 0; j < size; j++)
+        {
+          if (!strcmp (vars[j], "coo"))
+          {
+            if (!strcmp (vals[j], "camera"))
+              ut_array_1d_memcpy (Print.cameracoo, 3, coo);
+            else
+            {
+              int qty, k;
+              char **tmp = NULL;
+              ut_list_break (vals[j], NEUT_SEP_DEP, &tmp, &qty);
+              if (qty != 3)
+                ut_print_exprbug (vals[j]);
+              for (k = 0; k < 3; k++)
+                coo[k] = atof (tmp[k]);
+              ut_free_2d_char (&tmp, qty);
+            }
+          }
+          else if (!strcmp (vars[j], "col"))
+            ut_string_string (vals[j], &col);
+          else if (!strcmp (vars[j], "shadow"))
+            shadow = atoi (vals[j]);
+          else
+            ut_print_exprbug (vals[j]);
+        }
+
+        ut_color_name_rgb (col, rgb);
+        fprintf (file,
+                 "light_source { <%f, %f, %f> rgb<%f, %f, %f> %s}\n\n",
+                 coo[0], coo[2], coo[1], rgb[0] / 255., rgb[1] / 255., rgb[2] / 255.,
+                 !shadow ? "shadowless" : "");
+
+        ut_free_1d (&coo);
+        ut_free_1d_char (&col);
+        ut_free_2d_char (&vars, size);
+        ut_free_2d_char (&vals, size);
+      }
 
     fprintf (file, "global_settings { assumed_gamma 2.2 }\n");
   }
 
   fprintf (file, "union {\n\n");
+
+  ut_free_1d_int (&rgb);
 
   return;
 }

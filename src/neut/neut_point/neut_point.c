@@ -7,13 +7,14 @@
 void
 neut_point_set_zero (struct POINT *pPoint)
 {
+  (*pPoint).Name = NULL;
+  ut_string_string ("point", &(*pPoint).Name);
+
+  (*pPoint).Type = NULL;
   (*pPoint).Dim = 0;
-  (*pPoint).Periodic = NULL;
-  (*pPoint).activedim = NULL;
-  (*pPoint).BBox = NULL;
-  (*pPoint).PointQty = 0;
-  (*pPoint).PointCoo = NULL;
-  (*pPoint).PointRad = NULL;
+  (*pPoint).Qty = 0;
+  (*pPoint).Coo = NULL;
+  (*pPoint).Rad = NULL;
 
   return;
 }
@@ -21,14 +22,13 @@ neut_point_set_zero (struct POINT *pPoint)
 void
 neut_point_free (struct POINT *pPoint)
 {
-  ut_free_2d (&(*pPoint).PointCoo, (*pPoint).PointQty + 1);
-  ut_free_1d (&(*pPoint).PointRad);
-  ut_free_1d_int (&(*pPoint).Periodic);
-  ut_free_1d_int (&(*pPoint).activedim);
-  ut_free_2d (&(*pPoint).BBox, 3);
+  ut_free_1d_char (&(*pPoint).Name);
+  ut_free_1d_char (&(*pPoint).Type);
 
-  (*pPoint).PointQty = 0;
-  (*pPoint).Dim = 0;
+  ut_free_2d (&(*pPoint).Coo, (*pPoint).Qty + 1);
+  ut_free_1d (&(*pPoint).Rad);
+
+  neut_point_set_zero (pPoint);
 
   return;
 }
@@ -39,18 +39,18 @@ neut_point_centre (struct POINT Point, double *centre)
   int i;
   double size, totsize;
   double *tmp = ut_alloc_1d (3);
-  int weight = (ut_array_1d_sum (Point.PointRad + 1, Point.PointQty) != 0);
+  int weight = (ut_array_1d_sum (Point.Rad + 1, Point.Qty) != 0);
 
   ut_array_1d_zero (centre, 3);
   totsize = 0;
-  for (i = 1; i <= Point.PointQty; i++)
+  for (i = 1; i <= Point.Qty; i++)
   {
     if (weight)
       neut_point_pt_size (Point, i, &size);
     else
       size = 1;
 
-    ut_array_1d_memcpy (Point.PointCoo[i], 3, tmp);
+    ut_array_1d_memcpy (Point.Coo[i], 3, tmp);
     ut_array_1d_scale (tmp, 3, size);
 
     ut_array_1d_add (centre, tmp, 3, centre);
@@ -74,11 +74,11 @@ neut_point_bbox (struct POINT Point, double **bbox)
     bbox[i][1] = -DBL_MAX;
   }
 
-  for (i = 1; i <= Point.PointQty; i++)
+  for (i = 1; i <= Point.Qty; i++)
     for (j = 0; j < 3; j++)
     {
-      bbox[j][0] = ut_num_min (bbox[j][0], Point.PointCoo[i][j]);
-      bbox[j][1] = ut_num_max (bbox[j][1], Point.PointCoo[i][j]);
+      bbox[j][0] = ut_num_min (bbox[j][0], Point.Coo[i][j]);
+      bbox[j][1] = ut_num_max (bbox[j][1], Point.Coo[i][j]);
     }
 
   return;
@@ -106,25 +106,25 @@ neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
   }
   else if (!strcmp (var, "x"))
   {
-    (*pvals)[0] = Point.PointCoo[id][0];
+    (*pvals)[0] = Point.Coo[id][0];
     if (ptype)
       strcpy (*ptype, "%f");
   }
   else if (!strcmp (var, "y"))
   {
-    (*pvals)[0] = Point.PointCoo[id][1];
+    (*pvals)[0] = Point.Coo[id][1];
     if (ptype)
       strcpy (*ptype, "%f");
   }
   else if (!strcmp (var, "z"))
   {
-    (*pvals)[0] = Point.PointCoo[id][2];
+    (*pvals)[0] = Point.Coo[id][2];
     if (ptype)
       strcpy (*ptype, "%f");
   }
   else if (!strcmp (var, "rad"))
   {
-    (*pvals)[0] = Point.PointRad[id];
+    (*pvals)[0] = Point.Rad[id];
     if (ptype)
       strcpy (*ptype, "%f");
   }
@@ -132,7 +132,7 @@ neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
   {
     (*pvals)[0] = -1;
     for (i = 1; i <= Tess.PolyQty; i++)
-      if (neut_tess_point_inpoly (Tess, Point.PointCoo[id], i) == 1)
+      if (neut_tess_point_inpoly (Tess, Point.Coo[id], i) == 1)
       {
         (*pvals)[0] = i;
         break;
@@ -142,14 +142,14 @@ neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
   }
   else if (!strcmp (var, "elt"))
   {
-    neut_mesh_point_elt (Mesh, Nodes, Point.PointCoo[id], &tmp);
+    neut_mesh_point_elt (Mesh, Nodes, Point.Coo[id], &tmp);
     (*pvals)[0] = tmp;
     if (ptype)
       strcpy (*ptype, "%d");
   }
   else if (!strcmp (var, "elset"))
   {
-    neut_mesh_point_elset (Mesh, Nodes, Point.PointCoo[id], NULL, 0, &tmp);
+    neut_mesh_point_elset (Mesh, Nodes, Point.Coo[id], NULL, 0, &tmp);
     (*pvals)[0] = tmp;
     if (ptype)
       strcpy (*ptype, "%d");
@@ -187,18 +187,18 @@ neut_point_var_val_one (struct POINT Point, struct TESS Tess,
 void
 neut_point_addpoint (struct POINT *pPoint, double *coo, double rad)
 {
-  (*pPoint).PointQty++;
-  if ((*pPoint).PointQty == 1)
-    (*pPoint).PointCoo = ut_alloc_2d (1, 3);
+  (*pPoint).Qty++;
+  if ((*pPoint).Qty == 1)
+    (*pPoint).Coo = ut_alloc_2d (1, 3);
 
-  (*pPoint).PointCoo =
-    ut_realloc_2d_addline ((*pPoint).PointCoo, (*pPoint).PointQty + 1, 3);
-  (*pPoint).PointRad =
-    ut_realloc_1d ((*pPoint).PointRad, (*pPoint).PointQty + 1);
+  (*pPoint).Coo =
+    ut_realloc_2d_addline ((*pPoint).Coo, (*pPoint).Qty + 1, 3);
+  (*pPoint).Rad =
+    ut_realloc_1d ((*pPoint).Rad, (*pPoint).Qty + 1);
 
   if (coo)
-    ut_array_1d_memcpy (coo, 3, (*pPoint).PointCoo[(*pPoint).PointQty]);
-  (*pPoint).PointRad[(*pPoint).PointQty] = rad;
+    ut_array_1d_memcpy (coo, 3, (*pPoint).Coo[(*pPoint).Qty]);
+  (*pPoint).Rad[(*pPoint).Qty] = rad;
 
   return;
 }
@@ -208,11 +208,11 @@ neut_point_pt_size (struct POINT Point, int pt, double *psize)
 {
   (*psize) = 0;
   if (Point.Dim == 1)
-    (*psize) = 2 * Point.PointRad[pt];
+    (*psize) = 2 * Point.Rad[pt];
   else if (Point.Dim == 2)
-    (*psize) = M_PI * pow (Point.PointRad[pt], 2);
+    (*psize) = M_PI * pow (Point.Rad[pt], 2);
   else if (Point.Dim == 3)
-    (*psize) = (4. * M_PI / 3) * pow (Point.PointRad[pt], 3);
+    (*psize) = (4. * M_PI / 3) * pow (Point.Rad[pt], 3);
 
   return;
 }
@@ -222,8 +222,8 @@ neut_point_shift (struct POINT *pPoint, double *s)
 {
   int i;
 
-  for (i = 1; i <= (*pPoint).PointQty; i++)
-    ut_array_1d_add ((*pPoint).PointCoo[i], s, 3, (*pPoint).PointCoo[i]);
+  for (i = 1; i <= (*pPoint).Qty; i++)
+    ut_array_1d_add ((*pPoint).Coo[i], s, 3, (*pPoint).Coo[i]);
 
   return;
 }
@@ -266,13 +266,13 @@ neut_point_entity_expr_val (struct POINT Point, struct TESS Tess, struct NODES N
   if (ut_string_isfilename (expr))
   {
     file = ut_file_open (expr, "R");
-    ut_array_1d_fscanf (file, val + 1, Point.PointQty);
+    ut_array_1d_fscanf (file, val + 1, Point.Qty);
     ut_file_close (file, expr, "R");
     ut_string_string ("%f", ptype);
   }
   else
   {
-    for (j = 1; j <= Point.PointQty; j++)
+    for (j = 1; j <= Point.Qty; j++)
     {
       for (k = 0; k < varqty; k++)
       {
@@ -301,5 +301,5 @@ neut_point_entity_expr_val (struct POINT Point, struct TESS Tess, struct NODES N
 int
 neut_point_isvoid (struct POINT Point)
 {
-  return Point.PointQty == 0;
+  return Point.Qty == 0;
 }

@@ -12,11 +12,11 @@ net_tess_opt_init_sset_coo_centre_randpt (struct TOPT *pTOpt,
 {
   int status = 0;
 
-  net_tess_opt_init_sset_coo_centre_randpt_pick (Point, r, coo);
+  net_tess_opt_init_sset_coo_centre_randpt_pick (pTOpt, Point, (*pTOpt).activedim, r, coo);
 
   if (!(*pTOpt).DomType || strcmp ((*pTOpt).DomType, "cube"))
     status =
-      net_tess_opt_init_sset_coo_centre_randpt_test ((*pTOpt).DomPoly, Point,
+      net_tess_opt_init_sset_coo_centre_randpt_test (pTOpt, Point,
                                                      rad, penetration, coo,
                                                      pdist);
 
@@ -24,7 +24,7 @@ net_tess_opt_init_sset_coo_centre_randpt (struct TOPT *pTOpt,
 }
 
 int
-net_tess_opt_init_sset_coo_centre_randpt_cluster (struct POLY DomPoly,
+net_tess_opt_init_sset_coo_centre_randpt_cluster (struct TOPT *pTOpt,
                                                   struct POINT Point,
                                                   gsl_rng * r,
                                                   struct POINT Point2,
@@ -33,21 +33,21 @@ net_tess_opt_init_sset_coo_centre_randpt_cluster (struct POLY DomPoly,
 {
   int i, status = 0;
   double rad2, *coo2 = ut_alloc_1d (3);
-  double *val = ut_alloc_1d (Point2.PointQty + 1);
+  double *val = ut_alloc_1d (Point2.Qty + 1);
 
-  net_tess_opt_init_sset_coo_centre_randpt_pick (Point, r, coo);
+  net_tess_opt_init_sset_coo_centre_randpt_pick (pTOpt, Point, (*pTOpt).activedim, r, coo);
 
-  for (i = 1; i <= Point2.PointQty; i++)
+  for (i = 1; i <= Point2.Qty; i++)
   {
-    ut_array_1d_add (coo, Point2.PointCoo[i], 3, coo2);
-    rad2 = Point2.PointRad[i];
+    ut_array_1d_add (coo, Point2.Coo[i], 3, coo2);
+    rad2 = Point2.Rad[i];
     status =
-      net_tess_opt_init_sset_coo_centre_randpt_test (DomPoly, Point, rad2,
+      net_tess_opt_init_sset_coo_centre_randpt_test (pTOpt, Point, rad2,
                                                      penetration, coo2,
                                                      val + i);
   }
 
-  (*pdist) = ut_array_1d_sum (val + 1, Point2.PointQty);
+  (*pdist) = ut_array_1d_sum (val + 1, Point2.Qty);
 
   ut_free_1d (&val);
   ut_free_1d (&coo2);
@@ -56,8 +56,8 @@ net_tess_opt_init_sset_coo_centre_randpt_cluster (struct POLY DomPoly,
 }
 
 int
-net_tess_opt_init_sset_coo_centre_randpt_pick (struct POINT Point,
-                                               gsl_rng * r, double *coo)
+net_tess_opt_init_sset_coo_centre_randpt_pick (struct TOPT *pTOpt, struct POINT Point,
+                                               int *activedim, gsl_rng * r, double *coo)
 {
   int i;
 
@@ -65,22 +65,22 @@ net_tess_opt_init_sset_coo_centre_randpt_pick (struct POINT Point,
   // centre for all dimensions.
   for (i = 0; i < 3; i++)
     coo[i] =
-      Point.BBox[i][0] + gsl_rng_uniform (r) * (Point.BBox[i][1] -
-                                                Point.BBox[i][0]);
+      (*pTOpt).SSet.Size[i][0] + gsl_rng_uniform (r) * ((*pTOpt).SSet.Size[i][1] -
+                                                (*pTOpt).SSet.Size[i][0]);
 
   for (i = Point.Dim; i < 3; i++)
-    coo[i] = ut_array_1d_mean (Point.BBox[i], 2);
+    coo[i] = ut_array_1d_mean ((*pTOpt).SSet.Size[i], 2);
 
-  if (Point.activedim)
+  if (activedim)
     for (i = 0; i < Point.Dim; i++)
-      if (!Point.activedim[i])
-        coo[i] = ut_array_1d_mean (Point.BBox[i], 2);
+      if (!activedim[i])
+        coo[i] = ut_array_1d_mean ((*pTOpt).SSet.Size[i], 2);
 
   return 0;
 }
 
 int
-net_tess_opt_init_sset_coo_centre_randpt_test (struct POLY DomPoly,
+net_tess_opt_init_sset_coo_centre_randpt_test (struct TOPT *pTOpt,
                                                struct POINT Point, double rad,
                                                double penetration,
                                                double *coo, double *pdist)
@@ -90,27 +90,27 @@ net_tess_opt_init_sset_coo_centre_randpt_test (struct POLY DomPoly,
   double *ptcoo = ut_alloc_1d (3);
 
   status = 0;
-  if (DomPoly.FaceQty > 0 && neut_poly_point_in (DomPoly, coo) == 0)
+  if ((*pTOpt).DomPoly.FaceQty > 0 && neut_poly_point_in ((*pTOpt).DomPoly, coo) == 0)
     status = -2;
 
   else if (pdist)
   {
     (*pdist) = 0;
-    for (i = 1; i <= Point.PointQty; i++)
-      for (l = -Point.Periodic[0]; l <= Point.Periodic[0]; l++)
+    for (i = 1; i <= Point.Qty; i++)
+      for (l = -(*pTOpt).SSet.Periodic[0]; l <= (*pTOpt).SSet.Periodic[0]; l++)
       {
         ptcoo[0] =
-          Point.PointCoo[i][0] + l * (Point.BBox[0][1] - Point.BBox[0][0]);
-        for (m = -Point.Periodic[1]; m <= Point.Periodic[1]; m++)
+          Point.Coo[i][0] + l * ((*pTOpt).SSet.Size[0][1] - (*pTOpt).SSet.Size[0][0]);
+        for (m = -(*pTOpt).SSet.Periodic[1]; m <= (*pTOpt).SSet.Periodic[1]; m++)
         {
           ptcoo[1] =
-            Point.PointCoo[i][1] + m * (Point.BBox[1][1] - Point.BBox[1][0]);
-          for (n = -Point.Periodic[2]; n <= Point.Periodic[2]; n++)
+            Point.Coo[i][1] + m * ((*pTOpt).SSet.Size[1][1] - (*pTOpt).SSet.Size[1][0]);
+          for (n = -(*pTOpt).SSet.Periodic[2]; n <= (*pTOpt).SSet.Periodic[2]; n++)
           {
             ptcoo[2] =
-              Point.PointCoo[i][2] + n * (Point.BBox[2][1] -
-                                          Point.BBox[2][0]);
-            dist = ut_space_dist (ptcoo, coo) - Point.PointRad[i] - rad;
+              Point.Coo[i][2] + n * ((*pTOpt).SSet.Size[2][1] -
+                                          (*pTOpt).SSet.Size[2][0]);
+            dist = ut_space_dist (ptcoo, coo) - Point.Rad[i] - rad;
             (*pdist) = ut_num_min (dist, (*pdist));
           }
         }

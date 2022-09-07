@@ -18,6 +18,8 @@ extern "C"
   extern void neut_print_set_default (struct PRINT *);
   extern void neut_print_free (struct PRINT *);
   extern void neut_print_outdir (struct PRINT Print, struct SIM Sim, char *format, char **pdir);
+  extern void neut_print_imagesize (struct PRINT Print, int *pwidth, int *pheight);
+  extern int neut_print_cell_show (struct PRINT Print, struct TESS Tess, int cell);
 
 #endif				/* NEUT_PRINT_H */
 

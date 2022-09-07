@@ -132,7 +132,9 @@ Other dependencies are only needed at run-time (they are not necessary for compi
 
 - The `Gmsh <https://gmsh.info>`_ program (version 2.4.2 or higher, excluding version 2.5.1, mandatory for module -M). It is likely to be available from your system package manager. Alternatively, both binary and source-code versions can be downloaded from the program website (compiling from the source code significantly speeds up meshing).  Gmsh must be available at the terminal as the command :program:`gmsh`, or the path to its binary must be specified with option :option:`-gmsh` (in module -M).
 
-- The `POV-Ray <http://www.povray.org>`_ program (version 3.7 or higher, mandatory for module -V).  It is likely to be available on your system or from your system package manager (binary package).  Alternatively, both binary and source-code versions can be downloaded the program website.  POV-Ray must be available at the terminal as the command :program:`povray`, or the path to its binary must be specified with option :option:`-povray` (in module -V).
+- The `POV-Ray <http://www.povray.org>`_ program (version 3.7 or higher, mandatory for PNG output in :ref:`neper_v`).  It is likely to be available on your system or from your system package manager (binary package).  Alternatively, both binary and source-code versions can be downloaded the program website.  POV-Ray must be available at the terminal as the command :program:`povray`, or the path to its binary must be specified with option :option:`-povray` (in module -V).
+
+- The `Asymptote <https://asymptote.sourceforge.io/>`_ program (for pole figure plots in :ref:`neper_v`). It is likely to be available from your system package manager.  Alternatively, both binary and source-code versions can be downloaded from the program website.  Asymptote must be available at the terminal as the command :program:`asy`, or the path to its binary must be specified with option :option:`-asy` (in module -V).
 
 Finally, other third-party libraries are directly included in the source code (see directory :file:`src/contrib`) and are therefore not dependencies *per se*:
 
@@ -275,7 +277,7 @@ Neper runs on all threads by default.  The actual number of threads to use can b
 
 The environment variable is unset by default.
 
-Conventions used in this manual
+Conventions Used in This Manual
 -------------------------------
 
 .. index::
@@ -307,6 +309,8 @@ Conventions used in this manual
 
 - File names are printed like :file:`this`.
 
+Just like the :data:`$` sign, the :data:`<`, :data:`>`, :data:`[`, :data:`]`, :data:`{`, :data:`}`, etc. signs are used only for formatting and should not be typed.
+
 Options that are only of secondary importance or for fine tuning are tagged :data:`(Secondary option)`.
 
 Some options, such as :data:`-datacellcol`, :data:`-datafacecol`, etc., differ only by the fact that they apply to different entities and are documented together, as :data:`-data{cell,...,face,...}col`.
@@ -327,13 +331,14 @@ jargon:
 :code:`csys`	 coordinate system
 :code:`diameq`   equivalent diameter
 :code:`dim`  	 dimension
+:code:`dir`  	 directory or direction
 :code:`dis`  	 distribution or distortion
 :code:`dof`	 degree of freedom
 :code:`dup`	 duplicate(d)
 :code:`elset` 	 element set
 :code:`elt`   	 element
 :code:`expr`  	 expression
-:code:`<fact>` 	 factor
+:code:`fact` 	 factor
 :code:`faset` 	 element face set
 :code:`geo`   	 geometry
 :code:`id`    	 identifier
@@ -341,8 +346,8 @@ jargon:
 :code:`inf` 	 infinity
 :code:`inter` 	 interpolation
 :code:`iter`  	 iteration
-:code:`<max>`   	 maximum
-:code:`<min>`   	 minimum
+:code:`max`   	 maximum
+:code:`min`   	 minimum
 :code:`morpho` 	 morphology
 :code:`nb` 	 number
 :code:`neigh` 	 neighbor
@@ -353,9 +358,9 @@ jargon:
 :code:`poly`  	 polyhedron
 :code:`pov` 	 POV-Ray file
 :code:`qual`  	 quality
-:code:`<rad>` 	 radius
+:code:`rad` 	 radius
 :code:`rcl` 	 relative characteristic length
-:code:`<res>` 	 resolution
+:code:`res` 	 resolution
 :code:`rmax`   	 relative maximum
 :code:`sing` 	 singular
 :code:`stat`  	 statistics

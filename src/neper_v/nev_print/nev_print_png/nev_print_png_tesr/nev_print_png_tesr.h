@@ -3,4 +3,4 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nev_print_png_tesr (FILE *, struct PRINT, struct TESR,
-			    struct DATA);
+			    struct DATA *);

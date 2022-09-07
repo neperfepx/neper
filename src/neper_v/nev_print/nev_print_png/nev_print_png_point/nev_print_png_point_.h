@@ -11,4 +11,5 @@
 #include"ut.h"
 #include"neut_v.h"
 #include "../nev_print_png_utils/nev_print_png_utils.h"
+#include "../../nev_print_utils/nev_print_utils.h"
 #include "nev_print_png_point.h"

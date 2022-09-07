@@ -5,10 +5,10 @@
 #include"nev_space_.h"
 
 void
-nev_space (char **argv, int *pi, struct DATA *pPointData)
+nev_space (char **argv, int *pi, struct PRINT *pPrint)
 {
   if (!strcmp (argv[*pi], "-space"))
-    ut_string_string (argv[++(*pi)], &(*pPointData).Space);
+    ut_string_string (argv[++(*pi)], &(*pPrint).space);
   else
     ut_print_message (2, 0, "Unknown command %s\n", argv[(*pi)]);
 

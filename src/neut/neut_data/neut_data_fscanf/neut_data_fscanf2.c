@@ -125,8 +125,8 @@ neut_data_fscanf_scal (char *input, struct SIM *pSim,
                        struct TESS *pTess, struct TESR *pTesr,
                        struct NODES *pNodes, struct MESH **pMesh,
                        struct POINT *pPoints, char *entity, int entityqty,
-                       char *value, char **pColDataName, int *pColDataSize,
-                       double ***pColData, char **pColDataType)
+                       char *value, char **pDataName, int *pDataSize,
+                       double ***pData, char **pDataType)
 {
   int i, size = 1;
   char *vartype = NULL;
@@ -134,19 +134,19 @@ neut_data_fscanf_scal (char *input, struct SIM *pSim,
 
   neut_simres_set_zero (&SimRes);
 
-  if (pColDataName)
-    ut_string_string (value, pColDataName);
+  if (pDataName)
+    ut_string_string (value, pDataName);
 
-  if (pColDataSize)
-    *pColDataSize = 1;
+  if (pDataSize)
+    *pDataSize = 1;
 
-  *pColData = ut_alloc_2d (entityqty + 1, size);
+  *pData = ut_alloc_2d (entityqty + 1, size);
 
   if (pSim)
     neut_sim_simres (*pSim, entity, value, &SimRes);
 
   if (ut_file_exist (SimRes.file))
-    ut_array_2d_fnscanf_wcard (SimRes.file, *pColData + 1,
+    ut_array_2d_fnscanf_wcard (SimRes.file, *pData + 1,
                                entityqty, 1, NULL, "r");
   else
   {
@@ -179,16 +179,16 @@ neut_data_fscanf_scal (char *input, struct SIM *pSim,
       abort ();
 
     for (i = 1; i <= entityqty; i++)
-      (*pColData)[i][0] = data[i];
+      (*pData)[i][0] = data[i];
     ut_free_1d (&data);
   }
 
-  if (!strcmp (*pColDataType, "expr"))
+  if (!strcmp (*pDataType, "expr"))
   {
     if (!strcmp (vartype, "%d"))
-      ut_string_string ("int", pColDataType);
+      ut_string_string ("int", pDataType);
     else if (!strcmp (vartype, "%f"))
-      ut_string_string ("real", pColDataType);
+      ut_string_string ("real", pDataType);
     else
       abort ();
   }
@@ -200,27 +200,90 @@ neut_data_fscanf_scal (char *input, struct SIM *pSim,
 }
 
 void
-neut_data_fscanf_col_tensor (struct SIM Sim,
-                             char *entity, int entityqty,
-                             char *value, struct DATA *pData)
+neut_data_fscanf_string (char *input, struct SIM *pSim,
+                         struct TESS *pTess, struct TESR *pTesr,
+                         struct NODES *pNodes, struct MESH **pMesh,
+                         struct POINT *pPoints, char *entity, int entityqty,
+                         char *value, char **pDataName, int *pDataSize,
+                         char ***pData, char **pDataType)
+{
+  int i;
+  struct SIMRES SimRes;
+  (void) input;
+  (void) pSim;
+  (void) pTess;
+  (void) pTesr;
+  (void) pNodes;
+  (void) pMesh;
+  (void) pPoints;
+
+  ut_string_string ("string", pDataType);
+
+  neut_simres_set_zero (&SimRes);
+
+  if (pDataName)
+    ut_string_string (value, pDataName);
+
+  if (pDataSize)
+    *pDataSize = 1;
+
+  *pData = ut_alloc_1d_pchar (entityqty + 1);
+
+  if (pSim)
+    neut_sim_simres (*pSim, entity, value, &SimRes);
+
+  if (ut_file_exist (SimRes.file))
+  {
+    char *tmp = ut_alloc_1d_char (1000);
+    FILE *file = ut_file_open (SimRes.file, "R");
+
+    for (i = 1; i <= entityqty; i++)
+    {
+      if (fscanf (file, "%s", tmp) != 1)
+        abort ();
+      ut_string_string (tmp, (*pData) + i);
+    }
+
+    ut_file_close (file, SimRes.file, "R");
+    ut_free_1d_char (&tmp);
+  }
+
+  else
+  {
+    for (i = 1; i <= entityqty; i++)
+      ut_string_string (value, (*pData) + i);
+  }
+
+  neut_simres_free (&SimRes);
+
+  return;
+}
+
+void
+neut_data_fscanf_tensor (struct SIM Sim,
+                         char *entity, int entityqty,
+                         char *value, char **pDataName, int *pDataSize,
+                         double ***pData, char **pDataType)
 {
   struct SIMRES SimRes;
 
   neut_simres_set_zero (&SimRes);
 
-  ut_string_string (value, &(*pData).ColDataName);
+  ut_string_string (value, pDataName);
 
   neut_sim_simres (Sim, entity, value, &SimRes);
 
-  (*pData).ColDataSize = ut_file_nbcolumns (SimRes.file);
+  (*pDataSize) = ut_file_nbcolumns (SimRes.file);
 
-  (*pData).ColData = ut_alloc_2d (entityqty + 1, (*pData).ColDataSize);
+  (*pData) = ut_alloc_2d (entityqty + 1, *pDataSize);
 
   if (SimRes.file)
-    ut_array_2d_fnscanf_wcard (SimRes.file, (*pData).ColData + 1,
-                               entityqty, (*pData).ColDataSize, NULL, "r");
+    ut_array_2d_fnscanf_wcard (SimRes.file, *pData + 1,
+                               entityqty, *pDataSize, NULL, "r");
   else
     abort ();
+
+  ut_string_string ("vector", pDataType);
 
   neut_simres_free (&SimRes);
 

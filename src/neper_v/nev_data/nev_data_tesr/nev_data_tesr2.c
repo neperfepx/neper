@@ -21,7 +21,10 @@ nev_data_tesr_gen (struct SIM Sim, struct TESR *pTesr, struct DATA *pData, char 
 
   neut_data_datastring_type_value (entity, attribute, datastring, &datatype, &datavalue);
 
-  if (!strcmp (attribute, "colscheme"))
+  if (!strcmp (attribute, ""))
+    ut_string_string (datastring, &(*pData).Value);
+
+  else if (!strcmp (attribute, "colscheme"))
     ut_string_string (datastring, &(*pData).ColScheme);
 
   else if (!strcmp (attribute, "scale"))
@@ -91,14 +94,17 @@ nev_data_tesr_cell2vox (struct TESR Tesr, char *attribute,
 {
   int i, j, k, id, size, vox;
 
-  (*pData).ColDataDef = ut_alloc_1d_int ((*pData).Qty + 1);
+  (*pData).Qty = Tesr.size[0] * Tesr.size[1] * Tesr.size[2];
+
+  if (!(*pData).ColDataDef)
+    (*pData).ColDataDef = ut_alloc_1d_int ((*pData).Qty + 1);
   id = 0;
   for (k = 1; k <= Tesr.size[2]; k++)
     for (j = 1; j <= Tesr.size[1]; j++)
       for (i = 1; i <= Tesr.size[0]; i++)
         (*pData).ColDataDef[++id] = (Tesr.VoxCell[i][j][k] > 0);
 
-  ut_string_string ("cell", &(*pData).Entity);
+  ut_string_string ("voxel", &(*pData).Entity);
 
   if (!strcmp (attribute, "col"))
   {
@@ -117,7 +123,8 @@ nev_data_tesr_cell2vox (struct TESR Tesr, char *attribute,
     else
       abort ();
 
-    (*pData).ColData = ut_alloc_2d ((*pData).Qty + 1, size);
+    if (!(*pData).ColData)
+      (*pData).ColData = ut_alloc_2d ((*pData).Qty + 1, size);
     vox = 0;
     for (k = 1; k <= Tesr.size[2]; k++)
       for (j = 1; j <= Tesr.size[1]; j++)
@@ -133,6 +140,12 @@ nev_data_tesr_cell2vox (struct TESR Tesr, char *attribute,
     ut_string_string (TesrDataCell.Scale, &(*pData).Scale);
   else if (!strcmp (attribute, "scaletitle"))
     ut_string_string (TesrDataCell.ScaleTitle, &(*pData).ScaleTitle);
+  else if (!strcmp (attribute, "rad"))
+  {}
+  else if (!strcmp (attribute, "symbol"))
+  {}
+  else if (!strcmp (attribute, ""))
+  {}
   else
     ut_print_exprbug (attribute);
 

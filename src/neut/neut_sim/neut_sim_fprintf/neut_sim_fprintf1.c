@@ -121,6 +121,211 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
 }
 
 void
+neut_sim_fprintf_asy (char *dir, struct SIM Sim, char *mode)
+{
+  int i, j, k;
+  char *oldfilename = ut_string_paste (dir, "/report");
+  char *filename = NULL, *filename2 = NULL;
+  if (strstr (dir, ".sim"))
+  {
+    ut_string_string (dir, &filename);
+    ut_string_fnrs (filename, ".sim", ".asy", 1);
+  }
+  else
+    filename = ut_string_addextension (dir, "asy");
+
+  ut_string_string (filename, &filename2);
+  ut_string_fnrs (filename2, ".asy", ".pdf", 1);
+
+  char *command = ut_alloc_1d_char (strlen (filename) + 100);
+  FILE *file = ut_file_open (filename, "W");
+  ut_file_openmessage (filename2, mode);
+
+  if (ut_file_exist (oldfilename))
+    remove (oldfilename);
+
+  fprintf (file, "\n");
+  fprintf (file, "// A simple tree drawing module contributed by adarovsky\n");
+  fprintf (file, "// See example treetest.asy\n");
+  fprintf (file, "\n");
+  fprintf (file, "real treeNodeStep = 0.5cm;\n");
+  fprintf (file, "real treeLevelStep = 1cm;\n");
+  fprintf (file, "real treeMinNodeWidth = 2cm;\n");
+  fprintf (file, "\n");
+  fprintf (file, "struct TreeNode {\n");
+  fprintf (file, "  TreeNode parent;\n");
+  fprintf (file, "  TreeNode[] children;\n");
+  fprintf (file, "\n");
+  fprintf (file, "  frame content;\n");
+  fprintf (file, "\n");
+  fprintf (file, "  pair pos;\n");
+  fprintf (file, "  real adjust;\n");
+  fprintf (file, "}\n");
+  fprintf (file, "\n");
+  fprintf (file, "void add( TreeNode child, TreeNode parent )\n");
+  fprintf (file, "{\n");
+  fprintf (file, "  child.parent = parent;\n");
+  fprintf (file, "  parent.children.push( child );\n");
+  fprintf (file, "}\n");
+  fprintf (file, "\n");
+  fprintf (file, "TreeNode makeNode( TreeNode parent = null, frame f )\n");
+  fprintf (file, "{\n");
+  fprintf (file, "  TreeNode child = new TreeNode;\n");
+  fprintf (file, "  child.content = f;\n");
+  fprintf (file, "  if( parent != null ) {\n");
+  fprintf (file, "    add( child, parent );\n");
+  fprintf (file, "  }\n");
+  fprintf (file, "  return child;\n");
+  fprintf (file, "}\n");
+  fprintf (file, "\n");
+  fprintf (file, "TreeNode makeNode( TreeNode parent = null, Label label )\n");
+  fprintf (file, "{\n");
+  fprintf (file, "  frame f;\n");
+  fprintf (file, "  roundbox( f, label, 2, 2, linewidth(0.5), FillDraw(orange+white));\n");
+  fprintf (file, "  return makeNode( parent, f );\n");
+  fprintf (file, "}\n");
+  fprintf (file, "\n");
+  fprintf (file, "\n");
+  fprintf (file, "real layout( int level, TreeNode node )\n");
+  fprintf (file, "{\n");
+  fprintf (file, "  if( node.children.length > 0 ) {\n");
+  fprintf (file, "    real width[] = new real[node.children.length];\n");
+  fprintf (file, "    real curWidth = 0;\n");
+  fprintf (file, "\n");
+  fprintf (file, "    for( int i = 0; i < node.children.length; ++i ) {\n");
+  fprintf (file, "      width[i] = layout( level+1, node.children[i] );\n");
+  fprintf (file, "\n");
+  fprintf (file, "      node.children[i].pos = (curWidth + width[i]/2,\n");
+  fprintf (file, "                              -level*treeLevelStep);\n");
+  fprintf (file, "      curWidth += width[i] + treeNodeStep;\n");
+  fprintf (file, "    }\n");
+  fprintf (file, "\n");
+  fprintf (file, "    real midPoint = ( sum( width )+treeNodeStep*(width.length-1)) / 2;\n");
+  fprintf (file, "    for( int i = 0; i < node.children.length; ++i ) {\n");
+  fprintf (file, "      node.children[i].adjust = - midPoint;\n");
+  fprintf (file, "    }\n");
+  fprintf (file, "\n");
+  fprintf (file, "    return max( (max(node.content)-min(node.content)).x,\n");
+  fprintf (file, "                sum(width)+treeNodeStep*(width.length-1) );\n");
+  fprintf (file, "  }\n");
+  fprintf (file, "  else {\n");
+  fprintf (file, "    return max( treeMinNodeWidth, (max(node.content)-min(node.content)).x );\n");
+  fprintf (file, "  }\n");
+  fprintf (file, "}\n");
+  fprintf (file, "\n");
+  fprintf (file, "void drawAll( TreeNode node, frame f )\n");
+  fprintf (file, "{\n");
+  fprintf (file, "  pair pos;\n");
+  fprintf (file, "  if( node.parent != null )\n");
+  fprintf (file, "    pos = (node.parent.pos.x+node.adjust, 0);\n");
+  fprintf (file, "  else\n");
+  fprintf (file, "    pos = (node.adjust, 0);\n");
+  fprintf (file, "  node.pos += pos;\n");
+  fprintf (file, "\n");
+  fprintf (file, "  node.content = shift(node.pos)*node.content;\n");
+  fprintf (file, "  add( f, node.content );\n");
+  fprintf (file, "\n");
+  fprintf (file, "\n");
+  fprintf (file, "  if( node.parent != null ) {\n");
+  fprintf (file, "    path p = point(node.content, N)--point(node.parent.content,S);\n");
+  fprintf (file, "    draw( f, p, currentpen );\n");
+  fprintf (file, "  }\n");
+  fprintf (file, "\n");
+  fprintf (file, "  for( int i = 0; i < node.children.length; ++i )\n");
+  fprintf (file, "    drawAll( node.children[i], f );\n");
+  fprintf (file, "}\n");
+  fprintf (file, "\n");
+  fprintf (file, "void draw( TreeNode root, pair pos )\n");
+  fprintf (file, "{\n");
+  fprintf (file, "  frame f;\n");
+  fprintf (file, "\n");
+  fprintf (file, "  root.pos = (0,0);\n");
+  fprintf (file, "  layout( 1, root );\n");
+  fprintf (file, "\n");
+  fprintf (file, "  drawAll( root, f );\n");
+  fprintf (file, "\n");
+  fprintf (file, "  add(f,pos);\n");
+  fprintf (file, "}\n");
+
+  fprintf (file, "treeNodeStep = 0.4cm;\n");
+  fprintf (file, "treeLevelStep = 1.8cm;\n");
+  fprintf (file, "\n");
+  fprintf (file, "TreeNode root = makeNode(\"\\tt %s/\");\n", Sim.simdir);
+  fprintf (file, "\n");
+  fprintf (file, "TreeNode child1 = makeNode(root, \"\\tt inputs/\");\n");
+
+  int id = 0;
+  if (Sim.tess)
+    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.tess);
+  if (Sim.tesr)
+    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.tesr);
+  if (Sim.msh)
+    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.msh);
+  if (Sim.bcs)
+    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.bcs);
+  if (Sim.ori)
+    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.ori);
+  if (Sim.phase)
+    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.phase);
+  if (Sim.config)
+    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.config);
+
+  int print_results = 0;
+  char *child1 = ut_alloc_1d_char (100);
+  char *child2 = ut_alloc_1d_char (100);
+  for (i = 0; i < Sim.EntityQty; i++)
+    if (Sim.EntityResQty[i])
+    {
+      if (!print_results)
+      {
+        fprintf (file, "TreeNode child2 = makeNode(root, \"\\tt results/\");\n");
+        print_results = 1;
+      }
+
+      sprintf (child1, "child2%d", i + 1);
+
+      fprintf (file, "TreeNode %s = makeNode(child2, \"\\tt %s/\");\n",
+               child1, Sim.Entities[i]);
+
+      for (j = 0; j < Sim.EntityResQty[i]; j++)
+      {
+        sprintf (child2, "%s%d", child1, j + 1);
+
+        fprintf (file, "TreeNode %s = makeNode(%s, \"\\tt %s/\");\n",
+                 child2, child1, Sim.EntityRes[i][j]);
+
+        fprintf (file, "TreeNode %s1 = makeNode(%s, \"\\tt \\begin{tabular}{c}", child2, child2);
+        for (k = 0; k <= Sim.StepQty; k++)
+          fprintf (file, "%s.step%d \\\\", Sim.EntityRes[i][j], k);
+        fprintf (file, "\\end{tabular}\");\n");
+      }
+      fprintf (file, "\n");
+    }
+  ut_free_1d_char (&child1);
+  ut_free_1d_char (&child2);
+
+  /*
+  if (Sim.OriSpace)
+  {
+    fprintf (file, " **orispace\n");
+    fprintf (file, "   %s\n", Sim.OriSpace);
+  }
+  */
+
+  fprintf (file, "\n");
+  fprintf (file, "draw (root, (0, 0));\n");
+  ut_file_close (file, filename, "W");
+  ut_file_closemessage (filename2, mode);
+
+  ut_free_1d_char (&oldfilename);
+  ut_free_1d_char (&filename);
+  ut_free_1d_char (&filename2);
+  ut_free_1d_char (&command);
+
+  return;
+}
+
+void
 neut_sim_verbose (struct SIM Sim)
 {
   int i;

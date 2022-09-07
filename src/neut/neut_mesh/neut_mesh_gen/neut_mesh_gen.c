@@ -775,7 +775,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
                    int id, char *var, double **pvals, int *pvalqty,
                    char **ptype)
 {
-  int j, status;
+  int j, status, scale;
   double rrmean, rrmin, rrmax;
   char *typetmp = ut_alloc_1d_char (10);
   char *entity = NULL;
@@ -922,6 +922,13 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
       (*pvals)[0] = Mesh3D.ElsetGroup? Mesh3D.ElsetGroup[id] : -1;
       strcpy (typetmp, "%d");
     }
+    else if (!strncmp (var, "scaleid(", 8))
+    {
+      sscanf (var, "scaleid(%d)", &scale);
+      (*pvals)[0] = (scale <= Tess.ScaleQty
+                     && Tess.ScaleCellId) ? Tess.ScaleCellId[id][scale] : -1;
+      ut_string_string ("%d", &typetmp);
+    }
     else if (!strncmp (var, "fiber", 5))
     {
       double theta;
@@ -1014,6 +1021,15 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     {
       (*pvals)[0] = Mesh2D.ElsetGroup? Mesh2D.ElsetGroup[id] : -1;
       strcpy (typetmp, "%d");
+    }
+    else if (!strncmp (var, "scaleid(", 8))
+    {
+      sscanf (var, "scaleid(%d)", &scale);
+      (*pvals)[0] = (scale <= Tess.ScaleQty
+                     && Tess.ScaleCellId) ? Tess.ScaleCellId[id][scale] : -1;
+      if (Tess.Dim != 2)
+        (*pvals)[0] = -1;
+      ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var, "per"))
     {
@@ -1787,6 +1803,11 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
       (*pvals)[0] = Mesh0D.EltQty;
       strcpy (typetmp, "%d");
     }
+    else if (!strcmp (var, "elsetnb"))
+    {
+      (*pvals)[0] = Mesh0D.ElsetQty;
+      strcpy (typetmp, "%d");
+    }
     else if (!strcmp (var, "nodenb"))
     {
       (*pvals)[0] = Mesh0D.NodeQty;
@@ -1818,6 +1839,11 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     else if (!strcmp (var, "eltnb"))
     {
       (*pvals)[0] = Mesh1D.EltQty;
+      strcpy (typetmp, "%d");
+    }
+    else if (!strcmp (var, "elsetnb"))
+    {
+      (*pvals)[0] = Mesh1D.ElsetQty;
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var, "nodenb"))
@@ -1853,6 +1879,11 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
       (*pvals)[0] = Mesh2D.EltQty;
       strcpy (typetmp, "%d");
     }
+    else if (!strcmp (var, "elsetnb"))
+    {
+      (*pvals)[0] = Mesh2D.ElsetQty;
+      strcpy (typetmp, "%d");
+    }
     else if (!strcmp (var, "nodenb"))
     {
       (*pvals)[0] = Mesh2D.NodeQty;
@@ -1886,6 +1917,11 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
       (*pvals)[0] = Mesh3D.EltQty;
       strcpy (typetmp, "%d");
     }
+    else if (!strcmp (var, "elsetnb"))
+    {
+      (*pvals)[0] = Mesh3D.ElsetQty;
+      strcpy (typetmp, "%d");
+    }
     else if (!strcmp (var, "nodenb"))
     {
       (*pvals)[0] = Mesh3D.NodeQty;
@@ -1906,6 +1942,11 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D, struct MESH Mesh1D,
     if (!strcmp (var, "eltnb"))
     {
       (*pvals)[0] = MeshCo.EltQty;
+      strcpy (typetmp, "%d");
+    }
+    if (!strcmp (var, "elsetnb"))
+    {
+      (*pvals)[0] = MeshCo.ElsetQty;
       strcpy (typetmp, "%d");
     }
     else

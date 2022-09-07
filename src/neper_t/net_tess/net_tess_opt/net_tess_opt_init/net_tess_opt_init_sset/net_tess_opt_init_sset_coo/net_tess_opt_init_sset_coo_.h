@@ -38,11 +38,11 @@ extern int net_tess_opt_init_sset_coo_centre_randpt (struct TOPT *pTOpt, struct 
                                     Point, gsl_rng *r, double rad,
                                     double penetration, double
                                     *coo, double *pdist);
-extern int net_tess_opt_init_sset_coo_centre_randpt_pick (struct POINT
-    Point, gsl_rng *r, double *coo);
-extern int net_tess_opt_init_sset_coo_centre_randpt_test (struct POLY DomPoly, struct POINT
+extern int net_tess_opt_init_sset_coo_centre_randpt_pick (struct TOPT *pTOpt, struct POINT
+    Point, int *activedim, gsl_rng *r, double *coo);
+extern int net_tess_opt_init_sset_coo_centre_randpt_test (struct TOPT *pTOpt, struct POINT
     Point, double rad, double penetration, double *coo, double
     *pdist);
-extern int net_tess_opt_init_sset_coo_centre_randpt_cluster (struct POLY DomPoly, struct
-    POINT Point, gsl_rng *r, struct POINT Point2, double penetration,
-    double *coo, double *pdist);
+extern int net_tess_opt_init_sset_coo_centre_randpt_cluster (struct TOPT
+    *pTOpt, struct POINT Point, gsl_rng *r, struct POINT
+    Point2, double penetration, double *coo, double *pdist);

@@ -15,42 +15,55 @@ extern "C"
     // needed by: mesh nodes point tesr tess
     int Qty;
     int Dim;
-    char *Entity;               // Entity
+    char *Entity;               // Entity: cell, voxel, ...
+
+    char *Value; // ori, dir, ...
+
+    double **Data;     // data itself, needed in -space pf
+    char *DataType;
+    char *DataName;
+    int DataSize;
 
     // needed by: csys mesh nodes point tesr tess
-    double **ColData;		// Colour data
-    char *ColDataType;		// Type of color data (col, ori, ...)
-    char *ColDataName;          // Name of the color data
-    int ColDataSize;           // size of the color data
-    char *ColScheme;		// ColourScheme (legend)
-    int **Col;			// Colour
-    int *ColDataDef;		// 1 if data defined, 0 otherwise <-- tesr
+    double **ColData;		// Colour data, indexed 1
+    char *ColDataType;		// Type of color data (col, ori, ...), indexed 1
+    char *ColDataName;          // Name of the color data, indexed 1
+    int ColDataSize;            // size of the color data, indexed 1
+    char *ColScheme;		// ColourScheme (legend), indexed 1
+    int **Col;			// Colour, indexed 1
+    int *ColDataDef;		// 1 if data defined, 0 otherwise <-- tesr, indexed 1
 
     // needed by: point tesr tess
-    double **TrsData;		// Transparency data
-    char *TrsDataType;		// Type of transparency data
-    char *TrsScheme;		// Transparency scheme
-    double *Trs;		// Transparency
+    double **TrsData;		// Transparency data, indexed 1
+    char *TrsDataType;		// Type of transparency data, indexed 1
+    char *TrsScheme;		// Transparency scheme, indexed 1
+    double *Trs;		// Transparency, indexed 1
 
     // needed by: csys mesh nodes point tess
-    double **RadData;		// Radius data
-    char *RadDataType;		// Type of radius data
-    double *Rad;		// Radius
-    char *RadDataName;          // Name of the rad data
+    double **RadData;		// Radius data, indexed 1
+    char *RadDataType;		// Type of radius data, indexed 1
+    double *Rad;		// Radius, indexed 1
+    char *RadDataName;          // Name of the rad data, indexed 1
+
+    // needed by: csys mesh nodes point tess
+    char **SymbolData;          // Symbol data, indexed 1
+    char *SymbolDataType;	// Type of symbol data, indexed 1
+    char **Symbol;		// Symbol, indexed 1
+    char *SymbolDataName;       // Name of the symbol data, indexed 1
 
     // needed by: csys nodes point
-    double **CooData;
-    char *CooDataType;
+    double **CooData;           // indexed 1
+    char *CooDataType;          // indexed 1
     char *CooDataName;          // Name of the coo data
-    double **Coo;
-    double CooFact;
+    double **Coo;               // indexed 1
+    double CooFact;             // indexed 1
 
     // needed by: csys
-    double **LengthData;
-    char *LengthDataType;
-    double *Length;
+    double **LengthData;        // indexed 1
+    char *LengthDataType;       // indexed 1
+    double *Length;             // indexed 1
 
-    // needed by: mesh tesr
+    // needed by: mesh tesr tess
     int *BCol;			// Element boundary color
     double BRad;		// Element boundary radius
 
@@ -63,7 +76,6 @@ extern "C"
 
     // needed by: point
     double *Axes;
-    char *Space;
 
     // needed by: csys
     char **Label;

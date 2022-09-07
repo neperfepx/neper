@@ -21,7 +21,10 @@ nev_data_tess (struct SIM Sim, struct TESS *pTess, char *entity, char *attribute
   pData = nev_data_tess_init (*pTess, TessData, entity, attribute, datastring,
                               &dim, &entityqty, &datatype, &datavalue);
 
-  if (!strcmp (attribute, "colscheme"))
+  if (!strcmp (attribute, ""))
+    ut_string_string (datastring, &(*pData).Value);
+
+  else if (!strcmp (attribute, "colscheme"))
     ut_string_string (datastring, &(*pData).ColScheme);
 
   else if (!strcmp (attribute, "scale"))
@@ -39,6 +42,19 @@ nev_data_tess (struct SIM Sim, struct TESS *pTess, char *entity, char *attribute
     }
     else if (!strcmp (attribute, "rad"))
       TessData[5].BRad = atof (datavalue);
+    else
+      ut_print_exprbug (attribute);
+  }
+
+  else if (!strcmp (entity, "celledge"))
+  {
+    if (!strcmp (attribute, "col"))
+    {
+      TessData[dim].BCol = ut_alloc_1d_int (3);
+      ut_array_1d_int_fnscanf_wcard (datavalue, TessData[dim].BCol, 3, "color", "r");
+    }
+    else if (!strcmp (attribute, "rad"))
+      TessData[dim].BRad = atof (datavalue);
     else
       ut_print_exprbug (attribute);
   }

@@ -35,6 +35,7 @@ add_library(neper_v
 ./neper_v.c
 ./nev_sim/nev_sim1.c
 ./nev_space/nev_space1.c
+./nev_pf/nev_pf1.c
 ./nev_outdir/nev_outdir1.c
 ./nev_load/nev_load1.c
 ./nev_load/nev_load2.c
@@ -50,12 +51,15 @@ add_library(neper_v
 ./nev_data/nev_data_points/nev_data_points1.c
 ./nev_data/nev_data_csys/nev_data_csys1.c
 ./nev_camera/nev_camera1.c
+./nev_light/nev_light1.c
 ./nev_povray/nev_povray1.c
+./nev_asymptote/nev_asymptote1.c
 ./nev_print/nev_print1.c
 ./nev_print/nev_print_init/nev_print_init1.c
 ./nev_print/nev_print_init/nev_print_init2.c
 ./nev_print/nev_print_init/nev_print_init3.c
 ./nev_print/nev_print_init/nev_print_init4.c
+./nev_print/nev_print_utils/nev_print_utils1.c
 ./nev_print/nev_print_png/nev_print_png1.c
 ./nev_print/nev_print_png/nev_print_png2.c
 ./nev_print/nev_print_png/nev_print_png_utils/nev_print_png_utils1.c
@@ -76,8 +80,17 @@ add_library(neper_v
 ./nev_print/nev_print_png/nev_print_png_tess/nev_print_png_tess1.c
 ./nev_print/nev_print_png/nev_print_png_tesr/nev_print_png_tesr1.c
 ./nev_print/nev_print_png/nev_print_png_point/nev_print_png_point1.c
+./nev_print/nev_print_scale/nev_print_scale1.c
+./nev_print/nev_print_scale/nev_print_scale2.c
 ./nev_print/nev_print_vtk/nev_print_vtk1.c
 ./nev_print/nev_print_vtk/nev_print_vtk2.c
+./nev_print/nev_print_tree/nev_print_tree1.c
+./nev_print/nev_print_pf/nev_print_pf1.c
+./nev_print/nev_print_pf/nev_print_pf2.c
+./nev_print/nev_print_pf/nev_print_pf3.c
+./nev_print/nev_print_pf/nev_print_pf_ptsprint_density/nev_print_pf_ptsprint_density1.c
+./nev_print/nev_print_pf/nev_print_pf_ptsprint_density/nev_print_pf_ptsprint_density2.c
+./nev_print/nev_print_pf/nev_print_pf_ptsprint_density/nev_print_pf_ptsprint_density3.c
 )
 
 list (APPEND EXTRA_LIBS neut)

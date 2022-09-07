@@ -5,39 +5,38 @@
 #include"nev_print_png_.h"
 
 void
-nev_print_png_pov2png (char *povray, char *filename, int imagewidth,
-                   int imageheight, int imageantialias, int messagetag)
+nev_print_png_convert (char *povray, char *filename, int imagewidth,
+                   int imageheight, int antialiasing, int messagetag)
 {
-  char *outfilename = NULL;
+  char *pngfilename = NULL;
   char *command = ut_alloc_1d_char (1000);
 
   neut_povray_check (povray);
 
-  ut_string_string (filename, &outfilename);
-  outfilename[strlen (outfilename) - 2] = 'n';
-  outfilename[strlen (outfilename) - 1] = 'g';
+  ut_string_string (filename, &pngfilename);
+  ut_string_fnrs (pngfilename, ".pov", ".png", 1);
 
   if (messagetag >= 0)
     ut_print_message (0, messagetag,
                       "Generating png file (%dx%d pixels)...\n", imagewidth,
                       imageheight);
 
-  remove (outfilename);
+  remove (pngfilename);
 
-  ut_file_openmessage (outfilename, "w");
+  ut_file_openmessage (pngfilename, "w");
 
   sprintf (command, "%s Input_File_Name=%s +O%s +W%d +H%d -D %s 2>/dev/null",
-           povray, filename, outfilename, imagewidth, imageheight,
-           imageantialias > 0 ? "+A0.2" : "");
+           povray, filename, pngfilename, imagewidth, imageheight,
+           antialiasing > 0 ? "+A0.2" : "");
 
-  if (system (command) == -1 || !ut_file_exist (outfilename))
+  if (system (command) == -1 || !ut_file_exist (pngfilename))
   {
     ut_print_message (2, 3, "File `%s' could not be generated!\n",
-                      outfilename);
+                      pngfilename);
 
     sprintf (command, "%s Input_File_Name=%s +O%s +W%d +H%d -D %s", povray,
-             filename, outfilename, imagewidth, imageheight,
-             imageantialias > 0 ? "+A0.2" : "");
+             filename, pngfilename, imagewidth, imageheight,
+             antialiasing > 0 ? "+A0.2" : "");
 
     // otherwise, printing debugging info.
     ut_print_message (2, 3,
@@ -45,9 +44,9 @@ nev_print_png_pov2png (char *povray, char *filename, int imagewidth,
                       command);
   }
 
-  ut_file_closemessage (outfilename, "w");
+  ut_file_closemessage (pngfilename, "w");
 
-  ut_free_1d_char (&outfilename);
+  ut_free_1d_char (&pngfilename);
   ut_free_1d_char (&command);
 
   return;

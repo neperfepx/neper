@@ -9,12 +9,13 @@
 #include"ut.h"
 #include"neut_v.h"
 #include"neper_m/nem_reconstruct/nem_reconstruct_mesh/nem_reconstruct_mesh.h"
+#include"neper_t/net_ori/net_ori.h"
 
 #include "nev_load.h"
 
 extern void nev_load_init_data_tess (struct TESS Tess, int dim,
 				    struct DATA *pTessData);
-extern void nev_load_init_data_tesr (struct TESR Tesr,
+extern void nev_load_init_data_tesr (struct TESR Tesr, int id,
 				    struct DATA *pTesrData);
 
 extern void nev_load_init_data_node (struct NODES Nodes,

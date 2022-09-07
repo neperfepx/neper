@@ -5,13 +5,15 @@
 extern void nev_print_png (char *basename, struct PRINT Print, struct SIM Sim,
                            struct TESS Tess,
                            struct DATA *TessData, struct TESR Tesr,
-                           struct DATA *pTesrData, struct NODES Nodes,
+                           struct DATA *TesrData, struct NODES Nodes,
                            struct MESH *Mesh, int SQty, struct NODES *SNodes,
                            struct MESH *SMesh2D, struct DATA *pNodeData,
                            struct DATA *MeshData, struct DATA *pCsysData,
-                           struct POINT Point, struct DATA *pPointData,
+                           struct POINT *Points, int PointQty, struct DATA *pPointData,
                            struct DATA *SNodeData, struct DATA **SMeshData,
                            int **SElt2dElt3d);
+
+extern void nev_print_png_convert (char *, char *, int, int, int, int);
 
 #include "nev_print_png_foot/nev_print_png_foot.h"
 #include "nev_print_png_header/nev_print_png_header.h"

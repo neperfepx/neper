@@ -15,9 +15,20 @@ nev_load_init_data_tess (struct TESS Tess, int dim, struct DATA *pTessData)
 }
 
 void
-nev_load_init_data_tesr (struct TESR Tesr, struct DATA *pTesrData)
+nev_load_init_data_tesr (struct TESR Tesr, int id, struct DATA *pTesrData)
 {
-  (*pTesrData).Qty = ut_array_1d_int_prod (Tesr.size, 3);
+  if (id == 0)
+  {
+    ut_string_string ("cell", &(*pTesrData).Entity);
+    (*pTesrData).Qty = Tesr.CellQty;
+  }
+  else if (id == 1)
+  {
+    ut_string_string ("voxel", &(*pTesrData).Entity);
+    (*pTesrData).Qty = ut_array_1d_int_prod (Tesr.size, 3);
+  }
+  else
+    abort ();
 
   return;
 }
@@ -33,7 +44,7 @@ nev_load_init_data_node (struct NODES Nodes, struct DATA *pData)
 void
 nev_load_init_data_point (struct POINT Point, struct DATA *pPointData)
 {
-  (*pPointData).Qty = Point.PointQty;
+  (*pPointData).Qty = Point.Qty;
 
   return;
 }

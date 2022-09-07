@@ -2,4 +2,4 @@
 /* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nev_space (char **argv, int *pi, struct DATA *pPointData);
+extern void nev_space (char **argv, int *pi, struct PRINT *pPrint);

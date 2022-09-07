@@ -14,7 +14,7 @@ nev_print_init_camera_v (int dim, double *v)
     v[2] = 8;
   }
 
-  else if (dim == 3)
+  else if (dim >= 3)
   {
     v[0] = 3.462;
     v[1] = -5.770;

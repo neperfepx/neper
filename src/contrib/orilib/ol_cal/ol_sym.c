@@ -1374,8 +1374,7 @@ ol_pole_crysym (int *pole1, char *crysym, int nb, int *pole2)
     {2, 0, 1, 5, 3, 4},
     {1, 2, 0, 4, 5, 3}
   };
-  int signcubic[25][6] = {
-    {0, 0, 0, 0, 0, 0},
+  int signcubic[24][6] = {
     {1, 1, 1, 1, 1, 1},
     {1, 1, -1, 1, 1, -1},
     {1, -1, -1, 1, -1, -1},
@@ -1415,20 +1414,20 @@ ol_pole_crysym (int *pole1, char *crysym, int nb, int *pole2)
 void
 ol_pole_polecrysym (int *pole, char *crysym, int *pole2)
 {
-  int tmp;
+  int poleqty;
   int qty = ol_crysym_qty (crysym);
-  int **polelist = ut_alloc_2d_int (qty, 3);
+  int **poles = NULL;
 
-  ol_polef_polecrysym (pole, crysym, polelist, &tmp);
-  ol_pole_memcpy (polelist[0], pole2);
+  ol_polef_polecrysym (pole, crysym, &poles, &poleqty);
+  ol_pole_memcpy (poles[0], pole2);
 
-  ut_free_2d_int (&polelist, qty);
+  ut_free_2d_int (&poles, qty);
 
   return;
 }
 
 void
-ol_polef_polecrysym (int *polef, char *crysym, int **pole, int *pqty)
+ol_polef_polecrysym (int *polef, char *crysym, int ***ppoles, int *ppoleqty)
 {
   int *tmp = ol_pole_alloc ();
   int i, j;
@@ -1436,65 +1435,73 @@ ol_polef_polecrysym (int *polef, char *crysym, int **pole, int *pqty)
   int *sort;
   int *perm;
   int qty = ol_crysym_qty (crysym);
+  int **poles = ut_alloc_2d_int (100, 3);
 
-  (*pqty) = 0;
+  (*ppoleqty) = 0;
   for (i = 1; i <= qty; i++)
   {
     ol_pole_crysym (polef, crysym, i, tmp);
 
     record = 1;
-    for (j = 0; j < *pqty; j++) /* is it already in pole? */
-      if ((tmp[0] == pole[j][0]
-           && tmp[1] == pole[j][1]
-           && tmp[2] == pole[j][2])
-          || (tmp[0] == -pole[j][0]
-              && tmp[1] == -pole[j][1] && tmp[2] == -pole[j][2]))
+    for (j = 0; j < *ppoleqty; j++) /* is it already in pole? */
+      if ((tmp[0] == poles[j][0]
+           && tmp[1] == poles[j][1]
+           && tmp[2] == poles[j][2])
+          || (tmp[0] == -poles[j][0]
+              && tmp[1] == -poles[j][1] && tmp[2] == -poles[j][2]))
       {
         record = 0;
         break;
       }
 
     if (record)
-      ol_pole_memcpy (tmp, pole[(*pqty)++]);
+      ol_pole_memcpy (tmp, poles[(*ppoleqty)++]);
   }
 
   /* ordering: positive first */
-  for (i = 0; i < *pqty; i++)
+  for (i = 0; i < *ppoleqty; i++)
   {
     qty1 = 0;
     qty2 = 0;
     for (j = 0; j < 3; j++)
-      tmp[j] = -pole[i][j];
+      tmp[j] = -poles[i][j];
 
     for (j = 0; j < 3; j++)
     {
-      if (pole[i][j] < 0)
+      if (poles[i][j] < 0)
         qty1++;
       if (tmp[j] < 0)
         qty2++;
     }
 
     if (qty2 < qty1)
-      ol_pole_memcpy (tmp, pole[i]);
+      ol_pole_memcpy (tmp, poles[i]);
   }
 
-  sort = ut_alloc_1d_int (*pqty);
-  for (i = 0; i < *pqty; i++)
+  sort = ut_alloc_1d_int (*ppoleqty);
+  for (i = 0; i < *ppoleqty; i++)
   {
     sort[i] =
-      100 * abs (pole[i][0]) + 10 * abs (pole[i][1]) + abs (pole[i][2]);
+      100 * abs (poles[i][0]) + 10 * abs (poles[i][1]) + abs (poles[i][2]);
     for (j = 0; j < 3; j++)
-      if (pole[i][j] < 0)
+      if (poles[i][j] < 0)
         sort[i] -= 1000;
   }
 
-  perm = ut_alloc_1d_int (*pqty);
-  ut_array_1d_int_sort_des_index (sort, *pqty, perm);
-  ut_array_2d_int_permute (pole, *pqty, 3, perm);
+  perm = ut_alloc_1d_int (*ppoleqty);
+  ut_array_1d_int_sort_des_index (sort, *ppoleqty, perm);
+  ut_array_2d_int_permute (poles, *ppoleqty, 3, perm);
+
+  if (ppoles)
+  {
+    *ppoles = ut_alloc_2d_int (*ppoleqty, 3);
+    ut_array_2d_int_memcpy (poles, *ppoleqty, 3, *ppoles);
+  }
 
   ol_pole_free (tmp);
   ut_free_1d_int (&sort);
   ut_free_1d_int (&perm);
+  ut_free_2d_int (&poles, *ppoleqty);
 
   return;
 }

@@ -5,11 +5,16 @@
 #include"nev_povray_.h"
 
 void
-nev_povray (char **expargv, int *pi, struct PRINT *pPrint)
+nev_povray (char **argv, int *pi, struct PRINT *pPrint)
 {
-  (*pi)++;
+  if (!strcmp (argv[*pi], "-povray"))
+    ut_string_string (argv[++(*pi)], &(*pPrint).povray);
 
-  ut_string_string (expargv[*pi], &((*pPrint).povray));
+  else if (!strcmp (argv[*pi], "-povrayantialiasing"))
+    sscanf (argv[++(*pi)], "%d", &((*pPrint).povrayantialiasing));
+
+  else
+    ut_print_message (2, 0, "Unknown command %s\n", argv[(*pi)]);
 
   return;
 }

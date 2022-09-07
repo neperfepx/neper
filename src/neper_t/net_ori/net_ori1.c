@@ -60,7 +60,11 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
                        OSets + i, verbositylevel);
 
     else if (!strncmp (ori, "file(", 5))
+    {
+      ol_set_free (OSets[i]);
       net_ori_file (ori, OSets + i);
+      ut_string_string (oricrysym, &(OSets[i].crysym));
+    }
 
     else
       net_ori_label (parts[i], SSet, dtess, dcell, OSets + i);

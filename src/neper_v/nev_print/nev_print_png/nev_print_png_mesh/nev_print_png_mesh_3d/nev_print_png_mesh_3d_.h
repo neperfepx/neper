@@ -32,6 +32,6 @@ nev_print_png_mesh_3d_print_faces (FILE * file, struct PRINT Print,
 			       struct DATA NodeData,
 			       struct DATA *MeshData);
 extern void
-nev_print_png_mesh_3d_print_edges (FILE * file, int sceneshadow,
+nev_print_png_mesh_3d_print_edges (FILE * file, struct PRINT Print,
 			       struct NODES N, struct MESH M1D,
 			       struct DATA *MeshData);

@@ -130,7 +130,7 @@ net_ori_label (char *label, struct SEEDSET *SSet, int dtess, int dcell, struct O
 }
 
 void
-net_ori_file (char *filename, struct OL_SET *pOSet)
+net_ori_file (char *filename_in, struct OL_SET *pOSet)
 {
   unsigned int i;
   char *des = NULL, *conv = NULL, *tmp = NULL;
@@ -138,12 +138,20 @@ net_ori_file (char *filename, struct OL_SET *pOSet)
   double **g = ol_g_alloc ();
   FILE *fp = NULL;
   char *fct = NULL;
-  int varqty;
+  int varqty = 0;
   char **vars = NULL;
   char **vals = NULL;
+  char *filename = NULL;
 
-  ut_string_function (filename, &fct, &vars, &vals, &varqty);
+  if (!strncmp (filename_in, "file(", 5))
+  {
+    ut_string_function (filename_in, &fct, &vars, &vals, &varqty);
+    ut_string_string (vals[0], &filename);
+  }
+  else
+    ut_string_string (filename_in, &filename);
 
+  ut_string_string ("rodrigues", &des);
   ut_string_string ("active", &conv);
 
   if (varqty == 1)
@@ -160,7 +168,9 @@ net_ori_file (char *filename, struct OL_SET *pOSet)
       abort ();
   }
 
-  fp = ut_file_open (vals[0], "r");
+  (*pOSet) = ol_set_alloc (ut_file_nbwords (filename) / ol_des_size (des), NULL);
+
+  fp = ut_file_open (filename, "r");
 
   for (i = 0; i < (*pOSet).size; i++)
   {
@@ -218,6 +228,7 @@ net_ori_file (char *filename, struct OL_SET *pOSet)
   ol_g_free (g);
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
+  ut_free_1d_char (&filename);
 
   return;
 }

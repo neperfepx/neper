@@ -10,7 +10,11 @@
 #include"ut.h"
 #include"neut_v.h"
 #include "nev_print_init/nev_print_init.h"
+#include "nev_print_utils/nev_print_utils.h"
 #include "nev_print_png/nev_print_png.h"
 #include "nev_print_vtk/nev_print_vtk.h"
+#include "nev_print_pf/nev_print_pf.h"
+#include "nev_print_tree/nev_print_tree.h"
+#include "nev_print_scale/nev_print_scale.h"
 
 #include "nev_print.h"

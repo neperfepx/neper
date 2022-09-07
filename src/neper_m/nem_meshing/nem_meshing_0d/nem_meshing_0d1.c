@@ -20,7 +20,7 @@ nem_meshing_0d (struct TESS Tess, struct MESHPARA MeshPara,
 
   Mesh[0] = neut_mesh_alloc (0, "tri", 1, 0, 0);
 
-  ut_print_message (0, 2, "0d meshing... ");
+  ut_print_message (0, 2, "0D meshing... ");
 
   if (MeshPara.dim >= 0)
   {

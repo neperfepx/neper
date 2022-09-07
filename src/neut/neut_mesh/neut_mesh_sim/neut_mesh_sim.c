@@ -15,6 +15,7 @@ neut_mesh_sim (char *simdir, struct TESS Tess, struct NODES Nodes, struct MESH *
   ut_string_string (Mesh[Tess.Dim].ElsetOriDes, &((*pSim).OriDes));
 
   ut_string_string ("simulation.msh", &(*pSim).msh);
+  ut_string_string ("simulation.tess", &(*pSim).tess);
 
   return;
 }

@@ -117,7 +117,7 @@ _neper_completions() {
 
   -imagesize -imageantialias -imageformat \
 
-  -sceneshadow -scenebackground \
+  -scenebackground \
 
   -loop -endloop \
 

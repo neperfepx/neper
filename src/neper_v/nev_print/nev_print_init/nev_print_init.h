@@ -7,4 +7,4 @@ extern void nev_print_init (struct PRINT *pPrint, struct TESS Tess, struct DATA
     struct MESH *Mesh, struct DATA *pNodeData, struct DATA *MeshData, int
     *pSQty, struct NODES **pSNodes, struct MESH **pSMesh2D, struct DATA
     **pSNodeData, struct DATA ***pSMeshData, int ***pSElt2dElt3d, struct DATA
-    *pCsysData, struct POINT Point, struct DATA *pPointData);
+    *pCsysData, struct POINT *Points, int PointQty, struct DATA *PointData);

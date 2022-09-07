@@ -10,6 +10,8 @@ extern "C"
 #ifndef NEUT_TESS_GEN_H
 #define NEUT_TESS_GEN_H
 
+#include<orilib.h>
+
   extern void neut_tess_var_dim (int dim, char *entity, char *var, int *pdim);
   extern int neut_tess_var_val (struct TESS Tess,
 				int *showedge, int *showface, int *showpoly,
@@ -68,6 +70,8 @@ extern "C"
   extern int neut_tess_isreg (struct TESS Tess);
 
   extern int neut_tess_cell_id (struct TESS Tess, int cell);
+
+  extern void neut_tess_olset (struct TESS Tess, struct OL_SET *pOSet);
 
 #endif				/* NEUT_TESS_GEN_H */
 

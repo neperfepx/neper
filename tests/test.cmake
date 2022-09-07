@@ -9,7 +9,12 @@ if(RESVAR)
 endif()
 
 if ("${test_mode}" MATCHES "Normal" AND NOT "${test_mode_force_minimal}" EQUAL 1)
-  file(GLOB ref_files ref.*)
+  file(GLOB bak_files *.bak *~)
+  foreach(bak_file ${bak_files})
+    file (REMOVE ${bak_file})
+  endforeach()
+
+  file(GLOB ref_files ref.* ref-*)
   foreach(ref_file ${ref_files})
     string(REPLACE "ref" "test" test_file ${ref_file})
     if (NOT "${test_file}" MATCHES ".png")

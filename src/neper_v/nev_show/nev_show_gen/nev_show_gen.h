@@ -3,3 +3,4 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nev_show_csys (char **argv, int *pi, struct PRINT *pPrint);
+extern void nev_show_scale (char **argv, int *pi, struct PRINT *pPrint);

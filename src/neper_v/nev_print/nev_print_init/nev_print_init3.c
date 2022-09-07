@@ -10,7 +10,6 @@ nev_print_init_data_csys (struct PRINT Print, struct DATA *pData)
   int i;
 
   (*pData).Col = ut_alloc_2d_int (2, 3);
-  (*pData).Rad = ut_alloc_1d (2);
   (*pData).Coo = ut_alloc_2d (2, 3);
   (*pData).Rad = ut_alloc_1d (2);
   (*pData).Length = ut_alloc_1d (2);
@@ -22,9 +21,9 @@ nev_print_init_data_csys (struct PRINT Print, struct DATA *pData)
     if (!strcmp ((*pData).ColDataType, "col"))
       for (i = 0; i < 3; i++)
         (*pData).Col[1][i] = ut_num_d2ri ((*pData).ColData[1][i]);
-    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+    else if (ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "png"))
       ut_print_exprbug ((*pData).ColDataType);
   }
 
@@ -41,9 +40,9 @@ nev_print_init_data_csys (struct PRINT Print, struct DATA *pData)
   if (!(*pData).Label)
   {
     (*pData).Label = ut_alloc_1d_pchar (3);
-    ut_string_string ("X1", (*pData).Label);
-    ut_string_string ("X2", (*pData).Label + 1);
-    ut_string_string ("X3", (*pData).Label + 2);
+    ut_string_string ("$X_1$", (*pData).Label);
+    ut_string_string ("$X_2$", (*pData).Label + 1);
+    ut_string_string ("$X_3$", (*pData).Label + 2);
   }
 
   if ((*pData).FontSize == -1)
@@ -147,9 +146,9 @@ nev_print_init_data_mesh (struct PRINT Print, struct MESH Mesh, double size, int
       neut_data_ori_color ((*pData).ColData, (*pData).Qty,
                            (*pData).ColScheme, (*pData).Col);
 
-    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+    else if (ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "png"))
       ut_print_exprbug ((*pData).ColDataName);
   }
 
@@ -178,9 +177,12 @@ nev_print_init_data_nodes (struct PRINT Print, struct NODES Nodes, int Qty, stru
 {
   double noderad;
 
-  (*pData).Col = ut_alloc_2d_int ((*pData).Qty + 1, 3);
-  (*pData).Rad = ut_alloc_1d ((*pData).Qty + 1);
-  (*pData).Coo = ut_alloc_2d ((*pData).Qty + 1, 3);
+  if (!(*pData).Col)
+    (*pData).Col = ut_alloc_2d_int ((*pData).Qty + 1, 3);
+  if (!(*pData).Rad)
+    (*pData).Rad = ut_alloc_1d ((*pData).Qty + 1);
+  if (!(*pData).Coo)
+    (*pData).Coo = ut_alloc_2d ((*pData).Qty + 1, 3);
 
   noderad = 0.0168 / pow (Qty, 0.25);
   ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, noderad);
@@ -210,9 +212,9 @@ nev_print_init_data_nodes (struct PRINT Print, struct NODES Nodes, int Qty, stru
       neut_data_ori_color ((*pData).ColData, (*pData).Qty,
                            (*pData).ColScheme, (*pData).Col);
 
-    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+    else if (ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "png"))
       ut_print_exprbug ((*pData).ColDataType);
   }
 
@@ -241,17 +243,22 @@ nev_print_init_data_nodes (struct PRINT Print, struct NODES Nodes, int Qty, stru
 void
 nev_print_init_data_points (struct PRINT Print, struct POINT Point, struct DATA *pData)
 {
+  int i;
   double pointrad;
 
-  (*pData).Col = ut_alloc_2d_int ((*pData).Qty + 1, 3);
-  (*pData).Rad = ut_alloc_1d ((*pData).Qty + 1);
-  (*pData).Trs = ut_alloc_1d ((*pData).Qty + 1);
-  (*pData).Coo = ut_alloc_2d ((*pData).Qty + 1, 3);
+  if (!(*pData).Col)
+    (*pData).Col = ut_alloc_2d_int ((*pData).Qty + 1, 3);
+  if (!(*pData).Rad)
+    (*pData).Rad = ut_alloc_1d ((*pData).Qty + 1);
+  if (!(*pData).Trs)
+    (*pData).Trs = ut_alloc_1d ((*pData).Qty + 1);
+  if (!(*pData).Coo)
+    (*pData).Coo = ut_alloc_2d ((*pData).Qty + 1, 3);
 
   pointrad = 0.0168 / pow ((*pData).Qty, 0.25);
   ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, pointrad);
   ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 128);
-  ut_array_2d_memcpy (Point.PointCoo + 1, (*pData).Qty, 3,
+  ut_array_2d_memcpy (Point.Coo + 1, (*pData).Qty, 3,
                       (*pData).Coo + 1);
 
   if ((*pData).ColData)
@@ -274,10 +281,22 @@ nev_print_init_data_points (struct PRINT Print, struct POINT Point, struct DATA 
       neut_data_ori_color ((*pData).ColData, (*pData).Qty,
                            (*pData).ColScheme, (*pData).Col);
 
-    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+    else if (ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "png"))
       ut_print_exprbug ((*pData).ColDataType);
+  }
+
+  // by default, we color the points based on their ids
+  else
+  {
+    (*pData).ColData = ut_alloc_2d ((*pData).Qty + 1, 1);
+    for (i = 1; i <= (*pData).Qty; i++)
+      (*pData).ColData[i][0] = i;
+    neut_data_int_color ((*pData).ColData, (*pData).Qty, (*pData).VoidCol,
+                        (*pData).Col);
+
+    ut_string_string ("int", &(*pData).ColDataType);
   }
 
   if (!(*pData).RadDataType)
@@ -285,6 +304,8 @@ nev_print_init_data_points (struct PRINT Print, struct POINT Point, struct DATA 
   if ((*pData).RadData)
     neut_data_rad_radius ((*pData).RadData, (*pData).Qty,
                          (*pData).Rad);
+  else
+    ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, 0.02);
 
   if ((*pData).TrsData)
     neut_data_tr_tr ((*pData).TrsData, (*pData).Qty,
@@ -293,19 +314,31 @@ nev_print_init_data_points (struct PRINT Print, struct POINT Point, struct DATA 
   if ((*pData).CooDataType)
   {
     if (!strcmp ((*pData).CooDataType, "coo"))
-      neut_data_coo_coo (Point.PointCoo, (*pData).CooData,
+      neut_data_coo_coo (Point.Coo, (*pData).CooData,
                         (*pData).CooFact, (*pData).Qty,
                         (*pData).Coo);
     else if (!strcmp ((*pData).CooDataType, "disp"))
-      neut_data_disp_coo (Point.PointCoo, (*pData).CooData,
+      neut_data_disp_coo (Point.Coo, (*pData).CooData,
                          (*pData).CooFact, (*pData).Qty,
                          (*pData).Coo);
     else
       abort ();
   }
 
+  if ((*pData).BRad < 0)
+    (*pData).BRad = 0.01;
+
   if (!(*pData).BCol)
     (*pData).BCol = ut_alloc_1d_int (3);
+
+  if (!(*pData).Symbol)
+  {
+    (*pData).Symbol = ut_alloc_1d_pchar ((*pData).Qty + 1);
+
+    for (i = 1; i <= (*pData).Qty; i++)
+      ut_string_string ((*pData).SymbolData ? (*pData).SymbolData[i] : "sphere",
+                        (*pData).Symbol + i);
+  }
 
   return;
 }
@@ -324,7 +357,7 @@ nev_print_init_data_crystal (struct PRINT Print, , struct DATA *pData)
   pointrad = 0.0168 / pow ((*pData).Qty, 0.25);
   ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, pointrad);
   ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 128);
-  ut_array_2d_memcpy (Crystal.PointCoo + 1, (*pData).Qty, 3,
+  ut_array_2d_memcpy (Crystal.Coo + 1, (*pData).Qty, 3,
                       (*pData).Coo + 1);
 
   if ((*pData).ColData)
@@ -347,9 +380,9 @@ nev_print_init_data_crystal (struct PRINT Print, , struct DATA *pData)
       neut_data_ori_color ((*pData).ColData, (*pData).Qty,
                            (*pData).ColScheme, (*pData).Col);
 
-    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+    else if (ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "png"))
       ut_print_exprbug ((*pData).ColDataType);
   }
 
@@ -373,14 +406,19 @@ nev_print_init_data_crystal (struct PRINT Print, , struct DATA *pData)
 void
 nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pData)
 {
-  int i, j, k, id, Qty = ut_array_1d_int_prod (Tesr.size, 3);
+  int i, j, k, id;
   double size, rad;
 
-  (*pData).Col = ut_alloc_2d_int (Qty + 1, 3);
-  (*pData).Trs = ut_alloc_1d (Qty + 1);
+  if (!(*pData).Col)
+    (*pData).Col = ut_alloc_2d_int ((*pData).Qty + 1, 3);
+  if (!(*pData).Trs)
+    (*pData).Trs = ut_alloc_1d ((*pData).Qty + 1);
+  if (!(*pData).Rad)
+    (*pData).Rad = ut_alloc_1d ((*pData).Qty + 1);
 
-  ut_array_2d_int_set ((*pData).Col + 1, Qty, 3, 255);
-  ut_array_1d_set ((*pData).Trs + 1, Qty, 0);
+  ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 255);
+  ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
+  ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, 0.02);
 
   if (!(*pData).VoidCol)
   {
@@ -393,20 +431,20 @@ nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pDa
     ut_print_message (0, 1, "Computing colors...\n");
 
     if (!strcmp ((*pData).ColDataType, "col"))
-      neut_data_col_color ((*pData).ColData, Qty, (*pData).Col);
+      neut_data_col_color ((*pData).ColData, (*pData).Qty, (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "int"))
-      neut_data_int_color ((*pData).ColData, Qty, (*pData).VoidCol, (*pData).Col);
+      neut_data_int_color ((*pData).ColData, (*pData).Qty, (*pData).VoidCol, (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "real"))
       neut_data_real_color ((*pData).ColData, (*pData).ColDataDef,
-                            Qty, (*pData).Scale, (*pData).ColScheme,
+                            (*pData).Qty, (*pData).Scale, (*pData).ColScheme,
                             (*pData).Col, &((*pData).Scale));
 
     else if (!strcmp ((*pData).ColDataType, "ori")
           || !strcmp ((*pData).ColDataType, "disori"))
     {
-      neut_data_ori_color ((*pData).ColData, Qty, (*pData).ColScheme,
+      neut_data_ori_color ((*pData).ColData, (*pData).Qty, (*pData).ColScheme,
                            (*pData).Col);
       id = 0;
       if (Tesr.VoxOriDef)
@@ -420,9 +458,9 @@ nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pDa
             }
     }
 
-    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+    else if (ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "png"))
       ut_print_exprbug ((*pData).ColDataType);
   }
 
@@ -431,18 +469,31 @@ nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pDa
   {
     (*pData).ColData = ut_alloc_2d ((*pData).Qty + 1, 1);
 
-    id = 0;
-    for (k = 1; k <= Tesr.size[2]; k++)
-      for (j = 1; j <= Tesr.size[1]; j++)
-        for (i = 1; i <= Tesr.size[0]; i++)
-        {
-          if (Tesr.CellQty)
+    if (!strcmp ((*pData).Entity, "cell"))
+    {
+      if (!Tesr.CellId)
+        for (i = 1; i <= (*pData).Qty; i++)
+          (*pData).ColData[i][0] = i;
+      else
+        for (i = 1; i <= (*pData).Qty; i++)
+          (*pData).ColData[i][0] = Tesr.CellId[i];
+    }
+
+    else
+    {
+      id = 0;
+      for (k = 1; k <= Tesr.size[2]; k++)
+        for (j = 1; j <= Tesr.size[1]; j++)
+          for (i = 1; i <= Tesr.size[0]; i++)
           {
-            (*pData).ColData[++id][0] = Tesr.VoxCell[i][j][k];
-            if (Tesr.CellId)
-              (*pData).ColData[id][0] = Tesr.CellId[ut_num_d2ri ((*pData).ColData[id][0])];
+            if (Tesr.CellQty)
+            {
+              (*pData).ColData[++id][0] = Tesr.VoxCell[i][j][k];
+              if (Tesr.CellId)
+                (*pData).ColData[id][0] = Tesr.CellId[ut_num_d2ri ((*pData).ColData[id][0])];
+            }
           }
-        }
+    }
 
     neut_data_int_color ((*pData).ColData, (*pData).Qty, (*pData).VoidCol,
                         (*pData).Col);
@@ -458,11 +509,15 @@ nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pDa
   if ((*pData).TrsData)
   {
     ut_print_message (0, 1, "Computing transparency...\n");
-    neut_data_tr_tr ((*pData).TrsData, Qty, (*pData).Trs);
+    neut_data_tr_tr ((*pData).TrsData, (*pData).Qty, (*pData).Trs);
   }
 
+  if ((*pData).RadData)
+    neut_data_rad_radius ((*pData).RadData, (*pData).Qty,
+                         (*pData).Rad);
+
   if ((*pData).BRad < 0)
-    (*pData).BRad = 0;
+    (*pData).BRad = (!strcmp (Print.space, "pf")) ? 0.01 : 0;
 
   if (!(*pData).BCol)
     (*pData).BCol = ut_alloc_1d_int (3);
@@ -475,6 +530,13 @@ nev_print_init_data_tesr (struct PRINT Print, struct TESR Tesr, struct DATA *pDa
     sprintf ((*pData).RadDataName, "%g", rad);
   }
 
+  if (!(*pData).Symbol)
+    (*pData).Symbol = ut_alloc_1d_pchar ((*pData).Qty + 1);
+
+  for (i = 1; i <= (*pData).Qty; i++)
+    ut_string_string ((*pData).SymbolData ? (*pData).SymbolData[i] : "sphere",
+                      (*pData).Symbol + i);
+
   return;
 }
 
@@ -486,10 +548,14 @@ nev_print_init_data_tess (struct PRINT Print, struct TESS Tess, struct DATA *pDa
 
   neut_tess_size (Tess, &size);
 
-  (*pData).Col = ut_alloc_2d_int ((*pData).Qty + 1, 3);
-  (*pData).Trs = ut_alloc_1d ((*pData).Qty + 1);
-  (*pData).Rad = ut_alloc_1d ((*pData).Qty + 1);
+  if (!(*pData).Col)
+    (*pData).Col = ut_alloc_2d_int ((*pData).Qty + 1, 3);
+  if (!(*pData).Trs)
+    (*pData).Trs = ut_alloc_1d ((*pData).Qty + 1);
+  if (!(*pData).Rad)
+    (*pData).Rad = ut_alloc_1d ((*pData).Qty + 1);
 
+  // don't else if
   if (dim == 0)
   {
     rad = pow (size, 1. / 3) * 0.02000 / pow (Tess.CellQty, 0.25);
@@ -497,26 +563,33 @@ nev_print_init_data_tess (struct PRINT Print, struct TESS Tess, struct DATA *pDa
     ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
     ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, rad);
   }
-  else if (dim == 1)
+
+  if (dim == 1)
   {
     ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0);
     ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
     rad = pow (size, 1. / 3) * 0.01414 / pow (Tess.CellQty, 0.25);
     ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, rad);
   }
-  else if (dim == 2 || dim == 3)
+
+  if (dim == 2 || dim == 3)
   {
     ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 255);
     ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
   }
-  else if (dim == 4)
+
+  if (dim == Tess.Dim)
+    ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, 0.02);
+
+  if (dim == 4)
   {
     rad = pow (size, 1. / 3) * 0.04000 / pow (Tess.CellQty, 0.25);
     ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 128);
     ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
     ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, rad);
   }
-  else if (dim == 5)
+
+  if (dim == 5)
   {
     rad = pow (size, 1. / 3) * 0.04000 / pow (Tess.CellQty, 0.25);
     ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 128);
@@ -544,9 +617,9 @@ nev_print_init_data_tess (struct PRINT Print, struct TESS Tess, struct DATA *pDa
       neut_data_ori_color ((*pData).ColData, (*pData).Qty, (*pData).ColScheme,
                             (*pData).Col);
 
-    else if (ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "pov:objects")
-     || ut_list_testelt (Print.format, NEUT_SEP_NODEP, "png"))
+    else if (ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov:objects")
+     || ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "png"))
       ut_print_exprbug ((*pData).ColDataType);
   }
 
@@ -583,6 +656,24 @@ nev_print_init_data_tess (struct PRINT Print, struct TESS Tess, struct DATA *pDa
   {
     neut_tess_cellavradeq (Tess, Tess.CellQty, &(*pData).BRad);
     (*pData).BRad *= 0.01;
+  }
+
+  if (dim == Tess.Dim)
+  {
+    if ((*pData).BRad == -1)
+      (*pData).BRad = 0.01;
+
+    if (!(*pData).BCol)
+      (*pData).BCol = ut_alloc_1d_int (3);
+  }
+
+  if (dim == Tess.Dim)
+  {
+    (*pData).Symbol = ut_alloc_1d_pchar ((*pData).Qty + 1);
+
+    for (i = 1; i <= (*pData).Qty; i++)
+      ut_string_string ((*pData).SymbolData ? (*pData).SymbolData[i] : "sphere",
+                        (*pData).Symbol + i);
   }
 
   return;
@@ -687,10 +778,8 @@ nev_print_init_camera_sky (char *expr, int dim, double *coo)
   {
     if (dim == 2)
       ut_array_1d_set_3 (coo, 0, 1, 0);
-    else if (dim == 3)
+    else if (dim >= 3)
       ut_array_1d_set_3 (coo, 0, 0, 1);
-    else
-      abort ();
   }
 
   else

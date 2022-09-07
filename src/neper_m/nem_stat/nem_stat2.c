@@ -185,12 +185,12 @@ nem_stat_point (FILE * file, char *format, struct NODES Nodes,
         || ut_list_testelt (format, NEUT_SEP_NODEP, "2dmeshn"))
     {
       meshx_init = 1;
-      meshp = ut_alloc_2d (Point.PointQty + 1, 3);
-      meshd = ut_alloc_1d (Point.PointQty + 1);
-      meshv = ut_alloc_2d (Point.PointQty + 1, 3);
-      meshn = ut_alloc_2d (Point.PointQty + 1, 3);
+      meshp = ut_alloc_2d (Point.Qty + 1, 3);
+      meshd = ut_alloc_1d (Point.Qty + 1);
+      meshv = ut_alloc_2d (Point.Qty + 1, 3);
+      meshn = ut_alloc_2d (Point.Qty + 1, 3);
       neut_mesh_points_mesh2ddist (Tess, Nodes, Mesh[2], Mesh[3],
-                                   Point.PointCoo + 1, Point.PointQty,
+                                   Point.Coo + 1, Point.Qty,
                                    meshp + 1, meshd + 1, meshv + 1,
                                    meshn + 1);
     }
@@ -198,7 +198,7 @@ nem_stat_point (FILE * file, char *format, struct NODES Nodes,
 
   ut_list_break (format, NEUT_SEP_NODEP, &invar, &invalqty);
 
-  for (i = 1; i <= Point.PointQty; i++)
+  for (i = 1; i <= Point.Qty; i++)
     for (j = 0; j < invalqty; j++)
     {
       status =
@@ -233,9 +233,9 @@ nem_stat_point (FILE * file, char *format, struct NODES Nodes,
   if (meshx_init)
   {
     ut_free_1d (&meshd);
-    ut_free_2d (&meshp, Point.PointQty + 1);
-    ut_free_2d (&meshv, Point.PointQty + 1);
-    ut_free_2d (&meshn, Point.PointQty + 1);
+    ut_free_2d (&meshp, Point.Qty + 1);
+    ut_free_2d (&meshv, Point.Qty + 1);
+    ut_free_2d (&meshn, Point.Qty + 1);
   }
 
   return;

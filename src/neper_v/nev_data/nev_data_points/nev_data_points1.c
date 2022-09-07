@@ -25,7 +25,7 @@ nev_data_points (struct SIM Sim, struct POINT *pPoint, struct TESS *pTess,
 
   neut_data_datastring_type_value (entity, attribute, datastring, &datatype, &datavalue);
 
-  if (!strcmp (entity, "point"))
+  if (!strstr (entity, "edge"))
   {
     if (!strcmp (attribute, "colscheme"))
       ut_string_string (datastring, &(*pData).ColScheme);
@@ -37,18 +37,18 @@ nev_data_points (struct SIM Sim, struct POINT *pPoint, struct TESS *pTess,
       ut_string_string (datastring, &(*pData).ScaleTitle);
 
     else if (!strcmp (attribute, "coo"))
-      neut_data_fscanf_coo (Sim, "point", (*pPoint).PointQty, datatype, datavalue,
+      neut_data_fscanf_coo (Sim, "point", (*pPoint).Qty, datatype, datavalue,
                            pData);
 
     else if (!strcmp (attribute, "coofact"))
       (*pData).CooFact = atof (datavalue);
 
     else
-      neut_data_fscanf_general (DataInput, entity, 0, (*pPoint).PointQty, attribute,
+      neut_data_fscanf_general (DataInput, entity, 0, (*pPoint).Qty, attribute,
                             datatype, datavalue, pData);
   }
 
-  else if (!strcmp (entity, "pointedge"))
+  else
   {
     if (!strcmp (attribute, "col"))
     {

@@ -65,7 +65,7 @@ net_stat_point (FILE * file, char *format, struct POINT Point,
 
   ut_list_break (format, NEUT_SEP_NODEP, &invar, &invalqty);
 
-  for (i = 1; i <= Point.PointQty; i++)
+  for (i = 1; i <= Point.Qty; i++)
     for (j = 0; j < invalqty; j++)
     {
       status =

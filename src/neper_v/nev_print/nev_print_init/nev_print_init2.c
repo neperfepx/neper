@@ -7,12 +7,12 @@
 void
 nev_print_init_data (struct PRINT Print,
                struct TESS Tess, struct DATA *TessData, struct TESR Tesr,
-               struct DATA *pTesrData, struct NODES Nodes,
-               struct MESH *Mesh, struct POINT Point,
+               struct DATA *TesrData, struct NODES Nodes,
+               struct MESH *Mesh, struct POINT *Points, int PointQty,
                struct DATA *pData, struct DATA *MeshData,
-               struct DATA *pCsysData, struct DATA *pPointData)
+               struct DATA *pCsysData, struct DATA *PointData)
 {
-  int dim, meshdim;
+  int i, meshdim;
   double size;
 
   /*
@@ -21,11 +21,12 @@ nev_print_init_data (struct PRINT Print,
   */
 
   if (Print.showtess && !neut_tess_isvoid (Tess))
-    for (dim = 0; dim <= 5; dim++)
-      nev_print_init_data_tess (Print, Tess, TessData + dim);
+    for (i = 0; i <= 5; i++)
+      nev_print_init_data_tess (Print, Tess, TessData + i);
 
-  if (Print.showtesr && (*pTesrData).Qty > 0)
-    nev_print_init_data_tesr (Print, Tesr, pTesrData);
+  if (Print.showtesr && !neut_tesr_isvoid (Tesr))
+    for (i = 0; i <= 1; i++)
+      nev_print_init_data_tesr (Print, Tesr, TesrData + i);
 
   if ((Print.shownode || Print.showmesh || Print.showslice) && !neut_nodes_isvoid (Nodes))
     nev_print_init_data_nodes (Print, Nodes, Nodes.NodeQty, pData);
@@ -35,23 +36,27 @@ nev_print_init_data (struct PRINT Print,
   {
     neut_mesh_size (Nodes, Mesh[meshdim], &size);
 
-    for (dim = 0; dim <= meshdim; dim++)
-      if (!neut_mesh_isvoid (Mesh[dim]))
-        nev_print_init_data_mesh (Print, Mesh[dim], size, Mesh[dim].ElsetQty, meshdim, MeshData + dim);
+    for (i = 0; i <= meshdim; i++)
+      if (!neut_mesh_isvoid (Mesh[i]))
+        nev_print_init_data_mesh (Print, Mesh[i], size, Mesh[i].ElsetQty, meshdim, MeshData + i);
   }
 
   if (Print.showcsys)
     nev_print_init_data_csys (Print, pCsysData);
 
-  if (Print.showpoint && !neut_point_isvoid (Point))
-    nev_print_init_data_points (Print, Point, pPointData);
+  if (PointQty != Print.inputqty)
+    abort ();
+
+  for (i = 0; i < Print.inputqty; i++)
+    if (!neut_point_isvoid (Points[i]))
+      nev_print_init_data_points (Print, Points[i], PointData + i);
 
   return;
 }
 
 void
 nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
-               struct MESH *Mesh, int SQty, struct POINT Point,
+               struct MESH *Mesh, int SQty, struct POINT *Points, int PointQty,
                struct PRINT *pPrint)
 {
   int dim = neut_mesh_array_dim (Mesh);
@@ -85,14 +90,18 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
   if (!neut_tesr_isvoid (Tesr) && (*pPrint).showtesr == -1)
     (*pPrint).showtesr = 1;
 
-  if (!neut_point_isvoid (Point))
-    if ((*pPrint).showpoint[0] == -1)
-    {
-      (*pPrint).showpoint =
-        ut_realloc_1d_int ((*pPrint).showpoint, Point.PointQty + 1);
-      ut_array_1d_int_set ((*pPrint).showpoint + 1, Point.PointQty, 1);
-      (*pPrint).showpoint[0] = Point.PointQty;
-    }
+  if (PointQty > 0)
+  {
+    if (!(*pPrint).showpoint)
+      (*pPrint).showpoint = ut_alloc_1d_pint (PointQty);
+
+    for (i = 0; i < PointQty; i++)
+      if (!(*pPrint).showpoint[i])
+      {
+        (*pPrint).showpoint[i] = ut_alloc_1d_int (Points[i].Qty + 1);
+        ut_array_1d_int_set ((*pPrint).showpoint[i] + 1, Points[i].Qty, 1);
+      }
+  }
 
   if ((*pPrint).showmesh == 1)
   {
@@ -212,6 +221,21 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
 
   else if ((*pPrint).showtesr == 1)
   {
+    if (Tesr.Dim == 3 && (*pPrint).showpoly[0] == -1)
+    {
+      (*pPrint).showpoly =
+        ut_realloc_1d_int ((*pPrint).showpoly, Tesr.CellQty + 1);
+      (*pPrint).showpoly[0] = Tesr.CellQty;
+      ut_array_1d_int_set ((*pPrint).showpoly + 1, Tesr.CellQty, 1);
+    }
+    else if (Tesr.Dim == 2 && (*pPrint).showface[0] == -1)
+    {
+      (*pPrint).showface =
+        ut_realloc_1d_int ((*pPrint).showface, Tesr.CellQty + 1);
+      (*pPrint).showface[0] = Tesr.CellQty;
+      ut_array_1d_int_set ((*pPrint).showface + 1, Tesr.CellQty, 1);
+    }
+
     if (!(*pPrint).showvox)
     {
       (*pPrint).showvox = ut_alloc_3d_int (Tesr.size[0] + 1, Tesr.size[1] + 1, Tesr.size[2] + 1);
@@ -223,27 +247,12 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
     }
   }
 
-  if ((*pPrint).sceneshadow == -1)
-  {
-    if ((*pPrint).showmesh == 1)
-    {
-    }
-    else if ((*pPrint).showtess == 1)
-      dim = Tess.Dim;
-    else if ((*pPrint).showtesr == 1)
-      dim = Tesr.Dim;
-    else
-      dim = 3;
-
-    (*pPrint).sceneshadow = (dim == 3) ? 1 : 0;
-  }
-
   return;
 }
 
 void
 nev_print_init_camera (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
-                 struct MESH *Mesh, struct POINT Point,
+                 struct MESH *Mesh, struct POINT *Points, int PointQty,
                  struct DATA NodeData, struct PRINT *pPrint)
 {
   int dim = -1;
@@ -299,13 +308,13 @@ nev_print_init_camera (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
                               (*pPrint).cameralookat);
   }
 
-  else if (!neut_point_isvoid (Point))
+  else if (PointQty > 0)
   {
-    dim = Tesr.Dim;
+    dim = Points[0].Dim;
 
-    nev_print_init_camera_coo_points (Point, (*pPrint).cameracoostring,
+    nev_print_init_camera_coo_points (Points[0], (*pPrint).cameracoostring,
                                (*pPrint).cameracoo);
-    nev_print_init_camera_coo_points (Point, (*pPrint).cameralookatstring,
+    nev_print_init_camera_coo_points (Points[0], (*pPrint).cameralookatstring,
                                (*pPrint).cameralookat);
   }
 
@@ -320,6 +329,119 @@ nev_print_init_camera (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
 
   if (NodeData.CooData != NULL)
     neut_nodes_free (&Nodes2);
+
+  return;
+}
+
+void
+nev_print_init_light (struct TESS Tess, struct TESR Tesr, struct MESH *Mesh, struct PRINT *pPrint)
+{
+  int dim;
+
+  if ((*pPrint).showmesh == 1)
+    dim = neut_mesh_array_dim (Mesh);
+  else if ((*pPrint).showtess == 1)
+    dim = Tess.Dim;
+  else if ((*pPrint).showtesr == 1)
+    dim = Tesr.Dim;
+  else
+    dim = 3;
+
+  // lightsourcesource
+
+  if (!strcmp ((*pPrint).lightsourcestring, "default"))
+  {
+    if (dim == 3)
+    {
+      (*pPrint).lightsources = ut_alloc_1d_pchar (1);
+      ut_string_string ("point(coo=camera,shadow=0)", (*pPrint).lightsources);
+      (*pPrint).lightsourceqty = 1;
+    }
+    else
+      (*pPrint).lightsourceqty = 0;
+  }
+
+  else if (!(strcmp ((*pPrint).lightsourcestring, "none")))
+    (*pPrint).lightsourceqty = 0;
+
+  else
+    ut_list_break ((*pPrint).lightsourcestring, NEUT_SEP_NODEP,
+                   &(*pPrint).lightsources, &(*pPrint).lightsourceqty);
+
+  // lightambient
+
+  if (!strcmp ((*pPrint).lightambientstring, "default"))
+  {
+    if (dim == 3)
+      (*pPrint).lightambient = 0.6;
+    else
+      (*pPrint).lightambient = 1;
+  }
+  else
+    (*pPrint).lightambient = atof ((*pPrint).lightambientstring);
+
+  if (!strcmp ((*pPrint).lightdiffusestring, "default"))
+    (*pPrint).lightdiffuse = 0.6;
+  else
+    (*pPrint).lightdiffuse = atof ((*pPrint).lightdiffusestring);
+
+  if (!strcmp ((*pPrint).lightreflectionstring, "default"))
+    (*pPrint).lightreflection = 0;
+  else
+    (*pPrint).lightreflection = atof ((*pPrint).lightreflectionstring);
+
+  return;
+}
+
+void
+nev_print_init_pf (struct PRINT *pPrint)
+{
+  int i, varqty;
+  int *polef = ut_alloc_1d_int (3);
+  char *fct = NULL;
+  char **vars = NULL, **vals = NULL;
+
+  sscanf ((*pPrint).pfpolestring, "%d:%d:%d\n", polef, polef + 1, polef + 2);
+  ol_polef_polecrysym (polef, "cubic", &(*pPrint).pfpoles, &(*pPrint).pfpoleqty);
+
+  ut_string_function ((*pPrint).pfkernel, &fct, &vars, &vals, &varqty);
+
+  if (varqty == 1)
+    (*pPrint).pfkernelsig = atof (vals[0]);
+
+  int dirqty;
+  char **dirs = NULL;
+
+  (*pPrint).pfdir = ut_alloc_2d (3, 3);
+
+  ut_list_break ((*pPrint).pfdirstring, NEUT_SEP_DEP, &dirs, &dirqty);
+  if (dirqty != 2)
+    ut_print_exprbug ((*pPrint).pfdirstring);
+
+  for (i = 0; i < 2; i++)
+  {
+    if (!strcmp (dirs[i], "x") || !strcmp (dirs[i], "+x") || !strcmp (dirs[i], "-x"))
+      (*pPrint).pfdir[i][0] = 1.;
+    else if (!strcmp (dirs[i], "y") || !strcmp (dirs[i], "+y") || !strcmp (dirs[i], "-y"))
+      (*pPrint).pfdir[i][1] = 1.;
+    else if (!strcmp (dirs[i], "z") || !strcmp (dirs[i], "+z") || !strcmp (dirs[i], "-z"))
+      (*pPrint).pfdir[i][2] = 1.;
+    else
+      ut_print_exprbug ((*pPrint).pfdirstring);
+
+    if (strstr (dirs[i], "-"))
+      ut_array_1d_scale ((*pPrint).pfdir[i], 3, -1);
+  }
+
+  ut_vector_vectprod ((*pPrint).pfdir[0], (*pPrint).pfdir[1], (*pPrint).pfdir[2]);
+
+  if (ut_num_equal (ut_array_1d_min ((*pPrint).pfdir[2], 3), -1, 1e-6))
+    ut_print_message (1, 2, "%s: normal vector pointing downwards, which is non-standard.\n", (*pPrint).pfdirstring);
+
+  ut_free_2d_char (&dirs, dirqty);
+  ut_free_1d_int (&polef);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_2d_char (&vals, varqty);
 
   return;
 }

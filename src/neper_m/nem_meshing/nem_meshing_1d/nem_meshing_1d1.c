@@ -34,7 +34,7 @@ nem_meshing_1d (struct MESHPARA *pMeshPara, struct TESS Tess,
 
   Mesh[1] = neut_mesh_alloc (1, "tri", 1, 0, 0);
 
-  ut_print_message (0, 2, "1d meshing... ");
+  ut_print_message (0, 2, "1D meshing... ");
 
   ut_print_progress (stdout, 0, Tess.EdgeQty, "%3.0f%%", message);
 

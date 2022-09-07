@@ -11,11 +11,6 @@ net_tess_opt_init_sset_coo_cluster (int dim, int *activedim, gsl_rng * r2,
 {
   neut_point_set_zero (pPoint);
   (*pPoint).Dim = dim;
-  if (activedim)
-  {
-    (*pPoint).activedim = ut_alloc_1d_int (3);
-    ut_array_1d_int_memcpy (activedim, 3, (*pPoint).activedim);
-  }
 
   if (qty == 1)
     neut_point_addpoint (pPoint, NULL, rad);
@@ -65,13 +60,13 @@ net_tess_opt_init_sset_coo_centre (struct TOPT *pTOpt, gsl_rng * r, char *var,
     do
     {
       iter++;
-      if (Point2.PointQty == 1 && Point2.PointRad[1] == 0)
+      if (Point2.Qty == 1 && Point2.Rad[1] == 0)
         status =
           net_tess_opt_init_sset_coo_centre_randpt (pTOpt, Point, r, 0, 0,
                                                     coo[iter], dist + iter);
       else
         status =
-          net_tess_opt_init_sset_coo_centre_randpt_cluster ((*pTOpt).DomPoly,
+          net_tess_opt_init_sset_coo_centre_randpt_cluster (pTOpt,
                                                             Point, r, Point2,
                                                             0, coo[iter],
                                                             dist + iter);
@@ -109,7 +104,7 @@ net_tess_opt_init_sset_coo_centre (struct TOPT *pTOpt, gsl_rng * r, char *var,
         ut_array_1d_memcpy ((*pTOpt).tarcellval[pos][cell], (*pTOpt).Dim,
                             centre);
       else
-        net_tess_opt_init_sset_coo_centre_randpt_pick (Point, r, centre);
+        net_tess_opt_init_sset_coo_centre_randpt_pick (pTOpt, Point, (*pTOpt).activedim, r, centre);
     }
     else
       abort ();
@@ -140,12 +135,12 @@ net_tess_opt_init_sset_coo_record (struct TOPT *pTOpt, int cell,
   int i;
 
   neut_point_shift (pPoint2, centre);
-  for (i = 1; i <= (*pPoint2).PointQty; i++)
+  for (i = 1; i <= (*pPoint2).Qty; i++)
   {
-    neut_point_addpoint (pPoint, (*pPoint2).PointCoo[i],
-                         (*pPoint2).PointRad[i]);
-    neut_topt_seed_subcell_add (pTOpt, (*pPoint2).PointCoo[i],
-                                (*pPoint2).PointRad[i], cell);
+    neut_point_addpoint (pPoint, (*pPoint2).Coo[i],
+                         (*pPoint2).Rad[i]);
+    neut_topt_seed_subcell_add (pTOpt, (*pPoint2).Coo[i],
+                                (*pPoint2).Rad[i], cell);
   }
 
   return;

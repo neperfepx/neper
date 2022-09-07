@@ -45,7 +45,10 @@ extern "C"
 
   extern int neut_data_type_size (char *type, int *psize);
 
-  extern int neut_data_string_entity_attribute (char *string, char *entity, char *attribute);
+  extern int neut_data_string_entity_attribute (char *string, char *entity,
+                                                char **inputs, int inputqty, char *attribute);
+
+  extern void neut_data_colscheme_asygradient (char *colscheme, int stepqty, char **pasygradient);
 
 #endif				/* NEUT_DATA_GEN_H */
 

@@ -12,14 +12,15 @@ extern "C"
 
   struct POINT
   {
-    int Dim;
-    int *activedim;
-    int *Periodic;
-    double **BBox;
+    char *Name;
 
-    int PointQty;
-    double **PointCoo;
-    double *PointRad;
+    char *Type;
+    int Dim;
+
+    int Qty;
+    double **Coo;
+
+    double *Rad;
 
     // pointer to SIM structure
     struct SIM *pSim;

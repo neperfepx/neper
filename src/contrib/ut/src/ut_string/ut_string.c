@@ -347,14 +347,15 @@ ut_string_function (char *string, char **pfct, char ***pvars, char ***pvals,
   if (!string)
   {
     if (pqty)
-      (*pqty) = 0;
+      *pqty = 0;
     return;
   }
 
   if (!strstr (string, "("))
   {
     ut_string_string (string, pfct);
-    *pqty = 0;
+    if (pqty)
+      *pqty = 0;
     return;
   }
 

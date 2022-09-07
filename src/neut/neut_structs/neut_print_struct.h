@@ -12,31 +12,47 @@ extern "C"
 
   struct PRINT
   {
-    // povray
+    // prerequisites -----------------------------------------------------------
     char *povray;
+    int povrayantialiasing;
 
-    // camera settings
-    char *cameracoostring;
-    double *cameracoo;
+    char *asymptote;
 
-    char *cameralookatstring;
-    double *cameralookat;
+    // space -------------------------------------------------------------------
+    char *space;
 
-    char *cameraskystring;
-    double *camerasky;
+    // space -------------------------------------------------------------------
+    char *pfpolestring;
+    int** pfpoles;
+    int pfpoleqty;
 
-    double cameraangle;
+    char *pfprojection;         // stereographic or equal-area
+    char *pfmode;               // representation mode: point, contour, density
+    char *pffont;               // TimesRoman or ComputerModern
 
-    char *cameraprojection;
+    int pfgridsize;
+    char *pfkernel;
+    double pfkernelsig;
+    char *pfdirstring;
+    double **pfdir;             // [0,1]
+    char *pfsym;
+    int pfclustering;
 
-    // image settings
-    char *imagesize;
-    int imageantialias;
+    char *pfshape;
 
+    // slicing -----------------------------------------------------------------
+    char *slice;
+
+    // show --------------------------------------------------------------------
     int showtess;
     int showtesr;
     int showmesh;
     int showslice;
+    int showcsys;
+    int showscale;
+
+    int inputqty;
+    char **inputs;
 
     int *shownode;
     int *showelt3d;
@@ -55,24 +71,45 @@ extern "C"
     char *showvoidvoxstring;
     char *showedgestring;
 
-    int *showpoint;
+    int **showpoint;
     int *showcrystal;
 
-    int showcsys;
+    // camera ------------------------------------------------------------------
+    char *cameracoostring;
+    double *cameracoo;
+    char *cameralookatstring;
+    double *cameralookat;
+    char *cameraskystring;
+    double *camerasky;
+    double cameraangle;
+    char *cameraprojection;
 
+    // light -------------------------------------------------------------------
+    char *lightsourcestring;
+    char **lightsources;
+    int lightsourceqty;
+    char *lightambientstring;
+    double lightambient;
+    char *lightdiffusestring;
+    double lightdiffuse;
+    char *lightreflectionstring;
+    double lightreflection;
+
+    // scene -------------------------------------------------------------------
     char *scenebackground;
-    int sceneshadow;
 
-    // miscellaneous
-    int datareduction;
+    // image -------------------------------------------------------------------
+    char *imagesize;
+    char *imageformat;
 
-    char *format;
+    // output ------------------------------------------------------------------
+    char *outdir;
 
+    // advanced ----------------------------------------------------------------
     char *includepov;
 
-    char *slice;
-
-    char *outdir;
+    // internal for now --------------------------------------------------------
+    int datareduction; // set to 1
   };
   typedef struct PRINT PRINT;
 

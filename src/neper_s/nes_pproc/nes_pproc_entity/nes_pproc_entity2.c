@@ -101,19 +101,20 @@ nes_pproc_entity_file (struct SIM *pSim, char *entity, char *dir, char *res, cha
 {
   int step;
   char *simfile = ut_alloc_1d_char (1000);
+  char *stepsimfile = ut_alloc_1d_char (1000);
   char *filename = ut_alloc_1d_char (1000);
   char *prev = ut_alloc_1d_char (1000);
 
   ut_print_progress (stdout, 0, (*pSim).StepQty + 1, "%3.0f%%", prev);
 
-  expr[strlen (expr) - 1] = '\0';
+  ut_string_string (expr + 5, &simfile);
+  simfile[strlen (simfile) - 1] = '\0';
 
   for (step = 0; step <= (*pSim).StepQty; step++)
   {
-    sprintf (simfile, "%s.step%d)", expr, step);
+    sprintf (stepsimfile, "%s.step%d", simfile, step);
     sprintf (filename, "%s/%s/%s.step%d", dir, res, res, step);
-
-    ut_file_cp (simfile, filename);
+    ut_file_cp (ut_file_exist (stepsimfile) ? stepsimfile : simfile, filename);
 
     ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1, "%3.0f%%", prev);
   }
@@ -122,6 +123,7 @@ nes_pproc_entity_file (struct SIM *pSim, char *entity, char *dir, char *res, cha
   neut_sim_fprintf ((*pSim).simdir, *pSim, "W");
 
   ut_free_1d_char (&simfile);
+  ut_free_1d_char (&stepsimfile);
   ut_free_1d_char (&filename);
   ut_free_1d_char (&prev);
 

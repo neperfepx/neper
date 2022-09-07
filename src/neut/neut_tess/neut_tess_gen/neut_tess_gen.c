@@ -1183,11 +1183,7 @@ neut_tess_var_val (struct TESS Tess,
     status = neut_sim_entity_id_res_val (*(Tess.pSim), entity, id, var, *pvals);
 
   if (ptype)
-  {
-    ut_free_1d_char (ptype);
-    (*ptype) = ut_alloc_1d_char (strlen (typetmp) + 1);
-    strcpy (*ptype, typetmp);
-  }
+    ut_string_string (typetmp, ptype);
 
   ut_free_1d (&c);
   ut_free_2d (&bbox, 3);
@@ -1231,7 +1227,7 @@ neut_tess_entity_dim (struct TESS Tess, char *entity, int *pdim)
     (*pdim) = 3;
   else if (!strcmp (entity, "seed"))
     (*pdim) = 4;
-  else if (!strcmp (entity, "cell"))
+  else if (!strncmp (entity, "cell", 4))
     (*pdim) = Tess.Dim;
   else if (!strncmp (entity, "crystal", 7))
     (*pdim) = 5;
@@ -1280,6 +1276,8 @@ neut_tess_entity_qty (struct TESS Tess, char *entity, int *pqty)
   else if (!strcmp (entity, "crystal"))
     (*pqty) = Tess.CellQty;
   else if (!strcmp (entity, "crystaledge"))
+    (*pqty) = 1;
+  else if (!strcmp (entity, "celledge"))
     (*pqty) = 1;
   else if (!strcmp (entity, "seed"))
     (*pqty) = Tess.CellQty;
@@ -1821,4 +1819,20 @@ int
 neut_tess_cell_id (struct TESS Tess, int cell)
 {
   return Tess.CellId ? Tess.CellId[cell] : cell;
+}
+
+void
+neut_tess_olset (struct TESS Tess, struct OL_SET *pOSet)
+{
+  int i;
+
+  (*pOSet) = ol_set_alloc (Tess.CellQty, Tess.CellCrySym ? Tess.CellCrySym : "triclinic");
+
+  for (i = 1; i <= Tess.CellQty; i++)
+  {
+    ol_q_memcpy (Tess.CellOri[i], (*pOSet).q[i -1]);
+    neut_tess_cell_size (Tess, i, (*pOSet).weight + i - 1);
+  }
+
+  return;
 }

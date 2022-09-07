@@ -267,6 +267,9 @@ extern "C"
 /// \param pfile: new file pointer
 extern void ut_file_scan_file (FILE *file, char *dirname, FILE **pfile, char **pfilename);
 
+extern void ut_file_dir_basename_extension_filename (char *dir, char *basename,
+                                                     char *extension, char **pfilename);
+
 #endif                          /* UT_FILE_H */
 
 #ifdef __cplusplus

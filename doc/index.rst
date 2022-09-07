@@ -14,6 +14,7 @@ Neper: Polycrystal Generation and Meshing
    neper_v.rst
    exprskeys.rst
    fileformat.rst
+   tutorials.rst
    versions.rst
    gpl.rst
    fdl.rst

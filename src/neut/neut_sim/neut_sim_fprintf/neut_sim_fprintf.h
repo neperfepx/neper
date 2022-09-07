@@ -10,6 +10,8 @@
 /// writes a simulation report file
 extern void neut_sim_fprintf (char *dir, struct SIM Sim, char *mode);
 
+extern void neut_sim_fprintf_asy (char *dir, struct SIM Sim, char *mode);
+
 /// writes at terminal about the simulation
 extern void neut_sim_verbose (struct SIM Sim);
 

@@ -40,8 +40,8 @@ The following table gives an overview of the functions supported by the default 
 :data:`sign`    sign function: -1 if :math:`x<0`; 1 if :math:`x>0`
 :data:`rint`    round to nearest integer
 :data:`abs`     absolute value
-:data:`<min>`     min of all arguments
-:data:`<max>`     max of all arguments
+:data:`min`     min of all arguments
+:data:`max`     max of all arguments
 :data:`sum`     sum of all arguments
 :data:`avg`     mean value of all arguments
 =============== =========================================================
@@ -464,8 +464,9 @@ Available keys for a mesh itself are provided below.  "co" stands for "cohesive"
 
 ======================= ================================================= ==============================
 **Key**                 **Descriptor**                                    **Apply to**
-:data:`eltnb`           element number                                    {0-3}D,co mesh, co-elt mesh
+:data:`eltnb`           element number                                    {0-3}D,co mesh
 :data:`nodenb`          node number                                       {0-3}D mesh
+:data:`elsetnb`         elset number                                      {0-3}D,co mesh
 :data:`partnb`          partition number                                  highest-dimension mesh
 :data:`x`               x coordinate                                      {0-3}D mesh
 :data:`y`               y coordinate                                      {0-3}D mesh
@@ -494,6 +495,7 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`elsetco`                                   Cohesive elset                                                        co elt
 :data:`part`                                      partition                                                             {0-3}D elt, node
 :data:`group`                                     group                                                                 {0-3}D elt, {0-3}D elset
+:data:`scaleid(<scale_nb>)`                       identifier of the corresponding tess cell at scale :data:`<scale_nb>` 2D elset, 3D elset
 :data:`cyl`                                       cylinder polygonization [#cyl]_                                       1D elt, 1D elset
 :data:`vol`                                       volume                                                                3D elt, 3D elset
 :data:`area`                                      surface area                                                          2D elt
@@ -561,15 +563,15 @@ A result of a :ref:`simulation directory <simulation_directory>` can be invoked 
 
 Available results / keys and concerning orientation distributions are provided below.
 
-===================================== ======================================================================================== ====================================================
-**Key**                               **Descriptor**                                                                           **Apply to**
-:data:`ori`                           average orientation                                                                      elset, mesh
-:data:`oridisanisoangles`             orientation distribution principal angles                                                elset, mesh
-:data:`oridisanisoaxes`               orientation distribution principal axes                                                  elset, mesh
-:data:`oridisanisofact`               orientation distribution factor                                                          elset, mesh
-:data:`odf(sigma=value)`              ODF defined at elements, with sigma the standard deviation of the kernel (optional)      mesh
-:data:`odfn(sigma=value)`             ODF defined at nodes, with sigma the standard deviation of the kernel (optional)         mesh
-===================================== ======================================================================================== ====================================================
+===================================== ======================================================================================================= ===============
+**Key**                               **Descriptor**                                                                                          **Apply to**
+:data:`ori`                           average orientation                                                                                     elset, mesh
+:data:`oridisanisoangles`             orientation distribution principal angles                                                               elset, mesh
+:data:`oridisanisoaxes`               orientation distribution principal axes                                                                 elset, mesh
+:data:`oridisanisofact`               orientation distribution factor                                                                         elset, mesh
+:data:`odf(theta=<value>)`            ODF defined at elements, with :data:`theta` the standard deviation of the kernel (in degrees, optional) mesh
+:data:`odfn(theta=<value>)`           ODF defined at nodes, with :data:`theta` the standard deviation of the kernel (in degrees, optional)    mesh
+===================================== ======================================================================================================= ===============
 
 .. _rotations_and_orientations:
 
@@ -643,7 +645,7 @@ Crystal Symmetries
 Crystal symmetries can be described using the following descriptors.
 
 ======================== ============================================ ========================
-Key                      Descriptor                                   Number of operators
+**Key**                  **Descriptor**                               **Number of operators**
 :data:`triclinic`        triclinic (Laue group :math:`\overline{1}`)  24
 :data:`cubic`            cubic				              24
 :data:`hexagonal`        hexagonal				      1
@@ -821,29 +823,44 @@ Color Maps
 .. _color_map_for_integer_values:
 
 Color Map for Integer Values
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The *color map* or *palette* used to represent integer values is defined from the above color list, by excluding colors of brightness below 0.2 and above 0.8.  The brightness is defined as the average of the channel values divided by 255.  The resulting list of colors is: \(1) :data:`red`, (2) :data:`green`, (3) :data:`blue`, (4) :data:`yellow`, (5) :data:`magenta`, (6) :data:`cyan`, (7) :data:`chartreuse`, (8) :data:`springgreen`, (9) :data:`olive`, (10) :data:`purple`, (11) :data:`teal`, (12) :data:`gray`, (13) :data:`deepskyblue`, (14) :data:`lawngreen`, (15) :data:`darkgray`, (16) :data:`orangered`, (17) :data:`silver`, (18) :data:`darkorange`, (19) :data:`mediumblue`, (20) :data:`indigo`, (21) :data:`lightcoral`, (22) :data:`coral`, (23) :data:`salmon`, (24) :data:`aquamarine`, (25) :data:`gold`, (26) :data:`orange`, (27) :data:`darkmagenta`, (28) :data:`darkcyan`, (29) :data:`peru`, (30) :data:`steelblue`, (31) :data:`mediumspringgreen`, (32) :data:`darkslateblue`, (33) :data:`darkgoldenrod`, (34) :data:`lightsalmon`, (35) :data:`lightskyblue`, (36) :data:`tomato`, (37) :data:`slategray`, (38) :data:`hotpink`, (39) :data:`darkkhaki`, (40) :data:`darkturquoise`, (41) :data:`mediumseagreen`, (42) :data:`mediumvioletred`, (43) :data:`violet`, (44) :data:`greenyellow`, (45) :data:`darkseagreen`, (46) :data:`rosybrown`, (47) :data:`deeppink`, (48) :data:`saddlebrown`, (49) :data:`darkviolet`, (50) :data:`dodgerblue`, (51) :data:`lightslategray`, (52) :data:`burlywood`, (53) :data:`mediumslateblue`, (54) :data:`turquoise`, (55) :data:`skyblue`, (56) :data:`mediumturquoise`, (57) :data:`tan`, (58) :data:`limegreen`, (59) :data:`darksalmon`, (60) :data:`lightsteelblue`, (61) :data:`royalblue`, (62) :data:`palegreen`, (63) :data:`crimson`, (64) :data:`mediumorchid`, (65) :data:`khaki`, (66) :data:`lightgreen`, (67) :data:`darkslategray`, (68) :data:`darkorchid`, (69) :data:`seagreen`, (70) :data:`yellowgreen`, (71) :data:`blueviolet`, (72) :data:`palevioletred`, (73) :data:`olivedrab`, (74) :data:`mediumpurple`, (75) :data:`sandybrown`, (76) :data:`darkolivegreen`, (77) :data:`mediumaquamarine`, (78) :data:`slateblue`, (79) :data:`forestgreen`, (80) :data:`midnightblue`, (81) :data:`lightseagreen`, (82) :data:`orchid`, (83) :data:`cornflowerblue`, (84) :data:`sienna`, (85) :data:`firebrick`, (86) :data:`indianred`, (87) :data:`dimgray`, (88) :data:`chocolate`, (89) :data:`brown`, (90) :data:`goldenrod`, (91) :data:`plum` and (92) :data:`cadetblue`.
 
 .. _color_map_for_real_values:
 
 Color Maps for Real Values
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The color *map* used to represent real values is smooth and obtained by interpolation between nominal colors. `Tinycolormap <https://github.com/yuki-koyama/tinycolormap>`_ is used to generate standard color maps:
+The color *map* used to represent real values is smooth and obtained by interpolation between nominal colors. `Tinycolormap <https://github.com/yuki-koyama/tinycolormap>`_ is used to generate standard color maps, and the default is :data:`viridis`. The color maps are
 
-================= =============================== ========================
-**Python-style**  **Matlab-style**                **GitHub-style**
-:data:`magma`     :data:`parula`                  :data:`github`
-:data:`inferno`   :data:`heat`
-:data:`plasma`    :data:`hot`
-:data:`viridis`   :data:`jet`
-:data:`cividis`   :data:`gray`
-================= =============================== ========================
+================= ===================================================
+**Key**           **Color bar**
+viridis           .. image:: imgs/color-maps-real/viridis.png
+cividis           .. image:: imgs/color-maps-real/cividis.png
+magma             .. image:: imgs/color-maps-real/magma.png
+inferno           .. image:: imgs/color-maps-real/inferno.png
+plasma            .. image:: imgs/color-maps-real/plasma.png
+parula            .. image:: imgs/color-maps-real/parula.png
+heat              .. image:: imgs/color-maps-real/heat.png
+hot               .. image:: imgs/color-maps-real/hot.png
+jet               .. image:: imgs/color-maps-real/jet.png
+gray              .. image:: imgs/color-maps-real/gray.png
+github            .. image:: imgs/color-maps-real/github.png
+================= ===================================================
 
-and :data:`viridis` is the default.  See `Tinycolormap <https://github.com/yuki-koyama/tinycolormap>`_  for illustrations.
+Alternatively, a custom color map can be provided as :data:`custom(<color1>,<color2>,...)`.  Neper's legacy color map (version :math:`< 4`) is :data:`custom(blue,cyan,yellow,green)` and can also be obtained using :data:`legacy`:
 
-Alternatively, any series of colors can be used to define a color map.  Neper's legacy color map (version :math:`< 4`) is :data:`blue,cyan,yellow,green` and can be obtained using :data:`legacy`.
+================= ===================================================
+legacy            .. image:: imgs/color-maps-real/legacy.png
+================= ===================================================
+
+Finally, it is possible to gradually fade the start of a color map, to make it starts with white.  This can be done using the :data:`fade` modifier, following the syntax :data:`<colormap>:fade[(threshold)]`.  The threshold ranges from 0 to 1 and is equal to 0.1 by default.  Fading is applied linearly from 0 (full fading) to the threshold (no fading).  Examples are show below:
+
+================= ===================================================
+viridis:fade      .. image:: imgs/color-maps-real/viridis-fade.png
+viridis:fade(0.2) .. image:: imgs/color-maps-real/viridis-fade0p2.png
+================= ===================================================
 
 .. [#muparser_doc] Taken from the :data:`muparser` `documentation <http://beltoforion.de/article.php?a=muparser>`_
 

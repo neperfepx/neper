@@ -92,6 +92,7 @@ add_library(neut
 ./neut_seedset/neut_seedset1.cpp
 ./neut_seedset/neut_seedset2.cpp
 ./neut_povray/neut_povray.c
+./neut_asy/neut_asy.c
 ./neut_nset/neut_nset.c
 ./neut_print/neut_print.c
 ./neut_test/neut_test.c

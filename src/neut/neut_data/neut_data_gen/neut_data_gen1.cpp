@@ -64,12 +64,16 @@ neut_data_value_type (struct SIM Sim, char *entity, char *attribute,
 }
 
 int
-neut_data_string_entity_attribute (char *string, char *entity, char *attribute)
+neut_data_string_entity_attribute (char *string, char *entity, char **inputs, int inputqty,
+                                   char *attribute)
 {
+  int i;
   char *stringcpy = NULL;
 
   // skipping -data if present
   ut_string_string (!strncmp (string, "-data", 5) ? string + 5 : string, &stringcpy);
+
+  entity[0] = '\0';
 
   // setting entity: must be one of:
   // for the mesh: node, elt, elset, elt1d, eltedge
@@ -114,6 +118,8 @@ neut_data_string_entity_attribute (char *string, char *entity, char *attribute)
     strcpy (entity, "poly");
   else if (!strncmp (stringcpy, "seed", 4))
     strcpy (entity, "seed");
+  else if (!strncmp (stringcpy, "celledge", 8))
+    strcpy (entity, "celledge");
   else if (!strncmp (stringcpy, "cell", 4))
     strcpy (entity, "cell");
   else if (!strncmp (stringcpy, "voxedge", 7))
@@ -135,6 +141,27 @@ neut_data_string_entity_attribute (char *string, char *entity, char *attribute)
   else if (!strncmp (stringcpy, "mesh", 4))
     strcpy (entity, "mesh");
   else
+  {
+    for (i = 0; i < inputqty; i++)
+      if (!strncmp (stringcpy, inputs[i], strlen (inputs[i])))
+      {
+        strcpy (entity, inputs[i]);
+        break;
+      }
+
+    for (i = 0; i < inputqty; i++)
+    {
+      char *tmp = ut_string_paste (inputs[i], (char *) "edge");
+      if (!strncmp (stringcpy, tmp, strlen (tmp)))
+      {
+        strcpy (entity, tmp);
+        break;
+      }
+      ut_free_1d_char (&tmp);
+    }
+  }
+
+  if (strlen (entity) == 0)
   {
     ut_print_message (2, 0, "option -data*: entity not supported");
     abort ();
@@ -158,20 +185,13 @@ neut_data_type_size (char *type, int *psize)
 {
   int status = 0;
   if (!strcmp (type, "real") || !strcmp (type, "int")
-      || !strcmp (type, "rad") || !strcmp (type, "edgerad")
-      || !strcmp (type, "real"))
+      || !strcmp (type, "rad") || !strcmp (type, "edgerad"))
     (*psize) = 1;
   else if (!strcmp (type, "edgecol") || !strcmp (type, "col")
            || !strcmp (type, "coo"))
     (*psize) = 3;
   else if (!strcmp (type, "ori"))
     (*psize) = 4;
-  else if (strcmp (type, "cube"))
-    (*psize) = 10;
-  else if (strcmp (type, "cyl"))
-    (*psize) = 5;
-  else if (strcmp (type, "ell"))
-    (*psize) = 12;
   else if (!strncmp (type, "int", 3) || !strncmp (type, "real", 4))
     sscanf (type + 4, "%d", psize);
   else
@@ -275,16 +295,22 @@ void
 neut_data_real_color (double **data, int *datadef, int size, char *scale,
                       char *scheme_in, int **Col, char **pscale)
 {
-  int i;
-  double ScaleBeg, ScaleEnd;
+  int i, qty, valqty;
+  double ScaleBeg, ScaleEnd, alpha;
   double datamin, datamax;
   char **parts = NULL;
-  int qty;
   char *min = NULL, *max = NULL;
-  char *tmp = ut_alloc_1d_char (1000);
-  char *scheme = NULL;
+  char *scheme = NULL, *transform = NULL, *fct = NULL, **vals = NULL;
 
   ut_string_string (scheme_in? scheme_in : NEUT_DEFAULT_COLSCHEME_REAL, &scheme);
+
+  ut_list_break (scheme, NEUT_SEP_DEP, &parts, &qty);
+
+  if (qty == 2)
+  {
+    ut_string_string (parts[0], &scheme);
+    ut_string_string (parts[1], &transform);
+  }
 
   qty = 0;
   if (scale)
@@ -339,13 +365,41 @@ neut_data_real_color (double **data, int *datadef, int size, char *scale,
     tinycolormap::ColormapType type =
       neut_data_colscheme_tinycolormaptype (scheme);
 
+    double th = 0;
+    if (transform)
+    {
+      ut_string_function (transform, &fct, NULL, &vals, &valqty);
+
+      if (!strcmp (fct, "fade"))
+      {
+        th = 0.1;
+        if (valqty == 1)
+          sscanf (vals[0], "%lf", &th);
+      }
+      else
+        ut_print_exprbug (scheme_in);
+    }
+
     for (i = 1; i <= size; i++)
     {
       double val = (data[i][0] - ScaleBeg) / (ScaleEnd - ScaleBeg);
       tinycolormap::Color col = tinycolormap::GetColor(val, type);
+
       Col[i][0] = ut_num_d2ri (255 * col.r());
       Col[i][1] = ut_num_d2ri (255 * col.g());
       Col[i][2] = ut_num_d2ri (255 * col.b());
+
+      if (th)
+      {
+        alpha = val / th;
+
+        if (alpha < 1)
+        {
+          Col[i][0] = ut_num_d2ri (255 * (1 + alpha * (col.r() - 1)));
+          Col[i][1] = ut_num_d2ri (255 * (1 + alpha * (col.g() - 1)));
+          Col[i][2] = ut_num_d2ri (255 * (1 + alpha * (col.b() - 1)));
+        }
+      }
     }
   }
 
@@ -376,8 +430,10 @@ neut_data_real_color (double **data, int *datadef, int size, char *scale,
   ut_free_2d_char (&parts, qty);
   ut_free_1d_char (&min);
   ut_free_1d_char (&max);
-  ut_free_1d_char (&tmp);
   ut_free_1d_char (&scheme);
+  ut_free_1d_char (&transform);
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vals, valqty);
 
   return;
 }
@@ -413,7 +469,13 @@ neut_data_datastring_type_value (char *entity, char *attribute,
                                  char *datastring, char **pdatatype,
                                  char **pdatavalue)
 {
-  if (!strcmp (attribute, "scale")
+  if (!strcmp (attribute, "symbol"))
+  {
+    ut_string_string ("string", pdatatype);
+    ut_string_string (datastring, pdatavalue);
+  }
+
+  else if (!strcmp (attribute, "scale")
    || !strcmp (attribute, "scaletitle")
    || !strcmp (attribute, "colscheme")
    || !strcmp (attribute, "label"))
@@ -478,33 +540,39 @@ neut_data_datastring_type_value (char *entity, char *attribute,
 int
 neut_data_colscheme_istinycolormap (char *colscheme)
 {
+  char *tmp = ut_alloc_1d_char (strlen (colscheme) + 1);
+
   if (!colscheme)
     return 0;
 
-  if (!strcmp (colscheme, "Parula")
-   || !strcmp (colscheme, "Heat")
-   || !strcmp (colscheme, "Hot")
-   || !strcmp (colscheme, "Jet")
-   || !strcmp (colscheme, "Gray")
-   || !strcmp (colscheme, "Magma")
-   || !strcmp (colscheme, "Inferno")
-   || !strcmp (colscheme, "Plasma")
-   || !strcmp (colscheme, "Viridis")
-   || !strcmp (colscheme, "Cividis")
-   || !strcmp (colscheme, "Github")
-   || !strcmp (colscheme, "parula")
-   || !strcmp (colscheme, "heat")
-   || !strcmp (colscheme, "hot")
-   || !strcmp (colscheme, "jet")
-   || !strcmp (colscheme, "gray")
-   || !strcmp (colscheme, "grey")
-   || !strcmp (colscheme, "magma")
-   || !strcmp (colscheme, "inferno")
-   || !strcmp (colscheme, "plasma")
-   || !strcmp (colscheme, "viridis")
-   || !strcmp (colscheme, "cividis")
-   || !strcmp (colscheme, "github"))
+  ut_string_untilstring (colscheme, NEUT_SEP_DEP, NULL, tmp);
+
+  if (!strcmp (tmp, "Parula")
+   || !strcmp (tmp, "Heat")
+   || !strcmp (tmp, "Hot")
+   || !strcmp (tmp, "Jet")
+   || !strcmp (tmp, "Gray")
+   || !strcmp (tmp, "Magma")
+   || !strcmp (tmp, "Inferno")
+   || !strcmp (tmp, "Plasma")
+   || !strcmp (tmp, "Viridis")
+   || !strcmp (tmp, "Cividis")
+   || !strcmp (tmp, "Github")
+   || !strcmp (tmp, "parula")
+   || !strcmp (tmp, "heat")
+   || !strcmp (tmp, "hot")
+   || !strcmp (tmp, "jet")
+   || !strcmp (tmp, "gray")
+   || !strcmp (tmp, "grey")
+   || !strcmp (tmp, "magma")
+   || !strcmp (tmp, "inferno")
+   || !strcmp (tmp, "plasma")
+   || !strcmp (tmp, "viridis")
+   || !strcmp (tmp, "cividis")
+   || !strcmp (tmp, "github"))
    return 1;
+
+  ut_free_1d_char (&tmp);
 
   return 0;
 }
@@ -531,7 +599,8 @@ neut_data_colscheme_tinycolormaptype (char *colscheme)
     type = tinycolormap::ColormapType::Inferno;
   else if (!strcmp (colscheme, "Plasma") || !strcmp (colscheme, "plasma"))
     type = tinycolormap::ColormapType::Plasma;
-  else if (!strcmp (colscheme, "Viridis") || !strcmp (colscheme, "viridis"))
+  else if (!strcmp (colscheme, "Viridis") || !strcmp (colscheme, "viridis")
+        || !strncmp (colscheme, "wviridis", 8))
     type = tinycolormap::ColormapType::Viridis;
   else if (!strcmp (colscheme, "Cividis") || !strcmp (colscheme, "cividis"))
     type = tinycolormap::ColormapType::Cividis;
@@ -541,4 +610,32 @@ neut_data_colscheme_tinycolormaptype (char *colscheme)
     abort ();
 
   return type;
+}
+
+void
+neut_data_colscheme_asygradient (char *colscheme, int stepqty, char **pasygradient)
+{
+  int i;
+  double **vals = ut_alloc_2d (stepqty + 1, 1);
+  int **rgb = ut_alloc_2d_int (stepqty + 1, 3);
+
+  for (i = 1; i <= stepqty; i++)
+    vals[i][0] = (double) (i - 1) / (stepqty - 1);
+
+  neut_data_real_color (vals, NULL, stepqty, NULL, colscheme, rgb, NULL);
+
+  (*pasygradient) = ut_alloc_1d_char (stepqty * 100);
+
+  sprintf (*pasygradient, "Gradient(");
+  for (i = 1; i <= stepqty; i++)
+    sprintf (*pasygradient + strlen (*pasygradient), "rgb(%f,%f,%f)%s",
+             rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255.,
+             i < stepqty ? "," : "");
+
+  sprintf (*pasygradient + strlen (*pasygradient), ")");
+
+  ut_free_2d (&vals, stepqty + 1);
+  ut_free_2d_int (&rgb, stepqty + 1);
+
+  return;
 }

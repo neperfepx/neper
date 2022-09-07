@@ -7,9 +7,46 @@
 void
 neut_print_set_default (struct PRINT *pPrint)
 {
+  // space -------------------------------------------------------------
+  (*pPrint).space = NULL;
+  ut_string_string ("real", &((*pPrint).space));
+
+  // pf ----------------------------------------------------------------
+  (*pPrint).pfpolestring = NULL;
+  ut_string_string ("1:1:1", &(*pPrint).pfpolestring);
+  (*pPrint).pfpoles = NULL;
+  (*pPrint).pfpoleqty = 0;
+  (*pPrint).pfprojection = NULL;
+  ut_string_string ("stereographic", &(*pPrint).pfprojection);
+  (*pPrint).pfmode = NULL;
+  ut_string_string ("symbol", &(*pPrint).pfmode);
+  (*pPrint).pffont = NULL;
+  ut_string_string ("TimesRoman", &(*pPrint).pffont);
+
+  (*pPrint).pfsym = NULL;
+  ut_string_string ("monoclinic", &(*pPrint).pfsym);
+
+  (*pPrint).pfclustering = 1;
+
+  (*pPrint).pfgridsize = 200;
+  (*pPrint).pfkernel = NULL;
+  ut_string_string ("normal(3)", &(*pPrint).pfkernel);
+  (*pPrint).pfkernelsig = 3;
+
+  (*pPrint).pfdirstring = NULL;
+  ut_string_string ("y:-x", &(*pPrint).pfdirstring);
+  (*pPrint).pfdir = NULL;
+
+  (*pPrint).pfshape = NULL;
+  ut_string_string ("full", &(*pPrint).pfshape);
+
   // povray ------------------------------------------------------------
   (*pPrint).povray = NULL;
   ut_string_string ("povray", &((*pPrint).povray));
+
+  // asymptote ------------------------------------------------------------
+  (*pPrint).asymptote = NULL;
+  ut_string_string ("asy", &((*pPrint).asymptote));
 
   // camera ------------------------------------------------------------
   (*pPrint).cameracoostring = ut_alloc_1d_char (100);
@@ -31,15 +68,33 @@ neut_print_set_default (struct PRINT *pPrint)
   (*pPrint).cameraprojection = ut_alloc_1d_char (100);
   strcpy ((*pPrint).cameraprojection, "default");
 
+  // light ------------------------------------------------------------
+  (*pPrint).lightsourcestring = NULL;
+  ut_string_string ("default", &(*pPrint).lightsourcestring);
+  (*pPrint).lightsourceqty = 0;
+  (*pPrint).lightsources = NULL;
+  (*pPrint).lightambientstring = NULL;
+  ut_string_string ("default", &(*pPrint).lightambientstring);
+  (*pPrint).lightdiffusestring = NULL;
+  ut_string_string ("default", &(*pPrint).lightdiffusestring);
+  (*pPrint).lightreflectionstring = NULL;
+  ut_string_string ("default", &(*pPrint).lightreflectionstring);
+  (*pPrint).lightambient = 0;
+  (*pPrint).lightdiffuse = 0;
+  (*pPrint).lightreflection = 0;
+
   // image -------------------------------------------------------------
   (*pPrint).imagesize = ut_alloc_1d_char (100);
   sprintf ((*pPrint).imagesize, "1200%s900", NEUT_SEP_DEP);
-  (*pPrint).imageantialias = 1;
+  (*pPrint).povrayantialiasing = 1;
 
   (*pPrint).showtess = -1;
   (*pPrint).showtesr = -1;
   (*pPrint).showmesh = -1;
   (*pPrint).showslice = -1;
+
+  (*pPrint).inputqty = 0;
+  (*pPrint).inputs = NULL;
 
   (*pPrint).showseed = ut_alloc_1d_int (1);
   (*pPrint).showcrystal = ut_alloc_1d_int (1);
@@ -53,7 +108,7 @@ neut_print_set_default (struct PRINT *pPrint)
   (*pPrint).showelt0d = ut_alloc_1d_int (1);
   (*pPrint).showelt1d = ut_alloc_1d_int (1);
   (*pPrint).showelt2d = ut_alloc_1d_int (1);
-  (*pPrint).showpoint = ut_alloc_1d_int (1);
+  (*pPrint).showpoint = NULL;
   (*pPrint).showcrystal[0] = -1;
   (*pPrint).showseed[0] = -1;
   (*pPrint).showver[0] = -1;
@@ -65,21 +120,20 @@ neut_print_set_default (struct PRINT *pPrint)
   (*pPrint).showelt0d[0] = -1;
   (*pPrint).showelt1d[0] = -1;
   (*pPrint).showelt2d[0] = -1;
-  (*pPrint).showpoint[0] = -1;
   (*pPrint).showcsys = -1;
   (*pPrint).showvox = NULL;
   (*pPrint).showvoxstring = NULL;
   (*pPrint).showvoidvoxstring = NULL;
   (*pPrint).showedgestring = NULL;
   (*pPrint).scenebackground = NULL;
+  (*pPrint).showscale = -1;
 
   ut_string_string ("white", &(*pPrint).scenebackground);
-  (*pPrint).sceneshadow = -1;
 
   (*pPrint).datareduction = 1;
 
-  (*pPrint).format = ut_alloc_1d_char (10);
-  sprintf ((*pPrint).format, "png");
+  (*pPrint).imageformat = ut_alloc_1d_char (10);
+  sprintf ((*pPrint).imageformat, "png");
 
   (*pPrint).includepov = NULL;
 
@@ -94,6 +148,8 @@ neut_print_set_default (struct PRINT *pPrint)
 void
 neut_print_free (struct PRINT *pPrint)
 {
+  ut_free_1d_char (&(*pPrint).space);
+
   // camera ------------------------------------------------------------
   ut_free_1d_char (&(*pPrint).cameracoostring);
   ut_free_1d (&(*pPrint).cameracoo);
@@ -105,6 +161,13 @@ neut_print_free (struct PRINT *pPrint)
   ut_free_1d (&(*pPrint).camerasky);
 
   ut_free_1d_char (&(*pPrint).cameraprojection);
+
+  // light ------------------------------------------------------------
+  ut_free_1d_char (&(*pPrint).lightsourcestring);
+  ut_free_2d_char (&(*pPrint).lightsources, (*pPrint).lightsourceqty);
+  ut_free_1d_char (&(*pPrint).lightambientstring);
+  ut_free_1d_char (&(*pPrint).lightdiffusestring);
+  ut_free_1d_char (&(*pPrint).lightreflectionstring);
 
   // image -------------------------------------------------------------
   ut_free_1d_char (&(*pPrint).imagesize);
@@ -120,9 +183,10 @@ neut_print_free (struct PRINT *pPrint)
   ut_free_1d_int (&(*pPrint).showelt2d);
   ut_free_1d_int (&(*pPrint).showelt1d);
   ut_free_1d_int (&(*pPrint).showelt0d);
-  ut_free_1d_int (&(*pPrint).showpoint);
+  ut_free_2d_int (&(*pPrint).showpoint, (*pPrint).inputqty);
+  ut_free_2d_char (&(*pPrint).inputs, (*pPrint).inputqty);
 
-  ut_free_1d_char (&(*pPrint).format);
+  ut_free_1d_char (&(*pPrint).imageformat);
   ut_free_1d_char (&(*pPrint).includepov);
 
   return;
@@ -159,4 +223,34 @@ neut_print_outdir (struct PRINT Print, struct SIM Sim, char *format, char **pdir
   ut_free_2d_char (&parts, qty);
 
   return;
+}
+
+void
+neut_print_imagesize (struct PRINT Print, int *pwidth, int *pheight)
+{
+  int valqty;
+  char **vals = NULL;
+
+  ut_list_break (Print.imagesize, NEUT_SEP_DEP, &vals, &valqty);
+  if (valqty != 2)
+    ut_print_message (2, 2, "Expression `%s' could not be processed.\n",
+                      Print.imagesize);
+  if (pwidth)
+    ut_string_int (vals[0], pwidth);
+  if (pheight)
+    ut_string_int (vals[1], pheight);
+  ut_free_2d_char (&vals, valqty);
+
+  return;
+}
+
+int
+neut_print_cell_show (struct PRINT Print, struct TESS Tess, int cell)
+{
+  if (Tess.Dim == 2)
+    return Print.showface[cell];
+  else if (Tess.Dim == 3)
+    return Print.showpoly[cell];
+  else
+    abort ();
 }

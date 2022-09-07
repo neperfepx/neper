@@ -26,6 +26,14 @@ extern void neut_data_fscanf_scal (char *input, struct SIM *pSim,
                                    char **pColDataName, int *pColDataSize,
                                    double ***pColData, char **pColDataType);
 
-extern void neut_data_fscanf_col_tensor (struct SIM Sim,
-                                         char *entity, int entityqty,
-                                         char *value, struct DATA *pData);
+extern void neut_data_fscanf_string (char *input, struct SIM *pSim,
+                         struct TESS *pTess, struct TESR *pTesr,
+                         struct NODES *pNodes, struct MESH **pMesh,
+                         struct POINT *pPoints, char *entity, int entityqty,
+                         char *value, char **pDataName, int *pDataSize,
+                         char ***pData, char **pDataType);
+
+extern void neut_data_fscanf_tensor (struct SIM Sim,
+                             char *entity, int entityqty,
+                             char *value, char **pDataName, int *pDataSize,
+                             double ***pData, char **pDataType);

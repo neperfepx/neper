@@ -104,7 +104,6 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
 
   double *p = ut_alloc_1d (3);
   double *p2 = NULL;
-  double ambient = (Print.sceneshadow == 1) ? 0.6 : 1;
 
   // Writing poly faces
   if (Tess.Dim == 3)
@@ -129,8 +128,8 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
       Trs /= qty;
 
       fprintf (file,
-               "#declare grainface%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f} }\n",
-               i, Col[0] / 255., Col[1] / 255., Col[2] / 255., Trs, ambient);
+               "#declare grainface%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
+               i, Col[0] / 255., Col[1] / 255., Col[2] / 255., Trs, Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
       ut_free_1d_int (&Col);
 
@@ -146,7 +145,7 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
       fprintf (file, "// poly face %d\n", face);
 
       nev_print_png_polygon (file, Tess.FaceEq[face], Tess.FaceVerQty[face], coo,
-                         texture, NULL, NULL, Tess.FacePt[face] - 1, p2, NULL,
+                         texture, 0, NULL, Tess.FacePt[face] - 1, p2, 0,
                          NULL);
 
       ut_free_2d (&coo, Tess.FaceVerQty[face]);
@@ -158,10 +157,10 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
     face = facelist[i];
 
     fprintf (file,
-             "#declare face%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f} }\n",
+             "#declare face%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
              face, TessData[2].Col[face][0] / 255.,
              TessData[2].Col[face][1] / 255., TessData[2].Col[face][2] / 255.,
-             TessData[2].Trs[face], ambient);
+             TessData[2].Trs[face], Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
     sprintf (texture, "face%d", face);
 
@@ -189,7 +188,7 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
     fprintf (file, "// face %d\n", face);
 
     nev_print_png_polygon (file, Tess.FaceEq[face], Tess.FaceVerQty[face], coo,
-                       texture, NULL, NULL, Tess.FacePt[face] - 1, p2, NULL,
+                       texture, 0, NULL, Tess.FacePt[face] - 1, p2, 0,
                        NULL);
 
     if (Print.showfaceinter == 1 && neut_tess_face_ff (Tess, face) > 0)
@@ -208,8 +207,8 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
 
       fprintf (file, "#declare faceinter_rad = %.12f;\n", faceinter_rad);
       fprintf (file,
-               "#declare faceinter_texture = texture { pigment { rgbt <0.5,0.5,0.5,%f> } finish {ambient %f} }\n",
-               faceinter_trs, ambient);
+               "#declare faceinter_texture = texture { pigment { rgbt <0.5,0.5,0.5,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
+               faceinter_trs, Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
       // not printing the sphere at both extremities because they would
       // overlap with the regular edge spheres, which leads to bad
@@ -217,7 +216,7 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
       for (j = 0; j < Tess.FaceVerQty[face]; j++)
       {
         if (Tess.FacePt[face] <= 0)
-          nev_print_png_segment (file, p, coo[j], "faceinter_rad",
+          nev_print_png_segment (file, p, coo[j], faceinter_rad,
                              "faceinter_texture");
         else if (Tess.FacePt[face] != j + 1
                  && Tess.FacePt[face] != ut_array_rotpos (1,
@@ -228,7 +227,7 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
                                                           Tess.
                                                           FaceVerQty[face],
                                                           j + 1, -1))
-          nev_print_png_segment (file, p, coo[j], "faceinter_rad",
+          nev_print_png_segment (file, p, coo[j], faceinter_rad,
                              "faceinter_texture");
       }
     }
@@ -244,10 +243,10 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
     edge = edgelist[i];
 
     fprintf (file,
-             "#declare edge%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f} }\n",
+             "#declare edge%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
              edge, TessData[1].Col[edge][0] / 255.,
              TessData[1].Col[edge][1] / 255., TessData[1].Col[edge][2] / 255.,
-             TessData[1].Trs[edge], ambient);
+             TessData[1].Trs[edge], Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
     sprintf (texture, "edge%d", edge);
 
@@ -256,10 +255,7 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
     ut_array_1d_memcpy (Tess.VerCoo[Tess.EdgeVerNb[edge][0]], 3, coo[0]);
     ut_array_1d_memcpy (Tess.VerCoo[Tess.EdgeVerNb[edge][1]], 3, coo[1]);
 
-    char *string = ut_alloc_1d_char (100);
-    sprintf (string, "%.12f", TessData[1].Rad[edge]);
-    nev_print_png_segment_wsph (file, coo[0], coo[1], string, texture);
-    ut_free_1d_char (&string);
+    nev_print_png_segment_wsph (file, coo[0], coo[1], TessData[1].Rad[edge], texture);
 
     ut_free_2d (&coo, 2);
   }
@@ -270,17 +266,14 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
     ver = verlist[i];
 
     fprintf (file,
-             "#declare ver%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f} }\n",
+             "#declare ver%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
              ver, TessData[0].Col[ver][0] / 255.,
              TessData[0].Col[ver][1] / 255., TessData[0].Col[ver][2] / 255.,
-             TessData[0].Trs[ver], ambient);
+             TessData[0].Trs[ver], Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
     sprintf (texture, "ver%d", ver);
 
-    char *string = ut_alloc_1d_char (100);
-    sprintf (string, "%.12f", TessData[0].Rad[ver]);
-    nev_print_png_sphere (file, Tess.VerCoo[ver], string, texture);
-    ut_free_1d_char (&string);
+    nev_print_png_sphere (file, Tess.VerCoo[ver], TessData[0].Rad[ver], texture);
   }
 
   // Writing seeds
@@ -289,17 +282,14 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
     seed = seedlist[i];
 
     fprintf (file,
-             "#declare seed%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f} }\n",
+             "#declare seed%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
              seed, TessData[4].Col[seed][0] / 255.,
              TessData[4].Col[seed][1] / 255., TessData[4].Col[seed][2] / 255.,
-             TessData[4].Trs[seed], ambient);
+             TessData[4].Trs[seed], Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
     sprintf (texture, "seed%d", seed);
 
-    char *string = ut_alloc_1d_char (100);
-    sprintf (string, "%.12f", TessData[4].Rad[seed]);
-    nev_print_png_sphere (file, Tess.SeedCoo[seed], string, texture);
-    ut_free_1d_char (&string);
+    nev_print_png_sphere (file, Tess.SeedCoo[seed], TessData[4].Rad[seed], texture);
   }
 
   // Writing crystals
@@ -309,19 +299,19 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
     crystal = crystallist[i];
 
     fprintf (file,
-             "#declare crystal%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f} }\n",
+             "#declare crystal%d =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
              crystal, TessData[5].Col[crystal][0] / 255.,
              TessData[5].Col[crystal][1] / 255., TessData[5].Col[crystal][2] / 255.,
-             TessData[5].Trs[crystal], ambient);
+             TessData[5].Trs[crystal], Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
     sprintf (texture, "crystal%d", crystal);
 
     if (TessData[5].BRad > 0)
       fprintf (file,
-               "#declare crystal%dedge =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f} }\n",
+               "#declare crystal%dedge =\n  texture { pigment { rgbt <%f,%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
                crystal, TessData[5].BCol[0] / 255.,
                TessData[5].BCol[1] / 255., TessData[5].BCol[2] / 255.,
-               TessData[5].BRad, ambient);
+               TessData[5].BRad, Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
     sprintf (bordertexture, "crystal%dedge", crystal);
 
@@ -349,10 +339,7 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
     else
     {
       rad[0] = TessData[5].Rad[crystal];
-      char *string = ut_alloc_1d_char (100);
-      sprintf (string, "%.12f", TessData[5].Rad[crystal]);
-      nev_print_png_sphere (file, coo, string, texture);
-      ut_free_1d_char (&string);
+      nev_print_png_sphere (file, coo, TessData[5].Rad[crystal], texture);
     }
     ut_free_1d_char (&string);
     ut_free_1d (&coo);

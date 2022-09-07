@@ -7,6 +7,7 @@
 #include<string.h>
 #include<math.h>
 #include<orilib.h>
+#include<limits.h>
 
 #include"ut.h"
 #include"neut_v.h"
