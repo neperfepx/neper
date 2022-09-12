@@ -1,3 +1,6 @@
+New in 4.5.1-1 (12 Sep 2022):
+- documentation: made minor improvement.
+
 New in 4.5.0 (07 Sep 2022):
 - module -T: fixed -morpho cube, added -statcell and -statvox
   <orientation_descriptor>, added -ori :flat, added -transform ori, made minor

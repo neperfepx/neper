@@ -134,7 +134,7 @@ Other dependencies are only needed at run-time (they are not necessary for compi
 
 - The `POV-Ray <http://www.povray.org>`_ program (version 3.7 or higher, mandatory for PNG output in :ref:`neper_v`).  It is likely to be available on your system or from your system package manager (binary package).  Alternatively, both binary and source-code versions can be downloaded the program website.  POV-Ray must be available at the terminal as the command :program:`povray`, or the path to its binary must be specified with option :option:`-povray` (in module -V).
 
-- The `Asymptote <https://asymptote.sourceforge.io/>`_ program (for pole figure plots in :ref:`neper_v`). It is likely to be available from your system package manager.  Alternatively, both binary and source-code versions can be downloaded from the program website.  Asymptote must be available at the terminal as the command :program:`asy`, or the path to its binary must be specified with option :option:`-asy` (in module -V).
+- The `Asymptote <https://asymptote.sourceforge.io/>`_ program and `Tex Live <https://www.tug.org/texlive>`_ (:code:`texlive-full` on Ubuntu, for pole figure plots in :ref:`neper_v`). They are likely to be available from your system package manager.  Alternatively, both binary and source-code versions can be downloaded from the program websites.  Asymptote must be available at the terminal as the command :program:`asy`, or the path to its binary must be specified with option :option:`-asy` (in module -V).
 
 Finally, other third-party libraries are directly included in the source code (see directory :file:`src/contrib`) and are therefore not dependencies *per se*:
 
