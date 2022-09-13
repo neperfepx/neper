@@ -49,7 +49,7 @@ Finally, cells (or "grains") can be defined using the :data:`**cell` and :data:`
   :language: plain
   :emphasize-lines: 8-14
 
-.. note:: The lines highlighted above indicate that there are :data:`2` cells of numbers (or "ids") :data:`1` and :data:`2`.  The :data:`*id` section is optional if the cells are numbered contiguously from :data:`1`.  The :data:`**data` section should always contain numbers contiguously numbered from :data:`1` (:data:`0` can be used to represent empty voxels), where :data:`1` represents the first cell, :data:`2` the second cell, etc. (independently of the cell ids provided in :data:`*id`).
+.. note:: The lines highlighted above indicate that there are :data:`2` cells of numbers (or "ids") :data:`1` and :data:`2`.  The :data:`*id` section is optional if the cells are numbered contiguously from :data:`1`.  The :data:`**data` section should always contain numbers contiguously numbered from :data:`1` (:data:`0` can be used to represent empty voxels), where :data:`1` represents the first cell, :data:`2` the second cell, etc. (independently of the cell ids provided in :data:`*id`); if it is not the case, run :option:`-transform` :data:`renumber` on the tesr for automatic renumbering.
 
 The EBSD map can be visualized, colored by its cell ids (which is the default), as follows:
 
