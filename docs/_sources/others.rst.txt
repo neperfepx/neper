@@ -23,6 +23,7 @@ Dependencies
   - `Gmsh <http://gmsh.info/>`_
   - `libScotch <http://www.labri.fr/perso/pelegrin/scotch>`_ (included in Neper)
   - `POV-Ray <http://www.povray.org>`_
+  - `Asymptote <https://asymptote.sourceforge.io>`_
 
 Others
 ------
