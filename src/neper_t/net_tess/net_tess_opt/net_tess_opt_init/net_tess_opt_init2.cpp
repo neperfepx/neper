@@ -317,6 +317,8 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
           }
 
           Fct[j].sigma /= mean;
+          Fct[j].from /= mean;
+          Fct[j].to /= mean;
         }
       }
 

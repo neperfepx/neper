@@ -1,5 +1,6 @@
-New in 4.5.1-1 (12 Sep 2022):
+New in 4.5.1-2 (11 Oct 2022):
 - documentation: made minor improvement.
+- fixed truncated statistical distributions (from and to).
 
 New in 4.5.0 (07 Sep 2022):
 - module -T: fixed -morpho cube, added -statcell and -statvox

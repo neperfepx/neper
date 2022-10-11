@@ -560,6 +560,13 @@ ut_fct_numericalfct (struct FCT Fct, double min, double max, int size,
       sum += ut_fct_binwidth (*pFct2, i) * (*pFct2).y[i];
     }
     ut_array_1d_scale ((*pFct2).y, (*pFct2).size, FctC.area / sum);
+
+    double xmean = 0;
+    for (i = 0; i < (*pFct2).size; i++)
+      xmean += (*pFct2).x[i] * (*pFct2).y[i] * ut_fct_binwidth (*pFct2, i);
+
+    // it is necessary to fix the distribution when (unbalanced) from and to bounds are specified
+    ut_array_1d_addval ((*pFct2).x, (*pFct2).size, (*pFct2).mean - xmean, (*pFct2).x);
   }
 
   (*pFct2).interp_type = (gsl_interp_type *) gsl_interp_cspline;
