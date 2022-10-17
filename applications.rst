@@ -22,7 +22,11 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
 .. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
 
+- W Wang, P Wei, H Liu, C Zhu, G Deng and H Liu, *A micromechanics-based machine learning model for evaluating the microstructure-dependent rolling contact fatigue performance of a martensitic steel*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2022.107784.
+- X Gao, M Peng, X Zhang, M Qian, A Li, L Geng, H Wang and H-X Peng, *Profound strengthening and toughening effect of reinforcement aspect ratio in composite with network architecture*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2022.167444.
+- Y Liu, X Zhang and C Oskay, *A comparative study on fatigue indicator parameters for near‐α titanium alloys*, **Fatigue & Fracture of Engineering Materials & Structures**, https://doi.org/10.1111/ffe.13862.
 - T Xue, Z Gan, S Liao and J Cao, *Physics-embedded graph network for accelerating phase-field simulation of microstructure evolution in additive manufacturing*, **npj Computational Materials**, https://doi.org/10.1038/s41524-022-00890-9.
+- S Islam, M Norouzian and JA Turner, *Influence of tessellation morphology on ultrasonic scattering*, **The Journal of the Acoustical Society of America**, https://doi.org/10.1121/10.0014288.
 - V Guski, W Verestek and S Schmauder, *Microstructural simulations on CrAlN HPPMS coatings*, **Surface and Coatings Technology**, https://doi.org/10.1016/j.surfcoat.2022.128814.
 - M Kutsal, HF Poulsen, G Winther, HO Sørensen and Carsten Detlefs, *High-resolution 3D X-ray diffraction microscopy: 3D mapping of deformed metal microstructures*, **Journal of Applied Crystallography**, https://doi.org/10.1107/S1600576722007361.
 - R Quey, *On the statistical significance of grain-scale lattice rotation results*, **Materials Characterization**, https://doi.org/10.1016/j.matchar.2022.112252.
