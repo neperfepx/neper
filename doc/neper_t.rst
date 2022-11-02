@@ -643,6 +643,8 @@ Transformation Options
 
   Sort the tessellation cells (typically to facilitate data post-processing) following a mathematical expression based on the tessellation variables (see :ref:`tessellation_keys`). Sorting is done in ascending order.
 
+  .. note:: Sorting acts on the cell *ids*, see :ref:`tess_file`.
+
   **Default value**: -.
 
 Regularization Options

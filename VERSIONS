@@ -1,5 +1,5 @@
-New in 4.5.1-2 (11 Oct 2022):
-- documentation: made minor improvement.
+New in 4.5.1-3 (02 Nov 2022):
+- documentation: made minor improvements.
 - fixed truncated statistical distributions (from and to).
 
 New in 4.5.0 (07 Sep 2022):
