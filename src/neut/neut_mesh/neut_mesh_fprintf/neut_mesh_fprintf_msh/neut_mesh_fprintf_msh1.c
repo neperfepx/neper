@@ -37,6 +37,10 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
   {
     neut_mesh_fprintf_msh_entities (file, mode, Tess, Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D);
 
+    if (!ut_string_strcmp (Mesh2D.EltType, "quad")
+     || !ut_string_strcmp (Mesh3D.EltType, "quad"))
+      ut_print_message (2, 3, "`-format msh4` not available with `-elt quad|hex`.\n");
+
     neut_mesh_fprintf_msh_nodes_v4 (file, mode, Tess, Nodes, Mesh0D, Mesh1D, Mesh2D, Mesh3D);
 
     neut_mesh_fprintf_msh_elts_v4 (file, mode, Tess, Mesh0D, Mesh1D, Mesh2D,
