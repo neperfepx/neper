@@ -18,9 +18,6 @@ Neper is a free / open source software package for polycrystal generation and me
 
   See also Neper's companion program, `FEPX <https://fepx.info>`_, a finite element software package for polycrystal plasticity.  FEPX acts as a simulation tool for Neper.
 
-.. important::
-  Work with us!  See our postdoc offer at https://emploi.cnrs.fr/Offres/CDD/UMR5307-ROMQUE-003/Default.aspx?lang=EN (lot of Neper/FEPX!)
-
 Neper is developed by Romain Quey at `CNRS <http://www.cnrs.fr/en>`_ and `Mines Saint-Etienne <https://www.mines-stetienne.fr/en/>`_.
 
 .. toctree::
