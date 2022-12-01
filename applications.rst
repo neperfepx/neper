@@ -16,18 +16,28 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 - B Flipon, C Keller, R Quey and F Barbe, *A full-field crystal-plasticity analysis of bimodal polycrystals*, **International Journal of Solids and Structures**, vol. 184, pp. 178--192, 2020. `Flipon et al.'s journal cover <imgs/cover-ijss-2020.png>`_
 - R Carson, M Obstalecki, M Miller and P Dawson, *Characterizing Heterogeneous Intragranular Deformations in Polycrystalline Solids Using Diffraction-Based and Mechanics-Based Metrics*, **Modelling and Simulation in Materials Science and Engineering**,  vol. 25,  pp. 055008, 2017. `Carson et al.'s journal cover <imgs/cover-MSMSE-2505-OFC.png>`_
 
+2023
+----
+
+- JB le Graverend, *Crystal-Plasticity Modeling of Monotonic and Cyclic Softening in Inconel 718 Superalloy*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2022.107871.
+- JAM da Silva, MV de Carvalho, RPC Coelho, IAR Lopes and FMA Pires, *On the representativeness of polycrystalline models with transformation induced plasticity*, **Finite Elements in Analysis and Design**, https://doi.org/10.1016/j.finel.2022.103875.
+- X Gao, M Peng, X Zhang, M Qian, A Li, L Geng, H Wang and H-X Peng, *Profound strengthening and toughening effect of reinforcement aspect ratio in composite with network architecture*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2022.167444.
+- W Wang, P Wei, H Liu, C Zhu, G Deng and H Liu, *A micromechanics-based machine learning model for evaluating the microstructure-dependent rolling contact fatigue performance of a martensitic steel*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2022.107784.
+- Z Chlup, D Drdlík, H Hadraba, O Ševeček, F Šiška, J Erhart and K Maca, *Temperature effect on elastic and fracture behaviour of lead-free piezoceramic BaTiO3*, **Journal of the European Ceramic Society**, https://doi.org/10.1016/j.jeurceramsoc.2022.11.030.
+
+
 2022
 ----
 
 .. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
 .. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
 
+
+- H Ceric, RL de Orio and S Selberherr, *Microstructural impact on electromigration reliability of gold interconnects*, Solid-State Electronics, https://doi.org/10.1016/j.sse.2022.108528.
+- M Vieira de Carvalho, RP Cardoso Coelho and FMA Pires, *On the computational treatment of fully coupled crystal plasticity slip and martensitic transformation constitutive models at finite strains*, **International Journal for Numerical Methods in Engineering**, https://doi.org/10.1002/nme.7059.
 - T Fischer, S Xiang, CFO Dahlberg and P Hedström, *Creep-fatigue properties of austenitic cast iron D5S with tension and compression dwell: A dislocation density-based crystal plasticity study*, **Materials Science and Engineering A**, https://doi.org/10.1016/j.msea.2022.144212.
-- JB le Graverend, *Crystal-Plasticity Modeling of Monotonic and Cyclic Softening in Inconel 718 Superalloy*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2022.107871.
 - DP Banco, E Miller, A Beaudoin, MP Miller and K Chatterjee, *Quantifying Dynamic Signal Spread in Real-Time High-Energy X-ray Diffraction*, **Integrating Materials and Manufacturing Innovation**, https://doi.org/10.1007/s40192-022-00281-4.
 - X He, L Liu, B Li, H Shu and Y Yao, *Micromechanical modeling of the elastic-viscoplastic deformation for considering voids and imperfect interfaces in sintered nano-silver under compression*, **International Journal of Solids and Structures**, https://doi.org/10.1016/j.ijsolstr.2022.112023.
-- W Wang, P Wei, H Liu, C Zhu, G Deng and H Liu, *A micromechanics-based machine learning model for evaluating the microstructure-dependent rolling contact fatigue performance of a martensitic steel*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2022.107784.
-- X Gao, M Peng, X Zhang, M Qian, A Li, L Geng, H Wang and H-X Peng, *Profound strengthening and toughening effect of reinforcement aspect ratio in composite with network architecture*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2022.167444.
 - Y Liu, X Zhang and C Oskay, *A comparative study on fatigue indicator parameters for near‐α titanium alloys*, **Fatigue & Fracture of Engineering Materials & Structures**, https://doi.org/10.1111/ffe.13862.
 - T Xue, Z Gan, S Liao and J Cao, *Physics-embedded graph network for accelerating phase-field simulation of microstructure evolution in additive manufacturing*, **npj Computational Materials**, https://doi.org/10.1038/s41524-022-00890-9.
 - S Islam, M Norouzian and JA Turner, *Influence of tessellation morphology on ultrasonic scattering*, **The Journal of the Acoustical Society of America**, https://doi.org/10.1121/10.0014288.
