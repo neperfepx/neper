@@ -32,7 +32,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
 .. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
 
-
+- JA Moore, JP Rusch, PS Nezhad, S Manchiraju and D Erdeniz, *Effects of martensitic phase transformation on fatigue indicator parameters determined by a crystal plasticity model*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2022.107457.
 - H Ceric, RL de Orio and S Selberherr, *Microstructural impact on electromigration reliability of gold interconnects*, Solid-State Electronics, https://doi.org/10.1016/j.sse.2022.108528.
 - M Vieira de Carvalho, RP Cardoso Coelho and FMA Pires, *On the computational treatment of fully coupled crystal plasticity slip and martensitic transformation constitutive models at finite strains*, **International Journal for Numerical Methods in Engineering**, https://doi.org/10.1002/nme.7059.
 - T Fischer, S Xiang, CFO Dahlberg and P Hedström, *Creep-fatigue properties of austenitic cast iron D5S with tension and compression dwell: A dislocation density-based crystal plasticity study*, **Materials Science and Engineering A**, https://doi.org/10.1016/j.msea.2022.144212.
