@@ -19,6 +19,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2023
 ----
 
+- A Patra, N Pai and P Sharma, *Modeling intrinsic size effects using dislocation density-based strain gradient plasticity*, **Mechanics Research Communications**, https://doi.org/10.1016/j.mechrescom.2022.104038.
+- VRS De Silva, H Konietzky, H Märten, PG Ranjith, Z Lei and T Xu, *Grain-scale numerical simulation of crystalline rock fracturing using Soundless Cracking Demolition Agents for in-situ preconditioning*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2022.105187.
+- C Böhm, L Munk, B Hudobivnik, F Aldakheel, J Korelc and P Wriggers, *Virtual Elements for computational anisotropic crystal plasticity*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2022.115835.
 - JB le Graverend, *Crystal-Plasticity Modeling of Monotonic and Cyclic Softening in Inconel 718 Superalloy*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2022.107871.
 - JAM da Silva, MV de Carvalho, RPC Coelho, IAR Lopes and FMA Pires, *On the representativeness of polycrystalline models with transformation induced plasticity*, **Finite Elements in Analysis and Design**, https://doi.org/10.1016/j.finel.2022.103875.
 - X Gao, M Peng, X Zhang, M Qian, A Li, L Geng, H Wang and H-X Peng, *Profound strengthening and toughening effect of reinforcement aspect ratio in composite with network architecture*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2022.167444.
