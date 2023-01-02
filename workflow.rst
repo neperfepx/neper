@@ -4,7 +4,7 @@ Workflow
 ========
 
 This document presents the (rather elementary) workflow common to `Neper <https://fepx.info>`_ and `FEPX <https://fepx.info>`_ (herein *the program*). The text is written specifically for users who would like to contribute to the program and for internal developers (and, ultimately, for maintainers).  However, the workflow should be applicable to any other (average-size) program and so may also be of interest to the general reader.
-In the following, *user* denotes any user of the program, *contributor* denotes any user contributing code to the program, *developer* denotes an internal developer, and *maintainer* denotes whom has full power on the program - only *developers* and *maintainers* have access to the private repositories (and some links provided below).  No particular background on collaborative software development is assumed.
+In the following, *user* denotes any user of the program, *contributor* denotes any user contributing code to the program, *developer* denotes an internal developer, and *maintainer* denotes who has full power on the program - only *developers* and *maintainers* have access to the private repositories (and some links provided below).  No particular background on collaborative software development is assumed.
 
 Tools, Websites and Repositories
 --------------------------------
@@ -38,7 +38,7 @@ In addition to standard Git, developers use two scripts, `neperfepx-git <https:/
 Branches and Merge Strategy
 ---------------------------
 
-.. note:: This description is general and does not consider the case of external contributions, detailed below, see :ref:`contributions`.
+.. note:: This description is general and does not consider the case of external contributions, which are detailed in :ref:`contributions`.
 
 Branches are used to handle different versions of the code (stable, development, etc.), which are on one or both repositories.
 
@@ -187,8 +187,8 @@ First, you need to clone the code locally.  To get the full code (and code histo
 
 .. code-block:: console
 
-  $ git clone git@github.com:neperfepx/neper-dev.git neper     # for Neper
-  $ git clone git@github.com:neperfepx/FEPX-dev.git fepx  # for FEPX
+  $ git clone git@github.com:neperfepx/neper-dev.git neper # for Neper
+  $ git clone git@github.com:neperfepx/FEPX-dev.git fepx   # for FEPX
 
 This creates your own, *local* repository of the code (and code history) hosted on GitHub (but not the issues, etc.).  You also want to have access to the public repository (to push, pull, etc.).  A possibility would be to clone the public repository as you did for the public repository, but this would create another local repository, which is better to avoid (since there is only one of you).  Actually, as you cloned the private repository, a *remote* was defined in your local repository, which is named :data:`origin` and points to the GitHub private repository (from which you cloned):
 
@@ -198,7 +198,7 @@ This creates your own, *local* repository of the code (and code history) hosted 
   origin
   $ git remote show origin
   * remote origin
-    Fetch URL: git@github.com:neperfepx/neper-dev.git      # for Neper
+    Fetch URL: git@github.com:neperfepx/neper-dev.git # for Neper
     Fetch URL: git@github.com:neperfepx/FEPX-dev.git  # for FEPX
     [...]
 
@@ -207,7 +207,7 @@ It is possible to define another remote in your local repository, corresponding 
 .. code-block:: console
 
   $ git remote rename origin github-dev
-  $ git remote add github git@github.com:neperfepx/neper.git      # for Neper
+  $ git remote add github git@github.com:neperfepx/neper.git # for Neper
   $ git remote add github git@github.com:neperfepx/FEPX.git  # for FEPX
 
 From this point, it becomes possible for you to communicate with the public repository just as well as with the private repository. Since you cloned the private repository and its default branch is the :data:`devel` branch, you are currently on the :data:`devel` branch.  Check out to the :data:`main` branch, and you will be able to pull both from :data:`github-dev` and :data:`github`:
@@ -216,12 +216,12 @@ From this point, it becomes possible for you to communicate with the public repo
 
   $ git checkout main
   $ git pull github-dev main
-  From github.com:neperfepx/neper-dev      # for Neper
+  From github.com:neperfepx/neper-dev # for Neper
   From github.com:neperfepx/FEPX-dev  # for FEPX
    * branch            main       -> FETCH_HEAD
   Already up to date.
   $ git pull github main
-  From github.com:neperfepx/neper          # for Neper
+  From github.com:neperfepx/neper     # for Neper
   From github.com:neperfepx/FEPX      # for FEPX
    * branch            main       -> FETCH_HEAD
   * [new branch]      main       -> github/main

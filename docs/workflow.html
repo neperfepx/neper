@@ -112,7 +112,7 @@
   <div class="section" id="workflow">
 <span id="id1"></span><h1>Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline"></a></h1>
 <p>This document presents the (rather elementary) workflow common to <a class="reference external" href="https://fepx.info">Neper</a> and <a class="reference external" href="https://fepx.info">FEPX</a> (herein <em>the program</em>). The text is written specifically for users who would like to contribute to the program and for internal developers (and, ultimately, for maintainers).  However, the workflow should be applicable to any other (average-size) program and so may also be of interest to the general reader.
-In the following, <em>user</em> denotes any user of the program, <em>contributor</em> denotes any user contributing code to the program, <em>developer</em> denotes an internal developer, and <em>maintainer</em> denotes whom has full power on the program - only <em>developers</em> and <em>maintainers</em> have access to the private repositories (and some links provided below).  No particular background on collaborative software development is assumed.</p>
+In the following, <em>user</em> denotes any user of the program, <em>contributor</em> denotes any user contributing code to the program, <em>developer</em> denotes an internal developer, and <em>maintainer</em> denotes who has full power on the program - only <em>developers</em> and <em>maintainers</em> have access to the private repositories (and some links provided below).  No particular background on collaborative software development is assumed.</p>
 <div class="section" id="tools-websites-and-repositories">
 <h2>Tools, Websites and Repositories<a class="headerlink" href="#tools-websites-and-repositories" title="Permalink to this headline"></a></h2>
 <p>Development is made with tools and procedures based on  Git and GitHub. The program is made available on the Web as source code, and its development involves both public and private parts.  The program has “official releases”, but development also follows the principles of <em>continuous integration</em> for what is the “stable” version of the program, i.e. new features such as bug fixes and small improvements are merged into the code as often as necessary, and tests are run systematically on the program to make sure that all capabilities remain operational and that the output is not modified unexpectedly.</p>
@@ -141,7 +141,7 @@ In the following, <em>user</em> denotes any user of the program, <em>contributor
 <h2>Branches and Merge Strategy<a class="headerlink" href="#branches-and-merge-strategy" title="Permalink to this headline"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This description is general and does not consider the case of external contributions, detailed below, see <a class="reference internal" href="#contributions"><span class="std std-ref">Being a Contributor</span></a>.</p>
+<p>This description is general and does not consider the case of external contributions, which are detailed in <a class="reference internal" href="#contributions"><span class="std std-ref">Being a Contributor</span></a>.</p>
 </div>
 <p>Branches are used to handle different versions of the code (stable, development, etc.), which are on one or both repositories.</p>
 <div class="figure align-default" id="id26">
@@ -275,8 +275,8 @@ PS1=&quot;\h:\W\[\033[0;33m\]\$(parse_git_branch_and_add_brackets) \[\033[0m\]\$
 <div class="section" id="getting-the-code-as-a-local-git-repository">
 <h3>Getting the Code as a Local Git Repository<a class="headerlink" href="#getting-the-code-as-a-local-git-repository" title="Permalink to this headline"></a></h3>
 <p>First, you need to clone the code locally.  To get the full code (and code history), you should clone the private repository:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone git@github.com:neperfepx/neper-dev.git neper     <span class="c1"># for Neper</span>
-<span class="gp">$ </span>git clone git@github.com:neperfepx/FEPX-dev.git fepx  <span class="c1"># for FEPX</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone git@github.com:neperfepx/neper-dev.git neper <span class="c1"># for Neper</span>
+<span class="gp">$ </span>git clone git@github.com:neperfepx/FEPX-dev.git fepx   <span class="c1"># for FEPX</span>
 </pre></div>
 </div>
 <p>This creates your own, <em>local</em> repository of the code (and code history) hosted on GitHub (but not the issues, etc.).  You also want to have access to the public repository (to push, pull, etc.).  A possibility would be to clone the public repository as you did for the public repository, but this would create another local repository, which is better to avoid (since there is only one of you).  Actually, as you cloned the private repository, a <em>remote</em> was defined in your local repository, which is named <code class="xref py py-data docutils literal notranslate"><span class="pre">origin</span></code> and points to the GitHub private repository (from which you cloned):</p>
@@ -284,26 +284,26 @@ PS1=&quot;\h:\W\[\033[0;33m\]\$(parse_git_branch_and_add_brackets) \[\033[0m\]\$
 <span class="go">origin</span>
 <span class="gp">$ </span>git remote show origin
 <span class="go">* remote origin</span>
-<span class="go">  Fetch URL: git@github.com:neperfepx/neper-dev.git      # for Neper</span>
+<span class="go">  Fetch URL: git@github.com:neperfepx/neper-dev.git # for Neper</span>
 <span class="go">  Fetch URL: git@github.com:neperfepx/FEPX-dev.git  # for FEPX</span>
 <span class="go">  [...]</span>
 </pre></div>
 </div>
 <p>It is possible to define another remote in your local repository, corresponding to the public repository.  To do so, you can rename the first remote (<code class="xref py py-data docutils literal notranslate"><span class="pre">origin</span></code>) to <code class="xref py py-data docutils literal notranslate"><span class="pre">github-dev</span></code> and create a remote for the public repository, <code class="xref py py-data docutils literal notranslate"><span class="pre">github</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git remote rename origin github-dev
-<span class="gp">$ </span>git remote add github git@github.com:neperfepx/neper.git      <span class="c1"># for Neper</span>
+<span class="gp">$ </span>git remote add github git@github.com:neperfepx/neper.git <span class="c1"># for Neper</span>
 <span class="gp">$ </span>git remote add github git@github.com:neperfepx/FEPX.git  <span class="c1"># for FEPX</span>
 </pre></div>
 </div>
 <p>From this point, it becomes possible for you to communicate with the public repository just as well as with the private repository. Since you cloned the private repository and its default branch is the <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code> branch, you are currently on the <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code> branch.  Check out to the <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> branch, and you will be able to pull both from <code class="xref py py-data docutils literal notranslate"><span class="pre">github-dev</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">github</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git checkout main
 <span class="gp">$ </span>git pull github-dev main
-<span class="go">From github.com:neperfepx/neper-dev      # for Neper</span>
+<span class="go">From github.com:neperfepx/neper-dev # for Neper</span>
 <span class="go">From github.com:neperfepx/FEPX-dev  # for FEPX</span>
 <span class="go"> * branch            main       -&gt; FETCH_HEAD</span>
 <span class="go">Already up to date.</span>
 <span class="gp">$ </span>git pull github main
-<span class="go">From github.com:neperfepx/neper          # for Neper</span>
+<span class="go">From github.com:neperfepx/neper     # for Neper</span>
 <span class="go">From github.com:neperfepx/FEPX      # for FEPX</span>
 <span class="go"> * branch            main       -&gt; FETCH_HEAD</span>
 <span class="go">* [new branch]      main       -&gt; github/main</span>
