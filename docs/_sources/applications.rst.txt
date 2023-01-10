@@ -19,6 +19,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2023
 ----
 
+- Y Wang, Z Zhang, X Wang, Y Yang, X Lan and H Li, *Crystal Plasticity Finite Element Modeling on High Temperature Low Cycle Fatigue of Ti2AlNb Alloy*, **Applied Sciences**, https://doi.org/10.3390/app13020706.
+- P Trusov, N Kondratev and A Podsedertsev, *Grain Structure Rearrangement by Means the Advanced Statistical Model Modified for Describing Dynamic Recrystallization*, **Metals**, https://doi.org/10.3390/met13010113.
 - A Patra, N Pai and P Sharma, *Modeling intrinsic size effects using dislocation density-based strain gradient plasticity*, **Mechanics Research Communications**, https://doi.org/10.1016/j.mechrescom.2022.104038.
 - VRS De Silva, H Konietzky, H Märten, PG Ranjith, Z Lei and T Xu, *Grain-scale numerical simulation of crystalline rock fracturing using Soundless Cracking Demolition Agents for in-situ preconditioning*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2022.105187.
 - C Böhm, L Munk, B Hudobivnik, F Aldakheel, J Korelc and P Wriggers, *Virtual Elements for computational anisotropic crystal plasticity*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2022.115835.
