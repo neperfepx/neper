@@ -178,7 +178,7 @@ Then, go the official repository and open a *pull request* from your own :data:`
 Being an (Internal) Developer
 -----------------------------
 
-.. note:: To start working as a developer of the program, you need *(i)* a GitHub account and *(ii)* to be granted access to the private repository(ies).  It is also a good idea to `configure ssh access without a password <https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh>`_.  You will push code directly to the private repository(ies), not on a *fork*.
+.. note:: To start working as a developer of the program, you need *(i)* a GitHub account and *(ii)* to be granted access to the private repository(ies).  You also need to `configure the connection to GitHub using SSH <https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh>`_.  You will push code directly to the private repository(ies), not on a *fork*.
 
 Getting the Code as a Local Git Repository
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
