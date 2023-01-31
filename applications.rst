@@ -19,6 +19,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2023
 ----
 
+- S Lee, H Cho, CA Bronkhorst, R Pokharel, DW Brown, B Clausen, SC Vogel, V Anghel, GT Gray III and JR Mayeur, *Deformation, dislocation evolution and the non-Schmid effect in body-centered-cubic single-and polycrystal tantalum*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2023.103529.
+- W Liu, J Huang, Y Pang, K Zhu, S Li and J Ma, *Multi-scale modelling of evolving plastic anisotropy during Al-alloy sheet forming*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2023.108168.
 - N Jouini, F Schoenstein and S Mercone, *Engineered materials: micro-nanostructure, properties and applications*, **The European Physical Journal Special Topics**, https://doi.org/10.1140/epjs/s11734-022-00730-3.
 - M Men, R Zhao, Y Liu, M Wan and B Meng, *Effect of Grain Sizes on Electrically Assisted Micro—Filling of SUS304 Stainless Steel: Experiment and Simulation*, **Crystals**, https://doi.org/10.3390/cryst13010134.
 - WE Frazier, L Li, KS Choi, Y Fu, Z Xu, VV Joshi and A Soulami, *Microstructure-Process Relationships in Monolithic U-10Mo Fuel Foil Single-Pass Rolling: A Simulation Parameter Study*, **Journal of Nuclear Materials**, https://doi.org/10.1016/j.jnucmat.2023.154271.
