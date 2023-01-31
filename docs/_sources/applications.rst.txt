@@ -19,6 +19,10 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2023
 ----
 
+- N Jouini, F Schoenstein and S Mercone, *Engineered materials: micro-nanostructure, properties and applications*, **The European Physical Journal Special Topics**, https://doi.org/10.1140/epjs/s11734-022-00730-3.
+- M Men, R Zhao, Y Liu, M Wan and B Meng, *Effect of Grain Sizes on Electrically Assisted Micro—Filling of SUS304 Stainless Steel: Experiment and Simulation*, **Crystals**, https://doi.org/10.3390/cryst13010134.
+- WE Frazier, L Li, KS Choi, Y Fu, Z Xu, VV Joshi and A Soulami, *Microstructure-Process Relationships in Monolithic U-10Mo Fuel Foil Single-Pass Rolling: A Simulation Parameter Study*, **Journal of Nuclear Materials**, https://doi.org/10.1016/j.jnucmat.2023.154271.
+- D Liu, JF Xiong, L Wang, X Zheng, F Peng, X Ming, T Zhao, F Hu, J Sun, D Shen and J Shen, *Temperature dependence of magnetization reversal mechanism in misch-metal substituted Nd-Fe-B magnets sintered by dual alloy method*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2023.118710.
 - Y Wang, Z Zhang, X Wang, Y Yang, X Lan and H Li, *Crystal Plasticity Finite Element Modeling on High Temperature Low Cycle Fatigue of Ti2AlNb Alloy*, **Applied Sciences**, https://doi.org/10.3390/app13020706.
 - P Trusov, N Kondratev and A Podsedertsev, *Grain Structure Rearrangement by Means the Advanced Statistical Model Modified for Describing Dynamic Recrystallization*, **Metals**, https://doi.org/10.3390/met13010113.
 - A Patra, N Pai and P Sharma, *Modeling intrinsic size effects using dislocation density-based strain gradient plasticity*, **Mechanics Research Communications**, https://doi.org/10.1016/j.mechrescom.2022.104038.
