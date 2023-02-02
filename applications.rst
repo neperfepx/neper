@@ -19,6 +19,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2023
 ----
 
+- F Ghanbari, EG Rodriguez, D Millán, F Simonetti, AP Argüelles and C Peco, *Modeling of wave propagation in polycrystalline ice with hierarchical density gradients*, **Finite Elements in Analysis and Design**, https://doi.org/10.1016/j.finel.2023.103916.
 - S Lee, H Cho, CA Bronkhorst, R Pokharel, DW Brown, B Clausen, SC Vogel, V Anghel, GT Gray III and JR Mayeur, *Deformation, dislocation evolution and the non-Schmid effect in body-centered-cubic single-and polycrystal tantalum*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2023.103529.
 - W Liu, J Huang, Y Pang, K Zhu, S Li and J Ma, *Multi-scale modelling of evolving plastic anisotropy during Al-alloy sheet forming*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2023.108168.
 - N Jouini, F Schoenstein and S Mercone, *Engineered materials: micro-nanostructure, properties and applications*, **The European Physical Journal Special Topics**, https://doi.org/10.1140/epjs/s11734-022-00730-3.
