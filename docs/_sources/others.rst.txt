@@ -28,6 +28,6 @@ Dependencies
 Others
 ------
 
-  - Videos are available `here <https://www.youtube.com/watch?v=ImOU7ZysEH4&list=PLct8iNZXls-BMU7aleWoSoxgD8OFFe48W>`_ and constitute a good first introduction to Neper.
+  - `Neper2Rhino <https://www.food4rhino.com/en/app/neper2rhino?lang=en>`_: import Neper tessellation into Rhino and Grasshopper.
   - `Phon <https://phon.readthedocs.io>`_: insert interface elements and export to Abaqus or OOFEM. Note: interface elements can be inserted directly in Neper using :data:`-interface cohesive`.
   - `Neper2CAE <https://github.com/ngrilli/Neper2CAE>`_ and `PyCiGen <https://github.com/ngrilli/PyCiGen>`_: generate a columnar grain-growth polycrystal, insert interface elements and export to Abaqus (hex elements)
