@@ -1,0 +1,10 @@
+number_of_nodes 49
+number_of_elements 16
+number_of_partitions 2
+number_of_elements_bypartition 8 8 
+number_of_nodes_bypartition 25 24 
+orientation_definition rodrigues:active
+results_nodes coo disp vel
+results_elements ori crss elt_vol strain_el strain_pl strain stress sliprate stress_eq defrate_eq strain_eq defrate_pl_eq strain_pl_eq strain_el_eq velgrad defrate_pl spinrate slip work work_pl defrate workrate workrate_pl
+number_of_steps 2
+printed_steps 1 2 

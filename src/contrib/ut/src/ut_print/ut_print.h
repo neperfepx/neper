@@ -132,7 +132,7 @@ extern "C"
 /// \param file: output stream (usually \c stdout)
 /// \param current: current value
 /// \param total: final value
-/// \param format: format, e.g. "%.12f" or "foo %.12f" (the percentage is written)
+/// \param format: format, e.g. "%.8f" or "foo %.8f" (the percentage is written)
 /// \param prevprogress: previous printed progress (does not need to be set)
 /// \note A linebreak is made when 100% is reached
   extern void ut_print_progress (FILE * file, long current, long total,
@@ -142,7 +142,7 @@ extern "C"
 /// \param file: output stream (usually \c stdout)
 /// \param current: current value
 /// \param total: final value
-/// \param format: format, e.g. "%.12f" or "foo %.12f" (the percentage is written)
+/// \param format: format, e.g. "%.8f" or "foo %.8f" (the percentage is written)
 /// \param prevprogress: previous printed progress (does not need to be set)
   extern void ut_print_progress_nonl (FILE * file, long current, long total,
                                       const char *format, char *prevprogress);

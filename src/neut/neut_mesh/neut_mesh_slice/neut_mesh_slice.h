@@ -11,8 +11,8 @@ extern "C"
 #define NEUT_MESH_SLICE_H
 
 extern void neut_mesh_slice (struct NODES Nodes, struct MESH Mesh, struct DATA
-    NodeData, struct DATA *MeshData, char *slice, int *pSQty, struct NODES
-    **pN, struct MESH **pM, struct DATA **pData, struct DATA ***pMeshData, int
+    NodeData, struct DATA MeshData, char *slice, int *pSQty, struct NODES
+    **pN, struct MESH **pM, struct DATA **pData, struct DATA ****pSMeshData, int
     ***pEltNewOld);
 
 #endif /* NEUT_MESH_SLICE_H */

@@ -2,5 +2,5 @@
 # Copyright(C) 2003-2022, Romain Quey.
 # See the COPYING file in the top-level directory.
 
-set (test_command -V n2-id1.msh -showelt3d all -showelt1d all -print test)
+set (test_command -V n2-id1.msh -showelt3d all -showelt1d all -imageformat pov -print test)
 include(../../test.cmake)

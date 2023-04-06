@@ -219,14 +219,7 @@ net_transform_tess_cut_post (struct TESS TessGen, int *intseed_oldseed,
       (*pTess).CellModeId[i] = TessGen.CellModeId[intseed_oldseed[i]];
   }
 
-  // CellTrue
-  if (TessGen.CellTrue)
-  {
-    (*pTess).CellTrue = ut_alloc_1d_int ((*pTess).CellQty + 1);
-    for (i = 1; i <= (*pTess).CellQty; i++)
-      (*pTess).CellTrue[i] = TessGen.CellTrue[intseed_oldseed[i]];
-  }
-
+  /*
   // CellBody
   if (TessGen.CellBody)
   {
@@ -234,6 +227,7 @@ net_transform_tess_cut_post (struct TESS TessGen, int *intseed_oldseed,
     for (i = 1; i <= (*pTess).CellQty; i++)
       (*pTess).CellBody[i] = TessGen.CellBody[intseed_oldseed[i]];
   }
+  */
 
   return;
 }

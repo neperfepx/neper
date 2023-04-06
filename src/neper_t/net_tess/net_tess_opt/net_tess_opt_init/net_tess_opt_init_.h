@@ -49,8 +49,8 @@ extern void net_tess_opt_init_target (struct IN_T In, struct MTESS
 extern void net_tess_opt_init_crystal (struct IN_T In, int level, struct TOPT *pTOpt);
 
 extern void net_tess_opt_init_target_cellqty (struct IN_T In, struct
-					      MTESS MTess, struct TESS
-					      Tess, int poly, int *pCellQty);
+                                              MTESS MTess, struct TESS *pTess,
+                                              int poly, int *pCellQty);
 
 extern void net_tess_opt_init_target_scale (struct TOPT *pTOpt, int *pos);
 

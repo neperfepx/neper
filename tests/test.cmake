@@ -2,6 +2,14 @@
 # Copyright(C) 2003-2022, Romain Quey.
 # See the COPYING file in the top-level directory.
 
+if (DEFINED post_command)
+  execute_process(COMMAND ${post_command})
+endif()
+
+if (DEFINED pre_command)
+  execute_process(COMMAND ${pre_command})
+endif()
+
 execute_process(COMMAND ${test_prog} --rcfile none ${test_command} RESULT_VARIABLE RESVAR)
 
 if(RESVAR)
@@ -9,12 +17,20 @@ if(RESVAR)
 endif()
 
 if ("${test_mode}" MATCHES "Normal" AND NOT "${test_mode_force_minimal}" EQUAL 1)
+
   file(GLOB bak_files *.bak *~)
   foreach(bak_file ${bak_files})
     file (REMOVE ${bak_file})
   endforeach()
 
-  file(GLOB ref_files ref.* ref-*)
+  if (DEFINED ref_dirs)
+    file(GLOB_RECURSE ref_files ${ref_dirs}/*)
+  endif()
+
+  if (NOT DEFINED ref_files)
+    file(GLOB ref_files ref.* ref-*)
+  endif()
+
   foreach(ref_file ${ref_files})
     string(REPLACE "ref" "test" test_file ${ref_file})
     if (NOT "${test_file}" MATCHES ".png")
@@ -45,6 +61,7 @@ elseif ("${test_mode}" MATCHES "Writing")
     if (NOT "${test_file}" MATCHES "test.cmake")
       string(REPLACE "test." "ref." tmp ${test_file})
       string(REPLACE "test-" "ref-" ref_file ${tmp})
+      file(REMOVE_RECURSE ${ref_file})
       file(RENAME ${test_file} ${ref_file})
     endif()
   endforeach()
@@ -59,3 +76,7 @@ foreach(test_file ${test_files})
     endif()
   endif()
 endforeach()
+
+if (DEFINED post_command)
+  execute_process(COMMAND ${post_command})
+endif()

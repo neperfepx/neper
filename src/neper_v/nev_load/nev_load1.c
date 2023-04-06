@@ -8,7 +8,7 @@ void
 nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr,
           struct NODES *pNodes, struct MESH *Mesh, struct POINT **pPoints,
           int *pPointQty, struct DATA *TessData, struct DATA *TesrData,
-          struct DATA *pNodeData, struct DATA *MeshData,
+          struct DATA *pNodeData, struct DATA **MeshData,
           struct DATA **pPointData)
 {
   int i, j, qty, dim, topology;
@@ -26,11 +26,11 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
 
     qty = 0;
     list = ut_alloc_1d_pchar (3);
-    if (ut_file_exist ("%s/inputs/%s", string, (*pSim).tess))
+    if ((*pSim).tess)
       list[qty++] = ut_string_paste3 (string, "/inputs/", (*pSim).tess);
-    if (ut_file_exist ("%s/inputs/simulation.tesr", string))
+    if ((*pSim).tesr)
       list[qty++] = ut_string_paste3 (string, "/inputs/", (*pSim).tesr);
-    if (ut_file_exist ("%s/inputs/%s", string, (*pSim).msh))
+    if ((*pSim).msh)
       list[qty++] = ut_string_paste3 (string, "/inputs/", (*pSim).msh);
   }
 
@@ -116,11 +116,14 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
 
       ut_string_string (fct, &((*pPoints)[(*pPointQty) - 1].Name));
       ut_string_string ("none", &((*pPoints)[(*pPointQty) - 1].Type));
+      ut_string_string ("triclinic", &((*pPoints)[(*pPointQty) - 1].crysym));
 
       for (j = 0; j < varqty; j++)
       {
         if (!strcmp (vars[j], "type"))
           ut_string_string (vals[j], &((*pPoints)[(*pPointQty) - 1].Type));
+        else if (!strcmp (vars[j], "crysym"))
+          ut_string_string (vals[j], &((*pPoints)[(*pPointQty) - 1].crysym));
         else
           ut_print_exprbug (input);
       }
@@ -154,6 +157,8 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
     ut_free_1d_char (&file);
   }
 
+  neut_sim_testinputs (*pSim, *pTess, Mesh);
+
   ut_free_2d_char (&list, qty);
 
   if (!neut_tess_isvoid (*pTess))
@@ -168,7 +173,11 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
   {
     nev_load_init_data_node (*pNodes, pNodeData);
     for (dim = 0; dim <= 3; dim++)
-      nev_load_init_data_mesh (Mesh[dim], MeshData + dim);
+    {
+      nev_load_init_data_mesh (Mesh[dim], "elt", MeshData[dim]);
+      nev_load_init_data_mesh (Mesh[dim], "elset", MeshData[dim] + 1);
+      nev_load_init_data_mesh (Mesh[dim], "mesh", MeshData[dim] + 2);
+    }
   }
 
   (*pPointData) = calloc ((*pPointQty), sizeof (struct DATA));

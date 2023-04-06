@@ -12,7 +12,7 @@ nem_mesh_2d_gmsh_writeface_b (double cl, FILE * file)
   fprintf (file, "Surface (1) = {1};\n");
 
   if (cl > 0)
-    fprintf (file, "Mesh.CharacteristicLengthMax = %.12f;\n", cl);
+    fprintf (file, "Mesh.CharacteristicLengthMax = "REAL_PRINT_FORMAT";\n", cl);
 
   return;
 }
@@ -25,7 +25,7 @@ nem_mesh_3d_gmsh_writepoly (double cl, char *surf, FILE * file)
   fprintf (file, "Volume (1) = {1};\n");
 
   if (cl > 0)
-    fprintf (file, "Mesh.CharacteristicLengthMax = %.12f;\n", cl);
+    fprintf (file, "Mesh.CharacteristicLengthMax = "REAL_PRINT_FORMAT";\n", cl);
 
   return;
 }

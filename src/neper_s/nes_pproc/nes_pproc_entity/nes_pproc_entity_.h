@@ -27,7 +27,7 @@ extern void nes_pproc_entity_file (struct SIM *pSim, char *entity, char *dir, ch
 
 extern void nes_pproc_entity_subres (struct SIM *pSim, char *entity, struct SIMRES *pSimRes);
 
-extern int nes_pproc_entity_expr (struct SIM *pSim, struct TESS Tess,
+extern int nes_pproc_entity_expr (struct SIM *pSim, struct TESS *pTess,
                                   struct TESR Tesr, struct NODES *pNodes,
                                   struct MESH *Mesh, char *entity,
                                   struct SIMRES *pSimRes);

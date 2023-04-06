@@ -29,7 +29,11 @@ net_flatten (struct MTESS MTess, struct TESS *Tess, struct TESS *pFTess)
       net_mtess_flatten (MTess, Tess2, id, Tess2 + id);
     }
 
+
   neut_tess_tess (Tess2[1], pFTess);
+
+  if (Tess[1].CellCrySym)
+    ut_string_string (Tess[1].CellCrySym, &(*pFTess).CellCrySym);
 
   (*pFTess).ScaleQty = MTess.LevelQty;
   (*pFTess).ScaleCellId =

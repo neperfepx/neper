@@ -16,23 +16,18 @@
 
 #include"net_utils/net_utils.h"
 #include"net_domain_cube/net_domain_cube.h"
+#include"net_domain_stdtriangle/net_domain_stdtriangle.h"
 #include "../net_tess/net_tess3d/net_polycomp/net_polycomp_poly/net_polycomp_poly.h"
 
 extern void net_domain_cubeparms (char *domain, double **size);
-extern void net_domain_stdtriangle_planes (int, double **);
 extern void net_domain_cylinder_planes (double, double, int, double **);
 extern void net_domain_sphere_planes (double rad, int qty, double **eq);
-extern void net_domain_clip (struct POLY *, double **, int);
 extern void net_domain_tesspoly_planes (struct TESS, int, int *, double **);
 extern void net_domain_transform (struct TESS *pDomain, int dim, char* string);
 
 extern void net_domain_cylinder_string (char *domain, char *nstring, struct POLY *pDomain);
 extern void net_domain_cylinderparms (char *domain, char *nstring, double *parms, int *ppseudodim, double *ppseudosize);
 extern void net_domain_cylinder (double *parms, struct POLY *pDomain);
-
-extern void net_domain_stdtriangle_string (char *domain, struct POLY *pDomain);
-extern void net_domain_stdtriangleparms (char *domain, double *parms);
-extern void net_domain_stdtriangle (double *parms, struct POLY *pDomain);
 
 extern void net_domain_sphere_string (char *domain, struct POLY *pDomain);
 extern void net_domain_sphereparms (char *domain, double *parms);

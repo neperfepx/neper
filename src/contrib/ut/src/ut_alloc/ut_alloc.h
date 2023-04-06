@@ -101,6 +101,11 @@ extern "C"
 /// \return pointer to the array
   extern double ***ut_alloc_1d_ppdouble (unsigned int size);
 
+/// \brief Allocate a 1-D array of \c double***
+/// \param size: size of the array
+/// \return pointer to the array
+  extern double ****ut_alloc_1d_pppdouble (unsigned int size);
+
 /// \brief Allocate a 1-D array of \c char**
 /// \param size: size of the array
 /// \return pointer to the array

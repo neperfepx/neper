@@ -102,39 +102,29 @@ extern void neut_mesh_face_boundnodecoos (struct NODES Nodes, struct MESH
 					 struct MESH Mesh3D, double **p,
 					 double *d, double **v, double **n);
 
-  extern int neut_mesh_var_val (struct NODES Nodes, struct MESH Mesh0D,
-				struct MESH Mesh1D, struct MESH Mesh2D,
-				struct MESH Mesh3D, struct MESH MeshCo,
-				struct TESS Tess, int *showelt0d,
+  extern int neut_mesh_var_val (struct NODES Nodes, struct MESH *Mesh,
+				struct TESS *pTess, int *showelt0d,
 				int *showelt1d, int *showelt2d,
 				int *showelt3d, double cl, char *entity,
 				int id, char *var, double **pvals,
                                 int *pvalqty, char **ptype);
-  extern int neut_mesh_var_val_one (struct NODES Nodes, struct MESH Mesh0D,
-                                    struct MESH Mesh1D, struct MESH Mesh2D,
-                                    struct MESH Mesh3D, struct MESH MeshCo,
-                                    struct TESS Tess, int *showelt0d,
+  extern int neut_mesh_var_val_one (struct NODES Nodes, struct MESH *Mesh,
+                                    struct TESS *pTess, int *showelt0d,
                                     int *showelt1d, int *showelt2d,
                                     int *showelt3d, double cl, char *entity,
                                     int id, char *var, double *pval,
                                     char **ptype);
 
   extern void neut_mesh_entity_expr_val (struct NODES Nodes,
-					 struct MESH Mesh0D,
-					 struct MESH Mesh1D,
-					 struct MESH Mesh2D, struct MESH Mesh3D,
-					 struct MESH MeshCo,
-					 struct TESS Tess, int *showelt0d,
+					 struct MESH *Mesh,
+					 struct TESS *pTess, int *showelt0d,
 					 int *showelt1d, int *showelt2d,
 					 int *showelt3d, char *entity,
 					 char *expr, double *val, char **ptype);
 
   extern void neut_mesh_entity_expr_val_int (struct NODES Nodes,
-					 struct MESH Mesh0D,
-					 struct MESH Mesh1D,
-					 struct MESH Mesh2D, struct MESH Mesh3D,
-					 struct MESH MeshCo,
-					 struct TESS Tess, int *showelt0d,
+					 struct MESH *Mesh,
+					 struct TESS *pTess, int *showelt0d,
 					 int *showelt1d, int *showelt2d,
 					 int *showelt3d, char *entity,
 					 char *expr, int *val);
@@ -163,26 +153,31 @@ extern void neut_mesh_entity_qty (struct NODES Nodes, struct MESH Mesh0D,
                                   struct MESH Mesh3D, char *entity,
                                   int *pentityqty);
 
-extern void neut_mesh_eltdata_elsetdata (struct NODES Nodes, struct MESH Mesh,
-    int **elsets, int elsetqty, double **eltdata, int size, double **elsetdata);
+extern void neut_mesh_eltdata_elsetdata_stat (struct NODES Nodes, struct MESH Mesh,
+    int **elsets, int elsetqty, double **eltdata, int size, char *op, double **elsetdata);
 
 extern void neut_mesh_eltdata_elsetdata_ori (struct NODES Nodes, struct MESH
-    Mesh, int **elsets, int elsetqty, double **eltdata, char *crysym, double **elsetdata);
+    Mesh, int **elsets, int elsetqty, double **elsetdata);
 
 extern void neut_mesh_eltdata_elsetdata_oridis (struct NODES Nodes, struct MESH Mesh,
                                     int **elsets, int elsetqty,
-                                    double **eltdata, char *crysym, double ***elsetevect,
+                                    double ***elsetevect,
                                     double **elseteval);
 
 extern void neut_mesh_aselsets (struct MESH Mesh, int ***pelsets, int *pelsetqty);
 
-extern void neut_mesh_entity_expr_matches (struct TESS Tess, struct NODES Nodes,
-                               struct MESH Mesh0D, struct MESH Mesh1D,
-                               struct MESH Mesh2D, struct MESH Mesh3D,
-                               struct MESH MeshCo, char *entity,
+extern void neut_mesh_entity_expr_matches (struct TESS *pTess, struct NODES Nodes,
+                               struct MESH *Mesh, char *entity,
                                char *expr, int **pmatches, int *pmatchqty);
 
 extern int neut_mesh_entity_known (char *entity);
+
+extern int neut_mesh_eltori (struct MESH Mesh, double **eltori);
+extern int neut_mesh_elsetori (struct MESH Mesh, double **elsetori);
+
+extern void neut_mesh_eltdata_elsetdata_origos (struct NODES Nodes, struct MESH Mesh,
+                                   int **elsets, int elsetqty,
+                                   double *elsetgos);
 
 #endif /* NEUT_MESH_GEN_H */
 

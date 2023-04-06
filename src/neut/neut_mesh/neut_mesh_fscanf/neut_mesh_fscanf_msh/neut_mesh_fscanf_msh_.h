@@ -35,3 +35,7 @@ extern void neut_mesh_fscanf_msh_groups (FILE *file, struct MESH *pMesh);
 extern void neut_mesh_fscanf_msh_nsets (FILE *file);
 extern void neut_mesh_fscanf_msh_fasets (FILE *file, struct MESH *pMesh);
 extern void neut_mesh_fscanf_msh_nodeparts (FILE *file, struct NODES *pNodes);
+
+extern void neut_mesh_fscanf_msh_crysym (FILE *file, struct NODES *pNodes, struct MESH *pMesh0D,
+                                         struct MESH *pMesh1D, struct MESH *pMesh2D,
+                                         struct MESH *pMesh3D, struct MESH *pMeshCo);

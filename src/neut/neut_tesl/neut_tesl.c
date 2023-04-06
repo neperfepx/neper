@@ -36,8 +36,6 @@ neut_tesl_set_zero (struct TESL *pTesl)
   (*pTesl).PolyFaceQty = NULL;
   (*pTesl).PolyFaceNb = NULL;
   (*pTesl).PolyFaceOri = NULL;
-  (*pTesl).CellTrue = NULL;
-  (*pTesl).CellBody = NULL;
 
   return;
 }
@@ -68,8 +66,6 @@ neut_tesl_free (struct TESL *pTesl)
   ut_free_1d_int (&(*pTesl).PolyFaceQty);
   ut_free_2d_int (&(*pTesl).PolyFaceNb, (*pTesl).PolyQty + 1);
   ut_free_2d_int (&(*pTesl).PolyFaceOri, (*pTesl).PolyQty + 1);
-  ut_free_1d_int (&(*pTesl).CellTrue);
-  ut_free_1d_int (&(*pTesl).CellBody);
 
   neut_tesl_set_zero (pTesl);
 
@@ -160,96 +156,6 @@ neut_tesl_domainfacever (struct TESL Tesl, int **Ver)
   return;
 }
 
-int
-neut_tesl_cell_true (struct TESL Tesl, int nb)
-{
-  int i, j, k, res;
-  int ver;
-  double ctov;
-  double *coo = ut_alloc_1d (3);
-  double **size = ut_alloc_2d (3, 2);
-
-  neut_tesl_bbox (Tesl, size);
-
-  res = 1;
-  for (i = 1; i <= Tesl.PolyVerQty[nb]; i++)
-  {
-    ver = Tesl.PolyVerNb[nb][i];
-    ctov = ut_space_dist (Tesl.SeedCoo[nb], Tesl.VerCoo[ver]);
-
-    for (j = 0; j < 3; j++)
-      for (k = 0; k < 2; k++)
-        if (fabs (Tesl.VerCoo[ver][j] - size[j][k]) < 0.999 * ctov)
-        {
-          res = 0;
-          break;
-        }
-  }
-
-  ut_free_1d (&coo);
-  ut_free_2d (&size, 3);
-
-  return res;
-}
-
-/* returns 0 if not true, 1 if true & 2 if all parent poly are true */
-int
-neut_tesl_ver_true (struct TESL Tesl, int *TruePoly, int nb)
-{
-  int j;
-  int poly, res, all;
-
-  res = 0;
-  all = 1;
-  for (j = 0; j < 4; j++)
-  {
-    poly = Tesl.VerSeed[nb][j];
-    if (poly > 0)
-    {
-      if (TruePoly[poly] == 1)
-        res = 1;
-      else
-        all = 0;
-    }
-  }
-
-  if (res == 1 && all == 1)
-    res = 2;
-
-  return res;
-}
-
-/* returns 0 if not true, 1 if true & 2 if all parent poly are true */
-int
-neut_tesl_edge_true (struct TESL Tesl, int *TruePoly, int nb)
-{
-  int j;
-  int res, all;
-  int *poly = ut_alloc_1d_int (5);
-
-  neut_tesl_edge_poly (Tesl, nb, poly);
-
-  res = 0;
-  all = 1;
-  for (j = 1; j <= poly[0]; j++)
-  {
-    if (poly[j] > 0)
-    {
-      if (TruePoly[poly[j]] == 1)
-        res = 1;
-      else
-        all = 0;
-    }
-  }
-
-  if (res == 1 && all == 1)
-    res = 2;
-
-  ut_free_1d_int (&poly);
-
-  return res;
-}
-
 void
 neut_tesl_edge_poly (struct TESL Tesl, int edge, int *poly)
 {
@@ -265,81 +171,6 @@ neut_tesl_edge_poly (struct TESL Tesl, int edge, int *poly)
 
   for (i = -1; i >= -6; i--)
     poly[0] -= ut_array_1d_int_rmelt (poly + 1, poly[0], i, 1);
-
-  return;
-}
-
-/* returns 0 if not true, 1 if true & 2 if all parent poly are true */
-int
-neut_tesl_face_true (struct TESL Tesl, int *TruePoly, int nb)
-{
-  int j;
-  int res, all;
-
-  res = 0;
-  all = 1;
-  for (j = 0; j < 2; j++)
-  {
-    if (Tesl.FacePoly[nb][j] > 0)
-    {
-      if (TruePoly[Tesl.FacePoly[nb][j]] == 1)
-        res = 1;
-      else
-        all = 0;
-    }
-    else
-    {
-      res = 0;
-      break;
-    }
-  }
-
-  if (res == 1 && all == 1)
-    res = 2;
-
-  return res;
-}
-
-void
-neut_tesl_init_celltrue (struct TESL *pTess)
-{
-  int i, j, all, face, p;
-  int tru, status;
-
-  if ((*pTess).CellTrue == NULL)
-    (*pTess).CellTrue = ut_alloc_1d_int ((*pTess).PolyQty + 1);
-
-  for (i = 1; i <= (*pTess).PolyQty; i++)
-    (*pTess).CellTrue[i] = neut_tesl_cell_true ((*pTess), i);
-
-  status = 1;
-  for (tru = 2; status == 1; tru++)
-  {
-    status = 0;
-    for (i = 1; i <= (*pTess).PolyQty; i++)
-      if ((*pTess).CellTrue[i] == tru - 1)
-      {
-        all = 1;
-        for (j = 1; j <= (*pTess).PolyFaceQty[i]; j++)
-        {
-          face = (*pTess).PolyFaceNb[i][j];
-          p =
-            ((*pTess).FacePoly[face][0] !=
-             i) ? (*pTess).FacePoly[face][0] : (*pTess).FacePoly[face][1];
-
-          if ((*pTess).CellTrue[p] < tru - 1)
-          {
-            all = 0;
-            break;
-          }
-        }
-        if (all == 1)
-        {
-          (*pTess).CellTrue[i] = tru;
-          status = 1;
-        }
-      }
-  }
 
   return;
 }
@@ -432,72 +263,6 @@ neut_tesl_volume (struct TESL Tesl, double *pvol)
   {
     neut_tesl_poly_volume (Tesl, i, &poly_vol);
     (*pvol) += poly_vol;
-  }
-
-  return;
-}
-
-int
-neut_tesl_cell_body (struct TESL Tesl, int nb)
-{
-  int i, face, res;
-
-  res = 1;
-  for (i = 1; i <= Tesl.PolyFaceQty[nb]; i++)
-  {
-    face = Tesl.PolyFaceNb[nb][i];
-
-    if (Tesl.FacePoly[face][0] < 0 || Tesl.FacePoly[face][1] < 0)
-    {
-      res = 0;
-      break;
-    }
-  }
-
-  return res;
-}
-
-void
-neut_tesl_init_cellbody (struct TESL *pTess)
-{
-  int i, j, all, face, p;
-  int body, status;
-
-  if ((*pTess).CellBody == NULL)
-    (*pTess).CellBody = ut_alloc_1d_int ((*pTess).PolyQty + 1);
-
-  for (i = 1; i <= (*pTess).PolyQty; i++)
-    (*pTess).CellBody[i] = neut_tesl_cell_body ((*pTess), i);
-
-  status = 1;
-  for (body = 2; status == 1; body++)
-  {
-    status = 0;
-    for (i = 1; i <= (*pTess).PolyQty; i++)
-    {
-      if ((*pTess).CellBody[i] == body - 1)
-      {
-        all = 1;
-        for (j = 1; j <= (*pTess).PolyFaceQty[i]; j++)
-        {
-          face = (*pTess).PolyFaceNb[i][j];
-          p =
-            ((*pTess).FacePoly[face][0] !=
-             i) ? (*pTess).FacePoly[face][0] : (*pTess).FacePoly[face][1];
-
-          if ((*pTess).CellBody[p] < body - 1)
-          {
-            all = 0;
-            break;
-          }
-        }
-        if (all == 1)
-        {
-          (*pTess).CellBody[i] = body;
-          status = 1;
-        }
-      }
-    }
   }
 
   return;

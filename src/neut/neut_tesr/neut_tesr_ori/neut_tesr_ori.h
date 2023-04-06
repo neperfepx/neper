@@ -15,6 +15,9 @@ extern "C"
   extern void neut_tesr_cell_orianiso_delta (struct TESR Tesr, int cell,
                                             double **evect, double *delta);
 
+  extern void neut_tesr_cells_olset (struct TESR Tesr, double **CellOri, char *crysym,
+                         int *cells, int cellqty, struct OL_SET *pOSet);
+
 #include"net_utils/net_utils.h"
 
 #endif				/* NEUT_TESR_ORI_H */

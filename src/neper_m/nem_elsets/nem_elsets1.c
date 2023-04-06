@@ -5,7 +5,7 @@
 #include "nem_elsets_.h"
 
 void
-nem_elsets (struct IN_M In, struct TESS Tess, struct NODES Nodes,
+nem_elsets (struct IN_M In, struct TESS *pTess, struct NODES Nodes,
             struct MESH *Mesh)
 {
   int i, qty, *qty2 = NULL;
@@ -26,11 +26,8 @@ nem_elsets (struct IN_M In, struct TESS Tess, struct NODES Nodes,
     if (qty2[i] != 2)
       ut_print_message (2, 2, "Failed to process expression `%s'.", In.elset);
 
-    neut_mesh_entity_expr_matches (Tess, Nodes,
-                                   Mesh[0], Mesh[1],
-                                   Mesh[2], Mesh[3],
-                                   Mesh[4], "elt3d",
-                                   parts[i][1], &elts, &EltQty);
+    neut_mesh_entity_expr_matches (pTess, Nodes, Mesh, "elt3d", parts[i][1],
+                                   &elts, &EltQty);
 
     neut_mesh_addelset (Mesh + 3, elts, EltQty);
     Mesh[3].ElsetLabels =

@@ -168,7 +168,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
       else if (!strncmp (In.elttype, "quad", 4))
       {
         if (In.tess)
-          nem_meshing_tess_str (In, MeshPara, Tess, &Nodes, Mesh, NSet);
+          nem_meshing_tess_str (In, MeshPara, &Tess, &Nodes, Mesh, NSet);
         else if (In.tesr)
           nem_meshing_tesr_str (In, MeshPara, &Tesr, &Nodes, Mesh, NSet);
       }
@@ -177,7 +177,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
         ut_print_neperbug ();
 
       if (!neut_mesh_isvoid (Mesh[Tess.Dim]))
-        nem_ori (Tess, Mesh);
+        nem_ori (Tess, &Nodes, Mesh);
 
       // Post-scaling of input / mesh if necessary (use of clratio) ###
       nem_meshing_para_post (MeshPara, &Tess, &Tesr, &RNodes, &Nodes, Mesh);
@@ -226,7 +226,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.sortnode || In.sortelt)
   {
     ut_print_message (0, 2, "Sorting mesh...\n");
-    nem_sort (In, Tess, &Nodes, Mesh);
+    nem_sort (In, &Tess, &Nodes, Mesh);
   }
 
 // Partitioning mesh ###
@@ -251,7 +251,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (strcmp (In.elset, "default"))
   {
     ut_print_message (0, 1, "Searching elsets...\n");
-    nem_elsets (In, Tess, Nodes, Mesh);
+      nem_elsets (In, &Tess, Nodes, Mesh);
   }
 
 // ###################################################################
@@ -289,10 +289,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Writing mesh statistics...\n");
 
-    if (!neut_tess_isvoid (Tess) && !Tess.CellTrue)
-      neut_tess_init_celltrue (&Tess);
-
-    nem_stat (Nodes, Mesh, In, MeshPara, Tess, Point);
+    nem_stat (Nodes, Mesh, In, MeshPara, &Tess, Point);
   }
 
 // ###################################################################

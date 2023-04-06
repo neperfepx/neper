@@ -13,6 +13,12 @@ ut_vector_norm (double *a)
 }
 
 double
+ut_vector_norm_2d (double *a)
+{
+  return sqrt (a[0] * a[0] + a[1] * a[1]);
+}
+
+double
 ut_vector_norm_squared (double *a)
 {
   return a[0] * a[0] + a[1] * a[1] + a[2] * a[2];
@@ -113,29 +119,35 @@ ut_vector_int_angle (int *a, int *b)
 }
 
 void
-ut_vector_set_covar (double **v, int qty, int dim, double **covar)
+ut_vector_set_covar (double **v, double *weight_in, int qty, int dim, double **covar)
 {
   int i, j, k;
+  double *weight = ut_alloc_1d (qty);
+
+  if (weight_in)
+    ut_array_1d_memcpy (weight_in, qty, weight);
+  else
+    ut_array_1d_set (weight, qty, 1.);
 
   ut_array_2d_zero (covar, dim, dim);
 
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)
       for (k = 0; k < qty; k++)
-        covar[i][j] += v[k][i] * v[k][j];
+        covar[i][j] += weight[k] * v[k][i] * v[k][j];
 
-  ut_array_2d_scale (covar, dim, dim, 1. / qty);
+  ut_array_2d_scale (covar, dim, dim, 1. / ut_array_1d_sum (weight, qty));
 
   return;
 }
 
 void
-ut_vector_set_eigen (double **v, int qty, int dim, double **evect,
+ut_vector_set_eigen (double **v, double *weight, int qty, int dim, double **evect,
                      double *eval)
 {
   double **covar = ut_alloc_2d (dim, dim);
 
-  ut_vector_set_covar (v, qty, dim, covar);
+  ut_vector_set_covar (v, weight, qty, dim, covar);
   ut_mat_eigen (covar, dim, eval, evect);
 
   ut_free_2d (&covar, dim);

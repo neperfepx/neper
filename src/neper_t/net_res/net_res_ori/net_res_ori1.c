@@ -66,7 +66,7 @@ net_res_ori (struct IN_T In, struct TESS Tess, struct TESR Tesr)
         ol_q_e (CellOri[i], e);
         ol_e_e (e, e);
         for (j = 0; j < 3; j++)
-          fprintf (file, "%17.12f ", e[j]);
+          fprintf (file, REAL_PRINT_FORMAT5 " ", e[j]);
         fprintf (file, "\n");
       }
       ol_e_free (e);

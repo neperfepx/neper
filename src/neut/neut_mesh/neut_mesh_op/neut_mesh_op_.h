@@ -7,3 +7,4 @@
 #include<limits.h>
 #include<string.h>
 #include"neut.h"
+#include"omp.h"

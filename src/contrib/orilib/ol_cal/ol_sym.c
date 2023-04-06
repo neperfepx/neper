@@ -426,7 +426,10 @@ ol_g_crysym (double **g, char *crysym, int nb, double **g2)
   else
     abort ();
 
-  ol_g_g_g (T, g, g2);
+  if (g)
+    ol_g_g_g (T, g, g2);
+  else
+    ol_g_memcpy (T, g2);
 
   ol_g_free (T);
 
@@ -439,12 +442,12 @@ ol_q_crysym (double *q, char *crysym, int nb, double *q2)
   double *U = NULL;
 
   nb--;                         /* 0-indexed local vs 1-indexed input; this modif on nb is *local* */
-  if (strcmp (crysym, "cubic") == 0 || strcmp (crysym, "m-3m") == 0)
+  if (!crysym || strcmp (crysym, "triclinic") == 0 || strcmp (crysym, "-1") == 0)
+    U = U_1[nb];
+  else if (strcmp (crysym, "cubic") == 0 || strcmp (crysym, "m-3m") == 0)
     U = Um3m[nb];
   else if (strcmp (crysym, "hexagonal") == 0 || strcmp (crysym, "6/mmm") == 0)
     U = U6_mmm[nb];
-  else if (strcmp (crysym, "triclinic") == 0 || strcmp (crysym, "-1") == 0)
-    U = U_1[nb];
   else if (strcmp (crysym, "2/m") == 0)
     U = U2_m[nb];
   else if (strcmp (crysym, "mmm") == 0)
@@ -1401,12 +1404,18 @@ ol_pole_crysym (int *pole1, char *crysym, int nb, int *pole2)
     {1, -1, -1, 1, -1, -1}
   };
 
-  if (strcmp (crysym, "cubic") != 0 || nb < 1 || nb > 24)
-    abort ();
+  if (!strcmp (crysym, "cubic"))
+  {
+    if (nb < 1 || nb > 24)
+      abort ();
 
-  nb--;
-  for (i = 0; i < 3; i++)
-    pole2[i] = signcubic[nb][i] * pole1[permcubic[nb][i]];
+    nb--;
+    for (i = 0; i < 3; i++)
+      pole2[i] = signcubic[nb][i] * pole1[permcubic[nb][i]];
+  }
+
+  else if (!strcmp (crysym, "hexagonal"))
+    abort ();
 
   return;
 }
@@ -1492,6 +1501,13 @@ ol_polef_polecrysym (int *polef, char *crysym, int ***ppoles, int *ppoleqty)
   ut_array_1d_int_sort_des_index (sort, *ppoleqty, perm);
   ut_array_2d_int_permute (poles, *ppoleqty, 3, perm);
 
+  for (i = 0; i < *ppoleqty; i++)
+    if (ut_array_1d_int_equal (polef, 3, poles[i], 3))
+    {
+      ut_array_2d_int_switchlines (poles, 3, 0, i);
+      break;
+    }
+
   if (ppoles)
   {
     *ppoles = ut_alloc_2d_int (*ppoleqty, 3);
@@ -1502,6 +1518,65 @@ ol_polef_polecrysym (int *polef, char *crysym, int ***ppoles, int *ppoleqty)
   ut_free_1d_int (&sort);
   ut_free_1d_int (&perm);
   ut_free_2d_int (&poles, *ppoleqty);
+
+  return;
+}
+
+void
+ol_vect_crysym (double *v, char *crysym, int nb, double *v2)
+{
+  double **g = ol_g_alloc ();
+
+  ol_g_set_id (g);
+
+  ol_g_crysym (g, crysym, nb, g);
+
+  ol_g_vect_vect (g, v, v2);
+
+  ol_g_free (g);
+
+  return;
+}
+
+void
+ol_vect_crysym_all (double *v, char *crysym, double ***pv2, int *pqty)
+{
+  int i, j, found, qty;
+  double **gs = ol_g_alloc ();
+  double *tmp = ut_alloc_1d (3);
+  double *tmp2 = ut_alloc_1d (3);
+
+  (*pv2) = ut_alloc_2d (1, 3);
+
+  qty = ol_crysym_qty (crysym);
+
+  (*pqty) = 0;
+  for (i = 1; i <= qty; i++)
+  {
+    ol_g_crysym (NULL, crysym, i, gs);
+    ol_g_vect_vect (gs, v, tmp); // (*pv2)[i]);
+    ut_array_1d_memcpy (tmp, 3, tmp2);
+    ut_array_1d_scale (tmp2, 3, -1);
+
+    found = 0;
+    for (j = 1; j <= (*pqty); j++)
+      if (ut_array_1d_equal (tmp, (*pv2)[j], 3, 1e-6) || ut_array_1d_equal (tmp2, (*pv2)[j], 3, 1e-6))
+      {
+        found = 1;
+        break;
+      }
+
+    if (!found)
+    {
+      (*pqty)++;
+      (*pv2) = ut_realloc_2d_addline (*pv2, (*pqty) + 1, 3);
+      ut_array_1d_memcpy (tmp, 3, (*pv2)[(*pqty)]);
+    }
+  }
+
+  ol_g_free (gs);
+  ut_free_1d (&tmp);
+  ut_free_1d (&tmp2);
 
   return;
 }

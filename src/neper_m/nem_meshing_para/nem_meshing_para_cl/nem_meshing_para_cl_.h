@@ -18,19 +18,19 @@
 #include"nem_meshing_para_cl.h"
 
 extern int nem_meshing_para_cl_cell (char *, struct MESHPARA *,
-				     struct TESS Tess);
+				     struct TESS *pTess);
 extern int nem_meshing_para_cl_face (char *clstring, struct MESHPARA *pMeshPara,
-                                     struct TESS Tess);
+                                     struct TESS *pTess);
 extern int nem_meshing_para_cl_edge (char *clstring, struct MESHPARA *pMeshPara,
-                                     struct TESS Tess);
+                                     struct TESS *pTess);
 extern int nem_meshing_para_cl_ver (char *clstring, struct MESHPARA *pMeshPara,
-                                     struct TESS Tess);
+                                     struct TESS *pTess);
 extern int nem_meshing_para_cl_cell_tesr (char *, struct MESHPARA *pMeshPara,
 					  struct TESR Tesr);
 extern int nem_meshing_para_cl_poly_mesh (char *, struct MESHPARA *pMeshPara,
 					  struct NODES Nodes,
 					  struct MESH *Mesh,
-					  struct TESS Tess);
+					  struct TESS *pTess);
 
 extern int nem_meshing_para_rcl2cl (struct MESHPARA *pMeshPara, int cellqty, int dim,
                                     double *cell_cl);

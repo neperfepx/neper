@@ -8,15 +8,15 @@ void
 nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
                                struct NODES N, struct MESH M2D,
                                struct DATA NodeData,
-                               struct DATA *MeshData)
+                               struct DATA **MeshData)
 {
   int i;
   int **rgb = NULL;
   char *coldatatype = ut_alloc_1d_char (10);
 
   strcpy (coldatatype, "elt2d");
-  if (MeshData[2].ColDataType
-      && !strcmp (MeshData[2].ColDataType, "from_nodes"))
+  if (MeshData[2][0].ColDataType
+      && !strcmp (MeshData[2][0].ColDataType, "from_nodes"))
     strcpy (coldatatype, "nodes");
 
   if (!strncmp (coldatatype, "elt", 3))
@@ -24,7 +24,7 @@ nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
     rgb = ut_alloc_2d_int (M2D.EltQty + 1, 3);
 
     for (i = 1; i <= M2D.EltQty; i++)
-      ut_array_1d_int_memcpy (MeshData[2].Col[i], 3, rgb[i]);
+      ut_array_1d_int_memcpy (MeshData[2][0].Col[i], 3, rgb[i]);
 
     for (i = 1; i <= N.NodeQty; i++)
       ut_array_1d_memcpy (NodeData.Coo[i], 3, N.NodeCoo[i]);
@@ -56,19 +56,19 @@ nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
 
 void
 nev_print_png_mesh_2d_print_edges (FILE * file, struct PRINT Print, struct NODES N,
-                               struct MESH M1D, struct DATA *MeshData)
+                               struct MESH M1D, struct DATA **MeshData)
 {
   int i;
   double Rad;
   char *texture = ut_alloc_1d_char (100);
   int *Col = ut_alloc_1d_int (3);
 
-  if (MeshData[2].Qty > 0)
-    ut_array_1d_int_memcpy (MeshData[2].BCol, 3, Col);
+  if (MeshData[2][0].Qty > 0)
+    ut_array_1d_int_memcpy (MeshData[2][0].BCol, 3, Col);
   else
     ut_array_1d_int_zero (Col, 3);
 
-  Rad = MeshData[2].BRad;
+  Rad = MeshData[2][0].BRad;
 
   fprintf (file,
            "#declare elt3dedge =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",

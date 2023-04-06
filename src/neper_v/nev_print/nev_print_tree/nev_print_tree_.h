@@ -10,6 +10,7 @@
 #include<float.h>
 
 #include"ut.h"
+#include"../../structIn_v.h"
 #include"neut_v.h"
 #include "nev_print_tree.h"
 

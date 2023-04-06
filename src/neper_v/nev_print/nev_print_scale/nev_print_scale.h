@@ -2,6 +2,8 @@
 /* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nev_print_scale (char *basename, struct PRINT Print, struct SIM Sim,
+#include"../../structIn_v.h"
+
+extern void nev_print_scale (struct IN_V In, char *basename, struct SIM Sim,
                  struct DATA *TessData, struct DATA *pTesrData, struct DATA *pNodeData,
-                 struct DATA *MeshData, int PointQty, struct DATA *PointData);
+                 struct DATA **MeshData, int PointQty, struct DATA *PointData);

@@ -51,6 +51,17 @@ extern "C"
   extern void ut_list_break_double (const char *list, const char *sep,
                                     double **pparts, int *psize);
 
+/// \brief Break a list into a series of integers
+/// \param list: list
+/// \param sep: separator, e.g. "," or ":"
+/// \param *pparts: parts
+/// \param *psize: number of parts
+  extern void ut_list_break_int (const char *list, const char *sep,
+                                 int **pparts, int *psize);
+
+  extern void ut_list_break_int_range (const char *list, const char *sep,
+                                 int **pparts, int *psize);
+
 /// \brief Create a list
 /// \param parts: parts
 /// \param size: number of parts

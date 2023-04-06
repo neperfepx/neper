@@ -507,65 +507,29 @@ extern "C"
   extern void neut_tess_domface_body_edges (struct TESS Tess, int dface,
 					    int **pedge, int *pedgeqty);
 
-/// \brief Get the true level of a polyhedron
-///
-///
-///
-  extern int neut_tess_cell_true (struct TESS Tess, int);
-
 /// \brief Get the body level of a polyhedron
 ///
 ///
 ///
-  extern int neut_tess_cell_body (struct TESS Tess, int);
-
-/// \brief Get the true level of a poly
-///
-///
-///
-  extern int neut_tess_poly_true (struct TESS Tess, int);
-
-/// \brief Get the body level of a poly
-///
-///
-///
-  extern int neut_tess_poly_body (struct TESS Tess, int);
-
-/// \brief Get the true level of a face
-///
-///
-///
-  extern int neut_tess_face_true (struct TESS Tess, int);
+  extern int neut_tess_cell_body (struct TESS *pTess, char *expr, int);
 
 /// \brief Get the body level of a face
 ///
 ///
 ///
-  extern int neut_tess_face_body (struct TESS Tess, int);
-
-/// \brief Get the true level of a edge
-///
-///
-///
-  extern int neut_tess_edge_true (struct TESS Tess, int);
+  extern int neut_tess_face_body (struct TESS *pTess, char *expr, int);
 
 /// \brief Get the body level of a edge
 ///
 ///
 ///
-  extern int neut_tess_edge_body (struct TESS Tess, int);
-
-/// \brief Get the true level of a ver
-///
-///
-///
-  extern int neut_tess_ver_true (struct TESS Tess, int);
+  extern int neut_tess_edge_body (struct TESS *pTess, char *expr, int);
 
 /// \brief Get the body level of a ver
 ///
 ///
 ///
-  extern int neut_tess_ver_body (struct TESS Tess, int);
+  extern int neut_tess_ver_body (struct TESS *pTess, char *expr, int);
 
 /// \brief Determine if a polyhedron is standard
 ///
@@ -595,9 +559,6 @@ extern "C"
 
   extern void neut_tess_cell_vers (struct TESS Tess, int cell, int **pvers,
 				   int *pverqty);
-
-  extern int neut_tess_entity_true (struct TESS, char *, int);
-  extern int neut_tess_entity_body (struct TESS, char *, int);
 
   extern int neut_tess_seed_master_slave (struct TESS Tess, int master,
 					  int *pos, int fact);
@@ -697,6 +658,8 @@ extern "C"
   extern void neut_tess_edge_scale (struct TESS Tess, int edge, int *pscale);
   extern void neut_tess_ver_scale (struct TESS Tess, int ver, int *pscale);
   extern void neut_tess_edge_faces (struct TESS Tess, int edge, int **pfaces, int *pfaceqty);
+
+  extern int neut_tess_cellbody_pos (struct TESS Tess, char *expr, int *ppos);
 
 #endif				/* NEUT_TESS_TOPO_H */
 

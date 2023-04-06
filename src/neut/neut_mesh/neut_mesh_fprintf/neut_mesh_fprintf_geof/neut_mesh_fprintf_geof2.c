@@ -32,7 +32,7 @@ neut_mesh_fprintf_geof_nodes (FILE * out, struct NODES Nodes)
   {
     fprintf (out, "%d", i);
     for (j = 0; j < dim; j++)
-      fprintf (out, "  %.12f",
+      fprintf (out, "  " REAL_PRINT_FORMAT,
                (fabs (Nodes.NodeCoo[i][j]) <
                 1e-12) ? 0 : Nodes.NodeCoo[i][j]);
     fprintf (out, "\n");

@@ -3,4 +3,4 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nem_stat (struct NODES, struct MESH *,
-		      struct IN_M, struct MESHPARA, struct TESS, struct POINT);
+		      struct IN_M, struct MESHPARA, struct TESS *, struct POINT);

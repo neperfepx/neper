@@ -22,7 +22,7 @@ nes_pproc (struct IN_S In, struct SIM *pSim)
   nes_pproc_load (pSim, &Tess, &Tesr, &Nodes, Mesh);
 
   for (i = 0; i < In.entityqty; i++)
-    nes_pproc_entity (pSim, Tess, Tesr, &Nodes, Mesh, In.entities[i], In.entityresexpr[i]);
+    nes_pproc_entity (pSim, &Tess, Tesr, &Nodes, Mesh, In.entities[i], In.entityresexpr[i]);
 
   neut_tess_free (&Tess);
   neut_tesr_free (&Tesr);

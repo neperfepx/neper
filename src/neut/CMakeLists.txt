@@ -184,6 +184,7 @@ add_library(neut
 ./neut_odf/neut_odf1.cpp
 ./neut_odf/neut_odf2.cpp
 ./neut_odf/neut_odf3.cpp
+./neut_pf/neut_pf.c
 )
 
 ## Link libraries

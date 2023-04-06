@@ -301,6 +301,40 @@ neut_mesh_fscanf_msh_physical (FILE *file, struct MESH *pMesh0D,
 }
 
 void
+neut_mesh_fscanf_msh_crysym (FILE *file, struct NODES *pNodes, struct MESH *pMesh0D,
+                             struct MESH *pMesh1D, struct MESH *pMesh2D,
+                             struct MESH *pMesh3D, struct MESH *pMeshCo)
+{
+  char *tmp = ut_alloc_1d_char (1000);
+
+  // header
+  ut_file_skip (file, 1);
+
+  if (fscanf (file, "%s", tmp) != 1)
+    abort ();
+
+  if (pMesh0D)
+    ut_string_string (tmp, &(*pMesh0D).ElsetCrySym);
+  if (pMesh1D)
+    ut_string_string (tmp, &(*pMesh1D).ElsetCrySym);
+  if (pMesh2D)
+    ut_string_string (tmp, &(*pMesh2D).ElsetCrySym);
+  if (pMesh3D)
+    ut_string_string (tmp, &(*pMesh3D).ElsetCrySym);
+  if (pMeshCo)
+    ut_string_string (tmp, &(*pMeshCo).ElsetCrySym);
+  if (pNodes)
+    ut_string_string (tmp, &(*pNodes).crysym);
+
+  // footer
+  ut_file_skip (file, 1);
+
+  ut_free_1d_char (&tmp);
+
+  return;
+}
+
+void
 neut_mesh_fscanf_msh_orientations (FILE *file, char *entity, struct MESH *pMesh)
 {
   int qty;

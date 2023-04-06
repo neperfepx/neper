@@ -14,7 +14,7 @@
 
 #include"net_stat.h"
 
-extern void net_stat_tess (FILE *, char *, char *, struct TESS);
+extern void net_stat_tess (FILE *, char *, char *, struct TESS *pTess);
 extern void net_stat_tesr (FILE * file, char *entity, char *format,
 			   struct TESR *pTesr);
 extern void net_stat_point (FILE *, char *, struct POINT, struct TESS);

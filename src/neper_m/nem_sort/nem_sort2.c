@@ -5,15 +5,14 @@
 #include"nem_sort_.h"
 
 void
-nem_sort_nodes (struct IN_M In, struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh)
+nem_sort_nodes (struct IN_M In, struct TESS *pTess, struct NODES *pNodes, struct MESH *Mesh)
 {
   int i, max, dim = neut_mesh_array_dim (Mesh);
   double *val = ut_alloc_1d ((*pNodes).NodeQty + 1);
   int *id = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
   int *invid = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
 
-  neut_mesh_entity_expr_val (*pNodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
-                             Mesh[4], Tess, NULL, NULL, NULL, NULL, "node",
+  neut_mesh_entity_expr_val (*pNodes, Mesh, pTess, NULL, NULL, NULL, NULL, "node",
                              In.sortnode, val, NULL);
 
   ut_array_1d_sort_index (val + 1, (*pNodes).NodeQty, id + 1);
@@ -37,7 +36,7 @@ nem_sort_nodes (struct IN_M In, struct TESS Tess, struct NODES *pNodes, struct M
 }
 
 void
-nem_sort_elts (struct IN_M In, struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh)
+nem_sort_elts (struct IN_M In, struct TESS *pTess, struct NODES *pNodes, struct MESH *Mesh)
 {
   int max, dim = neut_mesh_array_dim (Mesh);
   int qty = Mesh[dim].EltQty;
@@ -47,8 +46,7 @@ nem_sort_elts (struct IN_M In, struct TESS Tess, struct NODES *pNodes, struct ME
   char *entity = ut_alloc_1d_char (10);
   sprintf (entity, "elt%dd", dim);
 
-  neut_mesh_entity_expr_val (*pNodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3],
-                             Mesh[4], Tess, NULL, NULL, NULL, NULL, entity,
+  neut_mesh_entity_expr_val (*pNodes, Mesh, pTess, NULL, NULL, NULL, NULL, entity,
                              In.sortelt, val, NULL);
 
   ut_array_1d_sort_index (val + 1, qty, id + 1);

@@ -50,10 +50,18 @@ nev_load_init_data_point (struct POINT Point, struct DATA *pPointData)
 }
 
 void
-nev_load_init_data_mesh (struct MESH Mesh, struct DATA *pMeshData)
+nev_load_init_data_mesh (struct MESH Mesh, char *entity, struct DATA *pMeshData)
 {
-  (*pMeshData).Qty = Mesh.EltQty;
   (*pMeshData).Dim = Mesh.Dimension;
+
+  if (!strncmp (entity, "elt", 3))
+    (*pMeshData).Qty = Mesh.EltQty;
+  else if (!strncmp (entity, "elset", 5))
+    (*pMeshData).Qty = Mesh.ElsetQty;
+  else if (!strncmp (entity, "mesh", 4))
+    (*pMeshData).Qty = 1;
+  else
+    abort ();
 
   return;
 }

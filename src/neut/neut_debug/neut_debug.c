@@ -225,23 +225,18 @@ neut_debug_tess (FILE * file, struct TESS Tess)
 
   fprintf (file, "CellOri =\n");
   if (Tess.CellOri)
-    ut_array_2d_fprintf (file, Tess.CellOri + 1, Tess.CellQty, 4, "%f");
+    ut_array_2d_fprintf (file, Tess.CellOri + 1, Tess.CellQty, 4, REAL_PRINT_FORMAT);
   else
     fprintf (file, "is NULL\n");
 
-  fprintf (file, "[id] CellTrue =\n");
-  if (Tess.CellTrue == NULL)
-    fprintf (file, "is NULL\n");
-  else
-    for (i = 1; i <= Tess.PolyQty; i++)
-      fprintf (file, "%d %d\n", i, Tess.CellTrue[i]);
-
+  /*
   fprintf (file, "[id] CellBody =\n");
   if (Tess.CellBody == NULL)
     fprintf (file, "is NULL\n");
   else
     for (i = 1; i <= Tess.PolyQty; i++)
       fprintf (file, "%d %d\n", i, Tess.CellBody[i]);
+      */
 
   fprintf (file, "CellCrySym = %s\n", Tess.CellCrySym);
 
@@ -256,7 +251,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     for (i = 1; i <= Tess.CellQty; i++)
     {
       fprintf (file, "%d ", i);
-      ut_array_1d_fprintf (file, Tess.SeedCoo[i], 3, "%f");
+      ut_array_1d_fprintf (file, Tess.SeedCoo[i], 3, REAL_PRINT_FORMAT);
     }
 
   fprintf (file, "[id] SeedWeight =\n");
@@ -279,7 +274,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       for (i = 1; i <= Tess.VerQty; i++)
       {
         fprintf (file, "%d ", i);
-        ut_array_1d_fprintf (file, Tess.VerCoo[i], 3, "%f");
+        ut_array_1d_fprintf (file, Tess.VerCoo[i], 3, REAL_PRINT_FORMAT);
       }
 
     fprintf (file, "[id] VerEdgeQty then VerEdgeNb =\n");
@@ -416,7 +411,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       fprintf (file, "is NULL\n");
     else
       for (i = 1; i <= Tess.FaceQty; i++)
-        ut_array_1d_fprintf (file, Tess.FaceEq[i], 4, "%f");
+        ut_array_1d_fprintf (file, Tess.FaceEq[i], 4, REAL_PRINT_FORMAT);
 
     fprintf (file, "[id] FaceState =\n");
     if (Tess.FaceState == NULL)
@@ -439,7 +434,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       for (i = 1; i <= Tess.FaceQty; i++)
       {
         fprintf (file, "%d ", i);
-        ut_array_1d_fprintf (file, Tess.FacePtCoo[i], 3, "%f");
+        ut_array_1d_fprintf (file, Tess.FacePtCoo[i], 3, REAL_PRINT_FORMAT);
       }
 
     fprintf (file, "[id] FaceDom =\n");
@@ -504,7 +499,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     for (i = 1; i <= Tess.DomVerQty; i++)
     {
       fprintf (file, "%d ", i);
-      ut_array_1d_fprintf (file, Tess.DomVerCoo[i], 3, "%f");
+      ut_array_1d_fprintf (file, Tess.DomVerCoo[i], 3, REAL_PRINT_FORMAT);
     }
 
   fprintf (file, "[id] DomVerLabel =\n");
@@ -600,7 +595,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
   fprintf (file, "DomFaceEq =\n");
   if (Tess.DomFaceEq != NULL)
     for (i = 1; i <= Tess.DomFaceQty; i++)
-      ut_array_1d_fprintf (file, Tess.DomFaceEq[i], 4, "%f");
+      ut_array_1d_fprintf (file, Tess.DomFaceEq[i], 4, REAL_PRINT_FORMAT);
   else
     fprintf (file, "is NULL\n");
   fflush (file);
@@ -658,7 +653,7 @@ neut_debug_tess (FILE * file, struct TESS Tess)
 
   fprintf (file, "PeriodicDist = ");
   if (Tess.PeriodicDist)
-    ut_array_1d_fprintf (file, Tess.PeriodicDist, 3, "%f");
+    ut_array_1d_fprintf (file, Tess.PeriodicDist, 3, REAL_PRINT_FORMAT);
   fprintf (file, "NULL\n");
 
   // PerSeed
@@ -788,7 +783,7 @@ neut_debug_seedset (FILE * file, struct SEEDSET SSet)
     {
       printf ("%d: ", i);
       fflush (file);
-      ut_array_1d_fprintf (file, SSet.SeedCoo0[i], 3, "%f");
+      ut_array_1d_fprintf (file, SSet.SeedCoo0[i], 3, REAL_PRINT_FORMAT);
     }
 
   fprintf (file, "SeedCoo =\n");
@@ -796,7 +791,7 @@ neut_debug_seedset (FILE * file, struct SEEDSET SSet)
     fprintf (file, "is NULL.\n");
   else
     for (i = 1; i <= SSet.Nall; i++)
-      ut_array_1d_fprintf (file, SSet.SeedCoo[i], 3, "%f");
+      ut_array_1d_fprintf (file, SSet.SeedCoo[i], 3, REAL_PRINT_FORMAT);
 
   fprintf (file, "SeedWeight =\n");
   if (!SSet.SeedWeight)
@@ -810,19 +805,19 @@ neut_debug_seedset (FILE * file, struct SEEDSET SSet)
     fprintf (file, "is NULL.\n");
   else
     for (i = 1; i <= SSet.N; i++)
-      ut_array_1d_fprintf (file, SSet.SeedOri[i], 4, "%f");
+      ut_array_1d_fprintf (file, SSet.SeedOri[i], 4, REAL_PRINT_FORMAT);
 
   fprintf (file, "LamEq = ");
   if (SSet.LamEq == NULL)
     fprintf (file, "(null)\n");
   else
-    ut_array_2d_fprintf (file, SSet.LamEq + 1, SSet.N, 4, "%f");
+    ut_array_2d_fprintf (file, SSet.LamEq + 1, SSet.N, 4, REAL_PRINT_FORMAT);
 
   fprintf (file, "LamWidth = ");
   if (SSet.LamEq == NULL)
     fprintf (file, "(null)\n");
   else
-    ut_array_1d_fprintf (file, SSet.LamWidth + 1, SSet.N, "%f");
+    ut_array_1d_fprintf (file, SSet.LamWidth + 1, SSet.N, REAL_PRINT_FORMAT);
 
   fprintf (file, "Periodic =\n");
   if (!SSet.Periodic)
@@ -834,13 +829,13 @@ neut_debug_seedset (FILE * file, struct SEEDSET SSet)
   if (!SSet.PeriodicDist)
     fprintf (file, "is NULL.\n");
   else
-    ut_array_1d_fprintf (file, SSet.PeriodicDist, 3, "%f");
+    ut_array_1d_fprintf (file, SSet.PeriodicDist, 3, REAL_PRINT_FORMAT);
 
   fprintf (file, "Size =\n");
   if (!SSet.Size)
     fprintf (file, "is NULL.\n");
   else
-    ut_array_2d_fprintf (file, SSet.Size, 3, 2, "%f");
+    ut_array_2d_fprintf (file, SSet.Size, 3, 2, REAL_PRINT_FORMAT);
 
   return;
 }
@@ -870,13 +865,13 @@ neut_debug_poly (FILE * file, struct POLY Poly)
   ut_array_2d_int_fprintf (file, Poly.VerFace + 1, Poly.VerQty, 3, "%d");
 
   fprintf (file, "VerCoo = \n");
-  ut_array_2d_fprintf (file, Poly.VerCoo + 1, Poly.VerQty, 3, "%f");
+  ut_array_2d_fprintf (file, Poly.VerCoo + 1, Poly.VerQty, 3, REAL_PRINT_FORMAT);
 
   fprintf (file, "FacePoly = \n");
   ut_array_1d_int_fprintf (file, Poly.FacePoly + 1, Poly.FaceQty, "%d");
 
   fprintf (file, "FaceEq = \n");
-  ut_array_2d_fprintf (file, Poly.FaceEq + 1, Poly.FaceQty, 4, "%f");
+  ut_array_2d_fprintf (file, Poly.FaceEq + 1, Poly.FaceQty, 4, REAL_PRINT_FORMAT);
 
   fprintf (file, "FaceVerQty: FaceVerNb = \n");
   for (i = 1; i <= Poly.FaceQty; i++)
@@ -917,7 +912,7 @@ neut_debug_polymod (FILE * file, struct POLYMOD Polymod)
   ut_array_1d_int_fprintf (file, Polymod.VerUse + 1, Polymod.VerQty, "%d");
 
   fprintf (file, "VerCoo = \n");
-  ut_array_2d_fprintf (file, Polymod.VerCoo + 1, Polymod.VerQty, 3, "%f");
+  ut_array_2d_fprintf (file, Polymod.VerCoo + 1, Polymod.VerQty, 3, REAL_PRINT_FORMAT);
 
   fprintf (file, "VerFace = \n");
   ut_array_2d_int_fprintf (file, Polymod.VerFace + 1, Polymod.VerQty, 3,
@@ -930,7 +925,7 @@ neut_debug_polymod (FILE * file, struct POLYMOD Polymod)
   ut_array_1d_int_fprintf (file, Polymod.FacePoly + 1, Polymod.FaceQty, "%d");
 
   fprintf (file, "FaceEq = \n");
-  ut_array_2d_fprintf (file, Polymod.FaceEq + 1, Polymod.FaceQty, 4, "%f");
+  ut_array_2d_fprintf (file, Polymod.FaceEq + 1, Polymod.FaceQty, 4, REAL_PRINT_FORMAT);
 
   fprintf (file, "FaceVerQty: FaceVerNb = \n");
   for (i = 1; i <= Polymod.FaceQty; i++)
@@ -970,11 +965,11 @@ neut_debug_data (FILE * file, struct DATA Data)
     if (!strcmp (Data.ColDataType, "col")
         || !strncmp (Data.ColDataType, "ori", 3))
       ut_array_2d_fprintf (file, Data.ColData + 1, Data.Qty, 3,
-                           "%f");
+                           REAL_PRINT_FORMAT);
     else if (!strcmp (Data.ColDataType, "rad")
              || !strcmp (Data.ColDataType, "real"))
       ut_array_2d_fprintf (file, Data.ColData + 1, Data.Qty, 1,
-                           "%f");
+                           REAL_PRINT_FORMAT);
     else
       abort ();
   }
@@ -991,7 +986,7 @@ neut_debug_data (FILE * file, struct DATA Data)
   fprintf (file, "RadData = \n");
   if (Data.RadData)
     ut_array_2d_fprintf (file, Data.RadData + 1, Data.Qty, 3,
-                         "%f");
+                         REAL_PRINT_FORMAT);
 
   fprintf (file, "Rad = \n");
   if (Data.Rad)
@@ -1054,14 +1049,14 @@ neut_debug_tesr (FILE * file, struct TESR Tesr)
 
   fprintf (file, "CellOri =\n");
   if (Tesr.CellOri)
-    ut_array_2d_fprintf (file, Tesr.CellOri + 1, Tesr.CellQty, 4, "%f");
+    ut_array_2d_fprintf (file, Tesr.CellOri + 1, Tesr.CellQty, 4, REAL_PRINT_FORMAT);
   else
     fprintf (file, "is NULL\n");
 
   fprintf (file, "size = ");
   ut_array_1d_int_fprintf (file, Tesr.size, 3, "%d");
   fprintf (file, "vsize = ");
-  ut_array_1d_fprintf (file, Tesr.vsize, 3, "%f");
+  ut_array_1d_fprintf (file, Tesr.vsize, 3, REAL_PRINT_FORMAT);
 
   fprintf (file, "VoxCell = ");
   for (k = 1; k <= Tesr.size[2]; k++)
@@ -1084,25 +1079,25 @@ neut_debug_prim (FILE * file, struct PRIM Prim)
 
   fprintf (file, "Parms = ");
   if (Prim.Parms)
-    ut_array_1d_fprintf (file, Prim.Parms, Prim.ParmQty, "%f");
+    ut_array_1d_fprintf (file, Prim.Parms, Prim.ParmQty, REAL_PRINT_FORMAT);
   else
     fprintf (file, "NULL\n");
 
   fprintf (file, "Eq = ");
   if (Prim.Eq)
-    ut_array_1d_fprintf (file, Prim.Eq, 4, "%f");
+    ut_array_1d_fprintf (file, Prim.Eq, 4, REAL_PRINT_FORMAT);
   else
     fprintf (file, "NULL\n");
 
   fprintf (file, "Base = ");
   if (Prim.Base)
-    ut_array_1d_fprintf (file, Prim.Base, 3, "%f");
+    ut_array_1d_fprintf (file, Prim.Base, 3, REAL_PRINT_FORMAT);
   else
     fprintf (file, "NULL\n");
 
   fprintf (file, "Dir = ");
   if (Prim.Dir)
-    ut_array_1d_fprintf (file, Prim.Dir, 3, "%f");
+    ut_array_1d_fprintf (file, Prim.Dir, 3, REAL_PRINT_FORMAT);
   else
     fprintf (file, "NULL\n");
 

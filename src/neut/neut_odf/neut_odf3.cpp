@@ -27,12 +27,11 @@ neut_odf_comp_elts_all (struct OL_SET *pOSet, double *q, struct ODF *pOdf, int i
 }
 
 void
-neut_odf_comp_elts_neigh (double *q, double cut_fact, my_kd_tree_t *nano_index,
-                          struct ODF *pOdf, int id)
-
+neut_odf_comp_elts_neigh (double *q, double cut_fact, QCLOUD qcloud,
+                          my_kd_tree_t *nano_index, struct ODF *pOdf, int id)
 {
   int i, neighqty;
-  double theta, cut_dist = pow (2 * sin (0.25 * cut_fact * (*pOdf).sigma), 2);
+  double theta, weight, cut_dist = pow (2 * sin (0.25 * cut_fact * (*pOdf).sigma), 2);
 
   nanoflann::SearchParams params;
   std::vector < std::pair < size_t, double > >ret_matches;
@@ -41,8 +40,11 @@ neut_odf_comp_elts_neigh (double *q, double cut_fact, my_kd_tree_t *nano_index,
   for (i = 0; i < neighqty; i++)
   {
     theta = 4 * asin (sqrt (ret_matches[i].second) * 0.5);
+
+    weight = qcloud.pts[ret_matches[i].first].weight;
+
     if (theta < M_PI)
-      (*pOdf).odf[id] += 1 / sqrt (2 * M_PI * (*pOdf).sigma * (*pOdf).sigma)
+      (*pOdf).odf[id] += weight / sqrt (2 * M_PI * (*pOdf).sigma * (*pOdf).sigma)
         * exp (-theta * theta / (2 * (*pOdf).sigma * (*pOdf).sigma));
   }
 
@@ -70,12 +72,12 @@ neut_odf_comp_nodes_all (struct OL_SET *pOSet, double *q, struct ODF *pOdf, int 
 }
 
 void
-neut_odf_comp_nodes_neigh (double *q, double cut_fact, my_kd_tree_t *nano_index,
+neut_odf_comp_nodes_neigh (double *q, double cut_fact, QCLOUD qcloud, my_kd_tree_t *nano_index,
                            struct ODF *pOdf, int id)
 
 {
   int i, neighqty;
-  double theta, cut_dist = pow (2 * sin (0.25 * cut_fact * (*pOdf).sigma), 2);
+  double theta, weight, cut_dist = pow (2 * sin (0.25 * cut_fact * (*pOdf).sigma), 2);
 
   nanoflann::SearchParams params;
   std::vector < std::pair < size_t, double > >ret_matches;
@@ -84,8 +86,10 @@ neut_odf_comp_nodes_neigh (double *q, double cut_fact, my_kd_tree_t *nano_index,
   for (i = 0; i < neighqty; i++)
   {
     theta = 4 * asin (sqrt (ret_matches[i].second) * 0.5);
+    weight = qcloud.pts[ret_matches[i].first].weight;
+
     if (theta < M_PI)
-      (*pOdf).odfn[id] += 1 / sqrt (2 * M_PI * (*pOdf).sigma * (*pOdf).sigma)
+      (*pOdf).odfn[id] += weight / sqrt (2 * M_PI * (*pOdf).sigma * (*pOdf).sigma)
         * exp (-theta * theta / (2 * (*pOdf).sigma * (*pOdf).sigma));
   }
 

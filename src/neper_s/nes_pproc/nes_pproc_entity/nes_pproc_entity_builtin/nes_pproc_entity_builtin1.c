@@ -9,7 +9,7 @@
 #endif
 
 int
-nes_pproc_entity_builtin (struct SIM *pSim, struct TESS Tess, struct TESR Tesr,
+nes_pproc_entity_builtin (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
                        struct NODES *pNodes, struct MESH *Mesh, char *entity,
                        struct SIMRES *pSimRes)
 {
@@ -23,13 +23,13 @@ nes_pproc_entity_builtin (struct SIM *pSim, struct TESS Tess, struct TESR Tesr,
                                           (*pSimRes).res);
 
   // entity is "elsets", "mesh" or a custom entity
-  else if (!strcmp (type, "elt") || !strcmp (type, "elset"))
-    status = nes_pproc_entity_builtin_elsets (pSim, Tess, pNodes, Mesh, entity,
+  else if (!strcmp (type, "elt") || !strcmp (type, "elset") || !strcmp (type, "mesh"))
+    status = nes_pproc_entity_builtin_elsets (pSim, pTess, pNodes, Mesh, entity,
                                               (*pSimRes).res);
 
   // entity is cell
   else if (!strcmp (type, "cell"))
-    status = nes_pproc_entity_builtin_cells (pSim, Tess, Tesr, entity,
+    status = nes_pproc_entity_builtin_cells (pSim, pTess, Tesr, entity,
                                              (*pSimRes).res);
 
   ut_free_1d_char (&type);

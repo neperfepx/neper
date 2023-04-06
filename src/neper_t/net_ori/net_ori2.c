@@ -350,7 +350,7 @@ net_ori_mtess_params (struct IN_T In, int level, struct MTESS MTess,
                                            In.orispread[level], porispread);
 
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
-                                           In.oricrysym[level], pcrysym);
+                                           In.crysym[level], pcrysym);
 
   if (level == 1 && !strncmp (*pori, "parent", 6))
     ut_print_message (2, 3, "`parent' not available at scale 1.\n");

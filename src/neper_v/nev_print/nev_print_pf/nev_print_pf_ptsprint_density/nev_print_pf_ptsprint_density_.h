@@ -10,6 +10,7 @@
 #include<float.h>
 
 #include "ut.h"
+#include "../../../structIn_v.h"
 #include "neut_v.h"
 #include "nev_print_pf_ptsprint_density.h"
 
@@ -20,24 +21,21 @@
 #define WMARGINPF 0.265
 #define EMARGINPF 0.265
 
-extern void nev_print_pf_ptsprint_density_write (FILE *, char *, struct PRINT, struct DATA, double ***, double **, double, double);
+extern void nev_print_pf_ptsprint_density_write (struct PF, struct PRINT, FILE *, char *, struct DATA, double **, double, double);
 
-extern void nev_print_pf_ptsprint_density_write_text0 (FILE *file, struct PRINT Print);
+extern void nev_print_pf_ptsprint_density_grid (struct PF Pf,
+                                                double ***pdensity,
+                                                double ***pldensity);
 
-extern void nev_print_pf_ptsprint_density_grid (struct PRINT Print,
-                                       double ****pgrid, double ***pdensity,
-				       double ****pPgrid, double ****plgrid, double ***pldensity);
-
-extern void nev_print_pf_ptsprint_density_odf (struct PRINT Print, double ***grid, double ***Pgrid,
-    double **coo, int borderptqty, double **pos, double *wgt, int pqty, double **density,
+extern void nev_print_pf_ptsprint_density_odf (struct PF Pf,
+    double **pos, double *wgt, int pqty, double **density,
     double *pmin, double *pmax);
 
-extern void nev_print_pf_ptsprint_density_ldensity (struct PRINT Print, double **density, double ***lgrid,
+extern void nev_print_pf_ptsprint_density_ldensity (struct PF Pf, double **density,
                                            double **ldensity);
 
-extern void nev_print_pf_ptsprint_density_write_data (char *filename, struct PRINT Print, double ***lgrid, double **ldensity);
+extern void nev_print_pf_ptsprint_density_write_data (struct PF Pf, char *filename, double **ldensity);
 
-extern void nev_print_pf_ptsprint_density_write_text (FILE *file, char *filename2, struct PRINT Print);
+extern void nev_print_pf_ptsprint_density_write_text (struct PF Pf, FILE *file, char *filename2);
 
-extern void nev_print_pf_ptsprint_density_write_mask (FILE *, struct PRINT, double **borderpt,
-			   int borderptqty);
+extern void nev_print_pf_ptsprint_density_write_mask (struct IN_V In, FILE *, struct PF);

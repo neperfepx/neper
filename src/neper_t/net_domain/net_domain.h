@@ -9,6 +9,7 @@ extern "C"
 
   extern void net_domain (struct IN_T In, struct MTESS *pMTess,
 			  struct TESS *pDomain);
+  extern void net_domain_clip (struct POLY *, double **, int);
 
 #ifdef __cplusplus
 }

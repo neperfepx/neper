@@ -254,14 +254,14 @@ extern "C"
 ///
 ///
 ///
-  extern int neut_mesh_point_elt (struct MESH Mesh, struct NODES Nodes,
+  extern int neut_mesh_point_elt (struct NODES Nodes, struct MESH Mesh,
 				  double *coo, int *pelt);
 
 /// \brief Determine the elset of a mesh to which a point belongs.
 ///
 ///
 ///
-  extern int neut_mesh_point_elset (struct MESH Mesh, struct NODES Nodes,
+  extern int neut_mesh_point_elset (struct NODES Nodes, struct MESH Mesh,
 				    double *coo, int *elsetlist,
 				    int elsetqty, int *pelt);
 
@@ -269,16 +269,14 @@ extern "C"
 ///
 ///
 ///
-  extern int neut_mesh_elset_point_elt (struct MESH Mesh, struct NODES
-					Nodes, int elset, double *coo,
-					int *pelt);
+  extern int neut_mesh_elset_point_elt (struct NODES Nodes, struct MESH Mesh,
+                                        int elset, double *coo, int *pelt);
 
 /// \brief Test if a point belongs to an elt of a mesh.
 ///
 ///
 ///
-  extern int neut_mesh_point_elt_in (struct MESH Mesh, struct NODES
-				      Nodes, double *coo, int elt);
+  extern int neut_mesh_point_elt_in (struct NODES Nodes, struct MESH Mesh, double *coo, int elt);
 
 /// \brief Determine the clsest elt of an elset of a mesh to which a point is.
 ///

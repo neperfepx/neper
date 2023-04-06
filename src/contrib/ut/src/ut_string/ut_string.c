@@ -156,6 +156,8 @@ ut_string_completion (char *in, char **list, int qty, char **pout)
 
   if (res > 0)
     ut_string_string (list2[res][0], pout);     // this is the good possibility
+  else
+    ut_string_string (in, pout); // copying input
 
   for (i = 1; i <= qty; i++)
     ut_free_2d_char (&list2[i], qty2[i]);
@@ -353,7 +355,8 @@ ut_string_function (char *string, char **pfct, char ***pvars, char ***pvals,
 
   if (!strstr (string, "("))
   {
-    ut_string_string (string, pfct);
+    if (pfct)
+      ut_string_string (string, pfct);
     if (pqty)
       *pqty = 0;
     return;
@@ -472,6 +475,9 @@ ut_string_substrings (char *string, char ***psubstrings, int *psubstringqty)
   char *tmp = NULL;
 
   (*psubstringqty) = 0;
+
+  if (!string)
+    return 0;
 
   if (strstr (string, "#"))
     abort ();

@@ -7,7 +7,7 @@
 void
 net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
 {
-  int tess_out, tesr_out, ori_out;
+  int tess_out, tesr_out, ori_out, sim_out;
 
   net_input_treatargs (fargc, fargv, argc, argv, pIn);
 
@@ -22,6 +22,7 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
   tess_out = 0;
   tesr_out = 0;
   ori_out = 0;
+  sim_out = 0;
   if (ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "tess") == 1
       || ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "geo") == 1
       || ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "mgeo") == 1
@@ -39,6 +40,9 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
   if (tess_out == 0 && tesr_out == 0
       && ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "ori") == 1)
     ori_out = 1;
+  if (sim_out == 0
+      && ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "sim") == 1)
+    sim_out = 1;
 
   // Setting mode
 
@@ -54,7 +58,7 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
   }
 
   // otherwise, tessellations are built in tess mode
-  else if (tess_out || tesr_out)
+  else if (tess_out || tesr_out || sim_out)
     ut_string_string ("tess", &(*pIn).mode);
 
   else if (ori_out)

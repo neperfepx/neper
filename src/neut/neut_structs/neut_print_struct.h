@@ -12,37 +12,6 @@ extern "C"
 
   struct PRINT
   {
-    // prerequisites -----------------------------------------------------------
-    char *povray;
-    int povrayantialiasing;
-
-    char *asymptote;
-
-    // space -------------------------------------------------------------------
-    char *space;
-
-    // space -------------------------------------------------------------------
-    char *pfpolestring;
-    int** pfpoles;
-    int pfpoleqty;
-
-    char *pfprojection;         // stereographic or equal-area
-    char *pfmode;               // representation mode: point, contour, density
-    char *pffont;               // TimesRoman or ComputerModern
-
-    int pfgridsize;
-    char *pfkernel;
-    double pfkernelsig;
-    char *pfdirstring;
-    double **pfdir;             // [0,1]
-    char *pfsym;
-    int pfclustering;
-
-    char *pfshape;
-
-    // slicing -----------------------------------------------------------------
-    char *slice;
-
     // show --------------------------------------------------------------------
     int showtess;
     int showtesr;
@@ -55,6 +24,10 @@ extern "C"
     char **inputs;
 
     int *shownode;
+    int *showelset3d; // used by pf
+    int *showelset2d; // used by pf
+    int *showelset1d; // used by pf
+    int *showelset0d; // used by pf
     int *showelt3d;
     int *showelt2d;
     int *showelt1d;
@@ -75,38 +48,18 @@ extern "C"
     int *showcrystal;
 
     // camera ------------------------------------------------------------------
-    char *cameracoostring;
     double *cameracoo;
-    char *cameralookatstring;
     double *cameralookat;
-    char *cameraskystring;
     double *camerasky;
     double cameraangle;
     char *cameraprojection;
 
     // light -------------------------------------------------------------------
-    char *lightsourcestring;
     char **lightsources;
     int lightsourceqty;
-    char *lightambientstring;
     double lightambient;
-    char *lightdiffusestring;
     double lightdiffuse;
-    char *lightreflectionstring;
     double lightreflection;
-
-    // scene -------------------------------------------------------------------
-    char *scenebackground;
-
-    // image -------------------------------------------------------------------
-    char *imagesize;
-    char *imageformat;
-
-    // output ------------------------------------------------------------------
-    char *outdir;
-
-    // advanced ----------------------------------------------------------------
-    char *includepov;
 
     // internal for now --------------------------------------------------------
     int datareduction; // set to 1

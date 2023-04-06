@@ -1402,7 +1402,7 @@ ut_space_polypts_point_dist_verbosity (double **ptcoos0, int ptqty,
   {
     fp = ut_file_open ("poly.geo", "w");
     for (i = 0; i < ptqty; i++)
-      fprintf (fp, "Point (%d) = {%.12f, %.12f, %.12f};\n", i, ptcoos0[i][0],
+      fprintf (fp, "Point (%d) = {" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "};\n", i, ptcoos0[i][0],
                ptcoos0[i][1], ptcoos0[i][2]);
     ut_file_close (fp, "ut_space_polypts_point_dist_verbosity.geo", "w");
   }
@@ -1413,9 +1413,9 @@ ut_space_polypts_point_dist_verbosity (double **ptcoos0, int ptqty,
   if (verbosity)
   {
     fprintf (fp, "ptcoos0 =\n");
-    ut_array_2d_fprintf (fp, ptcoos0, ptqty, 3, "%f");
+    ut_array_2d_fprintf (fp, ptcoos0, ptqty, 3, REAL_PRINT_FORMAT);
     fprintf (fp, "ptcoo = ");
-    ut_array_1d_fprintf (fp, ptcoo, 3, "%f");
+    ut_array_1d_fprintf (fp, ptcoo, 3, REAL_PRINT_FORMAT);
   }
 
   startpt = 0;
@@ -1455,7 +1455,7 @@ ut_space_polypts_point_dist_verbosity (double **ptcoos0, int ptqty,
       fprintf (fp, "simplex = ");
       ut_array_1d_int_fprintf (fp, list, qty, "%d");
       fprintf (fp, "dir = ");
-      ut_array_1d_fprintf (fp, dir, 3, "%f");
+      ut_array_1d_fprintf (fp, dir, 3, REAL_PRINT_FORMAT);
     }
 
     // searching the furthest point along dir (called A)
@@ -1512,7 +1512,7 @@ ut_space_polypts_point_dist_verbosity (double **ptcoos0, int ptqty,
         fprintf (fp, "entering ut_polypts_point_dist_dosimplex with list =");
         ut_array_1d_int_fprintf (fp, list, qty, "%d");
         fprintf (fp, "dir = ");
-        ut_array_1d_fprintf (fp, dir, 3, "%f");
+        ut_array_1d_fprintf (fp, dir, 3, REAL_PRINT_FORMAT);
       }
       // searching for the new points and search direction
       status =
@@ -1523,7 +1523,7 @@ ut_space_polypts_point_dist_verbosity (double **ptcoos0, int ptqty,
         fprintf (fp, "exiting ut_polypts_point_dist_dosimplex with list =");
         ut_array_1d_int_fprintf (fp, list, qty, "%d");
         fprintf (fp, "dir = ");
-        ut_array_1d_fprintf (fp, dir, 3, "%f");
+        ut_array_1d_fprintf (fp, dir, 3, REAL_PRINT_FORMAT);
         fprintf (fp, "status = %d\n", status);
       }
     }
@@ -1559,7 +1559,7 @@ ut_space_polypts_point_dist_verbosity (double **ptcoos0, int ptqty,
     fprintf (fp, "simplex = ");
     ut_array_1d_int_fprintf (fp, list, qty, "%d");
     fprintf (fp, "dir = ");
-    ut_array_1d_fprintf (fp, dir, 3, "%f");
+    ut_array_1d_fprintf (fp, dir, 3, REAL_PRINT_FORMAT);
 
     fprintf (fp, "%s",
              (status == -1) ? "no intersection\n" : "intersection\n");
@@ -1791,19 +1791,19 @@ ut_space_polypts_point_dist_dosimplex (double **vercoo, int *list, int *pqty,
     if (verbosity)
     {
       fprintf (fp, "AO = ");
-      ut_array_1d_fprintf (fp, AO, 3, "%f");
+      ut_array_1d_fprintf (fp, AO, 3, REAL_PRINT_FORMAT);
       fprintf (fp, "ABC = ");
-      ut_array_1d_fprintf (fp, ABC, 3, "%f");
+      ut_array_1d_fprintf (fp, ABC, 3, REAL_PRINT_FORMAT);
       fprintf (fp, "ABC.AO = %f\n", ut_vector_scalprod (ABC, AO));
       fprintf (fp, "ut_space_vectpair_samedir (ABC, AO) = %d\n",
                ut_space_vectpair_samedir (ABC, AO));
       fprintf (fp, "ACD = ");
-      ut_array_1d_fprintf (fp, ACD, 3, "%f");
+      ut_array_1d_fprintf (fp, ACD, 3, REAL_PRINT_FORMAT);
       fprintf (fp, "ACD.AO = %f\n", ut_vector_scalprod (ACD, AO));
       fprintf (fp, "ut_space_vectpair_samedir (ACD, AO) = %d\n",
                ut_space_vectpair_samedir (ACD, AO));
       fprintf (fp, "ADB = ");
-      ut_array_1d_fprintf (fp, ADB, 3, "%f");
+      ut_array_1d_fprintf (fp, ADB, 3, REAL_PRINT_FORMAT);
       fprintf (fp, "ADB.AO = %f\n", ut_vector_scalprod (ADB, AO));
       fprintf (fp, "ut_space_vectpair_samedir (ADB, AO) = %d\n",
                ut_space_vectpair_samedir (ADB, AO));
@@ -2561,7 +2561,7 @@ ut_space_pointset_plane (double **coos, int cooqty, double *eq)
     for (j = 0; j < 3; j++)
       coos2[i][j] = coos[i][j] - mean[j];
 
-  ut_vector_set_eigen (coos2, cooqty, 3, evect, eval);
+  ut_vector_set_eigen (coos2, NULL, cooqty, 3, evect, eval);
 
   ut_array_1d_memcpy (evect[2], 3, eq + 1);
   eq[0] = ut_vector_scalprod (mean, eq + 1);

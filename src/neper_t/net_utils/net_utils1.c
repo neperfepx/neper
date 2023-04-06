@@ -29,8 +29,8 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).morphooptismooth = NULL;
   (*pIn).morphooptistopstring = NULL;
   (*pIn).morphooptistop = NULL;
-  (*pIn).oricrysymstring = NULL;
-  (*pIn).oricrysym = NULL;
+  (*pIn).crysymstring = NULL;
+  (*pIn).crysym = NULL;
   (*pIn).orioptistopstring = NULL;
   (*pIn).orioptistop = NULL;
   (*pIn).orioptineighstring = NULL;
@@ -186,8 +186,8 @@ net_in_free (struct IN_T *pIn)
   ut_free_2d_char (&(*pIn).morphooptismooth, (*pIn).levelqty + 1);
   ut_free_1d_char (&(*pIn).morphooptistopstring);
   ut_free_2d_char (&(*pIn).morphooptistop, (*pIn).levelqty + 1);
-  ut_free_1d_char (&(*pIn).oricrysymstring);
-  ut_free_2d_char (&(*pIn).oricrysym, (*pIn).levelqty + 1);
+  ut_free_1d_char (&(*pIn).crysymstring);
+  ut_free_2d_char (&(*pIn).crysym, (*pIn).levelqty + 1);
   ut_free_1d_char (&(*pIn).orioptistopstring);
   ut_free_2d_char (&(*pIn).orioptistop, (*pIn).levelqty + 1);
   ut_free_1d_char (&(*pIn).morphooptilogtimestring);

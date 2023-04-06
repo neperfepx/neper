@@ -63,7 +63,7 @@ extern void neut_simres_free (struct SIMRES *pSimRes);
 // set step and update members
 extern void neut_simres_setstep (struct SIMRES *pSimRes, int step);
 
-extern void neut_sim_entity_init_members (struct SIM *pSim, struct TESS Tess,
+extern void neut_sim_entity_init_members (struct SIM *pSim, struct TESS *pTess,
                                           struct NODES Nodes, struct MESH *Mesh,
                                           char *entity);
 

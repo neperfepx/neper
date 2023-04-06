@@ -254,7 +254,7 @@ nem_meshing_2d_face_mesh_gmsh_writeboundary (struct NODES Nodes, int *bnodes,
   {
     node = bnodes[i];
 
-    fprintf (file, "Point(%d) = {%.12f, %.12f, %.12f, %.12f};\n", i + 1,
+    fprintf (file, "Point(%d) = {" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT ","  REAL_PRINT_FORMAT "};\n", i + 1,
              bnodecoos[i][0], bnodecoos[i][1], bnodecoos[i][2],
              bnodecls ? bnodecls[i] : Nodes.NodeCl[node]);
   }

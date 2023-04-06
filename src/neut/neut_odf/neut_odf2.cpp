@@ -7,13 +7,13 @@
 #include "neut_qcloud_struct.hpp"
 
 extern void neut_odf_comp_elts_all (struct OL_SET *pOSet, double *q, struct ODF *pOdf, int id);
-extern void neut_odf_comp_elts_neigh (double *q, double cut_fact, my_kd_tree_t *nano_index, struct ODF *pOdf, int id);
+extern void neut_odf_comp_elts_neigh (double *q, double cut_fact, QCLOUD qcloud, my_kd_tree_t *nano_index, struct ODF *pOdf, int id);
 extern void neut_odf_comp_nodes_all (struct OL_SET *pOSet, double *q, struct ODF *pOdf, int id);
-extern void neut_odf_comp_nodes_neigh (double *q, double cut_fact, my_kd_tree_t *nano_index,
+extern void neut_odf_comp_nodes_neigh (double *q, double cut_fact, QCLOUD qcloud, my_kd_tree_t *nano_index,
                            struct ODF *pOdf, int id);
 
 double
-neut_odf_comp_elts (char *neigh, struct OL_SET *pOSet,
+neut_odf_comp_elts (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud,
                     my_kd_tree_t *nano_index, struct ODF *pOdf)
 {
   int i, dim = neut_mesh_array_dim ((*pOdf).Mesh);
@@ -64,9 +64,8 @@ neut_odf_comp_elts (char *neigh, struct OL_SET *pOSet,
       neut_odf_comp_elts_all (pOSet, q, pOdf, i);
     else
     {
-      double cut_fact;
-      sscanf (neigh, "%lf", &cut_fact);
-      neut_odf_comp_elts_neigh (q, cut_fact, nano_index, pOdf, i);
+      double cut_fact = atof (neigh);
+      neut_odf_comp_elts_neigh (q, cut_fact, nano_cloud, nano_index, pOdf, i);
     }
 
     ol_q_free (q);
@@ -86,7 +85,7 @@ neut_odf_comp_elts (char *neigh, struct OL_SET *pOSet,
 }
 
 void
-neut_odf_comp_nodes (char *neigh, struct OL_SET *pOSet,
+neut_odf_comp_nodes (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud,
                      my_kd_tree_t *nano_index, struct ODF *pOdf)
 {
   int i;
@@ -123,7 +122,7 @@ neut_odf_comp_nodes (char *neigh, struct OL_SET *pOSet,
     {
       double cut_fact;
       sscanf (neigh, "%lf", &cut_fact);
-      neut_odf_comp_nodes_neigh (q, cut_fact, nano_index, pOdf, i);
+      neut_odf_comp_nodes_neigh (q, cut_fact, nano_cloud, nano_index, pOdf, i);
     }
 
 #pragma omp atomic

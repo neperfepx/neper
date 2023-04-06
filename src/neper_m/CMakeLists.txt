@@ -99,7 +99,6 @@ add_library(neper_m
 ./nem_nsets/nem_nsets1.c
 ./nem_nsets/nem_nsets2.c
 ./nem_elsets/nem_elsets1.c
-./nem_elsets/nem_elsets2.c
 ./nem_meshing_str/nem_meshing_str1.c
 ./nem_meshing_str/nem_meshing_str2.c
 ./neper_m.c

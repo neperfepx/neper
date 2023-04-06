@@ -135,11 +135,12 @@ Available keys for a tessellation itself are provided below.
 :data:`area`    surface area                        tess
 :data:`vol`     volume                              tess
 :data:`size`    size (surface area/volume in 2D/3D) tess
+:data:`step`    simulation step                     tess
 =============== =================================== ==================
 
 Available keys for tessellation seeds, vertices, edges, faces, polyhedra, crystals and cell groups are provided below.  Also note that the keys apply to *cells* if they are tagged to apply to *polyhedra* and the tessellation is 3D and *faces* and the tessellation is 2D, and that keys apply to *crystals* if they apply to *cells*.  You may also replace, in the tessellation keys themselves, :data:`poly` by :data:`cell` if the tessellation is 3D and :data:`face` by :data:`cell` if the tessellation is 2D (it applies only in rare cases).  For example, for a 2D tessellation, you may use :data:`-statcell ncells` instead of :data:`-statface nfaces`. Keys specific to cells are defined accordingly in the following but also apply to *polys* is the tessellation is 3D and *faces* is the tessellations is 2D.
 
-To turn a key value into a value relative to the mean over all entities (e.g. the relative cell size), append the key expression with the :data:`:rel` modifier.  To turn a key value into a value which holds for a unit cell size, append the key expression with the :data:`:uc` modifier.  To use as a reference only the *body* or *true* entities (see below), append :data:`b` or :data:`t` to the modifiers, respectively.
+To turn a key value into a value relative to the mean over all entities (e.g. the relative cell size), append the key expression with the :data:`:rel` modifier.  To turn a key value into a value which holds for a unit cell size, append the key expression with the :data:`:uc` modifier.  To use as a reference only the *body* entities (see below), append :data:`b` to the modifiers.
 
 ================================= =================================================================================================== =========================================
 **Key**                           **Descriptor**                                                                                      **Apply to**
@@ -155,14 +156,13 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 :data:`ymax`                      maximum y coordinate                                                                                edge, face, poly
 :data:`zmax`                      maximum z coordinate                                                                                edge, face, poly
 :data:`w`                         weight (width for a lamellar tessellation)                                                          seed, cell
-:data:`true`                      true level                                                                                          ver, edge, face, poly
-:data:`body`                      body level                                                                                          ver, edge, face, poly
+:data:`body[<expr>]`              body level                                                                                          ver, edge, face, poly
 :data:`state`                     state                                                                                               ver, edge, face, poly
 :data:`domtype`                   type of domain (0 if on a domain vertex, 1 if on a domain edge and 2 if on a domain face)           ver, edge, face
 :data:`domface`                   domain face (-1 if undefined)                                                                       face
 :data:`domedge`                   domain edge (-1 if undefined)                                                                       edge
 :data:`domver`                    domain vertex (-1 if undefined)                                                                     ver
-:data:`scale`                     scale                                                                                               face [#multiscale_face]_
+:data:`scale`                     scale                                                                                               ver, edge, face [#multiscale_entity]_
 :data:`length`                    length                                                                                              edge
 :data:`area`                      surface area                                                                                        face, poly, group
 :data:`vol`                       volume                                                                                              poly, group
@@ -210,19 +210,19 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 :data:`per`                       periodic (1 if periodic, 0 otherwise)                                                               ver, edge, face (in 3D)
 :data:`fiber(...)`                1 if in orientation fiber and 0 otherwise, see :ref:`orientation_fibers`                            poly
 :data:`<orientation_descriptor>`  :ref:`orientation descriptor <rotation_and_orientation_descriptors>`                                face (in 2D), poly (in 3D)
+:data:`step`                      simulation step                                                                                     ver, edge, face, poly
 ================================= =================================================================================================== =========================================
 
   Variables consisting of several values (:data:`vers`, etc.) are not available for sorting
   (option :option:`-sort`).
 
-  For a cell, the :data:`body` and :data:`true` variables are
-  defined as follows,
+  For a cell, the :data:`body` variable is defined as follows:
 
-  - :data:`body` is an integer equal to :data:`0` if the cell is at the domain boundary, i.e. if it shares at least one face with it (edge in 2D), and is equal to :data:`1` or higher otherwise.  This is determined as follows: if a cell is surrounded by cells with :data:`body` values equal to or higher than :data:`n`, its :data:`body` value is equal to :data:`n + 1`.  Therefore, :data:`body` tends to increase with the distance to the domain boundary and can be used to define cells that may suffer from boundary effects.
+  - In the general case (:data:`body`, no argument provided), it is an integer equal to :data:`0` if the cell is at the domain boundary, i.e. if it shares at least one face with it (edge in 2D), and is equal to :data:`1` or higher otherwise.  This is determined as follows: if a cell is surrounded by cells with :data:`body` values equal to or higher than :data:`n`, its :data:`body` value is equal to :data:`n + 1`.  Therefore, :data:`body` tends to increase with the distance to the domain boundary and can be used to define cells that may suffer from boundary effects.
 
-  - :data:`true` is an integer equal to :data:`0` it the cell shape is biased by the domain boundary, and is equal to :data:`1` or higher otherwise. A value higher than :data:`0` is achieved if and only if any seed that would have been located outside the domain (where it could not be) would not have affected the shape of the cell. This condition is fulfilled if the distance between the seed of the cell and any of its vertices is lower than the minimum distance between a vertex of the cell and the domain boundary.  :data:`true` is extended to values higher than :data:`1` in the same way as body: if a cell is surrounded by cells with :data:`true` values equal to or higher than :data:`n`, its :data:`true` value is equal to :data:`n + 1`.  As :data:`body`, :data:`true` tends to increase with the distance to the domain boundary, and :math:`true \leq body`.  :data:`true` is especially useful for statistics on the cells (morphology, mesh, etc.), for which only cells with :math:`true \geq 1` should be considered.
+  - In the case where an expression is provided as argument (:data:`body(<expr>)`), the expression is a logical expression that defines the boundary to consider, from the domain face (edge in 2D) labels (for a cube, :data:`x0`, :data:`x1`, :data:`y0`, :data:`y1`, :data:`z0` and :data:`z1`).  For example, :data:`body(z0||z1)` considers only the :data:`z0` and :data:`z1` domain faces as the boundary, and the more exotic :data:`body(x1&&y0||z1)` considers only the intersection between the :data:`x1` and :data:`y0` domain faces, and the :data:`z1` domain face as the boundary.
 
-  For entities of lower dimension than cells (vertices, edges and faces), :data:`body` and :data:`true` are equal to the maximum :data:`body`or :data:`true` values of the cells they belong to.
+  For entities of lower dimension than cells (vertices, edges and faces), :data:`body` is equal to the maximum :data:`body` value of the cells they belong to.
 
 .. _raster_tessellation_keys:
 
@@ -255,6 +255,7 @@ Available keys for raster tessellation itself are provided below.
 :data:`y`             y coordinate                                 tesr
 :data:`z`             z coordinate                                 tesr
 :data:`coo`           x, y and z coordinates                       tesr
+:data:`step`          simulation step                              tesr
 ===================== ============================================ ======================
 
 Available keys for raster tessellation seeds, cells, cell groups and voxels are provided below.  Mathematical and logical expressions based on these keys can also be used.  To turn a key value into a value relative to the mean over all entities (e.g.the relative cell size), append the key expression with the :data:`:rel` modifier.  To turn a key value into a value which holds for a unit cell size, append the key expression with the :data:`:uc` modifier.
@@ -268,6 +269,7 @@ General
 :data:`cell`                 cell                                                                    voxel
 :data:`oridef`               orientation is defined                                                  voxel
 :data:`w`                    Laguerre weight                                                         seed
+:data:`step`                 simulation step                                                         tesr
 ============================ ======================================================================= ====================================
 
 Geometry
@@ -477,7 +479,8 @@ Available keys for a mesh itself are provided below.  "co" stands for "cohesive"
 :data:`length`          length                                            1D mesh
 :data:`area`            surface area                                      2D mesh
 :data:`vol`             volume                                            3D mesh
-:data:`size`            size (length/area/volume in 1D/2D/3D)             1D mesh, 2D mesh, 3D mesh
+:data:`size`            size (length/area/volume in 1D/2D/3D)             {1-3}D mesh
+:data:`step`            simulation step                                   {0-3}D,co mesh
 ======================= ================================================= ==============================
 
 Available keys for mesh node, elements and element sets (of all dimensions) and points are provided below. "co" stands for "cohesive".
@@ -498,6 +501,7 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`part`                                      partition                                                             {0-3}D elt, node
 :data:`group`                                     group                                                                 {0-3}D elt, {0-3}D elset
 :data:`scaleid(<scale_nb>)`                       identifier of the corresponding tess cell at scale :data:`<scale_nb>` 2D elset, 3D elset
+:data:`scale`                                     scale                                                                 {0-2}D elset [#multiscale_entity_mesh]_
 :data:`cyl`                                       cylinder polygonization [#cyl]_                                       1D elt, 1D elset
 :data:`vol`                                       volume                                                                3D elt, 3D elset
 :data:`area`                                      surface area                                                          2D elt
@@ -517,8 +521,8 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`elts`                                      elements                                                              {0-3}D,co elset
 :data:`nodenb`                                    number of nodes                                                       {0-3}D,co elset
 :data:`nodes`                                     nodes                                                                 {0-3}D,co elset
-:data:`true`                                      true level                                                            {0-3}D elt, {0-3}D elset
 :data:`body`                                      body level                                                            {0-3}D elt, {0-3}D elset
+:data:`elsetbody`                                 body level, relative to the elset boundary                            {1-3}D elt
 :data:`domtype`                                   type of domain [#domtype]_                                            {0-2}D elt, {0-2}D elset
 :data:`2dmeshp`                                   closest point of the 2D mesh                                          node, 3D elt
 :data:`2dmeshd`                                   distance to :data:`2dmeshp`                                           node, 3D elt
@@ -526,10 +530,14 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`2dmeshn`                                   outgoing normal vector at :data:`2dmeshp`                             node, 3D elt
 :data:`per`                                       periodic (1 if periodic, 0 otherwise)                                 {0,1}D elt, 2D elt (in 3D), {0,1}D elset, 2D elset (in 3D)
 :data:`col_rodrigues`                             color in Rodrigues vector convention [#col_rodrigues]_                node
-:data:`col_stdtriangle`                           color in IPF convention [#col_stdtriangle]_                           node
+:data:`col_stdtriangle`                           color in IPF convention, cubic symmetry [#col_stdtriangle]_           node
+:data:`col_stdtriangle_hexagonal`                 color in IPF convention, hexagonal symmetry [#col_stdtriangle]_       node
 :data:`fiber(...)` [#fiber]_                      1 if in orientation fiber and 0 otherwise                             3D elt, 3D elset
 :data:`theta`                                     disorientation angle (in degrees)                                     1D elt and elset (in 2D), 2D elt and elset (in 3D)
+:data:`gos`                                       grain orientation spread [#gos]_                                      {2,3}D elset
+:data:`anisogos`                                  grain orientation spread estimated from the orientation distribution  [#gos]_            {2,3}D elset
 :data:`<orientation_descriptor>`                  :ref:`orientation descriptor <rotation_and_orientation_descriptors>`  2D elt (in 2D), 2D elset (in 2D), 3D elt (in 3D), 3D elset (in 3D)
+:data:`step`                                      simulation step                                                       {0-3}D,co mesh
 ================================================= ===================================================================== ===================================================================
 
 Variables beginning with :data:`2dmesh` are only available for statistics (options beginning with :data:`-stat` of module -M); for elements, they apply to the centroids.
@@ -561,19 +569,37 @@ Available keys for points are provided below.
 Simulation Results
 ------------------
 
-A result of a :ref:`simulation directory <simulation_directory>` can be invoked simply from its name.  A component of a vectorial or tensorial result can be invoked by prefixing the component to the name, as in :data:`coo1`, :data:`stress11`, etc.  For a symmetrical tensor (for which only 6 values are stored), :data:`t`, both :data:`t\<i\>\<j\>` and :data:`t\<j\>\<i\>` are valid.  The type of a result of the simulation directory is determined automatically. Elset and mesh results can be obtained from the element results, by averaging or other statistical treatments.
+A result of a :ref:`simulation_directory` can be invoked simply from its name.  A component of a vectorial or tensorial result can be invoked by prefixing the component to the name, as in :data:`coo1`, :data:`stress11`, etc.  For a symmetrical tensor (for which only 6 values are stored), :data:`t`, both :data:`t\<i\>\<j\>` and :data:`t\<j\>\<i\>` are valid.  The type of a result of the simulation directory is determined automatically. Tessellation results can be obtained from the cell results, by averaging or other statistical treatments.  Similarly, elset and mesh results can be obtained from the element results, by averaging or other statistical treatments.
 
-Available results / keys and concerning orientation distributions are provided below.
+Available results / keys for nodes are the following:
 
-===================================== ======================================================================================================= ===============
-**Key**                               **Descriptor**                                                                                          **Apply to**
-:data:`ori`                           average orientation                                                                                     elset, mesh
-:data:`oridisanisoangles`             orientation distribution principal angles                                                               elset, mesh
-:data:`oridisanisoaxes`               orientation distribution principal axes                                                                 elset, mesh
-:data:`oridisanisofact`               orientation distribution factor                                                                         elset, mesh
-:data:`odf(theta=<value>)`            ODF defined at elements, with :data:`theta` the standard deviation of the kernel (in degrees, optional) mesh
-:data:`odfn(theta=<value>)`           ODF defined at nodes, with :data:`theta` the standard deviation of the kernel (in degrees, optional)    mesh
-===================================== ======================================================================================================= ===============
+========================================== ================================================================ ==================================
+**Key**                                    **Descriptor**                                                   **Apply to**
+:data:`disp`                               displacement (computed from positions)                           node
+========================================== ================================================================ ==================================
+
+Available results / keys for elements sets are the following:
+
+========================================== ================================================================ ==================================
+**Key**                                    **Descriptor**                                                   **Apply to**
+:data:`ori`                                average orientation                                              elset, mesh
+:data:`gos`                                grain orientation spread [#gos]_                                 elset
+:data:`anisogos`                           grain orientation spread computed from :data:`oridisanisoangles` elset
+:data:`oridisanisoangles`                  orientation distribution principal angles                        elset, mesh
+:data:`oridisanisoaxes`                    orientation distribution principal axes                          elset, mesh
+:data:`oridisanisofact`                    orientation distribution factor                                  elset, mesh
+:data:`odf(<var>=<value>,...)`             ODF defined at elements of orientation space (see also below)    tess, tesr, mesh, cell, elt, elset
+:data:`odfn(<var>=<value>,...)`            ODF defined at nodes of orientation space (see also below)       tess, tesr, mesh
+========================================== ================================================================ ==================================
+
+The ODF (:data:`odf` or :data:`odfn`) of a tessellation or mesh is computed over orientation space (provided using :option:`-orispace`) from the orientations of the (tessellation) cells or (mesh) elsets.  The (optional) parameters are:
+
+- :data:`theta`: the standard deviation of the kernel (in degrees);
+- :data:`weight`: the weight of a cell or elset, which can be a real value or an expression based on the :ref:`tessellation_keys` (for cells) or :ref:`mesh_keys` (for elsets) --  by default, the volumes of the cells or elsets are used;
+- :data:`cutoff`: the cut-off factor used to compute the ODF, which can be :data:`all` (for no cut-off) or any positive real value (default :data:`5`).
+
+
+For a cell, element or elset, :data:`odf` returns the value of the ODF of the tessellation or mesh at the corresponding orientation (and simulation step).
 
 .. _rotations_and_orientations:
 
@@ -866,7 +892,9 @@ viridis:fade(0.2) .. image:: imgs/color-maps-real/viridis-fade0p2.png
 
 .. [#muparser_doc] Taken from the :data:`muparser` `documentation <http://beltoforion.de/article.php?a=muparser>`_
 
-.. [#multiscale_face] Applies only to a 3D tessellation and relevant for multiscale tessellations.  The scale of a face is the scale at which the face was created, and it ranges from 0 (for domain faces) to the number of scales of the tessellation (for the last created faces).
+.. [#multiscale_entity] Applies only to a 3D tessellation and relevant for multiscale tessellations.  The scale of an entity (vertex, edge or face) is the scale at which the entity was created, and it ranges from 0 (for domain entities) to the number of scales of the tessellation (for the last created entities).
+
+.. [#multiscale_entity_mesh] Applies only to a 3D mesh and relevant for meshes of multiscale tessellations.  The scale of an elset is equal to the scale of its corresponding tessellation entity  [#multiscale_entity]_.
 
 .. [#equivalent_diameter] Equivalent diameter = diameter of the circle of equivalent area/volume in 2D/3D
 

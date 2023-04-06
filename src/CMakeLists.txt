@@ -7,7 +7,7 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"4.5.1-4\")
+set(NEPER_VERSION \"4.6.0\")
 project(neper)
 
 if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8.1)
@@ -31,6 +31,9 @@ set(HAVE_LIBSCOTCH ON  CACHE BOOL "Use Scotch") # sets to ON in ut, etc.
 set(HAVE_PNG       OFF CACHE BOOL "Use the libpng library") # sets to OFF in ut, etc.
 set(FORCE_BUILTIN_LIBSCOTCH OFF CACHE BOOL "Force to use the built-in libscotch")
 set(FORCE_BUILTIN_NLOPT     OFF CACHE BOOL "Force to use the built-in nlopt")
+set(REAL_PRINT_FORMAT \"%.12f\" CACHE STRING "Printing format of real numbers")
+set(REAL_PRINT_FORMAT3 \"%15.12f\" CACHE STRING "Printing format of real numbers (15 characters)")
+set(REAL_PRINT_FORMAT5 \"%17.12f\" CACHE STRING "Printing format of real numbers (17 characters)")
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
   set (CMAKE_INSTALL_PREFIX_COMPLETION "/usr/share" CACHE STRING "Installation directory of Bash completion files")

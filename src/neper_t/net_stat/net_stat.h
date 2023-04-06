@@ -7,7 +7,7 @@ extern "C"
 {
 #endif
 
-  extern void net_stat (struct IN_T, struct TESS, struct TESR*, struct POINT);
+  extern void net_stat (struct IN_T, struct TESS*, struct TESR*, struct POINT);
 
 #ifdef __cplusplus
 }

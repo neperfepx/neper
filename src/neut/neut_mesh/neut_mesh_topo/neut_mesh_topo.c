@@ -1557,6 +1557,18 @@ neut_mesh_veredge (struct MESH Mesh0D, struct MESH Mesh1D, int ***pveredgenb,
   return;
 }
 
+void
+neut_mesh_elt_neighelts_all (struct MESH Mesh, int elt, int **pnelts,
+                             int *pneltqty)
+{
+  int eltnodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder);
+
+  neut_mesh_nodes_allelts (Mesh, Mesh.EltNodes[elt], eltnodeqty, pnelts,
+                           pneltqty);
+
+  return;
+}
+
 int
 neut_mesh_elt_neighelts (struct MESH Mesh, int elt, int **pnelts,
                          int *pneltqty)

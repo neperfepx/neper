@@ -5,7 +5,7 @@
 #include "nes_pproc_entity_.h"
 
 void
-nes_pproc_entity (struct SIM *pSim, struct TESS Tess, struct TESR Tesr,
+nes_pproc_entity (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
                   struct NODES *pNodes,
                   struct MESH *Mesh, char *entity, char *entityresexpr)
 {
@@ -32,7 +32,7 @@ nes_pproc_entity (struct SIM *pSim, struct TESS Tess, struct TESR Tesr,
     ut_print_message (2, 3, "Entity `%s' has no parent.\n", entity);
 
   // The option initializes the entity members only if needed
-  neut_sim_entity_init_members (pSim, Tess, *pNodes, Mesh, entity);
+  neut_sim_entity_init_members (pSim, pTess, *pNodes, Mesh, entity);
 
   for (i = 0; i < resultqty; i++)
   {
@@ -49,9 +49,9 @@ nes_pproc_entity (struct SIM *pSim, struct TESS Tess, struct TESR Tesr,
 
       if (strcmp (SimRes.res, "ori") || SimRes.expr)
         sprintf (message, "%s", SimRes.res);
-      else if (!neut_tess_isvoid (Tess))
+      else if (!neut_tess_isvoid (*pTess))
         sprintf (message, "%s (%s crystal symmetry)", SimRes.res,
-                           Tess.CellCrySym ? Tess.CellCrySym : "undefined");
+                           (*pTess).CellCrySym ? (*pTess).CellCrySym : "undefined");
       else if (!neut_tesr_isvoid (Tesr))
         sprintf (message, "%s (%s crystal symmetry)", SimRes.res,
                            Tesr.CellCrySym ? Tesr.CellCrySym : "undefined");
@@ -79,10 +79,10 @@ nes_pproc_entity (struct SIM *pSim, struct TESS Tess, struct TESR Tesr,
       // (an expression is necessarily 1D while a built-in result is not).
       else if (!strcmp (SimRes.status, "unknown"))
       {
-        status = nes_pproc_entity_expr (pSim, Tess, Tesr, pNodes, Mesh, entity, &SimRes);
+        status = nes_pproc_entity_expr (pSim, pTess, Tesr, pNodes, Mesh, entity, &SimRes);
 
         if (status)
-          status = nes_pproc_entity_builtin (pSim, Tess, Tesr, pNodes, Mesh, entity, &SimRes);
+          status = nes_pproc_entity_builtin (pSim, pTess, Tesr, pNodes, Mesh, entity, &SimRes);
       }
 
       else

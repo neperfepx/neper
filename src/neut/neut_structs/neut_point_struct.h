@@ -22,6 +22,8 @@ extern "C"
 
     double *Rad;
 
+    char *crysym; // crystal symmetry, if relevant
+
     // pointer to SIM structure
     struct SIM *pSim;
   };

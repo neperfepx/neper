@@ -37,7 +37,6 @@ extern void neut_tess_tess_poly (struct TESS, struct TESS *);
 extern void neut_tess_tess_polyqty (struct TESS, struct TESS *);
 extern void neut_tess_tess_polyface (struct TESS, struct TESS *);
 extern void neut_tess_tess_polystate (struct TESS, struct TESS *);
-extern void neut_tess_tess_celltrue (struct TESS, struct TESS *);
 extern void neut_tess_tess_cellbody (struct TESS, struct TESS *);
 extern void neut_tess_tess_celllamid (struct TESS, struct TESS *);
 extern void neut_tess_tess_cellmodeid (struct TESS, struct TESS *);

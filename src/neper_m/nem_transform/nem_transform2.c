@@ -147,6 +147,7 @@ nem_transform_ori (char *ori, struct TESS Tess, struct NODES Nodes, struct MESH 
     abort ();
 
   ut_string_string (ori, &filename);
+  filename = ut_realloc_1d_char (filename, strlen (filename) + 2);
   ut_string_fnrs (filename, "ori(", "file(", 1);
 
   nblines = ut_file_nblines (vals[0]);
@@ -166,7 +167,7 @@ nem_transform_ori (char *ori, struct TESS Tess, struct NODES Nodes, struct MESH 
       ut_string_string (Mesh[dim].ElsetOriDes, &Mesh[dim].EltOriDes);
     ut_array_2d_memcpy (OSet.q, Mesh[dim].EltQty, 4, Mesh[dim].EltOri + 1);
 
-    neut_mesh_init_elsetori (Nodes, Mesh + 3, Tess.CellCrySym);
+    neut_mesh_init_elsetori (Nodes, Mesh + 3);
   }
 
   else

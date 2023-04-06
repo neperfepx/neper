@@ -50,7 +50,7 @@ neut_nodes_fprintf_scotch (FILE * out, struct NODES Nodes)
   {
     fprintf (out, "%d", i);
     for (j = 0; j < 3; j++)
-      fprintf (out, "  %.12f", Nodes.NodeCoo[i][j]);
+      fprintf (out, " " REAL_PRINT_FORMAT, Nodes.NodeCoo[i][j]);
     fprintf (out, "\n");
   }
 

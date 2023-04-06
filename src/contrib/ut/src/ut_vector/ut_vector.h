@@ -20,6 +20,11 @@ extern "C"
 /// \return norm
   extern double ut_vector_norm (double *vect);
 
+/// \brief Get the norm of a vector, in 2D
+/// \param vect: vector
+/// \return norm
+  extern double ut_vector_norm_2d (double *vect);
+
 /// \brief Get the squared norm of a vector
 /// \param vect: vector
 /// \return squared norm
@@ -88,7 +93,7 @@ extern "C"
 /// \param vectqty: number of vectors
 /// \param dim: dimension
 /// \param covar: covariant matrix
-  extern void ut_vector_set_covar (double **vects, int vectqty, int dim,
+  extern void ut_vector_set_covar (double **vects, double *weight, int vectqty, int dim,
                                    double **covar);
 
 /// \brief Get the eigendecomposition of the covariant matrix of a set of vectors
@@ -97,7 +102,7 @@ extern "C"
 /// \param dim: dimension
 /// \param evect: eigen vectors
 /// \param eval: eigen values
-  extern void ut_vector_set_eigen (double **vects, int vectqty, int dim,
+  extern void ut_vector_set_eigen (double **vects, double *weight, int vectqty, int dim,
                                    double **evect, double *eval);
 
 #endif                          /* UT_VECTOR_H */

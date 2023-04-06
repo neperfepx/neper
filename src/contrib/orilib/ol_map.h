@@ -64,7 +64,7 @@ extern void ol_map_rgb_png (unsigned int, unsigned int, int ***, char *);
 
 extern void ol_map_vect_ipfrgb (struct OL_MAP, double *, int *);
 extern void ol_ipfweight_rgb (double *, int *);
-extern void ol_ipfrgb_legend (size_t, size_t*, int ****);
+extern void ol_ipfrgb_legend (size_t, size_t*, char *, int ****);
 
 extern void ol_map_transformparam (struct OL_MAP, double **, size_t *,
 				   size_t *, double *);

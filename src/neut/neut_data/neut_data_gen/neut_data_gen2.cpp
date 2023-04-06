@@ -127,7 +127,7 @@ neut_data_ori_color_axisangle (double **data, int size, char *scheme, int **Col)
 }
 
 void
-neut_data_ori_color_ipf (double **data, int size, char *scheme, int **Col)
+neut_data_ori_color_ipf (double **data, int size, char *crysym, char *scheme, int **Col)
 {
   int i, j, varqty, test;
   double *v = ut_alloc_1d (3), *Vs = ut_alloc_1d (3), *p = ut_alloc_1d (2);
@@ -155,13 +155,13 @@ neut_data_ori_color_ipf (double **data, int size, char *scheme, int **Col)
     ut_print_exprbug (scheme);
 
   for (i = 1; i <= size; i++)
-    for (j = 1; j <= 24; j++)
+    for (j = 1; j <= ol_crysym_qty (crysym); j++)
     {
-      ol_q_crysym (data[i], (char *) "cubic", j, q);
+      ol_q_crysym (data[i], crysym, j, q);
       ol_q_g (q, g);
       ol_g_ipf_stprojxy (g, Vs, p);
       ol_stprojxy_vect (p, v);
-      test = ol_vect_ipfweight (v, weight);
+      test = ol_vect_ipfweight (v, crysym, weight);
       if (test == 0)
       {
         ol_ipfweight_rgb (weight, Col[i]);

@@ -379,19 +379,6 @@ neut_tess_tess_polyface (struct TESS TessA, struct TESS *pTessB)
 }
 
 void
-neut_tess_tess_celltrue (struct TESS TessA, struct TESS *pTessB)
-{
-  if (!TessA.CellTrue)
-    return;
-
-  (*pTessB).CellTrue = ut_alloc_1d_int (TessA.CellQty + 1);
-  ut_array_1d_int_memcpy (TessA.CellTrue + 1, TessA.CellQty,
-                          (*pTessB).CellTrue + 1);
-
-  return;
-}
-
-void
 neut_tess_tess_celllamid (struct TESS TessA, struct TESS *pTessB)
 {
   if (!TessA.CellLamId)
@@ -433,12 +420,14 @@ neut_tess_tess_cellgroupid (struct TESS TessA, struct TESS *pTessB)
 void
 neut_tess_tess_cellbody (struct TESS TessA, struct TESS *pTessB)
 {
-  if (!TessA.CellBody)
+  if (!TessA.CellBodyQty)
     return;
 
-  (*pTessB).CellBody = ut_alloc_1d_int (TessA.CellQty + 1);
-  ut_array_1d_int_memcpy (TessA.CellBody + 1, TessA.CellQty,
-                          (*pTessB).CellBody + 1);
+  (*pTessB).CellBodyQty = TessA.CellBodyQty;
+
+  (*pTessB).CellBody = ut_alloc_2d_int (TessA.CellBodyQty, TessA.CellQty + 1);
+  ut_array_2d_int_memcpy (TessA.CellBody, TessA.CellBodyQty, TessA.CellQty + 1,
+                          (*pTessB).CellBody);
 
   return;
 }

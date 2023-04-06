@@ -19,7 +19,7 @@ net_group_tess (struct IN_T In, struct TESS *pTess)
   }
 
   else
-    neut_tess_entity_expr_val_int (*pTess, "cell", In.group, (*pTess).CellGroup);
+    neut_tess_entity_expr_val_int (pTess, "cell", In.group, (*pTess).CellGroup);
 
   return;
 }

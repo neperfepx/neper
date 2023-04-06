@@ -5,8 +5,8 @@
 #include "neut_odf_.h"
 #include "neut/neut_oset/neut_oset.hpp"
 
-extern double neut_odf_comp_elts (char *neigh, struct OL_SET *pOSet, my_kd_tree_t *nano_index, struct ODF *pOdf);
-extern double neut_odf_comp_nodes (char *neigh, struct OL_SET *pOSet, my_kd_tree_t *nano_index, struct ODF *pOdf);
+extern double neut_odf_comp_elts (char *neigh, struct OL_SET *pOSet, QCLOUD nanocloud, my_kd_tree_t *nano_index, struct ODF *pOdf);
+extern double neut_odf_comp_nodes (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud, my_kd_tree_t *nano_index, struct ODF *pOdf);
 
 void
 neut_odf_set_zero (struct ODF *pOdf)
@@ -82,14 +82,14 @@ neut_odf_space_fnscanf (char *filename, struct ODF *pOdf, char *mode)
 }
 
 void
-neut_odf_sigma (char *expr, struct OL_SET *pOSet, struct ODF *pOdf)
+neut_odf_setsigma (struct ODF *pOdf, char *expr, int qty, char *crysym)
 {
   int status, varqty = 1;
   double *vals = ut_alloc_1d (varqty);
   char **vars = ut_alloc_1d_pchar (varqty);
 
   ut_string_string ("avthetaeq", vars);
-  neut_ori_n_avthetaeq (NULL, (*pOSet).size, (*pOSet).crysym, vals);
+  neut_ori_n_avthetaeq (NULL, qty, crysym, vals);
   ol_theta_rad2deg (vals[0], vals);
 
   status = ut_math_eval (expr, varqty, vars, vals, &((*pOdf).sigma));
@@ -114,12 +114,20 @@ neut_odf_comp (char *mode, char *neigh, struct OL_SET *pOSet, struct ODF *pOdf)
   neut_oset_kdtree (pOSet, &nano_cloud, &nano_index);
 
   if (strstr (mode, "m") || strstr (mode, "n"))
-    neut_odf_comp_elts (neigh, pOSet, nano_index, pOdf);
+    neut_odf_comp_elts (neigh, pOSet, nano_cloud, nano_index, pOdf);
 
   if (strstr (mode, "n"))
-    neut_odf_comp_nodes (neigh, pOSet, nano_index, pOdf);
+    neut_odf_comp_nodes (neigh, pOSet, nano_cloud, nano_index, pOdf);
 
   delete nano_index;
+
+  return;
+}
+
+void
+neut_odf_orides (struct ODF Odf, char **porides)
+{
+  ut_string_function (Odf.gridtype, porides, NULL, NULL, NULL);
 
   return;
 }

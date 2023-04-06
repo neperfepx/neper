@@ -5,4 +5,4 @@
 extern void nev_print_png_mesh_0d (FILE * file, struct PRINT Print,
 			       struct MESH *Mesh,
 			       struct DATA NodeData,
-			       struct DATA *MeshData);
+			       struct DATA **MeshData);

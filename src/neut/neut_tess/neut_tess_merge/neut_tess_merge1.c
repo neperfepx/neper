@@ -54,7 +54,7 @@ neut_tess_cellexpr_merge (struct TESS *pTess, char *expr, double coplanar)
 {
   int newcell, cellqty, *cells = NULL;
 
-  neut_tess_expr_cells (*pTess, expr, &cells, &cellqty);
+  neut_tess_expr_cells (pTess, expr, &cells, &cellqty);
 
   newcell = neut_tess_cells_merge (pTess, cells, cellqty, coplanar);
 

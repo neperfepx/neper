@@ -84,6 +84,7 @@ extern "C"
 #include "neut_fepxsim/neut_fepxsim.h"
 #include "neut_sim/neut_sim.h"
 #include "neut_odf/neut_odf.h"
+#include "neut_pf/neut_pf.h"
 
 #endif				/* NEUT_H */
 

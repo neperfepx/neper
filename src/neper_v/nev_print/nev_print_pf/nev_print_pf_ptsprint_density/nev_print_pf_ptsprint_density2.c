@@ -5,147 +5,46 @@
 #include "nev_print_pf_ptsprint_density_.h"
 
 void
-nev_print_pf_ptsprint_density_grid (struct PRINT Print, double ****pgrid,
+nev_print_pf_ptsprint_density_grid (struct PF Pf,
                            double ***pdensity,
-			   double ****pPgrid, double ****plgrid,
                            double ***pldensity)
 {
-  int i, j, gridsize;
-
-  gridsize = Print.pfgridsize;
-  (*pgrid) = ut_alloc_3d (gridsize, gridsize, 2);
-  (*pdensity) = ut_alloc_2d (gridsize, gridsize);
-  (*plgrid) = ut_alloc_3d (gridsize + 2, gridsize + 2, 2);
-  (*pPgrid) = ut_alloc_3d (gridsize, gridsize, 3);
-  (*pldensity) = ut_alloc_2d (gridsize + 2, gridsize + 2);
-
-  if (!strcmp (Print.pfshape, "full"))
-  {
-    for (i = 0; i < gridsize; i++)
-      for (j = 0; j < gridsize; j++)
-      {
-	(*pgrid)[i][j][0] = 2 * (double) (i + 0.5) / (double) (gridsize) - 1;
-	(*pgrid)[i][j][1] = 2 * (double) (j + 0.5) / (double) (gridsize) - 1;
-	if (ut_array_1d_norm ((*pgrid)[i][j], 2) <= 1)
-	{
-	  if (!strcmp (Print.pfprojection, "stereographic"))
-	    ol_stprojxy_vect ((*pgrid)[i][j], (*pPgrid)[i][j]);
-	  else if (!strcmp (Print.pfprojection, "equal-area"))
-	      ol_eaprojxy_vect ((*pgrid)[i][j], (*pPgrid)[i][j]);
-	  else
-	    abort();
-	}
-      }
-
-    for (i = 0; i < gridsize + 2; i++)
-      for (j = 0; j < gridsize + 2; j++)
-      {
-	(*plgrid)[i][j][0] = 2 * (double) (i - 0.5) / (double) (gridsize) - 1;
-	(*plgrid)[i][j][1] = 2 * (double) (j - 0.5) / (double) (gridsize) - 1;
-      }
-  }
-
-  else if (!strcmp (Print.pfshape, "quarter"))
-  {
-    for (i = 0; i < gridsize; i++)
-      for (j = 0; j < gridsize; j++)
-      {
-	(*pgrid)[i][j][0] = (double) (i + 0.5) / (double) (gridsize);
-	(*pgrid)[i][j][1] = (double) (j + 0.5) / (double) (gridsize);
-	if (ut_array_1d_norm ((*pgrid)[i][j], 2) <= 1)
-	{
-	  if (!strcmp (Print.pfprojection, "stereographic"))
-	    ol_stprojxy_vect ((*pgrid)[i][j], (*pPgrid)[i][j]);
-	  else if (!strcmp (Print.pfprojection, "equal-area"))
-	      ol_eaprojxy_vect ((*pgrid)[i][j], (*pPgrid)[i][j]);
-	  else
-	    abort();
-	}
-      }
-
-    for (i = 0; i < gridsize + 2; i++)
-      for (j = 0; j < gridsize + 2; j++)
-      {
-	(*plgrid)[i][j][0] = (double) (i - 0.5) / (double) (gridsize);
-	(*plgrid)[i][j][1] = (double) (j - 0.5) / (double) (gridsize);
-      }
-  }
-
-  else if (!strcmp (Print.space, "ipf"))
-  {
-    double* v110 = ut_alloc_1d (3);
-    double* p110 = ut_alloc_1d (3);
-    ut_array_1d_set_3 (v110, 0, OL_IS2, OL_IS2);
-    if (! strcmp (Print.pfprojection, "stereographic"))
-      ol_vect_stprojxy (v110, p110);
-    else if (! strcmp (Print.pfprojection, "equal-area"))
-      ol_vect_eaprojxy (v110, p110);
-
-    double* v111 = ut_alloc_1d (3);
-    double* p111 = ut_alloc_1d (3);
-    ut_array_1d_set_3 (v111, OL_IS3, OL_IS3, OL_IS3);
-    if (! strcmp (Print.pfprojection, "stereographic"))
-      ol_vect_stprojxy (v111, p111);
-    else if (! strcmp (Print.pfprojection, "equal-area"))
-      ol_vect_eaprojxy (v111, p111);
-
-    for (i = 0; i < gridsize; i++)
-      for (j = 0; j < gridsize; j++)
-      {
-	(*pgrid)[i][j][0] = p110[1] * (double) (i + 0.5) / (double) (gridsize);
-	(*pgrid)[i][j][1] = p111[0] * (double) (j + 0.5) / (double) (gridsize);
-	if (!strcmp (Print.pfprojection, "stereographic"))
-	  ol_stprojxy_vect ((*pgrid)[i][j], (*pPgrid)[i][j]);
-	else if (!strcmp (Print.pfprojection, "equal-area"))
-	    ol_eaprojxy_vect ((*pgrid)[i][j], (*pPgrid)[i][j]);
-	else
-	  abort();
-      }
-
-    for (i = 0; i < gridsize + 2; i++)
-      for (j = 0; j < gridsize + 2; j++)
-      {
-	(*plgrid)[i][j][0] = p110[1] * (double) (i - 0.5) / (double) (gridsize);
-	(*plgrid)[i][j][1] = p111[0] * (double) (j - 0.5) / (double) (gridsize);
-      }
-
-    ut_free_1d (&v110);
-    ut_free_1d (&p110);
-    ut_free_1d (&v111);
-    ut_free_1d (&p111);
-  }
+  (*pdensity) = ut_alloc_2d (Pf.gridsize[0], Pf.gridsize[1]);
+  (*pldensity) = ut_alloc_2d (Pf.gridsize[0] + 2, Pf.gridsize[1] + 2);
 
   return;
 }
 
 void
-nev_print_pf_ptsprint_density_odf (struct PRINT Print, double ***grid, double ***Pgrid,
-                          double **borderpts, int borderptqty, double **pos, double *wgt,
+nev_print_pf_ptsprint_density_odf (struct PF Pf,
+                          double **pos, double *wgt,
 			  int pqty, double **density, double *pmin, double *pmax)
 {
-  int i;
-  double mean, sum;
-  double INPFVSIG2 = 1. / (2 * Print.pfkernelsig * Print.pfkernelsig);
-  double INPFVSQRTSIG2PI = 1. / (Print.pfkernelsig * sqrt (2 * OL_PI));
+  int i, j;
+  double mean, sum, weightsum;
+  double INPFVSIG2 = 1. / (2 * Pf.pfkernelsig * Pf.pfkernelsig);
+  double INPFVSQRTSIG2PI = 1. / (Pf.pfkernelsig * sqrt (2 * OL_PI));
+
+  ut_array_2d_set (density, Pf.gridsize[0], Pf.gridsize[1], 0);
 
 #pragma omp parallel for private(i)
-  for (i = 0; i < Print.pfgridsize; i++)
+  for (i = 0; i < Pf.gridsize[0]; i++)
   {
     int j, k;
     double theta, *P = ol_vect_alloc ();
-    for (j = 0; j < Print.pfgridsize; j++)
+    for (j = 0; j < Pf.gridsize[1]; j++)
     {
-      if (ut_array_1d_norm (grid[i][j], 2) <= 1)
+      if (ut_array_1d_norm (Pf.grid[i][j], 2) <= 1)
 	for (k = 0; k < pqty; k++)
 	{
-	  if (!strcmp (Print.pfprojection, "stereographic"))
+	  if (!strcmp (Pf.projection, "stereographic"))
 	    ol_stprojxy_vect (pos[k], P);
-	  else if (!strcmp (Print.pfprojection, "equal-area"))
+	  else if (!strcmp (Pf.projection, "equal-area"))
 	    ol_eaprojxy_vect (pos[k], P);
 	  else
 	    abort();
 
-	  ol_vect_vect_theta (P, Pgrid[i][j], &theta);
+          ol_vect_vect_theta (P, Pf.Pgrid[i][j], &theta);
 
 	  if (theta > 90)
 	    theta = 180 - theta;
@@ -158,143 +57,223 @@ nev_print_pf_ptsprint_density_odf (struct PRINT Print, double ***grid, double **
     ol_vect_free (P);
   }
 
-  int qty = 0;
   sum = 0;
-  if (!strcmp (Print.space, "pf"))
+  if (!strcmp (Pf.space, "pf"))
   {
+    weightsum = 0;
 #pragma omp parallel for private(i)
-    for (i = 0; i < Print.pfgridsize; i++)
+    for (i = 0; i < Pf.gridsize[0]; i++)
     {
       int j;
+      double norm, weight;
 
-      for (j = 0; j < Print.pfgridsize; j++)
-	if (ut_array_1d_norm (grid[i][j], 2) <= 1)
-	{
-#pragma omp critical
-	  sum += density[i][j];
-#pragma omp critical
-	  qty++;
-	}
-    }
-  }
-
-  else if (!strcmp (Print.space, "ipf"))
-  {
-#pragma omp parallel for private(i)
-    for (i = 0; i < Print.pfgridsize; i++)
-    {
-      int j;
-
-      for (j = 0; j < Print.pfgridsize; j++)
+      for (j = 0; j < Pf.gridsize[1]; j++)
       {
-        double *tmp = ut_alloc_1d (2);
-
-        // 2 next lines to confirm (signs)
-        tmp[0] = grid[i][j][1];
-        tmp[1] = -grid[i][j][0];
-	if (ut_space_point_indomain_2d (grid[i][j], borderpts, borderptqty))
+	norm = ut_array_1d_norm (Pf.grid[i][j], 2);
+	if (norm <= 1)
 	{
+          if (!strcmp (Pf.projection, "stereographic"))
+            weight = 1 / pow (1 + norm * norm, 2);
+          else if (!strcmp (Pf.projection, "equal-area"))
+            weight = 1;
+          else
+            abort ();
 #pragma omp critical
-	  sum += density[i][j];
+	  sum += weight * density[i][j];
 #pragma omp critical
-	  qty++;
+	  weightsum += weight;
 	}
-
-        ut_free_1d (&tmp);
       }
     }
   }
 
-  if (qty == 0)
+  else if (!strcmp (Pf.space, "ipf"))
+  {
+    weightsum = 0;
+#pragma omp parallel for private(i)
+    for (i = 0; i < Pf.gridsize[0]; i++)
+    {
+      int j;
+      double norm, weight;
+
+      for (j = 0; j < Pf.gridsize[1]; j++)
+	if (ut_space_point_indomain_2d (Pf.grid[i][j], Pf.domainpts, Pf.domainptqty))
+        {
+          norm = ut_array_1d_norm (Pf.grid[i][j], 2);
+          if (!strcmp (Pf.projection, "stereographic"))
+            weight = 1 / pow (1 + norm * norm, 2);
+          else if (!strcmp (Pf.projection, "equal-area"))
+            weight = 1;
+          else
+            abort ();
+#pragma omp critical
+	  sum += weight * density[i][j];
+#pragma omp critical
+	  weightsum += weight;
+	}
+    }
+  }
+
+  else
     abort ();
-  mean = sum / qty;
 
-  // FIXME
-  ut_array_2d_scale (density, Print.pfgridsize, Print.pfgridsize, 1. / mean);
+  if (weightsum == 0)
+    abort ();
+  mean = sum / weightsum;
 
-  (*pmin) = ut_array_2d_min (density, Print.pfgridsize, Print.pfgridsize);
-  (*pmax) = ut_array_2d_max (density, Print.pfgridsize, Print.pfgridsize);
+  ut_array_2d_scale (density, Pf.gridsize[0], Pf.gridsize[1], 1. / mean);
+
+  for (i = 0; i < Pf.gridsize[0]; i++)
+    for (j = 0; j < Pf.gridsize[1]; j++)
+      if (density[i][j] == 0)
+        density[i][j] = 1;
+
+  if (!strcmp (Pf.refsym, "uniaxial"))
+  {
+    int qty = Pf.gridsize[0] * Pf.gridsize[1];
+    double **density2 = ut_alloc_2d (Pf.gridsize[0], Pf.gridsize[1]);
+    int *ids = ut_alloc_1d_int (qty);
+    double *vals = ut_alloc_1d (qty);
+    double *norm = ut_alloc_1d (qty);
+
+    ut_array_2d_memcpy (density, Pf.gridsize[0], Pf.gridsize[1], density2);
+
+    int id = 0;
+    for (i = 0; i < Pf.gridsize[0]; i++)
+      for (j = 0; j < Pf.gridsize[1]; j++)
+      {
+	norm[id] = ut_array_1d_norm (Pf.grid[i][j], 2);
+	vals[id] = density[i][j];
+        id++;
+      }
+
+    double sig = (2. / Pf.gridsize[0]);
+
+#pragma omp parallel for private(i, j, id) schedule(dynamic)
+    for (i = 0; i < Pf.gridsize[0]; i++)
+      for (j = 0; j < Pf.gridsize[1]; j++)
+      {
+        int id0 = i * Pf.gridsize[0] + j;
+        double d;
+	if (norm[id0] <= 1)
+        {
+          double *ws = ut_alloc_1d (qty);
+          for (id = 0; id < qty; id++)
+            if (norm[id] <= 1)
+            {
+              d = fabs (norm[id0] - norm[id]);
+              ws[id] = exp (- d * d / (2 * sig * sig));
+            }
+
+          density2[i][j] = ut_array_1d_wmean (vals, ws, qty);
+          ut_free_1d (&ws);
+        }
+      }
+
+    ut_array_2d_memcpy (density2, Pf.gridsize[0], Pf.gridsize[1], density);
+
+    ut_free_1d_int (&ids);
+    ut_free_1d (&vals);
+    ut_free_2d (&density2, Pf.gridsize[0]);
+    ut_free_1d (&norm);
+  }
+
+  (*pmin) = ut_array_2d_min (density, Pf.gridsize[0], Pf.gridsize[1]);
+  (*pmax) = ut_array_2d_max (density, Pf.gridsize[0], Pf.gridsize[1]);
 
   return;
 }
 
-void nev_print_pf_ptsprint_density_ldensity (struct PRINT Print, double **density, double ***lgrid,
+void
+nev_print_pf_ptsprint_density_ldensity (struct PF Pf, double **density,
                                     double **ldensity)
 {
   int i, j;
 
   // copying density to a larger map to avoid edge effects
 
-  for (i = 0; i < Print.pfgridsize; i++)
-    ut_array_1d_memcpy (density[i], Print.pfgridsize, ldensity[i + 1] + 1);
+  for (i = 0; i < Pf.gridsize[0]; i++)
+    ut_array_1d_memcpy (density[i], Pf.gridsize[1], ldensity[i + 1] + 1);
 
-  if (!strcmp (Print.pfshape, "full"))
-    for (i = 0; i <= Print.pfgridsize + 1; i++)
-      for (j = 0; j <= Print.pfgridsize + 1; j++)
-      {
-	double r = ut_array_1d_norm (lgrid[i][j], 2);
-	double theta;
-
-	theta = (180 / OL_PI) * atan2 (lgrid[i][j][0], lgrid[i][j][1]);
-	if (r > 1 && r < 1 + 2. / Print.pfgridsize)
-	{
-	  if (theta >= -45 && theta <= 45)
-	    ldensity[i][j] = ldensity[i][j - 1];
-	  else if (theta >= 45 && theta <= 135)
-	    ldensity[i][j] = ldensity[i - 1][j];
-	  else if ((theta >= 135 && theta <= 180)
-		|| (theta >= -180 && (theta <= -135)))
-	    ldensity[i][j] = ldensity[i][j + 1];
-	  else if (theta >= -135 && theta <= -45)
-	    ldensity[i][j] = ldensity[i + 1][j];
-	}
-      }
-
-  else if (!strcmp (Print.pfshape, "quarter"))
+  if (!strcmp (Pf.space, "pf"))
   {
-    for (i = 0; i <= Print.pfgridsize + 1; i++)
-      for (j = 0; j <= Print.pfgridsize + 1; j++)
-      {
-	double r = ut_array_1d_norm (lgrid[i][j], 2);
-	double theta;
+    if (!strcmp (Pf.shape, "full"))
+      for (i = 0; i <= Pf.gridsize[0] + 1; i++)
+        for (j = 0; j <= Pf.gridsize[1] + 1; j++)
+        {
+          double r = ut_array_1d_norm (Pf.lgrid[i][j], 2);
+          double theta;
 
-	theta = (180 / OL_PI) * atan2 (lgrid[i][j][0], lgrid[i][j][1]);
-	if (r > 1 && r < 1 + 2. / Print.pfgridsize)
-	{
-	  if (theta <= 45)
-	    ldensity[i][j] = ldensity[i][j - 1];
-	  else
-	    ldensity[i][j] = ldensity[i - 1][j];
-	}
-      }
+          theta = (180 / OL_PI) * atan2 (Pf.lgrid[i][j][0], Pf.lgrid[i][j][1]);
+          if (r > 1 && r < 1 + 2. / sqrt (Pf.gridsize[0] * Pf.gridsize[1]))
+          {
+            if (theta >= -45 && theta <= 45)
+              ldensity[i][j] = ldensity[i][j - 1];
+            else if (theta >= 45 && theta <= 135)
+              ldensity[i][j] = ldensity[i - 1][j];
+            else if ((theta >= 135 && theta <= 180)
+                  || (theta >= -180 && (theta <= -135)))
+              ldensity[i][j] = ldensity[i][j + 1];
+            else if (theta >= -135 && theta <= -45)
+              ldensity[i][j] = ldensity[i + 1][j];
+          }
+        }
 
-    for (j = 0; j <= Print.pfgridsize + 1; j++)
-      ldensity[0][j] = ldensity[1][j];
-    for (i = 0; i <= Print.pfgridsize + 1; i++)
-      ldensity[i][0] = ldensity[i][1];
-    ldensity[0][0] = ldensity[1][1];
-  }
-
-  else if (!strcmp (Print.space, "ipf"))
-  {
-    for (j = 0; j <= Print.pfgridsize + 1; j++)
+    else if (!strcmp (Pf.shape, "quarter"))
     {
-      ldensity[0][j] = ldensity[1][j];
-      ldensity[Print.pfgridsize + 1][j] = ldensity[Print.pfgridsize][j];
-    }
-    for (i = 0; i <= Print.pfgridsize + 1; i++)
-    {
-      ldensity[i][0] = ldensity[i][1];
-      ldensity[i][Print.pfgridsize + 1] = ldensity[i][Print.pfgridsize];
+      for (i = 0; i <= Pf.gridsize[0] + 1; i++)
+        for (j = 0; j <= Pf.gridsize[1] + 1; j++)
+        {
+          double r = ut_array_1d_norm (Pf.lgrid[i][j], 2);
+          double theta;
+
+          theta = (180 / OL_PI) * atan2 (Pf.lgrid[i][j][0], Pf.lgrid[i][j][1]);
+          if (r > 1 && r < 1 + 2. / sqrt (Pf.gridsize[0] * Pf.gridsize[1]))
+          {
+            if (theta <= 45)
+              ldensity[i][j] = ldensity[i][j - 1];
+            else
+              ldensity[i][j] = ldensity[i - 1][j];
+          }
+        }
+
+      for (j = 0; j <= Pf.gridsize[1] + 1; j++)
+        ldensity[0][j] = ldensity[1][j];
+      for (i = 0; i <= Pf.gridsize[0] + 1; i++)
+        ldensity[i][0] = ldensity[i][1];
+      ldensity[0][0] = ldensity[1][1];
     }
   }
+
+  else if (!strcmp (Pf.space, "ipf"))
+  {
+    for (j = 0; j <= Pf.gridsize[1] + 1; j++)
+    {
+      ldensity[0][j] = ldensity[1][j];
+      ldensity[Pf.gridsize[0] + 1][j] = ldensity[Pf.gridsize[0]][j];
+    }
+    for (i = 0; i <= Pf.gridsize[0] + 1; i++)
+    {
+      ldensity[i][0] = ldensity[i][1];
+      ldensity[i][Pf.gridsize[1] + 1] = ldensity[i][Pf.gridsize[1]];
+    }
+
+    if (!strcmp (Pf.crysym, "hexagonal"))
+      for (j = 0; j <= Pf.gridsize[1] + 1; j++)
+        for (i = 1; i <= Pf.gridsize[0] + 1; i++)
+          if (ut_array_1d_norm (Pf.lgrid[i][j], 2) > 1)
+            ldensity[i][j] = ldensity[i - 1][j];
+  }
+
+  else
+    abort ();
 
   return;
 }
 
 void
-nev_print_pf_ptsprint_density_write (FILE *file, char *basename, struct PRINT Print,
-                            struct DATA Data, double ***lgrid, double **ldensity,
+nev_print_pf_ptsprint_density_write (struct PF Pf, struct PRINT Print, FILE *file, char *basename,
+                            struct DATA Data, double **ldensity,
                             double min, double max)
 {
   int i, partqty = 0;
@@ -307,9 +286,9 @@ nev_print_pf_ptsprint_density_write (FILE *file, char *basename, struct PRINT Pr
   char *tickformat = NULL;
   char *filename2 = ut_string_addextension (basename, ".level");
 
-  nev_print_pf_ptsprint_density_write_data (filename2, Print, lgrid, ldensity);
+  nev_print_pf_ptsprint_density_write_data (Pf, filename2, ldensity);
 
-  nev_print_pf_ptsprint_density_write_text (file, filename2, Print);
+  nev_print_pf_ptsprint_density_write_text (Pf, file, filename2);
 
   nev_print_scale_ticks (Data.Scale, &min, &max, &ticks, &tickvals, &tickqty, &tickformat);
 
@@ -317,20 +296,20 @@ nev_print_pf_ptsprint_density_write (FILE *file, char *basename, struct PRINT Pr
   {
     fprintf (file, "v[0][0] = %f;\n", min);
     fprintf (file, "for (int i = 0; i < n0; ++i)\n");
-    fprintf (file, "  for (int j = 0; j < n0; ++j)\n");
+    fprintf (file, "  for (int j = 0; j < n1; ++j)\n");
     fprintf (file, "    if (v[i][j] < v[0][0])\n");
     fprintf (file, "      v[i][j] = v[0][0];\n");
 
     fprintf (file, "v[0][1] = %f;\n", max);
     fprintf (file, "for (int i = 0; i < n0; ++i)\n");
-    fprintf (file, "  for (int j = 0; j < n0; ++j)\n");
+    fprintf (file, "  for (int j = 0; j < n1; ++j)\n");
     fprintf (file, "    if (v[i][j] > v[0][1])\n");
     fprintf (file, "      v[i][j] = v[0][1];\n");
   }
 
-  fprintf (file, "real[][] vt=new real[n0][n0];\n");
+  fprintf (file, "real[][] vt=new real[n0][n1];\n");
   fprintf (file, "for (int i = 0; i < n0; ++i)\n");
-  fprintf (file, "  for (int j = 0; j < n0; ++j)\n");
+  fprintf (file, "  for (int j = 0; j < n1; ++j)\n");
   fprintf (file, "  {\n");
   fprintf (file, "    vt[j][i] = v[i][j];\n");
   fprintf (file, "  }\n");
@@ -346,52 +325,41 @@ nev_print_pf_ptsprint_density_write (FILE *file, char *basename, struct PRINT Pr
 
   ut_free_1d_char (&asygradient);
 
-  double px = 1. / Print.pfgridsize;
+  double px = 1. / Pf.gridsize[0];
 
-  if (!strcmp (Print.pfshape, "full"))
-    fprintf (file, "bounds range=image(v,scale*%f*(-1,-1),scale*%f*(1,1),Palette);\n",
-	     1 + 2 * px, 1 + 2 * px);
-    // fprintf (file, "bounds range=image(v,scale*1.035*(-1,-1),scale*1.035*(1,1),Palette);\n");
-  else if (!strcmp (Print.pfshape, "quarter"))
-    fprintf (file, "bounds range=image(vt,scale*(%f,%f),scale*(%f,%f),Palette);\n",
-	-px, px, 1 + px, -1 - px);
-  else if (!strcmp (Print.space, "ipf"))
+  if (!strcmp (Pf.space, "pf"))
   {
-    double* v110 = ut_alloc_1d (3);
-    double* p110 = ut_alloc_1d (3);
-    double* v111 = ut_alloc_1d (3);
-    double* p111 = ut_alloc_1d (3);
-
-    ut_array_1d_set_3 (v110, 0, OL_IS2, OL_IS2);
-    if (! strcmp (Print.pfprojection, "stereographic"))
-      ol_vect_stprojxy (v110, p110);
-    else if (! strcmp (Print.pfprojection, "equal-area"))
-      ol_vect_eaprojxy (v110, p110);
-
-    ut_array_1d_set_3 (v111, OL_IS3, OL_IS3, OL_IS3);
-    if (! strcmp (Print.pfprojection, "stereographic"))
-      ol_vect_stprojxy (v111, p111);
-    else if (! strcmp (Print.pfprojection, "equal-area"))
-      ol_vect_eaprojxy (v111, p111);
-    fprintf (file, "bounds range=image(v,scale*(%f,%f),scale*(%f,%f),Palette);\n",
-	     1. + px, -p111[0] / p110[1] * px, -px, p111[0] / p110[1] + p111[0] / p110[1] * px);
-
-    ut_free_1d (&v110);
-    ut_free_1d (&p110);
-    ut_free_1d (&v111);
-    ut_free_1d (&p111);
+    if (!strcmp (Pf.shape, "full"))
+      fprintf (file, "bounds range=image(v,scale*%f*(-1,-1),scale*%f*(1,1),Palette);\n",
+               1 + 2 * px, 1 + 2 * px);
+      // fprintf (file, "bounds range=image(v,scale*1.035*(-1,-1),scale*1.035*(1,1),Palette);\n");
+    else if (!strcmp (Pf.shape, "quarter"))
+      fprintf (file, "bounds range=image(vt,scale*(%f,%f),scale*(%f,%f),Palette);\n",
+          -px, px, 1 + px, -1 - px);
   }
 
+  else if (!strcmp (Pf.space, "ipf"))
+    fprintf (file, "bounds range=image(v,scale*(%f,%f),scale*(%f,%f),Palette);\n",
+	     -px, -Pf.ipfpts[Pf.ipfptqty - 1][1] / Pf.ipfpts[1][0] * px,
+             1. + px, (Pf.ipfpts[Pf.ipfptqty - 1][1] / Pf.ipfpts[1][0]) * (1 + px));
+
+  else
+    abort ();
+
   double y;
-  if (strcmp (Print.space, "ipf") != 0)
+  if (strcmp (Pf.space, "ipf") != 0)
     y = 0;
   else
     y = 2;
 
   fprintf (file, "%spicture bar;\n", Print.showscale ? "" : "// ");
 
-  fprintf (file, "%spalette(bar,\"%s\",range,(0cm,0cm),(0.5cm,6cm),Right,Palette,\n",
-           Print.showscale ? "" : "// ", Data.ScaleTitle ? Data.ScaleTitle : "Density");
+  if (!strcmp (Pf.crysym, "cubic"))
+    fprintf (file, "%spalette(bar,\"%s\",range,(0cm,0cm),(0.5cm,6cm),Right,Palette,\n",
+             Print.showscale ? "" : "// ", Data.ScaleTitle ? Data.ScaleTitle : "Density");
+  else
+    fprintf (file, "%spalette(bar,\"%s\",range,(0cm,0cm),(0.392cm,4.7cm),Right,Palette,\n",
+             Print.showscale ? "" : "// ", Data.ScaleTitle ? Data.ScaleTitle : "Density");
 
   ut_list_break (Data.Scale, ":", &parts, &partqty);
 
@@ -404,38 +372,33 @@ nev_print_pf_ptsprint_density_write (FILE *file, char *basename, struct PRINT Pr
                tickformat);
   }
 
-  if (!strcmp (Print.pfshape, "full"))
-    fprintf (file, "%sadd(bar.fit(),point(E),W+%fS);\n", Print.showscale ? "" : "// ", y);
-
-  else if (!strcmp (Print.pfshape, "quarter"))
-    fprintf (file, "%sadd(bar.fit(),point(E),W+%fS);\n", Print.showscale ? "" : "// ", y);
-
-  if (!strcmp (Print.pfshape, "full"))
-    fprintf (file, "draw (contour (points, values, new real[] {");
-
-  else if (!strcmp (Print.pfshape, "quarter"))
-    fprintf (file, "draw (contour (scale(1,-1)*points, values, new real[] {");
-
-  else
+  if (!strcmp (Pf.space, "pf"))
   {
-    double* v = ut_alloc_1d (3);
-    double* p110 = ol_p_alloc ();
-    ut_array_1d_set_3 (v, 0, OL_IS2, OL_IS2);
+    if (!strcmp (Pf.shape, "full"))
+      fprintf (file, "%sadd(bar.fit(),point(E),W+%fS);\n", Print.showscale ? "" : "// ", y);
 
-    if (! strcmp (Print.pfprojection, "stereographic"))
-      ol_vect_stprojxy (v, p110);
-    else if (! strcmp (Print.pfprojection, "equal-area"))
-      ol_vect_eaprojxy (v, p110);
+    else if (!strcmp (Pf.shape, "quarter"))
+      fprintf (file, "%sadd(bar.fit(),point(E),W+%fS);\n", Print.showscale ? "" : "// ", y);
 
-    fprintf (file, "draw (contour (scale(1/%f)*points, values, new real[] {",
-	     p110[1]);
+    if (!strcmp (Pf.shape, "full"))
+      fprintf (file, "draw (contour (points, values, new real[] {");
 
-    ut_free_1d (&p110);
-    ut_free_1d (&v);
+    else if (!strcmp (Pf.shape, "quarter"))
+      fprintf (file, "draw (contour (scale(1,-1)*points, values, new real[] {");
   }
 
+  else if (!strcmp (Pf.space, "ipf"))
+  {
+    fprintf (file, "%sadd(bar.fit(),point(E),W);\n", Print.showscale ? "" : "// ");
+    fprintf (file, "draw (contour (scale(%f)*points, values, new real[] {",
+             1. / Pf.ipfpts[1][0]);
+  }
+
+  else
+    abort ();
+
   for (i = 1; i < tickqty; i++)
-    fprintf (file, "%.12f,", tickvals[i]);
+    fprintf (file, "%g,", tickvals[i]); // g avoids failed tests associated to machine precision
   fprintf (file, "}, operator --), new pen[] {");
   for (i = 1; i < tickqty - 1; i++)
     fprintf (file, "%s+linewidth(%f),", "black", 0.5);
@@ -452,34 +415,37 @@ nev_print_pf_ptsprint_density_write (FILE *file, char *basename, struct PRINT Pr
 }
 
 void
-nev_print_pf_ptsprint_density_write_text0 (FILE *file, struct PRINT Print)
+nev_print_pf_ptsprint_density_write_text0 (struct PF Pf, FILE *file)
 {
-  if (Print.space[0] == 'f')
+  if (!strcmp (Pf.space, "pf"))
   {
-    fprintf (file,
-      "label(\"\\begin{tabular}{r@{}}Gaussian smoothing: $%g^{\\circ}$\\\\", Print.pfkernelsig);
-  }
-  else if (Print.space[0] == 'q')
-  {
-    fprintf (file,
-      "label(\"\\begin{tabular}{r@{}}%s\\\\Gaussian smoothing: $%g^{\\circ}$\\\\",
-      !strcmp (Print.pfprojection, "stereographic") ? "stereo. proj." : "equal-area proj.",
-      Print.pfkernelsig);
-    fprintf (file,
-	     "\\end{tabular}\", scale(scale)*(%.3f,%.3f), NW, fontsize(8));\n",
-	    1., -1 - SMARGINPF * 0.465);
+    if (!strcmp (Pf.shape, "full"))
+    {
+      fprintf (file,
+        "label(\"\\begin{tabular}{r@{}}Gaussian smoothing: $%g^{\\circ}$\\\\", Pf.pfkernelsig);
+    }
+    else if (!strcmp (Pf.shape, "quarter"))
+    {
+      fprintf (file,
+        "label(\"\\begin{tabular}{r@{}}%s\\\\Gaussian smoothing: $%g^{\\circ}$\\\\",
+        !strcmp (Pf.projection, "stereographic") ? "stereo. proj." : "equal-area proj.",
+        Pf.pfkernelsig);
+      fprintf (file,
+               "\\end{tabular}\", scale(scale)*(%.3f,%.3f), NW, fontsize(8));\n",
+              1., -1 - SMARGINPF * 0.465);
+    }
   }
 
-  else if (Print.space[0] == 'i')
+  else if (!strcmp (Pf.space, "ipf"))
   {
     char *legp = ut_alloc_1d_char (1000);
-    sprintf (legp, "$\\!\\left\\{%d%d%d\\right\\}$",
-             Print.pfpoles[0][0], Print.pfpoles[0][1], Print.pfpoles[0][2]);
+    sprintf (legp, "$\\!\\left\\{%.0f%.0f%.0f\\right\\}$",
+             Pf.pfpoles[1][0], Pf.pfpoles[1][1], Pf.pfpoles[1][2]);
 
     fprintf (file,
       "label(\"\\begin{tabular}{l}%s\\\\%s\\\\Gaussian smoothing: $%g^{\\circ}$\\\\",
-      legp, !strcmp (Print.pfprojection, "stereographic") ? "stereo. proj." : "equal-area proj.",
-      Print.pfkernelsig);
+      legp, !strcmp (Pf.projection, "stereographic") ? "stereo. proj." : "equal-area proj.",
+      Pf.pfkernelsig);
 
     ut_free_1d_char (&legp);
 
@@ -488,47 +454,58 @@ nev_print_pf_ptsprint_density_write_text0 (FILE *file, struct PRINT Print)
 	     - WMARGINPF / 2, 1.);
   }
 
+  else
+    abort ();
+
   return;
 }
 
 void
-nev_print_pf_ptsprint_density_write_mask (FILE *file, struct PRINT Print, double **borderpt, int borderptqty)
+nev_print_pf_ptsprint_density_write_mask (struct IN_V In, FILE *file, struct PF Pf)
 {
-  char *color = NULL;
-
-  ut_string_string (Print.scenebackground ? Print.scenebackground : "white", &color);
-
-  if (!strcmp (Print.pfshape, "full"))
+  if (!strcmp (Pf.space, "pf"))
   {
-    fprintf (file, "draw (scale(scale)*(-X--X), black);\n");
-    fprintf (file, "draw (scale(scale)*(-Y--Y), black);\n");
+    if (!strcmp (Pf.shape, "full"))
+    {
+      fprintf (file, "draw (scale(scale)*(-X--X), black);\n");
+      fprintf (file, "draw (scale(scale)*(-Y--Y), black);\n");
 
-    fprintf (file, "path g = shift(O)*scale(scale*1.15)*((-X-Y)--(-X+Y)--(X+Y)--(X-Y)--cycle);\n");
-    fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*unitcircle^^g, evenodd+%s, %s);\n", color, color);
-    fprintf (file, "draw (shift(O)*scale(scale)*unitcircle, black);\n");
+      fprintf (file, "path g = shift(O)*scale(scale*1.15)*((-X-Y)--(-X+Y)--(X+Y)--(X-Y)--cycle);\n");
+      fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*unitcircle^^g, evenodd+%s, %s);\n", In.scenebackground, In.scenebackground);
+      fprintf (file, "draw (shift(O)*scale(scale)*unitcircle, black);\n");
+    }
+
+    else if (!strcmp (Pf.shape, "quarter"))
+    {
+      fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*((-.05*X)--(-.05*X+.05*Y)--(1.05*X+0.05*Y)--(1.05*X)--cycle), evenodd+%s, %s);\n", In.scenebackground, In.scenebackground);
+      fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*((.05*Y)--(.05*Y-.05*X)--(-1.05*Y-0.05*X)--(-1.05*Y)--cycle), evenodd+%s, %s);\n", In.scenebackground, In.scenebackground);
+      fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*(arc(O,-Y,X)--(1.05*X)--(1.05*X-1.05*Y)--(-1.05*Y)--cycle), evenodd+%s, %s);\n", In.scenebackground, In.scenebackground);
+      fprintf (file, "draw (shift(O)*scale(scale)*arc(O,-Y,X), black);\n");
+      fprintf (file, "draw (shift(O)*scale(scale)*(-Y--O--X), black);\n");
+    }
   }
 
-  else if (!strcmp (Print.pfshape, "quarter"))
+  else if (!strcmp (Pf.space, "ipf"))
   {
-    fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*((-.05*X)--(-.05*X+.05*Y)--(1.05*X+0.05*Y)--(1.05*X)--cycle), evenodd+%s, %s);\n", color, color);
-    fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*((.05*Y)--(.05*Y-.05*X)--(-1.05*Y-0.05*X)--(-1.05*Y)--cycle), evenodd+%s, %s);\n", color, color);
-    fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*(arc(O,-Y,X)--(1.05*X)--(1.05*X-1.05*Y)--(-1.05*Y)--cycle), evenodd+%s, %s);\n", color, color);
-    fprintf (file, "draw (shift(O)*scale(scale)*arc(O,-Y,X), black);\n");
-    fprintf (file, "draw (shift(O)*scale(scale)*(-Y--O--X), black);\n");
+    {
+      fprintf (file,
+          "filldraw(shift(O)*scale(scale/%f)*(scale(1+1e-3)*line110111--(%f,%f)--(%f,%f)--(%f,%f)--(%f,%f)--(%f,%f)--(%f,%f)--(%f,%f)--cycle), evenodd+%s+linewidth(3pt), %s);\n",
+          Pf.ipfpts[1][0],
+          0., 0.,
+          Pf.ipfpts[1][0] + 0.03, 0.,
+          Pf.ipfpts[1][0] + 0.03, -0.03,
+          -0.03, -0.03,
+          -0.03, Pf.ipfpts[Pf.ipfptqty - 1][1] + 0.03,
+          Pf.ipfpts[1][0] + 0.03, Pf.ipfpts[Pf.ipfptqty - 1][1] + 0.03,
+          Pf.ipfpts[1][0] + 0.03, 0.,
+          In.scenebackground, In.scenebackground);
+    }
+
+    fprintf (file, "draw (scale(scale/%f)*border, black);\n", Pf.ipfpts[1][0]);
   }
 
-  else if (!strcmp (Print.space, "ipf"))
-  {
-    fprintf (file,
-	"filldraw(shift(O)*scale(scale/%f)*(scale(1+1e-3)*line110111--(%f,%f)--(%f,%f)--(%f,%f)--cycle), evenodd+%s, %s);\n", borderpt[1][1],
-	-borderpt[borderptqty - 1][0], borderpt[borderptqty - 1][1] + 0.03,
-	-borderpt[borderptqty - 1][0] + 0.1, borderpt[borderptqty - 1][1] + 0.03,
-	-borderpt[borderptqty - 1][0] + 0.1, 0., color, color);
-    fprintf (file, "filldraw(scale(scale)*((-0.05,-0.05)--(-0.05,1.05)--(1.05,1.05)--(0,0)--(1.05,0)--(1.05,-0.05)--cycle), %s, %s);\n", color, color);
-    fprintf (file, "draw (scale(scale/%f)*border, black);\n", borderpt[1][1]);
-  }
-
-  ut_free_1d_char (&color);
+  else
+    abort ();
 
   return;
 }

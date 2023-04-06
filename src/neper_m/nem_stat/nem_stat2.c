@@ -6,7 +6,7 @@
 
 void
 nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
-                struct MESH *Mesh, struct TESS Tess)
+                struct MESH *Mesh, struct TESS *pTess)
 {
   int i, j, status, invalqty, valqty;
   double *vals = NULL;
@@ -22,7 +22,7 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
     meshd = ut_alloc_1d (Nodes.NodeQty + 1);
     meshv = ut_alloc_2d (Nodes.NodeQty + 1, 3);
     meshn = ut_alloc_2d (Nodes.NodeQty + 1, 3);
-    neut_mesh_nodes_mesh2ddist (Tess, Nodes, Mesh[2], Mesh[3], meshp, meshd,
+    neut_mesh_nodes_mesh2ddist (*pTess, Nodes, Mesh[2], Mesh[3], meshp, meshd,
                                 meshv, meshn);
   }
 
@@ -32,9 +32,8 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
     for (j = 0; j < invalqty; j++)
     {
       status =
-        neut_mesh_var_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Mesh[4],
-                           Tess, NULL, NULL, NULL, NULL, 0, "node", i,
-                           invar[j], &vals, &valqty, &type);
+        neut_mesh_var_val (Nodes, Mesh, pTess, NULL, NULL, NULL, NULL, 0,
+                           "node", i, invar[j], &vals, &valqty, &type);
 
       if (!status)
       {
@@ -42,19 +41,16 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
           fprintf (file, "%.0f|%.0f|%.0f", vals[0], vals[1], vals[2]);
         else
           ut_array_1d_fprintf_nonl (file, vals, valqty,
-                                    !strcmp (type, "%f") ? "%.12f" : type);
+                                    !strcmp (type, "%f") ? REAL_PRINT_FORMAT : type);
       }
       else if (!strcmp (invar[j], "2dmeshp"))
-        fprintf (file, "%.12f %.12f %.12f", meshp[i][0], meshp[i][1],
-                 meshp[i][2]);
+        ut_array_1d_fprintf_nonl (file, meshp[i], 3, REAL_PRINT_FORMAT);
       else if (!strcmp (invar[j], "2dmeshd"))
-        fprintf (file, "%.12f", meshd[i]);
+        fprintf (file, REAL_PRINT_FORMAT, meshd[i]);
       else if (!strcmp (invar[j], "2dmeshv"))
-        fprintf (file, "%.12f %.12f %.12f", meshv[i][0], meshv[i][1],
-                 meshv[i][2]);
+        ut_array_1d_fprintf_nonl (file, meshv[i], 3, REAL_PRINT_FORMAT);
       else if (!strcmp (invar[j], "2dmeshn"))
-        fprintf (file, "%.12f %.12f %.12f", meshn[i][0], meshn[i][1],
-                 meshn[i][2]);
+        ut_array_1d_fprintf_nonl (file, meshn[i], 3, REAL_PRINT_FORMAT);
       else
         ut_print_exprbug (invar[j]);
 
@@ -76,7 +72,7 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
 
 void
 nem_stat_elts (FILE *file, char *entity, int dim, int realdim, char *format, struct NODES Nodes,
-               struct MESH *Mesh, struct MESHPARA MeshPara, struct TESS Tess)
+               struct MESH *Mesh, struct MESHPARA MeshPara, struct TESS *pTess)
 {
   int i, j, invalqty, qty, meshx_init, valqty, status;
   double *vals = NULL, cl;
@@ -112,7 +108,7 @@ nem_stat_elts (FILE *file, char *entity, int dim, int realdim, char *format, str
     meshd = ut_alloc_1d (Mesh[3].EltQty + 1);
     meshv = ut_alloc_2d (Mesh[3].EltQty + 1, 3);
     meshn = ut_alloc_2d (Mesh[3].EltQty + 1, 3);
-    neut_mesh_elts_mesh2ddist (Tess, Nodes, Mesh[2], Mesh[3], meshp, meshd,
+    neut_mesh_elts_mesh2ddist (*pTess, Nodes, Mesh[2], Mesh[3], meshp, meshd,
                                meshv, meshn);
   }
 
@@ -126,23 +122,19 @@ nem_stat_elts (FILE *file, char *entity, int dim, int realdim, char *format, str
     for (j = 0; j < invalqty; j++)
     {
       status =
-        neut_mesh_var_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Mesh[4],
-                           Tess, NULL, NULL, NULL, NULL, cl, entity2, i,
-                           invar[j], &vals, &valqty, &type);
+        neut_mesh_var_val (Nodes, Mesh, pTess, NULL, NULL, NULL, NULL, cl,
+                           entity2, i, invar[j], &vals, &valqty, &type);
       if (!status)
         ut_array_1d_fprintf_nonl (file, vals, valqty,
-                                  !strcmp (type, "%f") ? "%.12f" : type);
+                                  !strcmp (type, "%f") ? REAL_PRINT_FORMAT : type);
       else if (realdim == 3 && !strcmp (invar[j], "2dmeshp"))
-        fprintf (file, "%.12f %.12f %.12f", meshp[i][0], meshp[i][1],
-                 meshp[i][2]);
+        ut_array_1d_fprintf_nonl (file, meshp[i], 3, REAL_PRINT_FORMAT);
       else if (realdim == 3 && !strcmp (invar[j], "2dmeshd"))
-        fprintf (file, "%.12f", meshd[i]);
+        fprintf (file, REAL_PRINT_FORMAT, meshd[i]);
       else if (realdim == 3 && !strcmp (invar[j], "2dmeshv"))
-        fprintf (file, "%.12f %.12f %.12f", meshv[i][0], meshv[i][1],
-                 meshv[i][2]);
+        ut_array_1d_fprintf_nonl (file, meshv[i], 3, REAL_PRINT_FORMAT);
       else if (realdim == 3 && !strcmp (invar[j], "2dmeshn"))
-        fprintf (file, "%.12f %.12f %.12f", meshn[i][0], meshn[i][1],
-                 meshn[i][2]);
+        ut_array_1d_fprintf_nonl (file, meshn[i], 3, REAL_PRINT_FORMAT);
       else
         ut_print_exprbug (invar[j]);
 
@@ -207,18 +199,15 @@ nem_stat_point (FILE * file, char *format, struct NODES Nodes,
 
       if (!status)
         ut_array_1d_fprintf_nonl (file, vals, valqty,
-                                  !strcmp (type, "%f") ? "%.12f" : type);
+                                  !strcmp (type, "%f") ? REAL_PRINT_FORMAT : type);
       else if (!strcmp (invar[j], "2dmeshp"))
-        fprintf (file, "%.12f %.12f %.12f", meshp[i][0], meshp[i][1],
-                 meshp[i][2]);
+        ut_array_1d_fprintf_nonl (file, meshp[i], 3, REAL_PRINT_FORMAT);
       else if (!strcmp (invar[j], "2dmeshd"))
-        fprintf (file, "%.12f", meshd[i]);
+        fprintf (file, REAL_PRINT_FORMAT, meshd[i]);
       else if (!strcmp (invar[j], "2dmeshv"))
-        fprintf (file, "%.12f %.12f %.12f", meshv[i][0], meshv[i][1],
-                 meshv[i][2]);
+        ut_array_1d_fprintf_nonl (file, meshv[i], 3, REAL_PRINT_FORMAT);
       else if (!strcmp (invar[j], "2dmeshn"))
-        fprintf (file, "%.12f %.12f %.12f", meshn[i][0], meshn[i][1],
-                 meshn[i][2]);
+        ut_array_1d_fprintf_nonl (file, meshn[i], 3, REAL_PRINT_FORMAT);
       else
         ut_print_exprbug (invar[j]);
 

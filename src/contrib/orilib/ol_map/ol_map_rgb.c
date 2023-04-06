@@ -27,7 +27,7 @@ ol_map_vect_ipfrgb (struct OL_MAP Map, double *Vs, int *nidrgb)
           ol_q_g (q, g);
           ol_g_ipf_stprojxy (g, Vs, p);
           ol_stprojxy_vect (p, v);
-          test = ol_vect_ipfweight (v, weight);
+          test = ol_vect_ipfweight (v, Map.crysym, weight);
           if (test == 0)
           {
             ol_ipfweight_rgb (weight, Map.rgb[i][j]);
@@ -98,7 +98,7 @@ ol_ipfweight_rgb (double *weight, int *rgb)
 }
 
 void
-ol_ipfrgb_legend (size_t xsize, size_t * pysize, int ****prgb)
+ol_ipfrgb_legend (size_t xsize, size_t * pysize, char *crysym, int ****prgb)
 {
   unsigned int i, j;
   int k, test;
@@ -118,7 +118,7 @@ ol_ipfrgb_legend (size_t xsize, size_t * pysize, int ****prgb)
       ol_p_set_this (p, ymax * (1 - (double) j / (*pysize - 1)),
                      xmax * (double) i / (xsize - 1));
       ol_stprojxy_vect (p, v);
-      test = ol_vect_ipfweight (v, weight);
+      test = ol_vect_ipfweight (v, crysym, weight);
       if (test == 0)
         ol_ipfweight_rgb (weight, (*prgb)[i][j]);
       else

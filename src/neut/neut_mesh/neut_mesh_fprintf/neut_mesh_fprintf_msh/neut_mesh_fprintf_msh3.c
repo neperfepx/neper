@@ -17,12 +17,9 @@ neut_mesh_fprintf_msh_entities_dim (FILE * file, char *mode, struct TESS Tess,
     fprintf (file, "%d ", i);
     neut_mesh_elset_bbox (Nodes, Mesh, i, bbox);
     if (Mesh.Dimension == 0)
-      fprintf (file, "%.12f %.12f %.12f",
-               Nodes.NodeCoo[Mesh.EltNodes[i][0]][0],
-               Nodes.NodeCoo[Mesh.EltNodes[i][0]][1],
-               Nodes.NodeCoo[Mesh.EltNodes[i][0]][2]);
+      ut_array_1d_fprintf (file, Nodes.NodeCoo[Mesh.EltNodes[i][0]], 3, REAL_PRINT_FORMAT);
     else
-      fprintf (file, "%.12f %.12f %.12f %.12f %.12f %.12f",
+      fprintf (file, REAL_PRINT_FORMAT " " REAL_PRINT_FORMAT " " REAL_PRINT_FORMAT " " REAL_PRINT_FORMAT " " REAL_PRINT_FORMAT " " REAL_PRINT_FORMAT,
                bbox[0][0], bbox[1][0], bbox[2][0],
                bbox[0][1], bbox[1][1], bbox[2][1]);
 
@@ -247,7 +244,7 @@ neut_mesh_fprintf_msh_nodes_dim_v4 (FILE * file, char *mode, struct TESS Tess,
       fprintf (file, "%d\n", nodes[j]);
 
     for (j = 0; j < NodeQty; j++)
-      ut_array_1d_fprintf (file, Nodes.NodeCoo[nodes[j]], 3, "%.12f");
+      ut_array_1d_fprintf (file, Nodes.NodeCoo[nodes[j]], 3, REAL_PRINT_FORMAT);
   }
 
   ut_free_1d_int (&nodes);

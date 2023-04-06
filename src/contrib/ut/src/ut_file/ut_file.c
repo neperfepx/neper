@@ -107,9 +107,15 @@ ut_file_exist (const char *name, ...)
 {
   int res;
   va_list args;
-  char *fullname = ut_alloc_1d_char (1000);
-  char *fullname2 = ut_alloc_1d_char (1000);
+  char *fullname = NULL;
+  char *fullname2 = NULL;
   FILE *file = NULL;
+
+  if (!name)
+    return 0;
+
+  fullname = ut_alloc_1d_char (1000);
+  fullname2 = ut_alloc_1d_char (1000);
 
   va_start (args, name);
   vsprintf (fullname, name, args);
@@ -924,9 +930,14 @@ ut_file_squashname (const char *name, char **pname)
   {
   }
 
-  (*pname) = ut_realloc_1d_char (*pname, strlen (*pname) + 1);
+  int qty;
+  char **tmp = NULL;
 
-  ut_string_untilchar (*pname, ',', NULL, *pname);
+  ut_list_break (*pname, ",", &tmp, &qty);
+
+  ut_string_string (tmp[0], pname);
+
+  ut_free_2d_char (&tmp, qty);
 
   return;
 }
@@ -1076,6 +1087,21 @@ ut_file_dir_basename_extension_filename (char *dir, char *basename,
 
   ut_free_1d_char (&filename);
   ut_free_1d_char (&tmp);
+
+  return;
+}
+
+void
+ut_file_removepath (char *filename1, char **pfilename2)
+{
+  int qty;
+  char **tmp = NULL;
+
+  ut_list_break (filename1, "/", &tmp, &qty);
+
+  ut_string_string (tmp[qty - 1], pfilename2);
+
+  ut_free_2d_char (&tmp, qty);
 
   return;
 }

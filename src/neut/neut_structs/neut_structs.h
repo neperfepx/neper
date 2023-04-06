@@ -55,6 +55,8 @@ extern "C"
 #include "neut_sim_struct.h"
 #include "neut_simres_struct.h"
 
+#include "neut_pf_struct.h"
+
 #endif				/* NEUT_STRUCTS_H */
 
 #ifdef __cplusplus

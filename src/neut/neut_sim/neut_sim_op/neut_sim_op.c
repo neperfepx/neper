@@ -190,14 +190,14 @@ neut_sim_addentity (struct SIM *pSim, char *entity_in)
     ut_string_string ("cell", (*pSim).EntityType + (*pSim).EntityQty - 1);
     (*pSim).EntityMemberQty[(*pSim).EntityQty - 1] = (*pSim).CellQty;
   }
-  else if (!strcmp (entity, "tess"))
+  else if (!strcmp (entity, "tess")) // tess treated as cells, internally
   {
-    ut_string_string ("tess", (*pSim).EntityType + (*pSim).EntityQty - 1);
+    ut_string_string ("cell", (*pSim).EntityType + (*pSim).EntityQty - 1);
     (*pSim).EntityMemberQty[(*pSim).EntityQty - 1] = 1;
   }
-  else if (!strcmp (entity, "tesr"))
+  else if (!strcmp (entity, "tesr")) // tesr treated as cells, internally
   {
-    ut_string_string ("tesr", (*pSim).EntityType + (*pSim).EntityQty - 1);
+    ut_string_string ("cell", (*pSim).EntityType + (*pSim).EntityQty - 1);
     (*pSim).EntityMemberQty[(*pSim).EntityQty - 1] = 1;
   }
   else
@@ -416,7 +416,7 @@ neut_simres_setstep (struct SIMRES *pSimRes, int step)
 }
 
 void
-neut_sim_entity_init_members (struct SIM *pSim, struct TESS Tess,
+neut_sim_entity_init_members (struct SIM *pSim, struct TESS *pTess,
                               struct NODES Nodes, struct MESH *Mesh,
                               char *entity)
 {
@@ -435,14 +435,11 @@ neut_sim_entity_init_members (struct SIM *pSim, struct TESS Tess,
   for (i = 0; i < (*pSim).EntityMemberQty[pos]; i++)
   {
     if (strstr ((*pSim).EntityMemberExpr[pos][i], "fiber(")
-        && !strcmp (Tess.CellCrySym, "triclinic"))
-      ut_print_message (1, 4, "Computing fiber using `%s' crystal symmetry.\n", Tess.CellCrySym);
+        && !strcmp ((*pTess).CellCrySym, "triclinic"))
+      ut_print_message (1, 4, "Computing fiber using `%s' crystal symmetry.\n", (*pTess).CellCrySym);
 
     int eltqty, *elts = NULL;
-    neut_mesh_entity_expr_matches (Tess, Nodes,
-                                   Mesh[0], Mesh[1],
-                                   Mesh[2], Mesh[3],
-                                   Mesh[4], "elt",
+    neut_mesh_entity_expr_matches (pTess, Nodes, Mesh, "elt",
                                    (*pSim).EntityMemberExpr[pos][i],
                                    &elts, &eltqty);
 

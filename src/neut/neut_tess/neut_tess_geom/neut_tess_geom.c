@@ -980,7 +980,7 @@ neut_tess_point_inpoly_reg (struct TESS Tess, double *coo, int nb)
 
   status = 0;
   for (i = 0; i < percooqty; i++)
-    if (neut_mesh_elset_point_elt (Mesh, Nodes, 1, percoos[i], &elt) == 0)
+    if (neut_mesh_elset_point_elt (Nodes, Mesh, 1, percoos[i], &elt) == 0)
     {
       status = 1;
       break;

@@ -192,7 +192,7 @@ net_tess_opt_init_target (struct IN_T In, struct MTESS MTess,
 
   ut_array_1d_int_set (diameq_pos, 2, -1);
 
-  net_tess_opt_init_target_cellqty (In, MTess, Tess[dtess], dpoly,
+  net_tess_opt_init_target_cellqty (In, MTess, Tess + dtess, dpoly,
                                     &(*pTOpt).CellQty);
 
   // allocating/initializing variables

@@ -649,7 +649,7 @@ neut_tesr_cell_aniso (struct TESR Tesr, int cell, double **evect,
   neut_tesr_cell_coos (Tesr, cell, &coos, &cooqty);
   for (i = 0; i < cooqty; i++)
     ut_array_1d_sub (coos[i], centre, Tesr.Dim, coos[i]);
-  ut_vector_set_covar (coos, cooqty, Tesr.Dim, S);
+  ut_vector_set_covar (coos, NULL, cooqty, Tesr.Dim, S);
   ut_mat_eigen (S, Tesr.Dim, eval, evect);
 
   ut_free_1d (&centre);

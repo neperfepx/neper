@@ -18,7 +18,7 @@ neut_tess_fprintf_per_gen (struct TESS Tess, FILE * file)
   fprintf (file, "   ");
   ut_array_1d_int_fprintf (file, Tess.Periodic, 3, "%d");
   fprintf (file, "   ");
-  ut_array_1d_fprintf (file, Tess.PeriodicDist, 3, "%.12f");
+  ut_array_1d_fprintf (file, Tess.PeriodicDist, 3, REAL_PRINT_FORMAT);
 
   return;
 }

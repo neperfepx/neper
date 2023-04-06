@@ -52,6 +52,7 @@ extern "C"
 
   extern int neut_tesr_cell_id (struct TESR Tesr, int cell);
 
+  extern int neut_tesr_cellori (struct TESR Tesr, double **cellori);
   extern int neut_tesr_cell_ori (struct TESR Tesr, int cell, double *q);
 
   extern int neut_tesr_cell_gos (struct TESR Tesr, int cell, double *q);

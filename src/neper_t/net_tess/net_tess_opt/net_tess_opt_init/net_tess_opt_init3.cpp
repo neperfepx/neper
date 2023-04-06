@@ -6,18 +6,18 @@
 
 void
 net_tess_opt_init_target_cellqty (struct IN_T In, struct MTESS MTess,
-                                  struct TESS Tess, int poly, int *pCellQty)
+                                  struct TESS *pTess, int poly, int *pCellQty)
 {
   int varqty;
   char **vars = NULL;
   double *vals = NULL;
   char *tmp2 = ut_alloc_1d_char (100);
-  char *expr = In.n[Tess.Level + 1];
+  char *expr = In.n[(*pTess).Level + 1];
 
-  neut_tess_expr_vars_vals (Tess, expr, NULL, NULL, NULL, (char *) "cell",
+  neut_tess_expr_vars_vals (pTess, expr, NULL, NULL, NULL, (char *) "cell",
                             poly, &vars, &vals, NULL, &varqty);
 
-  neut_mtess_tess_poly_mid (MTess, Tess, poly, &tmp2);
+  neut_mtess_tess_poly_mid (MTess, *pTess, poly, &tmp2);
   if (strcmp (expr, "from_morpho"))
   {
     net_multiscale_arg_0d_int_fscanf (expr, tmp2, varqty, vars, vals,

@@ -5,21 +5,27 @@
 #include"nev_print_pf_.h"
 
 void
-nev_print_pf (char *basename, struct PRINT Print, struct SIM Sim,
-              struct TESS Tess, struct TESR Tesr,
+nev_print_pf (struct IN_V In, struct PF *pPf, char *basename, struct PRINT Print,
+              int *steps, int stepqty, int steppos,
+              struct SIM Sim, struct TESS Tess, struct TESR Tesr,
               struct DATA *TessData, struct DATA *TesrData,
+              struct MESH *Mesh, struct DATA **MeshData,
               struct DATA CsysData,
               struct POINT *Points, int PointQty, struct DATA *PointData)
 {
-  int i, ptqty, imagewidth, imageheight, modeqty, ipfptqty, *ptcells = NULL, density_plotted;
-  double *wgts = NULL, **pts = NULL, *ptwgts = NULL, **ipfpts = NULL;
-  char **modes = NULL, *outdir = NULL, *filename = NULL, *filename2 = NULL;
+  int i, ptqty, imagewidth, imageheight, *ptcells = NULL, density_plotted, id;
+  double *wgts = NULL, **pts = NULL, *ptwgts = NULL;
+  int *cellptqty = NULL;
+  double ***cellpts = NULL;
+  char *outdir = NULL, *filename = NULL, *filename2 = NULL;
   char *pole_string = ut_alloc_1d_char (1000);
   FILE *file = NULL;
   struct DATA *pData = NULL;
-  struct SIMRES SimRes;
   double **data = NULL;
   char *type = NULL, *value = NULL;
+  int cellqty, clustering;
+  int isfirststep = (steppos == 0);
+  int islaststep = (steppos == stepqty - 1);
 
   struct DATAINPUT DataInput;
   neut_datainput_set_default (&DataInput);
@@ -27,172 +33,116 @@ nev_print_pf (char *basename, struct PRINT Print, struct SIM Sim,
   DataInput.pTess = &Tess;
   DataInput.pTesr = &Tesr;
 
-  neut_simres_set_zero (&SimRes);
+  int *show = NULL;
 
-  neut_print_outdir (Print, Sim, "pf", &outdir);
+  (void) steps;
+
+  neut_print_outdir (In.outdir, Sim, "pf", &outdir);
   if (strcmp (outdir, "."))
     ut_sys_mkdir (outdir);
 
   ut_file_dir_basename_extension_filename (outdir, basename, "asy", &filename);
   ut_file_dir_basename_extension_filename (outdir, basename, "level", &filename2);
 
-  ut_print_message (0, 1, "Printing pole figure...\n");
-  file = ut_file_open (filename, ut_list_testelt (Print.imageformat,
-                       NEUT_SEP_NODEP, "asy") ? "w" : "W");
+  if (isfirststep)
+  {
+    ut_print_message (0, 1, "Printing pole figure...\n");
 
-  nev_print_pf_header (file, Print);
+    nev_print_pf_inputs (Print, Points, PointQty, pPf);
 
-  nev_print_pf_background (file, Print);
+    file = ut_file_open (filename, ut_list_testelt (In.imageformat,
+                         NEUT_SEP_NODEP, "asy") ? "w" : "W");
 
-  nev_print_pf_border (file, Print, &ipfpts, &ipfptqty);
+    nev_print_pf_header (*pPf, file);
 
-  nev_print_pf_csys (file, Print, CsysData);
+    nev_print_pf_background (In, *pPf, file, Print);
 
-  ut_list_break (Print.pfmode, NEUT_SEP_NODEP, &modes, &modeqty);
+    nev_print_pf_csys (*pPf, file, CsysData);
+
+    nev_print_pf_border (file, pPf);
+  }
+
+  else
+    file = ut_file_open (filename, "A");
 
   density_plotted = 0;
 
-  if (Print.showtess == 1)
+  for (i = 0; i < (*pPf).inputqty; i++)
   {
-    ut_string_string ("tess", &DataInput.input);
+    if (!strcmp ((*pPf).inputs[i], "tess"))
+      nev_print_pf_pre_tess (Print, Tess, TessData, &DataInput, &pData,
+                             &cellqty, &wgts, &data, &type, &show);
 
-    pData = TessData + Tess.Dim;
-    wgts = ut_alloc_1d (Tess.CellQty);
-    for (i = 1; i <= Tess.CellQty; i++)
-      neut_tess_cell_size (Tess, i, wgts + i - 1);
+    else if (!strcmp ((*pPf).inputs[i], "tesr"))
+      nev_print_pf_pre_tesr (Print, Tesr, TesrData, &DataInput, &pData,
+                             &cellqty, &wgts, &data, &type, &show);
 
-    if (!(*pData).Value || !strcmp ((*pData).Value, "ori"))
+    else if (!strcmp ((*pPf).inputs[i], "mesh"))
+      nev_print_pf_pre_mesh (Print, Mesh, MeshData, &DataInput, &pData,
+                             &cellqty, &wgts, &data, &type, &show);
+
+    else if (!strncmp ((*pPf).inputs[i], "point", 5))
     {
-      ut_string_string ("ori", &type);
-      data = Tess.CellOri + 1;
-    }
-    else
-    {
-      neut_data_datastring_type_value ("entity", "", (*pData).Value, &type, &value);
-      neut_data_fscanf_general (DataInput, "cell", 3, (*pData).Qty, "", type, value, pData);
-      data = (*pData).Data + 1;
+      sscanf ((*pPf).inputs[i], "point%d", &id);
+      nev_print_pf_pre_points (Print, Points[id], PointData + id, id, &DataInput,
+                               &pData, &cellqty, &wgts, &data, &type, &show);
     }
 
-    nev_print_pf_pts (type, data, wgts, Tess.CellQty,
-                      Tess.Dim == 3 ? Print.showpoly + 1 : Print.showface + 1,
-                      Print, i == 0 ? modes : NULL, i == 0 ? modeqty : 0,
-                      &pts, &ptwgts, &ptcells, &ptqty);
+    nev_print_pf_pre_clustering (*pPf, cellqty, &clustering);
 
-    nev_print_pf_ptsprint (file, basename, Print, *pData, ipfpts, ipfptqty,
-                           pts, ptwgts, ptcells, ptqty, modes, modeqty, &density_plotted);
+    cellptqty = ut_alloc_1d_int (cellqty + 1);
+    cellpts = ut_alloc_1d_ppdouble (cellqty + 1);
 
-    if (!(*pData).Value || !strcmp ((*pData).Value, "ori"))
-    {
-      sprintf (pole_string, "$\\left\\{%s\\right\\}$", Print.pfpolestring);
-      ut_string_fnrs (pole_string, NEUT_SEP_DEP, "", INT_MAX);
-    }
-    else if (!strncmp ((*pData).Value, "vector", 6))
-      ut_string_string ("directions", &pole_string);
+    nev_print_pf_pts (i, pPf, type, data, wgts, cellqty, show, clustering,
+                      &pts, &ptwgts, &ptcells, &ptqty, cellpts, cellptqty);
+
+    nev_print_pf_ptsprint (In, i, pPf, file, basename, Print, *pData,
+                           pts, ptwgts, ptcells, ptqty,
+                           &density_plotted);
+
+    ut_free_2d (&data, cellqty);
+    ut_free_1d_char (&type);
+    // free cellptqty
+    // free cellpts
   }
 
-  if (Print.showtesr == 1)
+  if (isfirststep)
   {
-    ut_string_string ("tesr", &DataInput.input);
+    nev_print_pf_polestring (*pPf, pData, &pole_string);
 
-    pData = TesrData;
-    wgts = ut_alloc_1d (Tesr.CellQty);
-    for (i = 1; i <= Tesr.CellQty; i++)
-      neut_tesr_cell_size (Tesr, i, wgts + i - 1);
-
-    data = ut_alloc_2d (Tesr.CellQty + 1, 4);
-
-    if (!(*pData).Value || !strcmp ((*pData).Value, "ori"))
-    {
-      ut_string_string ("ori", &type);
-
-      if (Tesr.CellOri)
-        ut_array_2d_memcpy (Tesr.CellOri + 1, Tesr.CellQty, 4, data + 1);
-      else
-      {
-        FILE *file = NULL;
-        neut_sim_simres (Sim, "cell", "ori", &SimRes);
-        file = ut_file_open (SimRes.file, "R");
-        neut_ori_fscanf (file, Sim.OriDes, "ascii", data + 1, NULL, Tesr.CellQty, NULL);
-        ut_file_close (file, SimRes.file, "R");
-      }
-    }
-
-    else
-    {
-      neut_data_datastring_type_value ("cell", "", (*pData).Value, &type, &value);
-      neut_data_fscanf_general (DataInput, "cell", 3, (*pData).Qty, "", type, value, pData);
-      ut_array_2d_memcpy ((*pData).Data + 1, Tesr.CellQty, (*pData).DataSize, data + 1);
-    }
-
-    nev_print_pf_pts (type, data + 1, !strcmp (type, "ori") ? wgts : NULL, Tesr.CellQty,
-                      Tesr.Dim == 3 ? Print.showpoly + 1 : Print.showface + 1,
-                      Print, i == 0 ? modes : NULL, i == 0 ? modeqty : 0,
-                        &pts, &ptwgts, &ptcells, &ptqty);
-
-    nev_print_pf_ptsprint (file, basename, Print, *pData, ipfpts, ipfptqty,
-                           pts, ptwgts, ptcells, ptqty, modes, modeqty, &density_plotted);
-
-    if (!(*pData).Value || !strcmp ((*pData).Value, "ori"))
-    {
-      sprintf (pole_string, "$\\left\\{%s\\right\\}$", Print.pfpolestring);
-      ut_string_fnrs (pole_string, NEUT_SEP_DEP, "", INT_MAX);
-    }
-    else if (!strncmp ((*pData).Value, "vector", 6))
-      ut_string_string ("directions", &pole_string);
-
-    ut_free_2d (&data, Tesr.CellQty);
+    nev_print_pf_pole_proj (*pPf, file, pole_string);
   }
-
-  for (i = 0; i < PointQty; i++)
-    if (ut_array_1d_int_sum (Print.showpoint[i] + 1, Points[i].Qty) > 0)
-    {
-      pData = PointData + i;
-      nev_print_pf_pts (Points[i].Type, Points[i].Coo + 1, NULL, Points[i].Qty,
-                        Print.showpoint[i] + 1, Print,
-                        i == 0 ? modes : NULL, i == 0 ? modeqty : 0,
-                        &pts, &ptwgts, &ptcells, &ptqty);
-
-      nev_print_pf_ptsprint (file, basename, Print, *pData, ipfpts, ipfptqty,
-                             pts, ptwgts, ptcells, ptqty, modes, modeqty, &density_plotted);
-
-      if (strcmp (Points[i].Type, "vector"))
-      {
-        sprintf (pole_string, "$\\!\\left\\{%s\\right\\}$", Print.pfpolestring);
-        ut_string_fnrs (pole_string, NEUT_SEP_DEP, "", INT_MAX);
-      }
-      else
-        ut_string_string ("directions", &pole_string);
-    }
-
-  nev_print_pf_pole_proj (file, Print, pole_string);
 
   // nev_print_pf_compress (InPF, &pts, &ptwgts, &ptqty);
 
-  ut_file_close (file, filename, ut_list_testelt (Print.imageformat,
-                 NEUT_SEP_NODEP, "asy") ? "w" : "W");
+  if (islaststep)
+    ut_file_close (file, filename, ut_list_testelt (In.imageformat,
+                   NEUT_SEP_NODEP, "asy") ? "w" : "W");
+  else
+    ut_file_close (file, filename, "W");
 
-  neut_print_imagesize (Print, &imagewidth, &imageheight);
-  neut_asy_convert (Print.asymptote, filename, imagewidth, imageheight,
-                    Print.imageformat, 2);
-
-  if (!ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "asy"))
+  if (islaststep)
   {
-    remove (filename);
-    if (density_plotted)
-      remove (filename2);
+    neut_print_imagesize (In.imagesize, &imagewidth, &imageheight);
+    neut_asy_convert (In.asymptote, filename, imagewidth, imageheight,
+                      In.imageformat, 2);
+
+    if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "asy"))
+    {
+      remove (filename);
+      if (density_plotted)
+        remove (filename2);
+    }
   }
 
-  ut_free_2d (&ipfpts, ipfptqty);
   ut_free_1d_char (&filename);
   ut_free_1d_char (&filename2);
   ut_free_1d (&wgts);
   ut_free_2d (&pts, ptqty);
   ut_free_1d_int (&ptcells);
   ut_free_1d (&ptwgts);
-  ut_free_2d_char (&modes, modeqty);
   ut_free_1d_char (&outdir);
   ut_free_1d_char (&pole_string);
-  neut_simres_free (&SimRes);
   ut_free_1d_char (&type);
   ut_free_1d_char (&value);
 

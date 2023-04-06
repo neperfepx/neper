@@ -27,6 +27,8 @@ extern "C"
 ///
   extern void neut_mesh_free (struct MESH *pMesh);
 
+  extern void neut_mesh_free_simeltori (struct MESH *pMesh);
+
 /// \brief Allocate an array of MESH structures.
 ///
 ///
@@ -265,7 +267,13 @@ extern "C"
 
   extern void neut_mesh_init_eltori (struct MESH *pMesh);
 
-  extern void neut_mesh_init_elsetori (struct NODES Nodes, struct MESH *pMesh, char *crysym);
+  extern void neut_mesh_init_elsetori (struct NODES Nodes, struct MESH *pMesh);
+
+  extern int neut_mesh_init_simeltori (struct MESH *pMesh);
+
+  extern int neut_mesh_elt_body (struct MESH Mesh2D, struct MESH *pMesh3D, int id);
+
+  extern void neut_mesh_init_eltbody (struct MESH Mesh2D, struct MESH *pMesh3D);
 
 #endif				/* NEUT_MESH_OP_H */
 

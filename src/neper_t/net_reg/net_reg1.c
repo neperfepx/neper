@@ -12,7 +12,7 @@ net_reg (struct IN_T In, struct TESS *pTess, struct REG *pReg)
   if ((*pTess).CellQty == 0)
     return;
 
-  net_reg_init (In, *pTess, pReg);
+  net_reg_init (In, pTess, pReg);
 
   ut_print_message (0, 2, "");
 

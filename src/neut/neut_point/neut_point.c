@@ -16,6 +16,8 @@ neut_point_set_zero (struct POINT *pPoint)
   (*pPoint).Coo = NULL;
   (*pPoint).Rad = NULL;
 
+  (*pPoint).crysym = NULL;
+
   return;
 }
 
@@ -29,6 +31,8 @@ neut_point_free (struct POINT *pPoint)
   ut_free_1d (&(*pPoint).Rad);
 
   neut_point_set_zero (pPoint);
+
+  ut_free_1d_char (&(*pPoint).crysym);
 
   return;
 }
@@ -142,14 +146,14 @@ neut_point_var_val (struct POINT Point, int id, struct TESS Tess,
   }
   else if (!strcmp (var, "elt"))
   {
-    neut_mesh_point_elt (Mesh, Nodes, Point.Coo[id], &tmp);
+    neut_mesh_point_elt (Nodes, Mesh, Point.Coo[id], &tmp);
     (*pvals)[0] = tmp;
     if (ptype)
       strcpy (*ptype, "%d");
   }
   else if (!strcmp (var, "elset"))
   {
-    neut_mesh_point_elset (Mesh, Nodes, Point.Coo[id], NULL, 0, &tmp);
+    neut_mesh_point_elset (Nodes, Mesh, Point.Coo[id], NULL, 0, &tmp);
     (*pvals)[0] = tmp;
     if (ptype)
       strcpy (*ptype, "%d");

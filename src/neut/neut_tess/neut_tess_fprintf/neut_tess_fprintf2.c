@@ -27,7 +27,7 @@ neut_tess_fprintf_foot (FILE * file)
 void
 neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
 {
-  int i, j, qty;
+  int i, qty;
   double *e = ol_e_alloc ();
 
   fprintf (file, " **cell\n");
@@ -84,9 +84,8 @@ neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
     for (i = 1; i <= Tess.CellQty; i++)
     {
       fprintf (file, " %3d ", i);
-      for (j = 0; j < 3; j++)
-        fprintf (file, "%.12f ", Tess.SeedCoo[i][j]);
-      fprintf (file, "%.12f\n", Tess.SeedWeight[i]);
+      ut_array_1d_fprintf_nonl (file, Tess.SeedCoo[i], 3, REAL_PRINT_FORMAT);
+      fprintf (file, " " REAL_PRINT_FORMAT "\n", Tess.SeedWeight[i]);
     }
   }
 
@@ -112,16 +111,15 @@ neut_tess_fprintf_cell (struct TESS Tess, FILE * file)
 void
 neut_tess_fprintf_ver (struct TESS Tess, FILE * file)
 {
-  int i, j;
+  int i;
 
   fprintf (file, " **vertex\n");
   fprintf (file, " %d\n", Tess.VerQty);
 
   for (i = 1; i <= Tess.VerQty; i++)
   {
-    fprintf (file, " %3d ", i);
-    for (j = 0; j < 3; j++)
-      fprintf (file, " %.12f", Tess.VerCoo[i][j]);
+    fprintf (file, " %3d  ", i);
+    ut_array_1d_fprintf_nonl (file, Tess.VerCoo[i], 3, REAL_PRINT_FORMAT);
     fprintf (file, "     %d\n", Tess.VerState[i]);
   }
 
@@ -169,12 +167,12 @@ neut_tess_fprintf_face (struct TESS Tess, FILE * file)
     fprintf (file, "\n");
 
     fprintf (file, "    ");
-    ut_array_1d_fprintf (file, Tess.FaceEq[i], 4, "%.12f");
+    ut_array_1d_fprintf (file, Tess.FaceEq[i], 4, REAL_PRINT_FORMAT);
 
     fprintf (file, "    ");
     fprintf (file, " %d", Tess.FaceState[i]);
     fprintf (file, " %d ", Tess.FacePt[i]);
-    ut_array_1d_fprintf (file, Tess.FacePtCoo[i], 3, "%.12f");
+    ut_array_1d_fprintf (file, Tess.FacePtCoo[i], 3, REAL_PRINT_FORMAT);
   }
 
   return;
@@ -202,7 +200,7 @@ neut_tess_fprintf_poly (struct TESS Tess, FILE * file)
 void
 neut_tess_fprintf_dom (struct TESS Tess, FILE * file)
 {
-  int i, j;
+  int i;
 
   if (Tess.Level == 0)
     return;
@@ -216,9 +214,8 @@ neut_tess_fprintf_dom (struct TESS Tess, FILE * file)
 
   for (i = 1; i <= Tess.DomVerQty; i++)
   {
-    fprintf (file, " %3d ", i);
-    for (j = 0; j < 3; j++)
-      fprintf (file, " %.12f", Tess.DomVerCoo[i][j]);
+    fprintf (file, " %3d  ", i);
+    ut_array_1d_fprintf_nonl (file, Tess.DomVerCoo[i], 3, REAL_PRINT_FORMAT);
     fprintf (file, " %s\n", Tess.DomVerLabel[i]);
     fprintf (file, "    %3d %d\n", 1, Tess.DomTessVerNb[i]);
   }
@@ -267,10 +264,10 @@ neut_tess_fprintf_dom (struct TESS Tess, FILE * file)
       fprintf (file, "     %d ", Tess.DomFaceParmQty[i]);
 
       if (!strcmp (Tess.DomFaceType[i], "plane"))
-        ut_array_1d_fprintf (file, Tess.DomFaceEq[i], 4, "%.12f");
+        ut_array_1d_fprintf (file, Tess.DomFaceEq[i], 4, REAL_PRINT_FORMAT);
       else
         ut_array_1d_fprintf (file, Tess.DomFaceParms[i],
-                             Tess.DomFaceParmQty[i], "%.12f");
+                             Tess.DomFaceParmQty[i], REAL_PRINT_FORMAT);
 
       fprintf (file, "     %s\n", Tess.DomFaceLabel[i]);
 

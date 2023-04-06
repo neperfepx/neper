@@ -2,4 +2,6 @@
 /* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nev_print_tree (char *basename, struct PRINT Print, struct SIM Sim);
+#include"../../structIn_v.h"
+
+extern void nev_print_tree (struct IN_V In, char *basename, struct SIM Sim);

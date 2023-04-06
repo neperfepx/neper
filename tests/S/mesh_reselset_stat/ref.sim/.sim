@@ -1,0 +1,25 @@
+***sim
+ **format
+   1.0
+ **input
+  *tess
+   simulation.tess
+  *msh
+   simulation.msh
+ **general
+   0 81 214 2 0
+  *orides
+   rodrigues:active
+ **entity elt
+  *result
+   1
+   rr
+ **entity elset
+  *result
+   2
+   rr_stddev rr_var
+ **entity mesh
+  *result
+   2
+   rr_stddev rr_var
+***end

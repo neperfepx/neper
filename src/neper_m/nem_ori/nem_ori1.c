@@ -5,9 +5,16 @@
 #include"nem_ori_.h"
 
 void
-nem_ori (struct TESS Tess, struct MESH *Mesh)
+nem_ori (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh)
 {
   int i, j, dim = neut_mesh_array_dim (Mesh);
+
+  if (Tess.CellCrySym)
+  {
+    ut_string_string (Tess.CellCrySym, &((*pNodes).crysym));
+    for (i = 0; i <= 4; i++)
+      ut_string_string (Tess.CellCrySym, &(Mesh[i].ElsetCrySym));
+  }
 
   if (Tess.CellOri)
   {

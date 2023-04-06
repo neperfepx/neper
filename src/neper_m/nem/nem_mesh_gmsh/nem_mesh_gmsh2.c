@@ -57,7 +57,7 @@ nem_mesh_2d_gmsh_writeboundary (struct TESS Tess, struct NODES Nodes,
       ut_space_point_dir_plane_proj ((*pbnodecoos)[i], faceproj + 1, faceproj,
                                      (*pbnodecoos)[i]);
 
-    fprintf (file, "Point(%d) = {%.12f, %.12f, %.12f, %.12f};\n", i + 1,
+    fprintf (file, "Point(%d) = {" REAL_PRINT_FORMAT ", " REAL_PRINT_FORMAT ", " REAL_PRINT_FORMAT ", " REAL_PRINT_FORMAT "};\n", i + 1,
              (*pbnodecoos)[i][0], (*pbnodecoos)[i][1], (*pbnodecoos)[i][2],
              Nodes.NodeCl[node]);
   }

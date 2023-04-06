@@ -33,10 +33,14 @@ neut_fepxsim_fscanf (char *dir, struct FEPXSIM *pFSim, char *mode)
   if (ut_file_exist ("%s/rst%d.control", (*pFSim).fepxdir, restart))
     (*pFSim).RestartFiles = 1;
 
-  ut_string_string ("simulation.tess", &(*pFSim).tess);
-  ut_string_string ("simulation.tesr", &(*pFSim).tesr);
-  ut_string_string ("simulation.msh", &(*pFSim).msh);
-  ut_string_string ("simulation.config", &(*pFSim).config);
+  if (ut_file_exist ("%s/simulation.tess", (*pFSim).fepxdir))
+    ut_string_string ("simulation.tess", &(*pFSim).tess);
+  if (ut_file_exist ("%s/simulation.tesr", (*pFSim).fepxdir))
+    ut_string_string ("simulation.tesr", &(*pFSim).tesr);
+  if (ut_file_exist ("%s/simulation.msh", (*pFSim).fepxdir))
+    ut_string_string ("simulation.msh", &(*pFSim).msh);
+  if (ut_file_exist ("%s/simulation.config", (*pFSim).fepxdir))
+    ut_string_string ("simulation.config", &(*pFSim).config);
 
   file = ut_file_open (filename, mode);
 
@@ -151,7 +155,7 @@ neut_fepxsim_fscanf (char *dir, struct FEPXSIM *pFSim, char *mode)
 
   ut_free_1d_char (&filename);
 
-  filename = ut_string_paste (name, "/simulation.config");
+  filename = ut_string_paste3 (name, "/", (*pFSim).config);
 
   file = ut_file_open (filename, "R");
   while (fscanf (file, "%s", tmp) == 1)

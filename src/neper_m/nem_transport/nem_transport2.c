@@ -30,7 +30,7 @@ nem_transport_elt (char *type, char *filename, char *method,
 
     file = ut_file_open (name, "w");
     for (j = 1; j <= Mesh.EltQty; j++)
-      ut_array_1d_fprintf (file, data[(*poldelt)[j]], dim, "%11.6f");
+      ut_array_1d_fprintf (file, data[(*poldelt)[j]], dim, REAL_PRINT_FORMAT);
     ut_file_close (file, name, "w");
     ut_free_1d_char (&name);
 
@@ -88,7 +88,7 @@ nem_transport_node (char *type, char *filename, struct NODES RNodes,
     file = ut_file_open (name, "w");
     for (i = 1; i <= Nodes.NodeQty; i++)
     {
-      status = neut_mesh_point_elt (RMesh, RNodes, Nodes.NodeCoo[i], &elt);
+      status = neut_mesh_point_elt (RNodes, RMesh, Nodes.NodeCoo[i], &elt);
 
       if (status == -1)
         abort ();
@@ -107,7 +107,7 @@ nem_transport_node (char *type, char *filename, struct NODES RNodes,
         for (j = 0; j < 3; j++)
           val[k] += shfct[j] * data[RMesh.EltNodes[elt][j]][k];
 
-      ut_array_1d_fprintf (file, val, dim, "%.12f");
+      ut_array_1d_fprintf (file, val, dim, REAL_PRINT_FORMAT);
     }
     ut_file_close (file, name, "w");
     ut_free_1d_char (&name);

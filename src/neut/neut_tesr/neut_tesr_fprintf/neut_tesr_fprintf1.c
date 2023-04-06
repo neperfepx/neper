@@ -108,10 +108,10 @@ neut_tesr_fprintf_ami (FILE * file, char *format, struct TESR Tesr)
   fprintf (file, "DATASET STRUCTURED_POINTS\n");
   fprintf (file, "DIMENSIONS    %d   %d   %d\n", Tesr.size[0] + 1,
            Tesr.size[1] + 1, Tesr.size[2] + 1);
-  fprintf (file, "ORIGIN    %.12f %.12f %.12f\n", Tesr.Origin[0],
-           Tesr.Origin[1], Tesr.Origin[2]);
-  fprintf (file, "SPACING    %.12f    %.12f   %.12f\n", Tesr.vsize[0],
-           Tesr.vsize[1], Tesr.vsize[2]);
+  fprintf (file, "ORIGIN    ");
+  ut_array_1d_fprintf (file, Tesr.Origin, 3, REAL_PRINT_FORMAT);
+  fprintf (file, "SPACING    ");
+  ut_array_1d_fprintf (file, Tesr.vsize, 3, REAL_PRINT_FORMAT);
   fprintf (file, "CELL_DATA   %d\n", ut_array_1d_int_prod (Tesr.size, 3));
   fprintf (file, "SCALARS MaterialId %s\n", format_ami);
   fprintf (file, "LOOKUP_TABLE default\n");

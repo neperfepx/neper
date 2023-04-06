@@ -41,6 +41,8 @@ struct NODES
   int **Parts;                  // partitions (same format as struct MESH.Elsets)
   int *NodePart;                // partition of a node
 
+  char *crysym;                 // crystal symmetry
+
   // pointer to SIM structure
   struct SIM *pSim;
 };

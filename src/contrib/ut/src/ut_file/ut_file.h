@@ -270,6 +270,11 @@ extern void ut_file_scan_file (FILE *file, char *dirname, FILE **pfile, char **p
 extern void ut_file_dir_basename_extension_filename (char *dir, char *basename,
                                                      char *extension, char **pfilename);
 
+/// \brief Remove the path from a file name
+/// \param filename1: input file name, including path (path/to/file)
+/// \param pfilename2: pointer to output file name, excluding path (file)
+extern void ut_file_removepath (char *filename1, char **pfilename2);
+
 #endif                          /* UT_FILE_H */
 
 #ifdef __cplusplus

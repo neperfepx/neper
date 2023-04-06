@@ -2,15 +2,17 @@
 /* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nev_print_png (char *basename, struct PRINT Print, struct SIM Sim,
+#include"../../structIn_v.h"
+
+extern void nev_print_png (struct IN_V In, char *basename, struct PRINT Print, struct SIM Sim,
                            struct TESS Tess,
                            struct DATA *TessData, struct TESR Tesr,
                            struct DATA *TesrData, struct NODES Nodes,
                            struct MESH *Mesh, int SQty, struct NODES *SNodes,
                            struct MESH *SMesh2D, struct DATA *pNodeData,
-                           struct DATA *MeshData, struct DATA *pCsysData,
+                           struct DATA **MeshData, struct DATA *pCsysData,
                            struct POINT *Points, int PointQty, struct DATA *pPointData,
-                           struct DATA *SNodeData, struct DATA **SMeshData,
+                           struct DATA *SNodeData, struct DATA ***SMeshData,
                            int **SElt2dElt3d);
 
 extern void nev_print_png_convert (char *, char *, int, int, int, int);

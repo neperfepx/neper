@@ -6,7 +6,7 @@
 
 void
 nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
-                      struct TESS Tess, struct NODES *pNodes,
+                      struct TESS *pTess, struct NODES *pNodes,
                       struct MESH *Mesh, struct NSET *NSet)
 {
   int i;
@@ -15,12 +15,12 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
   double *bboxsize = ut_alloc_1d (3);
   double cl;
 
-  neut_tess_bbox (Tess, bbox);
-  neut_tess_bboxsize (Tess, bboxsize);
+  neut_tess_bbox ((*pTess), bbox);
+  neut_tess_bboxsize ((*pTess), bboxsize);
 
-  if (Tess.Dim == 3)
+  if ((*pTess).Dim == 3)
     cl = MeshPara.poly_cl[1];
-  else if (Tess.Dim == 2)
+  else if ((*pTess).Dim == 2)
     cl = MeshPara.face_cl[1];
   else
   {
@@ -36,40 +36,40 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
 
   /* Creating mapped mesh ------------------------------------------ */
   printf ("\n");
-  ut_print_message (0, 2, "%dD meshing... ", Tess.Dim);
+  ut_print_message (0, 2, "%dD meshing... ", (*pTess).Dim);
 
-  neut_mesh_str (Tess.Dim, msize, pNodes, Mesh + Tess.Dim,
-                 NSet + Tess.Dim - 1);
+  neut_mesh_str ((*pTess).Dim, msize, pNodes, Mesh + (*pTess).Dim,
+                 NSet + (*pTess).Dim - 1);
   neut_nodes_scale (pNodes, bboxsize[0], bboxsize[1], bboxsize[2]);
   neut_nodes_shift (pNodes, bbox[0][0], bbox[1][0], bbox[2][0]);
 
   /* Searching elsets ---------------------------------------------- */
 
   // ut_print_message (0, 2, "Searching elsets... ");
-  nem_meshing_str_tess (Tess, pNodes, Mesh);
+  nem_meshing_str_tess ((*pTess), pNodes, Mesh);
 
-  neut_mesh_init_elsets (Mesh + Tess.Dim);
-  neut_mesh_init_elsetlabels (Mesh + Tess.Dim);
+  neut_mesh_init_elsets (Mesh + (*pTess).Dim);
+  neut_mesh_init_elsetlabels (Mesh + (*pTess).Dim);
 
   nem_reconstruct_mesh (In.dimout, pNodes, Mesh, NULL);
 
-  int *poly = ut_alloc_1d_int (Tess.PolyQty + 1);
+  int *poly = ut_alloc_1d_int ((*pTess).PolyQty + 1);
   int polyqty;
 
-  ut_free_2d_int (&Mesh[Tess.Dim].NodeElts, (*pNodes).NodeQty + 1);
-  neut_mesh_init_nodeelts (Mesh + Tess.Dim, (*pNodes).NodeQty);
+  ut_free_2d_int (&Mesh[(*pTess).Dim].NodeElts, (*pNodes).NodeQty + 1);
+  neut_mesh_init_nodeelts (Mesh + (*pTess).Dim, (*pNodes).NodeQty);
 
   if (strcmp (In.meshpoly, "all") != 0)
   {
-    if (Mesh[Tess.Dim].ElsetId)
+    if (Mesh[(*pTess).Dim].ElsetId)
       ut_print_neperbug ();
 
     ut_print_message (0, 2, "Removing elsets other than `%s'... \n",
                       In.meshpoly);
-    neut_tess_expr_polys (Tess, In.meshpoly, &poly, &polyqty);
-    for (i = 1; i <= Tess.PolyQty; i++)
+    neut_tess_expr_polys (pTess, In.meshpoly, &poly, &polyqty);
+    for (i = 1; i <= (*pTess).PolyQty; i++)
       if (ut_array_1d_int_eltpos (poly, polyqty, i) == -1)
-        neut_mesh_rmelset (Mesh + Tess.Dim, *pNodes, i);
+        neut_mesh_rmelset (Mesh + (*pTess).Dim, *pNodes, i);
   }
 
   // ut_free_1d_char (&expandnset);

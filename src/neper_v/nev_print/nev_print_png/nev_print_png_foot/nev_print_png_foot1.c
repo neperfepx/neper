@@ -5,7 +5,7 @@
 #include"nev_print_png_foot_.h"
 
 void
-nev_print_png_foot (FILE * file, struct PRINT Print)
+nev_print_png_foot (struct IN_V In, FILE * file)
 {
   int i, j, k, povqty, *povqty2 = NULL, argqty;
   double tmp;
@@ -14,9 +14,9 @@ nev_print_png_foot (FILE * file, struct PRINT Print)
   char *line = ut_alloc_1d_char (1000);
   char *fct = NULL, **vars = NULL, **vals = NULL;
 
-  if (Print.includepov)
+  if (In.includepov)
   {
-    ut_list_break2 (Print.includepov, NEUT_SEP_NODEP, NEUT_SEP_DEP, &povs,
+    ut_list_break2 (In.includepov, NEUT_SEP_NODEP, NEUT_SEP_DEP, &povs,
                     &povqty2, &povqty);
 
     for (i = 0; i < povqty; i++)
@@ -41,7 +41,7 @@ nev_print_png_foot (FILE * file, struct PRINT Print)
         for (k = 0; k < argqty; k++)
         {
           ut_math_eval (vals[k], 0, NULL, NULL, &tmp);
-          fprintf (file, "%.12f%s", tmp, k < argqty - 1 ? "," : ">\n");
+          fprintf (file, REAL_PRINT_FORMAT "%s", tmp, k < argqty - 1 ? "," : ">\n");
         }
         fprintf (file, "}\n");
 
@@ -54,7 +54,7 @@ nev_print_png_foot (FILE * file, struct PRINT Print)
     }
   }
 
-  if (!ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov:objects"))
+  if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov:objects"))
   {
     fprintf (file, "rotate<-90,  0,  0>\n");
     fprintf (file, "scale <  1,  1, -1>\n");

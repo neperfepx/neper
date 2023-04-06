@@ -1,57 +1,91 @@
-/* This file is part of the Neper software package. */
+/* This fil40e is part of the Neper software package. */
 /* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_.h"
 
 void
-nev_print (char **expargv, int *pi, struct PRINT *pPrint, struct SIM Sim,
-           struct TESS Tess, struct DATA *TessData, struct TESR Tesr,
+nev_print (struct IN_V In,
+           struct PRINT *pPrint, struct SIM *pSim,
+           struct TESS *pTess, struct DATA *TessData, struct TESR Tesr,
            struct DATA *pTesrData, struct NODES Nodes, struct MESH *Mesh,
-           struct DATA *pNodeData, struct DATA *MeshData,
+           struct DATA *pNodeData, struct DATA **MeshData,
            struct DATA *pCsysData, struct POINT *Points, int PointQty,
            struct DATA *PointData)
 {
+  int status;
   char *basename = NULL;
   int SQty = 0;
   struct NODES *SNodes = NULL;
   struct MESH *SMesh2D = NULL;
   struct DATA *SNodeData = NULL;
-  struct DATA **SMeshData = NULL;
+  struct DATA ***SMeshData = NULL;
   int **SElt2dElt3d = NULL;
+  int stepqty = 0, *steps = NULL, steppos, islaststep;
+  struct PF Pf;
 
-  ut_string_string (expargv[++(*pi)], &basename);
+  neut_pf_set_zero (&Pf);
 
-  nev_print_init (pPrint, Tess, TessData, Tesr, pTesrData, Nodes, Mesh,
-                  pNodeData, MeshData, &SQty, &SNodes, &SMesh2D,
-                  &SNodeData, &SMeshData, &SElt2dElt3d, pCsysData, Points,
-                  PointQty, PointData);
+  ut_string_string (In.print, &basename);
 
-  if (!strcmp ((*pPrint).space, "real") || !strcmp ((*pPrint).space, "rodrigues"))
+  if (strcmp (In.step, "all"))
+    ut_list_break_int_range (In.step, NEUT_SEP_NODEP, &steps, &stepqty);
+  else
   {
-    if (ut_list_testelt ((*pPrint).imageformat, NEUT_SEP_NODEP, "pov")
-     || ut_list_testelt ((*pPrint).imageformat, NEUT_SEP_NODEP, "pov:objects")
-     || ut_list_testelt ((*pPrint).imageformat, NEUT_SEP_NODEP, "png"))
-      nev_print_png (basename, *pPrint, Sim, Tess, TessData, Tesr, pTesrData, Nodes,
-                     Mesh, SQty, SNodes, SMesh2D, pNodeData, MeshData, pCsysData,
-                     Points, PointQty, PointData, SNodeData, SMeshData, SElt2dElt3d);
-
-    if (ut_list_testelt ((*pPrint).imageformat, NEUT_SEP_NODEP, "vtk"))
-      nev_print_vtk (basename, *pPrint, Sim, Nodes, Mesh, pNodeData, MeshData);
+    stepqty = (*pSim).StepQty + 1;
+    steps = ut_alloc_1d_int (stepqty);
+    ut_array_1d_int_set_id (steps, stepqty);
   }
 
-  else if (!strcmp ((*pPrint).space, "pf"))
-    nev_print_pf (basename, *pPrint, Sim, Tess, Tesr, TessData, pTesrData,
-                  *pCsysData, Points, PointQty, PointData);
+  for (steppos = 0; steppos < stepqty; steppos++)
+  {
+    islaststep = (steppos == stepqty - 1);
 
-  else if (!strcmp ((*pPrint).space, "tree"))
-    nev_print_tree (basename, *pPrint, Sim);
+    status = neut_sim_setstep (pSim, steps[steppos]);
 
-  if ((*pPrint).showscale)
-    nev_print_scale (basename, *pPrint, Sim, TessData, pTesrData, pNodeData,
+    if (status)
+      ut_print_message (2, 2, "Step %d not available.\n", steps[steppos]);
+
+    nev_print_data (In, *pSim, pTess, &Tesr, &Nodes, &Mesh, &Points,
+                    PointQty, TessData, pTesrData, pNodeData, MeshData,
+                    pCsysData, &PointData);
+
+    nev_print_show (In, pTess, Tesr, Nodes, Mesh, Points, PointQty, pPrint);
+
+    nev_print_init (In, pPrint, &Pf, *pTess, TessData, Tesr, pTesrData, Nodes, Mesh,
+                    pNodeData, MeshData, &SQty, &SNodes, &SMesh2D,
+                    &SNodeData, &SMeshData, &SElt2dElt3d, pCsysData, Points,
+                    PointQty, PointData);
+
+    if (!strcmp (In.space, "real") || !strcmp (In.space, "rodrigues"))
+    {
+      if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov")
+       || ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov:objects")
+       || ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
+        nev_print_png (In, basename, *pPrint, *pSim, *pTess, TessData, Tesr, pTesrData, Nodes,
+                       Mesh, SQty, SNodes, SMesh2D, pNodeData, MeshData, pCsysData,
+                       Points, PointQty, PointData, SNodeData, SMeshData, SElt2dElt3d);
+
+      if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "vtk"))
+        nev_print_vtk (In, basename, *pSim, Nodes, Mesh, pNodeData, MeshData);
+    }
+
+    else if (!strcmp (In.space, "pf") || !strcmp (In.space, "ipf"))
+      nev_print_pf (In, &Pf, basename, *pPrint, steps, stepqty, steppos, *pSim,
+                    *pTess, Tesr, TessData, pTesrData, Mesh, MeshData,
+                    *pCsysData, Points, PointQty, PointData);
+
+    else if (!strcmp (In.space, "tree") && islaststep)
+      nev_print_tree (In, basename, *pSim);
+
+    if ((*pPrint).showscale && islaststep)
+      nev_print_scale (In, basename, *pSim, TessData, pTesrData, pNodeData,
                      MeshData, PointQty, PointData);
+  }
 
   ut_free_1d_char (&basename);
+  ut_free_1d_int (&steps);
+  neut_pf_free (&Pf);
 
   return;
 }

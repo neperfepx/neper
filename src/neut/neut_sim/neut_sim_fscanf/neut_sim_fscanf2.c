@@ -33,7 +33,7 @@ neut_sim_fscanf_head (FILE *file, char **pversion)
       || !ut_file_string_scanandtest (file, "**format"))
     ut_print_message (2, 0, "Input directory is not a valid simulation directory.\n");
 
-  (*pversion) = ut_alloc_1d_char (100);
+  (*pversion) = ut_realloc_1d_char (*pversion, 100);
   if (fscanf (file, "%s", *pversion) != 1)
     ut_print_message (2, 0, "Input directory is not a valid simulation directory.\n");
 

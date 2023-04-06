@@ -1183,202 +1183,49 @@ neut_tess_poly_face_ori (struct TESS Tess, int poly, int face, int *pfaceori)
 }
 
 int
-neut_tess_cell_true (struct TESS Tess, int nb)
+neut_tess_cell_body (struct TESS *pTess, char *expr, int nb)
 {
-  int i, status, verid;
-  double dist;
-  int verqty;
-  int *ver = NULL;
-  double *proj = NULL, *eq = NULL;
-  double domdist;
+  int pos;
 
-  status = 1;
-
-  if (!Tess.SeedCoo)
+  // void
+  if (neut_tess_cell_isvoid (*pTess, nb))
     return 0;
 
-  if ((Tess.Dim == 3 && Tess.PolyFaceQty[nb] == 0)
-      || (Tess.Dim == 2 && Tess.FaceVerQty[nb] == 0))
-    return 0;
-
-  proj = ut_alloc_1d (3);
-  eq = ut_alloc_1d (3);
-
-  if (Tess.Dim == 3)
-  {
-    if (Tess.DomFaceQty == 0)
-      ut_print_neperbug ();
-
-    if (Tess.PolyFaceQty[nb] > 0)
-    {
-      domdist = DBL_MAX;
-      for (i = 1; i <= Tess.DomFaceQty; i++)
-      {
-        dist =
-          ut_space_point_plane_dist (Tess.SeedCoo[nb], Tess.DomFaceEq[i]);
-        domdist = ut_num_min (domdist, dist);
-      }
-
-      neut_tess_poly_vers (Tess, nb, &ver, &verqty);
-
-      for (i = 0; i < verqty; i++)
-      {
-        verid = ver[i];
-        dist = ut_space_dist (Tess.SeedCoo[nb], Tess.VerCoo[verid]);
-        if (dist > .5 * domdist)
-        {
-          status = 0;
-          break;
-        }
-      }
-    }
-    else
-      status = 0;
-  }
-
-  else if (Tess.Dim == 2)
-  {
-    if (Tess.DomEdgeQty == 0)
-      ut_print_neperbug ();
-
-    if (Tess.FaceVerQty[nb] > 0)
-    {
-      domdist = DBL_MAX;
-      for (i = 1; i <= Tess.DomEdgeQty; i++)
-      {
-        neut_tess_domedge_eq (Tess, i, eq);
-        ut_space_point_line_dist_2d (Tess.SeedCoo[nb], eq, &dist);
-        domdist = ut_num_min (domdist, dist);
-      }
-
-      for (i = 1; i <= Tess.FaceVerQty[nb]; i++)
-      {
-        verid = Tess.FaceVerNb[nb][i];
-        dist = ut_space_dist (Tess.SeedCoo[nb], Tess.VerCoo[verid]);
-        if (dist > .5 * domdist)
-        {
-          status = 0;
-          break;
-        }
-      }
-    }
-    else
-      status = 0;
-  }
-
-  ut_free_1d_int (&ver);
-  ut_free_1d (&proj);
-  ut_free_1d (&eq);
-
-  return status;
-}
-
-int
-neut_tess_cell_body (struct TESS Tess, int nb)
-{
-  int i, id;
-
-  if ((Tess.Dim == 3 && Tess.PolyFaceQty[nb] == 0)
-      || (Tess.Dim == 2 && Tess.FaceVerQty[nb] == 0))
-    return 0;
-
-  if (Tess.Dim == 3)
-  {
-    if (Tess.PolyFaceQty[nb] == 0)
-      return 0;
-    else
-      for (i = 1; i <= Tess.PolyFaceQty[nb]; i++)
-      {
-        id = Tess.PolyFaceNb[nb][i];
-        if (Tess.FaceDom[id][0] == 2)
-          return 0;
-      }
-  }
-
-  else if (Tess.Dim == 2)
-  {
-    if (Tess.FaceVerQty[nb] == 0)
-      return 0;
-    else
-      for (i = 1; i <= Tess.FaceVerQty[nb]; i++)
-      {
-        id = Tess.FaceEdgeNb[nb][i];
-        if (Tess.EdgeDom[id][0] == 1)
-          return 0;
-      }
-  }
+  // recorded
+  else if (!neut_tess_cellbody_pos (*pTess, expr, &pos))
+    return (*pTess).CellBody[pos][nb];
 
   else
-    abort ();
-
-  return 1;
+  {
+    pos = neut_tess_init_cellbody (pTess, expr);
+    return (*pTess).CellBody[pos][nb];
+  }
 }
 
 int
-neut_tess_poly_true (struct TESS Tess, int nb)
-{
-  return (Tess.Dim == 3) ? Tess.CellTrue[nb] : -1;
-}
-
-int
-neut_tess_poly_body (struct TESS Tess, int nb)
-{
-  return (Tess.Dim == 3) ? Tess.CellBody[nb] : -1;
-}
-
-int
-neut_tess_face_true (struct TESS Tess, int nb)
+neut_tess_face_body (struct TESS *pTess, char *expr, int nb)
 {
   int i, res;
 
-  if (Tess.Dim == 3)
-  {
-    int polyqty;
-    int *polys = NULL;
-    int *celltrue = NULL;
-    neut_tess_face_polys (Tess, nb, &polys, &polyqty);
-    celltrue = ut_alloc_1d_int (polyqty);
-
-    for (i = 0; i < polyqty; i++)
-      celltrue[i] = Tess.CellTrue[polys[i]];
-
-    res = ut_array_1d_int_max (celltrue, polyqty);
-
-    ut_free_1d_int (&polys);
-    ut_free_1d_int (&celltrue);
-  }
-  else if (Tess.Dim == 2)
-    res = Tess.CellTrue[nb];
-  else
-    res = 0;
-
-  return res;
-}
-
-int
-neut_tess_face_body (struct TESS Tess, int nb)
-{
-  int i, res;
-
-  if (Tess.Dim == 3)
+  if ((*pTess).Dim == 3)
   {
     int polyqty;
     int *polys = NULL;
     int *cellbody = NULL;
 
-    neut_tess_face_polys (Tess, nb, &polys, &polyqty);
+    neut_tess_face_polys (*pTess, nb, &polys, &polyqty);
     cellbody = ut_alloc_1d_int (polyqty);
 
     for (i = 0; i < polyqty; i++)
-      cellbody[i] = Tess.CellBody[polys[i]];
+      cellbody[i] = neut_tess_cell_body (pTess, expr, polys[i]);
 
     res = ut_array_1d_int_max (cellbody, polyqty);
 
     ut_free_1d_int (&polys);
     ut_free_1d_int (&cellbody);
   }
-  else if (Tess.Dim == 2)
-    res = Tess.CellBody[nb];
+  else if ((*pTess).Dim == 2)
+    res = neut_tess_cell_body (pTess, expr, nb);
   else
     res = 0;
 
@@ -1386,58 +1233,19 @@ neut_tess_face_body (struct TESS Tess, int nb)
 }
 
 int
-neut_tess_edge_true (struct TESS Tess, int nb)
-{
-  int i, res, polyqty;
-  int *polys = NULL;
-  int *celltrue = NULL;
-
-  if (Tess.Dim == 3)
-  {
-    neut_tess_edge_polys (Tess, nb, &polys, &polyqty);
-    celltrue = ut_alloc_1d_int (polyqty);
-
-    for (i = 0; i < polyqty; i++)
-      celltrue[i] = Tess.CellTrue[polys[i]];
-
-    res = ut_array_1d_int_max (celltrue, polyqty);
-
-    ut_free_1d_int (&polys);
-    ut_free_1d_int (&celltrue);
-  }
-
-  else if (Tess.Dim == 2)
-  {
-    celltrue = ut_alloc_1d_int (Tess.EdgeFaceQty[nb]);
-
-    for (i = 0; i < Tess.EdgeFaceQty[nb]; i++)
-      celltrue[i] = Tess.CellTrue[Tess.EdgeFaceNb[nb][i]];
-
-    res = ut_array_1d_int_max (celltrue, Tess.EdgeFaceQty[nb]);
-
-    ut_free_1d_int (&celltrue);
-  }
-
-  else
-    res = 0;
-
-  return res;
-}
-
-int
-neut_tess_edge_body (struct TESS Tess, int nb)
+neut_tess_edge_body (struct TESS *pTess, char *expr, int nb)
 {
   int i, res, polyqty;
   int *polys = NULL;
   int *cellbody = NULL;
 
-  if (Tess.Dim == 3)
+  if ((*pTess).Dim == 3)
   {
-    neut_tess_edge_polys (Tess, nb, &polys, &polyqty);
+    neut_tess_edge_polys (*pTess, nb, &polys, &polyqty);
     cellbody = ut_alloc_1d_int (polyqty);
 
     for (i = 0; i < polyqty; i++)
-      cellbody[i] = Tess.CellBody[polys[i]];
+      cellbody[i] = neut_tess_cell_body (pTess, expr, polys[i]);
 
     res = ut_array_1d_int_max (cellbody, polyqty);
 
@@ -1445,14 +1253,14 @@ neut_tess_edge_body (struct TESS Tess, int nb)
     ut_free_1d_int (&cellbody);
   }
 
-  else if (Tess.Dim == 2)
+  else if ((*pTess).Dim == 2)
   {
-    cellbody = ut_alloc_1d_int (Tess.EdgeFaceQty[nb]);
+    cellbody = ut_alloc_1d_int ((*pTess).EdgeFaceQty[nb]);
 
-    for (i = 0; i < Tess.EdgeFaceQty[nb]; i++)
-      cellbody[i] = Tess.CellBody[Tess.EdgeFaceNb[nb][i]];
+    for (i = 0; i < (*pTess).EdgeFaceQty[nb]; i++)
+      cellbody[i] = neut_tess_cell_body (pTess, expr, (*pTess).EdgeFaceNb[nb][i]);
 
-    res = ut_array_1d_int_max (cellbody, Tess.EdgeFaceQty[nb]);
+    res = ut_array_1d_int_max (cellbody, (*pTess).EdgeFaceQty[nb]);
 
     ut_free_1d_int (&cellbody);
   }
@@ -1464,38 +1272,17 @@ neut_tess_edge_body (struct TESS Tess, int nb)
 }
 
 int
-neut_tess_ver_true (struct TESS Tess, int nb)
-{
-  int i, res, polyqty;
-  int *polys = NULL;
-  int *celltrue = NULL;
-
-  neut_tess_ver_polys (Tess, nb, &polys, &polyqty);
-  celltrue = ut_alloc_1d_int (polyqty);
-
-  for (i = 0; i < polyqty; i++)
-    celltrue[i] = Tess.CellTrue[polys[i]];
-
-  res = ut_array_1d_int_max (celltrue, polyqty);
-
-  ut_free_1d_int (&polys);
-  ut_free_1d_int (&celltrue);
-
-  return res;
-}
-
-int
-neut_tess_ver_body (struct TESS Tess, int nb)
+neut_tess_ver_body (struct TESS *pTess, char *expr, int nb)
 {
   int i, res, polyqty;
   int *polys = NULL;
   int *cellbody = NULL;
 
-  neut_tess_ver_polys (Tess, nb, &polys, &polyqty);
+  neut_tess_ver_polys (*pTess, nb, &polys, &polyqty);
   cellbody = ut_alloc_1d_int (polyqty);
 
   for (i = 0; i < polyqty; i++)
-    cellbody[i] = Tess.CellBody[polys[i]];
+    cellbody[i] = neut_tess_cell_body (pTess, expr, polys[i]);
 
   res = ut_array_1d_int_max (cellbody, polyqty);
 
@@ -2795,36 +2582,6 @@ neut_tess_cell_vers (struct TESS Tess, int cell, int **pvers, int *pverqty)
 }
 
 int
-neut_tess_entity_true (struct TESS Tess, char *entity, int id)
-{
-  if (!strcmp (entity, "cell") || !strcmp (entity, "poly"))
-    return neut_tess_cell_true (Tess, id);
-  else if (!strcmp (entity, "face"))
-    return neut_tess_face_true (Tess, id);
-  else if (!strcmp (entity, "edge"))
-    return neut_tess_edge_true (Tess, id);
-  else if (!strcmp (entity, "ver"))
-    return neut_tess_ver_true (Tess, id);
-  else
-    abort ();
-}
-
-int
-neut_tess_entity_body (struct TESS Tess, char *entity, int id)
-{
-  if (!strcmp (entity, "cell") || !strcmp (entity, "poly"))
-    return neut_tess_cell_body (Tess, id);
-  else if (!strcmp (entity, "face"))
-    return neut_tess_face_body (Tess, id);
-  else if (!strcmp (entity, "edge"))
-    return neut_tess_edge_body (Tess, id);
-  else if (!strcmp (entity, "ver"))
-    return neut_tess_ver_body (Tess, id);
-  else
-    abort ();
-}
-
-int
 neut_tess_seed_master_slave (struct TESS Tess, int master, int *pos, int fact)
 {
   int id =
@@ -3813,4 +3570,20 @@ neut_tess_ver_scale (struct TESS Tess, int ver, int *pscale)
   ut_free_1d_int (&edges);
 
   return;
+}
+
+int
+neut_tess_cellbody_pos (struct TESS Tess, char *expr, int *ppos)
+{
+  int i;
+
+  (*ppos) = -1;
+  for (i = 0; i < Tess.CellBodyQty; i++)
+    if (!ut_string_strcmp (expr, Tess.CellBodyExpr[i]))
+    {
+      (*ppos) = i;
+      break;
+    }
+
+  return (*ppos == -1) ? -1 : 0;
 }

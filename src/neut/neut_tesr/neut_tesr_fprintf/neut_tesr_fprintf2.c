@@ -17,7 +17,7 @@ neut_tesr_fprintf_head (FILE * file, struct TESR Tesr)
   fprintf (file, "   ");
   ut_array_1d_int_fprintf (file, Tesr.size, Tesr.Dim, "%d");
   fprintf (file, "   ");
-  ut_array_1d_fprintf (file, Tesr.vsize, Tesr.Dim, "%.12f");
+  ut_array_1d_fprintf (file, Tesr.vsize, Tesr.Dim, REAL_PRINT_FORMAT);
 
   for (i = 0; i < Tesr.Dim; i++)
     if (Tesr.Origin[i] != 0)
@@ -30,7 +30,7 @@ neut_tesr_fprintf_head (FILE * file, struct TESR Tesr)
   {
     fprintf (file, "  *origin\n");
     fprintf (file, "   ");
-    ut_array_1d_fprintf (file, Tesr.Origin, Tesr.Dim, "%.12f");
+    ut_array_1d_fprintf (file, Tesr.Origin, Tesr.Dim, REAL_PRINT_FORMAT);
   }
 
   return;
@@ -94,8 +94,8 @@ neut_tesr_fprintf_cell (FILE * file, struct TESR Tesr)
     {
       fprintf (file, " %3d ", i);
       for (j = 0; j < Tesr.Dim; j++)
-        fprintf (file, "%.12f ", Tesr.SeedCoo[i][j]);
-      fprintf (file, "%.12f\n", Tesr.SeedWeight[i]);
+        fprintf (file, REAL_PRINT_FORMAT " ", Tesr.SeedCoo[i][j]);
+      fprintf (file, REAL_PRINT_FORMAT "\n", Tesr.SeedWeight[i]);
     }
   }
 

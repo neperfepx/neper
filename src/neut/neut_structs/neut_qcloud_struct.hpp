@@ -10,6 +10,7 @@ struct QCLOUD
   struct pt
   {
     double q[4];
+    double weight;
   };
 
   std::vector < pt > pts;

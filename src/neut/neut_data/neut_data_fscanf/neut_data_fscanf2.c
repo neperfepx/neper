@@ -148,20 +148,20 @@ neut_data_fscanf_scal (char *input, struct SIM *pSim,
   if (ut_file_exist (SimRes.file))
     ut_array_2d_fnscanf_wcard (SimRes.file, *pData + 1,
                                entityqty, 1, NULL, "r");
+
   else
   {
     double tmp, *data = ut_alloc_1d (entityqty + 1);
 
     if (!strcmp (input, "tess"))
-      neut_tess_entity_expr_val (*pTess, entity, value, data, &vartype);
+      neut_tess_entity_expr_val (pTess, entity, value, data, &vartype);
 
     else if (!strcmp (input, "tesr"))
       neut_tesr_entity_expr_val (*pTesr, entity, value, data, &vartype);
 
     else if (!strcmp (input, "mesh") || !strncmp (input, "node", 4))
-      neut_mesh_entity_expr_val (*pNodes, (*pMesh)[0], (*pMesh)[1],
-                                 (*pMesh)[2], (*pMesh)[3], (*pMesh)[4],
-                                 *pTess, NULL, NULL, NULL, NULL, entity, value,
+      neut_mesh_entity_expr_val (*pNodes, *pMesh,
+                                 pTess, NULL, NULL, NULL, NULL, entity, value,
                                  data, &vartype);
 
     else if (!strncmp (input, "point", 5))
@@ -183,12 +183,12 @@ neut_data_fscanf_scal (char *input, struct SIM *pSim,
     ut_free_1d (&data);
   }
 
-  if (!strcmp (*pDataType, "expr"))
+  if (!strcmp (*pDataType, "scal"))
   {
-    if (!strcmp (vartype, "%d"))
-      ut_string_string ("int", pDataType);
-    else if (!strcmp (vartype, "%f"))
+    if (!vartype || !strcmp (vartype, "%f"))
       ut_string_string ("real", pDataType);
+    else if (!strcmp (vartype, "%d"))
+      ut_string_string ("int", pDataType);
     else
       abort ();
   }
@@ -317,15 +317,14 @@ neut_data_fscanf_rad_scal (char *input, struct SIM Sim,
     double *data = ut_alloc_1d (entityqty + 1);
 
     if (!strcmp (input, "tess"))
-      neut_tess_entity_expr_val (*pTess, entity, value, data, &vartype);
+      neut_tess_entity_expr_val (pTess, entity, value, data, &vartype);
 
     else if (!strcmp (input, "tesr"))
       neut_tesr_entity_expr_val (*pTesr, entity, value, data, &vartype);
 
     else if (!strcmp (input, "mesh") || !strncmp (input, "node", 4))
-      neut_mesh_entity_expr_val (*pNodes, (*pMesh)[0], (*pMesh)[1],
-                                 (*pMesh)[2], (*pMesh)[3], (*pMesh)[4],
-                                 *pTess, NULL, NULL, NULL, NULL, entity, value,
+      neut_mesh_entity_expr_val (*pNodes, *pMesh,
+                                 pTess, NULL, NULL, NULL, NULL, entity, value,
                                  data, &vartype);
 
     else if (!strncmp (input, "point", 5))
@@ -341,7 +340,7 @@ neut_data_fscanf_rad_scal (char *input, struct SIM Sim,
     ut_free_1d (&data);
   }
 
-  if (!strcmp ((*pData).RadDataType, "expr"))
+  if (!strcmp ((*pData).RadDataType, "scal"))
   {
     if (!strcmp (vartype, "%d"))
       ut_string_string ("int", &(*pData).RadDataType);

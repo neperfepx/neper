@@ -19,4 +19,4 @@
 
 extern void nes_pproc_load (struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr, struct NODES *pNodes, struct MESH *Mesh);
 
-extern void nes_pproc_load_crysym (struct TESS *pTess, struct TESR *pTesr, char **GroupCrySym, int GroupQty);
+extern void nes_pproc_load_crysym (struct TESS *pTess, struct TESR *pTesr, struct NODES *pNodes, struct MESH *Mesh, char **GroupCrySym, int GroupQty);

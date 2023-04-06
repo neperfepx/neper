@@ -3,7 +3,7 @@
 /* See the COPYING file in the top-level directory. */
 
 extern void nem_meshing_tess_str (struct IN_M In, struct MESHPARA
-                                  MeshPara, struct TESS Tess,
+                                  MeshPara, struct TESS *pTess,
                                   struct NODES *pNodes, struct MESH *Mesh,
                                   struct NSET *NSet);
 

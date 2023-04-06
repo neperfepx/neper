@@ -144,6 +144,9 @@ extern int ol_q_qrefsym_orthotropic (double *, double *);
 extern void ol_polef_polecrysym (int *, char*, int ***, int *);
 extern void ol_pole_polecrysym (int *, char*, int *);
 
+extern void ol_vect_crysym (double *v, char *crysym, int nb, double *v2);
+extern void ol_vect_crysym_all (double *v, char *crysym, double ***pv2, int *pqty);
+
 extern int ol_crysym_qty (char*);
 extern int ol_lauegroup_qty (char*);
 

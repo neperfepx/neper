@@ -1,0 +1,17 @@
+***sim
+ **format
+   1.0
+ **input
+  *tess
+   simulation.tess
+  *msh
+   simulation.msh
+ **general
+   0 81 214 2 0
+  *orides
+   rodrigues:active
+ **entity cell
+  *result
+   1
+   x
+***end

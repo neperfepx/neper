@@ -58,10 +58,15 @@ extern "C"
     double **EltOri;             // orientations of the elts [1...EltQty][0...3]
     char *EltOriDes;             // orientation descriptor
 
-    int *ElsetGroup;         // groups of the elsets [1...ElsetQty][0...3]
+    int *ElsetGroup;             // groups of the elsets [1...ElsetQty][0...3]
+
+    char *ElsetCrySym;           // crystal symmetry
 
     // pointer to SIM structure
     struct SIM *pSim;
+    double **SimEltOri;          // optional, element orientations from sim
+
+    int *EltBody;
   };
   typedef struct MESH MESH;
 

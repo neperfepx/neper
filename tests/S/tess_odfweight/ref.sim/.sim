@@ -1,0 +1,18 @@
+***sim
+ **format
+   1.0
+ **input
+  *tess
+   simulation.tess
+ **general
+   2 0 0 0 0
+  *orides
+   rodrigues:active
+ **entity cell
+ **entity tess
+  *result
+   2
+   odf(weight=id) odfn(weight=id)
+ **orispace
+   rod.msh
+***end

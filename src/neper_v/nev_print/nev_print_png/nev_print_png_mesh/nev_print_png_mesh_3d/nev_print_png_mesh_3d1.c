@@ -7,7 +7,7 @@
 void
 nev_print_png_mesh_3d (FILE * file, struct PRINT Print, struct NODES Nodes,
                    struct MESH *Mesh, struct DATA NodeData,
-                   struct DATA *MeshData, int ***pprintelt3dface)
+                   struct DATA **MeshData, int ***pprintelt3dface)
 {
   struct NODES N;
   struct MESH M1D, M2D;

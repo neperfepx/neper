@@ -41,7 +41,7 @@ nem_transport_elt_oldelt (struct NODES OldNodes, struct MESH OldMesh,
 
     // parent element = old element in which the new element centre falls.
     /*
-       status = neut_mesh_elset_point_elt (OldMesh, OldNodes, elset3d,
+       status = neut_mesh_elset_point_elt (OldNodes, OldMesh, elset3d,
        coo, &((*poldelt)[i]));
 
        // if it does not fall in any old element, picking the closest.

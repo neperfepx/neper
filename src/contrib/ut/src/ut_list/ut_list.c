@@ -66,6 +66,9 @@ ut_list_break (const char *string, const char *sep, char ***pparts, int *pqty)
       abort ();
   }
 
+  if ((unsigned int) pos == strlen (string) && strlen (string) > 0)
+    (*pqty)++;
+
   if (pparts)
   {
     (*pparts) = ut_alloc_1d_pchar (*pqty);
@@ -129,6 +132,70 @@ ut_list_break_double (const char *string, const char *sep, double **pparts, int 
     (*pqty) = qty;
 
   ut_free_2d_char (&tmp, qty);
+
+  return;
+}
+
+void
+ut_list_break_int (const char *string, const char *sep, int **pparts, int *pqty)
+{
+  int i, qty;
+  char **tmp = NULL;
+
+  ut_list_break (string, sep, &tmp, &qty);
+
+  if (pparts)
+  {
+    (*pparts) = ut_alloc_1d_int (qty);
+    for (i = 0; i < qty; i++)
+      (*pparts)[i] = atoi (tmp[i]);
+  }
+
+  if (pqty)
+    (*pqty) = qty;
+
+  ut_free_2d_char (&tmp, qty);
+
+  return;
+}
+
+void
+ut_list_break_int_range (const char *string, const char *sep, int **pparts, int *pqty)
+{
+  int i, j, beg, end, qty, *qty2 = NULL;
+  char ***tmp = NULL;
+
+  ut_list_break2 (string, sep, "-", &tmp, &qty2, &qty);
+
+  if (pparts)
+  {
+    *pqty = 0;
+    for (i = 0; i < qty; i++)
+    {
+      if (qty2[i] == 1)
+      {
+        beg = atoi (tmp[i][0]);
+        end = atoi (tmp[i][0]);
+      }
+
+      else if (qty2[i] == 2)
+      {
+        beg = atoi (tmp[i][0]);
+        end = atoi (tmp[i][1]);
+      }
+
+      else
+        abort ();
+
+      for (j = beg; j <= end; j++)
+        ut_array_1d_int_list_addval_nocheck (pparts, pqty, j);
+    }
+  }
+
+  for (i = 0; i < qty; i++)
+    ut_free_2d_char (tmp + i, qty2[i]);
+  ut_free_1d_ppchar (&tmp);
+  ut_free_1d_int (&qty2);
 
   return;
 }

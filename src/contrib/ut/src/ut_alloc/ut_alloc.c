@@ -193,6 +193,19 @@ ut_alloc_1d_ppdouble (unsigned int size)
   return array;
 }
 
+double ****
+ut_alloc_1d_pppdouble (unsigned int size)
+{
+  unsigned int i;
+
+  double ****array = calloc (size, sizeof (double ***));
+  ut_alloc_check (array, size);
+  for (i = 0; i < size; i++)
+    array[i] = NULL;
+
+  return array;
+}
+
 char ***
 ut_alloc_1d_ppchar (unsigned int size)
 {

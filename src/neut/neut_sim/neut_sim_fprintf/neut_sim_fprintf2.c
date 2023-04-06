@@ -13,7 +13,7 @@ neut_sim_verbose_results (char *entity_in, char **res, int resqty)
   entity[0] = toupper (entity_in[0]);
   for (i = 1; i < (int) strlen (entity_in); i++)
     entity[i] = entity_in[i];
-  if (entity[strlen (entity) - 1] == 's')
+  if (strcmp (entity, "Tess") && entity[strlen (entity) - 1] == 's')
     entity[strlen (entity) - 1] = '\0';
 
   ut_print_message (0, 3, "%s results", entity);

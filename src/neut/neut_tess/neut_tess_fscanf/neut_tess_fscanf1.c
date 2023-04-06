@@ -48,9 +48,6 @@ neut_tess_fscanf (FILE * file, struct TESS *pTess)
   neut_tess_fscanf_foot (file);
   neut_tess_init_edgelength (pTess);
 
-  neut_tess_init_celltrue (pTess);
-  neut_tess_init_cellbody (pTess);
-
   ut_free_1d_char (&version);
   ut_free_1d_char (&tmp);
 

@@ -16,6 +16,9 @@ extern void neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode);
 /// writes a simulation report file
 extern void neut_sim_fprintf (char *dir, struct SIM Sim, char *mode);
 
+/// test inputs
+extern void neut_sim_testinputs (struct SIM Sim, struct TESS Tess, struct MESH *Mesh);
+
 /// returns the result of a filename
 extern void neut_sim_file_res (char *file, char *res);
 
@@ -50,7 +53,7 @@ extern int neut_sim_res_type (struct SIM Sim, char *entity, char *res, char **pt
 // get the input file names
 extern void neut_sim_input_files (struct SIM Sim, char ***pfullfiles, char ***pfiles, int *pfileqty);
 
-extern void neut_sim_orispace (struct SIM Sim, char **porispace);
+extern void neut_sim_orispace (struct SIM Sim, struct ODF *pOdf, char *mode);
 
 extern int neut_sim_entity_pos (struct SIM Sim, char *entity, int *ppos);
 

@@ -26,7 +26,7 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
     net_domain_cylinder_string (strings[0], In.n[1], &Poly);
 
   else if (!strcmp (domain, "stdtriangle"))
-    net_domain_stdtriangle_string (strings[0], &Poly);
+    net_domain_stdtriangle (strings[0], &Poly);
 
   else if (!strcmp (domain, "sphere"))
     net_domain_sphere_string (strings[0], &Poly);

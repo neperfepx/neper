@@ -82,14 +82,6 @@ nem_reconstruct_mesh (char *dim, struct NODES *pNodes, struct MESH *Mesh,
   if (mode >= 1)
     neut_tess_init_domfaceeq (pTess);
 
-  if (mode == 2)
-  {
-    if (!(*pTess).CellTrue)
-      neut_tess_init_celltrue (pTess);
-    if (!(*pTess).CellBody)
-      neut_tess_init_cellbody (pTess);
-  }
-
   for (i = 0; i <= 2; i++)
     if (strcmp (dim, "all") != 0
         && !ut_list_testelt_int (dim, NEUT_SEP_NODEP, i))

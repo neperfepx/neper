@@ -54,7 +54,7 @@ net_input_options_default (struct IN_T *pIn)
   ut_string_string ("default", &(*pIn).orioptineighstring);
   ut_string_string ("default", &(*pIn).orioptiinistring);
   ut_string_string ("default", &(*pIn).orioptifixstring);
-  ut_string_string ("default", &((*pIn).oricrysymstring));
+  ut_string_string ("default", &((*pIn).crysymstring));
   ut_string_string ("none", &(*pIn).orioptilogvarstring);
 
   ut_string_string (NEUT_DEFAULT_ORIDESFULL, &((*pIn).orides));
@@ -106,8 +106,8 @@ net_input_options_default (struct IN_T *pIn)
 
   (*pIn).ori = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).oristring, (*pIn).ori);
-  (*pIn).oricrysym = ut_alloc_1d_pchar (1);
-  ut_string_string ((*pIn).oricrysymstring, (*pIn).oricrysym);
+  (*pIn).crysym = ut_alloc_1d_pchar (1);
+  ut_string_string ((*pIn).crysymstring, (*pIn).crysym);
   (*pIn).orioptistop = ut_alloc_1d_pchar (1);
   ut_string_string ((*pIn).oristring, (*pIn).orioptistop);
   (*pIn).orioptineigh = ut_alloc_1d_pchar (1);
@@ -183,6 +183,7 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-orioptiini");
   strcpy (ArgList[++ArgQty], "-orioptifix");
   strcpy (ArgList[++ArgQty], "-oridescriptor");
+  strcpy (ArgList[++ArgQty], "-crysym");
   strcpy (ArgList[++ArgQty], "-oricrysym");
   strcpy (ArgList[++ArgQty], "-oriformat");
   strcpy (ArgList[++ArgQty], "-orioptilogvar");
@@ -358,8 +359,12 @@ net_input_options_set (struct IN_T *pIn, int argc, char **argv)
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).orioptifixstring));
     else if (!strcmp (Arg, "-oridescriptor"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).orides));
-    else if (!strcmp (Arg, "-oricrysym"))
-      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oricrysymstring));
+    else if (!strcmp (Arg, "-oricrysym") || !strcmp (Arg, "-crysym"))
+    {
+      ut_arg_nextasstring (argv, &i, Arg, &((*pIn).crysymstring));
+      if (!strcmp (Arg, "-oricrysym"))
+        ut_print_message (1, 2, "Option `-oricrysym' will be removed in a future version.  Use `-crysym` instead.\n");
+    }
     else if (!strcmp (Arg, "-oriformat"))
       ut_arg_nextasstring (argv, &i, Arg, &((*pIn).oriformat));
     else if (!strcmp (Arg, "-orioptilogvar"))

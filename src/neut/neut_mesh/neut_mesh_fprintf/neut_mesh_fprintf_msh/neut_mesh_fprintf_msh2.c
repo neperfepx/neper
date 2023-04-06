@@ -89,7 +89,7 @@ neut_mesh_fprintf_msh_header (FILE * file, char *mode, char *version)
   fprintf (file, "$EndMeshFormat\n");
 
   fprintf (file, "$MeshVersion\n");
-  fprintf (file, "2.2.2\n");
+  fprintf (file, "2.2.3\n");
   fprintf (file, "$EndMeshVersion\n");
 
   return;
@@ -135,7 +135,7 @@ neut_mesh_fprintf_msh_nodes (FILE *file, char *mode, struct NODES Nodes)
     {
       fprintf (file, "%d", i);
       for (j = 0; j < 3; j++)
-        fprintf (file, " %.12f",
+        fprintf (file, " " REAL_PRINT_FORMAT,
                  (fabs (Nodes.NodeCoo[i][j]) <
                   1e-12) ? 0 : Nodes.NodeCoo[i][j]);
       fprintf (file, "\n");
@@ -379,6 +379,13 @@ void
 neut_mesh_fprintf_msh_orientations (FILE *file, struct MESH Mesh)
 {
   // elset
+
+  if (Mesh.ElsetCrySym)
+  {
+    fprintf (file, "$ElsetCrySym\n");
+    fprintf (file, "%s\n", Mesh.ElsetCrySym);
+    fprintf (file, "$EndElsetCrySym\n");
+  }
 
   if (Mesh.ElsetOri)
   {

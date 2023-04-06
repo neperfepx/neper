@@ -12,7 +12,7 @@ neut_poly_fprintf_gmsh (FILE * file, struct POLY Poly, int beg)
   beg--;
 
   for (i = 1; i <= Poly.VerQty; i++)
-    fprintf (file, "Point (%d) = {%.12f,%.12f,%.12f};\n", beg + i,
+    fprintf (file, "Point (%d) = {" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "};\n", beg + i,
              Poly.VerCoo[i][0], Poly.VerCoo[i][1], Poly.VerCoo[i][2]);
 
   int lineid = 1;

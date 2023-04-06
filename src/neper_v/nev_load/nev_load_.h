@@ -20,7 +20,7 @@ extern void nev_load_init_data_tesr (struct TESR Tesr, int id,
 
 extern void nev_load_init_data_node (struct NODES Nodes,
 				    struct DATA *pData);
-extern void nev_load_init_data_mesh (struct MESH Mesh,
+extern void nev_load_init_data_mesh (struct MESH Mesh, char *entity,
 				    struct DATA *pMeshData);
 
 extern void nev_load_init_data_point (struct POINT Point,

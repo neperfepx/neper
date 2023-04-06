@@ -1,0 +1,23 @@
+/* This file is part of the Neper software package. */
+/* Copyright (C) 2003-2022, Romain Quey. */
+/* See the COPYING file in the top-level directory. */
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
+#include<float.h>
+#include<string.h>
+#include<assert.h>
+#include<math.h>
+#include<ctype.h>
+
+#include"structIn_v.h"
+#include"ut.h"
+#include"neut_v.h"
+#include"neper_config.h"
+
+#include"nev_input.h"
+
+extern void nev_input_treatargs (int, char **, struct IN_V *, int *);
+extern void nev_input_options_default (struct IN_V *);
+extern void nev_input_options_set (int, char **, struct IN_V *, int *);

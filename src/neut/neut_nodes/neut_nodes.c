@@ -5,6 +5,72 @@
 #include"neut_nodes_.h"
 
 void
+neut_nodes_set_zero (struct NODES *pNodes)
+{
+  (*pNodes).NodeQty = 0;
+  (*pNodes).NodeCoo = NULL;
+  (*pNodes).NodeCl = NULL;
+
+  (*pNodes).Periodic = ut_alloc_1d_int (3);
+  (*pNodes).PeriodicDist = ut_alloc_1d (3);
+
+  (*pNodes).PerNodeQty = 0;
+  (*pNodes).PerNodeNb = NULL;
+  (*pNodes).PerNodeMaster = NULL;
+  (*pNodes).PerNodeShift = NULL;
+  (*pNodes).PerNodeSlaveQty = NULL;
+  (*pNodes).PerNodeSlaveNb = NULL;
+
+  (*pNodes).DupNodeQty = 0;
+  (*pNodes).DupNodeNb = NULL;
+  (*pNodes).DupNodeMaster = NULL;
+  (*pNodes).DupNodeSeed = NULL;
+  (*pNodes).DupNodeSlaveQty = NULL;
+  (*pNodes).DupNodeSlaveNb = NULL;
+
+  (*pNodes).PartQty = 0;
+  (*pNodes).NodePart = NULL;
+  (*pNodes).Parts = NULL;
+
+  (*pNodes).crysym = NULL;
+
+  (*pNodes).pSim = NULL;
+
+  return;
+}
+
+void
+neut_nodes_free (struct NODES *pNodes)
+{
+  if (!pNodes)
+    return;
+
+  ut_free_2d (&(*pNodes).NodeCoo, (*pNodes).NodeQty + 1);
+  ut_free_1d (&(*pNodes).NodeCl);
+
+  ut_free_1d_int (&(*pNodes).Periodic);
+  ut_free_1d (&(*pNodes).PeriodicDist);
+
+  ut_free_1d_int (&(*pNodes).NodePart);
+  ut_free_2d_int (&(*pNodes).Parts, (*pNodes).PartQty + 1);
+
+  ut_free_1d_int (&(*pNodes).PerNodeNb);
+  ut_free_1d_int (&(*pNodes).PerNodeMaster);
+  ut_free_2d_int (&(*pNodes).PerNodeShift, (*pNodes).NodeQty + 1);
+  ut_free_2d_int (&(*pNodes).PerNodeSlaveNb, (*pNodes).NodeQty + 1);
+
+  ut_free_1d_int (&(*pNodes).DupNodeNb);
+  ut_free_1d_int (&(*pNodes).DupNodeMaster);
+  ut_free_1d_int (&(*pNodes).DupNodeSeed);
+  ut_free_1d_int (&(*pNodes).DupNodeSlaveQty);
+  ut_free_2d_int (&(*pNodes).DupNodeSlaveNb, (*pNodes).NodeQty + 1);
+
+  ut_free_1d_char (&(*pNodes).crysym);
+
+  return;
+}
+
+void
 neut_nodes_scale (struct NODES *pNodes, double scalex, double scaley,
                   double scalez)
 {
@@ -114,68 +180,6 @@ neut_nodes_bbox_vect (struct NODES Nodes, double *bbox)
     bbox[4] = ut_num_min (bbox[4], Nodes.NodeCoo[i][2]);
     bbox[5] = ut_num_max (bbox[5], Nodes.NodeCoo[i][2]);
   }
-
-  return;
-}
-
-void
-neut_nodes_set_zero (struct NODES *pNodes)
-{
-  (*pNodes).NodeQty = 0;
-  (*pNodes).NodeCoo = NULL;
-  (*pNodes).NodeCl = NULL;
-
-  (*pNodes).Periodic = ut_alloc_1d_int (3);
-  (*pNodes).PeriodicDist = ut_alloc_1d (3);
-
-  (*pNodes).PerNodeQty = 0;
-  (*pNodes).PerNodeNb = NULL;
-  (*pNodes).PerNodeMaster = NULL;
-  (*pNodes).PerNodeShift = NULL;
-  (*pNodes).PerNodeSlaveQty = NULL;
-  (*pNodes).PerNodeSlaveNb = NULL;
-
-  (*pNodes).DupNodeQty = 0;
-  (*pNodes).DupNodeNb = NULL;
-  (*pNodes).DupNodeMaster = NULL;
-  (*pNodes).DupNodeSeed = NULL;
-  (*pNodes).DupNodeSlaveQty = NULL;
-  (*pNodes).DupNodeSlaveNb = NULL;
-
-  (*pNodes).PartQty = 0;
-  (*pNodes).NodePart = NULL;
-  (*pNodes).Parts = NULL;
-
-  (*pNodes).pSim = NULL;
-
-  return;
-}
-
-void
-neut_nodes_free (struct NODES *pNodes)
-{
-  if (!pNodes)
-    return;
-
-  ut_free_2d (&(*pNodes).NodeCoo, (*pNodes).NodeQty + 1);
-  ut_free_1d (&(*pNodes).NodeCl);
-
-  ut_free_1d_int (&(*pNodes).Periodic);
-  ut_free_1d (&(*pNodes).PeriodicDist);
-
-  ut_free_1d_int (&(*pNodes).NodePart);
-  ut_free_2d_int (&(*pNodes).Parts, (*pNodes).PartQty + 1);
-
-  ut_free_1d_int (&(*pNodes).PerNodeNb);
-  ut_free_1d_int (&(*pNodes).PerNodeMaster);
-  ut_free_2d_int (&(*pNodes).PerNodeShift, (*pNodes).NodeQty + 1);
-  ut_free_2d_int (&(*pNodes).PerNodeSlaveNb, (*pNodes).NodeQty + 1);
-
-  ut_free_1d_int (&(*pNodes).DupNodeNb);
-  ut_free_1d_int (&(*pNodes).DupNodeMaster);
-  ut_free_1d_int (&(*pNodes).DupNodeSeed);
-  ut_free_1d_int (&(*pNodes).DupNodeSlaveQty);
-  ut_free_2d_int (&(*pNodes).DupNodeSlaveNb, (*pNodes).NodeQty + 1);
 
   return;
 }

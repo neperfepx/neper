@@ -7,7 +7,7 @@
 void
 nev_print_png_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
                    struct MESH *Mesh, struct DATA NodeData,
-                   struct DATA *MeshData)
+                   struct DATA **MeshData)
 {
   int i, j, elset, elt1d_qty, elt3dqty, printelt1d_qty, texture_unique;
   char *texture = NULL;
@@ -62,9 +62,9 @@ nev_print_png_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
       if (Col == NULL)
       {
         Col = ut_alloc_1d_int (3);
-        ut_array_1d_int_memcpy (MeshData[1].Col[i], 3, Col);
+        ut_array_1d_int_memcpy (MeshData[1][0].Col[i], 3, Col);
       }
-      else if (!ut_array_1d_int_equal (MeshData[1].Col[i], 3, Col, 3))
+      else if (!ut_array_1d_int_equal (MeshData[1][0].Col[i], 3, Col, 3))
       {
         texture_unique = 0;
         break;
@@ -88,15 +88,15 @@ nev_print_png_mesh_1d (FILE * file, struct PRINT Print, struct TESS Tess,
       {
         fprintf (file,
                  "#declare elt1d%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
-                 i, MeshData[1].Col[i][0] / 255.,
-                 MeshData[1].Col[i][1] / 255., MeshData[1].Col[i][2] / 255.,
+                 i, MeshData[1][0].Col[i][0] / 255.,
+                 MeshData[1][0].Col[i][1] / 255., MeshData[1][0].Col[i][2] / 255.,
                  Print.lightambient, Print.lightdiffuse, Print.lightreflection);
 
         sprintf (texture, "elt1d%d", i);
       }
 
       nev_print_png_segment_wsph (file, NodeData.Coo[Mesh[1].EltNodes[i][0]],
-                              NodeData.Coo[Mesh[1].EltNodes[i][1]], MeshData[1].Rad[i],
+                              NodeData.Coo[Mesh[1].EltNodes[i][1]], MeshData[1][0].Rad[i],
                               texture);
 
       printelt1d_qty++;

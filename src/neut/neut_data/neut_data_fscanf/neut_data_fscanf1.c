@@ -146,6 +146,13 @@ neut_data_fscanf_general (struct DATAINPUT DataInput, char *entity, int dim,
     pDataType = &(*pData).LengthDataType;
     pDataName = &DataName;
   }
+  else if (!strcmp (attribute, "weight"))
+  {
+    pDataSize = &DataSize;
+    pDataArray = &(*pData).WeightData;
+    pDataType = &(*pData).WeightDataType;
+    pDataName = &DataName;
+  }
 
   ut_string_string (entity, &(*pData).Entity);
 
@@ -160,7 +167,7 @@ neut_data_fscanf_general (struct DATAINPUT DataInput, char *entity, int dim,
   if (strcmp (type, "none"))
     ut_string_string (type, pDataType);
   else
-    if (neut_data_value_type (*pSim, entity, "col", value, pDataType))
+    if (neut_data_value_type (*pSim, entity, attribute, value, pDataType))
       ut_print_message (2, 2, "Failed to determine data type for `%s'.\n", value);
 
   if (!*pDataType || !strcmp (*pDataType, "col"))
@@ -174,7 +181,7 @@ neut_data_fscanf_general (struct DATAINPUT DataInput, char *entity, int dim,
 
   else if (!strcmp (*pDataType, "int")
        || !strcmp (*pDataType, "real")
-       || !strcmp (*pDataType, "expr"))
+       || !strcmp (*pDataType, "scal"))
     neut_data_fscanf_scal (input, pSim, pTess, pTesr, pNodes, pMesh, pPoints,
                            entity, entityqty, value,
                            pDataName, pDataSize,
@@ -280,7 +287,10 @@ neut_data_fscanf_general (struct DATAINPUT DataInput, char *entity, int dim,
   }
 
   else
+  {
+    printf ("*pDataType = %s\n", *pDataType);
     abort ();
+  }
 
   ut_free_1d_char (&DataName);
 

@@ -1,6 +1,22 @@
-New in 4.5.1-4 (02 Nov 2022):
+New in 4.6.0 (06 Apr 2023):
+- module -T: fixed truncated statistical distributions (from and to), improved
+  -domain stdtriangle, generalized body key, added elsetbody key, removed legacy
+  true key.
+- module -M: added crystal symmetry to mesh file.
+- module -S: added computation of standard deviation (or variance) and other
+  statistical properties of the results of element-based entities (elset, mesh,
+  etc.), added -restess odf,odfn and -restesr odf,odfn, made various fixes.
+- module -V: fixed -data*colscheme ipf to support hexagonal crystal symmetry
+  (see the "Plotting an Orientation Color Key" tutorial too), added support for
+  hexagonal crystal symmetry (pole figures and inverse pole figures), added
+  -dataelset, -datacellweight and -dataelsetweight, added -res{cell,elt,elset}
+  odf, added -pfsym uniaxial, improved -step, enabled string completion for
+  options, added -space ipf, added -ipf* options, added -[i]pfprojlabel and
+  -[i]pfpolelabel options, extended -space [i]pf to mesh results, made code
+  overhaul, made minor fixes.
+- general: added tutorial, improved testing (including -S), added step, gos
+  and scale keys, added REAL_PRINT_FORMAT configuration variables.
 - documentation: made minor improvements.
-- fixed truncated statistical distributions (from and to).
 
 New in 4.5.0 (07 Sep 2022):
 - module -T: fixed -morpho cube, added -statcell and -statvox

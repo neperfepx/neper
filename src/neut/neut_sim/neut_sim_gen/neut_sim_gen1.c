@@ -194,6 +194,8 @@ neut_sim_entity_pos (struct SIM Sim, char *entity_in, int *ppos)
     ut_string_string ("elset", &entity);
   else if (!strcmp (entity_in, "mesh3d") || !strcmp (entity_in, "mesh"))
     ut_string_string ("mesh", &entity);
+  else if (!strcmp (entity_in, "cells"))
+    ut_string_string ("cell", &entity);
   else
     ut_string_string (entity_in, &entity);
 
@@ -251,14 +253,18 @@ neut_sim_entity_res (struct SIM Sim, char *entity, char ***pres, int *presqty)
 }
 
 void
-neut_sim_orispace (struct SIM Sim, char **porispace)
+neut_sim_orispace (struct SIM Sim, struct ODF *pOdf, char *mode)
 {
-  *porispace = ut_alloc_1d_char (1000);
+  char *filename = ut_alloc_1d_char (1000);
 
   if (Sim.OriSpace)
-    sprintf (*porispace, "%s/orispace/%s", Sim.simdir, Sim.OriSpace);
+    sprintf (filename, "%s/orispace/%s", Sim.simdir, Sim.OriSpace);
   else
     ut_print_message (2, 2, "Failed to find orispace.\n");
+
+  neut_odf_space_fnscanf (filename, pOdf, mode);
+
+  ut_free_1d_char (&filename);
 
   return;
 }
@@ -397,4 +403,31 @@ neut_sim_entity_id_res_val (struct SIM Sim, char *entity, int id, char *res, dou
   neut_simres_free (&SimRes);
 
   return status;
+}
+
+void
+neut_sim_testinputs (struct SIM Sim, struct TESS Tess, struct MESH *Mesh)
+{
+  (void) Sim;
+
+  if (!neut_tess_isvoid (Tess))
+  {
+    if (!neut_mesh_isvoid (Mesh[0]))
+      if (Tess.VerQty != Mesh[0].ElsetQty)
+        ut_print_message (2, 2, "simulation.tess and simulation.msh do not match (0D).\n");
+
+    if (!neut_mesh_isvoid (Mesh[1]))
+      if (Tess.EdgeQty != Mesh[1].ElsetQty)
+        ut_print_message (2, 2, "simulation.tess and simulation.msh do not match (1D).\n");
+
+    if (!neut_mesh_isvoid (Mesh[2]))
+      if (Tess.FaceQty != Mesh[2].ElsetQty)
+        ut_print_message (2, 2, "simulation.tess and simulation.msh do not match (2D).\n");
+
+    if (!neut_mesh_isvoid (Mesh[3]))
+      if (Tess.PolyQty != Mesh[3].ElsetQty)
+        ut_print_message (2, 2, "simulation.tess and simulation.msh do not match (3D).\n");
+  }
+
+  return;
 }

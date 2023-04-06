@@ -305,10 +305,8 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
     }
     else if (!strcmp (var, "oridisanisodeltas"))
     {
-      double **evect = ut_alloc_2d (3, 3);
-      neut_tesr_cell_orianiso_delta (Tesr, id, evect, *pvals);
+      neut_tesr_cell_orianiso_delta (Tesr, id, NULL, *pvals);
       (*pvalqty) = 3;
-      ut_free_2d (&evect, 3);
     }
     else if (!strcmp (var, "vxmin"))
     {
@@ -787,15 +785,9 @@ neut_tesr_cell_ori (struct TESR Tesr, int cell, double *q)
 {
   int status = -1;
 
-  if (Tesr.CellOri)
+  // if sim and step not initial, trying to read from sim
+  if (Tesr.pSim && (*(Tesr.pSim)).step)
   {
-    ol_q_memcpy (Tesr.CellOri[cell], q);
-    status = 0;
-  }
-
-  else if (Tesr.pSim)
-  {
-    double *R = ol_R_alloc ();
     struct SIMRES SimRes;
 
     neut_simres_set_zero (&SimRes);
@@ -804,17 +796,62 @@ neut_tesr_cell_ori (struct TESR Tesr, int cell, double *q)
 
     if (SimRes.file)
     {
-      double **qall = ut_alloc_2d (Tesr.CellQty + 1, 4);
-      neut_ori_fnscanf (SimRes.file, (*(Tesr.pSim)).OriDes, "ascii", qall + 1, NULL, (*(Tesr.pSim)).CellQty, NULL, "R");
+      double **qall = ut_alloc_2d (cell + 1, 4);
+      neut_ori_fnscanf (SimRes.file, (*(Tesr.pSim)).OriDes, "ascii", qall + 1, NULL, cell, NULL, "R");
 
       ol_q_memcpy (qall[cell], q);
 
-      ut_free_2d (&qall, Tesr.CellQty + 1);
+      ut_free_2d (&qall, cell + 1);
     }
 
     neut_simres_free (&SimRes);
-    ol_R_free (R);
 
+    status = 0;
+  }
+
+  // otherwise, reading internal
+  else if (Tesr.CellOri)
+  {
+    ol_q_memcpy (Tesr.CellOri[cell], q);
+    status = 0;
+  }
+
+  return status;
+}
+
+int
+neut_tesr_cellori (struct TESR Tesr, double **cellori)
+{
+  int status = -1;
+  struct SIM *pSim = Tesr.pSim;
+
+  // if sim, trying to read from sim (even at initial step)
+  if (Tesr.pSim && !neut_sim_isvoid (*(Tesr.pSim)))
+  {
+    struct SIMRES SimRes;
+
+    neut_simres_set_zero (&SimRes);
+
+    neut_sim_simres (*pSim, "cell", "ori", &SimRes);
+
+    if (SimRes.file && ut_file_exist (SimRes.file))
+    {
+      neut_ori_fnscanf (SimRes.file, (*pSim).OriDes, "ascii", cellori + 1, NULL, Tesr.CellQty, NULL, "R");
+      status = 0;
+    }
+    else if ((*pSim).step == 0 && Tesr.CellOri)
+    {
+      ut_array_2d_memcpy (Tesr.CellOri + 1, Tesr.CellQty, 4, cellori + 1);
+      status = 0;
+    }
+
+    neut_simres_free (&SimRes);
+  }
+
+  // otherwise, reading internal
+  else if (Tesr.CellOri)
+  {
+    ut_array_2d_memcpy (Tesr.CellOri + 1, Tesr.CellQty, 4, cellori + 1);
     status = 0;
   }
 

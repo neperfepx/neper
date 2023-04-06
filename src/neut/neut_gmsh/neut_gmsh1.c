@@ -179,8 +179,8 @@ neut_gmsh_elt_nb (char *type, int dim, int order, int *pnb)
 int
 neut_gmsh_sphere_tess_fprintf (FILE * file, double Rad, double cl)
 {
-  fprintf (file, "Rad = %.12f;\n", Rad);
-  fprintf (file, "cl = %.12f;\n", cl);
+  fprintf (file, "Rad = " REAL_PRINT_FORMAT ";\n", Rad);
+  fprintf (file, "cl = " REAL_PRINT_FORMAT ";\n", cl);
 
   fprintf (file, "Point(1) = {0, 0, 0, cl};\n");
   fprintf (file, "Point(2) = {Rad, 0, 0, cl};\n");

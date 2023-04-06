@@ -6,64 +6,64 @@
 
 int
 nem_meshing_para_cl_cell (char *clstring, struct MESHPARA *pMeshPara,
-                          struct TESS Tess)
+                          struct TESS *pTess)
 {
   double **pcell_cl = NULL;
 
-  if (Tess.Dim == 3)
+  if ((*pTess).Dim == 3)
     pcell_cl = &((*pMeshPara).poly_cl);
-  else if (Tess.Dim == 2)
+  else if ((*pTess).Dim == 2)
     pcell_cl = &((*pMeshPara).face_cl);
   else
     abort ();
 
-  (*pcell_cl) = ut_alloc_1d (Tess.CellQty + 1);
-  neut_tess_entity_expr_val (Tess, "cell", clstring, *pcell_cl, NULL);
+  (*pcell_cl) = ut_alloc_1d ((*pTess).CellQty + 1);
+  neut_tess_entity_expr_val (pTess, "cell", clstring, *pcell_cl, NULL);
 
   if (!strcmp ((*pMeshPara).cltype, "rel"))
-    nem_meshing_para_rcl2cl (pMeshPara, Tess.CellQty, Tess.Dim, *pcell_cl);
+    nem_meshing_para_rcl2cl (pMeshPara, (*pTess).CellQty, (*pTess).Dim, *pcell_cl);
 
   return 0;
 }
 
 int
 nem_meshing_para_cl_face (char *clstring, struct MESHPARA *pMeshPara,
-                          struct TESS Tess)
+                          struct TESS *pTess)
 {
-  neut_tess_entity_expr_val (Tess, "face", clstring, (*pMeshPara).face_cl, NULL);
+  neut_tess_entity_expr_val (pTess, "face", clstring, (*pMeshPara).face_cl, NULL);
 
   if (!strcmp ((*pMeshPara).cltype, "rel"))
-    nem_meshing_para_rcl2cl_face (pMeshPara, Tess, (*pMeshPara).face_cl);
+    nem_meshing_para_rcl2cl_face (pMeshPara, *pTess, (*pMeshPara).face_cl);
 
   return 0;
 }
 
 int
 nem_meshing_para_cl_edge (char *clstring, struct MESHPARA *pMeshPara,
-                          struct TESS Tess)
+                          struct TESS *pTess)
 {
   if (!(*pMeshPara).edge_cl)
-    (*pMeshPara).edge_cl = ut_alloc_1d (Tess.FaceQty + 1);
+    (*pMeshPara).edge_cl = ut_alloc_1d ((*pTess).FaceQty + 1);
 
-  neut_tess_entity_expr_val (Tess, "edge", clstring, (*pMeshPara).edge_cl, NULL);
+  neut_tess_entity_expr_val (pTess, "edge", clstring, (*pMeshPara).edge_cl, NULL);
 
   if (!strcmp ((*pMeshPara).cltype, "rel"))
-    nem_meshing_para_rcl2cl_edge (pMeshPara, Tess, (*pMeshPara).edge_cl);
+    nem_meshing_para_rcl2cl_edge (pMeshPara, *pTess, (*pMeshPara).edge_cl);
 
   return 0;
 }
 
 int
 nem_meshing_para_cl_ver (char *clstring, struct MESHPARA *pMeshPara,
-                         struct TESS Tess)
+                         struct TESS *pTess)
 {
   if (!(*pMeshPara).ver_cl)
-    (*pMeshPara).ver_cl = ut_alloc_1d (Tess.FaceQty + 1);
+    (*pMeshPara).ver_cl = ut_alloc_1d ((*pTess).FaceQty + 1);
 
-  neut_tess_entity_expr_val (Tess, "ver", clstring, (*pMeshPara).ver_cl, NULL);
+  neut_tess_entity_expr_val (pTess, "ver", clstring, (*pMeshPara).ver_cl, NULL);
 
   if (!strcmp ((*pMeshPara).cltype, "rel"))
-    nem_meshing_para_rcl2cl_ver (pMeshPara, Tess, (*pMeshPara).ver_cl);
+    nem_meshing_para_rcl2cl_ver (pMeshPara, *pTess, (*pMeshPara).ver_cl);
 
   return 0;
 }
@@ -97,19 +97,18 @@ nem_meshing_para_cl_cell_tesr (char *clstring, struct MESHPARA *pMeshPara,
 int
 nem_meshing_para_cl_poly_mesh (char *clstring, struct MESHPARA *pMeshPara,
                                struct NODES Nodes, struct MESH *Mesh,
-                               struct TESS Tess)
+                               struct TESS *pTess)
 {
   char *elset = ut_alloc_1d_char (100);
 
-  sprintf (elset, "elset%dd", Tess.Dim);
+  sprintf (elset, "elset%dd", (*pTess).Dim);
 
-  (*pMeshPara).poly_cl = ut_alloc_1d (Tess.PolyQty + 1);
-  neut_mesh_entity_expr_val (Nodes, Mesh[0], Mesh[1], Mesh[2], Mesh[3], Mesh[4],
-                             Tess, NULL, NULL, NULL, NULL, elset,
+  (*pMeshPara).poly_cl = ut_alloc_1d ((*pTess).PolyQty + 1);
+  neut_mesh_entity_expr_val (Nodes, Mesh, pTess, NULL, NULL, NULL, NULL, elset,
                              clstring, (*pMeshPara).poly_cl, NULL);
 
   if (!strcmp ((*pMeshPara).cltype, "rel"))
-    nem_meshing_para_rcl2cl (pMeshPara, Tess.CellQty, Tess.Dim,
+    nem_meshing_para_rcl2cl (pMeshPara, (*pTess).CellQty, (*pTess).Dim,
                              (*pMeshPara).poly_cl);
 
   ut_free_1d_char (&elset);

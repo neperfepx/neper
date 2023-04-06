@@ -7,14 +7,31 @@
 void
 nes_convert_write_inputs (struct IN_S In, struct FEPXSIM *pFSim)
 {
-  int i, filenameqty = 4;
-  char **filename = ut_alloc_1d_pchar (filenameqty);
+  int i, filenameqty = 0;
+  char **filename = NULL;
   char *dir = ut_string_paste (In.simdir, "/inputs");
 
-  ut_string_string ((*pFSim).tess, filename);
-  ut_string_string ((*pFSim).msh, filename + 1);
-  ut_string_string ("simulation.config", filename + 2);
-  ut_string_string ("*.sh", filename + 3);
+  if ((*pFSim).tess)
+  {
+    filename = ut_realloc_1d_pchar_null (filename, ++filenameqty, 1);
+    ut_string_string ((*pFSim).tess, filename + filenameqty - 1);
+  }
+
+  if ((*pFSim).msh)
+  {
+    filename = ut_realloc_1d_pchar_null (filename, ++filenameqty, 1);
+    ut_string_string ((*pFSim).msh, filename + filenameqty - 1);
+  }
+
+  if ((*pFSim).config)
+  {
+    filename = ut_realloc_1d_pchar_null (filename, ++filenameqty, 1);
+    ut_string_string ((*pFSim).config, filename + filenameqty - 1);
+  }
+
+  // *.sh
+  filename = ut_realloc_1d_pchar_null (filename, ++filenameqty, 1);
+  ut_string_string ("*.sh", filename + filenameqty - 1);
 
   if ((*pFSim).bcs)
   {

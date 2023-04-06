@@ -2,7 +2,7 @@ $MeshFormat
 2.2 0 8
 $EndMeshFormat
 $MeshVersion
-2.2.2
+2.2.3
 $EndMeshVersion
 $Domain
 cube
@@ -794,6 +794,9 @@ $PhysicalNames
 3 1 poly1
 3 2 poly2
 $EndPhysicalNames
+$ElsetCrySym
+triclinic
+$EndElsetCrySym
 $ElsetOrientations
 2 rodrigues:active
 1   -2.444015198417    0.618305125773    2.829029762200

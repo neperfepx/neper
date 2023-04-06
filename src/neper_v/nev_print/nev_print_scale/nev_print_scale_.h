@@ -15,3 +15,5 @@
 
 #include "../nev_print_utils/nev_print_utils.h"
 #include "../nev_print_png/nev_print_png.h"
+
+extern void nev_print_png_scale (struct IN_V In, FILE * file, char *ColScheme, char *scale, char *scaletitle);

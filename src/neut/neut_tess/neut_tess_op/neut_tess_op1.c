@@ -63,8 +63,9 @@ neut_tess_set_zero (struct TESS *pTess)
   (*pTess).PolyFaceOri = NULL;
   (*pTess).PolyState = NULL;
 
-  (*pTess).CellTrue = NULL;
+  (*pTess).CellBodyQty = 0;
   (*pTess).CellBody = NULL;
+  (*pTess).CellBodyExpr = NULL;
   (*pTess).CellLamId = NULL;
   (*pTess).CellModeId = NULL;
   (*pTess).CellGroup = NULL;
@@ -240,8 +241,8 @@ neut_tess_free (struct TESS *pTess)
   ut_free_2d_int (&(*pTess).PolyFaceOri, (*pTess).PolyQty + 1);
   ut_free_1d_int (&(*pTess).PolyState);
 
-  ut_free_1d_int (&(*pTess).CellTrue);
-  ut_free_1d_int (&(*pTess).CellBody);
+  ut_free_2d_int (&(*pTess).CellBody, (*pTess).CellBodyQty);
+  ut_free_2d_char (&(*pTess).CellBodyExpr, (*pTess).CellBodyQty);
   ut_free_1d_int (&(*pTess).CellLamId);
   ut_free_1d_int (&(*pTess).CellModeId);
   ut_free_1d_int (&(*pTess).CellGroup);
@@ -557,13 +558,9 @@ neut_tess_poly_switch (struct TESS *pTess, int p1, int p2)
   if ((*pTess).SeedWeight)
     ut_array_1d_switch ((*pTess).SeedWeight, p1, p2);
 
-  // CellTrue
-  if ((*pTess).CellTrue)
-    ut_array_1d_int_switch ((*pTess).CellTrue, p1, p2);
-
   // CellBody
-  if ((*pTess).CellBody)
-    ut_array_1d_int_switch ((*pTess).CellBody, p1, p2);
+  for (i = 0; i < (*pTess).CellBodyQty; i++)
+    ut_array_1d_int_switch ((*pTess).CellBody[i], p1, p2);
 
   // CellLamId
   if ((*pTess).CellLamId)
@@ -887,96 +884,105 @@ neut_tess_face_ff (struct TESS Tess, int face)
   return ff;
 }
 
-void
-neut_tess_init_celltrue (struct TESS *pTess)
+int
+neut_tess_init_cellbody (struct TESS *pTess, char *expr)
 {
-  int i, j, all, cell, qty;
-  int trueval, status;
-  int **neighcell = NULL;
-  int *neighcellqty = NULL;
-
-  (*pTess).CellTrue =
-    ut_realloc_1d_int ((*pTess).CellTrue, (*pTess).CellQty + 1);
-
-  if (!strcmp ((*pTess).Type, "periodic"))
-  {
-    ut_array_1d_int_set ((*pTess).CellTrue + 1, (*pTess).CellQty, 1);
-    return;
-  }
-
-  for (i = 1; i <= (*pTess).CellQty; i++)
-    (*pTess).CellTrue[i] = neut_tess_cell_true (*pTess, i);
-
-  neighcell = ut_alloc_1d_pint ((*pTess).CellQty + 1);
-  neighcellqty = ut_alloc_1d_int ((*pTess).CellQty + 1);
-
-  for (i = 1; i <= (*pTess).CellQty; i++)
-    neut_tess_cell_neighcell (*pTess, i, &(neighcell[i]), &(neighcellqty[i]));
-
-  status = 1;
-  for (trueval = 2; status == 1; trueval++)
-  {
-    status = 0;
-    for (i = 1; i <= (*pTess).CellQty; i++)
-    {
-      if ((*pTess).Dim == 3)
-        qty = (*pTess).PolyFaceQty[i];
-      else if ((*pTess).Dim == 2)
-        qty = (*pTess).FaceVerQty[i];
-      else
-        abort ();
-
-      if (qty == 0)
-        continue;
-
-      // if trueval is 1 lower and the cell has all neighbors
-      if ((*pTess).CellTrue[i] == trueval - 1 && neighcellqty[i] == qty)
-      {
-        all = 1;
-        for (j = 0; j < neighcellqty[i]; j++)
-        {
-          cell = neighcell[i][j];
-
-          if ((*pTess).CellTrue[cell] < trueval - 1)
-          {
-            all = 0;
-            break;
-          }
-        }
-        if (all == 1)
-        {
-          (*pTess).CellTrue[i] = trueval;
-          status = 1;
-        }
-      }
-    }
-  }
-
-  ut_free_2d_int (&neighcell, (*pTess).CellQty + 1);
-  ut_free_1d_int (&neighcellqty);
-
-  return;
-}
-
-void
-neut_tess_init_cellbody (struct TESS *pTess)
-{
-  int i, j, all, cell, qty;
+  int i, j, k, id, all, cell, qty;
   int body, status;
   int **neighcell = NULL;
   int *neighcellqty = NULL;
+  int pos;
 
-  (*pTess).CellBody =
-    ut_realloc_1d_int ((*pTess).CellBody, (*pTess).CellQty + 1);
+  neut_tess_cellbody_pos (*pTess, expr, &pos);
+
+  if (pos != -1)
+    return pos;
+
+  (*pTess).CellBodyQty++;
+  pos = (*pTess).CellBodyQty - 1;
+
+  (*pTess).CellBodyExpr = ut_realloc_1d_pchar_null ((*pTess).CellBodyExpr, (*pTess).CellBodyQty, 1);
+  // do not set CellBodyExpr here
+
+  (*pTess).CellBody = ut_realloc_1d_pint_null ((*pTess).CellBody, (*pTess).CellBodyQty, 1);
+  (*pTess).CellBody[pos] = ut_alloc_1d_int ((*pTess).CellQty + 1);
 
   if (!strcmp ((*pTess).Type, "periodic"))
   {
-    ut_array_1d_int_set ((*pTess).CellBody + 1, (*pTess).CellQty, 1);
-    return;
+    ut_array_1d_int_set ((*pTess).CellBody[pos] + 1, (*pTess).CellQty, 1);
+    return pos;
   }
 
-  for (i = 1; i <= (*pTess).CellQty; i++)
-    (*pTess).CellBody[i] = neut_tess_cell_body (*pTess, i);
+  if (!strcmp (expr, "body"))
+  {
+    for (i = 1; i <= (*pTess).CellQty; i++)
+    {
+      (*pTess).CellBody[pos][i] = 1;
+
+      if ((*pTess).Dim == 3)
+        for (j = 1; j <= (*pTess).PolyFaceQty[i]; j++)
+        {
+          id = (*pTess).PolyFaceNb[i][j];
+          if ((*pTess).FaceDom[id][0] == 2)
+          {
+            (*pTess).CellBody[pos][i] = 0;
+            break;
+          }
+        }
+
+      else if ((*pTess).Dim == 2)
+        for (j = 1; j <= (*pTess).FaceVerQty[i]; j++)
+        {
+          id = (*pTess).FaceEdgeNb[i][j];
+          if ((*pTess).EdgeDom[id][0] == 1)
+          {
+            (*pTess).CellBody[pos][i] = 0;
+            break;
+          }
+        }
+    }
+  }
+
+  else
+  {
+    char *arg = NULL;
+    ut_string_string (expr + 5, &arg);
+    arg[strlen (arg) - 1] = '\0';
+
+    for (i = 1; i <= (*pTess).CellQty; i++)
+    {
+      int status = 0;
+
+      int domqty, neighqty, *neighs = NULL, domtype, **dom = NULL;
+      char **domlabel = NULL;
+
+      neighqty = ((*pTess).Dim == 3) ? (*pTess).PolyFaceQty[i] : (*pTess).FaceVerQty[i];
+      neighs = ((*pTess).Dim == 3) ? (*pTess).PolyFaceNb[i] : (*pTess).FaceEdgeNb[i];
+      domtype = (*pTess).Dim - 1;
+      dom = ((*pTess).Dim == 3) ? (*pTess).FaceDom : (*pTess).EdgeDom;
+      domlabel = ((*pTess).Dim == 3) ? (*pTess).DomFaceLabel : (*pTess).DomEdgeLabel;
+      domqty = ((*pTess).Dim == 3) ? (*pTess).DomFaceQty : (*pTess).DomEdgeQty;
+
+      double *vals = ut_alloc_1d (domqty + 1);
+
+      for (j = 1; j <= domqty; j++)
+        if (strstr (arg, domlabel[j]))
+          for (k = 1; k <= neighqty; k++)
+          {
+            id = neighs[k];
+            if (dom[id][0] == domtype && dom[id][1] == j)
+              vals[j] = 1;
+          }
+
+      ut_math_eval_int (arg, domqty, domlabel + 1, vals + 1, &status);
+
+      ut_free_1d (&vals);
+
+      (*pTess).CellBody[pos][i] = 1 - status;
+    }
+
+    ut_free_1d_char (&arg);
+  }
 
   neighcell = ut_alloc_1d_pint ((*pTess).CellQty + 1);
   neighcellqty = ut_alloc_1d_int ((*pTess).CellQty + 1);
@@ -1001,14 +1007,14 @@ neut_tess_init_cellbody (struct TESS *pTess)
         continue;
 
       // if body is 1 lower and the cell has all neighbors
-      if ((*pTess).CellBody[i] == body - 1 && neighcellqty[i] == qty)
+      if ((*pTess).CellBody[pos][i] == body - 1) // && neighcellqty[i] == qty)
       {
         all = 1;
         for (j = 0; j < neighcellqty[i]; j++)
         {
           cell = neighcell[i][j];
 
-          if ((*pTess).CellBody[cell] < body - 1)
+          if ((*pTess).CellBody[pos][cell] < body - 1)
           {
             all = 0;
             break;
@@ -1016,17 +1022,20 @@ neut_tess_init_cellbody (struct TESS *pTess)
         }
         if (all == 1)
         {
-          (*pTess).CellBody[i] = body;
+          (*pTess).CellBody[pos][i] = body;
           status = 1;
         }
       }
     }
   }
 
+  // this must occur later, otherwise, neut_tess_cell_body will try to use the (yet uninitialized) values
+  ut_string_string (expr, (*pTess).CellBodyExpr + pos);
+
   ut_free_2d_int (&neighcell, (*pTess).CellQty + 1);
   ut_free_1d_int (&neighcellqty);
 
-  return;
+  return pos;
 }
 
 // This function should only be used if the domain is not known
@@ -2205,8 +2214,10 @@ neut_tess_poly_tess (struct TESS Tess, int poly, struct TESS *pTess)
     (*pTess).SeedWeight[1] = Tess.SeedWeight[poly];
   }
 
-  (*pTess).CellTrue = ut_alloc_1d_int (2);
+  /*
   (*pTess).CellBody = ut_alloc_1d_int (2);
+  ut_string_string (Tess.CellBodyExpr, &((*pTess).CellBodyExpr));
+  */
 
   (*pTess).PolyFaceQty = ut_alloc_1d_int (2);
   (*pTess).PolyFaceNb = ut_alloc_1d_pint (2);
@@ -2480,7 +2491,7 @@ neut_tess_addpoly_alloc (struct TESS *pTess)
 int
 neut_tess_addcell_alloc (struct TESS *pTess)
 {
-  int cell = ++(*pTess).CellQty;
+  int i, cell = ++(*pTess).CellQty;
 
   if ((*pTess).CellId)
   {
@@ -2497,20 +2508,15 @@ neut_tess_addcell_alloc (struct TESS *pTess)
     (*pTess).CellOri[cell] = ut_alloc_1d (4);
   }
 
-  if ((*pTess).CellTrue)
+  if ((*pTess).CellBodyQty)
   {
-    (*pTess).CellTrue =
-      ut_realloc_1d_int ((*pTess).CellTrue, (*pTess).CellQty + 1);
-    (*pTess).CellTrue[0] = 0;
-    (*pTess).CellTrue[cell] = 0;
-  }
-
-  if ((*pTess).CellBody)
-  {
-    (*pTess).CellBody =
-      ut_realloc_1d_int ((*pTess).CellBody, (*pTess).CellQty + 1);
-    (*pTess).CellBody[0] = 0;
-    (*pTess).CellBody[cell] = 0;
+    for (i = 0; i < (*pTess).CellBodyQty; i++)
+    {
+      (*pTess).CellBody[i] =
+        ut_realloc_1d_int ((*pTess).CellBody[i], (*pTess).CellQty + 1);
+      (*pTess).CellBody[i][0] = 0;
+      (*pTess).CellBody[i][cell] = 0;
+    }
   }
 
   if ((*pTess).CellLamId)
@@ -3599,7 +3605,7 @@ neut_tess_cellexpr_remove (struct TESS *pTess, char *expr)
   if ((*pTess).Dim == 2)
     abort ();
 
-  neut_tess_expr_cells (*pTess, expr, &cells, &cellqty);
+  neut_tess_expr_cells (pTess, expr, &cells, &cellqty);
 
   neut_tess_polys_remove (pTess, cells, cellqty);
 

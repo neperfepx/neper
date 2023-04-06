@@ -133,43 +133,43 @@ neut_tdyn_fprintf_time (struct TDYN TDyn)
       ut_array_1d_int_fprintf_nonl (TDyn.logtime_fp, TDyn.cellchanged,
                                     TDyn.cellchangedqty, "%d");
     else if (!strcmp (vars[i], "var"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.var_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.var_dur);
     else if (!strcmp (vars[i], "seed"))
-      fprintf (TDyn.logtime_fp, "%.6f", fabs (TDyn.seed_dur));
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, fabs (TDyn.seed_dur));
 
     else if (!strcmp (vars[i], "cell_init"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.cell_init_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.cell_init_dur);
     else if (!strcmp (vars[i], "cell_kdtree"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.cell_kdtree_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.cell_kdtree_dur);
     else if (!strcmp (vars[i], "cell_shift"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.cell_shift_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.cell_shift_dur);
     else if (!strcmp (vars[i], "cell_neigh"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.cell_neigh_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.cell_neigh_dur);
     else if (!strcmp (vars[i], "cell_cell"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.cell_cell_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.cell_cell_dur);
     else if (!strcmp (vars[i], "cell_other"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.cell_other_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.cell_other_dur);
     else if (!strcmp (vars[i], "cell_total"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.cell_total_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.cell_total_dur);
 
     else if (!strcmp (vars[i], "val_init"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.val_init_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.val_init_dur);
     else if (!strcmp (vars[i], "val_penalty"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.val_penalty_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.val_penalty_dur);
     else if (!strcmp (vars[i], "val_val"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.val_val_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.val_val_dur);
     else if (!strcmp (vars[i], "val_val_cellval"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.val_val_cellval_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.val_val_cellval_dur);
     else if (!strcmp (vars[i], "val_val_comp"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.val_val_comp_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.val_val_comp_dur);
     else if (!strcmp (vars[i], "val_comp"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.val_comp_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.val_comp_dur);
     else if (!strcmp (vars[i], "val"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.val_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.val_dur);
     else if (!strcmp (vars[i], "total"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.total_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.total_dur);
     else if (!strcmp (vars[i], "cumtotal"))
-      fprintf (TDyn.logtime_fp, "%.6f", TDyn.cumtotal_dur);
+      fprintf (TDyn.logtime_fp, REAL_PRINT_FORMAT, TDyn.cumtotal_dur);
     else
       fprintf (TDyn.logtime_fp, "%d", -1);
 

@@ -303,6 +303,33 @@ ut_array_1d_fprintf (FILE * file, double *array, int size, const char *format)
 }
 
 int
+ut_array_1d_fprintf_column (FILE * file, double *array, int size, const char *format)
+{
+  int i, status = -1;
+
+  for (i = 0; i < size; i++)
+  {
+    status = fprintf (file, format, array[i]);
+    status = fprintf (file, "\n");
+  }
+
+  return status;
+}
+
+int
+ut_array_1d_fnprintf_column (char *filename, double *array, int size, const char *format, char *mode)
+{
+  int status;
+  FILE *file = ut_file_open (filename, mode);
+
+  status = ut_array_1d_fprintf_column (file, array, size, format);
+
+  ut_file_close (file, filename, mode);
+
+  return status;
+}
+
+int
 ut_array_2d_fscanf (FILE * file, double **array, int d1, int d2)
 {
   int i, j, res = 0;
@@ -1031,6 +1058,28 @@ ut_array_1d_lmean (double *array, int size, double p)
     for (i = 0; i < size; i++)
       val += pow (array[i], p);
     val = pow (1. / size * val, 1. / p);
+  }
+
+  return val;
+}
+
+double
+ut_array_1d_lnorm (double *array, int size, double p)
+{
+  int i;
+  double val = 0;
+
+  if (size <= 0)
+    abort ();
+
+  if (p == DBL_MAX)
+    val = ut_array_1d_max (array, size);
+
+  else
+  {
+    for (i = 0; i < size; i++)
+      val += pow (array[i], p);
+    val = pow (val, 1. / p);
   }
 
   return val;
@@ -1766,6 +1815,26 @@ ut_array_2d_col_mean (double **array, int size1, int col)
   mean /= size1;
 
   return mean;
+}
+
+double
+ut_array_2d_col_wmean (double **array, double *weight, int size1, int col)
+{
+  int i;
+  double sum, sumweight;
+
+  if (size1 <= 0 || col < 0)
+    abort ();
+
+  sum = 0;
+  sumweight = 0;
+  for (i = 0; i < size1; i++)
+  {
+    sum += weight[i] * array[i][col];
+    sumweight += weight[i];
+  }
+
+  return sum / sumweight;
 }
 
 double

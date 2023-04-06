@@ -26,7 +26,9 @@ nes_pproc_load (struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr,
   if ((*pSim).config)
     nes_loadconfig (*pSim, &GroupCrySym, &GroupQty, 2);
 
-  nes_pproc_load_crysym (pTess, pTesr, GroupCrySym, GroupQty);
+  neut_sim_testinputs (*pSim, *pTess, Mesh);
+
+  nes_pproc_load_crysym (pTess, pTesr, pNodes, Mesh, GroupCrySym, GroupQty);
 
   ut_free_2d_char (&GroupCrySym, GroupQty);
 

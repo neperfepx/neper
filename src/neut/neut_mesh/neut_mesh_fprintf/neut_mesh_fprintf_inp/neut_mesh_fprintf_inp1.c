@@ -35,7 +35,7 @@ neut_mesh_fprintf_inp (FILE * file, char *dim, struct TESS Tess,
   {
     fprintf (file, "%d", i);
     for (j = 0; j < 3; j++)
-      fprintf (file, ", %.12f",
+      fprintf (file, ", " REAL_PRINT_FORMAT,
                (fabs (Nodes.NodeCoo[i][j]) <
                 1e-12) ? 0 : Nodes.NodeCoo[i][j]);
     fprintf (file, "\n");

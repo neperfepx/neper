@@ -45,7 +45,7 @@ nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
     if (!neut_mesh_isvoid (Mesh[2]))
       ut_print_message (0, 2, "2D meshing... skipped\n");
     else
-      nem_meshing_2d (In, *pMeshPara, *pTess, RNodes, RMesh, pNodes, Mesh);
+      nem_meshing_2d (In, *pMeshPara, pTess, RNodes, RMesh, pNodes, Mesh);
 
     if (Mesh[2].EltQty > 0 && (*pTess).Dim == 3 && In.mesh2dpinchfix)
       nem_meshing_pinching (In, *pMeshPara, pTess, RNodes, RMesh, pNodes,
@@ -57,7 +57,7 @@ nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
     if (!neut_mesh_isvoid (Mesh[3]))
       ut_print_message (0, 2, "3D meshing... skipped\n");
     else
-      nem_meshing_3d (In, *pMeshPara, *pTess, pNodes, Mesh);
+      nem_meshing_3d (In, *pMeshPara, pTess, pNodes, Mesh);
   }
 
   if ((*pTess).CellId)

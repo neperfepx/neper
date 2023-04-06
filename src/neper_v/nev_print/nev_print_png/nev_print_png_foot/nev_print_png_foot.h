@@ -2,4 +2,4 @@
 /* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nev_print_png_foot (FILE *, struct PRINT);
+extern void nev_print_png_foot (struct IN_V In, FILE *);

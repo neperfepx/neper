@@ -5,7 +5,7 @@
 #include"nev_print_scale_.h"
 
 void
-nev_print_png_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle)
+nev_print_png_scale (struct IN_V In, FILE * file, char *ColScheme, char *scale, char *scaletitle)
 {
   int i, tickqty;
   double min, max, z, *tickvals = NULL;
@@ -79,7 +79,6 @@ nev_print_png_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle
   Print.cameraangle = 6;
   Print.lightambient = 0.6;
   Print.lightdiffuse = 0.6;
-  ut_string_string ("point(coo=0:-5:0.5)", &(Print.lightsourcestring));
   Print.lightsourceqty = 1;
   Print.lightsources = ut_alloc_1d_pchar (1);
   ut_string_string ("point(coo=0:-5:0.5)", Print.lightsources);
@@ -89,9 +88,9 @@ nev_print_png_scale (FILE * file, char *ColScheme, char *scale, char *scaletitle
 
   neut_data_real_color (data, NULL, N.NodeQty, scale, ColScheme, rgb, NULL);
 
-  nev_print_png_header (file, Print);
+  nev_print_png_header (In, Print, file);
   nev_print_png_mesh2d (file, N, M, NULL, rgb, (char *) "elt", Print);
-  nev_print_png_foot (file, Print);
+  nev_print_png_foot (In, file);
 
   fprintf (file, "union {\n");
   fprintf (file,

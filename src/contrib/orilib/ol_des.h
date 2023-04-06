@@ -201,7 +201,7 @@ extern void ol_eaproj_vect (double *, double *);
 extern void ol_stprojxy_vect (double *, double *);
 extern void ol_eaprojxy_vect (double *, double *);
 
-extern int ol_vect_ipfweight (double *, double *);
+extern int ol_vect_ipfweight (double *, char *, double *);
 
 extern double* ol_q_alloc (void);
 extern void ol_q_free (double *);

@@ -179,8 +179,8 @@ nev_print_png_hcp (FILE * file, double *coo, double *rad, char *texture,
   fprintf (file, "      linear_sweep\n");
   fprintf (file, "      linear_spline\n");
   // a = 1, c = 1.633
-  fprintf (file, "      %.12f,\n", -0.5 * 1.633); // c = 1.633
-  fprintf (file, "      %.12f,\n",  0.5 * 1.633); // c = 1.633
+  fprintf (file, "      " REAL_PRINT_FORMAT ",\n", -0.5 * 1.633); // c = 1.633
+  fprintf (file, "      " REAL_PRINT_FORMAT ",\n",  0.5 * 1.633); // c = 1.633
   fprintf (file, "      7,\n");
   fprintf (file, "<-.5,-.866>, <-1.,0.>, <-.5,.866>, <.5,.866>, <1.,0.>,<.5,-.866>,<-.5,-.866>\n");
   fprintf (file, "scale %18.15g\n", rad[0]); // scaling to a
@@ -396,7 +396,8 @@ nev_print_png_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
 
   for (i = 1; i <= Nodes.NodeQty; i++)
   {
-    fprintf (file, "    <%.12f,%.12f,%.12f>%s\n", Nodes.NodeCoo[i][0],
+    fprintf (file, "    <" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT ">%s\n",
+             Nodes.NodeCoo[i][0],
              Nodes.NodeCoo[i][1], Nodes.NodeCoo[i][2],
              (i < Nodes.NodeQty) ? NEUT_SEP_NODEP : " ");
   }
@@ -417,7 +418,7 @@ nev_print_png_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
       {
         elt_text[i] = text_qty++;
         fprintf (file,
-                 "    texture{pigment{rgb<%.12f,%.12f,%.12f>} finish {ambient %f diffuse %f reflection %f}}\n",
+                 "    texture{pigment{rgb<" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT ">} finish {ambient %f diffuse %f reflection %f}}\n",
                  rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255.,
                  Print.lightambient, Print.lightdiffuse, Print.lightreflection);
       }
@@ -429,7 +430,7 @@ nev_print_png_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
     for (i = 1; i <= Nodes.NodeQty; i++)
     {
       fprintf (file,
-               "    texture{pigment{rgb<%.12f,%.12f,%.12f>} finish {ambient %f diffuse %f reflection %f}}\n",
+               "    texture{pigment{rgb<" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT  ">} finish {ambient %f diffuse %f reflection %f}}\n",
                rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255., Print.lightambient,
                Print.lightdiffuse, Print.lightreflection);
     }

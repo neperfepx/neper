@@ -9,6 +9,9 @@
 
 #include"ut.h"
 #include"neut_v.h"
+#include"../structIn_v.h"
+#include "nev_print_data/nev_print_data.h"
+#include "nev_print_show/nev_print_show.h"
 #include "nev_print_init/nev_print_init.h"
 #include "nev_print_utils/nev_print_utils.h"
 #include "nev_print_png/nev_print_png.h"

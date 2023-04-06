@@ -10,6 +10,7 @@ nes_orispace (struct IN_S In, struct SIM *pSim)
   char *filename = NULL;
 
   ut_file_squashname (In.orispace, &(*pSim).OriSpace);
+  ut_file_removepath ((*pSim).OriSpace, &(*pSim).OriSpace);
 
   ut_sys_mkdir ("%s/orispace", (*pSim).simdir);
 

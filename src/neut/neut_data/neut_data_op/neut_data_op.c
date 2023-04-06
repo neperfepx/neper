@@ -47,6 +47,10 @@ neut_data_set_default (struct DATA *pData)
   (*pData).Coo = NULL;
   (*pData).CooFact = 1;
 
+  (*pData).WeightData = NULL;
+  (*pData).WeightDataType = NULL;
+  (*pData).Weight = NULL;
+
   (*pData).LengthData = NULL;
   (*pData).LengthDataType = NULL;
   (*pData).Length = NULL;
@@ -112,6 +116,10 @@ neut_data_free (struct DATA *pData)
   (*pData).CooFact = 1;
   ut_free_1d_char (&(*pData).CooDataName);
 
+  ut_free_2d (&(*pData).WeightData, (*pData).Qty);
+  ut_free_1d_char (&(*pData).WeightDataType);
+  ut_free_1d (&(*pData).Weight);
+
   ut_free_2d (&(*pData).LengthData, (*pData).Qty);
   ut_free_1d_char (&(*pData).LengthDataType);
   ut_free_1d (&(*pData).Length);
@@ -137,39 +145,39 @@ neut_data_free (struct DATA *pData)
 }
 
 void
-neut_data_mesh2slice_elts (struct DATA *Data, struct MESH SMesh,
-                           int *elt_newold, struct DATA **pSData)
+neut_data_mesh2slice_elts (struct DATA Data, struct MESH SMesh,
+                           int *elt_newold, struct DATA ***pSData)
 {
   int i, j, size;
 
-  (*pSData)[0].Qty = 0;
-  (*pSData)[1].Qty = 0;
-  (*pSData)[2].Qty = SMesh.EltQty;
-  (*pSData)[3].Qty = 0;
+  (*pSData)[0][0].Qty = 0;
+  (*pSData)[1][0].Qty = 0;
+  (*pSData)[2][0].Qty = SMesh.EltQty;
+  (*pSData)[3][0].Qty = 0;
 
   // Mesh
-  if (Data[3].ColDataType)
+  if (Data.ColDataType)
   {
-    ut_string_string (Data[3].ColDataType,
-                      &((*pSData)[2].ColDataType));
+    ut_string_string (Data.ColDataType,
+                      &((*pSData)[2][0].ColDataType));
 
-    neut_data_coldatatype_size ((*pSData)[2], &size);
+    neut_data_coldatatype_size ((*pSData)[2][0], &size);
 
     if (size > 0)
     {
-      (*pSData)[2].ColData =
-        ut_alloc_2d ((*pSData)[2].Qty + 1, size);
+      (*pSData)[2][0].ColData =
+        ut_alloc_2d ((*pSData)[2][0].Qty + 1, size);
 
-      for (i = 1; i <= (*pSData)[2].Qty; i++)
+      for (i = 1; i <= (*pSData)[2][0].Qty; i++)
         for (j = 0; j < size; j++)
-          (*pSData)[2].ColData[i][j] =
-            Data[3].ColData[elt_newold[i]][j];
+          (*pSData)[2][0].ColData[i][j] =
+            Data.ColData[elt_newold[i]][j];
     }
   }
 
-  ut_string_string (Data[3].Scale, &((*pSData)[2].Scale));
-  ut_string_string (Data[3].ScaleTitle, &((*pSData)[2].ScaleTitle));
-  ut_string_string (Data[3].ColScheme, &((*pSData)[2].ColScheme));
+  ut_string_string (Data.Scale, &((*pSData)[2][0].Scale));
+  ut_string_string (Data.ScaleTitle, &((*pSData)[2][0].ScaleTitle));
+  ut_string_string (Data.ColScheme, &((*pSData)[2][0].ColScheme));
 
   return;
 }
@@ -215,6 +223,20 @@ neut_data_mesh2slice_nodes (struct DATA NodeData, struct NODES SNodes,
   ut_string_string (NodeData.Scale, &((*pSNodeData).Scale));
   ut_string_string (NodeData.ScaleTitle, &((*pSNodeData).ScaleTitle));
   ut_string_string (NodeData.ColScheme, &((*pSNodeData).ColScheme));
+
+  return;
+}
+
+void
+neut_data_symboldata_symbol (struct DATA *pData)
+{
+  int i;
+
+  (*pData).Symbol = ut_alloc_1d_pchar ((*pData).Qty + 1);
+
+  for (i = 1; i <= (*pData).Qty; i++)
+    ut_string_string ((*pData).SymbolData ? (*pData).SymbolData[i] : "sphere",
+                      (*pData).Symbol + i);
 
   return;
 }

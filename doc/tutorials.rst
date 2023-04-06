@@ -12,4 +12,5 @@ Tutorials
    tutorials/ebsd_process.rst
    tutorials/visualize_tessellation.rst
    tutorials/pole_figure.rst
+   tutorials/orientation_trajectories.rst
    tutorials/orientation_color_key.rst

@@ -182,8 +182,8 @@ net_tess_opt_comp_objective_debugtest (struct TOPT TOpt)
     ut_array_1d_int_fprintf (stdout, TOpt.TDyn.cellchanged,
                              TOpt.TDyn.cellchangedqty, "%d");
     printf ("cell vols: ");
-    ut_array_1d_fprintf (stdout, vol + 1, TOpt.CellQty, "%.15f");
-    printf ("totvol = %.15f != domvol = %.15f (ratio %.12f)\n", totvol,
+    ut_array_1d_fprintf (stdout, vol + 1, TOpt.CellQty, REAL_PRINT_FORMAT);
+    printf ("totvol = " REAL_PRINT_FORMAT " != domvol = " REAL_PRINT_FORMAT " (ratio " REAL_PRINT_FORMAT ")\n", totvol,
             domvol, totvol / domvol);
     abort ();
   }

@@ -58,17 +58,11 @@ extern "C"
 ///
   extern void neut_tess_poly_switch (struct TESS *, int poly1, int poly2);
 
-/// \brief Initialize the true level of the polyhedra of a TESS
-///
-///
-///
-  extern void neut_tess_init_celltrue (struct TESS *pTess);
-
 /// \brief Initialize the body level of the polyhedra of a TESS
 ///
 ///
 ///
-  extern void neut_tess_init_cellbody (struct TESS *pTess);
+  extern int neut_tess_init_cellbody (struct TESS *pTess, char *expr);
 
 /// \brief Initialize the lengths of the edges of a TESS
 ///

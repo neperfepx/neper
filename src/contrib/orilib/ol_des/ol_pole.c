@@ -562,7 +562,7 @@ ol_g_ipf_crysym_stproj_rad (double **g, double *vect, char *crysym, double *p)
     ol_g_crysym (g, crysym, i, gsym);
     ol_g_ipf_stprojxy (gsym, vect, p);
     ol_stprojxy_vect (p, v);
-    if (ol_vect_ipfweight (v, weight) == 0)
+    if (ol_vect_ipfweight (v, crysym, weight) == 0)
       break;
   }
 
@@ -722,7 +722,7 @@ ol_eaprojxy_vect (double *p, double *vect)
 }
 
 int
-ol_vect_ipfweight (double *v, double *weight)
+ol_vect_ipfweight (double *v, char *crysym, double *weight)
 {
   double *v1 = ol_vect_alloc ();
   double *v2 = ol_vect_alloc ();
@@ -734,110 +734,151 @@ ol_vect_ipfweight (double *v, double *weight)
 
   ol_e_set_zero (weight);
 
-  if (v[0] > v[1] && v[0] < v[1] + OL_EPS)
-    v[0] = v[1];
-
-  if (v[0] > v[1])
-    test = -1;
-
-  if (test != -1)
+  if (!strcmp (crysym, "cubic"))
   {
-    /* calculating v1 = rotated vector to (001)-(011) about (01-1) */
-    ol_r_set_this (r, 0, 1 / sqrt (2), -1 / sqrt (2));
+    if (v[0] > v[1] && v[0] < v[1] + OL_EPS)
+      v[0] = v[1];
 
-    ol_theta_rad2deg (atan2 (sqrt (2) * v[0], (v[1] + v[2])), &theta);
+    if (v[0] > v[1])
+      test = -1;
 
-    ol_rtheta_g (r, theta, g);
-    ol_g_vect_vect (g, v, v1);
-/* computing theta3 = angle to reach segment (001)-(111) by rotation
-   * about r (theta3 has a negative value)
+    if (test != -1)
+    {
+      /* calculating v1 = rotated vector to (001)-(011) about (01-1) */
+      ol_r_set_this (r, 0, 1 / sqrt (2), -1 / sqrt (2));
 
-  * theta3 is the solution of equation,
-   * cos(theta3).v0 - sin(theta3).(v1+v2)/sqrt(2)
-   = cos(theta3).(v1+v2)/2 + sin(theta3).v0/sqrt(2) + (v1-v2)/2
-   which is equivalent to,
-   t^2 .2(v2-v0) + t (-2sqrt(2).(v0+v1+v2)) + 2(v0-v1) = 0
-   with t = tan (theta3 / 2)
-   (( using cos (theta3) = (1 - t^2) / (1 + t^2) ))
-   ((       sin (theta3) =     2t    / (1 + t^2) ))
+      ol_theta_rad2deg (atan2 (sqrt (2) * v[0], (v[1] + v[2])), &theta);
 
-  a = 2 * (v[2] - v[0]);
-  b = -2 * sqrt(2) * (v[0] + v[1] + v[2]);
-  c = 2 * (v[0] - v[1]);
+      ol_rtheta_g (r, theta, g);
+      ol_g_vect_vect (g, v, v1);
+  /* computing theta3 = angle to reach segment (001)-(111) by rotation
+     * about r (theta3 has a negative value)
 
-  if (fabs (a) < 1e-6)
-    t = - c / b;
+    * theta3 is the solution of equation,
+     * cos(theta3).v0 - sin(theta3).(v1+v2)/sqrt(2)
+     = cos(theta3).(v1+v2)/2 + sin(theta3).v0/sqrt(2) + (v1-v2)/2
+     which is equivalent to,
+     t^2 .2(v2-v0) + t (-2sqrt(2).(v0+v1+v2)) + 2(v0-v1) = 0
+     with t = tan (theta3 / 2)
+     (( using cos (theta3) = (1 - t^2) / (1 + t^2) ))
+     ((       sin (theta3) =     2t    / (1 + t^2) ))
+
+    a = 2 * (v[2] - v[0]);
+    b = -2 * sqrt(2) * (v[0] + v[1] + v[2]);
+    c = 2 * (v[0] - v[1]);
+
+    if (fabs (a) < 1e-6)
+      t = - c / b;
+    else
+    {
+      delta = b*b - 4 * a * c;
+      t = (-b - sqrt(delta)) / (2 * a);
+    }
+
+    ol_theta_rad2deg (2 * atan (t), &thetab);
+
+    ol_rtheta_g (r, thetab, g);
+    ol_g_vect_vect (g, v, v1b);
+
+    w = 1 - acos (v1[2]) / (OL_PI / 4);
+    wb = 1 - acos(v1b[2]) / acos(1/sqrt(3));
+    ratio = theta / (theta + thetab);
+    weight[0] = w; */
+      weight[0] = 1 - acos (v1[2]) / (OL_PI / 4);
+
+      if (weight[0] < 0 && weight[0] > -OL_EPS)
+        weight[0] = 0;
+      if (weight[0] > 1 && weight[0] < 1 + OL_EPS)
+        weight[0] = 1;
+      if (weight[0] < 0 || weight[0] > 1)
+        test = -1;
+    }
+
+    if (test != -1)
+    {
+      /* calculating v2 = rotated vector to (001)-(011) about (-110) */
+
+      ol_r_set_this (r, -1 / sqrt (2), 1 / sqrt (2), 0);
+
+      if (fabs (v[1]) < OL_EPS)
+        t = -v[0] / (sqrt (2) * v[2]);
+      else
+        t =
+          (sqrt (2) * v[2] -
+           sqrt (2 * v[2] * v[2] + 4 * v[0] * v[1])) / (2 * v[1]);
+
+      ol_theta_rad2deg (2 * atan (t), &theta);
+
+      ol_rtheta_g (r, -theta, g);
+      ol_g_vect_vect (g, v, v2);
+      weight[1] = ut_num_acos (v2[2]) / (OL_PI / 4);
+      if (weight[1] < 0 && weight[1] > -OL_EPS)
+        weight[1] = 0;
+      if (weight[1] > 1 && weight[1] < 1 + OL_EPS)
+        weight[1] = 1;
+      if (weight[1] < 0 || weight[1] > 1)
+        test = -1;
+    }
+
+    if (test != -1)
+    {
+      /* rotation to (001)--(111) */
+      /* calculating v3 = rotated vector to (011)-(111) about (-100) */
+
+      ol_r_set_this (r, -1, 0, 0);
+
+      ol_theta_rad2deg (atan2 (v[1] - v[2], v[1] + v[2]), &theta);
+
+      ol_rtheta_g (r, theta, g);
+      ol_g_vect_vect (g, v, v3);
+
+      weight[2] =
+        1 - acos ((v3[0] + v3[1] + v3[2]) / sqrt (3)) / acos (2 / sqrt (6));
+      if (weight[2] < 0 && weight[2] > -OL_EPS)
+        weight[2] = 0;
+      if (weight[2] > 1 && weight[2] < 1 + OL_EPS)
+        weight[2] = 1;
+      if (weight[2] < 0 || weight[2] > 1)
+        test = -1;
+    }
+  }
+
+  else if (!strcmp (crysym, "hexagonal"))
+  {
+    int i;
+    double **g = ol_g_alloc ();
+    double *p = ol_p_alloc ();
+
+    int found = 0;
+    for (i = 1; i <= 12; i++)
+    {
+      ol_g_crysym (NULL, "hexagonal", i, g);
+      ol_g_vect_vect (g, v, v1);
+
+      ol_vect_stproj (v1, p);
+
+      if (p[1] >= 0 && p[1] <= 30 + OL_EPS)
+      {
+        found = 1;
+        break;
+      }
+    }
+
+    if (!found)
+      abort ();
+
+    weight[0] = 1 - p[0];
+    weight[1] = p[0] * p[1] / 30;
+    weight[2] = p[0] * (1 - p[1] / 30);
+
+    ol_g_free (g);
+    ol_p_free (p);
+  }
+
   else
   {
-    delta = b*b - 4 * a * c;
-    t = (-b - sqrt(delta)) / (2 * a);
-  }
-
-  ol_theta_rad2deg (2 * atan (t), &thetab);
-
-  ol_rtheta_g (r, thetab, g);
-  ol_g_vect_vect (g, v, v1b);
-
-  w = 1 - acos (v1[2]) / (OL_PI / 4);
-  wb = 1 - acos(v1b[2]) / acos(1/sqrt(3));
-  ratio = theta / (theta + thetab);
-  weight[0] = w; */
-    weight[0] = 1 - acos (v1[2]) / (OL_PI / 4);
-
-    if (weight[0] < 0 && weight[0] > -OL_EPS)
-      weight[0] = 0;
-    if (weight[0] > 1 && weight[0] < 1 + OL_EPS)
-      weight[0] = 1;
-    if (weight[0] < 0 || weight[0] > 1)
-      test = -1;
-  }
-
-  if (test != -1)
-  {
-    /* calculating v2 = rotated vector to (001)-(011) about (-110) */
-
-    ol_r_set_this (r, -1 / sqrt (2), 1 / sqrt (2), 0);
-
-    if (fabs (v[1]) < OL_EPS)
-      t = -v[0] / (sqrt (2) * v[2]);
-    else
-      t =
-        (sqrt (2) * v[2] -
-         sqrt (2 * v[2] * v[2] + 4 * v[0] * v[1])) / (2 * v[1]);
-
-    ol_theta_rad2deg (2 * atan (t), &theta);
-
-    ol_rtheta_g (r, -theta, g);
-    ol_g_vect_vect (g, v, v2);
-    weight[1] = ut_num_acos (v2[2]) / (OL_PI / 4);
-    if (weight[1] < 0 && weight[1] > -OL_EPS)
-      weight[1] = 0;
-    if (weight[1] > 1 && weight[1] < 1 + OL_EPS)
-      weight[1] = 1;
-    if (weight[1] < 0 || weight[1] > 1)
-      test = -1;
-  }
-
-  if (test != -1)
-  {
-    /* rotation to (001)--(111) */
-    /* calculating v3 = rotated vector to (011)-(111) about (-100) */
-
-    ol_r_set_this (r, -1, 0, 0);
-
-    ol_theta_rad2deg (atan2 (v[1] - v[2], v[1] + v[2]), &theta);
-
-    ol_rtheta_g (r, theta, g);
-    ol_g_vect_vect (g, v, v3);
-
-    weight[2] =
-      1 - acos ((v3[0] + v3[1] + v3[2]) / sqrt (3)) / acos (2 / sqrt (6));
-    if (weight[2] < 0 && weight[2] > -OL_EPS)
-      weight[2] = 0;
-    if (weight[2] > 1 && weight[2] < 1 + OL_EPS)
-      weight[2] = 1;
-    if (weight[2] < 0 || weight[2] > 1)
-      test = -1;
+    printf ("Crystal symmetry `%s' not supported.\n", crysym);
+    abort ();
   }
 
   ol_g_free (g);

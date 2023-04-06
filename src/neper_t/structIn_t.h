@@ -60,8 +60,8 @@ extern "C"
 
     char *oristring;		        // orientation distribution string
     char **ori;                         // orientation distribution
-    char *oricrysymstring;		// orientation crystal symmetry
-    char **oricrysym;			//
+    char *crysymstring;		        // orientation crystal symmetry
+    char **crysym;			//
     char *orioptistopstring;            // orientation opti / termination criterion
     char **orioptistop;                 //
     char *orioptineighstring;           // orientation opti / neighbor string

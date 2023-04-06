@@ -121,33 +121,6 @@ ol_set_aniso (struct OL_SET set, double **evect, double *eval)
 }
 
 void
-ol_q_aniso_theta (double *q, double **evect, double *theta)
-{
-  int j, k;
-  double tmp;
-  double *R = ol_R_alloc ();
-
-  ol_q_R (q, R);
-
-  /* Calculation of the thetas */
-  for (j = 0; j < 3; j++)
-  {
-    // printf ("calc theta along ");
-    // ut_array_1d_fprintf (stdout, evect[j], 3, "%9.6f");
-    tmp = 0;
-    for (k = 0; k < 3; k++)
-      tmp += evect[j][k] * R[k];
-
-    /* 114.59155902616464175442 is (180 / PI) * 2 */
-    theta[j] = 114.59155902616464175442 * atan (tmp);
-  }
-
-  ol_R_free (R);
-
-  return;
-}
-
-void
 ol_set_aniso_thetadistrib (struct OL_SET set, double **evect, double step,
                            double **pdistrib, double *distribfirstx,
                            int *distriblength)
@@ -184,6 +157,75 @@ ol_set_aniso_thetadistrib (struct OL_SET set, double **evect, double step,
   ut_free_2d (&theta, 3);
   ut_free_1d (&etheta);
   ol_q_free (q);
+
+  return;
+}
+
+void
+ol_q_aniso_theta (double *q, double **evect, double *theta)
+{
+  int j, k;
+  double tmp;
+  double *R = ol_R_alloc ();
+
+  ol_q_R (q, R);
+
+  /* Calculation of the thetas */
+  for (j = 0; j < 3; j++)
+  {
+    // printf ("calc theta along ");
+    // ut_array_1d_fprintf (stdout, evect[j], 3, "%9.6f");
+    tmp = 0;
+    for (k = 0; k < 3; k++)
+      tmp += evect[j][k] * R[k];
+
+    /* 114.59155902616464175442 is (180 / PI) * 2 */
+    theta[j] = 114.59155902616464175442 * atan (tmp);
+  }
+
+  ol_R_free (R);
+
+  return;
+}
+
+void
+ol_set_aniso_delta (struct OL_SET Set, double **evect, double *eval, double *delta)
+{
+  int i, j, *distriblength = ut_alloc_1d_int (3);
+  double step, *distribfirstx = ut_alloc_1d(3), **distrib = ut_alloc_1d_pdouble (3);
+  struct FCT Fct, CFct;
+
+  ut_fct_set_zero (&Fct);
+  ut_fct_set_zero (&CFct);
+
+  step = eval[0] / 1000;
+
+  ol_set_aniso_thetadistrib (Set, evect, step, distrib, distribfirstx, distriblength);
+
+  for (i = 0; i < 3; i++)
+  {
+    ut_fct_set_array (&Fct, distrib[i], distriblength[i], distribfirstx[i], step);
+    ut_fct_integralfct (Fct, &CFct);
+
+    double mode1 = -DBL_MAX, mode2 = -DBL_MAX;
+    for (j = 0; j < CFct.size; j++)
+    {
+      if (mode1 == -DBL_MAX && CFct.y[j] > 0.25)
+        mode1 = CFct.x[j];
+      if (mode2 == -DBL_MAX && CFct.y[j] > 0.75)
+      {
+        mode2 = CFct.x[j];
+        break;
+      }
+    }
+
+    delta[i] = mode2 - mode1;
+  }
+
+  ut_fct_free (&Fct);
+  ut_free_2d (&distrib, 3);
+  ut_free_1d (&distribfirstx);
+  ut_free_1d_int (&distriblength);
 
   return;
 }

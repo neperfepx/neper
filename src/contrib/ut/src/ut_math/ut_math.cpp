@@ -66,7 +66,9 @@ ut_math_eval (char *inexpr, int varqty, char **vars, double *vals, double *pres)
     // if not, we need to replace it, as muparser won't take it
     if (!status)
     {
-      ut_string_random (8, id, newvars + id);
+      do
+        ut_string_random (8, id, newvars + id);
+      while (strstr (newvars[id], vars[id]));
       ut_string_fnrs (expr, vars[id], newvars[id], INT_MAX);
     }
     else
@@ -297,6 +299,10 @@ ut_math_vars (char *expr, char ***pvars, int *pvarqty)
       }
     }
   }
+
+  // the trailing spaces are messing up ut_string_substrings
+  while (strlen (tmp) > 0 && tmp[strlen (tmp) - 1] == ' ')
+    tmp[strlen (tmp) - 1] = '\0';
 
   ut_string_substrings (tmp, &strings, &stringqty);
 

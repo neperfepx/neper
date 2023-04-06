@@ -27,7 +27,7 @@ net_sort_tess (struct TESS *pTess, char *expr)
   for (i = 1; i <= (*pTess).CellQty; i++)
   {
     for (j = 0; j < varqty; j++)
-      neut_tess_var_val_one (*pTess, NULL, NULL, NULL, cell, i, vars[j],
+      neut_tess_var_val_one (pTess, NULL, NULL, NULL, cell, i, vars[j],
                              vals + j, NULL);
 
     status = ut_math_eval (expr, varqty, vars, vals, &(res[i]));

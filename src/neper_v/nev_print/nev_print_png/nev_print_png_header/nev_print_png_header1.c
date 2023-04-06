@@ -5,20 +5,20 @@
 #include"nev_print_png_header_.h"
 
 void
-nev_print_png_header (FILE * file, struct PRINT Print)
+nev_print_png_header (struct IN_V In, struct PRINT Print, FILE * file)
 {
   int i;
   int *rgb = ut_alloc_1d_int (3);
 
-  if (!ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "pov:objects"))
+  if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov:objects"))
   {
     fprintf (file, "#version 3.7;\n");
     fprintf (file, "#include \"shapes.inc\"\n");
 
-    if (Print.scenebackground)
+    if (In.scenebackground)
     {
       int *rgb = ut_alloc_1d_int (3);
-      ut_color_name_rgb (Print.scenebackground, rgb);
+      ut_color_name_rgb (In.scenebackground, rgb);
       fprintf (file, "background {color rgb<%f,%f,%f>}\n", rgb[0] / 255.,
                rgb[1] / 255., rgb[2] / 255.);
       ut_free_1d_int (&rgb);

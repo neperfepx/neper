@@ -205,7 +205,7 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
       faceinter_rad /= Tess.FaceVerQty[face];
       faceinter_trs /= Tess.FaceVerQty[face];
 
-      fprintf (file, "#declare faceinter_rad = %.12f;\n", faceinter_rad);
+      fprintf (file, "#declare faceinter_rad = " REAL_PRINT_FORMAT ";\n", faceinter_rad);
       fprintf (file,
                "#declare faceinter_texture = texture { pigment { rgbt <0.5,0.5,0.5,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
                faceinter_trs, Print.lightambient, Print.lightdiffuse, Print.lightreflection);

@@ -15,4 +15,4 @@
 
 #include"net_reg.h"
 
-extern void net_reg_init (struct IN_T In, struct TESS Tess, struct REG *pReg);
+extern void net_reg_init (struct IN_T In, struct TESS *pTess, struct REG *pReg);

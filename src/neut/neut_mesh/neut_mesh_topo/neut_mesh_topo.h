@@ -106,6 +106,9 @@ extern "C"
   extern int neut_mesh_elt_neighelts (struct MESH Mesh, int elt, int **pnelts,
 				      int *pneltqty);
 
+  extern void neut_mesh_elt_neighelts_all (struct MESH Mesh, int elt,
+                                           int **pnelts, int *pneltqty);
+
 /// \brief Get the neighboring elts of an elt, which are in a given elset.
 ///
 ///

@@ -5,15 +5,15 @@
 #include"nev_print_vtk_.h"
 
 void
-nev_print_vtk (char *basename, struct PRINT Print,
+nev_print_vtk (struct IN_V In, char *basename,
                struct SIM Sim, struct NODES Nodes, struct MESH *Mesh,
-               struct DATA *pNodeData, struct DATA *MeshData)
+               struct DATA *pNodeData, struct DATA **MeshData)
 {
   FILE *file = NULL;
   char *filename = NULL;
   char *outdir = NULL;
 
-  neut_print_outdir (Print, Sim, "vtk", &outdir);
+  neut_print_outdir (In.outdir, Sim, "vtk", &outdir);
   if (strcmp (outdir, "."))
     ut_sys_mkdir (outdir);
 
@@ -55,10 +55,10 @@ nev_print_vtk (char *basename, struct PRINT Print,
 
   // element data
 
-  if (MeshData[3].ColDataType)
+  if (MeshData[3][0].ColDataType)
   {
-    fprintf (file, "CELL_DATA %d\n", MeshData[3].Qty);
-    nev_print_vtk_coldata (file, MeshData[3]);
+    fprintf (file, "CELL_DATA %d\n", MeshData[3][0].Qty);
+    nev_print_vtk_coldata (file, MeshData[3][0]);
   }
 
   ut_file_close (file, filename, "w");

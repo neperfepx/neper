@@ -45,50 +45,6 @@ net_domain_cylinder_planes (double h, double Rad, int qty, double **eq)
 }
 
 void
-net_domain_stdtriangle_planes (int qty, double **eq)
-{
-  int i;
-  double n[3] = { 0, 0, 1 }, **p = ut_alloc_2d (qty + 1, 3);
-  double *r = ol_r_alloc ();
-  double *q = ol_q_alloc ();
-  double *q2 = ol_q_alloc ();
-  double step, p2[3];
-
-  ut_array_1d_set_4 (eq[0], 0, 0, 0, -1);
-  ut_array_1d_set_4 (eq[1], 1e-6, 0, 0, 1);
-  ut_array_1d_set_4 (eq[2], 0, 0, -1, 0);
-  ut_array_1d_set_4 (eq[3], 0, -OL_IS2, OL_IS2, 0);
-
-  ol_r_set_this (r, 0, 1, 0);
-  ol_rtheta_q (r, -45, q);
-
-  ol_r_set_this (r, 1, 0, 0);
-
-  ol_theta_rad2deg (acos (sqrt (2. / 3)) / qty, &step);
-
-  for (i = 0; i <= qty; i++)
-  {
-    ol_rtheta_q (r, i * step, q2);
-    ol_q_q_q_ref (q, q2, q2);
-    ol_q_ipf_stprojxy (q2, n, p[i]);
-  }
-
-  for (i = 0; i < qty; i++)
-  {
-    ut_array_1d_memcpy (p[i], 3, p2);
-    p2[2] += 1;
-    ut_space_points_plane (p[i], p[i + 1], p2, eq[i + 4]);
-  }
-
-  ol_r_free (r);
-  ol_q_free (q);
-  ol_q_free (q2);
-  ut_free_2d (&p, qty + 1);
-
-  return;
-}
-
-void
 net_domain_tesspoly_planes (struct TESS Tess, int id, int *pqty, double **eq)
 {
   int i, face;

@@ -29,7 +29,6 @@ extern void nev_print_png_tet (FILE *, double *, double *, double *, double *,
 extern void nev_print_png_mesh2d (FILE *, struct NODES, struct MESH, int *,
 			      int **, char *, struct PRINT);
 
-extern void nev_print_png_scale (FILE *, char *, char *, char *);
 extern void nev_print_png_hcp (FILE * file, double *coo, double *rad, char *texture,
                               double brad, char *bordertexture);
 extern void nev_print_png_cone (FILE * file, double *coo1, double *coo2, double rad,

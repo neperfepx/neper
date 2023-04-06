@@ -90,12 +90,6 @@ extern "C"
     int **PolyVerNb;		// PolyVerNb[i][j] (j=1...PolyVerQty[i]) are the
     // numbers of the vertices.
 
-    int *CellTrue;		// true level of the polyhedron (0 if not true, 1
-    // is true, 2 if all neighs are true>=1, 3 if all
-    // neighs are true>=2, etc.
-
-    int *CellBody;		// same than CellTrue, but for body.
-
     // DOMAIN INFORMATION ------------------------------------------------
 
     int *VerOfDomain;		// VerOfDomain[0] = nb of ver of domain.

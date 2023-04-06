@@ -204,12 +204,12 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
         ut_string_string ("random", (*pIn).ori + i);
 
     // oricrysym
-    net_input_treatargs_multiscale ("-oricrysym", &(*pIn).oricrysymstring,
-                                    (*pIn).levelqty, &((*pIn).oricrysym));
+    net_input_treatargs_multiscale ("-crysym", &(*pIn).crysymstring,
+                                    (*pIn).levelqty, &((*pIn).crysym));
 
     for (i = 1; i <= (*pIn).levelqty; i++)
-      if (!strcmp ((*pIn).oricrysym[i], "default"))
-        ut_string_string ("triclinic", (*pIn).oricrysym + i);
+      if (!strcmp ((*pIn).crysym[i], "default"))
+        ut_string_string ("triclinic", (*pIn).crysym + i);
 
     // orioptistop
     net_input_treatargs_multiscale ("-orioptistop", &(*pIn).orioptistopstring,

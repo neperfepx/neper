@@ -25,7 +25,7 @@ nes_convert_write_inputs_file (struct IN_S In, struct FEPXSIM FSim, char *filena
   {
     ut_print_message (0, 4, "%s...\n", filename);
     char *command = ut_alloc_1d_char (1000);
-    sprintf (command, "cp %s/%s %s/inputs/", FSim.fepxdir, filename, In.simdir);
+    sprintf (command, "cp -f %s/%s %s/inputs/", FSim.fepxdir, filename, In.simdir);
     status = system (command);
     ut_free_1d_char (&command);
   }

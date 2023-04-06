@@ -161,7 +161,7 @@ net_ori_uniform_log_var (struct IN_T In, struct OL_SET OSet,
         ol_q_g (q, g);
         for (k = 0; k < 3; k++)
         {
-          ut_array_1d_fprintf_nonl (OOpt.logvar_fp, g[k], 3, "%.12f");
+          ut_array_1d_fprintf_nonl (OOpt.logvar_fp, g[k], 3, REAL_PRINT_FORMAT);
           if (k < 2)
             fprintf (OOpt.logvar_fp, " ");
         }
@@ -169,32 +169,32 @@ net_ori_uniform_log_var (struct IN_T In, struct OL_SET OSet,
       else if (!strcmp (vars[j], "angle-axis"))
       {
         ol_q_rtheta (q, r, &theta);
-        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, r, 3, "%.12f");
-        fprintf (OOpt.logvar_fp, " %.12f", theta);
+        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, r, 3, REAL_PRINT_FORMAT);
+        fprintf (OOpt.logvar_fp, " " REAL_PRINT_FORMAT, theta);
       }
       else if (!strcmp (vars[j], "rodrigues"))
       {
         ol_q_R (q, R);
-        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, R, 3, "%.12f");
+        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, R, 3, REAL_PRINT_FORMAT);
       }
       else if (!strcmp (vars[j], "quaternion"))
-        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, OSet.q[i], 4, "%.12f");
+        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, OSet.q[i], 4, REAL_PRINT_FORMAT);
       else if (!strcmp (vars[j], "euler-bunge"))
       {
         ol_q_e (q, tmp);
-        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, tmp, 3, "%.12f");
+        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, tmp, 3, REAL_PRINT_FORMAT);
       }
       else if (!strcmp (vars[j], "euler-kocks"))
       {
         ol_q_e (q, tmp);
         ol_e_ek (tmp, tmp);
-        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, tmp, 3, "%.12f");
+        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, tmp, 3, REAL_PRINT_FORMAT);
       }
       else if (!strcmp (vars[j], "euler-roe"))
       {
         ol_q_e (q, tmp);
         ol_e_er (tmp, tmp);
-        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, tmp, 3, "%.12f");
+        ut_array_1d_fprintf_nonl (OOpt.logvar_fp, tmp, 3, REAL_PRINT_FORMAT);
       }
       else
         fprintf (OOpt.logvar_fp, "-1");

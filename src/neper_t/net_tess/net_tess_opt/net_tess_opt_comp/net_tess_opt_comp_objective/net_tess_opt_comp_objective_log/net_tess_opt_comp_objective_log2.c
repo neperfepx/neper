@@ -36,21 +36,21 @@ net_tess_opt_comp_objective_log_dis (struct TOPT TOpt, int id)
       if (!strncmp (vars[j], "iter", 4))
         fprintf (TOpt.TDyn.logdis_fp[id], "%d", TOpt.iter);
       else if (!strcmp (vars[j], "x"))
-        fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.curpdf[id].x[i]);
+        fprintf (TOpt.TDyn.logdis_fp[id], REAL_PRINT_FORMAT, TOpt.curpdf[id].x[i]);
       else if (!strcmp (vars[j], "tarpdf"))
-        fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.tarpdf[id].y[i]);
+        fprintf (TOpt.TDyn.logdis_fp[id], REAL_PRINT_FORMAT, TOpt.tarpdf[id].y[i]);
       else if (!strcmp (vars[j], "tarcdf"))
-        fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.tarcdf[id].y[i]);
+        fprintf (TOpt.TDyn.logdis_fp[id], REAL_PRINT_FORMAT, TOpt.tarcdf[id].y[i]);
       else if (!strcmp (vars[j], "curpdf"))
-        fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.curpdf[id].y[i]);
+        fprintf (TOpt.TDyn.logdis_fp[id], REAL_PRINT_FORMAT, TOpt.curpdf[id].y[i]);
       else if (!strcmp (vars[j], "curcdf"))
-        fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.curcdf[id].y[i]);
+        fprintf (TOpt.TDyn.logdis_fp[id], REAL_PRINT_FORMAT, TOpt.curcdf[id].y[i]);
       else if (!strcmp (vars[j], "tarpdf0"))
-        fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.tarpdf0[id].y[i]);
+        fprintf (TOpt.TDyn.logdis_fp[id], REAL_PRINT_FORMAT, TOpt.tarpdf0[id].y[i]);
       else if (!strcmp (vars[j], "tarcdf0"))
-        fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.tarcdf0[id].y[i]);
+        fprintf (TOpt.TDyn.logdis_fp[id], REAL_PRINT_FORMAT, TOpt.tarcdf0[id].y[i]);
       else if (!strcmp (vars[j], "curcdf0"))
-        fprintf (TOpt.TDyn.logdis_fp[id], "%.12f", TOpt.curcdf0[id].y[i]);
+        fprintf (TOpt.TDyn.logdis_fp[id], REAL_PRINT_FORMAT, TOpt.curcdf0[id].y[i]);
       else
         fprintf (TOpt.TDyn.logdis_fp[id], "-1");
 
@@ -87,13 +87,13 @@ net_tess_opt_comp_objective_log_var (struct TOPT TOpt)
       else if (!strcmp (vars[j], "id"))
         fprintf (TOpt.TDyn.logvar_fp, "%d", i);
       else if (!strcmp (vars[j], "x"))
-        fprintf (TOpt.TDyn.logvar_fp, "%.12f", TOpt.SSet.SeedCoo0[i][0]);
+        fprintf (TOpt.TDyn.logvar_fp, REAL_PRINT_FORMAT, TOpt.SSet.SeedCoo0[i][0]);
       else if (!strcmp (vars[j], "y"))
-        fprintf (TOpt.TDyn.logvar_fp, "%.12f", TOpt.SSet.SeedCoo0[i][1]);
+        fprintf (TOpt.TDyn.logvar_fp, REAL_PRINT_FORMAT, TOpt.SSet.SeedCoo0[i][1]);
       else if (!strcmp (vars[j], "z"))
-        fprintf (TOpt.TDyn.logvar_fp, "%.12f", TOpt.SSet.SeedCoo0[i][2]);
+        fprintf (TOpt.TDyn.logvar_fp, REAL_PRINT_FORMAT, TOpt.SSet.SeedCoo0[i][2]);
       else if (!strcmp (vars[j], "w"))
-        fprintf (TOpt.TDyn.logvar_fp, "%.12f", TOpt.SSet.SeedWeight[i]);
+        fprintf (TOpt.TDyn.logvar_fp, REAL_PRINT_FORMAT, TOpt.SSet.SeedWeight[i]);
       else
         fprintf (TOpt.TDyn.logvar_fp, "-1");
 
@@ -126,18 +126,18 @@ net_tess_opt_comp_objective_log_val (struct TOPT TOpt)
     if (!strncmp (vars[i], "iter", 4))
       fprintf (TOpt.TDyn.logval_fp, "%d", TOpt.TDyn.iter);
     else if (!strcmp (vars[i], "val"))
-      fprintf (TOpt.TDyn.logval_fp, "%.12f", TOpt.objval);
+      fprintf (TOpt.TDyn.logval_fp, REAL_PRINT_FORMAT, TOpt.objval);
     else if (!strcmp (vars[i], "valmin"))
-      fprintf (TOpt.TDyn.logval_fp, "%.12f", TOpt.objvalmin[TOpt.iter]);
+      fprintf (TOpt.TDyn.logval_fp, REAL_PRINT_FORMAT, TOpt.objvalmin[TOpt.iter]);
     else if (!strcmp (vars[i], "val0"))
-      fprintf (TOpt.TDyn.logval_fp, "%.12f", TOpt.objval0);
+      fprintf (TOpt.TDyn.logval_fp, REAL_PRINT_FORMAT, TOpt.objval0);
     else if (!strcmp (vars[i], "valmin0"))
-      fprintf (TOpt.TDyn.logval_fp, "%.12f", TOpt.objvalmin0[TOpt.iter]);
+      fprintf (TOpt.TDyn.logval_fp, REAL_PRINT_FORMAT, TOpt.objvalmin0[TOpt.iter]);
     else if (!strncmp (vars[i], "val(", 4))
     {
       sscanf (vars[i], "val(%d)", &id);
       if (id >= 1 && id <= TOpt.tarqty)
-        fprintf (TOpt.TDyn.logval_fp, "%.12f", TOpt.curval[id - 1]);
+        fprintf (TOpt.TDyn.logval_fp, REAL_PRINT_FORMAT, TOpt.curval[id - 1]);
       else
         fprintf (TOpt.TDyn.logval_fp, "-1");
     }
@@ -145,19 +145,19 @@ net_tess_opt_comp_objective_log_val (struct TOPT TOpt)
     {
       sscanf (vars[i], "val0(%d)", &id);
       if (id >= 1 && id <= TOpt.tarqty)
-        fprintf (TOpt.TDyn.logval_fp, "%.12f", TOpt.curval0[id - 1]);
+        fprintf (TOpt.TDyn.logval_fp, REAL_PRINT_FORMAT, TOpt.curval0[id - 1]);
       else
         fprintf (TOpt.TDyn.logval_fp, "-1");
     }
     else if (!strcmp (vars[i], "eps"))
     {
       neut_topt_eps (TOpt, &val);
-      fprintf (TOpt.TDyn.logval_fp, "%.12f", val);
+      fprintf (TOpt.TDyn.logval_fp, REAL_PRINT_FORMAT, val);
     }
     else if (!strcmp (vars[i], "reps"))
     {
       neut_topt_reps (TOpt, &val);
-      fprintf (TOpt.TDyn.logval_fp, "%.12f", val);
+      fprintf (TOpt.TDyn.logval_fp, REAL_PRINT_FORMAT, val);
     }
     else if (!strcmp (vars[i], "loop"))
       fprintf (TOpt.TDyn.logval_fp, "%d", TOpt.loop);
@@ -200,15 +200,15 @@ net_tess_opt_comp_objective_log_tesr (struct TOPT TOpt)
         else if (!strcmp (vars[k], "id"))
           fprintf (TOpt.TDyn.logtesr_fp, "%d", i);
         else if (!strcmp (vars[k], "x"))
-          fprintf (TOpt.TDyn.logtesr_fp, "%f", TOpt.tarcellpts[i][j][0]);
+          fprintf (TOpt.TDyn.logtesr_fp, REAL_PRINT_FORMAT, TOpt.tarcellpts[i][j][0]);
         else if (!strcmp (vars[k], "y"))
-          fprintf (TOpt.TDyn.logtesr_fp, "%f", TOpt.tarcellpts[i][j][1]);
+          fprintf (TOpt.TDyn.logtesr_fp, REAL_PRINT_FORMAT, TOpt.tarcellpts[i][j][1]);
         else if (!strcmp (vars[k], "z"))
-          fprintf (TOpt.TDyn.logtesr_fp, "%f", TOpt.tarcellpts[i][j][2]);
+          fprintf (TOpt.TDyn.logtesr_fp, REAL_PRINT_FORMAT, TOpt.tarcellpts[i][j][2]);
         else if (!strcmp (vars[k], "w"))
-          fprintf (TOpt.TDyn.logtesr_fp, "%f", TOpt.tarcellptweights[i][j]);
+          fprintf (TOpt.TDyn.logtesr_fp, REAL_PRINT_FORMAT, TOpt.tarcellptweights[i][j]);
         else if (!strcmp (vars[k], "dist"))
-          fprintf (TOpt.TDyn.logtesr_fp, "%f", TOpt.tarcellptsdist[i][j]);
+          fprintf (TOpt.TDyn.logtesr_fp, REAL_PRINT_FORMAT, TOpt.tarcellptsdist[i][j]);
         else
           fprintf (TOpt.TDyn.logtesr_fp, "-1");
 

@@ -55,7 +55,7 @@ neut_tess_fprintf_gmsh (FILE * file, struct TESS Tess)
 
   for (i = 1; i <= Tess.VerQty; i++)
     if (!Tess.VerState || Tess.VerState[i] != -1)
-      fprintf (file, "Point (%d) = {%.12f,%.12f,%.12f};\n", i,
+      fprintf (file, "Point (%d) = {" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "};\n", i,
                Tess.VerCoo[i][0], Tess.VerCoo[i][1], Tess.VerCoo[i][2]);
 
   for (i = 1; i <= Tess.EdgeQty; i++)
@@ -113,7 +113,7 @@ neut_tess_fprintf_ply (FILE * file, struct TESS Tess)
 
   for (i = 1; i <= Tess.VerQty; i++)
     if (Tess.VerState[i] != -1)
-      fprintf (file, "%.12f %.12f %.12f\n", Tess.VerCoo[i][0],
+      fprintf (file, REAL_PRINT_FORMAT " " REAL_PRINT_FORMAT " " REAL_PRINT_FORMAT "\n", Tess.VerCoo[i][0],
                Tess.VerCoo[i][1], Tess.VerCoo[i][2]);
 
   for (i = 1; i <= Tess.FaceQty; i++)
@@ -151,7 +151,7 @@ neut_tess_fprintf_obj (FILE * file, struct TESS Tess)
   for (i = 1; i <= Tess.VerQty; i++)
   {
     fprintf (file, "v ");
-    ut_array_1d_fprintf (file, Tess.VerCoo[i], 3, "%.12f");
+    ut_array_1d_fprintf (file, Tess.VerCoo[i], 3, REAL_PRINT_FORMAT);
   }
 
   if (Tess.Dim == 2)
@@ -207,7 +207,7 @@ neut_tess_fprintf_dec (FILE * file, struct TESS Tess)
             fprintf (file, "                  ");
 
           for (l = 0; l < 3; l++)
-            fprintf (file, "%.12f ", Tess.VerCoo[ver][l]);
+            fprintf (file, REAL_PRINT_FORMAT " ", Tess.VerCoo[ver][l]);
 
           if (!(j == Tess.PolyFaceQty[i] && k == 1))
             fprintf (file, "&\n");
@@ -221,7 +221,7 @@ neut_tess_fprintf_dec (FILE * file, struct TESS Tess)
             fprintf (file, "                  ");
 
           for (l = 0; l < 3; l++)
-            fprintf (file, "%.12f ", Tess.VerCoo[ver][l]);
+            fprintf (file, REAL_PRINT_FORMAT " ", Tess.VerCoo[ver][l]);
 
           if (!(j == Tess.PolyFaceQty[i] && k == Tess.FaceVerQty[face]))
             fprintf (file, "&\n");
@@ -254,7 +254,7 @@ neut_tess_fprintf_fe (FILE * file, struct TESS Tess)
   for (i = 1; i <= Tess.VerQty; i++)
   {
     fprintf (file, "%d ", i);
-    ut_array_1d_fprintf (file, Tess.VerCoo[i], 3, "%.12f");
+    ut_array_1d_fprintf (file, Tess.VerCoo[i], 3, REAL_PRINT_FORMAT);
   }
 
   fprintf (file, "\nedges\n");
@@ -315,13 +315,15 @@ neut_tess_fprintf_stl (FILE * file, struct TESS Tess)
     for (j = 1; j <= M.EltQty; j++)
     {
       neut_mesh_elt_normal (M, N, j, n);
-      fprintf (file, "  facet normal %.12f %.12f %.12f\n", n[0], n[1], n[2]);
+      fprintf (file, "  facet normal ");
+      ut_array_1d_fprintf (file, n, 3, REAL_PRINT_FORMAT);
       fprintf (file, "    outer loop\n");
       for (k = 0; k < 3; k++)
-        fprintf (file, "      vertex %.12f %.12f %.12f\n",
-                 N.NodeCoo[M.EltNodes[j][k]][0],
-                 N.NodeCoo[M.EltNodes[j][k]][1],
-                 N.NodeCoo[M.EltNodes[j][k]][2]);
+      {
+        fprintf (file, "      vertex ");
+        ut_array_1d_fprintf (file, N.NodeCoo[M.EltNodes[j][k]], 3,
+                             REAL_PRINT_FORMAT);
+      }
       fprintf (file, "    endloop\n");
       fprintf (file, "  endfacet\n");
     }
@@ -392,13 +394,14 @@ neut_tess_cell_fprintf_stl (FILE * file, struct TESS Tess, int cell)
     for (j = 1; j <= M.EltQty; j++)
     {
       neut_mesh_elt_normal (M, N, j, n);
-      fprintf (file, "  facet normal %.12f %.12f %.12f\n", n[0], n[1], n[2]);
+      fprintf (file, "  facet normal ");
+      ut_array_1d_fprintf (file, n, 3, REAL_PRINT_FORMAT);
       fprintf (file, "    outer loop\n");
       for (k = 0; k < 3; k++)
-        fprintf (file, "      vertex %.12f %.12f %.12f\n",
-                 N.NodeCoo[M.EltNodes[j][k]][0],
-                 N.NodeCoo[M.EltNodes[j][k]][1],
-                 N.NodeCoo[M.EltNodes[j][k]][2]);
+      {
+        fprintf (file, "      vertex ");
+        ut_array_1d_fprintf (file, N.NodeCoo[M.EltNodes[j][k]], 3, REAL_PRINT_FORMAT);
+      }
       fprintf (file, "    endloop\n");
       fprintf (file, "  endfacet\n");
     }

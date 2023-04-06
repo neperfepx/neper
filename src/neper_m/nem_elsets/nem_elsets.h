@@ -2,4 +2,4 @@
 /* Copyright (C) 2003-2022, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
-extern void nem_elsets (struct IN_M, struct TESS Tess, struct NODES, struct MESH*);
+extern void nem_elsets (struct IN_M, struct TESS *pTess, struct NODES, struct MESH*);

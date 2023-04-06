@@ -59,6 +59,11 @@ extern "C"
     double CooFact;             // indexed 1
 
     // needed by: csys
+    double **WeightData;        // indexed 1
+    char *WeightDataType;       // indexed 1
+    double *Weight;             // indexed 1
+
+    // needed by: csys
     double **LengthData;        // indexed 1
     char *LengthDataType;       // indexed 1
     double *Length;             // indexed 1

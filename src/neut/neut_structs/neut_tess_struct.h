@@ -79,21 +79,15 @@ extern "C"
     // improved
     char *CellCrySym;
 
-    // "True" levels of the cells. true>0 means that the shape is not
-    // influenced by the domain boundary.
-    // 0: not true;
-    // 1: true;
-    // 2: all neighs are true >= 1;
-    // 3: all neighs are true >= 2, etc.
-    int *CellTrue;
-
     // "Body" levels of the cells. body>0 means that the cell does not
     // intersect the domain boundary.
     // 0: not body;
     // 1: body;
     // 2: all neighs are body >= 1;
     // 3: all neighs are body >= 2, etc.
-    int *CellBody;
+    int **CellBody;
+    int CellBodyQty;
+    char **CellBodyExpr;
 
     // SEED INFORMATION --------------------------------------------------
 

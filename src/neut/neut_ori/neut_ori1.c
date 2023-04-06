@@ -479,7 +479,7 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
 
         ol_q_e (q[i], e);
         if (!strcmp (format, "ascii"))
-          ol_e_fprintf (file, e, "%17.12f");
+          ol_e_fprintf (file, e, REAL_PRINT_FORMAT5);
         else
           fwrite (e, sizeof (double), 3, file);
       }
@@ -497,7 +497,7 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
       ol_q_e (q[i], e);
       ol_e_ek (e, e);
       if (!strcmp (format, "ascii"))
-        ol_e_fprintf (file, e, "%17.12f");
+        ol_e_fprintf (file, e, REAL_PRINT_FORMAT5);
       else
         fwrite (e, sizeof (double), 3, file);
     }
@@ -515,7 +515,7 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
         ol_q_e (q[i], e);
         ol_e_er (e, e);
         if (!strcmp (format, "ascii"))
-          ol_e_fprintf (file, e, "%17.12f");
+          ol_e_fprintf (file, e, REAL_PRINT_FORMAT5);
         else
           fwrite (e, sizeof (double), 3, file);
       }
@@ -533,11 +533,11 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
         ol_q_g (q[i], g);
         if (!strcmp (format, "ascii"))
         {
-          ut_array_1d_fprintf_nonl (file, g[0], 3, "%15.12f");
+          ut_array_1d_fprintf_nonl (file, g[0], 3, REAL_PRINT_FORMAT3);
           fprintf (file, " ");
-          ut_array_1d_fprintf_nonl (file, g[1], 3, "%15.12f");
+          ut_array_1d_fprintf_nonl (file, g[1], 3, REAL_PRINT_FORMAT3);
           fprintf (file, " ");
-          ut_array_1d_fprintf      (file, g[2], 3, "%15.12f");
+          ut_array_1d_fprintf      (file, g[2], 3, REAL_PRINT_FORMAT3);
         }
         else
         {
@@ -560,7 +560,7 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
 
         ol_q_rtheta (q[i], r, &theta);
         if (!strcmp (format, "ascii"))
-          ol_rtheta_fprintf (file, r, theta, "%17.12f");
+          ol_rtheta_fprintf (file, r, theta, REAL_PRINT_FORMAT5);
         else
         {
           fwrite (r, sizeof (double), 3, file);
@@ -580,7 +580,7 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
 
         ol_q_theta (q[i], &theta);
         if (!strcmp (format, "ascii"))
-          ol_theta_fprintf (file, theta, "%17.12f");
+          ol_theta_fprintf (file, theta, REAL_PRINT_FORMAT5);
         else
           fwrite (&theta, sizeof (double), 1, file);
       }
@@ -596,7 +596,7 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
 
         ol_q_R (q[i], R);
         if (!strcmp (format, "ascii"))
-          ol_R_fprintf (file, R, "%17.12f");
+          ol_R_fprintf (file, R, REAL_PRINT_FORMAT5);
         else
           fwrite (R, sizeof (double), 3, file);
       }
@@ -611,7 +611,7 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
           fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
       if (!strcmp (format, "ascii"))
-        ol_q_fprintf (file, q[i], "%17.12f");
+        ol_q_fprintf (file, q[i], REAL_PRINT_FORMAT5);
       else
         fwrite (q[i], sizeof (double), 4, file);
     }

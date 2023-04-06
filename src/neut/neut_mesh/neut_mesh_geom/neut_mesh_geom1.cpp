@@ -1097,7 +1097,7 @@ neut_mesh_elt_node_angle (struct NODES Nodes, struct MESH Mesh, int elt,
 }
 
 int
-neut_mesh_point_elt (struct MESH Mesh, struct NODES Nodes, double *coo,
+neut_mesh_point_elt (struct NODES Nodes, struct MESH Mesh, double *coo,
                      int *pelt)
 {
   int i, status;
@@ -1106,7 +1106,7 @@ neut_mesh_point_elt (struct MESH Mesh, struct NODES Nodes, double *coo,
   status = 1;
   for (i = 1; i <= Mesh.ElsetQty; i++)
   {
-    status = neut_mesh_elset_point_elt (Mesh, Nodes, i, coo, pelt);
+    status = neut_mesh_elset_point_elt (Nodes, Mesh, i, coo, pelt);
 
     if (status == 0)
       break;
@@ -1116,7 +1116,7 @@ neut_mesh_point_elt (struct MESH Mesh, struct NODES Nodes, double *coo,
 }
 
 int
-neut_mesh_elset_point_elt (struct MESH Mesh, struct NODES Nodes, int elset,
+neut_mesh_elset_point_elt (struct NODES Nodes, struct MESH Mesh, int elset,
                            double *coo, int *pelt)
 {
   int i, inelt;
@@ -1130,7 +1130,7 @@ neut_mesh_elset_point_elt (struct MESH Mesh, struct NODES Nodes, int elset,
 
   for (i = 1; i <= Mesh.Elsets[elset][0]; i++)
   {
-    inelt = neut_mesh_point_elt_in (Mesh, Nodes, coo, Mesh.Elsets[elset][i]);
+    inelt = neut_mesh_point_elt_in (Nodes, Mesh, coo, Mesh.Elsets[elset][i]);
 
     if (inelt == 1)
     {
@@ -1143,7 +1143,7 @@ neut_mesh_elset_point_elt (struct MESH Mesh, struct NODES Nodes, int elset,
 }
 
 int
-neut_mesh_point_elset (struct MESH Mesh, struct NODES Nodes, double *coo,
+neut_mesh_point_elset (struct NODES Nodes, struct MESH Mesh, double *coo,
                        int *elsetlist, int elsetqty, int *pelset)
 {
   int i, elt = -1, status;
@@ -1153,13 +1153,13 @@ neut_mesh_point_elset (struct MESH Mesh, struct NODES Nodes, double *coo,
     for (i = 0; i < elsetqty; i++)
     {
       status =
-        neut_mesh_elset_point_elt (Mesh, Nodes, elsetlist[i], coo, &elt);
+        neut_mesh_elset_point_elt (Nodes, Mesh, elsetlist[i], coo, &elt);
       if (!status)
         break;
     }
   }
   else
-    neut_mesh_point_elt (Mesh, Nodes, coo, &elt);
+    neut_mesh_point_elt (Nodes, Mesh, coo, &elt);
 
   (*pelset) = (elt != -1) ? Mesh.EltElset[elt] : -1;
 
@@ -1235,7 +1235,7 @@ neut_mesh_elset_points_closestelts (struct MESH Mesh, struct NODES Nodes,
                                                    nf_tree, testqty[j],
                                                    elts + i);
 
-        if (neut_mesh_point_elt_in (Mesh, Nodes, coos[i], elts[i]))
+        if (neut_mesh_point_elt_in (Nodes, Mesh, coos[i], elts[i]))
           break;
       }
 
@@ -1394,7 +1394,7 @@ neut_mesh_point_proj_alongonto (double *Coo, double *n, struct NODES N,
 }
 
 int
-neut_mesh_point_elt_in (struct MESH Mesh, struct NODES Nodes, double *coo,
+neut_mesh_point_elt_in (struct NODES Nodes, struct MESH Mesh, double *coo,
                         int elt)
 {
   if (Mesh.Dimension == 3)
@@ -1504,7 +1504,11 @@ neut_mesh_elt_size (struct NODES Nodes, struct MESH Mesh, int elt, double *psize
 int
 neut_mesh_elset_size (struct NODES Nodes, struct MESH Mesh, int elset, double *psize)
 {
-  if (Mesh.Dimension == 2)
+  if (Mesh.Dimension == 0)
+    (*psize) = 1; // used as weight somewehere
+  else if (Mesh.Dimension == 1)
+    neut_mesh_elset_length (Nodes, Mesh, elset, psize);
+  else if (Mesh.Dimension == 2)
     neut_mesh_elset_area (Nodes, Mesh, elset, psize);
   else if (Mesh.Dimension == 3)
     neut_mesh_elset_volume (Nodes, Mesh, elset, psize);

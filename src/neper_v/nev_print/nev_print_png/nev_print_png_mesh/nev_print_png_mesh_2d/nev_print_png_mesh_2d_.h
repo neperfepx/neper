@@ -15,10 +15,10 @@
 extern void nev_print_png_mesh_2d_print_edges (FILE * file, struct PRINT Print,
 					   struct NODES N,
 					   struct MESH M1D,
-					   struct DATA *MeshData);
+					   struct DATA **MeshData);
 
 extern void nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT
 					   Print, struct NODES N,
 					   struct MESH M2D,
 					   struct DATA NodeData,
-					   struct DATA *MeshData);
+					   struct DATA **MeshData);

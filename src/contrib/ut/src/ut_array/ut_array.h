@@ -445,11 +445,19 @@ extern "C"
 
 /// \brief Get the mean of a column of a 2D array of \c double
 /// \param array: array
+/// \param size1: size (1st index)
 /// \param col: column (2nd index)
-/// \param size: size
 /// \return mean
 /// \remark Failure if \c size <= 0
-  extern double ut_array_2d_col_mean (double **array, int size1, int size2);
+  extern double ut_array_2d_col_mean (double **array, int size1, int col);
+
+/// \brief Get the weighted mean of a column of a 2D array of \c double
+/// \param array: array
+/// \param size1: size (1st index)
+/// \param col: column (2nd index)
+/// \return mean
+/// \remark Failure if \c size <= 0
+  extern double ut_array_2d_col_wmean (double **array, double *weight, int size1, int col);
 
 /// \brief Get the mean of a 1D array of \c int
 /// \param array: array
@@ -503,6 +511,14 @@ extern "C"
 /// \return Lmean
 /// \remark Failure if \c size <= 0
   extern double ut_array_1d_lmean (double *array, int size, double p);
+
+/// \brief Get the Lp norm of a 1D array of \c double
+/// \param array: array
+/// \param size: size of the array
+/// \param p: power
+/// \return Lnorm
+/// \remark Failure if \c size <= 0
+  extern double ut_array_1d_lnorm (double *array, int size, double p);
 
 /// \brief Get the Lp mean (specified as an expression) of a 1D array of \c double
 /// \param array: array
@@ -1822,6 +1838,29 @@ extern "C"
 /// \note \c format can be %d, in which case values rounded to the nearest integers are written.
   extern int ut_array_1d_fprintf (FILE * file, double *array, int size,
                                   const char *format);
+
+/// \brief Write a 1D array of \c double on one column
+/// \param file: file pointer
+/// \param array: array
+/// \param size: size of the array
+/// \param format: format (usually "%f")
+/// \return 1 on success, undefined otherwise
+/// \note A newline is written at the end.
+/// \note \c format can be %d, in which case values rounded to the nearest integers are written.
+  extern int ut_array_1d_fprintf_column (FILE * file, double *array, int size,
+                                  const char *format);
+
+/// \brief Write a 1D array of \c double on one column
+/// \param filename: file name
+/// \param array: array
+/// \param size: size of the array
+/// \param format: format (usually "%f")
+/// \param mode: file opening mode, "w" (verbose) or "W" (not verbose)
+/// \return 1 on success, undefined otherwise
+/// \note A newline is written at the end.
+/// \note \c format can be %d, in which case values rounded to the nearest integers are written.
+  extern int ut_array_1d_fnprintf_column (char *filename, double *array, int size,
+                                  const char *format, char *mode);
 
 /// \brief Write a 1D array of \c int
 /// \param file: file pointer

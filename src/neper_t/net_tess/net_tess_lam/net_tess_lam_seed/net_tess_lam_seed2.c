@@ -19,7 +19,7 @@ net_tess_lam_seed_readargs (char *morpho, struct MTESS MTess,
   (*pvqty) = 0;
   ut_string_string ("none", pwtype);
   ut_string_string ("random", pvtype);
-  ut_string_string ("expr", ppostype);
+  ut_string_string ("scal", ppostype);
   ut_string_string ("random", ppos);
   (*preps) = 1e-2;
 

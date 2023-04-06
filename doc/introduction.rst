@@ -97,19 +97,19 @@ This procedure uses the default configuration options and should work out-of-the
 Fine Configuration
 ~~~~~~~~~~~~~~~~~~
 
-The locations where files are installed, which dependencies are included and other dependency information can be specified, before installation, using CMake variables.   This can be done using
+The locations where files are installed, which dependencies are included, other dependency information and program configuration options can be specified, before installation, using CMake variables.   This can be done using a terminal tool:
 
 .. code-block:: console
 
   $ ccmake ..
 
-for an interactive command-line tool, using
+or an interactive tool:
 
 .. code-block:: console
 
   $ cmake-gui ..
 
-for an interactive graphical tool, or directly at the command line, using Cmake's :data:`-D` option:
+or directly at the command line, using Cmake's :data:`-D` option:
 
 .. code-block:: console
 
@@ -149,6 +149,12 @@ Finally, other third-party libraries are directly included in the source code (s
 - The `muparser <https://beltoforion.de/en/muparser>`_ library.
 
 - The `openGJK <https://github.com/MattiaMontanari/openGJK>`_ library.
+
+The program configuration variables concern the printing format of the real numbers, in the result files (:file:`.tess`, :file:`.msh`, etc.):
+
+- :code:`REAL_PRINT_FORMAT`, default :code:`"%.12f"` (12 decimal digits);
+- :code:`REAL_PRINT_FORMAT3`, default :code:`"%15.12f"` (12 decimal digits, 15 total digits);
+- :code:`REAL_PRINT_FORMAT5`, default :code:`"%17.12f"` (12 decimal digits, 17 total digits).
 
 Testing Neper
 -------------
@@ -216,7 +222,7 @@ String completion is available for all options, so they may be abbreviated as lo
 
 Logical options can be enabled or disabled by providing argument values of :data:`1` or :data:`0`, respectively.  Integer or real arguments can be written as numeral values or :ref:`mathematical_and_logical_expressions`.  For instance, in module -T, option :data:`-rcl 0.5` can also be written as :data:`-rcl 1/2` or :data:`-rcl "cos(pi/3)"`.  For some options, different values can be specified to different entities by loading them from an external :ref:`data_file` (or similar), using :data:`file(<file_name>)`.  For the more complex case of a multiscale tessellation, a :ref:`multiscale_cell_file` can also be used, and loaded using :data:`msfile(<file_name>)`.
 
-Module -V shows some exceptions with respect to these rules: the argument cannot be listed in arbitrary order, string completion is not available, and option :option:`-loop` takes several arguments.
+Module -V shows some exceptions with respect to these rules: the argument can only be listed in arbitrary order before their corresponding :option:`-print` call, string completion is not available for custom input options, and option :option:`-loop` takes several arguments.
 
 Argument Separators
 ~~~~~~~~~~~~~~~~~~~

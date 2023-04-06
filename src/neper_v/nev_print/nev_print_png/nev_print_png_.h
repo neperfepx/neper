@@ -8,6 +8,7 @@
 #include<math.h>
 
 #include"ut.h"
+#include"../../structIn_v.h"
 #include"neut_v.h"
 // #include "nev_print_png_init/nev_print_png_init.h"
 #include "nev_print_png_header/nev_print_png_header.h"

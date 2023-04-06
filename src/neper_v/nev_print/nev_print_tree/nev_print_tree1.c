@@ -5,7 +5,7 @@
 #include"nev_print_tree_.h"
 
 void
-nev_print_tree (char *basename, struct PRINT Print, struct SIM Sim)
+nev_print_tree (struct IN_V In, char *basename, struct SIM Sim)
 {
   char *filename = NULL, *outdir = NULL;
   int imagewidth, imageheight;
@@ -18,7 +18,7 @@ nev_print_tree (char *basename, struct PRINT Print, struct SIM Sim)
     return;
   }
 
-  neut_print_outdir (Print, Sim, "pf", &outdir);
+  neut_print_outdir (In.outdir, Sim, "pf", &outdir);
   if (strcmp (outdir, "."))
     ut_sys_mkdir (outdir);
 
@@ -26,11 +26,11 @@ nev_print_tree (char *basename, struct PRINT Print, struct SIM Sim)
 
   ut_file_dir_basename_extension_filename (outdir, basename, "asy", &filename);
 
-  neut_print_imagesize (Print, &imagewidth, &imageheight);
-  neut_asy_convert (Print.asymptote, filename, imagewidth, imageheight,
-                    Print.imageformat, 2);
+  neut_print_imagesize (In.imagesize, &imagewidth, &imageheight);
+  neut_asy_convert (In.asymptote, filename, imagewidth, imageheight,
+                    In.imageformat, 2);
 
-  if (!ut_list_testelt (Print.imageformat, NEUT_SEP_NODEP, "asy"))
+  if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "asy"))
     remove (filename);
 
   ut_free_1d_char (&filename);

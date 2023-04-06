@@ -193,6 +193,9 @@ add_library(neper_t
 ./net_domain/net_domain_cube/net_domain_cube2.c
 ./net_domain/net_domain_cube/net_domain_cube1.c
 ./net_domain/net_domain_cube/net_domain_cube3.c
+./net_domain/net_domain_stdtriangle/net_domain_stdtriangle2.c
+./net_domain/net_domain_stdtriangle/net_domain_stdtriangle1.c
+./net_domain/net_domain_stdtriangle/net_domain_stdtriangle3.c
 ./net_dim/net_dim1.c
 ./neper_t.c
 )

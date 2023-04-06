@@ -5,7 +5,7 @@
 #include "net_stat_.h"
 
 void
-net_stat (struct IN_T In, struct TESS Tess, struct TESR *pTesr,
+net_stat (struct IN_T In, struct TESS *pTess, struct TESR *pTesr,
           struct POINT Point)
 {
   int i, qty, stattess, stattesr, statpoint;
@@ -92,14 +92,14 @@ net_stat (struct IN_T In, struct TESS Tess, struct TESR *pTesr,
 
     if (!strcmp (data[i][0], "seed") || !strcmp (data[i][0], "cell"))
     {
-      if (Tess.Dim > 0)
+      if ((*pTess).Dim > 0)
         stattess = 1;
       else if ((*pTesr).Dim > 0)
         stattesr = 1;
     }
     if (!strcmp (data[i][0], "group"))
     {
-      if (Tess.Dim > 0)
+      if ((*pTess).Dim > 0)
         stattess = 1;
       else if ((*pTesr).Dim > 0)
         stattesr = 1;
@@ -116,7 +116,7 @@ net_stat (struct IN_T In, struct TESS Tess, struct TESR *pTesr,
     if (stattess)
     {
       file = ut_file_open (name, "w");
-      net_stat_tess (file, data[i][0], data[i][1], Tess);
+      net_stat_tess (file, data[i][0], data[i][1], pTess);
       ut_file_close (file, name, "w");
     }
     else if (stattesr)
@@ -128,7 +128,7 @@ net_stat (struct IN_T In, struct TESS Tess, struct TESR *pTesr,
     else if (statpoint)
     {
       file = ut_file_open (name, "w");
-      net_stat_point (file, data[i][1], Point, Tess);
+      net_stat_point (file, data[i][1], Point, (*pTess));
       ut_file_close (file, name, "w");
     }
     ut_free_1d_char (&name);

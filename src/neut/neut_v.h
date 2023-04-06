@@ -35,6 +35,7 @@ extern "C"
 #include "neut_point/neut_point.h"
 #include "neut_part/neut_part.h"
 #include "neut_sim/neut_sim.h"
+#include "neut_pf/neut_pf.h"
 
 #endif				/* NEUT_V_H */
 

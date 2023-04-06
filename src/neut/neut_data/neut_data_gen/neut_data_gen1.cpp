@@ -22,30 +22,45 @@ neut_data_coldatatype_size (struct DATA Data, int *psize)
   return;
 }
 
+// needs improvements
 int
 neut_data_value_type (struct SIM Sim, char *entity, char *attribute,
                       char *value, char **ptype)
 {
   int status = 0;
-  double **g = ol_g_alloc ();
   struct SIMRES SimRes;
 
   neut_simres_set_zero (&SimRes);
 
-  if (ut_color_name_isvalid (value))
-    ut_string_string ("col", ptype);
+  // type "scal" can be an integer, real, of file().
 
-  else if (!ol_label_g (value, g))
-    ut_string_string ("ori", ptype);
+  // depending on the attribute, we should know what to expect
+  // should be consistent with the doc
+  if ( !strcmp (attribute, "rad"))
+    ut_string_string ("scal", ptype);
 
-  else if (!strncmp (value, "file(", 5))
+  else if (!strcmp (attribute, "trs"))
+    ut_string_string ("scal", ptype);
+
+  else if (!strcmp (attribute, "weight"))
+    ut_string_string ("scal", ptype);
+
+  else if (!strcmp (attribute, "coo"))
+    ut_string_string ("coo", ptype);
+
+  else if (!strcmp (attribute, "col"))
   {
-    if (!strcmp (attribute, "coo"))
-      ut_string_string ("coo", ptype);
+    if (ut_color_name_isvalid (value))
+      ut_string_string ("col", ptype);
+    else if (!strncmp (value, "file(", 5))
+      ut_string_string ("col", ptype);
     else
-      status = -1;
+      ut_string_string ("scal", ptype);
   }
 
+  (void) entity;
+  (void) Sim;
+  /*
   else if (!neut_sim_isvoid (Sim))
   {
     neut_sim_simres (Sim, entity, value, &SimRes);
@@ -54,9 +69,8 @@ neut_data_value_type (struct SIM Sim, char *entity, char *attribute,
   }
 
   else
-    ut_string_string ("expr", ptype);
-
-  ol_g_free (g);
+    ut_string_string ("scal", ptype);
+  */
 
   neut_simres_free (&SimRes);
 
@@ -238,29 +252,18 @@ neut_data_col_color (double **data, int size, int **Col)
 }
 
 void
-neut_data_tr_tr (double **data, int size, double *trs)
+neut_data_real_real (double **data, int size, double *res)
 {
   int i;
 
   for (i = 1; i <= size; i++)
-    trs[i] = data[i][0];
+    res[i] = data[i][0];
 
   return;
 }
 
 void
-neut_data_rad_radius (double **data, int size, double *Rad)
-{
-  int i;
-
-  for (i = 1; i <= size; i++)
-    Rad[i] = data[i][0];
-
-  return;
-}
-
-void
-neut_data_ori_color (double **data, int size, char *scheme, int **Col)
+neut_data_ori_color (double **data, int size, char *crysym, char *scheme, int **Col)
 {
   int varqty;
   char *fct = NULL, **vars = NULL, **vals = NULL;
@@ -280,7 +283,7 @@ neut_data_ori_color (double **data, int size, char *scheme, int **Col)
     neut_data_ori_color_axisangle (data, size, scheme, Col);
 
   else if (!strcmp (fct, "ipf"))
-    neut_data_ori_color_ipf (data, size, scheme, Col);
+    neut_data_ori_color_ipf (data, size, crysym, scheme, Col);
 
   else
     ut_print_exprbug (fct);
