@@ -29,14 +29,24 @@ Cubic crystal symmetry is assumed.  The color map onto the fundamental region of
 IPF Color Key
 -------------
 
-Cubic crystal symmetry is assumed.  The color map onto the standard stereographical triangle is created by generating a tessellation corresponding to the triangle, meshing it, getting the node colors, and visualizing it:
-
+The color map onto the standard stereographical triangle (cubic crystal symmetry) is created by generating a tessellation corresponding to the triangle, meshing it, getting the node colors, and visualizing it:
 
 .. code-block:: console
 
-  $ neper -T -n 1 -domain "stdtriangle(20)" -dim 2 -o stdtriangle
+  $ neper -T -n 1 -domain stdtriangle -dim 2 -o stdtriangle
   $ neper -M stdtriangle.tess -cl 0.02 -statnode col_stdtriangle
   $ neper -V stdtriangle.msh -datanodecol "col:file(stdtriangle.stnode)" -dataeltcol from_nodes -dataelt2dedgerad 0 -dataelt1drad 0.001 -showelt1d all -imagesize 800:400 -print tmp
   $ convert -pointsize 32 -draw "text 180,390 '[001]' text 545,390 '[011]' text 505,30 '[111]'" tmp.png stdtriangle.png
 
 .. image:: orientation_color_key/stdtriangle.png
+
+A color map for hexagonal crystal symmetry can be generated using the :data:`crysym` optional argument:
+
+.. code-block:: console
+
+  $ neper -T -n 1 -domain "stdtriangle(crysym=hexagonal)" -dim 2 -o stdtriangleh
+  $ neper -M stdtriangleh.tess -cl 0.02 -statnode col_stdtriangle_hexagonal
+  $ neper -V stdtriangleh.msh -datanodecol "col:file(stdtriangleh.stnode)" -dataeltcol from_nodes -dataelt2dedgerad 0 -dataelt1drad 0.0015 -showelt1d all -cameracoo x:y:2.84 -imagesize 800:400 -print tmp
+  $ convert -pointsize 32 -draw "text 35,390 '[0001]' text 702,359 '_' text 715,359 '_' text 676,390 '[2110]' text 590,30 '[1010]' text 631,-1 '_'" tmp.png stdtriangleh.png
+
+.. image:: orientation_color_key/stdtriangleh.png

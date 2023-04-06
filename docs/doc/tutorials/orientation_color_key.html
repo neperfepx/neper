@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plotting an Orientation Color Key &mdash; Neper 4.5.0 documentation</title>
+  <title>Plotting an Orientation Color Key &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Versions" href="../versions.html" />
-    <link rel="prev" title="Plotting a Pole Figure" href="pole_figure.html" /> 
+    <link rel="prev" title="Plotting Orientation Trajectories" href="orientation_trajectories.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -30,7 +30,7 @@
             <a href="../../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.5.0
+                4.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -50,6 +50,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_trajectories.html">Plotting Orientation Trajectories</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Plotting an Orientation Color Key</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#rodrigues-color-key">Rodrigues Color Key</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ipf-color-key">IPF Color Key</a></li>
@@ -112,14 +113,22 @@
 </div>
 <div class="section" id="ipf-color-key">
 <span id="id2"></span><h2>IPF Color Key<a class="headerlink" href="#ipf-color-key" title="Permalink to this headline"></a></h2>
-<p>Cubic crystal symmetry is assumed.  The color map onto the standard stereographical triangle is created by generating a tessellation corresponding to the triangle, meshing it, getting the node colors, and visualizing it:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1</span> -domain <span class="s2">&quot;stdtriangle(20)&quot;</span> -dim <span class="m">2</span> -o stdtriangle
+<p>The color map onto the standard stereographical triangle (cubic crystal symmetry) is created by generating a tessellation corresponding to the triangle, meshing it, getting the node colors, and visualizing it:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1</span> -domain stdtriangle -dim <span class="m">2</span> -o stdtriangle
 <span class="gp">$ </span>neper -M stdtriangle.tess -cl <span class="m">0</span>.02 -statnode col_stdtriangle
 <span class="gp">$ </span>neper -V stdtriangle.msh -datanodecol <span class="s2">&quot;col:file(stdtriangle.stnode)&quot;</span> -dataeltcol from_nodes -dataelt2dedgerad <span class="m">0</span> -dataelt1drad <span class="m">0</span>.001 -showelt1d all -imagesize <span class="m">800</span>:400 -print tmp
 <span class="gp">$ </span>convert -pointsize <span class="m">32</span> -draw <span class="s2">&quot;text 180,390 &#39;[001]&#39; text 545,390 &#39;[011]&#39; text 505,30 &#39;[111]&#39;&quot;</span> tmp.png stdtriangle.png
 </pre></div>
 </div>
 <img alt="../../_images/stdtriangle.png" src="../../_images/stdtriangle.png" />
+<p>A color map for hexagonal crystal symmetry can be generated using the <code class="xref py py-data docutils literal notranslate"><span class="pre">crysym</span></code> optional argument:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1</span> -domain <span class="s2">&quot;stdtriangle(crysym=hexagonal)&quot;</span> -dim <span class="m">2</span> -o stdtriangleh
+<span class="gp">$ </span>neper -M stdtriangleh.tess -cl <span class="m">0</span>.02 -statnode col_stdtriangle_hexagonal
+<span class="gp">$ </span>neper -V stdtriangleh.msh -datanodecol <span class="s2">&quot;col:file(stdtriangleh.stnode)&quot;</span> -dataeltcol from_nodes -dataelt2dedgerad <span class="m">0</span> -dataelt1drad <span class="m">0</span>.0015 -showelt1d all -cameracoo x:y:2.84 -imagesize <span class="m">800</span>:400 -print tmp
+<span class="gp">$ </span>convert -pointsize <span class="m">32</span> -draw <span class="s2">&quot;text 35,390 &#39;[0001]&#39; text 702,359 &#39;_&#39; text 715,359 &#39;_&#39; text 676,390 &#39;[2110]&#39; text 590,30 &#39;[1010]&#39; text 631,-1 &#39;_&#39;&quot;</span> tmp.png stdtriangleh.png
+</pre></div>
+</div>
+<img alt="../../_images/stdtriangleh.png" src="../../_images/stdtriangleh.png" />
 </div>
 </div>
 
@@ -127,7 +136,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pole_figure.html" class="btn btn-neutral float-left" title="Plotting a Pole Figure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="orientation_trajectories.html" class="btn btn-neutral float-left" title="Plotting Orientation Trajectories" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../versions.html" class="btn btn-neutral float-right" title="Versions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

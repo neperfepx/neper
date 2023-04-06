@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plotting Orientation Trajectories &mdash; Neper 4.6.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Plotting an Orientation Color Key" href="orientation_color_key.html" />
+    <link rel="prev" title="Plotting a Pole Figure" href="pole_figure.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Neper
+          </a>
+              <div class="version">
+                4.6.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simple_model.html">Generating and Meshing a Simple Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Plotting Orientation Trajectories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#generalities">Generalities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuring-the-symbol-plot">Configuring the Symbol Plot</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_color_key.html">Plotting an Orientation Color Key</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../papers.html">Reference Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../talks.html">Talks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../others.html">Other Resources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Documentation</a> &raquo;</li>
+          <li><a href="../tutorials.html">Tutorials</a> &raquo;</li>
+      <li>Plotting Orientation Trajectories</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/doc/tutorials/orientation_trajectories.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="plotting-orientation-trajectories">
+<span id="orientation-trajectories"></span><h1>Plotting Orientation Trajectories<a class="headerlink" href="#plotting-orientation-trajectories" title="Permalink to this headline"></a></h1>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Read first: <a class="reference internal" href="pole_figure.html#pole-figure"><span class="std std-ref">Plotting a Pole Figure</span></a>.</p>
+</div>
+<p>Orientation trajectories described in a <a class="reference internal" href="../fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a> (whether they apply to (raster) tessellation cells or mesh elsets) can be plotted on a pole figure or an inverse pole figure, using the <a class="reference internal" href="../neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a> and its <a class="reference internal" href="../neper_v.html#cmdoption-space"><code class="xref std std-option docutils literal notranslate"><span class="pre">-space</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">[i]pf</span></code> options.  This is done by plotting <em>several simulation steps</em> on the same figure, using <a class="reference internal" href="../neper_v.html#cmdoption-step"><code class="xref std std-option docutils literal notranslate"><span class="pre">-step</span></code></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In principle, it is possible to plot orientation trajectories from a list of (unrelated) orientations loaded from a file; however, proper visualization generally requires the orientation <em>history</em> (through <em>steps</em>), hence the recommended use of a <a class="reference internal" href="../fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a>.</p>
+</div>
+<p>In the following, the results of a small FEPX simulation is used (<a class="reference download internal" download="" href="../../_downloads/0d160d51797805a745a889d62a976a28/n20.sim.tgz"><code class="xref download docutils literal notranslate"><span class="pre">n20.sim.tgz</span></code></a>, derived from <a class="reference external" href="https://fepx.info/doc/examples.html#uniaxial-control-examples-1-uniaxial">this FEPX example</a>), which corresponds to the deformation to 10% (engineering) tensile strain of a 20-grain polycrystal :</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -S n20.sim
+
+<span class="go">========================    N   e   p   e   r    =======================</span>
+<span class="go">Info   : A software package for polycrystal generation and meshing.</span>
+<span class="go">Info   : Version 4.5.1</span>
+<span class="go">Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)</span>
+<span class="go">Info   : Running on 8 threads.</span>
+<span class="go">Info   : &lt;https://neper.info&gt;</span>
+<span class="go">Info   : Copyright (C) 2003-2022, and GNU GPL&#39;d, by Romain Quey.</span>
+<span class="go">Info   : Loading initialization file `/home/rquey/.neperrc&#39;...</span>
+<span class="go">Info   : ---------------------------------------------------------------</span>
+<span class="go">Info   : MODULE  -S loaded with arguments:</span>
+<span class="go">Info   : [ini file] (none)</span>
+<span class="go">Info   : [com line] n20.sim</span>
+<span class="go">Info   : ---------------------------------------------------------------</span>
+<span class="go">Info   : Reading input data...</span>
+<span class="go">Info   :   - Reading arguments...</span>
+<span class="go">Info   :     &gt; Input files: tess msh config</span>
+<span class="go">Info   :     &gt; Node number      : 3606</span>
+<span class="go">Info   :     &gt; Element number   : 2201</span>
+<span class="go">Info   :     &gt; Elset number     : 20</span>
+<span class="go">Info   :     &gt; Partition number : 2</span>
+<span class="go">Info   :     &gt; Step number      : 10</span>
+<span class="go">Info   :     &gt; Node results     : coo</span>
+<span class="go">Info   :     &gt; Elt results      : ori</span>
+<span class="go">Info   :     &gt; Elset results    : ori</span>
+<span class="go">Info   : Elapsed time: 0.001 secs.</span>
+<span class="go">========================================================================</span>
+</pre></div>
+</div>
+<p>The polycrystal and its orientations on an IPF can be visualized as follows (the second command appends the two images to generate the image shown below):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n20.sim -imagesize <span class="m">500</span>:500 -cameraangle <span class="m">15</span> -print img1 -space ipf -print img2
+<span class="gp">$ </span>convert +append +repage -flatten img1.png img2.png img3.png
+</pre></div>
+</div>
+<img alt="../../_images/img32.png" src="../../_images/img32.png" />
+<p>To reproduce <em>exactly</em> the images below, add the following line to your <code class="file docutils literal notranslate"><span class="pre">$HOME/.neperrc</span></code> file (or to a local configuration file to be loaded with <code class="xref std std-option docutils literal notranslate"><span class="pre">--rcfile</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">neper</span> <span class="o">-</span><span class="n">V</span> <span class="o">-</span><span class="n">imagesize</span> <span class="mi">500</span><span class="p">:</span><span class="mi">500</span>
+</pre></div>
+</div>
+<div class="section" id="generalities">
+<h2>Generalities<a class="headerlink" href="#generalities" title="Permalink to this headline"></a></h2>
+<p>The orientation trajectories can be visualized by specifying several steps to <a class="reference internal" href="../neper_v.html#cmdoption-step"><code class="xref std std-option docutils literal notranslate"><span class="pre">-step</span></code></a>. Using <a class="reference internal" href="../neper_v.html#cmdoption-step"><code class="xref std std-option docutils literal notranslate"><span class="pre">-step</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code>, all steps are printed:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n20.sim -space ipf -step all -print img4
+</pre></div>
+</div>
+<img alt="../../_images/img42.png" src="../../_images/img42.png" />
+<p>The orientations at successive steps are plotted <em>on top of each other</em>, using the same symbols.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Orientation trajectories can go out of the standard triangle just as if the inverse pole figure was complete (not reduced to the standard triangle under crystal symmetry conditions).</p>
+</div>
+</div>
+<div class="section" id="configuring-the-symbol-plot">
+<h2>Configuring the Symbol Plot<a class="headerlink" href="#configuring-the-symbol-plot" title="Permalink to this headline"></a></h2>
+<p>The way data are represented can be modified at large, as described in <a class="reference internal" href="pole_figure.html#pole-figure"><span class="std std-ref">Plotting a Pole Figure</span></a> (using <code class="xref py py-data docutils literal notranslate"><span class="pre">elset</span></code> instead of <code class="xref py py-data docutils literal notranslate"><span class="pre">cell</span></code>, since the results apply to a mesh).  The <code class="xref py py-data docutils literal notranslate"><span class="pre">step</span></code> variable can also be used to plot orientations differently for each step.  For example, to plot the last orientations using a larger symbol than the others (the “rotation path”):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n20.sim -space ipf -step all -dataelsetrad <span class="s2">&quot;real:((step&lt;10)?0.008:0.024)&quot;</span> -print img5
+</pre></div>
+</div>
+<img alt="../../_images/img52.png" src="../../_images/img52.png" />
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pole_figure.html" class="btn btn-neutral float-left" title="Plotting a Pole Figure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="orientation_color_key.html" class="btn btn-neutral float-right" title="Plotting an Orientation Color Key" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Romain Quey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plotting a Pole Figure &mdash; Neper 4.5.0 documentation</title>
+  <title>Plotting a Pole Figure &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
@@ -18,7 +18,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Plotting an Orientation Color Key" href="orientation_color_key.html" />
+    <link rel="next" title="Plotting Orientation Trajectories" href="orientation_trajectories.html" />
     <link rel="prev" title="Visualizing a Tessellation" href="visualize_tessellation.html" /> 
 </head>
 
@@ -30,7 +30,7 @@
             <a href="../../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.5.0
+                4.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -58,6 +58,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#working-from-multiple-inputs">Working From Multiple Inputs</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_trajectories.html">Plotting Orientation Trajectories</a></li>
 <li class="toctree-l2"><a class="reference internal" href="orientation_color_key.html">Plotting an Orientation Color Key</a></li>
 </ul>
 </li>
@@ -102,6 +103,10 @@
 <p>Read first: <a class="reference internal" href="../../tutorials/visualize_tessellation.html#visualize-tessellation"><span class="std std-ref">Visualizing a Tessellation</span></a>.</p>
 </div>
 <p>A pole figure can be generated using the <a class="reference internal" href="../neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>, by switching to pole figure space, using <a class="reference internal" href="../neper_v.html#cmdoption-space"><code class="xref std std-option docutils literal notranslate"><span class="pre">-space</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">pf</span></code>.  Pole figures can be generated from one or several inputs, among those of the <a class="reference internal" href="../neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>, such as the orientations of a tessellation cells, an orientation file and/or a direction file, making it possible to produce advanced figures.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Inverse pole figures can be plotted just as pole figures, using <a class="reference internal" href="../neper_v.html#cmdoption-space"><code class="xref std std-option docutils literal notranslate"><span class="pre">-space</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">ipf</span></code> instead of <a class="reference internal" href="../neper_v.html#cmdoption-space"><code class="xref std std-option docutils literal notranslate"><span class="pre">-space</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">pf</span></code>.  Inverse pole figures are used in <a class="reference internal" href="orientation_trajectories.html#orientation-trajectories"><span class="std std-ref">Plotting Orientation Trajectories</span></a>.</p>
+</div>
 <p>Visualization in pole figure space works in the same way as visualization in standard, real space: the entity properties can be specified using the <code class="xref std std-option docutils literal notranslate"><span class="pre">-data*</span></code> options, the entities to show can be specified using the <code class="xref std std-option docutils literal notranslate"><span class="pre">-show*</span></code> options, etc.  A difference is that the list of entities reduces to <code class="xref py py-data docutils literal notranslate"><span class="pre">cell</span></code> if the input is a tessellation, and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;input&gt;</span></code> (or the default <code class="xref py py-data docutils literal notranslate"><span class="pre">point</span></code>) if the input is a custom input (orientations or directions).</p>
 <p>In the following, and unless mentionned otherwise, a simple tessellation is used:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>$ neper -T -n <span class="m">100</span> -morpho gg -oricrysym cubic -o n100
@@ -137,21 +142,21 @@
 <p class="admonition-title">Note</p>
 <p>The PDF format, as a vectorial format, provides an optimal quality/weight ratio and should be used when possible (for example, in LaTeX documents).</p>
 </div>
-<p>The pole family can be modified using <a class="reference internal" href="../neper_v.html#cmdoption-pfpole"><code class="xref std std-option docutils literal notranslate"><span class="pre">-pfpole</span></code></a>:</p>
+<p>The pole family can be modified using <code class="xref std std-option docutils literal notranslate"><span class="pre">-pfpole</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100.tess -space pf -pfpole <span class="m">1</span>:0:0 -print img3
 </pre></div>
 </div>
-<img alt="../../_images/img32.png" src="../../_images/img32.png" />
-<p>The projection type can be modified using <a class="reference internal" href="../neper_v.html#cmdoption-pfprojection"><code class="xref std std-option docutils literal notranslate"><span class="pre">-pfprojection</span></code></a>:</p>
+<img alt="../../_images/img33.png" src="../../_images/img33.png" />
+<p>The projection type can be modified using <code class="xref std std-option docutils literal notranslate"><span class="pre">-pfprojection</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100.tess -space pf -pfprojection equal-area -print img4
 </pre></div>
 </div>
-<img alt="../../_images/img42.png" src="../../_images/img42.png" />
-<p>The sample directions can be modified using <a class="reference internal" href="../neper_v.html#cmdoption-pfdir"><code class="xref std std-option docutils literal notranslate"><span class="pre">-pfdir</span></code></a>, so as the actual axis labels, using <a class="reference internal" href="../neper_v.html#cmdoption-datacsyslabel"><code class="xref std std-option docutils literal notranslate"><span class="pre">-datacsyslabel</span></code></a>:</p>
+<img alt="../../_images/img43.png" src="../../_images/img43.png" />
+<p>The sample directions can be modified using <code class="xref std std-option docutils literal notranslate"><span class="pre">-pfdir</span></code>, so as the actual axis labels, using <a class="reference internal" href="../neper_v.html#cmdoption-datacsyslabel"><code class="xref std std-option docutils literal notranslate"><span class="pre">-datacsyslabel</span></code></a>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100.tess -space pf -pfdir y:z -datacsyslabel RD:TD:ND -print img5
 </pre></div>
 </div>
-<img alt="../../_images/img52.png" src="../../_images/img52.png" />
+<img alt="../../_images/img53.png" src="../../_images/img53.png" />
 <p>The representation <em>mode</em> can be changed into <code class="xref py py-data docutils literal notranslate"><span class="pre">density</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100.tess -space pf -pfmode density -print img6
 </pre></div>
@@ -225,7 +230,7 @@ transparency (option <code class="xref std std-option docutils literal notransla
 <div class="section" id="configuring-a-density-field-plot">
 <h2>Configuring a Density Field Plot<a class="headerlink" href="#configuring-a-density-field-plot" title="Permalink to this headline"></a></h2>
 <p>A tessellation with typical rolling orientations is used in the following: <a class="reference download internal" download="" href="../../_downloads/94f9efbf7b5324a1c42ebb7244c51afc/n200-psc.tess"><code class="xref download docutils literal notranslate"><span class="pre">n200-psc.tess</span></code></a>.</p>
-<p>The (default) symbol plot can be turned into a density field plot using <a class="reference internal" href="../neper_v.html#cmdoption-pfmode"><code class="xref std std-option docutils literal notranslate"><span class="pre">-pfmode</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">density</span></code>.</p>
+<p>The (default) symbol plot can be turned into a density field plot using <code class="xref std std-option docutils literal notranslate"><span class="pre">-pfmode</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">density</span></code>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200-psc.tess -space pf            <span class="se">\</span>
 <span class="hll">           -pfmode density                    <span class="se">\</span>
 </span>           -print img14
@@ -241,7 +246,7 @@ transparency (option <code class="xref std std-option docutils literal notransla
 </pre></div>
 </div>
 <img alt="../../_images/img15.png" src="../../_images/img15.png" />
-<p>A density field is computed by assigning a kernel to each pole, which is defined by <a class="reference internal" href="../neper_v.html#cmdoption-pfkernel"><code class="xref std std-option docutils literal notranslate"><span class="pre">-pfkernel</span></code></a> (default <code class="xref py py-data docutils literal notranslate"><span class="pre">normal(theta=3)</span></code>).  A different value changes the intensity of the density field:</p>
+<p>A density field is computed by assigning a kernel to each pole, which is defined by <code class="xref std std-option docutils literal notranslate"><span class="pre">-pfkernel</span></code> (default <code class="xref py py-data docutils literal notranslate"><span class="pre">normal(theta=3)</span></code>).  A different value changes the intensity of the density field:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200-psc.tess -space pf            <span class="se">\</span>
            -pfmode density                    <span class="se">\</span>
 <span class="hll">           -pfkernel <span class="s2">&quot;normal(theta=5)&quot;</span>        <span class="se">\</span>
@@ -271,7 +276,7 @@ transparency (option <code class="xref std std-option docutils literal notransla
 </pre></div>
 </div>
 <img alt="../../_images/img18.png" src="../../_images/img18.png" />
-<p>The density field is defined on a regular grid, whose dimensions can be modified using <a class="reference internal" href="../neper_v.html#cmdoption-pfgridsize"><code class="xref std std-option docutils literal notranslate"><span class="pre">-pfgridsize</span></code></a>.  While the default value of <code class="xref py py-data docutils literal notranslate"><span class="pre">200</span></code> provides a good balance between quality and computation time, the option can be used to speed up generation or, at the opposite, increase quality:</p>
+<p>The density field is defined on a regular grid, whose dimensions can be modified using <code class="xref std std-option docutils literal notranslate"><span class="pre">-pfgridsize</span></code>.  While the default value of <code class="xref py py-data docutils literal notranslate"><span class="pre">200</span></code> provides a good balance between quality and computation time, the option can be used to speed up generation or, at the opposite, increase quality:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200-psc.tess -space pf            <span class="se">\</span>
            -pfmode density                    <span class="se">\</span>
            -pfkernel <span class="s2">&quot;normal(theta=5)&quot;</span>        <span class="se">\</span>
@@ -337,6 +342,10 @@ The command produces the same image as if the orientations were read from a tess
 <div class="section" id="working-from-multiple-inputs">
 <h2>Working From Multiple Inputs<a class="headerlink" href="#working-from-multiple-inputs" title="Permalink to this headline"></a></h2>
 <p>A pole figure can be created from multiple inputs loaded as custom inputs (see <a class="reference internal" href="../neper_v.html#neper-v-input-data"><span class="std std-ref">Input Data</span></a>).  This can, for example, be used to plot a (lattice) rotation path associated with plastic deformation. In the following, file <a class="reference download internal" download="" href="../../_downloads/cb4b98deb0cad37336998aecdd89dcae/ini"><code class="xref download docutils literal notranslate"><span class="pre">ini</span></code></a> contains an initial orientation, <a class="reference download internal" download="" href="../../_downloads/6ee4d82803cba991c04c3a60abb3b8dd/all"><code class="xref download docutils literal notranslate"><span class="pre">all</span></code></a> its locations during plastic deformation, and <a class="reference download internal" download="" href="../../_downloads/0360e2b80c7002345e5af04a1498305d/fin"><code class="xref download docutils literal notranslate"><span class="pre">fin</span></code></a> the final orientation, all written as Rodrigues vectors.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>To plot lattice rotation paths, is it generally more efficient to use the method described in <a class="reference internal" href="orientation_trajectories.html#orientation-trajectories"><span class="std std-ref">Plotting Orientation Trajectories</span></a> instead of what is described here.</p>
+</div>
 <p>The initial orientation, rotation path and final orientation can be visualized as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="gp">$ </span>neper -V <span class="s2">&quot;final(type=ori):file(fin),initial(type=ori):file(ini),path(type=ori):file(all)&quot;</span> <span class="se">\</span>
 </span>        -space pf                                     <span class="se">\</span>
@@ -370,7 +379,7 @@ The command produces the same image as if the orientations were read from a tess
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="visualize_tessellation.html" class="btn btn-neutral float-left" title="Visualizing a Tessellation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="orientation_color_key.html" class="btn btn-neutral float-right" title="Plotting an Orientation Color Key" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="orientation_trajectories.html" class="btn btn-neutral float-right" title="Plotting Orientation Trajectories" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Visualizing a Tessellation &mdash; Neper 4.5.0 documentation</title>
+  <title>Visualizing a Tessellation &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
@@ -31,7 +31,7 @@
             <a href="../../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.5.0
+                4.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -68,6 +68,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_trajectories.html">Plotting Orientation Trajectories</a></li>
 <li class="toctree-l2"><a class="reference internal" href="orientation_color_key.html">Plotting an Orientation Color Key</a></li>
 </ul>
 </li>
@@ -139,18 +140,18 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcell <span class="s2">&quot;z&lt;0.5&quot;</span> -showedge all -print img3
 </pre></div>
 </div>
-<img alt="../../_images/img34.png" src="../../_images/img34.png" />
+<img alt="../../_images/img35.png" src="../../_images/img35.png" />
 <p>The figure is not very clear, and only the domain edges can be added instead:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcell <span class="s2">&quot;z&lt;0.5&quot;</span> -showedge <span class="s2">&quot;cell_shown||domtype==1&quot;</span> -print img4
 </pre></div>
 </div>
-<img alt="../../_images/img44.png" src="../../_images/img44.png" />
+<img alt="../../_images/img45.png" src="../../_images/img45.png" />
 <p><code class="xref py py-data docutils literal notranslate"><span class="pre">cell_shown</span></code> (or <code class="xref py py-data docutils literal notranslate"><span class="pre">cell_shown==1</span></code>) selects edges for which at least one cell is shown, <code class="xref py py-data docutils literal notranslate"><span class="pre">domtype==1</span></code> selects edges that belong to a domain edge, and <code class="xref py py-data docutils literal notranslate"><span class="pre">||</span></code> is the logical <code class="code docutils literal notranslate"><span class="pre">OR</span></code>.</p>
 <p>A logical expression can be arbitrarily complex.  For example, the following command only shows the cells that have a volume larger than average (0.005, for a 200-cell in a unit cube), have at least 20 faces and are interior to the domain:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcell <span class="s2">&quot;(vol&gt;0.005)&amp;&amp;(facenb&gt;=20)&amp;&amp;(body&gt;0)&quot;</span> -showedge <span class="s2">&quot;cell_shown||domtype==1&quot;</span> -print img5
 </pre></div>
 </div>
-<img alt="../../_images/img54.png" src="../../_images/img54.png" />
+<img alt="../../_images/img55.png" src="../../_images/img55.png" />
 <p>It is also possible to fully hide the cells and visualize the tessellation based on the individual faces, edges, etc.:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200.tess -showcell none -showface <span class="s2">&quot;z&lt;0.5&quot;</span> -showedge <span class="s2">&quot;face_shown||domtype==1&quot;</span> -print img6
 </pre></div>
@@ -167,7 +168,7 @@
 </pre></div>
 </div>
 <img alt="../../_images/img81.png" src="../../_images/img81.png" />
-<p>By default, crystals are represented based on the cell crystal symmetry (as specified by option <a class="reference internal" href="../neper_t.html#cmdoption-oricrysym"><code class="xref std std-option docutils literal notranslate"><span class="pre">-oricrysym</span></code></a>), the cell size and the crystal orientations.</p>
+<p>By default, crystals are represented based on the cell crystal symmetry (as specified by option <code class="xref std std-option docutils literal notranslate"><span class="pre">-oricrysym</span></code>), the cell size and the crystal orientations.</p>
 </div>
 <div class="section" id="setting-color-transparency-size-etc">
 <h2>Setting Color, Transparency, Size, etc.<a class="headerlink" href="#setting-color-transparency-size-etc" title="Permalink to this headline"></a></h2>

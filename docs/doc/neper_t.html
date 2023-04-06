@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tessellation Module (-T) &mdash; Neper 4.5.0 documentation</title>
+  <title>Tessellation Module (-T) &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.5.0
+                4.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -211,7 +211,13 @@
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cell(&lt;file_name&gt;,&lt;cell_id&gt;)</span></code>: a tessellation cell, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;file_name&gt;</span></code> is the tessellation file and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;cell_id&gt;</span></code> is the cell identifier;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues(&lt;crysym&gt;)</span></code>: a Rodrigues space fundamental region, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysym&gt;</span></code> is the <a class="reference internal" href="exprskeys.html#crystal-symmetries"><span class="std std-ref">Crystal Symmetry</span></a>;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">euler-bunge(&lt;size_x&gt;,&lt;size_y&gt;,&lt;size_z&gt;)</span></code>: the Euler space (Bunge convention), where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_y&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_z&gt;</span></code> are the space dimensions (in degrees or radians <a class="footnote-reference brackets" href="#euler-bunge" id="id6">9</a>);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">stdtriangle(&lt;segment_nb&gt;)</span></code>: a standard stereographic triangle, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;segment_nb&gt;</span></code> is the number of segments used to describe the [011]–[111] line.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">stdtriangle(crysym=&lt;crysym&gt;,projection=&lt;projection&gt;,segmentnb=&lt;segment_nb&gt;)</span></code>: a standard stereographic triangle, with the optional arguments:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">crysym</span></code>: the crystal symmetry (default <code class="xref py py-data docutils literal notranslate"><span class="pre">cubic</span></code>);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">projection</span></code>: the projection (default <code class="xref py py-data docutils literal notranslate"><span class="pre">stereographic</span></code>);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">segmentnb</span></code>: the number of segments along the curved edge (default <code class="xref py py-data docutils literal notranslate"><span class="pre">20</span></code>);</p></li>
+</ul>
+</li>
 </ul>
 <p>The transformation can be:</p>
 <ul class="simple">
@@ -543,6 +549,17 @@
 <div class="section" id="crystal-orientation-options">
 <h3>Crystal Orientation Options<a class="headerlink" href="#crystal-orientation-options" title="Permalink to this headline"></a></h3>
 <dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-crysym">
+<span class="sig-name descname"><span class="pre">-crysym</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;crysym&gt;</span></span><a class="headerlink" href="#cmdoption-crysym" title="Permalink to this definition"></a></dt>
+<dd><p>Specify the <a class="reference internal" href="exprskeys.html#crystal-symmetries"><span class="std std-ref">Crystal Symmetry</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is used by option <code class="xref py py-data docutils literal notranslate"><span class="pre">-ori</span> <span class="pre">uniform</span></code>, to reduce the domain of definition of the orientation descriptors and by the <a class="reference internal" href="neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>.</p>
+</div>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">triclinic</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-ori">
 <span class="sig-name descname"><span class="pre">-ori</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;ori_distrib&gt;</span></span><a class="headerlink" href="#cmdoption-ori" title="Permalink to this definition"></a></dt>
 <dd><p>Specify the type of crystal orientation distribution. It can be:</p>
@@ -585,14 +602,6 @@
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>: none.</p></li>
 </ul>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>.</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-oricrysym">
-<span class="sig-name descname"><span class="pre">-oricrysym</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;crysym&gt;</span></span><a class="headerlink" href="#cmdoption-oricrysym" title="Permalink to this definition"></a></dt>
-<dd><p>Specify the <a class="reference internal" href="exprskeys.html#crystal-symmetries"><span class="std std-ref">Crystal Symmetry</span></a>.</p>
-<p>This is used by option <code class="xref py py-data docutils literal notranslate"><span class="pre">-ori</span> <span class="pre">uniform</span></code> and to reduce the domain of definition of the orientation descriptors.</p>
-<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">triclinic</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
@@ -718,6 +727,10 @@ The region interior to the primitives is removed from the tessellation.  Append 
 <dt class="sig sig-object std" id="cmdoption-sort">
 <span class="sig-name descname"><span class="pre">-sort</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sort_expression&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-sort" title="Permalink to this definition"></a></dt>
 <dd><p>Sort the tessellation cells (typically to facilitate data post-processing) following a mathematical expression based on the tessellation variables (see <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>). Sorting is done in ascending order.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Sorting acts on the cell <em>ids</em>, see <a class="reference internal" href="fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a>.</p>
+</div>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
 
@@ -1204,7 +1217,7 @@ The files contain the data specified to the
 <dd><p>Endianness is both written in the tesr file and tested on the system when reading the tesr file, so that the user normally does not have to care about it (even when transferring files across systems).</p>
 </dd>
 <dt class="label" id="uniform-crysym"><span class="brackets"><a class="fn-backref" href="#id15">7</a></span></dt>
-<dd><p>The crystal symmetry must be specified using <a class="reference internal" href="#cmdoption-oricrysym"><code class="xref std std-option docutils literal notranslate"><span class="pre">-oricrysym</span></code></a>.</p>
+<dd><p>The crystal symmetry must be specified using <code class="xref std std-option docutils literal notranslate"><span class="pre">-oricrysym</span></code>.</p>
 </dd>
 <dt class="label" id="rotate"><span class="brackets">8</span></dt>
 <dd><p>Cell orientations are rotated accordingly.</p>

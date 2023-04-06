@@ -11,7 +11,7 @@
 Visualization Module (-V)
 =========================
 
-Module -V is the module for visualizing tessellations, meshes, simulation results and custom data, either as publication-quality (raster) PNG or (vectorial) PDF images, or VTK files, for interactive visualization.  Visualization can be done in real (physical) space, but also on pole figures, which is managed by option :option:`-space`.
+Module -V is the module for visualizing tessellations, meshes, simulation results and custom data, either as publication-quality (raster) PNG or (vectorial) PDF images, or VTK files, for interactive visualization.  Visualization can be done in real (physical) space, but also on pole figures or inverse pole figures, which is managed by option :option:`-space`.
 
 Virtually any detail of the visualization can be set.  For example, all entities (tessellation polyhedra, faces, edges, vertices, seeds and crystals, 3D, 2D, 1D and 0D mesh elements and nodes, and points) can be assigned a particular color, size, transparency, etc. (options :data:`-data*`), the visibility of the different entities can be adjusted (options :option:`-show*`), or slice views can be generated (option :option:`-slicemesh`).  This different capabilities make it possible to carry out standard or advanced visualizations but also post-processing.
 
@@ -19,9 +19,9 @@ Virtually any detail of the visualization can be set.  For example, all entities
 
 Standard, real space visualizations (default :option:`-space` :data:`real`) are achieved using the POV-Ray ray tracing renderer to produce high-quality (raster) PNG images.  The parameters of the "scene" are assigned default values, but can also be fine-tuned, such as the light positions, camera position and angle, projection type, etc. (options :data:`-camera*` and :data:`-light*`).
 
-Pole figure visualizations (:option:`-space` :data:`pf`) are achieved using the Asymptote vector graphics rendered to produce high-quality (raster) PNG images (by default), but also high-quality (vectorial) PDF images.  Data can be represented as symbols or a density field, and can be superimposed.
+Pole figure and inverse pole figure visualizations (option :option:`-space` :data:`pf`) are achieved using the Asymptote vector graphics rendered to produce high-quality (raster) PNG images (by default) or high-quality (vectorial) PDF images.  Data can be represented as symbols or a density field, and can be superimposed.  Orientation trajectories can be plotted (option :option:`-step`).
 
-In contrast to other modules, module -V processes the command arguments one after the other.
+In contrast to other modules, module -V can generate several outputs on the same run (using option :option:`-print` several times); command arguments are therefore read in batches, stopping at each :option:`print` to generate an output.
 
 Here is what a typical run of module -V looks like:
 
@@ -101,7 +101,7 @@ Input Data
   - :data:`[<input>[(type=<type>)]:]file(<file_name>[,des=<descriptor>])`: a custom input (points, vectors, ...) to load from a :ref:`data_file`, given a custom name, :data:`<input>` (default :data:`point`), and of a specified type, which can be:
 
     - :data:`point`: points (default in :option:`-space` :data:`real`);
-    - :data:`ori`: orientations (default in :option:`-space` :data:`pf`);
+    - :data:`ori`: orientations (default in :option:`-space` :data:`[i]pf`);
     - :data:`vector`: vectors.
 
   For :data:`ori`, the descriptor can be specified (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
@@ -110,11 +110,26 @@ Input Data
 
   **Default value**: -.
 
+.. option:: -crysym <crysym>
+
+  Specify the :ref:`Crystal Symmetry <crystal_symmetries>`.
+
+  .. note:: It is used by option :option:`-space` :data:`[i]pf`.
+
+  **Default value**: value read in the inputs when defined, and :data:`cubic` otherwise.
+
 When a simulation directory is loaded as input, it is possible to specify the simulation step to consider.
 
 .. option:: -step <step>
 
-  Specify the simulation step (:data:`0` for the initial state).,
+  Specify the simulation step(s), which can be:
+
+  - :data:`0`: initial state;
+  - any step number;
+  - :data:`all`: all steps;
+  - a list of steps combined with :data:`,`; a range of values can also be specified using :data:`-`.  An example is :data:`0-10,20` (for steps 0 to 10, and 20).
+
+  .. note:: Several steps can be specified in the case of :option:`-space` :data:`[i]pf`, to plot orientation trajectories.
 
   **Default value**: :data:`0`.
 
@@ -131,6 +146,7 @@ The following option enables the definition of the space in which data (simulati
 
   - :data:`real`: real (physical) space;
   - :data:`pf`: pole figure space;
+  - :data:`ipf`: inverse pole figure space;
   - :data:`tree`: tree space.
 
   **Default value**: :data:`real`.
@@ -154,13 +170,21 @@ The following option enables the definition of the cell data itself (pole figure
 
   **Default value**: :data:`ori`.
 
+.. option:: -datacellweight <weight>
+
+  Specify the cell weights, which can be:
+
+  - a real value;
+  - an expression based on the variables described in :ref:`tessellation_keys`, such as :data:`x` or :data:`vol`, or in a :ref:`simulation_directory`, which allows to define individual values;
+  - :data:`file(<file_name>)`: individual values to load from a :ref:`data_file`.
+
+  .. note:: :option:`-datacellweight` applies only in :data:`[i]pf` space (see option :option:`-space`).
+
+  **Default value**: :data:`size`.
 
 The following options enable the definition of the properties (color and size) of the tessellation cells or entities (polyhedra, faces, edges and vertices), seeds and crystals.  *Crystals* are plotted at the centers of their respective cells, shaped according to the `Crystal Symmetry <crystal_symmetries>`_ and have the same volumes as their respective cells.  |data_description|
 
-For each entity, all attributes can be set, although the may not apply in certain spaces (see option :option:`-space`). Specifically,
-
-  - :data:`-data{cell,poly,face}rad` applies only in PF space;
-  - :data:`-data*trs` does not apply in PF space.
+For each entity, all attributes can be set, although the may not apply in certain spaces (see option :option:`-space`). Specifically, :data:`-data{cell,poly,face}rad` do not apply in real space.
 
 .. index::
    single: -datacellcol
@@ -320,6 +344,18 @@ For each entity, all attributes can be set, although the may not apply in certai
 Mesh Data Loading and Rendering Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. option:: -dataelsetweight <weight>
+
+  Specify the elset weights, which can be:
+
+  - a real value;
+  - an expression based on the variables described in :ref:`tessellation_keys`, such as :data:`x` or :data:`vol`, or in a :ref:`simulation_directory`, which allows to define individual values;
+  - :data:`file(<file_name>)`: individual values to load from a :ref:`data_file`.
+
+  .. note:: :option:`-dataelsetweight` applies only in :data:`[i]pf` space (see option :option:`-space`).
+
+  **Default value**: :data:`size`.
+
 The following options enable the definition of the properties (color, size, etc.) of the mesh entities (3D, 2D, 1D and 0D elements and elsets, nodes, and full mesh).  :data:`elt` and :data:`elset` refer to the elements and elsets of higher dimensions.  The dimension can be also be specified explicitly, as in :data:`elt2d` or :data:`elset2d`.  :data:`node` represents all nodes, and :data:`mesh` the full mesh.  |data_description|
 
 .. option:: -data{elt,elset,node,elt{0-3}d,elset{0-3}d,elt{2,3}dedge,mesh}col <color>
@@ -407,7 +443,7 @@ The following options enable the definition of the properties (color, size, etc.
 
   **Default value**: -.
 
-.. option:: -data{elt{0,1}d,node,elt{2,3}dedge,elset{0,1}d}rad <rad>
+.. option:: -data{elt{0,1}d,node,elt{2,3}dedge,elset{0-3}d}rad <rad>
 
   Specify the radii, which can be:
 
@@ -415,7 +451,6 @@ The following options enable the definition of the properties (color, size, etc.
   - :data:`file(<file_name>)`: individual values to load values from a :ref:`data_file` (not for :data:`*edge*`).
 
   **Default value**: mesh dependent.
-
 
 The following options enable the loading of node positions.
 
@@ -798,10 +833,12 @@ Scene Options
 
   **Default value**: :data:`white`.
 
-Pole Figure Options
-~~~~~~~~~~~~~~~~~~~~
+Pole Figure and Inverse Pole Figure Options
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. option::  -pfdir <dir1>:<dir2>
+Most options apply to pole figures or inverse pole figures and can equivalently be called as :option:`-pf...` or :option:`-ipf...`. For inverse pole figures, cubic crystal symmetry is assumed.
+
+.. option::  -[i]pfdir <dir1>:<dir2>
 
   Specify the 2 reference coordinate system directions aligned with the horizontal and vertical directions of the pole figure, respectively, which can be :data:`x`, :data:`y`, :data:`z`, :data:`-x`, :data:`-y` or :data:`-z`.
 
@@ -809,13 +846,13 @@ Pole Figure Options
 
   **Default value**: :data:`x:-y`.
 
-.. option::  -pfpole <h>:<k>:<l>
+.. option::  -[i]pfpole <h>:<k>:<l> or <h>:<k>:<i>:<l>
 
-  Specify the pole family (for orientation input).
+  Specify the pole (for orientation input).  It is a crystal (family) direction for pole figures and a reference direction for inverse pole figures.  A crystal family direction can be specified using Miller indices (3 values, for cubic) or Miller-Bravais indices (4 values, for hexagonal).
 
-  **Default value**: :data:`1:1:1`.
+  **Default value**: :data:`1:1:1` for :option:`-space pf` and cubic crystal symmetry, :data:`0:0:0:1` for :option:`-space pf` and hexagonal crystal symmetry, and :data:`0:0:1` for :option:`-space ipf`.
 
-.. option::  -pfprojection <projection>
+.. option::  -[i]pfprojection <projection>
 
   Specify the projection, which can be :data:`stereographic` or :data:`equal-area`.
 
@@ -823,7 +860,7 @@ Pole Figure Options
 
 .. option::  -pfsym <symmetry>
 
-  Specify the symmetry, which can be :data:`monoclinic` or :data:`orthotropic`.
+  Specify the symmetry, which can be :data:`monoclinic`, :data:`orthotropic` or :data:`uniaxial`.
 
   **Default value**: :data:`monoclinic`.
 
@@ -833,7 +870,7 @@ Pole Figure Options
 
   **Default value**: :data:`full`.
 
-.. option::  -pfmode <mode1>,<mode2>,...
+.. option::  -[i]pfmode <mode1>,<mode2>,...
 
   Specify the representation mode, which can be:
 
@@ -842,9 +879,9 @@ Pole Figure Options
 
   .. note:: Modes are processed successively, so that the last one(s) are printed on top of the first  one(s).  In the case of multiple inputs, :data:`density` is applied only to the first input.
 
-  **Default value**: :data:`point`.
+  **Default value**: :data:`symbol`.
 
-.. option::  -pfkernel <kernel>
+.. option::  -[i]pfkernel <kernel>
 
   Specify the kernel used to smooth pole directions when computing a pole density field, which can be:
 
@@ -852,25 +889,39 @@ Pole Figure Options
 
   **Default value**: :data:`normal(theta=3)`.
 
-.. option::  -pfgridsize <size> (secondary option)
+.. option::  -[i]pfgridsize <size> (secondary option)
 
   Specify the size of the density grid (in pixels).
 
   **Default value**: :data:`200`.
 
-.. option::  -pfclustering <logical>
+.. option::  -[i]pfclustering <logical>
 
   Specify whether data clustering (which speeds up density generation) should be used.
 
-  .. note:: Clustering applies to all representation modes and slightly alters the point positions.  It should be disable for absolute accuracy.
+  .. note:: Clustering is available only for standard pole figures (:option:`-space` :data:`pf` :option:`-pfshape` :data:`full`).
+
+    Clustering applies to all representation modes (see :option:`-[i]pfmode`) and slightly alters the point positions.  It should be disable for absolute accuracy.
 
   **Default value**: :data:`1`.
 
-.. option::  -pffont <font> (secondary option)
+.. option::  -[i]pffont <font> (secondary option)
 
   Specify the character font, which can be :data:`TimesRoman` or :data:`ComputerModern`.
 
   **Default value**: :data:`TimesRoman`.
+
+.. option::  -[i]pfprojectionlabel <label>
+
+  Specify the projection label.
+
+  **Default value**: :data:`stereo. proj.` for :option:`-[i]pfprojection` :data:`stereographic` and :data:`equal-area. proj.` for :option:`-[i]pfprojection` :data:`equal-area`.
+
+.. option::  -[i]pfpolelabel <label>
+
+  Specify the pole label.
+
+  **Default value**: :data:`{<h><k>[<i>]<l>}` for PFs and :data:`{X,Y,Z} direction` for IPFs.
 
 Output Image Options
 ~~~~~~~~~~~~~~~~~~~~~

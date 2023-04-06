@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>File and Directory Formats &mdash; Neper 4.5.0 documentation</title>
+  <title>File and Directory Formats &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.5.0
+                4.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -421,7 +421,7 @@ and
 2.2 &lt;file_type&gt; &lt;data_size&gt;
 $EndMeshFormat
 $MeshVersion
-2.2 &lt;mesh_version&gt;
+&lt;mesh_version&gt;
 $EndMeshVersion
 $Domain
 &lt;domain&gt;
@@ -478,6 +478,9 @@ $ElsetOrientations
 &lt;elset_id&gt; &lt;ori_des1&gt; ...
 ...
 $EndOrientations
+$ElsetCrySym
+&lt;crysym&gt;
+$EndElsetCrySym
 $ElementOrientations
 &lt;number_of_elements&gt; &lt;orientation_descriptor&gt;
 &lt;element_id&gt; ori_des1&gt; ...
@@ -498,7 +501,7 @@ $EndGroups
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_size&gt;</span></code> is an integer equal to the size of the floating point numbers used in the file (= <code class="xref py py-data docutils literal notranslate"><span class="pre">sizeof</span> <span class="pre">(double)</span></code>).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$EndMeshFormat</span></code> denotes the end of a mesh format field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$MeshVersion</span></code> denotes the beginning of a mesh version field.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;mesh_version&gt;</span></code> is the mesh file version (currently <code class="xref py py-data docutils literal notranslate"><span class="pre">2.2.2</span></code>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;mesh_version&gt;</span></code> is the mesh file version (currently <code class="xref py py-data docutils literal notranslate"><span class="pre">2.2.3</span></code>).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$EndMeshVersion</span></code> denotes the end of a mesh version field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$Domain</span></code> denotes the beginning of an optional domain field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;domain&gt;</span></code> is the domain.</p></li>
@@ -546,11 +549,15 @@ $EndGroups
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;physical_name&gt;</span></code> is the name of a physical entity, under the form <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;verid&gt;</span></code> for 0D elsets (tessellation vertices), <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;edgeid&gt;</span></code> for 1D elsets (tessellation edges), <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;faceid&gt;</span></code> for 2D elsets (tessellation faces) and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;polyid&gt;</span></code> for 3D elsets (tessellation polyhedra), where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> ranges from 1 to the number of elsets.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$EndPhysicalNames</span></code> denotes the end of a physical name field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$ElsetOrientations</span></code> denotes the beginning of an elset orientation field.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$EndElsetOrientations</span></code> denotes the end of an elset orientation field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;number_of_elsets&gt;</span></code> is the number of elsets.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;orientation_descriptor&gt;</span></code> is the orientation descriptor.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;elset_id&gt;</span></code> is the elset id.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;ori_des1&gt;</span></code>, … is the orientation, following <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;orientation_descriptor&gt;</span></code>.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$EndElsetOrientations</span></code> denotes the end of an elset orientation field.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$ElsetCrySym</span></code> denotes the beginning of an elset crystal symmetry field.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysym&gt;</span></code> is the crystal symmetry (<code class="xref py py-data docutils literal notranslate"><span class="pre">triclinic</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">cubic</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">hexagonal</span></code>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$EndElsetCrySym</span></code> denotes the end of an elset crystal symmetry field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$ElementOrientations</span></code> denotes the beginning of an element orientation field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;number_of_elements&gt;</span></code> is the number of elements.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;element_id&gt;</span></code> is the element id.</p></li>

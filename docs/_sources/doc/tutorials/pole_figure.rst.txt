@@ -7,6 +7,8 @@ Plotting a Pole Figure
 
 A pole figure can be generated using the :ref:`neper_v`, by switching to pole figure space, using :option:`-space` :data:`pf`.  Pole figures can be generated from one or several inputs, among those of the :ref:`neper_v`, such as the orientations of a tessellation cells, an orientation file and/or a direction file, making it possible to produce advanced figures.
 
+.. note:: Inverse pole figures can be plotted just as pole figures, using :option:`-space` :data:`ipf` instead of :option:`-space` :data:`pf`.  Inverse pole figures are used in :ref:`orientation_trajectories`.
+
 Visualization in pole figure space works in the same way as visualization in standard, real space: the entity properties can be specified using the :option:`-data*` options, the entities to show can be specified using the :option:`-show*` options, etc.  A difference is that the list of entities reduces to :data:`cell` if the input is a tessellation, and :data:`<input>` (or the default :data:`point`) if the input is a custom input (orientations or directions).
 
 In the following, and unless mentionned otherwise, a simple tessellation is used:
@@ -336,6 +338,8 @@ Working From Multiple Inputs
 ----------------------------
 
 A pole figure can be created from multiple inputs loaded as custom inputs (see :ref:`neper_v_input_data`).  This can, for example, be used to plot a (lattice) rotation path associated with plastic deformation. In the following, file :download:`ini <pole_figure/ini>` contains an initial orientation, :download:`all <pole_figure/all>` its locations during plastic deformation, and :download:`fin <pole_figure/fin>` the final orientation, all written as Rodrigues vectors.
+
+.. important:: To plot lattice rotation paths, is it generally more efficient to use the method described in :ref:`orientation_trajectories` instead of what is described here.
 
 The initial orientation, rotation path and final orientation can be visualized as follows:
 

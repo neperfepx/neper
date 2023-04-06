@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generating and Meshing a Simple Tessellation &mdash; Neper 4.5.0 documentation</title>
+  <title>Generating and Meshing a Simple Tessellation &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -28,7 +28,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.5.0
+                4.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -129,7 +129,7 @@ A 100-cell tessellation can be generated as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100-id1.tess,n100-id1.msh -showelt1d all -dataelt1drad <span class="m">0</span>.005 -print img3
 </pre></div>
 </div>
-<img alt="../_images/img37.png" src="../_images/img37.png" />
+<img alt="../_images/img38.png" src="../_images/img38.png" />
 </div>
 <div class="section" id="regularizing-a-tessellation">
 <h2>Regularizing a Tessellation<a class="headerlink" href="#regularizing-a-tessellation" title="Permalink to this headline"></a></h2>
@@ -142,14 +142,14 @@ A 100-cell tessellation can be generated as follows:</p>
 <p class="admonition-title">Note</p>
 <p>An option name may be abbreviated as long as the abbreviation is not ambiguous.  Specifically, <code class="xref py py-data docutils literal notranslate"><span class="pre">-regularization</span></code> can be abbreviated to <code class="xref py py-data docutils literal notranslate"><span class="pre">-reg</span></code>.</p>
 </div>
-<img alt="../_images/img47.png" src="../_images/img47.png" />
+<img alt="../_images/img48.png" src="../_images/img48.png" />
 <p>The resulting tessellation is very similar to the original one, as only slight morphological changes occur during regularization.  However, no local mesh overrefinements will be present anymore.</p>
 <p>The new tessellation can be meshed, and the mesh can be visualized as before:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -M n100-id1.tess
 <span class="gp">$ </span>neper -V n100-id1.tess,n100-id1.msh -showelt1d all -dataelt1drad <span class="m">0</span>.005 -print img5
 </pre></div>
 </div>
-<img alt="../_images/img57.png" src="../_images/img57.png" />
+<img alt="../_images/img58.png" src="../_images/img58.png" />
 </div>
 <div class="section" id="setting-mesh-properties">
 <h2>Setting Mesh Properties<a class="headerlink" href="#setting-mesh-properties" title="Permalink to this headline"></a></h2>

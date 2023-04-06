@@ -119,7 +119,11 @@ Input Data
 
   - :data:`euler-bunge(<size_x>,<size_y>,<size_z>)`: the Euler space (Bunge convention), where :data:`<size_x>`, :data:`<size_y>` and :data:`<size_z>` are the space dimensions (in degrees or radians [#euler-bunge]_);
 
-  - :data:`stdtriangle(<segment_nb>)`: a standard stereographic triangle, where :data:`<segment_nb>` is the number of segments used to describe the [011]--[111] line.
+  - :data:`stdtriangle(crysym=<crysym>,projection=<projection>,segmentnb=<segment_nb>)`: a standard stereographic triangle, with the optional arguments:
+
+    - :data:`crysym`: the crystal symmetry (default :data:`cubic`);
+    - :data:`projection`: the projection (default :data:`stereographic`);
+    - :data:`segmentnb`: the number of segments along the curved edge (default :data:`20`);
 
   The transformation can be:
 
@@ -455,6 +459,14 @@ The following option can be used to define cell groups (each cell is assigned to
 Crystal Orientation Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. option:: -crysym <crysym>
+
+  Specify the :ref:`Crystal Symmetry <crystal_symmetries>`.
+
+  .. note :: It is used by option :data:`-ori uniform`, to reduce the domain of definition of the orientation descriptors and by the :ref:`neper_v`.
+
+  **Default value**: :data:`triclinic`.
+
 .. option:: -ori <ori_distrib>
 
   Specify the type of crystal orientation distribution. It can be:
@@ -500,14 +512,6 @@ Crystal Orientation Options
   - :data:`none`: none.
 
   **Default value**: :data:`none`.
-
-.. option:: -oricrysym <crysym>
-
-  Specify the :ref:`Crystal Symmetry <crystal_symmetries>`.
-
-  This is used by option :data:`-ori uniform` and to reduce the domain of definition of the orientation descriptors.
-
-  **Default value**: :data:`triclinic`.
 
 .. option:: -orioptiini <ori_distrib> (secondary option)
 
@@ -642,6 +646,8 @@ Transformation Options
 .. option:: -sort <sort_expression> (secondary option)
 
   Sort the tessellation cells (typically to facilitate data post-processing) following a mathematical expression based on the tessellation variables (see :ref:`tessellation_keys`). Sorting is done in ascending order.
+
+  .. note:: Sorting acts on the cell *ids*, see :ref:`tess_file`.
 
   **Default value**: -.
 

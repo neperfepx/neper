@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Introduction &mdash; Neper 4.5.0 documentation</title>
+  <title>Introduction &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -30,7 +30,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.5.0
+                4.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -185,15 +185,15 @@ Neper is multithreaded and operates on all threads by default.</p>
 </div>
 <div class="section" id="fine-configuration">
 <span id="id2"></span><h3>Fine Configuration<a class="headerlink" href="#fine-configuration" title="Permalink to this headline"></a></h3>
-<p>The locations where files are installed, which dependencies are included and other dependency information can be specified, before installation, using CMake variables.   This can be done using</p>
+<p>The locations where files are installed, which dependencies are included, other dependency information and program configuration options can be specified, before installation, using CMake variables.   This can be done using a terminal tool:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ccmake ..
 </pre></div>
 </div>
-<p>for an interactive command-line tool, using</p>
+<p>or an interactive tool:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake-gui ..
 </pre></div>
 </div>
-<p>for an interactive graphical tool, or directly at the command line, using Cmake’s <code class="xref py py-data docutils literal notranslate"><span class="pre">-D</span></code> option:</p>
+<p>or directly at the command line, using Cmake’s <code class="xref py py-data docutils literal notranslate"><span class="pre">-D</span></code> option:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake -D&lt;VARIABLE1&gt;<span class="o">=</span>&lt;VALUE1&gt; -D&lt;VARIABLE2&gt;<span class="o">=</span>&lt;VALUE2&gt; ..
 </pre></div>
 </div>
@@ -212,7 +212,7 @@ Neper is multithreaded and operates on all threads by default.</p>
 <ul class="simple">
 <li><p>The <a class="reference external" href="https://gmsh.info">Gmsh</a> program (version 2.4.2 or higher, excluding version 2.5.1, mandatory for module -M). It is likely to be available from your system package manager. Alternatively, both binary and source-code versions can be downloaded from the program website (compiling from the source code significantly speeds up meshing).  Gmsh must be available at the terminal as the command <strong class="program">gmsh</strong>, or the path to its binary must be specified with option <a class="reference internal" href="neper_m.html#cmdoption-gmsh"><code class="xref std std-option docutils literal notranslate"><span class="pre">-gmsh</span></code></a> (in module -M).</p></li>
 <li><p>The <a class="reference external" href="http://www.povray.org">POV-Ray</a> program (version 3.7 or higher, mandatory for PNG output in <a class="reference internal" href="neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>).  It is likely to be available on your system or from your system package manager (binary package).  Alternatively, both binary and source-code versions can be downloaded the program website.  POV-Ray must be available at the terminal as the command <strong class="program">povray</strong>, or the path to its binary must be specified with option <a class="reference internal" href="neper_v.html#cmdoption-povray"><code class="xref std std-option docutils literal notranslate"><span class="pre">-povray</span></code></a> (in module -V).</p></li>
-<li><p>The <a class="reference external" href="https://asymptote.sourceforge.io/">Asymptote</a> program (for pole figure plots in <a class="reference internal" href="neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>). It is likely to be available from your system package manager.  Alternatively, both binary and source-code versions can be downloaded from the program website.  Asymptote must be available at the terminal as the command <strong class="program">asy</strong>, or the path to its binary must be specified with option <code class="xref std std-option docutils literal notranslate"><span class="pre">-asy</span></code> (in module -V).</p></li>
+<li><p>The <a class="reference external" href="https://asymptote.sourceforge.io/">Asymptote</a> program and <a class="reference external" href="https://www.tug.org/texlive">Tex Live</a> (<code class="code docutils literal notranslate"><span class="pre">texlive-full</span></code> on Ubuntu, for pole figure plots in <a class="reference internal" href="neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>). They are likely to be available from your system package manager.  Alternatively, both binary and source-code versions can be downloaded from the program websites.  Asymptote must be available at the terminal as the command <strong class="program">asy</strong>, or the path to its binary must be specified with option <code class="xref std std-option docutils literal notranslate"><span class="pre">-asy</span></code> (in module -V).</p></li>
 </ul>
 <p>Finally, other third-party libraries are directly included in the source code (see directory <code class="file docutils literal notranslate"><span class="pre">src/contrib</span></code>) and are therefore not dependencies <em>per se</em>:</p>
 <ul class="simple">
@@ -222,6 +222,12 @@ Neper is multithreaded and operates on all threads by default.</p>
 <li><p>The <a class="reference external" href="https://github.com/jlblancoc/nanoflann">nanoflann</a> library.</p></li>
 <li><p>The <a class="reference external" href="https://beltoforion.de/en/muparser">muparser</a> library.</p></li>
 <li><p>The <a class="reference external" href="https://github.com/MattiaMontanari/openGJK">openGJK</a> library.</p></li>
+</ul>
+<p>The program configuration variables concern the printing format of the real numbers, in the result files (<code class="file docutils literal notranslate"><span class="pre">.tess</span></code>, <code class="file docutils literal notranslate"><span class="pre">.msh</span></code>, etc.):</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">REAL_PRINT_FORMAT</span></code>, default <code class="code docutils literal notranslate"><span class="pre">&quot;%.12f&quot;</span></code> (12 decimal digits);</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">REAL_PRINT_FORMAT3</span></code>, default <code class="code docutils literal notranslate"><span class="pre">&quot;%15.12f&quot;</span></code> (12 decimal digits, 15 total digits);</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">REAL_PRINT_FORMAT5</span></code>, default <code class="code docutils literal notranslate"><span class="pre">&quot;%17.12f&quot;</span></code> (12 decimal digits, 17 total digits).</p></li>
 </ul>
 </div>
 </div>
@@ -274,7 +280,7 @@ String completion is available for all options, so they may be abbreviated as lo
 </ul>
 </div>
 <p>Logical options can be enabled or disabled by providing argument values of <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>, respectively.  Integer or real arguments can be written as numeral values or <a class="reference internal" href="exprskeys.html#mathematical-and-logical-expressions"><span class="std std-ref">Mathematical and Logical Expressions</span></a>.  For instance, in module -T, option <code class="xref py py-data docutils literal notranslate"><span class="pre">-rcl</span> <span class="pre">0.5</span></code> can also be written as <code class="xref py py-data docutils literal notranslate"><span class="pre">-rcl</span> <span class="pre">1/2</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">-rcl</span> <span class="pre">&quot;cos(pi/3)&quot;</span></code>.  For some options, different values can be specified to different entities by loading them from an external <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> (or similar), using <code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>.  For the more complex case of a multiscale tessellation, a <a class="reference internal" href="fileformat.html#multiscale-cell-file"><span class="std std-ref">Multiscale Cell File</span></a> can also be used, and loaded using <code class="xref py py-data docutils literal notranslate"><span class="pre">msfile(&lt;file_name&gt;)</span></code>.</p>
-<p>Module -V shows some exceptions with respect to these rules: the argument cannot be listed in arbitrary order, string completion is not available, and option <a class="reference internal" href="neper_v.html#cmdoption-loop"><code class="xref std std-option docutils literal notranslate"><span class="pre">-loop</span></code></a> takes several arguments.</p>
+<p>Module -V shows some exceptions with respect to these rules: the argument can only be listed in arbitrary order before their corresponding <a class="reference internal" href="neper_v.html#cmdoption-print"><code class="xref std std-option docutils literal notranslate"><span class="pre">-print</span></code></a> call, string completion is not available for custom input options, and option <a class="reference internal" href="neper_v.html#cmdoption-loop"><code class="xref std std-option docutils literal notranslate"><span class="pre">-loop</span></code></a> takes several arguments.</p>
 </div>
 <div class="section" id="argument-separators">
 <h3>Argument Separators<a class="headerlink" href="#argument-separators" title="Permalink to this headline"></a></h3>

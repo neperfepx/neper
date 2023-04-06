@@ -1,0 +1,31 @@
+***sim
+ **format
+   1.0
+ **input
+  *tess
+   simulation.tess
+  *tesr
+   simulation.tesr
+  *msh
+   simulation.msh
+  *config
+   simulation.config
+ **general
+   0 3606 2201 20 2
+  *orides
+   rodrigues:active
+ **entity node
+  *result
+   1
+   coo
+ **entity elt
+  *result
+   1
+   ori
+ **entity elset
+  *result
+   1
+   ori
+ **step
+   10
+***end

@@ -474,7 +474,7 @@ Here are details on the native :file:`.msh` (adapted from Gmsh's msh format vers
   2.2 <file_type> <data_size>
   $EndMeshFormat
   $MeshVersion
-  2.2 <mesh_version>
+  <mesh_version>
   $EndMeshVersion
   $Domain
   <domain>
@@ -531,6 +531,9 @@ Here are details on the native :file:`.msh` (adapted from Gmsh's msh format vers
   <elset_id> <ori_des1> ...
   ...
   $EndOrientations
+  $ElsetCrySym
+  <crysym>
+  $EndElsetCrySym
   $ElementOrientations
   <number_of_elements> <orientation_descriptor>
   <element_id> ori_des1> ...
@@ -555,7 +558,7 @@ where
 
 - :data:`$MeshVersion` denotes the beginning of a mesh version field.
 
-- :data:`<mesh_version>` is the mesh file version (currently :data:`2.2.2`).
+- :data:`<mesh_version>` is the mesh file version (currently :data:`2.2.3`).
 
 - :data:`$EndMeshVersion` denotes the end of a mesh version field.
 
@@ -651,6 +654,8 @@ where
 
 - :data:`$ElsetOrientations` denotes the beginning of an elset orientation field.
 
+- :data:`$EndElsetOrientations` denotes the end of an elset orientation field.
+
 - :data:`<number_of_elsets>` is the number of elsets.
 
 - :data:`<orientation_descriptor>` is the orientation descriptor.
@@ -660,6 +665,12 @@ where
 - :data:`<ori_des1>`, ... is the orientation, following :data:`<orientation_descriptor>`.
 
 - :data:`$EndElsetOrientations` denotes the end of an elset orientation field.
+
+- :data:`$ElsetCrySym` denotes the beginning of an elset crystal symmetry field.
+
+- :data:`<crysym>` is the crystal symmetry (:data:`triclinic`, :data:`cubic` or :data:`hexagonal`).
+
+- :data:`$EndElsetCrySym` denotes the end of an elset crystal symmetry field.
 
 - :data:`$ElementOrientations` denotes the beginning of an element orientation field.
 
