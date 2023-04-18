@@ -2045,11 +2045,14 @@ neut_mesh_init_simeltori (struct MESH *pMesh)
   struct SIMRES SimRes;
   struct SIM *pSim = (*pMesh).pSim;
 
+#ifdef HAVE_OPENMP
+#pragma omp parallel
   if (omp_get_thread_num() != 0)
   {
     printf ("\nneut_mesh_init_simeltori is not thread-safe!\n");
     ut_print_neperbug ();
   }
+#endif
 
   neut_simres_set_zero (&SimRes);
   neut_sim_simres (*pSim, "elts", "ori", &SimRes);
