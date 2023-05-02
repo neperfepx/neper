@@ -2912,3 +2912,18 @@ neut_mesh_elsetori (struct MESH Mesh, double **elsetori)
 
   return status;
 }
+
+void
+neut_mesh_set_elsetgroup (int *ElsetGroup, struct MESH *Mesh)
+{
+  int dim = neut_mesh_array_dim (Mesh);
+
+  if (ElsetGroup && !neut_mesh_isvoid (Mesh[dim]))
+  {
+    Mesh[dim].ElsetGroup = ut_alloc_1d_int (Mesh[dim].ElsetQty + 1);
+    ut_array_1d_int_memcpy (ElsetGroup + 1, Mesh[dim].ElsetQty,
+                            Mesh[dim].ElsetGroup + 1);
+  }
+
+  return;
+}

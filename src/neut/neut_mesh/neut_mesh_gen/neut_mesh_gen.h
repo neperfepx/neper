@@ -179,6 +179,8 @@ extern void neut_mesh_eltdata_elsetdata_origos (struct NODES Nodes, struct MESH 
                                    int **elsets, int elsetqty,
                                    double *elsetgos);
 
+extern void neut_mesh_set_elsetgroup (int*, struct MESH *Mesh);
+
 #endif /* NEUT_MESH_GEN_H */
 
 #ifdef __cplusplus

@@ -72,6 +72,9 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
         neut_mesh_rmelset (Mesh + (*pTess).Dim, *pNodes, i);
   }
 
+  if ((*pTess).CellGroup && !neut_mesh_isvoid (Mesh[(*pTess).Dim]))
+    neut_mesh_set_elsetgroup ((*pTess).CellGroup, Mesh);
+
   // ut_free_1d_char (&expandnset);
   // ut_free_1d_char (&expandfaset);
   ut_free_1d_int (&msize);
@@ -163,6 +166,9 @@ nem_meshing_tesr_str (struct IN_M In, struct MESHPARA MeshPara,
   }
 
   nem_reconstruct_mesh (In.dimout, pNodes, Mesh, NULL);
+
+  if ((*pTesr).CellGroup && !neut_mesh_isvoid (Mesh[(*pTesr).Dim]))
+    neut_mesh_set_elsetgroup ((*pTesr).CellGroup, Mesh);
 
   ut_free_1d_int (&msize);
   ut_free_1d (&scale);

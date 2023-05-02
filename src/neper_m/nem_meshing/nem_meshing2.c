@@ -37,13 +37,8 @@ nem_meshing_post (struct TESS Tess, struct MESH *Mesh)
                Mesh[Tess.Dim].ElsetId ? Mesh[Tess.Dim].ElsetId[i] : i);
   }
 
-  // ElsetGroup
   if (Tess.CellGroup && !neut_mesh_isvoid (Mesh[Tess.Dim]))
-  {
-    Mesh[Tess.Dim].ElsetGroup = ut_alloc_1d_int (Mesh[Tess.Dim].ElsetQty + 1);
-    ut_array_1d_int_memcpy (Tess.CellGroup + 1, Mesh[Tess.Dim].ElsetQty,
-                            Mesh[Tess.Dim].ElsetGroup + 1);
-  }
+    neut_mesh_set_elsetgroup (Tess.CellGroup, Mesh);
 
   ut_free_1d_char (&entity);
 
