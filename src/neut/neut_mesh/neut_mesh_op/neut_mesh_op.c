@@ -2046,7 +2046,6 @@ neut_mesh_init_simeltori (struct MESH *pMesh)
   struct SIM *pSim = (*pMesh).pSim;
 
 #ifdef HAVE_OPENMP
-#pragma omp parallel
   if (omp_get_thread_num() != 0)
   {
     printf ("\nneut_mesh_init_simeltori is not thread-safe!\n");
