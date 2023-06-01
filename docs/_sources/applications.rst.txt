@@ -8,6 +8,13 @@ work should be listed here, please `contact us <romain.quey@mines-stetienne.fr>`
 
 This list is also available on Neper's `Google Scholar page <https://scholar.google.com/citations?hl=en&user=fG8cHDsAAAAJ&view_op=list_works&sortby=pubdate>`_.
 
+What they said
+--------------
+
+  *"Publicly available software (open source) such as DREAM3D [1069] and Neper [1068] are extremely valuable tools used in a large portion of the available literature for AM related RVE creation and not only."*
+
+  -- M Bayat et al, **Progress in Materials Science**, https://doi.org/10.1016/j.pmatsci.2023.101129.
+
 Journal Covers
 --------------
 
@@ -19,6 +26,19 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2023
 ----
 
+- N Mistry, L Hitzler, A Biswas, C Krempaszky and E Werner, *Predicting anisotropic behavior of textured PBF-LB materials via microstructural modeling*, **Continuum Mechanics and Thermodynamics**, https://doi.org/10.1007/s00161-023-01215-x.
+- S Zhang, S Qiu, P Li, Y Kou, Z Xie and L Jia, *Mode I fracture behavior of heterogeneous granite: Insights from grain-based FDEM modelling*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2023.109267.
+- F Sun, J Guo, X Liu and H Zhang, *Strain rockburst evolution process under true triaxial condition with single face unloading due to tunnel excavation*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2023.105465.
+- CEC Inga, S Sinha, G Walton and E Holley, *Modeling Brazilian Tensile Strength Tests on a Brittle Rock Using Deterministic, Semi-deterministic, and Voronoi Bonded Block Models*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-023-03329-9.
+- ST Abraham and SS Bhat, *Crystal plasticity finite element modelling on the influence of grain size and shape parameters on the tensile stiffness and yield strength*, **Materials Science and Engineering A**, https://doi.org/10.1016/j.msea.2023.145155. [Neper/FEPX]
+- T Iraki, L Morand, J Dornheim, N Link and D Helm, *A multi-task learning-based optimization approach for finding diverse sets of microstructures with desired properties*, **Journal of Intelligent Manufacturing**, https://doi.org/10.1007/s10845-023-02139-8.
+- X Hu, H Hu, N Xie, Y Huang, P Guo and X Gong, *The Effect of Grain Size Heterogeneity on Mechanical and Microcracking Behavior of Pre-heated Lac du Bonnet Granite Using a Grain-Based Model*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-023-03381-5.
+- L Hu, M Li, W Huang, X Yang and F Guo, *Crystal plasticity evaluation of the effect of grain morphology on compressive deformation behavior of AA2099 Al-Li alloy*, **Journal of Materials Research and Technology**, https://doi.org/10.1016/j.jmrt.2023.05.117.
+- SY Hwang, GJ Lee, Y Qi, MA Listyawan, K Song, Y Kang, J Ryu, X Lu, M-K Lee and S-Y Choi, *Enhanced thermal stability by short-range ordered ferroelectricity in K 0.5 Na 0.5 NbO 3-based piezoelectric oxides*, **Materials Horizons**, https://doi.org/10.1039/D3MH00285C.
+- C Böhm, J Korelc, B Hudobivnik, A Kraus and P Wriggers, *Mixed virtual element formulations for incompressible and inextensible problems*, **Computational Mechanics**, https://doi.org/10.1007/s00466-023-02340-9.
+- M Pressacco, J Kangas and T Saksala, *Comparative Numerical Study on the Weakening Effects of Microwave Irradiation and Surface Flux Heating Pretreatments in Comminution of Granite*, **Geosciences**, https://doi.org/10.3390/geosciences13050132.
+- W Xu, J Xu, W Zhang and J Wang, *A Combined-pole Permanent Magnet Synchronous Motor Incorporating Nanocomposite Magnets*, **Journal of Magnetism and Magnetic Materials**, https://doi.org/10.1016/j.jmmm.2023.170807.
+- IS Haryono, PW Booth, A Purwodihardjo and B Vorster, *Discrete fracture network combined with discontinuum based design for deep shafts–quantifiable risk assessment and design method*, **Book: Expanding Underground - Knowledge and Passion to Make a Positive Impact on the World**, ISBN: 9781003348030.
 - A Plowman, P Jedrasiak, T Jailin, P Crowther, S Mishra, P Shanthraj and JQ da Fonseca, *A novel integrated framework for reproducible formability predictions using virtual materials testing*, **Materials Open Research**, https://doi.org/10.12688/materialsopenres.17516.1.
 - I Benedetti, *An integral framework for computational thermo-elastic homogenization of polycrystalline materials*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2023.115927.
 - X Zhang, J Zhao, G Kang and M Zaiser, *Geometrically necessary dislocations and related kinematic hardening in gradient grained materials: A nonlocal crystal plasticity study*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2023.103553.
