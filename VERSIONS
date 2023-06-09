@@ -1,5 +1,6 @@
-New in 4.6.1-3 (10 May 2023):
+New in 4.6.1-4 (09 Jun 2023):
 - module -M: fixed -statelset group -elt hex.
+- general: made minor compilation fix.
 
 New in 4.6.0 (06 Apr 2023):
 - module -T: fixed truncated statistical distributions (from and to), improved

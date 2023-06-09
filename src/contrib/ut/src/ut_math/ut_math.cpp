@@ -5,6 +5,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<ctype.h>
+#include<limits.h>
 #include"ut.h"
 
 #ifdef HAVE_OPENMP
