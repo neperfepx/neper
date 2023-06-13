@@ -26,6 +26,11 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2023
 ----
 
+- Z Liang, X Wang, Y Cui, W Xu, Y Zhang and Y He, *A new data-driven probabilistic fatigue life prediction framework informed by experiments and multiscale simulation*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2023.107731.
+- D Zhu, W Zhang, Z Ding and J Kim, *Investigation of crack propagation driving force based on crystal plasticity and cyclic J-integral*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2023.109362.
+- S Li, H Xu, F Liu, R Lai, R Wu, Z Li, Y Zhang and Q Ma, *Optimization of grain boundary diffusion process by doping gallium and zirconium in Nd-Fe-B sintered magnets*, **Chinese Physics B**, https://doi.org/10.1088/1674-1056/acd61f.
+- L Singh, S Ha, S Vohra and M Sharma, *Computational homogenization based crystal plasticity investigation of deformation behavior of AA2024-T3 alloy at different strain rates*, **Multidiscipline Modeling in Materials and Structures**, https://doi.org/10.1108/MMMS-10-2022-0236.
+- L Singh, S Ha, S Vohra and M Sharma, *A new crystal plasticity model incorporating precipitation strengthening to simulate tensile deformation behavior of AA2024 alloy*, **Archives of Civil and Mechanical Engineering**, https://doi.org/10.1007/s43452-023-00696-6.
 - N Mistry, L Hitzler, A Biswas, C Krempaszky and E Werner, *Predicting anisotropic behavior of textured PBF-LB materials via microstructural modeling*, **Continuum Mechanics and Thermodynamics**, https://doi.org/10.1007/s00161-023-01215-x.
 - S Zhang, S Qiu, P Li, Y Kou, Z Xie and L Jia, *Mode I fracture behavior of heterogeneous granite: Insights from grain-based FDEM modelling*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2023.109267.
 - F Sun, J Guo, X Liu and H Zhang, *Strain rockburst evolution process under true triaxial condition with single face unloading due to tunnel excavation*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2023.105465.
