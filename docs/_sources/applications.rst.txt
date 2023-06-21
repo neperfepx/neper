@@ -26,6 +26,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2023
 ----
 
+- A Wessel, ES Perdahcioğlu, A Butz, T van den Boogaard and W Volk, *Prediction of texture-induced plastic anisotropy in AA6014-T4 aluminium sheets utilising two different crystal plasticity-based constitutive models*, **IOP Conference Series: Materials Science and Engineering**, https://doi.org/10.1088/1757-899X/1284/1/012059.
 - Z Liang, X Wang, Y Cui, W Xu, Y Zhang and Y He, *A new data-driven probabilistic fatigue life prediction framework informed by experiments and multiscale simulation*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2023.107731.
 - D Zhu, W Zhang, Z Ding and J Kim, *Investigation of crack propagation driving force based on crystal plasticity and cyclic J-integral*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2023.109362.
 - S Li, H Xu, F Liu, R Lai, R Wu, Z Li, Y Zhang and Q Ma, *Optimization of grain boundary diffusion process by doping gallium and zirconium in Nd-Fe-B sintered magnets*, **Chinese Physics B**, https://doi.org/10.1088/1674-1056/acd61f.
