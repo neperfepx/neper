@@ -8,6 +8,7 @@ void
 net_domain_cylinder_planes (double h, double Rad, int qty, double **eq)
 {
   int i;
+  double s;
   double *n = ut_alloc_1d (3);
   double *r = ol_r_alloc ();
   double theta;
@@ -23,6 +24,7 @@ net_domain_cylinder_planes (double h, double Rad, int qty, double **eq)
   eq[1][3] = 1;
   eq[1][0] = h;
 
+  s = Rad * (1 - cos (M_PI / qty));
   Rad *= cos (M_PI / qty);
 
   n[0] = -1;
@@ -34,7 +36,7 @@ net_domain_cylinder_planes (double h, double Rad, int qty, double **eq)
     ol_rtheta_g (r, theta, g);
     ol_g_vect_vect (g, n, eq[i + 2] + 1);
     eq[i + 2][0] =
-      Rad + (eq[i + 2][1] * Rad + eq[i + 2][2] * Rad + eq[i + 2][3] * Rad);
+      Rad + (eq[i + 2][1] * (Rad + s) + eq[i + 2][2] * (Rad + s) + eq[i + 2][3] * (Rad + s));
   }
 
   ol_r_free (n);

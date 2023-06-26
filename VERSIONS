@@ -1,4 +1,5 @@
-New in 4.6.1-5 (26 Jun 2023):
+New in 4.6.1-6 (26 Jun 2023):
+- module -T: fixed -domain cylinder and circle.
 - module -M: fixed -statelset group -elt hex, fixed -statnode col_stdtriangle.
 - general: made minor compilation fix.
 
