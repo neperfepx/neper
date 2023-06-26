@@ -1,5 +1,5 @@
-New in 4.6.1-4 (09 Jun 2023):
-- module -M: fixed -statelset group -elt hex.
+New in 4.6.1-5 (26 Jun 2023):
+- module -M: fixed -statelset group -elt hex, fixed -statnode col_stdtriangle.
 - general: made minor compilation fix.
 
 New in 4.6.0 (06 Apr 2023):

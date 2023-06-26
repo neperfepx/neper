@@ -736,8 +736,11 @@ ol_vect_ipfweight (double *v, char *crysym, double *weight)
 
   if (!strcmp (crysym, "cubic"))
   {
-    if (v[0] > v[1] && v[0] < v[1] + OL_EPS)
+    if (v[0] > v[1] && v[0] < v[1] + sqrt (OL_EPS))
+    {
       v[0] = v[1];
+      ut_array_1d_normalize (v, 3);
+    }
 
     if (v[0] > v[1])
       test = -1;
@@ -832,14 +835,19 @@ ol_vect_ipfweight (double *v, char *crysym, double *weight)
       ol_rtheta_g (r, theta, g);
       ol_g_vect_vect (g, v, v3);
 
-      weight[2] =
-        1 - acos ((v3[0] + v3[1] + v3[2]) / sqrt (3)) / acos (2 / sqrt (6));
-      if (weight[2] < 0 && weight[2] > -OL_EPS)
-        weight[2] = 0;
-      if (weight[2] > 1 && weight[2] < 1 + OL_EPS)
+      if (ut_array_1d_norm (weight, 2) < OL_EPS)
         weight[2] = 1;
-      if (weight[2] < 0 || weight[2] > 1)
-        test = -1;
+      else
+      {
+        weight[2] =
+          1 - acos ((v3[0] + v3[1] + v3[2]) / sqrt (3)) / acos (2 / sqrt (6));
+        if (weight[2] < 0 && weight[2] > -OL_EPS)
+          weight[2] = 0;
+        if (weight[2] > 1 && weight[2] < 1 + OL_EPS)
+          weight[2] = 1;
+        if (weight[2] < 0 || weight[2] > 1)
+          test = -1;
+      }
     }
   }
 
