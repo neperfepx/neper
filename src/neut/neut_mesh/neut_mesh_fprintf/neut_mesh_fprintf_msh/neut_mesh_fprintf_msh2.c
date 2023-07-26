@@ -399,7 +399,7 @@ neut_mesh_fprintf_msh_orientations (FILE *file, struct MESH Mesh)
     fprintf (file, "%d %s\n", ut_array_1d_int_sum (indexed + 1, Mesh.ElsetQty), Mesh.ElsetOriDes);
 
     neut_ori_fprintf (file, Mesh.ElsetOriDes, "ascii", Mesh.ElsetOri + 1,
-                      Mesh.ElsetId ? Mesh.ElsetId + 1 : NULL, indexed + 1, Mesh.ElsetQty, "id");
+                      Mesh.ElsetId ? Mesh.ElsetId + 1 : NULL, indexed + 1, Mesh.ElsetQty - Mesh.CustomElsetQty, "id");
 
     fprintf (file, "$EndElsetOrientations\n");
 

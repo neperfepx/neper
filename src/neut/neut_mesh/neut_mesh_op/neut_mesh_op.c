@@ -66,6 +66,7 @@ neut_mesh_alloc (int Dimension, char *EltType, int EltOrder, int EltQty,
   else
     Mesh.Elsets = NULL;
 
+  Mesh.CustomElsetQty = 0;
   Mesh.NodeQty = 0;
   Mesh.NodeElts = NULL;
   Mesh.EltBody = NULL;
@@ -94,7 +95,7 @@ neut_mesh_free (struct MESH *pMesh)
 
   ut_free_1d_int (&(*pMesh).EltPart);
 
-  ut_free_2d (&(*pMesh).ElsetOri, (*pMesh).ElsetQty + 1);
+  ut_free_2d (&(*pMesh).ElsetOri, (*pMesh).ElsetQty - (*pMesh).CustomElsetQty + 1);
 
   ut_free_2d_char (&(*pMesh).ElsetLabels, (*pMesh).ElsetQty + 1);
 

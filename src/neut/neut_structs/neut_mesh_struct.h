@@ -27,8 +27,10 @@ extern "C"
 
     int **EltNodes;		// for each elt: nodes, indexed [0...]
 
-    int ElsetQty;		// total number of elsets
+    int ElsetQty;		// total number of elsets, including custom elsets
     // arrays are indexed [1...ElsetQty]
+
+    int CustomElsetQty;		// total number of custom elsets
 
     int *ElsetId;		// if != NULL, actual ids of the elsets
 

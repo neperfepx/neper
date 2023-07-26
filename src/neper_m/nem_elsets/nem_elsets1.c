@@ -34,6 +34,8 @@ nem_elsets (struct IN_M In, struct TESS *pTess, struct NODES Nodes,
       ut_realloc_1d_pchar_null (Mesh[3].ElsetLabels, Mesh[3].ElsetQty + 1, 1);
     ut_string_string (parts[i][0], Mesh[3].ElsetLabels + Mesh[3].ElsetQty);
 
+    Mesh[3].CustomElsetQty++;
+
     ut_free_1d_int (&elts);
   }
 
