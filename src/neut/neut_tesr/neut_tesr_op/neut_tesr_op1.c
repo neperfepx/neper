@@ -911,68 +911,29 @@ neut_tesr_renumber_continuous (struct TESR *pTesr)
   double *SeedWeight_old = NULL;
   int *CellId_inv = NULL;
   int CellId_max;
+  int pos;
 
-  if (!(*pTesr).CellId)
-  {
-    (*pTesr).CellId = ut_alloc_1d_int ((*pTesr).CellQty + 1);
-    ut_array_1d_int_set_id ((*pTesr).CellId, (*pTesr).CellQty + 1);
-  }
+  // Pre-processing --------------------------------------------------------------
 
+  // If (*pTesr).CellQty and (*pTesr).CellId defined and one of the cells has an id equal to zero:
+  // - removing cell by setting its voxcell and bbox to zero
   for (l = 1; l <= (*pTesr).CellQty; l++)
-    if ((*pTesr).CellId[l] == 0)
+    if ((*pTesr).CellId && (*pTesr).CellId[l] == 0)
     {
-      for (k = (*pTesr).CellBBox[l][2][0]; k <= (*pTesr).CellBBox[l][2][1];
-           k++)
-        for (j = (*pTesr).CellBBox[l][1][0];
-             j <= (*pTesr).CellBBox[l][1][1]; j++)
-          for (i = (*pTesr).CellBBox[l][0][0];
-               i <= (*pTesr).CellBBox[l][0][1]; i++)
+      for (k = (*pTesr).CellBBox[l][2][0]; k <= (*pTesr).CellBBox[l][2][1]; k++)
+        for (j = (*pTesr).CellBBox[l][1][0]; j <= (*pTesr).CellBBox[l][1][1]; j++)
+          for (i = (*pTesr).CellBBox[l][0][0]; i <= (*pTesr).CellBBox[l][0][1]; i++)
             if ((*pTesr).VoxCell[i][j][k] == l)
               (*pTesr).VoxCell[i][j][k] = 0;
 
       ut_array_2d_int_zero ((*pTesr).CellBBox[l], 3, 2);
     }
 
-  if ((*pTesr).CellId)
-  {
-    CellQty_old = (*pTesr).CellQty;
-    CellId_old = ut_alloc_1d_int (CellQty_old + 1);
-    ut_array_1d_int_memcpy ((*pTesr).CellId + 1, CellQty_old, CellId_old + 1);
-    ut_array_1d_int_inv (CellId_old + 1, CellQty_old, &CellId_old_inv,
-                         &CellId_old_max);
-    ut_array_1d_int_addval (CellId_old_inv, CellId_old_max, 1,
-                            CellId_old_inv);
-  }
+  // Preparing renumbering per se -------------------------------------------------
 
-  if ((*pTesr).CellOri)
-  {
-    CellOri_old = ut_alloc_2d (CellQty_old + 1, 4);
-    ut_array_2d_memcpy ((*pTesr).CellOri + 1, CellQty_old, 4,
-                        CellOri_old + 1);
-  }
-
-  if ((*pTesr).CellGroup)
-  {
-    CellGroup_old = ut_alloc_1d_int (CellQty_old + 1);
-    ut_array_1d_int_memcpy ((*pTesr).CellGroup + 1, CellQty_old,
-                            CellGroup_old + 1);
-  }
-
-  if ((*pTesr).SeedCoo)
-  {
-    SeedCoo_old = ut_alloc_2d (CellQty_old + 1, 3);
-    ut_array_2d_memcpy ((*pTesr).SeedCoo + 1, CellQty_old, 3,
-                        SeedCoo_old + 1);
-  }
-
-  if ((*pTesr).SeedWeight)
-  {
-    SeedWeight_old = ut_alloc_1d (CellQty_old + 1);
-    ut_array_1d_memcpy ((*pTesr).SeedWeight + 1, CellQty_old,
-                        SeedWeight_old + 1);
-  }
-
-  // recording the number of voxels of each cell in cellvoxqty, cellidmax is the maximum cell id
+  // From (*pTesr).VoxCell:
+  // - determining the max cell id as cellidmax
+  // - recording the number of voxels of each cell in cellvoxqty (from 1 to cellidmax)
   cellidmax = 0;
   cellvoxqty = ut_alloc_1d_int (1);
   for (k = 1; k <= (*pTesr).size[2]; k++)
@@ -983,25 +944,81 @@ neut_tesr_renumber_continuous (struct TESR *pTesr)
         {
           oldcellidmax = cellidmax;
           cellidmax = (*pTesr).VoxCell[i][j][k];
-          cellvoxqty = ut_realloc_1d_int (cellvoxqty, cellidmax + 1);
-          for (l = oldcellidmax + 1; l <= cellidmax; l++)
-            cellvoxqty[l] = 0;
+          cellvoxqty = ut_realloc_1d_int_zero (cellvoxqty, cellidmax + 1, cellidmax - oldcellidmax);
         }
 
         cellvoxqty[(*pTesr).VoxCell[i][j][k]]++;
       }
 
-  // filling struct TESR.CellId
+  // If (*pTesr).CellId undefined but (*pTesr).CellQty defined:
+  // - setting it to 1, 2, ...
+  if ((*pTesr).CellQty && !(*pTesr).CellId)
+  {
+    (*pTesr).CellId = ut_alloc_1d_int ((*pTesr).CellQty + 1);
+    ut_array_1d_int_set_id ((*pTesr).CellId, (*pTesr).CellQty + 1);
+  }
+
+  // If CellQty defined, recording the existing variables as *_old, before
+  // renumbering;
+
+  if ((*pTesr).CellQty)
+  {
+    CellQty_old = (*pTesr).CellQty;
+
+    if ((*pTesr).CellId)
+    {
+      CellId_old = ut_alloc_1d_int (CellQty_old + 1);
+      ut_array_1d_int_memcpy ((*pTesr).CellId + 1, CellQty_old, CellId_old + 1);
+      ut_array_1d_int_inv (CellId_old + 1, CellQty_old, &CellId_old_inv,
+                           &CellId_old_max);
+      ut_array_1d_int_addval (CellId_old_inv, CellId_old_max, 1,
+                              CellId_old_inv);
+    }
+
+    if ((*pTesr).CellOri)
+    {
+      CellOri_old = ut_alloc_2d (CellQty_old + 1, 4);
+      ut_array_2d_memcpy ((*pTesr).CellOri + 1, CellQty_old, 4,
+                          CellOri_old + 1);
+    }
+
+    if ((*pTesr).CellGroup)
+    {
+      CellGroup_old = ut_alloc_1d_int (CellQty_old + 1);
+      ut_array_1d_int_memcpy ((*pTesr).CellGroup + 1, CellQty_old,
+                              CellGroup_old + 1);
+    }
+
+    if ((*pTesr).SeedCoo)
+    {
+      SeedCoo_old = ut_alloc_2d (CellQty_old + 1, 3);
+      ut_array_2d_memcpy ((*pTesr).SeedCoo + 1, CellQty_old, 3,
+                          SeedCoo_old + 1);
+    }
+
+    if ((*pTesr).SeedWeight)
+    {
+      SeedWeight_old = ut_alloc_1d (CellQty_old + 1);
+      ut_array_1d_memcpy ((*pTesr).SeedWeight + 1, CellQty_old,
+                          SeedWeight_old + 1);
+    }
+  }
+
+  // Starting renumbering --------------------------------------------------------
+
+  // Calculating (*pTesr).CellQty and (*pTesr).CellId
+
   (*pTesr).CellQty = 0;
-  (*pTesr).CellId =
-    ut_alloc_1d_int (cellidmax -
-                     ut_array_1d_int_valnb (cellvoxqty + 1, cellidmax,
-                                            0) + 1);
   for (i = 1; i <= cellidmax; i++)
     if (cellvoxqty[i] > 0)
-      (*pTesr).CellId[++(*pTesr).CellQty] = i;
+      (*pTesr).CellQty++;
 
-  (*pTesr).CellId = ut_realloc_1d_int ((*pTesr).CellId, (*pTesr).CellQty + 1);
+  (*pTesr).CellId = ut_alloc_1d_int ((*pTesr).CellQty + 1);
+
+  pos = 0;
+  for (i = 1; i <= cellidmax; i++)
+    if (cellvoxqty[i] > 0)
+      (*pTesr).CellId[++pos] = i;
 
   ut_array_1d_int_inv ((*pTesr).CellId, (*pTesr).CellQty + 1, &CellId_inv,
                        &CellId_max);

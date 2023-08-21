@@ -1,5 +1,5 @@
-New in 4.6.1-7 (26 Jul 2023):
-- module -T: fixed -domain cylinder and circle.
+New in 4.6.1-8 (21 Aug 2023):
+- module -T: fixed -domain cylinder and circle, fixed tesr reading.
 - module -M: fixed -elset, fixed -statelset group -elt hex, fixed -statnode
   col_stdtriangle.
 - general: made minor compilation fix.
