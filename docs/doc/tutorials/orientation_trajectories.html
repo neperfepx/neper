@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plotting Orientation Trajectories &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -92,8 +93,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="plotting-orientation-trajectories">
-<span id="orientation-trajectories"></span><h1>Plotting Orientation Trajectories<a class="headerlink" href="#plotting-orientation-trajectories" title="Permalink to this headline"></a></h1>
+  <section id="plotting-orientation-trajectories">
+<span id="orientation-trajectories"></span><h1>Plotting Orientation Trajectories<a class="headerlink" href="#plotting-orientation-trajectories" title="Permalink to this headline">¶</a></h1>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Read first: <a class="reference internal" href="pole_figure.html#pole-figure"><span class="std std-ref">Plotting a Pole Figure</span></a>.</p>
@@ -144,8 +145,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">neper</span> <span class="o">-</span><span class="n">V</span> <span class="o">-</span><span class="n">imagesize</span> <span class="mi">500</span><span class="p">:</span><span class="mi">500</span>
 </pre></div>
 </div>
-<div class="section" id="generalities">
-<h2>Generalities<a class="headerlink" href="#generalities" title="Permalink to this headline"></a></h2>
+<section id="generalities">
+<h2>Generalities<a class="headerlink" href="#generalities" title="Permalink to this headline">¶</a></h2>
 <p>The orientation trajectories can be visualized by specifying several steps to <a class="reference internal" href="../neper_v.html#cmdoption-step"><code class="xref std std-option docutils literal notranslate"><span class="pre">-step</span></code></a>. Using <a class="reference internal" href="../neper_v.html#cmdoption-step"><code class="xref std std-option docutils literal notranslate"><span class="pre">-step</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code>, all steps are printed:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n20.sim -space ipf -step all -print img4
 </pre></div>
@@ -156,16 +157,16 @@
 <p class="admonition-title">Note</p>
 <p>Orientation trajectories can go out of the standard triangle just as if the inverse pole figure was complete (not reduced to the standard triangle under crystal symmetry conditions).</p>
 </div>
-</div>
-<div class="section" id="configuring-the-symbol-plot">
-<h2>Configuring the Symbol Plot<a class="headerlink" href="#configuring-the-symbol-plot" title="Permalink to this headline"></a></h2>
+</section>
+<section id="configuring-the-symbol-plot">
+<h2>Configuring the Symbol Plot<a class="headerlink" href="#configuring-the-symbol-plot" title="Permalink to this headline">¶</a></h2>
 <p>The way data are represented can be modified at large, as described in <a class="reference internal" href="pole_figure.html#pole-figure"><span class="std std-ref">Plotting a Pole Figure</span></a> (using <code class="xref py py-data docutils literal notranslate"><span class="pre">elset</span></code> instead of <code class="xref py py-data docutils literal notranslate"><span class="pre">cell</span></code>, since the results apply to a mesh).  The <code class="xref py py-data docutils literal notranslate"><span class="pre">step</span></code> variable can also be used to plot orientations differently for each step.  For example, to plot the last orientations using a larger symbol than the others (the “rotation path”):</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n20.sim -space ipf -step all -dataelsetrad <span class="s2">&quot;real:((step&lt;10)?0.008:0.024)&quot;</span> -print img5
 </pre></div>
 </div>
 <img alt="../../_images/img52.png" src="../../_images/img52.png" />
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

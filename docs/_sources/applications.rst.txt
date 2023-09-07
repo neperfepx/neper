@@ -26,6 +26,14 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2023
 ----
 
+- J Moore and C Martinez, *A Nonconformal Nonlocal Approach to Calculating Statistical Spread in Fatigue Indicator Parameters for Polycrystals*, **Fatigue & Fracture of Engineering Materials & Structures**, https://doi.org/10.22541/au.168663823.33787160.
+- D Sharma, IV Singh and J Kumar, *A Computational Framework based on 3D Microstructure Modelling to Predict the Mechanical Behaviour of Polycrystalline Materials*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2023.108565.
+- Y Wang, J Tang and S Yan, *Fracture failure characteristics of porous polycrystalline ice based on the FDEM*, **Granular Matter**, https://doi.org/10.1007/s10035-023-01350-x.
+- LI Wanjia, T He, M Xiangxu, SHU Kun, W Tingjian, L Gu, L Wang and C Zhang, *Effects of Surface Defects on Rolling Contact Fatigue of M50 Steel with Consideration to Both the Transgranular and Intergranular Damage*, **Tribology International**, https://doi.org/10.1016/j.triboint.2023.108775.
+- J Dittmann and S Wulfinghoff, *Efficient numerical strategies for an implicit volume fraction transfer scheme for single crystal plasticity including twinning and secondary plasticity on the example of magnesium*, **International Journal for Numerical Methods in Engineering**,  https://doi.org/10.1002/nme.7329.
+- TN Tak, A Prakash, I Samajdar, AA Benzerga and PJ Guruprasad, *A discrete dislocation dynamics framework for modeling polycrystal plasticity with hardening*, **International Journal of Solids and Structures**, https://doi.org/10.1016/j.ijsolstr.2023.112442.
+- L van Wees, A Singh, M Obstalecki, P Shade, T Turner and M Kasemer, *An assessment of polarized light microscopy as a characterization method for crystal plasticity simulations*, **Materialia**, https://doi.org/10.1016/j.mtla.2023.101872.
+- Z Huang and G Zeng, *Microstructure characterization and crystal plastic finite element simulation of additive manufacturing 316 L stainless steel*, **Journal of Physics: Conference Series**, https://doi.org/10.1088/1742-6596/2553/1/012073.
 - A Wessel, ES Perdahcioğlu, A Butz, T van den Boogaard and W Volk, *Prediction of texture-induced plastic anisotropy in AA6014-T4 aluminium sheets utilising two different crystal plasticity-based constitutive models*, **IOP Conference Series: Materials Science and Engineering**, https://doi.org/10.1088/1757-899X/1284/1/012059.
 - Z Liang, X Wang, Y Cui, W Xu, Y Zhang and Y He, *A new data-driven probabilistic fatigue life prediction framework informed by experiments and multiscale simulation*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2023.107731.
 - D Zhu, W Zhang, Z Ding and J Kim, *Investigation of crack propagation driving force based on crystal plasticity and cyclic J-integral*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2023.109362.
@@ -77,9 +85,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2022
 ----
 
-.. PS Chaugulea, JB le Graverenda, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*
-.. M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, arXiv preprint arXiv:2202.01895, 2022
-
+- M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, **Philosophical Transactions of the Royal Society A**, https://doi.org/10.1098/rsta.2021.0382.
+- PS Chaugule and JB Le Graverend, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103243.
 - JA Moore, JP Rusch, PS Nezhad, S Manchiraju and D Erdeniz, *Effects of martensitic phase transformation on fatigue indicator parameters determined by a crystal plasticity model*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2022.107457.
 - H Ceric, RL de Orio and S Selberherr, *Microstructural impact on electromigration reliability of gold interconnects*, Solid-State Electronics, https://doi.org/10.1016/j.sse.2022.108528.
 - M Vieira de Carvalho, RP Cardoso Coelho and FMA Pires, *On the computational treatment of fully coupled crystal plasticity slip and martensitic transformation constitutive models at finite strains*, **International Journal for Numerical Methods in Engineering**, https://doi.org/10.1002/nme.7059.

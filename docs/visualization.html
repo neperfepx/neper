@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Visualization &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -90,11 +91,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="visualization">
-<span id="id1"></span><h1>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline"></a></h1>
+  <section id="visualization">
+<span id="id1"></span><h1>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h1>
 <p>Module -V is dedicated to tessellation, mesh and result visualization. The input data is a tessellation or mesh as provided by modules -T and -M, or a simulation directory as provided by module -S. How the tessellation, mesh and simulation results are displayed can be specified in detail. Mesh slicing is also available.  The output can be a publication-quality PNG image or a VTK file, for interactive visualization.  Loops can also be created to generate a series of images that can then be turned into a movie.</p>
-<div class="section" id="generalities">
-<h2>Generalities<a class="headerlink" href="#generalities" title="Permalink to this headline"></a></h2>
+<section id="generalities">
+<h2>Generalities<a class="headerlink" href="#generalities" title="Permalink to this headline">¶</a></h2>
 <p>A typical use is to load a tessellation or mesh for visualization and coloring the cells or element sets using a specific palette. It is possible to adjust the scene settings, namely, the camera position, angle, look-at point and projection, shadowing effects and image properties. The POV-Ray ray-tracing package is used to generate images at the PNG format. Examples are provided below for a tessellation and its mesh.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n1000.tess               <span class="se">\</span>
            -datacellcol id          <span class="se">\</span>
@@ -107,13 +108,13 @@
            -print n1000-mesh
 </pre></div>
 </div>
-<div class="figure align-default">
+<figure class="align-default">
 <img alt="_images/visu_gene.png" src="_images/visu_gene.png" />
-</div>
+</figure>
 <p><a class="reference external" href="imgs/visu_gene.sh">visu_gene.sh</a></p>
-</div>
-<div class="section" id="color-transparency-etc">
-<h2>Color, Transparency, etc.<a class="headerlink" href="#color-transparency-etc" title="Permalink to this headline"></a></h2>
+</section>
+<section id="color-transparency-etc">
+<h2>Color, Transparency, etc.<a class="headerlink" href="#color-transparency-etc" title="Permalink to this headline">¶</a></h2>
 <p>The tessellation and mesh entities can be assigned specific colors, transparencies or sizes. Mesh nodes can also be applied displacements. For example, cells colors can be defined from the cell identifiers, the lattice orientations or a scalar field, or they can be loaded from a file. A mesh can be colored from element or nodal values. Examples are provided below.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n1000.tess                            <span class="se">\</span>
            -datacellcol id                       <span class="se">\</span>
@@ -128,13 +129,13 @@
            -print n1000-mesh
 </pre></div>
 </div>
-<div class="figure align-default">
+<figure class="align-default">
 <img alt="_images/visu_cotr.png" src="_images/visu_cotr.png" />
-</div>
+</figure>
 <p><a class="reference external" href="imgs/visu_cotr.sh">visu_cotr.sh</a></p>
-</div>
-<div class="section" id="entity-selection">
-<h2>Entity selection<a class="headerlink" href="#entity-selection" title="Permalink to this headline"></a></h2>
+</section>
+<section id="entity-selection">
+<h2>Entity selection<a class="headerlink" href="#entity-selection" title="Permalink to this headline">¶</a></h2>
 <p>For both tessellations and meshes, the types and sets of entities to display can be specified. This can be carried out using logical expressions or identifiers loaded from a file. This is illustrated below for a tessellation and its mesh.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n1000.tess                         <span class="se">\</span>
            -datacellcol id                    <span class="se">\</span>
@@ -151,13 +152,13 @@
            -print selectmesh
 </pre></div>
 </div>
-<div class="figure align-default">
+<figure class="align-default">
 <img alt="_images/visu_sele.png" src="_images/visu_sele.png" />
-</div>
+</figure>
 <p><a class="reference external" href="imgs/visu_sele.sh">visu_sele.sh</a></p>
-</div>
-<div class="section" id="mesh-slicing">
-<h2>Mesh Slicing<a class="headerlink" href="#mesh-slicing" title="Permalink to this headline"></a></h2>
+</section>
+<section id="mesh-slicing">
+<h2>Mesh Slicing<a class="headerlink" href="#mesh-slicing" title="Permalink to this headline">¶</a></h2>
 <p>One or several slices of a mesh can be displayed. All fields are retained during slicing. This is illustrated on the right by 3 orthogonal slices of a mesh, where the color shows the distance with respect to the nearest cell boundary.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n1000.tess,n1000.msh                      <span class="se">\</span>
            -dataelt3dedgerad <span class="m">0</span>.001                   <span class="se">\</span>
@@ -168,16 +169,16 @@
            -print slicemesh
 </pre></div>
 </div>
-<div class="figure align-default">
+<figure class="align-default">
 <img alt="_images/visu_slic.png" src="_images/visu_slic.png" />
-</div>
+</figure>
 <p><a class="reference external" href="imgs/visu_slic.sh">visu_slic.sh</a></p>
-</div>
-<div class="section" id="simulation">
-<h2>Simulation<a class="headerlink" href="#simulation" title="Permalink to this headline"></a></h2>
+</section>
+<section id="simulation">
+<h2>Simulation<a class="headerlink" href="#simulation" title="Permalink to this headline">¶</a></h2>
 <p>Simulation results from a simulation directory can be simply displayed.  The simulation directory can be loaded as input, which effectively loads its input data (tessellation and mesh) and make the simulation results available in a similar way as the internal data of a tessellation or mesh (node coordinates, etc.).  This allows for easy visualization of simulation results, including through time, using <a class="reference internal" href="doc/neper_v.html#cmdoption-loop"><code class="xref std std-option docutils literal notranslate"><span class="pre">-loop</span></code></a>.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

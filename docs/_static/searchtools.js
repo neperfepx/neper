@@ -4,7 +4,7 @@
  *
  * Sphinx JavaScript utilities for the full-text search.
  *
- * :copyright: Copyright 2007-2022 by the Sphinx team, see AUTHORS.
+ * :copyright: Copyright 2007-2021 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
  */
@@ -328,6 +328,9 @@ var Search = {
     var results = [];
 
     for (var prefix in objects) {
+      if (!(objects[prefix] instanceof Array)) {
+        objects[prefix] = Object.entries(objects[prefix]).map(([name, match]) => [...match, name]);
+      }
       for (var iMatch = 0; iMatch != objects[prefix].length; ++iMatch) {
         var match = objects[prefix][iMatch];
         var name = match[4];

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Simulation Module (-S) &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -104,8 +105,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="simulation-module-s">
-<span id="neper-s"></span><span id="index-0"></span><h1>Simulation Module (-S)<a class="headerlink" href="#simulation-module-s" title="Permalink to this headline"></a></h1>
+  <section id="simulation-module-s">
+<span id="neper-s"></span><span id="index-0"></span><h1>Simulation Module (-S)<a class="headerlink" href="#simulation-module-s" title="Permalink to this headline">¶</a></h1>
 <p>Module -S is the module for post-processing simulation results.  It generates and works on a simply-structured and human-friendly <a class="reference internal" href="fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a>.  The <a class="reference internal" href="fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a> is particularly well suited for result management and allows for the computation of new results.</p>
 <p>A <a class="reference internal" href="fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a> is typically generated from an FEPX raw result directory, which can be done as simply as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -S &lt;fepx_raw_result_directory&gt;
@@ -161,13 +162,13 @@
 <span class="go">========================================================================</span>
 </pre></div>
 </div>
-<div class="section" id="arguments">
-<h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline"></a></h2>
-<div class="section" id="input-data">
-<h3>Input Data<a class="headerlink" href="#input-data" title="Permalink to this headline"></a></h3>
+<section id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
+<section id="input-data">
+<h3>Input Data<a class="headerlink" href="#input-data" title="Permalink to this headline">¶</a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-directory_name">
-<span id="cmdoption-arg-directory-name"></span><span class="sig-name descname"><span class="pre">&lt;directory_name&gt;</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-directory_name" title="Permalink to this definition"></a></dt>
+<span id="cmdoption-arg-directory-name"></span><span class="sig-name descname"><span class="pre">&lt;directory_name&gt;</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-directory_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the name of the input directory, which can be:</p>
 <ul class="simple">
 <li><p>an FEPX raw result directory <a class="footnote-reference brackets" href="#f1" id="id1">1</a>  (to convert into a <a class="reference internal" href="fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a>);</p></li>
@@ -179,28 +180,28 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-orispace">
-<span class="sig-name descname"><span class="pre">-orispace</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;file_name&gt;</span></span><a class="headerlink" href="#cmdoption-orispace" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-orispace</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;file_name&gt;</span></span><a class="headerlink" href="#cmdoption-orispace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the mesh of orientation space used for ODF computation.</p>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="step-options">
-<h3>Step Options<a class="headerlink" href="#step-options" title="Permalink to this headline"></a></h3>
+</section>
+<section id="step-options">
+<h3>Step Options<a class="headerlink" href="#step-options" title="Permalink to this headline">¶</a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-step">
-<span class="sig-name descname"><span class="pre">-step</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;step_nb&gt;</span></span><a class="headerlink" href="#cmdoption-step" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-step</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;step_nb&gt;</span></span><a class="headerlink" href="#cmdoption-step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define the number of steps of a simulation.</p>
 <p>This option is useful to import results (at simulation steps) into a simulation directory originally generated from a tessellation or a mesh (option <a class="reference internal" href="neper_t.html#cmdoption-format"><code class="xref std std-option docutils literal notranslate"><span class="pre">-format</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">sim</span></code> in the <a class="reference internal" href="neper_t.html#neper-t"><span class="std std-ref">Tessellation Module (-T)</span></a> or <a class="reference internal" href="neper_m.html#neper-m"><span class="std std-ref">Meshing Module (-M)</span></a>).</p>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="entity-options">
-<h3>Entity Options<a class="headerlink" href="#entity-options" title="Permalink to this headline"></a></h3>
+</section>
+<section id="entity-options">
+<h3>Entity Options<a class="headerlink" href="#entity-options" title="Permalink to this headline">¶</a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-entity">
-<span class="sig-name descname"><span class="pre">-entity</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;name&gt;:&lt;logical_expression&gt;</span></span><a class="headerlink" href="#cmdoption-entity" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-entity</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;name&gt;:&lt;logical_expression&gt;</span></span><a class="headerlink" href="#cmdoption-entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define a new entity (based on elements) from one or several logical expressions based on the variables described in <a class="reference internal" href="exprskeys.html#mesh-keys"><span class="std std-ref">Mesh Keys</span></a>. The expression argument can be:</p>
 <ul class="simple">
 <li><p>a single logical expression;</p></li>
@@ -210,13 +211,13 @@
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="results-options">
-<h3>Results Options<a class="headerlink" href="#results-options" title="Permalink to this headline"></a></h3>
+</section>
+<section id="results-options">
+<h3>Results Options<a class="headerlink" href="#results-options" title="Permalink to this headline">¶</a></h3>
 <p>Below are options to manipulate (add, remove or update) the results of a simulation directory.  New results can be computed from the simulation inputs (tess, mesh, …), existing siumulation results, or be loaded from a file.  Any result can also be assigned a <em>name</em> alongside its expression. <a class="footnote-reference brackets" href="#f2" id="id2">2</a>  Results of element-based entities (including <code class="xref py py-data docutils literal notranslate"><span class="pre">elset</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">mesh</span></code>) are computed from the mesh in the case of known variables, or from the element results (when they exist), in this order of priority.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-res-cell-tess-node-elt-elset-mesh-entity">
-<span class="sig-name descname"><span class="pre">-res{cell,tess,node,elt,elset,mesh,&lt;entity&gt;}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;res1&gt;,&lt;res2&gt;,...</span></span><a class="headerlink" href="#cmdoption-res-cell-tess-node-elt-elset-mesh-entity" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-res{cell,tess,node,elt,elset,mesh,&lt;entity&gt;}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;res1&gt;,&lt;res2&gt;,...</span></span><a class="headerlink" href="#cmdoption-res-cell-tess-node-elt-elset-mesh-entity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the results to add, remove or update, using <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;res&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">'!&lt;res&gt;'</span></code> <a class="footnote-reference brackets" href="#quotes" id="id3">4</a>  or <code class="xref py py-data docutils literal notranslate"><span class="pre">\&lt;res&gt;</span></code>, respectively.  A new result is typically computed from the tessellation, mesh or existing simulation results, as described in the following.  To (optionally) assign a name to a result, use <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;name&gt;:&lt;expression&gt;</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code> is the name and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;expression&gt;</span></code> is its expression.  A result expression can be:</p>
 <blockquote>
 <div><ul class="simple">
@@ -242,26 +243,26 @@
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="output-options">
-<h3>Output Options<a class="headerlink" href="#output-options" title="Permalink to this headline"></a></h3>
+</section>
+<section id="output-options">
+<h3>Output Options<a class="headerlink" href="#output-options" title="Permalink to this headline">¶</a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-o">
-<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;directory_name&gt;</span></span><a class="headerlink" href="#cmdoption-o" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;directory_name&gt;</span></span><a class="headerlink" href="#cmdoption-o" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the name of the output simulation directory (the default <code class="xref py py-data docutils literal notranslate"><span class="pre">sim</span></code> extension is not added to the argument).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;fepx_result_directory&gt;.sim</span></code></p>
 </dd></dl>
 
-</div>
-</div>
-<div class="section" id="output-directory">
-<h2>Output Directory<a class="headerlink" href="#output-directory" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+<section id="output-directory">
+<h2>Output Directory<a class="headerlink" href="#output-directory" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">sim</span></code>: simulation directory (see <a class="reference internal" href="fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a>).</p></li>
 </ul>
-</div>
-<div class="section" id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>Below are some examples of use of neper -S.</p>
 <ul>
 <li><p>Convert an FEPX raw result directory into a simulation directory:</p>
@@ -332,8 +333,8 @@
 <dd><p>For vectors of length 6 (<code class="xref py py-data docutils literal notranslate"><span class="pre">stress</span></code>, etc.), the 3 last components are multiplied by <span class="math notranslate nohighlight">\(\sqrt{2}\)</span>.</p>
 </dd>
 </dl>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

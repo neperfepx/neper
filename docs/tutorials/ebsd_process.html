@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Processing EBSD-type data &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -75,11 +76,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="processing-ebsd-type-data">
-<span id="ebsd-process"></span><h1>Processing EBSD-type data<a class="headerlink" href="#processing-ebsd-type-data" title="Permalink to this headline"></a></h1>
+  <section id="processing-ebsd-type-data">
+<span id="ebsd-process"></span><h1>Processing EBSD-type data<a class="headerlink" href="#processing-ebsd-type-data" title="Permalink to this headline">¶</a></h1>
 <p>An experimental EBSD (orientation) map can be written as a <a class="reference internal" href="../doc/fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a> and visualized using the <a class="reference internal" href="../doc/neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>.  It can also be post-processed using the <a class="reference internal" href="../doc/neper_s.html#neper-s"><span class="std std-ref">Simulation Module (-S)</span></a>, just as a mesh (and simulation results) can be.</p>
-<div class="section" id="writing-ebsd-type-data-as-a-tesr-file">
-<h2>Writing EBSD-type data as a <a class="reference internal" href="../doc/fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a><a class="headerlink" href="#writing-ebsd-type-data-as-a-tesr-file" title="Permalink to this headline"></a></h2>
+<section id="writing-ebsd-type-data-as-a-tesr-file">
+<h2>Writing EBSD-type data as a <a class="reference internal" href="../doc/fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a><a class="headerlink" href="#writing-ebsd-type-data-as-a-tesr-file" title="Permalink to this headline">¶</a></h2>
 <p>An EBSD map typically consists of an orientation field described over a 2D grid.  This can be described by a <a class="reference internal" href="../doc/fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a>.  An example of an EBSD map comprising <span class="math notranslate nohighlight">\(3 \times 4\)</span> pixels of size 0.001 is provided below (<code class="file docutils literal notranslate"><span class="pre">n2.tesr</span></code>):</p>
 <div class="highlight-plain notranslate"><div class="highlight"><pre><span></span>***tesr
  **format
@@ -245,9 +246,9 @@
 ***end
 </pre></div>
 </div>
-</div>
-<div class="section" id="processing-the-data">
-<h2>Processing the Data<a class="headerlink" href="#processing-the-data" title="Permalink to this headline"></a></h2>
+</section>
+<section id="processing-the-data">
+<h2>Processing the Data<a class="headerlink" href="#processing-the-data" title="Permalink to this headline">¶</a></h2>
 <p>A <a class="reference internal" href="../doc/fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a> (<code class="file docutils literal notranslate"><span class="pre">n2c.tesr</span></code>) can be written as a <a class="reference internal" href="../doc/fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a>, for post-processing.  This is simply done as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -loadtesr n2d.tesr -for sim
 </pre></div>
@@ -310,8 +311,8 @@
 </div>
 <p>This originally produces a PNG file named <code class="file docutils literal notranslate"><span class="pre">img5.png</span></code> for the map and a PNG file named <code class="file docutils literal notranslate"><span class="pre">img5-scale.png</span></code> for the scale bar, which is included to <code class="file docutils literal notranslate"><span class="pre">img5.png</span></code> thanks to <strong class="program">convert</strong>.</p>
 <img alt="../_images/img56.png" src="../_images/img56.png" />
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meshing Module (-M) &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -116,8 +117,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="meshing-module-m">
-<span id="neper-m"></span><span id="index-0"></span><h1>Meshing Module (-M)<a class="headerlink" href="#meshing-module-m" title="Permalink to this headline"></a></h1>
+  <section id="meshing-module-m">
+<span id="neper-m"></span><span id="index-0"></span><h1>Meshing Module (-M)<a class="headerlink" href="#meshing-module-m" title="Permalink to this headline">¶</a></h1>
 <p>Module -M is the module for meshing scalar and raster tessellations.  Two meshing strategies are available. <cite>Free (or unstructured) meshing</cite> creates a conforming mesh into tetrahedral elements (triangular in 2D).  <cite>Mapped (or structured) meshing</cite> generates a non-conforming mesh into regular hexahedral elements (quadrangular in 2D). Free meshing is carried out so that the elements have sizes as close as possible to the target value, and show high quality, that is, with shapes as close to equilateral as possible.  The input file is a tessellation file (<code class="file docutils literal notranslate"><span class="pre">.tess</span></code>) or a raster tessellation file (<code class="file docutils literal notranslate"><span class="pre">.tesr</span></code>), as provided by module -T.  Standard tessellations, multiscale tessellations, and periodic (or semi-periodic) tessellations are supported.  Free meshing of raster tessellations works for 2D tessellations only.  The output mesh can be written as a <code class="file docutils literal notranslate"><span class="pre">.msh</span></code> file, which can be readily used by FEPX, or at other formats.</p>
 <p>The target element size of the mesh can be specified through the element <em>characteristic length</em> (<code class="xref py py-data docutils literal notranslate"><span class="pre">cl</span></code>).  It corresponds to the length of a 1D element, the length of the edge of a triangular or quadrangular element (2D), and the length of an edge of a tetrahedral or hexahedral element (3D). A <em>relative characteristic length</em> (<code class="xref py py-data docutils literal notranslate"><span class="pre">rcl</span></code>) can be used instead, whose value is relative to the average cell size and provides a medium number of elements.  It is also possible to specify <code class="xref py py-data docutils literal notranslate"><span class="pre">cl</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">rcl</span></code> values on a per-cell basis, or different values along the three space directions.</p>
 <p>For free meshing,  mesh quality is ensured to the greatest extent possible using several approaches:</p>
@@ -174,31 +175,31 @@
 <span class="go">========================================================================</span>
 </pre></div>
 </div>
-<div class="section" id="arguments">
-<h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline"></a></h2>
-<div class="section" id="prerequisites">
-<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline"></a></h3>
+<section id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-gmsh">
-<span class="sig-name descname"><span class="pre">-gmsh</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;binary&gt;</span></span><a class="headerlink" href="#cmdoption-gmsh" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-gmsh</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;binary&gt;</span></span><a class="headerlink" href="#cmdoption-gmsh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the Gmsh command or the path to the Gmsh binary (for meshing into triangle and tetrahedral elements).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">gmsh</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-tmp">
-<span class="sig-name descname"><span class="pre">-tmp</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;directory&gt;</span></span><a class="headerlink" href="#cmdoption-tmp" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-tmp</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;directory&gt;</span></span><a class="headerlink" href="#cmdoption-tmp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the path to the temporary directory (used by Gmsh).</p>
 <p><strong>Default value</strong>: <code class="xref std std-option docutils literal notranslate"><span class="pre">.</span></code>.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="input-data">
-<h3>Input Data<a class="headerlink" href="#input-data" title="Permalink to this headline"></a></h3>
+</section>
+<section id="input-data">
+<h3>Input Data<a class="headerlink" href="#input-data" title="Permalink to this headline">¶</a></h3>
 <p>In normal use, the input data is a tessellation file, a raster tessellation file or a mesh file.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-arg-file_name1-transformation1-transformation2-...-file_name2-...">
-<span id="cmdoption-arg-file-name1-transformation1-transformation2-file-name2"></span><span class="sig-name descname"><span class="pre">&lt;file_name1&gt;[:&lt;transformation1&gt;][:&lt;transformation2&gt;]...,&lt;file_name2&gt;...</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-file_name1-transformation1-transformation2-...-file_name2-..." title="Permalink to this definition"></a></dt>
+<span id="cmdoption-arg-file-name1-transformation1-transformation2-file-name2"></span><span class="sig-name descname"><span class="pre">&lt;file_name1&gt;[:&lt;transformation1&gt;][:&lt;transformation2&gt;]...,&lt;file_name2&gt;...</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-arg-file_name1-transformation1-transformation2-...-file_name2-..." title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the input file, which can be:</p>
 <ul class="simple">
 <li><p>a tessellation file (<code class="file docutils literal notranslate"><span class="pre">.tess</span></code>);</p></li>
@@ -220,7 +221,7 @@
 <p>It is also possible to load a mesh to be considered as output mesh (in contrast to loading it as input file).  If the file contains meshes of dimensions lower than the tessellation’s dimension, they are used, and only higher-dimension meshes are computed. Use option <a class="reference internal" href="neper_t.html#cmdoption-o"><code class="xref std std-option docutils literal notranslate"><span class="pre">-o</span></code></a> to avoid overwriting the file.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-loadmesh">
-<span class="sig-name descname"><span class="pre">-loadmesh</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;file_name&gt;</span></span><a class="headerlink" href="#cmdoption-loadmesh" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-loadmesh</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;file_name&gt;</span></span><a class="headerlink" href="#cmdoption-loadmesh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a mesh from a <a class="reference internal" href="fileformat.html#mesh-file"><span class="std std-ref">Mesh File (.msh)</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
@@ -228,17 +229,17 @@
 <p>Finally, it is possible to load a set of points.  These points are used only for statistics, in option <a class="reference internal" href="neper_t.html#cmdoption-statpoint"><code class="xref std std-option docutils literal notranslate"><span class="pre">-statpoint</span></code></a>.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-loadpoint">
-<span class="sig-name descname"><span class="pre">-loadpoint</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;file_name&gt;</span></span><a class="headerlink" href="#cmdoption-loadpoint" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-loadpoint</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;file_name&gt;</span></span><a class="headerlink" href="#cmdoption-loadpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load points from a <a class="reference internal" href="fileformat.html#position-file"><span class="std std-ref">Position File</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="meshing-options">
-<h3>Meshing Options<a class="headerlink" href="#meshing-options" title="Permalink to this headline"></a></h3>
+</section>
+<section id="meshing-options">
+<h3>Meshing Options<a class="headerlink" href="#meshing-options" title="Permalink to this headline">¶</a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-elttype">
-<span class="sig-name descname"><span class="pre">-elttype</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;elt_type&gt;</span></span><a class="headerlink" href="#cmdoption-elttype" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-elttype</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;elt_type&gt;</span></span><a class="headerlink" href="#cmdoption-elttype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the type of elements, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">tri</span></code>  : triangular elements;</p></li>
@@ -253,7 +254,7 @@
 
 <span class="target" id="index-1"></span><span class="target" id="index-2"></span><dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-cl">
-<span class="sig-name descname"><span class="pre">-cl</span></span><span class="sig-prename descclassname"> <span class="pre">or</span> <span class="pre">-rcl</span> <span class="pre">&lt;length&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-cl" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-cl</span></span><span class="sig-prename descclassname"> <span class="pre">or</span> <span class="pre">-rcl</span> <span class="pre">&lt;length&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-cl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the absolute or relative characteristic lengths of the elements.  <code class="xref py py-data docutils literal notranslate"><span class="pre">-rcl</span></code> is defined relative to the average cell size.  The argument can be:</p>
 <ul class="simple">
 <li><p>a real value;</p></li>
@@ -265,7 +266,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-dim">
-<span class="sig-name descname"><span class="pre">-dim</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;dimension1&gt;,&lt;dimensions2&gt;,...[:msh]</span></span><a class="headerlink" href="#cmdoption-dim" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-dim</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;dimension1&gt;,&lt;dimensions2&gt;,...[:msh]</span></span><a class="headerlink" href="#cmdoption-dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the mesh dimension(s), which can be:</p>
 <ul class="simple">
 <li><p>an integer value between <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">3</span></code>;</p></li>
@@ -287,7 +288,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-order">
-<span class="sig-name descname"><span class="pre">-order</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;order&gt;</span></span><a class="headerlink" href="#cmdoption-order" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-order</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;order&gt;</span></span><a class="headerlink" href="#cmdoption-order" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the mesh order, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>: linear-interpolation elements (2-node linear elements, 3-node triangular elements, 4-node quadrangular elements, 4-node tetrahedral elements and 8-node hexahedral elements);</p></li>
@@ -298,7 +299,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-cl-ver-edge-face">
-<span class="sig-name descname"><span class="pre">-cl{ver,edge,face}</span></span><span class="sig-prename descclassname"> <span class="pre">or</span> <span class="pre">-rcl{ver,edge,face}</span> <span class="pre">&lt;characteritic_length&gt;</span> <span class="pre">(secondary</span> <span class="pre">options</span></span><a class="headerlink" href="#cmdoption-cl-ver-edge-face" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-cl{ver,edge,face}</span></span><span class="sig-prename descclassname"> <span class="pre">or</span> <span class="pre">-rcl{ver,edge,face}</span> <span class="pre">&lt;characteritic_length&gt;</span> <span class="pre">(secondary</span> <span class="pre">options</span></span><a class="headerlink" href="#cmdoption-cl-ver-edge-face" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the absolute or relative characteristic lengths of the elements at the vertex, edge or face level (compared to options <a class="reference internal" href="#cmdoption-cl"><code class="xref std std-option docutils literal notranslate"><span class="pre">-cl</span></code></a> and <code class="xref py py-data docutils literal notranslate"><span class="pre">-rcl</span></code> applying to the cells), which can be:</p>
 <ul>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">default</span></code>: the same value as the parent, upper-dimension entity;</p></li>
@@ -313,7 +314,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-pl">
-<span class="sig-name descname"><span class="pre">-pl</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;progression_factor&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-pl" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-pl</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;progression_factor&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-pl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the progression factor for the element characteristic lengths, which corresponds to
 the maximum ratio between the lengths of two adjacent 1D elements (<span class="math notranslate nohighlight">\(\geq 1\)</span>).</p>
 <p><strong>Deafult value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">2</span></code>.</p>
@@ -321,7 +322,7 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-clratio">
-<span class="sig-name descname"><span class="pre">-clratio</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;val_x&gt;:&lt;val_y&gt;:&lt;val_z&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-clratio" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-clratio</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;val_x&gt;:&lt;val_y&gt;:&lt;val_z&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-clratio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the ratios between the <code class="xref py py-data docutils literal notranslate"><span class="pre">cl</span></code> values along the <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code> directions. For example, <code class="xref py py-data docutils literal notranslate"><span class="pre">2:1:1</span></code> leads to elements twice as long in the <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code> direction as in the <code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code> directions.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1:1:1</span></code>.</p>
 </dd></dl>
@@ -329,28 +330,28 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 <p>The following options define the multimeshing algorithm (for 2D and 3D free meshings). <cite>Multimeshing</cite> consists of using several meshing algorithms concurrently, for each face or polyhedron, until a minimum, target mesh quality is reached. The mesh quality factor, <span class="math notranslate nohighlight">\(O\)</span>, accounts for both the element sizes and aspect ratios. It is given by <span class="math notranslate nohighlight">\(O = O_{dis}^\alpha \times O_{size}^{1-\alpha}\)</span>, where <span class="math notranslate nohighlight">\(O_{dis}\)</span> and <span class="math notranslate nohighlight">\(O_{size}\)</span> range from 0 (poor quality) to 1 (high quality), and <span class="math notranslate nohighlight">\(\alpha\)</span> is a factor equal to 0.8.  Therefore, <span class="math notranslate nohighlight">\(O\)</span> also ranges from 0 (poor quality) to 1 (high quality) <a class="reference internal" href="../tutorials/simple_model.html#cmame2011" id="id3"><span>[CMAME2011]</span></a>.  The minimum quality value can be modified using option <a class="reference internal" href="#cmdoption-meshqualmin"><code class="xref std std-option docutils literal notranslate"><span class="pre">-meshqualmin</span></code></a>.  The values of <span class="math notranslate nohighlight">\(O\)</span> and <span class="math notranslate nohighlight">\(O_{dis}\)</span> can be modified using options <a class="reference internal" href="#cmdoption-meshqualexpr"><code class="xref std std-option docutils literal notranslate"><span class="pre">-meshqualexpr</span></code></a> and <a class="reference internal" href="#cmdoption-meshqualdisexpr"><code class="xref std std-option docutils literal notranslate"><span class="pre">-meshqualdisexpr</span></code></a>.  The value of the target mesh quality significantly influences meshing speed and output mesh quality. A value of <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> provides the fastest meshing while a value of <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> provides the best-quality meshing. The default value provides an effective balance. 2D and 3D meshings are achieved using Gmsh and Netgen (options <a class="reference internal" href="#cmdoption-mesh2dalgo"><code class="xref std std-option docutils literal notranslate"><span class="pre">-mesh2dalgo</span></code></a> and <a class="reference internal" href="#cmdoption-mesh3dalgo"><code class="xref std std-option docutils literal notranslate"><span class="pre">-mesh3dalgo</span></code></a>).</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-meshqualmin">
-<span class="sig-name descname"><span class="pre">-meshqualmin</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;quality_value&gt;</span></span><a class="headerlink" href="#cmdoption-meshqualmin" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-meshqualmin</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;quality_value&gt;</span></span><a class="headerlink" href="#cmdoption-meshqualmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the minimum target value of mesh quality, <span class="math notranslate nohighlight">\(O\)</span>, as defined by option <a class="reference internal" href="#cmdoption-meshqualexpr"><code class="xref std std-option docutils literal notranslate"><span class="pre">-meshqualexpr</span></code></a>.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">0.9</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-meshqualexpr">
-<span class="sig-name descname"><span class="pre">-meshqualexpr</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;quality_expression&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-meshqualexpr" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-meshqualexpr</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;quality_expression&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-meshqualexpr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the expression of mesh quality, <span class="math notranslate nohighlight">\(O\)</span>, as a function of <span class="math notranslate nohighlight">\(O_{dis}\)</span> and <span class="math notranslate nohighlight">\(O_{size}\)</span>.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">Odis^0.8*Osize^0.2</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-meshqualdisexpr">
-<span class="sig-name descname"><span class="pre">-meshqualdisexpr</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;quality_expression&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-meshqualdisexpr" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-meshqualdisexpr</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;quality_expression&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-meshqualdisexpr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the expression of the mesh element distortion parameter, <span class="math notranslate nohighlight">\(O_{dis}\)</span>, as a function of the element distortion parameter <span class="math notranslate nohighlight">\(dis\)</span>.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">dis^(exp((dis^0.1)/(dis^0.1-1)))</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-mesh2dalgo">
-<span class="sig-name descname"><span class="pre">-mesh2dalgo</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;algo1&gt;,&lt;algo2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh2dalgo" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-mesh2dalgo</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;algo1&gt;,&lt;algo2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh2dalgo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the 2D meshing algorithm(s), which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">mead</span></code>: MeshAdapt;</p></li>
@@ -363,7 +364,7 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-mesh3dalgo">
-<span class="sig-name descname"><span class="pre">-mesh3dalgo</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mesh_algo1&gt;:&lt;opti_algo1&gt;,&lt;mesh_algo2&gt;:&lt;opti_algo2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh3dalgo" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-mesh3dalgo</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;mesh_algo1&gt;:&lt;opti_algo1&gt;,&lt;mesh_algo2&gt;:&lt;opti_algo2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh3dalgo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the 3D meshing and optimization algorithms.  The only meshing algorithm is <code class="xref py py-data docutils literal notranslate"><span class="pre">netg</span></code> (Netgen), and the optimization algorithms can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">gmsh</span></code>: Gmsh;</p></li>
@@ -377,7 +378,7 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-interface">
-<span class="sig-name descname"><span class="pre">-interface</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;interface_type&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-interface" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-interface</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;interface_type&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-interface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the type of interface meshing, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">continuous</span></code>: continuous mesh at interfaces with shared nodes between neighbor element sets (which are associated to the tessellation cells);</p></li>
@@ -390,18 +391,18 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-mesh2dpinchfix">
-<span class="sig-name descname"><span class="pre">-mesh2dpinchfix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh2dpinchfix" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-mesh2dpinchfix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh2dpinchfix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply 2D-mesh pinches correction after 2D meshing (recommended).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="raster-tessellation-meshing-options">
-<h3>Raster Tessellation Meshing Options<a class="headerlink" href="#raster-tessellation-meshing-options" title="Permalink to this headline"></a></h3>
+</section>
+<section id="raster-tessellation-meshing-options">
+<h3>Raster Tessellation Meshing Options<a class="headerlink" href="#raster-tessellation-meshing-options" title="Permalink to this headline">¶</a></h3>
 <p>Direct 2D raster tessellation meshing involves interface reconstruction, interface mesh smoothing and then remeshing. The following options enable the control of interface smoothing.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-tesrsmooth">
-<span class="sig-name descname"><span class="pre">-tesrsmooth</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;smoothing&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-tesrsmooth" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-tesrsmooth</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;smoothing&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-tesrsmooth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the method for smoothing the interface meshes reconstructed from a raster tessellation, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">laplacian</span></code>: Laplacian smoothing is an iterative method that modifies the coordinates of a node of a mesh using the coordinates of the connected nodes.  At iteration <span class="math notranslate nohighlight">\(i\)</span>, the position of a node, <span class="math notranslate nohighlight">\(X_i\)</span>, is calculated from its previous position, <span class="math notranslate nohighlight">\(X_{i-1}\)</span>, and the position of the barycenter of the neighboring nodes (weighted barycenter considering the inverse of the distance between the node and the neighbor), <span class="math notranslate nohighlight">\(X^n_{i-1}\)</span>, as follows: <span class="math notranslate nohighlight">\(X_i=(1-A)\,X_{i-1} + A\,X^n_{i-1}\)</span>.  <span class="math notranslate nohighlight">\(A \in \left[0,\,1\right]\)</span> is an adjustable parameter (see option <a class="reference internal" href="#cmdoption-tesrsmoothfact"><code class="xref std std-option docutils literal notranslate"><span class="pre">-tesrsmoothfact</span></code></a>). The number of iterations is set by option <a class="reference internal" href="#cmdoption-tesrsmoothitermax"><code class="xref std std-option docutils literal notranslate"><span class="pre">-tesrsmoothitermax</span></code></a>.  There is no stop criterion, and so, <code class="xref py py-data docutils literal notranslate"><span class="pre">itermax</span></code> will always be reached.</p></li>
@@ -412,25 +413,25 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-tesrsmoothfact">
-<span class="sig-name descname"><span class="pre">-tesrsmoothfact</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;fact&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-tesrsmoothfact" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-tesrsmoothfact</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;fact&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-tesrsmoothfact" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the factor used for the interface mesh smoothing (<span class="math notranslate nohighlight">\(A\)</span> in option <a class="reference internal" href="#cmdoption-tesrsmooth"><code class="xref std std-option docutils literal notranslate"><span class="pre">-tesrsmooth</span></code></a>).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">0.5</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-tesrsmoothitermax">
-<span class="sig-name descname"><span class="pre">-tesrsmoothitermax</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;iter_number&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-tesrsmoothitermax" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-tesrsmoothitermax</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;iter_number&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-tesrsmoothitermax" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the number of iterations used for interface mesh smoothing.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">5</span></code>.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="mesh-cleaning-options">
-<h3>Mesh Cleaning Options<a class="headerlink" href="#mesh-cleaning-options" title="Permalink to this headline"></a></h3>
+</section>
+<section id="mesh-cleaning-options">
+<h3>Mesh Cleaning Options<a class="headerlink" href="#mesh-cleaning-options" title="Permalink to this headline">¶</a></h3>
 <p>The following options are specific to mapped meshing of raster tessellations containing voids.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-clean">
-<span class="sig-name descname"><span class="pre">-clean</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cleaning_level&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-clean" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-clean</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cleaning_level&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the mesh cleaning level.  Cleaning makes it so that the mesh is made of a set of connected elements by removing the elements that are not connected to the main skeleton according to a given criterion, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>: no cleaning;</p></li>
@@ -442,7 +443,7 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-singnodedup">
-<span class="sig-name descname"><span class="pre">-singnodedup</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-singnodedup" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-singnodedup</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-singnodedup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Duplicate singular nodes.  A singular node belongs to several elements which share only a node or an edge which provides a singular behavior <a class="footnote-reference brackets" href="#singular" id="id4">2</a>.</p>
 <p>Duplicated nodes can be merged back using option <a class="reference internal" href="#cmdoption-dupnodemerge"><code class="xref std std-option docutils literal notranslate"><span class="pre">-dupnodemerge</span></code></a>.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>.</p>
@@ -450,18 +451,18 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-dupnodemerge">
-<span class="sig-name descname"><span class="pre">-dupnodemerge</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;distance&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-dupnodemerge" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-dupnodemerge</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;distance&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-dupnodemerge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Merge duplicate nodes. Provide as argument the distance between nodes below which two nodes are merged.</p>
 <p>Note that Neper does not generate meshes with duplicate nodes, except when <a class="reference internal" href="#cmdoption-singnodedup"><code class="xref std std-option docutils literal notranslate"><span class="pre">-singnodedup</span></code></a> or <a class="reference internal" href="#cmdoption-interface"><code class="xref std std-option docutils literal notranslate"><span class="pre">-interface</span></code></a> are used.</p>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="transformation-options">
-<h3>Transformation Options<a class="headerlink" href="#transformation-options" title="Permalink to this headline"></a></h3>
+</section>
+<section id="transformation-options">
+<h3>Transformation Options<a class="headerlink" href="#transformation-options" title="Permalink to this headline">¶</a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-transform">
-<span class="sig-name descname"><span class="pre">-transform</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;transformation1&gt;,&lt;transformation2&gt;,...</span></span><a class="headerlink" href="#cmdoption-transform" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-transform</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;transformation1&gt;,&lt;transformation2&gt;,...</span></span><a class="headerlink" href="#cmdoption-transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply successive transformations to a mesh, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">translate(&lt;dist_x&gt;,&lt;dist_y&gt;,&lt;dist_z&gt;)</span></code>: translate by distances <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dist_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dist_y&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dist_z&gt;</span></code> along <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code>, respectively;</p></li>
@@ -478,18 +479,18 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <span class="target" id="index-3"></span><dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-sort-node-elt">
-<span class="sig-name descname"><span class="pre">-sort{node,elt}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sort_expression&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-sort-node-elt" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-sort{node,elt}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sort_expression&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-sort-node-elt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sort nodes or elements (typically to facilitate data post-processing) according to a mathematical expression based on the variables described in <a class="reference internal" href="exprskeys.html#mesh-keys"><span class="std std-ref">Mesh Keys</span></a>, in ascending order.</p>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="mesh-partitioning-options">
-<h3>Mesh Partitioning Options<a class="headerlink" href="#mesh-partitioning-options" title="Permalink to this headline"></a></h3>
+</section>
+<section id="mesh-partitioning-options">
+<h3>Mesh Partitioning Options<a class="headerlink" href="#mesh-partitioning-options" title="Permalink to this headline">¶</a></h3>
 <p>Mesh partitioning is achieved using the <a class="reference external" href="https://www.labri.fr/perso/pelegrin/scotch">libscotch</a> library. The principle of mesh partitioning is to create partitions of the same size, in terms of nodes and elements, while minimizing the interfaces between them. This attempts to distribute an equal load to all computation units and minimizes communications between them, and therefore minimizes the total computation time of simulations.  There are two available strategies for mesh partitioning. The first one creates partitions and arranges them independently of each other, while the second one consists of optimizing the size and arrangment of the partitions based on a given computer cluster architecture to minimize computation time further. For those clusters that are made of nodes containing several cores each, the communication time between cores on a common node is much lower than the communication time between cores of different nodes. To minimize the global communication time, partitions which are processed by cores of the same node can be grouped together (on modern architectures, the gain remains marginal).  Partitioning is applied to the higher-dimension mesh and (for the sake of interfacing with FEPX) renumbers nodes and elements by ascending partition number.  This can be managed using options <code class="xref py py-data docutils literal notranslate"><span class="pre">-part*</span></code>.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-part">
-<span class="sig-name descname"><span class="pre">-part</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;part_number&gt;|&lt;part_architecture&gt;</span></span><a class="headerlink" href="#cmdoption-part" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-part</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;part_number&gt;|&lt;part_architecture&gt;</span></span><a class="headerlink" href="#cmdoption-part" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the number of partitions or a computer cluster architecture.  Using a number of partitions is generally sufficient.  Using a computer architecture may lead to a slight performance increase but the total number of partitions must be a power of 2. An architecture can be specified in two ways:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;number_of_nodes&gt;:&lt;number_of_cores_per_node&gt;</span></code>: Number of nodes (or “processors”) and number of cores per node or processor.  A ratio of 10 is considered between the computation time between cores located on different nodes and the one between cores of the same node.</p></li>
@@ -500,7 +501,7 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-partmethod">
-<span class="sig-name descname"><span class="pre">-partmethod</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;part_method&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-partmethod" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-partmethod</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;part_method&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-partmethod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the partitioning method, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">scotch</span></code>: libscotch partitioner;</p></li>
@@ -509,12 +510,12 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">scotch</span></code>.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="field-transport-options">
-<h3>Field Transport Options<a class="headerlink" href="#field-transport-options" title="Permalink to this headline"></a></h3>
+</section>
+<section id="field-transport-options">
+<h3>Field Transport Options<a class="headerlink" href="#field-transport-options" title="Permalink to this headline">¶</a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-transport">
-<span class="sig-name descname"><span class="pre">-transport</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;entity_type1&gt;:&lt;data_type1&gt;:&lt;file_name1&gt;,&lt;data_type2&gt;:&lt;file_name2&gt;,...</span></span><a class="headerlink" href="#cmdoption-transport" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-transport</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;entity_type1&gt;:&lt;data_type1&gt;:&lt;file_name1&gt;,&lt;data_type2&gt;:&lt;file_name2&gt;,...</span></span><a class="headerlink" href="#cmdoption-transport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transport data from a parent mesh to a child mesh.  The parent mesh is the input mesh and the child mesh is the result mesh (created by remeshing or loaded with <a class="reference internal" href="#cmdoption-loadmesh"><code class="xref std std-option docutils literal notranslate"><span class="pre">-loadmesh</span></code></a>).  <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;entity_type&gt;</span></code> can be <code class="xref py py-data docutils literal notranslate"><span class="pre">node</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">elt</span></code>, and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_type&gt;</span></code> can be <code class="xref py py-data docutils literal notranslate"><span class="pre">integer&lt;X&gt;</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">real&lt;X&gt;</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;X&gt;</span></code> is the data dimensionality, and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;file_name&gt;</span></code> is the file containing the parent data.</p>
 <p>Nodal data are transported by interpolation using the shape functions (2D only).  Elemental data are transported as specified by <a class="reference internal" href="#cmdoption-transporteltmethod"><code class="xref std std-option docutils literal notranslate"><span class="pre">-transporteltmethod</span></code></a>.</p>
 <p><strong>Default value</strong>: -.</p>
@@ -522,7 +523,7 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-transporteltmethod">
-<span class="sig-name descname"><span class="pre">-transporteltmethod</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;method&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-transporteltmethod" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-transporteltmethod</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;method&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-transporteltmethod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the method to transport elemental data from the parent mesh to the child mesh. For each element of the child mesh, its center, <span class="math notranslate nohighlight">\(c\)</span>, is considered.  The method can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">distance</span></code>: choose, for each element of the child mesh (of center <span class="math notranslate nohighlight">\(c\)</span>), the element of the parent mesh whose center is the closest to <span class="math notranslate nohighlight">\(c\)</span>;</p></li>
@@ -531,19 +532,19 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">distance</span></code>.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="output-options">
-<h3>Output Options<a class="headerlink" href="#output-options" title="Permalink to this headline"></a></h3>
+</section>
+<section id="output-options">
+<h3>Output Options<a class="headerlink" href="#output-options" title="Permalink to this headline">¶</a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-o">
-<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;file_name&gt;</span></span><a class="headerlink" href="#cmdoption-o" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;file_name&gt;</span></span><a class="headerlink" href="#cmdoption-o" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the output file name.</p>
 <p><strong>Default value</strong>: input file’s base name.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-format">
-<span class="sig-name descname"><span class="pre">-format</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;format1&gt;,&lt;format2&gt;,...</span></span><a class="headerlink" href="#cmdoption-format" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-format</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;format1&gt;,&lt;format2&gt;,...</span></span><a class="headerlink" href="#cmdoption-format" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the format(s) of the output file(s), which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">msh[:&lt;encoding&gt;]</span></code>: native (Gmsh-style) mesh file, where <code class="xref py py-data docutils literal notranslate"><span class="pre">encoding</span></code> can be <code class="xref py py-data docutils literal notranslate"><span class="pre">ascii</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">binary</span></code> (default <code class="xref py py-data docutils literal notranslate"><span class="pre">ascii</span></code>);</p></li>
@@ -563,7 +564,7 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-nset">
-<span class="sig-name descname"><span class="pre">-nset</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;nset1&gt;,&lt;nset2&gt;,...</span></span><a class="headerlink" href="#cmdoption-nset" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-nset</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;nset1&gt;,&lt;nset2&gt;,...</span></span><a class="headerlink" href="#cmdoption-nset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the node sets to provide, which can be:</p>
 <ul>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">faces</span></code>: domain faces;</p></li>
@@ -587,7 +588,7 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-faset">
-<span class="sig-name descname"><span class="pre">-faset</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;faset1&gt;,&lt;faset2&gt;,...</span></span><a class="headerlink" href="#cmdoption-faset" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-faset</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;faset1&gt;,&lt;faset2&gt;,...</span></span><a class="headerlink" href="#cmdoption-faset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the element surface meshes (edge meshes in 2D) to output, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">faces</span></code>: all domain faces;</p></li>
@@ -600,7 +601,7 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-elset">
-<span class="sig-name descname"><span class="pre">-elset</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;elset1&gt;,&lt;elset2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-elset" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-elset</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;elset1&gt;,&lt;elset2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-elset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the element sets to output, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">default</span></code>: default element sets (those corresponding to the input tessellation cells);</p></li>
@@ -611,7 +612,7 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-performat">
-<span class="sig-name descname"><span class="pre">-performat</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;format&gt;</span></span><a class="headerlink" href="#cmdoption-performat" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-performat</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;format&gt;</span></span><a class="headerlink" href="#cmdoption-performat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the format of the <code class="file docutils literal notranslate"><span class="pre">.per</span></code> output file, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">msh</span></code>;</p></li>
@@ -621,13 +622,13 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">msh</span></code>.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="post-processing-options">
-<h3>Post-Processing Options<a class="headerlink" href="#post-processing-options" title="Permalink to this headline"></a></h3>
+</section>
+<section id="post-processing-options">
+<h3>Post-Processing Options<a class="headerlink" href="#post-processing-options" title="Permalink to this headline">¶</a></h3>
 <p>The following options provide general statistics on the highest-dimension mesh (<code class="xref py py-data docutils literal notranslate"><span class="pre">mesh</span></code>), 0D mesh (<code class="xref py py-data docutils literal notranslate"><span class="pre">mesh0d</span></code>), 1D mesh (<code class="xref py py-data docutils literal notranslate"><span class="pre">mesh1d</span></code>), 2D mesh (<code class="xref py py-data docutils literal notranslate"><span class="pre">mesh2d</span></code>), 3D mesh (<code class="xref py py-data docutils literal notranslate"><span class="pre">mesh3d</span></code>) and cohesive-element mesh (<code class="xref py py-data docutils literal notranslate"><span class="pre">meshco</span></code>).</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-stat-mesh-mesh-0-3-d-meshco">
-<span class="sig-name descname"><span class="pre">-stat{mesh,mesh{0-3}d,meshco}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-stat-mesh-mesh-0-3-d-meshco" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-stat{mesh,mesh{0-3}d,meshco}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-stat-mesh-mesh-0-3-d-meshco" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide statistics on the mesh. Available keys are described in <a class="reference internal" href="exprskeys.html#mesh-keys"><span class="std std-ref">Mesh Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="xref std std-option docutils literal notranslate"><span class="pre">.stmesh</span></code>, <code class="xref std std-option docutils literal notranslate"><span class="pre">.stmesh{0-3}d</span></code>, <code class="xref std std-option docutils literal notranslate"><span class="pre">.stmeshco</span></code>.</p>
@@ -636,7 +637,7 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 <p>The following options provide statistics on the nodes (<code class="xref py py-data docutils literal notranslate"><span class="pre">nodes</span></code>), highest-dimension elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">elt</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elset</span></code>), 0D elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">elt0d</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elset0d</span></code>), 1D elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">elt1d</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elset1d</span></code>), 2D elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">elt2d</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elset2d</span></code>), 3D elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">elt3d</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elset3d</span></code>), cohesive elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">eltco</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elsetco</span></code>), and points (<code class="xref py py-data docutils literal notranslate"><span class="pre">point</span></code>).</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-stat-node-elt-elt-0-3-d-elset-elset-0-3-d-eltco-elsetco">
-<span class="sig-name descname"><span class="pre">-stat{node,elt,elt{0-3}d,elset,elset{0-3}d,eltco,elsetco}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-stat-node-elt-elt-0-3-d-elset-elset-0-3-d-eltco-elsetco" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-stat{node,elt,elt{0-3}d,elset,elset{0-3}d,eltco,elsetco}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-stat-node-elt-elt-0-3-d-elset-elset-0-3-d-eltco-elsetco" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide statistics on the nodes, elements or elsets.  Available keys are described in <a class="reference internal" href="exprskeys.html#mesh-keys"><span class="std std-ref">Mesh Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="xref std std-option docutils literal notranslate"><span class="pre">.stnode</span></code>, <code class="xref std std-option docutils literal notranslate"><span class="pre">.stelt</span></code>, <code class="xref std std-option docutils literal notranslate"><span class="pre">.stelt{0-3}d</span></code>, <code class="xref std std-option docutils literal notranslate"><span class="pre">.stelset</span></code>, <code class="xref std std-option docutils literal notranslate"><span class="pre">.stelset{0-3}d</span></code>, <code class="xref std std-option docutils literal notranslate"><span class="pre">.steltco</span></code>, <code class="xref std std-option docutils literal notranslate"><span class="pre">.stelsetco</span></code>.</p>
@@ -644,20 +645,20 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-statpoint">
-<span class="sig-name descname"><span class="pre">-statpoint</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statpoint" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-statpoint</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide statistics on points.  The points must be loaded with option
 <a class="reference internal" href="neper_t.html#cmdoption-loadpoint"><code class="xref std std-option docutils literal notranslate"><span class="pre">-loadpoint</span></code></a>. Available keys are described in <a class="reference internal" href="exprskeys.html#point-keys"><span class="std std-ref">Point Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="xref std std-option docutils literal notranslate"><span class="pre">.stpoint</span></code>.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="advanced-options">
-<h3>Advanced Options<a class="headerlink" href="#advanced-options" title="Permalink to this headline"></a></h3>
+</section>
+<section id="advanced-options">
+<h3>Advanced Options<a class="headerlink" href="#advanced-options" title="Permalink to this headline">¶</a></h3>
 <p>These advanced options set running conditions for the meshing libraries (2D and 3D meshing).</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-mesh3dclreps">
-<span class="sig-name descname"><span class="pre">-mesh3dclreps</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;tolerance&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh3dclreps" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-mesh3dclreps</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;tolerance&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh3dclreps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the relative tolerance on the average element characteristic length of each cell (compared to <code class="xref py py-data docutils literal notranslate"><span class="pre">cl</span></code>), which can be:</p>
 <ul class="simple">
 <li><p>a real value;</p></li>
@@ -670,7 +671,7 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 
 <span class="target" id="index-4"></span><dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-mesh-2-3-dmaxtime">
-<span class="sig-name descname"><span class="pre">-mesh{2,3}dmaxtime</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh-2-3-dmaxtime" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-mesh{2,3}dmaxtime</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;time&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh-2-3-dmaxtime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the maximum processing time allowed to the meshing library for meshing a tessellation face
 or polyhedron (in seconds).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1000</span></code>.</p>
@@ -678,24 +679,24 @@ or polyhedron (in seconds).</p>
 
 <span class="target" id="index-5"></span><dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-mesh-2-3-drmaxtime">
-<span class="sig-name descname"><span class="pre">-mesh{2,3}drmaxtime</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;relative_time&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh-2-3-drmaxtime" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-mesh{2,3}drmaxtime</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;relative_time&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh-2-3-drmaxtime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify a factor used to determine the maximum processing time allowed to the meshing library for meshing a tessellation face or polyhedron.  This option is similar to <code class="xref py py-data docutils literal notranslate"><span class="pre">-mesh2dmaxtime</span></code>, but the actual maximum time is the product of the maximum processing time of the previous meshings by the value provided in argument.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">100</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-mesh-2-3-diter">
-<span class="sig-name descname"><span class="pre">-mesh{2,3}diter</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;iter_number&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh-2-3-diter" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">-mesh{2,3}diter</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;iter_number&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-mesh-2-3-diter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Specify the maximum number of 2D meshing attempts for a particular face or polyhedron (in the rare case of failure).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">3</span></code>.</p>
 </dd></dl>
 
-</div>
-</div>
-<div class="section" id="output-files">
-<h2>Output Files<a class="headerlink" href="#output-files" title="Permalink to this headline"></a></h2>
-<div class="section" id="mesh">
-<h3>Mesh<a class="headerlink" href="#mesh" title="Permalink to this headline"></a></h3>
+</section>
+</section>
+<section id="output-files">
+<h2>Output Files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
+<section id="mesh">
+<h3>Mesh<a class="headerlink" href="#mesh" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="file docutils literal notranslate"><span class="pre">.msh</span></code>: mesh file as described in <a class="reference internal" href="fileformat.html#mesh-file"><span class="std std-ref">Mesh File (.msh)</span></a>;</p></li>
@@ -709,15 +710,15 @@ or polyhedron (in seconds).</p>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.per</span></code>: periodicity file.</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="interfaces">
-<h3>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this headline"></a></h3>
+</section>
+<section id="interfaces">
+<h3>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>File <code class="file docutils literal notranslate"><span class="pre">.intl</span></code>.  For each 2D interface, the file provides (one 2D interface per line) the labels of the two element sets of the interface.</p></li>
 </ul>
-</div>
-<div class="section" id="statistics">
-<h3>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline"></a></h3>
+</section>
+<section id="statistics">
+<h3>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h3>
 <p>Statistics files are provided for nodes, elements, element sets and points.  They are formatted with one entity per line.  Each line contains the data specified to the corresponding <code class="xref py py-data docutils literal notranslate"><span class="pre">-stat</span></code> option and described in <a class="reference internal" href="exprskeys.html#mesh-keys"><span class="std std-ref">Mesh Keys</span></a>.</p>
 <blockquote>
 <div><ul class="simple">
@@ -741,10 +742,10 @@ or polyhedron (in seconds).</p>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.stpoint</span></code>: point statistics file.</p></li>
 </ul>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>Below are some examples of use of neper -M.</p>
 <ul>
 <li><p>Mesh tessellation <code class="file docutils literal notranslate"><span class="pre">n100-id1.tess</span></code>:</p>
@@ -793,9 +794,9 @@ or polyhedron (in seconds).</p>
 </div>
 </li>
 </ul>
-</div>
-<div class="section" id="references">
-<h2>References<a class="headerlink" href="#references" title="Permalink to this headline"></a></h2>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <dl class="citation">
 <dt class="label" id="cmame2011"><span class="brackets">CMAME2011</span><span class="fn-backref">(<a href="#id2">1</a>,<a href="#id3">2</a>)</span></dt>
 <dd><p><em>R. Quey, P.R. Dawson and F. Barbe, Large-scale 3D random polycrystals for the finite element method: Generation, meshing and remeshing, Comput. Methods Appl. Mech. Engrg., vol. 200, pp. 1729-1745, 2011</em>.</p>
@@ -809,8 +810,8 @@ or polyhedron (in seconds).</p>
 <dd><p>In Mechanics, it corresponds to imposing a common displacement while the point can carry no stress, and, in Thermics, it corresponds to imposing a given temperature at a particular location shared by two bodies while the location can carry no heat flux.  When such a node is duplicated, each body has its own node and the singular behavior disappears.</p>
 </dd>
 </dl>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

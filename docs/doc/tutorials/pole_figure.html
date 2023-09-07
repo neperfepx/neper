@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plotting a Pole Figure &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -96,8 +97,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="plotting-a-pole-figure">
-<span id="pole-figure"></span><h1>Plotting a Pole Figure<a class="headerlink" href="#plotting-a-pole-figure" title="Permalink to this headline"></a></h1>
+  <section id="plotting-a-pole-figure">
+<span id="pole-figure"></span><h1>Plotting a Pole Figure<a class="headerlink" href="#plotting-a-pole-figure" title="Permalink to this headline">¶</a></h1>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Read first: <a class="reference internal" href="../../tutorials/visualize_tessellation.html#visualize-tessellation"><span class="std std-ref">Visualizing a Tessellation</span></a>.</p>
@@ -121,8 +122,8 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">neper</span> <span class="o">-</span><span class="n">V</span> <span class="o">-</span><span class="n">imagesize</span> <span class="mi">500</span><span class="p">:</span><span class="mi">500</span>
 </pre></div>
 </div>
-<div class="section" id="generalities">
-<h2>Generalities<a class="headerlink" href="#generalities" title="Permalink to this headline"></a></h2>
+<section id="generalities">
+<h2>Generalities<a class="headerlink" href="#generalities" title="Permalink to this headline">¶</a></h2>
 <p>The tessellation orientations can be visualized using <a class="reference internal" href="../neper_v.html#cmdoption-space"><code class="xref std std-option docutils literal notranslate"><span class="pre">-space</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">pf</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100.tess -space pf -print img2
 </pre></div>
@@ -181,9 +182,9 @@
 </pre></div>
 </div>
 <img alt="../../_images/img9.png" src="../../_images/img9.png" />
-</div>
-<div class="section" id="configuring-a-symbol-plot">
-<h2>Configuring a Symbol Plot<a class="headerlink" href="#configuring-a-symbol-plot" title="Permalink to this headline"></a></h2>
+</section>
+<section id="configuring-a-symbol-plot">
+<h2>Configuring a Symbol Plot<a class="headerlink" href="#configuring-a-symbol-plot" title="Permalink to this headline">¶</a></h2>
 <p>For a tessellation, the way data are represented can be specified using options <code class="xref std std-option docutils literal notranslate"><span class="pre">-datacell*</span></code>. The properties include the color (options <code class="xref std std-option docutils literal notranslate"><span class="pre">-datacellcol</span></code> and <code class="xref std std-option docutils literal notranslate"><span class="pre">-datacellcolscheme</span></code>),
 transparency (option <code class="xref std std-option docutils literal notranslate"><span class="pre">-datacelltrs</span></code>), radius (or size) (option <code class="xref std std-option docutils literal notranslate"><span class="pre">-datacellrad</span></code>) and symbol (option <a class="reference internal" href="../neper_v.html#cmdoption-datacellsymbol"><code class="xref std std-option docutils literal notranslate"><span class="pre">-datacellsymbol</span></code></a>).</p>
 <p>The size of the poles can, for instance, be set to be proportional to the corresponding cell sizes, and their colors a function of the z cell positions:</p>
@@ -226,9 +227,9 @@ transparency (option <code class="xref std std-option docutils literal notransla
 </pre></div>
 </div>
 <img alt="../../_images/img13.png" src="../../_images/img13.png" />
-</div>
-<div class="section" id="configuring-a-density-field-plot">
-<h2>Configuring a Density Field Plot<a class="headerlink" href="#configuring-a-density-field-plot" title="Permalink to this headline"></a></h2>
+</section>
+<section id="configuring-a-density-field-plot">
+<h2>Configuring a Density Field Plot<a class="headerlink" href="#configuring-a-density-field-plot" title="Permalink to this headline">¶</a></h2>
 <p>A tessellation with typical rolling orientations is used in the following: <a class="reference download internal" download="" href="../../_downloads/94f9efbf7b5324a1c42ebb7244c51afc/n200-psc.tess"><code class="xref download docutils literal notranslate"><span class="pre">n200-psc.tess</span></code></a>.</p>
 <p>The (default) symbol plot can be turned into a density field plot using <code class="xref std std-option docutils literal notranslate"><span class="pre">-pfmode</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">density</span></code>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n200-psc.tess -space pf            <span class="se">\</span>
@@ -301,9 +302,9 @@ transparency (option <code class="xref std std-option docutils literal notransla
 </pre></div>
 </div>
 <img alt="../../_images/img211.png" src="../../_images/img211.png" />
-</div>
-<div class="section" id="working-from-an-orientation-input">
-<h2>Working From an Orientation Input<a class="headerlink" href="#working-from-an-orientation-input" title="Permalink to this headline"></a></h2>
+</section>
+<section id="working-from-an-orientation-input">
+<h2>Working From an Orientation Input<a class="headerlink" href="#working-from-an-orientation-input" title="Permalink to this headline">¶</a></h2>
 <p>A pole figure can be generated from an orientation file by loading it as a custom input (see <a class="reference internal" href="../neper_v.html#neper-v-input-data"><span class="std std-ref">Input Data</span></a>).  For instance, consider an orientation file, <code class="file docutils literal notranslate"><span class="pre">n100.ori</span></code>, generated by <a class="reference internal" href="../neper_t.html#neper-t"><span class="std std-ref">Tessellation Module (-T)</span></a>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -for ori -o n100
 </pre></div>
@@ -323,9 +324,9 @@ The command produces the same image as if the orientations were read from a tess
 </pre></div>
 </div>
 <img alt="../../_images/img23.png" src="../../_images/img23.png" />
-</div>
-<div class="section" id="working-from-a-direction-input">
-<h2>Working From a Direction Input<a class="headerlink" href="#working-from-a-direction-input" title="Permalink to this headline"></a></h2>
+</section>
+<section id="working-from-a-direction-input">
+<h2>Working From a Direction Input<a class="headerlink" href="#working-from-a-direction-input" title="Permalink to this headline">¶</a></h2>
 <p>A pole figure can be created from directions (instead of orientations) loaded as a custom input (see <a class="reference internal" href="../neper_v.html#neper-v-input-data"><span class="std std-ref">Input Data</span></a>).  For instance, consider file <a class="reference download internal" download="" href="../../_downloads/10d4371d7e9acbbff522dae7d12b881a/dir_file"><code class="xref download docutils literal notranslate"><span class="pre">dir_file</span></code></a>. The file can be loaded to the <a class="reference internal" href="../neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>, as a direction file, and plotted as a pole figure as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V <span class="s2">&quot;mydir(type=vector):file(dir_file)&quot;</span> -space pf -print img24
 </pre></div>
@@ -338,9 +339,9 @@ The command produces the same image as if the orientations were read from a tess
 </pre></div>
 </div>
 <img alt="../../_images/img25.png" src="../../_images/img25.png" />
-</div>
-<div class="section" id="working-from-multiple-inputs">
-<h2>Working From Multiple Inputs<a class="headerlink" href="#working-from-multiple-inputs" title="Permalink to this headline"></a></h2>
+</section>
+<section id="working-from-multiple-inputs">
+<h2>Working From Multiple Inputs<a class="headerlink" href="#working-from-multiple-inputs" title="Permalink to this headline">¶</a></h2>
 <p>A pole figure can be created from multiple inputs loaded as custom inputs (see <a class="reference internal" href="../neper_v.html#neper-v-input-data"><span class="std std-ref">Input Data</span></a>).  This can, for example, be used to plot a (lattice) rotation path associated with plastic deformation. In the following, file <a class="reference download internal" download="" href="../../_downloads/cb4b98deb0cad37336998aecdd89dcae/ini"><code class="xref download docutils literal notranslate"><span class="pre">ini</span></code></a> contains an initial orientation, <a class="reference download internal" download="" href="../../_downloads/6ee4d82803cba991c04c3a60abb3b8dd/all"><code class="xref download docutils literal notranslate"><span class="pre">all</span></code></a> its locations during plastic deformation, and <a class="reference download internal" download="" href="../../_downloads/0360e2b80c7002345e5af04a1498305d/fin"><code class="xref download docutils literal notranslate"><span class="pre">fin</span></code></a> the final orientation, all written as Rodrigues vectors.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -371,8 +372,8 @@ The command produces the same image as if the orientations were read from a tess
 </div>
 <img alt="../../_images/img27.png" src="../../_images/img27.png" />
 <p>Of course, it is also possible to represent final state using a file containing several orientations.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

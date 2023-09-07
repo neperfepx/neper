@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Generating and Meshing a Simple Tessellation &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -94,8 +95,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="generating-and-meshing-a-simple-tessellation">
-<span id="simple-model"></span><h1>Generating and Meshing a Simple Tessellation<a class="headerlink" href="#generating-and-meshing-a-simple-tessellation" title="Permalink to this headline"></a></h1>
+  <section id="generating-and-meshing-a-simple-tessellation">
+<span id="simple-model"></span><h1>Generating and Meshing a Simple Tessellation<a class="headerlink" href="#generating-and-meshing-a-simple-tessellation" title="Permalink to this headline">¶</a></h1>
 <p>The only required input to generate and mesh a simple tessellation is the number of cells.  By default, a 3D Voronoi tessellation is generated <a class="reference internal" href="../../tutorials/simple_model.html#cmame2011" id="id1"><span>[CMAME2011]</span></a>.  2D is also available (option <a class="reference internal" href="../neper_t.html#cmdoption-dim"><code class="xref std std-option docutils literal notranslate"><span class="pre">-dim</span></code></a>).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -104,8 +105,8 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="generating-a-tessellation">
-<h2>Generating a Tessellation<a class="headerlink" href="#generating-a-tessellation" title="Permalink to this headline"></a></h2>
+<section id="generating-a-tessellation">
+<h2>Generating a Tessellation<a class="headerlink" href="#generating-a-tessellation" title="Permalink to this headline">¶</a></h2>
 <p>The number of cells can be specified using option <a class="reference internal" href="../neper_t.html#cmdoption-n"><code class="xref std std-option docutils literal notranslate"><span class="pre">-n</span></code></a> of the <a class="reference internal" href="../neper_t.html#neper-t"><span class="std std-ref">Tessellation Module (-T)</span></a>.
 A 100-cell tessellation can be generated as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span>
@@ -128,9 +129,9 @@ A 100-cell tessellation can be generated as follows:</p>
 </pre></div>
 </div>
 <img alt="../../_images/img1b.png" src="../../_images/img1b.png" />
-</div>
-<div class="section" id="meshing-a-tessellation">
-<h2>Meshing a Tessellation<a class="headerlink" href="#meshing-a-tessellation" title="Permalink to this headline"></a></h2>
+</section>
+<section id="meshing-a-tessellation">
+<h2>Meshing a Tessellation<a class="headerlink" href="#meshing-a-tessellation" title="Permalink to this headline">¶</a></h2>
 <p>A mesh can be obtained by passing <code class="file docutils literal notranslate"><span class="pre">n100-id1.tess</span></code> to the <a class="reference internal" href="../neper_m.html#neper-m"><span class="std std-ref">Meshing Module (-M)</span></a>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -M n100-id1.tess
 </pre></div>
@@ -150,9 +151,9 @@ A 100-cell tessellation can be generated as follows:</p>
 </pre></div>
 </div>
 <img alt="../../_images/img34.png" src="../../_images/img34.png" />
-</div>
-<div class="section" id="regularizing-a-tessellation">
-<h2>Regularizing a Tessellation<a class="headerlink" href="#regularizing-a-tessellation" title="Permalink to this headline"></a></h2>
+</section>
+<section id="regularizing-a-tessellation">
+<h2>Regularizing a Tessellation<a class="headerlink" href="#regularizing-a-tessellation" title="Permalink to this headline">¶</a></h2>
 <p>It is quite clear from the above image that the mesh is overrefined at some locations, which is where <em>small edges</em> typical of Voronoi tessellations are.  Neper includes a strategy called <em>regularization</em> (option <a class="reference internal" href="../neper_t.html#cmdoption-regularization"><code class="xref std std-option docutils literal notranslate"><span class="pre">-regularization</span></code></a>) that removes the smallest edges of the tessellation <a class="reference internal" href="../../tutorials/simple_model.html#cmame2011" id="id2"><span>[CMAME2011]</span></a>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -reg <span class="m">1</span>
 <span class="gp">$ </span>neper -V n100-id1.tess -print img4
@@ -170,9 +171,9 @@ A 100-cell tessellation can be generated as follows:</p>
 </pre></div>
 </div>
 <img alt="../../_images/img54.png" src="../../_images/img54.png" />
-</div>
-<div class="section" id="setting-mesh-properties">
-<h2>Setting Mesh Properties<a class="headerlink" href="#setting-mesh-properties" title="Permalink to this headline"></a></h2>
+</section>
+<section id="setting-mesh-properties">
+<h2>Setting Mesh Properties<a class="headerlink" href="#setting-mesh-properties" title="Permalink to this headline">¶</a></h2>
 <p>Mesh properties can be specified, such as the element size or <em>characteristic length</em>, the element type, etc.</p>
 <p>For example, smaller elements than shown above can be obtained using option <code class="xref std std-option docutils literal notranslate"><span class="pre">-rcl</span></code>, and 2nd-order elements can be obtained using option <a class="reference internal" href="../neper_m.html#cmdoption-order"><code class="xref std std-option docutils literal notranslate"><span class="pre">-order</span></code></a>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -M n100-id1.tess -rcl <span class="m">0</span>.7 -order <span class="m">2</span>
@@ -186,8 +187,8 @@ A 100-cell tessellation can be generated as follows:</p>
 <dd><p><a class="reference internal" href="../../papers.html#px"><span class="std std-ref">R Quey, PR Dawson and F Barbe, Large-scale 3D random polycrystals for the finite element method: Generation, meshing and remeshing, Computer Methods in Applied Mechanics and Engineering, vol. 200, pp.  1729-1745, 2011.</span></a>.</p>
 </dd>
 </dl>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

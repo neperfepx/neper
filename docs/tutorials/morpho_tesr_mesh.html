@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction &mdash; Neper 4.6.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -75,17 +76,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="meshing-a-polycrystal-image-obtained-by-synchrotron-x-ray-diffraction">
-<span id="tesr-mesh"></span><h1>Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction<a class="headerlink" href="#meshing-a-polycrystal-image-obtained-by-synchrotron-x-ray-diffraction" title="Permalink to this headline"></a></h1>
-<div class="section" id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline"></a></h2>
+  <section id="meshing-a-polycrystal-image-obtained-by-synchrotron-x-ray-diffraction">
+<span id="tesr-mesh"></span><h1>Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction<a class="headerlink" href="#meshing-a-polycrystal-image-obtained-by-synchrotron-x-ray-diffraction" title="Permalink to this headline">¶</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Methods such as diffraction contrast tomography (DCT) provide 3D polycrystal maps that are usually defined as <em>(i)</em> a field of grain identifiers (or “ids”) and <em>(ii)</em> grain orientations.  Neper can read in such maps and process them in different ways.  In particular, it can generate the <em>optimal tessellation</em> (made of convex cells) that corresponds to the polycrystal and mesh it for FEM simulations <a class="reference internal" href="#cmame2018" id="id1"><span>[CMAME2018]</span></a>.</p>
 <p>An AlLi polycrystal scanned by DCT at the Materials Science beamline of ESRF (ID11) is used as an example.   The polycrystal contains 299 grains and is described by a 16-bit binary <code class="file docutils literal notranslate"><span class="pre">.dat</span></code> data file that correspond to a 3D raster of 214 x 214 x 462 voxels of size 3.5 <span class="math notranslate nohighlight">\(\mu\text{m}\)</span>, on which grain ids are defined. Grain ids are strictly positive, while <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> represents empty voxels.  The orientations corresponding to the grains are defined as Rodrigues vectors in a separate, ASCII file.  The data were obtained in the context of the 3DPLASTICITY French ANR project.</p>
-</div>
-<div class="section" id="generating-a-clean-raster-tessellation-tesr">
-<h2>Generating a Clean Raster Tessellation (<code class="file docutils literal notranslate"><span class="pre">.tesr</span></code>)<a class="headerlink" href="#generating-a-clean-raster-tessellation-tesr" title="Permalink to this headline"></a></h2>
-<div class="section" id="converting-the-raw-files-dat-orientations-into-a-neper-tesr-file">
-<h3>Converting the Raw Files (<code class="file docutils literal notranslate"><span class="pre">.dat</span></code>, Orientations) into a Neper <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code> File<a class="headerlink" href="#converting-the-raw-files-dat-orientations-into-a-neper-tesr-file" title="Permalink to this headline"></a></h3>
+</section>
+<section id="generating-a-clean-raster-tessellation-tesr">
+<h2>Generating a Clean Raster Tessellation (<code class="file docutils literal notranslate"><span class="pre">.tesr</span></code>)<a class="headerlink" href="#generating-a-clean-raster-tessellation-tesr" title="Permalink to this headline">¶</a></h2>
+<section id="converting-the-raw-files-dat-orientations-into-a-neper-tesr-file">
+<h3>Converting the Raw Files (<code class="file docutils literal notranslate"><span class="pre">.dat</span></code>, Orientations) into a Neper <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code> File<a class="headerlink" href="#converting-the-raw-files-dat-orientations-into-a-neper-tesr-file" title="Permalink to this headline">¶</a></h3>
 <p>Neper uses a (standalone) <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code> (<em>raster tessellation</em>) file to describe a DCT-type polycrystal, which embeeds not only the information contained in the <code class="file docutils literal notranslate"><span class="pre">.dat</span></code> file and the grain orientations, but also the numbers of voxels, the voxel size, the crystal type, etc.  The raw <code class="file docutils literal notranslate"><span class="pre">.dat</span></code> file can be read by Neper using a minimal tesr file, named e.g. <code class="file docutils literal notranslate"><span class="pre">AlLi-load.tesr</span></code>, with the following content:</p>
 <div class="highlight-plain notranslate"><div class="highlight"><pre><span></span>***tesr
  **format
@@ -146,17 +147,17 @@
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="cleaning-the-tesr-raster-trimming-and-cell-renumbering">
-<h3>Cleaning the Tesr: Raster Trimming and Cell Renumbering<a class="headerlink" href="#cleaning-the-tesr-raster-trimming-and-cell-renumbering" title="Permalink to this headline"></a></h3>
+</section>
+<section id="cleaning-the-tesr-raster-trimming-and-cell-renumbering">
+<h3>Cleaning the Tesr: Raster Trimming and Cell Renumbering<a class="headerlink" href="#cleaning-the-tesr-raster-trimming-and-cell-renumbering" title="Permalink to this headline">¶</a></h3>
 <p>At this point, the polycrystal is generally surrounded by a relatively large empty volume, which makes the tesr file larger than necessary.  Also, the cells may not by numbered contiguously from 1 (in the <code class="xref py py-data docutils literal notranslate"><span class="pre">**cell/*data</span></code> section). This can be fixed as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -loadtesr AlLi.tesr -transform autocrop,resetorigin,renumber,resetcellid -o AlLi-c
 </pre></div>
 </div>
 <p><code class="xref py py-data docutils literal notranslate"><span class="pre">autocrop</span></code> generates a <code class="xref py py-data docutils literal notranslate"><span class="pre">**general/*origin</span></code> section so that the voxel coordinates are retained, and it is here reset to (<code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>) using <code class="xref py py-data docutils literal notranslate"><span class="pre">resetorigin</span></code>. <code class="xref py py-data docutils literal notranslate"><span class="pre">renumber</span></code> generates a <code class="xref py py-data docutils literal notranslate"><span class="pre">**cell/*id</span></code> section so that cell identifiers are retained, and they are here reset to a contiguous sequence starting from 1 using <code class="xref py py-data docutils literal notranslate"><span class="pre">resetcellid</span></code>.</p>
-</div>
-<div class="section" id="aligning-the-polycrystal">
-<h3>Aligning the Polycrystal<a class="headerlink" href="#aligning-the-polycrystal" title="Permalink to this headline"></a></h3>
+</section>
+<section id="aligning-the-polycrystal">
+<h3>Aligning the Polycrystal<a class="headerlink" href="#aligning-the-polycrystal" title="Permalink to this headline">¶</a></h3>
 <p>The polycrystal axes may not perfectly coincide with the tesr axes.  It is generally a good idea to fix this, at it will later facilitate the domain definition.  This can be analysed via orthographic views along the 3 coordinate axes:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V AlLi-c.tesr -print AlLi-c            <span class="se">\</span>
           -cameraprojection orthographic        <span class="se">\</span>
@@ -196,9 +197,9 @@
 </pre></div>
 </div>
 <img alt="../_images/AlLi-crc1.png" src="../_images/AlLi-crc1.png" />
-</div>
-<div class="section" id="defining-the-domain">
-<h3>Defining the Domain<a class="headerlink" href="#defining-the-domain" title="Permalink to this headline"></a></h3>
+</section>
+<section id="defining-the-domain">
+<h3>Defining the Domain<a class="headerlink" href="#defining-the-domain" title="Permalink to this headline">¶</a></h3>
 <p>The last step is to define the <em>domain</em>, i.e. the actual external envelope of the polycrystal, and to have the polycrystal fill it perfectly.  When the polycrystal is not cubic, this is certainly the most tedious step. For this polycrystal, the domain can be represented by a cube slightly slimer than the tesr in the <em>y</em> direction (by 2 x 3 voxels) and of the same size as the tesr in the <em>z</em> direction (which has already been “cropped”), and cut by 2 torus in the <em>x</em> direction.  We generate it through a 1000-cell tessellation:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1000</span> -domain <span class="s2">&quot;cube(1,0.479,1.5785):translate(-0.25,0.0105,0)&quot;</span> <span class="se">\</span>
            -transform <span class="s2">&quot;cut(torus(1.119,0.231,0.78925,0,0,1,10,8.916),torus(-0.58,0.231,0.78925,0,0,1,10,8.916))&quot;</span> <span class="se">\</span>
@@ -231,10 +232,10 @@
 </div>
 <img alt="../_images/AlLi-crcd1.png" src="../_images/AlLi-crcd1.png" />
 <p>This shows how closely the domain fits the polycrystal.</p>
-</div>
-</div>
-<div class="section" id="adjusting-the-tesr-to-the-domain">
-<h2>Adjusting the Tesr to the Domain<a class="headerlink" href="#adjusting-the-tesr-to-the-domain" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+<section id="adjusting-the-tesr-to-the-domain">
+<h2>Adjusting the Tesr to the Domain<a class="headerlink" href="#adjusting-the-tesr-to-the-domain" title="Permalink to this headline">¶</a></h2>
 <p>The tesr can now be adjusted to the domain. To do so, the grains are grown until they fill the entire tesr and the tesr is then intersected with the domain, and we finish by the usual <code class="xref py py-data docutils literal notranslate"><span class="pre">autocrop,renumber</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -loadtesr AlLi.tesr -transform <span class="s2">&quot;grow,tessinter(domain.tess),autocrop,renumber&quot;</span>
 </pre></div>
@@ -273,9 +274,9 @@
 </div>
 <img alt="../_images/AlLi-crcfs1.png" src="../_images/AlLi-crcfs1.png" />
 <p>The tesr is now perfectly clean and ready for further processing.</p>
-</div>
-<div class="section" id="generating-a-tessellation-tess">
-<h2>Generating a Tessellation (<code class="file docutils literal notranslate"><span class="pre">.tess</span></code>)<a class="headerlink" href="#generating-a-tessellation-tess" title="Permalink to this headline"></a></h2>
+</section>
+<section id="generating-a-tessellation-tess">
+<h2>Generating a Tessellation (<code class="file docutils literal notranslate"><span class="pre">.tess</span></code>)<a class="headerlink" href="#generating-a-tessellation-tess" title="Permalink to this headline">¶</a></h2>
 <p>A (scalar) tessellation (<code class="file docutils literal notranslate"><span class="pre">.tess</span></code>) can be generated from the tesr, for meshing. Since the domain has to be convex (and we can cut the tessellation afterwards), we use the bounding box of <code class="xref py py-data docutils literal notranslate"><span class="pre">domain.tess</span></code>. We make the domain a little larger along <em>x</em> to enable for clean cutting:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n from_morpho                                            <span class="se">\</span>
            -domain <span class="s2">&quot;cube(0.5687,0.4790,1.5785):translate(-0.01,0,0)&quot;</span> <span class="se">\</span>
@@ -294,9 +295,9 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -loadtess AlLi.tess -reg <span class="m">1</span> -rsel <span class="m">0</span>.25
 </pre></div>
 </div>
-</div>
-<div class="section" id="generating-a-mesh-msh">
-<h2>Generating a Mesh (<code class="file docutils literal notranslate"><span class="pre">.msh</span></code>)<a class="headerlink" href="#generating-a-mesh-msh" title="Permalink to this headline"></a></h2>
+</section>
+<section id="generating-a-mesh-msh">
+<h2>Generating a Mesh (<code class="file docutils literal notranslate"><span class="pre">.msh</span></code>)<a class="headerlink" href="#generating-a-mesh-msh" title="Permalink to this headline">¶</a></h2>
 <p>A mesh can be simply obtained from the tess; we adapt the progression factor to the value of <code class="xref std std-option docutils literal notranslate"><span class="pre">-rsel</span></code> used before:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -M AlLi-r.tess -rcl <span class="m">0</span>.5 -pl <span class="m">8</span>
 <span class="gp">$ </span>neper -V AlLi-r.tess,AlLi-r.msh -showelt1d all -print AlLi-mesh
@@ -308,8 +309,8 @@
 <dd><p><a class="reference internal" href="../papers.html#singlescale"><span class="std std-ref">R Quey and L Renversade, Optimal polyhedral description of 3D polycrystals: method and application to statistical and synchrotron X-ray diffraction data, Computer Methods in Applied Mechanics and Engineering, vol. 330, pp. 308-333, 2018.</span></a>.</p>
 </dd>
 </dl>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
