@@ -26,6 +26,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2023
 ----
 
+- M Kavousi, P McGarry, P McHugh and S Leen, *Geometrical and crystal plasticity modelling: Towards the establishment of a process-structure-property relationship for additively manufactured 316L struts*, **European Journal of Mechanics-A/Solids**, https://doi.org/10.1016/j.euromechsol.2023.105115.
+- KL Auth, J Brouzoulis and M Ekh, *Modeling of environmentally assisted intergranular crack propagation in polycrystals*, **International Journal for Numerical Methods in Engineering**, https://doi.org/10.1002/nme.7346.
+- M Pressacco, JJJ Kangas and T Saksala, *Numerical modelling of microwave irradiated rock fracture*, **Minerals Engineering**, https://doi.org/10.1016/j.mineng.2023.108318.
 - J Moore and C Martinez, *A Nonconformal Nonlocal Approach to Calculating Statistical Spread in Fatigue Indicator Parameters for Polycrystals*, **Fatigue & Fracture of Engineering Materials & Structures**, https://doi.org/10.22541/au.168663823.33787160.
 - D Sharma, IV Singh and J Kumar, *A Computational Framework based on 3D Microstructure Modelling to Predict the Mechanical Behaviour of Polycrystalline Materials*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2023.108565.
 - Y Wang, J Tang and S Yan, *Fracture failure characteristics of porous polycrystalline ice based on the FDEM*, **Granular Matter**, https://doi.org/10.1007/s10035-023-01350-x.
