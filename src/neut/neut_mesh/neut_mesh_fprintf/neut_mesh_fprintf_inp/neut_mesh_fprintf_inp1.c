@@ -123,10 +123,8 @@ neut_mesh_fprintf_inp (FILE * file, char *dim, struct TESS Tess,
 
 // fasets --------------------------------------------------------------
 
-  /*
   if (faset)
     neut_mesh_fprintf_inp_fasets (file, Tess, Mesh2D, Mesh3D, Nodes, faset);
-  */
 
 // foot ----------------------------------------------------------------
 
