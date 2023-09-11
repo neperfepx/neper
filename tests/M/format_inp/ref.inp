@@ -404,4 +404,436 @@
 *Nset, nset=z1
 4, 8, 9
 
+*Elset, elset=elt40-S1, internal, instance=tess
+40,
+*Elset, elset=elt80-S1, internal, instance=tess
+80,
+*Elset, elset=elt97-S4, internal, instance=tess
+97,
+*Elset, elset=elt67-S4, internal, instance=tess
+67,
+*Elset, elset=elt54-S4, internal, instance=tess
+54,
+*Elset, elset=elt118-S3, internal, instance=tess
+118,
+*Elset, elset=elt8-S4, internal, instance=tess
+8,
+*Elset, elset=elt22-S4, internal, instance=tess
+22,
+*Elset, elset=elt99-S4, internal, instance=tess
+99,
+*Elset, elset=elt50-S4, internal, instance=tess
+50,
+*Elset, elset=elt139-S4, internal, instance=tess
+139,
+*Elset, elset=elt141-S3, internal, instance=tess
+141,
+*Elset, elset=elt207-S3, internal, instance=tess
+207,
+*Elset, elset=elt169-S4, internal, instance=tess
+169,
+*Elset, elset=elt243-S1, internal, instance=tess
+243,
+*Elset, elset=elt226-S2, internal, instance=tess
+226,
+*Elset, elset=elt225-S1, internal, instance=tess
+225,
+*Elset, elset=elt206-S1, internal, instance=tess
+206,
+*Elset, elset=elt187-S1, internal, instance=tess
+187,
+*Elset, elset=elt184-S1, internal, instance=tess
+184,
+*Elset, elset=elt250-S1, internal, instance=tess
+250,
+*Elset, elset=elt171-S4, internal, instance=tess
+171,
+*Elset, elset=elt190-S1, internal, instance=tess
+190,
+*Elset, elset=elt236-S2, internal, instance=tess
+236,
+*Elset, elset=elt195-S1, internal, instance=tess
+195,
+*Elset, elset=elt151-S2, internal, instance=tess
+151,
+*Elset, elset=elt217-S1, internal, instance=tess
+217,
+*Elset, elset=elt212-S2, internal, instance=tess
+212,
+*Elset, elset=elt230-S2, internal, instance=tess
+230,
+*Elset, elset=elt176-S4, internal, instance=tess
+176,
+*Surface, type=ELEMENT, name=x0
+elt40-S1, S1
+elt80-S1, S1
+elt97-S4, S4
+elt67-S4, S4
+elt54-S4, S4
+elt118-S3, S3
+elt8-S4, S4
+elt22-S4, S4
+elt99-S4, S4
+elt50-S4, S4
+elt139-S4, S4
+elt141-S3, S3
+elt207-S3, S3
+elt169-S4, S4
+elt243-S1, S1
+elt226-S2, S2
+elt225-S1, S1
+elt206-S1, S1
+elt187-S1, S1
+elt184-S1, S1
+elt250-S1, S1
+elt171-S4, S4
+elt190-S1, S1
+elt236-S2, S2
+elt195-S1, S1
+elt151-S2, S2
+elt217-S1, S1
+elt212-S2, S2
+elt230-S2, S2
+elt176-S4, S4
+*Elset, elset=elt71-S3, internal, instance=tess
+71,
+*Elset, elset=elt55-S3, internal, instance=tess
+55,
+*Elset, elset=elt83-S3, internal, instance=tess
+83,
+*Elset, elset=elt86-S4, internal, instance=tess
+86,
+*Elset, elset=elt10-S1, internal, instance=tess
+10,
+*Elset, elset=elt29-S1, internal, instance=tess
+29,
+*Elset, elset=elt112-S2, internal, instance=tess
+112,
+*Elset, elset=elt100-S1, internal, instance=tess
+100,
+*Elset, elset=elt37-S3, internal, instance=tess
+37,
+*Elset, elset=elt1-S3, internal, instance=tess
+1,
+*Elset, elset=elt59-S2, internal, instance=tess
+59,
+*Elset, elset=elt33-S1, internal, instance=tess
+33,
+*Elset, elset=elt24-S4, internal, instance=tess
+24,
+*Elset, elset=elt102-S2, internal, instance=tess
+102,
+*Elset, elset=elt39-S2, internal, instance=tess
+39,
+*Elset, elset=elt34-S1, internal, instance=tess
+34,
+*Elset, elset=elt61-S4, internal, instance=tess
+61,
+*Elset, elset=elt57-S1, internal, instance=tess
+57,
+*Elset, elset=elt202-S4, internal, instance=tess
+202,
+*Elset, elset=elt246-S2, internal, instance=tess
+246,
+*Elset, elset=elt175-S1, internal, instance=tess
+175,
+*Elset, elset=elt239-S1, internal, instance=tess
+239,
+*Elset, elset=elt182-S1, internal, instance=tess
+182,
+*Elset, elset=elt136-S1, internal, instance=tess
+136,
+*Elset, elset=elt215-S1, internal, instance=tess
+215,
+*Elset, elset=elt156-S1, internal, instance=tess
+156,
+*Elset, elset=elt240-S1, internal, instance=tess
+240,
+*Elset, elset=elt238-S1, internal, instance=tess
+238,
+*Elset, elset=elt135-S3, internal, instance=tess
+135,
+*Surface, type=ELEMENT, name=x1
+elt71-S3, S3
+elt55-S3, S3
+elt83-S3, S3
+elt86-S4, S4
+elt10-S1, S1
+elt29-S1, S1
+elt112-S2, S2
+elt100-S1, S1
+elt37-S3, S3
+elt1-S3, S3
+elt59-S2, S2
+elt33-S1, S1
+elt24-S4, S4
+elt102-S2, S2
+elt39-S2, S2
+elt34-S1, S1
+elt61-S4, S4
+elt57-S1, S1
+elt202-S4, S4
+elt246-S2, S2
+elt175-S1, S1
+elt239-S1, S1
+elt182-S1, S1
+elt136-S1, S1
+elt215-S1, S1
+elt156-S1, S1
+elt240-S1, S1
+elt238-S1, S1
+elt135-S3, S3
+*Elset, elset=elt100-S4, internal, instance=tess
+100,
+*Elset, elset=elt81-S2, internal, instance=tess
+81,
+*Elset, elset=elt13-S2, internal, instance=tess
+13,
+*Elset, elset=elt74-S4, internal, instance=tess
+74,
+*Elset, elset=elt38-S2, internal, instance=tess
+38,
+*Elset, elset=elt135-S4, internal, instance=tess
+135,
+*Elset, elset=elt153-S3, internal, instance=tess
+153,
+*Elset, elset=elt167-S4, internal, instance=tess
+167,
+*Elset, elset=elt187-S2, internal, instance=tess
+187,
+*Elset, elset=elt137-S4, internal, instance=tess
+137,
+*Elset, elset=elt189-S3, internal, instance=tess
+189,
+*Elset, elset=elt146-S2, internal, instance=tess
+146,
+*Elset, elset=elt210-S4, internal, instance=tess
+210,
+*Elset, elset=elt190-S4, internal, instance=tess
+190,
+*Elset, elset=elt158-S3, internal, instance=tess
+158,
+*Elset, elset=elt139-S2, internal, instance=tess
+139,
+*Elset, elset=elt221-S3, internal, instance=tess
+221,
+*Elset, elset=elt253-S3, internal, instance=tess
+253,
+*Elset, elset=elt199-S1, internal, instance=tess
+199,
+*Elset, elset=elt204-S2, internal, instance=tess
+204,
+*Elset, elset=elt208-S1, internal, instance=tess
+208,
+*Elset, elset=elt196-S4, internal, instance=tess
+196,
+*Elset, elset=elt179-S3, internal, instance=tess
+179,
+*Elset, elset=elt180-S4, internal, instance=tess
+180,
+*Surface, type=ELEMENT, name=y0
+elt100-S4, S4
+elt81-S2, S2
+elt13-S2, S2
+elt74-S4, S4
+elt38-S2, S2
+elt135-S4, S4
+elt153-S3, S3
+elt167-S4, S4
+elt187-S2, S2
+elt137-S4, S4
+elt189-S3, S3
+elt146-S2, S2
+elt210-S4, S4
+elt190-S4, S4
+elt158-S3, S3
+elt139-S2, S2
+elt221-S3, S3
+elt253-S3, S3
+elt199-S1, S1
+elt204-S2, S2
+elt208-S1, S1
+elt196-S4, S4
+elt179-S3, S3
+elt180-S4, S4
+*Elset, elset=elt94-S3, internal, instance=tess
+94,
+*Elset, elset=elt3-S3, internal, instance=tess
+3,
+*Elset, elset=elt112-S1, internal, instance=tess
+112,
+*Elset, elset=elt42-S3, internal, instance=tess
+42,
+*Elset, elset=elt1-S2, internal, instance=tess
+1,
+*Elset, elset=elt93-S4, internal, instance=tess
+93,
+*Elset, elset=elt19-S3, internal, instance=tess
+19,
+*Elset, elset=elt78-S3, internal, instance=tess
+78,
+*Elset, elset=elt50-S2, internal, instance=tess
+50,
+*Elset, elset=elt71-S4, internal, instance=tess
+71,
+*Elset, elset=elt79-S4, internal, instance=tess
+79,
+*Elset, elset=elt51-S3, internal, instance=tess
+51,
+*Elset, elset=elt87-S4, internal, instance=tess
+87,
+*Elset, elset=elt16-S2, internal, instance=tess
+16,
+*Elset, elset=elt23-S2, internal, instance=tess
+23,
+*Elset, elset=elt103-S2, internal, instance=tess
+103,
+*Elset, elset=elt88-S1, internal, instance=tess
+88,
+*Elset, elset=elt116-S1, internal, instance=tess
+116,
+*Elset, elset=elt2-S2, internal, instance=tess
+2,
+*Elset, elset=elt151-S4, internal, instance=tess
+151,
+*Elset, elset=elt129-S2, internal, instance=tess
+129,
+*Elset, elset=elt205-S1, internal, instance=tess
+205,
+*Elset, elset=elt173-S3, internal, instance=tess
+173,
+*Elset, elset=elt142-S4, internal, instance=tess
+142,
+*Elset, elset=elt160-S2, internal, instance=tess
+160,
+*Elset, elset=elt186-S2, internal, instance=tess
+186,
+*Elset, elset=elt192-S2, internal, instance=tess
+192,
+*Elset, elset=elt202-S2, internal, instance=tess
+202,
+*Elset, elset=elt161-S1, internal, instance=tess
+161,
+*Elset, elset=elt169-S3, internal, instance=tess
+169,
+*Surface, type=ELEMENT, name=y1
+elt94-S3, S3
+elt3-S3, S3
+elt112-S1, S1
+elt42-S3, S3
+elt1-S2, S2
+elt93-S4, S4
+elt19-S3, S3
+elt78-S3, S3
+elt50-S2, S2
+elt71-S4, S4
+elt79-S4, S4
+elt51-S3, S3
+elt87-S4, S4
+elt16-S2, S2
+elt23-S2, S2
+elt103-S2, S2
+elt88-S1, S1
+elt116-S1, S1
+elt2-S2, S2
+elt151-S4, S4
+elt129-S2, S2
+elt205-S1, S1
+elt173-S3, S3
+elt142-S4, S4
+elt160-S2, S2
+elt186-S2, S2
+elt192-S2, S2
+elt202-S2, S2
+elt161-S1, S1
+elt169-S3, S3
+*Elset, elset=elt5-S2, internal, instance=tess
+5,
+*Elset, elset=elt45-S1, internal, instance=tess
+45,
+*Elset, elset=elt6-S2, internal, instance=tess
+6,
+*Elset, elset=elt113-S2, internal, instance=tess
+113,
+*Elset, elset=elt67-S1, internal, instance=tess
+67,
+*Elset, elset=elt40-S3, internal, instance=tess
+40,
+*Elset, elset=elt117-S4, internal, instance=tess
+117,
+*Elset, elset=elt41-S3, internal, instance=tess
+41,
+*Elset, elset=elt39-S4, internal, instance=tess
+39,
+*Elset, elset=elt98-S4, internal, instance=tess
+98,
+*Elset, elset=elt9-S3, internal, instance=tess
+9,
+*Elset, elset=elt14-S3, internal, instance=tess
+14,
+*Elset, elset=elt81-S3, internal, instance=tess
+81,
+*Elset, elset=elt90-S3, internal, instance=tess
+90,
+*Elset, elset=elt37-S4, internal, instance=tess
+37,
+*Elset, elset=elt43-S1, internal, instance=tess
+43,
+*Elset, elset=elt46-S2, internal, instance=tess
+46,
+*Elset, elset=elt103-S4, internal, instance=tess
+103,
+*Elset, elset=elt38-S1, internal, instance=tess
+38,
+*Elset, elset=elt104-S3, internal, instance=tess
+104,
+*Elset, elset=elt115-S1, internal, instance=tess
+115,
+*Elset, elset=elt12-S1, internal, instance=tess
+12,
+*Elset, elset=elt24-S2, internal, instance=tess
+24,
+*Elset, elset=elt19-S2, internal, instance=tess
+19,
+*Elset, elset=elt54-S3, internal, instance=tess
+54,
+*Elset, elset=elt51-S4, internal, instance=tess
+51,
+*Elset, elset=elt7-S4, internal, instance=tess
+7,
+*Elset, elset=elt80-S3, internal, instance=tess
+80,
+*Surface, type=ELEMENT, name=z0
+elt5-S2, S2
+elt45-S1, S1
+elt6-S2, S2
+elt113-S2, S2
+elt67-S1, S1
+elt40-S3, S3
+elt117-S4, S4
+elt41-S3, S3
+elt39-S4, S4
+elt98-S4, S4
+elt9-S3, S3
+elt14-S3, S3
+elt81-S3, S3
+elt90-S3, S3
+elt37-S4, S4
+elt43-S1, S1
+elt46-S2, S2
+elt103-S4, S4
+elt38-S1, S1
+elt104-S3, S3
+elt115-S1, S1
+elt12-S1, S1
+elt24-S2, S2
+elt19-S2, S2
+elt54-S3, S3
+elt51-S4, S4
+elt7-S4, S4
+elt80-S3, S3
+*Elset, elset=elt139-S1, internal, instance=tess
+139,
+*Surface, type=ELEMENT, name=z1
+elt139-S1, S1
 *End Part
