@@ -26,6 +26,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2023
 ----
 
+- MK Kalkowski, MJS Lowe, V Samaitis, F Schreyer and S Robert, *Weld map tomography for determining local grain orientations from ultrasound*, **Proceedings of the Royal Society A**, https://doi.org/10.1098/rspa.2023.0236.
 - M Kavousi, P McGarry, P McHugh and S Leen, *Geometrical and crystal plasticity modelling: Towards the establishment of a process-structure-property relationship for additively manufactured 316L struts*, **European Journal of Mechanics-A/Solids**, https://doi.org/10.1016/j.euromechsol.2023.105115.
 - KL Auth, J Brouzoulis and M Ekh, *Modeling of environmentally assisted intergranular crack propagation in polycrystals*, **International Journal for Numerical Methods in Engineering**, https://doi.org/10.1002/nme.7346.
 - M Pressacco, JJJ Kangas and T Saksala, *Numerical modelling of microwave irradiated rock fracture*, **Minerals Engineering**, https://doi.org/10.1016/j.mineng.2023.108318.
