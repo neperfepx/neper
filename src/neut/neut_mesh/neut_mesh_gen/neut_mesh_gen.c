@@ -1544,7 +1544,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH *Mesh,
     }
     else if (!strcmp (var, "part"))
     {
-      (*pvals)[0] = Mesh[3].EltPart ? Mesh[3].EltPart[id] : 0;
+      (*pvals)[0] = Mesh[2].EltPart ? Mesh[2].EltPart[id] : 0;
       strcpy (typetmp, "%d");
     }
     else if (!strcmp (var, "length"))
