@@ -20,8 +20,6 @@ net_mtess_flatten_cell_body (struct MTESS MTess, struct TESS *Tess,
     {
       if (Tess[id].CellId)
         (*pFTess).CellId = ut_alloc_1d_int (1);
-      if (Tess[id].CellOri)
-        (*pFTess).CellOri = ut_alloc_2d (1, 4);
       /*
       if (Tess[id].CellBody)
         (*pFTess).CellBody = ut_alloc_1d_int (1);
@@ -39,8 +37,11 @@ net_mtess_flatten_cell_body (struct MTESS MTess, struct TESS *Tess,
 
       neut_tess_cell_addcentre (pFTess, cell, Tess[id].SeedCoo[j],
                                 Tess[id].SeedWeight[j]);
+
+      /* moved to net_mtess_flatten_cell
       if (Tess[id].CellOri)
         ut_array_1d_memcpy (Tess[id].CellOri[j], 4, (*pFTess).CellOri[cell]);
+      */
 
       for (k = 1; k <= Tess[id].PolyFaceQty[j]; k++)
       {
