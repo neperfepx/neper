@@ -64,7 +64,7 @@ neut_asy_convert (char *asymptote, char *filename, int imagewidth, int imageheig
                           !strcmp (formats[i], "png") ? pixels: "");
 
       ut_file_openmessage (filename2, "w");
-      sprintf (command, "%s -f %s -render %f %s -o %s", asymptote, formats[i],
+      sprintf (command, "%s -f %s -antialias=4 -render %f %s -o %s", asymptote, formats[i],
                imageheight * .00492046785641154627, filename, filename2);
 
       if (system (command) == -1)
