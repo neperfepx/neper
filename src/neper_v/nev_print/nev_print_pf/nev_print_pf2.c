@@ -603,6 +603,8 @@ nev_print_pf_pts (int input, struct PF *pPf, char *type_in,
   char *type = NULL;
   double **data = NULL;
 
+  *pptqty = 0;
+
   if (!type_in || !strcmp (type_in, "none")) // if none, we assume rodrigues vectors
   {
     data = ut_alloc_2d (qty, 4);

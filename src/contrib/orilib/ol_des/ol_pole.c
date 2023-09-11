@@ -721,6 +721,7 @@ ol_eaprojxy_vect (double *p, double *vect)
   return;
 }
 
+// standard triangles are oriented in the same way for cubic and hexagonal symmetries
 int
 ol_vect_ipfweight (double *v, char *crysym, double *weight)
 {

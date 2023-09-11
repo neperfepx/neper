@@ -1,7 +1,8 @@
-New in 4.6.1-9 (07 Sep 2023):
+New in 4.6.1-10 (11 Sep 2023):
 - module -T: fixed -domain cylinder and circle, fixed tesr reading.
 - module -M: fixed -elset, fixed -statelset group -elt hex, fixed -statnode
   col_stdtriangle, added -faset for -format inp.
+- module -V: fixed -datacellcolscheme ipf for -crysym hexagonal.
 - general: made minor compilation fix.
 
 New in 4.6.0 (06 Apr 2023):

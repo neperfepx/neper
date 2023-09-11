@@ -162,6 +162,12 @@ neut_data_ori_color_ipf (double **data, int size, char *crysym, char *scheme, in
       ol_g_ipf_stprojxy (g, Vs, p);
       ol_stprojxy_vect (p, v);
       test = ol_vect_ipfweight (v, crysym, weight);
+      // FIXME; quick fix to get proper coloring in the case of hexagonal symmetry
+      // For some reasons, weights[1,2] must be switched to get green and blue at the right positions
+      // on the ipf (standard triangle)
+      // For some reasons, the change cannot (should not?) be done in ol_vect_ipfweight itself
+      if (!strcmp (crysym, "hexagonal"))
+        ut_array_1d_switch (weight, 1, 2);
       if (test == 0)
       {
         ol_ipfweight_rgb (weight, Col[i]);
