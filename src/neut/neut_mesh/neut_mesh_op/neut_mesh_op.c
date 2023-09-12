@@ -132,6 +132,7 @@ neut_mesh_set_zero (struct MESH *pMesh)
 
   (*pMesh).EltQty = 0;
   (*pMesh).ElsetQty = 0;
+  (*pMesh).CustomElsetQty = 0;
 
   (*pMesh).EltNodes = NULL;
 

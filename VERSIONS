@@ -1,4 +1,4 @@
-New in 4.6.1-14 (11 Sep 2023):
+New in 4.6.1-15 (12 Sep 2023):
 - module -T: fixed -domain cylinder and circle, fixed tesr reading, made minor
   fixes.
 - module -M: fixed -elset, fixed -statelset group -elt hex, fixed -statnode
