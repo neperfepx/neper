@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installing Neper on Ubuntu 22 &mdash; Neper 4.6.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Versions" href="../versions.html" />
+    <link rel="prev" title="Plotting an Orientation Color Key" href="orientation_color_key.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Neper
+          </a>
+              <div class="version">
+                4.6.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simple_model.html">Generating and Meshing a Simple Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_trajectories.html">Plotting Orientation Trajectories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_color_key.html">Plotting an Orientation Color Key</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Installing Neper on Ubuntu 22</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#downloading-neper">Downloading Neper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compiling-neper">Compiling Neper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-gmsh">Installing Gmsh</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-pov-ray-and-asymptote">Installing POV-Ray and Asymptote</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#improving-gmsh-s-installation-optional">Improving Gmsh’s Installation (optional)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-neper-s-documentation-optional">Installing Neper’s documentation (optional)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../papers.html">Reference Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../talks.html">Talks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../others.html">Other Resources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Documentation</a> &raquo;</li>
+          <li><a href="../tutorials.html">Tutorials</a> &raquo;</li>
+      <li>Installing Neper on Ubuntu 22</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/doc/tutorials/install_ubuntu22.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installing-neper-on-ubuntu-22">
+<span id="installation-ubuntu-22"></span><h1>Installing Neper on Ubuntu 22<a class="headerlink" href="#installing-neper-on-ubuntu-22" title="Permalink to this headline">¶</a></h1>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Read first: <a class="reference internal" href="../introduction.html#introduction"><span class="std std-ref">Introduction</span></a>, especially <a class="reference internal" href="../introduction.html#installing-neper"><span class="std std-ref">Installing Neper</span></a> and <a class="reference internal" href="../introduction.html#testing-neper"><span class="std std-ref">Testing Neper</span></a>.</p>
+</div>
+<p>This tutotial describes how to install Neper step by step on a <em>fresh</em> Ubuntu 22 distribution.  It may apply to other Ubuntu distributions too, and may be adapted to other distributions quite easily.  General installation instructions are provided in <a class="reference internal" href="../introduction.html#introduction"><span class="std std-ref">Introduction</span></a> (<a class="reference internal" href="../introduction.html#installing-neper"><span class="std std-ref">Installing Neper</span></a>), and this tutorial does not aim to substitute to it. However, we adopt here a different approach by managing (dependency) issues as they occur during the installation on a fresh Ubuntu 22 distribution (which misses packages that would typically already be present on older installations).</p>
+<section id="downloading-neper">
+<h2>Downloading Neper<a class="headerlink" href="#downloading-neper" title="Permalink to this headline">¶</a></h2>
+<p>We first download the last official version from the website (<a class="reference external" href="https://neper.info">https://neper.info</a>), <code class="code docutils literal notranslate"><span class="pre">neper-4.6.1.tar.gz</span></code> at the time of writing.
+It is then a good idea to move the archive to a dedicated directory, for example <code class="file docutils literal notranslate"><span class="pre">~/Progs</span></code>, and work from there.</p>
+<p>We create directory <code class="file docutils literal notranslate"><span class="pre">~/Progs</span></code> and move the archive into it:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mkdir ~/Progs
+<span class="gp">$ </span>mv neper-4.6.1.tar.gz ~/Progs
+</pre></div>
+</div>
+<p>We change directory to <code class="file docutils literal notranslate"><span class="pre">Progs</span></code> and unarchive the code:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> ~/Progs
+<span class="gp">$ </span>tar -zxf neper-4.6.1.tar.gz
+</pre></div>
+</div>
+</section>
+<section id="compiling-neper">
+<h2>Compiling Neper<a class="headerlink" href="#compiling-neper" title="Permalink to this headline">¶</a></h2>
+<p>We first compile Neper using the commands provided in <a class="reference internal" href="../introduction.html#installing-neper"><span class="std std-ref">Installing Neper</span></a> (namely, we should follow the <strong class="command">cmake</strong>, <strong class="command">make</strong>, <strong class="command">make install</strong> sequence):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> neper-4.6.1
+<span class="gp">$ </span><span class="nb">cd</span> src
+<span class="gp">$ </span>mkdir build
+<span class="gp">$ </span><span class="nb">cd</span> build
+<span class="gp">$ </span>cmake ..
+
+<span class="go">Command &#39;cmake&#39; not found, but can be installed with:</span>
+<span class="go">sudo snap install cmake  # version 3.26.4, or</span>
+<span class="go">sudo apt  install cmake  # version 3.22.1-1ubuntu1.22.04.1</span>
+<span class="go">See &#39;snap info cmake&#39; for additional versions.</span>
+</pre></div>
+</div>
+<p>We follow the terminal output and install <strong class="command">cmake</strong>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install cmake
+</pre></div>
+</div>
+<p>We re-run Cmake:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake ..
+
+<span class="go">-- The C compiler identification is GNU 11.3.0</span>
+<span class="go">-- The CXX compiler identification is unknown</span>
+<span class="go">-- Detecting C compiler ABI info</span>
+<span class="go">-- Detecting C compiler ABI info - done</span>
+<span class="go">-- Check for working C compiler: /usr/bin/cc - skipped</span>
+<span class="go">-- Detecting C compile features</span>
+<span class="go">-- Detecting C compile features - done</span>
+<span class="go">CMake Error at CMakeLists.txt:11 (project):</span>
+<span class="go">  No CMAKE_CXX_COMPILER could be found.</span>
+
+<span class="go">Tell CMake where to find the compiler by setting either the environment</span>
+<span class="go">variable &quot;CXX&quot; or the CMake cache entry CMAKE_CXX_COMPILER to the full path</span>
+<span class="go">to the compiler, or to the compiler name if it is in the PATH.</span>
+
+<span class="go">-- Configuring incomplete, errors occurred!</span>
+<span class="go">See also &quot;/home/rquey/Progs/neper-4.6.1/src/build/CMakeFiles/CMakeOutput.log&quot;.</span>
+<span class="go">See also &quot;/home/rquey/Progs/neper-4.6.1/src/build/CMakeFiles/CMakeError.log&quot;.</span>
+</pre></div>
+</div>
+<p>A CXX (C++) compiler is missing.  The GNU C++ compiler is <strong class="command">g++</strong>; so, we install it:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install g++
+</pre></div>
+</div>
+<p>We re-run Cmake:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake ..
+
+<span class="go">-- WARNING: you are using the obsolete &#39;PKGCONFIG&#39; macro, use FindPkgConfig</span>
+<span class="go">-- WARNING: PKGCONFIG() indicates that the tool pkg-config has not been found on your system. You should install it.</span>
+<span class="go">FindGSL.cmake: gsl-config/pkg-config gsl not found. Please set</span>
+<span class="go">it manually. GSL_CONFIG=GSL_CONFIG-NOTFOUND</span>
+<span class="go">CMake Error at CMakeLists.txt:46 (_message):</span>
+<span class="go">  GSL required, please specify it&#39;s location.</span>
+<span class="go">Call Stack (most recent call first):</span>
+<span class="go">  cmake/FindGSL.cmake:178 (MESSAGE)</span>
+<span class="go">  CMakeLists.txt:103 (find_package)</span>
+
+<span class="go">-- Configuring incomplete, errors occurred!</span>
+<span class="go">See also &quot;/home/rquey/Progs/neper-4.6.1/src/build/CMakeFiles/CMakeOutput.log&quot;.</span>
+<span class="go">See also &quot;/home/rquey/Progs/neper-4.6.1/src/build/CMakeFiles/CMakeError.log&quot;.</span>
+</pre></div>
+</div>
+<p>We follow the terminal output and install <strong class="command">pkg-config</strong>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install pkg-config
+</pre></div>
+</div>
+<p>We re-run Cmake:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake ..
+
+<span class="go">-- WARNING: you are using the obsolete &#39;PKGCONFIG&#39; macro, use FindPkgConfig</span>
+<span class="go">-- PKGCONFIG() indicates that gsl is not installed (install the package which contains gsl.pc if you want to support this feature)</span>
+<span class="go">FindGSL.cmake: gsl-config/pkg-config gsl not found. Please set</span>
+<span class="go">it manually. GSL_CONFIG=GSL_CONFIG-NOTFOUND</span>
+<span class="go">CMake Error at CMakeLists.txt:46 (_message):</span>
+<span class="go">  GSL required, please specify it&#39;s location.</span>
+<span class="go">Call Stack (most recent call first):</span>
+<span class="go">  cmake/FindGSL.cmake:178 (MESSAGE)</span>
+<span class="go">  CMakeLists.txt:103 (find_package)</span>
+
+<span class="go">-- Configuring incomplete, errors occurred!</span>
+<span class="go">See also &quot;/home/rquey/Progs/neper-4.6.1/src/build/CMakeFiles/CMakeOutput.log&quot;.</span>
+<span class="go">See also &quot;/home/rquey/Progs/neper-4.6.1/src/build/CMakeFiles/CMakeError.log&quot;.</span>
+</pre></div>
+</div>
+<p>We have to install <strong class="command">gsl</strong>. We search for it as follows (it is a library, so, we prefix it with <strong class="command">lib</strong> in the search):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt search libgsl
+
+<span class="go">Sorting... Done</span>
+<span class="go">Full Text Search... Done</span>
+<span class="go">libgsl-dbg/jammy 2.7.1+dfsg-3 amd64</span>
+<span class="go">  GNU Scientific Library (GSL) -- debug symbols package</span>
+
+<span class="go">libgsl-dev/jammy 2.7.1+dfsg-3 amd64</span>
+<span class="go">  GNU Scientific Library (GSL) -- development package</span>
+
+<span class="go">libgsl27/jammy 2.7.1+dfsg-3 amd64</span>
+<span class="go">  GNU Scientific Library (GSL) -- library package</span>
+
+<span class="go">libgslcblas0/jammy 2.7.1+dfsg-3 amd64</span>
+<span class="go">  GNU Scientific Library (GSL) -- blas library package</span>
+
+<span class="go">libocamlgsl-ocaml/jammy 1.24.3-1build3 amd64</span>
+<span class="go">  GNU scientific library for OCaml</span>
+
+<span class="go">libocamlgsl-ocaml-dev/jammy 1.24.3-1build3 amd64</span>
+<span class="go">  GNU scientific library for OCaml</span>
+</pre></div>
+</div>
+<p><strong class="command">libgsl-dev</strong> is the one we need; so, we install it:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install libgsl-dev
+</pre></div>
+</div>
+<p>We re-run Cmake:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake ..
+<span class="go">-- Found OpenMP_C: -fopenmp (found version &quot;4.5&quot;)</span>
+<span class="go">-- Found OpenMP_CXX: -fopenmp (found version &quot;4.5&quot;)</span>
+<span class="go">-- Found OpenMP: TRUE (found version &quot;4.5&quot;)</span>
+<span class="go">-- Could NOT find system Scotch - using built-in</span>
+<span class="go">-- Could NOT find system NLopt - using built-in</span>
+<span class="go">-- Neper is set to be installed in: /usr/local/bin and /usr/share</span>
+<span class="go">-- Configuring done</span>
+<span class="go">-- Generating done</span>
+<span class="go">-- Build files have been written to: /home/rquey/Progs/neper-4.6.1/src/build</span>
+</pre></div>
+</div>
+<p>It now seems good to go.  We can compile:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make
+<span class="go">[  0%] Building C object contrib/nlopt/CMakeFiles/nlopt.dir/src/algs/direct/DIRect.c.o</span>
+<span class="go">...</span>
+<span class="go">[100%] Built target neper</span>
+</pre></div>
+</div>
+<p>We can already install Neper (with root permissions):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo make install
+</pre></div>
+</div>
+<p>which copies the <code class="file docutils literal notranslate"><span class="pre">neper</span></code> binary to a system location and makes the <strong class="command">neper</strong> command available system-wide.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is also possible to simply copy the <code class="file docutils literal notranslate"><span class="pre">neper</span></code> binary to a user location, e.g. <code class="file docutils literal notranslate"><span class="pre">~/bin/</span></code>, and make it visible to the system by including <code class="file docutils literal notranslate"><span class="pre">~/bin</span></code> to your <code class="code docutils literal notranslate"><span class="pre">$PATH</span></code>, by adding <code class="code docutils literal notranslate"><span class="pre">PATH=$PATH:~/bin</span></code> to your <code class="file docutils literal notranslate"><span class="pre">~/.bashrc</span></code> file (assuming you are using the Bash shell (<strong class="command">echo $SHELL</strong>)).</p>
+</div>
+<p>We can now test the installation:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"> $ </span>ctest
+
+<span class="go">Test project /home/rquey/Progs/neper/neper/src/build</span>
+<span class="go">        Start   1: T/dim</span>
+<span class="go">  1/461 Test   #1: T/dim ...................................   Passed    0.02 sec</span>
+<span class="go">[...]</span>
+
+<span class="go">90% tests passed, 44 tests failed out of 461</span>
+
+<span class="go">Total Test time (real) =  48.33 sec</span>
+
+<span class="go">The following tests FAILED:</span>
+<span class="go">        129 - M/cl (Failed)</span>
+<span class="go">        130 - M/cl_expr (Failed)</span>
+<span class="go">        133 - M/clmin (Failed)</span>
+<span class="go">        134 - M/clratio (Failed)</span>
+<span class="go">        135 - M/cut (Failed)</span>
+<span class="go">        136 - M/dim (Failed)</span>
+<span class="go">        137 - M/dim2 (Failed)</span>
+<span class="go">        138 - M/dim_expr (Failed)</span>
+<span class="go">        139 - M/faset (Failed)</span>
+<span class="go">        142 - M/interface (Failed)</span>
+<span class="go">        143 - M/interface2 (Failed)</span>
+<span class="go">        144 - M/interface3 (Failed)</span>
+<span class="go">        145 - M/mesh2dalgo_dela (Failed)</span>
+<span class="go">        146 - M/mesh2dalgo_fron (Failed)</span>
+<span class="go">        147 - M/mesh2dalgo_mead (Failed)</span>
+<span class="go">        148 - M/mesh2dalgo_netg (Failed)</span>
+<span class="go">        149 - M/mesh3dalgo_netggmne (Failed)</span>
+<span class="go">        150 - M/mesh3dalgo_netggmsh (Failed)</span>
+<span class="go">        151 - M/mesh3dalgo_netgnetg (Failed)</span>
+<span class="go">        152 - M/meshing (Failed)</span>
+<span class="go">        154 - M/meshqualdisexpr (Failed)</span>
+<span class="go">        155 - M/meshqualexpr (Failed)</span>
+<span class="go">        156 - M/meshqualmin (Failed)</span>
+<span class="go">        157 - M/morpho_cube (Failed)</span>
+<span class="go">        158 - M/nset1 (Failed)</span>
+<span class="go">        159 - M/nset2 (Failed)</span>
+<span class="go">        160 - M/nset3 (Failed)</span>
+<span class="go">        161 - M/order (Failed)</span>
+<span class="go">        162 - M/order_dim2 (Failed)</span>
+<span class="go">        166 - M/part2 (Failed)</span>
+<span class="go">        167 - M/part_dim2 (Failed)</span>
+<span class="go">        168 - M/pl (Failed)</span>
+<span class="go">        169 - M/rcl (Failed)</span>
+<span class="go">        170 - M/rcl_expr (Failed)</span>
+<span class="go">        173 - M/remesh1 (Failed)</span>
+<span class="go">        174 - M/remesh2 (Failed)</span>
+<span class="go">        175 - M/remesh3 (Failed)</span>
+<span class="go">        176 - M/remesh4 (Failed)</span>
+<span class="go">        182 - M/statelsetco (Failed)</span>
+<span class="go">        188 - M/stateltco (Failed)</span>
+<span class="go">        190 - M/tesr_dim2 (Failed)</span>
+<span class="go">        193 - M/tess2ddim3 (Failed)</span>
+<span class="go">        211 - V/asymptote (Failed)</span>
+<span class="go">        326 - V/povray (Failed)</span>
+</pre></div>
+</div>
+<p>Some tests failed because we have not install the run-time dependencies: Gmsh, Asymptote and POV-Ray (see <a class="reference internal" href="../introduction.html#installing-neper"><span class="std std-ref">Installing Neper</span></a>).</p>
+</section>
+<section id="installing-gmsh">
+<h2>Installing Gmsh<a class="headerlink" href="#installing-gmsh" title="Permalink to this headline">¶</a></h2>
+<p>Gmsh is available from the package manager (meaning that we could run <strong class="command">sudo apt install gmsh</strong> to install it); however, it is worth installing it from source since it will run much faster.</p>
+<p>We download the source code from the website (<a class="reference external" href="https://gmsh.info">https://gmsh.info</a>), latest version.  It is then a good idea to move it to <code class="file docutils literal notranslate"><span class="pre">~/Progs</span></code>, where Neper already is:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mv gmsh-4.11.1-source.tgz ~/Progs/
+<span class="gp">$ </span>tar -zxf gmsh-4.11.1-source.tgz
+<span class="gp">$ </span><span class="nb">cd</span> ~/Progs/gmsh-4.11.1-source
+</pre></div>
+</div>
+<p>We can then compile it.  As Gmsh is also managed with CMake, installation is no much different from that of Neper itself:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mkdir build
+<span class="gp">$ </span><span class="nb">cd</span> build
+<span class="gp">$ </span>cmake ..
+
+<span class="go">-- The CXX compiler identification is GNU 11.3.0</span>
+<span class="go">-- The C compiler identification is GNU 11.3.0</span>
+<span class="go">-- Detecting CXX compiler ABI info</span>
+<span class="go">-- Detecting CXX compiler ABI info - done</span>
+<span class="go">-- Check for working CXX compiler: /usr/bin/c++ - skipped</span>
+<span class="go">-- Detecting CXX compile features</span>
+<span class="go">-- Detecting CXX compile features - done</span>
+<span class="go">-- Detecting C compiler ABI info</span>
+<span class="go">-- Detecting C compiler ABI info - done</span>
+<span class="go">-- Check for working C compiler: /usr/bin/cc - skipped</span>
+<span class="go">-- Detecting C compile features</span>
+<span class="go">-- Detecting C compile features - done</span>
+<span class="go">-- Could NOT find Git (missing: GIT_EXECUTABLE)</span>
+<span class="go">-- Looking for sys/types.h</span>
+<span class="go">-- Looking for sys/types.h - found</span>
+<span class="go">-- Looking for stdint.h</span>
+<span class="go">-- Looking for stdint.h - found</span>
+<span class="go">-- Looking for stddef.h</span>
+<span class="go">-- Looking for stddef.h - found</span>
+<span class="go">-- Check size of size_t</span>
+<span class="go">-- Check size of size_t - done</span>
+<span class="go">-- Found 64Bit</span>
+<span class="go">-- Found OpenMP_C: -fopenmp (found version &quot;4.5&quot;)</span>
+<span class="go">-- Found OpenMP_CXX: -fopenmp (found version &quot;4.5&quot;)</span>
+<span class="go">-- Found OpenMP: TRUE (found version &quot;4.5&quot;)</span>
+<span class="go">-- Found OpenMP</span>
+<span class="go">-- Found Eigen[contrib]</span>
+<span class="go">-- Found Mesh</span>
+<span class="go">-- Found Solver</span>
+<span class="go">-- Found Post</span>
+<span class="go">-- Found Plugins</span>
+<span class="go">-- Found Parser</span>
+<span class="go">-- Could NOT find OpenGL (missing: OPENGL_opengl_LIBRARY OPENGL_glx_LIBRARY OPENGL_INCLUDE_DIR)</span>
+<span class="go">-- Could NOT find X11 (missing: X11_X11_INCLUDE_PATH X11_X11_LIB)</span>
+<span class="go">-- Could NOT find FLTK (missing: FLTK_LIBRARIES FLTK_INCLUDE_DIR)</span>
+<span class="go">-- Found ONELAB</span>
+<span class="go">-- Found ONELABMetamodel</span>
+<span class="go">-- Found ANN[contrib]</span>
+<span class="go">-- Found ALGLIB[contrib]</span>
+<span class="go">-- Found DIntegration</span>
+<span class="go">-- Found Kbipack</span>
+<span class="go">-- GMP not found: Kbipack uses long int</span>
+<span class="go">-- Found MathEx[contrib]</span>
+<span class="go">-- Found Metis[contrib]</span>
+<span class="go">-- Found TetGen/BR</span>
+<span class="go">-- Found Voro++[contrib]</span>
+<span class="go">-- Found OptHom</span>
+<span class="go">-- Found DomHex</span>
+<span class="go">-- Found QuadTri</span>
+<span class="go">-- Found Blossom</span>
+<span class="go">-- Found Netgen</span>
+<span class="go">-- Found Bamg</span>
+<span class="go">-- Found Hxt</span>
+<span class="go">-- Found QuadMeshingTools</span>
+<span class="go">-- Found WinslowUntangler</span>
+<span class="go">-- Could NOT find HDF5 (missing: HDF5_LIBRARIES HDF5_INCLUDE_DIRS) (found version &quot;&quot;)</span>
+<span class="go">-- HDF5 not found</span>
+<span class="go">-- Found Gmm[contrib]</span>
+<span class="go">-- Could NOT find Freetype (missing: FREETYPE_LIBRARY FREETYPE_INCLUDE_DIRS)</span>
+<span class="go">-- Looking for vsnprintf</span>
+<span class="go">-- Looking for vsnprintf - found</span>
+<span class="go">-- Looking for sys/socket.h</span>
+<span class="go">-- Looking for sys/socket.h - found</span>
+<span class="go">-- Check size of socklen_t</span>
+<span class="go">-- Check size of socklen_t - done</span>
+<span class="go">-- Check size of intptr_t</span>
+<span class="go">-- Check size of intptr_t - done</span>
+<span class="go">-- Looking for dlfcn.h</span>
+<span class="go">-- Looking for dlfcn.h - found</span>
+<span class="go">-- Found Dlopen</span>
+<span class="go">-- Looking for linux/joystick.h</span>
+<span class="go">-- Looking for linux/joystick.h - found</span>
+<span class="go">-- Found LinuxJoystick</span>
+<span class="go">-- Performing Test WALL</span>
+<span class="go">-- Performing Test WALL - Success</span>
+<span class="go">-- Performing Test WCAST</span>
+<span class="go">-- Performing Test WCAST - Failed</span>
+<span class="go">-- Performing Test WDEPREC</span>
+<span class="go">-- Performing Test WDEPREC - Success</span>
+<span class="go">-- Performing Test WIND</span>
+<span class="go">-- Performing Test WIND - Success</span>
+<span class="go">-- Performing Test WATTR</span>
+<span class="go">-- Performing Test WATTR - Success</span>
+<span class="go">-- Performing Test NOWARN</span>
+<span class="go">-- Performing Test NOWARN - Success</span>
+<span class="go">-- Performing Test NOOPT</span>
+<span class="go">-- Performing Test NOOPT - Success</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/api/square.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/baffles.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/boolean.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/chamfer.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/coherence.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/compsolid.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/compsolid2.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/extend_field.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/extrude.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/extrude2.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/fillet.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/fillet2.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/fillet3.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/fillet4.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/fillet_chamfer.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/fleur.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/fragment_numbering.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/hybrid_occ_builtin.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/hyperboloid.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/import.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/import2.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/intersect_line_volume.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/neuron.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/number_of_tets.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/periodic.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/periodic_embedded.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/pipe.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/primitives.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/revolve.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/revolve2.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/shell_sewing.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/simple.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/simple2.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/simple3.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/simple4.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/simple5.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/simple6.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/simple7.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/slicer.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/slicer_surfaces.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/spherical_surf.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/spline.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/step_assembly.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/surface_filling.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/thicksolid.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/thrusections.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/transfinite.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/transform.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/boolean/twist.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/examples/post_processing/compute_area_volume.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/tutorials/t16.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/tutorials/t17.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/tutorials/t18.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/tutorials/t19.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/tutorials/t20.geo</span>
+<span class="go">Skipping test /home/rquey/Progs/gmsh-4.11.1-source/tutorials/t21.geo</span>
+<span class="go">--</span>
+<span class="go">-- Gmsh 4.11.1 has been configured for Linux64</span>
+<span class="go">--</span>
+<span class="go">--  * Build options: 64Bit ALGLIB[contrib] ANN[contrib] Bamg Blossom DIntegration Dlopen DomHex Eigen[contrib] Gmm[contrib] Hxt Kbipack LinuxJoystick MathEx[contrib] Mesh Metis[contrib] Netgen ONELAB ONELABMetamodel OpenMP OptHom Parser Plugins Post QuadMeshingTools QuadTri Solver TetGen/BR Voro++[contrib] WinslowUntangler</span>
+<span class="go">--  * Build type: RelWithDebInfo</span>
+<span class="go">--  * C compiler: /usr/bin/cc</span>
+<span class="go">--  * C++ compiler: /usr/bin/c++</span>
+<span class="go">--  * Install prefix: /usr/local</span>
+<span class="go">--</span>
+<span class="go">-- Configuring done</span>
+<span class="go">-- Generating done</span>
+<span class="go">-- Build files have been written to: /home/rquey/Progs/gmsh-4.11.1-source/build</span>
+</pre></div>
+</div>
+<p>Configuration completed and is sufficient for Neper. So, we can make and install:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make
+<span class="gp">$ </span>sudo make install
+</pre></div>
+</div>
+<p>The second command copies the <code class="file docutils literal notranslate"><span class="pre">gmsh</span></code> binary file to a system location, which makes the command available to Neper.</p>
+<p>Back to Neper’s build directory, we re-run the tests:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> ~/Progs/neper-4.6.1/src/build
+<span class="gp">$ </span>ctest
+
+<span class="go">99% tests passed, 2 tests failed out of 461</span>
+
+<span class="go">Total Test time (real) =  47.92 sec</span>
+
+<span class="go">The following tests FAILED:</span>
+<span class="go">        211 - V/asymptote (Failed)</span>
+<span class="go">        325 - V/povray (Failed)</span>
+<span class="go">Errors while running CTest</span>
+</pre></div>
+</div>
+<p>All “M” tests now pass.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We could also re-run only the “M” tests, using <strong class="command">ctest -R M</strong>.</p>
+</div>
+</section>
+<section id="installing-pov-ray-and-asymptote">
+<h2>Installing POV-Ray and Asymptote<a class="headerlink" href="#installing-pov-ray-and-asymptote" title="Permalink to this headline">¶</a></h2>
+<p>We install povray as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install povray
+</pre></div>
+</div>
+<p>We re-run the tests:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctest
+
+<span class="go">99% tests passed, 1 tests failed out of 461</span>
+
+<span class="go">Total Test time (real) =  47.92 sec</span>
+
+<span class="go">The following tests FAILED:</span>
+<span class="go">        211 - V/asymptote (Failed)</span>
+<span class="go">Errors while running CTest</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We could also simply run <code class="code docutils literal notranslate"><span class="pre">ctest</span> <span class="pre">-R</span> <span class="pre">V/povray</span></code></p>
+</div>
+<p>We now install Asymptote, which itself required full Tex Live, as we know from <a class="reference internal" href="../introduction.html#installing-neper"><span class="std std-ref">Installing Neper</span></a>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install asymptote
+<span class="gp">$ </span>sudo apt install texlive-full
+</pre></div>
+</div>
+<p>We re-run the tests:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctest
+
+<span class="go">[...]</span>
+
+<span class="go">100% tests passed, 0 tests failed out of 461</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We could also simply run <code class="code docutils literal notranslate"><span class="pre">ctest</span> <span class="pre">-R</span> <span class="pre">V/asymptote</span></code></p>
+</div>
+<p>The installation is now complete!</p>
+</section>
+<section id="improving-gmsh-s-installation-optional">
+<h2>Improving Gmsh’s Installation (optional)<a class="headerlink" href="#improving-gmsh-s-installation-optional" title="Permalink to this headline">¶</a></h2>
+<p>Back to Gmsh, the Gmsh installation may be improved so that we can actually open Gmsh’s GUI, by installing OpenGL’s development package (OpenGL itself may already be installed) and FLTK:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt-get install freeglut3-dev
+<span class="gp">$ </span>sudo apt-get install libfltk1.3 libfltk1.3-dev
+<span class="gp">$ </span><span class="nb">cd</span> ~/Progs/gmsh-4.11.1-source
+<span class="gp">$ </span>cmake ..
+<span class="gp">$ </span>make
+<span class="gp">$ </span>sudo make install
+</pre></div>
+</div>
+</section>
+<section id="installing-neper-s-documentation-optional">
+<h2>Installing Neper’s documentation (optional)<a class="headerlink" href="#installing-neper-s-documentation-optional" title="Permalink to this headline">¶</a></h2>
+<p>Neper’s documentation is available online, but we can also build our own local copy:</p>
+<p>From the <code class="file docutils literal notranslate"><span class="pre">doc</span></code> directory, we compile the documentation:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> ~/Progs/neper-4.6.0/doc
+<span class="gp">$ </span>make html
+
+<span class="go">sphinx-build -b html -d build/doctrees   . build/html</span>
+<span class="go">Traceback (most recent call last):</span>
+<span class="go">  File &quot;/home/rquey/.local/bin/sphinx-build&quot;, line 5, in &lt;module&gt;</span>
+<span class="go">    from sphinx.cmd.build import main</span>
+<span class="go">ModuleNotFoundError: No module named &#39;sphinx&#39;</span>
+<span class="go">make: *** [Makefile:53: html] Error 1</span>
+</pre></div>
+</div>
+<p>Sphinx is missing.  We install it:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt-get install python3-sphinx
+</pre></div>
+</div>
+<p>We re-compile the documentation:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make html
+
+<span class="go">sphinx-build -b html -d build/doctrees   . build/html</span>
+<span class="go">Running Sphinx v4.3.2</span>
+<span class="go">loading translations [en]... done</span>
+<span class="go">loading pickled environment... done</span>
+<span class="go">WARNING: sphinx_rtd_theme (&lt; 0.3.0) found. It will not be available since Sphinx-6.0</span>
+<span class="go">building [mo]: targets for 0 po files that are out of date</span>
+<span class="go">building [html]: targets for 11 source files that are out of date</span>
+<span class="go">updating environment: [config changed (&#39;version&#39;)] 11 added, 0 changed, 0 removed</span>
+<span class="go">reading sources... [100%] versions</span>
+<span class="go">/home/rquey/Progs/fepx/doc/copying.rst:24: WARNING: duplicate citation DAWSON15, other instance in /home/rquey/Progs/fepx/doc/develhistory.rst</span>
+<span class="go">/home/rquey/Progs/fepx/doc/develhistory.rst:77: WARNING: duplicate citation DAWSON15, other instance in /home/rquey/Progs/fepx/doc/copying.rst</span>
+<span class="go">/home/rquey/Progs/fepx/doc/input.rst:1020: WARNING: Explicit markup ends without a blank line; unexpected unindent.</span>
+<span class="go">looking for now-outdated files... none found</span>
+<span class="go">pickling environment... done</span>
+<span class="go">checking consistency... done</span>
+<span class="go">preparing documents... done</span>
+<span class="go">writing output... [100%] versions</span>
+<span class="go">/home/rquey/Progs/fepx/doc/versions.rst:7: WARNING: Pygments lexer name &#39;plain&#39; is not known</span>
+<span class="go">generating indices... genindex done</span>
+<span class="go">writing additional pages... search done</span>
+<span class="go">copying images... [100%] images/minimalbcs.png</span>
+<span class="go">copying static files... done</span>
+<span class="go">copying extra files... done</span>
+<span class="go">dumping search index in English (code: en)... done</span>
+<span class="go">dumping object inventory... done</span>
+<span class="go">build succeeded, 5 warnings.</span>
+
+<span class="go">The HTML pages are in build/html.</span>
+
+<span class="go">Build finished. The HTML pages are in build/html.</span>
+</pre></div>
+</div>
+<p>All done!  We may now copy the <code class="file docutils literal notranslate"><span class="pre">html</span></code> directory to somewhere more appropriate (there is no <strong class="command">make install</strong> command for the documentation).</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="orientation_color_key.html" class="btn btn-neutral float-left" title="Plotting an Orientation Color Key" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../versions.html" class="btn btn-neutral float-right" title="Versions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Romain Quey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
