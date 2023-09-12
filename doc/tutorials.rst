@@ -14,3 +14,4 @@ Tutorials
    tutorials/pole_figure.rst
    tutorials/orientation_trajectories.rst
    tutorials/orientation_color_key.rst
+   tutorials/install_ubuntu22.rst

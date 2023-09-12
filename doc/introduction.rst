@@ -52,10 +52,14 @@ Several, complementary resources describing Neper are available:
 
 Resources for FEPX can be accessed from https://fepx.info.
 
+.. _installing_neper:
+
 Installing Neper
 ----------------
 
-Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system (including macOS).  Neper also runs on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, although we do not test nor support this usage and multithreading must be turned off (which slows down execution significantly).
+Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system.  Neper is also known to run on macOS and on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, although we do not test nor support this usage and multithreading must be turned off (which slows down execution significantly).
+
+.. note:: Ubuntu users may be interested in the tutorial ":ref:`installation_ubuntu_22`" from step-by-step installation instructions.
 
 General Procedure
 ~~~~~~~~~~~~~~~~~
@@ -155,6 +159,8 @@ The program configuration variables concern the printing format of the real numb
 - :code:`REAL_PRINT_FORMAT`, default :code:`"%.12f"` (12 decimal digits);
 - :code:`REAL_PRINT_FORMAT3`, default :code:`"%15.12f"` (12 decimal digits, 15 total digits);
 - :code:`REAL_PRINT_FORMAT5`, default :code:`"%17.12f"` (12 decimal digits, 17 total digits).
+
+.. _testing_neper:
 
 Testing Neper
 -------------

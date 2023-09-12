@@ -15,9 +15,15 @@ if(CMAKE_VERSION VERSION_LESS "3.1")
 else()
     set(CMAKE_CXX_STANDARD 11)
 endif()
-add_definitions(-Wno-deprecated-declarations)
+add_definitions(-Wno-deprecated-declarations) #-Wno-maybe-uninitialized)
+add_definitions(-Wno-deprecated-declarations) #-Wno-maybe-uninitialized)
 
 add_definitions(-Wall -W -Wno-unknown-pragmas)
+
+# Fixes nanoflann compilation warnings
+set_source_files_properties(./neut_mesh/neut_mesh_geom/neut_mesh_geom1.cpp PROPERTIES COMPILE_FLAGS -Wno-maybe-uninitialized)
+set_source_files_properties(./neut_seedset/neut_seedset2.cpp PROPERTIES COMPILE_FLAGS -Wno-maybe-uninitialized)
+
 if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
   set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Wno-deprecated-copy")
 endif()
