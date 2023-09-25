@@ -40,8 +40,8 @@ nes_pproc_entity (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
     if (results[i][0] == '!' || results[i][0] == '\\')
       nes_pproc_entity_remove (pSim, entity, results[i] + 1);
 
-    // general case: adding result
-    else if (results[i][0] != '!')
+    // general case: adding result (includes the case of \result)
+    if (results[i][0] != '!')
     {
       result = (results[i][0] == '\\') ? results[i] + 1 : results[i];
 
