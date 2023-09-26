@@ -506,6 +506,32 @@ We re-run the tests:
 
 .. note:: We could also simply run :code:`ctest -R V/asymptote`
 
+
+Depending on your use of Neper, it may be necessary to make the following changes in your :file:`/etc/ImageMagick-6/policy.xml` file:
+
+  - Comment out the following lines:
+
+    .. code-block:: console
+
+      <policy domain="coder" rights="none" pattern="PS" />
+      <policy domain="coder" rights="none" pattern="PS2" />
+      <policy domain="coder" rights="none" pattern="PS3" />
+      <policy domain="coder" rights="none" pattern="EPS" />
+      <policy domain="coder" rights="none" pattern="PDF" />
+      <policy domain="coder" rights="none" pattern="XPS" />
+
+  - Increase the following limits (especially :data:`memory` and :data:`disk`):
+
+    .. code-block:: console
+
+      <policy domain="resource" name="memory" value="256MiB"/>
+      <policy domain="resource" name="map" value="512MiB"/>
+      <policy domain="resource" name="width" value="16KP"/>
+      <policy domain="resource" name="height" value="16KP"/>
+      <!-- <policy domain="resource" name="list-length" value="128"/> -->
+      <policy domain="resource" name="area" value="128MP"/>
+      <policy domain="resource" name="disk" value="1GiB"/>
+
 The installation is now complete!
 
 Improving Gmsh's Installation (optional)

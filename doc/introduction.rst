@@ -140,6 +140,31 @@ Other dependencies are only needed at run-time (they are not necessary for compi
 
 - The `Asymptote <https://asymptote.sourceforge.io/>`_ program and `Tex Live <https://www.tug.org/texlive>`_ (:code:`texlive-full` on Ubuntu, for pole figure plots in :ref:`neper_v`). They are likely to be available from your system package manager.  Alternatively, both binary and source-code versions can be downloaded from the program websites.  Asymptote must be available at the terminal as the command :program:`asy`, or the path to its binary must be specified with option :option:`-asy` (in module -V).
 
+  .. attention:: Depending on your configuration and your use of Neper, it may be necessary to make the following changes in your :file:`/etc/ImageMagick-6/policy.xml` file:
+
+    - Comment out the following lines:
+
+      .. code-block:: console
+
+        <policy domain="coder" rights="none" pattern="PS" />
+        <policy domain="coder" rights="none" pattern="PS2" />
+        <policy domain="coder" rights="none" pattern="PS3" />
+        <policy domain="coder" rights="none" pattern="EPS" />
+        <policy domain="coder" rights="none" pattern="PDF" />
+        <policy domain="coder" rights="none" pattern="XPS" />
+
+    - Increase the following limits (especially :data:`memory` and :data:`disk`):
+
+      .. code-block:: console
+
+        <policy domain="resource" name="memory" value="256MiB"/>
+        <policy domain="resource" name="map" value="512MiB"/>
+        <policy domain="resource" name="width" value="16KP"/>
+        <policy domain="resource" name="height" value="16KP"/>
+        <!-- <policy domain="resource" name="list-length" value="128"/> -->
+        <policy domain="resource" name="area" value="128MP"/>
+        <policy domain="resource" name="disk" value="1GiB"/>
+
 Finally, other third-party libraries are directly included in the source code (see directory :file:`src/contrib`) and are therefore not dependencies *per se*:
 
 - The `NLopt <https://nlopt.readthedocs.io>`_ library.  If it is already available on your system, the system version will be used instead.  To force the use of the built-in version, set :code:`FORCE_BUILTIN_NLOPT` to :code:`ON` (default :code:`OFF`).

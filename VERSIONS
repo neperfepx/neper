@@ -1,5 +1,6 @@
-New in 4.6.2-1 (25 Sep 2023):
+New in 4.6.2-2 (26 Sep 2023):
 - module -S: fixed -res... '\<result>` (result overwriting).
+- general: improved installation instructions.
 
 New in 4.6.1 (12 Sep 2023):
 - module -T: fixed -domain cylinder and circle, fixed tesr reading, made minor
