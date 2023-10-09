@@ -661,6 +661,8 @@ extern "C"
 
   extern int neut_tess_cellbody_pos (struct TESS Tess, char *expr, int *ppos);
 
+  extern int neut_tess_cell_scale (struct TESS Tess, int id, int *pscale);
+
 #endif				/* NEUT_TESS_TOPO_H */
 
 #ifdef __cplusplus

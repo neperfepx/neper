@@ -371,6 +371,12 @@ neut_tess_var_val (struct TESS *pTess,
                      && (*pTess).ScaleCellId) ? (*pTess).ScaleCellId[id][scale] : -1;
       ut_string_string ("%d", &typetmp);
     }
+    else if (!strcmp (var2, "scale"))
+    {
+      neut_tess_cell_scale (*pTess, id, &tmp);
+      (*pvals)[0] = tmp;
+      ut_string_string ("%d", &typetmp);
+    }
     else if (!strcmp (var2, "faces") || !strcmp (var2, "facelist"))
     {
       (*pvalqty) = (*pTess).PolyFaceQty[id];
@@ -691,6 +697,12 @@ neut_tess_var_val (struct TESS *pTess,
       sscanf (var2, "scaleid(%d)", &scale);
       (*pvals)[0] =
         (scale <= (*pTess).ScaleQty) ? (*pTess).ScaleCellId[id][scale] : -1;
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var2, "scale"))
+    {
+      neut_tess_cell_scale (*pTess, id, &tmp);
+      (*pvals)[0] = tmp;
       ut_string_string ("%d", &typetmp);
     }
     else if (!strcmp (var2, "scale"))

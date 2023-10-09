@@ -1,4 +1,5 @@
-New in 4.6.2-2 (26 Sep 2023):
+New in 4.6.2-3 (09 Oct 2023):
+- module -T: added -statcell scale.
 - module -S: fixed -res... '\<result>` (result overwriting).
 - general: improved installation instructions.
 

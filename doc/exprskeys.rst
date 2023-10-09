@@ -162,7 +162,7 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 :data:`domface`                   domain face (-1 if undefined)                                                                       face
 :data:`domedge`                   domain edge (-1 if undefined)                                                                       edge
 :data:`domver`                    domain vertex (-1 if undefined)                                                                     ver
-:data:`scale`                     scale                                                                                               ver, edge, face [#multiscale_entity]_
+:data:`scale`                     scale                                                                                               ver, edge, face, poly, cell [#multiscale_entity]_
 :data:`length`                    length                                                                                              edge
 :data:`area`                      surface area                                                                                        face, poly, group
 :data:`vol`                       volume                                                                                              poly, group
@@ -892,7 +892,7 @@ viridis:fade(0.2) .. image:: imgs/color-maps-real/viridis-fade0p2.png
 
 .. [#muparser_doc] Taken from the :data:`muparser` `documentation <http://beltoforion.de/article.php?a=muparser>`_
 
-.. [#multiscale_entity] Applies only to a 3D tessellation and relevant for multiscale tessellations.  The scale of an entity (vertex, edge or face) is the scale at which the entity was created, and it ranges from 0 (for domain entities) to the number of scales of the tessellation (for the last created entities).
+.. [#multiscale_entity] Applies only to a 3D tessellation and relevant for multiscale tessellations.  The scale of an entity (vertex, edge or face) is the scale at which the entity was created, and it ranges from 0 (for domain entities) to the number of scales of the tessellation (for the last created entities).  The scale of a cell is determined based on the number of subcells of its parent cell.
 
 .. [#multiscale_entity_mesh] Applies only to a 3D mesh and relevant for meshes of multiscale tessellations.  The scale of an elset is equal to the scale of its corresponding tessellation entity  [#multiscale_entity]_.
 

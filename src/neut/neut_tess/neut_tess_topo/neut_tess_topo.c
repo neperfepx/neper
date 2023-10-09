@@ -3587,3 +3587,26 @@ neut_tess_cellbody_pos (struct TESS Tess, char *expr, int *ppos)
 
   return (*ppos == -1) ? -1 : 0;
 }
+
+int
+neut_tess_cell_scale (struct TESS Tess, int id, int *pscale)
+{
+  int i, j;
+
+  (*pscale) = -1;
+
+  for (j = Tess.ScaleQty; j >= 1; j--)
+  {
+    for (i = 1; i <= Tess.CellQty; i++)
+      if (i != id && Tess.ScaleCellId[i][j - 1] == Tess.ScaleCellId[id][j - 1])
+      {
+        (*pscale) = j;
+        break;
+      }
+
+    if ((*pscale) != -1)
+      break;
+  }
+
+  return 0;
+}
