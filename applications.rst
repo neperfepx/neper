@@ -26,8 +26,12 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2023
 ----
 
+- Y Tu, SB Leen and NM Harrison, *Managing the Inevitable Microstructural and Property Heterogeneity in Powder Bed Fusion Ti-6Al-4V Parts via Heat Treatment*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2023.172309.
+- A He and XN Hu, *Achieving optimal magnetic flux expulsion of a Nb3Sn superconducting radio-frequency cavity via spatial temperature gradient*, **Physics Letters A**, https://doi.org/10.1016/j.physleta.2023.129129.
+- I Gribanov, R Taylor, J Thijssen and M Fuglem, *Investigating Ice Loads on Subsea Pipelines with Cohesive Zone Model in Abaqus*, **Modelling**, https://doi.org/10.3390/modelling4030023.
+- RPC Coelho, MV de Carvalho and FMA Pires, *A multi-scale model combining martensitic transformations with multi-phase crystallographic slip*, **Computers & Structures**, https://doi.org/10.1016/j.compstruc.2023.107174.
 - N Sheng, S Khazaie, M Chevreuil and S Fréour, *Statistical properties of effective elastic moduli of random cubic polycrystals*, **Mechanics & Industry**, https://doi.org/10.1051/meca/2023030.
- MK Kalkowski, MJS Lowe, V Samaitis, F Schreyer and S Robert, *Weld map tomography for determining local grain orientations from ultrasound*, **Proceedings of the Royal Society A**, https://doi.org/10.1098/rspa.2023.0236.
+- MK Kalkowski, MJS Lowe, V Samaitis, F Schreyer and S Robert, *Weld map tomography for determining local grain orientations from ultrasound*, **Proceedings of the Royal Society A**, https://doi.org/10.1098/rspa.2023.0236.
 - M Kavousi, P McGarry, P McHugh and S Leen, *Geometrical and crystal plasticity modelling: Towards the establishment of a process-structure-property relationship for additively manufactured 316L struts*, **European Journal of Mechanics-A/Solids**, https://doi.org/10.1016/j.euromechsol.2023.105115.
 - KL Auth, J Brouzoulis and M Ekh, *Modeling of environmentally assisted intergranular crack propagation in polycrystals*, **International Journal for Numerical Methods in Engineering**, https://doi.org/10.1002/nme.7346.
 - M Pressacco, JJJ Kangas and T Saksala, *Numerical modelling of microwave irradiated rock fracture*, **Minerals Engineering**, https://doi.org/10.1016/j.mineng.2023.108318.
