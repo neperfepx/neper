@@ -23,9 +23,16 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 - B Flipon, C Keller, R Quey and F Barbe, *A full-field crystal-plasticity analysis of bimodal polycrystals*, **International Journal of Solids and Structures**, vol. 184, pp. 178--192, 2020. `Flipon et al.'s journal cover <imgs/cover-ijss-2020.png>`_
 - R Carson, M Obstalecki, M Miller and P Dawson, *Characterizing Heterogeneous Intragranular Deformations in Polycrystalline Solids Using Diffraction-Based and Mechanics-Based Metrics*, **Modelling and Simulation in Materials Science and Engineering**,  vol. 25,  pp. 055008, 2017. `Carson et al.'s journal cover <imgs/cover-MSMSE-2505-OFC.png>`_
 
+2024
+----
+
+- D Xia and C Oskay, *Proper orthogonal decomposition assisted eigendeformation-based mathematical homogenization method for modeling cracks in 3D polycrystalline microstructures*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2023.116508.
+
 2023
 ----
 
+- A Chaurasia, G Walton, *Laboratory and Numerical Modeling of the Effects of Width-to-Height Ratio on the Strength and Deformation Behavior of Pillars Composed of Porous, Weak Limestone*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-023-03579-7.
+- A Ravikumar, D Höche, C Feiler, M Lekka, A Salicio-Paz, Michael Rohwerder, JM Prabhakar and M Zheludkevich, *Exploring the effect of microstructure and surface recombination on hydrogen effusion in Zn‐Ni coated martensitic steels by advanced computational modeling*, **Steel research international**,  https://doi.org/10.1002/srin.202300353.
 - Y Tu, SB Leen and NM Harrison, *Managing the Inevitable Microstructural and Property Heterogeneity in Powder Bed Fusion Ti-6Al-4V Parts via Heat Treatment*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2023.172309.
 - A He and XN Hu, *Achieving optimal magnetic flux expulsion of a Nb3Sn superconducting radio-frequency cavity via spatial temperature gradient*, **Physics Letters A**, https://doi.org/10.1016/j.physleta.2023.129129.
 - I Gribanov, R Taylor, J Thijssen and M Fuglem, *Investigating Ice Loads on Subsea Pipelines with Cohesive Zone Model in Abaqus*, **Modelling**, https://doi.org/10.3390/modelling4030023.
