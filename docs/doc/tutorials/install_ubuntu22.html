@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Installing Neper on Ubuntu 22 &mdash; Neper 4.6.1 documentation</title>
@@ -12,10 +12,9 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -99,35 +98,35 @@
            <div itemprop="articleBody">
              
   <section id="installing-neper-on-ubuntu-22">
-<span id="installation-ubuntu-22"></span><h1>Installing Neper on Ubuntu 22<a class="headerlink" href="#installing-neper-on-ubuntu-22" title="Permalink to this headline">¶</a></h1>
+<span id="installation-ubuntu-22"></span><h1>Installing Neper on Ubuntu 22<a class="headerlink" href="#installing-neper-on-ubuntu-22" title="Link to this heading"></a></h1>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Read first: <a class="reference internal" href="../introduction.html#introduction"><span class="std std-ref">Introduction</span></a>, especially <a class="reference internal" href="../introduction.html#installing-neper"><span class="std std-ref">Installing Neper</span></a> and <a class="reference internal" href="../introduction.html#testing-neper"><span class="std std-ref">Testing Neper</span></a>.</p>
 </div>
 <p>This tutotial describes how to install Neper step by step on a <em>fresh</em> Ubuntu 22 distribution.  It may apply to other Ubuntu distributions too, and may be adapted to other distributions quite easily.  General installation instructions are provided in <a class="reference internal" href="../introduction.html#introduction"><span class="std std-ref">Introduction</span></a> (<a class="reference internal" href="../introduction.html#installing-neper"><span class="std std-ref">Installing Neper</span></a>), and this tutorial does not aim to substitute to it. However, we adopt here a different approach by managing (dependency) issues as they occur during the installation on a fresh Ubuntu 22 distribution (which misses packages that would typically already be present on older installations).</p>
 <section id="downloading-neper">
-<h2>Downloading Neper<a class="headerlink" href="#downloading-neper" title="Permalink to this headline">¶</a></h2>
+<h2>Downloading Neper<a class="headerlink" href="#downloading-neper" title="Link to this heading"></a></h2>
 <p>We first download the last official version from the website (<a class="reference external" href="https://neper.info">https://neper.info</a>), <code class="code docutils literal notranslate"><span class="pre">neper-4.6.1.tar.gz</span></code> at the time of writing.
 It is then a good idea to move the archive to a dedicated directory, for example <code class="file docutils literal notranslate"><span class="pre">~/Progs</span></code>, and work from there.</p>
 <p>We create directory <code class="file docutils literal notranslate"><span class="pre">~/Progs</span></code> and move the archive into it:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mkdir ~/Progs
-<span class="gp">$ </span>mv neper-4.6.1.tar.gz ~/Progs
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mkdir<span class="w"> </span>~/Progs
+<span class="gp">$ </span>mv<span class="w"> </span>neper-4.6.1.tar.gz<span class="w"> </span>~/Progs
 </pre></div>
 </div>
 <p>We change directory to <code class="file docutils literal notranslate"><span class="pre">Progs</span></code> and unarchive the code:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> ~/Progs
-<span class="gp">$ </span>tar -zxf neper-4.6.1.tar.gz
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>~/Progs
+<span class="gp">$ </span>tar<span class="w"> </span>-zxf<span class="w"> </span>neper-4.6.1.tar.gz
 </pre></div>
 </div>
 </section>
 <section id="compiling-neper">
-<h2>Compiling Neper<a class="headerlink" href="#compiling-neper" title="Permalink to this headline">¶</a></h2>
+<h2>Compiling Neper<a class="headerlink" href="#compiling-neper" title="Link to this heading"></a></h2>
 <p>We first compile Neper using the commands provided in <a class="reference internal" href="../introduction.html#installing-neper"><span class="std std-ref">Installing Neper</span></a> (namely, we should follow the <strong class="command">cmake</strong>, <strong class="command">make</strong>, <strong class="command">make install</strong> sequence):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> neper-4.6.1
-<span class="gp">$ </span><span class="nb">cd</span> src
-<span class="gp">$ </span>mkdir build
-<span class="gp">$ </span><span class="nb">cd</span> build
-<span class="gp">$ </span>cmake ..
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>neper-4.6.1
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>src
+<span class="gp">$ </span>mkdir<span class="w"> </span>build
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>build
+<span class="gp">$ </span>cmake<span class="w"> </span>..
 
 <span class="go">Command &#39;cmake&#39; not found, but can be installed with:</span>
 <span class="go">sudo snap install cmake  # version 3.26.4, or</span>
@@ -136,11 +135,11 @@ It is then a good idea to move the archive to a dedicated directory, for example
 </pre></div>
 </div>
 <p>We follow the terminal output and install <strong class="command">cmake</strong>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install cmake
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>cmake
 </pre></div>
 </div>
 <p>We re-run Cmake:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake ..
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake<span class="w"> </span>..
 
 <span class="go">-- The C compiler identification is GNU 11.3.0</span>
 <span class="go">-- The CXX compiler identification is unknown</span>
@@ -162,11 +161,11 @@ It is then a good idea to move the archive to a dedicated directory, for example
 </pre></div>
 </div>
 <p>A CXX (C++) compiler is missing.  The GNU C++ compiler is <strong class="command">g++</strong>; so, we install it:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install g++
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>g++
 </pre></div>
 </div>
 <p>We re-run Cmake:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake ..
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake<span class="w"> </span>..
 
 <span class="go">-- WARNING: you are using the obsolete &#39;PKGCONFIG&#39; macro, use FindPkgConfig</span>
 <span class="go">-- WARNING: PKGCONFIG() indicates that the tool pkg-config has not been found on your system. You should install it.</span>
@@ -184,11 +183,11 @@ It is then a good idea to move the archive to a dedicated directory, for example
 </pre></div>
 </div>
 <p>We follow the terminal output and install <strong class="command">pkg-config</strong>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install pkg-config
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>pkg-config
 </pre></div>
 </div>
 <p>We re-run Cmake:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake ..
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake<span class="w"> </span>..
 
 <span class="go">-- WARNING: you are using the obsolete &#39;PKGCONFIG&#39; macro, use FindPkgConfig</span>
 <span class="go">-- PKGCONFIG() indicates that gsl is not installed (install the package which contains gsl.pc if you want to support this feature)</span>
@@ -206,7 +205,7 @@ It is then a good idea to move the archive to a dedicated directory, for example
 </pre></div>
 </div>
 <p>We have to install <strong class="command">gsl</strong>. We search for it as follows (it is a library, so, we prefix it with <strong class="command">lib</strong> in the search):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt search libgsl
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt<span class="w"> </span>search<span class="w"> </span>libgsl
 
 <span class="go">Sorting... Done</span>
 <span class="go">Full Text Search... Done</span>
@@ -230,11 +229,11 @@ It is then a good idea to move the archive to a dedicated directory, for example
 </pre></div>
 </div>
 <p><strong class="command">libgsl-dev</strong> is the one we need; so, we install it:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install libgsl-dev
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>libgsl-dev
 </pre></div>
 </div>
 <p>We re-run Cmake:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake ..
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake<span class="w"> </span>..
 <span class="go">-- Found OpenMP_C: -fopenmp (found version &quot;4.5&quot;)</span>
 <span class="go">-- Found OpenMP_CXX: -fopenmp (found version &quot;4.5&quot;)</span>
 <span class="go">-- Found OpenMP: TRUE (found version &quot;4.5&quot;)</span>
@@ -254,7 +253,7 @@ It is then a good idea to move the archive to a dedicated directory, for example
 </pre></div>
 </div>
 <p>We can already install Neper (with root permissions):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo make install
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>make<span class="w"> </span>install
 </pre></div>
 </div>
 <p>which copies the <code class="file docutils literal notranslate"><span class="pre">neper</span></code> binary to a system location and makes the <strong class="command">neper</strong> command available system-wide.</p>
@@ -324,18 +323,18 @@ It is then a good idea to move the archive to a dedicated directory, for example
 <p>Some tests failed because we have not install the run-time dependencies: Gmsh, Asymptote and POV-Ray (see <a class="reference internal" href="../introduction.html#installing-neper"><span class="std std-ref">Installing Neper</span></a>).</p>
 </section>
 <section id="installing-gmsh">
-<h2>Installing Gmsh<a class="headerlink" href="#installing-gmsh" title="Permalink to this headline">¶</a></h2>
+<h2>Installing Gmsh<a class="headerlink" href="#installing-gmsh" title="Link to this heading"></a></h2>
 <p>Gmsh is available from the package manager (meaning that we could run <strong class="command">sudo apt install gmsh</strong> to install it); however, it is worth installing it from source since it will run much faster.</p>
 <p>We download the source code from the website (<a class="reference external" href="https://gmsh.info">https://gmsh.info</a>), latest version.  It is then a good idea to move it to <code class="file docutils literal notranslate"><span class="pre">~/Progs</span></code>, where Neper already is:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mv gmsh-4.11.1-source.tgz ~/Progs/
-<span class="gp">$ </span>tar -zxf gmsh-4.11.1-source.tgz
-<span class="gp">$ </span><span class="nb">cd</span> ~/Progs/gmsh-4.11.1-source
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mv<span class="w"> </span>gmsh-4.11.1-source.tgz<span class="w"> </span>~/Progs/
+<span class="gp">$ </span>tar<span class="w"> </span>-zxf<span class="w"> </span>gmsh-4.11.1-source.tgz
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>~/Progs/gmsh-4.11.1-source
 </pre></div>
 </div>
 <p>We can then compile it.  As Gmsh is also managed with CMake, installation is no much different from that of Neper itself:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mkdir build
-<span class="gp">$ </span><span class="nb">cd</span> build
-<span class="gp">$ </span>cmake ..
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mkdir<span class="w"> </span>build
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>build
+<span class="gp">$ </span>cmake<span class="w"> </span>..
 
 <span class="go">-- The CXX compiler identification is GNU 11.3.0</span>
 <span class="go">-- The C compiler identification is GNU 11.3.0</span>
@@ -496,12 +495,12 @@ It is then a good idea to move the archive to a dedicated directory, for example
 </div>
 <p>Configuration completed and is sufficient for Neper. So, we can make and install:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make
-<span class="gp">$ </span>sudo make install
+<span class="gp">$ </span>sudo<span class="w"> </span>make<span class="w"> </span>install
 </pre></div>
 </div>
 <p>The second command copies the <code class="file docutils literal notranslate"><span class="pre">gmsh</span></code> binary file to a system location, which makes the command available to Neper.</p>
 <p>Back to Neper’s build directory, we re-run the tests:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> ~/Progs/neper-4.6.1/src/build
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>~/Progs/neper-4.6.1/src/build
 <span class="gp">$ </span>ctest
 
 <span class="go">99% tests passed, 2 tests failed out of 461</span>
@@ -521,9 +520,9 @@ It is then a good idea to move the archive to a dedicated directory, for example
 </div>
 </section>
 <section id="installing-pov-ray-and-asymptote">
-<h2>Installing POV-Ray and Asymptote<a class="headerlink" href="#installing-pov-ray-and-asymptote" title="Permalink to this headline">¶</a></h2>
+<h2>Installing POV-Ray and Asymptote<a class="headerlink" href="#installing-pov-ray-and-asymptote" title="Link to this heading"></a></h2>
 <p>We install povray as follows:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install povray
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>povray
 </pre></div>
 </div>
 <p>We re-run the tests:</p>
@@ -543,8 +542,8 @@ It is then a good idea to move the archive to a dedicated directory, for example
 <p>We could also simply run <code class="code docutils literal notranslate"><span class="pre">ctest</span> <span class="pre">-R</span> <span class="pre">V/povray</span></code></p>
 </div>
 <p>We now install Asymptote, which itself required full Tex Live, as we know from <a class="reference internal" href="../introduction.html#installing-neper"><span class="std std-ref">Installing Neper</span></a>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt install asymptote
-<span class="gp">$ </span>sudo apt install texlive-full
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>asymptote
+<span class="gp">$ </span>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>texlive-full
 </pre></div>
 </div>
 <p>We re-run the tests:</p>
@@ -562,23 +561,23 @@ It is then a good idea to move the archive to a dedicated directory, for example
 <p>The installation is now complete!</p>
 </section>
 <section id="improving-gmsh-s-installation-optional">
-<h2>Improving Gmsh’s Installation (optional)<a class="headerlink" href="#improving-gmsh-s-installation-optional" title="Permalink to this headline">¶</a></h2>
+<h2>Improving Gmsh’s Installation (optional)<a class="headerlink" href="#improving-gmsh-s-installation-optional" title="Link to this heading"></a></h2>
 <p>Back to Gmsh, the Gmsh installation may be improved so that we can actually open Gmsh’s GUI, by installing OpenGL’s development package (OpenGL itself may already be installed) and FLTK:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt-get install freeglut3-dev
-<span class="gp">$ </span>sudo apt-get install libfltk1.3 libfltk1.3-dev
-<span class="gp">$ </span><span class="nb">cd</span> ~/Progs/gmsh-4.11.1-source
-<span class="gp">$ </span>cmake ..
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>freeglut3-dev
+<span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>libfltk1.3<span class="w"> </span>libfltk1.3-dev
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>~/Progs/gmsh-4.11.1-source
+<span class="gp">$ </span>cmake<span class="w"> </span>..
 <span class="gp">$ </span>make
-<span class="gp">$ </span>sudo make install
+<span class="gp">$ </span>sudo<span class="w"> </span>make<span class="w"> </span>install
 </pre></div>
 </div>
 </section>
 <section id="installing-neper-s-documentation-optional">
-<h2>Installing Neper’s documentation (optional)<a class="headerlink" href="#installing-neper-s-documentation-optional" title="Permalink to this headline">¶</a></h2>
+<h2>Installing Neper’s documentation (optional)<a class="headerlink" href="#installing-neper-s-documentation-optional" title="Link to this heading"></a></h2>
 <p>Neper’s documentation is available online, but we can also build our own local copy:</p>
 <p>From the <code class="file docutils literal notranslate"><span class="pre">doc</span></code> directory, we compile the documentation:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> ~/Progs/neper-4.6.0/doc
-<span class="gp">$ </span>make html
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>~/Progs/neper-4.6.0/doc
+<span class="gp">$ </span>make<span class="w"> </span>html
 
 <span class="go">sphinx-build -b html -d build/doctrees   . build/html</span>
 <span class="go">Traceback (most recent call last):</span>
@@ -589,11 +588,11 @@ It is then a good idea to move the archive to a dedicated directory, for example
 </pre></div>
 </div>
 <p>Sphinx is missing.  We install it:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo apt-get install python3-sphinx
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>python3-sphinx
 </pre></div>
 </div>
 <p>We re-compile the documentation:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make html
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make<span class="w"> </span>html
 
 <span class="go">sphinx-build -b html -d build/doctrees   . build/html</span>
 <span class="go">Running Sphinx v4.3.2</span>

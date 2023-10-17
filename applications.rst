@@ -101,6 +101,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2022
 ----
 
+- Y El Hachi, S Berveiller, B Piotrowski, J Wright, W Ludwig and B Malard, *Multi-scale in situ mechanical investigation of the superelastic
+behavior of a Cu-Al-Be polycrystalline shape memory alloy*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2022.118107.
 - M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, **Philosophical Transactions of the Royal Society A**, https://doi.org/10.1098/rsta.2021.0382.
 - PS Chaugule and JB Le Graverend, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103243.
 - JA Moore, JP Rusch, PS Nezhad, S Manchiraju and D Erdeniz, *Effects of martensitic phase transformation on fatigue indicator parameters determined by a crystal plasticity model*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2022.107457.

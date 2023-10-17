@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Processing EBSD-type data &mdash; Neper 4.6.1 documentation</title>
@@ -12,10 +12,9 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -96,10 +95,10 @@
            <div itemprop="articleBody">
              
   <section id="processing-ebsd-type-data">
-<span id="ebsd-process"></span><h1>Processing EBSD-type data<a class="headerlink" href="#processing-ebsd-type-data" title="Permalink to this headline">¶</a></h1>
+<span id="ebsd-process"></span><h1>Processing EBSD-type data<a class="headerlink" href="#processing-ebsd-type-data" title="Link to this heading"></a></h1>
 <p>An experimental EBSD (orientation) map can be written as a <a class="reference internal" href="../fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a> and visualized using the <a class="reference internal" href="../neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>.  It can also be post-processed using the <a class="reference internal" href="../neper_s.html#neper-s"><span class="std std-ref">Simulation Module (-S)</span></a>, just as a mesh (and simulation results) can be.</p>
 <section id="writing-ebsd-type-data-as-a-tesr-file">
-<h2>Writing EBSD-type data as a <a class="reference internal" href="../fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a><a class="headerlink" href="#writing-ebsd-type-data-as-a-tesr-file" title="Permalink to this headline">¶</a></h2>
+<h2>Writing EBSD-type data as a <a class="reference internal" href="../fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a><a class="headerlink" href="#writing-ebsd-type-data-as-a-tesr-file" title="Link to this heading"></a></h2>
 <p>An EBSD map typically consists of an orientation field described over a 2D grid.  This can be described by a <a class="reference internal" href="../fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a>.  An example of an EBSD map comprising <span class="math notranslate nohighlight">\(3 \times 4\)</span> pixels of size 0.001 is provided below (<code class="file docutils literal notranslate"><span class="pre">n2.tesr</span></code>):</p>
 <div class="highlight-plain notranslate"><div class="highlight"><pre><span></span>***tesr
  **format
@@ -131,7 +130,7 @@
 <p>See the description of a <a class="reference internal" href="../fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a> for details on the structure.  <em>Voxel</em> is used instead of <em>pixel</em> in the following, and in Neper in general.</p>
 </div>
 <p>The EBSD map can be visualized, colored by orientation, using the <a class="reference internal" href="../neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n2.tesr -datavoxcol ori -print img1
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n2.tesr<span class="w"> </span>-datavoxcol<span class="w"> </span>ori<span class="w"> </span>-print<span class="w"> </span>img1
 </pre></div>
 </div>
 <img alt="../../_images/img1.png" src="../../_images/img1.png" />
@@ -173,7 +172,7 @@
 <p>Voxels for which the orientation is unknown (indicated <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> in the <code class="xref py py-data docutils literal notranslate"><span class="pre">**oridef</span></code> section) must still be assigned an orientation in the <code class="xref py py-data docutils literal notranslate"><span class="pre">**oridata</span></code> section, as a placeholder.</p>
 </div>
 <p>The EBSD map can be visualized as before:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n2b.tesr -datavoxcol ori -print img2
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n2b.tesr<span class="w"> </span>-datavoxcol<span class="w"> </span>ori<span class="w"> </span>-print<span class="w"> </span>img2
 </pre></div>
 </div>
 <img alt="../../_images/img2.png" src="../../_images/img2.png" />
@@ -219,7 +218,7 @@
 <p>The lines highlighted above indicate that there are <code class="xref py py-data docutils literal notranslate"><span class="pre">2</span></code> cells of numbers (or “ids”) <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">2</span></code>.  The <code class="xref py py-data docutils literal notranslate"><span class="pre">*id</span></code> section is optional if the cells are numbered contiguously from <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>.  The <code class="xref py py-data docutils literal notranslate"><span class="pre">**data</span></code> section should always contain numbers contiguously numbered from <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> (<code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> can be used to represent empty voxels), where <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> represents the first cell, <code class="xref py py-data docutils literal notranslate"><span class="pre">2</span></code> the second cell, etc. (independently of the cell ids provided in <code class="xref py py-data docutils literal notranslate"><span class="pre">*id</span></code>).</p>
 </div>
 <p>The EBSD map can be visualized, colored by its cell ids (which is the default), as follows:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n2c.tesr -print img3
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n2c.tesr<span class="w"> </span>-print<span class="w"> </span>img3
 </pre></div>
 </div>
 <img alt="../../_images/img3.png" src="../../_images/img3.png" />
@@ -267,9 +266,9 @@
 </div>
 </section>
 <section id="processing-the-data">
-<h2>Processing the Data<a class="headerlink" href="#processing-the-data" title="Permalink to this headline">¶</a></h2>
+<h2>Processing the Data<a class="headerlink" href="#processing-the-data" title="Link to this heading"></a></h2>
 <p>A <a class="reference internal" href="../fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a> (<code class="file docutils literal notranslate"><span class="pre">n2c.tesr</span></code>) can be written as a <a class="reference internal" href="../fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a>, for post-processing.  This is simply done as follows:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -loadtesr n2d.tesr -for sim
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-loadtesr<span class="w"> </span>n2d.tesr<span class="w"> </span>-for<span class="w"> </span>sim
 </pre></div>
 </div>
 <p>The resulting simulation directory is simply structured as follows:</p>
@@ -279,7 +278,7 @@
 </pre></div>
 </div>
 <p>Cell properties can then be computed using option <code class="xref std std-option docutils literal notranslate"><span class="pre">-rescell</span></code> of the <a class="reference internal" href="../neper_s.html#neper-s"><span class="std std-ref">Simulation Module (-S)</span></a>, as follows:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -S n2d.sim -rescell ori
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-S<span class="w"> </span>n2d.sim<span class="w"> </span>-rescell<span class="w"> </span>ori
 </pre></div>
 </div>
 <p>The resulting simulation directory is simply structured as follows:</p>
@@ -297,12 +296,12 @@
 <p>For consistency with actual simulation results, the result files are suffixed <code class="file docutils literal notranslate"><span class="pre">.step0</span></code>, which denotes the initial state.</p>
 </div>
 <p>The map can then be colored following its average cell orientations (compare to the first image):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n2d.sim -datacellcol ori -print img4
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n2d.sim<span class="w"> </span>-datacellcol<span class="w"> </span>ori<span class="w"> </span>-print<span class="w"> </span>img4
 </pre></div>
 </div>
 <img alt="../../_images/img4.png" src="../../_images/img4.png" />
 <p>Cell properties, such as the “grain orientation spread”, <code class="xref py py-data docutils literal notranslate"><span class="pre">gos</span></code>, can be computed:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -S n2d.sim -rescell gos
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-S<span class="w"> </span>n2d.sim<span class="w"> </span>-rescell<span class="w"> </span>gos
 </pre></div>
 </div>
 <p>The resulting simulation directory is simply structured as follows:</p>
@@ -318,14 +317,14 @@
 </pre></div>
 </div>
 <p>The data are simply formatted and can be accessed easily:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>more n2d.sim/results/cells/gos/gos.step0
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>more<span class="w"> </span>n2d.sim/results/cells/gos/gos.step0
 <span class="go">3.124415538011</span>
 <span class="go">2.405535676705</span>
 </pre></div>
 </div>
 <p>The map can then be colored following its cell <code class="xref py py-data docutils literal notranslate"><span class="pre">gos</span></code> values:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n2d.sim -datacellcol real:gos -datacellscale <span class="m">2</span>.0:3.0 -datacellscaletitle <span class="s2">&quot;GOS (degrees)&quot;</span> -print img5
-<span class="gp">$ </span>convert img5.png img5-scale.png -gravity East -composite img5.png
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n2d.sim<span class="w"> </span>-datacellcol<span class="w"> </span>real:gos<span class="w"> </span>-datacellscale<span class="w"> </span><span class="m">2</span>.0:3.0<span class="w"> </span>-datacellscaletitle<span class="w"> </span><span class="s2">&quot;GOS (degrees)&quot;</span><span class="w"> </span>-print<span class="w"> </span>img5
+<span class="gp">$ </span>convert<span class="w"> </span>img5.png<span class="w"> </span>img5-scale.png<span class="w"> </span>-gravity<span class="w"> </span>East<span class="w"> </span>-composite<span class="w"> </span>img5.png
 </pre></div>
 </div>
 <p>This originally produces a PNG file named <code class="file docutils literal notranslate"><span class="pre">img5.png</span></code> for the map and a PNG file named <code class="file docutils literal notranslate"><span class="pre">img5-scale.png</span></code> for the scale bar, which is included to <code class="file docutils literal notranslate"><span class="pre">img5.png</span></code> thanks to <strong class="program">convert</strong>.</p>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Visualization &mdash; Neper 4.6.1 documentation</title>
@@ -12,10 +12,9 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script src="_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -92,20 +91,20 @@
            <div itemprop="articleBody">
              
   <section id="visualization">
-<span id="id1"></span><h1>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h1>
 <p>Module -V is dedicated to tessellation, mesh and result visualization. The input data is a tessellation or mesh as provided by modules -T and -M, or a simulation directory as provided by module -S. How the tessellation, mesh and simulation results are displayed can be specified in detail. Mesh slicing is also available.  The output can be a publication-quality PNG image or a VTK file, for interactive visualization.  Loops can also be created to generate a series of images that can then be turned into a movie.</p>
 <section id="generalities">
-<h2>Generalities<a class="headerlink" href="#generalities" title="Permalink to this headline">¶</a></h2>
+<h2>Generalities<a class="headerlink" href="#generalities" title="Link to this heading"></a></h2>
 <p>A typical use is to load a tessellation or mesh for visualization and coloring the cells or element sets using a specific palette. It is possible to adjust the scene settings, namely, the camera position, angle, look-at point and projection, shadowing effects and image properties. The POV-Ray ray-tracing package is used to generate images at the PNG format. Examples are provided below for a tessellation and its mesh.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n1000.tess               <span class="se">\</span>
-           -datacellcol id          <span class="se">\</span>
-           -print n1000
-<span class="gp">$ </span>neper -V n1000.tess,n1000.msh     <span class="se">\</span>
-           -showelt1d all           <span class="se">\</span>
-           -dataelset3dcol id       <span class="se">\</span>
-           -dataelt3dedgerad <span class="m">0</span>.001  <span class="se">\</span>
-           -dataelt1drad <span class="m">0</span>.0025     <span class="se">\</span>
-           -print n1000-mesh
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n1000.tess<span class="w">               </span><span class="se">\</span>
+<span class="w">           </span>-datacellcol<span class="w"> </span>id<span class="w">          </span><span class="se">\</span>
+<span class="w">           </span>-print<span class="w"> </span>n1000
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n1000.tess,n1000.msh<span class="w">     </span><span class="se">\</span>
+<span class="w">           </span>-showelt1d<span class="w"> </span>all<span class="w">           </span><span class="se">\</span>
+<span class="w">           </span>-dataelset3dcol<span class="w"> </span>id<span class="w">       </span><span class="se">\</span>
+<span class="w">           </span>-dataelt3dedgerad<span class="w"> </span><span class="m">0</span>.001<span class="w">  </span><span class="se">\</span>
+<span class="w">           </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.0025<span class="w">     </span><span class="se">\</span>
+<span class="w">           </span>-print<span class="w"> </span>n1000-mesh
 </pre></div>
 </div>
 <figure class="align-default">
@@ -114,19 +113,19 @@
 <p><a class="reference external" href="imgs/visu_gene.sh">visu_gene.sh</a></p>
 </section>
 <section id="color-transparency-etc">
-<h2>Color, Transparency, etc.<a class="headerlink" href="#color-transparency-etc" title="Permalink to this headline">¶</a></h2>
+<h2>Color, Transparency, etc.<a class="headerlink" href="#color-transparency-etc" title="Link to this heading"></a></h2>
 <p>The tessellation and mesh entities can be assigned specific colors, transparencies or sizes. Mesh nodes can also be applied displacements. For example, cells colors can be defined from the cell identifiers, the lattice orientations or a scalar field, or they can be loaded from a file. A mesh can be colored from element or nodal values. Examples are provided below.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n1000.tess                            <span class="se">\</span>
-           -datacellcol id                       <span class="se">\</span>
-           -datacelltrs <span class="m">0</span>.5                      <span class="se">\</span>
-           -print n1000
-<span class="gp">$ </span>neper -V n1000.tess,n1000.msh                  <span class="se">\</span>
-           -showelt1d all                        <span class="se">\</span>
-           -dataelt3dedgerad <span class="m">0</span>.001               <span class="se">\</span>
-           -dataelt1drad <span class="m">0</span>.0025                  <span class="se">\</span>
-           -datanodecol <span class="s2">&quot;real:file(mesh.stnode)&quot;</span> <span class="se">\</span>
-           -dataeltcol from_nodes                <span class="se">\</span>
-           -print n1000-mesh
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n1000.tess<span class="w">                            </span><span class="se">\</span>
+<span class="w">           </span>-datacellcol<span class="w"> </span>id<span class="w">                       </span><span class="se">\</span>
+<span class="w">           </span>-datacelltrs<span class="w"> </span><span class="m">0</span>.5<span class="w">                      </span><span class="se">\</span>
+<span class="w">           </span>-print<span class="w"> </span>n1000
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n1000.tess,n1000.msh<span class="w">                  </span><span class="se">\</span>
+<span class="w">           </span>-showelt1d<span class="w"> </span>all<span class="w">                        </span><span class="se">\</span>
+<span class="w">           </span>-dataelt3dedgerad<span class="w"> </span><span class="m">0</span>.001<span class="w">               </span><span class="se">\</span>
+<span class="w">           </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.0025<span class="w">                  </span><span class="se">\</span>
+<span class="w">           </span>-datanodecol<span class="w"> </span><span class="s2">&quot;real:file(mesh.stnode)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">           </span>-dataeltcol<span class="w"> </span>from_nodes<span class="w">                </span><span class="se">\</span>
+<span class="w">           </span>-print<span class="w"> </span>n1000-mesh
 </pre></div>
 </div>
 <figure class="align-default">
@@ -135,21 +134,21 @@
 <p><a class="reference external" href="imgs/visu_cotr.sh">visu_cotr.sh</a></p>
 </section>
 <section id="entity-selection">
-<h2>Entity selection<a class="headerlink" href="#entity-selection" title="Permalink to this headline">¶</a></h2>
+<h2>Entity selection<a class="headerlink" href="#entity-selection" title="Link to this heading"></a></h2>
 <p>For both tessellations and meshes, the types and sets of entities to display can be specified. This can be carried out using logical expressions or identifiers loaded from a file. This is illustrated below for a tessellation and its mesh.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n1000.tess                         <span class="se">\</span>
-           -datacellcol id                    <span class="se">\</span>
-           -datacelltrs <span class="m">0</span>.5                   <span class="se">\</span>
-           -showcell <span class="s2">&quot;id&lt;=50&quot;</span>                 <span class="se">\</span>
-           -showedge <span class="s2">&quot;cell_shown||domtype==1&quot;</span> <span class="se">\</span>
-           -print selecttess
-<span class="gp">$ </span>neper -V n1000.tess,n1000.msh               <span class="se">\</span>
-           -dataelsetcol id                   <span class="se">\</span>
-           -showelt <span class="s2">&quot;z&lt;0.5||body&gt;0&quot;</span>           <span class="se">\</span>
-           -showelt1d elt3d_shown             <span class="se">\</span>
-           -dataelt3dedgerad <span class="m">0</span>.001            <span class="se">\</span>
-           -dataelt1drad <span class="m">0</span>.0025               <span class="se">\</span>
-           -print selectmesh
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n1000.tess<span class="w">                         </span><span class="se">\</span>
+<span class="w">           </span>-datacellcol<span class="w"> </span>id<span class="w">                    </span><span class="se">\</span>
+<span class="w">           </span>-datacelltrs<span class="w"> </span><span class="m">0</span>.5<span class="w">                   </span><span class="se">\</span>
+<span class="w">           </span>-showcell<span class="w"> </span><span class="s2">&quot;id&lt;=50&quot;</span><span class="w">                 </span><span class="se">\</span>
+<span class="w">           </span>-showedge<span class="w"> </span><span class="s2">&quot;cell_shown||domtype==1&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">           </span>-print<span class="w"> </span>selecttess
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n1000.tess,n1000.msh<span class="w">               </span><span class="se">\</span>
+<span class="w">           </span>-dataelsetcol<span class="w"> </span>id<span class="w">                   </span><span class="se">\</span>
+<span class="w">           </span>-showelt<span class="w"> </span><span class="s2">&quot;z&lt;0.5||body&gt;0&quot;</span><span class="w">           </span><span class="se">\</span>
+<span class="w">           </span>-showelt1d<span class="w"> </span>elt3d_shown<span class="w">             </span><span class="se">\</span>
+<span class="w">           </span>-dataelt3dedgerad<span class="w"> </span><span class="m">0</span>.001<span class="w">            </span><span class="se">\</span>
+<span class="w">           </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.0025<span class="w">               </span><span class="se">\</span>
+<span class="w">           </span>-print<span class="w"> </span>selectmesh
 </pre></div>
 </div>
 <figure class="align-default">
@@ -158,15 +157,15 @@
 <p><a class="reference external" href="imgs/visu_sele.sh">visu_sele.sh</a></p>
 </section>
 <section id="mesh-slicing">
-<h2>Mesh Slicing<a class="headerlink" href="#mesh-slicing" title="Permalink to this headline">¶</a></h2>
+<h2>Mesh Slicing<a class="headerlink" href="#mesh-slicing" title="Link to this heading"></a></h2>
 <p>One or several slices of a mesh can be displayed. All fields are retained during slicing. This is illustrated on the right by 3 orthogonal slices of a mesh, where the color shows the distance with respect to the nearest cell boundary.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n1000.tess,n1000.msh                      <span class="se">\</span>
-           -dataelt3dedgerad <span class="m">0</span>.001                   <span class="se">\</span>
-           -dataelt1drad <span class="m">0</span>.0025                      <span class="se">\</span>
-           -datanodecol scal:mesh-rclbody0p35.stnode <span class="se">\</span>
-           -dataeltcol from_nodes                    <span class="se">\</span>
-           -slicemesh <span class="nv">x</span><span class="o">=</span><span class="m">0</span>.5,y<span class="o">=</span><span class="m">0</span>.5,z<span class="o">=</span><span class="m">0</span>.5              <span class="se">\</span>
-           -print slicemesh
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n1000.tess,n1000.msh<span class="w">                      </span><span class="se">\</span>
+<span class="w">           </span>-dataelt3dedgerad<span class="w"> </span><span class="m">0</span>.001<span class="w">                   </span><span class="se">\</span>
+<span class="w">           </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.0025<span class="w">                      </span><span class="se">\</span>
+<span class="w">           </span>-datanodecol<span class="w"> </span>scal:mesh-rclbody0p35.stnode<span class="w"> </span><span class="se">\</span>
+<span class="w">           </span>-dataeltcol<span class="w"> </span>from_nodes<span class="w">                    </span><span class="se">\</span>
+<span class="w">           </span>-slicemesh<span class="w"> </span><span class="nv">x</span><span class="o">=</span><span class="m">0</span>.5,y<span class="o">=</span><span class="m">0</span>.5,z<span class="o">=</span><span class="m">0</span>.5<span class="w">              </span><span class="se">\</span>
+<span class="w">           </span>-print<span class="w"> </span>slicemesh
 </pre></div>
 </div>
 <figure class="align-default">
@@ -175,7 +174,7 @@
 <p><a class="reference external" href="imgs/visu_slic.sh">visu_slic.sh</a></p>
 </section>
 <section id="simulation">
-<h2>Simulation<a class="headerlink" href="#simulation" title="Permalink to this headline">¶</a></h2>
+<h2>Simulation<a class="headerlink" href="#simulation" title="Link to this heading"></a></h2>
 <p>Simulation results from a simulation directory can be simply displayed.  The simulation directory can be loaded as input, which effectively loads its input data (tessellation and mesh) and make the simulation results available in a similar way as the internal data of a tessellation or mesh (node coordinates, etc.).  This allows for easy visualization of simulation results, including through time, using <a class="reference internal" href="doc/neper_v.html#cmdoption-loop"><code class="xref std std-option docutils literal notranslate"><span class="pre">-loop</span></code></a>.</p>
 </section>
 </section>

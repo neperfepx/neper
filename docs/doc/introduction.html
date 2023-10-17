@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Introduction &mdash; Neper 4.6.1 documentation</title>
@@ -12,10 +12,9 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -111,9 +110,9 @@
            <div itemprop="articleBody">
              
   <section id="introduction">
-<span id="id1"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h1>
 <section id="description">
-<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading"></a></h2>
 <p>Neper is a software package for polycrystal generation and meshing.  The polycrystals can be 2D or 3D. Neper is built around four modules:</p>
 <p><em>Module -T</em> generates polycrystals as tessellations.  The tessellations can be <em>(i)</em> standard tessellations (Voronoi, etc.) or tessellations generated from cell properties (e.g. a size distribution), or <em>(ii)</em> multiscale tessellations, which are characterized by cell subdivision and are able to represent more complex microstructures.  All capabilities available for standard tessellations are also available for multiscale tessellations.  Tessellations with a very wide variety of cells morphologies can be generated, with the limitations that cells are convex.  Once generated, the tessellations can be <em>regularized</em> by removing their smallest features (edges and faces), which then enables good-quality meshing.  Periodicity conditions can be prescribed.  Crystal orientations are provided for the cells.  The output is a <em>tessellation file</em> written at a scalar (vectorial), <code class="file docutils literal notranslate"><span class="pre">.tess</span></code>, or raster format, <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code>.  Scalar tessellations can be meshed by module -M while raster tessellations can typically be used by FFT solvers.</p>
 <p><em>Module -M</em> meshes polycrystals described as tessellation files (<code class="file docutils literal notranslate"><span class="pre">.tess</span></code> and 2D <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code>). Two meshing techniques are available: <em>free</em> (or <em>unstructured</em>) meshing, which generates triangular elements (in 2D) or tetrahedral elements (in 3D) that follow the grain shapes, and <em>mapped</em> (or <em>structured</em>) meshing, which generates regular square elements (in 2D) or regular cubic elements (in 3D) that do not necessarily follow the grain shapes.  Free meshing into good-quality elements is ensured by optimized meshing rules, and multimeshing—a complementary use of several meshing algorithms.  Remeshing is also available and is similar to meshing except that it takes a mesh as input.  Cohesive elements can be inserted at interfaces.  The output is a <em>mesh file</em> written at the <code class="file docutils literal notranslate"><span class="pre">.msh</span></code> format, which can be readily be used as input by Neper’s companion program, <a class="reference external" href="https://fepx.info">FEPX</a>, or other formats.</p>
@@ -123,7 +122,7 @@
 Neper is multithreaded and operates on all threads by default.</p>
 </section>
 <section id="resources-and-support">
-<h2>Resources and Support<a class="headerlink" href="#resources-and-support" title="Permalink to this headline">¶</a></h2>
+<h2>Resources and Support<a class="headerlink" href="#resources-and-support" title="Link to this heading"></a></h2>
 <p>Several, complementary resources describing Neper are available:</p>
 <ul>
 <li><p>The Neper reference manual, which is this document, describes all Neper’s capabilities.</p></li>
@@ -131,7 +130,7 @@ Neper is multithreaded and operates on all threads by default.</p>
 <li><p>The <a class="reference external" href="https://github.com/rquey/neper">Neper GitHub repository</a> is where the latest, continuous-integration version is available and where user interactions take place:</p>
 <ul>
 <li><p>To get the code, clone the repository using:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone https://github.com/rquey/neper.git
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/rquey/neper.git
 </pre></div>
 </div>
 <p>which gives access to the latest stable development release on the default, <code class="code docutils literal notranslate"><span class="pre">main</span></code> branch. To update the code, run <strong class="command">git pull</strong> from within the repository.</p>
@@ -151,25 +150,25 @@ Neper is multithreaded and operates on all threads by default.</p>
 <p>Resources for FEPX can be accessed from <a class="reference external" href="https://fepx.info">https://fepx.info</a>.</p>
 </section>
 <section id="installing-neper">
-<span id="id2"></span><h2>Installing Neper<a class="headerlink" href="#installing-neper" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>Installing Neper<a class="headerlink" href="#installing-neper" title="Link to this heading"></a></h2>
 <p>Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system.  Neper is also known to run on macOS and on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, although we do not test nor support this usage and multithreading must be turned off (which slows down execution significantly).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Ubuntu users may be interested in the tutorial “<a class="reference internal" href="tutorials/install_ubuntu22.html#installation-ubuntu-22"><span class="std std-ref">Installing Neper on Ubuntu 22</span></a>” from step-by-step installation instructions.</p>
 </div>
 <section id="general-procedure">
-<h3>General Procedure<a class="headerlink" href="#general-procedure" title="Permalink to this headline">¶</a></h3>
+<h3>General Procedure<a class="headerlink" href="#general-procedure" title="Link to this heading"></a></h3>
 <p>Compilation is performed via <a class="reference external" href="https://cmake.org">CMake</a> (no root privileges needed):</p>
 <ul>
 <li><p>Create a <code class="file docutils literal notranslate"><span class="pre">build</span></code> directory, for instance as a subdirectory of Neper’s <code class="file docutils literal notranslate"><span class="pre">src</span></code> directory:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> src
-<span class="gp">$ </span>mkdir build
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>src
+<span class="gp">$ </span>mkdir<span class="w"> </span>build
 </pre></div>
 </div>
 </li>
 <li><p>Run CMake from within the <code class="file docutils literal notranslate"><span class="pre">build</span></code> directory, pointing to Neper’s <code class="file docutils literal notranslate"><span class="pre">src</span></code> directory:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> build
-<span class="gp">$ </span>cmake ..    <span class="o">(</span>on Windows: cmake -DHAVE_OPENMP<span class="o">=</span>OFF ..<span class="o">)</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>build
+<span class="gp">$ </span>cmake<span class="w"> </span>..<span class="w">    </span><span class="o">(</span>on<span class="w"> </span>Windows:<span class="w"> </span>cmake<span class="w"> </span>-DHAVE_OPENMP<span class="o">=</span>OFF<span class="w"> </span>..<span class="o">)</span>
 </pre></div>
 </div>
 </li>
@@ -182,24 +181,24 @@ Neper is multithreaded and operates on all threads by default.</p>
 </ul>
 <p>This generates the <code class="file docutils literal notranslate"><span class="pre">neper</span></code> binary file.  To make it available system-wide, run (as root):</p>
 <blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make install
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make<span class="w"> </span>install
 </pre></div>
 </div>
 </div></blockquote>
 <p>This procedure uses the default configuration options and should work out-of-the-box if the required dependencies are available in standard system locations.</p>
 </section>
 <section id="fine-configuration">
-<span id="id3"></span><h3>Fine Configuration<a class="headerlink" href="#fine-configuration" title="Permalink to this headline">¶</a></h3>
+<span id="id3"></span><h3>Fine Configuration<a class="headerlink" href="#fine-configuration" title="Link to this heading"></a></h3>
 <p>The locations where files are installed, which dependencies are included, other dependency information and program configuration options can be specified, before installation, using CMake variables.   This can be done using a terminal tool:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ccmake ..
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ccmake<span class="w"> </span>..
 </pre></div>
 </div>
 <p>or an interactive tool:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake-gui ..
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake-gui<span class="w"> </span>..
 </pre></div>
 </div>
 <p>or directly at the command line, using Cmake’s <code class="xref py py-data docutils literal notranslate"><span class="pre">-D</span></code> option:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake -D&lt;VARIABLE1&gt;<span class="o">=</span>&lt;VALUE1&gt; -D&lt;VARIABLE2&gt;<span class="o">=</span>&lt;VALUE2&gt; ..
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake<span class="w"> </span>-D&lt;VARIABLE1&gt;<span class="o">=</span>&lt;VALUE1&gt;<span class="w"> </span>-D&lt;VARIABLE2&gt;<span class="o">=</span>&lt;VALUE2&gt;<span class="w"> </span>..
 </pre></div>
 </div>
 <p>The installation directories are:</p>
@@ -210,7 +209,7 @@ Neper is multithreaded and operates on all threads by default.</p>
 <p>The dependencies which are (optionally) necessary at compilation time and must be (optionally) installed on your system before Neper is compiled are the following:</p>
 <ul class="simple">
 <li><p>The <a class="reference external" href="https://www.gnu.org/software/gsl">GNU Scientific Library</a> (GSL, mandatory, variable <code class="code docutils literal notranslate"><span class="pre">HAVE_GSL</span></code>).  It is likely to be available on your system or from your system package manager (binary and development packages). Alternatively, the source code version can be downloaded from the program website.</p></li>
-<li><p>The <a class="reference external" href="https://www.openmp.org/">OpenMP</a> library (optional but highly-recommended, enabled by default, variable <code class="code docutils literal notranslate"><span class="pre">HAVE_OPENMP</span></code>).  It is likely to be available on your system or from your system package manager. <a class="footnote-reference brackets" href="#mac-install" id="id4">1</a></p></li>
+<li><p>The <a class="reference external" href="https://www.openmp.org/">OpenMP</a> library (optional but highly-recommended, enabled by default, variable <code class="code docutils literal notranslate"><span class="pre">HAVE_OPENMP</span></code>).  It is likely to be available on your system or from your system package manager. <a class="footnote-reference brackets" href="#mac-install" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p></li>
 <li><p>The pthread library (mandatory). It is likely to be available on your system or from your system package manager.</p></li>
 </ul>
 <p>Other dependencies are only needed at run-time (they are not necessary for compilation):</p>
@@ -237,9 +236,9 @@ Neper is multithreaded and operates on all threads by default.</p>
 </section>
 </section>
 <section id="testing-neper">
-<span id="id5"></span><h2>Testing Neper<a class="headerlink" href="#testing-neper" title="Permalink to this headline">¶</a></h2>
+<span id="id5"></span><h2>Testing Neper<a class="headerlink" href="#testing-neper" title="Link to this heading"></a></h2>
 <p>Neper comes packaged with tests and reference outputs. To run the tests, execute the following from your build folder:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make <span class="nb">test</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
 </pre></div>
 </div>
 <p>or (equivalently):</p>
@@ -254,25 +253,25 @@ Neper is multithreaded and operates on all threads by default.</p>
 </ul>
 </section>
 <section id="getting-started">
-<h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
 <p>The <strong class="program">neper</strong> binary must be run in a terminal, followed by a list of arguments:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper &lt;arguments&gt;
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>&lt;arguments&gt;
 </pre></div>
 </div>
 <p>Neper returns messages in the terminal and results in ASCII (optionally binary) files.</p>
 <p>The list of arguments describes the problem to solve.  There are several
 general-purpose, self-explanatory arguments:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper --help
-<span class="gp">$ </span>neper --version
-<span class="gp">$ </span>neper --license
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>--help
+<span class="gp">$ </span>neper<span class="w"> </span>--version
+<span class="gp">$ </span>neper<span class="w"> </span>--license
 </pre></div>
 </div>
 <p>The following of this section provides information on how to call Neper’s modules,
 properly format option arguments and set up an initialization file.</p>
 <section id="modules">
-<h3>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h3>
+<h3>Modules<a class="headerlink" href="#modules" title="Link to this heading"></a></h3>
 <p>To call a module, run:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper &lt;module_name&gt; &lt;module_arguments&gt;
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>&lt;module_name&gt;<span class="w"> </span>&lt;module_arguments&gt;
 </pre></div>
 </div>
 <p>where the module name can be <code class="xref py py-data docutils literal notranslate"><span class="pre">-T</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">-M</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">-S</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">-V</span></code>, and the module arguments can include both required input data and options.  Input data (when not a file name) and options start by <code class="xref py py-data docutils literal notranslate"><span class="pre">-</span></code>.  Options can be provided in arbitrary order and are always followed by a single argument.
@@ -288,7 +287,7 @@ String completion is available for all options, so they may be abbreviated as lo
 <p>Module -V shows some exceptions with respect to these rules: the argument can only be listed in arbitrary order before their corresponding <a class="reference internal" href="neper_v.html#cmdoption-print"><code class="xref std std-option docutils literal notranslate"><span class="pre">-print</span></code></a> call, string completion is not available for custom input options, and option <a class="reference internal" href="neper_v.html#cmdoption-loop"><code class="xref std std-option docutils literal notranslate"><span class="pre">-loop</span></code></a> takes several arguments.</p>
 </section>
 <section id="argument-separators">
-<h3>Argument Separators<a class="headerlink" href="#argument-separators" title="Permalink to this headline">¶</a></h3>
+<h3>Argument Separators<a class="headerlink" href="#argument-separators" title="Link to this heading"></a></h3>
 <p>Some options may take several argument values, which can be combined using <em>separators</em>:</p>
 <ul class="simple">
 <li><p>The <code class="xref py py-data docutils literal notranslate"><span class="pre">,</span></code> separator is used to combine uncorrelated arguments, i.e. arguments of the same type, which can be processed independently from each other, in any order.  This is for example the case of output file formats.</p></li>
@@ -297,9 +296,9 @@ String completion is available for all options, so they may be abbreviated as lo
 </ul>
 </section>
 <section id="initialization-file">
-<h3>Initialization File<a class="headerlink" href="#initialization-file" title="Permalink to this headline">¶</a></h3>
+<h3>Initialization File<a class="headerlink" href="#initialization-file" title="Link to this heading"></a></h3>
 <p>When Neper is run, it starts by reading commands from an initialization file, <code class="file docutils literal notranslate"><span class="pre">$HOME/.neperrc</span></code>, if that file exists.  Another initialization file can be specified with option <code class="xref py py-data docutils literal notranslate"><span class="pre">--rcfile</span></code>, before calling a module:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper --rcfile &lt;my_rc_file&gt; &lt;module_name&gt; &lt;module_arguments&gt;
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>--rcfile<span class="w"> </span>&lt;my_rc_file&gt;<span class="w"> </span>&lt;module_name&gt;<span class="w"> </span>&lt;module_arguments&gt;
 </pre></div>
 </div>
 <p>The reading of an initialization file can be disabled using option <code class="xref py py-data docutils literal notranslate"><span class="pre">--rcfile</span> <span class="pre">none</span></code>.</p>
@@ -323,16 +322,16 @@ neper comments -------------------------------------  ## comment
 <p>If the initialization file is not found, or if <code class="xref py py-data docutils literal notranslate"><span class="pre">neper</span> <span class="pre">&lt;module_name&gt;</span></code> is not found inside it, Neper will consider only the command line arguments.  Also, if an argument is initialized several times (for instance, both in the initialization file and at the command line), only the last specified value is used.</p>
 </section>
 <section id="running-conditions">
-<h3>Running Conditions<a class="headerlink" href="#running-conditions" title="Permalink to this headline">¶</a></h3>
+<h3>Running Conditions<a class="headerlink" href="#running-conditions" title="Link to this heading"></a></h3>
 <p>Neper runs on all threads by default.  The actual number of threads to use can be set at run stage, using the <code class="code docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code> environment variable, as in</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">export</span> <span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">8</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">OMP_NUM_THREADS</span><span class="o">=</span><span class="m">8</span>
 </pre></div>
 </div>
 <p>The environment variable is unset by default.</p>
 </section>
 </section>
 <section id="conventions-used-in-this-manual">
-<h2>Conventions Used in This Manual<a class="headerlink" href="#conventions-used-in-this-manual" title="Permalink to this headline">¶</a></h2>
+<h2>Conventions Used in This Manual<a class="headerlink" href="#conventions-used-in-this-manual" title="Link to this heading"></a></h2>
 <ul>
 <li><p>A command entered at the terminal is shown like this:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">command</span>
@@ -362,10 +361,6 @@ neper comments -------------------------------------  ## comment
 <p>Some abbreviations are used consistently for options and contribute to Neper’s
 jargon:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 33%" />
-<col style="width: 67%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><strong>Abbreviation</strong></p></td>
 <td><p><strong>Meaning</strong></p></td>
@@ -528,11 +523,12 @@ jargon:</p>
 </tr>
 </tbody>
 </table>
-<dl class="footnote brackets">
-<dt class="label" id="mac-install"><span class="brackets"><a class="fn-backref" href="#id4">1</a></span></dt>
-<dd><p>On macOS, install <strong class="program">llvm</strong> and <strong class="program">libomp</strong> via Homebrew.</p>
-</dd>
-</dl>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="mac-install" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">1</a><span class="fn-bracket">]</span></span>
+<p>On macOS, install <strong class="program">llvm</strong> and <strong class="program">libomp</strong> via Homebrew.</p>
+</aside>
+</aside>
 </section>
 </section>
 

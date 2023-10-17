@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Workflow &mdash; Neper 4.6.1 documentation</title>
@@ -12,10 +12,9 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script src="_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -111,11 +110,11 @@
            <div itemprop="articleBody">
              
   <section id="workflow">
-<span id="id1"></span><h1>Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Workflow<a class="headerlink" href="#workflow" title="Link to this heading"></a></h1>
 <p>This document presents the (rather elementary) workflow common to <a class="reference external" href="https://fepx.info">Neper</a> and <a class="reference external" href="https://fepx.info">FEPX</a> (herein <em>the program</em>). The text is written specifically for users who would like to contribute to the program and for internal developers (and, ultimately, for maintainers).  However, the workflow should be applicable to any other (average-size) program and so may also be of interest to the general reader.
 In the following, <em>user</em> denotes any user of the program, <em>contributor</em> denotes any user contributing code to the program, <em>developer</em> denotes an internal developer, and <em>maintainer</em> denotes who has full power on the program - only <em>developers</em> and <em>maintainers</em> have access to the private repositories (and some links provided below).  No particular background on collaborative software development is assumed.</p>
 <section id="tools-websites-and-repositories">
-<h2>Tools, Websites and Repositories<a class="headerlink" href="#tools-websites-and-repositories" title="Permalink to this headline">¶</a></h2>
+<h2>Tools, Websites and Repositories<a class="headerlink" href="#tools-websites-and-repositories" title="Link to this heading"></a></h2>
 <p>Development is made with tools and procedures based on  Git and GitHub. The program is made available on the Web as source code, and its development involves both public and private parts.  The program has “official releases”, but development also follows the principles of <em>continuous integration</em> for what is the “stable” version of the program, i.e. new features such as bug fixes and small improvements are merged into the code as often as necessary, and tests are run systematically on the program to make sure that all capabilities remain operational and that the output is not modified unexpectedly.</p>
 <p>The program has no more that three spaces:</p>
 <ul>
@@ -139,7 +138,7 @@ In the following, <em>user</em> denotes any user of the program, <em>contributor
 <p>In addition to standard Git, developers use two scripts, <a class="reference external" href="https://github.com/neperfepx/neperfepx/tree/main/neperfepx-git">neperfepx-git</a> and <a class="reference external" href="https://github.com/neperfepx/neperfepx/tree/main/neperfepx-release">neperfepx-release</a>, as described below.</p>
 </section>
 <section id="branches-and-merge-strategy">
-<h2>Branches and Merge Strategy<a class="headerlink" href="#branches-and-merge-strategy" title="Permalink to this headline">¶</a></h2>
+<h2>Branches and Merge Strategy<a class="headerlink" href="#branches-and-merge-strategy" title="Link to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This description is general and does not consider the case of external contributions, which are detailed in <a class="reference internal" href="#contributions"><span class="std std-ref">Being a Contributor</span></a>.</p>
@@ -148,11 +147,11 @@ In the following, <em>user</em> denotes any user of the program, <em>contributor
 <figure class="align-default" id="id26">
 <img alt="_images/neperfepx-branches.png" src="_images/neperfepx-branches.png" />
 <figcaption>
-<p><span class="caption-text">Branches and repositories of the program. Branches are shown in blue (archived branches in light blue), commits in black, merge commits in red, tags in green, and merges in red (note that <code class="code docutils literal notranslate"><span class="pre">add-feature</span></code> itself is <em>not</em> a good branch name…).</span><a class="headerlink" href="#id26" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Branches and repositories of the program. Branches are shown in blue (archived branches in light blue), commits in black, merge commits in red, tags in green, and merges in red (note that <code class="code docutils literal notranslate"><span class="pre">add-feature</span></code> itself is <em>not</em> a good branch name…).</span><a class="headerlink" href="#id26" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <section id="branches">
-<h3>Branches<a class="headerlink" href="#branches" title="Permalink to this headline">¶</a></h3>
+<h3>Branches<a class="headerlink" href="#branches" title="Link to this heading"></a></h3>
 <p>Different branches are used for the different levels of development.  In principle, all developments are merged into <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> on a new release.</p>
 <ul class="simple">
 <li><p>The <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> branch is the “stable” branch and contains the official releases and continuous integration versions (the “latest versions”).  It is the branch available on the public repository and is a simple, linear branch.  It passes all tests.</p></li>
@@ -175,14 +174,14 @@ In the following, <em>user</em> denotes any user of the program, <em>contributor
 </ul>
 </section>
 <section id="branch-management">
-<h3>Branch Management<a class="headerlink" href="#branch-management" title="Permalink to this headline">¶</a></h3>
+<h3>Branch Management<a class="headerlink" href="#branch-management" title="Link to this heading"></a></h3>
 <section id="keeping-branches-up-to-date">
-<h4>Keeping Branches Up-to-date<a class="headerlink" href="#keeping-branches-up-to-date" title="Permalink to this headline">¶</a></h4>
+<h4>Keeping Branches Up-to-date<a class="headerlink" href="#keeping-branches-up-to-date" title="Link to this heading"></a></h4>
 <p>Keeping branches up-to-date with the branches they are based on is important.  The rule of thumb is that, on every new commit in <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> is to be merged in <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code> (this is the responsibility of who commits in <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code>), and, on every new commit in <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code> is to be merged into the new-feature branches (this is the responsibility of who owns the new-feature branch).   This is done as often as necessary to avoid <em>hellish</em> Git merges.</p>
 <p>Of course, once updated, the branches (especially <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code>) are pushed to their associated repositories (both <code class="xref py py-data docutils literal notranslate"><span class="pre">github</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">github-dev</span></code> for <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code>, and <code class="xref py py-data docutils literal notranslate"><span class="pre">github-dev</span></code> for <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code>) to make them available to others.</p>
 </section>
 <section id="merging-branches-back">
-<h4>Merging Branches Back<a class="headerlink" href="#merging-branches-back" title="Permalink to this headline">¶</a></h4>
+<h4>Merging Branches Back<a class="headerlink" href="#merging-branches-back" title="Link to this heading"></a></h4>
 <p>When complete, the new-feature branches are merged into <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code>.  Before the merge, the new-feature branch should be up-to-date with <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code>, as described right above. A new-feature branch can be merged in two ways:</p>
 <ul class="simple">
 <li><p>if the new-feature branch is on a local repository and is not associated to a pull request on a remote repository, using <strong class="program">git merge [--no-ff] &lt;branch_name&gt;</strong>.</p></li>
@@ -193,16 +192,16 @@ In the following, <em>user</em> denotes any user of the program, <em>contributor
 </section>
 </section>
 <section id="versions">
-<h3>Versions<a class="headerlink" href="#versions" title="Permalink to this headline">¶</a></h3>
+<h3>Versions<a class="headerlink" href="#versions" title="Link to this heading"></a></h3>
 <p>Version numbers are defined in a standard way, as <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</span></code> (see <a class="reference external" href="https://semver.org">https://semver.org</a> for a thorough discussion).  Typically, patch versions (<code class="xref py py-data docutils literal notranslate"><span class="pre">x.x.1</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">x.x.2</span></code>, etc.) gather bug fixes and small improvements, minor versions (<code class="xref py py-data docutils literal notranslate"><span class="pre">x.1.0</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">x.2.0</span></code>, etc.) contain new features, and major versions (<code class="xref py py-data docutils literal notranslate"><span class="pre">1.0.0</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">2.0.0</span></code>, etc.) are little revolutions, such as the addition of outstanding new features or global code overhaul.  In the special circumstances where backward incompatibility is introduced, the new version should be either a minor or a major version. A new version number is automatically created on each commit.  When not associated to a release, a version number is formatted as <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;-&lt;releasecandidate&gt;</span></code> when in the <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> branch, and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;-&lt;branch_name&gt;-&lt;releasecandidate&gt;</span></code> when in a development branch (either <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code> or a new-feature branch), where <code class="xref py py-data docutils literal notranslate"><span class="pre">patch</span></code> is the <em>next</em> patch number and <code class="xref py py-data docutils literal notranslate"><span class="pre">releasecandidate</span></code> increments from 1 (whether the next release is a patch or minor or major release is generally not known in advance, and it will always be considered that it is a patch release - this is generally not problematic, as the new version number will be defined at release). For example, considering only <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code>, the versions immediately following <code class="xref py py-data docutils literal notranslate"><span class="pre">1.0.0</span></code> are <code class="xref py py-data docutils literal notranslate"><span class="pre">1.0.1-1</span></code> (“release candidate for <code class="xref py py-data docutils literal notranslate"><span class="pre">1.0.1</span></code>”), <code class="xref py py-data docutils literal notranslate"><span class="pre">1.0.1-2</span></code>, etc. and will eventually be part of <code class="xref py py-data docutils literal notranslate"><span class="pre">1.0.1</span></code> (or <code class="xref py py-data docutils literal notranslate"><span class="pre">1.1.0</span></code> if the next release happens to be a minor release, or <code class="xref py py-data docutils literal notranslate"><span class="pre">2.0.0</span></code> for a major release). On an official release, the version number is prefixed <code class="xref py py-data docutils literal notranslate"><span class="pre">v</span></code> to create a Git tag and GitHub release.
 Version numbering is automatically handled by <a class="reference external" href="https://github.com/neperfepx/neperfepx/tree/main/neperfepx-git">neperfepx-git</a>, described below.</p>
 </section>
 </section>
 <section id="adding-code-to-the-program">
-<h2>Adding Code to the Program<a class="headerlink" href="#adding-code-to-the-program" title="Permalink to this headline">¶</a></h2>
+<h2>Adding Code to the Program<a class="headerlink" href="#adding-code-to-the-program" title="Link to this heading"></a></h2>
 <p>The rule of thumb is that, on every commit, both the code and documentation should be kept up-to-date and consistent with each other, and so any changes or additions to the code should be documented as they occur.  This helps maintaining good documentation.</p>
 <section id="making-commits">
-<h3>Making Commits<a class="headerlink" href="#making-commits" title="Permalink to this headline">¶</a></h3>
+<h3>Making Commits<a class="headerlink" href="#making-commits" title="Link to this heading"></a></h3>
 <p>Any commit should be done using <a class="reference external" href="https://github.com/neperfepx/neperfepx/tree/main/neperfepx-git">neperfepx-git</a>, which is a replacement for <strong class="program">git</strong> dedicated to the program and that runs Git with the provided arguments, updates the version number and helps resolving merge conflicts.  It should systematically be used, and it is a good idea to simply alias it as <strong class="program">git</strong> to have it used by default: just add <code class="code docutils literal notranslate"><span class="pre">alias</span> <span class="pre">git=path/to/neperfepx-git</span></code> to your <code class="file docutils literal notranslate"><span class="pre">~/.bashrc</span></code> file.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -230,7 +229,7 @@ particular solution was implemented.
 <p>If a commit is related to a GitHub <em>issue</em> or <em>discussion</em>, make a reference to it (via its number) in the commit message.  You can even end the message with, e.g., <code class="xref py py-data docutils literal notranslate"><span class="pre">Closes</span> <span class="pre">#2.</span></code> to get GitHub to automatically close the related issue (here, <code class="xref py py-data docutils literal notranslate"><span class="pre">#2</span></code>).  However, <code class="xref py py-data docutils literal notranslate"><span class="pre">Closes</span> <span class="pre">#2.</span></code> certainly does not make a good commit title, as it says nothing about what the changes actually are (especially outside of the GitHub repository).  Sometimes, it is useful to give the long issue number, which is formatted as <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;author&gt;/&lt;project&gt;#&lt;issue&gt;</span></code> (for example <code class="xref py py-data docutils literal notranslate"><span class="pre">neperfepx/neper#42</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">neperfepx/neper-dev#46</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">neperfepx/FEPX#23</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">acmelab-ua/FEPX-dev#26</span></code>, etc.).</p>
 </section>
 <section id="tips-and-tricks">
-<h3>Tips and Tricks<a class="headerlink" href="#tips-and-tricks" title="Permalink to this headline">¶</a></h3>
+<h3>Tips and Tricks<a class="headerlink" href="#tips-and-tricks" title="Link to this heading"></a></h3>
 <p>Add the following code to your <code class="file docutils literal notranslate"><span class="pre">~/.bashrc</span></code> to have the current branch printed before the prompt symbol (<code class="xref py py-data docutils literal notranslate"><span class="pre">$</span></code>) in the terminal:</p>
 <div class="highlight-plain notranslate"><div class="highlight"><pre><span></span>function parse_git_branch_and_add_brackets {
 git branch --no-color 2&gt; /dev/null | awk &#39;{if ($1 == &quot;*&quot;) print &quot; [&quot;$2&quot;]&quot;}&#39;
@@ -246,7 +245,7 @@ PS1=&quot;\h:\W\[\033[0;33m\]\$(parse_git_branch_and_add_brackets) \[\033[0m\]\$
 </section>
 </section>
 <section id="being-a-contributor">
-<span id="contributions"></span><h2>Being a Contributor<a class="headerlink" href="#being-a-contributor" title="Permalink to this headline">¶</a></h2>
+<span id="contributions"></span><h2>Being a Contributor<a class="headerlink" href="#being-a-contributor" title="Link to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>To start working as a contributor of the program, you need a GitHub account.  You will create a <em>fork</em> of the official repository in your own GitHub space.</p>
@@ -257,10 +256,10 @@ PS1=&quot;\h:\W\[\033[0;33m\]\$(parse_git_branch_and_add_brackets) \[\033[0m\]\$
 <li><p>make changes in a dedicated, new-feature branch, using as many commits as appropriate.</p></li>
 <li><p>make sure that, once the all necessary changes have been made, the branch is up-to-date with the official <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> branch:</p></li>
 </ul>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git checkout main
-<span class="gp">$ </span>git pull origin
-<span class="gp">$ </span>git checkout &lt;new-feature&gt;
-<span class="gp">$ </span>git merge main
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>checkout<span class="w"> </span>main
+<span class="gp">$ </span>git<span class="w"> </span>pull<span class="w"> </span>origin
+<span class="gp">$ </span>git<span class="w"> </span>checkout<span class="w"> </span>&lt;new-feature&gt;
+<span class="gp">$ </span>git<span class="w"> </span>merge<span class="w"> </span>main
 </pre></div>
 </div>
 <ul class="simple">
@@ -270,22 +269,22 @@ PS1=&quot;\h:\W\[\033[0;33m\]\$(parse_git_branch_and_add_brackets) \[\033[0m\]\$
 <p>Then, go the official repository and open a <em>pull request</em> from your own <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> branch to the official <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> branch.</p>
 </section>
 <section id="being-an-internal-developer">
-<h2>Being an (Internal) Developer<a class="headerlink" href="#being-an-internal-developer" title="Permalink to this headline">¶</a></h2>
+<h2>Being an (Internal) Developer<a class="headerlink" href="#being-an-internal-developer" title="Link to this heading"></a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>To start working as a developer of the program, you need <em>(i)</em> a GitHub account and <em>(ii)</em> to be granted access to the private repository(ies).  You also need to <a class="reference external" href="https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh">configure the connection to GitHub using SSH</a>.  You will push code directly to the private repository(ies), not on a <em>fork</em>.</p>
 </div>
 <section id="getting-the-code-as-a-local-git-repository">
-<h3>Getting the Code as a Local Git Repository<a class="headerlink" href="#getting-the-code-as-a-local-git-repository" title="Permalink to this headline">¶</a></h3>
+<h3>Getting the Code as a Local Git Repository<a class="headerlink" href="#getting-the-code-as-a-local-git-repository" title="Link to this heading"></a></h3>
 <p>First, you need to clone the code locally.  To get the full code (and code history), you should clone the private repository:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git clone git@github.com:neperfepx/neper-dev.git neper <span class="c1"># for Neper</span>
-<span class="gp">$ </span>git clone git@github.com:neperfepx/FEPX-dev.git fepx   <span class="c1"># for FEPX</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:neperfepx/neper-dev.git<span class="w"> </span>neper<span class="w"> </span><span class="c1"># for Neper</span>
+<span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:neperfepx/FEPX-dev.git<span class="w"> </span>fepx<span class="w">   </span><span class="c1"># for FEPX</span>
 </pre></div>
 </div>
 <p>This creates your own, <em>local</em> repository of the code (and code history) hosted on GitHub (but not the issues, etc.).  You also want to have access to the public repository (to push, pull, etc.).  A possibility would be to clone the public repository as you did for the public repository, but this would create another local repository, which is better to avoid (since there is only one of you).  Actually, as you cloned the private repository, a <em>remote</em> was defined in your local repository, which is named <code class="xref py py-data docutils literal notranslate"><span class="pre">origin</span></code> and points to the GitHub private repository (from which you cloned):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git remote show
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>remote<span class="w"> </span>show
 <span class="go">origin</span>
-<span class="gp">$ </span>git remote show origin
+<span class="gp">$ </span>git<span class="w"> </span>remote<span class="w"> </span>show<span class="w"> </span>origin
 <span class="go">* remote origin</span>
 <span class="go">  Fetch URL: git@github.com:neperfepx/neper-dev.git # for Neper</span>
 <span class="go">  Fetch URL: git@github.com:neperfepx/FEPX-dev.git  # for FEPX</span>
@@ -293,19 +292,19 @@ PS1=&quot;\h:\W\[\033[0;33m\]\$(parse_git_branch_and_add_brackets) \[\033[0m\]\$
 </pre></div>
 </div>
 <p>It is possible to define another remote in your local repository, corresponding to the public repository.  To do so, you can rename the first remote (<code class="xref py py-data docutils literal notranslate"><span class="pre">origin</span></code>) to <code class="xref py py-data docutils literal notranslate"><span class="pre">github-dev</span></code> and create a remote for the public repository, <code class="xref py py-data docutils literal notranslate"><span class="pre">github</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git remote rename origin github-dev
-<span class="gp">$ </span>git remote add github git@github.com:neperfepx/neper.git <span class="c1"># for Neper</span>
-<span class="gp">$ </span>git remote add github git@github.com:neperfepx/FEPX.git  <span class="c1"># for FEPX</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>remote<span class="w"> </span>rename<span class="w"> </span>origin<span class="w"> </span>github-dev
+<span class="gp">$ </span>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>github<span class="w"> </span>git@github.com:neperfepx/neper.git<span class="w"> </span><span class="c1"># for Neper</span>
+<span class="gp">$ </span>git<span class="w"> </span>remote<span class="w"> </span>add<span class="w"> </span>github<span class="w"> </span>git@github.com:neperfepx/FEPX.git<span class="w">  </span><span class="c1"># for FEPX</span>
 </pre></div>
 </div>
 <p>From this point, it becomes possible for you to communicate with the public repository just as well as with the private repository. Since you cloned the private repository and its default branch is the <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code> branch, you are currently on the <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code> branch.  Check out to the <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> branch, and you will be able to pull both from <code class="xref py py-data docutils literal notranslate"><span class="pre">github-dev</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">github</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git checkout main
-<span class="gp">$ </span>git pull github-dev main
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>checkout<span class="w"> </span>main
+<span class="gp">$ </span>git<span class="w"> </span>pull<span class="w"> </span>github-dev<span class="w"> </span>main
 <span class="go">From github.com:neperfepx/neper-dev # for Neper</span>
 <span class="go">From github.com:neperfepx/FEPX-dev  # for FEPX</span>
 <span class="go"> * branch            main       -&gt; FETCH_HEAD</span>
 <span class="go">Already up to date.</span>
-<span class="gp">$ </span>git pull github main
+<span class="gp">$ </span>git<span class="w"> </span>pull<span class="w"> </span>github<span class="w"> </span>main
 <span class="go">From github.com:neperfepx/neper     # for Neper</span>
 <span class="go">From github.com:neperfepx/FEPX      # for FEPX</span>
 <span class="go"> * branch            main       -&gt; FETCH_HEAD</span>
@@ -315,37 +314,37 @@ PS1=&quot;\h:\W\[\033[0;33m\]\$(parse_git_branch_and_add_brackets) \[\033[0m\]\$
 </div>
 <p>(Depending on your system, you may get a <code class="xref py py-data docutils literal notranslate"><span class="pre">warning:</span> <span class="pre">Pulling</span> <span class="pre">without</span> <span class="pre">specifying</span> <span class="pre">how</span> <span class="pre">to</span> <span class="pre">reconcile</span> <span class="pre">divergent</span> <span class="pre">branches...</span></code>.  In that case, run <strong class="program">git config pull.rebase false</strong> (you will need to do this only once)).</p>
 <p>If you have not done it before on your computer, now is a good time to tell Git who you are, as the information will be used by Git on new commits; you can also tell Git what your favorite editor is, as it will open on new commits:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git config --global user.name <span class="s2">&quot;John Doe&quot;</span>
-<span class="gp">$ </span>git config --global user.email johndoe@example.com
-<span class="gp">$ </span>git config --global core.editor vim
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.name<span class="w"> </span><span class="s2">&quot;John Doe&quot;</span>
+<span class="gp">$ </span>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.email<span class="w"> </span>johndoe@example.com
+<span class="gp">$ </span>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>core.editor<span class="w"> </span>vim
 </pre></div>
 </div>
 </section>
 </section>
 <section id="being-a-maintainer">
-<h2>Being a Maintainer<a class="headerlink" href="#being-a-maintainer" title="Permalink to this headline">¶</a></h2>
+<h2>Being a Maintainer<a class="headerlink" href="#being-a-maintainer" title="Link to this heading"></a></h2>
 <section id="making-latest-versions-continuous-integration">
-<h3>Making “Latest Versions” (Continuous Integration)<a class="headerlink" href="#making-latest-versions-continuous-integration" title="Permalink to this headline">¶</a></h3>
+<h3>Making “Latest Versions” (Continuous Integration)<a class="headerlink" href="#making-latest-versions-continuous-integration" title="Link to this heading"></a></h3>
 <p><em>Bug fixes</em> and <em>small improvements</em> are simply published as new commits to <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code>, in between official releases.  Here is the workflow:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git checkout main             <span class="c1"># if needed</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>checkout<span class="w"> </span>main<span class="w">             </span><span class="c1"># if needed</span>
 <span class="go">make changes to files...</span>
-<span class="gp">$ </span>git add .
-<span class="gp">$ </span>git commit                    <span class="c1"># do not forget to include &quot;Closes #...&quot; in the message, to close the issue</span>
-<span class="gp">$ </span>git push github main          <span class="c1"># make the commit available on github and close the issue</span>
-<span class="gp">$ </span>git push github-dev main      <span class="c1"># make the commit available on github-dev</span>
+<span class="gp">$ </span>git<span class="w"> </span>add<span class="w"> </span>.
+<span class="gp">$ </span>git<span class="w"> </span>commit<span class="w">                    </span><span class="c1"># do not forget to include &quot;Closes #...&quot; in the message, to close the issue</span>
+<span class="gp">$ </span>git<span class="w"> </span>push<span class="w"> </span>github<span class="w"> </span>main<span class="w">          </span><span class="c1"># make the commit available on github and close the issue</span>
+<span class="gp">$ </span>git<span class="w"> </span>push<span class="w"> </span>github-dev<span class="w"> </span>main<span class="w">      </span><span class="c1"># make the commit available on github-dev</span>
 </pre></div>
 </div>
 <p>The <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> branch should be the same, at all time, on all repositories (public, private and local). As a new commit is pushed to <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code>, users and developers will have to run <strong class="program">git pull github main</strong> (or <strong class="program">git pull github-dev main</strong>, for developers, which works equally well) to update their own versions - this is their responsibility.</p>
 <p>Of note, as <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> is modified, the branches based on it should be updated, as described previously.</p>
 </section>
 <section id="making-a-new-release">
-<h3>Making a New Release<a class="headerlink" href="#making-a-new-release" title="Permalink to this headline">¶</a></h3>
+<h3>Making a New Release<a class="headerlink" href="#making-a-new-release" title="Link to this heading"></a></h3>
 <p>New releases are made typically every 2-3 months.  This is done automatically, using <a class="reference external" href="https://github.com/neperfepx/neperfepx-dev/tree/main/neperfepx-release">neperfepx-release</a>.</p>
 <p>On a new release, <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code> is merged into <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> (which, in simple terms, makes the code that was in <code class="xref py py-data docutils literal notranslate"><span class="pre">devel</span></code> public).  This is not done as a standard merge, however, but so that all developments appear as a single, “release” commit in <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> (using Git merge’s <code class="xref py py-data docutils literal notranslate"><span class="pre">--squash</span></code> option).  In this way, the <code class="xref py py-data docutils literal notranslate"><span class="pre">main</span></code> branch is kept clean, while all “development” commits become archived in a branch named <code class="xref py py-data docutils literal notranslate"><span class="pre">devel-&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</span></code> (the new version number).</p>
 <p>On a new release, a Git tag and a Git release are created, and the website is updated with links to the new release and documentation.</p>
 </section>
 <section id="managing-the-website">
-<h3>Managing the Website<a class="headerlink" href="#managing-the-website" title="Permalink to this headline">¶</a></h3>
+<h3>Managing the Website<a class="headerlink" href="#managing-the-website" title="Link to this heading"></a></h3>
 <p>The source codes of the website (<a class="reference external" href="https://neper.info">Neper</a>/<a class="reference external" href="https://fepx.info">FEPX</a>) is in the <code class="xref py py-data docutils literal notranslate"><span class="pre">gh-pages</span></code> branch, and, when compiled using <strong class="program">make html</strong>, generates html code in <code class="file docutils literal notranslate"><span class="pre">docs</span></code>.  The website sources can be updated at any time on this branch and compiled, and GitHub will seamlessly show the updated website.  Synchronization generally takes no more than 30 seconds. On a new release, <a class="reference external" href="https://github.com/neperfepx/neperfepx-dev/tree/main/neperfepx-release">neperfepx-release</a> updates the website automatically.</p>
 </section>
 </section>

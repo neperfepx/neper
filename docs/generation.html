@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Generation &mdash; Neper 4.6.1 documentation</title>
@@ -12,10 +12,9 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script src="_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -97,14 +96,14 @@
            <div itemprop="articleBody">
              
   <section id="generation">
-<span id="id1"></span><h1>Generation<a class="headerlink" href="#generation" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Generation<a class="headerlink" href="#generation" title="Link to this heading"></a></h1>
 <p>Module -T is dedicated to tessellation generation. Its primary capabilities are <em>(i)</em> the generation of tessellations from cell properties (statistical, e.g. a size distribution, or defined grain by grain), <em>(ii)</em> the definition of cell groups (to represent different material phases) and <em>(iii)</em> the generation of multiscale tessellations (i.e. including cell subdivisions). These capabilities can also be used together. Tessellations are composed of convex cells (Laguerre tessellations).  Finally, the tessellations can be <em>regularized</em> to remove their smallest entities (edges and faces), which enables for good-quality meshing with module -M.  Periodicity conditions can be prescribed. Crystal orientations are provided for the grains.  The output is a tessellation file written at a scalar (vectorial) or raster format.</p>
 <section id="generalities">
-<h2>Generalities<a class="headerlink" href="#generalities" title="Permalink to this headline">¶</a></h2>
+<h2>Generalities<a class="headerlink" href="#generalities" title="Link to this heading"></a></h2>
 <p>Tessellations are built in a finite domain of space. A unit cubic domain is used by default, but cylindrical domains and spherical domains are also available while other, arbitrary convex domains can be defined, as illustrated below.  Tessellations can contain an arbitrary number of cells and can be 2D or 3D.  Crystal orientations are assigned to the cells.  Below is the generation of 1000-cell Voronoi tessellations (the default) in various 3D domains:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1000</span>
-<span class="gp">$ </span>neper -T -n <span class="m">1000</span> -domain <span class="s2">&quot;cylinder(1,100)&quot;</span>
-<span class="gp">$ </span>neper -T -n <span class="m">1000</span> -domain <span class="s2">&quot;sphere(1,1000)&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span>
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;cylinder(1,100)&quot;</span>
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;sphere(1,1000)&quot;</span>
 </pre></div>
 </div>
 <figure class="align-default">
@@ -113,11 +112,11 @@
 <p><a class="reference external" href="imgs/gene_gene.sh">gene_gene.sh</a></p>
 </section>
 <section id="tessellations-from-morphological-properties">
-<h2>Tessellations from Morphological Properties<a class="headerlink" href="#tessellations-from-morphological-properties" title="Permalink to this headline">¶</a></h2>
+<h2>Tessellations from Morphological Properties<a class="headerlink" href="#tessellations-from-morphological-properties" title="Link to this heading"></a></h2>
 <p>Tessellations can be of different types, depending on how seeds are defined, but are (almost) always composed of convex cells.  By default, a Voronoi tessellation is generated, for which seeds have random positions (following a uniform distribution).  If (experimental) morphological properties are provided for the cells as input, a Laguerre tessellation is generated for which the seed attributes are optimized so as to reproduce these properties. The properties can be statistical distributions (e.g. a cell size distribution) or defined grain by grain (cell centers, etc., including a full polycrystal image).  The method has no particular limitations (except that it generates convex cells) and allows for the generation of a wide variety of microstructure morphologies.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1000</span> -morpho voronoi <span class="o">(</span>or $ neper -T -n <span class="m">1000</span><span class="o">)</span>
-<span class="gp">$ </span>neper -T -n <span class="m">1000</span> -morpho graingrowth
-<span class="gp">$ </span>neper -T -n <span class="m">1000</span> -morpho <span class="s2">&quot;diameq:dirac(1),1-sphericity:lognormal(0.145,0.03)&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-morpho<span class="w"> </span>voronoi<span class="w"> </span><span class="o">(</span>or<span class="w"> </span>$<span class="w"> </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="o">)</span>
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-morpho<span class="w"> </span>graingrowth
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-morpho<span class="w"> </span><span class="s2">&quot;diameq:dirac(1),1-sphericity:lognormal(0.145,0.03)&quot;</span>
 </pre></div>
 </div>
 <figure class="align-default">
@@ -126,11 +125,11 @@
 <p><a class="reference external" href="imgs/gene_morp.sh">gene_morp.sh</a></p>
 </section>
 <section id="cell-groups-to-represent-phases">
-<h2>Cell Groups to Represent Phases<a class="headerlink" href="#cell-groups-to-represent-phases" title="Permalink to this headline">¶</a></h2>
+<h2>Cell Groups to Represent Phases<a class="headerlink" href="#cell-groups-to-represent-phases" title="Link to this heading"></a></h2>
 <p>Cell groups can be defined to represent different phases of a material.  Groups can be defined (post-tessellation) from arbitrary cell properties but are typically associated to the different modes of a multi-modal morphological property (e.g. the cell size distribution).</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1000</span> -group <span class="s2">&quot;id&lt;=500?1:2&quot;</span> -o gene_grou_1
-<span class="gp">$ </span>neper -T -n <span class="m">1000</span> -group <span class="s2">&quot;vol&gt;=0.001?1:2&quot;</span> -o gene_grou_2
-<span class="gp">$ </span>neper -T -n <span class="m">1000</span> -morpho <span class="s2">&quot;diameq:diameq:0.8*lognormal(1,0.35)+0.2*lognormal(2,0.6),1-sphericity:lognormal(0.230,0.03)&quot;</span> -group mode -o gene_grou_3
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-group<span class="w"> </span><span class="s2">&quot;id&lt;=500?1:2&quot;</span><span class="w"> </span>-o<span class="w"> </span>gene_grou_1
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-group<span class="w"> </span><span class="s2">&quot;vol&gt;=0.001?1:2&quot;</span><span class="w"> </span>-o<span class="w"> </span>gene_grou_2
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-morpho<span class="w"> </span><span class="s2">&quot;diameq:diameq:0.8*lognormal(1,0.35)+0.2*lognormal(2,0.6),1-sphericity:lognormal(0.230,0.03)&quot;</span><span class="w"> </span>-group<span class="w"> </span>mode<span class="w"> </span>-o<span class="w"> </span>gene_grou_3
 </pre></div>
 </div>
 <figure class="align-default">
@@ -139,11 +138,11 @@
 <p><a class="reference external" href="imgs/gene_grou.sh">gene_grou.sh</a></p>
 </section>
 <section id="multiscale-tessellations">
-<h2>Multiscale Tessellations<a class="headerlink" href="#multiscale-tessellations" title="Permalink to this headline">¶</a></h2>
+<h2>Multiscale Tessellations<a class="headerlink" href="#multiscale-tessellations" title="Link to this heading"></a></h2>
 <p>Multiscale tessellations can also be generated, which are obtained by subdividing each cell of an existing tessellation into a new tessellation (possibly several times). All capabilities available for standard, 1-scale tessellations are available for multiscale tessellations. Such tessellations can be used to represent complex microstructures such as those observed in steels, titanium alloys, etc.  Multiscale tessellations can be meshed just as standard tessellations.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">200</span>::from_morpho            -morpho <span class="s2">&quot;gg::lamellar(w=0.02)&quot;</span>
-<span class="gp">$ </span>neper -T -n <span class="m">200</span>::1000*size              -morpho <span class="s1">&#39;gg::diameq:dirac(1),sphericity:lognormal(0.145,0.03,1-x)&#39;</span>
-<span class="gp">$ </span>neper -T -n <span class="m">200</span>::1000*size::from_morpho -morpho <span class="s1">&#39;gg::diameq:dirac(1),sphericity:lognormal(0.145,0.03,1-x)::lamellar(w=0.01:0.03)&#39;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">200</span>::from_morpho<span class="w">            </span>-morpho<span class="w"> </span><span class="s2">&quot;gg::lamellar(w=0.02)&quot;</span>
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">200</span>::1000*size<span class="w">              </span>-morpho<span class="w"> </span><span class="s1">&#39;gg::diameq:dirac(1),sphericity:lognormal(0.145,0.03,1-x)&#39;</span>
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">200</span>::1000*size::from_morpho<span class="w"> </span>-morpho<span class="w"> </span><span class="s1">&#39;gg::diameq:dirac(1),sphericity:lognormal(0.145,0.03,1-x)::lamellar(w=0.01:0.03)&#39;</span>
 </pre></div>
 </div>
 <figure class="align-default">
@@ -152,11 +151,11 @@
 <p><a class="reference external" href="imgs/gene_mult.sh">gene_mult.sh</a></p>
 </section>
 <section id="periodic-and-semi-periodic-tessellations">
-<h2>Periodic and Semi-Periodic Tessellations<a class="headerlink" href="#periodic-and-semi-periodic-tessellations" title="Permalink to this headline">¶</a></h2>
+<h2>Periodic and Semi-Periodic Tessellations<a class="headerlink" href="#periodic-and-semi-periodic-tessellations" title="Link to this heading"></a></h2>
 <p>Full periodicity or semi-periodicity can be prescribed to the domain and therefore to the resulting tessellation.  Periodicity can be used to avoid boundary effects and reduce the size of the representative volume element.  Below are 1000-cell tessellations with full periodicity, 2-direction semi-periodicity and 1-direction semi-periodicity, successively, viewed along the y axis.  These tessellations can be meshed just as standard, non-periodic tessellations.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1000</span> -morpho graingrowth -periodicity all
-<span class="gp">$ </span>neper -T -n <span class="m">1000</span> -morpho graingrowth -periodicity x,y
-<span class="gp">$ </span>neper -T -n <span class="m">1000</span> -morpho graingrowth -periodicity x
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-morpho<span class="w"> </span>graingrowth<span class="w"> </span>-periodicity<span class="w"> </span>all
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-morpho<span class="w"> </span>graingrowth<span class="w"> </span>-periodicity<span class="w"> </span>x,y
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-morpho<span class="w"> </span>graingrowth<span class="w"> </span>-periodicity<span class="w"> </span>x
 </pre></div>
 </div>
 <figure class="align-default">
@@ -165,11 +164,11 @@
 <p><a class="reference external" href="imgs/gene_peri.sh">gene_peri.sh</a></p>
 </section>
 <section id="non-convex-domains">
-<h2>Non-convex Domains<a class="headerlink" href="#non-convex-domains" title="Permalink to this headline">¶</a></h2>
+<h2>Non-convex Domains<a class="headerlink" href="#non-convex-domains" title="Link to this heading"></a></h2>
 <p>Non-convex domains can be obtained by cutting a tessellation by one or several geometrical primitives, such as half-spaces, spheres, cylinders, elliptic cylinders, etc.  The current implementation is limited to the case where the local curvature of the geometrical primitive is larger than the typical cell size, so, this remains an experimental feature. The resulting tessellations can be regularized and meshed just as standard, convex tessellations.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1000</span> -morpho gg -transform <span class="s2">&quot;cut(sphere(1,0.5,1,0.7))&quot;</span>
-<span class="gp">$ </span>neper -T -n <span class="m">1000</span> -morpho gg -domain <span class="s2">&quot;cube(1.2,0.1,1.2)&quot;</span> -transform <span class="s2">&quot;cut(cylinder(0.3,0,0.3,0,1,0,0.15),cylinder(0.3,0,0.9,0,1,0,0.15),cylinder(0.9,0,0.3,0,1,0,0.15),cylinder(0.9,0,0.9,0,1,0,0.15))&quot;</span>
-<span class="gp">$ </span>neper -T -n <span class="m">1000</span> -morpho gg -domain <span class="s2">&quot;cube(0.6,0.6,1.4):translate(-0.3,-0.3,-0.7)&quot;</span> -transform <span class="s2">&quot;cut(cylinder(-0.9,0,0,0,1,0,0.8),cylinder(0.9,0,0,0,1,0,0.8),cylinder(0,-0.9,0,1,0,0,0.8),cylinder(0,0.9,0,1,0,0,0.8))&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-morpho<span class="w"> </span>gg<span class="w"> </span>-transform<span class="w"> </span><span class="s2">&quot;cut(sphere(1,0.5,1,0.7))&quot;</span>
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-morpho<span class="w"> </span>gg<span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;cube(1.2,0.1,1.2)&quot;</span><span class="w"> </span>-transform<span class="w"> </span><span class="s2">&quot;cut(cylinder(0.3,0,0.3,0,1,0,0.15),cylinder(0.3,0,0.9,0,1,0,0.15),cylinder(0.9,0,0.3,0,1,0,0.15),cylinder(0.9,0,0.9,0,1,0,0.15))&quot;</span>
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-morpho<span class="w"> </span>gg<span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;cube(0.6,0.6,1.4):translate(-0.3,-0.3,-0.7)&quot;</span><span class="w"> </span>-transform<span class="w"> </span><span class="s2">&quot;cut(cylinder(-0.9,0,0,0,1,0,0.8),cylinder(0.9,0,0,0,1,0,0.8),cylinder(0,-0.9,0,1,0,0,0.8),cylinder(0,0.9,0,1,0,0,0.8))&quot;</span>
 </pre></div>
 </div>
 <figure class="align-default">
@@ -178,34 +177,34 @@
 <p><a class="reference external" href="imgs/gene_cut.sh">gene_cut.sh</a></p>
 </section>
 <section id="crystal-orientation-distribution">
-<h2>Crystal Orientation Distribution<a class="headerlink" href="#crystal-orientation-distribution" title="Permalink to this headline">¶</a></h2>
+<h2>Crystal Orientation Distribution<a class="headerlink" href="#crystal-orientation-distribution" title="Link to this heading"></a></h2>
 <p>Crystal orientations are assigned to the cells.  The first type of crystal orientation distribution is <em>random</em>, which corresponds to the standard case for which orientations are distributed randomly according to a uniform distribution.  The second type of crystal orientation distribution is <em>uniform</em>, which corresponds to a new case for which orientations are distributed uniformly (still according to a uniform orientation distribution), i.e. there will be no local orientation clusters as is typical from a random distribution.  It is important to specify the crystal symmetry in this case.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1000</span> -format ori
-<span class="gp">$ </span>neper -T -n <span class="m">1000</span> -oricrysym cubic -ori uniform -format ori
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-format<span class="w"> </span>ori
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-oricrysym<span class="w"> </span>cubic<span class="w"> </span>-ori<span class="w"> </span>uniform<span class="w"> </span>-format<span class="w"> </span>ori
 </pre></div>
 </div>
 <figure class="align-default" id="id2">
 <img alt="_images/gene_flatori.png" src="_images/gene_flatori.png" />
 <figcaption>
-<p><span class="caption-text">(left) Random distribution, (right) uniform distribution.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">(left) Random distribution, (right) uniform distribution.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
 <section id="regularization">
-<h2>Regularization<a class="headerlink" href="#regularization" title="Permalink to this headline">¶</a></h2>
+<h2>Regularization<a class="headerlink" href="#regularization" title="Link to this heading"></a></h2>
 <p>Tessellations usually contain a large number of small edges and faces.  While these entities have a negligible effect on the cell morphologies, they are strongly detrimental to meshing because they represent strong constraints (which generates low-quality elements).  Neper includes a <em>regularization</em> method that removes the small edges and faces, as illustrated below. Note that regularization does not change the overall grain morphology while it removes most of the small edges and faces.</p>
 <figure class="align-default" id="id3">
 <img alt="_images/gene_regu.png" src="_images/gene_regu.png" />
 <figcaption>
-<p><span class="caption-text">(left) No regularization, (middle) regularization, (right) edge length distributions.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">(left) No regularization, (middle) regularization, (right) edge length distributions.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p><a class="reference external" href="imgs/gene_regu.sh">gene_regu.sh</a></p>
 </section>
 <section id="scalar-and-raster-formats">
-<h2>Scalar and Raster Formats<a class="headerlink" href="#scalar-and-raster-formats" title="Permalink to this headline">¶</a></h2>
+<h2>Scalar and Raster Formats<a class="headerlink" href="#scalar-and-raster-formats" title="Link to this heading"></a></h2>
 <p>Tessellations can be written at scalar and raster formats.  Scalar tessellations can be meshed into tetrahedral elements using -M while raster tessellations can be readily used in fast-Fourier transform (FFT) computations.  for The size of the raster can be specified. Below are shown a scalar tessellation and the corresponding raster tessellation constructed on a raster of 64 x 64 x 64 voxels.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1000</span> -morpho graingrowth -format tess,tesr -tesrsize <span class="m">64</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-morpho<span class="w"> </span>graingrowth<span class="w"> </span>-format<span class="w"> </span>tess,tesr<span class="w"> </span>-tesrsize<span class="w"> </span><span class="m">64</span>
 </pre></div>
 </div>
 <figure class="align-default">
@@ -214,9 +213,9 @@
 <p><a class="reference external" href="imgs/gene_form.sh">gene_form.sh</a></p>
 </section>
 <section id="statistics">
-<h2>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h2>
+<h2>Statistics<a class="headerlink" href="#statistics" title="Link to this heading"></a></h2>
 <p>A wide array of statistics are available on the cells or even on the faces, edges, vertices and seeds. Morphology and topology properties are available. For example, the cell variables include: the centroid coordinates, the volume, the numbers and lists of vertices, edges and faces, the surface areas and equations of the faces, etc. An example of statistical analysis on a 300-cell tessellation is illustrated below.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1000</span> -morpho gg -per <span class="m">1</span> -statcell diameq:rel,facenb
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-morpho<span class="w"> </span>gg<span class="w"> </span>-per<span class="w"> </span><span class="m">1</span><span class="w"> </span>-statcell<span class="w"> </span>diameq:rel,facenb
 </pre></div>
 </div>
 <figure class="align-default">

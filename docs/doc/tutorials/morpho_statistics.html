@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Generating a Tessellation from Statistical Cell Properties &mdash; Neper 4.6.1 documentation</title>
@@ -12,10 +12,9 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -98,7 +97,7 @@
            <div itemprop="articleBody">
              
   <section id="generating-a-tessellation-from-statistical-cell-properties">
-<span id="morpho-statistics"></span><h1>Generating a Tessellation from Statistical Cell Properties<a class="headerlink" href="#generating-a-tessellation-from-statistical-cell-properties" title="Permalink to this headline">¶</a></h1>
+<span id="morpho-statistics"></span><h1>Generating a Tessellation from Statistical Cell Properties<a class="headerlink" href="#generating-a-tessellation-from-statistical-cell-properties" title="Link to this heading"></a></h1>
 <p>Statistical morphological properties for the cells can be specified as input, using option <a class="reference internal" href="../neper_t.html#cmdoption-morpho"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morpho</span></code></a>.  In this case, instead of a Voronoi tessellation, Neper generates a Laguerre tessellation (which can represent any tessellation comprised of convex cells, and therefore does not involve particular limitations) by optimizing the attributes of its seeds until the specified input is reached <a class="reference internal" href="../../tutorials/morpho_tesr_mesh.html#cmame2018" id="id1"><span>[CMAME2018]</span></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -108,37 +107,37 @@
 </div>
 </div>
 <section id="using-the-built-in-graingrowth">
-<h2>Using the Built-in <code class="xref py py-data docutils literal notranslate"><span class="pre">graingrowth</span></code><a class="headerlink" href="#using-the-built-in-graingrowth" title="Permalink to this headline">¶</a></h2>
+<h2>Using the Built-in <code class="xref py py-data docutils literal notranslate"><span class="pre">graingrowth</span></code><a class="headerlink" href="#using-the-built-in-graingrowth" title="Link to this heading"></a></h2>
 <p>Option <a class="reference internal" href="../neper_t.html#cmdoption-morpho"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morpho</span></code></a> includes the <code class="xref py py-data docutils literal notranslate"><span class="pre">graingrowth</span></code> (or <code class="xref py py-data docutils literal notranslate"><span class="pre">gg</span></code>, for short) properties, which corresponds to those of an experimental polycrystal subjected to grain growth.  Both the cell size distribution and the cell sphericity distribution (how close are the cells from a sphere) are defined <a class="reference internal" href="../../tutorials/morpho_tesr_mesh.html#cmame2018" id="id2"><span>[CMAME2018]</span></a>.</p>
 <p>A 100-cell tessellation with grain-growth properties can be generated using the <a class="reference internal" href="../neper_t.html#neper-t"><span class="std std-ref">Tessellation Module (-T)</span></a> as follows:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -morpho gg
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-morpho<span class="w"> </span>gg
 </pre></div>
 </div>
 <p>This produces a <a class="reference internal" href="../fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a> named <code class="file docutils literal notranslate"><span class="pre">n100-id1.tess</span></code>.</p>
 <p>The tessellation can be visualized using the <a class="reference internal" href="../neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100-id1.tess -print img1
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100-id1.tess<span class="w"> </span>-print<span class="w"> </span>img1
 </pre></div>
 </div>
 <p>This produces a PNG file named <code class="file docutils literal notranslate"><span class="pre">img1.png</span></code>.</p>
 <img alt="../../_images/img11.png" src="../../_images/img11.png" />
 </section>
 <section id="specifying-custom-properties">
-<h2>Specifying Custom Properties<a class="headerlink" href="#specifying-custom-properties" title="Permalink to this headline">¶</a></h2>
+<h2>Specifying Custom Properties<a class="headerlink" href="#specifying-custom-properties" title="Link to this heading"></a></h2>
 <p>Statistical properties other than those of <code class="xref py py-data docutils literal notranslate"><span class="pre">gg</span></code> can be specified.  <code class="xref py py-data docutils literal notranslate"><span class="pre">gg</span></code> actually is an alias for <code class="xref py py-data docutils literal notranslate"><span class="pre">diameq:lognormal(1,0.35),1-sphericity:lognormal(0.145,0.03)</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">diameq::lognormal(1,0.35)</span></code> specifies a lognormal distribution of the (normalized) cell equivalent diameters of average 1 and standard deviation 0.35, and <code class="xref py py-data docutils literal notranslate"><span class="pre">1-sphericity:lognormal(0.145,0.03)</span></code> corresponds to a lognormal distribution of the cell “1-sphericities” of average 0.145 and standard deviation 0.03. It is therefore possible to use this longer argument and change the numerical values.  For example, to get nearly equal-size cells (small standard deviation of the cell size lognormal distribution), one may use:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -morpho <span class="s2">&quot;diameq:lognormal(1,0.05),1-sphericity:lognormal(0.145,0.03)&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-morpho<span class="w"> </span><span class="s2">&quot;diameq:lognormal(1,0.05),1-sphericity:lognormal(0.145,0.03)&quot;</span>
 </pre></div>
 </div>
 <p>The tessellation can be visualized as before:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100-id1.tess -print img2
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100-id1.tess<span class="w"> </span>-print<span class="w"> </span>img2
 </pre></div>
 </div>
 <img alt="../../_images/img21.png" src="../../_images/img21.png" />
 <p>Of course, it is also possible to change the sphericity distribution, for instance to get less spherical grains (smaller average of the sphericity distribution):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -morpho <span class="s2">&quot;diameq:lognormal(1,0.05),1-sphericity:lognormal(0.245,0.03)&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-morpho<span class="w"> </span><span class="s2">&quot;diameq:lognormal(1,0.05),1-sphericity:lognormal(0.245,0.03)&quot;</span>
 </pre></div>
 </div>
 <p>The tessellation can be visualized as before:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V n100-id1.tess -print img3
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100-id1.tess<span class="w"> </span>-print<span class="w"> </span>img3
 </pre></div>
 </div>
 <img alt="../../_images/img31.png" src="../../_images/img31.png" />
@@ -152,23 +151,23 @@
 </div>
 </section>
 <section id="specifying-an-absolute-cell-size-distribution">
-<h2>Specifying an Absolute Cell Size Distribution<a class="headerlink" href="#specifying-an-absolute-cell-size-distribution" title="Permalink to this headline">¶</a></h2>
+<h2>Specifying an Absolute Cell Size Distribution<a class="headerlink" href="#specifying-an-absolute-cell-size-distribution" title="Link to this heading"></a></h2>
 <p>It is possible to get Neper to consider the cell size distribution as a distribution of absolute values by using <a class="reference internal" href="../neper_t.html#cmdoption-n"><code class="xref std std-option docutils literal notranslate"><span class="pre">-n</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">from_morpho</span></code> (instead of an actual number of cells).  Neper determines the number of cells from the cell size distribution and the domain size.  An example is:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n from_morpho -morpho <span class="s2">&quot;diameq:lognormal(0.2,0.06),1-sphericity:lognormal(0.145,0.03)&quot;</span> -o mytess
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span>from_morpho<span class="w"> </span>-morpho<span class="w"> </span><span class="s2">&quot;diameq:lognormal(0.2,0.06),1-sphericity:lognormal(0.145,0.03)&quot;</span><span class="w"> </span>-o<span class="w"> </span>mytess
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Option <a class="reference internal" href="../neper_t.html#cmdoption-o"><code class="xref std std-option docutils literal notranslate"><span class="pre">-o</span></code></a> is used to set the output file name.  The default file name is <code class="file docutils literal notranslate"><span class="pre">n&lt;n&gt;-id&lt;id&gt;.tess</span></code> and, in this case, would be the odd <code class="file docutils literal notranslate"><span class="pre">nfrom_morpho-id1.tess</span></code>.</p>
+<p>Option <a class="reference internal" href="../neper_m.html#cmdoption-o"><code class="xref std std-option docutils literal notranslate"><span class="pre">-o</span></code></a> is used to set the output file name.  The default file name is <code class="file docutils literal notranslate"><span class="pre">n&lt;n&gt;-id&lt;id&gt;.tess</span></code> and, in this case, would be the odd <code class="file docutils literal notranslate"><span class="pre">nfrom_morpho-id1.tess</span></code>.</p>
 </div>
 <p>The tessellation contains 184 cells and can be visualized as before:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V mytess.tess -print img4
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>mytess.tess<span class="w"> </span>-print<span class="w"> </span>img4
 </pre></div>
 </div>
 <img alt="../../_images/img41.png" src="../../_images/img41.png" />
 </section>
 <section id="specifying-an-experimental-cell-size-distribution">
-<h2>Specifying an Experimental Cell Size Distribution<a class="headerlink" href="#specifying-an-experimental-cell-size-distribution" title="Permalink to this headline">¶</a></h2>
+<h2>Specifying an Experimental Cell Size Distribution<a class="headerlink" href="#specifying-an-experimental-cell-size-distribution" title="Link to this heading"></a></h2>
 <p>Experimental or, more generally, numerical distributions defined from a file can be specified by using option <a class="reference internal" href="../neper_t.html#cmdoption-morpho"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morpho</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;property&gt;:custom(&lt;file_name&gt;)</span></code> (instead of analytical distributions).</p>
 <p>Consider a cell-size (<code class="xref py py-data docutils literal notranslate"><span class="pre">diameq</span></code>) distribution defined from a file, <code class="file docutils literal notranslate"><span class="pre">mydistrib</span></code>, that contains:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.2</span> <span class="mf">10.0</span>
@@ -185,36 +184,38 @@
 </ul>
 </div>
 <p>The corresponding tessellation can be generated as follows:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n from_morpho                                                        <span class="se">\</span>
-           -morpho <span class="s2">&quot;diameq:custom(mydistrib),1-sphericity:lognormal(0.145,0.03)&quot;</span> <span class="se">\</span>
-           -statcell diameq                                                      <span class="se">\</span>
-           -o mytess
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span>from_morpho<span class="w">                                                        </span><span class="se">\</span>
+<span class="w">           </span>-morpho<span class="w"> </span><span class="s2">&quot;diameq:custom(mydistrib),1-sphericity:lognormal(0.145,0.03)&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">           </span>-statcell<span class="w"> </span>diameq<span class="w">                                                      </span><span class="se">\</span>
+<span class="w">           </span>-o<span class="w"> </span>mytess
 </pre></div>
 </div>
 <p>where option <a class="reference internal" href="../neper_t.html#cmdoption-statcell"><code class="xref std std-option docutils literal notranslate"><span class="pre">-statcell</span></code></a> is used to output the cell equivalent diameters to file <code class="file docutils literal notranslate"><span class="pre">mytess.stcell</span></code>.</p>
 <p>The tessellation can be visualized by coloring the cells from their equivalent diameters using options <code class="xref std std-option docutils literal notranslate"><span class="pre">-datacellcol</span></code> and <code class="xref std std-option docutils literal notranslate"><span class="pre">-datacellscale</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -V mytess.tess                                       <span class="se">\</span>
-           -datacellcol <span class="s2">&quot;real:file(mytess.stcell)&quot;</span>           <span class="se">\</span>
-           -datacellscale <span class="m">0</span>.15:0.20:0.25:0.30:0.35:0.40:0.45 <span class="se">\</span>
-           -datacellscaletitle <span class="s2">&quot;Cell size (mm)&quot;</span>              <span class="se">\</span>
-           -print img5
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>mytess.tess<span class="w">                                       </span><span class="se">\</span>
+<span class="w">           </span>-datacellcol<span class="w"> </span><span class="s2">&quot;real:file(mytess.stcell)&quot;</span><span class="w">           </span><span class="se">\</span>
+<span class="w">           </span>-datacellscale<span class="w"> </span><span class="m">0</span>.15:0.20:0.25:0.30:0.35:0.40:0.45<span class="w"> </span><span class="se">\</span>
+<span class="w">           </span>-datacellscaletitle<span class="w"> </span><span class="s2">&quot;Cell size (mm)&quot;</span><span class="w">              </span><span class="se">\</span>
+<span class="w">           </span>-print<span class="w"> </span>img5
 </pre></div>
 </div>
 <p>This produces a PNG file named <code class="file docutils literal notranslate"><span class="pre">img5.png</span></code> for the tessellation and a PNG file named <code class="file docutils literal notranslate"><span class="pre">img5-scale3.png</span></code> for the scale bar.</p>
 <p>To include the scale bar to the image, ImageMagick can be used:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>convert img5.png img5-scale3.png -gravity East -composite img5.png
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>convert<span class="w"> </span>img5.png<span class="w"> </span>img5-scale3.png<span class="w"> </span>-gravity<span class="w"> </span>East<span class="w"> </span>-composite<span class="w"> </span>img5.png
 </pre></div>
 </div>
 <img alt="../../_images/img51.png" src="../../_images/img51.png" />
 </section>
 <section id="speeding-up-tessellation">
-<h2>Speeding up Tessellation<a class="headerlink" href="#speeding-up-tessellation" title="Permalink to this headline">¶</a></h2>
+<h2>Speeding up Tessellation<a class="headerlink" href="#speeding-up-tessellation" title="Link to this heading"></a></h2>
 <p>When statistical properties (or other properties) are specified as input, Neper employs an interative approach, and so tessellation generation is longer than for a standard Voronoi tessellation. Even though the tessellation generation remains relatively fast, to speed up the tessellation process, a first way is through multithreading, as a performace increase is expected up about 16 threads.  A second way is to modify the termination criterion, which is controlled by option <a class="reference internal" href="../neper_t.html#cmdoption-morphooptistop"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morphooptistop</span></code></a> and set to <code class="xref py py-data docutils literal notranslate"><span class="pre">val=1e-5</span></code> by default, which is relatively low.  The value can be increased, or another criterion can be used.</p>
-<dl class="citation">
-<dt class="label" id="cmame2018"><span class="brackets">CMAME2018</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
-<dd><p><a class="reference internal" href="../../papers.html#singlescale"><span class="std std-ref">R Quey and L Renversade, Optimal polyhedral description of 3D polycrystals: method and application to statistical and synchrotron X-ray diffraction data, Computer Methods in Applied Mechanics and Engineering, vol. 330, pp. 308-333, 2018.</span></a></p>
-</dd>
-</dl>
+<div role="list" class="citation-list">
+<div class="citation" id="cmame2018" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>CMAME2018<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>)</span>
+<p><a class="reference internal" href="../../papers.html#singlescale"><span class="std std-ref">R Quey and L Renversade, Optimal polyhedral description of 3D polycrystals: method and application to statistical and synchrotron X-ray diffraction data, Computer Methods in Applied Mechanics and Engineering, vol. 330, pp. 308-333, 2018.</span></a></p>
+</div>
+</div>
 </section>
 </section>
 

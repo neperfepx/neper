@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tessellation Module (-T) &mdash; Neper 4.6.1 documentation</title>
@@ -12,10 +12,9 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -117,17 +116,17 @@
            <div itemprop="articleBody">
              
   <section id="tessellation-module-t">
-<span id="neper-t"></span><span id="index-0"></span><h1>Tessellation Module (-T)<a class="headerlink" href="#tessellation-module-t" title="Permalink to this headline">¶</a></h1>
+<span id="neper-t"></span><span id="index-0"></span><h1>Tessellation Module (-T)<a class="headerlink" href="#tessellation-module-t" title="Link to this heading"></a></h1>
 <p>Module -T is the module for generating <em>tessellations</em> and <em>multiscale tessellations</em> of a finite <em>domain</em> of space, in 2D or 3D.  The domain is generally convex, although non-convex shapes can also be obtained.  Periodicity and semi-periodicity conditions can be prescribed.  Module -T also enables the <em>regularization</em> of the tessellations for meshing with high quality elements. The tessellations are provided in scalar (vectorial) or raster formats.  The scalar format described the tessellation cells using sets of vertices, edges and faces, while the raster format uses a regular raster of voxels (similarly to an EBSD map). Module -T also generates crystal orientations for the cells.</p>
-<p><em>Tessellations</em> can be generated from various types of morphological cell properties (option <a class="reference internal" href="#cmdoption-morpho"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morpho</span></code></a>).  Several predefined properties are available, such as those obtained by grain growth in metals (which are described by cell size and sphericity (circularity, in 2D) distributions).  Custom properties can be specified using various metrics, including the size and sphericity (circularity, in 2D), the centroid or even the actual shape (using a raster tessellation), in terms of distributions or individual cell values.  Standard analytical distributions are included, and custom numerical distributions can be read from a file.  Global morphological properties, such as a cell aspect ratio or a columnar axis, can also be specified.  The generated <em>tessellations</em> are <em>general convex-cell tessellations</em> represented as Laguerre (or Voronoi) tessellations whose seed attributes are set by optimization to obtain the desired cell properties <a class="footnote-reference brackets" href="#convex" id="id1">2</a>.  Of course, it is also possible to generate standard tessellations (e.g. Poisson-Voronoi or regular tessellations).  Cell <em>groups</em> can be defined to represent, for example, the different phases of a multiphased polycrystalline material (option <a class="reference internal" href="#cmdoption-group"><code class="xref std std-option docutils literal notranslate"><span class="pre">-group</span></code></a>).</p>
+<p><em>Tessellations</em> can be generated from various types of morphological cell properties (option <a class="reference internal" href="#cmdoption-morpho"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morpho</span></code></a>).  Several predefined properties are available, such as those obtained by grain growth in metals (which are described by cell size and sphericity (circularity, in 2D) distributions).  Custom properties can be specified using various metrics, including the size and sphericity (circularity, in 2D), the centroid or even the actual shape (using a raster tessellation), in terms of distributions or individual cell values.  Standard analytical distributions are included, and custom numerical distributions can be read from a file.  Global morphological properties, such as a cell aspect ratio or a columnar axis, can also be specified.  The generated <em>tessellations</em> are <em>general convex-cell tessellations</em> represented as Laguerre (or Voronoi) tessellations whose seed attributes are set by optimization to obtain the desired cell properties <a class="footnote-reference brackets" href="#convex" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.  Of course, it is also possible to generate standard tessellations (e.g. Poisson-Voronoi or regular tessellations).  Cell <em>groups</em> can be defined to represent, for example, the different phases of a multiphased polycrystalline material (option <a class="reference internal" href="#cmdoption-group"><code class="xref std std-option docutils literal notranslate"><span class="pre">-group</span></code></a>).</p>
 <p><em>Multiscale tessellations</em> are characterized by the subdivision of the cells of a primary tessellation into secondary tessellations (and so on) and are obtained by combining into one, using <code class="xref py py-data docutils literal notranslate"><span class="pre">::</span></code>, the option arguments that apply at the successive scales.  The same value can be used for defining the tessellations at a given scale, or different values can be loaded using <code class="xref py py-data docutils literal notranslate"><span class="pre">msfile(&lt;file_name&gt;)</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;file_name&gt;</span></code> is a <a class="reference internal" href="fileformat.html#multiscale-cell-file"><span class="std std-ref">multiscale cell file</span></a>). So, all capabilities available for generating a standard (single-scale) tessellations are available for generating the tessellations at the different scales of a multiscale tessellation.</p>
-<p>The <em>domain</em> of space in which the tessellation is created can be of any convex shape. In 3D, cuboidal, cylindrical and spherical shapes (and a few other, exotic shapes) are directly supported while other morphologies can be defined from a set of planes (option <a class="reference internal" href="#cmdoption-domain"><code class="xref std std-option docutils literal notranslate"><span class="pre">-domain</span></code></a>).  Non convex domain shapes can be obtained by cutting the tessellation by different geometrical primitives once generated (option <code class="xref py py-data docutils literal notranslate"><span class="pre">-transform</span> <span class="pre">cut</span></code> <a class="footnote-reference brackets" href="#cut" id="id2">1</a>).  Periodicity or semi-periodicity conditions can be applied to the tessellation (option <a class="reference internal" href="#cmdoption-periodicity"><code class="xref std std-option docutils literal notranslate"><span class="pre">-periodicity</span></code></a>).</p>
+<p>The <em>domain</em> of space in which the tessellation is created can be of any convex shape. In 3D, cuboidal, cylindrical and spherical shapes (and a few other, exotic shapes) are directly supported while other morphologies can be defined from a set of planes (option <a class="reference internal" href="#cmdoption-domain"><code class="xref std std-option docutils literal notranslate"><span class="pre">-domain</span></code></a>).  Non convex domain shapes can be obtained by cutting the tessellation by different geometrical primitives once generated (option <code class="xref py py-data docutils literal notranslate"><span class="pre">-transform</span> <span class="pre">cut</span></code> <a class="footnote-reference brackets" href="#cut" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>).  Periodicity or semi-periodicity conditions can be applied to the tessellation (option <a class="reference internal" href="#cmdoption-periodicity"><code class="xref std std-option docutils literal notranslate"><span class="pre">-periodicity</span></code></a>).</p>
 <p><em>Crystal orientations</em> can be randomly distributed (according to a uniform distribution function), either in the 3D space or along a specific orientation fiber, or uniformly distributed (also according to a uniform distribution function, option <a class="reference internal" href="#cmdoption-ori"><code class="xref std std-option docutils literal notranslate"><span class="pre">-ori</span></code></a>).  Uniform crystal orientation distributions ensure that all possible crystal orientations are equally represented (no orientation clustering).  Crystal orientations can be written according to different descriptors (option <a class="reference internal" href="#cmdoption-oridescriptor"><code class="xref std std-option docutils literal notranslate"><span class="pre">-oridescriptor</span></code></a>).  It is also possible to define an analytical orientation spread for the cells (option <a class="reference internal" href="#cmdoption-orispread"><code class="xref std std-option docutils literal notranslate"><span class="pre">-orispread</span></code></a>).</p>
 <p><em>Regularization</em> can be applied to the tessellations and consists of removing their small edges and faces (option <a class="reference internal" href="#cmdoption-regularization"><code class="xref std std-option docutils literal notranslate"><span class="pre">-regularization</span></code></a>) which would otherwise be detrimental to generating meshes with high quality elements with <a class="reference internal" href="neper_m.html#neper-m"><span class="std std-ref">module -M</span></a>).</p>
 <p><em>Output files</em> describe the tessellation either at the <a class="reference internal" href="fileformat.html#tess-file"><span class="std std-ref">scalar format (.tess)</span></a> or at the <a class="reference internal" href="fileformat.html#tesr-file"><span class="std std-ref">raster format (.tesr)</span></a>. A <em>raster tessellation</em> also has all required fields to describe data obtained by 2D or 3D orientation mapping methods (such as EBSD).   Tessellation files are input files of the <a class="reference internal" href="neper_m.html#neper-m"><span class="std std-ref">Meshing Module (-M)</span></a> and the <a class="reference internal" href="neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>, and can also be exported as a <a class="reference internal" href="fileformat.html#simulation-directory"><span class="std std-ref">Simulation Directory (.sim)</span></a>, which is input to the <a class="reference internal" href="neper_s.html#neper-s"><span class="std std-ref">Simulation Module (-S)</span></a>, for post-processing.  Third-party software file formats are also available.</p>
 <p>The methods implemented for tessellation generation are described in <a class="reference internal" href="../tutorials/simple_model.html#cmame2011" id="id3"><span>[CMAME2011]</span></a>, <a class="reference internal" href="../tutorials/morpho_tesr_mesh.html#cmame2018" id="id4"><span>[CMAME2018]</span></a> and <a class="reference internal" href="#jac2018" id="id5"><span>[JAC2018]</span></a>.</p>
 <p>Here is what a typical run of module -T looks like:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">10</span> -reg <span class="m">1</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">10</span><span class="w"> </span>-reg<span class="w"> </span><span class="m">1</span>
 
 <span class="go">========================    N   e   p   e   r    =======================</span>
 <span class="go">Info   : A software package for polycrystal generation and meshing.</span>
@@ -158,12 +157,12 @@
 </pre></div>
 </div>
 <section id="arguments">
-<h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
+<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading"></a></h2>
 <section id="input-data">
-<h3>Input Data<a class="headerlink" href="#input-data" title="Permalink to this headline">¶</a></h3>
+<h3>Input Data<a class="headerlink" href="#input-data" title="Link to this heading"></a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-n">
-<span class="sig-name descname"><span class="pre">-n</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cell_number&gt;</span></span><a class="headerlink" href="#cmdoption-n" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-n</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;cell_number&gt;</span></span><a class="headerlink" href="#cmdoption-n" title="Link to this definition"></a></dt>
 <dd><p>Specify the number of cells of the tessellation, which can be:</p>
 <ul class="simple">
 <li><p>an integer value or any expression based on the <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>;</p></li>
@@ -174,7 +173,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-id">
-<span class="sig-name descname"><span class="pre">-id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;identifier&gt;</span></span><a class="headerlink" href="#cmdoption-id" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-id</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;identifier&gt;</span></span><a class="headerlink" href="#cmdoption-id" title="Link to this definition"></a></dt>
 <dd><p>Specify the identifier of the tessellation, which can be an integer value or any expression based on the <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>.</p>
 <p>The identifier is used as seed of the random number generator to compute the (initial) seed positions.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>.</p>
@@ -182,14 +181,14 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-dim">
-<span class="sig-name descname"><span class="pre">-dim</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;dimension&gt;</span></span><a class="headerlink" href="#cmdoption-dim" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-dim</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;dimension&gt;</span></span><a class="headerlink" href="#cmdoption-dim" title="Link to this definition"></a></dt>
 <dd><p>Specify the dimension of the tessellation, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">2</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">3</span></code>.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">3</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-domain">
-<span class="sig-name descname"><span class="pre">-domain</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;domain_morphology[:transformation]&gt;</span></span><a class="headerlink" href="#cmdoption-domain" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-domain</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;domain_morphology[:transformation]&gt;</span></span><a class="headerlink" href="#cmdoption-domain" title="Link to this definition"></a></dt>
 <dd><p>Specify the domain morphology and, optionally, a transformation.</p>
 <p>The domain morphology can be:</p>
 <ul>
@@ -211,7 +210,7 @@
 </li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cell(&lt;file_name&gt;,&lt;cell_id&gt;)</span></code>: a tessellation cell, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;file_name&gt;</span></code> is the tessellation file and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;cell_id&gt;</span></code> is the cell identifier;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues(&lt;crysym&gt;)</span></code>: a Rodrigues space fundamental region, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysym&gt;</span></code> is the <a class="reference internal" href="exprskeys.html#crystal-symmetries"><span class="std std-ref">Crystal Symmetry</span></a>;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">euler-bunge(&lt;size_x&gt;,&lt;size_y&gt;,&lt;size_z&gt;)</span></code>: the Euler space (Bunge convention), where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_y&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_z&gt;</span></code> are the space dimensions (in degrees or radians <a class="footnote-reference brackets" href="#euler-bunge" id="id6">9</a>);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">euler-bunge(&lt;size_x&gt;,&lt;size_y&gt;,&lt;size_z&gt;)</span></code>: the Euler space (Bunge convention), where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_y&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_z&gt;</span></code> are the space dimensions (in degrees or radians <a class="footnote-reference brackets" href="#euler-bunge" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a>);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">stdtriangle(crysym=&lt;crysym&gt;,projection=&lt;projection&gt;,segmentnb=&lt;segment_nb&gt;)</span></code>: a standard stereographic triangle, with the optional arguments:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">crysym</span></code>: the crystal symmetry (default <code class="xref py py-data docutils literal notranslate"><span class="pre">cubic</span></code>);</p></li>
@@ -233,7 +232,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-periodicity">
-<span class="sig-name descname"><span class="pre">-periodicity</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;periodicity&gt;</span></span><a class="headerlink" href="#cmdoption-periodicity" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-periodicity</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;periodicity&gt;</span></span><a class="headerlink" href="#cmdoption-periodicity" title="Link to this definition"></a></dt>
 <dd><p>Specify the periodicity conditions that apply to the domain (and therefore to the tessellation), which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>: no periodicity;</p></li>
@@ -246,14 +245,14 @@
 <p>Is it also possible to load a tessellation or a raster tessellation from a file:</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-loadtess">
-<span class="sig-name descname"><span class="pre">-loadtess</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;tess_file&gt;</span></span><a class="headerlink" href="#cmdoption-loadtess" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-loadtess</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;tess_file&gt;</span></span><a class="headerlink" href="#cmdoption-loadtess" title="Link to this definition"></a></dt>
 <dd><p>Load a tessellation from a <a class="reference internal" href="fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-loadtesr">
-<span class="sig-name descname"><span class="pre">-loadtesr</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;tesr_file&gt;[:&lt;transformation1&gt;][:&lt;transformation2&gt;:...]</span></span><a class="headerlink" href="#cmdoption-loadtesr" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-loadtesr</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;tesr_file&gt;[:&lt;transformation1&gt;][:&lt;transformation2&gt;:...]</span></span><a class="headerlink" href="#cmdoption-loadtesr" title="Link to this definition"></a></dt>
 <dd><p>Load a raster tessellation from a <a class="reference internal" href="fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a> and, optionally, apply transformations.</p>
 <p>The transformations can be:</p>
 <ul class="simple">
@@ -266,28 +265,28 @@
 <p>Finally, it is possible to load a set of points.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-loadpoint">
-<span class="sig-name descname"><span class="pre">-loadpoint</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;point_file&gt;</span></span><a class="headerlink" href="#cmdoption-loadpoint" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-loadpoint</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;point_file&gt;</span></span><a class="headerlink" href="#cmdoption-loadpoint" title="Link to this definition"></a></dt>
 <dd><p>Load points from a file formatted as a <a class="reference internal" href="fileformat.html#position-file"><span class="std std-ref">Position File</span></a>.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>These points are used only for statistics, in option <a class="reference internal" href="#cmdoption-statpoint"><code class="xref std std-option docutils literal notranslate"><span class="pre">-statpoint</span></code></a>, and are <em>not</em> used for tessellation.</p>
+<p>These points are used only for statistics, in option <a class="reference internal" href="neper_m.html#cmdoption-statpoint"><code class="xref std std-option docutils literal notranslate"><span class="pre">-statpoint</span></code></a>, and are <em>not</em> used for tessellation.</p>
 </div>
 <p><strong>Default value</strong>: -*</p>
 </dd></dl>
 
 </section>
 <section id="morphology-options">
-<h3>Morphology Options<a class="headerlink" href="#morphology-options" title="Permalink to this headline">¶</a></h3>
+<h3>Morphology Options<a class="headerlink" href="#morphology-options" title="Link to this heading"></a></h3>
 <p>These options can be used to set the cell morphology.</p>
-<span class="target" id="morpho-voronoi"></span><dl class="std option">
+<dl class="std option" id="morpho-voronoi">
 <dt class="sig sig-object std" id="cmdoption-morpho">
-<span class="sig-name descname"><span class="pre">-morpho</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;morphology&gt;</span></span><a class="headerlink" href="#cmdoption-morpho" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morpho</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;morphology&gt;</span></span><a class="headerlink" href="#cmdoption-morpho" title="Link to this definition"></a></dt>
 <dd><p>Specify morphological properties of the cells.  This can be done in different ways:</p>
 <p><strong>Special morphological properties</strong> can be (mutually-exclusive):</p>
 <ul>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">voronoi</span></code>: standard Poisson-Voronoi tessellation;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">graingrowth</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">gg</span></code>: grain-growth morphology, which corresponds to a wider grain size distribution and higher grain sphericities than in a Voronoi tessellation.  It actually is an alias for <code class="xref py py-data docutils literal notranslate"><span class="pre">diameq:lognormal(1,0.35),1-sphericity:lognormal(0.145,0.03)</span></code> in 3D and <code class="xref py py-data docutils literal notranslate"><span class="pre">diameq:lognormal(1,0.42),1-circularity:lognormal(0.100,0.03)</span></code> in 2D, which are described below.  The <code class="xref py py-data docutils literal notranslate"><span class="pre">graingrowth(&lt;mean&gt;)</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">gg(&lt;mean&gt;)</span></code> variants can be used to provide an absolute mean grain size, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;mean&gt;</span></code> (in which case <code class="xref py py-data docutils literal notranslate"><span class="pre">-n</span> <span class="pre">from_morpho</span></code> must be used, as described below).</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">centroidal</span></code>: a centroidal tessellation <a class="footnote-reference brackets" href="#centroidal" id="id7">3</a>.  It actually is an alias for <code class="xref py py-data docutils literal notranslate"><span class="pre">centroid:seed</span></code>, which is described below.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">centroidal</span></code>: a centroidal tessellation <a class="footnote-reference brackets" href="#centroidal" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.  It actually is an alias for <code class="xref py py-data docutils literal notranslate"><span class="pre">centroid:seed</span></code>, which is described below.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cube(&lt;N&gt;)</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">square(&lt;N&gt;)</span></code>: regular tessellations into cubic or square cells, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;N&gt;</span></code> is the number of cells along a direction, or <code class="xref py py-data docutils literal notranslate"><span class="pre">cube(&lt;N1&gt;,&lt;N2&gt;,&lt;N3&gt;)</span></code> / <code class="xref py py-data docutils literal notranslate"><span class="pre">square(&lt;N1&gt;,&lt;N2&gt;)</span></code> for a regular tessellation into cubic / square cells, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;N1&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;N2&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;N3&gt;</span></code> are the number of cells along the three directions;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">tocta(&lt;N&gt;)</span></code>: regular tessellation into truncated octahedra, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;N&gt;</span></code> is the number of cells along a direction;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">lamellar(w=&lt;width&gt;[,v=&lt;normal&gt;][,pos=&lt;pos&gt;][,reps=&lt;reps&gt;])</span></code>: lamellar morphology, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;width&gt;</span></code> is the absolute lamella width or a series of absolute lamella widths combined with <code class="xref py py-data docutils literal notranslate"><span class="pre">:</span></code>, and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;normal&gt;</span></code> is the lamella plane normal and can be:</p>
@@ -310,9 +309,9 @@
 </ul>
 <p><strong>Custom morphological properties</strong> can be defined using <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;property&gt;:&lt;value&gt;</span></code>. The properties and the possible corresponding values can be:</p>
 <ul>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">size</span></code>: the size (volume in 3D and area in 2D) <a class="footnote-reference brackets" href="#size-diameq" id="id8">11</a>;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">diameq</span></code>: the equivalent diameter <a class="footnote-reference brackets" href="#size-diameq" id="id9">11</a>;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">sphericity</span></code>: the sphericity, and <code class="xref py py-data docutils literal notranslate"><span class="pre">1-sphericity</span></code>: 1 <span class="math notranslate nohighlight">\(-\)</span> the sphericity (or <code class="xref py py-data docutils literal notranslate"><span class="pre">circularity</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">1-circularity</span></code>). <a class="footnote-reference brackets" href="#sphericity-circularity" id="id10">4</a> <a class="footnote-reference brackets" href="#sphericity" id="id11">5</a></p>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">size</span></code>: the size (volume in 3D and area in 2D) <a class="footnote-reference brackets" href="#size-diameq" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a>;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">diameq</span></code>: the equivalent diameter <a class="footnote-reference brackets" href="#size-diameq" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a>;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">sphericity</span></code>: the sphericity, and <code class="xref py py-data docutils literal notranslate"><span class="pre">1-sphericity</span></code>: 1 <span class="math notranslate nohighlight">\(-\)</span> the sphericity (or <code class="xref py py-data docutils literal notranslate"><span class="pre">circularity</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">1-circularity</span></code>). <a class="footnote-reference brackets" href="#sphericity-circularity" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#sphericity" id="id11" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a></p>
 <p>All of <code class="xref py py-data docutils literal notranslate"><span class="pre">size</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">diameq</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">sphericity</span></code> (and their variants) can be defined by <a class="reference internal" href="exprskeys.html#statistical-distributions"><span class="std std-ref">statistical distributions</span></a> or cell by cell.  If the number of cells is defined using option <a class="reference internal" href="#cmdoption-n"><code class="xref std std-option docutils literal notranslate"><span class="pre">-n</span></code></a>, the <code class="xref py py-data docutils literal notranslate"><span class="pre">size</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">diameq</span></code> distribution is scaled to get the specified number of cells.  At the opposite, if <code class="xref py py-data docutils literal notranslate"><span class="pre">-n</span> <span class="pre">from_morpho</span></code> is used, the number of cells is determined from the <code class="xref py py-data docutils literal notranslate"><span class="pre">size</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">diameq</span></code> distribution.  An interval of possible values can also be provided using <code class="xref py py-data docutils literal notranslate"><span class="pre">interval(&lt;min&gt;,&lt;max&gt;)</span></code>.  Cell-by-cell values can be provided using <code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;file_name&gt;</span></code> contains the cell values.  A unique (numeral) value to be assigned to all cells can also be provided directly.</p>
 </li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">centroid</span></code> for the centroid;</p></li>
@@ -335,7 +334,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptiini">
-<span class="sig-name descname"><span class="pre">-morphooptiini</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;seed_attributes&gt;</span></span><a class="headerlink" href="#cmdoption-morphooptiini" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptiini</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;seed_attributes&gt;</span></span><a class="headerlink" href="#cmdoption-morphooptiini" title="Link to this definition"></a></dt>
 <dd><p>Specify the initial positions and/or weights of the seeds.</p>
 <p>The general form of the argument is <code class="xref py py-data docutils literal notranslate"><span class="pre">coo:&lt;coo_definition&gt;,weight:&lt;weight_definition&gt;</span></code>.  Different values of <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;coo_definition&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;weight_definition&gt;</span></code> are available, depending on the value of option <a class="reference internal" href="#cmdoption-morpho"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morpho</span></code></a>:</p>
 <ul>
@@ -363,7 +362,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptiobjective">
-<span class="sig-name descname"><span class="pre">-morphooptiobjective</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;objective_function&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptiobjective" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptiobjective</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;objective_function&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptiobjective" title="Link to this definition"></a></dt>
 <dd><p>Specify the objective function.  The general form of the argument is <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;prop1&gt;:&lt;objective_function1&gt;,&lt;prop2&gt;:&lt;objective_function2&gt;,...</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;prop#&gt;</span></code> are properties as defined in option <a class="reference internal" href="#cmdoption-morpho"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morpho</span></code></a>, and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;objective_function#&gt;</span></code> are their objective functions.  An objective function depends on the property and its value.</p>
 <p><strong>Properties defined by a statistical distribution</strong> (which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">size</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">diameq</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">sphericity</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">1-sphericity</span></code> (or <code class="xref py py-data docutils literal notranslate"><span class="pre">circularity</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">1-circularity</span></code>)) can take values of:</p>
 <ul class="simple">
@@ -410,14 +409,14 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptidof">
-<span class="sig-name descname"><span class="pre">-morphooptidof</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;dof1&gt;,&lt;dof2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptidof" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptidof</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;dof1&gt;,&lt;dof2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptidof" title="Link to this definition"></a></dt>
 <dd><p>Specify the degrees of freedom, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code> for the 3 coordinates, and <code class="xref py py-data docutils literal notranslate"><span class="pre">w</span></code> for the weights.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">x,y,z,w</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptistop">
-<span class="sig-name descname"><span class="pre">-morphooptistop</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;var1&gt;=&lt;val1&gt;,&lt;var2&gt;=&lt;val2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptistop" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptistop</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;var1&gt;=&lt;val1&gt;,&lt;var2&gt;=&lt;val2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptistop" title="Link to this definition"></a></dt>
 <dd><p>Specify the stopping criteria of the optimization process, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">eps</span></code>: absolute error on the value of the objective function evaluated on a number of degrees of freedom basis (<code class="xref py py-data docutils literal notranslate"><span class="pre">nlopt_eps</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">nlopt_reps</span></code> are the NLopt iteration-based values);</p></li>
@@ -436,12 +435,12 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptialgo">
-<span class="sig-name descname"><span class="pre">-morphooptialgo</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;algorithm1&gt;,&lt;algorithm2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptialgo" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptialgo</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;algorithm1&gt;,&lt;algorithm2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptialgo" title="Link to this definition"></a></dt>
 <dd><p>Specify the optimization algorithm, which can be:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">subplex</span></code>: Subplex (recommend);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">praxis</span></code>: Praxis (recommended, except for high numbers of seeds, where it becomes highly memory-intensive) <a class="footnote-reference brackets" href="#praxis" id="id14">10</a> ;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">praxis</span></code>: Praxis (recommended, except for high numbers of seeds, where it becomes highly memory-intensive) <a class="footnote-reference brackets" href="#praxis" id="id14" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a> ;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">neldermead</span></code>: Nelder-Mead (not recommended);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cobyla</span></code>: Cobyla (not recommended);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">bobyqa</span></code>: Bobyqa (not recommended);</p></li>
@@ -456,14 +455,14 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptigrid">
-<span class="sig-name descname"><span class="pre">-morphooptigrid</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;var1&gt;:&lt;grid1&gt;,&lt;var2&gt;:&lt;grid2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptigrid" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptigrid</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;var1&gt;:&lt;grid1&gt;,&lt;var2&gt;:&lt;grid2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptigrid" title="Link to this definition"></a></dt>
 <dd><p>Specify the grids used to discretize the variable distributions. The variables are those defined in <a class="reference internal" href="#cmdoption-morpho"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morpho</span></code></a>, and the grid must be <code class="xref py py-data docutils literal notranslate"><span class="pre">regular(&lt;min&gt;,&lt;max&gt;,&lt;bin_nb&gt;)</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;min&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;max&gt;</span></code> are the minimum and maximum values of the grid interval, respectively, and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;bin_nb&gt;</span></code> is the number of bins.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">diameq:regular(-1,10,1100),size:regular(-1,10,1100),sphericity:regular(-0.1,1.1,1200),1-sphericity:regular(-0.1,1.1,1200)</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptismooth">
-<span class="sig-name descname"><span class="pre">-morphooptismooth</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;var1&gt;:&lt;val1&gt;,&lt;var2&gt;:&lt;val2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptismooth" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptismooth</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;var1&gt;:&lt;val1&gt;,&lt;var2&gt;:&lt;val2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptismooth" title="Link to this definition"></a></dt>
 <dd><p>Specify the standard deviations of the Gaussian distributions which are assigned to each cell data to compute the distributions.  The variables are those defined in <a class="reference internal" href="#cmdoption-morpho"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morpho</span></code></a>.</p>
 <p>It is also possible to specify how the convolution functions should be treated, using <code class="xref py py-data docutils literal notranslate"><span class="pre">analytical</span></code> for analytical functions or <code class="xref py py-data docutils literal notranslate"><span class="pre">numerical</span></code> for numerical functions (the default, recommended).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">diameq:0.05,size:0.05,sphericity:0.005,numerical</span></code>.</p>
@@ -471,7 +470,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptideltamax">
-<span class="sig-name descname"><span class="pre">-morphooptideltamax</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;deltamax&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptideltamax" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptideltamax</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;deltamax&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptideltamax" title="Link to this definition"></a></dt>
 <dd><p>Specify the maximal value by which each variable is allowed to change during optimization.</p>
 <p>Possible values: any (<span class="math notranslate nohighlight">\(\geq 0\)</span>).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">HUGE_VAL</span></code>.</p>
@@ -479,21 +478,21 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptiinistep">
-<span class="sig-name descname"><span class="pre">-morphooptiinistep</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;inistep&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptiinistep" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptiinistep</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;inistep&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptiinistep" title="Link to this definition"></a></dt>
 <dd><p>Specify the step used to perturb the seed positions and weights when optimization begins.  The argument can be a real value of a mathematical expression based on <code class="xref py py-data docutils literal notranslate"><span class="pre">avdiameq</span></code>, the average equivalent cell diameter.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">avdiameq/10</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptialgomaxiter">
-<span class="sig-name descname"><span class="pre">-morphooptialgomaxiter</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;iter_number&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptialgomaxiter" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptialgomaxiter</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;iter_number&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptialgomaxiter" title="Link to this definition"></a></dt>
 <dd><p>Specify the maximum number of iterations allowed to the optimization algorithm to run without decreasing the objective function.  The expression can be any mathematical expression based on variable <code class="xref py py-data docutils literal notranslate"><span class="pre">varnb</span></code> (the total number of optimization variables).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">max(varnb,1000)</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptilogtime">
-<span class="sig-name descname"><span class="pre">-morphooptilogtime</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variables&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptilogtime" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptilogtime</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variables&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptilogtime" title="Link to this definition"></a></dt>
 <dd><p>Log the time taken during the optimization process.  The variables can be among those provided in <a class="reference internal" href="exprskeys.html#time-keys"><span class="std std-ref">Time Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.logtime</span></code>.</p>
@@ -501,7 +500,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptilogvar">
-<span class="sig-name descname"><span class="pre">-morphooptilogvar</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variables&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptilogvar" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptilogvar</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variables&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptilogvar" title="Link to this definition"></a></dt>
 <dd><p>Log the variables (seed attributes) during the optimization process.  The variables can be among those provided in <a class="reference internal" href="exprskeys.html#variable-keys"><span class="std std-ref">Variable Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.logvar</span></code>.</p>
@@ -509,7 +508,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptilogval">
-<span class="sig-name descname"><span class="pre">-morphooptilogval</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variables&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptilogval" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptilogval</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variables&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptilogval" title="Link to this definition"></a></dt>
 <dd><p>Log the value of the objective function during the optimization process.  The variables can be among those provided in <a class="reference internal" href="exprskeys.html#objective-function-value-keys"><span class="std std-ref">Objective Function Value Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.logval</span></code>.</p>
@@ -517,7 +516,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptilogdis">
-<span class="sig-name descname"><span class="pre">-morphooptilogdis</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variables&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptilogdis" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptilogdis</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variables&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptilogdis" title="Link to this definition"></a></dt>
 <dd><p>Log the distributions during the optimization process.  The variables can be among those provided in <a class="reference internal" href="exprskeys.html#statistical-distribution-keys"><span class="std std-ref">Statistical Distribution Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.logdis#</span></code>.</p>
@@ -525,7 +524,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptilogtesr">
-<span class="sig-name descname"><span class="pre">-morphooptilogtesr</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variables&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptilogtesr" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-morphooptilogtesr</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variables&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-morphooptilogtesr" title="Link to this definition"></a></dt>
 <dd><p>Log the raster tessellation voxel data during the optimization process.  The variables can be among those provided in <a class="reference internal" href="exprskeys.html#tessellation-optimization-keys"><span class="std std-ref">Tessellation Optimization Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.logtesr</span></code>.</p>
@@ -533,11 +532,11 @@
 
 </section>
 <section id="group-options">
-<h3>Group Options<a class="headerlink" href="#group-options" title="Permalink to this headline">¶</a></h3>
+<h3>Group Options<a class="headerlink" href="#group-options" title="Link to this heading"></a></h3>
 <p>The following option can be used to define cell groups (each cell is assigned to a group).  Groups are computed after tessellation and so can be defined from the cell properties (if scalar and raster tessellations are written in output, groups are computed independently for each of them).</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-group">
-<span class="sig-name descname"><span class="pre">-group</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;group_expression&gt;</span></span><a class="headerlink" href="#cmdoption-group" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-group</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;group_expression&gt;</span></span><a class="headerlink" href="#cmdoption-group" title="Link to this definition"></a></dt>
 <dd><p>Specify the groups of the cells.  The expression can be:</p>
 <ul class="simple">
 <li><p>an integer number or an expression based on the variables defined in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a> or <a class="reference internal" href="exprskeys.html#raster-tessellation-keys"><span class="std std-ref">Raster Tessellation Keys</span></a>, for example <code class="xref py py-data docutils literal notranslate"><span class="pre">&quot;vol&lt;0.1?1:2&quot;</span></code>;</p></li>
@@ -548,10 +547,10 @@
 
 </section>
 <section id="crystal-orientation-options">
-<h3>Crystal Orientation Options<a class="headerlink" href="#crystal-orientation-options" title="Permalink to this headline">¶</a></h3>
+<h3>Crystal Orientation Options<a class="headerlink" href="#crystal-orientation-options" title="Link to this heading"></a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-crysym">
-<span class="sig-name descname"><span class="pre">-crysym</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;crysym&gt;</span></span><a class="headerlink" href="#cmdoption-crysym" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-crysym</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;crysym&gt;</span></span><a class="headerlink" href="#cmdoption-crysym" title="Link to this definition"></a></dt>
 <dd><p>Specify the <a class="reference internal" href="exprskeys.html#crystal-symmetries"><span class="std std-ref">Crystal Symmetry</span></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -562,11 +561,11 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-ori">
-<span class="sig-name descname"><span class="pre">-ori</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;ori_distrib&gt;</span></span><a class="headerlink" href="#cmdoption-ori" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-ori</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;ori_distrib&gt;</span></span><a class="headerlink" href="#cmdoption-ori" title="Link to this definition"></a></dt>
 <dd><p>Specify the type of crystal orientation distribution. It can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">random</span></code>: randomly-distributed orientations in 3D space;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">uniform</span></code>: uniformly-distributed orientations in 3D space <a class="footnote-reference brackets" href="#uniform-crysym" id="id15">7</a>;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">uniform</span></code>: uniformly-distributed orientations in 3D space <a class="footnote-reference brackets" href="#uniform-crysym" id="id15" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a>;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;orientation&gt;[:&lt;distribution&gt;]</span></code>: a <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">discrete orientation</span></a>, with an optional disorientation distribution (see below);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">fiber(&lt;dirc_x&gt;,&lt;dirc_y&gt;,&lt;dirc_z&gt;,&lt;dirs_x&gt;,&lt;dirs_y&gt;,&lt;dirs_z&gt;)[:normal(&lt;var&gt;=&lt;val&gt;)]</span></code>: randomly-distributed orientations along the fiber, see <a class="reference internal" href="exprskeys.html#orientation-fibers"><span class="std std-ref">Orientation Fibers</span></a>, with an optional disorientation distribution (see below);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">parent[:normal(&lt;var&gt;=&lt;val&gt;)]</span></code>: orientations inherited from the ones of the parent cells, with an optional disorientation distribution (see below);</p></li>
@@ -595,7 +594,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-orispread">
-<span class="sig-name descname"><span class="pre">-orispread</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;spread&gt;</span></span><a class="headerlink" href="#cmdoption-orispread" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-orispread</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;spread&gt;</span></span><a class="headerlink" href="#cmdoption-orispread" title="Link to this definition"></a></dt>
 <dd><p>Specify the type of (in-cell) orientation spreads.  It can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">normal(&lt;thetam&gt;)</span></code>: a 3-variate normal distribution corresponding to an average misorientation angle (with respect to the average orientation) of <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;thetam&gt;</span></code> (expressed in degree), to be applied to all cells.</p></li>
@@ -607,7 +606,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-orioptiini">
-<span class="sig-name descname"><span class="pre">-orioptiini</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;ori_distrib&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptiini" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-orioptiini</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;ori_distrib&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptiini" title="Link to this definition"></a></dt>
 <dd><p>Specify the initial crystal orientations, which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">random</span></code>: random orientations;</p></li>
@@ -618,7 +617,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-orioptifix">
-<span class="sig-name descname"><span class="pre">-orioptifix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;orientations&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptifix" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-orioptifix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;orientations&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptifix" title="Link to this definition"></a></dt>
 <dd><p>Specify some orientations to fix during optimization.  The argument can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: logical values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>;</p></li>
@@ -629,7 +628,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-orioptistop">
-<span class="sig-name descname"><span class="pre">-orioptistop</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;stopping_criterion&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptistop" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-orioptistop</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;stopping_criterion&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptistop" title="Link to this definition"></a></dt>
 <dd><p>Specify the stopping criterion of the optimization process, as a logical expression based on the following variables:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">reps</span></code>: relative error on the forces at orientations;</p></li>
@@ -640,7 +639,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-orioptineigh">
-<span class="sig-name descname"><span class="pre">-orioptineigh</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;neighborhood_radius&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptineigh" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-orioptineigh</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;neighborhood_radius&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptineigh" title="Link to this definition"></a></dt>
 <dd><p>Specify the radius of the neighborhood of orientations to be used to compute their forces (for <code class="xref py py-data docutils literal notranslate"><span class="pre">-ori</span> <span class="pre">uniform</span></code>), which can be any mathematical or logical expression based on:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">dr</span></code>: average radius of an orientation;</p></li>
@@ -651,7 +650,7 @@
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-orioptilogvar">
-<span class="sig-name descname"><span class="pre">-orioptilogvar</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variables&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptilogvar" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-orioptilogvar</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variables&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptilogvar" title="Link to this definition"></a></dt>
 <dd><p>Log the variables (the orientations) during the optimization process.  The variables can be among those provided in <a class="reference internal" href="exprskeys.html#orientation-optimization-keys"><span class="std std-ref">Orientation Optimization Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.logorivar</span></code>.</p>
@@ -659,10 +658,10 @@
 
 </section>
 <section id="transformation-options">
-<h3>Transformation Options<a class="headerlink" href="#transformation-options" title="Permalink to this headline">¶</a></h3>
+<h3>Transformation Options<a class="headerlink" href="#transformation-options" title="Link to this heading"></a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-transform">
-<span class="sig-name descname"><span class="pre">-transform</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;transformation1&gt;,&lt;transformation2&gt;,...</span></span><a class="headerlink" href="#cmdoption-transform" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-transform</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;transformation1&gt;,&lt;transformation2&gt;,...</span></span><a class="headerlink" href="#cmdoption-transform" title="Link to this definition"></a></dt>
 <dd><p>Apply successive transformations to a tessellation (if scalar and raster tessellations are written in output, they are transformed independently from each other).</p>
 <p><strong>For a scalar tessellation</strong>, the transformations can be:</p>
 <ul>
@@ -726,7 +725,7 @@ The region interior to the primitives is removed from the tessellation.  Append 
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-sort">
-<span class="sig-name descname"><span class="pre">-sort</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sort_expression&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-sort" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-sort</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;sort_expression&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-sort" title="Link to this definition"></a></dt>
 <dd><p>Sort the tessellation cells (typically to facilitate data post-processing) following a mathematical expression based on the tessellation variables (see <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>). Sorting is done in ascending order.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -737,10 +736,10 @@ The region interior to the primitives is removed from the tessellation.  Append 
 
 </section>
 <section id="regularization-options">
-<h3>Regularization Options<a class="headerlink" href="#regularization-options" title="Permalink to this headline">¶</a></h3>
+<h3>Regularization Options<a class="headerlink" href="#regularization-options" title="Link to this heading"></a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-regularization">
-<span class="sig-name descname"><span class="pre">-regularization</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-regularization" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-regularization</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-regularization" title="Link to this definition"></a></dt>
 <dd><p>Regularize a tessellation, that is, removes the small edges and (indirectly) faces. Regularization enables <a class="reference internal" href="neper_m.html#neper-m"><span class="std std-ref">meshing with higher-quality elements</span></a> and generates some slightly non-planar internal faces (in 3D).</p>
 <p>Control parameters can be set using options <a class="reference internal" href="#cmdoption-fmax"><code class="xref std std-option docutils literal notranslate"><span class="pre">-fmax</span></code></a>, <a class="reference internal" href="#cmdoption-sel"><code class="xref std std-option docutils literal notranslate"><span class="pre">-sel</span></code></a> and <a class="reference internal" href="#cmdoption-mloop"><code class="xref std std-option docutils literal notranslate"><span class="pre">-mloop</span></code></a>.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>.</p>
@@ -748,14 +747,14 @@ The region interior to the primitives is removed from the tessellation.  Append 
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-fmax">
-<span class="sig-name descname"><span class="pre">-fmax</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;maximum_angle&gt;</span></span><a class="headerlink" href="#cmdoption-fmax" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-fmax</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;maximum_angle&gt;</span></span><a class="headerlink" href="#cmdoption-fmax" title="Link to this definition"></a></dt>
 <dd><p>Specify the maximum allowed face flatness fault (in degrees). The flatness fault is the maximum angle between the normals at two locations on a face.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">20</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-sel">
-<span class="sig-name descname"><span class="pre">-sel</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;length&gt;</span> <span class="pre">or</span> <span class="pre">-rsel</span> <span class="pre">&lt;relative_length&gt;</span> <span class="pre">[secondary</span> <span class="pre">option]</span></span><a class="headerlink" href="#cmdoption-sel" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-sel</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;length&gt;</span> <span class="pre">or</span> <span class="pre">-rsel</span> <span class="pre">&lt;relative_length&gt;</span> <span class="pre">[secondary</span> <span class="pre">option]</span></span><a class="headerlink" href="#cmdoption-sel" title="Link to this definition"></a></dt>
 <dd><p>Specify the absolute, <code class="xref py py-data docutils literal notranslate"><span class="pre">sel</span></code>, or relative, <code class="xref py py-data docutils literal notranslate"><span class="pre">rsel</span></code>, (maximum) small edge length.  <code class="xref py py-data docutils literal notranslate"><span class="pre">rsel</span></code> is defined relative to the average cell size (volume in 3D and area in 2D), and a value of <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> corresponds to a length of 0.25 for a unit volume cell in 3D and 0.125 for a unit area cell in 2D.
 The value can be:</p>
 <ul class="simple">
@@ -769,24 +768,24 @@ The value can be:</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-mloop">
-<span class="sig-name descname"><span class="pre">-mloop</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;loop_number&gt;</span> <span class="pre">[secondary</span> <span class="pre">option]</span></span><a class="headerlink" href="#cmdoption-mloop" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-mloop</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;loop_number&gt;</span> <span class="pre">[secondary</span> <span class="pre">option]</span></span><a class="headerlink" href="#cmdoption-mloop" title="Link to this definition"></a></dt>
 <dd><p>Specify the maximum number of regularization loops.  During each loop, the small edges are considered for removal in turn from the shortest to the longest.  Regularization stops when the maximum number of loops is reached or no edges are deleted during a loop.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">2</span></code>.</p>
 </dd></dl>
 
 </section>
 <section id="output-options">
-<h3>Output Options<a class="headerlink" href="#output-options" title="Permalink to this headline">¶</a></h3>
+<h3>Output Options<a class="headerlink" href="#output-options" title="Link to this heading"></a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-o">
-<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;file_name&gt;</span></span><a class="headerlink" href="#cmdoption-o" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;file_name&gt;</span></span><a class="headerlink" href="#cmdoption-o" title="Link to this definition"></a></dt>
 <dd><p>Specify the output file name (no extension).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">n&lt;n&gt;-id&lt;id&gt;</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-format">
-<span class="sig-name descname"><span class="pre">-format</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;format1&gt;,&lt;format2&gt;,...</span></span><a class="headerlink" href="#cmdoption-format" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-format</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;format1&gt;,&lt;format2&gt;,...</span></span><a class="headerlink" href="#cmdoption-format" title="Link to this definition"></a></dt>
 <dd><p>Specify the format(s) of the output file(s), which can be:</p>
 <blockquote>
 <div><ul class="simple">
@@ -801,7 +800,7 @@ The value can be:</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-tesrformat">
-<span class="sig-name descname"><span class="pre">-tesrformat</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;format1&gt;,&lt;format2&gt;,...</span></span><a class="headerlink" href="#cmdoption-tesrformat" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-tesrformat</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;format1&gt;,&lt;format2&gt;,...</span></span><a class="headerlink" href="#cmdoption-tesrformat" title="Link to this definition"></a></dt>
 <dd><p>Specify the format(s) of the raster output file(s), which can be:</p>
 <blockquote>
 <div><ul class="simple">
@@ -810,14 +809,14 @@ The value can be:</p>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">binary16</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">binary16_big</span></code>: 16-bit binary / short-type;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">binary32</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">binary32_big</span></code>: 32-bit binary / int-type.</p></li>
 </ul>
-<p><code class="xref py py-data docutils literal notranslate"><span class="pre">binary16</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">binary32</span></code> correspond to little endianness while <code class="xref py py-data docutils literal notranslate"><span class="pre">binary16_big</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">binary32_big</span></code> correspond to big endianness. <a class="footnote-reference brackets" href="#endianness" id="id16">6</a></p>
+<p><code class="xref py py-data docutils literal notranslate"><span class="pre">binary16</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">binary32</span></code> correspond to little endianness while <code class="xref py py-data docutils literal notranslate"><span class="pre">binary16_big</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">binary32_big</span></code> correspond to big endianness. <a class="footnote-reference brackets" href="#endianness" id="id16" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a></p>
 </div></blockquote>
 <p><strong>Default value</strong> : <code class="xref py py-data docutils literal notranslate"><span class="pre">binary16</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">binary_big</span></code> (depending on the system).</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-tesrsize">
-<span class="sig-name descname"><span class="pre">-tesrsize</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;number_of_voxels&gt;</span></span><a class="headerlink" href="#cmdoption-tesrsize" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-tesrsize</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;number_of_voxels&gt;</span></span><a class="headerlink" href="#cmdoption-tesrsize" title="Link to this definition"></a></dt>
 <dd><p>Specify the number of voxels of a raster tessellation along a direction of
 the domain, which can be:</p>
 <ul class="simple">
@@ -829,14 +828,14 @@ the domain, which can be:</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-oridescriptor">
-<span class="sig-name descname"><span class="pre">-oridescriptor</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;descriptor[:convention]&gt;</span></span><a class="headerlink" href="#cmdoption-oridescriptor" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-oridescriptor</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;descriptor[:convention]&gt;</span></span><a class="headerlink" href="#cmdoption-oridescriptor" title="Link to this definition"></a></dt>
 <dd><p>Specify the orientation descriptor and (optionally) the orientation convention used in the <code class="file docutils literal notranslate"><span class="pre">.tess</span></code>, <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code> and <code class="file docutils literal notranslate"><span class="pre">.ori</span></code> files.  See <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a> for possible values.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues:active</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-oriformat">
-<span class="sig-name descname"><span class="pre">-oriformat</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;format1&gt;,&lt;format2&gt;,...</span></span><a class="headerlink" href="#cmdoption-oriformat" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-oriformat</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;format1&gt;,&lt;format2&gt;,...</span></span><a class="headerlink" href="#cmdoption-oriformat" title="Link to this definition"></a></dt>
 <dd><p>Specify the format(s) of the <code class="file docutils literal notranslate"><span class="pre">.ori</span></code> output file(s), which can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">plain</span></code>: plain format, for which descriptors are provided on successive lines;</p></li>
@@ -848,11 +847,11 @@ the domain, which can be:</p>
 
 </section>
 <section id="post-processing-options">
-<h3>Post-Processing Options<a class="headerlink" href="#post-processing-options" title="Permalink to this headline">¶</a></h3>
+<h3>Post-Processing Options<a class="headerlink" href="#post-processing-options" title="Link to this heading"></a></h3>
 <p>The following two options provide general statistics on tessellations.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-stattess">
-<span class="sig-name descname"><span class="pre">-stattess</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-stattess" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-stattess</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-stattess" title="Link to this definition"></a></dt>
 <dd><p>Provide statistics on the tessellation.  Available keys are described in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.sttess</span></code>.</p>
@@ -860,7 +859,7 @@ the domain, which can be:</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-stattesr">
-<span class="sig-name descname"><span class="pre">-stattesr</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-stattesr" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-stattesr</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-stattesr" title="Link to this definition"></a></dt>
 <dd><p>Provide statistics on the raster tessellation.  Available keys are described in <a class="reference internal" href="exprskeys.html#raster-tessellation-keys"><span class="std std-ref">Raster Tessellation Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.sttesr</span></code>.</p>
@@ -869,7 +868,7 @@ the domain, which can be:</p>
 <p>The following options apply to the cells, seeds or cell groups of a tessellation or a raster tessellation, independently of its dimension.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-statcell">
-<span class="sig-name descname"><span class="pre">-statcell</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statcell" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-statcell</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statcell" title="Link to this definition"></a></dt>
 <dd><p>Provide statistics on the tessellation cells.  Available keys are described in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a> and <a class="reference internal" href="exprskeys.html#raster-tessellation-keys"><span class="std std-ref">Raster Tessellation Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.stcell</span></code>.</p>
@@ -877,7 +876,7 @@ the domain, which can be:</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-statseed">
-<span class="sig-name descname"><span class="pre">-statseed</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statseed" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-statseed</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statseed" title="Link to this definition"></a></dt>
 <dd><p>Provide statistics on the tessellation seeds.  Available keys are described in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a> and <a class="reference internal" href="exprskeys.html#raster-tessellation-keys"><span class="std std-ref">Raster Tessellation Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.stseed</span></code>.</p>
@@ -885,7 +884,7 @@ the domain, which can be:</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-statgroup">
-<span class="sig-name descname"><span class="pre">-statgroup</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statgroup" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-statgroup</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statgroup" title="Link to this definition"></a></dt>
 <dd><p>Provide statistics on the tessellation cell groups.  Available keys are described in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a> and <a class="reference internal" href="exprskeys.html#raster-tessellation-keys"><span class="std std-ref">Raster Tessellation Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.stgroup</span></code>.</p>
@@ -894,7 +893,7 @@ the domain, which can be:</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-statver">
-<span class="sig-name descname"><span class="pre">-statver</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statver" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-statver</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statver" title="Link to this definition"></a></dt>
 <dd><p>Provide statistics on the tessellation vertices.  Available keys are described in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.stver</span></code>.</p>
@@ -902,7 +901,7 @@ the domain, which can be:</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-statedge">
-<span class="sig-name descname"><span class="pre">-statedge</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statedge" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-statedge</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statedge" title="Link to this definition"></a></dt>
 <dd><p>Provide statistics on the tessellation edges.  Available keys are described in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.stedge</span></code>.</p>
@@ -910,7 +909,7 @@ the domain, which can be:</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-statface">
-<span class="sig-name descname"><span class="pre">-statface</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statface" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-statface</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statface" title="Link to this definition"></a></dt>
 <dd><p>Provide statistics on the tessellation faces.  Available keys are described in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.stface</span></code>.</p>
@@ -918,7 +917,7 @@ the domain, which can be:</p>
 
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-statpoly">
-<span class="sig-name descname"><span class="pre">-statpoly</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statpoly" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-statpoly</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statpoly" title="Link to this definition"></a></dt>
 <dd><p>Provide statistics on the tessellation polyhedra.  Available keys are described in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.stpoly</span></code>.</p>
@@ -927,7 +926,7 @@ the domain, which can be:</p>
 <p>For a raster tessellation, it is also possible to get statistics on an per-voxel basis,</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-statvox">
-<span class="sig-name descname"><span class="pre">-statvox</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statvox" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-statvox</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statvox" title="Link to this definition"></a></dt>
 <dd><p>Provide statistics on the tessellation voxels.  Available keys are described in <a class="reference internal" href="exprskeys.html#raster-tessellation-keys"><span class="std std-ref">Raster Tessellation Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.stvox</span></code>.</p>
@@ -936,18 +935,18 @@ the domain, which can be:</p>
 <p>Finally, it is possible to get statistics for a particular set of points.</p>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-statpoint">
-<span class="sig-name descname"><span class="pre">-statpoint</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statpoint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provide statistics on the points loaded with option <a class="reference internal" href="#cmdoption-loadpoint"><code class="xref std std-option docutils literal notranslate"><span class="pre">-loadpoint</span></code></a>. Available keys are described in <a class="reference internal" href="exprskeys.html#point-keys"><span class="std std-ref">Point Keys</span></a>.</p>
+<span class="sig-name descname"><span class="pre">-statpoint</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;key1&gt;,&lt;key2&gt;,...</span></span><a class="headerlink" href="#cmdoption-statpoint" title="Link to this definition"></a></dt>
+<dd><p>Provide statistics on the points loaded with option <a class="reference internal" href="neper_m.html#cmdoption-loadpoint"><code class="xref std std-option docutils literal notranslate"><span class="pre">-loadpoint</span></code></a>. Available keys are described in <a class="reference internal" href="exprskeys.html#point-keys"><span class="std std-ref">Point Keys</span></a>.</p>
 <p><strong>Default value</strong>: -.</p>
 <p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.stpoint</span></code>.</p>
 </dd></dl>
 
 </section>
 <section id="debugging-options">
-<h3>Debugging Options<a class="headerlink" href="#debugging-options" title="Permalink to this headline">¶</a></h3>
+<h3>Debugging Options<a class="headerlink" href="#debugging-options" title="Link to this heading"></a></h3>
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-checktess">
-<span class="sig-name descname"><span class="pre">-checktess</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;file_name&gt;</span></span><a class="headerlink" href="#cmdoption-checktess" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">-checktess</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;file_name&gt;</span></span><a class="headerlink" href="#cmdoption-checktess" title="Link to this definition"></a></dt>
 <dd><p>Check a tessellation file.</p>
 <p>Use this option if a tessellation file fails to load using option <a class="reference internal" href="#cmdoption-loadtess"><code class="xref std std-option docutils literal notranslate"><span class="pre">-loadtess</span></code></a> or in other modules.</p>
 <p><strong>Default value</strong>: -.</p>
@@ -956,9 +955,9 @@ the domain, which can be:</p>
 </section>
 </section>
 <section id="output-files">
-<span id="id17"></span><h2>Output Files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
+<span id="id17"></span><h2>Output Files<a class="headerlink" href="#output-files" title="Link to this heading"></a></h2>
 <section id="tessellation">
-<h3>Tessellation<a class="headerlink" href="#tessellation" title="Permalink to this headline">¶</a></h3>
+<h3>Tessellation<a class="headerlink" href="#tessellation" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="file docutils literal notranslate"><span class="pre">.tess</span></code>: Neper (scalar) tessellation file (see <a class="reference internal" href="fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a>);</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.tesr</span></code>: Neper raster tessellation file (see <a class="reference internal" href="fileformat.html#tesr-file"><span class="std std-ref">Raster Tessellation File (.tesr)</span></a>);</p></li>
@@ -973,7 +972,7 @@ the domain, which can be:</p>
 </ul>
 </section>
 <section id="statistics">
-<h3>Statistics<a class="headerlink" href="#statistics" title="Permalink to this headline">¶</a></h3>
+<h3>Statistics<a class="headerlink" href="#statistics" title="Link to this heading"></a></h3>
 <p>Statistics files are first provided for the tessellation and raster tessellation. Each file contains the data specified to the corresponding <code class="xref py py-data docutils literal notranslate"><span class="pre">-stat</span></code> option and as described in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a> and <a class="reference internal" href="exprskeys.html#raster-tessellation-keys"><span class="std std-ref">Raster Tessellation Keys</span></a>.</p>
 <ul class="simple">
 <li><p><code class="file docutils literal notranslate"><span class="pre">.sttess</span></code>: tessellation statistics file;</p></li>
@@ -994,7 +993,7 @@ the domain, which can be:</p>
 </div></blockquote>
 </section>
 <section id="tessellation-optimization-log-files">
-<h3>Tessellation Optimization Log Files<a class="headerlink" href="#tessellation-optimization-log-files" title="Permalink to this headline">¶</a></h3>
+<h3>Tessellation Optimization Log Files<a class="headerlink" href="#tessellation-optimization-log-files" title="Link to this heading"></a></h3>
 <p>Log files are provided for the time, variables, statistical distributions and objective function value.  The files contain the data specified to the corresponding <code class="xref py py-data docutils literal notranslate"><span class="pre">-morphooptilog</span></code> option and described in <a class="reference internal" href="exprskeys.html#tessellation-optimization-keys"><span class="std std-ref">Tessellation Optimization Keys</span></a>.</p>
 <blockquote>
 <div><ul class="simple">
@@ -1007,7 +1006,7 @@ the domain, which can be:</p>
 </div></blockquote>
 </section>
 <section id="orientation-optimization-log-files">
-<h3>Orientation Optimization Log Files<a class="headerlink" href="#orientation-optimization-log-files" title="Permalink to this headline">¶</a></h3>
+<h3>Orientation Optimization Log Files<a class="headerlink" href="#orientation-optimization-log-files" title="Link to this heading"></a></h3>
 <p>A log file is provided for the orientation variables.
 The files contain the data specified to the
 <a class="reference internal" href="#cmdoption-orioptilogvar"><code class="xref std std-option docutils literal notranslate"><span class="pre">-orioptilogvar</span></code></a> option and described in <a class="reference internal" href="exprskeys.html#orientation-optimization-keys"><span class="std std-ref">Orientation Optimization Keys</span></a>.</p>
@@ -1019,91 +1018,91 @@ The files contain the data specified to the
 </section>
 </section>
 <section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
 <p>Below are some examples of use of neper -T.</p>
 <ul>
 <li><p>Generate a Voronoi tessellation containing 100 cells:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span>
 </pre></div>
 </div>
 </li>
 <li><p>Generate a different Voronoi tessellation containing 100 cells (identifier = 2):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -id <span class="m">2</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-id<span class="w"> </span><span class="m">2</span>
 </pre></div>
 </div>
 </li>
 <li><p>Use an elongated domain and generate a Voronoi tessellation containing 100 cells:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -domain <span class="s2">&quot;cube(3,1,0.33)&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;cube(3,1,0.33)&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Generate a Voronoi tessellation containing 100 cells and apply regularization:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -reg <span class="m">1</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-reg<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
 </li>
 <li><p>Generate a 2D Voronoi tessellation containing 100 cells:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -dim <span class="m">2</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-dim<span class="w"> </span><span class="m">2</span>
 </pre></div>
 </div>
 </li>
 <li><p>Generate a tessellation containing 100 cells with an <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code> columnar axis:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -morpho <span class="s2">&quot;columnar(x)&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-morpho<span class="w"> </span><span class="s2">&quot;columnar(x)&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Generate a tessellation containing 100 cells with a bamboo structure along <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -morpho <span class="s2">&quot;bamboo(x)&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-morpho<span class="w"> </span><span class="s2">&quot;bamboo(x)&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Generate a tessellation containing 100 cells with experimental grain-growth morphological properties:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -morpho gg
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-morpho<span class="w"> </span>gg
 </pre></div>
 </div>
 </li>
 <li><p>Generate a tessellation containing 100 cells with experimental grain-growth morphological properties and define groups by splitting cells based on their ids:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -morpho gg -group <span class="s2">&quot;id&lt;=50?1:2&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-morpho<span class="w"> </span>gg<span class="w"> </span>-group<span class="w"> </span><span class="s2">&quot;id&lt;=50?1:2&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Generate a tessellation containing 100 cells with experimental grain-growth morphological properties and an aspect ratio of 2:1:0.5:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -morpho <span class="s2">&quot;gg,aspratio(2,1,0.5)&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-morpho<span class="w"> </span><span class="s2">&quot;gg,aspratio(2,1,0.5)&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Generate a tessellation containing 100 cells with experimental grain-growth morphological properties, and get the equivalent diameters and sphericities of the cells:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -morpho gg -statcell diameq,sphericity
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-morpho<span class="w"> </span>gg<span class="w"> </span>-statcell<span class="w"> </span>diameq,sphericity
 </pre></div>
 </div>
 </li>
 <li><p>Generate a tessellation of specified absolute grain size distribution (the number of cells is determined accordingly):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n from_morpho -morpho <span class="s2">&quot;diameq:lognormal(0.1,0.03),1-sphericity:lognormal(0.145,0.03)&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span>from_morpho<span class="w"> </span>-morpho<span class="w"> </span><span class="s2">&quot;diameq:lognormal(0.1,0.03),1-sphericity:lognormal(0.145,0.03)&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Generate a tessellation in a non-convex domain (by cutting the tessellation once generated):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -morpho gg -transform <span class="s2">&quot;cut(cylinder(1.2,0.5,0.5,0,1,0,0.4))&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-morpho<span class="w"> </span>gg<span class="w"> </span>-transform<span class="w"> </span><span class="s2">&quot;cut(cylinder(1.2,0.5,0.5,0,1,0,0.4))&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Generate a 2-scale Voronoi tessellation containing 100 x 10 cells:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span>::10
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span>::10
 </pre></div>
 </div>
 </li>
 <li><p>Generate a 2-scale Voronoi tessellation containing 100 x 10 cells, with different tessellations at scale 2 (identifier = 2) (identifier = 2):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span>::10 -id <span class="m">1</span>::2
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span>::10<span class="w"> </span>-id<span class="w"> </span><span class="m">1</span>::2
 </pre></div>
 </div>
 </li>
 <li><p>Generate a 2-scale tessellation containing 10 primary cells with grain-growth morphological properties, each one divided into lamellae` of width 0.1:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">10</span>::from_morpho -morpho <span class="s2">&quot;gg::lamellar(w=0.1)&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">10</span>::from_morpho<span class="w"> </span>-morpho<span class="w"> </span><span class="s2">&quot;gg::lamellar(w=0.1)&quot;</span>
 </pre></div>
 </div>
 </li>
 <li><p>Generate a 2-scale Voronoi tessellation containing 10 primary cells with grain-growth morphological properties, each one divided into lamellae` of widths loaded from file <code class="file docutils literal notranslate"><span class="pre">lam_width</span></code> and plane normals loaded from file <code class="file docutils literal notranslate"><span class="pre">lam_normal</span></code>:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">10</span>::from_morpho -morpho <span class="s2">&quot;gg::lamellar(w=msfile(lam_width),v=msfile(lam_normal))&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">10</span>::from_morpho<span class="w"> </span>-morpho<span class="w"> </span><span class="s2">&quot;gg::lamellar(w=msfile(lam_width),v=msfile(lam_normal))&quot;</span>
 
 <span class="go">lam_width:</span>
 <span class="go">1 0.05</span>
@@ -1132,7 +1131,7 @@ The files contain the data specified to the
 </div>
 </li>
 <li><p>Generate a 2-scale Voronoi tessellation containing 3 primary cells divided into 1, 10 and 100 secondary cells, respectively:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="s2">&quot;3::msfile(myfile)&quot;</span> -id <span class="m">1</span>::1
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;3::msfile(myfile)&quot;</span><span class="w"> </span>-id<span class="w"> </span><span class="m">1</span>::1
 
 <span class="go">myfile:</span>
 <span class="go">1 1</span>
@@ -1142,7 +1141,7 @@ The files contain the data specified to the
 </div>
 </li>
 <li><p>Generate a 2-scale Voronoi tessellation containing 2 x 3 cells with specific seed coordinates at both scales (files <code class="file docutils literal notranslate"><span class="pre">coo1</span></code> and <code class="file docutils literal notranslate"><span class="pre">coo2</span></code>):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">2</span>::3 -id <span class="m">1</span>::1 -morphooptiini <span class="s2">&quot;coo,file(coo1),weight,0::coo,msfile(coo2),weight,0&quot;</span> -morpho voronoi
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">2</span>::3<span class="w"> </span>-id<span class="w"> </span><span class="m">1</span>::1<span class="w"> </span>-morphooptiini<span class="w"> </span><span class="s2">&quot;coo,file(coo1),weight,0::coo,msfile(coo2),weight,0&quot;</span><span class="w"> </span>-morpho<span class="w"> </span>voronoi
 
 <span class="go">coo1:</span>
 <span class="go">0.25 0.50 0.50</span>
@@ -1163,76 +1162,93 @@ The files contain the data specified to the
 </div>
 </li>
 <li><p>Generate a Voronoi tessellation containing 100 cells  with uniformly distributed crystal orientations and cubic crystal symmetry:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -oricrysym cubic -ori uniform
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-oricrysym<span class="w"> </span>cubic<span class="w"> </span>-ori<span class="w"> </span>uniform
 </pre></div>
 </div>
 </li>
 <li><p>Generate 100 uniformly distributed crystal orientations with cubic crystal symmetry (no tessellation):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">100</span> -oricrysym cubic -ori uniform -for ori
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-oricrysym<span class="w"> </span>cubic<span class="w"> </span>-ori<span class="w"> </span>uniform<span class="w"> </span>-for<span class="w"> </span>ori
 </pre></div>
 </div>
 </li>
 </ul>
 </section>
 <section id="references">
-<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<dl class="citation">
-<dt class="label" id="cmame2011"><span class="brackets"><a class="fn-backref" href="#id3">CMAME2011</a></span></dt>
-<dd><ol class="upperalpha simple" start="18">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<div role="list" class="citation-list">
+<div class="citation" id="cmame2011" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">CMAME2011</a><span class="fn-bracket">]</span></span>
+<ol class="upperalpha simple" start="18">
 <li><p>Quey, P.R. Dawson and F. Barbe, Large-scale 3D random polycrystals for the finite element method: Generation, meshing and remeshing, Comput. Methods Appl. Mech. Engrg., vol. 200, pp. 1729-1745, 2011.</p></li>
 </ol>
-</dd>
-<dt class="label" id="cmame2018"><span class="brackets">CMAME2018</span><span class="fn-backref">(<a href="#id4">1</a>,<a href="#id13">2</a>)</span></dt>
-<dd><ol class="upperalpha simple" start="18">
+</div>
+<div class="citation" id="cmame2018" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>CMAME2018<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id4">1</a>,<a role="doc-backlink" href="#id13">2</a>)</span>
+<ol class="upperalpha simple" start="18">
 <li><p>Quey and L. Renversade, Optimal polyhedral description of 3D polycrystals: Method and application to statistical and synchrotron X-ray diffraction data, Comput. Methods Appl. Mech. Engrg., vol. 330, pp. 308-333, 2018.</p></li>
 </ol>
-</dd>
-<dt class="label" id="jac2018"><span class="brackets"><a class="fn-backref" href="#id5">JAC2018</a></span></dt>
-<dd><ol class="upperalpha simple" start="18">
+</div>
+<div class="citation" id="jac2018" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">JAC2018</a><span class="fn-bracket">]</span></span>
+<ol class="upperalpha simple" start="18">
 <li><p>Quey, A. Villani and C. Maurice, Nearly uniform sampling of crystal orientations. J. Appl. Crystallogr., vol. 51, pp. 1162-1173, 2018.</p></li>
 </ol>
-</dd>
-<dt class="label" id="lllfp2011"><span class="brackets"><a class="fn-backref" href="#id12">LLLFP2011</a></span></dt>
-<dd><ol class="upperalpha simple">
+</div>
+<div class="citation" id="lllfp2011" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id12">LLLFP2011</a><span class="fn-bracket">]</span></span>
+<ol class="upperalpha simple">
 <li><p>Lyckegaard, E.M. Lauridsen, W. Ludwig, R.W. Fonda, and H.F. Poulsen. On the Use of Laguerre Tessellations for Representations of 3D Grain Structures. Advanced Engineering Materials, vol. 13, pp. 165–170, 2011.</p></li>
 </ol>
-</dd>
-</dl>
-<dl class="footnote brackets">
-<dt class="label" id="cut"><span class="brackets"><a class="fn-backref" href="#id2">1</a></span></dt>
-<dd><p>This capability is experimental and may fail as the local shape curvature approaches the cell size.</p>
-</dd>
-<dt class="label" id="convex"><span class="brackets"><a class="fn-backref" href="#id1">2</a></span></dt>
-<dd><p>Any normal tessellation, i.e. tessellation made of convex cells intersecting (one-to-one) along vertices, edges and faces, can be generated at a given <em>scale</em>.  There is no limitation owing to the use of the Laguerre parameterization.  For more complex structures, see the <em>multiscale</em> capability.</p>
-</dd>
-<dt class="label" id="centroidal"><span class="brackets"><a class="fn-backref" href="#id7">3</a></span></dt>
-<dd><p><code class="xref py py-data docutils literal notranslate"><span class="pre">centroidal</span></code> is not recommended as it does not correspond to a morphological property <em>per se</em>; size and/or sphericity properties should be used instead.</p>
-</dd>
-<dt class="label" id="sphericity-circularity"><span class="brackets"><a class="fn-backref" href="#id10">4</a></span></dt>
-<dd><p>Terms <code class="xref py py-data docutils literal notranslate"><span class="pre">sphericity</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">circularity</span></code> apply to 3D and 2D, respectively, but can be used interchangeably. The sphericity of a polyhedron corresponds to the ratio of the surface area of the sphere of equivalent volume to the surface area of the polyhedron. Similarly, the circularity of a polygon corresponds to the ratio of the perimeter of the circle of equivalent surface area to the perimeter of the polygon.</p>
-</dd>
-<dt class="label" id="sphericity"><span class="brackets"><a class="fn-backref" href="#id11">5</a></span></dt>
-<dd><p>The reason behind the <code class="xref py py-data docutils literal notranslate"><span class="pre">1-sphericity</span></code> (or <code class="xref py py-data docutils literal notranslate"><span class="pre">1-circularity</span></code>) variable is that, for a grain growth microstructure, 1 <span class="math notranslate nohighlight">\(-\)</span> the sphericity follows a lognormal distribution <a class="footnote-reference brackets" href="#cmame2018" id="id18"></a>.</p>
-</dd>
-<dt class="label" id="endianness"><span class="brackets"><a class="fn-backref" href="#id16">6</a></span></dt>
-<dd><p>Endianness is both written in the tesr file and tested on the system when reading the tesr file, so that the user normally does not have to care about it (even when transferring files across systems).</p>
-</dd>
-<dt class="label" id="uniform-crysym"><span class="brackets"><a class="fn-backref" href="#id15">7</a></span></dt>
-<dd><p>The crystal symmetry must be specified using <code class="xref std std-option docutils literal notranslate"><span class="pre">-oricrysym</span></code>.</p>
-</dd>
-<dt class="label" id="rotate"><span class="brackets">8</span></dt>
-<dd><p>Cell orientations are rotated accordingly.</p>
-</dd>
-<dt class="label" id="euler-bunge"><span class="brackets"><a class="fn-backref" href="#id6">9</a></span></dt>
-<dd><p>The angle convention is determined automatically from the values.</p>
-</dd>
-<dt class="label" id="praxis"><span class="brackets"><a class="fn-backref" href="#id14">10</a></span></dt>
-<dd><p>The amount of memory needed approximately scales with the square of the number of seeds. <code class="xref py py-data docutils literal notranslate"><span class="pre">-n</span> <span class="pre">10000</span> <span class="pre">-morpho</span> <span class="pre">gg</span></code> requires 12 Gb of RAM.</p>
-</dd>
-<dt class="label" id="size-diameq"><span class="brackets">11</span><span class="fn-backref">(<a href="#id8">1</a>,<a href="#id9">2</a>)</span></dt>
-<dd><p><code class="xref py py-data docutils literal notranslate"><span class="pre">size</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">diameq</span></code> should generally be considered as mutually exclusive.</p>
-</dd>
-</dl>
+</div>
+</div>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="cut" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<p>This capability is experimental and may fail as the local shape curvature approaches the cell size.</p>
+</aside>
+<aside class="footnote brackets" id="convex" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">2</a><span class="fn-bracket">]</span></span>
+<p>Any normal tessellation, i.e. tessellation made of convex cells intersecting (one-to-one) along vertices, edges and faces, can be generated at a given <em>scale</em>.  There is no limitation owing to the use of the Laguerre parameterization.  For more complex structures, see the <em>multiscale</em> capability.</p>
+</aside>
+<aside class="footnote brackets" id="centroidal" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">3</a><span class="fn-bracket">]</span></span>
+<p><code class="xref py py-data docutils literal notranslate"><span class="pre">centroidal</span></code> is not recommended as it does not correspond to a morphological property <em>per se</em>; size and/or sphericity properties should be used instead.</p>
+</aside>
+<aside class="footnote brackets" id="sphericity-circularity" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id10">4</a><span class="fn-bracket">]</span></span>
+<p>Terms <code class="xref py py-data docutils literal notranslate"><span class="pre">sphericity</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">circularity</span></code> apply to 3D and 2D, respectively, but can be used interchangeably. The sphericity of a polyhedron corresponds to the ratio of the surface area of the sphere of equivalent volume to the surface area of the polyhedron. Similarly, the circularity of a polygon corresponds to the ratio of the perimeter of the circle of equivalent surface area to the perimeter of the polygon.</p>
+</aside>
+<aside class="footnote brackets" id="sphericity" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id11">5</a><span class="fn-bracket">]</span></span>
+<p>The reason behind the <code class="xref py py-data docutils literal notranslate"><span class="pre">1-sphericity</span></code> (or <code class="xref py py-data docutils literal notranslate"><span class="pre">1-circularity</span></code>) variable is that, for a grain growth microstructure, 1 <span class="math notranslate nohighlight">\(-\)</span> the sphericity follows a lognormal distribution <a class="footnote-reference brackets" href="#cmame2018" id="id18" role="doc-noteref"><span class="fn-bracket">[</span><span class="fn-bracket">]</span></a>.</p>
+</aside>
+<aside class="footnote brackets" id="endianness" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id16">6</a><span class="fn-bracket">]</span></span>
+<p>Endianness is both written in the tesr file and tested on the system when reading the tesr file, so that the user normally does not have to care about it (even when transferring files across systems).</p>
+</aside>
+<aside class="footnote brackets" id="uniform-crysym" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id15">7</a><span class="fn-bracket">]</span></span>
+<p>The crystal symmetry must be specified using <code class="xref std std-option docutils literal notranslate"><span class="pre">-oricrysym</span></code>.</p>
+</aside>
+<aside class="footnote brackets" id="rotate" role="note">
+<span class="label"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></span>
+<p>Cell orientations are rotated accordingly.</p>
+</aside>
+<aside class="footnote brackets" id="euler-bunge" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">9</a><span class="fn-bracket">]</span></span>
+<p>The angle convention is determined automatically from the values.</p>
+</aside>
+<aside class="footnote brackets" id="praxis" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id14">10</a><span class="fn-bracket">]</span></span>
+<p>The amount of memory needed approximately scales with the square of the number of seeds. <code class="xref py py-data docutils literal notranslate"><span class="pre">-n</span> <span class="pre">10000</span> <span class="pre">-morpho</span> <span class="pre">gg</span></code> requires 12 Gb of RAM.</p>
+</aside>
+<aside class="footnote brackets" id="size-diameq" role="note">
+<span class="label"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id8">1</a>,<a role="doc-backlink" href="#id9">2</a>)</span>
+<p><code class="xref py py-data docutils literal notranslate"><span class="pre">size</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">diameq</span></code> should generally be considered as mutually exclusive.</p>
+</aside>
+</aside>
 </section>
 </section>
 

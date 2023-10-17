@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>File and Directory Formats &mdash; Neper 4.6.1 documentation</title>
@@ -12,10 +12,9 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -103,9 +102,9 @@
            <div itemprop="articleBody">
              
   <section id="file-and-directory-formats">
-<span id="file-and-directory-formats-link"></span><h1>File and Directory Formats<a class="headerlink" href="#file-and-directory-formats" title="Permalink to this headline">¶</a></h1>
+<span id="file-and-directory-formats-link"></span><h1>File and Directory Formats<a class="headerlink" href="#file-and-directory-formats" title="Link to this heading"></a></h1>
 <section id="tessellation-file-tess">
-<span id="tess-file"></span><h2>Tessellation File (<code class="file docutils literal notranslate"><span class="pre">.tess</span></code>)<a class="headerlink" href="#tessellation-file-tess" title="Permalink to this headline">¶</a></h2>
+<span id="tess-file"></span><h2>Tessellation File (<code class="file docutils literal notranslate"><span class="pre">.tess</span></code>)<a class="headerlink" href="#tessellation-file-tess" title="Link to this heading"></a></h2>
 <p>Here are details on the <code class="file docutils literal notranslate"><span class="pre">.tess</span></code> file format version
 2.0.  Developers should note that read and write functions are
 available as <code class="code docutils literal notranslate"><span class="pre">neut_tess_fscanf</span></code> and <code class="code docutils literal notranslate"><span class="pre">neut_tess_fprintf</span></code>,
@@ -316,7 +315,7 @@ and
 </ul>
 </section>
 <section id="raster-tessellation-file-tesr">
-<span id="tesr-file"></span><h2>Raster Tessellation File (<code class="file docutils literal notranslate"><span class="pre">.tesr</span></code>)<a class="headerlink" href="#raster-tessellation-file-tesr" title="Permalink to this headline">¶</a></h2>
+<span id="tesr-file"></span><h2>Raster Tessellation File (<code class="file docutils literal notranslate"><span class="pre">.tesr</span></code>)<a class="headerlink" href="#raster-tessellation-file-tesr" title="Link to this heading"></a></h2>
 <p>Here are details on the <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code> file format version <code class="xref py py-data docutils literal notranslate"><span class="pre">2.1</span></code> (format <code class="xref py py-data docutils literal notranslate"><span class="pre">2.0</span></code> was used up to version 4.1.2 and can still be read).  Developers should note that read and write functions are available as <code class="code docutils literal notranslate"><span class="pre">neut_tesr_fscanf</span></code> and <code class="code docutils literal notranslate"><span class="pre">neut_tesr_fprintf</span></code>, defined in directories <code class="file docutils literal notranslate"><span class="pre">neut/neut_tesr/neut_tesr_fscanf</span></code> and <code class="file docutils literal notranslate"><span class="pre">neut/neut_tesr/neut_tesr_fprintf</span></code>.  Compared to a tessellation file (<code class="file docutils literal notranslate"><span class="pre">.tess</span></code>), a raster tessellation file in enriched by cell morphological properties (centroids, etc.) as they are computed by option <a class="reference internal" href="neper_t.html#cmdoption-statcell"><code class="xref std std-option docutils literal notranslate"><span class="pre">-statcell</span></code></a>, which makes it possible to later retrieve them rapidly.</p>
 <div class="highlight-plain notranslate"><div class="highlight"><pre><span></span>***tesr
  **format
@@ -416,7 +415,7 @@ and
 </div>
 </section>
 <section id="mesh-file-msh">
-<span id="mesh-file"></span><h2>Mesh File (<code class="file docutils literal notranslate"><span class="pre">.msh</span></code>)<a class="headerlink" href="#mesh-file-msh" title="Permalink to this headline">¶</a></h2>
+<span id="mesh-file"></span><h2>Mesh File (<code class="file docutils literal notranslate"><span class="pre">.msh</span></code>)<a class="headerlink" href="#mesh-file-msh" title="Link to this heading"></a></h2>
 <p>Here are details on the native <code class="file docutils literal notranslate"><span class="pre">.msh</span></code> (adapted from Gmsh’s msh format version <code class="xref py py-data docutils literal notranslate"><span class="pre">2.2</span></code>).  Developers should note that read and write functions are available as <cite>neut_msh_fscanf</cite> and <cite>neut_msh_fprintf</cite>, defined in directories <code class="file docutils literal notranslate"><span class="pre">neut/neut_msh/neut_msh_fscanf</span></code> and <code class="file docutils literal notranslate"><span class="pre">neut/neut_msh/neut_msh_fprintf</span></code>.</p>
 <div class="highlight-plain notranslate"><div class="highlight"><pre><span></span>$MeshFormat
 2.2 &lt;file_type&gt; &lt;data_size&gt;
@@ -572,7 +571,7 @@ $EndGroups
 </ul>
 </section>
 <section id="simulation-directory-sim">
-<span id="simulation-directory"></span><h2>Simulation Directory (<code class="file docutils literal notranslate"><span class="pre">.sim</span></code>)<a class="headerlink" href="#simulation-directory-sim" title="Permalink to this headline">¶</a></h2>
+<span id="simulation-directory"></span><h2>Simulation Directory (<code class="file docutils literal notranslate"><span class="pre">.sim</span></code>)<a class="headerlink" href="#simulation-directory-sim" title="Link to this heading"></a></h2>
 <p>Here are details on the <code class="file docutils literal notranslate"><span class="pre">.sim</span></code> simulation directory (the <code class="file docutils literal notranslate"><span class="pre">.sim</span></code> extension is entirely optional).  The directory contains <em>inputs</em> and <em>results</em> on <em>entities</em>, over a certain number of <em>simulation steps</em>. It is structured as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">simulation.sim</span>
 <span class="go">|-- inputs</span>
@@ -660,8 +659,8 @@ $EndGroups
 </div>
 </section>
 <section id="multiscale-cell-file">
-<span id="id1"></span><h2>Multiscale Cell File<a class="headerlink" href="#multiscale-cell-file" title="Permalink to this headline">¶</a></h2>
-<p>A multiscale cell file provides cell-by-cell values for a multiscale tessellation and can be loaded using <code class="xref py py-data docutils literal notranslate"><span class="pre">msfile(&lt;file_name&gt;)</span></code> <a class="footnote-reference brackets" href="#msfile" id="id2">1</a>. The file contains, for each cell, its <em>multiscale identifier</em>, <code class="xref py py-data docutils literal notranslate"><span class="pre">mid</span></code>, and the value(s).  A <em>cell multiscale identifier</em> (<cite>mid</cite>) is a character string identifying a cell at a specific scale.  For a given cell, C, <code class="xref py py-data docutils literal notranslate"><span class="pre">mid</span></code> combines the identifiers of the cells that C belongs to, at successive scales, to its own <code class="xref py py-data docutils literal notranslate"><span class="pre">id</span></code>, separated by <code class="xref py py-data docutils literal notranslate"><span class="pre">::</span></code>.  For a 1-scale tessellation, <code class="xref py py-data docutils literal notranslate"><span class="pre">mid</span></code> equals <code class="xref py py-data docutils literal notranslate"><span class="pre">id</span></code>.  For a 2-scale tessellation composed of <span class="math notranslate nohighlight">\(2 \times 3\)</span> cells, the <code class="xref py py-data docutils literal notranslate"><span class="pre">mid</span></code> values are equal to <code class="xref py py-data docutils literal notranslate"><span class="pre">1::1</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">1::2</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">1::3</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">2::1</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">2::2</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">2::3</span></code>.  The domain (which can be considered as a cell at scale 0), <code class="xref py py-data docutils literal notranslate"><span class="pre">mid</span></code> is nil.  An example of a multiscale cell file that could be used to define the numbers of cells of a 3-scale tessellation is:</p>
+<span id="id1"></span><h2>Multiscale Cell File<a class="headerlink" href="#multiscale-cell-file" title="Link to this heading"></a></h2>
+<p>A multiscale cell file provides cell-by-cell values for a multiscale tessellation and can be loaded using <code class="xref py py-data docutils literal notranslate"><span class="pre">msfile(&lt;file_name&gt;)</span></code> <a class="footnote-reference brackets" href="#msfile" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. The file contains, for each cell, its <em>multiscale identifier</em>, <code class="xref py py-data docutils literal notranslate"><span class="pre">mid</span></code>, and the value(s).  A <em>cell multiscale identifier</em> (<cite>mid</cite>) is a character string identifying a cell at a specific scale.  For a given cell, C, <code class="xref py py-data docutils literal notranslate"><span class="pre">mid</span></code> combines the identifiers of the cells that C belongs to, at successive scales, to its own <code class="xref py py-data docutils literal notranslate"><span class="pre">id</span></code>, separated by <code class="xref py py-data docutils literal notranslate"><span class="pre">::</span></code>.  For a 1-scale tessellation, <code class="xref py py-data docutils literal notranslate"><span class="pre">mid</span></code> equals <code class="xref py py-data docutils literal notranslate"><span class="pre">id</span></code>.  For a 2-scale tessellation composed of <span class="math notranslate nohighlight">\(2 \times 3\)</span> cells, the <code class="xref py py-data docutils literal notranslate"><span class="pre">mid</span></code> values are equal to <code class="xref py py-data docutils literal notranslate"><span class="pre">1::1</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">1::2</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">1::3</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">2::1</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">2::2</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">2::3</span></code>.  The domain (which can be considered as a cell at scale 0), <code class="xref py py-data docutils literal notranslate"><span class="pre">mid</span></code> is nil.  An example of a multiscale cell file that could be used to define the numbers of cells of a 3-scale tessellation is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2</span>
 <span class="mi">1</span> <span class="mi">2</span>
 <span class="mi">2</span> <span class="mi">4</span>
@@ -676,7 +675,7 @@ $EndGroups
 <p>The file could be used in <code class="xref py py-data docutils literal notranslate"><span class="pre">-T</span></code> as <code class="xref py py-data docutils literal notranslate"><span class="pre">-n</span> <span class="pre">msfile(&lt;file_name&gt;)::msfile(&lt;file_name&gt;)::msfile(&lt;file_name&gt;)</span></code>.  The first instance of <code class="xref py py-data docutils literal notranslate"><span class="pre">msfile(&lt;file_name&gt;)</span></code> reads the number of scale-1 cells in line 1, the second instance of <code class="xref py py-data docutils literal notranslate"><span class="pre">msfile(&lt;file_name&gt;)</span></code> reads the number of scale-2 cells in lines 2–3, and the third  instance of <code class="xref py py-data docutils literal notranslate"><span class="pre">msfile(&lt;file_name&gt;)</span></code> reads the number of scale-3 cells in lines 4–7.</p>
 </section>
 <section id="data-file">
-<span id="id3"></span><h2>Data File<a class="headerlink" href="#data-file" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2>Data File<a class="headerlink" href="#data-file" title="Link to this heading"></a></h2>
 <p>A data file contains a number of data to be assigned to entities (seeds, cells, points, etc.).  It must contain the expected number of data.  It is a general, simply-formatted ASCII file that contains a fixed number of data per entity, and the data can be integers, real numbers or character strings.  A real number can have an arbitrary number of digits, but the decimal mark must be <code class="xref std std-option docutils literal notranslate"><span class="pre">.</span></code>.  The data can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with the data of one entity per line.  An example of a data file containing 5 values is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.1235</span>
 <span class="mf">5.9564</span>
@@ -703,7 +702,7 @@ $EndGroups
 </div>
 </section>
 <section id="position-file">
-<span id="id4"></span><h2>Position File<a class="headerlink" href="#position-file" title="Permalink to this headline">¶</a></h2>
+<span id="id4"></span><h2>Position File<a class="headerlink" href="#position-file" title="Link to this heading"></a></h2>
 <p>A position file contains the coordinates of a number of points.  The file must contain 1 coordinate per point in 1D, 2 coordinates per point in 2D and 3 coordinates per point in 3D.  While the dimension can be known from the context in which the file is read, it can also be specified by appending <code class="xref py py-data docutils literal notranslate"><span class="pre">:dim</span></code> to the name of the position file, where <code class="xref py py-data docutils literal notranslate"><span class="pre">dim</span></code> is the dimension.  A coordinate can be an integer or real number. A real number can have an arbitrary number of digits, but the decimal mark must be <code class="xref std std-option docutils literal notranslate"><span class="pre">.</span></code>.  The coordinates can be separated from each other by spaces, tabulators or newlines (any number as well as arbitrary combinations of them are supported).  However, a good practice is to format the file with one point per line.  An example of a position file containing 5 points in 3D is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">2.1235</span> <span class="mf">9.4544</span> <span class="mf">5.2145</span>
 <span class="mf">5.9564</span> <span class="mf">3.6884</span> <span class="mf">9.2145</span>
@@ -716,11 +715,12 @@ $EndGroups
 <p class="admonition-title">Note</p>
 <p>A <a class="reference internal" href="#position-file"><span class="std std-ref">Position File</span></a> is a <a class="reference internal" href="#data-file"><span class="std std-ref">Data File</span></a> with as many data per entity as dimensions.</p>
 </div>
-<dl class="footnote brackets">
-<dt class="label" id="msfile"><span class="brackets"><a class="fn-backref" href="#id2">1</a></span></dt>
-<dd><p>As of version 3.5.0, <code class="xref py py-data docutils literal notranslate"><span class="pre">msfile(&lt;file_name&gt;)</span></code> should be preferred over <code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>.</p>
-</dd>
-</dl>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="msfile" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<p>As of version 3.5.0, <code class="xref py py-data docutils literal notranslate"><span class="pre">msfile(&lt;file_name&gt;)</span></code> should be preferred over <code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>.</p>
+</aside>
+</aside>
 </section>
 </section>
 

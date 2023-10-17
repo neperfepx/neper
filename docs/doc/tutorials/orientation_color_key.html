@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Plotting an Orientation Color Key &mdash; Neper 4.6.1 documentation</title>
@@ -12,10 +12,9 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -95,39 +94,39 @@
            <div itemprop="articleBody">
              
   <section id="plotting-an-orientation-color-key">
-<span id="orientation-color-key"></span><h1>Plotting an Orientation Color Key<a class="headerlink" href="#plotting-an-orientation-color-key" title="Permalink to this headline">¶</a></h1>
+<span id="orientation-color-key"></span><h1>Plotting an Orientation Color Key<a class="headerlink" href="#plotting-an-orientation-color-key" title="Link to this heading"></a></h1>
 <p>The <a class="reference internal" href="../neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a> can color cells, elements, etc. according to their orientations, but an image of the color key itself is not generated.  Color keys can be obtained as described in the following.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>People interested in a color key rather than how it is generated may simply copy the image.</p>
 </div>
 <section id="rodrigues-color-key">
-<span id="id1"></span><h2>Rodrigues Color Key<a class="headerlink" href="#rodrigues-color-key" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>Rodrigues Color Key<a class="headerlink" href="#rodrigues-color-key" title="Link to this heading"></a></h2>
 <p>Cubic crystal symmetry is assumed.  The color map onto the fundamental region of Rodrigues space is created by generating a tessellation corresponding to the fundamental region, meshing it, getting the node colors, and visualizing it - as the space is 3D, we also produce a slice view:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1</span> -domain <span class="s2">&quot;rodrigues(cubic)&quot;</span> -o rodrigues
-<span class="gp">$ </span>neper -M rodrigues.tess -cl <span class="m">0</span>.05 -statnode col_rodrigues
-<span class="gp">$ </span>neper -V rodrigues.tess,rodrigues.msh -datanodecol <span class="s2">&quot;col:file(rodrigues.stnode)&quot;</span> -dataeltcol from_nodes -dataelt3dedgerad <span class="m">0</span> -dataelt1drad <span class="m">0</span>.002 -showelt1d all -showcsys <span class="m">1</span> -datacsyscoo <span class="m">0</span>.44:-0.44:0.65 -datacsysrad <span class="m">0</span>.005 -datacsyslength <span class="m">0</span>.15 -datacsyslabel <span class="s2">&quot; : : &quot;</span> -cameracoo <span class="m">4</span>:4:3 -imagesize <span class="m">400</span>:400 -cameraangle <span class="m">14</span> -cameraprojection orthographic -sceneshadow <span class="m">0</span> -print tmp1 -slicemesh <span class="s2">&quot;x=0,y=0,z=0&quot;</span> -showtess <span class="m">1</span> -showcell <span class="m">0</span> -showedge all -dataedgerad <span class="m">0</span>.002 -showmesh <span class="m">0</span> -showmeshslice <span class="m">1</span> -showcsys <span class="m">0</span> -print tmp2
-<span class="gp">$ </span>convert -pointsize <span class="m">20</span> -draw <span class="s2">&quot;text 1,86 &#39;X1&#39; text 55,86 &#39;X2&#39; text 28,17 &#39;X3&#39;&quot;</span> tmp1.png tmp1b.png
-<span class="gp">$ </span>convert +append tmp1b.png tmp2.png rodrigues.png
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;rodrigues(cubic)&quot;</span><span class="w"> </span>-o<span class="w"> </span>rodrigues
+<span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>rodrigues.tess<span class="w"> </span>-cl<span class="w"> </span><span class="m">0</span>.05<span class="w"> </span>-statnode<span class="w"> </span>col_rodrigues
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>rodrigues.tess,rodrigues.msh<span class="w"> </span>-datanodecol<span class="w"> </span><span class="s2">&quot;col:file(rodrigues.stnode)&quot;</span><span class="w"> </span>-dataeltcol<span class="w"> </span>from_nodes<span class="w"> </span>-dataelt3dedgerad<span class="w"> </span><span class="m">0</span><span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.002<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-showcsys<span class="w"> </span><span class="m">1</span><span class="w"> </span>-datacsyscoo<span class="w"> </span><span class="m">0</span>.44:-0.44:0.65<span class="w"> </span>-datacsysrad<span class="w"> </span><span class="m">0</span>.005<span class="w"> </span>-datacsyslength<span class="w"> </span><span class="m">0</span>.15<span class="w"> </span>-datacsyslabel<span class="w"> </span><span class="s2">&quot; : : &quot;</span><span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">400</span>:400<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">14</span><span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-sceneshadow<span class="w"> </span><span class="m">0</span><span class="w"> </span>-print<span class="w"> </span>tmp1<span class="w"> </span>-slicemesh<span class="w"> </span><span class="s2">&quot;x=0,y=0,z=0&quot;</span><span class="w"> </span>-showtess<span class="w"> </span><span class="m">1</span><span class="w"> </span>-showcell<span class="w"> </span><span class="m">0</span><span class="w"> </span>-showedge<span class="w"> </span>all<span class="w"> </span>-dataedgerad<span class="w"> </span><span class="m">0</span>.002<span class="w"> </span>-showmesh<span class="w"> </span><span class="m">0</span><span class="w"> </span>-showmeshslice<span class="w"> </span><span class="m">1</span><span class="w"> </span>-showcsys<span class="w"> </span><span class="m">0</span><span class="w"> </span>-print<span class="w"> </span>tmp2
+<span class="gp">$ </span>convert<span class="w"> </span>-pointsize<span class="w"> </span><span class="m">20</span><span class="w"> </span>-draw<span class="w"> </span><span class="s2">&quot;text 1,86 &#39;X1&#39; text 55,86 &#39;X2&#39; text 28,17 &#39;X3&#39;&quot;</span><span class="w"> </span>tmp1.png<span class="w"> </span>tmp1b.png
+<span class="gp">$ </span>convert<span class="w"> </span>+append<span class="w"> </span>tmp1b.png<span class="w"> </span>tmp2.png<span class="w"> </span>rodrigues.png
 </pre></div>
 </div>
 <img alt="../../_images/rodrigues.png" src="../../_images/rodrigues.png" />
 </section>
 <section id="ipf-color-key">
-<span id="id2"></span><h2>IPF Color Key<a class="headerlink" href="#ipf-color-key" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>IPF Color Key<a class="headerlink" href="#ipf-color-key" title="Link to this heading"></a></h2>
 <p>The color map onto the standard stereographical triangle (cubic crystal symmetry) is created by generating a tessellation corresponding to the triangle, meshing it, getting the node colors, and visualizing it:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1</span> -domain stdtriangle -dim <span class="m">2</span> -o stdtriangle
-<span class="gp">$ </span>neper -M stdtriangle.tess -cl <span class="m">0</span>.02 -statnode col_stdtriangle
-<span class="gp">$ </span>neper -V stdtriangle.msh -datanodecol <span class="s2">&quot;col:file(stdtriangle.stnode)&quot;</span> -dataeltcol from_nodes -dataelt2dedgerad <span class="m">0</span> -dataelt1drad <span class="m">0</span>.001 -showelt1d all -imagesize <span class="m">800</span>:400 -print tmp
-<span class="gp">$ </span>convert -pointsize <span class="m">32</span> -draw <span class="s2">&quot;text 180,390 &#39;[001]&#39; text 545,390 &#39;[011]&#39; text 505,30 &#39;[111]&#39;&quot;</span> tmp.png stdtriangle.png
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-domain<span class="w"> </span>stdtriangle<span class="w"> </span>-dim<span class="w"> </span><span class="m">2</span><span class="w"> </span>-o<span class="w"> </span>stdtriangle
+<span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>stdtriangle.tess<span class="w"> </span>-cl<span class="w"> </span><span class="m">0</span>.02<span class="w"> </span>-statnode<span class="w"> </span>col_stdtriangle
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>stdtriangle.msh<span class="w"> </span>-datanodecol<span class="w"> </span><span class="s2">&quot;col:file(stdtriangle.stnode)&quot;</span><span class="w"> </span>-dataeltcol<span class="w"> </span>from_nodes<span class="w"> </span>-dataelt2dedgerad<span class="w"> </span><span class="m">0</span><span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.001<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">800</span>:400<span class="w"> </span>-print<span class="w"> </span>tmp
+<span class="gp">$ </span>convert<span class="w"> </span>-pointsize<span class="w"> </span><span class="m">32</span><span class="w"> </span>-draw<span class="w"> </span><span class="s2">&quot;text 180,390 &#39;[001]&#39; text 545,390 &#39;[011]&#39; text 505,30 &#39;[111]&#39;&quot;</span><span class="w"> </span>tmp.png<span class="w"> </span>stdtriangle.png
 </pre></div>
 </div>
 <img alt="../../_images/stdtriangle.png" src="../../_images/stdtriangle.png" />
 <p>A color map for hexagonal crystal symmetry can be generated using the <code class="xref py py-data docutils literal notranslate"><span class="pre">crysym</span></code> optional argument:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper -T -n <span class="m">1</span> -domain <span class="s2">&quot;stdtriangle(crysym=hexagonal)&quot;</span> -dim <span class="m">2</span> -o stdtriangleh
-<span class="gp">$ </span>neper -M stdtriangleh.tess -cl <span class="m">0</span>.02 -statnode col_stdtriangle_hexagonal
-<span class="gp">$ </span>neper -V stdtriangleh.msh -datanodecol <span class="s2">&quot;col:file(stdtriangleh.stnode)&quot;</span> -dataeltcol from_nodes -dataelt2dedgerad <span class="m">0</span> -dataelt1drad <span class="m">0</span>.0015 -showelt1d all -cameracoo x:y:2.84 -imagesize <span class="m">800</span>:400 -print tmp
-<span class="gp">$ </span>convert -pointsize <span class="m">32</span> -draw <span class="s2">&quot;text 35,390 &#39;[0001]&#39; text 702,359 &#39;_&#39; text 715,359 &#39;_&#39; text 676,390 &#39;[2110]&#39; text 590,30 &#39;[1010]&#39; text 631,-1 &#39;_&#39;&quot;</span> tmp.png stdtriangleh.png
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;stdtriangle(crysym=hexagonal)&quot;</span><span class="w"> </span>-dim<span class="w"> </span><span class="m">2</span><span class="w"> </span>-o<span class="w"> </span>stdtriangleh
+<span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>stdtriangleh.tess<span class="w"> </span>-cl<span class="w"> </span><span class="m">0</span>.02<span class="w"> </span>-statnode<span class="w"> </span>col_stdtriangle_hexagonal
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>stdtriangleh.msh<span class="w"> </span>-datanodecol<span class="w"> </span><span class="s2">&quot;col:file(stdtriangleh.stnode)&quot;</span><span class="w"> </span>-dataeltcol<span class="w"> </span>from_nodes<span class="w"> </span>-dataelt2dedgerad<span class="w"> </span><span class="m">0</span><span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.0015<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-cameracoo<span class="w"> </span>x:y:2.84<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">800</span>:400<span class="w"> </span>-print<span class="w"> </span>tmp
+<span class="gp">$ </span>convert<span class="w"> </span>-pointsize<span class="w"> </span><span class="m">32</span><span class="w"> </span>-draw<span class="w"> </span><span class="s2">&quot;text 35,390 &#39;[0001]&#39; text 702,359 &#39;_&#39; text 715,359 &#39;_&#39; text 676,390 &#39;[2110]&#39; text 590,30 &#39;[1010]&#39; text 631,-1 &#39;_&#39;&quot;</span><span class="w"> </span>tmp.png<span class="w"> </span>stdtriangleh.png
 </pre></div>
 </div>
 <img alt="../../_images/stdtriangleh.png" src="../../_images/stdtriangleh.png" />
