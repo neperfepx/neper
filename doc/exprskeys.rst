@@ -300,6 +300,7 @@ Geometry
 :data:`area`                 surface area                                                            cell, group (in 2D)
 :data:`vol`                  volume                                                                  cell, group (in 3D)
 :data:`size`                 size (surface area/volume in 2D/3D)                                     cell, group
+:data:`voxnb`                number of voxels                                                        cell
 :data:`areafrac`             surface area fraction                                                   group (in 2D)
 :data:`volfrac`              volume fraction                                                         group (in 3D)
 :data:`sizefrac`             size fraction (surface area/volume fraction in 2D/3D)                   group

@@ -266,6 +266,12 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
     }
     else if (!strcmp (var, "vol"))
       neut_tesr_cell_volume (Tesr, id, *pvals);
+    else if (!strcmp (var, "voxnb"))
+    {
+      tmpint = neut_tesr_cell_voxqty (Tesr, id);
+      (*pvals)[0] = tmpint;
+      ut_string_string ("%d", &typetmp);
+    }
     else if (!strcmp (var, "diameq"))
       neut_tesr_cell_diameq (Tesr, id, *pvals);
     else if (!strcmp (var, "radeq"))
