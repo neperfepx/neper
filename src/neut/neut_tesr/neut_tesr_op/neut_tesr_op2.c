@@ -52,6 +52,16 @@ void
 neut_tesr_rmsat_cell_remove (struct TESR *pTesr, int dim, int voxqty,
                              int **voxpos)
 {
+  int i;
+
+  (void) dim;
+
+  for (i = 0; i < voxqty; i++)
+    (*pTesr).VoxCell[voxpos[i][0]][voxpos[i][1]][voxpos[i][2]] = 0;
+
+  /* legacy, caused possible infinite loop because neighcell could be the old cell.
+   * This could be fixed, but it seems more natural to just set to 0 and follow by 'grow'
+
   int i, j, neighqty, id;
   int **neighpos = NULL;
   int *pos = NULL;
@@ -79,6 +89,7 @@ neut_tesr_rmsat_cell_remove (struct TESR *pTesr, int dim, int voxqty,
   }
 
   ut_free_2d_int (&neighpos, neighqty);
+  */
 
   return;
 }

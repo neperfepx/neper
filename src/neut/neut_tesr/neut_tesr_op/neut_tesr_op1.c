@@ -1503,31 +1503,23 @@ void
 neut_tesr_rmsat (struct TESR *pTesr, char *rmsat, int verbosity)
 {
   int status, dim;
-  int voxqty = 0;
-  int **voxpos = NULL;
+  int voxqty = 0, **voxpos = NULL;
 
   status = sscanf (rmsat, "rmsat(%d)", &dim);
 
   if (status != 1)
     dim = (*pTesr).Dim - 1;
 
-  do
-  {
-    neut_tesr_rmsat_cell_find (*pTesr, dim, &voxqty, &voxpos);
+  neut_tesr_rmsat_cell_find (*pTesr, dim, &voxqty, &voxpos);
 
-    if (voxqty > 0)
-    {
-      neut_tesr_rmsat_cell_remove (pTesr, dim, voxqty, voxpos);
+  if (voxqty > 0)
+    neut_tesr_rmsat_cell_remove (pTesr, dim, voxqty, voxpos);
 
-      ut_free_2d_int (&voxpos, voxqty);
-      voxpos = NULL;
-    }
+  if (verbosity)
+    ut_print_message (0, verbosity, "%d voxel%s removed.\n", voxqty,
+                      (voxqty > 1) ? "s" : "");
 
-    if (verbosity)
-      ut_print_message (0, verbosity, "%d point%s filtered.\n", voxqty,
-                        (voxqty > 1) ? "s" : "");
-  }
-  while (voxqty > 0);
+  ut_free_2d_int (&voxpos, voxqty);
 
   return;
 }
@@ -1549,15 +1541,15 @@ neut_tesr_grow (struct TESR *pTesr, char *grow, int verbosity)
     {
       if (verbosity)
         ut_print_message (0, verbosity,
-                          "%d neighs: %d point%s filtered in %d iterations.\n",
-                          i, voxqty, (voxqty > 1) ? "s" : "", iterqty);
+                          "%d voxel%s added in %d iterations.\n",
+                          voxqty, (voxqty > 1) ? "s" : "", iterqty);
     }
     else
     {
       voxqty = 0;
       if (verbosity)
         ut_print_message (0, verbosity,
-                          "%d point%s filtered in %d iterations.\n", voxqty,
+                          "%d voxel%s added in %d iterations.\n", voxqty,
                           (voxqty > 1) ? "s" : "", iterqty);
       break;
     }
