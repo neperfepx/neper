@@ -1595,6 +1595,12 @@ neut_tesr_tessinter (struct TESR *pTesr, char *crop, int verbosity)
       coo[j] = bbox[j][1];
     neut_tesr_coo_pos (*pTesr, coo, 1, posmax);
 
+    for (j = 0; j < 3; j++)
+    {
+      posmin[j] = ut_num_max_int (posmin[j], 1);
+      posmax[j] = ut_num_min_int (posmax[j], (*pTesr).size[j]);
+    }
+
     for (z = posmin[2]; z <= posmax[2]; z++)
       for (y = posmin[1]; y <= posmax[1]; y++)
         for (x = posmin[0]; x <= posmax[0]; x++)
