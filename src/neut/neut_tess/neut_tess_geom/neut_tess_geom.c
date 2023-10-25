@@ -1880,6 +1880,28 @@ neut_tess_faceinter_fromdomface (struct TESS *pTess, int face)
                                      (*pTess).DomFaceParms[domface],
                                      (*pTess).FacePtCoo[face],
                                      (*pTess).FaceEq[face]);
+  double *p1 = ut_alloc_1d (3);
+  double *p2 = ut_alloc_1d (3);
+  double *p3 = ut_alloc_1d (3);
+  double *eq = ut_alloc_1d (4);
+
+  ut_array_1d_memcpy ((*pTess).VerCoo[(*pTess).FaceVerNb[face][1]], 3, p1);
+  ut_array_1d_memcpy ((*pTess).VerCoo[(*pTess).FaceVerNb[face][2]], 3, p2);
+  ut_array_1d_memcpy ((*pTess).VerCoo[(*pTess).FaceVerNb[face][3]], 3, p3);
+  ut_space_points_plane (p1, p2, p3, eq);
+
+  if (ut_vector_scalprod (eq + 1, (*pTess).FaceEq[face] + 1) > 0)
+    ut_array_1d_memcpy (eq, 4, (*pTess).FaceEq[face]);
+  else
+  {
+    ut_array_1d_memcpy (eq, 4, (*pTess).FaceEq[face]);
+    ut_array_1d_scale ((*pTess).FaceEq[face], 4, -1);
+  }
+
+  ut_free_1d (&p1);
+  ut_free_1d (&p2);
+  ut_free_1d (&p3);
+  ut_free_1d (&eq);
 
   (*pTess).FaceState[face] = 0;
   (*pTess).FacePt[face] = 0;

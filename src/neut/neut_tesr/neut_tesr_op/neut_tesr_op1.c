@@ -1611,8 +1611,10 @@ neut_tesr_tessinter (struct TESR *pTesr, char *crop, int verbosity)
 
             if (neut_tess_point_incell (Tess, coo, i))
             {
+              /*
               if (found[x][y][z])
                 abort ();
+                */
               found[x][y][z] = i;
             }
           }
