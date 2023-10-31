@@ -31,6 +31,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2023
 ----
 
+- W Flachberger, J Svoboda, T Antretter, M Petersmann and S Leitner, *Numerical treatment of reactive diffusion using the discontinuous Galerkin method*, **Continuum Mechanics and Thermodynamics**, https://doi.org/10.1007/s00161-023-01258-0.
 - A Chaurasia, G Walton, *Laboratory and Numerical Modeling of the Effects of Width-to-Height Ratio on the Strength and Deformation Behavior of Pillars Composed of Porous, Weak Limestone*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-023-03579-7.
 - A Ravikumar, D Höche, C Feiler, M Lekka, A Salicio-Paz, Michael Rohwerder, JM Prabhakar and M Zheludkevich, *Exploring the effect of microstructure and surface recombination on hydrogen effusion in Zn‐Ni coated martensitic steels by advanced computational modeling*, **Steel research international**,  https://doi.org/10.1002/srin.202300353.
 - Y Tu, SB Leen and NM Harrison, *Managing the Inevitable Microstructural and Property Heterogeneity in Powder Bed Fusion Ti-6Al-4V Parts via Heat Treatment*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2023.172309.
@@ -101,8 +102,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2022
 ----
 
-- Y El Hachi, S Berveiller, B Piotrowski, J Wright, W Ludwig and B Malard, *Multi-scale in situ mechanical investigation of the superelastic
-behavior of a Cu-Al-Be polycrystalline shape memory alloy*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2022.118107.
+- Y El Hachi, S Berveiller, B Piotrowski, J Wright, W Ludwig and B Malard, *Multi-scale in situ mechanical investigation of the superelastic behavior of a Cu-Al-Be polycrystalline shape memory alloy*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2022.118107.
 - M Huang, SI Rokhlin, MJS Lowe, *Appraising scattering theories for polycrystals of any symmetry using finite elements*, **Philosophical Transactions of the Royal Society A**, https://doi.org/10.1098/rsta.2021.0382.
 - PS Chaugule and JB Le Graverend, *Crystal-plasticity modeling of phase transformation-viscoplasticity coupling in high-temperature shape memory alloys*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2022.103243.
 - JA Moore, JP Rusch, PS Nezhad, S Manchiraju and D Erdeniz, *Effects of martensitic phase transformation on fatigue indicator parameters determined by a crystal plasticity model*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2022.107457.
