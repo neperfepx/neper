@@ -55,13 +55,19 @@ neut_tess_fprintf_gmsh (FILE * file, struct TESS Tess)
 
   for (i = 1; i <= Tess.VerQty; i++)
     if (!Tess.VerState || Tess.VerState[i] != -1)
-      fprintf (file, "Point (%d) = {" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "};\n", i,
+    {
+      fprintf (file, "Point (%d) = {" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "}; ", i,
                Tess.VerCoo[i][0], Tess.VerCoo[i][1], Tess.VerCoo[i][2]);
+      fprintf (file, "Physical Point (%d) = {%d};\n", i, i);
+    }
 
   for (i = 1; i <= Tess.EdgeQty; i++)
     if (!Tess.EdgeState || Tess.EdgeState[i] != -1)
-      fprintf (file, "Line (%d) = {%d,%d};\n", i, Tess.EdgeVerNb[i][0],
+    {
+      fprintf (file, "Line (%d) = {%d,%d}; ", i, Tess.EdgeVerNb[i][0],
                Tess.EdgeVerNb[i][1]);
+      fprintf (file, "Physical Line (%d) = {%d};\n", i, i);
+    }
 
   for (i = 1; i <= Tess.FaceQty; i++)
     if (!Tess.FaceState || Tess.FaceState[i] != -1)
