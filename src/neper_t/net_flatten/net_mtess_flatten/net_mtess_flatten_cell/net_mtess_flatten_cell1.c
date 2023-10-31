@@ -38,7 +38,7 @@ net_mtess_flatten_cell (struct TESS *Tess, int *CTessIds, int CTessQty,
       id = CTessIds[i];
 
       for (j = 1; j <= Tess[id].CellQty; j++)
-        (*pFTess).CellModeId[++id2] = Tess[id].CellModeId[j];
+        (*pFTess).CellModeId[++id2] = (Tess[id].CellModeId ? Tess[id].CellModeId[j] : -1;
     }
   }
 
