@@ -1,4 +1,4 @@
-New in 4.6.2-9 (31 Oct 2023):
+New in 4.6.2-10 (02 Nov 2023):
 - module -T: fixed -transform rmsat and -transform cut, added -statcell scale,
   added -statcell voxnb, improved geo format, made minor improvements.
 - module -S: fixed -res... '\<result>` (result overwriting).
