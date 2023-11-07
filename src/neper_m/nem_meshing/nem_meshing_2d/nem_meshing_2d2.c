@@ -8,10 +8,19 @@ void
 nem_meshing_2d_progress (struct MULTIM Multim, int face, int faceqty,
                          char *message)
 {
-  int a;
+  int i, a;
   int *pct = ut_alloc_1d_int (Multim.algoqty);
+  double mean;
   char *tmp = ut_alloc_1d_char (128);
   char *format = ut_alloc_1d_char (128);
+
+  if (face > 0)
+  {
+    mean = ut_array_1d_mean (Multim.O + 1, face);
+    for (i = 1; i <= face; i++)
+      if (Multim.O[i] == 0)
+        Multim.O[i] = mean;
+  }
 
   sprintf (format, "%%3.0f%%%% (%.2g|%.2g/",
            (face > 0) ? ut_array_1d_min (Multim.O + 1, face) : 0,

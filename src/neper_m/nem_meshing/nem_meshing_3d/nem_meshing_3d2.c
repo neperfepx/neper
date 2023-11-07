@@ -60,10 +60,19 @@ void
 nem_meshing_3d_progress (struct MULTIM Multim, int poly, int polyqty,
                          char *message)
 {
-  int a;
+  int i, a;
+  double mean;
   int *pct = ut_alloc_1d_int (Multim.algoqty);
   char *tmp = ut_alloc_1d_char (128);
   char *format = ut_alloc_1d_char (128);
+
+  if (poly > 0)
+  {
+    mean = ut_array_1d_mean (Multim.O + 1, poly);
+    for (i = 1; i <= poly; i++)
+      if (Multim.O[i] == 0)
+        Multim.O[i] = mean;
+  }
 
   sprintf (format, "%%3.0f%%%% (%.2g|%.2g/",
            (poly > 0) ? ut_array_1d_min (Multim.O + 1, poly) : 0,
