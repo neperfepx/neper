@@ -163,5 +163,12 @@ net_tess_opt_comp_objective_fval_cellpenalty (struct TOPT *pTOpt)
     }
   }
 
+  (*pTOpt).curcellpenaltyqty = 0;
+  for (i = 1; i <= (*pTOpt).CellQty; i++)
+    if ((*pTOpt).curcellpenalty[i] > 0)
+      (*pTOpt).curcellpenaltyqty++;
+
+  (*pTOpt).mincellpenaltyqty = ut_num_min ((*pTOpt).mincellpenaltyqty, (*pTOpt).curcellpenaltyqty);
+
   return;
 }

@@ -86,6 +86,9 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).oldcellval = NULL;
   (*pTOpt).tarrefval = NULL;
 
+  (*pTOpt).curcellpenaltyqty = 0;
+  (*pTOpt).mincellpenaltyqty = INT_MAX;
+
   (*pTOpt).tarpdf0 = NULL;
   (*pTOpt).tarpdf = NULL;
   (*pTOpt).tarcdf0 = NULL;

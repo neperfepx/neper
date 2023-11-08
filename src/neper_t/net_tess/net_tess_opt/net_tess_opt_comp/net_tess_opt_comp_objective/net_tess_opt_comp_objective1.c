@@ -163,15 +163,26 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
       for (i = 0; i < 6 - ut_num_tenlen_int ((*pTOpt).iter); i++)
         blank = strcat (blank, " ");
 
-      sprintf (message, "Iteration %s%d: fmin%s f%s%s", blank, (*pTOpt).iter,
-               fmin, f, loopnotice);
+      if ((*pTOpt).curcellpenaltyqty == 0 || (*pTOpt).mincellpenaltyqty == 0)
+        sprintf (message, "Iteration %s%d: fmin%s f%s%s", blank, (*pTOpt).iter,
+                 fmin, f, loopnotice);
+      else
+        sprintf (message, "Iteration %s%d: fmin%s f%s%s ((%d min) %d void cell%s)", blank, (*pTOpt).iter,
+                 fmin, f, loopnotice, (*pTOpt).mincellpenaltyqty,
+                 (*pTOpt).curcellpenaltyqty, (*pTOpt).curcellpenaltyqty > 1 ? "s" : "");
     }
     else
     {
       for (i = 0; i < 11 - ut_num_tenlen_int ((*pTOpt).iter); i++)
         blank = strcat (blank, " ");
-      sprintf (message, "Iter %s%d: fmin=%s f=%s%s", blank, (*pTOpt).iter,
-               fmin, f, loopnotice);
+
+      if ((*pTOpt).curcellpenaltyqty == 0 || (*pTOpt).mincellpenaltyqty == 0)
+        sprintf (message, "Iter %s%d: fmin=%s f=%s%s", blank, (*pTOpt).iter,
+                 fmin, f, loopnotice);
+      else
+        sprintf (message, "Iter %s%d: fmin=%s f=%s%s ((%d min) %d void cell%s)", blank, (*pTOpt).iter,
+                 fmin, f, loopnotice, (*pTOpt).mincellpenaltyqty,
+                 (*pTOpt).curcellpenaltyqty, (*pTOpt).curcellpenaltyqty > 1 ? "s" : "");
     }
     ut_free_1d_char (&blank);
   }

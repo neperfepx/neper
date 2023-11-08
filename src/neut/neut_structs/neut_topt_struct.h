@@ -80,6 +80,8 @@ struct TOPT
   double ***curcellval;		// current cell values
   double *oldcellpenalty;       // old (previous) cell penalty (if void)
   double ***oldcellval;		// old (previous) cell values
+  int curcellpenaltyqty;        // current number of penalized cells
+  int mincellpenaltyqty;        // minimum number of penalized cells
   // (number given by varcellvalqty)
 
   // seedset information
