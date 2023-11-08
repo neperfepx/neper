@@ -3196,6 +3196,7 @@ neut_tess_3dcolumnar_2d (struct TESS Tess, struct TESS *pT)
   int domface;
   int *oldver_newver = ut_alloc_1d_int (Tess.VerQty + 1);
   int *oldedge_newedge = ut_alloc_1d_int (Tess.EdgeQty + 1);
+  int *oldface_newface = ut_alloc_1d_int (Tess.FaceQty + 1);
 
   neut_tess_domface_label_id (Tess, "z0", &domface);
 
@@ -3206,9 +3207,9 @@ neut_tess_3dcolumnar_2d (struct TESS Tess, struct TESS *pT)
 
   neut_tess_domface_tess_seeds (Tess, pT);
 
-  neut_tess_3dcolumnar_2d_faces (Tess, domface, pT);
+  neut_tess_3dcolumnar_2d_faces (Tess, domface, pT, oldface_newface);
 
-  neut_tess_domface_tess_cells (Tess, NULL, pT);
+  neut_tess_domface_tess_cells (Tess, oldface_newface, pT);
 
   neut_tess_3dcolumnar_2d_edges (Tess, domface, pT, oldedge_newedge);
 
@@ -3225,6 +3226,7 @@ neut_tess_3dcolumnar_2d (struct TESS Tess, struct TESS *pT)
 
   ut_free_1d_int (&oldver_newver);
   ut_free_1d_int (&oldedge_newedge);
+  ut_free_1d_int (&oldface_newface);
 
   return;
 }

@@ -307,8 +307,7 @@ neut_tess_domface_tess_cells (struct TESS Tess, int *oldface_newface,
   (*pT).CellId = ut_alloc_1d_int ((*pT).CellQty + 1);
   ut_array_1d_int_set_id ((*pT).CellId, (*pT).CellQty + 1);
   for (i = 1; i <= (*pT).CellQty; i++)
-    if (newface_oldface)
-      (*pT).CellId[i] = neut_tess_cell_id (Tess, face_oldpoly[i]);
+    (*pT).CellId[i] = neut_tess_cell_id (Tess, face_oldpoly[i]);
 
   (*pT).ScaleCellId = ut_alloc_2d_int ((*pT).CellQty + 1, (*pT).ScaleQty + 1);
   for (i = 1; i <= (*pT).CellQty; i++)
@@ -420,7 +419,8 @@ neut_tess_domface_tess_faces (struct TESS Tess, int domface, struct TESS *pT,
 }
 
 void
-neut_tess_3dcolumnar_2d_faces (struct TESS Tess, int domface, struct TESS *pT)
+neut_tess_3dcolumnar_2d_faces (struct TESS Tess, int domface, struct TESS *pT,
+                               int *oldface_newface)
 {
   int i, j, face, oldface;
 
@@ -453,6 +453,7 @@ neut_tess_3dcolumnar_2d_faces (struct TESS Tess, int domface, struct TESS *pT)
     }
     if (oldface == -1)
       ut_print_neperbug ();
+    oldface_newface[oldface] = i;
 
     ut_array_1d_memcpy (Tess.FaceEq[oldface], 4, (*pT).FaceEq[i]);
     (*pT).FaceVerQty[i] = Tess.FaceVerQty[oldface];

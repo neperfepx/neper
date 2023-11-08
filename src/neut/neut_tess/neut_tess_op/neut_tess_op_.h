@@ -36,7 +36,8 @@ extern void neut_tess_domface_tess_domain (struct TESS Tess, int domface,
 					   int *oldver_newver);
 
 extern void neut_tess_3dcolumnar_2d_faces (struct TESS Tess, int domface,
-					   struct TESS *pT);
+					   struct TESS *pT,
+					   int *oldface_newface);
 extern void neut_tess_3dcolumnar_2d_edges (struct TESS Tess, int domface,
 					   struct TESS *pT,
 					   int *oldedge_newedge);
