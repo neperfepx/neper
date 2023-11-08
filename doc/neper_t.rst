@@ -310,7 +310,7 @@ These options can be used to set the cell morphology.
 
     Second, control points can be defined using :data:`pts(<def1>,<def2>,...)`, where :data:`<def#>` can be:
 
-      - :data:`region=\<region\>`, where :data:`region` can be :data:`surf` for surface voxels or :data:`all` for all voxels;
+      - :data:`region=\<region\>`, where :data:`<region>` can be :data:`surf` for surface voxels or :data:`all` for all voxels;
       - :data:`res=\<res\>`, where :data:`<res>` is the resolution, i.e. the average number of control points along a direction of a grain.
 
     Third, the expression of the objective function *per se* can be specified using :data:`val(<expr>)`, where :data:`expr` can be (mutually exclusive):
