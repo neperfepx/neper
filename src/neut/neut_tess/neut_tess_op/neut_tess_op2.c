@@ -298,9 +298,10 @@ neut_tess_domface_tess_cells (struct TESS Tess, int *oldface_newface,
                          &newfaceqty);
 
   for (i = 1; i <= (*pT).FaceQty; i++)
-    face_oldpoly[i] =
-      oldface_newface ? Tess.FacePoly[newface_oldface[i]][0] : Tess.
-      FacePoly[i][0];
+    if ((*pT).FaceVerQty[i])
+      face_oldpoly[i] =
+        oldface_newface ? Tess.FacePoly[newface_oldface[i]][0] : Tess.
+        FacePoly[i][0];
 
   (*pT).CellQty = (*pT).FaceQty;
 
