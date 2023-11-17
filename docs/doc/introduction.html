@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Introduction &mdash; Neper 4.6.1 documentation</title>
+  <title>Introduction &mdash; Neper 4.7.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../_static/documentation_options.js?v=bd5f082a"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -30,7 +30,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.6.1
+                4.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -213,10 +213,38 @@ Neper is multithreaded and operates on all threads by default.</p>
 <li><p>The pthread library (mandatory). It is likely to be available on your system or from your system package manager.</p></li>
 </ul>
 <p>Other dependencies are only needed at run-time (they are not necessary for compilation):</p>
-<ul class="simple">
+<ul>
 <li><p>The <a class="reference external" href="https://gmsh.info">Gmsh</a> program (version 2.4.2 or higher, excluding version 2.5.1, mandatory for module -M). It is likely to be available from your system package manager. Alternatively, both binary and source-code versions can be downloaded from the program website (compiling from the source code significantly speeds up meshing).  Gmsh must be available at the terminal as the command <strong class="program">gmsh</strong>, or the path to its binary must be specified with option <a class="reference internal" href="neper_m.html#cmdoption-gmsh"><code class="xref std std-option docutils literal notranslate"><span class="pre">-gmsh</span></code></a> (in module -M).</p></li>
 <li><p>The <a class="reference external" href="http://www.povray.org">POV-Ray</a> program (version 3.7 or higher, mandatory for PNG output in <a class="reference internal" href="neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>).  It is likely to be available on your system or from your system package manager (binary package).  Alternatively, both binary and source-code versions can be downloaded the program website.  POV-Ray must be available at the terminal as the command <strong class="program">povray</strong>, or the path to its binary must be specified with option <a class="reference internal" href="neper_v.html#cmdoption-povray"><code class="xref std std-option docutils literal notranslate"><span class="pre">-povray</span></code></a> (in module -V).</p></li>
-<li><p>The <a class="reference external" href="https://asymptote.sourceforge.io/">Asymptote</a> program and <a class="reference external" href="https://www.tug.org/texlive">Tex Live</a> (<code class="code docutils literal notranslate"><span class="pre">texlive-full</span></code> on Ubuntu, for pole figure plots in <a class="reference internal" href="neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>). They are likely to be available from your system package manager.  Alternatively, both binary and source-code versions can be downloaded from the program websites.  Asymptote must be available at the terminal as the command <strong class="program">asy</strong>, or the path to its binary must be specified with option <code class="xref std std-option docutils literal notranslate"><span class="pre">-asy</span></code> (in module -V).</p></li>
+<li><p>The <a class="reference external" href="https://asymptote.sourceforge.io/">Asymptote</a> program and <a class="reference external" href="https://www.tug.org/texlive">Tex Live</a> (<code class="code docutils literal notranslate"><span class="pre">texlive-full</span></code> on Ubuntu, for pole figure plots in <a class="reference internal" href="neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>). They are likely to be available from your system package manager.  Alternatively, both binary and source-code versions can be downloaded from the program websites.  Asymptote must be available at the terminal as the command <strong class="program">asy</strong>, or the path to its binary must be specified with option <code class="xref std std-option docutils literal notranslate"><span class="pre">-asy</span></code> (in module -V).</p>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Depending on your configuration and your use of Neper, it may be necessary to make the following changes in your <code class="file docutils literal notranslate"><span class="pre">/etc/ImageMagick-6/policy.xml</span></code> file:</p>
+<ul>
+<li><p>Comment out the following lines:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&lt;policy domain=&quot;coder&quot; rights=&quot;none&quot; pattern=&quot;PS&quot; /&gt;</span>
+<span class="go">&lt;policy domain=&quot;coder&quot; rights=&quot;none&quot; pattern=&quot;PS2&quot; /&gt;</span>
+<span class="go">&lt;policy domain=&quot;coder&quot; rights=&quot;none&quot; pattern=&quot;PS3&quot; /&gt;</span>
+<span class="go">&lt;policy domain=&quot;coder&quot; rights=&quot;none&quot; pattern=&quot;EPS&quot; /&gt;</span>
+<span class="go">&lt;policy domain=&quot;coder&quot; rights=&quot;none&quot; pattern=&quot;PDF&quot; /&gt;</span>
+<span class="go">&lt;policy domain=&quot;coder&quot; rights=&quot;none&quot; pattern=&quot;XPS&quot; /&gt;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Increase the following limits (especially <code class="xref py py-data docutils literal notranslate"><span class="pre">memory</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">disk</span></code>):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&lt;policy domain=&quot;resource&quot; name=&quot;memory&quot; value=&quot;256MiB&quot;/&gt;</span>
+<span class="go">&lt;policy domain=&quot;resource&quot; name=&quot;map&quot; value=&quot;512MiB&quot;/&gt;</span>
+<span class="go">&lt;policy domain=&quot;resource&quot; name=&quot;width&quot; value=&quot;16KP&quot;/&gt;</span>
+<span class="go">&lt;policy domain=&quot;resource&quot; name=&quot;height&quot; value=&quot;16KP&quot;/&gt;</span>
+<span class="go">&lt;!-- &lt;policy domain=&quot;resource&quot; name=&quot;list-length&quot; value=&quot;128&quot;/&gt; --&gt;</span>
+<span class="go">&lt;policy domain=&quot;resource&quot; name=&quot;area&quot; value=&quot;128MP&quot;/&gt;</span>
+<span class="go">&lt;policy domain=&quot;resource&quot; name=&quot;disk&quot; value=&quot;1GiB&quot;/&gt;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</li>
 </ul>
 <p>Finally, other third-party libraries are directly included in the source code (see directory <code class="file docutils literal notranslate"><span class="pre">src/contrib</span></code>) and are therefore not dependencies <em>per se</em>:</p>
 <ul class="simple">

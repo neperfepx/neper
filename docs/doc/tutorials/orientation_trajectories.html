@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plotting Orientation Trajectories &mdash; Neper 4.6.1 documentation</title>
+  <title>Plotting Orientation Trajectories &mdash; Neper 4.7.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
@@ -12,14 +12,14 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../../_static/documentation_options.js?v=bd5f082a"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Plotting an Orientation Color Key" href="orientation_color_key.html" />
-    <link rel="prev" title="Plotting a Pole Figure" href="pole_figure.html" /> 
+    <link rel="prev" title="Specifying Orientation Information for Tessellation Cells" href="ori_statistics.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -30,7 +30,7 @@
             <a href="../../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.6.1
+                4.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -45,11 +45,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="simple_model.html">Generating and Meshing a Simple Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
 <li class="toctree-l2"><a class="reference internal" href="morpho_tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_space.html">Generating and Meshing a Fundamental Region of Orientation Space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ori_statistics.html">Specifying Orientation Information for Tessellation Cells</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Plotting Orientation Trajectories</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#generalities">Generalities</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#configuring-the-symbol-plot">Configuring the Symbol Plot</a></li>
@@ -140,7 +142,7 @@
 <span class="gp">$ </span>convert<span class="w"> </span>+append<span class="w"> </span>+repage<span class="w"> </span>-flatten<span class="w"> </span>img1.png<span class="w"> </span>img2.png<span class="w"> </span>img3.png
 </pre></div>
 </div>
-<img alt="../../_images/img32.png" src="../../_images/img32.png" />
+<img alt="../../_images/img33.png" src="../../_images/img33.png" />
 <p>To reproduce <em>exactly</em> the images below, add the following line to your <code class="file docutils literal notranslate"><span class="pre">$HOME/.neperrc</span></code> file (or to a local configuration file to be loaded with <code class="xref std std-option docutils literal notranslate"><span class="pre">--rcfile</span></code>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">neper</span> <span class="o">-</span><span class="n">V</span> <span class="o">-</span><span class="n">imagesize</span> <span class="mi">500</span><span class="p">:</span><span class="mi">500</span>
 </pre></div>
@@ -151,7 +153,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n20.sim<span class="w"> </span>-space<span class="w"> </span>ipf<span class="w"> </span>-step<span class="w"> </span>all<span class="w"> </span>-print<span class="w"> </span>img4
 </pre></div>
 </div>
-<img alt="../../_images/img42.png" src="../../_images/img42.png" />
+<img alt="../../_images/img43.png" src="../../_images/img43.png" />
 <p>The orientations at successive steps are plotted <em>on top of each other</em>, using the same symbols.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -164,7 +166,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n20.sim<span class="w"> </span>-space<span class="w"> </span>ipf<span class="w"> </span>-step<span class="w"> </span>all<span class="w"> </span>-dataelsetrad<span class="w"> </span><span class="s2">&quot;real:((step&lt;10)?0.008:0.024)&quot;</span><span class="w"> </span>-print<span class="w"> </span>img5
 </pre></div>
 </div>
-<img alt="../../_images/img52.png" src="../../_images/img52.png" />
+<img alt="../../_images/img53.png" src="../../_images/img53.png" />
 </section>
 </section>
 
@@ -172,7 +174,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pole_figure.html" class="btn btn-neutral float-left" title="Plotting a Pole Figure" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ori_statistics.html" class="btn btn-neutral float-left" title="Specifying Orientation Information for Tessellation Cells" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="orientation_color_key.html" class="btn btn-neutral float-right" title="Plotting an Orientation Color Key" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

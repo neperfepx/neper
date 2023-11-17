@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Visualizing a Tessellation &mdash; Neper 4.6.1 documentation</title>
+  <title>Visualizing a Tessellation &mdash; Neper 4.7.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../../_static/documentation_options.js?v=bd5f082a"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Plotting a Pole Figure" href="pole_figure.html" />
-    <link rel="prev" title="Processing EBSD-type data" href="ebsd_process.html" /> 
+    <link rel="prev" title="Generating and Meshing a Simple Tessellation" href="simple_model.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -31,7 +31,7 @@
             <a href="../../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.6.1
+                4.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -46,9 +46,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="simple_model.html">Generating and Meshing a Simple Tessellation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="morpho_tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Visualizing a Tessellation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#generating-a-tessellation-image">Generating a Tessellation Image</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#showing-specific-entities">Showing Specific Entities</a></li>
@@ -68,6 +65,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_space.html">Generating and Meshing a Fundamental Region of Orientation Space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ori_statistics.html">Specifying Orientation Information for Tessellation Cells</a></li>
 <li class="toctree-l2"><a class="reference internal" href="orientation_trajectories.html">Plotting Orientation Trajectories</a></li>
 <li class="toctree-l2"><a class="reference internal" href="orientation_color_key.html">Plotting an Orientation Color Key</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install_ubuntu22.html">Installing Neper on Ubuntu 22</a></li>
@@ -141,18 +143,18 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-showcell<span class="w"> </span><span class="s2">&quot;z&lt;0.5&quot;</span><span class="w"> </span>-showedge<span class="w"> </span>all<span class="w"> </span>-print<span class="w"> </span>img3
 </pre></div>
 </div>
-<img alt="../../_images/img35.png" src="../../_images/img35.png" />
+<img alt="../../_images/img36.png" src="../../_images/img36.png" />
 <p>The figure is not very clear, and only the domain edges can be added instead:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-showcell<span class="w"> </span><span class="s2">&quot;z&lt;0.5&quot;</span><span class="w"> </span>-showedge<span class="w"> </span><span class="s2">&quot;cell_shown||domtype==1&quot;</span><span class="w"> </span>-print<span class="w"> </span>img4
 </pre></div>
 </div>
-<img alt="../../_images/img45.png" src="../../_images/img45.png" />
+<img alt="../../_images/img46.png" src="../../_images/img46.png" />
 <p><code class="xref py py-data docutils literal notranslate"><span class="pre">cell_shown</span></code> (or <code class="xref py py-data docutils literal notranslate"><span class="pre">cell_shown==1</span></code>) selects edges for which at least one cell is shown, <code class="xref py py-data docutils literal notranslate"><span class="pre">domtype==1</span></code> selects edges that belong to a domain edge, and <code class="xref py py-data docutils literal notranslate"><span class="pre">||</span></code> is the logical <code class="code docutils literal notranslate"><span class="pre">OR</span></code>.</p>
 <p>A logical expression can be arbitrarily complex.  For example, the following command only shows the cells that have a volume larger than average (0.005, for a 200-cell in a unit cube), have at least 20 faces and are interior to the domain:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-showcell<span class="w"> </span><span class="s2">&quot;(vol&gt;0.005)&amp;&amp;(facenb&gt;=20)&amp;&amp;(body&gt;0)&quot;</span><span class="w"> </span>-showedge<span class="w"> </span><span class="s2">&quot;cell_shown||domtype==1&quot;</span><span class="w"> </span>-print<span class="w"> </span>img5
 </pre></div>
 </div>
-<img alt="../../_images/img55.png" src="../../_images/img55.png" />
+<img alt="../../_images/img56.png" src="../../_images/img56.png" />
 <p>It is also possible to fully hide the cells and visualize the tessellation based on the individual faces, edges, etc.:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-showcell<span class="w"> </span>none<span class="w"> </span>-showface<span class="w"> </span><span class="s2">&quot;z&lt;0.5&quot;</span><span class="w"> </span>-showedge<span class="w"> </span><span class="s2">&quot;face_shown||domtype==1&quot;</span><span class="w"> </span>-print<span class="w"> </span>img6
 </pre></div>
@@ -216,7 +218,7 @@ Similarly to the <code class="xref std std-option docutils literal notranslate">
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-datavercol<span class="w"> </span>int:cellnb<span class="w"> </span>-dataverrad<span class="w"> </span><span class="m">0</span>.02<span class="w"> </span>-showcell<span class="w"> </span><span class="s2">&quot;z&lt;0.5&quot;</span><span class="w"> </span>-showedge<span class="w"> </span><span class="s2">&quot;cell_shown||domtype==1&quot;</span><span class="w"> </span>-showver<span class="w"> </span>cell_shown<span class="w"> </span>-print<span class="w"> </span>img13
 </pre></div>
 </div>
-<img alt="../../_images/img131.png" src="../../_images/img131.png" />
+<img alt="../../_images/img132.png" src="../../_images/img132.png" />
 <p>The image shows the vertices having 1, 2, 3 and 4 cells in red, green, blue and yellow, respectively.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -296,7 +298,7 @@ Similarly to the <code class="xref std std-option docutils literal notranslate">
 <span class="gp">$ </span>convert<span class="w"> </span>-append<span class="w"> </span>tmp1.png<span class="w"> </span>tmp2.png<span class="w"> </span>img23.png
 </pre></div>
 </div>
-<img alt="../../_images/img231.png" src="../../_images/img231.png" />
+<img alt="../../_images/img232.png" src="../../_images/img232.png" />
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Several images can be generated in a single Neper command by using option <a class="reference internal" href="../neper_v.html#cmdoption-print"><code class="xref std std-option docutils literal notranslate"><span class="pre">-print</span></code></a> several times.</p>
@@ -336,7 +338,7 @@ Similarly to the <code class="xref std std-option docutils literal notranslate">
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="ebsd_process.html" class="btn btn-neutral float-left" title="Processing EBSD-type data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="simple_model.html" class="btn btn-neutral float-left" title="Generating and Meshing a Simple Tessellation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pole_figure.html" class="btn btn-neutral float-right" title="Plotting a Pole Figure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

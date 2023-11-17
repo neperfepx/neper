@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plotting a Pole Figure &mdash; Neper 4.6.1 documentation</title>
+  <title>Plotting a Pole Figure &mdash; Neper 4.7.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
@@ -12,13 +12,13 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../../_static/documentation_options.js?v=bd5f082a"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Plotting Orientation Trajectories" href="orientation_trajectories.html" />
+    <link rel="next" title="Generating a Tessellation from Statistical Cell Properties" href="morpho_statistics.html" />
     <link rel="prev" title="Visualizing a Tessellation" href="visualize_tessellation.html" /> 
 </head>
 
@@ -30,7 +30,7 @@
             <a href="../../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.6.1
+                4.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -45,9 +45,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="simple_model.html">Generating and Meshing a Simple Tessellation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="morpho_tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Plotting a Pole Figure</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#generalities">Generalities</a></li>
@@ -58,6 +55,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#working-from-multiple-inputs">Working From Multiple Inputs</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_space.html">Generating and Meshing a Fundamental Region of Orientation Space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ori_statistics.html">Specifying Orientation Information for Tessellation Cells</a></li>
 <li class="toctree-l2"><a class="reference internal" href="orientation_trajectories.html">Plotting Orientation Trajectories</a></li>
 <li class="toctree-l2"><a class="reference internal" href="orientation_color_key.html">Plotting an Orientation Color Key</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install_ubuntu22.html">Installing Neper on Ubuntu 22</a></li>
@@ -117,7 +119,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100.tess<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">800</span>:400<span class="w"> </span>-print<span class="w"> </span>img1
 </pre></div>
 </div>
-<img alt="../../_images/img12.png" src="../../_images/img12.png" />
+<img alt="../../_images/img13.png" src="../../_images/img13.png" />
 <p>To reproduce <em>exactly</em> the images below, add the following line to your <code class="file docutils literal notranslate"><span class="pre">$HOME/.neperrc</span></code> file (or to a local configuration file to be loaded with <code class="xref std std-option docutils literal notranslate"><span class="pre">--rcfile</span></code>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">neper</span> <span class="o">-</span><span class="n">V</span> <span class="o">-</span><span class="n">imagesize</span> <span class="mi">500</span><span class="p">:</span><span class="mi">500</span>
 </pre></div>
@@ -128,7 +130,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100.tess<span class="w"> </span>-space<span class="w"> </span>pf<span class="w"> </span>-print<span class="w"> </span>img2
 </pre></div>
 </div>
-<img alt="../../_images/img22.png" src="../../_images/img22.png" />
+<img alt="../../_images/img23.png" src="../../_images/img23.png" />
 <p>This generates a PNG image named <code class="file docutils literal notranslate"><span class="pre">img2.png</span></code>.  By default, a pole figure is plotted from the (four) {111} poles, using a stereographic projection in the 1–2 reference plane, and all cell orientations/poles are represented using symbols.  Orientations are colored from their (cell) ids, so that colors match between visualizations in real space an pole figure space (the two images above).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -147,17 +149,17 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100.tess<span class="w"> </span>-space<span class="w"> </span>pf<span class="w"> </span>-pfpole<span class="w"> </span><span class="m">1</span>:0:0<span class="w"> </span>-print<span class="w"> </span>img3
 </pre></div>
 </div>
-<img alt="../../_images/img33.png" src="../../_images/img33.png" />
+<img alt="../../_images/img34.png" src="../../_images/img34.png" />
 <p>The projection type can be modified using <code class="xref std std-option docutils literal notranslate"><span class="pre">-pfprojection</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100.tess<span class="w"> </span>-space<span class="w"> </span>pf<span class="w"> </span>-pfprojection<span class="w"> </span>equal-area<span class="w"> </span>-print<span class="w"> </span>img4
 </pre></div>
 </div>
-<img alt="../../_images/img43.png" src="../../_images/img43.png" />
+<img alt="../../_images/img44.png" src="../../_images/img44.png" />
 <p>The sample directions can be modified using <code class="xref std std-option docutils literal notranslate"><span class="pre">-pfdir</span></code>, so as the actual axis labels, using <a class="reference internal" href="../neper_v.html#cmdoption-datacsyslabel"><code class="xref std std-option docutils literal notranslate"><span class="pre">-datacsyslabel</span></code></a>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100.tess<span class="w"> </span>-space<span class="w"> </span>pf<span class="w"> </span>-pfdir<span class="w"> </span>y:z<span class="w"> </span>-datacsyslabel<span class="w"> </span>RD:TD:ND<span class="w"> </span>-print<span class="w"> </span>img5
 </pre></div>
 </div>
-<img alt="../../_images/img53.png" src="../../_images/img53.png" />
+<img alt="../../_images/img54.png" src="../../_images/img54.png" />
 <p>The representation <em>mode</em> can be changed into <code class="xref py py-data docutils literal notranslate"><span class="pre">density</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100.tess<span class="w"> </span>-space<span class="w"> </span>pf<span class="w"> </span>-pfmode<span class="w"> </span>density<span class="w"> </span>-print<span class="w"> </span>img6
 </pre></div>
@@ -226,7 +228,7 @@ transparency (option <code class="xref std std-option docutils literal notransla
 </span><span class="w">  </span>-print<span class="w"> </span>img13
 </pre></div>
 </div>
-<img alt="../../_images/img13.png" src="../../_images/img13.png" />
+<img alt="../../_images/img131.png" src="../../_images/img131.png" />
 </section>
 <section id="configuring-a-density-field-plot">
 <h2>Configuring a Density Field Plot<a class="headerlink" href="#configuring-a-density-field-plot" title="Link to this heading"></a></h2>
@@ -323,7 +325,7 @@ The command produces the same image as if the orientations were read from a tess
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100.ori<span class="w"> </span>-space<span class="w"> </span>pf<span class="w"> </span>-datapointrad<span class="w"> </span><span class="m">0</span>.01+0.03*id/100<span class="w"> </span>-print<span class="w"> </span>img23
 </pre></div>
 </div>
-<img alt="../../_images/img23.png" src="../../_images/img23.png" />
+<img alt="../../_images/img231.png" src="../../_images/img231.png" />
 </section>
 <section id="working-from-a-direction-input">
 <h2>Working From a Direction Input<a class="headerlink" href="#working-from-a-direction-input" title="Link to this heading"></a></h2>
@@ -380,7 +382,7 @@ The command produces the same image as if the orientations were read from a tess
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="visualize_tessellation.html" class="btn btn-neutral float-left" title="Visualizing a Tessellation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="orientation_trajectories.html" class="btn btn-neutral float-right" title="Plotting Orientation Trajectories" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="morpho_statistics.html" class="btn btn-neutral float-right" title="Generating a Tessellation from Statistical Cell Properties" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

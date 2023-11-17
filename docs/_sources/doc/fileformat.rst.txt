@@ -36,6 +36,12 @@ and
    [*orispread
      <cellid_spread>
      ...]
+   [*orispreadtheta
+     <cellid_orispreadtheta>
+     ...]
+   [*weight
+     <cellid_weight>
+     ...]
    [*lam
      <cell1_lam> <cell2_lam> ...]
    [*mode
@@ -164,6 +170,14 @@ where (with identifiers being integer numbers),
 - :data:`*orispread` denotes the beginning of an optional crystal orientation distribution field.
 
 - :data:`<cellid_spread>` is the value of the orientation distribution of cell `id`.
+
+- :data:`*orispreadtheta` denotes the beginning of an optional crystal orientation distribution field (theta values).
+
+- :data:`<cellid_orispreadtheta>` is the theta value of the orientation distribution of cell `id` (in degrees).
+
+- :data:`*weight` denotes the beginning of an optional weight field.
+
+- :data:`<cellid_weight>` is the weight of cell `id`.
 
 - :data:`**vertex` denotes the beginning of the vertex field.
 

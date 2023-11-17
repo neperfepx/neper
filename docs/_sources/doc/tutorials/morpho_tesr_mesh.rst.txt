@@ -67,7 +67,7 @@ The grain orientations (and the crystal symmetry) can be added to the file throu
     *file AlLi.dat
   ***end
 
-where :data:`<number_of_cells>` is the number of cells, :data:`<crysym>` is the :ref:`crystal symmetry <crystal_symmetries>), :data:`<descriptor>` is the :ref:`orientation descriptor <rotation_and_orientation_descriptors>` (e.g., :data:`rodrigues:active`) and :data:`<orientations>` is the list of orientations (the crystal symmetry could also have been defined a posteriori, using the :option:`-oricrysym` option). If the grains are not numbered contiguously from 1, their ids must be provided in the :data:`**cell/*id` section in order to be able to provide an :data:`*ori` section.
+where :data:`<number_of_cells>` is the number of cells, :data:`<crysym>` is the crystal symmetry (see :ref:`crystal_symmetries`), :data:`<descriptor>` is the :ref:`orientation descriptor <rotation_and_orientation_descriptors>` (e.g., :data:`rodrigues:active`) and :data:`<orientations>` is the list of orientations (the crystal symmetry could also have been defined a posteriori, using the :option:`-oricrysym` option). If the grains are not numbered contiguously from 1, their ids must be provided in the :data:`**cell/*id` section in order to be able to provide an :data:`*ori` section.
 
 It is now possible to visualize the polycrystal colored by its grain orientations:
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generating and Meshing a Simple Tessellation &mdash; Neper 4.6.1 documentation</title>
+  <title>Generating and Meshing a Simple Tessellation &mdash; Neper 4.7.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
@@ -12,13 +12,13 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../../_static/documentation_options.js?v=bd5f082a"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Generating a Tessellation from Statistical Cell Properties" href="morpho_statistics.html" />
+    <link rel="next" title="Visualizing a Tessellation" href="visualize_tessellation.html" />
     <link rel="prev" title="Tutorials" href="../tutorials.html" /> 
 </head>
 
@@ -30,7 +30,7 @@
             <a href="../../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.6.1
+                4.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -51,11 +51,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#setting-mesh-properties">Setting Mesh Properties</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
 <li class="toctree-l2"><a class="reference internal" href="morpho_tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_space.html">Generating and Meshing a Fundamental Region of Orientation Space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ori_statistics.html">Specifying Orientation Information for Tessellation Cells</a></li>
 <li class="toctree-l2"><a class="reference internal" href="orientation_trajectories.html">Plotting Orientation Trajectories</a></li>
 <li class="toctree-l2"><a class="reference internal" href="orientation_color_key.html">Plotting an Orientation Color Key</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install_ubuntu22.html">Installing Neper on Ubuntu 22</a></li>
@@ -150,7 +152,7 @@ A 100-cell tessellation can be generated as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100-id1.tess,n100-id1.msh<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.005<span class="w"> </span>-print<span class="w"> </span>img3
 </pre></div>
 </div>
-<img alt="../../_images/img34.png" src="../../_images/img34.png" />
+<img alt="../../_images/img35.png" src="../../_images/img35.png" />
 </section>
 <section id="regularizing-a-tessellation">
 <h2>Regularizing a Tessellation<a class="headerlink" href="#regularizing-a-tessellation" title="Link to this heading"></a></h2>
@@ -163,14 +165,14 @@ A 100-cell tessellation can be generated as follows:</p>
 <p class="admonition-title">Note</p>
 <p>An option name may be abbreviated as long as the abbreviation is not ambiguous.  Here, <code class="xref py py-data docutils literal notranslate"><span class="pre">-regularization</span></code> has been abbreviated to <code class="xref py py-data docutils literal notranslate"><span class="pre">-reg</span></code>.</p>
 </div>
-<img alt="../../_images/img44.png" src="../../_images/img44.png" />
+<img alt="../../_images/img45.png" src="../../_images/img45.png" />
 <p>The resulting tessellation is very similar to the original one, as only slight morphological changes occur during regularization.  However, no local mesh overrefinements will be present anymore.</p>
 <p>The new tessellation can be meshed, and the mesh can be visualized as before:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>n100-id1.tess
 <span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100-id1.tess,n100-id1.msh<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.005<span class="w"> </span>-print<span class="w"> </span>img5
 </pre></div>
 </div>
-<img alt="../../_images/img54.png" src="../../_images/img54.png" />
+<img alt="../../_images/img55.png" src="../../_images/img55.png" />
 </section>
 <section id="setting-mesh-properties">
 <h2>Setting Mesh Properties<a class="headerlink" href="#setting-mesh-properties" title="Link to this heading"></a></h2>
@@ -197,7 +199,7 @@ A 100-cell tessellation can be generated as follows:</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../tutorials.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="morpho_statistics.html" class="btn btn-neutral float-right" title="Generating a Tessellation from Statistical Cell Properties" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="visualize_tessellation.html" class="btn btn-neutral float-right" title="Visualizing a Tessellation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

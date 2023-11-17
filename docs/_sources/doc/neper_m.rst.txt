@@ -271,6 +271,24 @@ The following options define the multimeshing algorithm (for 2D and 3D free mesh
 
   **Default value**: :data:`netg:gmsh,netg:netg,netg:gmne`.
 
+.. option:: -meshedge <edge_expr> (secondary option)
+
+  Specify the edges to mesh, which can be :data:`all` or an expression based on the variables described in :ref:`tessellation_keys`.
+
+  **Default value**: :data:`all`.
+
+.. option:: -meshface <face_expr> (secondary option)
+
+  Specify the faces to mesh, which can be :data:`all` or an expression based on the variables described in :ref:`tessellation_keys`.
+
+  **Default value**: :data:`all`.
+
+.. option:: -meshpoly <poly_expr> (secondary option)
+
+  Specify the polyhedra to mesh, which can be :data:`all` or an expression based on the variables described in :ref:`tessellation_keys`.
+
+  **Default value**: :data:`all`.
+
 .. option:: -interface <interface_type> (secondary option)
 
   Specify the type of interface meshing, which can be:

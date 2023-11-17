@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Specifying Orientation Information for Tessellation Cells &mdash; Neper 4.7.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/documentation_options.js?v=bd5f082a"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Plotting Orientation Trajectories" href="orientation_trajectories.html" />
+    <link rel="prev" title="Generating and Meshing a Fundamental Region of Orientation Space" href="orientation_space.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Neper
+          </a>
+              <div class="version">
+                4.7.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simple_model.html">Generating and Meshing a Simple Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_space.html">Generating and Meshing a Fundamental Region of Orientation Space</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Specifying Orientation Information for Tessellation Cells</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-an-odf">Using an ODF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-discrete-orientations-and-orientation-fibers">Using Discrete Orientations and Orientation Fibers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_trajectories.html">Plotting Orientation Trajectories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_color_key.html">Plotting an Orientation Color Key</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install_ubuntu22.html">Installing Neper on Ubuntu 22</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../papers.html">Reference Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../talks.html">Talks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../others.html">Other Resources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Documentation</a> &raquo;</li>
+          <li><a href="../tutorials.html">Tutorials</a> &raquo;</li>
+      <li>Specifying Orientation Information for Tessellation Cells</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/doc/tutorials/ori_statistics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="specifying-orientation-information-for-tessellation-cells">
+<span id="ori-statistics"></span><h1>Specifying Orientation Information for Tessellation Cells<a class="headerlink" href="#specifying-orientation-information-for-tessellation-cells" title="Link to this heading"></a></h1>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Read first: <a class="reference internal" href="../../tutorials/simple_model.html#simple-model"><span class="std std-ref">Generating and Meshing a Simple Tessellation</span></a> and (optionally) <a class="reference internal" href="orientation_space.html#orientation-space"><span class="std std-ref">Generating and Meshing a Fundamental Region of Orientation Space</span></a> and <a class="reference internal" href="pole_figure.html#pole-figure"><span class="std std-ref">Plotting a Pole Figure</span></a>.</p>
+</div>
+<p>Orientations for the cells can be specified as input, using option <a class="reference internal" href="../neper_t.html#cmdoption-ori"><code class="xref std std-option docutils literal notranslate"><span class="pre">-ori</span></code></a>. By default, “random orientations” are generated:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-crysym<span class="w"> </span>cubic
+</pre></div>
+</div>
+<p>This generates a <a class="reference internal" href="../fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a> named <code class="file docutils literal notranslate"><span class="pre">n1000-id1.tess</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>In general, it is important to define the crystal symmetry, using <a class="reference internal" href="../neper_t.html#cmdoption-crysym"><code class="xref std std-option docutils literal notranslate"><span class="pre">-crysym</span></code></a>.</p></li>
+<li><p>It is possible to generate only orientations (no actual tessellation) using <a class="reference internal" href="../neper_m.html#cmdoption-format"><code class="xref std std-option docutils literal notranslate"><span class="pre">-format</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">ori</span></code>, which only produces an orientation file (technically a <a class="reference internal" href="../fileformat.html#data-file"><span class="std std-ref">Data File</span></a>) of extension <code class="file docutils literal notranslate"><span class="pre">.ori</span></code>.</p></li>
+<li><p>In the case where an actual tessellation is generated, the cell orientations are generated after (and fully independently of) the tessellation morphology.</p></li>
+</ul>
+</div>
+<p>The orientations can be visualized on a pole figure using the <a class="reference internal" href="../neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a> and <a class="reference internal" href="../neper_v.html#cmdoption-space"><code class="xref std std-option docutils literal notranslate"><span class="pre">-space</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">pf</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n1000-id1.tess<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">500</span>:500<span class="w"> </span>-space<span class="w"> </span>pf<span class="w"> </span>-print<span class="w"> </span>img1
+</pre></div>
+</div>
+<img alt="../../_images/img12.png" src="../../_images/img12.png" />
+<p>We recognize a distribution of random orientations.  The apparent higher density in the center is due to the use of the stereographic projection (see <code class="xref std std-option docutils literal notranslate"><span class="pre">-pfprojection</span></code>), and an equal-area projection would effectively produce uniform density.</p>
+<section id="using-an-odf">
+<span id="specifying-an-odf"></span><h2>Using an ODF<a class="headerlink" href="#using-an-odf" title="Link to this heading"></a></h2>
+<p>An ODF can be specified by providing a mesh of orientation space and intensity values at the mesh elements.  A mesh of the fundamental region of Rodrigues space (for the considered crystal symmetry, here <em>cubic</em>) can be generated as follows (see tutorial “<a class="reference internal" href="orientation_space.html#orientation-space"><span class="std std-ref">Generating and Meshing a Fundamental Region of Orientation Space</span></a>”):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;rodrigues(cubic)&quot;</span><span class="w"> </span>-o<span class="w"> </span>fr
+<span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>fr.tess<span class="w"> </span>-cl<span class="w"> </span><span class="m">0</span>.05
+</pre></div>
+</div>
+<p>The elemental values of the ODF, which are defined externally, are written in an external file, <a class="reference download internal" download="" href="../../_downloads/cb8fd8bb176f301996a1904cc54da53a/odf.txt"><code class="xref download docutils literal notranslate"><span class="pre">odf.txt</span></code></a>.  In the present case, it defines a generic rolling texture of an FCC material.  The mesh of orientation space (generated as described above) also is provided by an external file, <a class="reference download internal" download="" href="../../_downloads/49d744ef5bd1df1f89b11ec421628118/fr.msh"><code class="xref download docutils literal notranslate"><span class="pre">fr.msh</span></code></a>.</p>
+<p>Cell orientations can be generated from the ODF as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-ori<span class="w"> </span><span class="s2">&quot;odf(mesh=file(fr.msh),val=file(odf.txt))&quot;</span><span class="w"> </span>-crysym<span class="w"> </span>cubic
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The crystal symmetry must be specified using <a class="reference internal" href="../neper_t.html#cmdoption-crysym"><code class="xref std std-option docutils literal notranslate"><span class="pre">-crysym</span></code></a> and should be the same as the one of the orientation space (<code class="file docutils literal notranslate"><span class="pre">fr.msh</span></code>); otherwise, an error is generated.</p>
+</div>
+<p>The orientations can be visualized as before:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n1000-id1.tess<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">500</span>:500<span class="w"> </span>-space<span class="w"> </span>pf<span class="w"> </span>-print<span class="w"> </span>img2
+</pre></div>
+</div>
+<img alt="../../_images/img22.png" src="../../_images/img22.png" />
+<p>We recognize a typical rolling texture.</p>
+</section>
+<section id="using-discrete-orientations-and-orientation-fibers">
+<h2>Using Discrete Orientations and Orientation Fibers<a class="headerlink" href="#using-discrete-orientations-and-orientation-fibers" title="Link to this heading"></a></h2>
+<p>An orientation distribution can be defined from “base”, discrete orientations and orientation fibers (see <a class="reference internal" href="../neper_t.html#cmdoption-ori"><code class="xref std std-option docutils literal notranslate"><span class="pre">-ori</span></code></a> and <a class="reference internal" href="../exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>), optionally surrounded by distributions.</p>
+<p>A simple case of a Cube-type orientation distribution can be obtained as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-crysym<span class="w"> </span>cubic<span class="w"> </span>-ori<span class="w"> </span><span class="s2">&quot;Cube:normal(8)&quot;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>“<code class="xref py py-data docutils literal notranslate"><span class="pre">normal(8)</span></code>” generates a distribution about the nominal orientation corresponding to a tri-variate normal distribution (in tangent space, <span class="math notranslate nohighlight">\(r\,\theta\)</span>) of a (1D) standard deviation equal to 8 degrees.  When applied to an orientation fiber, the distribution becomes bi-variate (perpendicular to the fiber).</p>
+</div>
+<p>The orientations can be visualized as before:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n1000-id1.tess<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">500</span>:500<span class="w"> </span>-space<span class="w"> </span>pf<span class="w"> </span>-print<span class="w"> </span>img3
+</pre></div>
+</div>
+<img alt="../../_images/img32.png" src="../../_images/img32.png" />
+<p>A simple case of a <span class="math notranslate nohighlight">\(\left&lt;1 0 0\right&gt; | X_i\)</span> fiber surrounded by a distribution of a 1D standard deviation of 4 degrees can be obtained as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-crysym<span class="w"> </span>cubic<span class="w"> </span>-ori<span class="w"> </span><span class="s2">&quot;fiber(1,0,0,1,0,0):normal(4)&quot;</span>
+</pre></div>
+</div>
+<p>The orientations can be visualized as before:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n1000-id1.tess<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">500</span>:500<span class="w"> </span>-space<span class="w"> </span>pf<span class="w"> </span>-print<span class="w"> </span>img5
+</pre></div>
+</div>
+<img alt="../../_images/img52.png" src="../../_images/img52.png" />
+<p>Several orientations (or orientation fibers) can be used to produce more complex distributions, each with its own weight and distribution.
+An example is as follows:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1000</span><span class="w"> </span>-crysym<span class="w"> </span>cubic<span class="w"> </span>-ori<span class="w"> </span><span class="s2">&quot;2*Brass1:normal(3.9)+2*Brass2:normal(3.9)+S1:normal(4.7)+S2:normal(4.7)+S3:normal(4.7)+S4:normal(4.7)+0.8*Copper1:normal(5.6)+0.8*Copper2:normal(5.6)+Cube:normal(3.9)+2*Goss:normal(3.9)&quot;</span>
+</pre></div>
+</div>
+<p>The orientations can be visualized as before:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n1000-id1.tess<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">500</span>:500<span class="w"> </span>-space<span class="w"> </span>pf<span class="w"> </span>-print<span class="w"> </span>img4
+</pre></div>
+</div>
+<img alt="../../_images/img42.png" src="../../_images/img42.png" />
+<p>Incidentally, it is similar to the one generated in <a class="reference internal" href="#specifying-an-odf"><span class="std std-ref">Using an ODF</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="orientation_space.html" class="btn btn-neutral float-left" title="Generating and Meshing a Fundamental Region of Orientation Space" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="orientation_trajectories.html" class="btn btn-neutral float-right" title="Plotting Orientation Trajectories" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Romain Quey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

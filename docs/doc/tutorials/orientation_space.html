@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generating and Meshing a Fundamental Region of Orientation Space &mdash; Neper 4.7.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/documentation_options.js?v=bd5f082a"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Specifying Orientation Information for Tessellation Cells" href="ori_statistics.html" />
+    <link rel="prev" title="Processing EBSD-type data" href="ebsd_process.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Neper
+          </a>
+              <div class="version">
+                4.7.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="simple_model.html">Generating and Meshing a Simple Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="morpho_tesr_mesh.html">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Generating and Meshing a Fundamental Region of Orientation Space</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#generating-and-meshing-a-standard-fundamental-region">Generating and Meshing a Standard Fundamental Region</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generating-and-meshing-a-periodic-fundamental-region">Generating and Meshing a Periodic Fundamental Region</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ori_statistics.html">Specifying Orientation Information for Tessellation Cells</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_trajectories.html">Plotting Orientation Trajectories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_color_key.html">Plotting an Orientation Color Key</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install_ubuntu22.html">Installing Neper on Ubuntu 22</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../papers.html">Reference Papers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../talks.html">Talks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../community.html">Community</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../others.html">Other Resources</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Neper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Documentation</a> &raquo;</li>
+          <li><a href="../tutorials.html">Tutorials</a> &raquo;</li>
+      <li>Generating and Meshing a Fundamental Region of Orientation Space</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/doc/tutorials/orientation_space.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="generating-and-meshing-a-fundamental-region-of-orientation-space">
+<span id="orientation-space"></span><h1>Generating and Meshing a Fundamental Region of Orientation Space<a class="headerlink" href="#generating-and-meshing-a-fundamental-region-of-orientation-space" title="Link to this heading"></a></h1>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Read first: <a class="reference internal" href="../../tutorials/simple_model.html#simple-model"><span class="std std-ref">Generating and Meshing a Simple Tessellation</span></a>.</p>
+</div>
+<p>Fundamental regions of Rodrigues orientation space can be generated as tessellation <em>domains</em>, using <a class="reference internal" href="../neper_t.html#cmdoption-domain"><code class="xref std std-option docutils literal notranslate"><span class="pre">-domain</span></code></a>, for any crystal symmetry (cubic, hexagonal, etc.).
+Once defined as a domain, a fundamental region can be tessellated and meshed just as any other domain.
+A mesh of the fundamental region is necessary, for example, in the <a class="reference internal" href="../neper_s.html#neper-s"><span class="std std-ref">Simulation Module (-S)</span></a>, to define the orientation space (<a class="reference internal" href="../neper_s.html#cmdoption-orispace"><code class="xref std std-option docutils literal notranslate"><span class="pre">-orispace</span></code></a>).
+Due to the particularity of the fundamental region of orientation space, it is also possible to enforce <em>periodicity</em> relationships between equivalent faces, i.e. faces that represent equivalent orientations, even if the domain does not have a periodic shape (the same goes for equivalent edges and vertices).</p>
+<section id="generating-and-meshing-a-standard-fundamental-region">
+<h2>Generating and Meshing a Standard Fundamental Region<a class="headerlink" href="#generating-and-meshing-a-standard-fundamental-region" title="Link to this heading"></a></h2>
+<p>A fundamental region can simply be generated using <a class="reference internal" href="../neper_t.html#cmdoption-domain"><code class="xref std std-option docutils literal notranslate"><span class="pre">-domain</span></code></a>, by specifying the crystal symmetry.  For example, for <em>cubic</em> and <em>hexagonal</em> crystal symmetries:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;rodrigues(cubic)&quot;</span><span class="w"> </span>-o<span class="w"> </span>fr-cub
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;rodrigues(hexagonal)&quot;</span><span class="w"> </span>-o<span class="w"> </span>fr-hex
+</pre></div>
+</div>
+<p>A fundamental region is best visualized in nearly-isometric, orthographic projection.  We can also adjust the cell and edge properties for better rendering:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-cub.tess<span class="w"> </span>-datacellcol<span class="w"> </span>lightblue<span class="w"> </span>-datacelltrs<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>-dataedgerad<span class="w"> </span><span class="m">0</span>.003<span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">500</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">13</span><span class="w"> </span>-print<span class="w"> </span>fr-cub
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-hex.tess<span class="w"> </span>-datacellcol<span class="w"> </span>lightblue<span class="w"> </span>-datacelltrs<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>-dataedgerad<span class="w"> </span><span class="m">0</span>.004<span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">600</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">24</span><span class="w"> </span>-print<span class="w"> </span>fr-hex
+<span class="gp">$ </span>convert<span class="w"> </span>+append<span class="w"> </span>fr-cub.png<span class="w"> </span>fr-hex.png<span class="w"> </span>fr1.png
+</pre></div>
+</div>
+<img alt="../../_images/fr1.png" src="../../_images/fr1.png" />
+<p>An internal tessellation can be generated as for any other domain.  For example, to generate a simple 100-cell tessellation:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;rodrigues(cubic)&quot;</span><span class="w"> </span>-o<span class="w"> </span>fr-cub100
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;rodrigues(hexagonal)&quot;</span><span class="w"> </span>-o<span class="w"> </span>fr-hex100
+</pre></div>
+</div>
+<p>Again, we adjust the cell and edge properties for better rendering:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-cub100.tess<span class="w"> </span>-datacelltrs<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>-dataedgerad<span class="w"> </span><span class="s2">&quot;((domtype==1)?0.003:0.002)&quot;</span><span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">500</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">13</span><span class="w"> </span>-print<span class="w"> </span>fr-cub100
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-hex100.tess<span class="w"> </span>-datacelltrs<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>-dataedgerad<span class="w"> </span><span class="s2">&quot;((domtype==1)?0.004:0.003)&quot;</span><span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">600</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">24</span><span class="w"> </span>-print<span class="w"> </span>fr-hex100
+<span class="gp">$ </span>convert<span class="w"> </span>+append<span class="w"> </span>fr-cub100.png<span class="w"> </span>fr-hex100.png<span class="w"> </span>fr3.png
+</pre></div>
+</div>
+<img alt="../../_images/fr3.png" src="../../_images/fr3.png" />
+<p>The generated tessellations (either 1-cell or 100-cell) can be meshed.  For example, with 1 cell (untessellated fundamental regions):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>fr-cub.tess<span class="w"> </span>-cl<span class="w"> </span><span class="m">0</span>.1
+<span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>fr-hex.tess<span class="w"> </span>-cl<span class="w"> </span><span class="m">0</span>.1
+
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-cub.tess,fr-cub.msh<span class="w"> </span>-dataelsetcol<span class="w"> </span>lightblue<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.003<span class="w"> </span>-dataelt3dedgerad<span class="w"> </span><span class="m">0</span>.0015<span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">500</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">13</span><span class="w"> </span>-print<span class="w"> </span>fr-cub
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-hex.tess,fr-hex.msh<span class="w"> </span>-dataelsetcol<span class="w"> </span>lightblue<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.004<span class="w"> </span>-dataelt3dedgerad<span class="w"> </span><span class="m">0</span>.0022<span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">600</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">24</span><span class="w"> </span>-print<span class="w"> </span>fr-hex
+<span class="gp">$ </span>convert<span class="w"> </span>+append<span class="w"> </span>fr-cub.png<span class="w"> </span>fr-hex.png<span class="w"> </span>fr4.png
+</pre></div>
+</div>
+<img alt="../../_images/fr4.png" src="../../_images/fr4.png" />
+<p>Optionally, the frontal 2D meshing algorithm can be enforced to generate a more regular surface mesh:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>fr-cub.tess<span class="w"> </span>-cl<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span>-mesh2dalgo<span class="w"> </span>fron
+<span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>fr-hex.tess<span class="w"> </span>-cl<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span>-mesh2dalgo<span class="w"> </span>fron
+
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-cub.tess,fr-cub.msh<span class="w"> </span>-dataelsetcol<span class="w"> </span>lightblue<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.003<span class="w"> </span>-dataelt3dedgerad<span class="w"> </span><span class="m">0</span>.0015<span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">500</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">13</span><span class="w"> </span>-print<span class="w"> </span>fr-cub
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-hex.tess,fr-hex.msh<span class="w"> </span>-dataelsetcol<span class="w"> </span>lightblue<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.004<span class="w"> </span>-dataelt3dedgerad<span class="w"> </span><span class="m">0</span>.0022<span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">600</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">24</span><span class="w"> </span>-print<span class="w"> </span>fr-hex
+<span class="gp">$ </span>convert<span class="w"> </span>+append<span class="w"> </span>fr-cub.png<span class="w"> </span>fr-hex.png<span class="w"> </span>fr5.png
+</pre></div>
+</div>
+<img alt="../../_images/fr5.png" src="../../_images/fr5.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Such meshes can be used in <a class="reference internal" href="../neper_s.html#cmdoption-orispace"><code class="xref std std-option docutils literal notranslate"><span class="pre">-orispace</span></code></a>, in the <a class="reference internal" href="../neper_s.html#neper-s"><span class="std std-ref">Simulation Module (-S)</span></a>.</p>
+</div>
+</section>
+<section id="generating-and-meshing-a-periodic-fundamental-region">
+<h2>Generating and Meshing a Periodic Fundamental Region<a class="headerlink" href="#generating-and-meshing-a-periodic-fundamental-region" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is available only for 1-cell tessellations (<a class="reference internal" href="../neper_t.html#cmdoption-n"><code class="xref std std-option docutils literal notranslate"><span class="pre">-n</span></code></a><code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>).</p>
+</div>
+<p>Periodicity can be enforced using <a class="reference internal" href="../neper_t.html#cmdoption-periodicity"><code class="xref std std-option docutils literal notranslate"><span class="pre">-periodicity</span></code></a><code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> (<code class="xref py py-data docutils literal notranslate"><span class="pre">-per</span> <span class="pre">1</span></code> for short):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;rodrigues(cubic)&quot;</span><span class="w"> </span>-per<span class="w"> </span><span class="m">1</span><span class="w"> </span>-o<span class="w"> </span>fr-cub
+<span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>-domain<span class="w"> </span><span class="s2">&quot;rodrigues(hexagonal)&quot;</span><span class="w"> </span>-per<span class="w"> </span><span class="m">1</span><span class="w"> </span>-o<span class="w"> </span>fr-hex
+</pre></div>
+</div>
+<p>which visually does not change anything at all:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-cub.tess<span class="w"> </span>-datacellcol<span class="w"> </span>lightblue<span class="w"> </span>-datacelltrs<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>-dataedgerad<span class="w"> </span><span class="m">0</span>.003<span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">500</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">13</span><span class="w"> </span>-print<span class="w"> </span>fr-cub
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-hex.tess<span class="w"> </span>-datacellcol<span class="w"> </span>lightblue<span class="w"> </span>-datacelltrs<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>-dataedgerad<span class="w"> </span><span class="m">0</span>.004<span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">600</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">24</span><span class="w"> </span>-print<span class="w"> </span>fr-hex
+<span class="gp">$ </span>convert<span class="w"> </span>+append<span class="w"> </span>fr-cub.png<span class="w"> </span>fr-hex.png<span class="w"> </span>fr6.png
+</pre></div>
+</div>
+<img alt="../../_images/fr6.png" src="../../_images/fr6.png" />
+<p>However, this defines periodicity relationships for the vertices, edges and faces in the <a class="reference internal" href="../fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a>.</p>
+<p>The generated tessellations can be meshed:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>fr-cub.tess<span class="w"> </span>-cl<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span>-mesh2dalgo<span class="w"> </span>fron
+<span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>fr-hex.tess<span class="w"> </span>-cl<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span>-mesh2dalgo<span class="w"> </span>fron
+
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-cub.tess,fr-cub.msh<span class="w"> </span>-dataelsetcol<span class="w"> </span>lightblue<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.003<span class="w"> </span>-dataelt3dedgerad<span class="w"> </span><span class="m">0</span>.0015<span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">500</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">13</span><span class="w"> </span>-print<span class="w"> </span>fr-cub
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-hex.tess,fr-hex.msh<span class="w"> </span>-dataelsetcol<span class="w"> </span>lightblue<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.004<span class="w"> </span>-dataelt3dedgerad<span class="w"> </span><span class="m">0</span>.0022<span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">600</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">24</span><span class="w"> </span>-print<span class="w"> </span>fr-hex
+<span class="gp">$ </span>convert<span class="w"> </span>+append<span class="w"> </span>fr-cub.png<span class="w"> </span>fr-hex.png<span class="w"> </span>fr7.png
+</pre></div>
+</div>
+<img alt="../../_images/fr7.png" src="../../_images/fr7.png" />
+<p>The meshes of the opposite faces, which can be visualized as follows, are such that their nodes follow the orientation equivalency <a class="footnote-reference brackets" href="#orientation-equivalency" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-cub.tess,fr-cub.msh<span class="w"> </span>-showelt3d<span class="w"> </span>none<span class="w"> </span>-showelt2d<span class="w"> </span><span class="s2">&quot;elset2d&lt;=2&quot;</span><span class="w"> </span>-dataelt2dcol<span class="w"> </span>lightblue<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.003<span class="w"> </span>-dataelt2dedgerad<span class="w"> </span><span class="m">0</span>.0015<span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">500</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">13</span><span class="w"> </span>-print<span class="w"> </span>fr-cub
+<span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>fr-hex.tess,fr-hex.msh<span class="w"> </span>-showelt3d<span class="w"> </span>none<span class="w"> </span>-showelt2d<span class="w"> </span><span class="s2">&quot;elset2d==9||elset2d==10&quot;</span><span class="w"> </span>-dataelt2dcol<span class="w"> </span>lightblue<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.004<span class="w"> </span>-dataelt2dedgerad<span class="w"> </span><span class="m">0</span>.0022<span class="w"> </span>-cameracoo<span class="w"> </span><span class="m">4</span>:4:3<span class="w"> </span>-cameraprojection<span class="w"> </span>orthographic<span class="w"> </span>-imagesize<span class="w"> </span><span class="m">600</span>:500<span class="w"> </span>-cameraangle<span class="w"> </span><span class="m">24</span><span class="w"> </span>-print<span class="w"> </span>fr-hex
+<span class="gp">$ </span>convert<span class="w"> </span>+append<span class="w"> </span>fr-cub.png<span class="w"> </span>fr-hex.png<span class="w"> </span>fr8.png
+</pre></div>
+</div>
+<img alt="../../_images/fr8.png" src="../../_images/fr8.png" />
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="orientation-equivalency" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Orientation equivalency between opposite faces is not equivalent to simple translation or symmetry, see (Kumar and Dawson, CMAME, 1998) for details.</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ebsd_process.html" class="btn btn-neutral float-left" title="Processing EBSD-type data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ori_statistics.html" class="btn btn-neutral float-right" title="Specifying Orientation Information for Tessellation Cells" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright Romain Quey.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

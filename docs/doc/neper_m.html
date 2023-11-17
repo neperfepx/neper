@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Meshing Module (-M) &mdash; Neper 4.6.1 documentation</title>
+  <title>Meshing Module (-M) &mdash; Neper 4.7.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../_static/documentation_options.js?v=bd5f082a"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.6.1
+                4.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -373,6 +373,27 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 </ul>
 <p>According to <em>multimeshing</em>, the algorithms are used concurrently until the quality criterion is reached.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">netg:gmsh,netg:netg,netg:gmne</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-meshedge">
+<span class="sig-name descname"><span class="pre">-meshedge</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;edge_expr&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-meshedge" title="Link to this definition"></a></dt>
+<dd><p>Specify the edges to mesh, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code> or an expression based on the variables described in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-meshface">
+<span class="sig-name descname"><span class="pre">-meshface</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;face_expr&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-meshface" title="Link to this definition"></a></dt>
+<dd><p>Specify the faces to mesh, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code> or an expression based on the variables described in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-meshpoly">
+<span class="sig-name descname"><span class="pre">-meshpoly</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;poly_expr&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-meshpoly" title="Link to this definition"></a></dt>
+<dd><p>Specify the polyhedra to mesh, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code> or an expression based on the variables described in <a class="reference internal" href="exprskeys.html#tessellation-keys"><span class="std std-ref">Tessellation Keys</span></a>.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">

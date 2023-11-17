@@ -162,7 +162,7 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 :data:`domface`                   domain face (-1 if undefined)                                                                       face
 :data:`domedge`                   domain edge (-1 if undefined)                                                                       edge
 :data:`domver`                    domain vertex (-1 if undefined)                                                                     ver
-:data:`scale`                     scale                                                                                               ver, edge, face [#multiscale_entity]_
+:data:`scale`                     scale                                                                                               ver, edge, face, poly, cell [#multiscale_entity]_
 :data:`length`                    length                                                                                              edge
 :data:`area`                      surface area                                                                                        face, poly, group
 :data:`vol`                       volume                                                                                              poly, group
@@ -300,6 +300,7 @@ Geometry
 :data:`area`                 surface area                                                            cell, group (in 2D)
 :data:`vol`                  volume                                                                  cell, group (in 3D)
 :data:`size`                 size (surface area/volume in 2D/3D)                                     cell, group
+:data:`voxnb`                number of voxels                                                        cell
 :data:`areafrac`             surface area fraction                                                   group (in 2D)
 :data:`volfrac`              volume fraction                                                         group (in 3D)
 :data:`sizefrac`             size fraction (surface area/volume fraction in 2D/3D)                   group
@@ -504,6 +505,7 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`scale`                                     scale                                                                 {0-2}D elset [#multiscale_entity_mesh]_
 :data:`cyl`                                       cylinder polygonization [#cyl]_                                       1D elt, 1D elset
 :data:`vol`                                       volume                                                                3D elt, 3D elset
+:data:`vol_orispace`                              volume, orientation-space-wise [#vol_orispace]_                       3D elt
 :data:`area`                                      surface area                                                          2D elt
 :data:`diameq`                                    equivalent diameter                                                   {2,3}D elt, {2,3}D elset
 :data:`radeq`                                     equivalent radius                                                     {2,3}D elt, {2,3}D elset
@@ -594,10 +596,11 @@ Available results / keys for elements sets are the following:
 
 The ODF (:data:`odf` or :data:`odfn`) of a tessellation or mesh is computed over orientation space (provided using :option:`-orispace`) from the orientations of the (tessellation) cells or (mesh) elsets.  The (optional) parameters are:
 
+- :data:`input`: the input used for the orientations, either :data:`elsets` or :data:`elts` for a mesh (default :data:`elsets`);
 - :data:`theta`: the standard deviation of the kernel (in degrees);
 - :data:`weight`: the weight of a cell or elset, which can be a real value or an expression based on the :ref:`tessellation_keys` (for cells) or :ref:`mesh_keys` (for elsets) --  by default, the volumes of the cells or elsets are used;
+- :data:`clustering`: a logical value controlling orientation clustering, which can be :data:`0` (for no clustering) or :data:`1` (for clustering); the default is :data:`0` for cells or elsets and :data:`1` for voxels or elements;
 - :data:`cutoff`: the cut-off factor used to compute the ODF, which can be :data:`all` (for no cut-off) or any positive real value (default :data:`5`).
-
 
 For a cell, element or elset, :data:`odf` returns the value of the ODF of the tessellation or mesh at the corresponding orientation (and simulation step).
 
@@ -892,7 +895,7 @@ viridis:fade(0.2) .. image:: imgs/color-maps-real/viridis-fade0p2.png
 
 .. [#muparser_doc] Taken from the :data:`muparser` `documentation <http://beltoforion.de/article.php?a=muparser>`_
 
-.. [#multiscale_entity] Applies only to a 3D tessellation and relevant for multiscale tessellations.  The scale of an entity (vertex, edge or face) is the scale at which the entity was created, and it ranges from 0 (for domain entities) to the number of scales of the tessellation (for the last created entities).
+.. [#multiscale_entity] Applies only to a 3D tessellation and relevant for multiscale tessellations.  The scale of an entity (vertex, edge or face) is the scale at which the entity was created, and it ranges from 0 (for domain entities) to the number of scales of the tessellation (for the last created entities).  The scale of a cell is determined based on the number of subcells of its parent cell.
 
 .. [#multiscale_entity_mesh] Applies only to a 3D mesh and relevant for meshes of multiscale tessellations.  The scale of an elset is equal to the scale of its corresponding tessellation entity  [#multiscale_entity]_.
 
@@ -927,4 +930,7 @@ viridis:fade(0.2) .. image:: imgs/color-maps-real/viridis-fade0p2.png
 .. [#col_stdtriangle] Applies to a mesh of the stereographic triangle
 
 .. [#cyl] 1 if polygonize the circular part of a cylindrical domain and 0 otherwise.
+
+.. [#vol_orispace] For a mesh of orientation space (or a fundamental region), returns the volume in orientation space.   Sums to :math:`\pi^2/n_c`, where :math:`n_c` is the multiplicity of the orientation (24 for cubic symmetry).
+
 .. [#fiber] See :ref:`orientation_fibers`.

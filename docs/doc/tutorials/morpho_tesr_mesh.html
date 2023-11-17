@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction &mdash; Neper 4.6.1 documentation</title>
+  <title>Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction &mdash; Neper 4.7.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/documentation_options.js?v=68f2c66a"></script>
+        <script src="../../_static/documentation_options.js?v=bd5f082a"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,7 +31,7 @@
             <a href="../../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.6.1
+                4.7.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -46,6 +46,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="simple_model.html">Generating and Meshing a Simple Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="morpho_statistics.html">Generating a Tessellation from Statistical Cell Properties</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Meshing a Polycrystal Image Obtained by Synchrotron X-Ray Diffraction</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
@@ -62,8 +64,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="ebsd_process.html">Processing EBSD-type data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="visualize_tessellation.html">Visualizing a Tessellation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pole_figure.html">Plotting a Pole Figure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orientation_space.html">Generating and Meshing a Fundamental Region of Orientation Space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ori_statistics.html">Specifying Orientation Information for Tessellation Cells</a></li>
 <li class="toctree-l2"><a class="reference internal" href="orientation_trajectories.html">Plotting Orientation Trajectories</a></li>
 <li class="toctree-l2"><a class="reference internal" href="orientation_color_key.html">Plotting an Orientation Color Key</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install_ubuntu22.html">Installing Neper on Ubuntu 22</a></li>
@@ -155,7 +157,7 @@
 ***end
 </pre></div>
 </div>
-<p>where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;number_of_cells&gt;</span></code> is the number of cells, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysym&gt;</span></code> is the <span class="xref std std-ref">crystal symmetry</span> is the <a class="reference internal" href="../exprskeys.html#rotation-and-orientation-descriptors"><span class="std std-ref">orientation descriptor</span></a> (e.g., <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues:active</span></code>) and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;orientations&gt;</span></code> is the list of orientations (the crystal symmetry could also have been defined a posteriori, using the <code class="xref std std-option docutils literal notranslate"><span class="pre">-oricrysym</span></code> option). If the grains are not numbered contiguously from 1, their ids must be provided in the <code class="xref py py-data docutils literal notranslate"><span class="pre">**cell/*id</span></code> section in order to be able to provide an <code class="xref py py-data docutils literal notranslate"><span class="pre">*ori</span></code> section.</p>
+<p>where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;number_of_cells&gt;</span></code> is the number of cells, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysym&gt;</span></code> is the crystal symmetry (see <a class="reference internal" href="../exprskeys.html#crystal-symmetries"><span class="std std-ref">Crystal Symmetries</span></a>), <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;descriptor&gt;</span></code> is the <a class="reference internal" href="../exprskeys.html#rotation-and-orientation-descriptors"><span class="std std-ref">orientation descriptor</span></a> (e.g., <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues:active</span></code>) and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;orientations&gt;</span></code> is the list of orientations (the crystal symmetry could also have been defined a posteriori, using the <code class="xref std std-option docutils literal notranslate"><span class="pre">-oricrysym</span></code> option). If the grains are not numbered contiguously from 1, their ids must be provided in the <code class="xref py py-data docutils literal notranslate"><span class="pre">**cell/*id</span></code> section in order to be able to provide an <code class="xref py py-data docutils literal notranslate"><span class="pre">*ori</span></code> section.</p>
 <p>It is now possible to visualize the polycrystal colored by its grain orientations:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>AlLi-load.tesr<span class="w"> </span>-datacellcol<span class="w"> </span>ori<span class="w"> </span>-print<span class="w"> </span>AlLi-ori
 </pre></div>
