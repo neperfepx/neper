@@ -16,13 +16,13 @@ net_tess_opt_init_sset_multiseed (struct IN_T In, int level, struct TOPT TOpt,
   strcpy (vars[2], "radeq");
   strcpy (vars[3], "diameq");
 
-  if (ut_string_isdigits (In.morphooptimultiseed[level]))
+  if (ut_string_isdigits (In.optimultiseed[level]))
   {
-    sscanf (In.morphooptimultiseed[level], "%d", qty);
+    sscanf (In.optimultiseed[level], "%d", qty);
     ut_array_1d_int_set (qty + 1, TOpt.CellQty, qty[0]);
   }
-  else if (ut_string_isfilename (In.morphooptimultiseed[level]))
-    ut_array_1d_int_fnscanf (In.morphooptimultiseed[level], qty + 1,
+  else if (ut_string_isfilename (In.optimultiseed[level]))
+    ut_array_1d_int_fnscanf (In.optimultiseed[level], qty + 1,
                              TOpt.CellQty, "r");
 
   else
@@ -34,14 +34,14 @@ net_tess_opt_init_sset_multiseed (struct IN_T In, int level, struct TOPT TOpt,
     {
       if (!strcmp (var, "tesr"))
         neut_tesr_expr_val_int_one (TOpt.tartesr, "cell", i,
-                                    In.morphooptimultiseed[level], qty + i,
+                                    In.optimultiseed[level], qty + i,
                                     NULL);
 
       else
       {
         vals[2] = rad[i];
         vals[3] = 2 * rad[i];
-        ut_math_eval_int (In.morphooptimultiseed[level], varqty, vars, vals,
+        ut_math_eval_int (In.optimultiseed[level], varqty, vars, vals,
                           qty + i);
       }
 

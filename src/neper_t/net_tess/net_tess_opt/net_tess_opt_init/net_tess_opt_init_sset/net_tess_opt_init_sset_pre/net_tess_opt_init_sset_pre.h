@@ -4,16 +4,10 @@
 
 #include"structIn_t.h"
 
-extern void net_tess_opt_init_sset_general (struct IN_T In,
-					    struct MTESS MTess,
-					    struct TESS *Tess, int dtess,
-					    int dcell, struct SEEDSET *SSet,
-					    struct SEEDSET *pSSet, int
-					    CellQty, struct TOPT *pTOpt);
-
 extern void net_tess_opt_init_sset_pre (struct IN_T In, int level,
 					struct MTESS MTess, struct TESS *Tess,
 					int domtess, int domcell,
+                                        struct SEEDSET *SSet,
 					char **pvar, int *ppos,
 					char **pweightexpr, char **pcooexpr,
 					struct TOPT *pTOpt);

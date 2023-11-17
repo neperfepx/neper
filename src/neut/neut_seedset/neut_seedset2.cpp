@@ -67,12 +67,36 @@ neut_seedset_memcpy_seeds (struct SEEDSET SSetA, struct SEEDSET *pSSetB)
   ut_array_1d_memcpy (SSetA.SeedWeight + 1, (*pSSetB).Nall,
                       (*pSSetB).SeedWeight + 1);
 
-  (*pSSetB).SeedOri = ut_alloc_2d ((*pSSetB).N + 1, 4);
-  ut_array_2d_memcpy (SSetA.SeedOri + 1, (*pSSetB).N, 4, (*pSSetB).SeedOri + 1);
+  if (SSetA.SeedOri)
+  {
+    (*pSSetB).SeedOri = ut_alloc_2d ((*pSSetB).N + 1, 4);
+    ut_array_2d_memcpy (SSetA.SeedOri + 1, (*pSSetB).N, 4, (*pSSetB).SeedOri + 1);
+  }
 
-  (*pSSetB).SeedOriDistrib = ut_alloc_2d_char ((*pSSetB).N + 1, 1);
-  for (i = 1; i <= (*pSSetB).N; i++)
-    ut_string_string (SSetA.SeedOriDistrib[i], (*pSSetB).SeedOriDistrib + i);
+  if (SSetA.SeedOriR)
+  {
+    (*pSSetB).SeedOriR = ut_alloc_2d ((*pSSetB).N + 1, 3);
+    ut_array_2d_memcpy (SSetA.SeedOriR + 1, (*pSSetB).N, 3, (*pSSetB).SeedOriR + 1);
+  }
+
+  if (SSetA.SeedOriDistrib)
+  {
+    (*pSSetB).SeedOriDistrib = ut_alloc_2d_char ((*pSSetB).N + 1, 1);
+    for (i = 1; i <= (*pSSetB).N; i++)
+      ut_string_string (SSetA.SeedOriDistrib[i], (*pSSetB).SeedOriDistrib + i);
+  }
+
+  if (SSetA.SeedOriTheta)
+  {
+    (*pSSetB).SeedOriTheta = ut_alloc_1d ((*pSSetB).N + 1);
+    ut_array_1d_memcpy (SSetA.SeedOriTheta + 1, (*pSSetB).N, (*pSSetB).SeedOriTheta + 1);
+  }
+
+  if (SSetA.SeedOriWeight)
+  {
+    (*pSSetB).SeedOriWeight = ut_alloc_1d ((*pSSetB).N + 1);
+    ut_array_1d_memcpy (SSetA.SeedOriWeight + 1, (*pSSetB).N, (*pSSetB).SeedOriWeight + 1);
+  }
 
   ut_string_string (SSetA.crysym, &(*pSSetB).crysym);
 

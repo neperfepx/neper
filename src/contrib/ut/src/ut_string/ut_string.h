@@ -155,6 +155,12 @@ extern "C"
   extern void ut_string_function (char *string, char **pfct,
                                   char ***vars, char ***vals, int *psize);
 
+/// \brief Extract from a function string its only argument
+/// \param string: string
+/// \param argument: argument
+/// \note A typical example is \c "myfct(foo)".  A variable may not be provided (in which case it is \c NULL).
+  extern int ut_string_functionargument (char *string, char **pargument);
+
 /// \brief Convert a string into a function, keep arguments as strings
 /// \param string: string
 /// \param *pfct: name of the function

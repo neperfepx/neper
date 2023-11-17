@@ -39,6 +39,9 @@ neut_tesr_fprintf_head (FILE * file, struct TESR Tesr)
 void
 neut_tesr_fprintf_data (FILE * file, char *format, struct TESR Tesr)
 {
+  if (!Tesr.CellId)
+    return;
+
   fprintf (file, " **data\n");
   fprintf (file, "   %s\n", format);
   neut_tesr_fprintf_data_noheader (file, format, NULL, Tesr, NULL);
@@ -74,60 +77,64 @@ void
 neut_tesr_fprintf_cell (FILE * file, struct TESR Tesr)
 {
   int i, j, count = 0;
-  double *e = ol_e_alloc ();
 
-  fprintf (file, " **cell\n");
-  fprintf (file, "   %d\n", Tesr.CellQty);
-
-  if (Tesr.CellId)
+  if (Tesr.CellQty)
   {
-    fprintf (file, "  *id\n   ");
-    for (i = 1; i <= Tesr.CellQty; i++)
-      ut_print_wnc_int (file, Tesr.CellId[i], &count, 72);
-    fprintf (file, "\n");
-  }
+    double *e = ol_e_alloc ();
 
-  if (Tesr.SeedCoo && Tesr.SeedWeight)
-  {
-    fprintf (file, "  *seed\n");
-    for (i = 1; i <= Tesr.CellQty; i++)
+    fprintf (file, " **cell\n");
+    fprintf (file, "   %d\n", Tesr.CellQty);
+
+    if (Tesr.CellId)
     {
-      fprintf (file, " %3d ", i);
-      for (j = 0; j < Tesr.Dim; j++)
-        fprintf (file, REAL_PRINT_FORMAT " ", Tesr.SeedCoo[i][j]);
-      fprintf (file, REAL_PRINT_FORMAT "\n", Tesr.SeedWeight[i]);
+      fprintf (file, "  *id\n   ");
+      for (i = 1; i <= Tesr.CellQty; i++)
+        ut_print_wnc_int (file, Tesr.CellId[i], &count, 72);
+      fprintf (file, "\n");
     }
-  }
 
-  if (Tesr.CellOri)
-  {
-    fprintf (file, "  *ori\n");
-    fprintf (file, "   %s\n", Tesr.CellOriDes);
-    neut_ori_fprintf (file, Tesr.CellOriDes, "ascii", Tesr.CellOri + 1, NULL, NULL, Tesr.CellQty, NULL);
-  }
+    if (Tesr.SeedCoo && Tesr.SeedWeight)
+    {
+      fprintf (file, "  *seed\n");
+      for (i = 1; i <= Tesr.CellQty; i++)
+      {
+        fprintf (file, " %3d ", i);
+        for (j = 0; j < Tesr.Dim; j++)
+          fprintf (file, REAL_PRINT_FORMAT " ", Tesr.SeedCoo[i][j]);
+        fprintf (file, REAL_PRINT_FORMAT "\n", Tesr.SeedWeight[i]);
+      }
+    }
 
-  if (neut_tesr_hascellorispread (Tesr))
-  {
-    fprintf (file, "  *orispread\n");
-    for (i = 1; i <= Tesr.CellQty; i++)
-      fprintf (file, "   %s\n", Tesr.CellOriDistrib[i]);
-  }
+    if (Tesr.CellOri)
+    {
+      fprintf (file, "  *ori\n");
+      fprintf (file, "   %s\n", Tesr.CellOriDes);
+      neut_ori_fprintf (file, Tesr.CellOriDes, "ascii", Tesr.CellOri + 1, NULL, NULL, Tesr.CellQty, NULL);
+    }
 
-  if (Tesr.CellGroup)
-  {
-    fprintf (file, "  *group\n   ");
-    for (i = 1; i <= Tesr.CellQty; i++)
-      ut_print_wnc_int (file, Tesr.CellGroup[i], &count, 72);
-    fprintf (file, "\n");
-  }
+    if (neut_tesr_hascellorispread (Tesr))
+    {
+      fprintf (file, "  *orispread\n");
+      for (i = 1; i <= Tesr.CellQty; i++)
+        fprintf (file, "   %s\n", Tesr.CellOriDistrib[i]);
+    }
 
-  if (Tesr.CellCrySym)
-  {
-    fprintf (file, "  *crysym\n");
-    fprintf (file, "   %s\n", Tesr.CellCrySym);
-  }
+    if (Tesr.CellGroup)
+    {
+      fprintf (file, "  *group\n   ");
+      for (i = 1; i <= Tesr.CellQty; i++)
+        ut_print_wnc_int (file, Tesr.CellGroup[i], &count, 72);
+      fprintf (file, "\n");
+    }
 
-  ol_e_free (e);
+    if (Tesr.CellCrySym)
+    {
+      fprintf (file, "  *crysym\n");
+      fprintf (file, "   %s\n", Tesr.CellCrySym);
+    }
+
+    ol_e_free (e);
+  }
 
   return;
 }

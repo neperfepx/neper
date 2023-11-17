@@ -126,6 +126,14 @@ neut_tess_face_area (struct TESS Tess, int face, double *parea)
   return 0;
 }
 
+void
+neut_tess_face_normal (struct TESS Tess, int face, double *n)
+{
+  ut_array_1d_memcpy (Tess.FaceEq[face] + 1, 3, n);
+
+  return;
+}
+
 int
 neut_tess_faces_area (struct TESS Tess, int *faces, int faceqty,
                       double *parea)

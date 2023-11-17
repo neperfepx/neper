@@ -19,13 +19,16 @@ struct ODF
   struct MESH *Mesh;
 
   // smoothing
-  double sigma;
+  double sigma; // radian
 
   // values
   int odfqty;
-  double *odf;
+  double *odf; // 0-indexed
   int odfnqty;
-  double *odfn;
+  double *odfn; // 0-indexed
+
+  // Weight of each element, in terms of corrected volume, normalized
+  double *EltWeight; // indexed 0
 
   double odfmin;
   double odfmax;

@@ -61,7 +61,7 @@ net_tess_opt_comp_rand_read (struct TOPT TOpt, int *pseedqty, int *pdimqty,
                       TOpt.algoname[0]);
   }
 
-  if (!strcmp (TOpt.optitype, "seeds"))
+  if (!strcmp (TOpt.optitype, "morpho"))
   {
     *palldimqty = 0;
     if (ut_list_testelt (TOpt.dof, NEUT_SEP_NODEP, "x"))
@@ -108,7 +108,7 @@ net_tess_opt_comp_rand_shift (double *x, struct TOPT *pTOpt, int seedqty,
                               int dimqty, double min, double max,
                               int *alldims, int alldimqty, gsl_rng * r)
 {
-  if (!strcmp ((*pTOpt).optitype, "seeds"))
+  if (!strcmp ((*pTOpt).optitype, "morpho"))
     net_tess_opt_comp_rand_shift_seeds (x, pTOpt, seedqty, dimqty, min, max,
                                         alldims, alldimqty, r);
   else if (!strcmp ((*pTOpt).optitype, "crystal"))

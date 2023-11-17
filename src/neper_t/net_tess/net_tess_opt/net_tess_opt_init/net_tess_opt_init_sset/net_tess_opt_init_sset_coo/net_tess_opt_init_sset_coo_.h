@@ -13,7 +13,6 @@
 
 #include"ut.h"
 #include"neut_t.h"
-#include"structIn_t.h"
 
 #include"neper_config.h"
 

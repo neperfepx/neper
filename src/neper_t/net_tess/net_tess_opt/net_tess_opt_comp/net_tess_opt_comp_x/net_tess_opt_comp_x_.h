@@ -12,6 +12,6 @@
 
 #include"net_tess_opt_comp_x.h"
 
-extern void net_tess_opt_comp_x_seeds (struct TOPT *pTOpt, double **px);
+extern void net_tess_opt_comp_x_morpho (struct TOPT *pTOpt, double **px);
+extern void net_tess_opt_comp_x_ori (struct TOPT *pTOpt, double **px);
 extern void net_tess_opt_comp_x_crystal (struct TOPT *pTOpt, double **px);
-extern void net_tess_opt_comp_x_domain (struct TOPT *pTOpt, double **px);

@@ -7,7 +7,7 @@ extern "C"
 {
 #endif
 
-  extern int net_tess_tocta (struct IN_T In, int level, char *morpho,
+  extern int net_tess_tocta (struct IN_T In, char *morpho,
       struct MTESS *pMTess, struct TESS *Tess, int domtess, int dompoly,
       int TessId, struct SEEDSET *SSet);
 

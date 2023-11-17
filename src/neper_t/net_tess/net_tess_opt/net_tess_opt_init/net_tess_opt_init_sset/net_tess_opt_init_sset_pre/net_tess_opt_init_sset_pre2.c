@@ -5,36 +5,20 @@
 #include "net_tess_opt_init_sset_pre_.h"
 
 void
-net_tess_opt_init_sset_pre_dim (struct TOPT TOpt, struct SEEDSET *pSSet)
-{
-  (*pSSet).Dim = TOpt.Dim;
-
-  return;
-}
-
-void
-net_tess_opt_init_sset_pre_type (struct SEEDSET *pSSet)
-{
-  ut_string_string ("standard", &(*pSSet).Type);
-
-  return;
-}
-
-void
 net_tess_opt_init_sset_pre_size (struct TESS *Tess, int dtess, int dcell,
-                                 struct TOPT *pTOpt, struct SEEDSET *pSSet)
+                                 struct TOPT *pTOpt)
 {
-  (*pSSet).Size = ut_alloc_2d (3, 2);
+  (*pTOpt).SSet.Size = ut_alloc_2d (3, 2);
 
-  if (pTOpt)
-    neut_tess_bbox ((*pTOpt).Dom, (*pSSet).Size);
+  if (pTOpt && !neut_tess_isvoid ((*pTOpt).Dom))
+    neut_tess_bbox ((*pTOpt).Dom, (*pTOpt).SSet.Size);
 
   else
   {
     struct TESS Cell;
     neut_tess_set_zero (&Cell);
     neut_tess_poly_tess (Tess[dtess], dcell, &Cell);
-    neut_tess_bbox (Cell, (*pSSet).Size);
+    neut_tess_bbox (Cell, (*pTOpt).SSet.Size);
     neut_tess_free (&Cell);
   }
 

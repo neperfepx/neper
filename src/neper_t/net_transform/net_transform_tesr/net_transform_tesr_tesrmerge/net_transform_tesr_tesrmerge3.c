@@ -299,7 +299,7 @@ net_transform_tesr_tesrmerge_mergecell (struct TESR *Tesrs, int *cells,
 
           ol_set_mean (Set, (*pTesr).VoxOri[pos[0]][pos[1]][pos[2]]);
 
-          ol_set_free (Set);
+          ol_set_free (&Set);
         }
 
         ut_free_1d_int (&found);

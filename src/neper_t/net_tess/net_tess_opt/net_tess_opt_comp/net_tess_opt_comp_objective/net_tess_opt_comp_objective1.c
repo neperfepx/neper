@@ -59,12 +59,12 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
 
   gettimeofday (&t2, NULL);
 
-  if (!strcmp ((*pTOpt).optitype, "seeds"))
-    net_tess_opt_comp_objective_x_seedset (x, pTOpt);
+  if (!strcmp ((*pTOpt).optitype, "morpho"))
+    net_tess_opt_comp_objective_x_morpho (x, pTOpt);
+  else if (!strcmp ((*pTOpt).optitype, "ori"))
+    net_tess_opt_comp_objective_x_ori (x, pTOpt);
   else if (!strcmp ((*pTOpt).optitype, "crystal"))
     net_tess_opt_comp_objective_x_crystal (x, pTOpt);
-  else if (!strcmp ((*pTOpt).optitype, "domain"))
-    net_tess_opt_comp_objective_x_domain (x, pTOpt);
   else
     abort ();
 
@@ -74,9 +74,9 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
 
   gettimeofday (&t3, NULL);
 
-  if (!strcmp ((*pTOpt).optitype, "seeds")
-      || !strcmp ((*pTOpt).optitype, "domain"))
+  if (!strcmp ((*pTOpt).optitype, "morpho"))
     status = net_tess_opt_comp_objective_poly (pTOpt);
+  // nothing to do for ori
   else
     status = 0;
 

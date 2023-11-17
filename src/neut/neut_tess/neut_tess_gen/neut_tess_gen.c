@@ -278,6 +278,25 @@ neut_tess_var_val (struct TESS *pTess,
       (*pvals)[0] = (*pTess).CellLamId ? (*pTess).CellLamId[id] : -1;
       ut_string_string ("%d", &typetmp);
     }
+    else if (!strcmp (var2, "weight"))
+      (*pvals)[0] = (*pTess).CellWeight ? (*pTess).CellWeight[id] : -1;
+    else if (!strcmp (var2, "theta"))
+    {
+      int qty = 0;
+      char *fct = NULL, **vars = NULL, **vals = NULL;
+
+      if ((*pTess).CellOriDistrib)
+      {
+        ut_string_function ((*pTess).CellOriDistrib[id], &fct, &vars, &vals, &qty);
+        sscanf (vals[0], "%lf", *pvals);
+      }
+      else
+        (*pvals)[0] = -1;
+
+      ut_free_2d_char (&vars, qty);
+      ut_free_2d_char (&vals, qty);
+      ut_free_1d_char (&fct);
+    }
     else if (!strcmp (var2, "group"))
     {
       (*pvals)[0] = (*pTess).CellGroup ? (*pTess).CellGroup[id] : -1;
@@ -1432,6 +1451,69 @@ neut_tess_expr_faces (struct TESS *pTess, char *expr, int **pface,
 
   // this is needed e.g. in nem_meshing_2D
   ut_array_1d_int_sort (*pface, *pfaceqty);
+
+  return 0;
+}
+
+int
+neut_tess_expr_edges (struct TESS *pTess, char *expr, int **pedge,
+                         int *pedgeqty)
+{
+  int i, j, status;
+  double res;
+  FILE *file = NULL;
+
+  if (!expr)
+    (*pedgeqty) = 0;
+
+  else if (!strcmp (expr, "all"))
+  {
+    (*pedgeqty) = (*pTess).EdgeQty;
+    (*pedge) = ut_alloc_1d_int (*pedgeqty + 1);
+    for (i = 1; i <= *pedgeqty; i++)
+      (*pedge)[i - 1] = i;
+  }
+
+  else if (ut_string_isfilename (expr))
+  {
+    (*pedgeqty) = ut_file_nbwords (expr);
+    (*pedge) = ut_alloc_1d_int (*pedgeqty);
+    file = ut_file_open (expr, "r");
+    ut_array_1d_int_fscanf (file, *pedge, *pedgeqty);
+    ut_file_close (file, expr, "r");
+  }
+  else
+  {
+    int varqty;
+    char **vars = NULL;
+    double *vals = NULL;
+
+    ut_math_vars (expr, &vars, &varqty);
+    vals = ut_alloc_1d (varqty);
+
+    (*pedgeqty) = 0;
+    for (i = 1; i <= (*pTess).EdgeQty; i++)
+    {
+      for (j = 0; j < varqty; j++)
+        neut_tess_var_val_one (pTess, NULL, NULL, NULL, "edge", i, vars[j],
+                               vals + j, NULL);
+
+      status = ut_math_eval (expr, varqty, vars, vals, &res);
+      if (status == -1)
+        abort ();
+      if (ut_num_equal (res, 1, 1e-6))
+      {
+        (*pedge) = ut_realloc_1d_int (*pedge, ++(*pedgeqty));
+        (*pedge)[(*pedgeqty) - 1] = i;
+      }
+    }
+
+    ut_free_2d_char (&vars, varqty);
+    ut_free_1d (&vals);
+  }
+
+  // this is needed e.g. in nem_meshing_2D
+  ut_array_1d_int_sort (*pedge, *pedgeqty);
 
   return 0;
 }

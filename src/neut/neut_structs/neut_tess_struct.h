@@ -53,6 +53,8 @@ extern "C"
     // [1...CellQty][0...3]
     double **CellOri;
 
+    double *CellWeight;
+
     // Crystal orientation spreads of the cells
     // [1...CellQty], NULL if uninitialized
     char **CellOriDistrib;

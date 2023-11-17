@@ -26,9 +26,6 @@ net_tess_lam (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
 
   neut_tess_init_seeds_fromcell (pTess);
 
-  ut_print_message (0, 2, "Generating crystal orientations...\n");
-  net_ori (In, level, *pMTess, Tess, SSet, dtess, dcell, pSSet, 3);
-
   neut_tess_free (&Dom);
 
   return 0;

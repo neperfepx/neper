@@ -1403,6 +1403,8 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH *Mesh,
     }
     else if (!strcmp (var, "vol"))
       neut_mesh_elt_volume (Nodes, Mesh[3], id, *pvals);
+    else if (!strcmp (var, "vol_orispace"))
+      neut_mesh_elt_volume_orispace (Nodes, Mesh[3], id, NULL, *pvals);
     else if (!strcmp (var, "diameq"))
       neut_mesh_elt_diameq (Nodes, Mesh[3], id, *pvals);
     else if (!strcmp (var, "radeq"))
@@ -2845,7 +2847,7 @@ neut_mesh_entity_known (char *entity)
 int
 neut_mesh_eltori (struct MESH Mesh, double **eltori)
 {
-  int status = -1;
+  int i, status = -1;
 
   // if sim, trying to read from sim (even at initial step)
   if (Mesh.pSim && !neut_sim_isvoid (*(Mesh.pSim)))
@@ -2856,18 +2858,28 @@ neut_mesh_eltori (struct MESH Mesh, double **eltori)
 
     neut_sim_simres (*(Mesh.pSim), "elt", "ori", &SimRes);
 
-    if (SimRes.file)
+    if (ut_file_exist (SimRes.file))
+    {
       neut_ori_fnscanf (SimRes.file, (*(Mesh.pSim)).OriDes, "ascii", eltori + 1, NULL, Mesh.EltQty, NULL, "R");
+      status = 0;
+    }
 
     neut_simres_free (&SimRes);
+  }
 
+  // if did not work (either not sim or not elt/ori result), reading internal
+  if (status && Mesh.EltOri)
+  {
+    ut_array_2d_memcpy (Mesh.EltOri + 1, Mesh.EltQty, 4, eltori + 1);
     status = 0;
   }
 
-  // otherwise, reading internal
-  else if (Mesh.EltOri)
+  // if did not work, setting from elsetori
+  if (status && Mesh.ElsetOri)
   {
-    ut_array_2d_memcpy (Mesh.EltOri + 1, Mesh.EltQty, 4, eltori + 1);
+    for (i = 1; i <= Mesh.EltQty; i++)
+      ol_q_memcpy (Mesh.ElsetOri[Mesh.EltElset[i]], eltori[i]);
+
     status = 0;
   }
 

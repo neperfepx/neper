@@ -83,7 +83,7 @@ net_tess_opt_comp_objective_log_var (struct TOPT TOpt)
     for (j = 0; j < varqty; j++)
     {
       if (!strncmp (vars[j], "iter", 4))
-        fprintf (TOpt.TDyn.logvar_fp, "%d", TOpt.TDyn.iter);
+        fprintf (TOpt.TDyn.logvar_fp, "%d", TOpt.iter);
       else if (!strcmp (vars[j], "id"))
         fprintf (TOpt.TDyn.logvar_fp, "%d", i);
       else if (!strcmp (vars[j], "x"))
@@ -94,6 +94,16 @@ net_tess_opt_comp_objective_log_var (struct TOPT TOpt)
         fprintf (TOpt.TDyn.logvar_fp, REAL_PRINT_FORMAT, TOpt.SSet.SeedCoo0[i][2]);
       else if (!strcmp (vars[j], "w"))
         fprintf (TOpt.TDyn.logvar_fp, REAL_PRINT_FORMAT, TOpt.SSet.SeedWeight[i]);
+      else if (!strcmp (vars[j], "r1"))
+        fprintf (TOpt.TDyn.logvar_fp, REAL_PRINT_FORMAT, TOpt.SSet.SeedOriR[i][0]);
+      else if (!strcmp (vars[j], "r2"))
+        fprintf (TOpt.TDyn.logvar_fp, REAL_PRINT_FORMAT, TOpt.SSet.SeedOriR[i][1]);
+      else if (!strcmp (vars[j], "r3"))
+        fprintf (TOpt.TDyn.logvar_fp, REAL_PRINT_FORMAT, TOpt.SSet.SeedOriR[i][2]);
+      else if (!strcmp (vars[j], "rw"))
+        fprintf (TOpt.TDyn.logvar_fp, REAL_PRINT_FORMAT, TOpt.SSet.SeedWeight[i]);
+      else if (!strcmp (vars[j], "rt"))
+        fprintf (TOpt.TDyn.logvar_fp, REAL_PRINT_FORMAT, TOpt.SSet.SeedOriTheta[i]);
       else
         fprintf (TOpt.TDyn.logvar_fp, "-1");
 

@@ -7,7 +7,7 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"4.6.2-14\")
+set(NEPER_VERSION \"4.7.0\")
 project(neper)
 
 if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8.1)
@@ -29,16 +29,19 @@ set(HAVE_MUPARSER  ON  CACHE BOOL "Use muParser") # sets to ON in ut, etc.
 set(HAVE_OPENGJK   ON  CACHE BOOL "Use openGJK") # sets to ON in ut, etc.
 set(HAVE_LIBSCOTCH ON  CACHE BOOL "Use Scotch") # sets to ON in ut, etc.
 set(HAVE_PNG       OFF CACHE BOOL "Use the libpng library") # sets to OFF in ut, etc.
+set(CMAKE_INSTALL_COMPLETION ON CACHE BOOL "Install Bash completion files")
 set(FORCE_BUILTIN_LIBSCOTCH OFF CACHE BOOL "Force to use the built-in libscotch")
 set(FORCE_BUILTIN_NLOPT     OFF CACHE BOOL "Force to use the built-in nlopt")
 set(REAL_PRINT_FORMAT \"%.12f\" CACHE STRING "Printing format of real numbers")
 set(REAL_PRINT_FORMAT3 \"%15.12f\" CACHE STRING "Printing format of real numbers (15 characters)")
 set(REAL_PRINT_FORMAT5 \"%17.12f\" CACHE STRING "Printing format of real numbers (17 characters)")
 
-if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-  set (CMAKE_INSTALL_PREFIX_COMPLETION "/usr/share" CACHE STRING "Installation directory of Bash completion files")
-elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-  set (CMAKE_INSTALL_PREFIX_COMPLETION "/usr/local/etc" CACHE STRING "Installation directory of Bash completion files")
+if (CMAKE_INSTALL_COMPLETION)
+  if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set (CMAKE_INSTALL_COMPLETION_PREFIX "/usr/share" CACHE STRING "Installation directory of Bash completion files")
+  elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    set (CMAKE_INSTALL_COMPLETION_PREFIX "/usr/local/etc" CACHE STRING "Installation directory of Bash completion files")
+  endif()
 endif()
 
 function(message)
@@ -254,16 +257,16 @@ install(TARGETS neper DESTINATION bin
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
 	 GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
-message(STATUS "Neper is set to be installed in: ${CMAKE_INSTALL_PREFIX}/bin and ${CMAKE_INSTALL_PREFIX_COMPLETION}")
+message(STATUS "Neper is set to be installed in: ${CMAKE_INSTALL_PREFIX}/bin and ${CMAKE_INSTALL_COMPLETION_PREFIX}")
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-  set (CMAKE_INSTALL_PREFIX_COMPLETION_FULL "${CMAKE_INSTALL_PREFIX_COMPLETION}/bash-completion/completions")
+  set (CMAKE_INSTALL_COMPLETION_PREFIX_FULL "${CMAKE_INSTALL_COMPLETION_PREFIX}/bash-completion/completions")
 elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-  set (CMAKE_INSTALL_PREFIX_COMPLETION_FULL "${CMAKE_INSTALL_PREFIX_COMPLETION}/bash_completion.d")
+  set (CMAKE_INSTALL_COMPLETION_PREFIX_FULL "${CMAKE_INSTALL_COMPLETION_PREFIX}/bash_completion.d")
 endif()
 
 install(FILES contrib/bashcomp/neper-completion.bash
-        DESTINATION ${CMAKE_INSTALL_PREFIX_COMPLETION_FULL}
+        DESTINATION ${CMAKE_INSTALL_COMPLETION_PREFIX_FULL}
         RENAME neper)
 
 # Testing ######################################################################

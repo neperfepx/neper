@@ -99,7 +99,10 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).curpenalty = NULL;
 
   (*pTOpt).tarmodeqty = 0;
+  (*pTOpt).tarmodefact = NULL;
   (*pTOpt).tarmodecdf0 = NULL;
+
+  neut_odf_set_zero (&(*pTOpt).Odf);
 
   neut_tesr_set_zero (&(*pTOpt).tartesr);
   (*pTOpt).tavoxqtyini = 0;
@@ -246,6 +249,8 @@ neut_topt_free (struct TOPT *pTOpt)
   free ((*pTOpt).tarmodecdf0);
 
   ut_free_2d (&(*pTOpt).tarmodefact, (*pTOpt).tarqty);
+
+  // neut_odf_free (&(*pTOpt).Odf);
 
   ut_free_1d (&(*pTOpt).curval);
 
@@ -452,4 +457,15 @@ neut_topt_iter_loop (struct TOPT TOpt, int iter, int *ploop)
   }
 
   return 0;
+}
+
+int
+neut_topt_typepos (struct TOPT TOpt)
+{
+  if (!strcmp (TOpt.optitype, "morpho"))
+    return 0;
+  else if (!strcmp (TOpt.optitype, "ori"))
+    return 1;
+  else
+    abort ();
 }

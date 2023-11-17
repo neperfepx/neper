@@ -254,26 +254,29 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
                        2) ? "point" : "points", Tesr.CellQty,
                       (Tesr.CellQty < 2) ? "cell" : "cells");
 
-    int i, j, k;
-    int min_id = INT_MAX, max_id = INT_MIN;
-    for (k = 1; k <= Tesr.size[2]; k++)
-      for (j = 1; j <= Tesr.size[1]; j++)
-        for (i = 1; i <= Tesr.size[0]; i++)
-        {
-          min_id = ut_num_min (min_id, Tesr.VoxCell[i][j][k]);
-          max_id = ut_num_max (max_id, Tesr.VoxCell[i][j][k]);
-        }
-
-    if ((min_id == 0 || min_id == 1) && max_id == Tesr.CellQty)
+    if (Tesr.VoxCell)
     {
-      ut_print_message (0, 3,
-                        "The cells are numbered contiguously from 1.\n");
-      if (min_id == 0)
-        ut_print_message (0, 3, "Some voxels are empty.\n");
+      int i, j, k;
+      int min_id = INT_MAX, max_id = INT_MIN;
+      for (k = 1; k <= Tesr.size[2]; k++)
+        for (j = 1; j <= Tesr.size[1]; j++)
+          for (i = 1; i <= Tesr.size[0]; i++)
+          {
+            min_id = ut_num_min (min_id, Tesr.VoxCell[i][j][k]);
+            max_id = ut_num_max (max_id, Tesr.VoxCell[i][j][k]);
+          }
+
+      if ((min_id == 0 || min_id == 1) && max_id == Tesr.CellQty)
+      {
+        ut_print_message (0, 3,
+                          "The cells are numbered contiguously from 1.\n");
+        if (min_id == 0)
+          ut_print_message (0, 3, "Some voxels are empty.\n");
+      }
+      else
+        ut_print_message (1, 3, "The cell ids range between %d and %d.\n",
+                          min_id, max_id);
     }
-    else
-      ut_print_message (1, 3, "The cell ids range between %d and %d.\n",
-                        min_id, max_id);
 
     neut_ori_des_expand (In.orides, &Tesr.CellOriDes);
   }

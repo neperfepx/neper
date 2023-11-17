@@ -7,7 +7,7 @@ extern "C"
 {
 #endif
 
-  extern void net_tess_tocta_seed (struct IN_T In, int level, char *, struct MTESS, struct TESS*,
+  extern void net_tess_tocta_seed (struct IN_T In, char *, struct MTESS, struct TESS*,
                             int dtess, int dcell, struct TESS,
 			    struct SEEDSET *, struct SEEDSET *);
 

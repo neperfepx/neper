@@ -3,6 +3,21 @@
 /* see the COPYING file in the top-level directory.*/
 #include "ol_set_alloc.h"
 
+void
+ol_set_zero (struct OL_SET *pOSet)
+{
+  (*pOSet).size = 0;
+  (*pOSet).q = NULL;
+  (*pOSet).weight = NULL;
+  (*pOSet).theta = NULL;
+  (*pOSet).id = NULL;
+  (*pOSet).label = NULL;
+  (*pOSet).crysym = NULL;
+  (*pOSet).nc = 0;
+
+  return;
+}
+
 struct OL_SET
 ol_set_alloc (size_t size, char *crysym)
 {
@@ -12,6 +27,7 @@ ol_set_alloc (size_t size, char *crysym)
   Set.q = ut_alloc_2d (size, 4);
   Set.weight = ut_alloc_1d (size);
   ut_array_1d_set (Set.weight, size, 1);
+  Set.theta = NULL;
   Set.id = ut_alloc_1d_int (size);
   ut_array_1d_int_set (Set.id, size, 1);
   Set.label = ut_alloc_1d_pchar (size);
@@ -33,13 +49,15 @@ ol_set_alloc (size_t size, char *crysym)
 }
 
 void
-ol_set_free (struct OL_SET Set)
+ol_set_free (struct OL_SET *pOSet)
 {
-  ut_free_2d (&Set.q, Set.size);
-  ut_free_1d (&Set.weight);
-  ut_free_1d_int (&Set.id);
-  ut_free_2d_char (&Set.label, Set.size);
-  ut_free_1d_char (&Set.crysym);
+  ut_free_2d (&(*pOSet).q, (*pOSet).size);
+  ut_free_1d (&(*pOSet).weight);
+  ut_free_1d (&(*pOSet).theta);
+  ut_free_1d_int (&(*pOSet).id);
+  ut_free_2d_char (&(*pOSet).label, (*pOSet).size);
+  ut_free_1d_char (&(*pOSet).crysym);
+  (*pOSet).size = 0;
 
   return;
 }
@@ -54,7 +72,7 @@ ol_set_fscanf (FILE * file, struct OL_SET *pSet, char *format)
   char *format2 = ut_alloc_1d_char (100);
 
   // checking the number of string on the first line
-  // can be 1, 3 or 4. 
+  // can be 1, 3 or 4.
   ut_file_nextlinenbwords (file, &firstline_nbw);
   whole_nbw = ut_file_nbwords_pointer (file);
 
@@ -143,7 +161,7 @@ ol_set_fscanf_sample (FILE * file, double factor, struct OL_SET *pSet,
 
   ol_set_fscanf (file, &Setb, format);
   ol_set_sample (Setb, factor, pSet);
-  ol_set_free (Setb);
+  ol_set_free (&Setb);
 
   return 1;
 }
@@ -157,7 +175,7 @@ ol_set_fscanf_sample_nb (FILE * file, int nb, struct OL_SET *pSet,
 
   ol_set_fscanf (file, &Setb, format);
   ol_set_sample_nb (Setb, nb, pSet);
-  ol_set_free (Setb);
+  ol_set_free (&Setb);
 
   return 1;
 }
@@ -290,6 +308,12 @@ ol_set_cat (struct OL_SET* OSets, int SetQty, struct OL_SET *pOSet)
     size += OSets[i].size;
 
   (*pOSet) = ol_set_alloc (size, OSets[0].crysym);
+  for (i = 0; i < SetQty; i++)
+    if (OSets[i].theta)
+    {
+      (*pOSet).theta = ut_alloc_1d (size);
+      break;
+    }
 
   id = 0;
   for (i = 0; i < SetQty; i++)
@@ -297,6 +321,8 @@ ol_set_cat (struct OL_SET* OSets, int SetQty, struct OL_SET *pOSet)
     {
       ut_array_1d_memcpy (OSets[i].q[j], 4, (*pOSet).q[id]);
       (*pOSet).weight[id] = OSets[i].weight[j];
+      if (OSets[i].theta)
+        (*pOSet).theta[id] = OSets[i].theta[j];
       (*pOSet).id[id] = OSets[i].id[j];
       id++;
     }
@@ -332,7 +358,7 @@ ol_set_shuf (struct OL_SET *pOSet, int random)
 
   gsl_rng_free (r);
   ut_free_1d_int (&id);
-  ol_set_free (OSetCpy);
+  ol_set_free (&OSetCpy);
 
   return;
 }

@@ -6,5 +6,5 @@
 
 extern void net_tess_opt_init_sset (struct IN_T In, int level,
 				    struct MTESS MTess, struct TESS *Tess,
-				    int dtess, int dcell,
+				    int dtess, int dcell, int TessId,
 				    struct SEEDSET *SSet, struct TOPT *pTOpt);

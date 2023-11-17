@@ -249,8 +249,8 @@ neut_mesh_memcpy (struct MESH Old, struct MESH *pNew)
 
   if (Old.ElsetOri)
   {
-    (*pNew).ElsetOri = ut_alloc_2d (Old.EltQty + 1, 4);
-    ut_array_2d_memcpy (Old.ElsetOri + 1, Old.EltQty, 4,
+    (*pNew).ElsetOri = ut_alloc_2d (Old.ElsetQty + 1, 4);
+    ut_array_2d_memcpy (Old.ElsetOri + 1, Old.ElsetQty, 4,
                         (*pNew).ElsetOri + 1);
   }
 

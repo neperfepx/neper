@@ -16,7 +16,9 @@ net_ori_uniform (struct IN_T In, int level, struct MTESS MTess,
   net_ori_uniform_init (In, level, MTess, Tess, dtess, dcell, random, pOSet,
                         &OOpt, verbositylevel);
 
-  net_ori_uniform_opt (In, &OOpt, pOSet, verbositylevel);
+  ut_print_message (0, verbositylevel, "Optimizing orientations (Thomson problem)...\n");
+
+  net_ori_uniform_opt (In, &OOpt, pOSet, verbositylevel + 1);
 
   neut_oopt_free (&OOpt);
 

@@ -48,6 +48,13 @@ neut_tess_tess_cell (struct TESS TessA, struct TESS *pTessB)
                             (*pTessB).CellId + 1);
   }
 
+  if (TessA.CellWeight)
+  {
+    (*pTessB).CellWeight = ut_alloc_1d (TessA.CellQty + 1);
+    ut_array_1d_memcpy (TessA.CellWeight + 1, TessA.CellQty,
+                            (*pTessB).CellWeight + 1);
+  }
+
   if (TessA.CellOri)
   {
     (*pTessB).CellOri = ut_alloc_2d (TessA.CellQty + 1, 4);

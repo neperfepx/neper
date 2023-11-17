@@ -5,7 +5,7 @@
 #include"net_tess_tocta_seed_.h"
 
 void
-net_tess_tocta_seed (struct IN_T In, int level, char *morpho,
+net_tess_tocta_seed (struct IN_T In, char *morpho,
                      struct MTESS MTess, struct TESS *Tess, int dtess,
                      int dcell, struct TESS Dom, struct SEEDSET *SSet,
                      struct SEEDSET *pSSet)
@@ -16,8 +16,7 @@ net_tess_tocta_seed (struct IN_T In, int level, char *morpho,
 
   net_tess_tocta_seed_readargs (morpho, &n);
 
-  net_tess_tocta_seed_set (In, level, MTess, Tess, dtess, dcell, Dom, n, SSet,
-                           pSSet);
+  net_tess_tocta_seed_set (In, MTess, Tess, dtess, dcell, Dom, n, SSet, pSSet);
 
   return;
 }

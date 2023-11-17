@@ -19,6 +19,7 @@ struct OL_SET
   size_t size;
   double **q;
   double *weight;
+  double *theta;
   int* id;
   char **label;
   char* crysym;
@@ -31,8 +32,9 @@ extern void ol_set_mean_ref (struct OL_SET, double *, double *);
 extern int ol_set_mean_iter (struct OL_SET, double *);
 extern int ol_set_mean_iter_ref (struct OL_SET, double *, double *);
 
+extern void ol_set_zero (struct OL_SET*);
 extern struct OL_SET ol_set_alloc (size_t, char*);
-extern void ol_set_free (struct OL_SET);
+extern void ol_set_free (struct OL_SET*);
 extern int ol_set_fscanf (FILE *, struct OL_SET *, char*);
 extern int ol_set_fscanf_sample (FILE *, double, struct OL_SET *, char*);
 extern int ol_set_fscanf_sample_nb (FILE *, int, struct OL_SET *, char*);
@@ -78,6 +80,8 @@ extern void ol_set_misorispread (char *distrib, int, long int, struct OL_SET *pO
 extern void ol_set_cat (struct OL_SET* Sets, int SetQty, struct OL_SET *pSet);
 extern void ol_set_shuf (struct OL_SET* pSet, int random);
 extern void ol_set_aniso_delta (struct OL_SET Set, double **evect, double *eval, double *delta);
+
+extern void ol_set_clean (struct OL_SET *pOSet);
 
 #endif /* OL_SSET */
 #ifndef OL_SETx

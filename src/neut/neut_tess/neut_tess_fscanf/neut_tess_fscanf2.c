@@ -136,6 +136,13 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
       neut_ori_fscanf (file, (*pTess).CellOriDes, "ascii", (*pTess).CellOri + 1, NULL, (*pTess).CellQty, NULL);
     }
 
+    else if (!strcmp (string, "*weight"))
+    {
+      ut_file_skip (file, 1);
+      (*pTess).CellWeight = ut_alloc_1d ((*pTess).CellQty + 1);
+      ut_array_1d_fscanf (file, (*pTess).CellWeight + 1, (*pTess).CellQty);
+    }
+
     else if (!strcmp (string, "*orispread") || !strcmp (string, "*orispread"))
     {
       ut_file_skip (file, 1);

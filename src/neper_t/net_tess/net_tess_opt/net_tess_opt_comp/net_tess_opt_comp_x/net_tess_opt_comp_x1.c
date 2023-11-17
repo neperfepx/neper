@@ -7,12 +7,12 @@
 void
 net_tess_opt_comp_x (struct TOPT *pTOpt, double **px)
 {
-  if (!strcmp ((*pTOpt).optitype, "seeds"))
-    net_tess_opt_comp_x_seeds (pTOpt, px);
+  if (!strcmp ((*pTOpt).optitype, "morpho"))
+    net_tess_opt_comp_x_morpho (pTOpt, px);
+  else if (!strcmp ((*pTOpt).optitype, "ori"))
+    net_tess_opt_comp_x_ori (pTOpt, px);
   else if (!strcmp ((*pTOpt).optitype, "crystal"))
     net_tess_opt_comp_x_crystal (pTOpt, px);
-  else if (!strcmp ((*pTOpt).optitype, "domain"))
-    net_tess_opt_comp_x_domain (pTOpt, px);
   else
     abort ();
 

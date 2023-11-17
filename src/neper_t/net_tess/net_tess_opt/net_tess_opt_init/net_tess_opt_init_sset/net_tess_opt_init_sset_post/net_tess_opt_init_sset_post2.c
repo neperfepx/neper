@@ -76,7 +76,7 @@ net_tess_opt_init_sset_post_log (struct IN_T In, int level,
   FILE *fp = NULL;
   char *filename = NULL;
 
-  if (ut_list_testelt (In.morphooptilogvar[level], NEUT_SEP_NODEP, "sset0"))
+  if (ut_list_testelt (In.optilogvar[level], NEUT_SEP_NODEP, "sset0"))
   {
     filename = ut_alloc_1d_char (strlen (In.body) + 10);
     sprintf (filename, "%s.sset0", In.body);
@@ -105,7 +105,7 @@ net_tess_opt_init_sset_post_log (struct IN_T In, int level,
   }
 
   if (ut_list_testelt
-      (In.morphooptilogvar[level], NEUT_SEP_NODEP, "cellscell"))
+      (In.optilogvar[level], NEUT_SEP_NODEP, "cellscell"))
   {
     filename = ut_alloc_1d_char (strlen (In.body) + 20);
     sprintf (filename, "%s.cellscell", In.body);
@@ -129,7 +129,7 @@ net_tess_opt_init_sset_post_log (struct IN_T In, int level,
   }
 
   if (ut_list_testelt
-      (In.morphooptilogvar[level], NEUT_SEP_NODEP, "scellcell"))
+      (In.optilogvar[level], NEUT_SEP_NODEP, "scellcell"))
   {
     filename = ut_alloc_1d_char (strlen (In.body) + 20);
     sprintf (filename, "%s.scellcell", In.body);

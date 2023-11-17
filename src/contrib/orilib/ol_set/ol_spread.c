@@ -197,7 +197,7 @@ ol_set_anifilter (struct OL_SET set1, double rel, struct OL_SET *pset2)
   ut_free_2d (&v, 3);
   ut_free_1d (&mdis);
   ut_free_1d (&dis);
-  ol_set_free (setd);
+  ol_set_free (&setd);
 
   if ((*pset2).size == 0)
   {
@@ -248,7 +248,7 @@ ol_set_mean_anifilter (struct OL_SET set1, double *qm, double rel,
   ut_free_1d (&mdis);
   ut_free_1d (&relmdis);
   ut_free_1d (&dis);
-  ol_set_free (setd);
+  ol_set_free (&setd);
 
   if (ut_array_1d_int_eltpos ((*pset2).id, (*pset2).size, 1) == -1)
   {
@@ -295,7 +295,7 @@ ol_set_mean_aniso_anifilter (struct OL_SET set1, double *qm, double **v,
 
   ut_free_1d (&relmdis);
   ut_free_1d (&dis);
-  ol_set_free (setd);
+  ol_set_free (&setd);
 
   if ((*pset2).size == 0)
   {
@@ -464,8 +464,8 @@ ol_set_mean_aniso_anifilter_iter_itermax (struct OL_SET set1, double *qmean0,
 
   ol_set_aniso (Setd, v, mdis);
 
-  ol_set_free (Setd);
-  ol_set_free (set1cpy);
+  ol_set_free (&Setd);
+  ol_set_free (&set1cpy);
 
   return (i < maxiter) ? i : -1;
 }
@@ -511,7 +511,7 @@ ol_set_aniso_modes (struct OL_SET Set, double *qmean,
     }
   }
 
-  ol_set_free (Setd);
+  ol_set_free (&Setd);
   ol_g_free (v);
   ol_r_free (theta);
 
@@ -586,7 +586,7 @@ ol_set_aniso_v_thetatr_modes_id (struct OL_SET Set, double *qmean,
     id[i] = (theta[0] < thetatr) ? 1 : 2;
   }
 
-  ol_set_free (Setd);
+  ol_set_free (&Setd);
   ol_r_free (theta);
 
   return;

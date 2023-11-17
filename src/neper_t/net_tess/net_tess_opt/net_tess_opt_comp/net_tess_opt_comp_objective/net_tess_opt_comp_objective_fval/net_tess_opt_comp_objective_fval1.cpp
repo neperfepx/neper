@@ -20,7 +20,8 @@ net_tess_opt_comp_objective_fval (struct TOPT *pTOpt)
 
   // updating penalties for changed cells
 
-  net_tess_opt_comp_objective_fval_cellpenalty (pTOpt);
+  if (!strcmp ((*pTOpt).optitype, "morpho"))
+    net_tess_opt_comp_objective_fval_cellpenalty (pTOpt);
 
   gettimeofday (&t3, NULL);
 

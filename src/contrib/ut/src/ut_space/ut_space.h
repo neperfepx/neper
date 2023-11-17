@@ -758,6 +758,9 @@ extern "C"
                                                     ptqty, double *pt,
                                                     double *pdist,
                                                     int verbosity);
+
+  extern void ut_space_tet_randompt (double *v0, double *v1, double *v2, double *v3, gsl_rng *r, double *pt);
+
 /// @endcond
 
 #endif                          /* UT_SPACE_H */

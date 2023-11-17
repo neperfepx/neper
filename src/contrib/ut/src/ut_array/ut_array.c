@@ -303,6 +303,22 @@ ut_array_1d_fprintf (FILE * file, double *array, int size, const char *format)
 }
 
 int
+ut_array_1d_fnprintf (char * filename, double *array, int size, const char *format, const char *mode)
+{
+  int status;
+
+  FILE *file = ut_file_open (filename, mode);
+
+  ut_array_1d_fprintf_nonl (file, array, size, format);
+
+  status = fprintf (file, "\n");
+
+  ut_file_close (file, filename, mode);
+
+  return status;
+}
+
+int
 ut_array_1d_fprintf_column (FILE * file, double *array, int size, const char *format)
 {
   int i, status = -1;
@@ -3506,6 +3522,20 @@ ut_array_1d_int_list_addval (int **parray, int *psize, int val)
   return status;
 }
 
+int
+ut_array_1d_int_list1_addval (int **parray, int *psize, int val)
+{
+  int status = -1;
+
+  if (ut_array_1d_int_eltpos (*parray + 1, *psize, val) == -1)
+  {
+    ut_array_1d_int_list1_addval_nocheck (parray, psize, val);
+    status = 0;
+  }
+
+  return status;
+}
+
 void
 ut_array_1d_int_list_addvals (int **parray, int *psize, int *elts, int eltqty)
 {
@@ -3523,6 +3553,16 @@ ut_array_1d_int_list_addval_nocheck (int **parray, int *psize, int val)
   (*psize)++;
   (*parray) = ut_realloc_1d_int (*parray, *psize);
   (*parray)[(*psize) - 1] = val;
+
+  return 0;
+}
+
+int
+ut_array_1d_int_list1_addval_nocheck (int **parray, int *psize, int val)
+{
+  (*psize)++;
+  (*parray) = ut_realloc_1d_int (*parray, *psize + 1);
+  (*parray)[*psize] = val;
 
   return 0;
 }

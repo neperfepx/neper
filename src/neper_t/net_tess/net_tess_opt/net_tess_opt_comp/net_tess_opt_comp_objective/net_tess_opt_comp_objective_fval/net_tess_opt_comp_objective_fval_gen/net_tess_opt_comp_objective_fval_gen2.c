@@ -145,3 +145,12 @@ net_tess_opt_comp_objective_fval_gen_centroidsize (struct TOPT *pTOpt,
 
   return;
 }
+
+void
+net_tess_opt_comp_objective_fval_gen_ori (struct TOPT *pTOpt, int var,
+                                          int cell)
+{
+  ut_array_1d_memcpy ((*pTOpt).SSet.SeedOriR[cell], 3, (*pTOpt).curcellval[var][cell]);
+
+  return;
+}

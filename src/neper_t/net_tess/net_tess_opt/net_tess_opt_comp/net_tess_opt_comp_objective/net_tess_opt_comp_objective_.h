@@ -24,8 +24,9 @@ extern "C"
 
 #include"net_tess_opt_comp_objective.h"
 
-extern void net_tess_opt_comp_objective_x_seedset (const double *x,
+extern void net_tess_opt_comp_objective_x_morpho (const double *x,
 					      struct TOPT *pTOpt);
+extern void net_tess_opt_comp_objective_x_ori (const double *x, struct TOPT *pTOpt);
 extern void net_tess_opt_comp_objective_x_crystal (const double *x,
 					      struct TOPT *pTOpt);
 extern void net_tess_opt_comp_objective_x_domain (const double *x,

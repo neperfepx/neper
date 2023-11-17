@@ -45,6 +45,7 @@ struct IN_M
 
   char *meshpoly;		// polys to mesh (expression)
   char *meshface;		// faces to mesh (expression)
+  char *meshedge;		// edges to mesh (expression)
   char* interface;		// type of interface meshing
                                 // (continuous or discontinuous)
 

@@ -687,7 +687,7 @@ neut_ori_orispread (double *qmean, char *orispread, int qty, int id, double **q)
   for (i = 0; i < qty; i++)
     ol_q_q_q_ref (qmean, OSet.q[i], q[i]);
 
-  ol_set_free (OSet);
+  ol_set_free (&OSet);
 
   return;
 }
@@ -796,7 +796,7 @@ neut_ori_fiber_spread (char *spread, double *dirs, long random, int qty, char *c
   }
 
   ut_free_1d (&z);
-  ol_set_free (OSet2);
+  ol_set_free (&OSet2);
   ol_q_free (q_align);
 
   return;

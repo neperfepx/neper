@@ -20,3 +20,12 @@ extern void net_tess3d_periodic_ver (struct TESS *pTess);
 extern void net_tess3d_periodic_ver_shrinkmaster (struct TESS *);
 extern void net_tess3d_periodic_edge_shrinkmaster (struct TESS *);
 extern void net_tess3d_periodic_edge_peredgeori (struct TESS *pTess);
+
+extern void net_tess3d_periodic_face_rodrigues (struct TESS *pTess);
+extern void net_tess3d_periodic_edge_rodrigues (struct TESS *pTess);
+extern void net_tess3d_periodic_ver_rodrigues (struct TESS *pTess);
+
+extern void net_tess3d_periodic_rodrigues_pair (double **coo, int qty, char *crysym, int **ppermaster);
+
+extern void net_tess3d_periodic_edge_rodrigues_peredgeori (struct TESS *pTess);
+extern void net_tess3d_periodic_face_rodrigues_perfaceori (struct TESS *pTess);

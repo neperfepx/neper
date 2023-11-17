@@ -51,6 +51,8 @@ nem_meshing_2d_face_mesh_gmsh (struct TESS Tess, struct NODES RNodes,
 // Writing meshing options ---------------------------------------------
 
   fprintf (file, "// face %d.\n", face);
+  if (Tess.FacePoly)
+    fprintf (file, "// (polys %d %d).\n", Tess.FacePoly[face][0], Tess.FacePoly[face][1]);
   fprintf (file, "// face state = %d\n", Tess.FaceState[face]);
   if (neut_gmsh_meshalgo2d_nb (algo, &nb) != 0)
   {

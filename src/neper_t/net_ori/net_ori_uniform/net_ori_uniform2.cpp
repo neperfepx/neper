@@ -20,7 +20,7 @@ net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
   (*pOOpt).n = (*pOSet).size;
   (*pOOpt).id = 0;
   ut_string_string ((*pOSet).crysym, &(*pOOpt).crysym);
-  ut_string_string (In.orioptistop[level], &(*pOOpt).orioptistop);
+  ut_string_string (In.optistop[1][level], &(*pOOpt).orioptistop);
   ut_string_string (In.orioptineigh[level], &(*pOOpt).orioptineigh);
 
   neut_ori_n_avradeq (NULL, (*pOSet).size, (*pOSet).crysym, vals);

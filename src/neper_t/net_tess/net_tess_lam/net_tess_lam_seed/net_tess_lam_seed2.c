@@ -75,8 +75,20 @@ net_tess_lam_seed_set (struct IN_T In, int level, struct MTESS MTess,
 
   net_tess_lam_seed_set_init (pSSet);
 
-  net_tess_opt_init_sset_general (In, MTess, Tess, dtess, dcell, SSet, pSSet,
-                                  1, NULL);
+  neut_seedset_set_zero (pSSet);
+
+  ut_string_string ("standard", &(*pSSet).Type);
+
+  struct TESS Cell;
+  neut_tess_set_zero (&Cell);
+  neut_tess_poly_tess (Tess[dtess], dcell, &Cell);
+  (*pSSet).Size = ut_alloc_2d (3, 2);
+  neut_tess_bbox (Cell, (*pSSet).Size);
+  neut_tess_free (&Cell);
+
+  net_ori_mtess_id (In, MTess, Tess, dtess, dcell, pSSet);
+
+  net_ori_mtess_randseed (MTess, Tess, dtess, dcell, SSet, 1, pSSet);
 
   gsl_rng_set (r, (*pSSet).Random);
   net_tess_lam_seed_set_normal (SSet, dtess, dcell, r, vtype, v, vqty, n);

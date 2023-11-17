@@ -79,3 +79,5 @@ extern void nem_meshing_2d_face_laplaciansmooth (struct TESS Tess, int face,
                                                  int *lbnodes, int bnodeqty,
                                                  struct NODES *pN,
                                                  struct MESH M);
+
+extern void nem_meshing_2d_face_per_rodrigues (struct TESS Tess, struct NODES *N, int face, struct NODES *pN);

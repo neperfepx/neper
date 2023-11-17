@@ -18,6 +18,8 @@ extern "C"
   extern void neut_tesr_cells_olset (struct TESR Tesr, double **CellOri, char *crysym,
                          int *cells, int cellqty, struct OL_SET *pOSet);
 
+  extern void neut_tesr_voxels_olset (struct TESR Tesr, struct OL_SET *pOSet);
+
 #include"net_utils/net_utils.h"
 
 #endif				/* NEUT_TESR_ORI_H */

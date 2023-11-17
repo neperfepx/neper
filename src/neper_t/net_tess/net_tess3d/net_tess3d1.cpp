@@ -43,7 +43,8 @@ net_tess3d (struct TESS PTess, int poly, struct SEEDSET SSet,
 
   net_tess3d_domain (PTess, poly, TessId, pMTess, pTess);
 
-  if (!strcmp ((*pTess).Type, "periodic"))
+  if (!strcmp ((*pTess).Type, "periodic")
+      || !strncmp ((*pTess).DomType, "rodrigues", 9))
     net_tess3d_periodic (pTess);
 
   neut_poly_free (&DomPoly);

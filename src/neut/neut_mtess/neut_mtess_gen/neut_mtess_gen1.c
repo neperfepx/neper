@@ -4,6 +4,28 @@
 
 #include "neut_mtess_gen_.h"
 
+void
+neut_mtess_argument_process (struct MTESS MTess, struct TESS *Tess, int dtess, int dcell,
+                             char *input, char **poutput)
+{
+  char *mid = NULL;
+
+  if (ut_string_isfilename (input)
+      && !ut_file_testformat (input, "tess"))
+  {
+    neut_mtess_tess_poly_mid (MTess, Tess[dtess], dcell, &mid);
+
+    *poutput = ut_alloc_1d_char (1000);
+    net_multiscale_arg_0d_char_fscanf (input, mid, *poutput);
+  }
+  else
+    ut_string_string (input, poutput);
+
+  ut_free_1d_char (&mid);
+
+  return;
+}
+
 int
 neut_mtess_tess_poly_mid (struct MTESS MTess, struct TESS Tess, int poly,
                           char **pid)

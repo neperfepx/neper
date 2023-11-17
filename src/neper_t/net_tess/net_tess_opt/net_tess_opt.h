@@ -9,9 +9,10 @@ extern "C"
 
 #include"structIn_t.h"
 
-extern int net_tess_opt (struct IN_T In, int level, char *morpho, struct TESS *Tess, int dtess,
-			 int dcell, int TessId, struct MTESS *pMTess,
-			 struct SEEDSET *SSet);
+extern int net_tess_opt (struct IN_T In, int level, char *optitype,
+                         char *optistring, struct TESS *Tess, int dtess,
+                         int dcell, int TessId, struct MTESS *pMTess,
+                         struct SEEDSET *SSet);
 
 #ifdef __cplusplus
 }

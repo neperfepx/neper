@@ -14,17 +14,11 @@
 #include"ut.h"
 #include"neut_t.h"
 #include"net_ori/net_ori.h"
-#include"structIn_t.h"
 
 #include"neper_config.h"
 
 #include"net_tess_opt_init_sset_pre.h"
 
-extern void net_tess_opt_init_sset_pre_dim (struct TOPT TOpt, struct SEEDSET *pSSet);
-
-extern void net_tess_opt_init_sset_pre_type (struct SEEDSET *pSSet);
-
 extern void net_tess_opt_init_sset_pre_size (struct TESS *Tess, int
 					     dtess, int dcell,
-                                             struct TOPT *pTOpt,
-					     struct SEEDSET *pSSet);
+                                             struct TOPT *pTOpt);

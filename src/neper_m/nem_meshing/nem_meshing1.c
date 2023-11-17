@@ -37,7 +37,7 @@ nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
     if (!neut_mesh_isvoid (Mesh[1]))
       ut_print_message (0, 2, "1D meshing... skipped\n");
     else
-      nem_meshing_1d (pMeshPara, *pTess, RNodes, RMesh, pNodes, Mesh);
+      nem_meshing_1d (In, pMeshPara, pTess, RNodes, RMesh, pNodes, Mesh);
   }
 
   if ((*pMeshPara).dim >= 2)

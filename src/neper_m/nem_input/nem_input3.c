@@ -69,6 +69,7 @@ nem_input_options_default (struct IN_M *pIn)
   (*pIn).mesh3dalgo = ut_alloc_1d_char (100);
   (*pIn).mesh2dpinchfix = 1;
   (*pIn).mesh3dreport = 0;
+  ut_string_string ("all", &((*pIn).meshedge));
   ut_string_string ("all", &((*pIn).meshface));
   ut_string_string ("all", &((*pIn).meshpoly));
   (*pIn).mesh3dclrepsstring = NULL;
@@ -169,6 +170,7 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
   strcpy (ArgList[++ArgQty], "-tesrsmoothitermax");
 
   // development options
+  strcpy (ArgList[++ArgQty], "-meshedge");
   strcpy (ArgList[++ArgQty], "-meshface");
   strcpy (ArgList[++ArgQty], "-meshpoly");
   strcpy (ArgList[++ArgQty], "-interface");
@@ -396,6 +398,8 @@ nem_input_options_set (struct IN_M *pIn, int argc, char **argv)
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).meshpoly));
       else if (!strcmp (Arg, "-meshface"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).meshface));
+      else if (!strcmp (Arg, "-meshedge"))
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).meshedge));
       // end of development options
 
       else if ((!strcmp (Arg, "-order")))

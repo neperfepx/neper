@@ -16,7 +16,7 @@ neut_tesr_cell_orianiso (struct TESR Tesr, int cell, double **evect,
 
   ol_set_aniso (Set, evect, eval);
 
-  ol_set_free (Set);
+  ol_set_free (&Set);
 
   return;
 }
@@ -41,7 +41,7 @@ neut_tesr_cell_orianiso_delta (struct TESR Tesr, int cell, double **evect_in,
   if (delta_in)
     ut_array_1d_memcpy (delta, 3, delta_in);
 
-  ol_set_free (Set);
+  ol_set_free (&Set);
   ut_free_2d (&evect, 3);
   ut_free_1d (&eval);
   ut_free_1d (&delta);
@@ -66,6 +66,35 @@ neut_tesr_cells_olset (struct TESR Tesr, double **CellOri, char *crysym,
 
   if (crysym)
     ut_string_string (crysym, &(*pOSet).crysym);
+
+  return;
+}
+
+void
+neut_tesr_voxels_olset (struct TESR Tesr, struct OL_SET *pOSet)
+{
+  int i, j, k, qty, pos;
+
+  qty = 0;
+  for (i = 1; i <= Tesr.size[0]; i++)
+    for (j = 1; j <= Tesr.size[1]; j++)
+      for (k = 1; k <= Tesr.size[2]; k++)
+        if (!Tesr.VoxOriDef || Tesr.VoxOriDef[i][j][k])
+          qty++;
+
+  (*pOSet) = ol_set_alloc (qty, Tesr.CellCrySym);
+
+  pos = 0;
+  for (i = 1; i <= Tesr.size[0]; i++)
+    for (j = 1; j <= Tesr.size[1]; j++)
+      for (k = 1; k <= Tesr.size[2]; k++)
+        if (!Tesr.VoxOriDef || Tesr.VoxOriDef[i][j][k])
+        {
+          if (Tesr.VoxOri)
+            ol_q_memcpy (Tesr.VoxOri[i][j][k], (*pOSet).q[pos++]);
+          else
+            ol_q_memcpy (Tesr.CellOri[Tesr.VoxCell[i][j][k]], (*pOSet).q[pos++]);
+        }
 
   return;
 }

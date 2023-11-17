@@ -10,9 +10,9 @@ extern "C"
 #include"structIn_t.h"
 
 void
-net_tess_opt_init (struct IN_T In, int level, char *morpho,
-                   struct MTESS MTess,
-		   struct TESS *Tess, int dtess, int dcell,
+net_tess_opt_init (struct IN_T In, int level, char *optitype,
+                   char *optistring, struct MTESS MTess,
+		   struct TESS *Tess, int dtess, int dcell, int TessId,
 		   struct SEEDSET *SSet, struct TOPT *pTOpt);
 
 #ifdef __cplusplus

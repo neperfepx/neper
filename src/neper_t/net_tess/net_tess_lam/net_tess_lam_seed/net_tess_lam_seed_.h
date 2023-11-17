@@ -11,7 +11,6 @@
 #include"orilib.h"
 #include"neut_t.h"
 
-#include"net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_pre/net_tess_opt_init_sset_pre.h"
 #include"net_tess_lam_seed.h"
 #include"net_ori/net_ori.h"
 

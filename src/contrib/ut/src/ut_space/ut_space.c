@@ -2860,3 +2860,40 @@ ut_space_point_ecyl_mirror (double *point, double *basis, double *axis,
 
   return;
 }
+
+// https://vcg.isti.cnr.it/activities/OLD/geometryegraphics/pointintetraedro.html
+// https://www.tandfonline.com/doi/abs/10.1080/10867651.2000.10487528
+void
+ut_space_tet_randompt (double *v0, double *v1, double *v2, double *v3, gsl_rng *r, double *pt)
+{
+  int i;
+
+  double a;
+  double s = gsl_rng_uniform (r);
+  double t = gsl_rng_uniform (r);
+  double u = gsl_rng_uniform (r);
+
+  if (s + t > 1.0) // cut'n fold the cube into a prism
+  {
+    s = 1.0 - s;
+    t = 1.0 - t;
+  }
+  if (t + u > 1.0) // cut'n fold the prism into a tetrahedron
+  {
+    double tmp = u;
+    u = 1.0 - s - t;
+    t = 1.0 - tmp;
+  }
+  else if (s + t + u > 1.0)
+  {
+    double tmp = u;
+    u = s + t + u - 1.0;
+    s = 1 - t - tmp;
+  }
+  a = 1 - s - t - u; // a, s, t, u are the barycentric coordinates of the random point.
+
+  for (i = 0; i < 3; i++)
+    pt[i] = v0[i] * a + v1[i] * s + v2[i] * t + v3[i] * u;
+
+  return;
+}

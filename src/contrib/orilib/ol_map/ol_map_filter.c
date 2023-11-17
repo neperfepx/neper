@@ -101,7 +101,7 @@ ol_map_filter_kuwahara_region (struct OL_MAP Map, double *q, double *pdis)
     ol_map_free (SubMap);
     ol_set_mean_ref (SubSet, qref, mean[i]);
     ol_set_disori (SubSet, mean[i], &(dis[i]));
-    ol_set_free (SubSet);
+    ol_set_free (&SubSet);
   }                             /* insert correction according to the number of available data */
 
   id = ut_array_1d_min_index (dis, 4);

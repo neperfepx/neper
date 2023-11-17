@@ -132,6 +132,8 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
       {
         struct OL_SET OSet;
 
+        ol_set_zero (&OSet);
+
         net_ori_file (file, &OSet);
 
         (*pPoints)[(*pPointQty) - 1].Dim = 4;
@@ -139,7 +141,7 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
         (*pPoints)[(*pPointQty) - 1].Coo = ut_alloc_2d (OSet.size + 1, 4);
         ut_array_2d_memcpy (OSet.q, OSet.size, 4, (*pPoints)[(*pPointQty) - 1].Coo + 1);
 
-        ol_set_free (OSet);
+        ol_set_free (&OSet);
       }
 
       else

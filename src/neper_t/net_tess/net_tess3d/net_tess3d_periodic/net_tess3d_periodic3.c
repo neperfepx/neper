@@ -76,3 +76,103 @@ net_tess3d_periodic_edge_peredgeori (struct TESS *pTess)
 
   return;
 }
+
+void
+net_tess3d_periodic_rodrigues_pair (double **coo, int qty, char *crysym, int **ppermaster)
+{
+  int i, j, master, slave;
+  double disori;
+  double *q1 = ol_q_alloc ();
+  double *q2 = ol_q_alloc ();
+
+  (*ppermaster) = ut_alloc_1d_int (qty + 1);
+
+  ut_array_1d_int_set (*ppermaster, qty + 1, -1);
+
+  // searching slaves based on disorientation
+  for (i = 1; i <= qty; i++)
+    // if not secondary yet, finding secondary
+    if ((*ppermaster)[i] == -1)
+    {
+      master = i;
+      ol_R_q (coo[master], q1);
+
+      slave = -1;
+
+      for (j = i + 1; j <= qty; j++)
+      {
+        ol_R_q (coo[j], q2);
+
+        ol_q_q_disori_rad (q1, q2, crysym, &disori);
+
+        if (disori < sqrt (OL_EPS) && (*ppermaster)[j] == -1)
+        {
+          slave = j;
+
+          (*ppermaster)[master] = 0;
+          (*ppermaster)[slave] = master;
+        }
+      }
+
+      if (slave == -1)
+        abort ();
+    }
+
+  ol_q_free (q1);
+  ol_q_free (q2);
+
+  return;
+}
+
+void
+net_tess3d_periodic_edge_rodrigues_peredgeori (struct TESS *pTess)
+{
+  int i;
+  double disori1, disori2;
+  double *q1 = ol_q_alloc ();
+  double *q2 = ol_q_alloc ();
+  char *crysym = NULL;
+
+  ut_string_functionargument ((*pTess).DomType, &crysym);
+
+  (*pTess).PerEdgeOri = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
+
+  for (i = 1; i <= (*pTess).EdgeQty; i++)
+    if ((*pTess).PerEdgeMaster[i] > 0)
+    {
+      // we cannot rely on the actual directions, since equivalent edges aren't necessarily parallel.
+      // testing the equivalency of the first vertex instead
+      ol_R_q ((*pTess).VerCoo[(*pTess).EdgeVerNb[i][0]], q1);
+      ol_R_q ((*pTess).VerCoo[(*pTess).EdgeVerNb[(*pTess).PerEdgeMaster[i]][0]], q2);
+      ol_q_q_disori (q1, q2, crysym, &disori1);
+      ol_R_q ((*pTess).VerCoo[(*pTess).EdgeVerNb[(*pTess).PerEdgeMaster[i]][1]], q2);
+      ol_q_q_disori (q1, q2, crysym, &disori2);
+
+      if (disori1 > OL_EPS && disori2 > OL_EPS)
+        abort ();
+
+      (*pTess).PerEdgeOri[i] = (disori1 < OL_EPS) ? 1 : -1;
+    }
+
+  ol_q_free (q1);
+  ol_q_free (q2);
+  ut_free_1d_char (&crysym);
+
+  return;
+}
+
+void
+net_tess3d_periodic_face_rodrigues_perfaceori (struct TESS *pTess)
+{
+  int i;
+
+  (*pTess).PerFaceOri = ut_alloc_1d_int ((*pTess).FaceQty + 1);
+  for (i = 1; i <= (*pTess).FaceQty; i++)
+    if ((*pTess).PerFaceMaster[i] > 0)
+    {
+      (*pTess).PerFaceOri[i]
+        = ut_num_d2ri (ut_vector_scalprod ((*pTess).FaceEq[(*pTess).PerFaceMaster[i]] + 1, (*pTess).FaceEq[i] + 1));
+    }
+
+  return;
+}

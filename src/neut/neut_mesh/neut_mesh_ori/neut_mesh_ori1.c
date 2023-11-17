@@ -10,18 +10,20 @@ neut_mesh_elts_olset (struct NODES Nodes, struct MESH Mesh,
 {
   int i, elt;
 
+  printf ("eltqty = %d\n", eltqty);
+  printf ("Mesh.ElsetCrySym = %s\n", Mesh.ElsetCrySym);
   *pOSet = ol_set_alloc (eltqty, Mesh.ElsetCrySym);
 
   for (i = 0; i < eltqty; i++)
   {
-    elt = elts[i];
+    elt = elts ? elts[i] : i + 1;
     neut_mesh_elt_size (Nodes, Mesh, elt, (*pOSet).weight + i);
   }
 
   if (Mesh.SimEltOri)
     for (i = 0; i < eltqty; i++)
     {
-      elt = elts[i];
+      elt = elts ? elts[i] : i + 1;
       ol_q_memcpy (Mesh.SimEltOri[elt], (*pOSet).q[i]);
     }
   else if (Mesh.pSim)
@@ -30,20 +32,20 @@ neut_mesh_elts_olset (struct NODES Nodes, struct MESH Mesh,
 
     for (i = 0; i < eltqty; i++)
     {
-      elt = elts[i];
+      elt = elts ? elts[i] : i + 1;
       ol_q_memcpy (Mesh.SimEltOri[elt], (*pOSet).q[i]);
     }
   }
   else if (Mesh.EltOri)
     for (i = 0; i < eltqty; i++)
     {
-      elt = elts[i];
+      elt = elts ? elts[i] : i + 1;
       ol_q_memcpy (Mesh.EltOri[elt], (*pOSet).q[i]);
     }
   else
     for (i = 0; i < eltqty; i++)
     {
-      elt = elts[i];
+      elt = elts ? elts[i] : i + 1;
       ol_q_memcpy (Mesh.ElsetOri[Mesh.EltElset[elt]], (*pOSet).q[i]);
     }
 
@@ -85,7 +87,7 @@ neut_mesh_elts_orimean (struct NODES Nodes, struct MESH Mesh,
 
   ol_set_mean_iter (OSet, mean);
 
-  ol_set_free (OSet);
+  ol_set_free (&OSet);
 
   return;
 }
@@ -133,7 +135,7 @@ neut_mesh_elts_orianiso (struct NODES Nodes, struct MESH Mesh,
 
   ol_set_aniso (OSet, evect, eval);
 
-  ol_set_free (OSet);
+  ol_set_free (&OSet);
 
   return;
 }
@@ -171,7 +173,7 @@ neut_mesh_elts_gos (struct NODES Nodes, struct MESH Mesh,
   }
   (*pgos) /= totvol;
 
-  ol_set_free (OSet);
+  ol_set_free (&OSet);
 
   return;
 }
@@ -218,7 +220,7 @@ neut_mesh_elts_orianiso_delta (struct NODES Nodes, struct MESH Mesh, int *elts, 
   if (delta_in)
     ut_array_1d_memcpy (delta, 3, delta_in);
 
-  ol_set_free (Set);
+  ol_set_free (&Set);
   ut_free_2d (&evect, 3);
   ut_free_1d (&eval);
   ut_free_1d (&delta);

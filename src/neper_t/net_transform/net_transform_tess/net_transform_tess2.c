@@ -30,7 +30,7 @@ net_transform_tess_ori (char *ori, struct TESS *pTess)
 
   ut_array_2d_memcpy (OSet.q, (*pTess).CellQty, 4, (*pTess).CellOri + 1);
 
-  ol_set_free (OSet);
+  ol_set_free (&OSet);
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vars, valqty);
   ut_free_2d_char (&vals, valqty);

@@ -25,6 +25,7 @@ extern "C"
 #include"net_tess_opt_comp_objective_fval_gen.h"
 #include"net_tess_opt_comp_objective_fval_gen_celldata/net_tess_opt_comp_objective_fval_gen_celldata.h"
 #include"net_tess_opt_comp_objective_fval_gen_stat/net_tess_opt_comp_objective_fval_gen_stat.h"
+#include"net_tess_opt_comp_objective_fval_gen_odf/net_tess_opt_comp_objective_fval_gen_odf.h"
 
 extern void net_tess_opt_comp_objective_fval_gen_size (struct TOPT *pTOpt, int var, int cell);
 extern void net_tess_opt_comp_objective_fval_gen_diameq (struct TOPT *pTOpt, int
@@ -37,6 +38,7 @@ extern void net_tess_opt_comp_objective_fval_gen_centroid (struct TOPT *pTOpt,
     int var, int cell);
 extern void net_tess_opt_comp_objective_fval_gen_centroidsize (struct TOPT
     *pTOpt, int var, int cell);
+extern void net_tess_opt_comp_objective_fval_gen_ori (struct TOPT *pTOpt, int var, int cell);
 
 #ifdef __cplusplus
 }

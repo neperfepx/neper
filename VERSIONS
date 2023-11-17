@@ -1,11 +1,19 @@
-New in 4.6.2-14 (08 Nov 2023):
-- module -T: fixed -transform rmsat and -transform cut, added -statcell scale,
-  added -statcell voxnb, improved geo format, made minor fixes and
-  improvements.
-- module -M: made minor improvements.
-- module -S: fixed -res... '\<result>` (result overwriting).
-- documentation: made minor improvements.
-- general: improved installation instructions.
+New in 4.7.0 (17 Nov 2023):
+- module -T: added -ori odf, added -orisampling, improved -domain rodrigues,
+  added -statcell scale and voxnb, fixed -morpho cube, fixed -transform rmsat,
+  improved geo format, cleaned code, made minor fixes and improvements.
+- module -M: added -statelt vol_orispace, added -meshedge, -meshface and
+  -meshpoly, made other minor improvements.
+- module -S: fixed -res... '\<result>` (result overwriting), made minor
+  improvements to the simulation directory.
+- general: added tutorials "Generating and Meshing a Fundamental Region of
+  Orientation Space" and "Specifying Orientation Information for Tessellation
+  Cells", improved installation instructions, added developer documentation,
+  added CMAKE_INSTALL_COMPLETION.
+
+* Incompatible changes:  In -T, now use `-orisampling uniform' in place of
+  `-ori uniform'.  Renamed CMAKE_INSTALL_PREFIX_COMPLETION into
+  CMAKE_INSTALL_COMPLETION_PREFIX.
 
 New in 4.6.1 (12 Sep 2023):
 - module -T: fixed -domain cylinder and circle, fixed tesr reading, made minor

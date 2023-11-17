@@ -116,7 +116,8 @@ nem_meshing_2d_face_per (struct TESS Tess, struct NODES Nodes,
                          struct MESH *pM, int **pmaster_id, int ***pbnodes,
                          int ***plbnodes, int **pbnodeqty, int face)
 {
-  int i, status, master = Tess.PerFaceMaster[face];
+  int i, j, status, master = Tess.PerFaceMaster[face];
+  double *n = ut_alloc_1d (3);
 
   neut_nodes_set_zero (pN);
   neut_mesh_set_zero (pM);
@@ -124,17 +125,21 @@ nem_meshing_2d_face_per (struct TESS Tess, struct NODES Nodes,
   neut_nodes_memcpy (N[master], pN);
   neut_mesh_memcpy (M[master], pM);
 
-  neut_nodes_shift (pN, Tess.PerFaceShift[face][0] * Tess.PeriodicDist[0],
-                    Tess.PerFaceShift[face][1] * Tess.PeriodicDist[1],
-                    Tess.PerFaceShift[face][2] * Tess.PeriodicDist[2]);
+  // standard case
+  if (strncmp (Tess.DomType, "rodrigues", 9))
+    neut_nodes_shift (pN, Tess.PerFaceShift[face][0] * Tess.PeriodicDist[0],
+                      Tess.PerFaceShift[face][1] * Tess.PeriodicDist[1],
+                      Tess.PerFaceShift[face][2] * Tess.PeriodicDist[2]);
+  // for Rodrigues space, its symmetry
+  else
+    nem_meshing_2d_face_per_rodrigues (Tess, N, face, pN);
 
   (*pmaster_id) = ut_alloc_1d_int (N[master].NodeQty + 1);
   ut_array_1d_int_set_id (*pmaster_id, N[master].NodeQty + 1);
 
   (*pbnodeqty)[face] = (*pbnodeqty)[master];
-  (*plbnodes)[face] =
-    ut_realloc_1d_int ((*plbnodes)[face], (*pbnodeqty)[face]);
-  (*pbnodes)[face] = ut_realloc_1d_int ((*pbnodes)[face], (*pbnodeqty)[face]);
+  (*plbnodes)[face]  = ut_realloc_1d_int ((*plbnodes)[face], (*pbnodeqty)[face]);
+  (*pbnodes)[face]   = ut_realloc_1d_int ((*pbnodes)[face] , (*pbnodeqty)[face]);
 
   ut_array_1d_int_memcpy ((*plbnodes)[master], (*pbnodeqty)[face],
                           (*plbnodes)[face]);
@@ -144,18 +149,48 @@ nem_meshing_2d_face_per (struct TESS Tess, struct NODES Nodes,
   int *shift = ut_alloc_1d_int (3);
   ut_array_1d_int_memcpy (Tess.PerFaceShift[face], 3, shift);
   ut_array_1d_int_scale (shift, 3, 1);
-  for (i = 0; i < (*pbnodeqty)[face]; i++)
+  if (strncmp (Tess.DomType, "rodrigues", 9))
   {
-    status =
-      neut_nodes_node_shift_pernode (Nodes, (*pbnodes)[master][i], shift,
-                                     (*pbnodes)[face] + i);
-    if (status)
-      abort ();
+    for (i = 0; i < (*pbnodeqty)[face]; i++)
+    {
+      status =
+        neut_nodes_node_shift_pernode (Nodes, (*pbnodes)[master][i], shift,
+                                       (*pbnodes)[face] + i);
+      if (status)
+        abort ();
+    }
+    ut_free_1d_int (&shift);
   }
-  ut_free_1d_int (&shift);
 
-  if (Tess.PerFaceOri[face] == 1)
+  // for Rodrigues, weak determination from the coordinates...
+  else
+  {
+    for (i = 0; i < (*pbnodeqty)[face]; i++)
+    {
+      status = -1;
+      for (j = 1; j <= Nodes.NodeQty; j++)
+      {
+        if (ut_space_dist (Nodes.NodeCoo[j], (*pN).NodeCoo[(*plbnodes)[face][i]]) < 1e-6)
+        {
+          (*pbnodes)[face][i] = j;
+          status = 0;
+          break;
+        }
+      }
+
+      if (status)
+        abort ();
+
+      if ((*pbnodes)[face][i] == 0)
+        abort ();
+    }
+  }
+
+  neut_mesh_elt_normal (*pM, *pN, 1, n);
+  if (ut_vector_scalprod (n, Tess.FaceEq[face] + 1) < 0)
     neut_mesh_reversenodes (pM);
+
+  ut_free_1d (&n);
 
   return 0;
 }

@@ -21,6 +21,7 @@ nem_in_set_zero (struct IN_M *pIn)
   (*pIn).loadpoint = NULL;
   (*pIn).mesh2dalgo = NULL;
   (*pIn).mesh3dalgo = NULL;
+  (*pIn).meshedge = NULL;
   (*pIn).meshface = NULL;
   (*pIn).meshpoly = NULL;
   (*pIn).interface = NULL;
@@ -82,6 +83,7 @@ nem_in_free (struct IN_M In)
   ut_free_1d_char (&In.performat);
   ut_free_1d_char (&In.mesh2dalgo);
   ut_free_1d_char (&In.mesh3dalgo);
+  ut_free_1d_char (&In.meshedge);
   ut_free_1d_char (&In.meshface);
   ut_free_1d_char (&In.meshpoly);
   ut_free_1d_char (&In.nset);

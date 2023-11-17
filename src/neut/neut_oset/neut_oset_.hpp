@@ -3,6 +3,7 @@
 /* See the COPYING file in the top-level directory. */
 
 #include <iostream>
+#include <cfloat>
 using namespace std;
 #include"neut_oset.hpp"
 #include "neut_qcloud_struct.hpp"

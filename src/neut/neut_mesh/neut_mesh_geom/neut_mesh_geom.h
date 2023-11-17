@@ -57,6 +57,13 @@ extern "C"
   extern int neut_mesh_elt_volume (struct NODES Nodes, struct MESH Mesh,
 				   int elt, double *pvol);
 
+/// \brief Get the volume of an elt of a 3D mesh, orientation space.
+///
+///
+///
+  extern int neut_mesh_elt_volume_orispace (struct NODES Nodes, struct MESH Mesh, int elt,
+                                 char *grid, double *pvol);
+
 /// \brief Get the size of an elt of a mesh.
 ///
 ///
@@ -319,6 +326,8 @@ extern "C"
 
   extern int neut_mesh_elt2dpair_angle (struct NODES Nodes, struct MESH
       Mesh, int elt1, int elt2, double *pangle);
+
+  extern void neut_mesh_elt_randompt (struct NODES Nodes, struct MESH Mesh, int elt, gsl_rng *r, double *pt);
 
 #endif				/* NEUT_MESH_GEOM_H */
 

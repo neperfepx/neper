@@ -43,6 +43,12 @@ extern "C"
 ///
   extern int neut_tess_face_area (struct TESS Tess, int, double *);
 
+/// \brief Get the normal of a face
+///
+///
+///
+  extern void neut_tess_face_normal (struct TESS Tess, int, double *);
+
 /// \brief Get the area of a set of faces
 ///
 ///

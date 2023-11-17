@@ -20,4 +20,6 @@ extern int neut_topt_refiter (struct TOPT TOpt, int deltaiter, int *prefiter);
 
 extern int neut_topt_iter_loop (struct TOPT TOpt, int iter, int *ploop);
 
+extern int neut_topt_typepos (struct TOPT TOpt);
+
 #endif /* NEUT_TOPT_H */

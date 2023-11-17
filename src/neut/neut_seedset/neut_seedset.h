@@ -25,8 +25,8 @@ extern void neut_seedset_init_seedslave (struct SEEDSET *pSSet);
 extern int neut_seedset_seedcoo0toseedcoo (struct SEEDSET *pSSet);
 extern int neut_seedset_seedcootoseedcoo0 (struct SEEDSET *pSSet);
 
-extern int neut_seedset_seed_update_fromseedcoo0 (struct SEEDSET *pSSet,
-						  int id);
+extern int neut_seedset_seed_update_fromseedcoo0 (struct SEEDSET *pSSet, int id);
+extern int neut_seedset_seed_update_fromseedorir (struct SEEDSET *pSSet, int id);
 extern void neut_seedset_seed_updateslaves (struct SEEDSET *pSSet, int id);
 
 extern double neut_seedset_voidcell_distance (struct SEEDSET, int seed);
@@ -44,5 +44,8 @@ extern void neut_seedset_seed_randomize (struct SEEDSET *pSet, int seed,
 			     gsl_rng *r, int *dims, int dimqty,
 			     double mindist, double maxdist);
 extern void neut_seedset_bbox_size (struct SEEDSET SSet, double *psize);
+
+extern void neut_seedset_bcc (struct TESS Dom, int n, struct SEEDSET *pSSet);
+extern void neut_seedset_bcc_expr (struct TESS Dom, char *cooexpr, struct SEEDSET *pSSet);
 
 #endif /* NEUT_SEEDSET_H */

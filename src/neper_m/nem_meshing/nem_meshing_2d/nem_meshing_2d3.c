@@ -177,3 +177,82 @@ nem_meshing_2d_face_record_elts (int face, struct MESH M, int *N_global_id,
 
   return;
 }
+
+// We use the formula by (Kumar and Dawson, CMAME, 1998), eq 33
+void
+nem_meshing_2d_face_per_rodrigues (struct TESS Tess, struct NODES *N, int face, struct NODES *pN)
+{
+  int i, j, k, master = Tess.PerFaceMaster[face];
+  double phi;
+  double *center = ut_alloc_1d (3);
+  double *center2 = ut_alloc_1d (3);
+  double *n = ut_alloc_1d (3);
+  double **I = ol_g_alloc ();
+  double **nxn = ol_g_alloc ();
+  double **I2nxn = ol_g_alloc ();
+  double **R = ol_g_alloc ();
+  double **tmp2 = ol_g_alloc ();
+  double *phi2n = ut_alloc_1d (3);
+  char *crysym = NULL;
+
+  ol_g_set_id (I);
+
+  ut_string_functionargument (Tess.DomType, &crysym);
+
+  ut_array_1d_memcpy (Tess.FaceEq[face] + 1, 3, n);
+
+  neut_tess_face_centre (Tess, face, center);
+
+  neut_tess_face_centre (Tess, master, center2);
+
+  neut_tess_face_normal (Tess, master, n);
+
+  phi =  4 * atan (ut_space_dist (center, center2) / 2);
+
+  for (j = 0; j < 3; j++)
+    for (k = 0; k < 3; k++)
+      nxn[j][k] = n[j] * n[k];
+
+  for (j = 0; j < 3; j++)
+    for (k = 0; k < 3; k++)
+      I2nxn[j][k] = I[j][k] - 2 * nxn[j][k];
+
+  for (i = 1; i <= (*pN).NodeQty; i++)
+  {
+    for (j = 0; j < 3; j++)
+      phi2n[j] = phi / 2 * n[j];
+
+    ol_rtheta_g_rad (n, - phi / 2, R);
+
+    ol_g_g_g_ref (R, I2nxn, tmp2);
+
+    ol_g_vect_vect (tmp2, N[master].NodeCoo[i], (*pN).NodeCoo[i]);
+
+    // test
+    double *q1 = ol_q_alloc ();
+    double *q2 = ol_q_alloc ();
+    double disori;
+
+    ol_R_q (N[master].NodeCoo[i], q1);
+    ol_R_q ((*pN).NodeCoo[i], q2);
+    ol_q_q_disori (q1, q2, crysym, &disori);
+    if (disori > 1)
+      abort ();
+
+    ol_q_free (q1);
+    ol_q_free (q2);
+  }
+
+  ut_free_1d (&center);
+  ut_free_1d (&center2);
+  ut_free_1d (&n);
+  ol_g_free (I);
+  ol_g_free (nxn);
+  ol_g_free (I2nxn);
+  ol_g_free (R);
+  ol_g_free (tmp2);
+  ut_free_1d (&phi2n);
+  ut_free_1d_char (&crysym);
+
+  return;
+}

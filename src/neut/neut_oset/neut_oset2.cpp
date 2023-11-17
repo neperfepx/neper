@@ -17,6 +17,7 @@ neut_oset_kdtree_cloud (struct OL_SET *pOSet, struct QCLOUD *pqcloud)
     for (j = 0; j < 4; j++)
       (*pqcloud).pts[id].q[j] = (*pOSet).q[i][j];
     (*pqcloud).pts[id].weight = (*pOSet).weight ? (*pOSet).weight[i] : 1;
+    (*pqcloud).pts[id].theta = (*pOSet).theta ? (*pOSet).theta[i] : 0;
     id++;
   }
 
@@ -25,6 +26,7 @@ neut_oset_kdtree_cloud (struct OL_SET *pOSet, struct QCLOUD *pqcloud)
     for (j = 0; j < 4; j++)
       (*pqcloud).pts[id].q[j] = -(*pOSet).q[i][j];
     (*pqcloud).pts[id].weight = (*pOSet).weight ? (*pOSet).weight[i] : 1;
+    (*pqcloud).pts[id].theta = (*pOSet).theta ? (*pOSet).theta[i] : 0;
     id++;
   }
 
@@ -35,6 +37,7 @@ neut_oset_kdtree_cloud (struct OL_SET *pOSet, struct QCLOUD *pqcloud)
       ol_q_crysym_nopos ((*pqcloud).pts[j].q, (*pOSet).crysym, i,
                          (*pqcloud).pts[id].q);
       (*pqcloud).pts[id].weight = (*pqcloud).pts[j].weight;
+      (*pqcloud).pts[id].theta = (*pqcloud).pts[j].theta;
       id++;
     }
 

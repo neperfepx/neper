@@ -73,23 +73,50 @@ nem_meshing_1d_edge_per (struct TESS Tess, struct NODES *N, struct MESH *M,
                          struct NODES *pN, struct MESH *pM, int **pmaster_id,
                          int edge)
 {
-  int master;
+  int master, i, j;
 
   neut_nodes_set_zero (pN);
   neut_mesh_set_zero (pM);
 
   master = Tess.PerEdgeMaster[edge];
   neut_mesh_elset_mesh (N[master], M[master], 1, pN, pM, pmaster_id);
-  neut_nodes_shift (N + edge,
-                    Tess.PerEdgeShift[edge][0] * Tess.PeriodicDist[0],
-                    Tess.PerEdgeShift[edge][1] * Tess.PeriodicDist[1],
-                    Tess.PerEdgeShift[edge][2] * Tess.PeriodicDist[2]);
-
-  if (Tess.PerEdgeOri[edge] == -1)
+  if (strncmp (Tess.DomType, "rodrigues", 9))
   {
-    neut_nodes_reverse (N + edge);
-    ut_array_1d_int_reverseelts (*pmaster_id + 1, N[edge].NodeQty);
+    neut_nodes_shift (N + edge,
+                      Tess.PerEdgeShift[edge][0] * Tess.PeriodicDist[0],
+                      Tess.PerEdgeShift[edge][1] * Tess.PeriodicDist[1],
+                      Tess.PerEdgeShift[edge][2] * Tess.PeriodicDist[2]);
+
+    if (Tess.PerEdgeOri[edge] == -1)
+    {
+      neut_nodes_reverse (N + edge);
+      ut_array_1d_int_reverseelts (*pmaster_id + 1, (*pN).NodeQty);
+    }
   }
+
+  else
+  {
+    double *coo1 = ut_alloc_1d (3);
+    double *coo2 = ut_alloc_1d (3);
+    double *pos = ut_alloc_1d ((*pN).NodeQty + 1);
+
+    for (i = 1; i <= (*pN).NodeQty; i++)
+      pos[i] = 1 - ut_space_dist ((*pN).NodeCoo[i], (*pN).NodeCoo[1])
+             / ut_space_dist ((*pN).NodeCoo[(*pN).NodeQty], (*pN).NodeCoo[1]);
+
+    ut_array_1d_memcpy (Tess.VerCoo[Tess.EdgeVerNb[edge][0]], 3, coo1);
+    ut_array_1d_memcpy (Tess.VerCoo[Tess.EdgeVerNb[edge][1]], 3, coo2);
+
+    for (i = 1; i <= (*pN).NodeQty; i++)
+      for (j = 0; j < 3; j++)
+        (*pN).NodeCoo[i][j] = pos[i] * coo1[j] + (1 - pos[i]) * coo2[j];
+
+    ut_free_1d (&coo1);
+    ut_free_1d (&coo2);
+    ut_free_1d (&pos);
+  }
+
+  return;
 }
 
 void

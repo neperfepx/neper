@@ -33,6 +33,8 @@ extern "C"
 				      int *);
   extern int neut_tess_expr_faces (struct TESS *pTess, char *, int **,
 				      int *);
+  extern int neut_tess_expr_edges (struct TESS *pTess, char *, int **,
+				      int *);
   extern void neut_tess_cell (struct TESS Tess, char **pcell);
   extern void neut_tess_entity_expr_val (struct TESS *pTess, char *entity,
 					 char *expr, double *val, char **ptype);

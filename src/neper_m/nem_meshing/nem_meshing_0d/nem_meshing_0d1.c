@@ -37,9 +37,13 @@ nem_meshing_0d (struct TESS Tess, struct MESHPARA MeshPara,
       {
         master = Tess.PerVerMaster[i];
         neut_mesh_elset_mesh (*pNodes, Mesh[0], master, &N, &M, NULL);
-        neut_nodes_shift (&N, Tess.PerVerShift[i][0] * Tess.PeriodicDist[0],
-                          Tess.PerVerShift[i][1] * Tess.PeriodicDist[1],
-                          Tess.PerVerShift[i][2] * Tess.PeriodicDist[2]);
+        if (strncmp (Tess.DomType, "rodrigues", 9))
+          neut_nodes_shift (&N, Tess.PerVerShift[i][0] * Tess.PeriodicDist[0],
+                            Tess.PerVerShift[i][1] * Tess.PeriodicDist[1],
+                            Tess.PerVerShift[i][2] * Tess.PeriodicDist[2]);
+        else
+          ut_array_1d_memcpy (Tess.VerCoo[i], 3, N.NodeCoo[1]);
+
         nem_meshing_0d_addvermesh (N, M, master, Tess.PerVerShift[i], pNodes,
                                    Mesh);
       }

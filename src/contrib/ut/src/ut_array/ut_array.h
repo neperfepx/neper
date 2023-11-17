@@ -1111,6 +1111,15 @@ extern "C"
   extern int ut_array_1d_equal (double *array, double *array2, int size,
                                 double tol);
 
+/// \brief Determine whether 2 \c double arrays are opposite to a given tolerance
+/// \param array1: 1st array
+/// \param array2: 2nd array
+/// \param size: size of the arrays
+/// \param tol: tolerancy
+/// \return 1 if equal and 0 otherwise
+  extern int ut_array_1d_opposite (double *array, double *array2, int size,
+                                   double tol);
+
 /// \brief Determine whether 2 \c int arrays are equal
 /// \param array1: 1st array
 /// \param size1: size of the 1st array
@@ -1339,6 +1348,23 @@ extern "C"
 /// \note Should be used only if the element does not exist in the array.
 /// \note The value is added at the end of the array.
   extern int ut_array_1d_int_list_addval_nocheck (int **parray, int *psize,
+                                                  int value);
+
+/// \brief Add a value to a 1D list \c int array, 1-indexed
+/// \param *parray: array
+/// \param *psize: size of the array
+/// \param value: value to remove
+/// \note The element is added only if it does not exist
+  extern int ut_array_1d_int_list1_addval (int **parray, int *psize,
+                                          int value);
+
+/// \brief Add a value to a 1D list \c int array, do not check for existence, 1-indexed
+/// \param *parray: array
+/// \param *psize: size of the array
+/// \param value: value to remove
+/// \note Should be used only if the element does not exist in the array.
+/// \note The value is added at the end of the array.
+  extern int ut_array_1d_int_list1_addval_nocheck (int **parray, int *psize,
                                                   int value);
 
 /// \brief Add values to a 1D list \c int array
@@ -1827,6 +1853,18 @@ extern "C"
 /// \note If file \c filename exists, the data are read from it.  Otherwise, \c wcard is used.  \c wcard can be: "numeral" for initializing \c array from a number, "color" for initializing \c array from the RGB values of \c filename (if a valid color name; if equal to "id", the color palette is used)
   extern int ut_array_2d_fnscanf_wcard (char *filename, double **array,
                                         int size1, int size2, char *wcard, char *mode);
+
+/// \brief Write a 1D array of \c double
+/// \param filename: file name
+/// \param array: array
+/// \param size: size of the array
+/// \param format: format (usually "%f")
+/// \param mode: opening mode ("w" or "W" or "a" or "A")
+/// \return 1 on success, undefined otherwise
+/// \note A newline is written at the end.
+/// \note \c format can be %d, in which case values rounded to the nearest integers are written.
+  extern int ut_array_1d_fnprintf (char* filename, double *array, int size,
+                                  const char *format, const char *mode);
 
 /// \brief Write a 1D array of \c double
 /// \param file: file pointer

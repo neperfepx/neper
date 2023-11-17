@@ -12,71 +12,128 @@ extern "C"
 
   struct IN_T
   {
-    // global options (level-independent)
-    int dim;				// dimension
-    char *domain;			// domain
-    char *periodicstring;		// periodicity
-    char *tesrsizestring;		// size of the tesr
+    // global options (level-independent) --------------------------------------
 
-    char *nstring;			// number of seeds
-    char **n;				//
-    char *idstring;			// id of the seed distribution
-    char **id;				//
-    char *morphostring;		// morphology optimization
-    char **morpho;			//
-    char *morphooptialgostring;		// opti algorithm
-    char **morphooptialgo;		//
-    char *morphooptiinistring;		// opti algorithm
-    char **morphooptiini;		//
-    char *morphooptialgomaxiterstring;  // max number of iterations without
-    					// decreasing the objective function
-    char **morphooptialgomaxiter;	//
-    char *morphooptiobjectivestring;	// opti objective function
-    char **morphooptiobjective;		//
-    char *morphooptigridstring;		// grid definition
-    char **morphooptigrid;		//
-    char *morphooptismoothstring;	// smoothing parameter
-    char **morphooptismooth;		//
-    char *morphooptistopstring;		// opti stop criterion
-    char **morphooptistop;		//
-    char *morphooptidofstring;		// opti dofs
-    char **morphooptidof;		//
-    char *morphooptideltamaxstring;		// opti limit distance
-    char **morphooptideltamax;		//
-    char *morphooptiinistepstring;	// opti ini step
-    char **morphooptiinistep;		//
-    char *morphooptilogtimestring;      // time log
-    char **morphooptilogtime;		//
-    char *morphooptilogvarstring;       // variable log
-    char **morphooptilogvar;		//
-    char *morphooptilogdisstring;       // distribution log
-    char **morphooptilogdis;		//
-    char *morphooptilogtesrstring;      // tesr control points log
-    char **morphooptilogtesr;		//
-    char *morphooptilogvalstring;       // value log
-    char **morphooptilogval;		//
-    char *morphooptimultiseedstring;	// opti multiseed
-    char **morphooptimultiseed;		//
+    // Dimension
+    int dim;
 
-    char *oristring;		        // orientation distribution string
-    char **ori;                         // orientation distribution
-    char *crysymstring;		        // orientation crystal symmetry
-    char **crysym;			//
-    char *orioptistopstring;            // orientation opti / termination criterion
-    char **orioptistop;                 //
+    // Domain
+    char *domain;
+
+    // Periodicity
+    char *periodicstring;
+
+    // Tesr size
+    char *tesrsizestring;
+
+    // Options that are defined per-level --------------------------------------
+
+    // number of seeds (-n)
+    char *nstring;
+    char **n;
+
+    // identifier (-id)
+    char *idstring;
+    char **id;
+
+    // morphology (-morpho)
+    char *morphostring;
+    char **morpho;
+
+    int optiqty;        // 2
+    char **optitype;    // "morpho", "ori"
+
+    // optimization algorithms (-*opti)
+    char **optialgostring;
+    char ***optialgo;
+
+    // optimization / degrees of freedom (-*optidof)
+    char **optidofstring;
+    char ***optidof;
+
+    // optimization / initial state (-*optiini)
+    char *optiinistring;
+    char **optiini;
+
+    // optimization / max number of iterations without decreasing the objective function (-*algomaxiter)
+    char *optialgomaxiterstring;
+    char **optialgomaxiter;
+
+    // optimization / objective function (-*optiobj)
+    char *optiobjectivestring;
+    char **optiobjective;
+
+    // optimization / grid (-*optigrid)
+    char *optigridstring;
+    char **optigrid;
+
+    // optimization / smoothing parameter (-*optismooth)
+    char *optismoothstring;
+    char **optismooth;
+
+    // optimization / termination criterion (-*optistop)
+    char **optistopstring;
+    char ***optistop;
+
+    // optimization / limit distance (-*optideltamax)
+    char *optideltamaxstring;
+    char **optideltamax;
+
+    // optimization / initial step (-*optiinistep)
+    char *optiinistepstring;
+    char **optiinistep;
+
+    // optimization / time log (-*optilogtime)
+    char *optilogtimestring;
+    char **optilogtime;
+
+    // optimization / variable log (-*optilogvar)
+    char *optilogvarstring;
+    char **optilogvar;
+
+    // optimization / distribution log (-*optilogdis)
+    char *optilogdisstring;
+    char **optilogdis;
+
+    // optimization / tesr control points log (-*optilogtesr)
+    char *optilogtesrstring;
+    char **optilogtesr;
+
+    // optimization / value log (-*optilogval)
+    char *optilogvalstring;
+    char **optilogval;
+
+    // optimization / multiseed (-*optimultiseed)
+    char *optimultiseedstring;
+    char **optimultiseed;
+
+    // orientation (-ori)
+    char *oristring;
+    char **ori;
+
+    char *orisamplingstring;            // orientation sampling
+    char **orisampling;                 //
+
     char *orioptineighstring;           // orientation opti / neighbor string
     char **orioptineigh;                //
+
     char *orioptiinistring;             // orientation opti initial orientations
     char **orioptiini;                  //
+
     char *orioptifixstring;             // orientation opti fixed orientations
     char **orioptifix;                  //
+
     char *orioptilogvarstring;           // variable log
     char **orioptilogvar;		//
 
     char *orispreadstring;		// orientation spread string
     char **orispread;                   // orientation spreads
 
-    // post-tessellation options
+    char *crysymstring;		        // crystal symmetry
+    char **crysym;			//
+
+    // post-tessellation options -----------------------------------------------
+
     int reg;				// regularization
     double fmax;			// regularization fmax
     char *seltype;			// regularization sel type

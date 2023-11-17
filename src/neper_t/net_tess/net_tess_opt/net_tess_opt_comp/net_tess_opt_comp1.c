@@ -12,9 +12,6 @@ net_tess_opt_comp (struct TOPT *pTOpt)
 
   neut_tdyn_fprintf_pre (&((*pTOpt).TDyn));
 
-  if ((*pTOpt).SSet.N == 1)
-    (*pTOpt).itermax = 1;
-
   net_tess_opt_comp_x (pTOpt, &x);
 
   if ((*pTOpt).tarqty > 0)

@@ -1865,7 +1865,7 @@ neut_tesr_cell_oriaverage (struct TESR *pTesr, int cell)
   if (OSet.size > 0)
     ol_set_mean_iter (OSet, (*pTesr).CellOri[cell]);
 
-  ol_set_free (OSet);
+  ol_set_free (&OSet);
 
   return;
 }

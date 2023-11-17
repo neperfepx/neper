@@ -6,14 +6,14 @@
 
 void
 net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess, int dtess,
-                        int dcell, int tessid, struct POLY *Poly,
+                        int dcell, int tessid,
                         struct TOPT TOpt, struct SEEDSET *SSet)
 {
   int i, cell;
   struct TESS *pTess = Tess + tessid;
   struct SEEDSET *pSSet = SSet + tessid;
 
-  net_polys_tess (Tess[dtess].Level + 1, TOpt.SSet, tessid, Poly, pTess);
+  net_polys_tess (Tess[dtess].Level + 1, TOpt.SSet, tessid, TOpt.Poly, pTess);
 
   if (TOpt.aspratio)
     neut_tess_scale (pTess, TOpt.aspratio[0], TOpt.aspratio[1],

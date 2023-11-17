@@ -44,6 +44,9 @@ struct TOPT
   double     **tarmodefact;     // factors of the modes of the target PDF/CDF
   struct FCT **tarmodecdf0;     // modes of the target CDF, not smoothed
 
+  // orientation distribution information
+  struct ODF Odf;
+
   // cell-by-cell information
   double ***tarcellval;		// variable cell value
   int *tarcellvalqty;		// number of cell values (1 for size, etc.)

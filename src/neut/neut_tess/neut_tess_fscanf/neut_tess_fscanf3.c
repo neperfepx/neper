@@ -374,7 +374,9 @@ neut_tess_fscanf_per_face (struct TESS *pTess, FILE * file)
   }
 
   neut_tess_init_faceslave (pTess);
-  neut_tess_init_facepoly_per (pTess);
+
+  if (strncmp ((*pTess).DomType, "rodrigues", 9))
+    neut_tess_init_facepoly_per (pTess);
 
   return;
 }

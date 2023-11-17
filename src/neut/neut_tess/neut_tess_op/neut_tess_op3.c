@@ -81,6 +81,28 @@ neut_tess_init_domain_label_3d (struct TESS *pTess)
       sprintf ((*pTess).DomFaceLabel[i], "f%d", i - 2);
   }
 
+  else if (!strncmp ((*pTess).DomType, "rodrigues", 9))
+  {
+    (*pTess).DomFaceLabel = ut_alloc_2d_char ((*pTess).DomFaceQty + 1, 10);
+    for (i = 1; i <= (*pTess).DomFaceQty; i++)
+    {
+      for (j = 1; j <= 3; j++)
+        if (ut_num_equal (fabs ((*pTess).DomFaceEq[i][j]), 1, 1e-3))
+        {
+          if ((*pTess).DomFaceEq[i][0] * (*pTess).DomFaceEq[i][j] < 0)
+            sprintf ((*pTess).DomFaceLabel[i], "%c0", 'x' + j - 1);
+          else
+            sprintf ((*pTess).DomFaceLabel[i], "%c1", 'x' + j - 1);
+        }
+    }
+
+    for (i = 1; i <= (*pTess).DomFaceQty; i++)
+    {
+      if (strlen ((*pTess).DomFaceLabel[i]) == 0)
+        sprintf ((*pTess).DomFaceLabel[i], "f%d", i);
+    }
+  }
+
   else if (strcmp ((*pTess).DomType, "cut"))
   {
     (*pTess).DomFaceLabel = ut_alloc_2d_char ((*pTess).DomFaceQty + 1, 10);

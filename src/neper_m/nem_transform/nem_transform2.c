@@ -173,7 +173,7 @@ nem_transform_ori (char *ori, struct TESS Tess, struct NODES Nodes, struct MESH 
   else
     ut_print_message (2, 4, "Wrong number of entries in file `%s'.\n", vals[0]);
 
-  ol_set_free (OSet);
+  ol_set_free (&OSet);
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vars, valqty);
   ut_free_2d_char (&vals, valqty);

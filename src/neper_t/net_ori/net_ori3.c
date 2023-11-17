@@ -25,3 +25,28 @@ net_orispread_file (char *orispread, struct SEEDSET *pSSet)
 
   return;
 }
+
+void
+net_ori_odf_pre (char *odf, struct OL_SET *pOSet, struct ODF *pOdf)
+{
+  int qty;
+  char *fct = NULL, **vars = NULL, **vals = NULL;
+
+  ut_string_function (odf, &fct, &vars, &vals, &qty);
+
+  ut_print_message (0, 2, "Crystal symmetry: %s\n", (*pOSet).crysym);
+
+  ut_print_message (0, 2, "Reading odf...\n");
+
+  neut_odf_fnscanf (odf, pOdf, "r");
+
+  if (!strstr ((*pOdf).gridtype, (*pOSet).crysym))
+    ut_print_message (2, 0, "Crystal symmetry (%s) and orientation space (%s) conflict.\n",
+                      (*pOSet).crysym, (*pOdf).gridtype);
+
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vars, qty);
+  ut_free_2d_char (&vals, qty);
+
+  return;
+}

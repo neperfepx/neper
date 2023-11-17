@@ -220,7 +220,6 @@ net_domain_rodrigues (char *crysym, struct POLY *pPoly)
   double *q2 = ol_q_alloc ();
   double *r = ol_r_alloc ();
   double theta, thetamax;
-  double *O = ut_alloc_1d (4);
   double **cubesize = ut_alloc_2d (3, 2);
   srand48 (1);
 
@@ -260,7 +259,6 @@ net_domain_rodrigues (char *crysym, struct POLY *pPoly)
     net_domain_clip (pPoly, eq, eqqty);
 
   ut_free_2d (&cubesize, 3);
-  ut_free_1d (&O);
   ol_r_free (r);
   ol_q_free (q1);
   ol_q_free (q2);

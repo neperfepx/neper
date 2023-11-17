@@ -13,6 +13,8 @@ extern "C"
   extern int neut_mtess_tess_poly_mid (struct MTESS MTess, struct TESS Tess,
 				       int poly, char **pid);
 
+  extern void neut_mtess_argument_process (struct MTESS MTess, struct TESS *Tess, int dtess, int dcell, char *input, char **poutput);
+
 #endif				/* NEUT_MTESS_GEN_H */
 
 #ifdef __cplusplus

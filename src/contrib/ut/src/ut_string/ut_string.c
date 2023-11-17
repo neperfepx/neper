@@ -411,6 +411,32 @@ ut_string_function (char *string, char **pfct, char ***pvars, char ***pvals,
   return;
 }
 
+int
+ut_string_functionargument (char *string, char **pargument)
+{
+  int qty, status;
+  char *fct = NULL, **vals = NULL, **vars = NULL;
+
+  ut_string_function (string, &fct, &vars, &vals, &qty);
+
+  if (qty == 1)
+  {
+    ut_string_string (vals[0], pargument);
+    status = 0;
+  }
+  else
+  {
+    ut_free_1d_char (pargument);
+    status = -1;
+  }
+
+  ut_free_1d_char (&fct);
+  ut_free_2d_char (&vals, qty);
+  ut_free_2d_char (&vars, qty);
+
+  return status;
+}
+
 void
 ut_string_function_expr (char *string, char **pfct, char ***pexprs,
                          int *pexprqty)

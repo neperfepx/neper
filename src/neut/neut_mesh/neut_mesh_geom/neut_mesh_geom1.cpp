@@ -63,6 +63,60 @@ neut_mesh_elt_volume (struct NODES Nodes, struct MESH Mesh, int elt,
 }
 
 int
+neut_mesh_elt_volume_orispace (struct NODES Nodes, struct MESH Mesh, int elt,
+                               char *grid, double *pvol)
+{
+  int i;
+  double max;
+  double *coo = ut_alloc_1d (3);
+  double *q = ol_q_alloc ();
+  char *space = NULL;
+
+  neut_mesh_elt_volume (Nodes, Mesh, elt, pvol);
+  neut_mesh_elt_centre (Nodes, Mesh, elt, coo);
+
+  if (grid)
+    ut_string_string (grid, &space);
+  else
+    ut_string_string (Mesh.Domain, &space);
+
+  if (!strncmp (space, "rodrigues", 9))
+  {
+    (*pvol) *= 1. / pow ((1 + ut_vector_scalprod (coo, coo)), 2);
+    ol_R_q (coo, q);
+  }
+  else if (!strncmp (space, "euler-bunge", 11))
+  {
+    max = 0;
+    for (i = 1; i <= Nodes.NodeQty; i++)
+      max = ut_num_max (max, Nodes.NodeCoo[i][0]);
+
+    if (max > 2 * M_PI + 1e-6)
+    {
+      (*pvol) *= pow (M_PI / 180, 3);
+      (*pvol) *= sin (coo[1] * M_PI / 180);
+      ol_e_q (coo, q);
+    }
+    else
+    {
+      (*pvol) *= sin (coo[1]);
+      ol_e_q_rad (coo, q);
+    }
+  }
+  else if (!strcmp (space, "homochoric"))
+  {
+  }
+  else
+    abort ();
+
+  ut_free_1d_char (&space);
+  ut_free_1d (&coo);
+  ol_q_free (q);
+
+  return 0;
+}
+
+int
 neut_mesh_volume (struct NODES Nodes, struct MESH Mesh, double *pvol)
 {
   int i;
@@ -1516,4 +1570,19 @@ neut_mesh_elset_size (struct NODES Nodes, struct MESH Mesh, int elset, double *p
     abort ();
 
   return 0;
+}
+
+void
+neut_mesh_elt_randompt (struct NODES Nodes, struct MESH Mesh, int elt, gsl_rng *r, double *pt)
+{
+  if (Mesh.Dimension != 3 || strcmp (Mesh.EltType, "tri"))
+    abort ();
+
+  ut_space_tet_randompt (Nodes.NodeCoo[Mesh.EltNodes[elt][0]],
+                         Nodes.NodeCoo[Mesh.EltNodes[elt][1]],
+                         Nodes.NodeCoo[Mesh.EltNodes[elt][2]],
+                         Nodes.NodeCoo[Mesh.EltNodes[elt][3]],
+                         r, pt);
+
+  return;
 }

@@ -168,6 +168,9 @@ net_ori_file (char *filename_in, struct OL_SET *pOSet)
       abort ();
   }
 
+  if ((*pOSet).size > 0)
+    ol_set_free (pOSet);
+
   (*pOSet) = ol_set_alloc (ut_file_nbwords (filename) / ol_des_size (des), NULL);
 
   fp = ut_file_open (filename, "r");
@@ -229,6 +232,102 @@ net_ori_file (char *filename_in, struct OL_SET *pOSet)
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
   ut_free_1d_char (&filename);
+
+  return;
+}
+
+void
+net_ori_odf (long random, char *odf, struct OL_SET *pOSet)
+{
+  int i, elt;
+  gsl_rng *r = NULL, *r2 = NULL;
+  struct ODF Odf;
+  char *method = NULL;
+
+  ut_string_string ("inverse_uniform_sampling", &method);
+
+  neut_odf_set_zero (&Odf);
+
+  r = gsl_rng_alloc (gsl_rng_ranlxd2);
+  gsl_rng_set (r, random - 1);
+  r2 = gsl_rng_alloc (gsl_rng_ranlxd2);
+  gsl_rng_set (r2, random - 1);
+
+  net_ori_odf_pre (odf, pOSet, &Odf);
+
+  ut_print_message (0, 2, "Sampling odf...\n");
+
+  if (!strcmp (method, "inverse_uniform_sampling"))
+  {
+    double *x = ut_alloc_1d (Odf.odfqty + 1);
+
+    neut_odf_init_eltweight (&Odf);
+
+    if (!strstr (Odf.gridtype, (*pOSet).crysym))
+      ut_print_message (2, 0, "Crystal symmetry (%s) and orientation space (%s) conflict.\n",
+                        (*pOSet).crysym, Odf.gridtype);
+
+    // building the probability array
+    x = ut_alloc_1d (Odf.odfqty + 1);
+    for (i = 1; i <= Odf.odfqty; i++)
+      x[i] = Odf.EltWeight[i - 1] * Odf.odf[i - 1] * ol_crysym_qty ((*pOSet).crysym) / pow (M_PI, 2);
+
+    // slight correction, if necessary, to make sure we sum exactly to 1
+    ut_array_1d_scale (x, Odf.odfqty + 1, 1. / ut_array_1d_sum (x, Odf.odfqty + 1));
+
+    for (i = 1; i <= Odf.odfqty; i++)
+      x[i] += x[i - 1];
+
+    for (i = 0; i < (int) (*pOSet).size; i++)
+    {
+      elt = ut_array_1d_eltpos_interpolate (x, Odf.odfqty + 1, gsl_rng_uniform (r));
+      neut_odf_elt_ori (Odf, elt, r2, (*pOSet).q[i]);
+    }
+
+    gsl_rng_free (r);
+    ut_free_1d (&x);
+  }
+
+  else if (!strcmp (method, "rejection")) // for the record, but inefficient
+  {
+    int status;
+    double n1, n2, n3;
+    double fmax, t;
+    double *e = ol_e_alloc ();
+    double *R = ol_R_alloc ();
+
+    fmax = ut_array_1d_max (Odf.odf, Odf.odfqty);
+
+    for (i = 0; i < (int) (*pOSet).size; i++)
+    {
+      // keep the n1 n2 n3 stuff for backward compatibility.
+      // Calling the gsl as an argument switches n1 and n3.
+      n1 = gsl_rng_uniform (r);
+      n2 = gsl_rng_uniform (r);
+      n3 = gsl_rng_uniform (r);
+      ol_nb_e (n1, n2, n3, e);
+      ol_e_R (e, R);
+      ol_R_Rcrysym (R, (*pOSet).crysym, R);
+
+      status = neut_mesh_point_elt (Odf.Nodes, Odf.Mesh[3], R, &elt);
+      if (status)
+        ut_print_message (2, 0, "Failed to find element for orientation = (%f,%f,%f)\n", R[0], R[1], R[2]);
+
+      t = gsl_rng_uniform (r);
+
+      if (t < Odf.odf[elt - 1] / fmax)
+        ol_e_q (e, (*pOSet).q[i]);
+      else
+        i--;
+    }
+
+    gsl_rng_free (r);
+    ol_e_free (e);
+    ol_R_free (R);
+  }
+
+  else
+    ut_print_neperbug ();
 
   return;
 }
@@ -340,11 +439,14 @@ net_ori_mtess_id (struct IN_T In, struct MTESS MTess, struct TESS *Tess,
 void
 net_ori_mtess_params (struct IN_T In, int level, struct MTESS MTess,
                       struct TESS *Tess, int dtess, int dcell, char **pori,
-                      char **porispread, char **pcrysym)
+                      char **porisampling, char **porispread, char **pcrysym)
 {
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.ori[level], pori);
   ut_string_fnrs (*pori, "fibre", "fiber", 1);
+
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
+                                           In.orisampling[level], porisampling);
 
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
                                            In.orispread[level], porispread);
@@ -400,6 +502,18 @@ net_ori_memcpy (struct OL_SET OSet, struct SEEDSET *pSSet)
 {
   (*pSSet).SeedOri = ut_alloc_2d ((*pSSet).N + 1, 4);
   ut_array_2d_memcpy (OSet.q, OSet.size, 4, (*pSSet).SeedOri + 1);
+
+  if (OSet.weight)
+  {
+    (*pSSet).SeedOriWeight = ut_alloc_1d ((*pSSet).N + 1);
+    ut_array_1d_memcpy (OSet.weight, OSet.size, (*pSSet).SeedOriWeight + 1);
+  }
+
+  if (OSet.theta)
+  {
+    (*pSSet).SeedOriTheta = ut_alloc_1d ((*pSSet).N + 1);
+    ut_array_1d_memcpy (OSet.theta, OSet.size, (*pSSet).SeedOriTheta + 1);
+  }
 
   ut_string_string (OSet.crysym, &(*pSSet).crysym);
 

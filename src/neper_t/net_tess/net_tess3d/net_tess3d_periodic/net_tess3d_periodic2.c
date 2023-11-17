@@ -278,3 +278,92 @@ net_tess3d_periodic_ver (struct TESS *pTess)
 
   return;
 }
+
+void
+net_tess3d_periodic_face_rodrigues (struct TESS *pTess)
+{
+  int i, qty = (*pTess).FaceQty;
+  double **coo = ut_alloc_2d (qty + 1, 3);
+  char *crysym = NULL;
+
+  ut_string_functionargument ((*pTess).DomType, &crysym);
+
+  // searching slaves based on disorientation
+  for (i = 1; i <= (*pTess).FaceQty; i++)
+    neut_tess_face_centre (*pTess, i, coo[i]);
+  net_tess3d_periodic_rodrigues_pair (coo, qty, crysym, &(*pTess).PerFaceMaster);
+
+  net_tess3d_periodic_face_rodrigues_perfaceori (pTess);
+
+  for (i = 1; i <= (*pTess).FaceQty; i++)
+    if ((*pTess).PerFaceMaster[i] > 0)
+      ut_array_1d_int_list1_addval_nocheck (&(*pTess).PerFaceNb, &(*pTess).PerFaceQty, i);
+
+  // allocated, but not set
+  (*pTess).PerFaceShift = ut_alloc_2d_int ((*pTess).FaceQty + 1, 3);
+
+  neut_tess_init_faceslave (pTess);
+
+  ut_free_2d (&coo, qty);
+  ut_free_1d_char (&crysym);
+
+  return;
+}
+
+void
+net_tess3d_periodic_edge_rodrigues (struct TESS *pTess)
+{
+  int i, qty = (*pTess).EdgeQty;
+  double **coo = ut_alloc_2d (qty + 1, 3);
+  char *crysym = NULL;
+
+  ut_string_functionargument ((*pTess).DomType, &crysym);
+
+  // searching slaves based on disorientation
+  for (i = 1; i <= (*pTess).EdgeQty; i++)
+    neut_tess_edge_centre (*pTess, i, coo[i]);
+  net_tess3d_periodic_rodrigues_pair (coo, qty, crysym, &(*pTess).PerEdgeMaster);
+
+  for (i = 1; i <= (*pTess).EdgeQty; i++)
+    if ((*pTess).PerEdgeMaster[i] > 0)
+      ut_array_1d_int_list1_addval_nocheck (&(*pTess).PerEdgeNb, &(*pTess).PerEdgeQty, i);
+
+  net_tess3d_periodic_edge_rodrigues_peredgeori (pTess);
+
+  // allocated, but not set
+  (*pTess).PerEdgeShift = ut_alloc_2d_int ((*pTess).EdgeQty + 1, 3);
+
+  neut_tess_init_edgeslave (pTess);
+
+  ut_free_1d_char (&crysym);
+
+  return;
+}
+
+void
+net_tess3d_periodic_ver_rodrigues (struct TESS *pTess)
+{
+  int i, qty = (*pTess).VerQty;
+  double **coo = ut_alloc_2d (qty + 1, 3);
+  char *crysym = NULL;
+
+  ut_string_functionargument ((*pTess).DomType, &crysym);
+
+  // searching slaves based on disorientation
+  for (i = 1; i <= (*pTess).VerQty; i++)
+    ut_array_1d_memcpy ((*pTess).VerCoo[i], 3, coo[i]);
+  net_tess3d_periodic_rodrigues_pair (coo, qty, crysym, &(*pTess).PerVerMaster);
+
+  for (i = 1; i <= (*pTess).VerQty; i++)
+    if ((*pTess).PerVerMaster[i] > 0)
+      ut_array_1d_int_list1_addval_nocheck (&(*pTess).PerVerNb, &(*pTess).PerVerQty, i);
+
+  // allocated, but not set
+  (*pTess).PerVerShift = ut_alloc_2d_int ((*pTess).VerQty + 1, 3);
+
+  neut_tess_init_verslave (pTess);
+
+  ut_free_1d_char (&crysym);
+
+  return;
+}

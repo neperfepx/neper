@@ -347,7 +347,7 @@ neut_tess_tess_polystate (struct TESS TessA, struct TESS *pTessB)
   (*pTessB).PolyState = ut_alloc_1d_int ((*pTessB).PolyQty + 1);
 
   for (i = 1; i <= (*pTessB).PolyQty; i++)
-    (*pTessB).PolyState[i] = TessA.PolyState[i];
+    (*pTessB).PolyState[i] = TessA.PolyState ? TessA.PolyState[i] : 0;
 
   return;
 }

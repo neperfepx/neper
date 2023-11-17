@@ -106,3 +106,61 @@ ol_set_misorispread (char *distrib, int dim, long int random, struct OL_SET *pOS
 
   return;
 }
+
+void
+ol_set_clean (struct OL_SET *pOSet)
+{
+  int i, pos, newsize, oldsize;
+  double **q = ut_alloc_2d ((*pOSet).size, 4);
+  double *weight = ut_alloc_1d ((*pOSet).size);
+  double *theta = ut_alloc_1d ((*pOSet).size);
+  int *id = ut_alloc_1d_int ((*pOSet).size);
+
+  oldsize = (*pOSet).size;
+  ut_array_2d_memcpy     ((*pOSet).q,      oldsize, 4, q);
+  ut_array_1d_memcpy     ((*pOSet).weight, oldsize, weight);
+  if ((*pOSet).theta)
+    ut_array_1d_memcpy     ((*pOSet).theta,  oldsize, theta);
+  if ((*pOSet).id)
+    ut_array_1d_int_memcpy ((*pOSet).id,     oldsize, id);
+
+  // first pass to determine size
+  newsize = 0;
+  for (i = 0; i < (int) (*pOSet).size; i++)
+    if ((*pOSet).weight[i] > 0 && (!(*pOSet).id || (*pOSet).id[i] == 1))
+      newsize++;
+
+  if (newsize < oldsize)
+  {
+    ut_free_2d (&(*pOSet).q, (*pOSet).size);
+
+    (*pOSet).size = newsize;
+
+    (*pOSet).q = ut_alloc_2d ((*pOSet).size, 4);
+    (*pOSet).weight = ut_realloc_1d ((*pOSet).weight, (*pOSet).size);
+    if ((*pOSet).theta)
+      (*pOSet).theta = ut_realloc_1d ((*pOSet).theta, (*pOSet).size);
+    if ((*pOSet).id)
+      (*pOSet).id = ut_realloc_1d_int ((*pOSet).id, (*pOSet).size);
+
+    pos = 0;
+    for (i = 0; i < oldsize; i++)
+      if (weight[i] > 0 && (!(*pOSet).id || id[i] == 1))
+      {
+        ut_array_1d_memcpy (q[i], 4, (*pOSet).q[pos]);
+        (*pOSet).weight[pos] = weight[i];
+        if ((*pOSet).theta)
+        (*pOSet).theta[pos] = theta[i];
+        if ((*pOSet).id)
+          (*pOSet).id[pos] = id[i];
+        pos++;
+      }
+  }
+
+  ut_free_2d (&q, oldsize);
+  ut_free_1d (&weight);
+  ut_free_1d (&theta);
+  ut_free_1d_int (&id);
+
+  return;
+}
