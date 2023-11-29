@@ -42,7 +42,7 @@ neut_mesh_fprintf_msh_entities_dim (FILE * file, char *mode, struct TESS Tess,
     }
     else if (Mesh.Dimension == 3)
     {
-      fprintf (file, " %d ", 2);
+      fprintf (file, " %d ", Tess.PolyFaceQty[i]);
       ut_array_1d_int_fprintf (file, Tess.PolyFaceNb[i] + 1, Tess.PolyFaceQty[i], "%d");
     }
   }
