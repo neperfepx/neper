@@ -1,25 +1,91 @@
-#######################################################################
-#                                                                     #
-#                                                                     #
-#                 __________                                          #
-#    _____   __ __\______   \_____  _______  ______  ____ _______     #
-#   /     \ |  |  \|     ___/\__  \ \_  __ \/  ___/_/ __ \\_  __ \    #
-#  |  Y Y  \|  |  /|    |     / __ \_|  | \/\___ \ \  ___/ |  | \/    #
-#  |__|_|  /|____/ |____|    (____  /|__|  /____  > \___  >|__|       #
-#        \/                       \/            \/      \/            #
-#					  Fast math parser Library                        #
-#                                                                     #
-#  Copyright (C) 2015 Ingo Berg                                       #
-#                                                                     #
-#  Web:     muparser.beltoforion.de                                   #
-#  e-mail:  muparser@beltoforion.de                                   #
-#                                                                     #
-#                                                                     #
-#######################################################################
- 
+
+     _____  __ _____________ _______  ______ ___________
+    /     \|  |  \____ \__  \\_  __ \/  ___// __ \_  __ \
+   |  Y Y  \  |  /  |_> > __ \|  | \/\___ \\  ___/|  | \/
+   |__|_|  /____/|   __(____  /__|  /____  >\___  >__|
+         \/      |__|       \/           \/     \/
+    Copyright (C) 2004 - 2022 Ingo Berg
+
+=======================================================================
+    https://beltoforion.de/en/muparser
+=======================================================================
 
 History:
 --------
+
+Rev 2.3.4: 06.11.2022
+---------------------
+  Build System Changes (CMake):
+   * cmake is using OpenMP target and setting _UNICODE preprocessor definition
+  Compiler Warnings:	
+   * fix for issue #117 (sprintf deprecation warning)
+	
+Rev 2.3.3: 22.01.2022
+---------------------
+  Build System Changes (CMake):
+   * Added a new option "-DENABLE_WIDE_CHAR" to CMake for building muparser with wide character support
+   
+  Compiler Warnings fixed/disabled (Visual Studio):
+   * Disabled compiler warning 26812 (Prefer 'enum class' over 'enum')
+     I consider this a bogus warning. Use of plain old enums has not been deprecated and only MSVC is complaining. 
+   * Disabled compiler warning 4251 (... needs to have dll-interface to be used by clients of class ...)
+     When the build system was changed to CMake Linux and Windows builds were unified. Each dynamic library contains the 
+     class interface as well as the C-interface. Before the linux shared library was using the class interface and the 
+     windows dll was using the C-interface.
+    
+     Only the C-Interface is safe to use when you intent to bring an executable to another linux distribution or windows version! 
+     This is up to the client software. I cannot change this because on linux the shared library was always using the class 
+     interface. Usually this is not a problem since distributions compile all applications from scratch. 
+
+     If you use the class interface you can not take for granted that your software will run with a muparser 
+     version compiled for another operating system or linux distribution! You must either use the C-Interface if you 
+     want this or use a static library build of muparser!
+
+  Security Fixes: (The issues were present in all prior stable releases)
+   * https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=24167 
+   * https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=24355
+   
+  Bugfixes:
+   * fixed a couple of issues for building the C-Interface (muParserDLL.cpp/.h) with wide character support.
+
+Rev 2.3.2: 17.06.2020
+---------------------
+  API-Change Revertion (to 2.3.0):
+   * removed final keyword from Parser class (added in 2.3.0) as this was breaking existing Applications
+
+  Changes:
+   * made Parser class final
+   * using OpenMP is now the default settings for cmake based builds
+   * added optimization for trivial expressions. (Expressions whose RPN only has a single entry)
+   * introduced a maximum length for expressions (5000 Character)
+   * introduced a maximum length for identifiers (100 Characters)
+   * removed the MUP_MATH_EXCEPTION macro and related functionality. (C++ exceptions for divide by zero or sqrt of a negative number are no longer supported)
+   * removed ParserStack.h (replaced with std::stack)
+   * removed macros for defining E and PI (replaced with a static constants)
+   * source code is now aimed at C++17
+   * the MUP_ASSERT macro is no longer removed in release builds for better protection against segmentation faults
+
+  Security Fixes: (The issues were present in all prior stable releases)
+   * Prevented multiple access violations for malformed expressions with if then else and functions taking multiple arguments like "sum(0?1,2,3,4:5)"
+   	   * https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=23330
+	   * https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=22922
+	   * https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=22938
+	   * https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=23330
+	   * https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=23410
+   * Added additional runtime checks for release builds to prevent segmentation faults for invalid expressions
+
+  Bugfixes:
+   * Fixed an issue where the bulk mode could hang on GCC/CLANG builds due to OpenMP chunksize dropping below 1.
+
+Rev 2.3.0 - 2.3.1:
+------------------
+Short lived releases or prereleases that were replaced by 2.3.2 almost instantly due to API breaking changes. Version 2.3.2 is the successor to version 2.2.6
+
+Rev 2.2.6: 04.10.2018
+---------------------
+  Changes:
+   * Build system is now based on cmake
+   * several compiler warnings fixed
 
 Rev 2.2.5: 27.04.2015
 ---------------------
@@ -104,7 +170,7 @@ Rev 2.1.0: 19.11.2011
    * Function atan2 added
 
   Bugfixes:
-   * Issue 3438380:  Changed behavior of tellg with GCC >4.6 led to failures  
+   * Issue 3438380:  Changed behaviour of tellg with GCC >4.6 led to failures  
                      in value detection callbacks.
    * Issue 3438715:  only "double" is a valid MUP_BASETYPE 
                      MUP_BASETYPE can now be any of:
@@ -180,7 +246,7 @@ Rev 1.34: 04.09.2010
   New features:
    * The associativity of binary operators can now be changed. The pow operator 
      is now right associative. (This is what Mathematica is using) 
-   * Seperator can now be used outside of functions. This allows compound 
+   * Separator can now be used outside of functions. This allows compound 
      expressions like:
      "a=10,b=20,c=a*b" The last "argument" will be taken as the return value
 
@@ -188,7 +254,7 @@ Rev 1.34: 04.09.2010
    * The copy constructor did not copy binary operator definitions. Those were lost
      in the copied parser instance.
    * Mixing special characters and alphabetic characters in binary operator names 
-     led to inconsistent parsing behavior when parsing expressions like "a ++ b" 
+     led to inconsistent parsing behaviour when parsing expressions like "a ++ b" 
      and "a++b" when "++" is defined as a binary operator. Binary operators must 
      now consist entirely of special characters or of alphabetic ones.
      (original bug report: https://sourceforge.net/projects/muparser/forums/forum/462843/topic/3696881/index/page/1)
@@ -226,7 +292,7 @@ Rev 1.32: 29.01.2010
 
 
 
-Rev 1.31cp: 15.01.2010  (Maintainance release for CodeProject)
+Rev 1.31cp: 15.01.2010  (Maintenance release for CodeProject)
 ----------------------
 
   Changes:
@@ -359,7 +425,7 @@ Changes:
 
   Project Changes:
     * Borland project files removed
-      (The code should still compile with BCB but I cant provide you with project files)
+      (The code should still compile with BCB but I can't provide you with project files)
 
   Internal Changes:
     * unnecessary template files have been removed:
@@ -377,11 +443,11 @@ user defined binary operators. Consequently the built in operators can now be
 turned off, thus you can deactivate them and write complete customized parser
 subclasses that only contain the functionality you want. Another new feature is 
 the introduction of callback functions taking string arguments, implicit 
-generation of variables and the Assignement operator.
+generation of variables and the Assignment operator.
 
   Functionality
     * New built in operator: xor; Logical xor.
-    * New built in operator: Assignement operator; Defining variables in terms of 
+    * New built in operator: Assignment operator; Defining variables in terms of 
                              other variables/constants
     * New feature: Strings as arguments for callback functions
     * New feature: User defined binary operators
@@ -407,7 +473,7 @@ generation of variables and the Assignement operator.
 
   Internal changes
     * new class muParserTokenReader.h encapsulates the token identification 
-      and token assignement.
+      and token assignment.
     * Internal handling of function callbacks unified as a result the performance 
       of the bytecode evaluation increased.
 
@@ -453,7 +519,7 @@ Rev 1.09 : November 20, 2004
     * Internal structure changed; changing base datatype at compile time is now possible.
     * Bug fix: Postfix operator parsing could fail in certain cases; This has been fixed now.
     * Internal change:  Removed most dependencies from the C-string libraries.
-    * Internal change:  Bytecode is now stored in a seperate class: ParserByteCode.h.
+    * Internal change:  Bytecode is now stored in a separate class: ParserByteCode.h.
     * Internal change:  GetUsedVar() does no longer require that variables are defined at time of call.
     * Internal change:  Error treatment changed. ParserException is no longer derived from 
                         std::runtime_error; Internal treatment of Error messages changed.
