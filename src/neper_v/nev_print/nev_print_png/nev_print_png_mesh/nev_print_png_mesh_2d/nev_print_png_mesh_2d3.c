@@ -13,6 +13,10 @@ nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
   int i;
   int **rgb = NULL;
   char *coldatatype = ut_alloc_1d_char (10);
+  double **Coo = ut_alloc_2d (N.NodeQty + 1, 3);
+
+  // for some reasons, we have to reset NodeCoo to its original value
+  ut_array_2d_memcpy (N.NodeCoo + 1, N.NodeQty, 3, Coo + 1);
 
   strcpy (coldatatype, "elt2d");
   if (MeshData[2][0].ColDataType
@@ -31,6 +35,9 @@ nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
 
     nev_print_png_mesh2d (file, N, M2D, Print.showelt2d, rgb, "elt", Print);
 
+    for (i = 1; i <= N.NodeQty; i++)
+      ut_array_1d_memcpy (Coo[i], 3, N.NodeCoo[i]);
+
     ut_free_2d_int (&rgb, M2D.EltQty + 1);
   }
 
@@ -46,10 +53,14 @@ nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
 
     nev_print_png_mesh2d (file, N, M2D, Print.showelt2d, rgb, "node", Print);
 
+    for (i = 1; i <= N.NodeQty; i++)
+      ut_array_1d_memcpy (Coo[i], 3, N.NodeCoo[i]);
+
     ut_free_2d_int (&rgb, N.NodeQty + 1);
   }
 
   ut_free_1d_char (&coldatatype);
+  ut_free_2d (&Coo, N.NodeQty + 1);
 
   return;
 }
