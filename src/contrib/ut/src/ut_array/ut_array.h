@@ -1589,6 +1589,13 @@ extern "C"
 /// \note Example: array = 1 2 3 1 2 returns 2 (because of the 2 last elements)
   extern int ut_array_1d_int_duplicates (int *array, int size);
 
+/// \brief Get the number of duplicate entries of a 1D array of \c int, excluding zeros
+/// \param array: array
+/// \param size: size of the array
+/// \return number of duplicate entries
+/// \note Example: array = 1 2 3 1 2 returns 2 (because of the 2 last elements)
+  extern int ut_array_1d_int_duplicates_nonzero (int *array, int size);
+
 #ifdef HAVE_GSL
 /// \brief Set a 1D array of \c double to random values
 /// \param array: array

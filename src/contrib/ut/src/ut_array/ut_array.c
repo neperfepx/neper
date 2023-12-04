@@ -4189,6 +4189,24 @@ ut_array_1d_int_duplicates (int *array, int qty)
 }
 
 int
+ut_array_1d_int_duplicates_nonzero (int *array, int qty)
+{
+  int qty2 = 0, *tmp = ut_alloc_1d_int (qty);
+  int qty3;
+
+  ut_array_1d_int_memcpy (array, qty, tmp);
+  ut_array_1d_int_sort_uniq (tmp, qty, &qty2);
+  qty3 = ut_array_1d_int_valnb (array, qty, 0);
+
+  qty -= qty3;
+  qty2 -= qty3 ? 1 : 0;
+
+  ut_free_1d_int (&tmp);
+
+  return (qty != qty2);
+}
+
+int
 ut_array_1d_eltpos (double *array, int size, double val)
 {
   int i, minid;

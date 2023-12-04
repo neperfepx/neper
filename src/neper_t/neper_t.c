@@ -151,7 +151,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
             if (status != 0)
               ut_print_message (2, 2, "Tessellation failed.\n");
 
-            if (Tess[MTess.TessQty].CellId && ut_array_1d_int_duplicates
+            if (Tess[MTess.TessQty].CellId && ut_array_1d_int_duplicates_nonzero
                 (Tess[MTess.TessQty].CellId + 1, Tess[MTess.TessQty].CellQty))
             {
               printf ("\n");
