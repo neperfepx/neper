@@ -26,11 +26,18 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2024
 ----
 
+- E Mengiste, D Piedmont, MC Messner, M Li, J Stubbins, J-S Park, X Zhang and M Kasemer, *Effect of irradiation-induced strength anisotropy on the reorientation trajectories and fragmentation behavior of grains in BCC polycrystals under tensile loading*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2023.119503.
 - D Xia and C Oskay, *Proper orthogonal decomposition assisted eigendeformation-based mathematical homogenization method for modeling cracks in 3D polycrystalline microstructures*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2023.116508.
+- X Yang, Y Zhang, G Li, Z Li, J Feng and K Wang, *Mesoscopic modeling approach and application based on rock thin slices and nanoindentation*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2023.105875.
 
 2023
 ----
 
+- MV de Carvalho, IAR Lopes and FMA Pires, *A multi-scale formulation for polycrystalline materials accounting for cohesive micro-cracks: Homogenisation of the traction-separation law*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2023.103780.
+- JA Moore, C Martinez and A Chandel, *NOCAL-FEA: A NonlOCAL results processor for finite element analysis*, **Software Impacts**, https://doi.org/10.1016/j.simpa.2023.100595.
+- I Nandi, N Ahmad, WG Tilson, J Wang, N Shamsaei and S Shao, *Crystal plasticity finite element study of tension-induced anisotropic contraction of additively manufactured Haynes 282*, **Journal of Materials Science** https://doi.org/10.1007/s10853-023-09076-0.
+- X Guo, J Zhang, T Kong, N Mao, C Sun, Y Cui and Z Xiong, *Understanding extra strengthening in gradient nanotwinned Cu using crystal plasticity model considering dislocation types and strain gradient effect, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2023.103822.
+- J Lizarazu, E Harirchian, UA Shaik, M Shareef, A Antoni-Zdziobek and T Lahmer, *Application of machine learning-based algorithms to predict the stress-strain curves of additively manufactured mild steel out of its microstructural characteristics, **Results in Engineering**, https://doi.org/10.1016/j.rineng.2023.101587.
 - W Flachberger, J Svoboda, T Antretter, M Petersmann and S Leitner, *Numerical treatment of reactive diffusion using the discontinuous Galerkin method*, **Continuum Mechanics and Thermodynamics**, https://doi.org/10.1007/s00161-023-01258-0.
 - A Chaurasia, G Walton, *Laboratory and Numerical Modeling of the Effects of Width-to-Height Ratio on the Strength and Deformation Behavior of Pillars Composed of Porous, Weak Limestone*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-023-03579-7.
 - A Ravikumar, D Höche, C Feiler, M Lekka, A Salicio-Paz, Michael Rohwerder, JM Prabhakar and M Zheludkevich, *Exploring the effect of microstructure and surface recombination on hydrogen effusion in Zn‐Ni coated martensitic steels by advanced computational modeling*, **Steel research international**,  https://doi.org/10.1002/srin.202300353.
