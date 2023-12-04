@@ -1,6 +1,6 @@
-New in 4.7.1-6 (04 Dec 2023):
+New in 4.7.1-7 (04 Dec 2023):
 - module -T: made minor fixes.
-- module -M: made minor fix to msh4 format.
+- module -M: fixed msh4 format.
 - documentation: made minor fix.
 - general: cleaned tests.
 

@@ -17,14 +17,13 @@ neut_mesh_fprintf_msh_entities_dim (FILE * file, char *mode, struct TESS Tess,
     fprintf (file, "%d ", i);
     neut_mesh_elset_bbox (Nodes, Mesh, i, bbox);
     if (Mesh.Dimension == 0)
-      ut_array_1d_fprintf (file, Nodes.NodeCoo[Mesh.EltNodes[i][0]], 3, REAL_PRINT_FORMAT);
+      ut_array_1d_fprintf_nonl (file, Nodes.NodeCoo[Mesh.EltNodes[i][0]], 3, REAL_PRINT_FORMAT);
     else
       fprintf (file, REAL_PRINT_FORMAT " " REAL_PRINT_FORMAT " " REAL_PRINT_FORMAT " " REAL_PRINT_FORMAT " " REAL_PRINT_FORMAT " " REAL_PRINT_FORMAT,
                bbox[0][0], bbox[1][0], bbox[2][0],
                bbox[0][1], bbox[1][1], bbox[2][1]);
 
-    fprintf (file, " 0 ");
-    // fprintf (file, "1 %d\n", i);
+    fprintf (file, " 1 %d", Mesh.ElsetId ? Mesh.ElsetId[i] : i);
 
     if (Mesh.Dimension == 0)
       fprintf (file, "\n");
@@ -35,9 +34,9 @@ neut_mesh_fprintf_msh_entities_dim (FILE * file, char *mode, struct TESS Tess,
     }
     else if (Mesh.Dimension == 2)
     {
-      fprintf (file, " %d ", Tess.FaceVerQty[i]);
+      fprintf (file, " %d", Tess.FaceVerQty[i]);
       for (j = 1; j <= Tess.FaceVerQty[i]; j++)
-        fprintf (file, "%d ", Tess.FaceEdgeNb[i][j] * Tess.FaceEdgeOri[i][j]);
+        fprintf (file, " %d", Tess.FaceEdgeNb[i][j] * Tess.FaceEdgeOri[i][j]);
       fprintf (file, "\n");
     }
     else if (Mesh.Dimension == 3)
