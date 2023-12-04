@@ -1,5 +1,5 @@
-New in 4.7.1-8 (04 Dec 2023):
-- module -T: made minor fixes.
+New in 4.7.1-9 (04 Dec 2023):
+- module -T: fixed weibull distribution, made minor fixes.
 - module -M: fixed msh4 format.
 - documentation: made minor fix.
 - general: cleaned tests.

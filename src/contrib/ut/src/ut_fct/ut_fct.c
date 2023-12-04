@@ -566,7 +566,14 @@ ut_fct_numericalfct (struct FCT Fct, double min, double max, int size,
       xmean += (*pFct2).x[i] * (*pFct2).y[i] * ut_fct_binwidth (*pFct2, i);
 
     // it is necessary to fix the distribution when (unbalanced) from and to bounds are specified
-    ut_array_1d_addval ((*pFct2).x, (*pFct2).size, (*pFct2).mean - xmean, (*pFct2).x);
+    if ((*pFct2).type_from != 'n' || (*pFct2).type_to != 'n')
+    {
+      // Note: doing this for weibull or beta would change the distribution because
+      // "mean" does not represent the mean.  See the doc.
+      if (!strcmp (FctC.type, "weibull") || !strcmp (FctC.type, "beta"))
+        abort ();
+      ut_array_1d_addval ((*pFct2).x, (*pFct2).size, (*pFct2).mean - xmean, (*pFct2).x);
+    }
   }
 
   (*pFct2).interp_type = (gsl_interp_type *) gsl_interp_cspline;
