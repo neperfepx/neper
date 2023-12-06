@@ -317,9 +317,9 @@ neut_mesh_fprintf_msh_physical (FILE * file, struct MESH Mesh0D,
     for (i = 1; i <= Mesh0D.ElsetQty; i++)
     {
       if (Mesh0D.ElsetLabels)
-        fprintf (file, "0 %d %s\n", i, Mesh0D.ElsetLabels[i]);
+        fprintf (file, "0 %d \"%s\"\n", i, Mesh0D.ElsetLabels[i]);
       else
-        fprintf (file, "0 %d ver%d\n", Mesh0D.ElsetId ? Mesh0D.ElsetId[i] : i, Mesh0D.ElsetId ? Mesh0D.ElsetId[i] : i);
+        fprintf (file, "0 %d \"ver%d\"\n", Mesh0D.ElsetId ? Mesh0D.ElsetId[i] : i, Mesh0D.ElsetId ? Mesh0D.ElsetId[i] : i);
     }
 
   // 1D mesh
@@ -327,9 +327,9 @@ neut_mesh_fprintf_msh_physical (FILE * file, struct MESH Mesh0D,
     for (i = 1; i <= Mesh1D.ElsetQty; i++)
     {
       if (Mesh1D.ElsetLabels)
-        fprintf (file, "1 %d %s\n", i, Mesh1D.ElsetLabels[i]);
+        fprintf (file, "1 %d \"%s\"\n", i, Mesh1D.ElsetLabels[i]);
       else
-        fprintf (file, "1 %d edge%d\n", Mesh1D.ElsetId ? Mesh1D.ElsetId[i] : i, Mesh1D.ElsetId ? Mesh1D.ElsetId[i] : i);
+        fprintf (file, "1 %d \"edge%d\"\n", Mesh1D.ElsetId ? Mesh1D.ElsetId[i] : i, Mesh1D.ElsetId ? Mesh1D.ElsetId[i] : i);
     }
 
   // 2D mesh
@@ -338,13 +338,13 @@ neut_mesh_fprintf_msh_physical (FILE * file, struct MESH Mesh0D,
     for (i = 1; i <= Mesh2D.ElsetQty; i++)
     {
       if (Mesh2D.ElsetLabels)
-        fprintf (file, "2 %d %s\n", Mesh2D.ElsetId ? Mesh2D.ElsetId[i] : i, Mesh2D.ElsetLabels[i]);
+        fprintf (file, "2 %d \"%s\"\n", Mesh2D.ElsetId ? Mesh2D.ElsetId[i] : i, Mesh2D.ElsetLabels[i]);
       else
         fprintf (file, "2 %d face%d\n", Mesh2D.ElsetId ? Mesh2D.ElsetId[i] : i, i);
     }
 
     for (i = 0; i < fasetqty; i++)
-      fprintf (file, "2 %d %s\n", fasetids[i] + Mesh2D.ElsetQty, fasets[i]);
+      fprintf (file, "2 %d \"%s\"\n", fasetids[i] + Mesh2D.ElsetQty, fasets[i]);
   }
 
   // 3D mesh
@@ -352,7 +352,7 @@ neut_mesh_fprintf_msh_physical (FILE * file, struct MESH Mesh0D,
     for (i = 1; i <= Mesh3D.ElsetQty; i++)
     {
       if (Mesh3D.ElsetLabels)
-        fprintf (file, "3 %d %s\n", Mesh3D.ElsetId ? Mesh3D.ElsetId[i] : i, Mesh3D.ElsetLabels[i]);
+        fprintf (file, "3 %d \"%s\"\n", Mesh3D.ElsetId ? Mesh3D.ElsetId[i] : i, Mesh3D.ElsetLabels[i]);
       else
         fprintf (file, "3 %d poly%d\n", Mesh3D.ElsetId ? Mesh3D.ElsetId[i] : i, Mesh3D.ElsetId ? Mesh3D.ElsetId[i] : i);
     }
