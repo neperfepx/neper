@@ -24,6 +24,10 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
   if (Mesh3D.Domain)
     neut_mesh_fprintf_msh_domain (file, Mesh3D.Domain);
 
+  neut_mesh_fprintf_msh_physical (file, Mesh0D, Mesh1D, Mesh2D, Mesh3D,
+                                   MeshCo, fasets, fasetids, fasetqty, dim);
+
+
   if (!strcmp (version, "msh") || !strcmp (version, "msh2") || version[0] == '2')
   {
     neut_mesh_fprintf_msh_nodes (file, mode, Nodes);
@@ -65,9 +69,6 @@ neut_mesh_fprintf_msh (FILE * file, char *dim, struct TESS Tess,
     || (Tess.Dim == 3 && ut_list_testelt (dim, NEUT_SEP_NODEP, "3")))
     && Nodes.PartQty > 0)
     neut_mesh_fprintf_msh_nodeparts (file, Nodes);
-
-  neut_mesh_fprintf_msh_physical (file, Mesh0D, Mesh1D, Mesh2D, Mesh3D,
-                                   MeshCo, fasets, fasetids, fasetqty, dim);
 
   if ((Tess.Dim == 2 && ut_list_testelt (dim, NEUT_SEP_NODEP, "2")
        && (Mesh2D.ElsetOri || Mesh2D.EltOri))
