@@ -612,21 +612,21 @@ x0
 $EndNSets
 $PhysicalNames
 17
-0 1 ver1
-0 2 ver2
-0 3 ver3
-0 4 ver4
-0 5 ver5
-0 6 ver6
-1 1 edge1
-1 2 edge2
-1 3 edge3
-1 4 edge4
-1 5 edge5
-1 6 edge6
-1 7 edge7
-2 1 face1
-2 2 face2
-3 1 poly1
-3 2 poly2
+0 1 "ver1"
+0 2 "ver2"
+0 3 "ver3"
+0 4 "ver4"
+0 5 "ver5"
+0 6 "ver6"
+1 1 "edge1"
+1 2 "edge2"
+1 3 "edge3"
+1 4 "edge4"
+1 5 "edge5"
+1 6 "edge6"
+1 7 "edge7"
+2 1 "face1"
+2 2 "face2"
+3 1 "poly1"
+3 2 "poly2"
 $EndPhysicalNames

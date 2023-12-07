@@ -220,8 +220,8 @@ y1
 $EndNSets
 $PhysicalNames
 2
-2 1 face1
-2 2 face2
+2 1 "face1"
+2 2 "face2"
 $EndPhysicalNames
 $ElsetCrySym
 triclinic
