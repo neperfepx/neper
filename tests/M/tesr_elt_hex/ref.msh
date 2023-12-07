@@ -2343,6 +2343,6 @@ $Elements
 $EndElements
 $PhysicalNames
 2
-3 1 poly1
-3 2 poly2
+3 1 "poly1"
+3 2 "poly2"
 $EndPhysicalNames
