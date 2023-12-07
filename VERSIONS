@@ -1,6 +1,7 @@
-New in 4.7.1-10 (04 Dec 2023):
+New in 4.7.1-11 (07 Dec 2023):
 - module -T: fixed weibull distribution, made minor fixes.
-- module -M: fixed msh4 format.
+- module -M: fixed meshing of -transform cut(cylinder) tessellations,
+  fixed msh4 format.
 - module -V: fixed -datanodecoofact.
 - documentation: made minor fix.
 - general: cleaned tests.

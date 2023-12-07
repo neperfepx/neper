@@ -178,7 +178,6 @@ nem_meshing_2d_face_mesh_gmsh_backproj (struct TESS Tess, struct NODES RNodes,
 
   else if (!strcmp (MeshPara.face_op[face], "sphereproj"))
   {
-    int domface = Tess.FaceDom[face][1];
     double *c = Tess.DomFaceParms[domface];     // centre
     double r = Tess.DomFaceParms[domface][3];   // radius
 
@@ -187,47 +186,9 @@ nem_meshing_2d_face_mesh_gmsh_backproj (struct TESS Tess, struct NODES RNodes,
   }
 
   else if (!strcmp (MeshPara.face_op[face], "cylinderproj"))
-  {
-    int i, j, domface = Tess.FaceDom[face][1];
-    double d, s, r = Tess.DomFaceParms[domface][6];
-    double *tmp = ut_alloc_1d (3);
-    double *plane = ut_alloc_1d (4);
-    double *proj = ut_alloc_1d (3);
-    double *uvect = ut_alloc_1d (3);
-    double sgn, theta;
-
-    ut_vector_vectprod (MeshPara.face_eq[face] + 1,
-                        Tess.DomFaceParms[domface] + 3, tmp);
-
-    ut_space_point_normal_plane (Tess.DomFaceParms[domface], tmp, plane);
-
     for (i = 1; i <= (*pN).NodeQty; i++)
-    {
-      ut_space_point_plane_proj ((*pN).NodeCoo[i], plane, proj);
-      ut_space_points_uvect ((*pN).NodeCoo[i], proj, uvect);
-      d = ut_space_dist ((*pN).NodeCoo[i], proj);
-
-      d = sin (d / r) * r;
-
-      for (j = 0; j < 3; j++)
-        (*pN).NodeCoo[i][j] = proj[j] - d * uvect[j];
-
-      theta = asin (d / r);
-
-      s = d * tan (theta / 2);
-
-      sgn =
-        ut_space_point_plane_side (Tess.DomFaceParms[domface] - 1,
-                                   MeshPara.face_eq[face]);
-      for (j = 0; j < 3; j++)
-        (*pN).NodeCoo[i][j] += sgn * s * MeshPara.face_eq[face][j + 1];
-    }
-
-    ut_free_1d (&proj);
-    ut_free_1d (&plane);
-    ut_free_1d (&tmp);
-    ut_free_1d (&uvect);
-  }
+      ut_space_point_cyl_proj ((*pN).NodeCoo[i], Tess.DomFaceParms[domface],
+                               Tess.DomFaceParms[domface] + 3, Tess.DomFaceParms[domface][6],(*pN).NodeCoo[i]);
 
   else
     abort ();
