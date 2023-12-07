@@ -21,16 +21,19 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
   neut_mesh_free (pMesh3D);
   neut_mesh_free (pMeshCo);
 
-  neut_mesh_fscanf_msh_head (file, &mode, &domain, ptopology);
-
-  neut_mesh_fscanf_msh_nodes (file, mode, pNodes, &node_nbs);
-
-  neut_mesh_fscanf_msh_elts (file, mode, domain, node_nbs, pMesh0D, pMesh1D, pMesh2D,
-                             pMesh3D, pMeshCo, &pMesh);
-
   while (ut_file_nextstring (file, NULL) == 1)
   {
-    if (ut_file_nextstring_test (file, "$Periodicity"))
+    if (ut_file_nextstring_test (file, "$MeshFormat"))
+      neut_mesh_fscanf_msh_head (file, &mode, &domain, ptopology);
+
+    else if (ut_file_nextstring_test (file, "$Nodes"))
+      neut_mesh_fscanf_msh_nodes (file, mode, pNodes, &node_nbs);
+
+    else if (ut_file_nextstring_test (file, "$Elements"))
+      neut_mesh_fscanf_msh_elts (file, mode, domain, node_nbs, pMesh0D, pMesh1D, pMesh2D,
+                                 pMesh3D, pMeshCo, &pMesh);
+
+    else if (ut_file_nextstring_test (file, "$Periodicity"))
       neut_mesh_fscanf_msh_periodicity (file, pNodes);
 
     else if (ut_file_nextstring_test (file, "$PhysicalNames"))

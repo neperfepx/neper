@@ -340,7 +340,7 @@ neut_mesh_fprintf_msh_physical (FILE * file, struct MESH Mesh0D,
       if (Mesh2D.ElsetLabels)
         fprintf (file, "2 %d \"%s\"\n", Mesh2D.ElsetId ? Mesh2D.ElsetId[i] : i, Mesh2D.ElsetLabels[i]);
       else
-        fprintf (file, "2 %d face%d\n", Mesh2D.ElsetId ? Mesh2D.ElsetId[i] : i, i);
+        fprintf (file, "2 %d \"face%d\"\n", Mesh2D.ElsetId ? Mesh2D.ElsetId[i] : i, i);
     }
 
     for (i = 0; i < fasetqty; i++)
@@ -354,7 +354,7 @@ neut_mesh_fprintf_msh_physical (FILE * file, struct MESH Mesh0D,
       if (Mesh3D.ElsetLabels)
         fprintf (file, "3 %d \"%s\"\n", Mesh3D.ElsetId ? Mesh3D.ElsetId[i] : i, Mesh3D.ElsetLabels[i]);
       else
-        fprintf (file, "3 %d poly%d\n", Mesh3D.ElsetId ? Mesh3D.ElsetId[i] : i, Mesh3D.ElsetId ? Mesh3D.ElsetId[i] : i);
+        fprintf (file, "3 %d \"poly%d\"\n", Mesh3D.ElsetId ? Mesh3D.ElsetId[i] : i, Mesh3D.ElsetId ? Mesh3D.ElsetId[i] : i);
     }
 
   // Co mesh
