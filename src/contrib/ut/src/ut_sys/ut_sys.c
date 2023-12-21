@@ -67,46 +67,58 @@ ut_sys_runwtime (char *exec, char *command, double tmax,
   char **list = NULL;
   int qty;
 
-  ctrlc_t = (*pctrlc_t);
-
-  memset (&act, 0, sizeof (struct sigaction));
-  act.sa_handler = sighandler;
-  // act.sa_flags = SA_RESTART;
-
-  value.it_value.tv_sec = (long int) (tmax);
-  value.it_value.tv_usec =
-    (long int) ((double) (tmax - value.it_value.tv_sec) * 1000000);
-
-  setitimer (ITIMER_REAL, &value, 0);
-
-  sigaction (SIGCHLD, &act, 0);
-  sigaction (SIGINT, &act, 0);
-  sigaction (SIGALRM, &act, 0);
-
-  ut_list_break (command, " ", &list, &qty);
-  list = ut_realloc_1d_pchar_null (list, qty + 1, 1);
-  pid = fork ();
-  if (pid == 0)
+  if (!strcmp (EXEC_METHOD, "system"))
   {
-    execvp (exec, list);
-    _exit (EXIT_FAILURE);
+    char *tmp = ut_alloc_1d_char (strlen (exec) + strlen (command) + 2);
+    sprintf (tmp, "%s %s", exec, command);
+
+    return system (tmp);
   }
-  else if (pid < 0)
-    /* The fork failed. Report failure. */
-    status = -1;
-  else
+
+  else if (!strcmp (EXEC_METHOD, "exec"))
   {
-    /* printf ("waiting for pid = %d\n", pid); */
-    if (waitpid (pid, &status, 0) != pid)
-      status = -1;
 
-    /* printf ("waiting for pid = %d\n", pid); */
+    ctrlc_t = (*pctrlc_t);
 
-    /* it is likely that this should not be necessary */
-    if (status == -1)
+    memset (&act, 0, sizeof (struct sigaction));
+    act.sa_handler = sighandler;
+    // act.sa_flags = SA_RESTART;
+
+    value.it_value.tv_sec = (long int) (tmax);
+    value.it_value.tv_usec =
+      (long int) ((double) (tmax - value.it_value.tv_sec) * 1000000);
+
+    setitimer (ITIMER_REAL, &value, 0);
+
+    sigaction (SIGCHLD, &act, 0);
+    sigaction (SIGINT, &act, 0);
+    sigaction (SIGALRM, &act, 0);
+
+    ut_list_break (command, " ", &list, &qty);
+    list = ut_realloc_1d_pchar_null (list, qty + 1, 1);
+    pid = fork ();
+    if (pid == 0)
     {
-      /* printf ("killing %d\n", pid); */
-      kill (pid, 9);
+      execvp (exec, list);
+      _exit (EXIT_FAILURE);
+    }
+    else if (pid < 0)
+      /* The fork failed. Report failure. */
+      status = -1;
+    else
+    {
+      /* printf ("waiting for pid = %d\n", pid); */
+      if (waitpid (pid, &status, 0) != pid)
+        status = -1;
+
+      /* printf ("waiting for pid = %d\n", pid); */
+
+      /* it is likely that this should not be necessary */
+      if (status == -1)
+      {
+        /* printf ("killing %d\n", pid); */
+        kill (pid, 9);
+      }
     }
   }
 

@@ -7,7 +7,7 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"4.7.1-17\")
+set(NEPER_VERSION \"4.7.1-18-fix_macos\")
 project(neper)
 
 if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8.1)
@@ -35,6 +35,7 @@ set(FORCE_BUILTIN_NLOPT     OFF CACHE BOOL "Force to use the built-in nlopt")
 set(REAL_PRINT_FORMAT \"%.12f\" CACHE STRING "Printing format of real numbers")
 set(REAL_PRINT_FORMAT3 \"%15.12f\" CACHE STRING "Printing format of real numbers (15 characters)")
 set(REAL_PRINT_FORMAT5 \"%17.12f\" CACHE STRING "Printing format of real numbers (17 characters)")
+set(EXEC_METHOD \"exec\" CACHE STRING "Command execution method (\"exec\" or \"system\")")
 
 if (CMAKE_INSTALL_COMPLETION)
   if (CMAKE_SYSTEM_NAME MATCHES "Linux")

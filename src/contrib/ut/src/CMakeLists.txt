@@ -13,6 +13,7 @@ project(ut)
 set(UT_VERSION_MAJOR 1)
 set(UT_VERSION_MINOR 0)
 set(UT_VERSION_PATCH 0)
+set(EXEC_METHOD \"exec\" CACHE STRING "Command execution method (\"exec\" or \"system\")")
 
 # should we use the optional libraries?
 option(HAVE_GSL      "Use the GNU Scientific Library(GSL)" ON)

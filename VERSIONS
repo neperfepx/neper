@@ -1,4 +1,4 @@
-New in 4.7.1-17 (21 Dec 2023):
+New in 4.7.1-18-fix_macos (21 Dec 2023):
 - module -T: fixed weibull distribution, made minor fixes.
 - module -M: fixed meshing of -transform cut(cylinder) tessellations,
   fixed msh4 format.
