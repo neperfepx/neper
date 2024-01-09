@@ -13,7 +13,7 @@ import sphinx_rtd_theme
 # extensions = ['sphinxcontrib.youtube']
 
 project = u'Neper'
-version = u'4.7.0'
+version = u'4.8.0'
 release = version
 author = u'Romain Quey'
 copyright = u'Romain Quey'

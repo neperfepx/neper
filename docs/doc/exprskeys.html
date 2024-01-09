@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Expressions and Keys &mdash; Neper 4.7.0 documentation</title>
+  <title>Expressions and Keys &mdash; Neper 4.8.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=bd5f082a"></script>
+        <script src="../_static/documentation_options.js?v=0b4ca7ae"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.7.0
+                4.8.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -375,7 +375,7 @@
 </tr>
 </tbody>
 </table>
-<p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;mean&gt;</span></code> represents the mean (or centre), and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;sigma&gt;</span></code> represents the standard deviation (or scale, <span class="math notranslate nohighlight">\(&gt; 0\)</span>). <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;gamma&gt;</span></code> depends on the distribution function (see the above table). For all distributions, custom endpoints can be added as last arguments, as <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;from_value&gt;,&lt;to_value&gt;</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;from_value&gt;</span></code> is the lower endpoint and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;to_value&gt;</span></code> is the upper endpoint. The parameter keywords do not need to be provided, but, when they are, the parameters can be given in any order, as in <code class="xref py py-data docutils literal notranslate"><span class="pre">moffat(gamma=1,from=0,to=1,sigma=0.1,mean=0.5)</span></code>.  Endpoints are considered inclusive by default, but exclusive endpoints can be specified using <code class="xref py py-data docutils literal notranslate"><span class="pre">fromexclusive=&lt;from_value&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">toexclusive=&lt;to_value&gt;</span></code> (<code class="xref py py-data docutils literal notranslate"><span class="pre">frominclusive=&lt;from_value&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">toinclusive=&lt;to_value&gt;</span></code> can be used for inclusive endpoints).  String completion is available for the keywords.  Finally, a sum of distributions of increasing averages can be provided, as in <code class="xref py py-data docutils literal notranslate"><span class="pre">0.3*lognormal(0.5,0.1)+0.7*normal(1,0.1)</span></code>.</p>
+<p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;mean&gt;</span></code> represents the mean (or centre), and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;sigma&gt;</span></code> represents the standard deviation (or scale, <span class="math notranslate nohighlight">\(&gt; 0\)</span>). <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;gamma&gt;</span></code> depends on the distribution function (see the above table). For all distributions but <code class="xref py py-data docutils literal notranslate"><span class="pre">weibull</span></code> and <cite>beta</cite>, custom endpoints can be added as last arguments, as <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;from_value&gt;,&lt;to_value&gt;</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;from_value&gt;</span></code> is the lower endpoint and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;to_value&gt;</span></code> is the upper endpoint. The parameter keywords do not need to be provided, but, when they are, the parameters can be given in any order, as in <code class="xref py py-data docutils literal notranslate"><span class="pre">moffat(gamma=1,from=0,to=1,sigma=0.1,mean=0.5)</span></code>.  Endpoints are considered inclusive by default, but exclusive endpoints can be specified using <code class="xref py py-data docutils literal notranslate"><span class="pre">fromexclusive=&lt;from_value&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">toexclusive=&lt;to_value&gt;</span></code> (<code class="xref py py-data docutils literal notranslate"><span class="pre">frominclusive=&lt;from_value&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">toinclusive=&lt;to_value&gt;</span></code> can be used for inclusive endpoints).  String completion is available for the keywords.  Finally, a sum of distributions of increasing averages can be provided, as in <code class="xref py py-data docutils literal notranslate"><span class="pre">0.3*lognormal(0.5,0.1)+0.7*normal(1,0.1)</span></code>.</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
 <p>When <code class="xref py py-data docutils literal notranslate"><span class="pre">from</span></code> and/or <code class="xref py py-data docutils literal notranslate"><span class="pre">to</span></code> are used, they should preferably be so that the distribution retains the same mean; otherwise, the distribution is shifted after truncation to match the specified mean.</p>

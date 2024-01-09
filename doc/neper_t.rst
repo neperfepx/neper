@@ -578,6 +578,8 @@ Transformation Options
   -  |rotate|;
   -  |scale|. For a 2D tessellation, :data:`<fact_z>` can be omitted.
 
+  -  :data:`resetorigin`: set origin to :math:`(0,\,0,\,0)`.
+
   -  :data:`renumber`: renumber cells to remove those that are empty or have a zero id.
 
   -  :data:`unindex`: assign a zero cell id to voxels of orientation :math:`(0,\,0,\,0)` (in Rodrigues vector).

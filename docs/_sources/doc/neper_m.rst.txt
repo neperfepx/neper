@@ -30,7 +30,7 @@ For mapped meshing, mesh cleaning options enable the removal of isolated element
 
 Mesh partitioning allows for the division the mesh nodes and elements into several sets while minimizing the interfaces between them [#partitioning]_, as needed for parallel simulations with FEPX.  Partitioning can return any number of partitions or be done according to a given parallel computer architecture (options :data:`-part*`).
 
-In the output mesh, the individual entities of the tessellations (the vertices, edges, faces and polyhedra) can be described by element sets (option :option:`-dim`).  Node sets of the vertices, edges and faces located on the boundary of the tessellation are also provided for prescribing the boundary conditions (option :option:`-nset`).  The surface element sets are also provided (option :option:`-faset`).  Element sets other than those corresponding to the tessellation cells can be defined (option :option:`-elset`). The mesh order can be 1 or 2 (option :option:`-order`).  Statistical data can be obtained on the meshes (options :data:`-stat*`).
+In the output mesh, the individual entities of the tessellations (the vertices, edges, faces and polyhedra) can be described by element sets (option :option:`-dim`).  Node sets of the vertices, edges and faces located on the boundary of the tessellation are also provided for prescribing the boundary conditions (option :option:`-nset`).  The surface element sets are also provided (option :option:`-faset`).  Element sets other than those corresponding to the tessellation cells can be defined (option :option:`-elset`). The mesh order can be 1 or 2 (option :option:`-order`, default :data:`2`).  Statistical data can be obtained on the meshes (options :data:`-stat*`).
 
 The methods implemented for meshing are described in [CMAME2011]_.
 
@@ -196,7 +196,7 @@ Meshing Options
 
   - :data:`2`: quadratic-interpolation elements (3-node linear elements, 6-node triangular elements, 8-node or 9-node quadrangular elements, 10-node tetrahedral elements and 20-node hexahedral elements).
 
-  **Default value**: :data:`1`.
+  **Default value**: :data:`2`.
 
 .. option:: -cl{ver,edge,face} or -rcl{ver,edge,face} <characteritic_length> (secondary options
 
@@ -482,7 +482,7 @@ Output Options
 
   - :data:`none`: none.
 
-  **Default value**: :data:`faces` in 3D and :data:`edges` in 2D.
+  **Default value**: :data:`faces,edges,vertices` in 3D and :data:`edges,vertices` in 2D.
 
 .. option:: -faset <faset1>,<faset2>,...
 
@@ -652,11 +652,11 @@ Below are some examples of use of neper -M.
 
     $ neper -M n100-id1.tesr
 
-- Mesh tessellation :file:`n100-id1.tess` with a mesh size of rcl = 0.5 and in 2nd-order elements:
+- Mesh tessellation :file:`n100-id1.tess` with a mesh size of rcl = 0.5 and in 1st-order elements:
 
   .. code-block:: console
 
-    $ neper -M n100-id1.tess -rcl 0.5 -order 2
+    $ neper -M n100-id1.tess -rcl 0.5
 
 - Mesh tessellation :file:`n100-id1.tess` with small elements for the interior cells and bigger elements for the boundary cells:
 

@@ -718,7 +718,7 @@ Here are details on the :file:`.sim` simulation directory (the :file:`.sim` exte
   simulation.sim
   |-- inputs
   |   |-- job.sh
-  |   |-- simulation.config
+  |   |-- simulation.cfg
   |   |-- simulation.msh
   |   `-- simulation.tess
   `-- results

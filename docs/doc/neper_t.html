@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tessellation Module (-T) &mdash; Neper 4.7.0 documentation</title>
+  <title>Tessellation Module (-T) &mdash; Neper 4.8.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=bd5f082a"></script>
+        <script src="../_static/documentation_options.js?v=0b4ca7ae"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.7.0
+                4.8.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -658,6 +658,7 @@ The region interior to the primitives is removed from the tessellation.  Append 
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">translate(&lt;dist_x&gt;,&lt;dist_y&gt;,&lt;dist_z&gt;)</span></code>: translate by distances <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dist_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dist_y&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dist_z&gt;</span></code> along <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code>, respectively;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">rotate(&lt;axis_x&gt;,&lt;axis_y&gt;,&lt;axis_z&gt;,&lt;angle&gt;)</span></code>: rotate about the center and by an axis/angle pair (angle expressed in degrees);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">scale(&lt;fact_x&gt;,&lt;fact_y&gt;,&lt;fact_z&gt;)</span></code>: scale by <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;fact_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;fact_y&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;fact_z&gt;</span></code> along <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code>, respectively. For a 2D tessellation, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;fact_z&gt;</span></code> can be omitted.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">resetorigin</span></code>: set origin to <span class="math notranslate nohighlight">\((0,\,0,\,0)\)</span>.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">renumber</span></code>: renumber cells to remove those that are empty or have a zero id.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">unindex</span></code>: assign a zero cell id to voxels of orientation <span class="math notranslate nohighlight">\((0,\,0,\,0)\)</span> (in Rodrigues vector).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">oriaverage</span></code>: set the cell orientations (field <code class="xref py py-data docutils literal notranslate"><span class="pre">**cell/ori</span></code>) as the averages of the cell voxel orientations (field <code class="xref py py-data docutils literal notranslate"><span class="pre">**oridata</span></code>).</p></li>

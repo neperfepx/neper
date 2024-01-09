@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Meshing Module (-M) &mdash; Neper 4.7.0 documentation</title>
+  <title>Meshing Module (-M) &mdash; Neper 4.8.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=bd5f082a"></script>
+        <script src="../_static/documentation_options.js?v=0b4ca7ae"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.7.0
+                4.8.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -129,7 +129,7 @@
 <p>Remeshing can also be applied to generate a new, good-quality mesh from a mesh containing poor-quality elements.  The variables defined on the parent mesh can be transported on the child mesh (options <code class="xref py py-data docutils literal notranslate"><span class="pre">-transport*</span></code>).</p>
 <p>For mapped meshing, mesh cleaning options enable the removal of isolated elements or duplicate nodes, or the duplication of nodes that would create a singular behavior in simulations (options <a class="reference internal" href="#cmdoption-clean"><code class="xref std std-option docutils literal notranslate"><span class="pre">-clean</span></code></a>, <a class="reference internal" href="#cmdoption-dupnodemerge"><code class="xref std std-option docutils literal notranslate"><span class="pre">-dupnodemerge</span></code></a> and <a class="reference internal" href="#cmdoption-singnodedup"><code class="xref std std-option docutils literal notranslate"><span class="pre">-singnodedup</span></code></a>).</p>
 <p>Mesh partitioning allows for the division the mesh nodes and elements into several sets while minimizing the interfaces between them <a class="footnote-reference brackets" href="#partitioning" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, as needed for parallel simulations with FEPX.  Partitioning can return any number of partitions or be done according to a given parallel computer architecture (options <code class="xref py py-data docutils literal notranslate"><span class="pre">-part*</span></code>).</p>
-<p>In the output mesh, the individual entities of the tessellations (the vertices, edges, faces and polyhedra) can be described by element sets (option <a class="reference internal" href="#cmdoption-dim"><code class="xref std std-option docutils literal notranslate"><span class="pre">-dim</span></code></a>).  Node sets of the vertices, edges and faces located on the boundary of the tessellation are also provided for prescribing the boundary conditions (option <a class="reference internal" href="#cmdoption-nset"><code class="xref std std-option docutils literal notranslate"><span class="pre">-nset</span></code></a>).  The surface element sets are also provided (option <a class="reference internal" href="#cmdoption-faset"><code class="xref std std-option docutils literal notranslate"><span class="pre">-faset</span></code></a>).  Element sets other than those corresponding to the tessellation cells can be defined (option <a class="reference internal" href="#cmdoption-elset"><code class="xref std std-option docutils literal notranslate"><span class="pre">-elset</span></code></a>). The mesh order can be 1 or 2 (option <a class="reference internal" href="#cmdoption-order"><code class="xref std std-option docutils literal notranslate"><span class="pre">-order</span></code></a>).  Statistical data can be obtained on the meshes (options <code class="xref py py-data docutils literal notranslate"><span class="pre">-stat*</span></code>).</p>
+<p>In the output mesh, the individual entities of the tessellations (the vertices, edges, faces and polyhedra) can be described by element sets (option <a class="reference internal" href="#cmdoption-dim"><code class="xref std std-option docutils literal notranslate"><span class="pre">-dim</span></code></a>).  Node sets of the vertices, edges and faces located on the boundary of the tessellation are also provided for prescribing the boundary conditions (option <a class="reference internal" href="#cmdoption-nset"><code class="xref std std-option docutils literal notranslate"><span class="pre">-nset</span></code></a>).  The surface element sets are also provided (option <a class="reference internal" href="#cmdoption-faset"><code class="xref std std-option docutils literal notranslate"><span class="pre">-faset</span></code></a>).  Element sets other than those corresponding to the tessellation cells can be defined (option <a class="reference internal" href="#cmdoption-elset"><code class="xref std std-option docutils literal notranslate"><span class="pre">-elset</span></code></a>). The mesh order can be 1 or 2 (option <a class="reference internal" href="#cmdoption-order"><code class="xref std std-option docutils literal notranslate"><span class="pre">-order</span></code></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">2</span></code>).  Statistical data can be obtained on the meshes (options <code class="xref py py-data docutils literal notranslate"><span class="pre">-stat*</span></code>).</p>
 <p>The methods implemented for meshing are described in <a class="reference internal" href="../tutorials/simple_model.html#cmame2011" id="id2"><span>[CMAME2011]</span></a>.</p>
 <p>Here is what a typical run of module -M looks like:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>n10-id1.tess
@@ -293,7 +293,7 @@
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>: linear-interpolation elements (2-node linear elements, 3-node triangular elements, 4-node quadrangular elements, 4-node tetrahedral elements and 8-node hexahedral elements);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">2</span></code>: quadratic-interpolation elements (3-node linear elements, 6-node triangular elements, 8-node or 9-node quadrangular elements, 10-node tetrahedral elements and 20-node hexahedral elements).</p></li>
 </ul>
-<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">2</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
@@ -603,7 +603,7 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 </li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>: none.</p></li>
 </ul>
-<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">faces</span></code> in 3D and <code class="xref py py-data docutils literal notranslate"><span class="pre">edges</span></code> in 2D.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">faces,edges,vertices</span></code> in 3D and <code class="xref py py-data docutils literal notranslate"><span class="pre">edges,vertices</span></code> in 2D.</p>
 </dd></dl>
 
 <dl class="std option">
@@ -778,8 +778,8 @@ or polyhedron (in seconds).</p>
 </pre></div>
 </div>
 </li>
-<li><p>Mesh tessellation <code class="file docutils literal notranslate"><span class="pre">n100-id1.tess</span></code> with a mesh size of rcl = 0.5 and in 2nd-order elements:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>n100-id1.tess<span class="w"> </span>-rcl<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>-order<span class="w"> </span><span class="m">2</span>
+<li><p>Mesh tessellation <code class="file docutils literal notranslate"><span class="pre">n100-id1.tess</span></code> with a mesh size of rcl = 0.5 and in 1st-order elements:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>n100-id1.tess<span class="w"> </span>-rcl<span class="w"> </span><span class="m">0</span>.5
 </pre></div>
 </div>
 </li>
