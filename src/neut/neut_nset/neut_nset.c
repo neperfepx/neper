@@ -19,20 +19,6 @@ neut_nset_expand (struct NSET NSet0D, struct NSET NSet1D, struct NSET NSet2D,
   if (!in || strlen (in) == 0 || !strcmp (in, "none"))
     return;
 
-  if (strstr (in, "default"))
-  {
-    qty = 1;
-    list = ut_alloc_2d_char (qty, 11);
-    if (NSet2D.qty > 0)
-      strcpy (list[0], "faces");
-    else if (NSet1D.qty > 0)
-      strcpy (list[0], "edges");
-    else if (NSet0D.qty > 0)
-      strcpy (list[0], "vertices");
-    else
-      ut_print_neperbug ();
-  }
-
   else if (strstr (in, "all"))
   {
     if (NSet2D.qty > 0)

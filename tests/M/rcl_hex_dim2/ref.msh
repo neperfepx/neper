@@ -156,7 +156,7 @@ $Elements
 64 3 3 1 1 0 71 72 81 80
 $EndElements
 $NSets
-4
+8
 x0
 9
 1
@@ -200,6 +200,18 @@ y1
 78
 79
 80
+81
+x0y0
+1
+1
+x1y0
+1
+9
+x0y1
+1
+73
+x1y1
+1
 81
 $EndNSets
 $PhysicalNames

@@ -31,8 +31,8 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
     fprintf (file, "  *ori\n   %s\n", Sim.msh);
   if (Sim.phase)
     fprintf (file, "  *phase\n   %s\n", Sim.msh);
-  if (Sim.config)
-    fprintf (file, "  *config\n   %s\n", Sim.config);
+  if (Sim.cfg)
+    fprintf (file, "  *cfg\n   %s\n", Sim.cfg);
 
   fprintf (file, " **general\n");
   fprintf (file, "   %d %d %d %d %d\n",
@@ -267,8 +267,8 @@ neut_sim_fprintf_asy (char *dir, struct SIM Sim, char *mode)
     fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.ori);
   if (Sim.phase)
     fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.phase);
-  if (Sim.config)
-    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.config);
+  if (Sim.cfg)
+    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.cfg);
 
   int print_results = 0;
   char *child1 = ut_alloc_1d_char (100);
@@ -343,8 +343,8 @@ neut_sim_verbose (struct SIM Sim)
     printf (" ori");
   if (Sim.phase)
     printf (" phase");
-  if (Sim.config)
-    printf (" config");
+  if (Sim.cfg)
+    printf (" cfg");
   printf ("\n");
 
   if (Sim.RestartId || Sim.RestartFiles)

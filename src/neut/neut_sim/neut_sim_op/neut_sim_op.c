@@ -36,7 +36,7 @@ neut_sim_set_zero (struct SIM *pSim)
   (*pSim).bcs = NULL;
   (*pSim).ori = NULL;
   (*pSim).phase = NULL;
-  (*pSim).config = NULL;
+  (*pSim).cfg = NULL;
 
   (*pSim).CellQty  = 0;
 
@@ -94,7 +94,7 @@ neut_sim_free (struct SIM *pSim)
   ut_free_1d_char (&(*pSim).bcs);
   ut_free_1d_char (&(*pSim).ori);
   ut_free_1d_char (&(*pSim).phase);
-  ut_free_1d_char (&(*pSim).config);
+  ut_free_1d_char (&(*pSim).cfg);
 
   return;
 }

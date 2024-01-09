@@ -4,7 +4,7 @@
  **input
   *msh
    simulation.msh
-  *config
+  *cfg
    simulation.config
  **general
    0 49 16 2 2

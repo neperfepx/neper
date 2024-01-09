@@ -188,6 +188,18 @@
 **nset x0
 3 4 6 7 24 25 26 64
 
+**nset x0y0
+6
+
+**nset x1y0
+1
+
+**nset x1y1
+2
+
+**nset x0y1
+3
+
 **liset bound5-cell1
 line 5 18
 line 18 19

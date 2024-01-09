@@ -58,7 +58,7 @@ neut_fepxsim_sim (struct FEPXSIM FSim, struct SIM *pSim)
   ut_string_string (FSim.bcs, &(*pSim).bcs);
   ut_string_string (FSim.ori, &(*pSim).ori);
   ut_string_string (FSim.phase, &(*pSim).phase);
-  ut_string_string (FSim.config, &(*pSim).config);
+  ut_string_string (FSim.cfg, &(*pSim).cfg);
 
   (*pSim).RestartId = FSim.RestartId;
   (*pSim).RestartFiles = FSim.RestartFiles;

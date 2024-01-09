@@ -442,6 +442,66 @@
 10, 11, 12, 13, 41, 42, 44, 45, 46, 48, 49, 50, 51, 52, 90, 91,
 92, 93, 94, 95, 96, 97, 98
 
+*Nset, nset=x0y1, instance=tess
+3, 5, 11, 20, 43, 100
+
+*Nset, nset=x0z1, instance=tess
+10, 11, 41, 42
+
+*Nset, nset=x0y0, instance=tess
+9, 10, 38, 39, 40
+
+*Nset, nset=x0z0, instance=tess
+3, 4, 9, 14, 15, 16, 99
+
+*Nset, nset=x1y0, instance=tess
+1, 7, 13, 47, 102
+
+*Nset, nset=x1z1, instance=tess
+12, 13, 44, 45, 46
+
+*Nset, nset=x1y1, instance=tess
+2, 6, 12, 23, 24, 25, 101
+
+*Nset, nset=x1z0, instance=tess
+1, 2, 21, 22
+
+*Nset, nset=y0z1, instance=tess
+10, 13, 48, 49
+
+*Nset, nset=y0z0, instance=tess
+1, 8, 9, 31, 32, 103
+
+*Nset, nset=y1z0, instance=tess
+2, 3, 33, 34
+
+*Nset, nset=y1z1, instance=tess
+11, 12, 50, 51, 52
+
+*Nset, nset=x0y0z0, instance=tess
+9
+
+*Nset, nset=x1y0z0, instance=tess
+1
+
+*Nset, nset=x1y1z0, instance=tess
+2
+
+*Nset, nset=x0y1z0, instance=tess
+3
+
+*Nset, nset=x0y0z1, instance=tess
+10
+
+*Nset, nset=x0y1z1, instance=tess
+11
+
+*Nset, nset=x1y1z1, instance=tess
+12
+
+*Nset, nset=x1y0z1, instance=tess
+13
+
 *Elset, elset=elt6-S1, internal, instance=tess
 6,
 *Elset, elset=elt38-S1, internal, instance=tess

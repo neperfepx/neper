@@ -34,7 +34,7 @@ struct FEPXSIM
   char *bcs;            // bcs
   char *ori;            // ori
   char *phase;          // phase
-  char *config;         // config
+  char *cfg;            // config
 };
 typedef struct FEPXSIM FEPXSIM;
 #endif /* STRUCTFEPXSIM_H */

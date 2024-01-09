@@ -123,14 +123,14 @@ void
 nes_loadconfig (struct SIM Sim, char ***pGroupCrySym, int *pGroupQty, int verbosity)
 {
   int id;
-  char *filename = ut_string_paste3 (Sim.simdir, "/inputs/", Sim.config);
+  char *filename = ut_string_paste3 (Sim.simdir, "/inputs/", Sim.cfg);
   char *string = ut_alloc_1d_char (1000);
   FILE *fp = NULL;
 
-  if (Sim.config && ut_file_exist (filename))
+  if (Sim.cfg && ut_file_exist (filename))
   {
     if (verbosity)
-      ut_print_message (0, verbosity + 1, "%s...\n", Sim.config);
+      ut_print_message (0, verbosity + 1, "%s...\n", Sim.cfg);
 
     fp = ut_file_open (filename, "R");
 

@@ -23,7 +23,7 @@ nes_pproc_load (struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr,
   if ((*pSim).msh)
     nes_loadmesh (pSim, pNodes, Mesh, 2);
 
-  if ((*pSim).config)
+  if ((*pSim).cfg)
     nes_loadconfig (*pSim, &GroupCrySym, &GroupQty, 2);
 
   neut_sim_testinputs (*pSim, *pTess, Mesh);

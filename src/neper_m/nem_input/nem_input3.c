@@ -42,7 +42,7 @@ nem_input_options_default (struct IN_M *pIn)
   strcpy ((*pIn).format, "msh");
 
   /* Options for meshing ------------------------------- */
-  (*pIn).order = 1;
+  (*pIn).order = 2;
   (*pIn).dimstring = ut_alloc_1d_char (9);
   strcpy ((*pIn).dimstring, "inputdim");
 

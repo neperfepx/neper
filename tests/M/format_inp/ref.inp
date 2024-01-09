@@ -404,6 +404,66 @@
 *Nset, nset=z1
 4, 8, 9
 
+*Nset, nset=x0y1
+3, 5, 10, 11, 20, 41, 42
+
+*Nset, nset=x0z1
+9, 10, 38, 39, 40
+
+*Nset, nset=x0y0
+4, 8
+
+*Nset, nset=x0z0
+3, 4, 14, 15, 16
+
+*Nset, nset=x1y0
+1, 4, 7, 9
+
+*Nset, nset=x1z1
+5, 11, 43
+
+*Nset, nset=x1y1
+2, 6, 23, 24, 25
+
+*Nset, nset=x1z0
+1, 2, 21, 22
+
+*Nset, nset=y0z1
+12, 13, 44, 45, 46
+
+*Nset, nset=y0z0
+1, 8, 31, 32
+
+*Nset, nset=y1z0
+2, 3, 33, 34
+
+*Nset, nset=y1z1
+7, 13, 47
+
+*Nset, nset=x0y0z0
+4
+
+*Nset, nset=x1y0z0
+1
+
+*Nset, nset=x1y1z0
+2
+
+*Nset, nset=x0y1z0
+3
+
+*Nset, nset=x0y0z1
+8
+
+*Nset, nset=x0y1z1
+9
+
+*Nset, nset=x1y1z1
+6
+
+*Nset, nset=x1y0z1
+10
+
 *Elset, elset=elt40-S1, internal, instance=tess
 40,
 *Elset, elset=elt80-S1, internal, instance=tess

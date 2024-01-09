@@ -348,4 +348,16 @@
 *Nset, nset=y1
 5, 6, 35, 36, 37, 38, 39, 40, 41, 42
 
+*Nset, nset=x0y0
+1
+
+*Nset, nset=x1y0
+3
+
+*Nset, nset=x0y1
+5
+
+*Nset, nset=x1y1
+6
+
 *End Part

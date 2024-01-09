@@ -1044,7 +1044,7 @@ $Elements
 493 3 3 2 2 0 509 510 540 539
 $EndElements
 $NSets
-4
+8
 x0
 18
 1
@@ -1148,6 +1148,18 @@ y1
 537
 538
 539
+540
+x0y0
+1
+1
+x1y0
+1
+30
+x0y1
+1
+511
+x1y1
+1
 540
 $EndNSets
 $PhysicalNames

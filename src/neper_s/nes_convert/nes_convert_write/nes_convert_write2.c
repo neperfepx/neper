@@ -23,10 +23,10 @@ nes_convert_write_inputs (struct IN_S In, struct FEPXSIM *pFSim)
     ut_string_string ((*pFSim).msh, filename + filenameqty - 1);
   }
 
-  if ((*pFSim).config)
+  if ((*pFSim).cfg)
   {
     filename = ut_realloc_1d_pchar_null (filename, ++filenameqty, 1);
-    ut_string_string ((*pFSim).config, filename + filenameqty - 1);
+    ut_string_string ((*pFSim).cfg, filename + filenameqty - 1);
   }
 
   // *.sh

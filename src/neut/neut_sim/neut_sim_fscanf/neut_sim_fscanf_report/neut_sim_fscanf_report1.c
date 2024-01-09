@@ -29,7 +29,7 @@ neut_sim_fscanf_report (char *dir, struct SIM *pSim, char *mode)
   ut_string_string ("simulation.tess", &(*pSim).tess);
   ut_string_string ("simulation.tesr", &(*pSim).tesr);
   ut_string_string ("simulation.msh", &(*pSim).msh);
-  ut_string_string ("simulation.config", &(*pSim).config);
+  ut_string_string ("simulation.config", &(*pSim).cfg);
 
   file = ut_file_open (filename, mode);
 
@@ -243,4 +243,3 @@ neut_sim_fscanf_report (char *dir, struct SIM *pSim, char *mode)
 
   return;
 }
-

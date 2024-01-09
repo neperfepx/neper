@@ -170,12 +170,12 @@ neut_sim_input_files (struct SIM Sim, char ***pfullfiles, char ***pfiles, int *p
     (*pfileqty)++;
   }
 
-  if (ut_file_exist ("%s/inputs/%s", Sim.simdir, "simulation.config"))
+  if (ut_file_exist ("%s/inputs/%s", Sim.simdir, "simulation.cfg"))
   {
     if (pfullfiles)
-      (*pfullfiles)[(*pfileqty)] = ut_string_paste3 (Sim.simdir, "/inputs/", "simulation.config");
+      (*pfullfiles)[(*pfileqty)] = ut_string_paste3 (Sim.simdir, "/inputs/", "simulation.cfg");
     if (pfiles)
-      ut_string_string ("simulation.config", (*pfiles) + (*pfileqty));
+      ut_string_string ("simulation.cfg", (*pfiles) + (*pfileqty));
     (*pfileqty)++;
   }
 

@@ -26,6 +26,14 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
   strcpy (sizestring[2], "area");
   strcpy (sizestring[3], "volume");
 
+  if (!strcmp (In.nset, "default"))
+  {
+    if (dim == 3)
+      ut_string_string ("faces,edges,vertices", &(In.nset));
+    else if (dim == 2)
+      ut_string_string ("edges,vertices", &(In.nset));
+  }
+
   neut_nset_expand (NSet[0], NSet[1], NSet[2], In.nset, &nsetlist);
   if (!strcmp (Mesh[dim].EltType, "tri"))
     neut_nset_expand (NSet[0], NSet[1], NSet[2], In.faset, &fasetlist);

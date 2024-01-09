@@ -4,7 +4,7 @@
 
 #include "nes_pproc_.h"
 
-// Checking consistency between Tess and Sim crysym, if simulation.config exists
+// Checking consistency between Tess and Sim crysym, if simulation.cfg exists
 void
 nes_pproc_load_crysym (struct TESS *pTess, struct TESR *pTesr,
                        struct NODES *pNodes, struct MESH *Mesh,
@@ -14,7 +14,7 @@ nes_pproc_load_crysym (struct TESS *pTess, struct TESR *pTesr,
 
   if (GroupQty)
   {
-    // Does simulation.config have multiple crystal symmetries?
+    // Does simulation.cfg have multiple crystal symmetries?
     multiple = 0;
     for (i = 1; i < GroupQty; i++)
       if (strcmp (GroupCrySym[0], GroupCrySym[i]))

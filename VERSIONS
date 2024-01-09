@@ -1,10 +1,14 @@
-New in 4.7.1-17 (21 Dec 2023):
+New in 4.8.0 (09 Jan 2024):
 - module -T: fixed weibull distribution, made minor fixes.
-- module -M: fixed meshing of -transform cut(cylinder) tessellations,
-  fixed msh4 format.
+- module -M: changed default value of -order to 2, changed -nset default value
+  to faces,edges,vertices in 3D and edges,vertices in 2D, fixed msh4 format,
+  fixed meshing of -transform cut(cylinder) tessellations.
 - module -V: fixed -datanodecoofact.
+- module -S: changed simulation.config onto simulation.cfg.
 - documentation: made minor fix.
 - general: cleaned tests.
+
+* Incompatible changes:  In -M, changed default value of -order to 2.
 
 New in 4.7.0 (17 Nov 2023):
 - module -T: added -ori odf, added -orisampling, improved -domain rodrigues,

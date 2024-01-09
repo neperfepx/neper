@@ -16,7 +16,7 @@ struct SIM
   char *bcs;            // bcs
   char *ori;            // ori
   char *phase;          // phase
-  char *config;         // config
+  char *cfg;            // config
 
   // general
   int CellQty;          // number of cells

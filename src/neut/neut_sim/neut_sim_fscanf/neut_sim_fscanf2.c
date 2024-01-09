@@ -118,12 +118,20 @@ neut_sim_fscanf_input (struct SIM *pSim, FILE *file)
       ut_string_string (string, &(*pSim).phase);
     }
 
+    else if (!strcmp (string, "*cfg"))
+    {
+      ut_file_skip (file, 1);
+      if (fscanf (file, "%s", string) != 1)
+        abort ();
+      ut_string_string (string, &(*pSim).cfg);
+    }
+
     else if (!strcmp (string, "*config"))
     {
       ut_file_skip (file, 1);
       if (fscanf (file, "%s", string) != 1)
         abort ();
-      ut_string_string (string, &(*pSim).config);
+      ut_string_string (string, &(*pSim).cfg);
     }
 
     else

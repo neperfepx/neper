@@ -8,8 +8,8 @@
    simulation.tesr
   *msh
    simulation.msh
-  *config
-   simulation.config
+  *cfg
+   simulation.cfg
  **general
    0 3606 2201 20 2
   *orides

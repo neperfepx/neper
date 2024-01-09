@@ -29,7 +29,7 @@ neut_fepxsim_set_zero (struct FEPXSIM *pFSim)
   (*pFSim).bcs = NULL;
   (*pFSim).ori = NULL;
   (*pFSim).phase = NULL;
-  (*pFSim).config = NULL;
+  (*pFSim).cfg = NULL;
 
   return;
 }
@@ -47,7 +47,7 @@ neut_fepxsim_free (struct FEPXSIM *pFSim)
   ut_free_1d_char (&(*pFSim).bcs);
   ut_free_1d_char (&(*pFSim).ori);
   ut_free_1d_char (&(*pFSim).phase);
-  ut_free_1d_char (&(*pFSim).config);
+  ut_free_1d_char (&(*pFSim).cfg);
 
   ut_free_1d_int (&(*pFSim).PartNodeQty);
   ut_free_1d_int (&(*pFSim).PartEltQty);

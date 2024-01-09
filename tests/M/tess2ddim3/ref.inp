@@ -464,4 +464,16 @@
 *Nset, nset=x0
 3, 4, 6, 7, 24, 25, 26
 
+*Nset, nset=x0y0
+6
+
+*Nset, nset=x1y0
+1
+
+*Nset, nset=x1y1
+2
+
+*Nset, nset=x0y1
+3
+
 *End Part
