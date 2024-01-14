@@ -8,7 +8,8 @@ void
 neut_mesh_fprintf_msh_entities_dim (FILE * file, char *mode, struct TESS Tess,
                                      struct NODES Nodes, struct MESH Mesh)
 {
-  int i, j;
+  int i, j, k, l;
+  int ElsetId, DomFaceNb, InDomFace = 0;
   double **bbox = ut_alloc_2d (3, 2);
   (void) mode;
 
@@ -23,17 +24,34 @@ neut_mesh_fprintf_msh_entities_dim (FILE * file, char *mode, struct TESS Tess,
                bbox[0][0], bbox[1][0], bbox[2][0],
                bbox[0][1], bbox[1][1], bbox[2][1]);
 
-    fprintf (file, " 1 %d", Mesh.ElsetId ? Mesh.ElsetId[i] : i);
+    ElsetId = Mesh.ElsetId ? Mesh.ElsetId[i] : i;
 
     if (Mesh.Dimension == 0)
-      fprintf (file, "\n");
+      fprintf (file, " 1 %d\n", ElsetId);
     else if (Mesh.Dimension == 1)
     {
-      fprintf (file, " %d ", 2);
+      fprintf (file, " 1 %d %d ", ElsetId, 2);
       ut_array_1d_int_fprintf (file, Tess.EdgeVerNb[i], 2, "%d");
     }
     else if (Mesh.Dimension == 2)
     {
+      InDomFace = 0;
+      for (k = 1; k <= Tess.DomFaceQty && !InDomFace; k++)
+      {
+        for (l = 1; l <= Tess.DomTessFaceQty[k] && !InDomFace; l++)
+        {
+          if (ElsetId == Tess.DomTessFaceNb[k][l])
+          {
+            InDomFace = 1;
+            DomFaceNb = Mesh.ElsetQty + k;
+          }
+        }
+      }
+      if (InDomFace == 1)
+        fprintf (file, " 2 %d %d", ElsetId, DomFaceNb);
+      else
+        fprintf (file, " 1 %d", ElsetId);
+
       fprintf (file, " %d", Tess.FaceVerQty[i]);
       for (j = 1; j <= Tess.FaceVerQty[i]; j++)
         fprintf (file, " %d", Tess.FaceEdgeNb[i][j] * Tess.FaceEdgeOri[i][j]);
@@ -41,7 +59,7 @@ neut_mesh_fprintf_msh_entities_dim (FILE * file, char *mode, struct TESS Tess,
     }
     else if (Mesh.Dimension == 3)
     {
-      fprintf (file, " %d ", Tess.PolyFaceQty[i]);
+      fprintf (file, " 1 %d %d ", ElsetId, Tess.PolyFaceQty[i]);
       ut_array_1d_int_fprintf (file, Tess.PolyFaceNb[i] + 1, Tess.PolyFaceQty[i], "%d");
     }
   }
