@@ -9,7 +9,7 @@ neut_mesh_fprintf_msh_entities_dim (FILE * file, char *mode, struct TESS Tess,
                                      struct NODES Nodes, struct MESH Mesh)
 {
   int i, j, k, l;
-  int ElsetId, DomFaceNb, InDomFace = 0;
+  int ElsetId, DomFaceNb, InDomFace;
   double **bbox = ut_alloc_2d (3, 2);
   (void) mode;
 
