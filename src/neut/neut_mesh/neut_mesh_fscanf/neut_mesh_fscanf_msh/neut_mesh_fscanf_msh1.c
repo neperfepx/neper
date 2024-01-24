@@ -26,6 +26,9 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
     if (ut_file_nextstring_test (file, "$MeshFormat"))
       neut_mesh_fscanf_msh_head (file, &mode, &domain, ptopology);
 
+    else if (ut_file_nextstring_test (file, "$MeshVersion"))
+      neut_mesh_fscanf_msh_version (file, &mode, &domain, ptopology);
+
     else if (ut_file_nextstring_test (file, "$Nodes"))
       neut_mesh_fscanf_msh_nodes (file, mode, pNodes, &node_nbs);
 

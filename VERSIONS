@@ -1,3 +1,7 @@
+New in 4.8.1-1 (24 Jan 2024):
+
+- general: fixed compatibility with Gmsh (version 4.12.2).
+
 New in 4.8.0 (09 Jan 2024):
 - module -T: fixed weibull distribution, made minor fixes.
 - module -M: changed default value of -order to 2, changed -nset default value
@@ -6,7 +10,7 @@ New in 4.8.0 (09 Jan 2024):
 - module -V: fixed -datanodecoofact.
 - module -S: changed simulation.config onto simulation.cfg.
 - documentation: made minor fix.
-- general: cleaned tests.
+- general: fixed compatibility with Gmsh (version 4.12.2).
 
 * Incompatible changes:  In -M, changed default value of -order to 2.
 

@@ -513,3 +513,22 @@ neut_mesh_fscanf_msh_nodeparts (FILE *file, struct NODES *pNodes)
 
   return;
 }
+
+void
+neut_mesh_fscanf_msh_version (FILE *file)
+{
+  char *tmp = ut_alloc_1d_char (1000);
+
+  // header
+  ut_file_skip (file, 1);
+
+  if (fscanf (file, "%s", tmp) != 1)
+    abort ();
+
+  // footer
+  ut_file_skip (file, 1);
+
+  ut_free_1d_char (&tmp);
+
+  return;
+}
