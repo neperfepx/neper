@@ -15,6 +15,10 @@ What they said
 
   -- M Bayat et al, **Progress in Materials Science**, https://doi.org/10.1016/j.pmatsci.2023.101129.
 
+  *"Neper is an open-source software that is primarily used for generating complex microstructures based on specific design criteria (Quey et al. 2011, 2018; Quey and Renversade 2018). It offers a diverse range of functionalities that enable the creation of models at various scales, making it possible to simulate intri- cate materials and structures. Additionally, Neper’s computational capabilities allow for the optimization of these models, ensuring improved performance and efficiency."*
+
+  -- Q Ma et al, **Geomechanics and Geophysics for Geo-Energy and Geo-Resources**, https://doi.org/10.1007/s40948-023-00711-3.
+
 Journal Covers
 --------------
 
@@ -26,6 +30,15 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2024
 ----
 
+- L Xue, W Cai, Y Sun, M Paredes, C Sun and Y Bai, *The influence of heat treatment on microstructure and mechanical response of a newly developed non-equimolar AlCrCuFeNi high-entropy alloy: Experiments and numerical modelling*, **Materials Characterization**, https://doi.org/10.1016/j.matchar.2023.113544.
+- X Guo, N Mao, T Kong, J Zhang, J Shen, C Wang, C Sun, P Li and Z Xiong, *Strain rate-dependent plastic behavior of TWIP steel investigated by crystal plasticity model*, **Materials Science and Engineering: A**,  https://doi.org/10.1016/j.msea.2023.145986.
+- Q Ma, X Liu, D Song, E Wang, J Zhang, W Yao and M Wang, *Thermal damage evolution of granite under different thermal conditions based on two-scale tessellation via discrete element method*, **Geomechanics and Geophysics for Geo-Energy and Geo-Resources**, https://doi.org/10.1007/s40948-023-00711-3.
+- J Cappola, J Wang and L Li, *A dislocation-density-based crystal plasticity model for FCC nanocrystalline metals incorporating thermally-activated depinning from grain boundaries*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2023.103863.
+- WX Zhang, YB Cong, J Wang, C Li, J Wan and YZ Chen, *Revealing the effects of martensitic transformation and dislocation slip in austenite on the micromechanical behaviors of a 9Ni steel using crystal plasticity finite element method*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2023.103869.
+- Y Zhang, C Yang, H Ke, KC Chan and W Wang, *A study on the microstructure and mechanical behavior of CoCrFeNi high entropy alloy fabricated via laser powder bed fusion: Experiment and crystal plasticity finite element modelling*, **Materials Science and Engineering: A**, https://doi.org/10.1016/j.msea.2024.146111.
+- WA Tayon, DC Pagan, SR Yeratapally, TQ Phan and JD Hochhalter, *Exploring the Role of Type-II Residual Stresses in a Laser Powder Bed Fusion Nickel-Based Superalloy using Measurement and Modeling*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108153.
+- K Shankar, M Harr, A Pilchak and M Kasemer, *The effect of anisotropic rate dependency on the deformation response of Ti-6242 during dwell fatigue loading*, **Materialia**, https://doi.org/10.1016/j.engfracmech.2024.109880.
+- S Ali, C Yan, T Wang, Y Zheng, D Han and W Ke, *Evaluating the impact of calcite and heterogeneity on the mechanical behavior of coal: A numerical study with grain-based finite-discrete element method*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2024.109880.
 - E Mengiste, D Piedmont, MC Messner, M Li, J Stubbins, J-S Park, X Zhang and M Kasemer, *Effect of irradiation-induced strength anisotropy on the reorientation trajectories and fragmentation behavior of grains in BCC polycrystals under tensile loading*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2023.119503.
 - D Xia and C Oskay, *Proper orthogonal decomposition assisted eigendeformation-based mathematical homogenization method for modeling cracks in 3D polycrystalline microstructures*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2023.116508.
 - X Yang, Y Zhang, G Li, Z Li, J Feng and K Wang, *Mesoscopic modeling approach and application based on rock thin slices and nanoindentation*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2023.105875.
