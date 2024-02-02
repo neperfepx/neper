@@ -582,17 +582,19 @@ Available results / keys for nodes are the following:
 
 Available results / keys for elements sets are the following:
 
-========================================== ================================================================ ==================================
-**Key**                                    **Descriptor**                                                   **Apply to**
-:data:`ori`                                average orientation                                              elset, mesh
-:data:`gos`                                grain orientation spread [#gos]_                                 elset
-:data:`anisogos`                           grain orientation spread computed from :data:`oridisanisoangles` elset
-:data:`oridisanisoangles`                  orientation distribution principal angles                        elset, mesh
-:data:`oridisanisoaxes`                    orientation distribution principal axes                          elset, mesh
-:data:`oridisanisofact`                    orientation distribution factor                                  elset, mesh
-:data:`odf(<var>=<value>,...)`             ODF defined at elements of orientation space (see also below)    tess, tesr, mesh, cell, elt, elset
-:data:`odfn(<var>=<value>,...)`            ODF defined at nodes of orientation space (see also below)       tess, tesr, mesh
-========================================== ================================================================ ==================================
+========================================== ========================================================================== ===================================
+**Key**                                    **Descriptor**                                                             **Apply to**
+:data:`ori`                                average orientation                                                        elset, mesh
+:data:`gos`                                grain orientation spread [#gos]_                                           elset
+:data:`anisogos`                           grain orientation spread computed from :data:`oridisanisoangles`           elset
+:data:`oridisanisoangles`                  orientation distribution principal angles                                  elset, mesh
+:data:`oridisanisoaxes`                    orientation distribution principal axes                                    elset, mesh
+:data:`oridisanisofact`                    orientation distribution factor                                            elset, mesh
+:data:`odf(<var>=<value>,...)`             ODF defined at elements of orientation space (see also below)              tess, tesr, mesh, cell, elt, elset
+:data:`odfn(<var>=<value>,...)`            ODF defined at nodes of orientation space (see also below)                 tess, tesr, mesh
+:data:`orifield(var=<var>,...)`            :data:`<var>` field defined at elements of orientation space (see below)   mesh
+:data:`orifieldn(var=<var>,...)`           :data:`<var>` field defined at nodes of orientation space (see below)      mesh
+========================================== ========================================================================== ===================================
 
 The ODF (:data:`odf` or :data:`odfn`) of a tessellation or mesh is computed over orientation space (provided using :option:`-orispace`) from the orientations of the (tessellation) cells or (mesh) elsets.  The (optional) parameters are:
 
@@ -603,6 +605,15 @@ The ODF (:data:`odf` or :data:`odfn`) of a tessellation or mesh is computed over
 - :data:`cutoff`: the cut-off factor used to compute the ODF, which can be :data:`all` (for no cut-off) or any positive real value (default :data:`5`).
 
 For a cell, element or elset, :data:`odf` returns the value of the ODF of the tessellation or mesh at the corresponding orientation (and simulation step).
+
+The :data:`orifield` and :data:`orifieldn` of a mesh is computed over orientation space (provided using :option:`-orispace`) from the values of the (mesh) elsets.  The mandatory parameter is:
+
+- :data:`var`: the variable, which must be defined for elsets (i.e., have its files in the simulation directory);
+
+and the optional parameters are:
+
+- :data:`theta`: the standard deviation of the kernel (in degrees);
+- :data:`weight`: the weight of an elset, which can be a real value or an expression based on the :ref:`mesh_keys` (for elsets) --  by default, the volumes of the elsets are used.
 
 .. _rotations_and_orientations:
 

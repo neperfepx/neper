@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Expressions and Keys &mdash; Neper 4.8.0 documentation</title>
+  <title>Expressions and Keys &mdash; Neper 4.8.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=0b4ca7ae"></script>
+        <script src="../_static/documentation_options.js?v=af3423b7"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.8.0
+                4.8.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -1730,6 +1730,14 @@
 <td><p>ODF defined at nodes of orientation space (see also below)</p></td>
 <td><p>tess, tesr, mesh</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">orifield(var=&lt;var&gt;,...)</span></code></p></td>
+<td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;var&gt;</span></code> field defined at elements of orientation space (see below)</p></td>
+<td><p>mesh</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">orifieldn(var=&lt;var&gt;,...)</span></code></p></td>
+<td><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;var&gt;</span></code> field defined at nodes of orientation space (see below)</p></td>
+<td><p>mesh</p></td>
+</tr>
 </tbody>
 </table>
 <p>The ODF (<code class="xref py py-data docutils literal notranslate"><span class="pre">odf</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">odfn</span></code>) of a tessellation or mesh is computed over orientation space (provided using <a class="reference internal" href="neper_s.html#cmdoption-orispace"><code class="xref std std-option docutils literal notranslate"><span class="pre">-orispace</span></code></a>) from the orientations of the (tessellation) cells or (mesh) elsets.  The (optional) parameters are:</p>
@@ -1741,6 +1749,15 @@
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cutoff</span></code>: the cut-off factor used to compute the ODF, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code> (for no cut-off) or any positive real value (default <code class="xref py py-data docutils literal notranslate"><span class="pre">5</span></code>).</p></li>
 </ul>
 <p>For a cell, element or elset, <code class="xref py py-data docutils literal notranslate"><span class="pre">odf</span></code> returns the value of the ODF of the tessellation or mesh at the corresponding orientation (and simulation step).</p>
+<p>The <code class="xref py py-data docutils literal notranslate"><span class="pre">orifield</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">orifieldn</span></code> of a mesh is computed over orientation space (provided using <a class="reference internal" href="neper_s.html#cmdoption-orispace"><code class="xref std std-option docutils literal notranslate"><span class="pre">-orispace</span></code></a>) from the values of the (mesh) elsets.  The mandatory parameter is:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">var</span></code>: the variable, which must be defined for elsets (i.e., have its files in the simulation directory);</p></li>
+</ul>
+<p>and the optional parameters are:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">theta</span></code>: the standard deviation of the kernel (in degrees);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">weight</span></code>: the weight of an elset, which can be a real value or an expression based on the <a class="reference internal" href="#mesh-keys"><span class="std std-ref">Mesh Keys</span></a> (for elsets) –  by default, the volumes of the elsets are used.</p></li>
+</ul>
 </section>
 <section id="rotations-and-orientations">
 <span id="id51"></span><h2>Rotations and Orientations<a class="headerlink" href="#rotations-and-orientations" title="Link to this heading"></a></h2>
