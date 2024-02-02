@@ -1143,3 +1143,124 @@ nes_pproc_entity_builtin_elsets_gen (struct SIM *pSim,
 
   return;
 }
+
+void
+nes_pproc_entity_builtin_elsets_orifield (struct SIM *pSim, struct TESS *pTess,
+                                     struct NODES *pNodes, struct MESH *Mesh,
+                                     char *entity, char *res, struct SIMRES *pSimRes)
+{
+  int i, step, size, status;
+  double **elsetdata = ut_alloc_2d (Mesh[(*pTess).Dim].ElsetQty + 1, 4);
+  double *elsetdata1d = ut_alloc_1d (Mesh[(*pTess).Dim].ElsetQty + 1);
+  double ***evect = ut_alloc_3d (Mesh[(*pTess).Dim].ElsetQty + 1, 3, 3);
+  double **eval = ut_alloc_2d (Mesh[(*pTess).Dim].ElsetQty + 1, 3);
+  char *prev = ut_alloc_1d_char (1000);
+  char *filename = NULL;
+  FILE *file = NULL;
+  struct OL_SET OSet;
+  struct ODF Odf;
+  char *fct = NULL, **vars = NULL, **vals = NULL;
+  char *weight = NULL;
+  char *var = NULL;
+  char *thetastring = ut_alloc_1d_char (100);
+  struct SIMRES SimRes2;
+
+  neut_simres_set_zero (&SimRes2);
+
+  ut_string_function (res, &fct, &vars, &vals, &size);
+
+  neut_sim_orispace (*pSim, &Odf, (char*) "R");
+
+  ut_print_progress (stdout, 0, (*pSim).StepQty + 1, (char*) "%3.0f%%", prev);
+
+  for (step = 0; step <= (*pSim).StepQty; step++)
+  {
+    neut_sim_setstep (pSim, step);
+    neut_sim_simres (*pSim, (char*) "elsets", (char*) "ori", &SimRes2);
+
+    neut_simres_setstep (pSimRes, step);
+    neut_simres_setstep (&SimRes2, step);
+
+    status = neut_mesh_elsetori (Mesh[(*pTess).Dim], elsetdata);
+    if (status)
+      ut_print_message (2, 0, (char*) "Failed to read elset oris.\n");
+
+    file = ut_file_open ((*pSimRes).file, (char*) "W");
+
+    neut_mesh_elsets_olset (*pNodes, Mesh[(*pTess).Dim], elsetdata,
+                            NULL, Mesh[(*pTess).Dim].ElsetQty, &OSet);
+    ut_string_string (Mesh[(*pTess).Dim].ElsetCrySym, &(OSet.crysym));
+
+    int user_sigma = 0;
+    ut_string_string ("1", &weight);
+    for (i = 0; i < size; i++)
+    {
+      if (!strcmp (vars[i], "theta"))
+      {
+        Odf.sigma = atof (vals[i]);
+        Odf.sigma *= M_PI / 180;
+        user_sigma = 1;
+      }
+      else if (!strcmp (vars[i], "weight"))
+        ut_string_string (vals[i], &weight);
+      else if (!strcmp (vars[i], "var"))
+        ut_string_string (vals[i], &var);
+    }
+    if (!user_sigma)
+      neut_odf_setsigma (&Odf, (char*) "avthetaeq", OSet.size, OSet.crysym);
+
+    sprintf (thetastring, " (theta = %9.6f°)     ", Odf.sigma * 180 / M_PI);
+    ut_print_clearline (stdout, strlen (thetastring) - 1);
+    printf ("%s", thetastring);
+
+    ut_print_progress (stdout, 0, (*pSim).StepQty + 1, (char*) "%3.0f%%", prev);
+
+    // Setting weights
+    for (i = 0; i < size; i++)
+      if (!strcmp (vars[i], "weight"))
+        neut_mesh_entity_expr_val (*pNodes, Mesh, pTess,
+                                   NULL, NULL, NULL, NULL, (char*) "elset", weight,
+                                   OSet.weight, NULL);
+
+    neut_sim_simres (*pSim, (char*) "elset", var, &SimRes2);
+    ut_array_1d_fnscanf (SimRes2.file, elsetdata1d + 1, Mesh[(*pTess).Dim].ElsetQty, (char *) "R");
+
+    if (!strcmp (fct, "orifield"))
+    {
+      neut_odf_orifield_comp ((char *) "m", !strcmp (weight, "1") ? (char *) "5" : (char *) "all", &OSet, elsetdata1d + 1, &Odf);
+
+      for (i = 0; i < Odf.odfqty; i++)
+        fprintf (file, REAL_PRINT_FORMAT "\n", Odf.odf[i]);
+    }
+    else if (!strcmp (fct, "orifieldn"))
+    {
+      neut_odf_orifield_comp ((char *) "n", !strcmp (weight, "1") ? (char *) "5" : (char *) "all", &OSet, elsetdata1d + 1, &Odf);
+      for (i = 0; i < Odf.odfnqty; i++)
+        fprintf (file, REAL_PRINT_FORMAT "\n", Odf.odfn[i]);
+    }
+
+    ut_file_close (file, (*pSimRes).file, "W");
+
+    ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1,  (char *) "%3.0f%%", prev);
+  }
+
+  neut_sim_setstep (pSim, 0);
+  neut_sim_addres (pSim, entity, res, NULL);
+  neut_sim_fprintf ((*pSim).simdir, *pSim, (char *) "W");
+
+  // neut_odf_free (&Odf);
+  ut_free_1d_char (&filename);
+  ut_free_3d (&evect, Mesh[(*pTess).Dim].ElsetQty + 1, 3);
+  ut_free_2d (&eval, Mesh[(*pTess).Dim].ElsetQty + 1);
+  ut_free_2d (&elsetdata, Mesh[(*pTess).Dim].ElsetQty + 1);
+  ut_free_1d (&elsetdata1d);
+  ut_free_1d_char (&prev);
+  ut_free_1d_char (&weight);
+  ut_free_1d_char (&var);
+  ut_free_1d_char (&thetastring);
+  ut_free_2d_char (&vars, size);
+  ut_free_2d_char (&vals, size);
+  neut_simres_free (&SimRes2);
+
+  return;
+}

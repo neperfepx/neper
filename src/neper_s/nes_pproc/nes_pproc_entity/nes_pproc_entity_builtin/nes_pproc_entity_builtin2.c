@@ -64,6 +64,14 @@ nes_pproc_entity_builtin_elsets (struct SIM *pSim, struct TESS *pTess,
                                                &SimRes);
   }
 
+  else if (!strncmp (res, "orifield", 8))
+  {
+    // if mesh, we compute the odf over orientation space
+    if (!strcmp (entity, "mesh"))
+      nes_pproc_entity_builtin_elsets_orifield (pSim, pTess, pNodes, Mesh,
+                                                entity, res, &SimRes);
+  }
+
   else
     nes_pproc_entity_builtin_elsets_gen (pSim, pNodes, Mesh, entity, res,
                                          members, memberqty, &SimRes);

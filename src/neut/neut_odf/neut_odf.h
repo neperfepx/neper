@@ -24,6 +24,8 @@ extern void neut_odf_convolve (struct ODF *pOdf, char *kernel);
 extern void neut_odf_deconvolve (struct ODF *pOdf, char *kernel);
 
 extern void neut_odf_elt_ori (struct ODF Odf, int elt, gsl_rng *r, double *q);
+extern void neut_odf_orifield_comp (char *mode, char *neigh, struct OL_SET *pOSet,
+                                    double *oridata, struct ODF *pOdf);
 
 #endif /* NEUT_ODF_H */
 

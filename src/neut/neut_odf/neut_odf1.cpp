@@ -7,6 +7,10 @@
 
 extern double neut_odf_comp_elts (char *neigh, struct OL_SET *pOSet, QCLOUD nanocloud, my_kd_tree_t *nano_index, struct ODF *pOdf, int verbosity);
 extern double neut_odf_comp_nodes (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud, my_kd_tree_t *nano_index, struct ODF *pOdf, int verbosity);
+extern double neut_odf_orifield_comp_elts (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud,
+                             my_kd_tree_t *nano_index, double *oridata, struct ODF *pOdf);
+extern double neut_odf_orifield_comp_nodes (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud,
+                     my_kd_tree_t *nano_index, double *oridata, struct ODF *pOdf);
 
 void
 neut_odf_set_zero (struct ODF *pOdf)
@@ -308,6 +312,27 @@ neut_odf_elt_ori (struct ODF Odf, int elt, gsl_rng *r, double *q)
   }
 
   ut_free_1d (&coo);
+
+  return;
+}
+
+void
+neut_odf_orifield_comp (char *mode, char *neigh, struct OL_SET *pOSet,
+                        double *oridata, struct ODF *pOdf)
+{
+  my_kd_tree_t *nano_index = nullptr;
+  nanoflann::SearchParams params;
+  QCLOUD nano_cloud;
+
+  neut_oset_kdtree (pOSet, &nano_cloud, &nano_index);
+
+  if (strstr (mode, "m") || strstr (mode, "n"))
+    neut_odf_orifield_comp_elts (neigh, pOSet, nano_cloud, nano_index, oridata, pOdf);
+
+  if (strstr (mode, "n"))
+    neut_odf_orifield_comp_nodes (neigh, pOSet, nano_cloud, nano_index, oridata, pOdf);
+
+  delete nano_index;
 
   return;
 }

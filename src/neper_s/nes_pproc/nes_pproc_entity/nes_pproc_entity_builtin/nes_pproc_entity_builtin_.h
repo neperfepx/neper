@@ -52,6 +52,10 @@ extern void nes_pproc_entity_builtin_elsets_odf (struct SIM *pSim, struct TESS *
                                   struct NODES *pNodes, struct MESH *Mesh,
                                   char *entity, char *res, struct SIMRES *pSimRes);
 
+extern void nes_pproc_entity_builtin_elsets_orifield (struct SIM *pSim, struct TESS *pTess,
+                                  struct NODES *pNodes, struct MESH *Mesh,
+                                  char *entity, char *res, struct SIMRES *pSimRes);
+
 extern void nes_pproc_entity_builtin_elsets_readodf (struct SIM *pSim, struct TESS Tess,
                                   struct MESH *Mesh, char *entity, char *res,
                                   struct SIMRES *pSimRes);

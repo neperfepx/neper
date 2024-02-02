@@ -61,6 +61,92 @@ neut_odf_comp_nodes_all (struct OL_SET *pOSet, double *q, struct ODF *pOdf, int 
   return;
 }
 
+// input: q & id: orientation and id of the mesh elt
+void
+neut_odf_orifield_comp_elts_all (struct OL_SET *pOSet, double *oridata, double *q,
+                                 int id, struct ODF *pOdf)
+{
+  int i, j, n = ol_crysym_qty ((*pOSet).crysym);
+  double theta, tmp, *oridata_weight = ut_alloc_1d ((*pOSet).size), *qs = ol_q_alloc ();
+
+  for (i = 0; i < (int) (*pOSet).size; i++)
+  {
+    // Computing weight (sum of gaussian kernels)
+    for (j = 1; j <= n; j++)
+    {
+      ol_q_crysym ((*pOSet).q[i], (*pOSet).crysym, j, qs);
+      ol_q_q_misori_rad (q, qs, &theta);
+
+      tmp = 1 / sqrt (2 * M_PI * (*pOdf).sigma * (*pOdf).sigma)
+        * exp (-theta * theta / (2 * (*pOdf).sigma * (*pOdf).sigma));
+
+      oridata_weight[i] += tmp;
+    }
+
+    // Multiplying by the orientation weight
+    oridata_weight[i] *= (*pOSet).weight[i];
+  }
+
+  // Computing weighted average
+  // weighting is done respective to the the previously computed weights and
+  // the orientation weights, if defined
+
+  // we use (*pOdf).odf as a placeholder, as we are not actually computing an odf
+  (*pOdf).odf[id] = 0;
+  for (i = 0; i < (int) (*pOSet).size; i++)
+    (*pOdf).odf[id] += oridata_weight[i] * oridata[i];
+  (*pOdf).odf[id] /= ut_array_1d_sum (oridata_weight, (int) (*pOSet).size);
+
+  ol_q_free (qs);
+  ut_free_1d (&oridata_weight);
+
+  return;
+}
+
+// same as neut_odf_orifield_comp_elts_all, except that we copy to odfn[id]
+// input: q & id: orientation and id of the mesh elt
+void
+neut_odf_orifield_comp_nodes_all (struct OL_SET *pOSet, double *oridata, double *q,
+                                  int id, struct ODF *pOdf)
+{
+  int i, j, n = ol_crysym_qty ((*pOSet).crysym);
+  double theta, tmp, *oridata_weight = ut_alloc_1d ((*pOSet).size), *qs = ol_q_alloc ();
+
+  for (i = 0; i < (int) (*pOSet).size; i++)
+  {
+    // Computing weight (sum of gaussian kernels)
+    for (j = 1; j <= n; j++)
+    {
+      ol_q_crysym ((*pOSet).q[i], (*pOSet).crysym, j, qs);
+      ol_q_q_misori_rad (q, qs, &theta);
+
+      tmp = 1 / sqrt (2 * M_PI * (*pOdf).sigma * (*pOdf).sigma)
+        * exp (-theta * theta / (2 * (*pOdf).sigma * (*pOdf).sigma));
+
+      oridata_weight[i] += tmp;
+    }
+
+    // Multiplying by the orientation weight
+    oridata_weight[i] *= (*pOSet).weight[i];
+  }
+
+  // Computing weighted average
+  // weighting is done respective to the the previously computed weights and
+  // the orientation weights, if defined
+
+  // we use (*pOdf).odfn as a placeholder, as we are not actually computing an odfn
+
+  (*pOdf).odfn[id] = 0;
+  for (i = 0; i < (int) (*pOSet).size; i++)
+    (*pOdf).odfn[id] += oridata_weight[i] * oridata[i];
+  (*pOdf).odfn[id] /= ut_array_1d_sum (oridata_weight, (int) (*pOSet).size);
+
+  ol_q_free (qs);
+  ut_free_1d (&oridata_weight);
+
+  return;
+}
+
 void
 neut_odf_comp_elts_neigh (double *q, double cut_fact, QCLOUD qcloud,
                           my_kd_tree_t *nano_index, struct ODF *pOdf, int id)

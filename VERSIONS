@@ -1,6 +1,6 @@
-New in 4.8.1-2 (24 Jan 2024):
-
+New in 4.8.1 (02 Feb 2024):
 - general: fixed compatibility with Gmsh (version 4.12.2).
+- module -S: added -resmesh orifield,orifieldn.
 
 New in 4.8.0 (09 Jan 2024):
 - module -T: fixed weibull distribution, made minor fixes.
@@ -10,7 +10,7 @@ New in 4.8.0 (09 Jan 2024):
 - module -V: fixed -datanodecoofact.
 - module -S: changed simulation.config onto simulation.cfg.
 - documentation: made minor fix.
-- general: fixed compatibility with Gmsh (version 4.12.2).
+- general: cleaned tests.
 
 * Incompatible changes:  In -M, changed default value of -order to 2.
 
