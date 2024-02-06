@@ -552,7 +552,7 @@ Transformation Options
 
     - :data:`torus[i](<basis_x>,<basis_y>,<basis_z>,<axis_x>,<axis_y>,<axis_z>,<rad>,<srad>)`: a torus of basis point (:data:`<basis_x>`, :data:`<basis_y>`, :data:`<basis_z>`), axis (:data:`<axis_x>`, :data:`<axis_y>`, :data:`<axis_z>`), radius :data:`<rad>` and section radius :data:`<srad>`;
 
-    - :data:`cube[i](<xmin>,<xmax>,<ymin>,<ymax>,<zmin>,<zmax>)`: a cube of :math:`x`, :math:`y` and :math:`z` coordinates in the specified ranges. (Only :data:`cubei` is available).
+    - :data:`cube[i](<xmin>,<xmax>,<ymin>,<ymax>,<zmin>,<zmax>,<rad>)`: a cube of :math:`x`, :math:`y` and :math:`z` coordinates in the specified ranges, with corners of radius :data:`<rad>`; the radius can take any value, but should typically be non-zero (and larger than the cell size).
 
   - :data:`planecut(<d>,<a>,<b>,<c>)`: cut by the (oriented) plane of equation :math:`a\,x+b\,y+c\,z=d`.
 

@@ -320,6 +320,29 @@ extern "C"
   extern int ut_space_point_sphere_side (double *pt, double *centre,
                                          double rad);
 
+/// \brief Get the side of a rounded cube a point belongs to
+/// \param pt: point
+/// \param parms: xmin, xmax, ymin, ymax, zmin, zmax, rad
+  extern int ut_space_point_cube_side (double *coo, double *parms, double *plane);
+
+/// \brief Get the tangent plane of a rounded cube at a given point
+/// \param pt: point
+/// \param parms: xmin, xmax, ymin, ymax, zmin, zmax, rad
+/// \param plane: plane
+  extern void ut_space_point_cube_tangentplane (double *coo, double *parms, double *plane);
+
+/// \brief Get the projection on a rounded cube at a given point
+/// \param pt: point
+/// \param parms: xmin, xmax, ymin, ymax, zmin, zmax, rad
+/// \param proj: projection
+  extern void ut_space_point_cube_proj (double *coo, double *parms, double *proj);
+
+/// \brief Get the mirror point, on a rounded cube, of a given point
+/// \param pt: point
+/// \param parms: xmin, xmax, ymin, ymax, zmin, zmax, rad
+/// \param plane: mirror
+  extern void ut_space_point_cube_mirror (double *coo, double *parms, double *mirror);
+
 /// \brief Get the side of a cylinder a point belongs to
 /// \param pt: point
 /// \param basept: cylinder base point

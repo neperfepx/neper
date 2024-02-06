@@ -2399,39 +2399,6 @@ ut_space_point_sphere_mirror (double *P, double *C, double rad, double *P2)
 }
 
 void
-ut_space_point_cyl_mirror (double *point, double *basis, double *axis,
-                           double rad, double *mirror)
-{
-  int i;
-  double *proj = ut_alloc_1d (3);
-  double *basis2 = ut_alloc_1d (3);
-  double *v = ut_alloc_1d (3);
-  double *oncyl = ut_alloc_1d (3);
-
-  ut_array_1d_add (basis, axis, 3, basis2);
-
-  ut_space_segment_point_proj (basis, basis2, point, proj, NULL, NULL);
-
-  ut_array_1d_sub (proj, point, 3, v);
-
-  ut_array_1d_normalize (v, 3);
-
-  ut_array_1d_scale (v, 3, rad);
-
-  ut_array_1d_add (proj, v, 3, oncyl);
-
-  for (i = 0; i < 3; i++)
-    mirror[i] = 2 * oncyl[i] - point[i];
-
-  ut_free_1d (&oncyl);
-  ut_free_1d (&proj);
-  ut_free_1d (&basis2);
-  ut_free_1d (&v);
-
-  return;
-}
-
-void
 ut_space_point_torus_mirror (double *P, double *C, double *N, double R,
                              double R2, double *mirror)
 {
@@ -2441,30 +2408,6 @@ ut_space_point_torus_mirror (double *P, double *C, double *N, double R,
   ut_space_point_sphere_mirror (P, K, R2, mirror);
 
   ut_free_1d (&K);
-
-  return;
-}
-
-void
-ut_space_point_cyl_proj (double *point, double *basis, double *axis,
-                         double rad, double *proj)
-{
-  double *basis2 = ut_alloc_1d (3);
-  double *v = ut_alloc_1d (3);
-  double *tmp = ut_alloc_1d (3);
-
-  ut_array_1d_add (basis, axis, 3, basis2);
-
-  ut_space_segment_point_proj (basis, basis2, point, tmp, NULL, NULL);
-
-  ut_array_1d_sub (tmp, point, 3, v);
-  ut_array_1d_normalize (v, 3);
-  ut_array_1d_scale (v, 3, rad);
-  ut_array_1d_add (tmp, v, 3, proj);
-
-  ut_free_1d (&basis2);
-  ut_free_1d (&v);
-  ut_free_1d (&tmp);
 
   return;
 }
@@ -2515,16 +2458,6 @@ ut_space_point_line_dist (double *P, double *A, double *v, double *pdist)
   ut_free_1d (&B);
 
   return;
-}
-
-int
-ut_space_point_cyl_side (double *coo, double *A, double *v, double rad)
-{
-  double dist;
-
-  ut_space_point_line_dist (coo, A, v, &dist);
-
-  return (dist <= rad) ? -1 : 1;
 }
 
 int
@@ -2589,32 +2522,6 @@ ut_space_point_sphere_tangentplane (double *point, double *c, double rad,
   planeeq[0] = ut_vector_scalprod (proj, planeeq + 1);
 
   ut_free_1d (&v);
-  ut_free_1d (&proj);
-
-  return;
-}
-
-void
-ut_space_point_cyl_tangentplane (double *point, double *basis, double *axis,
-                                 double rad, double *planeeq)
-{
-  double *tmp = ut_alloc_1d (3);
-  double *basis2 = ut_alloc_1d (3);
-  double *proj = ut_alloc_1d (3);
-
-  ut_space_point_cyl_proj (point, basis, axis, rad, proj);
-
-  ut_array_1d_add (basis, axis, 3, basis2);
-
-  ut_space_segment_point_proj (basis, basis2, proj, tmp, NULL, NULL);
-
-  ut_array_1d_sub (tmp, proj, 3, planeeq + 1);
-  ut_array_1d_normalize (planeeq + 1, 3);
-
-  planeeq[0] = ut_vector_scalprod (proj, planeeq + 1);
-
-  ut_free_1d (&basis2);
-  ut_free_1d (&tmp);
   ut_free_1d (&proj);
 
   return;
@@ -2894,6 +2801,495 @@ ut_space_tet_randompt (double *v0, double *v1, double *v2, double *v3, gsl_rng *
 
   for (i = 0; i < 3; i++)
     pt[i] = v0[i] * a + v1[i] * s + v2[i] * t + v3[i] * u;
+
+  return;
+}
+
+int
+ut_space_point_cyl_side (double *coo, double *A, double *v, double rad)
+{
+  double dist;
+
+  ut_space_point_line_dist (coo, A, v, &dist);
+
+  return (dist <= rad) ? -1 : 1;
+}
+
+void
+ut_space_point_cyl_tangentplane (double *point, double *basis, double *axis,
+                                 double rad, double *planeeq)
+{
+  double *tmp = ut_alloc_1d (3);
+  double *basis2 = ut_alloc_1d (3);
+  double *proj = ut_alloc_1d (3);
+
+  ut_space_point_cyl_proj (point, basis, axis, rad, proj);
+
+  ut_array_1d_add (basis, axis, 3, basis2);
+
+  ut_space_segment_point_proj (basis, basis2, proj, tmp, NULL, NULL);
+
+  ut_array_1d_sub (tmp, proj, 3, planeeq + 1);
+  ut_array_1d_normalize (planeeq + 1, 3);
+
+  planeeq[0] = ut_vector_scalprod (proj, planeeq + 1);
+
+  ut_free_1d (&basis2);
+  ut_free_1d (&tmp);
+  ut_free_1d (&proj);
+
+  return;
+}
+
+void
+ut_space_point_cyl_proj (double *point, double *basis, double *axis,
+                         double rad, double *proj)
+{
+  double *basis2 = ut_alloc_1d (3);
+  double *v = ut_alloc_1d (3);
+  double *tmp = ut_alloc_1d (3);
+
+  ut_array_1d_add (basis, axis, 3, basis2);
+
+  ut_space_segment_point_proj (basis, basis2, point, tmp, NULL, NULL);
+
+  ut_array_1d_sub (tmp, point, 3, v);
+  ut_array_1d_normalize (v, 3);
+  ut_array_1d_scale (v, 3, rad);
+  ut_array_1d_add (tmp, v, 3, proj);
+
+  ut_free_1d (&basis2);
+  ut_free_1d (&v);
+  ut_free_1d (&tmp);
+
+  return;
+}
+
+void
+ut_space_point_cyl_mirror (double *point, double *basis, double *axis,
+                           double rad, double *mirror)
+{
+  int i;
+  double *proj = ut_alloc_1d (3);
+  double *basis2 = ut_alloc_1d (3);
+  double *v = ut_alloc_1d (3);
+  double *oncyl = ut_alloc_1d (3);
+
+  ut_array_1d_add (basis, axis, 3, basis2);
+
+  ut_space_segment_point_proj (basis, basis2, point, proj, NULL, NULL);
+
+  ut_array_1d_sub (proj, point, 3, v);
+
+  ut_array_1d_normalize (v, 3);
+
+  ut_array_1d_scale (v, 3, rad);
+
+  ut_array_1d_add (proj, v, 3, oncyl);
+
+  for (i = 0; i < 3; i++)
+    mirror[i] = 2 * oncyl[i] - point[i];
+
+  ut_free_1d (&oncyl);
+  ut_free_1d (&proj);
+  ut_free_1d (&basis2);
+  ut_free_1d (&v);
+
+  return;
+}
+
+int
+ut_space_point_cube_side (double *coo, double *parms, double *plane)
+{
+  int i, j, k, id1, id2, id3, inside, tmp;
+  double rad, dist, mindist;
+  double *min = ut_alloc_1d (3);
+  double *max = ut_alloc_1d (3);
+  double *L = ut_alloc_1d (3);
+  double *Li = ut_alloc_1d (3);
+  double *C = ut_alloc_1d (3);
+  double *v = ut_alloc_1d (3);
+  double *base = ut_alloc_1d (3);
+  double **planes = ut_alloc_2d (6, 4);
+
+  if (plane)
+    ut_array_1d_zero (plane, 4);
+
+  rad = parms[6];
+  for (i = 0; i < 3; i++)
+  {
+    min[i] = parms[2 * i];
+    max[i] = parms[2 * i + 1];
+    L[i] = max[i] - min[i];
+    Li[i] = max[i] - min[i] - 2 * rad;
+    C[i] = .5 * (min[i] + max[i]);
+
+    planes[2 * i][0] = -min[i];
+    planes[2 * i][i + 1] = -1;
+    planes[2 * i + 1][0] = max[i];
+    planes[2 * i + 1][i + 1] = 1;
+  }
+
+  inside = -1;
+
+  // quick test for outside the outer cube
+  for (i = 0; i < 3; i++)
+    if (coo[i] < min[i] || coo[i] > max[i])
+    {
+      inside = 0;
+      break;
+    }
+
+  if (inside == -1)
+  {
+    // testing inner cubes
+    for (i = 0; i < 3; i++)
+    {
+      id1 = i;
+      id2 = ut_array_rotpos (0, 2, i, 1);
+      id3 = ut_array_rotpos (0, 2, i, 2);
+      if (coo[id1] > min[id1] && coo[id1] < max[id1]
+       && coo[id2] > min[id2] + rad && coo[id2] < max[id2] - rad
+       && coo[id3] > min[id3] + rad && coo[id3] < max[id3] - rad)
+      {
+        inside = 1;
+        break;
+      }
+    }
+
+    if (plane)
+    {
+      mindist = DBL_MAX;
+      for (i = 0; i < 6; i++)
+      {
+        dist = ut_space_point_plane_dist (coo, planes[i]);
+        if (dist < mindist)
+        {
+          mindist = dist;
+          ut_array_1d_memcpy (planes[i], 4, plane);
+        }
+      }
+    }
+  }
+
+  if (inside == -1)
+  {
+    // testing cylinders
+    for (i = 0; i < 3; i++)
+    {
+      id1 = i;
+      id2 = ut_array_rotpos (0, 2, i, 1);
+      id3 = ut_array_rotpos (0, 2, i, 2);
+
+      ut_array_1d_zero (v, 3);
+      v[id1] = 1;
+
+      if (coo[id1] > min[id1] + rad && coo[id1] < max[id1] - rad)
+        for (j = -1; j <=1; j += 2)
+        {
+          for (k = -1; k <=1; k += 2)
+          {
+            ut_array_1d_memcpy (C, 3, base);
+            base[id2] += j * Li[id2] / 2;
+            base[id3] += k * Li[id3] / 2;
+
+            tmp = ut_space_point_cyl_side (coo, base, v, rad);
+            if (tmp == -1)
+            {
+              inside = 1;
+              if (plane)
+                ut_space_point_cyl_tangentplane (coo, base, v, rad, plane);
+              break;
+            }
+          }
+
+          if (inside == 1)
+            break;
+        }
+
+      if (inside == 1)
+        break;
+    }
+  }
+
+  if (inside == -1)
+  {
+    // testing spheres
+    for (i = -1; i <= 1; i+=2)
+    {
+      for (j = -1; j <= 1; j+=2)
+      {
+        for (k = -1; k <= 1; k+=2)
+        {
+          ut_array_1d_memcpy (C, 3, base);
+          base[0] += i * Li[0] / 2;
+          base[1] += j * Li[1] / 2;
+          base[2] += k * Li[2] / 2;
+
+          tmp = ut_space_point_sphere_side (coo, base, rad);
+          if (tmp == -1)
+          {
+            inside = 1;
+            if (plane)
+              ut_space_point_sphere_tangentplane (coo, base, rad, plane);
+            break;
+          }
+        }
+
+        if (inside == 1)
+          break;
+      }
+
+      if (inside == 1)
+        break;
+    }
+  }
+
+  // at this point, if unitialized, we know it's outside
+  if (inside == -1)
+    inside = 0;
+
+  ut_free_1d (&min);
+  ut_free_1d (&max);
+  ut_free_1d (&L);
+  ut_free_1d (&Li);
+  ut_free_1d (&C);
+  ut_free_1d (&v);
+  ut_free_1d (&base);
+  ut_free_2d (&planes, 6);
+
+  return (inside == 0) ? 1 : -1;
+}
+
+void
+ut_space_point_cube_tangentplane (double *coo, double *parms, double *plane)
+{
+  int i, side;
+  double rad;
+  double *min = ut_alloc_1d (3);
+  double *max = ut_alloc_1d (3);
+  double *mins = ut_alloc_1d (3);
+  double *maxs = ut_alloc_1d (3);
+  double *C = ut_alloc_1d (3);
+  double *v = ut_alloc_1d (3);
+  double eps = 1e-9;
+
+  rad = parms[6];
+  for (i = 0; i < 3; i++)
+  {
+    min[i] = parms[2 * i];
+    max[i] = parms[2 * i + 1];
+    C[i] = .5 * (min[i] + max[i]);
+
+    mins[i] = min[i] + rad + eps;
+    maxs[i] = max[i] - rad - eps;
+  }
+
+  side = ut_space_point_cube_side (coo, parms, plane);
+
+  if (side == 1)
+  {
+    // testing corners from the outside
+
+    // x0y0z0
+    if (coo[0] < mins[0] && coo[1] < mins[1] && coo[2] < mins[2])
+    {
+      ut_array_1d_set_3 (C, mins[0], mins[1], mins[2]);
+      ut_space_point_sphere_tangentplane (coo, C, rad, plane);
+    }
+
+    // x1y0z0
+    else if (coo[0] > maxs[0] && coo[1] < mins[1] && coo[2] < mins[2])
+    {
+      ut_array_1d_set_3 (C, maxs[0], mins[1], mins[2]);
+      ut_space_point_sphere_tangentplane (coo, C, rad, plane);
+    }
+
+    // x1y1z0
+    else if (coo[0] > maxs[0] && coo[1] > maxs[1] && coo[2] < mins[2])
+    {
+      ut_array_1d_set_3 (C, maxs[0], maxs[1], mins[2]);
+      ut_space_point_sphere_tangentplane (coo, C, rad, plane);
+    }
+
+    // x0y1z0
+    else if (coo[0] < mins[0] && coo[1] > maxs[1] && coo[2] < mins[2])
+    {
+      ut_array_1d_set_3 (C, mins[0], maxs[1], mins[2]);
+      ut_space_point_sphere_tangentplane (coo, C, rad, plane);
+    }
+
+    // x0y0z1
+    else if (coo[0] < mins[0] && coo[1] < mins[1] && coo[2] > maxs[2])
+    {
+      ut_array_1d_set_3 (C, mins[0], mins[1], maxs[2]);
+      ut_space_point_sphere_tangentplane (coo, C, rad, plane);
+    }
+
+    // x1y0z1
+    else if (coo[0] > maxs[0] && coo[1] < mins[1] && coo[2] > maxs[2])
+    {
+      ut_array_1d_set_3 (C, maxs[0], mins[1], maxs[2]);
+      ut_space_point_sphere_tangentplane (coo, C, rad, plane);
+    }
+
+    // x1y1z1
+    else if (coo[0] > maxs[0] && coo[1] > maxs[1] && coo[2] > maxs[2])
+    {
+      ut_array_1d_set_3 (C, maxs[0], maxs[1], maxs[2]);
+      ut_space_point_sphere_tangentplane (coo, C, rad, plane);
+    }
+
+    // x0y1z1
+    else if (coo[0] < mins[0] && coo[1] > maxs[1] && coo[2] > maxs[2])
+    {
+      ut_array_1d_set_3 (C, mins[0], maxs[1], maxs[2]);
+      ut_space_point_sphere_tangentplane (coo, C, rad, plane);
+    }
+
+    // testing cylinders from the outside
+
+    // x0y0
+    else if (coo[0] < mins[0] && coo[1] < mins[1])
+    {
+      ut_array_1d_set_3 (C, mins[0], mins[1], 0);
+      ut_array_1d_set_3 (v, 0, 0, 1);
+      ut_space_point_cyl_tangentplane (coo, C, v, rad, plane);
+    }
+    // x1y0
+    else if (coo[0] > maxs[0] && coo[1] < mins[1])
+    {
+      ut_array_1d_set_3 (C, maxs[0], mins[1], 0);
+      ut_array_1d_set_3 (v, 0, 0, 1);
+      ut_space_point_cyl_tangentplane (coo, C, v, rad, plane);
+    }
+    // x1y1
+    else if (coo[0] > maxs[0] && coo[1] > maxs[1])
+    {
+      ut_array_1d_set_3 (C, maxs[0], maxs[1], 0);
+      ut_array_1d_set_3 (v, 0, 0, 1);
+      ut_space_point_cyl_tangentplane (coo, C, v, rad, plane);
+    }
+    // x0y1
+    else if (coo[0] < mins[0] && coo[1] > maxs[1])
+    {
+      ut_array_1d_set_3 (C, mins[0], maxs[1], 0);
+      ut_array_1d_set_3 (v, 0, 0, 1);
+      ut_space_point_cyl_tangentplane (coo, C, v, rad, plane);
+    }
+    // y0z0
+    else if (coo[1] < mins[1] && coo[2] < mins[2])
+    {
+      ut_array_1d_set_3 (C, 0, mins[1], mins[2]);
+      ut_array_1d_set_3 (v, 1, 0, 0);
+      ut_space_point_cyl_tangentplane (coo, C, v, rad, plane);
+    }
+    // y1z0
+    else if (coo[1] > maxs[1] && coo[2] < mins[2])
+    {
+      ut_array_1d_set_3 (C, 0, maxs[1], mins[2]);
+      ut_array_1d_set_3 (v, 1, 0, 0);
+      ut_space_point_cyl_tangentplane (coo, C, v, rad, plane);
+    }
+    // y1z1
+    else if (coo[1] > maxs[1] && coo[2] > maxs[2])
+    {
+      ut_array_1d_set_3 (C, 0, maxs[1], maxs[2]);
+      ut_array_1d_set_3 (v, 1, 0, 0);
+      ut_space_point_cyl_tangentplane (coo, C, v, rad, plane);
+    }
+    // y0z1
+    else if (coo[1] < mins[1] && coo[2] > maxs[2])
+    {
+      ut_array_1d_set_3 (C, 0, mins[1], maxs[2]);
+      ut_array_1d_set_3 (v, 1, 0, 0);
+      ut_space_point_cyl_tangentplane (coo, C, v, rad, plane);
+    }
+    // x0z0
+    else if (coo[0] < mins[0] && coo[2] < mins[2])
+    {
+      ut_array_1d_set_3 (C, mins[0], 0, mins[2]);
+      ut_array_1d_set_3 (v, 0, 1, 0);
+      ut_space_point_cyl_tangentplane (coo, C, v, rad, plane);
+    }
+    // x1z0
+    else if (coo[0] > maxs[0] && coo[2] < mins[2])
+    {
+      ut_array_1d_set_3 (C, maxs[0], 0, mins[2]);
+      ut_array_1d_set_3 (v, 0, 1, 0);
+      ut_space_point_cyl_tangentplane (coo, C, v, rad, plane);
+    }
+    // x1z1
+    else if (coo[0] > maxs[0] && coo[2] > maxs[2])
+    {
+      ut_array_1d_set_3 (C, maxs[0], 0, maxs[2]);
+      ut_array_1d_set_3 (v, 0, 1, 0);
+      ut_space_point_cyl_tangentplane (coo, C, v, rad, plane);
+    }
+    // x0z1
+    else if (coo[0] < mins[0] && coo[2] > maxs[2])
+    {
+      ut_array_1d_set_3 (C, mins[0], 0, maxs[2]);
+      ut_array_1d_set_3 (v, 0, 1, 0);
+      ut_space_point_cyl_tangentplane (coo, C, v, rad, plane);
+    }
+
+    // testing faces from the outside
+
+    // x0y0
+    else if (coo[0] < min[0] + eps)
+      ut_array_1d_set_4 (plane, -min[0], -1,  0,  0);
+    else if (coo[0] > max[0] - eps)
+      ut_array_1d_set_4 (plane, max[0],  1,  0,  0);
+    else if (coo[1] < min[1] + eps)
+      ut_array_1d_set_4 (plane, -min[1], 0,  -1,  0);
+    else if (coo[1] > max[1] - eps)
+      ut_array_1d_set_4 (plane, max[1], 0,   1,  0);
+    else if (coo[2] < min[2] + eps)
+      ut_array_1d_set_4 (plane, -min[2], 0,  0, -1);
+    else if (coo[2] > max[2] - eps)
+      ut_array_1d_set_4 (plane, max[2], 0,  0,  1);
+
+    else
+    {
+      ut_array_1d_fprintf (stdout, coo, 3, "%f");
+      printf ("couldn't find tangent plane\n");
+      abort ();
+    }
+  }
+
+  ut_free_1d (&min);
+  ut_free_1d (&max);
+  ut_free_1d (&mins);
+  ut_free_1d (&maxs);
+  ut_free_1d (&C);
+  ut_free_1d (&v);
+
+  return;
+}
+
+void
+ut_space_point_cube_proj (double *point, double *parms, double *proj)
+{
+  double *plane = ut_alloc_1d (4);
+
+  ut_space_point_cube_tangentplane (point, parms, plane);
+  ut_space_point_plane_proj (point, plane, proj);
+
+  ut_free_1d (&plane);
+
+  return;
+}
+
+void
+ut_space_point_cube_mirror (double *point, double *parms, double *mirror)
+{
+  double *plane = ut_alloc_1d (4);
+
+  ut_space_point_cube_tangentplane (point, parms, plane);
+  ut_space_point_plane_mirror (point, plane, mirror);
+
+  ut_free_1d (&plane);
 
   return;
 }

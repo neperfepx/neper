@@ -77,6 +77,25 @@ neut_prim_sscanf (char *expr, struct PRIM *pPrim)
     }
   }
 
+  else if (!strcmp ((*pPrim).Type, "cube")
+           || !strcmp ((*pPrim).Type, "cubei"))
+  {
+    if (valqty != 6 && valqty != 7)
+      status = -1;
+    else
+    {
+      (*pPrim).ParmQty = 7;
+      (*pPrim).Parms = ut_alloc_1d ((*pPrim).ParmQty);
+      (*pPrim).Base = ut_alloc_1d (3);
+      (*pPrim).Rad = ut_alloc_1d (1);
+      for (i = 0; i < valqty; i++)
+        sscanf (vals[i], "%lf", (*pPrim).Parms + i);
+      for (i = 0; i < 3; i++)
+        (*pPrim).Base[i] = (*pPrim).Parms[i] + (*pPrim).Parms[i + 3];
+      (*pPrim).Rad[0] = (*pPrim).Parms[6];
+    }
+  }
+
   else if (!strcmp ((*pPrim).Type, "cylinder")
            || !strcmp ((*pPrim).Type, "cylinderi"))
   {
@@ -203,6 +222,24 @@ neut_prim_point_side (struct PRIM Prim, double *coo, int *pside)
 
     ut_free_1d (&plane);
   }
+  else if (!strcmp (Prim.Type, "cube"))
+  {
+    double *plane = ut_alloc_1d (4);
+
+    ut_space_point_cube_tangentplane (coo, Prim.Parms, plane);
+    *pside = ut_space_point_plane_side (coo - 1, plane);
+
+    ut_free_1d (&plane);
+  }
+  else if (!strcmp (Prim.Type, "cubei"))
+  {
+    double *plane = ut_alloc_1d (4);
+
+    ut_space_point_cube_tangentplane (coo, Prim.Parms, plane);
+    *pside = -ut_space_point_plane_side (coo - 1, plane);
+
+    ut_free_1d (&plane);
+  }
   else if (!strcmp (Prim.Type, "torus"))
   {
     ut_space_point_circle_dist (coo, Prim.Base, Prim.Dir, Prim.Rad[0], &dist,
@@ -229,6 +266,8 @@ neut_prim_point_mirror (struct PRIM Prim, double *coo, double *mirror)
   else if (!strcmp (Prim.Type, "cylinder")
            || !strcmp (Prim.Type, "cylinderi"))
     ut_space_point_cyl_mirror (coo, Prim.Base, Prim.Dir, Prim.Rad[0], mirror);
+  else if (!strcmp (Prim.Type, "cube") || !strcmp (Prim.Type, "cubei"))
+    ut_space_point_cube_mirror (coo, Prim.Parms, mirror);
   else if (!strcmp (Prim.Type, "ecylinder")
            || !strcmp (Prim.Type, "ecylinderi"))
     ut_space_point_ecyl_mirror (coo, Prim.Base, Prim.Dir, Prim.Dir + 3,
@@ -264,6 +303,8 @@ neut_primparms_point_proj (char *type, double *parms, double *coo,
     ut_space_point_sphere_proj (coo, parms, parms[3], proj);
   else if (!strcmp (type, "cylinder") || !strcmp (type, "cylinderi"))
     ut_space_point_cyl_proj (coo, parms, parms + 3, parms[6], proj);
+  else if (!strcmp (type, "cube") || !strcmp (type, "cubei"))
+    ut_space_point_cube_proj (coo, parms, proj);
   else if (!strcmp (type, "ecylinder") || !strcmp (type, "ecylinderi"))
     ut_space_point_ecyl_proj (coo, parms, parms + 3, parms + 6, parms + 9,
                               parms[12], parms[13], proj);
@@ -294,6 +335,8 @@ neut_primparms_point_tangentplane (char *type, double *parms, double *coo,
     ut_space_point_sphere_tangentplane (coo, parms, parms[3], plane);
   else if (!strcmp (type, "cylinder") || !strcmp (type, "cylinderi"))
     ut_space_point_cyl_tangentplane (coo, parms, parms + 3, parms[6], plane);
+  else if (!strcmp (type, "cube") || !strcmp (type, "cubei"))
+    ut_space_point_cube_tangentplane (coo, parms, plane);
   else if (!strcmp (type, "ecylinder") || !strcmp (type, "ecylinderi"))
     ut_space_point_ecyl_tangentplane (coo, parms, parms + 3, parms + 6,
                                       parms + 9, parms[12], parms[13], plane);

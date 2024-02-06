@@ -1491,6 +1491,35 @@ neut_tess_cell_sphereside (struct TESS Tess, int cell, double *C, double rad,
   return 0;
 }
 
+// -1: inside, 1: outside, 0: cut
+int
+neut_tess_cell_cubeside (struct TESS Tess, int cell, double *parms, int *pside)
+{
+  int i, verqty, min, max;
+  int *vers = NULL;
+  int *side = NULL;
+
+  neut_tess_cell_vers (Tess, cell, &vers, &verqty);
+
+  if (verqty == 0)
+    return -1;
+
+  side = ut_alloc_1d_int (verqty);
+
+  for (i = 0; i < verqty; i++)
+    side[i] = ut_space_point_cube_side (Tess.VerCoo[vers[i]], parms, NULL);
+
+  min = ut_array_1d_int_min (side, verqty);
+  max = ut_array_1d_int_max (side, verqty);
+
+  (*pside) = (min == max) ? min : 0;
+
+  ut_free_1d_int (&vers);
+  ut_free_1d_int (&side);
+
+  return 0;
+}
+
 int
 neut_tess_cell_primside (struct TESS Tess, int cell, struct PRIM Prim,
                          int *pside)
@@ -1500,11 +1529,13 @@ neut_tess_cell_primside (struct TESS Tess, int cell, struct PRIM Prim,
   else if (!strcmp (Prim.Type, "hspacei"))
     return neut_tess_cell_planeside (Tess, cell, Prim.Eq, pside);
   else if (!strcmp (Prim.Type, "sphere"))
-    return neut_tess_cell_sphereside (Tess, cell, Prim.Base, Prim.Rad[0],
-                                      pside);
+    return neut_tess_cell_sphereside (Tess, cell, Prim.Base, Prim.Rad[0], pside);
   else if (!strcmp (Prim.Type, "spherei"))
-    return -neut_tess_cell_sphereside (Tess, cell, Prim.Base, Prim.Rad[0],
-                                       pside);
+    return -neut_tess_cell_sphereside (Tess, cell, Prim.Base, Prim.Rad[0], pside);
+  else if (!strcmp (Prim.Type, "cube"))
+    return neut_tess_cell_cubeside (Tess, cell, Prim.Parms, pside);
+  else if (!strcmp (Prim.Type, "cubei"))
+    return -neut_tess_cell_cubeside (Tess, cell, Prim.Parms, pside);
   else if (!strcmp (Prim.Type, "cylinder"))
     return neut_tess_cell_cylside (Tess, cell, Prim.Base, Prim.Dir,
                                    Prim.Rad[0], pside);
