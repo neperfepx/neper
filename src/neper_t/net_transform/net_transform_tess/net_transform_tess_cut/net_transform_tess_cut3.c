@@ -21,12 +21,9 @@ net_transform_tess_cut_pre_prim (char *expr, struct PRIM **pPrim, int *pPrimQty,
   (*pPrimQty) = 0;
   for (i = 0; i < qty; i++)
   {
-    if (strncmp (tmp[i], "cubei", 5))
-    {
-      prim = ut_realloc_1d_pchar_null (prim, ++(*pPrimQty), 1);
-      ut_string_string (tmp[i], prim + (*pPrimQty) - 1);
-    }
-    else
+    ut_string_function (tmp[i], &fct2, NULL, &tmp2, &qty2);
+
+    if (!strncmp (tmp[i], "cubei", 5) && qty2 == 6)
     {
       char **tmp0 = ut_alloc_2d_char (6, 1000);
       ut_string_function (tmp[i], &fct2, NULL, &tmp2, &qty2);
@@ -46,6 +43,12 @@ net_transform_tess_cut_pre_prim (char *expr, struct PRIM **pPrim, int *pPrimQty,
         ut_string_string (tmp0[j], prim + (*pPrimQty) - 1);
       }
       ut_free_2d_char (&tmp0, 6);
+    }
+
+    else
+    {
+      prim = ut_realloc_1d_pchar_null (prim, ++(*pPrimQty), 1);
+      ut_string_string (tmp[i], prim + (*pPrimQty) - 1);
     }
   }
 

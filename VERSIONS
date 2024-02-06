@@ -1,5 +1,5 @@
-New in 4.8.2-1 (06 Feb 2024):
-- module -T: added -transform "cut(cube)".
+New in 4.8.2-2 (06 Feb 2024):
+- module -T: added -transform "cut(cube)", improved -transform "cut(cubei)".
 
 New in 4.8.1 (02 Feb 2024):
 - general: fixed compatibility with Gmsh (version 4.12.2).
