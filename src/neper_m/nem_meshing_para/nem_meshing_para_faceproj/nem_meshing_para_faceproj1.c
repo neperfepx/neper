@@ -10,6 +10,8 @@ nem_meshing_para_faceproj (struct TESS Tess, struct NODES RNodes,
 {
   int i, j, status, facecpy_qty;
   char *message = ut_alloc_1d_char (8);
+  int *failed = ut_alloc_1d_int (Tess.FaceQty + 1);
+  int failed_sum;
 
   (*pMeshPara).face_eq = ut_alloc_2d (Tess.FaceQty + 1, 4);
 
@@ -36,11 +38,24 @@ nem_meshing_para_faceproj (struct TESS Tess, struct NODES RNodes,
       if (!strcmp ((*pMeshPara).face_op[i], "meshproj"))
         ut_string_string ("copy", (*pMeshPara).face_op + i);
       else
-        ut_print_message (2, 2, "Failed to project face %d.\n", i);
+        failed[i] = 1;
     }
 
     ut_print_progress (stdout, i, Tess.FaceQty, "%3.0f%%", message);
     fflush (stdout);
+  }
+
+  failed_sum = ut_array_1d_int_sum (failed + 1, Tess.FaceQty);
+  if (failed_sum)
+  {
+    ut_print_lineheader (2);
+    ut_print_level (2);
+    printf ("Failed to project %d face%s:", failed_sum, (failed_sum == 1) ? "" : "s");
+    for (i = 1; i <= Tess.FaceQty; i++)
+      if (failed[i])
+        printf (" %d", i);
+    printf (".\n");
+    abort ();
   }
 
   facecpy_qty = 0;
@@ -58,6 +73,7 @@ nem_meshing_para_faceproj (struct TESS Tess, struct NODES RNodes,
                       facecpy_qty, (facecpy_qty > 1) ? "s" : "");
 
   ut_free_1d_char (&message);
+  ut_free_1d_int (&failed);
 
   return;
 }
