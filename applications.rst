@@ -30,6 +30,12 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2024
 ----
 
+- X Gao, X Lu, X Zhang, M Qian, A Li, L Geng, H Wang, C Liu, W Ouyang and H-X Peng, *Effect of Particle Strength on SiCp/Al Composite Properties with Network Architecture Design*, **Materials**, https://doi.org/10.3390/ma17030597.
+- H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer, Q Ali, L Breth, Y Hong, W Rigaut, T Devillers, NM Dempsey, T Schrefl and H Oezelt, *Reduced order model for hard magnetic films*, **AIP Advances**, https://doi.org/10.1063/9.0000816.
+- ML Cascio, V Gulizzi, A Milazzo and I Benedetti, *A Model for Polycrystalline Thermo-Mechanical Homogenisation and Micro-Cracking*, **Procedia Structural Integrity**, https://doi.org/10.1016/j.prostr.2023.12.063.
+- IU Aydiner, B Tatli and T Yalçinkaya, *Investigation of failure mechanisms in dual-phase steels through cohesive zone modeling and crystal plasticity frameworks*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2024.103898.
+- B Murgas, J Stickel and S Ghosh, *Generative adversarial network (GAN) enabled Statistically equivalent virtual microstructures (SEVM) for modeling cold spray formed bimodal polycrystals*, **npj Computational Materials**, https://doi.org/10.1038/s41524-024-01219-4.
+- T Fischer, T Zhou, CFO Dahlberg and P Hedström, *Relating stress/strain heterogeneity to lath martensite strength by experiments and dislocation density-based crystal plasticity*,  **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2024.103917.
 - L Xue, W Cai, Y Sun, M Paredes, C Sun and Y Bai, *The influence of heat treatment on microstructure and mechanical response of a newly developed non-equimolar AlCrCuFeNi high-entropy alloy: Experiments and numerical modelling*, **Materials Characterization**, https://doi.org/10.1016/j.matchar.2023.113544.
 - X Guo, N Mao, T Kong, J Zhang, J Shen, C Wang, C Sun, P Li and Z Xiong, *Strain rate-dependent plastic behavior of TWIP steel investigated by crystal plasticity model*, **Materials Science and Engineering: A**,  https://doi.org/10.1016/j.msea.2023.145986.
 - Q Ma, X Liu, D Song, E Wang, J Zhang, W Yao and M Wang, *Thermal damage evolution of granite under different thermal conditions based on two-scale tessellation via discrete element method*, **Geomechanics and Geophysics for Geo-Energy and Geo-Resources**, https://doi.org/10.1007/s40948-023-00711-3.
