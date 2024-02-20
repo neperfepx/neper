@@ -125,9 +125,6 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
   for (i = 0; i < partqty; i++)
     size[i] = OSets[i].size;
 
-  printf ("ut_array_1d_int_sum (size, partqty) = %d\n", ut_array_1d_int_sum (size, partqty));
-  printf ("ut_array_1d_int_max (size, partqty) = %d\n", ut_array_1d_int_max (size, partqty));
-
   if (ut_array_1d_int_sum (size, partqty) > ut_array_1d_int_max (size, partqty))
     ol_set_shuf (&OSet, (*pSSet).Random);
 

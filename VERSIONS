@@ -1,4 +1,4 @@
-New in 4.8.2-4 (20 Feb 2024):
+New in 4.8.2-5 (20 Feb 2024):
 - module -T: added -transform "cut(cube)", improved -transform "cut(cubei)",
   made minor improvements.
 
