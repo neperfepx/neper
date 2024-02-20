@@ -34,6 +34,7 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
   int i, j, partqty, *qty = NULL;
   char **parts = NULL;
   struct OL_SET OSet, *OSets = NULL;
+  int *size = NULL;
 
   net_ori_mtess_params (In, level, MTess, Tess, dtess, dcell, &ori, &orisampling, &orispread, &oricrysym);
 
@@ -44,6 +45,7 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
   net_ori_qty (pSSet, parts, partqty, &qty);
 
   OSets = malloc (partqty * sizeof (struct OL_SET));
+  size = ut_alloc_1d_int (partqty);
   for (i = 0; i < partqty; i++)
     OSets[i] = ol_set_alloc (qty[i], oricrysym);
 
@@ -120,9 +122,14 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
   }
 
   ol_set_cat (OSets, partqty, &OSet);
+  for (i = 0; i < partqty; i++)
+    size[i] = OSets[i].size;
 
-  if (partqty > 1)
-      ol_set_shuf (&OSet, (*pSSet).Random);
+  printf ("ut_array_1d_int_sum (size, partqty) = %d\n", ut_array_1d_int_sum (size, partqty));
+  printf ("ut_array_1d_int_max (size, partqty) = %d\n", ut_array_1d_int_max (size, partqty));
+
+  if (ut_array_1d_int_sum (size, partqty) > ut_array_1d_int_max (size, partqty))
+    ol_set_shuf (&OSet, (*pSSet).Random);
 
   for (i = 0; i < partqty; i++)
     ol_set_free (OSets + i);
@@ -142,6 +149,7 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
   ut_free_1d_char (&orispread);
   ut_free_1d_char (&oricrysym);
   ol_set_free (&OSet);
+  ut_free_1d_int (&size);
 
   return;
 }
