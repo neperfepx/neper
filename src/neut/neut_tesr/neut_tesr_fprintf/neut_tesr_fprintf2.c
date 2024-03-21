@@ -39,9 +39,6 @@ neut_tesr_fprintf_head (FILE * file, struct TESR Tesr)
 void
 neut_tesr_fprintf_data (FILE * file, char *format, struct TESR Tesr)
 {
-  if (!Tesr.CellId)
-    return;
-
   fprintf (file, " **data\n");
   fprintf (file, "   %s\n", format);
   neut_tesr_fprintf_data_noheader (file, format, NULL, Tesr, NULL);

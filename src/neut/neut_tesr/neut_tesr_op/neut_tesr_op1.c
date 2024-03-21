@@ -228,9 +228,6 @@ neut_tesr_expr_cells (struct TESR *pTesr, char *expr, int **pcells,
   FILE *file;
   (*pcellqty) = 0;
 
-  if ((*pTesr).Dim != 3)
-    ut_print_neperbug ();
-
   if (strcmp (expr, "all") == 0)
   {
     (*pcellqty) = (*pTesr).CellQty;
@@ -2034,8 +2031,6 @@ neut_tesr_cellexpr_remove (struct TESR *pTesr, char *expr)
 {
   int i, *cells = NULL, cellqty = 0;
 
-  if ((*pTesr).Dim == 2)
-    abort ();
 
   neut_tesr_expr_cells (pTesr, expr, &cells, &cellqty);
 
