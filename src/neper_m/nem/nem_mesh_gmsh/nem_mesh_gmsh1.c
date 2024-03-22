@@ -14,7 +14,7 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
   FILE *file, *file2;
   char *Args = NULL;
   struct timeval beg_time, end_time;
-  int nb, optinb, status;
+  int nb, optinb, status, status2;
   struct MESH M2;
   int **Elsets = NULL;
   int ElsetQty;
@@ -119,7 +119,16 @@ nem_mesh_3d_gmsh (struct TESS Tess, int poly, struct NODES Nodes,
     {
       status = 0;
       file = ut_file_open (filename_msh, "R");
-      neut_mesh_fscanf_msh (file, pN, NULL, NULL, NULL, pM, NULL, NULL);
+      status2 = neut_mesh_fscanf_msh (file, pN, NULL, NULL, NULL, pM, NULL, NULL);
+      if (status2)
+      {
+        FILE *fp = ut_file_open ("failed_polys", "w");
+        fprintf (fp, "%d\n", poly);
+        fflush (fp);
+        ut_file_close (fp, "failed_polys", "w");
+        ut_print_message (2, 0, "Meshing failed\n");
+      }
+
       ut_file_close (file, filename_msh, "R");
     }
 

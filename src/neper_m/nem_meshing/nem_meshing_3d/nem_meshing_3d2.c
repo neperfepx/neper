@@ -47,8 +47,13 @@ nem_meshing_3d_poly (struct IN_M In, double cl, double mesh3dclreps,
 #pragma omp atomic
     (*pMultim).algohit[(*pMultim).Oalgo[poly]]++;
   else
+  {
+    FILE *fp = ut_file_open ("failed_polys", "w");
+    fprintf (fp, "%d\n", poly);
+    ut_file_close (fp, "failed_polys", "w");
     ut_print_message (2, 3, "Meshing of poly %d (%d) failed\n", poly,
                       neut_tess_cell_id (Tess, poly));
+  }
 
   neut_nodes_free (&N2);
   neut_mesh_free (&M2);

@@ -69,7 +69,7 @@ neut_mesh_fscanf_msh_nodes_foot (FILE * file)
 
 int
 neut_mesh_fscanf_msh_elts_dim (FILE * file, char *mode, struct MESH *pMesh, int *node_nbs,
-               int Dimension, int MaxEltQty)
+               int Dimension, int *pMaxEltQty)
 {
   int *elt_nbs = NULL;
   int *elset_nbs = NULL;
@@ -77,14 +77,14 @@ neut_mesh_fscanf_msh_elts_dim (FILE * file, char *mode, struct MESH *pMesh, int 
   neut_mesh_reset (pMesh);
 
   if (Dimension < 0 || Dimension > 3)
-    ut_print_message (2, 0, "Wrong mesh dimension: %d!\n", Dimension);
+    return -1;
 
-  if (MaxEltQty != 0)
+  if (*pMaxEltQty != 0)
   {
     (*pMesh).Dimension = Dimension;
 
     neut_mesh_fscanf_msh_elts_dim_prop (file, mode, pMesh, &elt_nbs,
-                                        MaxEltQty);
+                                        *pMaxEltQty);
 
     neut_mesh_init_elsets_2 (pMesh, elt_nbs, &elset_nbs);
 
@@ -102,5 +102,7 @@ neut_mesh_fscanf_msh_elts_dim (FILE * file, char *mode, struct MESH *pMesh, int 
   ut_free_1d_int (&elt_nbs);
   ut_free_1d_int (&elset_nbs);
 
-  return (*pMesh).EltQty;
+  (*pMaxEltQty) -= (*pMesh).EltQty;
+
+  return 0;
 }

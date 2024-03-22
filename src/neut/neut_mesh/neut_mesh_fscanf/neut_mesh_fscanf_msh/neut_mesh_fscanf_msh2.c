@@ -119,13 +119,13 @@ neut_mesh_fscanf_msh_nodes (FILE * file, char *mode,
   return;
 }
 
-void
+int
 neut_mesh_fscanf_msh_elts (FILE * file, char *mode, char *domain, int *node_nbs,
                            struct MESH *pMesh0D, struct MESH *pMesh1D,
                            struct MESH *pMesh2D, struct MESH *pMesh3D,
                            struct MESH *pMeshCo, struct MESH **ppMesh)
 {
-  int leftelts, dim;
+  int leftelts, dim, status;
   struct MESH Trash;
 
   neut_mesh_set_zero (&Trash);
@@ -140,29 +140,34 @@ neut_mesh_fscanf_msh_elts (FILE * file, char *mode, char *domain, int *node_nbs,
   if (!strcmp (mode, "binary"))
     if (fscanf (file, "%c", &c) != 1)
       abort ();
-  leftelts -=
-    neut_mesh_fscanf_msh_elts_dim (file, mode, pMesh0D ? pMesh0D : &Trash, node_nbs, 0,
-                   leftelts);
+  status = neut_mesh_fscanf_msh_elts_dim (file, mode, pMesh0D ? pMesh0D : &Trash, node_nbs, 0,
+                 &leftelts);
+  if (status != 0)
+    return status;
   if (pMesh0D && (*pMesh0D).EltQty > 0)
     dim = 0;
-  leftelts -=
-    neut_mesh_fscanf_msh_elts_dim (file, mode, pMesh1D ? pMesh1D : &Trash, node_nbs, 1,
-                   leftelts);
+  status = neut_mesh_fscanf_msh_elts_dim (file, mode, pMesh1D ? pMesh1D : &Trash, node_nbs, 1,
+                 &leftelts);
+  if (status != 0)
+    return status;
   if (pMesh1D && (*pMesh1D).EltQty > 0)
     dim = 1;
-  leftelts -=
-    neut_mesh_fscanf_msh_elts_dim (file, mode, pMesh2D ? pMesh2D : &Trash, node_nbs, 2,
-                   leftelts);
+  status = neut_mesh_fscanf_msh_elts_dim (file, mode, pMesh2D ? pMesh2D : &Trash, node_nbs, 2,
+                 &leftelts);
+  if (status != 0)
+    return status;
   if (pMesh2D && (*pMesh2D).EltQty > 0)
     dim = 2;
-  leftelts -=
-    neut_mesh_fscanf_msh_elts_dim (file, mode, pMesh3D ? pMesh3D : &Trash, node_nbs, 3,
-                   leftelts);
+  status = neut_mesh_fscanf_msh_elts_dim (file, mode, pMesh3D ? pMesh3D : &Trash, node_nbs, 3,
+                   &leftelts);
+  if (status != 0)
+    return status;
   if (pMesh3D && (*pMesh3D).EltQty > 0)
     dim = 3;
-  leftelts -=
-    neut_mesh_fscanf_msh_elts_dim (file, mode, pMeshCo ? pMeshCo : &Trash, node_nbs, dim,
-                   leftelts);
+  status = neut_mesh_fscanf_msh_elts_dim (file, mode, pMeshCo ? pMeshCo : &Trash, node_nbs, dim,
+                 &leftelts);
+  if (status != 0)
+    return status;
 
   ut_free_1d_int (&node_nbs);
 
@@ -197,7 +202,7 @@ neut_mesh_fscanf_msh_elts (FILE * file, char *mode, char *domain, int *node_nbs,
 
   neut_mesh_free (&Trash);
 
-  return;
+  return 0;
 }
 
 void

@@ -17,10 +17,10 @@ extern void neut_mesh_fscanf_msh_nodes_prop (FILE *, char *, struct NODES *, int
 extern void neut_mesh_fscanf_msh_nodes_foot (FILE  *);
 
 
-extern void neut_mesh_fscanf_msh_elts (FILE * file, char *mode, char *domain, int *node_nbs,
+extern int neut_mesh_fscanf_msh_elts (FILE * file, char *mode, char *domain, int *node_nbs,
     struct MESH *pMesh0D, struct MESH *pMesh1D, struct
     MESH *pMesh2D, struct MESH *pMesh3D, struct MESH *pMeshCo, struct MESH **ppMesh);
-extern int neut_mesh_fscanf_msh_elts_dim (FILE *, char *, struct MESH *, int *, int, int);
+extern int neut_mesh_fscanf_msh_elts_dim (FILE *, char *, struct MESH *, int *, int, int *);
 extern void neut_mesh_fscanf_msh_elts_foot (FILE *);
 extern void neut_mesh_fscanf_msh_elts_dim_prop (FILE *, char *, struct MESH *, int **, int);
 

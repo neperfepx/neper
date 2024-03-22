@@ -12,6 +12,7 @@ nem_meshing_para_faceproj (struct TESS Tess, struct NODES RNodes,
   char *message = ut_alloc_1d_char (8);
   int *failed = ut_alloc_1d_int (Tess.FaceQty + 1);
   int failed_sum;
+  FILE *file = NULL;
 
   (*pMeshPara).face_eq = ut_alloc_2d (Tess.FaceQty + 1, 4);
 
@@ -33,7 +34,8 @@ nem_meshing_para_faceproj (struct TESS Tess, struct NODES RNodes,
     status =
       nem_meshing_para_faceproj_eq (Tess, RNodes, RMesh, i,
                                     (*pMeshPara).face_eq[i]);
-    if (status == -1)
+
+    if (status != 0)
     {
       if (!strcmp ((*pMeshPara).face_op[i], "meshproj"))
         ut_string_string ("copy", (*pMeshPara).face_op + i);
@@ -55,6 +57,19 @@ nem_meshing_para_faceproj (struct TESS Tess, struct NODES RNodes,
       if (failed[i])
         printf (" %d", i);
     printf (".\n");
+
+    file = ut_file_open ("failed_faces", "w");
+    for (i = 1; i <= Tess.FaceQty; i++)
+      if (failed[i])
+        fprintf (file, "%d\n", i);
+    ut_file_close (file, "failed_faces", "w");
+
+    file = ut_file_open ("failed_polys", "w");
+    for (i = 1; i <= Tess.FaceQty; i++)
+      if (failed[i])
+        fprintf (file, "%d %d\n", Tess.FacePoly[i][0], Tess.FacePoly[i][1]);
+    ut_file_close (file, "failed_polys", "w");
+
     abort ();
   }
 

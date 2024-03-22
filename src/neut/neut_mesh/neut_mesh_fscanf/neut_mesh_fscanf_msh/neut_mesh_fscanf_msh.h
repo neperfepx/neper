@@ -9,7 +9,7 @@ extern "C"
 
 #ifndef NEUT_MESH_FSCANF_GMSH
 
-  extern void neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes,
+  extern int neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes,
 				    struct MESH *pMesh0D,
 				    struct MESH *pMesh1D,
 				    struct MESH *pMesh2D,

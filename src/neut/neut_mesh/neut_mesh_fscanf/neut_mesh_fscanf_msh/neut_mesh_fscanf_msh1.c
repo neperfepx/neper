@@ -4,12 +4,13 @@
 
 #include"neut_mesh_fscanf_msh_.h"
 
-void
+int
 neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
                       struct MESH *pMesh1D, struct MESH *pMesh2D,
                       struct MESH *pMesh3D, struct MESH *pMeshCo,
                       int *ptopology)
 {
+  int status;
   int *node_nbs = NULL;
   char *mode = NULL, *domain = NULL;
   struct MESH *pMesh = NULL;
@@ -33,8 +34,12 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
       neut_mesh_fscanf_msh_nodes (file, mode, pNodes, &node_nbs);
 
     else if (ut_file_nextstring_test (file, "$Elements"))
-      neut_mesh_fscanf_msh_elts (file, mode, domain, node_nbs, pMesh0D, pMesh1D, pMesh2D,
+    {
+      status = neut_mesh_fscanf_msh_elts (file, mode, domain, node_nbs, pMesh0D, pMesh1D, pMesh2D,
                                  pMesh3D, pMeshCo, &pMesh);
+      if (status)
+        return -1;
+    }
 
     else if (ut_file_nextstring_test (file, "$Periodicity"))
       neut_mesh_fscanf_msh_periodicity (file, pNodes);
@@ -69,7 +74,7 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
 
   ut_free_1d_char (&mode);
 
-  return;
+  return 0;
 }
 
 void
