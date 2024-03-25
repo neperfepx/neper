@@ -32,7 +32,8 @@ extern void net_transform_tess_cut_clean (struct PRIM *Prim, int PrimQty,
                                           int *cutcells, int cutcellqty, int
                                           *mirrorseeds, int *mirrorseedprims,
                                           int mirrorseedqty, struct TESS
-                                          *pTess);
+                                          *pTess,
+                                          int *intseed_oldseed, int *pintseedqty);
 
 extern void net_transform_tess_cut_post (struct TESS TessGen,
                                          int *intseed_oldseed, int intseedqty,

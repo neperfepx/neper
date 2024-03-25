@@ -51,7 +51,8 @@ net_transform_tess_cut (char *expr, struct TESS Dom, struct TESS *pTess)
 
     net_transform_tess_cut_clean (Prim, PrimQty, cutcells, cutcellqty,
                                   mirrorseeds, mirrorseedprims, mirrorseedqty,
-                                  pTess);
+                                  pTess, intseed_oldseed, &intseedqty);
+
     // finalizing
 
     net_transform_tess_cut_post (TessGen, intseed_oldseed, intseedqty, pTess);

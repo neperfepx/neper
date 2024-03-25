@@ -126,7 +126,8 @@ void
 net_transform_tess_cut_clean (struct PRIM *Prim, int PrimQty, int *cutcells,
                               int cutcellqty, int *mirrorseeds,
                               int *mirrorseedprims, int mirrorseedqty,
-                              struct TESS *pTess)
+                              struct TESS *pTess,
+                              int *intseed_oldseed, int *pintseedqty)
 {
   int i, j;
   int *seeds = NULL, seedqty;
@@ -148,6 +149,13 @@ net_transform_tess_cut_clean (struct PRIM *Prim, int PrimQty, int *cutcells,
   }
 
   int domfaceqty_old = (*pTess).DomFaceQty;
+
+  for (i = 1; i <= (*pTess).PolyQty; i++)
+    if ((*pTess).PolyState[i] == -1)
+    {
+      ut_array_1d_int_memcpy (intseed_oldseed + i + 1, (*pintseedqty) - i, intseed_oldseed + i);
+      (*pintseedqty)--;
+    }
 
   neut_tess_compress (pTess);
 
@@ -176,7 +184,7 @@ net_transform_tess_cut_post (struct TESS TessGen, int *intseed_oldseed,
   ut_string_string (TessGen.CellCrySym, &(*pTess).CellCrySym);
 
   // CellId
-  if ((*pTess).CellQty && TessGen.CellId)
+  if ((*pTess).CellQty && !TessGen.CellId && intseedqty > 0)
   {
     oldseed_max = ut_array_1d_int_max (intseed_oldseed + 1, intseedqty);
 
