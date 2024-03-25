@@ -288,7 +288,7 @@ These options can be used to set the cell morphology.
 
     - :data:`file(<file_name>)`: values from a :ref:`data_file`.
 
-  Alternatively, :data:`file(<file_name>)` can be used to load the seed coordinates and weights from a unique :ref:`tess_file` (thereby replicating the tessellation).
+  Alternatively, :data:`file(<file_name>)` can be used to load the seed coordinates, weights, orientations and ids (if defined) from a unique :ref:`tess_file` (thereby replicating the tessellation).
 
   **Default value**: :data:`default`.
 

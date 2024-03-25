@@ -394,49 +394,69 @@ net_domain_cell (char *filename, int cell, struct POLY *pPoly)
 void
 net_domain_transform (struct TESS *pPoly, int dim, char *string)
 {
-  int dir, status;
+  int i, dir;
   double *v = ol_r_alloc ();
   double theta;
   double **g = ol_g_alloc ();
   double *eq = ut_alloc_1d (4);
   double *coo = ut_alloc_1d (3);
+  char *fct = NULL;
+  char **vars = NULL;
+  int varqty = 0;
 
-  if (!strncmp (string, "rotate(", 7))
+  ut_string_function (string, &fct, NULL, &vars, &varqty);
+
+  if (!strcmp (fct, "rotate"))
   {
+    if ((dim == 3 && varqty != 4) || (dim == 2 && varqty != 1))
+      ut_print_message (2, 3, "Failed to parse expression `%s'.\n", string);
+
     ut_array_1d_set_3 (v, 0., 0., 1.);
-    status =
-      sscanf (string, "rotate(%lf,%lf,%lf,%lf)", v, v + 1, v + 2, &theta);
-    if (status != 1 && status != 4)
-      abort ();
+
+    for (i = 0; i < varqty - 1; i++)
+      ut_string_real (vars[i], v + i);
+    ut_string_real (vars[varqty - 1], &theta);
+
     ol_r_set_unit (v);
     ol_rtheta_g (v, theta, g);
     neut_tess_rotate (pPoly, g);
   }
 
-  else if (!strncmp (string, "translate(", 10))
+  else if (!strcmp (fct, "translate"))
   {
-    ut_array_1d_set (v, 3, 0.);
-    status = sscanf (string, "translate(%lf,%lf,%lf)", v, v + 1, v + 2);
-    if (status < dim)
+    if (varqty != dim)
       ut_print_message (2, 3, "Failed to parse expression `%s'.\n", string);
+
+    ut_array_1d_set (v, 3, 0.);
+
+    for (i = 0; i < dim; i++)
+      ut_string_real (vars[i], v + i);
+
     neut_tess_shift (pPoly, v[0], v[1], v[2]);
   }
 
-  else if (!strncmp (string, "scale(", 6))
+  else if (!strcmp (fct, "scale"))
   {
-    ut_array_1d_set (v, 3, 1.);
-    status = sscanf (string, "scale(%lf,%lf,%lf)", v, v + 1, v + 2);
-    if (status < dim)
+    if (varqty != dim)
       ut_print_message (2, 3, "Failed to parse expression `%s'.\n", string);
+
+    ut_array_1d_set (v, 3, 1.);
+
+    for (i = 0; i < dim; i++)
+      ut_string_real (vars[i], v + i);
+
     neut_tess_scale (pPoly, v[0], v[1], v[2]);
   }
 
-  else if (!strncmp (string, "split(", 6))
+  else if (!strcmp (fct, "split"))
   {
+    if (varqty != 1)
+      ut_print_message (2, 3, "Failed to parse expression `%s'.\n", string);
+
     double **bbox = ut_alloc_2d (3, 2);
     char *domtype = NULL;
     neut_tess_bbox (*pPoly, bbox);
-    dir = string[6] - 'x';
+    dir = vars[0][0] - 'x';
     if (dir < 0 || dir > 2)
       ut_print_message (2, 3, "Cannot read `%s'.\n", string);
 
@@ -456,6 +476,7 @@ net_domain_transform (struct TESS *pPoly, int dim, char *string)
   ol_g_free (g);
   ut_free_1d (&eq);
   ut_free_1d (&coo);
+  ut_free_2d_char (&vars, varqty);
 
   return;
 }

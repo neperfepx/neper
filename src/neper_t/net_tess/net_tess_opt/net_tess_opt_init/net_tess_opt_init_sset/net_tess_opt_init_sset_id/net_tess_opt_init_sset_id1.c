@@ -9,11 +9,26 @@ net_tess_opt_init_sset_id (int TessId, struct SEEDSET *SSet, char* idexpr, struc
 {
   (void) TessId;
   (void) SSet;
+  FILE *fp = NULL;
+  struct TESS Tmp;
 
   if (ut_string_isfilename (idexpr))
   {
-    (*pTOpt).SSet.SeedId = ut_alloc_1d_int ((*pTOpt).CellQty);
-    ut_array_1d_int_fnscanf (idexpr, (*pTOpt).SSet.SeedId + 1, (*pTOpt).CellQty, "r");
+    if (ut_file_testformat (idexpr, "tess"))
+    {
+      neut_tess_set_zero (&Tmp);
+      fp = ut_file_open (idexpr, "R");
+      neut_tess_fscanf (fp, &Tmp);
+      (*pTOpt).SSet.SeedId = ut_alloc_1d_int ((*pTOpt).CellQty + 1);
+      ut_array_1d_int_memcpy (Tmp.CellId + 1, (*pTOpt).CellQty, (*pTOpt).SSet.SeedId + 1);
+      ut_file_close (fp, idexpr, "R");
+      neut_tess_free (&Tmp);
+    }
+    else
+    {
+      (*pTOpt).SSet.SeedId = ut_alloc_1d_int ((*pTOpt).CellQty);
+      ut_array_1d_int_fnscanf (idexpr, (*pTOpt).SSet.SeedId + 1, (*pTOpt).CellQty, "r");
+    }
   }
 
   return;
