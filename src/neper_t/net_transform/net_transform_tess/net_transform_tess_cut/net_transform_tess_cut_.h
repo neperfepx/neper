@@ -13,7 +13,7 @@
 
 #include"net_transform_tess_cut.h"
 
-extern void net_transform_tess_cut_pre (struct TESS Tess, char *expr, struct TESS *pTessGen,
+extern void net_transform_tess_cut_pre (struct TESS *pTess, char *expr, struct TESS *pTessGen,
                                         struct PRIM **pPrim, int *pPrimQty);
 
 extern void net_transform_tess_cut_seedset_interior (struct PRIM *Prim, int PrimQty,

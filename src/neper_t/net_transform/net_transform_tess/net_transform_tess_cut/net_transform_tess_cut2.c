@@ -5,12 +5,13 @@
 #include"net_transform_tess_cut_.h"
 
 void
-net_transform_tess_cut_pre (struct TESS Tess, char *expr,
+net_transform_tess_cut_pre (struct TESS *pTess, char *expr,
                             struct TESS *pTessGen, struct PRIM **pPrim,
                             int *pPrimQty)
 {
-  neut_tess_tess_gen (Tess, pTessGen);
-  neut_tess_tess_cell (Tess, pTessGen);
+  neut_tess_compress (pTess);
+  neut_tess_tess_gen (*pTess, pTessGen);
+  neut_tess_tess_cell (*pTess, pTessGen);
 
   net_transform_tess_cut_pre_prim (expr, pPrim, pPrimQty, 1);
 

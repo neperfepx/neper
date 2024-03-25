@@ -23,7 +23,7 @@ net_transform_tess_cut (char *expr, struct TESS Dom, struct TESS *pTess)
 
   // preparing
 
-  net_transform_tess_cut_pre (*pTess, expr, &TessGen, &Prim, &PrimQty);
+  net_transform_tess_cut_pre (pTess, expr, &TessGen, &Prim, &PrimQty);
 
   // recording interior seeds
 
