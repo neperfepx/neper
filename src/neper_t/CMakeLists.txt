@@ -183,6 +183,7 @@ add_library(neper_t
 ./net_stat/net_stat2.c
 ./net_res/net_res_ori/net_res_ori1.c
 ./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_ori/net_tess_opt_init_sset_ori1.c
+./net_tess/net_tess_opt/net_tess_opt_init/net_tess_opt_init_sset/net_tess_opt_init_sset_id/net_tess_opt_init_sset_id1.c
 ./net_ori/net_ori1.c
 ./net_ori/net_ori2.c
 ./net_ori/net_ori3.c

@@ -1,6 +1,6 @@
-New in 4.8.2-8 (25 Mar 2024):
-- module -T: added -transform "cut(cube)", improved -transform "cut(cubei)",
-  made minor fixes and improvements.
+New in 4.8.2-9 (25 Mar 2024):
+- module -T: added -transform "cut(cube)", added -morphooptiini ori and id,
+  improved -transform "cut(cubei)", made minor fixes and improvements.
 - module -M: made minor improvements.
 
 New in 4.8.1 (02 Feb 2024):

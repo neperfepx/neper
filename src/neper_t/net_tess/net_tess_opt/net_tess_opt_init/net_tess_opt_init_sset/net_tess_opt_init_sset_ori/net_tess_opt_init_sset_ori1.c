@@ -5,15 +5,27 @@
 #include "net_tess_opt_init_sset_ori_.h"
 
 void
-net_tess_opt_init_sset_ori (int TessId, struct SEEDSET *SSet, struct TOPT *pTOpt)
+net_tess_opt_init_sset_ori (int TessId, struct SEEDSET *SSet, char* oriexpr, struct TOPT *pTOpt)
 {
   int i;
 
-  neut_seedset_memcpy (SSet[TessId], &(*pTOpt).SSet);
+  if (ut_string_isfilename (oriexpr))
+  {
+    struct OL_SET OSet;
+    ol_set_zero (&OSet);
+    net_ori_file (oriexpr, &OSet);
+    net_ori_memcpy (OSet, &(*pTOpt).SSet);
+    ol_set_free (&OSet);
+  }
 
-  (*pTOpt).SSet.SeedOriR = ut_alloc_2d ((*pTOpt).SSet.N + 1, 3);
-  for (i = 1; i <= (*pTOpt).SSet.N; i++)
-    ol_q_R ((*pTOpt).SSet.SeedOri[i], (*pTOpt).SSet.SeedOriR[i]);
+  else
+  {
+    neut_seedset_memcpy (SSet[TessId], &(*pTOpt).SSet);
+
+    (*pTOpt).SSet.SeedOriR = ut_alloc_2d ((*pTOpt).SSet.N + 1, 3);
+    for (i = 1; i <= (*pTOpt).SSet.N; i++)
+      ol_q_R ((*pTOpt).SSet.SeedOri[i], (*pTOpt).SSet.SeedOriR[i]);
+  }
 
   if (SSet[TessId].SeedOriTheta || strstr ((*pTOpt).dof, "rt"))
   {

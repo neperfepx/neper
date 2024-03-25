@@ -29,9 +29,15 @@ net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess, int dtess,
     ut_print_message (2, 2, "The tessellation is not valid.\n");
 #endif
 
-  if (TOpt.tarqty > 0 && !strcmp (TOpt.tarvar[0], "tesr"))
+  if (TOpt.SSet.SeedId)
   {
     (*pTess).CellId = ut_alloc_1d_int ((*pTess).CellQty + 1);
+    ut_array_1d_int_memcpy (TOpt.SSet.SeedId + 1, (*pTess).CellQty, (*pTess).CellId + 1);
+  }
+
+  if (TOpt.tarqty > 0 && !strcmp (TOpt.tarvar[0], "tesr"))
+  {
+    (*pTess).CellId = ut_realloc_1d_int ((*pTess).CellId, (*pTess).CellQty + 1);
     for (i = 1; i <= (*pTess).CellQty; i++)
     {
       cell = TOpt.SCellCell[i];
@@ -52,9 +58,10 @@ net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess, int dtess,
       }
     }
   }
+
   else if (TOpt.CellSCellQty && ut_array_1d_int_max (TOpt.CellSCellQty + 1, TOpt.CellQty) > 1)
   {
-    (*pTess).CellId = ut_alloc_1d_int ((*pTess).CellQty + 1);
+    (*pTess).CellId = ut_realloc_1d_int ((*pTess).CellId, (*pTess).CellQty + 1);
     for (i = 1; i <= (*pTess).CellQty; i++)
     {
       cell = TOpt.SCellCell[i];

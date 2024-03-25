@@ -32,6 +32,7 @@ neut_seedset_set_zero (struct SEEDSET *pSSet)
   (*pSSet).SeedCoo0 = NULL;
   (*pSSet).SeedCoo = NULL;
   (*pSSet).SeedWeight = NULL;
+  (*pSSet).SeedId = NULL;
   (*pSSet).SeedOriTheta = NULL;
   (*pSSet).SeedOriWeight = NULL;
   (*pSSet).LamEq = NULL;
@@ -67,6 +68,7 @@ neut_seedset_free (struct SEEDSET *pSSet)
   ut_free_2d (&(*pSSet).SeedCoo0, (*pSSet).N + 1);
   ut_free_2d (&(*pSSet).SeedCoo, (*pSSet).Nall + 1);
   ut_free_1d (&(*pSSet).SeedWeight);
+  ut_free_1d_int (&(*pSSet).SeedId);
   ut_free_1d (&(*pSSet).SeedOriTheta);
   ut_free_1d (&(*pSSet).SeedOriWeight);
   // UNCOMMENT and DEBUG with

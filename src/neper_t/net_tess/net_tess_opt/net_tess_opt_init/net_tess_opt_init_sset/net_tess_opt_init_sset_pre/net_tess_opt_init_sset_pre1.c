@@ -9,7 +9,8 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level, struct MTESS MTess,
                             struct TESS *Tess, int dtess, int dcell,
                             struct SEEDSET *SSet,
                             char **pvar, int *ppos, char **pweightexpr,
-                            char **pcooexpr, struct TOPT *pTOpt)
+                            char **pcooexpr, char **pidexpr, char **poriexpr,
+                            struct TOPT *pTOpt)
 {
   int i, qty, *qty1 = NULL;
   char *string = ut_alloc_1d_char (1000);
@@ -67,6 +68,8 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level, struct MTESS MTess,
   {
     net_tess_opt_init_sset_pre_default_coo (*pTOpt, *ppos, *pvar, pcooexpr);
     net_tess_opt_init_sset_pre_default_weight (*pTOpt, *pvar, pweightexpr);
+    (*pidexpr) = NULL;
+    (*poriexpr) = NULL;
   }
 
   else if (ut_file_exist (In.optiini[level])
@@ -74,6 +77,8 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level, struct MTESS MTess,
   {
     ut_string_string (In.optiini[level], pcooexpr);
     ut_string_string (In.optiini[level], pweightexpr);
+    ut_string_string (In.optiini[level], pidexpr);
+    ut_string_string (In.optiini[level], poriexpr);
   }
 
   else
@@ -86,6 +91,10 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level, struct MTESS MTess,
         ut_string_string (parts[i][1], pcooexpr);
       else if (!strcmp (parts[i][0], "weight"))
         ut_string_string (parts[i][1], pweightexpr);
+      else if (!strcmp (parts[i][0], "id"))
+        ut_string_string (parts[i][1], pidexpr);
+      else if (!strcmp (parts[i][0], "ori"))
+        ut_string_string (parts[i][1], poriexpr);
       else
         ut_print_message (2, 3,
                           "Unknown variable `%s' (should be `coo' or `weight').\n",

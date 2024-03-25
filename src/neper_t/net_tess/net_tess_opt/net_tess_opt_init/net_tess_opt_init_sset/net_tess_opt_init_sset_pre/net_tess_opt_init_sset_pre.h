@@ -10,6 +10,7 @@ extern void net_tess_opt_init_sset_pre (struct IN_T In, int level,
                                         struct SEEDSET *SSet,
 					char **pvar, int *ppos,
 					char **pweightexpr, char **pcooexpr,
+                                        char **pidexpr, char **poriexpr,
 					struct TOPT *pTOpt);
 
 extern void net_tess_opt_init_sset_pre_default_coo (struct TOPT TOpt, int pos, char

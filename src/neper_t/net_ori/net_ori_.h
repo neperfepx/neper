@@ -39,8 +39,6 @@ extern void net_ori_mtess_params (struct IN_T In, int level, struct MTESS MTess,
 
 extern int net_ori_mtess_randseed_rand (int *N, int *id, int *poly, int levelqty);
 
-extern void net_ori_memcpy (struct OL_SET OSet, struct SEEDSET *pSSet);
-
 extern void net_ori_orispread (char *orispread, struct SEEDSET *pSSet);
 
 extern void net_orispread_file (char *orispread, struct SEEDSET *pSSet);

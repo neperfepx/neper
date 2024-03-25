@@ -38,103 +38,115 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
 
   net_ori_mtess_params (In, level, MTess, Tess, dtess, dcell, &ori, &orisampling, &orispread, &oricrysym);
 
-  OSet = ol_set_alloc ((*pSSet).N, oricrysym);
-
-  ut_list_break (ori, "+", &parts, &partqty);
-
-  net_ori_qty (pSSet, parts, partqty, &qty);
-
-  OSets = malloc (partqty * sizeof (struct OL_SET));
-  size = ut_alloc_1d_int (partqty);
-  for (i = 0; i < partqty; i++)
-    OSets[i] = ol_set_alloc (qty[i], oricrysym);
-
-  for (i = 0; i < partqty; i++)
+  if (!strcmp (ori, "from_morpho"))
   {
-    if (!strcmp (parts[i], "random") || strstr (In.orioptiini[level], "ori=random"))
-    {
-      if (!strcmp (In.orisampling[level], "random"))
-        net_ori_random ((*pSSet).Random, OSets + i);
+    // oris already in *pSSet
+  }
+  else
+  {
+    OSet = ol_set_alloc ((*pSSet).N, oricrysym);
 
-      else if (!strcmp (In.orisampling[level], "uniform"))
-        net_ori_uniform (In, level, MTess, Tess, dtess, dcell, (*pSSet).Random,
-                         OSets + i, verbositylevel);
+    ut_list_break (ori, "+", &parts, &partqty);
+
+    net_ori_qty (pSSet, parts, partqty, &qty);
+
+    OSets = malloc (partqty * sizeof (struct OL_SET));
+    size = ut_alloc_1d_int (partqty);
+    for (i = 0; i < partqty; i++)
+      OSets[i] = ol_set_alloc (qty[i], oricrysym);
+
+    for (i = 0; i < partqty; i++)
+    {
+      if (!strcmp (parts[i], "from_morpho"))
+      {
+
+      }
+
+      else if (!strcmp (parts[i], "random") || strstr (In.orioptiini[level], "ori=random"))
+      {
+        if (!strcmp (In.orisampling[level], "random"))
+          net_ori_random ((*pSSet).Random, OSets + i);
+
+        else if (!strcmp (In.orisampling[level], "uniform"))
+          net_ori_uniform (In, level, MTess, Tess, dtess, dcell, (*pSSet).Random,
+                           OSets + i, verbositylevel);
+
+        else
+          ut_print_message (2, 3, "Failed to process `%s'.\n", In.orisampling[level]);
+      }
+
+      else if (!strncmp (parts[i], "fiber", 5))
+        net_ori_fiber (SSet, dtess, dcell, (*pSSet).Random, parts[i], OSets + i);
+
+      else if (!strncmp (ori, "file(", 5))
+      {
+        net_ori_file (ori, OSets + i);
+        ut_string_string (oricrysym, &(OSets[i].crysym));
+      }
+
+      else if (strstr (In.orioptiini[level], "ori="))
+      {
+        int qty, *qty1 = NULL;
+        char ***parts = NULL;
+        ut_list_break2 (In.orioptiini[level], ",", "=", &parts, &qty1, &qty);
+        for (j = 0; j < qty; j++)
+          if (!strcmp (parts[j][0], "ori"))
+            net_ori_file (parts[j][1], OSets + i);
+        ut_string_string (oricrysym, &(OSets[i].crysym));
+
+        ut_free_3d_char (&parts, qty, 2);
+        ut_free_1d_int (&qty1);
+      }
+
+      else if (!strncmp (parts[i], "odf", 3))
+        net_ori_odf ((*pSSet).Random, parts[i], OSets + i);
 
       else
-        ut_print_message (2, 3, "Failed to process `%s'.\n", In.orisampling[level]);
+        net_ori_label (parts[i], SSet, dtess, dcell, OSets + i);
+
+      if (strstr (In.orioptiini[level], "weight="))
+      {
+        int qty, *qty1 = NULL;
+        char ***parts = NULL;
+        ut_list_break2 (In.orioptiini[level], ",", "=", &parts, &qty1, &qty);
+
+        OSets[i].weight = ut_alloc_1d (OSets[i].size);
+        for (j = 0; j < qty; j++)
+          if (!strcmp (parts[j][0], "weight"))
+            ut_array_1d_fnscanf_wcard (parts[j][1], OSets[i].weight, OSets[i].size, "numeral", "r");
+      }
+
+      if (strstr (In.orioptiini[level], "theta="))
+      {
+        int qty, *qty1 = NULL;
+        char ***parts = NULL;
+        ut_list_break2 (In.orioptiini[level], ",", "=", &parts, &qty1, &qty);
+
+        OSets[i].theta = ut_alloc_1d (OSets[i].size);
+        for (j = 0; j < qty; j++)
+          if (!strcmp (parts[j][0], "theta"))
+          {
+            ut_array_1d_fnscanf_wcard (parts[j][1], OSets[i].theta, OSets[i].size, "numeral", "r");
+            ut_array_1d_scale (OSets[i].theta, OSets[i].size, M_PI / 180);
+          }
+      }
     }
 
-    else if (!strncmp (parts[i], "fiber", 5))
-      net_ori_fiber (SSet, dtess, dcell, (*pSSet).Random, parts[i], OSets + i);
+    ol_set_cat (OSets, partqty, &OSet);
+    for (i = 0; i < partqty; i++)
+      size[i] = OSets[i].size;
 
-    else if (!strncmp (ori, "file(", 5))
-    {
-      net_ori_file (ori, OSets + i);
-      ut_string_string (oricrysym, &(OSets[i].crysym));
-    }
+    if (ut_array_1d_int_sum (size, partqty) > ut_array_1d_int_max (size, partqty))
+      ol_set_shuf (&OSet, (*pSSet).Random);
 
-    else if (strstr (In.orioptiini[level], "ori="))
-    {
-      int qty, *qty1 = NULL;
-      char ***parts = NULL;
-      ut_list_break2 (In.orioptiini[level], ",", "=", &parts, &qty1, &qty);
-      for (j = 0; j < qty; j++)
-        if (!strcmp (parts[j][0], "ori"))
-          net_ori_file (parts[j][1], OSets + i);
-      ut_string_string (oricrysym, &(OSets[i].crysym));
+    for (i = 0; i < partqty; i++)
+      ol_set_free (OSets + i);
+    free (OSets);
 
-      ut_free_3d_char (&parts, qty, 2);
-      ut_free_1d_int (&qty1);
-    }
+    net_ori_oricrysym (&OSet);
 
-    else if (!strncmp (parts[i], "odf", 3))
-      net_ori_odf ((*pSSet).Random, parts[i], OSets + i);
-
-    else
-      net_ori_label (parts[i], SSet, dtess, dcell, OSets + i);
-
-    if (strstr (In.orioptiini[level], "weight="))
-    {
-      int qty, *qty1 = NULL;
-      char ***parts = NULL;
-      ut_list_break2 (In.orioptiini[level], ",", "=", &parts, &qty1, &qty);
-
-      OSets[i].weight = ut_alloc_1d (OSets[i].size);
-      for (j = 0; j < qty; j++)
-        if (!strcmp (parts[j][0], "weight"))
-          ut_array_1d_fnscanf_wcard (parts[j][1], OSets[i].weight, OSets[i].size, "numeral", "r");
-    }
-
-    if (strstr (In.orioptiini[level], "theta="))
-    {
-      int qty, *qty1 = NULL;
-      char ***parts = NULL;
-      ut_list_break2 (In.orioptiini[level], ",", "=", &parts, &qty1, &qty);
-
-      OSets[i].theta = ut_alloc_1d (OSets[i].size);
-      for (j = 0; j < qty; j++)
-        if (!strcmp (parts[j][0], "theta"))
-        {
-          ut_array_1d_fnscanf_wcard (parts[j][1], OSets[i].theta, OSets[i].size, "numeral", "r");
-          ut_array_1d_scale (OSets[i].theta, OSets[i].size, M_PI / 180);
-        }
-    }
+    net_ori_memcpy (OSet, pSSet);
   }
-
-  ol_set_cat (OSets, partqty, &OSet);
-  for (i = 0; i < partqty; i++)
-    size[i] = OSets[i].size;
-
-  if (ut_array_1d_int_sum (size, partqty) > ut_array_1d_int_max (size, partqty))
-    ol_set_shuf (&OSet, (*pSSet).Random);
-
-  for (i = 0; i < partqty; i++)
-    ol_set_free (OSets + i);
-  free (OSets);
-
-  net_ori_oricrysym (&OSet);
-
-  net_ori_memcpy (OSet, pSSet);
 
   // processing -orispread
   net_ori_orispread (orispread, pSSet);

@@ -26,6 +26,7 @@ extern "C"
   extern void net_ori_random (long random, struct OL_SET *pOSet);
 
   extern void net_ori_file (char *label, struct OL_SET *pOSet);
+  extern void net_ori_memcpy (struct OL_SET OSet, struct SEEDSET *pSSet);
 
   extern void net_ori_post (struct TESR *pTesr);
 

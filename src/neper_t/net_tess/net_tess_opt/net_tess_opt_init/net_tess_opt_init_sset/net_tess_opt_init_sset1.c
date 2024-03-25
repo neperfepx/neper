@@ -12,28 +12,36 @@ net_tess_opt_init_sset (struct IN_T In, int level, struct MTESS MTess,
   int pos;
   int *qty = ut_alloc_1d_int ((*pTOpt).CellQty + 1);
   double *rad = ut_alloc_1d ((*pTOpt).CellQty + 1);
-  char *var = NULL, *cooexpr = NULL, *weightexpr = NULL;
+  char *var = NULL, *cooexpr = NULL, *weightexpr = NULL, *idexpr = NULL, *oriexpr = NULL;
 
   if (!strcmp ((*pTOpt).optitype, "morpho"))
     ut_print_message (0, 2, "Setting seeds... ");
 
   net_tess_opt_init_sset_pre (In, level, MTess, Tess, dtess, dcell, SSet, &var,
-                              &pos, &weightexpr, &cooexpr, pTOpt);
+                              &pos, &weightexpr, &cooexpr, &idexpr, &oriexpr, pTOpt);
 
   if (!strcmp ((*pTOpt).optitype, "morpho"))
+  {
     net_tess_opt_init_sset_weight (MTess, Tess, dtess, dcell, *pTOpt, var, pos,
                                    weightexpr, rad);
-  else
-    ut_array_1d_set (rad + 1, (*pTOpt).CellQty, 1);
 
-  net_tess_opt_init_sset_multiseed (In, level, *pTOpt, var, rad, qty);
+    net_tess_opt_init_sset_multiseed (In, level, *pTOpt, var, rad, qty);
 
-  if (!strcmp ((*pTOpt).optitype, "morpho"))
     net_tess_opt_init_sset_coo (MTess, Tess, dtess, dcell, pTOpt, var, pos,
                                 cooexpr, rad, qty);
 
-  if (!strcmp ((*pTOpt).optitype, "ori"))
-    net_tess_opt_init_sset_ori (TessId, SSet, pTOpt);
+    if (oriexpr)
+      net_tess_opt_init_sset_ori (TessId, SSet, oriexpr, pTOpt);
+
+    if (idexpr)
+      net_tess_opt_init_sset_id (TessId, SSet, idexpr, pTOpt);
+  }
+
+  else if (!strcmp ((*pTOpt).optitype, "ori"))
+  {
+    ut_array_1d_set (rad + 1, (*pTOpt).CellQty, 1);
+    net_tess_opt_init_sset_ori (TessId, SSet, oriexpr, pTOpt);
+  }
 
   net_tess_opt_init_sset_post (In, level, Tess[dtess], dcell, pTOpt);
 
@@ -42,6 +50,8 @@ net_tess_opt_init_sset (struct IN_T In, int level, struct MTESS MTess,
   ut_free_1d_char (&var);
   ut_free_1d_char (&cooexpr);
   ut_free_1d_char (&weightexpr);
+  ut_free_1d_char (&idexpr);
+  ut_free_1d_char (&oriexpr);
 
   return;
 }

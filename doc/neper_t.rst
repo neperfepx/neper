@@ -257,9 +257,9 @@ These options can be used to set the cell morphology.
 
 .. option:: -morphooptiini <seed_attributes>
 
-  Specify the initial positions and/or weights of the seeds.
+  Specify the initial positions, weights, orientations and/or ids of the seeds.
 
-  The general form of the argument is :data:`coo:\<coo_definition\>,weight:\<weight_definition\>`.  Different values of :data:`<coo_definition>` and :data:`<weight_definition>` are available, depending on the value of option :option:`-morpho`:
+  The general form of the argument is :data:`coo:\<coo_definition\>,weight:\<weight_definition\>,...`.  Different values of :data:`<coo_definition>` and :data:`<weight_definition>` are available, depending on the value of option :option:`-morpho`:
 
   - :data:`<coo_definition>` can be:
 
@@ -277,6 +277,16 @@ These options can be used to set the cell morphology.
     - :data:`file(<file_name>)`: values from a :ref:`data_file` or a :ref:`tess_file` (only the seed weights are considered).
 
     The default depends on the value of option :data:`-morpho`: for :data:`voronoi`, it is :data:`0`, for a cell-size statistical distribution, it is :data:`avradeq`, and for cell-based size values (including :data:`-morpho tesr`) , it is :data:`radeq`.
+
+  It is also possible to load orientations or ids using :data:`ori:\<ori_definition\>` and :data:`id:\<id_definition\>`:
+
+  - :data:`<ori_definition>` can be:
+
+    - :data:`file(<file_name>[,des=<descriptor>])`: discrete orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
+
+  - :data:`<id_definition>` can be:
+
+    - :data:`file(<file_name>)`: values from a :ref:`data_file`.
 
   Alternatively, :data:`file(<file_name>)` can be used to load the seed coordinates and weights from a unique :ref:`tess_file` (thereby replicating the tessellation).
 
@@ -482,6 +492,8 @@ Crystal Orientation Options
   - :data:`parent[:<distribution>]`: orientations inherited from the ones of the parent cells, with an optional continuous distribution about the nominal orientations (see below);
 
   - :data:`file(<file_name>[,des=<descriptor>])`: discrete orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
+
+  - :data:`from_morpho`: discrete orientations read from :option:`-morphooptiini`:data:`ori`.
 
   For :option:`-ori`:data:`<orientation>` and :option:`-ori`:data:`parent`, the optional distributions are:
 

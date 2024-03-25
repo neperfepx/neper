@@ -59,6 +59,9 @@ extern "C"
     /// Seed weights
     double *SeedWeight;
 
+    /// Seed ids
+    int *SeedId;
+
     /// Orientations (quaternion)
     double **SeedOri;
     /// Orientations (Rodrigues vector)

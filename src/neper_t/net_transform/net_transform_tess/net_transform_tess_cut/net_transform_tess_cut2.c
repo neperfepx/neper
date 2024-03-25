@@ -177,7 +177,7 @@ void
 net_transform_tess_cut_post (struct TESS TessGen, int *intseed_oldseed,
                              int intseedqty, struct TESS *pTess)
 {
-  int i, oldseed_max;
+  int i;
 
   neut_tess_tess_gen (TessGen, pTess);
 
@@ -186,10 +186,8 @@ net_transform_tess_cut_post (struct TESS TessGen, int *intseed_oldseed,
   // CellId
   if ((*pTess).CellQty && !TessGen.CellId && intseedqty > 0)
   {
-    oldseed_max = ut_array_1d_int_max (intseed_oldseed + 1, intseedqty);
-
-    TessGen.CellId = ut_alloc_1d_int (oldseed_max + 1);
-    ut_array_1d_int_set_id (TessGen.CellId, oldseed_max + 1);
+    TessGen.CellId = ut_alloc_1d_int (ut_num_max_int ((*pTess).CellQty, TessGen.CellQty) + 1);
+    ut_array_1d_int_set_id (TessGen.CellId, ut_num_max_int ((*pTess).CellQty, TessGen.CellQty) + 1);
   }
 
   if (TessGen.CellId)

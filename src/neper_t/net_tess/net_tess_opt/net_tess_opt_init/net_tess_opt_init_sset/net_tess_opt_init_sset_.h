@@ -23,5 +23,6 @@
 #include "net_tess_opt_init_sset_coo/net_tess_opt_init_sset_coo.h"
 #include "net_tess_opt_init_sset_multiseed/net_tess_opt_init_sset_multiseed.h"
 #include "net_tess_opt_init_sset_ori/net_tess_opt_init_sset_ori.h"
+#include "net_tess_opt_init_sset_id/net_tess_opt_init_sset_id.h"
 #include "net_tess_opt_init_sset_post/net_tess_opt_init_sset_post.h"
 #include "net_tess_opt_init_sset_pre/net_tess_opt_init_sset_pre.h"
