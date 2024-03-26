@@ -146,6 +146,7 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
     net_ori_oricrysym (&OSet);
 
     net_ori_memcpy (OSet, pSSet);
+    ol_set_free (&OSet);
   }
 
   // processing -orispread
@@ -157,7 +158,6 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
   ut_free_1d_char (&orisampling);
   ut_free_1d_char (&orispread);
   ut_free_1d_char (&oricrysym);
-  ol_set_free (&OSet);
   ut_free_1d_int (&size);
 
   return;
