@@ -257,9 +257,9 @@ These options can be used to set the cell morphology.
 
 .. option:: -morphooptiini <seed_attributes>
 
-  Specify the initial positions and/or weights of the seeds.
+  Specify the initial positions, weights, orientations and/or ids of the seeds.
 
-  The general form of the argument is :data:`coo:\<coo_definition\>,weight:\<weight_definition\>`.  Different values of :data:`<coo_definition>` and :data:`<weight_definition>` are available, depending on the value of option :option:`-morpho`:
+  The general form of the argument is :data:`coo:\<coo_definition\>,weight:\<weight_definition\>,...`.  Different values of :data:`<coo_definition>` and :data:`<weight_definition>` are available, depending on the value of option :option:`-morpho`:
 
   - :data:`<coo_definition>` can be:
 
@@ -278,7 +278,17 @@ These options can be used to set the cell morphology.
 
     The default depends on the value of option :data:`-morpho`: for :data:`voronoi`, it is :data:`0`, for a cell-size statistical distribution, it is :data:`avradeq`, and for cell-based size values (including :data:`-morpho tesr`) , it is :data:`radeq`.
 
-  Alternatively, :data:`file(<file_name>)` can be used to load the seed coordinates and weights from a unique :ref:`tess_file` (thereby replicating the tessellation).
+  It is also possible to load orientations or ids using :data:`ori:\<ori_definition\>` and :data:`id:\<id_definition\>`:
+
+  - :data:`<ori_definition>` can be:
+
+    - :data:`file(<file_name>[,des=<descriptor>])`: discrete orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
+
+  - :data:`<id_definition>` can be:
+
+    - :data:`file(<file_name>)`: values from a :ref:`data_file`.
+
+  Alternatively, :data:`file(<file_name>)` can be used to load the seed coordinates, weights, orientations and ids (if defined) from a unique :ref:`tess_file` (thereby replicating the tessellation).
 
   **Default value**: :data:`default`.
 
@@ -483,6 +493,8 @@ Crystal Orientation Options
 
   - :data:`file(<file_name>[,des=<descriptor>])`: discrete orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
 
+  - :data:`from_morpho`: discrete orientations read from :option:`-morphooptiini`:data:`ori`.
+
   For :option:`-ori`:data:`<orientation>` and :option:`-ori`:data:`parent`, the optional distributions are:
 
     - :data:`normal(<var>=<val>)`: a 3-variate normal distribution, where :data:`<var>` can be:
@@ -552,7 +564,7 @@ Transformation Options
 
     - :data:`torus[i](<basis_x>,<basis_y>,<basis_z>,<axis_x>,<axis_y>,<axis_z>,<rad>,<srad>)`: a torus of basis point (:data:`<basis_x>`, :data:`<basis_y>`, :data:`<basis_z>`), axis (:data:`<axis_x>`, :data:`<axis_y>`, :data:`<axis_z>`), radius :data:`<rad>` and section radius :data:`<srad>`;
 
-    - :data:`cube[i](<xmin>,<xmax>,<ymin>,<ymax>,<zmin>,<zmax>)`: a cube of :math:`x`, :math:`y` and :math:`z` coordinates in the specified ranges. (Only :data:`cubei` is available).
+    - :data:`cube[i](<xmin>,<xmax>,<ymin>,<ymax>,<zmin>,<zmax>,<rad>)`: a cube of :math:`x`, :math:`y` and :math:`z` coordinates in the specified ranges, with corners of radius :data:`<rad>`; the radius can take any value, but should typically be non-zero (and larger than the cell size).
 
   - :data:`planecut(<d>,<a>,<b>,<c>)`: cut by the (oriented) plane of equation :math:`a\,x+b\,y+c\,z=d`.
 

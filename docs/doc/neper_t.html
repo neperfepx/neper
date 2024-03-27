@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tessellation Module (-T) &mdash; Neper 4.8.1 documentation</title>
+  <title>Tessellation Module (-T) &mdash; Neper 4.8.2 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=af3423b7"></script>
+        <script src="../_static/documentation_options.js?v=98cca9dd"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.8.1
+                4.8.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -335,8 +335,8 @@
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-morphooptiini">
 <span class="sig-name descname"><span class="pre">-morphooptiini</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;seed_attributes&gt;</span></span><a class="headerlink" href="#cmdoption-morphooptiini" title="Link to this definition"></a></dt>
-<dd><p>Specify the initial positions and/or weights of the seeds.</p>
-<p>The general form of the argument is <code class="xref py py-data docutils literal notranslate"><span class="pre">coo:&lt;coo_definition&gt;,weight:&lt;weight_definition&gt;</span></code>.  Different values of <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;coo_definition&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;weight_definition&gt;</span></code> are available, depending on the value of option <a class="reference internal" href="#cmdoption-morpho"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morpho</span></code></a>:</p>
+<dd><p>Specify the initial positions, weights, orientations and/or ids of the seeds.</p>
+<p>The general form of the argument is <code class="xref py py-data docutils literal notranslate"><span class="pre">coo:&lt;coo_definition&gt;,weight:&lt;weight_definition&gt;,...</span></code>.  Different values of <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;coo_definition&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;weight_definition&gt;</span></code> are available, depending on the value of option <a class="reference internal" href="#cmdoption-morpho"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morpho</span></code></a>:</p>
 <ul>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;coo_definition&gt;</span></code> can be:</p>
 <ul class="simple">
@@ -356,7 +356,20 @@
 <p>The default depends on the value of option <code class="xref py py-data docutils literal notranslate"><span class="pre">-morpho</span></code>: for <code class="xref py py-data docutils literal notranslate"><span class="pre">voronoi</span></code>, it is <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>, for a cell-size statistical distribution, it is <code class="xref py py-data docutils literal notranslate"><span class="pre">avradeq</span></code>, and for cell-based size values (including <code class="xref py py-data docutils literal notranslate"><span class="pre">-morpho</span> <span class="pre">tesr</span></code>) , it is <code class="xref py py-data docutils literal notranslate"><span class="pre">radeq</span></code>.</p>
 </li>
 </ul>
-<p>Alternatively, <code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code> can be used to load the seed coordinates and weights from a unique <a class="reference internal" href="fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a> (thereby replicating the tessellation).</p>
+<p>It is also possible to load orientations or ids using <code class="xref py py-data docutils literal notranslate"><span class="pre">ori:&lt;ori_definition&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">id:&lt;id_definition&gt;</span></code>:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;ori_definition&gt;</span></code> can be:</p>
+<ul>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code>: discrete orientations to be read from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> written using a specific descriptor (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).</p></li>
+</ul>
+</li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;id_definition&gt;</span></code> can be:</p>
+<ul>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: values from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.</p></li>
+</ul>
+</li>
+</ul>
+<p>Alternatively, <code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code> can be used to load the seed coordinates, weights, orientations and ids (if defined) from a unique <a class="reference internal" href="fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a> (thereby replicating the tessellation).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">default</span></code>.</p>
 </dd></dl>
 
@@ -570,6 +583,7 @@
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">fiber(&lt;dirc_x&gt;,&lt;dirc_y&gt;,&lt;dirc_z&gt;,&lt;dirs_x&gt;,&lt;dirs_y&gt;,&lt;dirs_z&gt;)[:normal(&lt;var&gt;=&lt;val&gt;)]</span></code>: orientations along a fiber (see <a class="reference internal" href="exprskeys.html#orientation-fibers"><span class="std std-ref">Orientation Fibers</span></a>), with an optional continuous distribution about the fiber (see below);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">parent[:&lt;distribution&gt;]</span></code>: orientations inherited from the ones of the parent cells, with an optional continuous distribution about the nominal orientations (see below);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code>: discrete orientations to be read from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> written using a specific descriptor (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">from_morpho</span></code>: discrete orientations read from <a class="reference internal" href="#cmdoption-morphooptiini"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morphooptiini</span></code></a><code class="xref py py-data docutils literal notranslate"><span class="pre">ori</span></code>.</p></li>
 </ul>
 <p>For <a class="reference internal" href="#cmdoption-ori"><code class="xref std std-option docutils literal notranslate"><span class="pre">-ori</span></code></a><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;orientation&gt;</span></code> and <a class="reference internal" href="#cmdoption-ori"><code class="xref std std-option docutils literal notranslate"><span class="pre">-ori</span></code></a><code class="xref py py-data docutils literal notranslate"><span class="pre">parent</span></code>, the optional distributions are:</p>
 <blockquote>
@@ -637,7 +651,7 @@ The region interior to the primitives is removed from the tessellation.  Append 
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cylinder[i](&lt;basis_x&gt;,&lt;basis_y&gt;,&lt;basis_z&gt;,&lt;axis_x&gt;,&lt;axis_y&gt;,&lt;axis_z&gt;,&lt;rad&gt;)</span></code>: a cylinder of basis point (<code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;basis_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;basis_y&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;basis_z&gt;</span></code>), axis (<code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;axis_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;axis_y&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;axis_z&gt;</span></code>) and radius <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;rad&gt;</span></code>;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ecylinder[i](&lt;basis_x&gt;,&lt;basis_y&gt;,&lt;basis_z&gt;,&lt;axis_x&gt;,&lt;axis_y&gt;,&lt;axis_z&gt;,&lt;esaxis1_x&gt;,&lt;esaxis1_y&gt;,&lt;esaxis1_z&gt;,&lt;esaxis2_x&gt;,&lt;esaxis2_y&gt;,&lt;esaxis2_z&gt;,&lt;srad1&gt;,&lt;srad2&gt;)</span></code>: an elliptic cylinder of basis point (<code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;basis_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;basis_y&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;basis_z&gt;</span></code>), axis (<code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;axis_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;axis_y&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;axis_z&gt;</span></code>), ellipse section first axis (<code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;esaxis1_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;esaxis1_y&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;esaxis1_z&gt;</span></code>), ellipse section second axis (<code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;esaxis2_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;esaxis2_y&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;esaxis2_z&gt;</span></code>), ellipse section first radius <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;esrad1&gt;</span></code> and ellipse section second radius <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;esrad2&gt;</span></code>;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">torus[i](&lt;basis_x&gt;,&lt;basis_y&gt;,&lt;basis_z&gt;,&lt;axis_x&gt;,&lt;axis_y&gt;,&lt;axis_z&gt;,&lt;rad&gt;,&lt;srad&gt;)</span></code>: a torus of basis point (<code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;basis_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;basis_y&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;basis_z&gt;</span></code>), axis (<code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;axis_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;axis_y&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;axis_z&gt;</span></code>), radius <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;rad&gt;</span></code> and section radius <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;srad&gt;</span></code>;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cube[i](&lt;xmin&gt;,&lt;xmax&gt;,&lt;ymin&gt;,&lt;ymax&gt;,&lt;zmin&gt;,&lt;zmax&gt;)</span></code>: a cube of <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span> coordinates in the specified ranges. (Only <code class="xref py py-data docutils literal notranslate"><span class="pre">cubei</span></code> is available).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cube[i](&lt;xmin&gt;,&lt;xmax&gt;,&lt;ymin&gt;,&lt;ymax&gt;,&lt;zmin&gt;,&lt;zmax&gt;,&lt;rad&gt;)</span></code>: a cube of <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(z\)</span> coordinates in the specified ranges, with corners of radius <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;rad&gt;</span></code>; the radius can take any value, but should typically be non-zero (and larger than the cell size).</p></li>
 </ul>
 </li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">planecut(&lt;d&gt;,&lt;a&gt;,&lt;b&gt;,&lt;c&gt;)</span></code>: cut by the (oriented) plane of equation <span class="math notranslate nohighlight">\(a\,x+b\,y+c\,z=d\)</span>.</p></li>
