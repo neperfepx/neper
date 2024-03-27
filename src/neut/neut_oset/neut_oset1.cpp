@@ -30,7 +30,7 @@ neut_oset_clustering (struct OL_SET OSet, struct OL_SET Grid, char *method, stru
     neut_oset_kdtree (&Grid, &nano_cloud, &nano_index);
 
     size_t num_results = 1;
-    std::vector<long unsigned int> ret_index(num_results);
+    std::vector<size_t> ret_index(num_results);
     std::vector<double>    out_dist_sqr(num_results);
 
     for (i = 0; i < (int) OSet.size; i++)

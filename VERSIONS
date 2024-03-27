@@ -1,7 +1,8 @@
-New in 4.8.2-12 (26 Mar 2024):
+New in 4.8.2-13 (27 Mar 2024):
 - module -T: added -transform "cut(cube)", added -morphooptiini ori and id,
   improved -transform "cut(cubei)", made minor fixes and improvements.
 - module -M: made minor improvements.
+- general: fixed compilation on 32-bit systems.
 
 New in 4.8.1 (02 Feb 2024):
 - general: fixed compatibility with Gmsh (version 4.12.2).
