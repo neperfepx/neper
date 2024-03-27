@@ -15,7 +15,11 @@ What they said
 
   -- M Bayat et al, **Progress in Materials Science**, https://doi.org/10.1016/j.pmatsci.2023.101129.
 
-  *"Neper is an open-source software that is primarily used for generating complex microstructures based on specific design criteria (Quey et al. 2011, 2018; Quey and Renversade 2018). It offers a diverse range of functionalities that enable the creation of models at various scales, making it possible to simulate intri- cate materials and structures. Additionally, Neper’s computational capabilities allow for the optimization of these models, ensuring improved performance and efficiency."*
+  *"Open-source software packages such as NEPER [58, 59] and DREAM.3D [60] are vital in generating realistic microstructure models for simulation. These packages can generate statistically equivalent microstructure models using data from previous characterization, e.g., grain size, twin length/area fraction, crystallographic texture, etc., and reconstruct experimental data sets, e.g., 2D models from EBSD or 3D models from serial sectioning and EBSD or high-energy x-ray diffraction microscopy (HEDM) [59,60,61]). They also integrate well with open-source crystal plasticity software packages [62,63,64,65,66]."*
+
+  --  KS Stopka et al, **Integrating Materials and Manufacturing Innovation**, https://doi.org/10.1007/s40192-024-00343-9.
+
+  *"Neper is an open-source software that is primarily used for generating complex microstructures based on specific design criteria (Quey et al. 2011, 2018; Quey and Renversade 2018). It offers a diverse range of functionalities that enable the creation of models at various scales, making it possible to simulate intricate materials and structures. Additionally, Neper’s computational capabilities allow for the optimization of these models, ensuring improved performance and efficiency."*
 
   -- Q Ma et al, **Geomechanics and Geophysics for Geo-Energy and Geo-Resources**, https://doi.org/10.1007/s40948-023-00711-3.
 
@@ -30,6 +34,21 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2024
 ----
 
+- Y Zhu, H Bao, Z Yang, H Jiang and F Ma, *Grain boundaries-dominated migration failure of copper interconnect under multiphysics field: Insight from theoretical modeling and finite element analysis*, **Microelectronics Reliability**, https://doi.org/10.1016/j.microrel.2024.115346.
+- S Zhang, S Qiu, Q Jiang, L Jia, S Li and Z Xie, *Effect of fully-grouted bolts on the failure behaviors of mine pillars: Insights from block-based FDEM modeling*, **Construction and Building Materials**, https://doi.org/10.1016/j.conbuildmat.2024.135468.
+- KS Stopka, A Desrosiers, A Andreaco and MD Sangid, *A Methodology for the Rapid Qualification of Additively Manufactured Materials Based on Pore Defect Structures*, **Integrating Materials and  Manufacturing Innovation**, https://doi.org/10.1007/s40192-024-00343-9.
+- S Zhang, S Qiu, Q Jiang, C Yan, L Zhou and X Li, *Modeling damage evolution in granite under temperature using a thermo-mechanical grain-based FDEM model*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2024.106198.
+- W Liu, X Li, M Liu, H Cui, J Huang, Y Pang and J Ma, *Virtual laboratory enabled constitutive modelling of dual phase steels*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2024.103930.
+- J Xiong, D Liu, X Zheng, L Wang, X Ming, J Hao and H Bai, *Intrinsic magnetism and practical potential of 2: 14: 1-type magnet with rare earth supplied only by misch-metal*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2024.174095.
+- KR Aboayanah, A Abdelaziz, BF Haile, Q Zhao and G Grasselli, *Evaluation of Damage Stress Thresholds and Mechanical Properties of Granite: New Insights from Digital Image Correlation and GB-FDEM*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-024-03789-7.
+- C Zhang, H Ji, S You and Q Geng, *A novel grain growth algorithm for grain-based models for investigating the complex behavior of crystalline rock*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2024.106230.
+- C Griesbach, CA Bronkhorst and R Thevamaran, *Crystal plasticity simulations reveal cooperative plasticity mechanisms leading to enhanced strength and toughness in gradient nanostructured metals*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2024.119835.
+- X Zheng, M He, Q Huang, H Mao, Y Liu, Y Kong, Y Du, *Integrated microstructural simulations and mechanical property predictions for age-precipitated Al–Mg–Si alloys*, **Journal of Materials Science**, https://doi.org/10.1007/s10853-024-09549-w. [to be confirmed]
+- S Zhou, MB Bettaieb, F Abed-Meraim, *A physically-based mixed hardening model for the prediction of the ductility limits of thin metal sheets using a CPFE approach*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2024.103946.
+- NV Dantuluri, SR Chalamalasetti and LP Chodagam, *Optimization of Ultra-Thin Strip Rolling Process Parameters on Phosphor Bronze C5191 Using Grey Relational Analysis*, **Journal of The Institution of Engineers (India): Series D**, https://doi.org/10.1007/s40033-024-00682-z.
+- BK Sivaraj, R Nitheesh Kumar and V Karthik, *Computational Modeling of Additive Manufacturing—Overview, Principles, and Simulations in Different Scales*, **Additive Manufacturing with Novel Materials: Processes, Properties and Applications**,  https://doi.org/10.1002/9781394198085.ch3
+- J Miao, X Du, R Tang, C Li, X Shan and B Chen, *A crystal plasticity framework for modelling the rolling contact fatigue of planetary roller screw mechanism*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108216.
+- JB Mandel, L Solorio and AB Tepole, *Geometry of adipocyte packing in subcutaneous tissue contributes to nonlinear tissue properties captured through a Gaussian process surrogate model*, **Soft Matter**, https://doi.org/10.1039/D3SM01661G.
 - X Gao, X Lu, X Zhang, M Qian, A Li, L Geng, H Wang, C Liu, W Ouyang and H-X Peng, *Effect of Particle Strength on SiCp/Al Composite Properties with Network Architecture Design*, **Materials**, https://doi.org/10.3390/ma17030597.
 - H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer, Q Ali, L Breth, Y Hong, W Rigaut, T Devillers, NM Dempsey, T Schrefl and H Oezelt, *Reduced order model for hard magnetic films*, **AIP Advances**, https://doi.org/10.1063/9.0000816.
 - ML Cascio, V Gulizzi, A Milazzo and I Benedetti, *A Model for Polycrystalline Thermo-Mechanical Homogenisation and Micro-Cracking*, **Procedia Structural Integrity**, https://doi.org/10.1016/j.prostr.2023.12.063.
