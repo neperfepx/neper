@@ -34,6 +34,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2024
 ----
 
+- H Dai, S Di and Y Xue, *Microscopic mechanism of plastic heterogeneous deformation of columnar-grained polycrystalline ice*, **Cold Regions Science and Technology**, https://doi.org/10.1016/j.coldregions.2024.104183.
+- C Pan, G Zhao, X Meng, C Dong and P Gao, *Numerical investigation of the influence of mineral mesostructure on quasi-static compressive behaviors of granite using a breakable grain-based model*, **Frontiers in Ecology and Evolution**, https://doi.org/10.3389/fevo.2023.1288870.
 - Y Zhu, H Bao, Z Yang, H Jiang and F Ma, *Grain boundaries-dominated migration failure of copper interconnect under multiphysics field: Insight from theoretical modeling and finite element analysis*, **Microelectronics Reliability**, https://doi.org/10.1016/j.microrel.2024.115346.
 - S Zhang, S Qiu, Q Jiang, L Jia, S Li and Z Xie, *Effect of fully-grouted bolts on the failure behaviors of mine pillars: Insights from block-based FDEM modeling*, **Construction and Building Materials**, https://doi.org/10.1016/j.conbuildmat.2024.135468.
 - KS Stopka, A Desrosiers, A Andreaco and MD Sangid, *A Methodology for the Rapid Qualification of Additively Manufactured Materials Based on Pore Defect Structures*, **Integrating Materials and  Manufacturing Innovation**, https://doi.org/10.1007/s40192-024-00343-9.
@@ -85,7 +87,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 - RPC Coelho, MV de Carvalho and FMA Pires, *A multi-scale model combining martensitic transformations with multi-phase crystallographic slip*, **Computers & Structures**, https://doi.org/10.1016/j.compstruc.2023.107174.
 - N Sheng, S Khazaie, M Chevreuil and S Fréour, *Statistical properties of effective elastic moduli of random cubic polycrystals*, **Mechanics & Industry**, https://doi.org/10.1051/meca/2023030.
 - MK Kalkowski, MJS Lowe, V Samaitis, F Schreyer and S Robert, *Weld map tomography for determining local grain orientations from ultrasound*, **Proceedings of the Royal Society A**, https://doi.org/10.1098/rspa.2023.0236.
-- M Kavousi, P McGarry, P McHugh and S Leen, *Geometrical and crystal plasticity modelling: Towards the establishment of a process-structure-property relationship for additively manufactured 316L struts*, **European Journal of Mechanics-A/Solids**, https://doi.org/10.1016/j.euromechsol.2023.105115.
+- M Kavousi, P McGarry, P McHugh and S Leen, *Geometrical and crystal plasticity modelling: Towards the establishment of a process-structure-property relationship for additively manufactured 316L struts*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2023.105115.
 - KL Auth, J Brouzoulis and M Ekh, *Modeling of environmentally assisted intergranular crack propagation in polycrystals*, **International Journal for Numerical Methods in Engineering**, https://doi.org/10.1002/nme.7346.
 - M Pressacco, JJJ Kangas and T Saksala, *Numerical modelling of microwave irradiated rock fracture*, **Minerals Engineering**, https://doi.org/10.1016/j.mineng.2023.108318.
 - J Moore and C Martinez, *A Nonconformal Nonlocal Approach to Calculating Statistical Spread in Fatigue Indicator Parameters for Polycrystals*, **Fatigue & Fracture of Engineering Materials & Structures**, https://doi.org/10.22541/au.168663823.33787160.
@@ -522,7 +524,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 
 - R Quey, JH Driver and PR Dawson *Intra-grain orientation distributions in hot-deformed aluminium: Orientation dependence and relation to deformation mechanisms*, **Journal of the Mechanics and Physics of Solids**, vol. 84, pp. 506-527, 2015.
 - J Zhang, ZH Chen and CF Dong, *Simulating Intergranular Stress Corrosion Cracking in AZ31 Using Three-Dimensional Cohesive Elements for Grain Structure*, **Journal of Materials Engineering and Performance**, vol. 24, pp. 4908-4918, 2015
-- A Van Pamel,  CR Brett, P Huthwaite and MJS Lowe, *Finite element modelling of elastic wave scattering within a polycrystalline material in two and three dimensions*, **Journal of the Acoustical Society of America**, vol. 138, pp. 2326-2336, 2015.
+- A Van Pamel,  CR Brett, P Huthwaite and MJS Lowe, *Finite element modelling of elastic wave scattering within a polycrystalline material in two and three dimensions*, **The Journal of the Acoustical Society of America**, vol. 138, pp. 2326-2336, 2015.
 - V Gulizzi, A Milazzo and I Benedetti, *An enhanced grain-boundary framework for computational homogenization and micro-cracking simulations of polycrystalline materials*, **Computational Mechanics**, DOI 10.1007/s00466-015-1192-8.
 - A Cruzadoa, B Gana, M Jiméneza, D Barbaa, K Ostolazab, A Linazab, JM Molina-Aldareguiaa, J Llorcaa and J Segurado, *Multiscale modeling of the mechanical behavior of IN718 superalloy based on micropillar compression and computational homogenization* , **Acta Materialia**, vol. 98, pp. 242-253, 2015.
 - L Zhang, W Xu, J Long and Z Lei, *Surface Roughening Analysis of Cold Drawn Tube Based on Macro-micro Coupling Finite Element Method*, **Journal of Materials Processing Technology**, vol. 224, pp. 189-199, 2015.
