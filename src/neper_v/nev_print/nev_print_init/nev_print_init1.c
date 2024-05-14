@@ -9,7 +9,7 @@ nev_print_init (struct IN_V In, struct PRINT *pPrint, struct PF *pPf,
                 struct TESS Tess, struct DATA *TessData, struct TESR Tesr,
                 struct DATA *TesrData, struct NODES Nodes, struct MESH *Mesh,
                 struct DATA *pNodeData, struct DATA **MeshData, int *pSQty,
-                struct NODES **pSNodes, struct MESH **pSMesh2D, struct DATA
+                struct NODES **pSNodes, struct MESH ***pSMesh, struct DATA
                 **pSNodeData, struct DATA ****pSMeshData, int ***pSElt2dElt3d,
                 struct DATA *pCsysData,
                 struct POINT *Points, int PointQty, struct DATA *PointData)
@@ -33,14 +33,14 @@ nev_print_init (struct IN_V In, struct PRINT *pPrint, struct PF *pPf,
 
     if (In.slice)
       neut_mesh_slice (Nodes, Mesh[3], *pNodeData, MeshData[3][0], In.slice,
-                       pSQty, pSNodes, pSMesh2D, pSNodeData, pSMeshData,
+                       pSQty, pSNodes, pSMesh, pSNodeData, pSMeshData,
                        pSElt2dElt3d);
 
     for (i = 0; i < *pSQty; i++)
     {
       nev_print_init_data_nodes (In, (*pSNodes)[i], crysym, (*pSNodes)[i].NodeQty,
                                  (*pSNodeData) + i);
-      nev_print_init_data_mesh (In, Nodes, (*pSMesh2D)[i], crysym, 1, Mesh[3].ElsetQty,
+      nev_print_init_data_mesh (In, Nodes, (*pSMesh)[i][2], crysym, 1, Mesh[3].ElsetQty,
                                 "elt", 3, (*pSMeshData)[i][2]);
     }
 

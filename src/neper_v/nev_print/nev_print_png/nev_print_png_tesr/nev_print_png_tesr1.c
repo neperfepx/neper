@@ -154,7 +154,7 @@ nev_print_png_tesr (FILE * file, struct PRINT Print, struct TESR Tesr,
     neut_mesh_entity_expr_val (Nodes, Mesh, &Tess, NULL, NULL, NULL, NULL,
                                "elt1d", TesrData[1].RadDataName, MeshData[1][0].Rad, NULL);
 
-    nev_print_png_mesh_1d (file, Print, Tess, Mesh, NodeData, MeshData);
+    nev_print_png_mesh_1d (file, Print, Tess, Nodes, Mesh, NodeData, MeshData);
 
     // printing tesr
     nev_print_png_mesh_2d (file, Print, Nodes, Mesh, NodeData, MeshData);

@@ -664,9 +664,11 @@ The following options apply to the full tessellations, mesh, etc.
    single: -showcsys
    single: -showscale
 
-.. option:: -show{tess,tesr,mesh,meshslice,csys,scale} <logical>
+.. option:: -show{tess,tesr,mesh,meshslice,meshsliceelt1d,csys,scale} <logical>
 
-  Show or hide a full tessellation, mesh, etc.
+  Show or hide a full tessellation or mesh, the mesh slices, the 1D elements of the mesh slices, the coordinate system, or the scale, respectively.
+  
+  .. note:: The 1D elements of the mesh slices are printed as specified by options :option:`-dataelt1d*`.
 
   **Default value**: :data:`1` for the more informative data (mesh slice :math:`>` mesh :math:`>` tessellation) and :data:`0` for others.
 

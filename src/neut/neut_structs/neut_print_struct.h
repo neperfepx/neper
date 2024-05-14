@@ -17,6 +17,7 @@ extern "C"
     int showtesr;
     int showmesh;
     int showslice;
+    int showsliceelt1d;
     int showcsys;
     int showscale;
 

@@ -1171,12 +1171,14 @@ neut_mesh1d_mesh0d (struct MESH Mesh1D, struct MESH *pMesh0D,
                     int ***pVerEdgeNb, int **pVerEdgeQty, int *pVerQty,
                     int verbosity)
 {
-  int i, j, elt1dqty, elset1dqty;
+  int i, j, elt1dqty, elset1dqty, VerQty;
   struct MESH EltMesh0D;
   int *elt1d = NULL;
   int *elset1d = NULL;
   char *progress = ut_alloc_1d_char (20);
   struct NODES fake;
+  int *VerEdgeQty = NULL;
+  int **VerEdgeNb = NULL;
 
   neut_nodes_set_zero (&fake);
 
@@ -1188,7 +1190,7 @@ neut_mesh1d_mesh0d (struct MESH Mesh1D, struct MESH *pMesh0D,
     ut_print_neperbug ();
   }
 
-  (*pVerQty) = 0;
+  VerQty = 0;
 
   neut_mesh_reset (pMesh0D);
   (*pMesh0D).Dimension = 0;
@@ -1244,8 +1246,8 @@ neut_mesh1d_mesh0d (struct MESH Mesh1D, struct MESH *pMesh0D,
   //   . else, do nothing.
   // Set ElsetQty, EltElset, *pVerQty, *pVerEdgeQty and *pVerEdgeNb
 
-  (*pVerQty) = (*pMesh0D).EltQty;
-  (*pVerEdgeQty) = ut_alloc_1d_int (*pVerQty);
+  VerQty = (*pMesh0D).EltQty;
+  VerEdgeQty = ut_alloc_1d_int (VerQty);
 
   if (verbosity)
     ut_print_progress (stdout, 0, (*pMesh0D).EltQty, "[2/2] %3.0f%%",
@@ -1264,9 +1266,9 @@ neut_mesh1d_mesh0d (struct MESH Mesh1D, struct MESH *pMesh0D,
     if (elset1dqty == 2 && elset1d[1] == -1)
       elset1d[1] = --eod;
 
-    (*pVerEdgeNb) = ut_realloc_2d_int_addline (*pVerEdgeNb, i, elset1dqty);
-    ut_array_1d_int_memcpy (elset1d, elset1dqty, (*pVerEdgeNb)[i - 1]);
-    (*pVerEdgeQty)[i - 1] = elset1dqty;
+    VerEdgeNb = ut_realloc_2d_int_addline (VerEdgeNb, i, elset1dqty);
+    ut_array_1d_int_memcpy (elset1d, elset1dqty, VerEdgeNb[i - 1]);
+    VerEdgeQty[i - 1] = elset1dqty;
 
     if (verbosity)
       ut_print_progress_nonl (stdout, i, (*pMesh0D).EltQty, "[2/2] %3.0f%%",
@@ -1277,17 +1279,38 @@ neut_mesh1d_mesh0d (struct MESH Mesh1D, struct MESH *pMesh0D,
     ut_print_progress (stdout, (*pMesh0D).EltQty, (*pMesh0D).EltQty,
                        "%3.0f%%", progress);
 
-  (*pMesh0D).ElsetQty = (*pVerQty);
-  (*pMesh0D).Elsets = ut_alloc_2d_int ((*pVerQty) + 1, 1);
+  (*pMesh0D).ElsetQty = VerQty;
+  (*pMesh0D).Elsets = ut_alloc_2d_int (VerQty + 1, 1);
 
   for (i = 1; i <= (*pMesh0D).EltQty; i++)
     neut_mesh_elset_addelt (pMesh0D, (*pMesh0D).EltElset[i], i);
+
+  if (pVerQty)
+    (*pVerQty) = VerQty;
+
+  if (pVerEdgeQty)
+  {
+    (*pVerEdgeQty) = ut_alloc_1d_int (VerQty);
+    ut_array_1d_int_memcpy (VerEdgeQty, VerQty, *pVerEdgeQty);
+  }
+
+  if (pVerEdgeNb)
+  {
+    (*pVerEdgeNb) = ut_alloc_1d_pint (VerQty);
+    for (i = 0; i < VerQty; i++)
+    {
+      (*pVerEdgeNb)[i] = ut_alloc_1d_int ((*pVerEdgeQty)[i]);
+      ut_array_1d_int_memcpy (VerEdgeNb[i], VerEdgeQty[i], (*pVerEdgeNb)[i]);
+    }
+  }
 
   neut_mesh_free (&EltMesh0D);
   ut_free_1d_int (&elt1d);
   ut_free_1d_int (&elset1d);
   ut_free_1d_char (&progress);
   neut_nodes_free (&fake);
+  ut_free_1d_int (&VerEdgeQty);
+  ut_free_2d_int (&VerEdgeNb, VerQty);
 
   return;
 }

@@ -16,7 +16,7 @@ nev_print_png_mesh (FILE * file, struct PRINT Print, struct TESS Tess,
 
   nev_print_png_mesh_2d (file, Print, Nodes, Mesh, NodeData, MeshData);
 
-  nev_print_png_mesh_1d (file, Print, Tess, Mesh, NodeData, MeshData);
+  nev_print_png_mesh_1d (file, Print, Tess, Nodes, Mesh, NodeData, MeshData);
 
   nev_print_png_mesh_0d (file, Print, Mesh, NodeData, MeshData);
 

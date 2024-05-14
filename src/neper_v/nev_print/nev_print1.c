@@ -17,7 +17,7 @@ nev_print (struct IN_V In,
   char *basename = NULL;
   int SQty = 0;
   struct NODES *SNodes = NULL;
-  struct MESH *SMesh2D = NULL;
+  struct MESH **SMesh = NULL;
   struct DATA *SNodeData = NULL;
   struct DATA ***SMeshData = NULL;
   int **SElt2dElt3d = NULL;
@@ -53,7 +53,7 @@ nev_print (struct IN_V In,
     nev_print_show (In, pTess, Tesr, Nodes, Mesh, Points, PointQty, pPrint);
 
     nev_print_init (In, pPrint, &Pf, *pTess, TessData, Tesr, pTesrData, Nodes, Mesh,
-                    pNodeData, MeshData, &SQty, &SNodes, &SMesh2D,
+                    pNodeData, MeshData, &SQty, &SNodes, &SMesh,
                     &SNodeData, &SMeshData, &SElt2dElt3d, pCsysData, Points,
                     PointQty, PointData);
 
@@ -63,7 +63,7 @@ nev_print (struct IN_V In,
        || ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov:objects")
        || ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
         nev_print_png (In, basename, *pPrint, *pSim, *pTess, TessData, Tesr, pTesrData, Nodes,
-                       Mesh, SQty, SNodes, SMesh2D, pNodeData, MeshData, pCsysData,
+                       Mesh, SQty, SNodes, SMesh, pNodeData, MeshData, pCsysData,
                        Points, PointQty, PointData, SNodeData, SMeshData, SElt2dElt3d);
 
       if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "vtk"))

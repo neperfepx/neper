@@ -25,6 +25,7 @@ neut_print_set_default (struct PRINT *pPrint)
   (*pPrint).showtesr = -1;
   (*pPrint).showmesh = -1;
   (*pPrint).showslice = -1;
+  (*pPrint).showsliceelt1d = -1;
 
   (*pPrint).inputqty = 0;
   (*pPrint).inputs = NULL;

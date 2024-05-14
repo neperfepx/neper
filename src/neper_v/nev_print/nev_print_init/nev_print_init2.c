@@ -82,6 +82,8 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
   {
     if ((*pPrint).showslice == -1)
       (*pPrint).showslice = 1;
+    if ((*pPrint).showsliceelt1d == -1)
+      (*pPrint).showsliceelt1d = 0;
     if ((*pPrint).showmesh == -1)
       (*pPrint).showmesh = 0;
     if ((*pPrint).showtess == -1)

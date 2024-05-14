@@ -41,6 +41,8 @@ neut_mesh3d_slice (struct NODES Nodes, struct MESH Mesh, double *eq,
   else
     ut_print_neperbug ();
 
+  neut_mesh_dupnodemerge (pSNodes, NULL, pSMesh, 1e-9, 0);
+
   int ElsetQty, **Elsets = NULL;
 
   ElsetQty = Mesh.ElsetQty;

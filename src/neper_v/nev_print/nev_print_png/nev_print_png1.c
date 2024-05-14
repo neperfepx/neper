@@ -8,7 +8,7 @@ void
 nev_print_png (struct IN_V In, char *basename, struct PRINT Print, struct SIM Sim,
                struct TESS Tess, struct DATA *TessData, struct TESR Tesr,
                struct DATA *TesrData, struct NODES Nodes, struct MESH *Mesh,
-               int SQty, struct NODES *SNodes, struct MESH *SMesh2D,
+               int SQty, struct NODES *SNodes, struct MESH **SMesh,
                struct DATA *pNodeData, struct DATA **MeshData,
                struct DATA *pCsysData, struct POINT *Points, int PointQty,
                struct DATA *PointData, struct DATA *SNodeData,
@@ -71,20 +71,34 @@ nev_print_png (struct IN_V In, char *basename, struct PRINT Print, struct SIM Si
 
     for (i = 0; i < SQty; i++)
     {
-      int j, *showelt2d = ut_alloc_1d_int (SMesh2D[i].EltQty + 1);
+      int j, *showelt2d = ut_alloc_1d_int (SMesh[i][2].EltQty + 1);
 
       if (Print.showelt3d[0] != -1)
-        for (j = 1; j <= SMesh2D[i].EltQty; j++)
+        for (j = 1; j <= SMesh[i][2].EltQty; j++)
           showelt2d[j] = Print.showelt3d[SElt2dElt3d[i][j]];
       else
-        ut_array_1d_int_set (showelt2d + 1, SMesh2D[i].EltQty, 1);
+        ut_array_1d_int_set (showelt2d + 1, SMesh[i][2].EltQty, 1);
 
       if (ut_string_strcmp (SMeshData[i][2][0].ColDataType, "from_nodes"))
-        nev_print_png_mesh2d (file, SNodes[i], SMesh2D[i], showelt2d,
+        nev_print_png_mesh2d (file, SNodes[i], SMesh[i][2], showelt2d,
                           SMeshData[i][2][0].Col, "elt", Print);
       else
-        nev_print_png_mesh2d (file, SNodes[i], SMesh2D[i], showelt2d,
+        nev_print_png_mesh2d (file, SNodes[i], SMesh[i][2], showelt2d,
                               SNodeData[i].Col, "node", Print);
+
+      if (Print.showsliceelt1d)
+      {
+        double *Rad = ut_alloc_1d (SMesh[i][1].EltQty + 1);
+        ut_array_1d_set (Rad + 1, SMesh[i][1].EltQty, MeshData[1][0].Rad[1]);
+        int **Col = ut_alloc_2d_int (SMesh[i][1].EltQty + 1, 3);
+        for (j = 1; j <= SMesh[i][1].EltQty; j++)
+          ut_array_1d_int_memcpy (MeshData[1][0].Col[1], 3, Col[j]);
+
+        nev_print_png_mesh1d (file, SNodes[i], SMesh[i][1], NULL,
+                              Col, Rad, Print);
+        ut_free_1d (&Rad);
+        ut_free_2d_int (&Col, SMesh[i][1].EltQty + 1);
+      }
 
       ut_free_1d_int (&showelt2d);
     }

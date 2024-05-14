@@ -1,3 +1,6 @@
+New in 4.8.3-8-add_showmeshsliceelt1d (14 May 2024):
+- module -V: added -showmeshsliceelt1d.
+
 New in 4.8.2 (27 Mar 2024):
 - module -T: added -transform "cut(cube)", added -morphooptiini ori and id,
   improved -transform "cut(cubei)", made minor fixes and improvements.

@@ -349,7 +349,7 @@ neut_mesh_scotchmesh (struct MESH Mesh, int vnodnbr, SCOTCH_Mesh * pSCMesh)
 }
 #endif /* HAVE_LIBSCOTCH */
 
-/* nodes & elements are considered to be numbered contiguously from 1 */
+/* nodes & elements are considered to be numbered contiguously from 0 */
 void
 neut_mesh_init_nodeelts (struct MESH *pMesh, int NodeQty)
 {
@@ -2173,6 +2173,80 @@ neut_mesh_init_eltbody (struct MESH Mesh2D, struct MESH *pMesh3D)
 
   ut_free_2d_int (&neighelts, (*pMesh3D).EltQty + 1);
   ut_free_1d_int (&neigheltqty);
+
+  return;
+}
+
+void
+neut_mesh_dupnodemerge (struct NODES *pNodes, struct MESH *Mesh, struct MESH *pMesh,
+                           double eps, int verbosity)
+{
+  int i, j;
+
+  int *slave_master = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+  int *masters = NULL, masterqty;
+
+  // Changing slaves to masters
+  for (i = 1; i <= (*pNodes).NodeQty; i++)
+    slave_master[i] = i;
+
+  char *message = ut_alloc_1d_char (1000);
+  if (verbosity > 0)
+    ut_print_progress (stdout, 0, 1, "%3.0f%%", message);
+
+  int testqty = 0;
+  int tottestqty = ((*pNodes).NodeQty * ((*pNodes).NodeQty - 1)) / 2;
+
+  for (i = 1; i < (*pNodes).NodeQty; i++)
+  {
+    for (j = i + 1; j <= (*pNodes).NodeQty; j++)
+      if (neut_nodes_dist_pair (*pNodes, i, j) < eps)
+        slave_master[j] = slave_master[i];
+
+    testqty += (*pNodes).NodeQty - i;
+
+    if (verbosity > 0)
+      ut_print_progress (stdout, testqty, tottestqty, "%3.0f%%", message);
+  }
+
+  masters = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+  ut_array_1d_int_memcpy (slave_master + 1, (*pNodes).NodeQty, masters + 1);
+  masterqty = (*pNodes).NodeQty;
+  ut_array_1d_int_sort_uniq (masters + 1, masterqty, &masterqty);
+
+  if (Mesh)
+    for (i = 0; i <= 3; i++)
+      neut_mesh_switch (Mesh + i, slave_master, NULL, NULL);
+  if (pMesh)
+      neut_mesh_switch (pMesh, slave_master, NULL, NULL);
+
+  // Removing useless nodes
+  int *node_nbs = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+  int NodeQty = 0;
+
+  for (i = 1; i <= (*pNodes).NodeQty; i++)
+    node_nbs[i] = (slave_master[i] == i) ? ++NodeQty : -1;
+
+  for (i = 1; i <= (*pNodes).NodeQty; i++)
+    if (node_nbs[i] != -1)
+      ut_array_1d_memcpy ((*pNodes).NodeCoo[i], 3,
+                          (*pNodes).NodeCoo[node_nbs[i]]);
+
+  if (Mesh)
+    for (i = 0; i <= 3; i++)
+      neut_mesh_switch (Mesh + i, node_nbs, NULL, NULL);
+  if (pMesh)
+      neut_mesh_switch (pMesh, node_nbs, NULL, NULL);
+
+  if (verbosity)
+    ut_print_message (0, 3, "%d %s removed.\n", (*pNodes).NodeQty - NodeQty,
+                      ((*pNodes).NodeQty - NodeQty <= 1) ? "node" : "nodes");
+
+  (*pNodes).NodeQty = NodeQty;
+
+  ut_free_1d_char (&message);
+  ut_free_1d_int (&slave_master);
+  ut_free_1d_int (&node_nbs);
 
   return;
 }

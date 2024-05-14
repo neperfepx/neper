@@ -4,6 +4,3 @@
 
 extern void nem_cleaning_singnodedup (struct MESH *Mesh,
 				      struct NODES *pNodes, int ***pFoDNodes);
-
-extern void nem_cleaning_dupnodemerge (struct NODES *pNodes, struct
-				       MESH *Mesh, double eps);

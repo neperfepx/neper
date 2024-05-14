@@ -202,7 +202,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.dupnodemerge > 0)
   {
     ut_print_message (0, 1, "Merging duplicated nodes... ");
-    nem_cleaning_dupnodemerge (&Nodes, Mesh, In.dupnodemerge);
+    neut_mesh_dupnodemerge (&Nodes, Mesh, NULL, In.dupnodemerge, 1);
   }
 
 // managing mesh order ###

@@ -275,6 +275,8 @@ extern "C"
 
   extern void neut_mesh_init_eltbody (struct MESH Mesh2D, struct MESH *pMesh3D);
 
+  extern void neut_mesh_dupnodemerge (struct NODES *pNodes, struct MESH *Mesh, struct MESH *pMesh, double eps, int verbosity);
+
 #endif				/* NEUT_MESH_OP_H */
 
 #ifdef __cplusplus

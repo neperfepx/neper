@@ -512,6 +512,64 @@ nev_print_png_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
 }
 
 void
+nev_print_png_mesh1d (FILE *file, struct NODES Nodes, struct MESH Mesh, int *showelt,
+                      int **Col, double *Rad, struct PRINT Print)
+{
+  int i, texture_unique;
+  int *ColU = ut_alloc_1d_int (3);
+  char *texture = ut_alloc_1d_char (100);
+
+  texture_unique = 1;
+  if (!Col)
+  {}
+
+  else
+    for (i = 1; i <= Mesh.EltQty; i++)
+      if (!showelt || showelt[i])
+      {
+        if (!ColU)
+        {
+          ColU = ut_alloc_1d_int (3);
+          ut_array_1d_int_memcpy (Col[i], 3, ColU);
+        }
+        else if (!ut_array_1d_int_equal (Col[i], 3, ColU, 3))
+        {
+          texture_unique = 0;
+          break;
+        }
+      }
+
+  if (texture_unique)
+  {
+    fprintf (file,
+             "#declare elt1d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
+             ColU[0] / 255., ColU[1] / 255., ColU[2] / 255., Print.lightambient, Print.lightdiffuse, Print.lightreflection);
+
+    strcpy (texture, "elt1d");
+  }
+
+  for (i = 1; i <= Mesh.EltQty; i++)
+    if (!showelt || showelt[i])
+    {
+      if (!texture_unique)
+      {
+        fprintf (file,
+                 "#declare elt1d%d =\n  texture { pigment { rgb <%f,%f,%f> } finish {ambient %f diffuse %f reflection %f} }\n",
+                 i, Col[i][0] / 255., Col[i][1] / 255., Col[i][2] / 255.,
+                 Print.lightambient, Print.lightdiffuse, Print.lightreflection);
+
+        sprintf (texture, "elt1d%d", i);
+      }
+
+      nev_print_png_segment_wsph (file, Nodes.NodeCoo[Mesh.EltNodes[i][0]],
+                              Nodes.NodeCoo[Mesh.EltNodes[i][1]], Rad[i],
+                              texture);
+    }
+
+  return;
+}
+
+void
 nev_print_png_triangle (FILE * file, double *coo1, double *coo2, double *coo3,
                     char *texture, char *edge_rad, char *edge_texture)
 {

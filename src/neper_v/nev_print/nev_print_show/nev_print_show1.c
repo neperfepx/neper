@@ -33,6 +33,9 @@ nev_print_show (struct IN_V In, struct TESS *pTess, struct TESR Tesr,
     else if (!strcmp (In.show[i][0], "meshslice"))
       ut_string_int (In.show[i][1], &((*pPrint).showslice));
 
+    else if (!strcmp (In.show[i][0], "meshsliceelt1d"))
+      ut_string_int (In.show[i][1], &((*pPrint).showsliceelt1d));
+
     // tess and tesr specific --------------------------------------------
 
     else if (!strcmp (In.show[i][0], "cell"))

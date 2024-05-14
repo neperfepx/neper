@@ -9,7 +9,7 @@ extern void nev_print_png (struct IN_V In, char *basename, struct PRINT Print, s
                            struct DATA *TessData, struct TESR Tesr,
                            struct DATA *TesrData, struct NODES Nodes,
                            struct MESH *Mesh, int SQty, struct NODES *SNodes,
-                           struct MESH *SMesh2D, struct DATA *pNodeData,
+                           struct MESH **SMesh, struct DATA *pNodeData,
                            struct DATA **MeshData, struct DATA *pCsysData,
                            struct POINT *Points, int PointQty, struct DATA *pPointData,
                            struct DATA *SNodeData, struct DATA ***SMeshData,
