@@ -282,7 +282,7 @@ These options can be used to set the cell morphology.
 
   - :data:`<ori_definition>` can be:
 
-    - :data:`file(<file_name>[,des=<descriptor>])`: discrete orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
+    - :data:`file(<file_name>[,des=<descriptor>])`: discrete orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).  :option:`-ori` :data:`from_morpho` must also be used.
 
   - :data:`<id_definition>` can be:
 
@@ -490,6 +490,10 @@ Crystal Orientation Options
   - :data:`fiber(<dirc_x>,<dirc_y>,<dirc_z>,<dirs_x>,<dirs_y>,<dirs_z>)[:normal(<var>=<val>)]`: orientations along a fiber (see :ref:`orientation_fibers`), with an optional continuous distribution about the fiber (see below);
 
   - :data:`parent[:<distribution>]`: orientations inherited from the ones of the parent cells, with an optional continuous distribution about the nominal orientations (see below);
+
+  - :data:`ks[:<distribution>]`: orientations inherited from the ones of the parent cells using the Kurdjumov-Sachs (KS) orientation relationship (austenite--ferrite transformation), with an optional continuous distribution about the nominal orientations (see below);
+
+  - :data:`ti_beta2alpha[:<distribution>]`: orientations inherited from the ones of the parent cells using the :math:`\beta\rightarrow\alpha` transformation orientation relationship in titanium, with an optional continuous distribution about the nominal orientations (see below);
 
   - :data:`file(<file_name>[,des=<descriptor>])`: discrete orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
 

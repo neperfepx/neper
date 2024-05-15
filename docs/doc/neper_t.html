@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tessellation Module (-T) &mdash; Neper 4.8.2 documentation</title>
+  <title>Tessellation Module (-T) &mdash; Neper 4.9.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=98cca9dd"></script>
+        <script src="../_static/documentation_options.js?v=7a99edf7"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.8.2
+                4.9.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -360,7 +360,7 @@
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;ori_definition&gt;</span></code> can be:</p>
 <ul>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code>: discrete orientations to be read from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> written using a specific descriptor (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code>: discrete orientations to be read from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> written using a specific descriptor (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).  <a class="reference internal" href="#cmdoption-ori"><code class="xref std std-option docutils literal notranslate"><span class="pre">-ori</span></code></a> <code class="xref py py-data docutils literal notranslate"><span class="pre">from_morpho</span></code> must also be used.</p></li>
 </ul>
 </li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;id_definition&gt;</span></code> can be:</p>
@@ -582,6 +582,8 @@
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;orientation&gt;[:&lt;distribution&gt;]</span></code>: a continuous distribution about a <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">discrete orientation</span></a> (the distribution itself is optional, see below);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">fiber(&lt;dirc_x&gt;,&lt;dirc_y&gt;,&lt;dirc_z&gt;,&lt;dirs_x&gt;,&lt;dirs_y&gt;,&lt;dirs_z&gt;)[:normal(&lt;var&gt;=&lt;val&gt;)]</span></code>: orientations along a fiber (see <a class="reference internal" href="exprskeys.html#orientation-fibers"><span class="std std-ref">Orientation Fibers</span></a>), with an optional continuous distribution about the fiber (see below);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">parent[:&lt;distribution&gt;]</span></code>: orientations inherited from the ones of the parent cells, with an optional continuous distribution about the nominal orientations (see below);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ks[:&lt;distribution&gt;]</span></code>: orientations inherited from the ones of the parent cells using the Kurdjumov-Sachs (KS) orientation relationship (austenite–ferrite transformation), with an optional continuous distribution about the nominal orientations (see below);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ti_beta2alpha[:&lt;distribution&gt;]</span></code>: orientations inherited from the ones of the parent cells using the <span class="math notranslate nohighlight">\(\beta\rightarrow\alpha\)</span> transformation orientation relationship in titanium, with an optional continuous distribution about the nominal orientations (see below);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code>: discrete orientations to be read from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> written using a specific descriptor (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">from_morpho</span></code>: discrete orientations read from <a class="reference internal" href="#cmdoption-morphooptiini"><code class="xref std std-option docutils literal notranslate"><span class="pre">-morphooptiini</span></code></a><code class="xref py py-data docutils literal notranslate"><span class="pre">ori</span></code>.</p></li>
 </ul>

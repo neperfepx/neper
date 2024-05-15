@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Visualization Module (-V) &mdash; Neper 4.8.2 documentation</title>
+  <title>Visualization Module (-V) &mdash; Neper 4.9.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=98cca9dd"></script>
+        <script src="../_static/documentation_options.js?v=7a99edf7"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.8.2
+                4.9.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -234,7 +234,8 @@
 <span class="sig-name descname"><span class="pre">-step</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;step&gt;</span></span><a class="headerlink" href="#cmdoption-step" title="Link to this definition"></a></dt>
 <dd><p>Specify the simulation step(s), which can be:</p>
 <ul class="simple">
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>: initial state;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>: the initial state;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">final</span></code>: the final step;</p></li>
 <li><p>any step number;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">all</span></code>: all steps;</p></li>
 <li><p>a list of steps combined with <code class="xref py py-data docutils literal notranslate"><span class="pre">,</span></code>; a range of values can also be specified using <code class="xref py py-data docutils literal notranslate"><span class="pre">-</span></code>.  An example is <code class="xref py py-data docutils literal notranslate"><span class="pre">0-10,20</span></code> (for steps 0 to 10, and 20).</p></li>
@@ -523,6 +524,17 @@ The type of color scheme depends on the type of data.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">palette</span></code> for integer values, <code class="xref py py-data docutils literal notranslate"><span class="pre">viridis</span></code> for real values, and <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code> for crystal orientations.</p>
 </dd></dl>
 
+<dl class="std option" id="index-5">
+<dt class="sig sig-object std" id="cmdoption-data-elt2d-elset2d-trs">
+<span class="sig-name descname"><span class="pre">-data{elt2d,elset2d}trs</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;transparency&gt;</span></span><a class="headerlink" href="#cmdoption-data-elt2d-elset2d-trs" title="Link to this definition"></a></dt>
+<dd><p>Specify the transparencies (values from 0 to 1), which can be:</p>
+<ul class="simple">
+<li><p>a real value;</p></li>
+<li><p>an expression based on the variables described in <a class="reference internal" href="exprskeys.html#mesh-keys"><span class="std std-ref">Mesh Keys</span></a>, such as <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">area</span></code>;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: individual values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>.</p></li>
+</ul>
+</dd></dl>
+
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-data-elt-elset-node-elt-0-3-d-elset-0-3-d-scale">
 <span class="sig-name descname"><span class="pre">-data{elt,elset,node,elt{0-3}d,elset{0-3}d}scale</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;scale&gt;</span></span><a class="headerlink" href="#cmdoption-data-elt-elset-node-elt-0-3-d-elset-0-3-d-scale" title="Link to this definition"></a></dt>
@@ -777,15 +789,19 @@ The type of color scheme depends on the type of data.</p>
 <section id="show-options">
 <h3>Show Options<a class="headerlink" href="#show-options" title="Link to this heading"></a></h3>
 <p>The following options apply to the full tessellations, mesh, etc.</p>
-<dl class="std option" id="index-5">
-<dt class="sig sig-object std" id="cmdoption-show-tess-tesr-mesh-meshslice-csys-scale">
-<span class="sig-name descname"><span class="pre">-show{tess,tesr,mesh,meshslice,csys,scale}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-show-tess-tesr-mesh-meshslice-csys-scale" title="Link to this definition"></a></dt>
-<dd><p>Show or hide a full tessellation, mesh, etc.</p>
+<dl class="std option" id="index-6">
+<dt class="sig sig-object std" id="cmdoption-show-tess-tesr-mesh-meshslice-meshsliceelt1d-csys-scale">
+<span class="sig-name descname"><span class="pre">-show{tess,tesr,mesh,meshslice,meshsliceelt1d,csys,scale}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-show-tess-tesr-mesh-meshslice-meshsliceelt1d-csys-scale" title="Link to this definition"></a></dt>
+<dd><p>Show or hide a full tessellation or mesh, the mesh slices, the 1D elements of the mesh slices, the coordinate system, or the scale, respectively.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The 1D elements of the mesh slices are printed as specified by options <code class="xref std std-option docutils literal notranslate"><span class="pre">-dataelt1d*</span></code>.</p>
+</div>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> for the more informative data (mesh slice <span class="math notranslate nohighlight">\(&gt;\)</span> mesh <span class="math notranslate nohighlight">\(&gt;\)</span> tessellation) and <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> for others.</p>
 </dd></dl>
 
 <p>The following option applies to a tessellation or a raster tessellation.</p>
-<dl class="std option" id="index-6">
+<dl class="std option" id="index-7">
 <dt class="sig sig-object std" id="cmdoption-show-cell-poly-face-edge-ver-seed-crystal-faceinter-vox">
 <span class="sig-name descname"><span class="pre">-show{cell,poly,face,edge,ver,seed,crystal,faceinter,vox}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-show-cell-poly-face-edge-ver-seed-crystal-faceinter-vox" title="Link to this definition"></a></dt>
 <dd><p>Specify the entities to show. The argument can be:</p>
@@ -800,7 +816,7 @@ The type of color scheme depends on the type of data.</p>
 </dd></dl>
 
 <p>The following options apply to the entities of the mesh.  The options apply to 3D elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">elt3d</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elset3d</span></code>), 2D elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">elt2d</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elset2d</span></code>), 1D elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">elt1d</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elset1d</span></code>), 0D elements (<code class="xref py py-data docutils literal notranslate"><span class="pre">elt0d</span></code>) and element sets (<code class="xref py py-data docutils literal notranslate"><span class="pre">elset0d</span></code>), and nodes (<code class="xref py py-data docutils literal notranslate"><span class="pre">nodes</span></code>). Also note that the <code class="xref py py-data docutils literal notranslate"><span class="pre">elt</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">elset</span></code> can be used to denote the highest-dimension elements and elsets.</p>
-<dl class="std option" id="index-7">
+<dl class="std option" id="index-8">
 <dt class="sig sig-object std" id="cmdoption-show-elt-elset-elt-0-3-d-elset-0-3-d-node">
 <span class="sig-name descname"><span class="pre">-show{elt,elset,elt{0-3}d,elset{0-3}d,node}</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;logical&gt;</span></span><a class="headerlink" href="#cmdoption-show-elt-elset-elt-0-3-d-elset-0-3-d-node" title="Link to this definition"></a></dt>
 <dd><p>Specify the entities to show. The argument can be:</p>

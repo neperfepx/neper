@@ -124,7 +124,8 @@ When a simulation directory is loaded as input, it is possible to specify the si
 
   Specify the simulation step(s), which can be:
 
-  - :data:`0`: initial state;
+  - :data:`0`: the initial state;
+  - :data:`final`: the final step;
   - any step number;
   - :data:`all`: all steps;
   - a list of steps combined with :data:`,`; a range of values can also be specified using :data:`-`.  An example is :data:`0-10,20` (for steps 0 to 10, and 20).
@@ -424,6 +425,18 @@ The following options enable the definition of the properties (color, size, etc.
 
   **Default value**: :data:`palette` for integer values, :data:`viridis` for real values, and :data:`rodrigues` for crystal orientations.
 
+.. index::
+   single: -dataelt2dtrs
+   single: -dataelset2dtrs
+
+.. option:: -data{elt2d,elset2d}trs <transparency>
+
+  Specify the transparencies (values from 0 to 1), which can be:
+
+  - a real value;
+  - an expression based on the variables described in :ref:`mesh_keys`, such as :data:`x` or :data:`area`;
+  - :data:`file(<file_name>)`: individual values to load from a :ref:`data_file`.
+
 .. option:: -data{elt,elset,node,elt{0-3}d,elset{0-3}d}scale <scale>
 
   Specify the scale relative to the :data:`-data...col real` data, which can be:
@@ -664,9 +677,11 @@ The following options apply to the full tessellations, mesh, etc.
    single: -showcsys
    single: -showscale
 
-.. option:: -show{tess,tesr,mesh,meshslice,csys,scale} <logical>
+.. option:: -show{tess,tesr,mesh,meshslice,meshsliceelt1d,csys,scale} <logical>
 
-  Show or hide a full tessellation, mesh, etc.
+  Show or hide a full tessellation or mesh, the mesh slices, the 1D elements of the mesh slices, the coordinate system, or the scale, respectively.
+  
+  .. note:: The 1D elements of the mesh slices are printed as specified by options :option:`-dataelt1d*`.
 
   **Default value**: :data:`1` for the more informative data (mesh slice :math:`>` mesh :math:`>` tessellation) and :data:`0` for others.
 
