@@ -735,7 +735,7 @@ ol_vect_ipfweight (double *v, char *crysym, double *weight)
 
   ol_e_set_zero (weight);
 
-  if (!strcmp (crysym, "cubic"))
+  if (crysym && !strcmp (crysym, "cubic"))
   {
     if (v[0] > v[1] && v[0] < v[1] + sqrt (OL_EPS))
     {
@@ -852,7 +852,7 @@ ol_vect_ipfweight (double *v, char *crysym, double *weight)
     }
   }
 
-  else if (!strcmp (crysym, "hexagonal"))
+  else if (crysym && !strcmp (crysym, "hexagonal"))
   {
     int i;
     double **g = ol_g_alloc ();
@@ -886,7 +886,7 @@ ol_vect_ipfweight (double *v, char *crysym, double *weight)
 
   else
   {
-    printf ("Crystal symmetry `%s' not supported.\n", crysym);
+    printf ("Crystal symmetry `%s' not supported.\n", crysym ? crysym : "NULL");
     abort ();
   }
 
