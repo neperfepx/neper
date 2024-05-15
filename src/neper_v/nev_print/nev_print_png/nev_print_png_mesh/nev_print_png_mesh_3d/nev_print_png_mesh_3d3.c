@@ -33,7 +33,7 @@ nev_print_png_mesh_3d_print_faces (FILE * file, struct PRINT Print,
       ut_array_1d_memcpy (NodeData.Coo[node], 3, N.NodeCoo[i]);
     }
 
-    nev_print_png_mesh2d (file, N, M2D, NULL, rgb, "elt", Print);
+    nev_print_png_mesh2d (file, N, M2D, NULL, rgb, NULL, "elt", Print);
 
     ut_free_2d_int (&rgb, M2D.EltQty + 1);
   }
@@ -54,7 +54,7 @@ nev_print_png_mesh_3d_print_faces (FILE * file, struct PRINT Print,
       ut_array_1d_memcpy (NodeData.Coo[node], 3, N.NodeCoo[i]);
     }
 
-    nev_print_png_mesh2d (file, N, M2D, NULL, rgb, "node", Print);
+    nev_print_png_mesh2d (file, N, M2D, NULL, rgb, NULL, "node", Print);
 
     ut_free_2d_int (&rgb, N.NodeQty + 1);
   }

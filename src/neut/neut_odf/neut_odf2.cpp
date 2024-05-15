@@ -75,7 +75,7 @@ neut_odf_elt_ori (struct ODF *pOdf, int elt, double *q)
 
 double
 neut_odf_comp_elts (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud,
-                    my_kd_tree_t *nano_index, struct ODF *pOdf, int verbosity)
+                    my_kd_tree_t *nano_index, struct ODF *pOdf, double *pfact, int verbosity)
 {
   int i, dim = neut_mesh_array_dim ((*pOdf).Mesh);
   double avradeq;
@@ -113,6 +113,7 @@ neut_odf_comp_elts (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud,
 
   (*pOdf).odfmean = ut_array_1d_wmean ((*pOdf).odf, (*pOdf).EltWeight, (*pOdf).odfqty);
   ut_array_1d_scale ((*pOdf).odf, (*pOdf).odfqty, 1. / (*pOdf).odfmean);
+  (*pfact) = 1. / (*pOdf).odfmean;
   (*pOdf).odfmean = 1;
   (*pOdf).odfsig = ut_array_1d_wstddev ((*pOdf).odf, (*pOdf).EltWeight, 1, (*pOdf).odfqty);
   (*pOdf).odfmin = ut_array_1d_min ((*pOdf).odf, (*pOdf).odfqty);
@@ -125,7 +126,7 @@ neut_odf_comp_elts (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud,
 
 void
 neut_odf_comp_nodes (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud,
-                     my_kd_tree_t *nano_index, struct ODF *pOdf, int verbosity)
+                     my_kd_tree_t *nano_index, struct ODF *pOdf, double fact, int verbosity)
 {
   int i;
   double mean;
@@ -179,7 +180,7 @@ neut_odf_comp_nodes (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud,
   mean /= (*pOdf).odfnqty;
 #pragma omp parallel for
   for (i = 0; i < (*pOdf).odfnqty; i++)
-    (*pOdf).odfn[i] /= mean;
+    (*pOdf).odfn[i] *= fact;
 
   ut_free_1d_char (&prev);
 

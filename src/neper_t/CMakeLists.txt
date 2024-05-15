@@ -70,6 +70,7 @@ add_library(neper_t
 ./net_tess/net_tess2.c
 ./net_tess/net_tess_cube/net_tess_cube1.c
 ./net_tess/net_tess_cube/net_tess_cube2.c
+./net_tess/net_tess_cube/net_tess_cube3.c
 ./net_tess/net_tess_onecell/net_tess_onecell1.c
 ./net_tess/net_tess_lam/net_tess_lam1.c
 ./net_tess/net_tess_lam//net_tess_lam_seed/net_tess_lam_seed1.c

@@ -50,3 +50,19 @@ net_ori_odf_pre (char *odf, struct OL_SET *pOSet, struct ODF *pOdf)
 
   return;
 }
+
+void
+net_ori_addspread (char *spread, long random, struct OL_SET *pOSet)
+{
+  int i;
+  struct OL_SET OSet2 = ol_set_alloc ((*pOSet).size, (*pOSet).crysym);
+
+  ol_set_misorispread (spread, 3, random, &OSet2);
+
+  for (i = 0; i < (int) (*pOSet).size; i++)
+    ol_q_q_q_ref ((*pOSet).q[i], OSet2.q[i], (*pOSet).q[i]);
+
+  ol_set_free (&OSet2);
+
+  return;
+}

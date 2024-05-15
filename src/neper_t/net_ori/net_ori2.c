@@ -92,39 +92,194 @@ net_ori_fiber (struct SEEDSET *SSet, int dtess, int dcell, long random,
 }
 
 void
-net_ori_label (char *label, struct SEEDSET *SSet, int dtess, int dcell, struct OL_SET *pOSet)
+net_ori_ks (long random, char *label, struct SEEDSET *SSet, int dtess, int dcell, struct OL_SET *pOSet)
 {
   unsigned int i;
-  int status, partqty;
+  int partqty;
   double *q = ol_q_alloc ();
   char **parts = NULL;
-  char *spread = NULL;
+  int status_parent, status_child;
+  double **X = ol_g_alloc ();
+  int n1;
+  double alpha_over_phi = 1.; // pow (2, 1. / 3);
+  double phi_over_alpha = 1. / alpha_over_phi;
+  double d = sqrt (6) * pow (phi_over_alpha, 3);
+  double *qX = ol_q_alloc ();
+  double *qtmp = ol_q_alloc ();
+  gsl_rng *r = NULL;
 
   ut_list_break (label, NEUT_SEP_DEP, &parts, &partqty);
 
-  if (partqty == 2)
-    ut_string_string (parts[1], &spread);
+  // After (Fortes, 1984)
+  if (strcmp (parts[0], "ks") && strcmp (parts[0], "KS"))
+    abort ();
 
-  status = 0;
-  if (!strcmp (parts[0], "parent"))
-    ol_q_memcpy (SSet[dtess].SeedOri[dcell], q);
-  else
-    status = ol_label_q (parts[0], q);
-
-  if (!status)
+  // Checking crystal symmetries
+  status_parent = 0; // 1: warning, 2: error
+  status_child = 0; // 1: warning, 2: error
+  if (strcmp (SSet[dtess].crysym, "cubic") || strcmp ((*pOSet).crysym, "cubic"))
   {
-    ol_set_misorispread (spread, 3, SSet[dtess].Random + dcell, pOSet);
+    if (strcmp (SSet[dtess].crysym, "cubic"))
+      status_parent = (!strcmp (SSet[dtess].crysym, "triclinic")) ? 1 : 2;
 
-    for (i = 0; i < (*pOSet).size; i++)
-      ol_q_q_q_ref (q, (*pOSet).q[i], (*pOSet).q[i]);
+    if (strcmp ((*pOSet).crysym, "cubic"))
+      status_child = (!strcmp (SSet[dtess].crysym, "triclinic")) ? 1 : 2;
   }
 
-  if (status)
-    abort ();
+  if (ut_num_max (status_parent, status_child) == 1)
+    ut_print_message (1, 2, "KS transformation assumes cubic parent and child phases.\n");
+  else if (ut_num_max (status_parent, status_child) == 2)
+    ut_print_message (2, 2, "KS transformation requires cubic parent and child phases.\n");
+
+  ut_array_1d_set_3 (X[0], 2 * d + 1, -1, d - 2);
+  ut_array_1d_set_3 (X[1], 1, 2 * d - 1, -d - 2);
+  ut_array_1d_set_3 (X[2], d - 2, d + 2, 4);
+  ut_array_2d_scale (X, 3, 3, 1. / pow (6 * d, 2. / 3));
+
+  ol_g_q (X, qX);
+
+  r = gsl_rng_alloc (gsl_rng_ranlxd2);
+  gsl_rng_set (r, random - 1);
+
+  ut_print_message (0, 2, "Applying KS...\n");
+
+  for (i = 0; i < (*pOSet).size; i++)
+  {
+    n1 = 1 + gsl_rng_uniform_int (r, 24);
+    ol_q_crysym (SSet[dtess].SeedOri[dcell], "cubic", n1, qtmp);
+    ol_q_q_q_cur (qtmp, qX, (*pOSet).q[i]);
+  }
+
+  ol_q_free (qX);
+  ol_q_free (qtmp);
+  gsl_rng_free (r);
+  ol_g_free (X);
+
+  if (partqty == 2)
+    net_ori_addspread (parts[1], SSet[dtess].Random + dcell, pOSet);
 
   ol_q_free (q);
   ut_free_2d_char (&parts, partqty);
-  ut_free_1d_char (&spread);
+
+  return;
+}
+
+void
+net_ori_ti_beta2alpha (long random, char *label, struct SEEDSET *SSet, int dtess, int dcell, struct OL_SET *pOSet)
+{
+  unsigned int i;
+  int partqty;
+  double *q = ol_q_alloc ();
+  char **parts = NULL;
+  int status_parent, status_child;
+  int n1;
+  double **qX = ut_alloc_2d (13, 4);
+  double *qtmp = ol_q_alloc ();
+  gsl_rng *r = NULL;
+
+  ut_list_break (label, NEUT_SEP_DEP, &parts, &partqty);
+
+  // After (Fortes, 1984)
+  if (strcmp (parts[0], "ti_beta2alpha") && strcmp (parts[0], "Ti_beta2alpha"))
+    abort ();
+
+  // Checking crystal symmetries
+  status_parent = 0; // 1: warning, 2: error
+  status_child = 0; // 1: warning, 2: error
+  if (strcmp (SSet[dtess].crysym, "cubic") || strcmp ((*pOSet).crysym, "hexagonal"))
+  {
+    if (strcmp (SSet[dtess].crysym, "cubic"))
+      status_parent = (!strcmp (SSet[dtess].crysym, "triclinic")) ? 1 : 2;
+
+    if (strcmp ((*pOSet).crysym, "hexagonal"))
+      status_child = (!strcmp (SSet[dtess].crysym, "triclinic")) ? 1 : 2;
+  }
+
+  if (ut_num_max (status_parent, status_child) == 1)
+    ut_print_message (1, 2, "beta2alpha transformation assumes cubic parent and hexagonal child phases.\n");
+  else if (ut_num_max (status_parent, status_child) == 2)
+    ut_print_message (2, 2, "beta2alpha transformation requires cubic parent and hexagonal child phases.\n");
+
+  ol_q_set_this (qX[1], 0.704416,  0.541675, -0.454519, -0.061628);
+  ol_q_set_this (qX[2], 0.901980,  0.082828,  0.373612,  0.199964);
+  ol_q_set_this (qX[3], 0.704416,  0.541675,  0.454519,  0.061628);
+  ol_q_set_this (qX[4], 0.901980,  0.082828, -0.373612, -0.199964);
+  ol_q_set_this (qX[5], 0.923000,  0.382319, -0.016692,  0.040299);
+  ol_q_set_this (qX[6], 0.704416, -0.541675, -0.454519,  0.061628);
+  ol_q_set_this (qX[7], 0.923000, -0.382319, -0.016692, -0.040299);
+  ol_q_set_this (qX[8], 0.704416, -0.541675,  0.454519, -0.061628);
+  ol_q_set_this (qX[9], 0.901980, -0.082828,  0.373612, -0.199964);
+  ol_q_set_this (qX[10], 0.923000,  0.382319,  0.016692, -0.040299);
+  ol_q_set_this (qX[11], 0.901980, -0.082828, -0.373612,  0.199964);
+  ol_q_set_this (qX[12], 0.923000, -0.382319,  0.016692,  0.040299);
+  for (i = 1; i <= 12; i++)
+    ol_q_set_unit (qX[i]);
+
+  r = gsl_rng_alloc (gsl_rng_ranlxd2);
+  gsl_rng_set (r, random - 1);
+
+  ut_print_message (0, 2, "Applying beta->alpha...\n");
+
+  for (i = 0; i < (*pOSet).size; i++)
+  {
+    n1 = 1 + gsl_rng_uniform_int (r, 12);
+    // ol_q_crysym (SSet[dtess].SeedOri[dcell], "cubic", n1, qtmp);
+    ol_q_q_q_cur (SSet[dtess].SeedOri[dcell], qX[n1], (*pOSet).q[i]);
+  }
+
+  ut_free_2d (&qX, 13);
+  ol_q_free (qtmp);
+  gsl_rng_free (r);
+
+  if (partqty == 2)
+    net_ori_addspread (parts[1], SSet[dtess].Random + dcell, pOSet);
+
+  ol_q_free (q);
+  ut_free_2d_char (&parts, partqty);
+
+  return;
+}
+
+void
+net_ori_parent (char *string, struct SEEDSET *SSet, int dtess, int dcell, struct OL_SET *pOSet)
+{
+  int i, partqty;
+  char **parts = NULL;
+
+  ut_list_break (string, NEUT_SEP_DEP, &parts, &partqty);
+
+  for (i = 0; i < (int) (*pOSet).size; i++)
+    ol_q_memcpy (SSet[dtess].SeedOri[dcell], (*pOSet).q[i]);
+
+  if (partqty == 2)
+    net_ori_addspread (parts[1], SSet[dtess].Random + dcell, pOSet);
+
+  ut_free_2d_char (&parts, partqty);
+
+  return;
+}
+
+void
+net_ori_label (char *label, struct SEEDSET *SSet, int dtess, int dcell, struct OL_SET *pOSet)
+{
+  int i, status, partqty;
+  double *q = ol_q_alloc ();
+  char **parts = NULL;
+
+  ut_list_break (label, NEUT_SEP_DEP, &parts, &partqty);
+
+  status = ol_label_q (parts[0], q);
+  if (status)
+    abort ();
+
+  for (i = 0; i < (int) (*pOSet).size; i++)
+    ol_q_memcpy (q, (*pOSet).q[i]);
+
+  if (partqty == 2)
+    net_ori_addspread (parts[1], SSet[dtess].Random + dcell, pOSet);
+
+  ol_q_free (q);
+  ut_free_2d_char (&parts, partqty);
 
   return;
 }

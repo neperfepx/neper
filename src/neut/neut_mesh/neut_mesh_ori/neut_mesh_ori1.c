@@ -10,8 +10,6 @@ neut_mesh_elts_olset (struct NODES Nodes, struct MESH Mesh,
 {
   int i, elt;
 
-  printf ("eltqty = %d\n", eltqty);
-  printf ("Mesh.ElsetCrySym = %s\n", Mesh.ElsetCrySym);
   *pOSet = ol_set_alloc (eltqty, Mesh.ElsetCrySym);
 
   for (i = 0; i < eltqty; i++)

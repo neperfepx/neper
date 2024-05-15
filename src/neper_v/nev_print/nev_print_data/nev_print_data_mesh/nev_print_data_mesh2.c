@@ -139,6 +139,15 @@ nev_print_data_mesh_elset2elt (struct MESH Mesh, char *entity, char *attribute,
         for (j = 1; j <= elsets[i][0]; j++)
           (*pData).RadData[elsets[i][j]][0] = MeshDataSet.RadData[i][0];
     }
+    else if (!strcmp (attribute, "trs"))
+    {
+      ut_string_string (MeshDataSet.TrsDataType, &(*pData).TrsDataType);
+
+      (*pData).TrsData = ut_alloc_2d ((*pData).Qty + 1, 1);
+      for (i = 1; i <= elsetqty; i++)
+        for (j = 1; j <= elsets[i][0]; j++)
+          (*pData).TrsData[elsets[i][j]][0] = MeshDataSet.TrsData[i][0];
+    }
     else if (!strcmp (attribute, "weight"))
     {
       ut_string_string (MeshDataSet.WeightDataType, &(*pData).WeightDataType);

@@ -24,9 +24,6 @@ extern void net_ori_qty (struct SEEDSET *pSSet, char **parts, int partqty, int *
 extern void net_ori_fiber (struct SEEDSET *SSet, int dtess, int dcell, long random,
                            char *distrib, struct OL_SET *pOSet);
 
-extern void net_ori_label (char *label, struct SEEDSET *SSet, int dtess, int dcell,
-                           struct OL_SET *pOSet);
-
 extern void net_ori_odf (long random, char *odf, struct OL_SET *pOSet);
 extern void net_ori_odf_pre (char *odf, struct OL_SET *pOSet, struct ODF *pOdf);
 
@@ -42,3 +39,15 @@ extern int net_ori_mtess_randseed_rand (int *N, int *id, int *poly, int levelqty
 extern void net_ori_orispread (char *orispread, struct SEEDSET *pSSet);
 
 extern void net_orispread_file (char *orispread, struct SEEDSET *pSSet);
+
+extern void net_ori_addspread (char *spread, long random, struct OL_SET *pOSet);
+
+extern void net_ori_ks (long random, char *label, struct SEEDSET *SSet, int dtess, int dcell, struct OL_SET *pOSet);
+
+extern void net_ori_ti_beta2alpha (long random, char *label, struct SEEDSET *SSet, int dtess, int dcell, struct OL_SET *pOSet);
+
+extern void net_ori_parent (char *label, struct SEEDSET *SSet, int dtess, int dcell,
+                           struct OL_SET *pOSet);
+
+extern void net_ori_label (char *label, struct SEEDSET *SSet, int dtess, int dcell,
+                           struct OL_SET *pOSet);

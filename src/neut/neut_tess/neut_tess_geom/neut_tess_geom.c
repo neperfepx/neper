@@ -658,6 +658,21 @@ neut_tess_bboxsize (struct TESS Tess, double *bboxsize)
 }
 
 void
+neut_tess_cell_bboxsize (struct TESS Tess, int cell, double *bboxsize)
+{
+  int i;
+  double **bbox = ut_alloc_2d (3, 2);
+
+  neut_tess_cell_bbox (Tess, cell, bbox);
+  for (i = 0; i < 3; i++)
+    bboxsize[i] = bbox[i][1] - bbox[i][0];
+
+  ut_free_2d (&bbox, 3);
+
+  return;
+}
+
+void
 neut_tess_vers_bbox (struct TESS Tess, int *vers, int verqty, double **bbox)
 {
   int i, j;

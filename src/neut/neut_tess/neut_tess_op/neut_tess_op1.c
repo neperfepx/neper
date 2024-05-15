@@ -3313,7 +3313,7 @@ neut_tess_init_facepoly_per (struct TESS *pTess)
   for (i = 1; i <= (*pTess).PerFaceQty; i++)
   {
     face = (*pTess).PerFaceNb[i];
-    if ((*pTess).FacePoly[face][1] != 0)
+    if ((*pTess).FacePoly[face][1] > 0)
       abort ();
 
     masterface = (*pTess).PerFaceMaster[face];

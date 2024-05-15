@@ -375,7 +375,8 @@ nev_print_png_triangle_edge (FILE * file, double *coo1, double *coo2,
 
 void
 nev_print_png_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
-                  int *showelt, int **rgb, char *coltype, struct PRINT Print)
+                      int *showelt, int **rgb, double *trs, char *coltype,
+                      struct PRINT Print)
 {
   int i, showeltqty;
 
@@ -417,10 +418,16 @@ nev_print_png_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
       if (!showelt || showelt[i])
       {
         elt_text[i] = text_qty++;
-        fprintf (file,
-                 "    texture{pigment{rgb<" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT ">} finish {ambient %f diffuse %f reflection %f}}\n",
-                 rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255.,
-                 Print.lightambient, Print.lightdiffuse, Print.lightreflection);
+        if (!trs || trs[i] == 0)
+          fprintf (file,
+                   "    texture{pigment{rgb<" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT ">} finish {ambient %f diffuse %f reflection %f}}\n",
+                   rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255.,
+                   Print.lightambient, Print.lightdiffuse, Print.lightreflection);
+        else
+          fprintf (file,
+                   "    texture{pigment{rgbt<" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT ">} finish {ambient %f diffuse %f reflection %f}}\n",
+                   rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255., trs[i],
+                   Print.lightambient, Print.lightdiffuse, Print.lightreflection);
       }
   }
   else if (strcmp (coltype, "node") == 0)
@@ -429,10 +436,16 @@ nev_print_png_mesh2d (FILE * file, struct NODES Nodes, struct MESH Mesh,
 
     for (i = 1; i <= Nodes.NodeQty; i++)
     {
-      fprintf (file,
-               "    texture{pigment{rgb<" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT  ">} finish {ambient %f diffuse %f reflection %f}}\n",
-               rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255., Print.lightambient,
-               Print.lightdiffuse, Print.lightreflection);
+      if (!trs || trs[i] == 0)
+        fprintf (file,
+                 "    texture{pigment{rgb<" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT  "," REAL_PRINT_FORMAT  ">} finish {ambient %f diffuse %f reflection %f}}\n",
+                 rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255.,
+                 Print.lightambient, Print.lightdiffuse, Print.lightreflection);
+      else
+        fprintf (file,
+                 "    texture{pigment{rgbt<" REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT "," REAL_PRINT_FORMAT  "," REAL_PRINT_FORMAT  ">} finish {ambient %f diffuse %f reflection %f}}\n",
+                 rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255., trs[i],
+                 Print.lightambient, Print.lightdiffuse, Print.lightreflection);
     }
   }
   else

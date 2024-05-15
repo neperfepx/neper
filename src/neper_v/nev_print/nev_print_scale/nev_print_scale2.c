@@ -89,7 +89,7 @@ nev_print_png_scale (struct IN_V In, FILE * file, char *ColScheme, char *scale, 
   neut_data_real_color (data, NULL, N.NodeQty, scale, ColScheme, rgb, NULL);
 
   nev_print_png_header (In, Print, file);
-  nev_print_png_mesh2d (file, N, M, NULL, rgb, (char *) "elt", Print);
+  nev_print_png_mesh2d (file, N, M, NULL, rgb, NULL, (char *) "elt", Print);
   nev_print_png_foot (In, file);
 
   fprintf (file, "union {\n");

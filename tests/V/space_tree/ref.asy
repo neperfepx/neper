@@ -103,9 +103,9 @@ void draw( TreeNode root, pair pos )
 treeNodeStep = 0.4cm;
 treeLevelStep = 1.8cm;
 
-TreeNode root = makeNode("\tt n2-id1.sim/");
+TreeNode root = makeNode("\tt n2-id1.sim");
 
-TreeNode child1 = makeNode(root, "\tt inputs/");
-TreeNode child11 = makeNode(child1, "\tt simulation.tess");
+TreeNode child1 = makeNode(root, "\tt inputs");
+TreeNode child1_content = makeNode(child1, "\tt \begin{tabular}{c}simulation.tess \\\end{tabular}");
 
 draw (root, (0, 0));

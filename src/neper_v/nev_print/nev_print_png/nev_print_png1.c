@@ -81,10 +81,10 @@ nev_print_png (struct IN_V In, char *basename, struct PRINT Print, struct SIM Si
 
       if (ut_string_strcmp (SMeshData[i][2][0].ColDataType, "from_nodes"))
         nev_print_png_mesh2d (file, SNodes[i], SMesh[i][2], showelt2d,
-                          SMeshData[i][2][0].Col, "elt", Print);
+                          SMeshData[i][2][0].Col, NULL, "elt", Print);
       else
         nev_print_png_mesh2d (file, SNodes[i], SMesh[i][2], showelt2d,
-                              SNodeData[i].Col, "node", Print);
+                              SNodeData[i].Col, NULL, "node", Print);
 
       if (Print.showsliceelt1d)
       {

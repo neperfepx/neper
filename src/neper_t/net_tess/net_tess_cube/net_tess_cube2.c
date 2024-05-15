@@ -58,12 +58,20 @@ net_tess_cube_ids (int *N, int ***verid, int ****edgeid, int ****faceid,
 }
 
 void
-net_tess_cube_general (int TessId, struct TESS *pTess)
+net_tess_cube_general (struct IN_T In, struct TESS *Tess, int dtess, int dcell,
+                       int TessId, struct TESS *pTess)
 {
   (*pTess).Dim = 3;
   (*pTess).Level = 1;
   (*pTess).TessId = TessId;
   ut_string_string ("standard", &((*pTess).Type));
+
+  if (ut_array_1d_int_sum (In.periodic, 3))
+  {
+    ut_string_string ("periodic", &((*pTess).Type));
+    ut_array_1d_int_memcpy (In.periodic, 3, (*pTess).Periodic);
+    neut_tess_cell_bboxsize (Tess[dtess], dcell, (*pTess).PeriodicDist);
+  }
 
   return;
 }
@@ -120,6 +128,9 @@ net_tess_cube_vers (int *N, double **bbox, int ***verid, struct TESS *pTess)
         (*pTess).VerCoo[id][2] = (double) k / N[2] * size[2] + origin[2];
       }
 
+  if (!strcmp ((*pTess).Type, "periodic"))
+    net_tess_cube_vers_per (N, verid, pTess);
+
   ut_free_1d (&size);
   ut_free_1d (&origin);
 
@@ -168,6 +179,9 @@ net_tess_cube_edges (int *N, int ***verid, int ****edgeid, struct TESS *pTess)
       }
 
   neut_tess_init_edgelength (pTess);
+
+  if (!strcmp ((*pTess).Type, "periodic"))
+    net_tess_cube_edges_per (N, edgeid, pTess);
 
   return;
 }
@@ -259,6 +273,9 @@ net_tess_cube_faces (int *N, int ***verid, int ****edgeid, int ****faceid,
           (*pTess).VerCoo[(*pTess).FaceVerNb[id][1]][2];
         (*pTess).FaceEq[id][3] = 1;
       }
+
+  if (!strcmp ((*pTess).Type, "periodic"))
+    net_tess_cube_faces_per (N, faceid, pTess);
 
   return;
 }

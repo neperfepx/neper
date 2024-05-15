@@ -103,13 +103,13 @@ void draw( TreeNode root, pair pos )
 treeNodeStep = 0.4cm;
 treeLevelStep = 1.8cm;
 
-TreeNode root = makeNode("\tt n2-id1.sim/");
+TreeNode root = makeNode("\tt n2-id1.sim");
 
-TreeNode child1 = makeNode(root, "\tt inputs/");
-TreeNode child11 = makeNode(child1, "\tt simulation.tess");
-TreeNode child2 = makeNode(root, "\tt results/");
-TreeNode child21 = makeNode(child2, "\tt cell/");
-TreeNode child211 = makeNode(child21, "\tt diameq/");
+TreeNode child1 = makeNode(root, "\tt inputs");
+TreeNode child1_content = makeNode(child1, "\tt \begin{tabular}{c}simulation.tess \\\end{tabular}");
+TreeNode child2 = makeNode(root, "\tt results");
+TreeNode child21 = makeNode(child2, "\tt cell");
+TreeNode child211 = makeNode(child21, "\tt diameq");
 TreeNode child2111 = makeNode(child211, "\tt \begin{tabular}{c}diameq.step0 \\\end{tabular}");
 
 

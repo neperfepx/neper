@@ -181,6 +181,12 @@ extern "C"
 ///
   extern int neut_tess_cell_bbox (struct TESS Tess, int cell, double **size);
 
+/// \brief Get the bounding box of the cell of a TESS
+///
+///
+///
+  extern void neut_tess_cell_bboxsize (struct TESS Tess, int cell, double *size);
+
 /// \brief Get the bounding box of an edge of a TESS
 ///
 ///

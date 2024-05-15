@@ -378,24 +378,39 @@ neut_sim_entity_parent (struct SIM Sim, char *entity, char **pparent)
 int
 neut_sim_entity_id_res_val (struct SIM Sim, char *entity, int id, char *res, double *pval)
 {
-  int status;
+  int nbcol, status;
   struct SIMRES SimRes;
   FILE *file = NULL;
 
   neut_simres_set_zero (&SimRes);
 
   neut_sim_simres (Sim, entity, res, &SimRes);
+
   if (ut_file_exist (SimRes.file))
   {
     status = 0;
 
-    file = ut_file_open (SimRes.file, "R");
+    // result
+    if (!SimRes.parentres)
+    {
+      file = ut_file_open (SimRes.file, "R");
+      ut_file_skip (file, id - 1);
+      if (fscanf (file, "%lf", pval) != 1)
+        abort ();
+      ut_file_close (file, SimRes.file, "R");
+    }
 
-    ut_file_skip (file, id - 1);
-    if (fscanf (file, "%lf", pval) != 1)
-      abort ();
+    // subresult
+    else
+    {
+      nbcol = ut_file_nbcolumns (SimRes.parentfile);
+      file = ut_file_open (SimRes.file, "R");
+      ut_file_skip (file, (id - 1) * nbcol + SimRes.parentcol - 1);
+      if (fscanf (file, "%lf", pval) != 1)
+        abort ();
+      ut_file_close (file, SimRes.file, "R");
+    }
 
-    ut_file_close (file, SimRes.file, "R");
   }
   else
     status = -1;

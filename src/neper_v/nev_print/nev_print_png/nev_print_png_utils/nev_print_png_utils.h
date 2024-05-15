@@ -27,7 +27,7 @@ extern void nev_print_png_tet (FILE *, double *, double *, double *, double *,
 			   char *, char *, char *);
 
 extern void nev_print_png_mesh2d (FILE *, struct NODES, struct MESH, int *,
-			      int **, char *, struct PRINT);
+			      int **, double *, char *, struct PRINT);
 extern void nev_print_png_mesh1d (FILE *file, struct NODES Nodes, struct MESH Mesh, int *showelt,
                       int **Col, double *Rad, struct PRINT Print);
 

@@ -101,6 +101,15 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
       else if (!strncmp (parts[i], "odf", 3))
         net_ori_odf ((*pSSet).Random, parts[i], OSets + i);
 
+      else if (!strncmp (parts[i], "parent", 6))
+        net_ori_parent (parts[i], SSet, dtess, dcell, OSets + i);
+
+      else if (!strncmp (parts[i], "ks", 2) || !strncmp (parts[i], "KS", 2))
+        net_ori_ks ((*pSSet).Random, parts[i], SSet, dtess, dcell, OSets + i);
+
+      else if (!strcmp (parts[i], "ti_beta2alpha"))
+        net_ori_ti_beta2alpha ((*pSSet).Random, parts[i], SSet, dtess, dcell, OSets + i);
+
       else
         net_ori_label (parts[i], SSet, dtess, dcell, OSets + i);
 

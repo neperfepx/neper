@@ -250,25 +250,28 @@ neut_sim_fprintf_asy (char *dir, struct SIM Sim, char *mode)
   fprintf (file, "treeNodeStep = 0.4cm;\n");
   fprintf (file, "treeLevelStep = 1.8cm;\n");
   fprintf (file, "\n");
-  fprintf (file, "TreeNode root = makeNode(\"\\tt %s/\");\n", Sim.simdir);
+  fprintf (file, "TreeNode root = makeNode(\"\\tt %s\");\n", Sim.simdir);
   fprintf (file, "\n");
-  fprintf (file, "TreeNode child1 = makeNode(root, \"\\tt inputs/\");\n");
+  fprintf (file, "TreeNode child1 = makeNode(root, \"\\tt inputs\");\n");
 
-  int id = 0;
+  fprintf (file, "TreeNode child1_content = makeNode(child1, \"\\tt \\begin{tabular}{c}");
+
   if (Sim.tess)
-    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.tess);
+    fprintf (file, "%s \\\\", Sim.tess);
   if (Sim.tesr)
-    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.tesr);
+    fprintf (file, "%s \\\\", Sim.tesr);
   if (Sim.msh)
-    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.msh);
+    fprintf (file, "%s \\\\", Sim.msh);
   if (Sim.bcs)
-    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.bcs);
+    fprintf (file, "%s \\\\", Sim.bcs);
   if (Sim.ori)
-    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.ori);
+    fprintf (file, "%s \\\\", Sim.ori);
   if (Sim.phase)
-    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.phase);
+    fprintf (file, "%s \\\\", Sim.phase);
   if (Sim.cfg)
-    fprintf (file, "TreeNode child1%d = makeNode(child1, \"\\tt %s\");\n", ++id, Sim.cfg);
+    fprintf (file, "%s \\\\", Sim.cfg);
+
+  fprintf (file, "\\end{tabular}\");\n");
 
   int print_results = 0;
   char *child1 = ut_alloc_1d_char (100);
@@ -278,20 +281,20 @@ neut_sim_fprintf_asy (char *dir, struct SIM Sim, char *mode)
     {
       if (!print_results)
       {
-        fprintf (file, "TreeNode child2 = makeNode(root, \"\\tt results/\");\n");
+        fprintf (file, "TreeNode child2 = makeNode(root, \"\\tt results\");\n");
         print_results = 1;
       }
 
       sprintf (child1, "child2%d", i + 1);
 
-      fprintf (file, "TreeNode %s = makeNode(child2, \"\\tt %s/\");\n",
+      fprintf (file, "TreeNode %s = makeNode(child2, \"\\tt %s\");\n",
                child1, Sim.Entities[i]);
 
       for (j = 0; j < Sim.EntityResQty[i]; j++)
       {
         sprintf (child2, "%s%d", child1, j + 1);
 
-        fprintf (file, "TreeNode %s = makeNode(%s, \"\\tt %s/\");\n",
+        fprintf (file, "TreeNode %s = makeNode(%s, \"\\tt %s\");\n",
                  child2, child1, Sim.EntityRes[i][j]);
 
         fprintf (file, "TreeNode %s1 = makeNode(%s, \"\\tt \\begin{tabular}{c}", child2, child2);

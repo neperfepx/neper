@@ -26,19 +26,25 @@ nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
   if (!strncmp (coldatatype, "elt", 3))
   {
     rgb = ut_alloc_2d_int (M2D.EltQty + 1, 3);
+    double* trs = ut_alloc_1d (M2D.EltQty + 1);
 
     for (i = 1; i <= M2D.EltQty; i++)
+    {
       ut_array_1d_int_memcpy (MeshData[2][0].Col[i], 3, rgb[i]);
+      if (MeshData[2][0].Trs)
+        trs[i] = MeshData[2][0].Trs[i];
+    }
 
     for (i = 1; i <= N.NodeQty; i++)
       ut_array_1d_memcpy (NodeData.Coo[i], 3, N.NodeCoo[i]);
 
-    nev_print_png_mesh2d (file, N, M2D, Print.showelt2d, rgb, "elt", Print);
+    nev_print_png_mesh2d (file, N, M2D, Print.showelt2d, rgb, trs, "elt", Print);
 
     for (i = 1; i <= N.NodeQty; i++)
       ut_array_1d_memcpy (Coo[i], 3, N.NodeCoo[i]);
 
     ut_free_2d_int (&rgb, M2D.EltQty + 1);
+    ut_free_1d (&trs);
   }
 
   else
@@ -51,7 +57,7 @@ nev_print_png_mesh_2d_print_faces (FILE * file, struct PRINT Print,
     for (i = 1; i <= N.NodeQty; i++)
       ut_array_1d_memcpy (NodeData.Coo[i], 3, N.NodeCoo[i]);
 
-    nev_print_png_mesh2d (file, N, M2D, Print.showelt2d, rgb, "node", Print);
+    nev_print_png_mesh2d (file, N, M2D, Print.showelt2d, rgb, NULL, "node", Print);
 
     for (i = 1; i <= N.NodeQty; i++)
       ut_array_1d_memcpy (Coo[i], 3, N.NodeCoo[i]);

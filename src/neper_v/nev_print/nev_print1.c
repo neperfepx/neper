@@ -28,14 +28,20 @@ nev_print (struct IN_V In,
 
   ut_string_string (In.print, &basename);
 
-  if (strcmp (In.step, "all"))
-    ut_list_break_int_range (In.step, NEUT_SEP_NODEP, &steps, &stepqty);
-  else
+  if (!strcmp (In.step, "final"))
+  {
+    stepqty = 1;
+    steps = ut_alloc_1d_int (stepqty);
+    steps[0] = (*pSim).StepQty;
+  }
+  else if (!strcmp (In.step, "all"))
   {
     stepqty = (*pSim).StepQty + 1;
     steps = ut_alloc_1d_int (stepqty);
     ut_array_1d_int_set_id (steps, stepqty);
   }
+  else
+    ut_list_break_int_range (In.step, NEUT_SEP_NODEP, &steps, &stepqty);
 
   for (steppos = 0; steppos < stepqty; steppos++)
   {

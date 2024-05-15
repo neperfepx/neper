@@ -1,5 +1,9 @@
-New in 4.8.3-6 (15 May 2024):
-- module -V: added -showmeshsliceelt1d.
+New in 4.9.0 (15 May 2024):
+- module -T: added -per 1 for -morpho cube, added -ori ks (Kurdjumov-Sachs)
+  and ti_beta2alpha (titanium).
+- module -S: fixed -res* odfn.
+- module -V: added -data{elt2d,elset2d}trs, added -step final, fixed -show*
+  <result_component>, added -showmeshsliceelt1d.
 
 New in 4.8.2 (27 Mar 2024):
 - module -T: added -transform "cut(cube)", added -morphooptiini ori and id,

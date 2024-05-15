@@ -70,21 +70,21 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
 
   net_tess_cube_ids (N, verid, edgeid, faceid, polyid);
 
-  net_tess_cube_general (TessId, Tess + 1);
+  net_tess_cube_general (In, Tess, dtess, dcell, TessId, Tess + TessId);
 
-  net_tess_cube_cells (N, Tess + 1);
-  net_tess_cube_vers (N, bbox, verid, Tess + 1);
-  net_tess_cube_edges (N, verid, edgeid, Tess + 1);
-  net_tess_cube_faces (N, verid, edgeid, faceid, Tess + 1);
-  net_tess_cube_polys (N, faceid, polyid, Tess + 1);
-  neut_tess_init_seeds_fromcell (Tess + 1);
-  net_tess_cube_sset (Tess[1], SSet + 1);
+  net_tess_cube_cells (N, Tess + TessId);
+  net_tess_cube_vers (N, bbox, verid, Tess + TessId);
+  net_tess_cube_edges (N, verid, edgeid, Tess + TessId);
+  net_tess_cube_faces (N, verid, edgeid, faceid, Tess + TessId);
+  net_tess_cube_polys (N, faceid, polyid, Tess + TessId);
+  neut_tess_init_seeds_fromcell (Tess + TessId);
+  net_tess_cube_sset (Tess[1], SSet + TessId);
 
-  neut_tess_init_veredge (Tess + 1);
-  neut_tess_init_edgeface (Tess + 1);
-  net_tess_cube_facepoly (N, faceid, Tess + 1);
+  neut_tess_init_veredge (Tess + TessId);
+  neut_tess_init_edgeface (Tess + TessId);
+  net_tess_cube_facepoly (N, faceid, Tess + TessId);
 
-  neut_tess_init_domain_poly (Tess + 1, Dom, 1, NULL, NULL, NULL);
+  neut_tess_init_domain_poly (Tess + TessId, Dom, 1, NULL, NULL, NULL);
 
   if (dim == 2)
   {
@@ -97,13 +97,13 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
       ut_print_neperbug ();
 
     neut_tess_domface_tess (Tess[1], id, &T2);
-    neut_tess_tess (T2, Tess + 1);
+    neut_tess_tess (T2, Tess + TessId);
     neut_tess_free (&T2);
   }
 
-  net_ori_mtess_id (In, *pMTess, Tess, 0, 1, SSet + 1);
+  net_ori_mtess_id (In, *pMTess, Tess, 0, 1, SSet + TessId);
 
-  net_ori_mtess_randseed (*pMTess, Tess, 0, 1, SSet, 1, SSet + 1);
+  net_ori_mtess_randseed (*pMTess, Tess, 0, 1, SSet, 1, SSet + TessId);
 
   ut_free_3d_int (&verid, N[0] + 1, N[1] + 1);
   ut_free_4d_int (&edgeid, 3, N[0] + 1, N[1] + 1);

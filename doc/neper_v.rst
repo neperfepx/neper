@@ -124,7 +124,8 @@ When a simulation directory is loaded as input, it is possible to specify the si
 
   Specify the simulation step(s), which can be:
 
-  - :data:`0`: initial state;
+  - :data:`0`: the initial state;
+  - :data:`final`: the final step;
   - any step number;
   - :data:`all`: all steps;
   - a list of steps combined with :data:`,`; a range of values can also be specified using :data:`-`.  An example is :data:`0-10,20` (for steps 0 to 10, and 20).
@@ -423,6 +424,18 @@ The following options enable the definition of the properties (color, size, etc.
     - :data:`axis-angle[(<max>[,absolute])]` for rotation axis / angle coloring, where :data:`<max>` is the maximum angle (in radian) and :data:`absolute` makes it so that the absolute values of the axis components are used.
 
   **Default value**: :data:`palette` for integer values, :data:`viridis` for real values, and :data:`rodrigues` for crystal orientations.
+
+.. index::
+   single: -dataelt2dtrs
+   single: -dataelset2dtrs
+
+.. option:: -data{elt2d,elset2d}trs <transparency>
+
+  Specify the transparencies (values from 0 to 1), which can be:
+
+  - a real value;
+  - an expression based on the variables described in :ref:`mesh_keys`, such as :data:`x` or :data:`area`;
+  - :data:`file(<file_name>)`: individual values to load from a :ref:`data_file`.
 
 .. option:: -data{elt,elset,node,elt{0-3}d,elset{0-3}d}scale <scale>
 
