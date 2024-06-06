@@ -1,5 +1,5 @@
-New in 4.9.1-1 (15 May 2024):
-- made minor improvements.
+New in 4.9.1-2 (06 Jun 2024):
+- made minor fixes and improvements.
 
 New in 4.9.0 (15 May 2024):
 - module -T: added -per 1 for -morpho cube, added -ori ks (Kurdjumov-Sachs)

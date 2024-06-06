@@ -270,7 +270,7 @@ neut_tess_fprintf_dom (struct TESS Tess, FILE * file)
 
       fprintf (file, "     %d ", Tess.DomFaceParmQty[i]);
 
-      if (!strcmp (Tess.DomFaceType[i], "plane"))
+      if (Tess.DomFaceType[i] && !strcmp (Tess.DomFaceType[i], "plane"))
         ut_array_1d_fprintf (file, Tess.DomFaceEq[i], 4, REAL_PRINT_FORMAT);
       else
         ut_array_1d_fprintf (file, Tess.DomFaceParms[i],
