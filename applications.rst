@@ -34,6 +34,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2024
 ----
 
+- S Kumar and KEK Vimal, *Numerical and experimental studies of thin super duplex stainless steel GTAW joints*, **International Journal of Materials Engineering Innovation**, https://doi.org/10.1504/IJMATEI.2024.138606.
+- Q Chen, Y Xu and X Zheng, *Microstructure-sensitivity of CPFEM models on fretting fatigue crack initiation of AA2024-T351 alloy*, **Journal of Constructional Steel Research**, https://doi.org/10.1016/j.jcsr.2024.108971.
+- M Lindroos, GC Soares, A Biswas, W Karlsen, A Freimanis, S Ren, M Serrano and A Laukkanen, *On the grain level deformation of BCC metals with crystal plasticity modeling: Application to an RPV steel and the effect of irradiation*, **Materials Science and Engineering: A**, https://doi.org/10.1016/j.msea.2024.147121.
 - DC Vu, L Amarsid, JY Delenne, V Richefeu and F Radjai, *Particle fracture regimes from impact simulations*, **Physical Review E**, https://doi.org/10.1103/PhysRevE.109.044907.
 - VK Sahu, P Chakraborty, M Yadava and NP Gurao, *Micro-mechanisms of anisotropic deformation in the presence of notch in commercially pure titanium: an in-situ study with CPFEM simulations*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2024.103985.
 - CW Adair and OK Johnson, *Characterizing grain boundary network length features through a harmonic representation*, **Materialia**, https://doi.org/10.1016/j.mtla.2024.102121.
