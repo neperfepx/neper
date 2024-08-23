@@ -142,7 +142,8 @@ neut_odf_orides (struct ODF Odf, char **porides)
 void
 neut_odf_fnscanf (char *filename, struct ODF *pOdf, char *mode)
 {
-  int i, qty, tmp;
+  int i, qty, tmp, status;
+  double fact;
   char *fct = NULL, **vars = NULL, **vals = NULL;
 
   ut_string_function (filename, &fct, &vars, &vals, &qty);
@@ -183,6 +184,10 @@ neut_odf_fnscanf (char *filename, struct ODF *pOdf, char *mode)
     else
       ut_print_message (2, 0, "Failed to process `%s'.\n", vars[i]);
   }
+
+  status = neut_odf_normalize (pOdf, &fact);
+  if (status)
+    ut_print_message (1, 3, "Average value not equal to 1.  Scaling ODF by %f...\n", fact);
 
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vars, qty);
@@ -262,18 +267,42 @@ neut_odf_convolve (struct ODF *pOdf, char *kernel)
       (*pOdf).odf[i] = ut_num_max (2 * odf_cpy[i] - (*pOdf).odf[i], 0);
   }
 
-  while (ut_array_1d_min ((*pOdf).odf, (*pOdf).odfqty) < 0)
-  {
-    for (i = 0; i < (*pOdf).odfqty; i++)
-      (*pOdf).odf[i] = ut_num_max ((*pOdf).odf[i], 0);
-    (*pOdf).odfmean = ut_array_1d_wmean ((*pOdf).odf, (*pOdf).EltWeight, (*pOdf).odfqty);
-    ut_array_1d_scale ((*pOdf).odf, (*pOdf).odfqty, 1. / (*pOdf).odfmean);
-  }
+  // setting (potential) negative values to zero
+  for (i = 0; i < (*pOdf).odfqty; i++)
+    (*pOdf).odf[i] = ut_num_max ((*pOdf).odf[i], 0);
+
+  neut_odf_normalize (pOdf, NULL);
 
   ol_set_free (&OSet);
   ut_free_1d (&odf_cpy);
 
   return;
+}
+
+int
+neut_odf_normalize (struct ODF *pOdf, double *pfact)
+{
+  int status;
+
+  status = 0;
+  if (pfact)
+    *pfact = 1;
+
+  if (!(*pOdf).EltWeight)
+    neut_odf_init_eltweight (pOdf);
+
+  (*pOdf).odfmean = ut_array_1d_wmean ((*pOdf).odf, (*pOdf).EltWeight, (*pOdf).odfqty);
+
+  if (!ut_num_equal ((*pOdf).odfmean, 1, 1e-6))
+  {
+    ut_array_1d_scale ((*pOdf).odf, (*pOdf).odfqty, 1. / (*pOdf).odfmean);
+    if (pfact)
+      (*pfact) = 1. / (*pOdf).odfmean;
+    (*pOdf).odfmean = 1.;
+    status = 1;
+  }
+
+  return status;
 }
 
 void

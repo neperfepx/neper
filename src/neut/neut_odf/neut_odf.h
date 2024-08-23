@@ -27,6 +27,8 @@ extern void neut_odf_elt_ori (struct ODF Odf, int elt, gsl_rng *r, double *q);
 extern void neut_odf_orifield_comp (char *mode, char *neigh, struct OL_SET *pOSet,
                                     double *oridata, struct ODF *pOdf);
 
+extern int neut_odf_normalize (struct ODF *pOdf, double *pfact);
+
 #endif /* NEUT_ODF_H */
 
 #ifdef __cplusplus
