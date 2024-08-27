@@ -34,6 +34,11 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2024
 ----
 
+.. To check:
+.. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
+
+- G Xu, C He, R Bai, Y Zhou and C Zhang, *Experimental and Numerical Study of Phyllite's Anisotropic Behavior in 3D Space Under Brazilian Test Conditions*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-024-04103-1.
+- M Wang, J Wu, Z Qian, W Wu, Z Yang, L Liu and H Wang, *Texture and bendability evolution mechanism of 6063 aluminum alloy tube formed by free-bending technology employing cross-scale numerical modeling*, **Journal of Materials Processing Technology**, https://doi.org/10.1016/j.jmatprotec.2024.118568.
 - D Güzel, T Kaiser, H Bishara, G Dehm and A Menzel, *Revisiting Andrews method and grain boundary resistivity from a computational multiscale perspective*, **Mechanics of Materials**, https://doi.org/10.1016/j.mechmat.2024.105115.
 - S Kumar and KEK Vimal, *Numerical and experimental studies of thin super duplex stainless steel GTAW joints*, **International Journal of Materials Engineering Innovation**, https://doi.org/10.1504/IJMATEI.2024.138606.
 - Q Chen, Y Xu and X Zheng, *Microstructure-sensitivity of CPFEM models on fretting fatigue crack initiation of AA2024-T351 alloy*, **Journal of Constructional Steel Research**, https://doi.org/10.1016/j.jcsr.2024.108971.
