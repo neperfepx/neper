@@ -164,6 +164,7 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 :data:`domver`                    domain vertex (-1 if undefined)                                                                     ver
 :data:`scale`                     scale                                                                                               ver, edge, face, poly, cell [#multiscale_entity]_
 :data:`length`                    length                                                                                              edge
+:data:`length(<d_x>,<d_y>,<d_z>)` directional length along :math:`(d_x,d_y,d_z)` (in 2D, :data:`d_z` can be omitted)                  edge, face, poly
 :data:`area`                      surface area                                                                                        face, poly, group
 :data:`vol`                       volume                                                                                              poly, group
 :data:`size`                      size (surface area/volume in 2D/3D)                                                                 cell, group

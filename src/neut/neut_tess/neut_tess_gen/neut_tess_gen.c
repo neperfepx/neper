@@ -322,6 +322,21 @@ neut_tess_var_val (struct TESS *pTess,
       neut_tess_poly_volume ((*pTess), id, *pvals);
     else if (!strcmp (var2, "diameq"))
       neut_tess_cell_diameq ((*pTess), id, *pvals);
+    else if (!strncmp (var2, "length(", 7))
+    {
+      int qty;
+      double *dir = ut_alloc_1d (3);
+      char **vals = NULL;
+
+      ut_string_function (var2, NULL, NULL, &vals, &qty);
+      for (i = 0; i < qty; i++)
+        dir[i] = atof (vals[i]);
+      ut_array_1d_normalize (dir, 3);
+      neut_tess_poly_dir_length ((*pTess), id, dir, *pvals);
+
+      ut_free_1d (&dir);
+      ut_free_2d_char (&vals, qty);
+    }
     else if (!strcmp (var2, "avdiameq"))
       neut_tess_cellavdiameq ((*pTess), (*pTess).CellQty, *pvals);
     else if (!strcmp (var2, "radeq"))
@@ -628,6 +643,21 @@ neut_tess_var_val (struct TESS *pTess,
       neut_tess_face_area ((*pTess), id, *pvals);
     else if (!strcmp (var2, "diameq"))
       neut_tess_face_diameq ((*pTess), id, *pvals);
+    else if (!strncmp (var2, "length(", 7))
+    {
+      int qty;
+      double *dir = ut_alloc_1d (3);
+      char **vals = NULL;
+
+      ut_string_function (var2, NULL, NULL, &vals, &qty);
+      for (i = 0; i < qty; i++)
+        dir[i] = atof (vals[i]);
+      ut_array_1d_normalize (dir, 3);
+      neut_tess_face_dir_length ((*pTess), id, dir, *pvals);
+
+      ut_free_1d (&dir);
+      ut_free_2d_char (&vals, qty);
+    }
     else if (!strcmp (var2, "radeq"))
       neut_tess_face_radeq ((*pTess), id, *pvals);
     else if (!strcmp (var2, "circularity") || !strcmp (var2, "sphericity"))
@@ -908,6 +938,21 @@ neut_tess_var_val (struct TESS *pTess,
     else if (!strcmp (var2, "length") || !strcmp (var2, "size")
              || !strcmp (var2, "diameq"))
       (*pvals)[0] = (*pTess).EdgeLength[id];
+    else if (!strncmp (var2, "length(", 7))
+    {
+      int qty;
+      double *dir = ut_alloc_1d (3);
+      char **vals = NULL;
+
+      ut_string_function (var2, NULL, NULL, &vals, &qty);
+      for (i = 0; i < qty; i++)
+        dir[i] = atof (vals[i]);
+      ut_array_1d_normalize (dir, 3);
+      neut_tess_edge_dir_length ((*pTess), id, dir, *pvals);
+
+      ut_free_1d (&dir);
+      ut_free_2d_char (&vals, qty);
+    }
     else if (!strcmp (var2, "radeq"))
       (*pvals)[0] = (*pTess).EdgeLength[id] * .5;
     else if (!strcmp (var2, "vernb"))

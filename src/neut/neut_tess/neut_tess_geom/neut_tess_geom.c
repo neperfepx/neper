@@ -2135,3 +2135,56 @@ neut_tess_group_size (struct TESS Tess, int group, double *psize)
   return;
 }
 
+void
+neut_tess_edge_dir_length (struct TESS Tess, int edge, double *dir, double *plength)
+{
+  *plength = fabs (ut_vector_scalprod (Tess.VerCoo[Tess.EdgeVerNb[edge][0]], dir)
+                 - ut_vector_scalprod (Tess.VerCoo[Tess.EdgeVerNb[edge][1]], dir));
+
+  return;
+}
+
+void
+neut_tess_face_dir_length (struct TESS Tess, int face, double *dir, double *plength)
+{
+  int i, ver;
+  double *val = ut_alloc_1d (Tess.FaceVerQty[face] + 1);
+
+  for (i = 1; i <= Tess.FaceVerQty[face]; i++)
+  {
+    ver = Tess.FaceVerNb[face][i];
+    val[i] = ut_vector_scalprod (Tess.VerCoo[ver], dir);
+  }
+
+  *plength = ut_array_1d_max (val + 1, Tess.FaceVerQty[face])
+           - ut_array_1d_min (val + 1, Tess.FaceVerQty[face]);
+
+  ut_free_1d (&val);
+
+  return;
+}
+
+void
+neut_tess_poly_dir_length (struct TESS Tess, int poly, double *dir, double *plength)
+{
+  int i, *vers = NULL, verqty, ver;
+  double *val = NULL;
+
+  neut_tess_poly_vers (Tess, poly, &vers, &verqty);
+
+  val = ut_alloc_1d (verqty + 1);
+
+  for (i = 1; i <= verqty; i++)
+  {
+    ver = vers[i - 1];
+    val[i] = ut_vector_scalprod (Tess.VerCoo[ver], dir);
+  }
+
+  *plength = ut_array_1d_max (val + 1, verqty)
+           - ut_array_1d_min (val + 1, verqty);
+
+  ut_free_1d (&val);
+  ut_free_1d_int (&vers);
+
+  return;
+}

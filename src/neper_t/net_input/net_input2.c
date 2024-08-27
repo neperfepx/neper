@@ -52,9 +52,8 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
         ut_print_message (2, 2, "Option `-morpho square' requires `-dim 2'.");
     // testing consistency between morpho = lamellar and n, which must be from_morpho
     for (i = 1; i <= (*pIn).levelqty; i++)
-      if ((!strncmp ((*pIn).morpho[i], "cube", 4)
-           || !strncmp ((*pIn).morpho[i], "lamellar", 8))
-          && strcmp ((*pIn).n[i], "from_morpho") != 0)
+      if ((!strncmp ((*pIn).morpho[i], "cube", 4))
+          && strcmp ((*pIn).n[i], "from_morpho"))
         ut_print_message (2, 2, "`-morpho %s' requires `-n from_morpho'.\n",
                           (*pIn).morpho[i]);
 

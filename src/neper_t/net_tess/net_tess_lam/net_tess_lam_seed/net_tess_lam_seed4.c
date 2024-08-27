@@ -5,19 +5,31 @@
 #include"net_tess_lam_seed_.h"
 
 int
-net_tess_lam_seed_set_w_pre (gsl_rng * r, struct TESS Dom, double *n,
-                             char *wtype, double *w, int wqty, char *postype,
-                             char *pos, double *plane, double reps,
+net_tess_lam_seed_set_w_pre (gsl_rng * r, struct TESS Dom, double *normal,
+                             char *ntype, int *n, char **pwtype, double **pw, int *pwqty,
+                             char *postype, char *pos, double *plane, double reps,
                              double *pdistmin, double *pdistmax)
 {
   int i;
   double fact, *dist = ut_alloc_1d (Dom.VerQty + 1);
-  double tmp1, tmp2, wall = ut_array_1d_sum (w, wqty);
+  double tmp1, tmp2, dirlength, wall;
 
-  (void) wtype;
-  (void) postype;
+  if (strcmp (*pwtype, "none"))
+    wall = ut_array_1d_sum (*pw, *pwqty);
+  else if (strcmp (ntype, "none"))
+  {
+    neut_tess_poly_dir_length (Dom, 1, normal, &dirlength);
+    *pwqty = 1;
+    (*pw) = ut_alloc_1d (1);
+    (*pw)[0] = dirlength / n[0];
+    wall = (*pw)[0];
+    ut_string_string ("from_n", pwtype);
+    ut_string_string ("start", &pos);
+  }
+  else
+    abort ();
 
-  ut_array_1d_memcpy (n, 3, plane + 1);
+  ut_array_1d_memcpy (normal, 3, plane + 1);
 
   // distmin and distmax are the min and max values from the plane (with
   // constant = 0) and the vertices
@@ -34,7 +46,7 @@ net_tess_lam_seed_set_w_pre (gsl_rng * r, struct TESS Dom, double *n,
   else if (!strcmp (pos, "start"))
     plane[0] = *pdistmin;
   else if (!strcmp (pos, "half"))
-    plane[0] = *pdistmin - 0.5 * w[0];
+    plane[0] = *pdistmin - 0.5 * (*pw)[0];
   else if (!strcmp (pos, "optimal"))
   {
     tmp1 = (*pdistmax - *pdistmin) / wall;
@@ -47,7 +59,7 @@ net_tess_lam_seed_set_w_pre (gsl_rng * r, struct TESS Dom, double *n,
     plane[0] = *pdistmin - (tmp2 - tmp1) * wall / 2;
   }
   else if (sscanf (pos, "%lf", &fact))
-    plane[0] = *pdistmin - fact * w[0];
+    plane[0] = *pdistmin - fact * (*pw)[0];
   else
     ut_print_message (2, 3, "Failed to process expression `pos=%s'.\n",
                       postype);
@@ -58,14 +70,14 @@ net_tess_lam_seed_set_w_pre (gsl_rng * r, struct TESS Dom, double *n,
 }
 
 int
-net_tess_lam_seed_set_addlam (double distcur, double *n, double w, int w_id,
+net_tess_lam_seed_set_addlam (double distcur, double *normal, double w, int w_id,
                               struct SEEDSET *pSSet)
 {
   (*pSSet).N++;
   (*pSSet).LamEq = ut_realloc_2d_addline ((*pSSet).LamEq, (*pSSet).N + 1, 4);
   (*pSSet).LamWidth = ut_realloc_1d ((*pSSet).LamWidth, (*pSSet).N + 1);
 
-  ut_array_1d_memcpy (n, 3, (*pSSet).LamEq[(*pSSet).N] + 1);
+  ut_array_1d_memcpy (normal, 3, (*pSSet).LamEq[(*pSSet).N] + 1);
   (*pSSet).LamEq[(*pSSet).N][0] = distcur;
   (*pSSet).LamWidth[(*pSSet).N] = w;
 

@@ -202,23 +202,25 @@ These options can be used to set the cell morphology.
 
   - :data:`tocta(<N>)`: regular tessellation into truncated octahedra, where :data:`<N>` is the number of cells along a direction;
 
-  - :data:`lamellar(w=<width>[,v=<normal>][,pos=<pos>][,reps=<reps>])`: lamellar morphology, where :data:`<width>` is the absolute lamella width or a series of absolute lamella widths combined with :data:`:`, and :data:`<normal>` is the lamella plane normal and can be:
+  - :data:`lamellar([w=<width>][,n=<n>][,v=<normal>][,pos=<pos>][,reps=<reps>])`: lamellar morphology, where :data:`<width>` is the absolute lamella width or a series of absolute lamella widths combined with :data:`:`, :data:`<n>` is the number of lamellae, :data:`<normal>` is the lamella plane normal, :data:`<pos>` is the position of the first lamella, and :data:`<reps>` is a relative tolerance on the width of the last lamella. :data:`width=\<width\>` and :data:`n=\<n\>` are mutually exclusive.  The number of lamellae can also be specified using option :option:`-n`.  Specifying a number of cells (using option :option:`-n` or :data:`n=\<n\>`) enforces :data:`pos=start` (or equivalently :data:`pos=optimal`, as described below).
 
-    - :data:`random`: randomly-distributed normals taken from a uniform distribution (the default);
-    - :data:`(<dir_x>,<dir_y>,<dir_z>)`: a specific direction of space, (:data:`dir_x`, :data:`dir_y`, :data:`dir_z`);
-    - :data:`crysdir(<crysdir_x>,<crysdir_y>,<crysdir_z>)`: a specific direction of the parent crystal, (:data:`<crysdir_x>`, :data:`<crysdir_y>`, :data:`<crysdir_z>`).
+    - :data:`<normal>` (the lamella plane normal) can be:
 
-    :data:`pos` is the position of the first lamella and can be:
+      - :data:`random`: randomly-distributed normals taken from a uniform distribution (the default);
+      - :data:`(<dir_x>,<dir_y>,<dir_z>)`: a specific direction of space, (:data:`dir_x`, :data:`dir_y`, :data:`dir_z`);
+      - :data:`crysdir(<crysdir_x>,<crysdir_y>,<crysdir_z>)`: a specific direction of the parent crystal, (:data:`<crysdir_x>`, :data:`<crysdir_y>`, :data:`<crysdir_z>`).
 
-    - :data:`random`: random position (the default);
-    - :data:`optimal`: optimal position, i.e. so that lamellae at the start *and* end of the domain are of lengths as close as possible to nominal (along direction :data:`<dir>`);
-    - :data:`start`: first lamella starting full-width from the start point of the domain (along direction  :data:`<dir>`);
-    - :data:`half`: first lamella starting half-width from the start point of the domain (along direction  :data:`<dir>`).
-    - :data:`<factor>`: lamella starting with a width equal to :data:`<factor>` times the nominal width (between :data:`0` and :data:`1`), from the start point of the domain (along direction  :data:`<dir>`).
+    - :data:`<pos>` (the position of the first lamella) can be:
 
-    :data:`reps` is a relative tolerance on the width of the last lamella (default :data:`1e-2`) - a lamella is allowed to be larger than nominal, within the specified relative tolerance, to avoid the occurence of unrealistically thin lamella.
+      - :data:`random`: random position (the default);
+      - :data:`optimal`: optimal position, i.e. so that lamellae at the start *and* end of the domain are of lengths as close as possible to nominal (along direction :data:`<dir>`);
+      - :data:`start`: first lamella starting full-width from the start point of the domain (along direction  :data:`<dir>`);
+      - :data:`half`: first lamella starting half-width from the start point of the domain (along direction  :data:`<dir>`).
+      - :data:`<factor>`: lamella starting with a width equal to :data:`<factor>` times the nominal width (between :data:`0` and :data:`1`), from the start point of the domain (along direction  :data:`<dir>`).
 
-    In the case of a multiscale tessellation, a :ref:`multiscale cell file <multiscale_cell_file>` can be provided as value of :data:`w`, :data:`v`, and :data:`pos`.
+    - :data:`<reps>` (default :data:`1e-2`) is so that a lamella is allowed to be larger than nominal, within the specified relative tolerance, to avoid the occurence of unrealistically thin lamella.
+
+    In the case of a multiscale tessellation, a :ref:`multiscale cell file <multiscale_cell_file>` can be provided as value of :data:`w`, :data:`n`, :data:`v`, and :data:`pos`.
 
   **Custom morphological properties** can be defined using :data:`<property>:\<value\>`. The properties and the possible corresponding values can be:
 

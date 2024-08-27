@@ -310,6 +310,10 @@ extern "C"
   extern void neut_tess_group_vol (struct TESS Tess, int group, double *pvol);
   extern void neut_tess_group_size (struct TESS Tess, int group, double *psize);
 
+  extern void neut_tess_edge_dir_length (struct TESS Tess, int edge, double *dir, double *plength);
+  extern void neut_tess_face_dir_length (struct TESS Tess, int face, double *dir, double *plength);
+  extern void neut_tess_poly_dir_length (struct TESS Tess, int poly, double *dir, double *plength);
+
 #endif				/* NEUT_TESS_GEOM_H */
 
 #ifdef __cplusplus

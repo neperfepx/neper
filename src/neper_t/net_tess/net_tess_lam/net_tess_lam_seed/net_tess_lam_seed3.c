@@ -51,11 +51,9 @@ net_tess_lam_seed_readargs_w (char *value, struct MTESS MTess,
 int
 net_tess_lam_seed_readargs_v (char *value, struct MTESS MTess,
                               struct TESS *Tess, int domtess, int dompoly,
-                              char **pvtype, double **pv, int *pvqty)
+                              char **pvtype, double **pv)
 {
   char *mid = NULL;
-
-  (*pvqty) = 0;
 
   if (!strcmp (value, "random"))
     ut_string_string ("random", pvtype);
@@ -68,7 +66,6 @@ net_tess_lam_seed_readargs_v (char *value, struct MTESS MTess,
   else if (ut_string_isfilename (value))
   {
     ut_string_string ("file", pvtype);
-    (*pvqty) = 1;
     (*pv) = ut_alloc_1d (3);
     neut_mtess_tess_poly_mid (MTess, Tess[domtess], dompoly, &mid);
     net_multiscale_arg_1d_fscanf (value, mid, *pv, 3);
@@ -121,7 +118,7 @@ net_tess_lam_seed_set_init (struct SEEDSET *pSSet)
 
 int
 net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
-                              gsl_rng * r, char *vtype, double *v, int vqty,
+                              gsl_rng * r, char *vtype, double *v,
                               double *n)
 {
   int dim = SSet[1].Dim;
@@ -131,7 +128,7 @@ net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
   if (dtess != 0)
     q = SSet[dtess].SeedOri[dcell];
 
-  if (!strcmp (vtype, "file") && vqty == 1)
+  if (!strcmp (vtype, "file"))
     ut_array_1d_memcpy (v, 3, n);
 
   else if (!strncmp (vtype, "random", 6))
@@ -200,15 +197,16 @@ net_tess_lam_seed_set_normal (struct SEEDSET *SSet, int dtess, int dcell,
 }
 
 int
-net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng * r, double *n,
-                           char *wtype, double *w, int wqty, char *postype,
-                           char *pos, double reps, struct SEEDSET *pSSet)
+net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng * r, double *normal,
+                           char *ntype, int *n,
+                           char **pwtype, double **pw, int *pwqty,
+                           char *postype, char *pos, double reps, struct SEEDSET *pSSet)
 {
   int w_id;
   double coo, distmin, distmax;
   double *plane = ut_alloc_1d (4);
 
-  net_tess_lam_seed_set_w_pre (r, Dom, n, wtype, w, wqty, postype, pos, plane,
+  net_tess_lam_seed_set_w_pre (r, Dom, normal, ntype, n, pwtype, pw, pwqty, postype, pos, plane,
                                reps, &distmin, &distmax);
 
   (*pSSet).N = 0;
@@ -216,14 +214,14 @@ net_tess_lam_seed_set_lam (struct TESS Dom, gsl_rng * r, double *n,
   w_id = -1;
   do
   {
-    w_id = ut_array_rotpos (0, wqty - 1, w_id, 1);
-    coo += w[w_id];
+    w_id = ut_array_rotpos (0, *pwqty - 1, w_id, 1);
+    coo += (*pw)[w_id];
     if (coo < distmin)
       continue;
 
-    net_tess_lam_seed_set_addlam (coo, n, w[w_id], wqty > 1 ? w_id : -1, pSSet);
+    net_tess_lam_seed_set_addlam (coo, normal, (*pw)[w_id], *pwqty > 1 ? w_id : -1, pSSet);
   }
-  while (coo < distmax - reps * w[w_id]);
+  while (coo < distmax - reps * (*pw)[w_id]);
 
   ut_free_1d (&plane);
 
