@@ -37,6 +37,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. To check:
 .. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
 
+- S Chandra, S Kumar, MK Samal and VM Chavan, *Influence of textural variability on plastic response of porous crystal embedded in polycrystalline aggregate: A crystal plasticity study*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2024.104117.
 - M Pan, L Yang, X Zheng, H Mao, Y Kong and Y Du, *Numerical simulation of fatigue fracture in gradient high-strength steel: effects of carbides and gradient structure on stress–strain response and crack propagation behavior*, **Journal of Materials Science**, https://doi.org/10.1007/s10853-024-09907-8.
 - G Xu, C He, R Bai, Y Zhou and C Zhang, *Experimental and Numerical Study of Phyllite's Anisotropic Behavior in 3D Space Under Brazilian Test Conditions*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-024-04103-1.
 - M Wang, J Wu, Z Qian, W Wu, Z Yang, L Liu and H Wang, *Texture and bendability evolution mechanism of 6063 aluminum alloy tube formed by free-bending technology employing cross-scale numerical modeling*, **Journal of Materials Processing Technology**, https://doi.org/10.1016/j.jmatprotec.2024.118568.
