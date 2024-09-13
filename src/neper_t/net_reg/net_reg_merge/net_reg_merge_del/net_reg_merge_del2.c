@@ -196,7 +196,7 @@ int
 UpdateVerCoo (struct TESS *pTess, int delver, int newver, int verbosity)
 {
   if ((*pTess).Dim == 2)
-    return UpdateVerCooBary (pTess, delver, newver);
+    return UpdateVerCooBary (pTess, delver, newver, verbosity);
   else if ((*pTess).Dim == 3)
     return UpdateVerCooMiniFF (pTess, newver, verbosity);
   else

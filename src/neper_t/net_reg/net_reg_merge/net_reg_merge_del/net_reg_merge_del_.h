@@ -39,5 +39,5 @@ extern void UpdateVerState (struct TESS *, int, int, int);
 extern void UpdateVerEdge (struct TESS *, int, int, int, int);
 extern int UpdateVerBound (struct TESS *, int, int);
 extern int UpdateVerCoo (struct TESS *, int, int, int);
-extern int UpdateVerCooBary (struct TESS *, int, int);
+extern int UpdateVerCooBary (struct TESS *, int, int, int);
 extern int UpdateVerCooMiniFF (struct TESS *, int, int);

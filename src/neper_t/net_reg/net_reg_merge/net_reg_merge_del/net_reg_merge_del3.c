@@ -271,7 +271,7 @@ UpdateEdgeLength (struct TESS *pTess, int ver)
 }
 
 int
-UpdateVerCooBary (struct TESS *pTess, int delver, int newver)
+UpdateVerCooBary (struct TESS *pTess, int delver, int newver, int verbosity)
 {
   int i, domedge, domedgeqty, domver1, domver2, eqqty;
   int *domedges = NULL;
@@ -284,11 +284,21 @@ UpdateVerCooBary (struct TESS *pTess, int delver, int newver)
   vers[0] = delver;
   vers[1] = newver;
 
+  if (verbosity)
+    printf ("delver = %d newver = %d\n", delver, newver);
+
   neut_tess_vers_alldomedges (*pTess, vers, 2, &domedges, &domedgeqty);
 
-  eqqty = domedgeqty + 1;
-  eqs = ut_alloc_2d (eqqty, 4);
+  if (verbosity)
+  {
+    printf ("domedgeqty = %d\n", domedgeqty);
+    printf ("domedges = ");
+    ut_array_1d_int_fprintf (stdout, domedges, domedgeqty, "%d");
+  }
 
+  eqs = ut_alloc_2d (domedgeqty + 1, 4);
+
+  eqqty = 1;
   ut_array_1d_memcpy ((*pTess).FaceEq[1], 4, eqs[0]);
 
   if (domedgeqty > 0)
@@ -297,21 +307,48 @@ UpdateVerCooBary (struct TESS *pTess, int delver, int newver)
       domedge = domedges[i];
       domver1 = (*pTess).DomEdgeVerNb[domedge][0];
       domver2 = (*pTess).DomEdgeVerNb[domedge][1];
-      ut_space_points_uvect ((*pTess).DomVerCoo[domver1],
-                             (*pTess).DomVerCoo[domver2], v);
-      ut_vector_vectprod (v, eqs[0] + 1, n);
-      ut_space_point_normal_plane ((*pTess).DomVerCoo[domver1], n,
-                                   eqs[i + 1]);
+      if (verbosity)
+        printf ("domedge = %d domver1 = %d domver2 = %d\n", domedge, domver1, domver2);
+      if (domver1 > 0 && domver2 > 0)
+      {
+        eqqty++;
+        ut_space_points_uvect ((*pTess).DomVerCoo[domver1],
+                               (*pTess).DomVerCoo[domver2], v);
+        ut_vector_vectprod (v, eqs[0] + 1, n);
+        ut_space_point_normal_plane ((*pTess).DomVerCoo[domver1], n,
+                                     eqs[i + 1]);
+      }
     }
+
+  if (verbosity)
+  {
+    printf ("eqqty = %d\n", eqqty);
+    printf ("eqs = ");
+    ut_array_2d_fprintf (stdout, eqs, eqqty, 4, "%f");
+  }
 
   ut_array_1d_memcpy ((*pTess).VerCoo[delver], 3, ptcoo[0]);
   ut_array_1d_memcpy ((*pTess).VerCoo[newver], 3, ptcoo[1]);
 
+  if (verbosity)
+  {
+    printf ("ptcoo[0] = ");
+    ut_array_1d_fprintf (stdout, ptcoo[0], 3, "%f");
+    printf ("ptcoo[1] = ");
+    ut_array_1d_fprintf (stdout, ptcoo[1], 3, "%f");
+  }
+
   ut_space_points_bary_constrained (ptcoo, NULL, 2, eqs, eqqty,
                                     (*pTess).VerCoo[newver]);
 
+  if (verbosity)
+  {
+    printf ("(*pTess).VerCoo[newver] = ");
+    ut_array_1d_fprintf (stdout, (*pTess).VerCoo[newver], 3, "%f");
+  }
+
   ut_free_2d (&ptcoo, 2);
-  ut_free_2d (&eqs, eqqty);
+  ut_free_2d (&eqs, domedgeqty + 1);
   ut_free_1d (&v);
   ut_free_1d (&n);
 
