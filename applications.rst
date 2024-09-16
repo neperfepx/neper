@@ -37,6 +37,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. To check:
 .. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
 
+- A Marano, C Ribart and H Proudhon, *Towards a data platform for multimodal 4d mechanics of material microstructures*, **Materials & Design**, https://doi.org/10.1016/j.matdes.2024.113306.
+- Y Zhang, Y Ben-Gao, X Jing, T Rui-Feng, B Yan-Bo and G Ming-Zhong, *Study on heating characteristics of granites with different sizes in microwave field*, **Thermal Science**, https://doi.org/10.2298/TSCI2404511Z.
 - S Chandra, S Kumar, MK Samal and VM Chavan, *Influence of textural variability on plastic response of porous crystal embedded in polycrystalline aggregate: A crystal plasticity study*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2024.104117.
 - M Pan, L Yang, X Zheng, H Mao, Y Kong and Y Du, *Numerical simulation of fatigue fracture in gradient high-strength steel: effects of carbides and gradient structure on stress–strain response and crack propagation behavior*, **Journal of Materials Science**, https://doi.org/10.1007/s10853-024-09907-8.
 - G Xu, C He, R Bai, Y Zhou and C Zhang, *Experimental and Numerical Study of Phyllite's Anisotropic Behavior in 3D Space Under Brazilian Test Conditions*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-024-04103-1.
