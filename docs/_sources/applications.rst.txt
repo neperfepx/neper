@@ -37,6 +37,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. To check:
 .. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
 
+- J Xu and W Xu, *Closed-Loop analysis of nanocomposite Magnets: Integrating micromagnetic simulation and experimental Testing*, **Journal of Magnetism and Magnetic Materials**, https://doi.org/10.1016/j.jmmm.2024.172553.
 - Z Ma, Z Wang, J Ye, Q Ma, T Hao, Z Cao and C Wang, *Effect of ultrasonic vibration on the roll bending deformation behavior of ultra-thin-walled corrugated sheets*, **Materials Today Communications**, https://doi.org/10.1016/j.mtcomm.2024.110497.
 - A Marano, C Ribart and H Proudhon, *Towards a data platform for multimodal 4d mechanics of material microstructures*, **Materials & Design**, https://doi.org/10.1016/j.matdes.2024.113306.
 - Y Zhang, Y Ben-Gao, X Jing, T Rui-Feng, B Yan-Bo and G Ming-Zhong, *Study on heating characteristics of granites with different sizes in microwave field*, **Thermal Science**, https://doi.org/10.2298/TSCI2404511Z.
