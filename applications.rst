@@ -37,6 +37,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. To check:
 .. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
 
+- WE Frazier, L Li, KS Choi, Y Fu, Z Xu, A Soulami and VV Joshi, *Investigating the Evolution of U-10Mo Fuel Foil Microstructures during Multi-Stage Hot Rolling using Coupled Potts Model-Finite Element Method Simulations*, **Journal of Nuclear Materials**, https://doi.org/10.1016/j.jnucmat.2024.155427.
+- N Sayer, M Fried and S Münstermann, *A Monte-Carlo approach for crack initiation modeling of cast superalloys informed by crystal plasticity*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108616.
 - J Xu and W Xu, *Closed-Loop analysis of nanocomposite Magnets: Integrating micromagnetic simulation and experimental Testing*, **Journal of Magnetism and Magnetic Materials**, https://doi.org/10.1016/j.jmmm.2024.172553.
 - Z Ma, Z Wang, J Ye, Q Ma, T Hao, Z Cao and C Wang, *Effect of ultrasonic vibration on the roll bending deformation behavior of ultra-thin-walled corrugated sheets*, **Materials Today Communications**, https://doi.org/10.1016/j.mtcomm.2024.110497.
 - A Marano, C Ribart and H Proudhon, *Towards a data platform for multimodal 4d mechanics of material microstructures*, **Materials & Design**, https://doi.org/10.1016/j.matdes.2024.113306.
