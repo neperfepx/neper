@@ -2,7 +2,7 @@ $MeshFormat
 2.2 0 8
 $EndMeshFormat
 $MeshVersion
-2.2.3
+2.3
 $EndMeshVersion
 $Domain
 cube
@@ -1156,12 +1156,12 @@ $PhysicalNames
 3 2 "poly2"
 $EndPhysicalNames
 $ElsetOrientations
-2 rodrigues:active
+2 rodrigues:passive
 1   -1.219705898935   -0.219190871379   -0.925548963545
 2    0.376729856955    0.139645709600    0.074260607185
 $EndElsetOrientations
 $ElementOrientations
-262 rodrigues:active
+262 rodrigues:passive
 1   -4.924480218085    1.213845568380   -0.540429233157
 2    0.260908405493    3.391610930560   -4.228536609508
 3    4.964661563559   -2.969295756211   -7.152752390930

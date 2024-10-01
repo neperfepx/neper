@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -291,6 +291,17 @@ extern "C"
     // Numbers of the domain vertices of the domain edges
     // [1...DomVerQty][0...DomEdgeVerQty-1]
     int **DomEdgeVerNb;		// 0 indexed
+
+
+    /// Type of domain edge: NULL, plane, cylinder, ecylinder or sphere
+    /// The parameters are recorded in DomEdgeParms
+    char **DomEdgeType;
+
+    int* DomEdgeParmQty;
+
+    // ecylinder: Cx, Cy, Cz, axisx, axisy, axisz, ell1x, ell1y, ell1z, ell2x,
+    // ell2y, ell2z, rady, radz
+    double **DomEdgeParms;
 
     // Numbers of the domain faces of the domain edges
     // [1...DomEdgeQty][0...1]

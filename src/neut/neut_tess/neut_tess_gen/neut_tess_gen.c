@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_gen_.h"
@@ -288,7 +288,10 @@ neut_tess_var_val (struct TESS *pTess,
       if ((*pTess).CellOriDistrib)
       {
         ut_string_function ((*pTess).CellOriDistrib[id], &fct, &vars, &vals, &qty);
-        sscanf (vals[0], "%lf", *pvals);
+        if (qty)
+          sscanf (vals[0], "%lf", *pvals);
+        else
+          (*pvals)[0] = -1;
       }
       else
         (*pvals)[0] = -1;

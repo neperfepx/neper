@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_.h"
@@ -64,7 +64,7 @@ net_tess_opt_init_general (struct IN_T In, int level, char *optitype,
 void
 net_tess_opt_init_target (struct IN_T In, int level, char *optistring,
                           struct MTESS MTess, struct TESS *Tess, int dtess,
-                          int dcell, struct TOPT *pTOpt)
+                          int dcell, int TessId, struct SEEDSET *SSet, struct TOPT *pTOpt)
 {
   int i, j, PartQty, status, diameq_pos[2], isval = 0;
   double mean = 1;
@@ -551,7 +551,12 @@ net_tess_opt_init_target (struct IN_T In, int level, char *optistring,
   }
 
   if ((*pTOpt).CellQty <= 0)
-    ut_print_message (2, 4, "Could not process '-n from_morpho'.\n");
+  {
+    if (SSet[TessId].N > 0)
+      (*pTOpt).CellQty = SSet[TessId].N;
+    else
+      ut_print_message (2, 4, "Could not process '-n from_morpho'.\n");
+  }
 
   if (diameq_pos[0] != -1)
     net_tess_opt_init_target_scale (pTOpt, diameq_pos);

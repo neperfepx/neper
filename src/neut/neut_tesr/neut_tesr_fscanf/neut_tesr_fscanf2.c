@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesr_fscanf_.h"
@@ -33,7 +33,7 @@ neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds, int **pvoxbounds,
                         "Input file is not a valid raster tessellation file.\n");
     ut_string_string (*pdataformat, poridataformat);
   }
-  else if (!strcmp (*pversion, "2.1"))
+  else if (!strcmp (*pversion, "2.1") || !strcmp (*pversion, "2.2"))
   {
   }
   else
@@ -108,7 +108,7 @@ neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds, int **pvoxbounds,
 }
 
 void
-neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file)
+neut_tesr_fscanf_cell (struct TESR *pTesr, char *version, FILE * file)
 {
   int i, status, id;
   char *string = ut_alloc_1d_char (1000);
@@ -157,11 +157,21 @@ neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file)
 
       else if (!strcmp (string, "*ori"))
       {
+        int major, minor;
+
+        ut_string_version (version, &major, &minor, NULL);
+
         ut_file_skip (file, 1);
         (*pTesr).CellOri = ut_alloc_2d ((*pTesr).CellQty + 1, 4);
         (*pTesr).CellOriDes = ut_alloc_1d_char (20);
         if (fscanf (file, "%s", (*pTesr).CellOriDes) != 1)
           abort ();
+
+        if (major <= 2 && minor <= 1)
+        {
+          ut_print_message (1, 3, "File version <= 2.1.  Fixing orientation convention...\n");
+          neut_ori_des_fixconvention (&(*pTesr).CellOriDes);
+        }
 
         neut_ori_fscanf (file, (*pTesr).CellOriDes, "ascii", (*pTesr).CellOri + 1,
                          NULL, (*pTesr).CellQty, NULL);

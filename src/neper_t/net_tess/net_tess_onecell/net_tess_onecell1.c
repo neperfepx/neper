@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_onecell_.h"
@@ -28,7 +28,7 @@ net_tess_onecell (struct IN_T In, struct MTESS *pMTess,
       ut_array_1d_int_scale (Tess[TessId].FaceEdgeOri[i] + 1,
                              Tess[TessId].FaceVerQty[i], -1);
 
-      neut_tess_face_fixorifromedges (Tess + TessId, i);
+      neut_tess_face_fixorifromedges (Tess[TessId], i, Tess[TessId].FaceEq[i]);
       Tess[TessId].PolyFaceOri[1][1 + ut_array_1d_int_eltpos (Tess[TessId].PolyFaceNb[1] + 1, Tess[TessId].PolyFaceQty[1], i)] *= -1;
     }
 
@@ -36,7 +36,12 @@ net_tess_onecell (struct IN_T In, struct MTESS *pMTess,
   SSet[TessId].N = 1;
   SSet[TessId].Nall = 1;
   SSet[TessId].SeedCoo = ut_alloc_2d (SSet[TessId].N + 1, 3);
+  SSet[TessId].SeedWeight = ut_alloc_1d (SSet[TessId].N + 1);
+  SSet[TessId].SeedCoo0 = ut_alloc_2d (SSet[TessId].N + 1, 3);
   neut_tess_cell_centroid (Tess[TessId], 1, SSet[TessId].SeedCoo[1]);
+  ut_array_1d_memcpy (SSet[TessId].SeedCoo[1], 3, SSet[TessId].SeedCoo0[1]);
+  SSet[TessId].Size = ut_alloc_2d (3, 2);
+  neut_tess_bbox (Tess[TessId], SSet[TessId].Size);
 
   // net_tess3d_domain (Tess[dtess], dcell, TessId, pMTess, Tess + TessId);
   neut_tess_init_domain_poly (Tess + TessId, Tess[dtess], dcell, NULL, NULL, NULL);

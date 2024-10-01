@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_png_tess_.h"
@@ -28,7 +28,7 @@ nev_print_png_tess (FILE * file, struct PRINT Print, struct TESS Tess,
 
   seedlist = ut_alloc_1d_int (Tess.CellQty + 1);
 
-  for (i = 1; i <= Tess.CellQty; i++)
+  for (i = 1; i <= Tess.SeedQty; i++)
     if (Print.showseed[i] == 1)
       seedlist[++seedlist[0]] = i;
 

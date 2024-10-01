@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2022, Romain Quey */
+/* Copyright (C) 2003-2024, Romain Quey.*/
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -75,6 +75,12 @@ extern "C"
 /// \param size: size of the array
 /// \return pointer to the array
   extern double **ut_alloc_1d_pdouble (unsigned int size);
+
+/// \brief Reallocate a 1-D array of \c double*, add one element and set to NULL
+/// \param array: array
+/// \param size: size of the array
+/// \return pointer to the array
+  extern double **ut_realloc_1d_pdouble_null (double **array, unsigned int size, unsigned int null);
 
 /// \brief Allocate a 1-D array of \c char*
 /// \param size: size of the array

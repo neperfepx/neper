@@ -1,6 +1,6 @@
 ***tess
  **format
-   3.4
+   3.5
  **general
    3 periodic
  **cell
@@ -10,7 +10,7 @@
   *seed
    1 0.000000000000 0.000000000000 0.000000000000 0.000000000000
   *ori
-   rodrigues:active
+   rodrigues:passive
    0.919953402851    1.412193625247   -0.358468593221
  **vertex
  24
@@ -193,111 +193,183 @@
   *edge
    36
    1 2 1 5
+     line
+     0
      f5z1
      0
    2 2 5 9
+     line
+     0
      y1z1
      0
    3 2 9 13
+     line
+     0
      f9z1
      0
    4 2 13 17
+     line
+     0
      f11z1
      0
    5 2 17 18
+     line
+     0
      x1z1
      0
    6 2 18 4
+     line
+     0
      f3z1
      0
    7 2 4 8
+     line
+     0
      f6z1
      0
    8 2 8 12
+     line
+     0
      y0z1
      0
    9 2 12 16
+     line
+     0
      f10z1
      0
   10 2 16 24
+     line
+     0
      f12z1
      0
   11 2 24 23
+     line
+     0
      x0z1
      0
   12 2 23 1
+     line
+     0
      f4z1
      0
   13 2 2 6
+     line
+     0
      f5z0
      0
   14 2 6 10
+     line
+     0
      y1z0
      0
   15 2 10 14
+     line
+     0
      f9z0
      0
   16 2 14 20
+     line
+     0
      f11z0
      0
   17 2 20 19
+     line
+     0
      x1z0
      0
   18 2 19 3
+     line
+     0
      f3z0
      0
   19 2 3 7
+     line
+     0
      f6z0
      0
   20 2 7 11
+     line
+     0
      y0z0
      0
   21 2 11 15
+     line
+     0
      f10z0
      0
   22 2 15 21
+     line
+     0
      f12z0
      0
   23 2 21 22
+     line
+     0
      x0z0
      0
   24 2 22 2
+     line
+     0
      f4z0
      0
   25 2 3 4
+     line
+     0
      f3f6
      0
   26 2 18 19
+     line
+     0
      f3x1
      0
   27 2 2 1
+     line
+     0
      f4f5
      0
   28 2 23 22
+     line
+     0
      f4x0
      0
   29 2 6 5
+     line
+     0
      f5y1
      0
   30 2 7 8
+     line
+     0
      f6y0
      0
   31 2 9 10
+     line
+     0
      f9y1
      0
   32 2 11 12
+     line
+     0
      f10y0
      0
   33 2 13 14
+     line
+     0
      f11f9
      0
   34 2 15 16
+     line
+     0
      f10f12
      0
   35 2 17 20
+     line
+     0
      f11x1
      0
   36 2 21 24
+     line
+     0
      f12x0
      0
   *face

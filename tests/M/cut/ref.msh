@@ -2,7 +2,7 @@ $MeshFormat
 2.2 0 8
 $EndMeshFormat
 $MeshVersion
-2.2.3
+2.3
 $EndMeshVersion
 $Domain
 cut
@@ -17051,7 +17051,7 @@ $ElsetCrySym
 triclinic
 $EndElsetCrySym
 $ElsetOrientations
-54 rodrigues:active
+54 rodrigues:passive
 1    0.919953402851    1.412193625247   -0.358468593221
 2   -1.381019825878    0.030115972514   -3.318384436434
 3    0.540501980937   -0.787561454202   -0.735523888182

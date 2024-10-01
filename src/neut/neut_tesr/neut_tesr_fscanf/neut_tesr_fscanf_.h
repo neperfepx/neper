@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -21,7 +21,7 @@ extern void neut_tesr_fscanf_head (struct TESR *pTesr, double *bounds,
                                    char **pdataformat, char **poridataformat,
                                    FILE * file);
 
-extern void neut_tesr_fscanf_cell (struct TESR *pTesr, FILE * file);
+extern void neut_tesr_fscanf_cell (struct TESR *pTesr, char *version, FILE * file);
 extern void neut_tesr_fscanf_data (struct TESR *pTesr, char *path, int *bounds,
 				   double *scale, char *version, char **dataformat, FILE * file);
 extern void neut_tesr_fscanf_oridata (struct TESR *pTesr, char *path, int *bounds,

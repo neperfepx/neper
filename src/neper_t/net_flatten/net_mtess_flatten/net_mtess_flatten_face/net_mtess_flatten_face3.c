@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_mtess_flatten_face_.h"
@@ -154,7 +154,7 @@ net_mtess_flatten_face_domface_body (struct MTESS MTess, struct TESS *Tess,
 
     // setting face normal so that the edges / vers are listed in
     // trigonometric order
-    neut_tess_face_fixorifromedges (pFTess, (*pFTess).FaceQty);
+    neut_tess_face_fixorifromedges (*pFTess, (*pFTess).FaceQty, (*pFTess).FaceEq[(*pFTess).FaceQty]);
 
     for (j = 0; j < 2; j++)
     {

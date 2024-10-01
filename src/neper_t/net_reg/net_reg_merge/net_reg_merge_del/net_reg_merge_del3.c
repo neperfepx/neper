@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_reg_merge_del_.h"
@@ -301,15 +301,17 @@ UpdateVerCooBary (struct TESS *pTess, int delver, int newver, int verbosity)
   eqqty = 1;
   ut_array_1d_memcpy ((*pTess).FaceEq[1], 4, eqs[0]);
 
-  if (domedgeqty > 0)
-    for (i = 0; i < domedgeqty; i++)
+  for (i = 0; i < domedgeqty; i++)
+  {
+    domedge = domedges[i];
+
+    if (!strcmp ((*pTess).DomEdgeType[domedge], "line"))
     {
-      domedge = domedges[i];
       domver1 = (*pTess).DomEdgeVerNb[domedge][0];
       domver2 = (*pTess).DomEdgeVerNb[domedge][1];
       if (verbosity)
         printf ("domedge = %d domver1 = %d domver2 = %d\n", domedge, domver1, domver2);
-      if (domver1 > 0 && domver2 > 0)
+      if (domver1 > 0 && domver2 > 0 && !strstr ((*pTess).DomEdgeLabel[domedge], "cut"))
       {
         eqqty++;
         ut_space_points_uvect ((*pTess).DomVerCoo[domver1],
@@ -319,6 +321,13 @@ UpdateVerCooBary (struct TESS *pTess, int delver, int newver, int verbosity)
                                      eqs[i + 1]);
       }
     }
+
+    else
+      neut_primparms_point_tangentplane ((*pTess).DomEdgeType[domedge],
+                                         (*pTess).DomEdgeParms[domedge],
+                                         (*pTess).VerCoo[newver],
+                                         eqs[i + 1]);
+  }
 
   if (verbosity)
   {

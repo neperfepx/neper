@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_compress_.h"
@@ -379,6 +379,14 @@ neut_tess_compress_movedomedge (struct TESS *pTess, int old, int new)
 
   ut_array_1d_int_memcpy ((*pTess).DomEdgeFaceNb[old], 2,
                           (*pTess).DomEdgeFaceNb[new]);
+
+  ut_string_string ((*pTess).DomEdgeType[old], &(*pTess).DomEdgeType[new]);
+
+  (*pTess).DomEdgeParmQty[new] = (*pTess).DomEdgeParmQty[old];
+
+  (*pTess).DomEdgeParms[new] =
+    ut_realloc_1d ((*pTess).DomEdgeParms[new], (*pTess).DomEdgeParmQty[new]);
+
 
   (*pTess).DomTessEdgeQty[new] = (*pTess).DomTessEdgeQty[old];
 

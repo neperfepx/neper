@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_1d_.h"
@@ -178,16 +178,34 @@ void
 nem_meshing_1d_edge_projontodomain (struct TESS Tess, int edge,
                                     struct NODES *pN, struct MESH M)
 {
-  int i;
+  int i, domedge;
   int *domfaces = NULL, domfaceqty;
 
-  neut_tess_edge_domfaces (Tess, edge, &domfaces, &domfaceqty);
+  // 2D
+  if (Tess.Dim == 2)
+  {
+    domedge = Tess.EdgeDom[edge][0] != -1 ? Tess.EdgeDom[edge][1] : -1;
 
-  for (i = 2; i < (*pN).NodeQty; i++)
-    neut_tess_domfaces_point_proj (Tess, domfaces, domfaceqty,
-                                   (*pN).NodeCoo[i], (*pN).NodeCoo[i]);
+    if (domedge == -1)
+      abort ();
 
-  ut_free_1d_int (&domfaces);
+    for (i = 2; i < (*pN).NodeQty; i++)
+      neut_primparms_point_proj (Tess.DomEdgeType[domedge], Tess.DomEdgeParms[domedge],
+                                 (*pN).NodeCoo[i], (*pN).NodeCoo[i]);
+
+  }
+
+  // 3D
+  else
+  {
+    neut_tess_edge_domfaces (Tess, edge, &domfaces, &domfaceqty);
+
+    for (i = 2; i < (*pN).NodeQty; i++)
+      neut_tess_domfaces_point_proj (Tess, domfaces, domfaceqty,
+                                     (*pN).NodeCoo[i], (*pN).NodeCoo[i]);
+
+    ut_free_1d_int (&domfaces);
+  }
 
   nem_meshing_1d_edge_proj_fixcl (M, pN);
 

@@ -46,7 +46,7 @@ Here is what a typical run of module -M looks like:
   Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
   Info   : Running on 8 threads.
   Info   : <https://neper.info>
-  Info   : Copyright (C) 2003-2021, and GNU GPL'd, by Romain Quey.
+  Info   : Copyright (C) 2003-2024, and GNU GPL'd, by Romain Quey.
   Info   : No initialization file found (`/home/rquey/.neperrc').
   Info   : ---------------------------------------------------------------
   Info   : MODULE  -M loaded with arguments:

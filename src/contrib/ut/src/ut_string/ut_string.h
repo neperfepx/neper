@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2022, Romain Quey */
+/* Copyright (C) 2003-2024, Romain Quey.*/
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -154,6 +154,13 @@ extern "C"
 /// \note A typical example is \c "myfct(foo=10,bar=2)".  A variable may not be provided (in which case it is \c NULL).
   extern void ut_string_function (char *string, char **pfct,
                                   char ***vars, char ***vals, int *psize);
+
+/// \brief Convert a string into version numbers
+/// \param string: string
+/// \param *major: major version number
+/// \param *minor: minor version number
+/// \param *patch: patch version number
+  extern void ut_string_version (char *string, int *pmajor, int *pminor, int *ppatch);
 
 /// \brief Extract from a function string its only argument
 /// \param string: string

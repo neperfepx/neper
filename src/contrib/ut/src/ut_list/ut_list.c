@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2022, Romain Quey */
+/* Copyright (C) 2003-2024, Romain Quey.*/
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -32,15 +32,27 @@ ut_list_break_2 (const char *string, const char *sep, char **ppart1, char **ppar
 }
 
 void
-ut_list_break (const char *string, const char *sep, char ***pparts, int *pqty)
+ut_list_break (const char *string0, const char *sep, char ***pparts, int *pqty)
 {
-  int i, pos, bracket;
+  int i, pos, bracket, len;
   char **tmp = NULL, *val = NULL;
+  char *string = NULL;
+
+  ut_string_string (string0, &string);
 
   if (!string)
   {
     (*pqty) = 0;
     return;
+  }
+
+  len = strlen (string);
+  for (i = len; i >= 0; i--)
+  {
+    if (!isgraph (string[i]))
+      string[i] = '\0';
+    else
+      break;
   }
 
   tmp = ut_alloc_2d_char (strlen (string) + 1, strlen (string) + 1);
@@ -78,6 +90,7 @@ ut_list_break (const char *string, const char *sep, char ***pparts, int *pqty)
 
   ut_free_2d_char (&tmp, strlen (string) + 1);
   ut_free_1d_char (&val);
+  ut_free_1d_char (&string);
 
   return;
 }

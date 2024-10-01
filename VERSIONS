@@ -1,8 +1,25 @@
-New in 4.9.1-6 (16 Sep 2024):
-- module -T: added -n ... -morpho lamellae and (the equivalent)
-  -morpho lamellar(n=...)", made minor fix to regularization of
-  2D cut domain, added tessellation key length(d_x,dd_y,d_z).
-- made minor fixes and improvements.
+New in 4.10.0 (01 Oct 2024):
+- general: switched "active" and "passive" for orientation convention (see
+  incompatibility note below), changed convention for HCP directions.
+- module -T: added -format svg, added -n ... -morpho lamellae and (the
+  equivalent) -morpho lamellar(n=...)", fixed regularization in the case of
+  curved domain edges, improved -domain and -loadtess to load CAD files (tess,
+  obj, ovm), added tessellation key length(d_x,d_y,d_z).
+- module -M: improved meshing of 2D tessellations with curved domain edges,
+  made minor bug fixes and improvements.
+- module -S: made minor bug fixes.
+
+* Incompatible changes in -T:
+  - switched "active" and "passive" for orientation convention.  The default
+    convention is now "passive".  The orientation data themselves remain the
+    same.  Bumped version numbers to 3.5 for tess, 2.2 for tesr, 2.3 for msh
+    and 1.1 for sim.  When an older tess, tesr, msh or sim is parsed, the
+    defined convention is changed from active to passive and vice versa.  This
+    ensures no change in Neper's own behavior.  Postprocessors that are
+    sensitive to the change of convention should be updated accordingly.
+  - changed convention for HCP directions (see the documentation).
+  - changed -domain "cell(<tess_file>,<cell_id>)" into -domain
+    "file(<tess_file_>),cell(<cell_id>)".
 
 New in 4.9.0 (15 May 2024):
 - module -T: added -per 1 for -morpho cube, added -ori ks (Kurdjumov-Sachs)

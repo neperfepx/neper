@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesr_fscanf_.h"
@@ -111,13 +111,13 @@ neut_tesr_fscanf_oridata_default (struct TESR *pTesr, char *desconv, char *orida
 
   id = 0;
 
-  if (!strcmp (conv, "active"))
+  if (!strcmp (conv, "passive"))
     for (k = 1; k <= (*pTesr).size[2]; k++)
       for (j = 1; j <= (*pTesr).size[1]; j++)
         for (i = 1; i <= (*pTesr).size[0]; i++)
           ut_array_1d_memcpy (q[id++], 4, (*pTesr).VoxOri[i][j][k]);
 
-  if (!strcmp (conv, "passive"))
+  if (!strcmp (conv, "active"))
     for (k = 1; k <= (*pTesr).size[2]; k++)
       for (j = 1; j <= (*pTesr).size[1]; j++)
         for (i = 1; i <= (*pTesr).size[0]; i++)

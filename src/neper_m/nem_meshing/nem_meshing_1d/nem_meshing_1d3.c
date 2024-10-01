@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_1d_.h"
@@ -37,8 +37,9 @@ nem_meshing_1d_edge_algo (struct TESS Tess, struct NODES RNodes,
   }
 
   // case of curved edge
-  // Since we do not know the geometry of the edge, we proceed by iterations,
-  // by successive remeshing.
+  // Since, in general, we do not know the geometry of the edge, we proceed by
+  // iterations, by successive remeshing.
+  // true also in the case of a domain edge, even if we know its equation.
   else if (neut_tess_edge_iscurved (Tess, edge))
   {
     nem_meshing_1d_edge_algo_mesh (Tess.EdgeVerNb[edge][0],

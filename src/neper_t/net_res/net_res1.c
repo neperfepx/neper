@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_res_.h"
@@ -47,6 +47,19 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
     else
       ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n",
                         In.obj);
+  }
+
+  if (strstr (In.format, "svg"))       // svg file
+  {
+    if (!neut_tess_isvoid (FTess))
+    {
+      file = ut_file_open (In.svg, "w");
+      neut_tess_fprintf_svg (file, In.format, FTess);
+      ut_file_close (file, In.svg, "w");
+    }
+    else
+      ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n",
+                        In.svg);
   }
 
   if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "3dec"))      // Itasca 3DEC file

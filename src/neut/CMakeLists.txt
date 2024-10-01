@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright(C) 2003-2022, Romain Quey.
+# Copyright (C) 2003-2024, Romain Quey.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 3.0)
@@ -126,6 +126,10 @@ add_library(neut
 ./neut_tess/neut_tess_fscanf/neut_tess_fscanf3.c
 ./neut_tess/neut_tess_fscanf/neut_tess_fscanf2.c
 ./neut_tess/neut_tess_fscanf/neut_tess_fscanf1.c
+./neut_tess/neut_tess_fscanf/neut_tess_fscanf_obj/neut_tess_fscanf_obj1.c
+./neut_tess/neut_tess_fscanf/neut_tess_fscanf_obj/neut_tess_fscanf_obj2.c
+./neut_tess/neut_tess_fscanf/neut_tess_fscanf_ovm/neut_tess_fscanf_ovm1.c
+./neut_tess/neut_tess_fscanf/neut_tess_fscanf_ovm/neut_tess_fscanf_ovm2.c
 ./neut_tess/neut_tess_op/neut_tess_op1.c
 ./neut_tess/neut_tess_op/neut_tess_op2.c
 ./neut_tess/neut_tess_op/neut_tess_op3.c

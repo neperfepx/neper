@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_.h"
@@ -13,7 +13,7 @@ net_tess_opt_init (struct IN_T In, int level, char *optitype, char *optistring,
   net_tess_opt_init_general (In, level, optitype, MTess, Tess, dtess, dcell, pTOpt);
 
   // target properties
-  net_tess_opt_init_target (In, level, optistring, MTess, Tess, dtess, dcell, pTOpt);
+  net_tess_opt_init_target (In, level, optistring, MTess, Tess, dtess, dcell, TessId, SSet, pTOpt);
 
   // sset (must come after target)
   if (!strcmp ((*pTOpt).optitype, "morpho") ||!strcmp ((*pTOpt).optitype, "ori"))

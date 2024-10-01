@@ -1,4 +1,6 @@
-# Copyright (c) 2012 Romain Quey
+# This file is part of the Neper software package.
+# Copyright (C) 2003-2024, Romain Quey.
+# See the COPYING file in the top-level directory.
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the

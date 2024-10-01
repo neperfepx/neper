@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fscanf_msh_.h"
@@ -12,7 +12,7 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
 {
   int status;
   int *node_nbs = NULL;
-  char *mode = NULL, *domain = NULL;
+  char *mode = NULL, *domain = NULL, *version = NULL;
   struct MESH *pMesh = NULL;
 
   neut_nodes_reset (pNodes);
@@ -25,10 +25,7 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
   while (ut_file_nextstring (file, NULL) == 1)
   {
     if (ut_file_nextstring_test (file, "$MeshFormat"))
-      neut_mesh_fscanf_msh_head (file, &mode, &domain, ptopology);
-
-    else if (ut_file_nextstring_test (file, "$MeshVersion"))
-      neut_mesh_fscanf_msh_version (file);
+      neut_mesh_fscanf_msh_head (file, &mode, &domain, ptopology, &version);
 
     else if (ut_file_nextstring_test (file, "$Nodes"))
       neut_mesh_fscanf_msh_nodes (file, mode, pNodes, &node_nbs);
@@ -51,10 +48,10 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
       neut_mesh_fscanf_msh_crysym (file, pNodes, pMesh0D, pMesh1D, pMesh2D, pMesh3D, pMeshCo);
 
     else if (ut_file_nextstring_test (file, "$ElsetOrientations"))
-      neut_mesh_fscanf_msh_orientations (file, "elset", pMesh);
+      neut_mesh_fscanf_msh_orientations (file, "elset", version, pMesh);
 
     else if (ut_file_nextstring_test (file, "$ElementOrientations"))
-      neut_mesh_fscanf_msh_orientations (file, "elt", pMesh);
+      neut_mesh_fscanf_msh_orientations (file, "elt", version, pMesh);
 
     else if (ut_file_nextstring_test (file, "$Groups"))
       neut_mesh_fscanf_msh_groups (file, pMesh);
@@ -73,6 +70,7 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
   }
 
   ut_free_1d_char (&mode);
+  ut_free_1d_char (&version);
 
   return 0;
 }

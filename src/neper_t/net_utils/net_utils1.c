@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_utils_.h"
@@ -112,6 +112,7 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).sts = NULL;
   (*pIn).dec = NULL;
   (*pIn).obj = NULL;
+  (*pIn).svg = NULL;
   (*pIn).orif = NULL;
   (*pIn).sim = NULL;
   (*pIn).debug = NULL;

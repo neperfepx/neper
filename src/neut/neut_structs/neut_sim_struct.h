@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifndef STRUCTSIM_H
@@ -15,6 +15,7 @@ struct SIM
   char *msh;            // mesh
   char *bcs;            // bcs
   char *ori;            // ori
+  char *opt;            // opt
   char *phase;          // phase
   char *cfg;            // config
 

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_fprintf_.h"
@@ -152,7 +152,7 @@ neut_tess_fprintf_ply (FILE * file, struct TESS Tess)
 void
 neut_tess_fprintf_obj (FILE * file, struct TESS Tess)
 {
-  int i, j, edge, face;
+  int i, j, face;
 
   for (i = 1; i <= Tess.VerQty; i++)
   {
@@ -164,13 +164,10 @@ neut_tess_fprintf_obj (FILE * file, struct TESS Tess)
     for (i = 1; i <= Tess.FaceQty; i++)
     {
       fprintf (file, "g cell%d\n", i);
+      fprintf (file, "f");
       for (j = 1; j <= Tess.FaceVerQty[i]; j++)
-      {
-        edge = Tess.FaceEdgeNb[i][j];
-        fprintf (file, "f %d %d %d %d\n", Tess.EdgeVerNb[edge][0],
-                 Tess.EdgeVerNb[edge][1], Tess.EdgeVerNb[edge][1],
-                 Tess.EdgeVerNb[edge][0]);
-      }
+        fprintf (file, " %d", Tess.FaceVerNb[i][j]);
+      fprintf (file, "\n");
     }
 
   else if (Tess.Dim == 3)
@@ -420,6 +417,56 @@ neut_tess_cell_fprintf_stl (FILE * file, struct TESS Tess, int cell)
 
   ut_free_1d (&n);
   ut_free_1d_int (&faces);
+
+  return;
+}
+
+void
+neut_tess_fprintf_svg (FILE * file, char *format, struct TESS Tess)
+{
+  int i, j;
+  double *bboxsize = ut_alloc_1d (3);
+  char *unit = NULL;
+  double **bbox = ut_alloc_2d (3, 2);
+  char **vars = NULL, **vals = NULL;
+  int varqty;
+
+  ut_string_function (format, NULL, &vars, &vals, &varqty);
+  ut_string_string ("", &unit);
+  for (i = 0; i < varqty; i++)
+    if (!strcmp (vars[i], "unit"))
+      ut_string_string (vals[i], &unit);
+    else
+      ut_print_exprbug (vars[i]);
+
+
+  neut_tess_bbox (Tess, bbox);
+
+  neut_tess_bboxsize (Tess, bboxsize);
+
+  fprintf (file, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
+  fprintf (file, "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n");
+  fprintf (file, "<!-- Generator: Neper (https://neper.info) -->\n");
+  fprintf (file, "<svg width=\"%f%s\" height=\"%f%s\" viewBox=\"%f %f %f %f\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\">\n",
+                 bboxsize[0], unit, bboxsize[1], unit, bbox[0][0], bbox[1][0], bbox[0][1], bbox[1][1]);
+
+  for (i = 1; i <= Tess.FaceQty; i++)
+  {
+    fprintf (file,"  <path stroke=\"none\" fill=\"#FFFFFF\" d=\"M ");
+
+    for (j = 1; j <= Tess.FaceVerQty[i]; j++)
+      fprintf (file, " %f,%f %s", Tess.VerCoo[Tess.FaceVerNb[i][j]][0], Tess.VerCoo[Tess.FaceVerNb[i][j]][1],
+          j < Tess.FaceVerQty[i] ? "L" : "Z");
+
+    fprintf (file, "\"/>\n");
+  }
+  fprintf (file, "</svg>\n");
+
+  ut_free_1d (&bboxsize);
+  ut_free_1d_char (&unit);
+  ut_free_2d (&bbox, 3);
+  ut_free_2d_char (&vars, varqty);
+  ut_free_2d_char (&vals, varqty);
 
   return;
 }

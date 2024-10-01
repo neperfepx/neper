@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_tess_.h"
@@ -510,6 +510,23 @@ neut_tess_tess_domaindata (struct TESS TessA, struct TESS *pTessB)
                               (*pTessB).DomTessEdgeQty[i],
                               (*pTessB).DomTessEdgeNb[i] + 1);
     }
+
+  (*pTessB).DomEdgeType = ut_alloc_1d_pchar ((*pTessB).DomEdgeQty + 1);
+  for (i = 1; i <= (*pTessB).DomEdgeQty; i++)
+    ut_string_string (TessA.DomEdgeType[i], (*pTessB).DomEdgeType + i);
+
+  (*pTessB).DomEdgeParmQty = ut_alloc_1d_int ((*pTessB).DomEdgeQty + 1);
+  (*pTessB).DomEdgeParms = ut_alloc_1d_pdouble ((*pTessB).DomEdgeQty + 1);
+  for (i = 1; i <= (*pTessB).DomEdgeQty; i++)
+  {
+    (*pTessB).DomEdgeParmQty[i] = TessA.DomEdgeParmQty[i];
+    if ((*pTessB).DomEdgeParmQty[i] > 0)
+    {
+      (*pTessB).DomEdgeParms[i] = ut_alloc_1d ((*pTessB).DomEdgeParmQty[i]);
+      ut_array_1d_memcpy (TessA.DomEdgeParms[i], (*pTessB).DomEdgeParmQty[i],
+                          (*pTessB).DomEdgeParms[i]);
+    }
+  }
 
   // face
 

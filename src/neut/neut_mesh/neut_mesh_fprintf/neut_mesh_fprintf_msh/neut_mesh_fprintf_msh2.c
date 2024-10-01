@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fprintf_msh_.h"
@@ -89,7 +89,7 @@ neut_mesh_fprintf_msh_header (FILE * file, char *mode, char *version)
   fprintf (file, "$EndMeshFormat\n");
 
   fprintf (file, "$MeshVersion\n");
-  fprintf (file, "2.2.3\n");
+  fprintf (file, "2.3\n");
   fprintf (file, "$EndMeshVersion\n");
 
   return;

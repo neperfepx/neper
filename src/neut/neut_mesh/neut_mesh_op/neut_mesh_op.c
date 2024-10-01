@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_op_.h"
@@ -353,7 +353,7 @@ neut_mesh_scotchmesh (struct MESH Mesh, int vnodnbr, SCOTCH_Mesh * pSCMesh)
 void
 neut_mesh_init_nodeelts (struct MESH *pMesh, int NodeQty)
 {
-  int i, j, eltnodeqty, node;
+  int i, j, eltnodeqty, node, nodemax;
 
   if ((*pMesh).NodeElts)
     ut_free_2d_int (&(*pMesh).NodeElts, (*pMesh).NodeQty + 1);
@@ -378,12 +378,20 @@ neut_mesh_init_nodeelts (struct MESH *pMesh, int NodeQty)
     for (j = 0; j < eltnodeqty; j++)
       (*pMesh).NodeElts[(*pMesh).EltNodes[i][j]][0]++;
 
+  nodemax = 0;
+  for (i = 1; i <= (*pMesh).NodeQty; i++)
+    if ((*pMesh).NodeElts[i][0] > 0)
+      nodemax = i;
+
+  (*pMesh).NodeQty = nodemax;
+  (*pMesh).NodeElts = ut_realloc_1d_pint ((*pMesh).NodeElts, (*pMesh).NodeQty + 1);
+
   /* allocation */
-  for (i = 1; i <= NodeQty; i++)
+  for (i = 1; i <= (*pMesh).NodeQty; i++)
     (*pMesh).NodeElts[i] =
       ut_realloc_1d_int ((*pMesh).NodeElts[i], (*pMesh).NodeElts[i][0] + 1);
 
-  ut_array_2d_int_zero ((*pMesh).NodeElts + 1, NodeQty, 1);
+  ut_array_2d_int_zero ((*pMesh).NodeElts + 1, (*pMesh).NodeQty, 1);
 
   /* recording node elements */
   for (i = 1; i <= (*pMesh).EltQty; i++)

@@ -1,6 +1,6 @@
 
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_transform_tess_cut_.h"
@@ -179,7 +179,7 @@ net_transform_tess_cut_clean_faceequpdate (int *newdomfaces,
     if (domface > 0)
       neut_tess_faceinter_fromdomface (pTess, face);
 
-    neut_tess_face_fixorifromedges (pTess, face);
+    neut_tess_face_fixorifromedges (*pTess, face, (*pTess).FaceEq[face]);
   }
 
   ut_free_1d_int (&vers);

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_debug_.h"
@@ -391,8 +391,11 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       for (i = 1; i <= Tess.FaceQty; i++)
       {
         fprintf (file, "%d %d ", i, Tess.FaceVerQty[i]);
-        ut_array_1d_int_fprintf (file, Tess.FaceEdgeNb[i] + 1,
-                                 Tess.FaceVerQty[i], "%d");
+        if (!Tess.FaceEdgeNb[i])
+          fprintf (file, "NULL\n");
+        else
+          ut_array_1d_int_fprintf (file, Tess.FaceEdgeNb[i] + 1,
+                                   Tess.FaceVerQty[i], "%d");
       }
 
     fprintf (file, "[id] FaceEdgeQty then Ori =\n");
@@ -402,8 +405,11 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       for (i = 1; i <= Tess.FaceQty; i++)
       {
         fprintf (file, "%d %d ", i, Tess.FaceVerQty[i]);
-        ut_array_1d_int_fprintf (file, Tess.FaceEdgeOri[i] + 1,
-                                 Tess.FaceVerQty[i], "%d");
+        if (!Tess.FaceEdgeOri[i])
+          fprintf (file, "NULL\n");
+        else
+          ut_array_1d_int_fprintf (file, Tess.FaceEdgeOri[i] + 1,
+                                   Tess.FaceVerQty[i], "%d");
       }
 
     fprintf (file, "[id] FaceEq =\n");
@@ -577,6 +583,14 @@ neut_debug_tess (FILE * file, struct TESS Tess)
       ut_array_1d_int_fprintf (file, Tess.DomTessEdgeNb[i] + 1,
                                Tess.DomTessEdgeQty[i], "%d");
     }
+
+  fprintf (file, "DomEdgeType =\n");
+  if (Tess.DomEdgeType != NULL)
+    for (i = 1; i <= Tess.DomEdgeQty; i++)
+      fprintf (file, "%s\n", Tess.DomEdgeType[i]);
+  else
+    fprintf (file, "is NULL\n");
+  fflush (file);
 
   // Domain face
   fprintf (file, "DomFaceQty = %d\n", Tess.DomFaceQty);

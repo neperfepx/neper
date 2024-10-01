@@ -1,8 +1,30 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_domain_.h"
+
+void
+net_domain_fromfile (char *filename, struct TESS *pDomain)
+{
+  if (ut_file_testformat (filename, "tess"))
+  {
+    neut_tess_fnscanf (filename, pDomain);
+    (*pDomain).Level = 0;
+    (*pDomain).TessId = 0;
+  }
+
+  else if (ut_file_testformat (filename, "obj"))
+    neut_tess_fnscanf_obj (filename, pDomain);
+
+  else if (ut_file_testformat (filename, "ovm"))
+    neut_tess_fnscanf_ovm (filename, pDomain);
+
+  else
+    ut_print_message (2, 0, "Unknown file type (%s)\n", filename);
+
+  return;
+}
 
 void
 net_domain_cylinder_string (char *domain, char *nstring, struct POLY *pPoly)
@@ -343,55 +365,6 @@ net_domain_planes (double **eqs, int eqqty, struct POLY *pPoly)
 }
 
 void
-net_domain_cell_string (char *domain, struct POLY *pPoly)
-{
-  int cell;
-  char *filename = NULL;
-
-  net_domain_cellparms (domain, &filename, &cell);
-  net_domain_cell (filename, cell, pPoly);
-
-  ut_free_1d_char (&filename);
-
-  return;
-}
-
-void
-net_domain_cellparms (char *domain, char **pfilename, int *pcell)
-{
-  int varqty;
-  char **vars = NULL, *filename = NULL;
-
-  ut_string_function (domain, NULL, NULL, &vars, &varqty);
-
-  if (varqty != 2)
-    ut_print_message (2, 0, "Unknown expression `%s'.\n", domain);
-
-  ut_string_string (vars[0], pfilename);
-  ut_string_int (vars[1], pcell);
-
-  ut_free_2d_char (&vars, varqty);
-  ut_free_1d_char (&filename);
-
-  return;
-}
-
-void
-net_domain_cell (char *filename, int cell, struct POLY *pPoly)
-{
-  struct TESS Tessb;
-
-  neut_tess_set_zero (&Tessb);
-
-  neut_tess_fnscanf (filename, &Tessb);
-  net_tess_poly (Tessb, cell, pPoly);
-
-  neut_tess_free (&Tessb);
-
-  return;
-}
-
-void
 net_domain_transform (struct TESS *pPoly, int dim, char *string)
 {
   int i, dir;
@@ -467,6 +440,14 @@ net_domain_transform (struct TESS *pPoly, int dim, char *string)
     if (!strcmp (domtype, "cube"))
       ut_string_string (domtype, &(*pPoly).DomType);
     ut_free_1d_char (&domtype);
+  }
+
+  else if (!strcmp (fct, "cell"))
+  {
+    if (varqty != 1)
+      ut_print_message (2, 3, "Failed to parse expression `%s'.\n", string);
+
+    neut_tess_poly_tess (*pPoly, atoi (vars[0]), pPoly);
   }
 
   else

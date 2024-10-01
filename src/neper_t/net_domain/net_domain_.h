@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -18,6 +18,8 @@
 #include"net_domain_cube/net_domain_cube.h"
 #include"net_domain_stdtriangle/net_domain_stdtriangle.h"
 #include "../net_tess/net_tess3d/net_polycomp/net_polycomp_poly/net_polycomp_poly.h"
+
+extern void net_domain_fromfile (char *filename, struct TESS *pDomain);
 
 extern void net_domain_cubeparms (char *domain, double **size);
 extern void net_domain_cylinder_planes (double, double, int, double **);

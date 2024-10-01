@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_sim_fscanf_.h"
@@ -52,7 +52,7 @@ neut_sim_fscanf (char *dir, struct SIM *pSim, char *mode)
         neut_sim_fscanf_input (pSim, file);
 
       else if (!strcmp (string, "**general"))
-        neut_sim_fscanf_general (pSim, file);
+        neut_sim_fscanf_general (pSim, version, file);
 
       else if (!strcmp (string, "**entity"))
         neut_sim_fscanf_entity (pSim, file);

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_fprintf_.h"
@@ -9,7 +9,7 @@ neut_tess_fprintf_head (struct TESS Tess, FILE * file)
 {
   fprintf (file, "***tess\n");
   fprintf (file, " **format\n");
-  fprintf (file, "   3.4\n");
+  fprintf (file, "   3.5\n");
   fprintf (file, " **general\n");
   fprintf (file, "   %d %s\n", Tess.Dim, Tess.Type);
 
@@ -239,6 +239,14 @@ neut_tess_fprintf_dom (struct TESS Tess, FILE * file)
                Tess.DomEdgeVerQty[i] ? " " : "");
       ut_array_1d_int_fprintf (file, Tess.DomEdgeVerNb[i],
                                Tess.DomEdgeVerQty[i], "%d");
+
+      fprintf (file, "     %s\n", Tess.DomEdgeType[i]);
+
+      fprintf (file, "     %d%s", Tess.DomEdgeParmQty[i], Tess.DomEdgeParmQty[i] > 0 ? " " : "");
+
+      ut_array_1d_fprintf (file, Tess.DomEdgeParms[i],
+                           Tess.DomEdgeParmQty[i], REAL_PRINT_FORMAT);
+
       fprintf (file, "     %s\n", Tess.DomEdgeLabel[i]);
       fprintf (file, "     %d%s", Tess.DomTessEdgeQty[i],
                Tess.DomTessEdgeQty[i] ? " " : "");

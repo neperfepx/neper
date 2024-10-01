@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -41,7 +41,7 @@ extern void net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTe
 
 extern void net_tess_opt_init_target (struct IN_T In, int level, char *optistring,
                                       struct MTESS MTess, struct TESS *Tess, int domtess,
-				      int dompoly, struct TOPT *pTOpt);
+				      int dompoly, int TessId, struct SEEDSET *SSet, struct TOPT *pTOpt);
 
 extern void net_tess_opt_init_crystal (struct IN_T In, int level, struct TOPT *pTOpt);
 

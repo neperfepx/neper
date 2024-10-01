@@ -34,7 +34,7 @@ if ("${test_mode}" MATCHES "Normal" AND NOT "${test_mode_force_minimal}" EQUAL 1
   foreach(ref_file ${ref_files})
     string(REPLACE "ref" "test" test_file ${ref_file})
     if (NOT "${test_file}" MATCHES ".png")
-      if ("${test_mode_diff}" MATCHES "cmake")
+      if ("${test_mode_diff}" MATCHES "hard")
         execute_process(COMMAND ${CMAKE_COMMAND} -E compare_files
                         ${test_file} ${ref_file}
                         RESULT_VARIABLE RESVAR)

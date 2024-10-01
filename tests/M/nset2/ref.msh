@@ -2,7 +2,7 @@ $MeshFormat
 2.2 0 8
 $EndMeshFormat
 $MeshVersion
-2.2.3
+2.3
 $EndMeshVersion
 $Domain
 cube
@@ -654,64 +654,7 @@ $Elements
 542 4 3 2 2 0 75 97 45 98
 $EndElements
 $NSets
-10
-x0
-24
-3
-4
-5
-9
-10
-11
-14
-15
-16
-17
-18
-19
-20
-38
-39
-40
-41
-42
-43
-53
-80
-81
-82
-83
-y1z1
-5
-11
-12
-50
-51
-52
-x0y0z0
-1
-9
-x1y0z0
-1
-1
-x1y1z0
-1
-2
-x0y1z0
-1
-3
-x0y0z1
-1
-10
-x0y1z1
-1
-11
-x1y1z1
-1
-12
-x1y0z1
-1
-13
+0
 $EndNSets
 $Fasets
 6
@@ -962,7 +905,7 @@ $ElsetCrySym
 triclinic
 $EndElsetCrySym
 $ElsetOrientations
-2 rodrigues:active
+2 rodrigues:passive
 1   -2.444015198417    0.618305125773    2.829029762200
 2    0.441042954395    0.731096527047   -0.307369633254
 $EndElsetOrientations

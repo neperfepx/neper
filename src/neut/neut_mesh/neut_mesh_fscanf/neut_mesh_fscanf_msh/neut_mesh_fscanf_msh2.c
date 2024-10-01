@@ -1,11 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fscanf_msh_.h"
 
 void
-neut_mesh_fscanf_msh_head (FILE * file, char **pmode, char **pdomain, int *ptopology)
+neut_mesh_fscanf_msh_head (FILE * file, char **pmode, char **pdomain, int *ptopology,
+                           char **pversion)
 {
   int status, type;
   char string[1000];
@@ -74,7 +75,7 @@ neut_mesh_fscanf_msh_head (FILE * file, char **pmode, char **pdomain, int *ptopo
     abort ();
 
   if (ut_file_nextstring_test (file, "$MeshVersion"))
-    ut_file_skip (file, 3);
+    neut_mesh_fscanf_msh_version (file, pversion);
 
   if (ut_file_nextstring_test (file, "$Domain"))
   {
@@ -340,11 +341,13 @@ neut_mesh_fscanf_msh_crysym (FILE *file, struct NODES *pNodes, struct MESH *pMes
 }
 
 void
-neut_mesh_fscanf_msh_orientations (FILE *file, char *entity, struct MESH *pMesh)
+neut_mesh_fscanf_msh_orientations (FILE *file, char *entity, char *version, struct MESH *pMesh)
 {
-  int qty;
+  int qty, major, minor;
   char *des = ut_alloc_1d_char (100), *end = NULL;
   char *tmp = ut_alloc_1d_char (100);
+
+  ut_string_version (version, &major, &minor, NULL);
 
   if (!strcmp (entity, "elt"))
     ut_string_string ("$EndElementOrientations", &end);
@@ -366,6 +369,12 @@ neut_mesh_fscanf_msh_orientations (FILE *file, char *entity, struct MESH *pMesh)
     {
       ut_string_string (des, &(*pMesh).ElsetOriDes);
       neut_ori_des_expand ((*pMesh).ElsetOriDes, &(*pMesh).ElsetOriDes);
+
+      if (major <= 2 && minor <= 2)
+      {
+        ut_print_message (1, 3, "File version <= 2.2.  Fixing orientation convention...\n");
+        neut_ori_des_fixconvention (&(*pMesh).ElsetOriDes);
+      }
 
       (*pMesh).ElsetOri = ut_alloc_2d ((*pMesh).ElsetQty + 1, 4);
 
@@ -520,20 +529,17 @@ neut_mesh_fscanf_msh_nodeparts (FILE *file, struct NODES *pNodes)
 }
 
 void
-neut_mesh_fscanf_msh_version (FILE *file)
+neut_mesh_fscanf_msh_version (FILE *file, char **pversion)
 {
-  char *tmp = ut_alloc_1d_char (1000);
-
   // header
   ut_file_skip (file, 1);
 
-  if (fscanf (file, "%s", tmp) != 1)
-    abort ();
+  (*pversion) = ut_alloc_1d_char (100);
+  if (fscanf (file, "%s", *pversion) != 1)
+    ut_print_message (2, 0, "Input file is not a valid mesh file.\n");
 
   // footer
   ut_file_skip (file, 1);
-
-  ut_free_1d_char (&tmp);
 
   return;
 }

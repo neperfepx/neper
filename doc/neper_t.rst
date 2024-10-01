@@ -41,7 +41,7 @@ Here is what a typical run of module -T looks like:
   Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
   Info   : Running on 8 threads.
   Info   : <https://neper.info>
-  Info   : Copyright (C) 2003-2020, and GNU GPL'd, by Romain Quey.
+  Info   : Copyright (C) 2003-2024, and GNU GPL'd, by Romain Quey.
   Info   : No initialization file found (`/home/rquey/.neperrc').
   Info   : ---------------------------------------------------------------
   Info   : MODULE  -T loaded with arguments:
@@ -93,43 +93,55 @@ Input Data
 
 .. option:: -domain <domain_morphology[:transformation]>
 
-  Specify the domain morphology and, optionally, a transformation.
+  Specify the domain morphology and, optionally, a transformation.  There are several options to do so:
 
-  The domain morphology can be:
+  - Simple 3D geometries:
 
-  - :data:`cube(<size_x>,<size_y>,<size_z>)`: a cuboidal shape (in 3D), or :data:`square(<size_x>,<size_y>)`: a rectangular shape (in 2D);
-  - :data:`cylinder(<height>,<diameter>[,<facet_nb>])`: a cylindrical shape;
-  - :data:`sphere(<diameter>[,<facet_nb>])`: a spherical shape (in 3D), or :data:`circle(<diameter>[,<facet_nb>])`: a circular shape (in 2D);
+    - :data:`cube(<size_x>,<size_y>,<size_z>)`: a cuboidal shape;
+    - :data:`cylinder(<height>,<diameter>[,<facet_nb>])`: a cylindrical shape;
+    - :data:`sphere(<diameter>[,<facet_nb>])`: a spherical shape;
 
-    :data:`facet_nb` is the number of facets used to described a curved surface.
+      For :data:`cylinder` and :data:`sphere`, :data:`<facet_nb>` is the number of facets used to described a curved surface.
 
-  - :data:`planes(<file_name>)`: an arbitrary (non-degenerated) convex 3D shape, where :data:`<file_name>` contains the total number of planes and then, for each plane, the 4 parameters of its equation: :data:`d`, :data:`a`, :data:`b` and :data:`c,` successively for an equation of the form :math:`a\,x+b\,y+c\,z=d`, and where the plane normal :math:`(a,\,b,\,c)` is an outgoing vector of the domain.  For the unit cube, the file can be as follows::
+  - Simple 2D geometries:
 
-      6
-      0 -1  0  0
-      0  0 -1  0
-      0  0  0 -1
-      1  1  0  0
-      1  0  1  0
-      1  0  0  1
+    - :data:`square(<size_x>,<size_y>)`: a rectangular shape;
+    - :data:`circle(<diameter>[,<segment_nb>])`: a circular shape;
 
-  - :data:`cell(<file_name>,<cell_id>)`: a tessellation cell, where :data:`<file_name>` is the tessellation file and :data:`<cell_id>` is the cell identifier;
+      For :data:`circle`, :data:`<segment_nb>` is the number of segments used to described the curved line.
 
-  - :data:`rodrigues(<crysym>)`: a Rodrigues space fundamental region, where :data:`<crysym>` is the :ref:`Crystal Symmetry <crystal_symmetries>` (to enforce periodicity relationships between opposite surfaces, use :option:`-periodicity`:data:`1` (only for :option:`-n`:data:`1`)) [#rodrigues]_;
+  - Orientation-related geometries:
 
-  - :data:`euler-bunge(<size_x>,<size_y>,<size_z>)`: the Euler space (Bunge convention), where :data:`<size_x>`, :data:`<size_y>` and :data:`<size_z>` are the space dimensions (in degrees or radians [#euler-bunge]_);
+    - :data:`rodrigues(<crysym>)`: a Rodrigues space fundamental region, where :data:`<crysym>` is the :ref:`Crystal Symmetry <crystal_symmetries>` (to enforce periodicity relationships between opposite surfaces, use :option:`-periodicity`:data:`1` (only for :option:`-n`:data:`1`)) [#rodrigues]_;
 
-  - :data:`stdtriangle(crysym=<crysym>,projection=<projection>,segmentnb=<segment_nb>)`: a standard stereographic triangle, with the optional arguments:
+    - :data:`euler-bunge(<size_x>,<size_y>,<size_z>)`: the Euler space (Bunge convention), where :data:`<size_x>`, :data:`<size_y>` and :data:`<size_z>` are the space dimensions (in degrees or radians [#euler-bunge]_);
 
-    - :data:`crysym`: the crystal symmetry (default :data:`cubic`);
-    - :data:`projection`: the projection (default :data:`stereographic`);
-    - :data:`segmentnb`: the number of segments along the curved edge (default :data:`20`);
+    - :data:`stdtriangle(crysym=<crysym>,projection=<projection>,segmentnb=<segment_nb>)`: a standard stereographic triangle, with the optional arguments:
+
+      - :data:`<crysym>`: the crystal symmetry (default :data:`cubic`);
+      - :data:`<projection>`: the projection (default :data:`stereographic`);
+      - :data:`<segment_nb>`: the number of segments along the curved edge (default :data:`20`);
+
+  - Fully custom geometries:
+
+    - :data:`file(<file_name>)`: a geometry loaded from a :ref:`tess_file`, a Wavefront OBJ file or an OpenVolumeMesh OVM file.  If the geometry contains several cells, use :data:`cell` as described below to extract a cell.
+
+    - :data:`planes(<file_name>)`: an arbitrary (non-degenerated) convex 3D shape, where :data:`<file_name>` contains the total number of planes and then, for each plane, the 4 parameters of its equation: :data:`d`, :data:`a`, :data:`b` and :data:`c,` successively for an equation of the form :math:`a\,x+b\,y+c\,z=d`, and where the plane normal :math:`(a,\,b,\,c)` is an outgoing vector of the domain.  For the unit cube, the file can be as follows::
+
+        6
+        0 -1  0  0
+        0  0 -1  0
+        0  0  0 -1
+        1  1  0  0
+        1  0  1  0
+        1  0  0  1
 
   The transformation can be:
 
   - |translate|;
   - |rotate|;
-  - :data:`split(<dir>)`: splitting the domain in half along direction :data:`<dir>` (:data:`x`, :data:`y` or :data:`z`), which can be used to apply symmetries.
+  - :data:`split(<dir>)`: split the domain in half along direction :data:`<dir>` (:data:`x`, :data:`y` or :data:`z`), which can be used to apply symmetries;
+  - :data:`cell(<cell_id>)`: extract a cell from a tessellation.
 
   For a 2D tessellation, the axis parameters can be omitted in :data:`rotate` (default :data:`z`), and the :math:`z` component can be omitted in :data:`scale` (n/a) and :data:`translate` (default :data:`0`).
 
@@ -151,7 +163,9 @@ Is it also possible to load a tessellation or a raster tessellation from a file:
 
 .. option:: -loadtess <tess_file>
 
-  Load a tessellation from a :ref:`tess_file`.
+  Load a tessellation from a :ref:`tess_file`, a Wavefront OBJ file (:file:`.obj`) or an OpenVolumeMesh OVM file (:file:`.ovm`).
+
+  .. note:: It is possible to load an OBJ or OVM file to convert it into a :ref:`tess_file`.
 
   **Default value**: -.
 
@@ -475,7 +489,7 @@ Crystal Orientation Options
 
   Specify the :ref:`Crystal Symmetry <crystal_symmetries>`.
 
-  .. note :: It is used by option :data:`-orisampling uniform`, to reduce the domain of definition of the orientation descriptors and by the :ref:`neper_v`.
+  .. note :: It is used by option :data:`-orisampling uniform`, to reduce the domain of definition of the orientation descriptors and by the :ref:`neper_v`.  See also :ref:`rotations_and_orientations` for the definition of the crystal coordinate system.
 
   **Default value**: :data:`triclinic`.
 
@@ -485,7 +499,7 @@ Crystal Orientation Options
 
   - :data:`random`: ODF = 1, i.e. no or "random" texture (standard case);
 
-  - :data:`odf(mesh=file(<mesh_file>),val=file(<value_file>))`: ODF described by :data:`<mesh_file>` (a mesh of the fundamental region of orientation space) and :data:`<value_file>` (a :ref:`data_file` containing the ODF values at the mesh elements);
+  - :data:`odf(mesh=file(<mesh_file>),val=file(<value_file>)[,theta=<theta>)`: ODF described by :data:`<mesh_file>` (a mesh of the fundamental region of orientation space), :data:`<value_file>` (a :ref:`data_file` containing the ODF values at the mesh elements) and :data:`<theta>` is the (optional, Neper-style) size of the kernel used to general the ODF (1-D standard deviation expressed in degrees, if any).
 
   - :data:`<orientation>[:<distribution>]`: a continuous distribution about a :ref:`discrete orientation <rotations_and_orientations>` (the distribution itself is optional, see below);
 
@@ -531,6 +545,87 @@ Crystal Orientation Options
   Uniform sampling is only available for :data:`-ori random` (done according to [JAC2018]_).
 
   **Default value**: :data:`random`.
+
+.. option:: -orioptialgo <algorithm1>,<algorithm2>,... (secondary option)
+
+  Specify the optimization algorithm, which can be:
+
+    - :data:`subplex`: Subplex (recommend);
+    - :data:`praxis`: Praxis (recommended, except for high numbers of seeds, where it becomes highly memory-intensive) [#praxis]_ ;
+    - :data:`neldermead`: Nelder-Mead (not recommended);
+    - :data:`cobyla`: Cobyla (not recommended);
+    - :data:`bobyqa`: Bobyqa (not recommended);
+    - :data:`newuoa`: Newuoa (not recommended).
+
+  In several algorithms are provided, the second etc. are used if the previous ones fails.
+
+  **Default value**: :data:`subplex,praxis`.
+
+.. option:: -orioptidof <dof1>,<dof2>,... (secondary option)
+
+  Specify the degrees of freedom, which can be :data:`r1`, :data:`r2` and :data:`r3` for the 3 components of the orientation (Rodrigues) vector, :data:`rw` for the weights, and :data:`rt` for the orientation spreads.  Use this option only if you really now what you are doing.
+
+  **Default value**: :data:`r1,r2,r3`.
+
+.. option:: -orioptiini <ori_attributes> (secondary option)
+
+  Specify the initial crystal orientations and/or their weights and distributions (theta parameter).
+
+  - :data:`random`: random orientations;
+  - :data:`file(<file_name>[,des=<descriptor>])`: orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
+
+  **Default value**: :data:`random`.
+
+.. option:: -orioptifix <orientations> (secondary option)
+
+  Specify some orientations to fix during optimization.  The argument can be:
+
+  - :data:`file(<file_name>)`: logical values to load from a :ref:`data_file`;
+  - :data:`none`: none.
+
+  **Default value**: :data:`none`.
+
+.. option:: -orioptistop <stopping_criterion> (secondary option)
+
+  Specify the stopping criterion of the optimization process, as a logical expression based on the following variables.
+  Depending on the problem (and on the algorithm to solve it), different criteria are available.
+
+  For :data:`-ori random -orisampling uniform`, the Thomson problem is solved using gradient descent, and the following criteria are available:
+
+  - :data:`reps`: relative error on the forces at orientations;
+  - :data:`iter`: iteration number.
+
+  In other situations, general minimization operates, and the following criteria are available:
+
+  - :data:`eps`: absolute error on the value of the objective function evaluated on a number of degrees of freedom basis (:data:`nlopt_eps` or :data:`nlopt_reps` are the NLopt iteration-based values);
+  - :data:`reps`: relative error on the value of the objective function evaluated on a number of degrees of freedom basis (:data:`nlopt_eps` or :data:`nlopt_reps` are the NLopt iteration-based values);
+  - :data:`xeps`: absolute error on the components of the solution vector;
+  - :data:`xreps`: relative error on the components of the solution vector;
+  - :data:`val`: value of the objective function;
+  - :data:`iter`: number of iterations;
+  - :data:`time`: maximum computation time;
+  - :data:`loop`: number of iteration loops.
+
+  Different criteria can be defined for the different algorithms (either :data:`Thomson` or :data:`general`) using the syntax :data:`<algorithm1>:<criterion1>,<algorithm2>:<criterion2>,...`.  The algorithm may be omitted in the case of a universal criterion (or when only one algorithm is used).
+
+  **Default value**: :data:`"thomson:reps<1e-3||iter>=1e3,general:eps<1e-6"`.
+
+.. option:: -orioptineigh <neighborhood_radius> (secondary option)
+
+  Specify the radius of the neighborhood of orientations to be used to compute their forces (for :data:`-orisampling uniform`), which can be any mathematical or logical expression based on:
+
+  - :data:`dr`: average radius of an orientation;
+  - :data:`Nstar`: grand number of orientations (i.e., taking crystal symmetry into account).
+
+  **Default value**: :data:`"Nstar<10000?pi:20*dr"`.
+
+.. option:: -orioptilogvar <variables> (secondary option)
+
+  Log the variables (the orientations) during the optimization process.  The variables can be among those provided in :ref:`orientation_optimization_keys`.
+
+  **Default value**: -.
+
+  **File extension**: :file:`.logorivar`.
 
 .. option:: -orispread <spread>
 
@@ -688,11 +783,11 @@ Output Options
 
   Specify the format(s) of the output file(s), which can be:
 
-    - tessellation: :data:`tess`, :data:`sim`, :data:`geo`, :data:`ply`, :data:`stl[:bycell]`, :data:`obj`, :data:`3dec`, :data:`fe`;
+    - tessellation: :data:`tess`, :data:`sim`, :data:`geo`, :data:`ply`, :data:`stl[:bycell]`, :data:`obj`, :data:`3dec`, :data:`fe`, :data:`svg[(unit=\<unit\>)]`;
     - raster tessellation: :data:`tesr`, :data:`sim`, :data:`vtk`;
     - orientations: :data:`ori`.
 
-  See :ref:`output_files` for details on the file formats.
+  :data:`svg[(unit=\<unit\>)]` applies only to 2D tessellations, and :data:`\<unit\>` is an optional physical unit (e.g. :data:`mm`).  See :ref:`output_files` for details on the file formats.
 
   **Default value**: :data:`tess`.
 
@@ -723,7 +818,7 @@ Output Options
 
   Specify the orientation descriptor and (optionally) the orientation convention used in the :file:`.tess`, :file:`.tesr` and :file:`.ori` files.  See :ref:`rotations_and_orientations` for possible values.
 
-  **Default value**: :data:`rodrigues:active`.
+  **Default value**: :data:`rodrigues:passive`.
 
 .. option:: -oriformat <format1>,<format2>,...
 
@@ -872,6 +967,8 @@ Tessellation
 -  :file:`.obj`: Wavefront geometry file describing the tessellation;
 
 -  :file:`.3dec`: Itasca 3DEC file describing the tessellation;
+
+-  :file:`.svg`: SVG file describing the tessellation;
 
 -  :file:`.vtk`: VTK file describing the raster tessellation and that is supported by Amitex_ffpt.  Binary data are always written using big endians;
 

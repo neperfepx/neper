@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_fscanf_.h"
@@ -104,6 +104,64 @@ neut_tess_fscanf_domain_edges_v3p3 (struct TESS *pTess, FILE * file)
 
     ut_array_1d_int_fscanf (file, (*pTess).DomEdgeVerNb[i],
                             (*pTess).DomEdgeVerQty[i]);
+
+    if (fscanf (file, "%s", (*pTess).DomEdgeLabel[i]) != 1)
+      abort ();
+
+    if (fscanf (file, "%d", &((*pTess).DomTessEdgeQty[i])) != 1)
+      abort ();
+
+    (*pTess).DomTessEdgeNb[i] =
+      ut_alloc_1d_int ((*pTess).DomTessEdgeQty[i] + 1);
+    ut_array_1d_int_fscanf (file, (*pTess).DomTessEdgeNb[i] + 1,
+                            (*pTess).DomTessEdgeQty[i]);
+  }
+
+  neut_tess_init_domain_domveredge (pTess);
+
+  return;
+}
+
+void
+neut_tess_fscanf_domain_edges_v3p5 (struct TESS *pTess, FILE * file)
+{
+  int i, id;
+
+  if (!ut_file_string_scanandtest (file, "*edge")
+      || fscanf (file, "%d", &((*pTess).DomEdgeQty)) != 1)
+    abort ();
+
+  (*pTess).DomEdgeLabel = ut_alloc_2d_char ((*pTess).DomEdgeQty + 1, 100);
+  (*pTess).DomTessEdgeQty = ut_alloc_1d_int ((*pTess).DomEdgeQty + 1);
+  (*pTess).DomTessEdgeNb = ut_alloc_1d_pint ((*pTess).DomEdgeQty + 1);
+  (*pTess).DomEdgeVerQty = ut_alloc_1d_int ((*pTess).DomEdgeQty + 1);
+  (*pTess).DomEdgeVerNb = ut_alloc_2d_int ((*pTess).DomEdgeQty + 1, 2);
+  (*pTess).DomEdgeType = ut_alloc_1d_pchar ((*pTess).DomEdgeQty + 1);
+  (*pTess).DomEdgeParmQty = ut_alloc_1d_int ((*pTess).DomEdgeQty + 1);
+  (*pTess).DomEdgeParms = ut_alloc_1d_pdouble ((*pTess).DomEdgeQty + 1);
+
+  for (i = 1; i <= (*pTess).DomEdgeQty; i++)
+  {
+    if (fscanf (file, "%d", &id) != 1 || id != i)
+      abort ();
+
+    if (fscanf (file, "%d", &((*pTess).DomEdgeVerQty[i])) != 1)
+      abort ();
+
+    ut_array_1d_int_fscanf (file, (*pTess).DomEdgeVerNb[i],
+                            (*pTess).DomEdgeVerQty[i]);
+
+    (*pTess).DomEdgeType[i] = ut_alloc_1d_char (10);
+    if (fscanf (file, "%s", (*pTess).DomEdgeType[i]) != 1)
+      abort ();
+
+    if (fscanf (file, "%d", &((*pTess).DomEdgeParmQty[i])) != 1)
+      abort ();
+
+    (*pTess).DomEdgeParms[i] = ut_alloc_1d ((*pTess).DomEdgeParmQty[i]);
+
+    ut_array_1d_fscanf (file, (*pTess).DomEdgeParms[i],
+                        (*pTess).DomEdgeParmQty[i]);
 
     if (fscanf (file, "%s", (*pTess).DomEdgeLabel[i]) != 1)
       abort ();

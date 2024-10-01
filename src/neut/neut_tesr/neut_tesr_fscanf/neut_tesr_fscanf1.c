@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesr_fscanf_.h"
@@ -83,7 +83,7 @@ neut_tesr_fscanf (FILE * file, char *dirname, double *bounds, double *scale,
 
   neut_tesr_fscanf_head (pTesr, bounds, &voxbounds, &version, &dataformat, &oridataformat, file);
 
-  neut_tesr_fscanf_cell (pTesr, file);
+  neut_tesr_fscanf_cell (pTesr, version, file);
 
   do
   {

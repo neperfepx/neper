@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_mtess_flatten_dom_.h"
@@ -60,6 +60,24 @@ net_mtess_flatten_dom_edge (struct TESS *Tess, int TessId,
   for (i = 1; i <= (*pFTess).DomEdgeQty; i++)
     ut_string_string (Tess[TessId].DomEdgeLabel[i],
                       &((*pFTess).DomEdgeLabel[i]));
+
+  (*pFTess).DomEdgeType = ut_alloc_1d_pchar ((*pFTess).DomEdgeQty + 1);
+  for (i = 1; i <= (*pFTess).DomEdgeQty; i++)
+    ut_string_string (Tess[TessId].DomEdgeType[i],
+                      &((*pFTess).DomEdgeType[i]));
+
+  (*pFTess).DomEdgeParmQty = ut_alloc_1d_int ((*pFTess).DomEdgeQty + 1);
+  ut_array_1d_int_memcpy (Tess[TessId].DomEdgeParmQty + 1,
+                          (*pFTess).DomEdgeQty, (*pFTess).DomEdgeParmQty + 1);
+
+  (*pFTess).DomEdgeParms = ut_alloc_1d_pdouble ((*pFTess).DomEdgeQty + 1);
+  for (i = 1; i <= (*pFTess).DomEdgeQty; i++)
+  {
+    (*pFTess).DomEdgeParms[i] = ut_alloc_1d ((*pFTess).DomEdgeParmQty[i]);
+    ut_array_1d_memcpy (Tess[TessId].DomEdgeParms[i],
+                        (*pFTess).DomEdgeParmQty[i],
+                        (*pFTess).DomEdgeParms[i]);
+  }
 
   (*pFTess).DomEdgeVerQty = ut_alloc_1d_int ((*pFTess).DomEdgeQty + 1);
   ut_array_1d_int_set ((*pFTess).DomEdgeVerQty + 1, (*pFTess).DomEdgeQty, 2);
@@ -127,15 +145,6 @@ net_mtess_flatten_dom_face (struct TESS *Tess, int TessId,
                         (*pFTess).DomFaceParmQty[i],
                         (*pFTess).DomFaceParms[i]);
   }
-
-  for (i = 1; i <= (*pFTess).DomFaceQty; i++)
-    ut_string_string (Tess[TessId].DomFaceType[i],
-                      &((*pFTess).DomFaceType[i]));
-
-  (*pFTess).DomFaceType = ut_alloc_1d_pchar ((*pFTess).DomFaceQty + 1);
-  for (i = 1; i <= (*pFTess).DomFaceQty; i++)
-    ut_string_string (Tess[TessId].DomFaceType[i],
-                      &((*pFTess).DomFaceType[i]));
 
   (*pFTess).DomFaceEq = ut_alloc_2d ((*pFTess).DomFaceQty + 1, 4);
   ut_array_2d_memcpy (Tess[TessId].DomFaceEq + 1, (*pFTess).DomFaceQty, 4,

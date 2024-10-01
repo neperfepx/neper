@@ -1,5 +1,5 @@
 /* This id is part of the 'hermes' program. */
-/* Copyright (C) 2007-2010, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYINPFG id in the top-level directory. */
 
 #include "nev_print_pf_ptsprint_density_.h"

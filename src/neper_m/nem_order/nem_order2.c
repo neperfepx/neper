@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_order_.h"
@@ -14,7 +14,13 @@ nem_order_pre (struct IN_M In, struct MESH *Mesh, int *domesh)
       domesh[i] = 1;
 
   if (!strcmp (In.interface, "cohesive"))
+  {
     domesh[4] = 1;
+    // disabling lower dimensions
+    domesh[2] = 0;
+    domesh[1] = 0;
+    domesh[0] = 0;
+  }
 
   if (dim == 2 && !strcmp (Mesh[2].EltType, "tri") && Mesh[4].EltQty > 0
       && !strcmp (Mesh[4].EltType, "quad"))

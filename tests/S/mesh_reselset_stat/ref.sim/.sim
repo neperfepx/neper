@@ -1,6 +1,6 @@
 ***sim
  **format
-   1.0
+   1.1
  **input
   *tess
    simulation.tess
@@ -9,7 +9,7 @@
  **general
    0 81 214 2 0
   *orides
-   rodrigues:active
+   rodrigues:passive
  **entity elt
   *result
    1

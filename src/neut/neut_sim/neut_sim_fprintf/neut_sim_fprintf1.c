@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_sim_fprintf_.h"
@@ -17,7 +17,7 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
 
   fprintf (file, "***sim\n");
   fprintf (file, " **format\n");
-  fprintf (file, "   1.0\n");
+  fprintf (file, "   1.1\n");
   fprintf (file, " **input\n");
   if (Sim.tess)
     fprintf (file, "  *tess\n   %s\n", Sim.tess);
@@ -29,6 +29,8 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
     fprintf (file, "  *bcs\n   %s\n", Sim.msh);
   if (Sim.ori)
     fprintf (file, "  *ori\n   %s\n", Sim.msh);
+  if (Sim.opt)
+    fprintf (file, "  *opt\n   %s\n", Sim.msh);
   if (Sim.phase)
     fprintf (file, "  *phase\n   %s\n", Sim.msh);
   if (Sim.cfg)
@@ -266,6 +268,8 @@ neut_sim_fprintf_asy (char *dir, struct SIM Sim, char *mode)
     fprintf (file, "%s \\\\", Sim.bcs);
   if (Sim.ori)
     fprintf (file, "%s \\\\", Sim.ori);
+  if (Sim.opt)
+    fprintf (file, "%s \\\\", Sim.opt);
   if (Sim.phase)
     fprintf (file, "%s \\\\", Sim.phase);
   if (Sim.cfg)
@@ -344,6 +348,8 @@ neut_sim_verbose (struct SIM Sim)
     printf (" bcs");
   if (Sim.ori)
     printf (" ori");
+  if (Sim.opt)
+    printf (" opt");
   if (Sim.phase)
     printf (" phase");
   if (Sim.cfg)

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -69,6 +69,12 @@ extern "C"
 ///
 ///
   extern void neut_tess_init_edgelength (struct TESS *pTess);
+
+/// \brief Initialize the equations of the faces of a TESS from the vertex coordinates
+///
+///
+///
+  extern void neut_tess_init_faceeq (struct TESS *pTess);
 
 /// \brief Initialize the length of an edge of a TESS
 ///
@@ -239,7 +245,7 @@ extern "C"
   extern void neut_tess_init_facepoly (struct TESS *pTess);
   extern int neut_tess_init_alldom_fromdomtess (struct TESS *pTess);
 
-  extern void neut_tess_face_fixorifromedges (struct TESS *pTess, int face);
+  extern void neut_tess_face_fixorifromedges (struct TESS Tess, int face, double *eq);
 
   extern void neut_tess_init_domain_domveredge (struct TESS *pTess);
   extern void neut_tess_init_domain_domedgeface (struct TESS *pTess);
@@ -267,6 +273,10 @@ extern "C"
   extern void neut_tess_resetcellid (struct TESS *pTess);
 
   extern int neut_tess_init_domfacez0 (struct TESS *pTess);
+
+  extern void neut_tess_init_polyfaceori (struct TESS *pTess);
+
+  extern void neut_tess_init_edges_fromversandfaces (struct TESS *pTess);
 
 #endif				/* NEUT_TESS_OP_H */
 

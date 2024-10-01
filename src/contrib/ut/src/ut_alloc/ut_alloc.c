@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2022, Romain Quey */
+/* Copyright (C) 2003-2024, Romain Quey.*/
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -825,6 +825,23 @@ ut_realloc_1d_pdouble (double **array, unsigned int size)
   array = realloc (array, size * sizeof (double *));
   if (size == 0)
     free (array);
+
+  return size ? array : NULL;
+}
+
+double **
+ut_realloc_1d_pdouble_null (double **array, unsigned int size, unsigned int null)
+{
+  unsigned int i;
+
+  if (null > size)
+    abort ();
+
+  array = ut_realloc_1d_pdouble (array, size);
+
+  if (array)
+    for (i = 0; i < null; i++)
+      array[size - 1 - i] = NULL;
 
   return size ? array : NULL;
 }

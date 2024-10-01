@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tesr_fprintf_.h"
@@ -11,7 +11,7 @@ neut_tesr_fprintf_head (FILE * file, struct TESR Tesr)
 
   fprintf (file, "***tesr\n");
   fprintf (file, " **format\n");
-  fprintf (file, "   2.1\n");
+  fprintf (file, "   2.2\n");
   fprintf (file, " **general\n");
   fprintf (file, "   %d\n", Tesr.Dim);
   fprintf (file, "   ");

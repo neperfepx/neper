@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_.h"
@@ -327,7 +327,12 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
     (*pTOpt).tarrefval[id] = 1;
 
   if (print)
-    ut_print_message (0, 4, "Number of cells: %d\n", (*pTOpt).CellQty);
+  {
+    if ((*pTOpt).CellQty > 0)
+      ut_print_message (0, 4, "Number of cells: %d\n", (*pTOpt).CellQty);
+    else
+      ut_print_message (0, 4, "Number of cells: unknown\n");
+  }
 
   return;
 }

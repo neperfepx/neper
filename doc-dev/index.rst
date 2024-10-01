@@ -13,6 +13,7 @@ Neper's Developer Documentation
    smoothing.rst
    1dlaguerre.rst
    ellipse.rst
+   odfsampling.rst
    gpl.rst
    fdl.rst
 

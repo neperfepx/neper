@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_domain_.h"
@@ -17,7 +17,9 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
   ut_string_function (strings[0], &domain, NULL, NULL, NULL);
 
   neut_poly_set_zero (&Poly);
+  neut_tess_set_zero (pDomain);
 
+  // build-in
   if (!strncmp (strings[0], "cube", 4) || !strncmp (strings[0], "square", 6)
    || !strncmp (strings[0], "euler", 5))
     net_domain_cube_string (strings[0], &Poly);
@@ -25,25 +27,27 @@ net_domain (struct IN_T In, struct MTESS *pMTess, struct TESS *pDomain)
   else if (!strcmp (domain, "cylinder") || !strcmp (domain, "circle"))
     net_domain_cylinder_string (strings[0], In.n[1], &Poly);
 
-  else if (!strcmp (domain, "stdtriangle"))
-    net_domain_stdtriangle (strings[0], &Poly);
-
   else if (!strcmp (domain, "sphere"))
     net_domain_sphere_string (strings[0], &Poly);
 
   else if (!strcmp (domain, "rodrigues"))
     net_domain_rodrigues_string (strings[0], &Poly);
 
+  else if (!strcmp (domain, "stdtriangle"))
+    net_domain_stdtriangle (strings[0], &Poly);
+
+  // custom
+  else if (ut_file_exist (strings[0]))
+    net_domain_fromfile (strings[0], pDomain);
+
   else if (!strcmp (domain, "planes"))
     net_domain_planes_string (strings[0], In.dim, &Poly);
-
-  else if (!strcmp (domain, "cell"))
-    net_domain_cell_string (strings[0], &Poly);
 
   else
     ut_print_message (2, 0, "Domain type unknown (%s)\n", domain);
 
-  net_poly_tess (Poly, NULL, pDomain);
+  if (neut_tess_isvoid (*pDomain))
+    net_poly_tess (Poly, NULL, pDomain);
 
   if (!strstr (In.domain, "rodrigues") && !strstr (In.domain, "euler"))
     ut_string_string (domain, &(*pDomain).DomType);

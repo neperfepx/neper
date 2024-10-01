@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -15,7 +15,7 @@ extern "C"
 #define NEUT_SEP_FRAC  "::"
 
 #define NEUT_DEFAULT_ORIDES "rodrigues"
-#define NEUT_DEFAULT_ORIDESFULL "rodrigues:active"
+#define NEUT_DEFAULT_ORIDESFULL "rodrigues:passive"
 #define NEUT_DEFAULT_COLSCHEME_REAL "viridis"
 
 #endif				/* NEUT_GLO_H */

@@ -1,10 +1,10 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_fscanf_.h"
 
-/* Tessellation exportation: head */
+/* Tessellation export: head */
 void
 neut_tess_fscanf_head (struct TESS *pTess, FILE * file, char **pversion)
 {
@@ -17,7 +17,7 @@ neut_tess_fscanf_head (struct TESS *pTess, FILE * file, char **pversion)
     ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
 
   if (strcmp (*pversion, "2.0") && strcmp (*pversion, "3.3")
-      && strcmp (*pversion, "3.4"))
+      && strcmp (*pversion, "3.4") && strcmp (*pversion, "3.5"))
     ut_print_message (2, 0, "Input file is not a valid tessellation file.\n");
 
   if (!ut_file_string_scanandtest (file, "**general"))
@@ -39,7 +39,7 @@ neut_tess_fscanf_head (struct TESS *pTess, FILE * file, char **pversion)
   return;
 }
 
-/* Tessellation exportation: foot */
+/* Tessellation export: foot */
 void
 neut_tess_fscanf_foot (FILE * file)
 {
@@ -49,9 +49,9 @@ neut_tess_fscanf_foot (FILE * file)
   return;
 }
 
-/* Tessellation exportation: vertex */
+/* Tessellation export: vertex */
 void
-neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_cell (struct TESS *pTess, char *version, FILE * file)
 {
   int i, status, id, level;
   char *string = ut_alloc_1d_char (1000);
@@ -127,11 +127,21 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
 
     else if (!strcmp (string, "*ori"))
     {
+      int major, minor;
+
+      ut_string_version (version, &major, &minor, NULL);
+
       ut_file_skip (file, 1);
       (*pTess).CellOri = ut_alloc_2d ((*pTess).CellQty + 1, 4);
       if (fscanf (file, "%s", (*pTess).CellOriDes) != 1)
         abort ();
       neut_ori_des_expand ((*pTess).CellOriDes, &(*pTess).CellOriDes);
+
+      if (major <= 3 && minor <= 4)
+      {
+        ut_print_message (1, 3, "File version <= 3.4.  Fixing orientation convention...\n");
+        neut_ori_des_fixconvention (&(*pTess).CellOriDes);
+      }
 
       neut_ori_fscanf (file, (*pTess).CellOriDes, "ascii", (*pTess).CellOri + 1, NULL, (*pTess).CellQty, NULL);
     }
@@ -169,7 +179,7 @@ neut_tess_fscanf_cell (struct TESS *pTess, FILE * file)
   return;
 }
 
-/* Tessellation exportation: vertex */
+/* Tessellation export: vertex */
 void
 neut_tess_fscanf_ver (struct TESS *pTess, FILE * file)
 {
@@ -201,7 +211,7 @@ neut_tess_fscanf_ver (struct TESS *pTess, FILE * file)
   return;
 }
 
-/* Tessellation exportation: edge */
+/* Tessellation export: edge */
 void
 neut_tess_fscanf_edge (struct TESS *pTess, FILE * file)
 {
@@ -231,7 +241,7 @@ neut_tess_fscanf_edge (struct TESS *pTess, FILE * file)
   return;
 }
 
-/* Tessellation exportation: face */
+/* Tessellation export: face */
 void
 neut_tess_fscanf_face (struct TESS *pTess, FILE * file)
 {
@@ -297,7 +307,7 @@ neut_tess_fscanf_face (struct TESS *pTess, FILE * file)
   return;
 }
 
-/* Tessellation exportation: poly */
+/* Tessellation export: poly */
 void
 neut_tess_fscanf_poly (struct TESS *pTess, FILE * file)
 {
@@ -345,7 +355,11 @@ neut_tess_fscanf_poly (struct TESS *pTess, FILE * file)
 void
 neut_tess_fscanf_domain (struct TESS *pTess, char *version, FILE * file)
 {
+  int i, major, minor;
+
   (*pTess).DomType = ut_alloc_1d_char (1000);
+
+  ut_string_version (version, &major, &minor, NULL);
 
   if (!ut_file_string_scanandtest (file, "**domain")
       || !ut_file_string_scanandtest (file, "*general")
@@ -358,12 +372,26 @@ neut_tess_fscanf_domain (struct TESS *pTess, char *version, FILE * file)
     neut_tess_fscanf_domain_edges_v2p0 (pTess, file);
   else if (!strcmp (version, "3.3") || !strcmp (version, "3.4"))
     neut_tess_fscanf_domain_edges_v3p3 (pTess, file);
+  else if (!strcmp (version, "3.5"))
+    neut_tess_fscanf_domain_edges_v3p5 (pTess, file);
+
+  if (major <= 3 && minor <= 4)
+  {
+    (*pTess).DomEdgeType = ut_alloc_1d_pchar ((*pTess).DomEdgeQty + 1);
+    (*pTess).DomEdgeParmQty = ut_alloc_1d_int ((*pTess).DomEdgeQty + 1);
+    (*pTess).DomEdgeParms = ut_alloc_1d_pdouble ((*pTess).DomEdgeQty + 1);
+    for (i = 1; i <= (*pTess).DomEdgeQty; i++)
+    {
+      ut_string_string ("line", (*pTess).DomEdgeType + i);
+      (*pTess).DomEdgeParmQty[i] = 0;
+    }
+  }
 
   if ((*pTess).Dim == 3)
   {
     if (!strcmp (version, "2.0"))
       neut_tess_fscanf_domain_faces_v2p0 (pTess, file);
-    else if (!strcmp (version, "3.3") || !strcmp (version, "3.4"))
+    else if (major >= 3 && minor >= 3)
       neut_tess_fscanf_domain_faces_v3p3 (pTess, file);
   }
 

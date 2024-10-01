@@ -180,14 +180,16 @@ ol_hpole_vect (int *hm, double *vect)
   int i, j;
   double norm;
   double **a = ut_alloc_2d (4, 3);
+  double c_a;
+
+  /* set c/a ratio to ideal HCP value */
+  c_a = 1.633;
 
   /* setting the non-zero terms only */
-  a[0][0] = sqrt (3) / 2;
-  a[0][1] = -.5;
-  a[1][1] = 1;
-  a[2][0] = -sqrt (3) / 2;
-  a[2][1] = -.5;
-  a[3][2] = 1;
+  a[0][0] = 1.5;
+  a[0][1] = sqrt (3) / 2;
+  a[1][1] = sqrt (3);
+  a[3][2] = c_a;
 
   ut_array_1d_zero (vect, 3);
   for (i = 0; i < 3; i++)

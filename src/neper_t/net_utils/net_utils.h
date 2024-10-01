@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -18,9 +18,6 @@ extern "C"
   extern void net_poly_tesl (struct POLY Poly, double *, struct TESL *pTess);
   extern void net_poly_tess (struct POLY Poly, double *coo,
 			     struct TESS *pTess);
-
-  extern void net_tess_poly_tess (struct TESS Tess, int poly,
-				  struct TESS *pPoly);
 
   extern void net_poly_centroid (struct POLY Poly, double *coo);
   extern void net_tess_tesr (char *tesrsizestring, struct TESS, struct TESR *);

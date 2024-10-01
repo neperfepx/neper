@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_input_.h"
@@ -31,7 +31,9 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
       || ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "ply") == 1
       || ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "stl") == 1
       || ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "stl:bycell") == 1
-      || ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "obj") == 1)
+      || ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "obj") == 1
+      || ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "ovm") == 1
+      || strstr ((*pIn).format, "svg"))
     tess_out = 1;
   if (ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "tesr") == 1
       || ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "raw") == 1
@@ -43,6 +45,10 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
   if (sim_out == 0
       && ut_list_testelt ((*pIn).format, NEUT_SEP_NODEP, "sim") == 1)
     sim_out = 1;
+
+  // if loading from a file, setting mode to its format
+  if (strstr ((*pIn).format, "svg") && (*pIn).dim == 3)
+    ut_print_message (2, 0, "`-format svg' requires `-dim 2'.\n");
 
   // Setting mode
 
@@ -63,6 +69,9 @@ net_input (struct IN_T *pIn, int fargc, char **fargv, int argc, char **argv)
 
   else if (ori_out)
     ut_string_string ("ori", &(*pIn).mode);
+
+  if (!strcmp ((*pIn).mode, "obj") || !strcmp ((*pIn).mode, "ovm"))
+    ut_string_string ("tess", &(*pIn).mode);
 
   return;
 }

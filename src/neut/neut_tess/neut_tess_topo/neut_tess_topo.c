@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_topo_.h"
@@ -3493,7 +3493,7 @@ int
 neut_tess_edge_iscurved (struct TESS Tess, int edge)
 {
   int i, curved;
-  int domface, *domfaces = NULL, domfaceqty;
+  int domedge, domface, *domfaces = NULL, domfaceqty;
 
   if (Tess.Dim == 3)
   {
@@ -3511,8 +3511,19 @@ neut_tess_edge_iscurved (struct TESS Tess, int edge)
       }
     }
   }
+
+  // 2D tessellations
   else
-    curved = 0;
+  {
+    // edge on a domain edge
+    if (Tess.EdgeDom[edge][0] == 1)
+    {
+      domedge = Tess.EdgeDom[edge][1];
+      curved = (!strcmp (Tess.DomEdgeType[domedge], "line")) ? 0 : 1;
+    }
+    else
+      curved = 0;
+  }
 
   ut_free_1d_int (&domfaces);
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2022, Romain Quey */
+/* Copyright (C) 2003-2024, Romain Quey.*/
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -418,20 +418,11 @@ ut_file_skip_char (FILE * file, int qty)
 int
 ut_file_skip_line (FILE * file, int qty)
 {
-  int i;
-  char c;
+  int i, c;
 
+  // Read and print characters until a newline is found
   for (i = 0; i < qty; i++)
-  {
-    // testing whether there is something to skip.  If not (i.e. EOF),
-    // this is reported as an error.
-    c = fgetc (file);
-    if (c == EOF)
-      return -1;
-
-    while (c != '\n' && c != EOF)
-      c = fgetc (file);
-  }
+    while ((c = fgetc(file)) != EOF && c != '\n') {}
 
   return 0;
 }
@@ -524,6 +515,18 @@ ut_file_format (const char *filename, char **pformat)
   {
     (*pformat) = ut_alloc_1d_char (12);
     sprintf ((*pformat), "zset:geof");
+    res = 0;
+  }
+  else if (strstr (filename, ".obj"))
+  {
+    (*pformat) = ut_alloc_1d_char (12);
+    sprintf ((*pformat), "obj");
+    res = 0;
+  }
+  else if (strcmp (string, "OVM") == 0)
+  {
+    (*pformat) = ut_alloc_1d_char (12);
+    sprintf ((*pformat), "ovm");
     res = 0;
   }
   else
@@ -792,8 +795,8 @@ void
 ut_file_nextline (FILE * file, char **pline)
 {
   int length = 10000;
-  // int multiplier = 2;
-  // int beg = 0, end = length - 2;
+  int multiplier = 2;
+  int beg = 0, end = length - 2;
 
   fpos_t pos;
 
@@ -805,24 +808,22 @@ ut_file_nextline (FILE * file, char **pline)
   if (*pline == NULL)
     abort ();
 
-  /*
-     while (1)
-     {
-     (*pline) = ut_realloc_1d_char ((*pline), length);
+  while (1)
+  {
+    (*pline) = ut_realloc_1d_char ((*pline), length);
 
-     //((*pline) + beg) =
-     if (fgets ((*pline) + beg, length - beg, file) == NULL)
-     break;
+    //((*pline) + beg) =
+    if (fgets ((*pline) + beg, length - beg, file) == NULL)
+    break;
 
-     if ((*pline)[end] == '\0' || (*pline)[end] == '\n'
-     || (*pline)[end] == EOF)
-     break;
+    if ((*pline)[end] == '\0' || (*pline)[end] == '\n'
+    || (*pline)[end] == EOF)
+    break;
 
-     beg = end + 1;
-     length *= multiplier;
-     end = length - 2;
-     }
-   */
+    beg = end + 1;
+    length *= multiplier;
+    end = length - 2;
+  }
 
   (*pline) = ut_realloc_1d_char ((*pline), strlen (*pline) + 1);
 

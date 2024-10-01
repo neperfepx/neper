@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neper_t_.h"
@@ -52,6 +52,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
       net_domain (In, &MTess, Tess);
     }
   }
+
 
   // ###################################################################
   // ### RUNNING MULTILEVEL TESSELLATION ###############################
@@ -204,7 +205,12 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     {
       ut_print_message (0, 1, "Importing tessellation...\n");
       neut_mtess_set_tess (&MTess, &Tess);
-      neut_tess_fnscanf (In.load, Tess + 1);
+      if (ut_file_testformat (In.load, "tess"))
+        neut_tess_fnscanf (In.load, Tess + 1);
+      else if (ut_file_testformat (In.load, "obj"))
+        neut_tess_fnscanf_obj (In.load, Tess + 1);
+      else if (ut_file_testformat (In.load, "ovm"))
+        neut_tess_fnscanf_ovm (In.load, Tess + 1);
 
       // Sorting cells ###
       if (strcmp (In.sortstring, "none"))

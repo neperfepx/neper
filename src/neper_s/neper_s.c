@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2013, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neper_s_.h"
@@ -27,11 +27,11 @@ neper_s (int fargc, char **fargv, int argc, char **argv)
 // #####################################################################
 // ### READING RESULTS #################################################
 
-  // reading fepx simulation
-  if (In.fepxdir)
+  // reading simulation and printing simulation content to terminal
+  if (In.simdir)
   {
-    ut_print_message (0, 1, "Converting FEPX result directory into simulation directory...\n");
-    nes_convert (In, &Sim);
+    neut_sim_fscanf (In.simdir, &Sim, "R");
+    neut_sim_verbose (Sim);
   }
 
   // merging simulations and loading resulting simulation
@@ -39,13 +39,6 @@ neper_s (int fargc, char **fargv, int argc, char **argv)
   {
     ut_print_message (0, 1, "Merging simulation directories...\n");
     nes_merge (In, &Sim);
-    neut_sim_verbose (Sim);
-  }
-
-  // reading simulation and printing simulation content to terminal
-  else if (In.simdir)
-  {
-    neut_sim_fscanf (In.simdir, &Sim, "R");
     neut_sim_verbose (Sim);
   }
 

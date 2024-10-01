@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_writemesh_.h"
@@ -11,6 +11,7 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
 {
   int i, j, dim;
   double size;
+  char *nset = NULL;
   FILE *file = NULL;
   char *nsetlist = NULL;
   char *fasetlist = NULL;
@@ -29,12 +30,12 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
   if (!strcmp (In.nset, "default"))
   {
     if (dim == 3)
-      ut_string_string ("faces,edges,vertices", &(In.nset));
+      ut_string_string ("faces,edges,vertices", &nset);
     else if (dim == 2)
-      ut_string_string ("edges,vertices", &(In.nset));
+      ut_string_string ("edges,vertices", &nset);
   }
 
-  neut_nset_expand (NSet[0], NSet[1], NSet[2], In.nset, &nsetlist);
+  neut_nset_expand (NSet[0], NSet[1], NSet[2], nset, &nsetlist);
   if (!strcmp (Mesh[dim].EltType, "tri"))
     neut_nset_expand (NSet[0], NSet[1], NSet[2], In.faset, &fasetlist);
 
@@ -154,6 +155,7 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
   ut_free_1d_char (&fasetlist);
   ut_free_2d_char (&sizestring, 4);
   ut_free_2d_char (&formats, formatqty);
+  ut_free_1d_char (&nset);
 
   return;
 }

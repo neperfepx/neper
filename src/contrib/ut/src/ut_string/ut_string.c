@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2022, Romain Quey */
+/* Copyright (C) 2003-2024, Romain Quey.*/
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -838,6 +838,33 @@ ut_string_random (int length, int rand, char **pstring)
     }
     (*pstring)[length] = '\0';
   }
+
+  return;
+}
+
+void
+ut_string_version (char *string, int *pmajor, int *pminor, int *ppatch)
+{
+  int partqty;
+  char **parts = NULL;
+
+  if (pmajor)
+    (*pmajor) = 0;
+  if (pminor)
+    (*pminor) = 0;
+  if (ppatch)
+    (*ppatch) = 0;
+
+  ut_list_break (string, ".", &parts, &partqty);
+
+  if (partqty >= 1 && pmajor)
+    (*pmajor) = atoi (parts[0]);
+  if (partqty >= 2 && pminor)
+    (*pminor) = atoi (parts[1]);
+  if (partqty >= 3 && ppatch)
+    (*ppatch) = atoi (parts[2]);
+
+  ut_free_2d_char (&parts, partqty);
 
   return;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_geom_.h"
@@ -1908,7 +1908,10 @@ neut_tess_face_eq_fromvers (struct TESS Tess, int face, double *eq)
 
   neut_tess_face_vercoos (Tess, face, &vercoos, &verqty);
 
+  // returns an equation, but only based on disordered vertices
   ut_space_pointset_plane (vercoos, verqty, eq);
+  // fixes to match the order of the vertices
+  neut_tess_face_fixorifromedges (Tess, face, eq);
 
   ut_free_2d (&vercoos, verqty);
 

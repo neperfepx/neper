@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_input_.h"
@@ -47,6 +47,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
         ut_print_message (2, 0,
                           "`-morpho `%s' is only available at level 1.\n",
                           (*pIn).morpho);
+
     for (i = 1; i <= (*pIn).levelqty; i++)
       if (!strncmp ((*pIn).morpho[i], "square", 6) && (*pIn).dim != 2)
         ut_print_message (2, 2, "Option `-morpho square' requires `-dim 2'.");
@@ -203,15 +204,8 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     net_input_treatargs_multiscale ("-orisampling", &(*pIn).orisamplingstring,
                                     (*pIn).levelqty, &((*pIn).orisampling));
     for (i = 1; i <= (*pIn).levelqty; i++)
-    {
       if (!strcmp ((*pIn).orisampling[i], "default"))
         ut_string_string ("random", (*pIn).orisampling + i);
-      else if (!strcmp ((*pIn).orisampling[i], "uniform"))
-      {
-        if (strcmp ((*pIn).ori[i], "random"))
-          ut_print_message (2, 2, "`-orisampling uniform' only available with `-ori random'.\n");
-      }
-    }
 
     // oricrysym
     net_input_treatargs_multiscale ("-crysym", &(*pIn).crysymstring,
@@ -365,6 +359,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   (*pIn).dec = ut_string_addextension ((*pIn).body, ".3dec");
   (*pIn).fe = ut_string_addextension ((*pIn).body, ".fe");
   (*pIn).obj = ut_string_addextension ((*pIn).body, ".obj");
+  (*pIn).svg = ut_string_addextension ((*pIn).body, ".svg");
   (*pIn).debug = ut_string_addextension ((*pIn).body, ".debug");
   (*pIn).mtess = ut_string_addextension ((*pIn).body, ".mtess");
   (*pIn).mgeo = ut_string_addextension ((*pIn).body, ".mgeo");

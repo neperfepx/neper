@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_sim_fscanf_.h"
@@ -37,7 +37,7 @@ neut_sim_fscanf_head (FILE *file, char **pversion)
   if (fscanf (file, "%s", *pversion) != 1)
     ut_print_message (2, 0, "Input directory is not a valid simulation directory.\n");
 
-  if (strcmp (*pversion, "1.0"))
+  if (strcmp (*pversion, "1.0") && strcmp (*pversion, "1.1"))
     ut_print_message (2, 0, "Input directory is not a valid simulation directory.\n");
 
   return;
@@ -110,6 +110,14 @@ neut_sim_fscanf_input (struct SIM *pSim, FILE *file)
       ut_string_string (string, &(*pSim).ori);
     }
 
+    else if (!strcmp (string, "*opt"))
+    {
+      ut_file_skip (file, 1);
+      if (fscanf (file, "%s", string) != 1)
+        abort ();
+      ut_string_string (string, &(*pSim).opt);
+    }
+
     else if (!strcmp (string, "*phase"))
     {
       ut_file_skip (file, 1);
@@ -144,10 +152,12 @@ neut_sim_fscanf_input (struct SIM *pSim, FILE *file)
 }
 
 void
-neut_sim_fscanf_general (struct SIM *pSim, FILE *file)
+neut_sim_fscanf_general (struct SIM *pSim, char *version, FILE *file)
 {
-  int level;
+  int level, major, minor;
   char *string = ut_alloc_1d_char (1000);
+
+  ut_string_version (version, &major, &minor, NULL);
 
   if (!ut_file_string_scanandtest (file, "**general"))
     abort ();
@@ -170,6 +180,11 @@ neut_sim_fscanf_general (struct SIM *pSim, FILE *file)
       if (fscanf (file, "%s", string) != 1)
         abort ();
       ut_string_string (string, &(*pSim).OriDes);
+      if (major <= 1 && minor <= 0)
+      {
+        ut_print_message (1, 3, "Directory version <= 1.0.  Fixing orientation convention...\n");
+        neut_ori_des_fixconvention (&(*pSim).OriDes);
+      }
     }
 
     else

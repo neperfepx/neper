@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_fscanf_.h"
@@ -14,7 +14,7 @@ neut_tess_fscanf (FILE * file, struct TESS *pTess)
 
   neut_tess_fscanf_head (pTess, file, &version);
 
-  neut_tess_fscanf_cell (pTess, file);
+  neut_tess_fscanf_cell (pTess, version, file);
 
   neut_tess_fscanf_ver (pTess, file);
 

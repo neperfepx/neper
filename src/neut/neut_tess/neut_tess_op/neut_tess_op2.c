@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_op_.h"
@@ -83,6 +83,9 @@ neut_tess_init_domain_memcpy (struct TESS *pTess, struct TESS DomTess)
   (*pTess).DomEdgeVerQty = ut_alloc_1d_int ((*pTess).DomEdgeQty + 1);
   (*pTess).DomEdgeVerNb = ut_alloc_2d_int ((*pTess).DomEdgeQty + 1, 2);
   (*pTess).DomEdgeFaceNb = ut_alloc_2d_int ((*pTess).DomEdgeQty + 1, 2);
+  (*pTess).DomEdgeType = ut_alloc_1d_pchar ((*pTess).DomEdgeQty + 1);
+  (*pTess).DomEdgeParmQty = ut_alloc_1d_int ((*pTess).DomEdgeQty + 1);
+  (*pTess).DomEdgeParms = ut_alloc_1d_pdouble ((*pTess).DomEdgeQty + 1);
 
   for (i = 1; i <= (*pTess).DomEdgeQty; i++)
   {
@@ -97,6 +100,13 @@ neut_tess_init_domain_memcpy (struct TESS *pTess, struct TESS DomTess)
                             (*pTess).DomEdgeFaceNb[i]);
     if (DomTess.EdgeFaceQty[i] != 2)
       ut_print_neperbug ();
+  }
+
+  for (i = 1; i <= (*pTess).DomEdgeQty; i++)
+  {
+    ut_string_string ("line", (*pTess).DomEdgeType + i);
+    (*pTess).DomEdgeParmQty[i] = 0;
+    (*pTess).DomEdgeParms[i] = NULL;
   }
 
   // Vertices
@@ -841,7 +851,7 @@ void
 neut_tess_domface_tess_domain (struct TESS Tess, int domface, struct TESS *pT,
                                int *oldedge_newedge, int *oldver_newver)
 {
-  int i, j, oldedge, oldver;
+  int i, j, oldedge, oldver, otherdomface;
   int *olddedge_newdedge = ut_alloc_1d_int (Tess.EdgeQty + 1);
   int *olddver_newdver = ut_alloc_1d_int (Tess.VerQty + 1);
 
@@ -860,6 +870,10 @@ neut_tess_domface_tess_domain (struct TESS Tess, int domface, struct TESS *pT,
   (*pT).DomEdgeFaceNb = ut_alloc_2d_int ((*pT).DomEdgeQty + 1, 2);
   (*pT).DomTessEdgeQty = ut_alloc_1d_int ((*pT).DomEdgeQty + 1);
   (*pT).DomTessEdgeNb = ut_alloc_1d_pint ((*pT).DomEdgeQty + 1);
+
+  (*pT).DomEdgeType = ut_alloc_1d_pchar ((*pT).DomEdgeQty + 1);
+  (*pT).DomEdgeParmQty = ut_alloc_1d_int ((*pT).DomEdgeQty + 1);
+  (*pT).DomEdgeParms = ut_alloc_1d_pdouble ((*pT).DomEdgeQty + 1);
 
   for (i = 1; i <= Tess.DomFaceEdgeQty[domface]; i++)
   {
@@ -881,6 +895,21 @@ neut_tess_domface_tess_domain (struct TESS Tess, int domface, struct TESS *pT,
     ut_array_1d_int_memcpy (Tess.DomTessEdgeNb[oldedge] + 1,
                             (*pT).DomTessEdgeQty[i],
                             (*pT).DomTessEdgeNb[i] + 1);
+
+    otherdomface = (Tess.DomEdgeFaceNb[i][0] == domface) ? Tess.DomEdgeFaceNb[i][1] : Tess.DomEdgeFaceNb[i][0];
+
+    if (!strcmp (Tess.DomFaceType[otherdomface], "plane"))
+    {
+      ut_string_string ("line", (*pT).DomEdgeType + i);
+      (*pT).DomEdgeParmQty[i] = 0;
+    }
+    else
+    {
+      ut_string_string (Tess.DomFaceType[otherdomface], (*pT).DomEdgeType + i);
+      (*pT).DomEdgeParmQty[i] = Tess.DomFaceParmQty[otherdomface];
+      (*pT).DomEdgeParms[i] = ut_alloc_1d ((*pT).DomEdgeParmQty[i]);
+      ut_array_1d_memcpy (Tess.DomFaceParms[otherdomface], (*pT).DomEdgeParmQty[i], (*pT).DomEdgeParms[i]);
+    }
   }
 
   // Domain vertices

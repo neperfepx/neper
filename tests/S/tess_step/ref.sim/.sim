@@ -1,14 +1,13 @@
 ***sim
  **format
-   1.0
+   1.1
  **input
   *tess
    simulation.tess
  **general
    2 0 0 0 0
   *orides
-   rodrigues:active
- **entity cell
+   rodrigues:passive
  **step
    10
 ***end

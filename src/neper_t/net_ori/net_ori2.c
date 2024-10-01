@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_.h"
@@ -288,6 +288,7 @@ void
 net_ori_file (char *filename_in, struct OL_SET *pOSet)
 {
   unsigned int i;
+  int des_size;
   char *des = NULL, *conv = NULL, *tmp = NULL;
   double *vect = ut_alloc_1d (4);
   double **g = ol_g_alloc ();
@@ -307,7 +308,7 @@ net_ori_file (char *filename_in, struct OL_SET *pOSet)
     ut_string_string (filename_in, &filename);
 
   ut_string_string ("rodrigues", &des);
-  ut_string_string ("active", &conv);
+  ut_string_string ("passive", &conv);
 
   if (varqty == 1)
     ut_string_string (NEUT_DEFAULT_ORIDES, &des);
@@ -326,7 +327,10 @@ net_ori_file (char *filename_in, struct OL_SET *pOSet)
   if ((*pOSet).size > 0)
     ol_set_free (pOSet);
 
-  (*pOSet) = ol_set_alloc (ut_file_nbwords (filename) / ol_des_size (des), NULL);
+  des_size = ol_des_size (des);
+  if (des_size < 0)
+    abort ();
+  (*pOSet) = ol_set_alloc (ut_file_nbwords (filename) / des_size, NULL);
 
   fp = ut_file_open (filename, "r");
 
@@ -373,7 +377,7 @@ net_ori_file (char *filename_in, struct OL_SET *pOSet)
       abort ();
   }
 
-  if (!strcmp (conv, "passive"))
+  if (!strcmp (conv, "active"))
     for (i = 0; i < (*pOSet).size; i++)
         ol_q_inverse ((*pOSet).q[i], (*pOSet).q[i]);
 

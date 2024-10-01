@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_pf_.h"
@@ -117,10 +117,10 @@ neut_pf_init_ipfborder (struct PF *pPf)
   {
     int *hpole = ut_alloc_1d_int (4);
     double* v2110 = ut_alloc_1d (3);
-    ut_array_1d_int_set_4 (hpole, -1, 2, -1, 0);
+    ut_array_1d_int_set_4 (hpole, 1, 0, -1, 0);
     ol_hpole_vect (hpole, v2110);
 
-    ol_r_set_this (r, 0, 0, -1);
+    ol_r_set_this (r, 0, 0, 1);
 
     if (!(*pPf).ipfptqty)
       (*pPf).ipfptqty = 32;
@@ -134,16 +134,11 @@ neut_pf_init_ipfborder (struct PF *pPf)
       ol_rtheta_g (r, i * dtheta, g);
       ol_g_vect_vect (g, v2110, v);
       if (!strcmp ((*pPf).projection, "stereographic"))
-        ol_vect_stprojxy (v, (*pPf).ipfpts[i + 1]);
+        ol_vect_stprojxy (v, (*pPf).ipfpts[(*pPf).ipfptqty - 1 - i]);
       else if (! strcmp ((*pPf).projection, "equal-area"))
-        ol_vect_eaprojxy (v, (*pPf).ipfpts[i + 1]);
+        ol_vect_eaprojxy (v, (*pPf).ipfpts[(*pPf).ipfptqty - 1 - i]);
       else
         abort ();
-    }
-    for (i = 0; i < (*pPf).ipfptqty; i++)
-    {
-      ut_array_1d_switch ((*pPf).ipfpts[i], 0, 1);
-      (*pPf).ipfpts[i][1] *= -1;
     }
 
     ut_free_1d (&v2110);

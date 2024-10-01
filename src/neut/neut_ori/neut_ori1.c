@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_ori_.h"
@@ -68,7 +68,7 @@ neut_ori_des_expand (char *des, char **pdes2)
     ut_string_string (parts[1], &part2);
   }
   else
-    ut_string_string ("active", &part2);
+    ut_string_string ("passive", &part2);
 
   *pdes2 = ut_alloc_1d_char (strlen (part1) + strlen (part2) + 2);
   sprintf (*pdes2, "%s%s%s", part1, NEUT_SEP_DEP, part2);
@@ -211,7 +211,7 @@ neut_ori_expr_desconv (char *expr, char **pdes, char **pconv)
   else if (qty == 1)
   {
     ut_string_string (tmp[0], pdes);
-    ut_string_string ("active", pconv);
+    ut_string_string ("passive", pconv);
   }
   else
   {
@@ -236,7 +236,7 @@ neut_ori_desconv_expr (char *des, char *conv, char **pexpr)
 
   ut_free_1d_char (pexpr);
 
-  if (!conv || strlen (conv) == 0 || !strcmp (conv, "active"))
+  if (!conv || strlen (conv) == 0 || !strcmp (conv, "passive"))
     ut_string_string (des, pexpr);
   else
   {
@@ -422,7 +422,7 @@ neut_ori_fscanf (FILE *file, char *desconv, char *format, double **q, int *ids, 
   }
 
 
-  if (!strcmp (conv, "passive"))
+  if (!strcmp (conv, "active"))
     for (i = 0; i < qty; i++)
       ol_q_inverse (q[i], q[i]);
 
@@ -462,9 +462,9 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
   if (status)
     ut_print_exprbug (desconv);
 
-  // copying CellOri to q, and taking the inverse if passive convention
+  // copying CellOri to q, and taking the inverse if active convention
   ut_array_2d_memcpy (q0, qty, 4, q);
-  if (!strcmp (conv, "passive"))
+  if (!strcmp (conv, "active"))
     for (i = 0; i < qty; i++)
       ol_q_inverse (q[i], q[i]);
 
@@ -897,7 +897,7 @@ neut_ori_des_ori (double *q0, char *des0, double *ori)
 
   status = 0;
 
-  if (!strcmp (conv, "passive"))
+  if (!strcmp (conv, "active"))
     ol_q_inverse (q, q);
 
   if (!strcmp (des, "euler-bunge"))
@@ -939,4 +939,18 @@ neut_ori_des_ori (double *q0, char *des0, double *ori)
   ut_free_1d_char (&conv);
 
   return status;
+}
+
+void
+neut_ori_des_fixconvention (char **porides)
+{
+  if (strstr (*porides, "active"))
+  {
+    *porides = ut_realloc_1d_char (*porides, strlen ((*porides)) + 2);
+    ut_string_fnrs (*porides, "active", "passive", 1);
+  }
+  else if (strstr (*porides, "passive"))
+    ut_string_fnrs (*porides, "passive", "active", 1);
+
+  return;
 }

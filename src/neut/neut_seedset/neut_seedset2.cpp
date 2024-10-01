@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2022, Romain Quey. */
+/* Copyright (C) 2003-2024, Romain Quey. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_seedset_.h"
@@ -14,7 +14,8 @@ neut_seedset_memcpy_general (struct SEEDSET SSetA, struct SEEDSET *pSSetB)
   (*pSSetB).Nall = SSetA.Nall;
 
   (*pSSetB).Size = ut_alloc_2d (3, 2);
-  ut_array_2d_memcpy (SSetA.Size, 3, 2, (*pSSetB).Size);
+  if (SSetA.Size)
+    ut_array_2d_memcpy (SSetA.Size, 3, 2, (*pSSetB).Size);
 
   (*pSSetB).Periodic = ut_alloc_1d_int (3);
   if (SSetA.Periodic)
@@ -56,16 +57,19 @@ neut_seedset_memcpy_seeds (struct SEEDSET SSetA, struct SEEDSET *pSSetB)
   }
 
   (*pSSetB).SeedCoo0 = ut_alloc_2d ((*pSSetB).N + 1, 3);
-  ut_array_2d_memcpy (SSetA.SeedCoo0 + 1, (*pSSetB).N, 3,
-                      (*pSSetB).SeedCoo0 + 1);
+  if (SSetA.SeedCoo0)
+    ut_array_2d_memcpy (SSetA.SeedCoo0 + 1, (*pSSetB).N, 3,
+                        (*pSSetB).SeedCoo0 + 1);
 
   (*pSSetB).SeedCoo = ut_alloc_2d ((*pSSetB).Nall + 1, 3);
-  ut_array_2d_memcpy (SSetA.SeedCoo + 1, (*pSSetB).Nall, 3,
-                      (*pSSetB).SeedCoo + 1);
+  if (SSetA.SeedCoo)
+    ut_array_2d_memcpy (SSetA.SeedCoo + 1, (*pSSetB).Nall, 3,
+                        (*pSSetB).SeedCoo + 1);
 
   (*pSSetB).SeedWeight = ut_alloc_1d ((*pSSetB).Nall + 1);
-  ut_array_1d_memcpy (SSetA.SeedWeight + 1, (*pSSetB).Nall,
-                      (*pSSetB).SeedWeight + 1);
+  if (SSetA.SeedWeight)
+    ut_array_1d_memcpy (SSetA.SeedWeight + 1, (*pSSetB).Nall,
+                        (*pSSetB).SeedWeight + 1);
 
   if (SSetA.SeedOri)
   {
