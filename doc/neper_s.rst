@@ -29,7 +29,7 @@ Here is what a typical run of module -S looks like:
   Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)
   Info   : Running on 20 threads.
   Info   : <https://neper.info>
-  Info   : Copyright (C) 2003-2022, and GNU GPL'd, by Romain Quey.
+  Info   : Copyright (C) 2003-2024, and GNU GPL'd, by Romain Quey.
   Info   : Loading initialization file `/home/rquey/.neperrc'...
   Info   : ---------------------------------------------------------------
   Info   : MODULE  -S loaded with arguments:

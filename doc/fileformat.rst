@@ -78,8 +78,10 @@ and
     *edge
      <total_number_of_dom_edges>
      <dom_edge_id> <number_of_dom_vertices> [<dom_ver_1> <dom_ver_2>]
+                   <dom_edge_type>
+                   <number_of_params> <dom_edge_param1> <dom_edge_param2> ...
                    <dom_edge_label>
-                   <number_of_dom_tess_edges> <edge_1> <edge_2> ...
+                   <number_of_dom_tess_edges> <dom_tess_edge_1> <dom_tess_edge_2> ...
      ...
     *face
      <total_number_of_dom_faces>
@@ -88,8 +90,7 @@ and
                    <dom_face_type>
                    <number_of_params> <dom_face_param1> <dom_face_param2> ...
                    <dom_face_label>
-                   <number_of_dom_tess_faces>
-                   <dom_tess_face_1> <dom_tess_face_2> ...
+                   <number_of_dom_tess_faces> <dom_tess_face_1> <dom_tess_face_2> ...
      ...
    **periodic
     *general
@@ -127,7 +128,7 @@ where (with identifiers being integer numbers),
 
 - :data:`**format` denotes the beginning of the format field.
 
-- :data:`<format>` is the file format, currently `2.0` (character string).
+- :data:`<format>` is the file format, currently `3.5` (character string).
 
 - :data:`**general` denotes the beginning of the general information field.
 
@@ -257,6 +258,12 @@ where (with identifiers being integer numbers),
 
 - :data:`<dom_ver_#>` are identifiers of the domain vertices of a domain edge or face.
 
+- :data:`<dom_edge_type>` is the type of an edge.
+
+- :data:`<number_of_params>` is the number of parameters.
+
+- :data:`<dom_edge_param#>` are the parameters of a domain edge.
+
 - :data:`<dom_edge_label>` is the label of a domain edge, formatted as :data:`x0y0`, :data:`x0y1`, :data:`x1y0`, ... (for a cubic domain).
 
 - :data:`<number_of_dom_tess_edges>` is the number of tessellation edges of a domain edge.
@@ -272,8 +279,6 @@ where (with identifiers being integer numbers),
 - :data:`<dom_edge_#>` are identifiers of the domain edges of a domain face.
 
 - :data:`<dom_face_type>` is the type of a face, among `plane`, `cylinder` or `sphere`.
-
-- :data:`<number_of_params>` is the number of parameters of a domain face.
 
 - :data:`<dom_face_param#>` are the parameters of a domain face.  For a planar face, they are the parameters of the equation of the face, listed in the order :data:`<face_eq_d>`, :data:`<face_eq_a>`, :data:`<face_eq_b>` and :data:`<face_eq_c>`.  For a cylindrical face, they are the coordinates of the base point, the axis and the radius.  For a spherical face, they are the coordinates of the center and the radius.
 
@@ -401,7 +406,7 @@ where
 
 - :data:`**format` denotes the beginning of the format field.
 
-- :data:`<format>` is the file format, currently `2.0` (character string).
+- :data:`<format>` is the file format, currently `2.2` (character string).
 
 - :data:`**general` denotes the beginning of the general information field.
 
@@ -572,7 +577,7 @@ where
 
 - :data:`$MeshVersion` denotes the beginning of a mesh version field.
 
-- :data:`<mesh_version>` is the mesh file version (currently :data:`2.2.3`).
+- :data:`<mesh_version>` is the mesh file version (currently :data:`2.3`).
 
 - :data:`$EndMeshVersion` denotes the end of a mesh version field.
 
@@ -769,7 +774,7 @@ where
 
 Results can have integer values, real values, vectorial values or tensorial values. In the result files, values for the different entities (nodes, elements, etc.) are written on successive lines, with components written on successive columns (space delimited). The components of a vector, :data:`v`, are written as :data:`v1` :data:`v2` :data:`v3`. The components of a symmetrical tensor, :data:`t`, are written using Voigt notation, as :data:`t11` :data:`t22` :data:`t33` :data:`t23` :data:`t31` :data:`t12`. The components of a skwe-symmetrical tensor, :data:`t`, are written using :data:`t12` :data:`t13` :data:`t23`. The components of a non-symmetrical tensor, :data:`t`, are written as :data:`t11` :data:`t12` :data:`t13` :data:`t21` :data:`t22` :data:`t23` :data:`t31` :data:`t32` :data:`t33`.
 
-The directory also contains a hidden file, :file:`.sim`, containing information on the simulation and the content of the simulation directory.  This file is only for internal use and is formatted as follows:
+The directory also contains a hidden file, :file:`.sim`, containing information on the simulation and the content of the simulation directory.  This file is only for internal use and is formatted as follows (the sections depend on the actual content of the simulation directory and most of them are optional):
 
 .. code-block:: plain
 
@@ -785,6 +790,8 @@ The directory also contains a hidden file, :file:`.sim`, containing information 
      <msh_file>
     *ori
      <ori_file>
+    *opt
+     <opt_file>
     *bcs
      <bcs_file>
     *phase

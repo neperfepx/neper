@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>File and Directory Formats &mdash; Neper 4.9.0 documentation</title>
+  <title>File and Directory Formats &mdash; Neper 4.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=7a99edf7"></script>
+        <script src="../_static/documentation_options.js?v=92ff7de8"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.9.0
+                4.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -172,8 +172,10 @@ and
   *edge
    &lt;total_number_of_dom_edges&gt;
    &lt;dom_edge_id&gt; &lt;number_of_dom_vertices&gt; [&lt;dom_ver_1&gt; &lt;dom_ver_2&gt;]
+                 &lt;dom_edge_type&gt;
+                 &lt;number_of_params&gt; &lt;dom_edge_param1&gt; &lt;dom_edge_param2&gt; ...
                  &lt;dom_edge_label&gt;
-                 &lt;number_of_dom_tess_edges&gt; &lt;edge_1&gt; &lt;edge_2&gt; ...
+                 &lt;number_of_dom_tess_edges&gt; &lt;dom_tess_edge_1&gt; &lt;dom_tess_edge_2&gt; ...
    ...
   *face
    &lt;total_number_of_dom_faces&gt;
@@ -182,8 +184,7 @@ and
                  &lt;dom_face_type&gt;
                  &lt;number_of_params&gt; &lt;dom_face_param1&gt; &lt;dom_face_param2&gt; ...
                  &lt;dom_face_label&gt;
-                 &lt;number_of_dom_tess_faces&gt;
-                 &lt;dom_tess_face_1&gt; &lt;dom_tess_face_2&gt; ...
+                 &lt;number_of_dom_tess_faces&gt; &lt;dom_tess_face_1&gt; &lt;dom_tess_face_2&gt; ...
    ...
  **periodic
   *general
@@ -218,7 +219,7 @@ and
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">***tess</span></code> denotes the beginning of a tessellation file.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**format</span></code> denotes the beginning of the format field.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;format&gt;</span></code> is the file format, currently <cite>2.0</cite> (character string).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;format&gt;</span></code> is the file format, currently <cite>3.5</cite> (character string).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**general</span></code> denotes the beginning of the general information field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dim&gt;</span></code> is the dimension of the tessellation (1, 2 or 3).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;type&gt;</span></code> is the type of tessellation (always <code class="xref py py-data docutils literal notranslate"><span class="pre">standard</span></code>).</p></li>
@@ -283,6 +284,9 @@ and
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dom_edge_id&gt;</span></code> is the identifier of a domain edge and ranges between <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> to <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;total_number_of_dom_edges&gt;</span></code>.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;number_of_dom_vertices&gt;</span></code> is the number of domain vertices of a domain edge or a domain face.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dom_ver_#&gt;</span></code> are identifiers of the domain vertices of a domain edge or face.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dom_edge_type&gt;</span></code> is the type of an edge.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;number_of_params&gt;</span></code> is the number of parameters.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dom_edge_param#&gt;</span></code> are the parameters of a domain edge.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dom_edge_label&gt;</span></code> is the label of a domain edge, formatted as <code class="xref py py-data docutils literal notranslate"><span class="pre">x0y0</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">x0y1</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">x1y0</span></code>, … (for a cubic domain).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;number_of_dom_tess_edges&gt;</span></code> is the number of tessellation edges of a domain edge.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">*face</span></code> denotes the beginning of the domain face field (for a tessellation of dimension 3).</p></li>
@@ -291,7 +295,6 @@ and
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;number_of_dom_edges&gt;</span></code> is the number of domain edges of a domain face.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dom_edge_#&gt;</span></code> are identifiers of the domain edges of a domain face.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dom_face_type&gt;</span></code> is the type of a face, among <cite>plane</cite>, <cite>cylinder</cite> or <cite>sphere</cite>.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;number_of_params&gt;</span></code> is the number of parameters of a domain face.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dom_face_param#&gt;</span></code> are the parameters of a domain face.  For a planar face, they are the parameters of the equation of the face, listed in the order <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;face_eq_d&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;face_eq_a&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;face_eq_b&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;face_eq_c&gt;</span></code>.  For a cylindrical face, they are the coordinates of the base point, the axis and the radius.  For a spherical face, they are the coordinates of the center and the radius.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dom_face_label&gt;</span></code> is the label of a domain face, formatted as <code class="xref py py-data docutils literal notranslate"><span class="pre">x0</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">x1</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">y0</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">y1</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">z0</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">z1</span></code> (for a cubic domain).  For a cylindrical domain, it is formatted as <code class="xref py py-data docutils literal notranslate"><span class="pre">z0</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">z1</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">f1</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">f2</span></code>, … Otherwise, it is one of <code class="xref py py-data docutils literal notranslate"><span class="pre">f1</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">f2</span></code>, …  Edge and vertex labels are derived accordingly.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;number_of_dom_tess_faces&gt;</span></code> is the number of tessellation faces of a domain face.</p></li>
@@ -383,7 +386,7 @@ and
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">***tesr</span></code> denotes the beginning of a raster tessellation file.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**format</span></code> denotes the beginning of the format field.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;format&gt;</span></code> is the file format, currently <cite>2.0</cite> (character string).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;format&gt;</span></code> is the file format, currently <cite>2.2</cite> (character string).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**general</span></code> denotes the beginning of the general information field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dimension&gt;</span></code> is the dimension of the raster tessellation.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_y&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_z&gt;</span></code> are the raster sizes along the coordinate axes. The number of sizes must match <cite>&lt;dimension&gt;</cite>.</p></li>
@@ -511,7 +514,7 @@ $EndGroups
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_size&gt;</span></code> is an integer equal to the size of the floating point numbers used in the file (= <code class="xref py py-data docutils literal notranslate"><span class="pre">sizeof</span> <span class="pre">(double)</span></code>).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$EndMeshFormat</span></code> denotes the end of a mesh format field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$MeshVersion</span></code> denotes the beginning of a mesh version field.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;mesh_version&gt;</span></code> is the mesh file version (currently <code class="xref py py-data docutils literal notranslate"><span class="pre">2.2.3</span></code>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;mesh_version&gt;</span></code> is the mesh file version (currently <code class="xref py py-data docutils literal notranslate"><span class="pre">2.3</span></code>).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$EndMeshVersion</span></code> denotes the end of a mesh version field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">$Domain</span></code> denotes the beginning of an optional domain field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;domain&gt;</span></code> is the domain.</p></li>
@@ -630,7 +633,7 @@ $EndGroups
 <li><p><code class="file docutils literal notranslate"><span class="pre">restart</span></code> is the restart directory.  It is present only if <code class="xref py py-data docutils literal notranslate"><span class="pre">restart</span></code> was switched on in FEPX and contains raw FEPX restart files (requires FEPX version 1.2 or higher).</p></li>
 </ul>
 <p>Results can have integer values, real values, vectorial values or tensorial values. In the result files, values for the different entities (nodes, elements, etc.) are written on successive lines, with components written on successive columns (space delimited). The components of a vector, <code class="xref py py-data docutils literal notranslate"><span class="pre">v</span></code>, are written as <code class="xref py py-data docutils literal notranslate"><span class="pre">v1</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">v2</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">v3</span></code>. The components of a symmetrical tensor, <code class="xref py py-data docutils literal notranslate"><span class="pre">t</span></code>, are written using Voigt notation, as <code class="xref py py-data docutils literal notranslate"><span class="pre">t11</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t22</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t33</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t23</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t31</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t12</span></code>. The components of a skwe-symmetrical tensor, <code class="xref py py-data docutils literal notranslate"><span class="pre">t</span></code>, are written using <code class="xref py py-data docutils literal notranslate"><span class="pre">t12</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t13</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t23</span></code>. The components of a non-symmetrical tensor, <code class="xref py py-data docutils literal notranslate"><span class="pre">t</span></code>, are written as <code class="xref py py-data docutils literal notranslate"><span class="pre">t11</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t12</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t13</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t21</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t22</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t23</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t31</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t32</span></code> <code class="xref py py-data docutils literal notranslate"><span class="pre">t33</span></code>.</p>
-<p>The directory also contains a hidden file, <code class="file docutils literal notranslate"><span class="pre">.sim</span></code>, containing information on the simulation and the content of the simulation directory.  This file is only for internal use and is formatted as follows:</p>
+<p>The directory also contains a hidden file, <code class="file docutils literal notranslate"><span class="pre">.sim</span></code>, containing information on the simulation and the content of the simulation directory.  This file is only for internal use and is formatted as follows (the sections depend on the actual content of the simulation directory and most of them are optional):</p>
 <div class="highlight-plain notranslate"><div class="highlight"><pre><span></span>***sim
  **format
    &lt;format&gt;
@@ -643,6 +646,8 @@ $EndGroups
    &lt;msh_file&gt;
   *ori
    &lt;ori_file&gt;
+  *opt
+   &lt;opt_file&gt;
   *bcs
    &lt;bcs_file&gt;
   *phase

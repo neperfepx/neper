@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tessellation Module (-T) &mdash; Neper 4.9.0 documentation</title>
+  <title>Tessellation Module (-T) &mdash; Neper 4.10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=7a99edf7"></script>
+        <script src="../_static/documentation_options.js?v=92ff7de8"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.9.0
+                4.10.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -134,7 +134,7 @@
 <span class="go">Info   : Built with: gsl|muparser|opengjk|openmp|nlopt|libscotch (full)</span>
 <span class="go">Info   : Running on 8 threads.</span>
 <span class="go">Info   : &lt;https://neper.info&gt;</span>
-<span class="go">Info   : Copyright (C) 2003-2020, and GNU GPL&#39;d, by Romain Quey.</span>
+<span class="go">Info   : Copyright (C) 2003-2024, and GNU GPL&#39;d, by Romain Quey.</span>
 <span class="go">Info   : No initialization file found (`/home/rquey/.neperrc&#39;).</span>
 <span class="go">Info   : ---------------------------------------------------------------</span>
 <span class="go">Info   : MODULE  -T loaded with arguments:</span>
@@ -189,14 +189,41 @@
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-domain">
 <span class="sig-name descname"><span class="pre">-domain</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;domain_morphology[:transformation]&gt;</span></span><a class="headerlink" href="#cmdoption-domain" title="Link to this definition"></a></dt>
-<dd><p>Specify the domain morphology and, optionally, a transformation.</p>
-<p>The domain morphology can be:</p>
+<dd><p>Specify the domain morphology and, optionally, a transformation.  There are several options to do so:</p>
 <ul>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cube(&lt;size_x&gt;,&lt;size_y&gt;,&lt;size_z&gt;)</span></code>: a cuboidal shape (in 3D), or <code class="xref py py-data docutils literal notranslate"><span class="pre">square(&lt;size_x&gt;,&lt;size_y&gt;)</span></code>: a rectangular shape (in 2D);</p></li>
+<li><p>Simple 3D geometries:</p>
+<ul>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cube(&lt;size_x&gt;,&lt;size_y&gt;,&lt;size_z&gt;)</span></code>: a cuboidal shape;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cylinder(&lt;height&gt;,&lt;diameter&gt;[,&lt;facet_nb&gt;])</span></code>: a cylindrical shape;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">sphere(&lt;diameter&gt;[,&lt;facet_nb&gt;])</span></code>: a spherical shape (in 3D), or <code class="xref py py-data docutils literal notranslate"><span class="pre">circle(&lt;diameter&gt;[,&lt;facet_nb&gt;])</span></code>: a circular shape (in 2D);</p>
-<p><code class="xref py py-data docutils literal notranslate"><span class="pre">facet_nb</span></code> is the number of facets used to described a curved surface.</p>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">sphere(&lt;diameter&gt;[,&lt;facet_nb&gt;])</span></code>: a spherical shape;</p>
+<p>For <code class="xref py py-data docutils literal notranslate"><span class="pre">cylinder</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">sphere</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;facet_nb&gt;</span></code> is the number of facets used to described a curved surface.</p>
 </li>
+</ul>
+</li>
+<li><p>Simple 2D geometries:</p>
+<ul>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">square(&lt;size_x&gt;,&lt;size_y&gt;)</span></code>: a rectangular shape;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">circle(&lt;diameter&gt;[,&lt;segment_nb&gt;])</span></code>: a circular shape;</p>
+<p>For <code class="xref py py-data docutils literal notranslate"><span class="pre">circle</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;segment_nb&gt;</span></code> is the number of segments used to described the curved line.</p>
+</li>
+</ul>
+</li>
+<li><p>Orientation-related geometries:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues(&lt;crysym&gt;)</span></code>: a Rodrigues space fundamental region, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysym&gt;</span></code> is the <a class="reference internal" href="exprskeys.html#crystal-symmetries"><span class="std std-ref">Crystal Symmetry</span></a> (to enforce periodicity relationships between opposite surfaces, use <a class="reference internal" href="#cmdoption-periodicity"><code class="xref std std-option docutils literal notranslate"><span class="pre">-periodicity</span></code></a><code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> (only for <a class="reference internal" href="#cmdoption-n"><code class="xref std std-option docutils literal notranslate"><span class="pre">-n</span></code></a><code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>)) <a class="footnote-reference brackets" href="#rodrigues" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a>;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">euler-bunge(&lt;size_x&gt;,&lt;size_y&gt;,&lt;size_z&gt;)</span></code>: the Euler space (Bunge convention), where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_y&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_z&gt;</span></code> are the space dimensions (in degrees or radians <a class="footnote-reference brackets" href="#euler-bunge" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a>);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">stdtriangle(crysym=&lt;crysym&gt;,projection=&lt;projection&gt;,segmentnb=&lt;segment_nb&gt;)</span></code>: a standard stereographic triangle, with the optional arguments:</p>
+<ul>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysym&gt;</span></code>: the crystal symmetry (default <code class="xref py py-data docutils literal notranslate"><span class="pre">cubic</span></code>);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;projection&gt;</span></code>: the projection (default <code class="xref py py-data docutils literal notranslate"><span class="pre">stereographic</span></code>);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;segment_nb&gt;</span></code>: the number of segments along the curved edge (default <code class="xref py py-data docutils literal notranslate"><span class="pre">20</span></code>);</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Fully custom geometries:</p>
+<ul>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: a geometry loaded from a <a class="reference internal" href="fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a>, a Wavefront OBJ file or an OpenVolumeMesh OVM file.  If the geometry contains several cells, use <code class="xref py py-data docutils literal notranslate"><span class="pre">cell</span></code> as described below to extract a cell.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">planes(&lt;file_name&gt;)</span></code>: an arbitrary (non-degenerated) convex 3D shape, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;file_name&gt;</span></code> contains the total number of planes and then, for each plane, the 4 parameters of its equation: <code class="xref py py-data docutils literal notranslate"><span class="pre">d</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">a</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">b</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">c,</span></code> successively for an equation of the form <span class="math notranslate nohighlight">\(a\,x+b\,y+c\,z=d\)</span>, and where the plane normal <span class="math notranslate nohighlight">\((a,\,b,\,c)\)</span> is an outgoing vector of the domain.  For the unit cube, the file can be as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">6</span>
 <span class="mi">0</span> <span class="o">-</span><span class="mi">1</span>  <span class="mi">0</span>  <span class="mi">0</span>
@@ -208,14 +235,6 @@
 </pre></div>
 </div>
 </li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cell(&lt;file_name&gt;,&lt;cell_id&gt;)</span></code>: a tessellation cell, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;file_name&gt;</span></code> is the tessellation file and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;cell_id&gt;</span></code> is the cell identifier;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues(&lt;crysym&gt;)</span></code>: a Rodrigues space fundamental region, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysym&gt;</span></code> is the <a class="reference internal" href="exprskeys.html#crystal-symmetries"><span class="std std-ref">Crystal Symmetry</span></a> (to enforce periodicity relationships between opposite surfaces, use <a class="reference internal" href="#cmdoption-periodicity"><code class="xref std std-option docutils literal notranslate"><span class="pre">-periodicity</span></code></a><code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> (only for <a class="reference internal" href="#cmdoption-n"><code class="xref std std-option docutils literal notranslate"><span class="pre">-n</span></code></a><code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>)) <a class="footnote-reference brackets" href="#rodrigues" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a>;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">euler-bunge(&lt;size_x&gt;,&lt;size_y&gt;,&lt;size_z&gt;)</span></code>: the Euler space (Bunge convention), where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_y&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_z&gt;</span></code> are the space dimensions (in degrees or radians <a class="footnote-reference brackets" href="#euler-bunge" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a>);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">stdtriangle(crysym=&lt;crysym&gt;,projection=&lt;projection&gt;,segmentnb=&lt;segment_nb&gt;)</span></code>: a standard stereographic triangle, with the optional arguments:</p>
-<ul class="simple">
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">crysym</span></code>: the crystal symmetry (default <code class="xref py py-data docutils literal notranslate"><span class="pre">cubic</span></code>);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">projection</span></code>: the projection (default <code class="xref py py-data docutils literal notranslate"><span class="pre">stereographic</span></code>);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">segmentnb</span></code>: the number of segments along the curved edge (default <code class="xref py py-data docutils literal notranslate"><span class="pre">20</span></code>);</p></li>
 </ul>
 </li>
 </ul>
@@ -223,7 +242,8 @@
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">translate(&lt;dist_x&gt;,&lt;dist_y&gt;,&lt;dist_z&gt;)</span></code>: translate by distances <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dist_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dist_y&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dist_z&gt;</span></code> along <code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code>, respectively;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">rotate(&lt;axis_x&gt;,&lt;axis_y&gt;,&lt;axis_z&gt;,&lt;angle&gt;)</span></code>: rotate about the center and by an axis/angle pair (angle expressed in degrees);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">split(&lt;dir&gt;)</span></code>: splitting the domain in half along direction <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dir&gt;</span></code> (<code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code>), which can be used to apply symmetries.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">split(&lt;dir&gt;)</span></code>: split the domain in half along direction <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dir&gt;</span></code> (<code class="xref py py-data docutils literal notranslate"><span class="pre">x</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">y</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code>), which can be used to apply symmetries;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cell(&lt;cell_id&gt;)</span></code>: extract a cell from a tessellation.</p></li>
 </ul>
 <p>For a 2D tessellation, the axis parameters can be omitted in <code class="xref py py-data docutils literal notranslate"><span class="pre">rotate</span></code> (default <code class="xref py py-data docutils literal notranslate"><span class="pre">z</span></code>), and the <span class="math notranslate nohighlight">\(z\)</span> component can be omitted in <code class="xref py py-data docutils literal notranslate"><span class="pre">scale</span></code> (n/a) and <code class="xref py py-data docutils literal notranslate"><span class="pre">translate</span></code> (default <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>).</p>
 <p>An example is <code class="xref py py-data docutils literal notranslate"><span class="pre">sphere(1,1,0,0):translate(-0.5-0.5-0.5):scale(0.512)</span></code>.</p>
@@ -246,7 +266,11 @@
 <dl class="std option">
 <dt class="sig sig-object std" id="cmdoption-loadtess">
 <span class="sig-name descname"><span class="pre">-loadtess</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;tess_file&gt;</span></span><a class="headerlink" href="#cmdoption-loadtess" title="Link to this definition"></a></dt>
-<dd><p>Load a tessellation from a <a class="reference internal" href="fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a>.</p>
+<dd><p>Load a tessellation from a <a class="reference internal" href="fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a>, a Wavefront OBJ file (<code class="file docutils literal notranslate"><span class="pre">.obj</span></code>) or an OpenVolumeMesh OVM file (<code class="file docutils literal notranslate"><span class="pre">.ovm</span></code>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is possible to load an OBJ or OVM file to convert it into a <a class="reference internal" href="fileformat.html#tess-file"><span class="std std-ref">Tessellation File (.tess)</span></a>.</p>
+</div>
 <p><strong>Default value</strong>: -.</p>
 </dd></dl>
 
@@ -289,22 +313,27 @@
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">centroidal</span></code>: a centroidal tessellation <a class="footnote-reference brackets" href="#centroidal" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.  It actually is an alias for <code class="xref py py-data docutils literal notranslate"><span class="pre">centroid:seed</span></code>, which is described below.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cube(&lt;N&gt;)</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">square(&lt;N&gt;)</span></code>: regular tessellations into cubic or square cells, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;N&gt;</span></code> is the number of cells along a direction, or <code class="xref py py-data docutils literal notranslate"><span class="pre">cube(&lt;N1&gt;,&lt;N2&gt;,&lt;N3&gt;)</span></code> / <code class="xref py py-data docutils literal notranslate"><span class="pre">square(&lt;N1&gt;,&lt;N2&gt;)</span></code> for a regular tessellation into cubic / square cells, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;N1&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;N2&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;N3&gt;</span></code> are the number of cells along the three directions;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">tocta(&lt;N&gt;)</span></code>: regular tessellation into truncated octahedra, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;N&gt;</span></code> is the number of cells along a direction;</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">lamellar(w=&lt;width&gt;[,v=&lt;normal&gt;][,pos=&lt;pos&gt;][,reps=&lt;reps&gt;])</span></code>: lamellar morphology, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;width&gt;</span></code> is the absolute lamella width or a series of absolute lamella widths combined with <code class="xref py py-data docutils literal notranslate"><span class="pre">:</span></code>, and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;normal&gt;</span></code> is the lamella plane normal and can be:</p>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">lamellar([w=&lt;width&gt;][,n=&lt;n&gt;][,v=&lt;normal&gt;][,pos=&lt;pos&gt;][,reps=&lt;reps&gt;])</span></code>: lamellar morphology, where <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;width&gt;</span></code> is the absolute lamella width or a series of absolute lamella widths combined with <code class="xref py py-data docutils literal notranslate"><span class="pre">:</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;n&gt;</span></code> is the number of lamellae, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;normal&gt;</span></code> is the lamella plane normal, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;pos&gt;</span></code> is the position of the first lamella, and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;reps&gt;</span></code> is a relative tolerance on the width of the last lamella. <code class="xref py py-data docutils literal notranslate"><span class="pre">width=&lt;width&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">n=&lt;n&gt;</span></code> are mutually exclusive.  The number of lamellae can also be specified using option <a class="reference internal" href="#cmdoption-n"><code class="xref std std-option docutils literal notranslate"><span class="pre">-n</span></code></a>.  Specifying a number of cells (using option <a class="reference internal" href="#cmdoption-n"><code class="xref std std-option docutils literal notranslate"><span class="pre">-n</span></code></a> or <code class="xref py py-data docutils literal notranslate"><span class="pre">n=&lt;n&gt;</span></code>) enforces <code class="xref py py-data docutils literal notranslate"><span class="pre">pos=start</span></code> (or equivalently <code class="xref py py-data docutils literal notranslate"><span class="pre">pos=optimal</span></code>, as described below).</p>
 <ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;normal&gt;</span></code> (the lamella plane normal) can be:</p>
+<ul>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">random</span></code>: randomly-distributed normals taken from a uniform distribution (the default);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">(&lt;dir_x&gt;,&lt;dir_y&gt;,&lt;dir_z&gt;)</span></code>: a specific direction of space, (<code class="xref py py-data docutils literal notranslate"><span class="pre">dir_x</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">dir_y</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">dir_z</span></code>);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">crysdir(&lt;crysdir_x&gt;,&lt;crysdir_y&gt;,&lt;crysdir_z&gt;)</span></code>: a specific direction of the parent crystal, (<code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysdir_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysdir_y&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysdir_z&gt;</span></code>).</p></li>
 </ul>
-<p><code class="xref py py-data docutils literal notranslate"><span class="pre">pos</span></code> is the position of the first lamella and can be:</p>
-<ul class="simple">
+</li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;pos&gt;</span></code> (the position of the first lamella) can be:</p>
+<ul>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">random</span></code>: random position (the default);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">optimal</span></code>: optimal position, i.e. so that lamellae at the start <em>and</em> end of the domain are of lengths as close as possible to nominal (along direction <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dir&gt;</span></code>);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">start</span></code>: first lamella starting full-width from the start point of the domain (along direction  <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dir&gt;</span></code>);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">half</span></code>: first lamella starting half-width from the start point of the domain (along direction  <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dir&gt;</span></code>).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;factor&gt;</span></code>: lamella starting with a width equal to <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;factor&gt;</span></code> times the nominal width (between <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>), from the start point of the domain (along direction  <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dir&gt;</span></code>).</p></li>
 </ul>
-<p><code class="xref py py-data docutils literal notranslate"><span class="pre">reps</span></code> is a relative tolerance on the width of the last lamella (default <code class="xref py py-data docutils literal notranslate"><span class="pre">1e-2</span></code>) - a lamella is allowed to be larger than nominal, within the specified relative tolerance, to avoid the occurence of unrealistically thin lamella.</p>
-<p>In the case of a multiscale tessellation, a <a class="reference internal" href="fileformat.html#multiscale-cell-file"><span class="std std-ref">multiscale cell file</span></a> can be provided as value of <code class="xref py py-data docutils literal notranslate"><span class="pre">w</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">v</span></code>, and <code class="xref py py-data docutils literal notranslate"><span class="pre">pos</span></code>.</p>
+</li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;reps&gt;</span></code> (default <code class="xref py py-data docutils literal notranslate"><span class="pre">1e-2</span></code>) is so that a lamella is allowed to be larger than nominal, within the specified relative tolerance, to avoid the occurence of unrealistically thin lamella.</p></li>
+</ul>
+<p>In the case of a multiscale tessellation, a <a class="reference internal" href="fileformat.html#multiscale-cell-file"><span class="std std-ref">multiscale cell file</span></a> can be provided as value of <code class="xref py py-data docutils literal notranslate"><span class="pre">w</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">n</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">v</span></code>, and <code class="xref py py-data docutils literal notranslate"><span class="pre">pos</span></code>.</p>
 </li>
 </ul>
 <p><strong>Custom morphological properties</strong> can be defined using <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;property&gt;:&lt;value&gt;</span></code>. The properties and the possible corresponding values can be:</p>
@@ -567,7 +596,7 @@
 <dd><p>Specify the <a class="reference internal" href="exprskeys.html#crystal-symmetries"><span class="std std-ref">Crystal Symmetry</span></a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>It is used by option <code class="xref py py-data docutils literal notranslate"><span class="pre">-orisampling</span> <span class="pre">uniform</span></code>, to reduce the domain of definition of the orientation descriptors and by the <a class="reference internal" href="neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>.</p>
+<p>It is used by option <code class="xref py py-data docutils literal notranslate"><span class="pre">-orisampling</span> <span class="pre">uniform</span></code>, to reduce the domain of definition of the orientation descriptors and by the <a class="reference internal" href="neper_v.html#neper-v"><span class="std std-ref">Visualization Module (-V)</span></a>.  See also <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a> for the definition of the crystal coordinate system.</p>
 </div>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">triclinic</span></code>.</p>
 </dd></dl>
@@ -578,7 +607,7 @@
 <dd><p>Specify the crystal orientation distribution function (ODF).  By default, the crystal orientations are sampled randomly from the distribution function (ODF).  For uniform sampling, see <a class="reference internal" href="#cmdoption-orisampling"><code class="xref std std-option docutils literal notranslate"><span class="pre">-orisampling</span></code></a>.  The ODF can be:</p>
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">random</span></code>: ODF = 1, i.e. no or “random” texture (standard case);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">odf(mesh=file(&lt;mesh_file&gt;),val=file(&lt;value_file&gt;))</span></code>: ODF described by <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;mesh_file&gt;</span></code> (a mesh of the fundamental region of orientation space) and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;value_file&gt;</span></code> (a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> containing the ODF values at the mesh elements);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">odf(mesh=file(&lt;mesh_file&gt;),val=file(&lt;value_file&gt;)[,theta=&lt;theta&gt;)</span></code>: ODF described by <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;mesh_file&gt;</span></code> (a mesh of the fundamental region of orientation space), <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;value_file&gt;</span></code> (a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> containing the ODF values at the mesh elements) and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;theta&gt;</span></code> is the (optional, Neper-style) size of the kernel used to general the ODF (1-D standard deviation expressed in degrees, if any).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;orientation&gt;[:&lt;distribution&gt;]</span></code>: a continuous distribution about a <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">discrete orientation</span></a> (the distribution itself is optional, see below);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">fiber(&lt;dirc_x&gt;,&lt;dirc_y&gt;,&lt;dirc_z&gt;,&lt;dirs_x&gt;,&lt;dirs_y&gt;,&lt;dirs_z&gt;)[:normal(&lt;var&gt;=&lt;val&gt;)]</span></code>: orientations along a fiber (see <a class="reference internal" href="exprskeys.html#orientation-fibers"><span class="std std-ref">Orientation Fibers</span></a>), with an optional continuous distribution about the fiber (see below);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">parent[:&lt;distribution&gt;]</span></code>: orientations inherited from the ones of the parent cells, with an optional continuous distribution about the nominal orientations (see below);</p></li>
@@ -618,6 +647,97 @@
 </ul>
 <p>Uniform sampling is only available for <code class="xref py py-data docutils literal notranslate"><span class="pre">-ori</span> <span class="pre">random</span></code> (done according to <a class="reference internal" href="#jac2018" id="id17"><span>[JAC2018]</span></a>).</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">random</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-orioptialgo">
+<span class="sig-name descname"><span class="pre">-orioptialgo</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;algorithm1&gt;,&lt;algorithm2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptialgo" title="Link to this definition"></a></dt>
+<dd><p>Specify the optimization algorithm, which can be:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">subplex</span></code>: Subplex (recommend);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">praxis</span></code>: Praxis (recommended, except for high numbers of seeds, where it becomes highly memory-intensive) <a class="footnote-reference brackets" href="#praxis" id="id18" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a> ;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">neldermead</span></code>: Nelder-Mead (not recommended);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">cobyla</span></code>: Cobyla (not recommended);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">bobyqa</span></code>: Bobyqa (not recommended);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">newuoa</span></code>: Newuoa (not recommended).</p></li>
+</ul>
+</div></blockquote>
+<p>In several algorithms are provided, the second etc. are used if the previous ones fails.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">subplex,praxis</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-orioptidof">
+<span class="sig-name descname"><span class="pre">-orioptidof</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;dof1&gt;,&lt;dof2&gt;,...</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptidof" title="Link to this definition"></a></dt>
+<dd><p>Specify the degrees of freedom, which can be <code class="xref py py-data docutils literal notranslate"><span class="pre">r1</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">r2</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">r3</span></code> for the 3 components of the orientation (Rodrigues) vector, <code class="xref py py-data docutils literal notranslate"><span class="pre">rw</span></code> for the weights, and <code class="xref py py-data docutils literal notranslate"><span class="pre">rt</span></code> for the orientation spreads.  Use this option only if you really now what you are doing.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">r1,r2,r3</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-orioptiini">
+<span class="sig-name descname"><span class="pre">-orioptiini</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;ori_attributes&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptiini" title="Link to this definition"></a></dt>
+<dd><p>Specify the initial crystal orientations and/or their weights and distributions (theta parameter).</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">random</span></code>: random orientations;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;[,des=&lt;descriptor&gt;])</span></code>: orientations to be read from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a> written using a specific descriptor (see <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>, default <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>).</p></li>
+</ul>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">random</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-orioptifix">
+<span class="sig-name descname"><span class="pre">-orioptifix</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;orientations&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptifix" title="Link to this definition"></a></dt>
+<dd><p>Specify some orientations to fix during optimization.  The argument can be:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">file(&lt;file_name&gt;)</span></code>: logical values to load from a <a class="reference internal" href="fileformat.html#data-file"><span class="std std-ref">Data File</span></a>;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>: none.</p></li>
+</ul>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">none</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-orioptistop">
+<span class="sig-name descname"><span class="pre">-orioptistop</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;stopping_criterion&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptistop" title="Link to this definition"></a></dt>
+<dd><p>Specify the stopping criterion of the optimization process, as a logical expression based on the following variables.
+Depending on the problem (and on the algorithm to solve it), different criteria are available.</p>
+<p>For <code class="xref py py-data docutils literal notranslate"><span class="pre">-ori</span> <span class="pre">random</span> <span class="pre">-orisampling</span> <span class="pre">uniform</span></code>, the Thomson problem is solved using gradient descent, and the following criteria are available:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">reps</span></code>: relative error on the forces at orientations;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">iter</span></code>: iteration number.</p></li>
+</ul>
+<p>In other situations, general minimization operates, and the following criteria are available:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">eps</span></code>: absolute error on the value of the objective function evaluated on a number of degrees of freedom basis (<code class="xref py py-data docutils literal notranslate"><span class="pre">nlopt_eps</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">nlopt_reps</span></code> are the NLopt iteration-based values);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">reps</span></code>: relative error on the value of the objective function evaluated on a number of degrees of freedom basis (<code class="xref py py-data docutils literal notranslate"><span class="pre">nlopt_eps</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">nlopt_reps</span></code> are the NLopt iteration-based values);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">xeps</span></code>: absolute error on the components of the solution vector;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">xreps</span></code>: relative error on the components of the solution vector;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">val</span></code>: value of the objective function;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">iter</span></code>: number of iterations;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">time</span></code>: maximum computation time;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">loop</span></code>: number of iteration loops.</p></li>
+</ul>
+<p>Different criteria can be defined for the different algorithms (either <code class="xref py py-data docutils literal notranslate"><span class="pre">Thomson</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">general</span></code>) using the syntax <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;algorithm1&gt;:&lt;criterion1&gt;,&lt;algorithm2&gt;:&lt;criterion2&gt;,...</span></code>.  The algorithm may be omitted in the case of a universal criterion (or when only one algorithm is used).</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">&quot;thomson:reps&lt;1e-3||iter&gt;=1e3,general:eps&lt;1e-6&quot;</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-orioptineigh">
+<span class="sig-name descname"><span class="pre">-orioptineigh</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;neighborhood_radius&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptineigh" title="Link to this definition"></a></dt>
+<dd><p>Specify the radius of the neighborhood of orientations to be used to compute their forces (for <code class="xref py py-data docutils literal notranslate"><span class="pre">-orisampling</span> <span class="pre">uniform</span></code>), which can be any mathematical or logical expression based on:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">dr</span></code>: average radius of an orientation;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Nstar</span></code>: grand number of orientations (i.e., taking crystal symmetry into account).</p></li>
+</ul>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">&quot;Nstar&lt;10000?pi:20*dr&quot;</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-orioptilogvar">
+<span class="sig-name descname"><span class="pre">-orioptilogvar</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;variables&gt;</span> <span class="pre">(secondary</span> <span class="pre">option)</span></span><a class="headerlink" href="#cmdoption-orioptilogvar" title="Link to this definition"></a></dt>
+<dd><p>Log the variables (the orientations) during the optimization process.  The variables can be among those provided in <a class="reference internal" href="exprskeys.html#orientation-optimization-keys"><span class="std std-ref">Orientation Optimization Keys</span></a>.</p>
+<p><strong>Default value</strong>: -.</p>
+<p><strong>File extension</strong>: <code class="file docutils literal notranslate"><span class="pre">.logorivar</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
@@ -766,12 +886,12 @@ The value can be:</p>
 <dd><p>Specify the format(s) of the output file(s), which can be:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>tessellation: <code class="xref py py-data docutils literal notranslate"><span class="pre">tess</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">sim</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">geo</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">ply</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">stl[:bycell]</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">obj</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">3dec</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">fe</span></code>;</p></li>
+<li><p>tessellation: <code class="xref py py-data docutils literal notranslate"><span class="pre">tess</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">sim</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">geo</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">ply</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">stl[:bycell]</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">obj</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">3dec</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">fe</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">svg[(unit=&lt;unit&gt;)]</span></code>;</p></li>
 <li><p>raster tessellation: <code class="xref py py-data docutils literal notranslate"><span class="pre">tesr</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">sim</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">vtk</span></code>;</p></li>
 <li><p>orientations: <code class="xref py py-data docutils literal notranslate"><span class="pre">ori</span></code>.</p></li>
 </ul>
 </div></blockquote>
-<p>See <a class="reference internal" href="#output-files"><span class="std std-ref">Output Files</span></a> for details on the file formats.</p>
+<p><code class="xref py py-data docutils literal notranslate"><span class="pre">svg[(unit=&lt;unit&gt;)]</span></code> applies only to 2D tessellations, and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;unit&gt;</span></code> is an optional physical unit (e.g. <code class="xref py py-data docutils literal notranslate"><span class="pre">mm</span></code>).  See <a class="reference internal" href="#output-files"><span class="std std-ref">Output Files</span></a> for details on the file formats.</p>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">tess</span></code>.</p>
 </dd></dl>
 
@@ -786,7 +906,7 @@ The value can be:</p>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">binary16</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">binary16_big</span></code>: 16-bit binary / short-type;</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">binary32</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">binary32_big</span></code>: 32-bit binary / int-type.</p></li>
 </ul>
-<p><code class="xref py py-data docutils literal notranslate"><span class="pre">binary16</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">binary32</span></code> correspond to little endianness while <code class="xref py py-data docutils literal notranslate"><span class="pre">binary16_big</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">binary32_big</span></code> correspond to big endianness. <a class="footnote-reference brackets" href="#endianness" id="id18" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a></p>
+<p><code class="xref py py-data docutils literal notranslate"><span class="pre">binary16</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">binary32</span></code> correspond to little endianness while <code class="xref py py-data docutils literal notranslate"><span class="pre">binary16_big</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">binary32_big</span></code> correspond to big endianness. <a class="footnote-reference brackets" href="#endianness" id="id19" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a></p>
 </div></blockquote>
 <p><strong>Default value</strong> : <code class="xref py py-data docutils literal notranslate"><span class="pre">binary16</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">binary_big</span></code> (depending on the system).</p>
 </dd></dl>
@@ -807,7 +927,7 @@ the domain, which can be:</p>
 <dt class="sig sig-object std" id="cmdoption-oridescriptor">
 <span class="sig-name descname"><span class="pre">-oridescriptor</span></span><span class="sig-prename descclassname"> <span class="pre">&lt;descriptor[:convention]&gt;</span></span><a class="headerlink" href="#cmdoption-oridescriptor" title="Link to this definition"></a></dt>
 <dd><p>Specify the orientation descriptor and (optionally) the orientation convention used in the <code class="file docutils literal notranslate"><span class="pre">.tess</span></code>, <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code> and <code class="file docutils literal notranslate"><span class="pre">.ori</span></code> files.  See <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a> for possible values.</p>
-<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues:active</span></code>.</p>
+<p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues:passive</span></code>.</p>
 </dd></dl>
 
 <dl class="std option">
@@ -932,7 +1052,7 @@ the domain, which can be:</p>
 </section>
 </section>
 <section id="output-files">
-<span id="id19"></span><h2>Output Files<a class="headerlink" href="#output-files" title="Link to this heading"></a></h2>
+<span id="id20"></span><h2>Output Files<a class="headerlink" href="#output-files" title="Link to this heading"></a></h2>
 <section id="tessellation">
 <h3>Tessellation<a class="headerlink" href="#tessellation" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -944,6 +1064,7 @@ the domain, which can be:</p>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.stl</span></code>: STL (“STereoLithography”) file describing the tessellation.  If <code class="xref py py-data docutils literal notranslate"><span class="pre">-format</span> <span class="pre">stl:bycell</span></code> is used, a separate file is written for each cell, whose name ends in <code class="file docutils literal notranslate"><span class="pre">-&lt;id&gt;.stl</span></code>, where <code class="xref py py-data docutils literal notranslate"><span class="pre">id</span></code> is the cell identifier written with leading zeros;</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.obj</span></code>: Wavefront geometry file describing the tessellation;</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.3dec</span></code>: Itasca 3DEC file describing the tessellation;</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.svg</span></code>: SVG file describing the tessellation;</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.vtk</span></code>: VTK file describing the raster tessellation and that is supported by Amitex_ffpt.  Binary data are always written using big endians;</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.ori</span></code>: orientation file describing the crystal orientations of the tessellation cells.  The orientations are written on successive lines, using the descriptor specified by option <a class="reference internal" href="#cmdoption-oridescriptor"><code class="xref std std-option docutils literal notranslate"><span class="pre">-oridescriptor</span></code></a> (see also <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a>) and the writing convention specified by option <a class="reference internal" href="#cmdoption-oriformat"><code class="xref std std-option docutils literal notranslate"><span class="pre">-oriformat</span></code></a>.</p></li>
 </ul>
@@ -986,7 +1107,7 @@ the domain, which can be:</p>
 <h3>Orientation Optimization Log Files<a class="headerlink" href="#orientation-optimization-log-files" title="Link to this heading"></a></h3>
 <p>A log file is provided for the orientation variables.
 The files contain the data specified to the
-<code class="xref std std-option docutils literal notranslate"><span class="pre">-orioptilogvar</span></code> option and described in <a class="reference internal" href="exprskeys.html#orientation-optimization-keys"><span class="std std-ref">Orientation Optimization Keys</span></a>.</p>
+<a class="reference internal" href="#cmdoption-orioptilogvar"><code class="xref std std-option docutils literal notranslate"><span class="pre">-orioptilogvar</span></code></a> option and described in <a class="reference internal" href="exprskeys.html#orientation-optimization-keys"><span class="std std-ref">Orientation Optimization Keys</span></a>.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="file docutils literal notranslate"><span class="pre">.logorivar</span></code>: variables (orientations) file.</p></li>
@@ -1199,10 +1320,10 @@ The files contain the data specified to the
 </aside>
 <aside class="footnote brackets" id="sphericity" role="note">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id12">5</a><span class="fn-bracket">]</span></span>
-<p>The reason behind the <code class="xref py py-data docutils literal notranslate"><span class="pre">1-sphericity</span></code> (or <code class="xref py py-data docutils literal notranslate"><span class="pre">1-circularity</span></code>) variable is that, for a grain growth microstructure, 1 <span class="math notranslate nohighlight">\(-\)</span> the sphericity follows a lognormal distribution <a class="footnote-reference brackets" href="#cmame2018" id="id20" role="doc-noteref"><span class="fn-bracket">[</span><span class="fn-bracket">]</span></a>.</p>
+<p>The reason behind the <code class="xref py py-data docutils literal notranslate"><span class="pre">1-sphericity</span></code> (or <code class="xref py py-data docutils literal notranslate"><span class="pre">1-circularity</span></code>) variable is that, for a grain growth microstructure, 1 <span class="math notranslate nohighlight">\(-\)</span> the sphericity follows a lognormal distribution <a class="footnote-reference brackets" href="#cmame2018" id="id21" role="doc-noteref"><span class="fn-bracket">[</span><span class="fn-bracket">]</span></a>.</p>
 </aside>
 <aside class="footnote brackets" id="endianness" role="note">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id18">6</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id19">6</a><span class="fn-bracket">]</span></span>
 <p>Endianness is both written in the tesr file and tested on the system when reading the tesr file, so that the user normally does not have to care about it (even when transferring files across systems).</p>
 </aside>
 <aside class="footnote brackets" id="uniform-crysym" role="note">
@@ -1222,7 +1343,8 @@ The files contain the data specified to the
 <p>The angle convention is determined automatically from the values.</p>
 </aside>
 <aside class="footnote brackets" id="praxis" role="note">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id15">11</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id15">1</a>,<a role="doc-backlink" href="#id18">2</a>)</span>
 <p>The amount of memory needed approximately scales with the square of the number of seeds. <code class="xref py py-data docutils literal notranslate"><span class="pre">-n</span> <span class="pre">10000</span> <span class="pre">-morpho</span> <span class="pre">gg</span></code> requires 12 Gb of RAM.</p>
 </aside>
 <aside class="footnote brackets" id="size-diameq" role="note">

@@ -164,6 +164,7 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 :data:`domver`                    domain vertex (-1 if undefined)                                                                     ver
 :data:`scale`                     scale                                                                                               ver, edge, face, poly, cell [#multiscale_entity]_
 :data:`length`                    length                                                                                              edge
+:data:`length(<d_x>,<d_y>,<d_z>)` directional length along :math:`(d_x,d_y,d_z)` (in 2D, :data:`d_z` can be omitted)                  edge, face, poly
 :data:`area`                      surface area                                                                                        face, poly, group
 :data:`vol`                       volume                                                                                              poly, group
 :data:`size`                      size (surface area/volume in 2D/3D)                                                                 cell, group
@@ -639,9 +640,35 @@ Key                        Descriptor                               Number of pa
 :data:`quaternion`         quaternion                               4
 ========================== ======================================== =============================
 
-The convention can be added to the descriptor, either :data:`active` or :data:`passive`, as in :data:`rodrigues:active`.  When no convention is provided, :data:`active` is assumed.
+The convention can be added to the descriptor, either :data:`active` or :data:`passive`, as in :data:`rodrigues:active`.  When no convention is provided, :data:`passive` is assumed.
 
 Some options can take parameter values as argument, in which case the orientation must be expressed as :data:`<descriptor>(<parameter1>,<parameters2>,...)`. An example is :data:`rodrigues(0.1,0.2,0.3)`.
+
+.. _orientation_convention:
+
+Orientation Convention
+~~~~~~~~~~~~~~~~~~~~~~
+
+The crystal coordinate systems are attached to the crystal lattice as illustrated below, in the case of cubic and hexagonal symmetries:
+
+.. image:: imgs/directionconvention.png
+
+The so-called "passive" orientation convention is used by default, which is based on the rotation of the sample coordinate system into the crystal coordinate system.  Under this convention, the values of all :ref:`rotation_and_orientation_descriptors` are provided below for a simple (but representative) configuration that corresponds to a rotation of 30° about :math:`X_s`:
+
+.. image:: imgs/orientationconvention.png
+
+======================================== =============================
+**Descriptor**                           **Value** (angles in degrees)
+Rodrigues vector                         :math:`(0.267949192,\,0,\,0)`
+Euler angles (Bunge convention)          :math:`(0,\,30,\,0)`
+Euler angles (Kocks convention)          :math:`(270,\,30,\,90)`
+Euler angles (Roe convention)            :math:`(270,\,30,\,90)`
+rotation matrix                          :math:`\left(\begin{array}{ccc}1 & 0 & 0 \\ 0 & 0.866025404 & 0.5 \\ 0 & -0.5 & 0.866025404\\\end{array}\right)`
+rotation axis / angle pair               :math:`(1,\,0,\,0) / 30`
+quaternion                               :math:`(0.965925826,\,0.258819045,\,0,\,0)`
+======================================== =============================
+
+The values of the orientation descriptors under the "active" convention are obtained by taking the opposite rotation.
 
 .. _ideal_orientations:
 
@@ -666,7 +693,7 @@ Keys are available for ideal orientations (lowercased is accepted):
 :data:`Copper2`          :math:`(\overline{1}\,1\,2)[1\,\overline{1}\,1]`
 ======================== ====================================
 
-When loading orientations from an external file, use :data:`file(<file_name>[,des=<descriptor>])` where the orientation descriptor is among those listed above and is :data:`rodrigues:active` by default.
+When loading orientations from an external file, use :data:`file(<file_name>[,des=<descriptor>])` where the orientation descriptor is among those listed above and is :data:`rodrigues:passive` by default.
 
 .. _orientation_fibers:
 
