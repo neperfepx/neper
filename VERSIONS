@@ -1,3 +1,6 @@
+New in 4.10.1-1 (08 Oct 2024):
+- module -M: simple fix.
+
 New in 4.10.0 (01 Oct 2024):
 - general: switched "active" and "passive" for orientation convention (see
   incompatibility note below), changed convention for HCP directions.

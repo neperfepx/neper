@@ -65,6 +65,9 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
     else if (ut_file_nextstring_test (file, "$NodePartitions"))
       neut_mesh_fscanf_msh_nodeparts (file, pNodes);
 
+    else if (ut_file_nextstring_test (file, "$MeshVersion"))
+      neut_mesh_fscanf_msh_version (file, &version);
+
     else
       ut_print_message (2, 2, "Failed to read msh file\n");
   }
