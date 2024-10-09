@@ -40,7 +40,7 @@ nem_order_periodic_edges (struct TESS Tess, struct NODES *pNodes,
   int i, j, k, l, nodeqty_tot, nodeqty_o1, nodes[2], nodemasters[2], node,
     nodemaster;
   int **fir = NULL;
-  int *node_slave = ut_alloc_1d_int ((*pNodes).NodeQty);
+  int *node_slave = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
   int *shift = ut_alloc_1d_int (3);
 
   neut_elt_orderarrays (Mesh[1].EltType, Mesh[1].Dimension, &fir,

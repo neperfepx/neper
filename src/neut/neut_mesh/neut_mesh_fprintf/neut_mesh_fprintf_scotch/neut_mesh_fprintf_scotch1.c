@@ -17,7 +17,7 @@ neut_mesh_fprintf_scotch (char *body, struct NODES Nodes, struct MESH Mesh)
 
   SCOTCH_meshInit (&SCMesh);
 
-  neut_mesh_scotchmesh (Mesh, Nodes.NodeQty, &SCMesh);
+  neut_mesh_scotchmesh (Nodes, Mesh, &SCMesh);
 
   file = ut_file_open (scm, "w");
   SCOTCH_meshSave (&SCMesh, file);

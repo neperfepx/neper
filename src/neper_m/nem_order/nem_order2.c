@@ -82,6 +82,8 @@ nem_order_periodic (struct TESS Tess, struct NODES *pNodes, struct MESH *Mesh)
   if (Tess.Dim == 3)
     nem_order_periodic_faces (Tess, pNodes, Mesh);
 
+  neut_nodes_init_nodeslave (pNodes);
+
   return;
 }
 

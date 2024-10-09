@@ -71,7 +71,7 @@ extern "C"
 ///
 ///
 #ifdef HAVE_LIBSCOTCH
-  extern void neut_mesh_scotchmesh (struct MESH, int, SCOTCH_Mesh *);
+  extern void neut_mesh_scotchmesh (struct NODES Nodes, struct MESH Mesh, SCOTCH_Mesh *);
 #endif /* HAVE_LIBSCOTCH */
 
 /// \brief Initialize NodeElts of a MESH structure.

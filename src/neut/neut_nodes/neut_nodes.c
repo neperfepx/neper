@@ -316,16 +316,15 @@ neut_nodes_memcpy (struct NODES Nodes, struct NODES *pNodes2)
     if (Nodes.PerNodeSlaveNb)
     {
       (*pNodes2).PerNodeSlaveNb = ut_alloc_1d_pint ((*pNodes2).NodeQty + 1);
-      for (i = 1; i <= (*pNodes2).PerNodeQty; i++)
-      {
-        id = (*pNodes2).PerNodeNb[i];
-        (*pNodes2).PerNodeSlaveNb[id] =
-          ut_alloc_1d_int ((*pNodes2).PerNodeSlaveQty[id] + 1);
+      for (i = 1; i <= (*pNodes2).NodeQty; i++)
+        if ((*pNodes2).PerNodeSlaveQty[i])
+        {
+          (*pNodes2).PerNodeSlaveNb[i] = ut_alloc_1d_int ((*pNodes2).PerNodeSlaveQty[i] + 1);
 
-        ut_array_1d_int_memcpy (Nodes.PerNodeSlaveNb[id] + 1,
-                                (*pNodes2).PerNodeSlaveQty[id],
-                                (*pNodes2).PerNodeSlaveNb[id] + 1);
-      }
+          ut_array_1d_int_memcpy (Nodes.PerNodeSlaveNb[i] + 1,
+                                  (*pNodes2).PerNodeSlaveQty[i],
+                                  (*pNodes2).PerNodeSlaveNb[i] + 1);
+        }
     }
   }
 
@@ -629,21 +628,69 @@ neut_nodes_wbary (struct NODES Nodes, int *nodes, double *nodeweights,
 }
 
 /* node_nbs[...] = new pos */
-/* RAM could be improved by more elegant exchange of lines (not through
- * a big copy coo array */
 void
 neut_nodes_renumber_switch (struct NODES *pNodes, int *node_nbs)
 {
-  int i;
-  double **coo = ut_alloc_2d ((*pNodes).NodeQty + 1, 3);
+  int i, j;
+  struct NODES Nodes2;
+
+  neut_nodes_set_zero (&Nodes2);
+  neut_nodes_memcpy (*pNodes, &Nodes2);
 
   for (i = 1; i <= (*pNodes).NodeQty; i++)
-    ut_array_1d_memcpy ((*pNodes).NodeCoo[i], 3, coo[i]);
+  {
+    ut_array_1d_memcpy (Nodes2.NodeCoo[i], 3, (*pNodes).NodeCoo[node_nbs[i]]);
+    if ((*pNodes).NodeCl)
+      (*pNodes).NodeCl[node_nbs[i]] = Nodes2.NodeCl[i];
+  }
 
-  for (i = 1; i <= (*pNodes).NodeQty; i++)
-    ut_array_1d_memcpy (coo[i], 3, (*pNodes).NodeCoo[node_nbs[i]]);
+  if ((*pNodes).PerNodeQty > 0)
+  {
+    for (i = 1; i <= (*pNodes).PerNodeQty; i++)
+      (*pNodes).PerNodeNb[i] = node_nbs[Nodes2.PerNodeNb[i]];
 
-  ut_free_2d (&coo, (*pNodes).NodeQty);
+    ut_array_1d_int_zero ((*pNodes).PerNodeMaster + 1, (*pNodes).NodeQty);
+    ut_array_2d_int_zero ((*pNodes).PerNodeShift + 1, (*pNodes).NodeQty, 3);
+    ut_array_1d_int_zero ((*pNodes).PerNodeSlaveQty + 1, (*pNodes).NodeQty);
+    for (i = 1; i <= (*pNodes).NodeQty; i++)
+      ut_free_1d_int ((*pNodes).PerNodeSlaveNb + i);
+
+    for (i = 1; i <= (*pNodes).NodeQty; i++)
+    {
+      (*pNodes).PerNodeMaster[node_nbs[i]] = node_nbs[Nodes2.PerNodeMaster[i]];
+      ut_array_1d_int_memcpy (Nodes2.PerNodeShift[i], 3, (*pNodes).PerNodeShift[node_nbs[i]]);
+      (*pNodes).PerNodeSlaveQty[node_nbs[i]] = Nodes2.PerNodeSlaveQty[i];
+      if ((*pNodes).PerNodeSlaveQty[node_nbs[i]])
+      {
+        (*pNodes).PerNodeSlaveNb[node_nbs[i]] = ut_realloc_1d_int ((*pNodes).PerNodeSlaveNb[node_nbs[i]],
+                                                                   (*pNodes).PerNodeSlaveQty[node_nbs[i]] + 1);
+        for (j = 1; j <= Nodes2.PerNodeSlaveQty[i]; j++)
+          (*pNodes).PerNodeSlaveNb[node_nbs[i]][j] = node_nbs[Nodes2.PerNodeSlaveNb[i][j]];
+      }
+    }
+  }
+
+  if ((*pNodes).DupNodeQty > 0)
+  {
+    for (i = 1; i <= (*pNodes).DupNodeQty; i++)
+      (*pNodes).DupNodeNb[i] = node_nbs[i];
+
+    for (i = 1; i <= (*pNodes).NodeQty; i++)
+    {
+      (*pNodes).DupNodeMaster[node_nbs[i]] = node_nbs[Nodes2.DupNodeMaster[i]];
+      (*pNodes).DupNodeSeed[node_nbs[i]] = Nodes2.DupNodeSeed[i];
+      (*pNodes).DupNodeSlaveQty[node_nbs[i]] = Nodes2.DupNodeSlaveQty[i];
+      if ((*pNodes).DupNodeSlaveQty[node_nbs[i]])
+      {
+        (*pNodes).DupNodeSlaveNb[node_nbs[i]] = ut_realloc_1d_int ((*pNodes).DupNodeSlaveNb[node_nbs[i]],
+                                                                    (*pNodes).DupNodeSlaveQty[node_nbs[i]] + 1);
+        for (j = 1; j <= Nodes2.DupNodeSlaveQty[i]; j++)
+          (*pNodes).DupNodeSlaveNb[node_nbs[i]][j] = node_nbs[Nodes2.DupNodeSlaveNb[i][j]];
+      }
+    }
+  }
+
+  neut_nodes_free (&Nodes2);
 
   return;
 }
@@ -715,6 +762,11 @@ void
 neut_nodes_init_nodeslave (struct NODES *pNodes)
 {
   int i, master, slave;
+
+  if ((*pNodes).PerNodeSlaveQty)
+    ut_free_1d_int (&(*pNodes).PerNodeSlaveQty);
+  if ((*pNodes).PerNodeSlaveNb)
+    ut_free_2d_int (&(*pNodes).PerNodeSlaveNb, (*pNodes).PerNodeQty);
 
   (*pNodes).PerNodeSlaveQty = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
   (*pNodes).PerNodeSlaveNb = ut_alloc_1d_pint ((*pNodes).NodeQty + 1);

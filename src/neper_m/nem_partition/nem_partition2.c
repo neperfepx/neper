@@ -102,7 +102,7 @@ nem_partition_prep (struct NODES *pNodes, struct MESH *Mesh,
     neut_mesh_init_nodeelts (Mesh + dim, (*pNodes).NodeQty);
 
   SCOTCH_meshInit (pSCMesh);
-  neut_mesh_scotchmesh (Mesh[dim], (*pNodes).NodeQty, pSCMesh);
+  neut_mesh_scotchmesh (*pNodes, Mesh[dim], pSCMesh);
 
   return;
 }

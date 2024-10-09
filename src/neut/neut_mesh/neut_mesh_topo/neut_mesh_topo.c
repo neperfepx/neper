@@ -2504,3 +2504,63 @@ neut_mesh_order1nodes_order2node (struct MESH Mesh, int node1, int node2,
 
   return;
 }
+
+void
+neut_mesh_elt_nodes_per (struct NODES Nodes, struct MESH Mesh, int elt, int **pnodes, int *pnodeqty)
+{
+  int i, j, node, eltnodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder);
+
+  (*pnodeqty) = eltnodeqty;
+  (*pnodes) = ut_alloc_1d_int (*pnodeqty);
+
+  ut_array_1d_int_memcpy (Mesh.EltNodes[elt], eltnodeqty, *pnodes);
+
+  // periodic
+  if (Nodes.PerNodeQty > 0)
+  {
+    for (i = 0; i < eltnodeqty; i++)
+    {
+      node = Mesh.EltNodes[elt][i];
+
+      // is slave
+      if (Nodes.PerNodeMaster[node] > 0)
+        ut_array_1d_int_list_addval_nocheck (pnodes, pnodeqty, Nodes.PerNodeMaster[node]);
+
+      // is master
+      else if (Nodes.PerNodeSlaveQty[node] > 0)
+        for (j = 1; j <= Nodes.PerNodeSlaveQty[node]; j++)
+          ut_array_1d_int_list_addval_nocheck (pnodes, pnodeqty, Nodes.PerNodeSlaveNb[node][j]);
+    }
+  }
+
+  return;
+}
+
+void
+neut_mesh_node_elts_per (struct NODES Nodes, struct MESH Mesh, int node, int **pelts, int *peltqty)
+{
+  int nodeeltqty, *nodeelts = NULL;
+
+  (*peltqty) = Mesh.NodeElts[node][0];
+  (*pelts) = ut_alloc_1d_int (*peltqty);
+
+  ut_array_1d_int_memcpy (Mesh.NodeElts[node] + 1, Mesh.NodeElts[node][0], *pelts);
+
+  // periodic
+  if (Nodes.PerNodeQty > 0)
+  {
+    // is slave
+    if (Nodes.PerNodeMaster[node] > 0)
+      ut_array_1d_int_listpair_merge (*pelts, *peltqty, Mesh.NodeElts[Nodes.PerNodeMaster[node]] + 1,
+                                      Mesh.NodeElts[Nodes.PerNodeMaster[node]][0], pelts, peltqty);
+
+    // is master
+    else if (Nodes.PerNodeSlaveQty[node] > 0)
+    {
+      neut_mesh_nodes_allelts (Mesh, Nodes.PerNodeSlaveNb[node] + 1, Nodes.PerNodeSlaveQty[node], &nodeelts, &nodeeltqty);
+      ut_array_1d_int_listpair_merge (*pelts, *peltqty, nodeelts, nodeeltqty, pelts, peltqty);
+    }
+  }
+
+  return;
+}

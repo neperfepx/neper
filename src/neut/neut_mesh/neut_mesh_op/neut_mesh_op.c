@@ -294,47 +294,43 @@ neut_mesh_memcpy (struct MESH Old, struct MESH *pNew)
 
 #ifdef HAVE_LIBSCOTCH
 void
-neut_mesh_scotchmesh (struct MESH Mesh, int vnodnbr, SCOTCH_Mesh * pSCMesh)
+neut_mesh_scotchmesh (struct NODES Nodes, struct MESH Mesh, SCOTCH_Mesh * pSCMesh)
 {
-  int i, id, status;
-  int velmbas, vnodbas, velmnbr, vertnbr, edgenbr;
-  int *verttab, *edgetab;
-  int eltnodeqty =
-    neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder);
+  int i, j, status;
+  int verqty, edgeqty, nodeqty, eltqty;
+  int *vers = NULL, *edges = NULL, *nodes = NULL, *elts = NULL;
+  int eltnodeqty = neut_elt_nodeqty (Mesh.EltType, Mesh.Dimension, Mesh.EltOrder);
 
-  velmbas = 1;                  /* element base number */
-  vnodbas = 1 + Mesh.EltQty;    /* node base number */
-  velmnbr = Mesh.EltQty;
+  verqty = Mesh.EltQty + Nodes.NodeQty;
+  edgeqty = 2 * Mesh.EltQty * eltnodeqty;
 
-  vertnbr = velmnbr + vnodnbr;
-  edgenbr = 2 * velmnbr * eltnodeqty;
-
-  verttab = ut_alloc_1d_int (vertnbr + 1);
-  edgetab = ut_alloc_1d_int (edgenbr + 1);
+  vers = ut_alloc_1d_int (verqty + 1);
 
   /* recording elements */
-  id = 0;
-  for (i = 1; i <= velmnbr; i++)
+  edgeqty = 0;
+  for (i = 1; i <= Mesh.EltQty; i++)
   {
-    verttab[i - 1] = id + 1;
-    ut_array_1d_int_memcpy (Mesh.EltNodes[i], eltnodeqty, edgetab + id);
-    ut_array_1d_int_addval (edgetab + id, eltnodeqty, vnodbas - 1,
-                            edgetab + id);
-    id += eltnodeqty;
+    vers[i - 1] = edgeqty + 1;
+
+    neut_mesh_elt_nodes_per (Nodes, Mesh, i, &nodes, &nodeqty);
+    for (j = 0; j < nodeqty; j++)
+      ut_array_1d_int_list_addval_nocheck (&edges, &edgeqty, nodes[j]);
   }
+  ut_array_1d_int_addval (edges, edgeqty, Mesh.EltQty, edges);
 
   /* recording nodes */
-  for (i = 1; i <= vnodnbr; i++)
+  for (i = 1; i <= Nodes.NodeQty; i++)
   {
-    verttab[i + Mesh.EltQty - 1] = id + 1;
-    ut_array_1d_int_memcpy (Mesh.NodeElts[i] + 1, Mesh.NodeElts[i][0],
-                            edgetab + id);
-    id += Mesh.NodeElts[i][0];
-  }
-  verttab[vertnbr] = edgenbr + 1;
+    vers[i + Mesh.EltQty - 1] = edgeqty + 1;
 
-  SCOTCH_meshBuild (pSCMesh, velmbas, vnodbas, velmnbr, vnodnbr, verttab,
-                    NULL, NULL, NULL, NULL, edgenbr, edgetab);
+    neut_mesh_node_elts_per (Nodes, Mesh, i, &elts, &eltqty);
+    for (j = 0; j < eltqty; j++)
+      ut_array_1d_int_list_addval_nocheck (&edges, &edgeqty, elts[j]);
+  }
+  vers[verqty] = edgeqty + 1;
+
+  SCOTCH_meshBuild (pSCMesh, 1, Mesh.EltQty + 1, Mesh.EltQty, Nodes.NodeQty, vers,
+                    NULL, NULL, NULL, NULL, edgeqty, edges);
   /*
      file = ut_file_open ("dd", "w");
      SCOTCH_meshSave (pSCMesh, file);

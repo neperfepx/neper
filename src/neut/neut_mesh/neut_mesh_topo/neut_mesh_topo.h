@@ -395,6 +395,9 @@ extern void neut_mesh_elt_domface (struct TESS Tess, struct MESH Mesh2D, int elt
 
 extern void neut_mesh_order1nodes_order2node (struct MESH Mesh, int node1, int node2, int *pnode);
 
+extern void neut_mesh_elt_nodes_per (struct NODES Nodes, struct MESH Mesh, int elt, int **pnodes, int *pnodeqty);
+extern void neut_mesh_node_elts_per (struct NODES Nodes, struct MESH Mesh, int node, int **pelts, int *peltqty);
+
 #endif /* NEUT_MESH_TOPO_H */
 
 #ifdef __cplusplus
