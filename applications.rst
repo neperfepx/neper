@@ -31,12 +31,23 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 - B Flipon, C Keller, R Quey and F Barbe, *A full-field crystal-plasticity analysis of bimodal polycrystals*, **International Journal of Solids and Structures**, vol. 184, pp. 178--192, 2020. `Flipon et al.'s journal cover <imgs/cover-ijss-2020.png>`_
 - R Carson, M Obstalecki, M Miller and P Dawson, *Characterizing Heterogeneous Intragranular Deformations in Polycrystalline Solids Using Diffraction-Based and Mechanics-Based Metrics*, **Modelling and Simulation in Materials Science and Engineering**,  vol. 25,  pp. 055008, 2017. `Carson et al.'s journal cover <imgs/cover-MSMSE-2505-OFC.png>`_
 
+2025
+----
+
+- W Xu, Y Zhou, Y Guo and F Jin, *Mesoscopic representation of conventional concrete and rock-filled concrete: A novel FEM-SBFEM coupled approach*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2024.106820.
+- KM Peterson, M Harr, A Pilchak, SL Semiatin, N Levkulich, N Levkulich, J Ruff and DC Pagan, *3D in situ observations of stress redistribution in Ti-6Al-4V within rogue grain neighborhoods during monotonic and cyclic loading*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108630.
+
 2024
 ----
 
 .. To check:
+.. Mesoscale study of fatigue damage evolution of polycrystalline Al alloy based on crystal plasticity finite element method coupled with continuum damage mechanics, Z Zhang, M Wei, T Zhai - Applied Physics A, 2024
 .. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
+.. Rate and negative Poisson's ratio effects on Compressive Mechanical behaviors of Thermal-Damaged Crystalline Rocks using a grain-based model L Xu, B Wang, X Huang, J Du - Bulletin of Engineering Geology and the Environment, 2024
 
+- D Güzel, T Furlan, T Kaiser and A Menzel, *Neper-Mosaic: Seamless generation of periodic representative volume elements on unit domains*, **SoftwareX**, https://doi.org/10.1016/j.softx.2024.101912.
+- H Roirand, N Saintier, A Hor and B Malard, *Understanding of additively manufactured material cyclic behavior at the grain scale by neutron diffraction and crystal plasticity modelling*, **Materials Science and Engineering: A**, https://doi.org/10.1016/j.msea.2024.147380.
+- H Wu, Y Zhang, D Lu, X Gong, L Lei, H Zhang, Y Liu and Q Wang, *Exploring the brittle-to-ductile transition and microstructural responses of γ-TiAl alloy with a crystal plasticity model incorporating dislocation and twinning*, **Materials & Design**, https://doi.org/10.1016/j.matdes.2024.113360.
 - WE Frazier, L Li, KS Choi, Y Fu, Z Xu, A Soulami and VV Joshi, *Investigating the Evolution of U-10Mo Fuel Foil Microstructures during Multi-Stage Hot Rolling using Coupled Potts Model-Finite Element Method Simulations*, **Journal of Nuclear Materials**, https://doi.org/10.1016/j.jnucmat.2024.155427.
 - N Sayer, M Fried and S Münstermann, *A Monte-Carlo approach for crack initiation modeling of cast superalloys informed by crystal plasticity*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108616.
 - J Xu and W Xu, *Closed-Loop analysis of nanocomposite Magnets: Integrating micromagnetic simulation and experimental Testing*, **Journal of Magnetism and Magnetic Materials**, https://doi.org/10.1016/j.jmmm.2024.172553.

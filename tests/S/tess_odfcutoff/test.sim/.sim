@@ -1,0 +1,19 @@
+***sim
+ **format
+   1.1
+ **input
+  *tess
+   simulation.tess
+ **general
+   2 0 0 0 0
+  *orides
+   rodrigues:passive
+ **entity cell
+ **entity tess
+  *result
+   2
+   odf odfn(cutoff=all)
+ **orispace
+  *mesh
+   rod.msh
+***end
