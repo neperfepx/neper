@@ -45,6 +45,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
 .. Rate and negative Poisson's ratio effects on Compressive Mechanical behaviors of Thermal-Damaged Crystalline Rocks using a grain-based model L Xu, B Wang, X Huang, J Du - Bulletin of Engineering Geology and the Environment, 2024
 
+- M Gille, H Proudhon, J Oddershede, R Quey and TF Morgeneyer, *3D strain heterogeneity and fracture studied by X-ray tomography and crystal plasticity in an aluminium alloy*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2024.104146.
 - D Güzel, T Furlan, T Kaiser and A Menzel, *Neper-Mosaic: Seamless generation of periodic representative volume elements on unit domains*, **SoftwareX**, https://doi.org/10.1016/j.softx.2024.101912.
 - H Roirand, N Saintier, A Hor and B Malard, *Understanding of additively manufactured material cyclic behavior at the grain scale by neutron diffraction and crystal plasticity modelling*, **Materials Science and Engineering: A**, https://doi.org/10.1016/j.msea.2024.147380.
 - H Wu, Y Zhang, D Lu, X Gong, L Lei, H Zhang, Y Liu and Q Wang, *Exploring the brittle-to-ductile transition and microstructural responses of γ-TiAl alloy with a crystal plasticity model incorporating dislocation and twinning*, **Materials & Design**, https://doi.org/10.1016/j.matdes.2024.113360.
