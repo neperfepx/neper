@@ -34,6 +34,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2025
 ----
 
+- D Hu, M Zhao, J Pan, R Chen, J Zhang, Y Gao and R Wang, *A novel LCF lifetime model for PM superalloys considering crack energy differences induced by surface underconstraint*, **International Journal of  Plasticity**, https://doi.org/10.1016/j.ijfatigue.2024.108648.
 - W Xu, Y Zhou, Y Guo and F Jin, *Mesoscopic representation of conventional concrete and rock-filled concrete: A novel FEM-SBFEM coupled approach*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2024.106820.
 - KM Peterson, M Harr, A Pilchak, SL Semiatin, N Levkulich, N Levkulich, J Ruff and DC Pagan, *3D in situ observations of stress redistribution in Ti-6Al-4V within rogue grain neighborhoods during monotonic and cyclic loading*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108630.
 
@@ -45,6 +46,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
 .. Rate and negative Poisson's ratio effects on Compressive Mechanical behaviors of Thermal-Damaged Crystalline Rocks using a grain-based model L Xu, B Wang, X Huang, J Du - Bulletin of Engineering Geology and the Environment, 2024
 
+- TF Fu, FY Yan, DF Zhu and YT Li, *An internal-strain loading approach for quasi-static fracturing in brittle rocks via the grain-based model*, **Engineering Analysis with Boundary Elements**, https://doi.org/10.1016/j.enganabound.2024.105996.
 - M Gille, H Proudhon, J Oddershede, R Quey and TF Morgeneyer, *3D strain heterogeneity and fracture studied by X-ray tomography and crystal plasticity in an aluminium alloy*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2024.104146.
 - D Güzel, T Furlan, T Kaiser and A Menzel, *Neper-Mosaic: Seamless generation of periodic representative volume elements on unit domains*, **SoftwareX**, https://doi.org/10.1016/j.softx.2024.101912.
 - H Roirand, N Saintier, A Hor and B Malard, *Understanding of additively manufactured material cyclic behavior at the grain scale by neutron diffraction and crystal plasticity modelling*, **Materials Science and Engineering: A**, https://doi.org/10.1016/j.msea.2024.147380.
