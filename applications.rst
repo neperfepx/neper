@@ -45,6 +45,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
 .. Rate and negative Poisson's ratio effects on Compressive Mechanical behaviors of Thermal-Damaged Crystalline Rocks using a grain-based model L Xu, B Wang, X Huang, J Du - Bulletin of Engineering Geology and the Environment, 2024
 
+- T Gheno and W Djedaa, *Modeling the Role of the Grain Structure in the Oxidation of Polycrystals*, **High Temperature Corrosion of Materials**, https://doi.org/10.1007/s11085-024-10311-5.
 - Z Zhang, M Wei and T Zhai, *Mesoscale study of fatigue damage evolution of polycrystalline Al alloy based on crystal plasticity finite element method coupled with continuum damage mechanics*, **Applied Physics A**, https://doi.org/10.1007/s00339-024-07948-z.
 - TF Fu, FY Yan, DF Zhu and YT Li, *An internal-strain loading approach for quasi-static fracturing in brittle rocks via the grain-based model*, **Engineering Analysis with Boundary Elements**, https://doi.org/10.1016/j.enganabound.2024.105996.
 - M Gille, H Proudhon, J Oddershede, R Quey and TF Morgeneyer, *3D strain heterogeneity and fracture studied by X-ray tomography and crystal plasticity in an aluminium alloy*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2024.104146.
