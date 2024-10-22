@@ -34,6 +34,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2025
 ----
 
+- F Theska, B Schulz, M Lison-Pick, SR Street and S Primig, *Precipitation-controlled grain boundary engineering in a cast & wrought Ni-based superalloy*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2024.177131.
 - D Hu, M Zhao, J Pan, R Chen, J Zhang, Y Gao and R Wang, *A novel LCF lifetime model for PM superalloys considering crack energy differences induced by surface underconstraint*, **International Journal of  Plasticity**, https://doi.org/10.1016/j.ijfatigue.2024.108648.
 - W Xu, Y Zhou, Y Guo and F Jin, *Mesoscopic representation of conventional concrete and rock-filled concrete: A novel FEM-SBFEM coupled approach*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2024.106820.
 - KM Peterson, M Harr, A Pilchak, SL Semiatin, N Levkulich, N Levkulich, J Ruff and DC Pagan, *3D in situ observations of stress redistribution in Ti-6Al-4V within rogue grain neighborhoods during monotonic and cyclic loading*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108630.
