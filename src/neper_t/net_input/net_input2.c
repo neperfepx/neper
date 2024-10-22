@@ -131,7 +131,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     for (i = 1; i <= (*pIn).levelqty; i++)
       if (!strcmp ((*pIn).optigrid[i], "default"))
         ut_string_string
-          ("diameq:regular(-1,10,1100),size:regular(-1,10,1100),sphericity:regular(-0.1,1.1,1200),1-sphericity:regular(-0.1,1.1,1200),ori:odf",
+          ("diameq:regular(-1,10,1100),size:regular(-1,100,5050),sphericity:regular(-0.1,1.1,1200),1-sphericity:regular(-0.1,1.1,1200),ori:odf",
            (*pIn).optigrid + i);
 
     // optismooth

@@ -88,7 +88,8 @@ net_tess_opt_comp_objective_fval_gen_stat_smoothed_gen_legacy (struct TOPT
       posmin = ut_fct_x_bin ((*pTOpt).curpdf[var], xmin);
       posmax = ut_fct_x_bin ((*pTOpt).curpdf[var], xmax);
       if (posmin < 1 || posmax + 1 >= (*pTOpt).curpdf[var].size)
-        abort ();
+        ut_print_message (2, 2, "Out-of-range value generated for `%s' (%f vs [%f, %f]).  Increase range in -morphooptigrid.\n", \
+                          var, (*pTOpt).curcellval[var][j][0], (*pTOpt).curpdf[var].min, (*pTOpt).curpdf[var].max);
 
 #pragma omp parallel for private(i) schedule(dynamic)
       for (i = posmin - 1; i <= posmax + 1; i++)

@@ -398,7 +398,7 @@ These options can be used to set the cell morphology.
 
   Specify the grids used to discretize the variable distributions. The variables are those defined in :option:`-morpho`, and the grid must be :data:`regular(<min>,<max>,<bin_nb>)`, where :data:`<min>` and :data:`<max>` are the minimum and maximum values of the grid interval, respectively, and :data:`<bin_nb>` is the number of bins.
 
-  **Default value**: :data:`diameq:regular(-1,10,1100),size:regular(-1,10,1100),sphericity:regular(-0.1,1.1,1200),1-sphericity:regular(-0.1,1.1,1200)`.
+  **Default value**: :data:`diameq:regular(-1,10,1100),size:regular(-1,100,5050),sphericity:regular(-0.1,1.1,1200),1-sphericity:regular(-0.1,1.1,1200)`.
 
 .. option:: -morphooptismooth <var1>:<val1>,<var2>:<val2>,... (secondary option)
 

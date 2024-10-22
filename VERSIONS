@@ -1,3 +1,6 @@
+New in 4.10.2-1 (22 Oct 2024):
+- module -T: made minor improvements.
+
 New in 4.10.1 (09 Oct 2024):
 - module -M: fixed -part for periodic meshes, fixed compatibility with Gmsh
   4.13.1.
