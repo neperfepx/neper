@@ -34,10 +34,10 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2025
 ----
 
-- F Theska, B Schulz, M Lison-Pick, SR Street and S Primig, *Precipitation-controlled grain boundary engineering in a cast & wrought Ni-based superalloy*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2024.177131.
-- D Hu, M Zhao, J Pan, R Chen, J Zhang, Y Gao and R Wang, *A novel LCF lifetime model for PM superalloys considering crack energy differences induced by surface underconstraint*, **International Journal of  Plasticity**, https://doi.org/10.1016/j.ijfatigue.2024.108648.
+- T Fischer, M Amiri, J Kumpati, P Hedström and A Borgenstam, *3D micromechanical interaction of thin-film retained austenite and lath martensite by computational plasticity*, **Scripta Materialia**, https://doi.org/10.1016/j.scriptamat.2024.116434.
 - W Xu, Y Zhou, Y Guo and F Jin, *Mesoscopic representation of conventional concrete and rock-filled concrete: A novel FEM-SBFEM coupled approach*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2024.106820.
-- KM Peterson, M Harr, A Pilchak, SL Semiatin, N Levkulich, N Levkulich, J Ruff and DC Pagan, *3D in situ observations of stress redistribution in Ti-6Al-4V within rogue grain neighborhoods during monotonic and cyclic loading*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108630.
+- WE Frazier, L Li, KS Choi, Y Fu, Z Xu, A Soulami and VV Joshi, *Investigating the Evolution of U-10Mo Fuel Foil Microstructures during Multi-Stage Hot Rolling using Coupled Potts Model-Finite Element Method Simulations*, **Journal of Nuclear Materials**, https://doi.org/10.1016/j.jnucmat.2024.155427.
+- N Sayer, M Fried and S Münstermann, *A Monte-Carlo approach for crack initiation modeling of cast superalloys informed by crystal plasticity*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108616.
 
 2024
 ----
@@ -45,7 +45,14 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. To check:
 .. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
 .. Rate and negative Poisson's ratio effects on Compressive Mechanical behaviors of Thermal-Damaged Crystalline Rocks using a grain-based model L Xu, B Wang, X Huang, J Du - Bulletin of Engineering Geology and the Environment, 2024
+.. - L Hitzler and  N Mistry, *Prediction of Static Macroscopic Material Behaviour of Additively Manufactured Metals through Crystal Plasticity Modelling*, **State of the Art and Future Trends in Materials Modelling 2**, https://doi.org/10.1007/978-3-031-72900-3_13.
+.. - X Chen, X Zheng, M Pan, Y Liu, Y Kong, A Hartmaier, L Li and Y Du, *Effect of Precipitation-Free Zone on Fatigue Properties in Age-Strengthened Aluminum Alloys: Crystal Plasticity Finite Element Analysis*.
 
+- KM Peterson, M Harr, A Pilchak, SL Semiatin, N Levkulich, N Levkulich, J Ruff and DC Pagan, *3D in situ observations of stress redistribution in Ti-6Al-4V within rogue grain neighborhoods during monotonic and cyclic loading*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108630.
+- D Hu, M Zhao, J Pan, R Chen, J Zhang, Y Gao and R Wang, *A novel LCF lifetime model for PM superalloys considering crack energy differences induced by surface underconstraint*, **International Journal of  Plasticity**, https://doi.org/10.1016/j.ijfatigue.2024.108648.
+- F Theska, B Schulz, M Lison-Pick, SR Street and S Primig, *Precipitation-controlled grain boundary engineering in a cast & wrought Ni-based superalloy*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2024.177131.
+- C Mao, H Cao, X Xie, C Liu, S Wang, J Jia, J Du, Z Lv, J Luo and Y Liu, *Microstructure and mechanical-property evolution of the explosive welding joint from the same RAFM steels under explosive welding and post-weld heat treatment*, **Materials Science and Engineering: A**, https://doi.org/10.1016/j.msea.2024.147465.
+- AL Jouybari, S El Shawish and L Cizelj, *Fast Fourier transform approach to Strain Gradient Crystal Plasticity: Regularization of strain localization and size effect*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2024.104153.
 - A Nasirov and C Oskay, *An Affine Formulation of Eigenstrain-based Homogenization Method and its Application to Polycrystal Plasticity*, **Modelling and Simulation in Materials Science and Engineering**, https://doi.org/10.1088/1361-651X/ad8ad7.
 - T Gheno and W Djedaa, *Modeling the Role of the Grain Structure in the Oxidation of Polycrystals*, **High Temperature Corrosion of Materials**, https://doi.org/10.1007/s11085-024-10311-5.
 - Z Zhang, M Wei and T Zhai, *Mesoscale study of fatigue damage evolution of polycrystalline Al alloy based on crystal plasticity finite element method coupled with continuum damage mechanics*, **Applied Physics A**, https://doi.org/10.1007/s00339-024-07948-z.
@@ -54,8 +61,6 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 - D Güzel, T Furlan, T Kaiser and A Menzel, *Neper-Mosaic: Seamless generation of periodic representative volume elements on unit domains*, **SoftwareX**, https://doi.org/10.1016/j.softx.2024.101912.
 - H Roirand, N Saintier, A Hor and B Malard, *Understanding of additively manufactured material cyclic behavior at the grain scale by neutron diffraction and crystal plasticity modelling*, **Materials Science and Engineering: A**, https://doi.org/10.1016/j.msea.2024.147380.
 - H Wu, Y Zhang, D Lu, X Gong, L Lei, H Zhang, Y Liu and Q Wang, *Exploring the brittle-to-ductile transition and microstructural responses of γ-TiAl alloy with a crystal plasticity model incorporating dislocation and twinning*, **Materials & Design**, https://doi.org/10.1016/j.matdes.2024.113360.
-- WE Frazier, L Li, KS Choi, Y Fu, Z Xu, A Soulami and VV Joshi, *Investigating the Evolution of U-10Mo Fuel Foil Microstructures during Multi-Stage Hot Rolling using Coupled Potts Model-Finite Element Method Simulations*, **Journal of Nuclear Materials**, https://doi.org/10.1016/j.jnucmat.2024.155427.
-- N Sayer, M Fried and S Münstermann, *A Monte-Carlo approach for crack initiation modeling of cast superalloys informed by crystal plasticity*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108616.
 - J Xu and W Xu, *Closed-Loop analysis of nanocomposite Magnets: Integrating micromagnetic simulation and experimental Testing*, **Journal of Magnetism and Magnetic Materials**, https://doi.org/10.1016/j.jmmm.2024.172553.
 - Z Ma, Z Wang, J Ye, Q Ma, T Hao, Z Cao and C Wang, *Effect of ultrasonic vibration on the roll bending deformation behavior of ultra-thin-walled corrugated sheets*, **Materials Today Communications**, https://doi.org/10.1016/j.mtcomm.2024.110497.
 - A Marano, C Ribart and H Proudhon, *Towards a data platform for multimodal 4d mechanics of material microstructures*, **Materials & Design**, https://doi.org/10.1016/j.matdes.2024.113306.
