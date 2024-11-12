@@ -44,6 +44,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 ----
 
 .. To check:
+.. - Simulation and Experimental Analysis of Surface Crack Propagation in Oscillating Bearings S Jiang, J Du, S Wang, C Li, S Xie - Tribology Transactions, 2024
 .. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
 .. Rate and negative Poisson's ratio effects on Compressive Mechanical behaviors of Thermal-Damaged Crystalline Rocks using a grain-based model L Xu, B Wang, X Huang, J Du - Bulletin of Engineering Geology and the Environment, 2024
 .. - L Hitzler and  N Mistry, *Prediction of Static Macroscopic Material Behaviour of Additively Manufactured Metals through Crystal Plasticity Modelling*, **State of the Art and Future Trends in Materials Modelling 2**, https://doi.org/10.1007/978-3-031-72900-3_13.
