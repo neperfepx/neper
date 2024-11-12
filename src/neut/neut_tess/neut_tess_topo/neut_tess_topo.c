@@ -3338,7 +3338,10 @@ neut_tess_face_scale (struct TESS Tess, int face, int *pscale)
       return 0;
     }
     else
-      abort ();
+    {
+      neut_tess_cell_scale (Tess, face, pscale);
+      return 0;
+    }
   }
 
   (*pscale) = -1;
