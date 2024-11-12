@@ -34,6 +34,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2025
 ----
 
+- D Xia, Y Li and S Qin, *Out-of-plane constraint for 2D representative volume element model of dual phase steels under uniaxial tension*, **Computational Materials Science**, https://doi.org/10.1016/j.commatsci.2024.113490.
 - T Fischer, M Amiri, J Kumpati, P Hedström and A Borgenstam, *3D micromechanical interaction of thin-film retained austenite and lath martensite by computational plasticity*, **Scripta Materialia**, https://doi.org/10.1016/j.scriptamat.2024.116434.
 - W Xu, Y Zhou, Y Guo and F Jin, *Mesoscopic representation of conventional concrete and rock-filled concrete: A novel FEM-SBFEM coupled approach*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2024.106820.
 - WE Frazier, L Li, KS Choi, Y Fu, Z Xu, A Soulami and VV Joshi, *Investigating the Evolution of U-10Mo Fuel Foil Microstructures during Multi-Stage Hot Rolling using Coupled Potts Model-Finite Element Method Simulations*, **Journal of Nuclear Materials**, https://doi.org/10.1016/j.jnucmat.2024.155427.
