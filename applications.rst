@@ -40,6 +40,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 - WE Frazier, L Li, KS Choi, Y Fu, Z Xu, A Soulami and VV Joshi, *Investigating the Evolution of U-10Mo Fuel Foil Microstructures during Multi-Stage Hot Rolling using Coupled Potts Model-Finite Element Method Simulations*, **Journal of Nuclear Materials**, https://doi.org/10.1016/j.jnucmat.2024.155427.
 - N Sayer, M Fried and S Münstermann, *A Monte-Carlo approach for crack initiation modeling of cast superalloys informed by crystal plasticity*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108616.
 
+- S Jiang, J Du, S Wang, C Li and S Xie, *Simulation and Experimental Analysis of Surface Crack Propagation in Oscillating Bearings*, **Tribology Transactions**, https://doi.org/10.1080/10402004.2024.2426509.
+
 2024
 ----
 

@@ -40,10 +40,13 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 - WE Frazier, L Li, KS Choi, Y Fu, Z Xu, A Soulami and VV Joshi, *Investigating the Evolution of U-10Mo Fuel Foil Microstructures during Multi-Stage Hot Rolling using Coupled Potts Model-Finite Element Method Simulations*, **Journal of Nuclear Materials**, https://doi.org/10.1016/j.jnucmat.2024.155427.
 - N Sayer, M Fried and S Münstermann, *A Monte-Carlo approach for crack initiation modeling of cast superalloys informed by crystal plasticity*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108616.
 
+- S Jiang, J Du, S Wang, C Li and S Xie, *Simulation and Experimental Analysis of Surface Crack Propagation in Oscillating Bearings*, **Tribology Transactions**, https://doi.org/10.1080/10402004.2024.2426509.
+
 2024
 ----
 
 .. To check:
+.. - Simulation and Experimental Analysis of Surface Crack Propagation in Oscillating Bearings S Jiang, J Du, S Wang, C Li, S Xie - Tribology Transactions, 2024
 .. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
 .. Rate and negative Poisson's ratio effects on Compressive Mechanical behaviors of Thermal-Damaged Crystalline Rocks using a grain-based model L Xu, B Wang, X Huang, J Du - Bulletin of Engineering Geology and the Environment, 2024
 .. - L Hitzler and  N Mistry, *Prediction of Static Macroscopic Material Behaviour of Additively Manufactured Metals through Crystal Plasticity Modelling*, **State of the Art and Future Trends in Materials Modelling 2**, https://doi.org/10.1007/978-3-031-72900-3_13.
