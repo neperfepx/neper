@@ -46,11 +46,15 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 ----
 
 .. To check:
-.. - Simulation and Experimental Analysis of Surface Crack Propagation in Oscillating Bearings S Jiang, J Du, S Wang, C Li, S Xie - Tribology Transactions, 2024
+- S Jiang, J Du, S Wang, C Li and S Xie, *Simulation and Experimental Analysis of Surface Crack Propagation in Oscillating Bearings*, **Tribology Transactions**, https://doi.org/10.1080/10402004.2024.2426509.
 .. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
 .. Rate and negative Poisson's ratio effects on Compressive Mechanical behaviors of Thermal-Damaged Crystalline Rocks using a grain-based model L Xu, B Wang, X Huang, J Du - Bulletin of Engineering Geology and the Environment, 2024
 .. - L Hitzler and  N Mistry, *Prediction of Static Macroscopic Material Behaviour of Additively Manufactured Metals through Crystal Plasticity Modelling*, **State of the Art and Future Trends in Materials Modelling 2**, https://doi.org/10.1007/978-3-031-72900-3_13.
 .. - X Chen, X Zheng, M Pan, Y Liu, Y Kong, A Hartmaier, L Li and Y Du, *Effect of Precipitation-Free Zone on Fatigue Properties in Age-Strengthened Aluminum Alloys: Crystal Plasticity Finite Element Analysis*.
+
+- S Kumar, NS Madugula, N Kumar and J Giri, *An extensive analysis of GTAW process and its influence on the microstructure and mechanical properties of SDSS 2507*, **Journal of Materials Research and Technology**, https://doi.org/10.1016/j.jmrt.2024.11.157.
+- S Jiang, J Du, S Wang and C Li, *Risk assessment of initial crack propagation in bearing steel based on finite element analysis and machine learning*, **Mechanics Based Design of Structures and Machines**, https://doi.org/10.1080/15397734.2024.2429738.
+- B Fu, C Wang, Y Dong, X Liu, Y Ke, D Wang and MA Wahab, *Crystal plasticity modeling of fretting fatigue crack initiation behavior in TI6Al4V*, **Engineering Failure Analysis**, https://doi.org/10.1016/j.engfailanal.2024.109074.
 
 - E Demir, A Martinez-Pechero, C Hardie and E Tarleton, *OXFORD-UMAT: An efficient and versatile crystal plasticity framework*, **International Journal of Solids and Structures**, https://doi.org/10.1016/j.ijsolstr.2024.113110.
 - KM Peterson, M Harr, A Pilchak, SL Semiatin, N Levkulich, N Levkulich, J Ruff and DC Pagan, *3D in situ observations of stress redistribution in Ti-6Al-4V within rogue grain neighborhoods during monotonic and cyclic loading*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108630.
