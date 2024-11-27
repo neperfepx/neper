@@ -52,6 +52,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. - L Hitzler and  N Mistry, *Prediction of Static Macroscopic Material Behaviour of Additively Manufactured Metals through Crystal Plasticity Modelling*, **State of the Art and Future Trends in Materials Modelling 2**, https://doi.org/10.1007/978-3-031-72900-3_13.
 .. - X Chen, X Zheng, M Pan, Y Liu, Y Kong, A Hartmaier, L Li and Y Du, *Effect of Precipitation-Free Zone on Fatigue Properties in Age-Strengthened Aluminum Alloys: Crystal Plasticity Finite Element Analysis*.
 
+- Y Xu, Y Wu, F Yuan, Y Feng and B Hao, *A Two‐Scale Model of Fretting Fatigue Crack Initiation Life Based on Long Short‐Term Memory Networks Improved by Genetic Algorithm*, **Fatigue & Fracture of Engineering Materials & Structures**, https://doi.org/10.1111/ffe.14487.
 - S Kumar, NS Madugula, N Kumar and J Giri, *An extensive analysis of GTAW process and its influence on the microstructure and mechanical properties of SDSS 2507*, **Journal of Materials Research and Technology**, https://doi.org/10.1016/j.jmrt.2024.11.157.
 - S Jiang, J Du, S Wang and C Li, *Risk assessment of initial crack propagation in bearing steel based on finite element analysis and machine learning*, **Mechanics Based Design of Structures and Machines**, https://doi.org/10.1080/15397734.2024.2429738.
 - B Fu, C Wang, Y Dong, X Liu, Y Ke, D Wang and MA Wahab, *Crystal plasticity modeling of fretting fatigue crack initiation behavior in TI6Al4V*, **Engineering Failure Analysis**, https://doi.org/10.1016/j.engfailanal.2024.109074.
