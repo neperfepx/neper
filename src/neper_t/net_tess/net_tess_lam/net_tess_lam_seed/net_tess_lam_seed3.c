@@ -9,11 +9,13 @@ net_tess_lam_seed_readargs_w (char *value, struct MTESS MTess,
                               struct TESS *Tess, int domtess, int dompoly,
                               char **pwtype, double **pw, int *pwqty)
 {
-  int i;
+  int i, status;
   char *string = ut_alloc_1d_char (1000);
   char **tmp = NULL;
   char *mid = NULL;
   int wqty = 0;
+
+  status = 0;
 
   // reading string
   if (ut_string_isfilename (value))
@@ -33,10 +35,18 @@ net_tess_lam_seed_readargs_w (char *value, struct MTESS MTess,
   // converting string into *pw / *pwqty
   ut_list_break (string, NEUT_SEP_DEP, &tmp, &wqty);
 
-  (*pw) = ut_alloc_1d (wqty);
-  for (i = 0; i < wqty; i++)
-    if (sscanf (tmp[i], "%lf", (*pw) + i) != 1)
-      ut_print_neperbug ();
+  if (strcmp (string, "from_morpho"))
+  {
+    (*pw) = ut_alloc_1d (wqty);
+    for (i = 0; i < wqty; i++)
+      if (sscanf (tmp[i], "%lf", (*pw) + i) != 1)
+        ut_print_neperbug ();
+  }
+  else
+  {
+    status = -1;
+    ut_string_string ("none", pwtype);
+  }
 
   ut_free_1d_char (&string);
   ut_free_2d_char (&tmp, wqty);
@@ -45,7 +55,7 @@ net_tess_lam_seed_readargs_w (char *value, struct MTESS MTess,
   if (pwqty)
     *pwqty = wqty;
 
-  return 0;
+  return status;
 }
 
 int

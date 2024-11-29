@@ -61,16 +61,27 @@ net_tess_opt_init_general_cellqty (struct IN_T In, struct MTESS MTess,
   int varqty;
   char **vars = NULL;
   double *vals = NULL;
-  char *tmp2 = ut_alloc_1d_char (100);
-  char *expr = In.n[(*pTess).Level + 1];
+  char *mid = ut_alloc_1d_char (100);
+  char *expr = ut_alloc_1d_char (1000);
+  FILE *file = NULL;
+
+  neut_mtess_tess_poly_mid (MTess, *pTess, poly, &mid);
+
+  if (!strncmp (In.n[(*pTess).Level + 1], "msfile(", 7))
+  {
+    file = ut_file_open (In.n[(*pTess).Level + 1], "R");
+    ut_array_0d_string_fscanf_prefix (file, expr, mid);
+    ut_file_close (file, expr, "R");
+  }
+  else
+    ut_string_string (In.n[(*pTess).Level + 1], &expr);
 
   neut_tess_expr_vars_vals (pTess, expr, NULL, NULL, NULL, (char *) "cell",
                             poly, &vars, &vals, NULL, &varqty);
 
-  neut_mtess_tess_poly_mid (MTess, *pTess, poly, &tmp2);
   if (strcmp (expr, "from_morpho"))
   {
-    net_multiscale_arg_0d_int_fscanf (expr, tmp2, varqty, vars, vals,
+    net_multiscale_arg_0d_int_fscanf (expr, mid, varqty, vars, vals,
                                       pCellQty);
     (*pCellQty) = ut_num_max (*pCellQty, 1);
   }
@@ -79,7 +90,8 @@ net_tess_opt_init_general_cellqty (struct IN_T In, struct MTESS MTess,
 
   ut_free_2d_char (&vars, varqty);
   ut_free_1d (&vals);
-  ut_free_1d_char (&tmp2);
+  ut_free_1d_char (&mid);
+  ut_free_1d_char (&expr);
 
   return;
 }

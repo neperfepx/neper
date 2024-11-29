@@ -12,7 +12,7 @@ net_tess_lam_seed_readargs (struct IN_T In, int level, char *morpho, struct MTES
                             char **pvtype, double **pv,
                             char **ppostype, char **ppos, double *preps)
 {
-  int i, j, varqty, tmpi;
+  int i, j, varqty, tmpi, status;
   double *tmp = NULL;
   char **vars = NULL, **vals = NULL;
   double *n_double = NULL;
@@ -40,11 +40,14 @@ net_tess_lam_seed_readargs (struct IN_T In, int level, char *morpho, struct MTES
   {
     if (!strcmp (vars[i], "n"))
     {
-      net_tess_lam_seed_readargs_w (vals[i], MTess, Tess, domtess, dompoly,
+      status = net_tess_lam_seed_readargs_w (vals[i], MTess, Tess, domtess, dompoly,
                                     pntype, &n_double, &tmpi);
-      (*pn) = ut_alloc_1d_int (1);
-      for (j = 0; j < 1; j++)
-        (*pn)[j] = n_double[j];
+      if (!status)
+      {
+        (*pn) = ut_alloc_1d_int (1);
+        for (j = 0; j < 1; j++)
+          (*pn)[j] = n_double[j];
+      }
     }
 
     else if (!strcmp (vars[i], "w"))
@@ -70,7 +73,7 @@ net_tess_lam_seed_readargs (struct IN_T In, int level, char *morpho, struct MTES
       abort ();
   }
 
-  if ((strcmp (*pntype, "none") || strcmp (In.n[level], "from_morpho")) && strcmp (*pwtype, "none"))
+  if (strcmp (*pntype, "none") && strcmp (*pwtype, "none"))
     ut_print_message (2, 2, "w and n are mutually exclusive.");
 
   if (!strcmp (*pntype, "none") && !strcmp (*pwtype, "none") && !strcmp (In.n[level], "from_morpho"))
