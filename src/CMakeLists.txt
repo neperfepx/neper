@@ -7,7 +7,7 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"4.10.2-3\")
+set(NEPER_VERSION \"4.10.2-4\")
 project(neper)
 
 if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8.1)

@@ -11,6 +11,8 @@
 #include"net_transform_tesr.h"
 #include"net_transform_tesr_tesrtranslate/net_transform_tesr_tesrtranslate.h"
 #include"net_transform_tesr_tesrmerge/net_transform_tesr_tesrmerge.h"
+#include"net_ori/net_ori.h"
 
 extern void net_transform_tesr_tesrrenumber (struct IN_T In, char *string, struct TESR *pTesr);
 extern void net_transform_tesr_orirotate (char *string, struct TESR *pTesr);
+extern void net_transform_tesr_ori (char *ori, struct TESR *pTesr);

@@ -165,6 +165,12 @@ net_transform_tesr (struct IN_T In, struct TESR *pTesr)
       ut_free_1d_char (&fct);
       ut_free_2d_char (&exprs, exprqty);
     }
+
+    else if (!strncmp (parts[i], "ori", 3))
+    {
+      ut_print_message (0, 3, "Overriding orientations...\n");
+      net_transform_tesr_ori (parts[i], pTesr);
+    }
     else
       ut_print_exprbug (parts[i]);
   }

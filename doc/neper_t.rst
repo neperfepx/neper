@@ -723,6 +723,8 @@ Transformation Options
 
   -  :data:`2d`: transform a 3D tessellation with 1 voxel along z into a 2D tessellation.
 
+  - :data:`ori(<file_name>[,des=<descriptor>])`: override cell orientations with ones defined in a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
+
   **Default value**: -.
 
 .. option:: -sort <sort_expression> (secondary option)

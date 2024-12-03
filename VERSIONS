@@ -1,5 +1,6 @@
-New in 4.10.2-3 (29 Nov 2024):
-- module -T: made minor bug fixes and improvements.
+New in 4.10.2-4 (03 Dec 2024):
+- module -T: added -ori transform ori for tesrs, made minor bug fixes and
+  improvements.
 - module -M: fixed -dim 2 -interface cohesive.
 
 New in 4.10.1 (09 Oct 2024):
