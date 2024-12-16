@@ -34,33 +34,30 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2025
 ----
 
+- S Luca, J Fischbacher, C Flament, R Sedek, P de Rango, GG Eslava and T Schrefl, *Microstructure and magnetic properties of the Cu-rich Nd (Fe, Mo) 12 strip cast flakes*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2024.178039.
 - Y Zhou, W Lv, B Li, Q Liang and S Wang, *A realistic 3D grain-based modeling approach for reproducing the mechanical and failure behavior of brittle granites*, **International Journal of Rock Mechanics and Mining Sciences**, https://doi.org/10.1016/j.ijrmms.2024.105981.
-
 - B Song, X Wang, L Xie, J Xiang, U Umer, MH Abidi andZ Almutairi, *The effect of surface roughness and microstructure on fretting fatigue properties of TC21 based on hierarchical multiscale modeling*, **Journal of Materials Research and Technology**, https://doi.org/10.1016/j.jmrt.2024.11.261.
-
 - D Xia, Y Li and S Qin, *Out-of-plane constraint for 2D representative volume element model of dual phase steels under uniaxial tension*, **Computational Materials Science**, https://doi.org/10.1016/j.commatsci.2024.113490.
 - T Fischer, M Amiri, J Kumpati, P Hedström and A Borgenstam, *3D micromechanical interaction of thin-film retained austenite and lath martensite by computational plasticity*, **Scripta Materialia**, https://doi.org/10.1016/j.scriptamat.2024.116434.
 - W Xu, Y Zhou, Y Guo and F Jin, *Mesoscopic representation of conventional concrete and rock-filled concrete: A novel FEM-SBFEM coupled approach*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2024.106820.
 - WE Frazier, L Li, KS Choi, Y Fu, Z Xu, A Soulami and VV Joshi, *Investigating the Evolution of U-10Mo Fuel Foil Microstructures during Multi-Stage Hot Rolling using Coupled Potts Model-Finite Element Method Simulations*, **Journal of Nuclear Materials**, https://doi.org/10.1016/j.jnucmat.2024.155427.
 - N Sayer, M Fried and S Münstermann, *A Monte-Carlo approach for crack initiation modeling of cast superalloys informed by crystal plasticity*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108616.
-
 - S Jiang, J Du, S Wang, C Li and S Xie, *Simulation and Experimental Analysis of Surface Crack Propagation in Oscillating Bearings*, **Tribology Transactions**, https://doi.org/10.1080/10402004.2024.2426509.
 
 2024
 ----
 
 .. To check:
-- S Jiang, J Du, S Wang, C Li and S Xie, *Simulation and Experimental Analysis of Surface Crack Propagation in Oscillating Bearings*, **Tribology Transactions**, https://doi.org/10.1080/10402004.2024.2426509.
 .. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
 .. Rate and negative Poisson's ratio effects on Compressive Mechanical behaviors of Thermal-Damaged Crystalline Rocks using a grain-based model L Xu, B Wang, X Huang, J Du - Bulletin of Engineering Geology and the Environment, 2024
 .. - L Hitzler and  N Mistry, *Prediction of Static Macroscopic Material Behaviour of Additively Manufactured Metals through Crystal Plasticity Modelling*, **State of the Art and Future Trends in Materials Modelling 2**, https://doi.org/10.1007/978-3-031-72900-3_13.
 .. - X Chen, X Zheng, M Pan, Y Liu, Y Kong, A Hartmaier, L Li and Y Du, *Effect of Precipitation-Free Zone on Fatigue Properties in Age-Strengthened Aluminum Alloys: Crystal Plasticity Finite Element Analysis*.
 
+- S Jiang, J Du, S Wang, C Li and S Xie, *Simulation and Experimental Analysis of Surface Crack Propagation in Oscillating Bearings*, **Tribology Transactions**, https://doi.org/10.1080/10402004.2024.2426509.
 - Y Xu, Y Wu, F Yuan, Y Feng and B Hao, *A Two‐Scale Model of Fretting Fatigue Crack Initiation Life Based on Long Short‐Term Memory Networks Improved by Genetic Algorithm*, **Fatigue & Fracture of Engineering Materials & Structures**, https://doi.org/10.1111/ffe.14487.
 - S Kumar, NS Madugula, N Kumar and J Giri, *An extensive analysis of GTAW process and its influence on the microstructure and mechanical properties of SDSS 2507*, **Journal of Materials Research and Technology**, https://doi.org/10.1016/j.jmrt.2024.11.157.
 - S Jiang, J Du, S Wang and C Li, *Risk assessment of initial crack propagation in bearing steel based on finite element analysis and machine learning*, **Mechanics Based Design of Structures and Machines**, https://doi.org/10.1080/15397734.2024.2429738.
 - B Fu, C Wang, Y Dong, X Liu, Y Ke, D Wang and MA Wahab, *Crystal plasticity modeling of fretting fatigue crack initiation behavior in TI6Al4V*, **Engineering Failure Analysis**, https://doi.org/10.1016/j.engfailanal.2024.109074.
-
 - E Demir, A Martinez-Pechero, C Hardie and E Tarleton, *OXFORD-UMAT: An efficient and versatile crystal plasticity framework*, **International Journal of Solids and Structures**, https://doi.org/10.1016/j.ijsolstr.2024.113110.
 - KM Peterson, M Harr, A Pilchak, SL Semiatin, N Levkulich, N Levkulich, J Ruff and DC Pagan, *3D in situ observations of stress redistribution in Ti-6Al-4V within rogue grain neighborhoods during monotonic and cyclic loading*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2024.108630.
 - D Hu, M Zhao, J Pan, R Chen, J Zhang, Y Gao and R Wang, *A novel LCF lifetime model for PM superalloys considering crack energy differences induced by surface underconstraint*, **International Journal of  Plasticity**, https://doi.org/10.1016/j.ijfatigue.2024.108648.
