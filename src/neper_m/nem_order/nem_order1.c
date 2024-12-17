@@ -22,7 +22,7 @@ nem_order (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
   if (domesh[4])
     nem_order_dim (In, pNodes, Mesh + dim, Mesh + 4);
 
-  if (!strcmp (Tess.Type, "periodic"))
+  if (Tess.Type && !strcmp (Tess.Type, "periodic"))
     nem_order_periodic (Tess, pNodes, Mesh);
 
   nem_order_post (In, NodeQty_before, pNodes);
