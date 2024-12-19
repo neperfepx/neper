@@ -119,8 +119,9 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   // Loading output mesh ###
   if (In.loadmesh)
   {
+    int topology;
     ut_print_message (0, 1, "Loading result mesh...\n");
-    nem_readmesh (In.loadmesh, &Nodes, Mesh);
+    nem_readmesh (In.loadmesh, &Nodes, Mesh, &topology);
     if (!In.tess)
       status = nem_input_init_dim_mesh (&In, Mesh);
 
@@ -139,7 +140,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
           break;
         }
 
-      if (status || (Tess.PolyQty == 0 && strcmp (In.nset, "none") != 0))
+      if (topology && (status || (Tess.PolyQty == 0 && strcmp (In.nset, "none") != 0)))
       {
         ut_print_message (0, 2, "Reconstructing mesh...\n");
         nem_reconstruct_mesh ((Tess.PolyQty == 0
