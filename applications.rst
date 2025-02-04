@@ -34,6 +34,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2025
 ----
 
+- Z Wang, T Sun and J Zhang, *Ultrasmooth Surface Formation of Polycrystalline Copper by Ultraprecision Diamond Cutting*, **Precision Machining Process and Technology**, https://doi.org/10.1007/978-981-16-4003-2_17-1.
+- D Liu, J Xiong, L Wang, X Zheng, X Ming, J Jin, J Hao, H Bai, Z Li, T Zhao, F Hu, J Sun, J Shen and B Shen, *Great influence of demagnetization history on internal interaction and magnetization process of mischmetal-based magnets*, **Science China Physics & Astronomy**, https://doi.org/10.1007/s11433-024-2521-9.
+- A Khajezade, WJ Poole, M Greenwood and M Militzer, *Simulation of Crystallographic Texture After High Temperature Axisymmetric Extrusion of Aluminum Alloys*, **Metallurgical and Materials Transactions A**, https://doi.org/10.1007/s11661-025-07701-y.
 - X Guo, T Kong, J Zhang, J Shen, Q Liu, F Liu, N Zhan and X Xu, *Revealing the strain rate-dependent asymmetric deformation mechanisms of TWIP steel by crystal plasticity modeling*, **Materials Science and Engineering: A**, https://doi.org/10.1016/j.msea.2025.147936.
 - S Zhu and E Brousseau, *A full-field non-local crystal plasticity investigation of bi-layered HEA*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2025.110009.
 - DO de Mentock, S Roongta, F Roters, P Eisenlohr and M Diehl, *A Python Library for Pre-and Post-Processing of DAMASK Simulations*, **Journal of Open Source Software**, https://doi.org/10.21105/joss.07164.
