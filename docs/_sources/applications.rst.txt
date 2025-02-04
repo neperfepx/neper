@@ -60,12 +60,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2024
 ----
 
-.. To check:
-.. - VE Shavshukov, *Grain Interaction and Elastic Strain Distribution in Polycrystalline Materials*, **Physical Mesomechanics**, https://doi.org/10.55652/1683-805X_2024_27_2_112-123.
-.. Rate and negative Poisson's ratio effects on Compressive Mechanical behaviors of Thermal-Damaged Crystalline Rocks using a grain-based model L Xu, B Wang, X Huang, J Du - Bulletin of Engineering Geology and the Environment, 2024
-.. - L Hitzler and  N Mistry, *Prediction of Static Macroscopic Material Behaviour of Additively Manufactured Metals through Crystal Plasticity Modelling*, **State of the Art and Future Trends in Materials Modelling 2**, https://doi.org/10.1007/978-3-031-72900-3_13.
-.. - X Chen, X Zheng, M Pan, Y Liu, Y Kong, A Hartmaier, L Li and Y Du, *Effect of Precipitation-Free Zone on Fatigue Properties in Age-Strengthened Aluminum Alloys: Crystal Plasticity Finite Element Analysis*.
-
+- X Chen, X Zheng, M Pan, Y Liu, Y Kong, A Hartmaier, L Li and Y Du, *Effect of Precipitation-Free Zone on Fatigue Properties in Age-Strengthened Aluminum Alloys: Crystal Plasticity Finite Element Analysis*, **Materials**, https://doi.org/10.3390/ma17225623.
 - P Pothana, V Rasouli and K Ling, *Polyaxial Stress-Dependent Tensorial Permeability Variations of a Columnar Jointed Rock Mass: Insights from 3D Distinct Element Method*, **Indian Geotechnical Journal**, https://doi.org/10.1007/s40098-024-01125-y.
 - S Jiang, J Du, S Wang, C Li and S Xie, *Simulation and Experimental Analysis of Surface Crack Propagation in Oscillating Bearings*, **Tribology Transactions**, https://doi.org/10.1080/10402004.2024.2426509.
 - Y Xu, Y Wu, F Yuan, Y Feng and B Hao, *A Two‐Scale Model of Fretting Fatigue Crack Initiation Life Based on Long Short‐Term Memory Networks Improved by Genetic Algorithm*, **Fatigue & Fracture of Engineering Materials & Structures**, https://doi.org/10.1111/ffe.14487.
