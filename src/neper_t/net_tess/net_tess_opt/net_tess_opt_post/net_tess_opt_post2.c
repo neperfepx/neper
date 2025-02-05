@@ -57,6 +57,15 @@ net_tess_opt_post_tess (struct MTESS *pMTess, struct TESS *Tess, int dtess,
                             (*pTess).CellOri[i]);
       }
     }
+
+    if (TOpt.tartesr.CellGroup)
+    {
+      (*pTess).CellGroup = ut_alloc_1d_int ((*pTess).CellQty + 1);
+      ut_array_1d_int_memcpy (TOpt.tartesr.CellGroup + 1, (*pTess).CellQty, (*pTess).CellGroup + 1);
+    }
+
+    if (TOpt.tartesr.CellCrySym)
+      ut_string_string (TOpt.tartesr.CellCrySym, &(*pTess).CellCrySym);
   }
 
   else if (TOpt.CellSCellQty && ut_array_1d_int_max (TOpt.CellSCellQty + 1, TOpt.CellQty) > 1)
