@@ -111,3 +111,61 @@ neut_tess_fscanf_obj_scanface (char *line, int ***pSFaceVerNb, int *pSFaceQty, s
 
   return;
 }
+
+// If there are duplicate vertices, removing them and renumbering faces
+void
+neut_tess_fscanf_obj_mergever (struct TESS *pTess)
+{
+  int i, j;
+  int *old_new = ut_alloc_1d_int ((*pTess).VerQty + 1);
+  int old_verqty = (*pTess).VerQty;
+  double eps, *lengths = ut_alloc_1d (3);
+
+  neut_tess_bboxsize (*pTess, lengths);
+  eps = 1e-9 * ut_array_1d_max (lengths, 3);
+
+  ut_array_1d_int_set_id (old_new, (*pTess).VerQty + 1);
+  for (i = 1; i <= (*pTess).VerQty; i++)
+    for (j = i + 1; j <= (*pTess).VerQty; j++)
+      if (ut_space_dist ((*pTess).VerCoo[i], (*pTess).VerCoo[j]) < eps)
+      {
+        old_new[j] = i;
+        (*pTess).VerState[j] = -1;
+      }
+
+  // renumbering old by new in faces
+  for (i = 1; i <= (*pTess).FaceQty; i++)
+    for (j = 1; j <= (*pTess).FaceVerQty[i]; j++)
+      (*pTess).FaceVerNb[i][j] = old_new[(*pTess).FaceVerNb[i][j]];
+
+  // compressing vertices
+  (*pTess).VerQty = 0;
+  for (i = 1; i <= old_verqty; i++)
+    if ((*pTess).VerState[i] == 0)
+    {
+      old_new[i] = ++(*pTess).VerQty;
+      ut_array_1d_memcpy ((*pTess).VerCoo[i], 3, (*pTess).VerCoo[(*pTess).VerQty]);
+    }
+
+  for (i = old_verqty; i > (*pTess).VerQty; i--)
+    ut_free_1d ((*pTess).VerCoo + i);
+
+  // replacing old by new in faces again
+  for (i = 1; i <= (*pTess).FaceQty; i++)
+    for (j = 1; j <= (*pTess).FaceVerQty[i]; j++)
+      (*pTess).FaceVerNb[i][j] = old_new[(*pTess).FaceVerNb[i][j]];
+
+  // compressing list of vertices in faces
+  for (i = 1; i <= (*pTess).FaceQty; i++)
+  {
+    ut_array_1d_int_uniq ((*pTess).FaceVerNb[i] + 1, (*pTess).FaceVerQty[i], (*pTess).FaceVerQty + i);
+    if ((*pTess).FaceVerNb[i][(*pTess).FaceVerQty[i]] == (*pTess).FaceVerNb[i][1])
+      (*pTess).FaceVerQty[i]--;
+    (*pTess).FaceVerNb[i] = ut_realloc_1d_int ((*pTess).FaceVerNb[i], (*pTess).FaceVerQty[i] + 1);
+  }
+
+  ut_free_1d_int (&old_new);
+  ut_free_1d (&lengths);
+
+  return;
+}

@@ -80,6 +80,9 @@ neut_tess_fscanf_obj (FILE *file, struct TESS *pTess)
     }
   }
 
+  // merging identical vertices
+  neut_tess_fscanf_obj_mergever (pTess);
+
   // working on the vertices, faces and cells
   ut_print_message (0, 3, "Recovering edges... ");
   neut_tess_init_edges_fromversandfaces (pTess);
