@@ -5,14 +5,19 @@
 #include "neut_tesr_ori_.h"
 
 void
-neut_tesr_cell_orianiso (struct TESR Tesr, int cell, double **evect,
-                         double *eval)
+neut_tesr_cell_orianiso (struct TESR Tesr, int cell, char *csys,
+                         double **evect, double *eval)
 {
   struct OL_SET Set;
 
   neut_tesr_cell_olset (Tesr, cell, &Set);
 
-  ol_set_disoriset (Set, &Set);
+  if (!csys || !strcmp (csys, "ref"))
+    ol_set_disoriset (Set, &Set);
+  else if (!strcmp (csys, "cur") || !strncmp (csys, "crys", 4))
+    ol_set_disoriset_cur (Set, &Set);
+  else
+    abort ();
 
   ol_set_aniso (Set, evect, eval);
 

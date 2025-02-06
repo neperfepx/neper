@@ -317,10 +317,12 @@ Orientation
 :data:`<orientation_descriptor>` :ref:`orientation descriptor <rotation_and_orientation_descriptors>`    voxel, cell
 :data:`gos`                      grain orientation spread [#gos]_                                        cell
 :data:`oridisanisoangles`        orientation distribution anisotropy / principal angles [#JMPS2015]_     cell
-:data:`oridisanisoaxes`          orientation distribution anisotropy / principal axes [#JMPS2015]_       cell
+:data:`oridisanisoaxes[_<csys>]` orientation distribution anisotropy / principal axes [#JMPS2015]_       cell
 :data:`oridisanisofact`          orientation distribution anisotropy factor [#JMPS2015]_                 cell
 :data:`oridisanisodeltas`        orientation distribution anisotropy / principal delta angles [#deltas]_ cell
 ================================ ======================================================================= ====================================
+
+In :data:`oridisanisoaxes[_<csys>]`, the optional coordinate system can be set to :data:`ref` for the reference (or sample) coordinate system or :data:`crys` for the crystal coordinate system (default :data:`ref`).
 
 .. _tessellation_optimization_keys:
 

@@ -283,7 +283,7 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
     else if (!strcmp (var, "oridisanisoangles"))
     {
       double **evect = ut_alloc_2d (3, 3);
-      neut_tesr_cell_orianiso (Tesr, id, evect, *pvals);
+      neut_tesr_cell_orianiso (Tesr, id, NULL, evect, *pvals);
       (*pvalqty) = 3;
       ut_free_2d (&evect, 3);
     }
@@ -291,16 +291,29 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
     {
       double **evect = ut_alloc_2d (3, 3);
       double *eval = ut_alloc_1d (3);
-      neut_tesr_cell_orianiso (Tesr, id, evect, eval);
+      neut_tesr_cell_orianiso (Tesr, id, NULL, evect, eval);
       (*pvals)[0] = eval[0] / pow (eval[0] * eval[1] * eval[2], 1. / 3);
       ut_free_2d (&evect, 3);
       ut_free_1d (&eval);
     }
-    else if (!strcmp (var, "oridisanisoaxes"))
+    else if (!strcmp (var, "oridisanisoaxes") || !strcmp (var, "oridisanisoaxes_ref"))
     {
       double **evect = ut_alloc_2d (3, 3);
       double *eval = ut_alloc_1d (3);
-      neut_tesr_cell_orianiso (Tesr, id, evect, eval);
+      neut_tesr_cell_orianiso (Tesr, id, "ref", evect, eval);
+      (*pvals) = ut_realloc_1d (*pvals, 9);
+      ut_array_1d_memcpy (evect[0], 3, *pvals);
+      ut_array_1d_memcpy (evect[1], 3, *pvals + 3);
+      ut_array_1d_memcpy (evect[2], 3, *pvals + 6);
+      (*pvalqty) = 9;
+      ut_free_2d (&evect, 3);
+      ut_free_1d (&eval);
+    }
+    else if (!strncmp (var, "oridisanisoaxes_crys", 4))
+    {
+      double **evect = ut_alloc_2d (3, 3);
+      double *eval = ut_alloc_1d (3);
+      neut_tesr_cell_orianiso (Tesr, id, "cur", evect, eval);
       (*pvals) = ut_realloc_1d (*pvals, 9);
       ut_array_1d_memcpy (evect[0], 3, *pvals);
       ut_array_1d_memcpy (evect[1], 3, *pvals + 3);

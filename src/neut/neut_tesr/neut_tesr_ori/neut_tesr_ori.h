@@ -10,7 +10,7 @@ extern "C"
 #ifndef  NEUT_TESR_ORI_H
 #define  NEUT_TESR_ORI_H
 
-  extern void neut_tesr_cell_orianiso (struct TESR Tesr, int cell,
+  extern void neut_tesr_cell_orianiso (struct TESR Tesr, int cell, char *csys,
                                        double **evect, double *eval);
   extern void neut_tesr_cell_orianiso_delta (struct TESR Tesr, int cell,
                                             double **evect, double *delta);
