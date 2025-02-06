@@ -1,4 +1,4 @@
-New in 4.10.2-10 (06 Feb 2025):
+New in 4.10.2-11 (06 Feb 2025):
 - module -T: added -ori transform ori for tesrs, added -statcell
   oridisanisoaxes_crys, made minor bug fixes and improvements.
 - module -M: fixed -dim 2 -interface cohesive, fixed -loadmesh on $Topology=0

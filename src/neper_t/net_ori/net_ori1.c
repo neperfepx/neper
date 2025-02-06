@@ -173,7 +173,7 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
 }
 
 void
-net_ori_post (struct TESR *pTesr)
+net_ori_post (struct SEEDSET SSet, struct TESR *pTesr)
 {
   int i, j;
 
@@ -189,7 +189,7 @@ net_ori_post (struct TESR *pTesr)
     neut_tesr_cell_voxs (*pTesr, i, &voxs, &voxqty);
 
     q = ut_alloc_2d (voxqty, 4);
-    neut_ori_orispread ((*pTesr).CellOri[i], (*pTesr).CellOriDistrib[i], voxqty, i, q);
+    neut_ori_orispread ((*pTesr).CellOri[i], (*pTesr).CellOriDistrib[i], voxqty, SSet.Random + i, q);
 
     for (j = 0; j < voxqty; j++)
       ol_q_memcpy (q[j], (*pTesr).VoxOri[voxs[j][0]][voxs[j][1]][voxs[j][2]]);

@@ -315,7 +315,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     net_tess_tesr (In.tesrsizestring, FTess, &Tesr);
 
     if (neut_tesr_hascellorispread (Tesr))
-      net_ori_post (&Tesr);
+      net_ori_post (SSet[1], &Tesr);
   }
 
   // ###################################################################
