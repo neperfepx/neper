@@ -34,6 +34,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2025
 ----
 
+- L Liu, H Yu, Y Li, Z He, S Huang, Z Cai, X He and Y Yao, *Experimental and damage-coupled crystal plasticity constitutive study for solder ball under shear tests*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2025.110898.
 - Z Wang, T Sun and J Zhang, *Ultrasmooth Surface Formation of Polycrystalline Copper by Ultraprecision Diamond Cutting*, **Precision Machining Process and Technology**, https://doi.org/10.1007/978-981-16-4003-2_17-1.
 - D Liu, J Xiong, L Wang, X Zheng, X Ming, J Jin, J Hao, H Bai, Z Li, T Zhao, F Hu, J Sun, J Shen and B Shen, *Great influence of demagnetization history on internal interaction and magnetization process of mischmetal-based magnets*, **Science China Physics & Astronomy**, https://doi.org/10.1007/s11433-024-2521-9.
 - A Khajezade, WJ Poole, M Greenwood and M Militzer, *Simulation of Crystallographic Texture After High Temperature Axisymmetric Extrusion of Aluminum Alloys*, **Metallurgical and Materials Transactions A**, https://doi.org/10.1007/s11661-025-07701-y.
