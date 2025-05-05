@@ -28,11 +28,39 @@ Journal Covers
 
 On a few occasions, Neper images made journal covers.  Congratulations to the authors!
 
+- G Grabowskin, *3-D Microstructure Reconstruction of Tetragonal Zirconia Polycrystalline*, **Journal of Casting & Materials Engineering**, https://doi.org/10.7491/jcme.2025.9.1.1. `Grabowskin journal's cover <imgs/cover-JCME-2025.png>`_
 - B Flipon, C Keller, R Quey and F Barbe, *A full-field crystal-plasticity analysis of bimodal polycrystals*, **International Journal of Solids and Structures**, vol. 184, pp. 178--192, 2020. `Flipon et al.'s journal cover <imgs/cover-ijss-2020.png>`_
 - R Carson, M Obstalecki, M Miller and P Dawson, *Characterizing Heterogeneous Intragranular Deformations in Polycrystalline Solids Using Diffraction-Based and Mechanics-Based Metrics*, **Modelling and Simulation in Materials Science and Engineering**,  vol. 25,  pp. 055008, 2017. `Carson et al.'s journal cover <imgs/cover-MSMSE-2505-OFC.png>`_
 
 2025
 ----
+
+.. check later: Periodically layered heterostructure enhances strength-ductility trade-off in an additive manufactured dual-phase medium-entropy ferrous alloy S Yang, T Lu, Y Hu, G Ma, H Chen, Z Li, D Wang… - Composites Part B …, 2025
+.. Improving diffusion modeling in all-solid-state lithium batteries: a novel approach for grain boundary effects L Scholz, Y Ou, B Grabowski, F Fritzen - arXiv preprint arXiv:2504.10348, 2025
+
+- L Chen, C Liu, P Ma, L Zhan, J Yang and M Huang, *Mitigating creep anisotropy of largely pre-deformed Al-Cu alloys by shape tailoring of dislocation sub-structures*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2025.104350.
+- Q Du, G Xiao, S Zhang, L Yang and L Qiao, *A trans-scale analysis and computation model for transient local stress in Nb3Sn superconductor under quench-induced thermal shock*, **Cryogenics**, https://doi.org/10.1016/j.cryogenics.2025.104085.
+- F Yanagimoto, T He and K Shibanuma, *The state-of-art of studies on brittle crack arrest in steel*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2025.111132.
+- M Yu and F Duan, *Fatigue damage evolution and lifetime prediction of ferrite-cementite steel with combined plasticity*, **International Journal of Fatigue**, https://doi.org/10.1016/j.ijfatigue.2025.108969.
+- H Zhai, W Jiang, Y Wang, Y Yang and H Lv, *Rapid prediction of overload fatigue life based on phase-field modeling of microstructures under different scanning strategies*,  **Additive Manufacturing**, https://doi.org/10.1016/j.addma.2025.104771.
+- G Grabowskin, *3-D Microstructure Reconstruction of Tetragonal Zirconia Polycrystalline*, **Journal of Casting & Materials Engineering**, https://doi.org/10.7491/jcme.2025.9.1.1.
+- TN Tak and PJ Guruprasad, *A Discrete Dislocation Dynamics framework for modelling plasticity in two-phase polycrystals*, **Modelling and Simulation in Materials Science and Engineering**, https://doi.org/10.1088/1361-651X/adc590.
+- Y Li, Y Guo, Y Zhang, W Feng, K Zhang, X Wang and F Yang, *Modeling of diffusion-induced inter-/transgranular cracking in polycrystal NCM particles: Effects of external force and boundary constraints*, **International Journal of Solids and Structures**, https://doi.org/10.1016/j.ijsolstr.2025.113300.
+- JM Scherer, M Ramesh, B Bourdin and K Bhattacharya, *Grain-size dependence of plastic-brittle transgranular fracture*, **Journal of the Mechanics and Physics of Solids**, https://doi.org/10.1016/j.jmps.2025.106116.
+- JCV Giraldo, B Tie, J Laurent, A Lhémery and D Solas, *Ultrasonic scattering in polycrystalline materials with elongated grains: A comparative 3D and 2D theoretical and numerical analysis*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2025.107642.
+- S Zhang, Q Jiang, S Qiu, S Li, Y Kou and D Xu, *Assessment of strain bursting using a Voronoi-based breakable block model: A case study of 2400-m-deep tunnels*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2025.110930.
+- M Cárdenas-Barrantes and C Ovalle, *Multiscale insights into Sliding Surface Liquefaction through DEM simulations*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2025.107191.
+- L Sameer, K Sachin, B Pandit, T Gaurav and D Venkatesh, *Dynamic behaviour of un-grouted and grouted jointed samples of a brittle rock in Split Hopkinson Pressure Bar tests: Insights from experiments and DEM modelling*, **Engineering Geology**, https://doi.org/10.1016/j.enggeo.2025.108033.
+- J Liu, C Davis, S Yue, MA Jolfaei, J Shen and Y Li, *Scalar permeability microstructure model considering crystallographic texture and grain size for magnetic evaluation of anisotropy in steel*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2025.120863.
+- S Han, C Cui, Q Zhang, Y Wang, Y Xie and Y Zhangn *The evaluation method for grain refinement effect of UIT on fatigue life of welded joints based on crystal plasticity*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2025.111023.
+- Z Fan, K Hou, Y Chen, S Zhang, Y Wang and X Chen, *Pumping and shrinking deformation of TSV-Cu under thermal cycling loads: A cross-scale analysis approach*, **Materials Science in Semiconductor Processing**, https://doi.org/10.1016/j.mssp.2025.109430.
+- B Chen, D Li, P Davies, R Johnston, X Ge and C Li, *Recent Progress of Digital Reconstruction in Polycrystalline Materials*, **Archives of Computational Methods in Engineering**, https://doi.org/10.1007/s11831-025-10245-4.
+- SK Gaddam, S Natarajan and AK Kanjarla, *Octree-based scaled boundary finite element approach for polycrystal RVEs: A comparison with traditional FE and FFT methods*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2025.117864.
+- W Cai, C Sun, H Zhang, L Qian, L Meng and MW Fu, *Modeling plastic deformation of TWIP steel using cohesive zone and crystal plasticity finite element*, **Materials & Design**, https://doi.org/10.1016/j.matdes.2025.113785.
+- D Texier, J Genée, V Velay, AC Moreno, D Monceau and E Andrieu, *Size effects on the plastic behavior of polycrystalline materials: Grain size, precipitation state and free-surface effects*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2025.104284.
+- F Hu, S Niezgoda, T Xue and J Cao, *Efficient GPU-computing simulation platform JAX-CPFEM for differentiable crystal plasticity finite element method*, **npj Computational Materials**, https://doi.org/10.1038/s41524-025-01528-2.
+- Z Gao, C Zhu, C Wang, Y Shu, S Liu, J Miao and L Yang, *Advanced deep learning framework for multi-scale prediction of mechanical properties from microstructural features in polycrystalline materials*, **Computer Methods in Applied Mechanics and Enginering**, https://doi.org/10.1016/j.cma.2025.117844.
+
 
 - S Zhou, MB Bettaieb and F Abed-Meraim, *A crystal plasticity-damage coupled finite element framework for predicting mechanical behavior and ductility limits of thin metal sheets*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2025.104267.
 - M He, F Gao, Y Guan, X Zheng, A Hartmaier and Y Du, *Elastic-plastic properties calibration for cemented carbide binder phases with different Ni contents*, **Materials Today Communications**, https://doi.org/10.1016/j.mtcomm.2025.111896.
