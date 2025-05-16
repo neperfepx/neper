@@ -38,6 +38,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. check later: Periodically layered heterostructure enhances strength-ductility trade-off in an additive manufactured dual-phase medium-entropy ferrous alloy S Yang, T Lu, Y Hu, G Ma, H Chen, Z Li, D Wang… - Composites Part B …, 2025
 .. Improving diffusion modeling in all-solid-state lithium batteries: a novel approach for grain boundary effects L Scholz, Y Ou, B Grabowski, F Fritzen - arXiv preprint arXiv:2504.10348, 2025
 
+
+- Z Gao, C Zhu, Y Shu, C Wang, Y Chen and S Wang, *Pgcnn: an interpretable graph convolutional neural network for predicting the mechanical properties of Ti-6Al-4V alloy*, **Applied Intelligence**, https://doi.org/10.1007/s10489-025-06401-9.
+- B Xu, T Xu, S Du, MJ Leap ARL Kushnir and B Liu, *Time-Dependent Deformation of Sandstone due to Chemical Corrosion: An Investigation Using the Heterogeneous Grain-Based Phase-Field Method*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-025-04439-2.
 - L Chen, C Liu, P Ma, L Zhan, J Yang and M Huang, *Mitigating creep anisotropy of largely pre-deformed Al-Cu alloys by shape tailoring of dislocation sub-structures*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2025.104350.
 - Q Du, G Xiao, S Zhang, L Yang and L Qiao, *A trans-scale analysis and computation model for transient local stress in Nb3Sn superconductor under quench-induced thermal shock*, **Cryogenics**, https://doi.org/10.1016/j.cryogenics.2025.104085.
 - F Yanagimoto, T He and K Shibanuma, *The state-of-art of studies on brittle crack arrest in steel*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2025.111132.
