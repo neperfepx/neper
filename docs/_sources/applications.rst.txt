@@ -35,10 +35,16 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2025
 ----
 
-.. check later: Periodically layered heterostructure enhances strength-ductility trade-off in an additive manufactured dual-phase medium-entropy ferrous alloy S Yang, T Lu, Y Hu, G Ma, H Chen, Z Li, D Wang… - Composites Part B …, 2025
 .. Improving diffusion modeling in all-solid-state lithium batteries: a novel approach for grain boundary effects L Scholz, Y Ou, B Grabowski, F Fritzen - arXiv preprint arXiv:2504.10348, 2025
 
 
+- G Lasko, I Danilenko, U Weber, S Schmauder and S Farahifar,  *Numerical study of the effect of residual stresses on fracture toughness in the microstructure of ZrO2 ceramics*, **Theoretical and Applied Fracture Mechanics**, https://doi.org/10.1016/j.tafmec.2025.105047.
+- K Louisa Auth, J Brouzoulis and M Ekh, *Phase‐Field Modeling of Ductile Fracture Across Grain Boundaries in Polycrystals*, **International Journal for Numerical Methods in Engineering**, https://doi.org/10.1002/nme.70056.
+- S Yan, Z Zhang and Q Qin, *Additive manufacturing of strong and ductile NiCoCr medium-entropy alloy via in-situ alloying nanoparticles*, **Materials Science and Engineering: A**, https://doi.org/10.1016/j.msea.2025.148616.
+- AL Jouybari, S El Shawish and L Cizelj, *Enhanced Strain Gradient Crystal Plasticity theory: Evolution of the length scale during deformation*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2025.104351.
+- T Saksala, AR Ruiz, S Bhusare, G Mohanty, T Coudert, S Dumoulin, R Bjørge, P-A Kane and M Hokka, *Numerical Modelling of Frictional Sliding Induced Damage and Heating Effects on Rock With an Application to Sievers' J‐Miniature Drilling on Granite*, **International Journal for Numerical and Analytical Methods in Geomechanics**, https://doi.org/10.1002/nag.4005.
+- V Langlois, A Salame, O Pitois, A Petit and B Soltner, *Permeability of foam-filled granular packing: Numerical modeling*, **Physical Review Fluids**, https://doi.org/10.1103/PhysRevFluids.10.053604.
+-  S Yang, T Lu, Y Hu, G Ma, H Chen, Z Li, D Wang, M Zhang, Y Liu and Y Wang, *Periodically layered heterostructure enhances strength-ductility trade-off in an additive manufactured dual-phase medium-entropy ferrous alloy*, **Composites Part B**, https://doi.org/10.1016/j.compositesb.2025.112494.
 - Z Gao, C Zhu, Y Shu, C Wang, Y Chen and S Wang, *Pgcnn: an interpretable graph convolutional neural network for predicting the mechanical properties of Ti-6Al-4V alloy*, **Applied Intelligence**, https://doi.org/10.1007/s10489-025-06401-9.
 - B Xu, T Xu, S Du, MJ Leap ARL Kushnir and B Liu, *Time-Dependent Deformation of Sandstone due to Chemical Corrosion: An Investigation Using the Heterogeneous Grain-Based Phase-Field Method*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-025-04439-2.
 - L Chen, C Liu, P Ma, L Zhan, J Yang and M Huang, *Mitigating creep anisotropy of largely pre-deformed Al-Cu alloys by shape tailoring of dislocation sub-structures*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2025.104350.
