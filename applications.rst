@@ -35,9 +35,23 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2025
 ----
 
+.. Check later
 .. Improving diffusion modeling in all-solid-state lithium batteries: a novel approach for grain boundary effects L Scholz, Y Ou, B Grabowski, F Fritzen - arXiv preprint arXiv:2504.10348, 2025
+.. An energy-based virtual element method framework for polycrystalline plasticity, M Ru, C Liu, Y Wei - Computer Methods in Applied Mechanics and Engineering, 2025
+.. Comparative Analysis of Algorithms for the Fitting of Tessellations to 3D Image Data, A Alpers, O Furat, C Jung, M Neumann, C Redenbach
+.. Random marked nested tessellations applied to the modelling of deformation twinning in polycrystalline materials, O Kornijčuk, L Heller, Z Pawlas, V Beneš
+.. Bridging the gap between microscale and macroscale plasticity in hybrid laser-arc welded joints of aluminium alloy 6061: experimentation and modelling: S. Yan et al. S Yan, Z Zhang, Y Zhu, Q Qin - Continuum Mechanics and Thermodynamics, 2025
+.. Numerical and data-driven modeling of spall failure in polycrystalline ductile materials, I Saha, L Graham-Brady - arXiv preprint arXiv:2507.03706, 2025
+.. Elastic moduli of 2D random Voronoi polycrystals: hierarchical estimates versus numerical simulations: D.-C. Pham et al. DC Pham, AB Tran, HNT Nguyen, LD Vu, MHT Vuong - Zeitschrift für angewandte …, 2025
+.. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
+.. Mesoscopic Modeling and Simulation of Microscopic Residual Stress for 8Cr4Mo4V Steel Bearing Ring After Heat Treatment T Xia, Z Chen, T Song, P Cui, Y Liu, J Zhu - Journal of Materials Engineering and …, 2025
+.. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
-
+- Z Ma, C Zhang, Y Liu and H Pan, *Damage characterization of laser-fractured granite: experimental validation and numerical modeling*, **Engineering Geology**, https://doi.org/10.1016/j.enggeo.2025.108244.
+- H Gupta, S Gopalakrishnan and S Suwas, *Elastic wave propagation in textured polycrystalline materials: A computationally-efficient and experimentally-supported approach*, **Materialia**, https://doi.org/10.1016/j.mtla.2025.102465.
+- RAR Ruiz, T Saksala, M Isakov, S Bhusare, G Mohanty, N Pournoori, T Coudert, S Dumoulin, R Bjørge, A Kane and M Hokka, *Weakening of granite by alternating voltage excitation of dispersed quartz: A 2D numerical analysis based on cohesive interface elements with a fatigue damage model*, **International Journal of Impact Engineering**, https://doi.org/10.1016/j.ijimpeng.2025.105439.
+- A Edalatmanesh and M Mahnama, *A Comprehensive AI-driven Framework for Predictive Design of Grained Materials: Case Study on Nanoglass*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2025.121292.
+- W Cai, K Gao, S Ai, S Zhang and Y Feng, *A 2D continuous-discontinuous heat transport model considering thermal cracking for the combined finite-discrete element method (FDEM) using node binding scheme*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2025.111365.
 - G Lasko, I Danilenko, U Weber, S Schmauder and S Farahifar,  *Numerical study of the effect of residual stresses on fracture toughness in the microstructure of ZrO2 ceramics*, **Theoretical and Applied Fracture Mechanics**, https://doi.org/10.1016/j.tafmec.2025.105047.
 - K Louisa Auth, J Brouzoulis and M Ekh, *Phase‐Field Modeling of Ductile Fracture Across Grain Boundaries in Polycrystals*, **International Journal for Numerical Methods in Engineering**, https://doi.org/10.1002/nme.70056.
 - S Yan, Z Zhang and Q Qin, *Additive manufacturing of strong and ductile NiCoCr medium-entropy alloy via in-situ alloying nanoparticles*, **Materials Science and Engineering: A**, https://doi.org/10.1016/j.msea.2025.148616.
