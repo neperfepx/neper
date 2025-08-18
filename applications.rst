@@ -45,7 +45,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
-.. Below one article to be added to Google scholar:
+- M Kamran, H Liu, D Fukuda, P Jia, G Min and A Chan, *State-of-the-Art Review and Prospect of Modelling the Dynamic Fracture of Rocks Under Impact Loads and Application in Blasting*, **Geosciences**, https://doi.org/10.3390/geosciences15080314.
+- KM Peterson, JS Park, P Kenesei, CW Herr, A Pilchak, M Kasemer and DC Pagan, *Determining anisotropic slip system rate sensitivities of Ti-6Al-4V using high-energy X-ray diffraction microscopy*, **Journal of Materials Science**, https://doi.org/10.1007/s10853-025-11248-z.
 - T Xia, Z Chen, T Song, P Cui, Y Liu and J Zhu, *Mesoscopic Modeling and Simulation of Microscopic Residual Stress for 8Cr4Mo4V Steel Bearing Ring After Heat Treatment*, **Journal of Materials Engineering and Performance**, https://doi.org/10.1007/s11665-025-11628-1.
 - A Chaurasia, G Walton, K Moore and N Viachopoulos, *Simulating Mechanical Behavior of Grouted Rockbolts in Large‑Scale
 Compressive Tests of Reinforced Rock Pillar Analogs*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-025-04610-9.
