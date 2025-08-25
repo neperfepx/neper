@@ -45,11 +45,13 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
+- Q Zhang, W Lao, YL Xu, Y Ye and C Cui, *Probabilistic meso-damage mechanics model for fatigue evaluation of weld zones of orthotropic steel deck*, **Thin-Walled Structures**, https://doi.org/10.1016/j.tws.2025.113882.
+- P Belamri, H Proudhon, D Texier and D Ryckelynck, *Quaternion-Based Vision-Transformer for Polycrystalline EBSD Scans Pre-Trained on Large-Scale Synthetic Data*, **Materials & Design**, https://doi.org/10.1016/j.matdes.2025.114599.
+- X Wang, R Quey, VK Nadimpalli, DJ Jensen and T Yu, **IOP Conference Series: Materials Science and Engineering**, *Role of cell structure in early-stage strengthening of L-PBF stainless steel 316L*, https://doi.org/10.1088/1757-899X/1332/1/012017.
 - M Kamran, H Liu, D Fukuda, P Jia, G Min and A Chan, *State-of-the-Art Review and Prospect of Modelling the Dynamic Fracture of Rocks Under Impact Loads and Application in Blasting*, **Geosciences**, https://doi.org/10.3390/geosciences15080314.
 - KM Peterson, JS Park, P Kenesei, CW Herr, A Pilchak, M Kasemer and DC Pagan, *Determining anisotropic slip system rate sensitivities of Ti-6Al-4V using high-energy X-ray diffraction microscopy*, **Journal of Materials Science**, https://doi.org/10.1007/s10853-025-11248-z.
 - T Xia, Z Chen, T Song, P Cui, Y Liu and J Zhu, *Mesoscopic Modeling and Simulation of Microscopic Residual Stress for 8Cr4Mo4V Steel Bearing Ring After Heat Treatment*, **Journal of Materials Engineering and Performance**, https://doi.org/10.1007/s11665-025-11628-1.
-- A Chaurasia, G Walton, K Moore and N Viachopoulos, *Simulating Mechanical Behavior of Grouted Rockbolts in Large‑Scale
-Compressive Tests of Reinforced Rock Pillar Analogs*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-025-04610-9.
+- A Chaurasia, G Walton, K Moore and N Viachopoulos, *Simulating Mechanical Behavior of Grouted Rockbolts in Large‑Scale Compressive Tests of Reinforced Rock Pillar Analogs*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-025-04610-9.
 - X Zheng and M Yi, *An Electro-thermo-mechanically Coupled Crystal Plasticity Model for Electroplasticity*, **Acta Mechanica Solida Sinica**, https://doi.org/10.1007/s10338-025-00630-8.
 - S Yan, Z Zhang, Y Zhu and Q Qin, *Bridging the gap between microscale and macroscale plasticity in hybrid laser-arc welded joints of aluminium alloy 6061: experimentation and modelling*, **Continuum Mechanics and Thermodynamics**, https://doi.org/10.1007/s00161-025-01402-y.
 - Z Ma, C Zhang, Y Liu and H Pan, *Damage characterization of laser-fractured granite: experimental validation and numerical modeling*, **Engineering Geology**, https://doi.org/10.1016/j.enggeo.2025.108244.
