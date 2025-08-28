@@ -360,8 +360,6 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   if (In.stc || In.stv || In.ste || In.stf || In.stp || In.sts || In.stpt
       || In.stvox || In.sttess || In.sttesr || In.stgroup)
   {
-    printf ("In.mode = %s\n", In.mode);
-
     ut_print_message (0, 1, "Writing statistics...\n");
     if (!strcmp (In.load, "none") &&
         (!ut_list_testelt (In.format, NEUT_SEP_NODEP, "tess") &&

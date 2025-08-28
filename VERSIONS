@@ -1,4 +1,4 @@
-New in 4.10.2-13 (28 Aug 2025):
+New in 4.10.2-14 (28 Aug 2025):
 - module -T: added -ori transform ori for tesrs, added -statcell
   oridisanisoaxes_crys, fixed -stat* scale, made minor bug fixes and
   improvements.
