@@ -658,6 +658,14 @@ neut_debug_tess (FILE * file, struct TESS Tess)
     fprintf (file, "is NULL\n");
   fflush (file);
 
+  fprintf (file, "== Multiscale =================\n");
+
+  fprintf (file, "ScaleQty = %d\n", Tess.ScaleQty);
+
+  fprintf (file, "ScaleCellId =\n");
+
+  ut_array_2d_int_fprintf (stdout, Tess.ScaleCellId + 1, Tess.CellQty, Tess.ScaleQty + 1, "%d");
+
   fprintf (file, "== Periodicity =================\n");
 
   fprintf (file, "Periodic = ");

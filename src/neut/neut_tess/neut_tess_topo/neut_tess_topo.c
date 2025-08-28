@@ -3325,6 +3325,8 @@ neut_tess_face_scale_polys (struct TESS Tess, int face, int scale, int *poly)
   return 0;
 }
 
+// the scale of a face is determined from its 2 cells
+// the scale is obtained when the 2 cells have different scaleids (from the domain up)
 int
 neut_tess_face_scale (struct TESS Tess, int face, int *pscale)
 {
@@ -3352,12 +3354,12 @@ neut_tess_face_scale (struct TESS Tess, int face, int *pscale)
   else
   {
     (*pscale) = 1;
-    for (i = Tess.ScaleQty - 1; i >= 0; i--)
+    for (i = 1; i <= Tess.ScaleQty; i++)
     {
       neut_tess_face_scale_polys (Tess, face, i, poly);
-      if (poly[0] == poly[1])
+      if (poly[0] != poly[1])
       {
-        (*pscale) = i + 1;
+        (*pscale) = i;
         break;
       }
     }
@@ -3605,22 +3607,28 @@ neut_tess_cellbody_pos (struct TESS Tess, char *expr, int *ppos)
 int
 neut_tess_cell_scale (struct TESS Tess, int id, int *pscale)
 {
-  int i, j;
+  int test_scale, j;
 
   (*pscale) = -1;
 
-  for (j = Tess.ScaleQty; j >= 1; j--)
+  for (test_scale = Tess.ScaleQty - 1; test_scale >= 1; test_scale--)
   {
-    for (i = 1; i <= Tess.CellQty; i++)
-      if (i != id && Tess.ScaleCellId[i][j - 1] == Tess.ScaleCellId[id][j - 1])
+    // can we find a cell different from id that belongs to the same upper-scale cells (down to the first scale)?
+    // if so, the upper-scale cell has several cells, and the scale is the current scale
+    // if not, we continue with the even upper-scale cell
+    for (j = 1; j <= Tess.CellQty; j++)
+      if (j != id && ut_array_1d_int_equal (Tess.ScaleCellId[j] + 1, test_scale, Tess.ScaleCellId[id] + 1, test_scale))
       {
-        (*pscale) = j;
+        (*pscale) = test_scale + 1;
         break;
       }
 
     if ((*pscale) != -1)
       break;
   }
+
+  if ((*pscale) == -1)
+    (*pscale) = 1;
 
   return 0;
 }

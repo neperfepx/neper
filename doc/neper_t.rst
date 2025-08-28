@@ -283,14 +283,16 @@ These options can be used to set the cell morphology.
     - :data:`packing`: positions set by (rough) dense sphere packing using the weights as sphere radii;
     - :data:`centroid`: cell centroids;
     - :data:`LLLFP2011`: Lyckegaard et al.'s method [LLLFP2011]_;
-    - :data:`file(<file_name>)`: values to load from a :ref:`position_file` or a :ref:`tess_file` (only the seed coordinates are considered).
+    - :data:`file(<file_name>)`: values to load from a :ref:`position_file` or a :ref:`tess_file` (only the seed coordinates are considered);
+    - :data:`msfile(<file_name>)`: values to load from a :ref:`multiscale cell file <multiscale_cell_file>`).
 
     The default depends on the value of option :option:`-morpho`: for :data:`voronoi`, it is :data:`random`, for a cell-size statistical distribution, it is :data:`none`, and for cell-based coordinate values (including :data:`-morpho tesr`), it is :data:`centroid`.
 
   - :data:`<weight_definition>` can be:
 
     - a real value or an expression based on the :ref:`tessellation_keys`, especially :data:`radeq`, :data:`diameq`, :data:`avradeq` and :data:`avdiameq`;
-    - :data:`file(<file_name>)`: values from a :ref:`data_file` or a :ref:`tess_file` (only the seed weights are considered).
+    - :data:`file(<file_name>)`: values from a :ref:`data_file` or a :ref:`tess_file` (only the seed weights are considered);
+    - :data:`msfile(<file_name>)`: values to load from a :ref:`multiscale cell file <multiscale_cell_file>`).
 
     The default depends on the value of option :data:`-morpho`: for :data:`voronoi`, it is :data:`0`, for a cell-size statistical distribution, it is :data:`avradeq`, and for cell-based size values (including :data:`-morpho tesr`) , it is :data:`radeq`.
 

@@ -167,6 +167,9 @@ neut_tess_var_val (struct TESS *pTess,
 
   else if (!strcmp (entity, "seed"))
   {
+    if (id > (*pTess).SeedQty)
+      ut_print_neperbug ();
+
     status = 0;
 
     if (!strcmp (var2, "id"))
@@ -205,6 +208,9 @@ neut_tess_var_val (struct TESS *pTess,
            || (!strcmp (entity, "cell") && (*pTess).Dim == 3)
            || (!strcmp (entity, "crystal") && (*pTess).Dim == 3))
   {
+    if (id > (*pTess).PolyQty)
+      ut_print_neperbug ();
+
     status = 0;
 
     if (!strcmp (var2, "id"))
@@ -568,6 +574,9 @@ neut_tess_var_val (struct TESS *pTess,
            || (!strcmp (entity, "cell") && (*pTess).Dim == 2)
            || (!strcmp (entity, "crystal") && (*pTess).Dim == 2))
   {
+    if (id > (*pTess).FaceQty)
+      ut_print_neperbug ();
+
     status = 0;
 
     if (!strcmp (var2, "id"))
@@ -753,12 +762,6 @@ neut_tess_var_val (struct TESS *pTess,
     }
     else if (!strcmp (var2, "scale"))
     {
-      neut_tess_cell_scale (*pTess, id, &tmp);
-      (*pvals)[0] = tmp;
-      ut_string_string ("%d", &typetmp);
-    }
-    else if (!strcmp (var2, "scale"))
-    {
       neut_tess_face_scale ((*pTess), id, &tmp);
       (*pvals)[0] = tmp;
       ut_string_string ("%d", &typetmp);
@@ -866,6 +869,9 @@ neut_tess_var_val (struct TESS *pTess,
 
   else if (!strcmp (entity, "edge"))
   {
+    if (id > (*pTess).EdgeQty)
+      ut_print_neperbug ();
+
     status = 0;
 
     if (!strcmp (var2, "id"))
@@ -1077,6 +1083,9 @@ neut_tess_var_val (struct TESS *pTess,
 
   else if (!strcmp (entity, "ver"))
   {
+    if (id > (*pTess).VerQty)
+      ut_print_neperbug ();
+
     status = 0;
     if (!strcmp (var2, "id"))
     {
@@ -1231,6 +1240,11 @@ neut_tess_var_val (struct TESS *pTess,
 
   else if (!strcmp (entity, "group"))
   {
+    /*
+    if (id > (*pTess).GroupQty)
+      ut_print_neperbug ();
+    */
+
     status = 0;
     if (!strcmp (var, "id"))
     {
