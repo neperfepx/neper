@@ -360,8 +360,18 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
   if (In.stc || In.stv || In.ste || In.stf || In.stp || In.sts || In.stpt
       || In.stvox || In.sttess || In.sttesr || In.stgroup)
   {
+    printf ("In.mode = %s\n", In.mode);
+
     ut_print_message (0, 1, "Writing statistics...\n");
-    if (!strcmp (In.load, "none") && !ut_list_testelt (In.format, NEUT_SEP_NODEP, "tess"))
+    if (!strcmp (In.load, "none") &&
+        (!ut_list_testelt (In.format, NEUT_SEP_NODEP, "tess") &&
+         !ut_list_testelt (In.format, NEUT_SEP_NODEP, "geo") &&
+         !ut_list_testelt (In.format, NEUT_SEP_NODEP, "ply") &&
+         !ut_list_testelt (In.format, NEUT_SEP_NODEP, "obj") &&
+         !ut_list_testelt (In.format, NEUT_SEP_NODEP, "3dec") &&
+         !ut_list_testelt (In.format, NEUT_SEP_NODEP, "stl") &&
+         !ut_list_testelt (In.format, NEUT_SEP_NODEP, "stl:bycell") &&
+         !ut_list_testelt (In.format, NEUT_SEP_NODEP, "fe")))
       neut_tess_reset (&FTess);
     net_stat (In, &FTess, &Tesr, Point);
   }
