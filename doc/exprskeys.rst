@@ -208,6 +208,8 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 :data:`lam`                       lamella width id [#lam]_                                                                            cell
 :data:`mode`                      mode [#mode]_                                                                                       cell
 :data:`group`                     group                                                                                               cell
+:data:`modenb`                    number of modes of the parent cells                                                                 ver, edge, face (in 3D)
+:data:`groupnb`                   number of groups of the parent cells                                                                ver, edge, face (in 3D)
 :data:`per`                       periodic (1 if periodic, 0 otherwise)                                                               ver, edge, face (in 3D)
 :data:`fiber(...)`                1 if in orientation fiber and 0 otherwise, see :ref:`orientation_fibers`                            poly
 :data:`<orientation_descriptor>`  :ref:`orientation descriptor <rotation_and_orientation_descriptors>`                                face (in 2D), poly (in 3D)

@@ -5,6 +5,8 @@
    3 standard
  **cell
   2
+  *group
+   1 2
   *crysym
    triclinic
   *seed

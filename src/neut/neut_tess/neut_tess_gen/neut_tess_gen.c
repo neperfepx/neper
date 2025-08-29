@@ -863,6 +863,52 @@ neut_tess_var_val (struct TESS *pTess,
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
       neut_ori_des_ori ((*pTess).CellOri[id], var, *pvals);
     }
+    else if (!strcmp (var2, "groupnb"))
+    {
+      if ((*pTess).Dim == 2)
+        (*pvals)[0] = 1;
+      else if ((*pTess).Dim == 3)
+      {
+        if (!(*pTess).CellGroup)
+          (*pvals)[0] = 1;
+        else
+        {
+          int *cells = NULL, cellqty;
+          neut_tess_face_cells (*pTess, id, &cells, &cellqty);
+          for (int j = 0; j < cellqty; j++)
+            cells[j] = (*pTess).CellGroup[cells[j]];
+          ut_array_1d_int_sort_uniq (cells, cellqty, &cellqty);
+          ut_free_1d_int (&cells);
+          (*pvals)[0] = cellqty;
+        }
+      }
+      else
+        ut_print_exprbug (var2);
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var2, "modenb"))
+    {
+      if ((*pTess).Dim == 2)
+        (*pvals)[0] = 1;
+      else if ((*pTess).Dim == 3)
+      {
+        if (!(*pTess).CellModeId)
+          (*pvals)[0] = 1;
+        else
+        {
+          int *cells = NULL, cellqty;
+          neut_tess_face_cells (*pTess, id, &cells, &cellqty);
+          for (int j = 0; j < cellqty; j++)
+            cells[j] = (*pTess).CellModeId[cells[j]];
+          ut_array_1d_int_sort_uniq (cells, cellqty, &cellqty);
+          ut_free_1d_int (&cells);
+          (*pvals)[0] = cellqty;
+        }
+      }
+      else
+        ut_print_exprbug (var2);
+      ut_string_string ("%d", &typetmp);
+    }
     else
       status = -1;
   }
@@ -1077,8 +1123,40 @@ neut_tess_var_val (struct TESS *pTess,
       (*pvals)[0] = tmp;
       ut_string_string ("%d", &typetmp);
     }
+    else if (!strcmp (var2, "groupnb"))
+    {
+      if (!(*pTess).CellGroup)
+        (*pvals)[0] = 1;
+      else
+      {
+        int *cells = NULL, cellqty;
+        neut_tess_edge_cells (*pTess, id, &cells, &cellqty);
+        for (int j = 0; j < cellqty; j++)
+          cells[j] = (*pTess).CellGroup[cells[j]];
+        ut_array_1d_int_sort_uniq (cells, cellqty, &cellqty);
+        ut_free_1d_int (&cells);
+        (*pvals)[0] = cellqty;
+      }
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var2, "modenb"))
+    {
+      if (!(*pTess).CellModeId)
+        (*pvals)[0] = 1;
+      else
+      {
+        int *cells = NULL, cellqty;
+        neut_tess_edge_cells (*pTess, id, &cells, &cellqty);
+        for (int j = 0; j < cellqty; j++)
+          cells[j] = (*pTess).CellModeId[cells[j]];
+        ut_array_1d_int_sort_uniq (cells, cellqty, &cellqty);
+        ut_free_1d_int (&cells);
+        (*pvals)[0] = cellqty;
+      }
+    }
     else
       status = -1;
+    ut_string_string ("%d", &typetmp);
   }
 
   else if (!strcmp (entity, "ver"))
@@ -1234,8 +1312,40 @@ neut_tess_var_val (struct TESS *pTess,
       (*pvals)[0] = tmp;
       ut_string_string ("%d", &typetmp);
     }
+    else if (!strcmp (var2, "groupnb"))
+    {
+      if (!(*pTess).CellGroup)
+        (*pvals)[0] = 1;
+      else
+      {
+        int *cells = NULL, cellqty;
+        neut_tess_ver_cells (*pTess, id, &cells, &cellqty);
+        for (int j = 0; j < cellqty; j++)
+          cells[j] = (*pTess).CellGroup[cells[j]];
+        ut_array_1d_int_sort_uniq (cells, cellqty, &cellqty);
+        ut_free_1d_int (&cells);
+        (*pvals)[0] = cellqty;
+      }
+      ut_string_string ("%d", &typetmp);
+    }
+    else if (!strcmp (var2, "modenb"))
+    {
+      if (!(*pTess).CellModeId)
+        (*pvals)[0] = 1;
+      else
+      {
+        int *cells = NULL, cellqty;
+        neut_tess_ver_cells (*pTess, id, &cells, &cellqty);
+        for (int j = 0; j < cellqty; j++)
+          cells[j] = (*pTess).CellModeId[cells[j]];
+        ut_array_1d_int_sort_uniq (cells, cellqty, &cellqty);
+        ut_free_1d_int (&cells);
+        (*pvals)[0] = cellqty;
+      }
+    }
     else
       status = -1;
+    ut_string_string ("%d", &typetmp);
   }
 
   else if (!strcmp (entity, "group"))
