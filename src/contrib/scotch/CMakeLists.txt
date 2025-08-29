@@ -2,7 +2,7 @@
 # Copyright (C) 2003-2024, Romain Quey.
 # See the COPYING file in the top-level directory.
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.0...3.10)
 project(scotch)
 
 add_definitions(-Wno-unused-parameter -Wno-sign-compare -Wno-missing-field-initializers -Wno-unused-variable -Wno-unused-function -Wno-unused-label -Wno-unused-but-set-variable -Wno-implicit-fallthrough -Wno-switch -Wno-uninitialized -Wno-unused-result -Wno-implicit-function-declaration -Wno-unknown-warning-option -Wno-free-nonheap-object -Wno-maybe-uninitialized)

@@ -1,9 +1,10 @@
-New in 4.10.2-15 (29 Aug 2025):
+New in 4.10.2-16 (29 Aug 2025):
 - module -T: added -ori transform ori for tesrs, added -statcell
   oridisanisoaxes_crys, fixed -stat* scale, added tessellation keys modenb and
   groupnb, made minor bug fixes and improvements.
 - module -M: fixed -dim 2 -interface cohesive, fixed -loadmesh on $Topology=0
   meshes, made minor other fixes.
+- general: fixed CMake compatibility.
 
 New in 4.10.1 (09 Oct 2024):
 - module -M: fixed -part for periodic meshes, fixed compatibility with Gmsh

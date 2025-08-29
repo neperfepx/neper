@@ -12,7 +12,7 @@
 # Benoit Scherrer, 2010 CRL, Harvard Medical School
 # Copyright (c) 2008-2009 Children's Hospital Boston
 #==============================================================================
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.10)
 if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()

@@ -2,12 +2,12 @@
 # Copyright (C) 2003-2024, Romain Quey.
 # See the COPYING file in the top-level directory.
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.0...3.10)
 if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"4.10.2-15\")
+set(NEPER_VERSION \"4.10.2-16\")
 project(neper)
 
 if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8.1)

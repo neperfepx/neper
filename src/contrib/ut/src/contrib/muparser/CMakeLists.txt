@@ -2,7 +2,7 @@
 # Copyright (C) 2003-2024, Romain Quey.
 # See the COPYING file in the top-level directory.
 
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.0...3.10)
 project(muparser CXX)
 
 file(GLOB headers "include/*.h")
