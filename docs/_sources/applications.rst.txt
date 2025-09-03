@@ -45,6 +45,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
+- J Tai, X Ji and Z Fan, *Ultrasonic evaluation of porosity under microstructures-induced coupling effects in LPBF-fabricated alloys*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2025.107798.
 - J Xiong, D Liu, R Liu, X Ming, L Wang, X Zheng, H Bai, Y Yin, J Xi, T Zhao, F Hu and B Shen, *Analysis and simulation of magnetocrystalline anisotropy of misch metal magnets*, **Results in Physics**, https://doi.org/10.1016/j.rinp.2025.108416.
 - Q Zhang, W Lao, YL Xu, Y Ye and C Cui, *Probabilistic meso-damage mechanics model for fatigue evaluation of weld zones of orthotropic steel deck*, **Thin-Walled Structures**, https://doi.org/10.1016/j.tws.2025.113882.
 - P Belamri, H Proudhon, D Texier and D Ryckelynck, *Quaternion-Based Vision-Transformer for Polycrystalline EBSD Scans Pre-Trained on Large-Scale Synthetic Data*, **Materials & Design**, https://doi.org/10.1016/j.matdes.2025.114599.
