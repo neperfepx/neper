@@ -35,6 +35,11 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2025
 ----
 
+- N Sheng, S Khazaie, M Chevreuil and S Fréour, *Influence of grain size distribution type on statistical moments of ultrasonic attenuations and phase velocities in random polycrystals*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2025.107800.
+
+2025
+----
+
 .. Check later
 .. Improving diffusion modeling in all-solid-state lithium batteries: a novel approach for grain boundary effects L Scholz, Y Ou, B Grabowski, F Fritzen - arXiv preprint arXiv:2504.10348, 2025
 .. An energy-based virtual element method framework for polycrystalline plasticity, M Ru, C Liu, Y Wei - Computer Methods in Applied Mechanics and Engineering, 2025
@@ -45,6 +50,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
+- M Ezequiel, E Héripré, IP Serre and T Auger, *Liquid metal embrittlement of Cu-30% Zn by EGaIn: Microscale fracture toughness by in situ SEM testing*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2025.111505.
+- E Günay and T Yalçinkaya, *Analysis of the size effect in the nanoscratching process of single crystalline and polycrystalline materials*, **Scientific Reports**, https://doi.org/10.1038/s41598-025-15595-4.
 - J Tai, X Ji and Z Fan, *Ultrasonic evaluation of porosity under microstructures-induced coupling effects in LPBF-fabricated alloys*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2025.107798.
 - J Xiong, D Liu, R Liu, X Ming, L Wang, X Zheng, H Bai, Y Yin, J Xi, T Zhao, F Hu and B Shen, *Analysis and simulation of magnetocrystalline anisotropy of misch metal magnets*, **Results in Physics**, https://doi.org/10.1016/j.rinp.2025.108416.
 - Q Zhang, W Lao, YL Xu, Y Ye and C Cui, *Probabilistic meso-damage mechanics model for fatigue evaluation of weld zones of orthotropic steel deck*, **Thin-Walled Structures**, https://doi.org/10.1016/j.tws.2025.113882.
