@@ -50,6 +50,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
+- SE Whitman and MI Latypov, *SR-CLD: Spatially Resolved Chord Length Distributions for Statistical Description and Visualization of Non-uniform Microstructures*, **Metallurgical and Materials Transactions A**, https://doi.org/10.1007/s11661-025-07963-6.
 - M Ezequiel, E Héripré, IP Serre and T Auger, *Liquid metal embrittlement of Cu-30% Zn by EGaIn: Microscale fracture toughness by in situ SEM testing*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2025.111505.
 - E Günay and T Yalçinkaya, *Analysis of the size effect in the nanoscratching process of single crystalline and polycrystalline materials*, **Scientific Reports**, https://doi.org/10.1038/s41598-025-15595-4.
 - J Tai, X Ji and Z Fan, *Ultrasonic evaluation of porosity under microstructures-induced coupling effects in LPBF-fabricated alloys*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2025.107798.
