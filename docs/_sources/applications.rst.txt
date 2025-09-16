@@ -32,9 +32,10 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 - B Flipon, C Keller, R Quey and F Barbe, *A full-field crystal-plasticity analysis of bimodal polycrystals*, **International Journal of Solids and Structures**, vol. 184, pp. 178--192, 2020. `Flipon et al.'s journal cover <imgs/cover-ijss-2020.png>`_
 - R Carson, M Obstalecki, M Miller and P Dawson, *Characterizing Heterogeneous Intragranular Deformations in Polycrystalline Solids Using Diffraction-Based and Mechanics-Based Metrics*, **Modelling and Simulation in Materials Science and Engineering**,  vol. 25,  pp. 055008, 2017. `Carson et al.'s journal cover <imgs/cover-MSMSE-2505-OFC.png>`_
 
-2025
+2026
 ----
 
+- B Zhou, C Zhao, H Chen and J Xing, *Multiscale damage constitutive model of rock based on the energy evolution of mineral grains and its application*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2025.107638.
 - N Sheng, S Khazaie, M Chevreuil and S Fréour, *Influence of grain size distribution type on statistical moments of ultrasonic attenuations and phase velocities in random polycrystals*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2025.107800.
 
 2025
@@ -50,6 +51,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
+- L Scholz, Y Ou, B Grabowski and F Fritzen, *A collapsed interface approach to resolve grain boundaries in finite element simulations of polycrystalline diffusion*, **Computational Materials Science**, https://doi.org/10.1016/j.commatsci.2025.114172.
 - SE Whitman and MI Latypov, *SR-CLD: Spatially Resolved Chord Length Distributions for Statistical Description and Visualization of Non-uniform Microstructures*, **Metallurgical and Materials Transactions A**, https://doi.org/10.1007/s11661-025-07963-6.
 - M Ezequiel, E Héripré, IP Serre and T Auger, *Liquid metal embrittlement of Cu-30% Zn by EGaIn: Microscale fracture toughness by in situ SEM testing*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2025.111505.
 - E Günay and T Yalçinkaya, *Analysis of the size effect in the nanoscratching process of single crystalline and polycrystalline materials*, **Scientific Reports**, https://doi.org/10.1038/s41598-025-15595-4.
