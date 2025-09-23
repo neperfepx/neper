@@ -35,6 +35,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- K Song, L Xu, L Zhao, Y Han, B Xiao and N Ma, *A microstructurally-sensitive damage model considering grain boundary effect under fatigue and creep-fatigue interaction*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2025.104484.
 - B Zhou, C Zhao, H Chen and J Xing, *Multiscale damage constitutive model of rock based on the energy evolution of mineral grains and its application*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2025.107638.
 - N Sheng, S Khazaie, M Chevreuil and S Fréour, *Influence of grain size distribution type on statistical moments of ultrasonic attenuations and phase velocities in random polycrystals*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2025.107800.
 
