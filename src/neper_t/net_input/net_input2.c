@@ -340,7 +340,10 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     if (!strcmp ((*pIn).input, "n"))
       sprintf ((*pIn).body, "n%s-id%s", (*pIn).nstring, (*pIn).idstring);
     else if (!strcmp ((*pIn).input, "tess") || !strcmp ((*pIn).input, "tesr"))
+    {
       ut_string_body ((*pIn).load, ".", &((*pIn).body));
+      ut_string_fnrs ((*pIn).body, "file(", "", 1);
+    }
     else if (!strcmp ((*pIn).input, "n_reg"))
       sprintf ((*pIn).body, "n%s-%s", (*pIn).nstring, (*pIn).morpho[1]);
     else
