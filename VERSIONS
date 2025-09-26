@@ -1,4 +1,4 @@
-New in 4.10.2-17 (24 Sep 2025):
+New in 4.10.2-18 (26 Sep 2025):
 - module -T: added -ori transform ori for tesrs, added -statcell
   oridisanisoaxes_crys, fixed -stat* scale, added tessellation keys modenb and
   groupnb, made minor bug fixes and improvements.

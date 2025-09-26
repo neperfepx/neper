@@ -1342,10 +1342,10 @@ neut_tess_var_val (struct TESS *pTess,
         ut_free_1d_int (&cells);
         (*pvals)[0] = cellqty;
       }
+      ut_string_string ("%d", &typetmp);
     }
     else
       status = -1;
-    ut_string_string ("%d", &typetmp);
   }
 
   else if (!strcmp (entity, "group"))
