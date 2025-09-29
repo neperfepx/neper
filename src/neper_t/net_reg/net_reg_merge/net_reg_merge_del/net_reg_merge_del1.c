@@ -8,10 +8,9 @@
 // and -2 if the edge deletion aborted.
 int
 net_reg_merge_del (struct TESS *pTess, int edge, int *pver, double *pmaxff,
-                   int **buf, struct TESS *pTessBuf)
+                   int **buf, struct TESS *pTessBuf, int verbosity)
 {
   int i, delver, test;
-  int verbosity = 0;
 
   // Buffering modified entities ---------------------------------------
   //
@@ -44,12 +43,28 @@ net_reg_merge_del (struct TESS *pTess, int edge, int *pver, double *pmaxff,
   // vertex - this case is not treated properly.
   if ((*pTess).VerDom[ver1][0] == 1 && (*pTess).VerDom[ver2][0] == 1
       && ((*pTess).VerDom[ver1][1] != (*pTess).VerDom[ver2][1]))
+  {
+    if (verbosity)
+      printf ("edge not on a domain edge, but shrinking into a domain vertex - not supported\n");
     return -2;
+  }
+
+  // test for edge linking 2 domain vertices - this case is not treated properly.
+  if ((*pTess).VerDom[ver1][0] == 0 && (*pTess).VerDom[ver2][0] == 0)
+  {
+    if (verbosity)
+      printf ("edge linking 2 domain vertices - this case is not treated properly.\n");
+    return -2;
+  }
 
   // test for edge equal to a domain edge.
   if ((*pTess).EdgeDom[edge][0] == 1
       && (*pTess).DomTessEdgeQty[(*pTess).EdgeDom[edge][1]] == 1)
+  {
+    if (verbosity)
+      printf ("edge equal to a domain edge\n");
     return -2;
+  }
 
   // test for edge belonging to a tet polyhedron or tri face, which
   // would mean deleting the cell - this is not allowed.

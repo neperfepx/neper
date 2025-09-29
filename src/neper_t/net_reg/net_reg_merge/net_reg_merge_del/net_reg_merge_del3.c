@@ -378,8 +378,6 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
   int N;                        // nb of faces
   int M;                        // nb of constrained faces
 
-  verbosity = 0;
-
   neut_tess_ver_faces (*pTess, newver, &face, &faceqty);
 
   if (verbosity > 0)
@@ -414,23 +412,25 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
     ut_array_1d_int_fprintf (stdout, domainface, M, "%d");
   }
 
-  int qty;
+  int domfaceqty;
   int *tmp = NULL;
-  neut_tess_ver_domfaces (*pTess, newver, &tmp, &qty);
+  neut_tess_ver_domfaces (*pTess, newver, &tmp, &domfaceqty);
 
   if (verbosity > 0)
   {
-    printf ("neut_tess_ver_domfaces returns qty = %d and ids = ", qty);
-    ut_array_1d_int_fprintf (stdout, tmp, qty, "%d");
+    printf ("neut_tess_ver_domfaces returns qty = %d and ids = ", domfaceqty);
+    ut_array_1d_int_fprintf (stdout, tmp, domfaceqty, "%d");
   }
 
-  M = qty;
+  if (verbosity)
+    printf ("domfaceqty = %d\n", domfaceqty);
 
   int curved, iter;
-  double dist, **constraint = ut_alloc_2d (M, 4);
+  double dist, **constraint = ut_alloc_2d (domfaceqty, 4);
+  double *eq = ut_alloc_1d (4);
 
   curved = 0;
-  for (i = 0; i < M; i++)
+  for (i = 0; i < domfaceqty; i++)
     if (strncmp ((*pTess).DomFaceType[tmp[i]], "plane", 5))
     {
       curved = 1;
@@ -442,17 +442,37 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
   {
     iter++;
 
-    for (i = 0; i < M; i++)
+    M = 0;
+    for (i = 0; i < domfaceqty; i++)
     {
       neut_primparms_point_tangentplane ((*pTess).DomFaceType[tmp[i]],
                                          (*pTess).DomFaceParms[tmp[i]],
                                          (*pTess).VerCoo[newver],
-                                         constraint[i]);
-      if (verbosity > 0)
+                                         eq);
+
+      int constraint_active = 1;
+      for (j = 0; j < M; j++)
+        if (ut_array_1d_equal (eq, constraint[j], 4, 1e-6))
+        {
+          constraint_active = 0;
+          break;
+        }
+
+      if (verbosity)
+        printf ("constraint_active = %d\n", constraint_active);
+
+      if (constraint_active)
       {
-        printf ("constraint %d (type = %s): ", i,
-                (*pTess).DomFaceType[tmp[i]]);
-        ut_array_1d_fprintf (stdout, constraint[i], 4, "%f");
+        ut_array_1d_memcpy (eq, 4, constraint[M]);
+        M++;
+
+        if (verbosity > 0)
+        {
+          printf ("constraint %d (type = %s): ", M - 1,
+                  (*pTess).DomFaceType[tmp[i]]);
+          fflush (stdout);
+          ut_array_1d_fprintf (stdout, constraint[M - 1], 4, "%f");
+        }
       }
     }
 
@@ -494,16 +514,18 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
     // the M constraint values of B.
     double *nprime = NULL;
     double dprime;
+    int id = 0;
     for (i = 0; i < M; i++)
     {
       nprime = constraint[i] + 1;
       dprime = constraint[i][0];
       for (j = 0; j < 3; j++)
       {
-        A[i + 3][j] = nprime[j];
-        A[j][i + 3] = nprime[j];
-        B[i + 3] = dprime;
+        A[id + 3][j] = nprime[j];
+        A[j][id + 3] = nprime[j];
+        B[id + 3] = dprime;
       }
+      id++;
     }
 
     status = ut_linalg_solve_LU (A, B, M + 3, X);
@@ -511,16 +533,24 @@ UpdateVerCooMiniFF (struct TESS *pTess, int newver, int verbosity)
     dist = ut_space_dist ((*pTess).VerCoo[newver], X);
 
     ut_array_1d_memcpy (X, 3, (*pTess).VerCoo[newver]);
+
+    ut_free_2d (&A, 3 + M);
+    ut_free_1d (&B);
+    ut_free_1d (&X);
   }
   while (curved && iter < 1000 && dist > 1e-9);
 
-  ut_free_2d (&A, 3 + M);
-  ut_free_1d (&B);
-  ut_free_1d (&X);
+  ut_free_1d (&eq);
   ut_free_1d_int (&face);
-  ut_free_2d (&constraint, M);
+  ut_free_2d (&constraint, domfaceqty);
   ut_free_1d_int (&domainface);
   ut_free_1d_int (&tmp);
+
+  if (verbosity)
+  {
+    printf ("new coo = ");
+    ut_array_1d_fprintf (stdout, (*pTess).VerCoo[newver], 3, "%f");
+  }
 
   return status;
 }

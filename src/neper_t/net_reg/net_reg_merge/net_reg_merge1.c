@@ -35,11 +35,14 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
   char *string = ut_alloc_1d_char (100);
   char *prevstring = ut_alloc_1d_char (100);
 
+  int attempt = 0, attemptnb = 1e7;
+  // scanf ("%d", &attemptnb);
+
   for (loop = 1; loop <= Reg.mloop; loop++)
   {
     edge = net_reg_merge_nextedge (*pTess, Reg, &lratio1);
 
-    while (edge != -1)
+    while (edge != -1 && ++attempt <= attemptnb)
     {
       if ((*pDelId) >= Reg.maxedgedelqty)
         break;
@@ -47,7 +50,7 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
       ThisDelQty = 0;
 
       testtess =
-        net_reg_merge_del (pTess, edge, &newver, &fmax, buf, &TessBuf);
+        net_reg_merge_del (pTess, edge, &newver, &fmax, buf, &TessBuf, verbosity);
 
       if ((*pTess).Dim == 2)
       {
@@ -66,6 +69,8 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
          * does.
          */
 
+        if (verbosity)
+          printf ("testtess = %d\n", testtess);
         /* if the max ff is acceptable, we record the modif into Tess
          * else, we re-initialize it.
          */
@@ -118,7 +123,7 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
               {
                 testtess =
                   net_reg_merge_del (pTess, edgeb, &trash, &tmp, buf2,
-                                     &TessBuf2);
+                                     &TessBuf2, verbosity);
                 net_reg_merge_undel (pTess, buf2, TessBuf2);
                 net_reg_merge_undel_free (buf2, &TessBuf2);
 
@@ -139,7 +144,7 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
             {
               ThisDelQty = 2;
 
-              net_reg_merge_del (pTess, minid, &newver, &tmp, NULL, NULL);
+              net_reg_merge_del (pTess, minid, &newver, &tmp, NULL, NULL, verbosity);
 
               // this node has been deleted: edgedel <- 1
               (*pTess).EdgeDel[minid] = 1;
@@ -147,9 +152,18 @@ net_reg_merge (struct TESS *pTess, struct REG Reg, int *pDelId)
             else
             {
               ThisDelQty = 0;
+              if (verbosity >= 3)
+                printf("undel edge (hi1)\n");
               net_reg_merge_undel (pTess, buf, TessBuf);
             }
           }
+        }
+
+        else if (testtess == -2)
+        {
+          if (verbosity > 0)
+            printf("undel edge (hi2)\n");
+          net_reg_merge_undel (pTess, buf, TessBuf);
         }
       }
 
