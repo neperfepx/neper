@@ -470,3 +470,39 @@ neut_tess_fprintf_svg (FILE * file, char *format, struct TESS Tess)
 
   return;
 }
+
+void
+neut_tess_fprintf_ovm (FILE *file, struct TESS Tess)
+{
+  fprintf (file, "OVM ASCII\n");
+
+  fprintf (file, "Vertices\n");
+  fprintf (file, "%d\n", Tess.VerQty);
+  ut_array_2d_fprintf (file, Tess.VerCoo + 1, Tess.VerQty, 3, "%.12f");
+
+  fprintf (file, "Edges\n");
+  fprintf (file, "%d\n", Tess.EdgeQty);
+  ut_array_2d_int_fprintf_addval (file, Tess.EdgeVerNb + 1, Tess.EdgeQty, 2, -1, "%d");
+
+  fprintf (file, "Faces\n");
+  fprintf (file, "%d\n", Tess.FaceQty);
+  for (int i = 1; i <= Tess.FaceQty; i++)
+  {
+    fprintf (file, "%d", Tess.FaceVerQty[i]);
+    for (int j = 1; j <= Tess.FaceVerQty[i]; j++)
+      fprintf (file, " %d", (Tess.FaceEdgeNb[i][j] - 1) * 2);
+    fprintf (file, "\n");
+  }
+
+  fprintf (file, "Polyhedra\n");
+  fprintf (file, "%d\n", Tess.PolyQty);
+  for (int i = 1; i <= Tess.PolyQty; i++)
+  {
+    fprintf (file, "%d", Tess.PolyFaceQty[i]);
+    for (int j = 1; j <= Tess.PolyFaceQty[i]; j++)
+      fprintf (file, " %d", (Tess.PolyFaceNb[i][j] - 1) * 2);
+    fprintf (file, "\n");
+  }
+
+  return;
+}

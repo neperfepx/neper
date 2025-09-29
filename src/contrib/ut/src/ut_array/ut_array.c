@@ -772,6 +772,24 @@ ut_array_1d_int_fprintf (FILE * file, int *array, int size,
 }
 
 int
+ut_array_1d_int_fprintf_addval (FILE * file, int *array, int size, int val,
+                         const char *format)
+{
+  int i, res;
+
+  for (i = 0; i < size - 1; i++)
+  {
+    fprintf (file, format, array[i] + val);
+    fprintf (file, " ");
+  }
+  if (size > 0)
+    fprintf (file, format, array[size - 1] + val);
+  res = fprintf (file, "\n");
+
+  return res;
+}
+
+int
 ut_array_1d_int_fprintf_reverse (FILE * file, int *array, int size,
                                  const char *format)
 {
@@ -933,6 +951,28 @@ ut_array_2d_int_fprintf (FILE * file, int **array, int size1, int size2,
     }
     if (size2 > 0)
       res = fprintf (file, format, array[i][size2 - 1]);
+    res = fprintf (file, "\n");
+  }
+
+  return res;
+}
+
+int
+ut_array_2d_int_fprintf_addval (FILE * file, int **array, int size1, int size2, int val,
+                                const char *format)
+{
+  int i, j, res;
+
+  res = 0;
+  for (i = 0; i < size1; i++)
+  {
+    for (j = 0; j < size2 - 1; j++)
+    {
+      res = fprintf (file, format, array[i][j] + val);
+      res = fprintf (file, " ");
+    }
+    if (size2 > 0)
+      res = fprintf (file, format, array[i][size2 - 1] + val);
     res = fprintf (file, "\n");
   }
 

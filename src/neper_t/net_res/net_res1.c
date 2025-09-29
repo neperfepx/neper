@@ -49,6 +49,19 @@ net_res (struct IN_T In, struct TESS FTess, struct TESR Tesr)
                         In.obj);
   }
 
+  if (ut_list_testelt (In.format, NEUT_SEP_NODEP, "ovm"))       // ovm file
+  {
+    if (!neut_tess_isvoid (FTess))
+    {
+      file = ut_file_open (In.ovm, "w");
+      neut_tess_fprintf_ovm (file, FTess);
+      ut_file_close (file, In.ovm, "w");
+    }
+    else
+      ut_print_message (1, 2, "Cannot write %s (is void) - skipping.\n",
+                        In.ovm);
+  }
+
   if (strstr (In.format, "svg"))       // svg file
   {
     if (!neut_tess_isvoid (FTess))

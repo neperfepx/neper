@@ -362,6 +362,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
   (*pIn).dec = ut_string_addextension ((*pIn).body, ".3dec");
   (*pIn).fe = ut_string_addextension ((*pIn).body, ".fe");
   (*pIn).obj = ut_string_addextension ((*pIn).body, ".obj");
+  (*pIn).ovm = ut_string_addextension ((*pIn).body, ".ovm");
   (*pIn).svg = ut_string_addextension ((*pIn).body, ".svg");
   (*pIn).debug = ut_string_addextension ((*pIn).body, ".debug");
   (*pIn).mtess = ut_string_addextension ((*pIn).body, ".mtess");

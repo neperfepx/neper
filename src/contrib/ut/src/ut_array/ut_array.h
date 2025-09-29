@@ -1917,6 +1917,17 @@ extern "C"
   extern int ut_array_1d_int_fprintf (FILE * file, int *array, int size,
                                       const char *format);
 
+/// \brief Write a 1D array of \c int but add val
+/// \param file: file pointer
+/// \param array: array
+/// \param size: size of the array
+/// \param val: added val
+/// \param format: format (usually "%d")
+/// \return 1 on success, undefined otherwise
+/// \note A newline is written at the end.
+  extern int ut_array_1d_int_fprintf_addval (FILE * file, int *array, int size, int val,
+                                      const char *format);
+
 /// \brief Write a 1D array of \c int in reverse order
 /// \param file: file pointer
 /// \param array: array
@@ -1979,6 +1990,18 @@ extern "C"
 /// \note A newline is written at the end of each line.
   extern int ut_array_2d_int_fprintf (FILE * file, int **array, int size1,
                                       int size2, const char *format);
+
+/// \brief Write a 2D array of \c int, but add val
+/// \param file: file pointer
+/// \param array: array
+/// \param size1: 1st-index size of the array
+/// \param size2: 2nd-index size of the array
+/// \param val: added value
+/// \param format: format (usually "%d")
+/// \return 1 on success, undefined otherwise
+/// \note A newline is written at the end of each line.
+  extern int ut_array_2d_int_fprintf_addval (FILE * file, int **array, int size1,
+                                             int size2, int val, const char *format);
 
 /// \brief Write a 2D array of \c double
 /// \param file: file pointer

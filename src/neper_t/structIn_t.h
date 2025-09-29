@@ -183,9 +183,10 @@ extern "C"
     char *stp;				// poly stat file
     char *sts;				// seed stat file
     char *stpt;				// point stat file
-    char *stvox;		        // vox stat file
-    char *stgroup;		        // group stat file
+    char *stvox;		  // vox stat file
+    char *stgroup;		// group stat file
     char *obj;				// Wavefront obj file
+    char *ovm;				// OVM file
     char *svg;				// svg file
     char *orif;				// orientation file
     char *sim;				// simulation file

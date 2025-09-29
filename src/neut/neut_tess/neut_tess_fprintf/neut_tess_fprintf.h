@@ -23,6 +23,7 @@ extern "C"
   extern void neut_tess_fprintf_svg (FILE *, char *, struct TESS);
   extern void neut_tess_fprintf_dec (FILE *, struct TESS);
   extern void neut_tess_fprintf_fe (FILE *, struct TESS);
+  extern void neut_tess_fprintf_ovm (FILE *, struct TESS);
 
 #endif				/* NEUT_TESS_FPRINTF_H */
 

@@ -787,7 +787,7 @@ Output Options
 
   Specify the format(s) of the output file(s), which can be:
 
-    - tessellation: :data:`tess`, :data:`sim`, :data:`geo`, :data:`ply`, :data:`stl[:bycell]`, :data:`obj`, :data:`3dec`, :data:`fe`, :data:`svg[(unit=\<unit\>)]`;
+    - tessellation: :data:`tess`, :data:`sim`, :data:`geo`, :data:`ply`, :data:`stl[:bycell]`, :data:`obj`, :data:`ovm`, :data:`3dec`, :data:`fe`, :data:`svg[(unit=\<unit\>)]`;
     - raster tessellation: :data:`tesr`, :data:`sim`, :data:`vtk`;
     - orientations: :data:`ori`.
 
@@ -969,6 +969,8 @@ Tessellation
 -  :file:`.stl`: STL ("STereoLithography") file describing the tessellation.  If :data:`-format stl:bycell` is used, a separate file is written for each cell, whose name ends in :file:`-<id>.stl`, where :data:`id` is the cell identifier written with leading zeros;
 
 -  :file:`.obj`: Wavefront geometry file describing the tessellation;
+
+-  :file:`.ovm`: OpenVolumeMesh geometry file describing the tessellation;
 
 -  :file:`.3dec`: Itasca 3DEC file describing the tessellation;
 
