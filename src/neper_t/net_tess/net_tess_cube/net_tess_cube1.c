@@ -105,6 +105,8 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
 
   net_ori_mtess_randseed (*pMTess, Tess, 0, 1, SSet, 1, SSet + TessId);
 
+  ut_string_string ("triclinic", &(Tess[TessId].CellCrySym));
+
   ut_free_3d_int (&verid, N[0] + 1, N[1] + 1);
   ut_free_4d_int (&edgeid, 3, N[0] + 1, N[1] + 1);
   ut_free_4d_int (&faceid, 3, N[0] + 1, N[1] + 1);

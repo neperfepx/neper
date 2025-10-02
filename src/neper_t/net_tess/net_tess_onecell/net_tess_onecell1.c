@@ -54,6 +54,8 @@ net_tess_onecell (struct IN_T In, struct MTESS *pMTess,
    && !strncmp (Tess[TessId].DomType, "rodrigues", 9))
     net_tess3d_periodic (Tess + TessId);
 
+  ut_string_string ("triclinic", &(Tess[TessId].CellCrySym));
+
   ut_free_1d (&O);
 
   return 0;

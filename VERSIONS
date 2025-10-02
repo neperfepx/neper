@@ -1,4 +1,4 @@
-New in 4.10.2-21 (02 Oct 2025):
+New in 4.10.2-22 (02 Oct 2025):
 - module -T: improved import and regularization of tessellations of non-cubical
   domains, added -ori transform ori for tesrs, added -statcell
   oridisanisoaxes_crys, added -format ovm, fixed -stat* scale, added
