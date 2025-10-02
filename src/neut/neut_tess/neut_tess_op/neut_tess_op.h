@@ -278,6 +278,8 @@ extern "C"
 
   extern void neut_tess_init_edges_fromversandfaces (struct TESS *pTess);
 
+  extern int neut_tess_compress_facedom (struct TESS *pTess);
+
 #endif				/* NEUT_TESS_OP_H */
 
 #ifdef __cplusplus

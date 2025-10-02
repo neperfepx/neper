@@ -1088,6 +1088,8 @@ neut_tess_init_domain_3d (struct TESS *pTess)
   // Init FaceDom, DomFaceQty, DomFaceEq, DomTessFaceQty and DomTessFaceNb
   (*pTess).DomFaceQty = neut_tess_init_facedom_fromfacepoly (pTess);
 
+  (*pTess).DomFaceQty = neut_tess_compress_facedom (pTess);
+
   neut_tess_init_domtessface (pTess);
 
   (*pTess).DomFaceType = ut_alloc_1d_pchar ((*pTess).DomFaceQty + 1);
@@ -1697,6 +1699,60 @@ neut_tess_init_facedom_fromfacepoly (struct TESS *pTess)
     }
 
   return max;
+}
+
+int
+neut_tess_compress_facedom (struct TESS *pTess)
+{
+  int i, j, k, *attributed = ut_alloc_1d_int ((*pTess).FaceQty + 1);
+  int face, nface, nfaceqty, *nfaces = NULL;
+  double *eq = ut_alloc_1d (4);
+
+  int facedomid = 0;
+
+  for (i = 1; i <= (*pTess).FaceQty; i++)
+    if ((*pTess).FaceDom[i][0] == 2 && !attributed[i])
+    {
+      attributed[i] = 1;
+      ut_array_1d_memcpy ((*pTess).FaceEq[i], 4, eq);
+
+      int cfaceqty = 0, *cfaces = NULL; // coplanar faces
+
+      ut_array_1d_int_list_addval (&cfaces, &cfaceqty, i);
+
+      for (j = 0; j < cfaceqty; j++)
+      {
+        face = cfaces[j];
+
+        neut_tess_face_neighfaces (*pTess, face, &nfaces, &nfaceqty);
+
+        for (k = 0; k < nfaceqty; k++)
+        {
+          nface = nfaces[k];
+
+          if (!attributed[nface] && ut_array_1d_equal (eq, (*pTess).FaceEq[nface], 4, 1e-6))
+          {
+            ut_array_1d_int_list_addval (&cfaces, &cfaceqty, nface);
+            attributed[nface] = 1;
+          }
+        }
+      }
+
+      facedomid++;
+
+      for (j = 0; j < cfaceqty; j++)
+      {
+        (*pTess).FaceDom[cfaces[j]][1] = facedomid;
+        (*pTess).FacePoly[cfaces[j]][1] = -facedomid;
+      }
+
+      ut_free_1d_int (&cfaces);
+    }
+
+  ut_free_1d_int (&attributed);
+  ut_free_1d (&eq);
+
+  return facedomid;
 }
 
 int
