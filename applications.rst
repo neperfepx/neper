@@ -35,7 +35,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
-- A Dziri, K Ammar, S Forest, H Proudhon, Q Sirvin, T Richeton et D Texier, *Effect of oxygen content on elastic properties of an oxygen-graded titanium: Experimental and computational analyses*, **Materials & Design**, https://doi.org/10.1016/j.matdes.2025.114801.
+- K Siriraksophon, N Vajragupta and V Uthaisangsuk, *Anisotropic plasticity and damage of additively manufactured 316L stainless steel by multiscale approach*, **Mechanics of Materials**, https://doi.org/10.1016/j.mechmat.2025.105509.
 - K Song, L Xu, L Zhao, Y Han, B Xiao and N Ma, *A microstructurally-sensitive damage model considering grain boundary effect under fatigue and creep-fatigue interaction*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2025.104484.
 - B Zhou, C Zhao, H Chen and J Xing, *Multiscale damage constitutive model of rock based on the energy evolution of mineral grains and its application*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2025.107638.
 - N Sheng, S Khazaie, M Chevreuil and S Fréour, *Influence of grain size distribution type on statistical moments of ultrasonic attenuations and phase velocities in random polycrystals*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2025.107800.
@@ -53,6 +53,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
+- H Hadraba, L Stratil, F Siska, Z Chlup, L Bertolla, ES Viragova and M Vilemova, *Strengthening 316L austenitic steel through a bimodal approach with ODS steel*, **Journal of Materials Science**, https://doi.org/10.1007/s10853-025-11444-x.
+- C Liu, K Berbatov, M Sedighi and AP Jivkov, *Combinatorial differential forms for multi-dimensional fluid flow in porous media: A unified framework for volumetric pores, fractures, and channels*, **Advances in Water Resources**, https://doi.org/10.1016/j.advwatres.2025.105095.
+- A Dziri, K Ammar, S Forest, H Proudhon, Q Sirvin, T Richeton et D Texier, *Effect of oxygen content on elastic properties of an oxygen-graded titanium: Experimental and computational analyses*, **Materials & Design**, https://doi.org/10.1016/j.matdes.2025.114801.
 - L Scholz, Y Ou, B Grabowski and F Fritzen, *A collapsed interface approach to resolve grain boundaries in finite element simulations of polycrystalline diffusion*, **Computational Materials Science**, https://doi.org/10.1016/j.commatsci.2025.114172.
 - SE Whitman and MI Latypov, *SR-CLD: Spatially Resolved Chord Length Distributions for Statistical Description and Visualization of Non-uniform Microstructures*, **Metallurgical and Materials Transactions A**, https://doi.org/10.1007/s11661-025-07963-6.
 - M Ezequiel, E Héripré, IP Serre and T Auger, *Liquid metal embrittlement of Cu-30% Zn by EGaIn: Microscale fracture toughness by in situ SEM testing*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2025.111505.
