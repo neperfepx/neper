@@ -53,6 +53,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
+- J Xing, C. Zhao, F Xiang, J Niu, H Chen, B Zhou and Y Zhou, *A Hydro-Mechanical Phase Field Model for Hydraulic Fracturing of Grain-Structured Rocks Based on Voronoi Tessellation*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-025-04933-7.
+- I Gribanov, RS Taylor, M Fuglem and A Derradji-Aouat, *Material point method for crushing and spalling ice simulation*, **International Journal of Fracture**, https://doi.org/10.1007/s10704-025-00886-8.
+- C Huang, S Aduloju, J Fritz, V Roshan Joseph, M Messner and T Truster, *Calibration of RAFM Micromechanical Model for Creep Using Bayesian Optimization for Functional Output*, **Journal of Computing and Information Science in Engineering**, https://doi.org/10.1115/1.4067584.
 - H Hadraba, L Stratil, F Siska, Z Chlup, L Bertolla, ES Viragova and M Vilemova, *Strengthening 316L austenitic steel through a bimodal approach with ODS steel*, **Journal of Materials Science**, https://doi.org/10.1007/s10853-025-11444-x.
 - C Liu, K Berbatov, M Sedighi and AP Jivkov, *Combinatorial differential forms for multi-dimensional fluid flow in porous media: A unified framework for volumetric pores, fractures, and channels*, **Advances in Water Resources**, https://doi.org/10.1016/j.advwatres.2025.105095.
 - A Dziri, K Ammar, S Forest, H Proudhon, Q Sirvin, T Richeton et D Texier, *Effect of oxygen content on elastic properties of an oxygen-graded titanium: Experimental and computational analyses*, **Materials & Design**, https://doi.org/10.1016/j.matdes.2025.114801.
