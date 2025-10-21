@@ -53,6 +53,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
+- H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer, Q Li, L Breth, T Schrefl and H Oezelt, *Graph neural networks to predict coercivity and maximum energy product of hard magnetic microstructures*, **Journal of Magnetism and Magnetic Materials**, https://doi.org/10.1016/j.jmmm.2025.173594.
 - J Xing, C. Zhao, F Xiang, J Niu, H Chen, B Zhou and Y Zhou, *A Hydro-Mechanical Phase Field Model for Hydraulic Fracturing of Grain-Structured Rocks Based on Voronoi Tessellation*, **Rock Mechanics and Rock Engineering**, https://doi.org/10.1007/s00603-025-04933-7.
 - I Gribanov, RS Taylor, M Fuglem and A Derradji-Aouat, *Material point method for crushing and spalling ice simulation*, **International Journal of Fracture**, https://doi.org/10.1007/s10704-025-00886-8.
 - C Huang, S Aduloju, J Fritz, V Roshan Joseph, M Messner and T Truster, *Calibration of RAFM Micromechanical Model for Creep Using Bayesian Optimization for Functional Output*, **Journal of Computing and Information Science in Engineering**, https://doi.org/10.1115/1.4067584.
