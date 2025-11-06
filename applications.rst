@@ -35,6 +35,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- S Gong, S Guo, Y Xiong, S Zhou, F Cui and M Liu, *Wave propagation in highly anisotropic polycrystals: a numerical perspective from an unstructured-mesh-based high-order finite element method*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2025.107882.
 - S Zhang, Q Jiang, S Qiu, Y Yu and T Xiang, *Modeling rockbursts in deep tunnels with faults using a hierarchical block model*, **Tunnelling and Underground Space Technology**, https://doi.org/10.1016/j.tust.2025.107191.
 - K Siriraksophon, N Vajragupta and V Uthaisangsuk, *Anisotropic plasticity and damage of additively manufactured 316L stainless steel by multiscale approach*, **Mechanics of Materials**, https://doi.org/10.1016/j.mechmat.2025.105509.
 - K Song, L Xu, L Zhao, Y Han, B Xiao and N Ma, *A microstructurally-sensitive damage model considering grain boundary effect under fatigue and creep-fatigue interaction*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2025.104484.
