@@ -55,6 +55,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
+- D Zhang, S Jiang, B Yan, D Sun, P Lin and Y Zhang, *Rolling deformation mechanism of dual-phase NiTiNb shape memory alloy thin strip based on crystal plasticity finite element method*, **Journal of Manufacturing Processes**, https://doi.org/10.1016/j.jmapro.2025.10.090.
 - K You, Y Cheng, Z Xu and Z Wang, *Investigation of dynamic fracture behaviors of U71MnG steel using a strain rate-dependent crystal plasticity-phase field model*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2025.111661.
 - M Calvat, C Keller and F Barbe, *Micromechanical analysis of a unimodal and a bimodal polycrystal with paired microstructures of ultrafine grains, 2D & 3D*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2024.105434.
 - H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer, Q Li, L Breth, T Schrefl and H Oezelt, *Graph neural networks to predict coercivity and maximum energy product of hard magnetic microstructures*, **Journal of Magnetism and Magnetic Materials**, https://doi.org/10.1016/j.jmmm.2025.173594.
