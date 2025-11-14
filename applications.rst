@@ -55,6 +55,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
+- M Araghi, A Nayebi and H Rokhgireh, *Neper-3D-CAE: The Interface Script between Neper and Abaqus for Polycrystalline Modeling Used in Crystal Plasticity Simulation*, **vectors**, https://doi.org/10.22055/jacm.2025.48554.5322.
+- S Qiu, S Zhang, Q Jiang, Y Fang, P Li, S Li, Y Xiao and D Xu, *Excavation-induced fracturing mechanisms in deep hard rock: A hierarchical block model*, **Underground Space**, https://doi.org/10.1016/j.undsp.2025.07.002.
 - X Guo, J Zhang, T Kong, J Shen, Q Liu, C Sun and P Li, *Unraveling the Discontinuous Dynamic Recrystallization of the TC17 Titanium Alloy during Hot Deformation by Crystal Plasticity Modeling*, **Acta Metallurgica Sinica (English Letters)**, https://doi.org/10.1007/s40195-025-01927-w.
 - D Zhang, S Jiang, B Yan, D Sun, P Lin and Y Zhang, *Rolling deformation mechanism of dual-phase NiTiNb shape memory alloy thin strip based on crystal plasticity finite element method*, **Journal of Manufacturing Processes**, https://doi.org/10.1016/j.jmapro.2025.10.090.
 - K You, Y Cheng, Z Xu and Z Wang, *Investigation of dynamic fracture behaviors of U71MnG steel using a strain rate-dependent crystal plasticity-phase field model*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2025.111661.
