@@ -56,7 +56,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
-
+- E Mengiste, J Strain, LN Brewer and M Kasemer, *Crystal plasticity finite element modeling of the deformation response of AA7050 processed via additive friction stir deposition*, **Materialia**, https://doi.org/10.1016/j.mtla.2025.102610.
 - S Zhou, MB Bettaieb and F Abed-Meraim, *Grain size impact on sheet metal behavior via CPFEM*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2025.111004.
 - M Araghi, A Nayebi and H Rokhgireh, *Neper-3D-CAE: The Interface Script between Neper and Abaqus for Polycrystalline Modeling Used in Crystal Plasticity Simulation*, **vectors**, https://doi.org/10.22055/jacm.2025.48554.5322.
 - S Qiu, S Zhang, Q Jiang, Y Fang, P Li, S Li, Y Xiao and D Xu, *Excavation-induced fracturing mechanisms in deep hard rock: A hierarchical block model*, **Underground Space**, https://doi.org/10.1016/j.undsp.2025.07.002.
