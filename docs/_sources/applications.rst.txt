@@ -35,6 +35,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- RPC Coelho and FMA Pires, *Efficient and accurate multiscale modelling of TRIP steels: Advanced numerical strategies and experimental validation*, **Finite Elements in Analysis and Design**, https://doi.org/10.1016/j.finel.2025.104484.
 - WX Zhang, J Wan, GY Yang, SJ Xia, YB Cong, J Wang, F Lin, C Li and YZ Chen, *On the role of austenite stability in stress/strain distribution and damage mechanism of martensite-austenite dual phase steels*, **Journal of Materials Science and Technology**, https://doi.org/10.1016/j.jmst.2025.11.011.
 - S Gong, S Guo, Y Xiong, S Zhou, F Cui and M Liu, *Wave propagation in highly anisotropic polycrystals: a numerical perspective from an unstructured-mesh-based high-order finite element method*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2025.107882.
 - S Zhang, Q Jiang, S Qiu, Y Yu and T Xiang, *Modeling rockbursts in deep tunnels with faults using a hierarchical block model*, **Tunnelling and Underground Space Technology**, https://doi.org/10.1016/j.tust.2025.107191.
