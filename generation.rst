@@ -45,7 +45,7 @@ Cell groups can be defined to represent different phases of a material.  Groups 
 
   $ neper -T -n 1000 -group "id<=500?1:2" -o gene_grou_1
   $ neper -T -n 1000 -group "vol>=0.001?1:2" -o gene_grou_2
-  $ neper -T -n 1000 -morpho "diameq:diameq:0.8*lognormal(1,0.35)+0.2*lognormal(2,0.6),1-sphericity:lognormal(0.230,0.03)" -group mode -o gene_grou_3
+  $ neper -T -n 1000 -morpho "diameq:0.8*lognormal(1,0.35)+0.2*lognormal(2,0.6),1-sphericity:lognormal(0.230,0.03)" -group mode -o gene_grou_3
 
 .. figure:: imgs/gene_grou.png
 
