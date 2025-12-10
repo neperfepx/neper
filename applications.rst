@@ -35,6 +35,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- N Kondratev, A Podsedertsev and D Bezverkhy, *A Hybrid Multilevel Model for Describing the Full Manufacturing–Operation Cycle*, **Metals**, https://doi.org/10.3390/met15121325.
+- N Kondratev, A Shveykin, K Romanov, R Mosina, I Shishkovsky, E Kharanzhevskiy and M Krivilyov, *Coupling crystal plasticity and microstructure in SLM manufactured 316L parts: model development and experimental assessment*, **Fracture and Structural Integrity**, https://doi.org/10.3221/IGF-ESIS.75.27.
+- D Zhang, S Jiang, X Duan, L Meng, B Yan, D Sun, P Lin and Y Zhang, *Investigation on crystal plasticity of dual-phase NiTiNb shape memory alloy during intermediate temperature compression*, **Materials Science and Engineeing: A**, https://doi.org/10.1016/j.msea.2025.149562.
 - RPC Coelho and FMA Pires, *Efficient and accurate multiscale modelling of TRIP steels: Advanced numerical strategies and experimental validation*, **Finite Elements in Analysis and Design**, https://doi.org/10.1016/j.finel.2025.104484.
 - WX Zhang, J Wan, GY Yang, SJ Xia, YB Cong, J Wang, F Lin, C Li and YZ Chen, *On the role of austenite stability in stress/strain distribution and damage mechanism of martensite-austenite dual phase steels*, **Journal of Materials Science and Technology**, https://doi.org/10.1016/j.jmst.2025.11.011.
 - S Gong, S Guo, Y Xiong, S Zhou, F Cui and M Liu, *Wave propagation in highly anisotropic polycrystals: a numerical perspective from an unstructured-mesh-based high-order finite element method*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2025.107882.
@@ -57,6 +60,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
+- SS Acar and T Yalçinkaya, *Polycrystalline plasticity analysis of cyclic loading and stress relaxation in 316H austenitic stainless steel*, **Computer Methods in Materials Science**, https://doi.org/10.7494/cmms.2025.3.1025.
 - E Mengiste, J Strain, LN Brewer and M Kasemer, *Crystal plasticity finite element modeling of the deformation response of AA7050 processed via additive friction stir deposition*, **Materialia**, https://doi.org/10.1016/j.mtla.2025.102610.
 - S Zhou, MB Bettaieb and F Abed-Meraim, *Grain size impact on sheet metal behavior via CPFEM*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2025.111004.
 - M Araghi, A Nayebi and H Rokhgireh, *Neper-3D-CAE: The Interface Script between Neper and Abaqus for Polycrystalline Modeling Used in Crystal Plasticity Simulation*, **vectors**, https://doi.org/10.22055/jacm.2025.48554.5322.
