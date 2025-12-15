@@ -35,6 +35,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- N Sheng and S Khazaie, *A new correlation model for ultrasonic attenuation in polycrystals with broad grain size distributions*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2025.107924
 - N Kondratev, A Podsedertsev and D Bezverkhy, *A Hybrid Multilevel Model for Describing the Full Manufacturing–Operation Cycle*, **Metals**, https://doi.org/10.3390/met15121325.
 - N Kondratev, A Shveykin, K Romanov, R Mosina, I Shishkovsky, E Kharanzhevskiy and M Krivilyov, *Coupling crystal plasticity and microstructure in SLM manufactured 316L parts: model development and experimental assessment*, **Fracture and Structural Integrity**, https://doi.org/10.3221/IGF-ESIS.75.27.
 - D Zhang, S Jiang, X Duan, L Meng, B Yan, D Sun, P Lin and Y Zhang, *Investigation on crystal plasticity of dual-phase NiTiNb shape memory alloy during intermediate temperature compression*, **Materials Science and Engineeing: A**, https://doi.org/10.1016/j.msea.2025.149562.
