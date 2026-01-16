@@ -35,6 +35,13 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- J Hu, B Xu, J Xiong, C Yu and G Kang, *Investigation to Grain-size Dependent Plasticity of Mg Alloys Based on Phase Field Approach*, **Mechanics of Materials**, https://doi.org/10.1016/j.mechmat.2025.105596.
+- P Prasoon, PR Prakash and B Pulatsu, *DEM modeling of the in-plane response of unreinforced masonry walls: Modeling strategies, fracture behavior, and implications*, **Engineering Structures**, https://doi.org/10.1016/j.engstruct.2025.121911.
+- Y Chen, X Ma, Q Han, D Yang, Y Xiao, H Wang and L Hua, *Crystallographic texture and grain refinement regulated low-cycle fatigue performance of 6061-T6 aluminum alloy*, **Engineering Failure Analysis**, https://doi.org/10.1016/j.engfailanal.2025.110486.
+- B Wang, R Lai, S Song, J Zhao, L Lei, L Shi, S Wu, W Rao, Z Shen and X Zhang, *Low-cycle fatigue prediction of AM IN718 using a crystal plasticity model with precipitate shear mechanism*, **Mechanics of Materials**, https://doi.org/10.1016/j.mechmat.2025.105574.
+- MR Gracej, T Tomše, B Podmiljšak, Z Samardžija, M Kušter, SS Parapari, N Gračanin, MM Kržmanc, L Schieren, C Burkhardt, J Fischbacher, T Schrefl, S Šturm and K Žužek, *Single-Grain Grain-Boundary Engineering with Nd-Cu for Sustainable Recycling and Reprocessing of Nd-Fe-B Magnets*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2025.185605.
+- A Bakonyi, L Bodnár and A Zelei, *Sensitivity Analysis of SAC 305 Solder Polycrystal Mechanical Parameters and Predicted Fatigue Lifetime with Different Grain Structures*, **Applied Sciences**, https://doi.org/10.3390/app16020704.
+- K Sagara, M Ito, T Kitamura and K Shibanuma, *A physics-based microscale model for predicting Coble creep deformation: incorporating stress–diffusion interactions and effects of polycrystalline morphology*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104609.
 - N Sheng and S Khazaie, *A new correlation model for ultrasonic attenuation in polycrystals with broad grain size distributions*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2025.107924
 - N Kondratev, A Podsedertsev and D Bezverkhy, *A Hybrid Multilevel Model for Describing the Full Manufacturing–Operation Cycle*, **Metals**, https://doi.org/10.3390/met15121325.
 - N Kondratev, A Shveykin, K Romanov, R Mosina, I Shishkovsky, E Kharanzhevskiy and M Krivilyov, *Coupling crystal plasticity and microstructure in SLM manufactured 316L parts: model development and experimental assessment*, **Fracture and Structural Integrity**, https://doi.org/10.3221/IGF-ESIS.75.27.
@@ -128,8 +135,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 - D Texier, J Genée, V Velay, AC Moreno, D Monceau and E Andrieu, *Size effects on the plastic behavior of polycrystalline materials: Grain size, precipitation state and free-surface effects*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2025.104284.
 - F Hu, S Niezgoda, T Xue and J Cao, *Efficient GPU-computing simulation platform JAX-CPFEM for differentiable crystal plasticity finite element method*, **npj Computational Materials**, https://doi.org/10.1038/s41524-025-01528-2.
 - Z Gao, C Zhu, C Wang, Y Shu, S Liu, J Miao and L Yang, *Advanced deep learning framework for multi-scale prediction of mechanical properties from microstructural features in polycrystalline materials*, **Computer Methods in Applied Mechanics and Enginering**, https://doi.org/10.1016/j.cma.2025.117844.
-
-
+- S Natarajan, *One Element Per Grain: An Effcient Virtual Element Method for Heat Conduction in Polycrystalline Materials*, **Journal of Advanced Thermal and Fluid Systems in Aerospace**.
 - S Zhou, MB Bettaieb and F Abed-Meraim, *A crystal plasticity-damage coupled finite element framework for predicting mechanical behavior and ductility limits of thin metal sheets*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2025.104267.
 - M He, F Gao, Y Guan, X Zheng, A Hartmaier and Y Du, *Elastic-plastic properties calibration for cemented carbide binder phases with different Ni contents*, **Materials Today Communications**, https://doi.org/10.1016/j.mtcomm.2025.111896.
 - L Liu, H Yu, Y Li, Z He, S Huang, Z Cai, X He and Y Yao, *Experimental and damage-coupled crystal plasticity constitutive study for solder ball under shear tests*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2025.110898.
