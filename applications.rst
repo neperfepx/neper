@@ -35,6 +35,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- F Hu, R Zhou, K Ryou, R Zha, S Niezgoda, T Xue and J Cao, *An Efficient Graphical Processing Unit-Accelerated Calibration of Crystal Plasticity Model Parameters by Multi-Objective Optimization With Automatic Differentiation-Based Sensitivities*, **Journal of Applied Mechanics**,  https://doi.org/10.1115/1.4070536.
 - J Hu, B Xu, J Xiong, C Yu and G Kang, *Investigation to Grain-size Dependent Plasticity of Mg Alloys Based on Phase Field Approach*, **Mechanics of Materials**, https://doi.org/10.1016/j.mechmat.2025.105596.
 - P Prasoon, PR Prakash and B Pulatsu, *DEM modeling of the in-plane response of unreinforced masonry walls: Modeling strategies, fracture behavior, and implications*, **Engineering Structures**, https://doi.org/10.1016/j.engstruct.2025.121911.
 - Y Chen, X Ma, Q Han, D Yang, Y Xiao, H Wang and L Hua, *Crystallographic texture and grain refinement regulated low-cycle fatigue performance of 6061-T6 aluminum alloy*, **Engineering Failure Analysis**, https://doi.org/10.1016/j.engfailanal.2025.110486.
@@ -68,6 +69,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 .. Graph Neural Networks to Predict Coercivity of Hard Magnetic Microstructures, H Moustafa, A Kovacs, J Fischbacher, M Gusenbauer… - arXiv preprint arXiv …, 2025
 .. https://pubs.aip.org/aip/apr/article-abstract/12/2/021327/3349815/Quantum-graph-learning-and-algorithms-applied-in?redirectedFrom=fulltext
 
+- S Zhang, S Qiu, Q Jiang, Y Kou, H Zhang and Z Xie, *Deformation failure mechanism and support effect in deep fractured rock masses*, **Bulletin of Engineering Geology and the Environment**, https://doi.org/10.1007/s10064-025-04627-y.
 - SS Acar and T Yalçinkaya, *Polycrystalline plasticity analysis of cyclic loading and stress relaxation in 316H austenitic stainless steel*, **Computer Methods in Materials Science**, https://doi.org/10.7494/cmms.2025.3.1025.
 - E Mengiste, J Strain, LN Brewer and M Kasemer, *Crystal plasticity finite element modeling of the deformation response of AA7050 processed via additive friction stir deposition*, **Materialia**, https://doi.org/10.1016/j.mtla.2025.102610.
 - S Zhou, MB Bettaieb and F Abed-Meraim, *Grain size impact on sheet metal behavior via CPFEM*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2025.111004.
