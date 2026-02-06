@@ -35,6 +35,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- C Liu, A Jivkov, K Berbatov, M Sedighi, J Liu and H Ni, *Microstructure-driven prediction of permeability and thermal conductivity in porous solids via a discrete multi-physics framework*, **International Journal of Rock and Mining Sciences**, https://doi.org/10.1016/j.ijrmms.2026.106432.
 - A Biswas, M Lindroos, N Grilli, M Salvini, S Ren, P Chekhonin, GC Soares, A Freimanis and M Mostafavi, *Crystal plasticity modelling of carbide network effects on microstructural strain localisation and fracture behaviour in bainitic steels*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2026.106044.
 - A Mukherjee and B Banerjee, *Strain gradient crystal plasticity model with strengthening and kinematic hardening due to plastic slip gradient*, **International Journal of Engineering Science**, https://doi.org/10.1016/j.ijengsci.2026.104480.
 - A Nasirov and C Oskay, *Surrogate-enhanced higher order eigenstrain-based reduced order homogenization for polycrystal plasticity*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2026.118772.
