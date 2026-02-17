@@ -35,6 +35,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- M Men, B Meng, J Han and M Wan, *A multiscale simulation framework for composite manufacturing process: Data transfer and experimental verification*, **Journal of Manufacturing Processes**, https://doi.org/10.1016/j.jmapro.2026.01.063.
+- HS Ryang, CS Kim, JH Kim, JS Jang, WG Pak, NS Han and H-N Kim, *Micromagnetic study on the effect of grain size distribution in hot-deformed Nd–Fe–B magnets*, **AIP Advances**, https://doi.org/10.1063/5.0287227.
+- XC Kuang, WG Jiang, LH Mao, ZK Wu, FC Liu, X Zhou, P-H Ling, Y-C Zhang and M Yi, *Microstructure-Induced Fatigue Scatter of Additively Manufactured Inconel 718: Insight from Multilevel Simulations and Dislocation-based Strain Gradient Crystal Plasticity*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104632.
 - C Liu, A Jivkov, K Berbatov, M Sedighi, J Liu and H Ni, *Microstructure-driven prediction of permeability and thermal conductivity in porous solids via a discrete multi-physics framework*, **International Journal of Rock and Mining Sciences**, https://doi.org/10.1016/j.ijrmms.2026.106432.
 - A Biswas, M Lindroos, N Grilli, M Salvini, S Ren, P Chekhonin, GC Soares, A Freimanis and M Mostafavi, *Crystal plasticity modelling of carbide network effects on microstructural strain localisation and fracture behaviour in bainitic steels*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2026.106044.
 - A Mukherjee and B Banerjee, *Strain gradient crystal plasticity model with strengthening and kinematic hardening due to plastic slip gradient*, **International Journal of Engineering Science**, https://doi.org/10.1016/j.ijengsci.2026.104480.
