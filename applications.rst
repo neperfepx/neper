@@ -35,6 +35,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- Y Wu, Y Li, B He, J Liu, M Huang and Z Li, *A physics-informed GNN-LSTM framework for prediction of microvoid growth in heterogeneous polycrystals*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2026.111938.
+- W Hu, J Peng, S Su, X Chen, M Yi and W Guo, *Crystal-plastic phase-field modeling of short crack behavior in laser shock peened material*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2026.106075.
 - M Men, B Meng, J Han and M Wan, *A multiscale simulation framework for composite manufacturing process: Data transfer and experimental verification*, **Journal of Manufacturing Processes**, https://doi.org/10.1016/j.jmapro.2026.01.063.
 - HS Ryang, CS Kim, JH Kim, JS Jang, WG Pak, NS Han and H-N Kim, *Micromagnetic study on the effect of grain size distribution in hot-deformed Nd–Fe–B magnets*, **AIP Advances**, https://doi.org/10.1063/5.0287227.
 - XC Kuang, WG Jiang, LH Mao, ZK Wu, FC Liu, X Zhou, P-H Ling, Y-C Zhang and M Yi, *Microstructure-Induced Fatigue Scatter of Additively Manufactured Inconel 718: Insight from Multilevel Simulations and Dislocation-based Strain Gradient Crystal Plasticity*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104632.
