@@ -35,6 +35,12 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- K Wu, H Liu, Y Tian and Q Meng, *Porous grain-based modeling of coral reef limestone: revealing heterogeneity and strain rate effects*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2026.107982.
+- Z Zhang, GY Huang, LZ Ma, F Shen, LL Ke and TQ Bui, *Coupled crystal plasticity and phase field modeling for gradient microstructure evolution under rolling*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2026.106089.
+- F Girault, L Toualbi, A Tanguy, A Ask and E Charkaluk, *Unraveling plastic strain localization in aluminum polycrystals by coupling of in situ high-resolution digital image correlation and crystal plasticity*, **Mechanics of Materials**,  https://doi.org/10.1016/j.mechmat.2026.105645.
+- L Fourel, JP Noyel, X Kleber, P Sainsot and F Ville, *Numerical analysis of 3D crack initiation under rolling contact fatigue in polycrystals with subsurface inclusions and surface dents*, **Tribology International**, https://doi.org/10.1016/j.triboint.2026.111860.
+- B Li, P Breitkopf and L Cauvin, *Stochastic inference of effective material properties from crystallographic textures via Gaussian process regression*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2026.118825.
+- Y Liu, Q Li, K Ni and M Huang, *Three-dimensional simulation and experimental investigation of ultrasound propagation through pores in additively manufactured metals*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2026.108000
 - Y Wu, Y Li, B He, J Liu, M Huang and Z Li, *A physics-informed GNN-LSTM framework for prediction of microvoid growth in heterogeneous polycrystals*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2026.111938.
 - W Hu, J Peng, S Su, X Chen, M Yi and W Guo, *Crystal-plastic phase-field modeling of short crack behavior in laser shock peened material*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2026.106075.
 - M Men, B Meng, J Han and M Wan, *A multiscale simulation framework for composite manufacturing process: Data transfer and experimental verification*, **Journal of Manufacturing Processes**, https://doi.org/10.1016/j.jmapro.2026.01.063.
