@@ -35,6 +35,10 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- TM Nogueira Pires, RP Cardoso Coelho and FM Andrade Pires, *Composite bayesian optimisation for multi-objective problems with smooth Tchebycheff scalarisation*, **Structural and Multidisciplinary Optimization**, https://doi.org/10.1007/s00158-025-04229-y.
+- C-H Tu, C-E Tseng, W-C Lai, C-H Hsu, J-S Yang, Y-C Zheng, HH Dang and P-C Tsai, *Quantifying Lattice–Crack–Electrochemical Transport Coupling for Durable, Fast-Charging Battery Cathodes*, **Advanced Energy Materials**, https://doi.org/10.1002/aenm.202506427.
+- S Zhang, Q Jiang, S Qiu, S Zhang, Y Xia and Z Song, *A Hybrid Numerical Modeling for Cross-Scale Mechanical Properties of Rock Materials*, **International Journal for Numerical and Analytical Methods in Geomechanics**, https://doi.org/10.1002/nag.70247.
+- BK Panda, T Puneeth, S Sahoo and AK Nath, *Microstructural analysis and deformation mechanisms in additively manufactured AlSi10Mg alloy: a crystal plasticity finite element study*, **Progress in Additive Manufacturing **, https://doi.org/10.1007/s40964-026-01547-5.
 - K Wu, H Liu, Y Tian and Q Meng, *Porous grain-based modeling of coral reef limestone: revealing heterogeneity and strain rate effects*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2026.107982.
 - Z Zhang, GY Huang, LZ Ma, F Shen, LL Ke and TQ Bui, *Coupled crystal plasticity and phase field modeling for gradient microstructure evolution under rolling*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2026.106089.
 - F Girault, L Toualbi, A Tanguy, A Ask and E Charkaluk, *Unraveling plastic strain localization in aluminum polycrystals by coupling of in situ high-resolution digital image correlation and crystal plasticity*, **Mechanics of Materials**,  https://doi.org/10.1016/j.mechmat.2026.105645.
