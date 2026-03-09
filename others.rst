@@ -3,14 +3,6 @@
 Other Resources
 ===============
 
-Development
------------
-
-.. toctree::
-   :maxdepth: 1
-
-   workflow.rst
-
 Dependencies
 ------------
 
@@ -33,5 +25,4 @@ Others (unofficial)
   - `Phon <https://phon.readthedocs.io>`_: insert interface elements and export to Abaqus or OOFEM. Note: interface elements can be inserted directly in Neper using :data:`-interface cohesive`.
   - `Neper2CAE <https://github.com/ngrilli/Neper2CAE>`_ and `PyCiGen <https://github.com/ngrilli/PyCiGen>`_: generate a columnar grain-growth polycrystal, insert interface elements and export to Abaqus (hex elements)
   - Video tutorials: https://www.youtube.com/watch?v=-5VQSpZ6ksQ, https://www.youtube.com/watch?v=xCcALRfnJeE, https://www.youtube.com/watch?v=t_eqipgcoCo, https://www.youtube.com/watch?v=qG7EoX34hZ8, https://www.youtube.com/watch?v=8reOruZaRUA.
-
-Relevant GitHub repository: https://github.com/InstituteOfMechanics/Neper_Mosaic_RVE_Generator
+  - https://github.com/InstituteOfMechanics/Neper_Mosaic_RVE_Generator
