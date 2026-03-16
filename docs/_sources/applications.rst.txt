@@ -35,6 +35,12 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- J Yang, G Xu, Y Zhou, Y Shu, Z Chen, C Zhang and J Zhang, Laboratory experimental and three-dimensional numerical study of anisotropic behavior of schist under triaxial compression experiment conditions, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2026.108054.
+- C Zhao, G Liu, Z Sun, Y Xin, P Chen and Y Shen, *A thermodynamically consistent phase field model via microforce balance for coupled gas diffusion, bubble evolution, deformation and fracture in irradiated UO2*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104669.
+- M Cárdenas-Barrantes, M Renouf, E Azéma and C Ovalle, *Comparing granular and fragmentation-driven silo DEM models for block caving*, **Powder Technology**, https://doi.org/10.1016/j.powtec.2026.122409.
+- H Sharma, D Sheyfer, R Harder and JZ Tischler, *LaueMatching: an approach for rapid and robust indexing of Laue diffraction patterns*, **Applied Crystallography**, https://doi.org/10.1107/S1600576726001196.
+
+
 - TM Nogueira Pires, RP Cardoso Coelho and FM Andrade Pires, *Composite bayesian optimisation for multi-objective problems with smooth Tchebycheff scalarisation*, **Structural and Multidisciplinary Optimization**, https://doi.org/10.1007/s00158-025-04229-y.
 - C-H Tu, C-E Tseng, W-C Lai, C-H Hsu, J-S Yang, Y-C Zheng, HH Dang and P-C Tsai, *Quantifying Lattice–Crack–Electrochemical Transport Coupling for Durable, Fast-Charging Battery Cathodes*, **Advanced Energy Materials**, https://doi.org/10.1002/aenm.202506427.
 - S Zhang, Q Jiang, S Qiu, S Zhang, Y Xia and Z Song, *A Hybrid Numerical Modeling for Cross-Scale Mechanical Properties of Rock Materials*, **International Journal for Numerical and Analytical Methods in Geomechanics**, https://doi.org/10.1002/nag.70247.
