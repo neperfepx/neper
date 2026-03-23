@@ -35,6 +35,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- Y Li, Y Guo, Y Zhang, Y Wu, Y Kai, K Zhang and F Yang, *Electrolyte infiltration effects on the cracking of polycrystalline NCM cathodes*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2026.112036.
+- Z Xie, Z Fu, J Zhang, K Zhang, T Zeng, Y Wu, S Liao, X Li and T Xue, *Sim-to-real diffusion models for microstructure prediction in metal additive manufacturing*, **Engineering with Computers**, https://doi.org/10.1007/s00366-026-02290-9.
+- DC Vu, *Multiscale analysis of crushable granular materials via the bonded-cell method with energy-controlled fracture*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2026.108082.
 - J Yang, G Xu, Y Zhou, Y Shu, Z Chen, C Zhang and J Zhang, Laboratory experimental and three-dimensional numerical study of anisotropic behavior of schist under triaxial compression experiment conditions, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2026.108054.
 - C Zhao, G Liu, Z Sun, Y Xin, P Chen and Y Shen, *A thermodynamically consistent phase field model via microforce balance for coupled gas diffusion, bubble evolution, deformation and fracture in irradiated UO2*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104669.
 - M Cárdenas-Barrantes, M Renouf, E Azéma and C Ovalle, *Comparing granular and fragmentation-driven silo DEM models for block caving*, **Powder Technology**, https://doi.org/10.1016/j.powtec.2026.122409.
