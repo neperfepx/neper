@@ -35,6 +35,12 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- S Chandra, S Rawat, H Hemani, A Alankar, A Syed, NN Kumar, S Sharma, MK Samal and VM Chavan, *Analysis of non-Schmid effects in a Ni-based superalloy*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104683.
+- V Lalleman, V Magnier and P Gosselet, *Global-in-time global-local coupling using direct cyclic analysis for multiscale shakedown assessment and application to problems with contact*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2026.118940.
+- J Lethoba, R Quey, DC Pagan and M Kasemer, *Sensitivity of grain-averaged elastic strain and orientation predictions on the mesh density and boundary conditions in crystal plasticity finite element simulations*, **Computational Materials Science**, https://doi.org/10.1016/j.commatsci.2026.114680.
+- A Yamaguchi, TT Chen, Y Adachi and Y Matsubara, *Crystal Plasticity Finite-Element Simulation of One-Way and Two-Way Cold Rolling in Pure Iron*, **Journal of Materials Research and Technology**, https://doi.org/10.1016/j.jmrt.2026.04.095.
+- M Arowolo, V Velay, V Vidal and M Dehmas, *Microscale to Macroscale Analyses of Superplasticity of Ti-6242S Titanium Alloy*, **Solid State Phenomena**, https://doi.org/10.4028/p-qnv3tq.
+- J Tang, W Wu, W Yin, G Zhang, J Zhao, S Liu, Y Fu, H Yang, Z Yang and H Chen, *Role of cellular austenite on fracture resistance in additively manufactured 18Ni (300) steel*, **Journal of Materials Science and Technology**, https://doi.org/10.1016/j.jmst.2026.04.011.
 - Y Li, Y Guo, Y Zhang, Y Wu, Y Kai, K Zhang and F Yang, *Electrolyte infiltration effects on the cracking of polycrystalline NCM cathodes*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2026.112036.
 - Z Xie, Z Fu, J Zhang, K Zhang, T Zeng, Y Wu, S Liao, X Li and T Xue, *Sim-to-real diffusion models for microstructure prediction in metal additive manufacturing*, **Engineering with Computers**, https://doi.org/10.1007/s00366-026-02290-9.
 - DC Vu, *Multiscale analysis of crushable granular materials via the bonded-cell method with energy-controlled fracture*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2026.108082.
