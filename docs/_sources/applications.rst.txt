@@ -35,6 +35,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- Z Zhang, J Ju, C Ji and M Zhu, *Cracking induced by second phases in a continuously cast micro-alloyed steel: Experiments and crystal plasticity modeling*, **Journal of Materials Research and Technology**, https://doi.org/10.1016/j.jmrt.2026.04.168.
 - U Yilmaz and H Darendeliler, *Crystal Plasticity-Based Investigation of Crack Propagation in AA2024 Aluminum: A Comparative Study of Damage Criteria Considering Grain Size and Orientation*, **Fatigue and Fracture of Engineering Materials and Structures**,  https://doi.org/10.1111/ffe.70276.
 - S Chandra, S Rawat, H Hemani, A Alankar, A Syed, NN Kumar, S Sharma, MK Samal and VM Chavan, *Analysis of non-Schmid effects in a Ni-based superalloy*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104683.
 - V Lalleman, V Magnier and P Gosselet, *Global-in-time global-local coupling using direct cyclic analysis for multiscale shakedown assessment and application to problems with contact*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2026.118940.
