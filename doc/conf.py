@@ -11,8 +11,8 @@ sys.path.insert(0, os.path.abspath('.'))
 import sphinx_rtd_theme
 
 project = u'Neper'
-version = u'4.10.2-44'
-release = u'4.10.2-44'
+version = u'4.10.2-45'
+release = u'4.10.2-45'
 author = u'Romain Quey'
 copyright = u'Romain Quey'
 language = 'en'
