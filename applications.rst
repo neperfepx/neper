@@ -35,6 +35,14 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- T Nyyssönen, A Ståhlkrantz, AA Gazder, R Hielscher and F Niessen, *Three-dimensional shape metrics for martensite and bainite from two-dimensional orientation maps*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2026.122306.
+- S Nazari-Onlaghi, G Li, K Vanmeensel and M Seefeldt, *Yield anisotropy of LPBF-processed 316L steel: Crystal plasticity models and phenomenological yield functions*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2026.106202.
+- Z Zhang, J Ju, C Ji, H Chang and M Zhu, *Corner cracking criterion in slab continuous casting: A cross-scale framework from laboratory calibration to industrial prediction*, **Journal of Manufacturing Processes**, https://doi.org/10.1016/j.jmapro.2026.05.032.
+- X Zhang, S Hao, S Cao, H Jiang, G Xu and G Wang, *Hydrogen Embrittlement in Low-Alloy Steel with Heterogeneous Gradient Structures: Competing Mechanisms within the Surface Metamorphosed Layer*, **Corrosion Science**, https://doi.org/10.1016/j.corsci.2026.113936.
+- C Zhao, J Chen, L Lei and G Fang, *Crystal plasticity model incorporating grain boundary misorientation effects*, **International Journal of Mechanical Sciences**, https://doi.org/10.1016/j.ijmecsci.2026.111720.
+- Z Zou, X Zhang, M Zhang, J Gu, Y Liu and F Yang, *Unveiling the Atomic-Scale Mechanisms of Grain-Size-Dependent Crack Propagation and Microstructural Evolution in CoCrNi Medium-Entropy Alloy*, **Journal of Materials Research and Technology**, https://doi.org/10.1016/j.jmrt.2026.05.041.
+- H Ohashi and Y Aoyagi, *Frequency-dependent stress response under thermal cycle: A thermal-crystal plasticity and dynamic mode decomposition study*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104722.
+- J Li, N Ao, Y Hu, X Zhang, J Xu, W Yan, Q Kan and G Kang, *A robust fatigue fracture model integrating crystal plasticity with phase field*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2026.112238.
 - AL Jouybari and L Cizelj, *Prospect of quantum computing on Enhanced Strain Gradient Crystal Plasticity theory*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104711.
 - Z Zhang, J Ju, C Ji and M Zhu, *Cracking induced by second phases in a continuously cast micro-alloyed steel: Experiments and crystal plasticity modeling*, **Journal of Materials Research and Technology**, https://doi.org/10.1016/j.jmrt.2026.04.168.
 - U Yilmaz and H Darendeliler, *Crystal Plasticity-Based Investigation of Crack Propagation in AA2024 Aluminum: A Comparative Study of Damage Criteria Considering Grain Size and Orientation*, **Fatigue and Fracture of Engineering Materials and Structures**,  https://doi.org/10.1111/ffe.70276.
