@@ -35,6 +35,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- LQ Machado, T Blumensath, V Samaitis, MJS Lowe and MK Kalkowski, *Model-based deep neural network inversion for ultrasonic reconstruction of thick-section welds*, **NDT & E International**, https://doi.org/10.1016/j.ndteint.2026.103775.
 - T Nyyssönen, A Ståhlkrantz, AA Gazder, R Hielscher and F Niessen, *Three-dimensional shape metrics for martensite and bainite from two-dimensional orientation maps*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2026.122306.
 - S Nazari-Onlaghi, G Li, K Vanmeensel and M Seefeldt, *Yield anisotropy of LPBF-processed 316L steel: Crystal plasticity models and phenomenological yield functions*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2026.106202.
 - Z Zhang, J Ju, C Ji, H Chang and M Zhu, *Corner cracking criterion in slab continuous casting: A cross-scale framework from laboratory calibration to industrial prediction*, **Journal of Manufacturing Processes**, https://doi.org/10.1016/j.jmapro.2026.05.032.
