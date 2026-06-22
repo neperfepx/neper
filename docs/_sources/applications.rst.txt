@@ -35,6 +35,15 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- G Huang, X Zhang, X Zou, K Wang, Z Xie, WR Jian, S Qin and X Yao, *Role of lattice distortion and chemical short-range order in dislocation drag and strain-rate sensitivity over wide strain rates*, **Journal of the Mechanics and Physics of Solids**, https://doi.org/10.1016/j.jmps.2026.106723.
+- D Xia and C Oskay, *Modeling Short-Crack Propagation in 3D Polycrystalline Microstructures through Adaptive Crack Insertion*, **Journal of Engineering Mechanics**, https://doi.org/10.1061/jenmdt.emeng-8913.
+- G Xiang, Z Yao, J Lai, C Shu, C Song, G Mo, X Zhu, J Dong, S Xue and S Zhang, *Dislocation density-based nonlocal crystal plasticity with carbide bypass strengthening for tempered 42CrMo steel*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2026.106245.
+- C Erdogan, B Tatli and T Yalçinkaya, *Failure prediction in dual-phase steel microstructures through a phase-field fracture framework*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104733.
+- Z Ma, C Zhang and Q Jiang, *Laser-assisted TBM disc cutter rock-breaking: Insights from grain model and thermomechanical damage coupling*, **Tunnelling and Underground Space Technology**, https://doi.org/10.1016/j.tust.2026.107820.
+- RPC Coelho, AFC Alves and FMA Pires, *A scalable composite Bayesian optimisation framework for material calibration using full-field measurements*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2026.119126.
+- Z Ma, C Zhang, Y Liu and H Pan, *Granite fracturing under multipoint sequential and mobile laser irradiation using a grain model*, **Journal of Rock Mechanics and Geotechnical Engineering**, https://doi.org/10.1016/j.jrmge.2025.12.064.
+- P Bouteiller, *Finite-pressure and small shear anisotropic hyperelasticity: A phenomenological approach*, **International Journal of Engineering Science**, https://doi.org/10.1016/j.ijengsci.2026.104578.
+
 - LQ Machado, T Blumensath, V Samaitis, MJS Lowe and MK Kalkowski, *Model-based deep neural network inversion for ultrasonic reconstruction of thick-section welds*, **NDT & E International**, https://doi.org/10.1016/j.ndteint.2026.103775.
 - T Nyyssönen, A Ståhlkrantz, AA Gazder, R Hielscher and F Niessen, *Three-dimensional shape metrics for martensite and bainite from two-dimensional orientation maps*, **Acta Materialia**, https://doi.org/10.1016/j.actamat.2026.122306.
 - S Nazari-Onlaghi, G Li, K Vanmeensel and M Seefeldt, *Yield anisotropy of LPBF-processed 316L steel: Crystal plasticity models and phenomenological yield functions*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2026.106202.
