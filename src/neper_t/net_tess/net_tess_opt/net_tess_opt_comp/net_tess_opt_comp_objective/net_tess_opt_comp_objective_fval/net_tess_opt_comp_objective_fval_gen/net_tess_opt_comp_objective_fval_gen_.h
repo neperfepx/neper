@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -33,6 +33,10 @@ extern void net_tess_opt_comp_objective_fval_gen_diameq (struct TOPT *pTOpt, int
 extern void net_tess_opt_comp_objective_fval_gen_sphericity (struct TOPT *pTOpt,
     int var, int cell);
 extern void net_tess_opt_comp_objective_fval_gen_convexity (struct TOPT *pTOpt,
+    int var, int cell);
+extern void net_tess_opt_comp_objective_fval_gen_anisofact (struct TOPT *pTOpt,
+    int var, int cell);
+extern void net_tess_opt_comp_objective_fval_gen_sel (struct TOPT *pTOpt,
     int var, int cell);
 extern void net_tess_opt_comp_objective_fval_gen_centroid (struct TOPT *pTOpt,
     int var, int cell);

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nes_utils_.h"
@@ -185,16 +185,21 @@ nes_in_addres (char *opt, char *resexpr, struct IN_S *pIn)
   int i, pos;
   char *entity = ut_alloc_1d_char (strlen (opt) - 3);
 
+  if (strlen (opt + 4) == 0)
+    ut_print_message (2, 3, "Option `-res' needs an entity.\n");
+
   entity = strncpy (entity, opt + 4, strlen (opt) - 4);
   neut_sim_entity_entity (entity, &entity);
 
   pos = -1;
   for (i = 0; i < (*pIn).entityqty; i++)
+  {
     if (!strcmp (entity, (*pIn).entities[i]))
     {
       pos = i;
       break;
     }
+  }
 
   if (pos == -1)
   {

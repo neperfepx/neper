@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -9,7 +9,6 @@
 
 #include"neper_config.h"
 #include"ut.h"
-#include"../../structIn_v.h"
 #include"neut_v.h"
 #include "nev_print_show_utils/nev_print_show_utils.h"
 #include "nev_print_show_tess/nev_print_show_tess.h"

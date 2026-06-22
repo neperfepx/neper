@@ -1,9 +1,9 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_seedset_.h"
-#include "neut_structs/neut_nfcloud_struct.hpp"
+#include "neut_struct/neut_struct_nfcloud.hpp"
 
 extern void neut_seedset_kdtree_cloud (struct SEEDSET SSet,
                                        NFCLOUD * pnf_cloud,
@@ -69,6 +69,7 @@ neut_seedset_free (struct SEEDSET *pSSet)
   ut_free_2d (&(*pSSet).SeedCoo, (*pSSet).Nall + 1);
   ut_free_1d (&(*pSSet).SeedWeight);
   ut_free_1d_int (&(*pSSet).SeedId);
+
   ut_free_1d (&(*pSSet).SeedOriTheta);
   ut_free_1d (&(*pSSet).SeedOriWeight);
   // UNCOMMENT and DEBUG with
@@ -519,21 +520,22 @@ neut_seedset_kdtree_update (struct SEEDSET SSet, int *seedmoved,
 }
 
 void
-neut_seedset_bcc (struct TESS Dom, int n, struct SEEDSET *pSSet)
+neut_seedset_bcc (struct TESS Dom, int *n, int *periodic, struct SEEDSET *pSSet)
 {
-  int i, x, y, z, nb, N = ut_num_d2ri (pow (n, 3) + pow (n + 1, 3));
+  int i, x, y, z, nb, N = ut_num_d2ri (n[0] * n[1] * n[2] + (n[0] + 1) * (n[1] + 1) * (n[2] + 1));
   double step[3], **bbox = ut_alloc_2d (3, 2);
 
   (*pSSet).SeedCoo = ut_alloc_2d (N + 1, 3);
+  (*pSSet).SeedWeight = ut_alloc_1d (N + 1);
 
   neut_tess_bbox (Dom, bbox);
   for (i = 0; i < 3; i++)
-    step[i] = (bbox[i][1] - bbox[i][0]) / n;
+    step[i] = (bbox[i][1] - bbox[i][0]) / n[i];
 
   nb = 0;
-  for (x = 1; x <= n; x++)
-    for (y = 1; y <= n; y++)
-      for (z = 1; z <= n; z++)
+  for (x = 1; x <= n[0]; x++)
+    for (y = 1; y <= n[1]; y++)
+      for (z = 1; z <= n[2]; z++)
       {
         nb++;
         (*pSSet).SeedCoo[nb][0] = bbox[0][0] + (x - 0.5) * step[0];
@@ -541,15 +543,64 @@ neut_seedset_bcc (struct TESS Dom, int n, struct SEEDSET *pSSet)
         (*pSSet).SeedCoo[nb][2] = bbox[2][0] + (z - 0.5) * step[2];
       }
 
-  for (x = 0; x <= n; x++)
-    for (y = 0; y <= n; y++)
-      for (z = 0; z <= n; z++)
+  for (x = 0; x <= n[0]; x++)
+    for (y = 0; y <= n[1]; y++)
+      for (z = 0; z <= n[2]; z++)
+        if (! ((periodic[0] && x == n[0]) || (periodic[1] && y == n[1]) || (periodic[2] && z == n[2])))
+        {
+          nb++;
+          (*pSSet).SeedCoo[nb][0] = bbox[0][0] + x * step[0];
+          (*pSSet).SeedCoo[nb][1] = bbox[1][0] + y * step[1];
+          (*pSSet).SeedCoo[nb][2] = bbox[2][0] + z * step[2];
+        }
+
+  ut_free_2d (&bbox, 3);
+  (*pSSet).N = nb;
+  (*pSSet).Nall = (*pSSet).N;
+
+  if (ut_array_1d_int_sum (periodic, 3))
+    neut_seedset_periodize (periodic, 0, Dom, 1, pSSet);
+
+  return;
+}
+
+void
+neut_seedset_hexv (struct TESS Dom, int *n, struct SEEDSET *pSSet)
+{
+  int i, x, y, nb, N;
+  double step[2], **bbox = ut_alloc_2d (3, 2);
+
+  N = 0;
+  for (y = 0; y <= n[1]; y++)
+    if (y % 2 == 0)
+      N += n[0];
+    else
+      N += n[0] + 1;
+
+  (*pSSet).SeedCoo = ut_alloc_2d (N + 1, 3);
+
+  neut_tess_bbox (Dom, bbox);
+  for (i = 0; i < 2; i++)
+    step[i] = (bbox[i][1] - bbox[i][0]) / n[i];
+
+  nb = 0;
+  for (y = 0; y <= n[1]; y++)
+  {
+    if (y % 2 == 0)
+      for (x = 0; x < n[0]; x++)
+      {
+        nb++;
+        (*pSSet).SeedCoo[nb][0] = bbox[0][0] + (x + 0.5) * step[0];
+        (*pSSet).SeedCoo[nb][1] = bbox[1][0] + y * step[1];
+      }
+    else
+      for (x = 0; x <= n[0]; x++)
       {
         nb++;
         (*pSSet).SeedCoo[nb][0] = bbox[0][0] + x * step[0];
         (*pSSet).SeedCoo[nb][1] = bbox[1][0] + y * step[1];
-        (*pSSet).SeedCoo[nb][2] = bbox[2][0] + z * step[2];
       }
+  }
 
   ut_free_2d (&bbox, 3);
   (*pSSet).N = nb;
@@ -558,13 +609,109 @@ neut_seedset_bcc (struct TESS Dom, int n, struct SEEDSET *pSSet)
 }
 
 void
-neut_seedset_bcc_expr (struct TESS Dom, char *cooexpr, struct SEEDSET *pSSet)
+neut_seedset_hexh (struct TESS Dom, int *n, struct SEEDSET *pSSet)
 {
-  int n;
+  int i, y, x, nb, N;
+  double step[2], **bbox = ut_alloc_2d (3, 2);
 
-  sscanf (cooexpr, "bcc(%d)", &n);
+  N = 0;
+  for (x = 0; x <= n[0]; x++)
+    if (x % 2 == 0)
+      N += n[1];
+    else
+      N += n[1] + 1;
 
-  neut_seedset_bcc (Dom, n, pSSet);
+  (*pSSet).SeedCoo = ut_alloc_2d (N + 1, 3);
+
+  neut_tess_bbox (Dom, bbox);
+  for (i = 0; i < 2; i++)
+    step[i] = (bbox[i][1] - bbox[i][0]) / n[i];
+
+  nb = 0;
+  for (x = 0; x <= n[0]; x++)
+  {
+    if (x % 2 == 0)
+      for (y = 0; y < n[1]; y++)
+      {
+        nb++;
+        (*pSSet).SeedCoo[nb][0] = bbox[0][0] + x * step[0];
+        (*pSSet).SeedCoo[nb][1] = bbox[1][0] + (y + 0.5) * step[1];
+      }
+    else
+      for (y = 0; y <= n[1]; y++)
+      {
+        nb++;
+        (*pSSet).SeedCoo[nb][0] = bbox[0][0] + x * step[0];
+        (*pSSet).SeedCoo[nb][1] = bbox[1][0] + y * step[1];
+      }
+  }
+
+  ut_free_2d (&bbox, 3);
+  (*pSSet).N = nb;
+
+  return;
+}
+
+void
+neut_seedset_periodize (int *periodic, int level, struct TESS Dom,
+                        int poly, struct SEEDSET *pSSet)
+{
+  int i, j, k, l;
+  int master;
+  int *shift = NULL;
+  double **bbox = NULL;
+
+  if (level > 0)
+  {
+    (*pSSet).Nall = (*pSSet).N;
+    return;
+  }
+
+  shift = ut_alloc_1d_int (3);
+  bbox = ut_alloc_2d (3, 2);
+
+  if (poly != 1)
+    ut_print_neperbug ();
+  neut_tess_bbox (Dom, bbox);
+
+  if (ut_array_1d_int_sum (periodic, 3) > 0)
+    ut_string_string ("periodic", &(*pSSet).Type);
+  else
+    ut_string_string ("standard", &(*pSSet).Type);
+
+  (*pSSet).Periodic = ut_alloc_1d_int (3);
+  ut_array_1d_int_memcpy (periodic, 3, (*pSSet).Periodic);
+
+  (*pSSet).PeriodicDist = ut_alloc_1d (3);
+  for (i = 0; i < 3; i++)
+    if ((*pSSet).Periodic[i])
+      (*pSSet).PeriodicDist[i] = bbox[i][1] - bbox[i][0];
+
+  (*pSSet).Nall = (*pSSet).N;
+  (*pSSet).PerSeedMaster = ut_alloc_1d_int ((*pSSet).Nall + 1);
+  (*pSSet).PerSeedShift = ut_alloc_2d_int ((*pSSet).Nall + 1, 3);
+
+  for (k = -(*pSSet).Periodic[2]; k <= (*pSSet).Periodic[2]; k++)
+    for (j = -(*pSSet).Periodic[1]; j <= (*pSSet).Periodic[1]; j++)
+      for (i = -(*pSSet).Periodic[0]; i <= (*pSSet).Periodic[0]; i++)
+      {
+        if (k == 0 && j == 0 && i == 0)
+          continue;
+
+        ut_array_1d_int_set_3 (shift, i, j, k);
+
+        for (l = 1; l <= (*pSSet).N; l++)
+        {
+          master = l;
+          neut_seedset_slave_add (pSSet, master, shift);
+        }
+      }
+
+  neut_seedset_seedcootoseedcoo0 (pSSet);
+  neut_seedset_init_seedslave (pSSet);
+
+  ut_free_1d_int (&shift);
+  ut_free_2d (&bbox, 3);
 
   return;
 }

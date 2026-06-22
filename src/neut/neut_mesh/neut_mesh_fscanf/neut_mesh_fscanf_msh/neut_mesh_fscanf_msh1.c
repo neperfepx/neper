@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fscanf_msh_.h"
@@ -28,7 +28,7 @@ neut_mesh_fscanf_msh (FILE * file, struct NODES *pNodes, struct MESH *pMesh0D,
       neut_mesh_fscanf_msh_head (file, &mode, &domain, ptopology, &version);
 
     else if (ut_file_nextstring_test (file, "$Nodes"))
-      neut_mesh_fscanf_msh_nodes (file, mode, pNodes, &node_nbs);
+      neut_mesh_fscanf_msh_nodes (file, mode, domain, pNodes, &node_nbs);
 
     else if (ut_file_nextstring_test (file, "$Elements"))
     {

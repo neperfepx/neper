@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_fval_gen_stat_.h"
@@ -108,6 +108,35 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate_kuiper (struct TOPT *pTOpt,
 {
   ut_stat_test_kuiper ((*pTOpt).tarcdf[var].y, (*pTOpt).curcdf[var].y,
                        (*pTOpt).tarcdf[var].size, (*pTOpt).curval + var);
+
+  return;
+}
+
+// valbased
+void
+net_tess_opt_comp_objective_fval_gen_stat_evaluate_FiL2 (struct TOPT *pTOpt,
+                                                             int var)
+{
+  int i;
+  double* vals = ut_alloc_1d ((*pTOpt).CellQty + 1);
+
+  net_tess_opt_comp_objective_fval_gen_stat_evaluate_FL2w (pTOpt, var);
+
+  for (i = 1; i <= (*pTOpt).CellQty; i++)
+    vals[i] = (*pTOpt).curcellval[var][i][0];
+
+  ut_array_1d_sort (vals + 1, (*pTOpt).CellQty);
+
+  double power = 2;
+  (*pTOpt).curval[var] = 0;
+  for (i = 1; i <= (*pTOpt).CellQty; i++)
+    (*pTOpt).curval[var] += pow (fabs (vals[i] - (*pTOpt).tarcellval[var][i][0]), power);
+  (*pTOpt).curval[var] /= (*pTOpt).CellQty * pow ((*pTOpt).tarrefval[var], power);
+  (*pTOpt).curval[var] = pow ((*pTOpt).curval[var], 1. / power);
+
+  // (*pTOpt).curval[var] = val1 * val1 + val2 * ut_num_max (0, 1 - val1);
+
+  ut_free_1d (&vals);
 
   return;
 }

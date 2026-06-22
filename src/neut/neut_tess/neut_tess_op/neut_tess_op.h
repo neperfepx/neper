@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -22,6 +22,7 @@ extern "C"
 ///
 ///
   extern void neut_tess_free (struct TESS *pTess);
+  extern void neut_tess_free_periodic (struct TESS *pTess);
   extern void neut_tess_free_domain (struct TESS *pTess);
 
 /// \brief Reset a TESS structure
@@ -271,6 +272,7 @@ extern "C"
   extern int  neut_tess_cellexpr_remove (struct TESS *pTess, char *expr);
 
   extern void neut_tess_resetcellid (struct TESS *pTess);
+  extern void neut_tess_setcellid (struct TESS *pTess, char* val);
 
   extern int neut_tess_init_domfacez0 (struct TESS *pTess);
 

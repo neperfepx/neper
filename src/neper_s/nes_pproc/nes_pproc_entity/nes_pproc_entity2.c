@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nes_pproc_entity_.h"
@@ -185,7 +185,6 @@ nes_pproc_entity_expr (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
   double *resval = NULL, **simvals = NULL;
   char **vars = NULL;
   char *prev = ut_alloc_1d_char (1000);
-  char *expression = (*pSimRes).expr ? (*pSimRes).expr : (*pSimRes).res;
   FILE *file = NULL;
   char *parent = NULL;
   struct SIMRES SimRes0;
@@ -193,7 +192,7 @@ nes_pproc_entity_expr (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
 
   status = neut_sim_entity_parent (*pSim, entity, &parent);
   if (status)
-    ut_print_message (2, 3, "Entity `%s' has no parent.\n", entity);
+    ut_print_message (2, 3, "Failed to process entity `%s' (no parent).\n", entity);
 
   neut_sim_entity_pos (*pSim, entity, &pos);
   if (pos == -1)
@@ -202,7 +201,7 @@ nes_pproc_entity_expr (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
   neut_simres_set_zero (&SimRes0);
   neut_simres_set_zero (&SimRes2);
 
-  ut_math_vars (expression, &vars, &varqty);
+  ut_math_vars ((*pSimRes).expr, &vars, &varqty);
 
   resval = ut_alloc_1d ((*pSim).EntityMemberQty[pos]);
   simvals = ut_alloc_2d (varqty, (*pSim).EntityMemberQty[pos]);
@@ -332,10 +331,10 @@ nes_pproc_entity_expr (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
       file = ut_file_open ((*pSimRes).file, "W");
 
       // running multiparser in multithreading
-      ut_math_evals (expression, varqty, vars, simvals, (*pSim).EntityMemberQty[pos], resval);
+      ut_math_evals ((*pSimRes).expr, varqty, vars, simvals, (*pSim).EntityMemberQty[pos], resval);
 
       for (i = 0; i < (*pSim).EntityMemberQty[pos]; i++)
-        if (ut_math_eval_exprislogical (expression))
+        if (ut_math_eval_exprislogical ((*pSimRes).expr))
           fprintf (file, "%d\n", ut_num_d2ri (resval[i]));
         else
           fprintf (file, REAL_PRINT_FORMAT"\n", resval[i]);

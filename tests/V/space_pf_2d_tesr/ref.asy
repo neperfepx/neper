@@ -51,8 +51,8 @@ if (w > 0) filldraw(shift(p)*rotate(theta)*scale(1.895 * s)*(pair0--pair5--pair1
 filldraw (scale(scale)*((-1.265,-1.192)--(1.265,-1.192)--(1.265,1.192)--(-1.265,1.192)--cycle),white,white);
 draw (shift(O)*scale(scale)*(-X--X), black);
 draw (shift(O)*scale(scale)*(-Y--Y), black);
-label("$X_2$", scale(scale)*(1,0), E);
-label("$X_1$", scale(scale)*(0,-1), S);
+label("$X_2$", scale(scale)*(1,0), E, black);
+label("$X_1$", scale(scale)*(0,-1), S, black);
 draw (shift(O)*scale(scale)*unitcircle, black);
 sphere (scale(scale/1.000000)*( 0.038905, -0.561374), 0.600000, 0.000000, rgb(1.000000,0.000000,0.000000), 0.000000, rgb(0.000000,0.000000,0.000000), 0.300000);
 sphere (scale(scale/1.000000)*( 0.401379,  0.054675), 0.600000, 0.000000, rgb(1.000000,0.000000,0.000000), 0.000000, rgb(0.000000,0.000000,0.000000), 0.300000);
@@ -62,5 +62,5 @@ sphere (scale(scale/1.000000)*( 0.013646,  0.736817), 0.600000, 0.000000, rgb(0.
 sphere (scale(scale/1.000000)*(-0.540402,  0.131434), 0.600000, 0.000000, rgb(0.000000,1.000000,0.000000), 0.000000, rgb(0.000000,0.000000,0.000000), 0.300000);
 sphere (scale(scale/1.000000)*(-0.020416, -0.331321), 0.600000, 0.000000, rgb(0.000000,1.000000,0.000000), 0.000000, rgb(0.000000,0.000000,0.000000), 0.300000);
 sphere (scale(scale/1.000000)*( 0.513596,  0.100219), 0.600000, 0.000000, rgb(0.000000,1.000000,0.000000), 0.000000, rgb(0.000000,0.000000,0.000000), 0.300000);
-label("$\left\{111\right\}$", scale(scale)*(-1.265, 1.000), NE);
-label("stereo. proj.", scale(scale)*(-1.255, 1.000), SE, fontsize(8));
+label("$\left\{111\right\}$", scale(scale)*(-1.265, 1.000), NE, black);
+label("stereo. proj.", scale(scale)*(-1.255, 1.000), SE, black+fontsize(8));

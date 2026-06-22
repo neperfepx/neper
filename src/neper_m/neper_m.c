@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neper_m_.h"
@@ -65,7 +65,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.tess)
   {
     ut_print_message (0, 2, "Loading tessellation...\n");
-    neut_tess_fnscanf (In.tess, &Tess);
+    neut_tess_fnscanf (In.tess, &Tess, "r");
     nem_input_init_dim_tess (&In, Tess);
   }
 
@@ -203,7 +203,7 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
   if (In.dupnodemerge > 0)
   {
     ut_print_message (0, 1, "Merging duplicated nodes... ");
-    neut_mesh_dupnodemerge (&Nodes, Mesh, NULL, In.dupnodemerge, 1);
+    neut_mesh_dupnodemerge (&Nodes, Mesh, NULL, In.dupnodemerge, 1, NULL);
   }
 
 // managing mesh order ###
@@ -212,7 +212,12 @@ neper_m (int fargc, char **fargv, int argc, char **argv)
     ut_print_message (0, 2, "Switching mesh to order 2...\n");
 
     if (dim >= 0 && Mesh[dim].EltOrder == 1)
-      nem_order (In, Tess, &Nodes, Mesh);
+    {
+      if (!MeshPara.msize)
+        nem_order (In, Tess, &Nodes, Mesh);
+      else
+        nem_order_str (In, MeshPara, &Nodes, Mesh);
+    }
   }
 
 // ###################################################################

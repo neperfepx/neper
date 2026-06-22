@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tesr_op_.h"
@@ -9,6 +9,8 @@ neut_tesr_set_zero (struct TESR *pTesr)
 {
   (*pTesr).Origin = NULL;
   (*pTesr).hasvoid = -1;
+
+  (*pTesr).Periodic = NULL;
 
   (*pTesr).size = NULL;
   (*pTesr).vsize = NULL;
@@ -100,6 +102,7 @@ neut_tesr_free (struct TESR *pTesr)
     ut_free_3d_int (&(*pTesr).VoxOriDef, (*pTesr).size[0] + 1, (*pTesr).size[1] + 1);
   }
   ut_free_1d_int (&(*pTesr).size);
+  ut_free_1d_int (&(*pTesr).Periodic);
 
   return;
 }
@@ -1570,7 +1573,7 @@ neut_tesr_tessinter (struct TESR *pTesr, char *crop, int verbosity)
   neut_tess_set_zero (&Tess);
   sscanf (crop, "tessinter(%s", tess);
   tess[strlen (tess) - 1] = '\0';
-  neut_tess_fnscanf (tess, &Tess);
+  neut_tess_fnscanf (tess, &Tess, "r");
 
 #pragma omp parallel for private(i)
   for (i = 1; i <= Tess.CellQty; i++)

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_fscanf_.h"
@@ -12,38 +12,38 @@ neut_tess_fscanf (FILE * file, struct TESS *pTess)
 
   neut_tess_reset (pTess);
 
-  neut_tess_fscanf_head (pTess, file, &version);
+  neut_tess_fscanf_head (file, pTess, &version);
 
-  neut_tess_fscanf_cell (pTess, version, file);
+  neut_tess_fscanf_cell (file, pTess, version);
 
-  neut_tess_fscanf_ver (pTess, file);
+  neut_tess_fscanf_ver (file, pTess);
 
-  neut_tess_fscanf_edge (pTess, file);
+  neut_tess_fscanf_edge (file, pTess);
   neut_tess_init_veredge (pTess);
 
   if ((*pTess).Dim >= 2)
   {
-    neut_tess_fscanf_face (pTess, file);
+    neut_tess_fscanf_face (file, pTess);
     neut_tess_init_edgeface (pTess);
   }
 
   if ((*pTess).Dim >= 3)
   {
-    neut_tess_fscanf_poly (pTess, file);
+    neut_tess_fscanf_poly (file, pTess);
     neut_tess_init_facepoly (pTess);
   }
 
   ut_file_nextstring (file, tmp);
   if (!strcmp (tmp, "**domain"))
-    neut_tess_fscanf_domain (pTess, version, file);
+    neut_tess_fscanf_domain (file, pTess, version);
 
   ut_file_nextstring (file, tmp);
   if (!strcmp (tmp, "**periodicity"))
-    neut_tess_fscanf_per (pTess, file);
+    neut_tess_fscanf_per (file, pTess);
 
   ut_file_nextstring (file, tmp);
   if (!strcmp (tmp, "**scale"))
-    neut_tess_fscanf_scale (pTess, file);
+    neut_tess_fscanf_scale (file, pTess);
 
   neut_tess_fscanf_foot (file);
   neut_tess_init_edgelength (pTess);
@@ -55,7 +55,7 @@ neut_tess_fscanf (FILE * file, struct TESS *pTess)
 }
 
 void
-neut_tess_fnscanf (char *name, struct TESS *pTess)
+neut_tess_fnscanf (char *name, struct TESS *pTess, char *mode)
 {
   FILE *file = NULL;
   char **list = NULL;
@@ -66,9 +66,9 @@ neut_tess_fnscanf (char *name, struct TESS *pTess)
 
   ut_list_break (name, NEUT_SEP_DEP, &list, &qty);
 
-  file = ut_file_open (list[0], "r");
+  file = ut_file_open (list[0], mode);
   neut_tess_fscanf (file, pTess);
-  ut_file_close (file, list[0], "r");
+  ut_file_close (file, list[0], mode);
 
   for (i = 1; i < qty; i++)
   {

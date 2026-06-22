@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the tgeom-level directory. */
 
 #include "neut_tesr_geom_.h"
@@ -83,7 +83,8 @@ neut_tesr_vox_ori (struct TESR Tesr, int vox, double *ori)
     if (Tesr.VoxOri)
       ut_array_1d_memcpy (Tesr.VoxOri[pos[0]][pos[1]][pos[2]], 4, ori);
     else
-      ut_array_1d_memcpy (Tesr.CellOri[Tesr.VoxCell[pos[0]][pos[1]][pos[2]]], 4, ori);
+      ut_array_1d_memcpy (Tesr.CellOri[Tesr.VoxCell[pos[0]][pos[1]][pos[2]]],
+                          4, ori);
 
     return 0;
   }
@@ -268,7 +269,7 @@ neut_tesr_cell_centre (struct TESR Tesr, int cell, double *coo)
   voxcoo = ut_alloc_1d (3);
 
   qty = 0;
-  ut_array_1d_zero (coo, 3);
+  ut_array_1d_zero (coo, Tesr.Dim);
   for (k = Tesr.CellBBox[cell][2][0]; k <= Tesr.CellBBox[cell][2][1]; k++)
     for (j = Tesr.CellBBox[cell][1][0]; j <= Tesr.CellBBox[cell][1][1]; j++)
       for (i = Tesr.CellBBox[cell][0][0]; i <= Tesr.CellBBox[cell][0][1]; i++)
@@ -276,12 +277,12 @@ neut_tesr_cell_centre (struct TESR Tesr, int cell, double *coo)
         {
           ut_array_1d_int_set_3 (voxpos, i, j, k);
           neut_tesr_pos_coo (Tesr, voxpos, voxcoo);
-          ut_array_1d_add (coo, voxcoo, 3, coo);
+          ut_array_1d_add (coo, voxcoo, Tesr.Dim, coo);
           qty++;
         }
 
   if (qty > 0)
-    ut_array_1d_scale (coo, 3, 1. / qty);
+    ut_array_1d_scale (coo, Tesr.Dim, 1. / qty);
 
   ut_free_1d_int (&voxpos);
   ut_free_1d (&voxcoo);
@@ -290,7 +291,8 @@ neut_tesr_cell_centre (struct TESR Tesr, int cell, double *coo)
 }
 
 void
-neut_tesr_cells_centre (struct TESR Tesr, int *cells, int cellqty, double *coo)
+neut_tesr_cells_centre (struct TESR Tesr, int *cells, int cellqty,
+                        double *coo)
 {
   int i, cell;
   double size, totsize, *tmp = ut_alloc_1d (3);
@@ -470,7 +472,7 @@ neut_tesr_cell_coos (struct TESR Tesr, int cell, double ***pcoos,
 
 void
 neut_tesr_cell_boundpoints (struct TESR Tesr, int cell, int ***ppts,
-                            int *pptqty, int connec, char* interior)
+                            int *pptqty, int connec, char *interior)
 {
   int i, j, k;
 
@@ -495,7 +497,7 @@ neut_tesr_cell_boundpoints (struct TESR Tesr, int cell, int ***ppts,
 
 void
 neut_tesr_cell_boundcoos (struct TESR Tesr, int cell, double ***pcoos,
-                          int *pcooqty, int connec, char* interior)
+                          int *pcooqty, int connec, char *interior)
 {
   int i, **pts = NULL;
 
@@ -658,6 +660,28 @@ neut_tesr_cell_aniso (struct TESR Tesr, int cell, double **evect,
   ut_free_2d (&S, Tesr.Dim);
 
   return;
+}
+
+void
+neut_tesr_cell_anisofact (struct TESR Tesr, int cell, double *pval)
+{
+  double eval_max, eval_min;
+  double **evect = ut_alloc_2d (3, 3);
+  double *eval = ut_alloc_1d (3);
+
+  neut_tesr_cell_aniso (Tesr, cell, evect, eval);
+
+  eval_max = ut_array_1d_max (eval, Tesr.Dim);
+  eval_min = ut_array_1d_min (eval, Tesr.Dim);
+  //prod = eval[0] * eval[1] * (Tesr.Dim == 3 ? eval[2] : 1.0);
+  //tmp = eval[0] / pow (prod, 1.0 / Tesr.Dim);
+
+  (*pval) = sqrt (eval_max / eval_min);
+  if (isinf (*pval))
+    *pval = -1;
+
+  ut_free_2d (&evect, 3);
+  ut_free_1d (&eval);
 }
 
 void
@@ -1032,8 +1056,8 @@ neut_tesr_cell_bbox_coo (struct TESR Tesr, int cell, double **bbox_coo)
   for (j = 0; j < 2; j++)
   {
     ut_array_1d_int_set_3 (pos, Tesr.CellBBox[cell][0][j],
-                                Tesr.CellBBox[cell][1][j],
-                                Tesr.CellBBox[cell][2][j]);
+                           Tesr.CellBBox[cell][1][j],
+                           Tesr.CellBBox[cell][2][j]);
 
     neut_tesr_pos_coo (Tesr, pos, coo);
 

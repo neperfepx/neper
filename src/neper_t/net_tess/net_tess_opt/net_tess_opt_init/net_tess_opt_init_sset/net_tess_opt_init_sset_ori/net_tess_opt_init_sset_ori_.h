@@ -1,5 +1,5 @@
 /* This file is part of the Neper software sizeage. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -12,7 +12,6 @@
 #include"ut.h"
 #include"neut_t.h"
 #include"net_ori/net_ori.h"
-#include"structIn_t.h"
 
 #include"neper_config.h"
 

@@ -1,0 +1,38 @@
+# Neper environment variables
+
+export NEPERROOT=/path/to/neper (*REPLACE BY YOUR OWN PATH*)
+export NEPER=$NEPERROOT/src
+export NEPERDOC=$NEPERROOT/doc
+export NEPERDOCDEV=$NEPERROOT/doc-dev
+
+# Custom terminal prompt including the git branch
+
+function parse_git_branch {
+    git branch --no-color 2> /dev/null | awk '{if ($1 == "*") print " ["$2"]"}'
+}
+PS1="\h:\W\[\033[0;33m\]\$(parse_git_branch)\[\033[0m\]\$ "
+
+# Access to Neper's custom development commands
+
+export PATH="$HOME/.local/bin/nepertools:$PATH"
+
+# Alias to override the git command by neper's git.  This is transparent to
+# other project, and the system git can still be called using \git.
+
+alias git="$HOME/.local/bin/nepertools/neperfepx-git"
+
+# m aliases
+
+alias m='cd ..; pwd; ls'
+alias mm='cd ../..; pwd; ls'
+alias mmm='cd ../../..; pwd; ls'
+alias mmmm='cd ../../../..; pwd; ls'
+alias mmmmm='cd ../../../../..; pwd; ls'
+alias mmmmmm='cd ../../../../../..; pwd; ls'
+alias mmmmmmm='cd ../../../../../../..; pwd; ls'
+alias mmmmmmmm='cd ../../../../../../../..; pwd; ls'
+alias mmmmmmmmm='cd ../../../../../../../../..; pwd; ls'
+
+export MAKEFLAGS="-j$(nproc)"
+
+cdc() { source ~/.local/share/neper/dev/cdc "$@"; }

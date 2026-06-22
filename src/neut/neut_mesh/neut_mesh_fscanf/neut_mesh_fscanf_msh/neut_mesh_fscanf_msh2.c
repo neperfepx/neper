@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_fscanf_msh_.h"
@@ -105,9 +105,10 @@ neut_mesh_fscanf_msh_head (FILE * file, char **pmode, char **pdomain, int *ptopo
 }
 
 void
-neut_mesh_fscanf_msh_nodes (FILE * file, char *mode,
+neut_mesh_fscanf_msh_nodes (FILE * file, char *mode, char *domain,
                             struct NODES *pNodes, int **pnode_nbs)
 {
+  ut_string_string (domain, &((*pNodes).Domain));
   neut_mesh_fscanf_msh_nodes_head (file, &(*pNodes).NodeQty);
 
   (*pnode_nbs) = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
@@ -273,29 +274,19 @@ neut_mesh_fscanf_msh_physical (FILE *file, struct MESH *pMesh0D,
     if (fscanf (file, "%d%d", &dim, &id) != 2)
       abort ();
 
-    if (dim == 0)
-      status = fscanf (file, "%s", pMesh0D
-                       && id <=
-                       (*pMesh0D).ElsetQty ? (*pMesh0D).
-                       ElsetLabels[id] : string);
-    else if (dim == 1)
-      status = fscanf (file, "%s", pMesh1D
-                       && id <=
-                       (*pMesh1D).ElsetQty ? (*pMesh1D).
-                       ElsetLabels[id] : string);
-    else if (dim == 2)
-      status = fscanf (file, "%s", pMesh2D
-                       && id <=
-                       (*pMesh2D).ElsetQty ? (*pMesh2D).
-                       ElsetLabels[id] : string);
-    else if (dim == 3)
-      status = fscanf (file, "%s", pMesh3D
-                       && id <=
-                       (*pMesh3D).ElsetQty ? (*pMesh3D).
-                       ElsetLabels[id] : string);
-
+    status = fscanf (file, "%s", string);
+    ut_string_fnrs (string, "\"", "", INT_MAX);
     if (status != 1)
       abort ();
+
+    if (dim == 0 && pMesh0D && id <= (*pMesh0D).ElsetQty)
+      (*pMesh0D).ElsetLabels[id] = strcpy ((*pMesh0D).ElsetLabels[id], string);
+    else if (dim == 1 && pMesh1D && id <= (*pMesh1D).ElsetQty)
+      (*pMesh1D).ElsetLabels[id] = strcpy ((*pMesh1D).ElsetLabels[id], string);
+    else if (dim == 2 && pMesh2D && id <= (*pMesh2D).ElsetQty)
+      (*pMesh2D).ElsetLabels[id] = strcpy ((*pMesh2D).ElsetLabels[id], string);
+    else if (dim == 3 && pMesh3D && id <= (*pMesh3D).ElsetQty)
+      (*pMesh3D).ElsetLabels[id] = strcpy ((*pMesh3D).ElsetLabels[id], string);
   }
 
   ut_free_1d_char (&string);

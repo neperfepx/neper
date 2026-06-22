@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -175,6 +175,14 @@ extern void neut_nodes_permasters (struct NODES Nodes, int **pmasters, int *pmas
 extern void neut_nodes_init_parts (struct NODES *pNodes);
 
 extern int neut_nodes_isvoid (struct NODES Nodes);
+
+extern void neut_nodes_init_nodeori (struct NODES *pNodes);
+
+extern void neut_nodes_init_nodeweight (struct NODES *pNodes, struct MESH *pMesh);
+
+extern void neut_nodes_fixperslaves (struct NODES *pNodes);
+
+extern void neut_nodes_stdtrianglenodeori (struct NODES Nodes, int node, double *dir0, double *R);
 
 #endif /* NEUT_NODES_H */
 

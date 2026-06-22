@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_poly_geom_.h"
@@ -727,6 +727,27 @@ neut_polys_convexity (struct POLY *Poly, int *polys, int polyqty,
 }
 
 int
+neut_polys_sel (struct POLY *Poly, int *polys, int polyqty, double *pval)
+{
+  int i, j, ver1, ver2;
+  (void) polys;
+
+  if (polyqty != 1)
+    abort ();
+
+  (*pval) = DBL_MAX;
+  for (i = 1; i <= Poly[polys[0]].FaceQty; i++)
+    for (j = 1; j <= Poly[polys[0]].FaceVerQty[i]; j++)
+    {
+      ver1 = Poly[polys[0]].FaceVerNb[i][j];
+      ver2 = Poly[polys[0]].FaceVerNb[i][ut_array_rotpos (1, Poly[polys[0]].FaceVerQty[i], j, 1)];
+      (*pval) = ut_num_min (*pval, ut_space_dist (Poly[polys[0]].VerCoo[ver1], Poly[polys[0]].VerCoo[ver2]));
+    }
+
+  return 0;
+}
+
+int
 neut_polys_sphericity_2d (struct POLY *Poly, int *polys, int polyqty,
                           double pseudosize, double *pval)
 {
@@ -1054,4 +1075,320 @@ neut_polys_convexhull (struct POLY *Poly, int *polys, int polyqty,
   ut_free_2d (&vercoos, verqty);
 
   return;
+}
+
+void
+neut_poly_aniso (struct POLY Poly, double **evect, double *eval)
+{
+  int i, j, k, s, f, ver;
+  double vol, totvol;
+  double coef, scalprod;
+  double centre[3];
+  double p[4][3];
+  double *p0 = NULL;
+  double *p1 = NULL;
+  double *p2 = NULL;
+  double *u = NULL, *v = NULL, *w = NULL, *vect = NULL;
+  double *bary = NULL, *M1 = NULL, *mu = NULL;
+  double **sum = NULL, **M2 = NULL;
+  double **C = NULL;
+
+  p0 = ut_alloc_1d (3);
+  u = ut_alloc_1d (3);
+  v = ut_alloc_1d (3);
+  w = ut_alloc_1d (3);
+  vect = ut_alloc_1d (3);
+  bary = ut_alloc_1d (3);
+  M1 = ut_alloc_1d (3);
+  mu = ut_alloc_1d (3);
+  sum = ut_alloc_2d (3, 3);
+  M2 = ut_alloc_2d (3, 3);
+  C = ut_alloc_2d (3, 3);
+
+  ut_array_1d_zero (mu, 3);
+  ut_array_1d_zero (M1, 3);
+  ut_array_2d_zero (M2, 3, 3);
+
+  neut_poly_centroid (Poly, centre);
+
+  totvol = 0;
+  for (f = 1; f <= Poly.FaceQty; f++)
+  {
+    ver = Poly.FaceVerNb[f][1];
+    ut_array_1d_memcpy (Poly.VerCoo[ver], 3, p0);
+
+    for (i = 1; i <= Poly.FaceVerQty[f]; i++)
+    {
+      p1 = Poly.VerCoo[Poly.FaceVerNb[f][i]];
+      p2 =
+        Poly.VerCoo[Poly.
+                    FaceVerNb[f][ut_array_rotpos
+                                 (1, Poly.FaceVerQty[f], i, 1)]];
+
+      // 2 vertices are the same, skipping
+      if (ver == Poly.FaceVerNb[f][i] || ver == Poly.FaceVerNb[f][ut_array_rotpos (1, Poly.FaceVerQty[f], i, 1)])
+                continue;
+
+      ut_array_1d_sub (centre, p0, 3, u);
+      ut_array_1d_sub (centre, p1, 3, v);
+      ut_array_1d_sub (centre, p2, 3, w);
+      ut_vector_vectprod (v, w, vect);
+      scalprod = ut_array_1d_scalprod (u, vect, 3);
+
+      vol = fabs (scalprod / 6);
+
+      coef = vol / 20;
+
+      for (j = 0; j < 3; j++)
+      {
+        p[0][j] = centre[j];
+        p[1][j] = p0[j];
+        p[2][j] = p1[j];
+        p[3][j] = p2[j];
+      }
+
+      ut_array_1d_zero (bary, 3);
+      ut_array_2d_zero (sum, 3, 3);
+      for (s = 0; s < 4; s++)
+      {
+        for (j = 0; j < 3; j++)
+          bary[j] += p[s][j];
+
+        for (j = 0; j < 3; j++)
+          for (k = 0; k < 3; k++)
+            sum[j][k] += p[s][j] * p[s][k];
+      }
+
+      // First moment of inertia of the tetrahedron
+      for (j = 0; j < 3; j++)
+        M1[j] += 0.25 * vol * bary[j];
+
+      // Second moment of inertia of the tetrahedron
+      coef = vol / 20;
+      for (j = 0; j < 3; j++)
+        for (k = 0; k < 3; k++)
+          M2[j][k] += coef * (sum[j][k] +  bary[j] * bary[k]);
+
+      totvol += vol;
+    }
+  }
+
+  for (j = 0; j < 3; j++)
+    mu[j] = M1[j] / totvol;
+
+  for (j = 0; j < 3; j++)
+    for (k = 0; k < 3; k++)
+      C[j][k] = M2[j][k] / totvol - mu[j] * mu[k];
+
+  ut_mat_eigen (C, 3, eval, evect);
+
+  // don't free p1, p2 (shortcuts)
+  ut_free_1d (&p0);
+  ut_free_1d (&u);
+  ut_free_1d (&v);
+  ut_free_1d (&w);
+  ut_free_1d (&vect);
+  ut_free_1d (&bary);
+  ut_free_1d (&M1);
+  ut_free_1d (&mu);
+  ut_free_2d (&sum, 3);
+  ut_free_2d (&M2, 3);
+  ut_free_2d (&C, 3);
+
+  return;
+}
+
+void
+neut_poly_anisofact (struct POLY Poly, double *pval)
+{
+  double eval_max, eval_min;
+  double *eval = ut_alloc_1d (3);
+  double **evect = ut_alloc_2d (3, 3);
+
+  neut_poly_aniso (Poly, evect, eval);
+
+    //if (!isfinite(eval[i]) || eval[i] <= eps)
+      //eval[i] = eps;
+   // sum_log += log (eval[i]);
+  eval_max = ut_array_1d_max (eval, 3);
+  eval_min = ut_array_1d_min (eval, 3);
+  //tmp = exp (sum_log / 3);
+ //*pval = eval_max / tmp;
+
+  (*pval) = sqrt (eval_max / eval_min);
+
+  if (isinf (*pval))
+  *pval = -1;
+
+  ut_free_2d (&evect, 3);
+  ut_free_1d (&eval);
+
+  return;
+}
+
+void
+neut_poly_aniso_2d (struct POLY Poly, double **evect, double *eval)
+{
+  int i, j, k, s;
+  int ver1, ver2;
+  int f_id = -1, pqty;
+  double area = 0, totarea, coef;
+  double *p0 = NULL;
+  double **p = NULL;
+  double *p1 = NULL;
+  double *p2 = NULL;
+  double *u = NULL, *v = NULL, *uxv = NULL;
+  double *bary = NULL, *M1 = NULL, *mu = NULL;
+  double **sum = NULL, **M2 = NULL, **C = NULL;
+
+  p = ut_alloc_2d (3, 2);
+  p0 = ut_alloc_1d (2);
+  p1 = ut_alloc_1d (2);
+  p2 = ut_alloc_1d (2);
+  u = ut_alloc_1d (3);
+  v = ut_alloc_1d (3);
+  uxv = ut_alloc_1d (3);
+  bary = ut_alloc_1d (2);
+  mu = ut_alloc_1d (2);
+  sum = ut_alloc_2d (2, 2);
+  M1 = ut_alloc_1d (2);
+  M2 = ut_alloc_2d (2, 2);
+  C = ut_alloc_2d (2, 2);
+
+  totarea = 0;
+  for (i = 1; i <= Poly.FaceQty; i++)
+    if (fabs (Poly.FaceEq[i][3]) > 0.99)
+    {
+      f_id = i;
+      break;
+    }
+
+  pqty = Poly.FaceVerQty[f_id];
+  neut_poly_face_centre (Poly, f_id, p0);
+
+  for (i = 1; i <= pqty; i++)
+  {
+    ver1 = Poly.FaceVerNb[f_id][i];
+    ver2 =
+        Poly.FaceVerNb[f_id][ut_array_rotpos (1, Poly.FaceVerQty[f_id], i, 1)];
+
+    ut_array_1d_memcpy (Poly.VerCoo[ver1], 2, p1);
+    ut_array_1d_memcpy (Poly.VerCoo[ver2], 2, p2);
+
+    ut_array_1d_sub (p0, p1, 3, u);
+    ut_array_1d_sub (p0, p2, 3, v);
+    ut_vector_vectprod (u, v, uxv);
+    area = ut_vector_norm (uxv) * 0.5;
+
+    for (j = 0; j < 2; j++)
+    {
+      p[0][j] = p0[j];
+      p[1][j] = p1[j];
+      p[2][j] = p2[j];
+    }
+
+    ut_array_1d_zero (bary, 2);
+    ut_array_2d_zero (sum, 2, 2);
+    for (s = 0; s < 3; s++)
+    {
+      ut_array_1d_add (bary, p[s], 2, bary);
+
+      for (j = 0; j < 2; j++)
+        for (k = 0; k < 2; k++)
+          sum[j][k] += p[s][j] * p[s][k];
+    }
+
+    // First moment of inertia of the tetrahedron
+    for (j = 0; j < 2; j++)
+      M1[j] += area * bary[j] * 0.3333333333333333333333;
+
+    // Second moment of inertia of the tetrahedron
+    coef = area / 12;
+    for (j = 0; j < 2; j++)
+      for (k = 0; k < 2; k++)
+        M2[j][k] += coef * (sum[j][k] + bary[j] * bary[k]);
+
+    totarea += area;
+  }
+
+  ut_array_1d_memcpy (M1, 2, mu);
+  ut_array_1d_scale (mu, 2, 1 / totarea);
+
+  for (j = 0; j < 2; j++)
+    for (k = 0; k < 2; k++)
+      C[j][k] = M2[j][k] / totarea - mu[j] * mu[k];
+
+  ut_mat_eigen (C, 2, eval, evect);
+
+  ut_free_1d (&p0);
+  ut_free_1d (&u);
+  ut_free_1d (&v);
+  ut_free_1d (&uxv);
+  ut_free_1d (&bary);
+  ut_free_1d (&M1);
+  ut_free_1d (&mu);
+  ut_free_2d (&sum, 2);
+  ut_free_2d (&M2, 2);
+  ut_free_2d (&C, 2);
+
+  return;
+}
+
+void
+neut_poly_anisofact_2d (struct POLY Poly, double *pval)
+{
+  double eval_max, eval_min;
+  double *eval = ut_alloc_1d (3);
+  double **evect = ut_alloc_2d (3, 3);
+
+  neut_poly_aniso_2d (Poly, evect, eval);
+
+  //if (!isfinite(eval[i]) || eval[i] <= eps)
+    //eval[i] = eps;
+   // sum_log += log (eval[i]);
+  eval_max = ut_array_1d_max (eval, 2);
+  eval_min = ut_array_1d_min (eval, 2);
+
+  //tmp = exp (sum_log / 2);
+
+  //*pval = eval_max / tmp;
+  (*pval) = sqrt (eval_max / eval_min);
+
+  if (isinf (*pval))
+    *pval = -1;
+
+  ut_free_2d (&evect, 3);
+  ut_free_1d (&eval);
+
+  return;
+}
+
+int
+neut_polys_anisofact (struct POLY *Poly, int *polys,
+                      int polyqty, double *pval)
+{
+  (void) polyqty;
+
+  if (polyqty == 1)
+    neut_poly_anisofact (Poly[polys[0]], pval);
+  else
+    ut_print_neperbug ();
+
+  return 0;
+}
+
+int
+neut_polys_anisofact_2d (struct POLY *Poly, int *polys,
+                         int polyqty, double *pval)
+{
+  (void) Poly;
+  (void) polys;
+  (void) polyqty;
+
+  if (polyqty == 1)
+    neut_poly_anisofact_2d (Poly[polys[0]], pval);
+  else
+    ut_print_neperbug ();
+
+  return 0;
 }

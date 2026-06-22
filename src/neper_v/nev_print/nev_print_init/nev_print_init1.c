@@ -1,17 +1,17 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_init_.h"
 
 void
 nev_print_init (struct IN_V In, struct PRINT *pPrint, struct PF *pPf,
-                struct TESS Tess, struct DATA *TessData, struct TESR Tesr,
-                struct DATA *TesrData, struct NODES Nodes, struct MESH *Mesh,
-                struct DATA *pNodeData, struct DATA **MeshData, int *pSQty,
-                struct NODES **pSNodes, struct MESH ***pSMesh, struct DATA
-                **pSNodeData, struct DATA ****pSMeshData, int ***pSElt2dElt3d,
-                struct DATA *pCsysData,
+                struct ORI *pOri, struct SIM *pSim, struct TESS Tess, struct DATA *TessData,
+                struct TESR Tesr, struct DATA *TesrData, struct NODES Nodes,
+                struct MESH *Mesh, struct DATA *pNodeData, struct DATA
+                **MeshData, int *pSQty, struct NODES **pSNodes, struct MESH
+                ***pSMesh, struct DATA **pSNodeData, struct DATA
+                ****pSMeshData, int ***pSElt2dElt3d, struct DATA *pCsysData,
                 struct POINT *Points, int PointQty, struct DATA *PointData)
 {
   int i;
@@ -24,6 +24,7 @@ nev_print_init (struct IN_V In, struct PRINT *pPrint, struct PF *pPf,
     for (i = 0; i < (*pPrint).inputqty; i++)
       ut_string_string (Points[i].Name, (*pPrint).inputs + i);
   }
+  ut_string_string (In.colormode, &(*pPrint).colormode);
 
   if (strcmp (In.imageformat, "vtk"))
   {
@@ -38,13 +39,15 @@ nev_print_init (struct IN_V In, struct PRINT *pPrint, struct PF *pPf,
 
     for (i = 0; i < *pSQty; i++)
     {
-      nev_print_init_data_nodes (In, (*pSNodes)[i], crysym, (*pSNodes)[i].NodeQty,
+      nev_print_init_data_nodes (In, *pPrint, (*pSNodes)[i], crysym, (*pSNodes)[i].NodeQty,
                                  (*pSNodeData) + i);
-      nev_print_init_data_mesh (In, Nodes, (*pSMesh)[i][2], crysym, 1, Mesh[3].ElsetQty,
+      nev_print_init_data_mesh (In, *pPrint, Nodes, (*pSMesh)[i][2], crysym, 1, Mesh[3].ElsetQty,
                                 "elt", 3, (*pSMeshData)[i][2]);
     }
 
     nev_print_init_show (Tess, Tesr, Nodes, Mesh, *pSQty, Points, PointQty, pPrint);
+
+    nev_print_init_scene (In, pPrint);
 
     nev_print_init_camera (In, Tess, Tesr, Nodes, Mesh, Points, PointQty, *pNodeData, pPrint);
 
@@ -52,10 +55,12 @@ nev_print_init (struct IN_V In, struct PRINT *pPrint, struct PF *pPf,
   }
 
   else
-    nev_print_init_data_nodes (In, Nodes, crysym, Nodes.NodeQty, pNodeData);
+    nev_print_init_data_nodes (In, *pPrint, Nodes, crysym, Nodes.NodeQty, pNodeData);
 
   if (!strcmp (In.space, "pf") || !strcmp (In.space, "ipf"))
     nev_print_init_pf (In, Tess, Tesr, Points, PointQty, pPf);
+  else if (!strncmp (In.space, "rodrigues", 9))
+    nev_print_init_ori (In, Tess, Tesr, pSim, pOri);
 
   ut_free_1d_char (&crysym);
 

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_.h"
@@ -68,7 +68,7 @@ nem_meshing (struct IN_M In, struct MESHPARA *pMeshPara, struct TESS *pTess,
                               Mesh[(*pTess).Dim].ElsetId + 1);
     }
 
-  nem_meshing_post (*pTess, Mesh);
+  nem_meshing_post (*pTess, pNodes, Mesh);
 
   return EXIT_SUCCESS;
 }

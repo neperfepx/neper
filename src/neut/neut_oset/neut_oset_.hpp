@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include <iostream>
 #include <cfloat>
 using namespace std;
 #include"neut_oset.hpp"
-#include "neut_qcloud_struct.hpp"
+#include "neut_struct_qcloud.hpp"
 
 #ifdef __cplusplus
 extern "C"
@@ -20,6 +20,3 @@ extern "C"
 }
 #endif
 
-extern void neut_oset_kdtree_cloud (struct OL_SET *pOSet, struct QCLOUD *pqcloud);
-extern void neut_oset_kdtree_build (struct QCLOUD *pqcloud,
-                                    my_kd_tree_t **pqindex);

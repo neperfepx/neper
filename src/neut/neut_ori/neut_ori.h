@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -57,6 +57,11 @@ extern "C"
   extern int neut_ori_des_ori (double *q0, char *des, double *ori);
 
   extern void neut_ori_des_fixconvention (char **porides);
+
+  extern void neut_ori_set_zero (struct ORI *pOri);
+  extern void neut_ori_free (struct ORI *pOri);
+
+  extern void neut_ori_R_Rcrysym_all (struct ORI Ori, double *R, double ***pRs, int *pqty);
 
 #ifdef __cplusplus
 }

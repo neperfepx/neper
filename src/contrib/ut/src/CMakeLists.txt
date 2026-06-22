@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2024, Romain Quey.
+# Copyright (C) 2003-2026, Romain Quey, CNRS.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 3.0...3.10)
@@ -22,6 +22,9 @@ option(HAVE_OPENGJK  "Use openGJK"                          OFF)
 option(HAVE_NLOPT    "Use NLopt"                            OFF)
 option(HAVE_OPENMP   "Use OpenMP"                           ON)
 option(HAVE_PNG      "Use the libpng library"               ON)
+set(REAL_PRINT_FORMAT \"%.12f\" CACHE STRING "Printing format of real numbers")
+set(REAL_PRINT_FORMAT3 \"%15.12f\" CACHE STRING "Printing format of real numbers (15 characters)")
+set(REAL_PRINT_FORMAT5 \"%17.12f\" CACHE STRING "Printing format of real numbers (17 characters)")
 
 # configure a header file to pass some of the CMake settings
 # to the source code
@@ -66,6 +69,7 @@ add_library(ut
   ut_array/ut_array.c
   ut_color/ut_color.c
   ut_file/ut_file.c
+  ut_dir/ut_dir.c
   ut_free/ut_free.c
   ut_math/ut_math.cpp
   ut_fct/ut_fct.c

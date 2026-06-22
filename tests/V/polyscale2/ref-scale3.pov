@@ -6038,7 +6038,7 @@ cylinder {<-0.1,0,1>,<0,0,1>,0.0025 texture {pigment{rgb<0,0,0>}}}
 union {
 cylinder {<-0.1,0,0.000000>,<0,0,0.000000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "0" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,0.000000>
@@ -6046,7 +6046,7 @@ translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.100000>,<0,0,0.100000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "0" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,0.100000>
@@ -6054,7 +6054,7 @@ translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,1.000000>,<0,0,1.000000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "1" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,1.000000>

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neper_s_.h"
@@ -54,13 +54,6 @@ neper_s (int fargc, char **fargv, int argc, char **argv)
 
 // #####################################################################
 // ### RUNNING POST-PROCESSING #########################################
-
-  // loading orientation space
-  if (In.simdir && strcmp (In.orispace, "none"))
-  {
-    ut_print_message (0, 1, "Loading orientation space...\n");
-    nes_orispace (In, &Sim);
-  }
 
   // loading number of steps
   if (In.stepqty != -1)

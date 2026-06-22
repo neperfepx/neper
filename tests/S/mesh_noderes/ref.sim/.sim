@@ -1,0 +1,23 @@
+***sim
+ **format
+   1.1
+ **input
+  *tess
+   simulation.tess
+  *msh
+   simulation.msh
+ **general
+   0 81 214 2 0
+  *orides
+   rodrigues:passive
+ **entity elset
+ **entity first
+  *type
+   elset
+  *member
+   1 id==1
+ **entity node
+  *result
+   1
+   x
+***end

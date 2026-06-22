@@ -1,0 +1,25 @@
+#!/bin/bash
+# Default Neper Developer Tmux Layout (3 panes)
+
+SESSION="neper-dev"
+
+# Only create the session if it doesn't exist
+tmux has-session -t $SESSION 2>/dev/null
+if [ $? != 0 ]; then
+    # Create a new detached session
+    tmux new-session -d -s $SESSION -n left-pane
+
+    # Left pane (full height, half width)
+    tmux send-keys -t $SESSION:0 "cd \$NEPER && clear" C-m
+
+    # Split right pane (vertically) 50% width
+    tmux split-window -h -p 50 -t $SESSION:0
+    tmux send-keys -t $SESSION:0.1 "cd \$NEPER && clear" C-m
+
+    # Split bottom-right pane (50% height)
+    tmux split-window -v -p 50 -t $SESSION:0.1
+    tmux send-keys -t $SESSION:0.2 "cd \$NEPER && mkdir -p build && cd build && clear" C-m
+fi
+
+# Attach to session safely (unset TMUX to allow nested)
+TMUX= tmux attach -t $SESSION

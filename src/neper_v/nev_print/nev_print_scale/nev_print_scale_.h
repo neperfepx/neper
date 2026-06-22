@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -14,6 +14,6 @@
 #include "nev_print_scale.h"
 
 #include "../nev_print_utils/nev_print_utils.h"
-#include "../nev_print_png/nev_print_png.h"
+#include "../nev_print_real/nev_print_real_png/nev_print_real_png.h"
 
-extern void nev_print_png_scale (struct IN_V In, FILE * file, char *ColScheme, char *scale, char *scaletitle);
+extern void nev_print_png_scale_minmax (FILE *file, struct DATA Data, struct PRINT Print);

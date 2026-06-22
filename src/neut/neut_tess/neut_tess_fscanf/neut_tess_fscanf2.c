@@ -1,12 +1,12 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_fscanf_.h"
 
 /* Tessellation export: head */
 void
-neut_tess_fscanf_head (struct TESS *pTess, FILE * file, char **pversion)
+neut_tess_fscanf_head (FILE *file, struct TESS *pTess, char **pversion)
 {
   if (!ut_file_string_scanandtest (file, "***tess")
       || !ut_file_string_scanandtest (file, "**format"))
@@ -41,7 +41,7 @@ neut_tess_fscanf_head (struct TESS *pTess, FILE * file, char **pversion)
 
 /* Tessellation export: foot */
 void
-neut_tess_fscanf_foot (FILE * file)
+neut_tess_fscanf_foot (FILE *file)
 {
   if (!ut_file_string_scanandtest (file, "***end"))
     abort ();
@@ -51,7 +51,7 @@ neut_tess_fscanf_foot (FILE * file)
 
 /* Tessellation export: vertex */
 void
-neut_tess_fscanf_cell (struct TESS *pTess, char *version, FILE * file)
+neut_tess_fscanf_cell (FILE *file, struct TESS *pTess, char *version)
 {
   int i, status, id, level;
   char *string = ut_alloc_1d_char (1000);
@@ -181,7 +181,7 @@ neut_tess_fscanf_cell (struct TESS *pTess, char *version, FILE * file)
 
 /* Tessellation export: vertex */
 void
-neut_tess_fscanf_ver (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_ver (FILE *file, struct TESS *pTess)
 {
   int i, ver, status;
 
@@ -213,7 +213,7 @@ neut_tess_fscanf_ver (struct TESS *pTess, FILE * file)
 
 /* Tessellation export: edge */
 void
-neut_tess_fscanf_edge (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_edge (FILE *file, struct TESS *pTess)
 {
   int i, edge, status;
 
@@ -243,7 +243,7 @@ neut_tess_fscanf_edge (struct TESS *pTess, FILE * file)
 
 /* Tessellation export: face */
 void
-neut_tess_fscanf_face (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_face (FILE *file, struct TESS *pTess)
 {
   int i, j, face, tmp, status;
 
@@ -309,7 +309,7 @@ neut_tess_fscanf_face (struct TESS *pTess, FILE * file)
 
 /* Tessellation export: poly */
 void
-neut_tess_fscanf_poly (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_poly (FILE *file, struct TESS *pTess)
 {
   int i, poly, status;
 
@@ -353,7 +353,7 @@ neut_tess_fscanf_poly (struct TESS *pTess, FILE * file)
 
 /* Tessellation import: domain */
 void
-neut_tess_fscanf_domain (struct TESS *pTess, char *version, FILE * file)
+neut_tess_fscanf_domain (FILE *file, struct TESS *pTess, char *version)
 {
   int i, major, minor;
 
@@ -366,14 +366,14 @@ neut_tess_fscanf_domain (struct TESS *pTess, char *version, FILE * file)
       || fscanf (file, "%s", (*pTess).DomType) != 1)
     abort ();
 
-  neut_tess_fscanf_domain_vers (pTess, file);
+  neut_tess_fscanf_domain_vers (file, pTess);
 
   if (!strcmp (version, "2.0"))
-    neut_tess_fscanf_domain_edges_v2p0 (pTess, file);
+    neut_tess_fscanf_domain_edges_v2p0 (file, pTess);
   else if (!strcmp (version, "3.3") || !strcmp (version, "3.4"))
-    neut_tess_fscanf_domain_edges_v3p3 (pTess, file);
+    neut_tess_fscanf_domain_edges_v3p3 (file, pTess);
   else if (!strcmp (version, "3.5"))
-    neut_tess_fscanf_domain_edges_v3p5 (pTess, file);
+    neut_tess_fscanf_domain_edges_v3p5 (file, pTess);
 
   if (major <= 3 && minor <= 4)
   {
@@ -390,9 +390,9 @@ neut_tess_fscanf_domain (struct TESS *pTess, char *version, FILE * file)
   if ((*pTess).Dim == 3)
   {
     if (!strcmp (version, "2.0"))
-      neut_tess_fscanf_domain_faces_v2p0 (pTess, file);
+      neut_tess_fscanf_domain_faces_v2p0 (file, pTess);
     else if (major >= 3 && minor >= 3)
-      neut_tess_fscanf_domain_faces_v3p3 (pTess, file);
+      neut_tess_fscanf_domain_faces_v3p3 (file, pTess);
   }
 
   neut_tess_init_alldom_fromdomtess (pTess);
@@ -401,22 +401,22 @@ neut_tess_fscanf_domain (struct TESS *pTess, char *version, FILE * file)
 }
 
 void
-neut_tess_fscanf_per (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_per (FILE *file, struct TESS *pTess)
 {
-  neut_tess_fscanf_per_gen (pTess, file);
-  neut_tess_fscanf_per_seed (pTess, file);
-  neut_tess_fscanf_per_ver (pTess, file);
-  neut_tess_fscanf_per_edge (pTess, file);
-  neut_tess_fscanf_per_face (pTess, file);
+  neut_tess_fscanf_per_gen (file, pTess);
+  neut_tess_fscanf_per_seed (file, pTess);
+  neut_tess_fscanf_per_ver (file, pTess);
+  neut_tess_fscanf_per_edge (file, pTess);
+  neut_tess_fscanf_per_face (file, pTess);
 
   return;
 }
 
 void
-neut_tess_fscanf_scale (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_scale (FILE *file, struct TESS *pTess)
 {
-  neut_tess_fscanf_scale_gen (pTess, file);
-  neut_tess_fscanf_scale_cellid (pTess, file);
+  neut_tess_fscanf_scale_gen (file, pTess);
+  neut_tess_fscanf_scale_cellid (file, pTess);
 
   return;
 }

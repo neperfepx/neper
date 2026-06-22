@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 /// \file neut_seedset.h
@@ -45,7 +45,11 @@ extern void neut_seedset_seed_randomize (struct SEEDSET *pSet, int seed,
 			     double mindist, double maxdist);
 extern void neut_seedset_bbox_size (struct SEEDSET SSet, double *psize);
 
-extern void neut_seedset_bcc (struct TESS Dom, int n, struct SEEDSET *pSSet);
-extern void neut_seedset_bcc_expr (struct TESS Dom, char *cooexpr, struct SEEDSET *pSSet);
+extern void neut_seedset_bcc (struct TESS Dom, int *n, int *periodic, struct SEEDSET *pSSet);
+extern void neut_seedset_hexv (struct TESS Dom, int *n, struct SEEDSET *pSSet);
+extern void neut_seedset_hexh (struct TESS Dom, int *n, struct SEEDSET *pSSet);
+
+extern void neut_seedset_periodize (int *periodic, int level, struct TESS Dom,
+                        int poly, struct SEEDSET *pSSet);
 
 #endif /* NEUT_SEEDSET_H */

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_uniform_.h"
@@ -7,7 +7,7 @@
 void
 net_ori_uniform_opt_forces (struct OL_SET *pOSet, double **f, double *E,
                             struct OOPT *pOOpt, struct QCLOUD *pqcloud,
-                            my_kd_tree_t * qindex)
+                            my_kd_tree_t * qtree)
 {
   struct timeval beg_time, end_time;
 
@@ -19,7 +19,7 @@ net_ori_uniform_opt_forces (struct OL_SET *pOSet, double **f, double *E,
     net_ori_uniform_opt_forces_ser (pOSet, f, E);
   else
     net_ori_uniform_opt_forces_ser_neigh (pOSet, f, E, pOOpt, pqcloud,
-                                          qindex);
+                                          qtree);
 
   gettimeofday (&end_time, NULL);
 
@@ -219,6 +219,9 @@ net_ori_uniform_log (struct IN_T In, struct OL_SET OSet,
 {
   if (strcmp (OOpt.logvar, "none"))
     net_ori_uniform_log_var (In, OSet, OOpt);
+
+  if (strcmp (OOpt.logval, "none"))
+    net_ori_uniform_log_val (In, OOpt);
 
   return;
 }

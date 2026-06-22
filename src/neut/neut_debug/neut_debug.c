@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_debug_.h"
@@ -664,19 +664,24 @@ neut_debug_tess (FILE * file, struct TESS Tess)
 
   fprintf (file, "ScaleCellId =\n");
 
-  ut_array_2d_int_fprintf (stdout, Tess.ScaleCellId + 1, Tess.CellQty, Tess.ScaleQty + 1, "%d");
+  if (Tess.ScaleCellId)
+    ut_array_2d_int_fprintf (stdout, Tess.ScaleCellId + 1, Tess.CellQty, Tess.ScaleQty + 1, "%d");
+  else
+    fprintf (file, "NULL\n");
 
   fprintf (file, "== Periodicity =================\n");
 
   fprintf (file, "Periodic = ");
   if (Tess.Periodic)
     ut_array_1d_int_fprintf (file, Tess.Periodic, 3, "%d");
-  fprintf (file, "NULL\n");
+  else
+    fprintf (file, "NULL\n");
 
   fprintf (file, "PeriodicDist = ");
   if (Tess.PeriodicDist)
     ut_array_1d_fprintf (file, Tess.PeriodicDist, 3, REAL_PRINT_FORMAT);
-  fprintf (file, "NULL\n");
+  else
+    fprintf (file, "NULL\n");
 
   // PerSeed
 

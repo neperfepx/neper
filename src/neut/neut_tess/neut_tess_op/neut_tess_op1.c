@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_op_.h"
@@ -258,24 +258,7 @@ neut_tess_free (struct TESS *pTess)
 
   ut_free_2d_int (&(*pTess).ScaleCellId, (*pTess).CellQty + 1);
 
-  ut_free_1d_int (&(*pTess).PerFaceNb);
-  ut_free_1d_int (&(*pTess).PerFaceMaster);
-  ut_free_2d_int (&(*pTess).PerFaceShift, (*pTess).FaceQty + 1);
-  ut_free_1d_int (&(*pTess).PerFaceOri);
-  ut_free_1d_int (&(*pTess).PerFaceSlaveNb);
-
-  ut_free_1d_int (&(*pTess).PerEdgeNb);
-  ut_free_1d_int (&(*pTess).PerEdgeMaster);
-  ut_free_2d_int (&(*pTess).PerEdgeShift, (*pTess).EdgeQty + 1);
-  ut_free_1d_int (&(*pTess).PerEdgeOri);
-  ut_free_1d_int (&(*pTess).PerEdgeSlaveQty);
-  ut_free_2d_int (&(*pTess).PerEdgeSlaveNb, (*pTess).EdgeQty + 1);
-
-  ut_free_1d_int (&(*pTess).PerVerNb);
-  ut_free_1d_int (&(*pTess).PerVerMaster);
-  ut_free_2d_int (&(*pTess).PerVerShift, (*pTess).VerQty + 1);
-  ut_free_1d_int (&(*pTess).PerVerSlaveQty);
-  ut_free_2d_int (&(*pTess).PerVerSlaveNb, (*pTess).VerQty + 1);
+  neut_tess_free_periodic (pTess);
 
   neut_tess_free_domain (pTess);
 
@@ -298,6 +281,38 @@ neut_tess_reset_domain (struct TESS *pTess)
   neut_tess_free_domain (pTess);
 
   neut_tess_set_zero_domain (pTess);
+
+  return;
+}
+
+void
+neut_tess_free_periodic (struct TESS *pTess)
+{
+  ut_free_1d_int (&(*pTess).PerFaceNb);
+  ut_free_1d_int (&(*pTess).PerFaceMaster);
+  ut_free_2d_int (&(*pTess).PerFaceShift, (*pTess).FaceQty + 1);
+  ut_free_1d_int (&(*pTess).PerFaceOri);
+  ut_free_1d_int (&(*pTess).PerFaceSlaveNb);
+
+  ut_free_1d_int (&(*pTess).PerEdgeNb);
+  ut_free_1d_int (&(*pTess).PerEdgeMaster);
+  ut_free_2d_int (&(*pTess).PerEdgeShift, (*pTess).EdgeQty + 1);
+  ut_free_1d_int (&(*pTess).PerEdgeOri);
+  ut_free_1d_int (&(*pTess).PerEdgeSlaveQty);
+  ut_free_2d_int (&(*pTess).PerEdgeSlaveNb, (*pTess).EdgeQty + 1);
+
+  ut_free_1d_int (&(*pTess).PerVerNb);
+  ut_free_1d_int (&(*pTess).PerVerMaster);
+  ut_free_2d_int (&(*pTess).PerVerShift, (*pTess).VerQty + 1);
+  ut_free_1d_int (&(*pTess).PerVerSlaveQty);
+  ut_free_2d_int (&(*pTess).PerVerSlaveNb, (*pTess).VerQty + 1);
+
+  (*pTess).PerSeedQty = 0;
+  (*pTess).PerVerSlaveQty = 0;
+  (*pTess).PerEdgeSlaveQty = 0;
+  (*pTess).PerVerQty = 0;
+  (*pTess).PerEdgeQty = 0;
+  (*pTess).PerFaceQty = 0;
 
   return;
 }
@@ -3712,6 +3727,24 @@ void
 neut_tess_resetcellid (struct TESS *pTess)
 {
   ut_free_1d_int (&(*pTess).CellId);
+
+  return;
+}
+
+void
+neut_tess_setcellid (struct TESS *pTess, char *val)
+{
+  char *val2 = ut_alloc_1d_char (1000);
+
+  sprintf (val2, "%s", val);
+  ut_string_fnrs (val2, (char *) "setcellid", (char *) "file", 1);
+  ut_free_1d_int (&(*pTess).CellId);
+
+  (*pTess).CellId = ut_alloc_1d_int ((*pTess).CellQty + 1);
+
+  ut_array_1d_int_fnscanf (val2, (*pTess).CellId + 1, (*pTess).CellQty, "R");
+
+  ut_free_1d_char (&val2);
 
   return;
 }

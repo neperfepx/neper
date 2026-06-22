@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_sim_gen_.h"
@@ -252,23 +252,6 @@ neut_sim_entity_res (struct SIM Sim, char *entity, char ***pres, int *presqty)
   return;
 }
 
-void
-neut_sim_orispace (struct SIM Sim, struct ODF *pOdf, char *mode)
-{
-  char *filename = ut_alloc_1d_char (1000);
-
-  if (Sim.OriSpace)
-    sprintf (filename, "%s/orispace/%s", Sim.simdir, Sim.OriSpace);
-  else
-    ut_print_message (2, 2, "Failed to find orispace.\n");
-
-  neut_odf_space_fnscanf (filename, pOdf, mode);
-
-  ut_free_1d_char (&filename);
-
-  return;
-}
-
 int
 neut_sim_entity_exist (struct SIM Sim, char *entity)
 {
@@ -331,6 +314,7 @@ neut_sim_entity_parent (struct SIM Sim, char *entity, char **pparent)
   // we don't else-if, as each test returns
   if (!strncmp (entity, "elt", 3)
    || !strncmp (entity, "elset", 5)
+   || !strncmp (entity, "node", 4)
    || !strcmp (entity, "mesh"))
   {
     ut_string_string ("mesh", pparent);

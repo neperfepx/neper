@@ -1,5 +1,5 @@
 /* This id is part of the 'hermes' program. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYINPFG id in the top-level directory. */
 
 #include"nev_print_pf_.h"

@@ -7,13 +7,11 @@
   *msh
    simulation.msh
  **general
-   0 81 214 2 0
+   0 447 214 2 0
   *orides
    rodrigues:passive
  **entity mesh
   *result
    2
    odf odfn
- **orispace
-   rod.msh
 ***end

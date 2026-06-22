@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_.h"
@@ -18,8 +18,6 @@ net_tess_opt_init (struct IN_T In, int level, char *optitype, char *optistring,
   // sset (must come after target)
   if (!strcmp ((*pTOpt).optitype, "morpho") ||!strcmp ((*pTOpt).optitype, "ori"))
     net_tess_opt_init_sset (In, level, MTess, Tess, dtess, dcell, TessId, SSet, pTOpt);
-  else if (!strcmp ((*pTOpt).optitype, "crystal"))
-    net_tess_opt_init_crystal (In, level, pTOpt);
   else
     abort ();
 

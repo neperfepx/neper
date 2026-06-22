@@ -168,7 +168,7 @@ We re-run Cmake:
   -- Found OpenMP_CXX: -fopenmp (found version "4.5")
   -- Found OpenMP: TRUE (found version "4.5")
   -- Could NOT find system Scotch - using built-in
-  -- Could NOT find system NLopt - using built-in
+  -- Ignored system NLopt - using built-in
   -- Neper is set to be installed in: /usr/local/bin and /usr/share
   -- Configuring done
   -- Generating done
@@ -183,15 +183,19 @@ It now seems good to go.  We can compile:
   ...
   [100%] Built target neper
 
-We can already install Neper (with root permissions):
+We can already install Neper, either system-wide (with root permissions):
 
 .. code-block:: console
 
   $ sudo make install
 
-which copies the :file:`neper` binary to a system location and makes the :command:`neper` command available system-wide.
+or locally, for the user:
 
-.. note:: It is also possible to simply copy the :file:`neper` binary to a user location, e.g. :file:`~/bin/`, and make it visible to the system by including :file:`~/bin` to your :code:`$PATH`, by adding :code:`PATH=$PATH:~/bin` to your :file:`~/.bashrc` file (assuming you are using the Bash shell (:command:`echo $SHELL`)).
+.. code-block:: console
+
+  $ make userinstall
+
+By default, the command copies the :file:`neper` binary to :file:`/usr/local/bin` and the data files to :file:`/usr/share` (for :command:`sudo make install`), or the :file:`neper` binary to :file:`$HOME/.local/bin` and the data files to :file:`$HOME/.local/share` (for :command:`make userinstall`),  In both cases, :command:`neper` becomes available at the command line.
 
 We can now test the installation:
 

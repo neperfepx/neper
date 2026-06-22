@@ -1,5 +1,5 @@
   /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_input_.h"
@@ -38,8 +38,11 @@ nev_input_options_default (struct IN_V *pIn)
 
   (*pIn).slice = NULL;
 
+  (*pIn).colormode = NULL;
+  ut_string_string ("bright", &(*pIn).colormode);
+
   (*pIn).scenebackground = NULL;
-  ut_string_string ("white", &(*pIn).scenebackground);
+  ut_string_string ("default", &(*pIn).scenebackground);
 
   (*pIn).includepov = NULL;
 
@@ -60,7 +63,7 @@ nev_input_options_default (struct IN_V *pIn)
   ut_string_string ("default", &(*pIn).camerasky);
 
   (*pIn).cameraangle= NULL;
-  ut_string_string ("25", &(*pIn).cameraangle);
+  ut_string_string ("default", &(*pIn).cameraangle);
 
   (*pIn).cameraprojection = NULL;
   ut_string_string ("default", &(*pIn).cameraprojection);
@@ -100,6 +103,23 @@ nev_input_options_default (struct IN_V *pIn)
   (*pIn).pfshape = NULL;
   ut_string_string ("full", &(*pIn).pfshape);
 
+  (*pIn).oritrs = 0.5;
+  (*pIn).oricol = NULL;
+  ut_string_string ("white", &(*pIn).oricol);
+  (*pIn).oriedgecol = NULL;
+  ut_string_string ("default", &(*pIn).oriedgecol);
+  (*pIn).oriedgerad = NULL;
+  ut_string_string ("default", &(*pIn).oriedgerad);
+  (*pIn).oriedgetrs = 0;
+
+  (*pIn).orimode = NULL;
+  ut_string_string ("symbol", &(*pIn).orimode);
+
+  (*pIn).orilayout = NULL;
+  ut_string_string ("default", &(*pIn).orilayout);
+
+  (*pIn).orifield = NULL;
+
   (*pIn).print = NULL;
 
   return;
@@ -132,6 +152,7 @@ nev_input_options_set (int argc, char **argv, struct IN_V *pIn, int *ppos)
   strcpy (ArgList[++ArgQty], "-lightambient");
   strcpy (ArgList[++ArgQty], "-lightdiffuse");
   strcpy (ArgList[++ArgQty], "-lightreflection");
+  strcpy (ArgList[++ArgQty], "-colormode");
   strcpy (ArgList[++ArgQty], "-scenebackground");
   strcpy (ArgList[++ArgQty], "-pfpole");
   strcpy (ArgList[++ArgQty], "-pfpolelabel");
@@ -145,6 +166,14 @@ nev_input_options_set (int argc, char **argv, struct IN_V *pIn, int *ppos)
   strcpy (ArgList[++ArgQty], "-pfsym");
   strcpy (ArgList[++ArgQty], "-pfclustering");
   strcpy (ArgList[++ArgQty], "-pfshape");
+  strcpy (ArgList[++ArgQty], "-oritrs");
+  strcpy (ArgList[++ArgQty], "-oricol");
+  strcpy (ArgList[++ArgQty], "-oriedgecol");
+  strcpy (ArgList[++ArgQty], "-oriedgerad");
+  strcpy (ArgList[++ArgQty], "-oriedgetrs");
+  strcpy (ArgList[++ArgQty], "-orimode");
+  strcpy (ArgList[++ArgQty], "-orilayout");
+  strcpy (ArgList[++ArgQty], "-orifield");
   strcpy (ArgList[++ArgQty], "-ipfpole");
   strcpy (ArgList[++ArgQty], "-ipfpolelabel");
   strcpy (ArgList[++ArgQty], "-ipfprojection");
@@ -301,6 +330,8 @@ nev_input_options_set (int argc, char **argv, struct IN_V *pIn, int *ppos)
   strcpy (ArgList[++ArgQty], "-showmeshslice");
   strcpy (ArgList[++ArgQty], "-showcsys");
   strcpy (ArgList[++ArgQty], "-showscale");
+  strcpy (ArgList[++ArgQty], "-showscalemin");
+  strcpy (ArgList[++ArgQty], "-showscalemax");
   strcpy (ArgList[++ArgQty], "-showcell");
   strcpy (ArgList[++ArgQty], "-showpoly");
   strcpy (ArgList[++ArgQty], "-showface");
@@ -431,6 +462,9 @@ nev_input_options_set (int argc, char **argv, struct IN_V *pIn, int *ppos)
       else if (!strcmp (Arg, "-lightreflection"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).lightreflection));
 
+      else if (!strcmp (Arg, "-colormode"))
+        ut_arg_nextasstring (argv, &i, Arg, &((*pIn).colormode));
+
       else if (!strcmp (Arg, "-scenebackground"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).scenebackground));
 
@@ -459,6 +493,22 @@ nev_input_options_set (int argc, char **argv, struct IN_V *pIn, int *ppos)
         ut_arg_nextasint (argv, &i, Arg, 0, 1, &(*pIn).pfclustering);
       else if (!strcmp (Arg, "-pfshape"))
         ut_arg_nextasstring (argv, &i, Arg, &(*pIn).pfshape);
+      else if (!strcmp (Arg, "-oritrs"))
+        ut_arg_nextasreal (argv, &i, Arg, 0, 1, &(*pIn).oritrs);
+      else if (!strcmp (Arg, "-oricol"))
+        ut_arg_nextasstring (argv, &i, Arg, &(*pIn).oricol);
+      else if (!strcmp (Arg, "-oriedgecol"))
+        ut_arg_nextasstring (argv, &i, Arg, &(*pIn).oriedgecol);
+      else if (!strcmp (Arg, "-oriedgerad"))
+        ut_arg_nextasstring (argv, &i, Arg, &(*pIn).oriedgerad);
+      else if (!strcmp (Arg, "-oriedgetrs"))
+        ut_arg_nextasreal (argv, &i, Arg, 0, 1, &(*pIn).oriedgetrs);
+      else if (!strcmp (Arg, "-orimode"))
+        ut_arg_nextasstring (argv, &i, Arg, &(*pIn).orimode);
+      else if (!strcmp (Arg, "-orilayout"))
+        ut_arg_nextasstring (argv, &i, Arg, &(*pIn).orilayout);
+      else if (!strcmp (Arg, "-orifield"))
+        ut_arg_nextasstring (argv, &i, Arg, &(*pIn).orifield);
 
       else if (!strcmp (Arg, "-outdir"))
         ut_arg_nextasstring (argv, &i, Arg, &((*pIn).outdir));

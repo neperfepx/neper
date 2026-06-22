@@ -427,7 +427,7 @@ ol_g_crysym (double **g, char *crysym, int nb, double **g2)
     abort ();
 
   if (g)
-    ol_g_g_g (T, g, g2);
+    ol_g_g_g (g, T, g2);
   else
     ol_g_memcpy (T, g2);
 

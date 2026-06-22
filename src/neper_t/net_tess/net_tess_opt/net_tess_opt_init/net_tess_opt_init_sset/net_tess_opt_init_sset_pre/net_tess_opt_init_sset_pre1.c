@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_sset_pre_.h"
@@ -35,7 +35,7 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level, struct MTESS MTess,
   (*pTOpt).CellSCellList = ut_alloc_1d_pint ((*pTOpt).CellQty + 1);
 
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess,
-                                           dcell, In.optiini[level],
+                                           dcell, In.optiini[0][level],
                                            &string);
 
   (*ppos) = -1;
@@ -72,13 +72,13 @@ net_tess_opt_init_sset_pre (struct IN_T In, int level, struct MTESS MTess,
     (*poriexpr) = NULL;
   }
 
-  else if (ut_file_exist (In.optiini[level])
-           && ut_file_testformat (In.optiini[level], "tess"))
+  else if (ut_file_exist (In.optiini[0][level])
+           && ut_file_testformat (In.optiini[0][level], "tess"))
   {
-    ut_string_string (In.optiini[level], pcooexpr);
-    ut_string_string (In.optiini[level], pweightexpr);
-    ut_string_string (In.optiini[level], pidexpr);
-    ut_string_string (In.optiini[level], poriexpr);
+    ut_string_string (In.optiini[0][level], pcooexpr);
+    ut_string_string (In.optiini[0][level], pweightexpr);
+    ut_string_string (In.optiini[0][level], pidexpr);
+    ut_string_string (In.optiini[0][level], poriexpr);
   }
 
   else

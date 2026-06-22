@@ -30,7 +30,7 @@ and
      <seed_id> <seed_x> <seed_y> <seed_z> <seed_weight>
      ...]
    [*ori
-     <descriptor>
+     <orientation_descriptor>
      <cellid_param1> <cellid_param2> ...
      ...]
    [*orispread
@@ -128,7 +128,7 @@ where (with identifiers being integer numbers),
 
 - :data:`**format` denotes the beginning of the format field.
 
-- :data:`<format>` is the file format, currently `3.5` (character string).
+- :data:`<format>` is the file format, currently :data:`3.5` (character string).
 
 - :data:`**general` denotes the beginning of the general information field.
 
@@ -164,7 +164,7 @@ where (with identifiers being integer numbers),
 
 - :data:`*ori` denotes the beginning of an optional crystal orientation field.
 
-- :data:`<descriptor>` is the descriptor used to parameterize the crystal orientations.  See :ref:`rotations_and_orientations` for the list of available descriptors.
+- :data:`<orientation_descriptor>` is the descriptor used to parameterize the crystal orientations.  See :ref:`rotations_and_orientations` for the list of available descriptors.
 
 - :data:`<cellid_param#>` are the values of the orientation descriptor of cell `id`.
 
@@ -366,7 +366,7 @@ Here are details on the :file:`.tesr` file format version :data:`2.1` (format :d
      <seed_id> <seed_x> <seed_y> [<seed_z>] <seed_weight>
       ...]
    [*ori
-     <descriptor>
+     <orientation_descriptor>
      <cell1_param1> <cell1_param2> ...
      <cell2_param1> <cell2_param2> ...
      ...]
@@ -382,12 +382,12 @@ Here are details on the :file:`.tesr` file format version :data:`2.1` (format :d
      or
     *file <data_file_name>
   [**oridata
-     <descriptor>
+     <orientation_descriptor>
      <oridata_format>
      <vox1_param1> <vox1_param2> ...
      <vox2_param1> <vox2_param2> ...
      or
-     <descriptor>
+     <orientation_descriptor>
      <oridata_format>
     *file <oridata_file_name>
   ]
@@ -406,7 +406,7 @@ where
 
 - :data:`**format` denotes the beginning of the format field.
 
-- :data:`<format>` is the file format, currently `2.2` (character string).
+- :data:`<format>` is the file format, currently :data:`2.2` (character string).
 
 - :data:`**general` denotes the beginning of the general information field.
 
@@ -438,7 +438,7 @@ where
 
 - :data:`*ori` denotes the beginning of an optional crystal orientation field.
 
-- :data:`<descriptor>` is the descriptor used to parametrize the crystal orientations.  See :ref:`rotations_and_orientations` for the list of available descriptors.
+- :data:`<orientation_descriptor>` is the descriptor used to parametrize the crystal orientations.  See :ref:`rotations_and_orientations` for the list of available descriptors.
 
 - :data:`<cellid_param#>` are the values of the orientation descriptor of cell `id`.
 
@@ -450,7 +450,7 @@ where
 
 - :data:`<crysym>` is the crystal symmetry (:data:`triclinic`, :data:`cubic` or :data:`hexagonal`).
 
-- :data:`**data` denotes the beginning of the data field.  Data can be provided in the :file:`.tesr` file or in a separate file, using :data:`*file`, see below.
+- :data:`**data` denotes the beginning of the data field.  Data can be provided in-file or in a separate file, using :data:`*file`, see below.
 
 - :data:`<data_format>` is the format of the data. It can be either :data:`ascii`, :data:`binary8` (8-bit binary), :data:`binary16` (16-bit binary, Little-Endian), :data:`binary16_big` (16-bit binary, Big-Endian), :data:`binary32` (32-bit binary, Little-Endian) or :data:`binary32_big` (32-bit binary, Big-Endian).
 
@@ -460,7 +460,7 @@ where
 
 - :data:`<data_file_name>` is the name of a file that contains the data.  It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided. Typically, it is a :file:`.raw` file.
 
-- :data:`**oridata` denotes the beginning of the orientation data field.  Data can be provided in the :file:`.tesr` file or in a separate file, using :data:`*file`, see below.
+- :data:`**oridata` denotes the beginning of the orientation data field.  Data can be provided in-file or in a separate file, using :data:`*file`, see below.
 
 - :data:`<oridata_format>` is the format of the data. It can be either :data:`ascii` or :data:`binary` (double-precision number).
 
@@ -468,7 +468,7 @@ where
 
 - :data:`<oridata_file_name>` is the name of a file that contains the orientation data.   It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided.  Typically, it is a :file:`.raw` file.
 
-- :data:`**oridef` denotes the beginning of the orientation definition field.  Data can be provided in the :file:`.tesr` file or in a separate file, using :data:`*file`, see below.
+- :data:`**oridef` denotes the beginning of the orientation definition field.  Data can be provided in-file or in a separate file, using :data:`*file`, see below.
 
 - :data:`<oridef_format>` is the format of the orientation definition. It can be either :data:`ascii` or :data:`binary` (8-bit).
 
@@ -479,6 +479,74 @@ where
 .. _tesr_data_oridata_oridef:
 
 .. note:: The :data:`**data`, :data:`**oridata` and :data:`**oridef` sections are independent from each other, so that a cell may contain voxels that do not have any orientation, or a voxel that has an orientation may not belong to any cell.
+
+.. _odf_file:
+
+Orientation Distribution Function File (:file:`.odf`)
+-----------------------------------------------------
+
+Here are details on the :file:`.odf` file format version :data:`1.0`.  Developers should note that read and write functions are available as :code:`neut_odf_fscanf` and :code:`neut_odf_fprintf`, defined in directories :file:`neut/neut_odf/neut_odf_fscanf` and :file:`neut/neut_odf/neut_odf_fprintf`.
+
+.. code-block:: plain
+
+  ***odf
+   **format
+     <format>
+   **space
+    <space>
+    *crysym
+     <crysym>
+    *fr
+     <fr>
+   [*theta
+     <theta>]
+   **eltdata
+     <eltdata_format>
+     <elt1_value> <elt2_value> ...
+     or
+    *file <eltdata_file_name>
+  [**nodedata
+     <nodedata_format>
+     <node1_value> <node2_value> ...
+     or
+    *file <nodedata_file_name>]
+  ***end
+
+where
+
+- :data:`***odf` denotes the beginning of an ODF file.
+
+- :data:`**format` denotes the beginning of the format field.
+
+- :data:`<format>` is the file format, currently :data:`1.0` (character string).
+
+- :data:`**space` denotes the beginning of the orientation space field.
+
+- :data:`<space>` is the space (:data:`rodrigues`, etc.).
+
+- :data:`*crysym` denotes the beginning of a crystal symmetry field.
+
+- :data:`<crysym>` is the crystal symmetry (:data:`cubic` or :data:`hexagonal`).
+
+- :data:`*fr` denotes the beginning of a fundamental region field.
+
+- :data:`<fr>` is the fundamental region.
+
+- :data:`*theta` denotes the beginning of a kernel parameter field.
+
+- :data:`<theta>` is the (1D) width of the Gaussian kernel (in degrees).
+
+- :data:`**eltdata` denotes the beginning of an elemental data field. Data can be provided in-file or in a separate file, using :data:`*file`, see below.
+
+- :data:`<eltdata_format>` is the format of the elemental data. It must be :data:`ascii`.
+
+- :data:`<eltdata_file_name>` is the name of the elemental data file.
+
+- :data:`**nodedata` denotes the beginning of an nodal data field. Data can be provided in-file or in a separate file, using :data:`*file`, see below.
+
+- :data:`<nodedata_format>` is the format of the nodal data. It must be :data:`ascii`.
+
+- :data:`<nodedata_file_name>` is the name of the nodal data file.
 
 .. _mesh_file:
 
@@ -810,7 +878,10 @@ The directory also contains a hidden file, :file:`.sim`, containing information 
      <result_nb>                                         |
      <result1> <result2> ...                             /
    **orispace
-    *rodrigues <space_file>
+    *tess
+     <tess_file>
+    *mesh
+     <mesh_file>
    **step
      <step_nb>
   ***end

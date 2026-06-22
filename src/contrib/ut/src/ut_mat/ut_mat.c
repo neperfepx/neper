@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2024, Romain Quey.*/
+/* Copyright (C) 2003-2026, Romain Quey, CNRS.*/
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_order_.h"
@@ -28,6 +28,28 @@ nem_order (struct IN_M In, struct TESS Tess, struct NODES *pNodes,
   nem_order_post (In, NodeQty_before, pNodes);
 
   ut_free_1d_int (&domesh);
+
+  return;
+}
+
+void
+nem_order_str (struct IN_M In, struct MESHPARA MeshPara, struct NODES *pNodes,
+               struct MESH *Mesh)
+{
+  int dim = neut_mesh_array_dim (Mesh);
+  int NodeQty_prev = (*pNodes).NodeQty;
+
+  nem_order_dim (In, pNodes, NULL, Mesh + dim);
+
+  neut_mesh_init_nodeelts (Mesh + dim, (*pNodes).NodeQty);
+
+  if (ut_array_1d_int_sum ((*pNodes).Periodic, 3))
+  {
+    if (dim == 2)
+      nem_order_str_per_2d (NodeQty_prev, MeshPara, pNodes, Mesh);
+    else
+      nem_order_str_per_3d (NodeQty_prev, MeshPara, pNodes, Mesh);
+  }
 
   return;
 }

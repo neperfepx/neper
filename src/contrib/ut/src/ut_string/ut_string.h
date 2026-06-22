@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2024, Romain Quey.*/
+/* Copyright (C) 2003-2026, Romain Quey, CNRS.*/
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -166,7 +166,7 @@ extern "C"
 /// \param string: string
 /// \param argument: argument
 /// \note A typical example is \c "myfct(foo)".  A variable may not be provided (in which case it is \c NULL).
-  extern int ut_string_functionargument (char *string, char **pargument);
+  extern int ut_string_function_oneargument (char *string, char **pfct, char **pargument);
 
 /// \brief Convert a string into a function, keep arguments as strings
 /// \param string: string
@@ -206,6 +206,9 @@ extern "C"
   extern int ut_string_untilchar (char *string, char c, int *ppos, char *res);
   extern int ut_string_untilstring (const char *string, const char *s,
                                     int *ppos, char *res);
+
+  extern int ut_string_isint (char *string);
+  extern int ut_string_isreal (char *string);
 /// @endcond
 
 #endif                          /* UT_STRING_H */

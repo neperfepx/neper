@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2024, Romain Quey.*/
+/* Copyright (C) 2003-2026, Romain Quey, CNRS.*/
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -412,7 +412,7 @@ ut_string_function (char *string, char **pfct, char ***pvars, char ***pvals,
 }
 
 int
-ut_string_functionargument (char *string, char **pargument)
+ut_string_function_oneargument (char *string, char **pfct, char **pargument)
 {
   int qty, status;
   char *fct = NULL, **vals = NULL, **vars = NULL;
@@ -429,6 +429,9 @@ ut_string_functionargument (char *string, char **pargument)
     ut_free_1d_char (pargument);
     status = -1;
   }
+
+  if (pfct)
+    ut_string_string (fct, pfct);
 
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vals, qty);
@@ -867,4 +870,50 @@ ut_string_version (char *string, int *pmajor, int *pminor, int *ppatch)
   ut_free_2d_char (&parts, partqty);
 
   return;
+}
+
+int
+ut_string_isint (char *string)
+{
+	char *endptr;
+
+	errno = 0;  // reset before call
+	strtol(string, &endptr, 10);
+
+	// No digits were found
+	if (endptr == string)
+		return 0;
+
+	// Extra characters after number (e.g. "123abc")
+	if (*endptr != '\0')
+		return 0;
+
+	// Overflow/underflow check
+	if (errno == ERANGE)
+		return 0;
+
+	return 1;
+}
+
+int
+ut_string_isreal (char *string)
+{
+  char *endptr;
+
+  errno = 0;
+  strtod (string, &endptr);
+
+  // No number found at all
+  if (endptr == string)
+    return 0;
+
+  // Trailing junk after number
+  if (*endptr != '\0')
+    return 0;
+
+  // Overflow / underflow
+  if (errno == ERANGE)
+    return 0;
+
+  return 1;
 }

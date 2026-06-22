@@ -1,11 +1,11 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_scale_.h"
 
 void
-nev_print_scale (struct IN_V In, char *basename, struct SIM Sim,
+nev_print_scale (struct IN_V In, char *basename, struct PRINT Print, struct SIM Sim,
                  struct DATA *TessData, struct DATA *pTesrData, struct DATA *pNodeData,
                  struct DATA **MeshData, int PointQty, struct DATA *PointData)
 {
@@ -16,8 +16,6 @@ nev_print_scale (struct IN_V In, char *basename, struct SIM Sim,
   char *suffix = ut_alloc_1d_char (10);
 
   neut_print_outdir (In.outdir, Sim, "png", &outdir);
-  if (strcmp (outdir, "."))
-    ut_sys_mkdir (outdir);
 
   neut_print_imagesize (In.imagesize, NULL, &imageheight);
 
@@ -32,12 +30,11 @@ nev_print_scale (struct IN_V In, char *basename, struct SIM Sim,
       ut_file_dir_basename_extension_filename (outdir, filename2, "pov", &filename2);
 
       file = ut_file_open (filename2, "w");
-      nev_print_png_scale (In, file, MeshData[i][0].ColScheme, MeshData[i][0].Scale,
-                       MeshData[i][0].ScaleTitle);
+      nev_print_png_scale (In, file, Print, MeshData[i][0]);
       ut_file_close (file, filename2, "w");
 
       if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
-        nev_print_png_convert (In.povray, filename2, 0.3 * imageheight,
+        neut_print_pov2png (In.povray, filename2, 0.3 * imageheight,
                            imageheight, In.povrayantialiasing, 3);
 
       if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov")
@@ -53,12 +50,11 @@ nev_print_scale (struct IN_V In, char *basename, struct SIM Sim,
     ut_file_dir_basename_extension_filename (outdir, filename2, "pov", &filename2);
 
     file = ut_file_open (filename2, "w");
-    nev_print_png_scale (In, file, (*pNodeData).ColScheme, (*pNodeData).Scale,
-                     (*pNodeData).ScaleTitle);
+    nev_print_png_scale (In, file, Print, *pNodeData);
     ut_file_close (file, filename2, "w");
 
     if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
-      nev_print_png_convert (In.povray, filename2, 0.3 * imageheight,
+      neut_print_pov2png (In.povray, filename2, 0.3 * imageheight,
                          imageheight, In.povrayantialiasing, 3);
 
     if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov")
@@ -84,12 +80,11 @@ nev_print_scale (struct IN_V In, char *basename, struct SIM Sim,
       ut_file_dir_basename_extension_filename (outdir, filename2, "pov", &filename2);
 
       file = ut_file_open (filename2, "w");
-      nev_print_png_scale (In, file, TessData[i].ColScheme, TessData[i].Scale,
-                       TessData[i].ScaleTitle);
+      nev_print_png_scale (In, file, Print, TessData[i]);
       ut_file_close (file, filename2, "w");
 
       if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
-        nev_print_png_convert (In.povray, filename2, 0.3 * imageheight,
+        neut_print_pov2png (In.povray, filename2, 0.3 * imageheight,
                            imageheight, In.povrayantialiasing, 3);
 
       if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov")
@@ -105,12 +100,11 @@ nev_print_scale (struct IN_V In, char *basename, struct SIM Sim,
     ut_file_dir_basename_extension_filename (outdir, filename2, "pov", &filename2);
 
     file = ut_file_open (filename2, "w");
-    nev_print_png_scale (In, file, (*pTesrData).ColScheme, (*pTesrData).Scale,
-                         (*pTesrData).ScaleTitle);
+    nev_print_png_scale (In, file, Print, *pTesrData);
     ut_file_close (file, filename2, "w");
 
     if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
-      nev_print_png_convert (In.povray, filename2, 0.3 * imageheight,
+      neut_print_pov2png (In.povray, filename2, 0.3 * imageheight,
                          imageheight, In.povrayantialiasing, 3);
 
     if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov")
@@ -127,12 +121,11 @@ nev_print_scale (struct IN_V In, char *basename, struct SIM Sim,
       ut_file_dir_basename_extension_filename (outdir, filename2, "pov", &filename2);
 
       file = ut_file_open (filename2, "w");
-      nev_print_png_scale (In, file, PointData[0].ColScheme, PointData[0].Scale,
-                       PointData[0].ScaleTitle);
+      nev_print_png_scale (In, file, Print, PointData[0]);
       ut_file_close (file, filename2, "w");
 
       if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
-        nev_print_png_convert (In.povray, filename2, 0.3 * imageheight,
+        neut_print_pov2png (In.povray, filename2, 0.3 * imageheight,
                            imageheight, In.povrayantialiasing, 3);
 
       if (!ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov")

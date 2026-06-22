@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_.h"
@@ -269,11 +269,12 @@ net_ori_label (char *label, struct SEEDSET *SSet, int dtess, int dcell, struct O
   ut_list_break (label, NEUT_SEP_DEP, &parts, &partqty);
 
   status = ol_label_q (parts[0], q);
-  if (status)
-    abort ();
 
-  for (i = 0; i < (int) (*pOSet).size; i++)
-    ol_q_memcpy (q, (*pOSet).q[i]);
+  if (!status)
+    for (i = 0; i < (int) (*pOSet).size; i++)
+      ol_q_memcpy (q, (*pOSet).q[i]);
+  else
+    abort ();
 
   if (partqty == 2)
     net_ori_addspread (parts[1], SSet[dtess].Random + dcell, pOSet);
@@ -288,7 +289,7 @@ void
 net_ori_file (char *filename_in, struct OL_SET *pOSet)
 {
   unsigned int i;
-  int des_size;
+  int des_size, status;
   char *des = NULL, *conv = NULL, *tmp = NULL;
   double *vect = ut_alloc_1d (4);
   double **g = ol_g_alloc ();
@@ -298,6 +299,7 @@ net_ori_file (char *filename_in, struct OL_SET *pOSet)
   char **vars = NULL;
   char **vals = NULL;
   char *filename = NULL;
+  char *label = ut_alloc_1d_char (1000);
 
   if (!strncmp (filename_in, "file(", 5))
   {
@@ -336,7 +338,15 @@ net_ori_file (char *filename_in, struct OL_SET *pOSet)
 
   for (i = 0; i < (*pOSet).size; i++)
   {
-    if (!strcmp (des, "euler-bunge"))
+    if (!strcmp (des, "label"))
+    {
+      if (fscanf (fp, "%s", label) != 1)
+        abort ();
+      status = ol_label_q (label, (*pOSet).q[i]);
+      if (status != 0)
+        abort ();
+    }
+    else if (!strcmp (des, "euler-bunge"))
     {
       ol_e_fscanf (fp, vect);
       ol_e_q (vect, (*pOSet).q[i]);
@@ -391,6 +401,7 @@ net_ori_file (char *filename_in, struct OL_SET *pOSet)
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
   ut_free_1d_char (&filename);
+  ut_free_1d_char (&label);
 
   return;
 }
@@ -420,16 +431,16 @@ net_ori_odf (long random, char *odf, struct OL_SET *pOSet)
   {
     double *x = ut_alloc_1d (Odf.odfqty + 1);
 
-    neut_odf_init_eltweight (&Odf);
+    neut_mesh_init_eltweight (Odf.Sp.Nodes, Odf.Sp.Mesh + 3);
 
-    if (!strstr (Odf.gridtype, (*pOSet).crysym))
+    if (!strstr (Odf.Sp.crysym, (*pOSet).crysym))
       ut_print_message (2, 0, "Crystal symmetry (%s) and orientation space (%s) conflict.\n",
-                        (*pOSet).crysym, Odf.gridtype);
+                        (*pOSet).crysym, Odf.Sp.crysym);
 
     // building the probability array
     x = ut_alloc_1d (Odf.odfqty + 1);
     for (i = 1; i <= Odf.odfqty; i++)
-      x[i] = Odf.EltWeight[i - 1] * Odf.odf[i - 1] * ol_crysym_qty ((*pOSet).crysym) / pow (M_PI, 2);
+      x[i] = Odf.Sp.Mesh[3].EltWeight[i] * Odf.odf[i - 1] * ol_crysym_qty ((*pOSet).crysym) / pow (M_PI, 2);
 
     // slight correction, if necessary, to make sure we sum exactly to 1
     ut_array_1d_scale (x, Odf.odfqty + 1, 1. / ut_array_1d_sum (x, Odf.odfqty + 1));
@@ -468,7 +479,7 @@ net_ori_odf (long random, char *odf, struct OL_SET *pOSet)
       ol_e_R (e, R);
       ol_R_Rcrysym (R, (*pOSet).crysym, R);
 
-      status = neut_mesh_point_elt (Odf.Nodes, Odf.Mesh[3], R, &elt);
+      status = neut_mesh_point_elt (Odf.Sp.Nodes, Odf.Sp.Mesh[3], R, &elt);
       if (status)
         ut_print_message (2, 0, "Failed to find element for orientation = (%f,%f,%f)\n", R[0], R[1], R[2]);
 
@@ -502,13 +513,12 @@ net_ori_oricrysym (struct OL_SET *pOSet)
   return;
 }
 
-int
+unsigned long
 net_ori_mtess_randseed_rand (int *N, int *id, int *poly, int levelqty)
 {
   int i;
-  time_t t;
   double tmp;
-  int Rand;
+  unsigned long Rand;
 
   gsl_rng *r = gsl_rng_alloc (gsl_rng_ranlxd2);
   gsl_rng_set (r, 1);
@@ -530,8 +540,10 @@ net_ori_mtess_randseed_rand (int *N, int *id, int *poly, int levelqty)
       Rand = N[1] * pow (10, 7 - ut_num_tenlen (N[1])) + id[1];
     else
     {
-      time (&t);
-      Rand = t;
+      FILE *f = fopen("/dev/urandom", "rb");
+      if (fread (&Rand, sizeof(Rand), 1, f) != 1)
+        abort ();
+      fclose (f);
     }
   }
   /* this version would provide backward compatibility with v2.0, but
@@ -571,9 +583,6 @@ net_ori_mtess_randseed_rand (int *N, int *id, int *poly, int levelqty)
 
     Rand = (int) tmp;
   }
-
-  if (Rand < 0)
-    ut_print_neperbug ();
 
   gsl_rng_free (r);
 

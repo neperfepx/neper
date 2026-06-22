@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_.h"
@@ -203,6 +203,8 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
   (*pTOpt).TDyn.val_dur = ut_time_subtract (&t4, &t5);
   (*pTOpt).TDyn.total_dur = ut_time_subtract (&(*pTOpt).end_time, &t5);
   (*pTOpt).TDyn.cumtotal_dur += (*pTOpt).TDyn.total_dur;
+  if (!strcmp ((*pTOpt).optitype, "ori"))
+    (*pTOpt).TDyn.iter++;
 
   net_tess_opt_comp_objective_log (*pTOpt);
 

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -15,6 +15,7 @@
 #include"neper_m/neper_m.h"
 #include"neper_v/neper_v.h"
 #include"neper_s/neper_s.h"
+#include"neut/neut.h"
 
 #ifdef HAVE_OPENMP
 #include <omp.h>

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -135,12 +135,6 @@ extern "C"
 ///
   extern int neut_tess_area (struct TESS Tess, double *);
 
-/// \brief Get the length of a TESS
-///
-///
-///
-  extern int neut_tess_length (struct TESS Tess, double *);
-
 /// \brief Get the area of a domain face of a TESS
 ///
 ///
@@ -266,6 +260,22 @@ extern "C"
   extern void neut_tess_face_perimeter (struct TESS Tess, int face,
 					double *pval);
   extern void neut_tess_poly_area (struct TESS Tess, int poly, double *pval);
+
+  extern void neut_tess_poly_aniso (struct TESS Tess, int poly, double **evect,
+          double *eval);
+  extern void neut_tess_face_aniso (struct TESS Tess, int face, double **evect,
+          double *eval);
+
+/// \brief Determine the anisotropy of a polyhedron
+///
+///
+///
+  extern void neut_tess_poly_anisofact (struct TESS Tess, int poly, double *pval);
+
+  extern void neut_tess_face_anisofact_spect (struct TESS Tess, int face, double *pval);
+
+  extern void neut_tess_face_anisofact (struct TESS Tess, int face, double *pval);
+
   extern int neut_tess_face_circularity (struct TESS, int face, double *pval);
   extern int neut_tess_poly_sphericity (struct TESS, int poly, double *pval);
   extern int neut_tess_cell_sphericity (struct TESS, int cell, double *pval);

@@ -1,20 +1,55 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_init_.h"
 
 void
-nev_print_init_data_csys (struct IN_V In, struct DATA *pData)
+nev_print_init_data_csys (struct IN_V In, char *crysym, struct PRINT Print, struct DATA *pData)
 {
   int i;
+  double hex_ratio = 32. / 20;
+  double hex_ratio2 = 1.0165;
 
   (*pData).Col = ut_alloc_2d_int (2, 3);
   (*pData).Coo = ut_alloc_2d (2, 3);
   (*pData).Rad = ut_alloc_1d (2);
   (*pData).Length = ut_alloc_1d (2);
-  (*pData).Rad[1] = 0.01;
-  (*pData).Length[1] = 0.2;
+
+  if (!strcmp (In.space, "real"))
+  {
+    (*pData).Rad[1] = 0.01;
+    (*pData).Length[1] = 0.2;
+  }
+
+  else if (!strncmp (In.space, "rodrigues", 9))
+  {
+    if (!strcmp (crysym, "cubic"))
+    {
+      (*pData).Rad[1] = 0.003;
+      (*pData).Length[1] = 0.1;
+      ut_array_1d_set_3 ((*pData).Coo[1], 0.465, -0.465, 0.465);
+    }
+    else if (!strcmp (crysym, "hexagonal"))
+    {
+      (*pData).Rad[1] = 0.003 * hex_ratio * hex_ratio2;
+      (*pData).Length[1] = 0.1 * hex_ratio * hex_ratio2;
+      ut_array_1d_set_3 ((*pData).Coo[1], 0.465, -0.465, 0.465);
+      (*pData).Coo[1][0] *= hex_ratio * hex_ratio2;
+      (*pData).Coo[1][1] *= hex_ratio * hex_ratio2;
+      (*pData).Coo[1][2] *= hex_ratio * hex_ratio2;
+    }
+    else
+      abort ();
+  }
+  else // pf: do nothing
+  {
+  }
+
+  if (!strcmp (Print.colormode, "bright"))
+    ut_array_2d_int_set ((*pData).Col, 2, 3, 0);
+  else if (!strcmp (Print.colormode, "dark"))
+    ut_array_2d_int_set ((*pData).Col, 2, 3, 255);
 
   if ((*pData).ColData)
   {
@@ -46,13 +81,23 @@ nev_print_init_data_csys (struct IN_V In, struct DATA *pData)
   }
 
   if ((*pData).FontSize == -1)
-    (*pData).FontSize = 1;
+  {
+    if (!strcmp (In.space, "real"))
+      (*pData).FontSize = 1;
+    else if (!strncmp (In.space, "rodrigues", 9))
+    {
+      if (!strcmp (crysym, "cubic"))
+        (*pData).FontSize = 0.6;
+      else if (!strcmp (crysym, "hexagonal"))
+        (*pData).FontSize = 0.6 * hex_ratio * hex_ratio2;
+    }
+  }
 
   return;
 }
 
 void
-nev_print_init_data_mesh (struct IN_V In, struct NODES Nodes, struct MESH Mesh, char *crysym,
+nev_print_init_data_mesh (struct IN_V In, struct PRINT Print, struct NODES Nodes, struct MESH Mesh, char *crysym,
                           double size, int Qty, char *entity, int dim,
                           struct DATA *pData)
 {
@@ -69,10 +114,13 @@ nev_print_init_data_mesh (struct IN_V In, struct NODES Nodes, struct MESH Mesh, 
   if (!(*pData).Trs)
     (*pData).Trs = ut_alloc_1d ((*pData).Qty + 1);
 
-  if (Mesh.Dimension == 0)
-    ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0);
-  else if (Mesh.Dimension == 1)
-    ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0);
+  if (Mesh.Dimension <= 1)
+  {
+    if (!strcmp (Print.colormode, "bright"))
+      ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0);
+    else
+      ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 255);
+  }
   else if (Mesh.Dimension == 2)
     ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 255);
   else if (Mesh.Dimension == 3)
@@ -112,15 +160,8 @@ nev_print_init_data_mesh (struct IN_V In, struct NODES Nodes, struct MESH Mesh, 
   if (!(*pData).BCol)
   {
     (*pData).BCol = ut_alloc_1d_int (3);
-
-    if (Mesh.Dimension == 0)
-      ut_array_1d_int_set ((*pData).BCol, 3, 0);
-    else if (Mesh.Dimension == 1)
-      ut_array_1d_int_set ((*pData).BCol, 3, 0);
-    else if (Mesh.Dimension == 2)
-      ut_array_1d_int_set ((*pData).BCol, 3, 0);
-    else if (Mesh.Dimension == 3)
-      ut_array_1d_int_set ((*pData).BCol, 3, 0);
+    if (!strcmp (In.colormode, "dark"))
+      ut_array_1d_int_set ((*pData).BCol, 3, 255);
   }
 
   if ((*pData).BRad < 0)
@@ -162,9 +203,7 @@ nev_print_init_data_mesh (struct IN_V In, struct NODES Nodes, struct MESH Mesh, 
                           (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "real"))
-      neut_data_real_color ((*pData).ColData, NULL, (*pData).Qty,
-                            (*pData).Scale, (*pData).ColScheme,
-                            (*pData).Col, &((*pData).Scale));
+      neut_data_init_color_real (pData);
 
     else if (!strcmp ((*pData).ColDataType, "ori"))
       neut_data_ori_color ((*pData).ColData, (*pData).Qty,
@@ -213,7 +252,7 @@ nev_print_init_data_mesh (struct IN_V In, struct NODES Nodes, struct MESH Mesh, 
 }
 
 void
-nev_print_init_data_nodes (struct IN_V In, struct NODES Nodes, char *crysym, int Qty, struct DATA *pData)
+nev_print_init_data_nodes (struct IN_V In, struct PRINT Print, struct NODES Nodes, char *crysym, int Qty, struct DATA *pData)
 {
   double noderad;
 
@@ -229,7 +268,10 @@ nev_print_init_data_nodes (struct IN_V In, struct NODES Nodes, char *crysym, int
   noderad = 0.0168 / pow (Qty, 0.25);
   ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, noderad);
 
-  ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0.);
+  if (!strcmp (Print.colormode, "bright"))
+    ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0.);
+  else
+    ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 255);
   ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, noderad);
   ut_array_1d_set ((*pData).Weight + 1, (*pData).Qty, 1);
 
@@ -247,9 +289,7 @@ nev_print_init_data_nodes (struct IN_V In, struct NODES Nodes, char *crysym, int
                           (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "real"))
-      neut_data_real_color ((*pData).ColData, NULL, (*pData).Qty,
-                            (*pData).Scale, (*pData).ColScheme,
-                            (*pData).Col, &((*pData).Scale));
+      neut_data_init_color_real (pData);
 
     else if (!strcmp ((*pData).ColDataType, "ori"))
       neut_data_ori_color ((*pData).ColData, (*pData).Qty,
@@ -322,10 +362,7 @@ nev_print_init_data_points (struct IN_V In, struct POINT Point, char *crysym, st
                           (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "real"))
-      neut_data_real_color ((*pData).ColData, NULL,
-                            (*pData).Qty, (*pData).Scale,
-                            (*pData).ColScheme, (*pData).Col,
-                            &((*pData).Scale));
+      neut_data_init_color_real (pData);
 
     else if (!strcmp ((*pData).ColDataType, "ori"))
       neut_data_ori_color ((*pData).ColData, (*pData).Qty,
@@ -383,7 +420,11 @@ nev_print_init_data_points (struct IN_V In, struct POINT Point, char *crysym, st
     (*pData).BRad = 0.01;
 
   if (!(*pData).BCol)
+  {
     (*pData).BCol = ut_alloc_1d_int (3);
+    if (!strcmp (In.colormode, "dark"))
+      ut_array_1d_int_set ((*pData).BCol, 3, 255);
+  }
 
   neut_data_symboldata_symbol (pData);
 
@@ -418,10 +459,7 @@ nev_print_init_data_crystal (struct PRINT Print, , struct DATA *pData)
                           (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "real"))
-      neut_data_real_color ((*pData).ColData, NULL,
-                            (*pData).Qty, (*pData).Scale,
-                            (*pData).ColScheme, (*pData).Col,
-                            &((*pData).Scale));
+      neut_data_init_color_real (pData);
 
     else if (!strcmp ((*pData).ColDataType, "ori"))
       neut_data_ori_color ((*pData).ColData, (*pData).Qty,
@@ -489,9 +527,7 @@ nev_print_init_data_tesr (struct IN_V In, struct TESR Tesr, struct DATA *pData)
       neut_data_int_color ((*pData).ColData, (*pData).Qty, (*pData).VoidCol, (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "real"))
-      neut_data_real_color ((*pData).ColData, (*pData).ColDataDef,
-                            (*pData).Qty, (*pData).Scale, (*pData).ColScheme,
-                            (*pData).Col, &((*pData).Scale));
+      neut_data_init_color_real (pData);
 
     else if (!strcmp ((*pData).ColDataType, "ori")
           || !strcmp ((*pData).ColDataType, "disori"))
@@ -576,7 +612,11 @@ nev_print_init_data_tesr (struct IN_V In, struct TESR Tesr, struct DATA *pData)
     (*pData).BRad = (!strcmp (In.space, "pf") || !strcmp (In.space, "ipf")) ? 0.01 : 0;
 
   if (!(*pData).BCol)
+  {
     (*pData).BCol = ut_alloc_1d_int (3);
+    if (!strcmp (In.colormode, "dark"))
+      ut_array_1d_int_set ((*pData).BCol, 3, 255);
+  }
 
   if (!(*pData).RadDataName)
   {
@@ -592,7 +632,7 @@ nev_print_init_data_tesr (struct IN_V In, struct TESR Tesr, struct DATA *pData)
 }
 
 void
-nev_print_init_data_tess (struct IN_V In, struct TESS Tess, struct DATA *pData)
+nev_print_init_data_tess (struct IN_V In, struct PRINT Print, struct TESS Tess, struct DATA *pData)
 {
   int i, dim = (*pData).Dim;
   double size, rad;
@@ -612,14 +652,20 @@ nev_print_init_data_tess (struct IN_V In, struct TESS Tess, struct DATA *pData)
   if (dim == 0)
   {
     rad = pow (size, 1. / 3) * 0.02000 / pow (Tess.CellQty, 0.25);
-    ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0);
+    if (!strcmp (Print.colormode, "bright"))
+      ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0);
+    else
+      ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 255);
     ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
     ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, rad);
   }
 
   if (dim == 1)
   {
-    ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0);
+    if (!strcmp (Print.colormode, "bright"))
+      ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 0);
+    else
+      ut_array_2d_int_set ((*pData).Col + 1, (*pData).Qty, 3, 255);
     ut_array_1d_set ((*pData).Trs + 1, (*pData).Qty, 0);
     rad = pow (size, 1. / 3) * 0.01414 / pow (Tess.CellQty, 0.25);
     ut_array_1d_set ((*pData).Rad + 1, (*pData).Qty, rad);
@@ -665,10 +711,7 @@ nev_print_init_data_tess (struct IN_V In, struct TESS Tess, struct DATA *pData)
                           (*pData).Col);
 
     else if (!strcmp ((*pData).ColDataType, "real"))
-      neut_data_real_color ((*pData).ColData, NULL, (*pData).Qty,
-                            (*pData).Scale, (*pData).ColScheme,
-                            (*pData).Col,
-                            &((*pData).Scale));
+      neut_data_init_color_real (pData);
 
     else if (!strcmp ((*pData).ColDataType, "ori"))
       neut_data_ori_color ((*pData).ColData, (*pData).Qty, Tess.CellCrySym,
@@ -697,7 +740,11 @@ nev_print_init_data_tess (struct IN_V In, struct TESS Tess, struct DATA *pData)
   }
 
   if (dim == 5 && !(*pData).BCol)
+  {
       (*pData).BCol = ut_alloc_1d_int (3);
+      if (!strcmp (In.colormode, "dark"))
+        ut_array_1d_int_set ((*pData).BCol, 3, 255);
+  }
 
   if ((*pData).RadData)
     neut_data_real_real ((*pData).RadData, (*pData).Qty,
@@ -725,7 +772,11 @@ nev_print_init_data_tess (struct IN_V In, struct TESS Tess, struct DATA *pData)
       (*pData).BRad = 0.01;
 
     if (!(*pData).BCol)
+    {
       (*pData).BCol = ut_alloc_1d_int (3);
+      if (!strcmp (In.colormode, "dark"))
+        ut_array_1d_int_set ((*pData).BCol, 3, 255);
+    }
   }
 
   neut_data_symboldata_symbol (pData);
@@ -849,6 +900,29 @@ nev_print_init_camera_sky (char *expr, int dim, double *coo)
   }
 
   ut_free_2d_char (&vals, qty);
+
+  return;
+}
+
+void
+nev_print_init_camera_coo_ori (char *expr, double *coo)
+{
+  int i;
+  double *v = ut_alloc_1d (3);
+  double **bbox = ut_alloc_2d (3, 2);
+
+  ut_array_1d_set_3 (v, 4, 4, 3);
+
+  for (i = 0; i < 3; i++)
+  {
+    bbox[i][0] = -(sqrt(2) - 1);
+    bbox[i][1] =  (sqrt(2) - 1);
+  }
+
+  nev_print_init_camera_coo (bbox, NULL, v, expr, coo);
+
+  ut_free_1d (&v);
+  ut_free_2d (&bbox, 3);
 
   return;
 }

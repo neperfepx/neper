@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_uniform_.h"
@@ -44,7 +44,7 @@ void
 net_ori_uniform_opt_forces_ser_neigh (struct OL_SET *pOSet, double **f,
                                       double *E, struct OOPT *pOOpt,
                                       struct QCLOUD *pqcloud,
-                                      my_kd_tree_t * qindex)
+                                      my_kd_tree_t * qtree)
 {
   unsigned int i, j, k, neighqty;
 
@@ -65,7 +65,7 @@ net_ori_uniform_opt_forces_ser_neigh (struct OL_SET *pOSet, double **f,
 
     std::vector < std::pair < size_t, double >>ret_matches;
     neighqty =
-      qindex->radiusSearch ((*pOSet).q[i], (*pOOpt).neighdE, ret_matches,
+      qtree->radiusSearch ((*pOSet).q[i], (*pOOpt).neighdE, ret_matches,
                             params);
     for (j = 0; j < neighqty; j++)
       neighs[j] = ret_matches[j].first;
@@ -214,6 +214,42 @@ net_ori_uniform_log_var (struct IN_T In, struct OL_SET OSet,
   ol_g_free (g);
   ol_r_free (r);
   ol_e_free (tmp);
+
+  return;
+}
+
+void
+net_ori_uniform_log_val (struct IN_T In, struct OOPT OOpt)
+{
+  int i, varqty;
+  char **vars = NULL;
+  char *filename = NULL;
+
+  filename = ut_string_addextension (In.body, ".logorival");
+
+  OOpt.logval_fp = ut_file_open (filename, OOpt.iter == 0 ? "W" : "A");
+  ut_list_break (OOpt.logval, NEUT_SEP_NODEP, &vars, &varqty);
+
+  for (i = 0; i < varqty; i++)
+  {
+    if (!strcmp (vars[i], "iter"))
+      fprintf (OOpt.logval_fp, "%d", OOpt.iter);
+    else if (!strcmp (vars[i], "val"))
+      fprintf (OOpt.logval_fp, "%.12f", OOpt.f);
+    else if (!strcmp (vars[i], "valmin"))
+      fprintf (OOpt.logval_fp, "%.12f", OOpt.fmin);
+    else
+      fprintf (OOpt.logval_fp, "-1");
+
+    if (i < varqty - 1)
+      fprintf (OOpt.logval_fp, " ");
+  }
+  fprintf (OOpt.logval_fp, "\n");
+
+  ut_file_close (OOpt.logval_fp, filename, OOpt.iter == 0 ? "W" : "A");
+
+  ut_free_2d_char (&vars, varqty);
+  ut_free_1d_char (&filename);
 
   return;
 }

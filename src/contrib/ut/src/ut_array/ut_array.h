@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2024, Romain Quey.*/
+/* Copyright (C) 2003-2026, Romain Quey, CNRS.*/
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -2051,6 +2051,12 @@ extern "C"
   extern int ut_array_3d_int_fprintf (FILE * file, int ***array, int size1,
                                       int size2, int size3,
                                       const char *format);
+
+  extern void ut_array_2d_int_grid1 (int **array, int size1, int size2);
+  extern void ut_array_3d_int_grid1 (int ***array, int size1, int size2, int size3);
+
+  extern int ut_array_1d_isint (double *array, int size);
+  extern int ut_array_2d_isint (double **array, int size1, int size2);
 
 #endif                          /* UT_ARRAY_H */
 

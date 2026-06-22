@@ -1,9 +1,9 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_geom_.h"
-#include"neut_nfcloud_struct.hpp"
+#include"neut_struct_nfcloud.hpp"
 
 /* neut_mesh_elt_area computes the area of a 2D element */
 int
@@ -1585,4 +1585,69 @@ neut_mesh_elt_randompt (struct NODES Nodes, struct MESH Mesh, int elt, gsl_rng *
                          r, pt);
 
   return;
+}
+
+void
+neut_mesh_elset_aniso (struct NODES Nodes, struct MESH Mesh, int elset, double **evect,
+                       double *eval)
+{
+  int i, elt, eltqty;
+
+  double *w = NULL, **v = NULL, **I = NULL;
+  double *centre = ut_alloc_1d (Mesh.Dimension);
+
+  neut_mesh_elset_centre (Nodes, Mesh, elset, centre);
+
+  if (Mesh.Dimension != 2 && Mesh.Dimension != 3)
+    ut_print_neperbug ();
+
+  eltqty = Mesh.Elsets[elset][0];
+
+  w = ut_alloc_1d (eltqty);
+  v = ut_alloc_2d (eltqty, Mesh.Dimension);
+  I = ut_alloc_2d (Mesh.Dimension, Mesh.Dimension);
+
+  for (i = 1; i <= eltqty; i++)
+  {
+    elt = Mesh.Elsets[elset][i];
+    neut_mesh_elt_centre (Nodes, Mesh, elt, v[i - 1]);
+    ut_array_1d_sub (v[i - 1], centre, 3, v[i - 1]);
+    neut_mesh_elt_size (Nodes, Mesh, elt, w + i - 1);
+  }
+
+  ut_vector_set_covar (v, w, eltqty, Mesh.Dimension, I);
+
+  ut_mat_eigen (I, Mesh.Dimension, eval, evect);
+
+  ut_free_1d (&w);
+  ut_free_1d (&centre);
+  ut_free_2d (&v, eltqty);
+  ut_free_2d (&I, Mesh.Dimension);
+
+  return;
+}
+
+void
+neut_mesh_elset_anisofact (struct NODES Nodes, struct MESH Mesh, int elset, double *pval)
+{
+  int i;
+  double eval_max, tmp, sum_log;
+  double *eval = ut_alloc_1d (3);
+  double **evect = ut_alloc_2d (3, 3);
+
+  neut_mesh_elset_aniso (Nodes, Mesh, elset, evect, eval);
+
+  sum_log = 0.0;
+  for (i = 0; i < Mesh.Dimension; i++)
+    sum_log += log (eval[i]);
+
+  eval_max = ut_array_1d_max (eval, Mesh.Dimension);
+  tmp = exp (sum_log / Mesh.Dimension);
+  (*pval) = eval_max / tmp;
+
+  if (tmp <= 0.0 && isinf (*pval))
+    *pval = -1;
+
+  ut_free_2d (&evect, 3);
+  ut_free_1d (&eval);
 }

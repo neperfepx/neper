@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_sim_simres_.h"
@@ -19,8 +19,8 @@ neut_sim_simres (struct SIM Sim, char *entity_in, char *res_in, struct SIMRES *p
   neut_simres_free (pSimRes);
   neut_simres_set_zero (pSimRes);
 
-  if (!strncmp (res, "file(", 5) && !expr)
-    ut_string_string (res, &(*pSimRes).file);
+//  if (!strncmp (res, "file(", 5) && !expr)
+//    ut_string_string (res, &(*pSimRes).file);
 
   if (neut_sim_isvoid (Sim))
     return;
@@ -32,7 +32,7 @@ neut_sim_simres (struct SIM Sim, char *entity_in, char *res_in, struct SIMRES *p
   // is it an expression?
   if (expr)
   {
-    // testing whether the label is valid (not a result and not a subresut)
+    // testing whether the label is valid (not a result and not a subresult)
     for (i = 0; i < entityresqty; i++)
       if (!strcmp (entityres[i], res))
         ut_print_message (2, 4, "%s: label is a result.\n", res);
@@ -60,6 +60,14 @@ neut_sim_simres (struct SIM Sim, char *entity_in, char *res_in, struct SIMRES *p
              (*pSimRes).res, (*pSimRes).res, (*pSimRes).step);
   }
 
+  // if no expression provided, copying res to both res and expr
+  else
+  {
+    ut_string_string (res, &expr);
+    ut_string_string (res, &(*pSimRes).res);
+    ut_string_string (expr, &(*pSimRes).expr);
+  }
+
   // is it a result?
   if (!ut_string_strcmp ((*pSimRes).status, "unknown"))
   {
@@ -69,7 +77,6 @@ neut_sim_simres (struct SIM Sim, char *entity_in, char *res_in, struct SIMRES *p
         ut_string_string ("result", &(*pSimRes).status);
 
         ut_string_string (entity, &(*pSimRes).entity);
-        ut_string_string (res, &(*pSimRes).res);
 
         (*pSimRes).dir = ut_alloc_1d_char (1000);
         sprintf ((*pSimRes).dir, "%s/results/%s/%s", Sim.simdir, entitydir,
@@ -96,7 +103,6 @@ neut_sim_simres (struct SIM Sim, char *entity_in, char *res_in, struct SIMRES *p
           ut_string_string ("subresult", &(*pSimRes).status);
 
           ut_string_string (entity, &(*pSimRes).entity);
-          ut_string_string (res, &(*pSimRes).res);
           neut_sim_simres_parentres (res, pSimRes);
 
           ut_string_string ("real", &(*pSimRes).type);
@@ -131,7 +137,6 @@ neut_sim_simres (struct SIM Sim, char *entity_in, char *res_in, struct SIMRES *p
   if (!ut_string_strcmp ((*pSimRes).status, "unknown"))
   {
     ut_string_string (entity, &(*pSimRes).entity);
-    ut_string_string (res, &(*pSimRes).res);
 
     (*pSimRes).dir = ut_alloc_1d_char (1000);
     sprintf ((*pSimRes).dir, "%s/results/%s/%s", Sim.simdir, entitydir,

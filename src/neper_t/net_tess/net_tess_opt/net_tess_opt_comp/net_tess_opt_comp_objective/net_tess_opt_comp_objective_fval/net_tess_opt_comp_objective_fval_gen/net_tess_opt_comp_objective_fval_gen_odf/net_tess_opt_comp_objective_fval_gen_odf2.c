@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_fval_gen_odf_.h"
@@ -107,9 +107,9 @@ net_tess_opt_comp_objective_fval_gen_odf_evaluate (struct TOPT *pTOpt, struct OD
     // net_tess_opt_comp_objective_fval_gen_odf_evaluate_chi2 (pTOpt, var);
 
     (*pTOpt).curval[var] = 0;
-    for (i = 0; i < (*pTOpt).Odf.odfqty; i++)
-      (*pTOpt).curval[var] += Odf.EltWeight[i] * pow ((*pTOpt).Odf.odf[i] - Odf.odf[i], 2);
-    (*pTOpt).curval[var] /= ut_array_1d_sum (Odf.EltWeight, (*pTOpt).Odf.odfqty);
+    for (i = 0; i < (*pTOpt).tarOdf.odfqty; i++)
+      (*pTOpt).curval[var] += (*pTOpt).tarOdf.Sp.Mesh[3].EltWeight[i - 1] * pow ((*pTOpt).tarOdf.odf[i] - Odf.odf[i], 2);
+    (*pTOpt).curval[var] /= ut_array_1d_sum ((*pTOpt).tarOdf.Sp.Mesh[3].EltWeight + 1, (*pTOpt).tarOdf.odfqty);
     if (isnan ((*pTOpt).curval[var]))
       (*pTOpt).curval[var] = 1000;
     (*pTOpt).curval[var] = sqrt ((*pTOpt).curval[var]);

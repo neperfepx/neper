@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -10,7 +10,6 @@
 #include"ut.h"
 #include"neut.h"
 #include"orilib.h"
-#include"structIn_s.h"
 
 #include"nes_merge.h"
 

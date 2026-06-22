@@ -49,8 +49,8 @@ if (w > 0) filldraw(shift(p)*rotate(theta)*scale(1.895 * s)*(pair0--pair5--pair1
       else filldraw(shift(p)*rotate(theta)*scale(1.895 * s)*(pair0--pair5--pair1--pair6--pair2--pair7--pair3--pair8--pair4--pair9--cycle), rgba+opacity(1-transa), invisible);
 }
 filldraw (scale(scale)*((-1.265,-1.192)--(2.100,-1.192)--(2.100,1.192)--(-1.265,1.192)--cycle),white,white);
-label("$X_3$", scale(scale)*(1,0), E);
-label("$X_2$", scale(scale)*(0,1), N);
+label("$X_3$", scale(scale)*(1,0), E, black);
+label("$X_2$", scale(scale)*(0,1), N, black);
 draw (shift(O)*scale(scale)*unitcircle, black);
 int n0 = 52;
 int n1 = 52;
@@ -86,7 +86,7 @@ pen[] Palette=Gradient(rgb(0.266667,0.003922,0.329412),rgb(0.270588,0.019608,0.3
 bounds range=image(v,scale*1.040000*(-1,-1),scale*1.040000*(1,1),Palette);
 picture bar;
 palette(bar,"Density",range,(0cm,0cm),(0.5cm,6cm),Right,Palette,
-        PaletteTicks(N=10,n=1,"$%.1f$"));
+        PaletteTicks(N=10,n=1,"$%.1f$",black));
 add(bar.fit(),point(E),W+0.000000S);
 draw (contour (points, values, new real[] {7.80415,15.6083,23.4125,31.2166,39.0208,46.8249,54.6291,62.4332,70.2374,78.0415,}, operator --), new pen[] {black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000)});
 draw (scale(scale)*(-X--X), black);
@@ -100,5 +100,5 @@ sphere (scale(scale/1.000000)*( 0.000000,  1.000000), 0.600000, 0.000000, rgb(0.
 sphere (scale(scale/1.000000)*(-1.000000, -0.000000), 0.600000, 0.000000, rgb(0.000000,0.000000,1.000000), 0.000000, rgb(0.000000,0.000000,0.000000), 0.300000);
 sphere (scale(scale/1.000000)*( 1.000000,  0.000000), 0.600000, 0.000000, rgb(0.000000,0.000000,1.000000), 0.000000, rgb(0.000000,0.000000,0.000000), 0.300000);
 sphere (scale(scale/1.000000)*( 0.366025,  0.366025), 0.600000, 0.000000, rgb(1.000000,1.000000,0.000000), 0.000000, rgb(0.000000,0.000000,0.000000), 0.300000);
-label("directions", scale(scale)*(-1.265, 1.000), NE);
-label("stereo. proj.", scale(scale)*(-1.255, 1.000), SE, fontsize(8));
+label("directions", scale(scale)*(-1.265, 1.000), NE, black);
+label("stereo. proj.", scale(scale)*(-1.255, 1.000), SE, black+fontsize(8));

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifndef NEM_SCALING_H
@@ -12,7 +12,6 @@
 
 #include"ut.h"
 #include"neut_m.h"
-#include"../structIn_m.h"
 #include"../nem_reconstruct/nem_reconstruct.h"
 #include"../nem/nem.h"
 

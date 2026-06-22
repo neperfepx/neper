@@ -10,11 +10,21 @@ extern "C"
 #ifndef OL_GEN
 #define OL_GEN
 
+#define UNIFORM 1
+#define FCC_PSC_ALPHA 2
+#define FCC_PSC_BETA 3
+#define FCC_PSC_ALPHA2 4
+#define FCC_PSC_ALPHA_FULL 5
+#define FCC_PSC_BETA_BENT 6
+#define _100_X3 7
+#define _110_X3 8
+
 #include "ol_des.h"
 #include "ol_glo.h"
 
 extern int  ol_label_g (char *, double **);
 extern int  ol_label_q (char *, double *);
+extern int  ol_q_label (double *, char *);
 
 extern void ol_nb_e (double, double, double, double *);
 extern void ol_nb_e_rad (double, double, double, double *);
@@ -34,6 +44,8 @@ extern void ol_nb_max_rtheta_mis (double, double, double, double, double *,
 				  double *);
 extern void ol_nb_max_rtheta_rad (double, double, double, double, double *,
 				  double *);
+
+extern void ol_specialid_label (int id, char *label);
 
 #endif /* OL_GEN */
 #ifndef OL_GENx

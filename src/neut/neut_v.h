@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -19,7 +19,7 @@ extern "C"
 #include "ut.h"
 
 #include "neut_glo/neut_glo.h"
-#include "neut_structs/neut_structs.h"
+#include "neut_struct/neut_struct.h"
 #include "neut_tess/neut_tess.h"
 #include "neut_crys/neut_crys.h"
 #include "neut_mtess/neut_mtess.h"
@@ -36,6 +36,7 @@ extern "C"
 #include "neut_part/neut_part.h"
 #include "neut_sim/neut_sim.h"
 #include "neut_pf/neut_pf.h"
+#include "neut_sys/neut_sys.h"
 
 #endif				/* NEUT_V_H */
 

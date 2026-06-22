@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_.h"
@@ -40,9 +40,9 @@ net_ori_odf_pre (char *odf, struct OL_SET *pOSet, struct ODF *pOdf)
 
   neut_odf_fnscanf (odf, pOdf, "r");
 
-  if (!strstr ((*pOdf).gridtype, (*pOSet).crysym))
+  if (!strstr ((*pOdf).Sp.crysym, (*pOSet).crysym))
     ut_print_message (2, 0, "Crystal symmetry (%s) and orientation space (%s) conflict.\n",
-                      (*pOSet).crysym, (*pOdf).gridtype);
+                      (*pOSet).crysym, (*pOdf).Sp.crysym);
 
   ut_free_1d_char (&fct);
   ut_free_2d_char (&vars, qty);

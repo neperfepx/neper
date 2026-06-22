@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_op_.h"
@@ -101,9 +101,11 @@ neut_mesh_free (struct MESH *pMesh)
 
   ut_free_1d_char (&(*pMesh).ElsetOriDes);
 
-  ut_free_2d (&(*pMesh).EltOri, (*pMesh).EltQty);
+  ut_free_2d (&(*pMesh).EltOri, (*pMesh).EltQty + 1);
 
-  ut_free_2d (&(*pMesh).SimEltOri, (*pMesh).EltQty);
+  ut_free_1d (&(*pMesh).EltWeight);
+
+  ut_free_2d (&(*pMesh).SimEltOri, (*pMesh).EltQty + 1);
 
   ut_free_1d_char (&(*pMesh).EltOriDes);
 
@@ -157,6 +159,8 @@ neut_mesh_set_zero (struct MESH *pMesh)
   (*pMesh).EltOri = NULL;
   (*pMesh).EltOriDes = NULL;
 
+  (*pMesh).EltWeight = NULL;
+
   (*pMesh).ElsetGroup = NULL;
 
   (*pMesh).ElsetCrySym = NULL;
@@ -189,6 +193,9 @@ neut_mesh_memcpy (struct MESH Old, struct MESH *pNew)
   (*pNew).EltQty = Old.EltQty;
   (*pNew).NodeQty = Old.NodeQty;
   (*pNew).ElsetQty = Old.ElsetQty;
+
+  if (Old.Domain)
+    ut_string_string (Old.Domain, &(*pNew).Domain);
 
   if (Old.EltType)
     ut_string_string (Old.EltType, &(*pNew).EltType);
@@ -2017,16 +2024,47 @@ neut_mesh_2d_laplaciansmooth (struct NODES *pN, struct MESH M, int *bnodes,
 }
 
 void
-neut_mesh_init_eltori (struct MESH *pMesh)
+neut_mesh_init_eltori (struct NODES Nodes, struct MESH *pMesh)
 {
   int i;
+  double *coo = ut_alloc_1d (3);
 
-  (*pMesh).EltOri = ut_alloc_2d ((*pMesh).EltQty + 1, 4);
+  if (!(*pMesh).EltOri)
+    (*pMesh).EltOri = ut_alloc_2d ((*pMesh).EltQty + 1, 4);
 
-  for (i = 1; i <= (*pMesh).EltQty; i++)
-    ut_array_1d_memcpy ((*pMesh).ElsetOri[(*pMesh).EltElset[i]], 4, (*pMesh).EltOri[i]);
+  // special case of a Rodrigues space mesh
+  if ((*pMesh).Domain && !strncmp ((*pMesh).Domain, "rodrigues", 9))
+    for (i = 1; i <= (*pMesh).EltQty; i++)
+    {
+      neut_mesh_elt_centre (Nodes, (*pMesh), i, coo);
+      ol_R_q (coo, (*pMesh).EltOri[i]);
+    }
 
-  ut_string_string ((*pMesh).ElsetOriDes, &(*pMesh).EltOriDes);
+  // special case of an Euler space mesh
+  else if ((*pMesh).Domain && !strncmp ((*pMesh).Domain, "euler-bunge", 11))
+    for (i = 0; i < (int) (*pMesh).EltQty; i++)
+    {
+      // FIXME
+      abort ();
+      /*
+      neut_mesh_elt_centre (Nodes, (*pMesh), i + 1, coo);
+      if (!strcmp (spaceunit, "degree"))
+        ol_e_q (coo, (*pMesh).EltOri[i]);
+      else if (!strcmp (spaceunit, "radian"))
+        ol_e_q_rad (coo, (*pMesh).EltOri[i]);
+      */
+    }
+
+  // general case of a physical space mesh
+  else
+  {
+    for (i = 1; i <= (*pMesh).EltQty; i++)
+      ut_array_1d_memcpy ((*pMesh).ElsetOri[(*pMesh).EltElset[i]], 4, (*pMesh).EltOri[i]);
+
+    ut_string_string ((*pMesh).ElsetOriDes, &(*pMesh).EltOriDes);
+  }
+
+  ut_free_1d (&coo);
 
   return;
 }
@@ -2183,7 +2221,7 @@ neut_mesh_init_eltbody (struct MESH Mesh2D, struct MESH *pMesh3D)
 
 void
 neut_mesh_dupnodemerge (struct NODES *pNodes, struct MESH *Mesh, struct MESH *pMesh,
-                           double eps, int verbosity)
+                        double eps, int verbosity, int **pnewnode_oldnode)
 {
   int i, j;
 
@@ -2246,11 +2284,38 @@ neut_mesh_dupnodemerge (struct NODES *pNodes, struct MESH *Mesh, struct MESH *pM
     ut_print_message (0, 3, "%d %s removed.\n", (*pNodes).NodeQty - NodeQty,
                       ((*pNodes).NodeQty - NodeQty <= 1) ? "node" : "nodes");
 
+  if (pnewnode_oldnode)
+  {
+    (*pnewnode_oldnode) = ut_alloc_1d_int (masterqty + 1);
+    ut_array_1d_int_memcpy (masters + 1, masterqty, (*pnewnode_oldnode) + 1);
+  }
+
   (*pNodes).NodeQty = NodeQty;
 
   ut_free_1d_char (&message);
   ut_free_1d_int (&slave_master);
   ut_free_1d_int (&node_nbs);
+
+  return;
+}
+
+void
+neut_mesh_init_eltweight (struct NODES Nodes, struct MESH *pMesh)
+{
+  int i, dim = (*pMesh).Dimension;
+
+  if (dim != 3)
+    abort ();
+
+  if (!(*pMesh).EltWeight)
+    (*pMesh).EltWeight = ut_alloc_1d ((*pMesh).EltQty + 1);
+  ut_array_1d_zero ((*pMesh).EltWeight + 1, (*pMesh).EltQty);
+
+  for (i = 1; i <= (*pMesh).EltQty; i++)
+    neut_mesh_elt_volume_orispace (Nodes, *pMesh, i, (char *) "rodrigues", (*pMesh).EltWeight + i);
+
+  // we keep the weights as is, so that they represent the orientation volumes
+  // ut_array_1d_scale ((*pOdf).EltWeight, (*pMesh).EltQty, 1. / ut_array_1d_mean ((*pOdf).EltWeight, (*pMesh).EltQty));
 
   return;
 }

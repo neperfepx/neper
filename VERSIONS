@@ -1,13 +1,27 @@
-New in 4.10.2-45 (07 May 2026):
+New in 5.0.0 (22 Jun 2026):
 - module -T: improved import and regularization of tessellations of non-cubical
-  domains, added -ori transform ori for tesrs, added -statcell
-  oridisanisoaxes_crys, added -format ovm, fixed -statedge, fixed -stat* scale,
-  added tessellation keys modenb and groupnb, improved svg output, made minor
-  bug fixes and improvements.
-- module -M: fixed -dim 2 -interface cohesive, fixed -loadmesh on $Topology=0
-  meshes, made minor other fixes.
-- module -S: made minor fixes.
-- general: fixed CMake compatibility, added GH actions.
+  domains, added [r]sel and anisofact to -morpho, added -ori transform ori for
+  tesrs, added -transform crysym, improved -ori odf, improved -morpho cube and
+  square, added anisotropy to -oridistrib, added special orientations
+  (fcc_psc*), added val<1e-12 to -morphooptistop default value, fixed -morpho
+  file to load only morpho-related information, added -morphooptiboundlower,
+  -morphooptiboundupper, -orioptiboundlower, -orioptiboundupper, added
+  tessellation keys modenb and groupnb, added -orioptilogval, fixed -stat*
+  scale, added -morpho hex,hexh,hexv, added -transform setcellid, added
+  anisofact for tesr cells, added non-deterministic seed generation (id -1),
+  improved -morpho tocta, which can now be used with -periodic, improved svg
+  output, made minor other fixes and improvements, cleaned code.
+- module -M: fixed hex meshing of periodic tessellations (.per generated),
+  fixed -dim 2 -interface cohesive, fixed -loadmesh on $Topology=0 meshes,
+  added -statnode orientation, added -statelset anisofact, made minor other
+  fixes, added -format etree,ntree (only for development).
+- module -S: sped up ODF computation, added odf(weight=...), added odfindex(),
+  made minor bug fixes.
+- module -V: added -space ori and -ori options, added -showscalemin and
+  -showscalemax, added Manim colors, made minor fixes.
+- general: added tutorials, improved installation (added make userinstall),
+  added developer tools and documentation (added make devinstall), fixed
+  orilib.
 
 New in 4.10.1 (09 Oct 2024):
 - module -M: fixed -part for periodic meshes, fixed compatibility with Gmsh

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+grep "^$@" -H --colour=auto -r `find . -name "*.[c,h]"`
+grep ".$@" -H --colour=auto -r `find . -name "*.[c,h]"`
+files=`find . -name "*.cpp"`
+if [ "$files" ]
+then
+  grep "$@" -H --colour=auto -r $files
+fi
+
+exit 0

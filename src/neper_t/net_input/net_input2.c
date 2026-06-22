@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_input_.h"
@@ -19,14 +19,37 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
 
   // Testing options ---------------------------------------------------
 
+  /*
+  if (!strcmp ((*pIn).morpho))
+    ut_string_string ("from_morpho", (*pIn).nstring);
+  */
+
+  /*
   if (!(*pIn).input)
     ut_print_message (2, 2, "Missing input data (`-n' or `-load*').\n");
+  */
 
   // Expanding args and setting to default values, when applicable -----
 
   // n
-  (*pIn).levelqty =
-    net_input_treatargs_multiscale ("-n", &(*pIn).nstring, -1, &((*pIn).n));
+  if (!strcmp ((*pIn).load, "none"))
+  {
+    if ((*pIn).nstring)
+      (*pIn).levelqty =
+        net_input_treatargs_multiscale ("-n", &(*pIn).nstring, -1, &((*pIn).n));
+    else if (strcmp ((*pIn).morphostring, "voronoi"))
+    {
+      (*pIn).levelqty =
+        net_input_treatargs_multiscale ("-morpho", &(*pIn).morphostring, -1, &((*pIn).morpho));
+      if ((*pIn).levelqty == 1)
+        ut_string_string ("from_morpho", &(*pIn).nstring);
+      ut_string_string ("n", &(*pIn).input);
+    }
+    else
+      abort ();
+  }
+
+  net_input_treatargs_multiscale ("-n", &(*pIn).nstring, -1, &((*pIn).n));
 
   if ((*pIn).levelqty > 0)
   {
@@ -49,14 +72,16 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
                           (*pIn).morpho);
 
     for (i = 1; i <= (*pIn).levelqty; i++)
-      if (!strncmp ((*pIn).morpho[i], "square", 6) && (*pIn).dim != 2)
-        ut_print_message (2, 2, "Option `-morpho square' requires `-dim 2'.");
+      if ((!strncmp ((*pIn).morpho[i], "square", 6) || !strncmp ((*pIn).morpho[i], "hex", 3)) && (*pIn).dim != 2)
+        ut_print_message (2, 2, "Option `-morpho square|hex' requires `-dim 2'.");
     // testing consistency between morpho = lamellar and n, which must be from_morpho
+    /*
     for (i = 1; i <= (*pIn).levelqty; i++)
       if ((!strncmp ((*pIn).morpho[i], "cube", 4))
           && strcmp ((*pIn).n[i], "from_morpho"))
         ut_print_message (2, 2, "`-morpho %s' requires `-n from_morpho'.\n",
                           (*pIn).morpho[i]);
+    */
 
     // optialgo
     for (i = 0; i < (*pIn).optiqty; i++)
@@ -84,11 +109,68 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
                                       (*pIn).optidofstring + i,
                                       (*pIn).levelqty, (*pIn).optidof + i);
 
+    // optiini
+    for (i = 0; i < (*pIn).optiqty; i++)
+      net_input_treatargs_multiscale (ut_string_paste3 ("-", (*pIn).optitype[i], "optiini"),
+                                      (*pIn).optiinistring + i,
+                                      (*pIn).levelqty, (*pIn).optiini + i);
+
+    // replacing "default" by its value
+    for (i = 1; i <= (*pIn).levelqty; i++)
+      if (!strcmp ((*pIn).optiini[1][i], "default"))
+        ut_string_string ("random", (*pIn).optiini[1] + i);
+
+    // optineigh
+    for (i = 0; i < (*pIn).optiqty; i++)
+      net_input_treatargs_multiscale (ut_string_paste3 ("-", (*pIn).optitype[i], "optineigh"),
+                                      (*pIn).optineighstring + i,
+                                      (*pIn).levelqty, (*pIn).optineigh + i);
+
+    // replacing "default" by its value
+    for (i = 1; i <= (*pIn).levelqty; i++)
+      if (!strcmp ((*pIn).optineigh[1][i], "default"))
+        ut_string_string ("Nstar<10000?pi:20*dr", (*pIn).optineigh[1] + i);
+
+    // optifix
+    for (i = 0; i < (*pIn).optiqty; i++)
+      net_input_treatargs_multiscale (ut_string_paste3 ("-", (*pIn).optitype[i], "optifix"),
+                                      (*pIn).optifixstring + i,
+                                      (*pIn).levelqty, (*pIn).optifix + i);
+
+    // replacing "default" by its value
+    for (i = 1; i <= (*pIn).levelqty; i++)
+      if (!strcmp ((*pIn).optifix[1][i], "default"))
+        ut_string_string ("none", (*pIn).optifix[1] + i);
+
     // optistop
     for (i = 0; i < (*pIn).optiqty; i++)
       net_input_treatargs_multiscale (ut_string_paste3 ("-", (*pIn).optitype[i], "optistop"),
                                       (*pIn).optistopstring + i,
                                       (*pIn).levelqty, (*pIn).optistop + i);
+
+    // optiinistep
+    for (i = 0; i < (*pIn).optiqty; i++)
+      net_input_treatargs_multiscale (ut_string_paste3 ("-", (*pIn).optitype[i], "optiinistep"),
+                                      (*pIn).optiinistepstring + i,
+                                      (*pIn).levelqty, (*pIn).optiinistep + i);
+
+    // optideltamax
+    for (i = 0; i < (*pIn).optiqty; i++)
+      net_input_treatargs_multiscale (ut_string_paste3 ("-", (*pIn).optitype[i], "optideltamax"),
+                                      (*pIn).optideltamaxstring + i,
+                                      (*pIn).levelqty, (*pIn).optideltamax + i);
+
+    // optiboundlower
+    for (i = 0; i < (*pIn).optiqty; i++)
+      net_input_treatargs_multiscale (ut_string_paste3 ("-", (*pIn).optitype[i], "optiboundlower"),
+                                      (*pIn).optiboundlstring + i,
+                                      (*pIn).levelqty, (*pIn).optiboundl + i);
+
+    // optiboundupper
+    for (i = 0; i < (*pIn).optiqty; i++)
+      net_input_treatargs_multiscale (ut_string_paste3 ("-", (*pIn).optitype[i], "optiboundupper"),
+                                      (*pIn).optiboundustring + i,
+                                      (*pIn).levelqty, (*pIn).optiboundu + i);
 
     for (i = 1; i <= (*pIn).levelqty; i++)
       if (!strcmp ((*pIn).optistop[0][i], "default"))
@@ -102,14 +184,9 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
 
     for (i = 1; i <= (*pIn).levelqty; i++)
       if (!strcmp ((*pIn).optistop[1][i], "default"))
-        ut_string_string ("reps<1e-3||iter>=1e3", (*pIn).optistop[1] + i);
+        ut_string_string ("thomson:reps<1e-3||iter>=1e3,general:eps<1e-6||val<1e-12", (*pIn).optistop[1] + i);
 
     // -----------------------
-
-    // optiini
-    net_input_treatargs_multiscale ("-morphooptiini",
-                                    &(*pIn).optiinistring,
-                                    (*pIn).levelqty, &((*pIn).optiini));
 
     // optialgomaxiter
     net_input_treatargs_multiscale ("-morphooptialgomaxiter",
@@ -131,7 +208,7 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     for (i = 1; i <= (*pIn).levelqty; i++)
       if (!strcmp ((*pIn).optigrid[i], "default"))
         ut_string_string
-          ("diameq:regular(-1,10,1100),size:regular(-1,100,5050),sphericity:regular(-0.1,1.1,1200),1-sphericity:regular(-0.1,1.1,1200),ori:odf",
+          ("diameq:regular(-1,10,1100),size:regular(-1,100,5050),sphericity:regular(-0.1,1.1,1200),1-sphericity:regular(-0.1,1.1,1200),ori:odf,anisofact:regular(0,10,1000),anisofact-1:regular(-1,10,1100)",
            (*pIn).optigrid + i);
 
     // optismooth
@@ -146,52 +223,47 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
            (*pIn).optismooth + i);
 
     // optideltamax
-    net_input_treatargs_multiscale ("-morphooptideltamax",
-                                    &(*pIn).optideltamaxstring,
-                                    (*pIn).levelqty,
-                                    &((*pIn).optideltamax));
+    net_input_treatargs_multiscale ("-morphooptideltamax", (*pIn).optideltamaxstring, (*pIn).levelqty, (*pIn).optideltamax);
+    net_input_treatargs_multiscale ("-orioptideltamax", (*pIn).optideltamaxstring + 1, (*pIn).levelqty, (*pIn).optideltamax + 1);
+
+    // optiboundl
+    net_input_treatargs_multiscale ("-morphooptiboundlower", (*pIn).optiboundlstring, (*pIn).levelqty, (*pIn).optiboundl);
+    net_input_treatargs_multiscale ("-orioptiboundlower", (*pIn).optiboundlstring + 1, (*pIn).levelqty, (*pIn).optiboundl + 1);
+
+    // optiboundu
+    net_input_treatargs_multiscale ("-morphooptiboundupper", (*pIn).optiboundustring, (*pIn).levelqty, (*pIn).optiboundu);
+    net_input_treatargs_multiscale ("-orioptiboundupper", (*pIn).optiboundustring + 1, (*pIn).levelqty, (*pIn).optiboundu + 1);
 
     // optiinistep
-    net_input_treatargs_multiscale ("-morphooptiinistep",
-                                    &(*pIn).optiinistepstring,
-                                    (*pIn).levelqty,
-                                    &((*pIn).optiinistep));
-
-    // optilogtime
-    net_input_treatargs_multiscale ("-morphooptilogtime",
-                                    &(*pIn).optilogtimestring,
-                                    (*pIn).levelqty,
-                                    &((*pIn).optilogtime));
+    net_input_treatargs_multiscale ("-morphooptiinistep", (*pIn).optiinistepstring, (*pIn).levelqty, (*pIn).optiinistep);
+    net_input_treatargs_multiscale ("-orioptiinistep", (*pIn).optiinistepstring + 1, (*pIn).levelqty, (*pIn).optiinistep + 1);
 
     // optilogvar
-    net_input_treatargs_multiscale ("-morphooptilogvar",
-                                    &(*pIn).optilogvarstring,
-                                    (*pIn).levelqty,
-                                    &((*pIn).optilogvar));
-
-    // optilogdis
-    net_input_treatargs_multiscale ("-morphooptilogdis",
-                                    &(*pIn).optilogdisstring,
-                                    (*pIn).levelqty,
-                                    &((*pIn).optilogdis));
-
-    // optilogtesr
-    net_input_treatargs_multiscale ("-morphooptilogtesr",
-                                    &(*pIn).optilogtesrstring,
-                                    (*pIn).levelqty,
-                                    &((*pIn).optilogtesr));
+    net_input_treatargs_multiscale ("-morphooptilogvar", (*pIn).optilogvarstring, (*pIn).levelqty, ((*pIn).optilogvar));
+    net_input_treatargs_multiscale ("-orioptilogvar", (*pIn).optilogvarstring + 1, (*pIn).levelqty, (*pIn).optilogvar + 1);
 
     // optilogval
-    net_input_treatargs_multiscale ("-morphooptilogval",
-                                    &(*pIn).optilogvalstring,
-                                    (*pIn).levelqty,
-                                    &((*pIn).optilogval));
+    net_input_treatargs_multiscale ("-morphooptilogval", (*pIn).optilogvalstring, (*pIn).levelqty, (*pIn).optilogval);
+    net_input_treatargs_multiscale ("-orioptilogval", (*pIn).optilogvalstring + 1, (*pIn).levelqty, (*pIn).optilogval + 1);
+
+    // optilogtime
+    net_input_treatargs_multiscale ("-morphooptilogtime", &(*pIn).optilogtimestring, (*pIn).levelqty, &((*pIn).optilogtime));
+
+    // optilogdis
+    net_input_treatargs_multiscale ("-morphooptilogdis", &(*pIn).optilogdisstring, (*pIn).levelqty, &((*pIn).optilogdis));
+
+    // optilogtesr
+    net_input_treatargs_multiscale ("-morphooptilogtesr", &(*pIn).optilogtesrstring, (*pIn).levelqty, &((*pIn).optilogtesr));
 
     // optimultiseed
-    net_input_treatargs_multiscale ("-morphooptimultiseed",
-                                    &(*pIn).optimultiseedstring,
-                                    (*pIn).levelqty,
-                                    &((*pIn).optimultiseed));
+    net_input_treatargs_multiscale ("-morphooptimultiseed", &(*pIn).optimultiseedstring, (*pIn).levelqty, &((*pIn).optimultiseed));
+
+    // morphosampling
+    net_input_treatargs_multiscale ("-morphosampling", &(*pIn).morphosamplingstring,
+                                    (*pIn).levelqty, &((*pIn).morphosampling));
+    for (i = 1; i <= (*pIn).levelqty; i++)
+      if (!strcmp ((*pIn).morphosampling[i], "default"))
+        ut_string_string ("random", (*pIn).morphosampling + i);
 
     // ori
     net_input_treatargs_multiscale ("-ori", &(*pIn).oristring,
@@ -214,33 +286,6 @@ net_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     for (i = 1; i <= (*pIn).levelqty; i++)
       if (!strcmp ((*pIn).crysym[i], "default"))
         ut_string_string ("triclinic", (*pIn).crysym + i);
-
-    // orioptineigh
-    net_input_treatargs_multiscale ("-orioptineigh",
-                                    &(*pIn).orioptineighstring,
-                                    (*pIn).levelqty, &((*pIn).orioptineigh));
-    for (i = 1; i <= (*pIn).levelqty; i++)
-      if (!strcmp ((*pIn).orioptineigh[i], "default"))
-        ut_string_string ("Nstar<10000?pi:20*dr", (*pIn).orioptineigh + i);
-
-    // orioptiini
-    net_input_treatargs_multiscale ("-orioptiini", &(*pIn).orioptiinistring,
-                                    (*pIn).levelqty, &((*pIn).orioptiini));
-    for (i = 1; i <= (*pIn).levelqty; i++)
-      if (!strcmp ((*pIn).orioptiini[i], "default"))
-        ut_string_string ("random", (*pIn).orioptiini + i);
-
-    // orioptifix
-    net_input_treatargs_multiscale ("-orioptifix", &(*pIn).orioptifixstring,
-                                    (*pIn).levelqty, &((*pIn).orioptifix));
-    for (i = 1; i <= (*pIn).levelqty; i++)
-      if (!strcmp ((*pIn).orioptifix[i], "default"))
-        ut_string_string ("none", (*pIn).orioptifix + i);
-
-    // orioptilogvar
-    net_input_treatargs_multiscale ("-orioptilogvar",
-                                    &(*pIn).orioptilogvarstring,
-                                    (*pIn).levelqty, &((*pIn).orioptilogvar));
 
     // orispread
     net_input_treatargs_multiscale ("-orispread", &(*pIn).orispreadstring,

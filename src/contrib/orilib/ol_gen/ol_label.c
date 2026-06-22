@@ -184,8 +184,103 @@ ol_label_q (char *label, double *q)
   status = ol_label_g (label, g);
   if (!status)
     ol_g_q (g, q);
+  else if (!strcmp (label, "random") || !strcmp (label, "uniform"))
+  {
+    ut_array_1d_set (q, 4, UNIFORM);
+    status = 0;
+  }
+  else if (!strcmp (label, "fcc_psc_alpha"))
+  {
+    ut_array_1d_set (q, 4, FCC_PSC_ALPHA);
+    status = 0;
+  }
+  else if (!strcmp (label, "fcc_psc_alpha2"))
+  {
+    ut_array_1d_set (q, 4, FCC_PSC_ALPHA2);
+    status = 0;
+  }
+  else if (!strcmp (label, "fcc_psc_alpha_full"))
+  {
+    ut_array_1d_set (q, 4, FCC_PSC_ALPHA_FULL);
+    status = 0;
+  }
+  else if (!strcmp (label, "fcc_psc_beta"))
+  {
+    ut_array_1d_set (q, 4, FCC_PSC_BETA);
+    status = 0;
+  }
+  else if (!strcmp (label, "fcc_psc_beta_bent"))
+  {
+    ut_array_1d_set (q, 4, FCC_PSC_BETA_BENT);
+    status = 0;
+  }
+  else if (!strcmp (label, "110_x3"))
+  {
+    ut_array_1d_set (q, 4, _110_X3);
+    status = 0;
+  }
 
   ol_g_free (g);
 
   return status;
+}
+
+int
+ol_q_label (double *q, char *label)
+{
+  if (ut_num_equal (ut_array_1d_norm (q, 4), 1, 1e-6))
+    return -1;
+  if (ut_num_equal (q[0], UNIFORM, 1e-6))
+  {
+    sprintf (label, "uniform");
+    return 0;
+  }
+  else if (ut_num_equal (q[0], FCC_PSC_ALPHA, 1e-6))
+  {
+    sprintf (label, "fcc_psc_alpha");
+    return 0;
+  }
+  else if (ut_num_equal (q[0], FCC_PSC_ALPHA2, 1e-6))
+  {
+    sprintf (label, "fcc_psc_alpha2");
+    return 0;
+  }
+  else if (ut_num_equal (q[0], FCC_PSC_ALPHA_FULL, 1e-6))
+  {
+    sprintf (label, "fcc_psc_alpha_full");
+    return 0;
+  }
+  else if (ut_num_equal (q[0], FCC_PSC_BETA, 1e-6))
+  {
+    sprintf (label, "fcc_psc_beta");
+    return 0;
+  }
+  else if (ut_num_equal (q[0], FCC_PSC_BETA_BENT, 1e-6))
+  {
+    sprintf (label, "fcc_psc_beta_bent");
+    return 0;
+  }
+  else if (ut_num_equal (q[0], _100_X3, 1e-6))
+  {
+    sprintf (label, "100_x3");
+    return 0;
+  }
+  else if (ut_num_equal (q[0], _110_X3, 1e-6))
+  {
+    sprintf (label, "110_x3");
+    return 0;
+  }
+  else
+    return -1;
+}
+
+void
+ol_specialid_label (int id, char *label)
+{
+  double *q = ol_q_alloc ();
+
+  ol_specialid_q (id, q);
+  ol_q_label (q, label);
+
+  ol_q_free (q);
 }

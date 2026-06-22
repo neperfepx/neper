@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -22,7 +22,6 @@ extern "C"
 
 #include"ut.h"
 #include"neut_t.h"
-#include"structIn_t.h"
 #include"../../net_tess.h"
 
 #include"neper_config.h"
@@ -42,8 +41,6 @@ extern void net_tess_opt_init_parms (struct IN_T In, int level, struct MTESS MTe
 extern void net_tess_opt_init_target (struct IN_T In, int level, char *optistring,
                                       struct MTESS MTess, struct TESS *Tess, int domtess,
 				      int dompoly, int TessId, struct SEEDSET *SSet, struct TOPT *pTOpt);
-
-extern void net_tess_opt_init_crystal (struct IN_T In, int level, struct TOPT *pTOpt);
 
 extern void net_tess_opt_init_general_domain (struct IN_T In, struct TESS PTess,
 				      int cell, struct TOPT *pTOpt);
@@ -83,6 +80,10 @@ extern void net_tess_opt_init_target_cvl (struct IN_T In, int level,
 					  int var, struct TOPT *pTOpt);
 
 extern void net_tess_opt_init_post (struct IN_T In, struct TOPT *pTOpt);
+
+extern void net_tess_opt_init_bounds_inputvals (struct TOPT *pTOpt, char **dofs, int dofqty, char *bound, double **bound_input);
+
+extern void net_tess_opt_sampling (struct TOPT *pTOpt, int id, char *sampling);
 
 #ifdef __cplusplus
 }

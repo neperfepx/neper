@@ -1,13 +1,11 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-
-#include "../structIn_s.h"
 
   extern void nes_in_set_zero (struct IN_S *pIn);
   extern void nes_in_free (struct IN_S *pIn);

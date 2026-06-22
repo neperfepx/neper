@@ -33,8 +33,6 @@
 
 #ifdef NLOPT_CXX
 #include "stogo.h"
-#endif
-#ifdef NLOPT_CXX11
 #include "ags.h"
 #endif
 
@@ -136,6 +134,28 @@ static int finite_domain(unsigned n, const double *lb, const double *ub)
         if (nlopt_isinf(ub[i] - lb[i]))
             return 0;
     return 1;
+}
+
+/*********************************************************************/
+/* when we nest optimization objects, we need to connect them
+   in a stack of force_stop_child nodes, so that if the user
+   calls nlopt_set_force_stop on the original nlopt_opt object
+   it will force all of the subsidiary optimization algorithms to stop. */
+
+static void push_force_stop_child(nlopt_opt opt, nlopt_opt newchild)
+{
+    /* assert: newchild != NULL && newchild->force_stop_child == NULL */
+    newchild->force_stop_child = opt->force_stop_child;
+    opt->force_stop_child = newchild;
+}
+
+static nlopt_opt pop_force_stop_child(nlopt_opt opt)
+{
+    /* assert: opt->force_stop_child != NULL */
+    nlopt_opt oldchild = opt->force_stop_child;
+    opt->force_stop_child = oldchild->force_stop_child;
+    oldchild->force_stop_child = NULL;
+    return oldchild;
 }
 
 /*********************************************************************/
@@ -390,10 +410,6 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
     if (!opt || !x || !minf || !opt->f || opt->maximize)
         RETURN_ERR(NLOPT_INVALID_ARGS, opt, "NULL args to nlopt_optimize_");
 
-    /* reset stopping flag */
-    nlopt_set_force_stop(opt, 0);
-    opt->force_stop_child = NULL;
-
     /* copy a few params to local vars for convenience */
     n = opt->n;
     ni = (int) n;               /* most of the subroutines take "int" arg */
@@ -441,7 +457,7 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
     case NLOPT_GN_DIRECT_L_RAND:
         if (!finite_domain(n, lb, ub))
             RETURN_ERR(NLOPT_INVALID_ARGS, opt, "finite domain required for global algorithm");
-        return cdirect(ni, f, f_data, lb, ub, x, minf, &stop, 0.0, (algorithm != NLOPT_GN_DIRECT) + 3 * (algorithm == NLOPT_GN_DIRECT_L_RAND ? 2 : (algorithm != NLOPT_GN_DIRECT))
+        return cdirect(ni, f, f_data, lb, ub, x, minf, &stop, nlopt_get_param(opt, "magic_eps", 0.0), (algorithm != NLOPT_GN_DIRECT) + 3 * (algorithm == NLOPT_GN_DIRECT_L_RAND ? 2 : (algorithm != NLOPT_GN_DIRECT))
                        + 9 * (algorithm == NLOPT_GN_DIRECT_L_RAND ? 1 : (algorithm != NLOPT_GN_DIRECT)));
 
     case NLOPT_GN_DIRECT_NOSCAL:
@@ -449,7 +465,7 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
     case NLOPT_GN_DIRECT_L_RAND_NOSCAL:
         if (!finite_domain(n, lb, ub))
             RETURN_ERR(NLOPT_INVALID_ARGS, opt, "finite domain required for global algorithm");
-        return cdirect_unscaled(ni, f, f_data, lb, ub, x, minf, &stop, 0.0, (algorithm != NLOPT_GN_DIRECT) + 3 * (algorithm == NLOPT_GN_DIRECT_L_RAND ? 2 : (algorithm != NLOPT_GN_DIRECT))
+        return cdirect_unscaled(ni, f, f_data, lb, ub, x, minf, &stop, nlopt_get_param(opt, "magic_eps", 0.0), (algorithm != NLOPT_GN_DIRECT) + 3 * (algorithm == NLOPT_GN_DIRECT_L_RAND ? 2 : (algorithm != NLOPT_GN_DIRECT))
                                 + 9 * (algorithm == NLOPT_GN_DIRECT_L_RAND ? 1 : (algorithm != NLOPT_GN_DIRECT)));
 
     case NLOPT_GN_ORIG_DIRECT:
@@ -464,7 +480,10 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
             dret = direct_optimize(f_direct, opt, ni, lb, ub, x, minf,
                                    stop.maxeval, -1,
                                    stop.start, stop.maxtime,
-                                   0.0, 0.0, pow(stop.xtol_rel, (double) n), -1.0, stop.force_stop, stop.minf_max, 0.0, NULL, algorithm == NLOPT_GN_ORIG_DIRECT ? DIRECT_ORIGINAL : DIRECT_GABLONSKY);
+                                   nlopt_get_param(opt, "magic_eps", 0.0), nlopt_get_param(opt, "magic_eps_abs", 0.0),
+                                   pow(stop.xtol_rel, (double) n), nlopt_get_param(opt, "sigma_reltol", -1.0), stop.force_stop,
+                                   stop.minf_max, nlopt_get_param(opt, "fglobal_reltol", 0.0),
+                                   NULL, algorithm == NLOPT_GN_ORIG_DIRECT ? DIRECT_ORIGINAL : DIRECT_GABLONSKY);
             free(opt->work);
             opt->work = NULL;
             switch (dret) {
@@ -499,7 +518,7 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
         }
 
     case NLOPT_GN_AGS:
-#ifdef NLOPT_CXX11
+#ifdef NLOPT_CXX
         if (!finite_domain(n, lb, ub))
             RETURN_ERR(NLOPT_INVALID_ARGS, opt, "finite domain required for global algorithm");
         return ags_minimize(ni, f, f_data, opt->m, opt->fc, x, minf, lb, ub, &stop);
@@ -567,7 +586,7 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
             double step;
             if (initial_step(opt, x, &step) != NLOPT_SUCCESS)
                 return NLOPT_OUT_OF_MEMORY;
-            return praxis_(0.0, DBL_EPSILON, step, ni, x, f_bound, opt, &stop, minf);
+            return praxis_(nlopt_get_param(opt, "t0_tol", 0.0), DBL_EPSILON, step, ni, x, f_bound, opt, &stop, minf);
         }
 
     case NLOPT_LD_LBFGS:
@@ -619,16 +638,16 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
             }
             if (opt->dx)
                 nlopt_set_initial_step(local_opt, opt->dx);
-            for (i = 0; i < n && stop.xtol_abs[i] > 0; ++i);
+            for (i = 0; i < n && stop.xtol_abs && stop.xtol_abs[i] > 0; ++i);
             if (local_opt->ftol_rel <= 0 && local_opt->ftol_abs <= 0 && local_opt->xtol_rel <= 0 && i < n) {
                 /* it is not sensible to call MLSL without *some*
                    nonzero tolerance for the local search */
                 nlopt_set_ftol_rel(local_opt, 1e-15);
                 nlopt_set_xtol_rel(local_opt, 1e-7);
             }
-            opt->force_stop_child = local_opt;
+            push_force_stop_child(opt, local_opt);
             ret = mlsl_minimize(ni, f, f_data, lb, ub, x, minf, &stop, local_opt, (int) POP(0), algorithm >= NLOPT_GN_MLSL_LDS && algorithm != NLOPT_G_MLSL);
-            opt->force_stop_child = NULL;
+            pop_force_stop_child(opt);
             if (!opt->local_opt)
                 nlopt_destroy(local_opt);
             return ret;
@@ -637,21 +656,31 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
     case NLOPT_LD_MMA:
     case NLOPT_LD_CCSAQ:
         {
+            int inner_maxeval = (int)nlopt_get_param(opt, "inner_maxeval",0);
+            int verbosity = (int)nlopt_get_param(opt, "verbosity",0);
+            double rho_init = nlopt_get_param(opt, "rho_init",1.0);
             nlopt_opt dual_opt;
             nlopt_result ret;
+
+            if (!(rho_init > 0) && !nlopt_isinf(rho_init))
+                RETURN_ERR(NLOPT_INVALID_ARGS, opt, "rho_init must be positive and finite");
+            verbosity = verbosity < 0 ? 0 : verbosity;
+
 #define LO(param, def) (opt->local_opt ? opt->local_opt->param : (def))
-            dual_opt = nlopt_create(LO(algorithm, nlopt_local_search_alg_deriv), nlopt_count_constraints(opt->m, opt->fc));
+            dual_opt = nlopt_create((nlopt_algorithm)nlopt_get_param(opt, "dual_algorithm", LO(algorithm, nlopt_local_search_alg_deriv)),
+                                    nlopt_count_constraints(opt->m, opt->fc));
             if (!dual_opt)
                 RETURN_ERR(NLOPT_FAILURE, opt, "failed creating dual optimizer");
-            nlopt_set_ftol_rel(dual_opt, LO(ftol_rel, 1e-14));
-            nlopt_set_ftol_abs(dual_opt, LO(ftol_abs, 0.0));
-            nlopt_set_maxeval(dual_opt, LO(maxeval, 100000));
+            nlopt_set_ftol_rel(dual_opt, nlopt_get_param(opt, "dual_ftol_rel", LO(ftol_rel, 1e-14)));
+            nlopt_set_ftol_abs(dual_opt, nlopt_get_param(opt, "dual_ftol_abs", LO(ftol_abs, 0.0)));
+            nlopt_set_xtol_rel(dual_opt, nlopt_get_param(opt, "dual_xtol_rel", 0.0));
+            nlopt_set_xtol_abs1(dual_opt, nlopt_get_param(opt, "dual_xtol_abs", 0.0));
+            nlopt_set_maxeval(dual_opt, nlopt_get_param(opt, "dual_maxeval", LO(maxeval, 100000)));
 #undef LO
-
             if (algorithm == NLOPT_LD_MMA)
-                ret = mma_minimize(n, f, f_data, opt->m, opt->fc, lb, ub, x, minf, &stop, dual_opt);
+                ret = mma_minimize(n, f, f_data, opt->m, opt->fc, lb, ub, x, minf, &stop, dual_opt, inner_maxeval, (unsigned)verbosity, rho_init, opt->dx);
             else
-                ret = ccsa_quadratic_minimize(n, f, f_data, opt->m, opt->fc, opt->pre, lb, ub, x, minf, &stop, dual_opt);
+                ret = ccsa_quadratic_minimize(n, f, f_data, opt->m, opt->fc, opt->pre, lb, ub, x, minf, &stop, dual_opt, inner_maxeval, (unsigned)verbosity, rho_init, opt->dx);
             nlopt_destroy(dual_opt);
             return ret;
         }
@@ -751,11 +780,11 @@ static nlopt_result nlopt_optimize_(nlopt_opt opt, double *x, double *minf)
             }
             if (opt->dx)
                 nlopt_set_initial_step(local_opt, opt->dx);
-            opt->force_stop_child = local_opt;
+            push_force_stop_child(opt, local_opt);
             ret = auglag_minimize(ni, f, f_data,
                                   opt->m, opt->fc,
                                   opt->p, opt->h, lb, ub, x, minf, &stop, local_opt, algorithm == NLOPT_AUGLAG_EQ || algorithm == NLOPT_LN_AUGLAG_EQ || algorithm == NLOPT_LD_AUGLAG_EQ);
-            opt->force_stop_child = NULL;
+            pop_force_stop_child(opt);
             if (!opt->local_opt)
                 nlopt_destroy(local_opt);
             return ret;
@@ -827,6 +856,10 @@ nlopt_result NLOPT_STDCALL nlopt_optimize(nlopt_opt opt, double *x, double *opt_
     f_data = opt->f_data;
     pre = opt->pre;
 
+    /* reset stopping flag */
+    nlopt_set_force_stop(opt, 0);
+    opt->force_stop_child = NULL;
+
     /* for maximizing, just minimize the f_max wrapper, which
        flips the sign of everything */
     if ((maximize = opt->maximize)) {
@@ -841,7 +874,7 @@ nlopt_result NLOPT_STDCALL nlopt_optimize(nlopt_opt opt, double *x, double *opt_
         opt->maximize = 0;
     }
 
-    {                           /* possibly eliminate lb == ub dimensions for some algorithms */
+    { /* possibly eliminate lb == ub dimensions for some algorithms */
         nlopt_opt elim_opt = opt;
         if (elimdim_wrapcheck(opt)) {
             elim_opt = elimdim_create(opt);
@@ -851,18 +884,22 @@ nlopt_result NLOPT_STDCALL nlopt_optimize(nlopt_opt opt, double *x, double *opt_
                 goto done;
             }
             elimdim_shrink(opt->n, x, opt->lb, opt->ub);
+            push_force_stop_child(opt, elim_opt);
         }
 
         ret = nlopt_optimize_(elim_opt, x, opt_f);
 
         if (elim_opt != opt) {
-            elimdim_destroy(elim_opt);
+            opt->numevals = elim_opt->numevals;
+            opt->errmsg = elim_opt->errmsg; elim_opt->errmsg = NULL;
+            pop_force_stop_child(opt);
             elimdim_expand(opt->n, x, opt->lb, opt->ub);
+            elimdim_destroy(elim_opt);
         }
     }
 
   done:
-    if (maximize) {             /* restore original signs */
+    if (maximize) { /* restore original signs */
         opt->maximize = maximize;
         opt->stopval = -opt->stopval;
         opt->f = f;

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nem_reconstruct_tesr_.h"
@@ -49,7 +49,7 @@ nem_reconstruct_tesr_tesr (struct TESR Tesr, struct TESS *pTess,
   for (i = 0; i < Tesr.Dim; i++)
     dsize[i] = Tesr.size[i] * Tesr.vsize[i];
 
-  neut_mesh_str (Tesr.Dim, Tesr.size, pNodes, Mesh + Tesr.Dim,
+  neut_mesh_str (Tesr.Dim, Tesr.size, NULL, pNodes, Mesh + Tesr.Dim,
                  NSet + Tesr.Dim - 1);
   neut_nodes_scale (pNodes, dsize[0], dsize[1], dsize[2]);
 

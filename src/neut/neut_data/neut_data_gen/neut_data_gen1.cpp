@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_data_gen_.hpp"
@@ -295,8 +295,7 @@ neut_data_ori_color (double **data, int size, char *crysym, char *scheme, int **
 }
 
 void
-neut_data_real_color (double **data, int *datadef, int size, char *scale,
-                      char *scheme_in, int **Col, char **pscale)
+neut_data_init_color_real (struct DATA *pData)
 {
   int i, qty, valqty;
   double ScaleBeg, ScaleEnd, alpha;
@@ -305,7 +304,7 @@ neut_data_real_color (double **data, int *datadef, int size, char *scale,
   char *min = NULL, *max = NULL;
   char *scheme = NULL, *transform = NULL, *fct = NULL, **vals = NULL;
 
-  ut_string_string (scheme_in? scheme_in : NEUT_DEFAULT_COLSCHEME_REAL, &scheme);
+  ut_string_string ((*pData).ColScheme ? (*pData).ColScheme  : NEUT_DEFAULT_COLSCHEME_REAL, &scheme);
 
   ut_list_break (scheme, NEUT_SEP_DEP, &parts, &qty);
 
@@ -316,8 +315,8 @@ neut_data_real_color (double **data, int *datadef, int size, char *scale,
   }
 
   qty = 0;
-  if (scale)
-    ut_list_break (scale, NEUT_SEP_DEP, &parts, &qty);
+  if ((*pData).Scale)
+    ut_list_break ((*pData).Scale, NEUT_SEP_DEP, &parts, &qty);
 
   if (qty >= 2)
   {
@@ -325,21 +324,21 @@ neut_data_real_color (double **data, int *datadef, int size, char *scale,
     ut_string_string (parts[qty - 1], &max);
   }
 
-  if (!datadef)
+  if (!(*pData).ColDataDef)
   {
-    datamin = ut_array_2d_col_min (data + 1, 0, size);
-    datamax = ut_array_2d_col_max (data + 1, 0, size);
+    datamin = ut_array_2d_col_min ((*pData).ColData + 1, 0, (*pData).Qty);
+    datamax = ut_array_2d_col_max ((*pData).ColData + 1, 0, (*pData).Qty);
   }
   else
   {
     datamin = DBL_MAX;
     datamax = -DBL_MAX;
 
-    for (i = 1; i <= size; i++)
-      if (datadef[i])
+    for (i = 1; i <= (*pData).Qty; i++)
+      if ((*pData).ColDataDef[i])
       {
-        datamin = ut_num_min (datamin, data[i][0]);
-        datamax = ut_num_max (datamax, data[i][0]);
+        datamin = ut_num_min (datamin, (*pData).ColData[i][0]);
+        datamax = ut_num_max (datamax, (*pData).ColData[i][0]);
       }
   }
 
@@ -354,14 +353,18 @@ neut_data_real_color (double **data, int *datadef, int size, char *scale,
     ut_string_real (max, &ScaleEnd);
 
   if (ut_num_min (ScaleBeg, ScaleEnd) > datamin)
+  {
     ut_print_message (1, 2,
                       "Scale minimum (%f) larger than data minimum (%f)\n",
                       ut_num_min (ScaleBeg, ScaleEnd), datamin);
+  }
 
   if (ut_num_max (ScaleBeg, ScaleEnd) < datamax)
+  {
     ut_print_message (1, 2,
                       "Scale maximum (%f) smaller than data maximum (%f)\n",
                       ut_num_max (ScaleBeg, ScaleEnd), datamax);
+  }
 
   if (neut_data_colscheme_istinycolormap (scheme))
   {
@@ -380,17 +383,19 @@ neut_data_real_color (double **data, int *datadef, int size, char *scale,
           sscanf (vals[0], "%lf", &th);
       }
       else
-        ut_print_exprbug (scheme_in);
+        ut_print_exprbug ((*pData).ColScheme );
     }
 
-    for (i = 1; i <= size; i++)
+    if (!(*pData).Col)
+      (*pData).Col = ut_alloc_2d_int ((*pData).Qty + 1, 3);
+    for (i = 1; i <= (*pData).Qty; i++)
     {
-      double val = (data[i][0] - ScaleBeg) / (ScaleEnd - ScaleBeg);
+      double val = ((*pData).ColData[i][0] - ScaleBeg) / (ScaleEnd - ScaleBeg);
       tinycolormap::Color col = tinycolormap::GetColor(val, type);
 
-      Col[i][0] = ut_num_d2ri (255 * col.r());
-      Col[i][1] = ut_num_d2ri (255 * col.g());
-      Col[i][2] = ut_num_d2ri (255 * col.b());
+      (*pData).Col[i][0] = ut_num_d2ri (255 * col.r());
+      (*pData).Col[i][1] = ut_num_d2ri (255 * col.g());
+      (*pData).Col[i][2] = ut_num_d2ri (255 * col.b());
 
       if (th)
       {
@@ -398,37 +403,34 @@ neut_data_real_color (double **data, int *datadef, int size, char *scale,
 
         if (alpha < 1)
         {
-          Col[i][0] = ut_num_d2ri (255 * (1 + alpha * (col.r() - 1)));
-          Col[i][1] = ut_num_d2ri (255 * (1 + alpha * (col.g() - 1)));
-          Col[i][2] = ut_num_d2ri (255 * (1 + alpha * (col.b() - 1)));
+          (*pData).Col[i][0] = ut_num_d2ri (255 * (1 + alpha * (col.r() - 1)));
+          (*pData).Col[i][1] = ut_num_d2ri (255 * (1 + alpha * (col.g() - 1)));
+          (*pData).Col[i][2] = ut_num_d2ri (255 * (1 + alpha * (col.b() - 1)));
         }
       }
     }
   }
 
   else
-    for (i = 1; i <= size; i++)
-      ut_color_bar_val_color (scheme, ScaleBeg, ScaleEnd, data[i][0], Col[i]);
+    for (i = 1; i <= (*pData).Qty; i++)
+      ut_color_bar_val_color (scheme, ScaleBeg, ScaleEnd, (*pData).ColData[i][0], (*pData).Col[i]);
 
-  if (pscale)
+  (*pData).Scale = ut_alloc_1d_char (1000);
+  if (qty >= 2)
   {
-    (*pscale) = ut_alloc_1d_char (1000);
-    if (qty >= 2)
+    strcpy ((*pData).Scale, parts[0]);
+    for (i = 1; i < qty - 1; i++)
     {
-      strcpy (*pscale, parts[0]);
-      for (i = 1; i < qty - 1; i++)
-      {
-        (*pscale) = strcat (*pscale, NEUT_SEP_DEP);
-        (*pscale) = strcat (*pscale, parts[i]);
-      }
-      (*pscale) = strcat (*pscale, NEUT_SEP_DEP);
-      (*pscale) = strcat (*pscale, parts[qty - 1]);
+      (*pData).Scale = strcat ((*pData).Scale, NEUT_SEP_DEP);
+      (*pData).Scale = strcat ((*pData).Scale, parts[i]);
     }
-    else
-      sprintf (*pscale, "%f%s%f", ScaleBeg, NEUT_SEP_DEP, ScaleEnd);
-
-    (*pscale) = ut_realloc_1d_char (*pscale, strlen (*pscale) + 1);
+    (*pData).Scale = strcat ((*pData).Scale, NEUT_SEP_DEP);
+    (*pData).Scale = strcat ((*pData).Scale, parts[qty - 1]);
   }
+  else
+    sprintf ((*pData).Scale, "%f%s%f", ScaleBeg, NEUT_SEP_DEP, ScaleEnd);
+
+  (*pData).Scale = ut_realloc_1d_char ((*pData).Scale, strlen ((*pData).Scale) + 1);
 
   ut_free_2d_char (&parts, qty);
   ut_free_1d_char (&min);
@@ -619,26 +621,31 @@ void
 neut_data_colscheme_asygradient (char *colscheme, int stepqty, char **pasygradient)
 {
   int i;
-  double **vals = ut_alloc_2d (stepqty + 1, 1);
-  int **rgb = ut_alloc_2d_int (stepqty + 1, 3);
+  struct DATA Data;
 
-  for (i = 1; i <= stepqty; i++)
-    vals[i][0] = (double) (i - 1) / (stepqty - 1);
+  neut_data_set_default (&Data);
 
-  neut_data_real_color (vals, NULL, stepqty, NULL, colscheme, rgb, NULL);
+  ut_string_string (colscheme, &(Data.ColScheme));
+  Data.Qty = stepqty;
+  Data.ColData = ut_alloc_2d (Data.Qty + 1, 1);
+  Data.Col = ut_alloc_2d_int (Data.Qty + 1, 3);
+
+  for (i = 1; i <= Data.Qty; i++)
+    Data.ColData[i][0] = (double) (i - 1) / (Data.Qty - 1);
+
+  neut_data_init_color_real (&Data);
 
   (*pasygradient) = ut_alloc_1d_char (stepqty * 100);
 
   sprintf (*pasygradient, "Gradient(");
   for (i = 1; i <= stepqty; i++)
     sprintf (*pasygradient + strlen (*pasygradient), "rgb(%f,%f,%f)%s",
-             rgb[i][0] / 255., rgb[i][1] / 255., rgb[i][2] / 255.,
+             Data.Col[i][0] / 255., Data.Col[i][1] / 255., Data.Col[i][2] / 255.,
              i < stepqty ? "," : "");
 
   sprintf (*pasygradient + strlen (*pasygradient), ")");
 
-  ut_free_2d (&vals, stepqty + 1);
-  ut_free_2d_int (&rgb, stepqty + 1);
+  neut_data_free (&Data);
 
   return;
 }

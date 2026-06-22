@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -25,8 +25,7 @@ extern "C"
   extern void neut_data_coo_coo (double **ref, double **data, double fact, int size,
                   double **coo);
 
-  extern void neut_data_real_color (double **data, int *datadef, int size, char *scale,
-                      char *scheme, int **Col, char **pscale);
+  extern void neut_data_init_color_real (struct DATA *pData);
 
   extern void neut_data_ori_color (double **data, int size, char *crysym, char *scheme, int **Col);
   extern void neut_data_ori_color_rodrigues (double **data, int size, char *scheme, int **Col);

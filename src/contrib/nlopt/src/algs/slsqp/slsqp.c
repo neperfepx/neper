@@ -76,7 +76,7 @@ static void daxpy_sl__(int *n_, const double *da_, const double *dx,
 static double ddot_sl__(int *n_, double *dx, int incx, double *dy, int incy)
 {
      int n = *n_, i;
-     long double sum = 0;
+     double sum = 0;
      if (n <= 0) return 0;
      for (i = 0; i < n; ++i) sum += dx[i*incx] * dy[i*incy];
      return (double) sum;
@@ -87,7 +87,7 @@ static double dnrm2___(int *n_, double *dx, int incx)
 {
      int i, n = *n_;
      double xmax = 0, scale;
-     long double sum = 0;
+     double sum = 0;
      for (i = 0; i < n; ++i) {
           double xabs = fabs(dx[incx*i]);
           if (xmax < xabs) xmax = xabs;
@@ -2235,7 +2235,7 @@ static void slsqp(int *m, int *meq, int *la, int *n,
 /* *    M              IS THE TOTAL NUMBER OF CONSTRAINTS, M .GE. 0      * */
 /* *    MEQ            IS THE NUMBER OF EQUALITY CONSTRAINTS, MEQ .GE. 0 * */
 /* *    LA             SEE A, LA .GE. MAX(M,1)                           * */
-/* *    N              IS THE NUMBER OF VARIBLES, N .GE. 1               * */
+/* *    N              IS THE NUMBER OF VARIABLES, N .GE. 1              * */
 /* *  * X()            X() STORES THE CURRENT ITERATE OF THE N VECTOR X  * */
 /* *                   ON ENTRY X() MUST BE INITIALIZED. ON EXIT X()     * */
 /* *                   STORES THE SOLUTION VECTOR X IF MODE = 0.         * */
@@ -2275,7 +2275,7 @@ static void slsqp(int *m, int *meq, int *la, int *n,
 /* *                1: FUNCTION EVALUATION, (F&C)                        * */
 /* *                                                                     * */
 /* *                   FAILURE MODES:                                    * */
-/* *                2: NUMBER OF EQUALITY CONTRAINTS LARGER THAN N       * */
+/* *                2: NUMBER OF EQUALITY CONSTRAINTS LARGER THAN N      * */
 /* *                3: MORE THAN 3*N ITERATIONS IN LSQ SUBPROBLEM        * */
 /* *                4: INEQUALITY CONSTRAINTS INCOMPATIBLE               * */
 /* *                5: SINGULAR MATRIX E IN LSQ SUBPROBLEM               * */
@@ -2361,7 +2361,7 @@ static void slsqp(int *m, int *meq, int *la, int *n,
 /* *                                                                     * */
 /* *  DATE:           APRIL - OCTOBER, 1981.                             * */
 /* *  STATUS:         DECEMBER, 31-ST, 1984.                             * */
-/* *  STATUS:         MARCH   , 21-ST, 1987, REVISED TO FORTAN 77        * */
+/* *  STATUS:         MARCH   , 21-ST, 1987, REVISED TO FORTRAN 77       * */
 /* *  STATUS:         MARCH   , 20-th, 1989, REVISED TO MS-FORTRAN       * */
 /* *  STATUS:         APRIL   , 14-th, 1989, HESSE   in-line coded       * */
 /* *  STATUS:         FEBRUARY, 28-th, 1991, FORTRAN/2 Version 1.04      * */
@@ -2605,7 +2605,7 @@ nlopt_result nlopt_slsqp(unsigned n, nlopt_func f, void *f_data,
 	  /* note: mode == -1 corresponds to the completion of a line search,
 	     and is the only time we should check convergence (as in original slsqp code) */
 	  if (mode == -1) {
-	       if (!nlopt_isinf(fprev)) {
+	       if (!nlopt_isinf(fprev) && feasible) {
 		    if (nlopt_stop_ftol(stop, fcur, fprev))
 			 ret = NLOPT_FTOL_REACHED;
 		    else if (nlopt_stop_x(stop, xcur, xprev))

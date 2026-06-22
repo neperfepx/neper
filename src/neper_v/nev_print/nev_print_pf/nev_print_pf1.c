@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_pf_.h"
@@ -38,8 +38,6 @@ nev_print_pf (struct IN_V In, struct PF *pPf, char *basename, struct PRINT Print
   (void) steps;
 
   neut_print_outdir (In.outdir, Sim, "pf", &outdir);
-  if (strcmp (outdir, "."))
-    ut_sys_mkdir (outdir);
 
   ut_file_dir_basename_extension_filename (outdir, basename, "asy", &filename);
   ut_file_dir_basename_extension_filename (outdir, basename, "level", &filename2);
@@ -55,11 +53,11 @@ nev_print_pf (struct IN_V In, struct PF *pPf, char *basename, struct PRINT Print
 
     nev_print_pf_header (*pPf, file);
 
-    nev_print_pf_background (In, *pPf, file, Print);
+    nev_print_pf_background (*pPf, file, Print);
 
-    nev_print_pf_csys (*pPf, file, CsysData);
+    nev_print_pf_csys (Print, *pPf, file, CsysData);
 
-    nev_print_pf_border (file, pPf);
+    nev_print_pf_border (file, Print, pPf);
   }
 
   else
@@ -110,7 +108,7 @@ nev_print_pf (struct IN_V In, struct PF *pPf, char *basename, struct PRINT Print
   {
     nev_print_pf_polestring (*pPf, pData, &pole_string);
 
-    nev_print_pf_pole_proj (*pPf, file, pole_string);
+    nev_print_pf_pole_proj (Print, *pPf, file, pole_string);
   }
 
   // nev_print_pf_compress (InPF, &pts, &ptwgts, &ptqty);

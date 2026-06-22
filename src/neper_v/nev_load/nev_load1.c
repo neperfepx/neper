@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_load_.h"
@@ -66,7 +66,7 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
     if (!strcmp (input, "tess"))
     {
       ut_print_message (0, 1, "Loading tessellation...\n");
-      neut_tess_fnscanf (file, pTess);
+      neut_tess_fnscanf (file, pTess, "r");
       (*pTess).pSim = pSim;
     }
 
@@ -165,20 +165,20 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
 
   if (!neut_tess_isvoid (*pTess))
     for (dim = 0; dim <= 5; dim++)
-      nev_load_init_data_tess (*pTess, dim, TessData + dim);
+      neut_data_init_tess (*pTess, dim, TessData + dim);
 
   if (!neut_tesr_isvoid (*pTesr))
     for (i = 0; i <= 1; i++)
-      nev_load_init_data_tesr (*pTesr, i, TesrData + i);
+      neut_data_init_tesr (*pTesr, i, TesrData + i);
 
   if (!neut_nodes_isvoid (*pNodes))
   {
-    nev_load_init_data_node (*pNodes, pNodeData);
+    neut_data_init_node (*pNodes, pNodeData);
     for (dim = 0; dim <= 3; dim++)
     {
-      nev_load_init_data_mesh (Mesh[dim], "elt", MeshData[dim]);
-      nev_load_init_data_mesh (Mesh[dim], "elset", MeshData[dim] + 1);
-      nev_load_init_data_mesh (Mesh[dim], "mesh", MeshData[dim] + 2);
+      neut_data_init_mesh (Mesh[dim], "elt", MeshData[dim]);
+      neut_data_init_mesh (Mesh[dim], "elset", MeshData[dim] + 1);
+      neut_data_init_mesh (Mesh[dim], "mesh", MeshData[dim] + 2);
     }
   }
 
@@ -187,7 +187,7 @@ nev_load (char *string, struct SIM *pSim, struct TESS *pTess, struct TESR *pTesr
   {
     neut_data_set_default ((*pPointData) + i);
     if (!neut_point_isvoid ((*pPoints)[i]))
-      nev_load_init_data_point ((*pPoints)[i], (*pPointData) + i);
+      neut_data_init_point ((*pPoints)[i], (*pPointData) + i);
   }
 
   return;

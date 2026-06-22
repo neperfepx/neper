@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2024, Romain Quey.*/
+/* Copyright (C) 2003-2026, Romain Quey, CNRS.*/
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -341,6 +341,8 @@ extern "C"
 /// \brief Initialize the mean of a function
 /// \param *pFct: function
   extern void ut_fct_init_mean (struct FCT *pFct);
+
+  extern int ut_fct_invert (struct FCT Fct1, struct FCT *pFct2);
 
 #endif                          /* UT_FCT_H */
 

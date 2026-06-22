@@ -20,8 +20,8 @@ struct OL_SET
   double **q;
   double *weight;
   double *theta;
+  double **theta3;
   int* id;
-  char **label;
   char* crysym;
   size_t nc;
 };
@@ -82,6 +82,12 @@ extern void ol_set_shuf (struct OL_SET* pSet, int random);
 extern void ol_set_aniso_delta (struct OL_SET Set, double **evect, double *eval, double *delta);
 
 extern void ol_set_clean (struct OL_SET *pOSet);
+
+extern void ol_spreadfct (struct FCT *);
+
+extern int ol_q_special_set (double *, struct OL_SET *);
+extern void ol_set_addori (struct OL_SET *pOSet, double *q, double weight, double theta, int id);
+extern void ol_set_expandset (struct OL_SET OSet1, struct OL_SET *pOSet2);
 
 #endif /* OL_SSET */
 #ifndef OL_SETx

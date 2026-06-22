@@ -35,8 +35,7 @@ union {
 #declare TransVec3=vnormalize(vcross(TransVec1,TransVec2));
 #declare X1 =
 text {ttf "timrom.ttf" "X1" 0, 0
-pigment {rgb<0,0,0>}
-scale 0.100000
+  texture { pigment { rgbt <0.000000,0.000000,0.000000,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000} }scale 0.100000
 Shear_Trans(TransVec2,-TransVec3,TransVec1) translate TextLowerLeft
 }
 #declare Min = min_extent ( X1 );
@@ -62,8 +61,7 @@ object { X1 translate (Min - Max) / 2 + <0.100000,0.000000,0.000000>}
 #declare TransVec3=vnormalize(vcross(TransVec1,TransVec2));
 #declare X2 =
 text {ttf "timrom.ttf" "X2" 0, 0
-pigment {rgb<0,0,0>}
-scale 0.100000
+  texture { pigment { rgbt <0.000000,0.000000,0.000000,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000} }scale 0.100000
 Shear_Trans(TransVec2,-TransVec3,TransVec1) translate TextLowerLeft
 }
 #declare Min = min_extent ( X2 );
@@ -89,8 +87,7 @@ object { X2 translate (Min - Max) / 2 + <0.000000,0.100000,0.000000>}
 #declare TransVec3=vnormalize(vcross(TransVec1,TransVec2));
 #declare X3 =
 text {ttf "timrom.ttf" "X3" 0, 0
-pigment {rgb<0,0,0>}
-scale 0.100000
+  texture { pigment { rgbt <0.000000,0.000000,0.000000,0.> } finish {ambient 0.600000 diffuse 0.600000 reflection 0.000000} }scale 0.100000
 Shear_Trans(TransVec2,-TransVec3,TransVec1) translate TextLowerLeft
 }
 #declare Min = min_extent ( X3 );

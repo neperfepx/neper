@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tess_tocta_seed_.h"
@@ -10,13 +10,15 @@ net_tess_tocta_seed (struct IN_T In, char *morpho,
                      int dcell, struct TESS Dom, struct SEEDSET *SSet,
                      struct SEEDSET *pSSet)
 {
-  int n;
+  int *n = ut_alloc_1d_int (3);
 
   ut_string_string ("standard", &(*pSSet).Type);
 
-  net_tess_tocta_seed_readargs (morpho, &n);
+  net_tess_tocta_seed_readargs (morpho, n);
 
   net_tess_tocta_seed_set (In, MTess, Tess, dtess, dcell, Dom, n, SSet, pSSet);
+
+  ut_free_1d_int (&n);
 
   return;
 }

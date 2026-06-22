@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_fval_gen_.h"
@@ -32,8 +32,9 @@ net_tess_opt_comp_objective_fval_gen (struct TOPT *pTOpt, int var)
                || strstr ((*pTOpt).tarvar[var], "1-sphericity"))
         net_tess_opt_comp_objective_fval_gen_sphericity (pTOpt, var, cell);
 
-      else if (!strcmp ((*pTOpt).tarvar[var], "convexity"))
-        net_tess_opt_comp_objective_fval_gen_convexity (pTOpt, var, cell);
+      else if (strstr ((*pTOpt).tarvar[var], "anisofact")
+               || strstr ((*pTOpt).tarvar[var], "anisofact-1"))
+        net_tess_opt_comp_objective_fval_gen_anisofact (pTOpt, var, cell);
 
       else if (!strcmp ((*pTOpt).tarvar[var], "centroid")
             || !strcmp ((*pTOpt).tarvar[var], "centroidtol"))
@@ -45,6 +46,13 @@ net_tess_opt_comp_objective_fval_gen (struct TOPT *pTOpt, int var)
 
       else if (!strcmp ((*pTOpt).tarvar[var], "ori"))
         net_tess_opt_comp_objective_fval_gen_ori (pTOpt, var, cell);
+
+      else if (!strcmp ((*pTOpt).tarvar[var], "convexity"))
+        net_tess_opt_comp_objective_fval_gen_convexity (pTOpt, var, cell);
+
+      else if (!strcmp ((*pTOpt).tarvar[var], "sel")
+            || !strcmp ((*pTOpt).tarvar[var], "rsel"))
+        net_tess_opt_comp_objective_fval_gen_sel (pTOpt, var, cell);
 
       else
       {

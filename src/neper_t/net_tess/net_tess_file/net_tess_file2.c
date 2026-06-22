@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_file_.h"
@@ -10,7 +10,7 @@ net_tess_file_tess (int level, char *morpho, struct TESS *Tess, int TessId,
 {
   struct TESS *pTess = Tess + TessId;
 
-  neut_tess_fnscanf (morpho, pTess);
+  neut_tess_fnscanf (morpho, pTess, "r");
 
   net_tess_seedset (*pTess, SSet + TessId);
 

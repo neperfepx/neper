@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_data_op_.h"
@@ -62,6 +62,8 @@ neut_data_set_default (struct DATA *pData)
 
   (*pData).Scale = NULL;
   (*pData).ScaleTitle = NULL;
+  (*pData).ScaleMin = NULL;
+  (*pData).ScaleMax = NULL;
 
   (*pData).Axes = NULL;
 
@@ -131,6 +133,8 @@ neut_data_free (struct DATA *pData)
 
   ut_free_1d_char (&(*pData).Scale);
   ut_free_1d_char (&(*pData).ScaleTitle);
+  ut_free_1d_char (&(*pData).ScaleMin);
+  ut_free_1d_char (&(*pData).ScaleMax);
 
   ut_free_1d (&(*pData).Axes);
 
@@ -213,11 +217,9 @@ neut_data_mesh2slice_nodes (struct DATA NodeData, struct NODES SNodes,
 
     for (i = 1; i <= (*pSNodeData).Qty; i++)
       for (j = 0; j < size; j++)
-      {
         (*pSNodeData).ColData[i][j] =
           (1 - node_fact[i]) * NodeData.ColData[node_newold[i][0]][j] +
           node_fact[i] * NodeData.ColData[node_newold[i][1]][j];
-      }
   }
 
   ut_string_string (NodeData.Scale, &((*pSNodeData).Scale));
@@ -237,6 +239,68 @@ neut_data_symboldata_symbol (struct DATA *pData)
   for (i = 1; i <= (*pData).Qty; i++)
     ut_string_string ((*pData).SymbolData ? (*pData).SymbolData[i] : "sphere",
                       (*pData).Symbol + i);
+
+  return;
+}
+
+void
+neut_data_init_tess (struct TESS Tess, int dim, struct DATA *pTessData)
+{
+  (*pTessData).Dim = dim;
+  neut_tess_dim_entity (dim, &(*pTessData).Entity);
+  neut_tess_entity_qty (Tess, (*pTessData).Entity, &(*pTessData).Qty);
+
+  return;
+}
+
+void
+neut_data_init_tesr (struct TESR Tesr, int id, struct DATA *pTesrData)
+{
+  if (id == 0)
+  {
+    ut_string_string ("cell", &(*pTesrData).Entity);
+    (*pTesrData).Qty = Tesr.CellQty;
+  }
+  else if (id == 1)
+  {
+    ut_string_string ("voxel", &(*pTesrData).Entity);
+    (*pTesrData).Qty = ut_array_1d_int_prod (Tesr.size, 3);
+  }
+  else
+    abort ();
+
+  return;
+}
+
+void
+neut_data_init_node (struct NODES Nodes, struct DATA *pData)
+{
+  (*pData).Qty = Nodes.NodeQty;
+
+  return;
+}
+
+void
+neut_data_init_point (struct POINT Point, struct DATA *pPointData)
+{
+  (*pPointData).Qty = Point.Qty;
+
+  return;
+}
+
+void
+neut_data_init_mesh (struct MESH Mesh, char *entity, struct DATA *pMeshData)
+{
+  (*pMeshData).Dim = Mesh.Dimension;
+
+  if (!strncmp (entity, "elt", 3))
+    (*pMeshData).Qty = Mesh.EltQty;
+  else if (!strncmp (entity, "elset", 5))
+    (*pMeshData).Qty = Mesh.ElsetQty;
+  else if (!strncmp (entity, "mesh", 4))
+    (*pMeshData).Qty = 1;
+  else
+    abort ();
 
   return;
 }

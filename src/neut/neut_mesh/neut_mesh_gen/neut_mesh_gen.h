@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -180,6 +180,13 @@ extern void neut_mesh_eltdata_elsetdata_origos (struct NODES Nodes, struct MESH 
                                    double *elsetgos);
 
 extern void neut_mesh_set_elsetgroup (int*, struct MESH *Mesh);
+
+extern void neut_mesh_olset (struct NODES Nodes, struct MESH Mesh, struct OL_SET *pOSet);
+
+extern void neut_mesh_elset_anisofact_dm (struct NODES Nodes, struct MESH Mesh, int elset,
+                                            double *pval);
+extern void neut_mesh_elset_anisofact_logm (struct NODES Nodes, struct MESH Mesh, int elset,
+                                              double *pval);
 
 #endif /* NEUT_MESH_GEN_H */
 

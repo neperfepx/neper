@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_tree_.h"
@@ -19,8 +19,6 @@ nev_print_tree (struct IN_V In, char *basename, struct SIM Sim)
   }
 
   neut_print_outdir (In.outdir, Sim, "pf", &outdir);
-  if (strcmp (outdir, "."))
-    ut_sys_mkdir (outdir);
 
   neut_sim_fprintf_asy (basename, Sim, "w");
 

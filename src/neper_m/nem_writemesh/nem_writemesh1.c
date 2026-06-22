@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_writemesh_.h"
@@ -125,6 +125,20 @@ nem_writemesh (struct IN_M In, struct TESS Tess, struct NODES Nodes,
                               NSet[0], NSet[1], NSet[2], nsetlist,
                               fasetlist, In.dimout, Bound);
       ut_file_close (file, In.geof, "w");
+    }
+
+    else if (!strcmp (formats[i], "etree"))
+    {
+      file = ut_file_open (In.etree, "wb");
+      neut_mesh_fprintf_tree (file, "elt", Nodes, Mesh[3]);
+      ut_file_close (file, In.etree, "wb");
+    }
+
+    else if (!strcmp (formats[i], "ntree"))
+    {
+      file = ut_file_open (In.ntree, "wb");
+      neut_mesh_fprintf_tree (file, "node", Nodes, Mesh[3]);
+      ut_file_close (file, In.ntree, "wb");
     }
 
     if (Nodes.Periodic && ut_array_1d_int_sum (Nodes.Periodic, 3) > 0

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_data_fscanf_.h"
@@ -39,7 +39,7 @@ neut_data_fscanf_ori_file (struct SIM Sim, char *datavalue, int qty, double ***p
   double **tmpdd = ut_alloc_2d (3, 3);
   FILE *file = NULL;
 
-  if (neut_sim_isvoid (Sim))
+  if (!neut_sim_isvoid (Sim))
   {
     struct SIMRES SimRes;
     neut_simres_set_zero (&SimRes);
@@ -128,11 +128,9 @@ neut_data_fscanf_scal (char *input, struct SIM *pSim,
                        char *value, char **pDataName, int *pDataSize,
                        double ***pData, char **pDataType)
 {
-  int i, size = 1;
-  char *vartype = NULL;
+  int i;
   struct SIMRES SimRes;
-
-  neut_simres_set_zero (&SimRes);
+  double *data = ut_alloc_1d (entityqty + 1);
 
   if (pDataName)
     ut_string_string (value, pDataName);
@@ -140,61 +138,112 @@ neut_data_fscanf_scal (char *input, struct SIM *pSim,
   if (pDataSize)
     *pDataSize = 1;
 
-  *pData = ut_alloc_2d (entityqty + 1, size);
+  *pData = ut_alloc_2d (entityqty + 1, 1);
 
-  if (pSim)
-    neut_sim_simres (*pSim, entity, value, &SimRes);
+  if (ut_file_exist (value))
+  {
+    ut_array_1d_fnscanf_wcard (value, data + 1, entityqty, NULL, "r");
+    for (int j = 1; j <= entityqty; j++)
+      (*pData)[j][0] = data[j];
+  }
 
-  if (ut_file_exist (SimRes.file))
-    ut_array_2d_fnscanf_wcard (SimRes.file, *pData + 1,
-                               entityqty, 1, NULL, "r");
+  else if (ut_string_isint (value))
+  {
+    for (int j = 1; j <= entityqty; j++)
+      (*pData)[j][0] = strtol (value, NULL, 10);
+    ut_string_string ("int", pDataType);
+  }
+
+  else if (ut_string_isreal (value))
+  {
+    for (int j = 1; j <= entityqty; j++)
+      (*pData)[j][0] = strtod (value, NULL);
+    ut_string_string ("real", pDataType);
+  }
 
   else
   {
-    double tmp, *data = ut_alloc_1d (entityqty + 1);
+    neut_simres_set_zero (&SimRes);
 
-    if (!strcmp (input, "tess"))
-      neut_tess_entity_expr_val (pTess, entity, value, data, &vartype);
+    int varqty;
+    char **vars = NULL;
+    ut_math_vars (value, &vars, &varqty);
+    double **vals = ut_alloc_2d (varqty, entityqty + 1);
+    char **vartype = ut_alloc_1d_pchar (varqty);
 
-    else if (!strcmp (input, "tesr"))
-      neut_tesr_entity_expr_val (*pTesr, entity, value, data, &vartype);
-
-    else if (!strcmp (input, "mesh") || !strncmp (input, "node", 4))
-      neut_mesh_entity_expr_val (*pNodes, *pMesh,
-                                 pTess, NULL, NULL, NULL, NULL, entity, value,
-                                 data, &vartype);
-
-    else if (!strncmp (input, "point", 5))
-      neut_point_entity_expr_val (*pPoints, *pTess, *pNodes,
-                                  (*pMesh)[(*pTess).Dim], value, data,
-                                  &vartype);
-
-    else if (sscanf (value, "%lf", &tmp) == 1)
+    double **tmp = ut_alloc_2d (entityqty + 1, 1);
+    for (i = 0; i < varqty; i++)
     {
-      ut_array_1d_set (data + 1, entityqty, tmp);
-      ut_string_string ("%f", &vartype);
+      if (pSim)
+        neut_sim_simres (*pSim, entity, vars[i], &SimRes);
+
+      if (pSim && ut_file_exist (SimRes.file))
+      {
+        ut_array_2d_fnscanf_wcard (SimRes.file, tmp + 1, entityqty, 1, NULL, "r");
+        for (int j = 1; j <= entityqty; j++)
+          vals[i][j] = tmp[j][0];
+
+        if (ut_array_2d_isint (tmp + 1, entityqty, 1))
+          ut_string_string ("int", vartype + i);
+        else
+          ut_string_string ("real", vartype + i);
+      }
+
+      else if (!strcmp (input, "tess"))
+        for (int j = 1; j <= entityqty; j++)
+          neut_tess_var_val_one (pTess, NULL, NULL, NULL, entity, j, vars[i], vals[i] + j, vartype + i);
+
+      else if (!strcmp (input, "tesr"))
+        for (int j = 1; j <= entityqty; j++)
+          neut_tesr_var_val_one (*pTesr, entity, j, vars[i], vals[i] + j, vartype + i);
+
+      else if (!strncmp (input, "node", 4) || !strcmp (input, "mesh"))
+        for (int j = 1; j <= entityqty; j++)
+          neut_mesh_var_val_one (*pNodes, *pMesh, pTess, NULL, NULL, NULL, NULL, 0, entity, j, vars[i], vals[i] + j, vartype + i);
+
+      else if (!strncmp (input, "point", 5))
+        for (int j = 1; j <= entityqty; j++)
+          neut_point_var_val_one (*pPoints, *pTess, *pNodes, (*pMesh)[3], j, vars[i], vals[i] + j, vartype + i);
+
+      else
+        ut_print_exprbug (input);
+    }
+    ut_free_2d (&tmp, entityqty);
+
+    if (!strcmp (*pDataType, "scal"))
+    {
+      int all_int = 1;
+      for (i = 0; i < varqty; i++)
+        if (strcmp (vartype[i], "%d"))
+        {
+          all_int = 0;
+          break;
+        }
+
+      if (all_int)
+        ut_string_string ("int", pDataType);
+      else
+        ut_string_string ("real", pDataType);
     }
 
-    else
-      abort ();
+    ut_math_evals (value, varqty, vars, vals, entityqty + 1, data);
+
+    if (!strcmp (*pDataType, "int"))
+    {
+      if (varqty > 1 || (varqty == 1 && strcmp (value, vars[0])))
+        if (!ut_array_1d_isint (data + 1, entityqty))
+          ut_string_string ("real", pDataType);
+    }
 
     for (i = 1; i <= entityqty; i++)
       (*pData)[i][0] = data[i];
-    ut_free_1d (&data);
+
+    ut_free_2d (&vals, varqty);
+    neut_simres_free (&SimRes);
+    ut_free_2d_char (&vartype, varqty);
   }
 
-  if (!strcmp (*pDataType, "scal"))
-  {
-    if (!vartype || !strcmp (vartype, "%f"))
-      ut_string_string ("real", pDataType);
-    else if (!strcmp (vartype, "%d"))
-      ut_string_string ("int", pDataType);
-    else
-      abort ();
-  }
-
-  ut_free_1d_char (&vartype);
-  neut_simres_free (&SimRes);
+  ut_free_1d (&data);
 
   return;
 }

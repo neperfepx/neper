@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_geom_.h"
@@ -433,6 +433,306 @@ neut_tess_poly_volume (struct TESS Tess, int poly, double *pvol)
   ut_free_1d (&centre);
 
   return 0;
+}
+
+void
+neut_tess_poly_aniso (struct TESS Tess, int poly, double **evect, double *eval)
+{
+  int i, j, k, s, f, ver, face;
+  double Vtet;
+  double coef, scalprod, V;
+  double centre[3];
+  double p[4][3];
+  double *p0 = NULL;
+  double *p1 = NULL;
+  double *p2 = NULL;
+  double *u = NULL, *v = NULL, *w = NULL, *vect = NULL;
+  double *bary = NULL, *M1 = NULL, *mu = NULL;
+  double **sum = NULL, **M2 = NULL;
+  double **C = NULL;
+
+  p0 = ut_alloc_1d (3);
+  u = ut_alloc_1d (3);
+  v = ut_alloc_1d (3);
+  w = ut_alloc_1d (3);
+  vect = ut_alloc_1d (3);
+  bary = ut_alloc_1d (3);
+  M1 = ut_alloc_1d (3);
+  mu = ut_alloc_1d (3);
+  sum = ut_alloc_2d (3, 3);
+  M2 = ut_alloc_2d (3, 3);
+  C = ut_alloc_2d (3, 3);
+
+  neut_tess_poly_centroid (Tess, poly, centre);
+
+  ut_array_1d_zero (mu, 3);
+  ut_array_1d_zero (M1, 3);
+  ut_array_2d_zero (M2, 3, 3);
+
+  V = 0;
+  for (f = 1; f <= Tess.PolyFaceQty[poly]; f++)
+  {
+    face = Tess.PolyFaceNb[poly][f];
+
+    if (Tess.FaceState[face] > 0)
+    {
+      if (Tess.FacePt[face] == 0)
+      {
+        ver = -1;
+        ut_array_1d_memcpy (Tess.FacePtCoo[face], 3, p0);
+      }
+      else if (Tess.FacePt[face] == -1)
+      {
+        ver = Tess.FaceVerNb[face][1];
+        neut_tess_face_centre (Tess, face, p0);
+      }
+      else
+      {
+        ver = Tess.FaceVerNb[face][Tess.FacePt[face]];
+        ut_array_1d_memcpy (Tess.VerCoo[ver], 3, p0);
+      }
+    }
+    else
+    {
+      ver = Tess.FaceVerNb[face][1];
+      ut_array_1d_memcpy (Tess.VerCoo[ver], 3, p0);
+    }
+
+    for (i = 1; i <= Tess.FaceVerQty[face]; i++)
+    {
+      p1 = Tess.VerCoo[Tess.FaceVerNb[face][i]];
+      p2 = Tess.VerCoo[Tess.FaceVerNb[face][ut_array_rotpos (1, Tess.FaceVerQty[face], i, 1)]];
+
+      // 2 vertices are the same, skipping
+      if (ver == Tess.FaceVerNb[face][i] || ver == Tess.FaceVerNb[face][ut_array_rotpos (1, Tess.FaceVerQty[face], i, 1)])
+        continue;
+
+      ut_array_1d_sub (centre, p0, 3, u);
+      ut_array_1d_sub (centre, p1, 3, v);
+      ut_array_1d_sub (centre, p2, 3, w);
+      ut_vector_vectprod (v, w, vect);
+      scalprod = ut_array_1d_scalprod (u, vect, 3);
+
+      Vtet = fabs (scalprod / 6);
+
+      coef = Vtet / 20;
+
+      for (j = 0; j < 3; j++)
+      {
+        p[0][j] = centre[j];
+        p[1][j] = p0[j];
+        p[2][j] = p1[j];
+        p[3][j] = p2[j];
+      }
+
+      ut_array_1d_zero (bary, 3);
+      ut_array_2d_zero (sum, 3, 3);
+      for (s = 0; s < 4; s++)
+      {
+        for (j = 0; j < 3; j++)
+          bary[j] += p[s][j];
+
+        for (j = 0; j < 3; j++)
+          for (k = 0; k < 3; k++)
+            sum[j][k] += p[s][j] * p[s][k];
+      }
+
+      // First moment of inertia of the tetrahedron
+      for (j = 0; j < 3; j++)
+        M1[j] += 0.25 * Vtet * bary[j];
+
+      // Second moment of inertia of the tetrahedron
+      coef = Vtet / 20;
+      for (j = 0; j < 3; j++)
+        for (k = 0; k < 3; k++)
+          M2[j][k] += coef * (sum[j][k] +  bary[j] * bary[k]);
+
+      V += Vtet;
+    }
+  }
+
+  for (j = 0; j < 3; j++)
+    mu[j] = M1[j] / V;
+
+  for (j = 0; j < 3; j++)
+    for (k = 0; k < 3; k++)
+      C[j][k] = M2[j][k] / V - mu[j] * mu[k];
+
+  ut_mat_eigen (C, 3, eval, evect);
+
+  // don't free p1, p2 (shortcuts)
+  ut_free_1d (&p0);
+  ut_free_1d (&u);
+  ut_free_1d (&v);
+  ut_free_1d (&w);
+  ut_free_1d (&vect);
+  ut_free_1d (&bary);
+  ut_free_1d (&M1);
+  ut_free_1d (&mu);
+  ut_free_2d (&sum, 3);
+  ut_free_2d (&M2, 3);
+  ut_free_2d (&C, 3);
+
+  return;
+}
+
+void
+neut_tess_poly_anisofact (struct TESS Tess, int poly, double *pval)
+{
+  double eval_max, eval_min;
+  double *eval = ut_alloc_1d (3);
+  double **evect = ut_alloc_2d (3, 3);
+
+  neut_tess_poly_aniso (Tess, poly, evect, eval);
+
+    //sum_log += log (eval[i]);
+    //
+  eval_max = ut_array_1d_max (eval, 3);
+  eval_min = ut_array_1d_min (eval, 3);
+
+  //tmp = exp (sum_log / 3);
+  //*pval = eval_max / tmp;
+
+  (*pval) = sqrt (eval_max / eval_min);
+
+  if (isinf (*pval))
+    *pval = -1;
+
+  ut_free_2d (&evect, 3);
+  ut_free_1d (&eval);
+}
+
+void
+neut_tess_face_aniso (struct TESS Tess, int face, double **evect, double *eval)
+{
+  int i, j, k, s, ver;
+  double coef, At, A;
+  double **p = NULL;
+  double *p0 = NULL;
+  double *p1 = NULL;
+  double *p2 = NULL;
+  double *u = NULL, *v = NULL, *uxv = NULL;
+  double *bary = NULL, *M1 = NULL, *mu = NULL;
+  double **sum = NULL, **M2 = NULL;
+  double **C = NULL;
+
+  p = ut_alloc_2d (3, Tess.Dim);
+  p0 = ut_alloc_1d (Tess.Dim);
+  p1 = ut_alloc_1d (Tess.Dim);
+  p2 = ut_alloc_1d (Tess.Dim);
+  u = ut_alloc_1d (3);
+  v = ut_alloc_1d (3);
+  uxv = ut_alloc_1d (3);
+  bary = ut_alloc_1d (Tess.Dim);
+  M1 = ut_alloc_1d (Tess.Dim);
+  mu = ut_alloc_1d (Tess.Dim);
+  sum = ut_alloc_2d (Tess.Dim, Tess.Dim);
+  M2 = ut_alloc_2d (Tess.Dim, Tess.Dim);
+  C = ut_alloc_2d (Tess.Dim, Tess.Dim);
+
+  if (Tess.FaceState[face] > 0)
+  {
+    if (Tess.FacePt[face] == 0)
+      ut_array_1d_memcpy (Tess.FacePtCoo[face], Tess.Dim, p0);
+    else if (Tess.FacePt[face] > 0)
+    {
+      ver = Tess.FaceVerNb[face][Tess.FacePt[face]];
+      ut_array_1d_memcpy (Tess.VerCoo[ver], Tess.Dim, p0);
+    }
+    else
+      neut_tess_face_centre (Tess, face, p0);
+  }
+  else if (Tess.FaceState[face] == 0)
+      neut_tess_face_centre (Tess, face, p0);
+
+  A = 0;
+  for (i = 1; i <= Tess.FaceVerQty[face]; i++)
+  {
+    p1 = Tess.VerCoo[Tess.FaceVerNb[face][i]];
+    p2 = Tess.VerCoo[Tess.FaceVerNb[face][ut_array_rotpos (1, Tess.FaceVerQty[face], i, 1)]];
+
+    ut_array_1d_sub (p0, p1, Tess.Dim, u);
+    ut_array_1d_sub (p0, p2, Tess.Dim, v);
+    ut_vector_vectprod (u, v, uxv);
+    At = ut_vector_norm (uxv) * 0.5;
+
+    for (j = 0; j < Tess.Dim; j++)
+    {
+      p[0][j] = p0[j];
+      p[1][j] = p1[j];
+      p[2][j] = p2[j];
+    }
+
+    ut_array_1d_zero (bary, Tess.Dim);
+    ut_array_2d_zero (sum, Tess.Dim, Tess.Dim);
+    for (s = 0; s < 3; s++)
+    {
+      ut_array_1d_add (bary, p[s], Tess.Dim, bary);
+
+      for (j = 0; j < Tess.Dim; j++)
+        for (k = 0; k < Tess.Dim; k++)
+          sum[j][k] += p[s][j] * p[s][k];
+    }
+
+    // First moment of inertia of the tetrahedron
+    for (j = 0; j < Tess.Dim; j++)
+      M1[j] += At * bary[j] * 0.3333333333333333333333;
+
+    // Second moment of inertia of the tetrahedron
+    coef = At / 12;
+    for (j = 0; j < Tess.Dim; j++)
+      for (k = 0; k < Tess.Dim; k++)
+        M2[j][k] += coef * (sum[j][k] + bary[j] * bary[k]);
+
+    A += At;
+  }
+
+  ut_array_1d_memcpy (M1, Tess.Dim, mu);
+  ut_array_1d_scale (mu, Tess.Dim, 1 / A);
+
+  for (j = 0; j < Tess.Dim; j++)
+    for (k = 0; k < Tess.Dim; k++)
+      C[j][k] = M2[j][k] / A - mu[j] * mu[k];
+
+  ut_mat_eigen (C, Tess.Dim, eval, evect);
+
+  ut_mat_sym (C, Tess.Dim, C);
+
+  ut_free_1d (&p0);
+  ut_free_1d (&u);
+  ut_free_1d (&v);
+  ut_free_1d (&uxv);
+  ut_free_1d (&bary);
+  ut_free_1d (&M1);
+  ut_free_1d (&mu);
+  ut_free_2d (&sum, Tess.Dim);
+  ut_free_2d (&M2, Tess.Dim);
+  ut_free_2d (&C, Tess.Dim);
+
+  return;
+}
+
+void
+neut_tess_face_anisofact (struct TESS Tess, int face, double *pval)
+{
+  double eval_max, eval_min;
+  double *eval = ut_alloc_1d (Tess.Dim);
+  double **evect = ut_alloc_2d (Tess.Dim, Tess.Dim);
+
+  neut_tess_face_aniso (Tess, face, evect, eval);
+
+    //sum_log += log (eval[i]);
+  eval_max = ut_array_1d_max (eval, 2);
+  eval_min = ut_array_1d_min (eval, 2);
+  //tmp = exp (sum_log / 2);
+
+  (*pval) = sqrt (eval_max / eval_min);
+
+  if (isinf (*pval))
+    *pval = -1;
+
+  ut_free_2d (&evect, Tess.Dim);
+  ut_free_1d (&eval);
 }
 
 int
@@ -1213,18 +1513,6 @@ neut_tess_face_normal_fromver (struct TESS Tess, int face, double *n)
   ut_free_1d (&n0);
 
   return;
-}
-
-int
-neut_tess_length (struct TESS Tess, double *plength)
-{
-  int i;
-
-  (*plength) = 0;
-  for (i = 1; i <= Tess.EdgeQty; i++)
-    (*plength) += Tess.EdgeLength[i];
-
-  return 0;
 }
 
 void

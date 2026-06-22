@@ -15,6 +15,7 @@ extern "C"
 #include<math.h>
 #include"ut.h"
 #include"../ol_des.h"
+#include"../ol_gen.h"
 
 #endif /* OL_Q_H */
 #ifdef __cplusplus

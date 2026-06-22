@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_ori_.h"
@@ -295,6 +295,7 @@ neut_ori_fscanf (FILE *file, char *desconv, char *format, double **q, int *ids, 
   char *des = NULL, *conv = NULL;
   int *ids2 = ut_alloc_1d_int (qty), *idinv = NULL;
   int idinput = (ids && ut_array_1d_int_sum (ids, qty) > 0);
+  char *label = ut_alloc_1d_char (1000);
 
   if (strcmp (format, "ascii") && prefix)
     abort ();
@@ -317,7 +318,14 @@ neut_ori_fscanf (FILE *file, char *desconv, char *format, double **q, int *ids, 
     if (pos == -1)
       abort ();
 
-    if (!strcmp (des, "quaternion") || !strcmp (des, "q"))
+    ut_file_nextstring (file, label);
+
+    if (!ol_label_q (label, tmp))
+    {
+      ut_file_skip (file, 1);
+      ol_q_memcpy (tmp, q[pos]);
+    }
+    else if (!strcmp (des, "quaternion") || !strcmp (des, "q"))
     {
       if (!strcmp (format, "ascii"))
       {
@@ -417,10 +425,21 @@ neut_ori_fscanf (FILE *file, char *desconv, char *format, double **q, int *ids, 
 
       ol_g_q (g, q[pos]);
     }
+    else if (!strcmp (des, "label"))
+    {
+      if (!strcmp (format, "ascii"))
+      {
+        if (fscanf (file, "%s", label) != 1)
+          return -1;
+        if (ol_label_q (label, q[i]))
+          abort ();
+      }
+      else
+        abort ();
+    }
     else
       ut_print_exprbug (desconv);
   }
-
 
   if (!strcmp (conv, "active"))
     for (i = 0; i < qty; i++)
@@ -430,6 +449,7 @@ neut_ori_fscanf (FILE *file, char *desconv, char *format, double **q, int *ids, 
   ut_free_1d_char (&conv);
   ut_free_1d (&tmp);
   ol_g_free (g);
+  ut_free_1d_char (&label);
 
   return 1;
 }
@@ -454,6 +474,7 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
   int i, status;
   double **q = ut_alloc_2d (qty, 4);
   char *des = NULL, *conv = NULL;
+  char *label = ut_alloc_1d_char (100);
 
   if (strcmp (format, "ascii") && prefix)
     abort ();
@@ -477,11 +498,16 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
         if (prefix && !strcmp (prefix, "id"))
           fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-        ol_q_e (q[i], e);
-        if (!strcmp (format, "ascii"))
-          ol_e_fprintf (file, e, REAL_PRINT_FORMAT5);
+        if (!ol_q_label (q[i], label))
+          neut_ori_fprintf_aslabel (file, format, label);
         else
-          fwrite (e, sizeof (double), 3, file);
+        {
+          ol_q_e (q[i], e);
+          if (!strcmp (format, "ascii"))
+            ol_e_fprintf (file, e, REAL_PRINT_FORMAT5);
+          else
+            fwrite (e, sizeof (double), 3, file);
+        }
       }
     ol_e_free (e);
   }
@@ -494,13 +520,18 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
         if (prefix && !strcmp (prefix, "id"))
           fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-      ol_q_e (q[i], e);
-      ol_e_ek (e, e);
-      if (!strcmp (format, "ascii"))
-        ol_e_fprintf (file, e, REAL_PRINT_FORMAT5);
-      else
-        fwrite (e, sizeof (double), 3, file);
-    }
+        if (!ol_q_label (q[i], label))
+          neut_ori_fprintf_aslabel (file, format, label);
+        else
+        {
+          ol_q_e (q[i], e);
+          ol_e_ek (e, e);
+          if (!strcmp (format, "ascii"))
+            ol_e_fprintf (file, e, REAL_PRINT_FORMAT5);
+          else
+            fwrite (e, sizeof (double), 3, file);
+        }
+      }
     ol_e_free (e);
   }
   else if (!strcmp (des, "euler-roe"))
@@ -512,12 +543,17 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
         if (prefix && !strcmp (prefix, "id"))
           fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-        ol_q_e (q[i], e);
-        ol_e_er (e, e);
-        if (!strcmp (format, "ascii"))
-          ol_e_fprintf (file, e, REAL_PRINT_FORMAT5);
+        if (!ol_q_label (q[i], label))
+          neut_ori_fprintf_aslabel (file, format, label);
         else
-          fwrite (e, sizeof (double), 3, file);
+        {
+          ol_q_e (q[i], e);
+          ol_e_er (e, e);
+          if (!strcmp (format, "ascii"))
+            ol_e_fprintf (file, e, REAL_PRINT_FORMAT5);
+          else
+            fwrite (e, sizeof (double), 3, file);
+        }
       }
     ol_e_free (e);
   }
@@ -530,22 +566,27 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
         if (prefix && !strcmp (prefix, "id"))
           fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-        ol_q_g (q[i], g);
-        if (!strcmp (format, "ascii"))
-        {
-          ut_array_1d_fprintf_nonl (file, g[0], 3, REAL_PRINT_FORMAT3);
-          fprintf (file, " ");
-          ut_array_1d_fprintf_nonl (file, g[1], 3, REAL_PRINT_FORMAT3);
-          fprintf (file, " ");
-          ut_array_1d_fprintf      (file, g[2], 3, REAL_PRINT_FORMAT3);
-        }
+        if (!ol_q_label (q[i], label))
+          neut_ori_fprintf_aslabel (file, format, label);
         else
         {
-          fwrite (g[0], sizeof (double), 3, file);
-          fwrite (g[1], sizeof (double), 3, file);
-          fwrite (g[2], sizeof (double), 3, file);
+          ol_q_g (q[i], g);
+          if (!strcmp (format, "ascii"))
+          {
+            ut_array_1d_fprintf_nonl (file, g[0], 3, REAL_PRINT_FORMAT3);
+            fprintf (file, " ");
+            ut_array_1d_fprintf_nonl (file, g[1], 3, REAL_PRINT_FORMAT3);
+            fprintf (file, " ");
+            ut_array_1d_fprintf      (file, g[2], 3, REAL_PRINT_FORMAT3);
+          }
+          else
+          {
+            fwrite (g[0], sizeof (double), 3, file);
+            fwrite (g[1], sizeof (double), 3, file);
+            fwrite (g[2], sizeof (double), 3, file);
+          }
         }
-    }
+      }
     ol_g_free (g);
   }
   else if (!strcmp (des, "axis-angle"))
@@ -558,13 +599,18 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
         if (prefix && !strcmp (prefix, "id"))
           fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-        ol_q_rtheta (q[i], r, &theta);
-        if (!strcmp (format, "ascii"))
-          ol_rtheta_fprintf (file, r, theta, REAL_PRINT_FORMAT5);
+        if (!ol_q_label (q[i], label))
+          neut_ori_fprintf_aslabel (file, format, label);
         else
         {
-          fwrite (r, sizeof (double), 3, file);
-          fwrite (&theta, sizeof (double), 1, file);
+          ol_q_rtheta (q[i], r, &theta);
+          if (!strcmp (format, "ascii"))
+            ol_rtheta_fprintf (file, r, theta, REAL_PRINT_FORMAT5);
+          else
+          {
+            fwrite (r, sizeof (double), 3, file);
+            fwrite (&theta, sizeof (double), 1, file);
+          }
         }
       }
     ol_r_free (r);
@@ -578,11 +624,16 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
         if (prefix && !strcmp (prefix, "id"))
           fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-        ol_q_theta (q[i], &theta);
-        if (!strcmp (format, "ascii"))
-          ol_theta_fprintf (file, theta, REAL_PRINT_FORMAT5);
+        if (!ol_q_label (q[i], label))
+          neut_ori_fprintf_aslabel (file, format, label);
         else
-          fwrite (&theta, sizeof (double), 1, file);
+        {
+          ol_q_theta (q[i], &theta);
+          if (!strcmp (format, "ascii"))
+            ol_theta_fprintf (file, theta, REAL_PRINT_FORMAT5);
+          else
+            fwrite (&theta, sizeof (double), 1, file);
+        }
       }
   }
   else if (!strcmp (des, "rodrigues"))
@@ -594,11 +645,16 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
         if (prefix && !strcmp (prefix, "id"))
           fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-        ol_q_R (q[i], R);
-        if (!strcmp (format, "ascii"))
-          ol_R_fprintf (file, R, REAL_PRINT_FORMAT5);
+        if (!ol_q_label (q[i], label))
+          neut_ori_fprintf_aslabel (file, format, label);
         else
-          fwrite (R, sizeof (double), 3, file);
+        {
+          ol_q_R (q[i], R);
+          if (!strcmp (format, "ascii"))
+            ol_R_fprintf (file, R, REAL_PRINT_FORMAT5);
+          else
+            fwrite (R, sizeof (double), 3, file);
+        }
       }
     ol_R_free (R);
   }
@@ -610,11 +666,16 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
         if (prefix && !strcmp (prefix, "id"))
           fprintf (file, "%d ", ids ? ids[i] : i + 1);
 
-      if (!strcmp (format, "ascii"))
-        ol_q_fprintf (file, q[i], REAL_PRINT_FORMAT5);
-      else
-        fwrite (q[i], sizeof (double), 4, file);
-    }
+        if (!ol_q_label (q[i], label))
+          neut_ori_fprintf_aslabel (file, format, label);
+        else
+        {
+          if (!strcmp (format, "ascii"))
+            ol_q_fprintf (file, q[i], REAL_PRINT_FORMAT5);
+          else
+            fwrite (q[i], sizeof (double), 4, file);
+        }
+      }
   }
   else
     ut_print_message (2, 1, "Format %s not available.\n", des);
@@ -622,6 +683,7 @@ neut_ori_fprintf (FILE *file, char *desconv, char *format, double **q0, int *ids
   ut_free_2d (&q, qty);
   ut_free_1d_char (&des);
   ut_free_1d_char (&conv);
+  ut_free_1d_char (&label);
 
   return;
 }
@@ -951,6 +1013,74 @@ neut_ori_des_fixconvention (char **porides)
   }
   else if (strstr (*porides, "passive"))
     ut_string_fnrs (*porides, "passive", "active", 1);
+
+  return;
+}
+
+void
+neut_ori_set_zero (struct ORI *pOri)
+{
+  (*pOri).space = NULL;
+  (*pOri).mode = NULL;
+  (*pOri).layout = NULL;
+  (*pOri).field = NULL;
+
+  (*pOri).inputqty = 0;
+  (*pOri).inputs = NULL;
+
+  (*pOri).crysym = NULL;
+
+  neut_ospace_set_zero (&(*pOri).Sp);
+
+  (*pOri).pSim = NULL;
+
+  return;
+}
+
+void
+neut_ori_free (struct ORI *pOri)
+{
+  ut_free_1d_char (&(*pOri).space);
+  ut_free_1d_char (&(*pOri).mode);
+  ut_free_1d_char (&(*pOri).layout);
+  ut_free_1d_char (&(*pOri).field);
+  ut_free_1d_char (&(*pOri).crysym);
+
+  return;
+}
+
+void
+neut_ori_R_Rcrysym_all (struct ORI Ori, double *R, double ***pRs, int *pqty)
+{
+  int i, qty, status;
+  double dist;
+  double *q = ol_q_alloc ();
+  double *qs = ol_q_alloc ();
+  double *Rs = ol_R_alloc ();
+
+  (*pqty) = 0;
+
+  qty = ol_crysym_qty (Ori.crysym);
+
+  ol_R_q (R, q);
+  for (i = 1; i <= qty; i++)
+  {
+    ol_q_crysym (q, Ori.crysym, i, qs);
+    ol_q_R (qs, Rs);
+
+    status = ut_space_polypts_point_dist (Ori.Sp.Tess.VerCoo + 1, Ori.Sp.Tess.VerQty, Rs, &dist);
+    if (status || dist < 1e-6)
+    {
+      (*pqty)++;
+      (*pRs) = ut_realloc_2d_addline (*pRs, *pqty, 3);
+
+      ut_array_1d_memcpy (Rs, 3, (*pRs)[(*pqty) - 1]);
+    }
+  }
+
+  ol_q_free (q);
+  ol_q_free (qs);
+  ol_R_free (Rs);
 
   return;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_point_.h"
@@ -306,4 +306,21 @@ int
 neut_point_isvoid (struct POINT Point)
 {
   return Point.Qty == 0;
+}
+
+void
+neut_point_olset (struct POINT Points, struct OL_SET *pOSet)
+{
+  int i;
+
+  (*pOSet) = ol_set_alloc (Points.Qty, "triclinic");
+
+  if (!strcmp (Points.Type, "none"))
+    for (i = 0; i < Points.Qty; i++)
+      ol_R_q (Points.Coo[i + 1], (*pOSet).q[i]);
+
+  else if (!strcmp (Points.Type, "ori"))
+    ut_array_2d_memcpy (Points.Coo + 1, Points.Qty, 4, (*pOSet).q);
+
+  return;
 }

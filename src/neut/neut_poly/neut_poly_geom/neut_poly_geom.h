@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -61,6 +61,8 @@ extern "C"
 
   extern int neut_poly_point_dist (struct POLY Poly, double *ptcoo,
                                    double *pdist);
+  extern int neut_polys_sel (struct POLY *Poly, int *polys, int
+      polyqty, double *pval);
   extern int neut_polys_convexity (struct POLY *Poly, int *polys, int
       polyqty, double *pval);
   extern int neut_polys_convexity_2d (struct POLY *Poly, int *polys, int
@@ -69,6 +71,18 @@ extern "C"
       struct MESH *pM);
   extern void neut_polys_convexhull (struct POLY *Poly, int *polys, int
       polyqty, struct NODES *pN, struct MESH *pM);
+
+  extern void neut_poly_aniso (struct POLY Poly, double **evect, double *eval);
+  extern void neut_poly_anisofact (struct POLY Poly, double *pval);
+
+  extern void neut_poly_aniso_2d (struct POLY Poly, double **evect, double *eval);
+  extern void neut_poly_anisofact_2d (struct POLY Poly, double *pval);
+
+
+  extern int neut_polys_anisofact (struct POLY *Poly, int *polys,
+				    int polyqty, double *pval);
+  extern int neut_polys_anisofact_2d (struct POLY *Poly, int *polys,
+                         int polyqty, double *pval);
 
 #endif				/* NEUT_POLY_GEOM_H */
 

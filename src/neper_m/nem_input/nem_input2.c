@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_input_.h"
@@ -36,11 +36,17 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     ut_string_string ("faces", &(*pIn).faset);
 
   char *tmp = ut_alloc_1d_char (1000);
-  sprintf (tmp, "%s --version > .nepertmp 2> .nepertmp", (*pIn).gmsh);
+  char *filename = ut_alloc_1d_char (100);
+  sprintf (filename, "%s/tempfileXXXXXX", (*pIn).tmp);
+
+  if (!mkstemp (filename))
+    abort ();
+
+  sprintf (tmp, "%s --version > %s 2> %s", (*pIn).gmsh, filename, filename);
   if (system (tmp) == -1)
     abort ();
 
-  FILE *file = ut_file_open (".nepertmp", "R");
+  FILE *file = ut_file_open (filename, "R");
   if (fscanf (file, "%s", tmp) != 1)
     ut_print_message (2, 3,
                       "Option `-gmsh' does not provide a valid path to the gmsh binary.\n");
@@ -52,9 +58,10 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
                       "Gmsh %s is known to produce error.  Please update.\n",
                       tmp);
 
-  ut_file_close (file, ".nepertmp", "R");
-  remove (".nepertmp");
+  ut_file_close (file, filename, "R");
+  remove (filename);
   ut_free_1d_char (&tmp);
+  ut_free_1d_char (&filename);
 
   if ((*pIn).partstring)
   {
@@ -147,6 +154,8 @@ nem_input_treatargs (int fargc, char **fargv, int argc, char **argv,
     (*pIn).outtess = ut_string_addextension ((*pIn).body, ".tess");
     (*pIn).intf = ut_string_addextension ((*pIn).body, ".intf");
     (*pIn).sim = ut_string_addextension ((*pIn).body, ".sim");
+    (*pIn).etree = ut_string_addextension ((*pIn).body, ".etree");
+    (*pIn).ntree = ut_string_addextension ((*pIn).body, ".ntree");
   }
 
   return;

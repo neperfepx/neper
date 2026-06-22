@@ -1,11 +1,11 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_stat_.h"
 
 void
-net_stat_tess (FILE * file, char *entity, char *format, struct TESS *pTess)
+net_stat_tess (FILE *file, char *entity, char *format, struct TESS *pTess)
 {
   int i, j, status, qty, invalqty, valqty;
   double *vals = NULL;
@@ -27,12 +27,13 @@ net_stat_tess (FILE * file, char *entity, char *format, struct TESS *pTess)
     for (j = 0; j < invalqty; j++)
     {
       status =
-        neut_tess_var_val (pTess, NULL, NULL, NULL, entity, i, invar[j], &vals,
-                           &valqty, &type);
+        neut_tess_var_val (pTess, NULL, NULL, NULL, entity, i, invar[j],
+                           &vals, &valqty, &type);
 
       if (!status)
         ut_array_1d_fprintf_nonl (file, vals, valqty,
-                                  !strcmp (type, "%f") ? REAL_PRINT_FORMAT : type);
+                                  !strcmp (type,
+                                           "%f") ? REAL_PRINT_FORMAT : type);
       else
         ut_print_exprbug (invar[j]);
 
@@ -51,7 +52,7 @@ net_stat_tess (FILE * file, char *entity, char *format, struct TESS *pTess)
 }
 
 void
-net_stat_point (FILE * file, char *format, struct POINT Point,
+net_stat_point (FILE *file, char *format, struct POINT Point,
                 struct TESS Tess)
 {
   int i, j, status, invalqty, valqty;
@@ -74,7 +75,8 @@ net_stat_point (FILE * file, char *format, struct POINT Point,
 
       if (!status)
         ut_array_1d_fprintf_nonl (file, vals, valqty,
-                                  !strcmp (type, "%f") ? REAL_PRINT_FORMAT : type);
+                                  !strcmp (type,
+                                           "%f") ? REAL_PRINT_FORMAT : type);
       else
         ut_print_exprbug (invar[j]);
 
@@ -92,7 +94,7 @@ net_stat_point (FILE * file, char *format, struct POINT Point,
 }
 
 void
-net_stat_tesr (FILE * file, char *entity, char *format, struct TESR *pTesr)
+net_stat_tesr (FILE *file, char *entity, char *format, struct TESR *pTesr)
 {
   int i, j, qty, status, invalqty, valqty;
   double *vals = NULL;
@@ -119,7 +121,10 @@ net_stat_tesr (FILE * file, char *entity, char *format, struct TESR *pTesr)
 
       if (!status)
         ut_array_1d_fprintf_nonl (file, vals, valqty,
-                                  !strcmp (type, "%f") ? REAL_PRINT_FORMAT : type);
+                                  (type == NULL
+                                   || !strcmp (type,
+                                               "%f") ? REAL_PRINT_FORMAT :
+                                   type));
       else
         ut_print_exprbug (invar[j]);
 

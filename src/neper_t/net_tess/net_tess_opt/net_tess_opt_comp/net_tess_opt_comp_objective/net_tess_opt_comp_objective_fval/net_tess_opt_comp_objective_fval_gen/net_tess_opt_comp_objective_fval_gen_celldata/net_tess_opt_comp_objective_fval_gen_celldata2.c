@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_fval_gen_celldata_.h"
@@ -41,6 +41,50 @@ net_tess_opt_comp_objective_fval_gen_celldata_scalar (struct TOPT *pTOpt,
     ut_array_1d_lmean_expr (val + 1, (*pTOpt).CellQty,
                             (*pTOpt).tarobjective[id]);
   // (*pTOpt).curval[id] /= (*pTOpt).Dim;
+
+  ut_free_1d (&val);
+
+  return;
+}
+
+void
+net_tess_opt_comp_objective_fval_gen_celldata_sel (struct TOPT *pTOpt, int id)
+{
+  int i;
+  double delta, *val = ut_alloc_1d ((*pTOpt).CellQty + 1);
+
+  for (i = 1; i <= (*pTOpt).CellQty; ++i)
+  {
+    if ((*pTOpt).curcellpenalty[i] == 0)
+    {
+      if ((*pTOpt).tarcellvalqty[id] == 1)
+        delta = (*pTOpt).curcellval[id][i][0] - (*pTOpt).tarcellval[id][i][0];
+
+      else if ((*pTOpt).tarcellvalqty[id] == 2)
+      {
+        if ((*pTOpt).curcellval[id][i][0] < (*pTOpt).tarcellval[id][i][0])
+        {
+          delta = (*pTOpt).curcellval[id][i][0] / (*pTOpt).tarcellval[id][i][0];
+          delta = fabs ((*pTOpt).curcellval[id][i][0] - (*pTOpt).tarcellval[id][i][0]) / (*pTOpt).tarcellval[id][i][0];
+        }
+        else if ((*pTOpt).curcellval[id][i][0] > (*pTOpt).tarcellval[id][i][1])
+          delta = fabs((*pTOpt).curcellval[id][i][0] - (*pTOpt).tarcellval[id][i][1]) / (*pTOpt).tarcellval[id][i][1];
+        else
+          delta = 0;
+      }
+
+      else
+        abort ();
+
+      val[i] = delta;
+    }
+    else
+      val[i] = 1000;
+  }
+
+  (*pTOpt).curval[id] =
+    ut_array_1d_lmean_expr (val + 1, (*pTOpt).CellQty,
+                            (*pTOpt).tarobjective[id]);
 
   ut_free_1d (&val);
 

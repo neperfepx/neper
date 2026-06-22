@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_uniform_.h"
@@ -20,14 +20,15 @@ net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
   (*pOOpt).n = (*pOSet).size;
   (*pOOpt).id = 0;
   ut_string_string ((*pOSet).crysym, &(*pOOpt).crysym);
-  ut_string_string (In.optistop[1][level], &(*pOOpt).orioptistop);
-  ut_string_string (In.orioptineigh[level], &(*pOOpt).orioptineigh);
+  ut_string_string (In.optineigh[1][level], &(*pOOpt).orioptineigh);
+
+  net_orioptistop (In, level, MTess, Tess, dtess, dcell, (char *) "thomson", &(*pOOpt).orioptistop);
 
   neut_ori_n_avradeq (NULL, (*pOSet).size, (*pOSet).crysym, vals);
   vals[1] = (*pOSet).size * (*pOSet).nc;
   vals[2] = M_PI;
 
-  ut_math_eval (In.orioptineigh[level], varqty, vars, vals,
+  ut_math_eval (In.optineigh[1][level], varqty, vars, vals,
                 &((*pOOpt).neighd));
 
   (*pOOpt).neighd = ut_num_min ((*pOOpt).neighd, M_PI - OL_EPS_RAD);
@@ -37,34 +38,34 @@ net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
   if ((*pOOpt).neighdE > 4 - OL_EPS)
     (*pOOpt).neighdE = 4 + OL_EPS;
 
-  // orioptiini
+  // optiini
 
-  if (!strcmp (In.orioptiini[level], "random"))
+  if (!strcmp (In.optiini[1][level], "random"))
     net_ori_random (random, pOSet);
-  else if (ut_string_isfilename (In.orioptiini[level]))
+  else if (ut_string_isfilename (In.optiini[1][level]))
   {
     ut_print_message (0, verbositylevel,
                       "Loading orientations from file...\n");
-    net_ori_file (In.orioptiini[level], pOSet);
+    net_ori_file (In.optiini[1][level], pOSet);
   }
   else
     abort ();
 
   // optioptifix
 
-  if (strcmp (In.orioptifix[level], "none"))
+  if (strcmp (In.optifix[1][level], "none"))
   {
     (*pOOpt).fixori = ut_alloc_1d_int ((*pOOpt).n);
 
     char *mid = NULL;
     neut_mtess_tess_poly_mid (MTess, Tess[dtess], dcell, &mid);
-    net_multiscale_arg_1d_int_fscanf (In.orioptifix[level], mid,
+    net_multiscale_arg_1d_int_fscanf (In.optifix[1][level], mid,
                                       (*pOOpt).fixori, (*pOOpt).n);
     ut_free_1d_char (&mid);
 
-    FILE *fp = ut_file_open (In.orioptifix[level], "r");
+    FILE *fp = ut_file_open (In.optifix[1][level], "r");
     ut_array_1d_int_fscanf (fp, (*pOOpt).fixori, (*pOOpt).n);
-    ut_file_close (fp, In.orioptifix[level], "r");
+    ut_file_close (fp, In.optifix[1][level], "r");
 
     (*pOOpt).fixoriqty = ut_array_1d_int_sum ((*pOOpt).fixori, (*pOOpt).n);
     ut_print_message (0, verbositylevel, "%d fixed orientation%s.\n",
@@ -72,8 +73,12 @@ net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
   }
 
   net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
-                                           In.orioptilogvar[level],
+                                           In.optilogvar[1][level],
                                            &(*pOOpt).logvar);
+
+  net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
+                                           In.optilogval[1][level],
+                                           &(*pOOpt).logval);
 
   // terminal output
   ut_print_message (0, verbositylevel, "Crystal symmetry: %s",
@@ -101,7 +106,7 @@ net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet,
   double *Etot = NULL;
   double **f = ut_alloc_2d ((*pOSet).size, 3);
   double *E = ut_alloc_1d ((*pOSet).size);
-  my_kd_tree_t *qindex = nullptr;
+  my_kd_tree_t *qtree = nullptr;
   struct QCLOUD qcloud;
   double **dq = NULL;
 
@@ -117,10 +122,10 @@ net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet,
     return 0;
 
   if ((*pOOpt).neighd < M_PI)
-    neut_oset_kdtree (pOSet, &qcloud, &qindex);
+    neut_oset_kdtree (pOSet, &qcloud, &qtree);
 
   // computing forces
-  net_ori_uniform_opt_forces (pOSet, f, E, pOOpt, &qcloud, qindex);
+  net_ori_uniform_opt_forces (pOSet, f, E, pOOpt, &qcloud, qtree);
 
   // computing energy
   net_ori_uniform_opt_energy (pOSet, E, &Etot, pOOpt);
@@ -149,10 +154,10 @@ net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet,
     net_ori_uniform_opt_rot (pOOpt, f, alpha, pOSet, dq);
 
     if (strcmp ((*pOOpt).orioptineigh, "all"))
-      neut_oset_kdtree (pOSet, &qcloud, &qindex);
+      neut_oset_kdtree (pOSet, &qcloud, &qtree);
 
     // computing forces
-    net_ori_uniform_opt_forces (pOSet, f, E, pOOpt, &qcloud, qindex);
+    net_ori_uniform_opt_forces (pOSet, f, E, pOOpt, &qcloud, qtree);
 
     net_ori_uniform_opt_energy (pOSet, E, &Etot, pOOpt);
 
@@ -180,7 +185,7 @@ net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SET *pOSet,
   ut_free_2d (&fc, (*pOSet).size);
   ut_free_2d (&qc, (*pOSet).size);
 
-  delete qindex;
+  delete qtree;
 
   return EXIT_SUCCESS;
 }

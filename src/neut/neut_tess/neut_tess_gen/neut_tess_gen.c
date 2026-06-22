@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_gen_.h"
@@ -78,6 +78,15 @@ neut_tess_var_val (struct TESS *pTess,
 
   if (pvalqty)
     (*pvalqty) = 1;
+
+  if (!strcmp (var, "step"))
+  {
+    (*pvals)[0] = (*(*pTess).pSim).step;
+    if (ptype)
+      ut_string_string ("%d", ptype);
+
+    return 0;
+  }
 
   int i, j, tmp, status, scale;
   double *c = ut_alloc_1d (3);
@@ -161,6 +170,21 @@ neut_tess_var_val (struct TESS *pTess,
       neut_tess_diameq ((*pTess), *pvals);
     else if (!strcmp (var2, "radeq"))
       neut_tess_radeq ((*pTess), *pvals);
+    else if (!strcmp (var2, "lengthx"))
+    {
+      neut_tess_bbox ((*pTess), bbox);
+      (*pvals)[0] = bbox[0][1] - bbox[0][0];
+    }
+    else if (!strcmp (var2, "lengthy"))
+    {
+      neut_tess_bbox ((*pTess), bbox);
+      (*pvals)[0] = bbox[1][1] - bbox[1][0];
+    }
+    else if (!strcmp (var2, "lengthz"))
+    {
+      neut_tess_bbox ((*pTess), bbox);
+      (*pvals)[0] = bbox[2][1] - bbox[2][0];
+    }
     else
       status = -1;
   }
@@ -331,6 +355,13 @@ neut_tess_var_val (struct TESS *pTess,
       neut_tess_poly_volume ((*pTess), id, *pvals);
     else if (!strcmp (var2, "diameq"))
       neut_tess_cell_diameq ((*pTess), id, *pvals);
+
+    else if (!strcmp (var2, "anisofact"))
+       neut_tess_poly_anisofact ((*pTess), id, *pvals);
+
+    /*else if (!strcmp (var2, "anisofact_spect"))
+       neut_tess_poly_anisofact_spect ((*pTess), id, *pvals);*/
+
     else if (!strncmp (var2, "length(", 7))
     {
       int qty;
@@ -655,6 +686,13 @@ neut_tess_var_val (struct TESS *pTess,
       neut_tess_face_area ((*pTess), id, *pvals);
     else if (!strcmp (var2, "diameq"))
       neut_tess_face_diameq ((*pTess), id, *pvals);
+
+    else if (!strcmp (var2, "anisofact"))
+      neut_tess_face_anisofact ((*pTess), id, *pvals);
+    //else if (!strcmp (var2, "anisofact_spect"))
+      //neut_tess_face_anisofact_spect ((*pTess), id, *pvals);
+
+
     else if (!strncmp (var2, "length(", 7))
     {
       int qty;
@@ -1355,16 +1393,16 @@ neut_tess_var_val (struct TESS *pTess,
     */
 
     status = 0;
-    if (!strcmp (var, "id"))
+    if (!strcmp (var2, "id"))
     {
       (*pvals)[0] = id;
       ut_string_string ("%d", &typetmp);
     }
-    else if (!strcmp (var, "vol"))
+    else if (!strcmp (var2, "vol"))
       neut_tess_group_vol ((*pTess), id, *pvals);
-    else if (!strcmp (var, "area"))
+    else if (!strcmp (var2, "area"))
       neut_tess_group_area ((*pTess), id, *pvals);
-    else if (!strcmp (var, "size"))
+    else if (!strcmp (var2, "size"))
       neut_tess_group_size ((*pTess), id, *pvals);
     else
       status = -1;
@@ -2081,14 +2119,57 @@ neut_tess_cell_id (struct TESS Tess, int cell)
 void
 neut_tess_olset (struct TESS Tess, struct OL_SET *pOSet)
 {
-  int i;
+  int i, varqty;
 
   (*pOSet) = ol_set_alloc (Tess.CellQty, Tess.CellCrySym ? Tess.CellCrySym : "triclinic");
 
+  if (Tess.CellOriDistrib)
+  {
+    (*pOSet).theta = ut_alloc_1d ((*pOSet).size);
+    ut_array_1d_set ((*pOSet).theta, (*pOSet).size, -1);
+    (*pOSet).theta3 = ut_alloc_1d_pdouble ((*pOSet).size);
+  }
+
+  // We call neut_tess_cellori to obtain the orientations from a sim, if defined
+  neut_tess_cellori (Tess, (*pOSet).q - 1);
   for (i = 1; i <= Tess.CellQty; i++)
   {
-    ol_q_memcpy (Tess.CellOri[i], (*pOSet).q[i -1]);
-    neut_tess_cell_size (Tess, i, (*pOSet).weight + i - 1);
+    // see above
+    // ol_q_memcpy (Tess.CellOri[i], (*pOSet).q[i -1]);
+    if (Tess.CellWeight)
+      (*pOSet).weight[i - 1] = Tess.CellWeight[i];
+    else
+      neut_tess_cell_size (Tess, i, (*pOSet).weight + i - 1);
+
+    if (Tess.CellOriDistrib && Tess.CellOriDistrib[i] && strlen (Tess.CellOriDistrib[i]) > 0)
+    {
+      char *fct = NULL, **vars = NULL, **vals = NULL;
+
+      ut_string_function (Tess.CellOriDistrib[i], &fct, &vars, &vals, &varqty);
+
+      if (strstr (Tess.CellOriDistrib[i], "theta1")
+       || strstr (Tess.CellOriDistrib[i], "theta2")
+       || strstr (Tess.CellOriDistrib[i], "theta3"))
+        (*pOSet).theta3[i - 1] = ut_alloc_1d (3);
+
+      for (int j = 0; j < varqty; j++)
+      {
+        if (!vars[j] || !strcmp (vars[j], "thetam"))
+          (*pOSet).theta[i - 1] = atof (vals[j]) / (2 * sqrt(2 / M_PI)) * M_PI / 180;
+        else if (!strcmp (vars[j], "theta"))
+          (*pOSet).theta[i - 1] = atof (vals[j]) * M_PI / 180;
+        else if (!strcmp (vars[j], "theta1"))
+          (*pOSet).theta3[i - 1][0] = atof (vals[j]) * M_PI / 180;
+        else if (!strcmp (vars[j], "theta2"))
+          (*pOSet).theta3[i - 1][1] = atof (vals[j]) * M_PI / 180;
+        else if (!strcmp (vars[j], "theta3"))
+          (*pOSet).theta3[i - 1][2] = atof (vals[j]) * M_PI / 180;
+      }
+
+      ut_free_1d_char (&fct);
+      ut_free_2d_char (&vars, varqty);
+      ut_free_2d_char (&vals, varqty);
+    }
   }
 
   return;

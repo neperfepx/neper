@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_domain_.h"
@@ -9,7 +9,7 @@ net_domain_fromfile (char *filename, struct TESS *pDomain)
 {
   if (ut_file_testformat (filename, "tess"))
   {
-    neut_tess_fnscanf (filename, pDomain);
+    neut_tess_fnscanf (filename, pDomain, "r");
     (*pDomain).Level = 0;
     (*pDomain).TessId = 0;
   }

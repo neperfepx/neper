@@ -1,15 +1,15 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_oset_.hpp"
 
 void
 neut_oset_kdtree (struct OL_SET *pOSet, struct QCLOUD *pqcloud,
-                  my_kd_tree_t ** pqindex)
+                  my_kd_tree_t ** pqtree)
 {
   neut_oset_kdtree_cloud (pOSet, pqcloud);
-  neut_oset_kdtree_build (pqcloud, pqindex);
+  neut_oset_kdtree_build (pqcloud, pqtree);
 
   return;
 }
@@ -87,11 +87,11 @@ neut_oset_clustering (struct OL_SET OSet, struct OL_SET Grid, char *method, stru
 }
 
 void
-neut_oset_odf_clustering (struct OL_SET OSet, struct ODF Odf, char *method, struct OL_SET *pOSet)
+neut_oset_odf_clustering (struct OL_SET OSet, struct ODF *pOdf, char *method, struct OL_SET *pOSet)
 {
   struct OL_SET Grid;
 
-  neut_odf_mesh_olset (Odf, &Grid);
+  neut_ospace_mesh_olset (&((*pOdf).Sp), &Grid);
   ut_array_1d_zero (Grid.weight, Grid.size);
 
   neut_oset_clustering (OSet, Grid, method, pOSet);

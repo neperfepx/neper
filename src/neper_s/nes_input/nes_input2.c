@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nes_input_.h"
@@ -51,6 +51,9 @@ nes_input_treatargs (int fargc, char **fargv, int argc, char **argv,
       ut_string_fnrs ((*pIn).simdir, NEUT_SEP_NODEP, "-", INT_MAX);
     }
   }
+
+  if (!(*pIn).orispace || !strcmp ((*pIn).orispace, "none"))
+    ut_string_string ("rodrigues(fr20)", &(*pIn).orispace);
 
   return;
 }

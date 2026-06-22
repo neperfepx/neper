@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_show_.h"
@@ -20,6 +20,12 @@ nev_print_show (struct IN_V In, struct TESS *pTess, struct TESR Tesr,
 
     else if (!strcmp (In.show[i][0], "scale"))
       ut_string_int (In.show[i][1], &((*pPrint).showscale));
+
+    else if (!strcmp (In.show[i][0], "scalemin"))
+      ut_string_int (In.show[i][1], &((*pPrint).showscalemin));
+
+    else if (!strcmp (In.show[i][0], "scalemax"))
+      ut_string_int (In.show[i][1], &((*pPrint).showscalemax));
 
     else if (!strcmp (In.show[i][0], "tess"))
       ut_string_int (In.show[i][1], &((*pPrint).showtess));

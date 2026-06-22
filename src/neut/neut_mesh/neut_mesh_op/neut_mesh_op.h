@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -265,7 +265,7 @@ extern "C"
   extern void neut_mesh_2d_laplaciansmooth (struct NODES *pN, struct MESH M,
                                             int *bnodes, int bnodeqty);
 
-  extern void neut_mesh_init_eltori (struct MESH *pMesh);
+  extern void neut_mesh_init_eltori (struct NODES Nodes, struct MESH *pMesh);
 
   extern void neut_mesh_init_elsetori (struct NODES Nodes, struct MESH *pMesh);
 
@@ -275,7 +275,11 @@ extern "C"
 
   extern void neut_mesh_init_eltbody (struct MESH Mesh2D, struct MESH *pMesh3D);
 
-  extern void neut_mesh_dupnodemerge (struct NODES *pNodes, struct MESH *Mesh, struct MESH *pMesh, double eps, int verbosity);
+  extern void neut_mesh_dupnodemerge (struct NODES *pNodes, struct MESH *Mesh,
+                                      struct MESH *pMesh, double eps, int verbosity,
+                                      int **pnewnode_oldnode);
+
+  extern void neut_mesh_init_eltweight (struct NODES Nodes, struct MESH *pMesh);
 
 #endif				/* NEUT_MESH_OP_H */
 

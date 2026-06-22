@@ -1,9 +1,9 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_seedset_.h"
-#include "neut_structs/neut_nfcloud_struct.hpp"
+#include "neut_struct/neut_struct_nfcloud.hpp"
 
 void
 neut_seedset_memcpy_general (struct SEEDSET SSetA, struct SEEDSET *pSSetB)

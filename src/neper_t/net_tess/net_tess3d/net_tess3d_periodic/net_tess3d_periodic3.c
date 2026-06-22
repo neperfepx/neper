@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tess3d_periodic_.h"
@@ -133,7 +133,7 @@ net_tess3d_periodic_edge_rodrigues_peredgeori (struct TESS *pTess)
   double *q2 = ol_q_alloc ();
   char *crysym = NULL;
 
-  ut_string_functionargument ((*pTess).DomType, &crysym);
+  ut_string_function_oneargument ((*pTess).DomType, NULL, &crysym);
 
   (*pTess).PerEdgeOri = ut_alloc_1d_int ((*pTess).EdgeQty + 1);
 

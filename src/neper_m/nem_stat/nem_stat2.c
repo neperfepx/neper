@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_stat_.h"
@@ -51,6 +51,20 @@ nem_stat_nodes (FILE * file, char *format, struct NODES Nodes,
         ut_array_1d_fprintf_nonl (file, meshv[i], 3, REAL_PRINT_FORMAT);
       else if (!strcmp (invar[j], "2dmeshn"))
         ut_array_1d_fprintf_nonl (file, meshn[i], 3, REAL_PRINT_FORMAT);
+      else if (ol_des_size (invar[j]) != - 1 && !strncmp (Nodes.Domain, "stdtriangle", 10))
+      {
+        int size = ol_des_size (invar[j]);
+        double *q = ol_q_alloc ();
+        double *tmp = ut_alloc_1d (9);
+
+        neut_nodes_stdtrianglenodeori (Nodes, i, NULL, q);
+        ol_q_des (q, invar[j], tmp);
+
+        ut_array_1d_fprintf_nonl (file, tmp, size, REAL_PRINT_FORMAT);
+
+        ut_free_1d (&tmp);
+        ol_q_free (q);
+      }
       else
         ut_print_exprbug (invar[j]);
 

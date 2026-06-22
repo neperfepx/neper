@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tesr_gen_.h"
@@ -33,7 +33,9 @@ neut_tesr_entity_qty (struct TESR Tesr, char *entity, int *pqty)
   else if (!strcmp (entity, "vox"))
     (*pqty) = ut_array_1d_int_prod (Tesr.size, 3);
   else if (!strcmp (entity, "group"))
-    (*pqty) = Tesr.CellGroup ? ut_array_1d_int_max (Tesr.CellGroup + 1, Tesr.CellQty) : 0;
+    (*pqty) =
+      Tesr.CellGroup ? ut_array_1d_int_max (Tesr.CellGroup + 1,
+                                            Tesr.CellQty) : 0;
   else
     (*pqty) = -1;
 
@@ -70,7 +72,8 @@ neut_tesr_expr_val (struct TESR Tesr, char *entity, int id, char *expr,
   vals = ut_alloc_1d (varqty);
 
   if (varqty == 1 && !strcmp (expr, vars[0]))
-    status = neut_tesr_var_val (Tesr, entity, id, expr, pvals, pvalqty, ptype);
+    status =
+      neut_tesr_var_val (Tesr, entity, id, expr, pvals, pvalqty, ptype);
 
   else
   {
@@ -231,7 +234,7 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
   }
 
   else if (!strcmp (entity, "cell") || !strcmp (entity, "poly")
-        || !strcmp (entity, "face") || !strcmp (entity, "edge"))
+           || !strcmp (entity, "face") || !strcmp (entity, "edge"))
   {
     status = 0;
     if (!strcmp (var, "id"))
@@ -278,6 +281,9 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       neut_tesr_cell_radeq (Tesr, id, *pvals);
     else if (!strcmp (var, "size"))
       neut_tesr_cell_size (Tesr, id, *pvals);
+    else if (!strcmp (var, "anisofact"))
+      neut_tesr_cell_anisofact (Tesr, id, *pvals);
+
     else if (!strcmp (var, "convexity"))
       neut_tesr_cell_convexity (Tesr, id, *pvals);
     else if (!strcmp (var, "oridisanisoangles"))
@@ -296,7 +302,8 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       ut_free_2d (&evect, 3);
       ut_free_1d (&eval);
     }
-    else if (!strcmp (var, "oridisanisoaxes") || !strcmp (var, "oridisanisoaxes_ref"))
+    else if (!strcmp (var, "oridisanisoaxes")
+             || !strcmp (var, "oridisanisoaxes_ref"))
     {
       double **evect = ut_alloc_2d (3, 3);
       double *eval = ut_alloc_1d (3);
@@ -387,7 +394,7 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       (*pvals)[0] = Tesr.size[2];
       ut_string_string ("%d", &typetmp);
     }
-    else if (neut_ori_des_isvalid (var)) // orientation descriptor
+    else if (neut_ori_des_isvalid (var))        // orientation descriptor
     {
       (*pvalqty) = ol_des_size (var);
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
@@ -491,7 +498,7 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
       (*pvals)[0] = tmpint;
       ut_string_string ("%d", &typetmp);
     }
-    else if (neut_ori_des_isvalid (var)) // orientation descriptor
+    else if (neut_ori_des_isvalid (var))        // orientation descriptor
     {
       (*pvalqty) = ol_des_size (var);
       (*pvals) = ut_realloc_1d (*pvals, *pvalqty);
@@ -533,7 +540,8 @@ neut_tesr_var_val (struct TESR Tesr, char *entity, int id, char *var,
     ut_print_message (2, 0, "Failed to process expression `%s'.\n", entity);
 
   if (status == -1 && Tesr.pSim)
-    status = neut_sim_entity_id_res_val (*(Tesr.pSim), entity, id, var, *pvals);
+    status =
+      neut_sim_entity_id_res_val (*(Tesr.pSim), entity, id, var, *pvals);
 
   if (ptype)
     ut_string_string (typetmp, ptype);
@@ -705,10 +713,12 @@ neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet)
 
   (*pOSet) =
     ol_set_alloc ((Tesr.CellBBox[cell][2][1] - Tesr.CellBBox[cell][2][0] +
-                   1) * (Tesr.CellBBox[cell][1][1] -
-                         Tesr.CellBBox[cell][1][0] +
-                         1) * (Tesr.CellBBox[cell][0][1] -
-                               Tesr.CellBBox[cell][0][0] + 1),
+                   1) *
+                  (Tesr.CellBBox[cell][1][1] -
+                   Tesr.CellBBox[cell][1][0] +
+                   1) *
+                  (Tesr.CellBBox[cell][0][1] -
+                   Tesr.CellBBox[cell][0][0] + 1),
                   Tesr.CellCrySym ? Tesr.CellCrySym : "triclinic");
 
   qty = 0;
@@ -718,9 +728,9 @@ neut_tesr_cell_olset (struct TESR Tesr, int cell, struct OL_SET *pOSet)
         if (Tesr.VoxCell[i][j][k] == cell)
         {
           qty++;
-          ol_q_memcpy (Tesr.VoxOri[i][j][k], (*pOSet).q[qty -1]);
+          ol_q_memcpy (Tesr.VoxOri[i][j][k], (*pOSet).q[qty - 1]);
           if (Tesr.VoxOriDef)
-           (*pOSet).id[qty -1] = Tesr.VoxOriDef[i][j][k];
+            (*pOSet).id[qty - 1] = Tesr.VoxOriDef[i][j][k];
         }
 
   (*pOSet).size = (size_t) qty;
@@ -816,7 +826,8 @@ neut_tesr_cell_ori (struct TESR Tesr, int cell, double *q)
     if (SimRes.file)
     {
       double **qall = ut_alloc_2d (cell + 1, 4);
-      neut_ori_fnscanf (SimRes.file, (*(Tesr.pSim)).OriDes, "ascii", qall + 1, NULL, cell, NULL, "R");
+      neut_ori_fnscanf (SimRes.file, (*(Tesr.pSim)).OriDes, "ascii", qall + 1,
+                        NULL, cell, NULL, "R");
 
       ol_q_memcpy (qall[cell], q);
 
@@ -855,7 +866,8 @@ neut_tesr_cellori (struct TESR Tesr, double **cellori)
 
     if (SimRes.file && ut_file_exist (SimRes.file))
     {
-      neut_ori_fnscanf (SimRes.file, (*pSim).OriDes, "ascii", cellori + 1, NULL, Tesr.CellQty, NULL, "R");
+      neut_ori_fnscanf (SimRes.file, (*pSim).OriDes, "ascii", cellori + 1,
+                        NULL, Tesr.CellQty, NULL, "R");
       status = 0;
     }
     else if ((*pSim).step == 0 && Tesr.CellOri)
@@ -904,4 +916,62 @@ neut_tesr_cell_gos (struct TESR Tesr, int cell, double *pgos)
   ol_q_free (q);
 
   return status;
+}
+
+void
+neut_tesr_olset (struct TESR Tesr, struct OL_SET *pOSet)
+{
+  int i, varqty;
+
+  (*pOSet) =
+    ol_set_alloc (Tesr.CellQty,
+                  Tesr.CellCrySym ? Tesr.CellCrySym : "triclinic");
+
+  if (Tesr.CellOriDistrib)
+  {
+    (*pOSet).theta = ut_alloc_1d ((*pOSet).size);
+    ut_array_1d_set ((*pOSet).theta, (*pOSet).size, -1);
+    (*pOSet).theta3 = ut_alloc_1d_pdouble ((*pOSet).size);
+  }
+
+  for (i = 1; i <= Tesr.CellQty; i++)
+  {
+    ol_q_memcpy (Tesr.CellOri[i], (*pOSet).q[i - 1]);
+    neut_tesr_cell_size (Tesr, i, (*pOSet).weight + i - 1);
+
+    if (Tesr.CellOriDistrib && Tesr.CellOriDistrib[i]
+        && strlen (Tesr.CellOriDistrib[i]) > 0)
+    {
+      char *fct = NULL, **vars = NULL, **vals = NULL;
+
+      ut_string_function (Tesr.CellOriDistrib[i], &fct, &vars, &vals,
+                          &varqty);
+
+      if (strstr (Tesr.CellOriDistrib[i], "theta1")
+          || strstr (Tesr.CellOriDistrib[i], "theta2")
+          || strstr (Tesr.CellOriDistrib[i], "theta3"))
+        (*pOSet).theta3[i - 1] = ut_alloc_1d (3);
+
+      for (int j = 0; j < varqty; j++)
+      {
+        if (!vars[j] || !strcmp (vars[j], "thetam"))
+          (*pOSet).theta[i - 1] =
+            atof (vals[j]) / (2 * sqrt (2 / M_PI)) * M_PI / 180;
+        else if (!strcmp (vars[j], "theta"))
+          (*pOSet).theta[i - 1] = atof (vals[j]) * M_PI / 180;
+        else if (!strcmp (vars[j], "theta1"))
+          (*pOSet).theta3[i - 1][0] = atof (vals[j]) * M_PI / 180;
+        else if (!strcmp (vars[j], "theta2"))
+          (*pOSet).theta3[i - 1][1] = atof (vals[j]) * M_PI / 180;
+        else if (!strcmp (vars[j], "theta3"))
+          (*pOSet).theta3[i - 1][2] = atof (vals[j]) * M_PI / 180;
+      }
+
+      ut_free_1d_char (&fct);
+      ut_free_2d_char (&vars, varqty);
+      ut_free_2d_char (&vals, varqty);
+    }
+  }
+
+  return;
 }

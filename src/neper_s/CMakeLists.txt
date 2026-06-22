@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2024, Romain Quey.
+# Copyright (C) 2003-2026, Romain Quey, CNRS.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 3.0...3.10)
@@ -28,7 +28,6 @@ nes_input/nes_input2.c
 nes_input/nes_input3.c
 nes_merge/nes_merge1.c
 nes_merge/nes_merge2.c
-nes_orispace/nes_orispace1.c
 nes_entity/nes_entity1.c
 nes_pproc/nes_pproc1.c
 nes_pproc/nes_pproc2.c
@@ -38,7 +37,7 @@ nes_pproc/nes_pproc_entity/nes_pproc_entity2.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity_builtin/nes_pproc_entity_builtin1.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity_builtin/nes_pproc_entity_builtin2.c
 nes_pproc/nes_pproc_entity/nes_pproc_entity_builtin/nes_pproc_entity_builtin3.cpp
-nes_pproc/nes_pproc_entity/nes_pproc_entity_builtin/nes_pproc_entity_builtin4.c
+nes_pproc/nes_pproc_orispace/nes_pproc_orispace1.c
 )
 
 list (APPEND EXTRA_LIBS neut)

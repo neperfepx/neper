@@ -72,12 +72,6 @@ Input Data
 
   **Default value**: -.
 
-.. option:: -orispace <file_name>
-
-  Specify the mesh of orientation space used for ODF computation.
-
-  **Default value**: -.
-
 Step Options
 ~~~~~~~~~~~~
 
@@ -128,6 +122,18 @@ Below are options to manipulate (add, remove or update) the results of a simulat
   .. note:: To use a simulation result at a specific step, use :data:`<res>(step=<step_nb>)`, where :data:`<res>` is the result and :data:`<step_nb>` is the step number.
 
   **Default value**: -.
+
+Orientation Space Options
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. option:: -orispace <file_name> (secondary option)
+
+  Specify the (one-cell) tessellation and/or mesh of orientation space used for ODF computation, which can be:
+
+    - A built-in space, of the form :data:`rodrigues(fr\<N\>)` (or :data:`fr\<N\>`), where :data:`<N>` is the refinement level;
+    - A custom space, of the form :data:`\<tess_file_name\>,\<mesh_file_name\>`.
+
+  **Default value**: :data:`rodrigues(fr20)`.
 
 Output Options
 ~~~~~~~~~~~~~~

@@ -1,9 +1,9 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_.h"
-#include "neut_nfcloud_struct.hpp"
+#include "neut_struct_nfcloud.hpp"
 
 extern void net_polycomp (struct POLY Domain, struct SEEDSET SeedSet,
                           NFCLOUD * pnf_cloud, NFTREE ** pnf_index,
@@ -70,7 +70,7 @@ net_tess_opt_comp_objective_x_ori (const double *x, struct TOPT *pTOpt)
       ut_array_1d_int_list_addval (&(*pTOpt).TDyn.seedchanged,
                                    &(*pTOpt).TDyn.seedchangedqty,
                                    (*pTOpt).x_seed[i]);
-      if ((*pTOpt).x_var[i] != 3)
+      if ((*pTOpt).x_var[i] <= (*pTOpt).SSet.Dim)
         ut_array_1d_int_list_addval (&(*pTOpt).TDyn.seedmoved,
                                      &(*pTOpt).TDyn.seedmovedqty,
                                      (*pTOpt).x_seed[i]);
@@ -87,7 +87,8 @@ net_tess_opt_comp_objective_x_ori (const double *x, struct TOPT *pTOpt)
   for (i = 0; i < (*pTOpt).TDyn.seedchangedqty; i++)
   {
     seed = (*pTOpt).TDyn.seedchanged[i];
-    neut_seedset_seed_update_fromseedorir (&((*pTOpt).SSet), seed);
+    if (strstr ((*pTOpt).dof, "r1") || strstr ((*pTOpt).dof, "r2") || strstr ((*pTOpt).dof, "r3"))
+      neut_seedset_seed_update_fromseedorir (&((*pTOpt).SSet), seed);
   }
 
   return;

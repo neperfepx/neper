@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -9,7 +9,6 @@
 #include<unistd.h>
 #include<limits.h>
 
-#include"structIn_m.h"
 #include"neut_m.h"
 #include"ut.h"
 
@@ -23,3 +22,7 @@ extern void nem_order_periodic_faces (struct TESS Tess, struct NODES *pNodes, st
 extern void nem_order_post (struct IN_M In, int NodeQty_before, struct NODES *pNodes);
 extern void nem_order_newnode (struct NODES *pNodes, struct MESH *pMesh, int *nodes);
 extern void nem_order_dim_record (struct MESH *pMesh, int *nodes, int node_o2);
+extern void nem_order_str_per_3d (int NodeQty_prev, struct MESHPARA MeshPara, struct NODES *pNodes,
+                   struct MESH *Mesh);
+extern void nem_order_str_per_2d (int NodeQty_prev, struct MESHPARA MeshPara, struct NODES *pNodes,
+                   struct MESH *Mesh);

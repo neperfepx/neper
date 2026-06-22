@@ -208,6 +208,7 @@ extern void ol_q_free (double *);
 extern int ol_q_fscanf (FILE *, double *);
 extern int ol_q_fprintf (FILE *, double *, char *);
 extern void ol_q_rtheta (double *, double *, double *);
+extern void ol_q_rthetav (double *, double *);
 extern void ol_q_rtheta_rad (double *, double *, double *);
 extern void ol_q_r (double *, double *);
 extern void ol_q_theta (double *, double *);
@@ -220,6 +221,7 @@ extern void ol_rtheta_q_rad (double *, double, double *);
 extern void ol_q_R (double *, double *);
 extern void ol_g_q (double **, double *);
 extern void ol_q_g (double *, double **);
+extern void ol_q_gv (double *, double *);
 extern void ol_e_q (double *, double *);
 extern void ol_q_e (double *, double *);
 extern void ol_e_q_rad (double *, double *);
@@ -313,6 +315,12 @@ extern void ol_theta_rad2deg (double, double *);
 extern void ol_rtheta_e (double *, double, double *);
 extern void ol_rtheta_e_rad (double *, double, double *);
 
+extern int ol_q_isspecial (double *q);
+extern int ol_q_isuniform (double *q);
+extern int ol_q_specialid (double *q);
+extern void ol_specialid_q (int id, double *q);
+
+extern int ol_q_des (double *q, char *des, double *vect);
 
 #endif /* OL_DES */
 #ifndef OL_DESx

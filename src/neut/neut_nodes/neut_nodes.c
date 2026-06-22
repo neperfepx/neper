@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_nodes_.h"
@@ -7,9 +7,12 @@
 void
 neut_nodes_set_zero (struct NODES *pNodes)
 {
+  (*pNodes).Domain = NULL;
   (*pNodes).NodeQty = 0;
   (*pNodes).NodeCoo = NULL;
   (*pNodes).NodeCl = NULL;
+  (*pNodes).NodeOri = NULL;
+  (*pNodes).NodeWeight = NULL;
 
   (*pNodes).Periodic = ut_alloc_1d_int (3);
   (*pNodes).PeriodicDist = ut_alloc_1d (3);
@@ -45,8 +48,11 @@ neut_nodes_free (struct NODES *pNodes)
   if (!pNodes)
     return;
 
+  ut_free_1d_char (&(*pNodes).Domain);
   ut_free_2d (&(*pNodes).NodeCoo, (*pNodes).NodeQty + 1);
   ut_free_1d (&(*pNodes).NodeCl);
+  ut_free_2d (&(*pNodes).NodeOri, (*pNodes).NodeQty + 1);
+  ut_free_1d (&(*pNodes).NodeWeight);
 
   ut_free_1d_int (&(*pNodes).Periodic);
   ut_free_1d (&(*pNodes).PeriodicDist);
@@ -245,6 +251,9 @@ neut_nodes_memcpy (struct NODES Nodes, struct NODES *pNodes2)
   ut_array_2d_memcpy (Nodes.NodeCoo + 1, Nodes.NodeQty, 3,
                       (*pNodes2).NodeCoo + 1);
 
+  if (Nodes.Domain)
+    ut_string_string (Nodes.Domain, &((*pNodes2).Domain));
+
   if (Nodes.NodeCl)
   {
     (*pNodes2).NodeCl = ut_alloc_1d (Nodes.NodeQty + 1);
@@ -279,7 +288,6 @@ neut_nodes_memcpy (struct NODES Nodes, struct NODES *pNodes2)
       ut_array_1d_int_memcpy (Nodes.Parts[i], Nodes.Parts[i][0] + 1, (*pNodes2).Parts[i]);
     }
   }
-
 
   (*pNodes2).PerNodeQty = Nodes.PerNodeQty;
 
@@ -972,4 +980,112 @@ int
 neut_nodes_isvoid (struct NODES Nodes)
 {
   return Nodes.NodeQty == 0;
+}
+
+void
+neut_nodes_init_nodeori (struct NODES *pNodes)
+{
+  int i;
+  double *coo = ut_alloc_1d (3);
+
+  if (!(*pNodes).NodeOri)
+    (*pNodes).NodeOri = ut_alloc_2d ((*pNodes).NodeQty + 1, 4);
+
+  if ((*pNodes).Domain && !strncmp ((*pNodes).Domain, "rodrigues", 9))
+    for (i = 1; i <= (int) (*pNodes).NodeQty; i++)
+      ol_R_q ((*pNodes).NodeCoo[i], (*pNodes).NodeOri[i]);
+
+  else if ((*pNodes).Domain && !strncmp ((*pNodes).Domain, "euler-bunge", 11))
+    // FIXME
+    abort ();
+    /*
+    for (i = 0; i < (int) (*pNodes).NodeQty; i++)
+    {
+      if (!strcmp ((*pNodes).spaceunit, "degree"))
+        ol_e_q ((*pNodes).NodeCoo[i + 1], (*pNodes).NodeOri[i]);
+      else if (!strcmp ((*pNodes).spaceunit, "radian"))
+        ol_e_q_rad (coo, (*pNodes).NodeOri[i]);
+    }
+    */
+
+  else
+    abort ();
+
+  ut_free_1d (&coo);
+
+  return;
+}
+
+void
+neut_nodes_init_nodeweight (struct NODES *pNodes, struct MESH *pMesh)
+{
+  int i, j;
+
+  if ((*pMesh).Dimension != 3)
+  {
+    printf ("dimension = %d != 3\n", (*pMesh).Dimension);
+    abort ();
+  }
+
+  if (!(*pNodes).NodeWeight)
+    (*pNodes).NodeWeight = ut_alloc_1d ((*pNodes).NodeQty + 1);
+  ut_array_1d_zero ((*pNodes).NodeWeight + 1, (*pNodes).NodeQty);
+
+  neut_mesh_init_nodeelts (pMesh, (*pNodes).NodeQty);
+
+  for (i = 1; i <= (*pNodes).NodeQty; i++)
+  {
+    // this is not exact, but should not be a bad approximation
+    for (j = 1; j <= (*pMesh).NodeElts[i][0]; j++)
+      (*pNodes).NodeWeight[i] += (*pMesh).EltWeight[(*pMesh).NodeElts[i][j]];
+  }
+
+  ut_array_1d_scale ((*pNodes).NodeWeight + 1, (*pNodes).NodeQty, 1. / ut_array_1d_mean ((*pNodes).NodeWeight + 1, (*pNodes).NodeQty));
+
+  return;
+}
+
+void
+neut_nodes_fixperslaves (struct NODES *pNodes)
+{
+  int i;
+
+  // looping so that no secondary is a primary
+  for (i = 1; i <= (*pNodes).NodeQty; i++)
+    if ((*pNodes).PerNodeMaster[i])
+    {
+      int master = (*pNodes).PerNodeMaster[i];
+      while ((*pNodes).PerNodeMaster[master])
+      {
+        int master2 = (*pNodes).PerNodeMaster[master];
+        ut_array_1d_int_add ((*pNodes).PerNodeShift[i], (*pNodes).PerNodeShift[master], 3, (*pNodes).PerNodeShift[i]);
+        (*pNodes).PerNodeMaster[i] = master2;
+        master = master2;
+      }
+    }
+
+  return;
+}
+
+void
+neut_nodes_stdtrianglenodeori (struct NODES Nodes, int node, double *dir0, double *q)
+{
+  double *dir = ol_vect_alloc ();
+  double *v = ol_vect_alloc ();
+  double **g = ol_g_alloc ();
+
+  if (!dir0)
+    ut_array_1d_set_3 (dir, 0, 0, 1);
+  else
+    ut_array_1d_memcpy (dir0, 3, dir);
+
+  ol_stprojxy_vect (Nodes.NodeCoo[node], v);
+  ol_vect_vect_g (dir, v, g);
+  ol_g_q (g, q);
+
+  ol_vect_free (v);
+  ol_vect_free (dir);
+  ol_g_free (g);
+
+  return;
 }

@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2024, Romain Quey.
+# Copyright (C) 2003-2026, Romain Quey, CNRS.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 3.0...3.10)
@@ -81,6 +81,7 @@ add_library(neut
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_geof/neut_mesh_fprintf_geof3.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_inp/neut_mesh_fprintf_inp1.c
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_inp/neut_mesh_fprintf_inp2.c
+./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_tree/neut_mesh_fprintf_tree1.cpp
 ./neut_mesh/neut_mesh_fprintf/neut_mesh_fprintf_scotch/neut_mesh_fprintf_scotch1.c
 ./neut_mesh/neut_mesh_op/neut_mesh_op.c
 ./neut_mesh/neut_mesh_ori/neut_mesh_ori1.c
@@ -99,6 +100,7 @@ add_library(neut
 ./neut_seedset/neut_seedset2.cpp
 ./neut_povray/neut_povray.c
 ./neut_asy/neut_asy.c
+./neut_sys/neut_sys.c
 ./neut_nset/neut_nset.c
 ./neut_print/neut_print.c
 ./neut_test/neut_test.c
@@ -191,9 +193,13 @@ add_library(neut
 ./neut_fepxsim/neut_fepxsim_fscanf/neut_fepxsim_fscanf1.c
 ./neut_fepxsim/neut_fepxsim_op/neut_fepxsim_op.c
 ./neut_fepxsim/neut_fepxsim_gen/neut_fepxsim_gen.c
+./neut_ospace/neut_ospace1.cpp
+./neut_ospace/neut_ospace2.cpp
 ./neut_odf/neut_odf1.cpp
 ./neut_odf/neut_odf2.cpp
 ./neut_odf/neut_odf3.cpp
+./neut_odf/neut_odf_fscanf/neut_odf_fscanf1.cpp
+./neut_odf/neut_odf_fscanf/neut_odf_fscanf2.cpp
 ./neut_pf/neut_pf.c
 )
 

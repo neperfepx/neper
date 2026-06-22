@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -142,6 +142,15 @@ extern "C"
 
   extern int neut_mesh_elt_radeq (struct NODES Nodes, struct MESH Mesh,
 				     int elt, double *pradeq);
+
+  extern void neut_mesh_elset_aniso (struct NODES Nodes, struct MESH Mesh, int elset, double **evect, double *eval);
+
+/// \brief Get the anisotropy of an elset of a 2D or 3D mesh
+///
+///
+///
+  extern void neut_mesh_elset_anisofact (struct NODES Nodes, struct MESH Mesh, int elset,
+                                         double *pval);
 
 /// \brief Get the area of an elset of a 2D mesh.
 ///

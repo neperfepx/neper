@@ -8,12 +8,10 @@ Neper's Developer Documentation
 
    copying.rst
    introduction.rst
-   regularization.rst
-   1dmeshing.rst
-   smoothing.rst
-   1dlaguerre.rst
-   ellipse.rst
-   odfsampling.rst
+   structure.rst
+   workflow.rst
+   devenv.rst
+   science.rst
    gpl.rst
    fdl.rst
 

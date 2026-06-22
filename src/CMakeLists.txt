@@ -1,5 +1,5 @@
 # This file is part of the Neper software package.
-# Copyright (C) 2003-2024, Romain Quey.
+# Copyright (C) 2003-2026, Romain Quey, CNRS.
 # See the COPYING file in the top-level directory.
 
 cmake_minimum_required(VERSION 3.0...3.10)
@@ -7,7 +7,7 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-set(NEPER_VERSION \"4.10.2-45\")
+set(NEPER_VERSION \"5.0.0\")
 project(neper)
 
 if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.8.1)
@@ -29,9 +29,10 @@ set(HAVE_MUPARSER  ON  CACHE BOOL "Use muParser") # sets to ON in ut, etc.
 set(HAVE_OPENGJK   ON  CACHE BOOL "Use openGJK") # sets to ON in ut, etc.
 set(HAVE_LIBSCOTCH ON  CACHE BOOL "Use Scotch") # sets to ON in ut, etc.
 set(HAVE_PNG       OFF CACHE BOOL "Use the libpng library") # sets to OFF in ut, etc.
-set(CMAKE_INSTALL_COMPLETION ON CACHE BOOL "Install Bash completion files")
+set(CMAKE_INSTALL_COMPLETION OFF CACHE BOOL "Install Bash completion files")
+set(CMAKE_INSTALL_TYPE "Full" CACHE STRING "Install type: Full|NoPost")
 set(FORCE_BUILTIN_LIBSCOTCH OFF CACHE BOOL "Force to use the built-in libscotch")
-set(FORCE_BUILTIN_NLOPT     OFF CACHE BOOL "Force to use the built-in nlopt")
+set(FORCE_BUILTIN_NLOPT     ON CACHE BOOL "Force to use the built-in nlopt")
 set(REAL_PRINT_FORMAT \"%.12f\" CACHE STRING "Printing format of real numbers")
 set(REAL_PRINT_FORMAT3 \"%15.12f\" CACHE STRING "Printing format of real numbers (15 characters)")
 set(REAL_PRINT_FORMAT5 \"%17.12f\" CACHE STRING "Printing format of real numbers (17 characters)")
@@ -78,7 +79,7 @@ include_directories("${PROJECT_SOURCE_DIR}/neper_m")
 include_directories("${PROJECT_SOURCE_DIR}/neper_s")
 include_directories("${PROJECT_SOURCE_DIR}/neper_v")
 include_directories("${PROJECT_SOURCE_DIR}/neut")
-include_directories("${PROJECT_SOURCE_DIR}/neut/neut_structs")
+include_directories("${PROJECT_SOURCE_DIR}/neut/neut_struct")
 include_directories("${PROJECT_SOURCE_DIR}/contrib/ut/src")
 include_directories("${PROJECT_SOURCE_DIR}/contrib/orilib")
 include_directories("${PROJECT_SOURCE_DIR}/contrib/tinycolormap")
@@ -147,7 +148,7 @@ if(HAVE_LIBSCOTCH)
     else()
       message("-- Ignored system Scotch - using built-in")
     endif()
-    add_subdirectory(contrib/scotch)
+    add_subdirectory(contrib/scotch EXCLUDE_FROM_ALL)
     find_package(Threads REQUIRED QUIET)
     list (APPEND EXTRA_LIBS ${CMAKE_THREAD_LIBS_INIT})
     unset (Scotch_INCLUDE_DIR CACHE)
@@ -192,7 +193,7 @@ if (HAVE_NLOPT)
     set(NLOPT_TESTS OFF)
     set(BUILD_SHARED_LIBS OFF)
     set(MESSAGE_QUIET ON)
-    add_subdirectory(contrib/nlopt)
+    add_subdirectory(contrib/nlopt EXCLUDE_FROM_ALL)
     set(MESSAGE_QUIET OFF)
     set(NLOPT_INCLUDE_DIR "${PROJECT_BINARY_DIR}/contrib/nlopt/src/api")
     set(NLOPT_INCLUDE_DIRS "${NLOPT_INCLUDE_DIR}")
@@ -213,12 +214,12 @@ set(BUILD_SHARED_LIBS OFF)
 
 set(MESSAGE_QUIET ON)
 
-add_subdirectory(contrib/openGJK)
+add_subdirectory(contrib/openGJK EXCLUDE_FROM_ALL)
 if (HAVE_MUPARSER)
-  add_subdirectory(contrib/muparser)
+  add_subdirectory(contrib/muparser EXCLUDE_FROM_ALL)
 endif()
-add_subdirectory(contrib/ut/src)
-add_subdirectory(contrib/orilib)
+add_subdirectory(contrib/ut/src EXCLUDE_FROM_ALL)
+add_subdirectory(contrib/orilib EXCLUDE_FROM_ALL)
 add_subdirectory(neut)
 set(MESSAGE_QUIET OFF)
 add_subdirectory(neper_t)
@@ -256,24 +257,91 @@ unset(WITH_THREADLOCAL CACHE)    # hide from ccmake (comes from NLopt)
 unset(NLOPT_TESTS CACHE)         # hide from ccmake (comes from NLopt)
 unset(HAVE_PNG CACHE)            # hide from ccmake (comes from Orilib)
 unset(BUILD_SHARED_LIBS CACHE)   # hide from ccmake (comes from NLopt)
+unset(CMAKE_INSTALL_RPATH CACHE) # hide from ccmake (comes from NLopt)
+unset(CMAKE_INSTALL_RPATH_USE_LINK_PATH CACHE) # hide from ccmake (comes from NLopt)
+unset(DISABLE_FP_CONTRACT CACHE) # hide from ccmake (comes from NLopt)
+unset(ENABLE_SAMPLES CACHE)
+unset(ENABLE_WIDE_CHAR CACHE)
+unset(GSL_CONFIG CACHE)
+unset(GSL_CONFIG_PREFER_PATH CACHE)
+unset(GSL_EXE_LINKER_FLAGS CACHE)
 
 target_link_libraries(neper ${EXTRA_LIBS})
 
 install(TARGETS neper DESTINATION bin
-  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
-	 GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
+               GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 
-message(STATUS "Neper is set to be installed in: ${CMAKE_INSTALL_PREFIX}/bin and ${CMAKE_INSTALL_COMPLETION_PREFIX}")
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/
+        DESTINATION share/neper
+        FILES_MATCHING
+        PATTERN "*")
 
-if (CMAKE_SYSTEM_NAME MATCHES "Linux")
-  set (CMAKE_INSTALL_COMPLETION_PREFIX_FULL "${CMAKE_INSTALL_COMPLETION_PREFIX}/bash-completion/completions")
-elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
-  set (CMAKE_INSTALL_COMPLETION_PREFIX_FULL "${CMAKE_INSTALL_COMPLETION_PREFIX}/bash_completion.d")
+# Only run post-processing for a Full install
+if("${CMAKE_INSTALL_TYPE}" STREQUAL "Full")
+    install(CODE "
+        message(STATUS \"Generating orispace tree files...\")
+
+        file(GLOB msh_files
+            \"\${CMAKE_INSTALL_PREFIX}/share/neper/orispace/*/fr*.msh\"
+        )
+
+        foreach(msh_file IN LISTS msh_files)
+            get_filename_component(dir_name \${msh_file} DIRECTORY)
+            get_filename_component(base_name \${msh_file} NAME)
+            file(RELATIVE_PATH rel_dir \"\${CMAKE_INSTALL_PREFIX}/share/neper\" \${dir_name})
+
+            message(STATUS \"  Processing \${rel_dir}/\${base_name}\")
+
+            execute_process(
+                COMMAND \${CMAKE_INSTALL_PREFIX}/bin/neper --rcfile none -M
+                        -tmp ${CMAKE_BINARY_DIR}
+                        \${rel_dir}/fr.tess
+                        -loadmesh \${rel_dir}/\${base_name}
+                        -nset none -faset none -order 1 -format etree,ntree
+                WORKING_DIRECTORY \${CMAKE_INSTALL_PREFIX}/share/neper
+                RESULT_VARIABLE result
+                OUTPUT_QUIET
+                ERROR_QUIET
+            )
+
+            if(NOT result EQUAL 0)
+                message(WARNING \"Neper failed on \${rel_dir}/\${base_name} (code \${result})\")
+            endif()
+        endforeach()
+
+        message(STATUS \"Finished processing all meshes.\")
+    ")
 endif()
 
-install(FILES contrib/bashcomp/neper-completion.bash
-        DESTINATION ${CMAKE_INSTALL_COMPLETION_PREFIX_FULL}
-        RENAME neper)
+add_custom_target(userinstall
+    COMMAND ${CMAKE_COMMAND}
+        -DCMAKE_INSTALL_PREFIX=$ENV{HOME}/.local
+        -DUSERINSTALL=ON
+        -P cmake_install.cmake
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Installing to $HOME/.local"
+)
+add_dependencies(userinstall neper)
+
+add_custom_target(devinstall
+  COMMAND ${CMAKE_SOURCE_DIR}/data/dev/dev.sh
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
+message(STATUS "Neper is set to be installed in: ${CMAKE_INSTALL_PREFIX}/bin")
+
+if(CMAKE_INSTALL_COMPLETION AND NOT USERINSTALL)
+  if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set (CMAKE_INSTALL_COMPLETION_PREFIX_FULL "${CMAKE_INSTALL_COMPLETION_PREFIX}/bash-completion/completions")
+  elseif (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    set (CMAKE_INSTALL_COMPLETION_PREFIX_FULL "${CMAKE_INSTALL_COMPLETION_PREFIX}/bash_completion.d")
+  endif()
+
+  install(FILES contrib/bashcomp/neper-completion.bash
+          DESTINATION ${CMAKE_INSTALL_COMPLETION_PREFIX_FULL}
+          RENAME neper)
+endif()
 
 # Testing ######################################################################
 

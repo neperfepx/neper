@@ -118,6 +118,28 @@ ol_q_g (double *q, double **g)
 }
 
 void
+ol_q_gv (double *q, double *g)
+{
+  double **gm = ol_g_alloc ();
+
+  ol_q_g (q, gm);
+
+  g[0] = gm[0][0];
+  g[1] = gm[0][1];
+  g[2] = gm[0][2];
+  g[3] = gm[1][0];
+  g[4] = gm[1][1];
+  g[5] = gm[1][2];
+  g[6] = gm[2][0];
+  g[7] = gm[2][1];
+  g[8] = gm[2][2];
+
+  ol_g_free (gm);
+
+  return;
+}
+
+void
 ol_rtheta_q (double *r, double theta, double *q)
 {
   ol_rtheta_q_rad (r, theta * OL_PI / 180, q);
@@ -134,6 +156,20 @@ ol_rtheta_q_rad (double *r, double theta, double *q)
 
   for (i = 0; i <= 2; i++)
     q[i + 1] = r[i] * sin (theta / 2);
+
+  return;
+}
+
+void
+ol_q_rthetav (double *q, double *rtheta)
+{
+  double theta, *r = ol_r_alloc ();
+
+  ol_q_rtheta (q, r, &theta);
+  ut_array_1d_memcpy (r, 3, rtheta);
+  rtheta[3] = theta;
+
+  ol_r_free (r);
 
   return;
 }
@@ -314,4 +350,28 @@ ol_q_fscanf (FILE * file, double *q)
     return 1;
   else
     return 0;
+}
+
+int
+ol_q_isspecial (double *q)
+{
+  return !ut_num_equal (ut_array_1d_norm (q, 4), 1, 1e-6);
+}
+
+int
+ol_q_isuniform (double *q)
+{
+  return (ol_q_isspecial (q) && ut_num_equal (q[0], UNIFORM, 1e-6));
+}
+
+int
+ol_q_specialid (double *q)
+{
+  return ol_q_isspecial (q) ? ut_num_d2ri (q[0]) : -1;
+}
+
+void
+ol_specialid_q (int id, double *q)
+{
+  ut_array_1d_set (q, 4, id);
 }

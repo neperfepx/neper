@@ -1,88 +1,30 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_odf_.h"
 #include "neut/neut_oset/neut_oset.hpp"
 
-extern double neut_odf_comp_elts (char *neigh, struct OL_SET *pOSet, QCLOUD nanocloud, my_kd_tree_t *nano_index, struct ODF *pOdf, double *pfactor, int verbosity);
-extern double neut_odf_comp_nodes (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud, my_kd_tree_t *nano_index, struct ODF *pOdf, double factor, int verbosity);
-extern double neut_odf_orifield_comp_elts (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud,
-                             my_kd_tree_t *nano_index, double *oridata, struct ODF *pOdf);
-extern double neut_odf_orifield_comp_nodes (char *neigh, struct OL_SET *pOSet, QCLOUD nano_cloud,
-                     my_kd_tree_t *nano_index, double *oridata, struct ODF *pOdf);
+extern void neut_odf_comp_exact (struct OL_SET *pOSet, char *entity, struct ODF *pOdf, int verbosity);
+extern void neut_odf_comp_neigh (struct OL_SET *pOSet, char *entity, char *neigh, struct ODF *pOdf, int verbosity);
+extern void neut_odf_orifield_comp_exact (struct OL_SET *pOSet, char *entity, double *oridata, struct ODF *pOdf);
 
 void
 neut_odf_set_zero (struct ODF *pOdf)
 {
-  int i;
-
-  (*pOdf).gridtype = NULL;
-  (*pOdf).gridunit = NULL;
-
-  neut_nodes_set_zero (&((*pOdf).Nodes));
-  (*pOdf).Mesh = (struct MESH*) calloc (4, sizeof (struct MESH));
-  for (i = 0; i < 4; i++)
-    neut_mesh_set_zero ((*pOdf).Mesh + i);
+  (*pOdf).sigma = 0;
 
   (*pOdf).odfqty = 0;
   (*pOdf).odf = NULL;
   (*pOdf).odfnqty = 0;
   (*pOdf).odfn = NULL;
 
-  (*pOdf).EltWeight = NULL;
-
   (*pOdf).odfmin = 0;
   (*pOdf).odfmax = 0;
   (*pOdf).odfmean = 0;
   (*pOdf).odfsig = 0;
 
-  (*pOdf).sigma = 0;
-
-  ut_fct_set_zero (&((*pOdf).hfct));
-  ol_homochoric_thetafct (&((*pOdf).hfct));
-
-  return;
-}
-
-void
-neut_odf_space_fnscanf (char *filename, struct ODF *pOdf, char *mode)
-{
-  int i, dim;
-
-  neut_odf_set_zero (pOdf);
-
-  neut_mesh_fnscanf_msh (filename, &((*pOdf).Nodes),
-                         (*pOdf).Mesh, (*pOdf).Mesh + 1,
-                         (*pOdf).Mesh + 2, (*pOdf).Mesh + 3, NULL, NULL, mode);
-
-  dim = neut_mesh_array_dim ((*pOdf).Mesh);
-
-  if (!(*pOdf).Mesh[dim].Domain)
-    ut_print_message (2, 2, "Mesh domain not defined\n");
-  ut_string_string ((*pOdf).Mesh[dim].Domain, &((*pOdf).gridtype));
-
-  if (!strncmp ((*pOdf).Mesh[dim].Domain, "euler-bunge", 11))
-  {
-    ut_string_string ("radian", &(*pOdf).gridunit);
-    if (!strncmp ((*pOdf).gridtype, "euler-bunge", 11))
-    {
-      double **bbox = ut_alloc_2d (3, 2);
-      neut_nodes_bbox ((*pOdf).Nodes, bbox);
-      for (i = 0; i < 3; i++)
-        if (bbox[i][1] > 10) // meaning we are in degrees and not radians
-        {
-          ut_string_string ("degree", &(*pOdf).gridunit);
-          break;
-        }
-      ut_free_2d (&bbox, 3);
-    }
-  }
-
-  (*pOdf).odfqty = (*pOdf).Mesh[dim].EltQty;
-  (*pOdf).odf = ut_alloc_1d ((*pOdf).odfqty);
-  (*pOdf).odfnqty = (*pOdf).Nodes.NodeQty;
-  (*pOdf).odfn = ut_alloc_1d ((*pOdf).odfnqty);
+  neut_ospace_set_zero (&((*pOdf).Sp));
 
   return;
 }
@@ -111,22 +53,42 @@ neut_odf_setsigma (struct ODF *pOdf, char *expr, int qty, char *crysym)
 }
 
 void
-neut_odf_comp (char *mode, char *neigh, struct OL_SET *pOSet, struct ODF *pOdf, int verbosity)
+neut_odf_comp (char *entity, char *neigh, struct OL_SET *pOSet, struct ODF *pOdf, int verbosity)
 {
-  my_kd_tree_t *nano_index = nullptr;
-  nanoflann::SearchParams params;
-  QCLOUD nano_cloud;
-  double factor;
+  struct OL_SET OSet2;
 
-  neut_oset_kdtree (pOSet, &nano_cloud, &nano_index);
+  ol_set_zero (&OSet2);
 
-  if (strstr (mode, "m") || strstr (mode, "n"))
-    neut_odf_comp_elts (neigh, pOSet, nano_cloud, nano_index, pOdf, &factor, verbosity);
+  if (!strncmp (entity, "elt", 3))
+  {
+    (*pOdf).odfqty = (*pOdf).Sp.Mesh[3].EltQty;
+    if (!(*pOdf).odf)
+      (*pOdf).odf = ut_alloc_1d ((*pOdf).odfqty);
+  }
 
-  if (strstr (mode, "n"))
-    neut_odf_comp_nodes (neigh, pOSet, nano_cloud, nano_index, pOdf, factor, verbosity);
+  if (!strncmp (entity, "node", 4))
+  {
+    (*pOdf).odfnqty = (*pOdf).Sp.Nodes.NodeQty;
+    if (!(*pOdf).odfn)
+      (*pOdf).odfn = ut_alloc_1d ((*pOdf).odfnqty);
+  }
 
-  delete nano_index;
+  ol_set_expandset (*pOSet, &OSet2);
+
+  for (int i = 0; i < (int) (*pOSet).size; i++)
+    if ((*pOSet).weight && isnan ((*pOSet).weight[i]))
+      abort ();
+
+  for (int i = 0; i < (int) OSet2.size; i++)
+    if (OSet2.weight && isnan (OSet2.weight[i]))
+      abort ();
+
+  if (!strcmp (neigh, "all"))
+    neut_odf_comp_exact (&OSet2, entity, pOdf, verbosity);
+  else
+    neut_odf_comp_neigh (&OSet2, entity, (char *) "5", pOdf, verbosity);
+
+  ol_set_free (&OSet2);
 
   return;
 }
@@ -134,93 +96,7 @@ neut_odf_comp (char *mode, char *neigh, struct OL_SET *pOSet, struct ODF *pOdf, 
 void
 neut_odf_orides (struct ODF Odf, char **porides)
 {
-  ut_string_function (Odf.gridtype, porides, NULL, NULL, NULL);
-
-  return;
-}
-
-void
-neut_odf_fnscanf (char *filename, struct ODF *pOdf, char *mode)
-{
-  int i, qty, tmp, status;
-  double fact;
-  char *fct = NULL, **vars = NULL, **vals = NULL;
-
-  ut_string_function (filename, &fct, &vars, &vals, &qty);
-
-  neut_odf_set_zero (pOdf);
-
-  for (i = 0; i < qty; i++)
-  {
-    if (!strcmp (vars[i], "mesh"))
-      neut_odf_space_fnscanf (vals[i], pOdf, mode);
-    else if (!strcmp (vars[i], "val"))
-    {
-      (*pOdf).odfqty = (*pOdf).Mesh[3].EltQty;
-
-      tmp = ut_file_nbwords (vals[i]);
-      if (tmp != (*pOdf).odfqty)
-        ut_print_message (2, 0, "Number of data and elements do not match (%d != %d, file = %s).\n", tmp, (*pOdf).Mesh[3].EltQty, vals[i]);
-
-      (*pOdf).odf = ut_alloc_1d ((*pOdf).odfqty);
-      ut_array_1d_fnscanf (vals[i], (*pOdf).odf, (*pOdf).odfqty, mode);
-    }
-    else if (!strcmp (vars[i], "valn"))
-    {
-      (*pOdf).odfnqty = (*pOdf).Nodes.NodeQty;
-
-      tmp = ut_file_nbwords (vals[i]);
-      if (tmp != (*pOdf).odfnqty)
-        ut_print_message (2, 0, "Number of data and elements do not match (%d != %d, file = %s).\n", tmp, (*pOdf).Mesh[3].EltQty, vals[i]);
-
-      (*pOdf).odfn = ut_alloc_1d ((*pOdf).odfnqty);
-      ut_array_1d_fnscanf (vals[i], (*pOdf).odfn, (*pOdf).odfnqty, mode);
-    }
-    else if (!strcmp (vars[i], "theta") || !strcmp (vars[i], "sigma"))
-    {
-      sscanf (vals[i], "%lf", &(*pOdf).sigma);
-      (*pOdf).sigma *= M_PI / 180;
-    }
-    else
-      ut_print_message (2, 0, "Failed to process `%s'.\n", vars[i]);
-  }
-
-  status = neut_odf_normalize (pOdf, &fact);
-  if (status)
-    ut_print_message (1, 3, "Average value not equal to 1.  Scaling ODF by %f...\n", fact);
-
-  ut_free_1d_char (&fct);
-  ut_free_2d_char (&vars, qty);
-  ut_free_2d_char (&vals, qty);
-
-  return;
-}
-
-void
-neut_odf_mesh_olset (struct ODF Odf, struct OL_SET *pOSet)
-{
-  int i, varqty;
-  double *coo = ut_alloc_1d (3);
-  char *fct = NULL, **vars = NULL, **vals = NULL;
-
-  ut_string_function (Odf.gridtype, &fct, &vars, &vals, &varqty);
-
-  (*pOSet) = ol_set_alloc (Odf.Mesh[3].EltQty, vals[0]);
-
-  for (i = 0; i < (int) (*pOSet).size; i++)
-  {
-    neut_mesh_elt_centre (Odf.Nodes, Odf.Mesh[3], i + 1, coo);
-    ol_R_q (coo, (*pOSet).q[i]);
-  }
-
-  neut_odf_init_eltweight (&Odf);
-
-  ut_array_1d_memcpy (Odf.EltWeight, Odf.Mesh[3].EltQty, (*pOSet).weight);
-
-  ut_free_1d (&coo);
-  ut_free_1d_char (&fct);
-  ut_free_2d_char (&vars, varqty);
-  ut_free_2d_char (&vals, varqty);
+  ut_string_function (Odf.Sp.space, porides, NULL, NULL, NULL);
 
   return;
 }
@@ -236,7 +112,7 @@ neut_odf_convolve (struct ODF *pOdf, char *kernel)
   ol_set_zero (&OSet);
   sscanf (kernel, "normal(%lf)", &theta);
 
-  neut_odf_mesh_olset (*pOdf, &OSet);
+  neut_ospace_mesh_olset (&((*pOdf).Sp), &OSet);
 
   for (i = 0; i < (*pOdf).odfqty; i++)
     OSet.weight[i] *= (*pOdf).odf[i];
@@ -253,7 +129,7 @@ neut_odf_convolve (struct ODF *pOdf, char *kernel)
   if (theta > 0)
   {
     (*pOdf).sigma = theta * M_PI / 180;
-    neut_odf_comp ((char *) "m", (char *) "5", &OSet, pOdf, 1);
+    neut_odf_comp ((char *) "elt", (char *) "5", &OSet, pOdf, 1);
   }
 
   else
@@ -261,7 +137,7 @@ neut_odf_convolve (struct ODF *pOdf, char *kernel)
     ut_array_1d_memcpy ((*pOdf).odf, (*pOdf).odfqty, odf_cpy);
 
     (*pOdf).sigma = theta * M_PI / 180;
-    neut_odf_comp ((char *) "m", (char *) "5", &OSet, pOdf, 1);
+    neut_odf_comp ((char *) "elt", (char *) "5", &OSet, pOdf, 1);
 
     for (i = 0; i < (*pOdf).odfqty; i++)
       (*pOdf).odf[i] = ut_num_max (2 * odf_cpy[i] - (*pOdf).odf[i], 0);
@@ -288,10 +164,10 @@ neut_odf_normalize (struct ODF *pOdf, double *pfact)
   if (pfact)
     *pfact = 1;
 
-  if (!(*pOdf).EltWeight)
-    neut_odf_init_eltweight (pOdf);
+  if (!(*pOdf).Sp.Mesh[3].EltWeight)
+    neut_mesh_init_eltweight ((*pOdf).Sp.Nodes, (*pOdf).Sp.Mesh + 3);
 
-  (*pOdf).odfmean = ut_array_1d_wmean ((*pOdf).odf, (*pOdf).EltWeight, (*pOdf).odfqty);
+  (*pOdf).odfmean = ut_array_1d_wmean ((*pOdf).odf, (*pOdf).Sp.Mesh[3].EltWeight + 1, (*pOdf).odfqty);
 
   if (!ut_num_equal ((*pOdf).odfmean, 1, 1e-6))
   {
@@ -301,6 +177,54 @@ neut_odf_normalize (struct ODF *pOdf, double *pfact)
     (*pOdf).odfmean = 1.;
     status = 1;
   }
+
+  return status;
+}
+
+int
+neut_odf_index (struct ODF *pOdf, double *pindex)
+{
+  int status;
+  double sumw;
+
+  status = 0;
+
+  if (!(*pOdf).Sp.Mesh[3].EltWeight)
+    neut_mesh_init_eltweight ((*pOdf).Sp.Nodes, (*pOdf).Sp.Mesh + 3);
+
+  *pindex = 0;
+  sumw = 0;
+  for (int i = 0; i < (*pOdf).odfqty; i++)
+  {
+    (*pindex) += (*pOdf).Sp.Mesh[3].EltWeight[i + 1] * pow ((*pOdf).odf[i] - 1, 2);
+    sumw += (*pOdf).Sp.Mesh[3].EltWeight[i + 1];
+  }
+  (*pindex) /= sumw;
+  (*pindex) = sqrt (*pindex);
+
+  return status;
+}
+
+int
+neut_odfn_index (struct ODF *pOdf, double *pindex)
+{
+  int status;
+  double sumw;
+
+  status = 0;
+
+  if (!(*pOdf).Sp.Nodes.NodeWeight)
+    neut_nodes_init_nodeweight (&(*pOdf).Sp.Nodes, (*pOdf).Sp.Mesh + 3);
+
+  *pindex = 0;
+  sumw = 0;
+  for (int i = 0; i < (*pOdf).odfnqty; i++)
+  {
+    (*pindex) += (*pOdf).Sp.Nodes.NodeWeight[i + 1] * pow ((*pOdf).odfn[i] - 1, 2);
+    sumw += (*pOdf).Sp.Nodes.NodeWeight[i + 1];
+  }
+  (*pindex) /= sumw;
+  (*pindex) = sqrt (*pindex);
 
   return status;
 }
@@ -327,17 +251,17 @@ neut_odf_elt_ori (struct ODF Odf, int elt, gsl_rng *r, double *q)
 {
   double *coo = ut_alloc_1d (3);
 
-  if (!strncmp (Odf.gridtype, "rodrigues", 9))
+  if (!strncmp (Odf.Sp.space, "rodrigues", 9))
   {
     if (r)
-      neut_mesh_elt_randompt (Odf.Nodes, Odf.Mesh[3], elt + 1, r, coo);
+      neut_mesh_elt_randompt (Odf.Sp.Nodes, Odf.Sp.Mesh[3], elt + 1, r, coo);
     else
-      neut_mesh_elt_centre (Odf.Nodes, Odf.Mesh[3], elt + 1, coo);
+      neut_mesh_elt_centre (Odf.Sp.Nodes, Odf.Sp.Mesh[3], elt + 1, coo);
     ol_R_q (coo, q);
   }
   else
   {
-    printf ("Odf.gridtype = %s\n", Odf.gridtype);
+    printf ("Odf.Sp.space = %s\n", Odf.Sp.space);
     abort ();
   }
 
@@ -347,22 +271,57 @@ neut_odf_elt_ori (struct ODF Odf, int elt, gsl_rng *r, double *q)
 }
 
 void
-neut_odf_orifield_comp (char *mode, char *neigh, struct OL_SET *pOSet,
+neut_odf_orifield_comp (char *entity, char *neigh, struct OL_SET *pOSet,
                         double *oridata, struct ODF *pOdf)
 {
-  my_kd_tree_t *nano_index = nullptr;
-  nanoflann::SearchParams params;
-  QCLOUD nano_cloud;
+  (void) neigh;
 
-  neut_oset_kdtree (pOSet, &nano_cloud, &nano_index);
+  neut_odf_orifield_comp_exact (pOSet, entity, oridata, pOdf);
 
-  if (strstr (mode, "m") || strstr (mode, "n"))
-    neut_odf_orifield_comp_elts (neigh, pOSet, nano_cloud, nano_index, oridata, pOdf);
+  /*
+  (*pOdf).odfmean = ut_array_1d_mean ((*pOdf).odf, (*pOdf).odfqty);
+  (*pOdf).odfsig = ut_array_1d_wstddev ((*pOdf).odf, vol, 1, (*pOdf).odfqty);
+  (*pOdf).odfmin = ut_array_1d_min ((*pOdf).odf, (*pOdf).odfqty);
+  (*pOdf).odfmax = ut_array_1d_max ((*pOdf).odf, (*pOdf).odfqty);
+  */
 
-  if (strstr (mode, "n"))
-    neut_odf_orifield_comp_nodes (neigh, pOSet, nano_cloud, nano_index, oridata, pOdf);
+  return;
+}
 
-  delete nano_index;
+void
+neut_odf_crysym (struct ODF Odf, char **pcrysym)
+{
+  int varqty;
+  char *fct = NULL, **vars = NULL, **vals = NULL;
+
+  ut_string_function (Odf.Sp.space, &fct, &vars, &vals, &varqty);
+  if (varqty > 0)
+    ut_string_string (vals[0], pcrysym);
+
+  ut_free_2d_char (&vars, varqty);
+  ut_free_2d_char (&vals, varqty);
+  ut_free_1d_char (&fct);
+
+  return;
+}
+
+void
+neut_odf_free (struct ODF *pOdf)
+{
+  int i;
+
+  ut_free_1d_char (&(*pOdf).Sp.space);
+  ut_free_1d_char (&(*pOdf).Sp.spaceunit);
+  neut_tess_free (&(*pOdf).Sp.Tess);
+  neut_nodes_free (&(*pOdf).Sp.Nodes);
+  for (i = 0; i <= 3; i++)
+    neut_mesh_free ((*pOdf).Sp.Mesh + i);
+
+  ut_free_1d (&((*pOdf).odf));
+  ut_free_1d (&((*pOdf).odfn));
+
+  ut_fct_free (&((*pOdf).Sp.hfct));
+  ut_fct_free (&((*pOdf).Sp.thetafct));
 
   return;
 }

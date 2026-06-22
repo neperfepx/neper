@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2024, Romain Quey.*/
+/* Copyright (C) 2003-2026, Romain Quey, CNRS.*/
 /* see the COPYING file in the top-level directory.*/
 
 /// \file ut.h
@@ -12,6 +12,7 @@
 #include "ut_array/ut_array.h"
 #include "ut_color/ut_color.h"
 #include "ut_file/ut_file.h"
+#include "ut_dir/ut_dir.h"
 #include "ut_free/ut_free.h"
 #include "ut_math/ut_math.h"
 #include "ut_fct/ut_fct.h"

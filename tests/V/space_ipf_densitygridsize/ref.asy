@@ -89,7 +89,7 @@ pen[] Palette=Gradient(rgb(0.266667,0.003922,0.329412),rgb(0.270588,0.019608,0.3
 bounds range=image(v,scale*(-0.005000,-0.004418),scale*(1.005000,0.888082),Palette);
 picture bar;
 palette(bar,"Density",range,(0cm,0cm),(0.5cm,6cm),Right,Palette,
-        PaletteTicks(N=10,n=1,"$%.1f$"));
+        PaletteTicks(N=10,n=1,"$%.1f$",black));
 add(bar.fit(),point(E),W);
 draw (contour (scale(2.414214)*points, values, new real[] {1.54652,3.09304,4.63956,6.18608,7.73259,9.27911,10.8256,12.3722,13.9187,15.4652,}, operator --), new pen[] {black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000),black+linewidth(0.500000)});
 filldraw(shift(O)*scale(scale/0.414214)*(scale(1+1e-3)*line110111--(0.000000,0.000000)--(0.444214,0.000000)--(0.444214,-0.030000)--(-0.030000,-0.030000)--(-0.030000,0.396025)--(0.444214,0.396025)--(0.444214,0.000000)--cycle), evenodd+white+linewidth(3pt), white);

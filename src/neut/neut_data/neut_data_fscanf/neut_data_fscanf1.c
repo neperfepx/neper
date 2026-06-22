@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_data_fscanf_.h"
@@ -230,7 +230,7 @@ neut_data_fscanf_general (struct DATAINPUT DataInput, char *entity, int dim,
     else if (!strcmp (input, "mesh"))
     {
       if (!strncmp (entity, "elt", 3) && !(*pMesh)[dim].EltOri)
-        neut_mesh_init_eltori ((*pMesh) + dim);
+        neut_mesh_init_eltori (*pNodes, (*pMesh) + dim);
 
       neut_data_fscanf_ori (*pSim, entity, value, entityqty,
                            !strncmp (entity, "elset", 5)?

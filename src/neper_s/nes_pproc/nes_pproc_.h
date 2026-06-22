@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -10,9 +10,9 @@
 #include"ut.h"
 #include"neut.h"
 #include"orilib.h"
-#include"structIn_s.h"
 
 #include"nes_pproc_entity/nes_pproc_entity.h"
+#include"nes_pproc_orispace/nes_pproc_orispace.h"
 #include"../nes_utils/nes_utils.h"
 
 #include"nes_pproc.h"

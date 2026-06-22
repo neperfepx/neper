@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_ori_.h"
@@ -62,7 +62,7 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
 
       }
 
-      else if (!strcmp (parts[i], "random") || strstr (In.orioptiini[level], "ori=random"))
+      else if (!strcmp (parts[i], "random") || strstr (In.optiini[1][level], "ori=random"))
       {
         if (!strcmp (In.orisampling[level], "random"))
           net_ori_random ((*pSSet).Random, OSets + i);
@@ -84,11 +84,11 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
         ut_string_string (oricrysym, &(OSets[i].crysym));
       }
 
-      else if (strstr (In.orioptiini[level], "ori="))
+      else if (strstr (In.optiini[1][level], "ori="))
       {
         int qty, *qty1 = NULL;
         char ***parts = NULL;
-        ut_list_break2 (In.orioptiini[level], ",", "=", &parts, &qty1, &qty);
+        ut_list_break2 (In.optiini[1][level], ",", "=", &parts, &qty1, &qty);
         for (j = 0; j < qty; j++)
           if (!strcmp (parts[j][0], "ori"))
             net_ori_file (parts[j][1], OSets + i);
@@ -113,11 +113,11 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
       else
         net_ori_label (parts[i], SSet, dtess, dcell, OSets + i);
 
-      if (strstr (In.orioptiini[level], "weight="))
+      if (strstr (In.optiini[1][level], "weight="))
       {
         int qty, *qty1 = NULL;
         char ***parts = NULL;
-        ut_list_break2 (In.orioptiini[level], ",", "=", &parts, &qty1, &qty);
+        ut_list_break2 (In.optiini[1][level], ",", "=", &parts, &qty1, &qty);
 
         OSets[i].weight = ut_alloc_1d (OSets[i].size);
         for (j = 0; j < qty; j++)
@@ -125,11 +125,11 @@ net_ori (struct IN_T In, int level, struct MTESS MTess, struct TESS *Tess,
             ut_array_1d_fnscanf_wcard (parts[j][1], OSets[i].weight, OSets[i].size, "numeral", "r");
       }
 
-      if (strstr (In.orioptiini[level], "theta="))
+      if (strstr (In.optiini[1][level], "theta="))
       {
         int qty, *qty1 = NULL;
         char ***parts = NULL;
-        ut_list_break2 (In.orioptiini[level], ",", "=", &parts, &qty1, &qty);
+        ut_list_break2 (In.optiini[1][level], ",", "=", &parts, &qty1, &qty);
 
         OSets[i].theta = ut_alloc_1d (OSets[i].size);
         for (j = 0; j < qty; j++)

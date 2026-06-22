@@ -1,5 +1,5 @@
 /* This fil40e is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_.h"
@@ -23,8 +23,10 @@ nev_print (struct IN_V In,
   int **SElt2dElt3d = NULL;
   int stepqty = 0, *steps = NULL, steppos, islaststep;
   struct PF Pf;
+  struct ORI Ori;
 
   neut_pf_set_zero (&Pf);
+  neut_ori_set_zero (&Ori);
 
   ut_string_string (In.print, &basename);
 
@@ -58,40 +60,38 @@ nev_print (struct IN_V In,
 
     nev_print_show (In, pTess, Tesr, Nodes, Mesh, Points, PointQty, pPrint);
 
-    nev_print_init (In, pPrint, &Pf, *pTess, TessData, Tesr, pTesrData, Nodes, Mesh,
+    nev_print_init (In, pPrint, &Pf, &Ori, pSim, *pTess, TessData, Tesr, pTesrData, Nodes, Mesh,
                     pNodeData, MeshData, &SQty, &SNodes, &SMesh,
                     &SNodeData, &SMeshData, &SElt2dElt3d, pCsysData, Points,
                     PointQty, PointData);
 
-    if (!strcmp (In.space, "real") || !strcmp (In.space, "rodrigues"))
-    {
-      if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov")
-       || ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "pov:objects")
-       || ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "png"))
-        nev_print_png (In, basename, *pPrint, *pSim, *pTess, TessData, Tesr, pTesrData, Nodes,
-                       Mesh, SQty, SNodes, SMesh, pNodeData, MeshData, pCsysData,
-                       Points, PointQty, PointData, SNodeData, SMeshData, SElt2dElt3d);
-
-      if (ut_list_testelt (In.imageformat, NEUT_SEP_NODEP, "vtk"))
-        nev_print_vtk (In, basename, *pSim, Nodes, Mesh, pNodeData, MeshData);
-    }
+    if (!strcmp (In.space, "real"))
+      nev_print_real (In, basename, *pPrint, *pSim, *pTess, TessData, Tesr, pTesrData, Nodes,
+                      Mesh, SQty, SNodes, SMesh, pNodeData, MeshData, pCsysData,
+                      Points, PointQty, PointData, SNodeData, SMeshData, SElt2dElt3d);
 
     else if (!strcmp (In.space, "pf") || !strcmp (In.space, "ipf"))
       nev_print_pf (In, &Pf, basename, *pPrint, steps, stepqty, steppos, *pSim,
                     *pTess, Tesr, TessData, pTesrData, Mesh, MeshData,
                     *pCsysData, Points, PointQty, PointData);
 
+    else if (!strncmp (In.space, "rodrigues", 9))
+      nev_print_ori (In, &Ori, basename, *pPrint, steps, stepqty, steppos, *pSim,
+                     *pTess, Tesr, TessData, pTesrData, Nodes, Mesh, MeshData,
+                     *pCsysData, Points, PointQty, PointData);
+
     else if (!strcmp (In.space, "tree") && islaststep)
       nev_print_tree (In, basename, *pSim);
 
     if ((*pPrint).showscale && islaststep)
-      nev_print_scale (In, basename, *pSim, TessData, pTesrData, pNodeData,
+      nev_print_scale (In, basename, *pPrint, *pSim, TessData, pTesrData, pNodeData,
                      MeshData, PointQty, PointData);
   }
 
   ut_free_1d_char (&basename);
   ut_free_1d_int (&steps);
   neut_pf_free (&Pf);
+  // neut_ori_free (&Ori);
 
   return;
 }

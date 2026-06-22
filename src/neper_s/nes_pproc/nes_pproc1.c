@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nes_pproc_.h"
@@ -20,6 +20,8 @@ nes_pproc (struct IN_S In, struct SIM *pSim)
     neut_mesh_set_zero (Mesh + i);
 
   nes_pproc_load (pSim, &Tess, &Tesr, &Nodes, Mesh);
+
+  nes_pproc_orispace (In, Tess.CellCrySym, pSim);
 
   for (i = 0; i < In.entityqty; i++)
     nes_pproc_entity (pSim, &Tess, Tesr, &Nodes, Mesh, In.entities[i], In.entityresexpr[i]);

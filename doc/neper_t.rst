@@ -81,7 +81,7 @@ Input Data
 
   Specify the identifier of the tessellation, which can be an integer value or any expression based on the :ref:`tessellation_keys`.
 
-  The identifier is used as seed of the random number generator to compute the (initial) seed positions.
+  The identifier is used as seed of the random number generator to compute the (initial) seed positions.  For a non-deterministic behavior, where the seed positions differ on each run, use :data:`-1` (or any other strictly negative value).
 
   **Default value**: :data:`1`.
 
@@ -212,11 +212,13 @@ These options can be used to set the cell morphology.
 
   - :data:`centroidal`: a centroidal tessellation [#centroidal]_.  It actually is an alias for :data:`centroid:seed`, which is described below.
 
-  - :data:`cube(<N>)` or :data:`square(<N>)`: regular tessellations into cubic or square cells, where :data:`<N>` is the number of cells along a direction, or :data:`cube(<N1>,<N2>,<N3>)` / :data:`square(<N1>,<N2>)` for a regular tessellation into cubic / square cells, where :data:`<N1>`, :data:`<N2>` and :data:`<N3>` are the number of cells along the three directions;
+  - :data:`cube[(<N>)]` or :data:`square(<N>)`: regular tessellations into cubic or square cells, where :data:`<N>` is the number of cells along a direction, or :data:`cube(<N1>,<N2>,<N3>)` / :data:`square(<N1>,<N2>)` for a regular tessellation into cubic / square cells, where :data:`<N1>`, :data:`<N2>` and :data:`<N3>` are the numbers of cells along the three directions.  If no argument is provided, the value of :data:`<N>` is computed from the value of :option:`-n`, which must be equal to an integer to the power of 3 (for :data:`cube`) or 2 (for :data:`square`). :option:`-n` :data:`from_morpho` does not need to be used.
 
-  - :data:`tocta(<N>)`: regular tessellation into truncated octahedra, where :data:`<N>` is the number of cells along a direction;
+  - :data:`hex[<orientation>](<N>)`: regular tessellation into hexagonal cells, where :data:`<orientation>` is the (optional) orientation (:data:`v` for vertical, pointy-top (the default) and :data:`h` for horizontal, flat-top) and :data:`<N>` is the number of cells along a direction, or :data:`hex[<orientation>](<N1>,<N2>]` where :data:`<N1>` and :data:`<N2>` are the numbers of cells along the two directions. [#morpho-hexagon]_ :option:`-n` :data:`from_morpho` does not need to be used.
 
-  - :data:`lamellar([w=<width>][,n=<n>][,v=<normal>][,pos=<pos>][,reps=<reps>])`: lamellar morphology, where :data:`<width>` is the absolute lamella width or a series of absolute lamella widths combined with :data:`:`, :data:`<n>` is the number of lamellae, :data:`<normal>` is the lamella plane normal, :data:`<pos>` is the position of the first lamella, and :data:`<reps>` is a relative tolerance on the width of the last lamella. :data:`width=\<width\>` and :data:`n=\<n\>` are mutually exclusive.  The number of lamellae can also be specified using option :option:`-n`.  Specifying a number of cells (using option :option:`-n` or :data:`n=\<n\>`) enforces :data:`pos=start` (or equivalently :data:`pos=optimal`, as described below).
+  - :data:`tocta(<N>)`: regular tessellation into truncated octahedra, where :data:`<N>` is the number of cells along a direction, or :data:`tocta(<N1>,<N2>,<N3>)` where :data:`<N1>`, :data:`<N2>` and :data:`<N3>` are the numbers of cells along the three directions. :option:`-n` :data:`from_morpho` does not need to be used.
+
+  - :data:`lamellar([w=<width>][,n=<n>][,v=<normal>][,pos=<pos>][,reps=<reps>])`: lamellar morphology, where :data:`<width>` is the absolute lamella width or a series of absolute lamella widths combined with :data:`:`, :data:`<n>` is the number of lamellae, :data:`<normal>` is the lamella plane normal, :data:`<pos>` is the position of the first lamella, and :data:`<reps>` is a relative tolerance on the width of the last lamella. :data:`width=\<width\>` and :data:`n=\<n\>` are mutually exclusive.  The number of lamellae can also be specified using option :option:`-n`.  Specifying a number of cells (using option :option:`-n` or :data:`n=\<n\>`) enforces :data:`pos=start` (or equivalently :data:`pos=optimal`, as described below). :option:`-n` :data:`from_morpho` must be used.
 
     - :data:`<normal>` (the lamella plane normal) can be:
 
@@ -244,7 +246,11 @@ These options can be used to set the cell morphology.
 
   - :data:`sphericity`: the sphericity, and :data:`1-sphericity`: 1 :math:`-` the sphericity (or :data:`circularity` and :data:`1-circularity`). [#sphericity-circularity]_ [#1-sphericity]_
 
-    All of :data:`size`, :data:`diameq` and :data:`sphericity` (and their variants) can be defined by :ref:`statistical distributions <statistical_distributions>` or cell by cell.  If the number of cells is defined using option :option:`-n`, the :data:`size` or :data:`diameq` distribution is scaled to get the specified number of cells.  At the opposite, if :data:`-n from_morpho` is used, the number of cells is determined from the :data:`size` or :data:`diameq` distribution.  An interval of possible values can also be provided using :data:`interval(<min>,<max>)`.  Cell-by-cell values can be provided using :data:`file(<file_name>)`, where :data:`<file_name>` contains the cell values.  A unique (numeral) value to be assigned to all cells can also be provided directly.
+  - :data:`anisofact`: the anisotropy factor, and :data:`1-anisofact`: 1 :math:`-` the anisotropy factor. [#anisofact]_
+
+  - :data:`[r]sel`: the smallest edge length. :data:`rsel` is the relative value, defined as in :option:`-rsel`.
+
+    All of :data:`size`, :data:`diameq` and :data:`sphericity` (and their variants) can be defined by :ref:`statistical distributions <statistical_distributions>` or cell by cell.  If the number of cells is defined using option :option:`-n`, the :data:`size` or :data:`diameq` distribution is scaled to get the specified number of cells.  At the opposite, if :data:`-n from_morpho` is used, the number of cells is determined from the :data:`size` or :data:`diameq` distribution.  An interval of possible values can also be provided using :data:`interval(<min>,<max>)` (:data:`min` or :data:`max` may be omitted).  Cell-by-cell values can be provided using :data:`file(<file_name>)`, where :data:`<file_name>` contains the cell values.  A unique (numeral) value to be assigned to all cells can also be provided directly.
 
   - :data:`centroid` for the centroid;
 
@@ -264,7 +270,11 @@ These options can be used to set the cell morphology.
 
   - :data:`aspratio(<r_x>,<r_y>,<r_z>)`, where :data:`r_x`, :data:`r_y` and :data:`r_z` represent relative length along the :data:`x`, :data:`y` and :data:`z` directions. For a 2D tessellation, :data:`r3` can be omitted.  When provided, other properties, such as the equivalent diameter or the sphericity (circularity, in 2D), are considered to apply to the cells as if they had no aspect ratio.
 
+  The interest of using :data:`rsel` or :data:`sel` is to avoid small edges, like option :option:`-reg`, but at the tessellation stage.  To specify a minimal value, use :data:`[r]sel:interval(<value>,)` or, equivalently, :data:`[r]sel:\<value>` (the latter syntax to specify a minimal value is valid only for :data:`[r]sel`). [#morpho-rsel]_
+
   **A tessellation file** (:file:`.tess`) can be loaded using :data:`file(<file_name>)`.
+
+    .. note :: Only the morphology-related information is loaded, not the cell orientation-related information.
 
   To specify several properties, combine them with :data:`,` (centroids and sizes / equivalent diameters should be seen as one property and specified with :data:`centroidsize` / :data:`centroiddiameq`).
 
@@ -286,7 +296,7 @@ These options can be used to set the cell morphology.
     - :data:`file(<file_name>)`: values to load from a :ref:`position_file` or a :ref:`tess_file` (only the seed coordinates are considered);
     - :data:`msfile(<file_name>)`: values to load from a :ref:`multiscale cell file <multiscale_cell_file>`).
 
-    The default depends on the value of option :option:`-morpho`: for :data:`voronoi`, it is :data:`random`, for a cell-size statistical distribution, it is :data:`none`, and for cell-based coordinate values (including :data:`-morpho tesr`), it is :data:`centroid`.
+    The default depends on the value of option :option:`-morpho`: for :data:`voronoi`, it is :data:`random`, for a cell-size statistical distribution, it is :data:`none`, and for cell-based coordinate values (including :option:`-morpho` :data:`tesr`), it is :data:`centroid`.
 
   - :data:`<weight_definition>` can be:
 
@@ -294,7 +304,7 @@ These options can be used to set the cell morphology.
     - :data:`file(<file_name>)`: values from a :ref:`data_file` or a :ref:`tess_file` (only the seed weights are considered);
     - :data:`msfile(<file_name>)`: values to load from a :ref:`multiscale cell file <multiscale_cell_file>`).
 
-    The default depends on the value of option :data:`-morpho`: for :data:`voronoi`, it is :data:`0`, for a cell-size statistical distribution, it is :data:`avradeq`, and for cell-based size values (including :data:`-morpho tesr`) , it is :data:`radeq`.
+    The default depends on the value of option :option:`-morpho`: for :data:`voronoi`, it is :data:`0`, for a cell-size statistical distribution, it is :data:`avradeq`, and for cell-based size values (including :option:`-morpho` :data:`tesr`) , it is :data:`radeq`.
 
   It is also possible to load orientations or ids using :data:`ori:\<ori_definition\>` and :data:`id:\<id_definition\>`:
 
@@ -323,7 +333,8 @@ These options can be used to set the cell morphology.
   - :data:`ad` (Anderson-Darling test);
   - :data:`FL2` (:math:`L^2\text{-norm}` on :math:`F`);
   - :data:`FL2w` (weighted :math:`L^2`-norm on :math:`F`) [CMAME2018]_;
-  - :data:`FL2wu` (weighted :math:`L^2`-norm on :math:`F` corresponding to :data:`FL2w` for a unimodal distribution).
+  - :data:`FL2wu` (weighted :math:`L^2`-norm on :math:`F` corresponding to :data:`FL2w` for a unimodal distribution);
+  - :data:`FiL2` (:math:`L^2\text{-norm}` on :math:`F^{-1}`).
 
   The default value is :data:`FL2w`.
 
@@ -377,7 +388,7 @@ These options can be used to set the cell morphology.
 
   Optimization can also be stopped anytime using the :command:`Ctrl+C` command.
 
-  **Default value**: :data:`eps<1e-6` (:data:`val<1e-4||iter>=10000` for :data:`-morpho centroidal`).
+  **Default value**: :data:`eps<1e-6||val<1e-12` (:data:`val<1e-4||iter>=10000` for :option:`-morpho` :data:`centroidal`).
 
 .. option:: -morphooptialgo <algorithm1>,<algorithm2>,... (secondary option)
 
@@ -389,12 +400,12 @@ These options can be used to set the cell morphology.
     - :data:`cobyla`: Cobyla (not recommended);
     - :data:`bobyqa`: Bobyqa (not recommended);
     - :data:`newuoa`: Newuoa (not recommended).
-    - :data:`lloyd[(<fact>]`: Lloyd's algorithm using a specified factor (default :data:`1.9`, only for :data:`-morpho centroidal`).
-    - :data:`random(<seednb>,<dimnb>,<min>,<max>,<id>)`: random perturbations (use only if you know what you are doing). At each odd iteration, for each of the :data:`seednb` seeds, :data:`dimnb` of its attributes (among those specified by option :data:`-morphooptidof`) are randomly perturbed, the norm of the total perturbation vector ranging from :data:`<min>` to :data:`<max>`; :data:`id` is the identifier of the distribution (similarly to option :option:`-id`).  Variables can be any mathematical expression based on :data:`seednb` (the total number of seeds), :data:`dim` (the tessellation dimension), :data:`avdiameq` (the average equivalent cell diameter) and :data:`inistep` (the value of :option:`-morphooptiinistep`); at each next (even) iteration, the attributes of the seeds are reverted to their original values.
+    - :data:`lloyd[(<fact>]`: Lloyd's algorithm using a specified factor (default :data:`1.9`, only for :option:`-morpho` :data:`centroidal`).
+    - :data:`random(<seednb>,<dimnb>,<min>,<max>,<id>)`: random perturbations (use only if you know what you are doing). At each odd iteration, for each of the :data:`seednb` seeds, :data:`dimnb` of its attributes (among those specified by option :option:`-morphooptidof`) are randomly perturbed, the norm of the total perturbation vector ranging from :data:`<min>` to :data:`<max>`; :data:`id` is the identifier of the distribution (similarly to option :option:`-id`).  Variables can be any mathematical expression based on :data:`seednb` (the total number of seeds), :data:`dim` (the tessellation dimension), :data:`avdiameq` (the average equivalent cell diameter) and :data:`inistep` (the value of :option:`-morphooptiinistep`); at each next (even) iteration, the attributes of the seeds are reverted to their original values.
 
   In several algorithms are provided, the second etc. are used if the previous ones fails.
 
-  **Default value**: :data:`subplex,praxis` (:data:`lloyd` for :data:`-morpho centroidal`).
+  **Default value**: :data:`subplex,praxis` (:data:`lloyd` for :option:`-morpho` :data:`centroidal`).
 
 .. option:: -morphooptigrid <var1>:<grid1>,<var2>:<grid2>,... (secondary option)
 
@@ -417,6 +428,28 @@ These options can be used to set the cell morphology.
   Possible values: any (:math:`\geq 0`).
 
   **Default value**: :data:`HUGE_VAL`.
+
+.. option:: -morphooptiboundlower <dof1>:<lower_bound>,<dof2>:<lower_bound> (secondary option)
+
+  Specify the lower bound of each variable. :data:`<dof1>`, :data:`<dof2>`, are the variables (or "degrees of freedom", as in :option:`-morphooptidof`) and :data:`<lower_bound>` is the lower bounds, which can be:
+
+    - a real value to apply to all cells;
+    - :data:`file(<file_name>)`: cell values from a :ref:`data_file`.
+
+  .. note :: When both :option:`-morphooptideltamax` and :option:`-morphooptiboundlower` are used, the conditions add up.
+
+  **Default value**: :data:`none`.
+
+.. option:: -morphooptiboundupper <dof1>:<lower_bound>,<dof2>:<lower_bound> (secondary option)
+
+  Specify the upper bound of each variable. :data:`<dof1>`, :data:`<dof2>`, are the variables (or "degrees of freedom", as in :option:`-morphooptidof`) and :data:`<lower_bound>` is the lower bounds, which can be:
+
+    - a real value to apply to all cells;
+    - :data:`file(<file_name>)`: cell values from a :ref:`data_file`.
+
+  .. note :: When both :option:`-morphooptideltamax` and :option:`-morphooptiboundupper` are used, the conditions add up.
+
+  **Default value**: :data:`none`.
 
 .. option:: -morphooptiinistep <inistep> (secondary option)
 
@@ -501,7 +534,7 @@ Crystal Orientation Options
 
   - :data:`random`: ODF = 1, i.e. no or "random" texture (standard case);
 
-  - :data:`odf(mesh=file(<mesh_file>),val=file(<value_file>)[,theta=<theta>)`: ODF described by :data:`<mesh_file>` (a mesh of the fundamental region of orientation space), :data:`<value_file>` (a :ref:`data_file` containing the ODF values at the mesh elements) and :data:`<theta>` is the (optional, Neper-style) size of the kernel used to general the ODF (1-D standard deviation expressed in degrees, if any).
+  - :data:`odf(<odf_file>)`: ODF defined in an :ref:`odf_file`;
 
   - :data:`<orientation>[:<distribution>]`: a continuous distribution about a :ref:`discrete orientation <rotations_and_orientations>` (the distribution itself is optional, see below);
 
@@ -515,7 +548,7 @@ Crystal Orientation Options
 
   - :data:`file(<file_name>[,des=<descriptor>])`: discrete orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
 
-  - :data:`from_morpho`: discrete orientations read from :option:`-morphooptiini`:data:`ori`.
+  - :data:`from_morpho`: discrete orientations read from :option:`-morphooptiini` :data:`ori`.
 
   For :option:`-ori`:data:`<orientation>` and :option:`-ori`:data:`parent`, the optional distributions are:
 
@@ -537,6 +570,20 @@ Crystal Orientation Options
 
   **Default value**: :data:`random`.
 
+.. option:: -orispread <spread>
+
+  Specify the type of (in-cell) orientation spreads.  It can be:
+
+  - :data:`normal(<var>=<value>)`: a 3-variate normal distribution to be applied to all cells, defined by (mutually exclusive):
+
+    - :data:`theta`: the (1D) standard deviation (in degrees);
+    - :data:`thetam`: the average disorientation angle with respect to the average orientation (in degrees).
+
+  - :data:`file(<file_name>)`: different cell distributions (of the type :data:`normal...`), to load from a :ref:`data_file`.
+  - :data:`none`: none.
+
+  **Default value**: :data:`none`.
+
 .. option:: -orisampling <sampling>
 
   Specify the type of sampling of the orientation distribution.  It can be:
@@ -544,7 +591,7 @@ Crystal Orientation Options
   - :data:`random`: random sampling;
   - :data:`uniform`: uniform sampling [#uniform-crysym]_.
 
-  Uniform sampling is only available for :data:`-ori random` (done according to [JAC2018]_).
+  Uniform sampling is only available for :option:`-ori` :data:`random` (done according to [JAC2018]_).
 
   **Default value**: :data:`random`.
 
@@ -569,12 +616,16 @@ Crystal Orientation Options
 
   **Default value**: :data:`r1,r2,r3`.
 
-.. option:: -orioptiini <ori_attributes> (secondary option)
+.. option:: -orioptiini <attributes> (secondary option)
 
   Specify the initial crystal orientations and/or their weights and distributions (theta parameter).
 
+  The general form of the argument is :data:`<attribute>:\<value\>,...`, where the attributes can be:
+
   - :data:`random`: random orientations;
-  - :data:`file(<file_name>[,des=<descriptor>])`: orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
+  - :data:`ori:file(<file_name>[,des=<descriptor>])`: orientations to be read from a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`);
+  - :data:`theta:file(<file_name>)`: the sizes of orientation spreads (as in :option:`-orispread`) to be read from a :ref:`data_file`;
+  - :data:`weight`: the weights to be read from a :ref:`data_file`.
 
   **Default value**: :data:`random`.
 
@@ -586,6 +637,42 @@ Crystal Orientation Options
   - :data:`none`: none.
 
   **Default value**: :data:`none`.
+
+.. option:: -orioptideltamax <deltamax> (secondary option)
+
+  Specify the maximal value by which each variable is allowed to change during optimization.
+
+  Possible values: any (:math:`\geq 0`).
+
+  **Default value**: :data:`HUGE_VAL`.
+
+.. option:: -orioptiboundlower <dof1>:<lower_bound>,<dof2>:<lower_bound> (secondary option)
+
+  Specify the lower bound of each variable. :data:`<dof1>`, :data:`<dof2>`, are the variables (or "degrees of freedom", as in :option:`-orioptidof`) and :data:`<lower_bound>` is the lower bounds, which can be:
+
+    - a real value to apply to all cells;
+    - :data:`file(<file_name>)`: cell values from a :ref:`data_file`.
+
+  .. note :: When both :option:`-orioptideltamax` and :option:`-orioptiboundlower` are used, the conditions add up.
+
+  **Default value**: :data:`none`.
+
+.. option:: -orioptiboundupper <dof1>:<lower_bound>,<dof2>:<lower_bound> (secondary option)
+
+  Specify the upper bound of each variable. :data:`<dof1>`, :data:`<dof2>`, are the variables (or "degrees of freedom", as in :option:`-orioptidof`) and :data:`<lower_bound>` is the lower bounds, which can be:
+
+    - a real value to apply to all cells;
+    - :data:`file(<file_name>)`: cell values from a :ref:`data_file`.
+
+  .. note :: When both :option:`-orioptideltamax` and :option:`-orioptiboundupper` are used, the conditions add up.
+
+  **Default value**: :data:`none`.
+
+.. option:: -orioptiinistep <inistep> (secondary option)
+
+  Specify the step used to perturb the orientation variables when optimization begins.
+
+  **Default value**: :data:`0.1`.
 
 .. option:: -orioptistop <stopping_criterion> (secondary option)
 
@@ -623,21 +710,19 @@ Crystal Orientation Options
 
 .. option:: -orioptilogvar <variables> (secondary option)
 
-  Log the variables (the orientations) during the optimization process.  The variables can be among those provided in :ref:`orientation_optimization_keys`.
+  Log the variables (the orientations) during the optimization process.  The variables can be among those provided in :ref:`ori_variable_keys`.
 
   **Default value**: -.
 
   **File extension**: :file:`.logorivar`.
 
-.. option:: -orispread <spread>
+.. option:: -orioptilogval <variables> (secondary option)
 
-  Specify the type of (in-cell) orientation spreads.  It can be:
+  Log the value of the objective function during the optimization process.  The variables can be among those provided in :ref:`ori_objective_function_value_keys`.
 
-  - :data:`normal(<thetam>)`: a 3-variate normal distribution corresponding to an average misorientation angle (with respect to the average orientation) of :data:`<thetam>` (expressed in degree), to be applied to all cells.
-  - :data:`file(<file_name>)`: different cell distributions (of the type :data:`normal...`), to load from a :ref:`data_file`.
-  - :data:`none`: none.
+  **Default value**: -.
 
-  **Default value**: :data:`none`.
+  **File extension**: :file:`.logval`.
 
 Transformation Options
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -649,8 +734,8 @@ Transformation Options
   **For a scalar tessellation**, the transformations can be:
 
   -  |translate|;
-  -  |rotate|;
-  -  |scale|. For a 2D tessellation, :data:`<fact_z>` can be omitted.
+  -  |rotate|; for a 2D tessellation, the axis must be omitted;
+  -  |scale|; for a 2D tessellation, :data:`<fact_z>` must be omitted.
 
   - :data:`cut(<primitive1>,<primitive2>,...)`: cut by a series of geometrical primitives (experimental).
     The region interior to the primitives is removed from the tessellation.  Append :data:`i` to a primitive name (as in :data:`spherei`, etc.) for the outer region.
@@ -683,9 +768,13 @@ Transformation Options
 
   - :data:`resetcellid`: reset cell ids to get a contiguous numbering starting from 1.
 
+  - :data:`setcellid(<data_file>)`: set the cell ids to the values defined in a :ref:`data_file`.
+
   - :data:`resetlabels`: reset the domain face, edge and vertex labels.
 
-  - :data:`ori(<file_name>[,des=<descriptor>])`: override cell orientations with ones defined in a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
+  - :data:`ori(<data_file>[,des=<descriptor>])`: override cell orientations with ones defined in a :ref:`data_file` written using a specific descriptor (see :ref:`rotations_and_orientations`, default :data:`rodrigues`).
+
+  - :data:`crysym(<crysym>)`: override :ref:`Crystal Symmetry <crystal_symmetries>`.
 
   **For a raster tessellation**, the transformations can be:
 
@@ -1002,7 +1091,7 @@ Statistics files are also provided for cells, seeds, vertices, edges, faces, pol
 Tessellation Optimization Log Files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Log files are provided for the time, variables, statistical distributions and objective function value.  The files contain the data specified to the corresponding :data:`-morphooptilog` option and described in :ref:`tessellation_optimization_keys`.
+Log files are provided for the time, variables, statistical distributions and objective function value.  The files contain the data specified to the corresponding :option:`-morphooptilog` option and described in :ref:`tessellation_optimization_keys`.
 
   - :file:`.logtime`: time file;
   - :file:`.logvar` : variables (seed attributes) file;
@@ -1216,6 +1305,8 @@ References
 
 .. [#1-sphericity] The reason behind the :data:`1-sphericity` (or :data:`1-circularity`) variable is that, for a grain growth microstructure, 1 :math:`-` the sphericity follows a lognormal distribution [#CMAME2018]_.
 
+.. [#anisofact] The anisotropy factor of a polygon or polyhedron corresponds to the ratio between the largest and smallest eigenvalues of its matrix of inertia.
+
 .. [#endianness] Endianness is both written in the tesr file and tested on the system when reading the tesr file, so that the user normally does not have to care about it (even when transferring files across systems).
 
 .. [#uniform-crysym] The crystal symmetry must be specified using :option:`-crysym`.
@@ -1229,3 +1320,7 @@ References
 .. [#praxis] The amount of memory needed approximately scales with the square of the number of seeds. :data:`-n 10000 -morpho gg` requires 12 Gb of RAM.
 
 .. [#size_diameq] :data:`size` and :data:`diameq` should generally be considered as mutually exclusive.
+
+.. [#morpho-rsel] When used, :data:`[r]sel` is considered in a second optimization, which includes all properties (all but :data:`[r]sel` already converged).
+
+.. [#morpho-hexagon] To get regular hexagons, use a domain of aspect ratio :math:`1:\sqrt(3)/2` for :data:`hex[v]` (:option:`-domain` :data:`"square(1,sqrt(3)/2)"`) and :math:`\sqrt(3)/2:1` for :data:`hexh` (:option:`-domain` :data:`"square(sqrt(3)/2,1)"`). When the number of cells is different along the two directions, adapt the aspect ratio accordingly.

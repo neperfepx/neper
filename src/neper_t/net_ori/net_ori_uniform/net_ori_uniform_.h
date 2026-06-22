@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -9,7 +9,6 @@
 #include<gsl/gsl_rng.h>
 #include<sys/time.h>
 
-#include"structIn_t.h"
 #include"ut.h"
 #include"float.h"
 #include"neut_t.h"
@@ -18,11 +17,12 @@
 #include"net_ori_uniform.h"
 #include"../net_ori.h"
 
-#include "neut_qcloud_struct.hpp"
+#include "neut_struct_qcloud.hpp"
 #include "neut/neut_oset/neut_oset.hpp"
 
 extern void net_ori_uniform_log (struct IN_T In, struct OL_SET OSet, struct OOPT OOpt);
 extern void net_ori_uniform_log_var (struct IN_T In, struct OL_SET OSet, struct OOPT OOpt);
+extern void net_ori_uniform_log_val (struct IN_T In, struct OOPT OOpt);
 
 extern void net_ori_uniform_init (struct IN_T In, int level, struct MTESS MTess,
                       struct TESS *Tess, int dtess, int dcell, long random,
@@ -33,12 +33,12 @@ extern int net_ori_uniform_opt (struct IN_T In, struct OOPT *pOOpt, struct OL_SE
 
 extern void net_ori_uniform_opt_forces (struct OL_SET *pOSet,
                                 double **f, double *E, struct OOPT *pOOpt,
-                                struct QCLOUD *pqcloud, my_kd_tree_t *qindex);
+                                struct QCLOUD *pqcloud, my_kd_tree_t *qtree);
 extern void net_ori_uniform_opt_forces_ser (struct OL_SET *pOSet, double **f, double *E);
 extern void net_ori_uniform_opt_forces_ser_neigh (struct OL_SET *pOSet, double **f,
                                           double *E, struct OOPT *pOOpt,
                                           struct QCLOUD *pqcloud,
-                                          my_kd_tree_t *qindex);
+                                          my_kd_tree_t *qtree);
 
 extern int net_ori_uniform_opt_energy (OL_SET * pOSet,
                                double *E, double **preps,

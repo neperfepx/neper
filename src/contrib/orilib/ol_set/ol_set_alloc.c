@@ -10,8 +10,8 @@ ol_set_zero (struct OL_SET *pOSet)
   (*pOSet).q = NULL;
   (*pOSet).weight = NULL;
   (*pOSet).theta = NULL;
+  (*pOSet).theta3 = NULL;
   (*pOSet).id = NULL;
-  (*pOSet).label = NULL;
   (*pOSet).crysym = NULL;
   (*pOSet).nc = 0;
 
@@ -28,9 +28,9 @@ ol_set_alloc (size_t size, char *crysym)
   Set.weight = ut_alloc_1d (size);
   ut_array_1d_set (Set.weight, size, 1);
   Set.theta = NULL;
+  Set.theta3 = NULL;
   Set.id = ut_alloc_1d_int (size);
   ut_array_1d_int_set (Set.id, size, 1);
-  Set.label = ut_alloc_1d_pchar (size);
   Set.crysym = NULL;
 
   if (crysym)
@@ -54,8 +54,8 @@ ol_set_free (struct OL_SET *pOSet)
   ut_free_2d (&(*pOSet).q, (*pOSet).size);
   ut_free_1d (&(*pOSet).weight);
   ut_free_1d (&(*pOSet).theta);
+  ut_free_2d (&(*pOSet).theta3, (*pOSet).size);
   ut_free_1d_int (&(*pOSet).id);
-  ut_free_2d_char (&(*pOSet).label, (*pOSet).size);
   ut_free_1d_char (&(*pOSet).crysym);
   (*pOSet).size = 0;
 
@@ -290,10 +290,40 @@ ol_set_orthotropic (struct OL_SET Set1, struct OL_SET *pSet2)
 void
 ol_set_memcpy (struct OL_SET Set1, struct OL_SET *pSet2)
 {
-  (*pSet2).size = Set1.size;
+  int i;
+
+  ol_set_free (pSet2);
+  (*pSet2) = ol_set_alloc (Set1.size, Set1.crysym);
   ut_array_2d_memcpy (Set1.q, Set1.size, 4, (*pSet2).q);
-  ut_array_1d_memcpy (Set1.weight, Set1.size, (*pSet2).weight);
-  ut_array_1d_int_memcpy (Set1.id, Set1.size, (*pSet2).id);
+
+  if (Set1.theta)
+  {
+    (*pSet2).theta = ut_alloc_1d ((*pSet2).size);
+    ut_array_1d_memcpy (Set1.theta, Set1.size, (*pSet2).theta);
+  }
+
+  if (Set1.theta3)
+  {
+    (*pSet2).theta3 = ut_alloc_1d_pdouble ((*pSet2).size);
+    for (i = 0; i < (int) (*pSet2).size; i++)
+      if (Set1.theta3[i])
+      {
+        (*pSet2).theta3[i] = ut_alloc_1d (3);
+        ut_array_1d_memcpy (Set1.theta3[i], 3, (*pSet2).theta3[i]);
+      }
+  }
+
+  if (Set1.weight)
+  {
+    (*pSet2).weight = ut_alloc_1d ((*pSet2).size);
+    ut_array_1d_memcpy (Set1.weight, Set1.size, (*pSet2).weight);
+  }
+
+  if (Set1.id)
+  {
+    (*pSet2).id = ut_alloc_1d_int ((*pSet2).size);
+    ut_array_1d_int_memcpy (Set1.id, Set1.size, (*pSet2).id);
+  }
 
   return;
 }

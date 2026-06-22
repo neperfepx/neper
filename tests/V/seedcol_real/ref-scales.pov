@@ -6038,7 +6038,7 @@ cylinder {<-0.1,0,1>,<0,0,1>,0.0025 texture {pigment{rgb<0,0,0>}}}
 union {
 cylinder {<-0.1,0,0.000000>,<0,0,0.000000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "0.159392" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,0.000000>
@@ -6046,7 +6046,7 @@ translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.100000>,<0,0,0.100000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "0.193634" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,0.100000>
@@ -6054,7 +6054,7 @@ translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.200000>,<0,0,0.200000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "0.227877" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,0.200000>
@@ -6062,7 +6062,7 @@ translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.300000>,<0,0,0.300000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "0.262119" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,0.300000>
@@ -6070,7 +6070,7 @@ translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.400000>,<0,0,0.400000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "0.296361" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,0.400000>
@@ -6078,7 +6078,7 @@ translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.500000>,<0,0,0.500000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "0.330604" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,0.500000>
@@ -6086,7 +6086,7 @@ translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.600000>,<0,0,0.600000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "0.364846" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,0.600000>
@@ -6094,7 +6094,7 @@ translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.700000>,<0,0,0.700000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "0.399088" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,0.700000>
@@ -6102,7 +6102,7 @@ translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.800000>,<0,0,0.800000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "0.433330" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,0.800000>
@@ -6110,7 +6110,7 @@ translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,0.900000>,<0,0,0.900000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "0.467573" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,0.900000>
@@ -6118,7 +6118,7 @@ translate <0.02,0,-0.02>
 }
 cylinder {<-0.1,0,1.000000>,<0,0,1.000000>,0.0025 texture {pigment{rgb<0,0,0>}}}
 text {ttf "timrom.ttf" "0.501815" 0.1, 0
-pigment {rgb<0,0,0>}
+texture {pigment{rgb<0,0,0>}}
 scale 0.06
 rotate <90,0,0>
 translate <0,0,1.000000>

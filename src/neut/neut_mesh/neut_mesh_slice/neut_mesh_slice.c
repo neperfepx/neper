@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_slice_.h"
@@ -8,7 +8,7 @@ void
 neut_mesh_slice (struct NODES Nodes, struct MESH Mesh,
                  struct DATA NodeData, struct DATA MeshData,
                  char *slice, int *pSQty, struct NODES **pN, struct MESH ***pM,
-                 struct DATA **pData, struct DATA ****pSMeshData,
+                 struct DATA **pSNodeData, struct DATA ****pSMeshData,
                  int ***pEltNewOld)
 {
   int i, j, k;
@@ -19,7 +19,7 @@ neut_mesh_slice (struct NODES Nodes, struct MESH Mesh,
 
   // allocation
   (*pN) = malloc (*pSQty * sizeof (struct NODES));
-  (*pData) = malloc (*pSQty * sizeof (struct DATA));
+  (*pSNodeData) = malloc (*pSQty * sizeof (struct DATA));
 
   (*pM) = malloc (*pSQty * sizeof (struct MESH*));
   for (i = 0; i < *pSQty; i++)
@@ -43,7 +43,7 @@ neut_mesh_slice (struct NODES Nodes, struct MESH Mesh,
   for (i = 0; i < *pSQty; i++)
   {
     neut_nodes_set_zero (&((*pN)[i]));
-    neut_data_set_default (&((*pData)[i]));
+    neut_data_set_default (&((*pSNodeData)[i]));
     for (j = 0; j <= 3; j++)
       for (k = 0; k < 3; k++)
         neut_data_set_default ((*pSMeshData)[i][j] + k);
@@ -70,7 +70,8 @@ neut_mesh_slice (struct NODES Nodes, struct MESH Mesh,
       Nodes.NodeCoo = coo;
 
     neut_data_mesh2slice_nodes (NodeData, (*pN)[i], node_newold, node_fact,
-                                &((*pData)[i]));
+                                &((*pSNodeData)[i]));
+
     neut_data_mesh2slice_elts (MeshData, (*pM)[i][2], (*pEltNewOld)[i],
                                &((*pSMeshData)[i]));
 

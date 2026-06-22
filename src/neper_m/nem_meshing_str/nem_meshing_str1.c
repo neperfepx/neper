@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nem_meshing_str_.h"
@@ -10,26 +10,11 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
                       struct MESH *Mesh, struct NSET *NSet)
 {
   int i;
-  int *msize = ut_alloc_1d_int (3);
   double **bbox = ut_alloc_2d (3, 2);
   double *bboxsize = ut_alloc_1d (3);
-  double cl;
 
   neut_tess_bbox ((*pTess), bbox);
   neut_tess_bboxsize ((*pTess), bboxsize);
-
-  if ((*pTess).Dim == 3)
-    cl = MeshPara.poly_cl[1];
-  else if ((*pTess).Dim == 2)
-    cl = MeshPara.face_cl[1];
-  else
-  {
-    ut_print_neperbug ();
-    abort ();                   // for warnings
-  }
-
-  for (i = 0; i < 3; i++)
-    msize[i] = ut_num_d2ri (bboxsize[i] / cl);
 
   // neut_utils_nset_expand (In.nset, &expandnset);
   // neut_utils_nset_expand (In.faset, &expandfaset);
@@ -38,7 +23,7 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
   printf ("\n");
   ut_print_message (0, 2, "%dD meshing... ", (*pTess).Dim);
 
-  neut_mesh_str ((*pTess).Dim, msize, pNodes, Mesh + (*pTess).Dim,
+  neut_mesh_str ((*pTess).Dim, MeshPara.msize, (*pTess).Periodic, pNodes, Mesh + (*pTess).Dim,
                  NSet + (*pTess).Dim - 1);
   neut_nodes_scale (pNodes, bboxsize[0], bboxsize[1], bboxsize[2]);
   neut_nodes_shift (pNodes, bbox[0][0], bbox[1][0], bbox[2][0]);
@@ -77,7 +62,6 @@ nem_meshing_tess_str (struct IN_M In, struct MESHPARA MeshPara,
 
   // ut_free_1d_char (&expandnset);
   // ut_free_1d_char (&expandfaset);
-  ut_free_1d_int (&msize);
   ut_free_2d (&bbox, 3);
   ut_free_1d (&bboxsize);
 
@@ -119,7 +103,7 @@ nem_meshing_tesr_str (struct IN_M In, struct MESHPARA MeshPara,
   printf ("\n");
   ut_print_message (0, 2, "%dD meshing... ", (*pTesr).Dim);
 
-  neut_mesh_str ((*pTesr).Dim, msize, pNodes, Mesh + (*pTesr).Dim,
+  neut_mesh_str ((*pTesr).Dim, msize, (*pTesr).Periodic, pNodes, Mesh + (*pTesr).Dim,
                  NSet + (*pTesr).Dim - 1);
 
   neut_nodes_scale (pNodes, bboxsize[0], bboxsize[1],

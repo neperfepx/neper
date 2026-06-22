@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_oset_.hpp"
@@ -45,11 +45,11 @@ neut_oset_kdtree_cloud (struct OL_SET *pOSet, struct QCLOUD *pqcloud)
 }
 
 void
-neut_oset_kdtree_build (struct QCLOUD *pqcloud, my_kd_tree_t ** pqindex)
+neut_oset_kdtree_build (struct QCLOUD *pqcloud, my_kd_tree_t ** pqtree)
 {
-  (*pqindex) = new my_kd_tree_t (4, *pqcloud);
+  (*pqtree) = new my_kd_tree_t (4, *pqcloud);
   // KDTreeSingleIndexAdaptorParams (10 /* max leaf */ ));
-  (*pqindex)->buildIndex ();
+  (*pqtree)->buildIndex ();
 
   return;
 }

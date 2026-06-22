@@ -1,11 +1,11 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_fscanf_.h"
 
 void
-neut_tess_fscanf_domain_vers (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_domain_vers (FILE *file, struct TESS *pTess)
 {
   int i, id, tmp;
 
@@ -40,7 +40,7 @@ neut_tess_fscanf_domain_vers (struct TESS *pTess, FILE * file)
 }
 
 void
-neut_tess_fscanf_domain_edges_v2p0 (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_domain_edges_v2p0 (FILE *file, struct TESS *pTess)
 {
   int i, id;
 
@@ -80,7 +80,7 @@ neut_tess_fscanf_domain_edges_v2p0 (struct TESS *pTess, FILE * file)
 }
 
 void
-neut_tess_fscanf_domain_edges_v3p3 (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_domain_edges_v3p3 (FILE *file, struct TESS *pTess)
 {
   int i, id;
 
@@ -123,7 +123,7 @@ neut_tess_fscanf_domain_edges_v3p3 (struct TESS *pTess, FILE * file)
 }
 
 void
-neut_tess_fscanf_domain_edges_v3p5 (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_domain_edges_v3p5 (FILE *file, struct TESS *pTess)
 {
   int i, id;
 
@@ -181,7 +181,7 @@ neut_tess_fscanf_domain_edges_v3p5 (struct TESS *pTess, FILE * file)
 }
 
 void
-neut_tess_fscanf_domain_faces_v2p0 (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_domain_faces_v2p0 (FILE *file, struct TESS *pTess)
 {
   int i, id;
 
@@ -256,7 +256,7 @@ neut_tess_fscanf_domain_faces_v2p0 (struct TESS *pTess, FILE * file)
 }
 
 void
-neut_tess_fscanf_domain_faces_v3p3 (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_domain_faces_v3p3 (FILE *file, struct TESS *pTess)
 {
   int i, id;
 
@@ -348,7 +348,7 @@ neut_tess_fscanf_domain_faces_v3p3 (struct TESS *pTess, FILE * file)
 }
 
 void
-neut_tess_fscanf_per_gen (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_per_gen (FILE *file, struct TESS *pTess)
 {
   if (!ut_file_string_scanandtest (file, "**periodicity")
       || !ut_file_string_scanandtest (file, "*general")
@@ -360,7 +360,7 @@ neut_tess_fscanf_per_gen (struct TESS *pTess, FILE * file)
 }
 
 void
-neut_tess_fscanf_per_seed (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_per_seed (FILE *file, struct TESS *pTess)
 {
   int i, j, id, master;
 
@@ -403,7 +403,7 @@ neut_tess_fscanf_per_seed (struct TESS *pTess, FILE * file)
 }
 
 void
-neut_tess_fscanf_per_face (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_per_face (FILE *file, struct TESS *pTess)
 {
   int i, id;
 
@@ -440,7 +440,7 @@ neut_tess_fscanf_per_face (struct TESS *pTess, FILE * file)
 }
 
 void
-neut_tess_fscanf_per_edge (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_per_edge (FILE *file, struct TESS *pTess)
 {
   int i, id;
 
@@ -473,7 +473,7 @@ neut_tess_fscanf_per_edge (struct TESS *pTess, FILE * file)
 }
 
 void
-neut_tess_fscanf_per_ver (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_per_ver (FILE *file, struct TESS *pTess)
 {
   int i, id;
 
@@ -500,7 +500,7 @@ neut_tess_fscanf_per_ver (struct TESS *pTess, FILE * file)
 }
 
 void
-neut_tess_fscanf_scale_gen (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_scale_gen (FILE *file, struct TESS *pTess)
 {
   if (!ut_file_string_scanandtest (file, "**scale")
       || !ut_file_string_scanandtest (file, "*general")
@@ -511,7 +511,7 @@ neut_tess_fscanf_scale_gen (struct TESS *pTess, FILE * file)
 }
 
 void
-neut_tess_fscanf_scale_cellid (struct TESS *pTess, FILE * file)
+neut_tess_fscanf_scale_cellid (FILE *file, struct TESS *pTess)
 {
   int i, id;
 

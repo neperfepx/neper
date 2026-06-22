@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nes_pproc_entity_builtin_.h"
@@ -8,6 +8,47 @@
 #ifdef HAVE_OPENMP
 #include <omp.h>
 #endif
+
+int
+nes_pproc_entity_builtin_nodes_coo (struct SIM *pSim, struct NODES Nodes,
+                                    char *dir, char *res,
+                                    struct SIMRES *pSimRes)
+{
+  int step;
+  char *simfile = ut_alloc_1d_char (1000);
+  char *filename = ut_alloc_1d_char (1000);
+  char *prev = ut_alloc_1d_char (1000);
+  FILE *file = NULL;
+
+  ut_print_progress (stdout, 0, (*pSim).StepQty + 1, (char *) "%3.0f%%", prev);
+
+  neut_sim_simres (*pSim, (char *) "node", (char *) "coo", pSimRes);
+
+  neut_sim_setstep (pSim, 0);
+
+  for (step = 0; step <= (*pSim).StepQty; step++)
+  {
+    neut_sim_setstep (pSim, step);
+    neut_simres_setstep (pSimRes, step);
+
+    sprintf (filename, (char *) "%s/%s.step%d", dir, res, step);
+
+    file = ut_file_open (filename, (char *) "W");
+    ut_array_2d_fprintf (file, Nodes.NodeCoo + 1, Nodes.NodeQty, 3, REAL_PRINT_FORMAT);
+    ut_file_close (file, filename, (char *) "W");
+
+    ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1, (char *) "%3.0f%%", prev);
+  }
+
+  neut_sim_addres (pSim, (char *) "node", res, NULL);
+  neut_sim_fprintf ((*pSim).simdir, *pSim, (char *) "W");
+
+  ut_free_1d_char (&simfile);
+  ut_free_1d_char (&filename);
+  ut_free_1d_char (&prev);
+
+  return 0;
+}
 
 int
 nes_pproc_entity_builtin_nodes_disp (struct SIM *pSim, struct NODES Nodes,
@@ -367,11 +408,10 @@ nes_pproc_entity_builtin_cells_pre (struct SIM *pSim, struct TESS Tess,
 
 void
 nes_pproc_entity_builtin_cells_odf (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
-                                    char *entity, char *res, struct SIMRES *pSimRes)
+                                    char *entity, char *res, char *expr, struct SIMRES *pSimRes)
 {
-  int i, step, varqty;
-  char *prev = ut_alloc_1d_char (1000);
-  char *filename = NULL;
+  int i, j, step, varqty;
+  char *filename = ut_alloc_1d_char (1000);
   struct OL_SET OSet;
   struct ODF Odf;
   char *fct = NULL, **vars = NULL, **vals = NULL;
@@ -380,6 +420,12 @@ nes_pproc_entity_builtin_cells_odf (struct SIM *pSim, struct TESS *pTess, struct
   char *thetastring = ut_alloc_1d_char (100);
   char *cutoff = NULL;
   struct SIMRES SimRes2;
+  double index;
+  FILE *file = NULL;
+  char *expr2_step = ut_alloc_1d_char (1000);
+  char *expr_step = ut_alloc_1d_char (1000);
+
+  sprintf (expr_step, "%s.step", expr);
 
   // variables defined from tess or tesr
   char *input = NULL;           // tess or tesr
@@ -389,12 +435,18 @@ nes_pproc_entity_builtin_cells_odf (struct SIM *pSim, struct TESS *pTess, struct
   char *crysym = NULL;          // crysym
 
   ol_set_zero (&OSet);
+  neut_odf_set_zero (&Odf);
 
   neut_simres_set_zero (&SimRes2);
 
-  ut_string_function (res, &fct, &vars, &vals, &varqty);
+  ut_string_function (expr, &fct, &vars, &vals, &varqty);
 
-  neut_sim_orispace (*pSim, &Odf, (char *) "R");
+  neut_ospace_fnscanf ((*pTess).CellCrySym, (*pSim).Sp.space, (*pSim).Sp.fr, &(Odf.Sp), (char *) "R");
+
+  Odf.odfqty = Odf.Sp.Mesh[3].EltQty;
+  Odf.odf = ut_alloc_1d (Odf.odfqty);
+  Odf.odfnqty = Odf.Sp.Nodes.NodeQty;
+  Odf.odfn = ut_alloc_1d (Odf.odfnqty);
 
   if (!neut_tess_isvoid (*pTess))
   {
@@ -415,14 +467,12 @@ nes_pproc_entity_builtin_cells_odf (struct SIM *pSim, struct TESS *pTess, struct
   else
     abort ();
 
-  ut_print_progress (stdout, 0, (*pSim).StepQty + 1, (char *) "%3.0f%%", prev);
-
   for (step = 0; step <= (*pSim).StepQty; step++)
   {
     // Setting defaults and parsing arguments
     Odf.sigma = -1;
     ut_string_string ((char *) "size", &weight);
-    ut_string_string ((char *) "all", &cutoff);
+    ut_string_string ((char *) "5", &cutoff);
     ut_string_string ((char *) "cells", &oriinput);
     clustering = -1;
 
@@ -493,10 +543,10 @@ nes_pproc_entity_builtin_cells_odf (struct SIM *pSim, struct TESS *pTess, struct
     }
 
     // Printing to terminal
-    sprintf (thetastring, (char *) " (theta = %9.6f°)     ", Odf.sigma * 180 / M_PI);
+    sprintf (thetastring, (char *) " (theta = %9.6f°) ", Odf.sigma * 180 / M_PI);
     ut_print_clearline (stdout, strlen (thetastring) - 1);
     printf ((char *) "%s", thetastring);
-    ut_print_progress (stdout, 0, (*pSim).StepQty + 1, (char *) "%3.0f%%", prev);
+    fflush (stdout);
 
     /*
     printf ((char *) "\n");
@@ -509,22 +559,35 @@ nes_pproc_entity_builtin_cells_odf (struct SIM *pSim, struct TESS *pTess, struct
     // Computing weights
     if (!strcmp (oriinput, (char *) "cell"))
     {
-      if (!strcmp (input, (char *) "tess"))
-        for (i = 1; i <= CellQty; i++)
-          neut_tess_expr_val_one (pTess, NULL, NULL, NULL, (char *) "cell", i, weight,
-                                 OSet.weight + i - 1, NULL);
+      if (!strncmp (weight, "file(", 5))
+        ut_array_1d_fnscanf (weight, OSet.weight, OSet.size, (char *) "R");
+
       else
-        for (i = 1; i <= CellQty; i++)
-          neut_tesr_expr_val_one (Tesr, (char *) "cell", i, weight, OSet.weight + i - 1,
-                                 NULL);
+      {
+        if (!strcmp (input, (char *) "tess"))
+          for (i = 1; i <= CellQty; i++)
+          {
+            if (!(*pTess).CellWeight)
+              neut_tess_expr_val_one (pTess, NULL, NULL, NULL, (char *) "cell", i, weight,
+                                     OSet.weight + i - 1, NULL);
+            else
+              OSet.weight[i - 1] = (*pTess).CellWeight[i];
+          }
+        else
+          for (i = 1; i <= CellQty; i++)
+            neut_tesr_expr_val_one (Tesr, (char *) "cell", i, weight, OSet.weight + i - 1,
+                                   NULL);
+      }
     }
 
+    /*
     for (i = 0; i < CellQty; i++)
       if (OSet.weight[i] < 0)
         ut_print_message (2, 2, (char *) "Negative weight.\n");
+        */
 
     if (clustering)
-      neut_oset_odf_clustering (OSet, Odf, NULL, &OSet);
+      neut_oset_odf_clustering (OSet, &Odf, NULL, &OSet);
 
     if (!strcmp (oriinput, (char *) "cell") && CellOriDistrib)
     {
@@ -532,26 +595,135 @@ nes_pproc_entity_builtin_cells_odf (struct SIM *pSim, struct TESS *pTess, struct
         ut_print_message (2, 2, (char *) "Clustering and cell with theta are mutually exclusive\n");
 
       OSet.theta = ut_alloc_1d (OSet.size);
+      OSet.theta3 = ut_alloc_1d_pdouble (OSet.size);
 
       for (i = 0; i < (int) OSet.size; i++)
-        sscanf (CellOriDistrib[i + 1], (char *) "normal(%lf)", OSet.theta + i);
+      {
+        int qty;
+        char *fct = NULL, **vars = NULL, **vals = NULL;
 
-      ut_array_1d_scale (OSet.theta, OSet.size, M_PI / 180);
+        ut_string_function (CellOriDistrib[i + 1], &fct, &vars, &vals, &qty);
+
+        // Replace by neut_tess_olset or similar
+        if (strstr (CellOriDistrib[i + 1], "theta1")
+         || strstr (CellOriDistrib[i + 1], "theta2")
+         || strstr (CellOriDistrib[i + 1], "theta3"))
+          OSet.theta3[i] = ut_alloc_1d (3);
+
+        if (strcmp (fct, "normal") || qty == 0)
+          abort ();
+
+        for (j = 0; j < qty; j++)
+        {
+          if (!vars[j] || !strcmp (vars[j], "thetam"))
+            OSet.theta[i] = atof (vals[j]) / (2 * sqrt(2 / M_PI)) * M_PI / 180;
+          else if (!strcmp (vars[j], "theta"))
+            OSet.theta[i] = atof (vals[j]) * M_PI / 180;
+          else if (!strcmp (vars[j], "theta1"))
+            OSet.theta3[i][0] = atof (vals[j]) * M_PI / 180;
+          else if (!strcmp (vars[j], "theta2"))
+            OSet.theta3[i][1] = atof (vals[j]) * M_PI / 180;
+          else if (!strcmp (vars[j], "theta3"))
+            OSet.theta3[i][2] = atof (vals[j]) * M_PI / 180;
+          else
+          {
+            printf ("Failed parsing of `%s'\n", vars[j]);
+            abort ();
+          }
+        }
+
+        ut_free_1d_char (&fct);
+        ut_free_2d_char (&vars, qty);
+        ut_free_2d_char (&vals, qty);
+      }
     }
 
-    if (!strcmp (fct, (char *) "odf"))
-      neut_odf_comp ((char *) "m", cutoff, &OSet, &Odf, 1);
-    else if (!strcmp (fct, (char *) "odfn"))
-      neut_odf_comp ((char *) "n", cutoff, &OSet, &Odf, 1);
+    if (!strcmp (fct, (char *) "odf") || !strcmp (fct, (char *) "odfindex"))
+      neut_odf_comp ((char *) "elt", cutoff, &OSet, &Odf, 1);
+    else if (!strcmp (fct, (char *) "odfn") || !strcmp (fct, (char *) "odfnindex"))
+      neut_odf_comp ((char *) "node", cutoff, &OSet, &Odf, 1);
 
     // Writing results
     if (!strcmp (fct, (char *) "odf"))
+    {
       ut_array_1d_fnprintf_column ((*pSimRes).file, Odf.odf, Odf.odfqty, REAL_PRINT_FORMAT, (char *) "W");
-    else if (!strcmp (fct, (char *) "odfn"))
-      ut_array_1d_fnprintf_column ((*pSimRes).file, Odf.odfn, Odf.odfnqty, REAL_PRINT_FORMAT, (char *) "W");
-  }
 
-  nes_pproc_entity_builtin_odf_writeconfig (pSimRes, fct, Odf);
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_theta.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      fprintf (file, REAL_PRINT_FORMAT, Odf.sigma * 180 / M_PI);
+      ut_file_close (file, filename, "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_min.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      fprintf (file, REAL_PRINT_FORMAT, ut_array_1d_min (Odf.odf, Odf.odfqty));
+      ut_file_close (file, filename, "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_max.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      fprintf (file, REAL_PRINT_FORMAT, ut_array_1d_max (Odf.odf, Odf.odfqty));
+      ut_file_close (file, filename, "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_stddev.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      neut_odf_index (&Odf, &index);
+      fprintf (file, REAL_PRINT_FORMAT, index);
+      ut_file_close (file, filename, "W");
+    }
+
+    else if (!strcmp (fct, (char *) "odfn"))
+    {
+      ut_array_1d_fnprintf_column ((*pSimRes).file, Odf.odfn, Odf.odfnqty, REAL_PRINT_FORMAT, (char *) "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_theta.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      fprintf (file, REAL_PRINT_FORMAT, Odf.sigma * 180 / M_PI);
+      ut_file_close (file, filename, "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_min.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      fprintf (file, REAL_PRINT_FORMAT, ut_array_1d_min (Odf.odfn, Odf.odfnqty));
+      ut_file_close (file, filename, "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_max.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      fprintf (file, REAL_PRINT_FORMAT, ut_array_1d_max (Odf.odfn, Odf.odfnqty));
+      ut_file_close (file, filename, "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_stddev.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      neut_odfn_index (&Odf, &index);
+      fprintf (file, REAL_PRINT_FORMAT, index);
+      ut_file_close (file, filename, "W");
+    }
+
+    else if (!strcmp (fct, (char *) "odfindex"))
+    {
+      neut_odf_index (&Odf, &index);
+      ut_array_1d_fnprintf_column ((*pSimRes).file, &index, 1, REAL_PRINT_FORMAT, (char *) "W");
+    }
+
+    else if (!strcmp (fct, (char *) "odfnindex"))
+    {
+      neut_odfn_index (&Odf, &index);
+      ut_array_1d_fnprintf_column ((*pSimRes).file, &index, 1, REAL_PRINT_FORMAT, (char *) "W");
+    }
+  }
 
   ol_set_free (&OSet);
 
@@ -569,6 +741,8 @@ nes_pproc_entity_builtin_cells_odf (struct SIM *pSim, struct TESS *pTess, struct
   neut_simres_free (&SimRes2);
   ut_free_1d_char (&cutoff);
   ut_free_1d_char (&oriinput);
+  ut_free_1d_char (&expr_step);
+  ut_free_1d_char (&expr2_step);
 
   return;
 }
@@ -634,7 +808,7 @@ nes_pproc_entity_builtin_elsets_gos (struct SIM *pSim, struct TESS Tess,
 void
 nes_pproc_entity_builtin_elsets_oridis (struct SIM *pSim, struct TESS Tess,
                                      struct NODES *pNodes, struct MESH *Mesh,
-                                     char *entity, char *res, int **elsets,
+                                     char *entity, char *res, char *expr, int **elsets,
                                      int elsetqty, struct SIMRES *pSimRes)
 {
   int i, step;
@@ -661,11 +835,11 @@ nes_pproc_entity_builtin_elsets_oridis (struct SIM *pSim, struct TESS Tess,
 
     for (i = 1; i <= elsetqty; i++)
     {
-      if (!strcmp (res, (char *) "oridisanisoangles"))
+      if (!strcmp (expr, (char *) "oridisanisoangles"))
         ut_array_1d_fprintf (file, eval[i], 3, REAL_PRINT_FORMAT);
-      else if (!strcmp (res, (char *) "oridisanisoaxes"))
+      else if (!strcmp (expr, (char *) "oridisanisoaxes"))
         ut_array_2d_fprintf_oneline (file, evect[i], 3, 3, REAL_PRINT_FORMAT);
-      else if (!strcmp (res, (char *) "oridisanisofact"))
+      else if (!strcmp (expr, (char *) "oridisanisofact"))
         fprintf (file, REAL_PRINT_FORMAT "\n", eval[i][0] / pow (ut_array_1d_prod (eval[i], 3), 1. / 3));
     }
 
@@ -677,7 +851,7 @@ nes_pproc_entity_builtin_elsets_oridis (struct SIM *pSim, struct TESS Tess,
   neut_mesh_free_simeltori (Mesh + Tess.Dim);
 
   neut_sim_setstep (pSim, 0);
-  neut_sim_addres (pSim, entity, res, NULL);
+  neut_sim_addres (pSim, entity, res, expr);
   neut_sim_fprintf ((*pSim).simdir, *pSim, (char *) "W");
 
   ut_free_3d (&evect, Mesh[Tess.Dim].ElsetQty + 1, 3);
@@ -692,12 +866,13 @@ nes_pproc_entity_builtin_elsets_oridis (struct SIM *pSim, struct TESS Tess,
 void
 nes_pproc_entity_builtin_elsets_odf (struct SIM *pSim, struct TESS *pTess,
                                      struct NODES *pNodes, struct MESH *Mesh,
-                                     char *entity, char *res, struct SIMRES *pSimRes)
+                                     char *entity, char *res, char *expr,
+                                     struct SIMRES *pSimRes)
 {
   int i, step, varqty, status, oriqty;
   double **oris = NULL;
   char *prev = ut_alloc_1d_char (1000);
-  char *filename = NULL;
+  char *filename = ut_alloc_1d_char (1000);
   FILE *file = NULL;
   struct OL_SET OSet;
   struct ODF Odf;
@@ -707,14 +882,20 @@ nes_pproc_entity_builtin_elsets_odf (struct SIM *pSim, struct TESS *pTess,
   char *thetastring = ut_alloc_1d_char (100);
   char *cutoff = NULL;
   struct SIMRES SimRes2;
+  double index;
+  char *expr2_step = ut_alloc_1d_char (1000);
+  char *expr_step = ut_alloc_1d_char (1000);
+
+  sprintf (expr_step, "%s.step", expr);
 
   ol_set_zero (&OSet);
+  neut_odf_set_zero (&Odf);
 
   neut_simres_set_zero (&SimRes2);
 
-  ut_string_function (res, &fct, &vars, &vals, &varqty);
+  ut_string_function (expr, &fct, &vars, &vals, &varqty);
 
-  neut_sim_orispace (*pSim, &Odf, (char *) "R");
+  neut_ospace_fnscanf (Mesh[3].ElsetCrySym, (*pSim).Sp.space, (*pSim).Sp.fr, &(Odf.Sp), (char *) "R");
 
   ut_print_progress (stdout, 0, (*pSim).StepQty + 1, (char *) "%3.0f%%", prev);
 
@@ -723,7 +904,7 @@ nes_pproc_entity_builtin_elsets_odf (struct SIM *pSim, struct TESS *pTess,
     // Setting defaults and parsing arguments
     Odf.sigma = -1;
     ut_string_string ((char *) "size", &weight);
-    ut_string_string ((char *) "all", &cutoff);
+    ut_string_string ((char *) "5", &cutoff);
     ut_string_string ((char *) "elsets", &oriinput);
     clustering = -1;
 
@@ -808,30 +989,99 @@ nes_pproc_entity_builtin_elsets_odf (struct SIM *pSim, struct TESS *pTess,
                                  OSet.weight - 1, NULL);
 
     if (clustering)
-      neut_oset_odf_clustering (OSet, Odf, NULL, &OSet);
+      neut_oset_odf_clustering (OSet, &Odf, NULL, &OSet);
 
-    file = ut_file_open ((*pSimRes).file, (char *) "W");
-
-    if (!strcmp (fct, (char *) "odf"))
-      neut_odf_comp ((char *) "m", cutoff, &OSet, &Odf, 0);
-    else if (!strcmp (fct, (char *) "odfn"))
-      neut_odf_comp ((char *) "n", cutoff, &OSet, &Odf, 0);
+    if (!strcmp (fct, (char *) "odf") || !strcmp (fct, (char *) "odfindex"))
+      neut_odf_comp ((char *) "elt", cutoff, &OSet, &Odf, 0);
+    else if (!strcmp (fct, (char *) "odfn") || !strcmp (fct, (char *) "odfnindex"))
+      neut_odf_comp ((char *) "node", cutoff, &OSet, &Odf, 0);
 
     // Writing results
     if (!strcmp (fct, (char *) "odf"))
+    {
       ut_array_1d_fnprintf_column ((*pSimRes).file, Odf.odf, Odf.odfqty, REAL_PRINT_FORMAT, (char *) "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_theta.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      fprintf (file, REAL_PRINT_FORMAT, Odf.sigma * 180 / M_PI);
+      ut_file_close (file, filename, "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_min.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      fprintf (file, REAL_PRINT_FORMAT, ut_array_1d_min (Odf.odf, Odf.odfqty));
+      ut_file_close (file, filename, "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_max.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      fprintf (file, REAL_PRINT_FORMAT, ut_array_1d_max (Odf.odf, Odf.odfqty));
+      ut_file_close (file, filename, "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_stddev.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      neut_odf_index (&Odf, &index);
+      fprintf (file, REAL_PRINT_FORMAT, index);
+      ut_file_close (file, filename, "W");
+    }
+
     else if (!strcmp (fct, (char *) "odfn"))
+    {
       ut_array_1d_fnprintf_column ((*pSimRes).file, Odf.odfn, Odf.odfnqty, REAL_PRINT_FORMAT, (char *) "W");
 
-    ut_file_close (file, (*pSimRes).file, (char *) "W");
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_theta.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      fprintf (file, REAL_PRINT_FORMAT, Odf.sigma * 180 / M_PI);
+      ut_file_close (file, filename, "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_min.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      fprintf (file, REAL_PRINT_FORMAT, ut_array_1d_min (Odf.odfn, Odf.odfnqty));
+      ut_file_close (file, filename, "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_max.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      fprintf (file, REAL_PRINT_FORMAT, ut_array_1d_max (Odf.odfn, Odf.odfnqty));
+      ut_file_close (file, filename, "W");
+
+      sprintf (filename, "%s", (*pSimRes).file);
+      sprintf (expr2_step, ".%s_stddev.step", expr);
+      ut_string_fnrs (filename, expr_step, expr2_step, 1);
+      file = ut_file_open (filename, "W");
+      neut_odfn_index (&Odf, &index);
+      fprintf (file, REAL_PRINT_FORMAT, index);
+      ut_file_close (file, filename, "W");
+    }
+
+    else if (!strcmp (fct, (char *) "odfindex"))
+    {
+      neut_odf_index (&Odf, &index);
+      ut_array_1d_fnprintf_column ((*pSimRes).file, &index, 1, REAL_PRINT_FORMAT, (char *) "W");
+    }
+
+    else if (!strcmp (fct, (char *) "odfnindex"))
+    {
+      neut_odfn_index (&Odf, &index);
+      ut_array_1d_fnprintf_column ((*pSimRes).file, &index, 1, REAL_PRINT_FORMAT, (char *) "W");
+    }
 
     ut_print_progress (stdout, step + 1, (*pSim).StepQty + 1, (char *) "%3.0f%%", prev);
   }
 
-  nes_pproc_entity_builtin_odf_writeconfig (pSimRes, fct, Odf);
-
   neut_sim_setstep (pSim, 0);
-  neut_sim_addres (pSim, entity, res, NULL);
+  neut_sim_addres (pSim, entity, res, expr);
   neut_sim_fprintf ((*pSim).simdir, *pSim, (char *) "W");
 
   // neut_odf_free (&Odf);
@@ -844,6 +1094,8 @@ nes_pproc_entity_builtin_elsets_odf (struct SIM *pSim, struct TESS *pTess,
   ut_free_1d_char (&weight);
   ut_free_1d_char (&oriinput);
   ut_free_1d_char (&cutoff);
+  ut_free_1d_char (&expr_step);
+  ut_free_1d_char (&expr2_step);
 
   return;
 }
@@ -851,7 +1103,8 @@ nes_pproc_entity_builtin_elsets_odf (struct SIM *pSim, struct TESS *pTess,
 void
 nes_pproc_entity_builtin_elsets_readodf (struct SIM *pSim, struct TESS Tess,
                                          struct MESH *Mesh,
-                                         char *entity, char *res, struct SIMRES *pSimRes)
+                                         char *entity, char *res,
+                                         struct SIMRES *pSimRes)
 {
   struct ODF Odf;
   char *orides = NULL;
@@ -864,6 +1117,7 @@ nes_pproc_entity_builtin_elsets_readodf (struct SIM *pSim, struct TESS Tess,
   double *oriodf = NULL;
 
   neut_simres_set_zero (&SimRes2);
+  neut_odf_set_zero (&Odf);
 
   if (!strcmp (entity, (char *) "elset"))
     entityqty = Mesh[Tess.Dim].ElsetQty;
@@ -875,11 +1129,11 @@ nes_pproc_entity_builtin_elsets_readodf (struct SIM *pSim, struct TESS Tess,
   ori = ut_alloc_2d (entityqty + 1, 4);
   oriodf = ut_alloc_1d (entityqty + 1);
 
-  neut_sim_orispace (*pSim, &Odf, (char *) "R");
+  neut_odf_fnscanf (NULL, &Odf, (char *) "r");
 
   neut_odf_orides (Odf, &orides);
-  Odf.odfqty = Odf.Mesh[3].EltQty;
-  Odf.odf = ut_alloc_1d (Odf.odfqty + 1);
+  Odf.odfqty = Odf.Sp.Mesh[3].EltQty;
+  Odf.odf = ut_alloc_1d (Odf.odfqty);
 
   ut_print_progress (stdout, 0, (*pSim).StepQty + 1, (char *) "%3.0f%%", prev);
 
@@ -891,7 +1145,7 @@ nes_pproc_entity_builtin_elsets_readodf (struct SIM *pSim, struct TESS Tess,
     neut_sim_simres (*pSim, (char *) "mesh", res, &SimRes2);
 
     // loading mesh ODF
-    ut_array_1d_fnscanf (SimRes2.file, Odf.odf + 1, Odf.odfqty, (char *) "R");
+    ut_array_1d_fnscanf (SimRes2.file, Odf.odf, Odf.odfqty, (char *) "R");
 
     // loading elset orientations
     if (!strcmp (entity, (char *) "elt"))
@@ -911,7 +1165,7 @@ nes_pproc_entity_builtin_elsets_readodf (struct SIM *pSim, struct TESS Tess,
         ol_R_Rcrysym (R, Mesh[Tess.Dim].ElsetCrySym, R);
       }
 
-      neut_mesh_point_elt (Odf.Nodes, Odf.Mesh[3], R, &elt);
+      neut_mesh_point_elt (Odf.Sp.Nodes, Odf.Sp.Mesh[3], R, &elt);
 
       if (elt == -1)
         abort ();
@@ -959,6 +1213,7 @@ nes_pproc_entity_builtin_cells_readodf (struct SIM *pSim, struct TESS Tess,
   char *crysym = NULL;
 
   neut_simres_set_zero (&SimRes2);
+  neut_odf_set_zero (&Odf);
 
   if (!strcmp (entity, (char *) "cell"))
   {
@@ -983,11 +1238,11 @@ nes_pproc_entity_builtin_cells_readodf (struct SIM *pSim, struct TESS Tess,
   ori = ut_alloc_2d (entityqty + 1, 4);
   oriodf = ut_alloc_1d (entityqty + 1);
 
-  neut_sim_orispace (*pSim, &Odf, (char *) "R");
+  neut_odf_fnscanf (NULL, &Odf, (char *) "r");
 
   neut_odf_orides (Odf, &orides);
-  Odf.odfqty = Odf.Mesh[3].EltQty;
-  Odf.odf = ut_alloc_1d (Odf.odfqty + 1);
+  Odf.odfqty = Odf.Sp.Mesh[3].EltQty;
+  Odf.odf = ut_alloc_1d (Odf.odfqty);
 
   ut_print_progress (stdout, 0, (*pSim).StepQty + 1, (char *) "%3.0f%%", prev);
 
@@ -999,7 +1254,7 @@ nes_pproc_entity_builtin_cells_readodf (struct SIM *pSim, struct TESS Tess,
     neut_sim_simres (*pSim, parent, res, &SimRes2);
 
     // loading mesh ODF
-    ut_array_1d_fnscanf (SimRes2.file, Odf.odf + 1, Odf.odfqty, (char *) "R");
+    ut_array_1d_fnscanf (SimRes2.file, Odf.odf, Odf.odfqty, (char *) "R");
 
     // loading cell orientations
     if (!strcmp (parent, (char *) "tess"))
@@ -1019,7 +1274,7 @@ nes_pproc_entity_builtin_cells_readodf (struct SIM *pSim, struct TESS Tess,
         ol_R_Rcrysym (R, crysym, R);
       }
 
-      neut_mesh_point_elt (Odf.Nodes, Odf.Mesh[3], R, &elt);
+      neut_mesh_point_elt (Odf.Sp.Nodes, Odf.Sp.Mesh[3], R, &elt);
 
       if (elt == -1)
       {
@@ -1027,7 +1282,7 @@ nes_pproc_entity_builtin_cells_readodf (struct SIM *pSim, struct TESS Tess,
         abort ();
       }
 
-      oriodf[i] = Odf.odf[elt];
+      oriodf[i] = Odf.odf[elt - 1];
 
       ol_R_free (R);
     }
@@ -1147,7 +1402,8 @@ nes_pproc_entity_builtin_elsets_gen (struct SIM *pSim,
 void
 nes_pproc_entity_builtin_elsets_orifield (struct SIM *pSim, struct TESS *pTess,
                                      struct NODES *pNodes, struct MESH *Mesh,
-                                     char *entity, char *res, struct SIMRES *pSimRes)
+                                     char *entity, char *res, char *expr,
+                                     struct SIMRES *pSimRes)
 {
   int i, step, size, status;
   double **elsetdata = ut_alloc_2d (Mesh[(*pTess).Dim].ElsetQty + 1, 4);
@@ -1163,13 +1419,15 @@ nes_pproc_entity_builtin_elsets_orifield (struct SIM *pSim, struct TESS *pTess,
   char *weight = NULL;
   char *var = NULL;
   char *thetastring = ut_alloc_1d_char (100);
-  struct SIMRES SimRes2;
+  struct SIMRES SimRes2, SimRes3;
 
   neut_simres_set_zero (&SimRes2);
+  neut_simres_set_zero (&SimRes3);
+  neut_odf_set_zero (&Odf);
 
-  ut_string_function (res, &fct, &vars, &vals, &size);
+  ut_string_function (expr, &fct, &vars, &vals, &size);
 
-  neut_sim_orispace (*pSim, &Odf, (char*) "R");
+  neut_odf_fnscanf (NULL, &Odf, (char *) "r");
 
   ut_print_progress (stdout, 0, (*pSim).StepQty + 1, (char*) "%3.0f%%", prev);
 
@@ -1177,9 +1435,11 @@ nes_pproc_entity_builtin_elsets_orifield (struct SIM *pSim, struct TESS *pTess,
   {
     neut_sim_setstep (pSim, step);
     neut_sim_simres (*pSim, (char*) "elsets", (char*) "ori", &SimRes2);
+    neut_sim_simres (*pSim, (char*) "elsets", (char*) "odfn", &SimRes3);
 
     neut_simres_setstep (pSimRes, step);
     neut_simres_setstep (&SimRes2, step);
+    neut_simres_setstep (&SimRes3, step);
 
     status = neut_mesh_elsetori (Mesh[(*pTess).Dim], elsetdata);
     if (status)
@@ -1227,14 +1487,22 @@ nes_pproc_entity_builtin_elsets_orifield (struct SIM *pSim, struct TESS *pTess,
 
     if (!strcmp (fct, "orifield"))
     {
-      neut_odf_orifield_comp ((char *) "m", !strcmp (weight, "1") ? (char *) "5" : (char *) "all", &OSet, elsetdata1d + 1, &Odf);
+      neut_sim_simres (*pSim, (char *) "mesh", (char *) "odf", &SimRes3);
+      Odf.odfqty = Odf.Sp.Mesh[3].EltQty;
+      Odf.odf = ut_alloc_1d (Odf.odfqty + 1);
+      ut_array_1d_fnscanf (SimRes3.file, Odf.odf + 1, Odf.odfqty, (char *) "R");
+      neut_odf_orifield_comp ((char *) "elt", !strcmp (weight, "1") ? (char *) "5" : (char *) "all", &OSet, elsetdata1d + 1, &Odf);
 
       for (i = 0; i < Odf.odfqty; i++)
         fprintf (file, REAL_PRINT_FORMAT "\n", Odf.odf[i]);
     }
     else if (!strcmp (fct, "orifieldn"))
     {
-      neut_odf_orifield_comp ((char *) "n", !strcmp (weight, "1") ? (char *) "5" : (char *) "all", &OSet, elsetdata1d + 1, &Odf);
+      neut_sim_simres (*pSim, (char *) "mesh", (char *) "odfn", &SimRes3);
+      Odf.odfnqty = Odf.Sp.Nodes.NodeQty;
+      Odf.odfn = ut_alloc_1d (Odf.odfnqty + 1);
+      ut_array_1d_fnscanf (SimRes3.file, Odf.odfn + 1, Odf.odfnqty, (char *) "R");
+      neut_odf_orifield_comp ((char *) "node", !strcmp (weight, "1") ? (char *) "5" : (char *) "all", &OSet, elsetdata1d + 1, &Odf);
       for (i = 0; i < Odf.odfnqty; i++)
         fprintf (file, REAL_PRINT_FORMAT "\n", Odf.odfn[i]);
     }
@@ -1245,7 +1513,7 @@ nes_pproc_entity_builtin_elsets_orifield (struct SIM *pSim, struct TESS *pTess,
   }
 
   neut_sim_setstep (pSim, 0);
-  neut_sim_addres (pSim, entity, res, NULL);
+  neut_sim_addres (pSim, entity, res, expr);
   neut_sim_fprintf ((*pSim).simdir, *pSim, (char *) "W");
 
   // neut_odf_free (&Odf);
@@ -1261,6 +1529,7 @@ nes_pproc_entity_builtin_elsets_orifield (struct SIM *pSim, struct TESS *pTess,
   ut_free_2d_char (&vars, size);
   ut_free_2d_char (&vals, size);
   neut_simres_free (&SimRes2);
+  neut_simres_free (&SimRes3);
 
   return;
 }

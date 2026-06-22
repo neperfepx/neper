@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_init_.h"
@@ -335,6 +335,10 @@ net_tess_opt_init_ref (struct TOPT *pTOpt, double mean, int id)
     }
   }
 
+  else if (strstr ((*pTOpt).tarvar[id], "sel"))
+    neut_tess_cellavdiameq ((*pTOpt).Dom0, (*pTOpt).CellQty,
+                            &((*pTOpt).tarrefval[id]));
+
   else
     (*pTOpt).tarrefval[id] = 1;
 
@@ -479,43 +483,62 @@ net_tess_opt_init_target_scale (struct TOPT *pTOpt, int *pos)
 void
 net_tess_opt_init_bounds_seeds (struct TOPT *pTOpt)
 {
-  int i, j, k, seed, dim, PartQty;
-  char **parts = NULL;
+  int i, j, k, seed, dim, dofqty;
+  char **dofs = NULL;
+  double **boundl_input = NULL;
+  double **boundu_input = NULL;
 
-  ut_list_break ((*pTOpt).dof, NEUT_SEP_NODEP, &parts, &PartQty);
+  ut_list_break ((*pTOpt).dof, NEUT_SEP_NODEP, &dofs, &dofqty);
 
-  (*pTOpt).boundl = ut_alloc_1d (PartQty * (*pTOpt).seedoptiqty + 1);
-  (*pTOpt).boundu = ut_alloc_1d (PartQty * (*pTOpt).seedoptiqty + 1);
+  boundl_input = ut_alloc_2d (dofqty, (*pTOpt).seedoptiqty);
+  ut_array_2d_set (boundl_input, dofqty, (*pTOpt).seedoptiqty, -DBL_MAX);
+  boundu_input = ut_alloc_2d (dofqty, (*pTOpt).seedoptiqty);
+  ut_array_2d_set (boundu_input, dofqty, (*pTOpt).seedoptiqty, DBL_MAX);
+
+  if (strcmp ((*pTOpt).boundlstring, "none"))
+    net_tess_opt_init_bounds_inputvals (pTOpt, dofs, dofqty, (*pTOpt).boundlstring, boundl_input);
+  if (strcmp ((*pTOpt).boundustring, "none"))
+    net_tess_opt_init_bounds_inputvals (pTOpt, dofs, dofqty, (*pTOpt).boundustring, boundu_input);
+
+  (*pTOpt).boundl = ut_alloc_1d (dofqty * (*pTOpt).seedoptiqty + 1);
+  (*pTOpt).boundu = ut_alloc_1d (dofqty * (*pTOpt).seedoptiqty + 1);
 
   k = 0;
   for (j = 0; j < (*pTOpt).seedoptiqty; j++)
   {
     seed = (*pTOpt).seedopti[j];
-    for (i = 0; i < PartQty; i++)
+    for (i = 0; i < dofqty; i++)
     {
-      if (!strcmp (parts[i], "x") || !strcmp (parts[i], "y")
-          || !strcmp (parts[i], "z"))
+      if (!strcmp (dofs[i], "x") || !strcmp (dofs[i], "y")
+          || !strcmp (dofs[i], "z"))
       {
-        dim = parts[i][0] - 'x';
+        dim = dofs[i][0] - 'x';
         (*pTOpt).boundl[k] =
           ((*pTOpt).SSet).SeedCoo0[seed][dim] - (*pTOpt).dist;
         (*pTOpt).boundu[k] =
           ((*pTOpt).SSet).SeedCoo0[seed][dim] + (*pTOpt).dist;
+        (*pTOpt).boundl[k] = ut_num_max ((*pTOpt).boundl[k], boundl_input[i][j]);
+        (*pTOpt).boundu[k] = ut_num_min ((*pTOpt).boundu[k], boundu_input[i][j]);
         k++;
       }
-      else if (!strcmp (parts[i], "w"))
+      else if (!strcmp (dofs[i], "w"))
       {
         (*pTOpt).boundl[k] = ((*pTOpt).SSet).SeedWeight[seed] - (*pTOpt).dist;
         (*pTOpt).boundu[k] = ((*pTOpt).SSet).SeedWeight[seed] + (*pTOpt).dist;
         (*pTOpt).boundl[k] = ut_num_max (0, (*pTOpt).boundl[k]);
+        (*pTOpt).boundl[k] = ut_num_max ((*pTOpt).boundl[k], boundl_input[i][j]);
+        (*pTOpt).boundu[k] = ut_num_min ((*pTOpt).boundu[k], boundu_input[i][j]);
         k++;
       }
       else
         abort ();
+
     }
   }
 
-  ut_free_2d_char (&parts, PartQty);
+  ut_free_2d_char (&dofs, dofqty);
+  ut_free_2d (&boundl_input, dofqty);
+  ut_free_2d (&boundu_input, dofqty);
 
   return;
 }
@@ -523,42 +546,63 @@ net_tess_opt_init_bounds_seeds (struct TOPT *pTOpt)
 void
 net_tess_opt_init_bounds_ori (struct TOPT *pTOpt)
 {
-  int i, j, k, seed, dim, PartQty;
-  char **parts = NULL;
+  int i, j, k, seed, dim, dofqty;
+  char **dofs = NULL;
+  double **boundl_input = NULL;
+  double **boundu_input = NULL;
 
-  ut_list_break ((*pTOpt).dof, NEUT_SEP_NODEP, &parts, &PartQty);
+  ut_list_break ((*pTOpt).dof, NEUT_SEP_NODEP, &dofs, &dofqty);
 
-  (*pTOpt).boundl = ut_alloc_1d (PartQty * (*pTOpt).seedoptiqty + 1);
-  (*pTOpt).boundu = ut_alloc_1d (PartQty * (*pTOpt).seedoptiqty + 1);
+  boundl_input = ut_alloc_2d (dofqty, (*pTOpt).seedoptiqty);
+  ut_array_2d_set (boundl_input, dofqty, (*pTOpt).seedoptiqty, -DBL_MAX);
+  boundu_input = ut_alloc_2d (dofqty, (*pTOpt).seedoptiqty);
+  ut_array_2d_set (boundu_input, dofqty, (*pTOpt).seedoptiqty, DBL_MAX);
+
+  if (strcmp ((*pTOpt).boundlstring, "none"))
+    net_tess_opt_init_bounds_inputvals (pTOpt, dofs, dofqty, (*pTOpt).boundlstring, boundl_input);
+  if (strcmp ((*pTOpt).boundustring, "none"))
+    net_tess_opt_init_bounds_inputvals (pTOpt, dofs, dofqty, (*pTOpt).boundustring, boundu_input);
+
+  (*pTOpt).boundl = ut_alloc_1d (dofqty * (*pTOpt).seedoptiqty + 1);
+  (*pTOpt).boundu = ut_alloc_1d (dofqty * (*pTOpt).seedoptiqty + 1);
 
   k = 0;
   for (j = 0; j < (*pTOpt).seedoptiqty; j++)
   {
     seed = (*pTOpt).seedopti[j];
-    for (i = 0; i < PartQty; i++)
+    for (i = 0; i < dofqty; i++)
     {
-      if (!strcmp (parts[i], "r1") || !strcmp (parts[i], "r2")
-          || !strcmp (parts[i], "r3"))
+      if (!strcmp (dofs[i], "r1") || !strcmp (dofs[i], "r2")
+          || !strcmp (dofs[i], "r3"))
       {
-        dim = parts[i][1] - '1';
-        (*pTOpt).boundl[k] =
-          ((*pTOpt).SSet).SeedOriR[seed][dim] - (*pTOpt).dist;
-        (*pTOpt).boundu[k] =
-          ((*pTOpt).SSet).SeedOriR[seed][dim] + (*pTOpt).dist;
+        dim = dofs[i][1] - '1';
+        (*pTOpt).boundl[k] = ((*pTOpt).SSet).SeedOriR[seed][dim] - (*pTOpt).dist;
+        (*pTOpt).boundu[k] = ((*pTOpt).SSet).SeedOriR[seed][dim] + (*pTOpt).dist;
+        (*pTOpt).boundl[k] = ut_num_max ((*pTOpt).boundl[k], boundl_input[i][j]);
+        (*pTOpt).boundu[k] = ut_num_min ((*pTOpt).boundu[k], boundu_input[i][j]);
         k++;
       }
-      else if (!strcmp (parts[i], "rw"))
+      else if (!strcmp (dofs[i], "rw"))
       {
-        (*pTOpt).boundl[k] = 0;
-        (*pTOpt).boundu[k] =
-          ((*pTOpt).SSet).SeedOriWeight[seed] + (*pTOpt).dist;
+        (*pTOpt).boundl[k] = -DBL_MAX;
+        (*pTOpt).boundu[k] = ((*pTOpt).SSet).SeedOriWeight[seed] + (*pTOpt).dist;
+        (*pTOpt).boundl[k] = ut_num_max ((*pTOpt).boundl[k], boundl_input[i][j]);
+        (*pTOpt).boundu[k] = ut_num_min ((*pTOpt).boundu[k], boundu_input[i][j]);
         k++;
       }
-      else if (!strcmp (parts[i], "rt"))
+      else if (!strcmp (dofs[i], "rt"))
       {
         (*pTOpt).boundl[k] = 0;
-        (*pTOpt).boundu[k] =
-          ((*pTOpt).SSet).SeedOriTheta[seed] + (*pTOpt).dist;
+        (*pTOpt).boundu[k] = ((*pTOpt).SSet).SeedOriTheta[seed] + (*pTOpt).dist;
+        (*pTOpt).boundl[k] = ut_num_max ((*pTOpt).boundl[k], boundl_input[i][j]);
+        (*pTOpt).boundu[k] = ut_num_min ((*pTOpt).boundu[k], boundu_input[i][j]);
+
+        if (ol_q_isuniform ((*pTOpt).SSet.SeedOri[seed]))
+        {
+          (*pTOpt).boundl[k] = (*pTOpt).SSet.SeedOriTheta[seed];
+          (*pTOpt).boundu[k] = (*pTOpt).SSet.SeedOriTheta[seed];
+        }
+
         k++;
       }
       else
@@ -566,31 +610,100 @@ net_tess_opt_init_bounds_ori (struct TOPT *pTOpt)
     }
   }
 
-  ut_free_2d_char (&parts, PartQty);
+  ut_free_2d_char (&dofs, dofqty);
+  ut_free_2d (&boundl_input, dofqty);
+  ut_free_2d (&boundu_input, dofqty);
 
   return;
 }
 
-// FIXME/EMMC
 void
-net_tess_opt_init_bounds_crystal (struct TOPT *pTOpt)
+net_tess_opt_sampling (struct TOPT *pTOpt, int id, char *sampling)
 {
-  int i, PartQty;
-  char **parts = NULL;
+  int i, cellqty, pos;
+  double x, *vals = NULL;
+  struct FCT Fi;
 
-  ut_list_break ((*pTOpt).dof, NEUT_SEP_NODEP, &parts, &PartQty);
+  ut_fct_set_zero (&Fi);
 
-  (*pTOpt).boundl = ut_alloc_1d (PartQty);
-  (*pTOpt).boundu = ut_alloc_1d (PartQty);
+  if (strcmp ((*pTOpt).tarvar[id], "diameq"))
+    abort ();
 
-  for (i = 0; i < PartQty; i++)
+  ut_fct_invert ((*pTOpt).tarcdf0[id], &Fi);
+
+  gsl_rng *r = gsl_rng_alloc (gsl_rng_ranlxd2);
+  gsl_rng_set (r, (*pTOpt).SSet.Random + 1);
+
+  double vol, totalvol, tessvol;
+  neut_tess_size ((*pTOpt).Dom0, &tessvol);
+
+  // sampling diameq distribution unti volume is filled
+  if (!strcmp (sampling, "random"))
   {
-    (*pTOpt).boundl[i] =
-      ut_num_max ((*pTOpt).Crys.C[i] - (*pTOpt).dist, 1e-6);
-    (*pTOpt).boundu[i] = (*pTOpt).Crys.C[i] + (*pTOpt).dist;
+    totalvol = 0;
+    cellqty = 0;
+    do
+    {
+      cellqty++;
+      vals = ut_realloc_1d (vals, cellqty);
+      x = gsl_rng_uniform (r);
+      vals[cellqty - 1] = ut_fct_eval (Fi, x);
+
+      vol = pow (vals[cellqty - 1] * (*pTOpt).tarrefval[id], 3) * (M_PI / 6);
+      totalvol += vol;
+    }
+    while (totalvol < tessvol);
+
+    // reverting to the previous configuration if it was closer
+    if (fabs (totalvol - vol - (*pTOpt).CellQty) < fabs (totalvol - (*pTOpt).CellQty))
+    {
+      totalvol -= vol;
+      cellqty--;
+    }
+
+    // adjusting diameqs, tarrefval and CelQty
+    ut_array_1d_scale (vals, cellqty, pow (tessvol / totalvol, 0.333333333333333));
+    // (*pTOpt).tarrefval[id] *= pow ((double) (*pTOpt).CellQty / cellqty, 0.3333333333333);
+    (*pTOpt).CellQty = cellqty;
   }
 
-  ut_free_2d_char (&parts, PartQty);
+  else if (!strcmp (sampling, "uniform"))
+  {
+    totalvol = 0;
+    vals = ut_alloc_1d ((*pTOpt).CellQty);
+    for (i = 1; i <= (*pTOpt).CellQty; i++)
+    {
+      x = (i - 0.5) / (*pTOpt).CellQty;
+      vals[i - 1] = ut_fct_eval (Fi, x);
+      totalvol += pow (vals[i - 1] * (*pTOpt).tarrefval[id], 3) * (M_PI / 6);
+    }
+
+    // adjusting diameqs, tarrefval and CelQty
+    ut_array_1d_scale (vals, (*pTOpt).CellQty, pow (tessvol / totalvol, 0.333333333333333));
+    // (*pTOpt).tarrefval[id] *= pow ((double) (*pTOpt).CellQty / cellqty, 0.3333333333333);
+  }
+
+  pos = 0;
+  double cdf = 0;
+  ut_array_1d_sort (vals, (*pTOpt).CellQty);
+  for (i = 0; i < (*pTOpt).tarcdf0[id].size; i++)
+  {
+    while (pos <= (*pTOpt).CellQty - 1 && (*pTOpt).tarcdf0[id].x[i] > vals[pos])
+    {
+      cdf += 1. / (*pTOpt).CellQty;
+      pos++;
+    }
+    (*pTOpt).tarcdf0[id].y[i] = cdf;
+  }
+
+  (*pTOpt).tarcellval[id] = ut_alloc_2d ((*pTOpt).CellQty + 1, 1);
+  (*pTOpt).tarcellvalqty[id] = 1;
+  for (i = 1; i <= (*pTOpt).CellQty; i++)
+    (*pTOpt).tarcellval[id][i][0] = vals[i - 1];
+
+  ut_fct_free (&Fi);
+  ut_free_1d (&vals);
+  gsl_rng_free (r);
 
   return;
 }

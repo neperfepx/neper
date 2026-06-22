@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2024, Romain Quey.*/
+/* Copyright (C) 2003-2026, Romain Quey, CNRS.*/
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -220,4 +220,62 @@ ut_num_reverseendian (double data)
     dest[i] = datac[sizeof (double) - i - 1];
 
   return result;
+}
+
+int
+ut_num_ispowerof (int num, int n, int *pnum2)
+{
+  int num2;
+
+  if (num <= 0 || n <= 1)
+    return 0;
+
+  num2 = 0;
+  printf ("res = %d\n", num % n);
+  while (num % n == 0)
+  {
+    printf ("dfd\n");
+    num2++;
+    num /= n;
+    printf ("res = %d\n", num % n);
+  }
+
+  if (pnum2)
+    (*pnum2) = num2;
+
+  return num == 1;
+}
+
+int ut_num_isequaltopowerof (int num, int n, int *pbase)
+{
+  int i, tmp, tmp2;
+
+  if (num <= 0 || n < 0)
+    return 0;
+
+  tmp = ut_num_d2ri (pow (num, 1. / n));
+
+  tmp2 = 1;
+  for (i = 1; i <= n; i++)
+    tmp2 *= tmp;
+
+  if (tmp2 == num)
+  {
+    if (pbase)
+      *pbase = tmp;
+    return 1;
+  }
+  else
+  {
+    if (pbase)
+      *pbase = -1;
+
+    return 0;
+  }
+}
+
+int
+ut_num_isint (double val)
+{
+  return ut_num_equal (val, ut_num_d2ri (val), 1e-9);
 }

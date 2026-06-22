@@ -1,5 +1,5 @@
 /* This id is part of the 'hermes' program. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYINPFG id in the top-level directory. */
 
 #include "nev_print_pf_ptsprint_density_.h"
@@ -285,6 +285,12 @@ nev_print_pf_ptsprint_density_write (struct PF Pf, struct PRINT Print, FILE *fil
   char **ticks = NULL;
   char *tickformat = NULL;
   char *filename2 = ut_string_addextension (basename, ".level");
+  char *basecolor = NULL;
+
+  if (!strcmp (Print.colormode, "bright"))
+    ut_string_string ("black", &basecolor);
+  else
+    ut_string_string ("white", &basecolor);
 
   nev_print_pf_ptsprint_density_write_data (Pf, filename2, ldensity);
 
@@ -366,10 +372,10 @@ nev_print_pf_ptsprint_density_write (struct PF Pf, struct PRINT Print, FILE *fil
   if (Print.showscale)
   {
     if (Data.Scale)
-      fprintf (file, "        PaletteTicks(N=%d,n=1,trailingzero));\n", tickqty - 1);
+      fprintf (file, "        PaletteTicks(N=%d,n=1,trailingzero,%s));\n", tickqty - 1, basecolor);
     else
-      fprintf (file, "        PaletteTicks(N=%d,n=1,\"$%s$\"));\n", tickqty - 1,
-               tickformat);
+      fprintf (file, "        PaletteTicks(N=%d,n=1,\"$%s$\",%s));\n", tickqty - 1,
+               tickformat, basecolor);
   }
 
   if (!strcmp (Pf.space, "pf"))
@@ -401,8 +407,8 @@ nev_print_pf_ptsprint_density_write (struct PF Pf, struct PRINT Print, FILE *fil
     fprintf (file, "%g,", tickvals[i]); // g avoids failed tests associated to machine precision
   fprintf (file, "}, operator --), new pen[] {");
   for (i = 1; i < tickqty - 1; i++)
-    fprintf (file, "%s+linewidth(%f),", "black", 0.5);
-  fprintf (file, "%s+linewidth(%f)});\n", "black", 0.5);
+    fprintf (file, "%s+linewidth(%f),", !strcmp (Print.colormode, "bright") ? "black" : "white", 0.5);
+  fprintf (file, "%s+linewidth(%f)});\n", !strcmp (Print.colormode, "bright") ? "black" : "white", 0.5);
 
   ut_free_2d_char (&parts, partqty);
   ut_free_2d_char (&tmp, qty);
@@ -410,6 +416,7 @@ nev_print_pf_ptsprint_density_write (struct PF Pf, struct PRINT Print, FILE *fil
   ut_free_1d (&tickvals);
   ut_free_1d_char (&tickformat);
   ut_free_1d_char (&filename2);
+  ut_free_1d_char (&basecolor);
 
   return;
 }
@@ -461,27 +468,33 @@ nev_print_pf_ptsprint_density_write_text0 (struct PF Pf, FILE *file)
 }
 
 void
-nev_print_pf_ptsprint_density_write_mask (struct IN_V In, FILE *file, struct PF Pf)
+nev_print_pf_ptsprint_density_write_mask (struct PRINT Print, FILE *file, struct PF Pf)
 {
+  char *background = NULL;
+  if (!strcmp (Print.colormode, "bright"))
+    ut_string_string ("black", &background);
+  else
+    ut_string_string ("white", &background);
+
   if (!strcmp (Pf.space, "pf"))
   {
     if (!strcmp (Pf.shape, "full"))
     {
-      fprintf (file, "draw (scale(scale)*(-X--X), black);\n");
-      fprintf (file, "draw (scale(scale)*(-Y--Y), black);\n");
+      fprintf (file, "draw (scale(scale)*(-X--X), %s);\n", background);
+      fprintf (file, "draw (scale(scale)*(-Y--Y), %s);\n", background);
 
       fprintf (file, "path g = shift(O)*scale(scale*1.15)*((-X-Y)--(-X+Y)--(X+Y)--(X-Y)--cycle);\n");
-      fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*unitcircle^^g, evenodd+%s, %s);\n", In.scenebackground, In.scenebackground);
-      fprintf (file, "draw (shift(O)*scale(scale)*unitcircle, black);\n");
+      fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*unitcircle^^g, evenodd+%s, %s);\n", Print.background, Print.background);
+      fprintf (file, "draw (shift(O)*scale(scale)*unitcircle, %s);\n", background);
     }
 
     else if (!strcmp (Pf.shape, "quarter"))
     {
-      fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*((-.05*X)--(-.05*X+.05*Y)--(1.05*X+0.05*Y)--(1.05*X)--cycle), evenodd+%s, %s);\n", In.scenebackground, In.scenebackground);
-      fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*((.05*Y)--(.05*Y-.05*X)--(-1.05*Y-0.05*X)--(-1.05*Y)--cycle), evenodd+%s, %s);\n", In.scenebackground, In.scenebackground);
-      fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*(arc(O,-Y,X)--(1.05*X)--(1.05*X-1.05*Y)--(-1.05*Y)--cycle), evenodd+%s, %s);\n", In.scenebackground, In.scenebackground);
-      fprintf (file, "draw (shift(O)*scale(scale)*arc(O,-Y,X), black);\n");
-      fprintf (file, "draw (shift(O)*scale(scale)*(-Y--O--X), black);\n");
+      fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*((-.05*X)--(-.05*X+.05*Y)--(1.05*X+0.05*Y)--(1.05*X)--cycle), evenodd+%s, %s);\n", Print.background, Print.background);
+      fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*((.05*Y)--(.05*Y-.05*X)--(-1.05*Y-0.05*X)--(-1.05*Y)--cycle), evenodd+%s, %s);\n", Print.background, Print.background);
+      fprintf (file, "filldraw(shift(O)*scale(scale*1.00)*(arc(O,-Y,X)--(1.05*X)--(1.05*X-1.05*Y)--(-1.05*Y)--cycle), evenodd+%s, %s);\n", Print.background, Print.background);
+      fprintf (file, "draw (shift(O)*scale(scale)*arc(O,-Y,X), %s);\n", background);
+      fprintf (file, "draw (shift(O)*scale(scale)*(-Y--O--X), %s);\n", background);
     }
   }
 
@@ -498,14 +511,16 @@ nev_print_pf_ptsprint_density_write_mask (struct IN_V In, FILE *file, struct PF 
           -0.03, Pf.ipfpts[Pf.ipfptqty - 1][1] + 0.03,
           Pf.ipfpts[1][0] + 0.03, Pf.ipfpts[Pf.ipfptqty - 1][1] + 0.03,
           Pf.ipfpts[1][0] + 0.03, 0.,
-          In.scenebackground, In.scenebackground);
+          Print.background, Print.background);
     }
 
-    fprintf (file, "draw (scale(scale/%f)*border, black);\n", Pf.ipfpts[1][0]);
+    fprintf (file, "draw (scale(scale/%f)*border, %s);\n", Pf.ipfpts[1][0], background);
   }
 
   else
     abort ();
+
+  ut_free_1d_char (&background);
 
   return;
 }

@@ -8,11 +8,8 @@
    2 0 0 0 0
   *orides
    rodrigues:passive
- **entity cell
  **entity tess
   *result
    2
-   odf(cutoff=all) odfn(cutoff=all)
- **orispace
-   rod.msh
+   odf odfn(cutoff=all)
 ***end

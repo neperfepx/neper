@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_utils_.h"
@@ -14,6 +14,8 @@ nem_in_set_zero (struct IN_M *pIn)
   (*pIn).format = NULL;
   (*pIn).performat = NULL;
   (*pIn).geof = NULL;
+  (*pIn).etree = NULL;
+  (*pIn).ntree = NULL;
   (*pIn).gmsh = NULL;
   (*pIn).tmp = NULL;
   (*pIn).outtess = NULL;

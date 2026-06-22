@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -39,6 +39,8 @@ extern "C"
                                           char *expr, double *val, char **ptype);
 
   extern int neut_point_isvoid (struct POINT Point);
+
+  extern void neut_point_olset (struct POINT Point, struct OL_SET *pOSet);
 
 #include "neut_point_fscanf/neut_point_fscanf.h"
 

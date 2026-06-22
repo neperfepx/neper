@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_gen_.h"
@@ -41,7 +41,16 @@ neut_mesh3d_slice (struct NODES Nodes, struct MESH Mesh, double *eq,
   else
     ut_print_neperbug ();
 
-  neut_mesh_dupnodemerge (pSNodes, NULL, pSMesh, 1e-9, 0);
+  int *newnode_oldnode = NULL;
+  neut_mesh_dupnodemerge (pSNodes, NULL, pSMesh, 1e-9, 0, &newnode_oldnode);
+
+  for (i = 1; i <= (*pSNodes).NodeQty; i++)
+  {
+    ut_array_1d_int_memcpy ((*pnode_newold)[newnode_oldnode[i]], 2, (*pnode_newold)[i]);
+    (*pnode_fact)[i] = (*pnode_fact)[newnode_oldnode[i]];
+  }
+
+  ut_free_1d_int (&newnode_oldnode);
 
   int ElsetQty, **Elsets = NULL;
 
@@ -773,13 +782,23 @@ int
 neut_mesh_var_val (struct NODES Nodes, struct MESH *Mesh,
                    struct TESS *pTess, int *showelt0d, int *showelt1d,
                    int *showelt2d, int *showelt3d, double cl, char *entity_in,
-                   int id, char *var, double **pvals, int *pvalqty,
-                   char **ptype)
+                   int id, char *var, double **pvals, int *pvalqty, char **ptype)
 {
   int j, status, scale;
   double rrmean, rrmin, rrmax;
-  char *typetmp = ut_alloc_1d_char (10);
+  char *typetmp = NULL;
   char *entity = NULL;
+
+  if (!strcmp (var, "step"))
+  {
+    if (pvalqty)
+      (*pvalqty) = 1;
+    (*pvals)[0] = (*(*pTess).pSim).step;
+    if (ptype)
+      ut_string_string ("%d", ptype);
+
+    return 0;
+  }
 
   ut_string_string ("%f", &typetmp);
 
@@ -890,6 +909,8 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH *Mesh,
       neut_mesh_elset_diameq (Nodes, Mesh[3], id, *pvals);
     else if (!strcmp (var, "radeq"))
       neut_mesh_elset_radeq (Nodes, Mesh[3], id, *pvals);
+    else if (!strcmp (var, "anisofact"))
+      neut_mesh_elset_anisofact (Nodes, Mesh[3], id, *pvals);
     else if (!strcmp (var, "rrav"))
       (*pvals)[0] = rrmean;
     else if (!strcmp (var, "rrmin"))
@@ -1015,6 +1036,8 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH *Mesh,
       neut_mesh_elset_diameq (Nodes, Mesh[2], id, *pvals);
     else if (!strcmp (var, "radeq"))
       neut_mesh_elset_radeq (Nodes, Mesh[2], id, *pvals);
+    else if (!strcmp (var, "anisofact"))
+      neut_mesh_elset_anisofact (Nodes, Mesh[2], id, *pvals);
     else if (!strcmp (var, "eltnb"))
     {
       (*pvals)[0] = Mesh[2].Elsets[id][0];
@@ -2107,6 +2130,7 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH *Mesh,
       (*pvals)[0] = Nodes.NodeCoo[id][2];
     else if (!strcmp (var, "coo"))
     {
+      (*pvals) = ut_realloc_1d ((*pvals), 3);
       ut_array_1d_memcpy (Nodes.NodeCoo[id], 3, *pvals);
       if (pvalqty)
         (*pvalqty) = 3;
@@ -2223,10 +2247,9 @@ neut_mesh_var_val (struct NODES Nodes, struct MESH *Mesh,
 
 int
 neut_mesh_var_val_one (struct NODES Nodes, struct MESH *Mesh,
-                       struct TESS *pTess,
-                       int *showelt0d, int *showelt1d, int *showelt2d,
-                       int *showelt3d, double cl, char *entity, int id,
-                       char *var, double *pval, char **ptype)
+                       struct TESS *pTess, int *showelt0d, int *showelt1d,
+                       int *showelt2d, int *showelt3d, double cl, char *entity,
+                       int id, char *var, double *pval, char **ptype)
 {
   int status, qty;
   double *tmp = NULL;
@@ -2308,10 +2331,17 @@ neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH *Mesh,
   }
 
   else if (varqty == 1 && !strcmp (expr, vars[0]))
+  {
+    int status;
     for (j = 1; j <= entityqty; j++)
-      neut_mesh_var_val_one (Nodes, Mesh, pTess, showelt0d, showelt1d, showelt2d,
+    {
+      status = neut_mesh_var_val_one (Nodes, Mesh, pTess, showelt0d, showelt1d, showelt2d,
                              showelt3d, 0, entity, j, expr, val + j,
                              ptype);
+      if (status != 0)
+        ut_print_exprbug (expr);
+    }
+  }
 
   else
   {
@@ -2337,7 +2367,7 @@ neut_mesh_entity_expr_val (struct NODES Nodes, struct MESH *Mesh,
 
       status = ut_math_eval (expr, varqty, vars, vals, val + j);
       if (status == -1)
-        abort ();
+        ut_print_exprbug (expr);
 
       ut_free_1d (&vals);
     }
@@ -2840,7 +2870,8 @@ neut_mesh_entity_known (char *entity)
    || !strcmp (entity, "mesh1d")
    || !strcmp (entity, "mesh2d")
    || !strcmp (entity, "mesh3d")
-   || !strcmp (entity, "nodes"))
+   || !strcmp (entity, "nodes")
+   || !strcmp (entity, "node"))
     return 1;
   else
     return 0;
@@ -2937,6 +2968,22 @@ neut_mesh_set_elsetgroup (int *ElsetGroup, struct MESH *Mesh)
     Mesh[dim].ElsetGroup = ut_alloc_1d_int (Mesh[dim].ElsetQty + 1);
     ut_array_1d_int_memcpy (ElsetGroup + 1, Mesh[dim].ElsetQty,
                             Mesh[dim].ElsetGroup + 1);
+  }
+
+  return;
+}
+
+void
+neut_mesh_olset (struct NODES Nodes, struct MESH Mesh, struct OL_SET *pOSet)
+{
+  int i;
+
+  (*pOSet) = ol_set_alloc (Mesh.ElsetQty, Mesh.ElsetCrySym ? Mesh.ElsetCrySym : "triclinic");
+
+  for (i = 1; i <= Mesh.ElsetQty; i++)
+  {
+    ol_q_memcpy (Mesh.ElsetOri[i], (*pOSet).q[i -1]);
+    neut_mesh_elset_volume (Nodes, Mesh, i, (*pOSet).weight + i - 1);
   }
 
   return;

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -9,8 +9,7 @@
 #include<string.h>
 
 #include"ut.h"
-#include"neut.h"
-#include "../structIn_t.h"
+#include"neut_t.h"
 #include "../net_tess/net_tess.h"
 #include "../net_tess/net_tess3d/net_polycomp/net_polycomp_poly/net_polycomp_poly.h"
 #include "../net_tess/net_tess3d/net_tesl/net_tesl.h"

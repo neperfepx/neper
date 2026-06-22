@@ -1,17 +1,18 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_mesh_str_.h"
 
 void
-neut_mesh_str (int dim, int *size, struct NODES *pNodes, struct MESH *pMesh,
-               struct NSET *pNSet)
+neut_mesh_str (int dim, int *size, int *periodic, struct NODES *pNodes, struct
+    MESH *pMesh, struct NSET *pNSet)
+
 {
   if (dim == 3)
-    neut_mesh_str_3d (size, pNodes, pMesh, pNSet);
+    neut_mesh_str_3d (size, periodic, pNodes, pMesh, pNSet);
   else if (dim == 2)
-    neut_mesh_str_2d (size, pNodes, pMesh, pNSet);
+    neut_mesh_str_2d (size, periodic, pNodes, pMesh, pNSet);
   else if (dim == 1)
     neut_mesh_str_1d (size, pNodes, pMesh, pNSet);
   else
@@ -21,7 +22,7 @@ neut_mesh_str (int dim, int *size, struct NODES *pNodes, struct MESH *pMesh,
 }
 
 void
-neut_mesh_str_3d (int *size, struct NODES *pNodes, struct MESH *pMesh,
+neut_mesh_str_3d (int *size, int *periodic, struct NODES *pNodes, struct MESH *pMesh,
                   struct NSET *pNSet2D)
 {
   int i, x, y, z, nid, eid, nodesperelt;
@@ -73,6 +74,77 @@ neut_mesh_str_3d (int *size, struct NODES *pNodes, struct MESH *pMesh,
         (*pNodes).NodeCoo[nid][2] = nz;
       }
     }
+  }
+
+  if (periodic && ut_array_1d_int_sum (periodic, 3) > 0)
+  {
+    (*pNodes).Periodic = ut_alloc_1d_int (3);
+    (*pNodes).PeriodicDist = ut_alloc_1d (3);
+    (*pNodes).PerNodeMaster = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+    (*pNodes).PerNodeShift = ut_alloc_2d_int ((*pNodes).NodeQty + 1, 3);
+    ut_array_1d_int_memcpy (periodic, 3, (*pNodes).Periodic);
+    ut_array_1d_set ((*pNodes).PeriodicDist, 3, 1.);
+    int primary, secondary;
+    int *shift = ut_alloc_1d_int (3);
+
+    // processing x-periodicity, if present
+    if (periodic[0])
+    {
+      ut_array_1d_int_zero (shift, 3);
+      shift[0] = 1;
+      for (z = 1; z <= size[2] + 1; z++)
+      {
+        nz = ((double) (z - 1)) / ((double) (size[2]));
+
+        for (y = 1; y <= size[1] + 1; y++)
+        {
+          primary = NMap[1][y][z];
+          secondary = NMap[size[0] + 1][y][z];
+          if ((*pNodes).PerNodeMaster[secondary] == 0)
+            neut_nodes_markasslave (pNodes, secondary, primary, shift);
+        }
+      }
+    }
+    if (periodic[1])
+    {
+      ut_array_1d_int_zero (shift, 3);
+      shift[1] = 1;
+      for (x = 1; x <= size[0] + 1; x++)
+      {
+        nx = ((double) (x - 1)) / ((double) (size[2]));
+
+        for (z = 1; z <= size[1] + 1; z++)
+        {
+          primary = NMap[x][1][z];
+          secondary = NMap[x][size[1] + 1][z];
+          if ((*pNodes).PerNodeMaster[secondary] == 0)
+            neut_nodes_markasslave (pNodes, secondary, primary, shift);
+        }
+      }
+    }
+    if (periodic[2])
+    {
+      ut_array_1d_int_zero (shift, 3);
+      shift[2] = 1;
+      for (y = 1; y <= size[0] + 1; y++)
+      {
+        ny = ((double) (y - 1)) / ((double) (size[2]));
+
+        for (x = 1; x <= size[1] + 1; x++)
+        {
+          primary = NMap[x][y][1];
+          secondary = NMap[x][y][size[2] + 1];
+          if ((*pNodes).PerNodeMaster[secondary] == 0)
+            neut_nodes_markasslave (pNodes, secondary, primary, shift);
+        }
+      }
+    }
+
+    neut_nodes_fixperslaves (pNodes);
+
+    ut_free_1d_int (&shift);
+
+    neut_nodes_init_nodeslave (pNodes);
   }
 
   /* Connectivity */
@@ -158,7 +230,7 @@ neut_mesh_str_3d (int *size, struct NODES *pNodes, struct MESH *pMesh,
 }
 
 void
-neut_mesh_str_2d (int *size, struct NODES *pNodes, struct MESH *pMesh,
+neut_mesh_str_2d (int *size, int *periodic, struct NODES *pNodes, struct MESH *pMesh,
                   struct NSET *pNSet1D)
 {
   int i, x, y, nid, eid, nodesperelt;
@@ -203,6 +275,50 @@ neut_mesh_str_2d (int *size, struct NODES *pNodes, struct MESH *pMesh,
       (*pNodes).NodeCoo[nid][0] = nx;
       (*pNodes).NodeCoo[nid][1] = ny;
     }
+  }
+
+  if (periodic && ut_array_1d_int_sum (periodic, 2) > 0)
+  {
+    (*pNodes).Periodic = ut_alloc_1d_int (3);
+    (*pNodes).PeriodicDist = ut_alloc_1d (3);
+    (*pNodes).PerNodeMaster = ut_alloc_1d_int ((*pNodes).NodeQty + 1);
+    (*pNodes).PerNodeShift = ut_alloc_2d_int ((*pNodes).NodeQty + 1, 3);
+    ut_array_1d_int_memcpy (periodic, 3, (*pNodes).Periodic);
+    ut_array_1d_set ((*pNodes).PeriodicDist, 3, 1.);
+    int primary, secondary;
+    int *shift = ut_alloc_1d_int (3);
+
+    // processing x-periodicity, if present
+    if (periodic[0])
+    {
+      ut_array_1d_int_zero (shift, 3);
+      shift[0] = 1;
+
+      for (y = 1; y <= size[1] + 1; y++)
+      {
+        primary = NMap[1][y];
+        secondary = NMap[size[0] + 1][y];
+        neut_nodes_markasslave (pNodes, secondary, primary, shift);
+      }
+    }
+    if (periodic[1])
+    {
+      ut_array_1d_int_zero (shift, 3);
+      shift[1] = 1;
+
+      for (x = 1; x <= size[0] + 1; x++)
+      {
+        primary = NMap[x][1];
+        secondary = NMap[x][size[1] + 1];
+        neut_nodes_markasslave (pNodes, secondary, primary, shift);
+      }
+    }
+
+    neut_nodes_fixperslaves (pNodes);
+
+    ut_free_1d_int (&shift);
+
+    neut_nodes_init_nodeslave (pNodes);
   }
 
   /* Connectivity */

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifndef NEUT_TOPT_H
@@ -21,5 +21,7 @@ extern int neut_topt_refiter (struct TOPT TOpt, int deltaiter, int *prefiter);
 extern int neut_topt_iter_loop (struct TOPT TOpt, int iter, int *ploop);
 
 extern int neut_topt_typepos (struct TOPT TOpt);
+
+extern int neut_topt_bound_stringtoarray (struct TOPT TOpt);
 
 #endif /* NEUT_TOPT_H */

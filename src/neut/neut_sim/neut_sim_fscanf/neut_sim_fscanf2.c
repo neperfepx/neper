@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_sim_fscanf_.h"
@@ -270,18 +270,41 @@ neut_sim_fscanf_entity (struct SIM *pSim, FILE *file)
 }
 
 void
-neut_sim_fscanf_orispace (struct SIM *pSim, FILE *file)
+neut_sim_fscanf_orispace (struct SIM *pSim, char *version, FILE *file)
 {
-  char *tmp = ut_alloc_1d_char (1000);
+  int level;
+  char *string = ut_alloc_1d_char (1000);
+  char *format = ut_alloc_1d_char (1000);
 
   ut_file_skip (file, 1);
 
-  if (fscanf (file, "%s", tmp) != 1)
-    abort ();
+  if (!strcmp (version, "1.0"))
+  {
+    if (fscanf (file, "%s", string) != 1)
+      abort ();
+    ut_string_string (string, &(*pSim).OriSpaceMesh);
+  }
 
-  ut_string_string (tmp, &(*pSim).OriSpace);
+  else if (!strcmp (version, "1.1"))
+  {
+    ut_file_nextstring_sectionlevel (file, &level);
 
-  ut_free_1d_char (&tmp);
+    while (!ut_file_nextstring_sectionlevel (file, &level) && level == 1)
+    {
+      if (fscanf (file, "%s%s", format, string) != 2)
+        abort ();
+
+      if (!strcmp (format, "*tess"))
+        ut_string_string (string, &(*pSim).OriSpaceTess);
+      else if (!strcmp (format, "*mesh"))
+        ut_string_string (string, &(*pSim).OriSpaceMesh);
+      else
+        abort ();
+    }
+  }
+
+  ut_free_1d_char (&string);
+  ut_free_1d_char (&format);
 
   return;
 }

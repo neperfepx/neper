@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_transform_tess_.h"
@@ -95,6 +95,12 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
       neut_tess_resetcellid (pTess);
     }
 
+    else if (!strncmp (parts[i], "setcellid", 9))
+    {
+      ut_print_message (0, 2, "Overriding cell ids...\n");
+      neut_tess_setcellid (pTess, parts[i]);
+    }
+
     else if (!strncmp (parts[i], "planecut(", 9))
     {
       ut_print_message (0, 2, "Cutting by plane...\n");
@@ -151,6 +157,12 @@ net_transform_tess (struct IN_T In, struct TESS *pDom, struct TESS *pTess)
     {
       ut_print_message (0, 3, "Overriding orientations...\n");
       net_transform_tess_ori (parts[i], pTess);
+    }
+
+    else if (!strncmp (parts[i], "crysym", 6))
+    {
+      ut_print_message (0, 3, "Overriding crystal symmetry...\n");
+      net_transform_tess_crysym (parts[i], pTess);
     }
 
     else

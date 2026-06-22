@@ -1,17 +1,18 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
 #include<string.h>
+#include<limits.h>
 
 #include"ut.h"
 #include"neut.h"
 
 extern void neut_mesh_fscanf_msh_head (FILE *, char **, char **, int *, char **pversion);
-extern void neut_mesh_fscanf_msh_nodes (FILE *, char *, struct NODES *, int **);
+extern void neut_mesh_fscanf_msh_nodes (FILE *, char *, char *, struct NODES *, int **);
 extern void neut_mesh_fscanf_msh_nodes_head (FILE *, int *);
 extern void neut_mesh_fscanf_msh_nodes_prop (FILE *, char *, struct NODES *, int *);
 extern void neut_mesh_fscanf_msh_nodes_foot (FILE  *);

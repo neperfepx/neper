@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tess3d_periodic_.h"
@@ -286,7 +286,7 @@ net_tess3d_periodic_face_rodrigues (struct TESS *pTess)
   double **coo = ut_alloc_2d (qty + 1, 3);
   char *crysym = NULL;
 
-  ut_string_functionargument ((*pTess).DomType, &crysym);
+  ut_string_function_oneargument ((*pTess).DomType, NULL, &crysym);
 
   // searching slaves based on disorientation
   for (i = 1; i <= (*pTess).FaceQty; i++)
@@ -317,7 +317,7 @@ net_tess3d_periodic_edge_rodrigues (struct TESS *pTess)
   double **coo = ut_alloc_2d (qty + 1, 3);
   char *crysym = NULL;
 
-  ut_string_functionargument ((*pTess).DomType, &crysym);
+  ut_string_function_oneargument ((*pTess).DomType, NULL, &crysym);
 
   // searching slaves based on disorientation
   for (i = 1; i <= (*pTess).EdgeQty; i++)
@@ -347,7 +347,7 @@ net_tess3d_periodic_ver_rodrigues (struct TESS *pTess)
   double **coo = ut_alloc_2d (qty + 1, 3);
   char *crysym = NULL;
 
-  ut_string_functionargument ((*pTess).DomType, &crysym);
+  ut_string_function_oneargument ((*pTess).DomType, NULL, &crysym);
 
   // searching slaves based on disorientation
   for (i = 1; i <= (*pTess).VerQty; i++)

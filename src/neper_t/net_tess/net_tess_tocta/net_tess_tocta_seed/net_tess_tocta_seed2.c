@@ -1,21 +1,26 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"net_tess_tocta_seed_.h"
 
 int
-net_tess_tocta_seed_readargs (char *morpho, int *pn)
+net_tess_tocta_seed_readargs (char *morpho, int *n)
 {
-  int varqty;
+  int i, varqty;
   char **vars = NULL, **vals = NULL;
 
   ut_string_function (morpho, NULL, &vars, &vals, &varqty);
 
-  if (varqty != 1)
-    abort ();
-
-  sscanf (vals[0], "%d", pn);
+  if (varqty == 1)
+  {
+    ut_math_eval_int (vals[0], 0, NULL, NULL, n);
+    n[1] = n[0];
+    n[2] = n[0];
+  }
+  else if (varqty == 3)
+    for (i = 0; i < varqty; i++)
+      ut_math_eval_int (vals[i], 0, NULL, NULL, n + i);
 
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
@@ -26,7 +31,7 @@ net_tess_tocta_seed_readargs (char *morpho, int *pn)
 int
 net_tess_tocta_seed_set (struct IN_T In, struct MTESS MTess,
                          struct TESS *Tess, int dtess, int dcell,
-                         struct TESS Dom, int n, struct SEEDSET *SSet,
+                         struct TESS Dom, int *n, struct SEEDSET *SSet,
                          struct SEEDSET *pSSet)
 {
   char *ori = NULL, *crysym = NULL;
@@ -46,9 +51,10 @@ net_tess_tocta_seed_set (struct IN_T In, struct MTESS MTess,
 
   net_ori_mtess_randseed (MTess, Tess, 0, 1, SSet, 1, pSSet);
 
-  neut_seedset_bcc (Dom, n, pSSet);
+  neut_seedset_bcc (Dom, n, In.periodic, pSSet);
 
-  net_tess_tocta_seed_set_finalize (pSSet);
+  if (!ut_array_1d_int_sum (In.periodic, 3))
+    net_tess_tocta_seed_set_finalize (pSSet);
 
   ut_free_1d_char (&ori);
   ut_free_1d_char (&crysym);

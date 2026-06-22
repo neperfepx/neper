@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_tess_tess_.h"
@@ -58,8 +58,11 @@ neut_tess_tess_cell (struct TESS TessA, struct TESS *pTessB)
   if (TessA.CellOri)
   {
     (*pTessB).CellOri = ut_alloc_2d (TessA.CellQty + 1, 4);
-    ut_array_2d_memcpy (TessA.CellOri + 1, TessA.CellQty, 4,
-                        (*pTessB).CellOri + 1);
+    for (i = 1; i <= TessA.CellQty; i++)
+      if (TessA.CellOri[i])
+        ut_array_1d_memcpy (TessA.CellOri[i], 4, (*pTessB).CellOri[i]);
+      else
+        ut_free_1d ((*pTessB).CellOri + i);
   }
 
   if (TessA.CellOriDistrib)

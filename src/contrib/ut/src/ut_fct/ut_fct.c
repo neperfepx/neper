@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2024, Romain Quey.*/
+/* Copyright (C) 2003-2026, Romain Quey, CNRS.*/
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -1172,6 +1172,59 @@ ut_fct_init_mean (struct FCT* pFct)
   (*pFct).mean /= sum;
 
   return;
+}
+
+int
+ut_fct_invert (struct FCT Fct1, struct FCT *pFct2)
+{
+  int i;
+
+  if (strcmp (Fct1.type, "numerical"))
+    abort ();
+
+  ut_string_string (Fct1.type, &((*pFct2).type));
+
+  // double mean;                // mean (or expectation) of distribution x
+  // double sigma;               // standard deviation x
+  // double gamma;               // extra parameter for some functions
+
+  // flags for x value restriction (0, 1, 2: none, inclusive, exclusive)
+  // char type_from;
+  // char type_to;
+
+  // double from;                // lower x value limit
+  // double to;                  // upper x value limit
+  // double area;
+
+  // double min;
+  // double max;
+
+  (*pFct2).size = 1;
+  (*pFct2).x = ut_alloc_1d ((*pFct2).size);
+  (*pFct2).y = ut_alloc_1d ((*pFct2).size);
+
+  (*pFct2).x = ut_alloc_1d ((*pFct2).size);
+  (*pFct2).y = ut_alloc_1d ((*pFct2).size);
+  (*pFct2).x[0] = Fct1.y[0];
+  (*pFct2).y[0] = Fct1.x[0];
+  for (i = 1; i < Fct1.size; i++)
+    if (Fct1.y[i] > Fct1.y[i - 1])
+    {
+      (*pFct2).size++;
+      (*pFct2).x = ut_realloc_1d ((*pFct2).x, (*pFct2).size);
+      (*pFct2).y = ut_realloc_1d ((*pFct2).y, (*pFct2).size);
+      (*pFct2).x[(*pFct2).size - 1] = Fct1.y[i];
+      (*pFct2).y[(*pFct2).size - 1] = Fct1.x[i];
+    }
+
+  (*pFct2).interp_type = (gsl_interp_type *) gsl_interp_linear;
+  ut_fct_init_interp (pFct2);
+
+  // gsl_interp *interp;
+  // gsl_interp_type *interp_type;
+  // gsl_interp_accel *interp_accel;
+
+  return 0;
 }
 
 #endif

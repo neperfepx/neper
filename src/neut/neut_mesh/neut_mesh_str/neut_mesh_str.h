@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -14,12 +14,12 @@ extern "C"
 ///
 ///
 ///
-  extern void neut_mesh_str (int dim, int *size, struct NODES *pNodes,
+  extern void neut_mesh_str (int dim, int *size, int *periodic, struct NODES *pNodes,
 			     struct MESH *pMesh, struct NSET *pNSet);
 
-  extern void neut_mesh_str_3d (int *size, struct NODES *pNodes, struct
+  extern void neut_mesh_str_3d (int *size, int *periodic, struct NODES *pNodes, struct
 				MESH *pMesh, struct NSET *pNSet);
-  extern void neut_mesh_str_2d (int *size, struct NODES *pNodes, struct
+  extern void neut_mesh_str_2d (int *size, int *periodic, struct NODES *pNodes, struct
 				MESH *pMesh, struct NSET *pNSet);
   extern void neut_mesh_str_1d (int *size, struct NODES *pNodes, struct
 				MESH *pMesh, struct NSET *pNSet);

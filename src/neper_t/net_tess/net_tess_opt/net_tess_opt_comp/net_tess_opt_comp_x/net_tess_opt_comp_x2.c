@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_x_.h"
@@ -83,9 +83,9 @@ net_tess_opt_comp_x_ori (struct TOPT *pTOpt, double **px)
   (*pTOpt).x_seed = ut_alloc_1d_int ((*pTOpt).xqty);
   (*pTOpt).x_var = ut_alloc_1d_int ((*pTOpt).xqty);
   (*pTOpt).seedvar_x =
-    ut_alloc_2d_int ((*pTOpt).SSet.N + 1, (*pTOpt).Dim + 1);
+    ut_alloc_2d_int ((*pTOpt).SSet.N + 1, (*pTOpt).Dim + 2);
   ut_array_2d_int_set ((*pTOpt).seedvar_x + 1, (*pTOpt).SSet.N,
-                       (*pTOpt).Dim + 1, -1);
+                       (*pTOpt).Dim + 2, -1);
 
   k = 0;
   for (j = 0; j < (*pTOpt).seedoptiqty; j++)
@@ -103,14 +103,6 @@ net_tess_opt_comp_x_ori (struct TOPT *pTOpt, double **px)
         (*px)[k] = (*pTOpt).SSet.SeedOriR[seed][dim];
         (*pTOpt).seedvar_x[seed][dim] = k;
       }
-      else if (!strcmp (parts[i], "rw"))
-      {
-        (*pTOpt).x_seed[k] = seed;
-        (*pTOpt).x_var[k] = (*pTOpt).SSet.Dim;
-        (*pTOpt).x_pvar[k] = &((*pTOpt).SSet.SeedOriWeight[seed]);
-        (*px)[k] = (*pTOpt).SSet.SeedOriWeight[seed];
-        (*pTOpt).seedvar_x[seed][(*pTOpt).SSet.Dim] = k;
-      }
       else if (!strcmp (parts[i], "rt"))
       {
         (*pTOpt).x_seed[k] = seed;
@@ -118,6 +110,14 @@ net_tess_opt_comp_x_ori (struct TOPT *pTOpt, double **px)
         (*pTOpt).x_pvar[k] = &((*pTOpt).SSet.SeedOriTheta[seed]);
         (*px)[k] = (*pTOpt).SSet.SeedOriTheta[seed];
         (*pTOpt).seedvar_x[seed][(*pTOpt).SSet.Dim] = k;
+      }
+      else if (!strcmp (parts[i], "rw"))
+      {
+        (*pTOpt).x_seed[k] = seed;
+        (*pTOpt).x_var[k] = (*pTOpt).SSet.Dim + 1;
+        (*pTOpt).x_pvar[k] = &((*pTOpt).SSet.SeedOriWeight[seed]);
+        (*px)[k] = (*pTOpt).SSet.SeedOriWeight[seed];
+        (*pTOpt).seedvar_x[seed][(*pTOpt).SSet.Dim + 1] = k;
       }
       else
         abort ();

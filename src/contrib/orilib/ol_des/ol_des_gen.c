@@ -11,6 +11,8 @@ ol_des_size (char* des0)
   ut_string_string (des0, &des);
   ut_string_fnr (des, ':', '\0');
 
+  if (! strcmp (des, "label") || !strcmp (des, "name"))
+    return 1;
   if (! strcmp (des, "g") || !strcmp (des, "rotmat"))
     return 9;
   else if (!strcmp (des, "e")  || !strcmp (des, "eb")
@@ -27,4 +29,35 @@ ol_des_size (char* des0)
     return 4;
   else
     return -1;
+}
+
+int
+ol_q_des (double *q, char *des, double *vect)
+{
+  int status = 0;
+
+  if (! strcmp (des, "g") || !strcmp (des, "rotmat"))
+    ol_q_gv (q, vect);
+  else if (!strcmp (des, "e") || !strcmp (des, "eb") || !strcmp (des, "euler"))
+    ol_q_e (q, vect);
+  else if (!strcmp (des, "er"))
+  {
+    ol_q_e (q, vect);
+    ol_e_er (vect, vect);
+  }
+  else if (!strcmp (des, "ek"))
+  {
+    ol_q_e (q, vect);
+    ol_e_ek (vect, vect);
+  }
+  else if (!strcmp (des, "rtheta") || !strcmp (des, "axis-angle"))
+    ol_q_rthetav (q, vect);
+  else if (!strcmp (des, "R") || !strcmp (des, "rodrigues"))
+    ol_q_R (q, vect);
+  else if (!strcmp (des, "q") || !strcmp (des, "quaternion"))
+    ol_q_memcpy (q, vect);
+  else
+    status = -1;
+
+  return status;
 }

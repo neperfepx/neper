@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2024, Romain Quey.*/
+/* Copyright (C) 2003-2026, Romain Quey, CNRS.*/
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -6,6 +6,7 @@
 #include<string.h>
 #include<stdarg.h>
 #include<limits.h>
+#include<dirent.h>
 #include"ut.h"
 
 int
@@ -503,6 +504,12 @@ ut_file_format (const char *filename, char **pformat)
   {
     (*pformat) = ut_alloc_1d_char (5);
     sprintf ((*pformat), "tesr");
+    res = 0;
+  }
+  else if (strcmp (string, "***odf") == 0)
+  {
+    (*pformat) = ut_alloc_1d_char (4);
+    sprintf ((*pformat), "odf");
     res = 0;
   }
   else if (strcmp (string, "$MeshFormat") == 0)
@@ -1052,7 +1059,10 @@ ut_file_scan_file (FILE *file, char *dirname, FILE **pfile, char **pfilename)
     filename = ut_alloc_1d_char (1000);
     if (fscanf (file, "%s", tmp2) != 1)
       abort ();
-    sprintf (filename, "%s/%s", dirname, tmp2);
+    if (dirname)
+      sprintf (filename, "%s/%s", dirname, tmp2);
+    else
+      sprintf (filename, "%s", tmp2);
     *pfile = ut_file_open (filename, "r");
   }
   else

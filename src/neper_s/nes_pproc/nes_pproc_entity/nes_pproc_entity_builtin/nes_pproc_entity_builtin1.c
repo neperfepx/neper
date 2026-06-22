@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nes_pproc_entity_builtin_.h"
@@ -20,17 +20,17 @@ nes_pproc_entity_builtin (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr
 
   if (!strcmp (type, "node"))
     status = nes_pproc_entity_builtin_nodes (pSim, *pNodes, (*pSimRes).dir,
-                                          (*pSimRes).res);
+                                          (*pSimRes).res, (*pSimRes).expr);
 
   // entity is "elsets", "mesh" or a custom entity
   else if (!strcmp (type, "elt") || !strcmp (type, "elset") || !strcmp (type, "mesh"))
     status = nes_pproc_entity_builtin_elsets (pSim, pTess, pNodes, Mesh, entity,
-                                              (*pSimRes).res);
+                                              (*pSimRes).res, (*pSimRes).expr);
 
   // entity is cell
   else if (!strcmp (type, "cell"))
     status = nes_pproc_entity_builtin_cells (pSim, pTess, Tesr, entity,
-                                             (*pSimRes).res);
+                                             (*pSimRes).res, (*pSimRes).expr);
 
   ut_free_1d_char (&type);
 

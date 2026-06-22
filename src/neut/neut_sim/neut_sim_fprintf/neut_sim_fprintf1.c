@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_sim_fprintf_.h"
@@ -76,17 +76,29 @@ neut_sim_fprintf (char *dir, struct SIM Sim, char *mode)
         for (j = 0; j < Sim.EntityResQty[i]; j++)
         {
           fprintf (file, " %s", Sim.EntityRes[i][j]);
-          if (Sim.EntityResExpr[i][j] && strlen (Sim.EntityResExpr[i][j]))
+          if (Sim.EntityResExpr[i][j] && strlen (Sim.EntityResExpr[i][j])
+           && strcmp (Sim.EntityRes[i][j], Sim.EntityResExpr[i][j]))
             fprintf (file, "%s%s", NEUT_SEP_DEP, Sim.EntityResExpr[i][j]);
         }
       fprintf (file, "\n");
     }
   }
 
-  if (Sim.OriSpace)
+  if (Sim.OriSpaceTess || Sim.OriSpaceMesh)
   {
     fprintf (file, " **orispace\n");
-    fprintf (file, "   %s\n", Sim.OriSpace);
+
+    if (Sim.OriSpaceTess)
+    {
+      fprintf (file, "  *tess\n");
+      fprintf (file, "   %s\n", Sim.OriSpaceTess);
+    }
+
+    if (Sim.OriSpaceMesh)
+    {
+      fprintf (file, "  *mesh\n");
+      fprintf (file, "   %s\n", Sim.OriSpaceMesh);
+    }
   }
 
   if (Sim.StepQty > 0)
@@ -311,14 +323,6 @@ neut_sim_fprintf_asy (char *dir, struct SIM Sim, char *mode)
   ut_free_1d_char (&child1);
   ut_free_1d_char (&child2);
 
-  /*
-  if (Sim.OriSpace)
-  {
-    fprintf (file, " **orispace\n");
-    fprintf (file, "   %s\n", Sim.OriSpace);
-  }
-  */
-
   fprintf (file, "\n");
   fprintf (file, "draw (root, (0, 0));\n");
   ut_file_close (file, filename, "W");
@@ -379,8 +383,15 @@ neut_sim_verbose (struct SIM Sim)
 
   ut_print_message (0, 3, "Step number      : %d\n", Sim.StepQty);
 
-  if (Sim.OriSpace)
-    ut_print_message (0, 3, "Orientation space: %s\n", Sim.OriSpace);
+  if (Sim.OriSpaceTess || Sim.OriSpaceMesh)
+  {
+    ut_print_message (0, 3, "Orientation space:");
+    if (Sim.OriSpaceTess)
+      printf (" %s", Sim.OriSpaceTess);
+    if (Sim.OriSpaceMesh)
+      printf (" %s", Sim.OriSpaceMesh);
+    printf ("\n");
+  }
 
   for (i = 0; i < Sim.EntityQty; i++)
     neut_sim_verbose_results (Sim.Entities[i], Sim.EntityRes[i], Sim.EntityResQty[i]);

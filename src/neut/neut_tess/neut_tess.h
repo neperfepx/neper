@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -10,7 +10,7 @@ extern "C"
 /// \file neut_tess.h
 /// \brief
 /// \author Romain Quey
-/// \bug Should not be necessary to include neut_structs.h
+/// \bug Should not be necessary to include neut_struct.h
 
 #ifndef NEUT_TESS_H
 #define NEUT_TESS_H

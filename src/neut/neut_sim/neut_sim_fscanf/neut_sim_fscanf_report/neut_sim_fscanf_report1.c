@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_sim_fscanf_report_.h"
@@ -100,9 +100,9 @@ neut_sim_fscanf_report (char *dir, struct SIM *pSim, char *mode)
     }
     else if (!strcmp (var, "orientation_space"))
     {
-      (*pSim).OriSpace = ut_alloc_1d_char (1000);
+      (*pSim).OriSpaceMesh = ut_alloc_1d_char (1000);
 
-      if (fscanf (file, "%s", (*pSim).OriSpace) != 1)
+      if (fscanf (file, "%s", (*pSim).OriSpaceMesh) != 1)
         abort ();
     }
     else if (!strcmp (var, "entities"))

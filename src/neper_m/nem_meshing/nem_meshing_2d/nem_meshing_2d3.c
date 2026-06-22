@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_2d_.h"
@@ -197,7 +197,7 @@ nem_meshing_2d_face_per_rodrigues (struct TESS Tess, struct NODES *N, int face, 
 
   ol_g_set_id (I);
 
-  ut_string_functionargument (Tess.DomType, &crysym);
+  ut_string_function_oneargument (Tess.DomType, NULL, &crysym);
 
   ut_array_1d_memcpy (Tess.FaceEq[face] + 1, 3, n);
 

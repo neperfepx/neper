@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -10,7 +10,6 @@
 #include<float.h>
 
 #include "ut.h"
-#include "../../../structIn_v.h"
 #include "neut_v.h"
 #include "nev_print_pf_ptsprint_density.h"
 
@@ -38,4 +37,4 @@ extern void nev_print_pf_ptsprint_density_write_data (struct PF Pf, char *filena
 
 extern void nev_print_pf_ptsprint_density_write_text (struct PF Pf, FILE *file, char *filename2);
 
-extern void nev_print_pf_ptsprint_density_write_mask (struct IN_V In, FILE *, struct PF);
+extern void nev_print_pf_ptsprint_density_write_mask (struct PRINT Print, FILE *, struct PF);

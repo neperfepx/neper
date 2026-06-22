@@ -1,0 +1,309 @@
+#!/bin/bash
+
+# set -e
+
+VERSION="1.0.1-5"
+
+sed_i ()
+{
+  if [ `uname` == "Linux" ]
+  then
+    sed -i "${@:1:1}" ${@:2}
+  else
+    sed -i '' -e "${@:1:1}" ${@:2}
+  fi
+}
+
+### Checking dependencies and environment variables ####################
+
+for dependency in git meld
+do
+  if [ ! "`which $dependency`" ]
+  then
+    echo "$dependency not found."
+    exit 1
+  fi
+done
+
+for var in NEPERROOT FEPXROOT
+do
+  eval echo \$${var} > ~/.neperfepx-git.tmp
+  read val < ~/.neperfepx-git.tmp
+  if [ ! "$val" ]
+  then
+    echo "Environment variable $var not set."
+    exit 1
+  fi
+done
+
+EDITOR=`git config --global core.editor`
+if [ ! "$EDITOR" ]
+then
+  EDITOR="vi"
+fi
+
+### Function definitions ###############################################
+
+neperfepx_git_commit()
+{
+  git commit $1
+  status="$?"
+
+  if [ "$status" != "0" ]
+  then
+    exit $status
+  fi
+
+  date=`date +"%d %b %G"`
+  tag=`git describe --tags --match "*start" | grep start | awk -F- '{print $1}'`
+  tag="${tag:1}"
+  id=` git describe --tags --match "*start" | grep start | awk -F- '{print $3}'`
+
+  if [ ! "$tag" ]
+  then
+    echo "Failed to find start tag."
+    exit -1
+  fi
+
+  branch=`git status | head -1 | awk '{print $3}'`
+
+  if [ "$branch" == "main" ]
+  then
+    version="$tag-$id"
+  else
+    version="$tag-$id-$branch"
+  fi
+
+  version_major=`echo $version | awk -F . '{print $1}'`
+  version_minor=`echo $version | awk -F . '{print $2}'`
+  version_patch=`echo $version | awk -F . '{print $3}'`
+
+  if [ "$CODE" != "NEPERFEPX" ]
+  then
+    if [ "$id" == "1" ]
+    then
+      sed_i "1s/^/New in $version ($date):\n\n/g" $ROOT/VERSIONS
+    else
+      sed_i "1s/.*/New in $version ($date):/g" $ROOT/VERSIONS
+    fi
+
+    sed_i "1,100s/^version = .*/version = u'$version'/g" $ROOT/doc/conf.py
+    sed_i "1,100s/^release = .*/release = u'$version'/g" $ROOT/doc/conf.py
+
+    sed_i "1,100s/set(${CODE}_VERSION.*/set(${CODE}_VERSION \\\\\"$version\\\\\")/g" $ROOT/src/CMakeLists.txt
+
+    sed_i "s/set(CPACK_PACKAGE_VERSION_MAJOR.*/set(CPACK_PACKAGE_VERSION_MAJOR $version_major)/g" $ROOT/src/CMakeLists.txt
+    sed_i "s/set(CPACK_PACKAGE_VERSION_MINOR.*/set(CPACK_PACKAGE_VERSION_MINOR $version_minor)/g" $ROOT/src/CMakeLists.txt
+    sed_i "s/set(CPACK_PACKAGE_VERSION_PATCH.*/set(CPACK_PACKAGE_VERSION_PATCH $version_patch)/g" $ROOT/src/CMakeLists.txt
+
+    $EDITOR $ROOT/VERSIONS
+    git add $ROOT/VERSIONS $ROOT/doc/conf.py $ROOT/src/CMakeLists.txt
+
+  else
+    for file in neperfepx-git neperfepx-release
+    do
+      sed_i "1,10s/VERSION=.*/VERSION=\"$version\"/g" $ROOT/$file/$file
+      sed_i "1,10s/Version.*/Version $version/g" $ROOT/$file/README.md
+      git add $ROOT/$file/$file $ROOT/$file/README.md
+    done
+    sed_i "1,10s/Version.*/Version $version/g" $ROOT/README.md
+    git add $ROOT/README.md
+  fi
+
+  git commit --amend --no-edit > /dev/null
+  status="$?"
+
+  if [ "$status" == "0" ]
+  then
+    echo "Updated version to $version."
+  else
+    echo "Failed to update version to $version.  Something nasty happened:"
+    git status
+    exit 1
+  fi
+}
+
+neperfepx_git_merge()
+{
+  # If --abort, aborting
+  if [ "$1" == "--abort" ]
+  then
+    git merge --abort
+    exit 0
+  fi
+
+  CMakeLists_change=`git diff --numstat $@:src/CMakeLists.txt HEAD:src/CMakeLists.txt | awk '{if ($1==1 && $2==1) {print "0"} else {print "1"}}'`
+  VERSIONS_change=`git diff --numstat $@:VERSIONS HEAD:VERSIONS | awk '{if ($1==1 && $2==1) {print "0"} else {print "1"}}'`
+  confpy_change=`git diff --numstat $@:doc/conf.py HEAD:doc/conf.py | awk '{if ($1==2 && $2==2) {print "0"} else {print "1"}}'`
+  if [ "$CODE" == "FEPX" ]
+  then
+    fepx_change=`git diff --numstat $@:src/fepx.f90 HEAD:src/fepx.f90 | awk '{if ($1==1 && $2==1) {print "0"} else {print "1"}}'`
+  fi
+
+  # Merging branch silently
+  git merge --no-edit $@ > ~/.neperfepx-git.tmp
+
+  status=$?
+  uptodate=`grep "Already up to date." ~/.neperfepx-git.tmp | wc -l`
+
+  # If merging failed...
+  if [ "$status" == "128" ]
+  then
+    exit $status
+
+  # If already up to date...
+  elif [ "$status" == "0" -a "$uptodate" == "1" ]
+  then
+    more ~/.neperfepx-git.tmp
+
+  # If there were no conflicts...
+  elif [ "$status" == "0" ]
+  then
+    neperfepx_git_commit --amend
+
+  # If there were conflicts...
+  else
+    # Resolving versioning conflicts
+    echo "Resolving versioning conflicts..."
+
+    version_files="VERSIONS src/CMakeLists.txt doc/conf.py"
+    if [ "$CODE" == "FEPX" ]
+    then
+      version_files="$version_files src/fepx.f90"
+    fi
+
+    for file in $version_files
+    do
+      # Checking if only the version line changed (qty=1)
+      qty=`git diff --numstat HEAD $ROOT/$file | tail -1 | awk '{print $2}'`
+
+      # If only the version line changed
+      if [ "$qty" == "1" ]
+      then
+        git checkout --ours $ROOT/$file
+        git add $ROOT/$file
+      fi
+    done
+
+    if [ "${CMakeLists_change}" == "0" ]
+    then
+      git checkout --ours $ROOT/src/CMakeLists.txt
+      git add $ROOT/src/CMakeLists.txt
+    fi
+
+    if [ "${VERSIONS_change}" == "0" ]
+    then
+      git checkout --ours $ROOT/VERSIONS
+      git add $ROOT/VERSIONS
+    fi
+
+    if [ "${confpy_change}" == "0" ]
+    then
+      git checkout --ours $ROOT/doc/conf.py
+      git add $ROOT/doc/conf.py
+    fi
+
+    if [ [ "$CODE" == "FEPX" ] && [ "${fepx_change}" == "0" ] ]
+    then
+      git checkout --ours $ROOT/src/fepx.f90
+      git add $ROOT/src/fepx.f90
+    fi
+
+    # Resolving other conflicts (if any)
+    git mergetool --tool=meld
+
+    # Cleaning
+    for file in $version_files
+    do
+      for ext in _BACKUP _BASE _LOCAL _REMOTE .orig
+      do
+        rm -f $ROOT/$file$ext*
+      done
+    done
+
+    # Generating commit
+    neperfepx_git_commit
+  fi
+}
+
+neperfepx_git_mergepr()
+{
+  # If --abort, aborting
+  if [ "$1" == "--abort" ]
+  then
+    git merge --abort
+    exit 0
+  fi
+
+  branch=`git status | head -1 | awk '{print $3}'`
+  pr_branch="$@"
+  pr_branch_repo=`echo $pr_branch | awk -F/ '{print $1}'`
+  pr_branch_name=`echo $pr_branch | awk -F/ '{print $2}'`
+
+  if [ ! "$pr_branch_repo" -o ! "$pr_branch_name" ]
+  then
+    echo "PR branch not found (repo=$pr_branch_repo, branch=$pr_branch_name)"
+    exit -1
+  fi
+
+  if [ "$branch" == "main" -a "$pr_branch_repo" != "github" ]
+  then
+    echo "Cannot merge PR into main from a repository different from github"
+    exit -1
+  elif [ "$branch" == "devel" -a "$pr_branch_repo" != "github-dev" ]
+  then
+    echo "Cannot merge PR into devel from a repository different from github-dev"
+    exit -1
+  fi
+
+  # Download the remote branch in case it is not present locally
+  git fetch $pr_branch_repo
+
+  neperfepx_git_merge --no-ff $pr_branch
+
+  git push $pr_branch_repo $branch
+
+  if [ "`git branch | grep "\<$pr_branch_name\>"`" ]
+  then
+    git branch -d $pr_branch_name
+  fi
+  git push $pr_branch_repo :$pr_branch_name
+  git fetch -p
+}
+
+### Starting program ###################################################
+
+if [ "`pwd | grep "$NEPERROOT"`" ]
+then
+  CODE="NEPER"
+  ROOT=$NEPERROOT
+elif [ "`pwd | grep "$FEPXROOT"`" ]
+then
+  CODE="FEPX"
+  ROOT=$FEPXROOT
+elif [ "`pwd | grep "$NEPERFEPXROOT"`" ]
+then
+  CODE="NEPERFEPX"
+  ROOT=$NEPERFEPXROOT
+else
+  git $@
+  exit $?
+fi
+
+if [ "$1" == "merge" ]
+then
+  echo "Version $VERSION"
+  neperfepx_git_merge "${@:2}"
+elif [ "$1" == "mergepr" ]
+then
+  echo "Version $VERSION"
+  neperfepx_git_mergepr "${@:2}"
+elif [ "$1" == "commit" ]
+then
+  echo "Version $VERSION"
+  neperfepx_git_commit "${@:2}"
+else
+  git $@
+fi
+
+exit $?

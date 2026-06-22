@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -10,7 +10,6 @@
 #include<time.h>
 #include<sys/time.h>
 
-#include"structIn_t.h"
 #include"ut.h"
 #include"neut_t.h"
 #include"orilib.h"
@@ -34,7 +33,7 @@ extern void net_ori_mtess_params (struct IN_T In, int level, struct MTESS MTess,
                                   char **pori, char **porisampling,
                                   char **porispread, char **pcrysym);
 
-extern int net_ori_mtess_randseed_rand (int *N, int *id, int *poly, int levelqty);
+extern unsigned long net_ori_mtess_randseed_rand (int *N, int *id, int *poly, int levelqty);
 
 extern void net_ori_orispread (char *orispread, struct SEEDSET *pSSet);
 

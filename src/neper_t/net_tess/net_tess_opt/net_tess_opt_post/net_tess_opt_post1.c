@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_post_.h"
@@ -39,7 +39,7 @@ net_tess_opt_post (struct MTESS *pMTess, struct TESS *Tess, int dtess,
       Tess[tessid].CellOriDistrib = ut_alloc_1d_pchar (Tess[tessid].CellQty + 1);
       for (i = 1; i <= Tess[tessid].CellQty; i++)
       {
-        sprintf (tmp, "normal(%.12f)", SSet[tessid].SeedOriTheta[i] * 180 / M_PI);
+        sprintf (tmp, "normal(theta=%.12f)", SSet[tessid].SeedOriTheta[i] * 180 / M_PI);
         ut_string_string (tmp, Tess[tessid].CellOriDistrib + i);
       }
       ut_free_1d_char (&tmp);

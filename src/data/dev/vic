@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ "$1" != "" ]
+then
+  cd `git rev-parse --show-toplevel`
+  file=`echo $1 | awk -F/ '{print $NF}' | awk -F: '{print $1}'`
+  dir=`find . -name $file | sed -e "s/$file//g"`
+  cd $dir
+fi
+
+echo $dir
+
+shopt -s nullglob
+
+headers=$(printf "%s\n" *[a-z].h *.hpp 2>/dev/null | sort -V)
+underscored=$(printf "%s\n" *_\.h *_\.hpp 2>/dev/null | sort -V)
+sources=$(printf "%s\n" *.c *.cpp 2>/dev/null | sort -V)
+
+vi $headers $underscored $sources
+
+exit 0

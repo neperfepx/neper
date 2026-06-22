@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -11,7 +11,6 @@
 #include"ut.h"
 #include"orilib.h"
 #include"neut.h"
-#include"structIn_s.h"
 
 #include"nes_pproc_entity_builtin.h"
 
@@ -21,11 +20,14 @@ extern "C"
 #endif
 
 extern int nes_pproc_entity_builtin_nodes (struct SIM *pSim, struct NODES Nodes, char *dir,
-                                           char *res);
+                                           char *res, char *expr);
 
 extern int nes_pproc_entity_builtin_elsets (struct SIM *pSim, struct TESS *pTess,
                                          struct NODES *pNodes, struct MESH
-                                         *Mesh, char *entity, char *res);
+                                         *Mesh, char *entity, char *res, char *expr);
+
+extern int nes_pproc_entity_builtin_nodes_coo (struct SIM *pSim, struct NODES Nodes,
+                                    char *dir, char *res, struct SIMRES *pSimRes);
 
 extern int nes_pproc_entity_builtin_nodes_disp (struct SIM *pSim, struct NODES Nodes,
                                              char *dir, char *res,
@@ -45,16 +47,17 @@ extern void nes_pproc_entity_builtin_elsets_ori (struct SIM *pSim,
 
 extern void nes_pproc_entity_builtin_elsets_oridis (struct SIM *pSim, struct TESS Tess,
                                      struct NODES *pNodes, struct MESH *Mesh,
-                                     char *entity, char *res, int **elsets,
+                                     char *entity, char *res, char *expr, int **elsets,
                                      int elsetqty, struct SIMRES *pSimRes);
 
 extern void nes_pproc_entity_builtin_elsets_odf (struct SIM *pSim, struct TESS *pTess,
                                   struct NODES *pNodes, struct MESH *Mesh,
-                                  char *entity, char *res, struct SIMRES *pSimRes);
+                                  char *entity, char *res, char *expr,
+                                  struct SIMRES *pSimRes);
 
 extern void nes_pproc_entity_builtin_elsets_orifield (struct SIM *pSim, struct TESS *pTess,
                                   struct NODES *pNodes, struct MESH *Mesh,
-                                  char *entity, char *res, struct SIMRES *pSimRes);
+                                  char *entity, char *res, char *expr, struct SIMRES *pSimRes);
 
 extern void nes_pproc_entity_builtin_elsets_readodf (struct SIM *pSim, struct TESS Tess,
                                   struct MESH *Mesh, char *entity, char *res,
@@ -70,7 +73,7 @@ extern void nes_pproc_entity_builtin_elsets_gen (struct SIM *pSim,
                                   int elsetqty, struct SIMRES *pSimRes);
 
 extern int nes_pproc_entity_builtin_cells (struct SIM *pSim, struct TESS *pTess,
-                                            struct TESR Tesr, char *entity, char *res);
+                                            struct TESR Tesr, char *entity, char *res, char *expr);
 extern void nes_pproc_entity_builtin_cells_ori (struct SIM *pSim, struct TESS Tess,
                                     struct TESR Tesr, char *entity, char *res,
                                     struct SIMRES *pSimRes);
@@ -81,7 +84,7 @@ extern void nes_pproc_entity_builtin_cells_gos (struct SIM *pSim, struct TESS Te
 
 extern void nes_pproc_entity_builtin_cells_odf (struct SIM *pSim, struct TESS *pTess,
                                      struct TESR Tesr, char *entity, char *res,
-                                     struct SIMRES *pSimRes);
+                                     char *expr, struct SIMRES *pSimRes);
 
 extern void nes_pproc_entity_builtin_cells_pre (struct SIM *pSim, struct TESS Tess,
                                   struct TESR Tesr, char *entity, char *res,
@@ -92,8 +95,6 @@ extern void nes_pproc_entity_builtin_elsets_gos (struct SIM *pSim, struct TESS T
                                      struct NODES *pNodes, struct MESH *Mesh,
                                      char *entity, char *res, int **elsets,
                                      int elsetqty, struct SIMRES *pSimRes);
-
-extern void nes_pproc_entity_builtin_odf_writeconfig (struct SIMRES *pSimRes, char *name, struct ODF Odf);
 
 #ifdef __cplusplus
 }

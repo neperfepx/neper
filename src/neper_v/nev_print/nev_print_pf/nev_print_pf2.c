@@ -1,5 +1,5 @@
 /* This file is part of the 'hermes' program. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYINPFG file in the top-level directory. */
 
 #include"nev_print_pf_.h"
@@ -119,7 +119,7 @@ nev_print_pf_header (struct PF Pf, FILE *file)
 }
 
 void
-nev_print_pf_background (struct IN_V In, struct PF Pf, FILE *file, struct PRINT Print)
+nev_print_pf_background (struct PF Pf, FILE *file, struct PRINT Print)
 {
   double xmin = 0, xmax = 0, ymin = 0, ymax = 0;
   int density = ut_list_testelt (Pf.mode, NEUT_SEP_NODEP, "density");
@@ -169,7 +169,7 @@ nev_print_pf_background (struct IN_V In, struct PF Pf, FILE *file, struct PRINT 
     abort ();
 
   fprintf (file, "filldraw (scale(scale)*((%.3f,%.3f)--(%.3f,%.3f)--(%.3f,%.3f)--(%.3f,%.3f)--cycle),%s,%s);\n", xmin, ymin, xmax, ymin, xmax, ymax, xmin, ymax,
-      In.scenebackground, In.scenebackground);
+      Print.background, Print.background);
 
   if (!ut_list_testelt (Pf.mode, NEUT_SEP_NODEP, "density"))
   {
@@ -177,13 +177,13 @@ nev_print_pf_background (struct IN_V In, struct PF Pf, FILE *file, struct PRINT 
     {
       if (!strcmp (Pf.shape, "full"))
       {
-        fprintf (file, "draw (shift(O)*scale(scale)*(-X--X), black);\n");
-        fprintf (file, "draw (shift(O)*scale(scale)*(-Y--Y), black);\n");
+        fprintf (file, "draw (shift(O)*scale(scale)*(-X--X), %s);\n", !strcmp (Print.colormode, "bright") ? "black" : "white");
+        fprintf (file, "draw (shift(O)*scale(scale)*(-Y--Y), %s);\n", !strcmp (Print.colormode, "bright") ? "black" : "white");
       }
       else if (!strcmp (Pf.shape, "quarter"))
       {
-        fprintf (file, "draw (shift(O)*scale(scale)*(O--X), black);\n");
-        fprintf (file, "draw (shift(O)*scale(scale)*(O--(-Y)), black);\n");
+        fprintf (file, "draw (shift(O)*scale(scale)*(O--X), %s);\n", !strcmp (Print.colormode, "bright") ? "black" : "white");
+        fprintf (file, "draw (shift(O)*scale(scale)*(O--(-Y)), %s);\n", !strcmp (Print.colormode, "bright") ? "black" : "white");
       }
     }
   }
@@ -192,14 +192,14 @@ nev_print_pf_background (struct IN_V In, struct PF Pf, FILE *file, struct PRINT 
 }
 
 void
-nev_print_pf_border (FILE *file, struct PF *pPf)
+nev_print_pf_border (FILE *file, struct PRINT Print, struct PF *pPf)
 {
   if (!strcmp ((*pPf).space, "pf"))
   {
     if (!strcmp ((*pPf).shape, "full"))
-      fprintf (file, "draw (shift(O)*scale(scale)*unitcircle, black);\n");
+      fprintf (file, "draw (shift(O)*scale(scale)*unitcircle, %s);\n", !strcmp (Print.colormode, "bright") ? "black" : "white");
     else if (!strcmp ((*pPf).shape, "quarter"))
-      fprintf (file, "draw (shift(O)*scale(scale)*arc(O,-Y,X), black);\n");
+      fprintf (file, "draw (shift(O)*scale(scale)*arc(O,-Y,X), %s);\n", !strcmp (Print.colormode, "bright") ? "black" : "white");
     else
       abort ();
   }
@@ -215,8 +215,9 @@ nev_print_pf_border (FILE *file, struct PF *pPf)
 
     fprintf (file, "path border = (0,0)--line110111--cycle;\n");
 
-    fprintf (file, "draw (shift(O)*scale(scale/%f)*border,black);\n",
-             (!strcmp ((*pPf).space, "ipf") && !strcmp ((*pPf).crysym, "cubic")) ? (*pPf).ipfpts[1][0] : 1.);
+    fprintf (file, "draw (shift(O)*scale(scale/%f)*border,%s);\n",
+             (!strcmp ((*pPf).space, "ipf") && !strcmp ((*pPf).crysym, "cubic")) ? (*pPf).ipfpts[1][0] : 1.,
+             !strcmp (Print.colormode, "bright") ? "black" : "white");
   }
 
   else
@@ -468,7 +469,7 @@ nev_print_pf_pre_clustering (struct PF Pf, int cellqty, int *pclustering)
 }
 
 void
-nev_print_pf_pole_proj (struct PF Pf, FILE *file, char *pole_string)
+nev_print_pf_pole_proj (struct PRINT Print, struct PF Pf, FILE *file, char *pole_string)
 {
   double xmin = 0, y, xshift;
 
@@ -489,10 +490,12 @@ nev_print_pf_pole_proj (struct PF Pf, FILE *file, char *pole_string)
     else
       abort ();
 
-    fprintf (file, "label(\"%s\", scale(scale)*(%.3f, %.3f), NE);\n", pole_string, xmin, y);
+    fprintf (file, "label(\"%s\", scale(scale)*(%.3f, %.3f), NE, %s);\n", pole_string, xmin, y,
+             !strcmp (Print.colormode, "bright") ? "black" : "white");
 
-    fprintf (file, "label(\"%s\", scale(scale)*(%.3f, %.3f), SE, fontsize(8));\n",
-             Pf.pfprojlabel, xmin + xshift, y);
+    fprintf (file, "label(\"%s\", scale(scale)*(%.3f, %.3f), SE, %s+fontsize(8));\n",
+             Pf.pfprojlabel, xmin + xshift, y,
+             !strcmp (Print.colormode, "bright") ? "black" : "white");
   }
 
   else if (!strcmp (Pf.space, "ipf"))
@@ -517,7 +520,7 @@ nev_print_pf_pole_proj (struct PF Pf, FILE *file, char *pole_string)
 }
 
 void
-nev_print_pf_csys (struct PF Pf, FILE *file, struct DATA CsysData)
+nev_print_pf_csys (struct PRINT Print, struct PF Pf, FILE *file, struct DATA CsysData)
 {
   int id;
   double* v = ol_r_alloc ();
@@ -541,13 +544,15 @@ nev_print_pf_csys (struct PF Pf, FILE *file, struct DATA CsysData)
     if (!strcmp (Pf.shape, "full"))
     {
       id = ut_array_1d_absmax_index (Pf.pfdir[0], 3);
-      fprintf (file, "label(\"%s\", scale(scale)*(%d,0), %s);\n",
+      fprintf (file, "label(\"%s\", scale(scale)*(%d,0), %s, %s);\n",
                CsysData.Label[id],
-               ut_num_sgn (Pf.pfdir[0][id]), Pf.pfdir[0][id] > 0 ? "E" : "W");
+               ut_num_sgn (Pf.pfdir[0][id]), Pf.pfdir[0][id] > 0 ? "E" : "W",
+               !strcmp (Print.colormode, "bright") ? "black" : "white");
       id = ut_array_1d_absmax_index (Pf.pfdir[1], 3);
-      fprintf (file, "label(\"%s\", scale(scale)*(0,%d), %s);\n",
+      fprintf (file, "label(\"%s\", scale(scale)*(0,%d), %s, %s);\n",
                CsysData.Label[id],
-               ut_num_sgn (Pf.pfdir[1][id]), Pf.pfdir[1][id] > 0 ? "N" : "S");
+               ut_num_sgn (Pf.pfdir[1][id]), Pf.pfdir[1][id] > 0 ? "N" : "S",
+               !strcmp (Print.colormode, "bright") ? "black" : "white");
       // fprintf (file, "label(\"$%s$\", scale(scale)*( 0,0), NE);\n", " ");
 
     }
@@ -695,7 +700,7 @@ nev_print_pf_ptsprint (struct IN_V In, int input, struct PF *pPf, FILE *file,
 
       if (!(*pdensity_plotted))
       {
-        nev_print_pf_ptsprint_density (In, *pPf, file, basename, Print, Data,
+        nev_print_pf_ptsprint_density (*pPf, file, basename, Print, Data,
                                        pts, ptwgts, ptqty);
         (*pdensity_plotted) = 1;
       }

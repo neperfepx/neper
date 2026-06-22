@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_tess_faces_merge_.h"
@@ -184,7 +184,7 @@ neut_tess_faces_merge_mergefaces (struct TESS *pTess, int newface,
   for (i = 0; i < delfaceqty; i++)
   {
     delface = delfaces[i];
-    if ((*pTess).FaceDom[delface][0] == 2)
+    if ((*pTess).Dim == 3 && (*pTess).FaceDom[delface][0] == 2)
       neut_tess_domface_rmface (pTess, (*pTess).FaceDom[delface][1], delface);
   }
 

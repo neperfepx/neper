@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifdef __cplusplus
@@ -7,7 +7,6 @@ extern "C"
 {
 #endif
 
-#include "../structIn_t.h"
   extern void net_in_set_zero (struct IN_T *pIn);
   extern void net_in_free (struct IN_T *pIn);
 
@@ -55,6 +54,10 @@ extern "C"
   extern int net_tess_seedset (struct TESS Tess, struct SEEDSET *pSSet);
 
   extern void net_seedset_tess (struct SEEDSET SSet, struct TESS *pTess);
+
+  extern void net_orioptistop (struct IN_T In, int level, struct MTESS MTess,
+              struct TESS *Tess, int dtess, int dcell, char *algo,
+              char **pstop);
 
 #include "net_tess/net_tess3d/net_tess3d.h"
 #include "net_polymod_poly/net_polymod_poly.h"

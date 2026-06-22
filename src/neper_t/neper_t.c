@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neper_t_.h"
@@ -64,7 +64,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
     {
       ut_print_message (0, 1, "Checking tessellation...\n");
       Tess = calloc (2, sizeof (struct TESS));
-      neut_tess_fnscanf (In.load, &(Tess[1]));
+      neut_tess_fnscanf (In.load, &(Tess[1]), "r");
       return 0;
     }
 
@@ -206,7 +206,7 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
       ut_print_message (0, 1, "Importing tessellation...\n");
       neut_mtess_set_tess (&MTess, &Tess);
       if (ut_file_testformat (In.load, "tess"))
-        neut_tess_fnscanf (In.load, Tess + 1);
+        neut_tess_fnscanf (In.load, Tess + 1, "r");
       else if (ut_file_testformat (In.load, "obj"))
         neut_tess_fnscanf_obj (In.load, Tess + 1);
       else if (ut_file_testformat (In.load, "ovm"))
@@ -369,7 +369,8 @@ neper_t (int fargc, char **fargv, int argc, char **argv)
          !ut_list_testelt (In.format, NEUT_SEP_NODEP, "3dec") &&
          !ut_list_testelt (In.format, NEUT_SEP_NODEP, "stl") &&
          !ut_list_testelt (In.format, NEUT_SEP_NODEP, "stl:bycell") &&
-         !ut_list_testelt (In.format, NEUT_SEP_NODEP, "fe")))
+         !ut_list_testelt (In.format, NEUT_SEP_NODEP, "fe") &&
+         !ut_list_testelt (In.format, NEUT_SEP_NODEP, "sim")))
       neut_tess_reset (&FTess);
     net_stat (In, &FTess, &Tesr, Point);
   }

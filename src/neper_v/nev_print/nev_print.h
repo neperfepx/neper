@@ -1,8 +1,6 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
-
-#include"../structIn_v.h"
 
 extern void nev_print (struct IN_V In, struct PRINT *pPrint, struct SIM *pSim,
                        struct TESS *pTess, struct DATA *TessData, struct TESR

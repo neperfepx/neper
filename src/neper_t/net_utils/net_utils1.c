@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_utils_.h"
@@ -16,12 +16,14 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).morphostring = NULL;
   (*pIn).morpho = NULL;
   (*pIn).optiinistring = NULL;
-  (*pIn).optiini = NULL;
+  (*pIn).optineighstring = NULL;
 
   (*pIn).optialgostring = NULL;
   (*pIn).optialgo = NULL;
   (*pIn).optidofstring = NULL;
   (*pIn).optidof = NULL;
+  (*pIn).optiini = NULL;
+  (*pIn).optineigh = NULL;
 
   (*pIn).optialgomaxiterstring = NULL;
   (*pIn).optialgomaxiter = NULL;
@@ -35,14 +37,6 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).optistop = NULL;
   (*pIn).crysymstring = NULL;
   (*pIn).crysym = NULL;
-  (*pIn).orioptineighstring = NULL;
-  (*pIn).orioptineigh = NULL;
-  (*pIn).orioptiinistring = NULL;
-  (*pIn).orioptiini = NULL;
-  (*pIn).orioptifixstring = NULL;
-  (*pIn).orioptifix = NULL;
-  (*pIn).orioptilogvarstring = NULL;
-  (*pIn).orioptilogvar = NULL;
   (*pIn).optilogtimestring = NULL;
   (*pIn).optilogtime = NULL;
   (*pIn).optilogvarstring = NULL;
@@ -55,10 +49,16 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).optilogval = NULL;
   (*pIn).optideltamaxstring = NULL;
   (*pIn).optideltamax = NULL;
+  (*pIn).optiboundlstring = NULL;
+  (*pIn).optiboundl = NULL;
+  (*pIn).optiboundustring = NULL;
+  (*pIn).optiboundu = NULL;
   (*pIn).optimultiseedstring = NULL;
   (*pIn).optimultiseed = NULL;
   (*pIn).optiinistepstring = NULL;
   (*pIn).optiinistep = NULL;
+  (*pIn).optifixstring = NULL;
+  (*pIn).optifix = NULL;
   (*pIn).periodicstring = NULL;
   (*pIn).periodic = NULL;
   (*pIn).reg = 0;
@@ -83,8 +83,10 @@ net_in_set_zero (struct IN_T *pIn)
   (*pIn).format = NULL;
   (*pIn).tesrformat = NULL;
   (*pIn).oristring = NULL;
+  (*pIn).morphosamplingstring = NULL;
   (*pIn).orisamplingstring = NULL;
   (*pIn).ori = NULL;
+  (*pIn).morphosampling = NULL;
   (*pIn).orisampling = NULL;
   (*pIn).orides = NULL;
   (*pIn).oriformat = NULL;
@@ -189,6 +191,16 @@ net_in_free (struct IN_T *pIn)
   // ut_free_3d_char (&(*pIn).optidof, (*pIn).optiqty, (*pIn).levelqty + 1);
   ut_free_2d_char (&(*pIn).optistopstring, (*pIn).optiqty);
   // ut_free_3d_char (&(*pIn).optistop, (*pIn).optiqty, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optideltamaxstring, (*pIn).optiqty);
+  ut_free_2d_char (&(*pIn).optiboundlstring, (*pIn).optiqty);
+  ut_free_2d_char (&(*pIn).optiboundustring, (*pIn).optiqty);
+  // ut_free_3d_char (&(*pIn).optideltamax, (*pIn).levelqty + 1);
+  // ut_free_3d_char (&(*pIn).optiboundl, (*pIn).levelqty + 1);
+  // ut_free_3d_char (&(*pIn).optiboundu, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optiinistepstring, (*pIn).optiqty);
+  // ut_free_3d_char (&(*pIn).optilogvar, (*pIn).levelqty + 1);
+  // ut_free_3d_char (&(*pIn).optiinistep, (*pIn).levelqty + 1);
+  ut_free_2d_char (&(*pIn).optilogvarstring, (*pIn).optiqty);
   // end new -------------
   ut_free_1d_char (&(*pIn).optiobjectivestring);
   ut_free_2d_char (&(*pIn).optiobjective, (*pIn).levelqty + 1);
@@ -198,14 +210,8 @@ net_in_free (struct IN_T *pIn)
   ut_free_2d_char (&(*pIn).crysym, (*pIn).levelqty + 1);
   ut_free_1d_char (&(*pIn).optilogtimestring);
   ut_free_2d_char (&(*pIn).optilogtime, (*pIn).levelqty + 1);
-  ut_free_1d_char (&(*pIn).optilogvarstring);
-  ut_free_2d_char (&(*pIn).optilogvar, (*pIn).levelqty + 1);
-  ut_free_1d_char (&(*pIn).optideltamaxstring);
-  ut_free_2d_char (&(*pIn).optideltamax, (*pIn).levelqty + 1);
   ut_free_1d_char (&(*pIn).optimultiseedstring);
   ut_free_2d_char (&(*pIn).optimultiseed, (*pIn).levelqty + 1);
-  ut_free_1d_char (&(*pIn).optiinistepstring);
-  ut_free_2d_char (&(*pIn).optiinistep, (*pIn).levelqty + 1);
 
   net_in_set_zero (pIn);
 
@@ -485,6 +491,12 @@ net_tess_tesr (char *tesrsizestring, struct TESS Tess, struct TESR *pTesr)
 {
   int i;
   double **bbox = ut_alloc_2d (3, 2);
+
+  if (Tess.Periodic)
+  {
+    (*pTesr).Periodic = ut_alloc_1d_int (3);
+    ut_array_1d_int_memcpy (Tess.Periodic, 3, (*pTesr).Periodic);
+  }
 
   (*pTesr).Dim = Tess.Dim;
   neut_tesr_init_tesrsize (pTesr, Tess, Tess.Dim, tesrsizestring);
@@ -1041,6 +1053,32 @@ net_seedset_tess (struct SEEDSET SSet, struct TESS *pTess)
     for (i = 0; i <= (*pTess).CellQty; i++)
       ut_string_string (SSet.SeedOriDistrib[i], (*pTess).CellOriDistrib + i);
   }
+
+  return;
+}
+
+void
+net_orioptistop (struct IN_T In, int level, struct MTESS MTess,
+                 struct TESS *Tess, int dtess, int dcell, char *algo,
+                 char **pstop)
+{
+  if (strstr (In.optistop[1][level], "general") || strstr (In.optistop[1][level], "thomson"))
+  {
+    char ***parts = NULL;
+    int qty, *qty1 = NULL;
+
+    ut_list_break2 (In.optistop[1][level], NEUT_SEP_NODEP, NEUT_SEP_DEP, &parts, &qty1, &qty);
+    for (int i = 0; i < qty; i++)
+      if (!strcmp (parts[i][0], algo))
+        net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
+                                                 parts[i][1], pstop);
+
+    // free memory
+  }
+
+  else
+    net_multiscale_mtess_arg_0d_char_fscanf (level, MTess, Tess, dtess, dcell,
+                                             In.optistop[1][level], pstop);
 
   return;
 }

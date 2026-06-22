@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "nes_pproc_entity_.h"
@@ -29,7 +29,7 @@ nes_pproc_entity (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
   status = neut_sim_entity_parent (*pSim, entity, &parent);
 
   if (status)
-    ut_print_message (2, 3, "Entity `%s' has no parent.\n", entity);
+    ut_print_message (2, 3, "Failed to process entity `%s' (no parent).\n", entity);
 
   // The option initializes the entity members only if needed
   neut_sim_entity_init_members (pSim, pTess, *pNodes, Mesh, entity);
@@ -38,7 +38,12 @@ nes_pproc_entity (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
   {
     // special case: removing result
     if (results[i][0] == '!' || results[i][0] == '\\')
-      nes_pproc_entity_remove (pSim, entity, results[i] + 1);
+    {
+      char *label = ut_alloc_1d_char (strlen (results[i]) + 1);
+      ut_string_untilstring (results[i] + 1, NEUT_SEP_DEP, NULL, label);
+      nes_pproc_entity_remove (pSim, entity, label);
+      ut_free_1d_char (&label);
+    }
 
     // general case: adding result (includes the case of \result)
     if (results[i][0] != '!')
@@ -47,7 +52,7 @@ nes_pproc_entity (struct SIM *pSim, struct TESS *pTess, struct TESR Tesr,
 
       neut_sim_simres (*pSim, entity, result, &SimRes);
 
-      if (strcmp (SimRes.res, "ori") || SimRes.expr)
+      if (strcmp (SimRes.res, "ori") || strcmp (SimRes.res, SimRes.expr))
         sprintf (message, "%s", SimRes.res);
       else if (!neut_tess_isvoid (*pTess))
         sprintf (message, "%s (%s crystal symmetry)", SimRes.res,

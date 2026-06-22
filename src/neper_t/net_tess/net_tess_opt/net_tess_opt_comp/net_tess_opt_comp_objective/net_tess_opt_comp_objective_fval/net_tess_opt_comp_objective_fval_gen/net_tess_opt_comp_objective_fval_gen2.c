@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_fval_gen_.h"
@@ -96,12 +96,43 @@ net_tess_opt_comp_objective_fval_gen_sphericity (struct TOPT *pTOpt, int var,
 }
 
 void
+net_tess_opt_comp_objective_fval_gen_anisofact (struct TOPT *pTOpt, int var,
+                                                int cell)
+{
+  if ((*pTOpt).Dim == 2)
+    neut_polys_anisofact_2d ((*pTOpt).Poly, (*pTOpt).CellSCellList[cell],
+                              (*pTOpt).CellSCellQty[cell],
+                              (*pTOpt).curcellval[var][cell]);
+
+  else
+    neut_polys_anisofact ((*pTOpt).Poly, (*pTOpt).CellSCellList[cell],
+                           (*pTOpt).CellSCellQty[cell],
+                           (*pTOpt).curcellval[var][cell]);
+
+  if (!strcmp ((*pTOpt).tarvar[var], "anisofact-1"))
+    (*pTOpt).curcellval[var][cell][0] = (*pTOpt).curcellval[var][cell][0] - 1;
+
+  return;
+}
+
+void
 net_tess_opt_comp_objective_fval_gen_convexity (struct TOPT *pTOpt, int var,
                                                 int cell)
 {
   neut_polys_convexity ((*pTOpt).Poly, (*pTOpt).CellSCellList[cell],
                         (*pTOpt).CellSCellQty[cell],
                         (*pTOpt).curcellval[var][cell]);
+
+  return;
+}
+
+void
+net_tess_opt_comp_objective_fval_gen_sel (struct TOPT *pTOpt, int var,
+                                                int cell)
+{
+  neut_polys_sel ((*pTOpt).Poly, (*pTOpt).CellSCellList[cell],
+                    (*pTOpt).CellSCellQty[cell],
+                    (*pTOpt).curcellval[var][cell]);
 
   return;
 }

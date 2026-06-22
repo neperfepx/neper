@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_oopt_.h"
@@ -40,6 +40,9 @@ neut_oopt_set_zero (struct OOPT *pOOpt)
 
   (*pOOpt).logvar = NULL;
   (*pOOpt).logvar_fp = NULL;
+
+  (*pOOpt).logval = NULL;
+  (*pOOpt).logval_fp = NULL;
 
   return;
 }

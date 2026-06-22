@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include<stdio.h>
@@ -10,7 +10,6 @@
 #include<float.h>
 
 #include"ut.h"
-#include"../../structIn_v.h"
 #include"neut_v.h"
 #include "nev_print_pf.h"
 
@@ -23,13 +22,13 @@
 #define EMARGINPF 0.265
 
 extern void nev_print_pf_header (struct PF Pf, FILE *);
-extern void nev_print_pf_background (struct IN_V In, struct PF Pf, FILE *, struct PRINT Print);
-extern void nev_print_pf_border (FILE *, struct PF *pPf);
+extern void nev_print_pf_background (struct PF Pf, FILE *, struct PRINT Print);
+extern void nev_print_pf_border (FILE *, struct PRINT Print, struct PF *pPf);
 extern void nev_print_pf_inputs (struct PRINT Print, struct POINT *Points,
                                  int PointQty, struct PF *pPf);
 
-extern void nev_print_pf_pole_proj (struct PF Pf, FILE *file, char *pole_string);
-extern void nev_print_pf_csys (struct PF Pf, FILE *, struct DATA CsysData);
+extern void nev_print_pf_pole_proj (struct PRINT Print, struct PF Pf, FILE *file, char *pole_string);
+extern void nev_print_pf_csys (struct PRINT Print, struct PF Pf, FILE *, struct DATA CsysData);
 
 extern void nev_print_pf_pts (int input, struct PF *pPf,
                        char *type, double **data, double *weights, int qty,

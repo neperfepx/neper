@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neut_sim_op_.h"
@@ -28,7 +28,8 @@ neut_sim_set_zero (struct SIM *pSim)
   (*pSim).RestartFiles = 0;
   (*pSim).RestartId = 0;
 
-  (*pSim).OriSpace = NULL;
+  (*pSim).OriSpaceTess = NULL;
+  (*pSim).OriSpaceMesh = NULL;
 
   (*pSim).tess = NULL;
   (*pSim).tesr = NULL;
@@ -47,6 +48,8 @@ neut_sim_set_zero (struct SIM *pSim)
   (*pSim).PartQty = 0;
 
   (*pSim).step = 0;
+
+  neut_ospace_set_zero (&(*pSim).Sp);
 
   return;
 }
@@ -87,7 +90,8 @@ neut_sim_free (struct SIM *pSim)
 
   ut_free_1d_char (&(*pSim).OriDes);
 
-  ut_free_1d_char (&(*pSim).OriSpace);
+  ut_free_1d_char (&(*pSim).OriSpaceTess);
+  ut_free_1d_char (&(*pSim).OriSpaceMesh);
 
   ut_free_1d_char (&(*pSim).tess);
   ut_free_1d_char (&(*pSim).tesr);
@@ -97,6 +101,8 @@ neut_sim_free (struct SIM *pSim)
   ut_free_1d_char (&(*pSim).opt);
   ut_free_1d_char (&(*pSim).phase);
   ut_free_1d_char (&(*pSim).cfg);
+
+  // neut_ospace_free (&(*pSim).Sp);
 
   return;
 }

@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "neut_topt_.h"
@@ -48,6 +48,7 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).tarcellval = NULL;
   (*pTOpt).tarcellvalqty = NULL;
 
+  (*pTOpt).taractive = NULL;
   (*pTOpt).tarvar = NULL;
   (*pTOpt).tartype = NULL;
   (*pTOpt).tarexpr = NULL;
@@ -66,6 +67,8 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).reps = 0;
   (*pTOpt).loopmax = 0;
 
+  (*pTOpt).boundlstring = NULL;
+  (*pTOpt).boundustring = NULL;
   (*pTOpt).boundl = NULL;
   (*pTOpt).boundu = NULL;
 
@@ -102,7 +105,11 @@ neut_topt_set_zero (struct TOPT *pTOpt)
   (*pTOpt).tarmodefact = NULL;
   (*pTOpt).tarmodecdf0 = NULL;
 
-  neut_odf_set_zero (&(*pTOpt).Odf);
+  neut_odf_set_zero (&(*pTOpt).tarOdf);
+  (*pTOpt).CellOdf = NULL;
+
+  (*pTOpt).SpecialOdfQty = 0;
+  (*pTOpt).SpecialOdf = NULL;
 
   neut_tesr_set_zero (&(*pTOpt).tartesr);
   (*pTOpt).tavoxqtyini = 0;
@@ -195,12 +202,15 @@ neut_topt_free (struct TOPT *pTOpt)
   }
   ut_free_1d_int (&(*pTOpt).tarcellvalqty);
 
+  ut_free_1d_int (&(*pTOpt).taractive);
   ut_free_2d_char (&(*pTOpt).tarvar, (*pTOpt).tarqty);
   ut_free_2d_char (&(*pTOpt).tartype, (*pTOpt).tarqty);
   ut_free_2d_char (&(*pTOpt).tarexpr, (*pTOpt).tarqty);
   ut_free_1d_int (&(*pTOpt).tarexprdisqty);
   ut_free_2d (&(*pTOpt).tarexprdisprop, (*pTOpt).tarqty);
 
+  ut_free_1d_char (&(*pTOpt).boundlstring);
+  ut_free_1d_char (&(*pTOpt).boundustring);
   ut_free_1d (&(*pTOpt).boundl);
   ut_free_1d (&(*pTOpt).boundu);
 
@@ -250,7 +260,17 @@ neut_topt_free (struct TOPT *pTOpt)
 
   ut_free_2d (&(*pTOpt).tarmodefact, (*pTOpt).tarqty);
 
-  // neut_odf_free (&(*pTOpt).Odf);
+  /*
+  neut_odf_free (&(*pTOpt).tarOdf);
+  if ((*pTOpt).CellOdf)
+  {
+    for (i = 0; i <= (*pTOpt).CellQty; i++)
+      neut_odf_free ((*pTOpt).CellOdf + i);
+    free ((*pTOpt).CellOdf);
+  }
+  */
+
+  // free SpecialOdf
 
   ut_free_1d (&(*pTOpt).curval);
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2024, Romain Quey.*/
+/* Copyright (C) 2003-2026, Romain Quey, CNRS.*/
 /* see the COPYING file in the top-level directory.*/
 
 #include<stdio.h>
@@ -4525,4 +4525,67 @@ ut_array_rotpos (int beg, int end, int pos, int near)
     pos += (end - beg + 1);
 
   return pos;
+}
+
+void
+ut_array_2d_int_grid1 (int **array, int size1, int size2)
+{
+  int i, j, id;
+
+  id = 0;
+
+  for (j = 1; j <= size2; j++)
+    for (i = 1; i <= size1; i++)
+      array[i][j] = ++id;
+
+  return;
+}
+
+
+void
+ut_array_3d_int_grid1 (int ***array, int size1, int size2, int size3)
+{
+  int i, j, k, id;
+
+  id = 0;
+
+  for (k = 1; k <= size3; k++)
+    for (j = 1; j <= size2; j++)
+      for (i = 1; i <= size1; i++)
+        array[i][j][k] = ++id;
+
+  return;
+}
+
+int
+ut_array_1d_isint (double *array, int qty)
+{
+  int i, res;
+
+  res = 1;
+  for (i = 0; i < qty; i++)
+    if (!ut_num_isint (array[i]))
+    {
+      res = 0;
+      break;
+    }
+
+  return res;
+}
+
+int
+ut_array_2d_isint (double **array, int size1, int size2)
+{
+  int i, j, res;
+
+  res = 1;
+  for (i = 0; i < size1; i++)
+    for (j = 0; j < size2; j++)
+      if (!ut_num_isint (array[i][j]))
+      {
+        res = 0;
+        break;
+      }
+
+  return res;
 }

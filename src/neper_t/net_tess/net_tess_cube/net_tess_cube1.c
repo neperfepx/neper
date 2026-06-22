@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_cube_.h"
@@ -26,7 +26,7 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
 
   ut_string_function (morpho, &fct, NULL, &vals, &varqty);
 
-  if (!strcmp (fct, "cube"))
+  if (!strcmp (fct, "cube") || In.dim == 3) // || In.dim == 3 is for -n 1
   {
     if (varqty == 1)
     {
@@ -36,10 +36,18 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
     else if (varqty == 3)
       for (i = 0; i < 3; i++)
         sscanf (vals[i], "%d", N + i);
+    else if (varqty == 0 && strcmp (In.n[level], "from_morpho"))
+    {
+      int n = atoi (In.n[level]);
+      if (ut_num_isequaltopowerof (n, 3, &n))
+        ut_array_1d_int_set (N, 3, n);
+      else
+        ut_print_message (2, 3, "Conflicting `-n %s' and `-morpho %s (not x^3)'.\n", In.n[level], In.morpho[level]);
+    }
     else
       abort ();
   }
-  else if (!strcmp (fct, "square"))
+  else if (!strcmp (fct, "square") || In.dim == 2) // || In.dim == 2 is for -n 1
   {
     if (varqty == 1)
     {
@@ -51,6 +59,17 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
       for (i = 0; i < 2; i++)
         sscanf (vals[i], "%d", N + i);
       N[2] = 1;
+    }
+    else if (varqty == 0 && strcmp (In.n[level], "from_morpho"))
+    {
+      int n = atoi (In.n[level]);
+      if (ut_num_isequaltopowerof (n, 2, &n))
+      {
+        ut_array_1d_int_set (N, 2, n);
+        N[2] = 1;
+      }
+      else
+        ut_print_message (2, 3, "Conflicting `-n %s' and `-morpho %s (not x^3)'.\n", In.n[level], In.morpho[level]);
     }
     else
       abort ();
@@ -104,6 +123,13 @@ net_tess_cube (struct IN_T In, int level, char *morpho, struct MTESS *pMTess,
   net_ori_mtess_id (In, *pMTess, Tess, 0, 1, SSet + TessId);
 
   net_ori_mtess_randseed (*pMTess, Tess, 0, 1, SSet, 1, SSet + TessId);
+
+  if (strcmp (In.n[level], "from_morpho"))
+  {
+    int n = atoi (In.n[level]);
+    if (n != Tess[TessId].CellQty)
+      ut_print_message (2, 3, "Conflicting `-n %s' and `-morpho %s'.\n", In.n[level], In.morpho[level]);
+  }
 
   ut_string_string ("triclinic", &(Tess[TessId].CellCrySym));
 

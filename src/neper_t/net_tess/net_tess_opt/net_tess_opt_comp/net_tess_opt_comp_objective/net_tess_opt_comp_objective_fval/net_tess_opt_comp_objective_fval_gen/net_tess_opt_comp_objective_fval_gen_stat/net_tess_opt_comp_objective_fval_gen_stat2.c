@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_fval_gen_stat_.h"
@@ -212,6 +212,9 @@ net_tess_opt_comp_objective_fval_gen_stat_evaluate (struct TOPT *pTOpt,
 
   else if (!strcmp ((*pTOpt).tarobjective[var], "kuiper"))
     net_tess_opt_comp_objective_fval_gen_stat_evaluate_kuiper (pTOpt, var);
+
+  else if (!strcmp ((*pTOpt).tarobjective[var], "FiL2"))
+    net_tess_opt_comp_objective_fval_gen_stat_evaluate_FiL2 (pTOpt, var);
 
   else
     ut_print_message (2, 3, "Unknown test `%s'.", (*pTOpt).tarobjective[var]);

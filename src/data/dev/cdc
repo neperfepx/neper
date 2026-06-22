@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "$1" != "" ]
+then
+  cd $NEPER
+  file=`echo $1 | awk -F/ '{print $NF}' | awk -F: '{print $1}'`
+  dir=`find . -name $file | sed -e "s/$file//g"`
+  cd $dir
+fi

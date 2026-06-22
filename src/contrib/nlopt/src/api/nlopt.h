@@ -165,13 +165,14 @@ typedef enum {
     NLOPT_OUT_OF_MEMORY = -3,
     NLOPT_ROUNDOFF_LIMITED = -4,
     NLOPT_FORCED_STOP = -5,
+    NLOPT_NUM_FAILURES = -6,    /* not a result, just the number of possible failures */
     NLOPT_SUCCESS = 1,          /* generic success code */
     NLOPT_STOPVAL_REACHED = 2,
     NLOPT_FTOL_REACHED = 3,
     NLOPT_XTOL_REACHED = 4,
     NLOPT_MAXEVAL_REACHED = 5,
     NLOPT_MAXTIME_REACHED = 6,
-    NLOPT_NUM_RESULTS           /* not a result, just the number of them */
+    NLOPT_NUM_RESULTS           /* not a result, just the number of possible successes */
 } nlopt_result;
 
 /* nlopt_result enum <-> string conversion */
@@ -216,6 +217,12 @@ NLOPT_EXTERN(unsigned) nlopt_get_dimension(const nlopt_opt opt);
 
 NLOPT_EXTERN(const char *) nlopt_get_errmsg(nlopt_opt opt);
 
+/* generic algorithm parameters: */
+NLOPT_EXTERN(nlopt_result) nlopt_set_param(nlopt_opt opt, const char *name, double val);
+NLOPT_EXTERN(double) nlopt_get_param(const nlopt_opt opt, const char *name, double defaultval);
+NLOPT_EXTERN(int) nlopt_has_param(const nlopt_opt opt, const char *name);
+NLOPT_EXTERN(unsigned) nlopt_num_params(const nlopt_opt opt);
+NLOPT_EXTERN(const char *) nlopt_nth_param(const nlopt_opt opt, unsigned n);
 
 /* constraints: */
 

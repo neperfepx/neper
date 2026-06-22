@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nem_meshing_para_.h"
@@ -50,6 +50,33 @@ nem_meshing_para (struct IN_M In, struct TESS *pTess, struct TESR *pTesr,
   if ((*pMeshPara).dim < In.dim)
     ut_print_message (1, 3, "Meshing will be applied in %dD (not %dD).\n",
                       (*pMeshPara).dim, In.dim);
+
+  if (!strncmp (In.elttype, "quad", 4))
+  {
+    double cl, *bboxsize = ut_alloc_1d (3);
+
+    (*pMeshPara).msize = ut_alloc_1d_int (3);
+
+    if (!neut_tess_isvoid (*pTess))
+    {
+      neut_tess_bboxsize ((*pTess), bboxsize);
+
+      if ((*pTess).Dim == 3)
+        cl = (*pMeshPara).poly_cl[1];
+      else if ((*pTess).Dim == 2)
+        cl = (*pMeshPara).face_cl[1];
+      else
+      {
+        ut_print_neperbug ();
+        abort ();                   // for warnings
+      }
+
+      for (i = 0; i < 3; i++)
+        (*pMeshPara).msize[i] = ut_num_d2ri (bboxsize[i] / cl);
+    }
+
+    ut_free_1d (&bboxsize);
+  }
 
   return;
 }

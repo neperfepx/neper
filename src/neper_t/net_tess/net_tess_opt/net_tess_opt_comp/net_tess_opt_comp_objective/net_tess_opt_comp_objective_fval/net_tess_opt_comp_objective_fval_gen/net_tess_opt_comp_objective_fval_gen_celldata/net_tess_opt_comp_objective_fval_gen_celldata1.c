@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include "net_tess_opt_comp_objective_fval_gen_celldata_.h"
@@ -7,12 +7,7 @@
 void
 net_tess_opt_comp_objective_fval_gen_celldata (struct TOPT *pTOpt, int id)
 {
-  if (!strncmp ((*pTOpt).tarvar[id], "size", 4)
-      || !strcmp ((*pTOpt).tarvar[id], "diameq")
-      || !strcmp ((*pTOpt).tarvar[id], "sphericity"))
-    net_tess_opt_comp_objective_fval_gen_celldata_scalar (pTOpt, id);
-
-  else if (!strcmp ((*pTOpt).tarvar[id], "centroid"))
+  if (!strcmp ((*pTOpt).tarvar[id], "centroid"))
     net_tess_opt_comp_objective_fval_gen_celldata_centroid (pTOpt, id);
 
   else if (!strcmp ((*pTOpt).tarvar[id], "centroidtol"))
@@ -22,8 +17,13 @@ net_tess_opt_comp_objective_fval_gen_celldata (struct TOPT *pTOpt, int id)
            || !strcmp ((*pTOpt).tarvar[id], "centroiddiameq"))
     net_tess_opt_comp_objective_fval_gen_celldata_centroiddiameq (pTOpt, id);
 
+  else if (!strcmp ((*pTOpt).tarvar[id], "sel")
+           || !strcmp ((*pTOpt).tarvar[id], "rsel"))
+    net_tess_opt_comp_objective_fval_gen_celldata_sel (pTOpt, id);
+
+  // size* or diameq or sphericity or anything else: assumed scalar
   else
-    abort ();
+    net_tess_opt_comp_objective_fval_gen_celldata_scalar (pTOpt, id);
 
   return;
 }

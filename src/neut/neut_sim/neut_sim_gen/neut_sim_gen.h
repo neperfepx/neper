@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #ifndef NEUT_SIM_GEN_H
@@ -52,8 +52,6 @@ extern int neut_sim_res_type (struct SIM Sim, char *entity, char *res, char **pt
 
 // get the input file names
 extern void neut_sim_input_files (struct SIM Sim, char ***pfullfiles, char ***pfiles, int *pfileqty);
-
-extern void neut_sim_orispace (struct SIM Sim, struct ODF *pOdf, char *mode);
 
 extern int neut_sim_entity_pos (struct SIM Sim, char *entity, int *ppos);
 

@@ -1,4 +1,4 @@
-/* Copyright (C) 2003-2024, Romain Quey.*/
+/* Copyright (C) 2003-2026, Romain Quey, CNRS.*/
 /* see the COPYING file in the top-level directory.*/
 
 #ifdef __cplusplus
@@ -145,6 +145,10 @@ extern "C"
 /// \param num: number as a character string
 /// \return number
   extern double ut_num_readwcomma (char *num);
+
+  extern int ut_num_isequaltopowerof (int num, int n, int *pbase);
+
+  extern int ut_num_isint (double val);
 
 #endif                          /* UT_NUM_H */
 

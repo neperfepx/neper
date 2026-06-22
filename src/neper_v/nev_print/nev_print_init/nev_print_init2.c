@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"nev_print_init_.h"
@@ -10,7 +10,8 @@ nev_print_init_data (struct IN_V In, struct PRINT Print,
                struct DATA *TesrData, struct NODES Nodes,
                struct MESH *Mesh, struct POINT *Points, int PointQty,
                struct DATA *pData, struct DATA **MeshData,
-               struct DATA *pCsysData, struct DATA *PointData, char **pcrysym)
+               struct DATA *pCsysData, struct DATA *PointData,
+               char **pcrysym)
 {
   int i, j, meshdim;
   double size;
@@ -27,7 +28,7 @@ nev_print_init_data (struct IN_V In, struct PRINT Print,
   if (Print.showtess && !neut_tess_isvoid (Tess))
   {
     for (i = 0; i <= 5; i++)
-      nev_print_init_data_tess (In, Tess, TessData + i);
+      nev_print_init_data_tess (In, Print, Tess, TessData + i);
     ut_string_string (Tess.CellCrySym, pcrysym);
   }
 
@@ -39,7 +40,7 @@ nev_print_init_data (struct IN_V In, struct PRINT Print,
   }
 
   if ((Print.shownode || Print.showmesh || Print.showslice) && !neut_nodes_isvoid (Nodes))
-    nev_print_init_data_nodes (In, Nodes, *pcrysym, Nodes.NodeQty, pData);
+    nev_print_init_data_nodes (In, Print, Nodes, *pcrysym, Nodes.NodeQty, pData);
 
   meshdim = neut_mesh_array_dim (Mesh);
   if ((Print.showmesh || Print.showslice) && meshdim > 0)
@@ -50,12 +51,12 @@ nev_print_init_data (struct IN_V In, struct PRINT Print,
     for (i = 0; i <= meshdim; i++)
       if (!neut_mesh_isvoid (Mesh[i]))
         for (j = 0; j < 3; j++)
-          nev_print_init_data_mesh (In, Nodes, Mesh[i], *pcrysym, size, Mesh[i].ElsetQty,
+          nev_print_init_data_mesh (In, Print, Nodes, Mesh[i], *pcrysym, size, Mesh[i].ElsetQty,
                                     entity[j], meshdim, MeshData[i] + j);
   }
 
   if (Print.showcsys)
-    nev_print_init_data_csys (In, pCsysData);
+    nev_print_init_data_csys (In, *pcrysym, Print, pCsysData);
 
   if (PointQty != Print.inputqty)
     abort ();
@@ -304,12 +305,37 @@ nev_print_init_show (struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
 }
 
 void
+nev_print_init_scene (struct IN_V In, struct PRINT *pPrint)
+{
+  ut_string_string (In.colormode, &(*pPrint).colormode);
+
+  if (!strcmp (In.scenebackground, "default"))
+  {
+    if (!strcmp (In.colormode, "bright"))
+      ut_string_string ("white", &(*pPrint).background);
+    else if (!strcmp (In.colormode, "dark"))
+      ut_string_string ("black", &(*pPrint).background);
+  }
+  else
+    ut_string_string (In.scenebackground, &(*pPrint).background);
+
+  return;
+}
+
+void
 nev_print_init_camera (struct IN_V In, struct TESS Tess, struct TESR Tesr, struct NODES Nodes,
                  struct MESH *Mesh, struct POINT *Points, int PointQty,
                  struct DATA NodeData, struct PRINT *pPrint)
 {
   int dim = -1;
   struct NODES Nodes2;
+  char *crysym = NULL;
+
+  ut_string_string ("cubic", &crysym);
+  if (!neut_tess_isvoid (Tess))
+    ut_string_string (Tess.CellCrySym, &crysym);
+  else if (!neut_tesr_isvoid (Tesr))
+    ut_string_string (Tesr.CellCrySym, &crysym);
 
   neut_nodes_set_zero (&Nodes2);
 
@@ -329,58 +355,78 @@ nev_print_init_camera (struct IN_V In, struct TESS Tess, struct TESR Tesr, struc
   else
     Nodes2 = Nodes;
 
-  if (!neut_tess_isvoid (Tess) && neut_nodes_isvoid (Nodes))
+  if (!strcmp (In.space, "real"))
   {
-    dim = Tess.Dim;
+    if (!neut_tess_isvoid (Tess) && neut_nodes_isvoid (Nodes))
+    {
+      dim = Tess.Dim;
 
-    nev_print_init_camera_coo_tess (Tess, In.cameracoo,
-                              (*pPrint).cameracoo);
-    nev_print_init_camera_coo_tess (Tess, In.cameralookat,
-                              (*pPrint).cameralookat);
+      nev_print_init_camera_coo_tess (Tess, In.cameracoo,
+                                (*pPrint).cameracoo);
+      nev_print_init_camera_coo_tess (Tess, In.cameralookat,
+                                (*pPrint).cameralookat);
+    }
+
+    else if (!neut_nodes_isvoid (Nodes))
+    {
+      dim = neut_nodes_dim (Nodes);
+      if (dim == -1)
+        ut_print_neperbug ();
+
+      nev_print_init_camera_coo_mesh (Nodes2, Mesh[dim], In.cameracoo,
+                                      (*pPrint).cameracoo);
+      nev_print_init_camera_coo_mesh (Nodes2, Mesh[dim], In.cameralookat,
+                                      (*pPrint).cameralookat);
+    }
+
+    else if (!neut_tesr_isvoid (Tesr))
+    {
+      dim = Tesr.Dim;
+
+      nev_print_init_camera_coo_tesr (Tesr, In.cameracoo,
+                                      (*pPrint).cameracoo);
+      nev_print_init_camera_coo_tesr (Tesr, In.cameralookat,
+                                      (*pPrint).cameralookat);
+    }
+
+    else if (PointQty > 0)
+    {
+      dim = Points[0].Dim;
+
+      nev_print_init_camera_coo_points (Points[0], In.cameracoo,
+                                 (*pPrint).cameracoo);
+      nev_print_init_camera_coo_points (Points[0], In.cameralookat,
+                                 (*pPrint).cameralookat);
+    }
+
+    nev_print_init_camera_sky (In.camerasky, dim, (*pPrint).camerasky);
+
+    (*pPrint).cameraangle = !strcmp (In.cameraangle, "default") ? 25 : atof (In.cameraangle);
+
+    ut_string_string (In.cameraprojection, &(*pPrint).cameraprojection);
+    if (!strcmp (In.cameraprojection, "default"))
+    {
+      ut_string_string ("perspective", &(*pPrint).cameraprojection);
+      if (dim <= 2)
+        ut_string_string ("orthographic", &(*pPrint).cameraprojection);
+    }
   }
 
-  else if (!neut_nodes_isvoid (Nodes))
+  else if (!strncmp (In.space, "rodrigues", 9))
   {
-    dim = neut_nodes_dim (Nodes);
-    if (dim == -1)
-      ut_print_neperbug ();
+    nev_print_init_camera_coo_ori (In.cameracoo, (*pPrint).cameracoo);
+    nev_print_init_camera_sky (In.camerasky, 3, (*pPrint).camerasky);
+    ut_string_string ("orthographic", &(*pPrint).cameraprojection);
 
-    nev_print_init_camera_coo_mesh (Nodes2, Mesh[dim], In.cameracoo,
-                                    (*pPrint).cameracoo);
-    nev_print_init_camera_coo_mesh (Nodes2, Mesh[dim], In.cameralookat,
-                                    (*pPrint).cameralookat);
-  }
-
-  else if (!neut_tesr_isvoid (Tesr))
-  {
-    dim = Tesr.Dim;
-
-    nev_print_init_camera_coo_tesr (Tesr, In.cameracoo,
-                                    (*pPrint).cameracoo);
-    nev_print_init_camera_coo_tesr (Tesr, In.cameralookat,
-                                    (*pPrint).cameralookat);
-  }
-
-  else if (PointQty > 0)
-  {
-    dim = Points[0].Dim;
-
-    nev_print_init_camera_coo_points (Points[0], In.cameracoo,
-                               (*pPrint).cameracoo);
-    nev_print_init_camera_coo_points (Points[0], In.cameralookat,
-                               (*pPrint).cameralookat);
-  }
-
-  nev_print_init_camera_sky (In.camerasky, dim, (*pPrint).camerasky);
-
-  (*pPrint).cameraangle = atof (In.cameraangle);
-
-  ut_string_string (In.cameraprojection, &(*pPrint).cameraprojection);
-  if (!strcmp (In.cameraprojection, "default"))
-  {
-    ut_string_string ("perspective", &(*pPrint).cameraprojection);
-    if (dim <= 2)
-      ut_string_string ("orthographic", &(*pPrint).cameraprojection);
+    if (!strcmp (In.cameraangle, "default"))
+    {
+      if (!strcmp (crysym, "cubic"))
+        (*pPrint).cameraangle = 20;
+      else
+        (*pPrint).cameraangle = 32; // this produces about the same apparent volume as "cubic"
+    }
+    else
+      (*pPrint).cameraangle = atof (In.cameraangle);
   }
 
   if (NodeData.CooData)
@@ -611,6 +657,34 @@ nev_print_init_pf (struct IN_V In, struct TESS Tess, struct TESR Tesr,
   ut_free_2d_char (&vars, varqty);
   ut_free_2d_char (&vals, varqty);
   ut_free_1d_char (&inputcrysym);
+
+  return;
+}
+
+void
+nev_print_init_ori (struct IN_V In, struct TESS Tess, struct TESR Tesr,
+                    struct SIM *pSim, struct ORI *pOri)
+{
+  ut_string_string ("cubic", &(*pOri).crysym);
+  if (Tess.CellCrySym)
+    ut_string_string (Tess.CellCrySym, &(*pOri).crysym);
+  else if (Tesr.CellCrySym)
+    ut_string_string (Tesr.CellCrySym, &(*pOri).crysym);
+
+  ut_string_string ((*pOri).Sp.space, &(*pOri).space);
+
+  ut_string_string (In.orimode, &(*pOri).mode);
+  ut_string_string (In.orilayout, &(*pOri).layout);
+  if (!strcmp ((*pOri).layout, "default"))
+  {
+    if (strstr ((*pOri).mode, "density"))
+      ut_string_string ("surface,slices", &((*pOri).layout));
+    else
+      ut_string_string ("surface", &((*pOri).layout));
+  }
+  ut_string_string (In.orifield, &(*pOri).field);
+
+  (*pOri).pSim = pSim;
 
   return;
 }

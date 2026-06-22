@@ -4,6 +4,7 @@
 #include "stogo.h"
 #include "global.h"
 
+namespace {
 class MyGlobal : public Global {
 protected:
   objective_func my_func;
@@ -18,13 +19,14 @@ public:
     switch (which) {
     case GRADIENT_ONLY:
     case OBJECTIVE_AND_GRADIENT:
-      return my_func((unsigned) xy.GetLength(), xy.raw_data_const(), grad.raw_data(), my_data);
+      return my_func(static_cast<unsigned>(xy.GetLength()), xy.raw_data_const(), grad.raw_data(), my_data);
     case OBJECTIVE_ONLY:
-      return my_func((unsigned) xy.GetLength(), xy.raw_data_const(), NULL, my_data);
+      return my_func(static_cast<unsigned>(xy.GetLength()), xy.raw_data_const(), NULL, my_data);
     }
     return 0.0;
   }
 };
+}  // namespace
 
 int stogo_minimize(int n,
 		   objective_func fgrad, void *data,

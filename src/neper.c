@@ -1,5 +1,5 @@
 /* This file is part of the Neper software package. */
-/* Copyright (C) 2003-2024, Romain Quey. */
+/* Copyright (C) 2003-2026, Romain Quey, CNRS. */
 /* See the COPYING file in the top-level directory. */
 
 #include"neper_.h"
@@ -22,10 +22,11 @@ main (int argc, char **argv)
 
   // Module list -------------------------------------------------------
 
-  modlist = ut_alloc_2d_char (10, 10);
+  modlist = ut_alloc_2d_char (11, 10);
   modqty = 0;
   strcpy (modlist[++modqty], "--help");
   strcpy (modlist[++modqty], "--version");
+  strcpy (modlist[++modqty], "--data");
   strcpy (modlist[++modqty], "--license");
   strcpy (modlist[++modqty], "--rcfile");
   strcpy (modlist[++modqty], "--diff");
@@ -65,6 +66,14 @@ main (int argc, char **argv)
 
   else if (argc >= 2 && !strcmp (mod, "--version"))
     printf ("%s\n", NEPER_VERSION);
+
+  else if (argc >= 2 && !strcmp (mod, "--data"))
+  {
+    char *data = NULL;
+    neut_sys_data (&data, 0);
+    printf ("%s\n", data);
+    ut_free_1d_char (&data);
+  }
 
   else if (argc >= 2 && !strcmp (mod, "--license"))
     ut_print_gplv3 (stdout);
@@ -199,6 +208,9 @@ neper_head (char *neper_version)
                       omp_get_num_threads ());
 #endif
 
+  // testing data directory
+  neut_sys_data (NULL, 1);
+
   return;
 }
 
@@ -217,7 +229,7 @@ neper_info ()
   ut_print_message (0, 0, "<https://neper.info>\n");
 
   ut_print_message (0, 0,
-                    "Copyright (C) 2003-2024, and GNU GPL'd, by Romain Quey.\n");
+                    "Copyright (C) 2003-2026, and GNU GPL'd, by Romain Quey, CNRS.\n");
 
   return;
 }
