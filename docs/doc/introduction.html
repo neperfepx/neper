@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Introduction &mdash; Neper 4.10.1 documentation</title>
+  <title>Introduction &mdash; Neper 5.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=3687f9f1"></script>
+        <script src="../_static/documentation_options.js?v=ce74c6a2"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -30,7 +30,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.10.1
+                5.0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -49,7 +49,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#resources-and-support">Resources and Support</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-neper">Installing Neper</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#general-procedure">General Procedure</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#fine-configuration">Fine Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Fine Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plugins">Plugins</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#testing-neper">Testing Neper</a></li>
@@ -125,7 +126,7 @@ Neper is multithreaded and operates on all threads by default.</p>
 <h2>Resources and Support<a class="headerlink" href="#resources-and-support" title="Link to this heading"></a></h2>
 <p>Several, complementary resources describing Neper are available:</p>
 <ul>
-<li><p>The Neper reference manual, which is this document, describes all Neper’s capabilities.</p></li>
+<li><p>The <span class="xref std std-ref">Neper user documentation</span> (this documentation) describes all of Neper’s capabilities.</p></li>
 <li><p>The <a class="reference external" href="https://neper.info">Neper website</a> presents a general introduction to Neper, contains tutorials, and is where Neper can be downloaded from.</p></li>
 <li><p>The <a class="reference external" href="https://github.com/rquey/neper">Neper GitHub repository</a> is where the latest, continuous-integration version is available and where user interactions take place:</p>
 <ul>
@@ -146,12 +147,14 @@ Neper is multithreaded and operates on all threads by default.</p>
 <li><p><a class="reference external" href="https://doi.org/10.1107/S1600576718009019">R. Quey, A. Villani and C. Maurice, Nearly uniform sampling of crystal orientations, J. Appl. Crystallogr., vol. 51, pp. 1162-1173, 2018,</a> describes uniform sampling of crystal orientations.</p></li>
 </ul>
 </li>
+<li><p>The Neper developer’s documentation is included in the distribution, in the <code class="file docutils literal notranslate"><span class="pre">doc-dev/</span></code> directory.</p></li>
 </ul>
 <p>Resources for FEPX can be accessed from <a class="reference external" href="https://fepx.info">https://fepx.info</a>.</p>
 </section>
 <section id="installing-neper">
 <span id="id2"></span><h2>Installing Neper<a class="headerlink" href="#installing-neper" title="Link to this heading"></a></h2>
 <p>Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system.  Neper is also known to run on macOS and on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, although we do not test nor support this usage and multithreading must be turned off (which slows down execution significantly).</p>
+<p>When installed, Neper consists the <strong class="program">neper</strong> binary, which can be called at the command-line, and data files, which are useful to the binary.  At runtime, <strong class="program">neper</strong> looks for its data files in <code class="code docutils literal notranslate"><span class="pre">$NEPER_DATA_DIR</span></code>, <code class="file docutils literal notranslate"><span class="pre">$HOME/.local/neper</span></code> and <code class="file docutils literal notranslate"><span class="pre">/usr/share/neper</span></code>, successively (see below).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Ubuntu users may be interested in the tutorial “<a class="reference internal" href="tutorials/install_ubuntu22.html#installation-ubuntu-22"><span class="std std-ref">Installing Neper on Ubuntu 22</span></a>” from step-by-step installation instructions.</p>
@@ -179,16 +182,29 @@ Neper is multithreaded and operates on all threads by default.</p>
 <p>Use option <code class="xref py py-data docutils literal notranslate"><span class="pre">-j</span></code> for a multithreaded compilation.</p>
 </li>
 </ul>
-<p>This generates the <code class="file docutils literal notranslate"><span class="pre">neper</span></code> binary file.  To make it available system-wide, run (as root):</p>
+<p>This generates the <code class="file docutils literal notranslate"><span class="pre">neper</span></code> binary file.</p>
+<p>To make Neper available system-wide, run (using <strong class="program">sudo</strong> for administration privileges):</p>
 <blockquote>
-<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make<span class="w"> </span>install
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>make<span class="w"> </span>install
+</pre></div>
+</div>
+</div></blockquote>
+<p>To make Neper available locally to the user, run:</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make<span class="w"> </span>userinstall
 </pre></div>
 </div>
 </div></blockquote>
 <p>This procedure uses the default configuration options and should work out-of-the-box if the required dependencies are available in standard system locations.</p>
+<blockquote id="fine-configuration">
+<div><div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Since version 4.11, either <strong class="command">make install</strong> or <strong class="command">make userinstall</strong> must be run for proper installation.  Copying the <code class="file docutils literal notranslate"><span class="pre">neper</span></code> binary to <code class="file docutils literal notranslate"><span class="pre">~/bin</span></code> for a local installation is no longer sufficient.</p>
+</div>
+</div></blockquote>
 </section>
-<section id="fine-configuration">
-<span id="id3"></span><h3>Fine Configuration<a class="headerlink" href="#fine-configuration" title="Link to this heading"></a></h3>
+<section id="id3">
+<h3>Fine Configuration<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
 <p>The locations where files are installed, which dependencies are included, other dependency information and program configuration options can be specified, before installation, using CMake variables.   This can be done using a terminal tool:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ccmake<span class="w"> </span>..
 </pre></div>
@@ -201,11 +217,8 @@ Neper is multithreaded and operates on all threads by default.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cmake<span class="w"> </span>-D&lt;VARIABLE1&gt;<span class="o">=</span>&lt;VALUE1&gt;<span class="w"> </span>-D&lt;VARIABLE2&gt;<span class="o">=</span>&lt;VALUE2&gt;<span class="w"> </span>..
 </pre></div>
 </div>
-<p>The installation directories are:</p>
-<ul class="simple">
-<li><p>The binary directory (variable <code class="code docutils literal notranslate"><span class="pre">CMAKE_BUILD_DIRECTORY</span></code>, default <code class="file docutils literal notranslate"><span class="pre">/usr/local</span></code>);</p></li>
-<li><p>The Bash completion script directory (variable <code class="code docutils literal notranslate"><span class="pre">CMAKE_BUILD_DIRECTORY_COMPLETION</span></code>, default <code class="file docutils literal notranslate"><span class="pre">/usr/share</span></code> on Linux and <code class="file docutils literal notranslate"><span class="pre">/usr/local/etc</span></code> on macOS).</p></li>
-</ul>
+<p>The installation directory is <code class="code docutils literal notranslate"><span class="pre">CMAKE_INSTALL_PREFIX</span></code>, which defaults to <code class="code docutils literal notranslate"><span class="pre">/usr/local</span></code> for <strong class="command">make install</strong> and <code class="file docutils literal notranslate"><span class="pre">$HOME/.local</span></code> for <strong class="command">make userinstall</strong>.</p>
+<p>The installation type is <code class="code docutils literal notranslate"><span class="pre">CMAKE_INSTALL_TYPE</span></code>, which defaults to <code class="code docutils literal notranslate"><span class="pre">Full</span></code>.  Use <code class="code docutils literal notranslate"><span class="pre">NoPost</span></code> to disable the post-installation operations.  The post-installation operations produce optional precomputed files that improve Neper’s runtime performance.</p>
 <p>The dependencies which are (optionally) necessary at compilation time and must be (optionally) installed on your system before Neper is compiled are the following:</p>
 <ul class="simple">
 <li><p>The <a class="reference external" href="https://www.gnu.org/software/gsl">GNU Scientific Library</a> (GSL, mandatory, variable <code class="code docutils literal notranslate"><span class="pre">HAVE_GSL</span></code>).  It is likely to be available on your system or from your system package manager (binary and development packages). Alternatively, the source code version can be downloaded from the program website.</p></li>
@@ -247,8 +260,14 @@ Neper is multithreaded and operates on all threads by default.</p>
 </li>
 </ul>
 <p>Finally, other third-party libraries are directly included in the source code (see directory <code class="file docutils literal notranslate"><span class="pre">src/contrib</span></code>) and are therefore not dependencies <em>per se</em>:</p>
-<ul class="simple">
-<li><p>The <a class="reference external" href="https://nlopt.readthedocs.io">NLopt</a> library.  If it is already available on your system, the system version will be used instead.  To force the use of the built-in version, set <code class="code docutils literal notranslate"><span class="pre">FORCE_BUILTIN_NLOPT</span></code> to <code class="code docutils literal notranslate"><span class="pre">ON</span></code> (default <code class="code docutils literal notranslate"><span class="pre">OFF</span></code>).</p></li>
+<ul>
+<li><p>The <a class="reference external" href="https://nlopt.readthedocs.io">NLopt</a> library.
+The built-in version will be used by default. If another version is installed on your system and you would like to use it instead, set <code class="code docutils literal notranslate"><span class="pre">FORCE_BUILTIN_NLOPT</span></code> to <code class="code docutils literal notranslate"><span class="pre">OFF</span></code> (default <code class="code docutils literal notranslate"><span class="pre">ON</span></code>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The built-in NLopt version is 2.8.0.  Other versions are not recommended.</p>
+</div>
+</li>
 <li><p>The <a class="reference external" href="https://www.labri.fr/perso/pelegrin/scotch">libscotch</a> library. If it is already available on your system, the system version will be used instead.  To force the use of the built-in version, set <code class="code docutils literal notranslate"><span class="pre">FORCE_BUILTIN_LIBSCOTCH</span></code> to <code class="code docutils literal notranslate"><span class="pre">ON</span></code> (default <code class="code docutils literal notranslate"><span class="pre">OFF</span></code>).</p></li>
 <li><p>The <a class="reference external" href="https://github.com/yuki-koyama/tinycolormap">tinycolormap</a> library.</p></li>
 <li><p>The <a class="reference external" href="https://github.com/jlblancoc/nanoflann">nanoflann</a> library.</p></li>
@@ -262,9 +281,19 @@ Neper is multithreaded and operates on all threads by default.</p>
 <li><p><code class="code docutils literal notranslate"><span class="pre">REAL_PRINT_FORMAT5</span></code>, default <code class="code docutils literal notranslate"><span class="pre">&quot;%17.12f&quot;</span></code> (12 decimal digits, 17 total digits).</p></li>
 </ul>
 </section>
+<section id="plugins">
+<span id="id5"></span><h3>Plugins<a class="headerlink" href="#plugins" title="Link to this heading"></a></h3>
+<p>Specific features that do not need to be included in the main distribution are available as plugins.  Plugins are available from a dedicated repository, <a class="reference external" href="https://github.com/neperfepx/neper-plugins">https://github.com/neperfepx/neper-plugins</a>.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A plugin does not need to be installed unless Neper requires it.</p>
+</div>
+</div></blockquote>
+</section>
 </section>
 <section id="testing-neper">
-<span id="id5"></span><h2>Testing Neper<a class="headerlink" href="#testing-neper" title="Link to this heading"></a></h2>
+<span id="id6"></span><h2>Testing Neper<a class="headerlink" href="#testing-neper" title="Link to this heading"></a></h2>
 <p>Neper comes packaged with tests and reference outputs. To run the tests, execute the following from your build folder:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>make<span class="w"> </span><span class="nb">test</span>
 </pre></div>
@@ -273,7 +302,7 @@ Neper is multithreaded and operates on all threads by default.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ctest
 </pre></div>
 </div>
-<p>This runs the tests in <code class="code docutils literal notranslate"><span class="pre">Normal</span></code> mode (<code class="code docutils literal notranslate"><span class="pre">Minimal</span></code> on macOS), for which the produced output files are compared to reference ones. The (packaged) reference output files are generated on Ubuntu 20.04, using compiler GCC 9.3.0, (built-in) NLopt 2.6.1, (built-in) libscotch 6.0, Gmsh 4.9.4 and POV-Ray 3.7.0. It is expected that different versions may result in minor (insignificant) changes to the output, though this will generally result in failed tests.  If this happens, change the testing mode to <code class="code docutils literal notranslate"><span class="pre">Minimal</span></code>.  The testing mode is controlled by variable <code class="code docutils literal notranslate"><span class="pre">BUILD_TESTING_MODE</span></code>, which may be changed as described in <a class="reference internal" href="#fine-configuration"><span class="std std-ref">Fine Configuration</span></a>.</p>
+<p>This runs the tests in <code class="code docutils literal notranslate"><span class="pre">Normal</span></code> mode (<code class="code docutils literal notranslate"><span class="pre">Minimal</span></code> on macOS), for which the produced output files are compared to reference ones. The (packaged) reference output files are generated on Ubuntu 20.04, using compiler GCC 9.3.0, (built-in) NLopt 2.6.1, (built-in) libscotch 6.0, Gmsh 4.9.4 and POV-Ray 3.7.0. It is expected that different versions may result in minor (insignificant) changes to the output, though this will generally result in failed tests.  If this happens, change the testing mode to <code class="code docutils literal notranslate"><span class="pre">Minimal</span></code>.  The testing mode is controlled by variable <code class="code docutils literal notranslate"><span class="pre">BUILD_TESTING_MODE</span></code>, which may be changed as described in <span class="xref std std-ref">fine_configuration</span>.</p>
 <ul class="simple">
 <li><p>The <code class="code docutils literal notranslate"><span class="pre">Normal</span></code> mode checks if the program completes without error and if the produced output is the same as a set of reference output.  It is the default mode on Linux.</p></li>
 <li><p>The <code class="code docutils literal notranslate"><span class="pre">Minimal</span></code> mode only checks if the program completes without error. This mode may be useful when installing on a machine which has program or library versions different from the ones with which the reference output was generated.  It is the default mode on macOS.</p></li>
@@ -292,6 +321,10 @@ general-purpose, self-explanatory arguments:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>--help
 <span class="gp">$ </span>neper<span class="w"> </span>--version
 <span class="gp">$ </span>neper<span class="w"> </span>--license
+</pre></div>
+</div>
+<p>The following command allows to determine from where Neper’s data are read.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>--data
 </pre></div>
 </div>
 <p>The following of this section provides information on how to call Neper’s modules,
@@ -365,7 +398,7 @@ neper comments -------------------------------------  ## comment
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">command</span>
 </pre></div>
 </div>
-<p>The first character on the line is the terminal prompt, and should not be typed. The dollar sign, <code class="xref py py-data docutils literal notranslate"><span class="pre">$</span></code>, is used as the standard prompt in this manual, although some systems may use a different character.</p>
+<p>The first character on the line is the terminal prompt, and should not be typed. The dollar sign, <code class="xref py py-data docutils literal notranslate"><span class="pre">$</span></code>, is used as the standard prompt in this documentation, although some systems may use a different character.</p>
 </li>
 <li><p>A program (or command) option is printed like <code class="xref py py-data docutils literal notranslate"><span class="pre">this</span></code>;</p></li>
 <li><p>An option argument is printed like <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;this&gt;</span></code>;</p></li>

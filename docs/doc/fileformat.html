@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>File and Directory Formats &mdash; Neper 4.10.1 documentation</title>
+  <title>File and Directory Formats &mdash; Neper 5.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=3687f9f1"></script>
+        <script src="../_static/documentation_options.js?v=ce74c6a2"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.10.1
+                5.0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -54,6 +54,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">File and Directory Formats</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#tessellation-file-tess">Tessellation File (<code class="file docutils literal notranslate"><span class="pre">.tess</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#raster-tessellation-file-tesr">Raster Tessellation File (<code class="file docutils literal notranslate"><span class="pre">.tesr</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#orientation-distribution-function-file-odf">Orientation Distribution Function File (<code class="file docutils literal notranslate"><span class="pre">.odf</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mesh-file-msh">Mesh File (<code class="file docutils literal notranslate"><span class="pre">.msh</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#simulation-directory-sim">Simulation Directory (<code class="file docutils literal notranslate"><span class="pre">.sim</span></code>)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#multiscale-cell-file">Multiscale Cell File</a></li>
@@ -124,7 +125,7 @@ and
    &lt;seed_id&gt; &lt;seed_x&gt; &lt;seed_y&gt; &lt;seed_z&gt; &lt;seed_weight&gt;
    ...]
  [*ori
-   &lt;descriptor&gt;
+   &lt;orientation_descriptor&gt;
    &lt;cellid_param1&gt; &lt;cellid_param2&gt; ...
    ...]
  [*orispread
@@ -219,7 +220,7 @@ and
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">***tess</span></code> denotes the beginning of a tessellation file.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**format</span></code> denotes the beginning of the format field.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;format&gt;</span></code> is the file format, currently <cite>3.5</cite> (character string).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;format&gt;</span></code> is the file format, currently <code class="xref py py-data docutils literal notranslate"><span class="pre">3.5</span></code> (character string).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**general</span></code> denotes the beginning of the general information field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dim&gt;</span></code> is the dimension of the tessellation (1, 2 or 3).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;type&gt;</span></code> is the type of tessellation (always <code class="xref py py-data docutils literal notranslate"><span class="pre">standard</span></code>).</p></li>
@@ -237,7 +238,7 @@ and
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;seed_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;seed_y&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;seed_z&gt;</span></code> are the three coordinates of a seed (real numbers).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;seed_weight&gt;</span></code> is the weight of a seed (real number).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">*ori</span></code> denotes the beginning of an optional crystal orientation field.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;descriptor&gt;</span></code> is the descriptor used to parameterize the crystal orientations.  See <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a> for the list of available descriptors.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;orientation_descriptor&gt;</span></code> is the descriptor used to parameterize the crystal orientations.  See <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a> for the list of available descriptors.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;cellid_param#&gt;</span></code> are the values of the orientation descriptor of cell <cite>id</cite>.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">*orispread</span></code> denotes the beginning of an optional crystal orientation distribution field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;cellid_spread&gt;</span></code> is the value of the orientation distribution of cell <cite>id</cite>.</p></li>
@@ -347,7 +348,7 @@ and
    &lt;seed_id&gt; &lt;seed_x&gt; &lt;seed_y&gt; [&lt;seed_z&gt;] &lt;seed_weight&gt;
     ...]
  [*ori
-   &lt;descriptor&gt;
+   &lt;orientation_descriptor&gt;
    &lt;cell1_param1&gt; &lt;cell1_param2&gt; ...
    &lt;cell2_param1&gt; &lt;cell2_param2&gt; ...
    ...]
@@ -363,12 +364,12 @@ and
    or
   *file &lt;data_file_name&gt;
 [**oridata
-   &lt;descriptor&gt;
+   &lt;orientation_descriptor&gt;
    &lt;oridata_format&gt;
    &lt;vox1_param1&gt; &lt;vox1_param2&gt; ...
    &lt;vox2_param1&gt; &lt;vox2_param2&gt; ...
    or
-   &lt;descriptor&gt;
+   &lt;orientation_descriptor&gt;
    &lt;oridata_format&gt;
   *file &lt;oridata_file_name&gt;
 ]
@@ -386,7 +387,7 @@ and
 <ul class="simple">
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">***tesr</span></code> denotes the beginning of a raster tessellation file.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**format</span></code> denotes the beginning of the format field.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;format&gt;</span></code> is the file format, currently <cite>2.2</cite> (character string).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;format&gt;</span></code> is the file format, currently <code class="xref py py-data docutils literal notranslate"><span class="pre">2.2</span></code> (character string).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**general</span></code> denotes the beginning of the general information field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;dimension&gt;</span></code> is the dimension of the raster tessellation.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_y&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;size_z&gt;</span></code> are the raster sizes along the coordinate axes. The number of sizes must match <cite>&lt;dimension&gt;</cite>.</p></li>
@@ -402,22 +403,22 @@ and
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;seed_x&gt;</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;seed_y&gt;</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;seed_z&gt;</span></code> are the three coordinates of a seed (real numbers).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;seed_weight&gt;</span></code> is the weight of a seed (real number).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">*ori</span></code> denotes the beginning of an optional crystal orientation field.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;descriptor&gt;</span></code> is the descriptor used to parametrize the crystal orientations.  See <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a> for the list of available descriptors.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;orientation_descriptor&gt;</span></code> is the descriptor used to parametrize the crystal orientations.  See <a class="reference internal" href="exprskeys.html#rotations-and-orientations"><span class="std std-ref">Rotations and Orientations</span></a> for the list of available descriptors.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;cellid_param#&gt;</span></code> are the values of the orientation descriptor of cell <cite>id</cite>.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">*orispread</span></code> denotes the beginning of an optional crystal orientation distribution field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;cellid_spread&gt;</span></code> is the value of the orientation distribution of cell <cite>id</cite>.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">*crysym</span></code> denotes the beginning of an optional crystal symmetry field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysym&gt;</span></code> is the crystal symmetry (<code class="xref py py-data docutils literal notranslate"><span class="pre">triclinic</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">cubic</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">hexagonal</span></code>).</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**data</span></code> denotes the beginning of the data field.  Data can be provided in the <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code> file or in a separate file, using <code class="xref py py-data docutils literal notranslate"><span class="pre">*file</span></code>, see below.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**data</span></code> denotes the beginning of the data field.  Data can be provided in-file or in a separate file, using <code class="xref py py-data docutils literal notranslate"><span class="pre">*file</span></code>, see below.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_format&gt;</span></code> is the format of the data. It can be either <code class="xref py py-data docutils literal notranslate"><span class="pre">ascii</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">binary8</span></code> (8-bit binary), <code class="xref py py-data docutils literal notranslate"><span class="pre">binary16</span></code> (16-bit binary, Little-Endian), <code class="xref py py-data docutils literal notranslate"><span class="pre">binary16_big</span></code> (16-bit binary, Big-Endian), <code class="xref py py-data docutils literal notranslate"><span class="pre">binary32</span></code> (32-bit binary, Little-Endian) or <code class="xref py py-data docutils literal notranslate"><span class="pre">binary32_big</span></code> (32-bit binary, Big-Endian).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;voxid_cell&gt;</span></code> is the cell voxel <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> belongs to.  Voxels must be listed in column-major order (x varying first, y varying second and z varying last).  The cell identifiers should start from 1. Use 0 for voids.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">*file</span></code> denotes the beginning of a file field.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_file_name&gt;</span></code> is the name of a file that contains the data.  It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided. Typically, it is a <code class="file docutils literal notranslate"><span class="pre">.raw</span></code> file.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**oridata</span></code> denotes the beginning of the orientation data field.  Data can be provided in the <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code> file or in a separate file, using <code class="xref py py-data docutils literal notranslate"><span class="pre">*file</span></code>, see below.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**oridata</span></code> denotes the beginning of the orientation data field.  Data can be provided in-file or in a separate file, using <code class="xref py py-data docutils literal notranslate"><span class="pre">*file</span></code>, see below.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;oridata_format&gt;</span></code> is the format of the data. It can be either <code class="xref py py-data docutils literal notranslate"><span class="pre">ascii</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">binary</span></code> (double-precision number).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;voxid_param#&gt;</span></code> are the values of the orientation descriptor of voxel <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code>. Orientations must be listed in column-major order (x varying first, y varying second and z varying last). Arbitrary orientations can be used for void voxels (<code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;voxid_cell&gt;</span></code> = 0`). These data must be written under format <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;data_format&gt;</span></code>, in terms of ASCII or binary. In the case of binary format, double-precision numbers are considered.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;oridata_file_name&gt;</span></code> is the name of a file that contains the orientation data.   It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided.  Typically, it is a <code class="file docutils literal notranslate"><span class="pre">.raw</span></code> file.</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**oridef</span></code> denotes the beginning of the orientation definition field.  Data can be provided in the <code class="file docutils literal notranslate"><span class="pre">.tesr</span></code> file or in a separate file, using <code class="xref py py-data docutils literal notranslate"><span class="pre">*file</span></code>, see below.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**oridef</span></code> denotes the beginning of the orientation definition field.  Data can be provided in-file or in a separate file, using <code class="xref py py-data docutils literal notranslate"><span class="pre">*file</span></code>, see below.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;oridef_format&gt;</span></code> is the format of the orientation definition. It can be either <code class="xref py py-data docutils literal notranslate"><span class="pre">ascii</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">binary</span></code> (8-bit).</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;voxid_oridef&gt;</span></code> indicates whether the orientation of voxel <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> is defined or not (<code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">0</span></code>, respectively). Data must be listed in column-major order (x varying first, y varying second and z varying last). The data must be written under format <code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;oridef_format&gt;</span></code>, in terms of ASCII or binary. In the case of binary format, 8-bit binary is considered.</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;oridef_file_name&gt;</span></code> is the name of a file that contains the orientation definitions.   It must be located in the same directory as the parent tesr file, or its path relative to the parent tesr file must be provided.</p></li>
@@ -426,6 +427,54 @@ and
 <p class="admonition-title">Note</p>
 <p>The <code class="xref py py-data docutils literal notranslate"><span class="pre">**data</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">**oridata</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">**oridef</span></code> sections are independent from each other, so that a cell may contain voxels that do not have any orientation, or a voxel that has an orientation may not belong to any cell.</p>
 </div>
+</section>
+<section id="orientation-distribution-function-file-odf">
+<span id="odf-file"></span><h2>Orientation Distribution Function File (<code class="file docutils literal notranslate"><span class="pre">.odf</span></code>)<a class="headerlink" href="#orientation-distribution-function-file-odf" title="Link to this heading"></a></h2>
+<p>Here are details on the <code class="file docutils literal notranslate"><span class="pre">.odf</span></code> file format version <code class="xref py py-data docutils literal notranslate"><span class="pre">1.0</span></code>.  Developers should note that read and write functions are available as <code class="code docutils literal notranslate"><span class="pre">neut_odf_fscanf</span></code> and <code class="code docutils literal notranslate"><span class="pre">neut_odf_fprintf</span></code>, defined in directories <code class="file docutils literal notranslate"><span class="pre">neut/neut_odf/neut_odf_fscanf</span></code> and <code class="file docutils literal notranslate"><span class="pre">neut/neut_odf/neut_odf_fprintf</span></code>.</p>
+<div class="highlight-plain notranslate"><div class="highlight"><pre><span></span>***odf
+ **format
+   &lt;format&gt;
+ **space
+  &lt;space&gt;
+  *crysym
+   &lt;crysym&gt;
+  *fr
+   &lt;fr&gt;
+ [*theta
+   &lt;theta&gt;]
+ **eltdata
+   &lt;eltdata_format&gt;
+   &lt;elt1_value&gt; &lt;elt2_value&gt; ...
+   or
+  *file &lt;eltdata_file_name&gt;
+[**nodedata
+   &lt;nodedata_format&gt;
+   &lt;node1_value&gt; &lt;node2_value&gt; ...
+   or
+  *file &lt;nodedata_file_name&gt;]
+***end
+</pre></div>
+</div>
+<p>where</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">***odf</span></code> denotes the beginning of an ODF file.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**format</span></code> denotes the beginning of the format field.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;format&gt;</span></code> is the file format, currently <code class="xref py py-data docutils literal notranslate"><span class="pre">1.0</span></code> (character string).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**space</span></code> denotes the beginning of the orientation space field.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;space&gt;</span></code> is the space (<code class="xref py py-data docutils literal notranslate"><span class="pre">rodrigues</span></code>, etc.).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">*crysym</span></code> denotes the beginning of a crystal symmetry field.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;crysym&gt;</span></code> is the crystal symmetry (<code class="xref py py-data docutils literal notranslate"><span class="pre">cubic</span></code> or <code class="xref py py-data docutils literal notranslate"><span class="pre">hexagonal</span></code>).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">*fr</span></code> denotes the beginning of a fundamental region field.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;fr&gt;</span></code> is the fundamental region.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">*theta</span></code> denotes the beginning of a kernel parameter field.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;theta&gt;</span></code> is the (1D) width of the Gaussian kernel (in degrees).</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**eltdata</span></code> denotes the beginning of an elemental data field. Data can be provided in-file or in a separate file, using <code class="xref py py-data docutils literal notranslate"><span class="pre">*file</span></code>, see below.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;eltdata_format&gt;</span></code> is the format of the elemental data. It must be <code class="xref py py-data docutils literal notranslate"><span class="pre">ascii</span></code>.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;eltdata_file_name&gt;</span></code> is the name of the elemental data file.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">**nodedata</span></code> denotes the beginning of an nodal data field. Data can be provided in-file or in a separate file, using <code class="xref py py-data docutils literal notranslate"><span class="pre">*file</span></code>, see below.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;nodedata_format&gt;</span></code> is the format of the nodal data. It must be <code class="xref py py-data docutils literal notranslate"><span class="pre">ascii</span></code>.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">&lt;nodedata_file_name&gt;</span></code> is the name of the nodal data file.</p></li>
+</ul>
 </section>
 <section id="mesh-file-msh">
 <span id="mesh-file"></span><h2>Mesh File (<code class="file docutils literal notranslate"><span class="pre">.msh</span></code>)<a class="headerlink" href="#mesh-file-msh" title="Link to this heading"></a></h2>
@@ -666,7 +715,10 @@ $EndGroups
    &lt;result_nb&gt;                                         |
    &lt;result1&gt; &lt;result2&gt; ...                             /
  **orispace
-  *rodrigues &lt;space_file&gt;
+  *tess
+   &lt;tess_file&gt;
+  *mesh
+   &lt;mesh_file&gt;
  **step
    &lt;step_nb&gt;
 ***end

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Visualizing a Tessellation &mdash; Neper 4.10.1 documentation</title>
+  <title>Visualizing a Tessellation &mdash; Neper 5.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=3687f9f1"></script>
+        <script src="../_static/documentation_options.js?v=ce74c6a2"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -29,7 +29,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.10.1
+                5.0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -95,7 +95,7 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-print<span class="w"> </span>img1
 </pre></div>
 </div>
-<img alt="../_images/img117.png" src="../_images/img117.png" />
+<img alt="../_images/img120.png" src="../_images/img120.png" />
 <p>This generates a PNG image named <code class="file docutils literal notranslate"><span class="pre">img1.png</span></code>.  By default, all cells and edges are shown, while other entities are hidden.  Cells are colored from their ids and edges appear in black.</p>
 </section>
 <section id="showing-specific-entities">
@@ -104,39 +104,39 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-showcell<span class="w"> </span><span class="s2">&quot;z&lt;0.5&quot;</span><span class="w"> </span>-print<span class="w"> </span>img2
 </pre></div>
 </div>
-<img alt="../_images/img215.png" src="../_images/img215.png" />
+<img alt="../_images/img217.png" src="../_images/img217.png" />
 <p>By default, only edges that belong to a shown cell are plotted. However, the edges to show can also be specified.  For example, to show all of them:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-showcell<span class="w"> </span><span class="s2">&quot;z&lt;0.5&quot;</span><span class="w"> </span>-showedge<span class="w"> </span>all<span class="w"> </span>-print<span class="w"> </span>img3
 </pre></div>
 </div>
-<img alt="../_images/img310.png" src="../_images/img310.png" />
+<img alt="../_images/img312.png" src="../_images/img312.png" />
 <p>The figure is not very clear, and only the domain edges can be added instead:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-showcell<span class="w"> </span><span class="s2">&quot;z&lt;0.5&quot;</span><span class="w"> </span>-showedge<span class="w"> </span><span class="s2">&quot;cell_shown||domtype==1&quot;</span><span class="w"> </span>-print<span class="w"> </span>img4
 </pre></div>
 </div>
-<img alt="../_images/img410.png" src="../_images/img410.png" />
+<img alt="../_images/img411.png" src="../_images/img411.png" />
 <p><code class="xref py py-data docutils literal notranslate"><span class="pre">cell_shown</span></code> (or <code class="xref py py-data docutils literal notranslate"><span class="pre">cell_shown==1</span></code>) selects edges for which at least one cell is shown, <code class="xref py py-data docutils literal notranslate"><span class="pre">domtype==1</span></code> selects edges that belong to a domain edge, and <code class="xref py py-data docutils literal notranslate"><span class="pre">||</span></code> is the logical <code class="code docutils literal notranslate"><span class="pre">OR</span></code>.</p>
 <p>A logical expression can be arbitrarily complex.  For example, the following command only shows the cells that have a volume larger than average (0.005, for a 200-cell in a unit cube), have at least 20 faces and are interior to the domain:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-showcell<span class="w"> </span><span class="s2">&quot;(vol&gt;0.005)&amp;&amp;(facenb&gt;=20)&amp;&amp;(body&gt;0)&quot;</span><span class="w"> </span>-showedge<span class="w"> </span><span class="s2">&quot;cell_shown||domtype==1&quot;</span><span class="w"> </span>-print<span class="w"> </span>img5
 </pre></div>
 </div>
-<img alt="../_images/img510.png" src="../_images/img510.png" />
+<img alt="../_images/img511.png" src="../_images/img511.png" />
 <p>It is also possible to fully hide the cells and visualize the tessellation based on the individual faces, edges, etc.:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-showcell<span class="w"> </span>none<span class="w"> </span>-showface<span class="w"> </span><span class="s2">&quot;z&lt;0.5&quot;</span><span class="w"> </span>-showedge<span class="w"> </span><span class="s2">&quot;face_shown||domtype==1&quot;</span><span class="w"> </span>-print<span class="w"> </span>img6
 </pre></div>
 </div>
-<img alt="../_images/img64.png" src="../_images/img64.png" />
+<img alt="../_images/img65.png" src="../_images/img65.png" />
 <p>Faces appear in white by default, but can be assigned colored, as will be covered in the following.</p>
 <p>The vertices can also be shown (as before, the domain edges are shown):</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-showcell<span class="w"> </span>none<span class="w"> </span>-showedge<span class="w"> </span><span class="s2">&quot;domtype==1&quot;</span><span class="w"> </span>-showver<span class="w"> </span>all<span class="w"> </span>-print<span class="w"> </span>img7
 </pre></div>
 </div>
-<img alt="../_images/img72.png" src="../_images/img72.png" />
+<img alt="../_images/img73.png" src="../_images/img73.png" />
 <p>Finally, the crystals can be shown (as before, the domain edges are shown):</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-showcell<span class="w"> </span>none<span class="w"> </span>-showcrystal<span class="w"> </span>all<span class="w"> </span>-showedge<span class="w"> </span><span class="s2">&quot;domtype==1&quot;</span><span class="w"> </span>-print<span class="w"> </span>img8
 </pre></div>
 </div>
-<img alt="../_images/img82.png" src="../_images/img82.png" />
+<img alt="../_images/img83.png" src="../_images/img83.png" />
 <p>By default, crystals are represented based on the cell crystal symmetry (as specified by option <code class="xref std std-option docutils literal notranslate"><span class="pre">-oricrysym</span></code>), the cell size and the crystal orientations.</p>
 </section>
 <section id="setting-color-transparency-size-etc">
@@ -151,7 +151,7 @@ Similarly to the <code class="xref std std-option docutils literal notranslate">
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-datacellcol<span class="w"> </span>ori<span class="w"> </span>-print<span class="w"> </span>img9
 </pre></div>
 </div>
-<img alt="../_images/img92.png" src="../_images/img92.png" />
+<img alt="../_images/img93.png" src="../_images/img93.png" />
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The orientation color key itself is not generated but can be obtained as detailed in <a class="reference internal" href="orientation_color_key.html#orientation-color-key"><span class="std std-ref">Plotting an Orientation Color Key</span></a> (<a class="reference internal" href="orientation_color_key.html#rodrigues-color-key"><span class="std std-ref">Rodrigues Color Key</span></a>).</p>
@@ -160,7 +160,7 @@ Similarly to the <code class="xref std std-option docutils literal notranslate">
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-datacellcol<span class="w"> </span>ori<span class="w"> </span>-datacellcolscheme<span class="w"> </span>ipf<span class="w"> </span>-print<span class="w"> </span>img10
 </pre></div>
 </div>
-<img alt="../_images/img102.png" src="../_images/img102.png" />
+<img alt="../_images/img103.png" src="../_images/img103.png" />
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The orientation color key itself is not generated but can be obtained as detailed in <a class="reference internal" href="orientation_color_key.html#orientation-color-key"><span class="std std-ref">Plotting an Orientation Color Key</span></a> (<a class="reference internal" href="orientation_color_key.html#ipf-color-key"><span class="std std-ref">IPF Color Key</span></a>).</p>
@@ -172,7 +172,7 @@ Similarly to the <code class="xref std std-option docutils literal notranslate">
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-datacellcol<span class="w"> </span>int:facenb<span class="w"> </span>-print<span class="w"> </span>img11
 </pre></div>
 </div>
-<img alt="../_images/img118.png" src="../_images/img118.png" />
+<img alt="../_images/img1110.png" src="../_images/img1110.png" />
 <p>The different integer values are assigned colors using a color palette (see <a class="reference internal" href="../doc/exprskeys.html#color-map-for-integer-values"><span class="std std-ref">Color Map for Integer Values</span></a>).</p>
 <p>(Mathematical) expressions can be used.  For example, Euler’s polyhedron formula, <span class="math notranslate nohighlight">\(V - E + F = 2\)</span>, where <span class="math notranslate nohighlight">\(V\)</span>, <span class="math notranslate nohighlight">\(E\)</span> and <span class="math notranslate nohighlight">\(F\)</span> are the number of vertices, edges and faces of a cell, respectively, can be verified as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-datacellcol<span class="w"> </span>int:vernb-edgenb+facenb<span class="w"> </span>-print<span class="w"> </span>img12
@@ -245,7 +245,7 @@ Similarly to the <code class="xref std std-option docutils literal notranslate">
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-dataedgerad<span class="w"> </span><span class="m">0</span>.05<span class="w"> </span>-dataedgecol<span class="w"> </span>id<span class="w"> </span>-print<span class="w"> </span>img21
 </pre></div>
 </div>
-<img alt="../_images/img216.png" src="../_images/img216.png" />
+<img alt="../_images/img218.png" src="../_images/img218.png" />
 <p>The following command plots small crystals in a tessellation for which cells are made gradually transparent:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n200.tess<span class="w"> </span>-showcrystal<span class="w"> </span>all<span class="w"> </span>-datacrystalrad<span class="w"> </span><span class="m">0</span>.5*radeq<span class="w"> </span>-datacelltrs<span class="w"> </span><span class="s2">&quot;sqrt(z)&quot;</span><span class="w"> </span>-dataedgetrs<span class="w"> </span><span class="m">0</span>.75<span class="w"> </span>-print<span class="w"> </span>img22
 </pre></div>

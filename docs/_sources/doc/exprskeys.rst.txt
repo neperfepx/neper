@@ -131,6 +131,9 @@ Available keys for a tessellation itself are provided below.
 :data:`x`       x coordinate                        tess
 :data:`y`       y coordinate                        tess
 :data:`z`       z coordinate                        tess
+:data:`lengthx` length along x                      tess
+:data:`lengthy` length along y                      tess
+:data:`lengthz` length along z                      tess
 :data:`coo`     x, y and z coordinates              tess
 :data:`area`    surface area                        tess
 :data:`vol`     volume                              tess
@@ -208,6 +211,8 @@ To turn a key value into a value relative to the mean over all entities (e.g. th
 :data:`lam`                       lamella width id [#lam]_                                                                            cell
 :data:`mode`                      mode [#mode]_                                                                                       cell
 :data:`group`                     group                                                                                               cell
+:data:`modenb`                    number of modes of the parent cells                                                                 ver, edge, face (in 3D)
+:data:`groupnb`                   number of groups of the parent cells                                                                ver, edge, face (in 3D)
 :data:`per`                       periodic (1 if periodic, 0 otherwise)                                                               ver, edge, face (in 3D)
 :data:`fiber(...)`                1 if in orientation fiber and 0 otherwise, see :ref:`orientation_fibers`                            poly
 :data:`<orientation_descriptor>`  :ref:`orientation descriptor <rotation_and_orientation_descriptors>`                                face (in 2D), poly (in 3D)
@@ -307,6 +312,7 @@ Geometry
 :data:`sizefrac`             size fraction (surface area/volume fraction in 2D/3D)                   group
 :data:`diameq`               equivalent diameter [#equivalent_diameter]_                             cell
 :data:`radeq`                equivalent radius                                                       cell
+:data:`anisofact`            anisotropy factor                                                       cell
 :data:`convexity`            convexity [#convexity]_                                                 cell
 ============================ ======================================================================= ====================================
 
@@ -317,10 +323,12 @@ Orientation
 :data:`<orientation_descriptor>` :ref:`orientation descriptor <rotation_and_orientation_descriptors>`    voxel, cell
 :data:`gos`                      grain orientation spread [#gos]_                                        cell
 :data:`oridisanisoangles`        orientation distribution anisotropy / principal angles [#JMPS2015]_     cell
-:data:`oridisanisoaxes`          orientation distribution anisotropy / principal axes [#JMPS2015]_       cell
+:data:`oridisanisoaxes[_<csys>]` orientation distribution anisotropy / principal axes [#JMPS2015]_       cell
 :data:`oridisanisofact`          orientation distribution anisotropy factor [#JMPS2015]_                 cell
 :data:`oridisanisodeltas`        orientation distribution anisotropy / principal delta angles [#deltas]_ cell
 ================================ ======================================================================= ====================================
+
+In :data:`oridisanisoaxes[_<csys>]`, the optional coordinate system can be set to :data:`ref` for the reference (or sample) coordinate system or :data:`crys` for the crystal coordinate system (default :data:`ref`).
 
 .. _tessellation_optimization_keys:
 
@@ -443,6 +451,8 @@ The available keys for option :option:`-morphooptilogtesr` are provided below.  
 Orientation Optimization Keys
 -----------------------------
 
+.. _ori_variable_keys:
+
 Variable Keys
 ~~~~~~~~~~~~~
 
@@ -460,6 +470,20 @@ The available keys for option :option:`-orioptilogvar` are provided below.  For 
 :data:`axis-angle`         rotation axis / angle pair                    seed
 :data:`quaternion`         quaternion                                    seed
 ========================== ============================================= ===================
+
+.. _ori_objective_function_value_keys:
+
+Objective Function Value Keys
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The available keys for option :option:`-orioptilogval` are provided below.
+
+======================= ==========================================================================
+**Key**                 **Descriptor**
+:data:`iter`            iteration number
+:data:`val`             value
+:data:`valmin`          minimal value
+======================= ==========================================================================
 
 .. _mesh_keys:
 
@@ -510,6 +534,7 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`area`                                      surface area                                                          2D elt
 :data:`diameq`                                    equivalent diameter                                                   {2,3}D elt, {2,3}D elset
 :data:`radeq`                                     equivalent radius                                                     {2,3}D elt, {2,3}D elset
+:data:`anisofact`                                 anisotropy factor                                                     {2-3}D elset
 :data:`length`                                    average edge length                                                   {0-3}D elt, 1D elset
 :data:`lengths`                                   edge lengths                                                          2D elt, 3D elt
 :data:`elsetvol`                                  elset volume                                                          3D elt
@@ -539,8 +564,8 @@ Available keys for mesh node, elements and element sets (of all dimensions) and 
 :data:`theta`                                     disorientation angle (in degrees)                                     1D elt and elset (in 2D), 2D elt and elset (in 3D)
 :data:`gos`                                       grain orientation spread [#gos]_                                      {2,3}D elset
 :data:`anisogos`                                  grain orientation spread estimated from the orientation distribution  [#gos]_            {2,3}D elset
-:data:`<orientation_descriptor>`                  :ref:`orientation descriptor <rotation_and_orientation_descriptors>`  2D elt (in 2D), 2D elset (in 2D), 3D elt (in 3D), 3D elset (in 3D)
-:data:`step`                                      simulation step                                                       {0-3}D,co mesh
+:data:`<orientation_descriptor>`                  :ref:`orientation descriptor <rotation_and_orientation_descriptors>`  2D elt (in 2D), 2D elset (in 2D), 3D elt (in 3D), 3D elset (in 3D), node [#ori_node]_
+:data:`step`                                      simulation step                                                       {0-3}D,co mesh, {0,3}D,co elt and elset
 ================================================= ===================================================================== ===================================================================
 
 Variables beginning with :data:`2dmesh` are only available for statistics (options beginning with :data:`-stat` of module -M); for elements, they apply to the centroids.
@@ -593,6 +618,8 @@ Available results / keys for elements sets are the following:
 :data:`oridisanisofact`                    orientation distribution factor                                            elset, mesh
 :data:`odf(<var>=<value>,...)`             ODF defined at elements of orientation space (see also below)              tess, tesr, mesh, cell, elt, elset
 :data:`odfn(<var>=<value>,...)`            ODF defined at nodes of orientation space (see also below)                 tess, tesr, mesh
+:data:`odfindex(<var>=<value>,...)`        "Texture index" of the ODF                                                 tess, tesr, mesh, cell
+:data:`odfnindex(<var>=<value>,...)`        "Texture index" of the (nodal) ODF                                        tess, tesr, mesh, cell
 :data:`orifield(var=<var>,...)`            :data:`<var>` field defined at elements of orientation space (see below)   mesh
 :data:`orifieldn(var=<var>,...)`           :data:`<var>` field defined at nodes of orientation space (see below)      mesh
 ========================================== ========================================================================== ===================================
@@ -601,11 +628,13 @@ The ODF (:data:`odf` or :data:`odfn`) of a tessellation or mesh is computed over
 
 - :data:`input`: the input used for the orientations, either :data:`elsets` or :data:`elts` for a mesh (default :data:`elsets`);
 - :data:`theta`: the standard deviation of the kernel (in degrees);
-- :data:`weight`: the weight of a cell or elset, which can be a real value or an expression based on the :ref:`tessellation_keys` (for cells) or :ref:`mesh_keys` (for elsets) --  by default, the volumes of the cells or elsets are used;
+- :data:`weight`: the weight of a cell or elset, which can be a real value, :data:`file(<file_name>)` to load values from a file, or an expression based on the :ref:`tessellation_keys` (for cells) or :ref:`mesh_keys` (for elsets) --  by default, the volumes of the cells or elsets are used;
 - :data:`clustering`: a logical value controlling orientation clustering, which can be :data:`0` (for no clustering) or :data:`1` (for clustering); the default is :data:`0` for cells or elsets and :data:`1` for voxels or elements;
 - :data:`cutoff`: the cut-off factor used to compute the ODF, which can be :data:`all` (for no cut-off) or any positive real value (default :data:`5`).
 
 For a cell, element or elset, :data:`odf` returns the value of the ODF of the tessellation or mesh at the corresponding orientation (and simulation step).
+
+The "texture index", :data:`odfindex`, is defined as :math:`\sqrt{\frac{n_c}{\pi^2}\int_g \left(f(g) - 1\right)^2 \hbox{d}g}`, where :math:`n_c` is the orientation multiplicity and :math:`\pi^2` is the volume of orientation space.
 
 The :data:`orifield` and :data:`orifieldn` of a mesh is computed over orientation space (provided using :option:`-orispace`) from the values of the (mesh) elsets.  The mandatory parameter is:
 
@@ -629,16 +658,17 @@ Rotation and Orientation Descriptors
 Rotations and orientations can be described using the following
 descriptors.
 
-========================== ======================================== =============================
-Key                        Descriptor                               Number of parameters
-:data:`rodrigues`          Rodrigues vector                         3
-:data:`euler-bunge`        Euler angles (Bunge convention)          3
-:data:`euler-kocks`        Euler angles (Kocks convention)          3
-:data:`euler-roe`          Euler angles (Roe convention)            3
-:data:`rotmat`             rotation matrix                          9
-:data:`axis-angle`         rotation axis / angle pair               4
-:data:`quaternion`         quaternion                               4
-========================== ======================================== =============================
+============================= ======================================== =============================
+Key                           Descriptor                               Number of parameters
+:data:`label` or :data:`name` Name (see :ref:`ideal_orientations`)     1
+:data:`rodrigues`             Rodrigues vector                         3
+:data:`euler-bunge`           Euler angles (Bunge convention)          3
+:data:`euler-kocks`           Euler angles (Kocks convention)          3
+:data:`euler-roe`             Euler angles (Roe convention)            3
+:data:`rotmat`                rotation matrix                          9
+:data:`axis-angle`            rotation axis / angle pair               4
+:data:`quaternion`            quaternion                               4
+============================= ======================================== =============================
 
 The convention can be added to the descriptor, either :data:`active` or :data:`passive`, as in :data:`rodrigues:active`.  When no convention is provided, :data:`passive` is assumed.
 
@@ -695,6 +725,24 @@ Keys are available for ideal orientations (lowercased is accepted):
 
 When loading orientations from an external file, use :data:`file(<file_name>[,des=<descriptor>])` where the orientation descriptor is among those listed above and is :data:`rodrigues:passive` by default.
 
+.. _special_orientations:
+
+Special Orientations
+~~~~~~~~~~~~~~~~~~~~
+
+Keys are available for special orientations, which do not represent single orientations (in contrast with :ref:`ideal_orientations`), but continuous orientation sets:
+
+========================== =====================================================================================
+**Key**                    **Miller indices**
+:data:`fcc_psc_alpha`      :math:`\alpha`, partial :math:`(1\,1\,0)\|\hbox{Z}` fiber (:math:`\pm45°` about Goss)
+:data:`fcc_psc_alpha2`     :math:`\alpha`, partial :math:`(1\,1\,0)\|\hbox{Z}` fiber (:math:`\pm45°` about U)
+:data:`fcc_psc_alpha_full` :math:`\alpha`, full :math:`(1\,1\,0)\|\hbox{Z}` fiber
+:data:`fcc_psc_beta`       :math:`\beta` partial fiber
+:data:`fcc_psc_beta_bent`  Bent :math:`\beta` partial fiber, that follow (since Brass, S and Copper do not align)
+========================== =====================================================================================
+
+When loading orientations from an external file, use :data:`file(<file_name>,des=label)` where the orientation descriptor is among those listed above and is :data:`rodrigues:passive` by default.
+
 .. _orientation_fibers:
 
 Orientation Fibers
@@ -741,7 +789,7 @@ Colors and Color Maps
 Colors
 ~~~~~~
 
-The available colors are provided below, with their corresponding RGB channel values (ranging from 0 to 255). Any other color can be defined from the RGB channel values, under format :data:`<R_value>:\<G_value\>:\<B_value\>`.
+The available colors are provided below, with their corresponding RGB channel values (ranging from 0 to 255). Any other color can be defined from the RGB channel values, under format :data:`<R_value>:\<G_value\>:\<B_value\>`.  `Manim <https://www.manim.community>`_ colors are available and prefixed :data:`manim`.
 
 ============================= ===================
 **Key**                       **RGB value**
@@ -882,6 +930,92 @@ The available colors are provided below, with their corresponding RGB channel va
 :data:`gainsboro`             (220, 220, 220)
 :data:`plum`                  (221, 160, 221)
 :data:`cadetblue`             (95, 158, 160)
+:data:`manimblack`            (0, 0, 0)
+:data:`manimblue`             (88, 196, 221)
+:data:`manimblue_a`           (199, 233, 241)
+:data:`manimblue_b`           (156, 220, 235)
+:data:`manimblue_c`           (88, 196, 221)
+:data:`manimblue_d`           (41, 171, 202)
+:data:`manimblue_e`           (35, 107, 142)
+:data:`manimdarker_gray`      (34, 34, 34)
+:data:`manimdarker_grey`      (34, 34, 34)
+:data:`manimdark_blue`        (35, 107, 142)
+:data:`manimdark_brown`       (139, 69, 19)
+:data:`manimdark_gray`        (68, 68, 68)
+:data:`manimdark_grey`        (68, 68, 68)
+:data:`manimgold`             (240, 172, 95)
+:data:`manimgold_a`           (247, 199, 151)
+:data:`manimgold_b`           (249, 183, 117)
+:data:`manimgold_c`           (240, 172, 95)
+:data:`manimgold_d`           (225, 161, 88)
+:data:`manimgold_e`           (199, 141, 70)
+:data:`manimgray`             (136, 136, 136)
+:data:`manimgray_a`           (221, 221, 221)
+:data:`manimgray_b`           (187, 187, 187)
+:data:`manimgray_brown`       (115, 99, 87)
+:data:`manimgray_c`           (136, 136, 136)
+:data:`manimgray_d`           (68, 68, 68)
+:data:`manimgray_e`           (34, 34, 34)
+:data:`manimgreen`            (131, 193, 103)
+:data:`manimgreen_a`          (201, 226, 174)
+:data:`manimgreen_b`          (166, 207, 140)
+:data:`manimgreen_c`          (131, 193, 103)
+:data:`manimgreen_d`          (119, 176, 93)
+:data:`manimgreen_e`          (105, 156, 82)
+:data:`manimgrey`             (136, 136, 136)
+:data:`manimgrey_a`           (221, 221, 221)
+:data:`manimgrey_b`           (187, 187, 187)
+:data:`manimgrey_brown`       (115, 99, 87)
+:data:`manimgrey_c`           (136, 136, 136)
+:data:`manimgrey_d`           (68, 68, 68)
+:data:`manimgrey_e`           (34, 34, 34)
+:data:`manimlighter_gray`     (221, 221, 221)
+:data:`manimlighter_grey`     (221, 221, 221)
+:data:`manimlight_brown`      (205, 133, 63)
+:data:`manimlight_gray`       (187, 187, 187)
+:data:`manimlight_grey`       (187, 187, 187)
+:data:`manimlight_pink`       (220, 117, 205)
+:data:`manimlogo_black`       (52, 52, 52)
+:data:`manimlogo_blue`        (82, 88, 147)
+:data:`manimlogo_green`       (135, 194, 165)
+:data:`manimlogo_red`         (224, 122, 95)
+:data:`manimlogo_white`       (236, 231, 226)
+:data:`manimmaroon`           (197, 95, 115)
+:data:`manimmaroon_a`         (236, 171, 193)
+:data:`manimmaroon_b`         (236, 146, 171)
+:data:`manimmaroon_c`         (197, 95, 115)
+:data:`manimmaroon_d`         (162, 77, 97)
+:data:`manimmaroon_e`         (148, 66, 79)
+:data:`manimorange`           (255, 134, 47)
+:data:`manimpink`             (209, 71, 189)
+:data:`manimpure_blue`        (0, 0, 255)
+:data:`manimpure_green`       (0, 255, 0)
+:data:`manimpure_red`         (255, 0, 0)
+:data:`manimpurple`           (154, 114, 172)
+:data:`manimpurple_a`         (202, 163, 232)
+:data:`manimpurple_b`         (177, 137, 198)
+:data:`manimpurple_c`         (154, 114, 172)
+:data:`manimpurple_d`         (113, 85, 130)
+:data:`manimpurple_e`         (100, 65, 114)
+:data:`manimred`              (252, 98, 85)
+:data:`manimred_a`            (247, 161, 163)
+:data:`manimred_b`            (255, 128, 128)
+:data:`manimred_c`            (252, 98, 85)
+:data:`manimred_d`            (230, 90, 76)
+:data:`manimred_e`            (207, 80, 68)
+:data:`manimteal`             (92, 208, 179)
+:data:`manimteal_a`           (172, 234, 215)
+:data:`manimteal_b`           (118, 221, 192)
+:data:`manimteal_c`           (92, 208, 179)
+:data:`manimteal_d`           (85, 193, 167)
+:data:`manimteal_e`           (73, 168, 143)
+:data:`manimwhite`            (255, 255, 255)
+:data:`manimyellow`           (255, 255, 0)
+:data:`manimyellow_a`         (255, 241, 182)
+:data:`manimyellow_b`         (255, 234, 148)
+:data:`manimyellow_c`         (255, 255, 0)
+:data:`manimyellow_d`         (244, 211, 69)
+:data:`manimyellow_e`         (232, 193, 28)
 ============================= ===================
 
 .. _color_maps:
@@ -966,6 +1100,8 @@ viridis:fade(0.2) .. image:: imgs/color-maps-real/viridis-fade0p2.png
 .. [#col_rodrigues] Applies to a mesh of Rodrigues space
 
 .. [#col_stdtriangle] Applies to a mesh of the stereographic triangle
+
+.. [#ori_node] Orientation of the node of a meshed standard triangle, assuming no rotation about the :math:`z` direction.
 
 .. [#cyl] 1 if polygonize the circular part of a cylindrical domain and 0 otherwise.
 

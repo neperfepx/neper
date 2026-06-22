@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generating and Meshing a Simple Tessellation &mdash; Neper 4.10.1 documentation</title>
+  <title>Generating and Meshing a Simple Tessellation &mdash; Neper 5.0.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/my_theme.css" type="text/css" />
@@ -12,14 +12,14 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/documentation_options.js?v=3687f9f1"></script>
+        <script src="../../_static/documentation_options.js?v=ce74c6a2"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Visualizing a Tessellation" href="visualize_tessellation.html" />
-    <link rel="prev" title="Tutorials" href="../tutorials.html" /> 
+    <link rel="prev" title="Generating Regular Tessellations" href="regular_tessellation.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -30,7 +30,7 @@
             <a href="../../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.10.1
+                5.0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -44,6 +44,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../features.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="voronoi_tessellation.html">Generating a Voronoi Tessellation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="regular_tessellation.html">Generating Regular Tessellations</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Generating and Meshing a Simple Tessellation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#generating-a-tessellation">Generating a Tessellation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#meshing-a-tessellation">Meshing a Tessellation</a></li>
@@ -120,7 +122,7 @@ A 100-cell tessellation can be generated as follows:</p>
 </pre></div>
 </div>
 <p>This produces a PNG file named <code class="file docutils literal notranslate"><span class="pre">img1.png</span></code> where cells are colored arbitrarily from their ids.</p>
-<img alt="../../_images/img110.png" src="../../_images/img110.png" />
+<img alt="../../_images/img113.png" src="../../_images/img113.png" />
 <p>Another tessellation with the same number of cells but different cell properties can be generated using <a class="reference internal" href="../neper_t.html#cmdoption-id"><code class="xref std std-option docutils literal notranslate"><span class="pre">-id</span></code></a> (the default value is <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>):</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-id<span class="w"> </span><span class="m">2</span>
 </pre></div>
@@ -147,12 +149,12 @@ A 100-cell tessellation can be generated as follows:</p>
 <p class="admonition-title">Note</p>
 <p>When both the tess file and mesh file are available, it is a good practice to pass both of them to <code class="xref std std-option docutils literal notranslate"><span class="pre">-V</span></code> by using the <code class="xref py py-data docutils literal notranslate"><span class="pre">,</span></code> separator.  Only the mesh is printed.</p>
 </div>
-<img alt="../../_images/img28.png" src="../../_images/img28.png" />
+<img alt="../../_images/img29.png" src="../../_images/img29.png" />
 <p>The cell boundaries can be highlighted via the 1D elements, using <code class="xref std std-option docutils literal notranslate"><span class="pre">-showelt1d</span></code> and (optionally) <code class="xref std std-option docutils literal notranslate"><span class="pre">-dataelt1drad</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100-id1.tess,n100-id1.msh<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.005<span class="w"> </span>-print<span class="w"> </span>img3
 </pre></div>
 </div>
-<img alt="../../_images/img35.png" src="../../_images/img35.png" />
+<img alt="../../_images/img36.png" src="../../_images/img36.png" />
 </section>
 <section id="regularizing-a-tessellation">
 <h2>Regularizing a Tessellation<a class="headerlink" href="#regularizing-a-tessellation" title="Link to this heading"></a></h2>
@@ -165,14 +167,14 @@ A 100-cell tessellation can be generated as follows:</p>
 <p class="admonition-title">Note</p>
 <p>An option name may be abbreviated as long as the abbreviation is not ambiguous.  Here, <code class="xref py py-data docutils literal notranslate"><span class="pre">-regularization</span></code> has been abbreviated to <code class="xref py py-data docutils literal notranslate"><span class="pre">-reg</span></code>.</p>
 </div>
-<img alt="../../_images/img45.png" src="../../_images/img45.png" />
+<img alt="../../_images/img46.png" src="../../_images/img46.png" />
 <p>The resulting tessellation is very similar to the original one, as only slight morphological changes occur during regularization.  However, no local mesh overrefinements will be present anymore.</p>
 <p>The new tessellation can be meshed, and the mesh can be visualized as before:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>n100-id1.tess
 <span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100-id1.tess,n100-id1.msh<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.005<span class="w"> </span>-print<span class="w"> </span>img5
 </pre></div>
 </div>
-<img alt="../../_images/img55.png" src="../../_images/img55.png" />
+<img alt="../../_images/img56.png" src="../../_images/img56.png" />
 </section>
 <section id="setting-mesh-properties">
 <h2>Setting Mesh Properties<a class="headerlink" href="#setting-mesh-properties" title="Link to this heading"></a></h2>
@@ -182,7 +184,7 @@ A 100-cell tessellation can be generated as follows:</p>
 <span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100-id1.tess,n100-id1.msh<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.005<span class="w"> </span>-print<span class="w"> </span>img6
 </pre></div>
 </div>
-<img alt="../../_images/img61.png" src="../../_images/img61.png" />
+<img alt="../../_images/img62.png" src="../../_images/img62.png" />
 <p>This mesh can be used by <a class="reference external" href="https://fepx.info">FEPX</a>.</p>
 <div role="list" class="citation-list">
 <div class="citation" id="cmame2011" role="doc-biblioentry">
@@ -198,7 +200,7 @@ A 100-cell tessellation can be generated as follows:</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../tutorials.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="regular_tessellation.html" class="btn btn-neutral float-left" title="Generating Regular Tessellations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="visualize_tessellation.html" class="btn btn-neutral float-right" title="Visualizing a Tessellation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

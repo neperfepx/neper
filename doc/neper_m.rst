@@ -458,7 +458,9 @@ Output Options
   - :data:`phase`: group file (optional FEPX input);
   - :data:`bcs`: boundary condition file (optional FEPX input);
   - :data:`per`: periodicity file (see also option :option:`-performat`);
-  - :data:`tess`: tessellation file, where the tessellation is reconstructed from the mesh.
+  - :data:`tess`: tessellation file, where the tessellation is reconstructed from the mesh;
+  - :data:`etree`: element-orientation k-d tree file (for development only);
+  - :data:`ntree`: node-orientation k-d tree file (for development only).
 
   **Default value**: :data:`msh`.
 
@@ -604,7 +606,9 @@ Mesh
   - :file:`.ori`: orientation file (optional FEPX file).  It contains the :data:`$ElsetOrientations` and :data:`$ElementOrientations` sections of the :file:`.msh` file;
   - :file:`.phase`: group file (optional FEPX file).  It contains the :data:`$Groups` section of the :file:`.msh` file;
   - :file:`.bcs`: boundary conditions file (optional FEPX file);
-  - :file:`.per`: periodicity file.
+  - :file:`.per`: periodicity file;
+  - :file:`.etree`: element-orientation k-d tree file;
+  - :file:`.ntree`: node-orientation k-d tree file.
 
 Interfaces
 ~~~~~~~~~~

@@ -136,6 +136,15 @@ When a simulation directory is loaded as input, it is possible to specify the si
 
 The data internal to the simulation directory have the same status as internal data (such as, for instance, the nominal element orientations stored in the mesh file) and can therefore be loaded (with options :data:`-data*`) more simply than with standard external files.  For example, coloring elements from orientations can be done using :data:`-step 2 -dataeltcol ori`.
 
+General Options
+~~~~~~~~~~~~~~~
+
+.. option::  -colormode <mode>
+
+  Specify the color mode used for rendering, which can be :data:`bright` or :data:`dark`.
+
+  **Default value**: :data:`bright`.
+
 Space Options
 ~~~~~~~~~~~~~
 
@@ -148,6 +157,8 @@ The following option enables the definition of the space in which data (simulati
   - :data:`real`: real (physical) space;
   - :data:`pf`: pole figure space;
   - :data:`ipf`: inverse pole figure space;
+  - :data:`ori`: orientation space (an alias for :data:`rodrigues(fr20)`, see below);
+  - :data:`rodrigues[(fr\<N\>)]`: rodrigues orientation space, and the (optional) :data:`fr\<N\>` mesh of the fundamental region (default :data:`fr20`);
   - :data:`tree`: tree space.
 
   **Default value**: :data:`real`.
@@ -241,7 +252,7 @@ For each entity, all attributes can be set, although the may not apply in certai
 
   .. note:: :option:`-datacelledgecol` applied only in PF space.
 
-  **Default value**: :data:`id` for cells and crystals, :data:`white` for faces, :data:`black` for edges and vertices, :data:`gray` for seeds, voxels and void voxels, :data:`black` for voxel edges.
+  **Default value**: :data:`id` for cells and crystals, :data:`white` for faces, :data:`black` (for :option:`-colormode` :data:`bright`) or :data:`white` (for :option:`-colormode` :data:`dark`) for edges and vertices, :data:`gray` for seeds, voxels and void voxels, :data:`black` (for :option:`-colormode` :data:`bright`) or :data:`white` (for :option:`-colormode` :data:`dark`) for voxel edges.
 
 
 .. index::
@@ -401,7 +412,7 @@ The following options enable the definition of the properties (color, size, etc.
 
   The color schemes used to determine the colors from the data can be fine-tuned using options :data:`-dataeltcolscheme` or :data:`-dataelsetcolscheme`.
 
-  **Default value**: :data:`-dataelsetcol id` (elsets of higher dimension colored, other elsets white, element edges black)
+  **Default value**: :data:`-dataelsetcol id` (elsets of higher dimension colored, other elsets white, element edges black (for :option:`colormode` :data:`bright`) or white (for :option:`colormode` :data:`dark`))
 
 
 .. option:: -data{elt,elset,node,elt{0-3}d,elset{0-3}d}colscheme <col_scheme>
@@ -621,7 +632,7 @@ The following options enable the definition of the properties (color, shape, siz
 
   Specify the color of the input point edges (represented as symbols), which can be a color as described in :ref:`colors_and_color_maps`.
 
-  **Default value**: :data:`black`.
+  **Default value**: :data:`black` for :option:`-colormode` :data:`bright` and :data:`white` for :option:`-colormode` :data:`dark`.
 
 Coordinate System Rendering Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -677,13 +688,13 @@ The following options apply to the full tessellations, mesh, etc.
    single: -showcsys
    single: -showscale
 
-.. option:: -show{tess,tesr,mesh,meshslice,meshsliceelt1d,csys,scale} <logical>
+.. option:: -show{tess,tesr,mesh,meshslice,meshsliceelt1d,csys,scale,scalemin,scalemax} <logical>
 
-  Show or hide a full tessellation or mesh, the mesh slices, the 1D elements of the mesh slices, the coordinate system, or the scale, respectively.
+  Show or hide a full tessellation or mesh, the mesh slices, the 1D elements of the mesh slices, the coordinate system, the scale, or (on the scale itself) the scale (data) minimum and maximum, respectively.
   
   .. note:: The 1D elements of the mesh slices are printed as specified by options :option:`-dataelt1d*`.
 
-  **Default value**: :data:`1` for the more informative data (mesh slice :math:`>` mesh :math:`>` tessellation) and :data:`0` for others.
+  **Default value**: :data:`1` for the more informative data (mesh slice :math:`>` mesh :math:`>` tessellation) and :data:`0` for others; :data:`1` for the scale, and :data:`1` for the scale (data) minimum and maximum if they are out-of-scale, and :data:`0` otherwise.
 
 The following option applies to a tessellation or a raster tessellation.
 
@@ -766,7 +777,7 @@ Camera Options
 
   - :data:`x`, :data:`y` and :data:`z`: the center of the tessellation or mesh (if both a tessellation and a mesh have been loaded, the mesh is considered);
   - :data:`length`: the average length of the domain (:data:`1` for a unit cube);
-  - :data:`vx`, :data:`vy` and :data:`vz`: the coordinates of the shift vector, which are equal to :data:`3.462`, :data:`-5.770` and :data:`4.327`, respectively in 3D, and :data:`0`, :data:`0` and :data:`8`, respectively, in 2D.
+  - :data:`vx`, :data:`vy` and :data:`vz`: the coordinates of the shift vector, which in real space are equal to :data:`3.462`, :data:`-5.770` and :data:`4.327`, respectively in 3D, and :data:`0`, :data:`0` and :data:`8`, respectively, in 2D.  In orientation space, the coordinates are equal to :data:`4`, :data:`4` and :data:`3`, respectively.
 
   **Default value**: :data:`x+length*vx:y+length*vy:z+length*vz`.
 
@@ -784,7 +795,7 @@ Camera Options
 
   The opening angle along the vertical direction is determined from the opening along the horizontal direction and the image size ratio.
 
-  **Default value**: :data:`25`.
+  **Default value**: :data:`25` in :option:`-space` :data:`real` and :data:`20` in :option:`-space` :data:`ori`.
 
 .. option:: -camerasky <dir_x>:<dir_y>:<dir_z>
 
@@ -796,7 +807,8 @@ Camera Options
 
   Specify the type of projection of the camera, which can be :data:`perspective` or :data:`orthographic`.
 
-  **Default value**: :data:`orthographic` for 2D and :data:`perspective` for 3D.
+  **Default value**: For :option:`-space` :data:`real`: :data:`orthographic` for 2D and :data:`perspective` for 3D; for :option:`-space` :data:`ori`: :data:`orthographic`.
+
 
 Light Options
 ~~~~~~~~~~~~~~
@@ -846,7 +858,7 @@ Scene Options
 
   Specify the color of the background, which can be any color as described in :ref:`colors_and_color_maps`.
 
-  **Default value**: :data:`white`.
+  **Default value**: :data:`white` for :option:`-colormode` :data:`bright` and :data:`black` for :option:`-colormode` :data:`dark`.
 
 Pole Figure and Inverse Pole Figure Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -872,8 +884,7 @@ Most options apply to pole figures or inverse pole figures and can equivalently 
   Specify the projection, which can be :data:`stereographic` or :data:`equal-area`.
 
   **Default value**: :data:`stereographic`.
-
-.. option::  -pfsym <symmetry>
+ option::  -pfsym <symmetry>
 
   Specify the symmetry, which can be :data:`monoclinic`, :data:`orthotropic` or :data:`uniaxial`.
 
@@ -937,6 +948,70 @@ Most options apply to pole figures or inverse pole figures and can equivalently 
   Specify the pole label.
 
   **Default value**: :data:`{<h><k>[<i>]<l>}` for PFs and :data:`{X,Y,Z} direction` for IPFs.
+
+Orientation Space Options
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. option::  -oricol <color>
+
+  Specify the color of orientation space (see :ref:`colors_and_color_maps`).
+
+  **Default value**: :data:`white`.
+
+.. option::  -oritrs <transparency>
+
+  Specify the transparency of orientation space (value from 0 to 1).
+
+  **Default value**: :data:`1` (full transparency).
+
+.. option::  -oriedgecol <color>
+
+  Specify the color of the edges of orientation space (see :ref:`colors_and_color_maps`).
+
+  **Default value**: :data:`black` for :option:`-colormode` :data:`bright` and :data:`black` for :option:`-colormode` :data:`dark`.
+
+.. option::  -oriedgerad <rad>
+
+  Specify the radius of the edges of orientation space.
+
+  **Default value**: :data:`0.002`.
+
+.. option::  -oriedgetrs <transparency>
+
+  Specify the transparency of the edges of orientation space (value from 0 to 1).
+
+  **Default value**: :data:`0`.
+
+.. option::  -orimode <mode1>,<mode2>,...
+
+  Specify the representation mode, which can be:
+
+    - :data:`symbol`: data represented as symbols;
+    - :data:`density`: data represented as a distribution density field.
+
+  .. note:: Modes are processed successively, so that the last one(s) are printed on top of the first  one(s).  In the case of multiple inputs, :data:`density` is applied only to the first input.
+
+  **Default value**: :data:`symbol`.
+
+.. option::  -orifield <field>
+
+  Specify the field to represent, which must be a simulation result.
+
+  .. note:: Requires :option:`-orimode` :data:`density`.
+
+  **Default value**: none.
+
+.. option::  -orilayout <layout>
+
+  Specify the orientation space layout, in the case where a field is visualized (:option:`-orimode` :data:`density`);
+  which can be:
+
+  - :data:`surface` for the surface of orienation space;
+  - :data:`slices` for orthogonal slices (:math:`x=0`, :math:`y=0` and :math:`z=0`).
+
+  .. note:: The scale automatically appears to the right of the image.  Use :option:`-showscale 0` to exclude it.
+
+  **Default value**: :data:`surface` for :data:`-orimode symbol`, and :data:`surface,slices` for :data:`-orimode [symbol,]density`.
 
 Output Image Options
 ~~~~~~~~~~~~~~~~~~~~~

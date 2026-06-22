@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Generating and Meshing a Simple Tessellation &mdash; Neper 4.10.1 documentation</title>
+  <title>Generating and Meshing a Simple Tessellation &mdash; Neper 5.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=3687f9f1"></script>
+        <script src="../_static/documentation_options.js?v=ce74c6a2"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -28,7 +28,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.10.1
+                5.0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -97,7 +97,7 @@ A 100-cell tessellation can be generated as follows:</p>
 </pre></div>
 </div>
 <p>This produces a PNG file named <code class="file docutils literal notranslate"><span class="pre">img1.png</span></code> where cells are colored arbitrarily from their ids.</p>
-<img alt="../_images/img116.png" src="../_images/img116.png" />
+<img alt="../_images/img119.png" src="../_images/img119.png" />
 <p>Another tessellation with the same number of cells but different cell properties can be generated using <a class="reference internal" href="../doc/neper_t.html#cmdoption-id"><code class="xref std std-option docutils literal notranslate"><span class="pre">-id</span></code></a> (the default value is <code class="xref py py-data docutils literal notranslate"><span class="pre">1</span></code>):</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-T<span class="w"> </span>-n<span class="w"> </span><span class="m">100</span><span class="w"> </span>-id<span class="w"> </span><span class="m">2</span>
 </pre></div>
@@ -107,7 +107,7 @@ A 100-cell tessellation can be generated as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100-id2.tess<span class="w"> </span>-print<span class="w"> </span>img1b
 </pre></div>
 </div>
-<img alt="../_images/img1b1.png" src="../_images/img1b1.png" />
+<img alt="../_images/img1b2.png" src="../_images/img1b2.png" />
 </section>
 <section id="meshing-a-tessellation">
 <h2>Meshing a Tessellation<a class="headerlink" href="#meshing-a-tessellation" title="Link to this heading"></a></h2>
@@ -124,12 +124,12 @@ A 100-cell tessellation can be generated as follows:</p>
 <p class="admonition-title">Note</p>
 <p>When both the tess file and mesh file are available, it is a good practice to pass both of them to <code class="xref std std-option docutils literal notranslate"><span class="pre">-V</span></code> by using the <code class="xref py py-data docutils literal notranslate"><span class="pre">,</span></code> separator.  Only the mesh is printed.</p>
 </div>
-<img alt="../_images/img214.png" src="../_images/img214.png" />
+<img alt="../_images/img216.png" src="../_images/img216.png" />
 <p>The cell boundaries can be highlighted via the 1D elements, using <code class="xref std std-option docutils literal notranslate"><span class="pre">-showelt1d</span></code> and <code class="xref std std-option docutils literal notranslate"><span class="pre">-dataelt1drad</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100-id1.tess,n100-id1.msh<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.005<span class="w"> </span>-print<span class="w"> </span>img3
 </pre></div>
 </div>
-<img alt="../_images/img39.png" src="../_images/img39.png" />
+<img alt="../_images/img311.png" src="../_images/img311.png" />
 </section>
 <section id="regularizing-a-tessellation">
 <h2>Regularizing a Tessellation<a class="headerlink" href="#regularizing-a-tessellation" title="Link to this heading"></a></h2>
@@ -142,14 +142,14 @@ A 100-cell tessellation can be generated as follows:</p>
 <p class="admonition-title">Note</p>
 <p>An option name may be abbreviated as long as the abbreviation is not ambiguous.  Specifically, <code class="xref py py-data docutils literal notranslate"><span class="pre">-regularization</span></code> can be abbreviated to <code class="xref py py-data docutils literal notranslate"><span class="pre">-reg</span></code>.</p>
 </div>
-<img alt="../_images/img49.png" src="../_images/img49.png" />
+<img alt="../_images/img410.png" src="../_images/img410.png" />
 <p>The resulting tessellation is very similar to the original one, as only slight morphological changes occur during regularization.  However, no local mesh overrefinements will be present anymore.</p>
 <p>The new tessellation can be meshed, and the mesh can be visualized as before:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>neper<span class="w"> </span>-M<span class="w"> </span>n100-id1.tess
 <span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100-id1.tess,n100-id1.msh<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.005<span class="w"> </span>-print<span class="w"> </span>img5
 </pre></div>
 </div>
-<img alt="../_images/img59.png" src="../_images/img59.png" />
+<img alt="../_images/img510.png" src="../_images/img510.png" />
 </section>
 <section id="setting-mesh-properties">
 <h2>Setting Mesh Properties<a class="headerlink" href="#setting-mesh-properties" title="Link to this heading"></a></h2>
@@ -159,7 +159,7 @@ A 100-cell tessellation can be generated as follows:</p>
 <span class="gp">$ </span>neper<span class="w"> </span>-V<span class="w"> </span>n100-id1.tess,n100-id1.msh<span class="w"> </span>-showelt1d<span class="w"> </span>all<span class="w"> </span>-dataelt1drad<span class="w"> </span><span class="m">0</span>.005<span class="w"> </span>-print<span class="w"> </span>img6
 </pre></div>
 </div>
-<img alt="../_images/img63.png" src="../_images/img63.png" />
+<img alt="../_images/img64.png" src="../_images/img64.png" />
 <p>This mesh can be used by <a class="reference external" href="https://fepx.info">FEPX</a>.</p>
 <div role="list" class="citation-list">
 <div class="citation" id="cmame2011" role="doc-biblioentry">

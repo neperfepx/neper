@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Meshing Module (-M) &mdash; Neper 4.10.1 documentation</title>
+  <title>Meshing Module (-M) &mdash; Neper 5.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/my_theme.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/documentation_options.js?v=3687f9f1"></script>
+        <script src="../_static/documentation_options.js?v=ce74c6a2"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -31,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Neper
           </a>
               <div class="version">
-                4.10.1
+                5.0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -577,7 +577,9 @@ the maximum ratio between the lengths of two adjacent 1D elements (<span class="
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">phase</span></code>: group file (optional FEPX input);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">bcs</span></code>: boundary condition file (optional FEPX input);</p></li>
 <li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">per</span></code>: periodicity file (see also option <a class="reference internal" href="#cmdoption-performat"><code class="xref std std-option docutils literal notranslate"><span class="pre">-performat</span></code></a>);</p></li>
-<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">tess</span></code>: tessellation file, where the tessellation is reconstructed from the mesh.</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">tess</span></code>: tessellation file, where the tessellation is reconstructed from the mesh;</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">etree</span></code>: element-orientation k-d tree file (for development only);</p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">ntree</span></code>: node-orientation k-d tree file (for development only).</p></li>
 </ul>
 <p><strong>Default value</strong>: <code class="xref py py-data docutils literal notranslate"><span class="pre">msh</span></code>.</p>
 </dd></dl>
@@ -727,7 +729,9 @@ or polyhedron (in seconds).</p>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.ori</span></code>: orientation file (optional FEPX file).  It contains the <code class="xref py py-data docutils literal notranslate"><span class="pre">$ElsetOrientations</span></code> and <code class="xref py py-data docutils literal notranslate"><span class="pre">$ElementOrientations</span></code> sections of the <code class="file docutils literal notranslate"><span class="pre">.msh</span></code> file;</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.phase</span></code>: group file (optional FEPX file).  It contains the <code class="xref py py-data docutils literal notranslate"><span class="pre">$Groups</span></code> section of the <code class="file docutils literal notranslate"><span class="pre">.msh</span></code> file;</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">.bcs</span></code>: boundary conditions file (optional FEPX file);</p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">.per</span></code>: periodicity file.</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.per</span></code>: periodicity file;</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.etree</span></code>: element-orientation k-d tree file;</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">.ntree</span></code>: node-orientation k-d tree file.</p></li>
 </ul>
 </div></blockquote>
 </section>

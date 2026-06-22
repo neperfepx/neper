@@ -6,6 +6,8 @@ Tutorials
 .. toctree::
    :maxdepth: 1
 
+   tutorials/voronoi_tessellation.rst
+   tutorials/regular_tessellation.rst
    tutorials/simple_model.rst
    tutorials/visualize_tessellation.rst
    tutorials/pole_figure.rst

@@ -24,7 +24,7 @@ Resources and Support
 
 Several, complementary resources describing Neper are available:
 
-- The Neper reference manual, which is this document, describes all Neper's capabilities.
+- The :ref:`Neper user documentation <neper_link>` (this documentation) describes all of Neper's capabilities.
 
 - The `Neper website <https://neper.info>`_ presents a general introduction to Neper, contains tutorials, and is where Neper can be downloaded from.
 
@@ -50,6 +50,8 @@ Several, complementary resources describing Neper are available:
 
   - `R. Quey, A. Villani and C. Maurice, Nearly uniform sampling of crystal orientations, J. Appl. Crystallogr., vol. 51, pp. 1162-1173, 2018, <https://doi.org/10.1107/S1600576718009019>`_ describes uniform sampling of crystal orientations.
 
+- The Neper developer's documentation is included in the distribution, in the :file:`doc-dev/` directory.
+
 Resources for FEPX can be accessed from https://fepx.info.
 
 .. _installing_neper:
@@ -58,6 +60,8 @@ Installing Neper
 ----------------
 
 Neper is written in (mostly ANSI) C and a little C++, and it can run on any Unix-like system.  Neper is also known to run on macOS and on Microsoft Windows using the Windows subsystem for Linux (WSL), the Ubuntu app or similar solutions, although we do not test nor support this usage and multithreading must be turned off (which slows down execution significantly).
+
+When installed, Neper consists the :program:`neper` binary, which can be called at the command-line, and data files, which are useful to the binary.  At runtime, :program:`neper` looks for its data files in :code:`$NEPER_DATA_DIR`, :file:`$HOME/.local/neper` and :file:`/usr/share/neper`, successively (see below).
 
 .. note:: Ubuntu users may be interested in the tutorial ":ref:`installation_ubuntu_22`" from step-by-step installation instructions.
 
@@ -88,15 +92,25 @@ Compilation is performed via `CMake <https://cmake.org>`_ (no root privileges ne
 
   Use option :data:`-j` for a multithreaded compilation.
 
-This generates the :file:`neper` binary file.  To make it available system-wide, run (as root):
+This generates the :file:`neper` binary file.
+
+To make Neper available system-wide, run (using :program:`sudo` for administration privileges):
 
   .. code-block:: console
 
-    $ make install
+    $ sudo make install
+
+To make Neper available locally to the user, run:
+
+  .. code-block:: console
+
+    $ make userinstall
 
 This procedure uses the default configuration options and should work out-of-the-box if the required dependencies are available in standard system locations.
 
 .. _fine_configuration:
+
+   .. attention:: Since version 4.11, either :command:`make install` or :command:`make userinstall` must be run for proper installation.  Copying the :file:`neper` binary to :file:`~/bin` for a local installation is no longer sufficient.
 
 Fine Configuration
 ~~~~~~~~~~~~~~~~~~
@@ -119,10 +133,11 @@ or directly at the command line, using Cmake's :data:`-D` option:
 
   $ cmake -D<VARIABLE1>=<VALUE1> -D<VARIABLE2>=<VALUE2> ..
 
-The installation directories are:
+The installation directory is :code:`CMAKE_INSTALL_PREFIX`, which defaults to :code:`/usr/local` for :command:`make install` and :file:`$HOME/.local` for :command:`make userinstall`.
 
-- The binary directory (variable :code:`CMAKE_BUILD_DIRECTORY`, default :file:`/usr/local`);
-- The Bash completion script directory (variable :code:`CMAKE_BUILD_DIRECTORY_COMPLETION`, default :file:`/usr/share` on Linux and :file:`/usr/local/etc` on macOS).
+The installation type is :code:`CMAKE_INSTALL_TYPE`, which defaults to :code:`Full`.  Use :code:`NoPost` to disable the post-installation operations.  The post-installation operations produce optional precomputed files that improve Neper’s runtime performance.
+
+.. - The Bash completion script directory (variable :code:`CMAKE_BUILD_DIRECTORY_COMPLETION`, default :file:`/usr/share` on Linux and :file:`/usr/local/etc` on macOS).
 
 The dependencies which are (optionally) necessary at compilation time and must be (optionally) installed on your system before Neper is compiled are the following:
 
@@ -167,7 +182,10 @@ Other dependencies are only needed at run-time (they are not necessary for compi
 
 Finally, other third-party libraries are directly included in the source code (see directory :file:`src/contrib`) and are therefore not dependencies *per se*:
 
-- The `NLopt <https://nlopt.readthedocs.io>`_ library.  If it is already available on your system, the system version will be used instead.  To force the use of the built-in version, set :code:`FORCE_BUILTIN_NLOPT` to :code:`ON` (default :code:`OFF`).
+- The `NLopt <https://nlopt.readthedocs.io>`_ library.
+  The built-in version will be used by default. If another version is installed on your system and you would like to use it instead, set :code:`FORCE_BUILTIN_NLOPT` to :code:`OFF` (default :code:`ON`).
+
+  .. note:: The built-in NLopt version is 2.8.0.  Other versions are not recommended.
 
 - The `libscotch <https://www.labri.fr/perso/pelegrin/scotch>`_ library. If it is already available on your system, the system version will be used instead.  To force the use of the built-in version, set :code:`FORCE_BUILTIN_LIBSCOTCH` to :code:`ON` (default :code:`OFF`).
 
@@ -184,6 +202,15 @@ The program configuration variables concern the printing format of the real numb
 - :code:`REAL_PRINT_FORMAT`, default :code:`"%.12f"` (12 decimal digits);
 - :code:`REAL_PRINT_FORMAT3`, default :code:`"%15.12f"` (12 decimal digits, 15 total digits);
 - :code:`REAL_PRINT_FORMAT5`, default :code:`"%17.12f"` (12 decimal digits, 17 total digits).
+
+.. _plugins:
+
+Plugins
+~~~~~~~
+
+Specific features that do not need to be included in the main distribution are available as plugins.  Plugins are available from a dedicated repository, https://github.com/neperfepx/neper-plugins.
+
+  .. note:: A plugin does not need to be installed unless Neper requires it.
 
 .. _testing_neper:
 
@@ -229,6 +256,12 @@ general-purpose, self-explanatory arguments:
   $ neper --help
   $ neper --version
   $ neper --license
+
+The following command allows to determine from where Neper's data are read.
+
+.. code-block:: console
+
+  $ neper --data
 
 The following of this section provides information on how to call Neper's modules,
 properly format option arguments and set up an initialization file.
@@ -327,7 +360,7 @@ Conventions Used in This Manual
 
     $ command
 
-  The first character on the line is the terminal prompt, and should not be typed. The dollar sign, :data:`$`, is used as the standard prompt in this manual, although some systems may use a different character.
+  The first character on the line is the terminal prompt, and should not be typed. The dollar sign, :data:`$`, is used as the standard prompt in this documentation, although some systems may use a different character.
 
 - A program (or command) option is printed like :data:`this`;
 - An option argument is printed like :data:`<this>`;
