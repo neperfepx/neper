@@ -35,6 +35,10 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- S Zhou, M Ben Bettaieb and F Abed-Meraim, *Flexible Generation of Polycrystalline Representative Volume Elements on Pre-Meshed Geometries: A Novel ABAQUS Toolbox for Crystal Plasticity Simulations*, **Integrating Materials and Manufacturing Innovation**, https://doi.org/10.1007/s40192-026-00466-1.
+- H Ben Boubaker, C Mareau, Y Ayed, L Gallegos-Mayorga and G Germain, *Influence of the microstructure of the Ti17 titanium alloy on chip formation during orthogonal cutting: experiments and crystal plasticity simulations*, **The International Journal of Advanced Manufacturing Technology**, https://doi.org/10.1007/s00170-026-18425-7.
+- M Bouyx, A Vattré, J Réthoré, V Bonnand and V Chiaruttini, *Statistical Analysis of Energy Release Rate Evolution for Microstructurally Small Fatigue Cracks*, **Fatigue & Fracture of Engineering Materials & Structures**, https://doi.org/10.1111/ffe.70330.
+- J Ju, Z Zhang, H Chang, C Ji and M Zhu, *Embedded Machine Learning-Assisted Inverse Calibration of Crystal Plasticity and Cohesive Zone Constitutive Parameters for High-Temperature Equiaxed Austenite*, **Metallurgical and Materials Transactions B**, https://doi.org/10.1007/s11663-026-04084-2.
 - G Huang, X Zhang, X Zou, K Wang, Z Xie, WR Jian, S Qin and X Yao, *Role of lattice distortion and chemical short-range order in dislocation drag and strain-rate sensitivity over wide strain rates*, **Journal of the Mechanics and Physics of Solids**, https://doi.org/10.1016/j.jmps.2026.106723.
 - D Xia and C Oskay, *Modeling Short-Crack Propagation in 3D Polycrystalline Microstructures through Adaptive Crack Insertion*, **Journal of Engineering Mechanics**, https://doi.org/10.1061/jenmdt.emeng-8913.
 - G Xiang, Z Yao, J Lai, C Shu, C Song, G Mo, X Zhu, J Dong, S Xue and S Zhang, *Dislocation density-based nonlocal crystal plasticity with carbide bypass strengthening for tempered 42CrMo steel*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2026.106245.
