@@ -20,6 +20,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Trust system Homebrew taps
+        run: brew trust aws/tap azure/bicep
+
       - name: Install GNU Scientific Library
         run: brew install gsl
 

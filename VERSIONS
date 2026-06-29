@@ -1,3 +1,6 @@
+New in 5.0.1-2 (29 Jun 2026):
+- general: minor fixes.
+
 New in 5.0.0 (22 Jun 2026):
 - module -T: improved import and regularization of tessellations of non-cubical
   domains, added [r]sel and anisofact to -morpho, added -ori transform ori for
