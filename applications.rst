@@ -35,6 +35,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- Y Chen, Y Zhao and G Nie, *Chemo-mechanical degradation of secondary particles in lithium-ion battery electrodes based on statistical and homogenization methods*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2026.112390.
 - S Zhou, M Ben Bettaieb and F Abed-Meraim, *Flexible Generation of Polycrystalline Representative Volume Elements on Pre-Meshed Geometries: A Novel ABAQUS Toolbox for Crystal Plasticity Simulations*, **Integrating Materials and Manufacturing Innovation**, https://doi.org/10.1007/s40192-026-00466-1.
 - H Ben Boubaker, C Mareau, Y Ayed, L Gallegos-Mayorga and G Germain, *Influence of the microstructure of the Ti17 titanium alloy on chip formation during orthogonal cutting: experiments and crystal plasticity simulations*, **The International Journal of Advanced Manufacturing Technology**, https://doi.org/10.1007/s00170-026-18425-7.
 - M Bouyx, A Vattré, J Réthoré, V Bonnand and V Chiaruttini, *Statistical Analysis of Energy Release Rate Evolution for Microstructurally Small Fatigue Cracks*, **Fatigue & Fracture of Engineering Materials & Structures**, https://doi.org/10.1111/ffe.70330.
