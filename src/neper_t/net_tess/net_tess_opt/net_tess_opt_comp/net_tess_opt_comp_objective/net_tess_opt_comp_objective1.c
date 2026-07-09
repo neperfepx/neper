@@ -188,12 +188,7 @@ net_tess_opt_comp_objective (unsigned int n, const double *x, double *grad,
   }
 
   else
-  {
-    printf ("\n");
-    ut_print_message (0, 3, "");
-    sprintf (message, "Final   solution: f   =%.9f", (*pTOpt).objval);
     strcpy ((*pTOpt).message, "");
-  }
 
   if ((*pTOpt).tarqty > 0)
     ut_print_progress (stdout, 1, INT_MAX, message, (*pTOpt).message);
