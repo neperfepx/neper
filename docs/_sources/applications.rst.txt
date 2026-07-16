@@ -35,6 +35,9 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- S Bhatt, T Hu and M Messner, *Modeling the Impact of Grain Morphology and Porosity on Creep Anisotropy in Laser Powder Bed Fusion Materials*, **Integrating Materials and Manufacturing Innovation**, https://doi.org/10.1007/s40192-026-00457-2.
+- E Demir, A Taipale, C Hardie and E Tarleton, *A finite element framework for cohesive zone modeling of interface fracture*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2026.112405.
+- Y Li, Z Zhang, T Wang, Y Wang, Y Li, Y Cao, H Xiao, G Liu and L He, *Thermal fracture of granite under 9 GHz microwave irradiation: The critical effect of grain size*, **Engineering Geology**, https://doi.org/10.1016/j.enggeo.2026.108908.
 - Y Chen, Y Zhao and G Nie, *Chemo-mechanical degradation of secondary particles in lithium-ion battery electrodes based on statistical and homogenization methods*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2026.112390.
 - S Zhou, M Ben Bettaieb and F Abed-Meraim, *Flexible Generation of Polycrystalline Representative Volume Elements on Pre-Meshed Geometries: A Novel ABAQUS Toolbox for Crystal Plasticity Simulations*, **Integrating Materials and Manufacturing Innovation**, https://doi.org/10.1007/s40192-026-00466-1.
 - H Ben Boubaker, C Mareau, Y Ayed, L Gallegos-Mayorga and G Germain, *Influence of the microstructure of the Ti17 titanium alloy on chip formation during orthogonal cutting: experiments and crystal plasticity simulations*, **The International Journal of Advanced Manufacturing Technology**, https://doi.org/10.1007/s00170-026-18425-7.
