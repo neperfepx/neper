@@ -806,6 +806,8 @@ Transformation Options
 
   -  :data:`rmsat`: remove the cell *satellites*, i.e. parts disconnected from the cell bulk.
 
+  - :data:`rmcell(<expr1>,<expr2>,...)` remove cells matching successive expressions :data:`<expr1>`, :data:`<expr2>`, etc., where expressions are based on the variables defined in :ref:`raster_tessellation_keys`.
+
   -  :data:`grow`: grow the cells to fill the domain.
 
   -  :data:`tessinter(<tess_file>)`: intersect with tessellation :file:`tess_file`.
