@@ -920,7 +920,7 @@ neut_tesr_voxlengtheq (struct TESR Tesr, double *plengtheq)
 }
 
 int
-neut_tesr_volume (struct TESR Tesr, double *pvol)
+neut_tesr_rastervolume (struct TESR Tesr, double *pvol)
 {
   if (Tesr.Dim == 3)
   {
@@ -937,7 +937,7 @@ neut_tesr_volume (struct TESR Tesr, double *pvol)
 }
 
 int
-neut_tesr_rastervolume (struct TESR Tesr, double *pvol)
+neut_tesr_volume (struct TESR Tesr, double *pvol)
 {
   int i, j, k, qty;
 
