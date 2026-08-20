@@ -35,6 +35,7 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- V Phalke, P Shanthraj, E Demir, M Carrington nd C Hardie, *Scalability study of parallel simulations on the HPC using open-source and commercial finite element software: Application to crystal plasticity modelling*, **Simulation Modelling Practice and Theory**, https://doi.org/10.1016/j.simpat.2026.103322.
 - S Bhatt, T Hu and M Messner, *Modeling the Impact of Grain Morphology and Porosity on Creep Anisotropy in Laser Powder Bed Fusion Materials*, **Integrating Materials and Manufacturing Innovation**, https://doi.org/10.1007/s40192-026-00457-2.
 - E Demir, A Taipale, C Hardie and E Tarleton, *A finite element framework for cohesive zone modeling of interface fracture*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2026.112405.
 - Y Li, Z Zhang, T Wang, Y Wang, Y Li, Y Cao, H Xiao, G Liu and L He, *Thermal fracture of granite under 9 GHz microwave irradiation: The critical effect of grain size*, **Engineering Geology**, https://doi.org/10.1016/j.enggeo.2026.108908.
