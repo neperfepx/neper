@@ -35,6 +35,8 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2026
 ----
 
+- Y Yang, H Zheng, X Zuo, J Wan, Y Rong, N Chen, *Crystal plasticity phase-field modeling of carbide effects on fracture behavior of quenching and tempering steels*, **Journal of Materials Research and Technology**, https://doi.org/10.1016/j.jmrt.2026.08.139.
+- D Liu, J Xiong, Q Wu, X Ming, R Liu, Y Yin, J Xi, T Zhao, F Hu and B Shen, *Correlating misch metal content with magnetization reversal and coercivity in dual-alloy sintered magnets*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2026.190465.
 - V Phalke, P Shanthraj, E Demir, M Carrington nd C Hardie, *Scalability study of parallel simulations on the HPC using open-source and commercial finite element software: Application to crystal plasticity modelling*, **Simulation Modelling Practice and Theory**, https://doi.org/10.1016/j.simpat.2026.103322.
 - S Bhatt, T Hu and M Messner, *Modeling the Impact of Grain Morphology and Porosity on Creep Anisotropy in Laser Powder Bed Fusion Materials*, **Integrating Materials and Manufacturing Innovation**, https://doi.org/10.1007/s40192-026-00457-2.
 - E Demir, A Taipale, C Hardie and E Tarleton, *A finite element framework for cohesive zone modeling of interface fracture*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2026.112405.
