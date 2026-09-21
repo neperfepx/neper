@@ -131,7 +131,7 @@ neut_nodes_rotate (struct NODES *pNodes, double r1, double r2, double r3,
 void
 neut_nodes_bbox (struct NODES Nodes, double **bbox)
 {
-  int *nodes = ut_alloc_1d_int (Nodes.NodeQty);
+  int *nodes = ut_alloc_1d_int (Nodes.NodeQty + 1);
 
   ut_array_1d_int_set_id (nodes, Nodes.NodeQty + 1);
 
