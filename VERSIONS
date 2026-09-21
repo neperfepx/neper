@@ -1,5 +1,6 @@
-New in 5.0.1-5 (31 Jul 2026):
+New in 5.0.1-6 (21 Sep 2026):
 - module -T: fixed -stattesr vol.
+- module -V: made minor fix.
 - general: minor fixes.
 
 New in 5.0.0 (22 Jun 2026):

@@ -133,9 +133,9 @@ neut_nodes_bbox (struct NODES Nodes, double **bbox)
 {
   int *nodes = ut_alloc_1d_int (Nodes.NodeQty);
 
-  ut_array_1d_int_set_id (nodes, Nodes.NodeQty);
+  ut_array_1d_int_set_id (nodes, Nodes.NodeQty + 1);
 
-  neut_nodes_nodes_bbox (Nodes, nodes, Nodes.NodeQty, bbox);
+  neut_nodes_nodes_bbox (Nodes, nodes + 1, Nodes.NodeQty, bbox);
 
   ut_free_1d_int (&nodes);
 
