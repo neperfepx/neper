@@ -32,9 +32,21 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 - B Flipon, C Keller, R Quey and F Barbe, *A full-field crystal-plasticity analysis of bimodal polycrystals*, **International Journal of Solids and Structures**, vol. 184, pp. 178--192, 2020. `Flipon et al.'s journal cover <imgs/cover-ijss-2020.png>`_
 - R Carson, M Obstalecki, M Miller and P Dawson, *Characterizing Heterogeneous Intragranular Deformations in Polycrystalline Solids Using Diffraction-Based and Mechanics-Based Metrics*, **Modelling and Simulation in Materials Science and Engineering**,  vol. 25,  pp. 055008, 2017. `Carson et al.'s journal cover <imgs/cover-MSMSE-2505-OFC.png>`_
 
+2027
+----
+
+- Q Deng, F Zheng, YY Jiao, Y Zhang, B Gong and W Wu, *A Cover-based Enhanced Direct Search Approach for Contact Detection of Convex Polyhedral Blocks and Its Application with 3D DDA*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2026.108644.
+- T Kaiser and A Menzel, *FFT-based computational homogenisation and asymptotic expansion analysis of thermoelectric solids*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2026.119364.
+
 2026
 ----
 
+- R Santos-Güemes, B Yang, E Nieto-Valeiras and J Llorca, *Design of dual-textured Mg-6.5 Zn alloys with low tension-compression asymmetry by means of crystal plasticity simulations*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2026.106380.
+- Y Hirama and T Hori, *Phonon mean free path and thermal conductivity in grain size-and shape-controlled polycrystalline nanostructures via Laguerre tessellation*, **International Communications in Heat and Mass Transfer**, https://doi.org/10.1016/j.icheatmasstransfer.2026.112516.
+- Z Liu, L Deng, Y Hao, P Gong, X Wang, X Tang and X Wang, *Enhanced Strength and Ductility of 5A06 Aluminum Alloy Through Thermo–Mechanical Treatments of Artificial Aging–Warm Deformation*, **Journal of Materials Research and Technology**, https://doi.org/10.1016/j.jmrt.2026.09.040.
+- J Pan, Y Zhang, D Hu, M Zhao, Y Lou, R Chen, X Yu, R Wang, X Su, J Zhang and M Yi, *Surface-induced energy amplification in polycrystalline plasticity: A grain-scale origin of the load-dependent surface-interior fatigue failure transition*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104822.
+- Y Wang, Z Yuan, Y Zhu, L Zhao, S Liang, M Huang and Z Li, *Learning 3D void growth and coalescence in heterogeneous polycrystalline materials using vision Transformer models*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2026.112576.
+- ZY Zhang, S Yin and LW Zhang, *A coupled thermo-chemo-mechanical framework for He-induced fracture under extreme thermal transients via crystal plasticity and phase-field methods*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2026.119327.
 - Y Yang, H Zheng, X Zuo, J Wan, Y Rong, N Chen, *Crystal plasticity phase-field modeling of carbide effects on fracture behavior of quenching and tempering steels*, **Journal of Materials Research and Technology**, https://doi.org/10.1016/j.jmrt.2026.08.139.
 - D Liu, J Xiong, Q Wu, X Ming, R Liu, Y Yin, J Xi, T Zhao, F Hu and B Shen, *Correlating misch metal content with magnetization reversal and coercivity in dual-alloy sintered magnets*, **Journal of Alloys and Compounds**, https://doi.org/10.1016/j.jallcom.2026.190465.
 - V Phalke, P Shanthraj, E Demir, M Carrington nd C Hardie, *Scalability study of parallel simulations on the HPC using open-source and commercial finite element software: Application to crystal plasticity modelling*, **Simulation Modelling Practice and Theory**, https://doi.org/10.1016/j.simpat.2026.103322.
