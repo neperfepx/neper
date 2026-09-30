@@ -35,12 +35,18 @@ On a few occasions, Neper images made journal covers.  Congratulations to the au
 2027
 ----
 
+- SK Gaddam, S Natarajan, AK Kanjarla, *Octree-based scaled boundary finite element framework for crystal plasticity: An open-source ABAQUS implementation*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2026.119427.
 - Q Deng, F Zheng, YY Jiao, Y Zhang, B Gong and W Wu, *A Cover-based Enhanced Direct Search Approach for Contact Detection of Convex Polyhedral Blocks and Its Application with 3D DDA*, **Computers and Geotechnics**, https://doi.org/10.1016/j.compgeo.2026.108644.
 - T Kaiser and A Menzel, *FFT-based computational homogenisation and asymptotic expansion analysis of thermoelectric solids*, **Computer Methods in Applied Mechanics and Engineering**, https://doi.org/10.1016/j.cma.2026.119364.
 
 2026
 ----
 
+- R Cai, C Jia, Z Jiang, C Sang, M Yang, L Yang, C Zheng, P Wang and D Li, *Cementite-Lamella Morphology and Inter-Nodule Compatibility Govern Hierarchical Plasticity in Pearlitic Steel*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijplas.2026.104832.
+- P Alizadeh, A Hekmatnejad, A Pena, LH Poh, *Microstructural disorder and fabric anisotropy in heterogeneous brittle rock materials: distinct controls on crack initiation and peak strength*, **Engineering Fracture Mechanics**, https://doi.org/10.1016/j.engfracmech.2026.112675.
+- J Tai, D Hu, Z Hu, A Saini, P Zuo, HY Chia, G Peng, WY Yeong, W Yan and Z Fan, *A physical framework linking ultrasonic scattering to strain localization in additively manufactured alloys*, **Ultrasonics**, https://doi.org/10.1016/j.ultras.2026.108303.
+- A Yamaguchi, TT Chen, Y Adachi and Y Matsubara, *Multiscale Crystal Plasticity Finite Element Simulation of Texture Evolution in Pure Iron during One-Way and Two-Way Cold Rolling*, **Materials Today Communications**, https://doi.org/10.1016/j.mtcomm.2026.116213.
+- Y Yang, J Zhang, H Zheng, X Zuo, J Wan, Y Rong and N Chen, *Mechanistic role of carbides in quenching-partitioning-tempering steel fracture*, **International Journal of Plasticity**, https://doi.org/10.1016/j.ijmecsci.2026.112129.
 - R Santos-Güemes, B Yang, E Nieto-Valeiras and J Llorca, *Design of dual-textured Mg-6.5 Zn alloys with low tension-compression asymmetry by means of crystal plasticity simulations*, **European Journal of Mechanics A/Solids**, https://doi.org/10.1016/j.euromechsol.2026.106380.
 - Y Hirama and T Hori, *Phonon mean free path and thermal conductivity in grain size-and shape-controlled polycrystalline nanostructures via Laguerre tessellation*, **International Communications in Heat and Mass Transfer**, https://doi.org/10.1016/j.icheatmasstransfer.2026.112516.
 - Z Liu, L Deng, Y Hao, P Gong, X Wang, X Tang and X Wang, *Enhanced Strength and Ductility of 5A06 Aluminum Alloy Through Thermo–Mechanical Treatments of Artificial Aging–Warm Deformation*, **Journal of Materials Research and Technology**, https://doi.org/10.1016/j.jmrt.2026.09.040.
