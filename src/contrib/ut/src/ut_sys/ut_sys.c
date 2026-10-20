@@ -61,9 +61,9 @@ ut_sys_runwtime (char *exec, char *command, double tmax,
                  struct timeval *pctrlc_t)
 {
   int status;
-  pid_t pid;
+  pid_t pid, res;
   struct sigaction act;
-  struct itimerval value = { {0, 0}, {0, 0} };
+  struct timeval beg_t, now_t;
   char **list = NULL;
   int qty;
 
@@ -71,17 +71,11 @@ ut_sys_runwtime (char *exec, char *command, double tmax,
 
   memset (&act, 0, sizeof (struct sigaction));
   act.sa_handler = sighandler;
-  // act.sa_flags = SA_RESTART;
 
-  value.it_value.tv_sec = (long int) (tmax);
-  value.it_value.tv_usec =
-    (long int) ((double) (tmax - value.it_value.tv_sec) * 1000000);
-
-  setitimer (ITIMER_REAL, &value, 0);
-
-  sigaction (SIGCHLD, &act, 0);
+  // only SIGINT is caught: the function can be called from several
+  // (OpenMP) threads at once, so the process-wide SIGCHLD / SIGALRM
+  // (setitimer) cannot be used to wait for a given child
   sigaction (SIGINT, &act, 0);
-  sigaction (SIGALRM, &act, 0);
 
   ut_list_break (command, " ", &list, &qty);
   list = ut_realloc_1d_pchar_null (list, qty + 1, 1);
@@ -96,17 +90,32 @@ ut_sys_runwtime (char *exec, char *command, double tmax,
     status = -1;
   else
   {
-    /* printf ("waiting for pid = %d\n", pid); */
-    if (waitpid (pid, &status, 0) != pid)
-      status = -1;
-
-    /* printf ("waiting for pid = %d\n", pid); */
-
-    /* it is likely that this should not be necessary */
-    if (status == -1)
+    // polling the child, and killing it once tmax is reached (tmax <= 0
+    // means no time limit)
+    gettimeofday (&beg_t, NULL);
+    while (1)
     {
-      /* printf ("killing %d\n", pid); */
-      kill (pid, 9);
+      res = waitpid (pid, &status, WNOHANG);
+
+      if (res == pid)
+        break;
+
+      if (res == -1 && errno != EINTR)
+      {
+        status = -1;
+        break;
+      }
+
+      gettimeofday (&now_t, NULL);
+      if (tmax > 0 && ut_time_subtract (&beg_t, &now_t) > tmax)
+      {
+        kill (pid, 9);
+        waitpid (pid, NULL, 0);
+        status = -1;
+        break;
+      }
+
+      usleep (1000);
     }
   }
 
