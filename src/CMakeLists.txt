@@ -112,10 +112,33 @@ if(HAVE_GSL)
 endif()
 
 if(HAVE_OPENMP)
-  if(APPLE AND XCODE)
-      set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include" CACHE INTERNAL "OpenMP flags for Xcode toolchain.")
-      set(OpenMP_CXX_LIB_NAMES "omp" CACHE INTERNAL "OpenMP lib name for Xcode toolchain.")
-      set(OpenMP_omp_LIBRARY "/usr/local/opt/libomp/lib/libomp.dylib" CACHE INTERNAL "OpenMP lib name for Xcode toolchain.")
+  # AppleClang does not ship OpenMP; look for libomp in LIBOMP_ROOT, then
+  # in Homebrew's (as given by brew --prefix libomp), then in the default
+  # Homebrew (/opt/homebrew, /usr/local) and MacPorts (/opt/local) locations
+  if(APPLE AND CMAKE_C_COMPILER_ID STREQUAL "AppleClang" AND NOT OpenMP_C_FLAGS)
+    find_program(BREW_EXECUTABLE brew)
+    if(BREW_EXECUTABLE)
+      execute_process(COMMAND ${BREW_EXECUTABLE} --prefix libomp
+        OUTPUT_VARIABLE BREW_LIBOMP_PREFIX
+        OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
+    endif()
+    find_path(LIBOMP_INCLUDE_DIR omp.h
+      HINTS ${LIBOMP_ROOT} ENV LIBOMP_ROOT ${BREW_LIBOMP_PREFIX}
+      PATHS /opt/homebrew/opt/libomp /usr/local/opt/libomp /opt/local
+      PATH_SUFFIXES include include/libomp)
+    find_library(LIBOMP_LIBRARY omp
+      HINTS ${LIBOMP_ROOT} ENV LIBOMP_ROOT ${BREW_LIBOMP_PREFIX}
+      PATHS /opt/homebrew/opt/libomp /usr/local/opt/libomp /opt/local
+      PATH_SUFFIXES lib lib/libomp)
+    if(LIBOMP_INCLUDE_DIR AND LIBOMP_LIBRARY)
+      foreach(lang C CXX)
+        set(OpenMP_${lang}_FLAGS "-Xpreprocessor -fopenmp -I${LIBOMP_INCLUDE_DIR}" CACHE STRING "OpenMP flags for AppleClang.")
+        set(OpenMP_${lang}_LIB_NAMES "omp" CACHE STRING "OpenMP lib names for AppleClang.")
+      endforeach()
+      set(OpenMP_omp_LIBRARY "${LIBOMP_LIBRARY}" CACHE FILEPATH "OpenMP library for AppleClang.")
+    else()
+      message(WARNING "libomp not found; install it (e.g., brew install libomp), set LIBOMP_ROOT, or set HAVE_OPENMP=OFF.")
+    endif()
   endif()
 
   find_package(OpenMP REQUIRED)
