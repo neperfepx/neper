@@ -244,6 +244,28 @@ ut_math_vars (char *expr, char ***pvars, int *pvarqty)
         length = 1;
       }
 
+      // if number, erasing it, including its exponent (as in 5e-1)
+      else if (isdigit (tmp[i]) || tmp[i] == '.')
+      {
+        j = i;
+        while (isdigit (tmp[j + 1]) || tmp[j + 1] == '.')
+          j++;
+
+        if ((tmp[j + 1] == 'e' || tmp[j + 1] == 'E')
+            && (isdigit (tmp[j + 2])
+                || ((tmp[j + 2] == '+' || tmp[j + 2] == '-')
+                    && isdigit (tmp[j + 3]))))
+        {
+          j += isdigit (tmp[j + 2]) ? 2 : 3;
+          while (isdigit (tmp[j + 1]))
+            j++;
+        }
+
+        for (; i < j; i++)
+          tmp[i] = ' ';
+        tmp[i] = ' ';
+      }
+
       // otherwise, erasing
       else
         tmp[i] = ' ';

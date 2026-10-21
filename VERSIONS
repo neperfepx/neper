@@ -1,7 +1,7 @@
-New in 5.0.1-7 (21 Sep 2026):
+New in 5.0.1-8 (22 Oct 2026):
 - module -T: fixed -stattesr vol.
 - module -V: made minor fix.
-- general: minor fixes.
+- general: fixed exponent notation in expressions, minor fixes.
 
 New in 5.0.0 (22 Jun 2026):
 - module -T: improved import and regularization of tessellations of non-cubical
