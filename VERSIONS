@@ -1,4 +1,4 @@
-New in 5.0.1-8 (22 Oct 2026):
+New in 5.0.1-9 (22 Oct 2026):
 - module -T: fixed -stattesr vol.
 - module -V: made minor fix.
 - general: fixed exponent notation in expressions, minor fixes.

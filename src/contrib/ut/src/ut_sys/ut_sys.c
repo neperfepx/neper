@@ -13,7 +13,11 @@
 #include<signal.h>
 #include<string.h>
 #include<float.h>
+#include<spawn.h>
+#include<fcntl.h>
 #include"ut.h"
+
+extern char **environ;
 
 struct timeval ctrlc_t;
 
@@ -56,6 +60,28 @@ sighandler (int signal)
   return;
 }
 
+void
+ut_sys_ctrlc_begin (struct timeval *pctrlc_t)
+{
+  struct sigaction act;
+
+  ctrlc_t = (*pctrlc_t);
+
+  memset (&act, 0, sizeof (struct sigaction));
+  act.sa_handler = sighandler;
+  sigaction (SIGINT, &act, 0);
+
+  return;
+}
+
+void
+ut_sys_ctrlc_end (struct timeval *pctrlc_t)
+{
+  (*pctrlc_t) = ctrlc_t;
+
+  return;
+}
+
 int
 ut_sys_runwtime (char *exec, char *command, double tmax,
                  struct timeval *pctrlc_t)
@@ -66,6 +92,7 @@ ut_sys_runwtime (char *exec, char *command, double tmax,
   struct itimerval value = { {0, 0}, {0, 0} };
   char **list = NULL;
   int qty;
+  posix_spawn_file_actions_t actions;
 
   ctrlc_t = (*pctrlc_t);
 
@@ -85,14 +112,19 @@ ut_sys_runwtime (char *exec, char *command, double tmax,
 
   ut_list_break (command, " ", &list, &qty);
   list = ut_realloc_1d_pchar_null (list, qty + 1, 1);
-  pid = fork ();
-  if (pid == 0)
-  {
-    execvp (exec, list);
-    _exit (EXIT_FAILURE);
-  }
-  else if (pid < 0)
-    /* The fork failed. Report failure. */
+  // the standard output and error are discarded (the command is not run
+  // through a shell, so it cannot include redirections)
+  posix_spawn_file_actions_init (&actions);
+  posix_spawn_file_actions_addopen (&actions, STDOUT_FILENO, "/dev/null",
+                                    O_WRONLY, 0);
+  posix_spawn_file_actions_addopen (&actions, STDERR_FILENO, "/dev/null",
+                                    O_WRONLY, 0);
+  // posix_spawnp is used instead of fork + exec, as fork copies the page
+  // tables of the (possibly large) calling process, which is slow.
+  status = posix_spawnp (&pid, exec, &actions, NULL, list, environ);
+  posix_spawn_file_actions_destroy (&actions);
+  if (status != 0)
+    /* The spawn failed. Report failure. */
     status = -1;
   else
   {
