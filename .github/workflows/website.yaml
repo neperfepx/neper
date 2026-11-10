@@ -1,11 +1,11 @@
-name: Build HTML documentation and deploy the website to GitHub Pages
+name: Build the HTML documentation
 
 on:
   workflow_call:
 
 jobs:
   build-website:
-    name: Build website with Sphinx using a theme provided by Read the Docs
+    name: Build the documentation with Sphinx
     runs-on: ubuntu-latest
     steps:
       - name: Update apt-get
@@ -28,49 +28,13 @@ jobs:
       - name: Install Read the Docs theme for Sphinx
         run: pip install sphinx-rtd-theme
 
-      - name: Build website
+      - name: Build the documentation
         working-directory: doc
         run: make html
 
-      - name: Upload website
-        uses: actions/upload-pages-artifact@v5
+      - name: Upload the documentation
+        uses: actions/upload-artifact@v4
         with:
+          name: documentation
           path: doc/build/html
           retention-days: ${{ github.event.repository.private && 1 || 7 }}
-
-  check-pages-status:
-    name: Check the status of GitHub Pages
-    env:
-      GITHUB_TOKEN: ${{ github.token }}
-    runs-on: ubuntu-latest
-    outputs:
-      pages_via_actions: ${{ steps.check-pages.outputs.pages_via_actions }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Is deployment via GitHub Actions enabled?
-        id: check-pages
-        run: bash .github/scripts/check-pages-deployment-via-actions.sh
-
-  deploy-website:
-    name: Deploy to GitHub Pages
-    needs: [build-website, check-pages-status]
-    if: >
-      needs.check-pages-status.outputs.pages_via_actions == 'true' &&
-      github.event_name != 'pull_request'
-    concurrency:
-      group: "pages"
-      cancel-in-progress: false
-
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Set up GitHub Pages
-        uses: actions/configure-pages@v6
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
