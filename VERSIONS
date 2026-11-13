@@ -1,6 +1,6 @@
 New in 7.0.1 (unreleased):
-- module -M: fixed meshing on macOS (the faces and polyhedra meshed by
-  the first Gmsh worker failed).
+- module -M: made the start of the Gmsh workers more robust (pipe file
+  descriptors kept apart from those of the workers).
 
 New in 7.0.0 (2026-11-13):
 - module -T: made the cylinder and sphere domains exact (curved, also
