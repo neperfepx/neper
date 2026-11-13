@@ -17,10 +17,14 @@ jobs:
     name: Website
     uses: ./.github/workflows/website.yaml
 
+  # The builds and tests run in the public repository only, where they are free: in the private
+  # repository (neper-dev, whose main is the same), they would be charged, macOS especially.
   linux:
     name: Linux
+    if: github.repository == 'neperfepx/neper'
     uses: ./.github/workflows/linux.yaml
 
   macos:
     name: MacOS
+    if: github.repository == 'neperfepx/neper'
     uses: ./.github/workflows/macos.yaml
