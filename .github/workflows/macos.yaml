@@ -26,6 +26,9 @@ jobs:
       - name: Install OpenMP
         run: brew install libomp
 
+      - name: Install Gmsh
+        run: brew install gmsh
+
       - name: Create build directory
         run: mkdir -p src/build
 
@@ -36,6 +39,7 @@ jobs:
         run: |
           export LDFLAGS="-L$(brew --prefix libomp)/lib"
           cmake \
+            -DCMAKE_PREFIX_PATH=$(brew --prefix) \
             -DCMAKE_C_COMPILER=$(brew --prefix llvm@18)/bin/clang \
             -DCMAKE_CXX_COMPILER=$(brew --prefix llvm@18)/bin/clang++ \
             -DOpenMP_C_FLAGS="-fopenmp -I$(brew --prefix libomp)/include" \

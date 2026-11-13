@@ -20,6 +20,9 @@ jobs:
       - name: Update apt-get
         run: sudo apt-get update
 
+      - name: Install Gmsh
+        run: sudo apt-get install -y libgmsh-dev
+
       - name: Checkout
         uses: actions/checkout@v6
 
