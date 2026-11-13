@@ -536,21 +536,39 @@ nem_gmsh_worker_exe (char *exe, unsigned int size)
 
 // creates a pipe whose file descriptors are closed on exec, so that they
 // are not inherited by the other workers (a worker would then not get the
-// end of its input when stopped)
+// end of its input when stopped), and are above those of the worker's input
+// and output: a file descriptor equal to its target is not duplicated by
+// posix_spawn_file_actions_adddup2, and on macOS it then keeps its
+// close-on-exec flag (the first worker, whose pipe was often 3 and 4, then
+// had no input, and every face it meshed failed)
 static int
 nem_gmsh_worker_pipe (int *fds)
 {
-#if defined(__linux__)
-  return pipe2 (fds, O_CLOEXEC);
-#else
-  if (pipe (fds))
-    return -1;
+  int i, tmp[2];
 
-  fcntl (fds[0], F_SETFD, FD_CLOEXEC);
-  fcntl (fds[1], F_SETFD, FD_CLOEXEC);
+#if defined(__linux__)
+  if (pipe2 (tmp, O_CLOEXEC))
+    return -1;
+#else
+  if (pipe (tmp))
+    return -1;
+#endif
+
+  for (i = 0; i < 2; i++)
+    fds[i] = fcntl (tmp[i], F_DUPFD_CLOEXEC, NEM_GMSH_WORKER_OUT + 1);
+
+  close (tmp[0]);
+  close (tmp[1]);
+
+  if (fds[0] < 0 || fds[1] < 0)
+  {
+    for (i = 0; i < 2; i++)
+      if (fds[i] >= 0)
+        close (fds[i]);
+    return -1;
+  }
 
   return 0;
-#endif
 }
 
 static int

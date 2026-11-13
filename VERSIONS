@@ -1,3 +1,7 @@
+New in 7.0.1 (unreleased):
+- module -M: fixed meshing on macOS (the faces and polyhedra meshed by
+  the first Gmsh worker failed).
+
 New in 7.0.0 (2026-11-13):
 - module -T: made the cylinder and sphere domains exact (curved, also
   for a cylinder periodic along z), added -domain hourglass, improved
